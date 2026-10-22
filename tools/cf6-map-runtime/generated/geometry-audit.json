@@ -1,0 +1,320 @@
+{
+  "schema": "cf6-static-geometry-audit.v1",
+  "evidenceBoundary": "point-based offline geometry only; actual player radius, camera and gameplay pending",
+  "maps": [
+    {
+      "id": "A01",
+      "collisionPolygons": 5,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 6473,
+      "freeSamples": 7824,
+      "spawnAdjusted": false,
+      "approximations": []
+    },
+    {
+      "id": "A02",
+      "collisionPolygons": 117,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 7901,
+      "freeSamples": 8850,
+      "spawnAdjusted": false,
+      "approximations": [
+        {
+          "shape": 1614,
+          "reason": "curved collision geometry is not an exact polygon",
+          "curveTolerance": 0.25,
+          "ignoredStrokeWidths": []
+        }
+      ]
+    },
+    {
+      "id": "A03",
+      "collisionPolygons": 3,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 10718,
+      "freeSamples": 11760,
+      "spawnAdjusted": true,
+      "approximations": []
+    },
+    {
+      "id": "A04",
+      "collisionPolygons": 3,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 8535,
+      "freeSamples": 11760,
+      "spawnAdjusted": false,
+      "approximations": []
+    },
+    {
+      "id": "A05",
+      "collisionPolygons": 3,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 13,
+      "freeSamples": 11760,
+      "spawnAdjusted": false,
+      "approximations": []
+    },
+    {
+      "id": "A06",
+      "collisionPolygons": 6,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 10264,
+      "freeSamples": 14164,
+      "spawnAdjusted": false,
+      "approximations": []
+    },
+    {
+      "id": "A08",
+      "collisionPolygons": 4,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 9838,
+      "freeSamples": 11023,
+      "spawnAdjusted": false,
+      "approximations": []
+    },
+    {
+      "id": "A09",
+      "collisionPolygons": 6,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 9867,
+      "freeSamples": 11322,
+      "spawnAdjusted": false,
+      "approximations": []
+    },
+    {
+      "id": "A10",
+      "collisionPolygons": 2,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 462,
+      "freeSamples": 553,
+      "spawnAdjusted": false,
+      "approximations": []
+    },
+    {
+      "id": "A11",
+      "collisionPolygons": 12,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 1777,
+      "freeSamples": 8704,
+      "spawnAdjusted": false,
+      "approximations": [
+        {
+          "shape": 1908,
+          "reason": "collision shape has stroked geometry",
+          "curveTolerance": 0.25,
+          "ignoredStrokeWidths": [
+            0.05
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A12",
+      "collisionPolygons": 5,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 313,
+      "freeSamples": 14367,
+      "spawnAdjusted": false,
+      "approximations": []
+    },
+    {
+      "id": "A13",
+      "collisionPolygons": 2,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 462,
+      "freeSamples": 553,
+      "spawnAdjusted": false,
+      "approximations": []
+    },
+    {
+      "id": "A14",
+      "collisionPolygons": 13,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 12251,
+      "freeSamples": 13605,
+      "spawnAdjusted": false,
+      "approximations": [
+        {
+          "shape": 1925,
+          "reason": "collision shape has stroked geometry",
+          "curveTolerance": null,
+          "ignoredStrokeWidths": [
+            0.05
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A15",
+      "collisionPolygons": 9,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 12171,
+      "freeSamples": 13221,
+      "spawnAdjusted": false,
+      "approximations": [
+        {
+          "shape": 1931,
+          "reason": "collision shape has stroked geometry",
+          "curveTolerance": null,
+          "ignoredStrokeWidths": [
+            0.05
+          ]
+        }
+      ]
+    },
+    {
+      "id": "A16",
+      "collisionPolygons": 9,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 6076,
+      "freeSamples": 6588,
+      "spawnAdjusted": false,
+      "approximations": []
+    },
+    {
+      "id": "A17",
+      "collisionPolygons": 2,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 13909,
+      "freeSamples": 15559,
+      "spawnAdjusted": false,
+      "approximations": []
+    },
+    {
+      "id": "A18",
+      "collisionPolygons": 2,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 12221,
+      "freeSamples": 13296,
+      "spawnAdjusted": false,
+      "approximations": []
+    },
+    {
+      "id": "A19",
+      "collisionPolygons": 3,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 12187,
+      "freeSamples": 12291,
+      "spawnAdjusted": true,
+      "approximations": []
+    },
+    {
+      "id": "A20",
+      "collisionPolygons": 14,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 16523,
+      "freeSamples": 16609,
+      "spawnAdjusted": true,
+      "approximations": []
+    },
+    {
+      "id": "A22",
+      "collisionPolygons": 14,
+      "fillSamples": 1000,
+      "fillMismatches": 0,
+      "spawnLineSamples": 202,
+      "spawnLineBlockedSamples": 0,
+      "pointGridStep": 5,
+      "reachableExit": true,
+      "reachableSamples": 16523,
+      "freeSamples": 16609,
+      "spawnAdjusted": false,
+      "approximations": []
+    }
+  ]
+}

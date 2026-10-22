@@ -6,6 +6,64 @@ class org.flashNight.arki.scene.BookRunRulesTest {
     private static function check(value:Boolean, message:String):Void {
         if (value) passed++; else { failed++; trace("[FAIL] BookRules: " + message); }
     }
+    private static function testCf6():Void {
+        var definition:Object=org.flashNight.arki.scene.BookDefinition;
+        var original:Object=definition._cf6;
+        var oldExt:Object=_root._saveExt, oldSlot=_root.savePath, oldLevel=_root.等级;
+        var codec:LiteJSON=new LiteJSON();
+        var campus:String=codec.stringifySafe(BookDefinition.get("repair-campus"));
+        var fixture:Object={schema:"playable-book.v1",id:"cf6-sting",routeId:"historical",stageName:"书中历险-毒刺行动",title:"TEST ONLY",
+            startingMoney:0,startingSkillPoints:0,actor:{name:"Andy",gender:"男",height:175,face:"face",hair:"hair",level:60,experience:157526193,
+                equipment:[{slot:"上装装备",name:"白色中山上装",enhancement:11}],skills:[{name:"小跳",level:10}]},
+            maps:[{id:"A01",title:"TEST ONLY",background:"cf6/CF6_A01_BG.swf",dialogue:[],stage:{Wave:{SubWave:[{EnemyGroup:{Enemy:[{Type:"兵种1",Level:35,Quantity:1,Parameters:{掉落物:[]}}]}}]}}}]};
+        try {
+            fixture.maps[0].presentation={scale:1,backgroundX:0,backgroundY:0};
+            fixture.maps[0].mechanism={assetScale:1,layers:[]};
+            definition._cf6=null;
+            check(BookDefinition.valid(fixture),"CF6 authored single-room fixture accepts without campus economy");
+            var wrongBackground:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(fixture);
+            wrongBackground.maps[0].background="cf6/../CF6_A01_BG.swf";
+            check(!BookDefinition.valid(wrongBackground),"CF6 background rejects traversal under the isolated directory");
+            wrongBackground.maps[0].background="cf6/CF6_A02_BG.swf";
+            check(!BookDefinition.valid(wrongBackground),"CF6 background must belong to the same map identity");
+            var tutorial:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(fixture);
+            tutorial.maps[0].id="TUTORIAL";tutorial.maps[0].background="cf6/CF6_Tutorial_BG.swf";
+            check(BookDefinition.valid(tutorial),"CF6 tutorial accepts its exact independent background");
+            var otherTutorialBackgrounds:Array=["gk1_1_BG.swf","cf6/gk1_1_BG.swf","cf6/CF6_A01_BG.swf",
+                "CF6_Tutorial_BG.swf","cf6/Other.swf","cf6\\CF6_Tutorial_BG.swf","cf6/../CF6_Tutorial_BG.swf"];
+            for(var tb:Number=0;tb<otherTutorialBackgrounds.length;tb++) {
+                tutorial.maps[0].background=otherTutorialBackgrounds[tb];
+                check(!BookDefinition.valid(tutorial),"CF6 tutorial rejects old placeholder or substituted background "+otherTutorialBackgrounds[tb]);
+            }
+            var broken:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(fixture);broken.routeId="plan61";
+            check(!BookDefinition.valid(broken),"CF6 future route fails closed");
+            broken=org.flashNight.gesh.object.PersistedSnapshot.clone(fixture);broken.actor.experience=0;
+            check(!BookDefinition.valid(broken),"CF6 level and cumulative XP must match");
+            broken=org.flashNight.gesh.object.PersistedSnapshot.clone(fixture);broken.maps[0].stage.bad=Number.NaN;
+            check(!BookDefinition.valid(broken),"CF6 rejects nested NaN in actual AVM1");
+            check(!BookDefinition.acceptFor("repair-campus",fixture),"late chapter response cannot populate another book cache");
+            check(BookDefinition.acceptFor("cf6-sting",fixture) && BookDefinition.ready("cf6-sting"),"CF6 validated chapter unlocks its own entry");
+            var first:Array=BookRunRules.stages(17,0,"cf6-sting"),second:Array=BookRunRules.stages(17,0,"cf6-sting");
+            first[0].Wave.SubWave[0].EnemyGroup.Enemy[0].Quantity=99;
+            check(second[0].Wave.SubWave[0].EnemyGroup.Enemy[0].Quantity==1 && fixture.maps[0].stage.Wave.SubWave[0].EnemyGroup.Enemy[0].Quantity==1,
+                "CF6 plans cannot mutate cached authored encounters or the next run");
+            check(second[0].BasicInformation.BookBoss==undefined && second[0].Instances.Instance.length==0
+                && second[0].Event[0].Callback.Name=="书中章节","CF6 owns authored encounters and receives chapter callback only");
+            check(BookRunRules.stages(17,Number.NaN,"cf6-sting").length==0,"CF6 rejects invalid debug index");
+            var run:Object={bookId:"cf6-sting",routeId:"historical",slot:"bookrun_cf6_fixture",outcome:"victory",elapsedMs:12000};
+            var quote:Object=BookRunRules.reward(run,{});
+            check(quote.sp==0 && quote.firstClear && quote.bestMs==12000,"CF6 victory records progress without external SP");
+            run.routeId="plan61";
+            check(!BookRunRules.reward(run,{}).firstClear,"CF6 foreign route cannot claim historical clear");
+            run.routeId="historical";_root._saveExt={bookRun:run};_root.savePath=run.slot;_root.等级=60;
+            check(org.flashNight.arki.scene.BookRunService.playerLevelCapReached(),"CF6 applied temporary character is capped at sixty");
+            _root.savePath="original";
+            check(!org.flashNight.arki.scene.BookRunService.playerLevelCapReached(),"CF6 stale run cannot cap an original slot");
+            check(codec.stringifySafe(BookDefinition.get("repair-campus"))==campus,"CF6 load and plan leave campus definition unchanged");
+        } finally {
+            definition._cf6=original;_root._saveExt=oldExt;_root.savePath=oldSlot;_root.等级=oldLevel;
+        }
+    }
     private static function findDrop(enemy:Object, name:String):Object {
         var rules:Array = enemy.Parameters.掉落物;
         for (var i:Number = 0; i < rules.length; i++) {
@@ -319,6 +377,7 @@ class org.flashNight.arki.scene.BookRunRulesTest {
         run.elapsedMs = 86400000;
         check(BookRunRules.reward(run, {}).sp == 0, "stale day-long result rejected");
         check(codec.stringifySafe(BookRunRules.stages(Number.NaN, 0)) == codec.stringifySafe(BookRunRules.stages(1, 0)), "invalid seed normalized");
+        testCf6();
         trace("BookRunRulesTest Tests Passed: " + passed);
         trace("BookRunRulesTest Tests Failed: " + failed);
     }

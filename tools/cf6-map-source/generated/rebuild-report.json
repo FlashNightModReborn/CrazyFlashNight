@@ -1,0 +1,193 @@
+{
+ "schema": "cf6-map-source-rebuild-report.v1",
+ "generatedAt": "2026-10-21T13:15:29.102586+08:00",
+ "python": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-py312\\Scripts\\python.exe",
+ "pydeps": "tools/cf6-map-source/pydeps (svgrender 工具发现；scipy/fontTools/matplotlib 用专用Python真实依赖)",
+ "runs": [
+  {
+   "stage": "A06-R2",
+   "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A06-R2/cf6-stage6-redraw-r2",
+   "python": "C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/tmp/cf6-py312/Scripts/python.exe",
+   "exitCode": 0,
+   "startedAt": "2026-10-21T12:32:50.224113+08:00",
+   "finishedAt": "2026-10-21T12:34:53.168161+08:00",
+   "log": "tmp/cf6-roguelike-20261021/kimi-maps/rebuild-logs/A06-R2.log",
+   "bakedFiles": [
+    "background-1762.png",
+    "bitmap-1701.png",
+    "bitmap-1702.png",
+    "bitmap-1704.png",
+    "bitmap-1740.png",
+    "bitmap-1742.png",
+    "bitmap-1743.png",
+    "bitmap-1753.png",
+    "bitmap-1756.png",
+    "bitmap-1757.png",
+    "bitmap-1758.png"
+   ],
+   "status": "ok"
+  },
+  {
+   "stage": "A08-R5",
+   "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5",
+   "python": "C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/tmp/cf6-py312/Scripts/python.exe",
+   "exitCode": 1,
+   "startedAt": "2026-10-21T12:34:53.172725+08:00",
+   "finishedAt": "2026-10-21T12:38:17.602769+08:00",
+   "log": "tmp/cf6-roguelike-20261021/kimi-maps/rebuild-logs/A08-R5.log",
+   "bakedFiles": [
+    "bitmap-1404.png",
+    "bitmap-1405.png",
+    "bitmap-1414.png",
+    "bitmap-1415.png",
+    "bitmap-1420.png",
+    "bitmap-1786.png",
+    "bitmap-1817.png",
+    "bitmap-1820.png",
+    "bitmap-1821.png",
+    "bitmap-1823.png",
+    "bitmap-1828.png",
+    "bitmap-1833.png"
+   ],
+   "status": "failed"
+  },
+  {
+   "stage": "A09-R2",
+   "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2",
+   "python": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-py312\\Scripts\\python.exe",
+   "exitCode": 0,
+   "startedAt": "2026-10-21T12:49:26.231444+08:00",
+   "finishedAt": "2026-10-21T12:52:17.222343+08:00",
+   "log": "tmp/cf6-roguelike-20261021/kimi-maps/rebuild-logs/A09-R2.log",
+   "bakedFiles": [
+    "bitmap-1404.png",
+    "bitmap-1405.png",
+    "bitmap-1414.png",
+    "bitmap-1415.png",
+    "bitmap-1420.png",
+    "bitmap-1446.png",
+    "bitmap-1806.png",
+    "bitmap-1808.png",
+    "bitmap-1817.png",
+    "bitmap-1821.png",
+    "bitmap-1828.png",
+    "bitmap-1842.png",
+    "bitmap-1844.png",
+    "bitmap-1848.png"
+   ],
+   "status": "ok"
+  },
+  {
+   "stage": "A10-R2",
+   "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2",
+   "python": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-py312\\Scripts\\python.exe",
+   "exitCode": 0,
+   "startedAt": "2026-10-21T12:52:17.228340+08:00",
+   "finishedAt": "2026-10-21T12:54:02.132604+08:00",
+   "log": "tmp/cf6-roguelike-20261021/kimi-maps/rebuild-logs/A10-R2.log",
+   "bakedFiles": [
+    "bitmap-1412.png",
+    "bitmap-1873.png",
+    "bitmap-1877.png",
+    "bitmap-1882.png"
+   ],
+   "status": "ok"
+  },
+  {
+   "stage": "A11-R2",
+   "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2",
+   "python": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-py312\\Scripts\\python.exe",
+   "exitCode": 0,
+   "startedAt": "2026-10-21T12:59:04.610603+08:00",
+   "finishedAt": "2026-10-21T13:02:23.423841+08:00",
+   "log": "tmp/cf6-roguelike-20261021/kimi-maps/rebuild-logs/A11-R2.log",
+   "bakedFiles": [
+    "bitmap-1404.png",
+    "bitmap-1405.png",
+    "bitmap-1412.png",
+    "bitmap-1414.png",
+    "bitmap-1415.png",
+    "bitmap-1588.png",
+    "bitmap-1817.png",
+    "bitmap-1820.png",
+    "bitmap-1821.png",
+    "bitmap-1828.png",
+    "bitmap-1833.png",
+    "bitmap-1842.png",
+    "bitmap-1844.png",
+    "bitmap-1877.png",
+    "bitmap-1882.png",
+    "bitmap-1895.png",
+    "bitmap-1897.png",
+    "bitmap-1902.png"
+   ],
+   "status": "ok"
+  },
+  {
+   "stage": "A12-R2",
+   "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2",
+   "python": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-py312\\Scripts\\python.exe",
+   "exitCode": 0,
+   "startedAt": "2026-10-21T12:54:18.470381+08:00",
+   "finishedAt": "2026-10-21T12:55:55.710043+08:00",
+   "log": "tmp/cf6-roguelike-20261021/kimi-maps/rebuild-logs/A12-R2.log",
+   "bakedFiles": [],
+   "status": "ok"
+  },
+  {
+   "stage": "A13-R2",
+   "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2",
+   "python": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-py312\\Scripts\\python.exe",
+   "exitCode": 0,
+   "startedAt": "2026-10-21T12:55:55.716055+08:00",
+   "finishedAt": "2026-10-21T12:57:22.662093+08:00",
+   "log": "tmp/cf6-roguelike-20261021/kimi-maps/rebuild-logs/A13-R2.log",
+   "bakedFiles": [],
+   "status": "ok"
+  },
+  {
+   "stage": "A14-R2",
+   "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2",
+   "python": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-py312\\Scripts\\python.exe",
+   "exitCode": 0,
+   "startedAt": "2026-10-21T13:02:23.434256+08:00",
+   "finishedAt": "2026-10-21T13:05:37.878157+08:00",
+   "log": "tmp/cf6-roguelike-20261021/kimi-maps/rebuild-logs/A14-R2.log",
+   "bakedFiles": [],
+   "status": "ok"
+  },
+  {
+   "stage": "A15-R2",
+   "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2",
+   "python": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-py312\\Scripts\\python.exe",
+   "exitCode": 0,
+   "startedAt": "2026-10-21T13:05:37.917677+08:00",
+   "finishedAt": "2026-10-21T13:09:05.425225+08:00",
+   "log": "tmp/cf6-roguelike-20261021/kimi-maps/rebuild-logs/A15-R2.log",
+   "bakedFiles": [],
+   "status": "ok"
+  },
+  {
+   "stage": "A16-R2",
+   "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2",
+   "python": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-py312\\Scripts\\python.exe",
+   "exitCode": 0,
+   "startedAt": "2026-10-21T13:09:05.433203+08:00",
+   "finishedAt": "2026-10-21T13:12:16.850891+08:00",
+   "log": "tmp/cf6-roguelike-20261021/kimi-maps/rebuild-logs/A16-R2.log",
+   "bakedFiles": [],
+   "status": "ok"
+  },
+  {
+   "stage": "A17-R2",
+   "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2",
+   "python": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-py312\\Scripts\\python.exe",
+   "exitCode": 0,
+   "startedAt": "2026-10-21T13:12:16.860890+08:00",
+   "finishedAt": "2026-10-21T13:15:29.102032+08:00",
+   "log": "tmp/cf6-roguelike-20261021/kimi-maps/rebuild-logs/A17-R2.log",
+   "bakedFiles": [],
+   "status": "ok"
+  }
+ ]
+}

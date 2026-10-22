@@ -1,0 +1,25 @@
+Stage 4 red barrel bitmap 1731: author visual review
+
+Original examined first at original 52×89 pixels and enlarged 8×. Shape-details.json was inspected for symbol 1732 and fragment fills 1733–1735. The redraw keeps bitmap coordinates 0,0,52,89; the symbol wrapper remains at −26,−44.5.
+
+Visual pass 1, 2026-10-15 12:52 UTC:
+Opened barrel-original-redraw-8x.png and barrel-original-redraw-native.png. Checked original/proposed matched scale, transparent silhouette, cylinder width/height, top ellipse, bungs, placard position, two rolled bands, pressed corrugations, base contact. Overall mass and essential features matched. At 8× the first main-band highlights and black lips looked too broad and clean, and the extra inner printed triangle was not supported by the reference.
+
+Changes after pass 1:
+Reduced main-band highlights from 1.5/1.6 px to 1.05/1.1 px, narrowed the dark lips, muted pink highlights, removed the unnecessary inner placard triangle. Kept burgundy paint and restrained broad cylindrical shading; added no holes, random bolts, or texture noise.
+
+Visual pass 2, 2026-10-15 12:53 UTC:
+Opened regenerated barrel-original-new.png and barrel-original-redraw-native.png. Confirmed narrower lower-contrast rings, coherent dark burgundy mass, visible lid/bung separation, restrained ochre sign, clean black flame, original two-band cadence, and preserved top/base contour at both 8× and 1:1. No clipping or unintended overshoot observed.
+
+The editable SVG has 46 native paths, two native ellipses, gradients and a vector clip path, no raster images or text objects. Both images have alpha bounds 0,0,52,89. Native silhouette IoU at alpha threshold 128 is 0.98282. Geometry validation is in barrel-geometry.json.
+
+Requested independent visual review from the batch reviewer after pass 2; parent will receive the review result separately. This record documents the actual author checks, not a substitute for independent review.
+
+Independent first review, 2026-10-15 12:54 UTC:
+Reviewer actually opened the 8× and 1:1 boards. No major structural misread: original proportion, lid and both bungs, two main bands, upper/lower corrugations and yellow triangle retained. Suggested softening the repeated small corrugation shadows/highlights before scene-level review. Did not equate silhouette overlap with artistic acceptance.
+
+Changes and visual pass 3, 2026-10-15 12:55 UTC:
+Small dark grooves reduced from 1.1 px opaque to 0.85 px at 72% opacity. Small highlights reduced from 0.55 px at 39% to 0.45 px at 25%; two highlights now have a short break. Main rolled bands, silhouette and placard unchanged. Actually reopened regenerated 8× and 1:1 boards; the cylinder reads as a continuous dark-red surface rather than a set of equally hard rings. Source and previews are stable pending independent confirmation and the parent's scene/fragment review.
+
+Independent second review, 2026-10-15 12:56 UTC:
+Reviewer reopened the updated 8× board and confirmed the reduced small-rib contrast, clearer hierarchy between the two primary bands and finer ribs, and retained original structure. Approved freezing this first redraw for user review. Remaining stylistic distinction: cleaner and more regular material than the old low-resolution bitmap. No further detail expansion requested.

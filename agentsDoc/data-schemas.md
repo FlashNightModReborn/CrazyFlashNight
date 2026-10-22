@@ -142,6 +142,10 @@ CF6 重制单位按系列归入 `data/enemy_properties/CF6重制敌人.xml`，�
 
 ### NPC 支线解锁与临时单位参数
 
+关卡 `Instances.Instance` 通过 `Identifier` 附加的 NPC，若首帧会缓存商店、技能或默认对白，可显式设置 `InitializeParametersBeforeAttach: true`。
+`SceneManager.addInstance` 只对严格布尔 `true` 在附加前提供隔离副本的 `Parameters`，并以实例的 `x/y` 作为首帧坐标；随后仍执行原参数接线。省略、`false` 或字符串 `"true"` 保持旧行为，外部 `url` 加载不使用该初始化对象。
+CF6 章节商人用该字段让首帧读取本章商店与空默认对白，避免先缓存普通 NPC 目录或发起无关对白查询；实际 AVM1 初始顺序由 `scripts/run-cf6-prototype-tests.ps1` 的元件挂载夹具覆盖，真实商店打开与购买另做隔离游戏验证。
+
 NPC 元件可设置 `任务需求支线 = [任务ID, ...]`；`_root.初始化NPC` 在主线条件之后，要求列表中每个可转换为数字的 ID 都满足 `_root.tasks_finished[String(ID)] >= 1`。任一未完成时停止并隐藏元件，本次不继续初始化；省略或空数组不增加限制，无法转为数字的条目跳过。
 
 走 `真九命猫妖初始化` 的单位还支持以下实例参数，来源优先级均为单位属性（含关卡 `Parameters` / 修改器）高于装备 `initParam`：

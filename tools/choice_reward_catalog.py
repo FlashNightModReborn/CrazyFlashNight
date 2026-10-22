@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'data/rewards/choice-rewards.json'
+BOOK_SOURCES = (('cf6-sting', ROOT / 'data/stages/books/cf6-sting-source/choice-rewards.fragment.json'),)
 ID = re.compile(r'[a-z][a-z0-9.-]{0,63}\Z')
 
 
@@ -98,10 +99,29 @@ def validate_items(bundle, ceiling, items):
         integer(row['quantity'], 1, 1 if item.findtext('type') in ('武器','防具') else 9999, 'bundle quantity')
 
 
+def merge_catalogs(base, additions):
+    """Append explicit book-owned catalogs without changing legacy rows or order."""
+    result = copy.deepcopy(validate(base))
+    for book_id, fragment in additions:
+        validate(fragment)
+        prefix = 'cf6.' if book_id == 'cf6-sting' else book_id + '.'
+        for pool in fragment['pools']:
+            if pool['scope'] != {'kind': 'book', 'bookId': book_id} or not pool['id'].startswith(prefix):
+                raise ValueError('chapter choice pool scope/namespace mismatch')
+        for bundle in fragment['bundles']:
+            if not bundle['id'].startswith(prefix): raise ValueError('chapter bundle namespace mismatch')
+            if book_id == 'cf6-sting' and bundle.get('kCost', 0) != 0:
+                raise ValueError('CF6 prototype choice cards must be free')
+        result['bundles'].extend(copy.deepcopy(fragment['bundles']))
+        result['pools'].extend(copy.deepcopy(fragment['pools']))
+    return validate(result)
+
+
 def load():
-    data = json.loads(SOURCE.read_text(encoding='utf-8'))
-    validate(data)
-    return data
+    base = json.loads(SOURCE.read_text(encoding='utf-8'))
+    additions = [(book_id, json.loads(path.read_text(encoding='utf-8-sig')))
+                 for book_id, path in BOOK_SOURCES if path.is_file()]
+    return merge_catalogs(base, additions)
 
 
 def validate(data):
@@ -141,6 +161,10 @@ def validate(data):
         pool_ids.add(pool['id']); item_names.add(pool['itemName'])
         for key in ('title', 'itemName'):
             if type(pool[key]) is not str or not 1 <= len(pool[key]) <= 96 or any(ord(c) < 32 for c in pool[key]): raise ValueError('invalid pool text')
+        existing_item = items.get(pool['itemName'])
+        if existing_item is not None and (existing_item.findtext('data/rewardPack/mode') != 'playerChoice'
+                                         or existing_item.findtext('data/rewardPack/poolId') != pool['id']):
+            raise ValueError('choice pack would shadow an unrelated item')
         integer(pool['version'], 1, 1000000, 'pool version')
         integer(pool['maxItemLevel'], 1, 60, 'pool level')
         if pool['chooseCount'] != 1 or type(pool['chooseCount']) is not int or pool['rerolls'] != 0 or type(pool['rerolls']) is not int:

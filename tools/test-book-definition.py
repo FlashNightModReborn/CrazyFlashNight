@@ -272,6 +272,160 @@ class BookDefinitionTests(unittest.TestCase):
             for option in checkpoint['options']:
                 self.assertIn(option['grade'], ('low', 'medium', 'high', 'special'))
 
+    # A01 教学炮塔挂接规格(r15):与装配产物逐字段一致;世界坐标=native×128/75。
+    CF6_TURRET_SPEC = dict(assetUrl='flashswf/backgrounds/cf6/CF6_A01_Turret.swf',
+                           linkage='CF6教学炮塔-A01自动炮', filterMarker='cf6-a01-turret-zombie',
+                           fireIntervalFrames=18, fireFrameOffset=11,
+                           turrets=[dict(x=228.352, y=345.4293, facing='right'),
+                                    dict(x=426.3253, y=735.4027, facing='right')])
+
+    def cf6_fixture(self):
+        # Test-only single room: never installed as playable content.
+        maximum = next(int(s.findtext('MaxLevel')) for s in self.skills if s.findtext('Name') == '小跳')
+        return dict(schema='playable-book.v1',id='cf6-sting',routeId='historical',stageName='书中历险-毒刺行动',title='CF6 TEST ONLY',
+                    startingMoney=0,startingSkillPoints=0,
+                    actor=dict(name='Andy',gender='男',height=175,face='男变装-基本脸型',hair='发型-男式-Andy发型',level=60,experience=157526193,
+                               equipment=[dict(slot='上装装备',name='白色中山上装',enhancement=11)],skills=[dict(name='小跳',level=maximum)]),
+                    maps=[dict(id='A01',title='TEST ONLY',background='cf6/CF6_A01_BG.swf',dialogue=[],
+                               presentation=dict(scale=1,backgroundX=0,backgroundY=0),
+                               mechanism=dict(assetScale=1,layers=[],turrets=copy.deepcopy(self.CF6_TURRET_SPEC)),
+                               stage={'Wave':{'SubWave':[{'EnemyGroup':{'Enemy':[{'Type':'兵种'+str(self.source['maps'][0]['enemies'][0]),'Level':35,'Quantity':1}]}}]}})])
+
+    def validate_cf6(self, data):
+        units={u['id'] for u in json.loads((ROOT/'data/units/units.json').read_text('utf-8-sig'))}
+        builder.validate_cf6(data,self.items,self.skills,units,require_backgrounds=False)
+
+    def test_cf6_authored_twenty_maps_plus_TUTORIAL(self):
+        data=self.cf6_fixture()
+        template=data['maps'][0]
+        data['maps']=[]
+        for identity in ['TUTORIAL']+['A%02d'%n for n in range(1,23) if n not in (7,21)]:
+            stage=copy.deepcopy(template);stage['id']=identity;stage['background']='cf6/CF6_Tutorial_BG.swf' if identity=='TUTORIAL' else 'cf6/CF6_'+identity+'_BG.swf'
+            if identity!='A01': stage['mechanism'].pop('turrets')  # 炮塔接线仅属A01
+            data['maps'].append(stage)
+        self.validate_cf6(data)
+        self.assertEqual(21,len(data['maps']))
+        output=json.loads(next(iter(builder.generated_cf6(data).values())))
+        self.assertEqual(data,output)
+
+    def test_cf6_background_allowlist_binds_exact_map(self):
+        data=self.cf6_fixture();self.validate_cf6(data)
+        for background in ['CF6_A01_BG.swf','cf6/CF6_A02_BG.swf','cf6/../CF6_A01_BG.swf','../cf6/CF6_A01_BG.swf','cf6\\CF6_A01_BG.swf','gk1_1_BG.swf']:
+            data=self.cf6_fixture();data['maps'][0]['background']=background
+            with self.subTest(background=background),self.assertRaises(ValueError):self.validate_cf6(data)
+    def test_cf6_tutorial_background_requires_dedicated_asset(self):
+        data=self.cf6_fixture();data['maps'][0].update(id='TUTORIAL',background='cf6/CF6_Tutorial_BG.swf')
+        data['maps'][0]['mechanism'].pop('turrets')  # 炮塔接线仅属A01
+        self.validate_cf6(data)
+        for background in ['gk1_1_BG.swf','cf6/gk1_1_BG.swf','cf6/CF6_A01_BG.swf',
+                           'CF6_Tutorial_BG.swf','cf6/Other.swf','cf6\\CF6_Tutorial_BG.swf','cf6/../CF6_Tutorial_BG.swf']:
+            data['maps'][0]['background']=background
+            with self.subTest(background=background),self.assertRaises(ValueError):self.validate_cf6(data)
+
+    def cf6_boss_fixture(self):
+        data=self.cf6_fixture();stage=data['maps'][0]
+        stage.update(id='A06',background='cf6/CF6_A06_BG.swf')
+        stage['mechanism'].pop('turrets')  # 炮塔接线仅属A01
+        stage['stage']['Wave']['SubWave']=[{'EnemyGroup':{'Enemy':[{'Type':'兵种463','Level':60,'Quantity':1,'InstanceName':'cf6Boss_A06'}]}}]
+        stage['bossEncounter']={'instanceName':'cf6Boss_A06','maxAlive':2,'maxRanged':1,'intervalFrames':60,
+            'groups':[{'hpRatio':1,'enemies':[{'Type':'兵种461','Level':60,'Quantity':3,'ranged':False,'SpawnIndex':'left','Parameters':{}}]},
+                      {'hpRatio':0.5,'enemies':[{'Type':'兵种466','Level':60,'Quantity':2,'ranged':True,'SpawnIndex':'right','Parameters':{}}]}]}
+        return data
+
+    def test_cf6_boss_finite_support_contract(self):
+        self.validate_cf6(self.cf6_boss_fixture())
+
+    def test_cf6_boss_rejects_mandatory_adds_in_main_wave(self):
+        data=self.cf6_boss_fixture();data['maps'][0]['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'].append({'Type':'兵种461','Level':60,'Quantity':1})
+        with self.assertRaises(ValueError):self.validate_cf6(data)
+
+    def test_cf6_boss_rejects_wrong_boss_or_name(self):
+        for field,value in [('Type','兵种472'),('InstanceName','other'),('Quantity',2)]:
+            data=self.cf6_boss_fixture();data['maps'][0]['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0][field]=value
+            with self.subTest(field=field),self.assertRaises(ValueError):self.validate_cf6(data)
+
+    def test_cf6_boss_caps_threshold_and_budget(self):
+        changes=[lambda p:p.update(maxAlive=9),lambda p:p.update(maxRanged=3),lambda p:p.update(intervalFrames=0),
+                 lambda p:p['groups'][1].update(hpRatio=1),lambda p:p['groups'][0]['enemies'][0].update(Quantity=128),
+                 lambda p:p.update(maxRanged=0)]
+        for change in changes:
+            data=self.cf6_boss_fixture();change(data['maps'][0]['bossEncounter'])
+            with self.assertRaises(ValueError):self.validate_cf6(data)
+
+    def test_cf6_boss_ownership_not_authorable(self):
+        for key in ('cf6BossOwnerToken','cf6SupportIdentity','publishStageEvent','产生源','InstanceName'):
+            data=self.cf6_boss_fixture();data['maps'][0]['bossEncounter']['groups'][0]['enemies'][0]['Parameters'][key]='injected'
+            with self.subTest(key=key),self.assertRaises(ValueError):self.validate_cf6(data)
+        data=self.cf6_boss_fixture();data['maps'][0]['bossEncounter']['groups'][0]['enemies'][0]['InstanceName']='injected'
+        with self.assertRaises(ValueError):self.validate_cf6(data)
+
+    def test_cf6_boss_spawn_index_must_exist(self):
+        data=self.cf6_boss_fixture();entry=data['maps'][0]['bossEncounter']['groups'][0]['enemies'][0];entry['SpawnIndex']=0
+        with self.assertRaises(ValueError):self.validate_cf6(data)
+        data['maps'][0]['stage']['SpawnPoint']={'Point':[{'x':100,'y':300}]};self.validate_cf6(data)
+        entry['SpawnIndex']=1
+        with self.assertRaises(ValueError):self.validate_cf6(data)
+
+    def test_cf6_a20_human_boss_transform_is_forbidden(self):
+        data=self.cf6_boss_fixture();stage=data['maps'][0];stage.update(id='A20',background='cf6/CF6_A20_BG.swf')
+        stage['bossEncounter']['instanceName']='cf6Boss_A20'
+        boss=stage['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0];boss.update(Type='兵种473',InstanceName='cf6Boss_A20')
+        with self.assertRaises(ValueError):self.validate_cf6(data)
+        boss['Parameters']={'老头变身':False};self.validate_cf6(data)
+
+    def test_cf6_identity_and_route_rejected(self):
+        for key,value in [('id','repair-campus'),('routeId','plan61'),('stageName','书中历险-修理大学')]:
+            data=self.cf6_fixture();data[key]=value
+            with self.subTest(key=key),self.assertRaises(ValueError): self.validate_cf6(data)
+
+    def test_cf6_actor_must_have_matching_xp_fixed_max_skills_and_eleven_equipment(self):
+        for mutate in [lambda a:a.update(experience=0),lambda a:a.update(level=35),
+                       lambda a:a['equipment'][0].update(enhancement=1),lambda a:a['equipment'][0].update(slot='刀'),
+                       lambda a:a['skills'][0].update(level=0),lambda a:a['skills'].append(copy.deepcopy(a['skills'][0]))]:
+            data=self.cf6_fixture();mutate(data['actor'])
+            with self.assertRaises(ValueError): self.validate_cf6(data)
+
+    def test_cf6_no_duplicate_vehicle_or_cinematic_maps(self):
+        for identity in ['A07','A21','../A01','A23']:
+            data=self.cf6_fixture();data['maps'][0]['id']=identity
+            with self.subTest(identity=identity),self.assertRaises(ValueError): self.validate_cf6(data)
+        data=self.cf6_fixture();data['maps']*=2
+        with self.assertRaises(ValueError): self.validate_cf6(data)
+
+    def test_cf6_invalid_background_enemy_and_nonfinite_mechanism_rejected(self):
+        for mutate in [lambda m:m.update(background='../wrong.swf'),lambda m:m.update(mechanism={'duration':float('nan')}),
+                       lambda m:m['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0].update(Type='兵种999999'),
+                       lambda m:m['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0].update(Quantity=0),
+                       lambda m:m['stage'].update(BasicInformation={'BookBoss':{}})]:
+            data=self.cf6_fixture();mutate(data['maps'][0])
+            with self.assertRaises(ValueError): self.validate_cf6(data)
+
+    def test_cf6_turret_wiring_schema_gate(self):
+        # A01 必须携带精确炮塔规格;其余地图严禁携带;字段/坐标/朝向逐项拒绝坏例。
+        data=self.cf6_fixture();self.validate_cf6(data)
+        data=self.cf6_fixture();data['maps'][0]['mechanism'].pop('turrets')
+        with self.assertRaisesRegex(ValueError,'turret spec fields'):
+            self.validate_cf6(data)
+        data=self.cf6_fixture();data['maps'][0]['mechanism']['turrets']=None
+        with self.assertRaisesRegex(ValueError,'turret spec fields'):
+            self.validate_cf6(data)
+        data=self.cf6_fixture();data['maps'][0].update(id='A02',background='cf6/CF6_A02_BG.swf')
+        with self.assertRaisesRegex(ValueError,'non-A01'):
+            self.validate_cf6(data)
+        for key,value in [('assetUrl','cf6/other.swf'),('linkage','other'),('filterMarker','other'),
+                          ('fireIntervalFrames',17),('fireFrameOffset',12)]:
+            data=self.cf6_fixture();data['maps'][0]['mechanism']['turrets'][key]=value
+            with self.subTest(key=key),self.assertRaises(ValueError): self.validate_cf6(data)
+        for mutate in [lambda t:t.pop(),lambda t:t[0].update(x=float('nan')),
+                       lambda t:t[0].update(y=5001),lambda t:t[0].update(facing='left'),
+                       lambda t:t[0].update(name='turretA')]:
+            data=self.cf6_fixture();mutate(data['maps'][0]['mechanism']['turrets']['turrets'])
+            with self.assertRaises(ValueError): self.validate_cf6(data)
+        # 真实装配产物全章过门
+        chapter=json.loads((ROOT/'data/stages/books/cf6-sting.json').read_text(encoding='utf-8-sig'))
+        units={u['id'] for u in json.loads((ROOT/'data/units/units.json').read_text('utf-8-sig'))}
+        builder.validate_cf6(chapter,self.items,self.skills,units,require_backgrounds=False)
+
 
 if __name__ == '__main__':
     unittest.main()

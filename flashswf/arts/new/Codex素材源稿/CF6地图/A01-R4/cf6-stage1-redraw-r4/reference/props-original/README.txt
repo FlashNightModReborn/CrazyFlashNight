@@ -1,0 +1,1 @@
+Original CF6 a1 prop SVG exports used only as visible references and original fragment clipping/matrix inputs. New replacement SVGs contain no raster images. These copied files make source/props.py self-contained within this project. The original SWF is not needed.

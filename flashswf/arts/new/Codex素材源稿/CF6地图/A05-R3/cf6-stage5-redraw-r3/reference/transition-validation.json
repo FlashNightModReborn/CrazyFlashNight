@@ -1,0 +1,32 @@
+{
+  "checks": {
+    "sourceStageIs600x350": true,
+    "sourceMatchesPriorAudit": true,
+    "a4IsRoot82World1737": true,
+    "a4ExitRequires22": true,
+    "a4ExitExplicitlyTargetsA5": true,
+    "a5LabelIsRoot86": true,
+    "a5IsRoot86World1752": true,
+    "a5HasMan1Depth160": true,
+    "exitGateBranchesResolveInsideDecodedWindow": true,
+    "exitFrame174IncomingChainEndsAtRealCode": true,
+    "bridgeIncomingChainEndsAtRealCode": true,
+    "loadIncomingChainEndsAtRealCode": true,
+    "enterFrameIncomingChainEndsAtRealCode": true,
+    "frontIncomingChainEndsAtRealCode": true,
+    "a5FrontIs1727Depth544": true,
+    "a5RootSceneDepthsOnlyWorldAndFront": true,
+    "authoredPlayerPlacementHasNoClipActions": true,
+    "arrivalFramesOneTwoThreeRelocatePlayer": true,
+    "arrivalPlacementHasNoClipActions": true,
+    "arrivalIsAt1190Point45And231Point4": true,
+    "playerDisabledFrame265HasEmptyDisplay": true,
+    "arrivalFrame122RestoresPlayerFrameOne": true,
+    "worldLoadMatchesA4": true,
+    "worldEnterFrameMatchesA4": true,
+    "rootForegroundMatchesA4": true
+  },
+  "allPassed": true,
+  "runtimeExecuted": false,
+  "productionModified": false
+}

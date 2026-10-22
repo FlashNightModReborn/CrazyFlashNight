@@ -1,0 +1,49 @@
+{
+  "schema": "cf6-native-layer-input.v1",
+  "map": "A04",
+  "layer": "background",
+  "name": "CF6_A04_BG_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A04-R1/cf6-stage4-redraw-r1/parts/background-1728.svg",
+  "sourceSha256": "3a9bbd15181e80a9cecb7987daa19ee73c4533c3f0c216ced9c2cb9a547c4c8b",
+  "inputIndex": "tools/cf6-map-source/generated/map-input.json",
+  "inputIndexSha256": "056c50dd321debee3545d2988b891d140b07cfec864b5d461bd062e44d29ba95",
+  "extraction": "decode existing PNG/JPEG data URI bytes only; no image rasterization or modification",
+  "inputs": [
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-37a61419c8fb9dc698ee0ab6.png",
+      "sha256": "37a61419c8fb9dc698ee0ab6ef9bc76f7857e8807009c6f69c7926f88d806846",
+      "bytes": 491549,
+      "pixels": [
+        918,
+        753
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-b162eb77a5e79a8f8fdfd8bf.png",
+      "sha256": "b162eb77a5e79a8f8fdfd8bfd108e2083979cd69b20fda22cd1b2d997fa97bd2",
+      "bytes": 261257,
+      "pixels": [
+        684,
+        591
+      ]
+    }
+  ],
+  "textures": {
+    "37a61419c8fb9dc698ee0ab6ef9bc76f7857e8807009c6f69c7926f88d806846": {
+      "name": "intrinsic-37a61419c8fb9dc698ee0ab6.png",
+      "pixels": [
+        918,
+        753
+      ]
+    },
+    "b162eb77a5e79a8f8fdfd8bfd108e2083979cd69b20fda22cd1b2d997fa97bd2": {
+      "name": "intrinsic-b162eb77a5e79a8f8fdfd8bf.png",
+      "pixels": [
+        684,
+        591
+      ]
+    }
+  },
+  "xfl": "flashswf/backgrounds/cf6/CF6_A04_BG_VectorCandidate01/CF6_A04_BG_VectorCandidate01.xfl",
+  "swf": "CF6_A04_BG_VectorCandidate01.swf"
+}

@@ -1,0 +1,161 @@
+{
+  "schema": "cf6-native-vector-candidate.v1",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/background-1581.svg",
+  "sourceSha256": "2cca92518011e900264db4901fdd74fd5fae03544c0be0ea1e11b560eae060a6",
+  "converterSha256": "b67471d4da6628a9f63da065189dc2dfa39412c4fd1cb3581efa85a9a0b60147",
+  "legacyWriterSha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655",
+  "nativeShapesProcessed": 15486,
+  "nativeShapes": 15480,
+  "nativeSymbols": 2385,
+  "nativeEdgesSegments": 100133,
+  "gradientUses": 138,
+  "masks": [
+    {
+      "id": "l0_r4earth",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "l1_wreck_silhouette",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "l1_wreck_contact_mask",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "l2_groundmix",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "l3_base",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    }
+  ],
+  "texts": [
+    {
+      "text": "DANGER",
+      "font": "flashswf\\arts\\new\\Codex素材源稿\\CF6地图\\A08-R5\\reference\\vehicles-props-DejaVuSans-Bold.ttf",
+      "fontSha256": "a4c5bc453ca281d90ea079e596da7ae0dfeb5777497c29ec254e76d97ff6f890",
+      "policy": "native glyph outlines; source text retained in report"
+    },
+    {
+      "text": "DECK",
+      "font": "flashswf\\arts\\new\\Codex素材源稿\\CF6地图\\A08-R5\\reference\\vehicles-props-DejaVuSans-Bold.ttf",
+      "fontSha256": "a4c5bc453ca281d90ea079e596da7ae0dfeb5777497c29ec254e76d97ff6f890",
+      "policy": "native glyph outlines; source text retained in report"
+    },
+    {
+      "text": "01",
+      "font": "flashswf\\arts\\new\\Codex素材源稿\\CF6地图\\A08-R5\\reference\\vehicles-props-DejaVuSans-Bold.ttf",
+      "fontSha256": "a4c5bc453ca281d90ea079e596da7ae0dfeb5777497c29ec254e76d97ff6f890",
+      "policy": "native glyph outlines; source text retained in report"
+    },
+    {
+      "text": "SERVICE LIFT",
+      "font": "flashswf\\arts\\new\\Codex素材源稿\\CF6地图\\A08-R5\\reference\\vehicles-props-DejaVuSans-Bold.ttf",
+      "fontSha256": "a4c5bc453ca281d90ea079e596da7ae0dfeb5777497c29ec254e76d97ff6f890",
+      "policy": "native glyph outlines; source text retained in report"
+    }
+  ],
+  "sourceViewBox": [
+    -676.95,
+    -212.95,
+    800.0,
+    452.0
+  ],
+  "additionalSources": [
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/prop-1411.svg",
+      "sha256": "c310a1db95fa0c64739fb4ccdc43a381bf9e473306fb57845ebc2d4e00f7fc22",
+      "placement": {
+        "id": "yellow-lamp-glow",
+        "role": "background",
+        "sourceKind": "isolated-part",
+        "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/baked/prop-1411.png",
+        "x": -46.7,
+        "y": -57.3,
+        "width": 199.8,
+        "height": 169.5,
+        "depth": 1,
+        "pixelSize": [
+          400,
+          339
+        ],
+        "source": {
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/prop-1411.svg",
+          "matrix": [
+            1,
+            0,
+            0,
+            1,
+            -620.3,
+            -179.65
+          ],
+          "matrixSpace": "symbol-1582 内部 translate；world=background_placement+matrix"
+        },
+        "basis": "reference/scene-identification.txt §二：光晕1411为原生矢量，与黄灯同在1582内部translate(-620.3,-179.65)；Chrome 候选烘焙（render-manifest.json）"
+      }
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/prop-1410.svg",
+      "sha256": "a9579788c2dbfa34c8f9eb042d72fddfb3d15516c9780be5ba37c91c74b0f533",
+      "placement": {
+        "id": "yellow-lamp",
+        "role": "background",
+        "sourceKind": "isolated-part",
+        "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/baked/prop-1410.png",
+        "x": -15.8,
+        "y": 14.95,
+        "width": 138,
+        "height": 25,
+        "depth": 2,
+        "pixelSize": [
+          276,
+          50
+        ],
+        "source": {
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/prop-1410.svg",
+          "matrix": [
+            1,
+            0,
+            0,
+            1,
+            -620.3,
+            -179.65
+          ],
+          "matrixSpace": "symbol-1582 内部 translate；world=background_placement+matrix"
+        },
+        "basis": "reference/scene-identification.txt §二：独立黄灯 shape1410→bitmap1409；source/scene-layout.json lamp_world；Chrome 候选烘焙"
+      }
+    }
+  ],
+  "texture": [
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/A01-source-soil.png",
+      "sha256": "d59054f5add2bbb73478d7321958e5af0201dde621fbdcf7e9564c45f4c8354a",
+      "bytes": 2047588
+    }
+  ],
+  "nativeLayerOrder": [
+    "yellow-lamp",
+    "yellow-lamp-glow",
+    "layer_5",
+    "layer_4",
+    "layer_3",
+    "layer_2",
+    "layer_1",
+    "layer_0"
+  ],
+  "state": "native_xfl_assembled; fresh CS6 compile and actual rendering still pending",
+  "limits": [
+    "Native mask alpha/cache semantics require actual AVM1 rendering verification.",
+    "Cubic to quadratic tolerance inherited as 0.06 source px; XFL coordinates quantized to twips.",
+    "Native solid strokes retained locally before full affine instance transforms.",
+    "Source group opacity is preserved via separate native instances, including overlap compositing."
+  ]
+}

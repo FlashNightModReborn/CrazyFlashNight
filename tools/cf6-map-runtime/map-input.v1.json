@@ -1,0 +1,21 @@
+{
+  "schema": "cf6-map-input.v1",
+  "documentationOnly": true,
+  "contract": {
+    "coordinates": "All placement, walkBounds, spawn, exit and collision values are original world coordinates. build.py applies (coordinate-nativeBounds.origin)*worldScale exactly once.",
+    "worldScale": "Explicit positive ratio. Current CF7 male unarmed standing is 145.19 local pixels at 175cm; do not infer ratio solely from screen width. Use 1 while original reference ratio remains unverified, mark calibration pending.",
+    "layers": "PNG exported from independent background or isolated component only. Never scene.png/scene-preview/full composite. Preserve source reference and matrices in adjacent provenance metadata.",
+    "depth": "For runtime dynamic layers, use an explicit existing-safe fixed depth from DepthBands: far scenery behind units and foreground in occlusion band. Do not choose arbitrary 0 if occupied.",
+    "elevator": "A10 and A13 need an elevator-scroll layer: isolated native scroll tile PNG, positive loopHeight, clip:[x,y,width,height] relative to layer origin. Runtime repeats tile twice at 37 authored-frame positions. Exact A10/A13 composition remains distinct. Foreground window/cabin occluders must be separate foreground layers.",
+    "sourceKind": ["background", "isolated-part"],
+    "roles": ["background", "foreground", "elevator-scroll", "door-left", "door-right"],
+    "requiredMapFields": ["id", "nativeBounds", "worldScale", "walkBounds", "spawn", "exit", "collisions", "layers"],
+    "requiredLayerFields": ["id", "role", "sourceKind", "png", "x", "y", "width", "height", "depth"],
+    "nativeBounds": ["x", "y", "width", "height"],
+    "walkBounds": ["xmin", "ymin", "xmax", "ymax"],
+    "spawn": ["x", "y"],
+    "exit": {"direction": "右", "rect": ["x0", "y0", "x1", "y1"]},
+    "collisions": "Array of polygons; each polygon has at least 3 [x,y] points. Original collision evidence or explicit prototype adjustment provenance required."
+  },
+  "maps": []
+}

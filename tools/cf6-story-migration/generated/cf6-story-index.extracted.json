@@ -1,0 +1,4454 @@
+{
+ "schema": "cf6-story-index.v1",
+ "source": {
+  "swf": "tmp/cf6-roguelike-20261021/kimi-content/extract/crazyflasher6-cn.swf",
+  "sha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "expectedSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "sha256Match": true,
+  "swfVersion": 8,
+  "fps": 30.0,
+  "mainFrameCount": 221,
+  "stageRectTwips": {
+   "xmin": 0,
+   "xmax": 12000,
+   "ymin": 0,
+   "ymax": 7000
+  },
+  "deobfuscatedScripts": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts"
+ },
+ "comics": [
+  {
+   "id": "cf6-s1",
+   "label": "s1",
+   "outer": 1292,
+   "strip": 1289,
+   "skipButton": 1291,
+   "mainFrame": 36,
+   "music": "music01",
+   "targets": [
+    {
+     "script": "frame_37\\PlaceObject2_1292_1\\CLIPACTIONRECORD onClipEvent(load).as",
+     "targetLabel": "a1"
+    }
+   ],
+   "outerPages": [
+    {
+     "outerFrame": 1,
+     "script": "DefineSprite_1292\\frame_1\\DoAction.as",
+     "pan": {
+      "x": 0,
+      "y": 0
+     },
+     "stop": true
+    },
+    {
+     "outerFrame": 2,
+     "script": "DefineSprite_1292\\frame_2\\DoAction.as",
+     "pan": {
+      "x": -302,
+      "y": -91
+     }
+    },
+    {
+     "outerFrame": 3,
+     "script": "DefineSprite_1292\\frame_3\\DoAction.as",
+     "pan": {
+      "x": -573,
+      "y": -42
+     }
+    },
+    {
+     "outerFrame": 4,
+     "script": "DefineSprite_1292\\frame_4\\DoAction.as",
+     "pan": {
+      "x": -362,
+      "y": -422
+     }
+    },
+    {
+     "outerFrame": 5,
+     "script": "DefineSprite_1292\\frame_5\\DoAction.as",
+     "transition": true,
+     "stop": true
+    }
+   ],
+   "stripAdvances": [
+    {
+     "stripFrame": 110,
+     "stops": false,
+     "script": "DefineSprite_1289\\frame_110\\DoAction.as"
+    },
+    {
+     "stripFrame": 337,
+     "stops": false,
+     "script": "DefineSprite_1289\\frame_337\\DoAction.as"
+    },
+    {
+     "stripFrame": 468,
+     "stops": false,
+     "script": "DefineSprite_1289\\frame_468\\DoAction.as"
+    },
+    {
+     "stripFrame": 537,
+     "stops": true,
+     "script": "DefineSprite_1289\\frame_537\\DoAction.as"
+    }
+   ],
+   "verify": {
+    "outerSpriteFrameCount": 13,
+    "stripSpriteFrameCount": 572,
+    "outerFrame1Places": [
+     {
+      "charId": 1289,
+      "depth": 1,
+      "name": null
+     },
+     {
+      "charId": 1291,
+      "depth": 5,
+      "name": null
+     }
+    ],
+    "stripSoundStreamHead": {
+     "tag": "SoundStreamHead",
+     "playbackRate": 22050,
+     "playback16bit": true,
+     "playbackStereo": true,
+     "format": "mp3",
+     "streamRate": 11025,
+     "stream16bit": true,
+     "streamStereo": false,
+     "latencySeek": 367
+    },
+    "stripStreamBlocks": 527,
+    "stripFirstAudioFrame": 1,
+    "outerSoundStreamHead": {
+     "tag": "SoundStreamHead2",
+     "playbackRate": 22050,
+     "playback16bit": true,
+     "playbackStereo": true,
+     "format": "uncompressed-native",
+     "streamRate": 5512,
+     "stream16bit": false,
+     "streamStereo": false,
+     "latencySeek": 0
+    },
+    "streamAudioSha256": "ec1b8b3abb69e7895ab59fcbb5c100ba7764e542f319839d63a64e880b88af7c",
+    "streamAudioBytes": 34244
+   },
+   "assetIds": [
+    1282,
+    1283,
+    1284,
+    1285,
+    1286,
+    1287,
+    1288,
+    1289,
+    1291,
+    1292
+   ],
+   "assets": [
+    {
+     "charId": 1282,
+     "kind": "DefineBitsJPEG2",
+     "tagCode": 21,
+     "bodyBytes": 180487,
+     "bodySha256": "e31eefd711c287809fa3ead387229794fbbe7584bf2b2e9fb7dce3cc781c4768",
+     "extractedFile": "cf6-s1/art-1282.jpg"
+    },
+    {
+     "charId": 1283,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 38,
+     "bodySha256": "251e81382bf3b8da2136402fd7211de81f6d4876d9e6d9b857186567a74598b6"
+    },
+    {
+     "charId": 1284,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 110,
+     "bodySha256": "0473436b12e6e3fddff7c9358d3d1f378ae2e5e93b1ffad8e626c42c47edb360"
+    },
+    {
+     "charId": 1285,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 228,
+     "bodySha256": "4056e746ebe0479636b3e47a10f87b12539a5c80122ee2d715b6507dec0826f4",
+     "editText": {
+      "charId": 1285,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">我感觉到一股邪恶气息，发生了什<sbr />么情况……</font></p><p align=\"left\"></p>"
+     }
+    },
+    {
+     "charId": 1286,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 282,
+     "bodySha256": "c339213f5706c1e74b287cafb315c0ff1a0d41b0bfb881b3cf07372ddc649e4f",
+     "editText": {
+      "charId": 1286,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">你说对了，我正想来通知你，哨塔<sbr />发现有大群丧尸向这边移动!我们现<sbr />在该怎么办?</font></p><p align=\"left\"></p>"
+     }
+    },
+    {
+     "charId": 1287,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 243,
+     "bodySha256": "8bcb916b2c46bd1d42a7d37f488bdcfa5bcf8b768ca07054de132b82506c4146",
+     "editText": {
+      "charId": 1287,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">别慌，你和驻守部队把守住各个入<sbr />口，丧尸让我来对付！</font></p><p align=\"left\"></p>"
+     }
+    },
+    {
+     "charId": 1288,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 174,
+     "bodySha256": "4daa1bb4d1279a41c723c7c84eba49276e6be58ad9b0c6a194cfbe3de4607cba",
+     "editText": {
+      "charId": 1288,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">呃………………呃啊……</font></p>"
+     }
+    },
+    {
+     "charId": 1289,
+     "kind": "sprite",
+     "frameCount": 572,
+     "bodySha256": "f7ea8a747e0a3daf527a1be643a2c391466eb48af3582eb6bb66bc46b7490544"
+    },
+    {
+     "charId": 1291,
+     "kind": "tag34",
+     "tagCode": 34,
+     "bodyBytes": 1286,
+     "bodySha256": "32c24bfb5a0ef35e944c326ba251bf3178e214167c2cd829e312eba543345c75"
+    },
+    {
+     "charId": 1292,
+     "kind": "sprite",
+     "frameCount": 13,
+     "bodySha256": "c38977d8e4de9167f03d7db41b43a8274c596ae93cd96527ad672b76d17d1707"
+    }
+   ],
+   "stripTimeline": [
+    {
+     "stripFrame": 1,
+     "depth": 1,
+     "charId": 1283,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 2,
+     "charId": 1284,
+     "matrix": {
+      "tx": 52,
+      "ty": 18,
+      "scale": [
+       -1.52587890625e-05,
+       1.52587890625e-05
+      ],
+      "rotate": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 3,
+     "charId": 1285,
+     "matrix": {
+      "tx": 5109,
+      "ty": 1618,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 110,
+     "removeDepth": 3
+    },
+    {
+     "stripFrame": 110,
+     "depth": 2,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": [
+       1.52587890625e-05,
+       4.57763671875e-05
+      ],
+      "rotate": [
+       0.0,
+       0.0
+      ]
+     },
+     "move": true
+    },
+    {
+     "stripFrame": 110,
+     "depth": 3,
+     "charId": 1286,
+     "matrix": {
+      "tx": 8677,
+      "ty": 7278,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 337,
+     "removeDepth": 3
+    },
+    {
+     "stripFrame": 337,
+     "depth": 2,
+     "matrix": {
+      "tx": 93,
+      "ty": -42,
+      "scale": [
+       -1.52587890625e-05,
+       1.52587890625e-05
+      ],
+      "rotate": [
+       0.0,
+       0.0
+      ]
+     },
+     "move": true
+    },
+    {
+     "stripFrame": 337,
+     "depth": 3,
+     "charId": 1287,
+     "matrix": {
+      "tx": 15097,
+      "ty": 6017,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 468,
+     "removeDepth": 3
+    },
+    {
+     "stripFrame": 468,
+     "depth": 2,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": [
+       3.0517578125e-05,
+       -6.103515625e-05
+      ],
+      "rotate": [
+       -0.001922607421875,
+       -0.0010528564453125
+      ]
+     },
+     "move": true
+    },
+    {
+     "stripFrame": 468,
+     "depth": 3,
+     "charId": 1288,
+     "matrix": {
+      "tx": 4070,
+      "ty": 10737,
+      "scale": null,
+      "rotate": null
+     }
+    }
+   ],
+   "skipScript": "DefineButton2_1291\\BUTTONCONDACTION on(keyPress Space).as",
+   "extractedPages": [
+    "cf6-s1/page1.svg",
+    "cf6-s1/page2.svg",
+    "cf6-s1/page3.svg",
+    "cf6-s1/page4.svg"
+   ]
+  },
+  {
+   "id": "cf6-s2",
+   "label": "s2",
+   "outer": 1308,
+   "strip": 1307,
+   "skipButton": 1291,
+   "mainFrame": 38,
+   "music": "music02",
+   "targets": [
+    {
+     "script": "frame_39\\PlaceObject2_1308_1\\CLIPACTIONRECORD onClipEvent(load).as",
+     "targetLabel": "a2"
+    }
+   ],
+   "outerPages": [
+    {
+     "outerFrame": 1,
+     "script": "DefineSprite_1308\\frame_1\\DoAction.as",
+     "pan": {
+      "x": 0,
+      "y": 0
+     },
+     "stop": true
+    },
+    {
+     "outerFrame": 2,
+     "script": "DefineSprite_1308\\frame_2\\DoAction.as",
+     "pan": {
+      "x": -250,
+      "y": -4
+     }
+    },
+    {
+     "outerFrame": 3,
+     "script": "DefineSprite_1308\\frame_3\\DoAction.as",
+     "pan": {
+      "x": -240,
+      "y": -100
+     }
+    },
+    {
+     "outerFrame": 4,
+     "script": "DefineSprite_1308\\frame_4\\DoAction.as",
+     "pan": {
+      "x": -6,
+      "y": -390
+     }
+    },
+    {
+     "outerFrame": 5,
+     "script": "DefineSprite_1308\\frame_5\\DoAction.as",
+     "pan": {
+      "x": -150,
+      "y": -365
+     }
+    },
+    {
+     "outerFrame": 6,
+     "script": "DefineSprite_1308\\frame_6\\DoAction.as",
+     "pan": {
+      "x": -200,
+      "y": -627
+     }
+    },
+    {
+     "outerFrame": 7,
+     "script": "DefineSprite_1308\\frame_7\\DoAction.as",
+     "pan": {
+      "x": -250,
+      "y": -354
+     }
+    },
+    {
+     "outerFrame": 8,
+     "script": "DefineSprite_1308\\frame_8\\DoAction.as",
+     "pan": {
+      "x": -250,
+      "y": -433
+     }
+    },
+    {
+     "outerFrame": 9,
+     "script": "DefineSprite_1308\\frame_9\\DoAction.as",
+     "transition": true,
+     "stop": true
+    }
+   ],
+   "stripAdvances": [
+    {
+     "stripFrame": 108,
+     "stops": false,
+     "script": "DefineSprite_1307\\frame_108\\DoAction.as"
+    },
+    {
+     "stripFrame": 292,
+     "stops": false,
+     "script": "DefineSprite_1307\\frame_292\\DoAction.as"
+    },
+    {
+     "stripFrame": 457,
+     "stops": false,
+     "script": "DefineSprite_1307\\frame_457\\DoAction.as"
+    },
+    {
+     "stripFrame": 517,
+     "stops": false,
+     "script": "DefineSprite_1307\\frame_517\\DoAction.as"
+    },
+    {
+     "stripFrame": 1102,
+     "stops": false,
+     "script": "DefineSprite_1307\\frame_1102\\DoAction.as"
+    },
+    {
+     "stripFrame": 2099,
+     "stops": false,
+     "script": "DefineSprite_1307\\frame_2099\\DoAction.as"
+    },
+    {
+     "stripFrame": 2351,
+     "stops": false,
+     "script": "DefineSprite_1307\\frame_2351\\DoAction.as"
+    },
+    {
+     "stripFrame": 2737,
+     "stops": true,
+     "script": "DefineSprite_1307\\frame_2737\\DoAction.as"
+    }
+   ],
+   "verify": {
+    "outerSpriteFrameCount": 13,
+    "stripSpriteFrameCount": 2737,
+    "outerFrame1Places": [
+     {
+      "charId": 1307,
+      "depth": 1,
+      "name": null
+     },
+     {
+      "charId": 1291,
+      "depth": 17,
+      "name": null
+     }
+    ],
+    "stripSoundStreamHead": {
+     "tag": "SoundStreamHead",
+     "playbackRate": 22050,
+     "playback16bit": true,
+     "playbackStereo": true,
+     "format": "mp3",
+     "streamRate": 11025,
+     "stream16bit": true,
+     "streamStereo": false,
+     "latencySeek": 367
+    },
+    "stripStreamBlocks": 2737,
+    "stripFirstAudioFrame": 1,
+    "outerSoundStreamHead": {
+     "tag": "SoundStreamHead2",
+     "playbackRate": 22050,
+     "playback16bit": true,
+     "playbackStereo": true,
+     "format": "uncompressed-native",
+     "streamRate": 5512,
+     "stream16bit": false,
+     "streamStereo": false,
+     "latencySeek": 0
+    },
+    "streamAudioSha256": "85730db2ae8e7a4ff5f66ad1453b384c09e5ce5f0a830b95a812dbeb0183ed7f",
+    "streamAudioBytes": 193052
+   },
+   "assetIds": [
+    1291,
+    1296,
+    1297,
+    1298,
+    1299,
+    1300,
+    1301,
+    1302,
+    1303,
+    1304,
+    1305,
+    1306,
+    1307,
+    1308
+   ],
+   "assets": [
+    {
+     "charId": 1291,
+     "kind": "tag34",
+     "tagCode": 34,
+     "bodyBytes": 1286,
+     "bodySha256": "32c24bfb5a0ef35e944c326ba251bf3178e214167c2cd829e312eba543345c75"
+    },
+    {
+     "charId": 1296,
+     "kind": "DefineBitsJPEG2",
+     "tagCode": 21,
+     "bodyBytes": 135417,
+     "bodySha256": "2d9a114c2ae8ef6d88b9d4e6cd35e1b78ad7824a7e48f220de85c3af844e44d8",
+     "extractedFile": "cf6-s2/art-1296.jpg"
+    },
+    {
+     "charId": 1297,
+     "kind": "DefineShape2",
+     "tagCode": 22,
+     "bodyBytes": 547,
+     "bodySha256": "af7d91db4368b5254f3285b4af3a4eb2e7cf66882ea3f6fa6e498eedca1fa8a1"
+    },
+    {
+     "charId": 1298,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 208,
+     "bodySha256": "da59a2aed3b632d64e2e6309ed8303216d32fd6729e9007ed53f68b6f29d90a2",
+     "editText": {
+      "charId": 1298,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">这些丧尸穿着制服，难道已<sbr />经规模化产生了？</font></p>"
+     }
+    },
+    {
+     "charId": 1299,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 284,
+     "bodySha256": "3f39d4d76621efbaf262ba6ab8653923c6c605512d39c0139f73cb8421922539",
+     "editText": {
+      "charId": 1299,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这可能和最近的恐怖组织<sbr />事件有关，详细情况Commander.M<sbr />会向你说明的。</font></p>"
+     }
+    },
+    {
+     "charId": 1300,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 238,
+     "bodySha256": "77462238503558e69079fc6a6a39c261c419fe51da77b119f1a84ccf3d4d1753",
+     "editText": {
+      "charId": 1300,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">Commander.M，联合国秘密特工局<sbr />指挥官？看来有大事将要发生<sbr />了。</font></p>"
+     }
+    },
+    {
+     "charId": 1301,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 184,
+     "bodySha256": "cfe32d77ef91e976cccce6355827a437e712481d611df47c797f98c3cc572787",
+     "editText": {
+      "charId": 1301,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">我已经把通讯转接过来<sbr />了。</font></p>"
+     }
+    },
+    {
+     "charId": 1302,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 3414,
+     "bodySha256": "dee649fb76e514419bfad982ddae286c14aa4c72a7070aa8b2bf48ea4160c32b",
+     "editText": {
+      "charId": 1302,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;你好Andy Law，我是联合国</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;秘密特工局指挥官Commander.M。</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们这次行动名为“毒刺行动”。最近</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;&nbsp;发生的多起事件都是由一个叫C.T的</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;&nbsp;恐怖组织引起的。他们占领了政府的</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;&nbsp;秘密地下研究所，计划使用生化武器</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;统治地球。我们的一名特工潜入该组织</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;调查，身份暴露而被困在欧洲某城市</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;的废墟。</font></p><p align=\"left\"></p><p align=\"left\"></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果线索断了就会使C.T</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;的野心得逞。到时候情况会比现在</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;更遭。各国政府不方便公开处理这个事件，希望</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">能秘密解决，所以通过特工局来接手，我知道你是这方<sbr />面的专家，所以希望能由你来接手这个任务，救出被困</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">的特工并彻底摧毁C&amp;T组织，当然报酬绝对不会少，而<sbr />且据说C.T的头目杀人如麻，凶狠残暴，在世界各地都<sbr />有他的势力，并收买了大量政府的官员，对你来说也是<sbr />个不错的挑战，如果你能完成这个任务，</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;各国政府在各方面都会给予你们基地</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;很大的援助。这对双方都没有任何损失。</font></p>"
+     }
+    },
+    {
+     "charId": 1303,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 113,
+     "bodySha256": "705ad312298c89c7cd3ea16e2ee8c67495190b2789f903edb737a9eb71d8d8fb"
+    },
+    {
+     "charId": 1304,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 273,
+     "bodySha256": "3961284811955b24fd8357e66598548748750d1b58f3e01f6b1dfd9a925df5b4",
+     "editText": {
+      "charId": 1304,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">如果这个任务能达到我所<sbr />期望的刺激，我可以接<sbr />手，但酬劳要由我说的<sbr />算，先付50%。</font></p>"
+     }
+    },
+    {
+     "charId": 1305,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 141,
+     "bodySha256": "12c2c74b8ad6a9e70e511b02892fde16e716ca214a94e3a3da4da64249457c25"
+    },
+    {
+     "charId": 1306,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 765,
+     "bodySha256": "e4124edb459d4cc5894b2c55bf78f7eca1fb9c27fef0833ca0520ecdefacdc32",
+     "editText": {
+      "charId": 1306,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;很好！成交！酬劳方面</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;不是问题，任务具体事项也可<sbr />以由你自行安排。这是我们派出<sbr />的特工最后和我们失去联络的</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;地方，相信会对你有所帮助。</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;祝你顺利完成任务！</font></p>"
+     }
+    },
+    {
+     "charId": 1307,
+     "kind": "sprite",
+     "frameCount": 2737,
+     "bodySha256": "d90e297ee8fcf365857eb6157e33ec459b5b0902d6d7caa3c5f91cc007a1898c"
+    },
+    {
+     "charId": 1308,
+     "kind": "sprite",
+     "frameCount": 13,
+     "bodySha256": "9f92eb4b6e157e1111a67b46df042a018676bc32d061381aebca2137c51a2997"
+    }
+   ],
+   "stripTimeline": [
+    {
+     "stripFrame": 1,
+     "depth": 6,
+     "charId": 1297,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 7,
+     "charId": 1298,
+     "matrix": {
+      "tx": 4460,
+      "ty": 986,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 8,
+     "charId": 1299,
+     "matrix": {
+      "tx": 8145,
+      "ty": 1486,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 9,
+     "charId": 1300,
+     "matrix": {
+      "tx": 12319,
+      "ty": 5160,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 10,
+     "charId": 1301,
+     "matrix": {
+      "tx": 419,
+      "ty": 8969,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 11,
+     "charId": 1302,
+     "matrix": {
+      "tx": 4400,
+      "ty": 12079,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 12,
+     "charId": 1303,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 13,
+     "charId": 1304,
+     "matrix": {
+      "tx": 11901,
+      "ty": 11667,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 14,
+     "charId": 1305,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 15,
+     "charId": 1306,
+     "matrix": {
+      "tx": 9701,
+      "ty": 13718,
+      "scale": null,
+      "rotate": null
+     }
+    }
+   ],
+   "skipScript": "DefineButton2_1291\\BUTTONCONDACTION on(keyPress Space).as",
+   "extractedPages": [
+    "cf6-s2/page1.svg",
+    "cf6-s2/page2.svg",
+    "cf6-s2/page3.svg",
+    "cf6-s2/page4.svg",
+    "cf6-s2/page5.svg",
+    "cf6-s2/page6.svg",
+    "cf6-s2/page7.svg",
+    "cf6-s2/page8.svg"
+   ]
+  },
+  {
+   "id": "cf6-s3",
+   "label": "s3",
+   "outer": 1325,
+   "strip": 1324,
+   "skipButton": 1291,
+   "mainFrame": 40,
+   "music": "music02",
+   "targets": [
+    {
+     "script": "frame_41\\PlaceObject2_1325_1\\CLIPACTIONRECORD onClipEvent(load).as",
+     "targetLabel": "a3"
+    }
+   ],
+   "outerPages": [
+    {
+     "outerFrame": 1,
+     "script": "DefineSprite_1325\\frame_1\\DoAction.as",
+     "pan": {
+      "x": 0,
+      "y": 0
+     },
+     "stop": true
+    },
+    {
+     "outerFrame": 2,
+     "script": "DefineSprite_1325\\frame_2\\DoAction.as",
+     "pan": {
+      "x": -250,
+      "y": -4
+     }
+    },
+    {
+     "outerFrame": 3,
+     "script": "DefineSprite_1325\\frame_3\\DoAction.as",
+     "pan": {
+      "x": -4,
+      "y": -276
+     }
+    },
+    {
+     "outerFrame": 4,
+     "script": "DefineSprite_1325\\frame_4\\DoAction.as",
+     "pan": {
+      "x": -244,
+      "y": -308
+     }
+    },
+    {
+     "outerFrame": 5,
+     "script": "DefineSprite_1325\\frame_5\\DoAction.as",
+     "pan": {
+      "x": -106,
+      "y": -650
+     }
+    },
+    {
+     "outerFrame": 6,
+     "script": "DefineSprite_1325\\frame_6\\DoAction.as",
+     "transition": true,
+     "stop": true
+    }
+   ],
+   "stripAdvances": [
+    {
+     "stripFrame": 110,
+     "stops": false,
+     "script": "DefineSprite_1324\\frame_110\\DoAction.as"
+    },
+    {
+     "stripFrame": 453,
+     "stops": false,
+     "script": "DefineSprite_1324\\frame_453\\DoAction.as"
+    },
+    {
+     "stripFrame": 572,
+     "stops": false,
+     "script": "DefineSprite_1324\\frame_572\\DoAction.as"
+    },
+    {
+     "stripFrame": 884,
+     "stops": false,
+     "script": "DefineSprite_1324\\frame_884\\DoAction.as"
+    },
+    {
+     "stripFrame": 976,
+     "stops": true,
+     "script": "DefineSprite_1324\\frame_976\\DoAction.as"
+    }
+   ],
+   "verify": {
+    "outerSpriteFrameCount": 13,
+    "stripSpriteFrameCount": 976,
+    "outerFrame1Places": [
+     {
+      "charId": 1324,
+      "depth": 1,
+      "name": null
+     },
+     {
+      "charId": 1291,
+      "depth": 21,
+      "name": null
+     }
+    ],
+    "stripSoundStreamHead": {
+     "tag": "SoundStreamHead",
+     "playbackRate": 22050,
+     "playback16bit": true,
+     "playbackStereo": true,
+     "format": "mp3",
+     "streamRate": 11025,
+     "stream16bit": true,
+     "streamStereo": false,
+     "latencySeek": 367
+    },
+    "stripStreamBlocks": 867,
+    "stripFirstAudioFrame": 110,
+    "outerSoundStreamHead": {
+     "tag": "SoundStreamHead2",
+     "playbackRate": 22050,
+     "playback16bit": true,
+     "playbackStereo": true,
+     "format": "uncompressed-native",
+     "streamRate": 5512,
+     "stream16bit": false,
+     "streamStereo": false,
+     "latencySeek": 0
+    },
+    "streamAudioSha256": "ac4999e4376b7b7f1428396cff1d8cb210995b4aca0c91e1145c155860128854",
+    "streamAudioBytes": 61396
+   },
+   "assetIds": [
+    1291,
+    1309,
+    1310,
+    1311,
+    1312,
+    1313,
+    1314,
+    1315,
+    1316,
+    1317,
+    1318,
+    1319,
+    1320,
+    1321,
+    1322,
+    1323,
+    1324,
+    1325
+   ],
+   "assets": [
+    {
+     "charId": 1291,
+     "kind": "tag34",
+     "tagCode": 34,
+     "bodyBytes": 1286,
+     "bodySha256": "32c24bfb5a0ef35e944c326ba251bf3178e214167c2cd829e312eba543345c75"
+    },
+    {
+     "charId": 1309,
+     "kind": "DefineBitsJPEG2",
+     "tagCode": 21,
+     "bodyBytes": 267182,
+     "bodySha256": "41b38da7288976fe178e603bd31dfcc8a16b2062e72699297c79cd3aecc65403",
+     "extractedFile": "cf6-s3/art-1309.jpg"
+    },
+    {
+     "charId": 1310,
+     "kind": "DefineShape2",
+     "tagCode": 22,
+     "bodyBytes": 97,
+     "bodySha256": "fe8a4dea8d876e4abd4ac219a58d0a759f1264f29f2da56bc617ec8d265f3869"
+    },
+    {
+     "charId": 1311,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 216,
+     "bodySha256": "8589244f43b70119bc1f9642959ce3e2a8b338934cbf129d2797511d192590a6",
+     "editText": {
+      "charId": 1311,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 1228,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"></p><p align=\"left\"></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"><b>某废旧房屋内</b><b>...</b></font></p>"
+     }
+    },
+    {
+     "charId": 1312,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 523,
+     "bodySha256": "dc2081c9b4f1e025e16c201c0e87b19a0ec989544d2174094e442d493b8fdee0"
+    },
+    {
+     "charId": 1313,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 206,
+     "bodySha256": "b239e288cd21586c90b8e1ac11a90e9c1cea40ea1e80af67e7cd3a175d92db4f",
+     "editText": {
+      "charId": 1313,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 1228,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"></p><p align=\"left\"></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"><b>废旧房屋前门</b></font></p>"
+     }
+    },
+    {
+     "charId": 1314,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 221,
+     "bodySha256": "e05f13f23b9301c972b760ba22d94035b62cc0ee048e117d4eba3a8d1581432a",
+     "editText": {
+      "charId": 1314,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">我必须尽快和总部<sbr />取得联系，把情况<sbr />报告给长官。</font></p>"
+     }
+    },
+    {
+     "charId": 1315,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 261,
+     "bodySha256": "e96b19081cb22d74aace85cff0446fbdc9600d39c36d29bae21a1e095ac5cc49",
+     "editText": {
+      "charId": 1315,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">我在C.T的身份已经暴露<sbr />了，目前还是先想想怎<sbr />么脱身吧！这里也不能<sbr />久留！</font></p>"
+     }
+    },
+    {
+     "charId": 1316,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 102,
+     "bodySha256": "09b5857dedb2abade009c10d3dbd312b22ceeb158188037f524bcdd427319c11"
+    },
+    {
+     "charId": 1317,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 201,
+     "bodySha256": "0c9df2130759d55ae87e3334a448a9a1adcc1971785d7aecba3a399d043ee966",
+     "editText": {
+      "charId": 1317,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">厄唔！~~找到间谍了！<sbr />给我上，抓活的！</font></p>"
+     }
+    },
+    {
+     "charId": 1318,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 113,
+     "bodySha256": "6e70cd340088c026022374a038d386aad180721a050ecebee8480962e3c1fd66"
+    },
+    {
+     "charId": 1319,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 322,
+     "bodySha256": "3152f6312a07e0a455d7a1e82a2873ad0a9e2b76a5900e0ba694cdb898def2a7",
+     "editText": {
+      "charId": 1319,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">嗯？没想到来得这么快！<sbr />求救信号已经发出去了，<sbr />至少要坚持到增援赶来！<sbr />好不容易收集到的情报不<sbr />能这么白费了！</font></p>"
+     }
+    },
+    {
+     "charId": 1320,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 227,
+     "bodySha256": "3c0c457e63cc38575d65099786379bc6ac729d80a3eb343131b9a9f764793d22"
+    },
+    {
+     "charId": 1321,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 202,
+     "bodySha256": "dc22d9ad4165817bc0213fbd288e54c59b2a3ee40144137c49c5e10042acfdad",
+     "editText": {
+      "charId": 1321,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">这间旧屋内有动静，<sbr />应该是这里没错了！</font></p>"
+     }
+    },
+    {
+     "charId": 1322,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 108,
+     "bodySha256": "67e99806377cced22bbb6fe303e158c93a2a38e010d5393e98b0457d3ed8d242"
+    },
+    {
+     "charId": 1323,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 155,
+     "bodySha256": "56d2c8d26af11c6d944f548b5df9b7e6415eff479748308f4a48409d580e8a5e",
+     "editText": {
+      "charId": 1323,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">唔呃呃呃！</font></p>"
+     }
+    },
+    {
+     "charId": 1324,
+     "kind": "sprite",
+     "frameCount": 976,
+     "bodySha256": "5f9960c48c83133ad39820ebf32240e256552d07beab41073a750b1f6ab554d9"
+    },
+    {
+     "charId": 1325,
+     "kind": "sprite",
+     "frameCount": 13,
+     "bodySha256": "0d7fcba2476c38bee0a30e6730a7467459c6c11154a112aefeb92435a729bc67"
+    }
+   ],
+   "stripTimeline": [
+    {
+     "stripFrame": 1,
+     "depth": 3,
+     "charId": 1310,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 4,
+     "charId": 1311,
+     "matrix": {
+      "tx": 870,
+      "ty": 824,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 8,
+     "charId": 1312,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 9,
+     "charId": 1313,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": [
+       -0.0001220703125,
+       -6.103515625e-05
+      ],
+      "rotate": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 10,
+     "charId": 1314,
+     "matrix": {
+      "tx": 9785,
+      "ty": 696,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 11,
+     "charId": 1315,
+     "matrix": {
+      "tx": 9519,
+      "ty": 2215,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 12,
+     "charId": 1316,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 13,
+     "charId": 1317,
+     "matrix": {
+      "tx": 4829,
+      "ty": 7768,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 14,
+     "charId": 1318,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 15,
+     "charId": 1319,
+     "matrix": {
+      "tx": 10783,
+      "ty": 7146,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 16,
+     "charId": 1320,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 17,
+     "charId": 1321,
+     "matrix": {
+      "tx": 8200,
+      "ty": 14852,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 18,
+     "charId": 1322,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 19,
+     "charId": 1323,
+     "matrix": {
+      "tx": 3417,
+      "ty": 6200,
+      "scale": null,
+      "rotate": null
+     }
+    }
+   ],
+   "skipScript": "DefineButton2_1291\\BUTTONCONDACTION on(keyPress Space).as",
+   "extractedPages": [
+    "cf6-s3/page1.svg",
+    "cf6-s3/page2.svg",
+    "cf6-s3/page3.svg",
+    "cf6-s3/page4.svg",
+    "cf6-s3/page5.svg"
+   ]
+  },
+  {
+   "id": "cf6-s4",
+   "label": "s4",
+   "outer": 1334,
+   "strip": 1333,
+   "skipButton": 1291,
+   "mainFrame": 42,
+   "music": "music01",
+   "targets": [
+    {
+     "script": "frame_43\\PlaceObject2_1334_1\\CLIPACTIONRECORD onClipEvent(load).as",
+     "targetLabel": "a7"
+    }
+   ],
+   "outerPages": [
+    {
+     "outerFrame": 1,
+     "script": "DefineSprite_1334\\frame_1\\DoAction.as",
+     "pan": {
+      "x": 0,
+      "y": 0
+     },
+     "stop": true
+    },
+    {
+     "outerFrame": 2,
+     "script": "DefineSprite_1334\\frame_2\\DoAction.as",
+     "pan": {
+      "x": -258,
+      "y": -90
+     }
+    },
+    {
+     "outerFrame": 3,
+     "script": "DefineSprite_1334\\frame_3\\DoAction.as",
+     "pan": {
+      "x": -176,
+      "y": -361
+     }
+    },
+    {
+     "outerFrame": 4,
+     "script": "DefineSprite_1334\\frame_4\\DoAction.as",
+     "pan": {
+      "x": -133,
+      "y": -630
+     }
+    },
+    {
+     "outerFrame": 5,
+     "script": "DefineSprite_1334\\frame_5\\DoAction.as",
+     "transition": true,
+     "stop": true
+    }
+   ],
+   "stripAdvances": [
+    {
+     "stripFrame": 306,
+     "stops": false,
+     "script": "DefineSprite_1333\\frame_306\\DoAction.as"
+    },
+    {
+     "stripFrame": 362,
+     "stops": false,
+     "script": "DefineSprite_1333\\frame_362\\DoAction.as"
+    },
+    {
+     "stripFrame": 417,
+     "stops": false,
+     "script": "DefineSprite_1333\\frame_417\\DoAction.as"
+    },
+    {
+     "stripFrame": 719,
+     "stops": true,
+     "script": "DefineSprite_1333\\frame_719\\DoAction.as"
+    }
+   ],
+   "verify": {
+    "outerSpriteFrameCount": 13,
+    "stripSpriteFrameCount": 741,
+    "outerFrame1Places": [
+     {
+      "charId": 1333,
+      "depth": 1,
+      "name": null
+     },
+     {
+      "charId": 1291,
+      "depth": 13,
+      "name": null
+     }
+    ],
+    "stripSoundStreamHead": {
+     "tag": "SoundStreamHead",
+     "playbackRate": 22050,
+     "playback16bit": true,
+     "playbackStereo": true,
+     "format": "mp3",
+     "streamRate": 11025,
+     "stream16bit": true,
+     "streamStereo": false,
+     "latencySeek": 367
+    },
+    "stripStreamBlocks": 737,
+    "stripFirstAudioFrame": 1,
+    "outerSoundStreamHead": {
+     "tag": "SoundStreamHead2",
+     "playbackRate": 22050,
+     "playback16bit": true,
+     "playbackStereo": true,
+     "format": "uncompressed-native",
+     "streamRate": 5512,
+     "stream16bit": false,
+     "streamStereo": false,
+     "latencySeek": 0
+    },
+    "streamAudioSha256": "85fbf0e4a93f768464a12491b7927547a9b44688da2f2609a86dfde407d3a79a",
+    "streamAudioBytes": 51828
+   },
+   "assetIds": [
+    1291,
+    1326,
+    1327,
+    1328,
+    1329,
+    1330,
+    1331,
+    1332,
+    1333,
+    1334
+   ],
+   "assets": [
+    {
+     "charId": 1291,
+     "kind": "tag34",
+     "tagCode": 34,
+     "bodyBytes": 1286,
+     "bodySha256": "32c24bfb5a0ef35e944c326ba251bf3178e214167c2cd829e312eba543345c75"
+    },
+    {
+     "charId": 1326,
+     "kind": "DefineBitsJPEG2",
+     "tagCode": 21,
+     "bodyBytes": 223887,
+     "bodySha256": "adb039e01bd9eabc5f4f875f69c22d8ff32538ac9f0d5951dd4a3ccd801e8539",
+     "extractedFile": "cf6-s4/art-1326.jpg"
+    },
+    {
+     "charId": 1327,
+     "kind": "DefineShape2",
+     "tagCode": 22,
+     "bodyBytes": 483,
+     "bodySha256": "6cfc7dcb6d70a23b410581b9930f3ad2de83d245b22a167c9e948432d770cf92"
+    },
+    {
+     "charId": 1328,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 283,
+     "bodySha256": "a643405010b99d12c8b2579709dd337f351df0fcd02b53c281aa26aaf5408c07",
+     "editText": {
+      "charId": 1328,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">快开车！</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">去地下研究所！</font></p>"
+     }
+    },
+    {
+     "charId": 1329,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 332,
+     "bodySha256": "89887b000cbe2f4b60246972ae85b9b423ce1cf3d8a14f2899801574972004fc",
+     "editText": {
+      "charId": 1329,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">有一个敌人逃走了！<sbr />我们必须赶在他之前<sbr />到达地下研究所，以<sbr />免他们把研究资料转<sbr />移，我知道线路，但<sbr />需要一辆快车！</font></p>"
+     }
+    },
+    {
+     "charId": 1330,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 177,
+     "bodySha256": "93c54a90af6f26a810a68f73a995c3686cfce744c55d306c32a3acfb9d1acfda",
+     "editText": {
+      "charId": 1330,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">交给我好了！他逃不掉的。</font></p>"
+     }
+    },
+    {
+     "charId": 1331,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 251,
+     "bodySha256": "90410c7810e763514e7d74197e48065ff18f7aeed270e77eed5fbe48d3cfbc31",
+     "editText": {
+      "charId": 1331,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">怎么样，美女，我改装的这<sbr />部兰博基尼还不错吧？还装<sbr />备有两架Mini-P29....</font></p>"
+     }
+    },
+    {
+     "charId": 1332,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 227,
+     "bodySha256": "fafcf1fc1b58d80c13f00ceb0fae61d567b4b03ec61893cbc11e4acaceb0c99a",
+     "editText": {
+      "charId": 1332,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">别废话了，敌人已<sbr />经逃得看不见踪影<sbr />了，赶快开车吧！</font></p>"
+     }
+    },
+    {
+     "charId": 1333,
+     "kind": "sprite",
+     "frameCount": 741,
+     "bodySha256": "1dc3b88173e458607aded6b77ee7edef52f2ce377f4725008548c5f7bd9b1294"
+    },
+    {
+     "charId": 1334,
+     "kind": "sprite",
+     "frameCount": 13,
+     "bodySha256": "8d8ee010877c7a38be9b637df645a4451e647ac0ba4b627461636b0190528b19"
+    }
+   ],
+   "stripTimeline": [
+    {
+     "stripFrame": 1,
+     "depth": 6,
+     "charId": 1327,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 7,
+     "charId": 1328,
+     "matrix": {
+      "tx": 13073,
+      "ty": 5006,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 8,
+     "charId": 1329,
+     "matrix": {
+      "tx": 3951,
+      "ty": 5585,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 9,
+     "charId": 1330,
+     "matrix": {
+      "tx": 8753,
+      "ty": 10114,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 10,
+     "charId": 1331,
+     "matrix": {
+      "tx": 10059,
+      "ty": 13854,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 11,
+     "charId": 1332,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    }
+   ],
+   "skipScript": "DefineButton2_1291\\BUTTONCONDACTION on(keyPress Space).as",
+   "extractedPages": [
+    "cf6-s4/page1.svg",
+    "cf6-s4/page2.svg",
+    "cf6-s4/page3.svg",
+    "cf6-s4/page4.svg"
+   ]
+  },
+  {
+   "id": "cf6-s5",
+   "label": "s5",
+   "outer": 1349,
+   "strip": 1348,
+   "skipButton": 1291,
+   "mainFrame": 44,
+   "music": "music01",
+   "targets": [
+    {
+     "script": "frame_45\\PlaceObject2_1349_1\\CLIPACTIONRECORD onClipEvent(load).as",
+     "targetLabel": "a8"
+    }
+   ],
+   "outerPages": [
+    {
+     "outerFrame": 1,
+     "script": "DefineSprite_1349\\frame_1\\DoAction.as",
+     "pan": {
+      "x": 0,
+      "y": 0
+     },
+     "stop": true
+    },
+    {
+     "outerFrame": 2,
+     "script": "DefineSprite_1349\\frame_2\\DoAction.as",
+     "pan": {
+      "x": -197,
+      "y": -11
+     }
+    },
+    {
+     "outerFrame": 3,
+     "script": "DefineSprite_1349\\frame_3\\DoAction.as",
+     "pan": {
+      "x": -11,
+      "y": -231
+     }
+    },
+    {
+     "outerFrame": 4,
+     "script": "DefineSprite_1349\\frame_4\\DoAction.as",
+     "pan": {
+      "x": -246,
+      "y": -237
+     }
+    },
+    {
+     "outerFrame": 5,
+     "script": "DefineSprite_1349\\frame_5\\DoAction.as",
+     "pan": {
+      "x": -11,
+      "y": -544
+     }
+    },
+    {
+     "outerFrame": 6,
+     "script": "DefineSprite_1349\\frame_6\\DoAction.as",
+     "pan": {
+      "x": -245,
+      "y": -467
+     }
+    },
+    {
+     "outerFrame": 7,
+     "script": "DefineSprite_1349\\frame_7\\DoAction.as",
+     "transition": true,
+     "stop": true
+    }
+   ],
+   "stripAdvances": [
+    {
+     "stripFrame": 29,
+     "stops": false,
+     "script": "DefineSprite_1348\\frame_29\\DoAction.as"
+    },
+    {
+     "stripFrame": 78,
+     "stops": false,
+     "script": "DefineSprite_1348\\frame_78\\DoAction.as"
+    },
+    {
+     "stripFrame": 217,
+     "stops": false,
+     "script": "DefineSprite_1348\\frame_217\\DoAction.as"
+    },
+    {
+     "stripFrame": 517,
+     "stops": false,
+     "script": "DefineSprite_1348\\frame_517\\DoAction.as"
+    },
+    {
+     "stripFrame": 931,
+     "stops": false,
+     "script": "DefineSprite_1348\\frame_931\\DoAction.as"
+    },
+    {
+     "stripFrame": 1486,
+     "stops": true,
+     "script": "DefineSprite_1348\\frame_1486\\DoAction.as"
+    }
+   ],
+   "verify": {
+    "outerSpriteFrameCount": 13,
+    "stripSpriteFrameCount": 1561,
+    "outerFrame1Places": [
+     {
+      "charId": 1348,
+      "depth": 1,
+      "name": null
+     },
+     {
+      "charId": 1291,
+      "depth": 18,
+      "name": null
+     }
+    ],
+    "stripSoundStreamHead": {
+     "tag": "SoundStreamHead",
+     "playbackRate": 22050,
+     "playback16bit": true,
+     "playbackStereo": true,
+     "format": "mp3",
+     "streamRate": 11025,
+     "stream16bit": true,
+     "streamStereo": false,
+     "latencySeek": 367
+    },
+    "stripStreamBlocks": 1531,
+    "stripFirstAudioFrame": 1,
+    "outerSoundStreamHead": {
+     "tag": "SoundStreamHead2",
+     "playbackRate": 22050,
+     "playback16bit": true,
+     "playbackStereo": true,
+     "format": "uncompressed-native",
+     "streamRate": 5512,
+     "stream16bit": false,
+     "streamStereo": false,
+     "latencySeek": 0
+    },
+    "streamAudioSha256": "5c00e8c8cb930d49333fc2c9f2a670523bcfd8e9982fb52b58b382cedfdce57a",
+    "streamAudioBytes": 106068
+   },
+   "assetIds": [
+    1291,
+    1335,
+    1336,
+    1337,
+    1338,
+    1339,
+    1341,
+    1342,
+    1343,
+    1344,
+    1345,
+    1346,
+    1347,
+    1348,
+    1349
+   ],
+   "assets": [
+    {
+     "charId": 1291,
+     "kind": "tag34",
+     "tagCode": 34,
+     "bodyBytes": 1286,
+     "bodySha256": "32c24bfb5a0ef35e944c326ba251bf3178e214167c2cd829e312eba543345c75"
+    },
+    {
+     "charId": 1335,
+     "kind": "DefineBitsJPEG2",
+     "tagCode": 21,
+     "bodyBytes": 199799,
+     "bodySha256": "9691b7f47a4820e588436d7931074d35c7ac7939705019d3643245571e891db9",
+     "extractedFile": "cf6-s5/art-1335.jpg"
+    },
+    {
+     "charId": 1336,
+     "kind": "DefineShape2",
+     "tagCode": 22,
+     "bodyBytes": 374,
+     "bodySha256": "576d293c9dd3d132440d6e51e90109a3b46d5100b0f4f28f6736a65812117494"
+    },
+    {
+     "charId": 1337,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 318,
+     "bodySha256": "9c02235d3820868e7691a621876cadb39fc6cd506036259cd027033b8c094cc4",
+     "editText": {
+      "charId": 1337,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">过了前面那个斜坡，背面的下水道<sbr />就是研究所入口。先把入口处的守<sbr />卫解决掉，我们要抓紧时间了，敌<sbr />人越来越多了！</font></p>"
+     }
+    },
+    {
+     "charId": 1338,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 177,
+     "bodySha256": "afbb15a8bcd91fa6ee9f22f314944154adf2e8d274f7144f4d0ebd72c9de592a"
+    },
+    {
+     "charId": 1339,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 242,
+     "bodySha256": "fa757cfe30309d08dc9e5185a906630ad7ad200ddb9dd03243088a8a860e9785",
+     "editText": {
+      "charId": 1339,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">守门的让我来解决，你去<sbr />切断警报，坐稳了，我要<sbr />直接冲进去了！</font></p>"
+     }
+    },
+    {
+     "charId": 1341,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 153,
+     "bodySha256": "e9e32473b47c35aa1982f5db1739fab35a2357d8b74be806b43433c02a81bae1",
+     "editText": {
+      "charId": 1341,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 1340,
+      "fontHeight": 600,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"黑体\" size=\"30\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"><b>啊！</b></font></p>"
+     }
+    },
+    {
+     "charId": 1342,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 278,
+     "bodySha256": "3d6e9e6b4ae77dd54955bec4dfabdbf52a5b5e8bb19945e0063d9d2778b17cc9",
+     "editText": {
+      "charId": 1342,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">有入侵者！</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> 发警报！</font></p>"
+     }
+    },
+    {
+     "charId": 1343,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 100,
+     "bodySha256": "202c19c06a5268d38326afd33fff3514ca0428c39a380ec87b5d9a6050175764"
+    },
+    {
+     "charId": 1344,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 272,
+     "bodySha256": "9d60b6c40737fd4292e8408ce875e8585ddfb952608923c23d4ebcac721f64b6",
+     "editText": {
+      "charId": 1344,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 1228,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"><b>Oh!</b></font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"><b>Shit!</b></font></p>"
+     }
+    },
+    {
+     "charId": 1345,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 372,
+     "bodySha256": "67513b8160a77c96e3cdb2741b770ae3e0e7f8fefcec7191984e63456216a569",
+     "editText": {
+      "charId": 1345,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">M.O.D智能主机报告：有入侵者。<sbr />哔哔！呲呲呲~~！入侵者已进入<sbr />第一区域。哔哔！呲呲呲~~！进<sbr />入初级警备状态，守卫机器人<sbr />【WAR-I】已启动。请下达指示！</font></p>"
+     }
+    },
+    {
+     "charId": 1346,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 433,
+     "bodySha256": "6438bf631dc11e191e65b37a2c961071896b7f01cecc0b4f5ba1b69a99143cec",
+     "editText": {
+      "charId": 1346,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">特工局的这帮蠢货，想和我作对还差<sbr />得远！把二级研究体先运回基地，其<sbr />它的都没用了，都放出去迎接我们的<sbr />客人。我的最终生化武器就快要完成<sbr />了，到时候地球就是我的了。呜哈哈<sbr />哈哈哈哈！~~</font></p>"
+     }
+    },
+    {
+     "charId": 1347,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 2035,
+     "bodySha256": "80d45eabaa9477d8ebc74d0101959f4446018c03a016e1ebff3cec642c9d972f"
+    },
+    {
+     "charId": 1348,
+     "kind": "sprite",
+     "frameCount": 1561,
+     "bodySha256": "ab1905de83bc49a2887ed3864a20ab305b7de16416edb18e55a0a30aff85aca9"
+    },
+    {
+     "charId": 1349,
+     "kind": "sprite",
+     "frameCount": 13,
+     "bodySha256": "498d25807e6e8067b96729d7dbe8748e3e7095ce33c4ee2db71ae38e70ecb8b7"
+    }
+   ],
+   "stripTimeline": [
+    {
+     "stripFrame": 1,
+     "depth": 5,
+     "charId": 1336,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 6,
+     "charId": 1337,
+     "matrix": {
+      "tx": 8702,
+      "ty": 7326,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 8,
+     "charId": 1338,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 9,
+     "charId": 1339,
+     "matrix": {
+      "tx": 5271,
+      "ty": 9484,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 10,
+     "charId": 1341,
+     "matrix": {
+      "tx": 14704,
+      "ty": 1693,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 11,
+     "charId": 1342,
+     "matrix": {
+      "tx": 12899,
+      "ty": 3492,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 12,
+     "charId": 1343,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 13,
+     "charId": 1344,
+     "matrix": {
+      "tx": 8332,
+      "ty": 5507,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 14,
+     "charId": 1345,
+     "matrix": {
+      "tx": 6827,
+      "ty": 13889,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 15,
+     "charId": 1346,
+     "matrix": {
+      "tx": 11319,
+      "ty": 9614,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 16,
+     "charId": 1347,
+     "matrix": {
+      "tx": 4342,
+      "ty": 4297,
+      "scale": null,
+      "rotate": null
+     }
+    }
+   ],
+   "skipScript": "DefineButton2_1291\\BUTTONCONDACTION on(keyPress Space).as",
+   "extractedPages": [
+    "cf6-s5/page1.svg",
+    "cf6-s5/page2.svg",
+    "cf6-s5/page3.svg",
+    "cf6-s5/page4.svg",
+    "cf6-s5/page5.svg",
+    "cf6-s5/page6.svg"
+   ]
+  },
+  {
+   "id": "cf6-s6",
+   "label": "s6",
+   "outer": 1384,
+   "strip": 1383,
+   "skipButton": 1291,
+   "mainFrame": 46,
+   "music": "music02",
+   "targets": [
+    {
+     "script": "frame_47\\PlaceObject2_1384_1\\CLIPACTIONRECORD onClipEvent(load).as",
+     "targetLabel": "a18"
+    }
+   ],
+   "outerPages": [
+    {
+     "outerFrame": 1,
+     "script": "DefineSprite_1384\\frame_1\\DoAction.as",
+     "pan": {
+      "x": 0,
+      "y": 0
+     },
+     "stop": true
+    },
+    {
+     "outerFrame": 2,
+     "script": "DefineSprite_1384\\frame_2\\DoAction.as",
+     "pan": {
+      "x": -259,
+      "y": -5
+     }
+    },
+    {
+     "outerFrame": 3,
+     "script": "DefineSprite_1384\\frame_3\\DoAction.as",
+     "pan": {
+      "x": -3,
+      "y": -202
+     }
+    },
+    {
+     "outerFrame": 4,
+     "script": "DefineSprite_1384\\frame_4\\DoAction.as",
+     "pan": {
+      "x": -259,
+      "y": -202
+     }
+    },
+    {
+     "outerFrame": 5,
+     "script": "DefineSprite_1384\\frame_5\\DoAction.as",
+     "pan": {
+      "x": -4,
+      "y": -617
+     }
+    },
+    {
+     "outerFrame": 6,
+     "script": "DefineSprite_1384\\frame_6\\DoAction.as",
+     "pan": {
+      "x": -4,
+      "y": -462
+     }
+    },
+    {
+     "outerFrame": 7,
+     "script": "DefineSprite_1384\\frame_7\\DoAction.as",
+     "pan": {
+      "x": -256,
+      "y": -470
+     }
+    },
+    {
+     "outerFrame": 8,
+     "script": "DefineSprite_1384\\frame_8\\DoAction.as",
+     "pan": {
+      "x": -253,
+      "y": -587
+     }
+    },
+    {
+     "outerFrame": 9,
+     "script": "DefineSprite_1384\\frame_9\\DoAction.as",
+     "transition": true,
+     "stop": true
+    }
+   ],
+   "stripAdvances": [
+    {
+     "stripFrame": 161,
+     "stops": false,
+     "script": "DefineSprite_1383\\frame_161\\DoAction.as"
+    },
+    {
+     "stripFrame": 354,
+     "stops": false,
+     "script": "DefineSprite_1383\\frame_354\\DoAction.as"
+    },
+    {
+     "stripFrame": 995,
+     "stops": false,
+     "script": "DefineSprite_1383\\frame_995\\DoAction.as"
+    },
+    {
+     "stripFrame": 1356,
+     "stops": false,
+     "script": "DefineSprite_1383\\frame_1356\\DoAction.as"
+    },
+    {
+     "stripFrame": 1777,
+     "stops": false,
+     "script": "DefineSprite_1383\\frame_1777\\DoAction.as"
+    },
+    {
+     "stripFrame": 1871,
+     "stops": false,
+     "script": "DefineSprite_1383\\frame_1871\\DoAction.as"
+    },
+    {
+     "stripFrame": 2119,
+     "stops": false,
+     "script": "DefineSprite_1383\\frame_2119\\DoAction.as"
+    },
+    {
+     "stripFrame": 2430,
+     "stops": true,
+     "script": "DefineSprite_1383\\frame_2430\\DoAction.as"
+    }
+   ],
+   "verify": {
+    "outerSpriteFrameCount": 13,
+    "stripSpriteFrameCount": 2434,
+    "outerFrame1Places": [
+     {
+      "charId": 1383,
+      "depth": 1,
+      "name": null
+     },
+     {
+      "charId": 1291,
+      "depth": 35,
+      "name": null
+     }
+    ],
+    "stripSoundStreamHead": {
+     "tag": "SoundStreamHead",
+     "playbackRate": 22050,
+     "playback16bit": true,
+     "playbackStereo": true,
+     "format": "mp3",
+     "streamRate": 11025,
+     "stream16bit": true,
+     "streamStereo": false,
+     "latencySeek": 367
+    },
+    "stripStreamBlocks": 2434,
+    "stripFirstAudioFrame": 1,
+    "outerSoundStreamHead": {
+     "tag": "SoundStreamHead2",
+     "playbackRate": 22050,
+     "playback16bit": true,
+     "playbackStereo": true,
+     "format": "uncompressed-native",
+     "streamRate": 5512,
+     "stream16bit": false,
+     "streamStereo": false,
+     "latencySeek": 0
+    },
+    "streamAudioSha256": "8d844cfbce88493d8f7054ff23470231278b29e5053b7b17a19638b42474f7a2",
+    "streamAudioBytes": 171664
+   },
+   "assetIds": [
+    1291,
+    1350,
+    1351,
+    1352,
+    1353,
+    1354,
+    1355,
+    1356,
+    1357,
+    1358,
+    1359,
+    1360,
+    1361,
+    1362,
+    1363,
+    1364,
+    1365,
+    1366,
+    1369,
+    1370,
+    1371,
+    1372,
+    1373,
+    1374,
+    1375,
+    1376,
+    1377,
+    1378,
+    1379,
+    1380,
+    1381,
+    1382,
+    1383,
+    1384
+   ],
+   "assets": [
+    {
+     "charId": 1291,
+     "kind": "tag34",
+     "tagCode": 34,
+     "bodyBytes": 1286,
+     "bodySha256": "32c24bfb5a0ef35e944c326ba251bf3178e214167c2cd829e312eba543345c75"
+    },
+    {
+     "charId": 1350,
+     "kind": "DefineBitsJPEG2",
+     "tagCode": 21,
+     "bodyBytes": 206474,
+     "bodySha256": "907881cf71b15e1a724ccd32897e2a2d18d943d69a8501a6590ee25d8ee34500",
+     "extractedFile": "cf6-s6/art-1350.jpg"
+    },
+    {
+     "charId": 1351,
+     "kind": "DefineShape2",
+     "tagCode": 22,
+     "bodyBytes": 128,
+     "bodySha256": "220500ea6b1f165e5693ba0f25125e0c652e3d9a54f52e4e1b04876ceb8d997d"
+    },
+    {
+     "charId": 1352,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 243,
+     "bodySha256": "59817d520f151489492405dde53a7c6ade6328b4647f5203fa0a8e72c58de1ab",
+     "editText": {
+      "charId": 1352,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">身手不错，小子！<sbr />下次见面就是你的<sbr />死期，唔哈哈哈哈<sbr />哈！~~~</font></p>"
+     }
+    },
+    {
+     "charId": 1353,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 113,
+     "bodySha256": "30eda5cd201313c078562ae2d5d6c195b0def35657120c07c92c448c2ec7d581"
+    },
+    {
+     "charId": 1354,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 415,
+     "bodySha256": "c13fb448d9ae74cbfb416a84771f34e13e2180dcf3a5b4197663ee5b94027e09",
+     "editText": {
+      "charId": 1354,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">他往B区去了，</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">那边有飞船！</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">他要逃走了！</font></p>"
+     }
+    },
+    {
+     "charId": 1355,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 101,
+     "bodySha256": "f1eedadd604fcc8de8ceb267e12c4166609dcc4306799a69994b6cce29d7786e"
+    },
+    {
+     "charId": 1356,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 186,
+     "bodySha256": "03f497856e7519c4e7b8960d254f302a2f34da970341ed9ad085a7dbc1479132",
+     "editText": {
+      "charId": 1356,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">Bloody，你休想<sbr />逃掉！我们追！</font></p>"
+     }
+    },
+    {
+     "charId": 1357,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 119,
+     "bodySha256": "53a4bee6a7a4c0fc3537edaa6c58f769b43a0210038e0e49ff46de962e990b34"
+    },
+    {
+     "charId": 1358,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 269,
+     "bodySha256": "e778c0f756214708a69e68bfd94cf7ccbe35679190609f14de8d503de2197e7c",
+     "editText": {
+      "charId": 1358,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">这里是Commander.M，<sbr />当地政府派出的空军已<sbr />经在研究所上空待机，<sbr />可随时听后差遣！</font></p>"
+     }
+    },
+    {
+     "charId": 1359,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 209,
+     "bodySha256": "351a8af7fd58a028c657e9298ff45b905558b41c3d81f9dca8000a509ad441bb"
+    },
+    {
+     "charId": 1360,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 279,
+     "bodySha256": "369d195a039fc4ed4ffe87e994543bb66d1550e9e0b75a0154cd8c9baf6f5d26",
+     "editText": {
+      "charId": 1360,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">呼叫Commander.M！C&amp;T组<sbr />织的头目Bloody逃走了，<sbr />我们正往研究所B-2区追<sbr />赶，请求空中支援！</font></p>"
+     }
+    },
+    {
+     "charId": 1361,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 286,
+     "bodySha256": "98fc43a2dd0a7f7e4ca72b25b8bcb19203b1edacfad7f35b1ae04daebfb259a3",
+     "editText": {
+      "charId": 1361,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">很好！我们已经到B-2<sbr />区飞船升降台了，让空<sbr />军紧跟在我们后面，<sbr />Bloody的飞船已经出来<sbr />了！</font></p>"
+     }
+    },
+    {
+     "charId": 1362,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 112,
+     "bodySha256": "a28b8dcb386010a07bf2f320b7b58e855fdcab0b8a236718084e610e020e40a1"
+    },
+    {
+     "charId": 1363,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 152,
+     "bodySha256": "e5175af1584cb24a31b95c2485a9ac3450772004dfd7060d7c6036624fa84529",
+     "editText": {
+      "charId": 1363,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">没问题！</font></p>"
+     }
+    },
+    {
+     "charId": 1364,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 202,
+     "bodySha256": "497da6b6514b7daca63d53d466934e7ddbf09f3020cbd8601dac8b4211f8fd99"
+    },
+    {
+     "charId": 1365,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 255,
+     "bodySha256": "6395f21b4adc51c745b7d37c872acbed30fdbb70235ba2bad0af066bd41d3652",
+     "editText": {
+      "charId": 1365,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">报告长官！研究所的<sbr />资料已经摧毁了！拷<sbr />贝的备份我稍后会传<sbr />回基地。</font></p>"
+     }
+    },
+    {
+     "charId": 1366,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 117,
+     "bodySha256": "79e4e588c118160fa26058fc1599b0d1d1f40d2bd1b2bb254ce8e976de3c5028"
+    },
+    {
+     "charId": 1369,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 269,
+     "bodySha256": "0db7faa6bfe8cae7b041488b39a1627debcd00adc76ff4c3fbec83fd92574329",
+     "editText": {
+      "charId": 1369,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">干得好！Wings！<sbr />请继续全力协助<sbr />Andy Law，彻底<sbr />消灭Bloody<font face=\"Comic Sans MS\">！</font></font></p>"
+     }
+    },
+    {
+     "charId": 1370,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 118,
+     "bodySha256": "292e228e5d58d56029c4276b9106814cd288636997df64f86b88dd1bed0a6ae4"
+    },
+    {
+     "charId": 1371,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 291,
+     "bodySha256": "36a06e5893d8ccdf0dfc4d4c5a24b5309a4b029345c64600d421029e4e87ba03",
+     "editText": {
+      "charId": 1371,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">哈哈哈！都跟过来吧！正好<sbr />让你们见识见识我的最终生<sbr />化武器的威力！你们都将成<sbr />为宇宙的尘埃！</font></p>"
+     }
+    },
+    {
+     "charId": 1372,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 119,
+     "bodySha256": "bf3f3491d5f78f88e5fc804ca45ea76679ab5045885e750be9c5caae2b796cbe"
+    },
+    {
+     "charId": 1373,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 322,
+     "bodySha256": "cc1016a103110de612e38dcb24645e4ea62ce3b77601e2e2789ccab87c88d3c9",
+     "editText": {
+      "charId": 1373,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">原来Bloody的老巢在这里，<sbr />X-ZONE-33区域，原星际联盟<sbr />第一中转基地，WW-III第三<sbr />次世界大战后这里已经多年<sbr />无人使用了。</font></p>"
+     }
+    },
+    {
+     "charId": 1374,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 117,
+     "bodySha256": "1e3320522d32eefeb0f89477937fcb7362550655ac2282c4bae2c876295dfc7d"
+    },
+    {
+     "charId": 1375,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 281,
+     "bodySha256": "f2d200d2b06a183552c039cae69c4010a350b1cc919ca547d4ad08f43dcfef28",
+     "editText": {
+      "charId": 1375,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">支援舰队不要再往前了，<sbr />原地待命！我和Wings潜<sbr />入基地就可以了，这里人<sbr />多反而不好行动！</font></p>"
+     }
+    },
+    {
+     "charId": 1376,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 71,
+     "bodySha256": "aa6c6aab14884c99ef220586cbd42dc93ba4cef9f26d4b2f2b700c9efbe7a6ea"
+    },
+    {
+     "charId": 1377,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 168,
+     "bodySha256": "83dd9902ad266e079f2cc304d8c7515ab7666f2df3be58c585581997ad3dde37",
+     "editText": {
+      "charId": 1377,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">支援舰队<sbr />明白！</font></p>"
+     }
+    },
+    {
+     "charId": 1378,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 92,
+     "bodySha256": "4826592006c3fadf5c2c54d7a2eda3ec3d794501f9ce4caaba2b9c228c51cba5"
+    },
+    {
+     "charId": 1379,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 203,
+     "bodySha256": "f7ac37ff0935c5b7b82f4bd3a8eeec5291caad8f8013550ed933671ba8a69bfa",
+     "editText": {
+      "charId": 1379,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">告诉基地，Roll <sbr />Phantom计划准备<sbr />启动！</font></p>"
+     }
+    },
+    {
+     "charId": 1380,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 116,
+     "bodySha256": "0533e5cc3012876cb3a274c1eb8dd14cf3e796fe18dacee2c91489bb517102a1"
+    },
+    {
+     "charId": 1381,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 215,
+     "bodySha256": "6f251c9f558d83d88c5a212a6d3c41fade55dfb54d1df46c9fb0c6870ca076b8",
+     "editText": {
+      "charId": 1381,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">基地明白！最终<sbr />生化武器激活倒<sbr />计时已开始！</font></p>"
+     }
+    },
+    {
+     "charId": 1382,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 155,
+     "bodySha256": "87e18cce9aa1aa98b6a17cddb06dc18587f9d565fc9129aa000a4f66a6ec2d0e",
+     "editText": {
+      "charId": 1382,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">是，长官！</font></p>"
+     }
+    },
+    {
+     "charId": 1383,
+     "kind": "sprite",
+     "frameCount": 2434,
+     "bodySha256": "ef2c96a0ef93712e78db27bef9287e04707a7b7091a478bab6ab092e833a50c3"
+    },
+    {
+     "charId": 1384,
+     "kind": "sprite",
+     "frameCount": 13,
+     "bodySha256": "327eb26a8df1e55dc50e9aa225665ec419025d978bd592f8cdf187a598351af4"
+    }
+   ],
+   "stripTimeline": [
+    {
+     "stripFrame": 1,
+     "depth": 2,
+     "charId": 1351,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 3,
+     "charId": 1352,
+     "matrix": {
+      "tx": 8077,
+      "ty": 2974,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 4,
+     "charId": 1353,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 5,
+     "charId": 1354,
+     "matrix": {
+      "tx": 13888,
+      "ty": 640,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 6,
+     "charId": 1355,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 7,
+     "charId": 1356,
+     "matrix": {
+      "tx": 11503,
+      "ty": 3865,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 8,
+     "charId": 1357,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 9,
+     "charId": 1358,
+     "matrix": {
+      "tx": 7210,
+      "ty": 8624,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 11,
+     "charId": 1359,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 12,
+     "charId": 1360,
+     "matrix": {
+      "tx": 3811,
+      "ty": 6216,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 13,
+     "charId": 1361,
+     "matrix": {
+      "tx": 3971,
+      "ty": 7966,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 14,
+     "charId": 1362,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 15,
+     "charId": 1363,
+     "matrix": {
+      "tx": 9790,
+      "ty": 8201,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 17,
+     "charId": 1364,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 18,
+     "charId": 1365,
+     "matrix": {
+      "tx": 11643,
+      "ty": 7839,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 19,
+     "charId": 1366,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 20,
+     "charId": 1369,
+     "matrix": {
+      "tx": 10834,
+      "ty": 5781,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 21,
+     "charId": 1370,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 22,
+     "charId": 1371,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 23,
+     "charId": 1372,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 24,
+     "charId": 1373,
+     "matrix": {
+      "tx": 10010,
+      "ty": 12279,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 25,
+     "charId": 1374,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 26,
+     "charId": 1375,
+     "matrix": {
+      "tx": 11003,
+      "ty": 9766,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 27,
+     "charId": 1376,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 28,
+     "charId": 1377,
+     "matrix": {
+      "tx": 15209,
+      "ty": 12983,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 29,
+     "charId": 1378,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 30,
+     "charId": 1379,
+     "matrix": {
+      "tx": 4661,
+      "ty": 14988,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 31,
+     "charId": 1380,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 32,
+     "charId": 1381,
+     "matrix": {
+      "tx": 2961,
+      "ty": 10487,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 33,
+     "charId": 1382,
+     "matrix": {
+      "tx": 14345,
+      "ty": 8676,
+      "scale": null,
+      "rotate": null
+     }
+    }
+   ],
+   "skipScript": "DefineButton2_1291\\BUTTONCONDACTION on(keyPress Space).as",
+   "extractedPages": [
+    "cf6-s6/page1.svg",
+    "cf6-s6/page2.svg",
+    "cf6-s6/page3.svg",
+    "cf6-s6/page4.svg",
+    "cf6-s6/page5.svg",
+    "cf6-s6/page6.svg",
+    "cf6-s6/page7.svg",
+    "cf6-s6/page8.svg"
+   ]
+  },
+  {
+   "id": "cf6-s7",
+   "label": "s7",
+   "outer": 1400,
+   "strip": 1399,
+   "skipButton": 1291,
+   "mainFrame": 48,
+   "music": "music03",
+   "targets": [
+    {
+     "script": "frame_49\\PlaceObject2_1400_1\\CLIPACTIONRECORD onClipEvent(load).as",
+     "targetLabel": "end"
+    }
+   ],
+   "outerPages": [
+    {
+     "outerFrame": 1,
+     "script": "DefineSprite_1400\\frame_1\\DoAction.as",
+     "pan": {
+      "x": 0,
+      "y": 0
+     },
+     "stop": true
+    },
+    {
+     "outerFrame": 2,
+     "script": "DefineSprite_1400\\frame_2\\DoAction.as",
+     "pan": {
+      "x": -249,
+      "y": -3
+     }
+    },
+    {
+     "outerFrame": 3,
+     "script": "DefineSprite_1400\\frame_3\\DoAction.as",
+     "pan": {
+      "x": 0,
+      "y": 0
+     }
+    },
+    {
+     "outerFrame": 4,
+     "script": "DefineSprite_1400\\frame_4\\DoAction.as",
+     "pan": {
+      "x": -249,
+      "y": -3
+     }
+    },
+    {
+     "outerFrame": 5,
+     "script": "DefineSprite_1400\\frame_5\\DoAction.as",
+     "pan": {
+      "x": -198,
+      "y": -315
+     }
+    },
+    {
+     "outerFrame": 6,
+     "script": "DefineSprite_1400\\frame_6\\DoAction.as",
+     "pan": {
+      "x": -6,
+      "y": -325
+     }
+    },
+    {
+     "outerFrame": 7,
+     "script": "DefineSprite_1400\\frame_7\\DoAction.as",
+     "pan": {
+      "x": -243,
+      "y": -310
+     }
+    },
+    {
+     "outerFrame": 8,
+     "script": "DefineSprite_1400\\frame_8\\DoAction.as",
+     "pan": {
+      "x": -248,
+      "y": -624
+     }
+    },
+    {
+     "outerFrame": 9,
+     "script": "DefineSprite_1400\\frame_9\\DoAction.as",
+     "transition": true,
+     "stop": true
+    }
+   ],
+   "stripAdvances": [
+    {
+     "stripFrame": 130,
+     "stops": false,
+     "script": "DefineSprite_1399\\frame_130\\DoAction.as"
+    },
+    {
+     "stripFrame": 314,
+     "stops": false,
+     "script": "DefineSprite_1399\\frame_314\\DoAction.as"
+    },
+    {
+     "stripFrame": 434,
+     "stops": false,
+     "script": "DefineSprite_1399\\frame_434\\DoAction.as"
+    },
+    {
+     "stripFrame": 521,
+     "stops": false,
+     "script": "DefineSprite_1399\\frame_521\\DoAction.as"
+    },
+    {
+     "stripFrame": 1121,
+     "stops": false,
+     "script": "DefineSprite_1399\\frame_1121\\DoAction.as"
+    },
+    {
+     "stripFrame": 1597,
+     "stops": false,
+     "script": "DefineSprite_1399\\frame_1597\\DoAction.as"
+    },
+    {
+     "stripFrame": 1879,
+     "stops": false,
+     "script": "DefineSprite_1399\\frame_1879\\DoAction.as"
+    },
+    {
+     "stripFrame": 1974,
+     "stops": true,
+     "script": "DefineSprite_1399\\frame_1974\\DoAction.as"
+    }
+   ],
+   "verify": {
+    "outerSpriteFrameCount": 13,
+    "stripSpriteFrameCount": 1979,
+    "outerFrame1Places": [
+     {
+      "charId": 1399,
+      "depth": 1,
+      "name": null
+     },
+     {
+      "charId": 1291,
+      "depth": 21,
+      "name": null
+     }
+    ],
+    "stripSoundStreamHead": {
+     "tag": "SoundStreamHead",
+     "playbackRate": 22050,
+     "playback16bit": true,
+     "playbackStereo": true,
+     "format": "mp3",
+     "streamRate": 11025,
+     "stream16bit": true,
+     "streamStereo": false,
+     "latencySeek": 367
+    },
+    "stripStreamBlocks": 1975,
+    "stripFirstAudioFrame": 1,
+    "outerSoundStreamHead": {
+     "tag": "SoundStreamHead2",
+     "playbackRate": 22050,
+     "playback16bit": true,
+     "playbackStereo": true,
+     "format": "uncompressed-native",
+     "streamRate": 5512,
+     "stream16bit": false,
+     "streamStereo": false,
+     "latencySeek": 0
+    },
+    "streamAudioSha256": "5b091743853b19e2fdcd4e316f2f39235c91664abf117d4560631d385ee8d87e",
+    "streamAudioBytes": 138940
+   },
+   "assetIds": [
+    1291,
+    1385,
+    1386,
+    1387,
+    1388,
+    1389,
+    1390,
+    1391,
+    1392,
+    1393,
+    1394,
+    1395,
+    1396,
+    1397,
+    1399,
+    1400
+   ],
+   "assets": [
+    {
+     "charId": 1291,
+     "kind": "tag34",
+     "tagCode": 34,
+     "bodyBytes": 1286,
+     "bodySha256": "32c24bfb5a0ef35e944c326ba251bf3178e214167c2cd829e312eba543345c75"
+    },
+    {
+     "charId": 1385,
+     "kind": "DefineBitsJPEG2",
+     "tagCode": 21,
+     "bodyBytes": 195653,
+     "bodySha256": "ee80ed0c94a66a80261c5e36b446f05bd90cf2827eedecf2ce0ef1ea54b5bf74",
+     "extractedFile": "cf6-s7/art-1385.jpg"
+    },
+    {
+     "charId": 1386,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 38,
+     "bodySha256": "78492344a332e5259a71b377c2da2079fefd0466a9ca9501e696a588f70e1d98"
+    },
+    {
+     "charId": 1387,
+     "kind": "DefineShape2",
+     "tagCode": 22,
+     "bodyBytes": 2318,
+     "bodySha256": "126241ba66d401813bf86bc368f9f57d3ff6617edb80eda20a9f924bca5b7cf2"
+    },
+    {
+     "charId": 1388,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 382,
+     "bodySha256": "e8faf95fd64168a278e92e551e85ac74cf27398f0f24048b0c7ff91652907626"
+    },
+    {
+     "charId": 1389,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 218,
+     "bodySha256": "532dc18b91ce24d70c1bc3c84a6baac568dedd854e3b9028d26839aa95b73913",
+     "editText": {
+      "charId": 1389,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">太好了！干得漂<sbr />亮！最终生化武器<sbr />被解决掉了！</font></p>"
+     }
+    },
+    {
+     "charId": 1390,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 261,
+     "bodySha256": "c007dc6b36950210019ff2a7acf68bb3e56d2094d34896874ff9cc126ebb6a70",
+     "editText": {
+      "charId": 1390,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">还没有，这只大怪物<sbr />还没死，我们要趁这<sbr />段时间离开这儿，飞<sbr />船修好了吗？</font></p>"
+     }
+    },
+    {
+     "charId": 1391,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 211,
+     "bodySha256": "1aeab2f06b271653f9ea80501453252452a5700e5879319cdcb3f9994a7fba85",
+     "editText": {
+      "charId": 1391,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">已经检修完毕，<sbr />燃料也足够我们<sbr />飞回去了！</font></p>"
+     }
+    },
+    {
+     "charId": 1392,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 208,
+     "bodySha256": "11e5a4e8f17443c895e0cadb3aee12ce105c146c6d0436a1cdd8af611d476c27",
+     "editText": {
+      "charId": 1392,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">那就赶紧走吧，<sbr />基地爆炸的时间<sbr />快到了！</font></p>"
+     }
+    },
+    {
+     "charId": 1393,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 215,
+     "bodySha256": "e3c6c2ba82909e281adba7db9b65a36df34e5f1ad6b00ce9060d7096bf260c4a"
+    },
+    {
+     "charId": 1394,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 524,
+     "bodySha256": "9f6219faa1b8a3da2fba6e1a00d8236d4ea93e10ab07bc42045624ba037b45f1",
+     "editText": {
+      "charId": 1394,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">祝贺你Andy Law！C&amp;T组织这下彻底<sbr />瓦解了，特工局会清理地球各地C&amp;T<sbr />组织的残党，恢复世界的正常秩<sbr />序。这都归功于你英勇无畏的表<sbr />现。特工局要是能有像你这样的英<sbr />雄特工一定会事半功倍，我们都希<sbr />望你能加入特工局一起打击犯罪，<sbr />维护世界和平。</font></p>"
+     }
+    },
+    {
+     "charId": 1395,
+     "kind": "DefineShape4",
+     "tagCode": 83,
+     "bodyBytes": 118,
+     "bodySha256": "f4ff90f7255e198a6f71c9190245492073e8d36a7d38e7d609b6115a0e5977fd"
+    },
+    {
+     "charId": 1396,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 424,
+     "bodySha256": "9973fbf57360f3d845c42707349b826a553db0a08638f7f38c4203299a6121b2",
+     "editText": {
+      "charId": 1396,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">谢谢你的好意Commander.M，我还<sbr />是喜欢按自己的方式做事，特工局<sbr />的工作可能不太适合我，不过如果<sbr />遇到高难度的任务，可以随时来找<sbr />我，只有在挑战高难度任务的时<sbr />候，我才有活着的感觉！</font></p>"
+     }
+    },
+    {
+     "charId": 1397,
+     "kind": "DefineEditText",
+     "tagCode": 37,
+     "bodyBytes": 523,
+     "bodySha256": "afde08a27609260b76a608900cc3cbf419521fa922328420d6a810997fd6032d",
+     "editText": {
+      "charId": 1397,
+      "varName": "",
+      "html": true,
+      "readOnly": true,
+      "fontId": 92,
+      "fontHeight": 240,
+      "color": "FF000000",
+      "initialText": "<p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\">好吧，既然这样我就不勉强<sbr />你了。如果什么时候改变主<sbr />意了，特工局随时欢迎你！<sbr />最后我再次感谢你保卫了地<sbr />球的和平！The world is <sbr />full of love and peace</font></p><p align=\"left\"><font face=\"宋体\" size=\"12\" color=\"#000000\" letterSpacing=\"0.000000\" kerning=\"0\"> &nbsp;&nbsp;&nbsp;&nbsp;again！Yeah~~~！</font></p>"
+     }
+    },
+    {
+     "charId": 1399,
+     "kind": "sprite",
+     "frameCount": 1979,
+     "bodySha256": "3ecc1006af0312f1b467f68f1f117db68626b17ddb52f03a369029fe629635be"
+    },
+    {
+     "charId": 1400,
+     "kind": "sprite",
+     "frameCount": 13,
+     "bodySha256": "efa47721c709dcd6eff533d4e81e29befb6e3611db4dc1ca998d2f8a43a36e96"
+    }
+   ],
+   "stripTimeline": [
+    {
+     "stripFrame": 1,
+     "depth": 1,
+     "charId": 1386,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 5,
+     "charId": 1387,
+     "matrix": {
+      "tx": 1529,
+      "ty": 1591,
+      "scale": [
+       -1.52587890625e-05,
+       -1.52587890625e-05
+      ],
+      "rotate": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 9,
+     "charId": 1388,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 10,
+     "charId": 1389,
+     "matrix": {
+      "tx": 4331,
+      "ty": 3215,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 11,
+     "charId": 1390,
+     "matrix": {
+      "tx": 10042,
+      "ty": 3125,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 12,
+     "charId": 1391,
+     "matrix": {
+      "tx": 6050,
+      "ty": 4073,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 13,
+     "charId": 1392,
+     "matrix": {
+      "tx": 8392,
+      "ty": 1902,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 15,
+     "charId": 1393,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 16,
+     "charId": 1394,
+     "matrix": {
+      "tx": 11495,
+      "ty": 10677,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 17,
+     "charId": 1395,
+     "matrix": {
+      "tx": 0,
+      "ty": 0,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 18,
+     "charId": 1396,
+     "matrix": {
+      "tx": 600,
+      "ty": 10877,
+      "scale": null,
+      "rotate": null
+     }
+    },
+    {
+     "stripFrame": 1,
+     "depth": 19,
+     "charId": 1397,
+     "matrix": {
+      "tx": 13264,
+      "ty": 7277,
+      "scale": null,
+      "rotate": null
+     }
+    }
+   ],
+   "skipScript": "DefineButton2_1291\\BUTTONCONDACTION on(keyPress Space).as",
+   "extractedPages": [
+    "cf6-s7/page1.svg",
+    "cf6-s7/page2.svg",
+    "cf6-s7/page3.svg",
+    "cf6-s7/page4.svg",
+    "cf6-s7/page5.svg",
+    "cf6-s7/page6.svg",
+    "cf6-s7/page7.svg",
+    "cf6-s7/page8.svg"
+   ]
+  }
+ ],
+ "performances": [
+  {
+   "id": "cf6-a21",
+   "label": "a21",
+   "mainFrame": 192,
+   "sprite": 2008,
+   "spriteFrameCount": 283,
+   "music": "music01",
+   "targets": [
+    {
+     "script": "frame_193\\PlaceObject2_2008_1\\CLIPACTIONRECORD onClipEvent(load).as",
+     "targetLabel": "a22"
+    }
+   ],
+   "soundStreamHead": {
+    "tag": "SoundStreamHead2",
+    "playbackRate": 22050,
+    "playback16bit": true,
+    "playbackStereo": true,
+    "format": "uncompressed-native",
+    "streamRate": 5512,
+    "stream16bit": false,
+    "streamStereo": false,
+    "latencySeek": 0
+   },
+   "assetIds": [
+    86,
+    152,
+    153,
+    154,
+    155,
+    156,
+    157,
+    158,
+    159,
+    160,
+    161,
+    162,
+    163,
+    164,
+    165,
+    953,
+    954,
+    955,
+    956,
+    957,
+    958,
+    959,
+    960,
+    961,
+    962,
+    963,
+    966,
+    976,
+    977,
+    978,
+    979,
+    980,
+    981,
+    982,
+    983,
+    984,
+    985,
+    986,
+    987,
+    988,
+    989,
+    990,
+    1994,
+    1995,
+    1996,
+    1997,
+    1998,
+    1999,
+    2000,
+    2001,
+    2002,
+    2003,
+    2006,
+    2008,
+    65535
+   ],
+   "assets": [
+    {
+     "charId": 86,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 34,
+     "bodySha256": "23e7e1a63b5cf035c7e59b64d013c751208adc11ef100ddc45d10e7145b708a4"
+    },
+    {
+     "charId": 152,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 165,
+     "bodySha256": "a9a7aa5ca22d5b2f0619f6d7ba95485ec0d305c675099f85a31ad55c71afd5bb"
+    },
+    {
+     "charId": 153,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 521,
+     "bodySha256": "2a9e13d5be16187ffde704fb7829cbbb0491499a836310a71d4bff1dd5446541"
+    },
+    {
+     "charId": 154,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 720,
+     "bodySha256": "cb00c9d3572fa9808a64e7d04ca73c358a7cc50826d5e75a93a4a122042f8e90"
+    },
+    {
+     "charId": 155,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 922,
+     "bodySha256": "32d6eda14dcf722919754373c92784ecf5584b2a3018cf6b4490d7ac3bfec362"
+    },
+    {
+     "charId": 156,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 832,
+     "bodySha256": "834549c552be461e1802e674c5b0b1cc53fd70f640e759815803ba9012cc7bf8"
+    },
+    {
+     "charId": 157,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 404,
+     "bodySha256": "ecd01d5338ce243202245d039cade82db047e020511531f6b9a23f5744729871"
+    },
+    {
+     "charId": 158,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 260,
+     "bodySha256": "3eefbd066c4a9cf421bb24ffddb1a2feebd45b56ba2cf7f727c60bea8e935cd7"
+    },
+    {
+     "charId": 159,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 137,
+     "bodySha256": "206b5b2f711208ce3f0049e23e5a1c708888b930cee91c1070deacb204807672"
+    },
+    {
+     "charId": 160,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 624,
+     "bodySha256": "1fb8e6cd71b1750df3b557eaf01cf1d61976fbb6e3606ba08cff4507f5859e3a"
+    },
+    {
+     "charId": 161,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 2132,
+     "bodySha256": "4fbd5fe055afd4dd498cc292dfe2d8f274bcc409cb3b43c1ef9439aaeb1c08ee"
+    },
+    {
+     "charId": 162,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 1823,
+     "bodySha256": "5e8b2b3fd582940f76da1f89f46bdee6ba1d82f64288955ac7147754ff6d99e9"
+    },
+    {
+     "charId": 163,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 1121,
+     "bodySha256": "0ea6dfba2252e887b119b301d35f5642391a7ee295b5051b876e1c39554e4912"
+    },
+    {
+     "charId": 164,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 532,
+     "bodySha256": "5f9524aa29fd0f12cca0303f34b55d5b586db467f7592f095ffb5fe1251062df"
+    },
+    {
+     "charId": 165,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 181,
+     "bodySha256": "d8caabd01cba305c113025a55de73b6c130266b8e8ea411beed94310a76bddae"
+    },
+    {
+     "charId": 953,
+     "kind": "DefineBitsJPEG3",
+     "tagCode": 35,
+     "bodyBytes": 35121,
+     "bodySha256": "cf8232e32aad9c2c168da2bc18b0076e497e5af3dfb12194cdceeb15617b3a00",
+     "extractedFile": "cf6-a21/bitmap-953.bin"
+    },
+    {
+     "charId": 954,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 108,
+     "bodySha256": "6643ad76436038e713934ad86ad9d70a26ff4acaf5a272f4c7f65e3f4678dc3d"
+    },
+    {
+     "charId": 955,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 163,
+     "bodySha256": "c6534767390cf77c627d70cbc544781ceeca15cd973ee494fd879a2ad7f3d8f7"
+    },
+    {
+     "charId": 956,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 145,
+     "bodySha256": "5848c3a451adc6a907079b302be5d526cdc7be0206fd398abf0c10baf7180902"
+    },
+    {
+     "charId": 957,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 148,
+     "bodySha256": "5ff5395e5905701ba6fc98c9aaa21ed31de31b4824fd114303d0beccbf49ea6b"
+    },
+    {
+     "charId": 958,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 304,
+     "bodySha256": "11c9708e03ee83168033eea4ea87c286dc7199c7d558a9f31cc6380e37a15b52"
+    },
+    {
+     "charId": 959,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 241,
+     "bodySha256": "e8432f8e4884370e1e2cfe7636da39c4fdc4a9de3c02b5920b8cd37bd5bd1e56"
+    },
+    {
+     "charId": 960,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 118,
+     "bodySha256": "7b17503fff64a2c2ac0443ae57a0d2d286b031bb9dd0ad59c1a7810c9bab6e49"
+    },
+    {
+     "charId": 961,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 135,
+     "bodySha256": "131782ff0e4234547f8c6d61a948a717c07a0ef244c14a29b0efa511deedda8a"
+    },
+    {
+     "charId": 962,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 305,
+     "bodySha256": "d80fde76e92ca3f88f20ba2bbd9407cae1626b22317884321093c087bc8e7b18"
+    },
+    {
+     "charId": 963,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 365,
+     "bodySha256": "6311c8a9eba6a26983d4a69701908eb20c14117507b13fa895cb85245e8187a4"
+    },
+    {
+     "charId": 966,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 148,
+     "bodySha256": "2137715729bb68b5ad6708ea5914f185108cfe403decbbfb2ace6190648eb2fd"
+    },
+    {
+     "charId": 976,
+     "kind": "DefineBitsJPEG3",
+     "tagCode": 35,
+     "bodyBytes": 63209,
+     "bodySha256": "e23baf4ec7879e73019cd7aee170d3d99ad5984192cedee3af796e2bfde45c8d",
+     "extractedFile": "cf6-a21/bitmap-976.bin"
+    },
+    {
+     "charId": 977,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 116,
+     "bodySha256": "f96b1fe0c830b71157d0ab7983f651fc421c0a5dc796c2be7fc9533d10cee7de"
+    },
+    {
+     "charId": 978,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 271,
+     "bodySha256": "4795c7cb49c560badcafea12574f5091f1eeefdbb7dc3e235fb30709a5a4fe57"
+    },
+    {
+     "charId": 979,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 148,
+     "bodySha256": "5f62436615352b79c8e6fdc390254bd4aecf1fc1aed663fb2afca3b73705677a"
+    },
+    {
+     "charId": 980,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 153,
+     "bodySha256": "80d70d1c3353babe3dc036b2ea62195cd1438ca045f3e189def4912691491215"
+    },
+    {
+     "charId": 981,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 146,
+     "bodySha256": "344b27b663ed64d33a2ddf78764d7c11f4bd1db26ef876753330f34e6def97e0"
+    },
+    {
+     "charId": 982,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 127,
+     "bodySha256": "45f5e0df2b2f73ed53cd72c1433d84967e0c5d9b59a35b792a55eea2dbe4901e"
+    },
+    {
+     "charId": 983,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 204,
+     "bodySha256": "5f2d9e6c7c0356651df9f37a0adf0b395c68eec1123400d49e55282fb0f682b8"
+    },
+    {
+     "charId": 984,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 115,
+     "bodySha256": "f30ac9585681226a094fa45d381736658b8ed73b718c4f1f6a58666f52afb6c0"
+    },
+    {
+     "charId": 985,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 124,
+     "bodySha256": "2ef75f48096c198cfdd84e4137152dee16c5b951face2c2cac1d05c38337c0e7"
+    },
+    {
+     "charId": 986,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 155,
+     "bodySha256": "107dd2425eaa4ee464e3f8a02ce6ffad3230f420db0d167ca8e44c75fd30a0aa"
+    },
+    {
+     "charId": 987,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 308,
+     "bodySha256": "5d22f1f381e813b5730df7423091f295894a83e9df3136b6249bc4119fea5d0c"
+    },
+    {
+     "charId": 988,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 344,
+     "bodySha256": "c9a21c8078e05c002cc6c4b641e83d9a683373a95eee20365188254e355de1c6"
+    },
+    {
+     "charId": 989,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 174,
+     "bodySha256": "80d900317fb52a1374aca9f5e859bb656c00bc98c08306e44d7cfe5396f9182a"
+    },
+    {
+     "charId": 990,
+     "kind": "sprite",
+     "frameCount": 39,
+     "bodySha256": "e838270a517b1d2da2bf78bb42fbc8d3b86c6a5f37118c0584f2ead653b6d507"
+    },
+    {
+     "charId": 1994,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 414,
+     "bodySha256": "af71f9151836f8bbb64c52880536f91f7283e2d7e9ded7734d93984ad0143e80"
+    },
+    {
+     "charId": 1995,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 309,
+     "bodySha256": "cffebec6ad456601bf8754a46a73b1fa25b072ff06505799922874ce29a15722"
+    },
+    {
+     "charId": 1996,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 235,
+     "bodySha256": "e2ca61b5c81d16150633a45786b84a8d9b4dd281e81efbba1865b9bb63cd04f4"
+    },
+    {
+     "charId": 1997,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 69,
+     "bodySha256": "ed09014c96ebaf3c1e62a220fbad6d26f6db4c099a4de477af1955fa1b8e9d92"
+    },
+    {
+     "charId": 1998,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 356,
+     "bodySha256": "e7a472529addc9595003f9691d949315c2f74678688b85f3fa8eeb30ff84149a"
+    },
+    {
+     "charId": 1999,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 793,
+     "bodySha256": "af50177b3177c990f6be1809d539168bc4beb514ed68bf986a79717d0f09dba1"
+    },
+    {
+     "charId": 2000,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 1141,
+     "bodySha256": "6b75bcbca379d25645f39ff29ae9a13827e897de280a2db09dad9ac9982adf2d"
+    },
+    {
+     "charId": 2001,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 1120,
+     "bodySha256": "98372902d6ddc8e461b1be795153fe1afa5cbffaa853b199aea3c97b5f796d80"
+    },
+    {
+     "charId": 2002,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 624,
+     "bodySha256": "3bea8de24860ad650581ab39764a17c652b424da5f017f04a2c4ded8cdf33cc5"
+    },
+    {
+     "charId": 2003,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 182,
+     "bodySha256": "d0f9469f8fb2a28dbd911bb6afdd4e73cf03769208ab99e101b1ce5bc8bb4bbe"
+    },
+    {
+     "charId": 2006,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 55,
+     "bodySha256": "682f8cec5241e5edcdda22ad9f2c8a0ecebdddea2a27aef0ce6b5fa33c85de7f"
+    },
+    {
+     "charId": 2008,
+     "kind": "sprite",
+     "frameCount": 283,
+     "bodySha256": "3b8ef93f887997abc4029e7fd489028fbb6a5f0a3048e600493be0a24569467d"
+    },
+    {
+     "charId": 65535,
+     "kind": "unknown"
+    }
+   ]
+  },
+  {
+   "id": "cf6-end",
+   "label": "end",
+   "mainFrame": 210,
+   "sprite": 2034,
+   "spriteFrameCount": 1,
+   "music": "music01",
+   "targets": [],
+   "soundStreamHead": {
+    "tag": "SoundStreamHead2",
+    "playbackRate": 22050,
+    "playback16bit": true,
+    "playbackStereo": true,
+    "format": "uncompressed-native",
+    "streamRate": 5512,
+    "stream16bit": false,
+    "streamStereo": false,
+    "latencySeek": 0
+   },
+   "assetIds": [
+    2013,
+    2014,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031,
+    2032,
+    2033,
+    2034,
+    65535
+   ],
+   "assets": [
+    {
+     "charId": 2013,
+     "kind": "DefineShape",
+     "tagCode": 2,
+     "bodyBytes": 65,
+     "bodySha256": "371a3701696b1325ee03ecef5e0b45d9f54eb6ab0c1042f0fdfaa75bd91d4457"
+    },
+    {
+     "charId": 2014,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 43,
+     "bodySha256": "4719399300e20ef06ed20a14ddc490e2f82926f32328e6fd1490032a1d38b168"
+    },
+    {
+     "charId": 2016,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 37,
+     "bodySha256": "fbd0115e43f01072431d747956d0f689eccc762dc03f84b100754df8cd25125b"
+    },
+    {
+     "charId": 2017,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 39,
+     "bodySha256": "4a461f2956b3ddbaf5fedb9e54cebb67c375980d9fb7062defc8af27c773bfe2"
+    },
+    {
+     "charId": 2018,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 36,
+     "bodySha256": "148701d99cb16114d8c4e9119d5d3f3603f43150c1561882733677aeeec2dc40"
+    },
+    {
+     "charId": 2019,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 65,
+     "bodySha256": "a54a66a6c444a1e8089d7f8ee682463eeeda3e4f642b16b1ea1d42b34bd9114a"
+    },
+    {
+     "charId": 2020,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 44,
+     "bodySha256": "2a7423a8a0bb50972bfde3749b5fc46f5ae50f52d41dffb2d4f6065c7efd8a5d"
+    },
+    {
+     "charId": 2021,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 43,
+     "bodySha256": "903399f24f2f4a126dbf6736225ee46f4f5503a72e76d4f7fdef8af15b0bd43b"
+    },
+    {
+     "charId": 2022,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 33,
+     "bodySha256": "4fc1ee003759f842be97d3a9f0526edd7d877ba39df2366231523cacea608496"
+    },
+    {
+     "charId": 2023,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 33,
+     "bodySha256": "c7d962435e097f7a71190e5c945327fa5cb20797ffb8252e7659ab524de527d8"
+    },
+    {
+     "charId": 2024,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 37,
+     "bodySha256": "3edcd1cae8b810fc77d3f0a3403df3bc7594efc6c5cb12925199ea52f58a4062"
+    },
+    {
+     "charId": 2025,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 33,
+     "bodySha256": "bbd8681a6692466dbedf5a2a9e8f02f2b4c57ee8db5cf0138f6dbcfdd29dbc29"
+    },
+    {
+     "charId": 2026,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 33,
+     "bodySha256": "9162d5a7aa00cfaae0f3c308e34ff9397adeb0cc287156c79d5cd6a883157842"
+    },
+    {
+     "charId": 2027,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 33,
+     "bodySha256": "fa0cf8440ca9ff7a5cd8d88ebbfe5a7c3c558a3951815eb038fca4effa72a033"
+    },
+    {
+     "charId": 2028,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 33,
+     "bodySha256": "7b40ed35698d14be96e8a8be2d3e2ae516529589f868cd46573abe3cfc7fb651"
+    },
+    {
+     "charId": 2029,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 33,
+     "bodySha256": "68da67bb66d4f4762fcef1f176cd7854f5611e30956aff1a0c49b10e7e2e1da5"
+    },
+    {
+     "charId": 2030,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 41,
+     "bodySha256": "a73c57b7b63f674b2f9c4261d2fde6f3337088c1af8a2270b653e40ed3739ebd"
+    },
+    {
+     "charId": 2031,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 33,
+     "bodySha256": "db92f9b80a3a87899b49aec46be2f3c50706c16eb2ddd39b41ae174c40e737c0"
+    },
+    {
+     "charId": 2032,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 37,
+     "bodySha256": "01ad6b9ba0096696c9512d4c053f980cd883e4a6c0775f7a77e1e8ad9a4aad50"
+    },
+    {
+     "charId": 2033,
+     "kind": "DefineText",
+     "tagCode": 11,
+     "bodyBytes": 37,
+     "bodySha256": "eead1986ce5bb33a1ddce85cae63ae587df8ad723259269617d3774d58d474c1"
+    },
+    {
+     "charId": 2034,
+     "kind": "sprite",
+     "frameCount": 1,
+     "bodySha256": "9d47f3c58a4d3208db39c89457b04fc3603ecc311a69a773417df51413177bed"
+    },
+    {
+     "charId": 65535,
+     "kind": "unknown"
+    }
+   ]
+  }
+ ],
+ "musicMap": [
+  {
+   "exportName": "music01",
+   "charId": 1110,
+   "sound": {
+    "format": "mp3",
+    "rate": 44100,
+    "is16bit": true,
+    "stereo": true,
+    "sampleCount": 9720576,
+    "dataSha256": "5c5298bfcc331c331f3316003b3b84f94d1da85e52c0e5ddca34e763c3549891",
+    "dataBytes": 3526742
+   },
+   "extractedFile": "music/music01.mp3"
+  },
+  {
+   "exportName": "music02",
+   "charId": 1111,
+   "sound": {
+    "format": "mp3",
+    "rate": 44100,
+    "is16bit": true,
+    "stereo": true,
+    "sampleCount": 6640128,
+    "dataSha256": "35e682258f5fd73942d36448f45df90ce7271be83dea2911d9d8baf4e8b86918",
+    "dataBytes": 2409119
+   },
+   "extractedFile": "music/music02.mp3"
+  },
+  {
+   "exportName": "music03",
+   "charId": 1112,
+   "sound": {
+    "format": "mp3",
+    "rate": 44100,
+    "is16bit": true,
+    "stereo": true,
+    "sampleCount": 1791360,
+    "dataSha256": "a18644c2bdc735850483978b383e0a6ebf5704e8e7e7341a191b84e34d639059",
+    "dataBytes": 649928
+   },
+   "extractedFile": "music/music03.mp3"
+  },
+  {
+   "exportName": "music04",
+   "charId": 1113,
+   "sound": {
+    "format": "mp3",
+    "rate": 44100,
+    "is16bit": true,
+    "stereo": true,
+    "sampleCount": 6172416,
+    "dataSha256": "3d64edf8f26b2c20964862e341b0a879c4f66d6429554ee687439b4eda7ca690",
+    "dataBytes": 2239428
+   },
+   "extractedFile": "music/music04.mp3"
+  }
+ ],
+ "transitionClips": [],
+ "mainLabels": {
+  "DLC": 0,
+  "logo": 5,
+  "函数集": 11,
+  "游戏封面": 21,
+  "about": 23,
+  "help": 25,
+  "set": 27,
+  "s1": 36,
+  "s2": 38,
+  "s3": 40,
+  "s4": 42,
+  "s5": 44,
+  "s6": 46,
+  "s7": 48,
+  "教学关": 57,
+  "a1": 65,
+  "a2": 72,
+  "a3": 77,
+  "a4": 81,
+  "a5": 85,
+  "a6": 91,
+  "a7": 103,
+  "a8": 107,
+  "a9": 115,
+  "a10": 130,
+  "a11": 137,
+  "a12": 142,
+  "a13": 147,
+  "a14": 151,
+  "a15": 156,
+  "a16": 161,
+  "a17": 168,
+  "a18": 177,
+  "a19": 182,
+  "a20": 187,
+  "a21": 192,
+  "a22": 197,
+  "end": 210
+ }
+}

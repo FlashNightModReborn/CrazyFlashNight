@@ -22,6 +22,7 @@ namespace CF7Launcher.Tests.Guardian
             internal readonly PanelHostController Host;
             internal readonly BookComicTask Task;
             internal readonly WebOverlayForm Form;
+            internal readonly LauncherCommandRouter Router;
             internal readonly JObject Data = new JObject
             {
                 ["v"] = 1, ["presentationId"] = "bookcomic:1",
@@ -65,7 +66,11 @@ namespace CF7Launcher.Tests.Guardian
                     return true;
                 });
                 Task.SetPostToWeb(_ => { }, null, Form.CloseBookComicPresentation);
+                Set(Form, "_bookComicTask", Task);
                 Host.SetBookComicTask(Task);
+                Router = new LauncherCommandRouter(socket, null, null, null, null, _ => { });
+                Router.SetPanelHost(Host);
+                Router.SetBookComicTask(Task);
                 Host.SetPanelCloseObserver((panel, instance) =>
                 {
                     if (panel == "book-comic") Task.OnHostClosed(instance);
@@ -135,6 +140,61 @@ namespace CF7Launcher.Tests.Guardian
         private static void Set(object target, string name, object value) =>
             target.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)
                 .SetValue(target, value);
+
+        [Theory]
+        [InlineData("cf6-s4", "cf6-s5", "continue")]
+        [InlineData("cf6-s4", "cf6-s5", "skip")]
+        [InlineData("cf6-s7", "cf6-end", "continue")]
+        [InlineData("cf6-s7", "cf6-end", "skip")]
+        public void RouterAcceptsSuccessorDuringOldCloseAndOpensItOnlyAfterExactCompletion(
+            string before, string after, string reason)
+        {
+            using var h = new Harness();
+            h.Data["pageId"] = before;
+            string oldInstance = h.Open();
+            h.Finish(reason);
+            var next = (JObject)h.Data.DeepClone();
+            next["presentationId"] = "bookcomic:2";
+            next["pageId"] = after;
+            var request = new JObject { ["source"] = "book_chapter", ["initData"] = next };
+            Assert.True(JObject.Parse(h.Router.TryOpenBookComic(request)).Value<bool>("accepted"));
+            Assert.Equal(oldInstance, h.Host.ActivePanelInstanceId);
+            Assert.False(h.Task.CanOpen(next.ToString()));
+            h.AssertNoUnpause();
+            h.Pump();
+            Assert.Equal("book-comic", h.Host.ActivePanelName);
+            Assert.NotEqual(oldInstance, h.Host.ActivePanelInstanceId);
+            Assert.True(h.Task.CanOpen(next.ToString()));
+            h.AssertSingleUnpause();
+            string successorInstance = h.Host.ActivePanelInstanceId;
+            h.Task.OnPresentationClosed(oldInstance, true);
+            h.Form.CloseBookComicPresentation(oldInstance);
+            h.Pump();
+            Assert.Equal(successorInstance, h.Host.ActivePanelInstanceId);
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void QueuedSuccessorCannotReplaceAnInterveningPanelOrSurviveDisconnect(bool disconnected)
+        {
+            using var h = new Harness();
+            h.Data["pageId"] = "cf6-s4";
+            h.Open();
+            if (!disconnected) Assert.True(h.Host.TryOpenPanel("settings", "{}", null, null));
+            h.Finish("continue");
+            var next = (JObject)h.Data.DeepClone();
+            next["presentationId"] = "bookcomic:2";
+            next["pageId"] = "cf6-s5";
+            Assert.True(JObject.Parse(h.Router.TryOpenBookComic(new JObject {
+                ["source"] = "book_chapter", ["initData"] = next
+            })).Value<bool>("accepted"));
+            if (disconnected) h.Task.OnDisconnected();
+            h.Pump();
+            Assert.Equal(disconnected ? null : "settings", h.Host.ActivePanelName);
+            Assert.False(h.Task.CanOpen(next.ToString()));
+            Assert.False(h.Task.Reserve(next));
+        }
 
         [Theory]
         [InlineData("continue")]

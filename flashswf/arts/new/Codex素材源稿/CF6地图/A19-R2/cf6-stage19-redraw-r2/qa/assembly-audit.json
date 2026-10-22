@@ -1,0 +1,601 @@
+{
+  "stage": "a19",
+  "source_kind": "independent frozen native-coordinate SVG reuse and preserved original vectors/excluded bitmap content",
+  "newly_redrawn_bitmap_ids": [
+    1231,
+    1957,
+    1962,
+    1964,
+    1965,
+    1966
+  ],
+  "reused_bitmap_ids": [
+    1412,
+    1821,
+    1848
+  ],
+  "frozen_shape_ids": [
+    1410,
+    1436,
+    1437,
+    1438,
+    1439,
+    1440,
+    1441
+  ],
+  "frozen_manifest_verified": true,
+  "world_logical_dimensions": [
+    1550,
+    410
+  ],
+  "root_layers": [],
+  "gameworld_placement": [
+    {
+      "matrix": [
+        1.000030517578125,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "placedAt": 183,
+      "id": 1985,
+      "name": "gameworld"
+    }
+  ],
+  "fixed_viewports": [
+    {
+      "name": "author",
+      "viewBox": [
+        0,
+        0,
+        600,
+        350
+      ],
+      "camera_world_translation": [
+        0,
+        0
+      ],
+      "root_camera_translation": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "middle",
+      "viewBox": [
+        0,
+        0,
+        600,
+        350
+      ],
+      "camera_world_translation": [
+        -475.0,
+        -30.0
+      ],
+      "root_camera_translation": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "right",
+      "viewBox": [
+        0,
+        0,
+        600,
+        350
+      ],
+      "camera_world_translation": [
+        -950,
+        -60
+      ],
+      "root_camera_translation": [
+        0,
+        0
+      ]
+    }
+  ],
+  "shape_replacements": [
+    {
+      "shape": 1413,
+      "viewBox": [
+        -99.05,
+        -40.6,
+        199.8,
+        117.5
+      ],
+      "replaced": [
+        {
+          "bitmap": 1412,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-31.5,-13.5)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1412,
+        65535
+      ]
+    },
+    {
+      "shape": 1849,
+      "viewBox": [
+        -65.5,
+        -80.5,
+        131.0,
+        161.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1848,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-65.5,-80.5)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1848
+      ]
+    },
+    {
+      "shape": 1852,
+      "viewBox": [
+        -65.5,
+        -80.5,
+        131.0,
+        161.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1848,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-65.5,-80.5)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1848
+      ]
+    },
+    {
+      "shape": 1853,
+      "viewBox": [
+        -26.5,
+        -47.0,
+        35.75,
+        28.5
+      ],
+      "replaced": [
+        {
+          "bitmap": 1848,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-65.05,-79.5)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1848
+      ]
+    },
+    {
+      "shape": 1854,
+      "viewBox": [
+        -60.0,
+        -47.25,
+        68.5,
+        121.25
+      ],
+      "replaced": [
+        {
+          "bitmap": 1848,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-65.3,-80.0)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1848
+      ]
+    },
+    {
+      "shape": 1855,
+      "viewBox": [
+        -26.25,
+        -46.75,
+        74.25,
+        120.25
+      ],
+      "replaced": [
+        {
+          "bitmap": 1848,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-64.3,-80.25)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1848
+      ]
+    },
+    {
+      "shape": 1857,
+      "viewBox": [
+        -127.5,
+        -74.5,
+        250.5,
+        148.5
+      ],
+      "replaced": [
+        {
+          "bitmap": 1848,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,10.7,-80.25)"
+        },
+        {
+          "bitmap": 1848,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-132.8,-80.0)"
+        },
+        {
+          "bitmap": 1848,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-65.05,-107.0)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1848
+      ]
+    },
+    {
+      "shape": 1858,
+      "viewBox": [
+        -26.5,
+        -74.5,
+        35.75,
+        28.5
+      ],
+      "replaced": [
+        {
+          "bitmap": 1848,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-65.05,-107.0)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1848
+      ]
+    },
+    {
+      "shape": 1859,
+      "viewBox": [
+        -127.5,
+        -47.25,
+        68.5,
+        121.25
+      ],
+      "replaced": [
+        {
+          "bitmap": 1848,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-132.8,-80.0)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1848
+      ]
+    },
+    {
+      "shape": 1860,
+      "viewBox": [
+        48.75,
+        -46.75,
+        74.25,
+        120.25
+      ],
+      "replaced": [
+        {
+          "bitmap": 1848,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,10.7,-80.25)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1848
+      ]
+    },
+    {
+      "shape": 1861,
+      "viewBox": [
+        -60.0,
+        -47.25,
+        108.0,
+        121.25
+      ],
+      "replaced": [
+        {
+          "bitmap": 1848,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-64.3,-80.25)"
+        },
+        {
+          "bitmap": 1848,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-65.3,-80.0)"
+        },
+        {
+          "bitmap": 1848,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-65.05,-79.5)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1848
+      ]
+    },
+    {
+      "shape": 1978,
+      "viewBox": [
+        -702.0,
+        -209.9,
+        1585.1,
+        420.85
+      ],
+      "replaced": [
+        {
+          "bitmap": 1231,
+          "matrix": "matrix(0.6929474,0.5203552,0.0,1.002533,548.9,-209.9)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,526.9,82.95)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,319.9,82.95)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,115.95,82.95)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,554.9,-44.0)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,347.9,-44.0)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,143.95,-44.0)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,730.85,82.95)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-87.1,82.95)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-291.05,82.95)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-498.05,82.95)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-702.0,82.95)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-60.1,-44.0)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-265.05,-44.0)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-470.05,-44.0)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-674.0,-44.0)"
+        },
+        {
+          "bitmap": 1231,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-52.05,-209.0)"
+        },
+        {
+          "bitmap": 1231,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,66.75,-209.0)"
+        },
+        {
+          "bitmap": 1821,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-342.3,-209.9)"
+        },
+        {
+          "bitmap": 1231,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-674.0,-208.0)"
+        },
+        {
+          "bitmap": 1231,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-200.0,-209.0)"
+        }
+      ],
+      "retained_original_nonimage_markup": false,
+      "floor_seam_repair": {
+        "shape": 1978,
+        "bitmap": 1957,
+        "rephasedFillIndices": [
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          27,
+          29,
+          31,
+          33,
+          35,
+          37,
+          39
+        ],
+        "phaseOrigin": [
+          -674.0,
+          -44.0
+        ],
+        "canvas": [
+          207,
+          128
+        ],
+        "latticeVectors": [
+          [
+            207,
+            0
+          ],
+          [
+            -28,
+            128
+          ]
+        ],
+        "geometryCorrections": [],
+        "originalFloorCoverageUnion": true,
+        "nonFloorClipsAndContentUnchanged": true,
+        "worldAndTimelineUnchanged": true,
+        "method": "single periodic phase inside exact floor-polygon union; interior clip cracks removed"
+      },
+      "original_bitmap_dependencies": [
+        1231,
+        1821,
+        1957,
+        65535
+      ]
+    },
+    {
+      "shape": 1979,
+      "viewBox": [
+        -702.95,
+        -187.8,
+        48.0,
+        30.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1962,
+          "matrix": "matrix(1.0,1.53e-05,0.0,1.0,-702.95,-187.8)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1962,
+        65535
+      ]
+    },
+    {
+      "shape": 1980,
+      "viewBox": [
+        338.0,
+        -146.65,
+        245.75,
+        45.25
+      ],
+      "replaced": [
+        {
+          "bitmap": 1964,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,338.0,-140.0)"
+        },
+        {
+          "bitmap": 1965,
+          "matrix": "matrix(0.6999969,0.4695129,0.0,1.0,555.05,-146.65)"
+        },
+        {
+          "bitmap": 1966,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,479.7,-135.0)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1964,
+        1965,
+        1966,
+        65535
+      ]
+    }
+  ],
+  "original_animation_frame_counts": {
+    "1426": 20,
+    "1442": 11,
+    "1862": 18,
+    "1982": 32,
+    "360": 1,
+    "237": 1,
+    "1981": 1,
+    "254": 189,
+    "255": 14
+  },
+  "state_samples": [
+    {
+      "sprite": 1442,
+      "total_original_frames": 11,
+      "preview_sample_frames": [
+        1,
+        3,
+        6,
+        11
+      ],
+      "original_timeline_and_native_masks_unchanged": true
+    },
+    {
+      "sprite": 1862,
+      "total_original_frames": 18,
+      "preview_sample_frames": [
+        1,
+        2,
+        5,
+        9,
+        13,
+        18
+      ],
+      "original_timeline_and_native_masks_unchanged": true
+    },
+    {
+      "sprite": 1982,
+      "total_original_frames": 32,
+      "preview_sample_frames": [
+        1,
+        2,
+        8,
+        16,
+        24,
+        32
+      ],
+      "original_timeline_and_native_masks_unchanged": true
+    }
+  ],
+  "preserved_original_bitmap_ids": [
+    239,
+    252
+  ],
+  "original_font_outline_shapes": [
+    1851,
+    1960,
+    1961
+  ],
+  "static_only": true,
+  "runtime_simulation": false,
+  "root_layers_stretched": false,
+  "panorama_note": "fixed root-author phase overview; fixed root 1956 covers only source 600x200 and is never repeated or stretched",
+  "full_frame_matrices_colors_clipDepth_retained": true
+}

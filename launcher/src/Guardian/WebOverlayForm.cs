@@ -1384,16 +1384,17 @@ namespace CF7Launcher.Guardian
 
         internal void CloseBookComicPresentation(string instance)
         {
-            if (_panelHost == null) return;
-            _panelHost.TryClosePanelExact("book-comic", instance, true,
+            if (_panelHost == null) { _bookComicTask?.OnPresentationClosed(instance,false); return; }
+            if (!_panelHost.TryClosePanelExact("book-comic", instance, true,
                 delegate(bool closed)
                 {
-                    if (!closed) return;
+                    if (!closed) { _bookComicTask?.OnPresentationClosed(instance,false); return; }
                     // AS2 retires the comic claim before this callback. The ordinary Web
                     // panel claim remains ours until this exact native/Web surface is closed.
                     // Reuse the standard release so a following dialogue keeps its own claim.
                     CommitAcceptedPanelCloseEffects("book-comic", false, false);
-                });
+                    _bookComicTask?.OnPresentationClosed(instance,true);
+                })) _bookComicTask?.OnPresentationClosed(instance,false);
         }
         private BookshelfTask _bookshelfTask;
         private BookshelfReturnPresentation _bookshelfReturn;

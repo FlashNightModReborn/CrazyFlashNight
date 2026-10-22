@@ -27,6 +27,7 @@ class org.flashNight.arki.scene.BookComicServiceTest {
         if (_root.gameworld != undefined) _root.gameworld.removeMovieClip();
         _root.gameworld = _root.createEmptyMovieClip("comicFixtureWorld", 9287);
         _root.savePath = "bookrun_comic_fixture";
+        _root.当前关卡名 = BookDefinition.get("repair-campus").stageName;
         _root._saveExt = {bookRun:{slot:_root.savePath,bookId:"repair-campus",seed:17,startedAt:100,outcome:"active"}};
         _root.__comicContinues = 0; _root.__comicSends = [];
         _root.server = {isSocketConnected:true,
@@ -39,8 +40,8 @@ class org.flashNight.arki.scene.BookComicServiceTest {
         PauseManager.set(false, "manual");
     }
     private static function follow():Void { _root.__comicContinues++; }
-    private static function open(page:String):Object {
-        BookComicService.begin(page, follow);
+    private static function open(page:String, preparation:Object):Object {
+        BookComicService.begin(page, follow, null, preparation);
         var p:Object = _root.__comicRequest;
         return {v:1,callId:9,presentationId:p.presentationId,slot:p.slot,sceneId:p.sceneId,
             pageId:p.pageId,panelInstanceId:"comic.fixture." + p.presentationId,reason:"continue"};
@@ -51,6 +52,11 @@ class org.flashNight.arki.scene.BookComicServiceTest {
         check(_root.暂停 === true, "opening owns a pause before web readiness");
         BookComicService.handle("prepared", p);
         check(last().success === true && last().phase == "presenting", "exact preparation becomes presenting");
+        var sends:Number = _root.__comicSends.length;
+        BookComicService.handle("prepared", p);
+        check(_root.__comicSends.length == sends + 1 && last().success === true
+            && last().phase == "presenting" && last().error == "" && _root.__comicContinues == 0,
+            "lost preparation acknowledgement is repeated without another continuation");
         var foreign:Object = {v:1,callId:10,presentationId:p.presentationId,slot:p.slot,sceneId:p.sceneId,
             pageId:p.pageId,panelInstanceId:"foreign",reason:"continue"};
         BookComicService.handle("finish", foreign);
@@ -112,6 +118,25 @@ class org.flashNight.arki.scene.BookComicServiceTest {
         BookComicService.handle("finish", p);
         check(last().phase == "expired" && _root.__comicContinues == 0,
             "closing a foreign save context never advances that save");
+
+        setup();
+        var prep:Object = {calls:0, prepare:function(session:Object, packet:Object):Boolean {
+            this.calls++;
+            org.flashNight.arki.scene.BookComicService.completePrepared(session, packet, "bgm_lease_unavailable");
+            return true;
+        }};
+        p = open("prologue", prep);
+        BookComicService.handle("prepared", p);
+        check(prep.calls == 1 && last().error == "bgm_lease_unavailable" && last().success === true,
+            "bounded audio degradation is retained as the authoritative preparation result");
+        sends = _root.__comicSends.length;
+        BookComicService.handle("prepared", p);
+        check(_root.__comicSends.length == sends + 1 && prep.calls == 1
+            && last().error == "bgm_lease_unavailable" && last().phase == "presenting",
+            "repeated preparation preserves degradation and does not reacquire audio ownership");
+        BookComicService.handle("finish", p);
+        check(_root.__comicContinues == 1 && _root.暂停 === false,
+            "degraded duplicate preparation still releases the presentation once");
     }
     private static function testChapterWaitsForCurtain():Void {
         var transition:Object = org.flashNight.arki.ui.SceneTransitionService;
@@ -131,6 +156,12 @@ class org.flashNight.arki.scene.BookComicServiceTest {
             _root.淡出动画._currentframe = 17; _root.淡出动画.__returnFadeActive = false; _root.场景转换中 = false;
             var identity:Object = StageReturnFlow.worldIdentity(_root.gameworld);
             EventBus.getInstance().publish("SceneReady",_root.gameworld,"",identity);
+            _root.当前关卡名 = "foreign-stage";
+            var chapterService:Object = org.flashNight.arki.scene.BookRunService;
+            var queuedBefore:Object = chapterService._chapter;
+            BookRunService.playChapter(0);
+            check(chapterService._chapter === queuedBefore, "foreign stage cannot enqueue a book chapter");
+            _root.当前关卡名 = BookDefinition.get("repair-campus").stageName;
             BookRunService.playChapter(0); BookRunService.presentChapter();
             check(_root.__comicRequest == null && _root.暂停 === false,
                 "chapter arrival cannot pause or open a comic before the loading curtain exits");
@@ -217,7 +248,7 @@ class org.flashNight.arki.scene.BookComicServiceTest {
     public static function runAllTests():Void {
         passed = 0; failed = 0;
         var keys:Array = ["gameworld","server","savePath","_saveExt","暂停","__comicContinues",
-            "__comicSends","__comicRequest","__comicAck","播放音效"];
+            "__comicSends","__comicRequest","__comicAck","播放音效","当前关卡名"];
         var saved:Object = {};
         for (var i:Number = 0; i < keys.length; i++) saved[keys[i]] = _root[keys[i]];
         _root.gameworld = undefined;

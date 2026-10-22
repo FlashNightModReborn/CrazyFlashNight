@@ -436,6 +436,7 @@ $focusedRun = @{
     )
     ExpectedTracePatterns = @(
         '(?m)^========== SaveManagerTest END: (?<savePassed>[1-9][0-9]*)/\k<savePassed> passed, 0 failed ==========\r?$'
+        '(?m)^SaveManagerQuickItem4Tests END: 13/13 passed, 0 failed\r?$'
         '(?m)^EquipmentInventoryTest Tests Passed: [1-9][0-9]*\r?$'
         '(?m)^EquipmentInventoryTest Tests Failed: 0\r?$'
         '(?m)^InventoryPanelServiceTest Tests Passed: [1-9][0-9]*\r?$'

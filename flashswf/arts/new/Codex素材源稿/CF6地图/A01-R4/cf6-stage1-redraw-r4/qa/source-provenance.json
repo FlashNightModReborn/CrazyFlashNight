@@ -1,0 +1,47 @@
+{
+  "original_swf": "crazyflasher6-cn_secure.swf",
+  "original_sha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "root_label": "a1",
+  "root_frame": 66,
+  "gameworld_sprite": 1592,
+  "background_shape": 1581,
+  "background_bitmap": 1580,
+  "background_size": [
+    800,
+    452
+  ],
+  "reference_files": {
+    "reference/background-1582.svg": "326fcb0ceaefe824ae6fba3b28e231dbe4ef880a1b2bf518f3c10efa09d06fba",
+    "reference/scene-identification.txt": "56e124961c70a46ac36b72894b7d2e013e4099101470cb4dd97168d6f0cec044",
+    "reference/original-asset-dependencies.json": "cc7be29832193ef1bea8415e94e29ee0fca6f31f570f9caa87e39e3552aeb53e",
+    "reference/ground-mark.png": "32989205b3dabd636c93ad74e1b1763a9106560ff742210794927b01c03226ee",
+    "reference/wreck-detail.png": "5f1a3be8efeddf993f4245082a800b4858b7e4a1cf7f64c2868d0b3b4ddc65aa",
+    "reference/a1-prop-1591.svg": "9cb039a5d9b71770bc0593618088f970a18f227dc85b350c4464acd21f64bc7a",
+    "reference/a1-prop-1442.svg": "6c79d6c65a8244712e8e8274e85ddb29b56350afaf404b3304d8b02458aa32a6",
+    "reference/original-1580.png": "26469d755f9f36f60c90f86e6edfac8e2370c7972b24cc1e4e2482add3dec9d4",
+    "reference/floor-detail.png": "7f6640c820e1fd5a775f8551c66ebbe0148cc022ea3439a7afc55e1e4ac7a988",
+    "reference/r1-frozen/scene-r1.png": "00efda508cd9801c5d4aa0808b70bd0dfb2e05c39dbaa8081e7f7794ece3a722",
+    "reference/r1-frozen/background-r1.png": "4cdf7a8a0c7d1f2ef2f5941ad4b8ff65ffa454e9c04f79e97cdd8b7a212b0bbb",
+    "reference/props-r1/prop-1591.svg": "e9f49e80481c9b7bf59886e2ef6f5c1942eefe42dccfa5a38748ab93feba04fa",
+    "reference/props-r1/prop-1442.svg": "85d2a8bed80713a5a22969cca577bd45a4c676cc01e5a98cff2d2f2ae02ff703",
+    "reference/props-original/README.txt": "22acf098dc94cf582c0c1c43f05b25d31e3f306480d8396c73924f210ace2b07",
+    "reference/props-original/previews/a1-prop-1591.svg": "9cb039a5d9b71770bc0593618088f970a18f227dc85b350c4464acd21f64bc7a",
+    "reference/props-original/previews/a1-prop-1442.svg": "6c79d6c65a8244712e8e8274e85ddb29b56350afaf404b3304d8b02458aa32a6",
+    "reference/props-original/shapes/1436.svg": "49b3510ce73f10015aa2a6321590d2ae546d1c6ea9dd9d1659cd49bd39048619",
+    "reference/props-original/shapes/1589.svg": "ed769a2c5791a38054b9d489f076d5d053740e6b2faad3ef942cfbee0f9ba520",
+    "reference/props-original/shapes/1438.svg": "08c01073e9696c4cee215f8fb233eccc961a6de0cb5aef4c29fee433d44a05ce",
+    "reference/props-original/shapes/1441.svg": "b3ddef05f71753fbb7a65ec520c9dfebd01022a08ac14ce3d2531e864cffede5",
+    "reference/props-original/shapes/1440.svg": "0422357835f6a470592ff8ac47cd18c42e40af04792316073760770b32ccb679",
+    "reference/props-original/shapes/1411.svg": "c6d90f1245d4b1bf2db81d5faeaadcc0e0c240dde4f9f907b83f80a3ebfc0133",
+    "reference/props-original/shapes/1439.svg": "86b87fa7e3c704e5daad85bb23a2d1fd8fe1e9dcf84cb4bcc285de365476b7d4",
+    "reference/props-original/shapes/1410.svg": "103d1727efe368217adecc1fde0fa040d90fff85120af4f73390278171a5a981",
+    "reference/props-original/shapes/1437.svg": "0a426a4a991bdf436658d460d05497c58d0370267033d42be50e0f6b39de2d7a"
+  },
+  "scope": "Actual original artwork and timeline inspected; native vectors manually rebuilt. Scripts do not run SWF or alter production.",
+  "revision": "R2",
+  "methods": {
+    "wreck": "Reference-assisted simplified vector color regions and aligned cavity masks; no embedded raster in final SVG",
+    "ground": "Authored raised strips and soil facets with reference-guided local value variation",
+    "equipment": "Native path material refinements with unchanged registrations"
+  }
+}

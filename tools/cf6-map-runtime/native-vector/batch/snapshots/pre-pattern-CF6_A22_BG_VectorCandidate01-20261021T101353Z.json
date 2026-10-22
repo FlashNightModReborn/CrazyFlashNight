@@ -1,0 +1,1548 @@
+{
+  "schema": "cf6-pattern-pre-adapter-snapshot.v1",
+  "name": "CF6_A22_BG_VectorCandidate01",
+  "takenAt": "20261021T101353Z",
+  "files": [
+    {
+      "path": "layers/build-pattern-layer.source.py",
+      "sha256": "04bc97d85525877bde5949c09048afb1ef3d0220038eeae70ad35fd53d3ffeca",
+      "bytes": 5342
+    },
+    {
+      "path": "layers/builder.source.py",
+      "sha256": "baf6fc519e27584130cbde6cb07d86a4b3600158d3096db3995a7ba80b1c3da8",
+      "bytes": 9287
+    },
+    {
+      "path": "layers/converter.source.py",
+      "sha256": "ad1cde5d1e97ac23aabdb12d5dafb8ee30974c6c8c92c51b92a5d581824533f6",
+      "bytes": 29328
+    },
+    {
+      "path": "layers/import-textures.jsfl",
+      "sha256": "a2213b6550d87596377522785ef3d0539512027f77ca1045403843071dfc2dd9",
+      "bytes": 4843
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00001-g.xml",
+      "sha256": "4fccde7647acb759d93a37915263ad4d2dd6e49f8fba83c89b8798e76d6e8f5b",
+      "bytes": 1811
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00002-pattern-opacity.xml",
+      "sha256": "0115a88b37bbedda3c916a17f5c15f241b7960310cf06c3527f6cc9a4d517931",
+      "bytes": 742
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00003-n2material_1986_1957_new-native-art.xml",
+      "sha256": "c4d48346a61668f97073602c0e14bac64b27a88d229b8a308c6a528db2ed237c",
+      "bytes": 44900
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00004-n2material_1986_1957.xml",
+      "sha256": "27820b0a727e5190b3e5bbd89e48cd8d13d30254c5ea97f0e41662931f8519f1",
+      "bytes": 643
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00005-g.xml",
+      "sha256": "8a15cbf139247102f2187a76f144a2f1c1c653dbaad09627be8ff325cb351001",
+      "bytes": 571
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00006-vector-pattern-content.xml",
+      "sha256": "971691daa6a1802f6dee111c32625fbbfeb5447fcf8d0fd251d661cf61dfd0cd",
+      "bytes": 677
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00007-vector-pattern-tile-clip.xml",
+      "sha256": "3cceaa3e82720fdcdee3d8823ed454009bf76bf09c18f1cb7aef5ef746454999",
+      "bytes": 677
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00008-vector-pattern-tile-n2floor_lattice.xml",
+      "sha256": "6c1d57f09f50590dd472e5704d8bd8739dbfbba7741924c899330e90ea347e1b",
+      "bytes": 955
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00009-vector-pattern-paint-clip.xml",
+      "sha256": "7e53e2dbddfaa7dbacdc1dc8ec4addbc7f8972d7dab300cd7e6698f09c6290a2",
+      "bytes": 709
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00010-vector-pattern-lattice.xml",
+      "sha256": "6d7921c95cb9c72f47ce29fcf64b8c4bc5c36cb84d915a0e6c2a5749bbca5786",
+      "bytes": 9999
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00011-vector-pattern-n2floor_lattice_1986.xml",
+      "sha256": "a2acd3154d597f39dc7dc47ea689e35d7b82c459b77a7b4c1ec439c4b9e4a742",
+      "bytes": 946
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00012-clip-path-content.xml",
+      "sha256": "b6d80d18bf7e88cf91ca1b02e329a28738097244d8e64cd625efbf224a78a358",
+      "bytes": 658
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00013-n2floor_union_1986.xml",
+      "sha256": "f92bdd6b71ad21d52c7a5c2f6632d96c1c46c4341c947ff877c8d047522121b5",
+      "bytes": 2348
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00014-clip-path-shape.xml",
+      "sha256": "fc63e2ba7ace2e8dcbe4f0538f389378b7d255435dd66c7bdf8a8e3023cac1dd",
+      "bytes": 667
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00015-clip-path-n2floor_union_1986.xml",
+      "sha256": "b0a7c34016564962e3d1a397e7578f0a17afb074e33e6b397943c207136ad092",
+      "bytes": 910
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00016-g.xml",
+      "sha256": "82139bd02acbd8aad5f0470af093c2426266962f4ca280afb5242807088d05a9",
+      "bytes": 547
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00017-clip-path-content.xml",
+      "sha256": "e9848475e5d00acbc448d366c75c5589a07b11d354bbdbaf406797406d7686cc",
+      "bytes": 1066
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00018-n2material_1986_1958_nativeBounds.xml",
+      "sha256": "066b6812aed562623855f046cf8b6544aca97c57a1ac27f359b8ae7594f5145e",
+      "bytes": 648
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00019-clip-path-shape.xml",
+      "sha256": "3d17c97aa087991b0fafbd03d990684aafcc973f180998354c5b56d840a56265",
+      "bytes": 682
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00020-clip-path-n2material_1986_1958_nati.xml",
+      "sha256": "ffa058d38583032840ff2344a6522db2efaf6bd5bfb62b8df6db8c73376d24da",
+      "bytes": 947
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00021-mask-content.xml",
+      "sha256": "2adcc1455b8a29a6bf22a8a620d1d2f523855834d3e0eceb6eee6af139c892cb",
+      "bytes": 643
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00022-n2material_1986_1958_coverage.xml",
+      "sha256": "b97b0cc6e91d12a107252401a48a6a61f1445ff51279bfb055808f056dbd2bb8",
+      "bytes": 45417
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00023-mask-shape.xml",
+      "sha256": "4fb60e5d7ba46a53724400d940ba64ca20dfc2e26b9606aa5964756b276645ad",
+      "bytes": 663
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00024-mask-n2material_1986_1958_coverage.xml",
+      "sha256": "8dc699ce107e7546239b4de27c90c84916895dcbca0af277dd24a5361805a05d",
+      "bytes": 974
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00025-n2material_1986_1958_new-native-art.xml",
+      "sha256": "82b8bd2c09e01e2240957e6f6903fb88fa57bdbf4fc938323232afdea9fa53bf",
+      "bytes": 655
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00026-n2material_1986_1958.xml",
+      "sha256": "f6a1ca52b34c55471714cb5568261ea17af625cda373a8fdac9719e586fd65e4",
+      "bytes": 643
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00027-use.xml",
+      "sha256": "c19f62e7b922ec37985d66df9e2dc1a9139c05f5005c37f082aee001119b56fb",
+      "bytes": 577
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00028-clip-path-content.xml",
+      "sha256": "809469ec7a97947e47b6731ecb2973343557b34113bf90bc185ed2bdb95e09c4",
+      "bytes": 678
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00029-n2c1986f14.xml",
+      "sha256": "dae33ffb441df9847c2ec2df727da959e4661423c5080ad0a434c137af4a96c0",
+      "bytes": 601
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00030-clip-path-shape.xml",
+      "sha256": "be08e2a855b43213666a58b74bfec64c15d707af8a94e3250059741052e291ff",
+      "bytes": 659
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00031-clip-path-n2c1986f14.xml",
+      "sha256": "3a8bff3e05d40fca282ab52bc9f1998f35736269530aee345cd7ab250ac84042",
+      "bytes": 886
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00032-g.xml",
+      "sha256": "c6e35bcb349458d4e6ed515a873cff6947c82ef2e4ecc0ff8624de749e295434",
+      "bytes": 539
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00033-clip-path-content.xml",
+      "sha256": "0908ceccd261c7b00272e31319746dbf97b85afe8074a2091067b4017a354a39",
+      "bytes": 31285
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00034-n2material_1986_1821_shieldpaint.xml",
+      "sha256": "d0516aebb3e2768f1867d1e3c04f362015aaf90287c0f5a5acd4fa9350fc7903",
+      "bytes": 697
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00035-clip-path-shape.xml",
+      "sha256": "df4563a296e7bd52d37891e1f1d9b451df21f612ba2106f73a9d81bb7ff1b97f",
+      "bytes": 681
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00036-clip-path-n2material_1986_1821_shie.xml",
+      "sha256": "d5721d6d6f0312ad94709976051bb9b801efabb47dde4f92feea6e7706d581ac",
+      "bytes": 945
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00037-g.xml",
+      "sha256": "8b71b85aee55f649c4917499e96dafb122e8171d57eb3e9d1e45ba40caee352a",
+      "bytes": 554
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00038-pattern-opacity.xml",
+      "sha256": "263f4c49ce2a7d2ab05c3a48b471afcc7295184795ce3aabb52a0d2be516578d",
+      "bytes": 730
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00039-mask-content.xml",
+      "sha256": "c81277389e70138050e6b4efcc32dea764a2cf7ce39ed98867656eb3da04f062",
+      "bytes": 12266
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00040-n2material_1986_1821_alpha.xml",
+      "sha256": "9aa507f9da527ead6ba032c538cc116085266a91990faccd3168713445cb642f",
+      "bytes": 867123
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00041-mask-shape.xml",
+      "sha256": "9e5a6a297576dd1ef8c1b83e73f9a25e191e895eeee2eb529e61da701eeeb858",
+      "bytes": 660
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00042-mask-n2material_1986_1821_alpha.xml",
+      "sha256": "1ba06e26b72093d6c46d18890543b727029dbc9eb63ed9b4580f496666ccff4f",
+      "bytes": 965
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00043-n2material_1986_1821_native-redraw.xml",
+      "sha256": "409f0ce74b920489f7565c8076d2b1758e8a1090eb260e505e275596913dffe5",
+      "bytes": 649
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00044-n2material_1986_1821.xml",
+      "sha256": "d8f60b57ab22ac323c2b0198fe4f9ad5dc87bac4109b83d46f5067f05a4e060c",
+      "bytes": 642
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00045-use.xml",
+      "sha256": "e977f8d7b62aef3dbdb6657fd0c1d8fa83792d8dd61f448667ada5c5cc5bd349",
+      "bytes": 577
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00046-clip-path-content.xml",
+      "sha256": "0968373a852287be75befd1a33e77e49fceaab13fa3ad585991befdb6f6e7516",
+      "bytes": 665
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00047-n2c1986f16.xml",
+      "sha256": "947c668f32eba9b252b28deb5c2ad41609a8fa22a5fb0ff6c8d1cfb176291bda",
+      "bytes": 598
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00048-clip-path-shape.xml",
+      "sha256": "498a3690c0c37c27b55670d6daf49d6e09dfd7762f140e61dc6dd20750ed3cf0",
+      "bytes": 659
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00049-clip-path-n2c1986f16.xml",
+      "sha256": "a7e13a6917269eb48ce5a22d7d592164eccdc33d18bfda7342440567c0e921a5",
+      "bytes": 886
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00050-g.xml",
+      "sha256": "b348c4c53c189b380d7eb924d123caf50317ff05708bd66c203c83bd83874d35",
+      "bytes": 539
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00051-pattern-opacity.xml",
+      "sha256": "7f7e74aaadd00c9a5527c702642a7993b8fe77bf26f6000bdb874c514cf86a58",
+      "bytes": 730
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00052-path.xml",
+      "sha256": "66c929bae3a83c3ab3b80d2a6f143bcb053cbe2a3cc1bfa276256911cf6e5bf1",
+      "bytes": 728
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00053-pattern-opacity.xml",
+      "sha256": "a2f7bd9d933f3d5252f259e1b0aa5300c68d1441bc8457177bef6d64477af028",
+      "bytes": 745
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00054-clip-path-content.xml",
+      "sha256": "73068d172d1a68e4f07b5f7e7c9603e33802c5191b4c9b82a9201ab4168300c5",
+      "bytes": 716
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00055-n2material_1986_1231_cavityClip.xml",
+      "sha256": "edc9844b773125f478ef46216b21f4d714f00b8b42002e5c2c7f063951cf78fe",
+      "bytes": 747
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00056-clip-path-shape.xml",
+      "sha256": "718bdde77c2091a8ac068021c82147cbd6246ab056ef024b212f16e7e53c1187",
+      "bytes": 680
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00057-clip-path-n2material_1986_1231_cavi.xml",
+      "sha256": "5ba1b73e6da20d302845e65c5401e07746b783326b8b25b83da789192806ec4d",
+      "bytes": 943
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00058-g.xml",
+      "sha256": "25d5b295cefe1c8431230d3790b957220b2b92ca602faf6440abe035dcb2ea05",
+      "bytes": 554
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00059-pattern-opacity.xml",
+      "sha256": "a43b3f051e39955ee988ce3b8b007be696a4ca0d12c835cb28cf6e520ad5c745",
+      "bytes": 739
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00060-clip-path-content.xml",
+      "sha256": "ab362396fc1cd321d2268234a7f7f0ed84f820c1ae90e07b906f12d4b8ab27aa",
+      "bytes": 34534
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00061-n2material_1986_1231_ribClip.xml",
+      "sha256": "fe2a0bae80150ef319844527834f3e6018ea1e1d6c65d58c5088256b81504204",
+      "bytes": 787
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00062-clip-path-shape.xml",
+      "sha256": "c18919d5b9e137850e3b95247d4133b56a12672bdb6656c21fdb4e3bbdf9a6c4",
+      "bytes": 677
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00063-clip-path-n2material_1986_1231_ribC.xml",
+      "sha256": "ecffd5974005c684a5239a13fb08bcbc240251cbf7a3d843444fe32b26518d40",
+      "bytes": 937
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00064-g.xml",
+      "sha256": "5e351f69f271fd9a2680fb9bc99196c5a34180ec8152140c992c91e412da6376",
+      "bytes": 554
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00065-clip-path-content.xml",
+      "sha256": "5e1241df30c735e000481ed71ad7604c531bdf68ca9c8782cf117482741d7276",
+      "bytes": 49629
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00066-n2material_1986_1231_nativeBounds.xml",
+      "sha256": "5c896873afe17cedbe9336709a658c5afb389e7fe6e47215b8e036a170718a48",
+      "bytes": 648
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00067-clip-path-shape.xml",
+      "sha256": "ff06ad1c24836713fe76eed3efa27116570a331e5a5fb2f9a6a6d0ed398ab78a",
+      "bytes": 682
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00068-clip-path-n2material_1986_1231_nati.xml",
+      "sha256": "ca8ec4c682f5407a49d33ebbba0339c7d9a7dc781d2fb07517ec6132ba37f591",
+      "bytes": 947
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00069-mask-content.xml",
+      "sha256": "6350c59601cefae949dad5faac70e0b82e0fadda3e4198bed52486f3ea06485c",
+      "bytes": 643
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00070-n2material_1986_1231_coverage.xml",
+      "sha256": "33f8d18623d559696e5e4008b274ee73a894227fa1cacf8cac8874f71f842b13",
+      "bytes": 636
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00071-mask-shape.xml",
+      "sha256": "6305a84829ab442b72749140ca91ec9ebc8ae387a51dd9669c35b04fb5f13d1a",
+      "bytes": 663
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00072-mask-n2material_1986_1231_coverage.xml",
+      "sha256": "8a0ac45520ce242b46eb1d8a221e939f990307d8c8a54d5c7324efde5843d5d4",
+      "bytes": 974
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00073-n2material_1986_1231_new-native-art.xml",
+      "sha256": "6b2df53bd448577ea802e144e2c8c0af281877d420090f74a7c3aabff1d70119",
+      "bytes": 655
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00074-n2material_1986_1231.xml",
+      "sha256": "2b29c9935bbd1bb9d154ee02531caf71474211b293da81c09105836941672f54",
+      "bytes": 643
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00075-use.xml",
+      "sha256": "8aa1d89b7fda6dad8e58003ca4eaeee1bf5d4bde8aacdc578bdd6207d20b917b",
+      "bytes": 577
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00076-clip-path-content.xml",
+      "sha256": "3e38b17a268e0074695a5058b375ef564a04a7e5b788b2250d8678f6d9c3ba04",
+      "bytes": 670
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00077-n2c1986f17.xml",
+      "sha256": "8babc95102e0753184c0ca1be259385a269bf04cf03dd6744dde67061a5ca67a",
+      "bytes": 599
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00078-clip-path-shape.xml",
+      "sha256": "91abe563b48bbdc25f7a3b43d5fe17e901616c2a76f4c6a71242791691957322",
+      "bytes": 659
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00079-clip-path-n2c1986f17.xml",
+      "sha256": "705c8f4b5c1de492e163fcc6e06508df59603a275cd64e42bebf9f7782da809d",
+      "bytes": 886
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00080-g.xml",
+      "sha256": "9b5375b1187eca71c12ebf066eb9aacd36fe12eedce7fd9ca69342524af93e71",
+      "bytes": 539
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00081-clip-path-content.xml",
+      "sha256": "5e52ce8fe3f26308d5aef936bd06e085a2958ec922cbabb8e66060f22b01e4f7",
+      "bytes": 691
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00082-n2c1986f48.xml",
+      "sha256": "5c4176ea70badaf25df28d7c5b42d64833149da2c85b5272c74fba97e6e3c63a",
+      "bytes": 600
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00083-clip-path-shape.xml",
+      "sha256": "b1533bde65eeca978b85a9d291168550bd035d9fb62631f0dbd319fb04888890",
+      "bytes": 659
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00084-clip-path-n2c1986f48.xml",
+      "sha256": "6b748d234a2165751acdc41d3fa61ced91cb3ca32089ef0c74618730795aa471",
+      "bytes": 886
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00085-g.xml",
+      "sha256": "0dc0e09f655e1df2e2be7892efd5a8c3a334d0881da88aed535c2e2e39d721e9",
+      "bytes": 539
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00086-clip-path-content.xml",
+      "sha256": "3941f1d49b8b655074adf91df222b7cc745438fac810557d6fd68d8da6c411f6",
+      "bytes": 690
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00087-n2c1986f50.xml",
+      "sha256": "9373c685418e8858dc7bd26d7015924c10567873de9a6c14f06ea7e69404a075",
+      "bytes": 601
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00088-clip-path-shape.xml",
+      "sha256": "bad6d8bfe1dcd186945dd92aae121d55973cd3832615ede49bcd8df208b8b61d",
+      "bytes": 659
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00089-clip-path-n2c1986f50.xml",
+      "sha256": "ecf1b0b346fb003441824a36ad73735516c78510cf24cf1053f301334267e0db",
+      "bytes": 886
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00090-g.xml",
+      "sha256": "b30dd0a806989c048b6555bb6d8c5a3a7404a891b43dfb4f4b10948103d86937",
+      "bytes": 539
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00091-g.xml",
+      "sha256": "d4f4b71db90bc1d7e3fb6c0a67704aea4be7c405b30f7c12fe16b901a5c18084",
+      "bytes": 1532
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00092-n3holder_original_shadow_footprint.xml",
+      "sha256": "83bdf09e6da1a6d63a398b962abc1d0de3bf54f0351a7da04eb18d94d7a51928",
+      "bytes": 1654
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00093-n3tube_recess.xml",
+      "sha256": "8ba9bcd4ace7e2ba4125d249bedbe11b802c1ec5f7ce439369ea361623e0986e",
+      "bytes": 882
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00094-n3fluorescent_tube.xml",
+      "sha256": "bcae32f68bf799a908d805781b0010790225712b5b7f9bb9f4c83cad69f90807",
+      "bytes": 1919
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00095-n3holder_left.xml",
+      "sha256": "ff1b82d7bae0a85c87a910b3a245f9e77b82e375e51430ff87227ff61044aec8",
+      "bytes": 2953
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00096-n3holder_right.xml",
+      "sha256": "2339d0f4f06ea643b98a4dae4d17d6fa983b937940f92ea45024e06183593d41",
+      "bytes": 2956
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00097-filter-col4.xml",
+      "sha256": "fe0e5d8ffef349022bb47dff159bf144b85e4768cb54b2ba925e3251859c1c4a",
+      "bytes": 1627
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00098-g.xml",
+      "sha256": "cf196969744188b67748710f5135c970bab3ceda6b3e8153e18048838ad14c54",
+      "bytes": 530
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00099-g.xml",
+      "sha256": "962d9fdf0947300f44d0cc32b6ebde2b07fa719adcddf7c9f4c27e133c415409",
+      "bytes": 552
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00100-filter-col6.xml",
+      "sha256": "7408140836bbe7f50a29b2a9a6dc2b330db9f45bb378d36588e2508e699138f5",
+      "bytes": 1122
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00101-g.xml",
+      "sha256": "da0778ce143af49b4daff587cf7b2b19689a8d8f12602a65b72e14f8e82252c0",
+      "bytes": 530
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00102-g.xml",
+      "sha256": "e53fe4128260199e34553431377baf251248717b06940ec18b787839f6c09888",
+      "bytes": 552
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00103-pattern-opacity.xml",
+      "sha256": "0a45900d5d0be4a4070f2960a18a0baefd6662e03333f9cff67ebbb5cbee000f",
+      "bytes": 746
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00104-mask-content.xml",
+      "sha256": "4268d9ea3bf8ab79824617018ce22745f66147a4fc38a5a2f56e1df3cbe74da8",
+      "bytes": 16902
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00105-n7material_1413_1412_coverage.xml",
+      "sha256": "59dd6b8382b68a2d1adf473e3d366164c76444855a494e8bcbb1705adb6eca96",
+      "bytes": 28034
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00106-mask-shape.xml",
+      "sha256": "c1d35c9254fcf3384f04bac87c91a36cb27c8ebad4b7143c36b9c1d2bf8bd72f",
+      "bytes": 663
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00107-mask-n7material_1413_1412_coverage.xml",
+      "sha256": "17f98ae7f965d9dab0fcfda3965453479c271545ead255909ca25c868a5b14fa",
+      "bytes": 974
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00108-n7material_1413_1412_new-native-art.xml",
+      "sha256": "718a6d35d7a7336bb76fbb3f30c7e20f4aad98bf8ab8642a8dffe62227936b22",
+      "bytes": 655
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00109-n7material_1413_1412.xml",
+      "sha256": "1698c9b067b75c74d1a7c72c03cdab4777bea8c2153b93e1e0a30d1f8b15385e",
+      "bytes": 643
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00110-use.xml",
+      "sha256": "00412982484fa6cbb2e1b4ef2194bbcc0255a8cb61e1be8c74649ae4116e45b1",
+      "bytes": 577
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00111-clip-path-content.xml",
+      "sha256": "183542e326bbd789bd7358238e07b37fb344f8f1501f3ed18971e6edd3aa734d",
+      "bytes": 666
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00112-n7c1413f2.xml",
+      "sha256": "a1ae48c427ba77f80e9cb5b4476b356dd2ff3bf5e0c02c84b54fe218b0df29f7",
+      "bytes": 588
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00113-clip-path-shape.xml",
+      "sha256": "adf2c7843ea5b5f9b3f25880467897262e201ade856fb3bc840e87d2290c2737",
+      "bytes": 658
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00114-clip-path-n7c1413f2.xml",
+      "sha256": "eb7791f81700774f6253cd6cdf21bc31f332c784bfa78b41012dd1e0a41ab563",
+      "bytes": 883
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00115-g.xml",
+      "sha256": "a201985aac2438b43f7658b111922bee26c2a843648f6235a40441b6d6f7c5f1",
+      "bytes": 538
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00116-g.xml",
+      "sha256": "bff74427e9f7f894c88bf7ec7f1abf23221218bb5f1abcbcf8f392dcb899e24d",
+      "bytes": 1124
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00117-n8material_1987_1231_cavityClip.xml",
+      "sha256": "adec709ec965549829923810da2661f1edf47b001f3225c7ed04fc477a2af087",
+      "bytes": 747
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00118-clip-path-shape.xml",
+      "sha256": "cebd6cfa44277cac94049ef411bf6662b25041d73097300c92f9fb013430ae64",
+      "bytes": 680
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00119-clip-path-n8material_1987_1231_cavi.xml",
+      "sha256": "3498de6ac72f84d2be92abdc4e4aefdfc39a910a78837c324cbc22d65bda4d9b",
+      "bytes": 943
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00120-g.xml",
+      "sha256": "b4fb6993fce65f1d2378ed5ba207e8e549591834042ee511845a38ff25f5e669",
+      "bytes": 554
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00121-n8material_1987_1231_ribClip.xml",
+      "sha256": "f8f1816a6ba57a0752f9dd63a5c8184840912965f1707f32f4246690d05a144a",
+      "bytes": 787
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00122-clip-path-shape.xml",
+      "sha256": "8d28af78b7c7c43a69e45f6ec03ab85596db85a30f2e439458390d2a0804a8c8",
+      "bytes": 677
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00123-clip-path-n8material_1987_1231_ribC.xml",
+      "sha256": "a9161f2b6aebb95c6e25550448e63d6406def47d56d807088c0499b6db611dbd",
+      "bytes": 937
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00124-g.xml",
+      "sha256": "29f1f2fd0fb1c610c206b1d33bf4de4e7a9fa6000442ae2c0c6b3c9c12f70b33",
+      "bytes": 554
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00125-clip-path-content.xml",
+      "sha256": "d5d68d5b084806a08fb7053325bd606f0ea2bd369966c9657ddefff341788521",
+      "bytes": 49629
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00126-n8material_1987_1231_nativeBounds.xml",
+      "sha256": "3be5882fa044f6eb3bd65a6280574075255ca562373f2a053db4af3dd5667f80",
+      "bytes": 648
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00127-clip-path-shape.xml",
+      "sha256": "f621d47211ed955070f18cde7dd2342e28ac251e6c301522a256549efbba5344",
+      "bytes": 682
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00128-clip-path-n8material_1987_1231_nati.xml",
+      "sha256": "6f2b579f776928d815bb7a152922ceaaaefb37da976b8ba994f29076cc4ec13c",
+      "bytes": 947
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00129-mask-content.xml",
+      "sha256": "afc578d0db229043321a9591383ce32d4d26050fa882da46370447ef76f9afe8",
+      "bytes": 643
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00130-n8material_1987_1231_coverage.xml",
+      "sha256": "f1cb288afeaa984de9ee022645a149d5130bd29c47345729150dc7ed7e1505df",
+      "bytes": 636
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00131-mask-shape.xml",
+      "sha256": "7566dd4d533312a09ab51f4194359324d90eedffbd51e7923ed4e2a36d7becdf",
+      "bytes": 663
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00132-mask-n8material_1987_1231_coverage.xml",
+      "sha256": "d317ed06607cdfa42cc927111112533ce20bbd0f88891978676ce3c45f2d8f42",
+      "bytes": 974
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00133-n8material_1987_1231_new-native-art.xml",
+      "sha256": "9de1824417c4c7795a1205f5a3fdb87768183b3fcfa6a8e92dd773bff6755a59",
+      "bytes": 655
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00134-n8material_1987_1231.xml",
+      "sha256": "01583a5c0f1698be1150605e2f14875b02fb390c6a2c39141a8ed0e2e11b6783",
+      "bytes": 643
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00135-use.xml",
+      "sha256": "5407c881c2b255dc8e53ea15309895501313a244a02017c174c540e05768fb4b",
+      "bytes": 577
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00136-clip-path-content.xml",
+      "sha256": "fe010672e6aa8a23b19f0692f3b7a012d5a557c452632f1a2c0817996425264a",
+      "bytes": 670
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00137-n8c1987f1.xml",
+      "sha256": "3f77a3a9f4291535fe20558821e22c3f2b921a44d4226a816ed2a33dfb30f1a4",
+      "bytes": 601
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00138-clip-path-shape.xml",
+      "sha256": "f6a49806cfaff79cbe22a2ac0792ab6cb2d5897fe0ccfade72a5e87309d41471",
+      "bytes": 658
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00139-clip-path-n8c1987f1.xml",
+      "sha256": "a702959f2579512b6d55d877cacb4fb460fd428c889cd3f16d7267f83ced132e",
+      "bytes": 883
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00140-g.xml",
+      "sha256": "105fe8a34ac495f15888a7d8ebf687c0347e8b56b0ff01088bccd8155ab9edec",
+      "bytes": 538
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00141-clip-path-content.xml",
+      "sha256": "b53aca7341bdd37f124ec9758f63ef0519e0dd3c3e68ab08a5b670716176ed48",
+      "bytes": 670
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00142-n8c1987f2.xml",
+      "sha256": "afd37c0d77c905e2f5d09d215a1fc13c34297fc31904789ee0352145ada5873b",
+      "bytes": 603
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00143-clip-path-shape.xml",
+      "sha256": "57d9be0769b32d4302bfcdcd60f7c430f9bb7984c767491e416d562bc8cdbe3a",
+      "bytes": 658
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00144-clip-path-n8c1987f2.xml",
+      "sha256": "4b4e15c8547561f2dd822d48b9d9f8348d69e5897b3c75fc971477eba304d3a4",
+      "bytes": 883
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00145-g.xml",
+      "sha256": "7ea4a9e47c3b2fd5e445908b3b2a482a320e314930534506869cfdb6edb8c603",
+      "bytes": 538
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00146-g.xml",
+      "sha256": "71b5c2ee6c995360c993d8397f13646995137889a5936a40542fb06b37973043",
+      "bytes": 748
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00147-path.xml",
+      "sha256": "973b65806a9e8f8c80cdb17fefd2a858482216e582ecbe5cda793dd90b398c34",
+      "bytes": 1028
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00148-path.xml",
+      "sha256": "f94629ce0dbe9b749426d6e5f40d6437c9d070e932905cdadbf86918fac72a9e",
+      "bytes": 575
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00149-path.xml",
+      "sha256": "f456556092743aaa821a5371ead2083cf890afb82817714ca2a9b9d3e3aa857e",
+      "bytes": 849
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00150-path.xml",
+      "sha256": "ddd0355054cfc24996c9682a4ff6df027d09f4311668b00311af678b91aff96b",
+      "bytes": 1104
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00151-path.xml",
+      "sha256": "2e33bc5c021bab9cecb6c1210d45b4f8a8f34683c60e3ba1aca7aaf14f59632a",
+      "bytes": 982
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00152-path.xml",
+      "sha256": "9324bb5023c8bc5b6f972acd145f9289292bc2f812603b837db2c6de187b0717",
+      "bytes": 900
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00153-path.xml",
+      "sha256": "7098e9106765c3130137c6c1d7d07aa849760245f2fd4cacad8fc5169ddac827",
+      "bytes": 1465
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00154-g.xml",
+      "sha256": "3f25e6866bb9994d91c361cc1a998e93a88683b0a739b0b73d20028c55c49002",
+      "bytes": 2385
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00155-filter-col10.xml",
+      "sha256": "ae7b8e2491e31dc588b12d35da75570a83f6d130e7d6da7d84e3c281ac3a5f4a",
+      "bytes": 763
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00156-g.xml",
+      "sha256": "6eefa400b61aedc76f70a006fb58d31472befe560a38288da7b76453102eaea3",
+      "bytes": 531
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00157-g.xml",
+      "sha256": "67a0a80929ff8e1319e0f5a41a3a52eaf83e9a620ef04a8d9838a3aa3c6ecbc4",
+      "bytes": 552
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00158-path.xml",
+      "sha256": "25b758efd5ee72355cbbd380ee611fcd032894de67216ad43370f0df7b11e7e6",
+      "bytes": 765
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00159-path.xml",
+      "sha256": "859e7b37375753b0cbaffb1d408e77e1a4f2fb3b52059f59c8c45a38075c931e",
+      "bytes": 576
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00160-path.xml",
+      "sha256": "b1222a03832bfd563984be0630767afe37f343a83f4201c60462eb4a2ad1d974",
+      "bytes": 634
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00161-path.xml",
+      "sha256": "60de436beff65e8a9568241d8271701590b759ef7c9b74ca9f9639fa09fe3cdc",
+      "bytes": 861
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00162-path.xml",
+      "sha256": "04bd9d1b58a480af24e3d2eca71638a5dc7f0bb5ff9493520b76cbbca8b1995b",
+      "bytes": 946
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00163-path.xml",
+      "sha256": "cea53f73590685264372d6f92b6a0ed00133021bc2704f07ce1dffde16619c5c",
+      "bytes": 1027
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00164-path.xml",
+      "sha256": "9f30605859c2252d04b66081aee63882297e95f35f28a602d6f0c287904ac7fe",
+      "bytes": 1044
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00165-g.xml",
+      "sha256": "be0013632e5a30954a63fe07510b2cdc9571152f573aa293adfb78a10d4328cb",
+      "bytes": 2132
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00166-filter-col12.xml",
+      "sha256": "d0291431ecb0bc33aa1eeb96d481d43b9660bf94fe48735f1d75e2b4457608e8",
+      "bytes": 761
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00167-g.xml",
+      "sha256": "45d59927bebc891983a8c3ee19fdc19380e7ab363381778b3543c38769eab09a",
+      "bytes": 531
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00168-g.xml",
+      "sha256": "28af3d25e335f92e0c482337b2e5492e4fd013d5c103ccb80be1f37b06503003",
+      "bytes": 552
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00169-pattern-opacity.xml",
+      "sha256": "731f77f83aa3f7a83bd389fa6942622de3cdf670a2b690f24fb8c2c1909a1f82",
+      "bytes": 726
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00170-clip-path-content.xml",
+      "sha256": "04e82e84b80dd7a9f0589e21549edc90da885d5e51f7df48b6d0473f5892f1c7",
+      "bytes": 23438
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00171-n13material_1979_1962_nativeBounds.xml",
+      "sha256": "deeebbd18c9084ac0361fb92c5bc70de1812f78a7b273372ea30b0d3865881cb",
+      "bytes": 647
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00172-clip-path-shape.xml",
+      "sha256": "aba105fd428ec29c4549b5dcd78f6604cfa35fdc6325438ece349d09371df74e",
+      "bytes": 683
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00173-clip-path-n13material_1979_1962_nat.xml",
+      "sha256": "b94e7d4da8ff2e35f09e0190125fd35a71e95a432ccf71706ec84089115a5c6e",
+      "bytes": 949
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00174-mask-content.xml",
+      "sha256": "e46de78ece2b7cc89d976f4d244d676ecada51a3363cd3bdb2739c89bb86bb4b",
+      "bytes": 643
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00175-n13material_1979_1962_coverage.xml",
+      "sha256": "a56ff7415e6582c174cc541552b673de79a0cb63d3969a7fd09b3135b74d5a6a",
+      "bytes": 21571
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00176-mask-shape.xml",
+      "sha256": "45d3d1ca72df7cd0a986cf5a24ce490735a8c40777d8944da6bf2040d3ff9f12",
+      "bytes": 664
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00177-mask-n13material_1979_1962_coverage.xml",
+      "sha256": "658530679ce1f1af8187a0cc1702c69d7e5a01a4ac70d23b8e66931c3580bf15",
+      "bytes": 977
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00178-n13material_1979_1962_new-native-ar.xml",
+      "sha256": "1675aa3b52aef16f8c44a2b04eebb4a5fdf364de64fa484c370d77d55767c67c",
+      "bytes": 658
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00179-n13material_1979_1962.xml",
+      "sha256": "975494a7e86203d8b5a8b3481c36ead169f81c80c934c4e8797282551f917e9d",
+      "bytes": 646
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00180-use.xml",
+      "sha256": "023b8457d5193523cd2662cce20f52159b52d2d05bef9c243a88e8767d41e091",
+      "bytes": 578
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00181-clip-path-content.xml",
+      "sha256": "7e11e6aa86bb10cdd3673772cacb1d17c5ad92c4fc027d4063ea6fc08d4b3028",
+      "bytes": 676
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00182-n13c1979f2.xml",
+      "sha256": "da3f3af96a608e91ed7c06e80e9bcf144de31518c64572a0aa5be37a2d4c40e6",
+      "bytes": 612
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00183-clip-path-shape.xml",
+      "sha256": "3ec125a96b7e3b586710ec1bb40bb8ab75fe9eb1df2f98c9e3c108e16e162bf0",
+      "bytes": 659
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00184-clip-path-n13c1979f2.xml",
+      "sha256": "5382c71b6de2d7fddde580bef3337a4cf62cec822874aa9fa47fdf7aeb80718e",
+      "bytes": 886
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00185-g.xml",
+      "sha256": "f0691d9e3f08fabb66e4a2cab3f17ed2743ed583877819e32118dc6350840c04",
+      "bytes": 539
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00186-g.xml",
+      "sha256": "31f174f69c5b02801607a13ce482890743f8c76999470c62f213f5785b324efc",
+      "bytes": 552
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00187-n14material_1413_1412_coverage.xml",
+      "sha256": "8ce303d52ee06beba73a46d49962f85de8217c1f667966f063d5b2f4d7c37669",
+      "bytes": 28037
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00188-mask-shape.xml",
+      "sha256": "888589c0566438afd27345c31e5a968435e6c848a67deec103738e46036382bd",
+      "bytes": 664
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00189-mask-n14material_1413_1412_coverage.xml",
+      "sha256": "dbbdb286a8fafcc650833188c7d94a147e4483fc68892ff3dc10d8cc90ee236b",
+      "bytes": 977
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00190-n14material_1413_1412_new-native-ar.xml",
+      "sha256": "6814e224a6b20b58e7c0943ffa6c6aed42e90ba7709874631a2764e536ce99cd",
+      "bytes": 658
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00191-n14material_1413_1412.xml",
+      "sha256": "899ccb2ed478f0d9535d64849663a15ad90e27968f3d4eb4eab0a07a2b89530d",
+      "bytes": 646
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00192-use.xml",
+      "sha256": "61b8fefca55e1656cd03f18fa87f52570def9fe53197c47f765bf55c79a31ec0",
+      "bytes": 578
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00193-clip-path-content.xml",
+      "sha256": "1e445f5a84f29fcbb969d61a1b72d67eb56a815eecf61225e638d5fb5626685b",
+      "bytes": 666
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00194-n14c1413f2.xml",
+      "sha256": "8a7e257e9362310652572d5a3744d6613206f2a1e561f6ed239913043630d696",
+      "bytes": 591
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00195-clip-path-shape.xml",
+      "sha256": "5a76a0987fc7e6a717de903a44840248add28159df0c1f3774b33385923b1d23",
+      "bytes": 659
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00196-clip-path-n14c1413f2.xml",
+      "sha256": "598cc648174aa10e1caaa7a7a5eb6259173e8300d0f0b5101c4dafdd22a9a936",
+      "bytes": 886
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00197-g.xml",
+      "sha256": "ce9d486837b5705c700ae4ce1e60bcad4cb84c99305a7706f09974d1b1eeeb46",
+      "bytes": 539
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00198-g.xml",
+      "sha256": "5d6d62c74dd3b99e9be8f046b0e2da1d6a535874cdd2ff933748e0e22c03e061",
+      "bytes": 1124
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00199-n15holder_original_shadow_footprint.xml",
+      "sha256": "43307ea6513dbab2ca82b54cb6b17c037e7dc70f07e1996df5d0c4a68b917524",
+      "bytes": 1657
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00200-n15tube_recess.xml",
+      "sha256": "a56e1188a1f305c68a381c026b4229c521fa6ef855b5f67e485c9c21e1ecee28",
+      "bytes": 885
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00201-n15fluorescent_tube.xml",
+      "sha256": "78e8525cfd2c0726bd21f6e8fe13e858a0cf5377163e4480ddf9652f9fb23ca7",
+      "bytes": 1922
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00202-n15holder_left.xml",
+      "sha256": "6bd58cbab0682a46321a20b64032d2bc129ebf4eed46fe89c28de2cac289816c",
+      "bytes": 2956
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00203-n15holder_right.xml",
+      "sha256": "950f4330e1caad9d321f9e8de73ee7f122a43d5eab4ccdb40d2c38fc81ef89ef",
+      "bytes": 2959
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00204-filter-col16.xml",
+      "sha256": "6dc19611db1082556d947bd756d6805557ef896c0c0be4bca8d6f161902cfa2a",
+      "bytes": 1635
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00205-g.xml",
+      "sha256": "c98f0a03e386917a27f83b405fa1156e688710bdebc685aa3bcbb6887420a76c",
+      "bytes": 531
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00206-g.xml",
+      "sha256": "4455050ce7df9de4f5c111df8333637496b955a5b54d9f6e26a57b423a517638",
+      "bytes": 552
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00207-filter-col18.xml",
+      "sha256": "be2371f7e42f566d1abe5d6e9734f30af85aea4c5d1f2d72dc80a0b428607da6",
+      "bytes": 1125
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00208-g.xml",
+      "sha256": "7e6fc05ba6175cc6991ca3e202139b66344500981426ce6c5c97e3ab387679e6",
+      "bytes": 531
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00209-g.xml",
+      "sha256": "027ccaf6037309df71524e91bcb235a05d809ba0818b1c0f55637e0e2e4bf397",
+      "bytes": 552
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00210-n19material_1413_1412_coverage.xml",
+      "sha256": "bd16f4c4e7c2263337056a66351e0f0ae0b0a4f7356ee4c76cfe442110015e04",
+      "bytes": 28037
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00211-mask-shape.xml",
+      "sha256": "bfbc0096db4a3ea9413ede02f4dd1354aeeb9e267bf08c9e58bdbab17906ccd7",
+      "bytes": 664
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00212-mask-n19material_1413_1412_coverage.xml",
+      "sha256": "daa26a84805c7100e4d438f670ad09b53deacc8116322894ebdde392c17df4c5",
+      "bytes": 977
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00213-n19material_1413_1412_new-native-ar.xml",
+      "sha256": "40ef268ef264f838885cd3fda1eee5f697f3e31f64297c701f8d93ee9249699f",
+      "bytes": 658
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00214-n19material_1413_1412.xml",
+      "sha256": "59c306a39df8d563b95406b6bfae2c74d523a561d2f415e7885ac03d24d0bbe9",
+      "bytes": 646
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00215-use.xml",
+      "sha256": "0781678c895e1734c066131aeb46abd37cb9b0a0b81dabbd6c9b5e8953cdcfe7",
+      "bytes": 578
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00216-clip-path-content.xml",
+      "sha256": "767a1798d6294f03a3abc974942819d7e0d6e215593a81706c010a4db3ee4cee",
+      "bytes": 666
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00217-n19c1413f2.xml",
+      "sha256": "3d7a1f1aa9e0a8ec2e776d2d02ef4cba6d3ed3762e7760c58cf343a30818aace",
+      "bytes": 591
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00218-clip-path-shape.xml",
+      "sha256": "7c7e40d662e05585d630c8eb741845b51a39b2451abc6acb62b678e2dad355b9",
+      "bytes": 659
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00219-clip-path-n19c1413f2.xml",
+      "sha256": "3b7b12f89f2fd4b1ce952482e9a95d6b3abaa4e4af97c2ece53ed960c943efe9",
+      "bytes": 886
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00220-g.xml",
+      "sha256": "1784bd34d47afa98cb05509117c6ce863bab832081eabb4bd357e44fa7c6b63d",
+      "bytes": 539
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00221-g.xml",
+      "sha256": "144e99e11cd330228f8d8bdd55080ff26ca421061ee75d9e6aa28a262afb2912",
+      "bytes": 1124
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00222-n20material_1892_1821_shieldpaint.xml",
+      "sha256": "cba4089685ae8f041a2a46f067c2dcddedcdd6cc4f361e2de9d45f6e6bf03246",
+      "bytes": 700
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00223-clip-path-shape.xml",
+      "sha256": "b17128f684ac0af4879a328c99bf42ac6a3275253dc72f06c11c43e3306d6abd",
+      "bytes": 682
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00224-clip-path-n20material_1892_1821_shi.xml",
+      "sha256": "6f44f413ae456a83492e7db849067751b8769b385091e9f160859198ec3bcfa9",
+      "bytes": 947
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00225-g.xml",
+      "sha256": "8a341cc73fb67055d1813e6f095a852637af46576b398aa3228c737f085c96a4",
+      "bytes": 554
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00226-mask-content.xml",
+      "sha256": "0e9253c112bde0b93d0cc259233ee425cc1d585a6cbff97b8ef25c8c0dd5ac26",
+      "bytes": 12266
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00227-n20material_1892_1821_alpha.xml",
+      "sha256": "d3f9189a945cb01050b377051c8e42b25a12abc4ad121aa7f805e317bbe32513",
+      "bytes": 867126
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00228-mask-shape.xml",
+      "sha256": "efc35d25779dbe1acb0963d8f9f1dcd9fe5653c0dcecfb84b4ed45e4e00034a1",
+      "bytes": 661
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00229-mask-n20material_1892_1821_alpha.xml",
+      "sha256": "1a038c3aa5d32209ffc999899da5cb133311e8e2ba9fb93cbfbe44f890802d6a",
+      "bytes": 968
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00230-n20material_1892_1821_native-redraw.xml",
+      "sha256": "7fb6f0a24583e505b7ef0756e9b950ac65e3fb033cec7fdfd8273fc5ab8ce826",
+      "bytes": 653
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00231-n20material_1892_1821.xml",
+      "sha256": "9f11c42c597c0222cc4417f9efef7362b8de122cf6d3483b927635a85239f342",
+      "bytes": 646
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00232-use.xml",
+      "sha256": "05e482bb9e9f6dc3ee13671fdf36099943b089a6ce1e67ad32f10b8bf4fa5b61",
+      "bytes": 578
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00233-clip-path-content.xml",
+      "sha256": "22e30846e29a850c26d70c4799b7ff156c6cd47186ac74d0498af11234639644",
+      "bytes": 667
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00234-n20c1892f2.xml",
+      "sha256": "870cc2b33fe4dc9575f52b8f7ef69ea02529c737a266f0923eb4c005e9c44181",
+      "bytes": 605
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00235-clip-path-shape.xml",
+      "sha256": "8fdf3fd58c441c1b27d896273f83e3e0d90aba20dc34a5b24f912ebe1ddbc7da",
+      "bytes": 659
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00236-clip-path-n20c1892f2.xml",
+      "sha256": "8328a44e534480468acae393b6efed2ce2a39e0e5268ae5022fa78bf3ce55dc7",
+      "bytes": 886
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00237-g.xml",
+      "sha256": "575b432f08d4b29c8c5c7439e8a5fcdb2822388f6ab63b05a11994f752f576bd",
+      "bytes": 539
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00238-g.xml",
+      "sha256": "b17bea1e0b1134cf8baa6f64a00470a340841f0fe4a6fc932541db94a960f731",
+      "bytes": 552
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00239-n21material_1413_1412_coverage.xml",
+      "sha256": "17af030a96864b8d0b1575fcc9eb49dea3435860cc4137c00a0cd6cef35a12f4",
+      "bytes": 28037
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00240-mask-shape.xml",
+      "sha256": "6c7c1c68b18abdef2619ffbcf47c29b057ab0c041832787cba60a73d33c20606",
+      "bytes": 664
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00241-mask-n21material_1413_1412_coverage.xml",
+      "sha256": "5d51a17128b8412acd8b8ec3ae1b4ddde77e1141cfa8f66cdd5c14159a9d2224",
+      "bytes": 977
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00242-n21material_1413_1412_new-native-ar.xml",
+      "sha256": "1d9ed5faca4ece79c209784f04905dee8e3bd03cc079a7e73e46932ed82b714b",
+      "bytes": 658
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00243-n21material_1413_1412.xml",
+      "sha256": "f1dc467bc9ed9acc72a4084719a4eab611642341a4e489fef58c982f9254eeca",
+      "bytes": 646
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00244-use.xml",
+      "sha256": "9e188540eedaef676da72f8521359934107513bf9f0852e19afccff5639348c0",
+      "bytes": 578
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00245-clip-path-content.xml",
+      "sha256": "6c493612a87937f42304398f481a396fe69cad3caec611d1cf936fca3df96c06",
+      "bytes": 666
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00246-n21c1413f2.xml",
+      "sha256": "4c285c12fa01da1f337980ab8d2884424131078c1b5aa200d1ced0f9bd95921d",
+      "bytes": 591
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00247-clip-path-shape.xml",
+      "sha256": "ae961ef1de919867a274e017f06fcb4cebea52f9ed79f44d08e958c3a738213c",
+      "bytes": 659
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00248-clip-path-n21c1413f2.xml",
+      "sha256": "3c277cc37d3b0b5bd6627f865c10e8d322982fb0ba82cfe1c3fc9e702cbac9f4",
+      "bytes": 886
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00249-g.xml",
+      "sha256": "b2e344d5e4cdfd9d74e814c142a6371a82253589c66dd033ed54d86fa6ee1a2b",
+      "bytes": 539
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00250-g.xml",
+      "sha256": "274d4b1c57f41790d92d9166ff44dc61c7b8130612d838a0807d969d68f202d4",
+      "bytes": 1124
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00251-n22material_1413_1412_coverage.xml",
+      "sha256": "520cb45e60bbdf87555d52ec69ac823c7dd240464362db205cdf20c9f6ba8426",
+      "bytes": 28037
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00252-mask-shape.xml",
+      "sha256": "952b6143989c0aef8a99f894f881fc108dd8eb34a089a6099612c82a2b5f97b7",
+      "bytes": 664
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00253-mask-n22material_1413_1412_coverage.xml",
+      "sha256": "f90a501e2ea889b6923167aa1969481b2fa8cd58e69f049be3f067dd4664ef3e",
+      "bytes": 977
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00254-n22material_1413_1412_new-native-ar.xml",
+      "sha256": "6096fb7a0a470d3960b116bc5e84fee114f7806fe2a5bf57a532fad840312dcb",
+      "bytes": 658
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00255-n22material_1413_1412.xml",
+      "sha256": "94df5afa70c47c58e9f6c5880c779f9828e3ee1f2c867f0b9cb19a244630a5ac",
+      "bytes": 646
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00256-use.xml",
+      "sha256": "fbdad0b199bea724b4ffd59c4d3b1ed8be375ec2d499c6da9bf3c90909fcec6f",
+      "bytes": 578
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00257-clip-path-content.xml",
+      "sha256": "eef0f9908f6f9caf3f426e1861d740950849643a8fb5411ccccecb54ea784a4b",
+      "bytes": 666
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00258-n22c1413f2.xml",
+      "sha256": "3d5231c57a7dc4e60540367745134833c54e7f1db8407ddd3e4afc11fe51bdd0",
+      "bytes": 591
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00259-clip-path-shape.xml",
+      "sha256": "674ef054416eca119d506c4b8789243cbacda34b639381a285a1a894d78bd6e1",
+      "bytes": 659
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00260-clip-path-n22c1413f2.xml",
+      "sha256": "57ed25c053c676ebda517a57446a15bb8e6de2e3f475f7ef5d42a8fc9f21743a",
+      "bytes": 886
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00261-g.xml",
+      "sha256": "62b84f5b35fe4bd0811d2069f20795946b7ac927f14afcf94dc8222912164c0e",
+      "bytes": 539
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00262-g.xml",
+      "sha256": "4b875628171c3899be5f957837f79ca9364b9791389b31caae19b2954976c783",
+      "bytes": 1124
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00263-n23material_1413_1412_coverage.xml",
+      "sha256": "0e7de910eaf45689505a7af80b3c97761613d9e2505df667f3ddd58a14099133",
+      "bytes": 28037
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00264-mask-shape.xml",
+      "sha256": "d82ae74f5301bdb87c410cd1e53a17dc49719b218c33914915a4a7eafc49d16d",
+      "bytes": 664
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00265-mask-n23material_1413_1412_coverage.xml",
+      "sha256": "6285f4412482061f29000f5259fd9f641f02837e9c0a4dbe969e1c8d634e4d7d",
+      "bytes": 977
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00266-n23material_1413_1412_new-native-ar.xml",
+      "sha256": "a7aa56de27159e51f4ae36a4ff80768500142d54e3e062fb29f5489a87537bb0",
+      "bytes": 658
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00267-n23material_1413_1412.xml",
+      "sha256": "f0af9cec1078e6daddc671606fda3ba42c2bcde7bf4d45dbb567aff706480511",
+      "bytes": 646
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00268-use.xml",
+      "sha256": "9958625eecb32c0ec49302f0d02ef1ef3e47cd1519eff4ffe454414f00cea661",
+      "bytes": 578
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00269-clip-path-content.xml",
+      "sha256": "5ce7c4e22b6e724ff883a74b171cb069849f04bbafcab25952888651e35804b3",
+      "bytes": 666
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00270-n23c1413f2.xml",
+      "sha256": "0cef6ad9b0c6c2341dfd70bb9900f097ffe3bb6dd75e28d296c4626e102ae86c",
+      "bytes": 591
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00271-clip-path-shape.xml",
+      "sha256": "b2ead463fc717cdf87ad3adc60324d0638200471a2494cca7431ed12b02913a5",
+      "bytes": 659
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00272-clip-path-n23c1413f2.xml",
+      "sha256": "e34a39171d73708d2fdbbcc7aab592d689733f090118d64a7002d11a4e66780f",
+      "bytes": 886
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00273-g.xml",
+      "sha256": "8bf90b0cc5b7f0e00fd33cbf7e82bc3e685ef4e78e7d24dd681ba82cec7bf9e4",
+      "bytes": 539
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00274-g.xml",
+      "sha256": "47ae50de8ce70db8e1db4fa047fde54e3873dfff055a50f1d83eee03823e16cb",
+      "bytes": 1124
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00275-g.xml",
+      "sha256": "712d5b63066a1514661e07fd4d1e372d02638811f2b8856672b36dd8408d1a9c",
+      "bytes": 587
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00276-g.xml",
+      "sha256": "a28ea7e5b6f4a086a3a02a9d7fb72bea072d3bec079e8d3be3160a4ed2129f53",
+      "bytes": 3873
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00277-svg.xml",
+      "sha256": "04404ad38031a959a4209ea9e0e37525aeb076a16b1ea6e0957b276574407786",
+      "bytes": 566
+    },
+    {
+      "path": "layers/LIBRARY/CF6Vector/00278-registered-native-layer.xml",
+      "sha256": "4da8c1a62ea69ba0bf793836f0d5922d1ab777b0482c5288ed8a57da8eb352e7",
+      "bytes": 620
+    },
+    {
+      "path": "layers/pattern_adapter.source.py",
+      "sha256": "9e0d00cc6e4606c1e2369e2aab982633b76b901ccef19cf2cb625db070a2bb43",
+      "bytes": 7822
+    },
+    {
+      "path": "layers/report.json",
+      "sha256": "d97c14bdeab112560fc25d60a05e2211c3b0d719352ced3de40c32092ab9780a",
+      "bytes": 18814
+    },
+    {
+      "path": "layers/texture-manifest.json",
+      "sha256": "6aeceadf2b83e7e848dd4eb308eb66e888a0a6c75a3b08b1495c7de4c9acb80b",
+      "bytes": 4631
+    },
+    {
+      "path": "layers/timeline.xml",
+      "sha256": "83c8881516c2c21284241379cdde11eb0ceb7c710ce1937bbca479fe9e8c000e",
+      "bytes": 1131
+    },
+    {
+      "path": "candidate/bin/M 1 1792577620.dat",
+      "sha256": "9757882dd6fbe2f6d60a25797a68c030df05bbe4cfa7928ca5ca37ffaee679af",
+      "bytes": 1122057
+    },
+    {
+      "path": "candidate/bin/M 2 1792577624.dat",
+      "sha256": "1d7773250d15a89ed313cf7cdc236c5b6bcb829e0dd04afdcd9b65a127b7fd1f",
+      "bytes": 186192
+    },
+    {
+      "path": "candidate/bin/M 3 1792577624.dat",
+      "sha256": "37e487c920bb85a5e66c14e658a0409d8200f3e093f0302e1f890286cc0c42bb",
+      "bytes": 48327
+    },
+    {
+      "path": "candidate/bin/M 4 1792577624.dat",
+      "sha256": "699e38874ecaa647a53c3a1351a95bf822f70ae30a0452fdbad1696b0430292a",
+      "bytes": 299229
+    },
+    {
+      "path": "candidate/bin/M 5 1792577625.dat",
+      "sha256": "9ad35df7063be4c076c408856ee068ab0ca044e658e2d537445d87d63b3abec7",
+      "bytes": 450627
+    },
+    {
+      "path": "candidate/bin/M 6 1792577627.dat",
+      "sha256": "69cfcfab418df52cd4348b5a7d670d3822b2600ee7ee42e70ba5944e328004ea",
+      "bytes": 442312
+    },
+    {
+      "path": "candidate/bin/M 7 1792577627.dat",
+      "sha256": "960e027869108499e62da424c79955943cc57a3ceb72d5b99297383345779c03",
+      "bytes": 19509
+    },
+    {
+      "path": "candidate/bin/M 8 1792577627.dat",
+      "sha256": "476337e17dddd511378dedf20895f63dcadbc10802a40079d131c648142958ff",
+      "bytes": 26862
+    },
+    {
+      "path": "candidate/bin/SymDepend.cache",
+      "sha256": "220d74862b1ca989fbf9337fcc06d757b06a00c85524d1ff96f1d3a9f5626985",
+      "bytes": 28
+    },
+    {
+      "path": "candidate/CF6_A22_BG_VectorCandidate01.xfl",
+      "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38",
+      "bytes": 9
+    },
+    {
+      "path": "candidate/DOMDocument.xml",
+      "sha256": "351a5c57c05240f7becea238bb4193f233c9731c46d4cf6cd00555449a5c2340",
+      "bytes": 9200
+    },
+    {
+      "path": "candidate/LIBRARY/intrinsic-25c98ecabc10ce7141c2780d.png",
+      "sha256": "25c98ecabc10ce7141c2780d70e7c80f5a52c8f2ffee9e323b1b769036c85449",
+      "bytes": 37757
+    },
+    {
+      "path": "candidate/LIBRARY/intrinsic-3836de63b32bea5064149496.png",
+      "sha256": "3836de63b32bea50641494963bf74228b0efccfb3510c25fa1f34f028abf4349",
+      "bytes": 387395
+    },
+    {
+      "path": "candidate/LIBRARY/intrinsic-7be9af367109c0913fbfa112.png",
+      "sha256": "7be9af367109c0913fbfa11203e0f8ba879c3e1fd6a489186f00ea4e7bf63238",
+      "bytes": 140585
+    },
+    {
+      "path": "candidate/LIBRARY/intrinsic-84a06159f67e42f946b9c8a9.png",
+      "sha256": "84a06159f67e42f946b9c8a9240c3f85ac47dd8edb18a07dfc21cee85d3cd471",
+      "bytes": 20434
+    },
+    {
+      "path": "candidate/LIBRARY/intrinsic-96c44bc08121cad6ebb3861f.png",
+      "sha256": "96c44bc08121cad6ebb3861f854d9226f64da8b7720e89e10395f6af1ca4ea0c",
+      "bytes": 724023
+    },
+    {
+      "path": "candidate/LIBRARY/intrinsic-bd330c92cb5c4b31de7cbc97.png",
+      "sha256": "bd330c92cb5c4b31de7cbc97b3665f52f5db0aaf4acce40797466b51b714f568",
+      "bytes": 316065
+    },
+    {
+      "path": "candidate/LIBRARY/intrinsic-c015876b695754db68bb11b9.png",
+      "sha256": "c015876b695754db68bb11b90b814dc0e0bd9e589dc9ed62151ec60d9ec240b3",
+      "bytes": 131197
+    },
+    {
+      "path": "candidate/LIBRARY/intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sha256": "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6",
+      "bytes": 16955
+    },
+    {
+      "path": "candidate/META-INF/metadata.xml",
+      "sha256": "65429e29a9eac412238c4dad1e07df15344efd2c8d1789208e1e3fcedc774907",
+      "bytes": 3875
+    },
+    {
+      "path": "candidate/MobileSettings.xml",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "candidate/PublishSettings.xml",
+      "sha256": "f98e26414b6edf183bcf7060ab631bc6c6536da73fe0858b1a5f7b5a2191a1fa",
+      "bytes": 8058
+    }
+  ],
+  "policy": "SHA snapshot only; pre-existing partial products are never reused by existence"
+}

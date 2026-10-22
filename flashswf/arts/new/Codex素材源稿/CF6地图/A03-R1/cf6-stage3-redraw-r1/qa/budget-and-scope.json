@@ -1,0 +1,59 @@
+{
+  "sixBaseMaterials": [
+    {
+      "name": "bitmap-1701.svg",
+      "bytes": 687371,
+      "paths": 228,
+      "imageNodes": 1
+    },
+    {
+      "name": "bitmap-1702.svg",
+      "bytes": 852091,
+      "paths": 43,
+      "imageNodes": 1
+    },
+    {
+      "name": "bitmap-1704.svg",
+      "bytes": 9241,
+      "paths": 35,
+      "imageNodes": 0
+    },
+    {
+      "name": "bitmap-1708.svg",
+      "bytes": 168134,
+      "paths": 1239,
+      "imageNodes": 0
+    },
+    {
+      "name": "bitmap-1717.svg",
+      "bytes": 60313,
+      "paths": 374,
+      "imageNodes": 0
+    },
+    {
+      "name": "bitmap-1724.svg",
+      "bytes": 30511,
+      "paths": 118,
+      "imageNodes": 0
+    }
+  ],
+  "priorStagesUntouched": {
+    "cf6-stage1-redraw-r4": true,
+    "cf6-stage2-redraw-r3": true
+  },
+  "doorStateSamples": {
+    "1714": [
+      1,
+      4,
+      9
+    ],
+    "1720": [
+      1,
+      25,
+      90,
+      150,
+      174
+    ]
+  },
+  "runtime": "not tested"
+}

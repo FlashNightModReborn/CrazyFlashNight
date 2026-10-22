@@ -1,0 +1,89 @@
+{
+  "original": {
+    "bottom_mean_rgb": [
+      80.935,
+      65.384,
+      42.917
+    ],
+    "bottom_luminance_std": 16.092,
+    "highpass_sigma1_rms": 12.427,
+    "midband_sigma1_to5_rms": 5.311,
+    "horizontal_difference_rms": 14.041,
+    "vertical_difference_rms": 22.774,
+    "directional_ratio_dy_dx": 1.622
+  },
+  "R1": {
+    "bottom_mean_rgb": [
+      82.318,
+      70.053,
+      44.974
+    ],
+    "bottom_luminance_std": 10.627,
+    "highpass_sigma1_rms": 7.052,
+    "midband_sigma1_to5_rms": 1.99,
+    "horizontal_difference_rms": 10.853,
+    "vertical_difference_rms": 11.408,
+    "directional_ratio_dy_dx": 1.051
+  },
+  "R2": {
+    "bottom_mean_rgb": [
+      81.591,
+      65.953,
+      43.992
+    ],
+    "bottom_luminance_std": 16.161,
+    "highpass_sigma1_rms": 12.392,
+    "midband_sigma1_to5_rms": 5.211,
+    "horizontal_difference_rms": 14.876,
+    "vertical_difference_rms": 22.715,
+    "directional_ratio_dy_dx": 1.527
+  },
+  "wrapping": {
+    "edge_column_mean_delta": -0.322,
+    "edge_absolute_delta": 9.694,
+    "ordinary_neighbor_absolute_delta": 9.203,
+    "overlap_seams_column_mean_delta": [
+      -0.408,
+      0.274,
+      0.526
+    ],
+    "original_fill_offsets": [
+      -677.85,
+      -358.9,
+      -41.9,
+      276.1
+    ]
+  },
+  "recipe": {
+    "version": "2.1.0",
+    "world_size": [
+      324,
+      300
+    ],
+    "embedded_size": [
+      648,
+      600
+    ],
+    "generated_sizes": [
+      [
+        324,
+        300
+      ],
+      [
+        648,
+        600
+      ],
+      [
+        1296,
+        1200
+      ]
+    ],
+    "deterministic_repeat_equal": true,
+    "no_reference_pixels_read_by_generator": true,
+    "dependencies": {
+      "numpy": "2.3.5",
+      "scipy": "1.17.0",
+      "Pillow": "12.3.0"
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "asset": 1742,
+  "candidate": "R3 final level-of-detail pass",
+  "reviewed_at_utc": "2026-10-15T15:13:24Z",
+  "independent_visual_review": {
+    "native_1x_reviewed": true,
+    "registered_detail_crops_reviewed": true,
+    "result": "A more complete candidate than frozen R2; suitable for user comparison, not a claim of exact historical restoration.",
+    "improvements": [
+      "Four corner medallions independently readable again",
+      "Center floral density and value separation improved over R2",
+      "Broad reserve branches and lower-contrast fine botanical network form distinct levels",
+      "No observed second-perspective distortion or registration drift"
+    ],
+    "residuals": [
+      "Gold scrollwork and outlines remain sharper and more regular than original",
+      "Textile relief remains subtler than original in the red ground and ivory center",
+      "The floral composition is newly reconstructed and is not the same historical pattern"
+    ]
+  },
+  "verification": {
+    "native_size": [
+      901,
+      145
+    ],
+    "alpha_max_absolute_error": 0,
+    "alpha_nonzero_pixels": 96142,
+    "svg_xml_parse": true,
+    "python_compile": true,
+    "deterministic_regeneration": true,
+    "svg_sha256": "f2e5f81da00209d2bea8e9512c52072577645f975abe312c1e49b2c80928324e",
+    "source_decor_py_identical_to_frozen_R2": true,
+    "painting_1743_identical_to_frozen_R2": true,
+    "runtime_gameplay_or_performance_tested": false
+  },
+  "review_images": [
+    "previews/carpet-r3-native-original-r2-r3.png",
+    "previews/carpet-r3-original-r2-r3-3x.png",
+    "previews/carpet-r3-same-scale-details.png"
+  ],
+  "source": "source/carpet_r3.py",
+  "source_credit_and_crop_record": "qa/carpet-r3-construction.json"
+}

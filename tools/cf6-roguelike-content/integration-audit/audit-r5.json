@@ -1,0 +1,543 @@
+{
+ "schema": "cf6-sting-content-audit-r5.v1",
+ "auditedAt": "2026-10-21",
+ "target": "data/stages/books/cf6-sting.json",
+ "inputSha256Start": {
+  "data/stages/books/cf6-sting.json": "b15cbee02b916bc348ccd4718ec56357086b9e1907840ff6db54717be1489833",
+  "data/stages/books/cf6-sting-source/maps.fragment.json": "37ed5709e6ac6a95ba779f2205851fcaa975d92af3491e5acccb717f68397811",
+  "data/stages/books/cf6-sting-source/economy.fragment.json": "37fd61c4060b727a99bb373d175193a02bc80a82ff52fc7a1211eca024b3086e",
+  "data/stages/books/cf6-sting-source/shops.fragment.json": "52d8d395ee8454f0c024b500742a95bdf1e32c89c49eaf92cda27dcd9a8071bb",
+  "data/stages/books/cf6-sting-source/choice-rewards.fragment.json": "6fada31c60cc1716885792a5774514464565ac95b50f5ba082a93e7a30635228",
+  "data/stages/books/cf6-sting-source/encounter-facts.v1.json": "b1c39aa89a5b6c0d35eb3b984830ed50af0f0e43e276b8abe0f7c2513429bdb9",
+  "tools/cf6-prototype/balance-input.json": "cf6b3a63b84a143af2a4b6762cf1787343cb69125c13717bc606c3fc6dae11a8",
+  "tools/cf6-prototype/economy-input-contract.json": "036b0001f30278b21214497c3551d016b682dd19da4e97a7656659e7ae516087",
+  "data/units/units.json": "ec144c69719d9e97273e0126713b892e4040829faec307811f96381af2cb3f8d",
+  "data/skills/skills.xml": "36864255cdcd6ce7b8b03190784fb6b837bdcdd71eda55140bf54189bbc64659",
+  "data/items/消耗品_自选配给.xml": "9bc1ab2f7d077e068c7c9ccdd698fa9a84e74a1ee5c691415d8f780d5c7cd488",
+  "data/rewards/choice-rewards.json": "a941b08e3eacd63e88da8878fdbbcc7e4aa38dd3294c048c0c963e64fc8f2464",
+  "data/rewards/choice-rewards.generated.json": "e92876dd7c7eedf077439ccfcce9bac93906daf462c288181fe1c10efaef45be",
+  "data/shops/list.xml": "23dbde49cf37df71eb517e54d9e47ca91e93cb26c146b47ccd92380391688c0d",
+  "data/enemy_properties/CF6重制敌人.xml": "d876c20b9de4cb889f28f2749175fdf74ff42440263bec6a1124fe8a2e519380",
+  "data/enemy_properties/γ-ECHO克隆兽.xml": "667b89db99944fb12cbb716195cc5ea924dcd006b508bcf832f7051dc6ba2314",
+  "data/items/asset_source_map.xml": "5f62ddc3f2a4e13bf169d6bb4fd9e3279be7d7ce0fb57a6d9f21a4d31739b122",
+  "tmp/cf6-roguelike-20261021/orchestration/encounter-review.json": "fcd277ba360aa12ce6889062d5a635f93c8e1e5476713bfc47beaad88f12d914",
+  "data/shops/npcs/书中-CF6毒刺-35级.json": "16cebcd0d47895b62a3d3523f2711b0fbd7f9df0e14761b67da64325539a6302",
+  "data/shops/npcs/书中-CF6毒刺-40级.json": "00fbdbaeb7340f0d2984f53d8bf2bbbfb0b90539a2442258e81549d3bc2951e5",
+  "data/shops/npcs/书中-CF6毒刺-45级.json": "cfd557c044664e9e125322c3c376cad7a94d4007007188c877ce26db7ef5167d",
+  "data/shops/npcs/书中-CF6毒刺-55级.json": "6444fa093370565bd28adf4ed2eccb44a47d4cb257b8f2fa8cfafbebfd2aefa1",
+  "data/shops/npcs/书中-CF6毒刺-60级.json": "b988106c3256ed4299c9f66ab5c5b938e9b5c1c35747e470313d09999b5e560d"
+ },
+ "inputSha256End": {
+  "data/stages/books/cf6-sting.json": "b15cbee02b916bc348ccd4718ec56357086b9e1907840ff6db54717be1489833",
+  "data/stages/books/cf6-sting-source/maps.fragment.json": "37ed5709e6ac6a95ba779f2205851fcaa975d92af3491e5acccb717f68397811",
+  "data/stages/books/cf6-sting-source/economy.fragment.json": "37fd61c4060b727a99bb373d175193a02bc80a82ff52fc7a1211eca024b3086e",
+  "data/stages/books/cf6-sting-source/shops.fragment.json": "52d8d395ee8454f0c024b500742a95bdf1e32c89c49eaf92cda27dcd9a8071bb",
+  "data/stages/books/cf6-sting-source/choice-rewards.fragment.json": "6fada31c60cc1716885792a5774514464565ac95b50f5ba082a93e7a30635228",
+  "data/stages/books/cf6-sting-source/encounter-facts.v1.json": "b1c39aa89a5b6c0d35eb3b984830ed50af0f0e43e276b8abe0f7c2513429bdb9",
+  "tools/cf6-prototype/balance-input.json": "cf6b3a63b84a143af2a4b6762cf1787343cb69125c13717bc606c3fc6dae11a8",
+  "tools/cf6-prototype/economy-input-contract.json": "036b0001f30278b21214497c3551d016b682dd19da4e97a7656659e7ae516087",
+  "data/units/units.json": "ec144c69719d9e97273e0126713b892e4040829faec307811f96381af2cb3f8d",
+  "data/skills/skills.xml": "36864255cdcd6ce7b8b03190784fb6b837bdcdd71eda55140bf54189bbc64659",
+  "data/items/消耗品_自选配给.xml": "9bc1ab2f7d077e068c7c9ccdd698fa9a84e74a1ee5c691415d8f780d5c7cd488",
+  "data/rewards/choice-rewards.json": "a941b08e3eacd63e88da8878fdbbcc7e4aa38dd3294c048c0c963e64fc8f2464",
+  "data/rewards/choice-rewards.generated.json": "e92876dd7c7eedf077439ccfcce9bac93906daf462c288181fe1c10efaef45be",
+  "data/shops/list.xml": "23dbde49cf37df71eb517e54d9e47ca91e93cb26c146b47ccd92380391688c0d",
+  "data/enemy_properties/CF6重制敌人.xml": "d876c20b9de4cb889f28f2749175fdf74ff42440263bec6a1124fe8a2e519380",
+  "data/enemy_properties/γ-ECHO克隆兽.xml": "667b89db99944fb12cbb716195cc5ea924dcd006b508bcf832f7051dc6ba2314",
+  "data/items/asset_source_map.xml": "5f62ddc3f2a4e13bf169d6bb4fd9e3279be7d7ce0fb57a6d9f21a4d31739b122",
+  "tmp/cf6-roguelike-20261021/orchestration/encounter-review.json": "fcd277ba360aa12ce6889062d5a635f93c8e1e5476713bfc47beaad88f12d914",
+  "data/shops/npcs/书中-CF6毒刺-35级.json": "16cebcd0d47895b62a3d3523f2711b0fbd7f9df0e14761b67da64325539a6302",
+  "data/shops/npcs/书中-CF6毒刺-40级.json": "00fbdbaeb7340f0d2984f53d8bf2bbbfb0b90539a2442258e81549d3bc2951e5",
+  "data/shops/npcs/书中-CF6毒刺-45级.json": "cfd557c044664e9e125322c3c376cad7a94d4007007188c877ce26db7ef5167d",
+  "data/shops/npcs/书中-CF6毒刺-55级.json": "6444fa093370565bd28adf4ed2eccb44a47d4cb257b8f2fa8cfafbebfd2aefa1",
+  "data/shops/npcs/书中-CF6毒刺-60级.json": "b988106c3256ed4299c9f66ab5c5b938e9b5c1c35747e470313d09999b5e560d"
+ },
+ "inputDrift": {},
+ "overall": "pass-with-caveats",
+ "checks": {
+  "C0.identity": {
+   "status": "pass",
+   "detail": {
+    "maps": 21,
+    "mapIds": [
+     "TUTORIAL",
+     "A01",
+     "A02",
+     "A03",
+     "A04",
+     "A05",
+     "A06",
+     "A08",
+     "A09",
+     "A10",
+     "A11",
+     "A12",
+     "A13",
+     "A14",
+     "A15",
+     "A16",
+     "A17",
+     "A18",
+     "A19",
+     "A20",
+     "A22"
+    ]
+   }
+  },
+  "C0.validator": {
+   "status": "pass",
+   "detail": {
+    "strict": "background-gate-only",
+    "nonStrict": "ok",
+    "missingBackgrounds": [
+     "cf6/CF6_A09_BG.swf",
+     "cf6/CF6_A10_BG.swf",
+     "cf6/CF6_A11_BG.swf",
+     "cf6/CF6_A12_BG.swf",
+     "cf6/CF6_A13_BG.swf",
+     "cf6/CF6_A14_BG.swf",
+     "cf6/CF6_A15_BG.swf",
+     "cf6/CF6_A16_BG.swf",
+     "cf6/CF6_A17_BG.swf",
+     "cf6/CF6_A18_BG.swf",
+     "cf6/CF6_A19_BG.swf",
+     "cf6/CF6_A20_BG.swf",
+     "cf6/CF6_A22_BG.swf"
+    ]
+   }
+  },
+  "C0.backgrounds": {
+   "status": "info",
+   "detail": {
+    "missing": [
+     "cf6/CF6_A09_BG.swf",
+     "cf6/CF6_A10_BG.swf",
+     "cf6/CF6_A11_BG.swf",
+     "cf6/CF6_A12_BG.swf",
+     "cf6/CF6_A13_BG.swf",
+     "cf6/CF6_A14_BG.swf",
+     "cf6/CF6_A15_BG.swf",
+     "cf6/CF6_A16_BG.swf",
+     "cf6/CF6_A17_BG.swf",
+     "cf6/CF6_A18_BG.swf",
+     "cf6/CF6_A19_BG.swf",
+     "cf6/CF6_A20_BG.swf",
+     "cf6/CF6_A22_BG.swf"
+    ],
+    "count": 13,
+    "note": "地图矢量线交付物;本审查未剥字段、未建假SWF绕门"
+   }
+  },
+  "C1.freeChannelDedup": {
+   "status": "pass",
+   "detail": {
+    "problems": [],
+    "duplicateQuotas": [],
+    "randomGuns": [
+     "AA12丧尸",
+     "DD MK18战术版",
+     "FSC7",
+     "G1111",
+     "M60E3",
+     "NA45",
+     "OPDW17EXL",
+     "RShG4",
+     "XM25",
+     "诺亚方舟护士狙击步枪",
+     "追月连弩",
+     "非规格步枪",
+     "高斯枪"
+    ],
+    "eliteGuns": [
+     "HK416战术版",
+     "PKM战术版",
+     "SAI GRY 幽灵",
+     "T181C",
+     "TTI Gen 12",
+     "战术-QBU-191",
+     "远古诛神枪",
+     "量子能量枪",
+     "钛合金QJZ171"
+    ],
+    "choiceGuns": [
+     "G111",
+     "M134暴力版",
+     "巴雷特",
+     "战术-QBZ-191",
+     "紫色幻想"
+    ],
+    "fixedGuns": [
+     "AA12战术版",
+     "AWP",
+     "CAR冲锋枪",
+     "战术-QBZ-192",
+     "极品UZI战术版"
+    ],
+    "note": "商店为付费渠道,与随机/精英同型号保留属r4已裁定设计,不计重复免费配额"
+   }
+  },
+  "C2.eliteCarrier": {
+   "status": "pass",
+   "detail": {
+    "issues": [],
+    "carriers": {
+     "E1": [
+      [
+       "A09",
+       "wave",
+       "兵种466",
+       1,
+       "elite_e1"
+      ]
+     ],
+     "E2": [
+      [
+       "A13",
+       "wave",
+       "兵种467",
+       1,
+       "elite_e2"
+      ]
+     ],
+     "E3": [
+      [
+       "A14",
+       "wave",
+       "兵种466",
+       1,
+       "elite_e3"
+      ]
+     ],
+     "E4": [
+      [
+       "A17",
+       "bossGroup@hpRatio=1.0",
+       "兵种467",
+       1,
+       null
+      ]
+     ],
+     "E5": [
+      [
+       "A19",
+       "wave",
+       "兵种467",
+       1,
+       "elite_e5"
+      ]
+     ]
+    },
+    "deathOnlyGrant": "奖励仅经 Parameters.掉落物(概率100)在载体最终死亡时发出;章节无其他投递路径",
+    "skipNote": "A17为Boss-hp出口,E4载体(467@hpRatio1.0组)理论上可被跳过->不发E4,符合'最终死亡才发'语义"
+   }
+  },
+  "C3.noEnhancementPropagation": {
+   "status": "pass",
+   "detail": {
+    "issues": [],
+    "actorSlots": 8,
+    "note": "经济/配给/波次载荷均无enhancement字段;精英'抽定枪强化1'为消费端合同(economy.fragment eliteQuotas.rule),非内容侧装配"
+   }
+  },
+  "C4.bossIdentity": {
+   "status": "pass",
+   "detail": {
+    "issues": [],
+    "bosses": {
+     "A06": {
+      "boss": "兵种463",
+      "support": {
+       "兵种461": 3,
+       "兵种468": 2,
+       "兵种466": 30
+      },
+      "supportTotal": 35,
+      "maxAlive": 2,
+      "maxRanged": 2,
+      "intervalFrames": 45
+     },
+     "A17": {
+      "boss": "兵种472",
+      "support": {
+       "兵种467": 1,
+       "兵种465": 2,
+       "兵种469": 31,
+       "兵种461": 1,
+       "兵种460": 5
+      },
+      "supportTotal": 40,
+      "maxAlive": 4,
+      "maxRanged": 2,
+      "intervalFrames": 45
+     },
+     "A20": {
+      "boss": "兵种473",
+      "support": {
+       "兵种467": 5,
+       "兵种464": 5,
+       "兵种461": 15,
+       "兵种469": 15
+      },
+      "supportTotal": 40,
+      "maxAlive": 4,
+      "maxRanged": 2,
+      "intervalFrames": 45
+     },
+     "A22": {
+      "boss": "兵种474",
+      "support": {
+       "兵种463": 15,
+       "兵种472": 15,
+       "兵种460": 15,
+       "兵种465": 15
+      },
+      "supportTotal": 60,
+      "maxAlive": 4,
+      "maxRanged": 2,
+      "intervalFrames": 45
+     }
+    },
+    "note": "A22增援含463/472(他图Boss兵种)系原作构成,非本图Boss身份重复;Boss枪Parameters.长枪=G36消费待实机核(r2已标)"
+   }
+  },
+  "C5.level60Boundary": {
+   "status": "pass",
+   "detail": {
+    "issues": [],
+    "externalRewards": 0,
+    "carryOut": "对外奖励=0;局内金币/K点/经验/技能不带出",
+    "note": "商店以金币出售'技能点'物品属设计内SP流通(economy.fragment level60Boundary),非免费投放"
+   }
+  },
+  "C6.shops": {
+   "status": "pass",
+   "detail": {
+    "issues": [],
+    "placement": {
+     "A01": "书中-CF6毒刺-35级",
+     "A08": "书中-CF6毒刺-40级",
+     "A11": "书中-CF6毒刺-45级",
+     "A16": "书中-CF6毒刺-55级",
+     "A19": "书中-CF6毒刺-60级"
+    },
+    "taughtSkills": [
+     "一瞬千击",
+     "兽王崩拳",
+     "内力爆发",
+     "口才",
+     "寸拳",
+     "径庭拳/黑闪",
+     "扭转乾坤",
+     "拳脚空中连招",
+     "旋风腿",
+     "气动波",
+     "裂地拳",
+     "觉醒震地",
+     "铁匠",
+     "龟派气功"
+    ],
+    "gunAmmo": {
+     "AR57": "冲锋枪钢芯穿甲弹",
+     "M4A1战术版": "突击步枪通用弹药",
+     "M4A1科技白": "突击步枪通用弹药",
+     "DD MK18战术版": "突击步枪钨芯穿甲弹",
+     "M60E3": "机枪贫铀穿甲弹",
+     "CAR冲锋枪": "冲锋枪达姆弹弹药",
+     "AA12丧尸": "00号鹿弹",
+     "钛合金P90": "冲锋枪钢芯穿甲弹",
+     "PKM战术版": "机枪贫铀穿甲弹",
+     "高斯枪": "能量电池",
+     "战术-QBU-191": "突击步枪钨芯穿甲弹",
+     "钛合金QJZ171": "机枪贫铀穿甲弹",
+     "HK416战术版": "突击步枪通用弹药",
+     "RShG4": "复合火箭弹弹药",
+     "M134暴力版的PIG版": "机枪贫铀穿甲弹"
+    },
+    "supersededFragmentShopsKeptUnregistered": true,
+    "note": "现役消费店=root按balance-input生成的'书中-CF6毒刺-NN级';本线旧'N档'片段未登记,不重复注册"
+   }
+  },
+  "C7.goldPlan": {
+   "status": "pass",
+   "detail": {
+    "issues": [],
+    "pickups": {
+     "A01": 15000,
+     "A02": 20000,
+     "A03": 25000,
+     "A04": 30000,
+     "A05": 40000,
+     "A06": 50000,
+     "A08": 40000,
+     "A09": 45000,
+     "A10": 45000,
+     "A12": 50000,
+     "A13": 60000,
+     "A14": 65000,
+     "A15": 65000,
+     "A17": 90000,
+     "A18": 90000,
+     "A19": 180000
+    },
+    "total": 910000,
+    "nominal": 940000,
+    "note": "以balance-input.json 91万拾取+3万起始=94万名义预算为准;economy.fragment旧'无金币'文本(goldIncomeGap)非最终状态"
+   }
+  },
+  "C8.choiceClosure": {
+   "status": "pass",
+   "detail": {
+    "issues": [],
+    "poolsInGenerated": [
+     "cf6.sting.t1",
+     "cf6.sting.t2",
+     "cf6.sting.t3",
+     "cf6.sting.t4",
+     "cf6.sting.t5"
+    ],
+    "note": "配给包不经固定Pickups/掉落重复发放(见C1);playerChoice拾取/背包打开链消费"
+   }
+  },
+  "C9.unitIdentity": {
+   "status": "pass-with-caveats",
+   "detail": {
+    "issues": [],
+    "evidence": {
+     "units": {
+      "461": {
+       "id": 461,
+       "spritename": "敌人-CF6普通男僵尸",
+       "level": 2,
+       "name": "CF6黄衣僵尸",
+       "is_hostile": true,
+       "height": 175,
+       "data": {
+        "primary": null,
+        "secondary": null,
+        "secondary2": null,
+        "melee": null
+       }
+      },
+      "460": {
+       "id": 460,
+       "spritename": "敌人-完全体克隆兽",
+       "level": 30,
+       "name": "暴君克隆兽",
+       "is_hostile": true,
+       "height": 230,
+       "data": {
+        "primary": null,
+        "secondary": null,
+        "secondary2": null,
+        "melee": null
+       }
+      }
+     },
+     "enemyProperties": {
+      "461": true,
+      "460": true
+     },
+     "linkage": {
+      "461": true,
+      "460": true,
+      "461swf": true,
+      "461swfSha256": "8166bc4a17e541876bd76092bcd4a5fd4e603a8bca8a8376589540861bcb98da",
+      "460swf": true,
+      "460swfSha256": "b50a502ed55b0360dc74bfebecc23112914626714792a6c37b1a13d3aedfd851"
+     },
+     "zombieTurret": {
+      "deathCallbackIdentical": true,
+      "deathCounterLine": true,
+      "turretChannelOnlyIn630": true,
+      "config": "encounter-review A01 statics: 477与630同hp200/AI5/攻击力20/同帧结构"
+     },
+     "alien": {
+      "originalCharId": 353,
+      "linkage": "aw-异形",
+      "meleeOnlyHitResponse": true,
+      "deathCounterLine": true,
+      "deathSound": true,
+      "eggHp200": true,
+      "reviewStatus": {
+       "original": "aw-异形",
+       "candidateUnitId": 460,
+       "basis": "Current approved guard transformation reuses暴君克隆兽460; direct egg/add use needs explicit integration choice."
+      },
+      "guardTransformReuse": true
+     },
+     "turretsInChapter": false,
+     "placements460": {
+      "A15": 5,
+      "A17": 5,
+      "A22": 15
+     }
+    },
+    "limits": [
+     "zombie_turret(630)与aw-僵尸(477)脚本/数值同构,唯一差异=630额外检测_root.gameworld.子弹区域(炮台子弹通道);本章节0处炮台,映射461(CF6重制黄衣僵尸,Antigravity专用素材.swf)仅丢该通道,encounter-review已记为适配",
+     "alien(353 aw-异形)为近战爬行体(卵hp200/A22 hp250),与CF7 460暴君克隆兽(Codex γECHO克隆兽资产,身高230,敌性面板独立)不同源;460仅'469变身后继'经GuardTransform批准;A15卵/A17组/A22增援的460直用=encounter-review candidate_reuse,主控裁决状态待确认"
+    ]
+   }
+  },
+  "C10.finiteWaves": {
+   "status": "pass",
+   "detail": {
+    "issues": [],
+    "proposalDiffs": {
+     "A09": {
+      "reviewProposal": {
+       "兵种461": 2,
+       "兵种467": 6,
+       "兵种468": 1
+      },
+      "assembled": {
+       "兵种466": 1,
+       "兵种468": 1,
+       "兵种461": 2,
+       "兵种467": 5
+      }
+     },
+     "A14": {
+      "reviewProposal": {
+       "兵种467": 2,
+       "兵种469": 7
+      },
+      "assembled": {
+       "兵种466": 1,
+       "兵种467": 1,
+       "兵种469": 7
+      }
+     }
+    },
+    "diffsExplained": "A09:467×6->467×5+466×1(E1载体) 与 A14:467×2->467×1+466×1(E3载体):精英载体各占1个持盾名额且改用466,各图总数9不变;review建议status=proposal_not_implemented,精英配额分配见economy.fragment eliteQuotas",
+    "semantics": "原作区分remainingDeathBudget(死亡才-1)/concurrent(上场个数)/initial(摆放);本章节全部有限波次,无无限刷新,适配值按encounter-review明示标prototypeDerived",
+    "diffsAre": "proposalDiffs仅列与review建议值的差异;建议值status=proposal_not_implemented,差异需对照r2-r4记录是否已裁定"
+   }
+  }
+ },
+ "findings": [
+  {
+   "check": "C9.unitIdentity",
+   "severity": "warning",
+   "field": "maps.A15/A17/A22 Type=兵种460",
+   "trigger": "aw-异形→460为candidate_reuse(encounter-review.mapping.candidateAlien),非registered",
+   "impact": "外观/体型/行为包与原作异形不同源;若主控未采纳需替换为专属资产",
+   "minimalFix": "主控在集成记录中显式采纳candidate_reuse,或退回到专用异形资产"
+  },
+  {
+   "check": "C10.finiteWaves",
+   "severity": "info",
+   "field": "maps.A09 composition",
+   "trigger": "{\"reviewProposal\": {\"兵种461\": 2, \"兵种467\": 6, \"兵种468\": 1}, \"assembled\": {\"兵种466\": 1, \"兵种468\": 1, \"兵种461\": 2, \"兵种467\": 5}}",
+   "impact": "与review建议值的构成差(精英载体466替换1个467名额,总数不变)",
+   "minimalFix": "无需修复;主控集成记录中注明该偏差即可"
+  },
+  {
+   "check": "C10.finiteWaves",
+   "severity": "info",
+   "field": "maps.A14 composition",
+   "trigger": "{\"reviewProposal\": {\"兵种467\": 2, \"兵种469\": 7}, \"assembled\": {\"兵种466\": 1, \"兵种467\": 1, \"兵种469\": 7}}",
+   "impact": "与review建议值的构成差(精英载体466替换1个467名额,总数不变)",
+   "minimalFix": "无需修复;主控集成记录中注明该偏差即可"
+  }
+ ]
+}

@@ -1,0 +1,310 @@
+{
+ "schema": "cf6-placement-adaptation.v1",
+ "status": "adopted-trial",
+ "statusNote": "主控试作采纳初版集成的有界源数据适配;真实消费者(运行时单位脱困/寻路)待实机验证;不声称原作完全复现。原始事实表与原坐标保持历史来源不变,本表记录原字段路径/原坐标/目的世界坐标/反算 native 新坐标/碰撞理由;root 组装仍只减 nativeBounds 原点一次",
+ "generatedBy": "tools/cf6-roguelike-content/build-placement-adaptation.py",
+ "coordinateSpace": "native-original(与 maps.fragment.json 一致)",
+ "geometryAuthority": {
+  "environment": "tools/cf6-map-runtime/generated/environment.fragment.xml(最终 walkBounds/Collision,世界空间)",
+  "origins": "tools/cf6-map-source/generated/map-input.json nativeBounds[:2](worldScale==1 已逐图核)",
+  "footBox": "36x18px(±18横向/±9纵向)整盒 1px 栅格无碰撞且严格在 walkBounds 内;候选按离原点最近可用区,并经 5px 参考格自出生点可达性过滤;不以贴碰撞边浮点充当安全点"
+ },
+ "inputSha256": {
+  "encounter-facts.v1.json": "b1c39aa89a5b6c0d35eb3b984830ed50af0f0e43e276b8abe0f7c2513429bdb9",
+  "environment.fragment.xml": "62a4772ae4b579659460ae8dee03055835063217a586e14091fefb6ad7fa73c5",
+  "map-input.json": "056c50dd321debee3545d2988b891d140b07cfec864b5d461bd062e44d29ba95",
+  "maps.fragment.json(pre-adaptation)": "37ed5709e6ac6a95ba779f2205851fcaa975d92af3491e5acccb717f68397811"
+ },
+ "unchangedPendingOnMachine": [
+  "A06 bossEncounter.groups[0].enemies[5] 兵种466 屏外对称入场位(世界(8.45,338.8),原作 id=1585 同位) — 保持不改,实机待核",
+  "A17 bossEncounter.groups[0].enemies[6..7] 兵种469 屏外对称入场位(世界(4.0,369.9)/(1546.9,416.3)) — 保持不改,实机待核",
+  "A17 Wave[0][0] 兵种472 Boss 原作同位高度(世界(963.55,305.9),walkBounds 顶上方 23.35px) — 保持不改,实机待核",
+  "TUTORIAL 既有门矩形上沿越 Ymin 2px(vanilla 引擎惯例,39 门中 23 个越界) — 保持不改"
+ ],
+ "entries": [
+  {
+   "id": "A02-wave-0-3",
+   "map": "A02",
+   "kind": "waveEnemy",
+   "fieldPath": "stage.Wave.SubWave[0].EnemyGroup.Enemy[3]",
+   "referencingFields": [],
+   "unit": "兵种461",
+   "originalNative": [
+    828.8,
+    441.9
+   ],
+   "originalWorld": [
+    872.25,
+    417.8
+   ],
+   "originalProvenance": "原作 display[13] id=477 depth=336 (aw-僵尸) — 作者摆放实例",
+   "factPath": "encounter-facts.v1.json A02 statics[3]",
+   "reason": "原作摆放位于原始 even-odd 填充体内;CF7 环境语义把填充转为实体 Collision,出生点落入多边形内部、玩家不可达(r6 fail#1)",
+   "origin": [
+    -43.45,
+    24.1
+   ],
+   "premise": {
+    "inWalkBounds": true,
+    "insideCollision": true,
+    "collisionIndex": 115
+   },
+   "newNative": [
+    828.5,
+    404.1
+   ],
+   "targetWorld": [
+    871.95,
+    380.0
+   ],
+   "distanceMovedPx": 37.8,
+   "verification": {
+    "footBoxHalf": [
+     18.0,
+     9.0
+    ],
+    "latticeStepPx": 1,
+    "offsetChecks": [
+     {
+      "offset": [
+       0.0,
+       0.0
+      ],
+      "freeSamples": "760/760"
+     }
+    ],
+    "walkBoundsContained": true,
+    "connectivityRef": "5px点格BFS自PlayerX/Y可达(参考,非AVM1寻路证明)"
+   }
+  },
+  {
+   "id": "A02-wave-0-5",
+   "map": "A02",
+   "kind": "waveEnemy",
+   "fieldPath": "stage.Wave.SubWave[0].EnemyGroup.Enemy[5]",
+   "referencingFields": [],
+   "unit": "兵种461",
+   "originalNative": [
+    1085.8,
+    463.9
+   ],
+   "originalWorld": [
+    1129.25,
+    439.8
+   ],
+   "originalProvenance": "原作 display[15] id=477 depth=411 (aw-僵尸) — 作者摆放实例",
+   "factPath": "encounter-facts.v1.json A02 statics[5]",
+   "reason": "同 r6 fail#2:填充体内摆放,转换后落入实体 Collision,玩家不可达",
+   "origin": [
+    -43.45,
+    24.1
+   ],
+   "premise": {
+    "inWalkBounds": true,
+    "insideCollision": true,
+    "collisionIndex": 115
+   },
+   "newNative": [
+    1085.5,
+    405.1
+   ],
+   "targetWorld": [
+    1128.95,
+    381.0
+   ],
+   "distanceMovedPx": 58.8,
+   "verification": {
+    "footBoxHalf": [
+     18.0,
+     9.0
+    ],
+    "latticeStepPx": 1,
+    "offsetChecks": [
+     {
+      "offset": [
+       0.0,
+       0.0
+      ],
+      "freeSamples": "760/760"
+     }
+    ],
+    "walkBoundsContained": true,
+    "connectivityRef": "5px点格BFS自PlayerX/Y可达(参考,非AVM1寻路证明)"
+   }
+  },
+  {
+   "id": "A18-spawnpoint-0",
+   "map": "A18",
+   "kind": "spawnPoint",
+   "fieldPath": "stage.SpawnPoint.Point[0]",
+   "referencingFields": [
+    "stage.Wave.SubWave[1].EnemyGroup.Enemy[0]"
+   ],
+   "unit": null,
+   "originalNative": [
+    856.5,
+    191.2
+   ],
+   "originalWorld": [
+    885.0,
+    208.65
+   ],
+   "originalProvenance": "原作 display[12] id=1434 name='敌人生成器1' depth=290 — 触发区(1868)激活的生成器",
+   "factPath": "encounter-facts.v1.json A18 generators[1]",
+   "reason": "r6 fail#3/#4:生成点落在墙带填充内,转换后为实体 Collision;引擎出生仅 +2y(WaveSpawner Offset)不足以脱出,引用它的 Wave[1][0](SpawnIndex=0)随本点一并修复",
+   "origin": [
+    -28.5,
+    -17.45
+   ],
+   "premise": {
+    "inWalkBounds": true,
+    "insideCollision": true,
+    "collisionIndex": 1
+   },
+   "newNative": [
+    856.5,
+    214.6
+   ],
+   "targetWorld": [
+    885.0,
+    232.05
+   ],
+   "distanceMovedPx": 23.4,
+   "verification": {
+    "footBoxHalf": [
+     18.0,
+     9.0
+    ],
+    "latticeStepPx": 1,
+    "offsetChecks": [
+     {
+      "offset": [
+       0.0,
+       0.0
+      ],
+      "freeSamples": "760/760"
+     },
+     {
+      "offset": [
+       0,
+       2
+      ],
+      "freeSamples": "760/760"
+     }
+    ],
+    "walkBoundsContained": true,
+    "connectivityRef": "5px点格BFS自PlayerX/Y可达(参考,非AVM1寻路证明)"
+   }
+  },
+  {
+   "id": "A20-boss-0-0",
+   "map": "A20",
+   "kind": "bossEnemy",
+   "fieldPath": "bossEncounter.groups[0].enemies[0]",
+   "referencingFields": [],
+   "unit": "兵种467",
+   "originalNative": [
+    185.0,
+    162.0
+   ],
+   "originalWorld": [
+    263.5,
+    185.45
+   ],
+   "originalProvenance": "原作 display[18] id=1434 depth=225 — door1 门刷点(门触发演出属机关线,首版按血量阈值发兵)",
+   "factPath": "encounter-facts.v1.json A20 generators[5]",
+   "reason": "r6 fail#5:门刷点在墙内填充体,转换后落入实体 Collision,玩家不可达",
+   "origin": [
+    -78.5,
+    -23.45
+   ],
+   "premise": {
+    "inWalkBounds": true,
+    "insideCollision": true,
+    "collisionIndex": 0
+   },
+   "newNative": [
+    184.5,
+    177.6
+   ],
+   "targetWorld": [
+    263.0,
+    201.05
+   ],
+   "distanceMovedPx": 15.61,
+   "verification": {
+    "footBoxHalf": [
+     18.0,
+     9.0
+    ],
+    "latticeStepPx": 1,
+    "offsetChecks": [
+     {
+      "offset": [
+       0.0,
+       0.0
+      ],
+      "freeSamples": "760/760"
+     }
+    ],
+    "walkBoundsContained": true,
+    "connectivityRef": "5px点格BFS自PlayerX/Y可达(参考,非AVM1寻路证明)"
+   }
+  },
+  {
+   "id": "A22-boss-0-3",
+   "map": "A22",
+   "kind": "bossEnemy",
+   "fieldPath": "bossEncounter.groups[0].enemies[3]",
+   "referencingFields": [],
+   "unit": "兵种465",
+   "originalNative": [
+    185.0,
+    162.0
+   ],
+   "originalWorld": [
+    263.5,
+    185.45
+   ],
+   "originalProvenance": "与 A20 共享门几何(A20/A22 walkBounds/碰撞相同),原作 display[18] 同位 id=1434",
+   "factPath": "encounter-facts.v1.json A22 generators[5]",
+   "reason": "r6 fail#6:同 A20 boss[0][0] 的门内墙填充问题",
+   "origin": [
+    -78.5,
+    -23.45
+   ],
+   "premise": {
+    "inWalkBounds": true,
+    "insideCollision": true,
+    "collisionIndex": 0
+   },
+   "newNative": [
+    184.5,
+    177.6
+   ],
+   "targetWorld": [
+    263.0,
+    201.05
+   ],
+   "distanceMovedPx": 15.61,
+   "verification": {
+    "footBoxHalf": [
+     18.0,
+     9.0
+    ],
+    "latticeStepPx": 1,
+    "offsetChecks": [
+     {
+      "offset": [
+       0.0,
+       0.0
+      ],
+      "freeSamples": "760/760"
+     }
+    ],
+    "walkBoundsContained": true,
+    "connectivityRef": "5px点格BFS自PlayerX/Y可达(参考,非AVM1寻路证明)"
+   }
+  }
+ ]
+}

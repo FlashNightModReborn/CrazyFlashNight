@@ -1,0 +1,497 @@
+{
+  "schema": "cf6-native-layer-input.v1",
+  "map": "A05",
+  "layer": "background",
+  "name": "CF6_A05_BG_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A05-R3/cf6-stage5-redraw-r3/parts/background-1745.svg",
+  "sourceSha256": "5790620a9e09ed1b26cfcbe74891976adc8e6ea582291df8f0e53747febcb9c0",
+  "inputIndex": "tools/cf6-map-source/generated/map-input.json",
+  "inputIndexSha256": "056c50dd321debee3545d2988b891d140b07cfec864b5d461bd062e44d29ba95",
+  "extraction": "decode existing PNG/JPEG data URI bytes only; no image rasterization or modification",
+  "inputs": [
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-37a61419c8fb9dc698ee0ab6.png",
+      "sha256": "37a61419c8fb9dc698ee0ab6ef9bc76f7857e8807009c6f69c7926f88d806846",
+      "bytes": 491549,
+      "pixels": [
+        918,
+        753
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-b162eb77a5e79a8f8fdfd8bf.png",
+      "sha256": "b162eb77a5e79a8f8fdfd8bfd108e2083979cd69b20fda22cd1b2d997fa97bd2",
+      "bytes": 261257,
+      "pixels": [
+        684,
+        591
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-78d3c0c5961053da9331584d.jpg",
+      "sha256": "78d3c0c5961053da9331584d48c4ba93d6c3a5a1fa82fac95fb9d8f77fadd806",
+      "bytes": 51601,
+      "pixels": [
+        520,
+        1000
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-42d49358a17e0a7d29fb38b2.jpg",
+      "sha256": "42d49358a17e0a7d29fb38b21952068aaad277da02d6b29758cebe9f465c6298",
+      "bytes": 49389,
+      "pixels": [
+        260,
+        650
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-4e54a27d240b81f16f082f50.png",
+      "sha256": "4e54a27d240b81f16f082f5087a382a0d083c9f12976fe8d267d6f9f2138140b",
+      "bytes": 364897,
+      "pixels": [
+        520,
+        640
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-6b248912fa7065ae77624843.png",
+      "sha256": "6b248912fa7065ae776248436a69866b20233e11530e3f5412010412bfb0cd27",
+      "bytes": 7263,
+      "pixels": [
+        54,
+        50
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-eb0c5f076357fa0dad74de3f.png",
+      "sha256": "eb0c5f076357fa0dad74de3f71f5c38128bad469369a9f9ac100cf2fd250a172",
+      "bytes": 6986,
+      "pixels": [
+        50,
+        48
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-2ce5c118ee9402299f7dea1e.png",
+      "sha256": "2ce5c118ee9402299f7dea1e8e36aec4ba85228a19de8780abe114dec62269af",
+      "bytes": 6920,
+      "pixels": [
+        48,
+        52
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-7e8eba1be2c34afd11ca5bb8.png",
+      "sha256": "7e8eba1be2c34afd11ca5bb8de4ffe8ee74465a614c5be1e84790fa7cf4edc1a",
+      "bytes": 6832,
+      "pixels": [
+        52,
+        46
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-7d14767170f28f3bd75ccc7b.png",
+      "sha256": "7d14767170f28f3bd75ccc7b49fd66171a5ba8917c7ee7c9a74741935f3bb8f2",
+      "bytes": 7678,
+      "pixels": [
+        54,
+        52
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-07802d228659d76a39b5dca2.png",
+      "sha256": "07802d228659d76a39b5dca2dcd692a2c918593966abdc8defefc454f749bfca",
+      "bytes": 6613,
+      "pixels": [
+        52,
+        48
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-edfe477cdd1cfac6cdb1f8bb.png",
+      "sha256": "edfe477cdd1cfac6cdb1f8bb7a63103599a636bc3a72c033c62d57a5342aa8cc",
+      "bytes": 4696,
+      "pixels": [
+        46,
+        44
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-6d61129bae94c7a83b7b0387.png",
+      "sha256": "6d61129bae94c7a83b7b038718d00527b45345ab695e04ee37a8ed107c5c667c",
+      "bytes": 5685,
+      "pixels": [
+        46,
+        46
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-26b140d3463eb58e2ab6e1ea.png",
+      "sha256": "26b140d3463eb58e2ab6e1ea3238dc2f040a6708a6fc501e798865244b193d72",
+      "bytes": 4369,
+      "pixels": [
+        40,
+        44
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-7827d59ca7eee87c23294707.png",
+      "sha256": "7827d59ca7eee87c23294707181d922f2410bb5202e798e91615c83c60e94c49",
+      "bytes": 1612,
+      "pixels": [
+        901,
+        145
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-a6d898944e0e2ffc5b7f6d9e.png",
+      "sha256": "a6d898944e0e2ffc5b7f6d9e008f9f8cdb744ee20d9787be91f9c2b45da3ab07",
+      "bytes": 151570,
+      "pixels": [
+        1980,
+        750
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-7071964ec36ad78a4068cb34.jpg",
+      "sha256": "7071964ec36ad78a4068cb343dd6b7d29938f3b2c49e03326310e4c8a4da1415",
+      "bytes": 63558,
+      "pixels": [
+        443,
+        637
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-3074662803ec3255c7f2cabe.jpg",
+      "sha256": "3074662803ec3255c7f2cabe8638eb8f6973e705086d5de4700239c3a99caa61",
+      "bytes": 18153,
+      "pixels": [
+        529,
+        161
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-79549e4807882d5de936378d.jpg",
+      "sha256": "79549e4807882d5de936378da8622ec1cdd9aa7b534ce35209ab324f6946d9d7",
+      "bytes": 130761,
+      "pixels": [
+        477,
+        607
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-d0248299270f2c08c48f51f5.jpg",
+      "sha256": "d0248299270f2c08c48f51f563c811150e3789a5dc7f2af143e32699df627467",
+      "bytes": 97987,
+      "pixels": [
+        507,
+        430
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-80d2909f0e4938aad928c29e.jpg",
+      "sha256": "80d2909f0e4938aad928c29e5398b5e6a1f2dbd35298a0b93b4be48f2f754e10",
+      "bytes": 90003,
+      "pixels": [
+        493,
+        380
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-59da3a0f55e4a9d0482b3a45.jpg",
+      "sha256": "59da3a0f55e4a9d0482b3a45616da1d9892621a15bb8d7b31e2a8300a7778ec9",
+      "bytes": 168134,
+      "pixels": [
+        637,
+        627
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-0265f082c233e103a7afc432.jpg",
+      "sha256": "0265f082c233e103a7afc4328632d1eaa956259bd7aaf30bb7dd86a01efb9e02",
+      "bytes": 305216,
+      "pixels": [
+        907,
+        763
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-bf112fb4556cedcaec68aa35.jpg",
+      "sha256": "bf112fb4556cedcaec68aa35694b51730c48449b5b2aedd0de71ea36718851bf",
+      "bytes": 82497,
+      "pixels": [
+        435,
+        357
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-6351137de2b90402a4b7b847.jpg",
+      "sha256": "6351137de2b90402a4b7b847d15e4cd0a6223d918ce009400db0e55d6e6df5b8",
+      "bytes": 43734,
+      "pixels": [
+        332,
+        264
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-9d13fc1f8aa8a713e45ede0c.jpg",
+      "sha256": "9d13fc1f8aa8a713e45ede0c5310206e85bc5521b6725d1a705fb3a93f4c6cfd",
+      "bytes": 95822,
+      "pixels": [
+        479,
+        402
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-f6abef38403fff498cf5f598.jpg",
+      "sha256": "f6abef38403fff498cf5f59874a02d0a86c9bb94402bce0733f694bfc0c42961",
+      "bytes": 55525,
+      "pixels": [
+        363,
+        313
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-2ac52a3fe5274cbc8892dfed.jpg",
+      "sha256": "2ac52a3fe5274cbc8892dfede0c99dc6a55158c8375392b50f48af091cc10cd6",
+      "bytes": 65697,
+      "pixels": [
+        385,
+        366
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-51b7b288735bf401c023f02b.jpg",
+      "sha256": "51b7b288735bf401c023f02b5dfb791053f1566daabb73e53a2fe3f8aeb26d61",
+      "bytes": 184052,
+      "pixels": [
+        676,
+        527
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-4b843d77b60fabf40a090373.jpg",
+      "sha256": "4b843d77b60fabf40a0903736eaa525bd76dd210c4ff4c22ee93df19e6daef40",
+      "bytes": 260903,
+      "pixels": [
+        845,
+        604
+      ]
+    }
+  ],
+  "textures": {
+    "37a61419c8fb9dc698ee0ab6ef9bc76f7857e8807009c6f69c7926f88d806846": {
+      "name": "intrinsic-37a61419c8fb9dc698ee0ab6.png",
+      "pixels": [
+        918,
+        753
+      ]
+    },
+    "b162eb77a5e79a8f8fdfd8bfd108e2083979cd69b20fda22cd1b2d997fa97bd2": {
+      "name": "intrinsic-b162eb77a5e79a8f8fdfd8bf.png",
+      "pixels": [
+        684,
+        591
+      ]
+    },
+    "78d3c0c5961053da9331584d48c4ba93d6c3a5a1fa82fac95fb9d8f77fadd806": {
+      "name": "intrinsic-78d3c0c5961053da9331584d.jpg",
+      "pixels": [
+        520,
+        1000
+      ]
+    },
+    "42d49358a17e0a7d29fb38b21952068aaad277da02d6b29758cebe9f465c6298": {
+      "name": "intrinsic-42d49358a17e0a7d29fb38b2.jpg",
+      "pixels": [
+        260,
+        650
+      ]
+    },
+    "4e54a27d240b81f16f082f5087a382a0d083c9f12976fe8d267d6f9f2138140b": {
+      "name": "intrinsic-4e54a27d240b81f16f082f50.png",
+      "pixels": [
+        520,
+        640
+      ]
+    },
+    "6b248912fa7065ae776248436a69866b20233e11530e3f5412010412bfb0cd27": {
+      "name": "intrinsic-6b248912fa7065ae77624843.png",
+      "pixels": [
+        54,
+        50
+      ]
+    },
+    "eb0c5f076357fa0dad74de3f71f5c38128bad469369a9f9ac100cf2fd250a172": {
+      "name": "intrinsic-eb0c5f076357fa0dad74de3f.png",
+      "pixels": [
+        50,
+        48
+      ]
+    },
+    "2ce5c118ee9402299f7dea1e8e36aec4ba85228a19de8780abe114dec62269af": {
+      "name": "intrinsic-2ce5c118ee9402299f7dea1e.png",
+      "pixels": [
+        48,
+        52
+      ]
+    },
+    "7e8eba1be2c34afd11ca5bb8de4ffe8ee74465a614c5be1e84790fa7cf4edc1a": {
+      "name": "intrinsic-7e8eba1be2c34afd11ca5bb8.png",
+      "pixels": [
+        52,
+        46
+      ]
+    },
+    "7d14767170f28f3bd75ccc7b49fd66171a5ba8917c7ee7c9a74741935f3bb8f2": {
+      "name": "intrinsic-7d14767170f28f3bd75ccc7b.png",
+      "pixels": [
+        54,
+        52
+      ]
+    },
+    "07802d228659d76a39b5dca2dcd692a2c918593966abdc8defefc454f749bfca": {
+      "name": "intrinsic-07802d228659d76a39b5dca2.png",
+      "pixels": [
+        52,
+        48
+      ]
+    },
+    "edfe477cdd1cfac6cdb1f8bb7a63103599a636bc3a72c033c62d57a5342aa8cc": {
+      "name": "intrinsic-edfe477cdd1cfac6cdb1f8bb.png",
+      "pixels": [
+        46,
+        44
+      ]
+    },
+    "6d61129bae94c7a83b7b038718d00527b45345ab695e04ee37a8ed107c5c667c": {
+      "name": "intrinsic-6d61129bae94c7a83b7b0387.png",
+      "pixels": [
+        46,
+        46
+      ]
+    },
+    "26b140d3463eb58e2ab6e1ea3238dc2f040a6708a6fc501e798865244b193d72": {
+      "name": "intrinsic-26b140d3463eb58e2ab6e1ea.png",
+      "pixels": [
+        40,
+        44
+      ]
+    },
+    "7827d59ca7eee87c23294707181d922f2410bb5202e798e91615c83c60e94c49": {
+      "name": "intrinsic-7827d59ca7eee87c23294707.png",
+      "pixels": [
+        901,
+        145
+      ]
+    },
+    "a6d898944e0e2ffc5b7f6d9e008f9f8cdb744ee20d9787be91f9c2b45da3ab07": {
+      "name": "intrinsic-a6d898944e0e2ffc5b7f6d9e.png",
+      "pixels": [
+        1980,
+        750
+      ]
+    },
+    "7071964ec36ad78a4068cb343dd6b7d29938f3b2c49e03326310e4c8a4da1415": {
+      "name": "intrinsic-7071964ec36ad78a4068cb34.jpg",
+      "pixels": [
+        443,
+        637
+      ]
+    },
+    "3074662803ec3255c7f2cabe8638eb8f6973e705086d5de4700239c3a99caa61": {
+      "name": "intrinsic-3074662803ec3255c7f2cabe.jpg",
+      "pixels": [
+        529,
+        161
+      ]
+    },
+    "79549e4807882d5de936378da8622ec1cdd9aa7b534ce35209ab324f6946d9d7": {
+      "name": "intrinsic-79549e4807882d5de936378d.jpg",
+      "pixels": [
+        477,
+        607
+      ]
+    },
+    "d0248299270f2c08c48f51f563c811150e3789a5dc7f2af143e32699df627467": {
+      "name": "intrinsic-d0248299270f2c08c48f51f5.jpg",
+      "pixels": [
+        507,
+        430
+      ]
+    },
+    "80d2909f0e4938aad928c29e5398b5e6a1f2dbd35298a0b93b4be48f2f754e10": {
+      "name": "intrinsic-80d2909f0e4938aad928c29e.jpg",
+      "pixels": [
+        493,
+        380
+      ]
+    },
+    "59da3a0f55e4a9d0482b3a45616da1d9892621a15bb8d7b31e2a8300a7778ec9": {
+      "name": "intrinsic-59da3a0f55e4a9d0482b3a45.jpg",
+      "pixels": [
+        637,
+        627
+      ]
+    },
+    "0265f082c233e103a7afc4328632d1eaa956259bd7aaf30bb7dd86a01efb9e02": {
+      "name": "intrinsic-0265f082c233e103a7afc432.jpg",
+      "pixels": [
+        907,
+        763
+      ]
+    },
+    "bf112fb4556cedcaec68aa35694b51730c48449b5b2aedd0de71ea36718851bf": {
+      "name": "intrinsic-bf112fb4556cedcaec68aa35.jpg",
+      "pixels": [
+        435,
+        357
+      ]
+    },
+    "6351137de2b90402a4b7b847d15e4cd0a6223d918ce009400db0e55d6e6df5b8": {
+      "name": "intrinsic-6351137de2b90402a4b7b847.jpg",
+      "pixels": [
+        332,
+        264
+      ]
+    },
+    "9d13fc1f8aa8a713e45ede0c5310206e85bc5521b6725d1a705fb3a93f4c6cfd": {
+      "name": "intrinsic-9d13fc1f8aa8a713e45ede0c.jpg",
+      "pixels": [
+        479,
+        402
+      ]
+    },
+    "f6abef38403fff498cf5f59874a02d0a86c9bb94402bce0733f694bfc0c42961": {
+      "name": "intrinsic-f6abef38403fff498cf5f598.jpg",
+      "pixels": [
+        363,
+        313
+      ]
+    },
+    "2ac52a3fe5274cbc8892dfede0c99dc6a55158c8375392b50f48af091cc10cd6": {
+      "name": "intrinsic-2ac52a3fe5274cbc8892dfed.jpg",
+      "pixels": [
+        385,
+        366
+      ]
+    },
+    "51b7b288735bf401c023f02b5dfb791053f1566daabb73e53a2fe3f8aeb26d61": {
+      "name": "intrinsic-51b7b288735bf401c023f02b.jpg",
+      "pixels": [
+        676,
+        527
+      ]
+    },
+    "4b843d77b60fabf40a0903736eaa525bd76dd210c4ff4c22ee93df19e6daef40": {
+      "name": "intrinsic-4b843d77b60fabf40a090373.jpg",
+      "pixels": [
+        845,
+        604
+      ]
+    }
+  },
+  "xfl": "flashswf/backgrounds/cf6/CF6_A05_BG_VectorCandidate01/CF6_A05_BG_VectorCandidate01.xfl",
+  "swf": "CF6_A05_BG_VectorCandidate01.swf"
+}

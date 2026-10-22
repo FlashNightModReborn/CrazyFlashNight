@@ -1,0 +1,148 @@
+{
+  "sourceCommit": "951145190cd45646abdfd4ebde1fbe68a4dd38ff",
+  "sourceSymbol": "1.枪械相关/长枪/枪-长枪-M134",
+  "frameIndex": 0,
+  "registration": [
+    0,
+    0
+  ],
+  "viewBox": [
+    -113.85000000000002,
+    -39.572,
+    450.356,
+    148.572
+  ],
+  "inkscapeQueryOriginal": [
+    888.15,
+    962.428,
+    446.356,
+    144.572
+  ],
+  "sources": [
+    {
+      "path": "1.枪械相关/长枪/枪-长枪-M134.xml",
+      "sha256": "bf1ca91862c07cc22056a79e7faacc0d24fee1fb4696d6bccb1cb8f441f72697"
+    },
+    {
+      "path": "无AS链接/Symbol 3836.xml",
+      "sha256": "968e8345786259cde85bc8d2b8d81bed0b64d7da03d3c82a8c2b54648c97f524"
+    },
+    {
+      "path": "无AS链接/Symbol 3838.xml",
+      "sha256": "b3493cef2c40772b8df26118cc1f4d6e1ab557c81beaf52fb5ecdc88fd0520ba"
+    }
+  ],
+  "outputs": {
+    "m134-native-complete-phase3.svg": "30352dc6f320ea8223ce80518f28323bf91794a12f5f0a7dca78fa5cf110824a",
+    "m134-native-complete-phase3.png": "1adcefb43d21008735c667d24001eef6e34f854ace2094d9e5541aa688b4c9ad"
+  },
+  "tools": {
+    "render_native_reference.py": "2333ee4be61d070ffc8ce402e8eae85c373e53854d884284084522afae107d67",
+    "xfl_to_svg_base.py": "1bc28a922866881721f239e35a354bbd03b224b597f6c604f76af4eee5585c62"
+  },
+  "removed": [
+    {
+      "where": "1.枪械相关/长枪/枪-长枪-M134",
+      "instance": "枪口位置",
+      "reason": "nonvisual muzzle registration marker"
+    }
+  ],
+  "unsupported": [],
+  "warnings": [
+    "无AS链接/Symbol 3838: 含 ActionScript，未执行"
+  ],
+  "selectedLayers": [
+    {
+      "where": "1.枪械相关/长枪/枪-长枪-M134",
+      "layerIndex": 0,
+      "layer": "Layer 1",
+      "layerType": null,
+      "frame": 0
+    },
+    {
+      "where": "1.枪械相关/长枪/枪-长枪-M134",
+      "layerIndex": 1,
+      "layer": "Layer 2",
+      "layerType": null,
+      "frame": 0
+    },
+    {
+      "where": "1.枪械相关/长枪/枪-长枪-M134",
+      "layerIndex": 2,
+      "layer": "Layer 3",
+      "layerType": null,
+      "frame": 0
+    },
+    {
+      "where": "无AS链接/Symbol 3838",
+      "layerIndex": 0,
+      "layer": "图层 3",
+      "layerType": null,
+      "frame": 2
+    },
+    {
+      "where": "无AS链接/Symbol 3838",
+      "layerIndex": 1,
+      "layer": "图层 2",
+      "layerType": null,
+      "frame": 2
+    },
+    {
+      "where": "无AS链接/Symbol 3838",
+      "layerIndex": 2,
+      "layer": "Layer 1",
+      "layerType": null,
+      "frame": 2
+    },
+    {
+      "where": "无AS链接/Symbol 3836",
+      "layerIndex": 0,
+      "layer": "Layer 1",
+      "layerType": null,
+      "frame": 0
+    },
+    {
+      "where": "无AS链接/Symbol 3836",
+      "layerIndex": 1,
+      "layer": "Layer 2",
+      "layerType": null,
+      "frame": 0
+    },
+    {
+      "where": "无AS链接/Symbol 3836",
+      "layerIndex": 2,
+      "layer": "Layer 3",
+      "layerType": null,
+      "frame": 0
+    },
+    {
+      "where": "无AS链接/Symbol 3836",
+      "layerIndex": 3,
+      "layer": "Layer 4",
+      "layerType": null,
+      "frame": 0
+    },
+    {
+      "where": "无AS链接/Symbol 3836",
+      "layerIndex": 4,
+      "layer": "Layer 5",
+      "layerType": null,
+      "frame": 0
+    },
+    {
+      "where": "无AS链接/Symbol 3836",
+      "layerIndex": 5,
+      "layer": "Layer 6",
+      "layerType": null,
+      "frame": 0
+    },
+    {
+      "where": "无AS链接/Symbol 3836",
+      "layerIndex": 6,
+      "layer": "Layer 7",
+      "layerType": null,
+      "frame": 0
+    }
+  ],
+  "fidelity": "Native vector geometry, layers, masks, matrices, colors. No Flash Player execution, no ActionScript/tween interpolation, antialiasing may differ."
+}

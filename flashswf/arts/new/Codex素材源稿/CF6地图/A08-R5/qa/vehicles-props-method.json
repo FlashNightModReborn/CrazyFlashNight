@@ -1,0 +1,69 @@
+{
+  "source": "R5 car: layered cockpit and corrected gun occlusion; new editable body/receiver SVG plus native project M134 barrel paths; smooth vector car/tires alpha and independent hardware alpha. Other props: upstream R2 artwork unchanged, original alpha retained. Deterministic generated micrograin and outlined typography.",
+  "seed": 1823142018281833,
+  "dimensions": {
+    "1823": [
+      411,
+      144
+    ],
+    "1420": [
+      144,
+      176
+    ],
+    "1828": [
+      55,
+      44
+    ],
+    "1833": [
+      52,
+      89
+    ]
+  },
+  "shared_shape_map": {
+    "1823": [
+      1824
+    ],
+    "1420": [
+      1421,
+      1422,
+      1423,
+      1424
+    ],
+    "1828": [
+      1829,
+      1830,
+      1831
+    ],
+    "1833": [
+      1834,
+      1835,
+      1836,
+      1837
+    ]
+  },
+  "unchanged": "All SWF fill matrices, original clipping polygons, atlas dimensions, animation display states and scene placement are retained by assembly. Bitmap1823 body outline is smoothed and new M134 alpha differs deliberately.",
+  "files": {
+    "1823": {
+      "sha256": "e842c952acdeff895fb28781f702561e893de0eb643a6871ebf0fc1e470ca93e",
+      "source": "source/vehicles_props.py: car/cockpit_r5/gun_cradle_brace_r5/rear_aero_r3/project_m134_r3/coated_car_r3",
+      "native_barrel": "reference/m134-native/render/m134-native-barrel-only-phase3.svg",
+      "alpha": "Smooth editable vehicle/tire outline, independent M134 hardware alpha; intentionally not old alpha",
+      "receiver": "Same-source referenced redrawing, not an untouched native whole gun",
+      "canvas": [
+        411,
+        144
+      ]
+    },
+    "1420": {
+      "sha256": "804d2e91691b1d4417381502f1ed1ae7b259bad3e1631708c1c86c54a627c801"
+    },
+    "1828": {
+      "sha256": "82a28835d404a0163284f1807d8977bd6d7bd047383478d83b25b278786f1912",
+      "source": "source/camera_r2.py",
+      "override": "R2 suspended camera, applied after vehicles_props.py"
+    },
+    "1833": {
+      "sha256": "bdbd0035d9aaa16d72e7a9d96484eae4885abb5cd67b79555933600038260e83"
+    }
+  }
+}

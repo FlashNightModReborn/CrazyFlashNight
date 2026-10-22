@@ -1,0 +1,27 @@
+{
+  "scope": "industrial floor 1957 only",
+  "validation": {
+    "stage": 18,
+    "original_reference_exact": {
+      "environment-original-nodes.json": true,
+      "environment-shape-details.json": true,
+      "layout-inventory.json": true
+    },
+    "changed_reused_svg_vs_R1": [
+      "bitmap-1957.svg"
+    ],
+    "floor_svg_sha256": "0d797ec659c8cbc797549936cf6e12fb28fdde2b40fdd9cd4614478dba523da9",
+    "floor_seams_sha256": "ef8ee41180699e123ff079393fdec80a0551f8581da2f48a687e1ffd28702bf8",
+    "rebuild_sha256": "f1926773706c91f4fd72160394c9143ccc62c3a5b499768cedeb74abe234d334",
+    "input_manifest_verified": true
+  },
+  "visual_review": "round1 actual inspection found original steps fixed but new internal clipping seams; round2-final removes nativeBounds duplicates and unions original floor clips; all four worlds and a19 angled wall inspected",
+  "independent_review": {
+    "reviewer": "assemble_cf6_review_batch",
+    "result": "accepted final candidate",
+    "findings": "a18 local and a19 angled wall: no residual vertical line or squared beam step; floor remains correctly behind walls and doors",
+    "residual_style": "regular mesh and relatively even beam surface remain from R1 style, outside seam scope"
+  },
+  "runtime_gameplay_modified": false,
+  "author_viewport_is_static_study": true
+}

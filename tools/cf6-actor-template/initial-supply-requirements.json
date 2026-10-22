@@ -1,0 +1,49 @@
+{
+  "schema": "cf6-initial-gun-supply.v1",
+  "weapon": "M4A1战术版",
+  "enhancement": 11,
+  "alreadyEquippedByActor": true,
+  "grantAdditionalFreeCopy": false,
+  "ammo": [
+    {
+      "kind": "primary",
+      "name": "突击步枪通用弹药",
+      "source": "data/items/消耗品_弹夹.xml",
+      "count": null,
+      "quantityAuthority": "chapter economy"
+    },
+    {
+      "kind": "subweapon",
+      "name": "榴弹弹药",
+      "source": "data/items/消耗品_弹夹.xml",
+      "count": null,
+      "quantityAuthority": "chapter economy"
+    }
+  ],
+  "authoredSubweapon": {
+    "name": "M4A1战术版",
+    "controlName": "M4A1战术版",
+    "description": "持枪瞄准时可以发射榴弹，每弹夹消耗1发榴弹弹药，可射击三发，换弹后可再次发射。",
+    "cd": "1000",
+    "mp": "0",
+    "power": "1800",
+    "powerMultiplier": "1",
+    "capacity": "3",
+    "reserveName": "榴弹弹药",
+    "bullet": "榴弹",
+    "sound": "re_GL_under.wav",
+    "split": "1",
+    "diffusion": "0",
+    "velocity": "25",
+    "range": "50",
+    "impact": "0.01",
+    "damageType": "物理",
+    "consumeMode": "onLoadGroup",
+    "consumeTiming": "onReloadCommit",
+    "clipCostPerLoad": "1",
+    "initialLoaded": "3",
+    "manualReloadAnimation": "longGun",
+    "manualReloadBurden": "25"
+  },
+  "note": "Subweapon fields are source facts, not an additional ammunition grant or runtime test result."
+}

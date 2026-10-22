@@ -1,0 +1,1029 @@
+{
+  "schema": "cf6-native-layer-candidate.v1",
+  "name": "CF6_A02_BG_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A02-R3/cf6-stage2-redraw-r3/parts/background-1613.svg",
+  "sourceSha256": "3f8d47aa8bd76d5a5d7d74a2315863edc2dd84e54a44afb8b71df3d448c180b9",
+  "nativeShapes": 2526,
+  "nativeSymbols": 870,
+  "intrinsicTextures": 1,
+  "masks": [
+    {
+      "id": "leaf0_b1600_clip-left-01-shard",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf0_b1600_clip-left-02-broken",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf0_b1600_clip-left-03-short",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf0_b1600_clip-left-04-high",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf0_b1600_clip-left-05-stump",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf0_b1600_clip-left-06-high",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf0_b1600_clip-left-07-broad-break",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf0_b1600_clip-rear-01",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf0_b1600_clip-rear-02-stump",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf0_b1600_clip-rear-03",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf0_b1600_clip-rear-04-right",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf0_b1600_clip-rear-05-right",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf0_b1600_clip-rear-06-right",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf0_b1600_clip-main-01-tall",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf0_b1600_clip-main-02-tall",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf0_b1600_clip-main-03-broken",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf0_fill0",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_b1603_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_b1603_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_b1603_original_openings",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "leaf1_fill0",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_b1604_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_b1604_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_b1604_original_openings",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "leaf1_fill1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_b1602_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_b1602_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_b1602_original_openings",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "leaf1_fill2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill3",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill5",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill6",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill7",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill8",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill9",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill10",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill11",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill12",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill13",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill14",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill15",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill16",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill17",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill18",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill19",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill20",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill21",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill22",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf1_fill23",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_b1603_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_b1603_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_b1603_original_openings",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "leaf2_fill0",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_b1604_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_b1604_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_b1604_original_openings",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "leaf2_fill1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_b1602_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_b1602_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_b1602_original_openings",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "leaf2_fill2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill3",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill5",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill6",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill7",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill8",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill9",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill10",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill11",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill12",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill13",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill14",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill15",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill16",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill17",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill18",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill19",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill20",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill21",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill22",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf2_fill23",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill0",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_b1603_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_b1603_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_b1603_original_openings",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "leaf3_fill1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_b1604_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_b1604_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_b1604_original_openings",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "leaf3_fill2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_b1602_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_b1602_sil",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_b1602_original_openings",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "leaf3_fill3",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill5",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill6",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill7",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill8",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill9",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill10",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill11",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill12",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill13",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill14",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill15",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill16",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill17",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill18",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill19",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill20",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill21",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill22",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill23",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill24",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill25",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill26",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill27",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill28",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill29",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill30",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill31",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill32",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill33",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill34",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill35",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill36",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill37",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill38",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill39",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill40",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill41",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill42",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill43",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill44",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill45",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill46",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill47",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill48",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill49",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill50",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill51",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill52",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill53",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill54",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill55",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill56",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill57",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill58",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill59",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill60",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill61",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill62",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill63",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill64",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill65",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "leaf3_fill66",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    }
+  ],
+  "maskImages": [],
+  "imagePlacements": [
+    {
+      "texture": "intrinsic-a379b9aee02af9ca67d993ce.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        324.0,
+        300.0
+      ],
+      "preserveAspectRatio": "none",
+      "nativeMatrix": [
+        0.5,
+        0,
+        0,
+        0.5,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "leaf1_farPlaneFinish",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.82,
+            0.0,
+            0.0,
+            0.0,
+            3.06,
+            0.0,
+            0.82,
+            0.0,
+            0.0,
+            3.06,
+            0.0,
+            0.0,
+            0.82,
+            0.0,
+            3.06,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          "mapping": "sRGB normalized offsets to 0..255"
+        },
+        {
+          "kind": "BlurFilter",
+          "sourceStdDeviation": [
+            0.28,
+            0.28
+          ],
+          "blur": [
+            0.56,
+            0.56
+          ],
+          "quality": 3,
+          "mapping": "three-pass native approximation; actual visual comparison required"
+        }
+      ],
+      "sourceRegion": {
+        "id": "leaf1_farPlaneFinish",
+        "x": "-.01",
+        "y": "-.05",
+        "width": "1.02",
+        "height": "1.1",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "farDark",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.62890625,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.62890625,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.62890625,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          "mapping": "sRGB normalized offsets to 0..255"
+        }
+      ],
+      "sourceRegion": {
+        "id": "farDark",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "leaf2_farPlaneFinish",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.82,
+            0.0,
+            0.0,
+            0.0,
+            3.06,
+            0.0,
+            0.82,
+            0.0,
+            0.0,
+            3.06,
+            0.0,
+            0.0,
+            0.82,
+            0.0,
+            3.06,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          "mapping": "sRGB normalized offsets to 0..255"
+        },
+        {
+          "kind": "BlurFilter",
+          "sourceStdDeviation": [
+            0.28,
+            0.28
+          ],
+          "blur": [
+            0.56,
+            0.56
+          ],
+          "quality": 3,
+          "mapping": "three-pass native approximation; actual visual comparison required"
+        }
+      ],
+      "sourceRegion": {
+        "id": "leaf2_farPlaneFinish",
+        "x": "-.01",
+        "y": "-.05",
+        "width": "1.02",
+        "height": "1.1",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "farDark",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.62890625,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.62890625,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.62890625,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          "mapping": "sRGB normalized offsets to 0..255"
+        }
+      ],
+      "sourceRegion": {
+        "id": "farDark",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    }
+  ],
+  "patterns": [],
+  "gradientFallbacks": [],
+  "sourceViewport": [
+    -716.95,
+    -183.0,
+    1330.9,
+    469.8
+  ],
+  "registrationMatrix": [
+    1.0,
+    0,
+    0,
+    1.0,
+    716.95,
+    183.0
+  ],
+  "state": "native XFL assembled; actual CS6 compile and rendering still pending",
+  "limits": [
+    "SVG filter-region clipping is reported per filter and not yet reproduced.",
+    "Native Gaussian blur is a three-pass approximation.",
+    "Root SVG viewport crop must be compared at the original edge."
+  ]
+}

@@ -1,5 +1,20 @@
 ﻿/** 可复现的出怪计划和有限纪录奖励。纯规则不读取或改写玩家状态。 */
 class org.flashNight.arki.scene.BookRunRules {
+    /** RewardStash may clone bookRun during commit/rollback; compare a detached identity, not object references. */
+    public static function sameCf6Run(identity:Object, current:Object):Boolean {
+        if (identity == null || current == null || identity.bookId !== "cf6-sting" || current.bookId !== "cf6-sting"
+                || identity.routeId !== "historical" || current.routeId !== "historical" || current.outcome !== "active"
+                || typeof identity.slot != "string" || identity.slot == "" || identity.slot !== current.slot
+                || typeof identity.seed != "number" || !isFinite(identity.seed) || isNaN(identity.seed)
+                || !(identity.seed > 0) || !(identity.seed < 2147483647) || Math.floor(identity.seed) != identity.seed
+                || typeof identity.startedAt != "number" || !isFinite(identity.startedAt) || isNaN(identity.startedAt)
+                || !(identity.startedAt > 0) || Math.floor(identity.startedAt) != identity.startedAt
+                || identity.seed !== current.seed || identity.startedAt !== current.startedAt
+                || identity.planSeed !== current.planSeed) return false;
+        return identity.planSeed === undefined || (typeof identity.planSeed == "number" && isFinite(identity.planSeed)
+            && !isNaN(identity.planSeed) && identity.planSeed > 0 && identity.planSeed < 2147483647
+            && Math.floor(identity.planSeed) == identity.planSeed);
+    }
     private static function next(state:Object):Number {
         state.value = (state.value * 48271) % 2147483647;
         return state.value / 2147483647;
@@ -7,8 +22,10 @@ class org.flashNight.arki.scene.BookRunRules {
     private static function integer(state:Object, lo:Number, hi:Number):Number {
         return lo + Math.floor(next(state) * (hi - lo + 1));
     }
-    public static function stages(seed:Number, startAt:Number):Array {
-        var config:Object = org.flashNight.arki.scene.BookDefinition.get();
+    public static function stages(seed:Number, startAt:Number, bookId:String):Array {
+        var config:Object = org.flashNight.arki.scene.BookDefinition.get(bookId);
+        if (config == null) return [];
+        if (config.id === "cf6-sting") return authoredStages(config, seed, startAt);
         var state:Object = {value:seed};
         if (isNaN(seed) || seed < 1 || seed >= 2147483647 || Math.floor(seed) != seed) state.value = 1;
         var result:Array = [];
@@ -98,6 +115,26 @@ class org.flashNight.arki.scene.BookRunRules {
         }
         return result;
     }
+    /** Authored CF6 plans are copied for each run; consumed drops never mutate cached config. */
+    private static function authoredStages(config:Object, seed:Number, startAt:Number):Array {
+        if (isNaN(startAt) || Math.floor(startAt) != startAt || startAt < 0 || startAt >= config.maps.length) return [];
+        var result:Array = [];
+        var maps:Array=org.flashNight.arki.scene.Cf6EconomyRules.maps(config,seed);
+        for (var i:Number=startAt;i<maps.length;i++) {
+            var map:Object=maps[i];
+            var stage:Object=map.stage;
+            if (stage.BasicInformation == null) stage.BasicInformation = {};
+            stage.BasicInformation.Background="flashswf/backgrounds/"+map.background;
+            stage.BasicInformation.EndFrame="房间";
+            stage.BasicInformation.Cf6Boss=map.bossEncounter;
+            if (!(stage.Event instanceof Array)) stage.Event=[];
+            stage.Event.unshift({EventName:"Start",Callback:{Name:"书中章节",Parameter:[i]},Message:config.title+" · "+map.title});
+            if (stage.Instances == null) stage.Instances={Instance:[]};
+            if (stage.Pickups == null) stage.Pickups={Pickup:[]};
+            result.push(stage);
+        }
+        return result;
+    }
     private static function bossPlan(config:Object, state:Object):Object {
         var result:Object = {instanceName:config.instanceName, intervalFrames:config.intervalFrames,
             maxAlive:config.maxAlive, maxRanged:config.maxRanged, groups:[]};
@@ -121,7 +158,17 @@ class org.flashNight.arki.scene.BookRunRules {
         return result;
     }
     public static function reward(run:Object, previous:Object):Object {
-        var c:Object = org.flashNight.arki.scene.BookDefinition.get();
+        if (run.bookId === "cf6-sting") {
+            var cleared:Boolean=run.routeId === "historical" && run.outcome === "victory" && run.debug !== true;
+            var historicalTime:Number=Number(run.elapsedMs);
+            cleared=cleared && !isNaN(historicalTime) && isFinite(historicalTime) && historicalTime > 0 && historicalTime < 86400000;
+            var oldBest:Number=Number(previous.bestMs || 0);
+            if (isNaN(oldBest) || oldBest < 0 || oldBest >= 86400000) oldBest=0;
+            return {sp:0,firstClear:previous.firstClear === true || cleared,bestTier:0,
+                bestMs:cleared && (oldBest == 0 || historicalTime < oldBest) ? historicalTime : oldBest,
+                reason:cleared ? "clear" : "incomplete"};
+        }
+        var c:Object = org.flashNight.arki.scene.BookDefinition.get("repair-campus");
         var first:Boolean = previous.firstClear === true;
         var best:Number = Number(previous.bestTier || 0), bestMs:Number = Number(previous.bestMs || 0);
         var elapsed:Number = Number(run.elapsedMs);
@@ -148,8 +195,9 @@ class org.flashNight.arki.scene.BookRunRules {
         if (isNaN(elapsed) || elapsed < 0 || elapsed >= 86400000) elapsed = 0;
         var outcome:String = String(run.outcome);
         if (outcome != "victory" && outcome != "failure" && outcome != "defeat" && outcome != "retreat") outcome = "abandoned";
-        return {runId:String(run.slot), bookId:String(run.bookId), outcome:outcome,
+        var record:Object = {runId:String(run.slot), bookId:String(run.bookId), outcome:outcome,
             elapsedMs:Math.floor(elapsed), completedAt:completedAt, sp:quote.sp,
             reason:quote.reason, debug:run.debug === true};
+        return record;
     }
 }

@@ -1,0 +1,80 @@
+{
+  "id": "ffdec-crosscheck-r15",
+  "date": "2026-10-22",
+  "scope": "CF6 A01 教学炮塔 sprite1591 闭包定向交叉核对（r15，maps lane）",
+  "tool": {
+    "ffdec": "tools/ffdec/ffdec-cli.jar (JPEXS Free Flash Decompiler v21.1.1)",
+    "jre": "C:/Program Files/Adobe/Adobe Animate 2024/jre/bin/java.exe（主控核对存在，r15 实跑可用）",
+    "independentDecoder": "tools/cf6-tutorial-turrets/verify-native-decode.py（r14 起独立的 from-scratch SWF-spec 解码器，非 FFDec）"
+  },
+  "sourceSwf": {
+    "path": "tmp/cf6-roguelike-20261021/kimi-content/extract/crazyflasher6-cn.swf",
+    "sha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "note": "与 tutorial-turrets.fragment.json sourceSwf 钉值一致"
+  },
+  "exportsPerformed": [
+    {"what": "sprite1591 帧序列 PNG", "cmd": "-selectid 1591 -export sprite", "out": "tmp/cf6-roguelike-20261021/kimi-maps/r15/ffdec/sprite1591-png/DefineSprite_1591/ (18 张)"},
+    {"what": "sprite1591 帧序列 SVG", "cmd": "-format sprite:svg -selectid 1591 -export sprite", "out": "tmp/.../r15/ffdec/sprite1591-svg/DefineSprite_1591/ (18 张)"},
+    {"what": "DefineSound 1169 定向导出", "cmd": "-selectid 1169 -export sound", "out": "tmp/.../r15/ffdec/sound1169/1169_ump.mp3"},
+    {"what": "dumpSWF 全片标签表（纯文本）", "cmd": "-dumpSWF", "out": "tmp/.../r15/ffdec/dumpSWF-full.txt (68966 行)"},
+    {"what": "sprite1591 闭包脚本 5 件", "cmd": "-export script（-selectid 对 script 不生效，全片导出后仅保留 DefineSprite_1591 子树，余树已删）", "out": "tmp/.../r15/ffdec/sprite1591-scripts-keep/DefineSprite_1591/ (5 文件)"}
+  ],
+  "overbroadExportsRemoved": [
+    "sprite1591-xfl（-selectid 对 xfl 导出不生效，140MB 近全片资产，已用 PowerShell -LiteralPath 删除）",
+    "sprite1591-scripts 全片脚本树（9.6MB，含超长 Unicode 路径，改用 \\\\?\\ 前缀后删除；定向 5 件已先行复制到 sprite1591-scripts-keep）"
+  ],
+  "findings": {
+    "frameCount": {"ffdec": "18 帧（PNG/SVG 导出与 sprite 头 frameCount=0x12）", "independent": 18, "agree": true},
+    "frameLayout": {
+      "ffdec": "SVG 1-11 与 13-18 字节完全相同（258320B）；帧12 独大（261915B，含枪口焰+标记）；dumpSWF 子标签序列：帧1 [SoundStreamHead2, Unknown253, DoAction(1242B), PlaceObject3(1590,dpt1)]，11×ShowFrame 后帧12 [Unknown253, PlaceObject2(359,dpt5,枪口位置2), PlaceObject2(506,dpt7), StartSound(1169)]，帧13 两个 RemoveObject2(dpt5,dpt7)",
+      "independent": "verify-decode-r15.json 同序同事",
+      "agree": true,
+      "matchesXflPlan": "11+1+6 与 build-turret-xfl.py 生成的 actions/帧12枪口/机身/射击声 四层帧结构一致"
+    },
+    "soundEnvelope": {
+      "ffdecDumpBytes": "91 04 08 01 00 00 00 00 0e 2b 3d 25",
+      "parsed": {"soundId": 1169, "flags": "0x08 (仅 HasEnvelope)", "points": 1, "pos44": 0, "level0": 11022, "level1": 9533},
+      "matchesConstants": "build-turret-xfl.py SOUND_ENVELOPE {level0:11022, level1:9533} 精确一致"
+    },
+    "colorMatrixFilter": {
+      "ffdecSvgFrame1": "feColorMatrix 20 值（offset 列按 SVG 0..1 归一化，×255 还原后与 COLOR_MATRIX float32 舍入内一致，差 <1e-6）",
+      "framesWithFilter": 18,
+      "independent": "帧1 PlaceObject3 恰好一个 ColorMatrixFilter，20 值与 build-turret-xfl.py COLOR_MATRIX 逐值精确相等",
+      "agree": true
+    },
+    "placements": {
+      "机身(chid1590,dpt1)": {"tx": 20.55, "ty": -49.45, "agree": true},
+      "枪口位置2(chid359,dpt5)": {"tx": 105.25, "ty": -12.55, "agree": true},
+      "枪口焰(chid506,dpt7)": {"tx": 112.45, "ty": -70.5, "agree": true}
+    },
+    "scripts": {
+      "frame1DoAction": "1242B；FFDec 反编译可见 swapDepths(this._y*100) 与僵尸增援生成段（僵尸型敌人总个数/door.play()/attachMovie/僵尸型敌人初始化）及 总个数<=0 时 stop()",
+      "muzzleLoad": "onClipEvent(load): localToGlobal→gameworld.globalToLocal→shootX/shootY→射击1()",
+      "muzzleEnterFrame": "onClipEvent(enterFrame): 每帧更新 shootX/shootY",
+      "muzzleUnload": "onClipEvent(unload): clearInterval(keepshooting)",
+      "flashLoad": "PlaceObject2(506) onClipEvent(load): gotoAndStop(random(3)+1) —— 与生成 XFL 枪口焰元件帧1 脚本一致"
+    }
+  },
+  "divergences": [
+    {
+      "id": "sound-4byte-prefix",
+      "what": "FFDec 导出 mp3(2392B) == Codex 源(2396B) 去掉前 4 字节（00 00 + SeekSamples 0x067d=1661）；MP3 帧载荷逐字节相同",
+      "assessment": "格式层差异（FFDec 剥非音频头），非内容漂移；Codex 源带 4 字节前缀是否影响 CS6 importFile 留待明晨 CS6 链验证",
+      "kept": true
+    },
+    {
+      "id": "frame1-action-underdocumented",
+      "what": "r14 fragment turretSymbol.frame1Action 仅记载 swapDepths；实际 DoAction(1242B) 还含僵尸增援生成与条件 stop()",
+      "assessment": "文档级相异；r15 服务化设计本就不迁移该脚本（波次归 WaveSpawner/服务，排序归 DepthManager），本轮已在 build-fragment.py 修正表述",
+      "kept": true
+    },
+    {
+      "id": "muzzle-unload-omitted",
+      "what": "r14 fragment 事件映射只列 turretMuzzleLoad/EnterFrame；实际还有 onClipEvent(unload) clearInterval(keepshooting)（44B，两侧解码器均见）",
+      "assessment": "文档级相异；r15 服务 removeOwned/teardown 已承担等价清理，本轮已在 build-fragment.py 补记",
+      "kept": true
+    }
+  ],
+  "crossCheckConclusion": "独立解码器与 FFDec 在帧数/帧结构/包络值/滤镜20值/三处放置坐标上全部一致；列出的三处相异均为格式层或 r14 文档记述遗漏，保留证据不粉饰。不把独立脚本自验称作第三方验证：FFDec 侧结论均来自 ffdec-cli 实际导出/转储。",
+  "notDone": "无 GUI/CS6；SVG/PNG 渲染内容未做逐像素比对（无基线意义）；CF6_A01_Turret.swf 仍未编译"
+}

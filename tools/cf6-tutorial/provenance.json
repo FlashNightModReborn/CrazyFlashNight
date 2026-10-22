@@ -1,0 +1,703 @@
+{
+  "schema": "cf6-tutorial-assembly.v2",
+  "mapId": "TUTORIAL",
+  "background": "cf6/CF6_Tutorial_BG.swf",
+  "xfl": "flashswf/backgrounds/cf6/CF6_Tutorial_BG/CF6_Tutorial_BG.xfl",
+  "sources": [
+    {
+      "path": "flashswf/arts/new/素材库-地图元件/LIBRARY/门2.xml",
+      "sha256": "dcdf35dbcadf9c0a80283734353a4f71a7df9d5866b1cfe163fd1a052382f94a",
+      "bytes": 10984
+    },
+    {
+      "path": "flashswf/arts/new/素材库-地图元件/LIBRARY/门灯光+排气扇.xml",
+      "sha256": "6276d932eb08b6db9e314c5f10efef24e2f7b000d6fbd43a33f1cb873f62cab3",
+      "bytes": 8232
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 1927.xml",
+      "sha256": "cc5aba9576c33277a5364423a392e56dee57d467f6a5f4583b3b4281e2c7e3da",
+      "bytes": 15014
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2256.xml",
+      "sha256": "aeda379f9aa012d6656d271aca1278f7469cbc6beda017f2019d55c4b3a4eb1b",
+      "bytes": 1900
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2262.xml",
+      "sha256": "c8e8fce17009461e75c58db4e08861ace2f98f75ac7758fd5fa4c61e228a7450",
+      "bytes": 9881
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2264.xml",
+      "sha256": "af1dd0879a6c850ec8c3aded7d76453566c90b6d568806622bd2f4b1a0862ca5",
+      "bytes": 7684
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2278.xml",
+      "sha256": "1b599df47d0880d1baeb0d7c95e1f739d395dfd377c1384bb93eb01ed84d78b1",
+      "bytes": 23660
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2280.xml",
+      "sha256": "f2dd69c6dd4cd960c7c29f20f2e4c928e1bfec394a3fd4cf23fac0dfe5dba9ee",
+      "bytes": 52421
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2282.xml",
+      "sha256": "fa4fa813ade41ce1292088214fe3aee1b7f85cc56a76ea1bf4b70fd16215d531",
+      "bytes": 33092
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2283.xml",
+      "sha256": "27729d304fcc85475f99b35e33929891bbb0574a88120f9c9ee685fc96ee4a49",
+      "bytes": 25942
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2287.xml",
+      "sha256": "026b6bc02c1ae43d7833e2a5c172310379d1f5a9e2e06d22bad7dddf89152419",
+      "bytes": 28988
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2290.xml",
+      "sha256": "d63ac6008f09b9f2e46f4b7704e9a5846de3f670398efa9575d7049ff7fa88bd",
+      "bytes": 3053
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2292.xml",
+      "sha256": "ac4fdd3a26e598050333ec1dab93330ef7ecadcebf9076a5e4eac1afbfa06ce5",
+      "bytes": 1274
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2293.xml",
+      "sha256": "423a23d0c02127db8e0142a565e85e0ddb2124b2929078739ffe89028a80d361",
+      "bytes": 25226
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2302.xml",
+      "sha256": "388e4839e9e6da1cbaaf9bd464a295749165b088a5c24f4e9c5a16bf210bcf17",
+      "bytes": 7018
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2303.xml",
+      "sha256": "d31b3a660050d03030e0aa98e97c3d4697d0ab1742f1bb7491166d74f44473e5",
+      "bytes": 5962
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2305.xml",
+      "sha256": "813236fcffd44415bf81bbbc85dd813b8e95b4f08663bda2bf65bd3f63207eec",
+      "bytes": 2963
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2310.xml",
+      "sha256": "84373e9971b2b40af819fc1c04a553ccc9cbd55f08da4d47cc74a4d6158c8f71",
+      "bytes": 5595
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2322.xml",
+      "sha256": "90e094f44f3628f3de186735cc19587fe10ee1e0c2a2beb5b2741282ce62b66f",
+      "bytes": 1278
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2323.xml",
+      "sha256": "1e64d1117a963a3a6eba85f51ff6d1705088b2647e4e09af30657c29b14c3b19",
+      "bytes": 1597
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 476.xml",
+      "sha256": "8534e8179c438211f350c1961383f787c6e9a28e17e9e9060ceca0893e1ae093",
+      "bytes": 1515
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/sprite/Symbol 2254.xml",
+      "sha256": "ba0761ada8643595359f1e823b080f0630f9680eaccb508f26809b09a0f961c5",
+      "bytes": 1221
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/sprite/Symbol 2577.xml",
+      "sha256": "3069d1db0e6b75429f407eacde3cc0ef623e1ece0c47b9295a01bdac480ce08e",
+      "bytes": 26455
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/房间摆件/摆件初始床.xml",
+      "sha256": "8a1469731bc51a08ce0e4323fbb415c45870e3941925517cc69248af2f2be73e",
+      "bytes": 42763
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/房间摆件/摆件初始梯子.xml",
+      "sha256": "728d862a33b223efdd514af2ef2033c506e92f855a9f2ebe9e5b457cd14a4181",
+      "bytes": 16779
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/LIBRARY/房间摆件/生活设施.xml",
+      "sha256": "7c575ccf463c68b20eba0526672924c22dc6e752bd33fa6d3253363ecfaedbfa",
+      "bytes": 1693
+    },
+    {
+      "path": "tools/cf6-tutorial/layout.json",
+      "sha256": "950ba610f415696b36665bfa855cf53e72489538e22e6b7e40595b58a45959f0",
+      "bytes": 5838
+    },
+    {
+      "path": "tools/cf6-tutorial/original-tutorial-geometry.json",
+      "sha256": "183abb3e10bd003a117f3addcc6edf52968d7c9a290d45f2fbd5ccce767a50e1",
+      "bytes": 9318
+    },
+    {
+      "path": "flashswf/backgrounds/cf6/CF6_A01_BG/DOMDocument.xml",
+      "sha256": "2dffded73e766c8d945b075827b0b884e818598adc6eddd4717cba60cbee14f1",
+      "bytes": 150796
+    },
+    {
+      "path": "flashswf/backgrounds/cf6/CF6_A01_BG/PublishSettings.xml",
+      "sha256": "73eb106d6bb4814f95bbd320e8d54b771fca8ebf2b86495e7cecd1d09259ab7b",
+      "bytes": 7799
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/DOMDocument.xml",
+      "sha256": "16b3870ec1d12d7244d9b661a9836b5d6f90719b360423e1f05c9b5a676a86fd",
+      "bytes": 186968
+    },
+    {
+      "path": "tools/cf6-tutorial/assemble.py",
+      "sha256": "87664e3b7d425530568129839a3b5013901d1b7d6701d2836edbfa128cd46f9e",
+      "bytes": 37400
+    },
+    {
+      "path": "tools/cf6-map-runtime/build-tutorial.py",
+      "sha256": "25a60606cc1d6bfa09adfe075b2639d1608bf4a6dcb139da51405bd3603a8fba",
+      "bytes": 1077
+    },
+    {
+      "path": "tools/rhino-map-assets/build.py",
+      "sha256": "cec01c5235d820fde7a9fad309602eea40ab22ba30d6688c64ed3cdf1d29f025",
+      "bytes": 23597
+    },
+    {
+      "path": "tools/asset-metrology/xfl_geometry.py",
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469",
+      "bytes": 7833
+    },
+    {
+      "path": "tools/cf6-map-runtime/geometry.py",
+      "sha256": "4c2c043b30ec6cf66083d9f22a285af480b638df67530dc2895e0d8ae5b4e211",
+      "bytes": 6771
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/bin/M 6 1736924415.dat",
+      "sha256": "744350422af43c01d69336cb74711982697c0cd5638415f6b64c796fda8f5471",
+      "bytes": 18486
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/bin/M 5 1736924415.dat",
+      "sha256": "ec588f8252952296b3b833d752788adc12c9a04903403011a6e919d6b527ddb7",
+      "bytes": 1932
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/bin/M 4 1736924415.dat",
+      "sha256": "19eee04b09e08c97ed65e9500d90731701c6c2c5dccafc81a35e2db397ee91ef",
+      "bytes": 1754
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/bin/M 3 1736924415.dat",
+      "sha256": "bc66b70bd4c3de8ccd054f815d6394f068af65382381b862e92510294ed03959",
+      "bytes": 3090
+    },
+    {
+      "path": "flashswf/levels/基地场景合集/bin/M 2 1736924415.dat",
+      "sha256": "55ee411f10aab46351f23d4abbba9c95f82701954fae52a0e1cf51608f48fc59",
+      "bytes": 3607
+    }
+  ],
+  "symbolMapping": [
+    {
+      "sourceSymbol": "sprite/Symbol 2577",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/sprite/Symbol 2577.xml",
+      "sourceSha256": "3069d1db0e6b75429f407eacde3cc0ef623e1ece0c47b9295a01bdac480ce08e",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2577"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2323",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2323.xml",
+      "sourceSha256": "1e64d1117a963a3a6eba85f51ff6d1705088b2647e4e09af30657c29b14c3b19",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2323"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2322",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2322.xml",
+      "sourceSha256": "90e094f44f3628f3de186735cc19587fe10ee1e0c2a2beb5b2741282ce62b66f",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2322"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2303",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2303.xml",
+      "sourceSha256": "d31b3a660050d03030e0aa98e97c3d4697d0ab1742f1bb7491166d74f44473e5",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2303"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2302",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2302.xml",
+      "sourceSha256": "388e4839e9e6da1cbaaf9bd464a295749165b088a5c24f4e9c5a16bf210bcf17",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2302"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 1927",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 1927.xml",
+      "sourceSha256": "cc5aba9576c33277a5364423a392e56dee57d467f6a5f4583b3b4281e2c7e3da",
+      "staticSymbol": "Tutorial/房间壳-Symbol 1927"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2310",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2310.xml",
+      "sourceSha256": "84373e9971b2b40af819fc1c04a553ccc9cbd55f08da4d47cc74a4d6158c8f71",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2310"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2287",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2287.xml",
+      "sourceSha256": "026b6bc02c1ae43d7833e2a5c172310379d1f5a9e2e06d22bad7dddf89152419",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2287"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2283",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2283.xml",
+      "sourceSha256": "27729d304fcc85475f99b35e33929891bbb0574a88120f9c9ee685fc96ee4a49",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2283"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2282",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2282.xml",
+      "sourceSha256": "fa4fa813ade41ce1292088214fe3aee1b7f85cc56a76ea1bf4b70fd16215d531",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2282"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2280",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2280.xml",
+      "sourceSha256": "f2dd69c6dd4cd960c7c29f20f2e4c928e1bfec394a3fd4cf23fac0dfe5dba9ee",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2280"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2278",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2278.xml",
+      "sourceSha256": "1b599df47d0880d1baeb0d7c95e1f739d395dfd377c1384bb93eb01ed84d78b1",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2278"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2305",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2305.xml",
+      "sourceSha256": "813236fcffd44415bf81bbbc85dd813b8e95b4f08663bda2bf65bd3f63207eec",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2305"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2293",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2293.xml",
+      "sourceSha256": "423a23d0c02127db8e0142a565e85e0ddb2124b2929078739ffe89028a80d361",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2293"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 476",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 476.xml",
+      "sourceSha256": "8534e8179c438211f350c1961383f787c6e9a28e17e9e9060ceca0893e1ae093",
+      "staticSymbol": "Tutorial/房间壳-Symbol 476"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2292",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2292.xml",
+      "sourceSha256": "ac4fdd3a26e598050333ec1dab93330ef7ecadcebf9076a5e4eac1afbfa06ce5",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2292"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2290",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2290.xml",
+      "sourceSha256": "d63ac6008f09b9f2e46f4b7704e9a5846de3f670398efa9575d7049ff7fa88bd",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2290"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2264",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2264.xml",
+      "sourceSha256": "af1dd0879a6c850ec8c3aded7d76453566c90b6d568806622bd2f4b1a0862ca5",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2264"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2262",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2262.xml",
+      "sourceSha256": "c8e8fce17009461e75c58db4e08861ace2f98f75ac7758fd5fa4c61e228a7450",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2262"
+    },
+    {
+      "sourceSymbol": "shape/Symbol 2256",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/shape/Symbol 2256.xml",
+      "sourceSha256": "aeda379f9aa012d6656d271aca1278f7469cbc6beda017f2019d55c4b3a4eb1b",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2256"
+    },
+    {
+      "sourceSymbol": "sprite/Symbol 2254",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/sprite/Symbol 2254.xml",
+      "sourceSha256": "ba0761ada8643595359f1e823b080f0630f9680eaccb508f26809b09a0f961c5",
+      "staticSymbol": "Tutorial/房间壳-Symbol 2254"
+    },
+    {
+      "sourceSymbol": "房间摆件/生活设施",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/房间摆件/生活设施.xml",
+      "sourceSha256": "7c575ccf463c68b20eba0526672924c22dc6e752bd33fa6d3253363ecfaedbfa",
+      "staticSymbol": "Tutorial/高架床-生活设施"
+    },
+    {
+      "sourceSymbol": "房间摆件/摆件初始梯子",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/房间摆件/摆件初始梯子.xml",
+      "sourceSha256": "728d862a33b223efdd514af2ef2033c506e92f855a9f2ebe9e5b457cd14a4181",
+      "staticSymbol": "Tutorial/高架床-摆件初始梯子"
+    },
+    {
+      "sourceSymbol": "房间摆件/摆件初始床",
+      "sourceFile": "flashswf/levels/基地场景合集/LIBRARY/房间摆件/摆件初始床.xml",
+      "sourceSha256": "8a1469731bc51a08ce0e4323fbb415c45870e3941925517cc69248af2f2be73e",
+      "staticSymbol": "Tutorial/高架床-摆件初始床"
+    },
+    {
+      "sourceSymbol": "门灯光+排气扇",
+      "sourceFile": "flashswf/arts/new/素材库-地图元件/LIBRARY/门灯光+排气扇.xml",
+      "sourceSha256": "6276d932eb08b6db9e314c5f10efef24e2f7b000d6fbd43a33f1cb873f62cab3",
+      "staticSymbol": "Tutorial/门灯-门灯光+排气扇"
+    },
+    {
+      "sourceSymbol": "门2",
+      "sourceFile": "flashswf/arts/new/素材库-地图元件/LIBRARY/门2.xml",
+      "sourceSha256": "dcdf35dbcadf9c0a80283734353a4f71a7df9d5866b1cfe163fd1a052382f94a",
+      "staticSymbol": "Tutorial/门-门2"
+    }
+  ],
+  "placements": [
+    {
+      "role": "房间壳",
+      "symbol": "Tutorial/房间壳-Symbol 2577",
+      "matrix": {
+        "a": 1.383,
+        "b": 0.0,
+        "c": 0.0,
+        "d": 1.383,
+        "tx": 1508.9221499999999,
+        "ty": 196.73925
+      },
+      "naturalBounds": [
+        -1239.47,
+        -472.99,
+        -70.89,
+        306.7
+      ],
+      "worldBounds": [
+        -205.26,
+        -457.4,
+        1410.88,
+        620.91
+      ],
+      "evidence": "宿舍房间.xml 背景层原样摆放（含滤镜）"
+    },
+    {
+      "role": "高架床",
+      "symbol": "Tutorial/高架床-生活设施",
+      "matrix": {
+        "a": 0.9,
+        "b": 0.0,
+        "c": 0.0,
+        "d": 0.9,
+        "tx": 118.08999999999999,
+        "ty": -154.96500000000003
+      },
+      "naturalBounds": [
+        79.9,
+        207.7,
+        409.15,
+        398.85
+      ],
+      "worldBounds": [
+        190.0,
+        31.96,
+        486.32,
+        204.0
+      ],
+      "evidence": "原生生活设施组合；真实Player11首版上缘裁切后按138px角色标尺缩至0.9，底边对齐204，保留组合内桌面与床架"
+    },
+    {
+      "role": "门灯左",
+      "symbol": "Tutorial/门灯-门灯光+排气扇",
+      "matrix": {
+        "a": 1.0,
+        "b": 0.0,
+        "c": 0.0,
+        "d": 1.0,
+        "tx": 43.5,
+        "ty": 25.5
+      },
+      "naturalBounds": [
+        -0.5,
+        -0.5,
+        100.65,
+        41.8
+      ],
+      "worldBounds": [
+        43.0,
+        25.0,
+        144.15,
+        67.3
+      ],
+      "evidence": "原作左灯管1410+光晕1411 世界 x≈43..181、y≈-58..111"
+    },
+    {
+      "role": "门灯右",
+      "symbol": "Tutorial/门灯-门灯光+排气扇",
+      "matrix": {
+        "a": 1.0,
+        "b": 0.0,
+        "c": 0.0,
+        "d": 1.0,
+        "tx": 430.5,
+        "ty": 25.5
+      },
+      "naturalBounds": [
+        -0.5,
+        -0.5,
+        100.65,
+        41.8
+      ],
+      "worldBounds": [
+        430.0,
+        25.0,
+        531.15,
+        67.3
+      ],
+      "evidence": "原作右灯管+光晕组 世界 x≈430..630"
+    },
+    {
+      "role": "出口门",
+      "symbol": "Tutorial/门-门2",
+      "matrix": {
+        "a": 0.8,
+        "b": 0.65,
+        "c": 0.0,
+        "d": 0.9,
+        "tx": 886.6,
+        "ty": 179.14999999999998
+      },
+      "naturalBounds": [
+        0.0,
+        0.0,
+        148.0,
+        194.0
+      ],
+      "worldBounds": [
+        886.6,
+        179.15,
+        1005.0,
+        449.95
+      ],
+      "evidence": "原门2保留竖边比例0.9，水平边沿右侧墙面倾斜；右下锚点仍为原型出口边缘，实际通行待验"
+    }
+  ],
+  "componentSizesWorldPx": {
+    "房间壳": {
+      "worldWidth": 1616.14,
+      "worldHeight": 1078.31
+    },
+    "高架床": {
+      "worldWidth": 296.32,
+      "worldHeight": 172.04
+    },
+    "门灯左": {
+      "worldWidth": 101.15,
+      "worldHeight": 42.3
+    },
+    "门灯右": {
+      "worldWidth": 101.15,
+      "worldHeight": 42.3
+    },
+    "出口门": {
+      "worldWidth": 118.4,
+      "worldHeight": 270.8
+    }
+  },
+  "characterReference": "CF7 持枪站姿约 138.38px（tools/cf6-map-runtime/README.md §输入与坐标）；worldScale=1",
+  "original": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "rootLabel": "教学关 = 主时间轴第58帧；world sprite = DefineSprite_1499 gameworld；背景 = DefineSprite_1419",
+    "walkBounds": [
+      50,
+      150,
+      1000,
+      500
+    ],
+    "authoredSpawn": [
+      347.5,
+      270.5
+    ],
+    "originalExitChain": "门1430 → 切镜 → 根标签 s1 → a1（原作第一关）；本作经章节顺序子关进入 A01",
+    "artAvailable": false,
+    "artNote": "原教学图不在 21 图源包内；背景画面为现役素材近似重组，不声称等价"
+  },
+  "geometry": {
+    "status": "originalStaticFillWithPrototypeDerivedEntryExit",
+    "collision": "原作 地图 碰撞子树偶奇填充（实心外墙减行走孔洞）按 walkBounds 裁剪分解为无孔凸多边形；与 route 覆盖同一 filled_trapezoids 管线",
+    "walkableBand": "后缘 y≈204（含 x182..507 家具凹口）、前缘 y≈449.95、右墙斜边 (716.5,204)→(1020.8,448.95)",
+    "spawn": [
+      347.5,
+      270.5
+    ],
+    "spawnAdjusted": false,
+    "exit": {
+      "direction": "右",
+      "rect": [
+        940,
+        425,
+        990,
+        445
+      ],
+      "note": "prototypeDerived CF7 手动右侧出口，不宣称原作自动转场"
+    },
+    "leftSpawnLine": [
+      59,
+      210,
+      61,
+      440
+    ],
+    "rightSpawnLine": [
+      979,
+      430,
+      981,
+      440
+    ],
+    "approximations": []
+  },
+  "scriptWhitelist": {
+    "allowed": [
+      "根时间轴第2帧 stop()+所有权/active guard（与 CF6_A01_BG 逐字一致）"
+    ],
+    "guardSha256": "c807faba0cc4d1becf48ea12a52f7a01371fbf1a70bb9dae1c73f2f621d170a8",
+    "strippedFromCopies": 0,
+    "convertedButtons": 0,
+    "removedLinkageAttrs": 0,
+    "droppedEmptyLayers": 0
+  },
+  "vectorReport": {
+    "symbols": 27,
+    "edgeSegments": 11541,
+    "bitmaps": 5,
+    "bitmapBytes": 28869,
+    "mediaSourceKind": "native-cache-only-existing-xfl",
+    "bitmapNote": "5 张纹理以原库原生 bin 缓存逐字闭合（href 原件本就不存在，探针 tutorial-cache-probe-r1 已真实 CS6 0/0）；不生成/重编码图像"
+  },
+  "media": [
+    {
+      "name": "image/bitmap2252.jpg",
+      "mediaSourceKind": "native-cache-only-existing-xfl",
+      "originalHrefPresent": false,
+      "frameRight": 15120,
+      "frameBottom": 4280,
+      "isJPEG": true,
+      "compressionType": null,
+      "sourceCache": {
+        "path": "flashswf/levels/基地场景合集/bin/M 6 1736924415.dat",
+        "sha256": "744350422af43c01d69336cb74711982697c0cd5638415f6b64c796fda8f5471",
+        "bytes": 18486
+      },
+      "outputBin": {
+        "path": "flashswf/backgrounds/cf6/CF6_Tutorial_BG/bin/M 6 1736924415.dat",
+        "sha256": "744350422af43c01d69336cb74711982697c0cd5638415f6b64c796fda8f5471",
+        "bytes": 18486
+      }
+    },
+    {
+      "name": "image/bitmap2255.jpg",
+      "mediaSourceKind": "native-cache-only-existing-xfl",
+      "originalHrefPresent": false,
+      "frameRight": 4000,
+      "frameBottom": 4000,
+      "isJPEG": true,
+      "compressionType": null,
+      "sourceCache": {
+        "path": "flashswf/levels/基地场景合集/bin/M 5 1736924415.dat",
+        "sha256": "ec588f8252952296b3b833d752788adc12c9a04903403011a6e919d6b527ddb7",
+        "bytes": 1932
+      },
+      "outputBin": {
+        "path": "flashswf/backgrounds/cf6/CF6_Tutorial_BG/bin/M 5 1736924415.dat",
+        "sha256": "ec588f8252952296b3b833d752788adc12c9a04903403011a6e919d6b527ddb7",
+        "bytes": 1932
+      }
+    },
+    {
+      "name": "image/bitmap2259.jpg",
+      "mediaSourceKind": "native-cache-only-existing-xfl",
+      "originalHrefPresent": false,
+      "frameRight": 4000,
+      "frameBottom": 4000,
+      "isJPEG": true,
+      "compressionType": null,
+      "sourceCache": {
+        "path": "flashswf/levels/基地场景合集/bin/M 4 1736924415.dat",
+        "sha256": "19eee04b09e08c97ed65e9500d90731701c6c2c5dccafc81a35e2db397ee91ef",
+        "bytes": 1754
+      },
+      "outputBin": {
+        "path": "flashswf/backgrounds/cf6/CF6_Tutorial_BG/bin/M 4 1736924415.dat",
+        "sha256": "19eee04b09e08c97ed65e9500d90731701c6c2c5dccafc81a35e2db397ee91ef",
+        "bytes": 1754
+      }
+    },
+    {
+      "name": "image/bitmap2261.png",
+      "mediaSourceKind": "native-cache-only-existing-xfl",
+      "originalHrefPresent": false,
+      "frameRight": 1140,
+      "frameBottom": 1480,
+      "isJPEG": false,
+      "compressionType": "lossless",
+      "sourceCache": {
+        "path": "flashswf/levels/基地场景合集/bin/M 3 1736924415.dat",
+        "sha256": "bc66b70bd4c3de8ccd054f815d6394f068af65382381b862e92510294ed03959",
+        "bytes": 3090
+      },
+      "outputBin": {
+        "path": "flashswf/backgrounds/cf6/CF6_Tutorial_BG/bin/M 3 1736924415.dat",
+        "sha256": "bc66b70bd4c3de8ccd054f815d6394f068af65382381b862e92510294ed03959",
+        "bytes": 3090
+      }
+    },
+    {
+      "name": "image/bitmap2321.png",
+      "mediaSourceKind": "native-cache-only-existing-xfl",
+      "originalHrefPresent": false,
+      "frameRight": 2760,
+      "frameBottom": 500,
+      "isJPEG": false,
+      "compressionType": null,
+      "sourceCache": {
+        "path": "flashswf/levels/基地场景合集/bin/M 2 1736924415.dat",
+        "sha256": "55ee411f10aab46351f23d4abbba9c95f82701954fae52a0e1cf51608f48fc59",
+        "bytes": 3607
+      },
+      "outputBin": {
+        "path": "flashswf/backgrounds/cf6/CF6_Tutorial_BG/bin/M 2 1736924415.dat",
+        "sha256": "55ee411f10aab46351f23d4abbba9c95f82701954fae52a0e1cf51608f48fc59",
+        "bytes": 3607
+      }
+    }
+  ],
+  "integratedByRoot": [
+    "BookDefinition 白名单只接受 cf6/CF6_Tutorial_BG.swf，已经 root 真实编译 579/579 测试通过",
+    "root 装配器已接 tutorial-map.fragment.json 与 environment.fragment.xml；runtime-index 20 图集合不变（教学为独立输入）"
+  ],
+  "approximations": [
+    "原教学美术缺失：房间壳/高架床/工作台取自现役宿舍房间（基地场景合集），门灯取自素材库-地图元件 门灯光+排气扇，门取 门2",
+    "房间壳按宿舍→教学世界 1.383 倍映射；高架床组合、门和灯具使用 layout.json 独立世界锚点及角色标尺缩放",
+    "原作墙照片（1443×2）与排气扇动画（1448×2）未复刻；门灯位置按原作灯管位",
+    "原作三个补给箱改为标准地面拾取物两份；原作屏外 弃枪/敌人生成器 不进入本作",
+    "门方向与原布局一致（右侧）；原生门图使用侧墙仿射摆放，保留独立的原型通行区"
+  ],
+  "pendingIntegration": [
+    "真实 CS6 编译（root）：scripts/compile_test.ps1 -Target 'flashswf/backgrounds/cf6/CF6_Tutorial_BG/CF6_Tutorial_BG.xfl' -PublishOnly -VerifySwf 'flashswf/backgrounds/cf6/CF6_Tutorial_BG.swf'；本线不编译、不生成 SWF",
+    "编译产物视觉检查（root）：5 张 native-cache 纹理在 SWF 画面中完整（同等装配探针 tutorial-cache-probe-r1 已 0/0 通过并目视确认）",
+    "实机验证（root）：角色体量/行走带/门口与画面一致、空波次清关开放出口、撤退回包"
+  ],
+  "acceptanceBoundary": "data/source prepared only; deterministic assembly; no CS6 compile, no in-game or art acceptance claimed; approximate recombination, not original artwork"
+}

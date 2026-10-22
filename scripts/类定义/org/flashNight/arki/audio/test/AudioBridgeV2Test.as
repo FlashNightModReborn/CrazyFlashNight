@@ -27,6 +27,7 @@ class org.flashNight.arki.audio.test.AudioBridgeV2Test {
         testExactInboundEnvelopes();
         testJukeboxQualificationGuard();
         testReadyBgmCorrelationAndLatestWins();
+        testBgmLeaseWireAndCorrelation();
         testSfxDropAndNoReplay();
         testQualificationStimulusGuardAndProductionBridge();
 
@@ -275,6 +276,76 @@ class org.flashNight.arki.audio.test.AudioBridgeV2Test {
         var uncorrelated:Object = makeResult(
             "bgm.unknown.999", "play", "started", "ok", SESSION, "42");
         assertFalse("unknown requestId rejected", AudioBridge.handleBgmResult(uncorrelated));
+    }
+
+    private static function testBgmLeaseWireAndCorrelation():Void {
+        var transport:Object = makeTransport();
+        AudioBridge._resetForTests();
+        AudioBridge._setTransportForTests(transport);
+        assertTrue("lease setup enters ready", AudioBridge.handleAudioReady(
+            makeReady(SESSION, "42", "9")));
+
+        var stages:Array = [];
+        var acquireId:String = AudioBridge.acquireBgmLease(
+            function(result:Object, isLatest:Boolean):Void {
+                stages.push(result.completionState + "|" + (isLatest ? "1" : "0"));
+            });
+        assertEqual("acquire uses exact lease request grammar",
+            "bgm.as2.lease." + SESSION + ".1.acquire", acquireId);
+        assertEqual("acquire can only send pause", "pause", transport.tasks[0].operation);
+        assertTrue("lease pause does not replace ordinary play intent",
+            AudioBridge._snapshotForTests().latestBgmRequestId == null);
+        assertTrue("lease accepted_deferred correlates as admission",
+            AudioBridge.handleBgmResult(makeResult(
+                acquireId, "pause", "accepted_deferred", "ok", SESSION, "42")));
+        assertFalse("duplicate lease admission is rejected",
+            AudioBridge.handleBgmResult(makeResult(
+                acquireId, "pause", "accepted_deferred", "ok", SESSION, "42")));
+        assertTrue("lease terminal success correlates",
+            AudioBridge.handleBgmResult(makeResult(
+                acquireId, "pause", "started", "ok", SESSION, "42")));
+        assertEqual("lease callbacks distinguish admission and terminal",
+            "accepted_deferred|1,started|1", stages.join(","));
+
+        var releaseId:String = AudioBridge.releaseBgmLease(acquireId, null);
+        assertEqual("release derives the same lease identity",
+            "bgm.as2.lease." + SESSION + ".1.release", releaseId);
+        assertEqual("release can only send resume", "resume", transport.tasks[1].operation);
+        assertTrue("release terminal failure remains correlated",
+            AudioBridge.handleBgmResult(makeResult(
+                releaseId, "resume", "failed", "not_ready", SESSION, "42")));
+
+        var invalid:Array = [
+            null,
+            "",
+            "bgm.as2.lease." + SESSION + "..acquire",
+            "bgm.as2.lease." + SESSION + ".0.acquire",
+            "bgm.as2.lease." + SESSION + ".01.acquire",
+            "bgm.as2.lease." + SESSION + ".1.release",
+            "bgm.as2.lease." + SESSION_2 + ".1.acquire",
+            "bgm.as2.lease-evil." + SESSION + ".1.acquire"
+        ];
+        for (var i:Number = 0; i < invalid.length; i++) {
+            assertTrue("invalid lease release rejected " + i,
+                AudioBridge.releaseBgmLease(invalid[i], null) == null);
+        }
+        assertEqual("invalid lease identities send no request", 2, transport.tasks.length);
+
+        transport.rejectNext = true;
+        assertTrue("acquire send failure returns no capability",
+            AudioBridge.acquireBgmLease(null) == null);
+        assertEqual("failed acquire send is not queued", 2, transport.tasks.length);
+        var ordinaryId:String = AudioBridge.pauseBGM(null);
+        assertTrue("ordinary BGM remains available after lease failure",
+            ordinaryId != null && ordinaryId.indexOf("bgm.as2.lease") != 0);
+        assertEqual("ordinary pause keeps its original operation",
+            "pause", transport.tasks[2].operation);
+
+        assertTrue("new session ready accepted", AudioBridge.handleAudioReady(
+            makeReady(SESSION_2, "43", "9")));
+        assertTrue("old session lease cannot be released into new session",
+            AudioBridge.releaseBgmLease(acquireId, null) == null);
+        assertEqual("old session release sends no request", 3, transport.tasks.length);
     }
 
     private static function testSfxDropAndNoReplay():Void {

@@ -1,0 +1,8006 @@
+{
+  "label": "a13",
+  "rootFrame": 148,
+  "rootDisplay": {
+    "2127": {
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        0.0,
+        0.0
+      ],
+      "placedAt": 1,
+      "id": 30
+    },
+    "1294": {
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        -175.05,
+        23.95
+      ],
+      "placedAt": 11,
+      "id": 94,
+      "name": "音乐循环播放器"
+    },
+    "1267": {
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        15.15,
+        -21.5
+      ],
+      "placedAt": 31,
+      "id": 1244,
+      "name": "单发枪间隔时间控制"
+    },
+    "1270": {
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        -48.0,
+        -21.25
+      ],
+      "placedAt": 31,
+      "id": 1249
+    },
+    "1274": {
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        300.0,
+        98.8
+      ],
+      "placedAt": 31,
+      "id": 1252,
+      "name": "过关提示"
+    },
+    "1277": {
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        300.0,
+        121.8
+      ],
+      "placedAt": 31,
+      "id": 1265,
+      "name": "死亡提示"
+    },
+    "1297": {
+      "matrix": [
+        8.099563598632812,
+        0,
+        0,
+        8.099563598632812,
+        300.0,
+        175.0
+      ],
+      "placedAt": 31,
+      "id": 1281,
+      "name": "切镜"
+    },
+    "1204": {
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        221.8,
+        318.35
+      ],
+      "placedAt": 58,
+      "id": 1523,
+      "name": "ui"
+    },
+    "1238": {
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        -50.85,
+        27.75
+      ],
+      "placedAt": 58,
+      "id": 1551,
+      "name": "买枪器"
+    },
+    "1251": {
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        342.45,
+        176.4
+      ],
+      "placedAt": 58,
+      "id": 1555
+    },
+    "2128": {
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        187.5,
+        -54.45
+      ],
+      "placedAt": 58,
+      "id": 1577,
+      "name": "修改器"
+    },
+    "2157": {
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        582.15,
+        17.95
+      ],
+      "placedAt": 58,
+      "id": 1579
+    },
+    "1": {
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        300.0,
+        211.45
+      ],
+      "placedAt": 148,
+      "id": 1876
+    },
+    "11": {
+      "matrix": [
+        1.000030517578125,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "placedAt": 148,
+      "id": 1920,
+      "name": "gameworld"
+    }
+  },
+  "newRootPlacements": [
+    {
+      "payloadOffset": 15835745,
+      "length": 12,
+      "flags": 22,
+      "depth": 1,
+      "characterId": 1876,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        300.0,
+        211.45
+      ],
+      "frame": 148
+    },
+    {
+      "payloadOffset": 15846948,
+      "length": 3302,
+      "flags": 182,
+      "depth": 11,
+      "characterId": 1920,
+      "matrix": [
+        1.000030517578125,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "name": "gameworld",
+      "allEventFlags": 3,
+      "clipActionRecords": [
+        {
+          "eventFlags": 1,
+          "eventName": "load",
+          "offset": 15846985,
+          "length": 1503,
+          "rawHex": "9b 07 00 04 05 00 00 00 29 00 96 03 00 00 03 00 96 05 00 07 56 09 00 00 96 05 00 07 ff 01 00 00 3f 96 05 00 07 05 00 00 00 0c 1d 96 03 00 00 03 00 1c 3e 96 03 00 00 01 00 96 05 00 07 16 fb ff ff 96 0d 00 06 00 00 00 00 00 00 00 00 00 04 05 00 3d 47 3c 96 03 00 00 01 00 1c 96 05 00 07 d8 01 00 00 0e 12 9d 02 00 21 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 fb 00 00 00 0a 1d 96 02 00 05 01 99 02 00 c9 ff 96 03 00 00 01 00 1c 96 05 00 07 5f 02 00 00 0e 12 9d 02 00 22 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 36 01 00 00 0b 1d 96 03 00 00 0f 00 99 02 00 91 ff 96 03 00 00 01 00 1c 96 05 00 07 00 00 00 00 0e 12 9d 02 00 3d 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 60 02 00 00 0a 1d 9d 02 00 05 00 99 02 00 17 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 e9 00 00 00 0b 1d 99 02 00 3e ff 96 03 00 00 01 00 1c 96 05 00 07 eb 01 00 00 0e 12 9d 02 00 3d 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 77 00 00 00 0b 1d 9d 02 00 05 00 99 02 00 17 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 de 00 00 00 0b 1d 99 02 00 eb fe 96 03 00 00 01 00 1c 96 05 00 07 5e 03 00 00 0e 12 9d 02 00 28 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 f6 00 00 00 0b 1d 88 09 00 02 00 f6 6d 02 00 10 45 00 99 02 00 ad fe 96 03 00 00 01 00 1c 96 05 00 07 50 00 00 00 0e 12 9d 02 00 1d 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 0f 02 00 00 0a 1d 3c 99 02 00 7a fe 96 03 00 00 01 00 1c 96 05 00 07 68 02 00 00 0e 12 9d 02 00 27 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 18 02 00 00 0b 1d 96 08 00 00 0f 00 07 01 00 00 00 99 02 00 3d fe 96 03 00 00 01 00 1c 96 05 00 07 29 01 00 00 0e 12 9d 02 00 1d 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 10 00 00 00 0a 1d 1c 99 02 00 0a fe 96 03 00 00 01 00 1c 96 05 00 07 8c 02 00 00 0e 12 9d 02 00 21 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 a1 00 00 00 0b 1d 96 02 00 05 01 99 02 00 d3 fd 96 03 00 00 01 00 1c 96 05 00 07 7f 00 00 00 0e 12 9d 02 00 1c 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 0d 02 00 00 0a 1d 99 02 00 a1 fd 96 03 00 00 01 00 1c 96 05 00 07 39 01 00 00 0e 12 9d 02 00 1d 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 39 01 00 00 0b 1d 12 99 02 00 6e fd 96 03 00 00 01 00 1c 96 05 00 07 d3 02 00 00 0e 12 9d 02 00 3d 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 5a 01 00 00 0b 1d 9d 02 00 05 00 99 02 00 17 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 fa 00 00 00 0b 1d 99 02 00 1b fd 96 03 00 00 01 00 1c 96 05 00 07 96 00 00 00 0e 12 9d 02 00 1c 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 d2 01 00 00 0a 1d 99 02 00 e9 fc 96 03 00 00 01 00 1c 96 05 00 07 60 02 00 00 0e 12 9d 02 00 39 01 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 e9 00 00 00 0b 1d 88 1a 01 21 00 5f 70 61 72 65 6e 74 00 73 74 6f 70 00 5f 72 6f 6f 74 00 58 6d 61 78 00 58 6d 69 6e 00 59 6d 61 78 00 59 6d 69 6e 00 e6 8e a7 e5 88 b6 e7 9b ae e6 a0 87 00 6d 61 6e 31 00 e5 8d b7 e5 b1 8f e7 9b ae e6 a0 87 00 e8 83 8c e6 99 af e9 95 bf 00 e8 83 8c e6 99 af e9 ab 98 00 e8 88 9e e5 8f b0 e9 95 bf 00 e8 88 9e e5 8f b0 e9 ab 98 00 e5 8d b7 e5 b1 8f 78 e6 9c 80 e5 b0 8f e5 9d 90 e6 a0 87 e5 80 bc 00 e5 8d b7 e5 b1 8f 79 e6 9c 80 e5 b0 8f e5 9d 90 e6 a0 87 e5 80 bc 00 e5 8d b7 e5 b1 8f 78 e6 9c 80 e5 a4 a7 e5 9d 90 e6 a0 87 e5 80 bc 00 e5 8d b7 e5 b1 8f 79 e6 9c 80 e5 a4 a7 e5 9d 90 e6 a0 87 e5 80 bc 00 6d 79 50 6f 69 6e 74 00 78 00 79 00 74 68 69 73 00 6c 6f 63 61 6c 54 6f 47 6c 6f 62 61 6c 00 67 61 6d 65 77 6f 72 6c 64 00 5f 78 73 63 61 6c 65 00 61 61 00 62 62 00 4d 61 74 68 00 61 62 73 00 78 78 78 00 5f 78 00 79 79 79 00 5f 79 00 99 02 00 9a fb 96 03 00 00 01 00 1c 96 05 00 07 79 01 00 00 0e 12 9d 02 00 21 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 fa 00 00 00 0b 1d 99 02 00 9e fa 99 02 00 63 fb 96 03 00 00 01 00 1c 96 05 00 07 74 01 00 00 0e 12 9d 02 00 21 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 de 00 00 00 0b 1d 99 02 00 cc c8 99 02 00 2c fb 96 03 00 00 01 00 1c 96 05 00 07 77 01 00 00 0e 12 9d 02 00 21 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 26 00 00 00 0a 1d 99 02 00 76 fa 99 02 00 7f 00 96 03 00 00 01 00 1c 96 05 00 07 e2 03 00 00 0e 12 9d 02 00 31 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 56 01 00 00 0b 1d 88 12 00 04 00 28 3b 00 2f ba 00 b5 24 03 fe 00 63 02 27 71 00 99 02 00 ae fa 96 03 00 00 01 00 1c 96 05 00 07 9d 01 00 00 0e 12 9d 02 00 1d 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 9d 01 00 00 0b 1d 00 99 02 00 7b fa 99 02 00 77 fa 00",
+          "actions": [
+            {
+              "offset": 15846985,
+              "opcode": "0x9b",
+              "op": "DefineFunction",
+              "byteLength": 10,
+              "payloadHex": "04 05 00 00 00 29 00"
+            },
+            {
+              "offset": 15846995,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0003"
+              ]
+            },
+            {
+              "offset": 15847001,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                2390
+              ]
+            },
+            {
+              "offset": 15847009,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                511
+              ]
+            },
+            {
+              "offset": 15847017,
+              "opcode": "0x3f",
+              "op": "Modulo",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847018,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                5
+              ]
+            },
+            {
+              "offset": 15847026,
+              "opcode": "0xc",
+              "op": "Multiply",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847027,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847028,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0003"
+              ]
+            },
+            {
+              "offset": 15847034,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847035,
+              "opcode": "0x3e",
+              "op": "Return",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847036,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847042,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                -1258
+              ]
+            },
+            {
+              "offset": 15847050,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 16,
+              "values": [
+                0.0,
+                "\u0004\u0005"
+              ]
+            },
+            {
+              "offset": 15847066,
+              "opcode": "0x3d",
+              "op": "CallFunction",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847067,
+              "opcode": "0x47",
+              "op": "Add2",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847068,
+              "opcode": "0x3c",
+              "op": "DefineLocal",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847069,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847075,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847076,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                472
+              ]
+            },
+            {
+              "offset": 15847084,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847085,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847086,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 33,
+              "branchTarget": 15847124
+            },
+            {
+              "offset": 15847091,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847097,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847103,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847104,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                251
+              ]
+            },
+            {
+              "offset": 15847112,
+              "opcode": "0xa",
+              "op": "Add",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847113,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847114,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 5,
+              "values": [
+                true
+              ]
+            },
+            {
+              "offset": 15847119,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -55,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15847124,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847130,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847131,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                607
+              ]
+            },
+            {
+              "offset": 15847139,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847140,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847141,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 34,
+              "branchTarget": 15847180
+            },
+            {
+              "offset": 15847146,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847152,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847158,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847159,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                310
+              ]
+            },
+            {
+              "offset": 15847167,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847168,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847169,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u000f"
+              ]
+            },
+            {
+              "offset": 15847175,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -111,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15847180,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847186,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847187,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                0
+              ]
+            },
+            {
+              "offset": 15847195,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847196,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847197,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 61,
+              "branchTarget": 15847263
+            },
+            {
+              "offset": 15847202,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847208,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847214,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847215,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                608
+              ]
+            },
+            {
+              "offset": 15847223,
+              "opcode": "0xa",
+              "op": "Add",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847224,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847225,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 5,
+              "branchTarget": 15847235
+            },
+            {
+              "offset": 15847230,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": 23,
+              "branchTarget": 15847258
+            },
+            {
+              "offset": 15847235,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847241,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847247,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847248,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                233
+              ]
+            },
+            {
+              "offset": 15847256,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847257,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847258,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -194,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15847263,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847269,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847270,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                491
+              ]
+            },
+            {
+              "offset": 15847278,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847279,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847280,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 61,
+              "branchTarget": 15847346
+            },
+            {
+              "offset": 15847285,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847291,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847297,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847298,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                119
+              ]
+            },
+            {
+              "offset": 15847306,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847307,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847308,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 5,
+              "branchTarget": 15847318
+            },
+            {
+              "offset": 15847313,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": 23,
+              "branchTarget": 15847341
+            },
+            {
+              "offset": 15847318,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847324,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847330,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847331,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                222
+              ]
+            },
+            {
+              "offset": 15847339,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847340,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847341,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -277,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15847346,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847352,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847353,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                862
+              ]
+            },
+            {
+              "offset": 15847361,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847362,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847363,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 40,
+              "branchTarget": 15847408
+            },
+            {
+              "offset": 15847368,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847374,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847380,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847381,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                246
+              ]
+            },
+            {
+              "offset": 15847389,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847390,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847391,
+              "opcode": "0x88",
+              "op": "ConstantPool",
+              "byteLength": 12,
+              "payloadHex": "02 00 f6 6d 02 00 10 45 00"
+            },
+            {
+              "offset": 15847403,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -339,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15847408,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847414,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847415,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                80
+              ]
+            },
+            {
+              "offset": 15847423,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847424,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847425,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 29,
+              "branchTarget": 15847459
+            },
+            {
+              "offset": 15847430,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847436,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847442,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847443,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                527
+              ]
+            },
+            {
+              "offset": 15847451,
+              "opcode": "0xa",
+              "op": "Add",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847452,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847453,
+              "opcode": "0x3c",
+              "op": "DefineLocal",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847454,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -390,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15847459,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847465,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847466,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                616
+              ]
+            },
+            {
+              "offset": 15847474,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847475,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847476,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 39,
+              "branchTarget": 15847520
+            },
+            {
+              "offset": 15847481,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847487,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847493,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847494,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                536
+              ]
+            },
+            {
+              "offset": 15847502,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847503,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847504,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 11,
+              "values": [
+                "\u000f",
+                1
+              ]
+            },
+            {
+              "offset": 15847515,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -451,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15847520,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847526,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847527,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                297
+              ]
+            },
+            {
+              "offset": 15847535,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847536,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847537,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 29,
+              "branchTarget": 15847571
+            },
+            {
+              "offset": 15847542,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847548,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847554,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847555,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                16
+              ]
+            },
+            {
+              "offset": 15847563,
+              "opcode": "0xa",
+              "op": "Add",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847564,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847565,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847566,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -502,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15847571,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847577,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847578,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                652
+              ]
+            },
+            {
+              "offset": 15847586,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847587,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847588,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 33,
+              "branchTarget": 15847626
+            },
+            {
+              "offset": 15847593,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847599,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847605,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847606,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                161
+              ]
+            },
+            {
+              "offset": 15847614,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847615,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847616,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 5,
+              "values": [
+                true
+              ]
+            },
+            {
+              "offset": 15847621,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -557,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15847626,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847632,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847633,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                127
+              ]
+            },
+            {
+              "offset": 15847641,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847642,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847643,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 28,
+              "branchTarget": 15847676
+            },
+            {
+              "offset": 15847648,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847654,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847660,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847661,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                525
+              ]
+            },
+            {
+              "offset": 15847669,
+              "opcode": "0xa",
+              "op": "Add",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847670,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847671,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -607,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15847676,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847682,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847683,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                313
+              ]
+            },
+            {
+              "offset": 15847691,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847692,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847693,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 29,
+              "branchTarget": 15847727
+            },
+            {
+              "offset": 15847698,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847704,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847710,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847711,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                313
+              ]
+            },
+            {
+              "offset": 15847719,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847720,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847721,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847722,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -658,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15847727,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847733,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847734,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                723
+              ]
+            },
+            {
+              "offset": 15847742,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847743,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847744,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 61,
+              "branchTarget": 15847810
+            },
+            {
+              "offset": 15847749,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847755,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847761,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847762,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                346
+              ]
+            },
+            {
+              "offset": 15847770,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847771,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847772,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 5,
+              "branchTarget": 15847782
+            },
+            {
+              "offset": 15847777,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": 23,
+              "branchTarget": 15847805
+            },
+            {
+              "offset": 15847782,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847788,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847794,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847795,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                250
+              ]
+            },
+            {
+              "offset": 15847803,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847804,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847805,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -741,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15847810,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847816,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847817,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                150
+              ]
+            },
+            {
+              "offset": 15847825,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847826,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847827,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 28,
+              "branchTarget": 15847860
+            },
+            {
+              "offset": 15847832,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847838,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847844,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847845,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                466
+              ]
+            },
+            {
+              "offset": 15847853,
+              "opcode": "0xa",
+              "op": "Add",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847854,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847855,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -791,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15847860,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847866,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847867,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                608
+              ]
+            },
+            {
+              "offset": 15847875,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847876,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847877,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 313,
+              "branchTarget": 15848195
+            },
+            {
+              "offset": 15847882,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847888,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15847894,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847895,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                233
+              ]
+            },
+            {
+              "offset": 15847903,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847904,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15847905,
+              "opcode": "0x88",
+              "op": "ConstantPool",
+              "byteLength": 285,
+              "payloadHex": "21 00 5f 70 61 72 65 6e 74 00 73 74 6f 70 00 5f 72 6f 6f 74 00 58 6d 61 78 00 58 6d 69 6e 00 59 6d 61 78 00 59 6d 69 6e 00 e6 8e a7 e5 88 b6 e7 9b ae e6 a0 87 00 6d 61 6e 31 00 e5 8d b7 e5 b1 8f e7 9b ae e6 a0 87 00 e8 83 8c e6 99 af e9 95 bf 00 e8 83 8c e6 99 af e9 ab 98 00 e8 88 9e e5 8f b0 e9 95 bf 00 e8 88 9e e5 8f b0 e9 ab 98 00 e5 8d b7 e5 b1 8f 78 e6 9c 80 e5 b0 8f e5 9d 90 e6 a0 87 e5 80 bc 00 e5 8d b7 e5 b1 8f 79 e6 9c 80 e5 b0 8f e5 9d 90 e6 a0 87 e5 80 bc 00 e5 8d b7 e5 b1 8f 78 e6 9c 80 e5 a4 a7 e5 9d 90 e6 a0 87 e5 80 bc 00 e5 8d b7 e5 b1 8f 79 e6 9c 80 e5 a4 a7 e5 9d 90 e6 a0 87 e5 80 bc 00 6d 79 50 6f 69 6e 74 00 78 00 79 00 74 68 69 73 00 6c 6f 63 61 6c 54 6f 47 6c 6f 62 61 6c 00 67 61 6d 65 77 6f 72 6c 64 00 5f 78 73 63 61 6c 65 00 61 61 00 62 62 00 4d 61 74 68 00 61 62 73 00 78 78 78 00 5f 78 00 79 79 79 00 5f 79 00"
+            },
+            {
+              "offset": 15848190,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -1126,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15848195,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848201,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848202,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                377
+              ]
+            },
+            {
+              "offset": 15848210,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848211,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848212,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 33,
+              "branchTarget": 15848250
+            },
+            {
+              "offset": 15848217,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848223,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848229,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848230,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                250
+              ]
+            },
+            {
+              "offset": 15848238,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848239,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848240,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -1378,
+              "branchTarget": 15846867
+            },
+            {
+              "offset": 15848245,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -1181,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15848250,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848256,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848257,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                372
+              ]
+            },
+            {
+              "offset": 15848265,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848266,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848267,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 33,
+              "branchTarget": 15848305
+            },
+            {
+              "offset": 15848272,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848278,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848284,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848285,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                222
+              ]
+            },
+            {
+              "offset": 15848293,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848294,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848295,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -14132,
+              "branchTarget": 15834168
+            },
+            {
+              "offset": 15848300,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -1236,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15848305,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848311,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848312,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                375
+              ]
+            },
+            {
+              "offset": 15848320,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848321,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848322,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 33,
+              "branchTarget": 15848360
+            },
+            {
+              "offset": 15848327,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848333,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848339,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848340,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                38
+              ]
+            },
+            {
+              "offset": 15848348,
+              "opcode": "0xa",
+              "op": "Add",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848349,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848350,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -1418,
+              "branchTarget": 15846937
+            },
+            {
+              "offset": 15848355,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": 127,
+              "branchTarget": 15848487
+            },
+            {
+              "offset": 15848360,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848366,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848367,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                994
+              ]
+            },
+            {
+              "offset": 15848375,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848376,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848377,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 49,
+              "branchTarget": 15848431
+            },
+            {
+              "offset": 15848382,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848388,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848394,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848395,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                342
+              ]
+            },
+            {
+              "offset": 15848403,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848404,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848405,
+              "opcode": "0x88",
+              "op": "ConstantPool",
+              "byteLength": 21,
+              "payloadHex": "04 00 28 3b 00 2f ba 00 b5 24 03 fe 00 63 02 27 71 00"
+            },
+            {
+              "offset": 15848426,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -1362,
+              "branchTarget": 15847069
+            },
+            {
+              "offset": 15848431,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848437,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848438,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                413
+              ]
+            },
+            {
+              "offset": 15848446,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848447,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848448,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 29,
+              "branchTarget": 15848482
+            },
+            {
+              "offset": 15848453,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848459,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848465,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848466,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                413
+              ]
+            },
+            {
+              "offset": 15848474,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848475,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848476,
+              "opcode": "0x0",
+              "op": "End",
+              "byteLength": 1
+            }
+          ]
+        },
+        {
+          "eventFlags": 2,
+          "eventName": "enterFrame",
+          "offset": 15848496,
+          "length": 1750,
+          "rawHex": "9b 07 00 04 05 00 00 00 29 00 96 03 00 00 03 00 96 05 00 07 68 02 00 00 96 05 00 07 ff 01 00 00 3f 96 05 00 07 05 00 00 00 0c 1d 96 03 00 00 03 00 1c 3e 96 03 00 00 01 00 96 05 00 07 3d ff ff ff 96 0d 00 06 00 00 00 00 00 00 00 00 00 04 05 00 3d 47 3c 96 03 00 00 01 00 1c 96 05 00 07 4a 01 00 00 0e 12 9d 02 00 21 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 28 00 00 00 0a 1d 96 02 00 05 01 99 02 00 c9 ff 96 03 00 00 01 00 1c 96 05 00 07 1f 03 00 00 0e 12 9d 02 00 21 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 c8 02 00 00 0b 1d 99 02 00 5d b9 99 02 00 92 ff 96 03 00 00 01 00 1c 96 05 00 07 b7 01 00 00 0e 12 9d 02 00 21 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 ad 01 00 00 0a 1d 99 02 00 eb f8 99 02 00 dc 05 96 03 00 00 01 00 1c 96 05 00 07 0c 01 00 00 0e 12 9d 02 00 21 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 db 02 00 00 0a 1d 96 02 00 05 01 99 02 00 24 ff 96 03 00 00 01 00 1c 96 05 00 07 20 02 00 00 0e 12 9d 02 00 22 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 f4 00 00 00 0b 1d 96 03 00 00 0f 00 99 02 00 ec fe 96 03 00 00 01 00 1c 96 05 00 07 99 03 00 00 0e 12 9d 02 00 1d 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 79 01 00 00 0b 1d 3c 99 02 00 b9 fe 96 03 00 00 01 00 1c 96 05 00 07 7a 03 00 00 0e 12 9d 02 00 f0 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 c3 01 00 00 0b 1d 88 d1 00 17 00 6d 79 50 6f 69 6e 74 00 78 00 79 00 74 68 69 73 00 5f 72 6f 6f 74 00 e5 8d b7 e5 b1 8f e7 9b ae e6 a0 87 00 6c 6f 63 61 6c 54 6f 47 6c 6f 62 61 6c 00 e6 8e a7 e5 88 b6 e7 9b ae e6 a0 87 00 6d 61 6e 31 00 67 61 6d 65 77 6f 72 6c 64 00 5f 78 73 63 61 6c 65 00 61 61 00 62 62 00 4d 61 74 68 00 61 62 73 00 78 78 78 00 5f 78 00 79 79 79 00 5f 79 00 e5 8d b7 e5 b1 8f 78 e6 9c 80 e5 b0 8f e5 9d 90 e6 a0 87 e5 80 bc 00 e5 8d b7 e5 b1 8f 78 e6 9c 80 e5 a4 a7 e5 9d 90 e6 a0 87 e5 80 bc 00 e5 8d b7 e5 b1 8f 79 e6 9c 80 e5 b0 8f e5 9d 90 e6 a0 87 e5 80 bc 00 e5 8d b7 e5 b1 8f 79 e6 9c 80 e5 a4 a7 e5 9d 90 e6 a0 87 e5 80 bc 00 99 02 00 b3 fd 96 03 00 00 01 00 1c 96 05 00 07 64 03 00 00 0e 12 9d 02 00 1d 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 64 03 00 00 0b 1d 00 99 02 00 80 fd 96 03 00 00 01 00 1c 96 05 00 07 ab 01 00 00 0e 12 9d 02 00 3d 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 cf 01 00 00 0a 1d 9d 02 00 05 00 99 02 00 17 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 c3 01 00 00 0b 1d 99 02 00 2d fd 96 03 00 00 01 00 1c 96 05 00 07 2a 03 00 00 0e 12 9d 02 00 21 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 59 02 00 00 0b 1d 96 02 00 05 01 99 02 00 f6 fc 96 03 00 00 01 00 1c 96 05 00 07 42 01 00 00 0e 12 9d 02 00 21 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 44 01 00 00 0a 1d 99 02 00 9d 87 99 02 00 bf fc 96 03 00 00 01 00 1c 96 05 00 07 d5 01 00 00 0e 12 9d 02 00 1d 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 2a 00 00 00 0b 1d 12 99 02 00 8c fc 96 03 00 00 01 00 1c 96 05 00 07 26 02 00 00 0e 12 9d 02 00 36 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 04 01 00 00 0a 1d 88 17 00 05 00 6e ec 00 b1 45 4f 00 27 98 31 a9 00 44 17 a5 3e 00 d4 d5 92 00 99 02 00 40 fc 96 03 00 00 01 00 1c 96 05 00 07 2c 01 00 00 0e 12 9d 02 00 1d 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 a9 00 00 00 0a 1d 1c 99 02 00 0d fc 96 03 00 00 01 00 1c 96 05 00 07 e7 03 00 00 0e 12 9d 02 00 3d 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 a5 02 00 00 0b 1d 9d 02 00 05 00 99 02 00 17 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 44 01 00 00 0a 1d 99 02 00 ba fb 96 03 00 00 01 00 1c 96 05 00 07 a6 00 00 00 0e 12 9d 02 00 27 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 f3 02 00 00 0a 1d 96 08 00 00 0f 00 07 01 00 00 00 99 02 00 7d fb 96 03 00 00 01 00 1c 96 05 00 07 86 02 00 00 0e 12 9d 02 00 1c 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 e0 01 00 00 0b 1d 99 02 00 4b fb 96 03 00 00 01 00 1c 96 05 00 07 72 01 00 00 0e 12 9d 02 00 3d 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 ad 01 00 00 0a 1d 9d 02 00 05 00 99 02 00 17 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 c8 02 00 00 0b 1d 99 02 00 f8 fa 96 03 00 00 01 00 1c 96 05 00 07 ac 02 00 00 0e 12 9d 02 00 32 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 a0 01 00 00 0b 1d 88 13 00 04 00 eb 42 2f fc 00 4f cb 00 0f 82 4c 00 b4 f1 35 f7 00 99 02 00 b0 fa 96 03 00 00 01 00 1c 96 05 00 07 57 00 00 00 0e 12 9d 02 00 1c 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 d3 02 00 00 0a 1d 99 02 00 7e fa 96 03 00 00 01 00 1c 96 05 00 07 08 03 00 00 0e 12 9d 02 00 28 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 62 02 00 00 0b 1d 88 09 00 02 00 63 62 00 57 c7 ac 00 99 02 00 40 fa 96 03 00 00 01 00 1c 96 05 00 07 b5 00 00 00 0e 12 9d 02 00 1c 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 57 00 00 00 0a 1d 99 02 00 0e fa 96 03 00 00 01 00 1c 96 05 00 07 09 03 00 00 0e 12 9d 02 00 21 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 54 02 00 00 0b 1d 99 02 00 24 80 99 02 00 d7 f9 96 03 00 00 01 00 1c 96 05 00 07 d1 00 00 00 0e 12 9d 02 00 3d 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 38 02 00 00 0a 1d 9d 02 00 05 00 99 02 00 17 00 96 03 00 00 01 00 96 03 00 00 01 00 1c 96 05 00 07 54 02 00 00 0b 1d 99 02 00 84 f9 99 02 00 80 f9 00",
+          "actions": [
+            {
+              "offset": 15848496,
+              "opcode": "0x9b",
+              "op": "DefineFunction",
+              "byteLength": 10,
+              "payloadHex": "04 05 00 00 00 29 00"
+            },
+            {
+              "offset": 15848506,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0003"
+              ]
+            },
+            {
+              "offset": 15848512,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                616
+              ]
+            },
+            {
+              "offset": 15848520,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                511
+              ]
+            },
+            {
+              "offset": 15848528,
+              "opcode": "0x3f",
+              "op": "Modulo",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848529,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                5
+              ]
+            },
+            {
+              "offset": 15848537,
+              "opcode": "0xc",
+              "op": "Multiply",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848538,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848539,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0003"
+              ]
+            },
+            {
+              "offset": 15848545,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848546,
+              "opcode": "0x3e",
+              "op": "Return",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848547,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848553,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                -195
+              ]
+            },
+            {
+              "offset": 15848561,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 16,
+              "values": [
+                0.0,
+                "\u0004\u0005"
+              ]
+            },
+            {
+              "offset": 15848577,
+              "opcode": "0x3d",
+              "op": "CallFunction",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848578,
+              "opcode": "0x47",
+              "op": "Add2",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848579,
+              "opcode": "0x3c",
+              "op": "DefineLocal",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848580,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848586,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848587,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                330
+              ]
+            },
+            {
+              "offset": 15848595,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848596,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848597,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 33,
+              "branchTarget": 15848635
+            },
+            {
+              "offset": 15848602,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848608,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848614,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848615,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                40
+              ]
+            },
+            {
+              "offset": 15848623,
+              "opcode": "0xa",
+              "op": "Add",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848624,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848625,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 5,
+              "values": [
+                true
+              ]
+            },
+            {
+              "offset": 15848630,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -55,
+              "branchTarget": 15848580
+            },
+            {
+              "offset": 15848635,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848641,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848642,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                799
+              ]
+            },
+            {
+              "offset": 15848650,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848651,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848652,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 33,
+              "branchTarget": 15848690
+            },
+            {
+              "offset": 15848657,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848663,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848669,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848670,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                712
+              ]
+            },
+            {
+              "offset": 15848678,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848679,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848680,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -18083,
+              "branchTarget": 15830602
+            },
+            {
+              "offset": 15848685,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -110,
+              "branchTarget": 15848580
+            },
+            {
+              "offset": 15848690,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848696,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848697,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                439
+              ]
+            },
+            {
+              "offset": 15848705,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848706,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848707,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 33,
+              "branchTarget": 15848745
+            },
+            {
+              "offset": 15848712,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848718,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848724,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848725,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                429
+              ]
+            },
+            {
+              "offset": 15848733,
+              "opcode": "0xa",
+              "op": "Add",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848734,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848735,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -1813,
+              "branchTarget": 15846927
+            },
+            {
+              "offset": 15848740,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": 1500,
+              "branchTarget": 15850245
+            },
+            {
+              "offset": 15848745,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848751,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848752,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                268
+              ]
+            },
+            {
+              "offset": 15848760,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848761,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848762,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 33,
+              "branchTarget": 15848800
+            },
+            {
+              "offset": 15848767,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848773,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848779,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848780,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                731
+              ]
+            },
+            {
+              "offset": 15848788,
+              "opcode": "0xa",
+              "op": "Add",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848789,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848790,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 5,
+              "values": [
+                true
+              ]
+            },
+            {
+              "offset": 15848795,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -220,
+              "branchTarget": 15848580
+            },
+            {
+              "offset": 15848800,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848806,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848807,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                544
+              ]
+            },
+            {
+              "offset": 15848815,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848816,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848817,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 34,
+              "branchTarget": 15848856
+            },
+            {
+              "offset": 15848822,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848828,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848834,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848835,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                244
+              ]
+            },
+            {
+              "offset": 15848843,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848844,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848845,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u000f"
+              ]
+            },
+            {
+              "offset": 15848851,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -276,
+              "branchTarget": 15848580
+            },
+            {
+              "offset": 15848856,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848862,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848863,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                921
+              ]
+            },
+            {
+              "offset": 15848871,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848872,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848873,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 29,
+              "branchTarget": 15848907
+            },
+            {
+              "offset": 15848878,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848884,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848890,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848891,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                377
+              ]
+            },
+            {
+              "offset": 15848899,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848900,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848901,
+              "opcode": "0x3c",
+              "op": "DefineLocal",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848902,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -327,
+              "branchTarget": 15848580
+            },
+            {
+              "offset": 15848907,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848913,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848914,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                890
+              ]
+            },
+            {
+              "offset": 15848922,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848923,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848924,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 240,
+              "branchTarget": 15849169
+            },
+            {
+              "offset": 15848929,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848935,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15848941,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848942,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                451
+              ]
+            },
+            {
+              "offset": 15848950,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848951,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15848952,
+              "opcode": "0x88",
+              "op": "ConstantPool",
+              "byteLength": 212,
+              "payloadHex": "17 00 6d 79 50 6f 69 6e 74 00 78 00 79 00 74 68 69 73 00 5f 72 6f 6f 74 00 e5 8d b7 e5 b1 8f e7 9b ae e6 a0 87 00 6c 6f 63 61 6c 54 6f 47 6c 6f 62 61 6c 00 e6 8e a7 e5 88 b6 e7 9b ae e6 a0 87 00 6d 61 6e 31 00 67 61 6d 65 77 6f 72 6c 64 00 5f 78 73 63 61 6c 65 00 61 61 00 62 62 00 4d 61 74 68 00 61 62 73 00 78 78 78 00 5f 78 00 79 79 79 00 5f 79 00 e5 8d b7 e5 b1 8f 78 e6 9c 80 e5 b0 8f e5 9d 90 e6 a0 87 e5 80 bc 00 e5 8d b7 e5 b1 8f 78 e6 9c 80 e5 a4 a7 e5 9d 90 e6 a0 87 e5 80 bc 00 e5 8d b7 e5 b1 8f 79 e6 9c 80 e5 b0 8f e5 9d 90 e6 a0 87 e5 80 bc 00 e5 8d b7 e5 b1 8f 79 e6 9c 80 e5 a4 a7 e5 9d 90 e6 a0 87 e5 80 bc 00"
+            },
+            {
+              "offset": 15849164,
+              "opcode": "0x99",
+              "op": "Jump",
+              "byteLength": 5,
+              "relativeOffset": -589,
+              "branchTarget": 15848580
+            },
+            {
+              "offset": 15849169,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15849175,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15849176,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                868
+              ]
+            },
+            {
+              "offset": 15849184,
+              "opcode": "0xe",
+              "op": "Equals",
+              "byteLength": 1
+            },
+            {
+              "offset": 15849185,
+              "opcode": "0x12",
+              "op": "Not",
+              "byteLength": 1
+            },
+            {
+              "offset": 15849186,
+              "opcode": "0x9d",
+              "op": "If",
+              "byteLength": 5,
+              "relativeOffset": 29,
+              "branchTarget": 15849220
+            },
+            {
+              "offset": 15849191,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15849197,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 6,
+              "values": [
+                "\u0001"
+              ]
+            },
+            {
+              "offset": 15849203,
+              "opcode": "0x1c",
+              "op": "GetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15849204,
+              "opcode": "0x96",
+              "op": "Push",
+              "byteLength": 8,
+              "values": [
+                868
+              ]
+            },
+            {
+              "offset": 15849212,
+              "opcode": "0xb",
+              "op": "Subtract",
+              "byteLength": 1
+            },
+            {
+              "offset": 15849213,
+              "opcode": "0x1d",
+              "op": "SetVariable",
+              "byteLength": 1
+            },
+            {
+              "offset": 15849214,
+              "opcode": "0x0",
+              "op": "End",
+              "byteLength": 1
+            }
+          ]
+        }
+      ],
+      "frame": 148
+    }
+  ],
+  "worldCharacterId": 1920,
+  "rootSceneObjects": [
+    {
+      "depth": 1,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        300.0,
+        211.45
+      ],
+      "placedAt": 148,
+      "id": 1876,
+      "characterId": 1876,
+      "role": "environment_root_layer",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 7249,
+        "offset": 15694251,
+        "depth": 0,
+        "frames": 37
+      },
+      "bitmapDependencies": [
+        1412,
+        1873
+      ]
+    }
+  ],
+  "worldFirstFrame": [
+    {
+      "depth": 1,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        673.5,
+        227.1
+      ],
+      "placedAt": 1,
+      "id": 1918,
+      "characterId": 1918,
+      "role": "environment_backdrop",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 26,
+        "offset": 15835757,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": [
+        1877
+      ]
+    },
+    {
+      "depth": 3,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        0.0,
+        0.0
+      ],
+      "placedAt": 1,
+      "id": 1919,
+      "colorMult": [
+        256,
+        256,
+        256,
+        0
+      ],
+      "colorAdd": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "name": "地图",
+      "characterId": 1919,
+      "role": "collision_map_alpha_zero",
+      "alphaZero": true,
+      "definition": {
+        "code": 39,
+        "size": 26,
+        "offset": 15835789,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 5,
+      "matrix": [
+        10.2099609375,
+        0,
+        0,
+        1.0,
+        -400.95,
+        177.1
+      ],
+      "placedAt": 1,
+      "id": 1433,
+      "characterId": 1433,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 35,
+        "offset": 14427182,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 7,
+      "matrix": [
+        10.2099609375,
+        0,
+        0,
+        1.0,
+        -400.95,
+        334.75
+      ],
+      "placedAt": 1,
+      "id": 1433,
+      "characterId": 1433,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 35,
+        "offset": 14427182,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 9,
+      "matrix": [
+        1.00201416015625,
+        0,
+        0,
+        4.299530029296875,
+        -98.1,
+        157.7
+      ],
+      "placedAt": 1,
+      "id": 1433,
+      "characterId": 1433,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 35,
+        "offset": 14427182,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 11,
+      "matrix": [
+        1.00201416015625,
+        0,
+        0,
+        4.299530029296875,
+        496.3,
+        162.9
+      ],
+      "placedAt": 1,
+      "id": 1433,
+      "characterId": 1433,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 35,
+        "offset": 14427182,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 13,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        172.5,
+        278.55
+      ],
+      "placedAt": 1,
+      "id": 1106,
+      "name": "man1",
+      "characterId": 1106,
+      "role": "character",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 60434,
+        "offset": 2562911,
+        "depth": 0,
+        "frames": 280
+      },
+      "bitmapDependencies": [
+        122,
+        124,
+        126,
+        128,
+        130,
+        132,
+        134,
+        136,
+        138,
+        140,
+        142,
+        144,
+        146,
+        148,
+        150,
+        239,
+        252,
+        502,
+        1012
+      ]
+    },
+    {
+      "depth": 96,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        557.45,
+        -3.1
+      ],
+      "placedAt": 1,
+      "id": 1434,
+      "name": "敌人生成器2",
+      "characterId": 1434,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 5243,
+        "offset": 14427223,
+        "depth": 0,
+        "frames": 60
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 98,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        425.45,
+        -5.85
+      ],
+      "placedAt": 1,
+      "id": 1434,
+      "name": "敌人生成器1",
+      "characterId": 1434,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 5243,
+        "offset": 14427223,
+        "depth": 0,
+        "frames": 60
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 100,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        413.75,
+        278.5
+      ],
+      "placedAt": 1,
+      "id": 580,
+      "name": "boss",
+      "characterId": 580,
+      "role": "character",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 9344,
+        "offset": 831118,
+        "depth": 0,
+        "frames": 92
+      },
+      "bitmapDependencies": [
+        122,
+        124,
+        126,
+        128,
+        130,
+        132,
+        134,
+        136,
+        138,
+        140,
+        142,
+        144,
+        146,
+        148,
+        150,
+        239,
+        252,
+        483,
+        502,
+        560
+      ]
+    },
+    {
+      "depth": 145,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        300.0,
+        -32.1
+      ],
+      "placedAt": 1,
+      "id": 1587,
+      "characterId": 1587,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 3489,
+        "offset": 14679659,
+        "depth": 0,
+        "frames": 59
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 149,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        300.45,
+        200.45
+      ],
+      "placedAt": 1,
+      "id": 1884,
+      "characterId": 1884,
+      "role": "environment_prop_or_animation",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 26,
+        "offset": 15750378,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": [
+        1882
+      ]
+    },
+    {
+      "depth": 151,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        0.0,
+        0.0
+      ],
+      "placedAt": 1,
+      "id": 1497,
+      "name": "子弹区域",
+      "characterId": 1497,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 14,
+        "offset": 14519557,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 153,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        0.0,
+        0.0
+      ],
+      "placedAt": 1,
+      "id": 1497,
+      "name": "子弹区域2",
+      "characterId": 1497,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 14,
+        "offset": 14519557,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 155,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        0.0,
+        0.0
+      ],
+      "placedAt": 1,
+      "id": 1498,
+      "name": "效果",
+      "characterId": 1498,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 14,
+        "offset": 14519577,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": []
+    }
+  ],
+  "worldFirstFrameAlphaNonzero": [
+    {
+      "depth": 1,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        673.5,
+        227.1
+      ],
+      "placedAt": 1,
+      "id": 1918,
+      "characterId": 1918,
+      "role": "environment_backdrop",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 26,
+        "offset": 15835757,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": [
+        1877
+      ]
+    },
+    {
+      "depth": 5,
+      "matrix": [
+        10.2099609375,
+        0,
+        0,
+        1.0,
+        -400.95,
+        177.1
+      ],
+      "placedAt": 1,
+      "id": 1433,
+      "characterId": 1433,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 35,
+        "offset": 14427182,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 7,
+      "matrix": [
+        10.2099609375,
+        0,
+        0,
+        1.0,
+        -400.95,
+        334.75
+      ],
+      "placedAt": 1,
+      "id": 1433,
+      "characterId": 1433,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 35,
+        "offset": 14427182,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 9,
+      "matrix": [
+        1.00201416015625,
+        0,
+        0,
+        4.299530029296875,
+        -98.1,
+        157.7
+      ],
+      "placedAt": 1,
+      "id": 1433,
+      "characterId": 1433,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 35,
+        "offset": 14427182,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 11,
+      "matrix": [
+        1.00201416015625,
+        0,
+        0,
+        4.299530029296875,
+        496.3,
+        162.9
+      ],
+      "placedAt": 1,
+      "id": 1433,
+      "characterId": 1433,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 35,
+        "offset": 14427182,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 13,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        172.5,
+        278.55
+      ],
+      "placedAt": 1,
+      "id": 1106,
+      "name": "man1",
+      "characterId": 1106,
+      "role": "character",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 60434,
+        "offset": 2562911,
+        "depth": 0,
+        "frames": 280
+      },
+      "bitmapDependencies": [
+        122,
+        124,
+        126,
+        128,
+        130,
+        132,
+        134,
+        136,
+        138,
+        140,
+        142,
+        144,
+        146,
+        148,
+        150,
+        239,
+        252,
+        502,
+        1012
+      ]
+    },
+    {
+      "depth": 96,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        557.45,
+        -3.1
+      ],
+      "placedAt": 1,
+      "id": 1434,
+      "name": "敌人生成器2",
+      "characterId": 1434,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 5243,
+        "offset": 14427223,
+        "depth": 0,
+        "frames": 60
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 98,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        425.45,
+        -5.85
+      ],
+      "placedAt": 1,
+      "id": 1434,
+      "name": "敌人生成器1",
+      "characterId": 1434,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 5243,
+        "offset": 14427223,
+        "depth": 0,
+        "frames": 60
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 100,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        413.75,
+        278.5
+      ],
+      "placedAt": 1,
+      "id": 580,
+      "name": "boss",
+      "characterId": 580,
+      "role": "character",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 9344,
+        "offset": 831118,
+        "depth": 0,
+        "frames": 92
+      },
+      "bitmapDependencies": [
+        122,
+        124,
+        126,
+        128,
+        130,
+        132,
+        134,
+        136,
+        138,
+        140,
+        142,
+        144,
+        146,
+        148,
+        150,
+        239,
+        252,
+        483,
+        502,
+        560
+      ]
+    },
+    {
+      "depth": 145,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        300.0,
+        -32.1
+      ],
+      "placedAt": 1,
+      "id": 1587,
+      "characterId": 1587,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 3489,
+        "offset": 14679659,
+        "depth": 0,
+        "frames": 59
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 149,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        300.45,
+        200.45
+      ],
+      "placedAt": 1,
+      "id": 1884,
+      "characterId": 1884,
+      "role": "environment_prop_or_animation",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 26,
+        "offset": 15750378,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": [
+        1882
+      ]
+    },
+    {
+      "depth": 151,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        0.0,
+        0.0
+      ],
+      "placedAt": 1,
+      "id": 1497,
+      "name": "子弹区域",
+      "characterId": 1497,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 14,
+        "offset": 14519557,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 153,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        0.0,
+        0.0
+      ],
+      "placedAt": 1,
+      "id": 1497,
+      "name": "子弹区域2",
+      "characterId": 1497,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 14,
+        "offset": 14519557,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": []
+    },
+    {
+      "depth": 155,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        0.0,
+        0.0
+      ],
+      "placedAt": 1,
+      "id": 1498,
+      "name": "效果",
+      "characterId": 1498,
+      "role": "logic_collision_or_effect_container",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 14,
+        "offset": 14519577,
+        "depth": 0,
+        "frames": 1
+      },
+      "bitmapDependencies": []
+    }
+  ],
+  "worldLoad": {
+    "jumpChain": [
+      15848350,
+      15846937,
+      15846378,
+      15845657
+    ],
+    "constantPool": {
+      "offset": 15847905,
+      "values": [
+        "_parent",
+        "stop",
+        "_root",
+        "Xmax",
+        "Xmin",
+        "Ymax",
+        "Ymin",
+        "控制目标",
+        "man1",
+        "卷屏目标",
+        "背景长",
+        "背景高",
+        "舞台长",
+        "舞台高",
+        "卷屏x最小坐标值",
+        "卷屏y最小坐标值",
+        "卷屏x最大坐标值",
+        "卷屏y最大坐标值",
+        "myPoint",
+        "x",
+        "y",
+        "this",
+        "localToGlobal",
+        "gameworld",
+        "_xscale",
+        "aa",
+        "bb",
+        "Math",
+        "abs",
+        "xxx",
+        "_x",
+        "yyy",
+        "_y"
+      ],
+      "rawHex": "88 1a 01 21 00 5f 70 61 72 65 6e 74 00 73 74 6f 70 00 5f 72 6f 6f 74 00 58 6d 61 78 00 58 6d 69 6e 00 59 6d 61 78 00 59 6d 69 6e 00 e6 8e a7 e5 88 b6 e7 9b ae e6 a0 87 00 6d 61 6e 31 00 e5 8d b7 e5 b1 8f e7 9b ae e6 a0 87 00 e8 83 8c e6 99 af e9 95 bf 00 e8 83 8c e6 99 af e9 ab 98 00 e8 88 9e e5 8f b0 e9 95 bf 00 e8 88 9e e5 8f b0 e9 ab 98 00 e5 8d b7 e5 b1 8f 78 e6 9c 80 e5 b0 8f e5 9d 90 e6 a0 87 e5 80 bc 00 e5 8d b7 e5 b1 8f 79 e6 9c 80 e5 b0 8f e5 9d 90 e6 a0 87 e5 80 bc 00 e5 8d b7 e5 b1 8f 78 e6 9c 80 e5 a4 a7 e5 9d 90 e6 a0 87 e5 80 bc 00 e5 8d b7 e5 b1 8f 79 e6 9c 80 e5 a4 a7 e5 9d 90 e6 a0 87 e5 80 bc 00 6d 79 50 6f 69 6e 74 00 78 00 79 00 74 68 69 73 00 6c 6f 63 61 6c 54 6f 47 6c 6f 62 61 6c 00 67 61 6d 65 77 6f 72 6c 64 00 5f 78 73 63 61 6c 65 00 61 61 00 62 62 00 4d 61 74 68 00 61 62 73 00 78 78 78 00 5f 78 00 79 79 79 00 5f 79 00"
+    },
+    "instructions": [
+      {
+        "offset": 15845657,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 14,
+        "values": [
+          0.0,
+          {
+            "constantIndex": 0,
+            "resolved": "_parent"
+          }
+        ]
+      },
+      {
+        "offset": 15845671,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845672,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 1,
+            "resolved": "stop"
+          }
+        ]
+      },
+      {
+        "offset": 15845677,
+        "opcode": "0x52",
+        "op": "CallMethod",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845678,
+        "opcode": "0x17",
+        "op": "Pop",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845679,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 2,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 15845684,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845685,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 10,
+        "values": [
+          {
+            "constantIndex": 3,
+            "resolved": "Xmax"
+          },
+          500
+        ]
+      },
+      {
+        "offset": 15845695,
+        "opcode": "0x4f",
+        "op": "SetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845696,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 2,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 15845701,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845702,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 10,
+        "values": [
+          {
+            "constantIndex": 4,
+            "resolved": "Xmin"
+          },
+          100
+        ]
+      },
+      {
+        "offset": 15845712,
+        "opcode": "0x4f",
+        "op": "SetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845713,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 2,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 15845718,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845719,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 10,
+        "values": [
+          {
+            "constantIndex": 5,
+            "resolved": "Ymax"
+          },
+          310
+        ]
+      },
+      {
+        "offset": 15845729,
+        "opcode": "0x4f",
+        "op": "SetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845730,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 2,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 15845735,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845736,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 10,
+        "values": [
+          {
+            "constantIndex": 6,
+            "resolved": "Ymin"
+          },
+          250
+        ]
+      },
+      {
+        "offset": 15845746,
+        "opcode": "0x4f",
+        "op": "SetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845747,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 2,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 15845752,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845753,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 7,
+        "values": [
+          {
+            "constantIndex": 7,
+            "resolved": "控制目标"
+          },
+          {
+            "constantIndex": 8,
+            "resolved": "man1"
+          }
+        ]
+      },
+      {
+        "offset": 15845760,
+        "opcode": "0x4f",
+        "op": "SetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845761,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 2,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 15845766,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845767,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 7,
+        "values": [
+          {
+            "constantIndex": 9,
+            "resolved": "卷屏目标"
+          },
+          {
+            "constantIndex": 2,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 15845774,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845775,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 7,
+            "resolved": "控制目标"
+          }
+        ]
+      },
+      {
+        "offset": 15845780,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845781,
+        "opcode": "0x4f",
+        "op": "SetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845782,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 10,
+        "values": [
+          {
+            "constantIndex": 10,
+            "resolved": "背景长"
+          },
+          800
+        ]
+      },
+      {
+        "offset": 15845792,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845793,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 10,
+        "values": [
+          {
+            "constantIndex": 11,
+            "resolved": "背景高"
+          },
+          800
+        ]
+      },
+      {
+        "offset": 15845803,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845804,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 10,
+        "values": [
+          {
+            "constantIndex": 12,
+            "resolved": "舞台长"
+          },
+          600
+        ]
+      },
+      {
+        "offset": 15845814,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845815,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 10,
+        "values": [
+          {
+            "constantIndex": 13,
+            "resolved": "舞台高"
+          },
+          350
+        ]
+      },
+      {
+        "offset": 15845825,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845826,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 7,
+        "values": [
+          {
+            "constantIndex": 14,
+            "resolved": "卷屏x最小坐标值"
+          },
+          {
+            "constantIndex": 12,
+            "resolved": "舞台长"
+          }
+        ]
+      },
+      {
+        "offset": 15845833,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845834,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 10,
+            "resolved": "背景长"
+          }
+        ]
+      },
+      {
+        "offset": 15845839,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845840,
+        "opcode": "0xb",
+        "op": "Subtract",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845841,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845842,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 7,
+        "values": [
+          {
+            "constantIndex": 15,
+            "resolved": "卷屏y最小坐标值"
+          },
+          {
+            "constantIndex": 13,
+            "resolved": "舞台高"
+          }
+        ]
+      },
+      {
+        "offset": 15845849,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845850,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 11,
+            "resolved": "背景高"
+          }
+        ]
+      },
+      {
+        "offset": 15845855,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845856,
+        "opcode": "0xb",
+        "op": "Subtract",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845857,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845858,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 14,
+        "values": [
+          {
+            "constantIndex": 16,
+            "resolved": "卷屏x最大坐标值"
+          },
+          0.0
+        ]
+      },
+      {
+        "offset": 15845872,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845873,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 14,
+        "values": [
+          {
+            "constantIndex": 17,
+            "resolved": "卷屏y最大坐标值"
+          },
+          0.0
+        ]
+      },
+      {
+        "offset": 15845887,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845888,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 32,
+        "values": [
+          {
+            "constantIndex": 18,
+            "resolved": "myPoint"
+          },
+          {
+            "constantIndex": 19,
+            "resolved": "x"
+          },
+          0.0,
+          {
+            "constantIndex": 20,
+            "resolved": "y"
+          },
+          0.0,
+          2
+        ]
+      },
+      {
+        "offset": 15845920,
+        "opcode": "0x43",
+        "op": "InitObject",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845921,
+        "opcode": "0x3c",
+        "op": "DefineLocal",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845922,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 18,
+            "resolved": "myPoint"
+          }
+        ]
+      },
+      {
+        "offset": 15845927,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845928,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 10,
+        "values": [
+          1,
+          {
+            "constantIndex": 21,
+            "resolved": "this"
+          }
+        ]
+      },
+      {
+        "offset": 15845938,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845939,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 2,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 15845944,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845945,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 9,
+            "resolved": "卷屏目标"
+          }
+        ]
+      },
+      {
+        "offset": 15845950,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845951,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845952,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 22,
+            "resolved": "localToGlobal"
+          }
+        ]
+      },
+      {
+        "offset": 15845957,
+        "opcode": "0x52",
+        "op": "CallMethod",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845958,
+        "opcode": "0x17",
+        "op": "Pop",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845959,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 2,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 15845964,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845965,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 7,
+            "resolved": "控制目标"
+          }
+        ]
+      },
+      {
+        "offset": 15845970,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845971,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 8,
+            "resolved": "man1"
+          }
+        ]
+      },
+      {
+        "offset": 15845976,
+        "opcode": "0x49",
+        "op": "Equals2",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845977,
+        "opcode": "0x12",
+        "op": "Not",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845978,
+        "opcode": "0x9d",
+        "op": "If",
+        "byteLength": 5,
+        "relativeOffset": 137,
+        "branchTarget": 15846120
+      },
+      {
+        "offset": 15845983,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 2,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 15845988,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845989,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 23,
+            "resolved": "gameworld"
+          }
+        ]
+      },
+      {
+        "offset": 15845994,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15845995,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 8,
+            "resolved": "man1"
+          }
+        ]
+      },
+      {
+        "offset": 15846000,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846001,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 24,
+            "resolved": "_xscale"
+          }
+        ]
+      },
+      {
+        "offset": 15846006,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846007,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 12,
+        "values": [
+          0.0
+        ]
+      },
+      {
+        "offset": 15846019,
+        "opcode": "0x67",
+        "op": "Greater",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846020,
+        "opcode": "0x12",
+        "op": "Not",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846021,
+        "opcode": "0x9d",
+        "op": "If",
+        "byteLength": 5,
+        "relativeOffset": 47,
+        "branchTarget": 15846073
+      },
+      {
+        "offset": 15846026,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 12,
+        "values": [
+          {
+            "constantIndex": 25,
+            "resolved": "aa"
+          },
+          150,
+          {
+            "constantIndex": 18,
+            "resolved": "myPoint"
+          }
+        ]
+      },
+      {
+        "offset": 15846038,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846039,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 19,
+            "resolved": "x"
+          }
+        ]
+      },
+      {
+        "offset": 15846044,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846045,
+        "opcode": "0xb",
+        "op": "Subtract",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846046,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846047,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 12,
+        "values": [
+          {
+            "constantIndex": 26,
+            "resolved": "bb"
+          },
+          240,
+          {
+            "constantIndex": 18,
+            "resolved": "myPoint"
+          }
+        ]
+      },
+      {
+        "offset": 15846059,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846060,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 20,
+            "resolved": "y"
+          }
+        ]
+      },
+      {
+        "offset": 15846065,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846066,
+        "opcode": "0xb",
+        "op": "Subtract",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846067,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846068,
+        "opcode": "0x99",
+        "op": "Jump",
+        "byteLength": 5,
+        "relativeOffset": 42,
+        "branchTarget": 15846115
+      },
+      {
+        "offset": 15846073,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 12,
+        "values": [
+          {
+            "constantIndex": 25,
+            "resolved": "aa"
+          },
+          450,
+          {
+            "constantIndex": 18,
+            "resolved": "myPoint"
+          }
+        ]
+      },
+      {
+        "offset": 15846085,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846086,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 19,
+            "resolved": "x"
+          }
+        ]
+      },
+      {
+        "offset": 15846091,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846092,
+        "opcode": "0xb",
+        "op": "Subtract",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846093,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846094,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 12,
+        "values": [
+          {
+            "constantIndex": 26,
+            "resolved": "bb"
+          },
+          240,
+          {
+            "constantIndex": 18,
+            "resolved": "myPoint"
+          }
+        ]
+      },
+      {
+        "offset": 15846106,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846107,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 20,
+            "resolved": "y"
+          }
+        ]
+      },
+      {
+        "offset": 15846112,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846113,
+        "opcode": "0xb",
+        "op": "Subtract",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846114,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846115,
+        "opcode": "0x99",
+        "op": "Jump",
+        "byteLength": 5,
+        "relativeOffset": 42,
+        "branchTarget": 15846162
+      },
+      {
+        "offset": 15846120,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 12,
+        "values": [
+          {
+            "constantIndex": 25,
+            "resolved": "aa"
+          },
+          300,
+          {
+            "constantIndex": 18,
+            "resolved": "myPoint"
+          }
+        ]
+      },
+      {
+        "offset": 15846132,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846133,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 19,
+            "resolved": "x"
+          }
+        ]
+      },
+      {
+        "offset": 15846138,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846139,
+        "opcode": "0xb",
+        "op": "Subtract",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846140,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846141,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 12,
+        "values": [
+          {
+            "constantIndex": 26,
+            "resolved": "bb"
+          },
+          240,
+          {
+            "constantIndex": 18,
+            "resolved": "myPoint"
+          }
+        ]
+      },
+      {
+        "offset": 15846153,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846154,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 20,
+            "resolved": "y"
+          }
+        ]
+      },
+      {
+        "offset": 15846159,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846160,
+        "opcode": "0xb",
+        "op": "Subtract",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846161,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846162,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 25,
+            "resolved": "aa"
+          }
+        ]
+      },
+      {
+        "offset": 15846167,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846168,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 10,
+        "values": [
+          1,
+          {
+            "constantIndex": 27,
+            "resolved": "Math"
+          }
+        ]
+      },
+      {
+        "offset": 15846178,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846179,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 28,
+            "resolved": "abs"
+          }
+        ]
+      },
+      {
+        "offset": 15846184,
+        "opcode": "0x52",
+        "op": "CallMethod",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846185,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 8,
+        "values": [
+          1
+        ]
+      },
+      {
+        "offset": 15846193,
+        "opcode": "0x67",
+        "op": "Greater",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846194,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 26,
+            "resolved": "bb"
+          }
+        ]
+      },
+      {
+        "offset": 15846199,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846200,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 10,
+        "values": [
+          1,
+          {
+            "constantIndex": 27,
+            "resolved": "Math"
+          }
+        ]
+      },
+      {
+        "offset": 15846210,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846211,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 28,
+            "resolved": "abs"
+          }
+        ]
+      },
+      {
+        "offset": 15846216,
+        "opcode": "0x52",
+        "op": "CallMethod",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846217,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 8,
+        "values": [
+          1
+        ]
+      },
+      {
+        "offset": 15846225,
+        "opcode": "0x67",
+        "op": "Greater",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846226,
+        "opcode": "0x11",
+        "op": "Or",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846227,
+        "opcode": "0x12",
+        "op": "Not",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846228,
+        "opcode": "0x9d",
+        "op": "If",
+        "byteLength": 5,
+        "relativeOffset": 140,
+        "branchTarget": 15846373
+      },
+      {
+        "offset": 15846233,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 7,
+        "values": [
+          {
+            "constantIndex": 29,
+            "resolved": "xxx"
+          },
+          {
+            "constantIndex": 21,
+            "resolved": "this"
+          }
+        ]
+      },
+      {
+        "offset": 15846240,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846241,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 30,
+            "resolved": "_x"
+          }
+        ]
+      },
+      {
+        "offset": 15846246,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846247,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 25,
+            "resolved": "aa"
+          }
+        ]
+      },
+      {
+        "offset": 15846252,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846253,
+        "opcode": "0x47",
+        "op": "Add2",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846254,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846255,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 7,
+        "values": [
+          {
+            "constantIndex": 31,
+            "resolved": "yyy"
+          },
+          {
+            "constantIndex": 21,
+            "resolved": "this"
+          }
+        ]
+      },
+      {
+        "offset": 15846262,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846263,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 32,
+            "resolved": "_y"
+          }
+        ]
+      },
+      {
+        "offset": 15846268,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846269,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 26,
+            "resolved": "bb"
+          }
+        ]
+      },
+      {
+        "offset": 15846274,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846275,
+        "opcode": "0x47",
+        "op": "Add2",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846276,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846277,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 29,
+            "resolved": "xxx"
+          }
+        ]
+      },
+      {
+        "offset": 15846282,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846283,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 14,
+            "resolved": "卷屏x最小坐标值"
+          }
+        ]
+      },
+      {
+        "offset": 15846288,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846289,
+        "opcode": "0x67",
+        "op": "Greater",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846290,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 29,
+            "resolved": "xxx"
+          }
+        ]
+      },
+      {
+        "offset": 15846295,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846296,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 16,
+            "resolved": "卷屏x最大坐标值"
+          }
+        ]
+      },
+      {
+        "offset": 15846301,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846302,
+        "opcode": "0x48",
+        "op": "Less2",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846303,
+        "opcode": "0x10",
+        "op": "And",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846304,
+        "opcode": "0x12",
+        "op": "Not",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846305,
+        "opcode": "0x9d",
+        "op": "If",
+        "byteLength": 5,
+        "relativeOffset": 15,
+        "branchTarget": 15846325
+      },
+      {
+        "offset": 15846310,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 21,
+            "resolved": "this"
+          }
+        ]
+      },
+      {
+        "offset": 15846315,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846316,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 7,
+        "values": [
+          {
+            "constantIndex": 30,
+            "resolved": "_x"
+          },
+          {
+            "constantIndex": 29,
+            "resolved": "xxx"
+          }
+        ]
+      },
+      {
+        "offset": 15846323,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846324,
+        "opcode": "0x4f",
+        "op": "SetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846325,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 31,
+            "resolved": "yyy"
+          }
+        ]
+      },
+      {
+        "offset": 15846330,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846331,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 15,
+            "resolved": "卷屏y最小坐标值"
+          }
+        ]
+      },
+      {
+        "offset": 15846336,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846337,
+        "opcode": "0x67",
+        "op": "Greater",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846338,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 31,
+            "resolved": "yyy"
+          }
+        ]
+      },
+      {
+        "offset": 15846343,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846344,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 17,
+            "resolved": "卷屏y最大坐标值"
+          }
+        ]
+      },
+      {
+        "offset": 15846349,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846350,
+        "opcode": "0x48",
+        "op": "Less2",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846351,
+        "opcode": "0x10",
+        "op": "And",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846352,
+        "opcode": "0x12",
+        "op": "Not",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846353,
+        "opcode": "0x9d",
+        "op": "If",
+        "byteLength": 5,
+        "relativeOffset": 15,
+        "branchTarget": 15846373
+      },
+      {
+        "offset": 15846358,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 21,
+            "resolved": "this"
+          }
+        ]
+      },
+      {
+        "offset": 15846363,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846364,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 7,
+        "values": [
+          {
+            "constantIndex": 32,
+            "resolved": "_y"
+          },
+          {
+            "constantIndex": 31,
+            "resolved": "yyy"
+          }
+        ]
+      },
+      {
+        "offset": 15846371,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846372,
+        "opcode": "0x4f",
+        "op": "SetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846373,
+        "opcode": "0x99",
+        "op": "Jump",
+        "byteLength": 5,
+        "relativeOffset": 554,
+        "branchTarget": 15846932
+      },
+      {
+        "offset": 15846378,
+        "opcode": "0x99",
+        "op": "Jump",
+        "byteLength": 5,
+        "relativeOffset": -726,
+        "branchTarget": 15845657
+      },
+      {
+        "offset": 15846383,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 32,
+        "values": [
+          {
+            "constantIndex": 0,
+            "resolved": "_parent"
+          },
+          {
+            "constantIndex": 1,
+            "resolved": "stop"
+          },
+          0.0,
+          {
+            "constantIndex": 2,
+            "resolved": "_root"
+          },
+          0.0,
+          2
+        ]
+      },
+      {
+        "offset": 15846415,
+        "opcode": "0x43",
+        "op": "InitObject",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846416,
+        "opcode": "0x3c",
+        "op": "DefineLocal",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846417,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 0,
+            "resolved": "_parent"
+          }
+        ]
+      },
+      {
+        "offset": 15846422,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846423,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 10,
+        "values": [
+          1,
+          {
+            "constantIndex": 3,
+            "resolved": "Xmax"
+          }
+        ]
+      },
+      {
+        "offset": 15846433,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846434,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 4,
+            "resolved": "Xmin"
+          }
+        ]
+      },
+      {
+        "offset": 15846439,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846440,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 5,
+            "resolved": "Ymax"
+          }
+        ]
+      },
+      {
+        "offset": 15846445,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846446,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846447,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 6,
+            "resolved": "Ymin"
+          }
+        ]
+      },
+      {
+        "offset": 15846452,
+        "opcode": "0x52",
+        "op": "CallMethod",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846453,
+        "opcode": "0x17",
+        "op": "Pop",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846454,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 4,
+            "resolved": "Xmin"
+          }
+        ]
+      },
+      {
+        "offset": 15846459,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846460,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 7,
+            "resolved": "控制目标"
+          }
+        ]
+      },
+      {
+        "offset": 15846465,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846466,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 8,
+            "resolved": "man1"
+          }
+        ]
+      },
+      {
+        "offset": 15846471,
+        "opcode": "0x49",
+        "op": "Equals2",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846472,
+        "opcode": "0x12",
+        "op": "Not",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846473,
+        "opcode": "0x9d",
+        "op": "If",
+        "byteLength": 5,
+        "relativeOffset": 173,
+        "branchTarget": 15846651
+      },
+      {
+        "offset": 15846478,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 4,
+            "resolved": "Xmin"
+          }
+        ]
+      },
+      {
+        "offset": 15846483,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846484,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 9,
+            "resolved": "卷屏目标"
+          }
+        ]
+      },
+      {
+        "offset": 15846489,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846490,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 8,
+            "resolved": "man1"
+          }
+        ]
+      },
+      {
+        "offset": 15846495,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846496,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 10,
+            "resolved": "背景长"
+          }
+        ]
+      },
+      {
+        "offset": 15846501,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846502,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 12,
+        "values": [
+          0.0
+        ]
+      },
+      {
+        "offset": 15846514,
+        "opcode": "0x67",
+        "op": "Greater",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846515,
+        "opcode": "0x12",
+        "op": "Not",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846516,
+        "opcode": "0x9d",
+        "op": "If",
+        "byteLength": 5,
+        "relativeOffset": 65,
+        "branchTarget": 15846586
+      },
+      {
+        "offset": 15846521,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 12,
+        "values": [
+          {
+            "constantIndex": 11,
+            "resolved": "背景高"
+          },
+          150,
+          {
+            "constantIndex": 0,
+            "resolved": "_parent"
+          }
+        ]
+      },
+      {
+        "offset": 15846533,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846534,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 1,
+            "resolved": "stop"
+          }
+        ]
+      },
+      {
+        "offset": 15846539,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846540,
+        "opcode": "0xb",
+        "op": "Subtract",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846541,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 8,
+        "values": [
+          5
+        ]
+      },
+      {
+        "offset": 15846549,
+        "opcode": "0xd",
+        "op": "Divide",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846550,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846551,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 12,
+        "values": [
+          {
+            "constantIndex": 12,
+            "resolved": "舞台长"
+          },
+          240,
+          {
+            "constantIndex": 0,
+            "resolved": "_parent"
+          }
+        ]
+      },
+      {
+        "offset": 15846563,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846564,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 2,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 15846569,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846570,
+        "opcode": "0xb",
+        "op": "Subtract",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846571,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 8,
+        "values": [
+          5
+        ]
+      },
+      {
+        "offset": 15846579,
+        "opcode": "0xd",
+        "op": "Divide",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846580,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846581,
+        "opcode": "0x99",
+        "op": "Jump",
+        "byteLength": 5,
+        "relativeOffset": 60,
+        "branchTarget": 15846646
+      },
+      {
+        "offset": 15846586,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 12,
+        "values": [
+          {
+            "constantIndex": 11,
+            "resolved": "背景高"
+          },
+          450,
+          {
+            "constantIndex": 0,
+            "resolved": "_parent"
+          }
+        ]
+      },
+      {
+        "offset": 15846598,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846599,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 1,
+            "resolved": "stop"
+          }
+        ]
+      },
+      {
+        "offset": 15846604,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846605,
+        "opcode": "0xb",
+        "op": "Subtract",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846606,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 8,
+        "values": [
+          5
+        ]
+      },
+      {
+        "offset": 15846614,
+        "opcode": "0xd",
+        "op": "Divide",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846615,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846616,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 12,
+        "values": [
+          {
+            "constantIndex": 12,
+            "resolved": "舞台长"
+          },
+          240,
+          {
+            "constantIndex": 0,
+            "resolved": "_parent"
+          }
+        ]
+      },
+      {
+        "offset": 15846628,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846629,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 2,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 15846634,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846635,
+        "opcode": "0xb",
+        "op": "Subtract",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846636,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 8,
+        "values": [
+          5
+        ]
+      },
+      {
+        "offset": 15846644,
+        "opcode": "0xd",
+        "op": "Divide",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846645,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846646,
+        "opcode": "0x99",
+        "op": "Jump",
+        "byteLength": 5,
+        "relativeOffset": 60,
+        "branchTarget": 15846711
+      },
+      {
+        "offset": 15846651,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 12,
+        "values": [
+          {
+            "constantIndex": 11,
+            "resolved": "背景高"
+          },
+          300,
+          {
+            "constantIndex": 0,
+            "resolved": "_parent"
+          }
+        ]
+      },
+      {
+        "offset": 15846663,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846664,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 1,
+            "resolved": "stop"
+          }
+        ]
+      },
+      {
+        "offset": 15846669,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846670,
+        "opcode": "0xb",
+        "op": "Subtract",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846671,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 8,
+        "values": [
+          5
+        ]
+      },
+      {
+        "offset": 15846679,
+        "opcode": "0xd",
+        "op": "Divide",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846680,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846681,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 12,
+        "values": [
+          {
+            "constantIndex": 12,
+            "resolved": "舞台长"
+          },
+          240,
+          {
+            "constantIndex": 0,
+            "resolved": "_parent"
+          }
+        ]
+      },
+      {
+        "offset": 15846693,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846694,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 2,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 15846699,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846700,
+        "opcode": "0xb",
+        "op": "Subtract",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846701,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 8,
+        "values": [
+          5
+        ]
+      },
+      {
+        "offset": 15846709,
+        "opcode": "0xd",
+        "op": "Divide",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846710,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846711,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 11,
+            "resolved": "背景高"
+          }
+        ]
+      },
+      {
+        "offset": 15846716,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846717,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 10,
+        "values": [
+          1,
+          {
+            "constantIndex": 13,
+            "resolved": "舞台高"
+          }
+        ]
+      },
+      {
+        "offset": 15846727,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846728,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 14,
+            "resolved": "卷屏x最小坐标值"
+          }
+        ]
+      },
+      {
+        "offset": 15846733,
+        "opcode": "0x52",
+        "op": "CallMethod",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846734,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 8,
+        "values": [
+          1
+        ]
+      },
+      {
+        "offset": 15846742,
+        "opcode": "0x67",
+        "op": "Greater",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846743,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 12,
+            "resolved": "舞台长"
+          }
+        ]
+      },
+      {
+        "offset": 15846748,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846749,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 10,
+        "values": [
+          1,
+          {
+            "constantIndex": 13,
+            "resolved": "舞台高"
+          }
+        ]
+      },
+      {
+        "offset": 15846759,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846760,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 14,
+            "resolved": "卷屏x最小坐标值"
+          }
+        ]
+      },
+      {
+        "offset": 15846765,
+        "opcode": "0x52",
+        "op": "CallMethod",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846766,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 8,
+        "values": [
+          1
+        ]
+      },
+      {
+        "offset": 15846774,
+        "opcode": "0x67",
+        "op": "Greater",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846775,
+        "opcode": "0x11",
+        "op": "Or",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846776,
+        "opcode": "0x12",
+        "op": "Not",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846777,
+        "opcode": "0x9d",
+        "op": "If",
+        "byteLength": 5,
+        "relativeOffset": 140,
+        "branchTarget": 15846922
+      },
+      {
+        "offset": 15846782,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 7,
+        "values": [
+          {
+            "constantIndex": 15,
+            "resolved": "卷屏y最小坐标值"
+          },
+          {
+            "constantIndex": 3,
+            "resolved": "Xmax"
+          }
+        ]
+      },
+      {
+        "offset": 15846789,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846790,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 16,
+            "resolved": "卷屏x最大坐标值"
+          }
+        ]
+      },
+      {
+        "offset": 15846795,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846796,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 11,
+            "resolved": "背景高"
+          }
+        ]
+      },
+      {
+        "offset": 15846801,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846802,
+        "opcode": "0x47",
+        "op": "Add2",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846803,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846804,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 7,
+        "values": [
+          {
+            "constantIndex": 17,
+            "resolved": "卷屏y最大坐标值"
+          },
+          {
+            "constantIndex": 3,
+            "resolved": "Xmax"
+          }
+        ]
+      },
+      {
+        "offset": 15846811,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846812,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 18,
+            "resolved": "myPoint"
+          }
+        ]
+      },
+      {
+        "offset": 15846817,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846818,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 12,
+            "resolved": "舞台长"
+          }
+        ]
+      },
+      {
+        "offset": 15846823,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846824,
+        "opcode": "0x47",
+        "op": "Add2",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846825,
+        "opcode": "0x1d",
+        "op": "SetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846826,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 15,
+            "resolved": "卷屏y最小坐标值"
+          }
+        ]
+      },
+      {
+        "offset": 15846831,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846832,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 19,
+            "resolved": "x"
+          }
+        ]
+      },
+      {
+        "offset": 15846837,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846838,
+        "opcode": "0x67",
+        "op": "Greater",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846839,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 15,
+            "resolved": "卷屏y最小坐标值"
+          }
+        ]
+      },
+      {
+        "offset": 15846844,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846845,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 20,
+            "resolved": "y"
+          }
+        ]
+      },
+      {
+        "offset": 15846850,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846851,
+        "opcode": "0x48",
+        "op": "Less2",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846852,
+        "opcode": "0x10",
+        "op": "And",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846853,
+        "opcode": "0x12",
+        "op": "Not",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846854,
+        "opcode": "0x9d",
+        "op": "If",
+        "byteLength": 5,
+        "relativeOffset": 15,
+        "branchTarget": 15846874
+      },
+      {
+        "offset": 15846859,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 3,
+            "resolved": "Xmax"
+          }
+        ]
+      },
+      {
+        "offset": 15846864,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846865,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 7,
+        "values": [
+          {
+            "constantIndex": 16,
+            "resolved": "卷屏x最大坐标值"
+          },
+          {
+            "constantIndex": 15,
+            "resolved": "卷屏y最小坐标值"
+          }
+        ]
+      },
+      {
+        "offset": 15846872,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846873,
+        "opcode": "0x4f",
+        "op": "SetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846874,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 17,
+            "resolved": "卷屏y最大坐标值"
+          }
+        ]
+      },
+      {
+        "offset": 15846879,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846880,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 21,
+            "resolved": "this"
+          }
+        ]
+      },
+      {
+        "offset": 15846885,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846886,
+        "opcode": "0x67",
+        "op": "Greater",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846887,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 17,
+            "resolved": "卷屏y最大坐标值"
+          }
+        ]
+      },
+      {
+        "offset": 15846892,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846893,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 22,
+            "resolved": "localToGlobal"
+          }
+        ]
+      },
+      {
+        "offset": 15846898,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846899,
+        "opcode": "0x48",
+        "op": "Less2",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846900,
+        "opcode": "0x10",
+        "op": "And",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846901,
+        "opcode": "0x12",
+        "op": "Not",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846902,
+        "opcode": "0x9d",
+        "op": "If",
+        "byteLength": 5,
+        "relativeOffset": 15,
+        "branchTarget": 15846922
+      },
+      {
+        "offset": 15846907,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 3,
+            "resolved": "Xmax"
+          }
+        ]
+      },
+      {
+        "offset": 15846912,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846913,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 7,
+        "values": [
+          {
+            "constantIndex": 18,
+            "resolved": "myPoint"
+          },
+          {
+            "constantIndex": 17,
+            "resolved": "卷屏y最大坐标值"
+          }
+        ]
+      },
+      {
+        "offset": 15846920,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846921,
+        "opcode": "0x4f",
+        "op": "SetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15846922,
+        "opcode": "0x99",
+        "op": "Jump",
+        "byteLength": 5,
+        "relativeOffset": 1813,
+        "branchTarget": 15848740
+      }
+    ],
+    "windowOffset": 15845657,
+    "protectedTag": {
+      "frame": 148,
+      "code": 253,
+      "offset": 15845641,
+      "length": 1301
+    },
+    "status": "Decoded protected load by literal pool and unconditional branch chain, without execution",
+    "clipRecordOffset": 15846985,
+    "parameters": {
+      "Xmax": 500,
+      "Xmin": 100,
+      "Ymax": 310,
+      "Ymin": 250,
+      "控制目标": "man1",
+      "背景长": 800,
+      "背景高": 800,
+      "舞台长": 600,
+      "舞台高": 350
+    },
+    "literalAssignments": [
+      {
+        "offset": 15845685,
+        "name": "Xmax",
+        "value": 500,
+        "op": "SetMember"
+      },
+      {
+        "offset": 15845702,
+        "name": "Xmin",
+        "value": 100,
+        "op": "SetMember"
+      },
+      {
+        "offset": 15845719,
+        "name": "Ymax",
+        "value": 310,
+        "op": "SetMember"
+      },
+      {
+        "offset": 15845736,
+        "name": "Ymin",
+        "value": 250,
+        "op": "SetMember"
+      },
+      {
+        "offset": 15845753,
+        "name": "控制目标",
+        "value": "man1",
+        "op": "SetMember"
+      },
+      {
+        "offset": 15845782,
+        "name": "背景长",
+        "value": 800,
+        "op": "SetVariable"
+      },
+      {
+        "offset": 15845793,
+        "name": "背景高",
+        "value": 800,
+        "op": "SetVariable"
+      },
+      {
+        "offset": 15845804,
+        "name": "舞台长",
+        "value": 600,
+        "op": "SetVariable"
+      },
+      {
+        "offset": 15845815,
+        "name": "舞台高",
+        "value": 350,
+        "op": "SetVariable"
+      }
+    ],
+    "logicalBackgroundSize": [
+      800,
+      800
+    ],
+    "stageSize": [
+      600,
+      350
+    ],
+    "windowRawHex": "96 0b 00 06 00 00 00 00 00 00 00 00 08 00 1c 96 02 00 08 01 52 17 96 02 00 08 02 1c 96 07 00 08 03 07 f4 01 00 00 4f 96 02 00 08 02 1c 96 07 00 08 04 07 64 00 00 00 4f 96 02 00 08 02 1c 96 07 00 08 05 07 36 01 00 00 4f 96 02 00 08 02 1c 96 07 00 08 06 07 fa 00 00 00 4f 96 02 00 08 02 1c 96 04 00 08 07 08 08 4f 96 02 00 08 02 1c 96 04 00 08 09 08 02 1c 96 02 00 08 07 4e 4f 96 07 00 08 0a 07 20 03 00 00 1d 96 07 00 08 0b 07 20 03 00 00 1d 96 07 00 08 0c 07 58 02 00 00 1d 96 07 00 08 0d 07 5e 01 00 00 1d 96 04 00 08 0e 08 0c 1c 96 02 00 08 0a 1c 0b 1d 96 04 00 08 0f 08 0d 1c 96 02 00 08 0b 1c 0b 1d 96 0b 00 08 10 06 00 00 00 00 00 00 00 00 1d 96 0b 00 08 11 06 00 00 00 00 00 00 00 00 1d 96 1d 00 08 12 08 13 06 00 00 00 00 00 00 00 00 08 14 06 00 00 00 00 00 00 00 00 07 02 00 00 00 43 3c 96 02 00 08 12 1c 96 07 00 07 01 00 00 00 08 15 1c 96 02 00 08 02 1c 96 02 00 08 09 4e 4e 96 02 00 08 16 52 17 96 02 00 08 02 1c 96 02 00 08 07 4e 96 02 00 08 08 49 12 9d 02 00 89 00 96 02 00 08 02 1c 96 02 00 08 17 4e 96 02 00 08 08 4e 96 02 00 08 18 4e 96 09 00 06 00 00 00 00 00 00 00 00 67 12 9d 02 00 2f 00 96 09 00 08 19 07 96 00 00 00 08 12 1c 96 02 00 08 13 4e 0b 1d 96 09 00 08 1a 07 f0 00 00 00 08 12 1c 96 02 00 08 14 4e 0b 1d 99 02 00 2a 00 96 09 00 08 19 07 c2 01 00 00 08 12 1c 96 02 00 08 13 4e 0b 1d 96 09 00 08 1a 07 f0 00 00 00 08 12 1c 96 02 00 08 14 4e 0b 1d 99 02 00 2a 00 96 09 00 08 19 07 2c 01 00 00 08 12 1c 96 02 00 08 13 4e 0b 1d 96 09 00 08 1a 07 f0 00 00 00 08 12 1c 96 02 00 08 14 4e 0b 1d 96 02 00 08 19 1c 96 07 00 07 01 00 00 00 08 1b 1c 96 02 00 08 1c 52 96 05 00 07 01 00 00 00 67 96 02 00 08 1a 1c 96 07 00 07 01 00 00 00 08 1b 1c 96 02 00 08 1c 52 96 05 00 07 01 00 00 00 67 11 12 9d 02 00 8c 00 96 04 00 08 1d 08 15 1c 96 02 00 08 1e 4e 96 02 00 08 19 1c 47 1d 96 04 00 08 1f 08 15 1c 96 02 00 08 20 4e 96 02 00 08 1a 1c 47 1d 96 02 00 08 1d 1c 96 02 00 08 0e 1c 67 96 02 00 08 1d 1c 96 02 00 08 10 1c 48 10 12 9d 02 00 0f 00 96 02 00 08 15 1c 96 04 00 08 1e 08 1d 1c 4f 96 02 00 08 1f 1c 96 02 00 08 0f 1c 67 96 02 00 08 1f 1c 96 02 00 08 11 1c 48 10 12 9d 02 00 0f 00 96 02 00 08 15 1c 96 04 00 08 20 08 1f 1c 4f 99 02 00 2a 02 99 02 00 2a fd 96 1d 00 08 00 08 01 06 00 00 00 00 00 00 00 00 08 02 06 00 00 00 00 00 00 00 00 07 02 00 00 00 43 3c 96 02 00 08 00 1c 96 07 00 07 01 00 00 00 08 03 1c 96 02 00 08 04 1c 96 02 00 08 05 4e 4e 96 02 00 08 06 52 17 96 02 00 08 04 1c 96 02 00 08 07 4e 96 02 00 08 08 49 12 9d 02 00 ad 00 96 02 00 08 04 1c 96 02 00 08 09 4e 96 02 00 08 08 4e 96 02 00 08 0a 4e 96 09 00 06 00 00 00 00 00 00 00 00 67 12 9d 02 00 41 00 96 09 00 08 0b 07 96 00 00 00 08 00 1c 96 02 00 08 01 4e 0b 96 05 00 07 05 00 00 00 0d 1d 96 09 00 08 0c 07 f0 00 00 00 08 00 1c 96 02 00 08 02 4e 0b 96 05 00 07 05 00 00 00 0d 1d 99 02 00 3c 00 96 09 00 08 0b 07 c2 01 00 00 08 00 1c 96 02 00 08 01 4e 0b 96 05 00 07 05 00 00 00 0d 1d 96 09 00 08 0c 07 f0 00 00 00 08 00 1c 96 02 00 08 02 4e 0b 96 05 00 07 05 00 00 00 0d 1d 99 02 00 3c 00 96 09 00 08 0b 07 2c 01 00 00 08 00 1c 96 02 00 08 01 4e 0b 96 05 00 07 05 00 00 00 0d 1d 96 09 00 08 0c 07 f0 00 00 00 08 00 1c 96 02 00 08 02 4e 0b 96 05 00 07 05 00 00 00 0d 1d 96 02 00 08 0b 1c 96 07 00 07 01 00 00 00 08 0d 1c 96 02 00 08 0e 52 96 05 00 07 01 00 00 00 67 96 02 00 08 0c 1c 96 07 00 07 01 00 00 00 08 0d 1c 96 02 00 08 0e 52 96 05 00 07 01 00 00 00 67 11 12 9d 02 00 8c 00 96 04 00 08 0f 08 03 1c 96 02 00 08 10 4e 96 02 00 08 0b 1c 47 1d 96 04 00 08 11 08 03 1c 96 02 00 08 12 4e 96 02 00 08 0c 1c 47 1d 96 02 00 08 0f 1c 96 02 00 08 13 1c 67 96 02 00 08 0f 1c 96 02 00 08 14 1c 48 10 12 9d 02 00 0f 00 96 02 00 08 03 1c 96 04 00 08 10 08 0f 1c 4f 96 02 00 08 11 1c 96 02 00 08 15 1c 67 96 02 00 08 11 1c 96 02 00 08 16 1c 48 10 12 9d 02 00 0f 00 96 02 00 08 03 1c 96 04 00 08 12 08 11 1c 4f 99 02 00 15 07"
+  },
+  "worldDisplayClosure": {
+    "id": 1920,
+    "definition": {
+      "code": 39,
+      "size": 9808,
+      "offset": 15835821,
+      "depth": 0,
+      "frames": 1
+    },
+    "displayClosure": [
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      123,
+      125,
+      127,
+      129,
+      131,
+      133,
+      135,
+      137,
+      139,
+      141,
+      143,
+      145,
+      147,
+      149,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      175,
+      176,
+      177,
+      178,
+      179,
+      236,
+      238,
+      240,
+      241,
+      242,
+      243,
+      244,
+      245,
+      246,
+      247,
+      248,
+      249,
+      250,
+      251,
+      253,
+      254,
+      277,
+      278,
+      279,
+      280,
+      281,
+      282,
+      283,
+      285,
+      290,
+      299,
+      358,
+      359,
+      360,
+      484,
+      485,
+      486,
+      487,
+      488,
+      489,
+      490,
+      491,
+      492,
+      493,
+      494,
+      495,
+      496,
+      497,
+      499,
+      501,
+      503,
+      504,
+      505,
+      506,
+      561,
+      562,
+      563,
+      564,
+      565,
+      566,
+      567,
+      568,
+      569,
+      570,
+      571,
+      572,
+      573,
+      574,
+      575,
+      577,
+      578,
+      579,
+      580,
+      616,
+      617,
+      619,
+      621,
+      622,
+      1000,
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      1006,
+      1013,
+      1014,
+      1015,
+      1016,
+      1017,
+      1018,
+      1019,
+      1020,
+      1021,
+      1022,
+      1023,
+      1024,
+      1025,
+      1026,
+      1027,
+      1028,
+      1030,
+      1031,
+      1032,
+      1033,
+      1034,
+      1035,
+      1036,
+      1037,
+      1038,
+      1039,
+      1040,
+      1041,
+      1042,
+      1044,
+      1047,
+      1048,
+      1049,
+      1050,
+      1051,
+      1052,
+      1053,
+      1054,
+      1055,
+      1056,
+      1057,
+      1058,
+      1059,
+      1061,
+      1062,
+      1065,
+      1067,
+      1069,
+      1071,
+      1072,
+      1074,
+      1075,
+      1076,
+      1077,
+      1078,
+      1079,
+      1080,
+      1082,
+      1083,
+      1084,
+      1085,
+      1086,
+      1087,
+      1088,
+      1089,
+      1091,
+      1092,
+      1093,
+      1095,
+      1096,
+      1097,
+      1098,
+      1100,
+      1101,
+      1102,
+      1103,
+      1104,
+      1105,
+      1106,
+      1433,
+      1434,
+      1497,
+      1498,
+      1586,
+      1587,
+      1878,
+      1880,
+      1883,
+      1884,
+      1918,
+      1919,
+      1920
+    ],
+    "shapeIds": [
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      123,
+      125,
+      127,
+      129,
+      131,
+      133,
+      135,
+      137,
+      139,
+      141,
+      143,
+      145,
+      147,
+      149,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      175,
+      176,
+      177,
+      178,
+      236,
+      238,
+      240,
+      241,
+      242,
+      243,
+      244,
+      245,
+      246,
+      247,
+      248,
+      249,
+      250,
+      251,
+      253,
+      277,
+      279,
+      280,
+      285,
+      358,
+      484,
+      485,
+      486,
+      487,
+      488,
+      489,
+      490,
+      491,
+      493,
+      494,
+      495,
+      496,
+      497,
+      503,
+      504,
+      505,
+      561,
+      565,
+      566,
+      567,
+      568,
+      569,
+      570,
+      571,
+      572,
+      575,
+      577,
+      578,
+      616,
+      617,
+      619,
+      621,
+      622,
+      1000,
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      1006,
+      1013,
+      1014,
+      1015,
+      1016,
+      1017,
+      1018,
+      1019,
+      1020,
+      1021,
+      1022,
+      1023,
+      1024,
+      1025,
+      1031,
+      1034,
+      1036,
+      1041,
+      1044,
+      1048,
+      1050,
+      1056,
+      1057,
+      1058,
+      1059,
+      1061,
+      1074,
+      1076,
+      1077,
+      1078,
+      1079,
+      1080,
+      1082,
+      1092,
+      1093,
+      1095,
+      1096,
+      1097,
+      1098,
+      1100,
+      1101,
+      1102,
+      1103,
+      1878,
+      1880,
+      1883
+    ],
+    "bitmapDependencies": [
+      122,
+      124,
+      126,
+      128,
+      130,
+      132,
+      134,
+      136,
+      138,
+      140,
+      142,
+      144,
+      146,
+      148,
+      150,
+      239,
+      252,
+      483,
+      502,
+      560,
+      1012,
+      1877,
+      1882
+    ]
+  },
+  "environmentRoots": [
+    1876,
+    1884,
+    1918
+  ],
+  "environmentBitmapIds": [
+    1412,
+    1873,
+    1877,
+    1882
+  ],
+  "environmentNewVersusFirstFive": [
+    1412,
+    1873,
+    1877,
+    1882
+  ],
+  "environmentReusedFromFirstFive": [],
+  "environmentBitmapsNotPreviouslyExtracted": [
+    1873,
+    1877,
+    1882
+  ],
+  "environmentBitmapsAlreadyExtractedInFirstFive": [
+    1412
+  ]
+}

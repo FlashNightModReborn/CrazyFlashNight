@@ -1,0 +1,547 @@
+{
+ "sourceSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+ "shaMatch": true,
+ "fps": 30.0,
+ "frameRectPx": {
+  "xmin": 0.0,
+  "xmax": 600.0,
+  "ymin": 0.0,
+  "ymax": 350.0
+ },
+ "shapes": {
+  "277": {
+   "tag": "DefineShape3",
+   "bounds": {
+    "xmin": -16.5,
+    "xmax": 16.5,
+    "ymin": -12.0,
+    "ymax": 12.0
+   },
+   "fillStyles": [
+    {
+     "type": 0,
+     "rgba": [
+      1,
+      1,
+      1,
+      0
+     ]
+    }
+   ],
+   "lineStyles": [],
+   "numFillBits": 1,
+   "numLineBits": 0,
+   "shapeRecords": {
+    "fillStyle0Used": [],
+    "fillStyle1Used": [
+     "1"
+    ],
+    "lineStyleUsed": [],
+    "styleChangeRecords": 1,
+    "edgeRecords": 4
+   },
+   "parsedEndByte": 391146,
+   "tagEndByte": 391146,
+   "consumedExact": true
+  },
+  "503": {
+   "tag": "DefineShape",
+   "bounds": {
+    "xmin": -29.4,
+    "xmax": 29.45,
+    "ymin": -20.55,
+    "ymax": 20.5
+   },
+   "fillStyles": [
+    {
+     "type": 67,
+     "bitmapId": 65535,
+     "matrix": {
+      "scaleX": 20.0,
+      "rotateSkew0": 0.0,
+      "rotateSkew1": 0.0,
+      "scaleY": 20.0,
+      "translateX": 0.0,
+      "translateY": 0.0
+     }
+    },
+    {
+     "type": 67,
+     "bitmapId": 502,
+     "matrix": {
+      "scaleX": 27.373046875,
+      "rotateSkew0": 0.0,
+      "rotateSkew1": 0.0,
+      "scaleY": 27.373046875,
+      "translateX": -29.4,
+      "translateY": -20.55
+     }
+    }
+   ],
+   "lineStyles": [],
+   "numFillBits": 2,
+   "numLineBits": 0,
+   "shapeRecords": {
+    "fillStyle0Used": [],
+    "fillStyle1Used": [
+     "2"
+    ],
+    "lineStyleUsed": [],
+    "styleChangeRecords": 1,
+    "edgeRecords": 4
+   },
+   "parsedEndByte": 697401,
+   "tagEndByte": 697401,
+   "consumedExact": true
+  },
+  "504": {
+   "tag": "DefineShape",
+   "bounds": {
+    "xmin": -27.9,
+    "xmax": 12.05,
+    "ymin": -6.5,
+    "ymax": 16.15
+   },
+   "fillStyles": [
+    {
+     "type": 67,
+     "bitmapId": 65535,
+     "matrix": {
+      "scaleX": 20.0,
+      "rotateSkew0": 0.0,
+      "rotateSkew1": 0.0,
+      "scaleY": 20.0,
+      "translateX": 0.0,
+      "translateY": 0.0
+     }
+    },
+    {
+     "type": 67,
+     "bitmapId": 502,
+     "matrix": {
+      "scaleX": 18.5675048828125,
+      "rotateSkew0": 0.0,
+      "rotateSkew1": 0.0,
+      "scaleY": -15.09613037109375,
+      "translateX": -27.9,
+      "translateY": 16.15
+     }
+    }
+   ],
+   "lineStyles": [],
+   "numFillBits": 2,
+   "numLineBits": 0,
+   "shapeRecords": {
+    "fillStyle0Used": [
+     "2"
+    ],
+    "fillStyle1Used": [],
+    "lineStyleUsed": [],
+    "styleChangeRecords": 1,
+    "edgeRecords": 4
+   },
+   "parsedEndByte": 697457,
+   "tagEndByte": 697457,
+   "consumedExact": true
+  },
+  "505": {
+   "tag": "DefineShape",
+   "bounds": {
+    "xmin": -25.85,
+    "xmax": 23.0,
+    "ymin": -15.0,
+    "ymax": 26.5
+   },
+   "fillStyles": [
+    {
+     "type": 67,
+     "bitmapId": 65535,
+     "matrix": {
+      "scaleX": 20.0,
+      "rotateSkew0": 0.0,
+      "rotateSkew1": 0.0,
+      "scaleY": 20.0,
+      "translateX": 0.0,
+      "translateY": 0.0
+     }
+    },
+    {
+     "type": 67,
+     "bitmapId": 502,
+     "matrix": {
+      "scaleX": 22.70416259765625,
+      "rotateSkew0": 0.0,
+      "rotateSkew1": 0.0,
+      "scaleY": -27.66571044921875,
+      "translateX": -25.85,
+      "translateY": 26.5
+     }
+    }
+   ],
+   "lineStyles": [],
+   "numFillBits": 2,
+   "numLineBits": 0,
+   "shapeRecords": {
+    "fillStyle0Used": [
+     "2"
+    ],
+    "fillStyle1Used": [],
+    "lineStyleUsed": [],
+    "styleChangeRecords": 1,
+    "edgeRecords": 4
+   },
+   "parsedEndByte": 697513,
+   "tagEndByte": 697513,
+   "consumedExact": true
+  },
+  "1589": {
+   "tag": "DefineShape2",
+   "bounds": {
+    "xmin": -100.55,
+    "xmax": 82.6,
+    "ymin": -45.45,
+    "ymax": 52.45
+   },
+   "fillStyles": [
+    {
+     "type": 66,
+     "bitmapId": 1588,
+     "matrix": {
+      "scaleX": 20.0,
+      "rotateSkew0": 0.0,
+      "rotateSkew1": 0.0,
+      "scaleY": 20.0,
+      "translateX": -100.55,
+      "translateY": -143.55
+     }
+    }
+   ],
+   "lineStyles": [],
+   "numFillBits": 1,
+   "numLineBits": 0,
+   "shapeRecords": {
+    "fillStyle0Used": [
+     "0",
+     "1"
+    ],
+    "fillStyle1Used": [
+     "0",
+     "1"
+    ],
+    "lineStyleUsed": [
+     "0"
+    ],
+    "styleChangeRecords": 5,
+    "edgeRecords": 33
+   },
+   "parsedEndByte": 14689213,
+   "tagEndByte": 14689213,
+   "consumedExact": true
+  }
+ },
+ "sprite1591": {
+  "frameCount": 18,
+  "frames": [
+   {
+    "index": 1,
+    "tags": [
+     {
+      "code": 45,
+      "tag": "SoundStreamHead2",
+      "len": 4
+     },
+     {
+      "code": 253,
+      "tag": "Unknown253",
+      "len": 313
+     },
+     {
+      "code": 12,
+      "tag": "DoAction",
+      "len": 1242
+     },
+     {
+      "code": 70,
+      "tag": "PlaceObject3",
+      "len": 92,
+      "place": {
+       "tag": "PlaceObject3",
+       "flags1": 6,
+       "flags2": 1,
+       "depth": 1,
+       "charId": 1590,
+       "matrix": {
+        "scaleX": 1.0,
+        "rotateSkew0": 0.0,
+        "rotateSkew1": 0.0,
+        "scaleY": 1.0,
+        "translateX": 20.55,
+        "translateY": -49.45
+       },
+       "filters": [
+        {
+         "filterId": 6,
+         "kind": "ColorMatrix",
+         "matrix": [
+          0.48174965381622314,
+          0.5356919169425964,
+          -0.027441544458270073,
+          0.0,
+          -45.89500045776367,
+          0.21949733793735504,
+          0.6808332800865173,
+          0.08966939151287079,
+          0.0,
+          -45.89500045776367,
+          0.30943387746810913,
+          0.3974023759365082,
+          0.28316378593444824,
+          0.0,
+          -45.89500427246094,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0
+         ]
+        }
+       ],
+       "parsedBytes": 92,
+       "consumedExact": true
+      }
+     }
+    ]
+   },
+   {
+    "index": 2,
+    "tags": []
+   },
+   {
+    "index": 3,
+    "tags": []
+   },
+   {
+    "index": 4,
+    "tags": []
+   },
+   {
+    "index": 5,
+    "tags": []
+   },
+   {
+    "index": 6,
+    "tags": []
+   },
+   {
+    "index": 7,
+    "tags": []
+   },
+   {
+    "index": 8,
+    "tags": []
+   },
+   {
+    "index": 9,
+    "tags": []
+   },
+   {
+    "index": 10,
+    "tags": []
+   },
+   {
+    "index": 11,
+    "tags": []
+   },
+   {
+    "index": 12,
+    "tags": [
+     {
+      "code": 253,
+      "tag": "Unknown253",
+      "len": 608
+     },
+     {
+      "code": 26,
+      "tag": "PlaceObject2",
+      "len": 2475,
+      "place": {
+       "tag": "PlaceObject2",
+       "flags1": 182,
+       "depth": 5,
+       "charId": 359,
+       "matrix": {
+        "scaleX": 1.0,
+        "rotateSkew0": 0.0,
+        "rotateSkew1": 0.0,
+        "scaleY": 1.0,
+        "translateX": 105.25,
+        "translateY": -12.55
+       },
+       "ratio": 11,
+       "name": "枪口位置2",
+       "clipActionRecords": [
+        {
+         "flags": 1,
+         "actionBytes": 1064
+        },
+        {
+         "flags": 4,
+         "actionBytes": 44
+        },
+        {
+         "flags": 2,
+         "actionBytes": 1307
+        }
+       ],
+       "parsedBytes": 2471,
+       "consumedExact": false
+      }
+     },
+     {
+      "code": 26,
+      "tag": "PlaceObject2",
+      "len": 53,
+      "place": {
+       "tag": "PlaceObject2",
+       "flags1": 150,
+       "depth": 7,
+       "charId": 506,
+       "matrix": {
+        "scaleX": 1.0,
+        "rotateSkew0": 0.0,
+        "rotateSkew1": 0.0,
+        "scaleY": 1.0,
+        "translateX": 112.45,
+        "translateY": -70.5
+       },
+       "ratio": 11,
+       "clipActionRecords": [
+        {
+         "flags": 1,
+         "actionBytes": 23
+        }
+       ],
+       "parsedBytes": 49,
+       "consumedExact": false
+      }
+     },
+     {
+      "code": 15,
+      "tag": "StartSound",
+      "len": 12
+     }
+    ]
+   },
+   {
+    "index": 13,
+    "tags": [
+     {
+      "code": 28,
+      "tag": "RemoveObject2",
+      "len": 2
+     },
+     {
+      "code": 28,
+      "tag": "RemoveObject2",
+      "len": 2
+     }
+    ]
+   },
+   {
+    "index": 14,
+    "tags": []
+   },
+   {
+    "index": 15,
+    "tags": []
+   },
+   {
+    "index": 16,
+    "tags": []
+   },
+   {
+    "index": 17,
+    "tags": []
+   },
+   {
+    "index": 18,
+    "tags": []
+   },
+   {
+    "index": 19,
+    "tags": []
+   }
+  ]
+ },
+ "charIdCheck": {
+  "277": {
+   "exists": true,
+   "tag": "DefineShape3",
+   "offset": 391110,
+   "length": 36
+  },
+  "359": {
+   "exists": true,
+   "tag": "DefineSprite",
+   "offset": 512446,
+   "length": 37
+  },
+  "502": {
+   "exists": true,
+   "tag": "DefineBitsLossless2",
+   "offset": 695760,
+   "length": 1585
+  },
+  "503": {
+   "exists": true,
+   "tag": "DefineShape",
+   "offset": 697345,
+   "length": 56
+  },
+  "504": {
+   "exists": true,
+   "tag": "DefineShape",
+   "offset": 697401,
+   "length": 56
+  },
+  "505": {
+   "exists": true,
+   "tag": "DefineShape",
+   "offset": 697457,
+   "length": 56
+  },
+  "506": {
+   "exists": true,
+   "tag": "DefineSprite",
+   "offset": 697513,
+   "length": 58
+  },
+  "1536": {
+   "exists": true,
+   "tag": "DefineEditText",
+   "offset": 14550537,
+   "length": 918
+  },
+  "1588": {
+   "exists": true,
+   "tag": "DefineBitsJPEG3",
+   "offset": 14683146,
+   "length": 5864
+  },
+  "1589": {
+   "exists": true,
+   "tag": "DefineShape2",
+   "offset": 14689010,
+   "length": 203
+  },
+  "1590": {
+   "exists": true,
+   "tag": "DefineSprite",
+   "offset": 14689213,
+   "length": 32
+  },
+  "65535": {
+   "exists": false
+  }
+ }
+}

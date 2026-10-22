@@ -10,7 +10,7 @@
   },
   "baseline": {
     "headCommit": "cbb018da95f078c3ac68fed9dff20c2b535140a1",
-    "lineNumberNote": "本 manifest 全部行号以 headCommit 及当前 R1 迁移工作树为准。历次已确认漂移（均为行号漂移，数量不变）：相对 callsites.md 封包基线 776db2ae26——A3 PlayerAssetTransaction.as 422→440（专项 A① K 店 durable fence 已合入 HEAD，flushStrongSaveNow 位于 :196）、D2 商城系统_WebView.as 721→749。相对 af69c795c3（2026-09-04 步骤 10 开工前校准时发现，K店 batch/openMany 两列车合入所致）——A4 ItemUseService.as 597→788、D1 商城系统_WebView.as 199→216、D2.requestSave 750→782、D2.markDirty 749→781；四项经 check-callsites.js 报「未命中 / 不在 manifest」后逐一定位，扫描计数与 manifest counts 全项一致，无任何调用点增删。 2026-09-05 现场反馈增量：Reward 分段与 ItemUse 合并仅引起 A2/A4 wrapper 行号漂移，调用点和 reason 不变。 合并上游 bbdb1fac1d：军阀返回基地路径使 A6 行号 523→531；A4 保留本轮合并结果后的 832，不退回上游旧值 788。 同文件已有 markDirty 仅随上游插入漂移 1345→1353，无新增调用。 2026-09-08 整形迁移同步 A1/B2/E6 行号；另按当前 HEAD 校正地图撤退合入后 A6 与 StageRunSession canonical dirty 的既有行号漂移，调用数量和语义不变。 2026-10-13：对六组 API/reason/返回消费及副作用顺序逐项核对后校正坐标；另登记 v2 共享设置保存点及 Garage/Gym 冻结 owner 的保存边界，见 docs/焦点输入与持久化修复施工-2026-10-13.md。",
+    "lineNumberNote": "本 manifest 全部行号以 headCommit 及当前 R1 迁移工作树为准。历次已确认漂移（均为行号漂移，数量不变）：相对 callsites.md 封包基线 776db2ae26——A3 PlayerAssetTransaction.as 422→440（专项 A① K 店 durable fence 已合入 HEAD，flushStrongSaveNow 位于 :196）、D2 商城系统_WebView.as 721→749。相对 af69c795c3（2026-09-04 步骤 10 开工前校准时发现，K店 batch/openMany 两列车合入所致）——A4 ItemUseService.as 597→788、D1 商城系统_WebView.as 199→216、D2.requestSave 750→782、D2.markDirty 749→781；四项经 check-callsites.js 报「未命中 / 不在 manifest」后逐一定位，扫描计数与 manifest counts 全项一致，无任何调用点增删。 2026-09-05 现场反馈增量：Reward 分段与 ItemUse 合并仅引起 A2/A4 wrapper 行号漂移，调用点和 reason 不变。 合并上游 bbdb1fac1d：军阀返回基地路径使 A6 行号 523→531；A4 保留本轮合并结果后的 832，不退回上游旧值 788。 同文件已有 markDirty 仅随上游插入漂移 1345→1353，无新增调用。 2026-09-08 整形迁移同步 A1/B2/E6 行号；另按当前 HEAD 校正地图撤退合入后 A6 与 StageRunSession canonical dirty 的既有行号漂移，调用数量和语义不变。 2026-10-13：对六组 API/reason/返回消费及副作用顺序逐项核对后校正坐标；另登记 v2 共享设置保存点及 Garage/Gym 冻结 owner 的保存边界，见 docs/焦点输入与持久化修复施工-2026-10-13.md。 2026-10-21（CF6 施工工作树，开工源码333299f9）：校准本章已有U6.1换槽边界163→197、U6.2 167→214、U6.3 208→255、U6.4 201→248，并同步BookRunService终局canonical markDirty记录197→235。逐项核对API、reason、返回消费或终局字段写入顺序，调用点和计数不变。开工已有的A1/B1、SkillLoadoutService/StageRunSession行号漂移，以及LeeSkillLoadout/MeridianPanelService未登记命中仍单独保留；baseline.headCommit不推进，不宣称全门通过。",
     "swf": {
       "scripts/asLoader.swf": {
         "sha256": "7d1f97b9c95b60450c75ad77fb7c6335e8ebf00c3e7ce4d792cf2b1476a574a2",
@@ -1194,7 +1194,7 @@
       "physicalId": "U6.1",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/scene/BookRunService.as",
-      "line": 163,
+      "line": 197,
       "frame": null,
       "legacyEntry": "apiFlushBeforeTransition",
       "legacyApi": "flushBeforeTransition(\"bookshelf.switch\")",
@@ -1218,7 +1218,7 @@
       "physicalId": "U6.2",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/ui/BookshelfPanelService.as",
-      "line": 167,
+      "line": 214,
       "frame": null,
       "legacyEntry": "apiFlushBeforeTransition",
       "legacyApi": "flushBeforeTransition(\"bookshelf.switch\")",
@@ -1242,7 +1242,7 @@
       "physicalId": "U6.3",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/ui/BookshelfPanelService.as",
-      "line": 208,
+      "line": 255,
       "frame": null,
       "legacyEntry": "apiFlushBeforeTransition",
       "legacyApi": "flushBeforeTransition(\"bookshelf.switch\")",
@@ -1266,7 +1266,7 @@
       "physicalId": "U6.4",
       "layer": "scripts",
       "sourcePath": "scripts/类定义/org/flashNight/arki/ui/BookshelfPanelService.as",
-      "line": 201,
+      "line": 248,
       "frame": null,
       "legacyEntry": "apiFlushBeforeTransition",
       "legacyApi": "flushBeforeTransition(\"bookshelf.switch\")",
@@ -1335,7 +1335,7 @@
     },
     {
       "sourcePath": "scripts/类定义/org/flashNight/arki/scene/BookRunService.as",
-      "line": 197,
+      "line": 235,
       "api": "_root.存档系统.markDirty()",
       "liveState": "live",
       "notes": "书中终局数据等待正规返回与书架换槽的严格全量保存；不另占奖励候选。"

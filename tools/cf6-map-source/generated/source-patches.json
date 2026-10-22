@@ -1,0 +1,37 @@
+{
+ "schema": "cf6-map-source-patches.v1",
+ "generatedAt": "2026-10-21T12:58:52.183966+08:00",
+ "note": "仅改归档副本的工具发现；原 Downloads ZIP 未动；不改画稿/注册点",
+ "packages": {
+  "A11-R2": {
+   "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2",
+   "changes": [
+    "tyrant_culture.py: inkscape --query-id=native-part → svgrender.query_bbox 工具发现（Inkscape 优先，缺失时 Chrome getBBox；仅决定 viewBox 展示元数据）"
+   ]
+  },
+  "A14-R2": {
+   "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2",
+   "changes": [
+    "tyrant_culture.py: inkscape --query-id=native-part → svgrender.query_bbox 工具发现（Inkscape 优先，缺失时 Chrome getBBox；仅决定 viewBox 展示元数据）"
+   ]
+  },
+  "A15-R2": {
+   "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2",
+   "changes": [
+    "tyrant_culture.py: inkscape --query-id=native-part → svgrender.query_bbox 工具发现（Inkscape 优先，缺失时 Chrome getBBox；仅决定 viewBox 展示元数据）"
+   ]
+  },
+  "A16-R2": {
+   "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2",
+   "changes": [
+    "tyrant_culture.py: inkscape --query-id=native-part → svgrender.query_bbox 工具发现（Inkscape 优先，缺失时 Chrome getBBox；仅决定 viewBox 展示元数据）"
+   ]
+  },
+  "A17-R2": {
+   "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2",
+   "changes": [
+    "tyrant_culture.py: inkscape --query-id=native-part → svgrender.query_bbox 工具发现（Inkscape 优先，缺失时 Chrome getBBox；仅决定 viewBox 展示元数据）"
+   ]
+  }
+ }
+}

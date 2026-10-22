@@ -1,0 +1,2134 @@
+{
+ "schema": "cf6-map-source-assemble-r3.v1",
+ "stages": {
+  "A10": {
+   "background": {
+    "sprite": 1879,
+    "worldRect": [
+     64.0,
+     -30.25,
+     480.0,
+     453.0
+    ],
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/baked/background-1879-backdrop.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/parts/environment-a10-backdrop.svg"
+   },
+   "foreground": {
+    "sprite": 1884,
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/baked/foreground-1884.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/parts/foreground-1884.svg",
+    "worldRect": [
+     60.45,
+     6.45,
+     480.0,
+     388.0
+    ],
+    "depth": 179,
+    "matrix": [
+     1,
+     0,
+     0,
+     1,
+     300.45,
+     200.45
+    ]
+   },
+   "elevator": {
+    "rootSprite": 1876,
+    "tile": 1875,
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/baked/elevator-1875-tile.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/parts/elevator-1875-tile.svg",
+    "layerOrigin": [
+     -50.0,
+     -60.0
+    ],
+    "logicalSize": [
+     700.0,
+     542.95
+    ],
+    "loopHeight": 541.95,
+    "clip": {
+     "rect": [
+      50.0,
+      60.0,
+      600.0,
+      350.0
+     ],
+     "worldRect": [
+      0.0,
+      0.0,
+      600.0,
+      350.0
+     ],
+     "basis": "对 cabin(backdrop)+1884 前框 alpha<128 并集在作者视口 [0,0,600,350] 内取补集外包围（1x Chrome 实测，本脚本 measure_elevator_clip）；原包 1876 无 clipDepth，原作靠层叠遮挡；此矩形为原型适配，保证可见区完整，cabin/前框不透明区由运行时层顺序继续遮盖",
+     "measureSvg": "tmp/cf6-roguelike-20261021/kimi-maps/r3/clip-measure/a10-occluders.svg",
+     "measurePng": "tmp/cf6-roguelike-20261021/kimi-maps/r3/clip-measure/a10-occluders.png"
+    },
+    "rootPlacement": [
+     1,
+     0,
+     0,
+     1,
+     300.0,
+     211.45
+    ],
+    "placedAtRootFrame": 131
+   },
+   "props": []
+  },
+  "A09": {
+   "background": {
+    "sprite": 1847,
+    "worldRect": [
+     -275.95,
+     -49.2,
+     1898.9,
+     542.55
+    ],
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/background-1847-backdrop.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/environment-a09-backdrop.svg"
+   },
+   "foreground": null,
+   "elevator": null,
+   "props": [
+    {
+     "id": 1443,
+     "depth": 67,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      724.8,
+      228.9
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-1443-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-1443-f1.svg",
+     "viewBox": [
+      -568.45,
+      -178.2,
+      57.00000000000006,
+      73.99999999999999
+     ],
+     "frames": 1
+    },
+    {
+     "id": 1448,
+     "depth": 68,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      184.85,
+      36.2
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-1448-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-1448-f1.svg",
+     "viewBox": [
+      -28.5,
+      -28.5,
+      57.0,
+      57.0
+     ],
+     "frames": 105
+    },
+    {
+     "id": 1443,
+     "depth": 73,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      648.8,
+      228.9
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-1443-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-1443-f1.svg",
+     "viewBox": [
+      -568.45,
+      -178.2,
+      57.00000000000006,
+      73.99999999999999
+     ],
+     "frames": 1
+    },
+    {
+     "id": 1448,
+     "depth": 74,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      108.85,
+      36.2
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-1448-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-1448-f1.svg",
+     "viewBox": [
+      -28.5,
+      -28.5,
+      57.0,
+      57.0
+     ],
+     "frames": 105
+    },
+    {
+     "id": 1862,
+     "depth": 79,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      433.0,
+      136.0
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-1862-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-1862-f1.svg",
+     "viewBox": [
+      -65.5,
+      -80.5,
+      131.0,
+      161.0
+     ],
+     "frames": 18
+    },
+    {
+     "id": 1832,
+     "depth": 87,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      515.5,
+      0.95
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-1832-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-1832-f1.svg",
+     "viewBox": [
+      -16.8,
+      -8.0,
+      31.5,
+      44.0
+     ],
+     "frames": 147
+    },
+    {
+     "id": 1430,
+     "depth": 89,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      1042.8,
+      124.95
+     ],
+     "name": null,
+     "colorMult": [
+      210,
+      210,
+      210,
+      256
+     ],
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-1430-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-1430-f1.svg",
+     "viewBox": [
+      -145.45,
+      -88.0,
+      290.45,
+      198.5
+     ],
+     "frames": 59
+    },
+    {
+     "id": 1832,
+     "depth": 100,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      1126.05,
+      0.95
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-1832-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-1832-f1.svg",
+     "viewBox": [
+      -16.8,
+      -8.0,
+      31.5,
+      44.0
+     ],
+     "frames": 147
+    },
+    {
+     "id": 1868,
+     "depth": 112,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      696.6,
+      252.0
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-1868-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-1868-f1.svg",
+     "viewBox": [
+      -295.7502533220686,
+      -227.45,
+      564.4588196324185,
+      481.1289094178006
+     ],
+     "frames": 29
+    },
+    {
+     "id": 255,
+     "depth": 370,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      261.5,
+      228.2
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-255-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-255-f1.svg",
+     "viewBox": [
+      -28.44985580444336,
+      -4.1971435546875,
+      28.049571990966797,
+      13.931829833984377
+     ],
+     "frames": 14
+    },
+    {
+     "id": 255,
+     "depth": 374,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      836.45,
+      449.3
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-255-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-255-f1.svg",
+     "viewBox": [
+      -28.44985580444336,
+      -4.1971435546875,
+      28.049571990966797,
+      13.931829833984377
+     ],
+     "frames": 14
+    }
+   ]
+  },
+  "A12": {
+   "background": {
+    "sprite": 1914,
+    "worldRect": [
+     -275.95,
+     -49.2,
+     1898.9,
+     542.55
+    ],
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/background-1914-backdrop.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/environment-a12-backdrop.svg"
+   },
+   "foreground": null,
+   "elevator": null,
+   "props": [
+    {
+     "id": 1862,
+     "depth": 167,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      628.0,
+      131.0
+     ],
+     "name": "door2",
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/prop-1862-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/prop-1862-f1.svg",
+     "viewBox": [
+      -65.5,
+      -80.5,
+      131.0,
+      161.0
+     ],
+     "frames": 18
+    },
+    {
+     "id": 1832,
+     "depth": 181,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      515.5,
+      0.95
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/prop-1832-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/prop-1832-f1.svg",
+     "viewBox": [
+      -16.8,
+      -8.0,
+      31.5,
+      44.0
+     ],
+     "frames": 147
+    },
+    {
+     "id": 1430,
+     "depth": 183,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      149.8,
+      125.2
+     ],
+     "name": null,
+     "colorMult": [
+      210,
+      210,
+      210,
+      256
+     ],
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/prop-1430-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/prop-1430-f1.svg",
+     "viewBox": [
+      -145.45,
+      -88.0,
+      290.45,
+      198.5
+     ],
+     "frames": 59
+    },
+    {
+     "id": 1442,
+     "depth": 193,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      933.5,
+      228.2
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/prop-1442-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/prop-1442-f1.svg",
+     "viewBox": [
+      -34.0,
+      -61.5,
+      68.0,
+      63.0
+     ],
+     "frames": 11
+    },
+    {
+     "id": 1838,
+     "depth": 200,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      830.4,
+      190.2
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/prop-1838-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/prop-1838-f1.svg",
+     "viewBox": [
+      -26.0,
+      -44.5,
+      52.0,
+      89.0
+     ],
+     "frames": 16
+    },
+    {
+     "id": 1838,
+     "depth": 207,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      723.4,
+      400.15
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/prop-1838-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/prop-1838-f1.svg",
+     "viewBox": [
+      -26.0,
+      -44.5,
+      52.0,
+      89.0
+     ],
+     "frames": 16
+    },
+    {
+     "id": 1838,
+     "depth": 214,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      565.4,
+      190.15
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/prop-1838-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/prop-1838-f1.svg",
+     "viewBox": [
+      -26.0,
+      -44.5,
+      52.0,
+      89.0
+     ],
+     "frames": 16
+    },
+    {
+     "id": 1832,
+     "depth": 221,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      1202.45,
+      0.95
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/prop-1832-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/prop-1832-f1.svg",
+     "viewBox": [
+      -16.8,
+      -8.0,
+      31.5,
+      44.0
+     ],
+     "frames": 147
+    },
+    {
+     "id": 255,
+     "depth": 407,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      402.95,
+      226.3
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/prop-255-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/prop-255-f1.svg",
+     "viewBox": [
+      -28.44985580444336,
+      -4.1971435546875,
+      28.049571990966797,
+      13.931829833984377
+     ],
+     "frames": 14
+    },
+    {
+     "id": 255,
+     "depth": 411,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      767.95,
+      220.35
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/prop-255-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/prop-255-f1.svg",
+     "viewBox": [
+      -28.44985580444336,
+      -4.1971435546875,
+      28.049571990966797,
+      13.931829833984377
+     ],
+     "frames": 14
+    }
+   ]
+  },
+  "A13": {
+   "background": {
+    "sprite": 1918,
+    "worldRect": [
+     64.0,
+     -30.25,
+     480.0,
+     453.0
+    ],
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/baked/background-1918-backdrop.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/parts/environment-a13-backdrop.svg"
+   },
+   "foreground": {
+    "sprite": 1884,
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/baked/foreground-1884.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/parts/foreground-1884.svg",
+    "worldRect": [
+     60.45,
+     6.45,
+     480.0,
+     388.0
+    ],
+    "depth": 149,
+    "matrix": [
+     1,
+     0,
+     0,
+     1,
+     300.45,
+     200.45
+    ]
+   },
+   "elevator": {
+    "rootSprite": 1876,
+    "tile": 1875,
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/baked/elevator-1875-tile.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/parts/elevator-1875-tile.svg",
+    "layerOrigin": [
+     -50.0,
+     -60.0
+    ],
+    "logicalSize": [
+     700.0,
+     542.95
+    ],
+    "loopHeight": 541.95,
+    "clip": {
+     "rect": [
+      50.0,
+      60.0,
+      600.0,
+      350.0
+     ],
+     "worldRect": [
+      0.0,
+      0.0,
+      600.0,
+      350.0
+     ],
+     "basis": "对 cabin(backdrop)+1884 前框 alpha<128 并集在作者视口 [0,0,600,350] 内取补集外包围（1x Chrome 实测，本脚本 measure_elevator_clip）；原包 1876 无 clipDepth，原作靠层叠遮挡；此矩形为原型适配，保证可见区完整，cabin/前框不透明区由运行时层顺序继续遮盖",
+     "measureSvg": "tmp/cf6-roguelike-20261021/kimi-maps/r3/clip-measure/a13-occluders.svg",
+     "measurePng": "tmp/cf6-roguelike-20261021/kimi-maps/r3/clip-measure/a13-occluders.png"
+    },
+    "rootPlacement": [
+     1,
+     0,
+     0,
+     1,
+     300.0,
+     211.45
+    ],
+    "placedAtRootFrame": 148
+   },
+   "props": []
+  },
+  "A18": {
+   "background": {
+    "sprite": 1968,
+    "worldRect": [
+     -28.5,
+     -17.45,
+     1732.9,
+     435.5
+    ],
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/baked/background-1968-backdrop.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/parts/environment-a18-backdrop.svg"
+   },
+   "foreground": null,
+   "elevator": null,
+   "props": [
+    {
+     "id": 1617,
+     "depth": 60,
+     "matrix": [
+      1.0,
+      0,
+      0,
+      1.2011871337890625,
+      1526.5,
+      285.7
+     ],
+     "name": null,
+     "colorMult": null,
+     "error": "帧1无可视外包围（仅 name=area 逻辑子件或空帧，逻辑区域容器非画稿）",
+     "frames": 2
+    },
+    {
+     "id": 1868,
+     "depth": 147,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      865.1,
+      205.0
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/baked/prop-1868-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/parts/prop-1868-f1.svg",
+     "viewBox": [
+      -295.7502533220686,
+      -227.45,
+      564.4588196324185,
+      481.1289094178006
+     ],
+     "frames": 29
+    },
+    {
+     "id": 1442,
+     "depth": 606,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      1335.55,
+      187.8
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/baked/prop-1442-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/parts/prop-1442-f1.svg",
+     "viewBox": [
+      -34.0,
+      -61.5,
+      68.0,
+      63.0
+     ],
+     "frames": 11
+    },
+    {
+     "id": 255,
+     "depth": 613,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      632.65,
+      185.3
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/baked/prop-255-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/parts/prop-255-f1.svg",
+     "viewBox": [
+      -28.44985580444336,
+      -4.1971435546875,
+      28.049571990966797,
+      13.931829833984377
+     ],
+     "frames": 14
+    },
+    {
+     "id": 1976,
+     "depth": 617,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      989.55,
+      182.2
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/baked/prop-1976-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/parts/prop-1976-f1.svg",
+     "viewBox": [
+      -26.0,
+      -44.5,
+      52.0,
+      89.0
+     ],
+     "frames": 16
+    }
+   ]
+  },
+  "A19": {
+   "background": {
+    "sprite": 1981,
+    "worldRect": [
+     -28.5,
+     -17.45,
+     1626.51,
+     529.15
+    ],
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/baked/background-1981-backdrop.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/parts/environment-a19-backdrop.svg"
+   },
+   "foreground": null,
+   "elevator": null,
+   "props": [
+    {
+     "id": 1982,
+     "depth": 47,
+     "matrix": [
+      0.6240386962890625,
+      0.481689453125,
+      0.0,
+      1.0,
+      1461.45,
+      262.9
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/baked/prop-1982-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/parts/prop-1982-f1.svg",
+     "viewBox": [
+      -145.45,
+      -80.5,
+      290.45,
+      191.0
+     ],
+     "frames": 32
+    },
+    {
+     "id": 1862,
+     "depth": 54,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      552.0,
+      85.0
+     ],
+     "name": "door1",
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/baked/prop-1862-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/parts/prop-1862-f1.svg",
+     "viewBox": [
+      -65.5,
+      -80.5,
+      131.0,
+      161.0
+     ],
+     "frames": 18
+    },
+    {
+     "id": 1862,
+     "depth": 62,
+     "matrix": [
+      0.603057861328125,
+      0.4695587158203125,
+      0.0,
+      1.0,
+      1318.0,
+      161.0
+     ],
+     "name": "door2",
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/baked/prop-1862-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/parts/prop-1862-f1.svg",
+     "viewBox": [
+      -65.5,
+      -80.5,
+      131.0,
+      161.0
+     ],
+     "frames": 18
+    },
+    {
+     "id": 1442,
+     "depth": 342,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      461.1,
+      187.85
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/baked/prop-1442-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/parts/prop-1442-f1.svg",
+     "viewBox": [
+      -34.0,
+      -61.5,
+      68.0,
+      63.0
+     ],
+     "frames": 11
+    },
+    {
+     "id": 255,
+     "depth": 349,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      223.9,
+      184.25
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/baked/prop-255-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/parts/prop-255-f1.svg",
+     "viewBox": [
+      -28.44985580444336,
+      -4.1971435546875,
+      28.049571990966797,
+      13.931829833984377
+     ],
+     "frames": 14
+    }
+   ]
+  },
+  "A20": {
+   "background": {
+    "sprite": 1989,
+    "worldRect": [
+     -78.5,
+     -23.45,
+     1873.35,
+     564.5
+    ],
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/baked/background-1989-backdrop.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/environment-a20-backdrop.svg"
+   },
+   "foreground": null,
+   "elevator": null,
+   "props": [
+    {
+     "id": 1862,
+     "depth": 51,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      195.0,
+      81.0
+     ],
+     "name": "door1",
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/baked/prop-1862-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/prop-1862-f1.svg",
+     "viewBox": [
+      -65.5,
+      -80.5,
+      131.0,
+      161.0
+     ],
+     "frames": 18
+    },
+    {
+     "id": 1862,
+     "depth": 59,
+     "matrix": [
+      0.603057861328125,
+      0.4695587158203125,
+      0.0,
+      1.0,
+      1115.0,
+      150.0
+     ],
+     "name": "door2",
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/baked/prop-1862-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/prop-1862-f1.svg",
+     "viewBox": [
+      -65.5,
+      -80.5,
+      131.0,
+      161.0
+     ],
+     "frames": 18
+    },
+    {
+     "id": 1862,
+     "depth": 67,
+     "matrix": [
+      0.603057861328125,
+      0.4695587158203125,
+      0.0,
+      1.0,
+      1261.0,
+      262.0
+     ],
+     "name": "door3",
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/baked/prop-1862-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/prop-1862-f1.svg",
+     "viewBox": [
+      -65.5,
+      -80.5,
+      131.0,
+      161.0
+     ],
+     "frames": 18
+    },
+    {
+     "id": 1862,
+     "depth": 75,
+     "matrix": [
+      0.603057861328125,
+      0.4695587158203125,
+      0.0,
+      1.0,
+      1433.0,
+      388.0
+     ],
+     "name": "door4",
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/baked/prop-1862-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/prop-1862-f1.svg",
+     "viewBox": [
+      -65.5,
+      -80.5,
+      131.0,
+      161.0
+     ],
+     "frames": 18
+    },
+    {
+     "id": 255,
+     "depth": 227,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      1188.95,
+      410.85
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/baked/prop-255-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/prop-255-f1.svg",
+     "viewBox": [
+      -28.44985580444336,
+      -4.1971435546875,
+      28.049571990966797,
+      13.931829833984377
+     ],
+     "frames": 14
+    },
+    {
+     "id": 255,
+     "depth": 231,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      864.8,
+      185.9
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/baked/prop-255-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/prop-255-f1.svg",
+     "viewBox": [
+      -28.44985580444336,
+      -4.1971435546875,
+      28.049571990966797,
+      13.931829833984377
+     ],
+     "frames": 14
+    },
+    {
+     "id": 255,
+     "depth": 235,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      170.0,
+      280.0
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/baked/prop-255-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/prop-255-f1.svg",
+     "viewBox": [
+      -28.44985580444336,
+      -4.1971435546875,
+      28.049571990966797,
+      13.931829833984377
+     ],
+     "frames": 14
+    },
+    {
+     "id": 1976,
+     "depth": 239,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      916.9,
+      190.0
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/baked/prop-1976-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/prop-1976-f1.svg",
+     "viewBox": [
+      -26.0,
+      -44.5,
+      52.0,
+      89.0
+     ],
+     "frames": 16
+    },
+    {
+     "id": 1976,
+     "depth": 246,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      288.1,
+      184.0
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/baked/prop-1976-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/prop-1976-f1.svg",
+     "viewBox": [
+      -26.0,
+      -44.5,
+      52.0,
+      89.0
+     ],
+     "frames": 16
+    },
+    {
+     "id": 1976,
+     "depth": 253,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      987.05,
+      140.0
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/baked/prop-1976-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/prop-1976-f1.svg",
+     "viewBox": [
+      -26.0,
+      -44.5,
+      52.0,
+      89.0
+     ],
+     "frames": 16
+    }
+   ]
+  },
+  "A22": {
+   "background": {
+    "sprite": 2009,
+    "worldRect": [
+     -78.5,
+     -23.45,
+     1873.35,
+     564.5
+    ],
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/baked/background-2009-backdrop.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/parts/environment-a22-backdrop.svg"
+   },
+   "foreground": null,
+   "elevator": null,
+   "props": [
+    {
+     "id": 1862,
+     "depth": 51,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      195.0,
+      81.0
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/baked/prop-1862-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/parts/prop-1862-f1.svg",
+     "viewBox": [
+      -65.5,
+      -80.5,
+      131.0,
+      161.0
+     ],
+     "frames": 18
+    },
+    {
+     "id": 1862,
+     "depth": 59,
+     "matrix": [
+      0.603057861328125,
+      0.4695587158203125,
+      0.0,
+      1.0,
+      1115.0,
+      150.0
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/baked/prop-1862-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/parts/prop-1862-f1.svg",
+     "viewBox": [
+      -65.5,
+      -80.5,
+      131.0,
+      161.0
+     ],
+     "frames": 18
+    },
+    {
+     "id": 1862,
+     "depth": 67,
+     "matrix": [
+      0.603057861328125,
+      0.4695587158203125,
+      0.0,
+      1.0,
+      1261.0,
+      262.0
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/baked/prop-1862-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/parts/prop-1862-f1.svg",
+     "viewBox": [
+      -65.5,
+      -80.5,
+      131.0,
+      161.0
+     ],
+     "frames": 18
+    },
+    {
+     "id": 1862,
+     "depth": 75,
+     "matrix": [
+      0.603057861328125,
+      0.4695587158203125,
+      0.0,
+      1.0,
+      1433.0,
+      388.0
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/baked/prop-1862-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/parts/prop-1862-f1.svg",
+     "viewBox": [
+      -65.5,
+      -80.5,
+      131.0,
+      161.0
+     ],
+     "frames": 18
+    },
+    {
+     "id": 481,
+     "depth": 233,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      564.45,
+      402.4
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/baked/prop-481-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/parts/prop-481-f1.svg",
+     "viewBox": [
+      -18.7,
+      -16.0,
+      33.0,
+      31.0
+     ],
+     "frames": 11
+    },
+    {
+     "id": 481,
+     "depth": 237,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      901.45,
+      215.45
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/baked/prop-481-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/parts/prop-481-f1.svg",
+     "viewBox": [
+      -18.7,
+      -16.0,
+      33.0,
+      31.0
+     ],
+     "frames": 11
+    }
+   ]
+  },
+  "A11": {
+   "background": {
+    "sprite": 1907,
+    "worldRect": [
+     -287.95,
+     -105.75,
+     1573.4,
+     599.1
+    ],
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/baked/background-1907-backdrop.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/parts/environment-a11-backdrop.svg"
+   },
+   "foreground": null,
+   "elevator": null,
+   "props": [
+    {
+     "id": 1832,
+     "depth": 117,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      344.5,
+      -0.55
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/baked/prop-1832-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/parts/prop-1832-f1.svg",
+     "viewBox": [
+      -16.8,
+      -8.0,
+      31.5,
+      44.0
+     ],
+     "frames": 147
+    },
+    {
+     "id": 1617,
+     "depth": 129,
+     "matrix": [
+      1.0,
+      0,
+      0,
+      1.2011871337890625,
+      42.55,
+      351.9
+     ],
+     "name": null,
+     "colorMult": null,
+     "error": "帧1无可视外包围（仅 name=area 逻辑子件或空帧，逻辑区域容器非画稿）",
+     "frames": 2
+    },
+    {
+     "id": 1442,
+     "depth": 244,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      900.05,
+      302.05
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/baked/prop-1442-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/parts/prop-1442-f1.svg",
+     "viewBox": [
+      -34.0,
+      -61.5,
+      68.0,
+      63.0
+     ],
+     "frames": 11
+    },
+    {
+     "id": 1442,
+     "depth": 251,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      882.05,
+      333.35
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/baked/prop-1442-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/parts/prop-1442-f1.svg",
+     "viewBox": [
+      -34.0,
+      -61.5,
+      68.0,
+      63.0
+     ],
+     "frames": 11
+    },
+    {
+     "id": 255,
+     "depth": 258,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      545.85,
+      451.35
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/baked/prop-255-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/parts/prop-255-f1.svg",
+     "viewBox": [
+      -28.44985580444336,
+      -4.1971435546875,
+      28.049571990966797,
+      13.931829833984377
+     ],
+     "frames": 14
+    },
+    {
+     "id": 1838,
+     "depth": 262,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      452.15,
+      213.9
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/baked/prop-1838-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/parts/prop-1838-f1.svg",
+     "viewBox": [
+      -26.0,
+      -44.5,
+      52.0,
+      89.0
+     ],
+     "frames": 16
+    }
+   ]
+  },
+  "A14": {
+   "background": {
+    "sprite": 1924,
+    "worldRect": [
+     -287.95,
+     -107.1,
+     2269.95,
+     600.46
+    ],
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/baked/background-1924-backdrop.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/parts/environment-a14-backdrop.svg"
+   },
+   "foreground": null,
+   "elevator": null,
+   "props": [
+    {
+     "id": 1832,
+     "depth": 404,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      344.5,
+      -0.55
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/baked/prop-1832-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/parts/prop-1832-f1.svg",
+     "viewBox": [
+      -16.8,
+      -8.0,
+      31.5,
+      44.0
+     ],
+     "frames": 147
+    },
+    {
+     "id": 1617,
+     "depth": 416,
+     "matrix": [
+      1.0,
+      0,
+      0,
+      1.2011871337890625,
+      1516.5,
+      351.9
+     ],
+     "name": null,
+     "colorMult": null,
+     "error": "帧1无可视外包围（仅 name=area 逻辑子件或空帧，逻辑区域容器非画稿）",
+     "frames": 2
+    },
+    {
+     "id": 1832,
+     "depth": 503,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      1370.7,
+      -0.55
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/baked/prop-1832-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/parts/prop-1832-f1.svg",
+     "viewBox": [
+      -16.8,
+      -8.0,
+      31.5,
+      44.0
+     ],
+     "frames": 147
+    },
+    {
+     "id": 1868,
+     "depth": 505,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      1046.0,
+      279.4
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/baked/prop-1868-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/parts/prop-1868-f1.svg",
+     "viewBox": [
+      -295.7502533220686,
+      -227.45,
+      564.4588196324185,
+      481.1289094178006
+     ],
+     "frames": 29
+    }
+   ]
+  },
+  "A15": {
+   "background": {
+    "sprite": 1930,
+    "worldRect": [
+     -287.95,
+     -87.6,
+     2269.95,
+     580.96
+    ],
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/baked/background-1930-backdrop.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/parts/environment-a15-backdrop.svg"
+   },
+   "foreground": null,
+   "elevator": null,
+   "props": [
+    {
+     "id": 1832,
+     "depth": 656,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      344.5,
+      -0.55
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/baked/prop-1832-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/parts/prop-1832-f1.svg",
+     "viewBox": [
+      -16.8,
+      -8.0,
+      31.5,
+      44.0
+     ],
+     "frames": 147
+    },
+    {
+     "id": 1617,
+     "depth": 668,
+     "matrix": [
+      1.0,
+      0,
+      0,
+      1.2011871337890625,
+      1516.5,
+      351.9
+     ],
+     "name": null,
+     "colorMult": null,
+     "error": "帧1无可视外包围（仅 name=area 逻辑子件或空帧，逻辑区域容器非画稿）",
+     "frames": 2
+    },
+    {
+     "id": 1832,
+     "depth": 755,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      1370.7,
+      -0.55
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/baked/prop-1832-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/parts/prop-1832-f1.svg",
+     "viewBox": [
+      -16.8,
+      -8.0,
+      31.5,
+      44.0
+     ],
+     "frames": 147
+    },
+    {
+     "id": 1939,
+     "depth": 759,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      530.0,
+      363.75
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/baked/prop-1939-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/parts/prop-1939-f1.svg",
+     "viewBox": [
+      -120.75011014658958,
+      -187.0,
+      245.43149470724165,
+      311.6032790184021
+     ],
+     "frames": 25
+    },
+    {
+     "id": 1939,
+     "depth": 828,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      752.0,
+      363.65
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/baked/prop-1939-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/parts/prop-1939-f1.svg",
+     "viewBox": [
+      -120.75011014658958,
+      -187.0,
+      245.43149470724165,
+      311.6032790184021
+     ],
+     "frames": 25
+    },
+    {
+     "id": 1939,
+     "depth": 897,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      935.0,
+      363.65
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/baked/prop-1939-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/parts/prop-1939-f1.svg",
+     "viewBox": [
+      -120.75011014658958,
+      -187.0,
+      245.43149470724165,
+      311.6032790184021
+     ],
+     "frames": 25
+    },
+    {
+     "id": 1939,
+     "depth": 966,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      1149.0,
+      363.65
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/baked/prop-1939-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/parts/prop-1939-f1.svg",
+     "viewBox": [
+      -120.75011014658958,
+      -187.0,
+      245.43149470724165,
+      311.6032790184021
+     ],
+     "frames": 25
+    },
+    {
+     "id": 1939,
+     "depth": 1035,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      1366.0,
+      363.65
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/baked/prop-1939-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/parts/prop-1939-f1.svg",
+     "viewBox": [
+      -120.75011014658958,
+      -187.0,
+      245.43149470724165,
+      311.6032790184021
+     ],
+     "frames": 25
+    }
+   ]
+  },
+  "A16": {
+   "background": {
+    "sprite": 1945,
+    "worldRect": [
+     -287.95,
+     -69.2,
+     2269.95,
+     612.55
+    ],
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/baked/background-1945-backdrop.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/parts/environment-a16-backdrop.svg"
+   },
+   "foreground": null,
+   "elevator": null,
+   "props": [
+    {
+     "id": 1832,
+     "depth": 605,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      344.5,
+      -0.55
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/baked/prop-1832-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/parts/prop-1832-f1.svg",
+     "viewBox": [
+      -16.8,
+      -8.0,
+      31.5,
+      44.0
+     ],
+     "frames": 147
+    },
+    {
+     "id": 1617,
+     "depth": 617,
+     "matrix": [
+      1.0,
+      0,
+      0,
+      1.2011871337890625,
+      1516.5,
+      351.9
+     ],
+     "name": null,
+     "colorMult": null,
+     "error": "帧1无可视外包围（仅 name=area 逻辑子件或空帧，逻辑区域容器非画稿）",
+     "frames": 2
+    },
+    {
+     "id": 255,
+     "depth": 702,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      421.45,
+      255.4
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/baked/prop-255-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/parts/prop-255-f1.svg",
+     "viewBox": [
+      -28.44985580444336,
+      -4.1971435546875,
+      28.049571990966797,
+      13.931829833984377
+     ],
+     "frames": 14
+    },
+    {
+     "id": 1832,
+     "depth": 708,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      1370.7,
+      -0.55
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/baked/prop-1832-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/parts/prop-1832-f1.svg",
+     "viewBox": [
+      -16.8,
+      -8.0,
+      31.5,
+      44.0
+     ],
+     "frames": 147
+    }
+   ]
+  },
+  "A17": {
+   "background": {
+    "sprite": 1951,
+    "worldRect": [
+     -287.95,
+     -79.2,
+     2269.95,
+     612.55
+    ],
+    "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/baked/background-1951-backdrop.png",
+    "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/environment-a17-backdrop.svg"
+   },
+   "foreground": null,
+   "elevator": null,
+   "props": [
+    {
+     "id": 1832,
+     "depth": 500,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      344.5,
+      -0.55
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/baked/prop-1832-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/prop-1832-f1.svg",
+     "viewBox": [
+      -16.8,
+      -8.0,
+      31.5,
+      44.0
+     ],
+     "frames": 147
+    },
+    {
+     "id": 1939,
+     "depth": 516,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      190.55,
+      304.15
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/baked/prop-1939-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/prop-1939-f1.svg",
+     "viewBox": [
+      -120.75011014658958,
+      -187.0,
+      245.43149470724165,
+      311.6032790184021
+     ],
+     "frames": 25
+    },
+    {
+     "id": 255,
+     "depth": 585,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      166.8,
+      305.4
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/baked/prop-255-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/prop-255-f1.svg",
+     "viewBox": [
+      -28.44985580444336,
+      -4.1971435546875,
+      28.049571990966797,
+      13.931829833984377
+     ],
+     "frames": 14
+    },
+    {
+     "id": 1832,
+     "depth": 591,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      1370.7,
+      -0.55
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/baked/prop-1832-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/prop-1832-f1.svg",
+     "viewBox": [
+      -16.8,
+      -8.0,
+      31.5,
+      44.0
+     ],
+     "frames": 147
+    },
+    {
+     "id": 1939,
+     "depth": 595,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      916.5,
+      300.15
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/baked/prop-1939-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/prop-1939-f1.svg",
+     "viewBox": [
+      -120.75011014658958,
+      -187.0,
+      245.43149470724165,
+      311.6032790184021
+     ],
+     "frames": 25
+    },
+    {
+     "id": 1939,
+     "depth": 664,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      1080.0,
+      300.15
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/baked/prop-1939-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/prop-1939-f1.svg",
+     "viewBox": [
+      -120.75011014658958,
+      -187.0,
+      245.43149470724165,
+      311.6032790184021
+     ],
+     "frames": 25
+    },
+    {
+     "id": 1939,
+     "depth": 733,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      1245.35,
+      300.15
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/baked/prop-1939-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/prop-1939-f1.svg",
+     "viewBox": [
+      -120.75011014658958,
+      -187.0,
+      245.43149470724165,
+      311.6032790184021
+     ],
+     "frames": 25
+    },
+    {
+     "id": 1939,
+     "depth": 802,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      1429.0,
+      294.15
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/baked/prop-1939-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/prop-1939-f1.svg",
+     "viewBox": [
+      -120.75011014658958,
+      -187.0,
+      245.43149470724165,
+      311.6032790184021
+     ],
+     "frames": 25
+    },
+    {
+     "id": 255,
+     "depth": 1181,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      445.95,
+      248.25
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/baked/prop-255-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/prop-255-f1.svg",
+     "viewBox": [
+      -28.44985580444336,
+      -4.1971435546875,
+      28.049571990966797,
+      13.931829833984377
+     ],
+     "frames": 14
+    },
+    {
+     "id": 255,
+     "depth": 1185,
+     "matrix": [
+      1,
+      0,
+      0,
+      1,
+      964.95,
+      329.25
+     ],
+     "name": null,
+     "colorMult": null,
+     "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/baked/prop-255-f1.png",
+     "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/prop-255-f1.svg",
+     "viewBox": [
+      -28.44985580444336,
+      -4.1971435546875,
+      28.049571990966797,
+      13.931829833984377
+     ],
+     "frames": 14
+    }
+   ]
+  }
+ }
+}

@@ -24,6 +24,15 @@
         return typeof path === 'string' && /^[A-Za-z0-9_./-]+$/.test(path)
             && path.split('/').every(function(p) { return p && p !== '.' && p !== '..'; });
     }
+    function validRemake(remake, index) {
+        if (!remake || typeof remake.available !== 'boolean') return false;
+        if (index === 0) return remake.available && remake.id === 'repair-campus';
+        if (index === 5) return remake.available ? remake.id === 'cf6-sting' : remake.id === null;
+        return !remake.available && remake.id === null;
+    }
+    function chapterNumberForBook(bookId) {
+        return bookId === 'repair-campus' ? 1 : bookId === 'cf6-sting' ? 6 : 0;
+    }
     function adoptCatalog(data) {
         if (!data || data.schema !== 'bookshelf-catalog.v1' || !Array.isArray(data.books)
                 || !data.books.length || data.books.length > 32) throw new Error('invalid_catalog');
@@ -41,7 +50,7 @@
                     && safeAsset(c.cover)
                     && c.original && c.original.chapter === i + 1
                     && JSON.stringify(c.original.languages) === JSON.stringify(i === 0 ? ['cn'] : ['cn','en'])
-                    && c.remake && c.remake.available === (i === 0) && c.remake.id === (i === 0 ? 'repair-campus' : null);
+                    && validRemake(c.remake, i);
                 }))) throw new Error('invalid_series');
         });
         books.splice.apply(books, [0, books.length].concat(data.books));
@@ -96,5 +105,6 @@
             singleFlight:!original, write:!original && cmd === 'commit', sendError:'not_sent'}, done);
     };
     RequestMux.prototype.destroy = function() { this.mux.destroy(); };
-    return {books:books, pageUrl:pageUrl, safeAsset:safeAsset, adoptCatalog:adoptCatalog, validateIndex:validateIndex, RequestMux:RequestMux};
+    return {books:books, pageUrl:pageUrl, safeAsset:safeAsset, adoptCatalog:adoptCatalog, validateIndex:validateIndex,
+        chapterNumberForBook:chapterNumberForBook, RequestMux:RequestMux};
 });

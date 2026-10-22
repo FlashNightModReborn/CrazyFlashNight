@@ -1,0 +1,115 @@
+{
+  "schema": "cf6-canonical-native-assembly.v1",
+  "target": "CF6_A06_sky",
+  "candidate": "CF6_A06_sky_VectorCandidate01",
+  "nativeClosureFiles": 9,
+  "oldSourcePresent": false,
+  "oldSwfPresent": false,
+  "sourceXfl": "flashswf/backgrounds/cf6/CF6_A06_sky/CF6_A06_sky.xfl",
+  "requiredFreshSwf": "flashswf/backgrounds/cf6/CF6_A06_sky.swf",
+  "scope": "source-only canonical assembly; candidate SWF is not copied; no formal runtime promotion",
+  "transaction": "20261021T101442Z-54bc448e0b",
+  "candidateSource": "flashswf/backgrounds/cf6/CF6_A06_sky_VectorCandidate01",
+  "candidateClosure": [
+    {
+      "path": "CF6_A06_sky_VectorCandidate01.xfl",
+      "bytes": 9,
+      "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38"
+    },
+    {
+      "path": "DOMDocument.xml",
+      "bytes": 1767,
+      "sha256": "2f0fa188bb241fd3b83bb09d10a4d98283dcb6a53e31f97420cd27b6d7db2438"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00001-svg.xml",
+      "bytes": 543,
+      "sha256": "a2ec209c8b26834477a76db62888de431d5e4965d4112c29322125f914e415c5"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00002-sky-viewport-content.xml",
+      "bytes": 667,
+      "sha256": "770a6a0692198f305b871e16564bec135da3dcdd7b3752a0c6f5409c31383aae"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00003-sky-viewport-mask.xml",
+      "bytes": 658,
+      "sha256": "44406f753d18c5b01b2f25703506178ec1f725c6c2e7cbedc83c899eea9a700b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00004-sky-viewport.xml",
+      "bytes": 867,
+      "sha256": "c21ca63a8126c5edd533d7b45c8b3afcc554c23e2e624adf2fdc9be5f14ead5e"
+    },
+    {
+      "path": "LIBRARY/intrinsic-e450b02cede956a1aae6efd0.png",
+      "bytes": 249616,
+      "sha256": "e450b02cede956a1aae6efd008b46791ab50297111b1cd84e83a68db28583d31"
+    },
+    {
+      "path": "PublishSettings.xml",
+      "bytes": 7818,
+      "sha256": "1fc7e45c3b463d8804d6cd33025c3fed8193245136698e9958276aee956303f4"
+    },
+    {
+      "path": "bin/M 1 1792577678.dat",
+      "bytes": 580360,
+      "sha256": "c592e553aa005dda1908600cc131cb0b2adbb90ad10a88d9a73a0db2969f76fd"
+    }
+  ],
+  "candidateClosureSha256": "a20b041aeefbea6d5e9a26e8bd11fd738660a3df7dfeb66c24d44b2f6956edc4",
+  "canonicalClosure": [
+    {
+      "path": "bin/M 1 1792577678.dat",
+      "bytes": 580360,
+      "sha256": "c592e553aa005dda1908600cc131cb0b2adbb90ad10a88d9a73a0db2969f76fd"
+    },
+    {
+      "path": "CF6_A06_sky.xfl",
+      "bytes": 9,
+      "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38"
+    },
+    {
+      "path": "DOMDocument.xml",
+      "bytes": 1767,
+      "sha256": "2f0fa188bb241fd3b83bb09d10a4d98283dcb6a53e31f97420cd27b6d7db2438"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00001-svg.xml",
+      "bytes": 543,
+      "sha256": "a2ec209c8b26834477a76db62888de431d5e4965d4112c29322125f914e415c5"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00002-sky-viewport-content.xml",
+      "bytes": 667,
+      "sha256": "770a6a0692198f305b871e16564bec135da3dcdd7b3752a0c6f5409c31383aae"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00003-sky-viewport-mask.xml",
+      "bytes": 658,
+      "sha256": "44406f753d18c5b01b2f25703506178ec1f725c6c2e7cbedc83c899eea9a700b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00004-sky-viewport.xml",
+      "bytes": 867,
+      "sha256": "c21ca63a8126c5edd533d7b45c8b3afcc554c23e2e624adf2fdc9be5f14ead5e"
+    },
+    {
+      "path": "LIBRARY/intrinsic-e450b02cede956a1aae6efd0.png",
+      "bytes": 249616,
+      "sha256": "e450b02cede956a1aae6efd008b46791ab50297111b1cd84e83a68db28583d31"
+    },
+    {
+      "path": "PublishSettings.xml",
+      "bytes": 7800,
+      "sha256": "7fb850eceaeececf318db7f096a7cfe8e3c102fa4d61d8a53bfcbab555f16b1a"
+    }
+  ],
+  "canonicalClosureSha256": "b05881899fbcf926029523d193d3bdf5e6ac0e3f66691d9deb450ac6688ab174",
+  "oldSource": [],
+  "oldSwf": null,
+  "archive": "tools/cf6-map-runtime/native-vector/archive/canonical-predecessors/CF6_A06_sky/20261021T101442Z-54bc448e0b",
+  "state": "native_source_installed; exact canonical CS6 compile still required",
+  "sourceManifest": "tools/cf6-map-runtime/native-vector/layers/CF6_A06_sky_VectorCandidate01/texture-manifest.json",
+  "sourceManifestSha256": "21b1f2da76ea809d27b8a4ae376e23408a41097b8969e07ce8547f8d25c522dc"
+}

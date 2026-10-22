@@ -1,0 +1,2012 @@
+{
+  "schema": "cf6-native-layer-candidate.v1",
+  "name": "CF6_A11_BG_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/parts/environment-a11-backdrop.svg",
+  "sourceSha256": "8b3152d2f0c0cf169cc0934f1cd984fdc22758fbaff9815cec4f5f038ab40671",
+  "nativeShapes": 17011,
+  "nativeSymbols": 1202,
+  "intrinsicTextures": 14,
+  "masks": [
+    {
+      "id": "n2b1886_0__wallgrainmask",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2b1886_0__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2c1886f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_0__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_1__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_2__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f6",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_3__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f8",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_4__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f10",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_5__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f12",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_6__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f14",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_7__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f16",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_8__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f18",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_9__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f20",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_10__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f22",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_11__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f24",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_12__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f26",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_13__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f28",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_14__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f30",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_15__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f32",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_16__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f34",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_17__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f36",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_18__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f38",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_19__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f40",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_20__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f42",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_21__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f44",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_22__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f46",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_23__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1891f48",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7b1891_24__wallgrainmask",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n7b1891_24__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n7c1891f50",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1892_0__shieldpaint",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1892_0__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n10c1892f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n11b1413_0__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n11c1413f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n44b1900_0__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n44c1900f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n44b1900_1__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n44c1900f4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n44b1900_2__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n44c1900f6",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n44b1900_3__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n44c1900f8",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n44b1900_4__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n44c1900f10",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n47b1901_0__upperface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n47b1901_0__lowerface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n47c1901f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n48b1903_0__source-alpha-1902",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n48c1903f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n48b1903_1__circuit-interior",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n48b1903_1__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n48c1903f4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n48b1903_2__source-alpha-1902",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n48c1903f6",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n48b1903_3__source-alpha-1902",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n48c1903f8",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n48c1903f10",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n48c1903f12",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n48c1903f14",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n48b1903_7__circuit-interior",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n48b1903_7__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n48c1903f16",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n49b1413_0__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n49c1413f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n50b1413_0__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n50c1413f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n51b1413_0__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n51c1413f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n52b1413_0__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n52c1413f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n54b1878_0__rear-left-voltage-front",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n54b1878_0__rear-left-voltage-side",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n54b1878_0__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n54c1878f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n55b1904_0__far-A-frame-face-grain",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n55b1904_0__near-A-frame-face-grain",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n55c1904f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n56b1883_0__front-left-voltage-front",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n56b1883_0__front-left-voltage-side",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n56b1883_0__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n56c1883f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57b1905_0__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57c1905f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57b1905_1__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57c1905f4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57b1905_2__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57c1905f6",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57b1905_3__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57c1905f8",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57b1905_4__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57c1905f10",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57b1905_5__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57c1905f12",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57b1905_6__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57c1905f14",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57b1905_7__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57c1905f16",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57b1905_8__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57c1905f18",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57b1905_9__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57c1905f20",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57b1905_10__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57c1905f22",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57b1905_11__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57c1905f24",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n59d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n59d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n60d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n60d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n61d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n61d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n62d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n62d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n63d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n63d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n64d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n64d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n65d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n65d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n66d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n66d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n67d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n67d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n68d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n68d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n69d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n69d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n70d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n70d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n71d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n71d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n72d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n72d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n73d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n73d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n74d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n74d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n75d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n75d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n76d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n76d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    }
+  ],
+  "maskImages": [],
+  "imagePlacements": [
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-9579f1a200075776adefc639.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-51b11bf2ce2d5077dbc21848.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        1.0,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-9579f1a200075776adefc639.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-51b11bf2ce2d5077dbc21848.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        1.0,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-9579f1a200075776adefc639.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-51b11bf2ce2d5077dbc21848.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        1.0,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-9b9c1497bee995524be11b65.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        68.0,
+        63.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        1.0,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-9b9c1497bee995524be11b65.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        68.0,
+        63.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        1.0,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-9b9c1497bee995524be11b65.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        68.0,
+        63.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        1.0,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-f73320ef971862e5120db0e9.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        38.0,
+        52.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-f73320ef971862e5120db0e9.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        38.0,
+        52.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "col4",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            1.0,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            0.37890625,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col4",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col6",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            1.0,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            0.37890625,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col6",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    }
+  ],
+  "patterns": [
+    {
+      "id": "n2b1886_0__plaster",
+      "texture": "intrinsic-7306457526928ec9a3ea3e4a.png",
+      "sourceTile": [
+        600.0,
+        225.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n7b1891_24__plaster",
+      "texture": "intrinsic-7306457526928ec9a3ea3e4a.png",
+      "sourceTile": [
+        600.0,
+        225.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n10b1892_0__paintgrain",
+      "texture": "intrinsic-3836de63b32bea5064149496.png",
+      "sourceTile": [
+        133.0,
+        162.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n11b1413_0__grain",
+      "texture": "intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sourceTile": [
+        63.0,
+        27.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n44b1900_2__metalgrain",
+      "texture": "intrinsic-9edb117c5bad8a9942697b57.png",
+      "sourceTile": [
+        85.0,
+        50.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n44b1900_4__iron",
+      "texture": "intrinsic-fdcdcdef41face8ac7bd71ba.png",
+      "sourceTile": [
+        57.0,
+        171.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n48b1903_1__grime",
+      "texture": "intrinsic-21bf95049e7f77ed8869f22c.png",
+      "sourceTile": [
+        118.0,
+        134.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n48b1903_7__grime",
+      "texture": "intrinsic-785e044604178bfb67bed99b.png",
+      "sourceTile": [
+        74.0,
+        91.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n49b1413_0__grain",
+      "texture": "intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sourceTile": [
+        63.0,
+        27.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n50b1413_0__grain",
+      "texture": "intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sourceTile": [
+        63.0,
+        27.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n51b1413_0__grain",
+      "texture": "intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sourceTile": [
+        63.0,
+        27.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n52b1413_0__grain",
+      "texture": "intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sourceTile": [
+        63.0,
+        27.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n54b1878_0__grain",
+      "texture": "intrinsic-b2fb7d7f5070acd7093c768b.png",
+      "sourceTile": [
+        480.0,
+        453.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n56b1883_0__grain",
+      "texture": "intrinsic-83614aa0c319c35d1bff6907.png",
+      "sourceTile": [
+        480.0,
+        388.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "gradientFallbacks": [],
+  "blendModes": [],
+  "sourceViewport": [
+    -287.95,
+    -105.75,
+    1573.4,
+    599.1
+  ],
+  "registrationMatrix": [
+    1.0,
+    0,
+    0,
+    1.0,
+    287.95,
+    105.75
+  ],
+  "state": "native XFL assembled; actual CS6 compile and rendering still pending",
+  "limits": [
+    "SVG filter-region clipping is reported per filter and not yet reproduced.",
+    "Native Gaussian blur is a three-pass approximation.",
+    "Root SVG viewport crop must be compared at the original edge."
+  ]
+}

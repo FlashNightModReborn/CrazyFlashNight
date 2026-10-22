@@ -1,0 +1,191 @@
+{
+  "stage": "a13",
+  "source_kind": "independent frozen SVG reuse + original native vector and embedded original excluded bitmap content",
+  "newly_redrawn_assets": [],
+  "reused_bitmap_ids": [
+    1412,
+    1873,
+    1877,
+    1882
+  ],
+  "frozen_manifest_verified": true,
+  "world_logical_dimensions": [
+    800,
+    800
+  ],
+  "root_layers": [
+    {
+      "depth": 1,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        300.0,
+        211.45
+      ],
+      "placedAt": 148,
+      "id": 1876,
+      "characterId": 1876,
+      "role": "environment_root_layer",
+      "alphaZero": false,
+      "definition": {
+        "code": 39,
+        "size": 7249,
+        "offset": 15694251,
+        "depth": 0,
+        "frames": 37
+      },
+      "bitmapDependencies": [
+        1412,
+        1873
+      ]
+    }
+  ],
+  "gameworld_placement": [
+    {
+      "matrix": [
+        1.000030517578125,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "placedAt": 148,
+      "id": 1920,
+      "name": "gameworld"
+    }
+  ],
+  "fixed_viewports": [
+    {
+      "name": "author",
+      "viewBox": [
+        0,
+        0,
+        600,
+        350
+      ]
+    },
+    {
+      "name": "middle",
+      "viewBox": [
+        100,
+        0,
+        600,
+        350
+      ]
+    },
+    {
+      "name": "right",
+      "viewBox": [
+        200,
+        0,
+        600,
+        350
+      ]
+    }
+  ],
+  "shape_replacements": [
+    {
+      "shape": 1413,
+      "viewBox": [
+        -99.05,
+        -40.6,
+        199.8,
+        117.5
+      ],
+      "replaced": [
+        {
+          "bitmap": 1412,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-31.5,-13.5)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "original_bitmap_dependencies": [
+        1412,
+        65535
+      ]
+    },
+    {
+      "shape": 1874,
+      "viewBox": [
+        -350.0,
+        -271.45,
+        700.0,
+        542.95
+      ],
+      "replaced": [
+        {
+          "bitmap": 1873,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-350.0,89.5)"
+        },
+        {
+          "bitmap": 1873,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-350.0,-89.45)"
+        },
+        {
+          "bitmap": 1873,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-350.0,-271.45)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "original_bitmap_dependencies": [
+        1873,
+        65535
+      ]
+    },
+    {
+      "shape": 1878,
+      "viewBox": [
+        -609.5,
+        -257.35,
+        480.0,
+        453.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1877,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-609.5,-257.35)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "original_bitmap_dependencies": [
+        1877,
+        65535
+      ]
+    },
+    {
+      "shape": 1883,
+      "viewBox": [
+        -240.0,
+        -194.0,
+        480.0,
+        388.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1882,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-240.0,-194.0)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "original_bitmap_dependencies": [
+        1882,
+        65535
+      ]
+    }
+  ],
+  "original_animation_frame_counts": {
+    "1875": 1,
+    "1876": 37,
+    "1884": 1,
+    "1918": 1
+  },
+  "state_samples": [],
+  "preserved_original_bitmap_ids": [],
+  "excluded_character_pose_roots": [],
+  "static_only": true,
+  "root_layers_stretched": false,
+  "a13_cycle_frame38_equals_frame1": true
+}

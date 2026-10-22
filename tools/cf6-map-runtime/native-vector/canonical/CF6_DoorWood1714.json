@@ -1,0 +1,845 @@
+{
+  "schema": "cf6-canonical-native-assembly.v1",
+  "target": "CF6_DoorWood1714",
+  "candidate": "CF6_DoorWood1714_VectorCandidate01",
+  "nativeClosureFiles": 82,
+  "oldSourcePresent": true,
+  "oldSwfPresent": false,
+  "sourceXfl": "flashswf/backgrounds/cf6/CF6_DoorWood1714/CF6_DoorWood1714.xfl",
+  "requiredFreshSwf": "flashswf/backgrounds/cf6/CF6_DoorWood1714.swf",
+  "scope": "source-only canonical assembly; candidate SWF is not copied; no formal runtime promotion",
+  "transaction": "20261021T084550Z-7c97094642",
+  "candidateSource": "flashswf/backgrounds/cf6/CF6_DoorWood1714_VectorCandidate01",
+  "candidateClosure": [
+    {
+      "path": "CF6_DoorWood1714_VectorCandidate01.xfl",
+      "bytes": 9,
+      "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38"
+    },
+    {
+      "path": "DOMDocument.xml",
+      "bytes": 9765,
+      "sha256": "10aff144b6cc48ec912062950eca318abc4a5d635ecc59f9ec303030d487f06e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00001-svg.xml",
+      "bytes": 654,
+      "sha256": "563dcfd8ca74668a8c3b5140e801e6ede36175ead0937bb0a9abcfaaecc5d9ee"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00002-original-shape-1707.xml",
+      "bytes": 608,
+      "sha256": "82e87692a76dfe1c118e0882d8d8fb80bb1cbf322a0c2da1af4821bc27d214ad"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00003-b1708_outer-upright-1.xml",
+      "bytes": 16434,
+      "sha256": "5595997919663d6c3ae853b5d2460e13966b283b853472338ba9cb8f76e53a48"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00004-b1708_outer-upright-2.xml",
+      "bytes": 17230,
+      "sha256": "e145662ee5ced077d0fe2af3a1c5a1892cf4d1076098c9fb07e95a0add8f373b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00005-b1708_top-transom-board.xml",
+      "bytes": 1505,
+      "sha256": "a4460705e7612974e6c9f6bed065afea3da3bb1cbe3a047626a5c375bc1b5975"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00006-b1708_left-leaf-board-grain.xml",
+      "bytes": 88252,
+      "sha256": "488c72181b5b631ca166202fc6087d90c1d813d49de54d4f0ed83239faa2544f"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00007-b1708_right-leaf-board-grain.xml",
+      "bytes": 154290,
+      "sha256": "94315444e0ee04a73f4f48de014ff0119320ffa44411b63883aa2d651f29ab93"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00008-b1708_wood-panel-1.xml",
+      "bytes": 14902,
+      "sha256": "f58d622300a86933928e805dc1fb385876c1f683bd5018761bd70296e5541f32"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00009-b1708_wood-panel-2.xml",
+      "bytes": 15463,
+      "sha256": "577a021d12a19fd560e7e2c63cdaa183af0e9562d2e9042e7877eb3c75acdfbe"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00010-b1708_wood-panel-3.xml",
+      "bytes": 15484,
+      "sha256": "8d974e0b9fb85479d015a0d0caa922a8afbf62d90790a12f3c080ea068cce191"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00011-b1708_wood-panel-4.xml",
+      "bytes": 16383,
+      "sha256": "c309ada00cd48bf79500cbcf31f3f43b5e8c692d57cbba8e4388b7dbfb91a152"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00012-b1708_wood-panel-5.xml",
+      "bytes": 17848,
+      "sha256": "9b7a7eb76237c1a5c671036e524e29934d08d49cee1dcf8a8973d2c8b07c5d40"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00013-b1708_wood-panel-6.xml",
+      "bytes": 17871,
+      "sha256": "669566f3b258a028effc89610ca4680d02c49c71ddc7f95aa2dc351688dcbee3"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00014-b1708_wood-panel-7.xml",
+      "bytes": 16702,
+      "sha256": "2027d32327bedc0e6b6e12dfcea1f11b13ee8b2c4d5f5b264c213217443ae877"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00015-b1708_wood-panel-8.xml",
+      "bytes": 17823,
+      "sha256": "d1db5b3bf8bc058a3c4e680e289e61cd8fcdd82c0aab8d4ff001c05996afe262"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00016-b1708_wood-panel-9.xml",
+      "bytes": 17873,
+      "sha256": "362bb2851f4e4c1ca43898c040f58103bf23cfcded408c3c664d71a3c06def7e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00017-b1708_iron-hinge-1.xml",
+      "bytes": 2572,
+      "sha256": "6747e935897d08ccfe54ab612324d05ad6f83d280952ae3e7e1267fe9a254898"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00018-b1708_iron-hinge-2.xml",
+      "bytes": 2596,
+      "sha256": "1e1745b8f423d492bedd4671a048f7a8710a241e818593322bbf5d64806d03ff"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00019-b1708_iron-hinge-3.xml",
+      "bytes": 2597,
+      "sha256": "c619ee1ad69bd987169ef9fcac035c8070221282edbe7e40dfe6d004c1d7eee1"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00020-b1708_iron-hinge-4.xml",
+      "bytes": 2621,
+      "sha256": "7abba72c7b0780ee723c81296556451e932211eb445638df9df7769a9173feb2"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00021-b1708_iron-handle-1.xml",
+      "bytes": 5483,
+      "sha256": "fead8ab04b08a83b12353335a05655e232cea5f7f83558d95e401c51414bbbc7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00022-b1708_iron-handle-2.xml",
+      "bytes": 5605,
+      "sha256": "145d5dfc70030098780023a210acc6e4e13d9bda306bbd4027f0ab43dc28304b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00023-b1708_keyhole-escutcheon.xml",
+      "bytes": 2782,
+      "sha256": "bd8c96081ffd18a017905796c4c0a5d1104ce4472f768dde29bf6121d305ff34"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00024-mask-content.xml",
+      "bytes": 10928,
+      "sha256": "091a2f40723acd0fdaec3551ce63f21815ea59bf355336fdbd212cee7375ceea"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00025-b1708_original-wood-alpha.xml",
+      "bytes": 3720,
+      "sha256": "a3d1da9e5bdb55ade947079efad10f6d531de2b70b8b7d3c00cbf4b5f86139f2"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00026-mask-shape.xml",
+      "bytes": 659,
+      "sha256": "130ae56f29caa8471c8022e7c8f4d2e4ce65cf2ec29ee912942b2595cf38e6bb"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00027-mask-b1708_original-wood-alpha.xml",
+      "bytes": 962,
+      "sha256": "99a88a7ec6db882fa76ad62cc60dd6e6ef67e64074667b52e20f70de3b36af80"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00028-b1708_bitmap-1708-wood-door.xml",
+      "bytes": 627,
+      "sha256": "88470b1ba6fe9fb675f1cb6b2633ada4a7d0abd96658b68b29e4d716dab01741"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00029-bitmap1708.xml",
+      "bytes": 605,
+      "sha256": "a14bceaaa8c225338ef6ada773c06a7653c087304f950eb59c474b1f39ada9cf"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00030-use.xml",
+      "bytes": 567,
+      "sha256": "d8e2ca04552f28d9536e81b005f32e4a8bdc32bdf7a2a26201576751740d4a49"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00031-clip-path-content.xml",
+      "bytes": 666,
+      "sha256": "428fc539da8f26a6fa0d01034507b41d334f3f15caa775ea1e769c67368920b9"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00032-fill0.xml",
+      "bytes": 586,
+      "sha256": "b09e57ce78e190443a3e0ad8a82f1ba8d5f60db2a5498b4ad71a4b867b13c24c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00033-clip-path-shape.xml",
+      "bytes": 654,
+      "sha256": "a33eaee9cb85c995f7c8850deaf3928758a847f17576e7b055651b035577efcd"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00034-clip-path-fill0.xml",
+      "bytes": 871,
+      "sha256": "36c2ab821d3ce35bc252f614e97c1202e59de1f53de7ca42dc1c0ed8ac89fa13"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00035-g.xml",
+      "bytes": 534,
+      "sha256": "a9a3cb4087c6ae56693fbbf71d378aa3ae539d5610248891bd5a8858bc2d08cc"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00036-svg.xml",
+      "bytes": 558,
+      "sha256": "e687e66466791a9c652f42239dcd9622b1903aa225d577bea5444398bc8ec271"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00037-original-shape-1709.xml",
+      "bytes": 608,
+      "sha256": "e161a273120b9dddd3e8a1e150ebdf0061bf679f5bcfcb548c4c2648a4671227"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00038-clip-path-content.xml",
+      "bytes": 668,
+      "sha256": "938f0128671e71d3be99be11bd2b1b4d02d620a790a06b555efe5dafe204541b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00039-fill0.xml",
+      "bytes": 581,
+      "sha256": "eb8f6398aa7b515b8c0d4c7f73971ad0bc4b09649fbf37425a6e9338854c1a21"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00040-clip-path-shape.xml",
+      "bytes": 654,
+      "sha256": "5febcd08023e72bd64aa25939898d8931af8f82ab183c24acd3d5a7e5faf13e1"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00041-clip-path-fill0.xml",
+      "bytes": 871,
+      "sha256": "91fe3b899c8fa75f9574049265f33e333c6d25037a43fe3b4a19ceef1aa9f503"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00042-g.xml",
+      "bytes": 534,
+      "sha256": "41d0f7d64cb99936422bbce0a4d7a874455f9ebdf4218b21a920439ef1db35c6"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00043-svg.xml",
+      "bytes": 558,
+      "sha256": "3d40c43e9ccd8629594f5415b79b6fd1a9c509169fda11bf05b17729327a5ce7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00044-original-shape-1710.xml",
+      "bytes": 608,
+      "sha256": "8e56c75eb6d41f11e84b70d15079dc4cd0d36489ebd66417ac51c87df17e5e6e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00045-clip-path-content.xml",
+      "bytes": 667,
+      "sha256": "f848fe0d81eba42e977427ab2f922db5a140e90f9959fcec1d75059ce0cf7d3e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00046-fill0.xml",
+      "bytes": 582,
+      "sha256": "a43b880c7c81db5719563009e748cbfc1c0ad6cc88776639bcfa5e4b8a4f5ee6"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00047-clip-path-shape.xml",
+      "bytes": 654,
+      "sha256": "d007fe231111964a3471b26256603d28757ff005792d2f082d1eee0638229a96"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00048-clip-path-fill0.xml",
+      "bytes": 871,
+      "sha256": "48953b87c75b840ad217f708f45195d4c04bc700cb87fd7933aa80c3b909490f"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00049-g.xml",
+      "bytes": 534,
+      "sha256": "7b004bab60b10702885c77cdaedcbc83196ea48885e7d8cb42f3a8d4d571518e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00050-svg.xml",
+      "bytes": 558,
+      "sha256": "00ead6195dbee89acfa5ed5e52159bbb37fc533d14038ce2cc74b3cd77ef786e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00051-original-shape-1711.xml",
+      "bytes": 608,
+      "sha256": "2e25dbd6834898c83ac808320df22ccbb327fcfa8895d4ea762dcd6eebf0c7e5"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00052-fill0.xml",
+      "bytes": 747,
+      "sha256": "4a57a99739cbb3ffb616e51e75760b48b31698f41d66a4a658ec66ea58fe3687"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00053-clip-path-shape.xml",
+      "bytes": 654,
+      "sha256": "61722061f0563bb59e4499daa279d872ce8e33ba2f745a6c233e38f6f120d3f8"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00054-clip-path-fill0.xml",
+      "bytes": 871,
+      "sha256": "b3dfa23e5326208c4eb851fb8765d4fa027d40288e36d59b456a68a9ef995e46"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00055-g.xml",
+      "bytes": 534,
+      "sha256": "b194f38afeca60a9e7982bc91248b577fb1e488c3418b5b452ee989f115e55e8"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00056-svg.xml",
+      "bytes": 558,
+      "sha256": "07a659badc8903ac7b33f3acdf251fd7148d5ac0d3fde5232da9b70d8b3d7b81"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00057-original-shape-1712.xml",
+      "bytes": 608,
+      "sha256": "1142678cee3ba815a95a23d5e9dece2cff2fc3cb26722de31db9d6d3a5275060"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00058-door-frame-1.xml",
+      "bytes": 817,
+      "sha256": "74cb4646f60fcca156ee880a2e47417b2f9e8a5edac1bb455e5b6cffbddcd9e6"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00059-door-content.xml",
+      "bytes": 887,
+      "sha256": "2062c9d1a077993526e5114ad55ba04585edb2e2fe61472d877580a052b23407"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00060-door-clip.xml",
+      "bytes": 650,
+      "sha256": "6020a5c701e3fa88e93998d454b66914eb559aa06b1e9e5a6d47e23c7bbb419e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00061-original-depth-2.xml",
+      "bytes": 863,
+      "sha256": "fab60dba4dfdf835672ecc9d4cfc18c143ae9d6ecd4635a3e766b0d0ec27af0d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00062-door-frame-2.xml",
+      "bytes": 996,
+      "sha256": "3f10c604250783ada1f7deae61129754c3bec4f525c260621d1803fb978c922f"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00063-door-content.xml",
+      "bytes": 930,
+      "sha256": "eabc2dd4bd1a999e5ffec4409f3953bd3b9b535efecd2e5d8731795b26ee7605"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00064-original-depth-2.xml",
+      "bytes": 863,
+      "sha256": "de56f223ccf2d523303f450fb6e33aec60021db31979a0c265952223ae7ab1cd"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00065-door-frame-3.xml",
+      "bytes": 996,
+      "sha256": "eda01eaef3a6ba0997121005a4e1150c1d0bbbd7967db4b94fc8a42b0e74ea3b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00066-door-content.xml",
+      "bytes": 930,
+      "sha256": "3cbaeb55c81492bd415a2b70b47d333a9d92f199ae4c34a0ca27d405002f63ee"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00067-original-depth-2.xml",
+      "bytes": 863,
+      "sha256": "6ffcf59171674d37affb3379c915c0883d2badb6ab490d6499bbae5b85cbfe4e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00068-door-frame-4.xml",
+      "bytes": 996,
+      "sha256": "29ad941057b984193f994b9042fac244bfef44f6e1da43f0b9b037f83b9ece25"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00069-door-frame-5.xml",
+      "bytes": 996,
+      "sha256": "8257f9f229562962881b97d99ff6ea7013e25c6d5aa5ff82ca0c6a50e112b70b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00070-door-content.xml",
+      "bytes": 930,
+      "sha256": "bf4e09367efcce134d817d362a62ddf866c61c1b9eb9baa174e97fab2610a96a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00071-original-depth-2.xml",
+      "bytes": 863,
+      "sha256": "6dc8b06db3262dbc19fe008de1c408ae3bb6a081d5cd81bc74e67922b437e455"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00072-door-frame-6.xml",
+      "bytes": 996,
+      "sha256": "bb128ea8d58102e3e32c9c4d8819bc3de6b9339eb70362edbba1edc276167679"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00073-door-content.xml",
+      "bytes": 929,
+      "sha256": "2cac85dd8217dbcceb8ed44e165b7e6d483d5d40ea497ee85fc75f1631bbf5be"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00074-original-depth-2.xml",
+      "bytes": 863,
+      "sha256": "dba8d2b73c0dff250af4d6c58433a7e4f94010f246445fbb8cc319cfb97cf07c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00075-door-frame-7.xml",
+      "bytes": 996,
+      "sha256": "e9f281fe88b1aa24e6485fe3839b6a9a53e61272992a4117cf77a03662f8b4af"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00076-door-content.xml",
+      "bytes": 927,
+      "sha256": "53cd892934e0a2bae0d43daebad0e1504e2f156462e9dc2030708d721316cbb5"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00077-original-depth-2.xml",
+      "bytes": 863,
+      "sha256": "92f8a75b90d604cb3f99192f0adb7de00dd89e87486696a63a8ea8168ca69f2d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00078-door-frame-8.xml",
+      "bytes": 996,
+      "sha256": "7cff582e2886d17abc8659152078a2016ce5a4c1682f088b1dcae82d15bbeca4"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00079-door-frame-9.xml",
+      "bytes": 996,
+      "sha256": "bf8650fad2548d8ba74d8b580c78f1fcd1ebae27a5843b7dc2e786a873cb0cf5"
+    },
+    {
+      "path": "PublishSettings.xml",
+      "bytes": 8086,
+      "sha256": "b196b22c785f8ae4965e0ce5c19f12afbb78d0ae67181b79b2e87b4ed478afe1"
+    }
+  ],
+  "candidateClosureSha256": "721e98626b748f9c559173f400503dfca63299f3cfe6a9870f416253e39441b1",
+  "canonicalClosure": [
+    {
+      "path": "CF6_DoorWood1714.xfl",
+      "bytes": 9,
+      "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38"
+    },
+    {
+      "path": "DOMDocument.xml",
+      "bytes": 9632,
+      "sha256": "5b6b51ae5aefddb6a132e4ec8508c81e18f7ecb5731a25daf4d2dd0ed95ba5e2"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00001-svg.xml",
+      "bytes": 654,
+      "sha256": "563dcfd8ca74668a8c3b5140e801e6ede36175ead0937bb0a9abcfaaecc5d9ee"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00002-original-shape-1707.xml",
+      "bytes": 608,
+      "sha256": "82e87692a76dfe1c118e0882d8d8fb80bb1cbf322a0c2da1af4821bc27d214ad"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00003-b1708_outer-upright-1.xml",
+      "bytes": 16434,
+      "sha256": "5595997919663d6c3ae853b5d2460e13966b283b853472338ba9cb8f76e53a48"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00004-b1708_outer-upright-2.xml",
+      "bytes": 17230,
+      "sha256": "e145662ee5ced077d0fe2af3a1c5a1892cf4d1076098c9fb07e95a0add8f373b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00005-b1708_top-transom-board.xml",
+      "bytes": 1505,
+      "sha256": "a4460705e7612974e6c9f6bed065afea3da3bb1cbe3a047626a5c375bc1b5975"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00006-b1708_left-leaf-board-grain.xml",
+      "bytes": 88252,
+      "sha256": "488c72181b5b631ca166202fc6087d90c1d813d49de54d4f0ed83239faa2544f"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00007-b1708_right-leaf-board-grain.xml",
+      "bytes": 154290,
+      "sha256": "94315444e0ee04a73f4f48de014ff0119320ffa44411b63883aa2d651f29ab93"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00008-b1708_wood-panel-1.xml",
+      "bytes": 14902,
+      "sha256": "f58d622300a86933928e805dc1fb385876c1f683bd5018761bd70296e5541f32"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00009-b1708_wood-panel-2.xml",
+      "bytes": 15463,
+      "sha256": "577a021d12a19fd560e7e2c63cdaa183af0e9562d2e9042e7877eb3c75acdfbe"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00010-b1708_wood-panel-3.xml",
+      "bytes": 15484,
+      "sha256": "8d974e0b9fb85479d015a0d0caa922a8afbf62d90790a12f3c080ea068cce191"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00011-b1708_wood-panel-4.xml",
+      "bytes": 16383,
+      "sha256": "c309ada00cd48bf79500cbcf31f3f43b5e8c692d57cbba8e4388b7dbfb91a152"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00012-b1708_wood-panel-5.xml",
+      "bytes": 17848,
+      "sha256": "9b7a7eb76237c1a5c671036e524e29934d08d49cee1dcf8a8973d2c8b07c5d40"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00013-b1708_wood-panel-6.xml",
+      "bytes": 17871,
+      "sha256": "669566f3b258a028effc89610ca4680d02c49c71ddc7f95aa2dc351688dcbee3"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00014-b1708_wood-panel-7.xml",
+      "bytes": 16702,
+      "sha256": "2027d32327bedc0e6b6e12dfcea1f11b13ee8b2c4d5f5b264c213217443ae877"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00015-b1708_wood-panel-8.xml",
+      "bytes": 17823,
+      "sha256": "d1db5b3bf8bc058a3c4e680e289e61cd8fcdd82c0aab8d4ff001c05996afe262"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00016-b1708_wood-panel-9.xml",
+      "bytes": 17873,
+      "sha256": "362bb2851f4e4c1ca43898c040f58103bf23cfcded408c3c664d71a3c06def7e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00017-b1708_iron-hinge-1.xml",
+      "bytes": 2572,
+      "sha256": "6747e935897d08ccfe54ab612324d05ad6f83d280952ae3e7e1267fe9a254898"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00018-b1708_iron-hinge-2.xml",
+      "bytes": 2596,
+      "sha256": "1e1745b8f423d492bedd4671a048f7a8710a241e818593322bbf5d64806d03ff"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00019-b1708_iron-hinge-3.xml",
+      "bytes": 2597,
+      "sha256": "c619ee1ad69bd987169ef9fcac035c8070221282edbe7e40dfe6d004c1d7eee1"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00020-b1708_iron-hinge-4.xml",
+      "bytes": 2621,
+      "sha256": "7abba72c7b0780ee723c81296556451e932211eb445638df9df7769a9173feb2"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00021-b1708_iron-handle-1.xml",
+      "bytes": 5483,
+      "sha256": "fead8ab04b08a83b12353335a05655e232cea5f7f83558d95e401c51414bbbc7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00022-b1708_iron-handle-2.xml",
+      "bytes": 5605,
+      "sha256": "145d5dfc70030098780023a210acc6e4e13d9bda306bbd4027f0ab43dc28304b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00023-b1708_keyhole-escutcheon.xml",
+      "bytes": 2782,
+      "sha256": "bd8c96081ffd18a017905796c4c0a5d1104ce4472f768dde29bf6121d305ff34"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00024-mask-content.xml",
+      "bytes": 10928,
+      "sha256": "091a2f40723acd0fdaec3551ce63f21815ea59bf355336fdbd212cee7375ceea"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00025-b1708_original-wood-alpha.xml",
+      "bytes": 3720,
+      "sha256": "a3d1da9e5bdb55ade947079efad10f6d531de2b70b8b7d3c00cbf4b5f86139f2"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00026-mask-shape.xml",
+      "bytes": 659,
+      "sha256": "130ae56f29caa8471c8022e7c8f4d2e4ce65cf2ec29ee912942b2595cf38e6bb"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00027-mask-b1708_original-wood-alpha.xml",
+      "bytes": 962,
+      "sha256": "99a88a7ec6db882fa76ad62cc60dd6e6ef67e64074667b52e20f70de3b36af80"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00028-b1708_bitmap-1708-wood-door.xml",
+      "bytes": 627,
+      "sha256": "88470b1ba6fe9fb675f1cb6b2633ada4a7d0abd96658b68b29e4d716dab01741"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00029-bitmap1708.xml",
+      "bytes": 605,
+      "sha256": "a14bceaaa8c225338ef6ada773c06a7653c087304f950eb59c474b1f39ada9cf"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00030-use.xml",
+      "bytes": 567,
+      "sha256": "d8e2ca04552f28d9536e81b005f32e4a8bdc32bdf7a2a26201576751740d4a49"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00031-clip-path-content.xml",
+      "bytes": 666,
+      "sha256": "428fc539da8f26a6fa0d01034507b41d334f3f15caa775ea1e769c67368920b9"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00032-fill0.xml",
+      "bytes": 586,
+      "sha256": "b09e57ce78e190443a3e0ad8a82f1ba8d5f60db2a5498b4ad71a4b867b13c24c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00033-clip-path-shape.xml",
+      "bytes": 654,
+      "sha256": "a33eaee9cb85c995f7c8850deaf3928758a847f17576e7b055651b035577efcd"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00034-clip-path-fill0.xml",
+      "bytes": 871,
+      "sha256": "36c2ab821d3ce35bc252f614e97c1202e59de1f53de7ca42dc1c0ed8ac89fa13"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00035-g.xml",
+      "bytes": 534,
+      "sha256": "a9a3cb4087c6ae56693fbbf71d378aa3ae539d5610248891bd5a8858bc2d08cc"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00036-svg.xml",
+      "bytes": 558,
+      "sha256": "e687e66466791a9c652f42239dcd9622b1903aa225d577bea5444398bc8ec271"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00037-original-shape-1709.xml",
+      "bytes": 608,
+      "sha256": "e161a273120b9dddd3e8a1e150ebdf0061bf679f5bcfcb548c4c2648a4671227"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00038-clip-path-content.xml",
+      "bytes": 668,
+      "sha256": "938f0128671e71d3be99be11bd2b1b4d02d620a790a06b555efe5dafe204541b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00039-fill0.xml",
+      "bytes": 581,
+      "sha256": "eb8f6398aa7b515b8c0d4c7f73971ad0bc4b09649fbf37425a6e9338854c1a21"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00040-clip-path-shape.xml",
+      "bytes": 654,
+      "sha256": "5febcd08023e72bd64aa25939898d8931af8f82ab183c24acd3d5a7e5faf13e1"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00041-clip-path-fill0.xml",
+      "bytes": 871,
+      "sha256": "91fe3b899c8fa75f9574049265f33e333c6d25037a43fe3b4a19ceef1aa9f503"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00042-g.xml",
+      "bytes": 534,
+      "sha256": "41d0f7d64cb99936422bbce0a4d7a874455f9ebdf4218b21a920439ef1db35c6"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00043-svg.xml",
+      "bytes": 558,
+      "sha256": "3d40c43e9ccd8629594f5415b79b6fd1a9c509169fda11bf05b17729327a5ce7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00044-original-shape-1710.xml",
+      "bytes": 608,
+      "sha256": "8e56c75eb6d41f11e84b70d15079dc4cd0d36489ebd66417ac51c87df17e5e6e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00045-clip-path-content.xml",
+      "bytes": 667,
+      "sha256": "f848fe0d81eba42e977427ab2f922db5a140e90f9959fcec1d75059ce0cf7d3e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00046-fill0.xml",
+      "bytes": 582,
+      "sha256": "a43b880c7c81db5719563009e748cbfc1c0ad6cc88776639bcfa5e4b8a4f5ee6"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00047-clip-path-shape.xml",
+      "bytes": 654,
+      "sha256": "d007fe231111964a3471b26256603d28757ff005792d2f082d1eee0638229a96"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00048-clip-path-fill0.xml",
+      "bytes": 871,
+      "sha256": "48953b87c75b840ad217f708f45195d4c04bc700cb87fd7933aa80c3b909490f"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00049-g.xml",
+      "bytes": 534,
+      "sha256": "7b004bab60b10702885c77cdaedcbc83196ea48885e7d8cb42f3a8d4d571518e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00050-svg.xml",
+      "bytes": 558,
+      "sha256": "00ead6195dbee89acfa5ed5e52159bbb37fc533d14038ce2cc74b3cd77ef786e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00051-original-shape-1711.xml",
+      "bytes": 608,
+      "sha256": "2e25dbd6834898c83ac808320df22ccbb327fcfa8895d4ea762dcd6eebf0c7e5"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00052-fill0.xml",
+      "bytes": 747,
+      "sha256": "4a57a99739cbb3ffb616e51e75760b48b31698f41d66a4a658ec66ea58fe3687"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00053-clip-path-shape.xml",
+      "bytes": 654,
+      "sha256": "61722061f0563bb59e4499daa279d872ce8e33ba2f745a6c233e38f6f120d3f8"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00054-clip-path-fill0.xml",
+      "bytes": 871,
+      "sha256": "b3dfa23e5326208c4eb851fb8765d4fa027d40288e36d59b456a68a9ef995e46"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00055-g.xml",
+      "bytes": 534,
+      "sha256": "b194f38afeca60a9e7982bc91248b577fb1e488c3418b5b452ee989f115e55e8"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00056-svg.xml",
+      "bytes": 558,
+      "sha256": "07a659badc8903ac7b33f3acdf251fd7148d5ac0d3fde5232da9b70d8b3d7b81"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00057-original-shape-1712.xml",
+      "bytes": 608,
+      "sha256": "1142678cee3ba815a95a23d5e9dece2cff2fc3cb26722de31db9d6d3a5275060"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00058-door-frame-1.xml",
+      "bytes": 817,
+      "sha256": "74cb4646f60fcca156ee880a2e47417b2f9e8a5edac1bb455e5b6cffbddcd9e6"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00059-door-content.xml",
+      "bytes": 887,
+      "sha256": "2062c9d1a077993526e5114ad55ba04585edb2e2fe61472d877580a052b23407"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00060-door-clip.xml",
+      "bytes": 650,
+      "sha256": "6020a5c701e3fa88e93998d454b66914eb559aa06b1e9e5a6d47e23c7bbb419e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00061-original-depth-2.xml",
+      "bytes": 863,
+      "sha256": "fab60dba4dfdf835672ecc9d4cfc18c143ae9d6ecd4635a3e766b0d0ec27af0d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00062-door-frame-2.xml",
+      "bytes": 996,
+      "sha256": "3f10c604250783ada1f7deae61129754c3bec4f525c260621d1803fb978c922f"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00063-door-content.xml",
+      "bytes": 930,
+      "sha256": "eabc2dd4bd1a999e5ffec4409f3953bd3b9b535efecd2e5d8731795b26ee7605"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00064-original-depth-2.xml",
+      "bytes": 863,
+      "sha256": "de56f223ccf2d523303f450fb6e33aec60021db31979a0c265952223ae7ab1cd"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00065-door-frame-3.xml",
+      "bytes": 996,
+      "sha256": "eda01eaef3a6ba0997121005a4e1150c1d0bbbd7967db4b94fc8a42b0e74ea3b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00066-door-content.xml",
+      "bytes": 930,
+      "sha256": "3cbaeb55c81492bd415a2b70b47d333a9d92f199ae4c34a0ca27d405002f63ee"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00067-original-depth-2.xml",
+      "bytes": 863,
+      "sha256": "6ffcf59171674d37affb3379c915c0883d2badb6ab490d6499bbae5b85cbfe4e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00068-door-frame-4.xml",
+      "bytes": 996,
+      "sha256": "29ad941057b984193f994b9042fac244bfef44f6e1da43f0b9b037f83b9ece25"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00069-door-frame-5.xml",
+      "bytes": 996,
+      "sha256": "8257f9f229562962881b97d99ff6ea7013e25c6d5aa5ff82ca0c6a50e112b70b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00070-door-content.xml",
+      "bytes": 930,
+      "sha256": "bf4e09367efcce134d817d362a62ddf866c61c1b9eb9baa174e97fab2610a96a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00071-original-depth-2.xml",
+      "bytes": 863,
+      "sha256": "6dc8b06db3262dbc19fe008de1c408ae3bb6a081d5cd81bc74e67922b437e455"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00072-door-frame-6.xml",
+      "bytes": 996,
+      "sha256": "bb128ea8d58102e3e32c9c4d8819bc3de6b9339eb70362edbba1edc276167679"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00073-door-content.xml",
+      "bytes": 929,
+      "sha256": "2cac85dd8217dbcceb8ed44e165b7e6d483d5d40ea497ee85fc75f1631bbf5be"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00074-original-depth-2.xml",
+      "bytes": 863,
+      "sha256": "dba8d2b73c0dff250af4d6c58433a7e4f94010f246445fbb8cc319cfb97cf07c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00075-door-frame-7.xml",
+      "bytes": 996,
+      "sha256": "e9f281fe88b1aa24e6485fe3839b6a9a53e61272992a4117cf77a03662f8b4af"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00076-door-content.xml",
+      "bytes": 927,
+      "sha256": "53cd892934e0a2bae0d43daebad0e1504e2f156462e9dc2030708d721316cbb5"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00077-original-depth-2.xml",
+      "bytes": 863,
+      "sha256": "92f8a75b90d604cb3f99192f0adb7de00dd89e87486696a63a8ea8168ca69f2d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00078-door-frame-8.xml",
+      "bytes": 996,
+      "sha256": "7cff582e2886d17abc8659152078a2016ce5a4c1682f088b1dcae82d15bbeca4"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00079-door-frame-9.xml",
+      "bytes": 996,
+      "sha256": "bf8650fad2548d8ba74d8b580c78f1fcd1ebae27a5843b7dc2e786a873cb0cf5"
+    },
+    {
+      "path": "PublishSettings.xml",
+      "bytes": 7805,
+      "sha256": "cbe2017f35ac07ea536bc00e3c5fdf74b6b81d7a01c221c9be8f9e1591a6e856"
+    }
+  ],
+  "canonicalClosureSha256": "bd83ddd28069d3824417c93377d59a679917fab773e31470c051181e086ea457",
+  "oldSource": [],
+  "oldSwf": null,
+  "archive": "tools/cf6-map-runtime/native-vector/archive/canonical-predecessors/CF6_DoorWood1714/20261021T084550Z-7c97094642",
+  "state": "native_source_installed; exact canonical CS6 compile still required",
+  "sourceManifest": null,
+  "sourceManifestSha256": null
+}

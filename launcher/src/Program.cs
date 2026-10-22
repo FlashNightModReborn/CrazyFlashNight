@@ -2714,6 +2714,13 @@ class Program
                 && socketServer != null && socketServer.IsClientReady
                 && socketServer.TrySend(payload);
         });
+        agentControlTask.SetBookshelfOpenAction(delegate
+        {
+            const string payload = "{\"task\":\"cmd\",\"action\":\"openBookshelfForAgent\"}\0";
+            return !form.IsShutdownAdmissionClosed
+                && socketServer != null && socketServer.IsClientReady
+                && socketServer.TrySend(payload);
+        });
         agentControlTask.SetActivePanelStatusProvider(delegate
         {
             string name = panelHost.ActivePanelName;

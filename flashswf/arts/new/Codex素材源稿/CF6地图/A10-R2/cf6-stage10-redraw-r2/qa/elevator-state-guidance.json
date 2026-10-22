@@ -1,0 +1,156 @@
+{
+  "root": 1876,
+  "actualFrameCount": 37,
+  "distinctStates": 37,
+  "child": 1875,
+  "childrenPerFrame": 2,
+  "tileOffsetY": 541.95,
+  "recommendedFrames": [
+    1,
+    10,
+    19,
+    28,
+    37
+  ],
+  "loopCheck": "37 -> 1; first y from -541.90 to 0, second y from 0.05 to 541.95; placement interval 541.95. Do not freeze root into background.",
+  "originalShape1874TileY": [
+    -271.45,
+    -89.45,
+    89.5
+  ],
+  "originalTileCaveat": "Third tile begins at 89.5, overlapping previous extent by 3.05; preserve original fill paths/matrices instead of evenly resampling the 542.95px shape.",
+  "sampledStateTransforms": {
+    "1": {
+      "1": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0.0,
+          0.0
+        ],
+        "placedAt": 1,
+        "id": 1875
+      },
+      "9": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0.0,
+          541.95
+        ],
+        "placedAt": 1,
+        "id": 1875
+      }
+    },
+    "10": {
+      "1": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0.0,
+          -135.45
+        ],
+        "placedAt": 1,
+        "id": 1875
+      },
+      "9": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0.0,
+          406.5
+        ],
+        "placedAt": 1,
+        "id": 1875
+      }
+    },
+    "19": {
+      "1": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0.0,
+          -270.95
+        ],
+        "placedAt": 1,
+        "id": 1875
+      },
+      "9": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0.0,
+          271.0
+        ],
+        "placedAt": 1,
+        "id": 1875
+      }
+    },
+    "28": {
+      "1": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0.0,
+          -406.45
+        ],
+        "placedAt": 1,
+        "id": 1875
+      },
+      "9": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0.0,
+          135.5
+        ],
+        "placedAt": 1,
+        "id": 1875
+      }
+    },
+    "37": {
+      "1": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0.0,
+          -541.9
+        ],
+        "placedAt": 1,
+        "id": 1875
+      },
+      "9": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0.0,
+          0.05
+        ],
+        "placedAt": 1,
+        "id": 1875
+      }
+    }
+  },
+  "registration": "Bitmap viewBoxes are native [0,0,width,height]; assembler must preserve original shape fill matrix, clipping paths, display matrices, depth and CXFORM.",
+  "a10_a13_note": "The exact shared four bitmaps are usable by both a10 and a13; root/display compositions differ and must use their own original nodes."
+}

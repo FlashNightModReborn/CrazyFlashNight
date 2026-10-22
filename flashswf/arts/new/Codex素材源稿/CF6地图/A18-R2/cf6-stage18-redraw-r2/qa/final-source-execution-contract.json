@@ -1,0 +1,247 @@
+{
+  "stage": 18,
+  "final_source_and_reference_equal_executed_cold_inputs": true,
+  "input_files": [
+    {
+      "file": "source/galaxy.py",
+      "sha256": "afadf9d481be6e7bcd5d43a854383008559f8ffb5dca73f019ed67f79bf62f3f",
+      "cold_sha256": "afadf9d481be6e7bcd5d43a854383008559f8ffb5dca73f019ed67f79bf62f3f",
+      "equal": true
+    },
+    {
+      "file": "source/industrial_context_review.py",
+      "sha256": "b273bfe785b40e5bcd00d6ab0acf4fe5555b9e329533789e2cee507cf2124764",
+      "cold_sha256": "b273bfe785b40e5bcd00d6ab0acf4fe5555b9e329533789e2cee507cf2124764",
+      "equal": true
+    },
+    {
+      "file": "source/industrial_materials.py",
+      "sha256": "0802d7a4c5c23b474eed9d379326de79de678abac4f1bf0e6b5af0318b1a1546",
+      "cold_sha256": "0802d7a4c5c23b474eed9d379326de79de678abac4f1bf0e6b5af0318b1a1546",
+      "equal": true
+    },
+    {
+      "file": "source/radiation_drum.py",
+      "sha256": "0c3d38a1d3a8a5d1ae78cebd32a5b37eeb0d235813959f330e3b6fdcb61afe04",
+      "cold_sha256": "0c3d38a1d3a8a5d1ae78cebd32a5b37eeb0d235813959f330e3b6fdcb61afe04",
+      "equal": true
+    },
+    {
+      "file": "source/rebuild.py",
+      "sha256": "e3e837927abb09928cfed7d5b3613bb34edf7a2772da7db53d504e76fb2bcba4",
+      "cold_sha256": "e3e837927abb09928cfed7d5b3613bb34edf7a2772da7db53d504e76fb2bcba4",
+      "equal": true
+    },
+    {
+      "file": "source/svg_native.py",
+      "sha256": "2dd90570ac1303eeceb415b8bf9fabe080ed084cfffb730869c8de0a05dc56ea",
+      "cold_sha256": "2dd90570ac1303eeceb415b8bf9fabe080ed084cfffb730869c8de0a05dc56ea",
+      "equal": true
+    },
+    {
+      "file": "reference/1231.png",
+      "sha256": "9721b1ad5291c9a1c1a9c49e87a22070f5d35ab5eeb71a48c1344946651b8771",
+      "cold_sha256": "9721b1ad5291c9a1c1a9c49e87a22070f5d35ab5eeb71a48c1344946651b8771",
+      "equal": true
+    },
+    {
+      "file": "reference/1955.png",
+      "sha256": "45c4e3c55db6b692e176a7267126344fd977f87da9a133e0798649015231a423",
+      "cold_sha256": "45c4e3c55db6b692e176a7267126344fd977f87da9a133e0798649015231a423",
+      "equal": true
+    },
+    {
+      "file": "reference/1957.png",
+      "sha256": "c974d4b3d6718947a0a771a042e2a0752f4a7d856c8128fb241206dd3057737a",
+      "cold_sha256": "c974d4b3d6718947a0a771a042e2a0752f4a7d856c8128fb241206dd3057737a",
+      "equal": true
+    },
+    {
+      "file": "reference/1958.png",
+      "sha256": "22150abd4fbd01507259dbcef8e8348e4769837be2e90d3865ecc4008b3f4840",
+      "cold_sha256": "22150abd4fbd01507259dbcef8e8348e4769837be2e90d3865ecc4008b3f4840",
+      "equal": true
+    },
+    {
+      "file": "reference/1962.png",
+      "sha256": "62183e1a6ad9d432260a1cb457fc8845fa8c569a050b5982394b348a0f163e27",
+      "cold_sha256": "62183e1a6ad9d432260a1cb457fc8845fa8c569a050b5982394b348a0f163e27",
+      "equal": true
+    },
+    {
+      "file": "reference/1964.png",
+      "sha256": "4c70b04530aff504d6f71de4f32ec5e8968856705a022f22983654cd24508557",
+      "cold_sha256": "4c70b04530aff504d6f71de4f32ec5e8968856705a022f22983654cd24508557",
+      "equal": true
+    },
+    {
+      "file": "reference/1965.png",
+      "sha256": "e7130056b465fb8c9fc6038166d03bed6f9e9c760b25c49dd6a3fd196e9fbd6b",
+      "cold_sha256": "e7130056b465fb8c9fc6038166d03bed6f9e9c760b25c49dd6a3fd196e9fbd6b",
+      "equal": true
+    },
+    {
+      "file": "reference/1966.png",
+      "sha256": "302274a42e64e74ebad5f12d88c1da7bb91c73486b7294c1857ad1c4651810f0",
+      "cold_sha256": "302274a42e64e74ebad5f12d88c1da7bb91c73486b7294c1857ad1c4651810f0",
+      "equal": true
+    },
+    {
+      "file": "reference/1971.png",
+      "sha256": "82de6522c336d8d17bca523eeabed60bf4760ce98b8a592977536e15f4adf0cb",
+      "cold_sha256": "82de6522c336d8d17bca523eeabed60bf4760ce98b8a592977536e15f4adf0cb",
+      "equal": true
+    },
+    {
+      "file": "reference/environment-original-nodes.json",
+      "sha256": "c35c618cc3ef4d53cc213f6c5d6b110c2c580856842774e6f68ce3e4f0e56e9d",
+      "cold_sha256": "c35c618cc3ef4d53cc213f6c5d6b110c2c580856842774e6f68ce3e4f0e56e9d",
+      "equal": true
+    },
+    {
+      "file": "reference/environment-shape-details.json",
+      "sha256": "b682357080b0d82da45beda2871255294492d559b6aaebc5a63b1404e8fee362",
+      "cold_sha256": "b682357080b0d82da45beda2871255294492d559b6aaebc5a63b1404e8fee362",
+      "equal": true
+    },
+    {
+      "file": "reference/frozen-asset-manifest.json",
+      "sha256": "0f14f9c9d6e777612c4dba2acb7fd6c967cdd5fdd08cb7b0daab2c4755b3ce02",
+      "cold_sha256": "0f14f9c9d6e777612c4dba2acb7fd6c967cdd5fdd08cb7b0daab2c4755b3ce02",
+      "equal": true
+    },
+    {
+      "file": "reference/industrial-source-shapes.json",
+      "sha256": "f2ed64182dfdf1bf99c647b7dd361a084d9772886cbeb378549cd47eac1b8bfe",
+      "cold_sha256": "f2ed64182dfdf1bf99c647b7dd361a084d9772886cbeb378549cd47eac1b8bfe",
+      "equal": true
+    },
+    {
+      "file": "reference/layout-inventory.json",
+      "sha256": "b37a62ed0036a1b3cc1d53633d2c867f16979ee13603a5b64b3de9b3c1dda821",
+      "cold_sha256": "b37a62ed0036a1b3cc1d53633d2c867f16979ee13603a5b64b3de9b3c1dda821",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1231.svg",
+      "sha256": "09296dcd1801a173f75730766840dbfb5a604b1203177db85f5d242d5ed47946",
+      "cold_sha256": "09296dcd1801a173f75730766840dbfb5a604b1203177db85f5d242d5ed47946",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1412.svg",
+      "sha256": "6c2a31a6c077835561f70808838d468b75cff4baecab35984dc45fafae4a7f87",
+      "cold_sha256": "6c2a31a6c077835561f70808838d468b75cff4baecab35984dc45fafae4a7f87",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1806.svg",
+      "sha256": "897316b4077467fa318b630e2aa5fdb6bf4a3b1621904d67a41ef98bfd69043b",
+      "cold_sha256": "897316b4077467fa318b630e2aa5fdb6bf4a3b1621904d67a41ef98bfd69043b",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1808.svg",
+      "sha256": "d1b37724e367b29e725a6ecb24fcbefc337913686645eef859333d246f615edf",
+      "cold_sha256": "d1b37724e367b29e725a6ecb24fcbefc337913686645eef859333d246f615edf",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1821.svg",
+      "sha256": "bf2ada232b8f8d27f1ee88c2afdcf1c35eb83eabcc089fecaee3e3850aae3048",
+      "cold_sha256": "bf2ada232b8f8d27f1ee88c2afdcf1c35eb83eabcc089fecaee3e3850aae3048",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1955.svg",
+      "sha256": "eacc8b8be6300be98020089fdbbbc345a9eb975ba62cf1ce4578c90e2604eb0d",
+      "cold_sha256": "eacc8b8be6300be98020089fdbbbc345a9eb975ba62cf1ce4578c90e2604eb0d",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1957.svg",
+      "sha256": "03130cdd1adff4eb15f79143b6899d60960211ce761b72f6ef33a112c3a4fba9",
+      "cold_sha256": "03130cdd1adff4eb15f79143b6899d60960211ce761b72f6ef33a112c3a4fba9",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1958.svg",
+      "sha256": "148a9d7c087a4127cf1e30e1fc3fe385d3f4ce20f870f288611e535f6d04dcd1",
+      "cold_sha256": "148a9d7c087a4127cf1e30e1fc3fe385d3f4ce20f870f288611e535f6d04dcd1",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1962.svg",
+      "sha256": "b052379b381f4a196c67f6acaf84c3b5f7a7a7b0fa07963d1091999ea5491fd9",
+      "cold_sha256": "b052379b381f4a196c67f6acaf84c3b5f7a7a7b0fa07963d1091999ea5491fd9",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1964.svg",
+      "sha256": "f624e60fe4a10c29eb82ea70ba488388c5c40c5bfd13d0195a2774ad4ef75adf",
+      "cold_sha256": "f624e60fe4a10c29eb82ea70ba488388c5c40c5bfd13d0195a2774ad4ef75adf",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1965.svg",
+      "sha256": "a6acda32c93fdda913ccb6fc76de198f1a5661c1064b7f19c093ba6186fc21fc",
+      "cold_sha256": "a6acda32c93fdda913ccb6fc76de198f1a5661c1064b7f19c093ba6186fc21fc",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1966.svg",
+      "sha256": "fe4622b9dd8cc2561259892425016eeb873d54e5152a53565a772ca9abfc1f50",
+      "cold_sha256": "fe4622b9dd8cc2561259892425016eeb873d54e5152a53565a772ca9abfc1f50",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1971.svg",
+      "sha256": "5d0b2c1eed58674acd692bdfffcf5b5c766a081701ac4ff2418713295054f45b",
+      "cold_sha256": "5d0b2c1eed58674acd692bdfffcf5b5c766a081701ac4ff2418713295054f45b",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/shape-1410.svg",
+      "sha256": "a9579788c2dbfa34c8f9eb042d72fddfb3d15516c9780be5ba37c91c74b0f533",
+      "cold_sha256": "a9579788c2dbfa34c8f9eb042d72fddfb3d15516c9780be5ba37c91c74b0f533",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/shape-1436.svg",
+      "sha256": "3aff3d0c6a52bb5c4c39aa2b5d0168b5135b1fee9b0c146e8dc4267ca4eb0771",
+      "cold_sha256": "3aff3d0c6a52bb5c4c39aa2b5d0168b5135b1fee9b0c146e8dc4267ca4eb0771",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/shape-1437.svg",
+      "sha256": "75304d5ca59a2954059e6550e2e467170560d3322f2ae8cf7c5530ce87f7074d",
+      "cold_sha256": "75304d5ca59a2954059e6550e2e467170560d3322f2ae8cf7c5530ce87f7074d",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/shape-1438.svg",
+      "sha256": "c49a56b1d9a61df6792e0e4033044160ccc3a394c227e045747e876a621c307d",
+      "cold_sha256": "c49a56b1d9a61df6792e0e4033044160ccc3a394c227e045747e876a621c307d",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/shape-1439.svg",
+      "sha256": "95ef9cd0a46789c6d37a78abb17426172d1b8768de3f7698b8fffd4a7bed4dbc",
+      "cold_sha256": "95ef9cd0a46789c6d37a78abb17426172d1b8768de3f7698b8fffd4a7bed4dbc",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/shape-1440.svg",
+      "sha256": "1d7abbc4a55cfbf208e736c55fee8cc2bbb41278cc24d0a5bf7d4a7916a95f9a",
+      "cold_sha256": "1d7abbc4a55cfbf208e736c55fee8cc2bbb41278cc24d0a5bf7d4a7916a95f9a",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/shape-1441.svg",
+      "sha256": "30d2b94d602d0e6d0194314459c35dac88013140f7e27597daab68c048117fd0",
+      "cold_sha256": "30d2b94d602d0e6d0194314459c35dac88013140f7e27597daab68c048117fd0",
+      "equal": true
+    }
+  ],
+  "packaging_note": "Final source ZIP adds completed QA records; code and reference inputs equal the /tmp cold execution. The earlier source_zip_sha256 in cold-rebuild.json identifies its pre-report candidate ZIP."
+}

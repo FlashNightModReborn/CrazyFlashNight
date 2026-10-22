@@ -1,0 +1,49 @@
+{
+  "newBitmapIDs": [
+    1740,
+    1742,
+    1743,
+    1746
+  ],
+  "reusedMaterialIDs": [
+    1701,
+    1702,
+    1704,
+    1717,
+    1724
+  ],
+  "reusedCrateShapeIDs": [
+    1436,
+    1437,
+    1438,
+    1439,
+    1440,
+    1441
+  ],
+  "world": 1752,
+  "background": 1745,
+  "sourceType": "hybrid; see per-material scripts and QA",
+  "versions": {
+    "Python": "3.12.14",
+    "Pillow": "12.3.0",
+    "NumPy": "2.3.5",
+    "SciPy": "1.17.0",
+    "Matplotlib": "3.10.8"
+  },
+  "originalSWFSHA256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "staticSampleCounts": {
+    "grandDoor1750": 6,
+    "arrival1729": 7,
+    "crate1442": 6
+  },
+  "runtimeTested": false,
+  "selfContainedOriginalNodes": 61,
+  "unsupportedOriginalNodes": {},
+  "combinedBackdropBounds": [
+    -684.75,
+    -240.5,
+    1516.75,
+    483.3
+  ],
+  "originalClipMatrixPreservation": "each new leaf uses original fill paths/matrices; every sprite uses original frame dictionary/depth/clipDepth"
+}

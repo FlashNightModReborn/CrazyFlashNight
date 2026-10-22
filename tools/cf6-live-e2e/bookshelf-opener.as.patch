@@ -1,0 +1,14 @@
+*** Begin Patch
+*** Update File: scripts/类定义/org/flashNight/arki/ui/BookshelfPanelService.as
+@@
+         _installed = true;
++        _root.gameCommands["openBookshelfForAgent"] = function():Boolean { return org.flashNight.arki.ui.BookshelfPanelService.openForAgent(); };
+@@
+-    public static function openPanel():Boolean {
++    public static function openForAgent():Boolean {
++        var slot:String=String(_root.savePath);
++        if (slot.indexOf("cf7_agent_") != 0 || _root._saveExt.bookRun != null || !canSwitch()) return false;
++        return openPanel();
++    }
++    public static function openPanel():Boolean {
+*** End Patch

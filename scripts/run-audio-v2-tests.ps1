@@ -85,10 +85,10 @@ if ($serverSource -notmatch 'taskType == "audio"' -or
 $assertionCount = [regex]::Matches(
     $suiteSource,
     '(?m)^\s*assert(?:True|False|Equal)\(').Count
-if ($assertionCount -ne 185) {
-    throw "audio-v2 assertion matrix drift: expected 185, found $assertionCount"
+if ($assertionCount -ne 205) {
+    throw "audio-v2 assertion matrix drift: expected 205 call sites, found $assertionCount"
 }
-Write-Host '[OK] audio-v2 strict source policy passed (185 assertions)'
+Write-Host '[OK] audio-v2 strict source policy passed (205 call sites; 212 runtime assertions including 8 invalid lease identities)'
 
 $focusedRun = @{
     DomainId = 'audio-v2'
@@ -106,10 +106,10 @@ $focusedRun = @{
         'scripts\类定义\org\flashNight\neur\Server\ServerManager.as'
     )
     ExpectedTracePatterns = @(
-        '(?m)^AudioBridgeV2Test Tests Passed: 185\r?$'
+        '(?m)^AudioBridgeV2Test Tests Passed: 212\r?$'
         '(?m)^AudioBridgeV2Test Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'AudioBridgeV2Test 185/185'
+    SuccessSummary = 'AudioBridgeV2Test 212/212'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

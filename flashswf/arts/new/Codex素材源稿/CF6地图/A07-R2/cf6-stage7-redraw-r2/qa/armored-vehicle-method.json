@@ -1,0 +1,73 @@
+{
+  "source": "New hand-authored native SVG reconstruction; visual references 1806/1808; generated stochastic grain, no original RGB reused. Typography outlines from system DejaVu Serif Bold.",
+  "seed": 18061808,
+  "revision": "r2",
+  "review_changes": [
+    "Inset front horizontal grille restored",
+    "Chipped stencil ink and irregular microtype",
+    "Darker coarse diagonal tire blocks, subdued hub rings",
+    "Lower fenders darkened; connecting roof plate restored"
+  ],
+  "dimensions": {
+    "1806": [
+      371,
+      236
+    ],
+    "1808": [
+      45,
+      45
+    ]
+  },
+  "audit": {
+    "body_shape": 1807,
+    "body_fragments": 2,
+    "body_bitmap_translation": [
+      -185.5,
+      -209.1
+    ],
+    "wheel_shape": 1809,
+    "wheel_animation": 1810,
+    "wheel_rotation_frames": 20,
+    "root": 1813,
+    "root_frames": 209,
+    "wheel_centers_bitmap": [
+      [
+        52.7,
+        210
+      ],
+      [
+        131.2,
+        211.5
+      ],
+      [
+        244.65,
+        211
+      ]
+    ],
+    "root_geometry_changes": 0,
+    "occupant": "unchanged"
+  },
+  "files": {
+    "1806": {
+      "sha256": "897316b4077467fa318b630e2aa5fdb6bf4a3b1621904d67a41ef98bfd69043b"
+    },
+    "1808": {
+      "sha256": "d1b37724e367b29e725a6ecb24fcbefc337913686645eef859333d246f615edf"
+    }
+  },
+  "independent_review": {
+    "rounds": 2,
+    "result": "R2 accepted for full 209-frame assembly; no remaining silhouette or connection error identified.",
+    "remaining_observations": [
+      "119 slightly narrower and thinner paint than original",
+      "Tire central hub somewhat brighter and more orderly",
+      "Body wear cleaner than original"
+    ],
+    "reviewer": "assemble_cf6_review_batch"
+  },
+  "silhouette_check": {
+    "1806_alpha_iou": 0.9831,
+    "1808_alpha_iou": 0.9563,
+    "same_original_and_new_alpha_bbox": true
+  }
+}

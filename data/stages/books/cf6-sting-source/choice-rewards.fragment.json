@@ -1,0 +1,442 @@
+{
+ "schema": "choice-rewards.v1",
+ "bundles": [
+  {
+   "id": "cf6.sting.t1.gun",
+   "name": "毒刺一枪械捆",
+   "title": "巴雷特 装载",
+   "description": "巴雷特一把,附配套弹药与急救。史实候选,未实测平衡。",
+   "grade": "low",
+   "weapon": "巴雷特",
+   "mods": [],
+   "consumables": [
+    {
+     "name": "狙击步枪通用弹药",
+     "count": 6
+    },
+    {
+     "name": "普通hp药剂",
+     "count": 2
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t1.supply",
+   "name": "毒刺一补给捆",
+   "title": "阶段补给 · 一",
+   "description": "弹药/治疗/强化石组合,按阶段梯度。",
+   "grade": "low",
+   "items": [
+    {
+     "itemName": "突击步枪通用弹药",
+     "quantity": 6
+    },
+    {
+     "itemName": "普通hp药剂",
+     "quantity": 3
+    },
+    {
+     "itemName": "强化石",
+     "quantity": 2
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t1.skill",
+   "name": "毒刺一技能捆",
+   "title": "技能传授 · 小跳",
+   "description": "直接传授1级小跳(史实Andy未满技能)。",
+   "grade": "low",
+   "items": [],
+   "skills": [
+    {
+     "skillKey": "小跳",
+     "level": 1
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t2.gun",
+   "name": "毒刺二枪械捆",
+   "title": "G111 装载",
+   "description": "G111一把,附配套弹药与急救。史实候选,未实测平衡。",
+   "grade": "medium",
+   "weapon": "G111",
+   "mods": [],
+   "consumables": [
+    {
+     "name": "突击步枪钨芯穿甲弹",
+     "count": 6
+    },
+    {
+     "name": "普通hp药剂",
+     "count": 2
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t2.supply",
+   "name": "毒刺二补给捆",
+   "title": "阶段补给 · 二",
+   "description": "弹药/治疗/强化石组合,按阶段梯度。",
+   "grade": "medium",
+   "items": [
+    {
+     "itemName": "00号鹿弹",
+     "quantity": 4
+    },
+    {
+     "itemName": "大HP药剂",
+     "quantity": 1
+    },
+    {
+     "itemName": "强化石",
+     "quantity": 2
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t2.skill",
+   "name": "毒刺二技能捆",
+   "title": "技能传授 · 拳脚攻击",
+   "description": "直接传授1级拳脚攻击(史实Andy未满技能)。",
+   "grade": "medium",
+   "items": [],
+   "skills": [
+    {
+     "skillKey": "拳脚攻击",
+     "level": 1
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t3.gun",
+   "name": "毒刺三枪械捆",
+   "title": "M134暴力版 装载",
+   "description": "M134暴力版一把,附配套弹药与急救。史实候选,未实测平衡。",
+   "grade": "medium",
+   "weapon": "M134暴力版",
+   "mods": [],
+   "consumables": [
+    {
+     "name": "机枪贫铀穿甲弹",
+     "count": 6
+    },
+    {
+     "name": "普通hp药剂",
+     "count": 2
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t3.supply",
+   "name": "毒刺三补给捆",
+   "title": "阶段补给 · 三",
+   "description": "弹药/治疗/强化石组合,按阶段梯度。",
+   "grade": "medium",
+   "items": [
+    {
+     "itemName": "机枪贫铀穿甲弹",
+     "quantity": 3
+    },
+    {
+     "itemName": "大HP药剂",
+     "quantity": 2
+    },
+    {
+     "itemName": "强化石",
+     "quantity": 3
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t3.skill",
+   "name": "毒刺三技能捆",
+   "title": "技能传授 · 升龙拳",
+   "description": "直接传授1级升龙拳(史实Andy未满技能)。",
+   "grade": "medium",
+   "items": [],
+   "skills": [
+    {
+     "skillKey": "升龙拳",
+     "level": 1
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t4.gun",
+   "name": "毒刺四枪械捆",
+   "title": "战术-QBZ-191 装载",
+   "description": "战术-QBZ-191一把,附配套弹药与急救。史实候选,未实测平衡。",
+   "grade": "medium",
+   "weapon": "战术-QBZ-191",
+   "mods": [],
+   "consumables": [
+    {
+     "name": "突击步枪通用弹药",
+     "count": 6
+    },
+    {
+     "name": "普通hp药剂",
+     "count": 2
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t4.supply",
+   "name": "毒刺四补给捆",
+   "title": "阶段补给 · 四",
+   "description": "弹药/治疗/强化石组合,按阶段梯度。",
+   "grade": "medium",
+   "items": [
+    {
+     "itemName": "能量电池",
+     "quantity": 3
+    },
+    {
+     "itemName": "大HP药剂",
+     "quantity": 2
+    },
+    {
+     "itemName": "强化石",
+     "quantity": 3
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t4.skill",
+   "name": "毒刺四技能捆",
+   "title": "技能传授 · 聚气",
+   "description": "直接传授1级聚气(史实Andy未满技能)。",
+   "grade": "medium",
+   "items": [],
+   "skills": [
+    {
+     "skillKey": "聚气",
+     "level": 1
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t5.gun",
+   "name": "毒刺五枪械捆",
+   "title": "紫色幻想 装载",
+   "description": "紫色幻想一把,附配套弹药与急救。史实候选,未实测平衡。",
+   "grade": "high",
+   "weapon": "紫色幻想",
+   "mods": [],
+   "consumables": [
+    {
+     "name": "能量电池",
+     "count": 6
+    },
+    {
+     "name": "普通hp药剂",
+     "count": 2
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t5.supply",
+   "name": "毒刺五补给捆",
+   "title": "阶段补给 · 五",
+   "description": "弹药/治疗/强化石组合,按阶段梯度。",
+   "grade": "high",
+   "items": [
+    {
+     "itemName": "突击步枪钨芯穿甲弹",
+     "quantity": 6
+    },
+    {
+     "itemName": "大HP药剂",
+     "quantity": 2
+    },
+    {
+     "itemName": "强化石",
+     "quantity": 4
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t5.skill",
+   "name": "毒刺五技能捆",
+   "title": "技能传授 · 霸体",
+   "description": "直接传授1级霸体(史实Andy未满技能)。",
+   "grade": "high",
+   "items": [],
+   "skills": [
+    {
+     "skillKey": "霸体",
+     "level": 1
+    }
+   ]
+  }
+ ],
+ "pools": [
+  {
+   "id": "cf6.sting.t1",
+   "version": 1,
+   "title": "毒刺行动 · 阶段配给一",
+   "itemName": "书中CF6毒刺自选配给包·一",
+   "scope": {
+    "kind": "book",
+    "bookId": "cf6-sting"
+   },
+   "maxItemLevel": 40,
+   "chooseCount": 1,
+   "rerolls": 0,
+   "groups": [
+    {
+     "id": "main",
+     "draw": 3,
+     "entries": [
+      {
+       "bundleId": "cf6.sting.t1.gun",
+       "weight": 1
+      },
+      {
+       "bundleId": "cf6.sting.t1.supply",
+       "weight": 1
+      },
+      {
+       "bundleId": "cf6.sting.t1.skill",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t2",
+   "version": 1,
+   "title": "毒刺行动 · 阶段配给二",
+   "itemName": "书中CF6毒刺自选配给包·二",
+   "scope": {
+    "kind": "book",
+    "bookId": "cf6-sting"
+   },
+   "maxItemLevel": 45,
+   "chooseCount": 1,
+   "rerolls": 0,
+   "groups": [
+    {
+     "id": "main",
+     "draw": 3,
+     "entries": [
+      {
+       "bundleId": "cf6.sting.t2.gun",
+       "weight": 1
+      },
+      {
+       "bundleId": "cf6.sting.t2.supply",
+       "weight": 1
+      },
+      {
+       "bundleId": "cf6.sting.t2.skill",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t3",
+   "version": 1,
+   "title": "毒刺行动 · 阶段配给三",
+   "itemName": "书中CF6毒刺自选配给包·三",
+   "scope": {
+    "kind": "book",
+    "bookId": "cf6-sting"
+   },
+   "maxItemLevel": 50,
+   "chooseCount": 1,
+   "rerolls": 0,
+   "groups": [
+    {
+     "id": "main",
+     "draw": 3,
+     "entries": [
+      {
+       "bundleId": "cf6.sting.t3.gun",
+       "weight": 1
+      },
+      {
+       "bundleId": "cf6.sting.t3.supply",
+       "weight": 1
+      },
+      {
+       "bundleId": "cf6.sting.t3.skill",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t4",
+   "version": 1,
+   "title": "毒刺行动 · 阶段配给四",
+   "itemName": "书中CF6毒刺自选配给包·四",
+   "scope": {
+    "kind": "book",
+    "bookId": "cf6-sting"
+   },
+   "maxItemLevel": 55,
+   "chooseCount": 1,
+   "rerolls": 0,
+   "groups": [
+    {
+     "id": "main",
+     "draw": 3,
+     "entries": [
+      {
+       "bundleId": "cf6.sting.t4.gun",
+       "weight": 1
+      },
+      {
+       "bundleId": "cf6.sting.t4.supply",
+       "weight": 1
+      },
+      {
+       "bundleId": "cf6.sting.t4.skill",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "cf6.sting.t5",
+   "version": 1,
+   "title": "毒刺行动 · 阶段配给五",
+   "itemName": "书中CF6毒刺自选配给包·五",
+   "scope": {
+    "kind": "book",
+    "bookId": "cf6-sting"
+   },
+   "maxItemLevel": 60,
+   "chooseCount": 1,
+   "rerolls": 0,
+   "groups": [
+    {
+     "id": "main",
+     "draw": 3,
+     "entries": [
+      {
+       "bundleId": "cf6.sting.t5.gun",
+       "weight": 1
+      },
+      {
+       "bundleId": "cf6.sting.t5.supply",
+       "weight": 1
+      },
+      {
+       "bundleId": "cf6.sting.t5.skill",
+       "weight": 1
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

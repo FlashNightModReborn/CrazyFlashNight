@@ -371,6 +371,33 @@ class org.flashNight.arki.audio.AudioBridge {
         return sendBgm("resume", null, callback);
     }
 
+    public static function acquireBgmLease(callback:Function):String {
+        var requestId:String = nextRequestId("bgm.as2.lease.");
+        if (requestId == null) return null;
+        requestId += ".acquire";
+        if (requestId.length > MAX_REQUEST_ID_CHARS) return null;
+        return sendBgm("pause", null, callback, requestId);
+    }
+
+    public static function releaseBgmLease(
+            acquireRequestId:String,
+            callback:Function):String {
+        var prefix:String = "bgm.as2.lease." + _audioSessionId + ".";
+        var acquireSuffix:String = ".acquire";
+        if (typeof acquireRequestId != "string"
+                || acquireRequestId.indexOf(prefix) != 0
+                || acquireRequestId.length <= prefix.length + acquireSuffix.length
+                || acquireRequestId.substr(acquireRequestId.length - acquireSuffix.length) != acquireSuffix) {
+            return null;
+        }
+        var sequence:String = acquireRequestId.substring(prefix.length,
+            acquireRequestId.length - acquireSuffix.length);
+        if (!isCanonicalNonZeroDecimal(sequence)) return null;
+        var requestId:String = acquireRequestId.substr(
+            0, acquireRequestId.length - acquireSuffix.length) + ".release";
+        return sendBgm("resume", null, callback, requestId);
+    }
+
     public static function seekBGM(seconds:Number, callback:Function):String {
         if (!isBoundedNumber(seconds, 0, 86400)) return null;
         return sendBgm("seek", {seekSeconds: seconds}, callback);
@@ -431,10 +458,11 @@ class org.flashNight.arki.audio.AudioBridge {
     private static function sendBgm(
             operation:String,
             operationPayload:Object,
-            callback:Function):String {
+            callback:Function,
+            leaseRequestId:String):String {
         if (!isReady() || !contains(OPERATIONS, operation)) return null;
-        var requestId:String = nextRequestId();
-        if (requestId == null) return null;
+        var requestId:String = leaseRequestId == null ? nextRequestId() : leaseRequestId;
+        if (!isCanonicalRequestId(requestId)) return null;
 
         var request:Object = new Object();
         request.wireRevision = 2;
@@ -471,13 +499,14 @@ class org.flashNight.arki.audio.AudioBridge {
         return requestId;
     }
 
-    private static function nextRequestId():String {
+    private static function nextRequestId(prefix:String):String {
         var next:String = incrementDecimal(_bgmRequestSequence);
         if (next == null) {
             resetAvailability("unavailable", true);
             return null;
         }
-        var requestId:String = "bgm.as2." + _audioSessionId + "." + next;
+        if (prefix == null) prefix = "bgm.as2.";
+        var requestId:String = prefix + _audioSessionId + "." + next;
         if (requestId.length > MAX_REQUEST_ID_CHARS) return null;
         _bgmRequestSequence = next;
         return requestId;

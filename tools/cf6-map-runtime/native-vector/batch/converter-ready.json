@@ -1,0 +1,357 @@
+{
+  "schema": "cf6-native-converter-ready.v1",
+  "generation": "source-preparation-r1b",
+  "createdUtc": "2026-10-21T08:57:55.494608+00:00",
+  "scope": "source-preparation-only; not CS6 compile, pixel equality, consumer acceptance or canonical promotion",
+  "status": "ready_for_K3_source_preparation",
+  "files": [
+    {
+      "path": "tools/cf6-map-runtime/native-vector/build-a01.py",
+      "sha256": "ad1cde5d1e97ac23aabdb12d5dafb8ee30974c6c8c92c51b92a5d581824533f6",
+      "bytes": 29328
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/build-layer.py",
+      "sha256": "baf6fc519e27584130cbde6cb07d86a4b3600158d3096db3995a7ba80b1c3da8",
+      "bytes": 9287
+    },
+    {
+      "path": "tools/cf6-map-runtime/native_xfl.py",
+      "sha256": "2e386b9499f211be696d3a9bfc57778b4a9b07f689668920ec4e50d07dfc7cd9",
+      "bytes": 5191
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "sha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655",
+      "bytes": 18556
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/reference/vehicles-props-DejaVuSans-Bold.ttf",
+      "sha256": "a4c5bc453ca281d90ea079e596da7ae0dfeb5777497c29ec254e76d97ff6f890",
+      "bytes": 708920
+    },
+    {
+      "path": "tools/cf6-map-runtime/build.py",
+      "sha256": "5738a4c2e8f1719c637217182831a0b14029dda262e07f29ac55073738f1c01d",
+      "bytes": 17374
+    }
+  ],
+  "converterBundleSha256": "69bf33f7769966e03a1c89835c8e248fcf759862f79d2efe8f9952f0258e7be2",
+  "inputIndex": "tools/cf6-map-source/generated/map-input.json",
+  "inputIndexSha256": "056c50dd321debee3545d2988b891d140b07cfec864b5d461bd062e44d29ba95",
+  "jobs": [
+    {
+      "map": "A09",
+      "layer": "background",
+      "name": "CF6_A09_BG_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/environment-a09-backdrop.svg",
+      "sourceSha256": "f3bc78269dbccf2889cf97e2a4a659569d45fd3fcc7200099fe80519773d9b29",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A09_BG_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A09_BG_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A09",
+        "--layer",
+        "background",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    },
+    {
+      "map": "A10",
+      "layer": "background",
+      "name": "CF6_A10_BG_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/parts/environment-a10-backdrop.svg",
+      "sourceSha256": "c6f17eee56c1aee9add129e8aa9231ad55fe2ae051df6c9a0827ab458c69db21",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A10_BG_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A10_BG_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A10",
+        "--layer",
+        "background",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    },
+    {
+      "map": "A10",
+      "layer": "elevator-scroll",
+      "name": "CF6_A10_elevator-scroll_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/parts/elevator-1875-tile.svg",
+      "sourceSha256": "a1f9b64d4d704dbbc202df59baad5e130ea1f5ce989fa26683b2839d3200162c",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A10_elevator-scroll_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A10_elevator-scroll_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A10",
+        "--layer",
+        "elevator-scroll",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    },
+    {
+      "map": "A10",
+      "layer": "foreground",
+      "name": "CF6_A10_foreground_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/parts/foreground-1884.svg",
+      "sourceSha256": "ce2ecb42680236ac1ded252798a34ca99f4fb9021c7f69c0f1a5f117fdbe30a2",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A10_foreground_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A10_foreground_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A10",
+        "--layer",
+        "foreground",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    },
+    {
+      "map": "A11",
+      "layer": "background",
+      "name": "CF6_A11_BG_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/parts/environment-a11-backdrop.svg",
+      "sourceSha256": "8b3152d2f0c0cf169cc0934f1cd984fdc22758fbaff9815cec4f5f038ab40671",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A11_BG_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A11_BG_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A11",
+        "--layer",
+        "background",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    },
+    {
+      "map": "A12",
+      "layer": "background",
+      "name": "CF6_A12_BG_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/environment-a12-backdrop.svg",
+      "sourceSha256": "ee410623c440d8c0ccddb9ac57f7137e78f18cce0f0db1641a539d522841c33a",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A12_BG_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A12_BG_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A12",
+        "--layer",
+        "background",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    },
+    {
+      "map": "A13",
+      "layer": "background",
+      "name": "CF6_A13_BG_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/parts/environment-a13-backdrop.svg",
+      "sourceSha256": "82f7f9e41b9298acbbf52c657363d8788bc16a04a0e52ba183f77b01edd7394b",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A13_BG_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A13_BG_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A13",
+        "--layer",
+        "background",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    },
+    {
+      "map": "A13",
+      "layer": "elevator-scroll",
+      "name": "CF6_A13_elevator-scroll_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/parts/elevator-1875-tile.svg",
+      "sourceSha256": "47bc4dc5df0710317029e08c1f7c48e3d8df9fa2cca5cdadd949f1c151c7849f",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A13_elevator-scroll_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A13_elevator-scroll_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A13",
+        "--layer",
+        "elevator-scroll",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    },
+    {
+      "map": "A13",
+      "layer": "foreground",
+      "name": "CF6_A13_foreground_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/parts/foreground-1884.svg",
+      "sourceSha256": "97496ebd913f45391db8c948a4900c7889220131483826433b686be4da0e3703",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A13_foreground_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A13_foreground_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A13",
+        "--layer",
+        "foreground",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    },
+    {
+      "map": "A14",
+      "layer": "background",
+      "name": "CF6_A14_BG_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/parts/environment-a14-backdrop.svg",
+      "sourceSha256": "d15101e37aa48c3e95a829efd65ee1a4bcd6ea64dc00864b670c101a655c1078",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A14_BG_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A14_BG_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A14",
+        "--layer",
+        "background",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    },
+    {
+      "map": "A15",
+      "layer": "background",
+      "name": "CF6_A15_BG_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/parts/environment-a15-backdrop.svg",
+      "sourceSha256": "e4c7c4a206c6834ebff7abbe1e33f5f01cebaaf7507ee93b015f60881ee354ff",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A15_BG_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A15_BG_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A15",
+        "--layer",
+        "background",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    },
+    {
+      "map": "A16",
+      "layer": "background",
+      "name": "CF6_A16_BG_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/parts/environment-a16-backdrop.svg",
+      "sourceSha256": "f7b53e3dc1879c01d4ab5ffb6abf1890a88e0d580c6daedd66f61912475eaa80",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A16_BG_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A16_BG_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A16",
+        "--layer",
+        "background",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    },
+    {
+      "map": "A17",
+      "layer": "background",
+      "name": "CF6_A17_BG_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/environment-a17-backdrop.svg",
+      "sourceSha256": "c25930912c3d21543f0489f18ebc091ad9090acd5014fd1836628d595f61a6cf",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A17_BG_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A17_BG_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A17",
+        "--layer",
+        "background",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    },
+    {
+      "map": "A18",
+      "layer": "background",
+      "name": "CF6_A18_BG_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/parts/environment-a18-backdrop.svg",
+      "sourceSha256": "a456f0a4b110a7161133584672cb26f0c6ffaeaf25aa5c4531d8f2a900e8b842",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A18_BG_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A18_BG_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A18",
+        "--layer",
+        "background",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    },
+    {
+      "map": "A19",
+      "layer": "background",
+      "name": "CF6_A19_BG_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/parts/environment-a19-backdrop.svg",
+      "sourceSha256": "55484d30da86fa68e5004712859a1aa0e3f73ae522bb689d7c5cce190ace5f89",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A19_BG_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A19_BG_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A19",
+        "--layer",
+        "background",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    },
+    {
+      "map": "A20",
+      "layer": "background",
+      "name": "CF6_A20_BG_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/environment-a20-backdrop.svg",
+      "sourceSha256": "646bfcad9dc5609fd29d7e7fe1578f1a0bef5365046964e75030d76cac1e8b5b",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A20_BG_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A20_BG_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A20",
+        "--layer",
+        "background",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    },
+    {
+      "map": "A22",
+      "layer": "background",
+      "name": "CF6_A22_BG_VectorCandidate01",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/parts/environment-a22-backdrop.svg",
+      "sourceSha256": "646bfcad9dc5609fd29d7e7fe1578f1a0bef5365046964e75030d76cac1e8b5b",
+      "ownedLayersDirectory": "tools/cf6-map-runtime/native-vector/layers/CF6_A22_BG_VectorCandidate01",
+      "ownedCandidateDirectory": "flashswf/backgrounds/cf6/CF6_A22_BG_VectorCandidate01",
+      "prepareArguments": [
+        "--map",
+        "A22",
+        "--layer",
+        "background",
+        "--asset-dir",
+        "tools/cf6-map-runtime/native-vector/batch/assets"
+      ]
+    }
+  ],
+  "runtime": "tmp/cf6-py312/Scripts/python.exe",
+  "entry": "tools/cf6-map-runtime/native-vector/build-layer.py",
+  "ownedBatchDirectory": "tools/cf6-map-runtime/native-vector/batch",
+  "constraints": [
+    "No converter/canonical/shared index/source archive changes.",
+    "Do not run CS6 or copy candidate SWF to canonical names.",
+    "Serialize texture extraction; preserve existing input bytes.",
+    "Skip unchanged inputs with matching converter SHA and successful output closure.",
+    "Record failures; do not flatten whole layers or silently omit unsupported SVG."
+  ],
+  "knownPending": [
+    "A05 parts actual mask/filter comparison pending; multiply omission fixed at source only.",
+    "Native Gaussian blur is approximate; source filter-region clipping is not reproduced.",
+    "Zero-dimension gradient strokes use explicit width fallback.",
+    "Root SVG viewport crop is a comparison item."
+  ],
+  "staticTests": "test-native-vector.py 14 passed; native_xfl 7 passed; actual 20-map rendering remains separate",
+  "supersedes": {
+    "generation": "source-preparation-r1",
+    "signalSha256": "10ba0f6fc7954e3c8250ce547927c90f0c66360dbdd7c9a1e9de1e71a18f8c43",
+    "converterBundleSha256": "995eae15fbd403fad61b74237aa2446e045343440690cbfe9adc43aa17a38f4b",
+    "archivedSignal": "tools/cf6-map-runtime/native-vector/diagnostics/converter-ready-source-preparation-r1.json"
+  },
+  "changeFromPrevious": "Dependency closure correction only: include runtime build.py, imported by build-layer.py for native JSFL recipes. The five previous code/font inputs are unchanged; no converter implementation change."
+}

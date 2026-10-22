@@ -138,6 +138,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         test_launcher_snapshot_migrates_drug_schema();
         test_launcher_snapshot_migrates_reward_inbox();
         test_replacePlayerContext_isolates_character_and_temporary_run();
+        test_quickItem4_unpack_pack_and_context();
     }
 
     private static function runPrefetchTests():Void {
@@ -1531,7 +1532,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
                 stages:[{BasicInformation:{Background:"flashswf/backgrounds/gk15_1_BG.swf",
                     EndFrame:"房间", PlayerX:230, PlayerY:470},
                     Wave:{SubWave:[{EnemyGroup:{Enemy:[{Type:"兵种47", Level:20, Quantity:2,
-                        Parameters:{不掉钱:true, 最小经验值:0, 最大经验值:0, 掉落物:[]}}]}}]},
+                        Parameters:{不掉钱:true, 不掉装备:true, 最小经验值:0, 最大经验值:0, 掉落物:[]}}]}}]},
                     Instances:{Instance:[]}, Pickups:{Pickup:[]}}]};
             assert(org.flashNight.arki.scene.LeeTrialDefinition.accept(trialConfig)
                     && org.flashNight.arki.scene.LeeTrialDefinition.ready(),
@@ -1586,6 +1587,57 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
                 key = keys[j]; _root[key] = previous[key];
             }
         }
+    }
+
+    /** Use production unpack/pack and real context reset; no reference-only roundtrip. */
+    private static function test_quickItem4_unpack_pack_and_context():Void {
+        var beforePassed:Number=passedCount, beforeTotal:Number=testCount;
+        var keys:Array=["savePath","gameworld","场景转换中","当前为战斗地图","基础身价值",
+            "允许存档","限制系统","转场景数据","转场景记录数据第一次记录","新出生",
+            "当前关卡名","当前关卡难度","当前通关的关卡","难度等级","关卡地图帧值",
+            "场景进入位置名","关卡可获得奖励品","快捷物品栏4","特殊操作单位"];
+        var saved:Object={};
+        for(var k:Number=0;k<keys.length;k++) saved[keys[k]]=_root[keys[k]];
+        var sm:SaveManager=SaveManager.getInstance();
+        setUpForLoadTest();
+        try {
+            sm._configureSaveFlowForTest({saveInFlight:false,resetDirty:true,
+                resetScheduler:true,flushResult:undefined,beforeLocalCommit:null});
+            StageRunSession.testOnlyReset();
+            _root.gameworld=undefined;_root.当前为战斗地图=false;_root.场景转换中=true;
+            _root.限制系统=undefined;_root.基础身价值=1000;
+            sm._resetSavePhysicalStatsForTest();
+            var cases:Array=[{name:"nonempty",present:true,value:"普通hp药剂"},
+                {name:"null",present:true,value:null},{name:"empty",present:true,value:""},
+                {name:"legacy28",present:false,value:null}];
+            for(var i:Number=0;i<cases.length;i++) {
+                var c:Object=cases[i];var data:Object=buildValidMydata();
+                if(c.present) data[1][28]=c.value;
+                _root.快捷物品栏4="previous_character_residue";
+                var unpacked:Boolean=sm.unpackGameState(data);
+                assert(unpacked && _root.快捷物品栏4===c.value,
+                    "quick_item4_"+c.name+": production unpack overwrites the previous character value with exact representation");
+                var packed:Object=sm.packGameState();
+                assert(packed[1].length==29 && packed[1][28]===c.value
+                        && data[1].length==(c.present ? 29 : 28),
+                    "quick_item4_"+c.name+": production pack preserves the value without extending the input array");
+                _root.快捷物品栏4="another_character_residue";
+                var replaced:Boolean=sm.replacePlayerContext(TEST_SLOT+"_quick4_"+i,data,null);
+                packed=sm.packGameState();
+                assert(replaced && _root.savePath===TEST_SLOT+"_quick4_"+i
+                        && _root.快捷物品栏4===c.value && packed[1][28]===c.value,
+                    "quick_item4_"+c.name+": real context reset then load restores the destination and cannot leak old memory");
+            }
+            var stats:Object=sm._getSavePhysicalStatsForTest();
+            assert(stats.doSaveAll==0 && stats.flushAttempt==0 && stats.shadowDispatch==0,
+                "quick_item4_context: unpack, pack and replacement never write a player slot");
+        } finally {
+            sm._configureSaveFlowForTest({saveInFlight:false,resetDirty:true,resetScheduler:true});
+            sm.clearPrefetch();StageRunSession.testOnlyReset();
+            for(k=0;k<keys.length;k++) _root[keys[k]]=saved[keys[k]];
+        }
+        var total:Number=testCount-beforeTotal, passed:Number=passedCount-beforePassed;
+        trace("SaveManagerQuickItem4Tests END: "+passed+"/"+total+" passed, "+(total-passed)+" failed");
     }
 
     private static function test_loadFromMydata_v3_succeeds():Void {
@@ -2687,6 +2739,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
                 stopBGMForTransition:function():Void { bgmStops++; }
             };
             var scheduledSceneReady:Number = 0;
+            var acceptedTransitions:Number = 0;
             _root.帧计时器 = {
                 性能等级上限:1,
                 添加单次任务:function(callback:Function, delay:Number):Void {
@@ -2910,7 +2963,8 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
                 "prepareNewCharacter_memory_reset: packs only the clean post-reset authority snapshot");
 
             ok = prepared.success && sm.startNewCharacterTutorial(
-                String(prepared.startToken), true, null, null);
+                String(prepared.startToken), true,
+                function():Void { acceptedTransitions++; }, null);
             assert(ok && DrugInputService.getActiveBank() == 0 && allDrugCooldownsReady(true),
                 "newCharacter_drug_session: successful new-character boundary resets bank and five cooldowns");
             assert(_root._saveExt.drugLoadout.version == 3
@@ -2977,13 +3031,13 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             _root.难度 = "";
 
             capturedLoaded({});
-            assert(_root.淡出动画.fadeCount == 1 && scheduledSceneReady == 1
-                    && bgmStops == 1 && _root.当前关卡名 == "教学关卡",
-                "newCharacter_stage_entry: XML success commits globals and one transition");
+            assert(_root.淡出动画.fadeCount == 1 && scheduledSceneReady == 0
+                    && acceptedTransitions == 1 && bgmStops == 1 && _root.当前关卡名 == "教学关卡",
+                "newCharacter_stage_entry: XML success accepts one transition without anonymous SceneReady");
             capturedLoaded({});
             capturedError();
-            assert(_root.淡出动画.fadeCount == 1 && scheduledSceneReady == 1,
-                "newCharacter_stage_entry: duplicate callbacks cannot repeat transition");
+            assert(_root.淡出动画.fadeCount == 1 && scheduledSceneReady == 0 && acceptedTransitions == 1,
+                "newCharacter_stage_entry: duplicate callbacks cannot repeat transition or synthesize SceneReady");
             StageRunSession.cancelStageStart(capturedToken);
 
             StageRunSession.testOnlyReset();

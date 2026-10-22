@@ -1,0 +1,865 @@
+{
+  "schema": "cf6-canonical-native-assembly.v1",
+  "target": "CF6_DoorExit1720",
+  "candidate": "CF6_DoorExit1720_VectorCandidate01",
+  "nativeClosureFiles": 84,
+  "oldSourcePresent": true,
+  "oldSwfPresent": false,
+  "sourceXfl": "flashswf/backgrounds/cf6/CF6_DoorExit1720/CF6_DoorExit1720.xfl",
+  "requiredFreshSwf": "flashswf/backgrounds/cf6/CF6_DoorExit1720.swf",
+  "scope": "source-only canonical assembly; candidate SWF is not copied; no formal runtime promotion",
+  "transaction": "20261021T084603Z-d9764aa209",
+  "candidateSource": "flashswf/backgrounds/cf6/CF6_DoorExit1720_VectorCandidate01",
+  "candidateClosure": [
+    {
+      "path": "CF6_DoorExit1720_VectorCandidate01.xfl",
+      "bytes": 9,
+      "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38"
+    },
+    {
+      "path": "DOMDocument.xml",
+      "bytes": 24013,
+      "sha256": "a46fc4244c3fff386f017270ab6094c187af678f8013c1d88508ba05648fd0c5"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00001-svg.xml",
+      "bytes": 566,
+      "sha256": "d9a881368eb602fbea5efddfee38c5409490e3a368153f0a37182f651fe09bb0"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00002-original-shape-1715.xml",
+      "bytes": 608,
+      "sha256": "103380f637f8f022acf9bf1965a871729d7106c19bf8c08a2ed3e156c0ca060d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00003-svg.xml",
+      "bytes": 1026,
+      "sha256": "568370d555f2fdae59071b13f776ed1a83429f68e7ffed70067456e593aac00c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00004-original-shape-1716.xml",
+      "bytes": 608,
+      "sha256": "55fc0b85e3d33e05a0bd6e9890e80875dbd194e1774b4e9055b571e2d54e3822"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00005-b1717_metal-outer-frame.xml",
+      "bytes": 29651,
+      "sha256": "c2400b0c3db1e15799b0e37e6042bd3093cbafef24a1877147b4b37fd6bfe75a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00006-b1717_metal-upright-1.xml",
+      "bytes": 10058,
+      "sha256": "8211d9697cd53638354fc3c1aab23cc71cf9faee989b832dd727e513cc59b348"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00007-b1717_metal-upright-2.xml",
+      "bytes": 10832,
+      "sha256": "850b6265cc77797a9bf9883af9c8f235487bad2637656bac5a966f8c71926d45"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00008-b1717_metal-upright-3.xml",
+      "bytes": 10058,
+      "sha256": "d8e6cbebd7b82e8977ac20cff300b20d5484c1a2db99aeef9ee408d672814f30"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00009-b1717_metal-upright-4.xml",
+      "bytes": 10905,
+      "sha256": "eef6af60e6261bb4f8313417c3ce662b07311d2cde47827eaf587666185b8294"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00010-b1717_metal-upright-5.xml",
+      "bytes": 10200,
+      "sha256": "35ebefc45341ea0be5ea8061ecc60bf09e5fe543a89de845b9f50d5e5ef2f4ab"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00011-b1717_metal-upright-6.xml",
+      "bytes": 10996,
+      "sha256": "c0e6ecd5c94ae4f6def7fa6ba56b17dfe647f0aab5d96c017dfc43186eff6d43"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00012-b1717_metal-upright-7.xml",
+      "bytes": 10196,
+      "sha256": "5a4af28c5784fa5886f6bdb4e30b618f9f429f96f97ad14ddf0db4562d2aa000"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00013-path.xml",
+      "bytes": 1203,
+      "sha256": "d0c72b436a788ef3f7ad2033eabe4922b40e95c04fa7df527c5b570e68d8531e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00014-path.xml",
+      "bytes": 1202,
+      "sha256": "4ba2a5b2c3ee29f5a1783f740650d6fbc48f2772ac849c9de64abc92848ce67d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00015-b1717_forged-diamond-course-1.xml",
+      "bytes": 13916,
+      "sha256": "f6b241d0018164e501c55d625b1eb8cf1dd0c91580ecf26729272923bd6acdec"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00016-path.xml",
+      "bytes": 1268,
+      "sha256": "ec366c903df58279a03ad540fcc9e8a3b232bdaeb76d015ba2addf74a87e2d12"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00017-path.xml",
+      "bytes": 1268,
+      "sha256": "ce9f3046b360b2f544b69d842bfff5ad908d1aa700fd2ea8f5b14a6e81d14657"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00018-b1717_forged-diamond-course-2.xml",
+      "bytes": 15143,
+      "sha256": "08b72d94dab00ef42727f0c0d0947b2932c2b5f069fa552ead3c42172904651b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00019-path.xml",
+      "bytes": 1267,
+      "sha256": "32936d8922675e8dd3a786ceb844eb75b18f00ab8747ce3b2985d0dac388bccf"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00020-path.xml",
+      "bytes": 1267,
+      "sha256": "bffdb50b4f18a94023ad6795fcbbd1096d1bee2e03d5d6434b6b7472d5a71702"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00021-b1717_forged-diamond-course-3.xml",
+      "bytes": 14626,
+      "sha256": "9dc2072676a0f794362ca62417e325b26fd84b7b440078335d129bcbd0260aff"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00022-b1717_bitmap-1717-open-metal-grille.xml",
+      "bytes": 6664,
+      "sha256": "3885d0ff46f2709e68be53401a58abbbb57dcac2f3e03d56cc9c451b1afea0b8"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00023-bitmap1717.xml",
+      "bytes": 613,
+      "sha256": "71d58b3aa8c7b6108dbf4422bd80db79a64227f345a0695f22198da8f8f5e28f"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00024-use.xml",
+      "bytes": 567,
+      "sha256": "1a9c2b55bfba4e2e41e17891441e6f38fbf11aff567914f3fdcc46184fc3bd91"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00025-clip-path-content.xml",
+      "bytes": 666,
+      "sha256": "5c06024a51533a2283ad07cbc4ceeb585282c024fc200854c76f105d16913132"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00026-fill0.xml",
+      "bytes": 588,
+      "sha256": "f3d6d223103ac0b818675a30c97e99972c21f5fa99b6dfb82afb81b4723801fd"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00027-clip-path-shape.xml",
+      "bytes": 654,
+      "sha256": "132398510d495a5f4e7be8390d83b80464fb261a54dcb3e4ec0a4d51e61f6e58"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00028-clip-path-fill0.xml",
+      "bytes": 871,
+      "sha256": "c9636fb0b3cde3dbdb21d6ee93b5fb7db594992b9609ace82f5a34c87f73447a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00029-g.xml",
+      "bytes": 534,
+      "sha256": "12ad6ff9edf9ab25c01d257a585e0e50c8b8f46ad15ca365d9b9704bbec961f5"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00030-svg.xml",
+      "bytes": 558,
+      "sha256": "01c41e11190bfc59ee005931c870b204ecfac6337c3520f728e2f8458b60c60b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00031-original-shape-1718.xml",
+      "bytes": 608,
+      "sha256": "55eea3f6ecbbfd31061c55899a6e33f0748cb5774b22da4acbb88fd0fd8ad40b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00032-door-frame-1.xml",
+      "bytes": 1229,
+      "sha256": "045d200508ec48f27d90a13417c9caa576f518cc43bcbbefae2dea4308d61424"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00033-door-frame-2.xml",
+      "bytes": 1229,
+      "sha256": "a1e9c3877a580e88807984b4d5374bc417b23effc5f23ff529b209f2a52c0a3a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00034-door-frame-3.xml",
+      "bytes": 1229,
+      "sha256": "33c55c3f7b3762f8f525153fcc3174a60b38a84ee8703976166c6134b3dbee9f"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00035-door-frame-4.xml",
+      "bytes": 1229,
+      "sha256": "c6b1f1762c102787b8bccf93a49c086e2cd5c087695023d378d4ede0a18f65d0"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00036-door-frame-5.xml",
+      "bytes": 1229,
+      "sha256": "a7b2448687a0d6aa87f4074b9265dd88056d953a19a47e62b1bb63ad81fda2ca"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00037-door-frame-6.xml",
+      "bytes": 1229,
+      "sha256": "e85ef9848d7bcb0fac7baad710c141f870fa702f26e1575175514ae65769acab"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00038-door-frame-7.xml",
+      "bytes": 1229,
+      "sha256": "0252955612483f910bdf51ed08e9307c825aee22dd7dff42d4bd29603d96b793"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00039-door-frame-8.xml",
+      "bytes": 1229,
+      "sha256": "557cd7bb2057443e5718cd7f4964156d052d8bc0b31fed0aca84025c405bef53"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00040-door-frame-9.xml",
+      "bytes": 1229,
+      "sha256": "dea1ef4867cb26d4f24ffe73ee8f34895d55688962919708e93f77973c57e941"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00041-door-frame-10.xml",
+      "bytes": 1232,
+      "sha256": "6f42c7db41af3e61c955ac0e820a0e10319a6ec17055bfcae0b257541969d052"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00042-door-frame-11.xml",
+      "bytes": 1243,
+      "sha256": "92262d7ccae06c461e38f7d73cb6ce9d0cda93bd08890bd7d0f91e14049b2f74"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00043-door-frame-12.xml",
+      "bytes": 1246,
+      "sha256": "a433882118d4b43be5a4764cfc1a88029970425e877b8a1e8c4bb960b48fdd4d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00044-door-frame-13.xml",
+      "bytes": 1246,
+      "sha256": "ef8042d705949ea777df3b57af626fb4a46670eb66e4623ed0086d3a8fce02ea"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00045-door-frame-14.xml",
+      "bytes": 1246,
+      "sha256": "d93d772263b22614973d492b7905d76304465f72a411bc68fbb21a22479286c7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00046-door-frame-15.xml",
+      "bytes": 1246,
+      "sha256": "670cf354a49fbd9a576f322b06b9855f5727d9545ef4f53efc4fcc5a066110d0"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00047-door-frame-16.xml",
+      "bytes": 1245,
+      "sha256": "84d729bbdeeb3da169ffc005d93c352510e84d3ec92afdf71bbcecefb4dc26f3"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00048-door-frame-17.xml",
+      "bytes": 1245,
+      "sha256": "cfa24f7f9ddd9453a02f8e47cca279a6a38f69ab2bdf311848abc5cd98811414"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00049-door-frame-18.xml",
+      "bytes": 1245,
+      "sha256": "7af7ef59daf63e578817d385a1e813e95fb06131c552eae467711e30acbb3c59"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00050-door-frame-19.xml",
+      "bytes": 1246,
+      "sha256": "8397f48a72e1e3b027002a63d016e5ebbd4dc34d8f7ea599b44914161f4b6058"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00051-door-frame-20.xml",
+      "bytes": 1247,
+      "sha256": "2c37a3c98513b147640cb20dfedc8756ef4015b64ec2ab16791175713cd8b659"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00052-door-frame-21.xml",
+      "bytes": 1247,
+      "sha256": "94f9faa03e3f4995b97fa8bde0ec246d384438c61d3a27cdc122bea1ef0ff27c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00053-door-frame-22.xml",
+      "bytes": 1247,
+      "sha256": "6bd7fa637699585397b6c472020925e2531f860b68b27bbd9864a94c121261f9"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00054-door-frame-23.xml",
+      "bytes": 1246,
+      "sha256": "ca7b5d3f3763ca9084910da81954ff40ce700a19d76bacb9a6f337d1983018e2"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00055-door-frame-24.xml",
+      "bytes": 1246,
+      "sha256": "5dea4df05cc201a3e3f2b913b74099960091171727603af4a6c2bf4c5bdb7923"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00056-door-frame-25.xml",
+      "bytes": 1246,
+      "sha256": "c65d0ffebaccc8c9c76f78a52ca93de53105b5b6f995e5b44155356fb25c6cc3"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00057-door-frame-26.xml",
+      "bytes": 1247,
+      "sha256": "b643cfbd0bdf17f6da94e57c71c4e961c2cd8063f1c83b017292873cbde3f69b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00058-door-frame-27.xml",
+      "bytes": 1247,
+      "sha256": "8162ad83f41525486c915e60c56daab835c389c13be020971bf9478e82be66cc"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00059-door-frame-28.xml",
+      "bytes": 1247,
+      "sha256": "52e60f0d385de8e3448b63f4304af2892bc870ec90f1332844ccd34f87c13e41"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00060-door-frame-29.xml",
+      "bytes": 1247,
+      "sha256": "8d91cc56aa7f562e0e109e1c5fead1b96f9472cac4e43077e63bf76c1bb8bc90"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00061-door-frame-30.xml",
+      "bytes": 1246,
+      "sha256": "a13ff9c5ca270a856fe9a7ac523a72290b18704c27047862a81a07c1a87effe6"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00062-door-frame-31.xml",
+      "bytes": 1245,
+      "sha256": "43b7ebc71b936f1460f5d613f60f4c994d9ef30ca0d10f820563d3e8f9700968"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00063-door-frame-32.xml",
+      "bytes": 1246,
+      "sha256": "d5b036041f97a40326b759f8af000280c44cf1b4456ed64389ec44a84da3e6ff"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00064-door-frame-33.xml",
+      "bytes": 1247,
+      "sha256": "704b95a0dfd1944f7d95cb63be353a7fe18763f6431209b891894e96f276af44"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00065-door-frame-34.xml",
+      "bytes": 1247,
+      "sha256": "abd86afe3ec83cfd0229f04faeb2bc887eae5d21280d1fc767bc2e0040054427"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00066-door-frame-35.xml",
+      "bytes": 1247,
+      "sha256": "32604162e0bdfdc290953137c32087342cce36f26b55c7b97680b9cea8f98432"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00067-door-frame-36.xml",
+      "bytes": 1247,
+      "sha256": "ac9f1f0946120cda2fd30d5092ea545e82307940d6b47ee94af100a2da4164b2"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00068-door-frame-37.xml",
+      "bytes": 1246,
+      "sha256": "447fdaf3bfbd4fe172ea0fa4c768832942f97dd0929485b180908e29c8e75bb0"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00069-door-frame-38.xml",
+      "bytes": 1246,
+      "sha256": "308ec4ba2d6ce6bb150dd27f799c7da7aa712394cc6a9c0f109c420be48124b1"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00070-door-frame-39.xml",
+      "bytes": 1245,
+      "sha256": "263ea397830e39b249c7e1ce82af62d519de28457505602c1195530680ba55f8"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00071-door-frame-40.xml",
+      "bytes": 1247,
+      "sha256": "ff7b170268bb2d07f13557dd260d195c52cfc08e74c172c5cd6cca8a3e80baeb"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00072-door-frame-41.xml",
+      "bytes": 1247,
+      "sha256": "153a0a95c81f137cf5eadb46366cecde84d10eeeab0498b7a091c10ff5faf331"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00073-door-frame-42.xml",
+      "bytes": 1247,
+      "sha256": "cfe500fb9e0e2dc8d5434303a671b47187cf2a8bf9ce6496f05e5d2d22b7b145"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00074-door-frame-43.xml",
+      "bytes": 1247,
+      "sha256": "7866d14b49f656558c3c9189a712749573f8b252cf53e1df7eacd3e66eb08f33"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00075-door-frame-44.xml",
+      "bytes": 1246,
+      "sha256": "1cc1a1bcd23d0e7a53bd8f55f1b14897077e24d43f3629d1a022a651d24e6bd7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00076-door-frame-45.xml",
+      "bytes": 1246,
+      "sha256": "433f5f4e9da4415af1b59d67a3aecd76a7faa564004d6edfbd4bef850b7f090a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00077-door-frame-46.xml",
+      "bytes": 1246,
+      "sha256": "480a7da1710678606347b92dbb8182061842a47669b9f70feb1f06f5254fa1be"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00078-door-frame-47.xml",
+      "bytes": 1246,
+      "sha256": "48f84d92591c97b9d26407d21de524775a9aff71c498963da8cbcdcfdeb3c084"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00079-door-frame-48.xml",
+      "bytes": 1246,
+      "sha256": "05c9b0c91d47737992ad7556ac1249ed745db1d84e2f6eae2d8df4bf6998d98a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00080-door-frame-49.xml",
+      "bytes": 1246,
+      "sha256": "699664ed0e9ffc8bf7c741238d83c346535dfedf437405dc3a0ca1740f2948b7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00081-door-frame-50.xml",
+      "bytes": 1246,
+      "sha256": "27852e79ee5d26e13b8b37e7c005661a3eb3e16eaadb2e971182fe309b0074a0"
+    },
+    {
+      "path": "PublishSettings.xml",
+      "bytes": 8086,
+      "sha256": "0a4cac369f3c126b167e2ac158127e4f22ab9a15bc02f56941b78e410efd03da"
+    }
+  ],
+  "candidateClosureSha256": "3f898159662c989ef51946f8f56e3467a06d419bf890c931f475444b1d7dfc15",
+  "canonicalClosure": [
+    {
+      "path": "CF6_DoorExit1720.xfl",
+      "bytes": 9,
+      "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38"
+    },
+    {
+      "path": "DOMDocument.xml",
+      "bytes": 23837,
+      "sha256": "25dd3dfa9a6a5db6983a8e1c23c403c80637e49f463c72194258bd15924bcf34"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00001-svg.xml",
+      "bytes": 566,
+      "sha256": "d9a881368eb602fbea5efddfee38c5409490e3a368153f0a37182f651fe09bb0"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00002-original-shape-1715.xml",
+      "bytes": 608,
+      "sha256": "103380f637f8f022acf9bf1965a871729d7106c19bf8c08a2ed3e156c0ca060d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00003-svg.xml",
+      "bytes": 1026,
+      "sha256": "568370d555f2fdae59071b13f776ed1a83429f68e7ffed70067456e593aac00c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00004-original-shape-1716.xml",
+      "bytes": 608,
+      "sha256": "55fc0b85e3d33e05a0bd6e9890e80875dbd194e1774b4e9055b571e2d54e3822"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00005-b1717_metal-outer-frame.xml",
+      "bytes": 29651,
+      "sha256": "c2400b0c3db1e15799b0e37e6042bd3093cbafef24a1877147b4b37fd6bfe75a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00006-b1717_metal-upright-1.xml",
+      "bytes": 10058,
+      "sha256": "8211d9697cd53638354fc3c1aab23cc71cf9faee989b832dd727e513cc59b348"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00007-b1717_metal-upright-2.xml",
+      "bytes": 10832,
+      "sha256": "850b6265cc77797a9bf9883af9c8f235487bad2637656bac5a966f8c71926d45"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00008-b1717_metal-upright-3.xml",
+      "bytes": 10058,
+      "sha256": "d8e6cbebd7b82e8977ac20cff300b20d5484c1a2db99aeef9ee408d672814f30"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00009-b1717_metal-upright-4.xml",
+      "bytes": 10905,
+      "sha256": "eef6af60e6261bb4f8313417c3ce662b07311d2cde47827eaf587666185b8294"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00010-b1717_metal-upright-5.xml",
+      "bytes": 10200,
+      "sha256": "35ebefc45341ea0be5ea8061ecc60bf09e5fe543a89de845b9f50d5e5ef2f4ab"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00011-b1717_metal-upright-6.xml",
+      "bytes": 10996,
+      "sha256": "c0e6ecd5c94ae4f6def7fa6ba56b17dfe647f0aab5d96c017dfc43186eff6d43"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00012-b1717_metal-upright-7.xml",
+      "bytes": 10196,
+      "sha256": "5a4af28c5784fa5886f6bdb4e30b618f9f429f96f97ad14ddf0db4562d2aa000"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00013-path.xml",
+      "bytes": 1203,
+      "sha256": "d0c72b436a788ef3f7ad2033eabe4922b40e95c04fa7df527c5b570e68d8531e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00014-path.xml",
+      "bytes": 1202,
+      "sha256": "4ba2a5b2c3ee29f5a1783f740650d6fbc48f2772ac849c9de64abc92848ce67d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00015-b1717_forged-diamond-course-1.xml",
+      "bytes": 13916,
+      "sha256": "f6b241d0018164e501c55d625b1eb8cf1dd0c91580ecf26729272923bd6acdec"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00016-path.xml",
+      "bytes": 1268,
+      "sha256": "ec366c903df58279a03ad540fcc9e8a3b232bdaeb76d015ba2addf74a87e2d12"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00017-path.xml",
+      "bytes": 1268,
+      "sha256": "ce9f3046b360b2f544b69d842bfff5ad908d1aa700fd2ea8f5b14a6e81d14657"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00018-b1717_forged-diamond-course-2.xml",
+      "bytes": 15143,
+      "sha256": "08b72d94dab00ef42727f0c0d0947b2932c2b5f069fa552ead3c42172904651b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00019-path.xml",
+      "bytes": 1267,
+      "sha256": "32936d8922675e8dd3a786ceb844eb75b18f00ab8747ce3b2985d0dac388bccf"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00020-path.xml",
+      "bytes": 1267,
+      "sha256": "bffdb50b4f18a94023ad6795fcbbd1096d1bee2e03d5d6434b6b7472d5a71702"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00021-b1717_forged-diamond-course-3.xml",
+      "bytes": 14626,
+      "sha256": "9dc2072676a0f794362ca62417e325b26fd84b7b440078335d129bcbd0260aff"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00022-b1717_bitmap-1717-open-metal-grille.xml",
+      "bytes": 6664,
+      "sha256": "3885d0ff46f2709e68be53401a58abbbb57dcac2f3e03d56cc9c451b1afea0b8"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00023-bitmap1717.xml",
+      "bytes": 613,
+      "sha256": "71d58b3aa8c7b6108dbf4422bd80db79a64227f345a0695f22198da8f8f5e28f"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00024-use.xml",
+      "bytes": 567,
+      "sha256": "1a9c2b55bfba4e2e41e17891441e6f38fbf11aff567914f3fdcc46184fc3bd91"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00025-clip-path-content.xml",
+      "bytes": 666,
+      "sha256": "5c06024a51533a2283ad07cbc4ceeb585282c024fc200854c76f105d16913132"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00026-fill0.xml",
+      "bytes": 588,
+      "sha256": "f3d6d223103ac0b818675a30c97e99972c21f5fa99b6dfb82afb81b4723801fd"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00027-clip-path-shape.xml",
+      "bytes": 654,
+      "sha256": "132398510d495a5f4e7be8390d83b80464fb261a54dcb3e4ec0a4d51e61f6e58"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00028-clip-path-fill0.xml",
+      "bytes": 871,
+      "sha256": "c9636fb0b3cde3dbdb21d6ee93b5fb7db594992b9609ace82f5a34c87f73447a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00029-g.xml",
+      "bytes": 534,
+      "sha256": "12ad6ff9edf9ab25c01d257a585e0e50c8b8f46ad15ca365d9b9704bbec961f5"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00030-svg.xml",
+      "bytes": 558,
+      "sha256": "01c41e11190bfc59ee005931c870b204ecfac6337c3520f728e2f8458b60c60b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00031-original-shape-1718.xml",
+      "bytes": 608,
+      "sha256": "55eea3f6ecbbfd31061c55899a6e33f0748cb5774b22da4acbb88fd0fd8ad40b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00032-door-frame-1.xml",
+      "bytes": 1229,
+      "sha256": "045d200508ec48f27d90a13417c9caa576f518cc43bcbbefae2dea4308d61424"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00033-door-frame-2.xml",
+      "bytes": 1229,
+      "sha256": "a1e9c3877a580e88807984b4d5374bc417b23effc5f23ff529b209f2a52c0a3a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00034-door-frame-3.xml",
+      "bytes": 1229,
+      "sha256": "33c55c3f7b3762f8f525153fcc3174a60b38a84ee8703976166c6134b3dbee9f"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00035-door-frame-4.xml",
+      "bytes": 1229,
+      "sha256": "c6b1f1762c102787b8bccf93a49c086e2cd5c087695023d378d4ede0a18f65d0"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00036-door-frame-5.xml",
+      "bytes": 1229,
+      "sha256": "a7b2448687a0d6aa87f4074b9265dd88056d953a19a47e62b1bb63ad81fda2ca"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00037-door-frame-6.xml",
+      "bytes": 1229,
+      "sha256": "e85ef9848d7bcb0fac7baad710c141f870fa702f26e1575175514ae65769acab"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00038-door-frame-7.xml",
+      "bytes": 1229,
+      "sha256": "0252955612483f910bdf51ed08e9307c825aee22dd7dff42d4bd29603d96b793"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00039-door-frame-8.xml",
+      "bytes": 1229,
+      "sha256": "557cd7bb2057443e5718cd7f4964156d052d8bc0b31fed0aca84025c405bef53"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00040-door-frame-9.xml",
+      "bytes": 1229,
+      "sha256": "dea1ef4867cb26d4f24ffe73ee8f34895d55688962919708e93f77973c57e941"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00041-door-frame-10.xml",
+      "bytes": 1232,
+      "sha256": "6f42c7db41af3e61c955ac0e820a0e10319a6ec17055bfcae0b257541969d052"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00042-door-frame-11.xml",
+      "bytes": 1243,
+      "sha256": "92262d7ccae06c461e38f7d73cb6ce9d0cda93bd08890bd7d0f91e14049b2f74"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00043-door-frame-12.xml",
+      "bytes": 1246,
+      "sha256": "a433882118d4b43be5a4764cfc1a88029970425e877b8a1e8c4bb960b48fdd4d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00044-door-frame-13.xml",
+      "bytes": 1246,
+      "sha256": "ef8042d705949ea777df3b57af626fb4a46670eb66e4623ed0086d3a8fce02ea"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00045-door-frame-14.xml",
+      "bytes": 1246,
+      "sha256": "d93d772263b22614973d492b7905d76304465f72a411bc68fbb21a22479286c7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00046-door-frame-15.xml",
+      "bytes": 1246,
+      "sha256": "670cf354a49fbd9a576f322b06b9855f5727d9545ef4f53efc4fcc5a066110d0"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00047-door-frame-16.xml",
+      "bytes": 1245,
+      "sha256": "84d729bbdeeb3da169ffc005d93c352510e84d3ec92afdf71bbcecefb4dc26f3"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00048-door-frame-17.xml",
+      "bytes": 1245,
+      "sha256": "cfa24f7f9ddd9453a02f8e47cca279a6a38f69ab2bdf311848abc5cd98811414"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00049-door-frame-18.xml",
+      "bytes": 1245,
+      "sha256": "7af7ef59daf63e578817d385a1e813e95fb06131c552eae467711e30acbb3c59"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00050-door-frame-19.xml",
+      "bytes": 1246,
+      "sha256": "8397f48a72e1e3b027002a63d016e5ebbd4dc34d8f7ea599b44914161f4b6058"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00051-door-frame-20.xml",
+      "bytes": 1247,
+      "sha256": "2c37a3c98513b147640cb20dfedc8756ef4015b64ec2ab16791175713cd8b659"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00052-door-frame-21.xml",
+      "bytes": 1247,
+      "sha256": "94f9faa03e3f4995b97fa8bde0ec246d384438c61d3a27cdc122bea1ef0ff27c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00053-door-frame-22.xml",
+      "bytes": 1247,
+      "sha256": "6bd7fa637699585397b6c472020925e2531f860b68b27bbd9864a94c121261f9"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00054-door-frame-23.xml",
+      "bytes": 1246,
+      "sha256": "ca7b5d3f3763ca9084910da81954ff40ce700a19d76bacb9a6f337d1983018e2"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00055-door-frame-24.xml",
+      "bytes": 1246,
+      "sha256": "5dea4df05cc201a3e3f2b913b74099960091171727603af4a6c2bf4c5bdb7923"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00056-door-frame-25.xml",
+      "bytes": 1246,
+      "sha256": "c65d0ffebaccc8c9c76f78a52ca93de53105b5b6f995e5b44155356fb25c6cc3"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00057-door-frame-26.xml",
+      "bytes": 1247,
+      "sha256": "b643cfbd0bdf17f6da94e57c71c4e961c2cd8063f1c83b017292873cbde3f69b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00058-door-frame-27.xml",
+      "bytes": 1247,
+      "sha256": "8162ad83f41525486c915e60c56daab835c389c13be020971bf9478e82be66cc"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00059-door-frame-28.xml",
+      "bytes": 1247,
+      "sha256": "52e60f0d385de8e3448b63f4304af2892bc870ec90f1332844ccd34f87c13e41"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00060-door-frame-29.xml",
+      "bytes": 1247,
+      "sha256": "8d91cc56aa7f562e0e109e1c5fead1b96f9472cac4e43077e63bf76c1bb8bc90"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00061-door-frame-30.xml",
+      "bytes": 1246,
+      "sha256": "a13ff9c5ca270a856fe9a7ac523a72290b18704c27047862a81a07c1a87effe6"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00062-door-frame-31.xml",
+      "bytes": 1245,
+      "sha256": "43b7ebc71b936f1460f5d613f60f4c994d9ef30ca0d10f820563d3e8f9700968"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00063-door-frame-32.xml",
+      "bytes": 1246,
+      "sha256": "d5b036041f97a40326b759f8af000280c44cf1b4456ed64389ec44a84da3e6ff"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00064-door-frame-33.xml",
+      "bytes": 1247,
+      "sha256": "704b95a0dfd1944f7d95cb63be353a7fe18763f6431209b891894e96f276af44"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00065-door-frame-34.xml",
+      "bytes": 1247,
+      "sha256": "abd86afe3ec83cfd0229f04faeb2bc887eae5d21280d1fc767bc2e0040054427"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00066-door-frame-35.xml",
+      "bytes": 1247,
+      "sha256": "32604162e0bdfdc290953137c32087342cce36f26b55c7b97680b9cea8f98432"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00067-door-frame-36.xml",
+      "bytes": 1247,
+      "sha256": "ac9f1f0946120cda2fd30d5092ea545e82307940d6b47ee94af100a2da4164b2"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00068-door-frame-37.xml",
+      "bytes": 1246,
+      "sha256": "447fdaf3bfbd4fe172ea0fa4c768832942f97dd0929485b180908e29c8e75bb0"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00069-door-frame-38.xml",
+      "bytes": 1246,
+      "sha256": "308ec4ba2d6ce6bb150dd27f799c7da7aa712394cc6a9c0f109c420be48124b1"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00070-door-frame-39.xml",
+      "bytes": 1245,
+      "sha256": "263ea397830e39b249c7e1ce82af62d519de28457505602c1195530680ba55f8"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00071-door-frame-40.xml",
+      "bytes": 1247,
+      "sha256": "ff7b170268bb2d07f13557dd260d195c52cfc08e74c172c5cd6cca8a3e80baeb"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00072-door-frame-41.xml",
+      "bytes": 1247,
+      "sha256": "153a0a95c81f137cf5eadb46366cecde84d10eeeab0498b7a091c10ff5faf331"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00073-door-frame-42.xml",
+      "bytes": 1247,
+      "sha256": "cfe500fb9e0e2dc8d5434303a671b47187cf2a8bf9ce6496f05e5d2d22b7b145"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00074-door-frame-43.xml",
+      "bytes": 1247,
+      "sha256": "7866d14b49f656558c3c9189a712749573f8b252cf53e1df7eacd3e66eb08f33"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00075-door-frame-44.xml",
+      "bytes": 1246,
+      "sha256": "1cc1a1bcd23d0e7a53bd8f55f1b14897077e24d43f3629d1a022a651d24e6bd7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00076-door-frame-45.xml",
+      "bytes": 1246,
+      "sha256": "433f5f4e9da4415af1b59d67a3aecd76a7faa564004d6edfbd4bef850b7f090a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00077-door-frame-46.xml",
+      "bytes": 1246,
+      "sha256": "480a7da1710678606347b92dbb8182061842a47669b9f70feb1f06f5254fa1be"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00078-door-frame-47.xml",
+      "bytes": 1246,
+      "sha256": "48f84d92591c97b9d26407d21de524775a9aff71c498963da8cbcdcfdeb3c084"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00079-door-frame-48.xml",
+      "bytes": 1246,
+      "sha256": "05c9b0c91d47737992ad7556ac1249ed745db1d84e2f6eae2d8df4bf6998d98a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00080-door-frame-49.xml",
+      "bytes": 1246,
+      "sha256": "699664ed0e9ffc8bf7c741238d83c346535dfedf437405dc3a0ca1740f2948b7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00081-door-frame-50.xml",
+      "bytes": 1246,
+      "sha256": "27852e79ee5d26e13b8b37e7c005661a3eb3e16eaadb2e971182fe309b0074a0"
+    },
+    {
+      "path": "PublishSettings.xml",
+      "bytes": 7805,
+      "sha256": "3efd8496e4ceba4b0851ac922031b59528f5bbe0c3ead5af518ba6639b741b00"
+    }
+  ],
+  "canonicalClosureSha256": "2229bdd4b66769d7901c0598b8572b479523f21cdaf1b5b8efd1e13fcd41d1b5",
+  "oldSource": [],
+  "oldSwf": null,
+  "archive": "tools/cf6-map-runtime/native-vector/archive/canonical-predecessors/CF6_DoorExit1720/20261021T084603Z-d9764aa209",
+  "state": "native_source_installed; exact canonical CS6 compile still required",
+  "sourceManifest": null,
+  "sourceManifestSha256": null
+}

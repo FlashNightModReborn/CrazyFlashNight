@@ -1,0 +1,123 @@
+===== frame_1\DoAction.as
+var §\x01§ = 67;
+var §\x0f§ = 1;
+this.swapDepths(this._y * 100);
+AI = _root.敌人AI;
+stop();
+
+===== frame_1\PlaceObject2_278_31\CLIPACTIONRECORD onClipEvent(enterFrame).as
+onClipEvent(enterFrame){
+   var §\x01§ = 134;
+   var §\x0f§ = 1;
+   if(this.hitTest(_root.gameworld.man1.抓人探测块))
+   {
+      _parent.gotoAndStop("被抓");
+   }
+   else if(this.hitTest(_root.gameworld.man1.man.中击))
+   {
+      _parent.hp -= _root.近战中击威力;
+      _root.金钱 += _root.近战中击威力;
+      _parent.gotoAndStop("倒");
+   }
+   else if(this.hitTest(_root.gameworld.man1.man.轻击))
+   {
+      _parent.hp -= _root.近战轻击威力;
+      _root.金钱 += _root.近战轻击威力;
+      _parent.gotoAndStop("被击中");
+   }
+   else if(this.hitTest(_root.gameworld.man1.man.绝招探测))
+   {
+      _root.gameworld.man1.man.gotoAndPlay("绝招攻击");
+   }
+   else if(this.hitTest(_root.gameworld.man1.连击探测块) and Key.isDown(_root.A键))
+   {
+      _root.gameworld.man1.gotoAndStop("连击");
+   }
+   if(_parent.hp <= 0)
+   {
+      _parent.hp = 0;
+      _parent.gotoAndStop("死");
+   }
+}
+
+===== frame_1\PlaceObject2_283_35\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   攻击 = "攻1";
+}
+
+===== frame_1\PlaceObject2_403_1\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   gotoAndPlay(random(15));
+}
+
+===== frame_15\PlaceObject2_286_41\CLIPACTIONRECORD onClipEvent(enterFrame).as
+onClipEvent(enterFrame){
+   var §\x01§ = 395;
+   var §\x0f§ = 1;
+   var myPoint = {x:0,y:0};
+   this.localToGlobal(myPoint);
+   xx = myPoint.x;
+   yy = myPoint.y;
+   if(_root.gameworld.地图.hitTest(xx,yy,true))
+   {
+      _parent._y += 2 * _parent.y速度;
+   }
+}
+
+===== frame_15\PlaceObject2_286_43\CLIPACTIONRECORD onClipEvent(enterFrame).as
+onClipEvent(enterFrame){
+   var §\x01§ = 292;
+   var §\x0f§ = 1;
+   var myPoint = {x:0,y:0};
+   this.localToGlobal(myPoint);
+   xx = myPoint.x;
+   yy = myPoint.y;
+   if(_root.gameworld.地图.hitTest(xx,yy,true))
+   {
+      _parent._y -= 2 * _parent.y速度;
+   }
+}
+
+===== frame_15\PlaceObject2_404_1\CLIPACTIONRECORD onClipEvent(enterFrame).as
+onClipEvent(enterFrame){
+   var §\x01§ = 313;
+   var §\x0f§ = 1;
+   _parent.swapDepths(_parent._y * 100);
+}
+
+===== frame_50\PlaceObject2_406_1\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   var §\x01§ = 271;
+   var §\x0f§ = 1;
+   if(random(_parent.击倒率) == 0)
+   {
+      _parent.gotoAndStop("倒");
+   }
+   else
+   {
+      gotoAndPlay("a" + random(2));
+   }
+}
+
+===== frame_70\PlaceObject2_408_1\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   var §\x01§ = 426;
+   var §\x0f§ = 1;
+   firesound = new Sound();
+   firesound.attachSound("男-兽人-" + random(3));
+   firesound.start(o,1);
+}
+
+===== frame_77\PlaceObject2_476_1\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   var §\x01§ = 223;
+   var §\x0f§ = 1;
+   _root.电梯死亡敌人计数++;
+   _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
+   _root.gameworld[_parent.产生源].僵尸型敌人总个数--;
+   firesound = new Sound();
+   firesound.attachSound("jiangshideadsound" + random(6));
+   firesound.start(o,1);
+   gotoAndPlay("a" + random(3));
+}
+

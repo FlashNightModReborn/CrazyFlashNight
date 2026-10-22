@@ -1,0 +1,834 @@
+{
+  "stage": "a16",
+  "source_kind": "independent frozen SVG reuse + original native vector and embedded original excluded bitmap content",
+  "newly_redrawn_assets": [],
+  "reused_bitmap_ids": [
+    1404,
+    1405,
+    1412,
+    1588,
+    1817,
+    1821,
+    1828,
+    1842,
+    1895,
+    1897
+  ],
+  "frozen_manifest_verified": true,
+  "world_logical_dimensions": [
+    970,
+    450
+  ],
+  "root_layers": [],
+  "gameworld_placement": [
+    {
+      "matrix": [
+        1.0,
+        0,
+        0,
+        1.00006103515625,
+        0.0,
+        0.0
+      ],
+      "placedAt": 162,
+      "id": 1950,
+      "name": "gameworld"
+    }
+  ],
+  "fixed_viewports": [
+    {
+      "name": "author",
+      "viewBox": [
+        0,
+        0,
+        600,
+        350
+      ]
+    },
+    {
+      "name": "middle",
+      "viewBox": [
+        185.0,
+        50.0,
+        600,
+        350
+      ]
+    },
+    {
+      "name": "right",
+      "viewBox": [
+        370,
+        100,
+        600,
+        350
+      ]
+    }
+  ],
+  "shape_replacements": [
+    {
+      "shape": 1406,
+      "viewBox": [
+        -386.45,
+        -91.2,
+        85.0,
+        112.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1404,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-386.45,-91.2)"
+        },
+        {
+          "bitmap": 1405,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-358.45,-53.2)"
+        },
+        {
+          "bitmap": 1405,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-384.45,-53.2)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "original_bitmap_dependencies": [
+        1404,
+        1405,
+        65535
+      ]
+    },
+    {
+      "shape": 1413,
+      "viewBox": [
+        -99.05,
+        -40.6,
+        199.8,
+        117.5
+      ],
+      "replaced": [
+        {
+          "bitmap": 1412,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-31.5,-13.5)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "original_bitmap_dependencies": [
+        1412,
+        65535
+      ]
+    },
+    {
+      "shape": 1829,
+      "viewBox": [
+        -16.8,
+        -8.0,
+        31.5,
+        44.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1828,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-16.8,-8.0)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "original_bitmap_dependencies": [
+        1828
+      ]
+    },
+    {
+      "shape": 1830,
+      "viewBox": [
+        -14.05,
+        -8.0,
+        23.5,
+        44.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1828,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-45.55,-8.0)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "original_bitmap_dependencies": [
+        1828
+      ]
+    },
+    {
+      "shape": 1831,
+      "viewBox": [
+        -14.8,
+        -8.0,
+        31.5,
+        44.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1828,
+          "matrix": "matrix(-1.0,0.0,0.0,1.0,16.7,-8.0)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "original_bitmap_dependencies": [
+        1828
+      ]
+    },
+    {
+      "shape": 1896,
+      "viewBox": [
+        -57.05,
+        -46.1,
+        77.0,
+        63.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1895,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-57.05,-46.1)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "original_bitmap_dependencies": [
+        1895,
+        65535
+      ]
+    },
+    {
+      "shape": 1898,
+      "viewBox": [
+        -18.45,
+        -17.2,
+        43.0,
+        35.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1897,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-18.45,-17.2)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "original_bitmap_dependencies": [
+        1897,
+        65535
+      ]
+    },
+    {
+      "shape": 1901,
+      "viewBox": [
+        -80.0,
+        -98.0,
+        160.0,
+        196.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1588,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-80.0,-98.0)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "original_bitmap_dependencies": [
+        1588,
+        65535
+      ]
+    },
+    {
+      "shape": 1912,
+      "viewBox": [
+        9.5,
+        46.3,
+        1250.95,
+        279.95
+      ],
+      "replaced": [
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,1029.45,256.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,867.45,256.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,705.45,256.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,543.45,256.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,381.45,256.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,219.5,256.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,959.45,186.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,797.45,186.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,635.45,186.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,473.45,186.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,311.45,186.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,149.5,186.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,889.45,116.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,727.45,116.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,565.45,116.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,403.45,116.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,241.45,116.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,79.5,116.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,819.45,46.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,657.45,46.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,495.45,46.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,333.45,46.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,171.45,46.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,9.5,46.3)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "original_bitmap_dependencies": [
+        1842,
+        65535
+      ]
+    },
+    {
+      "shape": 1941,
+      "viewBox": [
+        -961.45,
+        -232.35,
+        2269.95,
+        558.6
+      ],
+      "replaced": [
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,58.5,256.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-103.5,256.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-265.5,256.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-427.5,256.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-589.5,256.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-751.45,256.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-11.5,186.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-173.5,186.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-335.5,186.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-497.5,186.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-659.5,186.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-821.45,186.25)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-81.5,116.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-243.5,116.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-405.5,116.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-567.5,116.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-729.5,116.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-891.45,116.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-151.5,46.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-313.5,46.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-475.5,46.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-637.5,46.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-799.5,46.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-961.45,46.3)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,591.5,-19.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,429.5,-19.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,267.5,-19.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,105.5,-19.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-56.5,-19.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-218.45,-19.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,521.5,-89.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,359.5,-89.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,197.5,-89.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,35.5,-89.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-126.5,-89.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-288.45,-89.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,451.5,-159.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,289.5,-159.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,127.5,-159.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-34.5,-159.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-196.5,-159.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-358.45,-159.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,381.5,-229.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,219.5,-229.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,57.5,-229.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-104.5,-229.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-266.5,-229.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-428.45,-229.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,1077.5,-19.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,915.5,-19.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,753.5,-19.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,591.5,-19.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,429.5,-19.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,267.55,-19.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,1007.5,-89.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,845.5,-89.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,683.5,-89.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,521.5,-89.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,359.5,-89.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,197.55,-89.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,937.5,-159.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,775.5,-159.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,613.5,-159.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,451.5,-159.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,289.5,-159.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,127.55,-159.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,867.5,-229.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,705.5,-229.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,543.5,-229.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,381.5,-229.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,219.5,-229.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,57.55,-229.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,106.55,-22.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-55.45,-22.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-217.45,-22.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-379.45,-22.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-541.45,-22.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-703.4,-22.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,36.55,-92.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-125.45,-92.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-287.45,-92.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-449.45,-92.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-611.45,-92.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-773.4,-92.4)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-33.45,-162.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-195.45,-162.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-357.45,-162.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-519.45,-162.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-681.45,-162.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-843.4,-162.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-103.45,-232.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-265.45,-232.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-427.45,-232.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-589.45,-232.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-751.45,-232.35)"
+        },
+        {
+          "bitmap": 1842,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-913.4,-232.35)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "original_bitmap_dependencies": [
+        1842,
+        65535
+      ]
+    },
+    {
+      "shape": 1942,
+      "viewBox": [
+        -683.45,
+        -243.25,
+        1698.5,
+        227.55
+      ],
+      "replaced": [
+        {
+          "bitmap": 1821,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-67.55,-177.7)"
+        },
+        {
+          "bitmap": 1817,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-683.45,-243.25)"
+        },
+        {
+          "bitmap": 1817,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-91.45,-243.25)"
+        },
+        {
+          "bitmap": 1817,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,415.05,-243.25)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "original_bitmap_dependencies": [
+        1817,
+        1821,
+        65535
+      ]
+    },
+    {
+      "shape": 1944,
+      "viewBox": [
+        -24.5,
+        -25.4,
+        49.0,
+        50.8
+      ],
+      "replaced": [
+        {
+          "bitmap": 1588,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-24.5,-170.6)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "original_bitmap_dependencies": [
+        1588
+      ]
+    }
+  ],
+  "original_animation_frame_counts": {
+    "1945": 1,
+    "1832": 147,
+    "1616": 1,
+    "1617": 2,
+    "1899": 6,
+    "237": 1,
+    "1906": 1,
+    "254": 189,
+    "255": 14
+  },
+  "state_samples": [
+    {
+      "sprite": 1899,
+      "total_original_frames": 6,
+      "preview_sample_frames": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "note": "Frozen SVG material reuse with unchanged original native vector, masks and original timeline. Not newly redrawn full animation."
+    }
+  ],
+  "preserved_original_bitmap_ids": [
+    239,
+    252
+  ],
+  "excluded_character_pose_roots": [
+    1948,
+    1949
+  ],
+  "static_only": true,
+  "root_layers_stretched": false,
+  "a13_cycle_frame38_equals_frame1": false
+}

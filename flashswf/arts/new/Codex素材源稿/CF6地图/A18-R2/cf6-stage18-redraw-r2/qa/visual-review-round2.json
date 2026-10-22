@@ -1,0 +1,27 @@
+{
+  "stage": 18,
+  "round": 2,
+  "actual_cold_render_visual_review": true,
+  "full_original_new_panorama_reviewed": true,
+  "all_fixed_600x350_viewports_reviewed": [
+    "author",
+    "middle",
+    "right"
+  ],
+  "state_sheets_reviewed": [
+    1442,
+    1868,
+    1976
+  ],
+  "all_original_new_state_shapes_registered": true,
+  "missing_layers_or_new_registration_errors": false,
+  "all_preview_titles_readable": true,
+  "two_round_visual_review_complete": true,
+  "residuals": [
+    "New grid edges are cleaner and more even; the original step-cut beam ends are consequently more conspicuous.",
+    "Raised wall perforations are smoother/rounder than original.",
+    "The galaxy is a sparser/softer procedural approximation; root placement and clipping are unchanged.",
+    "Frozen reused props keep the previously reviewed stylization differences."
+  ],
+  "independent_reviewer": "All panorama variants, window geometry, door timings, barrel damage/debris, reused vehicle door and excluded old drops checked independently."
+}

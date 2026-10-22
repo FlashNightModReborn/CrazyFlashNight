@@ -1,0 +1,91 @@
+{
+  "schema": "cf6-historical-budget.v1",
+  "status": "candidate-not-balanced-not-machine-playtested",
+  "bookId": "cf6-sting",
+  "routeId": "historical",
+  "startingMoney": 30000,
+  "goldPlanForAssembly": "beforeFinalMerchant",
+  "goldPlans": {
+    "requested": [
+      {"mapId":"A01","value":15000}, {"mapId":"A02","value":20000},
+      {"mapId":"A03","value":25000}, {"mapId":"A04","value":30000},
+      {"mapId":"A05","value":40000}, {"mapId":"A06","value":50000},
+      {"mapId":"A08","value":40000}, {"mapId":"A09","value":45000},
+      {"mapId":"A10","value":45000}, {"mapId":"A11","value":0},
+      {"mapId":"A12","value":50000}, {"mapId":"A13","value":60000},
+      {"mapId":"A14","value":65000}, {"mapId":"A15","value":65000},
+      {"mapId":"A16","value":0}, {"mapId":"A17","value":90000},
+      {"mapId":"A18","value":70000}, {"mapId":"A19","value":90000},
+      {"mapId":"A20","value":110000}, {"mapId":"A22","value":0}
+    ],
+    "beforeFinalMerchant": [
+      {"mapId":"A01","value":15000}, {"mapId":"A02","value":20000},
+      {"mapId":"A03","value":25000}, {"mapId":"A04","value":30000},
+      {"mapId":"A05","value":40000}, {"mapId":"A06","value":50000},
+      {"mapId":"A08","value":40000}, {"mapId":"A09","value":45000},
+      {"mapId":"A10","value":45000}, {"mapId":"A11","value":0},
+      {"mapId":"A12","value":50000}, {"mapId":"A13","value":60000},
+      {"mapId":"A14","value":65000}, {"mapId":"A15","value":65000},
+      {"mapId":"A16","value":0}, {"mapId":"A17","value":90000},
+      {"mapId":"A18","value":90000}, {"mapId":"A19","value":180000},
+      {"mapId":"A20","value":0}, {"mapId":"A22","value":0}
+    ]
+  },
+  "goldPickupContract": {
+    "name": "金币",
+    "placement": "one native Pickup at exact validated PlayerX/PlayerY on map entry; zero values emit no pickup",
+    "a07TransitionOwner": "A08 only; no A07 playable node and no second relocation grant",
+    "nominalTotal": 910000,
+    "actualCreditedAmount": "unknown until live pickup; do not treat Value as a durable money receipt",
+    "exactCurrencyOverride": false,
+    "externalReward": 0
+  },
+  "commonShopItems": ["技能点","K点","强化石","普通hp药剂","普通mp药剂","大HP药剂","大MP药剂"],
+  "merchantNodes": [
+    {"mapId":"A01","shopId":"书中-CF6毒刺-35级","title":"毒刺整备 · 初战","maxItemLevel":35,
+     "addWeapons":["M4A1科技白","M4A1战术版","AR57"]},
+    {"mapId":"A08","shopId":"书中-CF6毒刺-40级","title":"毒刺整备 · 补充火力","maxItemLevel":40,
+     "addWeapons":["DD MK18战术版","M60E3"]},
+    {"mapId":"A11","shopId":"书中-CF6毒刺-45级","title":"毒刺整备 · 进入实验区","maxItemLevel":45,
+     "addWeapons":["CAR冲锋枪","钛合金P90","AA12丧尸"]},
+    {"mapId":"A16","shopId":"书中-CF6毒刺-55级","title":"毒刺整备 · 重装迎战","maxItemLevel":55,
+     "addWeapons":["PKM战术版","HK416战术版","高斯枪","钛合金QJZ171","战术-QBU-191"]},
+    {"mapId":"A19","shopId":"书中-CF6毒刺-60级","title":"毒刺整备 · 最后补给","maxItemLevel":60,
+     "addWeapons":["RShG4","M134暴力版的PIG版"]}
+  ],
+  "shopRules": {
+    "cumulativeCatalog": true,
+    "includeExactAmmoForEveryStockedGun": true,
+    "prices": "live data/items price; no price override",
+    "baselineEloquenceLevel": 0,
+    "baselineSmithLevel": 0,
+    "initialEquipmentSwap": "existing same-use convert operation exchanges enhancement levels; one initial long gun #11 remains one transferable #11, never duplicated",
+    "freeSourcesCountedAsCash": false,
+    "guaranteedSaleIncome": 0,
+    "freeChoicePools": 5,
+    "externalSPGoldK": 0
+  },
+  "shoppingRoute": [
+    {"mapId":"A01","purchaseWeapon":null,"ammoWeapon":"M4A1战术版","ammoPacks":24,"largeHP":6,"largeMP":4,"secondaryEnhancementTarget":5},
+    {"mapId":"A08","purchaseWeapon":"DD MK18战术版","ammoWeapon":"DD MK18战术版","ammoPacks":24,"largeHP":6,"largeMP":4,"secondaryEnhancementTarget":5},
+    {"mapId":"A11","purchaseWeapon":"CAR冲锋枪","ammoWeapon":"CAR冲锋枪","ammoPacks":24,"largeHP":6,"largeMP":4,"secondaryEnhancementTarget":5},
+    {"mapId":"A16","purchaseWeapon":"PKM战术版","ammoWeapon":"PKM战术版","ammoPacks":12,"largeHP":8,"largeMP":4,"secondaryEnhancementTarget":5},
+    {"mapId":"A19","purchaseWeapon":"M134暴力版的PIG版","ammoWeapon":"M134暴力版的PIG版","ammoPacks":4,"largeHP":10,"largeMP":4,"secondaryEnhancementTarget":5}
+  ],
+  "stressPurchases": [
+    {"mapId":"A08","weapon":"M60E3","ammoPacks":12,"largeHP":6,"largeMP":4,"secondaryEnhancementTarget":5},
+    {"mapId":"A11","weapon":"AA12丧尸","ammoPacks":24,"largeHP":6,"largeMP":4,"secondaryEnhancementTarget":5},
+    {"mapId":"A16","weapon":"钛合金QJZ171","ammoPacks":12,"largeHP":8,"largeMP":4,"secondaryEnhancementTarget":5},
+    {"mapId":"A16","weapon":"高斯枪","ammoPacks":6,"largeHP":8,"largeMP":4,"secondaryEnhancementTarget":5},
+    {"mapId":"A19","weapon":"RShG4","ammoPacks":12,"largeHP":10,"largeMP":4,"secondaryEnhancementTarget":5}
+  ],
+  "modelBoundaries": [
+    "This is a static nominal-cash affordability model, not survival or weapon balance acceptance.",
+    "No sales, elite guns, random guns, free choice contents or free ammunition are counted as guaranteed cash or deducted twice.",
+    "The route buys one alternative primary at later merchants; the initial #11 long gun is already usable, so the first merchant prioritizes supplies.",
+    "Each node's 1-to-5 stone purchase is a bounded optional secondary-weapon reserve, not mandatory re-enhancement of the transferred primary.",
+    "Ammo equivalents use unmodified XML magazine capacity; tactical recovery, plugins, chamber/overload rewards and starting loaded rounds are not credited.",
+    "Actual drug effectiveness, damage intake, purchases, pickup corrections and final balances need isolated real-game observation.",
+    "61-line growth, armor construction and currency budgets remain out of scope."
+  ]
+}

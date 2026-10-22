@@ -1,0 +1,241 @@
+{
+  "schema": "cf6-native-layer-input.v1",
+  "map": "A11",
+  "layer": "background",
+  "name": "CF6_A11_BG_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/parts/environment-a11-backdrop.svg",
+  "sourceSha256": "8b3152d2f0c0cf169cc0934f1cd984fdc22758fbaff9815cec4f5f038ab40671",
+  "inputIndex": "tools/cf6-map-source/generated/map-input.json",
+  "inputIndexSha256": "056c50dd321debee3545d2988b891d140b07cfec864b5d461bd062e44d29ba95",
+  "extraction": "decode existing PNG/JPEG data URI bytes only; no image rasterization or modification",
+  "inputs": [
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-7306457526928ec9a3ea3e4a.png",
+      "sha256": "7306457526928ec9a3ea3e4a277055695f4e7a9d9503caea98c81e672f77b486",
+      "bytes": 2466576,
+      "pixels": [
+        2400,
+        900
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-d453200c45c400bc8c656872.png",
+      "sha256": "d453200c45c400bc8c656872a4c31867ba711dacd8683cb5eb6e8daae4aca82e",
+      "bytes": 128795,
+      "pixels": [
+        693,
+        210
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-3836de63b32bea5064149496.png",
+      "sha256": "3836de63b32bea50641494963bf74228b0efccfb3510c25fa1f34f028abf4349",
+      "bytes": 387395,
+      "pixels": [
+        532,
+        648
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sha256": "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6",
+      "bytes": 16955,
+      "pixels": [
+        189,
+        81
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-9edb117c5bad8a9942697b57.png",
+      "sha256": "9edb117c5bad8a9942697b57084f212bccb36817751a72a4fd4cdf2eb1dcb771",
+      "bytes": 70586,
+      "pixels": [
+        340,
+        200
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-fdcdcdef41face8ac7bd71ba.png",
+      "sha256": "fdcdcdef41face8ac7bd71ba8568bf555de5ff6a347fecdfc278cfc0dc45cf14",
+      "bytes": 171562,
+      "pixels": [
+        228,
+        684
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-51b11bf2ce2d5077dbc21848.png",
+      "sha256": "51b11bf2ce2d5077dbc21848e193ce3b4cf3dfd0baef026450a5b4ac3a8a706d",
+      "bytes": 975,
+      "pixels": [
+        52,
+        89
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-9579f1a200075776adefc639.png",
+      "sha256": "9579f1a200075776adefc6392f822ccb8895d2e9a444d91e824d09a246fad1aa",
+      "bytes": 50223,
+      "pixels": [
+        156,
+        267
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-21bf95049e7f77ed8869f22c.png",
+      "sha256": "21bf95049e7f77ed8869f22c8045e16f92b07472aa62ecd3c7de8cf9f96438e9",
+      "bytes": 272112,
+      "pixels": [
+        472,
+        536
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-9b9c1497bee995524be11b65.png",
+      "sha256": "9b9c1497bee995524be11b656d22eecd130b624c975fd1fab2e4a228b9cbc812",
+      "bytes": 10238,
+      "pixels": [
+        68,
+        63
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-785e044604178bfb67bed99b.png",
+      "sha256": "785e044604178bfb67bed99bbd99b08422b2f32eae94dbb8ba8e7d58b7f8d4b1",
+      "bytes": 117770,
+      "pixels": [
+        296,
+        364
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-b2fb7d7f5070acd7093c768b.png",
+      "sha256": "b2fb7d7f5070acd7093c768bcfce1b7c18cfe557ab3b085d44cfbdc74e10a6d3",
+      "bytes": 2086610,
+      "pixels": [
+        1440,
+        1359
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-f73320ef971862e5120db0e9.png",
+      "sha256": "f73320ef971862e5120db0e914d1e91bff1088246daef3f3953fbe2d2666e26a",
+      "bytes": 18459,
+      "pixels": [
+        114,
+        156
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-83614aa0c319c35d1bff6907.png",
+      "sha256": "83614aa0c319c35d1bff6907fdc28fa0a733c547d00f5da444ed686b7d62528b",
+      "bytes": 1790518,
+      "pixels": [
+        1440,
+        1164
+      ]
+    }
+  ],
+  "textures": {
+    "7306457526928ec9a3ea3e4a277055695f4e7a9d9503caea98c81e672f77b486": {
+      "name": "intrinsic-7306457526928ec9a3ea3e4a.png",
+      "pixels": [
+        2400,
+        900
+      ]
+    },
+    "d453200c45c400bc8c656872a4c31867ba711dacd8683cb5eb6e8daae4aca82e": {
+      "name": "intrinsic-d453200c45c400bc8c656872.png",
+      "pixels": [
+        693,
+        210
+      ]
+    },
+    "3836de63b32bea50641494963bf74228b0efccfb3510c25fa1f34f028abf4349": {
+      "name": "intrinsic-3836de63b32bea5064149496.png",
+      "pixels": [
+        532,
+        648
+      ]
+    },
+    "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6": {
+      "name": "intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "pixels": [
+        189,
+        81
+      ]
+    },
+    "9edb117c5bad8a9942697b57084f212bccb36817751a72a4fd4cdf2eb1dcb771": {
+      "name": "intrinsic-9edb117c5bad8a9942697b57.png",
+      "pixels": [
+        340,
+        200
+      ]
+    },
+    "fdcdcdef41face8ac7bd71ba8568bf555de5ff6a347fecdfc278cfc0dc45cf14": {
+      "name": "intrinsic-fdcdcdef41face8ac7bd71ba.png",
+      "pixels": [
+        228,
+        684
+      ]
+    },
+    "51b11bf2ce2d5077dbc21848e193ce3b4cf3dfd0baef026450a5b4ac3a8a706d": {
+      "name": "intrinsic-51b11bf2ce2d5077dbc21848.png",
+      "pixels": [
+        52,
+        89
+      ]
+    },
+    "9579f1a200075776adefc6392f822ccb8895d2e9a444d91e824d09a246fad1aa": {
+      "name": "intrinsic-9579f1a200075776adefc639.png",
+      "pixels": [
+        156,
+        267
+      ]
+    },
+    "21bf95049e7f77ed8869f22c8045e16f92b07472aa62ecd3c7de8cf9f96438e9": {
+      "name": "intrinsic-21bf95049e7f77ed8869f22c.png",
+      "pixels": [
+        472,
+        536
+      ]
+    },
+    "9b9c1497bee995524be11b656d22eecd130b624c975fd1fab2e4a228b9cbc812": {
+      "name": "intrinsic-9b9c1497bee995524be11b65.png",
+      "pixels": [
+        68,
+        63
+      ]
+    },
+    "785e044604178bfb67bed99bbd99b08422b2f32eae94dbb8ba8e7d58b7f8d4b1": {
+      "name": "intrinsic-785e044604178bfb67bed99b.png",
+      "pixels": [
+        296,
+        364
+      ]
+    },
+    "b2fb7d7f5070acd7093c768bcfce1b7c18cfe557ab3b085d44cfbdc74e10a6d3": {
+      "name": "intrinsic-b2fb7d7f5070acd7093c768b.png",
+      "pixels": [
+        1440,
+        1359
+      ]
+    },
+    "f73320ef971862e5120db0e914d1e91bff1088246daef3f3953fbe2d2666e26a": {
+      "name": "intrinsic-f73320ef971862e5120db0e9.png",
+      "pixels": [
+        114,
+        156
+      ]
+    },
+    "83614aa0c319c35d1bff6907fdc28fa0a733c547d00f5da444ed686b7d62528b": {
+      "name": "intrinsic-83614aa0c319c35d1bff6907.png",
+      "pixels": [
+        1440,
+        1164
+      ]
+    }
+  },
+  "xfl": "flashswf/backgrounds/cf6/CF6_A11_BG_VectorCandidate01/CF6_A11_BG_VectorCandidate01.xfl",
+  "swf": "CF6_A11_BG_VectorCandidate01.swf"
+}

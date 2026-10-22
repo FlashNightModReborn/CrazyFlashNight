@@ -1,0 +1,35 @@
+{
+  "schema": "cf6-native-sky-input.v1",
+  "map": "A06",
+  "layer": "sky",
+  "name": "CF6_A06_sky_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A06-R2/cf6-stage6-redraw-r2/parts/bitmap-1753.svg",
+  "sourceSha256": "de4b6be9d07f765523ce0f98c55f66db3553cb626cc9ed1417217b28b18075fd",
+  "extraction": "original embedded PNG bytes only; no rasterization",
+  "inputs": [
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-e450b02cede956a1aae6efd0.png",
+      "sha256": "e450b02cede956a1aae6efd008b46791ab50297111b1cd84e83a68db28583d31",
+      "bytes": 249616,
+      "pixels": [
+        2400,
+        561
+      ]
+    }
+  ],
+  "textures": {
+    "e450b02cede956a1aae6efd008b46791ab50297111b1cd84e83a68db28583d31": {
+      "name": "intrinsic-e450b02cede956a1aae6efd0.png",
+      "pixels": [
+        2400,
+        561
+      ]
+    }
+  },
+  "xfl": "flashswf/backgrounds/cf6/CF6_A06_sky_VectorCandidate01/CF6_A06_sky_VectorCandidate01.xfl",
+  "swf": "CF6_A06_sky_VectorCandidate01.swf",
+  "size": [
+    800,
+    187
+  ]
+}

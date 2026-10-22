@@ -1,0 +1,29 @@
+{
+  "stage": 18,
+  "round": 1,
+  "reviewed_full_original_new_panorama": true,
+  "reviewed_all_600x350_original_new_views": [
+    "author",
+    "middle",
+    "right"
+  ],
+  "view_layout_and_depth_match_original": true,
+  "root_layer_stretched": false,
+  "new_missing_layer_or_registration_issue": false,
+  "external_svg_references": [],
+  "svg_files_checked": 35,
+  "residuals": [
+    "New grid edges are cleaner and more even; the original step-cut beam ends are consequently more conspicuous.",
+    "Raised wall perforations are smoother/rounder than original.",
+    "The galaxy is a sparser/softer procedural approximation; root placement and clipping are unchanged.",
+    "Frozen reused props keep the previously reviewed stylization differences."
+  ],
+  "state_reviewed_sprites": [
+    1442,
+    1868,
+    1976
+  ],
+  "state_review_pending": false,
+  "two_round_visual_review_complete": false,
+  "provenance": "Actual visual inspection of rendered original/new panorama, three fixed windows, and listed state sheets. Independent reviewer also checked all four panorama variants and fixed viewports."
+}
