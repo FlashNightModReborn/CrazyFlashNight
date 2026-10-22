@@ -2,15 +2,23 @@
   "schema": "cf6-manman.native-import.v1",
   "owner": "flashswf/arts/new/Codex蛮蛮素材",
   "approvedInput": "flashswf/arts/new/Codex素材源稿/CF6蛮蛮-R2",
-  "nativeSymbolCount": 106,
+  "nativeSymbolCount": 110,
   "buildInputs": [
     {
       "path": "tools/cf6-manman-assets/build.py",
-      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+      "sha256": "868001fe8a0b67b0c642455e51c0e5c19ff90df2b811904b028c22b9c90f2c68"
     },
     {
       "path": "tools/cf6-manman-assets/ManmanAI.as",
-      "sha256": "dfe70a8e7f4652e13a76e99ce34c5678c9a9db02145c593839fec25f4dd9d1a5"
+      "sha256": "20cd32e6b902cb3ad4953035732149405e01442d76f7e4d1e3b3e47542d9ba4d"
+    },
+    {
+      "path": "tools/cf6-manman-assets/wolf_leap.py",
+      "sha256": "0bc1ae2ee880a744972f9fc9b87855b9a019337b41e44554abb5c54511bbb8cf"
+    },
+    {
+      "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-狼跳.xml",
+      "sha256": "0f3fff7455eb1f8f8f6142451960d30da6ae8bb52fb248a827402178fd73a0aa"
     },
     {
       "path": "tools/cf6-zombie-assets/build.py",
@@ -512,14 +520,34 @@
       "bytes": 183736
     },
     {
+      "path": "LIBRARY/Codex/蛮蛮/动作/狼跳.xml",
+      "sha256": "5ce87ca924c8d045833b21f558c3f3e234c901fa479d9a1b63d33c6c9daaa4d5",
+      "bytes": 27136
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/动作/狼跳挥斧骨架.xml",
+      "sha256": "da02dde6332ea2e447c443dcd4e84b1f63b6507cff76871035661164d3298a9f",
+      "bytes": 352612
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/动作/狼跳落地判定.xml",
+      "sha256": "3326575bd8230cda8b18467b00bd954020beaa1d268f0e64191acbff28fdea52",
+      "bytes": 1065
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/动作/狼跳落地判定/area.xml",
+      "sha256": "6e0e371dfd5244851bbe50b61de2cbc2213f1d7519b5e6bf54c6367d463774f1",
+      "bytes": 988
+    },
+    {
       "path": "LIBRARY/Codex/蛮蛮/动作/血腥死.xml",
       "sha256": "b49910e1ed7de2f071d78154540e0ca07656a71aa5a4fecaf68d4e63eee5b505",
       "bytes": 106032
     },
     {
       "path": "LIBRARY/Codex/蛮蛮/敌人-CF6蛮蛮.xml",
-      "sha256": "fa3a5ba4b3b7b7a424383d7d95068fe28e9a129dc84ee9ec8623eca2740512c3",
-      "bytes": 28980
+      "sha256": "c26f94f83feec0cffb1e041aa7ee388a245e768c581dd0c94d8022ead65bad6d",
+      "bytes": 36636
     },
     {
       "path": "LIBRARY/Codex/蛮蛮/死亡血肉/660.xml",
@@ -690,8 +718,8 @@
   "projectFiles": [
     {
       "path": "DOMDocument.xml",
-      "sha256": "385033fd68503424185fb2cc8b361a6dbb7578b302ff03bc2e9b86415372bd7b",
-      "bytes": 12651
+      "sha256": "bc4874b1d15f453b14be2df42c16ad3e6229e7045d9a11b6cd6f2162445341c0",
+      "bytes": 13194
     },
     {
       "path": "Codex蛮蛮素材.xfl",

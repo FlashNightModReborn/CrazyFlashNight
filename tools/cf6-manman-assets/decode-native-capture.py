@@ -42,7 +42,9 @@ def main():
             completed.add(name)
     legacy = {'stand', 'cleave-impact', 'death-late'}
     current = legacy | {'death-start', 'death-transition'}
-    if completed not in (legacy, current) or set(captures) != completed:
+    wolf = current | {'wolf-windup', 'wolf-flight', 'wolf-impact', 'wolf-recovery', 'wolf-left'}
+    motion = {'wolf-motion-right','wolf-motion-left'}
+    if completed not in (legacy, current, wolf, motion) or set(captures) != completed:
         raise ValueError('Expected a complete legacy or fixed-scale stand/impact/death capture set')
     args.output.mkdir(parents=True, exist_ok=True)
     for name, item in captures.items():

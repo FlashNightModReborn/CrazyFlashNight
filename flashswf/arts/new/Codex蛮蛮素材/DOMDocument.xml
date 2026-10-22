@@ -6,6 +6,7 @@
     <DOMFolderItem name="Codex/蛮蛮/CF7" itemID="6af20000-312a4cdd"/>
     <DOMFolderItem name="Codex/蛮蛮/分件" itemID="6af20000-f29754be"/>
     <DOMFolderItem name="Codex/蛮蛮/动作" itemID="6af20000-bfb01eb7"/>
+    <DOMFolderItem name="Codex/蛮蛮/动作/狼跳落地判定" itemID="6af20000-068a718c"/>
     <DOMFolderItem name="Codex/蛮蛮/死亡血肉" itemID="6af20000-56c2232b"/>
   </folders>
   <symbols>
@@ -80,6 +81,10 @@
     <Include href="Codex/蛮蛮/分件/646-遮罩3.xml" itemID="6af00000-0cfa3031" loadImmediate="false"/>
     <Include href="Codex/蛮蛮/分件/646-遮罩4.xml" itemID="6af00000-39952ffa" loadImmediate="false"/>
     <Include href="Codex/蛮蛮/分件/646-遮罩5.xml" itemID="6af00000-50b50600" loadImmediate="false"/>
+    <Include href="Codex/蛮蛮/动作/狼跳.xml" itemID="6af00000-8b772904" loadImmediate="false"/>
+    <Include href="Codex/蛮蛮/动作/狼跳挥斧骨架.xml" itemID="6af00000-02dd5771" loadImmediate="false"/>
+    <Include href="Codex/蛮蛮/动作/狼跳落地判定.xml" itemID="6af00000-068a718c" loadImmediate="false"/>
+    <Include href="Codex/蛮蛮/动作/狼跳落地判定/area.xml" itemID="6af00000-eecbcd3e" loadImmediate="false"/>
     <Include href="Codex/蛮蛮/动作/血腥死.xml" itemID="6af00000-0c111d03" loadImmediate="false"/>
     <Include href="Codex/蛮蛮/敌人-CF6蛮蛮.xml" itemID="6af00000-b50a05e6" loadImmediate="false"/>
     <Include href="Codex/蛮蛮/死亡血肉/660.xml" itemID="6af00000-b38e97ef" loadImmediate="false"/>
