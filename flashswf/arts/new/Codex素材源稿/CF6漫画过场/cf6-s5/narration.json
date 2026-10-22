@@ -1,0 +1,16 @@
+{
+ "streamHead": {
+  "tag": "SoundStreamHead",
+  "playbackRate": 22050,
+  "playback16bit": true,
+  "playbackStereo": true,
+  "format": "mp3",
+  "streamRate": 11025,
+  "stream16bit": true,
+  "streamStereo": false,
+  "latencySeek": 367
+ },
+ "streamBlocks": 1531,
+ "rawConcatSha256": "5c00e8c8cb930d49333fc2c9f2a670523bcfd8e9982fb52b58b382cedfdce57a",
+ "note": "raw bin = SoundStreamBlock bodies concatenated byte-exact; mp3 = per-block 4-byte SI16 headers stripped per SWF spec (payload unchanged)"
+}

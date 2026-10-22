@@ -1,0 +1,91 @@
+{
+  "stage": 22,
+  "final_source_and_reference_equal_executed_cold_inputs": true,
+  "input_files": [
+    {
+      "file": "source/rebuild.py",
+      "sha256": "56b11f8e8c6c23fb7545ddb607c79e856d2aa9a0f1e2cb38f7e77666f13dd944",
+      "cold_sha256": "56b11f8e8c6c23fb7545ddb607c79e856d2aa9a0f1e2cb38f7e77666f13dd944",
+      "equal": true
+    },
+    {
+      "file": "source/svg_native.py",
+      "sha256": "2dd90570ac1303eeceb415b8bf9fabe080ed084cfffb730869c8de0a05dc56ea",
+      "cold_sha256": "2dd90570ac1303eeceb415b8bf9fabe080ed084cfffb730869c8de0a05dc56ea",
+      "equal": true
+    },
+    {
+      "file": "reference/environment-original-nodes.json",
+      "sha256": "ca83a06adbd5de8673eb454fff6a6e929ea5d7584d24cf2ad75f7a9f94782d28",
+      "cold_sha256": "ca83a06adbd5de8673eb454fff6a6e929ea5d7584d24cf2ad75f7a9f94782d28",
+      "equal": true
+    },
+    {
+      "file": "reference/environment-shape-details.json",
+      "sha256": "768d8ec33f7e2d56a4e0969e4d71d36c7002012ed7a47f99a59594e0048eff46",
+      "cold_sha256": "768d8ec33f7e2d56a4e0969e4d71d36c7002012ed7a47f99a59594e0048eff46",
+      "equal": true
+    },
+    {
+      "file": "reference/frozen-asset-manifest.json",
+      "sha256": "6ad01a15d5631ce21bde8a1b3c757adf2989f6d185073d04c862eaf3f79d6da4",
+      "cold_sha256": "6ad01a15d5631ce21bde8a1b3c757adf2989f6d185073d04c862eaf3f79d6da4",
+      "equal": true
+    },
+    {
+      "file": "reference/layout-inventory.json",
+      "sha256": "b9b7f7f7d84c39d690d4982891d8132e2366fce782608a42dfe20a2a3ed58ce5",
+      "cold_sha256": "b9b7f7f7d84c39d690d4982891d8132e2366fce782608a42dfe20a2a3ed58ce5",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1231.svg",
+      "sha256": "09296dcd1801a173f75730766840dbfb5a604b1203177db85f5d242d5ed47946",
+      "cold_sha256": "09296dcd1801a173f75730766840dbfb5a604b1203177db85f5d242d5ed47946",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1412.svg",
+      "sha256": "6c2a31a6c077835561f70808838d468b75cff4baecab35984dc45fafae4a7f87",
+      "cold_sha256": "6c2a31a6c077835561f70808838d468b75cff4baecab35984dc45fafae4a7f87",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1821.svg",
+      "sha256": "bf2ada232b8f8d27f1ee88c2afdcf1c35eb83eabcc089fecaee3e3850aae3048",
+      "cold_sha256": "bf2ada232b8f8d27f1ee88c2afdcf1c35eb83eabcc089fecaee3e3850aae3048",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1848.svg",
+      "sha256": "5a7143a55652c7983366009706ab152f2ba7ff48bd3f6447b385a25ff13dc526",
+      "cold_sha256": "5a7143a55652c7983366009706ab152f2ba7ff48bd3f6447b385a25ff13dc526",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1957.svg",
+      "sha256": "03130cdd1adff4eb15f79143b6899d60960211ce761b72f6ef33a112c3a4fba9",
+      "cold_sha256": "03130cdd1adff4eb15f79143b6899d60960211ce761b72f6ef33a112c3a4fba9",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1958.svg",
+      "sha256": "148a9d7c087a4127cf1e30e1fc3fe385d3f4ce20f870f288611e535f6d04dcd1",
+      "cold_sha256": "148a9d7c087a4127cf1e30e1fc3fe385d3f4ce20f870f288611e535f6d04dcd1",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/bitmap-1962.svg",
+      "sha256": "b052379b381f4a196c67f6acaf84c3b5f7a7a7b0fa07963d1091999ea5491fd9",
+      "cold_sha256": "b052379b381f4a196c67f6acaf84c3b5f7a7a7b0fa07963d1091999ea5491fd9",
+      "equal": true
+    },
+    {
+      "file": "reference/reused/shape-1410.svg",
+      "sha256": "a9579788c2dbfa34c8f9eb042d72fddfb3d15516c9780be5ba37c91c74b0f533",
+      "cold_sha256": "a9579788c2dbfa34c8f9eb042d72fddfb3d15516c9780be5ba37c91c74b0f533",
+      "equal": true
+    }
+  ],
+  "packaging_note": "Final source ZIP adds completed QA records; code and reference inputs equal the /tmp cold execution. The earlier source_zip_sha256 in cold-rebuild.json identifies its pre-report candidate ZIP."
+}

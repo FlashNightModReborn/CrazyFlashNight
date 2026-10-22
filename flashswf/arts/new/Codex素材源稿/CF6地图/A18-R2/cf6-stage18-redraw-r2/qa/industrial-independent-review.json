@@ -1,0 +1,24 @@
+{
+  "reviewer": "independent batch material reviewer",
+  "status": "accepted_for_assembly_candidate",
+  "date": "2026-10-15",
+  "reviewed": [
+    "seven-material contact sheet",
+    "latest 1231 large comparison",
+    "1957 large comparison",
+    "1965 large comparison",
+    "native alpha/cold source evidence"
+  ],
+  "findings": [
+    "1231 recessed channel no longer reads as a bright cylindrical tube; panel joints and double hole columns correspond to original.",
+    "1957 diagonal structural strip and lattice perspective directions are retained; recessed depth remains readable.",
+    "All small sign types are present and correspond to original.",
+    "No structural defect requiring rework found."
+  ],
+  "residuals": [
+    "1231 hole lips are more regular and brighter; cavity layer detail is simplified versus original.",
+    "1957 lattice is cleaner than original.",
+    "1958 cloud pattern is more even."
+  ],
+  "guidance": "Record stylistic residuals for user evaluation; do not add more random noise. Keep final source and cold-build hashes synchronized."
+}

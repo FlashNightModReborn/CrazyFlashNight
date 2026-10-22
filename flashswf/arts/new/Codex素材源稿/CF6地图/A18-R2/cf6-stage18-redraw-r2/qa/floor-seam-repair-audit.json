@@ -1,0 +1,202 @@
+[
+  {
+    "stage": 18,
+    "shape": 1959,
+    "bitmap": 1957,
+    "rephasedFillIndices": [
+      12,
+      14,
+      16,
+      18,
+      20,
+      22,
+      24,
+      26,
+      28,
+      30,
+      32,
+      34,
+      36,
+      38,
+      40,
+      42
+    ],
+    "phaseOrigin": [
+      -674.0,
+      -44.0
+    ],
+    "canvas": [
+      207,
+      128
+    ],
+    "latticeVectors": [
+      [
+        207,
+        0
+      ],
+      [
+        -28,
+        128
+      ]
+    ],
+    "geometryCorrections": [
+      {
+        "fillIndex": 16,
+        "change": "top y -43 to -44; bottom unchanged",
+        "maxDisplacementPx": 1,
+        "reason": "isolated source 1px cross-rail step"
+      }
+    ],
+    "originalFloorCoverageUnion": true,
+    "nonFloorClipsAndContentUnchanged": true,
+    "worldAndTimelineUnchanged": true,
+    "method": "single periodic phase inside exact floor-polygon union; interior clip cracks removed"
+  },
+  {
+    "stage": 19,
+    "shape": 1978,
+    "bitmap": 1957,
+    "rephasedFillIndices": [
+      12,
+      14,
+      16,
+      18,
+      20,
+      22,
+      24,
+      26,
+      27,
+      29,
+      31,
+      33,
+      35,
+      37,
+      39
+    ],
+    "phaseOrigin": [
+      -674.0,
+      -44.0
+    ],
+    "canvas": [
+      207,
+      128
+    ],
+    "latticeVectors": [
+      [
+        207,
+        0
+      ],
+      [
+        -28,
+        128
+      ]
+    ],
+    "geometryCorrections": [],
+    "originalFloorCoverageUnion": true,
+    "nonFloorClipsAndContentUnchanged": true,
+    "worldAndTimelineUnchanged": true,
+    "method": "single periodic phase inside exact floor-polygon union; interior clip cracks removed"
+  },
+  {
+    "stage": 20,
+    "shape": 1986,
+    "bitmap": 1957,
+    "rephasedFillIndices": [
+      2,
+      4,
+      6,
+      8,
+      10,
+      12,
+      19,
+      21,
+      23,
+      25,
+      27,
+      29,
+      31,
+      33,
+      34,
+      36,
+      38,
+      40,
+      42,
+      44,
+      46
+    ],
+    "phaseOrigin": [
+      -700.9,
+      -49.0
+    ],
+    "canvas": [
+      207,
+      128
+    ],
+    "latticeVectors": [
+      [
+        207,
+        0
+      ],
+      [
+        -28,
+        128
+      ]
+    ],
+    "geometryCorrections": [],
+    "originalFloorCoverageUnion": true,
+    "nonFloorClipsAndContentUnchanged": true,
+    "worldAndTimelineUnchanged": true,
+    "method": "single periodic phase inside exact floor-polygon union; interior clip cracks removed"
+  },
+  {
+    "stage": 22,
+    "shape": 1986,
+    "bitmap": 1957,
+    "rephasedFillIndices": [
+      2,
+      4,
+      6,
+      8,
+      10,
+      12,
+      19,
+      21,
+      23,
+      25,
+      27,
+      29,
+      31,
+      33,
+      34,
+      36,
+      38,
+      40,
+      42,
+      44,
+      46
+    ],
+    "phaseOrigin": [
+      -700.9,
+      -49.0
+    ],
+    "canvas": [
+      207,
+      128
+    ],
+    "latticeVectors": [
+      [
+        207,
+        0
+      ],
+      [
+        -28,
+        128
+      ]
+    ],
+    "geometryCorrections": [],
+    "originalFloorCoverageUnion": true,
+    "nonFloorClipsAndContentUnchanged": true,
+    "worldAndTimelineUnchanged": true,
+    "method": "single periodic phase inside exact floor-polygon union; interior clip cracks removed"
+  }
+]
