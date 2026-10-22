@@ -104,6 +104,7 @@ def integrate(candidate, check_only=False):
              "integratorSha256":sha(Path(__file__)),"encoding":"webp-lossless-pixel-verified","width":644,"height":276,
              "imageBytes":sum(entry["bytes"] for entry in entries),"stages":entries}
     outputs["manifest.json"]=(json.dumps(runtime,ensure_ascii=False,indent=2)+"\n").encode("utf-8")
+    outputs[".gitattributes"]=b".gitattributes text eol=lf\nmanifest.json text eol=lf\n*.webp -text\n"
     original=REGISTRY.read_bytes();patched=bind_banners(original,entries)
     unexpected={p.name for p in DESTINATION.iterdir()}-set(outputs) if DESTINATION.exists() else set()
     if unexpected:raise ValueError("Unmanaged files in the HD delivery directory: "+", ".join(sorted(unexpected)))

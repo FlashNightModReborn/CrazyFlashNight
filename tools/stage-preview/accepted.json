@@ -4,8 +4,8 @@
   "date": "2026-10-22",
   "statement": "用户验收通过该批缩略图，并授权接入选关界面及仅提交推送本次相关改动。",
   "candidateManifestSha256": "ff08949611a951e1aeaebcff68e13d2cb7ef461efb40fe3719ac60bee6c6b182",
-  "sourceConfigSha256": "e4a4dcdb21b24b6257f4eacf5cd17f7442c5079fe074249ac98dad90052bacf4",
-  "generatorSha256": "b2f8022c1bfefbf16e1994ed14c0a1d02a98e803315136f4f5fe4fc86eb15f32",
+  "sourceConfigSha256": "197ab47c9a781d129f1c4e9227ae8549186bbaabfdfb6730d07445db06b29d51",
+  "generatorSha256": "22cb17dda22b092f64ddeb7b0a397cc3864194d33c8013b9dbeec123379d3668",
   "stages": [
     {
       "id": "stage_0_0",
@@ -502,5 +502,11 @@
       "pngSha256": "a548adda736d00955590cfb4950a6528733d4f3aab695bfe71f4324c224a2410",
       "rgbSha256": "7d92768ea8efabf6bca884a323a2c2366b47f015aa85bc909de5e7373f63c26d"
     }
-  ]
+  ],
+  "sourceByteNormalization": {
+    "date": "2026-10-22",
+    "change": "CRLF to LF only; all 99 rebuilt PNG file hashes remain identical to the human-accepted candidate.",
+    "acceptedSourceConfigSha256": "e4a4dcdb21b24b6257f4eacf5cd17f7442c5079fe074249ac98dad90052bacf4",
+    "acceptedGeneratorSha256": "b2f8022c1bfefbf16e1994ed14c0a1d02a98e803315136f4f5fe4fc86eb15f32"
+  }
 }

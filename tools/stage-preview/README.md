@@ -49,6 +49,8 @@ node tools/stage-preview/review-server.js tmp/stage-preview-candidate
 
 原生导出缓存可以丢失后重建；冻结底稿与配方必须保留。来源摘要或导出像素不符时应停止并审查变化，不改摘要掩盖漂移。`prepare.py` 的独立运行日志保存在缓存 `.runs/` 中。
 
+本目录的源文本与验收记录固定为 UTF-8、LF，运行资源 manifest 也固定 LF；局部 `.gitattributes` 保证 Git 在 Windows 检出时不把摘要输入转换成 CRLF。编辑配方或生成持久元数据时保持该行尾，PNG／WebP 按二进制处理。首批验收记录保留行尾归一化前的来源摘要，并以重新生成的相同 PNG 绑定规范化后的源身份。
+
 `verify-negative.py` 在新的临时副本中分别注入漏关、清单主体错配、冻结图像素变化与近似重复构图，确认检查器会拒绝；原候选保持不变，反例及报告保留在 `tmp/stage-preview-negative/`。
 
 ## 接入已验收选图
