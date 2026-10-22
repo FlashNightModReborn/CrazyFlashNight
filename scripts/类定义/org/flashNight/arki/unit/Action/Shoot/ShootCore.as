@@ -60,7 +60,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
     /** 半自动锁属性名前缀，拼接 taskName 后存储在 core 上 */
     private static var SEMI_LOCK_PREFIX:String = "_semiLock_";
 
-    /** 半自动射速间隔锁（key: "单位名_任务名" → true），由 EnhancedCooldownWheel 定时清除，帧同步 */
+    /** 射速锁（单位名/通道 → 独立回调身份）；换弹只停调度，不删除尚未结束的射速预算。 */
     public static var _lastShotTimes:Object = {};
 
     /** 半自动按键释放标记属性名前缀，存储在 core 上，用于枪械师技能判断点按/连按 */
@@ -351,6 +351,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             // 射击成功时设置后摇状态
             if (core[shootStateName]) {
                 ShootCore.setLaneRecoil(core, config.taskName, true);
+                var semi:Boolean = core.攻击模式 == "双枪"
+                    ? man[params.prefix == "2" ? "副手是否单发" : "主手是否单发"] : man.是否单发;
+                if (!semi || TargetCacheManager.findHero() !== core) {
+                    ShootCore.armRateLimit(core, config.taskName, shootSpeed);
+                }
             }
 
             // 更新弹匣剩余子弹数量
@@ -548,11 +553,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         // 半自动射速间隔防御：即使 core 重建导致锁标记丢失，轮定时器仍可保障最小间隔
         // 仅对玩家控制的单位启用半自动逻辑，AI 统一走全自动分支
         var isSemiAuto:Boolean = protagonist.是否单发 && (TargetCacheManager.findHero() === core);
-        var rateKey:String = null;
-        if (isSemiAuto) {
-            rateKey = core._name + "_" + params.taskName;
-            if (_lastShotTimes[rateKey]) return;
-        }
+        var rateKey:String = core._name + "_" + params.taskName;
+        if (_lastShotTimes[rateKey]) return;
 
         // 枪械师技能半自动优化：半自动支持"按住=1.25x自动连射 / 点按=0.85x更快间隔"
         // 实现方式：
@@ -575,8 +577,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             if (hasGunslingerSkill) {
                 // 枪械师技能：半自动武器连射
                 // 1) 点按收益：以 0.85x 作为最小射击间隔（解锁下一次 startShooting）
-                _lastShotTimes[rateKey] = true;
-                EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, tapInterval, false, rateKey);
+                ShootCore.armRateLimit(core, params.taskName, tapInterval);
                 // 不立即清除射击状态，保持后摇期间的移动限制
 
                 // 枪械师后摇控制：后摇时间根据等级折扣（1级100%，10级85%）
@@ -616,24 +617,13 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
                 );
             } else if (isSemiAuto) {
                 // 普通半自动模式：仅射击一发，需要释放按键才能继续
-                _lastShotTimes[rateKey] = true;
-                EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, interval, false, rateKey);
+                ShootCore.armRateLimit(core, params.taskName, interval);
                 // 不立即清除射击状态，保持后摇期间的移动限制
-                core[semiLockProp] = true;
+                ShootCore.armSemiLock(core, params.taskName, interval, params.actionFlagName);
 
                 // 普通半自动后摇控制：与全自动对等
                 var semiRecoilTime:Number = Math.min(interval, 300);
                 ShootCore.scheduleRecoil(core, params.taskName, semiRecoilTime, params.shootingStateName);
-
-                EnhancedCooldownWheel.I().addTask(
-                    ShootCore._onSemiCooldownDone,
-                    interval,
-                    false,
-                    core,
-                    semiLockProp,
-                    params.actionFlagName,
-                    null
-                );
             } else {
                 // 全自动模式：注册持续射击循环任务
                 ShootCore.removeStoredTask(core, params.taskName);
@@ -716,8 +706,39 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      * 半自动射速间隔冷却回调：由 EnhancedCooldownWheel 在 interval 后触发，清除射速锁
      * @param key 射速间隔锁的键（格式: "单位名_任务名"）
      */
-    public static function _clearRateLimit(key:String):Void {
+    public static function _clearRateLimit(key:String, owner:Object):Void {
+        if (_lastShotTimes[key] !== owner) return;
         delete _lastShotTimes[key];
+    }
+
+    /** 替换冷却时取消旧任务，迟到回调只能释放注册时的那一代。 */
+    public static function armRateLimit(core:Object, taskName:String, interval:Number):Void {
+        var key:String = core._name + "_" + taskName;
+        var previous:Object = _lastShotTimes[key];
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        if (previous.taskId != null) wheel.removeTask(previous.taskId);
+        var owner:Object = {};
+        _lastShotTimes[key] = owner;
+        owner.taskId = wheel.addTask(ShootCore._clearRateLimit, interval, false, key, owner);
+    }
+
+    private static function retireRateLimit(core:Object, taskName:String):Void {
+        var key:String = core._name + "_" + taskName;
+        var owner:Object = _lastShotTimes[key];
+        if (owner.taskId != null) EnhancedCooldownWheel.I().removeTask(owner.taskId);
+        delete _lastShotTimes[key];
+    }
+
+    /** 最小间隔与松键两阶段共用一个普通对象身份，覆盖延迟回调和轮询。 */
+    public static function armSemiLock(core:Object, taskName:String, interval:Number, actionFlagName:String):Void {
+        var lockProp:String = SEMI_LOCK_PREFIX + taskName;
+        var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
+        ShootCore._cleanupSemiLock(core, wheel, lockProp);
+        var owner:Object = {};
+        core[lockProp + "_owner"] = owner;
+        core[lockProp] = true;
+        owner.pendingId = wheel.addTask(ShootCore._onSemiCooldownDone, interval, false,
+            core, lockProp, actionFlagName, null, owner);
     }
 
     /**
@@ -754,12 +775,15 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      * @param actionFlagName 动作标志属性名（如"动作A"）
      * @param releasedProp   释放标记属性名（用于枪械师技能判断）
      */
-    public static function _onSemiCooldownDone(core:Object, lockProp:String, actionFlagName:String, releasedProp:String):Void {
+    public static function _onSemiCooldownDone(core:Object, lockProp:String, actionFlagName:String, releasedProp:String, owner:Object):Void {
+        if (core[lockProp + "_owner"] !== owner) return;
+        owner.pendingId = null;
         if (!core[lockProp]) return; // MC已重建或被cleanup清理
 
         // 按键已释放，直接解锁，并标记为已释放（用于枪械师点按判断）
         if (!core[actionFlagName]) {
             delete core[lockProp];
+            delete core[lockProp + "_owner"];
             if (releasedProp) core[releasedProp] = true;
             return;
         }
@@ -772,8 +796,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             core,
             lockProp,
             actionFlagName,
-            releasedProp
+            releasedProp,
+            owner
         );
+        owner.pollId = core[lockProp];
     }
 
     /**
@@ -785,10 +811,15 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      * @param actionFlagName 动作标志属性名
      * @param releasedProp   释放标记属性名（用于枪械师技能判断）
      */
-    public static function _pollRelease(core:Object, lockProp:String, actionFlagName:String, releasedProp:String):Void {
+    public static function _pollRelease(core:Object, lockProp:String, actionFlagName:String, releasedProp:String, owner:Object):Void {
+        if (core[lockProp + "_owner"] !== owner) {
+            if (owner.pollId != null) EnhancedCooldownWheel.I().removeTask(owner.pollId);
+            return;
+        }
         if (!core[actionFlagName]) {
             var task = core[lockProp];
             delete core[lockProp];
+            delete core[lockProp + "_owner"];
             if (task != null && typeof task == "number") {
                 EnhancedCooldownWheel.I().removeTask(task);
             }
@@ -875,8 +906,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         if (ShootCore.continuousShoot(core, attackMode, baseInterval, params, holdInterval)) {
             // 射击成功：点按收益最小间隔（用于下一次 startShooting）
             var rateKey:String = core._name + "_" + params.taskName;
-            _lastShotTimes[rateKey] = true;
-            EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, tapInterval, false, rateKey);
+            ShootCore.armRateLimit(core, params.taskName, tapInterval);
             // 不立即清除射击状态，保持后摇期间的移动限制
 
             // 枪械师连射后摇控制：后摇时间根据等级折扣
@@ -951,8 +981,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         if (continueShooting) {
             // 射击成功：点按收益最小间隔（用于下一次 startShooting）
             var rateKey:String = core._name + "_" + timerProp;
-            _lastShotTimes[rateKey] = true;
-            EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, tapInterval, false, rateKey);
+            ShootCore.armRateLimit(core, timerProp, tapInterval);
             // 不立即清除射击状态，保持后摇期间的移动限制
 
             // 枪械师双枪连射后摇控制：后摇时间根据等级折扣
@@ -1016,6 +1045,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      * @param lockProp 锁标记属性名
      */
     private static function _cleanupSemiLock(core:Object, wheel:EnhancedCooldownWheel, lockProp:String):Void {
+        var owner:Object = core[lockProp + "_owner"];
+        if (owner.pendingId != null) wheel.removeTask(owner.pendingId);
+        if (owner.pollId != null) wheel.removeTask(owner.pollId);
+        delete core[lockProp + "_owner"];
         var val = core[lockProp];
         if (val != null) {
             if (typeof val == "number") wheel.removeTask(val);
@@ -1041,13 +1074,19 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         }
     }
 
-    public static function cleanupLane(core:Object, params:Object):Void {
+    public static function cleanupLane(core:Object, params:Object, preserveCooldown:Boolean):Void {
         if (!core || !params) return;
         var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
 
         ShootCore.removeStoredTask(core, params.taskName);
         wheel.removeTaskByLabel(core, "结束射击后摇_" + params.taskName);
-        _cleanupSemiLock(core, wheel, SEMI_LOCK_PREFIX + params.taskName);
+        if (!preserveCooldown) {
+            _cleanupSemiLock(core, wheel, SEMI_LOCK_PREFIX + params.taskName);
+            ShootCore.retireRateLimit(core, params.taskName);
+        } else if (!core[params.actionFlagName]) {
+            // 换弹入场已观察到松键，可以重新武装按压锁；射速预算仍保留。
+            _cleanupSemiLock(core, wheel, SEMI_LOCK_PREFIX + params.taskName);
+        }
 
         var pollProp:String = GUNSLINGER_RELEASE_POLL_PREFIX + params.taskName;
         if (core[pollProp] != null) {
@@ -1061,7 +1100,6 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             delete core[chainProp];
         }
 
-        delete _lastShotTimes[core._name + "_" + params.taskName];
         delete core[SEMI_RELEASED_PREFIX + params.taskName];
         core[params.shootingStateName] = false;
         ShootCore.setLaneRecoil(core, params.taskName, false);
@@ -1074,15 +1112,19 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
      *
      * @param core 需要清理的单位对象
      */
-    public static function cleanup(core:Object):Void {
+    public static function stopForReload(core:Object):Void {
+        ShootCore.cleanup(core, true);
+    }
+
+    public static function cleanup(core:Object, preserveCooldown:Boolean):Void {
         if (!core) return;
 
         var wheel:EnhancedCooldownWheel = EnhancedCooldownWheel.I();
 
         // 清理各射击 lane 任务
-        ShootCore.cleanupLane(core, primaryParams);
-        ShootCore.cleanupLane(core, secondaryParams);
-        ShootCore.cleanupLane(core, subweaponParams);
+        ShootCore.cleanupLane(core, primaryParams, preserveCooldown);
+        ShootCore.cleanupLane(core, secondaryParams, preserveCooldown);
+        ShootCore.cleanupLane(core, subweaponParams, preserveCooldown);
 
         // [v1.3] 使用生命周期 API 清理射击后摇任务
         wheel.removeTaskByLabel(core, "结束射击后摇");

@@ -116,9 +116,6 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         // ReloadManager 相关函数
         target.开始换弹 = function() {
             if (ReloadManager.handleReloadInput(target, parentRef)) return;
-            // 清理射击循环/连射链/半自动锁等帧计时器任务，
-            // 防止换弹期间射击任务继续抢时间轴导致 finishReload 不执行
-            ShootCore.cleanup(parentRef);
             ReloadManager.startReload(target, parentRef, rootRef);
         };
 
@@ -324,13 +321,14 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             // 半自动射速间隔防御（仅玩家控制单位）
             var isSemiAuto:Boolean = that[singleShotProp] && (TargetCacheManager.findHero() === parentRef);
             var rateKey:String = parentRef._name + "_" + timerProp;
-            if (isSemiAuto && ShootCore._lastShotTimes[rateKey]) return;
+            if (ShootCore._lastShotTimes[rateKey]) return;
 
-            // 枪械师技能半自动优化：点按=0.85x，按住=1.25x
+            // 双枪入口与单武器、持续回调共用等级公式，首次续发和重新点按不能提前取得满级倍率。
             var hasGunslingerSkill:Boolean = isSemiAuto && parentRef.被动技能 && parentRef.被动技能.枪械师 && parentRef.被动技能.枪械师.启用;
             var interval:Number = that[speedProp];
-            var tapInterval:Number = hasGunslingerSkill ? (interval * ShootCore.GUNSLINGER_TAP_MULTIPLIER) : interval;
-            var holdInterval:Number = hasGunslingerSkill ? (interval * ShootCore.GUNSLINGER_HOLD_MULTIPLIER) : interval;
+            var gunslingerLevel:Number = hasGunslingerSkill ? (parentRef.被动技能.枪械师.等级 || 1) : 1;
+            var tapInterval:Number = hasGunslingerSkill ? (interval * ShootCore.calcGunslingerTapMultiplier(gunslingerLevel)) : interval;
+            var holdInterval:Number = hasGunslingerSkill ? (interval * ShootCore.calcGunslingerHoldMultiplier(gunslingerLevel)) : interval;
 
             // 枪械师半自动：当连射链存在时，交由链任务驱动下一发
             if (hasGunslingerSkill && parentRef[gunslingerChainProp] != null) {
@@ -344,10 +342,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                 if (hasGunslingerSkill) {
                     // 枪械师技能：半自动可连射
                     // 1) 点按收益：以 tapInterval 作为最小射击间隔
-                    ShootCore._lastShotTimes[rateKey] = true;
-                    EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, tapInterval, false, rateKey);
+                    ShootCore.armRateLimit(parentRef, timerProp, tapInterval);
                     parentRef[shootingFlagProp] = false;
-                    var recoilTime:Number = Math.min(interval, 300) * ShootCore.calcGunslingerRecoilMultiplier(parentRef.被动技能.枪械师.等级 || 1);
+                    var recoilTime:Number = Math.min(interval, 300) * ShootCore.calcGunslingerRecoilMultiplier(gunslingerLevel);
                     ShootCore.scheduleRecoil(parentRef, timerProp, recoilTime, shootingFlagProp);
 
                     // 2) 按住自动：注册连射链（固定 holdInterval 间隔）
@@ -384,19 +381,10 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
                     );
                 } else if (isSemiAuto) {
                     // 普通半自动模式：仅射击一发，使用两阶段冷却防止连续触发
-                    ShootCore._lastShotTimes[rateKey] = true;
-                    EnhancedCooldownWheel.I().addTask(ShootCore._clearRateLimit, interval, false, rateKey);
+                    ShootCore.armRateLimit(parentRef, timerProp, interval);
                     parentRef[shootingFlagProp] = false;
                     ShootCore.scheduleRecoil(parentRef, timerProp, Math.min(interval, 300), shootingFlagProp);
-                    parentRef[semiLockProp] = true;
-                    EnhancedCooldownWheel.I().addTask(
-                        ShootCore._onSemiCooldownDone,
-                        interval,
-                        false,
-                        parentRef,
-                        semiLockProp,
-                        actionFlagName
-                    );
+                    ShootCore.armSemiLock(parentRef, timerProp, interval, actionFlagName);
                 } else {
                     // 全自动模式：注册持续射击循环任务
                     ShootCore.removeStoredTask(parentRef, timerProp);

@@ -220,6 +220,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             if (attackMode == "长枪") LongGunSubWeaponCore.startManualReloadAnimation(parentRef);
             return;
         }
+        // 资格与库存已通过，才停止动作；上一发冷却和半自动松键权威继续存活。
+        ShootCore.stopForReload(parentRef);
         WeaponAmmoRuntime.beginReload(parentRef, attackMode);
         if (isHero && _canLinkSubweaponReload(parentRef, attrs.reloadType))
             LongGunSubWeaponCore.setLinkedReloadRequest(target, parentRef);
@@ -487,12 +489,6 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 return;
             }
 
-            // 防御：换弹前清理射击循环/连射链/半自动锁等帧计时器任务。
-            // 与单枪 开始换弹（ShootInitCore._bindCoreFunctions）保持一致：
-            // 双枪 开始换弹 原先漏掉该清理，残留的射击循环任务会在换弹期间
-            // 继续抢 man 时间轴，极端情况下还能在换弹边界凑出孤儿循环。
-            ShootCore.cleanup(parentRef);
-
             if (parentRef === TargetCacheManager.findHero()) {
                 // 使用状态管理器决定换弹策略
                 var passiveSkills:Object = parentRef.被动技能;
@@ -502,6 +498,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 switch (reloadDecision) {
                     case 1: // 主手换弹
                         // 标记本次换弹序列从主手开始（用于双枪换弹负担系统的手位解析）
+                        ShootCore.stopForReload(parentRef);
                         that.dualReloadStartHand = "主手";
                         delete that._dualReloadFirstInitStartFrame;
                         // 显式设置换弹标签，防止 finishReload 的 "换弹标签=false" 动态属性
@@ -512,6 +509,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                         return;
                     case 2: // 副手换弹
                         // 标记本次换弹序列从副手开始（用于双枪换弹负担系统的手位解析）
+                        ShootCore.stopForReload(parentRef);
                         that.dualReloadStartHand = "副手";
                         delete that._dualReloadFirstInitStartFrame;
                         ReloadManager.bumpReloadGeneration(that);
@@ -527,6 +525,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                             if (!stateManager.mainIsFull
                                 && parentRef.手枪属性.reloadType != "tube"
                                 && ReloadManager.canTacticalFreeReload(parentRef, "手枪", gsLv)) {
+                                ShootCore.stopForReload(parentRef);
                                 that.dualReloadStartHand = "主手";
                                 delete that._dualReloadFirstInitStartFrame;
                                 ReloadManager.bumpReloadGeneration(that);
@@ -537,6 +536,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                             if (!stateManager.subIsFull
                                 && parentRef.手枪2属性.reloadType != "tube"
                                 && ReloadManager.canTacticalFreeReload(parentRef, "手枪2", gsLv)) {
+                                ShootCore.stopForReload(parentRef);
                                 that.dualReloadStartHand = "副手";
                                 delete that._dualReloadFirstInitStartFrame;
                                 ReloadManager.bumpReloadGeneration(that);
@@ -547,9 +547,10 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                         }
                         delete that.dualReloadStartHand;
                         delete that._dualReloadFirstInitStartFrame;
-                        that.gotoAndPlay("换弹结束");
+                        return;
                 }
             } else {
+                ShootCore.stopForReload(parentRef);
                 that.dualReloadStartHand = "主手";
                 delete that._dualReloadFirstInitStartFrame;
                 ReloadManager.bumpReloadGeneration(that);
