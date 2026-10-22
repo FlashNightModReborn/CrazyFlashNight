@@ -1,0 +1,9 @@
+{
+  "stage": "a13",
+  "review_type": "actual visual inspection, two passes",
+  "observations": [
+    "First pass: original root/world, new frame19 and original/new frame19. Elevator native pillar/rail geometry, lighting and root matrix align.",
+    "Second pass: original/new frame28 and frame37-to1 edge sheet; independent root background remains unstretched. Full 37 original states preserved. Rendered frame38 equals frame1 pixel-for-pixel in original and new."
+  ],
+  "current_status": "visual assembly checked; independent reviewer and cold-rebuild verification tracked separately"
+}
