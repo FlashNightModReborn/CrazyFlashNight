@@ -1,0 +1,62 @@
+{
+  "scope": {
+    "stages": [
+      "a10",
+      "a13"
+    ],
+    "bitmapIds": [
+      1412,
+      1873,
+      1877,
+      1882
+    ],
+    "root1876FramesPreservedByAssembler": 37
+  },
+  "selfReviewRounds": [
+    {
+      "round": 1,
+      "checked": [
+        "All original bitmaps visually inspected",
+        "Original material identities and native sizes",
+        "1877 deck, rails, central control; 1882 front opening"
+      ],
+      "findingsAndFixes": [
+        "Corrected lamp from three tubes to original two luminous strips plus dark central grille",
+        "Replaced shallow wall curvature with deeper cylindrical arc and restrained independent material grain",
+        "Recreated left platform triangular warning label and correct pale control cap"
+      ]
+    },
+    {
+      "round": 2,
+      "checked": [
+        "Original/new paired views at native and enlarged scale",
+        "1882 exact baluster positions derived from alpha occupancy",
+        "Registration, openings and generated SVG content",
+        "Right-bottom EXIT stencil as original two-line label"
+      ],
+      "findingsAndFixes": [
+        "Aligned front balusters at 40,70,130,190 and 280,340,400,431",
+        "Replaced solid alpha-stencil ink with independent outlined EXIT glyph paths",
+        "Fixed Inkscape single-pixel near-opaque mask quantization; all 4 alpha arrays now exact"
+      ]
+    }
+  ],
+  "independentReview": {
+    "reviewer": "assemble_cf6_review_batch",
+    "initialVerdict": "1877 five grating sections, guardrail and guides match; 1882 opening and 4+4 bars match; lamp double bars and deep wall arcs valid; eligible for assembly. Required EXIT stencil readability check.",
+    "finalVerdict": "Reopened final EXIT detail: both EXIT rows distinguishable; missing marks follow preserved alpha wear; accepted for assembly.",
+    "residualStyleDifference": "New finish subtly cool-green vs original neutral grey, grating cleaner; reviewer did not consider it a functional or spatial defect."
+  },
+  "validation": [
+    "Four native alpha masks equal original pixel-for-pixel with max error 0",
+    "All 4 SVGs parse and retain original bitmap viewBoxes",
+    "Each SVG has only 1 embedded independently generated grain material; no original RGB reused",
+    "Font labels are path outlines, not live font references"
+  ],
+  "assemblyCautions": [
+    "Preserve original bitmap fill paths and matrices, including shape1874 third tile y=89.5 and 3.05px overlap",
+    "Keep root1876 as all 37 frames, not static background",
+    "Check state1/10/19/28/37 plus wrap37->1; inspect each stage own original display roots",
+    "Do not treat file-only material validation as game-runtime acceptance"
+  ]
+}

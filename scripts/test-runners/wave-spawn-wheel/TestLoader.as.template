@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId wave-spawn-wheel Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.WaveSpawnWheelTest.runAllTests();
+trace("FocusedTestRunId wave-spawn-wheel Complete: __FOCUSED_RUN_ID__");

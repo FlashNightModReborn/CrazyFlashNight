@@ -1,0 +1,45 @@
+{
+  "schema": "cf6-map-batch-readiness.v1",
+  "maps": [
+    {
+      "id": "A01",
+      "backgroundPrepared": true,
+      "pending": [
+        "independent yellow lamp",
+        "interactive turret and crate consumers"
+      ]
+    },
+    {
+      "id": "A02",
+      "backgroundPrepared": true,
+      "pending": [
+        "source camera parallax currently fixed in prototype",
+        "interactive crate consumer"
+      ]
+    },
+    {
+      "id": "A03",
+      "backgroundPrepared": true,
+      "pending": [
+        "source door animation and matching exit position",
+        "foreground parallax awaits controller support"
+      ]
+    },
+    {
+      "id": "A04",
+      "backgroundPrepared": true,
+      "pending": [
+        "source door animation and matching exit position",
+        "foreground parallax awaits controller support"
+      ]
+    },
+    {
+      "id": "A05",
+      "backgroundPrepared": true,
+      "pending": [
+        "source door animation and matching exit position",
+        "foreground parallax awaits controller support"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "stage": 18,
+  "original_nodes_sha256": "c35c618cc3ef4d53cc213f6c5d6b110c2c580856842774e6f68ce3e4f0e56e9d",
+  "original_nodes_equal_audit": true,
+  "inventory_equal_original_audit": true,
+  "frozen_reference_hashes_verified": true,
+  "all_frames_retained": {
+    "1433": 1,
+    "1442": 11,
+    "1968": 1,
+    "1976": 16,
+    "1868": 29,
+    "1616": 1,
+    "1617": 2,
+    "359": 1,
+    "360": 1,
+    "237": 1,
+    "254": 189,
+    "255": 14
+  },
+  "preserved_font_outline_shape_ids": [
+    1960,
+    1961
+  ],
+  "original_excluded_bitmap_ids": [
+    239,
+    252
+  ],
+  "external_runtime_dependencies": false,
+  "runtime_packages": [
+    "Python 3",
+    "Pillow",
+    "Inkscape",
+    "DejaVuSans"
+  ],
+  "artifact_regeneration": "python source/rebuild.py",
+  "production_game_modified": false,
+  "artwork_regeneration_packages": [
+    "NumPy",
+    "SciPy"
+  ],
+  "artwork_regeneration_scripts": [
+    "industrial_materials.py --no-render",
+    "galaxy.py",
+    "radiation_drum.py"
+  ],
+  "revision": "R2",
+  "floor_repair": {
+    "bitmap1957_sha256": "0d797ec659c8cbc797549936cf6e12fb28fdde2b40fdd9cd4614478dba523da9",
+    "module_sha256": "ef8ee41180699e123ff079393fdec80a0551f8581da2f48a687e1ffd28702bf8",
+    "scope": "static artwork only; floor polygon union and shared phase; a18 isolated 1px top-edge jog removed",
+    "original_reference_data_unchanged": true,
+    "world_collision_and_timeline_unchanged": true
+  }
+}

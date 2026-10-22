@@ -182,9 +182,17 @@ namespace CF7Launcher.Guardian
         public void SetBookComicTask(BookComicTask task) { _bookComicTask = task; }
         public string TryOpenBookComic(JObject request) {
             var data = BookComicTask.BuildOpenData(request.Value<string>("source"), request["initData"]?.ToString(Formatting.None));
-            bool accepted = data != null && _bookComicTask != null && _panelHost != null && string.IsNullOrEmpty(_panelHost.ActivePanelName) && _bookComicTask.Reserve(data);
-            if (accepted) { accepted = OpenPanel("book-comic", data.ToString(Formatting.None)); if (!accepted) _bookComicTask.RejectOpen(data); }
+            bool accepted = data != null && _bookComicTask != null && _panelHost != null
+                && (_bookComicTask.TryQueueSuccessor(data,_panelHost.ActivePanelName,
+                    _panelHost.ActivePanelInstanceId,OpenBookComicAfterClose) || OpenBookComicAfterClose(data));
             return new JObject { ["success"] = accepted, ["accepted"] = accepted, ["bound"] = false, ["panel"] = "book-comic", ["presentationId"] = data?["presentationId"], ["error"] = accepted ? "" : "comic_open_rejected" }.ToString(Formatting.None);
+        }
+        private bool OpenBookComicAfterClose(JObject data) {
+            if(_panelHost==null||_bookComicTask==null||!string.IsNullOrEmpty(_panelHost.ActivePanelName)
+                ||!_bookComicTask.Reserve(data))return false;
+            bool accepted=OpenPanel("book-comic",data.ToString(Formatting.None));
+            if(!accepted)_bookComicTask.RejectOpen(data);
+            return accepted;
         }
         private LootPanelCoordinator _lootPanelCoordinator;
         private SkillTask _skillTask;

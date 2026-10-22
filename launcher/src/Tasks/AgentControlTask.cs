@@ -36,6 +36,7 @@ namespace CF7Launcher.Tasks
         private Func<bool> _openCharacterBuild;
         private Func<bool> _openArena;
         private Func<bool> _openGym;
+        private Func<bool> _openBookshelf;
         private Func<JObject> _getActivePanelStatus;
         private JObject _runtimeSaveStatus;
         private bool _gameEnteredObserved;
@@ -154,6 +155,12 @@ namespace CF7Launcher.Tasks
             lock (_gate) { _openGym = openGym; }
         }
 
+        /// <summary>Fixed production bookshelf opener; no chapter, token or write payload is accepted.</summary>
+        public void SetBookshelfOpenAction(Func<bool> openBookshelf)
+        {
+            lock (_gate) { _openBookshelf = openBookshelf; }
+        }
+
         /// <summary>Read-only panel observation for outer runners; never opens or mutates a panel.</summary>
         public void SetActivePanelStatusProvider(Func<JObject> getActivePanelStatus)
         {
@@ -185,6 +192,8 @@ namespace CF7Launcher.Tasks
                         return OpenArena(msg).ToString(Newtonsoft.Json.Formatting.None);
                     case "openGym":
                         return OpenGym(msg).ToString(Newtonsoft.Json.Formatting.None);
+                    case "openBookshelf":
+                        return OpenBookshelf(msg).ToString(Newtonsoft.Json.Formatting.None);
                     default:
                         return BuildError("unsupported_action", "unsupported action: " + action).ToString(Newtonsoft.Json.Formatting.None);
                 }
@@ -381,6 +390,17 @@ namespace CF7Launcher.Tasks
             return OpenAgentPanel(msg, "gym");
         }
 
+        private JObject OpenBookshelf(JObject msg)
+        {
+            foreach (JProperty field in msg.Properties())
+            {
+                if (field.Name != "task" && field.Name != "action"
+                    && field.Name != "expectedSlot" && field.Name != "expectedAttemptId")
+                    return BuildError("invalid_payload", "openBookshelf accepts only the exact slot and attempt");
+            }
+            return OpenAgentPanel(msg, "bookshelf");
+        }
+
         private JObject OpenAgentPanel(JObject msg, string panelKind)
         {
             JToken expectedSlotToken = msg["expectedSlot"];
@@ -450,6 +470,8 @@ namespace CF7Launcher.Tasks
                         ? _openArena
                         : panelKind == "gym"
                             ? _openGym
+                        : panelKind == "bookshelf"
+                            ? _openBookshelf
                         : _openEquipmentTuning;
             }
             if (open == null)
@@ -477,6 +499,8 @@ namespace CF7Launcher.Tasks
                         ? "AS2 openArenaForAgent command was not sent"
                         : panelKind == "gym"
                             ? "AS2 openGymForAgent command was not sent"
+                        : panelKind == "bookshelf"
+                            ? "AS2 openBookshelfForAgent command was not sent"
                         : "AS2 openInventoryWorkbench command was not sent");
             }
 

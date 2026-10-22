@@ -15,7 +15,8 @@
 // 设计要点：
 //   - 元战队单元 = 一个 SubStage 合并后的敌方阵容（一间「房」的真实组合，1~N 体）。
 //     丢弃关卡专属的 x/y/SpawnIndex 站位（竞技场自行布阵）。
-//   - 关卡 Enemy 里出现的 兵种 全量保留；is_hostile 只作为标签，不再决定是否进入元战队。
+//   - teams[] 保留关卡 Enemy 原始组合并标记 npc；自动 roster 排除受 NPC 保护的成员。
+//     is_hostile 只作为阵营标签，不替代 NPC 保护判断；定制预设仍可读取完整原始组合。
 //   - 人形模板仍标记为 humanoid，并只从自动势力采样池剔除；teams[]/定制预设保留真实关卡组合。
 //   - faction 主信号 = 敌人 spritename 家族（敌人-盗贼* → 堕落城）；命不中规则 → unknown，
 //     summary 列出所有未识别家族供人工补 FACTION_RULES。
@@ -310,6 +311,7 @@ function buildTeam(rel, stageName, groupId, body) {
             type: repType, id: rep.id, name: cleanName(rep), spritename: rep.spritename,
             level: lvl, count: 0, random: !!en.random,
             isHostile: rep.is_hostile === true,
+            npc: (rep.NPC || (en.parameters && en.parameters.NPC)) ? true : undefined,
             gender: humanoid && rep.data && rep.data.gender != null ? String(rep.data.gender) : undefined,
             humanoid: humanoid,
             randomTypes: en.random ? en.types.slice() : undefined,
@@ -382,6 +384,7 @@ for (const t of teams) {
     if (!rosters[t.faction]) rosters[t.faction] = { teamCount: 0, units: {} };
     rosters[t.faction].teamCount++;
     for (const m of t.members) {
+        if (m.npc) continue; // 剧情保护单位保留来源，但不进入 Host 势力/爬升自动战斗池
         if (m.humanoid) continue; // 佣兵模板单位不入普通怪物采样池（性能成本高，只走 mixed）
         const parameterSignature = hasParameters(m.parameters) ? stableStringify(m.parameters) : '';
         const unitKey = m.type + (parameterSignature ? '#p' + parameterSignature : '');
@@ -412,6 +415,7 @@ function slimWebMember(m) {
         humanoid: m.humanoid === true
     };
     if (m.gender) out.gender = m.gender;
+    if (m.npc) out.npc = true;
     if (hasParameters(m.parameters)) out.parameters = m.parameters;
     return out;
 }
@@ -439,7 +443,7 @@ const webTeams = teams
 const catalog = {
     generatedBy: 'tools/derive-arena-meta-teams.js',
     granularity: GRANULARITY,
-    note: '竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队); rosters{}=按势力聚合的兵种池(按等级带采样K体用); mercenaries[]=混编人形侧优先池(来自 data/merc/mercenaries.json，排除 hidden)。请勿手改——改采集规则后重跑。',
+    note: '竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队，npc=true 标记保护成员); rosters{}=排除 NPC 保护与人形模板的自动势力兵种池(按等级带采样K体用); mercenaries[]=混编人形侧优先池(来自 data/merc/mercenaries.json，排除 hidden)。请勿手改——改采集规则后重跑。',
     stageFilesScanned: files.length,
     stagesWithTeams: stageWithTeams,
     teamCount: teams.length,

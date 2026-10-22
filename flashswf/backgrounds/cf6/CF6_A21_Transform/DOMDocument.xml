@@ -1,0 +1,64 @@
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" frameRate="30" width="1280" height="720" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" majorVersion="12" buildNumber="481">
+  <symbols>
+    <Include href="CF6A21/Codex/老头/CF7/Symbol 2.xml" itemID="6af60000-3d182fe2"/>
+    <Include href="CF6A21/Codex/老头/分件/954.xml" itemID="6af60000-667f2ff9"/>
+    <Include href="CF6A21/Codex/老头/分件/955.xml" itemID="6af60000-47b12fac"/>
+    <Include href="CF6A21/Codex/老头/分件/956.xml" itemID="6af60000-d68f23e4"/>
+    <Include href="CF6A21/Codex/老头/分件/957.xml" itemID="6af60000-f7209146"/>
+    <Include href="CF6A21/Codex/老头/分件/958.xml" itemID="6af60000-7c63c029"/>
+    <Include href="CF6A21/Codex/老头/分件/959.xml" itemID="6af60000-b92e4b12"/>
+    <Include href="CF6A21/Codex/老头/分件/960.xml" itemID="6af60000-911ba725"/>
+    <Include href="CF6A21/Codex/老头/分件/961.xml" itemID="6af60000-f14dfc8c"/>
+    <Include href="CF6A21/Codex/老头/分件/962.xml" itemID="6af60000-7cdee1f7"/>
+    <Include href="CF6A21/Codex/老头/分件/963.xml" itemID="6af60000-3c8b8f8b"/>
+    <Include href="CF6A21/Codex/老头/分件/966.xml" itemID="6af60000-65cf5273"/>
+    <Include href="CF6A21/Codex/老头/分件/977.xml" itemID="6af60000-91da39fd"/>
+    <Include href="CF6A21/Codex/老头/分件/978.xml" itemID="6af60000-f1206f44"/>
+    <Include href="CF6A21/Codex/老头/分件/979.xml" itemID="6af60000-cc26ecd1"/>
+    <Include href="CF6A21/Codex/老头/分件/980.xml" itemID="6af60000-62d5491d"/>
+    <Include href="CF6A21/Codex/老头/分件/981.xml" itemID="6af60000-62618db9"/>
+    <Include href="CF6A21/Codex/老头/分件/982.xml" itemID="6af60000-46363cc2"/>
+    <Include href="CF6A21/Codex/老头/分件/983.xml" itemID="6af60000-29651aa8"/>
+    <Include href="CF6A21/Codex/老头/分件/984.xml" itemID="6af60000-c9ae1749"/>
+    <Include href="CF6A21/Codex/老头/分件/985.xml" itemID="6af60000-e4d921bb"/>
+    <Include href="CF6A21/Codex/老头/分件/986.xml" itemID="6af60000-613583ef"/>
+    <Include href="CF6A21/Codex/老头/分件/987.xml" itemID="6af60000-c0c31365"/>
+    <Include href="CF6A21/Codex/老头/分件/988.xml" itemID="6af60000-27730310"/>
+    <Include href="CF6A21/Codex/老头/分件/989.xml" itemID="6af60000-abc8790e"/>
+    <Include href="CF6A21/Codex/老头/原始特效/1994.xml" itemID="6af60000-5302ed17"/>
+    <Include href="CF6A21/Codex/老头/原始特效/1995.xml" itemID="6af60000-63b60344"/>
+    <Include href="CF6A21/Codex/老头/原始特效/1996.xml" itemID="6af60000-5f3bff39"/>
+    <Include href="CF6A21/Codex/老头/原始特效/1997.xml" itemID="6af60000-288295d7"/>
+    <Include href="CF6A21/Codex/老头/原始特效/1998.xml" itemID="6af60000-eaf4fdfd"/>
+    <Include href="CF6A21/Codex/老头/原始特效/1999.xml" itemID="6af60000-b8f0a7bb"/>
+    <Include href="CF6A21/Codex/老头/原始特效/2000.xml" itemID="6af60000-f642002a"/>
+    <Include href="CF6A21/Codex/老头/原始特效/2001.xml" itemID="6af60000-6997eb41"/>
+    <Include href="CF6A21/Codex/老头/原始特效/2002.xml" itemID="6af60000-86ba71f0"/>
+    <Include href="CF6A21/Codex/老头/原始特效/2003.xml" itemID="6af60000-9576118a"/>
+    <Include href="CF6A21/Codex/老头/变身/角色演出.xml" itemID="6af60000-1c63dc75"/>
+    <Include href="CF6A21/Codex/老头/接地阴影.xml" itemID="6af60000-9e81e4c7"/>
+    <Include href="CF6A21/Codex/老头/行为驱动.xml" itemID="6af60000-4d83a708"/>
+  </symbols>
+  <timelines>
+    <DOMTimeline name="A21 display only">
+      <layers>
+        <DOMLayer name="actor">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();actor.stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/变身/角色演出" name="actor">
+                  <matrix>
+                    <Matrix a="0.6666666666666666" d="0.6666666666666666" tx="0" ty="-88.88333333333333"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timelines>
+</DOMDocument>

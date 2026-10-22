@@ -237,7 +237,7 @@ items.forEach((item) => {
     }
     modeCounts[mode] += 1;
     if (mode === 'playerChoice') {
-        const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/rewards/choice-rewards.json'), 'utf8'));
+        const catalog = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/rewards/choice-rewards.generated.json'), 'utf8'));
         const poolId = textOf(rewardPack, 'poolId');
         const pool = catalog.pools.find(p => p.id === poolId && p.itemName === item.name);
         const fields = Array.from(rewardPack.matchAll(/<([A-Za-z][A-Za-z0-9]*)\b[^>]*>/g), m => m[1]);

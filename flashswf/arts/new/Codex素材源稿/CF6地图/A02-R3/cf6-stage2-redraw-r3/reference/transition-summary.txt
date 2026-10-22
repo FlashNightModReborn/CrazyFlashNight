@@ -1,0 +1,51 @@
+CF6 第一可玩关到第二可玩关：静态跳转证据
+
+结论：a1（主时间轴66帧，gameworld=1592）过关后先进入s2剧情漫画（主时间轴39帧，sprite1308），之后才到a2（主时间轴73帧，gameworld=1695）。不能把a1结束直接接a2说成原作连续流程。
+
+方法与边界
+只读取原SWF字节，解析SWF标签、AVM1即时值/常量池及相对跳转；没有运行SWF、ActionScript、播放器或游戏。偏移均为该未压缩SWF文件的十进制绝对字节偏移。原SWF SHA-256：b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01。
+保护层把真实指令放入code253标签，并从DoAction中向后跳转到253标签尾部的跳板。证据JSON保留常量池、真实指令窗口、原始hex及跨标签Jump目标，不依赖仅搜字符串或按a2标签编号猜测。
+
+1. a1实际过关目标
+sprite1592内的PlaceObject2数据偏移14701491，74字节，depth148，character1587。其load（eventFlags=1）动作明确是：
+  需要杀死数 = 20;
+  目标帧 = "s2";
+该目标位于1587实例上。
+sprite1587第1帧清零_root.电梯死亡敌人计数并stop。内嵌area的enterFrame比较计数与_parent.需要杀死数；达到20后令_root.gameworld.man1.gotoAndStop("等待")并_parent.play()。第2帧令_root.过关提示.gotoAndPlay(2)。
+sprite1587第59帧真实指令位于14681825，常量池为[_root,切镜,gotoAndPlay,目标帧]，等价于：
+  _root.切镜.gotoAndPlay(2);
+  _root.切镜.目标帧 = 目标帧;
+  stop();
+DoAction的Jump：14682159 → 14681881（code253尾部跳板）→ 14681825（上述代码）。所以切镜目标为s2。
+
+2. 共用切镜如何进入主时间轴目标
+切镜是sprite1281，主时间轴depth1297的命名实例“切镜”。其第21帧真实指令位于11969141，常量池为[_root,自动存盘,目标帧,gotoAndStop]，等价于：
+  _root.自动存盘();
+  _root.gotoAndStop(目标帧);
+DoAction的Jump：11969649 → 11969192 → 11969141。
+
+3. s2确为中间剧情而不是下一可玩场景
+主时间轴FrameLabel s2对应第39帧。该帧PlaceObject2数据偏移12559016，79字节，放置sprite1308，其load动作明确是：
+  目标帧 = "a2";
+  _parent.stop();
+sprite1308共13帧；第1帧设置myx=myy=0并stop，第2至8帧改变myx/myy；第9帧（不是第13帧）启动与上面同构的切镜：将本实例目标a2交给_root.切镜。真实指令窗口12557982；Jump链12558712 → 12558038 → 12557982。
+1308包含sprite1307及多段可编辑剧情文字（characters1298/1299/1300/1301/1302/1304/1306），谈论制服丧尸、Commander.M、“毒刺行动”、解救被困特工及接下任务。JSON保存完整原始文本抽取。因此“中间剧情漫画”的判断同时有时间轴、视口移动和叙事文本佐证。
+
+4. a2可玩入口
+FrameLabel a2对应主时间轴73帧；该帧明确放置name=gameworld、character1695。world内有man1、地图、敌人生成器、男/女丧尸等。与s2不同，它是战斗场景对象，而不是依据编号顺推。
+
+a2相机与城市视差补充
+- world1695根放置数据14921586，depth4，matrix=[1.000030517578125,0,0,1,0,0]。load动作入口14921623，enterFrame入口14922824；保护层真实指令分别在14920295、14921021。
+- load设Xmax=1250、Xmin=50、Ymax=500、Ymin=150，控制目标=卷屏目标="man1"；背景长1250、高450；舞台长600、高350。允许赋值区间严格为-650<x<0、-100<y<0。
+- load先用this[_root.卷屏目标].localToGlobal({x:0,y:0})得到角色全局点。面向右时aa=150-point.x，bb=240-point.y；面向左时x目标450，其他控制目标x目标300。候选xxx=this._x+aa，yyy=this._y+bb，只有落入各自严格区间才赋值。越界时是不赋值，不是夹到边界。
+- enterFrame使用同样目标，但aa、bb除以5进行跟随。只要abs(aa)>1或abs(bb)>1，就尝试各轴严格区间内的赋值。
+- man1根放置数据14914657，character1106，位置(91.5,353.7)，没有placement clipActions。1106第1帧动作仅按this._y*100作swapDepths、换弹夹=0及stop；该动作没有位置写入。
+- 把上述作者放置值代入load公式：point约(91.502792,353.7)，面向右候选(58.497208,-113.7)，两轴都越界，所以这段load相机代码留下world=(0,0)。这一点是静态算式推导，不是实测运行相机；不替其他事件顺序、输入或运行状态作保证。
+- 城市sprite1599根放置数据14733449，depth2，作者位置(-0.75,-1)，只有enterFrame（eventFlags=2），没有load动作。其代码真实入口14733370，等价于this._x=_root.gameworld._x/2；this._y=_root.gameworld._y。即水平半速视差，竖直同速。首个enterFrame即可能改变作者放置值，不能把(-0.75,-1)称为稳定运行相机。
+- 因此静态600×350截图可以严格使用SWF作者放置值，并标“作者初始摆放/静态裁切”；不要声称是已运行首屏。若要说明相机，引用以上公式和范围即可。
+
+产物
+transition-evidence.json：跳转链、常量池、逐条指令、原始hex、主时间轴显示列表与剧情文本。
+transition-camera-evidence.json：root73两个PlaceObject的ClipActions、相机/视差常量池及逐条指令、初始坐标代入分析。
+transition-man1-placement.json：角色作者放置记录。
+transition-audit.py：可复核的只读解析脚本。

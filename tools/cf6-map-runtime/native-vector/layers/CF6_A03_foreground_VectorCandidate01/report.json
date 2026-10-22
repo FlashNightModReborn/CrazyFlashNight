@@ -1,0 +1,391 @@
+{
+  "schema": "cf6-native-layer-candidate.v1",
+  "name": "CF6_A03_foreground_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A03-R1/cf6-stage3-redraw-r1/parts/foreground-1727.svg",
+  "sourceSha256": "f21a83bc8bb3cccfcde4b574428b983bd6a03142d94eeb79fda97f1dc40c1b09",
+  "nativeShapes": 413,
+  "nativeSymbols": 127,
+  "intrinsicTextures": 0,
+  "masks": [
+    {
+      "id": "n33_fill0",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n35_fill0",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n37_fill0",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n39_fill0",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    }
+  ],
+  "filters": [],
+  "patterns": [],
+  "gradientFallbacks": [
+    {
+      "id": "n33_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        52.0,
+        1.1,
+        0.0,
+        4.6
+      ],
+      "strokeWidth": 0.7999999999999999,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n33_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.8,
+        13.4,
+        0.0,
+        4.1
+      ],
+      "strokeWidth": 0.7499999999999999,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n33_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.7,
+        25.3,
+        0.0,
+        4.399999999999999
+      ],
+      "strokeWidth": 0.7000000000000001,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n33_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.9,
+        39.3,
+        0.0,
+        33.8
+      ],
+      "strokeWidth": 0.7999999999999999,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n33_b1724_edgeGlint",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.9,
+        39.3,
+        0.0,
+        33.8
+      ],
+      "strokeWidth": 0.21,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n33_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.9,
+        72.2,
+        0.0,
+        11.099999999999994
+      ],
+      "strokeWidth": 0.42,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n33_b1724_edgeGlint",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.9,
+        72.2,
+        0.0,
+        11.099999999999994
+      ],
+      "strokeWidth": 0.21,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n35_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        52.0,
+        1.1,
+        0.0,
+        4.6
+      ],
+      "strokeWidth": 0.7999999999999999,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n35_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.8,
+        13.4,
+        0.0,
+        4.1
+      ],
+      "strokeWidth": 0.7499999999999999,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n35_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.7,
+        25.3,
+        0.0,
+        4.399999999999999
+      ],
+      "strokeWidth": 0.7000000000000001,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n35_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.9,
+        39.3,
+        0.0,
+        33.8
+      ],
+      "strokeWidth": 0.7999999999999999,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n35_b1724_edgeGlint",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.9,
+        39.3,
+        0.0,
+        33.8
+      ],
+      "strokeWidth": 0.21,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n35_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.9,
+        72.2,
+        0.0,
+        11.099999999999994
+      ],
+      "strokeWidth": 0.42,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n35_b1724_edgeGlint",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.9,
+        72.2,
+        0.0,
+        11.099999999999994
+      ],
+      "strokeWidth": 0.21,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n37_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        52.0,
+        1.1,
+        0.0,
+        4.6
+      ],
+      "strokeWidth": 0.7999999999999999,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n37_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.8,
+        13.4,
+        0.0,
+        4.1
+      ],
+      "strokeWidth": 0.7499999999999999,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n37_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.7,
+        25.3,
+        0.0,
+        4.399999999999999
+      ],
+      "strokeWidth": 0.7000000000000001,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n37_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.9,
+        39.3,
+        0.0,
+        33.8
+      ],
+      "strokeWidth": 0.7999999999999999,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n37_b1724_edgeGlint",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.9,
+        39.3,
+        0.0,
+        33.8
+      ],
+      "strokeWidth": 0.21,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n37_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.9,
+        72.2,
+        0.0,
+        11.099999999999994
+      ],
+      "strokeWidth": 0.42,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n37_b1724_edgeGlint",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.9,
+        72.2,
+        0.0,
+        11.099999999999994
+      ],
+      "strokeWidth": 0.21,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n39_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        52.0,
+        1.1,
+        0.0,
+        4.6
+      ],
+      "strokeWidth": 0.7999999999999999,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n39_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.8,
+        13.4,
+        0.0,
+        4.1
+      ],
+      "strokeWidth": 0.7499999999999999,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n39_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.7,
+        25.3,
+        0.0,
+        4.399999999999999
+      ],
+      "strokeWidth": 0.7000000000000001,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n39_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.9,
+        39.3,
+        0.0,
+        33.8
+      ],
+      "strokeWidth": 0.7999999999999999,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n39_b1724_edgeGlint",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.9,
+        39.3,
+        0.0,
+        33.8
+      ],
+      "strokeWidth": 0.21,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n39_b1724_rod",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.9,
+        72.2,
+        0.0,
+        11.099999999999994
+      ],
+      "strokeWidth": 0.42,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    },
+    {
+      "id": "n39_b1724_edgeGlint",
+      "reason": "zero-area objectBoundingBox on authored straight gradient stroke",
+      "originalBox": [
+        51.9,
+        72.2,
+        0.0,
+        11.099999999999994
+      ],
+      "strokeWidth": 0.21,
+      "policy": "expand only the zero dimension to the native stroke width; local visual comparison required"
+    }
+  ],
+  "sourceViewport": [
+    111.0,
+    0.55,
+    1211.95,
+    178.75
+  ],
+  "registrationMatrix": [
+    1.0,
+    0,
+    0,
+    1.0,
+    -111.0,
+    -0.55
+  ],
+  "state": "native XFL assembled; actual CS6 compile and rendering still pending",
+  "limits": [
+    "SVG filter-region clipping is reported per filter and not yet reproduced.",
+    "Native Gaussian blur is a three-pass approximation.",
+    "Root SVG viewport crop must be compared at the original edge."
+  ]
+}

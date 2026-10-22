@@ -1,0 +1,3883 @@
+{
+  "schema": "cfn.stage-preview.v1",
+  "status": "candidate_pending_human_review",
+  "normalPolicy": "preserve_existing_v6_unless_explicit_refinement",
+  "dimensions": {
+    "hd": [
+      644,
+      276
+    ],
+    "thumb": [
+      161,
+      69
+    ]
+  },
+  "stages": [
+    {
+      "id": "stage_0_0",
+      "stageName": "新手练习场",
+      "region": "基地门口",
+      "kind": "base",
+      "original": "assets/stage-select/previews/stage-internal-5dc7d127.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_0_0.webp",
+      "baseline_sha256": "d2a5d89e5634e8c7d5c2d7d562fa53aea3a66595f6d28fc598dfb0d170b658bf",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "v6_png_sha256": "be7aa62cdff17610eaa82670f0a7ba8d789c371ce407e6c347b61e7cdc0fb04f",
+      "subjects": [
+        "敌人-黄色衣服男僵尸1",
+        "敌人-眼镜僵尸1"
+      ]
+    },
+    {
+      "id": "stage_0_1",
+      "stageName": "超市废墟",
+      "region": "基地门口",
+      "kind": "base",
+      "original": "assets/stage-select/previews/stage-internal-4d1e536c.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_0_1.webp",
+      "baseline_sha256": "fb0b586ef6bef4bc9dd6097c22f9aa5241cb020194085f271103fa818a59b8b5",
+      "decision": "refined",
+      "changeReason": "移除当前关卡未配置的胖僵尸与柜员，保留FOOD SHOP招牌，改用本关眼镜与黄衣僵尸",
+      "v6_png_sha256": "6e355fb6722815ba71a27f475034c947828298e7d2ee5fe953ccafdadb1547df",
+      "subjects": [
+        "敌人-眼镜僵尸1",
+        "敌人-黄色衣服男僵尸1"
+      ],
+      "renderer": "base_layout",
+      "composition": {
+        "bg_stem": "gk2_1_BG",
+        "outdoor": true,
+        "crop_box": [
+          0.755,
+          0.18,
+          0.22,
+          0.2
+        ],
+        "layouts": [
+          {
+            "spritename": "敌人-眼镜僵尸1",
+            "height": 0.97,
+            "target": [
+              0.75,
+              0.52
+            ],
+            "brightness": 0.78
+          },
+          {
+            "spritename": "敌人-黄色衣服男僵尸1",
+            "height": 1.22,
+            "target": [
+              0.92,
+              0.52
+            ],
+            "brightness": 0.92
+          }
+        ]
+      }
+    },
+    {
+      "id": "stage_0_2",
+      "stageName": "废墟武器店",
+      "region": "基地门口",
+      "kind": "base",
+      "original": "assets/stage-select/previews/stage-internal-7894bfe6.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_0_2.webp",
+      "baseline_sha256": "d97081f727fee2febe4a8642d883eb21bf43242bdf988756bbfba14164033fb2",
+      "decision": "refined",
+      "changeReason": "调整眼镜僵尸为前景，金发僵尸退后，完整保留禁枪牌与柜体",
+      "renderer": "base_layout",
+      "composition": {
+        "bg_stem": "gk3_4_BG",
+        "crop_box": [
+          0.528,
+          0.155,
+          0.165,
+          0.185
+        ],
+        "layouts": [
+          {
+            "spritename": "敌人-金发红衣服女僵尸1",
+            "height": 0.94,
+            "target": [
+              0.7,
+              0.52
+            ],
+            "brightness": 0.77
+          },
+          {
+            "spritename": "敌人-眼镜僵尸1",
+            "height": 1.24,
+            "target": [
+              0.89,
+              0.52
+            ],
+            "brightness": 0.92
+          }
+        ]
+      },
+      "v6_png_sha256": "43df95f04fa6225a999af16d87fbf3ce3a2090342482ea0d7e8f5267608c1698",
+      "subjects": [
+        "敌人-金发红衣服女僵尸1",
+        "敌人-眼镜僵尸1"
+      ]
+    },
+    {
+      "id": "stage_0_3",
+      "stageName": "郊区",
+      "region": "基地门口",
+      "kind": "base",
+      "original": "assets/stage-select/previews/stage-internal-b154ede5.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_0_3.webp",
+      "baseline_sha256": "816afd272b56f59294d051e79873640b49f6d1e9bed80c395de93f1b1636e8b6",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "v6_png_sha256": "08927333b2e62f412b6c8fc0bd0e829db913f1f9275eca8351bba45d9f5bef4d",
+      "subjects": [
+        "敌人-光头军人僵尸1",
+        "敌人-黄色衣服男僵尸1"
+      ]
+    },
+    {
+      "id": "stage_0_4",
+      "stageName": "第一防线",
+      "region": "基地门口",
+      "kind": "base",
+      "original": "assets/stage-select/previews/stage-internal-acbf04d2.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_0_4.webp",
+      "baseline_sha256": "96c698846c22e2257941e7d74a59f0c79ac1f704ba6aee9e828e6c6fe4532173",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "v6_png_sha256": "256e9b46e3e2e9712a57bb276321691477400d77c75294aeb775dbe35edcedea",
+      "subjects": [
+        "敌人-柜员女僵尸",
+        "敌人-小儿麻痹僵尸1",
+        "敌人-光头军人僵尸1"
+      ]
+    },
+    {
+      "id": "stage_0_5",
+      "stageName": "商业区",
+      "region": "基地门口",
+      "kind": "base",
+      "original": "assets/stage-select/previews/stage-internal-3c5cab19.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_0_5.webp",
+      "baseline_sha256": "e834fc76f061c3f8b0187178a6f4b230031beb60e1382c1ca7a986bb5d9533c2",
+      "decision": "refined",
+      "changeReason": "保留原生五官线条，移除程序重绘脸板，控制眼光与取景倍率",
+      "renderer": "commercial",
+      "v6_png_sha256": "4f339c59e5ff835906e8f9d3d80b262395fad6ded14d1adb543ebad7222c6617",
+      "subjects": [
+        "敌人-帽子瘦僵尸1"
+      ],
+      "composition": {
+        "selected_bg": "gk7_2_BG.swf"
+      }
+    },
+    {
+      "id": "stage_0_6",
+      "stageName": "第三集结点",
+      "region": "基地门口",
+      "kind": "base",
+      "original": "assets/stage-select/previews/stage-internal-30e425d0.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_0_6.webp",
+      "baseline_sha256": "5c96a94fe5599f8745b6dbf3320ce47246dc819ca94c5c040bc36a1a346307c4",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "v6_png_sha256": "1f4c798a0a0cf5ff4b2063806dc5182d176c590eb4564ab2b2471887c8e91463",
+      "subjects": [
+        "敌人-光头军人僵尸1",
+        "敌人-胖僵尸1"
+      ]
+    },
+    {
+      "id": "stage_0_7",
+      "stageName": "贫民窟",
+      "region": "基地门口",
+      "kind": "base",
+      "original": "assets/stage-select/previews/stage-internal-c9a089da.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_0_7.webp",
+      "baseline_sha256": "79dcc1d7c239743a539fd64a677b791ab3825a7273ce4590f090e364d3ec9d97",
+      "decision": "refined",
+      "changeReason": "重新定位台阶入口，给左侧地标留出空间",
+      "renderer": "shantytown",
+      "v6_png_sha256": "6f9ce9266015337495482a64a63fdeb045083085967772faf0f9191e19d4ff61",
+      "subjects": [
+        "敌人-裸体兽化僵尸1",
+        "敌人-士兵奔跑僵尸1"
+      ],
+      "composition": {
+        "selected_bg": "gk9_2_BG.swf"
+      }
+    },
+    {
+      "id": "stage_0_8",
+      "stageName": "闹市区",
+      "region": "基地门口",
+      "kind": "base",
+      "original": "assets/stage-select/previews/stage-internal-1be6cc68.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_0_8.webp",
+      "baseline_sha256": "e0b71434a499d5db3ec7e09a4da0ef4a7b40ec7a46de306f7a05b399ed2b5eb2",
+      "decision": "refined",
+      "changeReason": "三只同阵营僵尸分层，移除遮挡主体的发块，保留闹市涂鸦",
+      "renderer": "base_layout",
+      "composition": {
+        "bg_stem": "gk10_1_BG",
+        "outdoor": true,
+        "crop_box": [
+          0.31,
+          0.24,
+          0.34,
+          0.24
+        ],
+        "layouts": [
+          {
+            "spritename": "敌人-胖僵尸1",
+            "height": 0.87,
+            "target": [
+              0.61,
+              0.54
+            ],
+            "brightness": 0.72
+          },
+          {
+            "spritename": "敌人-士兵奔跑僵尸1",
+            "height": 1.04,
+            "target": [
+              0.76,
+              0.53
+            ],
+            "brightness": 0.85
+          },
+          {
+            "spritename": "敌人-防爆服僵尸",
+            "height": 1.18,
+            "target": [
+              0.91,
+              0.52
+            ],
+            "brightness": 0.92
+          }
+        ]
+      },
+      "v6_png_sha256": "34f57ef06fed9d79237d8dbb9329138cc4af19b9e669df10ebec4fca7d4127f5",
+      "subjects": [
+        "敌人-胖僵尸1",
+        "敌人-士兵奔跑僵尸1",
+        "敌人-防爆服僵尸"
+      ]
+    },
+    {
+      "id": "stage_0_9",
+      "stageName": "地铁站",
+      "region": "基地门口",
+      "kind": "base",
+      "original": "assets/stage-select/previews/stage-internal-d1e96a89.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_0_9.webp",
+      "baseline_sha256": "92cfe22aebc00ca8791f82b4136f3b25a578e6d51f155caf5713f2a048eea3c1",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "v6_png_sha256": "2daec7a01fbe8b7a397fe510618ed984a10e15a3439b662bb81f94819ef96f69",
+      "subjects": [
+        "敌人-boss大僵尸"
+      ]
+    },
+    {
+      "id": "stage_0_10",
+      "stageName": "外交-第一防线防区",
+      "region": "基地门口",
+      "kind": "base",
+      "original": "assets/stage-select/previews/stage-default.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_0_10.webp",
+      "baseline_sha256": "abf3e76b25ba37d495951032c4823f4449942ab3658658772c3d12650d646212",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "v6_png_sha256": "2ed05553e6d4a7f8962b4910e2bfd98de91cd1a5c50a4daa1e07a48f25278dce",
+      "subjects": []
+    },
+    {
+      "id": "stage_0_11",
+      "stageName": "自来水厂",
+      "region": "基地门口",
+      "kind": "base",
+      "original": "assets/stage-select/previews/stage-161e2d82.png",
+      "baseline": "tools/stage-preview/sources/v6/stage_0_11.webp",
+      "baseline_sha256": "436178dbc99a6bd976b8c8e77766afd13657fe96a01cdb0db6ed951bf6f33fe3",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "v6_png_sha256": "20e728c9923b39f30e93259d249f5016d17bb32a507d7781c729264adfb7b5da",
+      "subjects": [
+        "敌人-瘦骨男尸",
+        "敌人-防爆服僵尸",
+        "敌人-特警僵尸"
+      ]
+    },
+    {
+      "id": "stage_0_12",
+      "stageName": "废城环线",
+      "region": "基地门口",
+      "kind": "base",
+      "original": "assets/stage-select/previews/stage-8ac69506.png",
+      "baseline": "tools/stage-preview/sources/v6/stage_0_12.webp",
+      "baseline_sha256": "6b24718415e28088fcd310ca7560902e4861eff125a47d0dd99b639dc117f215",
+      "decision": "refined",
+      "changeReason": "保留废城与环线四层地标，按现役关卡配置改用兽化变种为主怪；原版巨臂方案保留在V6对照中",
+      "v6_png_sha256": "c6f805275eb981656529d7396112932f663acd96725f6bf1b5b7a599fe8c5006",
+      "subjects": [
+        "敌人-光头军人僵尸1",
+        "敌人-兽化变种"
+      ],
+      "renderer": "ringroad",
+      "composition": {
+        "selected_bg": "废城环线地图3.swf"
+      }
+    },
+    {
+      "id": "stage_0_13",
+      "stageName": "医院",
+      "region": "基地门口",
+      "kind": "base",
+      "original": "assets/stage-select/previews/stage-de987ea8.png",
+      "baseline": "tools/stage-preview/sources/v6/stage_0_13.webp",
+      "baseline_sha256": "f66135740d4216561d47a8eb70a86957d4b280121b5693e40dfadfb3ee0c356f",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "v6_png_sha256": "1ef4f43f8e14905c6eff3027c20ff98b3873b3ad125b048d3ebefe3eb85302e7",
+      "subjects": [
+        "敌人-骨刺僵尸"
+      ]
+    },
+    {
+      "id": "stage_0_14",
+      "stageName": "地铁站隧道",
+      "region": "基地门口",
+      "kind": "base",
+      "original": "assets/stage-select/previews/derived/stage-derived-359f5dbb.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_0_14.webp",
+      "baseline_sha256": "0b1c33b8f46f63f9313d4de2dceb24d8167ee29c37f375de6f8f44112b56b23c",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "v6_png_sha256": "78edc9cf8db14a8abc1cf50050f2f0ac4084f33fa95ff70673164ebe8b5a0b41",
+      "subjects": [
+        "敌人-触手僵尸",
+        "敌人-爆胖僵尸"
+      ]
+    },
+    {
+      "id": "stage_0_15",
+      "stageName": "外交-隧道据点",
+      "region": "基地门口",
+      "kind": "base",
+      "original": "assets/stage-select/previews/stage-default.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_0_15.webp",
+      "baseline_sha256": "89c143c475177daf106992dee350955c3ca40ec797b1c025c635db8ac03f0345",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "v6_png_sha256": "cc519b6ce1f65be4b79a7e7366e220b7e84dbf6d7110efb2f746486df690f859",
+      "subjects": []
+    },
+    {
+      "id": "stage_10_0",
+      "stageName": "DEATH MATCH入门赛",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-0530c17a.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_0.webp",
+      "baseline_sha256": "b71f96e293120faf4208b5da957922110a0100edb9cbee5f0547750678db0e12",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_10_0",
+        "stageName": "DEATH MATCH入门赛",
+        "frameLabel": "基地车库",
+        "mode": "A_landmark",
+        "selected_sub_id": "0",
+        "selected_bg": "gk4_1_BG.swf",
+        "crop_box": [
+          0.06,
+          0.02,
+          0.3,
+          0.42
+        ],
+        "theme": "wasteland_warm",
+        "monsters": []
+      },
+      "v6_png_sha256": "869cf8a1a201d4266da4ab88486225f6fcac0c83fa15112e67604e7d4e426de2",
+      "subjects": []
+    },
+    {
+      "id": "stage_10_1",
+      "stageName": "DEATH MATCH角斗场",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-4948175b.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_1.webp",
+      "baseline_sha256": "3ccd2fab1c022b056571e005f3f1a3575f23d4b9ddcb56d376360118c59a4634",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_10_1",
+        "stageName": "DEATH MATCH角斗场",
+        "frameLabel": "基地车库",
+        "mode": "A_deathmatch_logo",
+        "selected_sub_id": "0",
+        "selected_bg": "jdc_2_BG.swf",
+        "crop_box": [
+          0.16,
+          0.04,
+          0.62,
+          0.72
+        ],
+        "theme": "wasteland_warm",
+        "monsters": []
+      },
+      "v6_png_sha256": "6b8a67f0fa59224686285f1384565162352b21cc560057e3799c3793e83a7381",
+      "subjects": []
+    },
+    {
+      "id": "stage_10_2",
+      "stageName": "堕落城区",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-c66733d3.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_2.webp",
+      "baseline_sha256": "1af7f63263a1ac51d3e3c02921fe54e755ed4ab1958f8e4e5096c50ff2c3da7a",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_10_2",
+        "stageName": "堕落城区",
+        "frameLabel": "基地车库",
+        "mode": "D_pack",
+        "selected_sub_id": "0",
+        "selected_bg": "gk12_1_BG.swf",
+        "crop_box": [
+          0.16,
+          0.08,
+          0.46,
+          0.7
+        ],
+        "theme": "urban_ruins",
+        "monsters": [
+          {
+            "spritename": "敌人-盗贼大叔",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-盗贼枪手",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-盗贼侏儒",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "3e078206853d54a19c4463e0b3cf06e31053d720ee8cbec3714be8f32651be6a",
+      "subjects": [
+        "敌人-盗贼大叔",
+        "敌人-盗贼枪手",
+        "敌人-盗贼侏儒"
+      ]
+    },
+    {
+      "id": "stage_10_3",
+      "stageName": "游寇基地",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-44f47c9a.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_3.webp",
+      "baseline_sha256": "309073a47c1bbc94582cfc85ca7dfe7447389d8529295758c7c4794bf2a90565",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_10_3",
+        "stageName": "游寇基地",
+        "frameLabel": "基地车库",
+        "mode": "C_duo",
+        "selected_sub_id": "1",
+        "selected_bg": "gk13_2_BG.swf",
+        "crop_box": [
+          0.28,
+          0.1,
+          0.45,
+          0.68
+        ],
+        "theme": "bandit_base",
+        "monsters": [
+          {
+            "spritename": "敌人-盗贼枪手",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-盗贼瘦子",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "e24fe47d5a6c596b12784e6948cc59271705f1bf51eaacff82eb24dcccfe0189",
+      "subjects": [
+        "敌人-盗贼枪手",
+        "敌人-盗贼瘦子"
+      ]
+    },
+    {
+      "id": "stage_10_4",
+      "stageName": "黑铁会",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-668d9d27.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_4.webp",
+      "baseline_sha256": "91fbb70a2fd2bee117b7ffce0a34626ca5fe819fea8ba39fa5101c00add6e195",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_10_4",
+        "stageName": "黑铁会",
+        "frameLabel": "基地车库",
+        "mode": "C_duo",
+        "selected_sub_id": "0",
+        "selected_bg": "gk14_1_BG.swf",
+        "crop_box": [
+          0.3,
+          0.1,
+          0.45,
+          0.68
+        ],
+        "theme": "heitie_steel",
+        "monsters": [
+          {
+            "spritename": "敌人-黑铁死士精英",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-黑铁会死士",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "72c03b406db053b7530c0a97478231c961ab413e3496f3dabac77922b8a166a1",
+      "subjects": [
+        "敌人-黑铁死士精英",
+        "敌人-黑铁会死士"
+      ]
+    },
+    {
+      "id": "stage_10_5",
+      "stageName": "摇滚公园",
+      "region": "基地车库",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/stage-internal-9c27b1ff.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_5.webp",
+      "baseline_sha256": "c469a632a728e8113d31bd563b0e8aae7d9eb5592154befbe8506ec945b90c69",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "variant": "A",
+      "v6_png_sha256": "4af2e9b4c20416099c9d9a579c19a2e833bb5f0332c7a7470efc2545714fd387",
+      "composition": {
+        "id": "stage_10_5",
+        "stageName": "摇滚公园",
+        "frameLabel": "基地车库",
+        "mode": "W_rock_instruments",
+        "selected_sub_id": "4",
+        "selected_bg": "gk15_5_BG.swf",
+        "crop_box": [
+          0.2,
+          0.07,
+          0.25,
+          0.25
+        ],
+        "theme": "rock_concert",
+        "monsters": [
+          {
+            "spritename": "敌人-摇滚公园萝莉",
+            "role": "weapon_crop"
+          },
+          {
+            "spritename": "敌人-摇滚公园少女",
+            "role": "weapon_crop"
+          }
+        ]
+      },
+      "subjects": [
+        "敌人-摇滚公园萝莉",
+        "敌人-摇滚公园少女"
+      ]
+    },
+    {
+      "id": "stage_10_6",
+      "stageName": "革命军哨所",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-18915708.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_6.webp",
+      "baseline_sha256": "4635f1447c79144bfc05ec24ed978b75c830318df3a1ebb89e7f3c73e4559c05",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_10_6",
+        "stageName": "革命军哨所",
+        "frameLabel": "基地车库",
+        "mode": "D_pack",
+        "selected_sub_id": "4",
+        "selected_bg": "gk16_55_BG.swf",
+        "crop_box": [
+          0.34,
+          0.08,
+          0.45,
+          0.7
+        ],
+        "theme": "military_outpost",
+        "monsters": [
+          {
+            "spritename": "敌人-军阀重装兵",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-军阀突击兵",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-军阀狙击兵",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "ddf801d157bb25da862556a0ab0adb55219b2a8d6756b4e398c7948c35a4ece2",
+      "subjects": [
+        "敌人-军阀重装兵",
+        "敌人-军阀突击兵",
+        "敌人-军阀狙击兵"
+      ]
+    },
+    {
+      "id": "stage_10_7",
+      "stageName": "堕落城深处",
+      "region": "基地车库",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/stage-b7cb58ce.png",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_7.webp",
+      "baseline_sha256": "6fe06a99eef28b63896d762f411cde25791b8dc18bef9d9f577793a482403ad9",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "variant": "A",
+      "v6_png_sha256": "88ca1107e1553a9dc325a02cc52eec1f60c26a2d9d470b5e23c9ad85572181ce",
+      "composition": {
+        "id": "stage_10_7",
+        "stageName": "堕落城深处",
+        "frameLabel": "基地车库",
+        "mode": "C2_linear_shadow",
+        "selected_sub_id": "4",
+        "selected_bg": "gk13_1_BG.swf",
+        "crop_box": [
+          0.18,
+          0.1,
+          0.45,
+          0.68
+        ],
+        "theme": "deep_city_shadow",
+        "monsters": [
+          {
+            "spritename": "敌人-黑白无常",
+            "role": "primary"
+          }
+        ]
+      },
+      "subjects": [
+        "敌人-黑白无常"
+      ]
+    },
+    {
+      "id": "stage_10_8",
+      "stageName": "A兵团试炼场",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-3f61ca68.png",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_8.webp",
+      "baseline_sha256": "973d4305be88ef443c83dd9a6412dba17eee626125fb4b72019f2284816679a0",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_10_8",
+        "stageName": "A兵团试炼场",
+        "frameLabel": "基地车库",
+        "mode": "D_pack",
+        "selected_sub_id": "6",
+        "selected_bg": "Survival_mode_BG.swf",
+        "crop_box": [
+          0.18,
+          0.08,
+          0.45,
+          0.7
+        ],
+        "theme": "trial_facility",
+        "monsters": [
+          {
+            "spritename": "敌人-黑铁会死士",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-军阀突击兵",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-Gazer",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "cceef8369dcddb1f9ab7b66b907dc822f466f394cbf69c10c0c5108be2ce2fd0",
+      "subjects": [
+        "敌人-黑铁会死士",
+        "敌人-军阀突击兵",
+        "敌人-Gazer"
+      ]
+    },
+    {
+      "id": "stage_10_9",
+      "stageName": "压制摇滚公园",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-63df91f6.png",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_9.webp",
+      "baseline_sha256": "2d6b3caa64157a2f6c3d80237ad5c8b90efacf27883101896cbca00302ff6294",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_10_9",
+        "stageName": "压制摇滚公园",
+        "frameLabel": "基地车库",
+        "mode": "D_pack",
+        "selected_sub_id": "0",
+        "selected_bg": "gk15_2_BG.swf",
+        "crop_box": [
+          0.22,
+          0.08,
+          0.45,
+          0.7
+        ],
+        "theme": "rock_suppression",
+        "monsters": [
+          {
+            "spritename": "敌人-双喷少女",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-刀狙少女",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-狂野玫瑰马尾姑娘",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "57aa58ddea3d10799780e2064f130ce66a20cb3e8311181f1cb0d1fcc1ff6854",
+      "subjects": [
+        "敌人-双喷少女",
+        "敌人-刀狙少女",
+        "敌人-狂野玫瑰马尾姑娘"
+      ]
+    },
+    {
+      "id": "stage_10_10",
+      "stageName": "摇滚内战",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-0df1b961.png",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_10.webp",
+      "baseline_sha256": "d144824035cc6cbba4b56af0f6fe240e61dc9ef5baddb604c748abed0d01e989",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_10_10",
+        "stageName": "摇滚内战",
+        "frameLabel": "基地车库",
+        "mode": "D_pack",
+        "selected_sub_id": "2",
+        "selected_bg": "gk15_3_BG.swf",
+        "crop_box": [
+          0.46,
+          0.16,
+          0.46,
+          0.58
+        ],
+        "theme": "rock_civil_war",
+        "monsters": [
+          {
+            "spritename": "敌人-诺亚虔信者",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-刀狙少女",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-劫掠少女",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "443e9a51bd3bc70c3105fc8f45b2010a2b4de74e7edbc4b9e48020d9b3b55e24",
+      "subjects": [
+        "敌人-诺亚虔信者",
+        "敌人-刀狙少女",
+        "敌人-劫掠少女"
+      ]
+    },
+    {
+      "id": "stage_10_11",
+      "stageName": "外交-摇滚公园",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-default.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_11.webp",
+      "baseline_sha256": "741757f68280e0c6932ebd251151ad4e6b78980ca3b4de8285180b7152771ab3",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_10_11",
+        "stageName": "外交-摇滚公园",
+        "frameLabel": "基地车库",
+        "mode": "A_landmark",
+        "selected_sub_id": "0",
+        "selected_bg": "地图-摇滚公园.swf",
+        "crop_box": [
+          0.21,
+          0.06,
+          0.38,
+          0.52
+        ],
+        "theme": "rock_park_diplomacy",
+        "monsters": []
+      },
+      "v6_png_sha256": "011076f2874cfe2288bd79482eaa87d332df4c1a3730b6470c48c1e65aff1062",
+      "subjects": []
+    },
+    {
+      "id": "stage_10_12",
+      "stageName": "外交-堕落城酒吧",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-default.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_12.webp",
+      "baseline_sha256": "24cb375501616765ffba1ab67a1323c4b73fdb245a9bef57931d5f3d395408ce",
+      "decision": "refined",
+      "changeReason": "保留地图原生吧台与两组桌椅，移除预览中的运行时名字占位和交互标记",
+      "composition": {
+        "id": "stage_10_12",
+        "stageName": "外交-堕落城酒吧",
+        "frameLabel": "基地车库",
+        "mode": "A_landmark",
+        "selected_sub_id": "0",
+        "selected_bg": "地图-堕落城酒吧.swf",
+        "crop_box": [
+          0.67,
+          0.4,
+          0.3,
+          0.5
+        ],
+        "theme": "fallen_city_bar_diplomacy",
+        "monsters": [],
+        "layouts": [],
+        "source_png": "refine_sources/bar_decor/DefineSprite_181_地图-堕落城酒吧/1.png",
+        "crop_bounds": [
+          0.33,
+          0.35,
+          0.92,
+          0.869
+        ]
+      },
+      "renderer": "normal",
+      "v6_png_sha256": "cec8a3374d75c2734fda9edcf2c7d6e0ff761f7bf38a9fa01640f373686026b7",
+      "subjects": []
+    },
+    {
+      "id": "stage_10_13",
+      "stageName": "外交-联合大学",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-default.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_13.webp",
+      "baseline_sha256": "0706c659a676015d77d86016bc0fe0f369cf3720520714cf55f804ac7a842e04",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_10_13",
+        "stageName": "外交-联合大学",
+        "frameLabel": "基地车库",
+        "mode": "A_landmark",
+        "selected_sub_id": "0",
+        "selected_bg": "地图-联合大学.swf",
+        "crop_box": [
+          0.22,
+          0.02,
+          0.44,
+          0.37
+        ],
+        "theme": "university_diplomacy",
+        "monsters": []
+      },
+      "v6_png_sha256": "2e1eb5aa6833972603b578479137dcd6d5d9dab37cffe8fe810d63aa74736b5b",
+      "subjects": []
+    },
+    {
+      "id": "stage_10_14",
+      "stageName": "大学城周边",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-ee41424d.png",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_14.webp",
+      "baseline_sha256": "c31a3b6923649c6b5700b3da05392e1c636b5205c07fd42b8a360e2eaa1d4a77",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_10_14",
+        "stageName": "大学城周边",
+        "frameLabel": "基地车库",
+        "mode": "D_pack",
+        "selected_sub_id": "0",
+        "selected_bg": "gk12_1_BG.swf",
+        "crop_box": [
+          0.04,
+          0.18,
+          0.44,
+          0.54
+        ],
+        "theme": "university_town_periphery",
+        "monsters": [
+          {
+            "spritename": "敌人-盗贼大叔",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-盗贼瘦子",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-劫掠少女",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "2fcb7ad4f3d87192581f501a2e7971ccc8d61d742330c32333876ec3537ee547",
+      "subjects": [
+        "敌人-盗贼大叔",
+        "敌人-盗贼瘦子",
+        "敌人-劫掠少女"
+      ]
+    },
+    {
+      "id": "stage_10_15",
+      "stageName": "堕落城下水道入口",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-5b6008e1.png",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_15.webp",
+      "baseline_sha256": "d84f373c4892b9e4e99733a68f1347087f104b39a5331f5c66d2937214f7e60c",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_10_15",
+        "stageName": "堕落城下水道入口",
+        "frameLabel": "基地车库",
+        "mode": "C_sewer_right",
+        "selected_sub_id": "0",
+        "selected_bg": "堕落城下水道入口.swf",
+        "crop_box": [
+          0.32,
+          0.12,
+          0.68,
+          0.82
+        ],
+        "theme": "fallen_city_sewer_entrance",
+        "monsters": [
+          {
+            "spritename": "敌人-异变盗贼",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-瘦骨男尸",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "6e03f7138778f9bade2936984f5ea1d7c9ba7d105085cfbc7c520adb1960e0b3",
+      "subjects": [
+        "敌人-异变盗贼",
+        "敌人-瘦骨男尸"
+      ]
+    },
+    {
+      "id": "stage_10_16",
+      "stageName": "外交-堕落城商业街",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-default.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_16.webp",
+      "baseline_sha256": "4dce175b576e12cae357bf09285609dad432fd656708fe61ddf4a6567262858f",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_10_16",
+        "stageName": "外交-堕落城商业街",
+        "frameLabel": "基地车库",
+        "mode": "A_landmark",
+        "selected_sub_id": "0",
+        "selected_bg": "地图-堕落城商业街.swf",
+        "crop_box": [
+          0.25,
+          0.16,
+          0.68,
+          0.49
+        ],
+        "theme": "fallen_city_commercial_street_diplomacy",
+        "monsters": []
+      },
+      "v6_png_sha256": "ae01b0e2c3cd80e48e939a4819d67704614c4881841b7e7d99fa84649fef4413",
+      "subjects": []
+    },
+    {
+      "id": "stage_10_17",
+      "stageName": "堕落城保卫战",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/derived/stage-derived-be8e2219.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_17.webp",
+      "baseline_sha256": "4aef7c6be6c947e3dc6829b0f2cf4333e243c452151d99ce77938ddd4ce957d7",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_10_17",
+        "stageName": "堕落城保卫战",
+        "frameLabel": "基地车库",
+        "mode": "D_pack",
+        "selected_sub_id": "2",
+        "selected_bg": "堕落城保卫战3.swf",
+        "crop_box": [
+          0.03,
+          0.2,
+          0.46,
+          0.58
+        ],
+        "theme": "fallen_city_defense",
+        "monsters": [
+          {
+            "spritename": "敌人-闪6特工",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-诺亚克隆兽",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-重型改造僵尸",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "e6567c862b8639fe56b2e007a1bbc20da0bcbe00abf007ac40e2c327af6bdf99",
+      "subjects": [
+        "敌人-闪6特工",
+        "敌人-诺亚克隆兽",
+        "敌人-重型改造僵尸"
+      ]
+    },
+    {
+      "id": "stage_10_18",
+      "stageName": "据点M",
+      "region": "基地车库",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/derived/stage-derived-b2c956cf.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_10_18.webp",
+      "baseline_sha256": "3db016331585d5d0a9a1ef7bb4fd21a0196c053657c182168fa90c5e59ce0fcf",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_10_18",
+        "stageName": "据点M",
+        "frameLabel": "基地车库",
+        "mode": "D_pack",
+        "selected_sub_id": "1",
+        "selected_bg": "据点M-月面保洁.swf",
+        "crop_box": [
+          0.08,
+          0.16,
+          0.48,
+          0.62
+        ],
+        "theme": "stronghold_m",
+        "monsters": [
+          {
+            "spritename": "敌人-特警僵尸",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-盗贼大叔",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-爆胖僵尸",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "3183a43682b48e5cc988cb12cba6d3b2d500ba33beb82c75c4a3e33c8b469924",
+      "subjects": [
+        "敌人-特警僵尸",
+        "敌人-盗贼大叔",
+        "敌人-爆胖僵尸"
+      ]
+    },
+    {
+      "id": "stage_18_0",
+      "stageName": "黑铁会翅虎堂外围",
+      "region": "黑铁会总部",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-72500594.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_18_0.webp",
+      "baseline_sha256": "b82084f938d8c1309b5cc854d1db86e9e2c66532aa59d08f66cc69fb35c206e0",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_18_0",
+        "stageName": "黑铁会翅虎堂外围",
+        "mode": "C_duo",
+        "selected_sub_id": "2",
+        "selected_bg": "gk13_2_BG.swf",
+        "crop_box": [
+          0.12,
+          0.05,
+          0.44,
+          0.52
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-黑铁会刺客",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-黑铁会死士",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "25567eeeab604f49157b641f2f26a8142146bc1e2cc80bb84fac805992c6fcbe",
+      "subjects": [
+        "敌人-黑铁会刺客",
+        "敌人-黑铁会死士"
+      ]
+    },
+    {
+      "id": "stage_18_1",
+      "stageName": "黑铁会总部边缘",
+      "region": "黑铁会总部",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-ebfda5bd.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_18_1.webp",
+      "baseline_sha256": "84e93f5f6982060f9ca720b1ac01da4aed418c7c75d7ba4f4f82d54c1309bfe2",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_18_1",
+        "stageName": "黑铁会总部边缘",
+        "mode": "C_duo",
+        "selected_sub_id": "2",
+        "selected_bg": "gk15_3_BG.swf",
+        "crop_box": [
+          0.12,
+          0.05,
+          0.44,
+          0.52
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-黑铁死士精英",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-黑铁会大叔",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "705328a426f40b3b8cd9e884202f41e2875ea7444a871233aae4e43bccc3b394",
+      "subjects": [
+        "敌人-黑铁死士精英",
+        "敌人-黑铁会大叔"
+      ]
+    },
+    {
+      "id": "stage_18_2",
+      "stageName": "黑铁会翅虎堂内部",
+      "region": "黑铁会总部",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/stage-internal-8a6a80db.png",
+      "baseline": "tools/stage-preview/sources/v6/stage_18_2.webp",
+      "baseline_sha256": "5e110214f59622a0ced5bd78766ad3344f03815797fe8344ceb86084b6eb7758",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "variant": "A",
+      "v6_png_sha256": "6a1a1d7133860abd880b64afb77fdc86c64af4b7de1c1566229d1045fd1add11",
+      "composition": {
+        "id": "stage_18_2",
+        "stageName": "黑铁会翅虎堂内部",
+        "mode": "C2_linear_shadow",
+        "selected_sub_id": "2",
+        "selected_bg": "hthcftnb_3_BG.swf",
+        "crop_box": [
+          0.4,
+          0.05,
+          0.45,
+          0.55
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-飞刀小子",
+            "role": "primary"
+          }
+        ]
+      },
+      "subjects": [
+        "敌人-飞刀小子"
+      ]
+    },
+    {
+      "id": "stage_18_3",
+      "stageName": "黑铁会火凤堂外围",
+      "region": "黑铁会总部",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-8fb47d2c.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_18_3.webp",
+      "baseline_sha256": "836c56a600bed03fc1597921c7f255297f8551cd2f1986e35aaa37bd029f09af",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_18_3",
+        "stageName": "黑铁会火凤堂外围",
+        "mode": "C_duo",
+        "selected_sub_id": "1",
+        "selected_bg": "gk16_2_BG.swf",
+        "crop_box": [
+          0.15,
+          0.05,
+          0.45,
+          0.52
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-黑铁长枪兵",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-黑铁会大叔",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "e425571f7af65ebf29c95fa0ee7d60729568f0bfa9d6607f2ae5df11fdcecf84",
+      "subjects": [
+        "敌人-黑铁长枪兵",
+        "敌人-黑铁会大叔"
+      ]
+    },
+    {
+      "id": "stage_18_4",
+      "stageName": "黑铁会火凤堂内部",
+      "region": "黑铁会总部",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/stage-internal-bae09aa3.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_18_4.webp",
+      "baseline_sha256": "daeac3e2c43931c551e9b511adebed11d7df587577577b8b5108632f958d9f0e",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "variant": "A",
+      "v6_png_sha256": "1b11edaa3bdd0583e22f2ccef5958160bea4880d23b8bca51d8ff983b80032bf",
+      "composition": {
+        "id": "stage_18_4",
+        "stageName": "黑铁会火凤堂内部",
+        "mode": "C2_linear_shadow",
+        "selected_sub_id": "2",
+        "selected_bg": "hthhftnb_2_BG.swf",
+        "crop_box": [
+          0.22,
+          0.05,
+          0.45,
+          0.55
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-粉红头发御姐",
+            "role": "primary"
+          }
+        ]
+      },
+      "subjects": [
+        "敌人-粉红头发御姐"
+      ]
+    },
+    {
+      "id": "stage_18_5",
+      "stageName": "黑铁会黑龙堂外围",
+      "region": "黑铁会总部",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-d66e726b.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_18_5.webp",
+      "baseline_sha256": "c27351122a3a7a708925137a307344a855310eb2cb1e922b9f27d7e482b74809",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_18_5",
+        "stageName": "黑铁会黑龙堂外围",
+        "mode": "C_duo",
+        "selected_sub_id": "1",
+        "selected_bg": "gk12_5_BG.swf",
+        "crop_box": [
+          0.12,
+          0.05,
+          0.44,
+          0.52
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-黑铁精英流锤兵",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-黑铁长枪兵",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "4e79d6bc25f949679ca86d05a8b835d8541244129eeccdb6492f572180927453",
+      "subjects": [
+        "敌人-黑铁精英流锤兵",
+        "敌人-黑铁长枪兵"
+      ]
+    },
+    {
+      "id": "stage_18_6",
+      "stageName": "黑铁会黑龙堂内部",
+      "region": "黑铁会总部",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/stage-internal-f2c34f54.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_18_6.webp",
+      "baseline_sha256": "4376bedec99b9c59f950bfe675b85511c20c5136a6724af56a6601ea19eaf907",
+      "decision": "refined",
+      "changeReason": "恢复向左上出枪的原版动势，枪尖完整入画，保持握持手与重甲头部",
+      "variant": "A",
+      "renderer": "boss",
+      "v6_png_sha256": "c1bbce683c8dfd4f5732c1e2527c6cad23a2281849e182586b4131517da64116",
+      "composition": {
+        "id": "stage_18_6",
+        "stageName": "黑铁会黑龙堂内部",
+        "mode": "C2_linear_shadow",
+        "selected_sub_id": "0",
+        "selected_bg": "hthhltnb_3_BG.swf",
+        "crop_box": [
+          0.12,
+          0.08,
+          0.45,
+          0.55
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-铠甲勇士战马形态",
+            "role": "primary"
+          }
+        ]
+      },
+      "subjects": [
+        "敌人-铠甲勇士战马形态"
+      ],
+      "boss": {
+        "region": "黑铁会总部",
+        "crop_box_override": [
+          0.5,
+          0.02,
+          0.28,
+          0.36
+        ],
+        "stage_lights": [
+          {
+            "center": [
+              0.18,
+              0.3
+            ],
+            "radius": [
+              0.24,
+              0.42
+            ],
+            "rgb": [
+              90,
+              225,
+              145
+            ],
+            "alpha": 60
+          }
+        ],
+        "sig_hues": [
+          [
+            200,
+            248
+          ],
+          [
+            345,
+            22
+          ]
+        ],
+        "rim_rgb": [
+          210,
+          228,
+          250
+        ],
+        "col_a": {
+          "type": "hires",
+          "folder": "敌人-铠甲勇士战马形态_c1839",
+          "frame": 13,
+          "flip_x": false,
+          "scale_h": 1.35,
+          "max_w": 1.36,
+          "anchor_xy": [
+            0.5,
+            0
+          ],
+          "target_xy": [
+            0.61,
+            0.08
+          ]
+        }
+      },
+      "requiredSubjectPoints": [
+        {
+          "name": "枪尖",
+          "uv": [
+            0.025,
+            0.03
+          ],
+          "margin": 8
+        },
+        {
+          "name": "握持手",
+          "uv": [
+            0.55,
+            0.64
+          ],
+          "margin": 8
+        }
+      ]
+    },
+    {
+      "id": "stage_18_7",
+      "stageName": "黑铁会总堂外围",
+      "region": "黑铁会总部",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-dfb8a578.png",
+      "baseline": "tools/stage-preview/sources/v6/stage_18_7.webp",
+      "baseline_sha256": "7dcc6d022497e6ec153e0d6d8b406f8a48d93fa9b2c82d3a351e33eb3d1822df",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_18_7",
+        "stageName": "黑铁会总堂外围",
+        "mode": "C_duo",
+        "selected_sub_id": "5",
+        "selected_bg": "hthzt_0_BG.swf",
+        "crop_box": [
+          0.15,
+          0.05,
+          0.45,
+          0.55
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-黑铁弓箭手",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-黑铁武士",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "d4e293f5175cb6ca805f890bed11909792dab6d0b8f41a136fe2663187a58ff3",
+      "subjects": [
+        "敌人-黑铁弓箭手",
+        "敌人-黑铁武士"
+      ]
+    },
+    {
+      "id": "stage_18_8",
+      "stageName": "黑铁会总堂",
+      "region": "黑铁会总部",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/stage-internal-dea2d3a2.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_18_8.webp",
+      "baseline_sha256": "a9298907baec74a416d065b8a0f1b8d3ed88e406f169d0a00a4210d7885ad133",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "variant": "A",
+      "v6_png_sha256": "e529bc4b96d5bec9f5dbdb2e539d5b4e9f9d4658ca3522232954ae3f7ea411a5",
+      "composition": {
+        "id": "stage_18_8",
+        "stageName": "黑铁会总堂",
+        "mode": "C2_linear_shadow",
+        "selected_sub_id": "5",
+        "selected_bg": "hthzt_5_BG.swf",
+        "crop_box": [
+          0.12,
+          0.08,
+          0.45,
+          0.55
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-唐装剑侠",
+            "role": "primary"
+          }
+        ]
+      },
+      "subjects": [
+        "敌人-唐装剑侠"
+      ]
+    },
+    {
+      "id": "stage_18_9",
+      "stageName": "被攻击的黑铁会",
+      "region": "黑铁会总部",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-8d0b7bf0.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_18_9.webp",
+      "baseline_sha256": "ac578b26af69aecafc0e65ea4648c23be4aad9fadcb2e9d48ffdad77fb4c2421",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_18_9",
+        "stageName": "被攻击的黑铁会",
+        "mode": "D_pack",
+        "selected_sub_id": "3",
+        "selected_bg": "hthzt_4_BG.swf",
+        "crop_box": [
+          0.12,
+          0.08,
+          0.45,
+          0.55
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-兽化改造僵尸",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-普通改造僵尸",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-重型改造僵尸",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "f19e9eb771bee53dcece721af0a4b286a2cb95477647611430af568eafeb1aa7",
+      "subjects": [
+        "敌人-兽化改造僵尸",
+        "敌人-普通改造僵尸",
+        "敌人-重型改造僵尸"
+      ]
+    },
+    {
+      "id": "stage_18_10",
+      "stageName": "外交-黑铁会修炼场",
+      "region": "黑铁会总部",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-default.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_18_10.webp",
+      "baseline_sha256": "766eb746243b90a48c5647aaff6e25a0f789780d2c6ee2d2c8a3c08688c1d538",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_18_10",
+        "stageName": "外交-黑铁会修炼场",
+        "mode": "A_landmark",
+        "selected_sub_id": "0",
+        "selected_bg": "地图-黑铁会修炼场.swf",
+        "crop_box": [
+          0.22,
+          0.05,
+          0.56,
+          0.65
+        ],
+        "monsters": []
+      },
+      "v6_png_sha256": "c2709b6a0ae25c3b92d32c871d908172304c76cd953d3c5f6a9bbc73ccfcb3c9",
+      "subjects": []
+    },
+    {
+      "id": "stage_25_0",
+      "stageName": "禁区边缘",
+      "region": "地下2层",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/stage-internal-23e2fb7b.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_25_0.webp",
+      "baseline_sha256": "f9e279d5d3df17b9c303223dc056e7f463d8d9566c7a0846303543d22d054660",
+      "decision": "refined",
+      "changeReason": "T800左移并放大头肩，让首次遭遇的主体重新成为焦点",
+      "variant": "A",
+      "renderer": "boss",
+      "v6_png_sha256": "914deb5b5ab01c2535bc1af5631f7f5cd671eaed4bebd88588395b0176ec23ed",
+      "composition": {
+        "id": "stage_25_0",
+        "stageName": "禁区边缘",
+        "mode": "C2_linear_shadow",
+        "selected_sub_id": "1",
+        "selected_bg": "gk23_2_BG.swf",
+        "crop_box": [
+          0.28,
+          0.14,
+          0.38,
+          0.52
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-终结者T800",
+            "role": "primary"
+          }
+        ]
+      },
+      "subjects": [
+        "敌人-终结者T800"
+      ],
+      "boss": {
+        "region": "地下2层",
+        "crop_box_override": [
+          0.02,
+          0.18,
+          0.28,
+          0.36
+        ],
+        "stage_lights": [
+          {
+            "center": [
+              0.72,
+              0.42
+            ],
+            "radius": [
+              0.22,
+              0.36
+            ],
+            "rgb": [
+              255,
+              45,
+              45
+            ],
+            "alpha": 70
+          }
+        ],
+        "sig_hues": [
+          [
+            345,
+            20
+          ]
+        ],
+        "rim_rgb": [
+          205,
+          224,
+          245
+        ],
+        "col_a": {
+          "type": "hires",
+          "folder": "敌人-终结者T800_c1762_9x",
+          "frame": 1,
+          "flip_x": false,
+          "top_y": -0.02,
+          "visible_ry": 0.16,
+          "anchor_xy": [
+            0.54,
+            0
+          ],
+          "target_xy": [
+            0.73,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "stage_25_1",
+      "stageName": "深入禁区",
+      "region": "地下2层",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-cf7b231c.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_25_1.webp",
+      "baseline_sha256": "f380c62de36987cc69b04cde23d4a1a2ebb436510fde6157c54d2539014b9fe7",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_25_1",
+        "stageName": "深入禁区",
+        "mode": "D_pack",
+        "selected_sub_id": "4",
+        "selected_bg": "gk24_5_BG.swf",
+        "crop_box": [
+          0.08,
+          0.12,
+          0.38,
+          0.54
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-终结者T800",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-兽化僵尸1",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "94cb45d8c8d8b6ddea3b48a5a52841872a11843f8832cd0f1c52bf4bc90b3f60",
+      "subjects": [
+        "敌人-终结者T800",
+        "敌人-兽化僵尸1"
+      ]
+    },
+    {
+      "id": "stage_25_2",
+      "stageName": "诺亚前线基地哨岗",
+      "region": "地下2层",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-2359c3ae.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_25_2.webp",
+      "baseline_sha256": "d2da300eb85c4122fbbf3544ed26a130fc71bd5320563695ab66ec34b09aba5a",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_25_2",
+        "stageName": "诺亚前线基地哨岗",
+        "mode": "D_pack",
+        "selected_sub_id": "1",
+        "selected_bg": "诺亚前线基地哨岗_1_BG.swf",
+        "crop_box": [
+          0.02,
+          0.2,
+          0.45,
+          0.6
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-普通爆炸僵尸",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-重型改造僵尸",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-兽化改造僵尸",
+            "role": "tertiary"
+          }
+        ]
+      },
+      "v6_png_sha256": "9809f7fe0c7150c564205a46954f10245586c356562006a61d1a463120193798",
+      "subjects": [
+        "敌人-普通爆炸僵尸",
+        "敌人-重型改造僵尸",
+        "敌人-兽化改造僵尸"
+      ]
+    },
+    {
+      "id": "stage_25_3",
+      "stageName": "诺亚前线基地兵工厂",
+      "region": "地下2层",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-1c3e2d21.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_25_3.webp",
+      "baseline_sha256": "05b58d080446c23e117925613fa4d85b1a39b7d13a9614111824739e6423973d",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_25_3",
+        "stageName": "诺亚前线基地兵工厂",
+        "mode": "C_duo",
+        "selected_sub_id": "5",
+        "selected_bg": "诺亚前线基地兵工厂中枢_BG.swf",
+        "crop_box": [
+          0.08,
+          0.4,
+          0.5,
+          0.45
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-诺亚克隆兽",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-闪6特工",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "b50d4bb48fa76cc7b20093dd1e51cfea475a8f207f437121c24869e89c5cc76b",
+      "subjects": [
+        "敌人-诺亚克隆兽",
+        "敌人-闪6特工"
+      ]
+    },
+    {
+      "id": "stage_25_4",
+      "stageName": "被偷袭的基地",
+      "region": "地下2层",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/derived/stage-derived-b276c644.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_25_4.webp",
+      "baseline_sha256": "029a399d45c0c5791a3efe7ee7baa31fd47615b82d5c3f4f67b55dc2752eeee5",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_25_4",
+        "stageName": "被偷袭的基地",
+        "mode": "C_duo",
+        "selected_sub_id": "2",
+        "selected_bg": "gk20_1_BG.swf",
+        "crop_box": [
+          0.2,
+          0.16,
+          0.44,
+          0.52
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-终结者T800",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-终结者T800",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "7eb9ed9a98923029d98af94776c8846c03ffb93c24f88385c8dbfd0087db1c89",
+      "subjects": [
+        "敌人-终结者T800",
+        "敌人-终结者T800"
+      ]
+    },
+    {
+      "id": "stage_25_5",
+      "stageName": "菲尼克斯Lv16",
+      "region": "地下2层",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/derived/stage-derived-e87d7dc4.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_25_5.webp",
+      "baseline_sha256": "14994d71d7ca5c061682073470c9c5f4ede69b3cfaa8a2e8a5fda6ae744c6d8a",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "variant": "A",
+      "v6_png_sha256": "0a8a41cc99d9de07e54c438e0f108436ce37ee1f4720cc8ecc1c998dc4db730f",
+      "composition": {
+        "id": "stage_25_5",
+        "stageName": "菲尼克斯Lv16",
+        "mode": "C2_linear_shadow",
+        "selected_sub_id": "0",
+        "selected_bg": "ciyuanta_魔神图专用.swf",
+        "crop_box": [
+          0.02,
+          0.04,
+          0.36,
+          0.42
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-魔神菲尼克斯",
+            "role": "primary"
+          }
+        ]
+      },
+      "subjects": [
+        "敌人-魔神菲尼克斯"
+      ]
+    },
+    {
+      "id": "stage_25_6",
+      "stageName": "锡蒙利Lv16",
+      "region": "地下2层",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/derived/stage-derived-5e23549b.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_25_6.webp",
+      "baseline_sha256": "9a092f088934754b14d25daca6c7150729812382c8245a61ac2c49de055264c2",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "variant": "A",
+      "v6_png_sha256": "079877f3ea057c976f59654b75044649288f48ea2a251fde90badfdc47af5a9b",
+      "composition": {
+        "id": "stage_25_6",
+        "stageName": "锡蒙利Lv16",
+        "mode": "C2_linear_shadow",
+        "selected_sub_id": "0",
+        "selected_bg": "ciyuanta_魔神图专用.swf",
+        "crop_box": [
+          0.22,
+          0.04,
+          0.38,
+          0.42
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-锡蒙利",
+            "role": "primary"
+          }
+        ]
+      },
+      "subjects": [
+        "敌人-锡蒙利"
+      ]
+    },
+    {
+      "id": "stage_25_7",
+      "stageName": "菲尼克斯Lv10",
+      "region": "地下2层",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/derived/stage-derived-e67d7a9e.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_25_7.webp",
+      "baseline_sha256": "bec7bdcafd6bd91710dcc64a0d896acb0ad7b9501ee50b9b8916e674d1cf672b",
+      "decision": "refined",
+      "changeReason": "移除Lv10出怪配置未列出的赤焰眷属，改用本关武士与火精灵",
+      "composition": {
+        "id": "stage_25_7",
+        "stageName": "菲尼克斯Lv10",
+        "mode": "D_pack",
+        "selected_sub_id": "0",
+        "selected_bg": "ciyuanta_魔神图专用.swf",
+        "crop_box": [
+          0.38,
+          0.04,
+          0.38,
+          0.42
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-凤凰眷属武士",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-凤凰眷属火精灵",
+            "role": "secondary"
+          }
+        ],
+        "layouts": [
+          {
+            "spritename": "敌人-凤凰眷属火精灵",
+            "height": 0.88,
+            "target": [
+              0.62,
+              0.54
+            ],
+            "brightness": 0.82
+          },
+          {
+            "spritename": "敌人-凤凰眷属武士",
+            "height": 1.17,
+            "target": [
+              0.86,
+              0.52
+            ],
+            "brightness": 0.92
+          }
+        ]
+      },
+      "renderer": "normal",
+      "v6_png_sha256": "524d6f6782d524a0b3800887321426fdd4366d7a3d917fd852c20df8e136dbfe",
+      "subjects": [
+        "敌人-凤凰眷属武士",
+        "敌人-凤凰眷属火精灵"
+      ]
+    },
+    {
+      "id": "stage_25_8",
+      "stageName": "锡蒙利Lv10",
+      "region": "地下2层",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/derived/stage-derived-64235e0d.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_25_8.webp",
+      "baseline_sha256": "b02202e8b9923e589bb1c3eea881c328e526b98bc8c2cc32d857430a62cf6f90",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_25_8",
+        "stageName": "锡蒙利Lv10",
+        "mode": "D_pack",
+        "selected_sub_id": "0",
+        "selected_bg": "ciyuanta_魔神图专用.swf",
+        "crop_box": [
+          0.58,
+          0.04,
+          0.38,
+          0.42
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-黑炎骑士",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-恶魔骑士",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-重剑骑士",
+            "role": "tertiary"
+          }
+        ]
+      },
+      "v6_png_sha256": "9db5709c94d8ee042190030ad07e77e1b7c02df42078c8e5e0aeebe593a1d4cd",
+      "subjects": [
+        "敌人-黑炎骑士",
+        "敌人-恶魔骑士",
+        "敌人-重剑骑士"
+      ]
+    },
+    {
+      "id": "stage_25_9",
+      "stageName": "被终结者占领的诺亚前线基地兵工厂",
+      "region": "地下2层",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/derived/stage-derived-7d451f9a.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_25_9.webp",
+      "baseline_sha256": "7971fb6d170e32c26cd02cd4ca9060dd5a44308813adacbf715fa145067f74ec",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_25_9",
+        "stageName": "被终结者占领的诺亚前线基地兵工厂",
+        "mode": "D_pack",
+        "selected_sub_id": "0",
+        "selected_bg": "nyqxjdbgc_1_BG.swf",
+        "crop_box": [
+          0.18,
+          0.15,
+          0.36,
+          0.5
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-终结者T800",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-重型改造僵尸",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-兽化改造僵尸",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "3473d37267a19c5f629f5bed2cfbf7db26ff2965f9079b74a1253521f20f3d22",
+      "subjects": [
+        "敌人-终结者T800",
+        "敌人-重型改造僵尸",
+        "敌人-兽化改造僵尸"
+      ]
+    },
+    {
+      "id": "stage_25_10",
+      "stageName": "基地禁区边缘地带",
+      "region": "地下2层",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/derived/stage-derived-d9e8aa8f.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_25_10.webp",
+      "baseline_sha256": "e25ffddcee3c3da96e8f49b9018fb93934e7efb383e02fbd9a4c6ac5fd0d7902",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_25_10",
+        "stageName": "基地禁区边缘地带",
+        "mode": "D_pack",
+        "selected_sub_id": "1",
+        "selected_bg": "avp1_2_BG.swf",
+        "crop_box": [
+          0.14,
+          0.18,
+          0.38,
+          0.52
+        ],
+        "monsters": [
+          {
+            "spritename": "敌人-终结者T800",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-兽化改造僵尸",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-普通爆炸僵尸",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "02177a4781933e511888b883de74bc0972b8284018caf172513ebbaba8502966",
+      "subjects": [
+        "敌人-终结者T800",
+        "敌人-兽化改造僵尸",
+        "敌人-普通爆炸僵尸"
+      ]
+    },
+    {
+      "id": "stage_25_11",
+      "stageName": "幸存者营地",
+      "region": "地下2层",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-default.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_25_11.webp",
+      "baseline_sha256": "eb1e0e8d283e7a85cb5131397c5808337572b696d16a280bf866a7cef3ead713",
+      "decision": "refined",
+      "changeReason": "聚焦营地门厅、物资、车辆和围栏，保留夜色与生活设施",
+      "composition": {
+        "id": "stage_25_11",
+        "stageName": "幸存者营地",
+        "mode": "A_landmark",
+        "selected_sub_id": "0",
+        "selected_bg": "地图-幸存者营地.swf",
+        "crop_box": [
+          0.23,
+          0.39,
+          0.55,
+          0.31
+        ],
+        "monsters": [],
+        "layouts": [],
+        "crop_bounds": [
+          0.319,
+          0.184,
+          0.873,
+          0.711
+        ],
+        "brightness": 1.12
+      },
+      "renderer": "normal",
+      "v6_png_sha256": "6327220c8291d35640f390f5f0d8227a660f604e8479b0ca0cdfcac2e2619786",
+      "subjects": []
+    },
+    {
+      "id": "stage_25_12",
+      "stageName": "同盟卸货站",
+      "region": "地下2层",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-default.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_25_12.webp",
+      "baseline_sha256": "c4faa6fcfabfe866c6790ca63874b5ab242f4c838adbe4c5cec992ec910e23e6",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_25_12",
+        "stageName": "同盟卸货站",
+        "mode": "A_landmark",
+        "selected_sub_id": "0",
+        "selected_bg": "地图-同盟卸货站.swf",
+        "crop_box": [
+          0.18,
+          0.12,
+          0.52,
+          0.62
+        ],
+        "monsters": []
+      },
+      "v6_png_sha256": "29819ed8210fd29e21eb166ac63db9bbcb09134823e82e32413b3dcee0daf613",
+      "subjects": []
+    },
+    {
+      "id": "stage_25_13",
+      "stageName": "核电站",
+      "region": "地下2层",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/derived/stage-derived-1217f67d.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_25_13.webp",
+      "baseline_sha256": "5a1e5b597495ee6445883c84179ae6b87a0de8e5d0598d85876fb5b22f5b53a3",
+      "decision": "refined",
+      "changeReason": "采用冷却池地标版，不以候选脚本手工注入的三头犬替代已核实关卡内容",
+      "variant": "A",
+      "renderer": "normal",
+      "composition": {
+        "id": "stage_25_13",
+        "stageName": "核电站",
+        "mode": "A_landmark",
+        "selected_sub_id": "3",
+        "selected_bg": "核电站反应室冷却池.swf",
+        "crop_box": [
+          0.24,
+          0.03,
+          0.42,
+          0.5
+        ],
+        "monsters": [],
+        "layouts": []
+      },
+      "subjectPolicy": "landmark_no_unverified_enemy",
+      "v6_png_sha256": "35240b01f06267b5ba4819290e6c550e0e1d8577df5c4bb43bec6bc3fb2cb651",
+      "subjects": []
+    },
+    {
+      "id": "stage_34_0",
+      "stageName": "难民营地",
+      "region": "基地房顶",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-87557e8d.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_34_0.webp",
+      "baseline_sha256": "ec52e3af18dfb4b865b4f247a1654bf12aab141e8d16b554f366b45ed4958c1d",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_34_0",
+        "stageName": "难民营地",
+        "selected_sub_id": "0",
+        "selected_bg": "gk17_1_BG.swf",
+        "crop_box": [
+          0.14,
+          0.02,
+          0.44,
+          0.46
+        ],
+        "mode": "C_duo",
+        "monsters": [
+          {
+            "spritename": "敌人-军阀突击兵",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-盗贼大叔",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "b173ce811a9cc0517d4494b1a7271f5b1e7ad3574cad2cc6ed4be1c910a8d014",
+      "subjects": [
+        "敌人-军阀突击兵",
+        "敌人-盗贼大叔"
+      ]
+    },
+    {
+      "id": "stage_34_1",
+      "stageName": "军阀临时补给点",
+      "region": "基地房顶",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-f336ede9.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_34_1.webp",
+      "baseline_sha256": "8a97ab3d3771010fbeac1363679d3ee60945eece75a9d850300be0654e69e091",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_34_1",
+        "stageName": "军阀临时补给点",
+        "selected_sub_id": "2",
+        "selected_bg": "gk18_3_BG.swf",
+        "crop_box": [
+          0.02,
+          0.03,
+          0.46,
+          0.46
+        ],
+        "mode": "C_duo",
+        "monsters": [
+          {
+            "spritename": "敌人-军阀弹药兵",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-军阀重装兵",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "98f6f22d309714029125db6a476761bd6656ef82920f7e4c5390e5364ce38615",
+      "subjects": [
+        "敌人-军阀弹药兵",
+        "敌人-军阀重装兵"
+      ]
+    },
+    {
+      "id": "stage_34_2",
+      "stageName": "残垣断壁",
+      "region": "基地房顶",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-98fa7d29.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_34_2.webp",
+      "baseline_sha256": "d91eeaeec678e458958aabdfc8e221d4ab94bdf5abf79656af1f66b7c1e4757a",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_34_2",
+        "stageName": "残垣断壁",
+        "selected_sub_id": "4",
+        "selected_bg": "gk19_5_BG.swf",
+        "crop_box": [
+          0.04,
+          0.02,
+          0.46,
+          0.48
+        ],
+        "mode": "C_duo",
+        "monsters": [
+          {
+            "spritename": "敌人-军阀狙击兵",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-军阀精英突击兵",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "cd950d7edf3abf21d86e3f7c56f4fd757437006f1ccbcb57083991929080ba79",
+      "subjects": [
+        "敌人-军阀狙击兵",
+        "敌人-军阀精英突击兵"
+      ]
+    },
+    {
+      "id": "stage_34_3",
+      "stageName": "基地",
+      "region": "基地房顶",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-8b6b2fa7.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_34_3.webp",
+      "baseline_sha256": "424b930875ea1ea415779cc1ddf470384da0d63c3e5687f90155971045b5fce9",
+      "decision": "refined",
+      "changeReason": "切换到当前关卡的基地围攻背景，保持军阀兵种与防线定位",
+      "composition": {
+        "id": "stage_34_3",
+        "stageName": "基地",
+        "selected_sub_id": "3",
+        "selected_bg": "gk20_1_BG_围攻.swf",
+        "crop_box": [
+          0.18,
+          0.16,
+          0.44,
+          0.4
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-军阀突击兵",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-军阀重装兵",
+            "role": "primary"
+          }
+        ],
+        "layouts": [
+          {
+            "spritename": "敌人-军阀突击兵",
+            "height": 0.95,
+            "target": [
+              0.66,
+              0.53
+            ],
+            "brightness": 0.78
+          },
+          {
+            "spritename": "敌人-军阀重装兵",
+            "height": 1.18,
+            "target": [
+              0.88,
+              0.52
+            ],
+            "brightness": 0.92
+          }
+        ]
+      },
+      "renderer": "normal",
+      "v6_png_sha256": "02594714318c91ac24bb5c12836645c2ec2ffd3b79b1f6d9f95d1e39e10cf611",
+      "subjects": [
+        "敌人-军阀突击兵",
+        "敌人-军阀重装兵"
+      ]
+    },
+    {
+      "id": "stage_34_4",
+      "stageName": "军阀据点",
+      "region": "基地房顶",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/stage-internal-bbec8e5b.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_34_4.webp",
+      "baseline_sha256": "d6d52515cdb4453ee8cb8377df98140bad19554c01303264ba6d04d61023e5bb",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "variant": "A",
+      "v6_png_sha256": "658b2675eb52492b30f0734ffe31ddef5a6a788f70b8b3d79023cc071330df31",
+      "composition": {
+        "id": "stage_34_4",
+        "stageName": "军阀据点",
+        "selected_sub_id": "1",
+        "selected_bg": "gk21_2_BG.swf",
+        "crop_box": [
+          0.18,
+          0.1,
+          0.48,
+          0.46
+        ],
+        "mode": "C2_linear_shadow",
+        "monsters": [
+          {
+            "spritename": "敌人-军阀将军",
+            "role": "primary"
+          }
+        ]
+      },
+      "subjects": [
+        "敌人-军阀将军"
+      ]
+    },
+    {
+      "id": "stage_34_5",
+      "stageName": "军阀前线基地",
+      "region": "基地房顶",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/stage-internal-bf3e7938.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_34_5.webp",
+      "baseline_sha256": "f566ec1589e3cb5eaf45f8ff2b3c90438a67faa2ba288b0352ef9699572a3d59",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "variant": "A",
+      "v6_png_sha256": "5c59f6d47a9150ff5ae41edd8528b39211cc10f222e7fd8d31315ed37435ff08",
+      "composition": {
+        "id": "stage_34_5",
+        "stageName": "军阀前线基地",
+        "selected_sub_id": "2",
+        "selected_bg": "gk22_3_BG.swf",
+        "crop_box": [
+          0.14,
+          0.18,
+          0.46,
+          0.44
+        ],
+        "mode": "C2_linear_shadow",
+        "monsters": [
+          {
+            "spritename": "敌人-忍者BOSS",
+            "role": "primary"
+          }
+        ]
+      },
+      "subjects": [
+        "敌人-忍者BOSS"
+      ]
+    },
+    {
+      "id": "stage_34_6",
+      "stageName": "军阀秘密基地",
+      "region": "基地房顶",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-e722f196.png",
+      "baseline": "tools/stage-preview/sources/v6/stage_34_6.webp",
+      "baseline_sha256": "660f78afcb5be7455b1ccfcdef255a1ddb29b6313c1b18bbbce58728868509a6",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_34_6",
+        "stageName": "军阀秘密基地",
+        "selected_sub_id": "4",
+        "selected_bg": "军阀秘密基地_改装间_BG.swf",
+        "crop_box": [
+          0.03,
+          0.14,
+          0.54,
+          0.58
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-军阀精英突击兵",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-军阀精英狙击兵",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-军阀精英重装兵",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "8715816132f2a414b86500dc3a9c96a48a9c17b30e27e30877c83321006c8feb",
+      "subjects": [
+        "敌人-军阀精英突击兵",
+        "敌人-军阀精英狙击兵",
+        "敌人-军阀精英重装兵"
+      ]
+    },
+    {
+      "id": "stage_34_7",
+      "stageName": "袭杀与圈套",
+      "region": "基地房顶",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-ac80f0bb.png",
+      "baseline": "tools/stage-preview/sources/v6/stage_34_7.webp",
+      "baseline_sha256": "3ba9f69fd5c8e1cfeb8c59d598332c540eeb01c7cd040343be4957c86ad794e5",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_34_7",
+        "stageName": "袭杀与圈套",
+        "selected_sub_id": "2",
+        "selected_bg": "gk19_3_BG.swf",
+        "crop_box": [
+          0.08,
+          0.02,
+          0.46,
+          0.48
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-军阀精英重装兵",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-军阀精英弹药兵",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-军阀精英狙击兵",
+            "role": "tertiary"
+          }
+        ]
+      },
+      "v6_png_sha256": "0e7e85a121bce97d1ccf3b45c7832ecec6abc10558004554215a52f706fb41fc",
+      "subjects": [
+        "敌人-军阀精英重装兵",
+        "敌人-军阀精英弹药兵",
+        "敌人-军阀精英狙击兵"
+      ]
+    },
+    {
+      "id": "stage_34_8",
+      "stageName": "虫洞外围",
+      "region": "基地房顶",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/derived/stage-derived-a1387b7e.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_34_8.webp",
+      "baseline_sha256": "2e9b67891b22f2907feb05d98bcbcb304031f9d59be0a4104d6b84be2f28e1fa",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_34_8",
+        "stageName": "虫洞外围",
+        "selected_sub_id": "1",
+        "selected_bg": "gk19_2_BG.swf",
+        "crop_box": [
+          0.12,
+          0.02,
+          0.46,
+          0.48
+        ],
+        "mode": "C_duo",
+        "monsters": [
+          {
+            "spritename": "敌人-波斯步兵",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-波斯弓兵",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "6c70e2d1dbcbb04f95809f1156d50df5a7c0c0720a4b5211e4bd5923e7f728df",
+      "subjects": [
+        "敌人-波斯步兵",
+        "敌人-波斯弓兵"
+      ]
+    },
+    {
+      "id": "stage_34_9",
+      "stageName": "虫洞洞口",
+      "region": "基地房顶",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/derived/stage-derived-040aa61f.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_34_9.webp",
+      "baseline_sha256": "25ecb27a9de2463b1c4eb949eab8de25dfa27e9efccbe499981db1257d773c36",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_34_9",
+        "stageName": "虫洞洞口",
+        "selected_sub_id": "5",
+        "selected_bg": "gk19_4_BG.swf",
+        "crop_box": [
+          0.08,
+          0.02,
+          0.46,
+          0.48
+        ],
+        "mode": "C_duo",
+        "monsters": [
+          {
+            "spritename": "敌人-波斯弓兵",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-波斯步兵",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "7b1c75045e3647211bb4773148ec0c05a5b4dd65c1aea5bef160b930f1a291ba",
+      "subjects": [
+        "敌人-波斯弓兵",
+        "敌人-波斯步兵"
+      ]
+    },
+    {
+      "id": "stage_34_10",
+      "stageName": "外交-军阀",
+      "region": "基地房顶",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-default.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_34_10.webp",
+      "baseline_sha256": "7ee1d6e07b80761c15f68f3bfc3045a2441e5f146bce0e34b8fb4fda3a359f02",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_34_10",
+        "stageName": "外交-军阀",
+        "selected_sub_id": "0",
+        "selected_bg": "地图-军阀基地.swf",
+        "crop_box": [
+          0.2,
+          0.04,
+          0.52,
+          0.52
+        ],
+        "mode": "A_landmark",
+        "monsters": []
+      },
+      "v6_png_sha256": "f10b8dc9ce66f022d08072bd84c8b94a6887195715061a566510b3ea412207d9",
+      "subjects": []
+    },
+    {
+      "id": "stage_59_0",
+      "stageName": "训练场",
+      "region": "诺亚前线基地深处",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-9b78a301.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_59_0.webp",
+      "baseline_sha256": "84043d22c26251bb0e44e62c93e010687a7891ac7438d83193044d1d89de534a",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_59_0",
+        "stageName": "训练场",
+        "selected_sub_id": "1",
+        "selected_bg": "nyqxjdxlc_2_BG.swf",
+        "crop_box": [
+          0.32,
+          0.14,
+          0.4,
+          0.48
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-普通改造僵尸",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-兽化改造僵尸",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-重型改造僵尸",
+            "role": "tertiary"
+          }
+        ]
+      },
+      "v6_png_sha256": "8e56b51d15bf3a38c582f84f7bb6dc3dd67c31d0460930475e0d8e332eaba481",
+      "subjects": [
+        "敌人-普通改造僵尸",
+        "敌人-兽化改造僵尸",
+        "敌人-重型改造僵尸"
+      ]
+    },
+    {
+      "id": "stage_59_1",
+      "stageName": "试验场",
+      "region": "诺亚前线基地深处",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-4f0f7b4a.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_59_1.webp",
+      "baseline_sha256": "7fee38ae9e0d3d76240c6637518d0e6b3bc1a08fd13d25ce6b7370c7adc23ab8",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_59_1",
+        "stageName": "试验场",
+        "selected_sub_id": "2",
+        "selected_bg": "nyqxjdsyc_3_BG.swf",
+        "crop_box": [
+          0.16,
+          0.16,
+          0.38,
+          0.46
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-蛙型仿生僵尸",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-兽化改造僵尸",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-重型改造僵尸",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "26ed35459fda2379e5a233ad196fe3880648cc2c679d6ab2819d4c254a155233",
+      "subjects": [
+        "敌人-蛙型仿生僵尸",
+        "敌人-兽化改造僵尸",
+        "敌人-重型改造僵尸"
+      ]
+    },
+    {
+      "id": "stage_59_2",
+      "stageName": "被摧毁的武器仓库",
+      "region": "诺亚前线基地深处",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-a5e58f6a.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_59_2.webp",
+      "baseline_sha256": "78c6713aa5a2910911c010d19263e28c295a2bfcedfd7f7e93f15bd8192acce2",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_59_2",
+        "stageName": "被摧毁的武器仓库",
+        "selected_sub_id": "3",
+        "selected_bg": "nyqxjdfqck_4_BG.swf",
+        "crop_box": [
+          0.12,
+          0.08,
+          0.4,
+          0.48
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-普通爆炸僵尸",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-重型改造僵尸",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-普通改造僵尸",
+            "role": "tertiary"
+          }
+        ]
+      },
+      "v6_png_sha256": "7b302cdafa822c86eeb571f5380885004d4f165ca32176a9b9b68c172e87c358",
+      "subjects": [
+        "敌人-普通爆炸僵尸",
+        "敌人-重型改造僵尸",
+        "敌人-普通改造僵尸"
+      ]
+    },
+    {
+      "id": "stage_59_3",
+      "stageName": "防御地带",
+      "region": "诺亚前线基地深处",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-023f5ec6.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_59_3.webp",
+      "baseline_sha256": "1c73773e1f40ba3198afb97567c3769856a26525f1f0319380556c765ba322a0",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_59_3",
+        "stageName": "防御地带",
+        "selected_sub_id": "3",
+        "selected_bg": "防御地带高地.swf",
+        "crop_box": [
+          0.08,
+          0.14,
+          0.44,
+          0.56
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-闪6特工",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-诺亚克隆兽",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-EXUSIAI突击型",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "55589666512cab71beed19f9a7c2e9d2299d851678f64875ffe6d659f676fd48",
+      "subjects": [
+        "敌人-闪6特工",
+        "敌人-诺亚克隆兽",
+        "敌人-EXUSIAI突击型"
+      ]
+    },
+    {
+      "id": "stage_59_4",
+      "stageName": "被炸毁的防御地带",
+      "region": "诺亚前线基地深处",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-26a0c76c.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_59_4.webp",
+      "baseline_sha256": "fd9ab88dbf5c71de61de06ad983dbb0616af563154e2106f8f9cb9bc90869480",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_59_4",
+        "stageName": "被炸毁的防御地带",
+        "selected_sub_id": "3",
+        "selected_bg": "nyqxjdfydd_4_BG.swf",
+        "crop_box": [
+          0.02,
+          0.18,
+          0.4,
+          0.48
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-兽化改造僵尸",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-普通爆炸僵尸",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-重型改造僵尸",
+            "role": "tertiary"
+          }
+        ]
+      },
+      "v6_png_sha256": "6d465b8a0765d97a559e286a00f6ea0c7e3710a88650c3f658a106b40b1c09c4",
+      "subjects": [
+        "敌人-兽化改造僵尸",
+        "敌人-普通爆炸僵尸",
+        "敌人-重型改造僵尸"
+      ]
+    },
+    {
+      "id": "stage_59_5",
+      "stageName": "武器仓库",
+      "region": "诺亚前线基地深处",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/stage-internal-7a6ad839.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_59_5.webp",
+      "baseline_sha256": "9c2473a9aa64a1f4809cb36ad78cc46e6170ee0463f493de610aefb86802583f",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "variant": "A",
+      "v6_png_sha256": "f9bf8822162b990decd68d5c7ecd61cc071b2fadf7403ae0a74aba494a42f62b",
+      "composition": {
+        "id": "stage_59_5",
+        "stageName": "武器仓库",
+        "selected_sub_id": "4",
+        "selected_bg": "武器仓库数据中心.swf",
+        "crop_box": [
+          0.38,
+          0.24,
+          0.48,
+          0.4
+        ],
+        "mode": "C2_linear_shadow",
+        "monsters": [
+          {
+            "spritename": "敌人-方舟爪豪",
+            "role": "primary"
+          }
+        ]
+      },
+      "subjects": [
+        "敌人-方舟爪豪"
+      ]
+    },
+    {
+      "id": "stage_59_6",
+      "stageName": "尸母巢穴",
+      "region": "诺亚前线基地深处",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/stage-internal-dd29b860.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_59_6.webp",
+      "baseline_sha256": "75b3f938165e51cac1557eb96795024c8277a6fae73cc235e65daeaef57e0243",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "variant": "A",
+      "v6_png_sha256": "837afed2e6cbd66af7bb7304f9a17c4ad3a090a877566c7f6d78906cdf8b8906",
+      "composition": {
+        "id": "stage_59_6",
+        "stageName": "尸母巢穴",
+        "selected_sub_id": "7",
+        "selected_bg": "尸母巢穴中心_BG.swf",
+        "crop_box": [
+          0.04,
+          0.12,
+          0.48,
+          0.54
+        ],
+        "mode": "C2_linear_shadow",
+        "monsters": [
+          {
+            "spritename": "敌人-普通尸母",
+            "role": "boss_shadow"
+          }
+        ]
+      },
+      "subjects": [
+        "敌人-普通尸母"
+      ]
+    },
+    {
+      "id": "stage_59_7",
+      "stageName": "解救A兵团士兵",
+      "region": "诺亚前线基地深处",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-4093724b.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_59_7.webp",
+      "baseline_sha256": "ff657d601ee76296d5f87ad062a5b389c3b4006b005b089c2f76ee34942be22f",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_59_7",
+        "stageName": "解救A兵团士兵",
+        "selected_sub_id": "3",
+        "selected_bg": "nyqxjdsmcx_4_BG.swf",
+        "crop_box": [
+          0.12,
+          0.12,
+          0.44,
+          0.44
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-普通改造僵尸",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-兽化改造僵尸",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-普通爆炸僵尸",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "2a26ed7eb6cb8d24775023b1358fc3bab05edf344fd762b9c3bdda7634133015",
+      "subjects": [
+        "敌人-普通改造僵尸",
+        "敌人-兽化改造僵尸",
+        "敌人-普通爆炸僵尸"
+      ]
+    },
+    {
+      "id": "stage_59_8",
+      "stageName": "僵尸卫队",
+      "region": "诺亚前线基地深处",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-8cdd8542.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_59_8.webp",
+      "baseline_sha256": "b69f953ddf9e14d5d5bfa33aa88cc139e5a0559bdc377a2bc091ec3ed85b9724",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_59_8",
+        "stageName": "僵尸卫队",
+        "selected_sub_id": "2",
+        "selected_bg": "nyqxjdjswd_3_BG.swf",
+        "crop_box": [
+          0.02,
+          0.18,
+          0.46,
+          0.52
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-重型改造僵尸",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-普通爆炸僵尸",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-普通改造僵尸",
+            "role": "tertiary"
+          }
+        ]
+      },
+      "v6_png_sha256": "0848f25ae6b20947132337de011fea9b49d293be4f40c69ffdfa3152d07c688f",
+      "subjects": [
+        "敌人-重型改造僵尸",
+        "敌人-普通爆炸僵尸",
+        "敌人-普通改造僵尸"
+      ]
+    },
+    {
+      "id": "stage_59_9",
+      "stageName": "研究院",
+      "region": "诺亚前线基地深处",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/stage-internal-f3ca6137.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_59_9.webp",
+      "baseline_sha256": "873abebb9774e875c27eab3b5c545608a36117b7e4d8a8f8580387aeb0a7fdbf",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "variant": "A",
+      "v6_png_sha256": "5f1843bb23743f3afa38862a86e6abcdf6d1e652d625010f1a51bdd93aab9151",
+      "composition": {
+        "id": "stage_59_9",
+        "stageName": "研究院",
+        "selected_sub_id": "8",
+        "selected_bg": "nyqxjdyjy_1_BG.swf",
+        "crop_box": [
+          0.35,
+          0.18,
+          0.46,
+          0.54
+        ],
+        "mode": "C2_linear_shadow",
+        "monsters": [
+          {
+            "spritename": "敌人-黑铁会改造人",
+            "role": "primary"
+          }
+        ]
+      },
+      "subjects": [
+        "敌人-黑铁会改造人"
+      ]
+    },
+    {
+      "id": "stage_59_10",
+      "stageName": "虫洞",
+      "region": "诺亚前线基地深处",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-6fbfed1c.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_59_10.webp",
+      "baseline_sha256": "af09232eeb153483e198b242470edd08a0a53e28a6dbe14d1443e6942b9a791c",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_59_10",
+        "stageName": "虫洞",
+        "selected_sub_id": "1",
+        "selected_bg": "nyqxjdcd_2_BG.swf",
+        "crop_box": [
+          0.08,
+          0.1,
+          0.44,
+          0.52
+        ],
+        "mode": "chiaroscuro",
+        "monsters": [
+          {
+            "spritename": "敌人-普通基因虫",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-普通爆炸僵尸",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "614afd793da193ef96748d657b928ee904327bba02f91617aa22ffc4209d8b23",
+      "subjects": [
+        "敌人-普通基因虫",
+        "敌人-普通爆炸僵尸"
+      ]
+    },
+    {
+      "id": "stage_59_11",
+      "stageName": "被清扫的虫洞",
+      "region": "诺亚前线基地深处",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-f1caf9bf.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_59_11.webp",
+      "baseline_sha256": "031736490761cabbae4762d9787a3ec8f64d2cfca5f56844d6cf0cfd059b405b",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_59_11",
+        "stageName": "被清扫的虫洞",
+        "selected_sub_id": "3",
+        "selected_bg": "nyqxjdcd_4_BG.swf",
+        "crop_box": [
+          0.08,
+          0.12,
+          0.44,
+          0.52
+        ],
+        "mode": "chiaroscuro",
+        "monsters": [
+          {
+            "spritename": "敌人-普通改造僵尸",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-兽化改造僵尸",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "fd3c092e9b6a14872204091ef24b909637e134d7a435f02cd161fb4682bdba95",
+      "subjects": [
+        "敌人-普通改造僵尸",
+        "敌人-兽化改造僵尸"
+      ]
+    },
+    {
+      "id": "stage_59_12",
+      "stageName": "初心者",
+      "region": "诺亚前线基地深处",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-93acb3fc.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_59_12.webp",
+      "baseline_sha256": "96e603dc6c9d5ffcb714a93cb53d507b5d67dce84e5938dff15719175a30125d",
+      "decision": "refined",
+      "changeReason": "改为正面门禁与物资管线，使用两只僵尸错位，区分被炸毁防线",
+      "composition": {
+        "id": "stage_59_12",
+        "stageName": "初心者",
+        "selected_sub_id": "0",
+        "selected_bg": "nyqxjdfydd_4_BG.swf",
+        "crop_box": [
+          0.39,
+          0.17,
+          0.43,
+          0.39
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-重型改造僵尸",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-兽化改造僵尸",
+            "role": "primary"
+          }
+        ],
+        "layouts": [
+          {
+            "spritename": "敌人-重型改造僵尸",
+            "height": 0.82,
+            "target": [
+              0.7,
+              0.51
+            ],
+            "brightness": 0.76
+          },
+          {
+            "spritename": "敌人-兽化改造僵尸",
+            "height": 1.12,
+            "target": [
+              0.9,
+              0.52
+            ],
+            "brightness": 0.92
+          }
+        ]
+      },
+      "renderer": "normal",
+      "v6_png_sha256": "398ddabf0ea6d8a7beac6c705264ed348c704a1ba41bcd68dbe02692d1686f4d",
+      "subjects": [
+        "敌人-重型改造僵尸",
+        "敌人-兽化改造僵尸"
+      ]
+    },
+    {
+      "id": "stage_59_13",
+      "stageName": "指挥部外围",
+      "region": "诺亚前线基地深处",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/stage-internal-56e167e1.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_59_13.webp",
+      "baseline_sha256": "a300746262814f0f603976b0e12e451898e4922f83ca378b6f369b803a30c9c2",
+      "decision": "refined",
+      "changeReason": "采用NOAH徽章版保持原版悬念，不依赖尚未绑定现役出场链的Boss选取",
+      "variant": "A",
+      "renderer": "imported",
+      "subjectPolicy": "emblem_no_boss_reveal",
+      "v6_png_sha256": "6c7b7002e606d6085f97b8e24de2ba41b08f57c83e341c18de76a86cec45e044",
+      "composition": {
+        "id": "stage_59_13",
+        "stageName": "指挥部外围",
+        "selected_sub_id": "2",
+        "selected_bg": "指挥部外围3.swf",
+        "crop_box": [
+          0.3,
+          0.05,
+          0.44,
+          0.65
+        ],
+        "mode": "C2_linear_shadow",
+        "monsters": []
+      },
+      "subjects": [],
+      "image_source": "tools/stage-preview/sources/alternates/stage_59_13_A.webp",
+      "image_source_sha256": "218a9146130429e37f9afe134482f7a102bd6b9c70c2b17333aca802538c3683"
+    },
+    {
+      "id": "stage_59_14",
+      "stageName": "指挥部大厅",
+      "region": "诺亚前线基地深处",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-a2d67acb.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_59_14.webp",
+      "baseline_sha256": "ccd5711745a87cca3a817765d972648a2508ceb6eede75a183a8cd96b716c7a5",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_59_14",
+        "stageName": "指挥部大厅",
+        "selected_sub_id": "0",
+        "selected_bg": "nyqxjdzhbdt_1_BG.swf",
+        "crop_box": [
+          0.18,
+          0.16,
+          0.44,
+          0.52
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-重型改造僵尸",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-兽化改造僵尸",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-普通爆炸僵尸",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "3445818d613a4244f005d8729ba58b12cfc9c21b9dcd8337cd8f4a3e97788267",
+      "subjects": [
+        "敌人-重型改造僵尸",
+        "敌人-兽化改造僵尸",
+        "敌人-普通爆炸僵尸"
+      ]
+    },
+    {
+      "id": "stage_59_15",
+      "stageName": "决战之地",
+      "region": "诺亚前线基地深处",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/stage-internal-326b56dd.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_59_15.webp",
+      "baseline_sha256": "782370d51b86760e25855ee88867db3ca7030900b1d6dc4565896745c1b51b4f",
+      "decision": "refined",
+      "changeReason": "保留一阶段斗笠遮脸的技能关键帧，原生分层导出时去掉刀光烟尘，突出护臂、佛珠与红巾",
+      "variant": "A",
+      "renderer": "boss",
+      "v6_png_sha256": "bcefa5ef413fb12aa4b8d7433a2b6c4690d104e2914516fe6f351ece3cf26de8",
+      "composition": {
+        "id": "stage_59_15",
+        "stageName": "决战之地",
+        "selected_sub_id": "9",
+        "selected_bg": "nyqxjdjzzd_5_BG.swf",
+        "crop_box": [
+          0.32,
+          0.14,
+          0.44,
+          0.52
+        ],
+        "mode": "C2_linear_shadow",
+        "monsters": [
+          {
+            "spritename": "敌人-方舟兽王",
+            "role": "primary"
+          }
+        ]
+      },
+      "subjects": [
+        "敌人-方舟兽王"
+      ],
+      "boss": {
+        "region": "诺亚前线基地深处",
+        "crop_box_override": [
+          0.22,
+          0.04,
+          0.34,
+          0.38
+        ],
+        "stage_lights": [],
+        "sig_hues": [
+          [
+            340,
+            22
+          ]
+        ],
+        "rim_rgb": [
+          245,
+          220,
+          190
+        ],
+        "col_a": {
+          "type": "hires",
+          "folder": "敌人-方舟兽王_c803_clean",
+          "frame": 13,
+          "flip_x": true,
+          "scale_h": 1.95,
+          "max_w": 1.7,
+          "anchor_xy": [
+            0.3,
+            0.28
+          ],
+          "target_xy": [
+            0.75,
+            0.42
+          ]
+        },
+        "bg_grade": {
+          "brightness": 0.67,
+          "contrast": 1.06,
+          "saturation": 0.5
+        }
+      }
+    },
+    {
+      "id": "stage_79_0",
+      "stageName": "雪地平原",
+      "region": "雪山",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-ea5e9be9.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_79_0.webp",
+      "baseline_sha256": "fa91a5bd5353bb673da88d3a19661ce1ab722778f858f68bd9c5cc98da2c99f7",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_79_0",
+        "stageName": "雪地平原",
+        "selected_sub_id": "0",
+        "selected_bg": "xdpy_1_BG.swf",
+        "crop_box": [
+          0.1,
+          0.08,
+          0.5,
+          0.56
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-重型改造僵尸",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-兽化改造僵尸",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-普通改造僵尸",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "e7f702d34759bae5cf496fd255c9fa934d05c4251aba283f75e0ba2e1f286381",
+      "subjects": [
+        "敌人-重型改造僵尸",
+        "敌人-兽化改造僵尸",
+        "敌人-普通改造僵尸"
+      ]
+    },
+    {
+      "id": "stage_79_1",
+      "stageName": "雪原坡地",
+      "region": "雪山",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-6ef5d1cf.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_79_1.webp",
+      "baseline_sha256": "0cff24aac35e03a2213f0266e858009bbb69fb47d61cc72e0244b897ebd038ad",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_79_1",
+        "stageName": "雪原坡地",
+        "selected_sub_id": "0",
+        "selected_bg": "xypd_1_BG.swf",
+        "crop_box": [
+          0.08,
+          0.08,
+          0.5,
+          0.56
+        ],
+        "mode": "C_duo",
+        "monsters": [
+          {
+            "spritename": "敌人-方舟卫士",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-普通基因虫",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "10d63119527a0b3dccc450f21da599e09f77c66b9ee8fa5a9a249db036b669ce",
+      "subjects": [
+        "敌人-方舟卫士",
+        "敌人-普通基因虫"
+      ]
+    },
+    {
+      "id": "stage_79_2",
+      "stageName": "雪原防御带",
+      "region": "雪山",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-70418df3.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_79_2.webp",
+      "baseline_sha256": "259de95f77b8f8b42b77809b0e089f9b1f2e82a451666f266ca2b6f6fb8bc4ed",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_79_2",
+        "stageName": "雪原防御带",
+        "selected_sub_id": "0",
+        "selected_bg": "xyfyd_1_BG.swf",
+        "crop_box": [
+          0.1,
+          0.06,
+          0.48,
+          0.56
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-重型改造僵尸",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-普通爆炸僵尸",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-方舟无人机",
+            "role": "tertiary"
+          }
+        ]
+      },
+      "v6_png_sha256": "a767601493e50bef55e9a702f03ba66a3b8d1f3bba7bf710d5187b80505144fd",
+      "subjects": [
+        "敌人-重型改造僵尸",
+        "敌人-普通爆炸僵尸",
+        "敌人-方舟无人机"
+      ]
+    },
+    {
+      "id": "stage_79_3",
+      "stageName": "雪原深处",
+      "region": "雪山",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-12d32dc3.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_79_3.webp",
+      "baseline_sha256": "dc5a320872c92685322c4894a9ac6a64365aa6863a07510d778058906b858359",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_79_3",
+        "stageName": "雪原深处",
+        "selected_sub_id": "3",
+        "selected_bg": "xysc_3_BG.swf",
+        "crop_box": [
+          0.05,
+          0.08,
+          0.48,
+          0.56
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-普通基因虫",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-普通爆炸僵尸",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-方舟无人机",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "86cd1e0a448e7312b988084f9be2b8a793908208a3ed6eace348acc2f23c4d6c",
+      "subjects": [
+        "敌人-普通基因虫",
+        "敌人-普通爆炸僵尸",
+        "敌人-方舟无人机"
+      ]
+    },
+    {
+      "id": "stage_79_4",
+      "stageName": "雪原基地",
+      "region": "雪山",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-6f2a128c.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_79_4.webp",
+      "baseline_sha256": "8a8b631844b222a74dda24e8aab45056cd87836d13e852ed8ea3f3ce920ecd15",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_79_4",
+        "stageName": "雪原基地",
+        "selected_sub_id": "0",
+        "selected_bg": "xyjd_1_BG.swf",
+        "crop_box": [
+          0.18,
+          0.08,
+          0.48,
+          0.58
+        ],
+        "mode": "C_duo",
+        "monsters": [
+          {
+            "spritename": "敌人-渗透者",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-普通改造僵尸",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "36abf995e09431ece819bc8409dcc164199783e12c77d20b157d98e529ec3351",
+      "subjects": [
+        "敌人-渗透者",
+        "敌人-普通改造僵尸"
+      ]
+    },
+    {
+      "id": "stage_79_5",
+      "stageName": "冰雪之心",
+      "region": "雪山",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-f59cc86d.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_79_5.webp",
+      "baseline_sha256": "118964d312fd91213e8c747051c85a5c2b305b7981d3555f8b7aefb463297840",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_79_5",
+        "stageName": "冰雪之心",
+        "selected_sub_id": "0",
+        "selected_bg": "bxzx_1_BG.swf",
+        "crop_box": [
+          0.08,
+          0.08,
+          0.48,
+          0.56
+        ],
+        "mode": "C_duo",
+        "monsters": [
+          {
+            "spritename": "敌人-方舟无人机",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-渗透者",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "2dba3d38141c18ff0c84e8bdc1773f500e986bcae045e8f692149e2bda4ee84b",
+      "subjects": [
+        "敌人-方舟无人机",
+        "敌人-渗透者"
+      ]
+    },
+    {
+      "id": "stage_79_6",
+      "stageName": "诺亚雪山",
+      "region": "雪山",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-8dc64a14.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_79_6.webp",
+      "baseline_sha256": "60c987949fb838a25d5ee6c73e0f81235122d2217393176c35af435ee69a2e4e",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_79_6",
+        "stageName": "诺亚雪山",
+        "selected_sub_id": "0",
+        "selected_bg": "nyxs_1_BG.swf",
+        "crop_box": [
+          0.06,
+          0.06,
+          0.5,
+          0.56
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-方舟卫士",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-方舟无人机",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-重型改造僵尸",
+            "role": "tertiary"
+          }
+        ]
+      },
+      "v6_png_sha256": "2e3658023b5854e28253a001911492b2c16c69e1f063a2c1b172b002dc64d782",
+      "subjects": [
+        "敌人-方舟卫士",
+        "敌人-方舟无人机",
+        "敌人-重型改造僵尸"
+      ]
+    },
+    {
+      "id": "stage_79_7",
+      "stageName": "诺亚雪山山脚",
+      "region": "雪山",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-9e803b7f.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_79_7.webp",
+      "baseline_sha256": "2fb2a92e0a810d6d0f3ee419d3c97797a4b26cc14e13050401ac69a74c8fff03",
+      "decision": "refined",
+      "changeReason": "保留护士完整面甲和红色医护标识，以积雪防线和警示桶定位山脚",
+      "composition": {
+        "id": "stage_79_7",
+        "stageName": "诺亚雪山山脚",
+        "selected_sub_id": "1",
+        "selected_bg": "nyxssj_2_BG.swf",
+        "crop_box": [
+          0.15,
+          0.19,
+          0.48,
+          0.4
+        ],
+        "mode": "C_duo",
+        "monsters": [
+          {
+            "spritename": "敌人-方舟护士",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-方舟无人机",
+            "role": "secondary"
+          }
+        ],
+        "layouts": [
+          {
+            "spritename": "敌人-方舟无人机",
+            "height": 0.74,
+            "target": [
+              0.61,
+              0.57
+            ],
+            "brightness": 0.81
+          },
+          {
+            "spritename": "敌人-方舟护士",
+            "height": 1.16,
+            "target": [
+              0.86,
+              0.52
+            ],
+            "brightness": 0.92
+          }
+        ]
+      },
+      "renderer": "normal",
+      "v6_png_sha256": "d9f62127db4ba4dbbc748386b7afa0be543724eb88d8361da0276ffa0e17f4e8",
+      "subjects": [
+        "敌人-方舟护士",
+        "敌人-方舟无人机"
+      ]
+    },
+    {
+      "id": "stage_79_8",
+      "stageName": "诺亚雪山部队",
+      "region": "雪山",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-ff045131.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_79_8.webp",
+      "baseline_sha256": "4ec8dccd3675aa55b985663761ac1895ec03a3aab27a592d0d6ce64dc303a497",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_79_8",
+        "stageName": "诺亚雪山部队",
+        "selected_sub_id": "0",
+        "selected_bg": "nyxsbd_1_BG.swf",
+        "crop_box": [
+          0.06,
+          0.06,
+          0.5,
+          0.56
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-渗透者",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-方舟护士",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-方舟无人机",
+            "role": "tertiary"
+          }
+        ]
+      },
+      "v6_png_sha256": "4546714873f6f12a61a282d341163828ec87789badff5ff5ae7ad28365928806",
+      "subjects": [
+        "敌人-渗透者",
+        "敌人-方舟护士",
+        "敌人-方舟无人机"
+      ]
+    },
+    {
+      "id": "stage_79_9",
+      "stageName": "诺亚雪山山脊",
+      "region": "雪山",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-ae8054af.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_79_9.webp",
+      "baseline_sha256": "b174159e0872378cc1808ac9c9078b612fc9a10d5b2cb6203a180e871cced446",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_79_9",
+        "stageName": "诺亚雪山山脊",
+        "selected_sub_id": "0",
+        "selected_bg": "nyxssj1_1_BG.swf",
+        "crop_box": [
+          0.08,
+          0.06,
+          0.48,
+          0.56
+        ],
+        "mode": "C_duo",
+        "monsters": [
+          {
+            "spritename": "敌人-普通爆炸僵尸",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-渗透者",
+            "role": "secondary"
+          }
+        ]
+      },
+      "v6_png_sha256": "235aaadee4419f8a91dddbbb982bf1f2e4efe49f1394265b5cf3bdfabb9c81a6",
+      "subjects": [
+        "敌人-普通爆炸僵尸",
+        "敌人-渗透者"
+      ]
+    },
+    {
+      "id": "stage_79_10",
+      "stageName": "诺亚精英部队",
+      "region": "雪山",
+      "kind": "normal",
+      "original": "assets/stage-select/previews/stage-internal-4e69ec25.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_79_10.webp",
+      "baseline_sha256": "719ff6c89464068d400ca44f241feb23d5144d99bf290db72fa3fa8a76027128",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "composition": {
+        "id": "stage_79_10",
+        "stageName": "诺亚精英部队",
+        "selected_sub_id": "0",
+        "selected_bg": "nyxsjybd_1_BG.swf",
+        "crop_box": [
+          0.06,
+          0.04,
+          0.48,
+          0.56
+        ],
+        "mode": "D_pack",
+        "monsters": [
+          {
+            "spritename": "敌人-方舟卫士",
+            "role": "primary"
+          },
+          {
+            "spritename": "敌人-方舟护士",
+            "role": "secondary"
+          },
+          {
+            "spritename": "敌人-渗透者",
+            "role": "tertiary"
+          }
+        ]
+      },
+      "v6_png_sha256": "640eed91171ac9a9c72399fb647bf7821d7d90a3e72346be77c6128b4ccb9d4d",
+      "subjects": [
+        "敌人-方舟卫士",
+        "敌人-方舟护士",
+        "敌人-渗透者"
+      ]
+    },
+    {
+      "id": "stage_79_11",
+      "stageName": "诺亚雪山山顶",
+      "region": "雪山",
+      "kind": "boss",
+      "original": "assets/stage-select/previews/stage-internal-42a3dfab.jpg",
+      "baseline": "tools/stage-preview/sources/v6/stage_79_11.webp",
+      "baseline_sha256": "12146f6686ebe9b1d4f6b089c3c02ef7bac4d5a3bc6d511ba29983530d5f6d8a",
+      "decision": "preserve_v6",
+      "changeReason": "",
+      "variant": "A",
+      "v6_png_sha256": "a548adda736d00955590cfb4950a6528733d4f3aab695bfe71f4324c224a2410",
+      "composition": {
+        "id": "stage_79_11",
+        "stageName": "诺亚雪山山顶",
+        "selected_sub_id": "0",
+        "selected_bg": "nyxssd_1_BG.swf",
+        "crop_box": [
+          0.08,
+          0.06,
+          0.5,
+          0.58
+        ],
+        "mode": "C2_linear_shadow",
+        "monsters": [
+          {
+            "spritename": "敌人-方舟巨人",
+            "role": "primary"
+          }
+        ]
+      },
+      "subjects": [
+        "敌人-方舟巨人"
+      ]
+    }
+  ]
+}

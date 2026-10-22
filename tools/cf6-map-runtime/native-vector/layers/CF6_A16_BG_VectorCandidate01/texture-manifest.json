@@ -1,0 +1,97 @@
+{
+  "schema": "cf6-native-layer-input.v1",
+  "map": "A16",
+  "layer": "background",
+  "name": "CF6_A16_BG_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/parts/environment-a16-backdrop.svg",
+  "sourceSha256": "f7b53e3dc1879c01d4ab5ffb6abf1890a88e0d580c6daedd66f61912475eaa80",
+  "inputIndex": "tools/cf6-map-source/generated/map-input.json",
+  "inputIndexSha256": "056c50dd321debee3545d2988b891d140b07cfec864b5d461bd062e44d29ba95",
+  "extraction": "decode existing PNG/JPEG data URI bytes only; no image rasterization or modification",
+  "inputs": [
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-d453200c45c400bc8c656872.png",
+      "sha256": "d453200c45c400bc8c656872a4c31867ba711dacd8683cb5eb6e8daae4aca82e",
+      "bytes": 128795,
+      "pixels": [
+        693,
+        210
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sha256": "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6",
+      "bytes": 16955,
+      "pixels": [
+        189,
+        81
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-7306457526928ec9a3ea3e4a.png",
+      "sha256": "7306457526928ec9a3ea3e4a277055695f4e7a9d9503caea98c81e672f77b486",
+      "bytes": 2466576,
+      "pixels": [
+        2400,
+        900
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-3836de63b32bea5064149496.png",
+      "sha256": "3836de63b32bea50641494963bf74228b0efccfb3510c25fa1f34f028abf4349",
+      "bytes": 387395,
+      "pixels": [
+        532,
+        648
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-9edb117c5bad8a9942697b57.png",
+      "sha256": "9edb117c5bad8a9942697b57084f212bccb36817751a72a4fd4cdf2eb1dcb771",
+      "bytes": 70586,
+      "pixels": [
+        340,
+        200
+      ]
+    }
+  ],
+  "textures": {
+    "d453200c45c400bc8c656872a4c31867ba711dacd8683cb5eb6e8daae4aca82e": {
+      "name": "intrinsic-d453200c45c400bc8c656872.png",
+      "pixels": [
+        693,
+        210
+      ]
+    },
+    "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6": {
+      "name": "intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "pixels": [
+        189,
+        81
+      ]
+    },
+    "7306457526928ec9a3ea3e4a277055695f4e7a9d9503caea98c81e672f77b486": {
+      "name": "intrinsic-7306457526928ec9a3ea3e4a.png",
+      "pixels": [
+        2400,
+        900
+      ]
+    },
+    "3836de63b32bea50641494963bf74228b0efccfb3510c25fa1f34f028abf4349": {
+      "name": "intrinsic-3836de63b32bea5064149496.png",
+      "pixels": [
+        532,
+        648
+      ]
+    },
+    "9edb117c5bad8a9942697b57084f212bccb36817751a72a4fd4cdf2eb1dcb771": {
+      "name": "intrinsic-9edb117c5bad8a9942697b57.png",
+      "pixels": [
+        340,
+        200
+      ]
+    }
+  },
+  "xfl": "flashswf/backgrounds/cf6/CF6_A16_BG_VectorCandidate01/CF6_A16_BG_VectorCandidate01.xfl",
+  "swf": "CF6_A16_BG_VectorCandidate01.swf"
+}

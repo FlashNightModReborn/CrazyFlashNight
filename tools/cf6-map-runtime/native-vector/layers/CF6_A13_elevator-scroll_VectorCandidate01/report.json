@@ -1,0 +1,168 @@
+{
+  "schema": "cf6-native-layer-candidate.v1",
+  "name": "CF6_A13_elevator-scroll_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/parts/elevator-1875-tile.svg",
+  "sourceSha256": "47bc4dc5df0710317029e08c1f7c48e3d8df9fa2cca5cdadd949f1c151c7849f",
+  "nativeShapes": 617,
+  "nativeSymbols": 59,
+  "intrinsicTextures": 2,
+  "masks": [
+    {
+      "id": "n2b1874_0__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2c1874f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1874_1__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2c1874f4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1874_2__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2c1874f6",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n3b1413_0__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n3c1413f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n4b1413_0__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n4c1413f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    }
+  ],
+  "maskImages": [],
+  "imagePlacements": [],
+  "filters": [],
+  "patterns": [
+    {
+      "id": "n2b1874_0__wallgrain",
+      "texture": "intrinsic-76d531101673d7f9b5a7ba75.png",
+      "sourceTile": [
+        700.0,
+        182.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n2b1874_1__wallgrain",
+      "texture": "intrinsic-76d531101673d7f9b5a7ba75.png",
+      "sourceTile": [
+        700.0,
+        182.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n2b1874_2__wallgrain",
+      "texture": "intrinsic-76d531101673d7f9b5a7ba75.png",
+      "sourceTile": [
+        700.0,
+        182.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n3b1413_0__grain",
+      "texture": "intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sourceTile": [
+        63.0,
+        27.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n4b1413_0__grain",
+      "texture": "intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sourceTile": [
+        63.0,
+        27.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "gradientFallbacks": [],
+  "blendModes": [],
+  "sourceViewport": [
+    -350.0,
+    -271.45,
+    700.0,
+    542.95
+  ],
+  "registrationMatrix": [
+    1.0,
+    0,
+    0,
+    1.0,
+    350.0,
+    271.45
+  ],
+  "state": "native XFL assembled; actual CS6 compile and rendering still pending",
+  "limits": [
+    "SVG filter-region clipping is reported per filter and not yet reproduced.",
+    "Native Gaussian blur is a three-pass approximation.",
+    "Root SVG viewport crop must be compared at the original edge."
+  ]
+}

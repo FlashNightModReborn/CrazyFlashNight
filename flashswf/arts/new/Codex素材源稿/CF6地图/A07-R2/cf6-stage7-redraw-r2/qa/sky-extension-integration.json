@@ -1,0 +1,38 @@
+{
+  "purpose": "A7 lower-sky decorative coverage repair in the reconstructed SVG scene; original SWF has not been modified.",
+  "material_svg": "parts/sky-1753-extension.svg",
+  "reference_snapshot": "reference/reused/sky-1753-extension.svg",
+  "generator": "source/sky_material.py",
+  "canvas": {
+    "width": 800,
+    "height": 66.5,
+    "viewBox": [
+      0,
+      0,
+      800,
+      66.5
+    ]
+  },
+  "screen_placement": {
+    "x": 0,
+    "y": 76.5,
+    "width": 800,
+    "height": 66.5
+  },
+  "native_placement_inside_original_sky_root": {
+    "root_transform": "translate(400 -16.5)",
+    "extension_transform": "translate(-400 93)"
+  },
+  "depth": "Bottommost decorative sky underlay, behind original 1754 and all river/architecture/world layers.",
+  "phase": "Fixed screen/root sky phase; do not inherit scrolling or phase-varying world matrices.",
+  "original_unchanged": [
+    "bitmap1753 size 800x187 and registration",
+    "shape1754 viewBox [-400,-93.5,800,187] and clip",
+    "root/world/camera matrices",
+    "49-frame background display-list motion",
+    "collision and gameplay data"
+  ],
+  "external_integration_required": "Replacing bitmap1753 alone cannot close the original lower-sky gap. Add this separate decorative SVG as a sky-root underlay at the listed placement when integrating into the real Flash/game asset. No new SWF symbol ID is assigned by this package.",
+  "applied_here": "source/assemble_scene.py includes the underlay in R2 reconstructed colour scene previews. This does not claim that the original SWF was edited.",
+  "A6": "No extension is displayed in A6; its original camera views already have no transparent sky gap."
+}

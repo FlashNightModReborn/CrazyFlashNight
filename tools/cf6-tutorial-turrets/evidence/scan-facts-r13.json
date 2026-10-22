@@ -1,0 +1,881 @@
+{
+ "watch": {
+  "359": {
+   "tagCode": 39,
+   "tag": "DefineSprite",
+   "offset": 512446,
+   "length": 31
+  },
+  "506": {
+   "tagCode": 39,
+   "tag": "DefineSprite",
+   "offset": 697513,
+   "length": 52
+  },
+  "1419": {
+   "tagCode": 39,
+   "tag": "DefineSprite",
+   "offset": 14358470,
+   "length": 368
+  },
+  "1443": {
+   "tagCode": 2,
+   "tag": "DefineShape",
+   "offset": 14443906,
+   "length": 55,
+   "boundsPx": [
+    -568.45,
+    -511.45,
+    -178.2,
+    -104.2
+   ]
+  },
+  "1448": {
+   "tagCode": 39,
+   "tag": "DefineSprite",
+   "offset": 14446996,
+   "length": 389
+  },
+  "1497": {
+   "tagCode": 39,
+   "tag": "DefineSprite",
+   "offset": 14519549,
+   "length": 14
+  },
+  "1498": {
+   "tagCode": 39,
+   "tag": "DefineSprite",
+   "offset": 14519569,
+   "length": 14
+  },
+  "1499": {
+   "tagCode": 39,
+   "tag": "DefineSprite",
+   "offset": 14519589,
+   "length": 15483
+  },
+  "1551": {
+   "tagCode": 39,
+   "tag": "DefineSprite",
+   "offset": 14565374,
+   "length": 2798
+  },
+  "1584": {
+   "tagCode": 39,
+   "tag": "DefineSprite",
+   "offset": 14674339,
+   "length": 26
+  },
+  "1591": {
+   "tagCode": 39,
+   "tag": "DefineSprite",
+   "offset": 14689245,
+   "length": 4893
+  },
+  "1592": {
+   "tagCode": 39,
+   "tag": "DefineSprite",
+   "offset": 14694144,
+   "length": 10089
+  }
+ },
+ "sprites": {
+  "1499": {
+   "frameCount": 1,
+   "frame1": {
+    "places": [
+     {
+      "depth": 1,
+      "charId": 1419,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       673.5,
+       207.1
+      ],
+      "className": null,
+      "clipEvents": [
+       "<filters:truncated>"
+      ]
+     },
+     {
+      "depth": 50,
+      "charId": 1430,
+      "name": null,
+      "matrix": [
+       0.0000762939453125,
+       0.0001068115234375,
+       0.00006103515625,
+       0.0000152587890625,
+       -0.3,
+       0
+      ],
+      "clipEvents": [
+       "load",
+       "unload",
+       "keyUp",
+       "rollOver",
+       "releaseOutside",
+       "press"
+      ]
+     },
+     {
+      "depth": 60,
+      "charId": 1432,
+      "name": "地图",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       0,
+       0
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 62,
+      "charId": 1433,
+      "name": null,
+      "matrix": [
+       -0.00653076171875,
+       0.00048828125,
+       0,
+       -0.000457763671875,
+       5.8,
+       -1.9
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 64,
+      "charId": 1433,
+      "name": null,
+      "matrix": [
+       -0.00653076171875,
+       0.00048828125,
+       0,
+       -0.000457763671875,
+       6.3,
+       24.65
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 66,
+      "charId": 1433,
+      "name": null,
+      "matrix": [
+       0.00048828125,
+       -0.0018310546875,
+       -0.0015716552734375,
+       0.000244140625,
+       4.6,
+       5.85
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 68,
+      "charId": 1433,
+      "name": null,
+      "matrix": [
+       0.00048828125,
+       -0.0018310546875,
+       -0.0015716552734375,
+       0.000244140625,
+       4.6,
+       -6.3
+      ],
+      "clipEvents": [
+       "enterFrame",
+       "press"
+      ]
+     },
+     {
+      "depth": 70,
+      "charId": 1106,
+      "name": "man1",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       347.5,
+       270.5
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 153,
+      "charId": 1434,
+      "name": "敌人生成器2",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       557.45,
+       -3.1
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 155,
+      "charId": 1434,
+      "name": "敌人生成器1",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       425.45,
+       -5.85
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 157,
+      "charId": 1442,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       431.45,
+       359.25
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 164,
+      "charId": 1442,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       626,
+       409
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 171,
+      "charId": 1442,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       545.45,
+       409
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 178,
+      "charId": 1443,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       916.4,
+       206.35
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 179,
+      "charId": 1448,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       376.45,
+       13.65
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 184,
+      "charId": 1443,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       840.4,
+       206.35
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 185,
+      "charId": 1448,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       300.45,
+       13.65
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 190,
+      "charId": 1455,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       358.45,
+       268.05
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 197,
+      "charId": 1496,
+      "name": "对话框",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       159.9,
+       23.95
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 216,
+      "charId": 255,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       562.45,
+       -111.2
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 220,
+      "charId": 1497,
+      "name": "地面痕迹",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       0,
+       0
+      ],
+      "className": null,
+      "clipEvents": [
+       "<filters:truncated>"
+      ]
+     },
+     {
+      "depth": 222,
+      "charId": 1497,
+      "name": "子弹区域",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       0,
+       0
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 224,
+      "charId": 1497,
+      "name": "子弹区域2",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       0,
+       0
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 226,
+      "charId": 1498,
+      "name": "效果",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       0,
+       0
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     }
+    ],
+    "doAction": 0,
+    "label": null
+   }
+  },
+  "1591": {
+   "frameCount": 18,
+   "frames": [
+    {
+     "frame": 1,
+     "label": null,
+     "doAction": 1,
+     "places": [
+      {
+       "depth": 1,
+       "charId": 1590,
+       "name": null,
+       "matrix": [
+        1,
+        0,
+        0,
+        1,
+        20.55,
+        -49.45
+       ],
+       "className": null,
+       "clipEvents": [
+        "<filters:truncated>"
+       ]
+      }
+     ]
+    },
+    {
+     "frame": 12,
+     "label": null,
+     "doAction": 0,
+     "places": [
+      {
+       "depth": 5,
+       "charId": 359,
+       "name": "枪口位置2",
+       "matrix": [
+        1,
+        0,
+        0,
+        1,
+        105.25,
+        -12.55
+       ],
+       "clipEvents": [
+        "load",
+        "unload",
+        "enterFrame"
+       ]
+      },
+      {
+       "depth": 7,
+       "charId": 506,
+       "name": null,
+       "matrix": [
+        1,
+        0,
+        0,
+        1,
+        112.45,
+        -70.5
+       ],
+       "clipEvents": [
+        "load"
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  "1592": {
+   "frameCount": 1,
+   "frame1": {
+    "places": [
+     {
+      "depth": 1,
+      "charId": 1582,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       673.5,
+       207.1
+      ],
+      "className": null,
+      "clipEvents": [
+       "<filters:truncated>"
+      ]
+     },
+     {
+      "depth": 5,
+      "charId": 1584,
+      "name": "地图",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       0,
+       0
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 7,
+      "charId": 1433,
+      "name": null,
+      "matrix": [
+       -0.00653076171875,
+       0.00048828125,
+       0,
+       -0.000457763671875,
+       5.8,
+       -1.9
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 9,
+      "charId": 1433,
+      "name": null,
+      "matrix": [
+       -0.00653076171875,
+       0.00048828125,
+       0,
+       -0.000457763671875,
+       6.3,
+       24.65
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 11,
+      "charId": 1433,
+      "name": null,
+      "matrix": [
+       0.00048828125,
+       -0.0018310546875,
+       -0.0015716552734375,
+       0.000244140625,
+       4.6,
+       5.85
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 13,
+      "charId": 1433,
+      "name": null,
+      "matrix": [
+       0.00048828125,
+       -0.0018310546875,
+       -0.0015716552734375,
+       0.000244140625,
+       4.6,
+       6.15
+      ],
+      "clipEvents": [
+       "enterFrame",
+       "press"
+      ]
+     },
+     {
+      "depth": 15,
+      "charId": 1106,
+      "name": "man1",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       317.45,
+       281.85
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 98,
+      "charId": 1434,
+      "name": "敌人生成器2",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       557.45,
+       -3.1
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 100,
+      "charId": 1434,
+      "name": "敌人生成器1",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       862.8,
+       7.75
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 102,
+      "charId": 477,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       708.25,
+       310.2
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 146,
+      "charId": 1585,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       783.95,
+       323.1
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 148,
+      "charId": 1587,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       362,
+       -62.2
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 152,
+      "charId": 1591,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       133.8,
+       202.4
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 160,
+      "charId": 1591,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       249.8,
+       430.9
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 168,
+      "charId": 630,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       617,
+       319
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 212,
+      "charId": 1442,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       75.1,
+       427.35
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 219,
+      "charId": 255,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       87.8,
+       276.55
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 223,
+      "charId": 255,
+      "name": null,
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       107.1,
+       322.65
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     },
+     {
+      "depth": 227,
+      "charId": 1497,
+      "name": "地面痕迹",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       0,
+       0
+      ],
+      "className": null,
+      "clipEvents": [
+       "<filters:truncated>"
+      ]
+     },
+     {
+      "depth": 229,
+      "charId": 1497,
+      "name": "子弹区域",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       0,
+       0
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 231,
+      "charId": 1497,
+      "name": "子弹区域2",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       0,
+       0
+      ],
+      "clipEvents": []
+     },
+     {
+      "depth": 233,
+      "charId": 1498,
+      "name": "效果",
+      "matrix": [
+       1,
+       0,
+       0,
+       1,
+       0,
+       0
+      ],
+      "clipEvents": [
+       "load"
+      ]
+     }
+    ],
+    "doAction": 0,
+    "label": null
+   }
+  }
+ }
+}

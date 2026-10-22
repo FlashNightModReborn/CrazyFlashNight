@@ -63,6 +63,13 @@ class org.flashNight.arki.hud.PlayerHudServiceTest {
         var next:Object=PlayerHudService.testOnlyCombat(unit);
         check(next!==first && next.ammo[0]=="9" && next.ammoDetails[0].ghost==1,"source change invalidates combat delta");
         check(first.ammoDetails[0].loaded==10 && first.ammoDetails[0].ghost==2,"prior wire snapshot is not mutated by next shot");
+        unit.长枪={name:"M249",value:{shot:25}};unit.长枪弹匣容量=100;unit.长枪属性={bullet:"普通子弹",split:1,clipname:"机枪弹夹"};
+        unit.长枪副武器配置={};unit.长枪副武器弹匣容量=18;unit.长枪副武器状态={shot:15,capacity:18,split:1,isVerticalSplit:false};
+        unit.长枪副武器={value:unit.长枪副武器状态};unit.主动战技={长枪:{isSubweaponControl:true}};
+        var subCombat:Object=PlayerHudService.testOnlyCombat(unit);
+        check(subCombat.mode=="长枪副武器" && subCombat.ammoDetails[0].capacity==100 && subCombat.ammoDetails[0].loaded==75
+            && subCombat.ammoDetails[1].capacity==18 && subCombat.ammoDetails[1].loaded==3,
+            "standard guns and long-gun subweapon project authoritative capacity and loaded counts");
         service.ammoDetailsEnabled=oldDetails;
         world.removeMovieClip();_root.gameworld=oldWorld;_root.控制目标=oldTarget;
     }

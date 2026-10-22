@@ -1,0 +1,57 @@
+{
+  "project": "a9 lab materials",
+  "final_revision": "r2",
+  "self_check_rounds": [
+    {
+      "round": 1,
+      "viewed": [
+        "all four bitmap original/new pairs at 4x",
+        "all 18 door states original/new contact sheet",
+        "fan original native-blade/grille assembly"
+      ],
+      "findings": [
+        "A-frame background fill hid triangular openings",
+        "fan panel too bright",
+        "floor grain had overly broad cloudy features",
+        "door texture lacked streaked wear"
+      ],
+      "corrections": [
+        "restored both support apertures with vector even-odd paths",
+        "darkened fan frame and retained translucent hand-drawn mesh",
+        "rebalanced procedural texture toward short fine mineral marks",
+        "added subtle generated vertical drips and edge shading"
+      ]
+    },
+    {
+      "round": 2,
+      "viewed": [
+        "all four bitmap original/new pairs at 1x",
+        "barrier and door 4x pairs after final refinement"
+      ],
+      "findings": [
+        "caution yellow areas needed widening",
+        "door inner edge needed restrained wear",
+        "small bitmap review labels overlapped"
+      ],
+      "corrections": [
+        "widened the three warning bands within unchanged board silhouette",
+        "added inner-edge soft darkening and fine hand-authored scratches",
+        "widened comparison gutters without changing original/new scale",
+        "reduced hand-authored mesh opacity after all7 state review so original animated blades remain legible"
+      ]
+    }
+  ],
+  "independent_review": {
+    "reviewer": "assemble_cf6_review_batch",
+    "result": "Final r2 accepted after reviewer reopened actual 1x seven-state fan sheet: original five-blade gaps/contours readable; grille no longer obscures disk. All 18 door frames inspected: closed, split retreat, fully open and closing match with no mask leaks or slice misalignment. Main contours, A-frame openings/crossbar joins and door panel positions accepted; wider warning yellow and light inner-door wear applied."
+  },
+  "no_original_pixels_reused_in_art": true,
+  "native_layers": "Panels, borders, outlines, mesh, trestle geometry, lettering, seams and marks are authored SVG; only newly seeded grain is bitmap. Original native fan blades and door status text are preserved reference elements in state QA.",
+  "bundle_dependencies": "Only project-relative reference files. Python PIL/numpy/fontTools; installed DejaVuSans-BoldOblique font to regenerate outlined KEEP OUT; Inkscape for rendering. Renderer uses cross-project lock.",
+  "production_changes": false,
+  "final_state_checks": {
+    "door": "All 18 original/new states actually viewed; same clipping, opening and three-way panel travel.",
+    "fan": "All 105 original frame records preserved; seven distinct states rendered and compared.",
+    "geometry": "12 replacement shape clip paths and viewBoxes match exact audited originals."
+  }
+}

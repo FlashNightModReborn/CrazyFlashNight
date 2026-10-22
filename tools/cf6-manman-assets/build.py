@@ -50,7 +50,8 @@ def sha(path):
 
 
 def build_inputs():
-    paths = [HERE / 'build.py', HERE / 'ManmanAI.as',
+    paths = [HERE / 'build.py', HERE / 'ManmanAI.as', HERE / 'wolf_leap.py',
+        ROOT / 'flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-狼跳.xml',
         ROOT / 'tools/cf6-zombie-assets/build.py', ROOT / 'tools/gamma-echo-assets/build.py',
         ROOT / 'tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py',
         ROOT / 'tools/asset-metrology/xfl_geometry.py',
@@ -265,6 +266,8 @@ def build_symbols():
                 script='onClipEvent(enterFrame){ _parent.manmanTick(); }\n')
             root.find('x:timeline/x:DOMTimeline/x:layers', NS).insert(0, native.layer('私有行为', [native.frame(duration=127, elements=[driver])]))
         generated[name] = root
+    wolf = module('manman_wolf_leap', HERE / 'wolf_leap.py')
+    wolf.add_action(generated, root_name, native)
     return generated, root_name, source_rows
 
 

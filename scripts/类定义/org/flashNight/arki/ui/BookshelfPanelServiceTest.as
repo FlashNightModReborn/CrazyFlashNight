@@ -600,6 +600,52 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
             check(BookshelfPanelService.execute("commit", {v:1,token:token,kind:"settle",target:trialActive.slot,snapshot:{ext:{bookRun:trialResult}}}).error == "invalid_target"
                     && _root.技能点数 == 100 && _root.__bookEffects.length == 0,
                 "a trial result cannot be relabeled as a rewarded university run");
+            setup(); token=open();
+            var cf6Active:Object={slot:"bookrun_cf6_fixture",originSlot:"book_fixture_a",seed:37,bookId:"cf6-sting",routeId:"historical",outcome:"active"};
+            _root._saveExt.bookshelf={active:cf6Active,firstClear:true,bestMs:500000,clears:9,lastReward:45,history:universityHistory};
+            var cf6Result:Object=PersistedSnapshot.clone(cf6Active);cf6Result.outcome="victory";cf6Result.elapsedMs=15000;
+            var wrongRoute:Object=PersistedSnapshot.clone(cf6Result);wrongRoute.routeId="plan61";
+            check(BookshelfPanelService.execute("commit",{v:1,token:token,kind:"settle",target:cf6Active.slot,snapshot:{ext:{bookRun:wrongRoute}}}).error=="invalid_target",
+                "CF6 cross-route settlement rejects before durable mutation");
+            result=BookshelfPanelService.execute("commit",{v:1,token:token,kind:"settle",target:cf6Active.slot,snapshot:{ext:{bookRun:cf6Result}}});
+            check(result.phase=="save_pending" && _root.技能点数==100 && _root.__bookEffects.length==0,"CF6 uses durable zero-SP settlement");
+            check(result.cf6Records==undefined,"unconfirmed first CF6 history remains absent from the public snapshot");
+            result=BookshelfPanelService.execute("query",{v:1,token:token});
+            var cf6History:Object=_root._saveExt.bookshelf.routes["cf6-sting.historical"];
+            check(result.phase=="applied" && cf6History.firstClear===true && cf6History.clears==1 && cf6History.bestMs==15000,
+                "CF6 zero-reward victory still increments its own clear record");
+            check(result.records.bestMs==500000 && result.records.clears==9 && result.lastReward==45
+                && result.records.history[0].runId=="campus_kept","CF6 settlement preserves campus record and last reward");
+            check(cf6History.history.length==1 && cf6History.history[0].routeId=="historical" && cf6History.history[0].sp==0,
+                "CF6 record retains historical route identity");
+            check(result.cf6Records.bestMs==15000 && result.cf6Records.clears==1 && result.cf6Records.history.length==1,
+                "confirmed CF6 record has its own public summary");
+            var publicCf6:Object=result.cf6Records.history[0],publicKeys:Number=0;
+            for (var publicKey:String in publicCf6) publicKeys++;
+            check(publicKeys==8 && publicCf6.routeId==undefined && publicCf6.bookId=="cf6-sting",
+                "public CF6 history exposes exactly the eight existing result keys");
+            publicCf6.outcome="mutated";
+            check(cf6History.history[0].outcome=="victory","public CF6 history is detached from durable route authority");
+            BookshelfPanelService.execute("commit",{v:1,token:token,kind:"settle",target:cf6Active.slot,snapshot:{ext:{bookRun:cf6Result}}});
+            check(cf6History.clears==1 && cf6History.history.length==1,"CF6 exact duplicate settlement cannot increment again");
+            token=open();
+            check(BookshelfPanelService.execute("commit",{v:1,token:token,kind:"settle",target:cf6Active.slot,snapshot:{ext:{bookRun:cf6Result}}}).error=="invalid_target",
+                "CF6 late result after credential retirement is rejected");
+            setup(); token=open();
+            _root._saveExt.bookshelf={bestMs:123,clears:8,history:universityHistory};
+            result=BookshelfPanelService.execute("snapshot",{v:1,token:token});
+            check(result.cf6Records==undefined && result.records.bestMs==123,"missing CF6 history does not borrow the campus record");
+            _root._saveExt.bookshelf.routes={};
+            var malformedCf6:Object={bestMs:0,clears:0,history:[]};
+            _root._saveExt.bookshelf.routes["cf6-sting.historical"]=malformedCf6;
+            var foreignCf6:Object=PersistedSnapshot.clone(cf6History.history[0]);foreignCf6.routeId="plan61";
+            var campusCf6:Object=PersistedSnapshot.clone(cf6History.history[0]);campusCf6.bookId="repair-campus";
+            malformedCf6.history=[foreignCf6,campusCf6];
+            result=BookshelfPanelService.execute("snapshot",{v:1,token:token});
+            check(result.cf6Records.history.length==0,"CF6 projection rejects foreign route and campus history without fabricating replacements");
+            malformedCf6.bestMs=Number.NaN;
+            result=BookshelfPanelService.execute("snapshot",{v:1,token:token});
+            check(result.cf6Records==undefined,"damaged CF6 summary is omitted instead of sending NaN or campus fallback");
             testDirectStageReturn();
             testReturnUiWaitsForCurtain();
             testContextArrivalWaitsForCurtain();

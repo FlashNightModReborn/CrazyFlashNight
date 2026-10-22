@@ -1,0 +1,259 @@
+{
+  "audioPolicy": "MP3 bytes copied unchanged; no audio transcoding or audible validation",
+  "byteExactCopies": [
+    {
+      "mirror": "cf6-s1/narration.mp3",
+      "sha256": "046b4339acd624a0fe04b8e23af808893d764924cfc7cf4b2310b2e7e52886d9",
+      "source": "cf6-s1/narration.mp3"
+    },
+    {
+      "mirror": "cf6-s2/narration.mp3",
+      "sha256": "ad36bf71a89fe26c6b19c4b9ead4be03ca2d3b3aac7506b4d81128a07f214aed",
+      "source": "cf6-s2/narration.mp3"
+    },
+    {
+      "mirror": "cf6-s3/narration.mp3",
+      "sha256": "118f61bad01c6a477a132a1e2176f5642875406b0f808c665c43767129c11da1",
+      "source": "cf6-s3/narration.mp3"
+    },
+    {
+      "mirror": "cf6-s4/narration.mp3",
+      "sha256": "0ecab48d5f77b5276ab229df4aa250f7d83d23624f1178b8d1ddb8384a80e3ce",
+      "source": "cf6-s4/narration.mp3"
+    },
+    {
+      "mirror": "cf6-s5/narration.mp3",
+      "sha256": "50091c9a8fe41bed7c8e423cee7c48add96e7459255548294c0a8d3d0dee8a30",
+      "source": "cf6-s5/narration.mp3"
+    },
+    {
+      "mirror": "cf6-s6/narration.mp3",
+      "sha256": "1ec20975220b5c337b7942ad88eb6da65236a661b33ec7fbcaea70a7834bcac4",
+      "source": "cf6-s6/narration.mp3"
+    },
+    {
+      "mirror": "cf6-s7/narration.mp3",
+      "sha256": "3393ebda62d32547b1874e8dd9e18028c2d8e2b51d95a0ee143fb15c4ae54b91",
+      "source": "cf6-s7/narration.mp3"
+    },
+    {
+      "mirror": "music/music01.mp3",
+      "sha256": "244c97f15033fcd82376881d8547cca1d2fbe2c3c1fe46d686afad98493c9f3e",
+      "source": "music/music01.mp3"
+    },
+    {
+      "mirror": "music/music02.mp3",
+      "sha256": "e2914b77190786f11b565a50190c59af98f0f9019bd01270a72c8212692be53d",
+      "source": "music/music02.mp3"
+    },
+    {
+      "mirror": "music/music03.mp3",
+      "sha256": "76d3427c67b32547529db3af4f5dd47a63e53110dd3cd23218696e92c2759b91",
+      "source": "music/music03.mp3"
+    }
+  ],
+  "fileCount": 18,
+  "generatedOutputs": [
+    {
+      "bytes": 2860,
+      "path": "launcher/web/assets/book-comic/cf6/cf6-end/credits.svg",
+      "sha256": "0ffb0fe44ddd7130aaa19051d9637b77548dd53d96d28bd276de8d222c97da1a"
+    },
+    {
+      "bytes": 244560,
+      "path": "launcher/web/assets/book-comic/cf6/cf6-s1/comic.svg",
+      "sha256": "224405043e994519d58da1624eb5221effbdae55563d3a605cf0a0647c6220da"
+    },
+    {
+      "bytes": 32136,
+      "path": "launcher/web/assets/book-comic/cf6/cf6-s1/narration.mp3",
+      "sha256": "046b4339acd624a0fe04b8e23af808893d764924cfc7cf4b2310b2e7e52886d9"
+    },
+    {
+      "bytes": 193425,
+      "path": "launcher/web/assets/book-comic/cf6/cf6-s2/comic.svg",
+      "sha256": "70753d567dda3885f0ac69c2e068030acba702749bf776378fd8f1f8bab43650"
+    },
+    {
+      "bytes": 182104,
+      "path": "launcher/web/assets/book-comic/cf6/cf6-s2/narration.mp3",
+      "sha256": "ad36bf71a89fe26c6b19c4b9ead4be03ca2d3b3aac7506b4d81128a07f214aed"
+    },
+    {
+      "bytes": 371889,
+      "path": "launcher/web/assets/book-comic/cf6/cf6-s3/comic.svg",
+      "sha256": "3a2b99abfae90cdea472cad9301b03143baeb9a4b4fd40da5d6361251373dbeb"
+    },
+    {
+      "bytes": 57928,
+      "path": "launcher/web/assets/book-comic/cf6/cf6-s3/narration.mp3",
+      "sha256": "118f61bad01c6a477a132a1e2176f5642875406b0f808c665c43767129c11da1"
+    },
+    {
+      "bytes": 305736,
+      "path": "launcher/web/assets/book-comic/cf6/cf6-s4/comic.svg",
+      "sha256": "5db2986d65e574ca0700f1e5602047e39f1986616ff9c37ef80dfbc44c797e0a"
+    },
+    {
+      "bytes": 48880,
+      "path": "launcher/web/assets/book-comic/cf6/cf6-s4/narration.mp3",
+      "sha256": "0ecab48d5f77b5276ab229df4aa250f7d83d23624f1178b8d1ddb8384a80e3ce"
+    },
+    {
+      "bytes": 290153,
+      "path": "launcher/web/assets/book-comic/cf6/cf6-s5/comic.svg",
+      "sha256": "11b7e0baf878caa3b169d785afe7c1f547b6be32cf0bd63c82d38e97fee63d31"
+    },
+    {
+      "bytes": 99944,
+      "path": "launcher/web/assets/book-comic/cf6/cf6-s5/narration.mp3",
+      "sha256": "50091c9a8fe41bed7c8e423cee7c48add96e7459255548294c0a8d3d0dee8a30"
+    },
+    {
+      "bytes": 299608,
+      "path": "launcher/web/assets/book-comic/cf6/cf6-s6/comic.svg",
+      "sha256": "2075d2338a0fedc5c0155b2ae88361f67cd2b289cf958b469953e1a7cbb74fa2"
+    },
+    {
+      "bytes": 161928,
+      "path": "launcher/web/assets/book-comic/cf6/cf6-s6/narration.mp3",
+      "sha256": "1ec20975220b5c337b7942ad88eb6da65236a661b33ec7fbcaea70a7834bcac4"
+    },
+    {
+      "bytes": 288508,
+      "path": "launcher/web/assets/book-comic/cf6/cf6-s7/comic.svg",
+      "sha256": "eed96ad98e47cea735e630a830e8062b40cb5a15552b12a7f2a82b5e46908da9"
+    },
+    {
+      "bytes": 131040,
+      "path": "launcher/web/assets/book-comic/cf6/cf6-s7/narration.mp3",
+      "sha256": "3393ebda62d32547b1874e8dd9e18028c2d8e2b51d95a0ee143fb15c4ae54b91"
+    },
+    {
+      "bytes": 14008,
+      "path": "launcher/web/assets/book-comic/cf6/manifest.json",
+      "sha256": "1491963e75212ddad85968b463096c714b900b4abd2af78142150b1e93519806"
+    },
+    {
+      "bytes": 3526740,
+      "path": "launcher/web/assets/book-comic/cf6/music/music01.mp3",
+      "sha256": "244c97f15033fcd82376881d8547cca1d2fbe2c3c1fe46d686afad98493c9f3e"
+    },
+    {
+      "bytes": 2409117,
+      "path": "launcher/web/assets/book-comic/cf6/music/music02.mp3",
+      "sha256": "e2914b77190786f11b565a50190c59af98f0f9019bd01270a72c8212692be53d"
+    },
+    {
+      "bytes": 649926,
+      "path": "launcher/web/assets/book-comic/cf6/music/music03.mp3",
+      "sha256": "76d3427c67b32547529db3af4f5dd47a63e53110dd3cd23218696e92c2759b91"
+    },
+    {
+      "bytes": 112644,
+      "path": "launcher/web/modules/book-comic-cf6-content.js",
+      "sha256": "14bf99c6c75c6ca949a86149d9eaf55d589457b26f99f449d16556a70d1a0b4e"
+    },
+    {
+      "bytes": 112610,
+      "path": "tools/cf6-story-migration/generated/cf6-web-content.json",
+      "sha256": "71a541ffc6477e6d107f35253516ed5553147f11425bcae2852e673d2abc5ee3"
+    }
+  ],
+  "maxFileBytes": 3526740,
+  "runtimePayload": [
+    {
+      "bytes": 2860,
+      "path": "cf6-end/credits.svg",
+      "sha256": "0ffb0fe44ddd7130aaa19051d9637b77548dd53d96d28bd276de8d222c97da1a"
+    },
+    {
+      "bytes": 244560,
+      "path": "cf6-s1/comic.svg",
+      "sha256": "224405043e994519d58da1624eb5221effbdae55563d3a605cf0a0647c6220da"
+    },
+    {
+      "bytes": 32136,
+      "path": "cf6-s1/narration.mp3",
+      "sha256": "046b4339acd624a0fe04b8e23af808893d764924cfc7cf4b2310b2e7e52886d9"
+    },
+    {
+      "bytes": 193425,
+      "path": "cf6-s2/comic.svg",
+      "sha256": "70753d567dda3885f0ac69c2e068030acba702749bf776378fd8f1f8bab43650"
+    },
+    {
+      "bytes": 182104,
+      "path": "cf6-s2/narration.mp3",
+      "sha256": "ad36bf71a89fe26c6b19c4b9ead4be03ca2d3b3aac7506b4d81128a07f214aed"
+    },
+    {
+      "bytes": 371889,
+      "path": "cf6-s3/comic.svg",
+      "sha256": "3a2b99abfae90cdea472cad9301b03143baeb9a4b4fd40da5d6361251373dbeb"
+    },
+    {
+      "bytes": 57928,
+      "path": "cf6-s3/narration.mp3",
+      "sha256": "118f61bad01c6a477a132a1e2176f5642875406b0f808c665c43767129c11da1"
+    },
+    {
+      "bytes": 305736,
+      "path": "cf6-s4/comic.svg",
+      "sha256": "5db2986d65e574ca0700f1e5602047e39f1986616ff9c37ef80dfbc44c797e0a"
+    },
+    {
+      "bytes": 48880,
+      "path": "cf6-s4/narration.mp3",
+      "sha256": "0ecab48d5f77b5276ab229df4aa250f7d83d23624f1178b8d1ddb8384a80e3ce"
+    },
+    {
+      "bytes": 290153,
+      "path": "cf6-s5/comic.svg",
+      "sha256": "11b7e0baf878caa3b169d785afe7c1f547b6be32cf0bd63c82d38e97fee63d31"
+    },
+    {
+      "bytes": 99944,
+      "path": "cf6-s5/narration.mp3",
+      "sha256": "50091c9a8fe41bed7c8e423cee7c48add96e7459255548294c0a8d3d0dee8a30"
+    },
+    {
+      "bytes": 299608,
+      "path": "cf6-s6/comic.svg",
+      "sha256": "2075d2338a0fedc5c0155b2ae88361f67cd2b289cf958b469953e1a7cbb74fa2"
+    },
+    {
+      "bytes": 161928,
+      "path": "cf6-s6/narration.mp3",
+      "sha256": "1ec20975220b5c337b7942ad88eb6da65236a661b33ec7fbcaea70a7834bcac4"
+    },
+    {
+      "bytes": 288508,
+      "path": "cf6-s7/comic.svg",
+      "sha256": "eed96ad98e47cea735e630a830e8062b40cb5a15552b12a7f2a82b5e46908da9"
+    },
+    {
+      "bytes": 131040,
+      "path": "cf6-s7/narration.mp3",
+      "sha256": "3393ebda62d32547b1874e8dd9e18028c2d8e2b51d95a0ee143fb15c4ae54b91"
+    },
+    {
+      "bytes": 3526740,
+      "path": "music/music01.mp3",
+      "sha256": "244c97f15033fcd82376881d8547cca1d2fbe2c3c1fe46d686afad98493c9f3e"
+    },
+    {
+      "bytes": 2409117,
+      "path": "music/music02.mp3",
+      "sha256": "e2914b77190786f11b565a50190c59af98f0f9019bd01270a72c8212692be53d"
+    },
+    {
+      "bytes": 649926,
+      "path": "music/music03.mp3",
+      "sha256": "76d3427c67b32547529db3af4f5dd47a63e53110dd3cd23218696e92c2759b91"
+    }
+  ],
+  "schema": "cf6-book-comic-integrity-audit.v1",
+  "sourceBindingSha256": "afd74ed558bce5383adf37c63ef98debbc10da24f65b212db9a456b790d4f687",
+  "totalBytes": 9296482
+}

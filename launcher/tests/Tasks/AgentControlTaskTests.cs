@@ -452,6 +452,58 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(1, sendCount);
         }
 
+        [Theory]
+        [InlineData("bookId")]
+        [InlineData("token")]
+        [InlineData("cmd")]
+        [InlineData("snapshot")]
+        [InlineData("panel")]
+        public void OpenBookshelf_RejectsBusinessPayload(string extra)
+        {
+            int sent = 0;
+            var task = CreateRuntimeReadyTask("cf7_agent_cf6_sting_20261021", "attempt-cf6");
+            task.SetBookshelfOpenAction(() => { sent++; return true; });
+            var request = new JObject { ["task"]="agent_control", ["action"]="openBookshelf",
+                ["expectedSlot"]="cf7_agent_cf6_sting_20261021", ["expectedAttemptId"]="attempt-cf6" };
+            request[extra] = "forbidden";
+            var result = JObject.Parse(task.Handle(request));
+            Assert.Equal("invalid_payload", (string)result["error"]);
+            Assert.Equal(0, sent);
+        }
+
+        [Fact]
+        public void OpenBookshelf_UsesExactRuntimeWatermarksAndFixedOpener()
+        {
+            int sent = 0;
+            var task = CreateRuntimeReadyTask("cf7_agent_cf6_sting_20261021", "attempt-cf6");
+            task.SetBookshelfOpenAction(() => { sent++; return true; });
+            var request = new JObject { ["action"]="openBookshelf",
+                ["expectedSlot"]="cf7_agent_cf6_sting_20261021", ["expectedAttemptId"]="attempt-old" };
+            Assert.Equal("agent_attempt_mismatch", (string)JObject.Parse(task.Handle(request))["error"]);
+            request["expectedAttemptId"]="attempt-cf6";
+            request["expectedSlot"]="cf7_agent_foreign";
+            Assert.Equal("agent_slot_mismatch", (string)JObject.Parse(task.Handle(request))["error"]);
+            request["expectedSlot"]="crazyflasher7_saves";
+            Assert.Equal("invalid_expected_slot", (string)JObject.Parse(task.Handle(request))["error"]);
+            Assert.Equal(0, sent);
+            request["expectedSlot"]="cf7_agent_cf6_sting_20261021";
+            var result = JObject.Parse(task.Handle(request));
+            Assert.True((bool)result["success"]);
+            Assert.Equal("bookshelf_panel_open_requested", (string)result["note"]);
+            Assert.Equal(1, sent);
+        }
+
+        [Fact]
+        public void OpenBookshelf_FailedDeliveryDoesNotClaimOpened()
+        {
+            var task = CreateRuntimeReadyTask("cf7_agent_cf6_sting_20261021", "attempt-cf6");
+            var request = new JObject { ["action"]="openBookshelf", ["expectedSlot"]="cf7_agent_cf6_sting_20261021",
+                ["expectedAttemptId"]="attempt-cf6" };
+            Assert.Equal("bookshelf_open_unavailable", (string)JObject.Parse(task.Handle(request))["error"]);
+            task.SetBookshelfOpenAction(() => false);
+            Assert.Equal("bookshelf_open_failed", (string)JObject.Parse(task.Handle(request))["error"]);
+        }
+
         [Fact]
         public void OpenGym_UsesExactCloneSlotAndFixedOpenerOnly()
         {

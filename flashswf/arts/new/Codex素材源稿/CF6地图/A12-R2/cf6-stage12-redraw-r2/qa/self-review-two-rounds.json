@@ -1,0 +1,10 @@
+{
+  "stage": "a12",
+  "review_type": "actual visual inspection, two passes",
+  "observations": [
+    "First pass: original world overview, panorama-original-new and middle crop. Both doors, three barrels, one crate, two original guns, B27 text, arrows and wall-hole overlays align.",
+    "Second pass: author crop and original/new door/barrel/crate state sheets. Door masking and broken barrel/crate fragments retain states. Expanded 1430 and 1442 sample canvases after identifying clipped crate fragments.",
+    "Original audit PNG omits top-level 1430 RGB multiplier 210/256; current reconstructed original includes the inventory multiplier. Source timing and frozen artwork remain unchanged."
+  ],
+  "current_status": "visual assembly checked; independent reviewer and cold-rebuild verification tracked separately"
+}

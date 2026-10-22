@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "scope": "Static decoding consistency only; no ActionScript execution or runtime QA.",
+  "checks": {
+    "source_swffile_unchanged": true,
+    "a2_exit_load_s3_and_threshold7": true,
+    "s3_load_a3": true,
+    "a3_root_world1723": true,
+    "s3_exit_frame6_not13": true,
+    "no_a2_city1599_on_root78": true,
+    "camera_load_branch_resolves": true,
+    "camera_enter_branch_resolves": true,
+    "foreground_branch_resolves": true,
+    "foreground_two_1_2_multipliers": true,
+    "player_no_placement_clipactions": true,
+    "arithmetic_world_load_result": true
+  }
+}

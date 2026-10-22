@@ -1,0 +1,14 @@
+{
+  "bitmap-1753.svg": {
+    "source_generator": "source/sky_material.py",
+    "reference_snapshot": "reference/reused/bitmap-1753.svg",
+    "sha256": "5abc17a96fbce15bb5a67b1f8b73195a254735d1b6af4888c3facda9fd854c85",
+    "method": "Local deterministic volumetric field, original 800x187 crop."
+  },
+  "sky-1753-extension.svg": {
+    "source_generator": "source/sky_material.py",
+    "reference_snapshot": "reference/reused/sky-1753-extension.svg",
+    "sha256": "4df8ffdf9da9deae4ed71cfe3cb38499b8e4cd1d9265dd6f9853d22cf14c5026",
+    "method": "Continuous field native y186.5..253 crop, not scanline or vertical stretching; A7-only background underlay."
+  }
+}

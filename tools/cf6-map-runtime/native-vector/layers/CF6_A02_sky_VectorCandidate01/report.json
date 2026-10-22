@@ -1,0 +1,64 @@
+{
+  "schema": "cf6-native-sky-candidate.v1",
+  "name": "CF6_A02_sky_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A02-R3/cf6-stage2-redraw-r3/parts/bitmap-1595.svg",
+  "sourceSha256": "acc1024d89084084bb79dcac5b1f727de4a37e58126743a0b1917bd4e9f79429",
+  "nativeShapes": 130,
+  "nativeSymbols": 29,
+  "intrinsicTextures": 0,
+  "size": [
+    600,
+    187
+  ],
+  "proceduralEffects": [
+    {
+      "id": "haze",
+      "sourceGraph": [
+        "feTurbulence",
+        "feColorMatrix"
+      ],
+      "sourceFrequency": [
+        0.012,
+        0.045
+      ],
+      "sourceSeed": 1595,
+      "runtimeLimit": [
+        1024,
+        512
+      ],
+      "storage": "bounded runtime BitmapData only; vector source retained; no generated PNG",
+      "difference": "Flash perlinNoise is not SVG feTurbulence. Cloud displacement/color interpolation and three-pass blur are visual approximations; source filter-region crop is replaced by the explicit sky viewport clip."
+    },
+    {
+      "id": "cloudsoft",
+      "sourceGraph": [
+        "feTurbulence",
+        "feDisplacementMap",
+        "feGaussianBlur"
+      ],
+      "sourceFrequency": [
+        0.035,
+        0.06
+      ],
+      "sourceSeed": 18,
+      "runtimeLimit": [
+        1024,
+        512
+      ],
+      "storage": "bounded runtime BitmapData only; vector source retained; no generated PNG",
+      "difference": "Flash perlinNoise is not SVG feTurbulence. Cloud displacement/color interpolation and three-pass blur are visual approximations; source filter-region crop is replaced by the explicit sky viewport clip."
+    }
+  ],
+  "frozenCoreBundleSha256": "69bf33f7769966e03a1c89835c8e248fcf759862f79d2efe8f9952f0258e7be2",
+  "specializedInputs": [
+    {
+      "path": "tools/cf6-map-runtime/native-vector/build-sky.py",
+      "sha256": "b0f4e1c0db7afc5132262e33e2c362edec49796ef5bc667fca0142039c946211"
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/sky_filter.py",
+      "sha256": "ba374fb2c869a82d90f18c6cdf6d620ef35f736b33d27ae44795135b13d6dee1"
+    }
+  ],
+  "state": "native XFL assembled; real CS6 compile and consumer verification still pending"
+}

@@ -243,3 +243,20 @@ tools/input-hook-diagnostic/obj/
 /scripts/IronGuardFinalTwoDogs/
 /scripts/IronGuardFinalTwoDogs.swf
 /scripts/IronGuardFinalTwoDogsEntry.as
+
+# CF6 delivery keeps canonical XFL/SWF, authored inputs and generators.
+# Exploratory exports and rebuildable duplicate candidates remain local.
+/kimi-content/
+/Cf6ViewportProbeHost.swf
+/scripts/Cf6ViewportProbeHost.swf
+/scripts/Cf6ViewportProbeHost/
+/tools/cf6-story-migration/ffdec-work/
+/tools/cf6-tutorial-turrets/generated/selftest-xfl/
+/flashswf/backgrounds/cf6/*VectorCandidate*/
+/flashswf/backgrounds/cf6/*VectorCandidate*.swf
+/flashswf/backgrounds/cf6/*Diagnostic*/
+/flashswf/backgrounds/cf6/*Diagnostic*.swf
+/tools/cf6-map-runtime/native-vector/archive/
+/tools/cf6-map-runtime/native-vector/diagnostics/
+/tools/cf6-map-runtime/native-vector/generated/LIBRARY/
+/tools/cf6-map-runtime/native-vector/layers/*/LIBRARY/

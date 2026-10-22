@@ -1,0 +1,5842 @@
+{
+  "schema": "cf6-native-source-feature-census.v1",
+  "mapInputSha256": "056c50dd321debee3545d2988b891d140b07cfec864b5d461bd062e44d29ba95",
+  "scope": "raw XML count including defs; not runtime shape count, draw coverage or native conversion acceptance",
+  "layers": [
+    {
+      "map": "A01",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/background-1581.svg",
+      "sha256": "2cca92518011e900264db4901fdd74fd5fae03544c0be0ea1e11b560eae060a6",
+      "bytes": 5176615,
+      "viewBox": "-676.95 -212.95 800 452",
+      "elements": {
+        "svg": 1,
+        "g": 2333,
+        "defs": 13,
+        "linearGradient": 14,
+        "stop": 57,
+        "path": 9897,
+        "ellipse": 5549,
+        "clipPath": 3,
+        "image": 1,
+        "mask": 2,
+        "rect": 1,
+        "radialGradient": 4,
+        "text": 4
+      },
+      "imagesByEncoding": {
+        "data:image/png": 1
+      },
+      "filterOperations": [],
+      "filters": [],
+      "patterns": [],
+      "texts": [
+        {
+          "text": "DANGER",
+          "attributes": {
+            "x": "94.5",
+            "y": "85",
+            "text-anchor": "middle",
+            "font-family": "DejaVu Sans",
+            "font-weight": "bold",
+            "font-size": "5.8",
+            "fill": "#c3a745"
+          }
+        },
+        {
+          "text": "DECK",
+          "attributes": {
+            "x": "0",
+            "y": "14",
+            "font-family": "DejaVu Sans",
+            "font-size": "20",
+            "font-weight": "bold"
+          }
+        },
+        {
+          "text": "01",
+          "attributes": {
+            "x": "22",
+            "y": "57",
+            "font-family": "DejaVu Sans",
+            "font-size": "47",
+            "font-weight": "bold"
+          }
+        },
+        {
+          "text": "SERVICE LIFT",
+          "attributes": {
+            "x": "9",
+            "y": "77",
+            "font-family": "DejaVu Sans",
+            "font-size": "13",
+            "font-weight": "bold"
+          }
+        }
+      ],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A01",
+      "layer": "yellow-lamp-glow",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/prop-1411.svg",
+      "sha256": "c310a1db95fa0c64739fb4ccdc43a381bf9e473306fb57845ebc2d4e00f7fc22",
+      "bytes": 994,
+      "viewBox": "-99.9 -84.75 199.8 169.5",
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "radialGradient": 1,
+        "stop": 2,
+        "path": 1
+      },
+      "imagesByEncoding": {},
+      "filterOperations": [],
+      "filters": [],
+      "patterns": [],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A01",
+      "layer": "yellow-lamp",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/prop-1410.svg",
+      "sha256": "a9579788c2dbfa34c8f9eb042d72fddfb3d15516c9780be5ba37c91c74b0f533",
+      "bytes": 3237,
+      "viewBox": "-69 -12.5 138 25",
+      "elements": {
+        "svg": 1,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "radialGradient": 1,
+        "stop": 12,
+        "linearGradient": 2,
+        "g": 5,
+        "ellipse": 2,
+        "rect": 8,
+        "path": 6
+      },
+      "imagesByEncoding": {},
+      "filterOperations": [],
+      "filters": [],
+      "patterns": [],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A02",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A02-R3/cf6-stage2-redraw-r3/parts/background-1613.svg",
+      "sha256": "3f8d47aa8bd76d5a5d7d74a2315863edc2dd84e54a44afb8b71df3d448c180b9",
+      "bytes": 1432843,
+      "viewBox": "-716.95 -183 1330.9 469.8",
+      "elements": {
+        "svg": 1,
+        "defs": 39,
+        "filter": 3,
+        "feColorMatrix": 3,
+        "g": 240,
+        "linearGradient": 67,
+        "stop": 366,
+        "path": 2608,
+        "clipPath": 141,
+        "use": 116,
+        "feGaussianBlur": 2,
+        "mask": 9,
+        "rect": 9,
+        "radialGradient": 21,
+        "ellipse": 273,
+        "title": 1,
+        "desc": 1,
+        "image": 1
+      },
+      "imagesByEncoding": {
+        "data:image/png": 1
+      },
+      "filterOperations": [
+        "feColorMatrix",
+        "feGaussianBlur"
+      ],
+      "filters": [
+        {
+          "id": "farDark",
+          "attributes": {
+            "id": "farDark",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": ".62890625 0 0 0 0 0 .62890625 0 0 0 0 0 .62890625 0 0 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "leaf1_farPlaneFinish",
+          "attributes": {
+            "id": "leaf1_farPlaneFinish",
+            "x": "-.01",
+            "y": "-.05",
+            "width": "1.02",
+            "height": "1.1",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": ".82 0 0 0 .012 0 .82 0 0 .012 0 0 .82 0 .012 0 0 0 1 0"
+            },
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".28"
+            }
+          ]
+        },
+        {
+          "id": "leaf2_farPlaneFinish",
+          "attributes": {
+            "id": "leaf2_farPlaneFinish",
+            "x": "-.01",
+            "y": "-.05",
+            "width": "1.02",
+            "height": "1.1",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": ".82 0 0 0 .012 0 .82 0 0 .012 0 0 .82 0 .012 0 0 0 1 0"
+            },
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".28"
+            }
+          ]
+        }
+      ],
+      "patterns": [],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A02",
+      "layer": "city-parallax",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A02-R3/cf6-stage2-redraw-r3/parts/shape-1598.svg",
+      "sha256": "cdd607d3ae3424eb096cd424c0b8eb4d59af017d47728732d0725ed3d8c4bcf3",
+      "bytes": 5377,
+      "viewBox": "0.0 109.0 1441.4 66.44999999999999",
+      "elements": {
+        "svg": 1,
+        "defs": 2,
+        "g": 10,
+        "linearGradient": 1,
+        "stop": 3,
+        "clipPath": 9,
+        "path": 34,
+        "use": 8
+      },
+      "imagesByEncoding": {},
+      "filterOperations": [],
+      "filters": [],
+      "patterns": [],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A03",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A03-R1/cf6-stage3-redraw-r1/parts/background-1706.svg",
+      "sha256": "23747a9650fa887b053e31ec40bf668a306ffbbdbcc5984a8de4a32f0e942a36",
+      "bytes": 1591227,
+      "viewBox": "-676.95 -240.75 1508.95 483.55",
+      "elements": {
+        "svg": 1,
+        "g": 86,
+        "defs": 17,
+        "image": 2,
+        "path": 430,
+        "rect": 1,
+        "clipPath": 15,
+        "use": 15,
+        "linearGradient": 32,
+        "stop": 212,
+        "radialGradient": 8,
+        "filter": 8,
+        "feGaussianBlur": 4,
+        "ellipse": 16,
+        "feComponentTransfer": 4,
+        "feFuncR": 4,
+        "feFuncG": 4,
+        "feFuncB": 4,
+        "feFuncA": 4
+      },
+      "imagesByEncoding": {
+        "data:image/png": 2
+      },
+      "filterOperations": [
+        "feComponentTransfer",
+        "feGaussianBlur"
+      ],
+      "filters": [
+        {
+          "id": "n3_b1704_softShadow",
+          "attributes": {
+            "id": "n3_b1704_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "col5",
+          "attributes": {
+            "id": "col5",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "n6_b1704_softShadow",
+          "attributes": {
+            "id": "n6_b1704_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "col8",
+          "attributes": {
+            "id": "col8",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "n9_b1704_softShadow",
+          "attributes": {
+            "id": "n9_b1704_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "col11",
+          "attributes": {
+            "id": "col11",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "n12_b1704_softShadow",
+          "attributes": {
+            "id": "n12_b1704_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "col14",
+          "attributes": {
+            "id": "col14",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        }
+      ],
+      "patterns": [],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A03",
+      "layer": "foreground",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A03-R1/cf6-stage3-redraw-r1/parts/foreground-1727.svg",
+      "sha256": "f21a83bc8bb3cccfcde4b574428b983bd6a03142d94eeb79fda97f1dc40c1b09",
+      "bytes": 132649,
+      "viewBox": "111 0.55 1211.95 178.75",
+      "elements": {
+        "svg": 1,
+        "g": 116,
+        "defs": 8,
+        "linearGradient": 32,
+        "stop": 204,
+        "radialGradient": 4,
+        "filter": 4,
+        "feGaussianBlur": 4,
+        "path": 476,
+        "ellipse": 56,
+        "clipPath": 4,
+        "use": 4
+      },
+      "imagesByEncoding": {},
+      "filterOperations": [
+        "feGaussianBlur"
+      ],
+      "filters": [
+        {
+          "id": "n33_b1724_softShadow",
+          "attributes": {
+            "id": "n33_b1724_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "n35_b1724_softShadow",
+          "attributes": {
+            "id": "n35_b1724_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "n37_b1724_softShadow",
+          "attributes": {
+            "id": "n37_b1724_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "n39_b1724_softShadow",
+          "attributes": {
+            "id": "n39_b1724_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        }
+      ],
+      "patterns": [],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A04",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A04-R1/cf6-stage4-redraw-r1/parts/background-1728.svg",
+      "sha256": "3a9bbd15181e80a9cecb7987daa19ee73c4533c3f0c216ced9c2cb9a547c4c8b",
+      "bytes": 1591227,
+      "viewBox": "-676.95 -240.5 1508.95 483.3",
+      "elements": {
+        "svg": 1,
+        "g": 86,
+        "defs": 17,
+        "image": 2,
+        "path": 430,
+        "rect": 1,
+        "clipPath": 15,
+        "use": 15,
+        "linearGradient": 32,
+        "stop": 212,
+        "radialGradient": 8,
+        "filter": 8,
+        "feGaussianBlur": 4,
+        "ellipse": 16,
+        "feComponentTransfer": 4,
+        "feFuncR": 4,
+        "feFuncG": 4,
+        "feFuncB": 4,
+        "feFuncA": 4
+      },
+      "imagesByEncoding": {
+        "data:image/png": 2
+      },
+      "filterOperations": [
+        "feComponentTransfer",
+        "feGaussianBlur"
+      ],
+      "filters": [
+        {
+          "id": "n3_b1704_softShadow",
+          "attributes": {
+            "id": "n3_b1704_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "col5",
+          "attributes": {
+            "id": "col5",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "n6_b1704_softShadow",
+          "attributes": {
+            "id": "n6_b1704_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "col8",
+          "attributes": {
+            "id": "col8",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "n9_b1704_softShadow",
+          "attributes": {
+            "id": "n9_b1704_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "col11",
+          "attributes": {
+            "id": "col11",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "n12_b1704_softShadow",
+          "attributes": {
+            "id": "n12_b1704_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "col14",
+          "attributes": {
+            "id": "col14",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        }
+      ],
+      "patterns": [],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A04",
+      "layer": "foreground",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A04-R1/cf6-stage4-redraw-r1/parts/foreground-1727.svg",
+      "sha256": "6c886059c67355963ef46f2d6f75ed2c6e183f8bae8d1cd25f0cabb43c0f8c6f",
+      "bytes": 132649,
+      "viewBox": "111 0.55 1211.95 178.75",
+      "elements": {
+        "svg": 1,
+        "g": 116,
+        "defs": 8,
+        "linearGradient": 32,
+        "stop": 204,
+        "radialGradient": 4,
+        "filter": 4,
+        "feGaussianBlur": 4,
+        "path": 476,
+        "ellipse": 56,
+        "clipPath": 4,
+        "use": 4
+      },
+      "imagesByEncoding": {},
+      "filterOperations": [
+        "feGaussianBlur"
+      ],
+      "filters": [
+        {
+          "id": "n85_b1724_softShadow",
+          "attributes": {
+            "id": "n85_b1724_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "n87_b1724_softShadow",
+          "attributes": {
+            "id": "n87_b1724_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "n89_b1724_softShadow",
+          "attributes": {
+            "id": "n89_b1724_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "n91_b1724_softShadow",
+          "attributes": {
+            "id": "n91_b1724_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        }
+      ],
+      "patterns": [],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A05",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A05-R3/cf6-stage5-redraw-r3/parts/background-1745.svg",
+      "sha256": "5790620a9e09ed1b26cfcbe74891976adc8e6ea582291df8f0e53747febcb9c0",
+      "bytes": 6081331,
+      "viewBox": "-684.75 -240.5 1516.75 483.3",
+      "elements": {
+        "svg": 15,
+        "g": 332,
+        "defs": 41,
+        "image": 38,
+        "path": 2490,
+        "rect": 1,
+        "clipPath": 45,
+        "use": 930,
+        "linearGradient": 74,
+        "stop": 438,
+        "radialGradient": 28,
+        "filter": 24,
+        "feGaussianBlur": 16,
+        "ellipse": 114,
+        "feComponentTransfer": 4,
+        "feFuncR": 4,
+        "feFuncG": 4,
+        "feFuncB": 4,
+        "feFuncA": 4,
+        "title": 4,
+        "desc": 5,
+        "mask": 12,
+        "metadata": 1,
+        "circle": 4,
+        "feColorMatrix": 4
+      },
+      "imagesByEncoding": {
+        "data:image/png": 16,
+        "data:image/jpeg": 22
+      },
+      "filterOperations": [
+        "feColorMatrix",
+        "feComponentTransfer",
+        "feGaussianBlur"
+      ],
+      "filters": [
+        {
+          "id": "n3_b1704_softShadow",
+          "attributes": {
+            "id": "n3_b1704_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "col5",
+          "attributes": {
+            "id": "col5",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "n6_b1704_softShadow",
+          "attributes": {
+            "id": "n6_b1704_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "col8",
+          "attributes": {
+            "id": "col8",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "n9_b1740_base-reliefSoft",
+          "attributes": {
+            "id": "n9_b1740_base-reliefSoft"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".13"
+            }
+          ]
+        },
+        {
+          "id": "n9_b1740_base-soft",
+          "attributes": {
+            "id": "n9_b1740_base-soft"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".55"
+            }
+          ]
+        },
+        {
+          "id": "n9_b1740_base-broadSoft",
+          "attributes": {
+            "id": "n9_b1740_base-broadSoft"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "n9_b1740_r3-roll",
+          "attributes": {
+            "id": "n9_b1740_r3-roll"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".24"
+            }
+          ]
+        },
+        {
+          "id": "n9_b1740_r3-soft",
+          "attributes": {
+            "id": "n9_b1740_r3-soft"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.0"
+            }
+          ]
+        },
+        {
+          "id": "n9_b1740_r3-contact",
+          "attributes": {
+            "id": "n9_b1740_r3-contact"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".25"
+            }
+          ]
+        },
+        {
+          "id": "n10_b1704_softShadow",
+          "attributes": {
+            "id": "n10_b1704_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "col12",
+          "attributes": {
+            "id": "col12",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "n13_b1704_softShadow",
+          "attributes": {
+            "id": "n13_b1704_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "col15",
+          "attributes": {
+            "id": "col15",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "n16_b1740_base-reliefSoft",
+          "attributes": {
+            "id": "n16_b1740_base-reliefSoft"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".13"
+            }
+          ]
+        },
+        {
+          "id": "n16_b1740_base-soft",
+          "attributes": {
+            "id": "n16_b1740_base-soft"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".55"
+            }
+          ]
+        },
+        {
+          "id": "n16_b1740_base-broadSoft",
+          "attributes": {
+            "id": "n16_b1740_base-broadSoft"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "n16_b1740_r3-roll",
+          "attributes": {
+            "id": "n16_b1740_r3-roll"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".24"
+            }
+          ]
+        },
+        {
+          "id": "n16_b1740_r3-soft",
+          "attributes": {
+            "id": "n16_b1740_r3-soft"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.0"
+            }
+          ]
+        },
+        {
+          "id": "n16_b1740_r3-contact",
+          "attributes": {
+            "id": "n16_b1740_r3-contact"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".25"
+            }
+          ]
+        },
+        {
+          "id": "n16_b1743_r2FlowerAlpha",
+          "attributes": {
+            "id": "n16_b1743_r2FlowerAlpha",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.02048 3.43296 .34656 0 -.50"
+            }
+          ]
+        },
+        {
+          "id": "n16_b1743_r2FoliageAlpha",
+          "attributes": {
+            "id": "n16_b1743_r2FoliageAlpha",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.4882 5.0064 .5054 0 -.48"
+            }
+          ]
+        },
+        {
+          "id": "n16_b1743_r2CoolVase",
+          "attributes": {
+            "id": "n16_b1743_r2CoolVase",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": ".14 .45 .05 0 .045  .13 .42 .05 0 .042  .17 .52 .06 0 .065  0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "n16_b1743_r2WarmStone",
+          "attributes": {
+            "id": "n16_b1743_r2WarmStone",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": ".78 .16 .04 0 0  .32 .52 .07 0 0  .18 .16 .35 0 0  0 0 0 1 0"
+            }
+          ]
+        }
+      ],
+      "patterns": [],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A05",
+      "layer": "foreground",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A05-R3/cf6-stage5-redraw-r3/parts/foreground-1727.svg",
+      "sha256": "2ec117c5ca0a9de84ccf6ec5f291e5689ce968ac0648e11fa646303b0d2b8932",
+      "bytes": 132869,
+      "viewBox": "111 0.55 1211.95 178.75",
+      "elements": {
+        "svg": 1,
+        "g": 116,
+        "defs": 8,
+        "linearGradient": 32,
+        "stop": 204,
+        "radialGradient": 4,
+        "filter": 4,
+        "feGaussianBlur": 4,
+        "path": 476,
+        "ellipse": 56,
+        "clipPath": 4,
+        "use": 4
+      },
+      "imagesByEncoding": {},
+      "filterOperations": [
+        "feGaussianBlur"
+      ],
+      "filters": [
+        {
+          "id": "n79_b1724_softShadow",
+          "attributes": {
+            "id": "n79_b1724_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "n81_b1724_softShadow",
+          "attributes": {
+            "id": "n81_b1724_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "n83_b1724_softShadow",
+          "attributes": {
+            "id": "n83_b1724_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "n85_b1724_softShadow",
+          "attributes": {
+            "id": "n85_b1724_softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        }
+      ],
+      "patterns": [],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A06",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A06-R2/cf6-stage6-redraw-r2/parts/background-1762.svg",
+      "sha256": "9387e79025e1e00c70c6ffef12697c877a3b3c89b2df8b212625ba79afccb63c",
+      "bytes": 18941730,
+      "viewBox": "-676.95 -240.5 1522.95 483.3",
+      "elements": {
+        "svg": 43,
+        "g": 941,
+        "clipPath": 106,
+        "path": 17336,
+        "image": 74,
+        "rect": 51,
+        "defs": 83,
+        "linearGradient": 189,
+        "stop": 1290,
+        "radialGradient": 68,
+        "filter": 30,
+        "feGaussianBlur": 15,
+        "ellipse": 2889,
+        "feComponentTransfer": 3,
+        "feFuncR": 3,
+        "feFuncG": 3,
+        "feFuncB": 3,
+        "feFuncA": 3,
+        "title": 14,
+        "desc": 14,
+        "use": 1280,
+        "mask": 34,
+        "metadata": 3,
+        "circle": 12,
+        "feColorMatrix": 12
+      },
+      "imagesByEncoding": {
+        "data:image/png": 24,
+        "data:image/jpeg": 50
+      },
+      "filterOperations": [
+        "feColorMatrix",
+        "feComponentTransfer",
+        "feGaussianBlur"
+      ],
+      "filters": [
+        {
+          "id": "n3_b1705_0__softShadow",
+          "attributes": {
+            "id": "n3_b1705_0__softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "col5",
+          "attributes": {
+            "id": "col5",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "n6_b1759_2__r2FlowerAlpha",
+          "attributes": {
+            "id": "n6_b1759_2__r2FlowerAlpha",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.02048 3.43296 .34656 0 -.50"
+            }
+          ]
+        },
+        {
+          "id": "n6_b1759_2__r2FoliageAlpha",
+          "attributes": {
+            "id": "n6_b1759_2__r2FoliageAlpha",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.4882 5.0064 .5054 0 -.48"
+            }
+          ]
+        },
+        {
+          "id": "n6_b1759_2__r2CoolVase",
+          "attributes": {
+            "id": "n6_b1759_2__r2CoolVase",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": ".14 .45 .05 0 .045  .13 .42 .05 0 .042  .17 .52 .06 0 .065  0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "n6_b1759_2__r2WarmStone",
+          "attributes": {
+            "id": "n6_b1759_2__r2WarmStone",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": ".78 .16 .04 0 0  .32 .52 .07 0 0  .18 .16 .35 0 0  0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "n6_b1759_5__base-reliefSoft",
+          "attributes": {
+            "id": "n6_b1759_5__base-reliefSoft"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".13"
+            }
+          ]
+        },
+        {
+          "id": "n6_b1759_5__base-soft",
+          "attributes": {
+            "id": "n6_b1759_5__base-soft"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".55"
+            }
+          ]
+        },
+        {
+          "id": "n6_b1759_5__base-broadSoft",
+          "attributes": {
+            "id": "n6_b1759_5__base-broadSoft"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "n6_b1759_5__r3-roll",
+          "attributes": {
+            "id": "n6_b1759_5__r3-roll"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".24"
+            }
+          ]
+        },
+        {
+          "id": "n6_b1759_5__r3-soft",
+          "attributes": {
+            "id": "n6_b1759_5__r3-soft"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.0"
+            }
+          ]
+        },
+        {
+          "id": "n6_b1759_5__r3-contact",
+          "attributes": {
+            "id": "n6_b1759_5__r3-contact"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".25"
+            }
+          ]
+        },
+        {
+          "id": "n7_b1705_0__softShadow",
+          "attributes": {
+            "id": "n7_b1705_0__softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "col9",
+          "attributes": {
+            "id": "col9",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "n10_b1760_1__base-reliefSoft",
+          "attributes": {
+            "id": "n10_b1760_1__base-reliefSoft"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".13"
+            }
+          ]
+        },
+        {
+          "id": "n10_b1760_1__base-soft",
+          "attributes": {
+            "id": "n10_b1760_1__base-soft"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".55"
+            }
+          ]
+        },
+        {
+          "id": "n10_b1760_1__base-broadSoft",
+          "attributes": {
+            "id": "n10_b1760_1__base-broadSoft"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "n10_b1760_1__r3-roll",
+          "attributes": {
+            "id": "n10_b1760_1__r3-roll"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".24"
+            }
+          ]
+        },
+        {
+          "id": "n10_b1760_1__r3-soft",
+          "attributes": {
+            "id": "n10_b1760_1__r3-soft"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.0"
+            }
+          ]
+        },
+        {
+          "id": "n10_b1760_1__r3-contact",
+          "attributes": {
+            "id": "n10_b1760_1__r3-contact"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": ".25"
+            }
+          ]
+        },
+        {
+          "id": "n11_b1705_0__softShadow",
+          "attributes": {
+            "id": "n11_b1705_0__softShadow",
+            "x": "-1",
+            "y": "-.1",
+            "width": "3",
+            "height": "1.5"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.1"
+            }
+          ]
+        },
+        {
+          "id": "col13",
+          "attributes": {
+            "id": "col13",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "n14_b1761_2__r2FlowerAlpha",
+          "attributes": {
+            "id": "n14_b1761_2__r2FlowerAlpha",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.02048 3.43296 .34656 0 -.50"
+            }
+          ]
+        },
+        {
+          "id": "n14_b1761_2__r2FoliageAlpha",
+          "attributes": {
+            "id": "n14_b1761_2__r2FoliageAlpha",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.4882 5.0064 .5054 0 -.48"
+            }
+          ]
+        },
+        {
+          "id": "n14_b1761_2__r2CoolVase",
+          "attributes": {
+            "id": "n14_b1761_2__r2CoolVase",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": ".14 .45 .05 0 .045  .13 .42 .05 0 .042  .17 .52 .06 0 .065  0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "n14_b1761_2__r2WarmStone",
+          "attributes": {
+            "id": "n14_b1761_2__r2WarmStone",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": ".78 .16 .04 0 0  .32 .52 .07 0 0  .18 .16 .35 0 0  0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "n14_b1761_5__r2FlowerAlpha",
+          "attributes": {
+            "id": "n14_b1761_5__r2FlowerAlpha",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.02048 3.43296 .34656 0 -.50"
+            }
+          ]
+        },
+        {
+          "id": "n14_b1761_5__r2FoliageAlpha",
+          "attributes": {
+            "id": "n14_b1761_5__r2FoliageAlpha",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  1.4882 5.0064 .5054 0 -.48"
+            }
+          ]
+        },
+        {
+          "id": "n14_b1761_5__r2CoolVase",
+          "attributes": {
+            "id": "n14_b1761_5__r2CoolVase",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": ".14 .45 .05 0 .045  .13 .42 .05 0 .042  .17 .52 .06 0 .065  0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "n14_b1761_5__r2WarmStone",
+          "attributes": {
+            "id": "n14_b1761_5__r2WarmStone",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": ".78 .16 .04 0 0  .32 .52 .07 0 0  .18 .16 .35 0 0  0 0 0 1 0"
+            }
+          ]
+        }
+      ],
+      "patterns": [],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A08",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/parts/environment-a8-backdrop.svg",
+      "sha256": "457f62c93f4a8db4b2ca13f6efecd88f443e5239d329370175ca8305f0237248",
+      "bytes": 12952895,
+      "viewBox": "0 0 1150 410",
+      "elements": {
+        "svg": 1,
+        "g": 216,
+        "clipPath": 22,
+        "path": 3565,
+        "defs": 20,
+        "mask": 13,
+        "linearGradient": 102,
+        "stop": 443,
+        "rect": 333,
+        "pattern": 8,
+        "image": 13,
+        "ellipse": 3981,
+        "polygon": 18,
+        "filter": 6,
+        "feTurbulence": 4,
+        "feColorMatrix": 4,
+        "feComposite": 4,
+        "metadata": 2,
+        "radialGradient": 3,
+        "feGaussianBlur": 2
+      },
+      "imagesByEncoding": {
+        "data:image/png": 13
+      },
+      "filterOperations": [
+        "feColorMatrix",
+        "feComposite",
+        "feGaussianBlur",
+        "feTurbulence"
+      ],
+      "filters": [
+        {
+          "id": "n5b1788_0__wear",
+          "attributes": {
+            "id": "n5b1788_0__wear",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feTurbulence",
+              "baseFrequency": ".8",
+              "numOctaves": "2",
+              "seed": "786",
+              "result": "grain"
+            },
+            {
+              "kind": "feColorMatrix",
+              "in": "grain",
+              "type": "matrix",
+              "values": "0 0 0 0 .2 0 0 0 0 .2 0 0 0 0 .18 .9 0 0 0 -.32"
+            },
+            {
+              "kind": "feComposite",
+              "in2": "SourceGraphic",
+              "operator": "in"
+            }
+          ]
+        },
+        {
+          "id": "n6b1788_0__wear",
+          "attributes": {
+            "id": "n6b1788_0__wear",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feTurbulence",
+              "baseFrequency": ".8",
+              "numOctaves": "2",
+              "seed": "786",
+              "result": "grain"
+            },
+            {
+              "kind": "feColorMatrix",
+              "in": "grain",
+              "type": "matrix",
+              "values": "0 0 0 0 .2 0 0 0 0 .2 0 0 0 0 .18 .9 0 0 0 -.32"
+            },
+            {
+              "kind": "feComposite",
+              "in2": "SourceGraphic",
+              "operator": "in"
+            }
+          ]
+        },
+        {
+          "id": "n7b1788_0__wear",
+          "attributes": {
+            "id": "n7b1788_0__wear",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feTurbulence",
+              "baseFrequency": ".8",
+              "numOctaves": "2",
+              "seed": "786",
+              "result": "grain"
+            },
+            {
+              "kind": "feColorMatrix",
+              "in": "grain",
+              "type": "matrix",
+              "values": "0 0 0 0 .2 0 0 0 0 .2 0 0 0 0 .18 .9 0 0 0 -.32"
+            },
+            {
+              "kind": "feComposite",
+              "in2": "SourceGraphic",
+              "operator": "in"
+            }
+          ]
+        },
+        {
+          "id": "n8b1824_2__softReflect",
+          "attributes": {
+            "id": "n8b1824_2__softReflect",
+            "x": "-.1",
+            "y": "-.3",
+            "width": "1.2",
+            "height": "1.6"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "1.05"
+            }
+          ]
+        },
+        {
+          "id": "n8b1824_2__broadReflect",
+          "attributes": {
+            "id": "n8b1824_2__broadReflect",
+            "x": "-.2",
+            "y": "-.3",
+            "width": "1.4",
+            "height": "1.6"
+          },
+          "operations": [
+            {
+              "kind": "feGaussianBlur",
+              "stdDeviation": "2.0"
+            }
+          ]
+        },
+        {
+          "id": "n9b1788_0__wear",
+          "attributes": {
+            "id": "n9b1788_0__wear",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feTurbulence",
+              "baseFrequency": ".8",
+              "numOctaves": "2",
+              "seed": "786",
+              "result": "grain"
+            },
+            {
+              "kind": "feColorMatrix",
+              "in": "grain",
+              "type": "matrix",
+              "values": "0 0 0 0 .2 0 0 0 0 .2 0 0 0 0 .18 .9 0 0 0 -.32"
+            },
+            {
+              "kind": "feComposite",
+              "in2": "SourceGraphic",
+              "operator": "in"
+            }
+          ]
+        }
+      ],
+      "patterns": [
+        {
+          "id": "n3b1818_0__plaster",
+          "attributes": {
+            "id": "n3b1818_0__plaster",
+            "patternUnits": "userSpaceOnUse",
+            "width": "600",
+            "height": "225"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n3b1818_1__plaster",
+          "attributes": {
+            "id": "n3b1818_1__plaster",
+            "patternUnits": "userSpaceOnUse",
+            "width": "600",
+            "height": "225"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n4b1822_0__paintgrain",
+          "attributes": {
+            "id": "n4b1822_0__paintgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "133",
+            "height": "162"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n4b1822_1__paintgrain",
+          "attributes": {
+            "id": "n4b1822_1__paintgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "133",
+            "height": "162"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n4b1822_4__metalgrain",
+          "attributes": {
+            "id": "n4b1822_4__metalgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "85",
+            "height": "50"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n4b1822_6__iron",
+          "attributes": {
+            "id": "n4b1822_6__iron",
+            "patternUnits": "userSpaceOnUse",
+            "width": "57",
+            "height": "171"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n8b1824_0__grime",
+          "attributes": {
+            "id": "n8b1824_0__grime",
+            "patternUnits": "userSpaceOnUse",
+            "width": "74",
+            "height": "91"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n8b1824_1__grime",
+          "attributes": {
+            "id": "n8b1824_1__grime",
+            "patternUnits": "userSpaceOnUse",
+            "width": "118",
+            "height": "134"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": [
+        "feComposite",
+        "feTurbulence"
+      ]
+    },
+    {
+      "map": "A09",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/environment-a09-backdrop.svg",
+      "sha256": "f3bc78269dbccf2889cf97e2a4a659569d45fd3fcc7200099fe80519773d9b29",
+      "bytes": 18196347,
+      "viewBox": "-275.95 -49.2 1898.9 542.55",
+      "elements": {
+        "svg": 1,
+        "g": 213,
+        "clipPath": 113,
+        "path": 11620,
+        "defs": 67,
+        "mask": 12,
+        "linearGradient": 21,
+        "stop": 101,
+        "rect": 313,
+        "pattern": 7,
+        "image": 57,
+        "ellipse": 3828,
+        "polygon": 18,
+        "circle": 216,
+        "title": 3,
+        "desc": 3,
+        "radialGradient": 6
+      },
+      "imagesByEncoding": {
+        "data:image/png": 57
+      },
+      "filterOperations": [],
+      "filters": [],
+      "patterns": [
+        {
+          "id": "n2b1843_0__plaster",
+          "attributes": {
+            "id": "n2b1843_0__plaster",
+            "patternUnits": "userSpaceOnUse",
+            "width": "600",
+            "height": "225"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2b1843_1__paintgrain",
+          "attributes": {
+            "id": "n2b1843_1__paintgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "133",
+            "height": "162"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2b1843_26__plaster",
+          "attributes": {
+            "id": "n2b1843_26__plaster",
+            "patternUnits": "userSpaceOnUse",
+            "width": "600",
+            "height": "225"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2b1843_27__paintgrain",
+          "attributes": {
+            "id": "n2b1843_27__paintgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "133",
+            "height": "162"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2b1843_30__metalgrain",
+          "attributes": {
+            "id": "n2b1843_30__metalgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "85",
+            "height": "50"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n10b1846_0__grime",
+          "attributes": {
+            "id": "n10b1846_0__grime",
+            "patternUnits": "userSpaceOnUse",
+            "width": "74",
+            "height": "91"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n10b1846_1__grime",
+          "attributes": {
+            "id": "n10b1846_1__grime",
+            "patternUnits": "userSpaceOnUse",
+            "width": "118",
+            "height": "134"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A10",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/parts/environment-a10-backdrop.svg",
+      "sha256": "c6f17eee56c1aee9add129e8aa9231ad55fe2ae051df6c9a0827ab458c69db21",
+      "bytes": 2910981,
+      "viewBox": "64 -30.25 480 453",
+      "elements": {
+        "svg": 1,
+        "g": 8,
+        "clipPath": 3,
+        "path": 1003,
+        "defs": 2,
+        "mask": 1,
+        "linearGradient": 9,
+        "stop": 33,
+        "pattern": 1,
+        "image": 1,
+        "rect": 35,
+        "circle": 72
+      },
+      "imagesByEncoding": {
+        "data:image/png": 1
+      },
+      "filterOperations": [],
+      "filters": [],
+      "patterns": [
+        {
+          "id": "n2b1878_0__grain",
+          "attributes": {
+            "id": "n2b1878_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "480",
+            "height": "453"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A10",
+      "layer": "elevator-scroll",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/parts/elevator-1875-tile.svg",
+      "sha256": "a1f9b64d4d704dbbc202df59baad5e130ea1f5ce989fa26683b2839d3200162c",
+      "bytes": 3099691,
+      "viewBox": "-350 -271.45 700 542.95",
+      "elements": {
+        "svg": 1,
+        "g": 18,
+        "clipPath": 5,
+        "path": 1306,
+        "defs": 151,
+        "mask": 5,
+        "linearGradient": 170,
+        "stop": 392,
+        "pattern": 5,
+        "image": 5,
+        "rect": 23,
+        "circle": 24,
+        "radialGradient": 2
+      },
+      "imagesByEncoding": {
+        "data:image/png": 5
+      },
+      "filterOperations": [],
+      "filters": [],
+      "patterns": [
+        {
+          "id": "n2b1874_0__wallgrain",
+          "attributes": {
+            "id": "n2b1874_0__wallgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "700",
+            "height": "182"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2b1874_1__wallgrain",
+          "attributes": {
+            "id": "n2b1874_1__wallgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "700",
+            "height": "182"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2b1874_2__wallgrain",
+          "attributes": {
+            "id": "n2b1874_2__wallgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "700",
+            "height": "182"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n3b1413_0__grain",
+          "attributes": {
+            "id": "n3b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n4b1413_0__grain",
+          "attributes": {
+            "id": "n4b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A10",
+      "layer": "foreground",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/parts/foreground-1884.svg",
+      "sha256": "ce2ecb42680236ac1ded252798a34ca99f4fb9021c7f69c0f1a5f117fdbe30a2",
+      "bytes": 2441085,
+      "viewBox": "-240 -194 480 388",
+      "elements": {
+        "svg": 1,
+        "g": 10,
+        "clipPath": 3,
+        "path": 498,
+        "defs": 2,
+        "mask": 1,
+        "linearGradient": 9,
+        "stop": 33,
+        "pattern": 1,
+        "image": 1,
+        "rect": 16,
+        "circle": 48
+      },
+      "imagesByEncoding": {
+        "data:image/png": 1
+      },
+      "filterOperations": [],
+      "filters": [],
+      "patterns": [
+        {
+          "id": "n2b1883_0__grain",
+          "attributes": {
+            "id": "n2b1883_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "480",
+            "height": "388"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A11",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/parts/environment-a11-backdrop.svg",
+      "sha256": "8b3152d2f0c0cf169cc0934f1cd984fdc22758fbaff9815cec4f5f038ab40671",
+      "bytes": 23063648,
+      "viewBox": "-287.95 -105.75 1573.4 599.1",
+      "elements": {
+        "svg": 1,
+        "g": 676,
+        "clipPath": 138,
+        "path": 12975,
+        "defs": 102,
+        "mask": 30,
+        "linearGradient": 139,
+        "stop": 563,
+        "rect": 431,
+        "pattern": 14,
+        "image": 61,
+        "ellipse": 3898,
+        "filter": 10,
+        "feComponentTransfer": 2,
+        "feFuncR": 2,
+        "feFuncG": 2,
+        "feFuncB": 2,
+        "feFuncA": 2,
+        "circle": 348,
+        "title": 21,
+        "desc": 21,
+        "radialGradient": 14,
+        "polygon": 13,
+        "feColorMatrix": 8
+      },
+      "imagesByEncoding": {
+        "data:image/png": 61
+      },
+      "filterOperations": [
+        "feColorMatrix",
+        "feComponentTransfer"
+      ],
+      "filters": [
+        {
+          "id": "col4",
+          "attributes": {
+            "id": "col4",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col6",
+          "attributes": {
+            "id": "col6",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "white15",
+          "attributes": {
+            "id": "white15"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white19",
+          "attributes": {
+            "id": "white19"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white23",
+          "attributes": {
+            "id": "white23"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white27",
+          "attributes": {
+            "id": "white27"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white31",
+          "attributes": {
+            "id": "white31"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white35",
+          "attributes": {
+            "id": "white35"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white39",
+          "attributes": {
+            "id": "white39"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white43",
+          "attributes": {
+            "id": "white43"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        }
+      ],
+      "patterns": [
+        {
+          "id": "n2b1886_0__plaster",
+          "attributes": {
+            "id": "n2b1886_0__plaster",
+            "patternUnits": "userSpaceOnUse",
+            "width": "600",
+            "height": "225"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n7b1891_24__plaster",
+          "attributes": {
+            "id": "n7b1891_24__plaster",
+            "patternUnits": "userSpaceOnUse",
+            "width": "600",
+            "height": "225"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n10b1892_0__paintgrain",
+          "attributes": {
+            "id": "n10b1892_0__paintgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "133",
+            "height": "162"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n11b1413_0__grain",
+          "attributes": {
+            "id": "n11b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n44b1900_2__metalgrain",
+          "attributes": {
+            "id": "n44b1900_2__metalgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "85",
+            "height": "50"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n44b1900_4__iron",
+          "attributes": {
+            "id": "n44b1900_4__iron",
+            "patternUnits": "userSpaceOnUse",
+            "width": "57",
+            "height": "171"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n48b1903_1__grime",
+          "attributes": {
+            "id": "n48b1903_1__grime",
+            "patternUnits": "userSpaceOnUse",
+            "width": "118",
+            "height": "134"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n48b1903_7__grime",
+          "attributes": {
+            "id": "n48b1903_7__grime",
+            "patternUnits": "userSpaceOnUse",
+            "width": "74",
+            "height": "91"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n49b1413_0__grain",
+          "attributes": {
+            "id": "n49b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n50b1413_0__grain",
+          "attributes": {
+            "id": "n50b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n51b1413_0__grain",
+          "attributes": {
+            "id": "n51b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n52b1413_0__grain",
+          "attributes": {
+            "id": "n52b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n54b1878_0__grain",
+          "attributes": {
+            "id": "n54b1878_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "480",
+            "height": "453"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n56b1883_0__grain",
+          "attributes": {
+            "id": "n56b1883_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "480",
+            "height": "388"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A12",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/environment-a12-backdrop.svg",
+      "sha256": "ee410623c440d8c0ccddb9ac57f7137e78f18cce0f0db1641a539d522841c33a",
+      "bytes": 23183384,
+      "viewBox": "-275.95 -49.2 1898.9 542.55",
+      "elements": {
+        "svg": 1,
+        "g": 227,
+        "clipPath": 114,
+        "path": 12000,
+        "defs": 72,
+        "mask": 17,
+        "linearGradient": 20,
+        "stop": 100,
+        "rect": 323,
+        "pattern": 9,
+        "image": 57,
+        "ellipse": 5636,
+        "polygon": 26,
+        "circle": 192,
+        "title": 3,
+        "desc": 3,
+        "radialGradient": 6,
+        "filter": 4,
+        "feComponentTransfer": 4,
+        "feFuncR": 4,
+        "feFuncG": 4,
+        "feFuncB": 4,
+        "feFuncA": 4
+      },
+      "imagesByEncoding": {
+        "data:image/png": 57
+      },
+      "filterOperations": [
+        "feComponentTransfer"
+      ],
+      "filters": [
+        {
+          "id": "col12",
+          "attributes": {
+            "id": "col12",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col14",
+          "attributes": {
+            "id": "col14",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col16",
+          "attributes": {
+            "id": "col16",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col18",
+          "attributes": {
+            "id": "col18",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        }
+      ],
+      "patterns": [
+        {
+          "id": "n2b1911_0__plaster",
+          "attributes": {
+            "id": "n2b1911_0__plaster",
+            "patternUnits": "userSpaceOnUse",
+            "width": "600",
+            "height": "225"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2b1911_1__plaster",
+          "attributes": {
+            "id": "n2b1911_1__plaster",
+            "patternUnits": "userSpaceOnUse",
+            "width": "600",
+            "height": "225"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2b1911_2__grime",
+          "attributes": {
+            "id": "n2b1911_2__grime",
+            "patternUnits": "userSpaceOnUse",
+            "width": "74",
+            "height": "91"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2b1911_3__paintgrain",
+          "attributes": {
+            "id": "n2b1911_3__paintgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "133",
+            "height": "162"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2b1911_6__metalgrain",
+          "attributes": {
+            "id": "n2b1911_6__metalgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "85",
+            "height": "50"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2b1911_31__plaster",
+          "attributes": {
+            "id": "n2b1911_31__plaster",
+            "patternUnits": "userSpaceOnUse",
+            "width": "600",
+            "height": "225"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2b1911_32__paintgrain",
+          "attributes": {
+            "id": "n2b1911_32__paintgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "133",
+            "height": "162"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2b1911_35__metalgrain",
+          "attributes": {
+            "id": "n2b1911_35__metalgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "85",
+            "height": "50"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n10b1913_0__grime",
+          "attributes": {
+            "id": "n10b1913_0__grime",
+            "patternUnits": "userSpaceOnUse",
+            "width": "118",
+            "height": "134"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A13",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/parts/environment-a13-backdrop.svg",
+      "sha256": "82f7f9e41b9298acbbf52c657363d8788bc16a04a0e52ba183f77b01edd7394b",
+      "bytes": 2963041,
+      "viewBox": "64 -30.25 480 453",
+      "elements": {
+        "svg": 1,
+        "g": 8,
+        "clipPath": 3,
+        "path": 1003,
+        "defs": 2,
+        "mask": 1,
+        "linearGradient": 9,
+        "stop": 33,
+        "pattern": 1,
+        "image": 1,
+        "rect": 35,
+        "circle": 72
+      },
+      "imagesByEncoding": {
+        "data:image/png": 1
+      },
+      "filterOperations": [],
+      "filters": [],
+      "patterns": [
+        {
+          "id": "n2b1878_0__grain",
+          "attributes": {
+            "id": "n2b1878_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "480",
+            "height": "453"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A13",
+      "layer": "elevator-scroll",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/parts/elevator-1875-tile.svg",
+      "sha256": "47bc4dc5df0710317029e08c1f7c48e3d8df9fa2cca5cdadd949f1c151c7849f",
+      "bytes": 3160435,
+      "viewBox": "-350 -271.45 700 542.95",
+      "elements": {
+        "svg": 1,
+        "g": 18,
+        "clipPath": 5,
+        "path": 1306,
+        "defs": 151,
+        "mask": 5,
+        "linearGradient": 170,
+        "stop": 392,
+        "pattern": 5,
+        "image": 5,
+        "rect": 23,
+        "circle": 24,
+        "radialGradient": 2
+      },
+      "imagesByEncoding": {
+        "data:image/png": 5
+      },
+      "filterOperations": [],
+      "filters": [],
+      "patterns": [
+        {
+          "id": "n2b1874_0__wallgrain",
+          "attributes": {
+            "id": "n2b1874_0__wallgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "700",
+            "height": "182"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2b1874_1__wallgrain",
+          "attributes": {
+            "id": "n2b1874_1__wallgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "700",
+            "height": "182"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2b1874_2__wallgrain",
+          "attributes": {
+            "id": "n2b1874_2__wallgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "700",
+            "height": "182"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n3b1413_0__grain",
+          "attributes": {
+            "id": "n3b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n4b1413_0__grain",
+          "attributes": {
+            "id": "n4b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A13",
+      "layer": "foreground",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/parts/foreground-1884.svg",
+      "sha256": "97496ebd913f45391db8c948a4900c7889220131483826433b686be4da0e3703",
+      "bytes": 2484105,
+      "viewBox": "-240 -194 480 388",
+      "elements": {
+        "svg": 1,
+        "g": 10,
+        "clipPath": 3,
+        "path": 498,
+        "defs": 2,
+        "mask": 1,
+        "linearGradient": 9,
+        "stop": 33,
+        "pattern": 1,
+        "image": 1,
+        "rect": 16,
+        "circle": 48
+      },
+      "imagesByEncoding": {
+        "data:image/png": 1
+      },
+      "filterOperations": [],
+      "filters": [],
+      "patterns": [
+        {
+          "id": "n2b1883_0__grain",
+          "attributes": {
+            "id": "n2b1883_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "480",
+            "height": "388"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A14",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/parts/environment-a14-backdrop.svg",
+      "sha256": "d15101e37aa48c3e95a829efd65ee1a4bcd6ea64dc00864b670c101a655c1078",
+      "bytes": 38766833,
+      "viewBox": "-287.95 -107.1 2269.95 600.46",
+      "elements": {
+        "svg": 1,
+        "g": 5257,
+        "clipPath": 630,
+        "path": 34952,
+        "defs": 371,
+        "image": 126,
+        "circle": 576,
+        "mask": 22,
+        "rect": 181,
+        "linearGradient": 578,
+        "stop": 2084,
+        "radialGradient": 34,
+        "ellipse": 2174,
+        "pattern": 6,
+        "polygon": 5,
+        "title": 229,
+        "desc": 229,
+        "filter": 10,
+        "feComponentTransfer": 2,
+        "feFuncR": 2,
+        "feFuncG": 2,
+        "feFuncB": 2,
+        "feFuncA": 2,
+        "feColorMatrix": 8
+      },
+      "imagesByEncoding": {
+        "data:image/png": 126
+      },
+      "filterOperations": [
+        "feColorMatrix",
+        "feComponentTransfer"
+      ],
+      "filters": [
+        {
+          "id": "col12",
+          "attributes": {
+            "id": "col12",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col14",
+          "attributes": {
+            "id": "col14",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "white239",
+          "attributes": {
+            "id": "white239"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white243",
+          "attributes": {
+            "id": "white243"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white247",
+          "attributes": {
+            "id": "white247"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white251",
+          "attributes": {
+            "id": "white251"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white255",
+          "attributes": {
+            "id": "white255"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white259",
+          "attributes": {
+            "id": "white259"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white263",
+          "attributes": {
+            "id": "white263"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white267",
+          "attributes": {
+            "id": "white267"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        }
+      ],
+      "patterns": [
+        {
+          "id": "n2b1921_54__plaster",
+          "attributes": {
+            "id": "n2b1921_54__plaster",
+            "patternUnits": "userSpaceOnUse",
+            "width": "600",
+            "height": "225"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2b1921_55__paintgrain",
+          "attributes": {
+            "id": "n2b1921_55__paintgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "133",
+            "height": "162"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n6b1413_0__grain",
+          "attributes": {
+            "id": "n6b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n8b1878_0__grain",
+          "attributes": {
+            "id": "n8b1878_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "480",
+            "height": "453"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n9b1883_0__grain",
+          "attributes": {
+            "id": "n9b1883_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "480",
+            "height": "388"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n195b1413_0__grain",
+          "attributes": {
+            "id": "n195b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A15",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/parts/environment-a15-backdrop.svg",
+      "sha256": "e4c7c4a206c6834ebff7abbe1e33f5f01cebaaf7507ee93b015f60881ee354ff",
+      "bytes": 39909709,
+      "viewBox": "-287.95 -87.6 2269.95 580.96",
+      "elements": {
+        "svg": 1,
+        "g": 10313,
+        "clipPath": 1052,
+        "path": 49434,
+        "defs": 608,
+        "image": 134,
+        "circle": 1083,
+        "mask": 15,
+        "rect": 279,
+        "linearGradient": 1168,
+        "stop": 4147,
+        "pattern": 12,
+        "radialGradient": 68,
+        "title": 456,
+        "desc": 456,
+        "ellipse": 624
+      },
+      "imagesByEncoding": {
+        "data:image/png": 134
+      },
+      "filterOperations": [],
+      "filters": [],
+      "patterns": [
+        {
+          "id": "n3b1413_0__grain",
+          "attributes": {
+            "id": "n3b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n5b1413_0__grain",
+          "attributes": {
+            "id": "n5b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n6b1413_0__grain",
+          "attributes": {
+            "id": "n6b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n7b1413_0__grain",
+          "attributes": {
+            "id": "n7b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n8b1413_0__grain",
+          "attributes": {
+            "id": "n8b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n494b1413_0__grain",
+          "attributes": {
+            "id": "n494b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n495b1413_0__grain",
+          "attributes": {
+            "id": "n495b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n496b1413_0__grain",
+          "attributes": {
+            "id": "n496b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n497b1413_0__grain",
+          "attributes": {
+            "id": "n497b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n498b1413_0__grain",
+          "attributes": {
+            "id": "n498b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n499b1413_0__grain",
+          "attributes": {
+            "id": "n499b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n500b1413_0__grain",
+          "attributes": {
+            "id": "n500b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A16",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/parts/environment-a16-backdrop.svg",
+      "sha256": "f7b53e3dc1879c01d4ab5ffb6abf1890a88e0d580c6daedd66f61912475eaa80",
+      "bytes": 46936238,
+      "viewBox": "-287.95 -69.2 2269.95 612.55",
+      "elements": {
+        "svg": 1,
+        "g": 7511,
+        "clipPath": 871,
+        "path": 51329,
+        "defs": 523,
+        "image": 142,
+        "circle": 684,
+        "mask": 43,
+        "linearGradient": 1022,
+        "stop": 3911,
+        "pattern": 22,
+        "rect": 417,
+        "radialGradient": 87,
+        "ellipse": 6246,
+        "polygon": 13,
+        "filter": 18,
+        "feComponentTransfer": 2,
+        "feFuncR": 2,
+        "feFuncG": 2,
+        "feFuncB": 2,
+        "feFuncA": 2,
+        "title": 341,
+        "desc": 341,
+        "feColorMatrix": 16
+      },
+      "imagesByEncoding": {
+        "data:image/png": 142
+      },
+      "filterOperations": [
+        "feColorMatrix",
+        "feComponentTransfer"
+      ],
+      "filters": [
+        {
+          "id": "col21",
+          "attributes": {
+            "id": "col21",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col23",
+          "attributes": {
+            "id": "col23",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "white32",
+          "attributes": {
+            "id": "white32"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white36",
+          "attributes": {
+            "id": "white36"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white40",
+          "attributes": {
+            "id": "white40"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white44",
+          "attributes": {
+            "id": "white44"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white48",
+          "attributes": {
+            "id": "white48"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white52",
+          "attributes": {
+            "id": "white52"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white56",
+          "attributes": {
+            "id": "white56"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white60",
+          "attributes": {
+            "id": "white60"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white64",
+          "attributes": {
+            "id": "white64"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white68",
+          "attributes": {
+            "id": "white68"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white72",
+          "attributes": {
+            "id": "white72"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white76",
+          "attributes": {
+            "id": "white76"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white80",
+          "attributes": {
+            "id": "white80"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white84",
+          "attributes": {
+            "id": "white84"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white88",
+          "attributes": {
+            "id": "white88"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white92",
+          "attributes": {
+            "id": "white92"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        }
+      ],
+      "patterns": [
+        {
+          "id": "n3b1413_0__grain",
+          "attributes": {
+            "id": "n3b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n5b1413_0__grain",
+          "attributes": {
+            "id": "n5b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n6b1413_0__grain",
+          "attributes": {
+            "id": "n6b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n7b1413_0__grain",
+          "attributes": {
+            "id": "n7b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n8b1413_0__grain",
+          "attributes": {
+            "id": "n8b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n9b1413_0__grain",
+          "attributes": {
+            "id": "n9b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n10b1413_0__grain",
+          "attributes": {
+            "id": "n10b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n11b1413_0__grain",
+          "attributes": {
+            "id": "n11b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n12b1413_0__grain",
+          "attributes": {
+            "id": "n12b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n13b1413_0__grain",
+          "attributes": {
+            "id": "n13b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n14b1413_0__grain",
+          "attributes": {
+            "id": "n14b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n15b1413_0__grain",
+          "attributes": {
+            "id": "n15b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n16b1413_0__grain",
+          "attributes": {
+            "id": "n16b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n17b1413_0__grain",
+          "attributes": {
+            "id": "n17b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n18b1413_0__grain",
+          "attributes": {
+            "id": "n18b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n19b1942_0__plaster",
+          "attributes": {
+            "id": "n19b1942_0__plaster",
+            "patternUnits": "userSpaceOnUse",
+            "width": "600",
+            "height": "225"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n19b1942_1__plaster",
+          "attributes": {
+            "id": "n19b1942_1__plaster",
+            "patternUnits": "userSpaceOnUse",
+            "width": "600",
+            "height": "225"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n19b1942_2__plaster",
+          "attributes": {
+            "id": "n19b1942_2__plaster",
+            "patternUnits": "userSpaceOnUse",
+            "width": "600",
+            "height": "225"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n19b1942_3__paintgrain",
+          "attributes": {
+            "id": "n19b1942_3__paintgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "133",
+            "height": "162"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n24b1406_2__metalgrain",
+          "attributes": {
+            "id": "n24b1406_2__metalgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "85",
+            "height": "50"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n100b1413_0__grain",
+          "attributes": {
+            "id": "n100b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n111b1413_0__grain",
+          "attributes": {
+            "id": "n111b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A17",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/environment-a17-backdrop.svg",
+      "sha256": "c25930912c3d21543f0489f18ebc091ad9090acd5014fd1836628d595f61a6cf",
+      "bytes": 44695687,
+      "viewBox": "-287.95 -79.2 2269.95 612.55",
+      "elements": {
+        "svg": 1,
+        "g": 5511,
+        "clipPath": 706,
+        "path": 46594,
+        "defs": 428,
+        "image": 142,
+        "circle": 684,
+        "mask": 43,
+        "linearGradient": 807,
+        "stop": 3166,
+        "pattern": 22,
+        "rect": 377,
+        "radialGradient": 77,
+        "ellipse": 6116,
+        "polygon": 13,
+        "filter": 18,
+        "feComponentTransfer": 2,
+        "feFuncR": 2,
+        "feFuncG": 2,
+        "feFuncB": 2,
+        "feFuncA": 2,
+        "title": 246,
+        "desc": 246,
+        "feColorMatrix": 16
+      },
+      "imagesByEncoding": {
+        "data:image/png": 142
+      },
+      "filterOperations": [
+        "feColorMatrix",
+        "feComponentTransfer"
+      ],
+      "filters": [
+        {
+          "id": "col21",
+          "attributes": {
+            "id": "col21",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col23",
+          "attributes": {
+            "id": "col23",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "white32",
+          "attributes": {
+            "id": "white32"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white36",
+          "attributes": {
+            "id": "white36"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white40",
+          "attributes": {
+            "id": "white40"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white44",
+          "attributes": {
+            "id": "white44"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white48",
+          "attributes": {
+            "id": "white48"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white52",
+          "attributes": {
+            "id": "white52"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white56",
+          "attributes": {
+            "id": "white56"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white60",
+          "attributes": {
+            "id": "white60"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white64",
+          "attributes": {
+            "id": "white64"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white68",
+          "attributes": {
+            "id": "white68"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white72",
+          "attributes": {
+            "id": "white72"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white76",
+          "attributes": {
+            "id": "white76"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white80",
+          "attributes": {
+            "id": "white80"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white84",
+          "attributes": {
+            "id": "white84"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white88",
+          "attributes": {
+            "id": "white88"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        },
+        {
+          "id": "white92",
+          "attributes": {
+            "id": "white92"
+          },
+          "operations": [
+            {
+              "kind": "feColorMatrix",
+              "type": "matrix",
+              "values": "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
+            }
+          ]
+        }
+      ],
+      "patterns": [
+        {
+          "id": "n3b1413_0__grain",
+          "attributes": {
+            "id": "n3b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n5b1413_0__grain",
+          "attributes": {
+            "id": "n5b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n6b1413_0__grain",
+          "attributes": {
+            "id": "n6b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n7b1413_0__grain",
+          "attributes": {
+            "id": "n7b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n8b1413_0__grain",
+          "attributes": {
+            "id": "n8b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n9b1413_0__grain",
+          "attributes": {
+            "id": "n9b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n10b1413_0__grain",
+          "attributes": {
+            "id": "n10b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n11b1413_0__grain",
+          "attributes": {
+            "id": "n11b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n12b1413_0__grain",
+          "attributes": {
+            "id": "n12b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n13b1413_0__grain",
+          "attributes": {
+            "id": "n13b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n14b1413_0__grain",
+          "attributes": {
+            "id": "n14b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n15b1413_0__grain",
+          "attributes": {
+            "id": "n15b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n16b1413_0__grain",
+          "attributes": {
+            "id": "n16b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n17b1413_0__grain",
+          "attributes": {
+            "id": "n17b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n18b1413_0__grain",
+          "attributes": {
+            "id": "n18b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n19b1942_0__plaster",
+          "attributes": {
+            "id": "n19b1942_0__plaster",
+            "patternUnits": "userSpaceOnUse",
+            "width": "600",
+            "height": "225"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n19b1942_1__plaster",
+          "attributes": {
+            "id": "n19b1942_1__plaster",
+            "patternUnits": "userSpaceOnUse",
+            "width": "600",
+            "height": "225"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n19b1942_2__plaster",
+          "attributes": {
+            "id": "n19b1942_2__plaster",
+            "patternUnits": "userSpaceOnUse",
+            "width": "600",
+            "height": "225"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n19b1942_3__paintgrain",
+          "attributes": {
+            "id": "n19b1942_3__paintgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "133",
+            "height": "162"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n24b1406_2__metalgrain",
+          "attributes": {
+            "id": "n24b1406_2__metalgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "85",
+            "height": "50"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n100b1413_0__grain",
+          "attributes": {
+            "id": "n100b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n111b1413_0__grain",
+          "attributes": {
+            "id": "n111b1413_0__grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A18",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/parts/environment-a18-backdrop.svg",
+      "sha256": "a456f0a4b110a7161133584672cb26f0c6ffaeaf25aa5c4531d8f2a900e8b842",
+      "bytes": 2887013,
+      "viewBox": "-28.5 -17.45 1732.9 435.5",
+      "elements": {
+        "svg": 1,
+        "g": 116,
+        "defs": 52,
+        "linearGradient": 65,
+        "stop": 300,
+        "pattern": 14,
+        "image": 14,
+        "rect": 131,
+        "path": 1742,
+        "mask": 11,
+        "radialGradient": 17,
+        "clipPath": 24,
+        "ellipse": 61,
+        "use": 15,
+        "filter": 14,
+        "feComponentTransfer": 14,
+        "feFuncR": 14,
+        "feFuncG": 14,
+        "feFuncB": 14,
+        "feFuncA": 14,
+        "title": 6,
+        "desc": 6,
+        "polygon": 5,
+        "circle": 48
+      },
+      "imagesByEncoding": {
+        "data:image/png": 14
+      },
+      "filterOperations": [
+        "feComponentTransfer"
+      ],
+      "filters": [
+        {
+          "id": "col4",
+          "attributes": {
+            "id": "col4",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col6",
+          "attributes": {
+            "id": "col6",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col9",
+          "attributes": {
+            "id": "col9",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col11",
+          "attributes": {
+            "id": "col11",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col14",
+          "attributes": {
+            "id": "col14",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col16",
+          "attributes": {
+            "id": "col16",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col18",
+          "attributes": {
+            "id": "col18",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col20",
+          "attributes": {
+            "id": "col20",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col22",
+          "attributes": {
+            "id": "col22",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col24",
+          "attributes": {
+            "id": "col24",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col26",
+          "attributes": {
+            "id": "col26",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col28",
+          "attributes": {
+            "id": "col28",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col30",
+          "attributes": {
+            "id": "col30",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col32",
+          "attributes": {
+            "id": "col32",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        }
+      ],
+      "patterns": [
+        {
+          "id": "n2material_1959_1957_floorgrain",
+          "attributes": {
+            "id": "n2material_1959_1957_floorgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "207",
+            "height": "128"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2material_1959_1231_grain",
+          "attributes": {
+            "id": "n2material_1959_1231_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "482",
+            "height": "166"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2material_1959_1231_ribgrain",
+          "attributes": {
+            "id": "n2material_1959_1231_ribgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "64",
+            "height": "166"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2material_1959_1231_cavitygrain",
+          "attributes": {
+            "id": "n2material_1959_1231_cavitygrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "24",
+            "height": "121"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2floor_lattice_1959",
+          "attributes": {
+            "id": "n2floor_lattice_1959",
+            "patternUnits": "userSpaceOnUse",
+            "width": "207",
+            "height": "128",
+            "patternTransform": "matrix(1 0 -0.21875 1 -674 -44)"
+          },
+          "children": [
+            "g"
+          ]
+        },
+        {
+          "id": "n7material_1892_1821_paintgrain",
+          "attributes": {
+            "id": "n7material_1892_1821_paintgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "133",
+            "height": "162"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n12material_1963_1962_grain",
+          "attributes": {
+            "id": "n12material_1963_1962_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "48",
+            "height": "30"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n33material_1967_1964_grain",
+          "attributes": {
+            "id": "n33material_1967_1964_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "38",
+            "height": "32"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n33material_1967_1965_grain",
+          "attributes": {
+            "id": "n33material_1967_1965_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "41",
+            "height": "26"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n33material_1967_1966_grain",
+          "attributes": {
+            "id": "n33material_1967_1966_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "31",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n34material_1413_1412_grain",
+          "attributes": {
+            "id": "n34material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n35material_1413_1412_grain",
+          "attributes": {
+            "id": "n35material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n36material_1413_1412_grain",
+          "attributes": {
+            "id": "n36material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n37material_1413_1412_grain",
+          "attributes": {
+            "id": "n37material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A19",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/parts/environment-a19-backdrop.svg",
+      "sha256": "55484d30da86fa68e5004712859a1aa0e3f73ae522bb689d7c5cce190ace5f89",
+      "bytes": 2485240,
+      "viewBox": "-28.5 -17.45 1626.51 529.15",
+      "elements": {
+        "svg": 1,
+        "g": 99,
+        "defs": 45,
+        "mask": 11,
+        "rect": 120,
+        "linearGradient": 70,
+        "stop": 309,
+        "radialGradient": 14,
+        "pattern": 15,
+        "image": 14,
+        "clipPath": 24,
+        "path": 1825,
+        "ellipse": 57,
+        "polygon": 5,
+        "use": 16,
+        "filter": 10,
+        "feComponentTransfer": 10,
+        "feFuncR": 10,
+        "feFuncG": 10,
+        "feFuncB": 10,
+        "feFuncA": 10,
+        "title": 4,
+        "desc": 4,
+        "circle": 60
+      },
+      "imagesByEncoding": {
+        "data:image/png": 14
+      },
+      "filterOperations": [
+        "feComponentTransfer"
+      ],
+      "filters": [
+        {
+          "id": "col4",
+          "attributes": {
+            "id": "col4",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col6",
+          "attributes": {
+            "id": "col6",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col8",
+          "attributes": {
+            "id": "col8",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col10",
+          "attributes": {
+            "id": "col10",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col12",
+          "attributes": {
+            "id": "col12",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col14",
+          "attributes": {
+            "id": "col14",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col17",
+          "attributes": {
+            "id": "col17",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col19",
+          "attributes": {
+            "id": "col19",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col21",
+          "attributes": {
+            "id": "col21",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col23",
+          "attributes": {
+            "id": "col23",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        }
+      ],
+      "patterns": [
+        {
+          "id": "n2material_1978_1231_grain",
+          "attributes": {
+            "id": "n2material_1978_1231_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "482",
+            "height": "166"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2material_1978_1231_ribgrain",
+          "attributes": {
+            "id": "n2material_1978_1231_ribgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "64",
+            "height": "166"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2material_1978_1231_cavitygrain",
+          "attributes": {
+            "id": "n2material_1978_1231_cavitygrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "24",
+            "height": "121"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2material_1978_1957_floorgrain",
+          "attributes": {
+            "id": "n2material_1978_1957_floorgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "207",
+            "height": "128"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2material_1978_1821_paintgrain",
+          "attributes": {
+            "id": "n2material_1978_1821_paintgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "133",
+            "height": "162"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2floor_lattice_1978",
+          "attributes": {
+            "id": "n2floor_lattice_1978",
+            "patternUnits": "userSpaceOnUse",
+            "width": "207",
+            "height": "128",
+            "patternTransform": "matrix(1 0 -0.21875 1 -674 -44)"
+          },
+          "children": [
+            "g"
+          ]
+        },
+        {
+          "id": "n15material_1979_1962_grain",
+          "attributes": {
+            "id": "n15material_1979_1962_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "48",
+            "height": "30"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n24material_1980_1964_grain",
+          "attributes": {
+            "id": "n24material_1980_1964_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "38",
+            "height": "32"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n24material_1980_1965_grain",
+          "attributes": {
+            "id": "n24material_1980_1965_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "41",
+            "height": "26"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n24material_1980_1966_grain",
+          "attributes": {
+            "id": "n24material_1980_1966_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "31",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n25material_1413_1412_grain",
+          "attributes": {
+            "id": "n25material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n26material_1413_1412_grain",
+          "attributes": {
+            "id": "n26material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n27material_1413_1412_grain",
+          "attributes": {
+            "id": "n27material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n28material_1413_1412_grain",
+          "attributes": {
+            "id": "n28material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n29material_1413_1412_grain",
+          "attributes": {
+            "id": "n29material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A20",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/environment-a20-backdrop.svg",
+      "sha256": "646bfcad9dc5609fd29d7e7fe1578f1a0bef5365046964e75030d76cac1e8b5b",
+      "bytes": 4800477,
+      "viewBox": "-78.5 -23.45 1873.35 564.5",
+      "elements": {
+        "svg": 1,
+        "g": 88,
+        "defs": 42,
+        "mask": 12,
+        "rect": 122,
+        "linearGradient": 81,
+        "stop": 352,
+        "radialGradient": 12,
+        "pattern": 17,
+        "image": 17,
+        "clipPath": 26,
+        "path": 2351,
+        "ellipse": 100,
+        "polygon": 10,
+        "use": 16,
+        "filter": 6,
+        "feComponentTransfer": 6,
+        "feFuncR": 6,
+        "feFuncG": 6,
+        "feFuncB": 6,
+        "feFuncA": 6,
+        "title": 2,
+        "desc": 2,
+        "circle": 72
+      },
+      "imagesByEncoding": {
+        "data:image/png": 17
+      },
+      "filterOperations": [
+        "feComponentTransfer"
+      ],
+      "filters": [
+        {
+          "id": "col4",
+          "attributes": {
+            "id": "col4",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col6",
+          "attributes": {
+            "id": "col6",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col10",
+          "attributes": {
+            "id": "col10",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col12",
+          "attributes": {
+            "id": "col12",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col16",
+          "attributes": {
+            "id": "col16",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col18",
+          "attributes": {
+            "id": "col18",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        }
+      ],
+      "patterns": [
+        {
+          "id": "n2material_1986_1231_grain",
+          "attributes": {
+            "id": "n2material_1986_1231_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "482",
+            "height": "166"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2material_1986_1231_ribgrain",
+          "attributes": {
+            "id": "n2material_1986_1231_ribgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "64",
+            "height": "166"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2material_1986_1231_cavitygrain",
+          "attributes": {
+            "id": "n2material_1986_1231_cavitygrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "24",
+            "height": "121"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2material_1986_1957_floorgrain",
+          "attributes": {
+            "id": "n2material_1986_1957_floorgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "207",
+            "height": "128"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2material_1986_1821_paintgrain",
+          "attributes": {
+            "id": "n2material_1986_1821_paintgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "133",
+            "height": "162"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2floor_lattice_1986",
+          "attributes": {
+            "id": "n2floor_lattice_1986",
+            "patternUnits": "userSpaceOnUse",
+            "width": "207",
+            "height": "128",
+            "patternTransform": "matrix(1 0 -0.21875 1 -700.9 -49)"
+          },
+          "children": [
+            "g"
+          ]
+        },
+        {
+          "id": "n7material_1413_1412_grain",
+          "attributes": {
+            "id": "n7material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n8material_1987_1231_grain",
+          "attributes": {
+            "id": "n8material_1987_1231_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "482",
+            "height": "166"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n8material_1987_1231_ribgrain",
+          "attributes": {
+            "id": "n8material_1987_1231_ribgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "64",
+            "height": "166"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n8material_1987_1231_cavitygrain",
+          "attributes": {
+            "id": "n8material_1987_1231_cavitygrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "24",
+            "height": "121"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n13material_1979_1962_grain",
+          "attributes": {
+            "id": "n13material_1979_1962_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "48",
+            "height": "30"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n14material_1413_1412_grain",
+          "attributes": {
+            "id": "n14material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n19material_1413_1412_grain",
+          "attributes": {
+            "id": "n19material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n20material_1892_1821_paintgrain",
+          "attributes": {
+            "id": "n20material_1892_1821_paintgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "133",
+            "height": "162"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n21material_1413_1412_grain",
+          "attributes": {
+            "id": "n21material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n22material_1413_1412_grain",
+          "attributes": {
+            "id": "n22material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n23material_1413_1412_grain",
+          "attributes": {
+            "id": "n23material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    },
+    {
+      "map": "A22",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/parts/environment-a22-backdrop.svg",
+      "sha256": "646bfcad9dc5609fd29d7e7fe1578f1a0bef5365046964e75030d76cac1e8b5b",
+      "bytes": 4800477,
+      "viewBox": "-78.5 -23.45 1873.35 564.5",
+      "elements": {
+        "svg": 1,
+        "g": 88,
+        "defs": 42,
+        "mask": 12,
+        "rect": 122,
+        "linearGradient": 81,
+        "stop": 352,
+        "radialGradient": 12,
+        "pattern": 17,
+        "image": 17,
+        "clipPath": 26,
+        "path": 2351,
+        "ellipse": 100,
+        "polygon": 10,
+        "use": 16,
+        "filter": 6,
+        "feComponentTransfer": 6,
+        "feFuncR": 6,
+        "feFuncG": 6,
+        "feFuncB": 6,
+        "feFuncA": 6,
+        "title": 2,
+        "desc": 2,
+        "circle": 72
+      },
+      "imagesByEncoding": {
+        "data:image/png": 17
+      },
+      "filterOperations": [
+        "feComponentTransfer"
+      ],
+      "filters": [
+        {
+          "id": "col4",
+          "attributes": {
+            "id": "col4",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col6",
+          "attributes": {
+            "id": "col6",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col10",
+          "attributes": {
+            "id": "col10",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col12",
+          "attributes": {
+            "id": "col12",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col16",
+          "attributes": {
+            "id": "col16",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        },
+        {
+          "id": "col18",
+          "attributes": {
+            "id": "col18",
+            "color-interpolation-filters": "sRGB"
+          },
+          "operations": [
+            {
+              "kind": "feComponentTransfer"
+            }
+          ]
+        }
+      ],
+      "patterns": [
+        {
+          "id": "n2material_1986_1231_grain",
+          "attributes": {
+            "id": "n2material_1986_1231_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "482",
+            "height": "166"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2material_1986_1231_ribgrain",
+          "attributes": {
+            "id": "n2material_1986_1231_ribgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "64",
+            "height": "166"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2material_1986_1231_cavitygrain",
+          "attributes": {
+            "id": "n2material_1986_1231_cavitygrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "24",
+            "height": "121"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2material_1986_1957_floorgrain",
+          "attributes": {
+            "id": "n2material_1986_1957_floorgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "207",
+            "height": "128"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2material_1986_1821_paintgrain",
+          "attributes": {
+            "id": "n2material_1986_1821_paintgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "133",
+            "height": "162"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n2floor_lattice_1986",
+          "attributes": {
+            "id": "n2floor_lattice_1986",
+            "patternUnits": "userSpaceOnUse",
+            "width": "207",
+            "height": "128",
+            "patternTransform": "matrix(1 0 -0.21875 1 -700.9 -49)"
+          },
+          "children": [
+            "g"
+          ]
+        },
+        {
+          "id": "n7material_1413_1412_grain",
+          "attributes": {
+            "id": "n7material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n8material_1987_1231_grain",
+          "attributes": {
+            "id": "n8material_1987_1231_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "482",
+            "height": "166"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n8material_1987_1231_ribgrain",
+          "attributes": {
+            "id": "n8material_1987_1231_ribgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "64",
+            "height": "166"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n8material_1987_1231_cavitygrain",
+          "attributes": {
+            "id": "n8material_1987_1231_cavitygrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "24",
+            "height": "121"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n13material_1979_1962_grain",
+          "attributes": {
+            "id": "n13material_1979_1962_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "48",
+            "height": "30"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n14material_1413_1412_grain",
+          "attributes": {
+            "id": "n14material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n19material_1413_1412_grain",
+          "attributes": {
+            "id": "n19material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n20material_1892_1821_paintgrain",
+          "attributes": {
+            "id": "n20material_1892_1821_paintgrain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "133",
+            "height": "162"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n21material_1413_1412_grain",
+          "attributes": {
+            "id": "n21material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n22material_1413_1412_grain",
+          "attributes": {
+            "id": "n22material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        },
+        {
+          "id": "n23material_1413_1412_grain",
+          "attributes": {
+            "id": "n23material_1413_1412_grain",
+            "patternUnits": "userSpaceOnUse",
+            "width": "63",
+            "height": "27"
+          },
+          "children": [
+            "image"
+          ]
+        }
+      ],
+      "texts": [],
+      "requiresNewFilterPrimitive": []
+    }
+  ]
+}

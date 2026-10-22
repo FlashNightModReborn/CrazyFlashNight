@@ -37,7 +37,7 @@
         this.tooltip = win && win.PanelTooltip;
         this.tooltipScope = this.tooltip && this.tooltip.createScope('choice-rewards', {profile:'dense-inspect'});
         this.snapshot = null; this.selected = ''; this.offerId = ''; this.state = 'idle';
-        this.signature = ''; this.destroyed = false;
+        this.signature = ''; this.destroyed = false; this.readPending = false; this.readFeedback = '';
         var entryHost = options.view.root.querySelector('[data-build-pane="candidates"] .character-build-pane-heading .character-build-pane-tools');
         this.button = element(this.document, 'button', '自选礼包', 'character-build-choice-entry');
         this.button.setAttribute('data-choice-rewards-open', ''); this.button.hidden = true;
@@ -56,6 +56,7 @@
         this.context = element(this.document, 'div', '', 'character-build-choice-context');
         this.balance = element(this.document, 'p', '', 'character-build-choice-hint');
         this.context.appendChild(this.balance);
+        this.context.appendChild(element(this.document, 'p', '开包后候选已确定，不能重新抽取。可在本局内返回构筑，稍后继续选择。', 'character-build-choice-hint'));
         this.context.appendChild(element(this.document, 'p', '每次选择一张。技能直接授予，主动技能需在技能页装备；物品优先进入背包，装不下的进入暂存。付费卡确认时扣除局内K点。', 'character-build-choice-hint'));
         this.offers = element(this.document, 'div', '', 'character-build-choice-offers');
         this.offers.setAttribute('role', 'group');
@@ -68,7 +69,8 @@
         var footer = element(this.document, 'footer', '', 'character-build-choice-footer');
         this.status = element(this.document, 'p'); this.status.setAttribute('role', 'status');
         footer.appendChild(this.status);
-        this.refresh = element(this.document, 'button', '刷新'); this.refresh.onclick = function() { options.refresh(); };
+        this.refresh = element(this.document, 'button', '更新领取状态'); this.refresh.onclick = function() { options.refresh(); };
+        this.refresh.setAttribute('data-choice-refresh', '');
         this.query = element(this.document, 'button', '核对领取结果'); this.query.onclick = function() { options.reconcile(); };
         this.confirm = element(this.document, 'button', '领取这套配给'); this.confirm.onclick = function() {
             if (!self.confirm.disabled && self.snapshot) options.choose(self.snapshot, self.offerId, self.selected);
@@ -116,7 +118,7 @@
                 row.onclick = function() {
                     if (self.state !== 'idle' || self.snapshot.pendingOperationId) return;
                     if (self.offerId === offer.offerId) return;
-                    self.offerId = offer.offerId; self.selected = ''; self.cards.scrollTop = 0;
+                    self.offerId = offer.offerId; self.selected = ''; self.readFeedback = ''; self.cards.scrollTop = 0;
                     self.offers.querySelectorAll('[data-choice-offer]').forEach(function(node) {
                         node.setAttribute('aria-pressed', String(node.getAttribute('data-choice-offer') === self.offerId));
                     });
@@ -206,7 +208,7 @@
             card.onclick = function() {
                 if (self.state !== 'idle' || self.snapshot.pendingOperationId) return;
                 self.selected = option.optionId;
-                self.grantedNote = '';
+                self.grantedNote = ''; self.readFeedback = '';
                 self.cards.querySelectorAll('[data-choice-option]').forEach(function(node) {
                     node.setAttribute('aria-pressed', String(node.getAttribute('data-choice-option') === self.selected));
                 });
@@ -287,7 +289,7 @@
         if (this.destroyed) return;
         this.state = state;
         var pending = this.snapshot && this.snapshot.pendingOperationId;
-        var busy = state !== 'idle' || !!pending;
+        var busy = state !== 'idle' || !!pending || this.readPending;
         var count = this.snapshot ? this.snapshot.offers.length : 0;
         this.button.hidden = count === 0 && !pending && !this.choicePending && !this.page.isActive();
         this.button.textContent = count ? '自选礼包 ' + count : pending || this.choicePending ? '自选·待确认' : '自选礼包';
@@ -295,7 +297,9 @@
         this.confirm.disabled = busy || this.loadFailed || !this.selected || !this.snapshot;
         this.storage.disabled = busy;
         this.offers.querySelectorAll('[data-choice-offer]').forEach(function(node) { node.disabled = busy; });
-        this.refresh.disabled = state === 'write_pending' || state === 'query_pending';
+        this.refresh.disabled = this.readPending || state === 'write_pending' || state === 'query_pending';
+        this.refresh.textContent = this.readPending ? '更新中…' : this.loadFailed ? '重试读取' : '更新领取状态';
+        this.cards.setAttribute('aria-busy', String(this.readPending));
         this.query.hidden = state !== 'needs_reconcile' && !pending;
         this.query.disabled = state === 'query_pending' || state === 'write_pending';
         this.back.disabled = state === 'write_pending' || state === 'query_pending';
@@ -308,13 +312,15 @@
         this.confirm.disabled = this.confirm.disabled || !affordable || !!chosen && chosen.available === false;
         this.confirm.textContent = chosen ? (chosen.kCost ? '支付 ' + chosen.kCost + ' K点领取「' : '领取「') + chosen.title + '」' : '领取这套配给';
         if (state !== 'idle') this.grantedNote = '';
-        this.status.textContent = this.loadFailed ? '配给列表暂时无法读取，请刷新重试。'
-            : state === 'write_pending' ? '正在保存你的选择…'
+        this.status.textContent = state === 'write_pending' ? '正在保存你的选择…'
             : state === 'query_pending' ? '正在核对领取结果…'
             : state === 'needs_reconcile' || pending ? '上次操作结果待确认，请先核对。'
-            : this.grantedNote ? this.grantedNote
+            : this.loadFailed ? '配给列表暂时无法读取，请重试。'
+            : this.readPending ? '正在更新领取状态…'
             : chosen && chosen.available === false ? '该技能已达到奖励等级，或当前状态不可领取，请改选其他配给。'
             : !affordable ? 'K点不足，可选择免费配给，或保留候选稍后领取。'
+            : this.readFeedback ? this.readFeedback
+            : this.grantedNote ? this.grantedNote
             : this.selected ? '确认后其余候选将放弃；只支付这一张卡片的价格。' : count ? '点选一套配给，再确认领取。' : '';
     };
     ChoiceView.prototype.destroy = function() {
@@ -327,7 +333,7 @@
             var self = this;
             this._choiceRewards = new ChoiceView({view:this._view,
                 open:function() { self._choiceRewards.open(); self._refreshChoiceRewards(); },
-                refresh:function() { self._refreshChoiceRewards(); },
+                refresh:function() { self._refreshChoiceRewards(null, false, true); },
                 storage:function() { self._openRewardInbox(); },
                 reconcile:function() {
                     if (self._itemUse.debugState().state === 'needs_reconcile') self._itemUse.reconcile();
@@ -343,15 +349,24 @@
                 }});
             return this._choiceRewards;
         };
-        controller._refreshChoiceRewards = function(preferred, returnWhenFinished) {
+        controller._refreshChoiceRewards = function(preferred, returnWhenFinished, manual) {
             var view = this._ensureChoiceRewards();
             if (!view) return;
             var self = this;
             var request = this._choiceRefreshSequence = (this._choiceRefreshSequence || 0) + 1;
-            if (preferred) view.open();
-            this._itemUse.requestChoices(function(data) {
-                if (view.destroyed || self._choiceRewards !== view) return;
+            var restoreFocus = manual && view.document.activeElement === view.refresh;
+            function finishRead(data) {
+                view.readPending = false;
+                view.readFeedback = manual && data ? '领取状态已更新，候选不会重新抽取。' : '';
                 view.setSnapshot(data, preferred);
+                if (restoreFocus && view.page.isActive() && !view.refresh.disabled
+                        && view.document.activeElement === view.document.body) view.refresh.focus({preventScroll:true});
+            }
+            view.readPending = true; view.loadFailed = false; view.readFeedback = ''; view.updateState(view.state);
+            if (preferred) view.open();
+            var callId = this._itemUse.requestChoices(function(data) {
+                if (view.destroyed || self._choiceRewards !== view || request !== self._choiceRefreshSequence) return;
+                finishRead(data);
                 // Only a committed choice may finish this workflow. An empty or
                 // failed background read must never dismiss a pending receipt.
                 if (!returnWhenFinished || !data || data.offers.length || data.pendingOperationId) return;
@@ -364,6 +379,9 @@
                         view.page.close('claimed');
                 });
             });
+            if (!callId && request === this._choiceRefreshSequence && view.readPending) {
+                finishRead(null);
+            }
         };
         controller._choiceRewardsStateChanged = function(state) {
             if (this._choiceRewards) {

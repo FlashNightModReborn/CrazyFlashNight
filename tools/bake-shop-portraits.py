@@ -34,12 +34,19 @@ RECEIPT_SCHEMA = "cf7-shop-portrait-promotion-receipt-v1"
 GENERATOR_VERSION = "1.1.1"
 GEOMETRY = {"width": 256, "height": 256}
 PADDING = 16
-EXPECTED_LIST_COUNT = 40
-EXPECTED_ACTIVE_COUNT = 39
+EXPECTED_LIST_COUNT = 45
+EXPECTED_ACTIVE_COUNT = 44
 EXCLUDED_SHOPS = {"幸存老兵-暂时停用"}
 # Same character, separate inventory authority. Keep both exact runtime shopIds;
 # only these declared identities may share the existing portrait pixels.
-SHARED_SHOP_PORTRAITS = {"书中-迷之盔甲君": "迷之盔甲君"}
+SHARED_SHOP_PORTRAITS = {
+    "书中-迷之盔甲君": "迷之盔甲君",
+    "书中-CF6毒刺-35级": "迷之盔甲君",
+    "书中-CF6毒刺-40级": "迷之盔甲君",
+    "书中-CF6毒刺-45级": "迷之盔甲君",
+    "书中-CF6毒刺-55级": "迷之盔甲君",
+    "书中-CF6毒刺-60级": "迷之盔甲君",
+}
 DEFAULT_EXPRESSION = "普通"
 DIALOGUE_LINKAGE = "对话框肖像"
 WEAPON_MASTER = "武器大师"

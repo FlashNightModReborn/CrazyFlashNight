@@ -1,0 +1,249 @@
+{
+ "map": "A16",
+ "worldSprite": 1950,
+ "mainFrame": 162,
+ "walkBounds": [
+  50.0,
+  200.0,
+  970.0,
+  450.0
+ ],
+ "spawn": [
+  273.9,
+  378.15
+ ],
+ "generators": [
+  {
+   "charId": 1434,
+   "depth": 706,
+   "name": "敌人生成器1",
+   "xy": [
+    433.45,
+    -6.25
+   ],
+   "config": {
+    "stop": true,
+    "兵种": "aw-异形",
+    "僵尸型敌人总个数": 5,
+    "僵尸型敌人上场个数": 2,
+    "击中效果": "飙血",
+    "近身距离": 180,
+    "近身率": 3,
+    "击倒率": 5,
+    "hp": 10,
+    "x速度": 5,
+    "y速度": 2.5,
+    "AI": 5,
+    "枪声音": "无",
+    "霰弹值": 3,
+    "子弹散射度": 15,
+    "子弹种类": "敌人普通子弹",
+    "子弹威力": 10,
+    "子弹速度": 20
+   }
+  },
+  {
+   "charId": 1434,
+   "depth": 710,
+   "name": "敌人生成器x",
+   "xy": [
+    1108.4,
+    285.15
+   ],
+   "config": {
+    "stop": true,
+    "兵种": "敌人-光头男",
+    "僵尸型敌人总个数": 5,
+    "僵尸型敌人上场个数": 2,
+    "击中效果": "飙血",
+    "近身距离": 180,
+    "近身率": 3,
+    "击倒率": 5,
+    "hp": 10,
+    "x速度": 5,
+    "y速度": 2.5,
+    "AI": 5,
+    "枪声音": "无",
+    "霰弹值": 3,
+    "子弹散射度": 15,
+    "子弹种类": "敌人普通子弹",
+    "子弹威力": 10,
+    "子弹速度": 20,
+    "是否变身": 1
+   }
+  }
+ ],
+ "statics": [],
+ "exits": [
+  {
+   "charId": 1617,
+   "depth": 617,
+   "name": null,
+   "xy": [
+    1516.5,
+    351.9
+   ],
+   "config": {
+    "stop": false,
+    "需要杀死数": 0,
+    "目标帧": "a12"
+   }
+  }
+ ],
+ "triggers": [],
+ "pickups": [
+  {
+   "charId": 255,
+   "depth": 702,
+   "name": null,
+   "xy": [
+    421.45,
+    255.4
+   ],
+   "kind": "弃枪",
+   "config": {
+    "stop": false,
+    "gunname": "m4-2",
+    "弹夹内子弹": 60,
+    "长枪威力": 23,
+    "射击速度": 160,
+    "长枪是否单发": 0,
+    "长枪子弹散射度": 8,
+    "长枪散弹值": 1
+   }
+  }
+ ],
+ "misc": [
+  {
+   "charId": 1945,
+   "depth": 1,
+   "name": null,
+   "xy": [
+    673.5,
+    207.1
+   ],
+   "kind": null,
+   "config": {}
+  },
+  {
+   "charId": 1832,
+   "depth": 605,
+   "name": null,
+   "xy": [
+    344.5,
+    -0.55
+   ],
+   "kind": "随机帧装饰",
+   "config": {
+    "stop": false,
+    "a": "this._totalframes"
+   }
+  },
+  {
+   "charId": 1947,
+   "depth": 607,
+   "name": "地图",
+   "xy": [
+    0.0,
+    0.0
+   ],
+   "kind": null,
+   "config": {}
+  },
+  {
+   "charId": 1832,
+   "depth": 708,
+   "name": null,
+   "xy": [
+    1370.7,
+    -0.55
+   ],
+   "kind": "随机帧装饰",
+   "config": {
+    "stop": false,
+    "a": "this._totalframes"
+   }
+  },
+  {
+   "charId": 1455,
+   "depth": 712,
+   "name": null,
+   "xy": [
+    722.0,
+    244.25
+   ],
+   "kind": "装饰1455",
+   "config": {
+    "stop": false,
+    "几段话": 6,
+    "头像1": "Andy Law",
+    "目标1": "_root.gameworld.man1",
+    "talk1": "这里应该是机房了，我靠，这大头娃不会是主机吧？咦，BLOODY也在！",
+    "头像2": "R_server",
+    "目标2": "_root.gameworld.R_server",
+    "talk2": "入侵等级升至一级，应急预案F启动！",
+    "头像3": "bloody",
+    "目标3": "_root.gameworld.bloody",
+    "talk3": "呵呵，没想到你突破重围竟然来到这里！",
+    "头像4": "bloody",
+    "目标4": "_root.gameworld.bloody",
+    "talk4": "连联合国特工部队也无法攻破的堡垒竟然被一个人突破，你就像传说中一样厉害啊，Andy Law！",
+    "头像5": "Andy Law",
+    "目标5": "_root.gameworld.man1",
+    "talk5": "Bloody！今天我就要消灭你和你的军队！",
+    "头像6": "R_server",
+    "目标6": "_root.gameworld.R_server",
+    "talk6": "攻坚队到位！立刻对入侵者进行终结！"
+   }
+  },
+  {
+   "charId": 1496,
+   "depth": 719,
+   "name": "对话框",
+   "xy": [
+    514.1,
+    43.2
+   ],
+   "kind": "对话框",
+   "config": {
+    "stop": true,
+    "目标帧": "a17"
+   }
+  },
+  {
+   "charId": 1948,
+   "depth": 738,
+   "name": "R_server",
+   "xy": [
+    653.0,
+    256.9
+   ],
+   "kind": null,
+   "config": {}
+  },
+  {
+   "charId": 1949,
+   "depth": 740,
+   "name": "bloody",
+   "xy": [
+    761.4,
+    242.7
+   ],
+   "kind": "bloody",
+   "config": {}
+  },
+  {
+   "charId": 1498,
+   "depth": 748,
+   "name": "效果",
+   "xy": [
+    0.0,
+    0.0
+   ],
+   "kind": "效果",
+   "config": {
+    "stop": false
+   }
+  }
+ ]
+}

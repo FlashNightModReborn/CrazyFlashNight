@@ -1,0 +1,52 @@
+onClipEvent(load){
+   var §\x01§ = 274;
+   var §\x0f§ = 1;
+   _parent.stop();
+   _root.Xmax = 1250;
+   _root.Xmin = 50;
+   _root.Ymax = 500;
+   _root.Ymin = 150;
+   _root.控制目标 = "man1";
+   _root.卷屏目标 = _root.控制目标;
+   背景长 = 1300;
+   背景高 = 450;
+   舞台长 = 600;
+   舞台高 = 350;
+   卷屏x最小坐标值 = -700;
+   卷屏y最小坐标值 = -100;
+   卷屏x最大坐标值 = 0;
+   卷屏y最大坐标值 = 0;
+   var myPoint = {x:0,y:0};
+   this[_root.卷屏目标].localToGlobal(myPoint);
+   if(_root.控制目标 == "man1")
+   {
+      if(_root.gameworld.man1._xscale > 0)
+      {
+         aa = 150 - myPoint.x;
+         bb = 240 - myPoint.y;
+      }
+      else
+      {
+         aa = 450 - myPoint.x;
+         bb = 240 - myPoint.y;
+      }
+   }
+   else
+   {
+      aa = 300 - myPoint.x;
+      bb = 240 - myPoint.y;
+   }
+   if(Math.abs(aa) > 1 or Math.abs(bb) > 1)
+   {
+      xxx = this._x + aa;
+      yyy = this._y + bb;
+      if(xxx > 卷屏x最小坐标值 and xxx < 卷屏x最大坐标值)
+      {
+         this._x = xxx;
+      }
+      if(yyy > 卷屏y最小坐标值 and yyy < 卷屏y最大坐标值)
+      {
+         this._y = yyy;
+      }
+   }
+}

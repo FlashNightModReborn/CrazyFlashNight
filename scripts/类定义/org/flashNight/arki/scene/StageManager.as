@@ -1000,6 +1000,7 @@ class org.flashNight.arki.scene.StageManager {
         if (org.flashNight.arki.scene.LeeAssaultService.interceptClear(this, gameworld)) return;
         if (org.flashNight.arki.scene.BaseSiegeController.interceptClear(this, gameworld)) return;
         if (org.flashNight.arki.scene.NewcomerRescueController.interceptClear(this, gameworld)) return;
+        if (org.flashNight.arki.scene.Cf6MapMechanism.interceptClear(this, gameworld)) return;
         if (stageMode == "warlord") {
             trace("[StageManager] Warlord clearStage rejected; typed result required");
             return;

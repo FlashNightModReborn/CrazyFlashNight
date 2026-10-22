@@ -1,0 +1,807 @@
+{
+  "schema": "cfn.stage-preview-runtime.v1",
+  "source": "tools/stage-preview/stages.json",
+  "acceptance": "tools/stage-preview/accepted.json",
+  "acceptanceSha256": "3064cdd74f762621da71f6cabb4455d17c8f299c85adaa4a595f25ff2b73f202",
+  "sourceConfigSha256": "197ab47c9a781d129f1c4e9227ae8549186bbaabfdfb6730d07445db06b29d51",
+  "generatorSha256": "22cb17dda22b092f64ddeb7b0a397cc3864194d33c8013b9dbeec123379d3668",
+  "integratorSha256": "ef754dff34f007435c1b4df181cbd78410cd4f3f5fecf679e90ce6f85b166a74",
+  "encoding": "webp-lossless-pixel-verified",
+  "width": 644,
+  "height": 276,
+  "imageBytes": 12404154,
+  "stages": [
+    {
+      "id": "stage_0_0",
+      "stageName": "新手练习场",
+      "url": "assets/stage-select/previews/hd/stage_0_0-d2a5d89e5634.webp",
+      "sha256": "d2a5d89e5634e8c7d5c2d7d562fa53aea3a66595f6d28fc598dfb0d170b658bf",
+      "rgbSha256": "966a88d247257d12bfb772e27553babe32d42f5919751645336245399e6d6aed",
+      "bytes": 115604
+    },
+    {
+      "id": "stage_0_1",
+      "stageName": "超市废墟",
+      "url": "assets/stage-select/previews/hd/stage_0_1-047cdec3b965.webp",
+      "sha256": "047cdec3b965b6a0839037adfcccc3a8b35972be7506c26f814d6140d7096928",
+      "rgbSha256": "7edf9f50f3c9ce27cee0e9d46f1960e3513048367c92a8d04651d7be63c50212",
+      "bytes": 114896
+    },
+    {
+      "id": "stage_0_2",
+      "stageName": "废墟武器店",
+      "url": "assets/stage-select/previews/hd/stage_0_2-1f9e0bd9f2f3.webp",
+      "sha256": "1f9e0bd9f2f3370963f111eba6ba7bf6d8a226bdadc09608e432199185b5111e",
+      "rgbSha256": "8648f107fc05b4866a137fbaaab1e39451eaaf43b3b25223ee7a816665a6d005",
+      "bytes": 84268
+    },
+    {
+      "id": "stage_0_3",
+      "stageName": "郊区",
+      "url": "assets/stage-select/previews/hd/stage_0_3-816afd272b56.webp",
+      "sha256": "816afd272b56f59294d051e79873640b49f6d1e9bed80c395de93f1b1636e8b6",
+      "rgbSha256": "1acf9d2a26fb68559d03e1bde77e67ad0412a543834e99c4a26ac31711294aa6",
+      "bytes": 166674
+    },
+    {
+      "id": "stage_0_4",
+      "stageName": "第一防线",
+      "url": "assets/stage-select/previews/hd/stage_0_4-96c698846c22.webp",
+      "sha256": "96c698846c22e2257941e7d74a59f0c79ac1f704ba6aee9e828e6c6fe4532173",
+      "rgbSha256": "ef75b88a119df87960bd59ab4b1b9e378edb357b38a831c541a9ad4da57c8e8d",
+      "bytes": 95870
+    },
+    {
+      "id": "stage_0_5",
+      "stageName": "商业区",
+      "url": "assets/stage-select/previews/hd/stage_0_5-fbe4f2be2a02.webp",
+      "sha256": "fbe4f2be2a02a4743da714b3f8db29e28564df7e431d381166a6291a3d183d67",
+      "rgbSha256": "91d08ebefec02e80f42cbf19a8bcad23b7bf380ff75feb2914922edd22feb187",
+      "bytes": 63706
+    },
+    {
+      "id": "stage_0_6",
+      "stageName": "第三集结点",
+      "url": "assets/stage-select/previews/hd/stage_0_6-5c96a94fe559.webp",
+      "sha256": "5c96a94fe5599f8745b6dbf3320ce47246dc819ca94c5c040bc36a1a346307c4",
+      "rgbSha256": "fd9286aba66a8eb326018b15188273b62090fd4093689548c037ed813ebe926c",
+      "bytes": 101886
+    },
+    {
+      "id": "stage_0_7",
+      "stageName": "贫民窟",
+      "url": "assets/stage-select/previews/hd/stage_0_7-b82b125cbdac.webp",
+      "sha256": "b82b125cbdac147bd50ae73d632983b88238eebf2049d853947fdf0d7a22fb9b",
+      "rgbSha256": "bd95346d2dc2e9f96a495ee6bb9550dbb4c5afd513c64710f2eded9711297559",
+      "bytes": 112254
+    },
+    {
+      "id": "stage_0_8",
+      "stageName": "闹市区",
+      "url": "assets/stage-select/previews/hd/stage_0_8-c6b669481712.webp",
+      "sha256": "c6b6694817121027cb131a6b8c1adf95a9f838e1e1cb1ad55b942dbb5859edc5",
+      "rgbSha256": "e7975dac1feae9afe17d8c95856f5e6ab1cfd220758e57245397262a3c2e0fc2",
+      "bytes": 89850
+    },
+    {
+      "id": "stage_0_9",
+      "stageName": "地铁站",
+      "url": "assets/stage-select/previews/hd/stage_0_9-92cfe22aebc0.webp",
+      "sha256": "92cfe22aebc00ca8791f82b4136f3b25a578e6d51f155caf5713f2a048eea3c1",
+      "rgbSha256": "da5ba4f99ffef6e905523c53337395abb3900c07794802c96b76c8f3e646be0e",
+      "bytes": 76242
+    },
+    {
+      "id": "stage_0_10",
+      "stageName": "外交-第一防线防区",
+      "url": "assets/stage-select/previews/hd/stage_0_10-abf3e76b25ba.webp",
+      "sha256": "abf3e76b25ba37d495951032c4823f4449942ab3658658772c3d12650d646212",
+      "rgbSha256": "b1be553c7e57478e12df4863fb94db692bc9c741e489a660a63e183e6066c2c9",
+      "bytes": 122592
+    },
+    {
+      "id": "stage_0_11",
+      "stageName": "自来水厂",
+      "url": "assets/stage-select/previews/hd/stage_0_11-436178dbc99a.webp",
+      "sha256": "436178dbc99a6bd976b8c8e77766afd13657fe96a01cdb0db6ed951bf6f33fe3",
+      "rgbSha256": "5498e4766780ec38e6cd8842b2d8c40c9a5cdb5bc56050f2197637c8a2c0f512",
+      "bytes": 82710
+    },
+    {
+      "id": "stage_0_12",
+      "stageName": "废城环线",
+      "url": "assets/stage-select/previews/hd/stage_0_12-4994f0a599a7.webp",
+      "sha256": "4994f0a599a72975396bf64e5a656351523f11a623ca7b1f7df2f19a12183e10",
+      "rgbSha256": "4e9af72a88ba9e4ed95a248cae9a858eb9619d6476b9f50cdfa9bb113c6769cf",
+      "bytes": 140510
+    },
+    {
+      "id": "stage_0_13",
+      "stageName": "医院",
+      "url": "assets/stage-select/previews/hd/stage_0_13-f66135740d42.webp",
+      "sha256": "f66135740d4216561d47a8eb70a86957d4b280121b5693e40dfadfb3ee0c356f",
+      "rgbSha256": "d936597d20c8d9ee881ea5d2c199e21e6bd60e56a2f4f32fbe5a84ac72ea26f6",
+      "bytes": 116342
+    },
+    {
+      "id": "stage_0_14",
+      "stageName": "地铁站隧道",
+      "url": "assets/stage-select/previews/hd/stage_0_14-0b1c33b8f46f.webp",
+      "sha256": "0b1c33b8f46f63f9313d4de2dceb24d8167ee29c37f375de6f8f44112b56b23c",
+      "rgbSha256": "82aa46ff144fba021d5ffde0977f1bfd749e7d150254d1aa4c0c113b00cd50d5",
+      "bytes": 127384
+    },
+    {
+      "id": "stage_0_15",
+      "stageName": "外交-隧道据点",
+      "url": "assets/stage-select/previews/hd/stage_0_15-89c143c47517.webp",
+      "sha256": "89c143c475177daf106992dee350955c3ca40ec797b1c025c635db8ac03f0345",
+      "rgbSha256": "596bbb87c8e5dd593e90bbcd37f16d1c759af5007a23079b99741485b4bf0c5f",
+      "bytes": 175304
+    },
+    {
+      "id": "stage_10_0",
+      "stageName": "DEATH MATCH入门赛",
+      "url": "assets/stage-select/previews/hd/stage_10_0-b71f96e29312.webp",
+      "sha256": "b71f96e293120faf4208b5da957922110a0100edb9cbee5f0547750678db0e12",
+      "rgbSha256": "8766e4f7ecbb883f1e96b52dd0fe7346075c74d237f77d9d80061bcaef8f2ff0",
+      "bytes": 129710
+    },
+    {
+      "id": "stage_10_1",
+      "stageName": "DEATH MATCH角斗场",
+      "url": "assets/stage-select/previews/hd/stage_10_1-3ccd2fab1c02.webp",
+      "sha256": "3ccd2fab1c022b056571e005f3f1a3575f23d4b9ddcb56d376360118c59a4634",
+      "rgbSha256": "9d37c76cd61596570e20e1ae2fcbf7d717c0a08dd54b3514e45fcec77edb9d5f",
+      "bytes": 191178
+    },
+    {
+      "id": "stage_10_2",
+      "stageName": "堕落城区",
+      "url": "assets/stage-select/previews/hd/stage_10_2-1af7f63263a1.webp",
+      "sha256": "1af7f63263a1ac51d3e3c02921fe54e755ed4ab1958f8e4e5096c50ff2c3da7a",
+      "rgbSha256": "6c7cf45e9b906bf90ff96d937a3d7da5a489897cae19bbaf9b25e6ae6e0f5156",
+      "bytes": 108446
+    },
+    {
+      "id": "stage_10_3",
+      "stageName": "游寇基地",
+      "url": "assets/stage-select/previews/hd/stage_10_3-309073a47c1b.webp",
+      "sha256": "309073a47c1bbc94582cfc85ca7dfe7447389d8529295758c7c4794bf2a90565",
+      "rgbSha256": "36228c58b2bd4ef46cd50762d3f8a7c1416a0db7539cb95712b476b130ec8faf",
+      "bytes": 114644
+    },
+    {
+      "id": "stage_10_4",
+      "stageName": "黑铁会",
+      "url": "assets/stage-select/previews/hd/stage_10_4-91fbb70a2fd2.webp",
+      "sha256": "91fbb70a2fd2bee117b7ffce0a34626ca5fe819fea8ba39fa5101c00add6e195",
+      "rgbSha256": "b16e987ea87cb174ba737135c2b7ffaa03e09b030ae6465b6e3cedd4e603ad8b",
+      "bytes": 106854
+    },
+    {
+      "id": "stage_10_5",
+      "stageName": "摇滚公园",
+      "url": "assets/stage-select/previews/hd/stage_10_5-c469a632a728.webp",
+      "sha256": "c469a632a728e8113d31bd563b0e8aae7d9eb5592154befbe8506ec945b90c69",
+      "rgbSha256": "2a360755ff566e1bad5164d87ccd5040fd5b643e598dc7a7aef639143f4c8e9b",
+      "bytes": 134348
+    },
+    {
+      "id": "stage_10_6",
+      "stageName": "革命军哨所",
+      "url": "assets/stage-select/previews/hd/stage_10_6-4635f1447c79.webp",
+      "sha256": "4635f1447c79144bfc05ec24ed978b75c830318df3a1ebb89e7f3c73e4559c05",
+      "rgbSha256": "4109814338d6cce3fa190c13d64f6076db47bb393689f6c6a68a41d9d9c67f03",
+      "bytes": 108080
+    },
+    {
+      "id": "stage_10_7",
+      "stageName": "堕落城深处",
+      "url": "assets/stage-select/previews/hd/stage_10_7-6fe06a99eef2.webp",
+      "sha256": "6fe06a99eef28b63896d762f411cde25791b8dc18bef9d9f577793a482403ad9",
+      "rgbSha256": "1fb0773ddc5bab2f86095f89ba24b6be39a96b78e494bac1503f20599c320919",
+      "bytes": 121112
+    },
+    {
+      "id": "stage_10_8",
+      "stageName": "A兵团试炼场",
+      "url": "assets/stage-select/previews/hd/stage_10_8-973d4305be88.webp",
+      "sha256": "973d4305be88ef443c83dd9a6412dba17eee626125fb4b72019f2284816679a0",
+      "rgbSha256": "d52448a9ce68a42d36ee076dce033694067551f4f217eb4c7a34ef584bf0573c",
+      "bytes": 110668
+    },
+    {
+      "id": "stage_10_9",
+      "stageName": "压制摇滚公园",
+      "url": "assets/stage-select/previews/hd/stage_10_9-2d6b3caa6415.webp",
+      "sha256": "2d6b3caa64157a2f6c3d80237ad5c8b90efacf27883101896cbca00302ff6294",
+      "rgbSha256": "f86aa87f7f370f4316b1c2e655b018ad7b7f3e1be7a4a874b55bb2406b67ed49",
+      "bytes": 114016
+    },
+    {
+      "id": "stage_10_10",
+      "stageName": "摇滚内战",
+      "url": "assets/stage-select/previews/hd/stage_10_10-d144824035cc.webp",
+      "sha256": "d144824035cc6cbba4b56af0f6fe240e61dc9ef5baddb604c748abed0d01e989",
+      "rgbSha256": "8b503329aa03ab77559669ce2e72e01edde856078440572a46403ef0c06ba606",
+      "bytes": 118902
+    },
+    {
+      "id": "stage_10_11",
+      "stageName": "外交-摇滚公园",
+      "url": "assets/stage-select/previews/hd/stage_10_11-741757f68280.webp",
+      "sha256": "741757f68280e0c6932ebd251151ad4e6b78980ca3b4de8285180b7152771ab3",
+      "rgbSha256": "33d9635c43d42859a2ed611473fffb63f8a239d77c1e11e9a836755beb28f820",
+      "bytes": 128200
+    },
+    {
+      "id": "stage_10_12",
+      "stageName": "外交-堕落城酒吧",
+      "url": "assets/stage-select/previews/hd/stage_10_12-9538978edd1e.webp",
+      "sha256": "9538978edd1e22b3cea3e28dca8d9d46fcb9610a773db8196dd70c23f52c1532",
+      "rgbSha256": "7b3e7d70caf586f5a3c5366083fecaedb6acfcb030e48cf3fd37a04b103449e5",
+      "bytes": 134248
+    },
+    {
+      "id": "stage_10_13",
+      "stageName": "外交-联合大学",
+      "url": "assets/stage-select/previews/hd/stage_10_13-0706c659a676.webp",
+      "sha256": "0706c659a676015d77d86016bc0fe0f369cf3720520714cf55f804ac7a842e04",
+      "rgbSha256": "49f66f9e055a665827a3ce4b2f706a7f4659289dc5dfdef3875f9965898476b6",
+      "bytes": 117326
+    },
+    {
+      "id": "stage_10_14",
+      "stageName": "大学城周边",
+      "url": "assets/stage-select/previews/hd/stage_10_14-c31a3b692364.webp",
+      "sha256": "c31a3b6923649c6b5700b3da05392e1c636b5205c07fd42b8a360e2eaa1d4a77",
+      "rgbSha256": "97f22c65e78d1f7c361cc61f64a6f3511c5e4556c1db934b6eb5eca83d69be6e",
+      "bytes": 125712
+    },
+    {
+      "id": "stage_10_15",
+      "stageName": "堕落城下水道入口",
+      "url": "assets/stage-select/previews/hd/stage_10_15-d84f373c4892.webp",
+      "sha256": "d84f373c4892b9e4e99733a68f1347087f104b39a5331f5c66d2937214f7e60c",
+      "rgbSha256": "fa78db08dc17033e17e4a7c73464bc26e5a3a66def1356da2cb3d75378583580",
+      "bytes": 101512
+    },
+    {
+      "id": "stage_10_16",
+      "stageName": "外交-堕落城商业街",
+      "url": "assets/stage-select/previews/hd/stage_10_16-4dce175b576e.webp",
+      "sha256": "4dce175b576e12cae357bf09285609dad432fd656708fe61ddf4a6567262858f",
+      "rgbSha256": "8d24b09042b10c6a0f5f9d8e6ad22daaa5647b9be9d948be8ca24dbfe084b365",
+      "bytes": 72418
+    },
+    {
+      "id": "stage_10_17",
+      "stageName": "堕落城保卫战",
+      "url": "assets/stage-select/previews/hd/stage_10_17-4aef7c6be6c9.webp",
+      "sha256": "4aef7c6be6c947e3dc6829b0f2cf4333e243c452151d99ce77938ddd4ce957d7",
+      "rgbSha256": "ae22f22037c7f99b0c2af1400fe82576b53cc107fb1dd58de7373881c4487fe2",
+      "bytes": 94524
+    },
+    {
+      "id": "stage_10_18",
+      "stageName": "据点M",
+      "url": "assets/stage-select/previews/hd/stage_10_18-3db016331585.webp",
+      "sha256": "3db016331585d5d0a9a1ef7bb4fd21a0196c053657c182168fa90c5e59ce0fcf",
+      "rgbSha256": "a04d2fce3d1d1fedaf42b1ce5e760c371b595f680609387aef84931c81310e06",
+      "bytes": 101092
+    },
+    {
+      "id": "stage_18_0",
+      "stageName": "黑铁会翅虎堂外围",
+      "url": "assets/stage-select/previews/hd/stage_18_0-b82084f938d8.webp",
+      "sha256": "b82084f938d8c1309b5cc854d1db86e9e2c66532aa59d08f66cc69fb35c206e0",
+      "rgbSha256": "9baf98e63ab6edc6effd52037bea6df918dc55c72587eae7ff6e454bc0111f6c",
+      "bytes": 88442
+    },
+    {
+      "id": "stage_18_1",
+      "stageName": "黑铁会总部边缘",
+      "url": "assets/stage-select/previews/hd/stage_18_1-84e93f5f6982.webp",
+      "sha256": "84e93f5f6982060f9ca720b1ac01da4aed418c7c75d7ba4f4f82d54c1309bfe2",
+      "rgbSha256": "4ecd49cb53bd006af37169dac1233b324e103d6cb51df567b1cb90f6ea6a13e8",
+      "bytes": 98524
+    },
+    {
+      "id": "stage_18_2",
+      "stageName": "黑铁会翅虎堂内部",
+      "url": "assets/stage-select/previews/hd/stage_18_2-5e110214f596.webp",
+      "sha256": "5e110214f59622a0ced5bd78766ad3344f03815797fe8344ceb86084b6eb7758",
+      "rgbSha256": "3a314b0ee476d23e923422f1003809c28b8be2d0fe5fedd3b3a1446b5bb7d35b",
+      "bytes": 110078
+    },
+    {
+      "id": "stage_18_3",
+      "stageName": "黑铁会火凤堂外围",
+      "url": "assets/stage-select/previews/hd/stage_18_3-836c56a600be.webp",
+      "sha256": "836c56a600bed03fc1597921c7f255297f8551cd2f1986e35aaa37bd029f09af",
+      "rgbSha256": "bee893ff775a86b09e38c88b8f5954eae4a99144ea47af48e8abf656add5c7da",
+      "bytes": 81280
+    },
+    {
+      "id": "stage_18_4",
+      "stageName": "黑铁会火凤堂内部",
+      "url": "assets/stage-select/previews/hd/stage_18_4-daeac3e2c439.webp",
+      "sha256": "daeac3e2c43931c551e9b511adebed11d7df587577577b8b5108632f958d9f0e",
+      "rgbSha256": "a482141d02a45cf170563192ae8aae26c76950af47d3b7abf22dd34598972738",
+      "bytes": 119868
+    },
+    {
+      "id": "stage_18_5",
+      "stageName": "黑铁会黑龙堂外围",
+      "url": "assets/stage-select/previews/hd/stage_18_5-c27351122a3a.webp",
+      "sha256": "c27351122a3a7a708925137a307344a855310eb2cb1e922b9f27d7e482b74809",
+      "rgbSha256": "531a947b60da78629900c7a6c7c77d671329948e4cbbfb63329f7701b8888a03",
+      "bytes": 98484
+    },
+    {
+      "id": "stage_18_6",
+      "stageName": "黑铁会黑龙堂内部",
+      "url": "assets/stage-select/previews/hd/stage_18_6-5990c7c3211a.webp",
+      "sha256": "5990c7c3211ab23739eb95afdd5ccccd50de6771376307273fc1b21de3581f64",
+      "rgbSha256": "e2cfa91dbcaad2f3fbc9152ebdf57b421bf862b90146ac5ce4aee94764e80e76",
+      "bytes": 97020
+    },
+    {
+      "id": "stage_18_7",
+      "stageName": "黑铁会总堂外围",
+      "url": "assets/stage-select/previews/hd/stage_18_7-7dcc6d022497.webp",
+      "sha256": "7dcc6d022497e6ec153e0d6d8b406f8a48d93fa9b2c82d3a351e33eb3d1822df",
+      "rgbSha256": "ca0380989ca3fae1a6415395b34040b4775ac42559b8a35c1eb5817fa7331362",
+      "bytes": 108886
+    },
+    {
+      "id": "stage_18_8",
+      "stageName": "黑铁会总堂",
+      "url": "assets/stage-select/previews/hd/stage_18_8-a9298907baec.webp",
+      "sha256": "a9298907baec74a416d065b8a0f1b8d3ed88e406f169d0a00a4210d7885ad133",
+      "rgbSha256": "6b926364eb042662843c3b94e5bd0957400d694a12d5ae034c51581d919dc756",
+      "bytes": 129310
+    },
+    {
+      "id": "stage_18_9",
+      "stageName": "被攻击的黑铁会",
+      "url": "assets/stage-select/previews/hd/stage_18_9-ac578b26af69.webp",
+      "sha256": "ac578b26af69aecafc0e65ea4648c23be4aad9fadcb2e9d48ffdad77fb4c2421",
+      "rgbSha256": "205d192ca5afd9b563239aeef0af9222cb9fe4454038cbe7339343d6523c1eaa",
+      "bytes": 107202
+    },
+    {
+      "id": "stage_18_10",
+      "stageName": "外交-黑铁会修炼场",
+      "url": "assets/stage-select/previews/hd/stage_18_10-766eb746243b.webp",
+      "sha256": "766eb746243b90a48c5647aaff6e25a0f789780d2c6ee2d2c8a3c08688c1d538",
+      "rgbSha256": "9a7d0ad0aa3dff14172af4168639cd81d4d6891aa85c23c792247301a663dbe3",
+      "bytes": 115228
+    },
+    {
+      "id": "stage_25_0",
+      "stageName": "禁区边缘",
+      "url": "assets/stage-select/previews/hd/stage_25_0-15c421bf91ba.webp",
+      "sha256": "15c421bf91baf18a22b2196308f04f2e751abf9ed0afdcad536b4a177707f3e9",
+      "rgbSha256": "812762a5b371971f22cd5d16a31d4934998ed52130a2d334bf75c6aeaa1d2302",
+      "bytes": 145562
+    },
+    {
+      "id": "stage_25_1",
+      "stageName": "深入禁区",
+      "url": "assets/stage-select/previews/hd/stage_25_1-f380c62de369.webp",
+      "sha256": "f380c62de36987cc69b04cde23d4a1a2ebb436510fde6157c54d2539014b9fe7",
+      "rgbSha256": "02c978ad2d64f2cafa512a6c3fd6abef653a409f412b035e6a91b6ed62cbebfb",
+      "bytes": 172158
+    },
+    {
+      "id": "stage_25_2",
+      "stageName": "诺亚前线基地哨岗",
+      "url": "assets/stage-select/previews/hd/stage_25_2-d2da300eb85c.webp",
+      "sha256": "d2da300eb85c4122fbbf3544ed26a130fc71bd5320563695ab66ec34b09aba5a",
+      "rgbSha256": "f7e7387b17c712d15150539d99547d7560c0584c6b582471e76e91fcc40cef46",
+      "bytes": 79410
+    },
+    {
+      "id": "stage_25_3",
+      "stageName": "诺亚前线基地兵工厂",
+      "url": "assets/stage-select/previews/hd/stage_25_3-05b58d080446.webp",
+      "sha256": "05b58d080446c23e117925613fa4d85b1a39b7d13a9614111824739e6423973d",
+      "rgbSha256": "e5c4e31e4b571912cf5bbf6c24ff702bc60aa02d5a235dbba9b6a116ded5d17a",
+      "bytes": 122324
+    },
+    {
+      "id": "stage_25_4",
+      "stageName": "被偷袭的基地",
+      "url": "assets/stage-select/previews/hd/stage_25_4-029a399d45c0.webp",
+      "sha256": "029a399d45c0c5791a3efe7ee7baa31fd47615b82d5c3f4f67b55dc2752eeee5",
+      "rgbSha256": "507df73ef40a5a6671bdd0e183822348763c54c033a4c1f4459c36ac2083d647",
+      "bytes": 160588
+    },
+    {
+      "id": "stage_25_5",
+      "stageName": "菲尼克斯Lv16",
+      "url": "assets/stage-select/previews/hd/stage_25_5-14994d71d7ca.webp",
+      "sha256": "14994d71d7ca5c061682073470c9c5f4ede69b3cfaa8a2e8a5fda6ae744c6d8a",
+      "rgbSha256": "dd480f1a36f3fb55383599dd88b7e439ed18d3721df5518b83b2571e5822d767",
+      "bytes": 166064
+    },
+    {
+      "id": "stage_25_6",
+      "stageName": "锡蒙利Lv16",
+      "url": "assets/stage-select/previews/hd/stage_25_6-9a092f088934.webp",
+      "sha256": "9a092f088934754b14d25daca6c7150729812382c8245a61ac2c49de055264c2",
+      "rgbSha256": "850a115abdee78b298251d78ffe52e2ff723329b1fc34e542ba3b44bdfa66741",
+      "bytes": 115316
+    },
+    {
+      "id": "stage_25_7",
+      "stageName": "菲尼克斯Lv10",
+      "url": "assets/stage-select/previews/hd/stage_25_7-628fa88a7aa8.webp",
+      "sha256": "628fa88a7aa81c846f2700600ba5e461361d663a20c66220c2c3390130e7baa0",
+      "rgbSha256": "9abfe049632f9b8e95edf411d66dbeb12ffab57fbf0ee57b61b0b8641bea7c6b",
+      "bytes": 90686
+    },
+    {
+      "id": "stage_25_8",
+      "stageName": "锡蒙利Lv10",
+      "url": "assets/stage-select/previews/hd/stage_25_8-b02202e8b992.webp",
+      "sha256": "b02202e8b9923e589bb1c3eea881c328e526b98bc8c2cc32d857430a62cf6f90",
+      "rgbSha256": "41a97dea4108b8e3c140626c01646c30bb29da22cd3a0cda63a22edbbbec6cd8",
+      "bytes": 78996
+    },
+    {
+      "id": "stage_25_9",
+      "stageName": "被终结者占领的诺亚前线基地兵工厂",
+      "url": "assets/stage-select/previews/hd/stage_25_9-7971fb6d170e.webp",
+      "sha256": "7971fb6d170e32c26cd02cd4ca9060dd5a44308813adacbf715fa145067f74ec",
+      "rgbSha256": "8b50c30690fba1630b02bd3f633723ede8b71e81dcc28504aafdf49a404641a3",
+      "bytes": 120104
+    },
+    {
+      "id": "stage_25_10",
+      "stageName": "基地禁区边缘地带",
+      "url": "assets/stage-select/previews/hd/stage_25_10-e25ffddcee3c.webp",
+      "sha256": "e25ffddcee3c3da96e8f49b9018fb93934e7efb383e02fbd9a4c6ac5fd0d7902",
+      "rgbSha256": "7e43071f8892dba173d0d0783395f4c930527b5c232c7ceeb4b9b45bc38c7660",
+      "bytes": 168850
+    },
+    {
+      "id": "stage_25_11",
+      "stageName": "幸存者营地",
+      "url": "assets/stage-select/previews/hd/stage_25_11-cabc4fab07d1.webp",
+      "sha256": "cabc4fab07d1781c2b8d9feee7be224160973f10c6f0fc68745753db41bff33e",
+      "rgbSha256": "cfda9e39b57ff715e87353fa0efb27517c286b788b55b6311f0e9f1b70c6fa70",
+      "bytes": 83636
+    },
+    {
+      "id": "stage_25_12",
+      "stageName": "同盟卸货站",
+      "url": "assets/stage-select/previews/hd/stage_25_12-c4faa6fcfabf.webp",
+      "sha256": "c4faa6fcfabfe866c6790ca63874b5ab242f4c838adbe4c5cec992ec910e23e6",
+      "rgbSha256": "3bb16805f0521d2ed497ea18a271e7573207e351a74f833b8fab5f70f11c120d",
+      "bytes": 114152
+    },
+    {
+      "id": "stage_25_13",
+      "stageName": "核电站",
+      "url": "assets/stage-select/previews/hd/stage_25_13-47a6f1358fdd.webp",
+      "sha256": "47a6f1358fdd73b802e51117a7080a03915f32e9276d35d0e6162ca08c2e76d0",
+      "rgbSha256": "a7abb1cc2bdff82bbc58b0a50bc7ff95b5c2a5f97fa5078ca2eb883eee256e86",
+      "bytes": 89150
+    },
+    {
+      "id": "stage_34_0",
+      "stageName": "难民营地",
+      "url": "assets/stage-select/previews/hd/stage_34_0-ec52e3af18df.webp",
+      "sha256": "ec52e3af18dfb4b865b4f247a1654bf12aab141e8d16b554f366b45ed4958c1d",
+      "rgbSha256": "dbd02f3fcd411e9f5d7da47d6a879d1d66e36876b74736c8b3a705bd8d3dd3a0",
+      "bytes": 153096
+    },
+    {
+      "id": "stage_34_1",
+      "stageName": "军阀临时补给点",
+      "url": "assets/stage-select/previews/hd/stage_34_1-8a97ab3d3771.webp",
+      "sha256": "8a97ab3d3771010fbeac1363679d3ee60945eece75a9d850300be0654e69e091",
+      "rgbSha256": "8f27cf07bdf48baa870b5418ffc8858a137e23257db9d30fc0b5dd96ca218de4",
+      "bytes": 136956
+    },
+    {
+      "id": "stage_34_2",
+      "stageName": "残垣断壁",
+      "url": "assets/stage-select/previews/hd/stage_34_2-d91eeaeec678.webp",
+      "sha256": "d91eeaeec678e458958aabdfc8e221d4ab94bdf5abf79656af1f66b7c1e4757a",
+      "rgbSha256": "81c920531bc7accfd166812d819f4bf1d2ed67e9be508b53f85805e1b3844590",
+      "bytes": 143618
+    },
+    {
+      "id": "stage_34_3",
+      "stageName": "基地",
+      "url": "assets/stage-select/previews/hd/stage_34_3-00c16ce58589.webp",
+      "sha256": "00c16ce5858983c2a03ede88ac70de95e1caf4802214fed9c105102b752140f0",
+      "rgbSha256": "560224f91a71095cd190a5b8e8a53969c22a9863cb1e696e8970f11383586c4d",
+      "bytes": 141420
+    },
+    {
+      "id": "stage_34_4",
+      "stageName": "军阀据点",
+      "url": "assets/stage-select/previews/hd/stage_34_4-d6d52515cdb4.webp",
+      "sha256": "d6d52515cdb4453ee8cb8377df98140bad19554c01303264ba6d04d61023e5bb",
+      "rgbSha256": "03901cd0241fb1d3f10f57ff818856484d096888b19ba88dd2e132afa69b6ded",
+      "bytes": 168782
+    },
+    {
+      "id": "stage_34_5",
+      "stageName": "军阀前线基地",
+      "url": "assets/stage-select/previews/hd/stage_34_5-f566ec1589e3.webp",
+      "sha256": "f566ec1589e3cb5eaf45f8ff2b3c90438a67faa2ba288b0352ef9699572a3d59",
+      "rgbSha256": "c1d75c138ce31f39e0c67c4c641291738b303de4b07576c55f9232b7c1557ee8",
+      "bytes": 151516
+    },
+    {
+      "id": "stage_34_6",
+      "stageName": "军阀秘密基地",
+      "url": "assets/stage-select/previews/hd/stage_34_6-660f78afcb5b.webp",
+      "sha256": "660f78afcb5be7455b1ccfcdef255a1ddb29b6313c1b18bbbce58728868509a6",
+      "rgbSha256": "ae4da8fb73419097c7b2ee6e1daa30ecdeccd74edd3a904492ef8258bf466868",
+      "bytes": 103152
+    },
+    {
+      "id": "stage_34_7",
+      "stageName": "袭杀与圈套",
+      "url": "assets/stage-select/previews/hd/stage_34_7-3ba9f69fd5c8.webp",
+      "sha256": "3ba9f69fd5c8e1cfeb8c59d598332c540eeb01c7cd040343be4957c86ad794e5",
+      "rgbSha256": "bce44bebc8b5bed47e7072321f4208108dda7bd623518dedd2b4a06c52d54a60",
+      "bytes": 135106
+    },
+    {
+      "id": "stage_34_8",
+      "stageName": "虫洞外围",
+      "url": "assets/stage-select/previews/hd/stage_34_8-2e9b67891b22.webp",
+      "sha256": "2e9b67891b22f2907feb05d98bcbcb304031f9d59be0a4104d6b84be2f28e1fa",
+      "rgbSha256": "63a66f2c573dd753f7a01a187e5d98c5b2bdcb20951a8b256dcff9553698eff1",
+      "bytes": 111944
+    },
+    {
+      "id": "stage_34_9",
+      "stageName": "虫洞洞口",
+      "url": "assets/stage-select/previews/hd/stage_34_9-25ecb27a9de2.webp",
+      "sha256": "25ecb27a9de2463b1c4eb949eab8de25dfa27e9efccbe499981db1257d773c36",
+      "rgbSha256": "e3d79c8d3d17ba988c15d4b23ae64266ad639563f5744d5172b727894de24708",
+      "bytes": 101846
+    },
+    {
+      "id": "stage_34_10",
+      "stageName": "外交-军阀",
+      "url": "assets/stage-select/previews/hd/stage_34_10-7ee1d6e07b80.webp",
+      "sha256": "7ee1d6e07b80761c15f68f3bfc3045a2441e5f146bce0e34b8fb4fda3a359f02",
+      "rgbSha256": "59d916c820754cc43a8f81eee640ecd693246aa3b10e16813231b802e3488478",
+      "bytes": 182930
+    },
+    {
+      "id": "stage_59_0",
+      "stageName": "训练场",
+      "url": "assets/stage-select/previews/hd/stage_59_0-84043d22c262.webp",
+      "sha256": "84043d22c26251bb0e44e62c93e010687a7891ac7438d83193044d1d89de534a",
+      "rgbSha256": "7a33d71d76b75947d911f1bda276fa189cd295381f50779ab2b5ad5f05de9b66",
+      "bytes": 140468
+    },
+    {
+      "id": "stage_59_1",
+      "stageName": "试验场",
+      "url": "assets/stage-select/previews/hd/stage_59_1-7fee38ae9e0d.webp",
+      "sha256": "7fee38ae9e0d3d76240c6637518d0e6b3bc1a08fd13d25ce6b7370c7adc23ab8",
+      "rgbSha256": "b77330026d7bcb1db322b464b9439e2c8b7e8a773aa8475e225849b425e7fdc3",
+      "bytes": 157362
+    },
+    {
+      "id": "stage_59_2",
+      "stageName": "被摧毁的武器仓库",
+      "url": "assets/stage-select/previews/hd/stage_59_2-78c6713aa5a2.webp",
+      "sha256": "78c6713aa5a2910911c010d19263e28c295a2bfcedfd7f7e93f15bd8192acce2",
+      "rgbSha256": "ffdb9fdea9059e28a19d0d8c16323a8b36c9984825cb817f26cdec915c828431",
+      "bytes": 132822
+    },
+    {
+      "id": "stage_59_3",
+      "stageName": "防御地带",
+      "url": "assets/stage-select/previews/hd/stage_59_3-1c73773e1f40.webp",
+      "sha256": "1c73773e1f40ba3198afb97567c3769856a26525f1f0319380556c765ba322a0",
+      "rgbSha256": "392546be9748c2079b17af9a1abdbe9cb6cb431c74b2156cc009de9d5077acf9",
+      "bytes": 113698
+    },
+    {
+      "id": "stage_59_4",
+      "stageName": "被炸毁的防御地带",
+      "url": "assets/stage-select/previews/hd/stage_59_4-fd9ab88dbf5c.webp",
+      "sha256": "fd9ab88dbf5c71de61de06ad983dbb0616af563154e2106f8f9cb9bc90869480",
+      "rgbSha256": "1e8e3404b08c52b8feeaacb58a5f338da38a2011d10508fa126121dd5f64c88f",
+      "bytes": 165506
+    },
+    {
+      "id": "stage_59_5",
+      "stageName": "武器仓库",
+      "url": "assets/stage-select/previews/hd/stage_59_5-9c2473a9aa64.webp",
+      "sha256": "9c2473a9aa64a1f4809cb36ad78cc46e6170ee0463f493de610aefb86802583f",
+      "rgbSha256": "941fe2b8ffbd81874c4c8855b9870b0580c2933ca051975d6ef0e8b8d82c7d73",
+      "bytes": 130808
+    },
+    {
+      "id": "stage_59_6",
+      "stageName": "尸母巢穴",
+      "url": "assets/stage-select/previews/hd/stage_59_6-75b3f938165e.webp",
+      "sha256": "75b3f938165e51cac1557eb96795024c8277a6fae73cc235e65daeaef57e0243",
+      "rgbSha256": "66d9e96da1f73193664b3ae3c81d593099340c79648ec3b83a2a9d86b518c9ba",
+      "bytes": 137450
+    },
+    {
+      "id": "stage_59_7",
+      "stageName": "解救A兵团士兵",
+      "url": "assets/stage-select/previews/hd/stage_59_7-ff657d601ee7.webp",
+      "sha256": "ff657d601ee76296d5f87ad062a5b389c3b4006b005b089c2f76ee34942be22f",
+      "rgbSha256": "90a3624f102ffa9146948e6bea03e44c118e1e355fa9b092d9250bac837b0507",
+      "bytes": 134878
+    },
+    {
+      "id": "stage_59_8",
+      "stageName": "僵尸卫队",
+      "url": "assets/stage-select/previews/hd/stage_59_8-b69f953ddf9e.webp",
+      "sha256": "b69f953ddf9e14d5d5bfa33aa88cc139e5a0559bdc377a2bc091ec3ed85b9724",
+      "rgbSha256": "e7b4beea8c64591082579f5943211c2b856d73ab1ff6d9ddf62e114fa180ff99",
+      "bytes": 135394
+    },
+    {
+      "id": "stage_59_9",
+      "stageName": "研究院",
+      "url": "assets/stage-select/previews/hd/stage_59_9-873abebb9774.webp",
+      "sha256": "873abebb9774e875c27eab3b5c545608a36117b7e4d8a8f8580387aeb0a7fdbf",
+      "rgbSha256": "83257435a4770d2a00df170f0c26b2b6ee3f6c52c374bd6fdeb430f31476a0f1",
+      "bytes": 127774
+    },
+    {
+      "id": "stage_59_10",
+      "stageName": "虫洞",
+      "url": "assets/stage-select/previews/hd/stage_59_10-af09232eeb15.webp",
+      "sha256": "af09232eeb153483e198b242470edd08a0a53e28a6dbe14d1443e6942b9a791c",
+      "rgbSha256": "0bf6592d7e29e2c56b45657c348f71e223323583c637394dada697f23424b16b",
+      "bytes": 170452
+    },
+    {
+      "id": "stage_59_11",
+      "stageName": "被清扫的虫洞",
+      "url": "assets/stage-select/previews/hd/stage_59_11-031736490761.webp",
+      "sha256": "031736490761cabbae4762d9787a3ec8f64d2cfca5f56844d6cf0cfd059b405b",
+      "rgbSha256": "1ea9d3970361f4fc65b3fe3044b8fe76f5e16198fc99b39bfc08f2ae43afad76",
+      "bytes": 160266
+    },
+    {
+      "id": "stage_59_12",
+      "stageName": "初心者",
+      "url": "assets/stage-select/previews/hd/stage_59_12-ead367942240.webp",
+      "sha256": "ead3679422402a3c71f05672599840d51272b8a87a92c29026c71c281717362c",
+      "rgbSha256": "cf2eab6ae1a963592ee67038fe8bb5bcd577b8f88a946ab81e9b4e18c31126cd",
+      "bytes": 173678
+    },
+    {
+      "id": "stage_59_13",
+      "stageName": "指挥部外围",
+      "url": "assets/stage-select/previews/hd/stage_59_13-218a91461304.webp",
+      "sha256": "218a9146130429e37f9afe134482f7a102bd6b9c70c2b17333aca802538c3683",
+      "rgbSha256": "3ed0d87a19ea93a5d9304fe7d3af5126ae3fc89507d2c5f504707005c3c0d3d5",
+      "bytes": 96014
+    },
+    {
+      "id": "stage_59_14",
+      "stageName": "指挥部大厅",
+      "url": "assets/stage-select/previews/hd/stage_59_14-ccd5711745a8.webp",
+      "sha256": "ccd5711745a87cca3a817765d972648a2508ceb6eede75a183a8cd96b716c7a5",
+      "rgbSha256": "40c820296a001f8229e5d119d0ecccbef9f10b54acbd60c48d17dbd3adf26a45",
+      "bytes": 113016
+    },
+    {
+      "id": "stage_59_15",
+      "stageName": "决战之地",
+      "url": "assets/stage-select/previews/hd/stage_59_15-062fbf0f716f.webp",
+      "sha256": "062fbf0f716f3c7dbce3f19f40f02c398696410895ba36543f3d662753c2fc54",
+      "rgbSha256": "a7356ad5778d3bf337ed6244fd482a15d56e22b0f0886afc791cdbd54a5af7a6",
+      "bytes": 133022
+    },
+    {
+      "id": "stage_79_0",
+      "stageName": "雪地平原",
+      "url": "assets/stage-select/previews/hd/stage_79_0-fa91a5bd5353.webp",
+      "sha256": "fa91a5bd5353bb673da88d3a19661ce1ab722778f858f68bd9c5cc98da2c99f7",
+      "rgbSha256": "6ae16ab2e8a19f4e3d501ef3fb9c12fcd13e5acd1aac7bdc7c280e83e3bced5d",
+      "bytes": 124606
+    },
+    {
+      "id": "stage_79_1",
+      "stageName": "雪原坡地",
+      "url": "assets/stage-select/previews/hd/stage_79_1-0cff24aac35e.webp",
+      "sha256": "0cff24aac35e03a2213f0266e858009bbb69fb47d61cc72e0244b897ebd038ad",
+      "rgbSha256": "a615709d501e3b95d216cb51959ae3f784c1a5bef2c2d5bbccc0a0b4fa5797f3",
+      "bytes": 158280
+    },
+    {
+      "id": "stage_79_2",
+      "stageName": "雪原防御带",
+      "url": "assets/stage-select/previews/hd/stage_79_2-259de95f77b8.webp",
+      "sha256": "259de95f77b8f8b42b77809b0e089f9b1f2e82a451666f266ca2b6f6fb8bc4ed",
+      "rgbSha256": "6f0d5d1b2afbe1289fff6424f00c91c4bc504a99de3f38d31f844fd0c27a9447",
+      "bytes": 168002
+    },
+    {
+      "id": "stage_79_3",
+      "stageName": "雪原深处",
+      "url": "assets/stage-select/previews/hd/stage_79_3-dc5a320872c9.webp",
+      "sha256": "dc5a320872c92685322c4894a9ac6a64365aa6863a07510d778058906b858359",
+      "rgbSha256": "add3472ecc4fd5c90d3fe53af7e4d3174cc5d567aefa5a5b8153021ce76f71e0",
+      "bytes": 144846
+    },
+    {
+      "id": "stage_79_4",
+      "stageName": "雪原基地",
+      "url": "assets/stage-select/previews/hd/stage_79_4-8a8b631844b2.webp",
+      "sha256": "8a8b631844b222a74dda24e8aab45056cd87836d13e852ed8ea3f3ce920ecd15",
+      "rgbSha256": "f417e81da6900a78f709b92c5cf52677cf3316eff605fbd868ec45f2696b7d6e",
+      "bytes": 122090
+    },
+    {
+      "id": "stage_79_5",
+      "stageName": "冰雪之心",
+      "url": "assets/stage-select/previews/hd/stage_79_5-118964d312fd.webp",
+      "sha256": "118964d312fd91213e8c747051c85a5c2b305b7981d3555f8b7aefb463297840",
+      "rgbSha256": "67a29ecb756d8a6dda0e7b3b33749bd1c3da8c5e5781cc7bd432d42ba19bedb9",
+      "bytes": 136852
+    },
+    {
+      "id": "stage_79_6",
+      "stageName": "诺亚雪山",
+      "url": "assets/stage-select/previews/hd/stage_79_6-60c987949fb8.webp",
+      "sha256": "60c987949fb838a25d5ee6c73e0f81235122d2217393176c35af435ee69a2e4e",
+      "rgbSha256": "9b38041874c2d67f74d66f16ac3e6d3b1acab317d0d1ecb501d3c3706c14d32c",
+      "bytes": 138424
+    },
+    {
+      "id": "stage_79_7",
+      "stageName": "诺亚雪山山脚",
+      "url": "assets/stage-select/previews/hd/stage_79_7-3a473c04c8b8.webp",
+      "sha256": "3a473c04c8b8fd2339da980fe3422c89161f2f97286a7299b248c5169bc1aec6",
+      "rgbSha256": "4a9e09daeff8ba1bcf8ee77afaf5a5bcaaa15fc229d0805ed42788eb171d06c4",
+      "bytes": 155156
+    },
+    {
+      "id": "stage_79_8",
+      "stageName": "诺亚雪山部队",
+      "url": "assets/stage-select/previews/hd/stage_79_8-4ec8dccd3675.webp",
+      "sha256": "4ec8dccd3675aa55b985663761ac1895ec03a3aab27a592d0d6ce64dc303a497",
+      "rgbSha256": "2ae43776e1da0e9645f520a299dc0e8fcafb098b375b6ed716194b96af41749a",
+      "bytes": 162200
+    },
+    {
+      "id": "stage_79_9",
+      "stageName": "诺亚雪山山脊",
+      "url": "assets/stage-select/previews/hd/stage_79_9-b174159e0872.webp",
+      "sha256": "b174159e0872378cc1808ac9c9078b612fc9a10d5b2cb6203a180e871cced446",
+      "rgbSha256": "0864326f576b17592764f0630f6efdcd3e8f0210aed65b837c46b66cac02e0f5",
+      "bytes": 170314
+    },
+    {
+      "id": "stage_79_10",
+      "stageName": "诺亚精英部队",
+      "url": "assets/stage-select/previews/hd/stage_79_10-719ff6c89464.webp",
+      "sha256": "719ff6c89464068d400ca44f241feb23d5144d99bf290db72fa3fa8a76027128",
+      "rgbSha256": "9612377f7bc39f9e90860dae894f0188c72c4ba78a44e227d86f64ff4215d7b8",
+      "bytes": 134842
+    },
+    {
+      "id": "stage_79_11",
+      "stageName": "诺亚雪山山顶",
+      "url": "assets/stage-select/previews/hd/stage_79_11-12146f6686eb.webp",
+      "sha256": "12146f6686ebe9b1d4f6b089c3c02ef7bac4d5a3bc6d511ba29983530d5f6d8a",
+      "rgbSha256": "7d92768ea8efabf6bca884a323a2c2366b47f015aa85bc909de5e7373f63c26d",
+      "bytes": 155168
+    }
+  ]
+}

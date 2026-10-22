@@ -1,0 +1,65 @@
+{
+  "schema": "cf6-native-layer-input.v1",
+  "map": "A15",
+  "layer": "background",
+  "name": "CF6_A15_BG_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/parts/environment-a15-backdrop.svg",
+  "sourceSha256": "e4c7c4a206c6834ebff7abbe1e33f5f01cebaaf7507ee93b015f60881ee354ff",
+  "inputIndex": "tools/cf6-map-source/generated/map-input.json",
+  "inputIndexSha256": "056c50dd321debee3545d2988b891d140b07cfec864b5d461bd062e44d29ba95",
+  "extraction": "decode existing PNG/JPEG data URI bytes only; no image rasterization or modification",
+  "inputs": [
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-d453200c45c400bc8c656872.png",
+      "sha256": "d453200c45c400bc8c656872a4c31867ba711dacd8683cb5eb6e8daae4aca82e",
+      "bytes": 128795,
+      "pixels": [
+        693,
+        210
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sha256": "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6",
+      "bytes": 16955,
+      "pixels": [
+        189,
+        81
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-bd390a38e397a6693d65a032.png",
+      "sha256": "bd390a38e397a6693d65a0327552bc4e6692ed305bc6d612ac8c6856dcf20342",
+      "bytes": 995480,
+      "pixels": [
+        1113,
+        708
+      ]
+    }
+  ],
+  "textures": {
+    "d453200c45c400bc8c656872a4c31867ba711dacd8683cb5eb6e8daae4aca82e": {
+      "name": "intrinsic-d453200c45c400bc8c656872.png",
+      "pixels": [
+        693,
+        210
+      ]
+    },
+    "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6": {
+      "name": "intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "pixels": [
+        189,
+        81
+      ]
+    },
+    "bd390a38e397a6693d65a0327552bc4e6692ed305bc6d612ac8c6856dcf20342": {
+      "name": "intrinsic-bd390a38e397a6693d65a032.png",
+      "pixels": [
+        1113,
+        708
+      ]
+    }
+  },
+  "xfl": "flashswf/backgrounds/cf6/CF6_A15_BG_VectorCandidate01/CF6_A15_BG_VectorCandidate01.xfl",
+  "swf": "CF6_A15_BG_VectorCandidate01.swf"
+}

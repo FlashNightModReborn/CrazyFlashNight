@@ -1,0 +1,26 @@
+{
+  "checks": {
+    "sourceMatchesPriorAudit": true,
+    "a3ExitHasNineThreshold": true,
+    "a3ExitExplicitlyTargetsA4": true,
+    "exitGateBranchesResolveInsideDecodedWindow": true,
+    "exitFrame174IncomingChainEndsAtRealCode": true,
+    "bridgeIncomingChainEndsAtRealCode": true,
+    "a4IsRoot82World1737": true,
+    "a4HasMan1": true,
+    "loadIncomingChainEndsAtRealCode": true,
+    "enterFrameIncomingChainEndsAtRealCode": true,
+    "frontIncomingChainEndsAtRealCode": true,
+    "a4FrontIs1727Depth470": true,
+    "authoredPlayerPlacementHasNoClipActions": true,
+    "onlyLoadArithmeticGivesYMinus77Point2": true,
+    "onlyLoadArithmeticRejectsX": true,
+    "arrivalFramesOneTwoThreeRelocatePlayer": true,
+    "arrivalPlacementHasNoClipActions": true,
+    "playerDisabledFrame265HasEmptyDisplay": true,
+    "arrivalFrame122RestoresPlayerFrameOne": true
+  },
+  "allPassed": true,
+  "runtimeExecuted": false,
+  "productionModified": false
+}

@@ -1,0 +1,658 @@
+{
+  "stage": "a18",
+  "source_kind": "independent frozen native-coordinate SVG reuse and preserved original vectors/excluded bitmap content",
+  "newly_redrawn_bitmap_ids": [
+    1231,
+    1955,
+    1957,
+    1958,
+    1962,
+    1964,
+    1965,
+    1966,
+    1971
+  ],
+  "reused_bitmap_ids": [
+    1412,
+    1806,
+    1808,
+    1821
+  ],
+  "frozen_shape_ids": [
+    1410,
+    1436,
+    1437,
+    1438,
+    1439,
+    1440,
+    1441
+  ],
+  "frozen_manifest_verified": true,
+  "world_logical_dimensions": [
+    1550,
+    410
+  ],
+  "root_layers": [
+    {
+      "depth": 1,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        300.0,
+        75.0
+      ],
+      "placedAt": 178,
+      "id": 1956,
+      "characterId": 1956,
+      "role": "environment_root_layer",
+      "alphaZero": false,
+      "definition": {
+        "code": 2,
+        "size": 54,
+        "offset": 16069367,
+        "depth": 0
+      },
+      "bitmapDependencies": [
+        1955
+      ]
+    }
+  ],
+  "gameworld_placement": [
+    {
+      "matrix": [
+        1.000030517578125,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "placedAt": 178,
+      "id": 1977,
+      "name": "gameworld"
+    }
+  ],
+  "fixed_viewports": [
+    {
+      "name": "author",
+      "viewBox": [
+        0,
+        0,
+        600,
+        350
+      ],
+      "camera_world_translation": [
+        0,
+        0
+      ],
+      "root_camera_translation": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "middle",
+      "viewBox": [
+        0,
+        0,
+        600,
+        350
+      ],
+      "camera_world_translation": [
+        -475.0,
+        -30.0
+      ],
+      "root_camera_translation": [
+        0,
+        0
+      ]
+    },
+    {
+      "name": "right",
+      "viewBox": [
+        0,
+        0,
+        600,
+        350
+      ],
+      "camera_world_translation": [
+        -950,
+        -60
+      ],
+      "root_camera_translation": [
+        0,
+        0
+      ]
+    }
+  ],
+  "shape_replacements": [
+    {
+      "shape": 1413,
+      "viewBox": [
+        -99.05,
+        -40.6,
+        199.8,
+        117.5
+      ],
+      "replaced": [
+        {
+          "bitmap": 1412,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-31.5,-13.5)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1412,
+        65535
+      ]
+    },
+    {
+      "shape": 1809,
+      "viewBox": [
+        -22.5,
+        -22.5,
+        45.0,
+        45.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1808,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-22.5,-22.5)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1808,
+        65535
+      ]
+    },
+    {
+      "shape": 1866,
+      "viewBox": [
+        -188.15,
+        -227.45,
+        371.0,
+        232.79999999999998
+      ],
+      "replaced": [
+        {
+          "bitmap": 1806,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-188.15,-230.65)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1806
+      ]
+    },
+    {
+      "shape": 1867,
+      "viewBox": [
+        -39.35,
+        -49.15,
+        78.75,
+        98.25
+      ],
+      "replaced": [
+        {
+          "bitmap": 1806,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-183.0,-133.8)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1806
+      ]
+    },
+    {
+      "shape": 1892,
+      "viewBox": [
+        -242.0,
+        -208.35,
+        133.0,
+        162.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1821,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-242.0,-208.35)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1821,
+        65535
+      ]
+    },
+    {
+      "shape": 1956,
+      "viewBox": [
+        -300.0,
+        -75.0,
+        600.0,
+        200.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1955,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-300.0,-75.0)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1955,
+        65535
+      ]
+    },
+    {
+      "shape": 1959,
+      "viewBox": [
+        -702.0,
+        -209.0,
+        1732.9,
+        419.95
+      ],
+      "replaced": [
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,730.85,82.95)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,526.9,82.95)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,319.9,82.95)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,115.95,82.95)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,758.85,-44.0)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,554.9,-44.0)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,347.9,-44.0)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,143.95,-44.0)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-87.1,82.95)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-291.05,82.95)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-498.05,82.95)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-702.0,82.95)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-59.1,-44.0)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-263.05,-43.0)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-470.05,-44.0)"
+        },
+        {
+          "bitmap": 1957,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-674.0,-44.0)"
+        },
+        {
+          "bitmap": 1231,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-63.05,-209.0)"
+        },
+        {
+          "bitmap": 1958,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,414.95,-209.0)"
+        },
+        {
+          "bitmap": 1231,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,548.9,-209.0)"
+        },
+        {
+          "bitmap": 1231,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-674.0,-208.0)"
+        },
+        {
+          "bitmap": 1958,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-196.0,-209.0)"
+        }
+      ],
+      "retained_original_nonimage_markup": false,
+      "floor_seam_repair": {
+        "shape": 1959,
+        "bitmap": 1957,
+        "rephasedFillIndices": [
+          12,
+          14,
+          16,
+          18,
+          20,
+          22,
+          24,
+          26,
+          28,
+          30,
+          32,
+          34,
+          36,
+          38,
+          40,
+          42
+        ],
+        "phaseOrigin": [
+          -674.0,
+          -44.0
+        ],
+        "canvas": [
+          207,
+          128
+        ],
+        "latticeVectors": [
+          [
+            207,
+            0
+          ],
+          [
+            -28,
+            128
+          ]
+        ],
+        "geometryCorrections": [
+          {
+            "fillIndex": 16,
+            "change": "top y -43 to -44; bottom unchanged",
+            "maxDisplacementPx": 1,
+            "reason": "isolated source 1px cross-rail step"
+          }
+        ],
+        "originalFloorCoverageUnion": true,
+        "nonFloorClipsAndContentUnchanged": true,
+        "worldAndTimelineUnchanged": true,
+        "method": "single periodic phase inside exact floor-polygon union; interior clip cracks removed"
+      },
+      "original_bitmap_dependencies": [
+        1231,
+        1957,
+        1958,
+        65535
+      ]
+    },
+    {
+      "shape": 1963,
+      "viewBox": [
+        -342.0,
+        -170.0,
+        48.0,
+        30.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1962,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-342.0,-170.0)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1962,
+        65535
+      ]
+    },
+    {
+      "shape": 1967,
+      "viewBox": [
+        -23.0,
+        -151.0,
+        655.45,
+        66.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1964,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-20.0,-151.0)"
+        },
+        {
+          "bitmap": 1965,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-23.0,-111.0)"
+        },
+        {
+          "bitmap": 1966,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,601.45,-134.0)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1964,
+        1965,
+        1966,
+        65535
+      ]
+    },
+    {
+      "shape": 1972,
+      "viewBox": [
+        -26.0,
+        -44.5,
+        52.0,
+        89.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1971,
+          "matrix": "matrix(1.0,0.0,0.0,1.0,-26.0,-44.5)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1971,
+        65535
+      ]
+    },
+    {
+      "shape": 1973,
+      "viewBox": [
+        -51.3,
+        -58.25,
+        122.3,
+        96.0
+      ],
+      "replaced": [
+        {
+          "bitmap": 1971,
+          "matrix": "matrix(0.6821747,0.0,0.0,0.6821747,-51.3,-32.4)"
+        },
+        {
+          "bitmap": 1971,
+          "matrix": "matrix(0.6821747,0.0,0.0,0.6821747,16.05,-22.95)"
+        },
+        {
+          "bitmap": 1971,
+          "matrix": "matrix(0.6821747,0.0,0.0,0.6821747,35.5,-31.55)"
+        },
+        {
+          "bitmap": 1971,
+          "matrix": "matrix(0.6821747,0.0,0.0,0.6821747,-51.3,-58.25)"
+        },
+        {
+          "bitmap": 1971,
+          "matrix": "matrix(0.6821747,0.0,0.0,0.6821747,20.9,-56.2)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1971
+      ]
+    },
+    {
+      "shape": 1974,
+      "viewBox": [
+        -118.65,
+        -65.95,
+        236.10000000000002,
+        98.85
+      ],
+      "replaced": [
+        {
+          "bitmap": 1971,
+          "matrix": "matrix(0.0,-0.5043182,0.5043182,0.0,-136.9,15.75)"
+        },
+        {
+          "bitmap": 1971,
+          "matrix": "matrix(0.1287079,0.4803314,-0.4803314,0.1287079,117.9,-3.6)"
+        },
+        {
+          "bitmap": 1971,
+          "matrix": "matrix(0.1202698,0.4488525,-0.4488525,0.1202698,123.5,-22.25)"
+        },
+        {
+          "bitmap": 1971,
+          "matrix": "matrix(0.283844,-0.283844,0.283844,0.283844,-118.65,-58.55)"
+        },
+        {
+          "bitmap": 1971,
+          "matrix": "matrix(0.1151276,0.4296417,-0.4296417,0.1151276,95.85,-76.05)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1971
+      ]
+    },
+    {
+      "shape": 1975,
+      "viewBox": [
+        -181.35,
+        -34.4,
+        361.9,
+        63.599999999999994
+      ],
+      "replaced": [
+        {
+          "bitmap": 1971,
+          "matrix": "matrix(-0.2818756,-0.162735,0.1627502,-0.2818756,-150.0,37.9)"
+        },
+        {
+          "bitmap": 1971,
+          "matrix": "matrix(-0.2798767,0.0749969,-0.0749969,-0.2798767,151.55,40.9)"
+        },
+        {
+          "bitmap": 1971,
+          "matrix": "matrix(-0.2198944,0.1269531,-0.1269531,-0.2198944,183.5,10.2)"
+        },
+        {
+          "bitmap": 1971,
+          "matrix": "matrix(-0.0610809,-0.2279968,0.2280121,-0.0610809,-179.75,-26.55)"
+        },
+        {
+          "bitmap": 1971,
+          "matrix": "matrix(-0.2082672,0.0558014,-0.0558014,-0.2082672,185.95,-26.15)"
+        }
+      ],
+      "retained_original_nonimage_markup": true,
+      "floor_seam_repair": null,
+      "original_bitmap_dependencies": [
+        1971
+      ]
+    }
+  ],
+  "original_animation_frame_counts": {
+    "1433": 1,
+    "1442": 11,
+    "1968": 1,
+    "1976": 16,
+    "1868": 29,
+    "1616": 1,
+    "1617": 2,
+    "359": 1,
+    "360": 1,
+    "237": 1,
+    "254": 189,
+    "255": 14
+  },
+  "state_samples": [
+    {
+      "sprite": 1442,
+      "total_original_frames": 11,
+      "preview_sample_frames": [
+        1,
+        3,
+        6,
+        11
+      ],
+      "original_timeline_and_native_masks_unchanged": true
+    },
+    {
+      "sprite": 1976,
+      "total_original_frames": 16,
+      "preview_sample_frames": [
+        1,
+        3,
+        6,
+        8,
+        9,
+        10,
+        12,
+        15,
+        16
+      ],
+      "original_timeline_and_native_masks_unchanged": true
+    },
+    {
+      "sprite": 1868,
+      "total_original_frames": 29,
+      "preview_sample_frames": [
+        1,
+        10,
+        20,
+        29
+      ],
+      "original_timeline_and_native_masks_unchanged": true
+    }
+  ],
+  "preserved_original_bitmap_ids": [
+    239,
+    252
+  ],
+  "original_font_outline_shapes": [
+    1960,
+    1961
+  ],
+  "static_only": true,
+  "runtime_simulation": false,
+  "root_layers_stretched": false,
+  "panorama_note": "fixed root-author phase overview; fixed root 1956 covers only source 600x200 and is never repeated or stretched",
+  "full_frame_matrices_colors_clipDepth_retained": true
+}

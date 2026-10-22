@@ -134,6 +134,70 @@ public sealed class PlayerHudVisualTests
     }
 
     [Fact]
+    public void ShortNameStaysStationaryWhileOverflowingNameScrolls()
+    {
+        Assert.Equal(3.7f, PlayerHudBottomWidget.NameOffset(6600, 80f));
+        Assert.Equal(3.7f, PlayerHudBottomWidget.NameOffset(6600, PlayerHudBottomWidget.NameVisibleWidth));
+        Assert.True(PlayerHudBottomWidget.NameOffset(6600, PlayerHudBottomWidget.NameVisibleWidth + 10f) < -120f);
+    }
+
+    [Fact]
+    public void AmmoColorReflectsEmptyAndLowMagazineThresholdsWhilePreservingSpecialSources()
+    {
+        Assert.Equal(Color.FromArgb(204, 204, 204), PlayerHudBottomWidget.AmmoColor(null));
+        Assert.Equal(Color.FromArgb(204, 204, 204), PlayerHudBottomWidget.AmmoColor(new(30, 15, 15, 0, 0, 0, 60, 1.0, 0)));
+        Assert.Equal(Color.FromArgb(245, 172, 92), PlayerHudBottomWidget.AmmoColor(new(30, 6, 6, 0, 0, 0, 60, 1.0, 0)));
+        Assert.Equal(Color.FromArgb(242, 108, 92), PlayerHudBottomWidget.AmmoColor(new(30, 0, 0, 0, 0, 0, 60, 1.0, 0)));
+        Assert.Equal(Color.FromArgb(255, 204, 112), PlayerHudBottomWidget.AmmoColor(new(30, 1, 0, 0, 1, 0, 60, 1.0, 0)));
+        // Full magazines (e.g. 50 / 0, 60 / 0, 17 / 0, 1 / 0 when capacity is 1) stay neutral grey
+        Assert.Equal(Color.FromArgb(204, 204, 204), PlayerHudBottomWidget.AmmoColor(null, "50", 50));
+        Assert.Equal(Color.FromArgb(204, 204, 204), PlayerHudBottomWidget.AmmoColor(null, "60", 60));
+        Assert.Equal(Color.FromArgb(204, 204, 204), PlayerHudBottomWidget.AmmoColor(null, "17", 17));
+        Assert.Equal(Color.FromArgb(204, 204, 204), PlayerHudBottomWidget.AmmoColor(null, "1", 1));
+        // Low loaded rounds (<= 20% or last round of multi-shot magazine) turn warm amber
+        Assert.Equal(Color.FromArgb(245, 172, 92), PlayerHudBottomWidget.AmmoColor(null, "10", 50));
+        Assert.Equal(Color.FromArgb(245, 172, 92), PlayerHudBottomWidget.AmmoColor(null, "12", 60));
+        Assert.Equal(Color.FromArgb(245, 172, 92), PlayerHudBottomWidget.AmmoColor(null, "3", 17));
+        Assert.Equal(Color.FromArgb(245, 172, 92), PlayerHudBottomWidget.AmmoColor(null, "1", 2));
+        // Empty loaded rounds turn coral red
+        Assert.Equal(Color.FromArgb(242, 108, 92), PlayerHudBottomWidget.AmmoColor(null, "0", 50));
+    }
+
+    [Fact]
+    public void TerminalActionErrorFadesOutWhilePendingWriteMessagePersists()
+    {
+        RunOnSta(() =>
+        {
+            var root = FindRoot(); RuntimeFontCatalog.Configure(root);
+            using var owner = new Form { ClientSize = new Size(1024, 576) };
+            using var anchor = new Panel { Dock = DockStyle.Fill };
+            owner.Controls.Add(anchor); owner.CreateControl(); anchor.CreateControl();
+            var sent = new List<JObject>();
+            using var controller = new PlayerHudController(raw => { sent.Add(JObject.Parse(raw.TrimEnd('\0'))); return true; }, () => true, action => action());
+            var packet = PlayerHudStateTests.Full();
+            packet["groups"]["vitals"]["hp"][0] = 0;
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
+            using var bottom = new PlayerHudBottomWidget(anchor, controller, Path.Combine(root, "launcher", "web", "icons"));
+            var target = new PlayerHudTarget("drug", 0, "药剂0", 1, 4, 0, PlayerHudBottomWidget.DrugRect(0), controller.Generation);
+            Assert.True(controller.Act(target));
+            Assert.True(controller.WritePending);
+            // In-flight write message must not auto-fade
+            bottom.Tick(3000);
+            Assert.False(bottom.WantsAnimationTick);
+
+            var id = sent.Single(p => (string)p["action"] == "playerHudAction")["actionId"].Value<string>();
+            var errAck = new JObject { ["v"] = 1, ["result"] = new JObject { ["actionId"] = id, ["success"] = false, ["error"] = "bag_full", ["changed"] = false } };
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(errAck));
+            Assert.False(controller.WritePending);
+            Assert.NotEmpty(controller.Message);
+            Assert.True(bottom.WantsAnimationTick);
+
+            bottom.Tick(PlayerHudBottomWidget.MessageTotalMs);
+            Assert.False(bottom.WantsAnimationTick);
+        });
+    }
+
+    [Fact]
     public void AuthoredNameClockHoldsLeavesAndReenters()
     {
         Assert.Equal(3.7f, PlayerHudBottomWidget.NameOffset(0));

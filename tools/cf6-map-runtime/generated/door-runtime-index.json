@@ -1,0 +1,652 @@
+{
+  "schema": "cf6-door-native.v1",
+  "sourceManifestSha256": "321da4c5ea6bd729e011eb5fff59c2eac91bd693f6d486c96ca16b517a03bab0",
+  "timelineOwner": "Cf6MapMechanism; imported XFL must be finalized before publishing",
+  "sets": [
+    {
+      "id": "wood1714",
+      "name": "CF6_DoorWood1714",
+      "xfl": "flashswf/backgrounds/cf6/CF6_DoorWood1714/CF6_DoorWood1714.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_DoorWood1714.swf",
+      "frames": 9,
+      "viewBox": [
+        -85,
+        -100,
+        170,
+        240
+      ],
+      "inputs": [
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/wood1714/frame-001.png",
+          "sha256": "79180c033a1106785a1946449700977e19faf38799e2f9f67c7ae39273ca83de",
+          "bytes": 67320,
+          "sourceFrame": 1
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/wood1714/frame-002.png",
+          "sha256": "4b435bbd08348925dfb9baf52344d2cbf618410c65f58202d82a8ff0f055026b",
+          "bytes": 70001,
+          "sourceFrame": 2
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/wood1714/frame-003.png",
+          "sha256": "1ea82d76e3d58369ddfa148e82fc9220392503112c54037d0087572461b58938",
+          "bytes": 71724,
+          "sourceFrame": 3
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/wood1714/frame-004.png",
+          "sha256": "f898c009a9fed9c96cd7ebbeac45c30cf484695fe548d5c2ada1eba6bd4ebbd6",
+          "bytes": 39451,
+          "sourceFrame": 4
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/wood1714/frame-005.png",
+          "sha256": "f898c009a9fed9c96cd7ebbeac45c30cf484695fe548d5c2ada1eba6bd4ebbd6",
+          "bytes": 39451,
+          "sourceFrame": 5
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/wood1714/frame-006.png",
+          "sha256": "fce1f76a8cbbc40258d96946553774bfc1fa5127e2e1fb56b02f583f6e90c963",
+          "bytes": 54513,
+          "sourceFrame": 6
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/wood1714/frame-007.png",
+          "sha256": "e3bede52a5e68e51681fede4a54be19ffb46e1ef594c9a8d462acdddbfb583bc",
+          "bytes": 71805,
+          "sourceFrame": 7
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/wood1714/frame-008.png",
+          "sha256": "68e23f5092412fa510c289dfdb265399567eb12d94f6cb5627ad3aabdba96c66",
+          "bytes": 84597,
+          "sourceFrame": 8
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/wood1714/frame-009.png",
+          "sha256": "4b435bbd08348925dfb9baf52344d2cbf618410c65f58202d82a8ff0f055026b",
+          "bytes": 70001,
+          "sourceFrame": 9
+        }
+      ],
+      "behavior": "entry open-close pulse",
+      "excluded": "all inherited actions, actors, weapons, collision markers and transitions"
+    },
+    {
+      "id": "exit1720",
+      "name": "CF6_DoorExit1720",
+      "xfl": "flashswf/backgrounds/cf6/CF6_DoorExit1720/CF6_DoorExit1720.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_DoorExit1720.swf",
+      "frames": 50,
+      "viewBox": [
+        -85,
+        -100,
+        170,
+        240
+      ],
+      "inputs": [
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-001.png",
+          "sha256": "930214a3454f323a7a1ce4af93e9fbde9d1bcc410d1fdc166f7c7f05257cc069",
+          "bytes": 31834,
+          "sourceFrame": 1
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-002.png",
+          "sha256": "930214a3454f323a7a1ce4af93e9fbde9d1bcc410d1fdc166f7c7f05257cc069",
+          "bytes": 31834,
+          "sourceFrame": 2
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-003.png",
+          "sha256": "930214a3454f323a7a1ce4af93e9fbde9d1bcc410d1fdc166f7c7f05257cc069",
+          "bytes": 31834,
+          "sourceFrame": 3
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-004.png",
+          "sha256": "930214a3454f323a7a1ce4af93e9fbde9d1bcc410d1fdc166f7c7f05257cc069",
+          "bytes": 31834,
+          "sourceFrame": 4
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-005.png",
+          "sha256": "930214a3454f323a7a1ce4af93e9fbde9d1bcc410d1fdc166f7c7f05257cc069",
+          "bytes": 31834,
+          "sourceFrame": 5
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-006.png",
+          "sha256": "930214a3454f323a7a1ce4af93e9fbde9d1bcc410d1fdc166f7c7f05257cc069",
+          "bytes": 31834,
+          "sourceFrame": 6
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-007.png",
+          "sha256": "930214a3454f323a7a1ce4af93e9fbde9d1bcc410d1fdc166f7c7f05257cc069",
+          "bytes": 31834,
+          "sourceFrame": 7
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-008.png",
+          "sha256": "930214a3454f323a7a1ce4af93e9fbde9d1bcc410d1fdc166f7c7f05257cc069",
+          "bytes": 31834,
+          "sourceFrame": 8
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-009.png",
+          "sha256": "930214a3454f323a7a1ce4af93e9fbde9d1bcc410d1fdc166f7c7f05257cc069",
+          "bytes": 31834,
+          "sourceFrame": 9
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-010.png",
+          "sha256": "930214a3454f323a7a1ce4af93e9fbde9d1bcc410d1fdc166f7c7f05257cc069",
+          "bytes": 31834,
+          "sourceFrame": 10
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-011.png",
+          "sha256": "0c6ab86cbed09cf3ca6e82cd4950e8e17e4d66a46ec687ffb707e3044f5946d4",
+          "bytes": 31871,
+          "sourceFrame": 11
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-012.png",
+          "sha256": "f1246cc5c066b3a3f4be59329a445bbcc4ea01076c97178ddf4f5d0ff22ca06a",
+          "bytes": 30939,
+          "sourceFrame": 12
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-013.png",
+          "sha256": "97fdd4958df218fdf104cb6d1d810407bbd9f7397a4606850d79b056ff747762",
+          "bytes": 30881,
+          "sourceFrame": 13
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-014.png",
+          "sha256": "72b178a8d3f0c16448c944c18cf8e98574005d86519b7235b6fde954abd62e5e",
+          "bytes": 30581,
+          "sourceFrame": 14
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-015.png",
+          "sha256": "472c2cbeb9dee3ffa7ad24a3daca93a08ca1cd64fca318d9d7b093899d8b229e",
+          "bytes": 30597,
+          "sourceFrame": 15
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-016.png",
+          "sha256": "ec5598a125dfcbceaee5ca7824bd2d1eeaea4ea5e88c711a19e6523fe6bfa26a",
+          "bytes": 29931,
+          "sourceFrame": 16
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-017.png",
+          "sha256": "b63fc375ddb9fc9f561eb099ee5e525902befb05931b4453eb6b5bedc36687e3",
+          "bytes": 29243,
+          "sourceFrame": 17
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-018.png",
+          "sha256": "e099864c2f42edc406992e8e67a11e0375504f448f3503c36a30b7b690f74dc9",
+          "bytes": 29368,
+          "sourceFrame": 18
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-019.png",
+          "sha256": "4ca8e7639cbd2487fba6fb1b74e72913ac998b4daefe6daf85b7bfaba0cd9fec",
+          "bytes": 29230,
+          "sourceFrame": 19
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-020.png",
+          "sha256": "13c981cbbf3bc689d6b99bafbe067574baabbbf3030bb2d5b45b57c8ee208807",
+          "bytes": 28272,
+          "sourceFrame": 20
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-021.png",
+          "sha256": "d2ba708df6e1612d437ff780de7e8d8845cf72f2e6ecec471c194c8253c1eaf2",
+          "bytes": 27813,
+          "sourceFrame": 21
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-022.png",
+          "sha256": "9adb3793745abd07b6cebb4424c1533fb33b21c1973cd446b2e8845091af6b3d",
+          "bytes": 27129,
+          "sourceFrame": 22
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-023.png",
+          "sha256": "0869cc67c845a964ff593bf1f530a75787df3f6c957030b14a777701f6ff8df2",
+          "bytes": 26541,
+          "sourceFrame": 23
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-024.png",
+          "sha256": "f5446499a42568b938c80ff65fb82dca09449c61640d5d338fc23c52a7dd7536",
+          "bytes": 26454,
+          "sourceFrame": 24
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-025.png",
+          "sha256": "60414badc5248194323584ee920e9a98f80fa6ff137ea2b6e9e49c2998ab505c",
+          "bytes": 26340,
+          "sourceFrame": 25
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-026.png",
+          "sha256": "bef4bf4e9a7371ffed312258d4fa9528ad04a8515c8a27e75f57b7906ac06868",
+          "bytes": 25956,
+          "sourceFrame": 26
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-027.png",
+          "sha256": "22820ee58a9e0ed022f92cce186c885ee646b590d87c019def9ddb8ef555b475",
+          "bytes": 24980,
+          "sourceFrame": 27
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-028.png",
+          "sha256": "d17b1402508e14bed43082df1d9516aa32f350e278617a38211a3b5398c546d5",
+          "bytes": 25196,
+          "sourceFrame": 28
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-029.png",
+          "sha256": "610d947b4582c9c44f0d9d71c4bd835795d7e97238e6c85a6e3aa6a921bb3258",
+          "bytes": 24403,
+          "sourceFrame": 29
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-030.png",
+          "sha256": "a68e8a58d1e3e81857cc2e742e7e6c32ba002d4a2f05b2059599620eddb553dc",
+          "bytes": 23344,
+          "sourceFrame": 30
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-031.png",
+          "sha256": "a0ccd5dbbe2ad4b185267ae357245f1d34ebdc067762531e6fa9105def9ac756",
+          "bytes": 23193,
+          "sourceFrame": 31
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-032.png",
+          "sha256": "db9e406af58fe2b0ddea0f3bbc00d034d90b5884a6562e06840cfa3a5c8990f1",
+          "bytes": 22831,
+          "sourceFrame": 32
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-033.png",
+          "sha256": "e943a3b7f5f2dd31d1f6087f8c545a71b194c3746c7f28418d085cefec5cea5a",
+          "bytes": 22387,
+          "sourceFrame": 33
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-034.png",
+          "sha256": "5a905675cbdad108b4b43cba1e0318afbe5f6065e8b894831c8d89421ec00d91",
+          "bytes": 22122,
+          "sourceFrame": 34
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-035.png",
+          "sha256": "af097f7cd0f71828cc01e76604dce782c3dabade47796fd027a3293de6b05027",
+          "bytes": 21875,
+          "sourceFrame": 35
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-036.png",
+          "sha256": "30e1677a3960b04c51f856ac0c11e41f396840840cada0a1e3d37323078d8b3b",
+          "bytes": 21340,
+          "sourceFrame": 36
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-037.png",
+          "sha256": "865682085972a715927c6fed6664643eb07884536d8d80ece6946d39117de39c",
+          "bytes": 20865,
+          "sourceFrame": 37
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-038.png",
+          "sha256": "f3b8451287e8d49908d73a883599004f21635c3649a8a54451e7475867b926a4",
+          "bytes": 19882,
+          "sourceFrame": 38
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-039.png",
+          "sha256": "60b922a664b48309e794a0f43a0a8fb5bd1dca009948ca06fad10fef6fbd3f17",
+          "bytes": 19082,
+          "sourceFrame": 39
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-040.png",
+          "sha256": "87998850d7a77ee9abb35d1ed74e03b449e110436afeaada41fdfff3d141e194",
+          "bytes": 18977,
+          "sourceFrame": 40
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-041.png",
+          "sha256": "d0d45d412045066363a6053d4fd5e8a5003e323c8b0ccf145fd58840a6e172a9",
+          "bytes": 18689,
+          "sourceFrame": 41
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-042.png",
+          "sha256": "5abef544ab4686b9a4259049966f84ef3792e257b2881ba9e5daf831edc7fc3d",
+          "bytes": 17631,
+          "sourceFrame": 42
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-043.png",
+          "sha256": "b3292533fc6b3b2a91b3ac4801df8960b20daa23b6a810d8a7a3dfa87804e453",
+          "bytes": 17592,
+          "sourceFrame": 43
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-044.png",
+          "sha256": "bf79793d11f34218a3b245ab0d2d085243bcdf28c7273c235d682144b669b57e",
+          "bytes": 16891,
+          "sourceFrame": 44
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-045.png",
+          "sha256": "fe9eca5a422820899b1d1e82edec3cc78104530ba9dfa130ae1e48ab451cb9ef",
+          "bytes": 16776,
+          "sourceFrame": 45
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-046.png",
+          "sha256": "fe9eca5a422820899b1d1e82edec3cc78104530ba9dfa130ae1e48ab451cb9ef",
+          "bytes": 16776,
+          "sourceFrame": 46
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-047.png",
+          "sha256": "fe9eca5a422820899b1d1e82edec3cc78104530ba9dfa130ae1e48ab451cb9ef",
+          "bytes": 16776,
+          "sourceFrame": 47
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-048.png",
+          "sha256": "fe9eca5a422820899b1d1e82edec3cc78104530ba9dfa130ae1e48ab451cb9ef",
+          "bytes": 16776,
+          "sourceFrame": 48
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-049.png",
+          "sha256": "fe9eca5a422820899b1d1e82edec3cc78104530ba9dfa130ae1e48ab451cb9ef",
+          "bytes": 16776,
+          "sourceFrame": 49
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/exit1720/frame-050.png",
+          "sha256": "fe9eca5a422820899b1d1e82edec3cc78104530ba9dfa130ae1e48ab451cb9ef",
+          "bytes": 16776,
+          "sourceFrame": 50
+        }
+      ],
+      "behavior": "clear-only opening; terminal open frame",
+      "excluded": "all inherited actions, actors, weapons, collision markers and transitions"
+    },
+    {
+      "id": "grand1750",
+      "name": "CF6_DoorGrand1750",
+      "xfl": "flashswf/backgrounds/cf6/CF6_DoorGrand1750/CF6_DoorGrand1750.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_DoorGrand1750.swf",
+      "frames": 40,
+      "viewBox": [
+        -200,
+        -110,
+        400,
+        280
+      ],
+      "inputs": [
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-001.png",
+          "sha256": "00ab7f19b1a4c8dc7ea814846a77564b885e1cd1d8888311972b615bc57b8c62",
+          "bytes": 79817,
+          "sourceFrame": 1
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-002.png",
+          "sha256": "781666f8453c3fd03d0df9878399174b4688cbaa58527a6eb9461407debd4151",
+          "bytes": 97757,
+          "sourceFrame": 2
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-003.png",
+          "sha256": "103d9671e4915d3ef47e45b04e45bbb355b6baf3cea5b27124913a7e08479b22",
+          "bytes": 100208,
+          "sourceFrame": 3
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-004.png",
+          "sha256": "9e6fc79d27e9e6a9640014bf270c9f5f238bb8d56f850fec326351af812ebdf8",
+          "bytes": 103617,
+          "sourceFrame": 4
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-005.png",
+          "sha256": "a216d5432b237dbb68479dd345e6ee4ef7a0bc85d9ae8dbaa94fd30a0dffc77e",
+          "bytes": 105867,
+          "sourceFrame": 5
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-006.png",
+          "sha256": "87690f4b71d4f0b61d1e93c7d0d99e963af65c8a98f55b6d8c409600743109fc",
+          "bytes": 107352,
+          "sourceFrame": 6
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-007.png",
+          "sha256": "b81e62b076429fe940faf7261b0564e0cc232227d4f064fbfec272608f38d648",
+          "bytes": 108897,
+          "sourceFrame": 7
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-008.png",
+          "sha256": "451f3fe777cf30b1de76214d01a834e4947881f6ca4435af8f79b4bbbebe93c6",
+          "bytes": 110583,
+          "sourceFrame": 8
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-009.png",
+          "sha256": "734f21d77069957bb04464f6762025c193ce3dd5640f5e0205f56d0edb251fe5",
+          "bytes": 111738,
+          "sourceFrame": 9
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-010.png",
+          "sha256": "4c48600de779f860bf02471d4a19ab2cf266df674681b07e71879c43346a706e",
+          "bytes": 111931,
+          "sourceFrame": 10
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-011.png",
+          "sha256": "60374c9bddaea6abfc1f36ab880a738ad3495f951db52ccc70e37fa3105f481a",
+          "bytes": 113027,
+          "sourceFrame": 11
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-012.png",
+          "sha256": "77f0bffbf27d82c0bc2d87493d5d0275a296be5735516f971b71e0244a630f1b",
+          "bytes": 113679,
+          "sourceFrame": 12
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-013.png",
+          "sha256": "fffa3a7f626c5f7823c87c622e5c71455f41dd41134f4b40ad2ffc185b0ba33b",
+          "bytes": 114366,
+          "sourceFrame": 13
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-014.png",
+          "sha256": "336e5540c2f464be6b9e95be87044bd0a6417ba5d10a47c1236f8ae9299c6e83",
+          "bytes": 112534,
+          "sourceFrame": 14
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-015.png",
+          "sha256": "cbc76619eba876b2180d04683b2fa8b0f587efb09b5dbcea8f11956441f2249e",
+          "bytes": 114361,
+          "sourceFrame": 15
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-016.png",
+          "sha256": "fd2ad1e1d25c7e020c3ecbaef6a4da0d442fdeb9c4b5a2792099ffcbb28dffda",
+          "bytes": 114027,
+          "sourceFrame": 16
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-017.png",
+          "sha256": "2ff99ec5d77988c80bbdef06b4e60d6b1875f8e807355a8c6c12e913b8d4d8ae",
+          "bytes": 113818,
+          "sourceFrame": 17
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-018.png",
+          "sha256": "c650c81afd512b939ecca964137918d38b115f073d7576098353dcd445af8639",
+          "bytes": 115156,
+          "sourceFrame": 18
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-019.png",
+          "sha256": "2fbd77426351529c7f7ab06da612b1ceadcaf19137e1276b6c2ce5d18d5cc25c",
+          "bytes": 111596,
+          "sourceFrame": 19
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-020.png",
+          "sha256": "2cb86353fc11940e2f4a59afc425d122f0dee0e15031791d5e70fb6cc3df9f25",
+          "bytes": 111575,
+          "sourceFrame": 20
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-021.png",
+          "sha256": "df35db9fe3387ca5c4995d492cf0933d3761b181007c3cfbfd45d307b552d3d5",
+          "bytes": 114126,
+          "sourceFrame": 21
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-022.png",
+          "sha256": "be4b97fb363c889b4b82e6aacb0d8c5deed9a4c530c412fb042bdd7739de0efe",
+          "bytes": 112493,
+          "sourceFrame": 22
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-023.png",
+          "sha256": "1b41733b28942a98f8c51b68773f29d8bdb11fdd0c2687c771fd8bad0198bc7b",
+          "bytes": 112474,
+          "sourceFrame": 23
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-024.png",
+          "sha256": "65a785e55249eca79dfbba65a89328a7366708b24e4df7d30236ebc763dd2e77",
+          "bytes": 111233,
+          "sourceFrame": 24
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-025.png",
+          "sha256": "9559a3264e7adb718a17b13f42a88f7ee645b3677f5b958772dc29b25c5726ec",
+          "bytes": 110561,
+          "sourceFrame": 25
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-026.png",
+          "sha256": "e44dc83de216d021ca45a6a1e63763def48725e714d3ae4a90a36094e3ffffc7",
+          "bytes": 110506,
+          "sourceFrame": 26
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-027.png",
+          "sha256": "168716b392a821a7c3e5fd274cce466a1e2536785d492f5a905bc8bf89c76fd9",
+          "bytes": 104449,
+          "sourceFrame": 27
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-028.png",
+          "sha256": "cbf20ea9465278a4e8e25a1512f271b76dffef6492eba80ecf8a2823adca17c4",
+          "bytes": 108360,
+          "sourceFrame": 28
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-029.png",
+          "sha256": "254a54fa4f61378d1ef9e3ad96b1ef0f2b75894ee0309f1c7c929906bb551bef",
+          "bytes": 106930,
+          "sourceFrame": 29
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-030.png",
+          "sha256": "dab47740914003bb383b083ab15ecbdd723a1a667deb7ac516776bdae348b6d5",
+          "bytes": 106510,
+          "sourceFrame": 30
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-031.png",
+          "sha256": "1263055a174abc11324e4b7bb57ed964588edea65b6d0ad8b30e5944a40f66e5",
+          "bytes": 105552,
+          "sourceFrame": 31
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-032.png",
+          "sha256": "add5526a727a828c2f27e1fd25e68c7623a8a9f2489aa0ddd3a3b52ff9e62f67",
+          "bytes": 104609,
+          "sourceFrame": 32
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-033.png",
+          "sha256": "a535a0d82439f5f257bb866dc778a2db6794e015e7d4496bfef8cced0add3a1c",
+          "bytes": 102610,
+          "sourceFrame": 33
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-034.png",
+          "sha256": "0864fab6d8111866112111ced7484f944f456bb514d2ef854033e70bb6c0719a",
+          "bytes": 100632,
+          "sourceFrame": 34
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-035.png",
+          "sha256": "6f530a99d32cc512023456d384bea7665811723b00465b5fffd48c0089eb2365",
+          "bytes": 101883,
+          "sourceFrame": 35
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-036.png",
+          "sha256": "2c3ef79f6399e85de6a581b008d245ff0b5b7bc0cf3559ad07b3241f238a0915",
+          "bytes": 99317,
+          "sourceFrame": 36
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-037.png",
+          "sha256": "dfb6a11d39edb1533927f40ecdbf31702a03de91cb5c16ce9a43764e07e0df67",
+          "bytes": 99391,
+          "sourceFrame": 37
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-038.png",
+          "sha256": "4637b6b8aff1d8aee675b008ee971b60f85d335a854fa95d50f62deb3d7fca9d",
+          "bytes": 97871,
+          "sourceFrame": 38
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-039.png",
+          "sha256": "c9185ab103160e04ad018541bcd4e2159a2f5cf179fe9b626c1c77b05c8bd761",
+          "bytes": 96482,
+          "sourceFrame": 39
+        },
+        {
+          "path": "tools/cf6-map-runtime/assets/doors/grand1750/frame-040.png",
+          "sha256": "71a086ce7fd88c2d31089116973e330d2edf75829e9de4f33ee334076464bb8d",
+          "bytes": 94463,
+          "sourceFrame": 40
+        }
+      ],
+      "behavior": "clear-only opening; terminal open frame",
+      "excluded": "all inherited actions, actors, weapons, collision markers and transitions"
+    }
+  ]
+}

@@ -1,0 +1,3291 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="CF6A21/Codex/老头/变身/角色演出" itemID="6af60000-1c63dc75">
+  <timeline>
+    <DOMTimeline name="角色演出">
+      <layers>
+        <DOMLayer name="原生SFX调用" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="78">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="80" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="81" keyMode="9728" duration="10">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="91" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="92" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="CF7控制" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728" duration="91">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="92" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="身体内部时钟" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="93">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/行为驱动" name="elderBodyDriver">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="真实攻击区域" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="93">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_27" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="17">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.367126" b="-0.040787" c="0.040726" d="-0.367081" tx="43.6" ty="14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728" duration="70">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_26" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="17">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/955" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.006653" b="-0.370605" c="0.370605" d="-0.006653" tx="47.45" ty="-23.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728" duration="4">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/原始特效/1994" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" tx="-12.95" ty="44.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/原始特效/1995" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" tx="-12.95" ty="44.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728" duration="60">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_25" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="17">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.356781" b="-0.097641" c="0.097641" d="-0.356781" tx="4.85" ty="12.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.092804" b="-0.357117" c="0.357132" d="-0.092804" tx="12.95" ty="17.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.032135" b="-0.367401" c="0.367401" d="-0.032135" tx="17.8" ty="24.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.114166" b="-0.350235" c="0.350235" d="0.114166" tx="17.8" ty="24.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728" duration="21">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/原始特效/2000" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" tx="-12.95" ty="44.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="57" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/原始特效/2001" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" tx="-12.95" ty="44.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="60" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/原始特效/2002" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" tx="-12.95" ty="44.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="63" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/原始特效/2003" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" tx="-12.95" ty="44.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="66" keyMode="9728" duration="27">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_24" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="17">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.052277" b="-0.368744" c="0.368759" d="0.052277" tx="12.95" ty="-20.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.333099" b="-0.164581" c="0.164597" d="0.333099" tx="48.25" ty="8.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.355621" b="-0.106888" c="0.106888" d="0.355621" tx="54.1" ty="21.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.355621" b="-0.106888" c="0.106888" d="0.355621" tx="52.6" ty="35.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/原始特效/1996" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" tx="-12.95" ty="44.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/原始特效/1997" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" tx="-12.95" ty="44.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/原始特效/1998" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" tx="-12.95" ty="44.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/原始特效/1999" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.5" d="1.5" tx="-12.95" ty="44.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/988" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.314941" b="-0.190353" c="0.190369" d="0.314941" tx="17.6" ty="3.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="14">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_23" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="23">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.231033" b="-0.287155" c="0.287064" d="-0.231079" tx="49.15" ty="31.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.179993" b="-0.321396" c="0.321304" d="-0.180054" tx="51.35" ty="43.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.206451" b="-0.304688" c="0.304688" d="0.206451" tx="12.2" ty="33.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.238449" b="-0.280167" c="0.280197" d="0.238449" tx="14.3" ty="37.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.266876" b="-0.313583" c="0.313614" d="0.266876" tx="17.6" ty="42.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.265488" b="-0.39566" c="0.395691" d="0.265488" tx="26.05" ty="49.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.281479" b="-0.41951" c="0.41954" d="0.281479" tx="26.9" ty="52.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.297501" b="-0.44339" c="0.44342" d="0.297501" tx="27.7" ty="53.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/987" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.17569" b="-0.209442" c="0.209473" d="0.17569" tx="35.35" ty="58.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/987" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.202591" b="-0.309647" c="0.309677" d="0.202591" tx="55.7" ty="71.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="14">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_22" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="23">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/955" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.261734" b="-0.261307" c="0.261322" d="0.261734" tx="77.2" ty="8.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/955" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.301346" b="-0.214066" c="0.214081" d="0.301346" tx="82.75" ty="26"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.336349" b="0.155945" c="-0.15593" d="0.336349" tx="44.5" ty="53.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.317169" b="0.191696" c="-0.191681" d="0.317169" tx="44.3" ty="60.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.35498" b="0.214554" c="-0.214554" d="0.35498" tx="51.2" ty="67.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.43634" b="0.199844" c="-0.199829" d="0.43634" tx="68.05" ty="74.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.628967" b="0.288055" c="-0.28804" d="0.628967" tx="71.45" ty="78.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/986" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.310074" b="0.081116" c="-0.081116" d="0.310074" tx="74.2" ty="82.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/986" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.344681" b="0.133514" c="-0.133499" d="0.344681" tx="83.6" ty="89.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/986" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.369873" b="-0.013657" c="0.013672" d="0.369873" tx="120.65" ty="107.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="14">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_21" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="17">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/989" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.360535" b="0.096634" c="-0.096588" d="0.360535" tx="6.7" ty="-22"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/989" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.325333" b="0.182373" c="-0.182327" d="0.325363" tx="23.05" ty="-15.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728" duration="9">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/989" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.290359" b="0.23378" c="-0.233734" d="0.29039" tx="33.35" ty="-6.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728" duration="15">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/989" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.26297" b="0.264023" c="-0.263962" d="0.262985" tx="39.65" ty="-0.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/989" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.270706" b="0.255615" c="-0.255569" d="0.270706" tx="51.7" ty="6.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/989" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.291122" b="0.234406" c="-0.234344" d="0.291122" tx="55.85" ty="2.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/989" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.369125" b="0.061798" c="-0.061768" d="0.369095" tx="25.45" ty="-53.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/989" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.369125" b="0.061798" c="-0.061768" d="0.369095" tx="11.65" ty="-75.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_20" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="54">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.084381" b="0.364227" c="-0.364212" d="-0.084381" tx="-14.35" ty="117.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="14">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_19" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="54">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/982" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.034332" b="0.373306" c="-0.373306" d="0.034332" tx="-74.6" ty="101.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/988" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.370148" b="0.040283" c="-0.040283" d="0.370148" tx="-13" ty="-47"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/988" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.370148" b="0.040283" c="-0.040283" d="0.370148" tx="-26.8" ty="-68.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_18" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="54">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/981" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.372757" b="0.027832" c="-0.027832" d="0.372757" tx="-9.05" ty="68.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/987" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.038681" b="-0.371246" c="0.371277" d="0.038635" tx="-22.55" ty="21.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/987" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.038681" b="-0.371246" c="0.371277" d="0.038635" tx="-36.35" ty="-0.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_17" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="54">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.289383" b="0.237564" c="-0.237549" d="0.289383" tx="59.05" ty="59.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/986" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.373108" b="0.022324" c="-0.022308" d="0.373108" tx="55.7" ty="18.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/986" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.373108" b="0.022324" c="-0.022308" d="0.373108" tx="41.9" ty="-3.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_16" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.356827" b="0.097" c="-0.097046" d="-0.356781" tx="43.6" ty="14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.356827" b="0.097" c="-0.097046" d="-0.356781" tx="45.5" ty="14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.356827" b="0.097" c="-0.097046" d="-0.356781" tx="43.6" ty="14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.356827" b="0.097" c="-0.097046" d="-0.356781" tx="45.5" ty="14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.356827" b="0.097" c="-0.097046" d="-0.356781" tx="43.6" ty="14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.356827" b="0.097" c="-0.097046" d="-0.356781" tx="45.5" ty="14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.356827" b="0.097" c="-0.097046" d="-0.356781" tx="43.6" ty="14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.356827" b="0.097" c="-0.097046" d="-0.356781" tx="45.5" ty="14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.356827" b="0.097" c="-0.097046" d="-0.356781" tx="43.6" ty="14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="37">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/985" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.000778" b="-0.370987" c="0.371002" d="-0.000748" tx="53.3" ty="65.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/985" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.182693" b="-0.323502" c="0.323532" d="-0.182663" tx="53.9" ty="2.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/985" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.182693" b="-0.323502" c="0.323532" d="-0.182663" tx="40.1" ty="-19.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_15" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.246933" b="-0.278046" c="0.278046" d="-0.246933" tx="33.35" ty="-25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.246933" b="-0.278046" c="0.278046" d="-0.246933" tx="34" ty="-23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.246933" b="-0.278046" c="0.278046" d="-0.246933" tx="33.35" ty="-25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.246933" b="-0.278046" c="0.278046" d="-0.246933" tx="34" ty="-23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.246933" b="-0.278046" c="0.278046" d="-0.246933" tx="33.35" ty="-25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.246933" b="-0.278046" c="0.278046" d="-0.246933" tx="34" ty="-23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.246933" b="-0.278046" c="0.278046" d="-0.246933" tx="33.35" ty="-25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.246933" b="-0.278046" c="0.278046" d="-0.246933" tx="34" ty="-23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.246933" b="-0.278046" c="0.278046" d="-0.246933" tx="33.35" ty="-25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="37">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/984" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.36528" b="-0.069916" c="0.069931" d="0.36528" tx="90.4" ty="64.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/984" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.284576" b="-0.240234" c="0.240234" d="0.284576" tx="85.9" ty="-16.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/984" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.284576" b="-0.240234" c="0.240234" d="0.284576" tx="72.1" ty="-38.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_14" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.369888" b="0.016235" c="-0.01622" d="-0.369888" tx="4.75" ty="12.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.366486" b="0.051819" c="-0.051819" d="-0.366486" tx="7.7" ty="15.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.369888" b="0.016235" c="-0.01622" d="-0.369888" tx="4.75" ty="12.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.366486" b="0.051819" c="-0.051819" d="-0.366486" tx="7.7" ty="15.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.369888" b="0.016235" c="-0.01622" d="-0.369888" tx="4.75" ty="12.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.366486" b="0.051819" c="-0.051819" d="-0.366486" tx="7.7" ty="15.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.369888" b="0.016235" c="-0.01622" d="-0.369888" tx="4.75" ty="12.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.366486" b="0.051819" c="-0.051819" d="-0.366486" tx="7.7" ty="15.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.369888" b="0.016235" c="-0.01622" d="-0.369888" tx="4.75" ty="12.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.252945" b="-0.271317" c="0.271317" d="0.252914" tx="-22.3" ty="-9.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.311768" b="-0.200424" c="0.200455" d="0.311737" tx="-8.2" ty="-10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.34053" b="-0.145767" c="0.145798" d="0.34053" tx="1.6" ty="-6.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.361572" b="-0.079437" c="0.079468" d="0.361572" tx="1.6" ty="-6.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.36795" b="-0.039413" c="0.039444" d="0.36795" tx="8.15" ty="-3.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="39" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.411835" b="-0.044098" c="0.044128" d="0.411835" tx="10.75" ty="-3.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.467636" b="-0.104965" c="0.104996" d="0.467636" tx="12.2" ty="-2.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.495804" b="-0.111282" c="0.111313" d="0.495804" tx="12.2" ty="-2.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="48" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.524002" b="-0.117615" c="0.117645" d="0.524002" tx="12.2" ty="-4.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.577957" b="-0.062134" c="0.062195" d="0.577957" tx="25" ty="-1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="55.85" ty="41.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="28.55" ty="43"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_13" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.052277" b="-0.368744" c="0.368759" d="0.052277" tx="0.55" ty="-23.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.032059" b="-0.370789" c="0.370789" d="-0.032059" tx="0.95" ty="-19.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.052277" b="-0.368744" c="0.368759" d="0.052277" tx="0.55" ty="-23.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.032059" b="-0.370789" c="0.370789" d="-0.032059" tx="0.95" ty="-19.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.052277" b="-0.368744" c="0.368759" d="0.052277" tx="0.55" ty="-23.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.032059" b="-0.370789" c="0.370789" d="-0.032059" tx="0.95" ty="-19.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.052277" b="-0.368744" c="0.368759" d="0.052277" tx="0.55" ty="-23.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.032059" b="-0.370789" c="0.370789" d="-0.032059" tx="0.95" ty="-19.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/966" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.052277" b="-0.368744" c="0.368759" d="0.052277" tx="0.55" ty="-23.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="19">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/962" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.317688" b="0.197235" c="-0.19722" d="0.317688" tx="55.1" ty="60.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728" duration="18">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/962" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.282745" b="0.244431" c="-0.244415" d="0.282745" tx="55.1" ty="60.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.11586" b="0.355438" c="-0.355423" d="0.11586" tx="-18.7" ty="79.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.279968" b="0.248566" c="-0.248566" d="0.279968" tx="-32.5" ty="58"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_12" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.252945" b="-0.271317" c="0.271317" d="0.252914" tx="-22.3" ty="-9.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.233215" b="-0.288345" c="0.28833" d="0.233185" tx="-22.3" ty="-6.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.252945" b="-0.271317" c="0.271317" d="0.252914" tx="-22.3" ty="-9.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.233215" b="-0.288345" c="0.28833" d="0.233185" tx="-22.3" ty="-6.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.252945" b="-0.271317" c="0.271317" d="0.252914" tx="-22.3" ty="-9.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.233215" b="-0.288345" c="0.28833" d="0.233185" tx="-22.3" ty="-6.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.252945" b="-0.271317" c="0.271317" d="0.252914" tx="-22.3" ty="-9.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.233215" b="-0.288345" c="0.28833" d="0.233185" tx="-22.3" ty="-6.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.252945" b="-0.271317" c="0.271317" d="0.252914" tx="-22.3" ty="-9.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="19">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/962" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.129135" b="0.350815" c="-0.3508" d="-0.129105" tx="-22.25" ty="121.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728" duration="18">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/962" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.094528" b="0.361542" c="-0.361542" d="-0.094498" tx="-19.3" ty="120.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/982" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="-77.95" ty="104.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/982" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="-74.5" ty="103.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_11" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/963" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.344696" b="0.145096" c="-0.145081" d="0.344742" tx="5.15" ty="-22.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/963" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.32724" b="0.180862" c="-0.180862" d="0.327286" tx="6.25" ty="-20.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/963" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.344696" b="0.145096" c="-0.145081" d="0.344742" tx="5.15" ty="-22.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/963" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.32724" b="0.180862" c="-0.180862" d="0.327286" tx="6.25" ty="-20.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/963" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.344696" b="0.145096" c="-0.145081" d="0.344742" tx="5.15" ty="-22.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/963" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.32724" b="0.180862" c="-0.180862" d="0.327286" tx="6.25" ty="-20.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/963" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.344696" b="0.145096" c="-0.145081" d="0.344742" tx="5.15" ty="-22.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/963" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.32724" b="0.180862" c="-0.180862" d="0.327286" tx="6.25" ty="-20.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/963" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.344696" b="0.145096" c="-0.145081" d="0.344742" tx="5.15" ty="-22.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="19">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.013336" b="0.374725" c="-0.374725" d="-0.013336" tx="-77.6" ty="99.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728" duration="18">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.013336" b="0.374725" c="-0.374725" d="-0.013336" tx="-75.7" ty="103.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/982" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="16.1" ty="108.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/982" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="53.75" ty="104.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/982" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="26.45" ty="99.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_10" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="17">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/962" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.317688" b="0.197235" c="-0.19722" d="0.317688" tx="55.1" ty="60.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="19">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="20.65" ty="110.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728" duration="18">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.361404" b="0.098877" c="-0.098846" d="0.361404" tx="13.75" ty="106.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/981" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.372757" b="0.027832" c="-0.027832" d="0.372757" tx="-13.4" ty="30.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/981" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.372757" b="0.027832" c="-0.027832" d="0.372757" tx="-27.2" ty="8.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_9" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/962" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.129135" b="0.350815" c="-0.3508" d="-0.129105" tx="-22.25" ty="121.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/962" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.129135" b="0.350815" c="-0.3508" d="-0.129105" tx="-21.5" ty="121.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/962" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.129135" b="0.350815" c="-0.3508" d="-0.129105" tx="-22.25" ty="121.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/962" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.129135" b="0.350815" c="-0.3508" d="-0.129105" tx="-21.5" ty="121.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/962" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.129135" b="0.350815" c="-0.3508" d="-0.129105" tx="-22.25" ty="121.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/962" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.129135" b="0.350815" c="-0.3508" d="-0.129105" tx="-21.5" ty="121.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/962" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.129135" b="0.350815" c="-0.3508" d="-0.129105" tx="-22.25" ty="121.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/962" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.129135" b="0.350815" c="-0.3508" d="-0.129105" tx="-21.5" ty="121.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/962" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.129135" b="0.350815" c="-0.3508" d="-0.129105" tx="-22.25" ty="121.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="19">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.37114" b="0.050568" c="-0.050552" d="0.37114" tx="-17.6" ty="66.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728" duration="15">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.374359" b="-0.003571" c="0.003571" d="0.374359" tx="-17.6" ty="66.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.372208" b="0.03891" c="-0.03891" d="0.372208" tx="-12.7" ty="66.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/980" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.367844" b="0.071716" c="-0.071701" d="0.367844" tx="2.65" ty="62.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/980" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.367844" b="0.071716" c="-0.071701" d="0.367844" tx="-1.7" ty="24.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/980" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.367844" b="0.071716" c="-0.071701" d="0.367844" tx="-15.5" ty="2.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_8" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.013336" b="0.374725" c="-0.374725" d="-0.013336" tx="-77.6" ty="99.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.028198" b="0.373856" c="-0.373856" d="-0.028198" tx="-76.85" ty="99.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.013336" b="0.374725" c="-0.374725" d="-0.013336" tx="-77.6" ty="99.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.028198" b="0.373856" c="-0.373856" d="-0.028198" tx="-76.85" ty="99.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.013336" b="0.374725" c="-0.374725" d="-0.013336" tx="-77.6" ty="99.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.028198" b="0.373856" c="-0.373856" d="-0.028198" tx="-76.85" ty="99.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.013336" b="0.374725" c="-0.374725" d="-0.013336" tx="-77.6" ty="99.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.028198" b="0.373856" c="-0.373856" d="-0.028198" tx="-76.85" ty="99.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.013336" b="0.374725" c="-0.374725" d="-0.013336" tx="-77.6" ty="99.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="19">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="-8.15" ty="61.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728" duration="15">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.370697" b="0.055511" c="-0.055481" d="0.370697" tx="-8.15" ty="61.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.361893" b="0.097137" c="-0.097107" d="0.361893" tx="-2.6" ty="61.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/979" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.056549" b="-0.369614" c="0.369644" d="-0.05658" tx="9.35" ty="65.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/979" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.089661" b="-0.363022" c="0.363052" d="0.08963" tx="5" ty="26.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/979" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.277023" b="-0.252014" c="0.252045" d="0.277023" tx="-8.8" ty="5.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_7" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="17">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/961" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="20.65" ty="110.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/958" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.369873" b="0.060638" c="-0.060623" d="0.369873" tx="-8.35" ty="43.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/958" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.343262" b="0.149811" c="-0.149796" d="0.343262" tx="-7.75" ty="44.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728" duration="9">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/978" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.317551" b="0.196838" c="-0.196808" d="0.317551" tx="-5.15" ty="43.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728" duration="15">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/978" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.294022" b="0.230286" c="-0.230255" d="0.294022" tx="-4.1" ty="45.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/978" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2659" b="0.262054" c="-0.262024" d="0.2659" tx="3.1" ty="46.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/978" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.22316" b="0.300156" c="-0.300125" d="0.22316" tx="0.1" ty="41.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/978" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.342072" b="0.152573" c="-0.152542" d="0.342072" tx="-4.45" ty="7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/978" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.342072" b="0.152573" c="-0.152542" d="0.342072" tx="-18.25" ty="-14.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_6" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.37114" b="0.050568" c="-0.050552" d="0.37114" tx="-17.6" ty="66.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.372513" b="0.038849" c="-0.038834" d="0.372513" tx="-17.6" ty="65.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.37114" b="0.050568" c="-0.050552" d="0.37114" tx="-17.6" ty="66.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.372513" b="0.038849" c="-0.038834" d="0.372513" tx="-17.6" ty="65.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.37114" b="0.050568" c="-0.050552" d="0.37114" tx="-17.6" ty="66.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.372513" b="0.038849" c="-0.038834" d="0.372513" tx="-17.6" ty="65.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.37114" b="0.050568" c="-0.050552" d="0.37114" tx="-17.6" ty="66.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.372513" b="0.038849" c="-0.038834" d="0.372513" tx="-17.6" ty="65.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/960" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.37114" b="0.050568" c="-0.050552" d="0.37114" tx="-17.6" ty="66.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="34">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/957" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.029221" b="-0.37204" c="0.372055" d="-0.029266" tx="0.8" ty="63.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/957" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.013168" b="-0.372818" c="0.372833" d="0.013123" tx="5.95" ty="65.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="39">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_5" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="-8.15" ty="61.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="-8.15" ty="62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="-8.15" ty="61.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="-8.15" ty="62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="-8.15" ty="61.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="-8.15" ty="62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="-8.15" ty="61.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="-8.15" ty="62.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/959" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.375" d="0.375" tx="-8.15" ty="61.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="16">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.013885" b="-0.36763" c="0.367569" d="-0.014008" tx="39.7" ty="50.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728" duration="15">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.026367" b="-0.366821" c="0.36676" d="0.02623" tx="39.8" ty="56.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/956" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.06778" b="-0.361328" c="0.361298" d="0.067642" tx="45.4" ty="63.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="39">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_4" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/958" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.369873" b="0.060638" c="-0.060623" d="0.369873" tx="-8.35" ty="43.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/958" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.368408" b="0.068802" c="-0.068802" d="0.368408" tx="-8.35" ty="46"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/958" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.369873" b="0.060638" c="-0.060623" d="0.369873" tx="-8.35" ty="43.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/958" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.368408" b="0.068802" c="-0.068802" d="0.368408" tx="-8.35" ty="46"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/958" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.369873" b="0.060638" c="-0.060623" d="0.369873" tx="-8.35" ty="43.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/958" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.368408" b="0.068802" c="-0.068802" d="0.368408" tx="-8.35" ty="46"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/958" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.369873" b="0.060638" c="-0.060623" d="0.369873" tx="-8.35" ty="43.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/958" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.368408" b="0.068802" c="-0.068802" d="0.368408" tx="-8.35" ty="46"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/958" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.369873" b="0.060638" c="-0.060623" d="0.369873" tx="-8.35" ty="43.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="16">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/955" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.358139" b="-0.089859" c="0.089859" d="0.358139" tx="75.65" ty="50"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728" duration="15">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/955" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.365692" b="-0.05014" c="0.050156" d="0.365692" tx="75.55" ty="60.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/955" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.368866" b="-0.008331" c="0.008331" d="0.368866" tx="80.6" ty="70.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="39">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_3" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/957" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.029221" b="-0.37204" c="0.372055" d="-0.029266" tx="0.8" ty="63.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/957" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.047119" b="-0.370117" c="0.370132" d="-0.047165" tx="0.8" ty="65.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/957" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.029221" b="-0.37204" c="0.372055" d="-0.029266" tx="0.8" ty="63.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/957" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.047119" b="-0.370117" c="0.370132" d="-0.047165" tx="0.8" ty="65.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/957" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.029221" b="-0.37204" c="0.372055" d="-0.029266" tx="0.8" ty="63.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/957" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.047119" b="-0.370117" c="0.370132" d="-0.047165" tx="0.8" ty="65.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/957" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.029221" b="-0.37204" c="0.372055" d="-0.029266" tx="0.8" ty="63.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/957" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.047119" b="-0.370117" c="0.370132" d="-0.047165" tx="0.8" ty="65.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/957" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.029221" b="-0.37204" c="0.372055" d="-0.029266" tx="0.8" ty="63.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.220444" b="-0.299515" c="0.299515" d="0.220444" tx="12.25" ty="-8.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.306839" b="-0.209427" c="0.209427" d="0.306839" tx="25" ty="-0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.337189" b="-0.155426" c="0.155441" d="0.337189" tx="32.8" ty="8.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.368759" b="-0.039871" c="0.039871" d="0.368759" tx="32.8" ty="8.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="36" keyMode="9728" duration="15">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.370773" b="0.000687" c="-0.000687" d="0.370773" tx="37.55" ty="14.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.368179" b="0.04274" c="-0.042725" d="0.368179" tx="47.95" ty="20.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="39">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_2" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.220444" b="-0.299515" c="0.299515" d="0.220444" tx="12.25" ty="-8.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.205582" b="-0.309814" c="0.309814" d="0.205582" tx="12.25" ty="-5.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.220444" b="-0.299515" c="0.299515" d="0.220444" tx="12.25" ty="-8.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.205582" b="-0.309814" c="0.309814" d="0.205582" tx="12.25" ty="-5.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.220444" b="-0.299515" c="0.299515" d="0.220444" tx="12.25" ty="-8.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.205582" b="-0.309814" c="0.309814" d="0.205582" tx="12.25" ty="-5.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.220444" b="-0.299515" c="0.299515" d="0.220444" tx="12.25" ty="-8.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.205582" b="-0.309814" c="0.309814" d="0.205582" tx="12.25" ty="-5.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/954" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.220444" b="-0.299515" c="0.299515" d="0.220444" tx="12.25" ty="-8.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="37">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="54" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/977" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.371201" b="0.02243" c="-0.02243" d="0.371201" tx="53.95" ty="26.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/977" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.335068" b="-0.162521" c="0.162537" d="0.335068" tx="35.45" ty="-32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="85" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/分件/977" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.335068" b="-0.162521" c="0.162537" d="0.335068" tx="21.65" ty="-53.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="身体内接地阴影" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="93">
+              <elements>
+                <DOMSymbolInstance libraryItemName="CF6A21/Codex/老头/接地阴影" name="elderShadow">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

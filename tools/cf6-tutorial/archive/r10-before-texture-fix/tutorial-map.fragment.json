@@ -1,0 +1,82 @@
+{
+  "id": "TUTORIAL",
+  "title": "行动前训练",
+  "background": "cf6/CF6_Tutorial_BG.swf",
+  "mechanism": {
+    "kind": "exit",
+    "layers": []
+  },
+  "dialogue": [
+    {
+      "speaker": "Andy",
+      "text": "操作方法：WSAD控制移动，J为射击，K为换弹夹。空格为跳过对话。"
+    },
+    {
+      "speaker": "Andy",
+      "text": "长枪和刀已经在你的初始装备里，这里不再发枪。地面备有一份长枪弹药和一份急救包，走近执行拾取；状态良好时无需消耗。"
+    },
+    {
+      "speaker": "Andy",
+      "text": "熟悉操作后从右侧大门离开。门外就是A01第一现场，第一场战斗在那里开始。"
+    }
+  ],
+  "stage": {
+    "BasicInformation": {
+      "Background": "flashswf/backgrounds/cf6/CF6_Tutorial_BG.swf",
+      "PlayerX": 347.5,
+      "PlayerY": 270.5,
+      "EndFrame": "房间",
+      "BGM": {
+        "Command": "play",
+        "Title": "Moan",
+        "Loop": true
+      }
+    },
+    "Instances": {
+      "Instance": []
+    },
+    "SpawnPoint": {
+      "Point": []
+    },
+    "Pickups": {
+      "Pickup": [
+        {
+          "Name": "战场长枪弹药包",
+          "Value": 1,
+          "x": 431,
+          "y": 360
+        },
+        {
+          "Name": "战场复合急救包",
+          "Value": 1,
+          "x": 626,
+          "y": 409
+        }
+      ]
+    },
+    "Event": [
+      {
+        "EventName": "Start",
+        "Guidance": "引导-拾取",
+        "Message": "行动前训练：移动并切换初始长枪试射。靠近地面补给后执行拾取；药品或弹药已满时无需消耗。"
+      },
+      {
+        "EventName": "Clear",
+        "Message": "训练结束，右侧大门已经开放。走出去即进入A01第一现场，战斗教学由第一战承担。"
+      }
+    ],
+    "Wave": {
+      "SubWave": [
+        {
+          "WaveInformation": {
+            "Duration": 0,
+            "FinishRequirement": 0
+          },
+          "EnemyGroup": {
+            "Enemy": []
+          }
+        }
+      ]
+    }
+  }
+}

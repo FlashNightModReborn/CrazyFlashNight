@@ -1,0 +1,130 @@
+{
+  "bitmapReplacements": [
+    {
+      "id": 1701,
+      "png": "bitmap-1701.png",
+      "size": [
+        306,
+        251
+      ],
+      "originalBitmapFillMatrices": "unchanged"
+    },
+    {
+      "id": 1702,
+      "png": "bitmap-1702.png",
+      "size": [
+        228,
+        197
+      ],
+      "originalBitmapFillMatrices": "unchanged"
+    },
+    {
+      "id": 1704,
+      "png": "bitmap-1704.png",
+      "size": [
+        69,
+        94
+      ],
+      "originalBitmapFillMatrices": "unchanged"
+    },
+    {
+      "id": 1717,
+      "png": "bitmap-1717.png",
+      "size": [
+        101,
+        179
+      ],
+      "originalBitmapFillMatrices": "unchanged"
+    },
+    {
+      "id": 1724,
+      "png": "bitmap-1724.png",
+      "size": [
+        105,
+        178
+      ],
+      "originalBitmapFillMatrices": "unchanged"
+    },
+    {
+      "id": 1740,
+      "png": "bitmap-1740.png",
+      "size": [
+        65,
+        211
+      ],
+      "originalBitmapFillMatrices": "unchanged"
+    },
+    {
+      "id": 1742,
+      "png": "bitmap-1742.png",
+      "size": [
+        901,
+        145
+      ],
+      "originalBitmapFillMatrices": "unchanged"
+    },
+    {
+      "id": 1743,
+      "png": "bitmap-1743.png",
+      "size": [
+        72,
+        89
+      ],
+      "originalBitmapFillMatrices": "unchanged"
+    },
+    {
+      "id": 1746,
+      "png": "bitmap-1746.png",
+      "size": [
+        232,
+        176
+      ],
+      "originalBitmapFillMatrices": "unchanged"
+    }
+  ],
+  "background": {
+    "png": "background-1745.png",
+    "viewBox": [
+      -684.75,
+      -240.5,
+      1516.75,
+      483.3
+    ],
+    "worldPlacement": [
+      673.5,
+      207.1
+    ],
+    "includesWallLightsAndOriginalGlow": true
+  },
+  "foreground": {
+    "png": "foreground-1727.png",
+    "viewBox": [
+      111,
+      0.55,
+      1211.95,
+      178.75
+    ],
+    "cameraParallax": 1.2
+  },
+  "worldLogicalSize": [
+    1300,
+    450
+  ],
+  "viewport": [
+    600,
+    350
+  ],
+  "authoredPlayerLoadFormulaOnly": [
+    0,
+    -77.2
+  ],
+  "arrivalOverridesRealPlayer": [
+    1190.45,
+    231.4
+  ],
+  "initialRuntimeCamera": "unverified; arrival scripts change player position",
+  "grandDoor1750": "40 original frames, original depth, six static samples incl unchanged character",
+  "arrival1729": "174 original frames incl unchanged player and masks; seven static samples",
+  "crate1442": "approved material reused through original fragment clips; six static samples",
+  "runtime": "not imported; no realtime SVG or animation acceptance; use original bitmap fill pipeline where possible"
+}

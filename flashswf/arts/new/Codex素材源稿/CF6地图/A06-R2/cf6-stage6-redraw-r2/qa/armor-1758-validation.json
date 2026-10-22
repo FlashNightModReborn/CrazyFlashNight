@@ -1,0 +1,60 @@
+{
+  "bitmap_id": 1758,
+  "native_size": [
+    68,
+    195
+  ],
+  "viewBox": "0 0 68 195",
+  "render_1x": [
+    68,
+    195
+  ],
+  "render_4x": [
+    272,
+    780
+  ],
+  "editable_svg": true,
+  "embedded_raster_count": 0,
+  "external_resources": [],
+  "elements": {
+    "svg": 1,
+    "title": 1,
+    "desc": 1,
+    "defs": 1,
+    "linearGradient": 14,
+    "stop": 119,
+    "radialGradient": 6,
+    "clipPath": 3,
+    "path": 1486,
+    "g": 11,
+    "ellipse": 270
+  },
+  "source": "source/display_armor.py",
+  "svg_bytes": 222164,
+  "svg_sha256": "ac14d2a455eed11eabf665c598fa510fc7a795b8dea440d26bfefca10313af28",
+  "reference_alpha_iou_threshold_100": 0.90107,
+  "registration_preserved": "Native 68×195 origin, pose and handedness. Contour is a hand redraw; not a pixel-identical trace.",
+  "reviews": [
+    {
+      "round": 1,
+      "findings": [
+        "Green cast and broad reflection",
+        "Gauntlets too boxy",
+        "Central skirt edge too bright",
+        "Visor too tall"
+      ]
+    },
+    {
+      "round": 2,
+      "resolution": [
+        "Neutral black steel and local silver highlight",
+        "Smaller closed gauntlets, distinct wrist seams",
+        "Dark skirt centre with restrained flanking plates",
+        "Narrow disconnected eye slots with structural centre ridge"
+      ],
+      "independent_review": "No blocking disconnected joints. Candidate ready after softening right chest auxiliary reflection.",
+      "remaining_style_notes": "Elbows and sabatons are still cleaner and more angular than the tiny bitmap original."
+    }
+  ],
+  "rebuild": "python source/display_armor.py; uses Python 3 and Inkscape via source/svg_native.py; no network or bitmap embedding."
+}

@@ -1,0 +1,4348 @@
+{
+ "schema": "cf6-source-boundary-check-r8.v1",
+ "generatedBy": "tools/cf6-roguelike-content/placement-review/source-boundary-check.py (K3 content r8, read-only)",
+ "inputSha256": {
+  "data/stages/books/cf6-sting.json": "d79e716efab238b0d0730560df1d0945406c4e57befa92d3ae8e1886d45e9021",
+  "data/stages/books/cf6-sting-source/maps.fragment.json": "b47024d66ed716d8f5c7e834dfa60edec95268c15d0a61ae70e7d321f0ff31eb",
+  "data/environment/stage_environment.xml": "983fa55e361a6d5246522999672e19414e0c75e4de6e88a613624f7c4d7a51de",
+  "tools/cf6-map-runtime/generated/runtime-index.json": "7aafd2377cdd6f1aec96b311f2d34bfad32ddd53b372d2a7057c6851b63ee24a"
+ },
+ "sourceEvidence": {
+  "spawn_verbatim_xy": {
+   "file": "scripts/类定义/org/flashNight/arki/scene/WaveSpawner.as",
+   "lines": "353-416",
+   "claim": "spawnEnemy 对显式 x/y 原样写入 initObject._x/_y（as:412-413），全程无 clamp；仅 isNaN(x)||isNaN(y) 时才按 SpawnIndex 替换（数值→SpawnPoint，as:356-369；'left'/'right'→出生线随机整点，as:370-383）。显式 x/y 绝对优先于 SpawnIndex。",
+   "sha256": "313f35a1cc878073e532a349af260001932160f7130c175aa2b56f8e2803f17e"
+  },
+  "spawn_support_entry": {
+   "file": "scripts/类定义/org/flashNight/arki/scene/StageEvent.as",
+   "lines": "184-199",
+   "claim": "Cf6FiniteSupport 的 boss 支援怪与波次怪共用同一个 WaveSpawner.spawnEnemy 出口，SpawnIndex 与 x/y 语义一致。",
+   "sha256": "7f2b4343dc135c5634c00becc1267a53366a0a2b20935798f9cf13214df8a167"
+  },
+  "z_axis_from_y": {
+   "file": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+   "lines": "723",
+   "claim": "单位初始化 this.Z轴坐标 = this._y；无地面吸附、无行走带归位。",
+   "sha256": "c40304f7961c49e2aa8a13a5289d27a3004c729c76477933a44aef32844d53ed"
+  },
+  "boundary_ring_draw": {
+   "file": "scripts/类定义/org/flashNight/arki/collision/CollisionLayerRenderer.as",
+   "lines": "45-90",
+   "claim": "drawBoundary 以 [Xmin-300,Xmax+300]x[Ymin-300,Ymax+300] 外框减行走区内框绘制实心墙环；环内点 hitTest=true（碰撞），行走区内与环外（>300px）为 false。",
+   "sha256": "717e1427c53fc68c39fda4f7bb53efdbd53f110973880ac4a7d03ef67dab7c71"
+  },
+  "boundary_ring_margin": {
+   "file": "scripts/类定义/org/flashNight/arki/scene/SceneCollisionManager.as",
+   "lines": "98-114",
+   "claim": "redraw 显式以 margin=300 调 drawBoundary（坐标经 calculateOffset 换算到碰撞层空间，语义不变）。",
+   "sha256": "b5e72925fd0495932ea91bdd4551c1e7336c769de15462fe07a0e296c0d3007c"
+  },
+  "move_hit_test": {
+   "file": "scripts/类定义/org/flashNight/arki/spatial/move/Mover.as",
+   "lines": "134-158",
+   "claim": "move2D 仅当目标点 hitTest 为 false 才写 _x/_y；命中则转 resolveCollision，本步不走。",
+   "sha256": "08a3d298d0db1a9b98bad421b739b1b9071f718882d0c9b4813a958ca4f81807"
+  },
+  "resolve_push_in": {
+   "file": "scripts/类定义/org/flashNight/arki/spatial/move/Mover.as",
+   "lines": "384-426",
+   "claim": "resolveCollision：当前点已在碰撞内时，按 lerp(移动方向, 指向场景中心) 归一化向量以 max(speed,5) 步长挤出；两个分量在'单位于环内、目标在界内'场景下均指向界内，该条件下存在朝界内挤出的路径。它不保证单位发起移动、到达界内或可被命中；无精确 clamp。",
+   "sha256": "08a3d298d0db1a9b98bad421b739b1b9071f718882d0c9b4813a958ca4f81807"
+  },
+  "chase_z_seek": {
+   "file": "scripts/类定义/org/flashNight/arki/unit/UnitAI/behavior/CombatModule.as",
+   "lines": "136-148",
+   "claim": "追击未进入攻击距离且非 standby 时设置 上行/下行 = sign(diff_z)、左行/右行 = x 方向；AI 具有把界外单位沿 z/x 带回界内的方向性。",
+   "sha256": "b6e0a3bf520e6c5741b9849abf88c989eff23e09d13c6ed487808405405c8083"
+  },
+  "ai_ticks_offscreen": {
+   "file": "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/EventComponent/UpdateEventComponent.as",
+   "lines": "54-56,93-107",
+   "claim": "屏外剔除仅置 _visible=false（注释明言'仅控制渲染，不影响逻辑'）；unitAI.update() 无条件执行，界外单位 AI 照常 tick。",
+   "sha256": "9aa274bb5a3aa7f55757e42e80ceb7da25f2c2ced9bd1f01df18497982853c9c"
+  },
+  "no_spawn_depenetration": {
+   "file": "scripts/类定义/org/flashNight/arki/spatial/move/Mover.as",
+   "lines": "516-617",
+   "claim": "pushOutFromCollision/enforceScreenBounds 仅被主角过场景钩子、装备与主角/佣兵 AI 卡死脱困调用；普通敌人出生时刻无 depenetration，静止界外单位无任何代码修正其位置。",
+   "sha256": "08a3d298d0db1a9b98bad421b739b1b9071f718882d0c9b4813a958ca4f81807"
+  }
+ },
+ "boundaryMargin": 300.0,
+ "evidenceBoundary": "静态点/多边形几何 + 已核源码路径语义归类；未运行 Flash/CS6/游戏。boundary_ring 仅表示'移动时 resolveCollision 朝心挤出路径适用'；单位是否/何时移动（AI tick、standby/登场门、XFL 时间轴节律）及精确回界帧数只能实机确定。静止界外单位无任何逐帧代码修正其位置。",
+ "totals": {
+  "inside_walk": 129,
+  "boundary_ring": 4,
+  "beyond_ring": 0,
+  "engine_spawn_line": 39,
+  "engine_default": 1,
+  "no_env": 0,
+  "inside_collision_polygon": 0
+ },
+ "maps": {
+  "A01": {
+   "background": "CF6_A01_BG.swf",
+   "walkBounds": [
+    53.45,
+    155.85,
+    793.45,
+    455.85
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 6,
+    "bossSupport": 0,
+    "merchant": 1,
+    "spawnPoint": 4
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 320.9,
+      "y": 287.7,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       320.9,
+       287.7
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       155.85,
+       793.45,
+       455.85
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种461",
+      "Level": 35,
+      "x": 711.65,
+      "y": 316.05,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       711.65,
+       316.05
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       155.85,
+       793.45,
+       455.85
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][1]",
+      "Type": "兵种461",
+      "Level": 35,
+      "x": 620.45,
+      "y": 324.85,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       620.45,
+       324.85
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       155.85,
+       793.45,
+       455.85
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[1][0]",
+      "Type": "兵种461",
+      "Level": 35,
+      "x": null,
+      "y": null,
+      "SpawnIndex": 0,
+      "InstanceName": null,
+      "resolution": "spawnPoint[0] (WaveSpawner.as:356-369)",
+      "world": [
+       787.4,
+       328.95
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       155.85,
+       793.45,
+       455.85
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[2][0]",
+      "Type": "兵种461",
+      "Level": 35,
+      "x": null,
+      "y": null,
+      "SpawnIndex": 1,
+      "InstanceName": null,
+      "resolution": "spawnPoint[1] (WaveSpawner.as:356-369)",
+      "world": [
+       787.4,
+       328.95
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       155.85,
+       793.45,
+       455.85
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[3][0]",
+      "Type": "兵种461",
+      "Level": 35,
+      "x": null,
+      "y": null,
+      "SpawnIndex": 2,
+      "InstanceName": null,
+      "resolution": "spawnPoint[2] (WaveSpawner.as:356-369)",
+      "world": [
+       787.4,
+       328.95
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       155.85,
+       793.45,
+       455.85
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[4][0]",
+      "Type": "兵种461",
+      "Level": 35,
+      "x": null,
+      "y": null,
+      "SpawnIndex": 3,
+      "InstanceName": null,
+      "resolution": "spawnPoint[3] (WaveSpawner.as:356-369)",
+      "world": [
+       787.4,
+       328.95
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       155.85,
+       793.45,
+       455.85
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [],
+    "merchant": [
+     {
+      "ref": "Instance[0]",
+      "Identifier": "生存战-迷之盔甲君",
+      "x": 400.9,
+      "y": 287.7,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       400.9,
+       287.7
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       155.85,
+       793.45,
+       455.85
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "spawnPoint": [
+     {
+      "ref": "SpawnPoint[0]",
+      "x": 787.4,
+      "y": 328.95,
+      "QuantityMax": 5,
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false
+     },
+     {
+      "ref": "SpawnPoint[1]",
+      "x": 787.4,
+      "y": 328.95,
+      "QuantityMax": 5,
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false
+     },
+     {
+      "ref": "SpawnPoint[2]",
+      "x": 787.4,
+      "y": 328.95,
+      "QuantityMax": 5,
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false
+     },
+     {
+      "ref": "SpawnPoint[3]",
+      "x": 787.4,
+      "y": 328.95,
+      "QuantityMax": 5,
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false
+     }
+    ]
+   }
+  },
+  "A02": {
+   "background": "CF6_A02_BG.swf",
+   "walkBounds": [
+    93.45,
+    125.9,
+    1293.45,
+    475.9
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 9,
+    "bossSupport": 0,
+    "merchant": 0,
+    "spawnPoint": 0
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 134.95,
+      "y": 329.6,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       134.95,
+       329.6
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       93.45,
+       125.9,
+       1293.45,
+       475.9
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种468",
+      "Level": 37,
+      "x": 933.55,
+      "y": 243.8,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       933.55,
+       243.8
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       93.45,
+       125.9,
+       1293.45,
+       475.9
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][1]",
+      "Type": "兵种461",
+      "Level": 36,
+      "x": 684.25,
+      "y": 292.9,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       684.25,
+       292.9
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       93.45,
+       125.9,
+       1293.45,
+       475.9
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][2]",
+      "Type": "兵种461",
+      "Level": 36,
+      "x": 782.25,
+      "y": 343.8,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       782.25,
+       343.8
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       93.45,
+       125.9,
+       1293.45,
+       475.9
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][3]",
+      "Type": "兵种461",
+      "Level": 36,
+      "x": 871.95,
+      "y": 380.0,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       871.95,
+       380.0
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       93.45,
+       125.9,
+       1293.45,
+       475.9
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][4]",
+      "Type": "兵种468",
+      "Level": 37,
+      "x": 1033.55,
+      "y": 374.8,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1033.55,
+       374.8
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       93.45,
+       125.9,
+       1293.45,
+       475.9
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][5]",
+      "Type": "兵种461",
+      "Level": 36,
+      "x": 1128.95,
+      "y": 381.0,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1128.95,
+       381.0
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       93.45,
+       125.9,
+       1293.45,
+       475.9
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][6]",
+      "Type": "兵种461",
+      "Level": 36,
+      "x": 1096.25,
+      "y": 247.8,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1096.25,
+       247.8
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       93.45,
+       125.9,
+       1293.45,
+       475.9
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][7]",
+      "Type": "兵种462",
+      "Level": 36,
+      "x": 578.55,
+      "y": 309.0,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       578.55,
+       309.0
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       93.45,
+       125.9,
+       1293.45,
+       475.9
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][8]",
+      "Type": "兵种462",
+      "Level": 36,
+      "x": 927.55,
+      "y": 326.3,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       927.55,
+       326.3
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       93.45,
+       125.9,
+       1293.45,
+       475.9
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [],
+    "merchant": [],
+    "spawnPoint": []
+   }
+  },
+  "A03": {
+   "background": "CF6_A03_BG.swf",
+   "walkBounds": [
+    53.45,
+    183.65,
+    1253.45,
+    533.65
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 6,
+    "bossSupport": 0,
+    "merchant": 0,
+    "spawnPoint": 1
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 73.45,
+      "y": 353.65,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       73.45,
+       353.65
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.65,
+       1253.45,
+       533.65
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种468",
+      "Level": 38,
+      "x": 552.55,
+      "y": 437.75,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       552.55,
+       437.75
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.65,
+       1253.45,
+       533.65
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][1]",
+      "Type": "兵种461",
+      "Level": 37,
+      "x": 867.15,
+      "y": 297.15,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       867.15,
+       297.15
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.65,
+       1253.45,
+       533.65
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][2]",
+      "Type": "兵种461",
+      "Level": 37,
+      "x": 301.25,
+      "y": 337.15,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       301.25,
+       337.15
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.65,
+       1253.45,
+       533.65
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][3]",
+      "Type": "兵种461",
+      "Level": 37,
+      "x": 245.25,
+      "y": 401.15,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       245.25,
+       401.15
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.65,
+       1253.45,
+       533.65
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][4]",
+      "Type": "兵种462",
+      "Level": 37,
+      "x": 672.55,
+      "y": 369.25,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       672.55,
+       369.25
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.65,
+       1253.45,
+       533.65
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][5]",
+      "Type": "兵种468",
+      "Level": 38,
+      "x": null,
+      "y": null,
+      "SpawnIndex": 0,
+      "InstanceName": null,
+      "resolution": "spawnPoint[0] (WaveSpawner.as:356-369)",
+      "world": [
+       527.95,
+       244.55
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.65,
+       1253.45,
+       533.65
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [],
+    "merchant": [],
+    "spawnPoint": [
+     {
+      "ref": "SpawnPoint[0]",
+      "x": 527.95,
+      "y": 244.55,
+      "QuantityMax": 2,
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false
+     }
+    ]
+   }
+  },
+  "A04": {
+   "background": "CF6_A04_BG.swf",
+   "walkBounds": [
+    53.45,
+    183.4,
+    1253.45,
+    533.4
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 6,
+    "bossSupport": 0,
+    "merchant": 0,
+    "spawnPoint": 2
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 671.9,
+      "y": 260.35,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       671.9,
+       260.35
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.4,
+       1253.45,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种468",
+      "Level": 39,
+      "x": 1071.55,
+      "y": 405.0,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1071.55,
+       405.0
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.4,
+       1253.45,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][1]",
+      "Type": "兵种461",
+      "Level": 38,
+      "x": 248.55,
+      "y": 442.3,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       248.55,
+       442.3
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.4,
+       1253.45,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][2]",
+      "Type": "兵种462",
+      "Level": 38,
+      "x": 538.55,
+      "y": 366.5,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       538.55,
+       366.5
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.4,
+       1253.45,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][3]",
+      "Type": "兵种462",
+      "Level": 38,
+      "x": 900.55,
+      "y": 324.5,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       900.55,
+       324.5
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.4,
+       1253.45,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][4]",
+      "Type": "兵种468",
+      "Level": 39,
+      "x": null,
+      "y": null,
+      "SpawnIndex": 0,
+      "InstanceName": null,
+      "resolution": "spawnPoint[0] (WaveSpawner.as:356-369)",
+      "world": [
+       527.95,
+       244.3
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.4,
+       1253.45,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][5]",
+      "Type": "兵种461",
+      "Level": 38,
+      "x": null,
+      "y": null,
+      "SpawnIndex": 1,
+      "InstanceName": null,
+      "resolution": "spawnPoint[1] (WaveSpawner.as:356-369)",
+      "world": [
+       932.95,
+       244.3
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.4,
+       1253.45,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [],
+    "merchant": [],
+    "spawnPoint": [
+     {
+      "ref": "SpawnPoint[0]",
+      "x": 527.95,
+      "y": 244.3,
+      "QuantityMax": 2,
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false
+     },
+     {
+      "ref": "SpawnPoint[1]",
+      "x": 932.95,
+      "y": 244.3,
+      "QuantityMax": 5,
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false
+     }
+    ]
+   }
+  },
+  "A05": {
+   "background": "CF6_A05_BG.swf",
+   "walkBounds": [
+    61.25,
+    183.4,
+    1261.25,
+    533.4
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 7,
+    "bossSupport": 0,
+    "merchant": 0,
+    "spawnPoint": 0
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 1201.7,
+      "y": 264.8,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1201.7,
+       264.8
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       61.25,
+       183.4,
+       1261.25,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种468",
+      "Level": 40,
+      "x": 539.35,
+      "y": 420.0,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       539.35,
+       420.0
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       61.25,
+       183.4,
+       1261.25,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][1]",
+      "Type": "兵种461",
+      "Level": 39,
+      "x": 373.05,
+      "y": 294.3,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       373.05,
+       294.3
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       61.25,
+       183.4,
+       1261.25,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][2]",
+      "Type": "兵种468",
+      "Level": 40,
+      "x": 955.35,
+      "y": 304.0,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       955.35,
+       304.0
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       61.25,
+       183.4,
+       1261.25,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][3]",
+      "Type": "兵种468",
+      "Level": 40,
+      "x": 847.95,
+      "y": 390.0,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       847.95,
+       390.0
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       61.25,
+       183.4,
+       1261.25,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][4]",
+      "Type": "兵种461",
+      "Level": 39,
+      "x": 711.05,
+      "y": 400.3,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       711.05,
+       400.3
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       61.25,
+       183.4,
+       1261.25,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][5]",
+      "Type": "兵种461",
+      "Level": 39,
+      "x": 466.05,
+      "y": 277.3,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       466.05,
+       277.3
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       61.25,
+       183.4,
+       1261.25,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][6]",
+      "Type": "兵种462",
+      "Level": 39,
+      "x": 634.35,
+      "y": 387.5,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       634.35,
+       387.5
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       61.25,
+       183.4,
+       1261.25,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [],
+    "merchant": [],
+    "spawnPoint": []
+   }
+  },
+  "A06": {
+   "background": "CF6_A06_BG.swf",
+   "walkBounds": [
+    53.45,
+    183.4,
+    1503.45,
+    533.4
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 1,
+    "bossSupport": 15,
+    "merchant": 0,
+    "spawnPoint": 0
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 846.9,
+      "y": 442.1,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       846.9,
+       442.1
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.4,
+       1503.45,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种463",
+      "Level": 42,
+      "x": 863.05,
+      "y": 241.0,
+      "SpawnIndex": null,
+      "InstanceName": "cf6Boss_A06",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       863.05,
+       241.0
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.4,
+       1503.45,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [
+     {
+      "ref": "boss[0][0](hpRatio=1.0)",
+      "Type": "兵种461",
+      "Level": 40,
+      "x": 559.95,
+      "y": 296.9,
+      "SpawnIndex": "left",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       559.95,
+       296.9
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.4,
+       1503.45,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][1](hpRatio=1.0)",
+      "Type": "兵种461",
+      "Level": 40,
+      "x": 420.85,
+      "y": 291.7,
+      "SpawnIndex": "left",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       420.85,
+       291.7
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.4,
+       1503.45,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][2](hpRatio=1.0)",
+      "Type": "兵种461",
+      "Level": 40,
+      "x": 1267.85,
+      "y": 312.1,
+      "SpawnIndex": "right",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1267.85,
+       312.1
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.4,
+       1503.45,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][3](hpRatio=1.0)",
+      "Type": "兵种468",
+      "Level": 40,
+      "x": 1276.65,
+      "y": 404.5,
+      "SpawnIndex": "right",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1276.65,
+       404.5
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.4,
+       1503.45,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][4](hpRatio=1.0)",
+      "Type": "兵种468",
+      "Level": 40,
+      "x": 369.75,
+      "y": 413.6,
+      "SpawnIndex": "left",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       369.75,
+       413.6
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.4,
+       1503.45,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][5](hpRatio=1.0)",
+      "Type": "兵种466",
+      "Level": 41,
+      "x": 8.45,
+      "y": 338.8,
+      "SpawnIndex": "left",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       8.45,
+       338.8
+      ],
+      "zone": "boundary_ring",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.4,
+       1503.45,
+       533.4
+      ],
+      "distOutside": {
+       "left": 45.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][6](hpRatio=1.0)",
+      "Type": "兵种466",
+      "Level": 41,
+      "x": 1495.15,
+      "y": 338.8,
+      "SpawnIndex": "right",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1495.15,
+       338.8
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       53.45,
+       183.4,
+       1503.45,
+       533.4
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[1][0](hpRatio=0.8)",
+      "Type": "兵种466",
+      "Level": 41,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[1][1](hpRatio=0.8)",
+      "Type": "兵种466",
+      "Level": 41,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[2][0](hpRatio=0.6)",
+      "Type": "兵种466",
+      "Level": 41,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[2][1](hpRatio=0.6)",
+      "Type": "兵种466",
+      "Level": 41,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[3][0](hpRatio=0.4)",
+      "Type": "兵种466",
+      "Level": 41,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[3][1](hpRatio=0.4)",
+      "Type": "兵种466",
+      "Level": 41,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[4][0](hpRatio=0.2)",
+      "Type": "兵种466",
+      "Level": 41,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[4][1](hpRatio=0.2)",
+      "Type": "兵种466",
+      "Level": 41,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     }
+    ],
+    "merchant": [],
+    "spawnPoint": []
+   }
+  },
+  "A08": {
+   "background": "CF6_A08_BG.swf",
+   "walkBounds": [
+    50.0,
+    150.0,
+    1250.0,
+    500.0
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 0,
+    "bossSupport": 0,
+    "merchant": 1,
+    "spawnPoint": 0
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 240.55,
+      "y": 268.3,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       240.55,
+       268.3
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       50.0,
+       150.0,
+       1250.0,
+       500.0
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [],
+    "bossSupport": [],
+    "merchant": [
+     {
+      "ref": "Instance[0]",
+      "Identifier": "生存战-迷之盔甲君",
+      "x": 240.55,
+      "y": 313.3,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       240.55,
+       313.3
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       50.0,
+       150.0,
+       1250.0,
+       500.0
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "spawnPoint": []
+   }
+  },
+  "A09": {
+   "background": "CF6_A09_BG.swf",
+   "walkBounds": [
+    325.95,
+    199.2,
+    1425.95,
+    539.2
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 5,
+    "bossSupport": 0,
+    "merchant": 0,
+    "spawnPoint": 1
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 367.2,
+      "y": 320.7,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       367.2,
+       320.7
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       325.95,
+       199.2,
+       1425.95,
+       539.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种466",
+      "Level": 45,
+      "x": 660.45,
+      "y": 331.9,
+      "SpawnIndex": null,
+      "InstanceName": "elite_e1",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       660.45,
+       331.9
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       325.95,
+       199.2,
+       1425.95,
+       539.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][1]",
+      "Type": "兵种468",
+      "Level": 44,
+      "x": 602.05,
+      "y": 412.4,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       602.05,
+       412.4
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       325.95,
+       199.2,
+       1425.95,
+       539.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][2]",
+      "Type": "兵种461",
+      "Level": 44,
+      "x": 1298.35,
+      "y": 371.7,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1298.35,
+       371.7
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       325.95,
+       199.2,
+       1425.95,
+       539.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][3]",
+      "Type": "兵种461",
+      "Level": 44,
+      "x": 1300.25,
+      "y": 460.7,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1300.25,
+       460.7
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       325.95,
+       199.2,
+       1425.95,
+       539.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[1][0]",
+      "Type": "兵种467",
+      "Level": 45,
+      "x": null,
+      "y": null,
+      "SpawnIndex": 0,
+      "InstanceName": null,
+      "resolution": "spawnPoint[0] (WaveSpawner.as:356-369)",
+      "world": [
+       972.45,
+       309.5
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       325.95,
+       199.2,
+       1425.95,
+       539.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [],
+    "merchant": [],
+    "spawnPoint": [
+     {
+      "ref": "SpawnPoint[0]",
+      "x": 972.45,
+      "y": 309.5,
+      "QuantityMax": 2,
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false
+     }
+    ]
+   }
+  },
+  "A10": {
+   "background": "CF6_A10_BG.swf",
+   "walkBounds": [
+    150.0,
+    310.0,
+    550.0,
+    370.0
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 2,
+    "bossSupport": 0,
+    "merchant": 0,
+    "spawnPoint": 0
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 222.5,
+      "y": 338.55,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       222.5,
+       338.55
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       150.0,
+       310.0,
+       550.0,
+       370.0
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种469",
+      "Level": 45,
+      "x": 468.0,
+      "y": 344.7,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       468.0,
+       344.7
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       150.0,
+       310.0,
+       550.0,
+       370.0
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][1]",
+      "Type": "兵种461",
+      "Level": 45,
+      "x": 381.1,
+      "y": 353.2,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       381.1,
+       353.2
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       150.0,
+       310.0,
+       550.0,
+       370.0
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [],
+    "merchant": [],
+    "spawnPoint": []
+   }
+  },
+  "A11": {
+   "background": "CF6_A11_BG.swf",
+   "walkBounds": [
+    337.95,
+    255.75,
+    1277.95,
+    605.75
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 1,
+    "bossSupport": 0,
+    "merchant": 1,
+    "spawnPoint": 0
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 1041.45,
+      "y": 354.8,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1041.45,
+       354.8
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       255.75,
+       1277.95,
+       605.75
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种462",
+      "Level": 46,
+      "x": 1219.05,
+      "y": 476.85,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1219.05,
+       476.85
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       255.75,
+       1277.95,
+       605.75
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [],
+    "merchant": [
+     {
+      "ref": "Instance[0]",
+      "Identifier": "生存战-迷之盔甲君",
+      "x": 1041.45,
+      "y": 399.8,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1041.45,
+       399.8
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       255.75,
+       1277.95,
+       605.75
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "spawnPoint": []
+   }
+  },
+  "A12": {
+   "background": "CF6_A12_BG.swf",
+   "walkBounds": [
+    325.95,
+    199.2,
+    1615.95,
+    539.2
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 6,
+    "bossSupport": 0,
+    "merchant": 0,
+    "spawnPoint": 1
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 1509.5,
+      "y": 356.45,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1509.5,
+       356.45
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       325.95,
+       199.2,
+       1615.95,
+       539.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种469",
+      "Level": 47,
+      "x": 621.05,
+      "y": 385.6,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       621.05,
+       385.6
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       325.95,
+       199.2,
+       1615.95,
+       539.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][1]",
+      "Type": "兵种466",
+      "Level": 48,
+      "x": 656.15,
+      "y": 477.8,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       656.15,
+       477.8
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       325.95,
+       199.2,
+       1615.95,
+       539.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][2]",
+      "Type": "兵种469",
+      "Level": 47,
+      "x": 516.05,
+      "y": 382.6,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       516.05,
+       382.6
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       325.95,
+       199.2,
+       1615.95,
+       539.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][3]",
+      "Type": "兵种468",
+      "Level": 47,
+      "x": 467.05,
+      "y": 480.6,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       467.05,
+       480.6
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       325.95,
+       199.2,
+       1615.95,
+       539.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][4]",
+      "Type": "兵种466",
+      "Level": 48,
+      "x": 704.15,
+      "y": 374.5,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       704.15,
+       374.5
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       325.95,
+       199.2,
+       1615.95,
+       539.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][5]",
+      "Type": "兵种461",
+      "Level": 47,
+      "x": null,
+      "y": null,
+      "SpawnIndex": 0,
+      "InstanceName": null,
+      "resolution": "spawnPoint[0] (WaveSpawner.as:356-369)",
+      "world": [
+       893.45,
+       264.9
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       325.95,
+       199.2,
+       1615.95,
+       539.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [],
+    "merchant": [],
+    "spawnPoint": [
+     {
+      "ref": "SpawnPoint[0]",
+      "x": 893.45,
+      "y": 264.9,
+      "QuantityMax": 3,
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false
+     }
+    ]
+   }
+  },
+  "A13": {
+   "background": "CF6_A13_BG.swf",
+   "walkBounds": [
+    150.0,
+    310.0,
+    550.0,
+    370.0
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 1,
+    "bossSupport": 0,
+    "merchant": 0,
+    "spawnPoint": 0
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 222.5,
+      "y": 338.55,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       222.5,
+       338.55
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       150.0,
+       310.0,
+       550.0,
+       370.0
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种467",
+      "Level": 49,
+      "x": 463.8,
+      "y": 338.5,
+      "SpawnIndex": null,
+      "InstanceName": "elite_e2",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       463.8,
+       338.5
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       150.0,
+       310.0,
+       550.0,
+       370.0
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [],
+    "merchant": [],
+    "spawnPoint": []
+   }
+  },
+  "A14": {
+   "background": "CF6_A14_BG.swf",
+   "walkBounds": [
+    337.95,
+    257.1,
+    1787.95,
+    597.1
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 3,
+    "bossSupport": 0,
+    "merchant": 0,
+    "spawnPoint": 1
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 558.85,
+      "y": 340.4,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       558.85,
+       340.4
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       257.1,
+       1787.95,
+       597.1
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种466",
+      "Level": 51,
+      "x": 1595.45,
+      "y": 402.2,
+      "SpawnIndex": null,
+      "InstanceName": "elite_e3",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1595.45,
+       402.2
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       257.1,
+       1787.95,
+       597.1
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][1]",
+      "Type": "兵种467",
+      "Level": 51,
+      "x": 1593.45,
+      "y": 549.2,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1593.45,
+       549.2
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       257.1,
+       1787.95,
+       597.1
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[1][0]",
+      "Type": "兵种469",
+      "Level": 50,
+      "x": null,
+      "y": null,
+      "SpawnIndex": 0,
+      "InstanceName": null,
+      "resolution": "spawnPoint[0] (WaveSpawner.as:356-369)",
+      "world": [
+       1396.35,
+       392.2
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       257.1,
+       1787.95,
+       597.1
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [],
+    "merchant": [],
+    "spawnPoint": [
+     {
+      "ref": "SpawnPoint[0]",
+      "x": 1396.35,
+      "y": 392.2,
+      "QuantityMax": 2,
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false
+     }
+    ]
+   }
+  },
+  "A15": {
+   "background": "CF6_A15_BG.swf",
+   "walkBounds": [
+    337.95,
+    237.6,
+    1787.95,
+    577.6
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 1,
+    "bossSupport": 0,
+    "merchant": 0,
+    "spawnPoint": 0
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 473.9,
+      "y": 486.4,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       473.9,
+       486.4
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       237.6,
+       1787.95,
+       577.6
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种460",
+      "Level": 50,
+      "x": null,
+      "y": null,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "engine default spawn semantics (WaveSpawner.as:404-408)",
+      "zone": "engine_default"
+     }
+    ],
+    "bossSupport": [],
+    "merchant": [],
+    "spawnPoint": []
+   }
+  },
+  "A16": {
+   "background": "CF6_A16_BG.swf",
+   "walkBounds": [
+    337.95,
+    269.2,
+    1257.95,
+    519.2
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 0,
+    "bossSupport": 0,
+    "merchant": 1,
+    "spawnPoint": 0
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 561.85,
+      "y": 447.35,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       561.85,
+       447.35
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       269.2,
+       1257.95,
+       519.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [],
+    "bossSupport": [],
+    "merchant": [
+     {
+      "ref": "Instance[0]",
+      "Identifier": "生存战-迷之盔甲君",
+      "x": 641.85,
+      "y": 447.35,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       641.85,
+       447.35
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       269.2,
+       1257.95,
+       519.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "spawnPoint": []
+   }
+  },
+  "A17": {
+   "background": "CF6_A17_BG.swf",
+   "walkBounds": [
+    337.95,
+    329.2,
+    1787.95,
+    599.2
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 1,
+    "bossSupport": 16,
+    "merchant": 0,
+    "spawnPoint": 0
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 951.8,
+      "y": 368.25,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       951.8,
+       368.25
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       329.2,
+       1787.95,
+       599.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种472",
+      "Level": 57,
+      "x": 963.55,
+      "y": 305.9,
+      "SpawnIndex": null,
+      "InstanceName": "cf6Boss_A17",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       963.55,
+       305.9
+      ],
+      "zone": "boundary_ring",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       329.2,
+       1787.95,
+       599.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 23.30000000000001,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [
+     {
+      "ref": "boss[0][0](hpRatio=1.0)",
+      "Type": "兵种467",
+      "Level": 56,
+      "x": 449.05,
+      "y": 451.8,
+      "SpawnIndex": "left",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       449.05,
+       451.8
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       329.2,
+       1787.95,
+       599.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][1](hpRatio=1.0)",
+      "Type": "兵种465",
+      "Level": 56,
+      "x": 400.75,
+      "y": 507.7,
+      "SpawnIndex": "left",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       400.75,
+       507.7
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       329.2,
+       1787.95,
+       599.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][2](hpRatio=1.0)",
+      "Type": "兵种465",
+      "Level": 56,
+      "x": 1584.15,
+      "y": 527.6,
+      "SpawnIndex": "right",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1584.15,
+       527.6
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       329.2,
+       1787.95,
+       599.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][3](hpRatio=1.0)",
+      "Type": "兵种469",
+      "Level": 56,
+      "x": 535.65,
+      "y": 547.7,
+      "SpawnIndex": "left",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       535.65,
+       547.7
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       329.2,
+       1787.95,
+       599.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][4](hpRatio=1.0)",
+      "Type": "兵种461",
+      "Level": 55,
+      "x": 1653.35,
+      "y": 468.8,
+      "SpawnIndex": "right",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1653.35,
+       468.8
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       329.2,
+       1787.95,
+       599.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][5](hpRatio=1.0)",
+      "Type": "兵种460",
+      "Level": 55,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[0][6](hpRatio=1.0)",
+      "Type": "兵种469",
+      "Level": 56,
+      "x": 291.95,
+      "y": 449.1,
+      "SpawnIndex": "left",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       291.95,
+       449.1
+      ],
+      "zone": "boundary_ring",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       329.2,
+       1787.95,
+       599.2
+      ],
+      "distOutside": {
+       "left": 46.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][7](hpRatio=1.0)",
+      "Type": "兵种469",
+      "Level": 56,
+      "x": 1834.85,
+      "y": 495.5,
+      "SpawnIndex": "right",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1834.85,
+       495.5
+      ],
+      "zone": "boundary_ring",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       337.95,
+       329.2,
+       1787.95,
+       599.2
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 46.899999999999864,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[1][0](hpRatio=0.8)",
+      "Type": "兵种469",
+      "Level": 56,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[1][1](hpRatio=0.8)",
+      "Type": "兵种469",
+      "Level": 56,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[2][0](hpRatio=0.6)",
+      "Type": "兵种469",
+      "Level": 56,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[2][1](hpRatio=0.6)",
+      "Type": "兵种469",
+      "Level": 56,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[3][0](hpRatio=0.4)",
+      "Type": "兵种469",
+      "Level": 56,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[3][1](hpRatio=0.4)",
+      "Type": "兵种469",
+      "Level": 56,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[4][0](hpRatio=0.2)",
+      "Type": "兵种469",
+      "Level": 56,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[4][1](hpRatio=0.2)",
+      "Type": "兵种469",
+      "Level": 56,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     }
+    ],
+    "merchant": [],
+    "spawnPoint": []
+   }
+  },
+  "A18": {
+   "background": "CF6_A18_BG.swf",
+   "walkBounds": [
+    78.5,
+    167.45,
+    1578.5,
+    417.45
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 8,
+    "bossSupport": 0,
+    "merchant": 0,
+    "spawnPoint": 1
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 101.0,
+      "y": 246.0,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       101.0,
+       246.0
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种467",
+      "Level": 59,
+      "x": 931.6,
+      "y": 351.65,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       931.6,
+       351.65
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][1]",
+      "Type": "兵种464",
+      "Level": 59,
+      "x": 1022.9,
+      "y": 343.35,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1022.9,
+       343.35
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][2]",
+      "Type": "兵种461",
+      "Level": 57,
+      "x": 464.9,
+      "y": 244.55,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       464.9,
+       244.55
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][3]",
+      "Type": "兵种461",
+      "Level": 57,
+      "x": 487.9,
+      "y": 300.55,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       487.9,
+       300.55
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][4]",
+      "Type": "兵种461",
+      "Level": 57,
+      "x": 495.9,
+      "y": 364.55,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       495.9,
+       364.55
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][5]",
+      "Type": "兵种464",
+      "Level": 59,
+      "x": 1199.9,
+      "y": 267.25,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1199.9,
+       267.25
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][6]",
+      "Type": "兵种464",
+      "Level": 59,
+      "x": 1302.9,
+      "y": 380.55,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1302.9,
+       380.55
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[1][0]",
+      "Type": "兵种463",
+      "Level": 59,
+      "x": null,
+      "y": null,
+      "SpawnIndex": 0,
+      "InstanceName": null,
+      "resolution": "spawnPoint[0] (WaveSpawner.as:356-369)",
+      "world": [
+       885.0,
+       232.05
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [],
+    "merchant": [],
+    "spawnPoint": [
+     {
+      "ref": "SpawnPoint[0]",
+      "x": 885.0,
+      "y": 232.05,
+      "QuantityMax": 2,
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false
+     }
+    ]
+   }
+  },
+  "A19": {
+   "background": "CF6_A19_BG.swf",
+   "walkBounds": [
+    78.5,
+    167.45,
+    1578.5,
+    417.45
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 6,
+    "bossSupport": 0,
+    "merchant": 1,
+    "spawnPoint": 2
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 98.5,
+      "y": 297.45,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       98.5,
+       297.45
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种467",
+      "Level": 60,
+      "x": 399.2,
+      "y": 260.65,
+      "SpawnIndex": null,
+      "InstanceName": "elite_e5",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       399.2,
+       260.65
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][1]",
+      "Type": "兵种465",
+      "Level": 60,
+      "x": 1095.0,
+      "y": 362.15,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1095.0,
+       362.15
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][2]",
+      "Type": "兵种463",
+      "Level": 60,
+      "x": 1112.7,
+      "y": 276.85,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1112.7,
+       276.85
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][3]",
+      "Type": "兵种467",
+      "Level": 60,
+      "x": 442.2,
+      "y": 332.45,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       442.2,
+       332.45
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][4]",
+      "Type": "兵种469",
+      "Level": 59,
+      "x": null,
+      "y": null,
+      "SpawnIndex": 0,
+      "InstanceName": null,
+      "resolution": "spawnPoint[0] (WaveSpawner.as:356-369)",
+      "world": [
+       1325.0,
+       258.05
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][5]",
+      "Type": "兵种464",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": 1,
+      "InstanceName": null,
+      "resolution": "spawnPoint[1] (WaveSpawner.as:356-369)",
+      "world": [
+       573.1,
+       189.65
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [],
+    "merchant": [
+     {
+      "ref": "Instance[0]",
+      "Identifier": "生存战-迷之盔甲君",
+      "x": 178.5,
+      "y": 297.45,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       178.5,
+       297.45
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       78.5,
+       167.45,
+       1578.5,
+       417.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "spawnPoint": [
+     {
+      "ref": "SpawnPoint[0]",
+      "x": 1325.0,
+      "y": 258.05,
+      "QuantityMax": 2,
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false
+     },
+     {
+      "ref": "SpawnPoint[1]",
+      "x": 573.1,
+      "y": 189.65,
+      "QuantityMax": 3,
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false
+     }
+    ]
+   }
+  },
+  "A20": {
+   "background": "CF6_A20_BG.swf",
+   "walkBounds": [
+    128.5,
+    173.45,
+    1568.5,
+    563.45
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 1,
+    "bossSupport": 14,
+    "merchant": 0,
+    "spawnPoint": 0
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 148.5,
+      "y": 303.45,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       148.5,
+       303.45
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       128.5,
+       173.45,
+       1568.5,
+       563.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种473",
+      "Level": 60,
+      "x": 726.9,
+      "y": 225.15,
+      "SpawnIndex": null,
+      "InstanceName": "cf6Boss_A20",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       726.9,
+       225.15
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       128.5,
+       173.45,
+       1568.5,
+       563.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [
+     {
+      "ref": "boss[0][0](hpRatio=1.0)",
+      "Type": "兵种467",
+      "Level": 60,
+      "x": 263.0,
+      "y": 201.05,
+      "SpawnIndex": "left",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       263.0,
+       201.05
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       128.5,
+       173.45,
+       1568.5,
+       563.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][1](hpRatio=1.0)",
+      "Type": "兵种464",
+      "Level": 60,
+      "x": 1493.4,
+      "y": 479.15,
+      "SpawnIndex": "right",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1493.4,
+       479.15
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       128.5,
+       173.45,
+       1568.5,
+       563.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][2](hpRatio=1.0)",
+      "Type": "兵种461",
+      "Level": 60,
+      "x": 1182.5,
+      "y": 249.25,
+      "SpawnIndex": "right",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1182.5,
+       249.25
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       128.5,
+       173.45,
+       1568.5,
+       563.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][3](hpRatio=1.0)",
+      "Type": "兵种469",
+      "Level": 60,
+      "x": 1329.5,
+      "y": 362.25,
+      "SpawnIndex": "right",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1329.5,
+       362.25
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       128.5,
+       173.45,
+       1568.5,
+       563.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[1][0](hpRatio=0.75)",
+      "Type": "兵种461",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[1][1](hpRatio=0.75)",
+      "Type": "兵种469",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[1][2](hpRatio=0.75)",
+      "Type": "兵种467",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[1][3](hpRatio=0.75)",
+      "Type": "兵种464",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[2][0](hpRatio=0.5)",
+      "Type": "兵种461",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[2][1](hpRatio=0.5)",
+      "Type": "兵种469",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[2][2](hpRatio=0.5)",
+      "Type": "兵种467",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[2][3](hpRatio=0.5)",
+      "Type": "兵种464",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[3][0](hpRatio=0.25)",
+      "Type": "兵种461",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[3][1](hpRatio=0.25)",
+      "Type": "兵种469",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     }
+    ],
+    "merchant": [],
+    "spawnPoint": []
+   }
+  },
+  "A22": {
+   "background": "CF6_A22_BG.swf",
+   "walkBounds": [
+    128.5,
+    173.45,
+    1568.5,
+    563.45
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 1,
+    "bossSupport": 16,
+    "merchant": 0,
+    "spawnPoint": 0
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 623.95,
+      "y": 274.55,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       623.95,
+       274.55
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       128.5,
+       173.45,
+       1568.5,
+       563.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种474",
+      "Level": 60,
+      "x": 765.5,
+      "y": 273.35,
+      "SpawnIndex": null,
+      "InstanceName": "cf6Boss_A22",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       765.5,
+       273.35
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       128.5,
+       173.45,
+       1568.5,
+       563.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [
+     {
+      "ref": "boss[0][0](hpRatio=1.0)",
+      "Type": "兵种463",
+      "Level": 60,
+      "x": 1493.4,
+      "y": 479.15,
+      "SpawnIndex": "right",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1493.4,
+       479.15
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       128.5,
+       173.45,
+       1568.5,
+       563.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][1](hpRatio=1.0)",
+      "Type": "兵种472",
+      "Level": 60,
+      "x": 1182.5,
+      "y": 249.25,
+      "SpawnIndex": "right",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1182.5,
+       249.25
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       128.5,
+       173.45,
+       1568.5,
+       563.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][2](hpRatio=1.0)",
+      "Type": "兵种460",
+      "Level": 60,
+      "x": 1329.5,
+      "y": 362.25,
+      "SpawnIndex": "right",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1329.5,
+       362.25
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       128.5,
+       173.45,
+       1568.5,
+       563.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[0][3](hpRatio=1.0)",
+      "Type": "兵种465",
+      "Level": 60,
+      "x": 263.0,
+      "y": 201.05,
+      "SpawnIndex": "left",
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       263.0,
+       201.05
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       128.5,
+       173.45,
+       1568.5,
+       563.45
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "boss[1][0](hpRatio=0.75)",
+      "Type": "兵种463",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[1][1](hpRatio=0.75)",
+      "Type": "兵种472",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[1][2](hpRatio=0.75)",
+      "Type": "兵种460",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[1][3](hpRatio=0.75)",
+      "Type": "兵种465",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[2][0](hpRatio=0.5)",
+      "Type": "兵种463",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[2][1](hpRatio=0.5)",
+      "Type": "兵种472",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[2][2](hpRatio=0.5)",
+      "Type": "兵种460",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[2][3](hpRatio=0.5)",
+      "Type": "兵种465",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[3][0](hpRatio=0.25)",
+      "Type": "兵种463",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[3][1](hpRatio=0.25)",
+      "Type": "兵种472",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[3][2](hpRatio=0.25)",
+      "Type": "兵种460",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "left",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     },
+     {
+      "ref": "boss[3][3](hpRatio=0.25)",
+      "Type": "兵种465",
+      "Level": 60,
+      "x": null,
+      "y": null,
+      "SpawnIndex": "right",
+      "resolution": "spawn-line random point, engine-resolved at runtime (WaveSpawner.as:370-383)",
+      "zone": "engine_spawn_line"
+     }
+    ],
+    "merchant": [],
+    "spawnPoint": []
+   }
+  },
+  "TUTORIAL": {
+   "background": "gk1_1_BG.swf",
+   "walkBounds": [
+    50.0,
+    242.0,
+    1688.0,
+    640.0
+   ],
+   "counts": {
+    "player": 1,
+    "waveEnemy": 2,
+    "bossSupport": 0,
+    "merchant": 0,
+    "spawnPoint": 0
+   },
+   "entries": {
+    "player": [
+     {
+      "x": 152,
+      "y": 461,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       152,
+       461
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       50.0,
+       242.0,
+       1688.0,
+       640.0
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "waveEnemy": [
+     {
+      "ref": "Wave[0][0]",
+      "Type": "兵种2",
+      "Level": 2,
+      "x": 711,
+      "y": 476,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       711,
+       476
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       50.0,
+       242.0,
+       1688.0,
+       640.0
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     },
+     {
+      "ref": "Wave[0][1]",
+      "Type": "兵种6",
+      "Level": 2,
+      "x": 1642,
+      "y": 531,
+      "SpawnIndex": null,
+      "InstanceName": null,
+      "resolution": "explicit x/y verbatim, overrides SpawnIndex (WaveSpawner.as:412-413)",
+      "world": [
+       1642,
+       531
+      ],
+      "zone": "inside_walk",
+      "insideCollisionPolygon": false,
+      "walkBounds": [
+       50.0,
+       242.0,
+       1688.0,
+       640.0
+      ],
+      "distOutside": {
+       "left": 0.0,
+       "right": 0.0,
+       "top": 0.0,
+       "bottom": 0.0
+      }
+     }
+    ],
+    "bossSupport": [],
+    "merchant": [],
+    "spawnPoint": []
+   }
+  }
+ }
+}

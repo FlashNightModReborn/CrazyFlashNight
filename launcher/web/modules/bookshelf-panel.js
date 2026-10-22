@@ -280,13 +280,14 @@
             if (!state && result.leeEntry === true) selected = 'lee-trial';
             if (!state && (result.inRun || (result.pendingRun && result.pendingBookId !== 'lee-trial'))) {
                 selected = result.bookId === 'lee-trial' ? 'lee-trial' : 'crazy-flasher';
-                selectedChapter = 1;
+                selectedChapter = R.chapterNumberForBook(result.bookId || result.pendingBookId) || 1;
             }
             state = result;
         }
         if (result.phase === 'switching') {
             if (result.kind === 'return') {
-                returning = true; selected = result.returningResult && result.returningResult.bookId === 'lee-trial' ? 'lee-trial' : 'crazy-flasher'; selectedChapter = 1;
+                returning = true; selected = result.returningResult && result.returningResult.bookId === 'lee-trial' ? 'lee-trial' : 'crazy-flasher';
+                selectedChapter = R.chapterNumberForBook(result.returningResult && result.returningResult.bookId || result.bookId) || 1;
                 status('正在恢复原角色。可以查看本局结果，请稍候…', false); render(); pollReturn();
             } else { status('正在翻开另一段人生…'); close(true); }
             return;
@@ -360,7 +361,7 @@
         } else {
             reader.hide();
             var detail = el('detail');
-            var detailKey = selected + (chapter ? ':' + selectedChapter : '');
+            var detailKey = selected + (chapter ? ':' + selectedChapter + ':' + String(chapter.remake.id) + ':' + String(chapter.remake.available) : '');
             if (detail.dataset.view !== detailKey) {
                 detail.textContent = ''; detail.dataset.view = detailKey;
                 if (chapter) {
@@ -374,7 +375,7 @@
                         + '<button class="bookshelf-primary" data-action="remake"></button></section></div>';
                     if (chapter.remake.available) {
                         var records = document.createElement('section'); records.className = 'bookshelf-run-records';
-                        records.setAttribute('aria-label', '修理大学挑战记录');
+                        records.setAttribute('aria-label', chapter.remake.id === 'cf6-sting' ? '毒刺行动史实路线记录' : '修理大学挑战记录');
                         detail.appendChild(records);
                     }
                     book.chapters.forEach(function(c, i) {
@@ -388,15 +389,18 @@
                     detail.querySelector('h2').textContent = '第 ' + selectedChapter + ' 章 · ' + chapter.title;
                     var titles = detail.querySelectorAll('.bookshelf-editions h3');
                     titles[0].textContent = '闪客快打 ' + selectedChapter;
-                    titles[1].textContent = chapter.remake.available ? '修理大学 · 七图历险' : '尚未制作';
+                    var historical = chapter.remake.id === 'cf6-sting';
+                    titles[1].textContent = chapter.remake.available ? historical ? '毒刺行动 · 史实路线' : '修理大学 · 七图历险' : '尚未制作';
                     detail.querySelector('[data-edition="original-description"]').textContent = selectedChapter === 1
                         ? '重温 Andy 的校园往事。随时返回章节，重新载入会从头开始。'
                         : '读取本机正版合集中的游戏，体验原有剧情与战斗。' + (selectedChapter >= 3 ? '存档与当前角色独立。' : '');
                     detail.querySelector('[data-edition="remake-description"]').textContent = chapter.remake.available
-                        ? '从 1 级 Andy Law 开始，挑选配给，学习技能，挑战修理大学。本次旅程不支持中途续玩。'
+                        ? historical ? '操作 60 级 Andy，沿二十张地图推进，选择枪械、技能与补给，完成毒刺行动。本次旅程不支持中途续玩。'
+                            : '从 1 级 Andy Law 开始，挑选配给，学习技能，挑战修理大学。本次旅程不支持中途续玩。'
                         : '这一章的重制历险尚未制作。';
                     detail.querySelector('[data-edition="remake-note"]').textContent = chapter.remake.available
-                        ? '首次通关或刷新个人纪录：45 SP；其他通关：5 SP。未通关或中途离开不发奖励。按未暂停的游戏时间计时；剧情、商店和暂停不计入成绩。'
+                        ? historical ? '装备、金币、K 点和技能成长只用于本次旅程；本路线不提供 SP 奖励。战斗结束后恢复原角色。'
+                            : '首次通关或刷新个人纪录：45 SP；其他通关：5 SP。未通关或中途离开不发奖励。按未暂停的游戏时间计时；剧情、商店和暂停不计入成绩。'
                         : '原版不提供闪客快打 7 的奖励。';
                     var language = detail.querySelector('[data-action="language"]');
                     chapter.original.languages.forEach(function(code) { var option = document.createElement('option');
@@ -445,12 +449,12 @@
                     action.textContent = '核对上次旅程'; action.onclick = function() { commit('settle', state.pendingRun); };
                 } else {
                     action.textContent = state && state.unlocked ? '进入重制版' : '完成地铁站主线后开放';
-                    action.onclick = function() { commit('play', 'repair-campus'); };
+                    action.onclick = function() { commit('play', chapter.remake.id); };
                 }
                 action.disabled = !chapter.remake.available || !state || !state.canSwitch || (!state.inRun && !state.pendingRun && !state.unlocked);
             }
             action.disabled = action.disabled || busy || !!recovery || readFailed || returning || !!transition;
-            if (chapter && chapter.remake.available) renderRecords(detail.querySelector('.bookshelf-run-records'));
+            if (chapter && chapter.remake.available) renderRecords(detail.querySelector('.bookshelf-run-records'), chapter.remake.id);
         }
         el('recover').textContent = recovery ? '核对结果' : '重新读取';
         el('recover').hidden = returning && state && state.phase === 'switching' && !readFailed && !statusAttention
@@ -518,13 +522,16 @@
         return Math.floor(value / 60000) + ':' + String(Math.floor(value / 1000) % 60).padStart(2, '0')
             + '.' + String(Math.floor(value / 10) % 100).padStart(2, '0');
     }
-    function renderRecords(node) {
+    function renderRecords(node, bookId) {
         if (!node) return;
-        var records = state && state.records || {}, history = Array.isArray(records.history) ? records.history : [];
+        var records = state && (bookId === 'cf6-sting' ? state.cf6Records : state.records);
+        var hasSummary = !!records; records = records || {};
+        var history = Array.isArray(records.history) ? records.history.filter(function(record) { return record.bookId === bookId; }) : [];
         var pending = state && state.returningResult;
+        if (pending && pending.bookId !== bookId) pending = null;
         var last = history[0] || null;
         if (pending && (!last || pending.runId !== last.runId)) last = pending;
-        var signature = JSON.stringify([records, last]);
+        var signature = JSON.stringify([bookId, hasSummary, records, last]);
         if (node.dataset.records === signature) return;
         node.dataset.records = signature;
         var expanded = node.querySelector('details') && node.querySelector('details').open;
@@ -534,8 +541,8 @@
             (parent || node).appendChild(n); return n;
         }
         var labels = {victory:'通关', failure:'挑战失败', defeat:'挑战失败', retreat:'主动撤退', abandoned:'中途结束'};
-        var reasons = {first_clear:'首次通关', personal_best:'刷新个人纪录', clear:'通关奖励', debug:'调试局，不计成绩', incomplete:'未通关，无奖励', pending:'奖励确认中'};
-        line('p', '个人最佳 ' + runTime(records.bestMs) + '　·　累计通关 ' + (records.clears || 0) + ' 次', 'bookshelf-record-summary');
+        var reasons = {first_clear:'首次通关', personal_best:'刷新个人纪录', clear:bookId === 'cf6-sting' ? '史实路线通关' : '通关奖励', debug:'调试局，不计成绩', incomplete:'未通关，无奖励', pending:'奖励确认中'};
+        if (hasSummary) line('p', '个人最佳 ' + runTime(records.bestMs) + '　·　累计通关 ' + (records.clears || 0) + ' 次', 'bookshelf-record-summary');
         if (last) {
             var card = line('div', '', 'bookshelf-last-run');
             line('strong', (last.reason === 'pending' ? '本局' : '上一局') + ' · ' + (labels[last.outcome] || '中途结束'), '', card);
@@ -543,7 +550,7 @@
             var reason = last.debug ? reasons.debug : reasons[last.reason] || '';
             line('b', last.sp > 0 ? '+' + last.sp + ' SP · 已入账' : last.reason === 'pending' ? reasons.pending : '本局无 SP 奖励', 'bookshelf-record-reward', card);
             line('small', reason, 'bookshelf-muted', card);
-        } else line('p', '尚无详细战绩。旧档最佳用时继续保留，新挑战将在这里记录。', 'bookshelf-muted');
+        } else line('p', bookId === 'cf6-sting' ? '当前没有可显示的史实路线战绩。' : '尚无详细战绩。旧档最佳用时继续保留，新挑战将在这里记录。', 'bookshelf-muted');
         if (history.length) {
             var details = line('details', '', 'bookshelf-history'); details.open = expanded;
             line('summary', '最近挑战记录 · ' + history.length + ' 局（最多保留 20 局）', '', details);

@@ -1,0 +1,56 @@
+{
+  "1588": {
+    "viewBox": "0 0 160 196",
+    "element_count": 691,
+    "native_path_count": 593,
+    "image_count": 0,
+    "sha256": "cffba7eb017434f1f6180dc9f7d97aadec5333746ab98d4d88ea7fc1f197da5f",
+    "baked_dimensions": [
+      160,
+      196
+    ],
+    "transparent_pixel_count": 21389,
+    "central_opening_alpha_zero": true
+  },
+  "1902": {
+    "viewBox": "0 0 52 89",
+    "element_count": 176,
+    "native_path_count": 129,
+    "image_count": 2,
+    "sha256": "dae928c5b80d82159054873c335183e87639717eedd2830098b36856da4752e1",
+    "baked_dimensions": [
+      52,
+      89
+    ],
+    "transparent_pixel_count": 260,
+    "original_alpha_exact": true
+  },
+  "1902_original_reuse": {
+    "source_bitmap": 1833,
+    "full_rgba_equal": true,
+    "different_pixels": 0,
+    "frozen_source_sha256": "dc149d949ebbd3a803948332e6be2d1e01c864737441507628ba2c9fa6c619c7"
+  },
+  "protected": [
+    "Original native shape1901 glass unchanged; fill #33ffcc opacity 0.4",
+    "Original monster bitmap261 and sprite1906 unchanged",
+    "No production or unrelated source files modified"
+  ],
+  "self_review_rounds": [
+    "Round1: viewed original pixel reference and 5x original-new pair, corrected brushed metal microdetail on two drums",
+    "Round2: viewed regenerated original-new shell and 9x barrel comparisons, checked separate original glass connection",
+    "Round3: after independent review corrections, viewed shell/glass at 5x and both baked assets at 1x"
+  ],
+  "deterministic_regeneration": true,
+  "independent_review_edits": [
+    "Restored three wide lower louvres with deep gaps",
+    "Strengthened soft silver-gray reflection on upper front cylinder",
+    "Reduced fine wear contrast on upper housing"
+  ],
+  "glass_center_rgba": [
+    50,
+    255,
+    203,
+    102
+  ]
+}

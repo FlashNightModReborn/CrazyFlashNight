@@ -1,0 +1,36 @@
+{
+  "shared_defs_byte_identical": true,
+  "other_mechanical_builders_byte_identical": {
+    "1606": true,
+    "1607": true,
+    "1608": true
+  },
+  "other_mechanical_parts_byte_identical": {
+    "1606": true,
+    "1607": true,
+    "1608": true
+  },
+  "1609_viewbox": "0 0 118 88",
+  "1609_all_non_chassis_groups_identical": {
+    "cab_frame_and_open_glazing": true,
+    "rounded_counterweight_and_engine_cover": true,
+    "single_continuous_boom_and_anchored_rams": true,
+    "dipper_bucket_pivots_and_linkage": true
+  },
+  "1609_crawler_and_turntable_xml_identical": true,
+  "1609_rgba_diff_bbox_at_6x": [
+    309,
+    409,
+    478,
+    521
+  ],
+  "1609_rgba_diff_bbox_in_native_coordinates": [
+    51.5,
+    68.16666666666667,
+    79.66666666666667,
+    86.83333333333333
+  ],
+  "scope": "Dozer blade and immediately adjacent shadowed mounting region only; arm bucket, upper body, near crawler and turntable unchanged.",
+  "rebuild_review": "python source/blade_review.py; all inputs retained inside project",
+  "reference_blade_caution": "Source is 118 x 88; cylinder or exact rear-arm count cannot be established and has not been added."
+}

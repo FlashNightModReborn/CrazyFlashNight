@@ -2257,9 +2257,16 @@ class org.flashNight.neur.Server.SaveManager {
                 || _root.gameworld._parent != undefined
                 || !org.flashNight.arki.scene.StageRunSession.canNavigateAwayFromStage()) return false;
         if (run != null && (run.slot !== slot || typeof run.originSlot != "string" || run.originSlot == ""
-                || (run.bookId !== "repair-campus" && run.bookId !== "lee-trial"))) return false;
+                || (!org.flashNight.arki.scene.BookDefinition.supports(run.bookId) && run.bookId !== "lee-trial"))) return false;
         if (run != null && run.bookId === "lee-trial"
                 && !org.flashNight.arki.scene.LeeTrialDefinition.ready()) return false;
+        var cf6Loadout:Object;
+        if (run != null && run.bookId === "cf6-sting") {
+            if (run.routeId !== "historical" || slot.indexOf("bookrun_") != 0 || slot === run.originSlot
+                    || !org.flashNight.arki.scene.BookDefinition.ready("cf6-sting")) return false;
+            cf6Loadout = prepareCf6Loadout();
+            if (cf6Loadout == null) return false;
+        }
         if (run == null && !validateMydata(snapshot)) return false;
         clearPrefetch();
         org.flashNight.arki.scene.StageManager.getInstance().clear();
@@ -2298,6 +2305,17 @@ class org.flashNight.neur.Server.SaveManager {
                 _root.等级 = trialActor.level; _root.经验值 = 0; _root.技能点数 = 0;
                 _root.金钱 = 0; _root.虚拟币 = 0; _root.身价 = _root.基础身价值 * trialActor.level;
                 _root.difficultyMode = 0;
+            } else if (run.bookId === "cf6-sting") {
+                var historical:Object=org.flashNight.arki.scene.BookDefinition.get("cf6-sting");
+                var actor:Object=historical.actor;
+                _root.角色名=actor.name; _root.性别=actor.gender; _root.身高=actor.height;
+                _root.脸型=actor.face; _root.发型=actor.hair;
+                _root.等级=actor.level; _root.经验值=actor.experience;
+                _root.技能点数=historical.startingSkillPoints; _root.金钱=historical.startingMoney;
+                _root.虚拟币=0; _root.身价=_root.基础身价值*actor.level; _root.difficultyMode=0;
+                _root.物品栏.装备栏=new EquipmentInventory(cf6Loadout.equipment);
+                _root.主角技能表=cf6Loadout.skills;
+                _root.主角被动技能=cf6Loadout.passives;
             } else {
                 _root.角色名 = "Andy Law"; _root.性别 = "男"; _root.身高 = 175;
                 _root.脸型 = "男变装-基本脸型"; _root.发型 = "发型-男式-Andy发型";
@@ -2321,6 +2339,34 @@ class org.flashNight.neur.Server.SaveManager {
             _root.agent.槽位已切换();
         }
         return true;
+    }
+
+    /** Build and validate detached initial state before clearing the origin character. */
+    private function prepareCf6Loadout():Object {
+        var config:Object=org.flashNight.arki.scene.BookDefinition.get("cf6-sting");
+        if (!org.flashNight.arki.scene.BookDefinition.valid(config)) return null;
+        var equipment:Object={};
+        var allowed:Object={头部装备:true,上装装备:true,下装装备:true,手部装备:true,脚部装备:true,颈部装备:true,刀:true,长枪:true,手枪:true,手枪2:true};
+        for (var i:Number=0;i<config.actor.equipment.length;i++) {
+            var source:Object=config.actor.equipment[i];
+            if (allowed[source.slot] !== true) return null;
+            var item:BaseItem=BaseItem.create(source.name,source.enhancement);
+            var meta:Object=_root.getItemData(source.name);
+            if (item == null || item.value.level !== 11 || (meta.use !== source.slot && !(source.slot === "手枪2" && meta.use === "手枪"))) return null;
+            equipment[source.slot]=item;
+        }
+        var skills:Array=new Array(80), passives:Object={};
+        for (i=0;i<80;i++) skills[i]=["",0,false,"",true];
+        for (i=0;i<config.actor.skills.length;i++) {
+            var grant:Object=config.actor.skills[i];
+            var skill:Object=_root.技能表对象[grant.name];
+            if (skill == null || typeof skill.Type != "string" || Number(skill.MaxLevel) !== grant.level
+                    || grant.name === "驾驶" || typeof skill.Equippable != "boolean" || typeof skill.Passive != "boolean") return null;
+            var pure:Boolean=String(skill.Type) === "被动" || skill.Equippable === false;
+            skills[i]=[grant.name,grant.level,pure,skill.Type,pure];
+            if (skill.Passive === true) passives[grant.name]={技能名:grant.name,等级:grant.level,启用:pure};
+        }
+        return {equipment:equipment,skills:skills,passives:passives};
     }
 
     /**
@@ -2914,6 +2960,9 @@ class org.flashNight.neur.Server.SaveManager {
         _root.快捷技能栏10 = 装备储存数据[25];
         _root.快捷技能栏11 = 装备储存数据[26];
         _root.快捷技能栏12 = 装备储存数据[27];
+        // 换角色先清内存；此格也必须从原档恢复，保留 null/空串/非空串。
+        // 旧 28 项数组没有此格时清为 null，不能沿用上一角色残值。
+        _root.快捷物品栏4 = 装备储存数据.length > 28 ? 装备储存数据[28] : null;
 
         // 同伴
         _root.同伴数据 = mydata[4][0];

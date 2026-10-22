@@ -8,7 +8,7 @@
 //   3. tokens.css 的 --wb-grade-* 静态别名层与 canonical 同值（派生层单独钉住）；
 //   4. 漂移清零：features.css 情报材料 token 不再持四档外色相或漂移蓝，
 //      equipment-tuning.css fallback 不再出现 #b78938；
-//   5. data/rewards/choice-rewards.json 每个 bundle 的显式 grade 都在封闭枚举内。
+//   5. build-choice-rewards 的合并派生目录每个 bundle 的显式 grade 都在封闭枚举内。
 
 const fs = require('fs');
 const path = require('path');
@@ -102,7 +102,7 @@ if (/\.inventory-equip-slot\.grade-(?:low|medium|high|special)\s*\{[^}]*#[0-9A-F
     fail('inventory.css grade cores must consume --wb-grade-core-* tokens, not raw literals');
 }
 
-const catalog = JSON.parse(readText('data/rewards/choice-rewards.json'));
+const catalog = JSON.parse(readText('data/rewards/choice-rewards.generated.json'));
 const grades = new Set(['low', 'medium', 'high', 'special']);
 let gradedBundles = 0;
 for (const bundle of catalog.bundles) {

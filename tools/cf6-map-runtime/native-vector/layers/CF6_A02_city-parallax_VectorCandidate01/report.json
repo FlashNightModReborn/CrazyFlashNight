@@ -1,0 +1,78 @@
+{
+  "schema": "cf6-native-layer-candidate.v1",
+  "name": "CF6_A02_city-parallax_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A02-R3/cf6-stage2-redraw-r3/parts/shape-1598.svg",
+  "sourceSha256": "cdd607d3ae3424eb096cd424c0b8eb4d59af017d47728732d0725ed3d8c4bcf3",
+  "nativeShapes": 34,
+  "nativeSymbols": 49,
+  "intrinsicTextures": 0,
+  "masks": [
+    {
+      "id": "b1597_buildings",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "fill0",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "fill1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "fill2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "fill3",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "fill4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "fill5",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "fill6",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "fill7",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    }
+  ],
+  "filters": [],
+  "patterns": [],
+  "sourceViewport": [
+    0.0,
+    109.0,
+    1441.4,
+    66.44999999999999
+  ],
+  "registrationMatrix": [
+    1.0,
+    0,
+    0,
+    1.0000000000000002,
+    0.0,
+    -109.00000000000003
+  ],
+  "state": "native XFL assembled; actual CS6 compile and rendering still pending",
+  "limits": [
+    "SVG filter-region clipping is reported per filter and not yet reproduced.",
+    "Native Gaussian blur is a three-pass approximation.",
+    "Root SVG viewport crop must be compared at the original edge."
+  ]
+}

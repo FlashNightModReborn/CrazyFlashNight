@@ -1,0 +1,8198 @@
+{
+ "schema": "cf6-placement-audit-r6.v1",
+ "snapshotIdentity": {
+  "inputSha256AtStart": {
+   "data/stages/books/cf6-sting.json": "b15cbee02b916bc348ccd4718ec56357086b9e1907840ff6db54717be1489833",
+   "tools/cf6-map-runtime/generated/environment.fragment.xml": "62a4772ae4b579659460ae8dee03055835063217a586e14091fefb6ad7fa73c5",
+   "tools/cf6-map-runtime/generated/runtime-index.json": "7aafd2377cdd6f1aec96b311f2d34bfad32ddd53b372d2a7057c6851b63ee24a",
+   "tools/cf6-map-runtime/route-geometry-overrides.json": "58491dde0efa6ef5bd28e9003391f5f02cd66832ce18c7faaeaa14152608d00a",
+   "data/stages/books/cf6-sting-source/maps.fragment.json": "37ed5709e6ac6a95ba779f2205851fcaa975d92af3491e5acccb717f68397811",
+   "tools/cf6-map-source/generated/map-input.json": "056c50dd321debee3545d2988b891d140b07cfec864b5d461bd062e44d29ba95",
+   "data/environment/stage_environment.xml": "983fa55e361a6d5246522999672e19414e0c75e4de6e88a613624f7c4d7a51de"
+  },
+  "inputSha256AtEnd": {
+   "data/stages/books/cf6-sting.json": "b15cbee02b916bc348ccd4718ec56357086b9e1907840ff6db54717be1489833",
+   "tools/cf6-map-runtime/generated/environment.fragment.xml": "62a4772ae4b579659460ae8dee03055835063217a586e14091fefb6ad7fa73c5",
+   "tools/cf6-map-runtime/generated/runtime-index.json": "7aafd2377cdd6f1aec96b311f2d34bfad32ddd53b372d2a7057c6851b63ee24a",
+   "tools/cf6-map-runtime/route-geometry-overrides.json": "58491dde0efa6ef5bd28e9003391f5f02cd66832ce18c7faaeaa14152608d00a",
+   "data/stages/books/cf6-sting-source/maps.fragment.json": "37ed5709e6ac6a95ba779f2205851fcaa975d92af3491e5acccb717f68397811",
+   "tools/cf6-map-source/generated/map-input.json": "056c50dd321debee3545d2988b891d140b07cfec864b5d461bd062e44d29ba95",
+   "data/environment/stage_environment.xml": "983fa55e361a6d5246522999672e19414e0c75e4de6e88a613624f7c4d7a51de"
+  },
+  "changed": [
+   "data/stages/books/cf6-sting.json"
+  ],
+  "note": "主控在审查期间改写了 cf6-sting.json(未跟踪文件,git status '??');本报告全部结论绑定开始快照 083be489…,未追最新版本重审。对结束版本的抽查:21图路线不变、A02 Wave[0][3]=(872.25,417.8)、A18 SpawnPoint[0]=(885.0,208.65) 等6项失败坐标仍原值存在。"
+ },
+ "evidenceBoundary": "static point/grid geometry on assembled JSON+XML; connectivity grid is a reference, not Flash player-foot or AVM1 pathfinding proof; no game was run",
+ "summary": {
+  "total": 503,
+  "byStatus": {
+   "pass": 471,
+   "fail": 6,
+   "unknown": 26
+  },
+  "reverified": 11
+ },
+ "checks": [
+  {
+   "map": "*",
+   "category": "identity",
+   "item": "book route",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     "TUTORIAL",
+     "A01",
+     "A02",
+     "A03",
+     "A04",
+     "A05",
+     "A06",
+     "A08",
+     "A09",
+     "A10",
+     "A11",
+     "A12",
+     "A13",
+     "A14",
+     "A15",
+     "A16",
+     "A17",
+     "A18",
+     "A19",
+     "A20",
+     "A22"
+    ],
+    "actual": [
+     "TUTORIAL",
+     "A01",
+     "A02",
+     "A03",
+     "A04",
+     "A05",
+     "A06",
+     "A08",
+     "A09",
+     "A10",
+     "A11",
+     "A12",
+     "A13",
+     "A14",
+     "A15",
+     "A16",
+     "A17",
+     "A18",
+     "A19",
+     "A20",
+     "A22"
+    ]
+   }
+  },
+  {
+   "map": "*",
+   "category": "identity",
+   "item": "runtime-index route",
+   "status": "pass",
+   "detail": {
+    "actual": [
+     "A01",
+     "A02",
+     "A03",
+     "A04",
+     "A05",
+     "A06",
+     "A08",
+     "A09",
+     "A10",
+     "A11",
+     "A12",
+     "A13",
+     "A14",
+     "A15",
+     "A16",
+     "A17",
+     "A18",
+     "A19",
+     "A20",
+     "A22"
+    ]
+   }
+  },
+  {
+   "map": "*",
+   "category": "identity",
+   "item": "overrides route",
+   "status": "pass",
+   "detail": {
+    "actual": [
+     "A01",
+     "A02",
+     "A03",
+     "A04",
+     "A05",
+     "A06",
+     "A08",
+     "A09",
+     "A10",
+     "A11",
+     "A12",
+     "A13",
+     "A14",
+     "A15",
+     "A16",
+     "A17",
+     "A18",
+     "A19",
+     "A20",
+     "A22"
+    ]
+   }
+  },
+  {
+   "map": "*",
+   "category": "identity",
+   "item": "environment fragment route",
+   "status": "pass",
+   "detail": {
+    "actual": [
+     "CF6_A01_BG.swf",
+     "CF6_A02_BG.swf",
+     "CF6_A03_BG.swf",
+     "CF6_A04_BG.swf",
+     "CF6_A05_BG.swf",
+     "CF6_A06_BG.swf",
+     "CF6_A08_BG.swf",
+     "CF6_A09_BG.swf",
+     "CF6_A10_BG.swf",
+     "CF6_A11_BG.swf",
+     "CF6_A12_BG.swf",
+     "CF6_A13_BG.swf",
+     "CF6_A14_BG.swf",
+     "CF6_A15_BG.swf",
+     "CF6_A16_BG.swf",
+     "CF6_A17_BG.swf",
+     "CF6_A18_BG.swf",
+     "CF6_A19_BG.swf",
+     "CF6_A20_BG.swf",
+     "CF6_A22_BG.swf"
+    ]
+   }
+  },
+  {
+   "map": "*",
+   "category": "identity",
+   "item": "A07 has no node",
+   "status": "pass",
+   "detail": {
+    "note": "A07 absent from book/runtime-index/overrides/environment fragment"
+   }
+  },
+  {
+   "map": "*",
+   "category": "identity",
+   "item": "A21 performance mechanism between A20 and A22",
+   "status": "pass",
+   "detail": {
+    "bookNotePresent": true,
+    "consumer": "Cf6MapMechanism.beginRoom injects {role:transformation, url:flashswf/backgrounds/cf6/CF6_A21_Transform.swf} when mapId==A20; loaded() requires mc.actor._totalframes>92; render plays 93 frames/180",
+    "transformSwfExists": false,
+    "transformXflExists": true,
+    "swfStatus": "compiled SWF pending (Astra lane)"
+   }
+  },
+  {
+   "map": "TUTORIAL",
+   "category": "registration",
+   "item": "tutorial environment gk1_1_BG.swf",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "TUTORIAL",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     152,
+     461
+    ]
+   }
+  },
+  {
+   "map": "TUTORIAL",
+   "category": "pickup",
+   "item": "战场长枪弹药包 x1",
+   "status": "pass",
+   "detail": {
+    "world": [
+     500,
+     460
+    ]
+   }
+  },
+  {
+   "map": "TUTORIAL",
+   "category": "pickup",
+   "item": "战场复合急救包 x1",
+   "status": "pass",
+   "detail": {
+    "world": [
+     780,
+     460
+    ]
+   }
+  },
+  {
+   "map": "TUTORIAL",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种2 L2",
+   "status": "pass",
+   "detail": {
+    "world": [
+     711,
+     476
+    ]
+   }
+  },
+  {
+   "map": "TUTORIAL",
+   "category": "waveEnemy",
+   "item": "Wave[0][1] 兵种6 L2",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1642,
+     531
+    ]
+   }
+  },
+  {
+   "map": "TUTORIAL",
+   "category": "door",
+   "item": "Door[0] 上",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     883.0,
+     240.0,
+     998.0,
+     310.0
+    ],
+    "insideWalkBounds": false,
+    "freeSamplesOf25": 20,
+    "note": "pre-existing vanilla map gk1_1_BG.swf (not produced by cf6 assembly); door rects crossing the boundary wall are engine convention: 23/39 vanilla doors in stage_environment.xml extend past walkBounds; 20/25 rect samples free"
+   }
+  },
+  {
+   "map": "TUTORIAL",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 25833,
+    "reachableCells": 25833,
+    "start": [
+     152.5,
+     459.5
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 2.06
+     },
+     {
+      "label": "pickup:战场长枪弹药包",
+      "reachable": true,
+      "snapDistance": 2.55
+     },
+     {
+      "label": "pickup:战场复合急救包",
+      "reachable": true,
+      "snapDistance": 2.55
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A01",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     320.9,
+     287.7
+    ],
+    "runtimeSpawn": [
+     320.9,
+     287.7
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A01",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     317.45,
+     281.85
+    ],
+    "expected": [
+     320.9,
+     287.7
+    ],
+    "runtimeSpawn": [
+     320.9,
+     287.7
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A01",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": []
+    }
+   }
+  },
+  {
+   "map": "A01",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     53.45,
+     155.85,
+     793.45,
+     455.85
+    ],
+    "actual": [
+     53.45,
+     155.85,
+     793.45,
+     455.85
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     743.45,
+     170.85,
+     793.45,
+     445.85
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       743.45,
+       170.85,
+       793.45,
+       445.85
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 5,
+    "fragmentCount": 5,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A01",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     62.45,
+     215.85,
+     64.45,
+     440.85
+    ],
+    "actual": [
+     62.45,
+     215.85,
+     64.45,
+     440.85
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     782.45,
+     175.85,
+     784.45,
+     440.85
+    ],
+    "actual": [
+     782.45,
+     175.85,
+     784.45,
+     440.85
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "transform",
+   "item": "economy gold pickup on PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gold": [
+     320.9,
+     287.7
+    ],
+    "player": [
+     320.9,
+     287.7
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A01",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     320.9,
+     287.7
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "pickup",
+   "item": "极品UZI战术版 x1",
+   "status": "pass",
+   "detail": {
+    "world": [
+     78.55,
+     433.25
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "pickup",
+   "item": "冲锋枪达姆弹弹药 x3",
+   "status": "pass",
+   "detail": {
+    "world": [
+     118.55,
+     433.25
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "pickup",
+   "item": "金币 x15000",
+   "status": "pass",
+   "detail": {
+    "world": [
+     320.9,
+     287.7
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "merchant",
+   "item": "生存战-迷之盔甲君",
+   "status": "pass",
+   "detail": {
+    "world": [
+     400.9,
+     287.7
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种461 L35",
+   "status": "pass",
+   "detail": {
+    "world": [
+     711.65,
+     316.05
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "waveEnemy",
+   "item": "Wave[0][1] 兵种461 L35",
+   "status": "pass",
+   "detail": {
+    "world": [
+     620.45,
+     324.85
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "waveEnemy",
+   "item": "Wave[1][0] 兵种461 L35 via SpawnPoint[0]",
+   "status": "pass",
+   "detail": {
+    "world": [
+     787.4,
+     328.95
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "waveEnemy",
+   "item": "Wave[2][0] 兵种461 L35 via SpawnPoint[1]",
+   "status": "pass",
+   "detail": {
+    "world": [
+     787.4,
+     328.95
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "waveEnemy",
+   "item": "Wave[3][0] 兵种461 L35 via SpawnPoint[2]",
+   "status": "pass",
+   "detail": {
+    "world": [
+     787.4,
+     328.95
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "waveEnemy",
+   "item": "Wave[4][0] 兵种461 L35 via SpawnPoint[3]",
+   "status": "pass",
+   "detail": {
+    "world": [
+     787.4,
+     328.95
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "spawnPoint",
+   "item": "SpawnPoint[0] QuantityMax=5",
+   "status": "pass",
+   "detail": {
+    "world": [
+     787.4,
+     328.95
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "spawnPoint",
+   "item": "SpawnPoint[1] QuantityMax=5",
+   "status": "pass",
+   "detail": {
+    "world": [
+     787.4,
+     328.95
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "spawnPoint",
+   "item": "SpawnPoint[2] QuantityMax=5",
+   "status": "pass",
+   "detail": {
+    "world": [
+     787.4,
+     328.95
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "spawnPoint",
+   "item": "SpawnPoint[3] QuantityMax=5",
+   "status": "pass",
+   "detail": {
+    "world": [
+     787.4,
+     328.95
+    ]
+   }
+  },
+  {
+   "map": "A01",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     743.45,
+     170.85,
+     793.45,
+     445.85
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 20
+   }
+  },
+  {
+   "map": "A01",
+   "category": "registration",
+   "item": "background swf",
+   "status": "pass",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A01_BG.swf",
+    "exists": true,
+    "note": null
+   }
+  },
+  {
+   "map": "A01",
+   "category": "merchant",
+   "item": "assembler anchor predicate",
+   "status": "pass",
+   "detail": {
+    "anchor": [
+     400.9,
+     287.7
+    ],
+    "reason": "assembler predicate holds"
+   }
+  },
+  {
+   "map": "A01",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 7824,
+    "reachableCells": 7824,
+    "start": [
+     320.95,
+     288.35
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 2.5
+     },
+     {
+      "label": "pickup:极品UZI战术版",
+      "reachable": true,
+      "snapDistance": 2.4
+     },
+     {
+      "label": "pickup:冲锋枪达姆弹弹药",
+      "reachable": true,
+      "snapDistance": 2.4
+     },
+     {
+      "label": "pickup:金币",
+      "reachable": true,
+      "snapDistance": 0.65
+     },
+     {
+      "label": "instance:生存战-迷之盔甲君",
+      "reachable": true,
+      "snapDistance": 0.65
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A02",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     134.95,
+     329.6
+    ],
+    "runtimeSpawn": [
+     134.95,
+     329.6
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A02",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     91.5,
+     353.7
+    ],
+    "expected": [
+     134.95,
+     329.6
+    ],
+    "runtimeSpawn": [
+     134.95,
+     329.6
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A02",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": []
+    }
+   }
+  },
+  {
+   "map": "A02",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     93.45,
+     125.9,
+     1293.45,
+     475.9
+    ],
+    "actual": [
+     93.45,
+     125.9,
+     1293.45,
+     475.9
+    ]
+   }
+  },
+  {
+   "map": "A02",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1243.45,
+     205.9,
+     1293.45,
+     385.9
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1243.45,
+       205.9,
+       1293.45,
+       385.9
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A02",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 117,
+    "fragmentCount": 117,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A02",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     102.45,
+     215.9,
+     104.45,
+     380.9
+    ],
+    "actual": [
+     102.45,
+     215.9,
+     104.45,
+     380.9
+    ]
+   }
+  },
+  {
+   "map": "A02",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1282.45,
+     210.9,
+     1284.45,
+     380.9
+    ],
+    "actual": [
+     1282.45,
+     210.9,
+     1284.45,
+     380.9
+    ]
+   }
+  },
+  {
+   "map": "A02",
+   "category": "transform",
+   "item": "economy gold pickup on PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gold": [
+     134.95,
+     329.6
+    ],
+    "player": [
+     134.95,
+     329.6
+    ]
+   }
+  },
+  {
+   "map": "A02",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A02",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     134.95,
+     329.6
+    ]
+   }
+  },
+  {
+   "map": "A02",
+   "category": "pickup",
+   "item": "AWP x1",
+   "status": "pass",
+   "detail": {
+    "world": [
+     532.05,
+     250.3
+    ]
+   }
+  },
+  {
+   "map": "A02",
+   "category": "pickup",
+   "item": "狙击步枪通用弹药 x3",
+   "status": "pass",
+   "detail": {
+    "world": [
+     571.95,
+     250.3
+    ]
+   }
+  },
+  {
+   "map": "A02",
+   "category": "pickup",
+   "item": "金币 x20000",
+   "status": "pass",
+   "detail": {
+    "world": [
+     134.95,
+     329.6
+    ]
+   }
+  },
+  {
+   "map": "A02",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种468 L37",
+   "status": "pass",
+   "detail": {
+    "world": [
+     933.55,
+     243.8
+    ]
+   }
+  },
+  {
+   "map": "A02",
+   "category": "waveEnemy",
+   "item": "Wave[0][1] 兵种461 L36",
+   "status": "pass",
+   "detail": {
+    "world": [
+     684.25,
+     292.9
+    ]
+   }
+  },
+  {
+   "map": "A02",
+   "category": "waveEnemy",
+   "item": "Wave[0][2] 兵种461 L36",
+   "status": "pass",
+   "detail": {
+    "world": [
+     782.25,
+     343.8
+    ]
+   }
+  },
+  {
+   "map": "A02",
+   "category": "waveEnemy",
+   "item": "Wave[0][3] 兵种461 L36",
+   "status": "fail",
+   "detail": {
+    "world": [
+     872.25,
+     417.8
+    ],
+    "reason": "inside collision polygon",
+    "walkBounds": [
+     93.45,
+     125.9,
+     1293.45,
+     475.9
+    ],
+    "reverification": {
+     "verdict": "fail",
+     "sourceField": "maps.fragment.json A02 Wave[0].EnemyGroup.Enemy[3] x=828.8 y=441.9",
+     "originalProvenance": "original display[13] id=477 depth=336 at (828.75,441.85) — authored placement",
+     "geometry": "inside original even-odd fill AND inside converted Collision trapezoid; original engine evidence of solid-fill movement blocking not found, CF7 environment semantics treat the fill as solid",
+     "playerCanReach": false,
+     "nearestFreeWorld": [
+      864.49,
+      388.82
+     ],
+     "minimalFixCandidate": "nudge spawn to nearest free point ~(864.5,388.8) world (30px) or mark unit as turret/static; needs 主控实机 to confirm whether CF7 depenetration frees wall-spawned units"
+    }
+   }
+  },
+  {
+   "map": "A02",
+   "category": "waveEnemy",
+   "item": "Wave[0][4] 兵种468 L37",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1033.55,
+     374.8
+    ]
+   }
+  },
+  {
+   "map": "A02",
+   "category": "waveEnemy",
+   "item": "Wave[0][5] 兵种461 L36",
+   "status": "fail",
+   "detail": {
+    "world": [
+     1129.25,
+     439.8
+    ],
+    "reason": "inside collision polygon",
+    "walkBounds": [
+     93.45,
+     125.9,
+     1293.45,
+     475.9
+    ],
+    "reverification": {
+     "verdict": "fail",
+     "sourceField": "maps.fragment.json A02 Wave[0].EnemyGroup.Enemy[5] x=1085.8 y=463.9",
+     "originalProvenance": "original display[15] id=477 depth=411 at (1085.75,463.85) — authored placement",
+     "geometry": "inside original even-odd fill AND converted Collision",
+     "playerCanReach": false,
+     "nearestFreeWorld": [
+      1137.53,
+      470.71
+     ],
+     "minimalFixCandidate": "nudge spawn to ~(1137.5,470.7) world (32px); same caveat as Wave[0][3]"
+    }
+   }
+  },
+  {
+   "map": "A02",
+   "category": "waveEnemy",
+   "item": "Wave[0][6] 兵种461 L36",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1096.25,
+     247.8
+    ]
+   }
+  },
+  {
+   "map": "A02",
+   "category": "waveEnemy",
+   "item": "Wave[0][7] 兵种462 L36",
+   "status": "pass",
+   "detail": {
+    "world": [
+     578.55,
+     309.0
+    ]
+   }
+  },
+  {
+   "map": "A02",
+   "category": "waveEnemy",
+   "item": "Wave[0][8] 兵种462 L36",
+   "status": "pass",
+   "detail": {
+    "world": [
+     927.55,
+     326.3
+    ]
+   }
+  },
+  {
+   "map": "A02",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1243.45,
+     205.9,
+     1293.45,
+     385.9
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 20
+   }
+  },
+  {
+   "map": "A02",
+   "category": "registration",
+   "item": "background swf",
+   "status": "pass",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A02_BG.swf",
+    "exists": true,
+    "note": null
+   }
+  },
+  {
+   "map": "A02",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 8850,
+    "reachableCells": 8610,
+    "start": [
+     135.95,
+     328.4
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 3.54
+     },
+     {
+      "label": "pickup:AWP",
+      "reachable": true,
+      "snapDistance": 2.2
+     },
+     {
+      "label": "pickup:狙击步枪通用弹药",
+      "reachable": true,
+      "snapDistance": 2.15
+     },
+     {
+      "label": "pickup:金币",
+      "reachable": true,
+      "snapDistance": 1.56
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A03",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     73.45,
+     353.65
+    ],
+    "runtimeSpawn": [
+     73.45,
+     353.65
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A03",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     70,
+     320
+    ],
+    "expected": [
+     73.45,
+     353.65
+    ],
+    "runtimeSpawn": [
+     73.45,
+     353.65
+    ],
+    "spawnAdjusted": true,
+    "spawnAdjustment": "nearest 10px grid position with 20px X edge margin when authored point is outside walkable region"
+   }
+  },
+  {
+   "map": "A03",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "door",
+     "layers": [
+      {
+       "id": "foreground",
+       "role": "foreground",
+       "url": "flashswf/backgrounds/cf6/CF6_A03_foreground.swf",
+       "x": 114.45,
+       "y": 34.2,
+       "width": 1211.95,
+       "height": 178.75,
+       "depth": 10
+      },
+      {
+       "id": "wood1714-21",
+       "role": "door-spawn-sequence",
+       "url": "flashswf/backgrounds/cf6/CF6_DoorWood1714.swf",
+       "frames": 9,
+       "x": 454.9,
+       "y": 48.6,
+       "width": 170,
+       "height": 240,
+       "depth": 21,
+       "spawnX": 527.95,
+       "spawnY": 244.55,
+       "spawnRadius": 100
+      },
+      {
+       "id": "exit1720-28",
+       "role": "door-exit-sequence",
+       "url": "flashswf/backgrounds/cf6/CF6_DoorExit1720.swf",
+       "frames": 50,
+       "x": 1116.85,
+       "y": 46.05,
+       "width": 170,
+       "height": 240,
+       "depth": 28
+      }
+     ]
+    }
+   }
+  },
+  {
+   "map": "A03",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     53.45,
+     183.65,
+     1253.45,
+     533.65
+    ],
+    "actual": [
+     53.45,
+     183.65,
+     1253.45,
+     533.65
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1203.45,
+     238.65,
+     1253.45,
+     478.65
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1203.45,
+       238.65,
+       1253.45,
+       478.65
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 3,
+    "fragmentCount": 3,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A03",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     62.45,
+     243.65,
+     64.45,
+     473.65
+    ],
+    "actual": [
+     62.45,
+     243.65,
+     64.45,
+     473.65
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1242.45,
+     243.65,
+     1244.45,
+     473.65
+    ],
+    "actual": [
+     1242.45,
+     243.65,
+     1244.45,
+     473.65
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "transform",
+   "item": "economy gold pickup on PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gold": [
+     73.45,
+     353.65
+    ],
+    "player": [
+     73.45,
+     353.65
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A03",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     73.45,
+     353.65
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "pickup",
+   "item": "AA12战术版 x1",
+   "status": "pass",
+   "detail": {
+    "world": [
+     381.55,
+     477.65
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "pickup",
+   "item": "00号鹿弹 x3",
+   "status": "pass",
+   "detail": {
+    "world": [
+     421.55,
+     477.65
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "pickup",
+   "item": "金币 x25000",
+   "status": "pass",
+   "detail": {
+    "world": [
+     73.45,
+     353.65
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种468 L38",
+   "status": "pass",
+   "detail": {
+    "world": [
+     552.55,
+     437.75
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "waveEnemy",
+   "item": "Wave[0][1] 兵种461 L37",
+   "status": "pass",
+   "detail": {
+    "world": [
+     867.15,
+     297.15
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "waveEnemy",
+   "item": "Wave[0][2] 兵种461 L37",
+   "status": "pass",
+   "detail": {
+    "world": [
+     301.25,
+     337.15
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "waveEnemy",
+   "item": "Wave[0][3] 兵种461 L37",
+   "status": "pass",
+   "detail": {
+    "world": [
+     245.25,
+     401.15
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "waveEnemy",
+   "item": "Wave[0][4] 兵种462 L37",
+   "status": "pass",
+   "detail": {
+    "world": [
+     672.55,
+     369.25
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "waveEnemy",
+   "item": "Wave[0][5] 兵种468 L38 via SpawnPoint[0]",
+   "status": "pass",
+   "detail": {
+    "world": [
+     527.95,
+     244.55
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "spawnPoint",
+   "item": "SpawnPoint[0] QuantityMax=2",
+   "status": "pass",
+   "detail": {
+    "world": [
+     527.95,
+     244.55
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1203.45,
+     238.65,
+     1253.45,
+     478.65
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 20
+   }
+  },
+  {
+   "map": "A03",
+   "category": "mechanism",
+   "item": "door kind requires leaves or exit sequence",
+   "status": "pass",
+   "detail": {
+    "roles": [
+     "foreground",
+     "door-spawn-sequence",
+     "door-exit-sequence"
+    ]
+   }
+  },
+  {
+   "map": "A03",
+   "category": "registration",
+   "item": "layer swf CF6_A03_foreground.swf",
+   "status": "pass",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A03_foreground.swf",
+    "exists": true,
+    "note": null
+   }
+  },
+  {
+   "map": "A03",
+   "category": "mechanism",
+   "item": "door-spawn-sequence wood1714-21",
+   "status": "pass",
+   "detail": {
+    "id": "wood1714-21",
+    "frames": 9,
+    "spawnX": 527.95,
+    "spawnY": 244.55,
+    "spawnRadius": 100,
+    "spawnPointFree": true
+   }
+  },
+  {
+   "map": "A03",
+   "category": "registration",
+   "item": "layer swf CF6_DoorWood1714.swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_DoorWood1714.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane; runtime fails closed on missing layer"
+   }
+  },
+  {
+   "map": "A03",
+   "category": "mechanism",
+   "item": "door-exit-sequence exit1720-28",
+   "status": "pass",
+   "detail": {
+    "id": "exit1720-28",
+    "frames": 50
+   }
+  },
+  {
+   "map": "A03",
+   "category": "registration",
+   "item": "layer swf CF6_DoorExit1720.swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_DoorExit1720.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane; runtime fails closed on missing layer"
+   }
+  },
+  {
+   "map": "A03",
+   "category": "registration",
+   "item": "background swf",
+   "status": "pass",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A03_BG.swf",
+    "exists": true,
+    "note": null
+   }
+  },
+  {
+   "map": "A03",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 11760,
+    "reachableCells": 11760,
+    "start": [
+     75.95,
+     356.15
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 3.54
+     },
+     {
+      "label": "pickup:AA12战术版",
+      "reachable": true,
+      "snapDistance": 1.62
+     },
+     {
+      "label": "pickup:00号鹿弹",
+      "reachable": true,
+      "snapDistance": 1.62
+     },
+     {
+      "label": "pickup:金币",
+      "reachable": true,
+      "snapDistance": 3.54
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A04",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     671.9,
+     260.35
+    ],
+    "runtimeSpawn": [
+     671.9,
+     260.35
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A04",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     668.45,
+     226.95
+    ],
+    "expected": [
+     671.9,
+     260.35
+    ],
+    "runtimeSpawn": [
+     671.9,
+     260.35
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A04",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": [
+      {
+       "id": "foreground",
+       "role": "foreground",
+       "url": "flashswf/backgrounds/cf6/CF6_A04_foreground.swf",
+       "x": 114.45,
+       "y": 33.95,
+       "width": 1211.95,
+       "height": 178.75,
+       "depth": 10
+      },
+      {
+       "id": "wood1714-21",
+       "role": "door-spawn-sequence",
+       "url": "flashswf/backgrounds/cf6/CF6_DoorWood1714.swf",
+       "frames": 9,
+       "x": 454.9,
+       "y": 48.35,
+       "width": 170,
+       "height": 240,
+       "depth": 21,
+       "spawnX": 527.95,
+       "spawnY": 244.3,
+       "spawnRadius": 100
+      },
+      {
+       "id": "wood1714-89",
+       "role": "door-spawn-sequence",
+       "url": "flashswf/backgrounds/cf6/CF6_DoorWood1714.swf",
+       "frames": 9,
+       "x": 863.9,
+       "y": 48.35,
+       "width": 170,
+       "height": 240,
+       "depth": 89,
+       "spawnX": 932.95,
+       "spawnY": 244.3,
+       "spawnRadius": 100
+      }
+     ]
+    }
+   }
+  },
+  {
+   "map": "A04",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     53.45,
+     183.4,
+     1253.45,
+     533.4
+    ],
+    "actual": [
+     53.45,
+     183.4,
+     1253.45,
+     533.4
+    ]
+   }
+  },
+  {
+   "map": "A04",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1203.45,
+     238.4,
+     1253.45,
+     478.4
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1203.45,
+       238.4,
+       1253.45,
+       478.4
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A04",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 3,
+    "fragmentCount": 3,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A04",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     62.45,
+     243.4,
+     64.45,
+     473.4
+    ],
+    "actual": [
+     62.45,
+     243.4,
+     64.45,
+     473.4
+    ]
+   }
+  },
+  {
+   "map": "A04",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1242.45,
+     243.4,
+     1244.45,
+     473.4
+    ],
+    "actual": [
+     1242.45,
+     243.4,
+     1244.45,
+     473.4
+    ]
+   }
+  },
+  {
+   "map": "A04",
+   "category": "transform",
+   "item": "economy gold pickup on PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gold": [
+     671.9,
+     260.35
+    ],
+    "player": [
+     671.9,
+     260.35
+    ]
+   }
+  },
+  {
+   "map": "A04",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A04",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     671.9,
+     260.35
+    ]
+   }
+  },
+  {
+   "map": "A04",
+   "category": "pickup",
+   "item": "突击步枪通用弹药 x3",
+   "status": "pass",
+   "detail": {
+    "world": [
+     756.95,
+     391.0
+    ]
+   }
+  },
+  {
+   "map": "A04",
+   "category": "pickup",
+   "item": "金币 x30000",
+   "status": "pass",
+   "detail": {
+    "world": [
+     671.9,
+     260.35
+    ]
+   }
+  },
+  {
+   "map": "A04",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种468 L39",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1071.55,
+     405.0
+    ]
+   }
+  },
+  {
+   "map": "A04",
+   "category": "waveEnemy",
+   "item": "Wave[0][1] 兵种461 L38",
+   "status": "pass",
+   "detail": {
+    "world": [
+     248.55,
+     442.3
+    ]
+   }
+  },
+  {
+   "map": "A04",
+   "category": "waveEnemy",
+   "item": "Wave[0][2] 兵种462 L38",
+   "status": "pass",
+   "detail": {
+    "world": [
+     538.55,
+     366.5
+    ]
+   }
+  },
+  {
+   "map": "A04",
+   "category": "waveEnemy",
+   "item": "Wave[0][3] 兵种462 L38",
+   "status": "pass",
+   "detail": {
+    "world": [
+     900.55,
+     324.5
+    ]
+   }
+  },
+  {
+   "map": "A04",
+   "category": "waveEnemy",
+   "item": "Wave[0][4] 兵种468 L39 via SpawnPoint[0]",
+   "status": "pass",
+   "detail": {
+    "world": [
+     527.95,
+     244.3
+    ]
+   }
+  },
+  {
+   "map": "A04",
+   "category": "waveEnemy",
+   "item": "Wave[0][5] 兵种461 L38 via SpawnPoint[1]",
+   "status": "pass",
+   "detail": {
+    "world": [
+     932.95,
+     244.3
+    ]
+   }
+  },
+  {
+   "map": "A04",
+   "category": "spawnPoint",
+   "item": "SpawnPoint[0] QuantityMax=2",
+   "status": "pass",
+   "detail": {
+    "world": [
+     527.95,
+     244.3
+    ]
+   }
+  },
+  {
+   "map": "A04",
+   "category": "spawnPoint",
+   "item": "SpawnPoint[1] QuantityMax=5",
+   "status": "pass",
+   "detail": {
+    "world": [
+     932.95,
+     244.3
+    ]
+   }
+  },
+  {
+   "map": "A04",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1203.45,
+     238.4,
+     1253.45,
+     478.4
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 20
+   }
+  },
+  {
+   "map": "A04",
+   "category": "registration",
+   "item": "layer swf CF6_A04_foreground.swf",
+   "status": "pass",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A04_foreground.swf",
+    "exists": true,
+    "note": null
+   }
+  },
+  {
+   "map": "A04",
+   "category": "mechanism",
+   "item": "door-spawn-sequence wood1714-21",
+   "status": "pass",
+   "detail": {
+    "id": "wood1714-21",
+    "frames": 9,
+    "spawnX": 527.95,
+    "spawnY": 244.3,
+    "spawnRadius": 100,
+    "spawnPointFree": true
+   }
+  },
+  {
+   "map": "A04",
+   "category": "registration",
+   "item": "layer swf CF6_DoorWood1714.swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_DoorWood1714.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane; runtime fails closed on missing layer"
+   }
+  },
+  {
+   "map": "A04",
+   "category": "mechanism",
+   "item": "door-spawn-sequence wood1714-89",
+   "status": "pass",
+   "detail": {
+    "id": "wood1714-89",
+    "frames": 9,
+    "spawnX": 932.95,
+    "spawnY": 244.3,
+    "spawnRadius": 100,
+    "spawnPointFree": true
+   }
+  },
+  {
+   "map": "A04",
+   "category": "registration",
+   "item": "layer swf CF6_DoorWood1714.swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_DoorWood1714.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane; runtime fails closed on missing layer"
+   }
+  },
+  {
+   "map": "A04",
+   "category": "registration",
+   "item": "background swf",
+   "status": "pass",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A04_BG.swf",
+    "exists": true,
+    "note": null
+   }
+  },
+  {
+   "map": "A04",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 11760,
+    "reachableCells": 11760,
+    "start": [
+     670.95,
+     260.9
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 3.54
+     },
+     {
+      "label": "pickup:突击步枪通用弹药",
+      "reachable": true,
+      "snapDistance": 1.0
+     },
+     {
+      "label": "pickup:金币",
+      "reachable": true,
+      "snapDistance": 1.1
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A05",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     1201.7,
+     264.8
+    ],
+    "runtimeSpawn": [
+     1201.7,
+     264.8
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A05",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     1190.45,
+     231.4
+    ],
+    "expected": [
+     1201.7,
+     264.8
+    ],
+    "runtimeSpawn": [
+     1201.7,
+     264.8
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A05",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "door",
+     "layers": [
+      {
+       "id": "foreground",
+       "role": "foreground",
+       "url": "flashswf/backgrounds/cf6/CF6_A05_foreground.swf",
+       "x": 122.25,
+       "y": 33.95,
+       "width": 1211.95,
+       "height": 178.75,
+       "depth": 10
+      },
+      {
+       "id": "grand1750-88",
+       "role": "door-exit-sequence",
+       "url": "flashswf/backgrounds/cf6/CF6_DoorGrand1750.swf",
+       "frames": 40,
+       "x": 464.95,
+       "y": 36.35,
+       "width": 400,
+       "height": 280,
+       "depth": 88
+      }
+     ]
+    }
+   }
+  },
+  {
+   "map": "A05",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     61.25,
+     183.4,
+     1261.25,
+     533.4
+    ],
+    "actual": [
+     61.25,
+     183.4,
+     1261.25,
+     533.4
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1211.25,
+     238.4,
+     1261.25,
+     478.4
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1211.25,
+       238.4,
+       1261.25,
+       478.4
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 3,
+    "fragmentCount": 3,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A05",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     70.25,
+     243.4,
+     72.25,
+     473.4
+    ],
+    "actual": [
+     70.25,
+     243.4,
+     72.25,
+     473.4
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1250.25,
+     243.4,
+     1252.25,
+     473.4
+    ],
+    "actual": [
+     1250.25,
+     243.4,
+     1252.25,
+     473.4
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "transform",
+   "item": "economy gold pickup on PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gold": [
+     1201.7,
+     264.8
+    ],
+    "player": [
+     1201.7,
+     264.8
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A05",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1201.7,
+     264.8
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "pickup",
+   "item": "强化石 x2",
+   "status": "pass",
+   "detail": {
+    "world": [
+     299.95,
+     263.9
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "pickup",
+   "item": "普通hp药剂 x2",
+   "status": "pass",
+   "detail": {
+    "world": [
+     329.85,
+     285.1
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "pickup",
+   "item": "金币 x40000",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1201.7,
+     264.8
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种468 L40",
+   "status": "pass",
+   "detail": {
+    "world": [
+     539.35,
+     420.0
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "waveEnemy",
+   "item": "Wave[0][1] 兵种461 L39",
+   "status": "pass",
+   "detail": {
+    "world": [
+     373.05,
+     294.3
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "waveEnemy",
+   "item": "Wave[0][2] 兵种468 L40",
+   "status": "pass",
+   "detail": {
+    "world": [
+     955.35,
+     304.0
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "waveEnemy",
+   "item": "Wave[0][3] 兵种468 L40",
+   "status": "pass",
+   "detail": {
+    "world": [
+     847.95,
+     390.0
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "waveEnemy",
+   "item": "Wave[0][4] 兵种461 L39",
+   "status": "pass",
+   "detail": {
+    "world": [
+     711.05,
+     400.3
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "waveEnemy",
+   "item": "Wave[0][5] 兵种461 L39",
+   "status": "pass",
+   "detail": {
+    "world": [
+     466.05,
+     277.3
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "waveEnemy",
+   "item": "Wave[0][6] 兵种462 L39",
+   "status": "pass",
+   "detail": {
+    "world": [
+     634.35,
+     387.5
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1211.25,
+     238.4,
+     1261.25,
+     478.4
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 20
+   }
+  },
+  {
+   "map": "A05",
+   "category": "mechanism",
+   "item": "door kind requires leaves or exit sequence",
+   "status": "pass",
+   "detail": {
+    "roles": [
+     "foreground",
+     "door-exit-sequence"
+    ]
+   }
+  },
+  {
+   "map": "A05",
+   "category": "registration",
+   "item": "layer swf CF6_A05_foreground.swf",
+   "status": "pass",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A05_foreground.swf",
+    "exists": true,
+    "note": null
+   }
+  },
+  {
+   "map": "A05",
+   "category": "mechanism",
+   "item": "door-exit-sequence grand1750-88",
+   "status": "pass",
+   "detail": {
+    "id": "grand1750-88",
+    "frames": 40
+   }
+  },
+  {
+   "map": "A05",
+   "category": "registration",
+   "item": "layer swf CF6_DoorGrand1750.swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_DoorGrand1750.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane; runtime fails closed on missing layer"
+   }
+  },
+  {
+   "map": "A05",
+   "category": "registration",
+   "item": "background swf",
+   "status": "pass",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A05_BG.swf",
+    "exists": true,
+    "note": null
+   }
+  },
+  {
+   "map": "A05",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 11760,
+    "reachableCells": 11760,
+    "start": [
+     1203.75,
+     265.9
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 3.54
+     },
+     {
+      "label": "pickup:强化石",
+      "reachable": true,
+      "snapDistance": 2.33
+     },
+     {
+      "label": "pickup:普通hp药剂",
+      "reachable": true,
+      "snapDistance": 1.36
+     },
+     {
+      "label": "pickup:金币",
+      "reachable": true,
+      "snapDistance": 2.33
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A06",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     846.9,
+     442.1
+    ],
+    "runtimeSpawn": [
+     846.9,
+     442.1
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A06",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     843.45,
+     408.7
+    ],
+    "expected": [
+     846.9,
+     442.1
+    ],
+    "runtimeSpawn": [
+     846.9,
+     442.1
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A06",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": []
+    }
+   }
+  },
+  {
+   "map": "A06",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     53.45,
+     183.4,
+     1503.45,
+     533.4
+    ],
+    "actual": [
+     53.45,
+     183.4,
+     1503.45,
+     533.4
+    ]
+   }
+  },
+  {
+   "map": "A06",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1453.45,
+     243.4,
+     1503.45,
+     478.4
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1453.45,
+       243.4,
+       1503.45,
+       478.4
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A06",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 6,
+    "fragmentCount": 6,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A06",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     62.45,
+     243.4,
+     64.45,
+     473.4
+    ],
+    "actual": [
+     62.45,
+     243.4,
+     64.45,
+     473.4
+    ]
+   }
+  },
+  {
+   "map": "A06",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1492.45,
+     243.4,
+     1494.45,
+     473.4
+    ],
+    "actual": [
+     1492.45,
+     243.4,
+     1494.45,
+     473.4
+    ]
+   }
+  },
+  {
+   "map": "A06",
+   "category": "transform",
+   "item": "economy gold pickup on PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gold": [
+     846.9,
+     442.1
+    ],
+    "player": [
+     846.9,
+     442.1
+    ]
+   }
+  },
+  {
+   "map": "A06",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A06",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     846.9,
+     442.1
+    ]
+   }
+  },
+  {
+   "map": "A06",
+   "category": "pickup",
+   "item": "金币 x50000",
+   "status": "pass",
+   "detail": {
+    "world": [
+     846.9,
+     442.1
+    ]
+   }
+  },
+  {
+   "map": "A06",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种463 L42",
+   "status": "pass",
+   "detail": {
+    "world": [
+     863.05,
+     241.0
+    ]
+   }
+  },
+  {
+   "map": "A06",
+   "category": "bossEnemy",
+   "item": "boss[0][0] 兵种461 L40",
+   "status": "pass",
+   "detail": {
+    "world": [
+     559.95,
+     296.9
+    ]
+   }
+  },
+  {
+   "map": "A06",
+   "category": "bossEnemy",
+   "item": "boss[0][1] 兵种461 L40",
+   "status": "pass",
+   "detail": {
+    "world": [
+     420.85,
+     291.7
+    ]
+   }
+  },
+  {
+   "map": "A06",
+   "category": "bossEnemy",
+   "item": "boss[0][2] 兵种461 L40",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1267.85,
+     312.1
+    ]
+   }
+  },
+  {
+   "map": "A06",
+   "category": "bossEnemy",
+   "item": "boss[0][3] 兵种468 L40",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1276.65,
+     404.5
+    ]
+   }
+  },
+  {
+   "map": "A06",
+   "category": "bossEnemy",
+   "item": "boss[0][4] 兵种468 L40",
+   "status": "pass",
+   "detail": {
+    "world": [
+     369.75,
+     413.6
+    ]
+   }
+  },
+  {
+   "map": "A06",
+   "category": "bossEnemy",
+   "item": "boss[0][5] 兵种466 L41",
+   "status": "unknown",
+   "detail": {
+    "world": [
+     8.45,
+     338.8
+    ],
+    "reason": "outside walkBounds",
+    "walkBounds": [
+     53.45,
+     183.4,
+     1503.45,
+     533.4
+    ],
+    "offscreenJustification": null,
+    "reverification": {
+     "verdict": "unknown",
+     "sourceField": "maps.fragment.json A06 bossEncounter.groups[0] 兵种466 x=5.0 y=305.4 SpawnIndex=left",
+     "originalProvenance": "matches original display[7] id=1585 depth=91 at (5.0,305.45); runtime-index A06 pendingDynamics lists sprite1585 as unidentified semantics",
+     "geometry": "45px left of original walkBounds x0=50 (world x=8.45 < Xmin=53.45); original authored off-screen entrance, symmetric to the in-bounds right pair",
+     "playerCanReach": "not applicable (off-screen entrance; unit walks in)",
+     "minimalFixCandidate": "none if entrance intent confirmed; alternatively drop explicit x/y and keep SpawnIndex=left to spawn on the left line"
+    }
+   }
+  },
+  {
+   "map": "A06",
+   "category": "bossEnemy",
+   "item": "boss[0][6] 兵种466 L41",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1495.15,
+     338.8
+    ]
+   }
+  },
+  {
+   "map": "A06",
+   "category": "bossEnemy",
+   "item": "boss[1][0] 兵种466 L41",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     62.45,
+     243.4,
+     64.45,
+     473.4
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A06",
+   "category": "bossEnemy",
+   "item": "boss[1][1] 兵种466 L41",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1492.45,
+     243.4,
+     1494.45,
+     473.4
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A06",
+   "category": "bossEnemy",
+   "item": "boss[2][0] 兵种466 L41",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     62.45,
+     243.4,
+     64.45,
+     473.4
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A06",
+   "category": "bossEnemy",
+   "item": "boss[2][1] 兵种466 L41",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1492.45,
+     243.4,
+     1494.45,
+     473.4
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A06",
+   "category": "bossEnemy",
+   "item": "boss[3][0] 兵种466 L41",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     62.45,
+     243.4,
+     64.45,
+     473.4
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A06",
+   "category": "bossEnemy",
+   "item": "boss[3][1] 兵种466 L41",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1492.45,
+     243.4,
+     1494.45,
+     473.4
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A06",
+   "category": "bossEnemy",
+   "item": "boss[4][0] 兵种466 L41",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     62.45,
+     243.4,
+     64.45,
+     473.4
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A06",
+   "category": "bossEnemy",
+   "item": "boss[4][1] 兵种466 L41",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1492.45,
+     243.4,
+     1494.45,
+     473.4
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A06",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1453.45,
+     243.4,
+     1503.45,
+     478.4
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 20
+   }
+  },
+  {
+   "map": "A06",
+   "category": "registration",
+   "item": "background swf",
+   "status": "pass",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A06_BG.swf",
+    "exists": true,
+    "note": null
+   }
+  },
+  {
+   "map": "A06",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 14164,
+    "reachableCells": 14164,
+    "start": [
+     845.95,
+     440.9
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 2.5
+     },
+     {
+      "label": "pickup:金币",
+      "reachable": true,
+      "snapDistance": 1.53
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A08",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     240.55,
+     268.3
+    ],
+    "runtimeSpawn": [
+     240.55,
+     268.3
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A08",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     240.55,
+     268.3
+    ],
+    "expected": [
+     240.55,
+     268.3
+    ],
+    "runtimeSpawn": [
+     240.55,
+     268.3
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A08",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": []
+    }
+   }
+  },
+  {
+   "map": "A08",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     50.0,
+     150.0,
+     1250.0,
+     500.0
+    ],
+    "actual": [
+     50.0,
+     150.0,
+     1250.0,
+     500.0
+    ]
+   }
+  },
+  {
+   "map": "A08",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1200,
+     205,
+     1250,
+     445
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1200.0,
+       205.0,
+       1250.0,
+       445.0
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A08",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 4,
+    "fragmentCount": 4,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A08",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     59,
+     265,
+     61,
+     440
+    ],
+    "actual": [
+     59.0,
+     265.0,
+     61.0,
+     440.0
+    ]
+   }
+  },
+  {
+   "map": "A08",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1239,
+     210,
+     1241,
+     440
+    ],
+    "actual": [
+     1239.0,
+     210.0,
+     1241.0,
+     440.0
+    ]
+   }
+  },
+  {
+   "map": "A08",
+   "category": "transform",
+   "item": "economy gold pickup on PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gold": [
+     240.55,
+     268.3
+    ],
+    "player": [
+     240.55,
+     268.3
+    ]
+   }
+  },
+  {
+   "map": "A08",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A08",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     240.55,
+     268.3
+    ]
+   }
+  },
+  {
+   "map": "A08",
+   "category": "pickup",
+   "item": "普通hp药剂 x2",
+   "status": "pass",
+   "detail": {
+    "world": [
+     932.5,
+     228.2
+    ]
+   }
+  },
+  {
+   "map": "A08",
+   "category": "pickup",
+   "item": "突击步枪通用弹药 x2",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1018.5,
+     225.2
+    ]
+   }
+  },
+  {
+   "map": "A08",
+   "category": "pickup",
+   "item": "金币 x40000",
+   "status": "pass",
+   "detail": {
+    "world": [
+     240.55,
+     268.3
+    ]
+   }
+  },
+  {
+   "map": "A08",
+   "category": "merchant",
+   "item": "生存战-迷之盔甲君",
+   "status": "pass",
+   "detail": {
+    "world": [
+     240.55,
+     313.3
+    ]
+   }
+  },
+  {
+   "map": "A08",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1200.0,
+     205.0,
+     1250.0,
+     445.0
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 20
+   }
+  },
+  {
+   "map": "A08",
+   "category": "registration",
+   "item": "background swf",
+   "status": "pass",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A08_BG.swf",
+    "exists": true,
+    "note": null
+   }
+  },
+  {
+   "map": "A08",
+   "category": "merchant",
+   "item": "assembler anchor predicate",
+   "status": "pass",
+   "detail": {
+    "anchor": [
+     240.55,
+     313.3
+    ],
+    "reason": "assembler predicate holds"
+   }
+  },
+  {
+   "map": "A08",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 11023,
+    "reachableCells": 11023,
+    "start": [
+     242.5,
+     267.5
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 3.54
+     },
+     {
+      "label": "pickup:普通hp药剂",
+      "reachable": true,
+      "snapDistance": 0.7
+     },
+     {
+      "label": "pickup:突击步枪通用弹药",
+      "reachable": true,
+      "snapDistance": 2.51
+     },
+     {
+      "label": "pickup:金币",
+      "reachable": true,
+      "snapDistance": 2.11
+     },
+     {
+      "label": "instance:生存战-迷之盔甲君",
+      "reachable": true,
+      "snapDistance": 2.11
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A09",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     367.2,
+     320.7
+    ],
+    "runtimeSpawn": [
+     367.2,
+     320.7
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A09",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     91.25,
+     271.5
+    ],
+    "expected": [
+     367.2,
+     320.7
+    ],
+    "runtimeSpawn": [
+     367.2,
+     320.7
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A09",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": []
+    }
+   }
+  },
+  {
+   "map": "A09",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     325.95,
+     199.2,
+     1425.95,
+     539.2
+    ],
+    "actual": [
+     325.95,
+     199.2,
+     1425.95,
+     539.2
+    ]
+   }
+  },
+  {
+   "map": "A09",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1375.95,
+     264.2,
+     1425.95,
+     529.2
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1375.95,
+       264.2,
+       1425.95,
+       529.2
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A09",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 6,
+    "fragmentCount": 6,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A09",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     334.95,
+     264.2,
+     336.95,
+     524.2
+    ],
+    "actual": [
+     334.95,
+     264.2,
+     336.95,
+     524.2
+    ]
+   }
+  },
+  {
+   "map": "A09",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1414.95,
+     269.2,
+     1416.95,
+     524.2
+    ],
+    "actual": [
+     1414.95,
+     269.2,
+     1416.95,
+     524.2
+    ]
+   }
+  },
+  {
+   "map": "A09",
+   "category": "transform",
+   "item": "economy gold pickup on PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gold": [
+     367.2,
+     320.7
+    ],
+    "player": [
+     367.2,
+     320.7
+    ]
+   }
+  },
+  {
+   "map": "A09",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A09",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     367.2,
+     320.7
+    ]
+   }
+  },
+  {
+   "map": "A09",
+   "category": "pickup",
+   "item": "金币 x45000",
+   "status": "pass",
+   "detail": {
+    "world": [
+     367.2,
+     320.7
+    ]
+   }
+  },
+  {
+   "map": "A09",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种466 L45",
+   "status": "pass",
+   "detail": {
+    "world": [
+     660.45,
+     331.9
+    ]
+   }
+  },
+  {
+   "map": "A09",
+   "category": "waveEnemy",
+   "item": "Wave[0][1] 兵种468 L44",
+   "status": "pass",
+   "detail": {
+    "world": [
+     602.05,
+     412.4
+    ]
+   }
+  },
+  {
+   "map": "A09",
+   "category": "waveEnemy",
+   "item": "Wave[0][2] 兵种461 L44",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1298.35,
+     371.7
+    ]
+   }
+  },
+  {
+   "map": "A09",
+   "category": "waveEnemy",
+   "item": "Wave[0][3] 兵种461 L44",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1300.25,
+     460.7
+    ]
+   }
+  },
+  {
+   "map": "A09",
+   "category": "waveEnemy",
+   "item": "Wave[1][0] 兵种467 L45 via SpawnPoint[0]",
+   "status": "pass",
+   "detail": {
+    "world": [
+     972.45,
+     309.5
+    ]
+   }
+  },
+  {
+   "map": "A09",
+   "category": "spawnPoint",
+   "item": "SpawnPoint[0] QuantityMax=2",
+   "status": "pass",
+   "detail": {
+    "world": [
+     972.45,
+     309.5
+    ]
+   }
+  },
+  {
+   "map": "A09",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1375.95,
+     264.2,
+     1425.95,
+     529.2
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 20
+   }
+  },
+  {
+   "map": "A09",
+   "category": "registration",
+   "item": "background swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A09_BG.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane",
+    "xflPath": "flashswf/backgrounds/cf6/CF6_A09_BG/CF6_A09_BG.xfl",
+    "xflExists": false
+   }
+  },
+  {
+   "map": "A09",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 11322,
+    "reachableCells": 11322,
+    "start": [
+     368.45,
+     321.7
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 2.5
+     },
+     {
+      "label": "pickup:金币",
+      "reachable": true,
+      "snapDistance": 1.6
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A10",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     222.5,
+     338.55
+    ],
+    "runtimeSpawn": [
+     222.5,
+     338.55
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A10",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     172.5,
+     278.55
+    ],
+    "expected": [
+     222.5,
+     338.55
+    ],
+    "runtimeSpawn": [
+     222.5,
+     338.55
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A10",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": [
+      {
+       "id": "elevator-scroll",
+       "role": "elevator-scroll",
+       "url": "flashswf/backgrounds/cf6/CF6_A10_elevator-scroll.swf",
+       "x": 0.0,
+       "y": 0.0,
+       "width": 700.0,
+       "height": 542.95,
+       "depth": 0,
+       "loopHeight": 541.95,
+       "clip": [
+        50.0,
+        60.0,
+        600.0,
+        350.0
+       ]
+      },
+      {
+       "id": "foreground",
+       "role": "foreground",
+       "url": "flashswf/backgrounds/cf6/CF6_A10_foreground.swf",
+       "x": 110.45,
+       "y": 66.45,
+       "width": 480.0,
+       "height": 388.0,
+       "depth": 10
+      }
+     ]
+    }
+   }
+  },
+  {
+   "map": "A10",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     150.0,
+     310.0,
+     550.0,
+     370.0
+    ],
+    "actual": [
+     150.0,
+     310.0,
+     550.0,
+     370.0
+    ]
+   }
+  },
+  {
+   "map": "A10",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     490.0,
+     335.0,
+     540.0,
+     360.0
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       490.0,
+       335.0,
+       540.0,
+       360.0
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A10",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 2,
+    "fragmentCount": 2,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A10",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     159.0,
+     340.0,
+     161.0,
+     355.0
+    ],
+    "actual": [
+     159.0,
+     340.0,
+     161.0,
+     355.0
+    ]
+   }
+  },
+  {
+   "map": "A10",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     529.0,
+     340.0,
+     531.0,
+     355.0
+    ],
+    "actual": [
+     529.0,
+     340.0,
+     531.0,
+     355.0
+    ]
+   }
+  },
+  {
+   "map": "A10",
+   "category": "transform",
+   "item": "economy gold pickup on PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gold": [
+     222.5,
+     338.55
+    ],
+    "player": [
+     222.5,
+     338.55
+    ]
+   }
+  },
+  {
+   "map": "A10",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A10",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     222.5,
+     338.55
+    ]
+   }
+  },
+  {
+   "map": "A10",
+   "category": "pickup",
+   "item": "CAR冲锋枪 x1",
+   "status": "pass",
+   "detail": {
+    "world": [
+     282.5,
+     338.6
+    ]
+   }
+  },
+  {
+   "map": "A10",
+   "category": "pickup",
+   "item": "冲锋枪达姆弹弹药 x3",
+   "status": "pass",
+   "detail": {
+    "world": [
+     322.5,
+     338.6
+    ]
+   }
+  },
+  {
+   "map": "A10",
+   "category": "pickup",
+   "item": "金币 x45000",
+   "status": "pass",
+   "detail": {
+    "world": [
+     222.5,
+     338.55
+    ]
+   }
+  },
+  {
+   "map": "A10",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种469 L45",
+   "status": "pass",
+   "detail": {
+    "world": [
+     468.0,
+     344.7
+    ]
+   }
+  },
+  {
+   "map": "A10",
+   "category": "waveEnemy",
+   "item": "Wave[0][1] 兵种461 L45",
+   "status": "pass",
+   "detail": {
+    "world": [
+     381.1,
+     353.2
+    ]
+   }
+  },
+  {
+   "map": "A10",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     490.0,
+     335.0,
+     540.0,
+     360.0
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 25
+   }
+  },
+  {
+   "map": "A10",
+   "category": "mechanism",
+   "item": "elevator fail-closed requirements",
+   "status": "pass",
+   "detail": {
+    "consumer": "Cf6MapMechanism.createState forces kind=elevator for A10/A13; loadLayers fails closed without elevator-scroll (loopHeight>0, clip[4]); exit stays closed until closing->moving->stopping->opening->ready",
+    "layers": [
+     {
+      "id": "elevator-scroll",
+      "role": "elevator-scroll",
+      "url": "flashswf/backgrounds/cf6/CF6_A10_elevator-scroll.swf",
+      "x": 0.0,
+      "y": 0.0,
+      "width": 700.0,
+      "height": 542.95,
+      "depth": 0,
+      "loopHeight": 541.95,
+      "clip": [
+       50.0,
+       60.0,
+       600.0,
+       350.0
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "map": "A10",
+   "category": "registration",
+   "item": "layer swf CF6_A10_elevator-scroll.swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A10_elevator-scroll.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane; runtime fails closed on missing layer"
+   }
+  },
+  {
+   "map": "A10",
+   "category": "registration",
+   "item": "layer swf CF6_A10_foreground.swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A10_foreground.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane; runtime fails closed on missing layer"
+   }
+  },
+  {
+   "map": "A10",
+   "category": "registration",
+   "item": "background swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A10_BG.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane",
+    "xflPath": "flashswf/backgrounds/cf6/CF6_A10_BG/CF6_A10_BG.xfl",
+    "xflExists": false
+   }
+  },
+  {
+   "map": "A10",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 553,
+    "reachableCells": 553,
+    "start": [
+     222.5,
+     337.5
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 2.5
+     },
+     {
+      "label": "pickup:CAR冲锋枪",
+      "reachable": true,
+      "snapDistance": 1.1
+     },
+     {
+      "label": "pickup:冲锋枪达姆弹弹药",
+      "reachable": true,
+      "snapDistance": 1.1
+     },
+     {
+      "label": "pickup:金币",
+      "reachable": true,
+      "snapDistance": 1.05
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A11",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     1041.45,
+     354.8
+    ],
+    "runtimeSpawn": [
+     1041.45,
+     354.8
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A11",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     753.5,
+     249.05
+    ],
+    "expected": [
+     1041.45,
+     354.8
+    ],
+    "runtimeSpawn": [
+     1041.45,
+     354.8
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A11",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": []
+    }
+   }
+  },
+  {
+   "map": "A11",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     337.95,
+     255.75,
+     1277.95,
+     605.75
+    ],
+    "actual": [
+     337.95,
+     255.75,
+     1277.95,
+     605.75
+    ]
+   }
+  },
+  {
+   "map": "A11",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1227.95,
+     385.75,
+     1277.95,
+     590.75
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1227.95,
+       385.75,
+       1277.95,
+       590.75
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A11",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 12,
+    "fragmentCount": 12,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A11",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     346.95,
+     330.75,
+     348.95,
+     585.75
+    ],
+    "actual": [
+     346.95,
+     330.75,
+     348.95,
+     585.75
+    ]
+   }
+  },
+  {
+   "map": "A11",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1266.95,
+     390.75,
+     1268.95,
+     585.75
+    ],
+    "actual": [
+     1266.95,
+     390.75,
+     1268.95,
+     585.75
+    ]
+   }
+  },
+  {
+   "map": "A11",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A11",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1041.45,
+     354.8
+    ]
+   }
+  },
+  {
+   "map": "A11",
+   "category": "merchant",
+   "item": "生存战-迷之盔甲君",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1041.45,
+     399.8
+    ]
+   }
+  },
+  {
+   "map": "A11",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种462 L46",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1219.05,
+     476.85
+    ]
+   }
+  },
+  {
+   "map": "A11",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1227.95,
+     385.75,
+     1277.95,
+     590.75
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 20
+   }
+  },
+  {
+   "map": "A11",
+   "category": "registration",
+   "item": "background swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A11_BG.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane",
+    "xflPath": "flashswf/backgrounds/cf6/CF6_A11_BG/CF6_A11_BG.xfl",
+    "xflExists": false
+   }
+  },
+  {
+   "map": "A11",
+   "category": "merchant",
+   "item": "assembler anchor predicate",
+   "status": "pass",
+   "detail": {
+    "anchor": [
+     1041.45,
+     399.8
+    ],
+    "reason": "assembler predicate holds"
+   }
+  },
+  {
+   "map": "A11",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 8704,
+    "reachableCells": 8704,
+    "start": [
+     1040.45,
+     353.25
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 2.5
+     },
+     {
+      "label": "instance:生存战-迷之盔甲君",
+      "reachable": true,
+      "snapDistance": 1.84
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A12",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     1509.5,
+     356.45
+    ],
+    "runtimeSpawn": [
+     1509.5,
+     356.45
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A12",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     1233.55,
+     307.25
+    ],
+    "expected": [
+     1509.5,
+     356.45
+    ],
+    "runtimeSpawn": [
+     1509.5,
+     356.45
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A12",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": []
+    }
+   }
+  },
+  {
+   "map": "A12",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     325.95,
+     199.2,
+     1615.95,
+     539.2
+    ],
+    "actual": [
+     325.95,
+     199.2,
+     1615.95,
+     539.2
+    ]
+   }
+  },
+  {
+   "map": "A12",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1565.95,
+     264.2,
+     1615.95,
+     529.2
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1565.95,
+       264.2,
+       1615.95,
+       529.2
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A12",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 5,
+    "fragmentCount": 5,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A12",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     334.95,
+     269.2,
+     336.95,
+     524.2
+    ],
+    "actual": [
+     334.95,
+     269.2,
+     336.95,
+     524.2
+    ]
+   }
+  },
+  {
+   "map": "A12",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1604.95,
+     269.2,
+     1606.95,
+     524.2
+    ],
+    "actual": [
+     1604.95,
+     269.2,
+     1606.95,
+     524.2
+    ]
+   }
+  },
+  {
+   "map": "A12",
+   "category": "transform",
+   "item": "economy gold pickup on PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gold": [
+     1509.5,
+     356.45
+    ],
+    "player": [
+     1509.5,
+     356.45
+    ]
+   }
+  },
+  {
+   "map": "A12",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A12",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1509.5,
+     356.45
+    ]
+   }
+  },
+  {
+   "map": "A12",
+   "category": "pickup",
+   "item": "普通hp药剂 x1",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1209.45,
+     277.4
+    ]
+   }
+  },
+  {
+   "map": "A12",
+   "category": "pickup",
+   "item": "突击步枪钨芯穿甲弹 x2",
+   "status": "pass",
+   "detail": {
+    "world": [
+     678.85,
+     275.5
+    ]
+   }
+  },
+  {
+   "map": "A12",
+   "category": "pickup",
+   "item": "金币 x50000",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1509.5,
+     356.45
+    ]
+   }
+  },
+  {
+   "map": "A12",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种469 L47",
+   "status": "pass",
+   "detail": {
+    "world": [
+     621.05,
+     385.6
+    ]
+   }
+  },
+  {
+   "map": "A12",
+   "category": "waveEnemy",
+   "item": "Wave[0][1] 兵种466 L48",
+   "status": "pass",
+   "detail": {
+    "world": [
+     656.15,
+     477.8
+    ]
+   }
+  },
+  {
+   "map": "A12",
+   "category": "waveEnemy",
+   "item": "Wave[0][2] 兵种469 L47",
+   "status": "pass",
+   "detail": {
+    "world": [
+     516.05,
+     382.6
+    ]
+   }
+  },
+  {
+   "map": "A12",
+   "category": "waveEnemy",
+   "item": "Wave[0][3] 兵种468 L47",
+   "status": "pass",
+   "detail": {
+    "world": [
+     467.05,
+     480.6
+    ]
+   }
+  },
+  {
+   "map": "A12",
+   "category": "waveEnemy",
+   "item": "Wave[0][4] 兵种466 L48",
+   "status": "pass",
+   "detail": {
+    "world": [
+     704.15,
+     374.5
+    ]
+   }
+  },
+  {
+   "map": "A12",
+   "category": "waveEnemy",
+   "item": "Wave[0][5] 兵种461 L47 via SpawnPoint[0]",
+   "status": "pass",
+   "detail": {
+    "world": [
+     893.45,
+     264.9
+    ]
+   }
+  },
+  {
+   "map": "A12",
+   "category": "spawnPoint",
+   "item": "SpawnPoint[0] QuantityMax=3",
+   "status": "pass",
+   "detail": {
+    "world": [
+     893.45,
+     264.9
+    ]
+   }
+  },
+  {
+   "map": "A12",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1565.95,
+     264.2,
+     1615.95,
+     529.2
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 20
+   }
+  },
+  {
+   "map": "A12",
+   "category": "registration",
+   "item": "background swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A12_BG.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane",
+    "xflPath": "flashswf/backgrounds/cf6/CF6_A12_BG/CF6_A12_BG.xfl",
+    "xflExists": false
+   }
+  },
+  {
+   "map": "A12",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 14367,
+    "reachableCells": 14367,
+    "start": [
+     1508.45,
+     356.7
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 2.5
+     },
+     {
+      "label": "pickup:普通hp药剂",
+      "reachable": true,
+      "snapDistance": 1.22
+     },
+     {
+      "label": "pickup:突击步枪钨芯穿甲弹",
+      "reachable": true,
+      "snapDistance": 1.26
+     },
+     {
+      "label": "pickup:金币",
+      "reachable": true,
+      "snapDistance": 1.08
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A13",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     222.5,
+     338.55
+    ],
+    "runtimeSpawn": [
+     222.5,
+     338.55
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A13",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     172.5,
+     278.55
+    ],
+    "expected": [
+     222.5,
+     338.55
+    ],
+    "runtimeSpawn": [
+     222.5,
+     338.55
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A13",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": [
+      {
+       "id": "elevator-scroll",
+       "role": "elevator-scroll",
+       "url": "flashswf/backgrounds/cf6/CF6_A13_elevator-scroll.swf",
+       "x": 0.0,
+       "y": 0.0,
+       "width": 700.0,
+       "height": 542.95,
+       "depth": 0,
+       "loopHeight": 541.95,
+       "clip": [
+        50.0,
+        60.0,
+        600.0,
+        350.0
+       ]
+      },
+      {
+       "id": "foreground",
+       "role": "foreground",
+       "url": "flashswf/backgrounds/cf6/CF6_A13_foreground.swf",
+       "x": 110.45,
+       "y": 66.45,
+       "width": 480.0,
+       "height": 388.0,
+       "depth": 10
+      }
+     ]
+    }
+   }
+  },
+  {
+   "map": "A13",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     150.0,
+     310.0,
+     550.0,
+     370.0
+    ],
+    "actual": [
+     150.0,
+     310.0,
+     550.0,
+     370.0
+    ]
+   }
+  },
+  {
+   "map": "A13",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     490.0,
+     335.0,
+     540.0,
+     360.0
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       490.0,
+       335.0,
+       540.0,
+       360.0
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A13",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 2,
+    "fragmentCount": 2,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A13",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     159.0,
+     340.0,
+     161.0,
+     355.0
+    ],
+    "actual": [
+     159.0,
+     340.0,
+     161.0,
+     355.0
+    ]
+   }
+  },
+  {
+   "map": "A13",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     529.0,
+     340.0,
+     531.0,
+     355.0
+    ],
+    "actual": [
+     529.0,
+     340.0,
+     531.0,
+     355.0
+    ]
+   }
+  },
+  {
+   "map": "A13",
+   "category": "transform",
+   "item": "economy gold pickup on PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gold": [
+     222.5,
+     338.55
+    ],
+    "player": [
+     222.5,
+     338.55
+    ]
+   }
+  },
+  {
+   "map": "A13",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A13",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     222.5,
+     338.55
+    ]
+   }
+  },
+  {
+   "map": "A13",
+   "category": "pickup",
+   "item": "金币 x60000",
+   "status": "pass",
+   "detail": {
+    "world": [
+     222.5,
+     338.55
+    ]
+   }
+  },
+  {
+   "map": "A13",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种467 L49",
+   "status": "pass",
+   "detail": {
+    "world": [
+     463.8,
+     338.5
+    ]
+   }
+  },
+  {
+   "map": "A13",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     490.0,
+     335.0,
+     540.0,
+     360.0
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 25
+   }
+  },
+  {
+   "map": "A13",
+   "category": "mechanism",
+   "item": "elevator fail-closed requirements",
+   "status": "pass",
+   "detail": {
+    "consumer": "Cf6MapMechanism.createState forces kind=elevator for A10/A13; loadLayers fails closed without elevator-scroll (loopHeight>0, clip[4]); exit stays closed until closing->moving->stopping->opening->ready",
+    "layers": [
+     {
+      "id": "elevator-scroll",
+      "role": "elevator-scroll",
+      "url": "flashswf/backgrounds/cf6/CF6_A13_elevator-scroll.swf",
+      "x": 0.0,
+      "y": 0.0,
+      "width": 700.0,
+      "height": 542.95,
+      "depth": 0,
+      "loopHeight": 541.95,
+      "clip": [
+       50.0,
+       60.0,
+       600.0,
+       350.0
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "map": "A13",
+   "category": "registration",
+   "item": "layer swf CF6_A13_elevator-scroll.swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A13_elevator-scroll.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane; runtime fails closed on missing layer"
+   }
+  },
+  {
+   "map": "A13",
+   "category": "registration",
+   "item": "layer swf CF6_A13_foreground.swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A13_foreground.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane; runtime fails closed on missing layer"
+   }
+  },
+  {
+   "map": "A13",
+   "category": "registration",
+   "item": "background swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A13_BG.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane",
+    "xflPath": "flashswf/backgrounds/cf6/CF6_A13_BG/CF6_A13_BG.xfl",
+    "xflExists": false
+   }
+  },
+  {
+   "map": "A13",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 553,
+    "reachableCells": 553,
+    "start": [
+     222.5,
+     337.5
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 2.5
+     },
+     {
+      "label": "pickup:金币",
+      "reachable": true,
+      "snapDistance": 1.05
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A14",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     558.85,
+     340.4
+    ],
+    "runtimeSpawn": [
+     558.85,
+     340.4
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A14",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     270.9,
+     233.3
+    ],
+    "expected": [
+     558.85,
+     340.4
+    ],
+    "runtimeSpawn": [
+     558.85,
+     340.4
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A14",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": []
+    }
+   }
+  },
+  {
+   "map": "A14",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     337.95,
+     257.1,
+     1787.95,
+     597.1
+    ],
+    "actual": [
+     337.95,
+     257.1,
+     1787.95,
+     597.1
+    ]
+   }
+  },
+  {
+   "map": "A14",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1737.95,
+     337.1,
+     1787.95,
+     587.1
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1737.95,
+       337.1,
+       1787.95,
+       587.1
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A14",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 13,
+    "fragmentCount": 13,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A14",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     346.95,
+     392.1,
+     348.95,
+     582.1
+    ],
+    "actual": [
+     346.95,
+     392.1,
+     348.95,
+     582.1
+    ]
+   }
+  },
+  {
+   "map": "A14",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1776.95,
+     342.1,
+     1778.95,
+     582.1
+    ],
+    "actual": [
+     1776.95,
+     342.1,
+     1778.95,
+     582.1
+    ]
+   }
+  },
+  {
+   "map": "A14",
+   "category": "transform",
+   "item": "economy gold pickup on PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gold": [
+     558.85,
+     340.4
+    ],
+    "player": [
+     558.85,
+     340.4
+    ]
+   }
+  },
+  {
+   "map": "A14",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A14",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     558.85,
+     340.4
+    ]
+   }
+  },
+  {
+   "map": "A14",
+   "category": "pickup",
+   "item": "金币 x65000",
+   "status": "pass",
+   "detail": {
+    "world": [
+     558.85,
+     340.4
+    ]
+   }
+  },
+  {
+   "map": "A14",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种466 L51",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1595.45,
+     402.2
+    ]
+   }
+  },
+  {
+   "map": "A14",
+   "category": "waveEnemy",
+   "item": "Wave[0][1] 兵种467 L51",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1593.45,
+     549.2
+    ]
+   }
+  },
+  {
+   "map": "A14",
+   "category": "waveEnemy",
+   "item": "Wave[1][0] 兵种469 L50 via SpawnPoint[0]",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1396.35,
+     392.2
+    ]
+   }
+  },
+  {
+   "map": "A14",
+   "category": "spawnPoint",
+   "item": "SpawnPoint[0] QuantityMax=2",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1396.35,
+     392.2
+    ]
+   }
+  },
+  {
+   "map": "A14",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1737.95,
+     337.1,
+     1787.95,
+     587.1
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 20
+   }
+  },
+  {
+   "map": "A14",
+   "category": "registration",
+   "item": "background swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A14_BG.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane",
+    "xflPath": "flashswf/backgrounds/cf6/CF6_A14_BG/CF6_A14_BG.xfl",
+    "xflExists": false
+   }
+  },
+  {
+   "map": "A14",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 13605,
+    "reachableCells": 13605,
+    "start": [
+     560.45,
+     339.6
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 3.54
+     },
+     {
+      "label": "pickup:金币",
+      "reachable": true,
+      "snapDistance": 1.79
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A15",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     473.9,
+     486.4
+    ],
+    "runtimeSpawn": [
+     473.9,
+     486.4
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A15",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     185.95,
+     398.8
+    ],
+    "expected": [
+     473.9,
+     486.4
+    ],
+    "runtimeSpawn": [
+     473.9,
+     486.4
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A15",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": []
+    }
+   }
+  },
+  {
+   "map": "A15",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     337.95,
+     237.6,
+     1787.95,
+     577.6
+    ],
+    "actual": [
+     337.95,
+     237.6,
+     1787.95,
+     577.6
+    ]
+   }
+  },
+  {
+   "map": "A15",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1737.95,
+     332.6,
+     1787.95,
+     567.6
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1737.95,
+       332.6,
+       1787.95,
+       567.6
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A15",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 9,
+    "fragmentCount": 9,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A15",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     346.95,
+     417.6,
+     348.95,
+     562.6
+    ],
+    "actual": [
+     346.95,
+     417.6,
+     348.95,
+     562.6
+    ]
+   }
+  },
+  {
+   "map": "A15",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1776.95,
+     337.6,
+     1778.95,
+     562.6
+    ],
+    "actual": [
+     1776.95,
+     337.6,
+     1778.95,
+     562.6
+    ]
+   }
+  },
+  {
+   "map": "A15",
+   "category": "transform",
+   "item": "economy gold pickup on PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gold": [
+     473.9,
+     486.4
+    ],
+    "player": [
+     473.9,
+     486.4
+    ]
+   }
+  },
+  {
+   "map": "A15",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A15",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     473.9,
+     486.4
+    ]
+   }
+  },
+  {
+   "map": "A15",
+   "category": "pickup",
+   "item": "战术-QBZ-192 x1",
+   "status": "pass",
+   "detail": {
+    "world": [
+     533.85,
+     486.4
+    ]
+   }
+  },
+  {
+   "map": "A15",
+   "category": "pickup",
+   "item": "突击步枪通用弹药 x3",
+   "status": "pass",
+   "detail": {
+    "world": [
+     573.85,
+     486.4
+    ]
+   }
+  },
+  {
+   "map": "A15",
+   "category": "pickup",
+   "item": "金币 x65000",
+   "status": "pass",
+   "detail": {
+    "world": [
+     473.9,
+     486.4
+    ]
+   }
+  },
+  {
+   "map": "A15",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种460 L50",
+   "status": "pass",
+   "detail": {
+    "semantics": "no x/y and no SpawnIndex: engine default 1/3 left line, 2/3 right line (WaveSpawner.spawnEnemy default)",
+    "spawnLinesPresent": true
+   }
+  },
+  {
+   "map": "A15",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1737.95,
+     332.6,
+     1787.95,
+     567.6
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 20
+   }
+  },
+  {
+   "map": "A15",
+   "category": "registration",
+   "item": "background swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A15_BG.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane",
+    "xflPath": "flashswf/backgrounds/cf6/CF6_A15_BG/CF6_A15_BG.xfl",
+    "xflExists": false
+   }
+  },
+  {
+   "map": "A15",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 13221,
+    "reachableCells": 13221,
+    "start": [
+     475.45,
+     485.1
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 2.5
+     },
+     {
+      "label": "pickup:战术-QBZ-192",
+      "reachable": true,
+      "snapDistance": 2.06
+     },
+     {
+      "label": "pickup:突击步枪通用弹药",
+      "reachable": true,
+      "snapDistance": 2.06
+     },
+     {
+      "label": "pickup:金币",
+      "reachable": true,
+      "snapDistance": 2.02
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A16",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     561.85,
+     447.35
+    ],
+    "runtimeSpawn": [
+     561.85,
+     447.35
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A16",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     273.9,
+     378.15
+    ],
+    "expected": [
+     561.85,
+     447.35
+    ],
+    "runtimeSpawn": [
+     561.85,
+     447.35
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A16",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": []
+    }
+   }
+  },
+  {
+   "map": "A16",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     337.95,
+     269.2,
+     1257.95,
+     519.2
+    ],
+    "actual": [
+     337.95,
+     269.2,
+     1257.95,
+     519.2
+    ]
+   }
+  },
+  {
+   "map": "A16",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1197.95,
+     389.2,
+     1247.95,
+     509.2
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1197.95,
+       389.2,
+       1247.95,
+       509.2
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A16",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 9,
+    "fragmentCount": 9,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A16",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     346.95,
+     394.2,
+     348.95,
+     504.2
+    ],
+    "actual": [
+     346.95,
+     394.2,
+     348.95,
+     504.2
+    ]
+   }
+  },
+  {
+   "map": "A16",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1236.95,
+     394.2,
+     1238.95,
+     504.2
+    ],
+    "actual": [
+     1236.95,
+     394.2,
+     1238.95,
+     504.2
+    ]
+   }
+  },
+  {
+   "map": "A16",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A16",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     561.85,
+     447.35
+    ]
+   }
+  },
+  {
+   "map": "A16",
+   "category": "merchant",
+   "item": "生存战-迷之盔甲君",
+   "status": "pass",
+   "detail": {
+    "world": [
+     641.85,
+     447.35
+    ]
+   }
+  },
+  {
+   "map": "A16",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1197.95,
+     389.2,
+     1247.95,
+     509.2
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 25
+   }
+  },
+  {
+   "map": "A16",
+   "category": "registration",
+   "item": "background swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A16_BG.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane",
+    "xflPath": "flashswf/backgrounds/cf6/CF6_A16_BG/CF6_A16_BG.xfl",
+    "xflExists": false
+   }
+  },
+  {
+   "map": "A16",
+   "category": "merchant",
+   "item": "assembler anchor predicate",
+   "status": "pass",
+   "detail": {
+    "anchor": [
+     641.85,
+     447.35
+    ],
+    "reason": "assembler predicate holds"
+   }
+  },
+  {
+   "map": "A16",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 6588,
+    "reachableCells": 6588,
+    "start": [
+     560.45,
+     446.7
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 3.54
+     },
+     {
+      "label": "instance:生存战-迷之盔甲君",
+      "reachable": true,
+      "snapDistance": 1.54
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A17",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     951.8,
+     368.25
+    ],
+    "runtimeSpawn": [
+     951.8,
+     368.25
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A17",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     663.85,
+     289.05
+    ],
+    "expected": [
+     951.8,
+     368.25
+    ],
+    "runtimeSpawn": [
+     951.8,
+     368.25
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A17",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": []
+    }
+   }
+  },
+  {
+   "map": "A17",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     337.95,
+     329.2,
+     1787.95,
+     599.2
+    ],
+    "actual": [
+     337.95,
+     329.2,
+     1787.95,
+     599.2
+    ]
+   }
+  },
+  {
+   "map": "A17",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1737.95,
+     339.2,
+     1787.95,
+     589.2
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1737.95,
+       339.2,
+       1787.95,
+       589.2
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A17",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 2,
+    "fragmentCount": 2,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A17",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     346.95,
+     344.2,
+     348.95,
+     584.2
+    ],
+    "actual": [
+     346.95,
+     344.2,
+     348.95,
+     584.2
+    ]
+   }
+  },
+  {
+   "map": "A17",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1776.95,
+     344.2,
+     1778.95,
+     584.2
+    ],
+    "actual": [
+     1776.95,
+     344.2,
+     1778.95,
+     584.2
+    ]
+   }
+  },
+  {
+   "map": "A17",
+   "category": "transform",
+   "item": "economy gold pickup on PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gold": [
+     951.8,
+     368.25
+    ],
+    "player": [
+     951.8,
+     368.25
+    ]
+   }
+  },
+  {
+   "map": "A17",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A17",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     951.8,
+     368.25
+    ]
+   }
+  },
+  {
+   "map": "A17",
+   "category": "pickup",
+   "item": "金币 x90000",
+   "status": "pass",
+   "detail": {
+    "world": [
+     951.8,
+     368.25
+    ]
+   }
+  },
+  {
+   "map": "A17",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种472 L57",
+   "status": "unknown",
+   "detail": {
+    "world": [
+     963.55,
+     305.9
+    ],
+    "reason": "outside walkBounds",
+    "walkBounds": [
+     337.95,
+     329.2,
+     1787.95,
+     599.2
+    ],
+    "offscreenJustification": "screen-edge/off-screen spawn; verify intent in sourceNote",
+    "reverification": {
+     "verdict": "unknown",
+     "sourceField": "maps.fragment.json A17 Wave[0].Enemy[0] 兵种472 InstanceName=cf6Boss_A17 x=675.6 y=226.7",
+     "originalProvenance": "matches original display[18] id=952 name='boss' depth=871 at (675.6,226.65) — the original authored boss placement",
+     "geometry": "23.35px above walkBounds top in both spaces (original 226.7 < 250; world 305.9 < Ymin 329.2)",
+     "playerCanReach": "player cannot walk above Ymin; boss stand position unverifiable statically",
+     "minimalFixCandidate": "keep original coordinate pending 主控实机; if boss is clamped/frozen, lower to walk top edge (world y≈330)"
+    }
+   }
+  },
+  {
+   "map": "A17",
+   "category": "bossEnemy",
+   "item": "boss[0][0] 兵种467 L56",
+   "status": "pass",
+   "detail": {
+    "world": [
+     449.05,
+     451.8
+    ]
+   }
+  },
+  {
+   "map": "A17",
+   "category": "bossEnemy",
+   "item": "boss[0][1] 兵种465 L56",
+   "status": "pass",
+   "detail": {
+    "world": [
+     400.75,
+     507.7
+    ]
+   }
+  },
+  {
+   "map": "A17",
+   "category": "bossEnemy",
+   "item": "boss[0][2] 兵种465 L56",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1584.15,
+     527.6
+    ]
+   }
+  },
+  {
+   "map": "A17",
+   "category": "bossEnemy",
+   "item": "boss[0][3] 兵种469 L56",
+   "status": "pass",
+   "detail": {
+    "world": [
+     535.65,
+     547.7
+    ]
+   }
+  },
+  {
+   "map": "A17",
+   "category": "bossEnemy",
+   "item": "boss[0][4] 兵种461 L55",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1653.35,
+     468.8
+    ]
+   }
+  },
+  {
+   "map": "A17",
+   "category": "bossEnemy",
+   "item": "boss[0][5] 兵种460 L55",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1776.95,
+     344.2,
+     1778.95,
+     584.2
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A17",
+   "category": "bossEnemy",
+   "item": "boss[0][6] 兵种469 L56",
+   "status": "unknown",
+   "detail": {
+    "world": [
+     291.95,
+     449.1
+    ],
+    "reason": "outside walkBounds",
+    "walkBounds": [
+     337.95,
+     329.2,
+     1787.95,
+     599.2
+    ],
+    "offscreenJustification": null,
+    "reverification": {
+     "verdict": "unknown",
+     "sourceField": "maps.fragment.json A17 bossEncounter.groups[0] 兵种469 x=4.0 y=369.9 SpawnIndex=left",
+     "originalProvenance": "matches original display[7] id=1585 depth=512 at (4.0,369.9); sprite1585 semantics unidentified",
+     "geometry": "46px left of original walkBounds x0=50 (world 291.95 < Xmin 337.95); authored off-screen entrance",
+     "playerCanReach": "not applicable (off-screen entrance)",
+     "minimalFixCandidate": "none if entrance intent confirmed"
+    }
+   }
+  },
+  {
+   "map": "A17",
+   "category": "bossEnemy",
+   "item": "boss[0][7] 兵种469 L56",
+   "status": "unknown",
+   "detail": {
+    "world": [
+     1834.85,
+     495.5
+    ],
+    "reason": "outside walkBounds",
+    "walkBounds": [
+     337.95,
+     329.2,
+     1787.95,
+     599.2
+    ],
+    "offscreenJustification": null,
+    "reverification": {
+     "verdict": "unknown",
+     "sourceField": "maps.fragment.json A17 bossEncounter.groups[0] 兵种469 x=1546.9 y=416.3 SpawnIndex=right",
+     "originalProvenance": "matches original display[8] id=1585 depth=514 at (1546.9,416.3)",
+     "geometry": "46.9px right of original walkBounds x1=1500 (world 1834.85 > Xmax 1787.95); authored off-screen entrance",
+     "playerCanReach": "not applicable (off-screen entrance)",
+     "minimalFixCandidate": "none if entrance intent confirmed"
+    }
+   }
+  },
+  {
+   "map": "A17",
+   "category": "bossEnemy",
+   "item": "boss[1][0] 兵种469 L56",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     346.95,
+     344.2,
+     348.95,
+     584.2
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A17",
+   "category": "bossEnemy",
+   "item": "boss[1][1] 兵种469 L56",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1776.95,
+     344.2,
+     1778.95,
+     584.2
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A17",
+   "category": "bossEnemy",
+   "item": "boss[2][0] 兵种469 L56",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     346.95,
+     344.2,
+     348.95,
+     584.2
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A17",
+   "category": "bossEnemy",
+   "item": "boss[2][1] 兵种469 L56",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1776.95,
+     344.2,
+     1778.95,
+     584.2
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A17",
+   "category": "bossEnemy",
+   "item": "boss[3][0] 兵种469 L56",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     346.95,
+     344.2,
+     348.95,
+     584.2
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A17",
+   "category": "bossEnemy",
+   "item": "boss[3][1] 兵种469 L56",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1776.95,
+     344.2,
+     1778.95,
+     584.2
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A17",
+   "category": "bossEnemy",
+   "item": "boss[4][0] 兵种469 L56",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     346.95,
+     344.2,
+     348.95,
+     584.2
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A17",
+   "category": "bossEnemy",
+   "item": "boss[4][1] 兵种469 L56",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1776.95,
+     344.2,
+     1778.95,
+     584.2
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A17",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1737.95,
+     339.2,
+     1787.95,
+     589.2
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 20
+   }
+  },
+  {
+   "map": "A17",
+   "category": "registration",
+   "item": "background swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A17_BG.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane",
+    "xflPath": "flashswf/backgrounds/cf6/CF6_A17_BG/CF6_A17_BG.xfl",
+    "xflExists": false
+   }
+  },
+  {
+   "map": "A17",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 15559,
+    "reachableCells": 15559,
+    "start": [
+     950.45,
+     366.7
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 3.54
+     },
+     {
+      "label": "pickup:金币",
+      "reachable": true,
+      "snapDistance": 2.06
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A18",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     101.0,
+     246.0
+    ],
+    "runtimeSpawn": [
+     101.0,
+     246.0
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A18",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     72.5,
+     228.55
+    ],
+    "expected": [
+     101.0,
+     246.0
+    ],
+    "runtimeSpawn": [
+     101.0,
+     246.0
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A18",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": []
+    }
+   }
+  },
+  {
+   "map": "A18",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     78.5,
+     167.45,
+     1578.5,
+     417.45
+    ],
+    "actual": [
+     78.5,
+     167.45,
+     1578.5,
+     417.45
+    ]
+   }
+  },
+  {
+   "map": "A18",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1528.5,
+     187.45,
+     1578.5,
+     407.45
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1528.5,
+       187.45,
+       1578.5,
+       407.45
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A18",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 2,
+    "fragmentCount": 2,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A18",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     87.5,
+     192.45,
+     89.5,
+     402.45
+    ],
+    "actual": [
+     87.5,
+     192.45,
+     89.5,
+     402.45
+    ]
+   }
+  },
+  {
+   "map": "A18",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1567.5,
+     192.45,
+     1569.5,
+     402.45
+    ],
+    "actual": [
+     1567.5,
+     192.45,
+     1569.5,
+     402.45
+    ]
+   }
+  },
+  {
+   "map": "A18",
+   "category": "transform",
+   "item": "economy gold pickup on PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gold": [
+     101.0,
+     246.0
+    ],
+    "player": [
+     101.0,
+     246.0
+    ]
+   }
+  },
+  {
+   "map": "A18",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A18",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     101.0,
+     246.0
+    ]
+   }
+  },
+  {
+   "map": "A18",
+   "category": "pickup",
+   "item": "金币 x90000",
+   "status": "pass",
+   "detail": {
+    "world": [
+     101.0,
+     246.0
+    ]
+   }
+  },
+  {
+   "map": "A18",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种467 L59",
+   "status": "pass",
+   "detail": {
+    "world": [
+     931.6,
+     351.65
+    ]
+   }
+  },
+  {
+   "map": "A18",
+   "category": "waveEnemy",
+   "item": "Wave[0][1] 兵种464 L59",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1022.9,
+     343.35
+    ]
+   }
+  },
+  {
+   "map": "A18",
+   "category": "waveEnemy",
+   "item": "Wave[0][2] 兵种461 L57",
+   "status": "pass",
+   "detail": {
+    "world": [
+     464.9,
+     244.55
+    ]
+   }
+  },
+  {
+   "map": "A18",
+   "category": "waveEnemy",
+   "item": "Wave[0][3] 兵种461 L57",
+   "status": "pass",
+   "detail": {
+    "world": [
+     487.9,
+     300.55
+    ]
+   }
+  },
+  {
+   "map": "A18",
+   "category": "waveEnemy",
+   "item": "Wave[0][4] 兵种461 L57",
+   "status": "pass",
+   "detail": {
+    "world": [
+     495.9,
+     364.55
+    ]
+   }
+  },
+  {
+   "map": "A18",
+   "category": "waveEnemy",
+   "item": "Wave[0][5] 兵种464 L59",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1199.9,
+     267.25
+    ]
+   }
+  },
+  {
+   "map": "A18",
+   "category": "waveEnemy",
+   "item": "Wave[0][6] 兵种464 L59",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1302.9,
+     380.55
+    ]
+   }
+  },
+  {
+   "map": "A18",
+   "category": "waveEnemy",
+   "item": "Wave[1][0] 兵种463 L59 via SpawnPoint[0]",
+   "status": "fail",
+   "detail": {
+    "world": [
+     885.0,
+     208.65
+    ],
+    "reason": "inside collision polygon",
+    "walkBounds": [
+     78.5,
+     167.45,
+     1578.5,
+     417.45
+    ],
+    "reverification": {
+     "verdict": "fail",
+     "sourceField": "spawned through SpawnPoint[0] (see spawnPoint entry)",
+     "geometry": "inherits SpawnPoint[0] in-collision position",
+     "playerCanReach": false,
+     "minimalFixCandidate": "fixed together with SpawnPoint[0]"
+    }
+   }
+  },
+  {
+   "map": "A18",
+   "category": "spawnPoint",
+   "item": "SpawnPoint[0] QuantityMax=2",
+   "status": "fail",
+   "detail": {
+    "world": [
+     885.0,
+     208.65
+    ],
+    "reason": "inside collision polygon",
+    "walkBounds": [
+     78.5,
+     167.45,
+     1578.5,
+     417.45
+    ],
+    "reverification": {
+     "verdict": "fail",
+     "sourceField": "maps.fragment.json A18 stage.SpawnPoint.Point[0] x=856.5 y=191.2",
+     "originalProvenance": "matches original display[12] id=1434 name='敌人生成器1' depth=290 at (856.45,191.15)",
+     "geometry": "inside original even-odd fill AND converted Collision; engine adds only +2y at spawn (WaveSpawner Offset), insufficient: fill continues to y≈205.2 original (world 222.65)",
+     "playerCanReach": false,
+     "nearestFreeWorld": [
+      885.0,
+      222.65
+     ],
+     "minimalFixCandidate": "move SpawnPoint[0] to (885.0,222.65) world (14px down) or set Offset>=16; confirm with 主控实机 whether door-spawned units escape the wall band"
+    }
+   }
+  },
+  {
+   "map": "A18",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1528.5,
+     187.45,
+     1578.5,
+     407.45
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 20
+   }
+  },
+  {
+   "map": "A18",
+   "category": "registration",
+   "item": "background swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A18_BG.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane",
+    "xflPath": "flashswf/backgrounds/cf6/CF6_A18_BG/CF6_A18_BG.xfl",
+    "xflExists": false
+   }
+  },
+  {
+   "map": "A18",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 13296,
+    "reachableCells": 13296,
+    "start": [
+     101.0,
+     244.95
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 3.54
+     },
+     {
+      "label": "pickup:金币",
+      "reachable": true,
+      "snapDistance": 1.05
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A19",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     98.5,
+     297.45
+    ],
+    "runtimeSpawn": [
+     98.5,
+     297.45
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A19",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     70,
+     280
+    ],
+    "expected": [
+     98.5,
+     297.45
+    ],
+    "runtimeSpawn": [
+     98.5,
+     297.45
+    ],
+    "spawnAdjusted": true,
+    "spawnAdjustment": "nearest 10px grid position with 20px X edge margin when authored point is outside walkable region"
+   }
+  },
+  {
+   "map": "A19",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": []
+    }
+   }
+  },
+  {
+   "map": "A19",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     78.5,
+     167.45,
+     1578.5,
+     417.45
+    ],
+    "actual": [
+     78.5,
+     167.45,
+     1578.5,
+     417.45
+    ]
+   }
+  },
+  {
+   "map": "A19",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1478.5,
+     387.45,
+     1528.5,
+     407.45
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1478.5,
+       387.45,
+       1528.5,
+       407.45
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A19",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 3,
+    "fragmentCount": 3,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A19",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     87.5,
+     192.45,
+     89.5,
+     402.45
+    ],
+    "actual": [
+     87.5,
+     192.45,
+     89.5,
+     402.45
+    ]
+   }
+  },
+  {
+   "map": "A19",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1517.5,
+     392.45,
+     1519.5,
+     402.45
+    ],
+    "actual": [
+     1517.5,
+     392.45,
+     1519.5,
+     402.45
+    ]
+   }
+  },
+  {
+   "map": "A19",
+   "category": "transform",
+   "item": "economy gold pickup on PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gold": [
+     98.5,
+     297.45
+    ],
+    "player": [
+     98.5,
+     297.45
+    ]
+   }
+  },
+  {
+   "map": "A19",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A19",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     98.5,
+     297.45
+    ]
+   }
+  },
+  {
+   "map": "A19",
+   "category": "pickup",
+   "item": "金币 x180000",
+   "status": "pass",
+   "detail": {
+    "world": [
+     98.5,
+     297.45
+    ]
+   }
+  },
+  {
+   "map": "A19",
+   "category": "merchant",
+   "item": "生存战-迷之盔甲君",
+   "status": "pass",
+   "detail": {
+    "world": [
+     178.5,
+     297.45
+    ]
+   }
+  },
+  {
+   "map": "A19",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种467 L60",
+   "status": "pass",
+   "detail": {
+    "world": [
+     399.2,
+     260.65
+    ]
+   }
+  },
+  {
+   "map": "A19",
+   "category": "waveEnemy",
+   "item": "Wave[0][1] 兵种465 L60",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1095.0,
+     362.15
+    ]
+   }
+  },
+  {
+   "map": "A19",
+   "category": "waveEnemy",
+   "item": "Wave[0][2] 兵种463 L60",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1112.7,
+     276.85
+    ]
+   }
+  },
+  {
+   "map": "A19",
+   "category": "waveEnemy",
+   "item": "Wave[0][3] 兵种467 L60",
+   "status": "pass",
+   "detail": {
+    "world": [
+     442.2,
+     332.45
+    ]
+   }
+  },
+  {
+   "map": "A19",
+   "category": "waveEnemy",
+   "item": "Wave[0][4] 兵种469 L59 via SpawnPoint[0]",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1325.0,
+     258.05
+    ]
+   }
+  },
+  {
+   "map": "A19",
+   "category": "waveEnemy",
+   "item": "Wave[0][5] 兵种464 L60 via SpawnPoint[1]",
+   "status": "pass",
+   "detail": {
+    "world": [
+     573.1,
+     189.65
+    ]
+   }
+  },
+  {
+   "map": "A19",
+   "category": "spawnPoint",
+   "item": "SpawnPoint[0] QuantityMax=2",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1325.0,
+     258.05
+    ]
+   }
+  },
+  {
+   "map": "A19",
+   "category": "spawnPoint",
+   "item": "SpawnPoint[1] QuantityMax=3",
+   "status": "pass",
+   "detail": {
+    "world": [
+     573.1,
+     189.65
+    ]
+   }
+  },
+  {
+   "map": "A19",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1478.5,
+     387.45,
+     1528.5,
+     407.45
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 24
+   }
+  },
+  {
+   "map": "A19",
+   "category": "registration",
+   "item": "background swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A19_BG.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane",
+    "xflPath": "flashswf/backgrounds/cf6/CF6_A19_BG/CF6_A19_BG.xfl",
+    "xflExists": false
+   }
+  },
+  {
+   "map": "A19",
+   "category": "merchant",
+   "item": "assembler anchor predicate",
+   "status": "pass",
+   "detail": {
+    "anchor": [
+     178.5,
+     297.45
+    ],
+    "reason": "assembler predicate holds"
+   }
+  },
+  {
+   "map": "A19",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 12291,
+    "reachableCells": 12291,
+    "start": [
+     101.0,
+     294.95
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 3.54
+     },
+     {
+      "label": "pickup:金币",
+      "reachable": true,
+      "snapDistance": 3.54
+     },
+     {
+      "label": "instance:生存战-迷之盔甲君",
+      "reachable": true,
+      "snapDistance": 3.54
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A20",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     148.5,
+     303.45
+    ],
+    "runtimeSpawn": [
+     148.5,
+     303.45
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A20",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     70,
+     280
+    ],
+    "expected": [
+     148.5,
+     303.45
+    ],
+    "runtimeSpawn": [
+     148.5,
+     303.45
+    ],
+    "spawnAdjusted": true,
+    "spawnAdjustment": "nearest 10px grid position with 20px X edge margin when authored point is outside walkable region"
+   }
+  },
+  {
+   "map": "A20",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": []
+    }
+   }
+  },
+  {
+   "map": "A20",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     128.5,
+     173.45,
+     1568.5,
+     563.45
+    ],
+    "actual": [
+     128.5,
+     173.45,
+     1568.5,
+     563.45
+    ]
+   }
+  },
+  {
+   "map": "A20",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1488.5,
+     513.45,
+     1538.5,
+     533.45
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1488.5,
+       513.45,
+       1538.5,
+       533.45
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A20",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 14,
+    "fragmentCount": 14,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A20",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     137.5,
+     198.45,
+     139.5,
+     528.45
+    ],
+    "actual": [
+     137.5,
+     198.45,
+     139.5,
+     528.45
+    ]
+   }
+  },
+  {
+   "map": "A20",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1537.5,
+     523.45,
+     1539.5,
+     533.45
+    ],
+    "actual": [
+     1537.5,
+     523.45,
+     1539.5,
+     533.45
+    ]
+   }
+  },
+  {
+   "map": "A20",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A20",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     148.5,
+     303.45
+    ]
+   }
+  },
+  {
+   "map": "A20",
+   "category": "pickup",
+   "item": "普通hp药剂 x2",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1267.5,
+     434.35
+    ]
+   }
+  },
+  {
+   "map": "A20",
+   "category": "pickup",
+   "item": "突击步枪钨芯穿甲弹 x2",
+   "status": "pass",
+   "detail": {
+    "world": [
+     943.3,
+     209.35
+    ]
+   }
+  },
+  {
+   "map": "A20",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种473 L60",
+   "status": "pass",
+   "detail": {
+    "world": [
+     726.9,
+     225.15
+    ]
+   }
+  },
+  {
+   "map": "A20",
+   "category": "bossEnemy",
+   "item": "boss[0][0] 兵种467 L60",
+   "status": "fail",
+   "detail": {
+    "world": [
+     263.5,
+     185.45
+    ],
+    "reason": "inside collision polygon",
+    "walkBounds": [
+     128.5,
+     173.45,
+     1568.5,
+     563.45
+    ],
+    "reverification": {
+     "verdict": "fail",
+     "sourceField": "maps.fragment.json A20 bossEncounter.groups[0] 兵种467 x=185.0 y=162.0 SpawnIndex=left",
+     "originalProvenance": "matches original display[18] id=1434 depth=225 at (185.0,162.0) — original door spawner; sourceNote: 原门触发演出(door1/2/4)属机关线,首版按血量阈值发兵",
+     "geometry": "inside original even-odd fill AND converted Collision (door-in-wall)",
+     "playerCanReach": false,
+     "nearestFreeWorld": [
+      267.5,
+      192.38
+     ],
+     "minimalFixCandidate": "nudge to (267.5,192.4) world (8px) or rely on SpawnIndex=left line; same door-in-wall class as A18"
+    }
+   }
+  },
+  {
+   "map": "A20",
+   "category": "bossEnemy",
+   "item": "boss[0][1] 兵种464 L60",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1493.4,
+     479.15
+    ]
+   }
+  },
+  {
+   "map": "A20",
+   "category": "bossEnemy",
+   "item": "boss[0][2] 兵种461 L60",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1182.5,
+     249.25
+    ]
+   }
+  },
+  {
+   "map": "A20",
+   "category": "bossEnemy",
+   "item": "boss[0][3] 兵种469 L60",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1329.5,
+     362.25
+    ]
+   }
+  },
+  {
+   "map": "A20",
+   "category": "bossEnemy",
+   "item": "boss[1][0] 兵种461 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     137.5,
+     198.45,
+     139.5,
+     528.45
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A20",
+   "category": "bossEnemy",
+   "item": "boss[1][1] 兵种469 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1537.5,
+     523.45,
+     1539.5,
+     533.45
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A20",
+   "category": "bossEnemy",
+   "item": "boss[1][2] 兵种467 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     137.5,
+     198.45,
+     139.5,
+     528.45
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A20",
+   "category": "bossEnemy",
+   "item": "boss[1][3] 兵种464 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1537.5,
+     523.45,
+     1539.5,
+     533.45
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A20",
+   "category": "bossEnemy",
+   "item": "boss[2][0] 兵种461 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     137.5,
+     198.45,
+     139.5,
+     528.45
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A20",
+   "category": "bossEnemy",
+   "item": "boss[2][1] 兵种469 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1537.5,
+     523.45,
+     1539.5,
+     533.45
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A20",
+   "category": "bossEnemy",
+   "item": "boss[2][2] 兵种467 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     137.5,
+     198.45,
+     139.5,
+     528.45
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A20",
+   "category": "bossEnemy",
+   "item": "boss[2][3] 兵种464 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1537.5,
+     523.45,
+     1539.5,
+     533.45
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A20",
+   "category": "bossEnemy",
+   "item": "boss[3][0] 兵种461 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     137.5,
+     198.45,
+     139.5,
+     528.45
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A20",
+   "category": "bossEnemy",
+   "item": "boss[3][1] 兵种469 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1537.5,
+     523.45,
+     1539.5,
+     533.45
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A20",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1488.5,
+     513.45,
+     1538.5,
+     533.45
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 25
+   }
+  },
+  {
+   "map": "A20",
+   "category": "registration",
+   "item": "background swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A20_BG.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane",
+    "xflPath": "flashswf/backgrounds/cf6/CF6_A20_BG/CF6_A20_BG.xfl",
+    "xflExists": false
+   }
+  },
+  {
+   "map": "A20",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 16609,
+    "reachableCells": 16609,
+    "start": [
+     151.0,
+     300.95
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 3.54
+     },
+     {
+      "label": "pickup:普通hp药剂",
+      "reachable": true,
+      "snapDistance": 2.19
+     },
+     {
+      "label": "pickup:突击步枪钨芯穿甲弹",
+      "reachable": true,
+      "snapDistance": 2.8
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "A22",
+   "category": "transform",
+   "item": "PlayerX/Y == runtime-index spawn (already world)",
+   "status": "pass",
+   "detail": {
+    "book": [
+     623.95,
+     274.55
+    ],
+    "runtimeSpawn": [
+     623.95,
+     274.55
+    ],
+    "note": "assembler copies runtime spawn; must not subtract origin again"
+   }
+  },
+  {
+   "map": "A22",
+   "category": "transform",
+   "item": "runtime spawn == overrides spawn - origin (once)",
+   "status": "pass",
+   "detail": {
+    "overridesSpawn": [
+     545.45,
+     251.1
+    ],
+    "expected": [
+     623.95,
+     274.55
+    ],
+    "runtimeSpawn": [
+     623.95,
+     274.55
+    ],
+    "spawnAdjusted": false,
+    "spawnAdjustment": null
+   }
+  },
+  {
+   "map": "A22",
+   "category": "transform",
+   "item": "mechanism layers identical to runtime-index (no re-transform)",
+   "status": "pass",
+   "detail": {
+    "bookMechanism": {
+     "kind": "exit",
+     "layers": []
+    }
+   }
+  },
+  {
+   "map": "A22",
+   "category": "transform",
+   "item": "walkBounds fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     128.5,
+     173.45,
+     1568.5,
+     563.45
+    ],
+    "actual": [
+     128.5,
+     173.45,
+     1568.5,
+     563.45
+    ]
+   }
+  },
+  {
+   "map": "A22",
+   "category": "transform",
+   "item": "exit Door rect == overrides.exit - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1488.5,
+     513.45,
+     1538.5,
+     533.45
+    ],
+    "doors": [
+     {
+      "direction": "右",
+      "rect": [
+       1488.5,
+       513.45,
+       1538.5,
+       533.45
+      ],
+      "identifier": null
+     }
+    ]
+   }
+  },
+  {
+   "map": "A22",
+   "category": "transform",
+   "item": "collision polygons fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "overridesCount": 14,
+    "fragmentCount": 14,
+    "mismatchIndex": []
+   }
+  },
+  {
+   "map": "A22",
+   "category": "transform",
+   "item": "leftSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     137.5,
+     198.45,
+     139.5,
+     528.45
+    ],
+    "actual": [
+     137.5,
+     198.45,
+     139.5,
+     528.45
+    ]
+   }
+  },
+  {
+   "map": "A22",
+   "category": "transform",
+   "item": "rightSpawnLine fragment == overrides - origin",
+   "status": "pass",
+   "detail": {
+    "expected": [
+     1537.5,
+     523.45,
+     1539.5,
+     533.45
+    ],
+    "actual": [
+     1537.5,
+     523.45,
+     1539.5,
+     533.45
+    ]
+   }
+  },
+  {
+   "map": "A22",
+   "category": "registration",
+   "item": "geometryBasis book == runtime-index",
+   "status": "pass",
+   "detail": {}
+  },
+  {
+   "map": "A22",
+   "category": "spawn",
+   "item": "PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "world": [
+     623.95,
+     274.55
+    ]
+   }
+  },
+  {
+   "map": "A22",
+   "category": "pickup",
+   "item": "普通hp药剂 x2",
+   "status": "pass",
+   "detail": {
+    "world": [
+     643.0,
+     425.85
+    ]
+   }
+  },
+  {
+   "map": "A22",
+   "category": "waveEnemy",
+   "item": "Wave[0][0] 兵种474 L60",
+   "status": "pass",
+   "detail": {
+    "world": [
+     765.5,
+     273.35
+    ]
+   }
+  },
+  {
+   "map": "A22",
+   "category": "bossEnemy",
+   "item": "boss[0][0] 兵种463 L60",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1493.4,
+     479.15
+    ]
+   }
+  },
+  {
+   "map": "A22",
+   "category": "bossEnemy",
+   "item": "boss[0][1] 兵种472 L60",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1182.5,
+     249.25
+    ]
+   }
+  },
+  {
+   "map": "A22",
+   "category": "bossEnemy",
+   "item": "boss[0][2] 兵种460 L60",
+   "status": "pass",
+   "detail": {
+    "world": [
+     1329.5,
+     362.25
+    ]
+   }
+  },
+  {
+   "map": "A22",
+   "category": "bossEnemy",
+   "item": "boss[0][3] 兵种465 L60",
+   "status": "fail",
+   "detail": {
+    "world": [
+     263.5,
+     185.45
+    ],
+    "reason": "inside collision polygon",
+    "walkBounds": [
+     128.5,
+     173.45,
+     1568.5,
+     563.45
+    ],
+    "reverification": {
+     "verdict": "fail",
+     "sourceField": "maps.fragment.json A22 bossEncounter.groups[0] 兵种465 x=185.0 y=162.0 SpawnIndex=left",
+     "originalProvenance": "same shared door geometry as A20 (A20/A22 share walkBounds/collisions)",
+     "geometry": "inside original even-odd fill AND converted Collision (door-in-wall)",
+     "playerCanReach": false,
+     "nearestFreeWorld": [
+      267.5,
+      192.38
+     ],
+     "minimalFixCandidate": "same as A20"
+    }
+   }
+  },
+  {
+   "map": "A22",
+   "category": "bossEnemy",
+   "item": "boss[1][0] 兵种463 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     137.5,
+     198.45,
+     139.5,
+     528.45
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A22",
+   "category": "bossEnemy",
+   "item": "boss[1][1] 兵种472 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1537.5,
+     523.45,
+     1539.5,
+     533.45
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A22",
+   "category": "bossEnemy",
+   "item": "boss[1][2] 兵种460 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     137.5,
+     198.45,
+     139.5,
+     528.45
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A22",
+   "category": "bossEnemy",
+   "item": "boss[1][3] 兵种465 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1537.5,
+     523.45,
+     1539.5,
+     533.45
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A22",
+   "category": "bossEnemy",
+   "item": "boss[2][0] 兵种463 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     137.5,
+     198.45,
+     139.5,
+     528.45
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A22",
+   "category": "bossEnemy",
+   "item": "boss[2][1] 兵种472 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1537.5,
+     523.45,
+     1539.5,
+     533.45
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A22",
+   "category": "bossEnemy",
+   "item": "boss[2][2] 兵种460 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     137.5,
+     198.45,
+     139.5,
+     528.45
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A22",
+   "category": "bossEnemy",
+   "item": "boss[2][3] 兵种465 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1537.5,
+     523.45,
+     1539.5,
+     533.45
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A22",
+   "category": "bossEnemy",
+   "item": "boss[3][0] 兵种463 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     137.5,
+     198.45,
+     139.5,
+     528.45
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A22",
+   "category": "bossEnemy",
+   "item": "boss[3][1] 兵种472 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1537.5,
+     523.45,
+     1539.5,
+     533.45
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A22",
+   "category": "bossEnemy",
+   "item": "boss[3][2] 兵种460 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     137.5,
+     198.45,
+     139.5,
+     528.45
+    ],
+    "semantics": "boss reinforcement random point on left line"
+   }
+  },
+  {
+   "map": "A22",
+   "category": "bossEnemy",
+   "item": "boss[3][3] 兵种465 L60",
+   "status": "pass",
+   "detail": {
+    "spawnLine": [
+     1537.5,
+     523.45,
+     1539.5,
+     533.45
+    ],
+    "semantics": "boss reinforcement random point on right line"
+   }
+  },
+  {
+   "map": "A22",
+   "category": "door",
+   "item": "Door[0] 右",
+   "status": "pass",
+   "detail": {
+    "rect": [
+     1488.5,
+     513.45,
+     1538.5,
+     533.45
+    ],
+    "insideWalkBounds": true,
+    "freeSamplesOf25": 25
+   }
+  },
+  {
+   "map": "A22",
+   "category": "registration",
+   "item": "background swf",
+   "status": "unknown",
+   "detail": {
+    "url": "flashswf/backgrounds/cf6/CF6_A22_BG.swf",
+    "exists": false,
+    "note": "compiled SWF pending in Astra lane",
+    "xflPath": "flashswf/backgrounds/cf6/CF6_A22_BG/CF6_A22_BG.xfl",
+    "xflExists": false
+   }
+  },
+  {
+   "map": "A22",
+   "category": "connectivity",
+   "item": "reference grid BFS from PlayerX/Y",
+   "status": "pass",
+   "detail": {
+    "gridStep": 5.0,
+    "freeCells": 16609,
+    "reachableCells": 16609,
+    "start": [
+     626.0,
+     275.95
+    ],
+    "targets": [
+     {
+      "label": "door0-center",
+      "reachable": true,
+      "snapDistance": 3.54
+     },
+     {
+      "label": "pickup:普通hp药剂",
+      "reachable": true,
+      "snapDistance": 2.0
+     }
+    ],
+    "caveat": "point grid step 5.0; not player-radius/AVM1 proof"
+   }
+  },
+  {
+   "map": "*",
+   "category": "merchant",
+   "item": "five merchants total",
+   "status": "pass",
+   "detail": {
+    "count": 5,
+    "at": [
+     [
+      "A01",
+      400.9,
+      287.7
+     ],
+     [
+      "A08",
+      240.55,
+      313.3
+     ],
+     [
+      "A11",
+      1041.45,
+      399.8
+     ],
+     [
+      "A16",
+      641.85,
+      447.35
+     ],
+     [
+      "A19",
+      178.5,
+      297.45
+     ]
+    ]
+   }
+  }
+ ]
+}

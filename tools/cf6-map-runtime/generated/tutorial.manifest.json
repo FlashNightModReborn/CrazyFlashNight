@@ -1,0 +1,53 @@
+{
+  "schema": "cf6-tutorial-assembly.v1",
+  "mapId": "TUTORIAL",
+  "sources": [
+    {
+      "path": "data/environment/stage_environment.xml",
+      "sha256": "7c50999bef88b7df8a45fd36ca2bafedb39518a71acb04d48703e94153984847"
+    },
+    {
+      "path": "data/stages/基地门口/新手练习场.xml",
+      "sha256": "f003fcb9cfa99905eb4876bb5ad97b5ca1eb6fdf345f8187d07c5ea07f6b5b33"
+    },
+    {
+      "path": "flashswf/backgrounds/gk1_1_BG.swf",
+      "sha256": "0b553977bb726baae4687d21c5fe642ce5be1e408706828e27b10758650dfb5e"
+    }
+  ],
+  "environment": {
+    "BackgroundURL": "gk1_1_BG.swf",
+    "Alignment": false,
+    "Xmin": 50,
+    "Xmax": 1688,
+    "Ymin": 242,
+    "Ymax": 640,
+    "Width": 1688,
+    "Height": 640,
+    "Door": {
+      "Index": 1,
+      "Direction": "上",
+      "x0": 883,
+      "y0": 240,
+      "x1": 998,
+      "y1": 310,
+      "Identifier": "横向地图路障"
+    }
+  },
+  "spawn": [
+    152,
+    461
+  ],
+  "borrowedScope": "existing published background and its standard environment only; no base scene business scripts",
+  "weaponGrants": 0,
+  "externalRewards": 0,
+  "targetGroup": "proposal copied from first current 新手练习场 substage; content owner integrates final group",
+  "tutorialContract": [
+    "movement toward target",
+    "switch current initial long gun and fire",
+    "pick up one ammo and one recovery supply",
+    "observe full-state or applied supply feedback",
+    "clear targets and use standard upper exit"
+  ],
+  "acceptanceBoundary": "data/source prepared only; no actual tutorial playthrough claimed"
+}

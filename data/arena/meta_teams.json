@@ -1,7 +1,7 @@
 {
   "generatedBy": "tools/derive-arena-meta-teams.js",
   "granularity": "subwave",
-  "note": "竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队); rosters{}=按势力聚合的兵种池(按等级带采样K体用); mercenaries[]=混编人形侧优先池(来自 data/merc/mercenaries.json，排除 hidden)。请勿手改——改采集规则后重跑。",
+  "note": "竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队，npc=true 标记保护成员); rosters{}=排除 NPC 保护与人形模板的自动势力兵种池(按等级带采样K体用); mercenaries[]=混编人形侧优先池(来自 data/merc/mercenaries.json，排除 hidden)。请勿手改——改采集规则后重跑。",
   "stageFilesScanned": 216,
   "stagesWithTeams": 198,
   "teamCount": 2100,
@@ -2754,24 +2754,6 @@
           "weight": 7
         },
         {
-          "type": "兵种210",
-          "name": "终结者改量X1",
-          "spritename": "敌人-终结者T800",
-          "isHostile": false,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 7
-        },
-        {
-          "type": "兵种211",
-          "name": "终结者改量X2",
-          "spritename": "敌人-终结者T800",
-          "isHostile": false,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 7
-        },
-        {
           "type": "兵种196",
           "name": "亚种方舟巨人",
           "spritename": "敌人-方舟巨人",
@@ -3926,7 +3908,7 @@
           }
         }
       ],
-      "unitCount": 142
+      "unitCount": 140
     },
     "异形": {
       "teamCount": 262,
@@ -7188,39 +7170,12 @@
           }
         },
         {
-          "type": "兵种223",
-          "name": "弹药兵",
-          "spritename": "敌人-军阀弹药兵",
-          "isHostile": false,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 8
-        },
-        {
-          "type": "兵种222",
-          "name": "突击兵",
-          "spritename": "敌人-军阀突击兵",
-          "isHostile": false,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 7
-        },
-        {
           "type": "兵种89",
           "name": "战斗少女",
           "spritename": "敌人-辫子姑娘",
           "isHostile": false,
           "minLevel": 20,
           "maxLevel": 20,
-          "weight": 6
-        },
-        {
-          "type": "兵种221",
-          "name": "重装兵",
-          "spritename": "敌人-军阀重装兵",
-          "isHostile": false,
-          "minLevel": 60,
-          "maxLevel": 60,
           "weight": 6
         },
         {
@@ -7709,38 +7664,11 @@
           "weight": 1
         }
       ],
-      "unitCount": 46
+      "unitCount": 43
     },
     "摇滚公园": {
       "teamCount": 14,
       "units": [
-        {
-          "type": "兵种219",
-          "name": "键盘",
-          "spritename": "敌人-摇滚公园少女",
-          "isHostile": false,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 8
-        },
-        {
-          "type": "兵种220",
-          "name": "主唱",
-          "spritename": "敌人-摇滚公园御姐",
-          "isHostile": false,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 7
-        },
-        {
-          "type": "兵种218",
-          "name": "吉他",
-          "spritename": "敌人-摇滚公园萝莉",
-          "isHostile": false,
-          "minLevel": 60,
-          "maxLevel": 60,
-          "weight": 6
-        },
         {
           "type": "兵种50",
           "name": "吉他",
@@ -7864,7 +7792,7 @@
           }
         }
       ],
-      "unitCount": 13
+      "unitCount": 10
     },
     "狂野玫瑰": {
       "teamCount": 45,
@@ -23119,6 +23047,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -23131,6 +23060,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -23143,6 +23073,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "女",
           "humanoid": true
         }
@@ -23340,6 +23271,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -23352,6 +23284,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -23364,6 +23297,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "女",
           "humanoid": true
         }
@@ -23550,6 +23484,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -23562,6 +23497,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -23574,6 +23510,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "女",
           "humanoid": true
         }
@@ -23793,6 +23730,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -23805,6 +23743,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -23817,6 +23756,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "女",
           "humanoid": true
         }
@@ -24036,6 +23976,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -24048,6 +23989,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -24060,6 +24002,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "女",
           "humanoid": true
         }
@@ -24279,6 +24222,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -24291,6 +24235,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -24303,6 +24248,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "女",
           "humanoid": true
         }
@@ -44654,6 +44600,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         }
@@ -44862,6 +44809,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         }
@@ -45070,6 +45018,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         }
@@ -45278,6 +45227,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         }
@@ -45486,6 +45436,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         }
@@ -45694,6 +45645,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         }
@@ -46667,6 +46619,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -46679,6 +46632,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "女",
           "humanoid": true
         }
@@ -46887,6 +46841,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -46899,6 +46854,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "女",
           "humanoid": true
         }
@@ -47107,6 +47063,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -47119,6 +47076,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "女",
           "humanoid": true
         }
@@ -67178,6 +67136,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "女",
           "humanoid": true
         }
@@ -70847,6 +70806,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         }
@@ -70995,6 +70955,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -71089,6 +71050,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -71227,6 +71189,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         }
@@ -71332,6 +71295,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         }
@@ -100796,6 +100760,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         }
@@ -103223,6 +103188,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -103234,6 +103200,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -103315,6 +103282,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -103326,6 +103294,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -103407,6 +103376,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -103418,6 +103388,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -103499,6 +103470,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -103510,6 +103482,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -103591,6 +103564,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -103602,6 +103576,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -103749,6 +103724,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -103760,6 +103736,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -103907,6 +103884,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -103918,6 +103896,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -104054,6 +104033,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -104065,6 +104045,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -104190,6 +104171,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -104201,6 +104183,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -104348,6 +104331,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -104359,6 +104343,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -104370,6 +104355,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -104506,6 +104492,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -104517,6 +104504,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -104598,6 +104586,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -104609,6 +104598,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -104690,6 +104680,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -104701,6 +104692,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -104782,6 +104774,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -104793,6 +104786,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -104874,6 +104868,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -104885,6 +104880,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -105032,6 +105028,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -105043,6 +105040,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -105190,6 +105188,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -105201,6 +105200,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -105348,6 +105348,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -105359,6 +105360,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -105506,6 +105508,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -105517,6 +105520,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -105664,6 +105668,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -105675,6 +105680,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -105686,6 +105692,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -128338,6 +128345,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -128350,6 +128358,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "女",
           "humanoid": true
         }
@@ -128432,6 +128441,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -128444,6 +128454,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "女",
           "humanoid": true
         }
@@ -128526,6 +128537,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -128538,6 +128550,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "女",
           "humanoid": true
         }
@@ -128675,6 +128688,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -128687,6 +128701,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "女",
           "humanoid": true
         }
@@ -128835,6 +128850,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -128847,6 +128863,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         }
@@ -128973,6 +128990,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -128985,6 +129003,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         }
@@ -129133,6 +129152,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -129145,6 +129165,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "男",
           "humanoid": true
         },
@@ -129157,6 +129178,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "gender": "女",
           "humanoid": true
         }
@@ -131323,6 +131345,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -131334,6 +131357,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -131415,6 +131439,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -131426,6 +131451,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -131507,6 +131533,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -131518,6 +131545,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -131643,6 +131671,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -131654,6 +131683,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -131779,6 +131809,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -131790,6 +131821,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -131937,6 +131969,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -131948,6 +131981,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],
@@ -132095,6 +132129,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         },
         {
@@ -132106,6 +132141,7 @@
           "count": 1,
           "random": false,
           "isHostile": false,
+          "npc": true,
           "humanoid": false
         }
       ],

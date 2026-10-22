@@ -1,0 +1,1369 @@
+{
+  "schema": "cf6-canonical-native-assembly.v1",
+  "target": "CF6_A03_foreground",
+  "candidate": "CF6_A03_foreground_VectorCandidate01",
+  "nativeClosureFiles": 130,
+  "oldSourcePresent": true,
+  "oldSwfPresent": true,
+  "sourceXfl": "flashswf/backgrounds/cf6/CF6_A03_foreground/CF6_A03_foreground.xfl",
+  "requiredFreshSwf": "flashswf/backgrounds/cf6/CF6_A03_foreground.swf",
+  "scope": "source-only canonical assembly; candidate SWF is not copied; no formal runtime promotion",
+  "transaction": "20261021T084537Z-17e3d389c2",
+  "candidateSource": "flashswf/backgrounds/cf6/CF6_A03_foreground_VectorCandidate01",
+  "candidateClosure": [
+    {
+      "path": "CF6_A03_foreground_VectorCandidate01.xfl",
+      "bytes": 9,
+      "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38"
+    },
+    {
+      "path": "DOMDocument.xml",
+      "bytes": 11036,
+      "sha256": "bba158405904f5216e5394410b5dce07a3bd0eb255c768725208713bef5042f7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00001-path.xml",
+      "bytes": 1256,
+      "sha256": "699f7c71391849dc77c6345871f33bf63475af240a41972e23a4fdca344c4a49"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00002-path.xml",
+      "bytes": 1259,
+      "sha256": "c2f3a8d4d8991a30545337feb6405a3b55226ee66875a920be1083e4f401df36"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00003-path.xml",
+      "bytes": 1191,
+      "sha256": "37d3fcc2c0909ace82c5243aaff0e2767907d87694f7e146b3f3cbae32c84eaa"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00004-path.xml",
+      "bytes": 1128,
+      "sha256": "e67939538016abb8a576ca05b51fb8fbbc4b8ebbb811800679f7f52cb28dc1b6"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00005-n33_b1724_chain-and-crown.xml",
+      "bytes": 10258,
+      "sha256": "e86f6b28e65134159673491cc320e4359e524832071bc3b78a5a745596d01d40"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00006-path.xml",
+      "bytes": 1330,
+      "sha256": "b508e1c9c43ab4fbcc0657680cd00481cb7a8e8af21a3ca6af4c2934cae35644"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00007-g.xml",
+      "bytes": 1915,
+      "sha256": "8ea7b7aeb8b419c6bdb4b2842cb9d1edfc62c8a82b282bb65a053e4d893e299e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00008-n33_b1724_upper-open-scrolls.xml",
+      "bytes": 2197,
+      "sha256": "e5a15ec44497ae1976959eb0e9f2d090ed025f2fbfef9243dcb59e071ef3b57e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00009-path.xml",
+      "bytes": 1363,
+      "sha256": "e3a4e0a00701785f74b9925181064546d4e9d7594c7e7415ed662391ae029ba9"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00010-g.xml",
+      "bytes": 1985,
+      "sha256": "42a02041c0ec622803245cbb356ad115e7f7b0cb96b961d1b4a43697775676ca"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00011-path.xml",
+      "bytes": 1380,
+      "sha256": "edde9009fdbd6005f6cb709b4ee8d92a0f6c3ef256f25c126cf3c226663ee555"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00012-g.xml",
+      "bytes": 2019,
+      "sha256": "f266f3c86613621fcf603ed49f0473955e395bb2c0204cd4bed3c49a92679fcd"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00013-path.xml",
+      "bytes": 1385,
+      "sha256": "441681cf97705fa7229eb2c499d69ede08a644e4e8d2ad0490227afbc258cf0f"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00014-g.xml",
+      "bytes": 2031,
+      "sha256": "1cc08ec05f35d1ed11246eedd49baa86d4218de741895160f68c210e8662d039"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00015-n33_b1724_six-open-support-arms.xml",
+      "bytes": 6010,
+      "sha256": "93d4d69f23da35918d81a8f92fb2bc05b8b8bfb97d6f3436141e1c455e7b636d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00016-n33_b1724_glass-rear-left.xml",
+      "bytes": 5134,
+      "sha256": "88759c93d766278ea0b164313dec45b81d8a8ecba7be4c2f8025a5e9b405c85d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00017-n33_b1724_glass-rear-right.xml",
+      "bytes": 5199,
+      "sha256": "40d8d4de49526de3aebb7c386dc24619af22e983cb594bd8054e3db4dff1b571"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00018-n33_b1724_rear-glass-pair.xml",
+      "bytes": 869,
+      "sha256": "07f1dfa2a6f40e61c32e107ecd6936f98c0e58a99c3d4309d308a381b98dc906"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00019-path.xml",
+      "bytes": 1130,
+      "sha256": "c943ceffbb59031e4b0b528205014860feaeba39cf58e0ab9c8406aaeb65064c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00020-n33_b1724_central-column.xml",
+      "bytes": 4561,
+      "sha256": "08747548d901746c398c7b70d5b681dfdc2c2d0d0995f8c3ac87d856076681b9"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00021-path.xml",
+      "bytes": 1309,
+      "sha256": "81960b9b28bf34c6f9e2a3a9efd566af269366d10ab7765334eeded746c22090"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00022-g.xml",
+      "bytes": 1865,
+      "sha256": "fd106b731e84a481ef2ba15c2e0dfdc429a6e2d071b61f1a76756fcec8624f6d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00023-n33_b1724_scrolls-over-rear-cups.xml",
+      "bytes": 2159,
+      "sha256": "534181822f8e30ea91805673125b5b83a89d141e81ee3bfc9bb38231aa314e53"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00024-n33_b1724_glass-outer-left.xml",
+      "bytes": 5113,
+      "sha256": "7898604ccf264e3a2ddc2351e63e493f588d58d348bfe90f3ac0074a89713416"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00025-n33_b1724_glass-outer-right.xml",
+      "bytes": 5203,
+      "sha256": "139b3eb95cd9f0bc82413f3cd2d1e89fb599de26bf848bd5d78b9db7956b6b55"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00026-n33_b1724_outer-glass-pair.xml",
+      "bytes": 874,
+      "sha256": "eee040ad00b9020e88b64a3d7831243e3ade1a4ce5bb0ae42ccda2ceaa74c0c7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00027-n33_b1724_glass-front-left.xml",
+      "bytes": 5127,
+      "sha256": "473bf7c5ffdc252f45b7df5009e16f0c94846dbac9ea75f8b3439d923b80306d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00028-n33_b1724_glass-front-right.xml",
+      "bytes": 5200,
+      "sha256": "11dadaa77aea4b72636593f5786c628ca8d8cf0c601d20d052d3c62f50c03b9e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00029-n33_b1724_front-glass-pair.xml",
+      "bytes": 874,
+      "sha256": "99e451552394c8ccf50bee7d9af3f3155de66eaa3a7a82ba5f7ec1338b2304e5"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00030-path.xml",
+      "bytes": 1308,
+      "sha256": "668c6e5213ab09d292aa4de2eeb508df1624e81dccb5c0648e6d9d3fb1ef6126"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00031-g.xml",
+      "bytes": 1864,
+      "sha256": "222195ab1c37b60a5dbc904572154cc044f01be4945895151462a49517eee1c6"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00032-path.xml",
+      "bytes": 1255,
+      "sha256": "3947b7872161ea79c5a340ca2134998aaa892d75d111f7feb315c4676b6a56db"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00033-g.xml",
+      "bytes": 1757,
+      "sha256": "f39c2abbae53813f6e91b90401d3177b3298ddb01a598bb7d0c40bba5f9a3d8b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00034-path.xml",
+      "bytes": 1247,
+      "sha256": "a668c116d7df28b804fc81d9d00a177e3d631a04c918cb37530ca16427713c5b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00035-g.xml",
+      "bytes": 1741,
+      "sha256": "4c564aef55dd8ea014a2e37102f1ef859f428f00db90f04499fbd486c62b9f4f"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00036-n33_b1724_lower-open-scroll-basket.xml",
+      "bytes": 5346,
+      "sha256": "b1a20a6be55328146b3c149812c9e35030174d81a60048c63fc7557ce75dfc90"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00037-n33_b1724_lower-central-finial.xml",
+      "bytes": 2192,
+      "sha256": "388c450c07218afe32eadedf4ab314ae1c14bb28d811d3a27706eaf47f274817"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00038-n33_b1724_chandelier-1724.xml",
+      "bytes": 2659,
+      "sha256": "717cac2ee0e778c4a31c2bbec634f0d4eb8f41ea6d1ecb6702e09e8c2064f262"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00039-n33_bitmap1724.xml",
+      "bytes": 615,
+      "sha256": "d72dcb9c66c3944353b3cc6ad59d5efc6600e737ece12bd6f99a0d001c6d012b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00040-use.xml",
+      "bytes": 571,
+      "sha256": "740d5e093f94f0a4bce3496fb27244eef3aec9dd56dbcb98d095f18e3700cbf5"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00041-clip-path-content.xml",
+      "bytes": 664,
+      "sha256": "ca2ca140d495d455266c5c98b294d619d5f00cd7105ef817d818850274eac4a7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00042-n33_fill0.xml",
+      "bytes": 600,
+      "sha256": "1123fa02cfb6f7c3dc3991251550e1b67cc37813d8bcf17bd1aabe7399dfe6f3"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00043-clip-path-shape.xml",
+      "bytes": 658,
+      "sha256": "c90d35151af67ae1c277a7a1e74d1bb7397da578dda4bc3e668db948dfd14439"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00044-clip-path-n33_fill0.xml",
+      "bytes": 883,
+      "sha256": "e7d2a4dc37da4cefee557406df1dc8ed437c07600317ca85751a7ae35bf8fb2e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00045-g.xml",
+      "bytes": 538,
+      "sha256": "13a94ae027aca1f80ff1ea2e89afb9d89678c4ffc19e09def358101a404f1680"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00046-g.xml",
+      "bytes": 552,
+      "sha256": "9f766e7e0508a21a4db6b3641e9441b89a170a5cf68bcf6d48ddd89300778275"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00047-g.xml",
+      "bytes": 552,
+      "sha256": "95702c62662020b8f9392f4261b503bf72dc521a54f9e5efac1040b88e012d9d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00048-n35_b1724_chain-and-crown.xml",
+      "bytes": 10258,
+      "sha256": "5954f9e8ca1b8f4ee2df79e6b0c76c23f2f92f7342939e7f3a710826a203ee59"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00049-n35_b1724_upper-open-scrolls.xml",
+      "bytes": 2197,
+      "sha256": "a36cef18bc97d381d7d7deec14f3ea61bc98de76ceea69080bad83c3ce04d303"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00050-n35_b1724_six-open-support-arms.xml",
+      "bytes": 6010,
+      "sha256": "341cc1ae22faee5f63f14a3ed88da5ec4a5ba9c429f8c36cf1c1a3df8a023348"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00051-n35_b1724_glass-rear-left.xml",
+      "bytes": 5134,
+      "sha256": "1adfbffe16a5a7999aa7ac4c2c795438507ee8dddd0807e4216e089e554df044"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00052-n35_b1724_glass-rear-right.xml",
+      "bytes": 5199,
+      "sha256": "2bebafb74a4a956964414a9a003957fda91f0aadb1376ea301f747f00621f934"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00053-n35_b1724_rear-glass-pair.xml",
+      "bytes": 869,
+      "sha256": "6a32f84bca8b0aa4a24ecc5bdd7100e2cceb5adba722136d69e5322c50db5341"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00054-n35_b1724_central-column.xml",
+      "bytes": 4561,
+      "sha256": "5e49540bf6f8f62ee015c40b294d17d27774810fce06478b8e7f2abf3e7b87b9"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00055-n35_b1724_scrolls-over-rear-cups.xml",
+      "bytes": 2159,
+      "sha256": "a742ab2b4905a08cee2012fb27e466a9e58ba0deb316c01bc5390f95a5832416"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00056-n35_b1724_glass-outer-left.xml",
+      "bytes": 5113,
+      "sha256": "0920ba891d4150dbc262d441614bced6d70b5afdc7ea01dbeeaf3420e953d896"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00057-n35_b1724_glass-outer-right.xml",
+      "bytes": 5203,
+      "sha256": "1b1a015372632fcf13010ca110220d99048499d7a01e2621b1bc0c1af0c910c6"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00058-n35_b1724_outer-glass-pair.xml",
+      "bytes": 874,
+      "sha256": "0bba5ec53c1495cc19e5752ea13d3b8faf060d67cf8a7ca0582a57c853b106ba"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00059-n35_b1724_glass-front-left.xml",
+      "bytes": 5127,
+      "sha256": "a5453d0cc831bb18313e79100a3b500f4be66d6abca21957621022507727886f"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00060-n35_b1724_glass-front-right.xml",
+      "bytes": 5200,
+      "sha256": "f2024af413d8c1e1610e0ad16d92653c4ee1c61b30e29a01858117f1903bccc2"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00061-n35_b1724_front-glass-pair.xml",
+      "bytes": 874,
+      "sha256": "c14e7130721fd53c7e7ac4a1a9121c3295b50a3ff5c72fa7e9b66f1c36aba01e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00062-n35_b1724_lower-open-scroll-basket.xml",
+      "bytes": 5346,
+      "sha256": "0f1633b0bdc27530e1802a344f8305bc804b97cd2085489b7c128a4c81f98199"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00063-n35_b1724_lower-central-finial.xml",
+      "bytes": 2192,
+      "sha256": "e990f6c58adcf0526389c5d3714ad94cc2084ab190274a2a5cbce2136ce879bd"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00064-n35_b1724_chandelier-1724.xml",
+      "bytes": 2659,
+      "sha256": "c2113e3b51bc8b403665781fc9b24ae8c121364232affa5ab6a8afc9a4aba3e2"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00065-n35_bitmap1724.xml",
+      "bytes": 615,
+      "sha256": "8d5bc408cec875c9832f980b06aff438d8fae0afc7985d5dfc65376d74c3bdd8"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00066-use.xml",
+      "bytes": 571,
+      "sha256": "8fcd019d521e0ff9455aca34abee2a348cea7bc56a687868199d323375e5a677"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00067-clip-path-content.xml",
+      "bytes": 664,
+      "sha256": "13906e6f4b09a2913dd79f5003a50a6cc7f76e1af1e894a226bbf7eddcd2bc81"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00068-n35_fill0.xml",
+      "bytes": 600,
+      "sha256": "6a867f5cf738d638f8c4e395b9d487c618c371d59c3a23ead376659991316318"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00069-clip-path-shape.xml",
+      "bytes": 658,
+      "sha256": "07a736ee710d668d4c92fcc1eb828645e478a794416da5936830c420b91dbd14"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00070-clip-path-n35_fill0.xml",
+      "bytes": 883,
+      "sha256": "c6ed31a85c7b0f8133fc0aa11eda6f97b49b0e951fa10abba85d7d6bf37e7cd9"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00071-g.xml",
+      "bytes": 538,
+      "sha256": "46e6cadf1e2c14057a2568704374084701b41d6947c3f601d1629bf2e725d045"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00072-g.xml",
+      "bytes": 552,
+      "sha256": "8a79189b377e29ff49e5cd916038ad239711735a02d36ce9e8c1509f4398f650"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00073-g.xml",
+      "bytes": 552,
+      "sha256": "d43c316c9af370f785d2ca06eb6a6574b88d9f56ff000bbca915cc12c6d425c1"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00074-n37_b1724_chain-and-crown.xml",
+      "bytes": 10258,
+      "sha256": "ea04db6072705eba4156d2f7c54acd093b2c1a8a9b41c657fdde12f76a2d1fc7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00075-n37_b1724_upper-open-scrolls.xml",
+      "bytes": 2197,
+      "sha256": "bc7c3dcaf16a1cadd452f276f8ab5ffa12f6a05d0fefc80687f8f5e84f14aadf"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00076-n37_b1724_six-open-support-arms.xml",
+      "bytes": 6010,
+      "sha256": "f241039e9609c53da84bf55d300f26e5f94435b190f67c58e816f73b9dee7347"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00077-n37_b1724_glass-rear-left.xml",
+      "bytes": 5134,
+      "sha256": "9baaaf13d02acb64e453858659fd4be79631eb2a21663da38a2f3303d48439f2"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00078-n37_b1724_glass-rear-right.xml",
+      "bytes": 5199,
+      "sha256": "f28d1ae3c8bde7a5c85aeb1b9c5301a8a00a16426b862a425bc6d49244f0eb4e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00079-n37_b1724_rear-glass-pair.xml",
+      "bytes": 869,
+      "sha256": "adca63d16cedf1b45af1e02ddd5ea75cc0a884c465211f3d2ed4f7a369939bb0"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00080-n37_b1724_central-column.xml",
+      "bytes": 4561,
+      "sha256": "504363aeec365123a1212ee6d0d9182e9948ed862983f627bb345396d8b86df7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00081-n37_b1724_scrolls-over-rear-cups.xml",
+      "bytes": 2159,
+      "sha256": "17bef21bdc1c9cff9324c3c5a615ece1687f441b98e4ce99662ce7941637fd9a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00082-n37_b1724_glass-outer-left.xml",
+      "bytes": 5113,
+      "sha256": "bc73e90db3b73e6087cf5b605cc65dfadf6f8c2ff509f0aaa8a2bf9eac70d064"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00083-n37_b1724_glass-outer-right.xml",
+      "bytes": 5203,
+      "sha256": "44d00f76d54dede228f1da99f88ef3df02f59cde7614260156381376569f2128"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00084-n37_b1724_outer-glass-pair.xml",
+      "bytes": 874,
+      "sha256": "bb1ebbdc01e6d32fc99e51db45119bedb59e58dc0524160c87b50c9d098c498d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00085-n37_b1724_glass-front-left.xml",
+      "bytes": 5127,
+      "sha256": "326fede1ba432fd013b4480766d11a5ea4680e794e0597ea87c59a7291a0fece"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00086-n37_b1724_glass-front-right.xml",
+      "bytes": 5200,
+      "sha256": "4dc87d15a40a5b1d231fbb9cadc96890110c2f0d838b4bd70d840f2ff3b75a08"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00087-n37_b1724_front-glass-pair.xml",
+      "bytes": 874,
+      "sha256": "67a9e1476f3a72c56da5cdd630e6bd54412cd10756a640628c0e7606a872d801"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00088-n37_b1724_lower-open-scroll-basket.xml",
+      "bytes": 5346,
+      "sha256": "69715f4a126a393631665d73f54912fcd2425cb7c3e0559cd4975ef6ef0d5d80"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00089-n37_b1724_lower-central-finial.xml",
+      "bytes": 2192,
+      "sha256": "af36b31a1e4bfa5b84d8802e37397f88dc62868c144e0fbadd6cb8748c5619e5"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00090-n37_b1724_chandelier-1724.xml",
+      "bytes": 2659,
+      "sha256": "998fa5fc1b241fffaa2bd925f147ff1e429319bb163b31de486f33854cc53ada"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00091-n37_bitmap1724.xml",
+      "bytes": 615,
+      "sha256": "61e3ad40f03407220a3ac042ab344abf1e3dd2ee50e1fb29005f5f376034b07e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00092-use.xml",
+      "bytes": 571,
+      "sha256": "2e7059a0f65c48a02ba69cdaa1b662b85fc80c5bfb3a12fe907641b0e0fce28d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00093-clip-path-content.xml",
+      "bytes": 664,
+      "sha256": "9d3625a5d360f5963ce7e16f5ff0de74b13c1e070a3af1618ff6af41ed62c94e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00094-n37_fill0.xml",
+      "bytes": 600,
+      "sha256": "971b7ca3b546d50d65d2884302619bcd549a9359a140f62af3ce8ff531bae848"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00095-clip-path-shape.xml",
+      "bytes": 658,
+      "sha256": "9d39c5400511cf6f17ccf40d78e49552aadfaf9ebfcd912b06e1c28b49795402"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00096-clip-path-n37_fill0.xml",
+      "bytes": 883,
+      "sha256": "99cc755775abde63e7234e443bc80fc3e001aa2a40b50fc3f3eb37c087d52970"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00097-g.xml",
+      "bytes": 538,
+      "sha256": "24f37233c4e43a26c1ca7c7a702862c15e046ef1215ccf2b2f40084a5bfc5b11"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00098-g.xml",
+      "bytes": 552,
+      "sha256": "48af9cf97f3e8d9dd179c4746611c12e499e043230b29daa50df4313e77e542b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00099-g.xml",
+      "bytes": 552,
+      "sha256": "962d9fdf0947300f44d0cc32b6ebde2b07fa719adcddf7c9f4c27e133c415409"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00100-n39_b1724_chain-and-crown.xml",
+      "bytes": 10258,
+      "sha256": "b8d9dd593b6b17fc1316283393a27d528d9d5016821699ca524cda2d54d6d3af"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00101-n39_b1724_upper-open-scrolls.xml",
+      "bytes": 2197,
+      "sha256": "6eadee5fb58c7d198c396b0f212efd70ad55c679de3eb887fc41eae30f667e85"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00102-n39_b1724_six-open-support-arms.xml",
+      "bytes": 6010,
+      "sha256": "d97eb7b0aa67d1179d63aa26cb11632ce01ac79ea1b0d62ba8f616715103e42c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00103-n39_b1724_glass-rear-left.xml",
+      "bytes": 5134,
+      "sha256": "6ee72b5d69fdde453f84fe944dd044d29b2511eba8efec5856817c112391a8ce"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00104-n39_b1724_glass-rear-right.xml",
+      "bytes": 5199,
+      "sha256": "fad5aa42bdb1655179ba1fa054fa6c1108658e1d616029542b3ddc2854d47bea"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00105-n39_b1724_rear-glass-pair.xml",
+      "bytes": 869,
+      "sha256": "2a2c15e0e0b2dce64a6b0a7e2951245b12c9273eab6f6af936eedf90fd07de14"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00106-n39_b1724_central-column.xml",
+      "bytes": 4561,
+      "sha256": "baa083dbba0f69bb98324a47503bb56777787c3151547d6a9eda3746316eb38c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00107-n39_b1724_scrolls-over-rear-cups.xml",
+      "bytes": 2159,
+      "sha256": "7d7305d781344470e685a737ba345495332a52d5661d9f83e1a84eb8e9024b4a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00108-n39_b1724_glass-outer-left.xml",
+      "bytes": 5113,
+      "sha256": "506d7382c063c3eae04cb1d1c19d00d4710fb08ab5da882860ce7b33ab81132b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00109-n39_b1724_glass-outer-right.xml",
+      "bytes": 5203,
+      "sha256": "b57415202431dcaa88e12aa701d34642ddea8c4f65cb6994478c9126872ab141"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00110-n39_b1724_outer-glass-pair.xml",
+      "bytes": 874,
+      "sha256": "4062152eb29639dfa319b329442e8fbe714c6cdbd5873e7332a471288ab6877c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00111-n39_b1724_glass-front-left.xml",
+      "bytes": 5127,
+      "sha256": "120cda162b58d371bdb58d8fc778071723084810a6d710350bd46ea3c3eeb0a6"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00112-n39_b1724_glass-front-right.xml",
+      "bytes": 5200,
+      "sha256": "47a571bd3d0763e069794b29f76368806c1bec17d9574c241f12111845b20eb1"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00113-n39_b1724_front-glass-pair.xml",
+      "bytes": 874,
+      "sha256": "5f47b9a45a03e71940b007c7d3e8888f512e4290e55f01e06719948164a59c4c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00114-n39_b1724_lower-open-scroll-basket.xml",
+      "bytes": 5346,
+      "sha256": "5ced1c40ef6e0bc862d905de445f46988b9022d30c1b627371457403b98f54d0"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00115-n39_b1724_lower-central-finial.xml",
+      "bytes": 2192,
+      "sha256": "590c74d4c674c368c935cf805bc022dc0819b7806182a832f1bfac1c19b9ce76"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00116-n39_b1724_chandelier-1724.xml",
+      "bytes": 2659,
+      "sha256": "f4f11c640820c76eb0e5445c3c371e6c2dc46e38097aa3b0f68b3ed2582fddb8"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00117-n39_bitmap1724.xml",
+      "bytes": 615,
+      "sha256": "1fd51b00a28c97b543e75d0ba9bd864dadc1405f12892e7fbcedd5880ee36bce"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00118-use.xml",
+      "bytes": 571,
+      "sha256": "44dac8191c7ce842a62759d9aeef31cb0b1c92f8a1af585f01d67fb7b38093da"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00119-clip-path-content.xml",
+      "bytes": 664,
+      "sha256": "5330fae0db445f60fda2bd29e1584cc9a0953a5120c9fa5a5d9d7ff007b2509a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00120-n39_fill0.xml",
+      "bytes": 600,
+      "sha256": "03060f3fe788124007ec152c20c55e4879e07e21184d850076d5b68f93205474"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00121-clip-path-shape.xml",
+      "bytes": 658,
+      "sha256": "6043634ee73e9ebc90fd783fdf019c882503d28fb6e21a61d3676810bbe82f49"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00122-clip-path-n39_fill0.xml",
+      "bytes": 883,
+      "sha256": "6133756eb048aceb6a5bcbbc8be77e22f427cff7e4ab712c9eb48dbdb8cb7283"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00123-g.xml",
+      "bytes": 538,
+      "sha256": "1af6002ef8aa2da5185db185d5cffe7409b74823d6cea4f3fb49563ce174b8a4"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00124-g.xml",
+      "bytes": 552,
+      "sha256": "d8396519cfdc27e1217f7f2b48779759441c30525a2078565f05ae1da81eff3b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00125-g.xml",
+      "bytes": 552,
+      "sha256": "35e69eeb7f2220416affa402a7aa086f9cd80efdb5719407ad7121d8123c55a9"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00126-svg.xml",
+      "bytes": 1179,
+      "sha256": "f331bb2af492338d9a975772d5d06901af5327bbbebb4131494bb71367b88acc"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00127-registered-native-layer.xml",
+      "bytes": 620,
+      "sha256": "371cf22e0c35f2ef79fe733c6e7eafee1d566b7a7027848d190b8aa466058369"
+    },
+    {
+      "path": "PublishSettings.xml",
+      "bytes": 7825,
+      "sha256": "24da4e55de9053d16b8fe1b842e49884ed3eea0a53172d9fbb2445acd725fb9d"
+    }
+  ],
+  "candidateClosureSha256": "7e738933680490256da32058eebf22fb589f0589b2801a53d65bb7803c7c0f65",
+  "canonicalClosure": [
+    {
+      "path": "CF6_A03_foreground.xfl",
+      "bytes": 9,
+      "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38"
+    },
+    {
+      "path": "DOMDocument.xml",
+      "bytes": 11036,
+      "sha256": "bba158405904f5216e5394410b5dce07a3bd0eb255c768725208713bef5042f7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00001-path.xml",
+      "bytes": 1256,
+      "sha256": "699f7c71391849dc77c6345871f33bf63475af240a41972e23a4fdca344c4a49"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00002-path.xml",
+      "bytes": 1259,
+      "sha256": "c2f3a8d4d8991a30545337feb6405a3b55226ee66875a920be1083e4f401df36"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00003-path.xml",
+      "bytes": 1191,
+      "sha256": "37d3fcc2c0909ace82c5243aaff0e2767907d87694f7e146b3f3cbae32c84eaa"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00004-path.xml",
+      "bytes": 1128,
+      "sha256": "e67939538016abb8a576ca05b51fb8fbbc4b8ebbb811800679f7f52cb28dc1b6"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00005-n33_b1724_chain-and-crown.xml",
+      "bytes": 10258,
+      "sha256": "e86f6b28e65134159673491cc320e4359e524832071bc3b78a5a745596d01d40"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00006-path.xml",
+      "bytes": 1330,
+      "sha256": "b508e1c9c43ab4fbcc0657680cd00481cb7a8e8af21a3ca6af4c2934cae35644"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00007-g.xml",
+      "bytes": 1915,
+      "sha256": "8ea7b7aeb8b419c6bdb4b2842cb9d1edfc62c8a82b282bb65a053e4d893e299e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00008-n33_b1724_upper-open-scrolls.xml",
+      "bytes": 2197,
+      "sha256": "e5a15ec44497ae1976959eb0e9f2d090ed025f2fbfef9243dcb59e071ef3b57e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00009-path.xml",
+      "bytes": 1363,
+      "sha256": "e3a4e0a00701785f74b9925181064546d4e9d7594c7e7415ed662391ae029ba9"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00010-g.xml",
+      "bytes": 1985,
+      "sha256": "42a02041c0ec622803245cbb356ad115e7f7b0cb96b961d1b4a43697775676ca"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00011-path.xml",
+      "bytes": 1380,
+      "sha256": "edde9009fdbd6005f6cb709b4ee8d92a0f6c3ef256f25c126cf3c226663ee555"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00012-g.xml",
+      "bytes": 2019,
+      "sha256": "f266f3c86613621fcf603ed49f0473955e395bb2c0204cd4bed3c49a92679fcd"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00013-path.xml",
+      "bytes": 1385,
+      "sha256": "441681cf97705fa7229eb2c499d69ede08a644e4e8d2ad0490227afbc258cf0f"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00014-g.xml",
+      "bytes": 2031,
+      "sha256": "1cc08ec05f35d1ed11246eedd49baa86d4218de741895160f68c210e8662d039"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00015-n33_b1724_six-open-support-arms.xml",
+      "bytes": 6010,
+      "sha256": "93d4d69f23da35918d81a8f92fb2bc05b8b8bfb97d6f3436141e1c455e7b636d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00016-n33_b1724_glass-rear-left.xml",
+      "bytes": 5134,
+      "sha256": "88759c93d766278ea0b164313dec45b81d8a8ecba7be4c2f8025a5e9b405c85d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00017-n33_b1724_glass-rear-right.xml",
+      "bytes": 5199,
+      "sha256": "40d8d4de49526de3aebb7c386dc24619af22e983cb594bd8054e3db4dff1b571"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00018-n33_b1724_rear-glass-pair.xml",
+      "bytes": 869,
+      "sha256": "07f1dfa2a6f40e61c32e107ecd6936f98c0e58a99c3d4309d308a381b98dc906"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00019-path.xml",
+      "bytes": 1130,
+      "sha256": "c943ceffbb59031e4b0b528205014860feaeba39cf58e0ab9c8406aaeb65064c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00020-n33_b1724_central-column.xml",
+      "bytes": 4561,
+      "sha256": "08747548d901746c398c7b70d5b681dfdc2c2d0d0995f8c3ac87d856076681b9"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00021-path.xml",
+      "bytes": 1309,
+      "sha256": "81960b9b28bf34c6f9e2a3a9efd566af269366d10ab7765334eeded746c22090"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00022-g.xml",
+      "bytes": 1865,
+      "sha256": "fd106b731e84a481ef2ba15c2e0dfdc429a6e2d071b61f1a76756fcec8624f6d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00023-n33_b1724_scrolls-over-rear-cups.xml",
+      "bytes": 2159,
+      "sha256": "534181822f8e30ea91805673125b5b83a89d141e81ee3bfc9bb38231aa314e53"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00024-n33_b1724_glass-outer-left.xml",
+      "bytes": 5113,
+      "sha256": "7898604ccf264e3a2ddc2351e63e493f588d58d348bfe90f3ac0074a89713416"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00025-n33_b1724_glass-outer-right.xml",
+      "bytes": 5203,
+      "sha256": "139b3eb95cd9f0bc82413f3cd2d1e89fb599de26bf848bd5d78b9db7956b6b55"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00026-n33_b1724_outer-glass-pair.xml",
+      "bytes": 874,
+      "sha256": "eee040ad00b9020e88b64a3d7831243e3ade1a4ce5bb0ae42ccda2ceaa74c0c7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00027-n33_b1724_glass-front-left.xml",
+      "bytes": 5127,
+      "sha256": "473bf7c5ffdc252f45b7df5009e16f0c94846dbac9ea75f8b3439d923b80306d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00028-n33_b1724_glass-front-right.xml",
+      "bytes": 5200,
+      "sha256": "11dadaa77aea4b72636593f5786c628ca8d8cf0c601d20d052d3c62f50c03b9e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00029-n33_b1724_front-glass-pair.xml",
+      "bytes": 874,
+      "sha256": "99e451552394c8ccf50bee7d9af3f3155de66eaa3a7a82ba5f7ec1338b2304e5"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00030-path.xml",
+      "bytes": 1308,
+      "sha256": "668c6e5213ab09d292aa4de2eeb508df1624e81dccb5c0648e6d9d3fb1ef6126"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00031-g.xml",
+      "bytes": 1864,
+      "sha256": "222195ab1c37b60a5dbc904572154cc044f01be4945895151462a49517eee1c6"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00032-path.xml",
+      "bytes": 1255,
+      "sha256": "3947b7872161ea79c5a340ca2134998aaa892d75d111f7feb315c4676b6a56db"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00033-g.xml",
+      "bytes": 1757,
+      "sha256": "f39c2abbae53813f6e91b90401d3177b3298ddb01a598bb7d0c40bba5f9a3d8b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00034-path.xml",
+      "bytes": 1247,
+      "sha256": "a668c116d7df28b804fc81d9d00a177e3d631a04c918cb37530ca16427713c5b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00035-g.xml",
+      "bytes": 1741,
+      "sha256": "4c564aef55dd8ea014a2e37102f1ef859f428f00db90f04499fbd486c62b9f4f"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00036-n33_b1724_lower-open-scroll-basket.xml",
+      "bytes": 5346,
+      "sha256": "b1a20a6be55328146b3c149812c9e35030174d81a60048c63fc7557ce75dfc90"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00037-n33_b1724_lower-central-finial.xml",
+      "bytes": 2192,
+      "sha256": "388c450c07218afe32eadedf4ab314ae1c14bb28d811d3a27706eaf47f274817"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00038-n33_b1724_chandelier-1724.xml",
+      "bytes": 2659,
+      "sha256": "717cac2ee0e778c4a31c2bbec634f0d4eb8f41ea6d1ecb6702e09e8c2064f262"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00039-n33_bitmap1724.xml",
+      "bytes": 615,
+      "sha256": "d72dcb9c66c3944353b3cc6ad59d5efc6600e737ece12bd6f99a0d001c6d012b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00040-use.xml",
+      "bytes": 571,
+      "sha256": "740d5e093f94f0a4bce3496fb27244eef3aec9dd56dbcb98d095f18e3700cbf5"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00041-clip-path-content.xml",
+      "bytes": 664,
+      "sha256": "ca2ca140d495d455266c5c98b294d619d5f00cd7105ef817d818850274eac4a7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00042-n33_fill0.xml",
+      "bytes": 600,
+      "sha256": "1123fa02cfb6f7c3dc3991251550e1b67cc37813d8bcf17bd1aabe7399dfe6f3"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00043-clip-path-shape.xml",
+      "bytes": 658,
+      "sha256": "c90d35151af67ae1c277a7a1e74d1bb7397da578dda4bc3e668db948dfd14439"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00044-clip-path-n33_fill0.xml",
+      "bytes": 883,
+      "sha256": "e7d2a4dc37da4cefee557406df1dc8ed437c07600317ca85751a7ae35bf8fb2e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00045-g.xml",
+      "bytes": 538,
+      "sha256": "13a94ae027aca1f80ff1ea2e89afb9d89678c4ffc19e09def358101a404f1680"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00046-g.xml",
+      "bytes": 552,
+      "sha256": "9f766e7e0508a21a4db6b3641e9441b89a170a5cf68bcf6d48ddd89300778275"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00047-g.xml",
+      "bytes": 552,
+      "sha256": "95702c62662020b8f9392f4261b503bf72dc521a54f9e5efac1040b88e012d9d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00048-n35_b1724_chain-and-crown.xml",
+      "bytes": 10258,
+      "sha256": "5954f9e8ca1b8f4ee2df79e6b0c76c23f2f92f7342939e7f3a710826a203ee59"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00049-n35_b1724_upper-open-scrolls.xml",
+      "bytes": 2197,
+      "sha256": "a36cef18bc97d381d7d7deec14f3ea61bc98de76ceea69080bad83c3ce04d303"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00050-n35_b1724_six-open-support-arms.xml",
+      "bytes": 6010,
+      "sha256": "341cc1ae22faee5f63f14a3ed88da5ec4a5ba9c429f8c36cf1c1a3df8a023348"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00051-n35_b1724_glass-rear-left.xml",
+      "bytes": 5134,
+      "sha256": "1adfbffe16a5a7999aa7ac4c2c795438507ee8dddd0807e4216e089e554df044"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00052-n35_b1724_glass-rear-right.xml",
+      "bytes": 5199,
+      "sha256": "2bebafb74a4a956964414a9a003957fda91f0aadb1376ea301f747f00621f934"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00053-n35_b1724_rear-glass-pair.xml",
+      "bytes": 869,
+      "sha256": "6a32f84bca8b0aa4a24ecc5bdd7100e2cceb5adba722136d69e5322c50db5341"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00054-n35_b1724_central-column.xml",
+      "bytes": 4561,
+      "sha256": "5e49540bf6f8f62ee015c40b294d17d27774810fce06478b8e7f2abf3e7b87b9"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00055-n35_b1724_scrolls-over-rear-cups.xml",
+      "bytes": 2159,
+      "sha256": "a742ab2b4905a08cee2012fb27e466a9e58ba0deb316c01bc5390f95a5832416"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00056-n35_b1724_glass-outer-left.xml",
+      "bytes": 5113,
+      "sha256": "0920ba891d4150dbc262d441614bced6d70b5afdc7ea01dbeeaf3420e953d896"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00057-n35_b1724_glass-outer-right.xml",
+      "bytes": 5203,
+      "sha256": "1b1a015372632fcf13010ca110220d99048499d7a01e2621b1bc0c1af0c910c6"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00058-n35_b1724_outer-glass-pair.xml",
+      "bytes": 874,
+      "sha256": "0bba5ec53c1495cc19e5752ea13d3b8faf060d67cf8a7ca0582a57c853b106ba"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00059-n35_b1724_glass-front-left.xml",
+      "bytes": 5127,
+      "sha256": "a5453d0cc831bb18313e79100a3b500f4be66d6abca21957621022507727886f"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00060-n35_b1724_glass-front-right.xml",
+      "bytes": 5200,
+      "sha256": "f2024af413d8c1e1610e0ad16d92653c4ee1c61b30e29a01858117f1903bccc2"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00061-n35_b1724_front-glass-pair.xml",
+      "bytes": 874,
+      "sha256": "c14e7130721fd53c7e7ac4a1a9121c3295b50a3ff5c72fa7e9b66f1c36aba01e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00062-n35_b1724_lower-open-scroll-basket.xml",
+      "bytes": 5346,
+      "sha256": "0f1633b0bdc27530e1802a344f8305bc804b97cd2085489b7c128a4c81f98199"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00063-n35_b1724_lower-central-finial.xml",
+      "bytes": 2192,
+      "sha256": "e990f6c58adcf0526389c5d3714ad94cc2084ab190274a2a5cbce2136ce879bd"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00064-n35_b1724_chandelier-1724.xml",
+      "bytes": 2659,
+      "sha256": "c2113e3b51bc8b403665781fc9b24ae8c121364232affa5ab6a8afc9a4aba3e2"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00065-n35_bitmap1724.xml",
+      "bytes": 615,
+      "sha256": "8d5bc408cec875c9832f980b06aff438d8fae0afc7985d5dfc65376d74c3bdd8"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00066-use.xml",
+      "bytes": 571,
+      "sha256": "8fcd019d521e0ff9455aca34abee2a348cea7bc56a687868199d323375e5a677"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00067-clip-path-content.xml",
+      "bytes": 664,
+      "sha256": "13906e6f4b09a2913dd79f5003a50a6cc7f76e1af1e894a226bbf7eddcd2bc81"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00068-n35_fill0.xml",
+      "bytes": 600,
+      "sha256": "6a867f5cf738d638f8c4e395b9d487c618c371d59c3a23ead376659991316318"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00069-clip-path-shape.xml",
+      "bytes": 658,
+      "sha256": "07a736ee710d668d4c92fcc1eb828645e478a794416da5936830c420b91dbd14"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00070-clip-path-n35_fill0.xml",
+      "bytes": 883,
+      "sha256": "c6ed31a85c7b0f8133fc0aa11eda6f97b49b0e951fa10abba85d7d6bf37e7cd9"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00071-g.xml",
+      "bytes": 538,
+      "sha256": "46e6cadf1e2c14057a2568704374084701b41d6947c3f601d1629bf2e725d045"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00072-g.xml",
+      "bytes": 552,
+      "sha256": "8a79189b377e29ff49e5cd916038ad239711735a02d36ce9e8c1509f4398f650"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00073-g.xml",
+      "bytes": 552,
+      "sha256": "d43c316c9af370f785d2ca06eb6a6574b88d9f56ff000bbca915cc12c6d425c1"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00074-n37_b1724_chain-and-crown.xml",
+      "bytes": 10258,
+      "sha256": "ea04db6072705eba4156d2f7c54acd093b2c1a8a9b41c657fdde12f76a2d1fc7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00075-n37_b1724_upper-open-scrolls.xml",
+      "bytes": 2197,
+      "sha256": "bc7c3dcaf16a1cadd452f276f8ab5ffa12f6a05d0fefc80687f8f5e84f14aadf"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00076-n37_b1724_six-open-support-arms.xml",
+      "bytes": 6010,
+      "sha256": "f241039e9609c53da84bf55d300f26e5f94435b190f67c58e816f73b9dee7347"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00077-n37_b1724_glass-rear-left.xml",
+      "bytes": 5134,
+      "sha256": "9baaaf13d02acb64e453858659fd4be79631eb2a21663da38a2f3303d48439f2"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00078-n37_b1724_glass-rear-right.xml",
+      "bytes": 5199,
+      "sha256": "f28d1ae3c8bde7a5c85aeb1b9c5301a8a00a16426b862a425bc6d49244f0eb4e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00079-n37_b1724_rear-glass-pair.xml",
+      "bytes": 869,
+      "sha256": "adca63d16cedf1b45af1e02ddd5ea75cc0a884c465211f3d2ed4f7a369939bb0"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00080-n37_b1724_central-column.xml",
+      "bytes": 4561,
+      "sha256": "504363aeec365123a1212ee6d0d9182e9948ed862983f627bb345396d8b86df7"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00081-n37_b1724_scrolls-over-rear-cups.xml",
+      "bytes": 2159,
+      "sha256": "17bef21bdc1c9cff9324c3c5a615ece1687f441b98e4ce99662ce7941637fd9a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00082-n37_b1724_glass-outer-left.xml",
+      "bytes": 5113,
+      "sha256": "bc73e90db3b73e6087cf5b605cc65dfadf6f8c2ff509f0aaa8a2bf9eac70d064"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00083-n37_b1724_glass-outer-right.xml",
+      "bytes": 5203,
+      "sha256": "44d00f76d54dede228f1da99f88ef3df02f59cde7614260156381376569f2128"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00084-n37_b1724_outer-glass-pair.xml",
+      "bytes": 874,
+      "sha256": "bb1ebbdc01e6d32fc99e51db45119bedb59e58dc0524160c87b50c9d098c498d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00085-n37_b1724_glass-front-left.xml",
+      "bytes": 5127,
+      "sha256": "326fede1ba432fd013b4480766d11a5ea4680e794e0597ea87c59a7291a0fece"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00086-n37_b1724_glass-front-right.xml",
+      "bytes": 5200,
+      "sha256": "4dc87d15a40a5b1d231fbb9cadc96890110c2f0d838b4bd70d840f2ff3b75a08"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00087-n37_b1724_front-glass-pair.xml",
+      "bytes": 874,
+      "sha256": "67a9e1476f3a72c56da5cdd630e6bd54412cd10756a640628c0e7606a872d801"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00088-n37_b1724_lower-open-scroll-basket.xml",
+      "bytes": 5346,
+      "sha256": "69715f4a126a393631665d73f54912fcd2425cb7c3e0559cd4975ef6ef0d5d80"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00089-n37_b1724_lower-central-finial.xml",
+      "bytes": 2192,
+      "sha256": "af36b31a1e4bfa5b84d8802e37397f88dc62868c144e0fbadd6cb8748c5619e5"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00090-n37_b1724_chandelier-1724.xml",
+      "bytes": 2659,
+      "sha256": "998fa5fc1b241fffaa2bd925f147ff1e429319bb163b31de486f33854cc53ada"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00091-n37_bitmap1724.xml",
+      "bytes": 615,
+      "sha256": "61e3ad40f03407220a3ac042ab344abf1e3dd2ee50e1fb29005f5f376034b07e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00092-use.xml",
+      "bytes": 571,
+      "sha256": "2e7059a0f65c48a02ba69cdaa1b662b85fc80c5bfb3a12fe907641b0e0fce28d"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00093-clip-path-content.xml",
+      "bytes": 664,
+      "sha256": "9d3625a5d360f5963ce7e16f5ff0de74b13c1e070a3af1618ff6af41ed62c94e"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00094-n37_fill0.xml",
+      "bytes": 600,
+      "sha256": "971b7ca3b546d50d65d2884302619bcd549a9359a140f62af3ce8ff531bae848"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00095-clip-path-shape.xml",
+      "bytes": 658,
+      "sha256": "9d39c5400511cf6f17ccf40d78e49552aadfaf9ebfcd912b06e1c28b49795402"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00096-clip-path-n37_fill0.xml",
+      "bytes": 883,
+      "sha256": "99cc755775abde63e7234e443bc80fc3e001aa2a40b50fc3f3eb37c087d52970"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00097-g.xml",
+      "bytes": 538,
+      "sha256": "24f37233c4e43a26c1ca7c7a702862c15e046ef1215ccf2b2f40084a5bfc5b11"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00098-g.xml",
+      "bytes": 552,
+      "sha256": "48af9cf97f3e8d9dd179c4746611c12e499e043230b29daa50df4313e77e542b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00099-g.xml",
+      "bytes": 552,
+      "sha256": "962d9fdf0947300f44d0cc32b6ebde2b07fa719adcddf7c9f4c27e133c415409"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00100-n39_b1724_chain-and-crown.xml",
+      "bytes": 10258,
+      "sha256": "b8d9dd593b6b17fc1316283393a27d528d9d5016821699ca524cda2d54d6d3af"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00101-n39_b1724_upper-open-scrolls.xml",
+      "bytes": 2197,
+      "sha256": "6eadee5fb58c7d198c396b0f212efd70ad55c679de3eb887fc41eae30f667e85"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00102-n39_b1724_six-open-support-arms.xml",
+      "bytes": 6010,
+      "sha256": "d97eb7b0aa67d1179d63aa26cb11632ce01ac79ea1b0d62ba8f616715103e42c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00103-n39_b1724_glass-rear-left.xml",
+      "bytes": 5134,
+      "sha256": "6ee72b5d69fdde453f84fe944dd044d29b2511eba8efec5856817c112391a8ce"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00104-n39_b1724_glass-rear-right.xml",
+      "bytes": 5199,
+      "sha256": "fad5aa42bdb1655179ba1fa054fa6c1108658e1d616029542b3ddc2854d47bea"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00105-n39_b1724_rear-glass-pair.xml",
+      "bytes": 869,
+      "sha256": "2a2c15e0e0b2dce64a6b0a7e2951245b12c9273eab6f6af936eedf90fd07de14"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00106-n39_b1724_central-column.xml",
+      "bytes": 4561,
+      "sha256": "baa083dbba0f69bb98324a47503bb56777787c3151547d6a9eda3746316eb38c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00107-n39_b1724_scrolls-over-rear-cups.xml",
+      "bytes": 2159,
+      "sha256": "7d7305d781344470e685a737ba345495332a52d5661d9f83e1a84eb8e9024b4a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00108-n39_b1724_glass-outer-left.xml",
+      "bytes": 5113,
+      "sha256": "506d7382c063c3eae04cb1d1c19d00d4710fb08ab5da882860ce7b33ab81132b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00109-n39_b1724_glass-outer-right.xml",
+      "bytes": 5203,
+      "sha256": "b57415202431dcaa88e12aa701d34642ddea8c4f65cb6994478c9126872ab141"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00110-n39_b1724_outer-glass-pair.xml",
+      "bytes": 874,
+      "sha256": "4062152eb29639dfa319b329442e8fbe714c6cdbd5873e7332a471288ab6877c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00111-n39_b1724_glass-front-left.xml",
+      "bytes": 5127,
+      "sha256": "120cda162b58d371bdb58d8fc778071723084810a6d710350bd46ea3c3eeb0a6"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00112-n39_b1724_glass-front-right.xml",
+      "bytes": 5200,
+      "sha256": "47a571bd3d0763e069794b29f76368806c1bec17d9574c241f12111845b20eb1"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00113-n39_b1724_front-glass-pair.xml",
+      "bytes": 874,
+      "sha256": "5f47b9a45a03e71940b007c7d3e8888f512e4290e55f01e06719948164a59c4c"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00114-n39_b1724_lower-open-scroll-basket.xml",
+      "bytes": 5346,
+      "sha256": "5ced1c40ef6e0bc862d905de445f46988b9022d30c1b627371457403b98f54d0"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00115-n39_b1724_lower-central-finial.xml",
+      "bytes": 2192,
+      "sha256": "590c74d4c674c368c935cf805bc022dc0819b7806182a832f1bfac1c19b9ce76"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00116-n39_b1724_chandelier-1724.xml",
+      "bytes": 2659,
+      "sha256": "f4f11c640820c76eb0e5445c3c371e6c2dc46e38097aa3b0f68b3ed2582fddb8"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00117-n39_bitmap1724.xml",
+      "bytes": 615,
+      "sha256": "1fd51b00a28c97b543e75d0ba9bd864dadc1405f12892e7fbcedd5880ee36bce"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00118-use.xml",
+      "bytes": 571,
+      "sha256": "44dac8191c7ce842a62759d9aeef31cb0b1c92f8a1af585f01d67fb7b38093da"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00119-clip-path-content.xml",
+      "bytes": 664,
+      "sha256": "5330fae0db445f60fda2bd29e1584cc9a0953a5120c9fa5a5d9d7ff007b2509a"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00120-n39_fill0.xml",
+      "bytes": 600,
+      "sha256": "03060f3fe788124007ec152c20c55e4879e07e21184d850076d5b68f93205474"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00121-clip-path-shape.xml",
+      "bytes": 658,
+      "sha256": "6043634ee73e9ebc90fd783fdf019c882503d28fb6e21a61d3676810bbe82f49"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00122-clip-path-n39_fill0.xml",
+      "bytes": 883,
+      "sha256": "6133756eb048aceb6a5bcbbc8be77e22f427cff7e4ab712c9eb48dbdb8cb7283"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00123-g.xml",
+      "bytes": 538,
+      "sha256": "1af6002ef8aa2da5185db185d5cffe7409b74823d6cea4f3fb49563ce174b8a4"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00124-g.xml",
+      "bytes": 552,
+      "sha256": "d8396519cfdc27e1217f7f2b48779759441c30525a2078565f05ae1da81eff3b"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00125-g.xml",
+      "bytes": 552,
+      "sha256": "35e69eeb7f2220416affa402a7aa086f9cd80efdb5719407ad7121d8123c55a9"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00126-svg.xml",
+      "bytes": 1179,
+      "sha256": "f331bb2af492338d9a975772d5d06901af5327bbbebb4131494bb71367b88acc"
+    },
+    {
+      "path": "LIBRARY/CF6Vector/00127-registered-native-layer.xml",
+      "bytes": 620,
+      "sha256": "371cf22e0c35f2ef79fe733c6e7eafee1d566b7a7027848d190b8aa466058369"
+    },
+    {
+      "path": "PublishSettings.xml",
+      "bytes": 7807,
+      "sha256": "b0ed85d5b2250393395b11efc5babb12d051d2542b41d2b863025c72a721a640"
+    }
+  ],
+  "canonicalClosureSha256": "d4989a96f62b2daf2887a3dc8d14e1acbfd23eca6854f76cd4cd7ec6d5f45a6f",
+  "oldSource": [
+    {
+      "path": "bin/M 1 1792559564.dat",
+      "bytes": 73516,
+      "sha256": "a40adc98d6dc877b6bf8dbf124279e8b16b34e91e0314e73f9540c1b6fc2bf92"
+    },
+    {
+      "path": "bin/SymDepend.cache",
+      "bytes": 28,
+      "sha256": "50d8c5626e1bb6f4a8f1e4633ea20b2a3710425886e68ebc4761b3eed0ca3cb2"
+    },
+    {
+      "path": "CF6_A03_foreground.xfl",
+      "bytes": 9,
+      "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38"
+    },
+    {
+      "path": "DOMDocument.xml",
+      "bytes": 2444,
+      "sha256": "18fb6c7f60ba2e0292dc3d62d21e376eb9c0c3df961fd39ce908267113ea5024"
+    },
+    {
+      "path": "LIBRARY/foreground-1727.png",
+      "bytes": 75498,
+      "sha256": "29617400374cfa7fcdf85c9ab20ea73143a76331f37aca1e2f031c477fa3f576"
+    },
+    {
+      "path": "META-INF/metadata.xml",
+      "bytes": 3875,
+      "sha256": "ce8cac34ce6d17773c980957644f91ef481af156b01f1d34de07c23553b8c8b2"
+    },
+    {
+      "path": "MobileSettings.xml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "PublishSettings.xml",
+      "bytes": 7801,
+      "sha256": "106ed73b27f10d329db115702b0e4bc2a113f6fd73da63b587acc04f2d2e4fdb"
+    }
+  ],
+  "oldSwf": {
+    "bytes": 66498,
+    "sha256": "ffda3de23000d2cecc77a12d5129207498a7a9ae5ab365914469dd5568900bc4"
+  },
+  "archive": "tools/cf6-map-runtime/native-vector/archive/canonical-predecessors/CF6_A03_foreground/20261021T084537Z-17e3d389c2",
+  "state": "native_source_installed; exact canonical CS6 compile still required",
+  "sourceManifest": "tools/cf6-map-runtime/native-vector/layers/CF6_A03_foreground_VectorCandidate01/texture-manifest.json",
+  "sourceManifestSha256": "3490921e56317feb9ffb75a4dc3ad527c259d464ac49906de41b589d5cacc477"
+}

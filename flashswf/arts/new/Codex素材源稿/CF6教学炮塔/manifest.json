@@ -1,0 +1,105 @@
+{
+ "schema": "cf6-turret-native-tags.v2",
+ "sourceSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+ "tags": {
+  "277": {
+   "file": "raw-tags/tag-277-DefineShape3.bin",
+   "tag": "DefineShape3",
+   "offset": 391110,
+   "length": 36,
+   "sha256": "dda4d89d249efddc8ccb2dbdf4a905fe6bb106093c840b137e7d063514066ac1"
+  },
+  "359": {
+   "file": "raw-tags/tag-359-DefineSprite.bin",
+   "tag": "DefineSprite",
+   "offset": 512446,
+   "length": 37,
+   "sha256": "5763ff589f842a2d0a820fd798dc7fe7966e248abf42b81196400d541eb5e3eb"
+  },
+  "502": {
+   "file": "raw-tags/tag-502-DefineBitsLossless2.bin",
+   "tag": "DefineBitsLossless2",
+   "offset": 695760,
+   "length": 1585,
+   "sha256": "c2b62dfb425cf8eea1e75c70a4fc89e4e50fa30f9384326c090d5b5d9979fc02"
+  },
+  "503": {
+   "file": "raw-tags/tag-503-DefineShape.bin",
+   "tag": "DefineShape",
+   "offset": 697345,
+   "length": 56,
+   "sha256": "42e32f0bc3bd3406550c1ba8d5dec2cc0bb43ace88ec59cb67b26d719212d79e"
+  },
+  "504": {
+   "file": "raw-tags/tag-504-DefineShape.bin",
+   "tag": "DefineShape",
+   "offset": 697401,
+   "length": 56,
+   "sha256": "49911fceeb46a01b7c364047cb8574ff9ffa81fa28e3a0ebdbbbcbdf6ef705d1"
+  },
+  "505": {
+   "file": "raw-tags/tag-505-DefineShape.bin",
+   "tag": "DefineShape",
+   "offset": 697457,
+   "length": 56,
+   "sha256": "e38010fc1adfb5efdae0d9685cb395745f6c94a0a7695dc1884f2cbf1602a539"
+  },
+  "506": {
+   "file": "raw-tags/tag-506-DefineSprite.bin",
+   "tag": "DefineSprite",
+   "offset": 697513,
+   "length": 58,
+   "sha256": "d8c615e8a5a4e3642956ee2b06f8075ef0cfa53fb4652008d40ace10b66b8581"
+  },
+  "927": {
+   "file": "raw-tags/tag-927-DefineBitsJPEG3.bin",
+   "tag": "DefineBitsJPEG3",
+   "offset": 1814824,
+   "length": 22462,
+   "sha256": "359a6669ae2d020440f43cd5ba5ef6d032b74d345a9cb00c79cb16fc8f3b0721"
+  },
+  "1169": {
+   "file": "raw-tags/tag-1169-DefineSound.bin",
+   "tag": "DefineSound",
+   "offset": 11732676,
+   "length": 2407,
+   "sha256": "56ffa882a772d80c2194a525210e89d89fbe7c08a221e9685197515a0de744be"
+  },
+  "1588": {
+   "file": "raw-tags/tag-1588-DefineBitsJPEG3.bin",
+   "tag": "DefineBitsJPEG3",
+   "offset": 14683146,
+   "length": 5864,
+   "sha256": "37406fd112318e89da4bba899f8bf419bde6e421dc7bc22d50f0216df47f3687"
+  },
+  "1589": {
+   "file": "raw-tags/tag-1589-DefineShape2.bin",
+   "tag": "DefineShape2",
+   "offset": 14689010,
+   "length": 203,
+   "sha256": "9f84d13817e99db804293b06dcb42fde2bba7419e093592ee39ee60b22696919"
+  },
+  "1590": {
+   "file": "raw-tags/tag-1590-DefineSprite.bin",
+   "tag": "DefineSprite",
+   "offset": 14689213,
+   "length": 32,
+   "sha256": "b6057f8fe59ed1f041132b1a942b823cd6e1be2d8c8d76ce7e9f1d858e240dd6"
+  },
+  "1591": {
+   "file": "raw-tags/tag-1591-DefineSprite.bin",
+   "tag": "DefineSprite",
+   "offset": 14689245,
+   "length": 4899,
+   "sha256": "829fa927e8aebafdc2928c67aed70d62f4f00f85af7fb5ab95b960df3130484f"
+  }
+ },
+ "corrections": {
+  "deadFillEntries": {
+   "65535": "0xFFFF 填充条目真实存在于 503/504/505 的 FillStyleArray（type 0x43 位图填充），但三个形状的所有 edge 记录均不选用该填充索引（503 fillStyle1=2；504/505 fillStyle0=2，均指向有效位图 502）。按原作语义保留：不渲染、不以纯色替代、不视作缺失定义。"
+  },
+  "parserArtifacts": {
+   "1536": "r13 extract-native-tags.js 幻影引用：readMatrixEnd 将 NbitsScale 位误作 HasRotate，并对 DefineBitsJPEG3(1588) 的 JPEG 体误跑填充扫描。1536 实际存在但为无关 DefineEditText，不属于炮塔闭包；r14 起不再列入任何引用清单。"
+  }
+ }
+}

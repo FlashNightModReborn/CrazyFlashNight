@@ -142,6 +142,10 @@ CF6 重制单位按系列归入 `data/enemy_properties/CF6重制敌人.xml`，�
 
 ### NPC 支线解锁与临时单位参数
 
+关卡 `Instances.Instance` 通过 `Identifier` 附加的 NPC，若首帧会缓存商店、技能或默认对白，可显式设置 `InitializeParametersBeforeAttach: true`。
+`SceneManager.addInstance` 只对严格布尔 `true` 在附加前提供隔离副本的 `Parameters`，并以实例的 `x/y` 作为首帧坐标；随后仍执行原参数接线。省略、`false` 或字符串 `"true"` 保持旧行为，外部 `url` 加载不使用该初始化对象。
+CF6 章节商人用该字段让首帧读取本章商店与空默认对白，避免先缓存普通 NPC 目录或发起无关对白查询；实际 AVM1 初始顺序由 `scripts/run-cf6-prototype-tests.ps1` 的元件挂载夹具覆盖，真实商店打开与购买另做隔离游戏验证。
+
 NPC 元件可设置 `任务需求支线 = [任务ID, ...]`；`_root.初始化NPC` 在主线条件之后，要求列表中每个可转换为数字的 ID 都满足 `_root.tasks_finished[String(ID)] >= 1`。任一未完成时停止并隐藏元件，本次不继续初始化；省略或空数组不增加限制，无法转为数字的条目跳过。
 
 走 `真九命猫妖初始化` 的单位还支持以下实例参数，来源优先级均为单位属性（含关卡 `Parameters` / 修改器）高于装备 `initParam`：
@@ -175,6 +179,7 @@ NPC 元件可设置 `任务需求支线 = [任务ID, ...]`；`_root.初始化NPC
 - `arena_config.xml` 是标准卡与隐藏警报卡的运行时真源。`Cards/Card` 的 `id/index/countMin/countMax/levelMin/levelMax/exprTemplate` 和 `HiddenChallenges/HiddenChallenge` 的 offset、人数、mixed 要求与经济倍率由 C# `ArenaAuthorityCatalog` 启动期严格解析；损坏、重复 ID、倒置范围或模板与数字字段不一致会让竞技场 fail-closed，不回退 Web 硬编码。
 - `arena_factions.json` 是势力卡手作元数据真源，schemaVersion 固定为 1；每个 faction 必须命中 meta roster，`benchLevel` 只能为正整数或 null，`scale` 只能为 `small|large|coalition`，`enabled` 为布尔，`units` 为 null 或不重复的 `兵种N` 白名单。`launcher/web/modules/arena-factions.js` 由 `tools/derive-arena-factions.js` 生成，禁止手改。
 - `meta_teams.json` 与 `launcher/web/modules/arena-meta-rosters.js` 由 `tools/derive-arena-meta-teams.js` 从 `data/stages/**` 同步派生；`--check` 会 exact 比较 tracked 字节。release prepare 会先重建 meta/faction 投影，再重建 custom presets、unit catalog 和 parameter presets；任何 stale 输出必须非零失败。
+- `teams[]` 保留关卡原始组合供溯源与定制测试，成员的兵种或关卡参数带 `NPC` 保护时投影 `npc:true`；自动势力/爬升 `rosters` 排除这些成员，Web 自动整队与人形回退采样也排除保护成员。`is_hostile:false` 仍只是阵营标签，不代替 NPC 保护判断；过滤后的等级带与经济沿用现有公式派生。
 - `arena_calibrated_rosters.json` 只承载通过机器完成门、低 timeout/error、side-swap 复核及明确人类锚点的**精确组合**，不把单元格边推断成势力常数，也不写 `benchLevel`。`active=false` 时必须为空且不影响旧抽取；`active=true` 时每条 roster 必须绑定标准 `tierId`、组合成员/参数顺序、来源单元格、样本与 timeout/error 审计、side-swap 状态、生产物理 profile 和 `catalogHash`。非人单位还必须形成 `requiredKnownEnemies` 闭包，未知图鉴不会投影给玩家。
 - 正式启用只能由 `build-production-recommendation.js` 生成 `baseSha256 + replacementSha256 + dry-run diff + implementationClosure + rollback` 的 exact bundle，再由人类批准精确 `bundleHash` 后调用 `apply-production-recommendation.js`。apply 对 base/revision/消费者闭包做 CAS，启用后运行 Host/Web/文档门，任一失败恢复原始字节；禁止手抄组合、跳过验证或直接修改 Web 生成物。
 - 运行时 snapshot 的 `arenaAuthority.sourceDigest` 覆盖上述 XML、meta-team JSON、faction JSON、calibrated-roster JSON 与 `data/units/units.json` 的原始字节；Host 还会以 unit ID + spritename 精确验证每个目录成员及 humanoid 分类。标准怪物卡命中标定目录时，Web 展示 snapshot 中的 canonical 组合并只回传 session `cardId/cardIndex/calibratedRosterId`；Host 按同一 session 与 tier 反查原始 roster，拒绝未知单位、伪造 ID、跨档位 ID 或同时夹带的 client roster。未命中时保留既有 roster 抽取路径；C# 继续重建经济、表达式与爬升池，AS2 在写入前独立复算。完整协议与验证入口见 [Launcher README](../launcher/README.md)、[测试矩阵数据行](testing-guide.md#data) 与 [测试正文数据段](testing-details.md#data)。

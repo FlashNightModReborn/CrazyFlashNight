@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="CF6Vector/00002-native-sky-haze" symbolType="movie clip"><timeline><DOMTimeline name="native-sky-haze"><layers><DOMLayer name="native-sky-haze"><frames><DOMFrame index="0" duration="1" keyMode="9728"><Actionscript><script>stop();
+var bounds=content.getBounds(this);
+var left=Math.floor(bounds.xMin),top=Math.floor(bounds.yMin);
+var width=Math.ceil(bounds.xMax)-left,height=Math.ceil(bounds.yMax)-top;
+if(width&gt;0 &amp;&amp; height&gt;0 &amp;&amp; width&lt;=1024 &amp;&amp; height&lt;=512) {
+  this.__cf6SkyNoise=new flash.display.BitmapData(width,height,true,0xFF000000);
+  this.__cf6SkyNoise.perlinNoise(83.33333333333333,22.22222222222222,3,1595,false,false,1,true,[new flash.geom.Point(left,top),new flash.geom.Point(left,top),new flash.geom.Point(left,top)]);
+  this.__cf6SkyNoise.applyFilter(this.__cf6SkyNoise,new flash.geom.Rectangle(0,0,width,height),new flash.geom.Point(0,0),new flash.filters.ColorMatrixFilter([0,0,0,0,241.04560961783594,0,0,0,0,239.83386188152363,0,0,0,0,221.93795799777254,0.2,0,0,0,0]));
+  var haze=this.createEmptyMovieClip("nativeHaze",this.getNextHighestDepth());
+  haze._x=left;haze._y=top;haze.attachBitmap(this.__cf6SkyNoise,0,"auto",true);
+  content.cacheAsBitmap=true;haze.cacheAsBitmap=true;haze.setMask(content);
+  this.onUnload=function(){this.__cf6SkyNoise.dispose();};
+} else {trace("CF6_SKY_NOISE_BOUNDS_UNSUPPORTED");}
+</script></Actionscript><elements><DOMSymbolInstance libraryItemName="CF6Vector/00001-sky-filter-content" symbolType="movie clip" name="content"><matrix><Matrix a="1" b="0" c="0" d="1" tx="0" ty="0" /></matrix></DOMSymbolInstance></elements></DOMFrame></frames></DOMLayer></layers></DOMTimeline></timeline></DOMSymbolItem>

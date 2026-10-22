@@ -66,6 +66,8 @@ namespace CF7Launcher.Tests.Tasks
             foreach (string id in new[] { "Andy Law", "The Girl", "Shop Girl", "Boy", "King", "Pig", "格格巫" })
                 Assert.True(Access().Value<bool>(id));
             Assert.False(access.Value<bool>("书中-迷之盔甲君"));
+            foreach (int level in new[] { 35, 40, 45, 55, 60 })
+                Assert.False(access.Value<bool>($"书中-CF6毒刺-{level}级"));
             Assert.False(access.Value<bool>("虎妙"));
         }
 
@@ -134,12 +136,14 @@ namespace CF7Launcher.Tests.Tasks
                     return materials.Contains(name) || inputs.Contains(name);
                 })).Select(x => (string)x["shopId"]).ToHashSet(StringComparer.Ordinal);
             var policy = JObject.Parse(File.ReadAllText(Path.Combine(Root, NpcShopAccessPolicy.RelativePath)));
-            Assert.Equal(26, candidates.Count);
+            Assert.Equal(31, candidates.Count);
             Assert.True(candidates.SetEquals(((JObject)policy["shops"]).Properties().Select(p => p.Name)));
             var loaded = NpcShopAccessPolicy.Load(Root, Definition());
             Assert.Contains(NpcShopAccessPolicy.RelativePath, loaded.SourceHashes.Keys);
             Assert.Contains("data/shops/list.xml", loaded.SourceHashes.Keys);
             Assert.Contains("launcher/web/assets/tablet/contacts.json", loaded.SourceHashes.Keys);
+            foreach (int level in new[] { 35, 40, 45, 55, 60 })
+                Assert.Contains($"data/shops/npcs/书中-CF6毒刺-{level}级.json", loaded.SourceHashes.Keys);
         }
     }
 }

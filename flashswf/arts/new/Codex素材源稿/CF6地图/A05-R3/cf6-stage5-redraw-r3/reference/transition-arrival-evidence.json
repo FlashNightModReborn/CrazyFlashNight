@@ -1,0 +1,1237 @@
+{
+  "source": {
+    "path": "/workspace/scratch/1fc166b42c80/cf6-handoff-input/extracted/crazyflasher6-cn_secure.swf",
+    "sha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "method": "Static SWF tag parsing, AVM1 literal and constant-pool instruction decoding, signed-relative branch resolution, and arithmetic substitution only. No SWF, AVM1, ActionScript or game execution.",
+    "offsetUnit": "Decimal absolute byte offset in the supplied uncompressed SWF."
+  },
+  "characterId": 1729,
+  "spriteFrameCount": 174,
+  "placement": {
+    "payloadOffset": 15250314,
+    "length": 10,
+    "flags": 6,
+    "depth": 26,
+    "characterId": 1729,
+    "matrix": [
+      1,
+      0,
+      0,
+      1,
+      1190.45,
+      231.4
+    ]
+  },
+  "placementHasLoad": false,
+  "firstThreeFrameActions": [
+    {
+      "ownerSprite": 1729,
+      "frame": 1,
+      "protectedTag": {
+        "frame": 1,
+        "code": 253,
+        "headerOffset": 15074542,
+        "offset": 15074548,
+        "length": 490
+      },
+      "doAction": {
+        "frame": 1,
+        "code": 12,
+        "headerOffset": 15075038,
+        "offset": 15075044,
+        "length": 967
+      },
+      "constantPool": {
+        "offset": 15075838,
+        "values": [
+          "失效",
+          "_root",
+          "gameworld",
+          "man1",
+          "gotoAndStop",
+          "_x",
+          "this",
+          "_y"
+        ],
+        "rawHex": "88 35 00 08 00 e5 a4 b1 e6 95 88 00 5f 72 6f 6f 74 00 67 61 6d 65 77 6f 72 6c 64 00 6d 61 6e 31 00 67 6f 74 6f 41 6e 64 53 74 6f 70 00 5f 78 00 74 68 69 73 00 5f 79 00"
+      },
+      "instructionWindowOffset": 15074930,
+      "instructionWindowRawHex": "96 09 00 08 00 07 01 00 00 00 08 01 1c 96 02 00 08 02 4e 96 02 00 08 03 4e 96 02 00 08 04 52 17 96 02 00 08 01 1c 96 02 00 08 02 4e 96 02 00 08 03 4e 96 04 00 08 05 08 06 1c 96 02 00 08 05 4e 4f 96 02 00 08 01 1c 96 02 00 08 02 4e 96 02 00 08 03 4e 96 04 00 08 07 08 06 1c 96 02 00 08 07 4e 4f 99 02 00 94 03 99 02 00 94 ff",
+      "instructions": [
+        {
+          "offset": 15074930,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 12,
+          "values": [
+            {
+              "constantIndex": 0,
+              "resolved": "失效"
+            },
+            1,
+            {
+              "constantIndex": 1,
+              "resolved": "_root"
+            }
+          ]
+        },
+        {
+          "offset": 15074942,
+          "opcode": "0x1c",
+          "op": "GetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 15074943,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 2,
+              "resolved": "gameworld"
+            }
+          ]
+        },
+        {
+          "offset": 15074948,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15074949,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 3,
+              "resolved": "man1"
+            }
+          ]
+        },
+        {
+          "offset": 15074954,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15074955,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 4,
+              "resolved": "gotoAndStop"
+            }
+          ]
+        },
+        {
+          "offset": 15074960,
+          "opcode": "0x52",
+          "op": "CallMethod",
+          "byteLength": 1
+        },
+        {
+          "offset": 15074961,
+          "opcode": "0x17",
+          "op": "Pop",
+          "byteLength": 1
+        },
+        {
+          "offset": 15074962,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 1,
+              "resolved": "_root"
+            }
+          ]
+        },
+        {
+          "offset": 15074967,
+          "opcode": "0x1c",
+          "op": "GetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 15074968,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 2,
+              "resolved": "gameworld"
+            }
+          ]
+        },
+        {
+          "offset": 15074973,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15074974,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 3,
+              "resolved": "man1"
+            }
+          ]
+        },
+        {
+          "offset": 15074979,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15074980,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 7,
+          "values": [
+            {
+              "constantIndex": 5,
+              "resolved": "_x"
+            },
+            {
+              "constantIndex": 6,
+              "resolved": "this"
+            }
+          ]
+        },
+        {
+          "offset": 15074987,
+          "opcode": "0x1c",
+          "op": "GetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 15074988,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 5,
+              "resolved": "_x"
+            }
+          ]
+        },
+        {
+          "offset": 15074993,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15074994,
+          "opcode": "0x4f",
+          "op": "SetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15074995,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 1,
+              "resolved": "_root"
+            }
+          ]
+        },
+        {
+          "offset": 15075000,
+          "opcode": "0x1c",
+          "op": "GetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 15075001,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 2,
+              "resolved": "gameworld"
+            }
+          ]
+        },
+        {
+          "offset": 15075006,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15075007,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 3,
+              "resolved": "man1"
+            }
+          ]
+        },
+        {
+          "offset": 15075012,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15075013,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 7,
+          "values": [
+            {
+              "constantIndex": 7,
+              "resolved": "_y"
+            },
+            {
+              "constantIndex": 6,
+              "resolved": "this"
+            }
+          ]
+        },
+        {
+          "offset": 15075020,
+          "opcode": "0x1c",
+          "op": "GetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 15075021,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 7,
+              "resolved": "_y"
+            }
+          ]
+        },
+        {
+          "offset": 15075026,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15075027,
+          "opcode": "0x4f",
+          "op": "SetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15075028,
+          "opcode": "0x99",
+          "op": "Jump",
+          "byteLength": 5,
+          "relativeOffset": 916,
+          "branchTarget": 15075949
+        },
+        {
+          "offset": 15075033,
+          "opcode": "0x99",
+          "op": "Jump",
+          "byteLength": 5,
+          "relativeOffset": -108,
+          "branchTarget": 15074930
+        }
+      ],
+      "crossTagIncomingJumps": [
+        {
+          "offset": 15075944,
+          "target": 15075033,
+          "rawHex": "99 02 00 6c fc"
+        }
+      ],
+      "crossTagUnconditionalJumpChains": [
+        [
+          15075944,
+          15075033,
+          15074930
+        ]
+      ],
+      "pseudocode": "_root.gameworld.man1.gotoAndStop(\"失效\"); _root.gameworld.man1._x=this._x; _root.gameworld.man1._y=this._y;"
+    },
+    {
+      "ownerSprite": 1729,
+      "frame": 2,
+      "protectedTag": {
+        "frame": 2,
+        "code": 253,
+        "headerOffset": 15079093,
+        "offset": 15079099,
+        "length": 446
+      },
+      "doAction": {
+        "frame": 2,
+        "code": 12,
+        "headerOffset": 15079545,
+        "offset": 15079551,
+        "length": 962
+      },
+      "constantPool": {
+        "offset": 15079938,
+        "values": [
+          "失效",
+          "_root",
+          "gameworld",
+          "man1",
+          "gotoAndStop",
+          "_x",
+          "this",
+          "_y"
+        ],
+        "rawHex": "88 35 00 08 00 e5 a4 b1 e6 95 88 00 5f 72 6f 6f 74 00 67 61 6d 65 77 6f 72 6c 64 00 6d 61 6e 31 00 67 6f 74 6f 41 6e 64 53 74 6f 70 00 5f 78 00 74 68 69 73 00 5f 79 00"
+      },
+      "instructionWindowOffset": 15079437,
+      "instructionWindowRawHex": "96 09 00 08 00 07 01 00 00 00 08 01 1c 96 02 00 08 02 4e 96 02 00 08 03 4e 96 02 00 08 04 52 17 96 02 00 08 01 1c 96 02 00 08 02 4e 96 02 00 08 03 4e 96 04 00 08 05 08 06 1c 96 02 00 08 05 4e 4f 96 02 00 08 01 1c 96 02 00 08 02 4e 96 02 00 08 03 4e 96 04 00 08 07 08 06 1c 96 02 00 08 07 4e 4f 99 02 00 72 02 99 02 00 94 ff",
+      "instructions": [
+        {
+          "offset": 15079437,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 12,
+          "values": [
+            {
+              "constantIndex": 0,
+              "resolved": "失效"
+            },
+            1,
+            {
+              "constantIndex": 1,
+              "resolved": "_root"
+            }
+          ]
+        },
+        {
+          "offset": 15079449,
+          "opcode": "0x1c",
+          "op": "GetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079450,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 2,
+              "resolved": "gameworld"
+            }
+          ]
+        },
+        {
+          "offset": 15079455,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079456,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 3,
+              "resolved": "man1"
+            }
+          ]
+        },
+        {
+          "offset": 15079461,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079462,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 4,
+              "resolved": "gotoAndStop"
+            }
+          ]
+        },
+        {
+          "offset": 15079467,
+          "opcode": "0x52",
+          "op": "CallMethod",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079468,
+          "opcode": "0x17",
+          "op": "Pop",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079469,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 1,
+              "resolved": "_root"
+            }
+          ]
+        },
+        {
+          "offset": 15079474,
+          "opcode": "0x1c",
+          "op": "GetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079475,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 2,
+              "resolved": "gameworld"
+            }
+          ]
+        },
+        {
+          "offset": 15079480,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079481,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 3,
+              "resolved": "man1"
+            }
+          ]
+        },
+        {
+          "offset": 15079486,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079487,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 7,
+          "values": [
+            {
+              "constantIndex": 5,
+              "resolved": "_x"
+            },
+            {
+              "constantIndex": 6,
+              "resolved": "this"
+            }
+          ]
+        },
+        {
+          "offset": 15079494,
+          "opcode": "0x1c",
+          "op": "GetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079495,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 5,
+              "resolved": "_x"
+            }
+          ]
+        },
+        {
+          "offset": 15079500,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079501,
+          "opcode": "0x4f",
+          "op": "SetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079502,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 1,
+              "resolved": "_root"
+            }
+          ]
+        },
+        {
+          "offset": 15079507,
+          "opcode": "0x1c",
+          "op": "GetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079508,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 2,
+              "resolved": "gameworld"
+            }
+          ]
+        },
+        {
+          "offset": 15079513,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079514,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 3,
+              "resolved": "man1"
+            }
+          ]
+        },
+        {
+          "offset": 15079519,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079520,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 7,
+          "values": [
+            {
+              "constantIndex": 7,
+              "resolved": "_y"
+            },
+            {
+              "constantIndex": 6,
+              "resolved": "this"
+            }
+          ]
+        },
+        {
+          "offset": 15079527,
+          "opcode": "0x1c",
+          "op": "GetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079528,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 7,
+              "resolved": "_y"
+            }
+          ]
+        },
+        {
+          "offset": 15079533,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079534,
+          "opcode": "0x4f",
+          "op": "SetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15079535,
+          "opcode": "0x99",
+          "op": "Jump",
+          "byteLength": 5,
+          "relativeOffset": 626,
+          "branchTarget": 15080166
+        },
+        {
+          "offset": 15079540,
+          "opcode": "0x99",
+          "op": "Jump",
+          "byteLength": 5,
+          "relativeOffset": -108,
+          "branchTarget": 15079437
+        }
+      ],
+      "crossTagIncomingJumps": [
+        {
+          "offset": 15080161,
+          "target": 15079540,
+          "rawHex": "99 02 00 8e fd"
+        }
+      ],
+      "crossTagUnconditionalJumpChains": [
+        [
+          15080161,
+          15079540,
+          15079437
+        ]
+      ],
+      "pseudocode": "_root.gameworld.man1.gotoAndStop(\"失效\"); _root.gameworld.man1._x=this._x; _root.gameworld.man1._y=this._y;"
+    },
+    {
+      "ownerSprite": 1729,
+      "frame": 3,
+      "protectedTag": {
+        "frame": 3,
+        "code": 253,
+        "headerOffset": 15080943,
+        "offset": 15080949,
+        "length": 416
+      },
+      "doAction": {
+        "frame": 3,
+        "code": 12,
+        "headerOffset": 15081365,
+        "offset": 15081371,
+        "length": 963
+      },
+      "constantPool": {
+        "offset": 15081914,
+        "values": [
+          "失效",
+          "_root",
+          "gameworld",
+          "man1",
+          "gotoAndStop",
+          "_x",
+          "this",
+          "_y"
+        ],
+        "rawHex": "88 35 00 08 00 e5 a4 b1 e6 95 88 00 5f 72 6f 6f 74 00 67 61 6d 65 77 6f 72 6c 64 00 6d 61 6e 31 00 67 6f 74 6f 41 6e 64 53 74 6f 70 00 5f 78 00 74 68 69 73 00 5f 79 00"
+      },
+      "instructionWindowOffset": 15081257,
+      "instructionWindowRawHex": "96 09 00 08 00 07 01 00 00 00 08 01 1c 96 02 00 08 02 4e 96 02 00 08 03 4e 96 02 00 08 04 52 17 96 02 00 08 01 1c 96 02 00 08 02 4e 96 02 00 08 03 4e 96 04 00 08 05 08 06 1c 96 02 00 08 05 4e 4f 96 02 00 08 01 1c 96 02 00 08 02 4e 96 02 00 08 03 4e 96 04 00 08 07 08 06 1c 96 02 00 08 07 4e 4f 99 02 00 1b 01 99 02 00 94 ff",
+      "instructions": [
+        {
+          "offset": 15081257,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 12,
+          "values": [
+            {
+              "constantIndex": 0,
+              "resolved": "失效"
+            },
+            1,
+            {
+              "constantIndex": 1,
+              "resolved": "_root"
+            }
+          ]
+        },
+        {
+          "offset": 15081269,
+          "opcode": "0x1c",
+          "op": "GetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081270,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 2,
+              "resolved": "gameworld"
+            }
+          ]
+        },
+        {
+          "offset": 15081275,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081276,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 3,
+              "resolved": "man1"
+            }
+          ]
+        },
+        {
+          "offset": 15081281,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081282,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 4,
+              "resolved": "gotoAndStop"
+            }
+          ]
+        },
+        {
+          "offset": 15081287,
+          "opcode": "0x52",
+          "op": "CallMethod",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081288,
+          "opcode": "0x17",
+          "op": "Pop",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081289,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 1,
+              "resolved": "_root"
+            }
+          ]
+        },
+        {
+          "offset": 15081294,
+          "opcode": "0x1c",
+          "op": "GetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081295,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 2,
+              "resolved": "gameworld"
+            }
+          ]
+        },
+        {
+          "offset": 15081300,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081301,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 3,
+              "resolved": "man1"
+            }
+          ]
+        },
+        {
+          "offset": 15081306,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081307,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 7,
+          "values": [
+            {
+              "constantIndex": 5,
+              "resolved": "_x"
+            },
+            {
+              "constantIndex": 6,
+              "resolved": "this"
+            }
+          ]
+        },
+        {
+          "offset": 15081314,
+          "opcode": "0x1c",
+          "op": "GetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081315,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 5,
+              "resolved": "_x"
+            }
+          ]
+        },
+        {
+          "offset": 15081320,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081321,
+          "opcode": "0x4f",
+          "op": "SetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081322,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 1,
+              "resolved": "_root"
+            }
+          ]
+        },
+        {
+          "offset": 15081327,
+          "opcode": "0x1c",
+          "op": "GetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081328,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 2,
+              "resolved": "gameworld"
+            }
+          ]
+        },
+        {
+          "offset": 15081333,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081334,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 3,
+              "resolved": "man1"
+            }
+          ]
+        },
+        {
+          "offset": 15081339,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081340,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 7,
+          "values": [
+            {
+              "constantIndex": 7,
+              "resolved": "_y"
+            },
+            {
+              "constantIndex": 6,
+              "resolved": "this"
+            }
+          ]
+        },
+        {
+          "offset": 15081347,
+          "opcode": "0x1c",
+          "op": "GetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081348,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 5,
+          "values": [
+            {
+              "constantIndex": 7,
+              "resolved": "_y"
+            }
+          ]
+        },
+        {
+          "offset": 15081353,
+          "opcode": "0x4e",
+          "op": "GetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081354,
+          "opcode": "0x4f",
+          "op": "SetMember",
+          "byteLength": 1
+        },
+        {
+          "offset": 15081355,
+          "opcode": "0x99",
+          "op": "Jump",
+          "byteLength": 5,
+          "relativeOffset": 283,
+          "branchTarget": 15081643
+        },
+        {
+          "offset": 15081360,
+          "opcode": "0x99",
+          "op": "Jump",
+          "byteLength": 5,
+          "relativeOffset": -108,
+          "branchTarget": 15081257
+        }
+      ],
+      "crossTagIncomingJumps": [
+        {
+          "offset": 15081638,
+          "target": 15081360,
+          "rawHex": "99 02 00 e5 fe"
+        }
+      ],
+      "crossTagUnconditionalJumpChains": [
+        [
+          15081638,
+          15081360,
+          15081257
+        ]
+      ],
+      "pseudocode": "_root.gameworld.man1.gotoAndStop(\"失效\"); _root.gameworld.man1._x=this._x; _root.gameworld.man1._y=this._y;"
+    }
+  ],
+  "playerResultOfTheseAssignments": {
+    "localXY": [
+      1190.45,
+      231.4
+    ],
+    "timelineLabel": "失效",
+    "timelineFrame": 265
+  },
+  "playerDisabledFrameEvidence": {
+    "label": {
+      "frame": 265,
+      "code": 43,
+      "headerOffset": 2623274,
+      "offset": 2623280,
+      "length": 7
+    },
+    "removal": {
+      "frame": 265,
+      "code": 28,
+      "headerOffset": 2623270,
+      "offset": 2623272,
+      "length": 2
+    },
+    "previousFrameDisplay": {
+      "1": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          15.0,
+          -57.85
+        ],
+        "placedAt": 223,
+        "id": 1105,
+        "ratio": 222,
+        "name": "man"
+      }
+    },
+    "disabledFrameDisplay": {},
+    "meaning": "Frame265 labeled 失效 has an empty display list. It removes the real player drawing; no _visible=false property assignment is claimed."
+  },
+  "frame122Restore": {
+    "ownerSprite": 1729,
+    "frame": 122,
+    "offset": 15122816,
+    "rawHex": "96 11 00 07 01 00 00 00 07 01 00 00 00 00 5f 72 6f 6f 74 00 1c 96 0b 00 00 67 61 6d 65 77 6f 72 6c 64 00 4e 96 06 00 00 6d 61 6e 31 00 4e 96 0d 00 00 67 6f 74 6f 41 6e 64 53 74 6f 70 00 52 17 00",
+    "instructions": [
+      {
+        "offset": 15122816,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 20,
+        "values": [
+          1,
+          1,
+          "_root"
+        ]
+      },
+      {
+        "offset": 15122836,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 15122837,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 14,
+        "values": [
+          "gameworld"
+        ]
+      },
+      {
+        "offset": 15122851,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15122852,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 9,
+        "values": [
+          "man1"
+        ]
+      },
+      {
+        "offset": 15122861,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 15122862,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 16,
+        "values": [
+          "gotoAndStop"
+        ]
+      },
+      {
+        "offset": 15122878,
+        "opcode": "0x52",
+        "op": "CallMethod",
+        "byteLength": 1
+      },
+      {
+        "offset": 15122879,
+        "opcode": "0x17",
+        "op": "Pop",
+        "byteLength": 1
+      },
+      {
+        "offset": 15122880,
+        "opcode": "0x0",
+        "op": "End",
+        "byteLength": 1
+      }
+    ],
+    "pseudocode": "_root.gameworld.man1.gotoAndStop(1);"
+  },
+  "frame174Stop": {
+    "ownerSprite": 1729,
+    "frame": 174,
+    "offset": 15123765,
+    "instructions": [
+      {
+        "offset": 15123765,
+        "opcode": "0x7",
+        "op": "Stop",
+        "byteLength": 1
+      },
+      {
+        "offset": 15123766,
+        "opcode": "0x0",
+        "op": "End",
+        "byteLength": 1
+      }
+    ]
+  },
+  "cameraImpact": "Arrival1729 at depth26 relocates real man1 to local (1190.45,231.4) during its frames1/2/3 and puts it into empty frame265. It restores man1 frame1 at frame122. Thus a raw display-list preview showing man1 at (34.55,317.2) with arrival1729 is not an authentic first playable state. Order relative to world load, enterFrame, character logic, user inputs and saved state is not executed, so no exact first-playable viewport is asserted.",
+  "conditionalCameraArithmetic": {
+    "assumption": "If load reads the arrival-assigned player coordinates while the world remains at authored origin and man1 faces right.",
+    "playerGlobalPoint": [
+      1190.486329650879,
+      231.4
+    ],
+    "candidateWorldXY": [
+      -1040.486329650879,
+      8.599999999999994
+    ],
+    "xCandidatePasses": false,
+    "yCandidatePasses": false,
+    "conclusion": "Both load candidates are outside their strict valid ranges, so this conditional load alone retains world (0,0). The enterFrame rule eases separately; this does not establish actual order or actual viewport."
+  }
+}

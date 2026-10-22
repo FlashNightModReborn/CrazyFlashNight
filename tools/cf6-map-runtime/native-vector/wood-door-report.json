@@ -1,0 +1,75 @@
+{
+  "schema": "cf6-native-door-candidate.v1",
+  "name": "CF6_DoorWood1714_VectorCandidate01",
+  "frames": 9,
+  "sourceSprite": 1714,
+  "nativeShapesProcessed": 5637,
+  "nativeSymbols": 79,
+  "originalClipDepths": [
+    {
+      "sourceFrame": 2,
+      "depth": 2,
+      "clipDepth": 5
+    },
+    {
+      "sourceFrame": 3,
+      "depth": 2,
+      "clipDepth": 5
+    },
+    {
+      "sourceFrame": 4,
+      "depth": 2,
+      "clipDepth": 5
+    },
+    {
+      "sourceFrame": 5,
+      "depth": 2,
+      "clipDepth": 5
+    },
+    {
+      "sourceFrame": 6,
+      "depth": 2,
+      "clipDepth": 5
+    },
+    {
+      "sourceFrame": 7,
+      "depth": 2,
+      "clipDepth": 5
+    },
+    {
+      "sourceFrame": 8,
+      "depth": 2,
+      "clipDepth": 5
+    },
+    {
+      "sourceFrame": 9,
+      "depth": 2,
+      "clipDepth": 5
+    }
+  ],
+  "sourceInputs": [
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A03-R1/cf6-stage3-redraw-r1/reference/environment-original-nodes.json",
+      "sha256": "39b7986dcee648081ebbbcfcb515f3050713894fe60b47285b8a421b1b476fba"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A03-R1/cf6-stage3-redraw-r1/parts/shape-1709.svg",
+      "sha256": "fdadc65fbb6fbe4578038c649b21879764b6f65ff15840f9a49c02e015b77a91"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A03-R1/cf6-stage3-redraw-r1/parts/shape-1710.svg",
+      "sha256": "5df6d77b4e6f183270b21b0efcf46edc280c6a2ff2aaef055c6f8359ffe860b5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A03-R1/cf6-stage3-redraw-r1/parts/shape-1711.svg",
+      "sha256": "34f36175ca37e7d33cedb4baecb252ff4246edc234f09f5113b31c5228317777"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A03-R1/cf6-stage3-redraw-r1/parts/shape-1712.svg",
+      "sha256": "753b2e10bcb1667ed65c8cc5abd99956594120de4a323c9c2c57e1ba767ab0aa"
+    }
+  ],
+  "textureCount": 0,
+  "nativeRootScripts": "stop only; mask wrappers initialize native setMask; no inherited game actions",
+  "state": "native XFL source only; CS6 compile and nine-frame actual playback required"
+}

@@ -631,7 +631,7 @@
             var members = team.members || [];
             for (var m = 0; m < members.length; m++) {
                 var member = members[m];
-                if (!isHumanoidTemplateUnit(member)) continue;
+                if (!isHumanoidTemplateUnit(member) || !isKnownEnemyUnit(member)) continue;
                 var unit = {
                     type: member.type,
                     name: member.name,
@@ -847,7 +847,8 @@
     }
 
     function isKnownEnemyUnit(unit) {
-        if (!unit || !unit.spritename) return false;
+        // 同 sprite 的击杀解锁不能把剧情保护版本变成自动战斗候选。
+        if (!unit || !unit.spritename || unit.npc === true) return false;
         if (isHumanoidTemplateUnit(unit)) return true; // 佣兵模板由竞技场混编放行；普通怪物仍要求已击杀
         return S._knownEnemies[String(unit.spritename)] === true;
     }

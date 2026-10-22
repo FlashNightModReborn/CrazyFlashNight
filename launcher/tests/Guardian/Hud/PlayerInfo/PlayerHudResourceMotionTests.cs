@@ -40,6 +40,182 @@ public sealed class PlayerHudResourceMotionTests
     }
 
     [Fact]
+    public void TemporaryShieldPresenceHoldsBrightFillAcrossShortGapAndReleasesWithoutZeroDarkFlash()
+    {
+        var baseVitals = Vitals() with { ShieldPresent = false, Shield = 0, ShieldMax = 0 };
+        var motion = new PlayerHudResourceMotion();
+        motion.Observe(baseVitals);
+        Assert.Equal(0f, motion.Shield.Presence);
+
+        var tempShield = baseVitals with { ShieldPresent = true, Shield = 200, ShieldMax = 200 };
+        motion.Observe(tempShield);
+        Assert.InRange(motion.Shield.Presence, 0.1f, 0.9f);
+        motion.Advance(PlayerHudResourceMotion.AttackMilliseconds);
+        Assert.Equal(1f, motion.Shield.Presence);
+        Assert.Equal(1f, motion.Shield.DisplayFraction);
+        Assert.Equal(0f, motion.EmptyMix);
+
+        // Shield expires: Grace window holds presence (frame anti-flicker), switches fill to desaturated ghost, and shows 0 readout
+        motion.Observe(baseVitals);
+        motion.Advance(240);
+        Assert.Equal(1f, motion.Shield.Presence);
+        Assert.Equal(1f, motion.Shield.DisplayFraction);
+        Assert.Equal(0, motion.ResolveShieldDisplay(baseVitals).Shield);
+        Assert.Equal(1f, motion.EmptyMix);
+
+        // Re-acquiring temporary shield during grace window snaps back to active bright shield without dip/flicker
+        motion.Observe(tempShield);
+        Assert.Equal(1f, motion.Shield.Presence);
+        Assert.Equal(1f, motion.Shield.DisplayFraction);
+        Assert.Equal(200, motion.ResolveShieldDisplay(tempShield).Shield);
+        Assert.Equal(0f, motion.EmptyMix);
+
+        // Final expiration: holds 360ms as desaturated ghost with 0 readout, then dissolves smoothly over 480ms
+        motion.Observe(baseVitals);
+        motion.Advance(PlayerHudResourceMotion.GraceMilliseconds);
+        Assert.Equal(1f, motion.Shield.Presence);
+        Assert.Equal(1f, motion.Shield.DisplayFraction);
+        Assert.Equal(0, motion.ResolveShieldDisplay(baseVitals).Shield);
+        Assert.Equal(1f, motion.EmptyMix);
+
+        motion.Advance(PlayerHudResourceMotion.ReleaseMilliseconds / 2);
+        Assert.InRange(motion.Shield.Presence, 0.45f, 0.55f);
+        Assert.Equal(1f, motion.Shield.DisplayFraction);
+        Assert.Equal(0, motion.ResolveShieldDisplay(baseVitals).Shield);
+        Assert.Equal(1f, motion.EmptyMix);
+
+        motion.Advance(PlayerHudResourceMotion.ReleaseMilliseconds);
+        Assert.Equal(0f, motion.Shield.Presence);
+        Assert.False(motion.Shield.Active);
+    }
+
+    [Fact]
+    public void MultiHitChipDamageWithinShortWindowTriggersAfterimageTrailAndShieldBreakPulse()
+    {
+        var v = Vitals();
+        var motion = new PlayerHudResourceMotion();
+        motion.Observe(v);
+
+        // First 1.5% hit (< 2.5% per-frame threshold) starts accumulating in the 260ms window
+        v = v with { Shield = 985 };
+        motion.Observe(v);
+        Assert.False(motion.Shield.Active);
+
+        // Second 1.5% hit 50ms later brings cumulative window drop to 3.0% (>= 2.5%), triggering trail from 1.0!
+        motion.Advance(50);
+        v = v with { Shield = 970 };
+        motion.Observe(v);
+        Assert.True(motion.Shield.Active);
+        Assert.True(motion.Shield.Loss > 0f);
+        Assert.Equal(1.0f, motion.Shield.Trail, 2);
+
+        // Third 1.5% hit 50ms later sustains the trail while Loss > 0
+        motion.Advance(50);
+        v = v with { Shield = 955 };
+        motion.Observe(v);
+        Assert.True(motion.Shield.Loss > 0.9f);
+
+        // Combat hit breaking shield to 0 triggers BreakPulse
+        v = v with { Shield = 0 };
+        motion.Observe(v);
+        Assert.Equal(1f, motion.Shield.BreakPulse);
+        motion.Advance(PlayerHudResourceMotion.BreakDurationMilliseconds);
+        Assert.Equal(0f, motion.Shield.BreakPulse);
+    }
+
+    [Fact]
+    public void TemporaryShieldLayerExpiringOverDepletedBaseShieldHoldsBeforeEasing()
+    {
+        var depletedBase = Vitals() with { ShieldPresent = true, Shield = 0, ShieldMax = 500 };
+        var motion = new PlayerHudResourceMotion();
+        motion.Observe(depletedBase);
+        Assert.Equal(1f, motion.EmptyMix);
+
+        var withTempLayer = depletedBase with { Shield = 300, ShieldMax = 800 };
+        motion.Observe(withTempLayer);
+        motion.Advance(PlayerHudResourceMotion.EmptyTransitionMilliseconds);
+        Assert.Equal(0f, motion.EmptyMix);
+        Assert.Equal(0.375f, motion.Shield.DisplayFraction, 3);
+
+        // Temporary layer expires untouched (capacity and maxCapacity both drop by 300)
+        motion.Observe(depletedBase);
+        Assert.True(motion.Shield.HoldingLayer);
+        Assert.Equal(0.375f, motion.Shield.DisplayFraction, 3);
+        Assert.Equal(300, motion.ResolveShieldDisplay(depletedBase).Shield, 1);
+        Assert.Equal(0f, motion.EmptyMix);
+
+        motion.Advance(PlayerHudResourceMotion.GraceMilliseconds);
+        Assert.Equal(0.375f, motion.Shield.DisplayFraction, 3);
+        motion.Advance(PlayerHudResourceMotion.ReleaseMilliseconds);
+        Assert.False(motion.Shield.HoldingLayer);
+        Assert.Equal(0f, motion.Shield.DisplayFraction, 3);
+    }
+
+    [Fact]
+    public void ContinuousNaturalDecayDoesNotTriggerHitFlashWhileDiscreteLossDoes()
+    {
+        var v = Vitals();
+        var motion = new PlayerHudResourceMotion();
+        motion.Observe(v);
+
+        // 1% continuous decay step (< 2.5% threshold) does not trigger hit flash
+        v = v with { Shield = 990 };
+        motion.Observe(v);
+        Assert.False(motion.Shield.Active);
+        Assert.Equal(0.99f, motion.Shield.Trail, 3);
+
+        // 30% discrete combat hit (>= 2.5% threshold) triggers hit trail & flash
+        v = v with { Shield = 690 };
+        motion.Observe(v);
+        Assert.True(motion.Active);
+        Assert.Equal(0.99f, motion.Shield.Trail, 3);
+    }
+
+    [Fact]
+    public void ShieldReadoutThrottlesContinuousDecayAndSnapsOnBoundariesOrDiscreteHits()
+    {
+        var v = Vitals();
+        var motion = new PlayerHudResourceMotion();
+        motion.Observe(v);
+        Assert.Equal(1000, motion.ResolveShieldDisplay(v).Shield);
+
+        // Small continuous decay is throttled for 100ms
+        var decayed = v with { Shield = 988 };
+        motion.Observe(decayed);
+        Assert.Equal(1000, motion.ResolveShieldDisplay(decayed).Shield);
+        motion.Advance(PlayerHudResourceMotion.ReadoutThrottleMilliseconds);
+        Assert.Equal(988, motion.ResolveShieldDisplay(decayed).Shield);
+
+        // Discrete hit snaps immediately without waiting for throttle
+        var hit = v with { Shield = 600 };
+        motion.Observe(hit);
+        Assert.Equal(600, motion.ResolveShieldDisplay(hit).Shield);
+
+        // Depletion to 0 snaps immediately
+        var broken = v with { Shield = 0 };
+        motion.Observe(broken);
+        Assert.Equal(0, motion.ResolveShieldDisplay(broken).Shield);
+    }
+
+    [Fact]
+    public void ResistantBypassTransitionInterpolatesSmoothly()
+    {
+        var detail = new PlayerHudShield("finite", 500, false, new("full", 1, 0, 0));
+        var v = Vitals() with { ShieldDetail = detail };
+        var motion = new PlayerHudResourceMotion();
+        motion.Observe(v);
+        Assert.Equal(0f, motion.ResistantMix);
+
+        v = v with { ShieldDetail = detail with { ResistsBypass = true } };
+        motion.Observe(v);
+        Assert.True(motion.Active);
+        motion.Advance(PlayerHudResourceMotion.ResistantTransitionMilliseconds / 2);
+        Assert.InRange(motion.ResistantMix, 0.45f, 0.55f);
+        motion.Advance(PlayerHudResourceMotion.ResistantTransitionMilliseconds);
+        Assert.Equal(1f, motion.ResistantMix);
+    }
+
+    [Fact]
     public void DecorationBudgetUsesSustainedNativeCostAndRecoversWithoutStopping()
     {
         var budget=new PlayerHudDecorationBudget();

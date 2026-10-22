@@ -156,7 +156,7 @@ public sealed class PlayerHudPresentationTests
             var data=PlayerHudStateTests.Full();data["groups"]["vitals"]["paused"]=true;
             data["groups"]["cooldowns"][1]=new JArray(0,0,126);
             Assert.True(controller.State.Receive(PlayerHudStateTests.Encode(data),1));
-            var origin=anchor.PointToScreen(Point.Empty);var rect=Rectangle.Ceiling(PlayerHudBottomWidget.HotkeyRect(PlayerHudBottomWidget.SkillRect(0)));
+            var origin=anchor.PointToScreen(Point.Empty);var rect=Rectangle.Ceiling(PlayerHudBottomWidget.SkillRect(0));
             Bitmap Paint(){var bitmap=new Bitmap(1024,576,PixelFormat.Format32bppPArgb);using(var g=Graphics.FromImage(bitmap))bottom.Paint(g,1,origin);return bitmap;}
             int Differences(Bitmap a,Bitmap b){var count=0;for(var y=rect.Top;y<rect.Bottom;y++)for(var x=rect.Left;x<rect.Right;x++)if(a.GetPixel(x,y)!=b.GetPixel(x,y))count++;return count;}
             using var start=Paint();bottom.Tick(5000);using var still=Paint();Assert.Equal(0,Differences(start,still));
@@ -164,6 +164,34 @@ public sealed class PlayerHudPresentationTests
             Assert.True(controller.State.Receive(PlayerHudStateTests.Encode(data),2));using var advanced=Paint();Assert.True(Differences(start,advanced)>0);
             data["seq"]=3;data["groups"]["cooldowns"][1]=new JArray(1,0,126);
             Assert.True(controller.State.Receive(PlayerHudStateTests.Encode(data),3));bottom.Tick(300);using var ready=Paint();Assert.True(Differences(ready,advanced)>0);
+        });
+    }
+
+    [Fact]
+    public void ColdSkillsRenderOnSecondRowAndDeduplicateEquippedQuickBarSkills()
+    {
+        Sta(()=>
+        {
+            var root=Root();RuntimeFontCatalog.Configure(root);
+            using var form=new Form{ClientSize=new Size(1024,576)};using var anchor=new Panel{Dock=DockStyle.Fill};
+            form.Controls.Add(anchor);form.CreateControl();anchor.CreateControl();
+            using var controller=new PlayerHudController(_=>true,()=>true,a=>a());
+            using var bottom=new PlayerHudBottomWidget(anchor,controller,Path.Combine(root,"launcher","web","icons"));
+            var data=PlayerHudStateTests.Full();
+            data["groups"]["loadout"]["skills"][0]["equipped"]=true;
+            data["groups"]["loadout"]["skills"][0]["skillKey"]="拔刀术";
+            data["groups"]["loadout"]["skills"][0]["iconKey"]="拔刀术";
+            data["groups"]["loadout"]["skills"][0]["level"]=3;
+            data["groups"]["coldSkills"]=new JArray(
+                new JObject{["name"]="拔刀术",["icon"]="拔刀术",["key"]="⇧→B",["level"]=3,["ready"]=true,["step"]=0,["total"]=150,["blocked"]=false},
+                new JObject{["name"]="迅斩",["icon"]="迅斩",["key"]="↓→B",["level"]=5,["ready"]=false,["step"]=60,["total"]=300,["blocked"]=false},
+                new JObject{["name"]="瞬步斩",["icon"]="瞬步斩",["key"]="⇧↓→B",["level"]=2,["ready"]=true,["step"]=0,["total"]=450,["blocked"]=true});
+            Assert.True(controller.State.Receive(PlayerHudStateTests.Encode(data),1));
+            var visible=PlayerHudBottomWidget.VisibleColdSkills(controller.State.Snapshot);
+            Assert.Equal(2,visible.Length);
+            Assert.Equal("迅斩",visible[0].Name);
+            Assert.Equal("瞬步斩",visible[1].Name);
+            Assert.Equal(474,bottom.ScreenBounds.Top-anchor.PointToScreen(Point.Empty).Y);
         });
     }
     [Fact]

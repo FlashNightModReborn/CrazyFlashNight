@@ -1,0 +1,25 @@
+{
+  "independent_review": {
+    "rounds": 2,
+    "result": "R2 accepted for full 209-frame assembly; no remaining silhouette or connection error identified.",
+    "remaining_observations": [
+      "119 slightly narrower and thinner paint than original",
+      "Tire central hub somewhat brighter and more orderly",
+      "Body wear cleaner than original"
+    ],
+    "reviewer": "assemble_cf6_review_batch"
+  },
+  "silhouette_check": {
+    "1806_alpha_iou": 0.9831,
+    "1808_alpha_iou": 0.9563,
+    "same_original_and_new_alpha_bbox": true
+  },
+  "frozen_part_sha256": {
+    "1806": {
+      "sha256": "897316b4077467fa318b630e2aa5fdb6bf4a3b1621904d67a41ef98bfd69043b"
+    },
+    "1808": {
+      "sha256": "d1b37724e367b29e725a6ecb24fcbefc337913686645eef859333d246f615edf"
+    }
+  }
+}

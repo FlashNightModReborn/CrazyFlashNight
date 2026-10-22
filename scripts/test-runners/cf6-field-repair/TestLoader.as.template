@@ -1,0 +1,12 @@
+﻿trace("FocusedTestRunId cf6-field-repair Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.WaveSpawnWheelTest.runAllTests();
+org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntimeTest.runAllTests();
+org.flashNight.gesh.tooltip.test.WeaponAmmoTooltipTest.runAllTests();
+org.flashNight.gesh.tooltip.test.TooltipFormatterTest.runAllTests();
+org.flashNight.arki.unit.Action.Shoot.WeaponAmmoDataTest.onComplete = function():Void {
+    org.flashNight.arki.scene.Cf6TutorialTurretServiceTest.setCompletionCallback(function():Void {
+        trace("FocusedTestRunId cf6-field-repair Complete: __FOCUSED_RUN_ID__");
+    });
+    org.flashNight.arki.scene.Cf6TutorialTurretServiceTest.runAllTests();
+};
+org.flashNight.arki.unit.Action.Shoot.WeaponAmmoDataTest.runAllTests();

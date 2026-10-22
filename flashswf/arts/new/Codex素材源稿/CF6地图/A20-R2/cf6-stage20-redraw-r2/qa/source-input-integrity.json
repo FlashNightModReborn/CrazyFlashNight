@@ -1,0 +1,43 @@
+{
+  "stage": 20,
+  "original_nodes_sha256": "91f300a80af123bf2572454a1508ad14fc22d13227e16904c0386ff6c0c8b758",
+  "original_nodes_equal_audit": true,
+  "inventory_equal_original_audit": true,
+  "frozen_reference_hashes_verified": true,
+  "all_frames_retained": {
+    "1976": 16,
+    "1862": 18,
+    "1989": 1,
+    "359": 1,
+    "360": 1,
+    "237": 1,
+    "254": 189,
+    "255": 14
+  },
+  "preserved_font_outline_shape_ids": [
+    1851,
+    1960,
+    1961
+  ],
+  "original_excluded_bitmap_ids": [
+    239,
+    252
+  ],
+  "external_runtime_dependencies": false,
+  "runtime_packages": [
+    "Python 3",
+    "Pillow",
+    "Inkscape",
+    "DejaVuSans"
+  ],
+  "artifact_regeneration": "python source/rebuild.py",
+  "production_game_modified": false,
+  "revision": "R2",
+  "floor_repair": {
+    "bitmap1957_sha256": "0d797ec659c8cbc797549936cf6e12fb28fdde2b40fdd9cd4614478dba523da9",
+    "module_sha256": "ef8ee41180699e123ff079393fdec80a0551f8581da2f48a687e1ffd28702bf8",
+    "scope": "static artwork only; floor polygon union and shared phase; a18 isolated 1px top-edge jog removed",
+    "original_reference_data_unchanged": true,
+    "world_collision_and_timeline_unchanged": true
+  }
+}

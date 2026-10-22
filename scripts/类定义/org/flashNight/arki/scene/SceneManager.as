@@ -440,6 +440,11 @@ class org.flashNight.arki.scene.SceneManager {
 
     public function addInstance(info:Object, name:String):MovieClip{
         var inst;
+        var instanceParameters:Object = info.Parameters;
+        if (info.InitializeParametersBeforeAttach === true && info.Parameters) {
+            // ObjectUtil 的循环引用表会登记内部ID；先隔离，避免给作者配置写标记。
+            instanceParameters = org.flashNight.gesh.object.PersistedSnapshot.clone(info.Parameters);
+        }
         if (info.url != null) {
             // 检测url参数载入外部swf
             inst = gameworld.createEmptyMovieClip(name, gameworld.getNextHighestDepth());
@@ -448,7 +453,19 @@ class org.flashNight.arki.scene.SceneManager {
             else inst.loadMovie(info.url);
         } else if(info.Identifier != null) {
             // 根据identifier从库中加载元件
-            inst = gameworld.attachMovie(info.Identifier, name, gameworld.getNextHighestDepth());
+            var initial:Object = null;
+            if (info.InitializeParametersBeforeAttach === true && info.Parameters) {
+                // 显式选择的NPC在首帧缓存商店/对白前就必须取得本章参数。
+                initial = {};
+                ObjectUtil.cloneParameters(initial, instanceParameters);
+                initial._x = info.x;
+                initial._y = info.y;
+            }
+            if (initial == null) {
+                inst = gameworld.attachMovie(info.Identifier, name, gameworld.getNextHighestDepth());
+            } else {
+                inst = gameworld.attachMovie(info.Identifier, name, gameworld.getNextHighestDepth(), initial);
+            }
         }else{
             // 否则，创建空元件
             inst = gameworld.createEmptyMovieClip(name, gameworld.getNextHighestDepth());
@@ -461,7 +478,7 @@ class org.flashNight.arki.scene.SceneManager {
         } else {
             inst.swapDepths(info.Depth);
         }
-        if (info.Parameters) ObjectUtil.cloneParameters(inst, info.Parameters);
+        if (instanceParameters) ObjectUtil.cloneParameters(inst, instanceParameters);
         if (info.url == null) org.flashNight.arki.render.SceneLightBridge.track(inst, info.LightKey);
         return inst;
     }

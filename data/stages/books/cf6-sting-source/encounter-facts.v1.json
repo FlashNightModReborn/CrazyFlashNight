@@ -1,0 +1,3449 @@
+{
+ "schema": "cf6-encounter-facts.v1",
+ "source": {
+  "exe": "CrazyFlasherSeries/exes/crazyflasher6-cn_secure.exe",
+  "exeSha256": "3523806f0e250ebf8ffe32683d027c7712578711ec99803d341673a22253d18c",
+  "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "decompiledScripts": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts"
+ },
+ "counterRule": "电梯死亡敌人计数>=需要杀死数 开出口;Boss图为 boss.hp<=0",
+ "mechanismNotes": [
+  "击杀计数:源单位最终死亡在尸体剪辑load时 _root.电梯死亡敌人计数++(已核僵尸477/630回调,每源单位一次死亡借记)。A09/A12/A13/A14/A18/A19 的'需要杀死数'与'自由生成器死亡预算+静态+已证实触发生成器预算'数值相等;该相等只说明阈值按此口径标定,不证明实际生成总数、也不证明每杀恰好记1次。任何双计数分支需逐帧路径证据,且不得在现代奖励口径复现。",
+  "生成器(sprite 1434/1585):'僵尸型敌人总个数'是剩余死亡预算——仅源单位最终死亡时-1;出兵(attachMovie)不减预算,补位(上场个数-场上实际人数)不按剩余预算裁剪;故预算B并发C的源模型可发B..B+C-1只(源模型,非AVM1实跑)。出兵动作在frame10,frame24 gotoAndPlay(2)循环,无预编波次分组。实例onClipEvent(load)首行stop()者为停止态。",
+  "停止态生成器的激活:全SWF脚本与pcode常量池穷举搜索,仅触发区sprite 1868(A09→敌人生成器1,A14→敌人生成器x,A18→敌人生成器1)引用生成器实例名;其余图的停止态生成器无任何脚本触发,记trigger=unknown(不捏造)。",
+  "A01:活跃生成器死亡预算15+静态2=17<出口阈值20;停止态生成器(僵尸15+光头男5)无触发源。不能据17<20证明双计数为关卡所需——未钳制补位已使'固定总生成17'成为伪前提;原版整图真实逐局生成总量=unknown。首版461×20是对出口死亡阈值20的有限化适配(prototypeDerived),不称原版固定20。",
+  "触发区1868:玩家hitTest→把指定生成器挪到触发区位置并play()。",
+  "异形卵1939:玩家走近(hitTest)→play→frame24 attachMovie aw-异形×1(hp200)→stop;每卵1只,卵生成物死亡计入击杀计数。A15的5卵=出口所需5杀,数值匹配(同上,不证明生成总数)。",
+  "Boss出口1766:监视 _root.gameworld[需要杀死者].hp<=0→play→frame70 切镜.目标帧转场;Boss实例名均为'boss',配1783血条(_root.gameworld.boss.hp)。",
+  "老头人形(975)原版脚本无任何变身逻辑;变身是光头男(888)尸体剪辑的'是否变身==1'分支。现役引擎老头单位自动变身需在底座关闭(Parameters.老头变身=false),属引擎侧要求。",
+  "光头男(888)'是否变身==1'时,frame77尸体剪辑(PlaceObject2_611_1)onClipEvent(load)进入变身分支:_parent.gotoAndStop('变身'),变身链经sprite887 frame70 attachMovie('aw-异形')生成后继;是否变身!=1不进入该分支。同剪辑line10存在 _root.电梯死亡敌人计数++,其相对变身分支的归属未逐行核定,变身路径是否同时记数=unknown。现役映射:是否变身=1的光头男=兵种469(CF6光头保安·变身型),变身后继由469内部处理,投送469时不另发460。逐图标注:A10静态×1,A12静态×2,A14生成器x(是否变身=1,预算7),A15/A16生成器x(停止态),A17静态×1+两路活跃生成器(各预算15),A19生成器2(预算5),A20生成器(预算15)。",
+  "车战A07与演出A21不在本批;出口目标帧s1-s7为原版关间商店帧,肉鸽路线不接。A16模板出口(需要杀死数0→a12)为复制模板,对白链实际目标为a17(主控审查确认),章节按路线顺序A16→A17,不回A12。"
+ ],
+ "maps": [
+  {
+   "id": "tutorial",
+   "worldSprite": 1499,
+   "mainFrame": 58,
+   "walkBounds": [
+    50,
+    150,
+    1000,
+    500
+   ],
+   "spawn": [
+    150,
+    325
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器2",
+     "unit": "敌人-光头男",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 100,
+     "transform": null,
+     "initialState": "stopped",
+     "trigger": "unknown",
+     "xy": null,
+     "unitKey": "thug"
+    },
+    {
+     "instance": "敌人生成器1",
+     "unit": "aw-异形",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "transform": null,
+     "initialState": "stopped",
+     "trigger": "unknown",
+     "xy": null,
+     "unitKey": "alien"
+    }
+   ],
+   "statics": [],
+   "exits": [
+    {
+     "type": "killCount",
+     "required": 0,
+     "targetFrame": "s1",
+     "charId": 1430
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 0,
+   "pickups": [
+    {
+     "kind": "crate_gun",
+     "gun": "m4"
+    },
+    {
+     "kind": "crate",
+     "content": "救护包"
+    },
+    {
+     "kind": "dropped_gun",
+     "gun": "super gun",
+     "note": "教学作弊枪 弹夹20000"
+    }
+   ],
+   "dialogue": [
+    {
+     "speaker": "Andy Law",
+     "text": "操作方法：WSAD控制移动，J为射击，K为换弹夹。空格为跳过对话。"
+    },
+    {
+     "speaker": "Andy Law",
+     "text": "熟悉操作了吗？出门看看吧，我感觉有情况！"
+    },
+    {
+     "speaker": "Andy Law",
+     "text": "对了，方向键和换弹夹键可以搓招哦。"
+    }
+   ],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1499,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1499/frame_1",
+    "note": "手工提取;含教学对话"
+   }
+  },
+  {
+   "id": "A01",
+   "worldSprite": 1592,
+   "mainFrame": 66,
+   "walkBounds": [
+    50.0,
+    150.0,
+    790.0,
+    450.0
+   ],
+   "spawn": [
+    317.45,
+    281.85
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器2",
+     "charId": 1434,
+     "depth": 98,
+     "xy": [
+      557.45,
+      -3.1
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 100,
+     "xy": [
+      862.8,
+      7.75
+     ],
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "remainingDeathBudget": 15,
+     "concurrent": 5,
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": null,
+     "charId": 1585,
+     "depth": 146,
+     "xy": [
+      783.95,
+      323.1
+     ],
+     "unit": "aw-僵尸-可被炮台打",
+     "unitKey": "zombie_turret",
+     "remainingDeathBudget": 15,
+     "concurrent": 5,
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "free",
+     "trigger": null
+    }
+   ],
+   "statics": [
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 102,
+     "xy": [
+      708.25,
+      310.2
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸-可被炮台打",
+     "unitKey": "zombie_turret",
+     "depth": 168,
+     "xy": [
+      617.0,
+      319.0
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1587,
+     "depth": 148,
+     "type": "killCount",
+     "required": 20,
+     "bossInstance": null,
+     "targetFrame": "s2"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 0,
+   "turrets": 2,
+   "antiEnemyTurrets": 0,
+   "pickups": [
+    {
+     "kind": "补给箱",
+     "depth": 212,
+     "xy": [
+      75.1,
+      427.35
+     ],
+     "content": "救护包"
+    },
+    {
+     "kind": "弃枪",
+     "depth": 219,
+     "xy": [
+      87.8,
+      276.55
+     ],
+     "gun": "ump",
+     "ammoInMag": 50
+    },
+    {
+     "kind": "弃枪",
+     "depth": 223,
+     "xy": [
+      107.1,
+      322.65
+     ],
+     "gun": "mp5-pdw",
+     "ammoInMag": 60
+    }
+   ],
+   "dialogue": [],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1592,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1592/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A02",
+   "worldSprite": 1695,
+   "mainFrame": 73,
+   "walkBounds": [
+    50.0,
+    150.0,
+    1250.0,
+    500.0
+   ],
+   "spawn": [
+    91.5,
+    353.7
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器2",
+     "charId": 1434,
+     "depth": 213,
+     "xy": [
+      571.45,
+      -10.1
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 215,
+     "xy": [
+      425.45,
+      -5.85
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    }
+   ],
+   "statics": [
+    {
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "depth": 217,
+     "xy": [
+      890.15,
+      267.85
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 0
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 248,
+     "xy": [
+      640.75,
+      317.0
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 292,
+     "xy": [
+      738.75,
+      367.85
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 336,
+     "xy": [
+      828.75,
+      441.85
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "depth": 380,
+     "xy": [
+      990.15,
+      398.85
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 0
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 411,
+     "xy": [
+      1085.75,
+      463.85
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 455,
+     "xy": [
+      1052.75,
+      271.85
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸-女",
+     "unitKey": "zombie_f",
+     "depth": 506,
+     "xy": [
+      535.1,
+      333.05
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸-女",
+     "unitKey": "zombie_f",
+     "depth": 557,
+     "xy": [
+      884.1,
+      350.45
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1617,
+     "depth": 128,
+     "type": "killCount",
+     "required": 7,
+     "bossInstance": null,
+     "targetFrame": "s3"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 0,
+   "pickups": [
+    {
+     "kind": "补给箱",
+     "depth": 499,
+     "xy": [
+      488.55,
+      274.4
+     ],
+     "gun": "m1",
+     "ammoInMag": 16,
+     "content": "枪"
+    }
+   ],
+   "dialogue": [],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1695,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1695/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A03",
+   "worldSprite": 1723,
+   "mainFrame": 78,
+   "walkBounds": [
+    50.0,
+    150.0,
+    1250.0,
+    500.0
+   ],
+   "spawn": [
+    34.55,
+    317.2
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器2",
+     "charId": 1434,
+     "depth": 182,
+     "xy": [
+      524.5,
+      210.9
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": "door1",
+     "initialState": "free",
+     "trigger": null
+    },
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 184,
+     "xy": [
+      425.45,
+      -5.85
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    }
+   ],
+   "statics": [
+    {
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "depth": 186,
+     "xy": [
+      549.1,
+      404.15
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 0
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 217,
+     "xy": [
+      863.7,
+      263.5
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 261,
+     "xy": [
+      297.75,
+      303.5
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 305,
+     "xy": [
+      241.75,
+      367.5
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸-女",
+     "unitKey": "zombie_f",
+     "depth": 360,
+     "xy": [
+      669.1,
+      335.6
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1720,
+     "depth": 28,
+     "type": "killCount",
+     "required": 9,
+     "bossInstance": null,
+     "targetFrame": "a4"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 0,
+   "pickups": [
+    {
+     "kind": "补给箱",
+     "depth": 349,
+     "xy": [
+      378.1,
+      444.0
+     ],
+     "gun": "mp5-pdw",
+     "ammoInMag": 60,
+     "content": "枪"
+    },
+    {
+     "kind": "弃枪",
+     "depth": 356,
+     "xy": [
+      1043.85,
+      216.55
+     ],
+     "gun": "awp",
+     "ammoInMag": 10
+    }
+   ],
+   "dialogue": [],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1723,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1723/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A04",
+   "worldSprite": 1737,
+   "mainFrame": 82,
+   "walkBounds": [
+    50.0,
+    150.0,
+    1250.0,
+    500.0
+   ],
+   "spawn": [
+    34.55,
+    317.2
+   ],
+   "generators": [
+    {
+     "instance": null,
+     "charId": 1434,
+     "depth": 251,
+     "xy": [
+      524.5,
+      210.9
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": "door1",
+     "initialState": "free",
+     "trigger": null
+    },
+    {
+     "instance": null,
+     "charId": 1434,
+     "depth": 253,
+     "xy": [
+      425.45,
+      -5.85
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": null,
+     "charId": 1434,
+     "depth": 255,
+     "xy": [
+      929.5,
+      210.9
+     ],
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "remainingDeathBudget": 15,
+     "concurrent": 5,
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": "door2",
+     "initialState": "free",
+     "trigger": null
+    }
+   ],
+   "statics": [
+    {
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "depth": 257,
+     "xy": [
+      1068.1,
+      371.6
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 0
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 288,
+     "xy": [
+      245.05,
+      408.9
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸-女",
+     "unitKey": "zombie_f",
+     "depth": 357,
+     "xy": [
+      535.1,
+      333.05
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸-女",
+     "unitKey": "zombie_f",
+     "depth": 408,
+     "xy": [
+      897.1,
+      291.05
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1720,
+     "depth": 28,
+     "type": "killCount",
+     "required": 22,
+     "bossInstance": null,
+     "targetFrame": "a5"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 3,
+   "pickups": [
+    {
+     "kind": "弃枪",
+     "depth": 332,
+     "xy": [
+      753.5,
+      357.55
+     ],
+     "gun": "m4-2",
+     "ammoInMag": 60
+    }
+   ],
+   "dialogue": [],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1737,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1737/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A05",
+   "worldSprite": 1752,
+   "mainFrame": 86,
+   "walkBounds": [
+    50.0,
+    150.0,
+    1250.0,
+    500.0
+   ],
+   "spawn": [
+    34.55,
+    317.2
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器2",
+     "charId": 1434,
+     "depth": 243,
+     "xy": [
+      524.5,
+      210.9
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": "door1",
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 245,
+     "xy": [
+      425.45,
+      -5.85
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器2",
+     "charId": 1434,
+     "depth": 247,
+     "xy": [
+      929.5,
+      210.9
+     ],
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "remainingDeathBudget": 15,
+     "concurrent": 5,
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": "door2",
+     "initialState": "stopped",
+     "trigger": "unknown"
+    }
+   ],
+   "statics": [
+    {
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "depth": 249,
+     "xy": [
+      528.1,
+      386.6
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 0
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 280,
+     "xy": [
+      361.8,
+      260.95
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "depth": 324,
+     "xy": [
+      944.1,
+      270.6
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 0
+    },
+    {
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "depth": 355,
+     "xy": [
+      836.7,
+      356.6
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 0
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 386,
+     "xy": [
+      699.75,
+      366.95
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 430,
+     "xy": [
+      454.75,
+      243.95
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸-女",
+     "unitKey": "zombie_f",
+     "depth": 485,
+     "xy": [
+      623.1,
+      354.15
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1750,
+     "depth": 88,
+     "type": "killCount",
+     "required": 5,
+     "bossInstance": null,
+     "targetFrame": "a6"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 0,
+   "pickups": [
+    {
+     "kind": "补给箱",
+     "depth": 474,
+     "xy": [
+      288.7,
+      230.5
+     ],
+     "content": "救护包"
+    },
+    {
+     "kind": "弃枪",
+     "depth": 481,
+     "xy": [
+      318.55,
+      251.65
+     ],
+     "gun": "ak47",
+     "ammoInMag": 60
+    }
+   ],
+   "dialogue": [],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1752,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1752/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A06",
+   "worldSprite": 1778,
+   "mainFrame": 92,
+   "walkBounds": [
+    50.0,
+    150.0,
+    1500.0,
+    500.0
+   ],
+   "spawn": [
+    843.45,
+    408.7
+   ],
+   "generators": [
+    {
+     "instance": null,
+     "charId": 1585,
+     "depth": 91,
+     "xy": [
+      5.0,
+      305.45
+     ],
+     "unit": "敌人-特种兵",
+     "unitKey": "specop",
+     "remainingDeathBudget": 15,
+     "concurrent": 1,
+     "hp": 150,
+     "ai": 5,
+     "gun": "g36",
+     "transform": null,
+     "door": null,
+     "initialState": "free",
+     "trigger": null
+    },
+    {
+     "instance": null,
+     "charId": 1585,
+     "depth": 93,
+     "xy": [
+      1491.7,
+      305.45
+     ],
+     "unit": "敌人-特种兵",
+     "unitKey": "specop",
+     "remainingDeathBudget": 15,
+     "concurrent": 1,
+     "hp": 150,
+     "ai": 5,
+     "gun": "g36",
+     "transform": null,
+     "door": null,
+     "initialState": "free",
+     "trigger": null
+    },
+    {
+     "instance": "敌人生成器2",
+     "charId": 1434,
+     "depth": 178,
+     "xy": [
+      557.45,
+      -3.1
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 180,
+     "xy": [
+      425.45,
+      -5.85
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    }
+   ],
+   "statics": [
+    {
+     "unit": "aw-蛮蛮",
+     "unitKey": "manman",
+     "depth": 32,
+     "xy": [
+      859.6,
+      207.55
+     ],
+     "hp": 1000,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "depth": 232,
+     "xy": [
+      1273.15,
+      371.15
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 0
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 263,
+     "xy": [
+      556.45,
+      263.5
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 307,
+     "xy": [
+      417.45,
+      258.3
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 351,
+     "xy": [
+      1264.4,
+      278.7
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "depth": 395,
+     "xy": [
+      366.3,
+      380.25
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 0
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1766,
+     "depth": 182,
+     "type": "bossKill",
+     "required": null,
+     "bossInstance": "boss",
+     "targetFrame": "s4"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 0,
+   "pickups": [],
+   "dialogue": [
+    {
+     "speaker": "Wings",
+     "text": "Andy！救我！"
+    }
+   ],
+   "boss": {
+    "unit": "aw-蛮蛮",
+    "unitKey": "manman",
+    "depth": 32,
+    "xy": [
+     859.6,
+     207.55
+    ],
+    "hp": 1000,
+    "ai": 5,
+    "gun": null,
+    "transform": null
+   },
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1778,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1778/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A08",
+   "worldSprite": 1841,
+   "mainFrame": 108,
+   "walkBounds": [
+    50.0,
+    150.0,
+    1250.0,
+    500.0
+   ],
+   "spawn": [
+    240.55,
+    268.3
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器2",
+     "charId": 1434,
+     "depth": 112,
+     "xy": [
+      524.5,
+      210.9
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": "door1",
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 114,
+     "xy": [
+      425.45,
+      -5.85
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器2",
+     "charId": 1434,
+     "depth": 116,
+     "xy": [
+      929.5,
+      210.9
+     ],
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "remainingDeathBudget": 15,
+     "concurrent": 5,
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": "door2",
+     "initialState": "stopped",
+     "trigger": "unknown"
+    }
+   ],
+   "statics": [],
+   "exits": [
+    {
+     "charId": 1430,
+     "depth": 120,
+     "type": "killCount",
+     "required": 0,
+     "bossInstance": null,
+     "targetFrame": "a9"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 3,
+   "pickups": [
+    {
+     "kind": "补给箱",
+     "depth": 130,
+     "xy": [
+      932.5,
+      228.2
+     ]
+    },
+    {
+     "kind": "补给箱",
+     "depth": 205,
+     "xy": [
+      1018.5,
+      225.2
+     ],
+     "gun": "g36",
+     "ammoInMag": 60,
+     "content": "枪"
+    }
+   ],
+   "dialogue": [
+    {
+     "speaker": "Wings",
+     "text": "到达地下实验室入口了，你要从这里进入，找到电梯才能到达地下！"
+    },
+    {
+     "speaker": "Wings",
+     "text": "你就从这里攻进去，我去配电房入侵他们内部网络，把资料下载下来！"
+    },
+    {
+     "speaker": "Andy Law",
+     "text": "攻击的事交给我了！"
+    }
+   ],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1841,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1841/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A09",
+   "worldSprite": 1869,
+   "mainFrame": 116,
+   "walkBounds": [
+    50.0,
+    150.0,
+    1150.0,
+    490.0
+   ],
+   "spawn": [
+    91.25,
+    271.5
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器2",
+     "charId": 1434,
+     "depth": 202,
+     "xy": [
+      550.45,
+      -5.85
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 204,
+     "xy": [
+      696.45,
+      260.3
+     ],
+     "unit": "敌人-特种兵-带盾",
+     "unitKey": "specop_shield",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 300,
+     "ai": 5,
+     "gun": "ak47",
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    }
+   ],
+   "statics": [
+    {
+     "unit": "敌人-特种兵-带盾",
+     "unitKey": "specop_shield",
+     "depth": 206,
+     "xy": [
+      384.5,
+      282.7
+     ],
+     "hp": 300,
+     "ai": 5,
+     "gun": "ak47",
+     "transform": null
+    },
+    {
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "depth": 251,
+     "xy": [
+      326.15,
+      363.25
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 0
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 282,
+     "xy": [
+      1022.35,
+      322.5
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 326,
+     "xy": [
+      1024.35,
+      411.5
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1430,
+     "depth": 89,
+     "type": "killCount",
+     "required": 9,
+     "bossInstance": null,
+     "targetFrame": "a10"
+    }
+   ],
+   "triggerZones": [
+    {
+     "depth": 112,
+     "xy": [
+      696.6,
+      252.0
+     ],
+     "target": "敌人生成器1"
+    }
+   ],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 0,
+   "pickups": [
+    {
+     "kind": "弃枪",
+     "depth": 370,
+     "xy": [
+      261.5,
+      228.2
+     ],
+     "gun": "m4",
+     "ammoInMag": 60
+    },
+    {
+     "kind": "弃枪",
+     "depth": 374,
+     "xy": [
+      836.45,
+      449.3
+     ],
+     "gun": "type97",
+     "ammoInMag": 50
+    }
+   ],
+   "dialogue": [],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1869,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1869/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A10",
+   "worldSprite": 1885,
+   "mainFrame": 131,
+   "walkBounds": [
+    100.0,
+    250.0,
+    500.0,
+    310.0
+   ],
+   "spawn": [
+    172.5,
+    278.55
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器2",
+     "charId": 1434,
+     "depth": 96,
+     "xy": [
+      557.45,
+      -3.1
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 98,
+     "xy": [
+      425.45,
+      -5.85
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    }
+   ],
+   "statics": [
+    {
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "depth": 104,
+     "xy": [
+      418.0,
+      284.7
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 1
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 135,
+     "xy": [
+      331.1,
+      293.25
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1587,
+     "depth": 100,
+     "type": "killCount",
+     "required": 2,
+     "bossInstance": null,
+     "targetFrame": "a11"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 0,
+   "pickups": [],
+   "dialogue": [],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1885,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1885/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A11",
+   "worldSprite": 1910,
+   "mainFrame": 138,
+   "walkBounds": [
+    50.0,
+    150.0,
+    990.0,
+    500.0
+   ],
+   "spawn": [
+    753.5,
+    249.05
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器2",
+     "charId": 1434,
+     "depth": 214,
+     "xy": [
+      550.45,
+      -5.85
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 216,
+     "xy": [
+      433.45,
+      -6.25
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    }
+   ],
+   "statics": [
+    {
+     "unit": "aw-僵尸-女",
+     "unitKey": "zombie_f",
+     "depth": 269,
+     "xy": [
+      931.1,
+      371.05
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1617,
+     "depth": 129,
+     "type": "killCount",
+     "required": 0,
+     "bossInstance": null,
+     "targetFrame": "a12"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 1,
+   "pickups": [
+    {
+     "kind": "补给箱",
+     "depth": 244,
+     "xy": [
+      900.05,
+      302.05
+     ],
+     "content": "救护包"
+    },
+    {
+     "kind": "补给箱",
+     "depth": 251,
+     "xy": [
+      882.05,
+      333.35
+     ],
+     "gun": "mp5-pdw",
+     "ammoInMag": 60,
+     "content": "枪"
+    },
+    {
+     "kind": "弃枪",
+     "depth": 258,
+     "xy": [
+      545.85,
+      451.35
+     ],
+     "gun": "m1",
+     "ammoInMag": 16
+    }
+   ],
+   "dialogue": [
+    {
+     "speaker": "Andy Law",
+     "text": "我靠，这是什么？"
+    },
+    {
+     "speaker": "Andy Law",
+     "text": "强行兽化装甲……这是幼体吗？看来速度和智慧更高的武器终于被造出来了！"
+    },
+    {
+     "speaker": "Andy Law",
+     "text": "还是赶快找到达中央服务器，摧毁这里吧！"
+    }
+   ],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1910,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1910/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A12",
+   "worldSprite": 1917,
+   "mainFrame": 143,
+   "walkBounds": [
+    50.0,
+    150.0,
+    1340.0,
+    490.0
+   ],
+   "spawn": [
+    1233.55,
+    307.25
+   ],
+   "generators": [
+    {
+     "instance": null,
+     "charId": 1434,
+     "depth": 175,
+     "xy": [
+      580.5,
+      37.9
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": "door1",
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": null,
+     "charId": 1434,
+     "depth": 177,
+     "xy": [
+      425.45,
+      -5.85
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": null,
+     "charId": 1434,
+     "depth": 179,
+     "xy": [
+      617.5,
+      215.65
+     ],
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "remainingDeathBudget": 10,
+     "concurrent": 3,
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": "door2",
+     "initialState": "free",
+     "trigger": null
+    },
+    {
+     "instance": null,
+     "charId": 1434,
+     "depth": 224,
+     "xy": [
+      762.25,
+      -22.95
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    }
+   ],
+   "statics": [
+    {
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "depth": 226,
+     "xy": [
+      345.05,
+      336.4
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 1
+    },
+    {
+     "unit": "敌人-特种兵",
+     "unitKey": "specop",
+     "depth": 257,
+     "xy": [
+      380.25,
+      428.65
+     ],
+     "hp": 150,
+     "ai": 5,
+     "gun": "g36",
+     "transform": null
+    },
+    {
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "depth": 301,
+     "xy": [
+      240.05,
+      333.4
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 1
+    },
+    {
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "depth": 332,
+     "xy": [
+      191.05,
+      431.4
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 0
+    },
+    {
+     "unit": "敌人-特种兵",
+     "unitKey": "specop",
+     "depth": 363,
+     "xy": [
+      428.25,
+      325.3
+     ],
+     "hp": 150,
+     "ai": 5,
+     "gun": "ak47",
+     "transform": null
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1430,
+     "depth": 183,
+     "type": "killCount",
+     "required": 15,
+     "bossInstance": null,
+     "targetFrame": "a13"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 3,
+   "pickups": [
+    {
+     "kind": "补给箱",
+     "depth": 193,
+     "xy": [
+      933.5,
+      228.2
+     ]
+    },
+    {
+     "kind": "弃枪",
+     "depth": 407,
+     "xy": [
+      402.95,
+      226.3
+     ],
+     "gun": "ak47",
+     "ammoInMag": 60
+    },
+    {
+     "kind": "弃枪",
+     "depth": 411,
+     "xy": [
+      767.95,
+      220.35
+     ],
+     "gun": "g36",
+     "ammoInMag": 60
+    }
+   ],
+   "dialogue": [],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1917,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1917/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A13",
+   "worldSprite": 1920,
+   "mainFrame": 148,
+   "walkBounds": [
+    100.0,
+    250.0,
+    500.0,
+    310.0
+   ],
+   "spawn": [
+    172.5,
+    278.55
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器2",
+     "charId": 1434,
+     "depth": 96,
+     "xy": [
+      557.45,
+      -3.1
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 98,
+     "xy": [
+      425.45,
+      -5.85
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    }
+   ],
+   "statics": [
+    {
+     "unit": "敌人-特种兵-带盾",
+     "unitKey": "specop_shield",
+     "depth": 100,
+     "xy": [
+      413.75,
+      278.5
+     ],
+     "hp": 300,
+     "ai": 5,
+     "gun": "ak47",
+     "transform": null
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1587,
+     "depth": 145,
+     "type": "killCount",
+     "required": 1,
+     "bossInstance": null,
+     "targetFrame": "a14"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 0,
+   "pickups": [],
+   "dialogue": [],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1920,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1920/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A14",
+   "worldSprite": 1927,
+   "mainFrame": 152,
+   "walkBounds": [
+    50.0,
+    150.0,
+    1500.0,
+    490.0
+   ],
+   "spawn": [
+    270.9,
+    233.3
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 501,
+     "xy": [
+      433.45,
+      -6.25
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器x",
+     "charId": 1434,
+     "depth": 512,
+     "xy": [
+      1108.4,
+      285.15
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 7,
+     "concurrent": 2,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 1,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    }
+   ],
+   "statics": [
+    {
+     "unit": "敌人-特种兵-带盾",
+     "unitKey": "specop_shield",
+     "depth": 540,
+     "xy": [
+      1307.45,
+      295.1
+     ],
+     "hp": 300,
+     "ai": 5,
+     "gun": "ak47",
+     "transform": null
+    },
+    {
+     "unit": "敌人-特种兵-带盾",
+     "unitKey": "specop_shield",
+     "depth": 585,
+     "xy": [
+      1305.45,
+      442.05
+     ],
+     "hp": 300,
+     "ai": 5,
+     "gun": "ak47",
+     "transform": null
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1617,
+     "depth": 416,
+     "type": "killCount",
+     "required": 9,
+     "bossInstance": null,
+     "targetFrame": "a15"
+    }
+   ],
+   "triggerZones": [
+    {
+     "depth": 505,
+     "xy": [
+      1046.0,
+      279.4
+     ],
+     "target": "敌人生成器x"
+    }
+   ],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 0,
+   "pickups": [],
+   "dialogue": [
+    {
+     "speaker": "Andy Law",
+     "text": "我靠，看来已经到达兽化兵生产线了……"
+    },
+    {
+     "speaker": "Andy Law",
+     "text": "我要快点找到BLOODY那个老混蛋，把它解决掉，把这里轰掉！"
+    }
+   ],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1927,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1927/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A15",
+   "worldSprite": 1940,
+   "mainFrame": 157,
+   "walkBounds": [
+    50.0,
+    150.0,
+    1500.0,
+    490.0
+   ],
+   "spawn": [
+    185.95,
+    398.8
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 753,
+     "xy": [
+      433.45,
+      -6.25
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器x",
+     "charId": 1434,
+     "depth": 757,
+     "xy": [
+      1108.4,
+      285.15
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": 1,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    }
+   ],
+   "statics": [],
+   "exits": [
+    {
+     "charId": 1617,
+     "depth": 668,
+     "type": "killCount",
+     "required": 5,
+     "bossInstance": null,
+     "targetFrame": "a16"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 5,
+   "turrets": 0,
+   "antiEnemyTurrets": 0,
+   "pickups": [],
+   "dialogue": [],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1940,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1940/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A16",
+   "worldSprite": 1950,
+   "mainFrame": 162,
+   "walkBounds": [
+    50.0,
+    200.0,
+    970.0,
+    450.0
+   ],
+   "spawn": [
+    273.9,
+    378.15
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 706,
+     "xy": [
+      433.45,
+      -6.25
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器x",
+     "charId": 1434,
+     "depth": 710,
+     "xy": [
+      1108.4,
+      285.15
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": 1,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    }
+   ],
+   "statics": [],
+   "exits": [
+    {
+     "charId": 1617,
+     "depth": 617,
+     "type": "killCount",
+     "required": 0,
+     "bossInstance": null,
+     "targetFrame": "a12"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 0,
+   "pickups": [
+    {
+     "kind": "弃枪",
+     "depth": 702,
+     "xy": [
+      421.45,
+      255.4
+     ],
+     "gun": "m4-2",
+     "ammoInMag": 60
+    }
+   ],
+   "dialogue": [
+    {
+     "speaker": "Andy Law",
+     "text": "这里应该是机房了，我靠，这大头娃不会是主机吧？咦，BLOODY也在！"
+    },
+    {
+     "speaker": "R_server",
+     "text": "入侵等级升至一级，应急预案F启动！"
+    },
+    {
+     "speaker": "bloody",
+     "text": "呵呵，没想到你突破重围竟然来到这里！"
+    },
+    {
+     "speaker": "bloody",
+     "text": "连联合国特工部队也无法攻破的堡垒竟然被一个人突破，你就像传说中一样厉害啊，Andy Law！"
+    },
+    {
+     "speaker": "Andy Law",
+     "text": "Bloody！今天我就要消灭你和你的军队！"
+    },
+    {
+     "speaker": "R_server",
+     "text": "攻坚队到位！立刻对入侵者进行终结！"
+    }
+   ],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1950,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1950/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   },
+   "exitNote": "模板出口需要杀死数0→a12为复制模板;对白链实际目标a17(主控审查 encounter-review 确认),章节按路线顺序A16→A17,不回A12"
+  },
+  {
+   "id": "A17",
+   "worldSprite": 1954,
+   "mainFrame": 169,
+   "walkBounds": [
+    50.0,
+    250.0,
+    1500.0,
+    520.0
+   ],
+   "spawn": [
+    663.85,
+    289.05
+   ],
+   "generators": [
+    {
+     "instance": null,
+     "charId": 1585,
+     "depth": 512,
+     "xy": [
+      4.0,
+      369.9
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 15,
+     "concurrent": 1,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 1,
+     "door": null,
+     "initialState": "free",
+     "trigger": null
+    },
+    {
+     "instance": null,
+     "charId": 1585,
+     "depth": 514,
+     "xy": [
+      1546.9,
+      416.3
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 15,
+     "concurrent": 1,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 1,
+     "door": null,
+     "initialState": "free",
+     "trigger": null
+    },
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 589,
+     "xy": [
+      433.45,
+      -6.25
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器x",
+     "charId": 1434,
+     "depth": 593,
+     "xy": [
+      1108.4,
+      285.15
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": 1,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    }
+   ],
+   "statics": [
+    {
+     "unit": "敌人-大头机器人",
+     "unitKey": "robot_big",
+     "depth": 871,
+     "xy": [
+      675.6,
+      226.65
+     ],
+     "hp": 2000,
+     "ai": 5,
+     "gun": "g36",
+     "transform": null
+    },
+    {
+     "unit": "敌人-特种兵-带盾",
+     "unitKey": "specop_shield",
+     "depth": 989,
+     "xy": [
+      161.1,
+      372.65
+     ],
+     "hp": 300,
+     "ai": 5,
+     "gun": "ak47",
+     "transform": null
+    },
+    {
+     "unit": "敌人-大刀机器人",
+     "unitKey": "robot_sword",
+     "depth": 1034,
+     "xy": [
+      112.75,
+      428.5
+     ],
+     "hp": 450,
+     "ai": 5,
+     "gun": "g36",
+     "transform": null
+    },
+    {
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "depth": 1070,
+     "xy": [
+      247.65,
+      468.5
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 1
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 1101,
+     "xy": [
+      1365.4,
+      389.55
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "敌人-大刀机器人",
+     "unitKey": "robot_sword",
+     "depth": 1145,
+     "xy": [
+      1296.15,
+      448.4
+     ],
+     "hp": 450,
+     "ai": 5,
+     "gun": "g36",
+     "transform": null
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1766,
+     "depth": 985,
+     "type": "bossKill",
+     "required": null,
+     "bossInstance": "boss",
+     "targetFrame": "s6"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 5,
+   "turrets": 0,
+   "antiEnemyTurrets": 0,
+   "pickups": [
+    {
+     "kind": "弃枪",
+     "depth": 585,
+     "xy": [
+      166.8,
+      305.4
+     ],
+     "gun": "m4-2",
+     "ammoInMag": 60
+    },
+    {
+     "kind": "弃枪",
+     "depth": 1181,
+     "xy": [
+      445.95,
+      248.25
+     ],
+     "gun": "type97",
+     "ammoInMag": 50
+    },
+    {
+     "kind": "弃枪",
+     "depth": 1185,
+     "xy": [
+      964.95,
+      329.25
+     ],
+     "gun": "awp",
+     "ammoInMag": 10
+    }
+   ],
+   "dialogue": [],
+   "boss": {
+    "unit": "敌人-大头机器人",
+    "unitKey": "robot_big",
+    "depth": 871,
+    "xy": [
+     675.6,
+     226.65
+    ],
+    "hp": 2000,
+    "ai": 5,
+    "gun": "g36",
+    "transform": null
+   },
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1954,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1954/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A18",
+   "worldSprite": 1977,
+   "mainFrame": 178,
+   "walkBounds": [
+    50.0,
+    150.0,
+    1550.0,
+    400.0
+   ],
+   "spawn": [
+    72.5,
+    228.55
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器2",
+     "charId": 1434,
+     "depth": 145,
+     "xy": [
+      557.45,
+      -3.1
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 290,
+     "xy": [
+      856.45,
+      191.15
+     ],
+     "unit": "aw-蛮蛮",
+     "unitKey": "manman",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 500,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    }
+   ],
+   "statics": [
+    {
+     "unit": "敌人-特种兵-带盾",
+     "unitKey": "specop_shield",
+     "depth": 154,
+     "xy": [
+      903.1,
+      334.2
+     ],
+     "hp": 300,
+     "ai": 5,
+     "gun": "ak47",
+     "transform": null
+    },
+    {
+     "unit": "敌人-wings",
+     "unitKey": "wings",
+     "depth": 199,
+     "xy": [
+      994.4,
+      325.85
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": "g36",
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 292,
+     "xy": [
+      436.45,
+      227.1
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 336,
+     "xy": [
+      459.45,
+      283.1
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "depth": 380,
+     "xy": [
+      467.45,
+      347.1
+     ],
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "敌人-wings",
+     "unitKey": "wings",
+     "depth": 424,
+     "xy": [
+      1171.4,
+      249.85
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": "g36",
+     "transform": null
+    },
+    {
+     "unit": "敌人-wings",
+     "unitKey": "wings",
+     "depth": 515,
+     "xy": [
+      1274.4,
+      363.05
+     ],
+     "hp": 100,
+     "ai": 5,
+     "gun": "g36",
+     "transform": null
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1617,
+     "depth": 60,
+     "type": "killCount",
+     "required": 12,
+     "bossInstance": null,
+     "targetFrame": "a19"
+    }
+   ],
+   "triggerZones": [
+    {
+     "depth": 147,
+     "xy": [
+      865.1,
+      205.0
+     ],
+     "target": "敌人生成器1"
+    }
+   ],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 0,
+   "pickups": [
+    {
+     "kind": "补给箱",
+     "depth": 606,
+     "xy": [
+      1335.55,
+      187.8
+     ],
+     "content": "救护包"
+    },
+    {
+     "kind": "弃枪",
+     "depth": 613,
+     "xy": [
+      632.65,
+      185.3
+     ],
+     "gun": "ak47",
+     "ammoInMag": 60
+    }
+   ],
+   "dialogue": [],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1977,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1977/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A19",
+   "worldSprite": 1985,
+   "mainFrame": 183,
+   "walkBounds": [
+    50.0,
+    150.0,
+    1550.0,
+    400.0
+   ],
+   "spawn": [
+    42.5,
+    278.7
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器2",
+     "charId": 1434,
+     "depth": 163,
+     "xy": [
+      1296.45,
+      240.55
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 1,
+     "door": "door2",
+     "initialState": "free",
+     "trigger": null
+    },
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 165,
+     "xy": [
+      544.6,
+      172.15
+     ],
+     "unit": "敌人-wings",
+     "unitKey": "wings",
+     "remainingDeathBudget": 10,
+     "concurrent": 3,
+     "hp": 100,
+     "ai": 5,
+     "gun": "g36",
+     "transform": null,
+     "door": "door1",
+     "initialState": "free",
+     "trigger": null
+    }
+   ],
+   "statics": [
+    {
+     "unit": "敌人-特种兵-带盾",
+     "unitKey": "specop_shield",
+     "depth": 167,
+     "xy": [
+      370.7,
+      243.15
+     ],
+     "hp": 300,
+     "ai": 5,
+     "gun": "ak47",
+     "transform": null
+    },
+    {
+     "unit": "敌人-大刀机器人",
+     "unitKey": "robot_sword",
+     "depth": 212,
+     "xy": [
+      1066.5,
+      344.7
+     ],
+     "hp": 450,
+     "ai": 5,
+     "gun": "g36",
+     "transform": null
+    },
+    {
+     "unit": "aw-蛮蛮",
+     "unitKey": "manman",
+     "depth": 248,
+     "xy": [
+      1084.25,
+      259.35
+     ],
+     "hp": 500,
+     "ai": 5,
+     "gun": null,
+     "transform": null
+    },
+    {
+     "unit": "敌人-特种兵-带盾",
+     "unitKey": "specop_shield",
+     "depth": 297,
+     "xy": [
+      413.7,
+      315.0
+     ],
+     "hp": 300,
+     "ai": 5,
+     "gun": "ak47",
+     "transform": null
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1982,
+     "depth": 47,
+     "type": "killCount",
+     "required": 19,
+     "bossInstance": null,
+     "targetFrame": "a20"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 0,
+   "pickups": [
+    {
+     "kind": "补给箱",
+     "depth": 342,
+     "xy": [
+      461.1,
+      187.85
+     ],
+     "content": "救护包"
+    },
+    {
+     "kind": "弃枪",
+     "depth": 349,
+     "xy": [
+      223.9,
+      184.25
+     ],
+     "gun": "m249",
+     "ammoInMag": 200
+    }
+   ],
+   "dialogue": [],
+   "boss": null,
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1985,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1985/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A20",
+   "worldSprite": 1992,
+   "mainFrame": 188,
+   "walkBounds": [
+    50.0,
+    150.0,
+    1490.0,
+    540.0
+   ],
+   "spawn": [
+    42.5,
+    278.7
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器2",
+     "charId": 1434,
+     "depth": 176,
+     "xy": [
+      557.45,
+      -3.1
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 178,
+     "xy": [
+      425.45,
+      -5.85
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": null,
+     "charId": 1434,
+     "depth": 219,
+     "xy": [
+      1414.9,
+      455.7
+     ],
+     "unit": "敌人-wings",
+     "unitKey": "wings",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 100,
+     "ai": 5,
+     "gun": "g36",
+     "transform": null,
+     "door": "door4",
+     "initialState": "free",
+     "trigger": null
+    },
+    {
+     "instance": null,
+     "charId": 1434,
+     "depth": 221,
+     "xy": [
+      1103.95,
+      225.75
+     ],
+     "unit": "aw-僵尸",
+     "unitKey": "zombie",
+     "remainingDeathBudget": 15,
+     "concurrent": 1,
+     "hp": 200,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": "door2",
+     "initialState": "free",
+     "trigger": null
+    },
+    {
+     "instance": null,
+     "charId": 1434,
+     "depth": 223,
+     "xy": [
+      1250.95,
+      338.75
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 15,
+     "concurrent": 1,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": 1,
+     "door": "door2",
+     "initialState": "free",
+     "trigger": null
+    },
+    {
+     "instance": null,
+     "charId": 1434,
+     "depth": 225,
+     "xy": [
+      185.0,
+      162.0
+     ],
+     "unit": "敌人-特种兵-带盾",
+     "unitKey": "specop_shield",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 300,
+     "ai": 5,
+     "gun": "ak47",
+     "transform": null,
+     "door": "door1",
+     "initialState": "free",
+     "trigger": null
+    }
+   ],
+   "statics": [
+    {
+     "unit": "敌人-老头人形",
+     "unitKey": "oldman_human",
+     "depth": 180,
+     "xy": [
+      648.4,
+      201.65
+     ],
+     "hp": 2000,
+     "ai": 5,
+     "gun": "g36",
+     "transform": null
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1766,
+     "depth": 215,
+     "type": "bossKill",
+     "required": null,
+     "bossInstance": "boss",
+     "targetFrame": "a21"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 0,
+   "pickups": [
+    {
+     "kind": "弃枪",
+     "depth": 227,
+     "xy": [
+      1188.95,
+      410.85
+     ],
+     "gun": "m4",
+     "ammoInMag": 60
+    },
+    {
+     "kind": "弃枪",
+     "depth": 231,
+     "xy": [
+      864.8,
+      185.9
+     ],
+     "gun": "ump",
+     "ammoInMag": 50
+    },
+    {
+     "kind": "弃枪",
+     "depth": 235,
+     "xy": [
+      170.0,
+      280.0
+     ],
+     "gun": "m1",
+     "ammoInMag": 16
+    }
+   ],
+   "dialogue": [],
+   "boss": {
+    "unit": "敌人-老头人形",
+    "unitKey": "oldman_human",
+    "depth": 180,
+    "xy": [
+     648.4,
+     201.65
+    ],
+    "hp": 2000,
+    "ai": 5,
+    "gun": "g36",
+    "transform": null
+   },
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 1992,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1992/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  },
+  {
+   "id": "A22",
+   "worldSprite": 2011,
+   "mainFrame": 198,
+   "walkBounds": [
+    50.0,
+    150.0,
+    1490.0,
+    540.0
+   ],
+   "spawn": [
+    545.45,
+    251.1
+   ],
+   "generators": [
+    {
+     "instance": "敌人生成器2",
+     "charId": 1434,
+     "depth": 176,
+     "xy": [
+      557.45,
+      -3.1
+     ],
+     "unit": "敌人-光头男",
+     "unitKey": "thug",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 100,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": "敌人生成器1",
+     "charId": 1434,
+     "depth": 178,
+     "xy": [
+      425.45,
+      -5.85
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 5,
+     "concurrent": 2,
+     "hp": 10,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": null,
+     "initialState": "stopped",
+     "trigger": "unknown"
+    },
+    {
+     "instance": null,
+     "charId": 1434,
+     "depth": 225,
+     "xy": [
+      1414.9,
+      455.7
+     ],
+     "unit": "aw-蛮蛮",
+     "unitKey": "manman",
+     "remainingDeathBudget": 15,
+     "concurrent": 1,
+     "hp": 500,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": "door4",
+     "initialState": "free",
+     "trigger": null
+    },
+    {
+     "instance": null,
+     "charId": 1434,
+     "depth": 227,
+     "xy": [
+      1103.95,
+      225.75
+     ],
+     "unit": "敌人-大头机器人",
+     "unitKey": "robot_big",
+     "remainingDeathBudget": 15,
+     "concurrent": 1,
+     "hp": 500,
+     "ai": 5,
+     "gun": "g36",
+     "transform": null,
+     "door": "door2",
+     "initialState": "free",
+     "trigger": null
+    },
+    {
+     "instance": null,
+     "charId": 1434,
+     "depth": 229,
+     "xy": [
+      1250.95,
+      338.75
+     ],
+     "unit": "aw-异形",
+     "unitKey": "alien",
+     "remainingDeathBudget": 15,
+     "concurrent": 1,
+     "hp": 250,
+     "ai": 5,
+     "gun": null,
+     "transform": null,
+     "door": "door2",
+     "initialState": "free",
+     "trigger": null
+    },
+    {
+     "instance": null,
+     "charId": 1434,
+     "depth": 231,
+     "xy": [
+      185.0,
+      162.0
+     ],
+     "unit": "敌人-大刀机器人",
+     "unitKey": "robot_sword",
+     "remainingDeathBudget": 15,
+     "concurrent": 1,
+     "hp": 450,
+     "ai": 5,
+     "gun": "g36",
+     "transform": null,
+     "door": "door1",
+     "initialState": "free",
+     "trigger": null
+    }
+   ],
+   "statics": [
+    {
+     "unit": "敌人-老头机器人",
+     "unitKey": "oldman_robot",
+     "depth": 184,
+     "xy": [
+      686.95,
+      249.95
+     ],
+     "hp": 3000,
+     "ai": 5,
+     "gun": "g36",
+     "transform": null
+    }
+   ],
+   "exits": [
+    {
+     "charId": 1766,
+     "depth": 180,
+     "type": "bossKill",
+     "required": null,
+     "bossInstance": "boss",
+     "targetFrame": "s7"
+    }
+   ],
+   "triggerZones": [],
+   "alienEggs": 0,
+   "turrets": 0,
+   "antiEnemyTurrets": 0,
+   "pickups": [
+    {
+     "kind": "救护包",
+     "depth": 233,
+     "xy": [
+      564.45,
+      402.4
+     ]
+    },
+    {
+     "kind": "救护包",
+     "depth": 237,
+     "xy": [
+      901.45,
+      215.45
+     ]
+    }
+   ],
+   "dialogue": [],
+   "boss": {
+    "unit": "敌人-老头机器人",
+    "unitKey": "oldman_robot",
+    "depth": 184,
+    "xy": [
+     686.95,
+     249.95
+    ],
+    "hp": 3000,
+    "ai": 5,
+    "gun": "g36",
+    "transform": null
+   },
+   "provenance": {
+    "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "worldSprite": 2011,
+    "scriptBase": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_2011/frame_1",
+    "note": "逐实例 onClipEvent(load) 配置解析"
+   }
+  }
+ ]
+}

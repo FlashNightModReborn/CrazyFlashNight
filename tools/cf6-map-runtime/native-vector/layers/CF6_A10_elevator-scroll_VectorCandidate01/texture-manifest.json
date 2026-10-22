@@ -1,0 +1,49 @@
+{
+  "schema": "cf6-native-layer-input.v1",
+  "map": "A10",
+  "layer": "elevator-scroll",
+  "name": "CF6_A10_elevator-scroll_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/parts/elevator-1875-tile.svg",
+  "sourceSha256": "a1f9b64d4d704dbbc202df59baad5e130ea1f5ce989fa26683b2839d3200162c",
+  "inputIndex": "tools/cf6-map-source/generated/map-input.json",
+  "inputIndexSha256": "056c50dd321debee3545d2988b891d140b07cfec864b5d461bd062e44d29ba95",
+  "extraction": "decode existing PNG/JPEG data URI bytes only; no image rasterization or modification",
+  "inputs": [
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-326f8bd62a9888c43adf445c.png",
+      "sha256": "326f8bd62a9888c43adf445cfbab16a785789cc67ef52ec2ba190799ee4fabe0",
+      "bytes": 697401,
+      "pixels": [
+        2100,
+        546
+      ]
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/assets/intrinsic-bad42f8ab9ad860db40dba27.png",
+      "sha256": "bad42f8ab9ad860db40dba27767a78f883bb2613115d864df5cf222f2fa2a84e",
+      "bytes": 16792,
+      "pixels": [
+        189,
+        81
+      ]
+    }
+  ],
+  "textures": {
+    "326f8bd62a9888c43adf445cfbab16a785789cc67ef52ec2ba190799ee4fabe0": {
+      "name": "intrinsic-326f8bd62a9888c43adf445c.png",
+      "pixels": [
+        2100,
+        546
+      ]
+    },
+    "bad42f8ab9ad860db40dba27767a78f883bb2613115d864df5cf222f2fa2a84e": {
+      "name": "intrinsic-bad42f8ab9ad860db40dba27.png",
+      "pixels": [
+        189,
+        81
+      ]
+    }
+  },
+  "xfl": "flashswf/backgrounds/cf6/CF6_A10_elevator-scroll_VectorCandidate01/CF6_A10_elevator-scroll_VectorCandidate01.xfl",
+  "swf": "CF6_A10_elevator-scroll_VectorCandidate01.swf"
+}

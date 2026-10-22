@@ -1,0 +1,70 @@
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" width="1000" height="450" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
+  <media>
+    <DOMBitmapItem name="image/bitmap2252.jpg" itemID="6597607b-00000456" sourceLastImported="1704419451" quality="50" href="image/bitmap2252.jpg" bitmapDataHRef="M 6 1736924415.dat" frameRight="15120" frameBottom="4280" isJPEG="true"/>
+    <DOMBitmapItem name="image/bitmap2255.jpg" itemID="6597607b-0000045b" sourceLastImported="1704419451" quality="50" href="image/bitmap2255.jpg" bitmapDataHRef="M 5 1736924415.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
+    <DOMBitmapItem name="image/bitmap2259.jpg" itemID="6597607b-00000460" sourceLastImported="1704419451" quality="50" href="image/bitmap2259.jpg" bitmapDataHRef="M 4 1736924415.dat" frameRight="4000" frameBottom="4000" isJPEG="true"/>
+    <DOMBitmapItem name="image/bitmap2261.png" itemID="6597607b-00000465" sourceLastImported="1704419451" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="image/bitmap2261.png" bitmapDataHRef="M 3 1736924415.dat" frameRight="1140" frameBottom="1480"/>
+    <DOMBitmapItem name="image/bitmap2321.png" itemID="6597607b-00000479" sourceLastImported="1704419451" originalCompressionType="lossless" quality="50" href="image/bitmap2321.png" bitmapDataHRef="M 2 1736924415.dat" frameRight="2760" frameBottom="500"/>
+  </media>
+  <timelines>
+    <DOMTimeline name="Tutorial Room Native Vector Candidate">
+      <layers>
+        <DOMLayer name="initialize-then-bake">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="1" keyMode="9728">
+              <Actionscript>
+                <script>stop();if(_root.gameworld!=undefined &amp;&amp; (this===_root.gameworld.背景 || this._parent===_root.gameworld.背景) &amp;&amp; _root._saveExt.bookRun.bookId=="cf6-sting" &amp;&amp; _root._saveExt.bookRun.routeId=="historical" &amp;&amp; _root._saveExt.bookRun.outcome=="active" &amp;&amp; typeof _root.贴背景图=="function") _root.贴背景图(true);</script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="room">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Tutorial/教学室场景" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timelines>
+  <symbols>
+    <Include href="Tutorial/房间壳-Symbol 1927.xml" loadImmediate="false" itemID="6a9f0000-489113dd"/>
+    <Include href="Tutorial/房间壳-Symbol 2254.xml" loadImmediate="false" itemID="6a9f0000-46418d0c"/>
+    <Include href="Tutorial/房间壳-Symbol 2256.xml" loadImmediate="false" itemID="6a9f0000-0478a05c"/>
+    <Include href="Tutorial/房间壳-Symbol 2262.xml" loadImmediate="false" itemID="6a9f0000-0d684d1e"/>
+    <Include href="Tutorial/房间壳-Symbol 2264.xml" loadImmediate="false" itemID="6a9f0000-79864f6e"/>
+    <Include href="Tutorial/房间壳-Symbol 2278.xml" loadImmediate="false" itemID="6a9f0000-0f104391"/>
+    <Include href="Tutorial/房间壳-Symbol 2280.xml" loadImmediate="false" itemID="6a9f0000-0c582537"/>
+    <Include href="Tutorial/房间壳-Symbol 2282.xml" loadImmediate="false" itemID="6a9f0000-4780f787"/>
+    <Include href="Tutorial/房间壳-Symbol 2283.xml" loadImmediate="false" itemID="6a9f0000-33c96ae1"/>
+    <Include href="Tutorial/房间壳-Symbol 2287.xml" loadImmediate="false" itemID="6a9f0000-751ff508"/>
+    <Include href="Tutorial/房间壳-Symbol 2290.xml" loadImmediate="false" itemID="6a9f0000-106e026b"/>
+    <Include href="Tutorial/房间壳-Symbol 2292.xml" loadImmediate="false" itemID="6a9f0000-54cbe078"/>
+    <Include href="Tutorial/房间壳-Symbol 2293.xml" loadImmediate="false" itemID="6a9f0000-43fc92e0"/>
+    <Include href="Tutorial/房间壳-Symbol 2302.xml" loadImmediate="false" itemID="6a9f0000-5e52e920"/>
+    <Include href="Tutorial/房间壳-Symbol 2303.xml" loadImmediate="false" itemID="6a9f0000-6ef9ccde"/>
+    <Include href="Tutorial/房间壳-Symbol 2305.xml" loadImmediate="false" itemID="6a9f0000-3d29af1a"/>
+    <Include href="Tutorial/房间壳-Symbol 2310.xml" loadImmediate="false" itemID="6a9f0000-19bdec1b"/>
+    <Include href="Tutorial/房间壳-Symbol 2322.xml" loadImmediate="false" itemID="6a9f0000-697f5de8"/>
+    <Include href="Tutorial/房间壳-Symbol 2323.xml" loadImmediate="false" itemID="6a9f0000-41a60718"/>
+    <Include href="Tutorial/房间壳-Symbol 2577.xml" loadImmediate="false" itemID="6a9f0000-14c74f5f"/>
+    <Include href="Tutorial/房间壳-Symbol 476.xml" loadImmediate="false" itemID="6a9f0000-7754871f"/>
+    <Include href="Tutorial/教学室场景.xml" loadImmediate="false" itemID="6a9f0000-2a56303e"/>
+    <Include href="Tutorial/门-门2.xml" loadImmediate="false" itemID="6a9f0000-32041c76"/>
+    <Include href="Tutorial/门灯-门灯光+排气扇.xml" loadImmediate="false" itemID="6a9f0000-6f464beb"/>
+    <Include href="Tutorial/高架床-摆件初始床.xml" loadImmediate="false" itemID="6a9f0000-0255864d"/>
+    <Include href="Tutorial/高架床-摆件初始梯子.xml" loadImmediate="false" itemID="6a9f0000-44363de0"/>
+    <Include href="Tutorial/高架床-生活设施.xml" loadImmediate="false" itemID="6a9f0000-50fd5dc2"/>
+  </symbols>
+</DOMDocument>

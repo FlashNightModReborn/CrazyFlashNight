@@ -10,7 +10,8 @@ internal static class PlayerHudPoisePainter
     internal static PlayerHudPoiseVisual Flags(PlayerHudVitals value) => value.PoiseVisual ??
         new(value.PoiseDetail?.Phase == "air", value.PoiseDetail?.Phase == "rigid", value.PoiseDetail?.Phase == "down");
 
-    internal static void Paint(Graphics g, PlayerHudVitals value, GraphicsPath cells)
+    internal static void Paint(Graphics g, PlayerHudVitals value, GraphicsPath cells,
+        float pulseIntensity = 0f, bool pulseIsRisk = false)
     {
         var detail=value.PoiseDetail; var flags=Flags(value);
         var ready=detail!=null && detail.Phase!="unavailable";
@@ -48,6 +49,22 @@ internal static class PlayerHudPoisePainter
             g.FillRectangle(riskFill,source.Left,source.Top,split,source.Height);
         }
         g.Restore(filled);
+        if (pulseIntensity > 0.001f && !inactive)
+        {
+            var pulseLayer = g.Save();
+            g.SetClip(cells, CombineMode.Intersect);
+            var washColor = pulseIsRisk
+                ? Color.FromArgb(Math.Clamp((int)Math.Round(125 * pulseIntensity), 0, 255), 255, 112, 32)
+                : Color.FromArgb(Math.Clamp((int)Math.Round(110 * pulseIntensity), 0, 255), 255, 238, 96);
+            using var pulseWash = new SolidBrush(washColor);
+            g.FillPath(pulseWash, cells);
+            var rimColor = pulseIsRisk
+                ? Color.FromArgb(Math.Clamp((int)Math.Round(215 * pulseIntensity), 0, 255), 255, 156, 52)
+                : Color.FromArgb(Math.Clamp((int)Math.Round(205 * pulseIntensity), 0, 255), 255, 245, 110);
+            using var pulsePen = new Pen(rimColor, 0.8f);
+            g.DrawPath(pulsePen, cells);
+            g.Restore(pulseLayer);
+        }
         using var border=new Pen(inactive?Color.FromArgb(91,104,110):Color.FromArgb(139,130,80),0.3f);
         g.DrawPath(border,cells);
         if(split>0)

@@ -68,7 +68,12 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime {
         if (!value || !(cap > 0)) return null;
         var attrs:Object = unit[slot + "属性"];
         if (!value.ammoState && attrs.reloadType != "tube" && !(count(attrs.overload.chamber) > 0)
-                && !(count(attrs.overload.ghost) > 0) && !attrs.overload.reward) return null;
+                && !(count(attrs.overload.ghost) > 0) && !attrs.overload.reward) {
+            // 普通枪仍需初始化射击计数；新物品和旧存档都可能没有该字段。
+            var plainShot:Number = Number(value.shot);
+            if (!isFinite(plainShot) || plainShot < 0) value.shot = 0;
+            return null;
+        }
         var state:Object = value.ammoState;
         if (!state || state.v != 1) {
             var legacyShot:Number = Number(value.shot);

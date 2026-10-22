@@ -1,0 +1,64 @@
+{
+  "schema": "cf6-r12-headless.v1",
+  "audio": "mocked; no audible validation",
+  "checkedSegments": [
+    {
+      "pageId": "cf6-s1",
+      "pages": 4
+    },
+    {
+      "pageId": "cf6-s2",
+      "pages": 8
+    },
+    {
+      "pageId": "cf6-s3",
+      "pages": 5
+    },
+    {
+      "pageId": "cf6-s4",
+      "pages": 4
+    },
+    {
+      "pageId": "cf6-s5",
+      "pages": 6
+    },
+    {
+      "pageId": "cf6-s6",
+      "pages": 8
+    },
+    {
+      "pageId": "cf6-s7",
+      "pages": 8
+    }
+  ],
+  "screenshots": [
+    "cf6-s1-page-1.png",
+    "cf6-s2-page-1.png",
+    "cf6-s7-page-8.png",
+    "cf6-end.png"
+  ],
+  "checks": [],
+  "skipAndLateResponse": {
+    "skipCount": 1,
+    "duplicateIgnored": true,
+    "lateResponseIgnored": true
+  },
+  "failureCancellationAndCredits": {
+    "closeUsesFailed": true,
+    "cleanupSilent": true,
+    "imageFailure": true,
+    "manualCredits": true
+  },
+  "campusRegression": {
+    "spacePausesAndResumes": true,
+    "noCf6Audio": true
+  },
+  "automaticPlayback": {
+    "advancedToPage": 2,
+    "naturalOverview": true,
+    "continueCount": 1
+  },
+  "pageErrors": [],
+  "foreignAudioUntouched": true,
+  "passed": true
+}

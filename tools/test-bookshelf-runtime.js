@@ -65,7 +65,9 @@ async function main() {
     check(R.books.length===5, 'five catalog books');
     const series = R.books.find(b => b.id === 'crazy-flasher');
     check(series.chapters.length === 6 && R.books.filter(b => b.format === 'playable').length === 1, 'one book and six chapters');
-    check(series.chapters[0].remake.id === 'repair-campus' && series.chapters.slice(1).every(c => !c.remake.available), 'stable first remake identity and unfinished future chapters');
+    check(series.chapters[0].remake.id === 'repair-campus' && series.chapters.slice(1,5).every(c => !c.remake.available), 'stable first remake identity and unfinished middle chapters');
+    check(R.chapterNumberForBook('repair-campus') === 1 && R.chapterNumberForBook('cf6-sting') === 6
+        && R.chapterNumberForBook('foreign') === 0, 'returning chapters resolve before the asynchronous catalog arrives');
     check(R.books.every(b => b.format === 'playable' ? R.safeAsset(b.boxArt) : R.safeAsset(b.spine))
         && series.chapters.every(c => R.safeAsset(c.cover)), 'catalog presentation assets pass the safe path boundary');
     const malformed = JSON.parse(JSON.stringify(catalog)); malformed.books[4].chapters[1].original.languages.push('file:/fake.swf');
@@ -74,6 +76,16 @@ async function main() {
     assert.throws(() => R.adoptCatalog(badSpine)); passed++;
     const badCover = JSON.parse(JSON.stringify(catalog)); delete badCover.books[4].chapters[0].cover;
     assert.throws(() => R.adoptCatalog(badCover)); passed++;
+    const cf6Catalog = JSON.parse(JSON.stringify(catalog));
+    cf6Catalog.books.find(b => b.id === 'crazy-flasher').chapters[5].remake = {id:'cf6-sting', available:true};
+    R.adoptCatalog(cf6Catalog);
+    check(R.books.find(b => b.id === 'crazy-flasher').chapters[5].remake.id === 'cf6-sting', 'CF6 entry keeps its own business identity');
+    for (const remake of [{id:'repair-campus',available:true},{id:'cf6-sting-61',available:true},{id:'cf6-sting',available:false}]) {
+        const invalidCf6=JSON.parse(JSON.stringify(cf6Catalog));
+        invalidCf6.books.find(b => b.id === 'crazy-flasher').chapters[5].remake=remake;
+        assert.throws(() => R.adoptCatalog(invalidCf6));passed++;
+    }
+    R.adoptCatalog(catalog);
     const transport = new R.RequestMux({domain:'bookshelf-original', panelInstanceId:'bookshelf.original.1',router,send:m=>{sent=m;return true;}});
     let originalReplies = 0;
     check(transport.request('commit', {kind:'play'}, () => {}) === null, 'original transport never sends CF7 business commands');

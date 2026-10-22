@@ -1,0 +1,302 @@
+{
+  "schema": "cf6-tutorial-turrets.v1",
+  "coordinateSpace": "native-original",
+  "sourceSwf": {
+    "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/crazyflasher6-cn.swf",
+    "sha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "fps": 30
+  },
+  "targetMap": {
+    "mapId": "A01",
+    "mainFrame": 66,
+    "frameLabel": "a1",
+    "worldSprite": 1592,
+    "note": "两门炮塔在 A01 世界 sprite1592 首帧；教学室（帧58/sprite1499）经全量放置核对无任何炮塔实例。"
+  },
+  "tutorialRoomCheck": {
+    "mainFrame": 58,
+    "frameLabel": "教学关",
+    "worldSprite": 1499,
+    "turretInstanceCount": 0,
+    "note": "教学室内的成对静态图形 charId 1443（depth178/184）是无脚本 DefineShape 背景件，不是炮塔交互，不作为迁移对象。"
+  },
+  "turretSymbol": {
+    "originalCharId": 1591,
+    "originalExportName": null,
+    "frameCount": 18,
+    "frame1Action": "r15 FFDec 交叉核对补正：帧1 DoAction(1242B) 含 swapDepths(this._y*100)（静态 y 排序，CF7 侧由 DepthManager 承担）与一段僵尸增援生成逻辑（僵尸型敌人总个数/door.play()/attachMovie/僵尸型敌人初始化）及 总个数<=0 时 stop()。整段不迁移：排序归 DepthManager，波次生成归 CF7 WaveSpawner/服务，时间轴推进归 Cf6TutorialTurretService。",
+    "frame1Filter": {
+      "type": "ColorMatrixFilter",
+      "matrix": [
+        0.48174965381622314,
+        0.5356919169425964,
+        -0.027441544458270073,
+        0.0,
+        -45.89500045776367,
+        0.21949733793735504,
+        0.6808332800865173,
+        0.08966939151287079,
+        0.0,
+        -45.89500045776367,
+        0.30943387746810913,
+        0.3974023759365082,
+        0.28316378593444824,
+        0.0,
+        -45.89500427246094,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "applyTo": "帧1 机身实例（1590）",
+      "note": "r14 独立解码确认：帧1 PlaceObject3 恰好一个 ColorMatrixFilter（非阴影，不省略）。XFL 无原生 ColorMatrixFilter 节点，由生成的元件帧1 脚本按上列 20 原值应用。"
+    },
+    "fireFrame": 12,
+    "fireCycleFrames": 18,
+    "fireSound": {
+      "charId": 1169,
+      "format": "mp3",
+      "frame": 12,
+      "sync": "event",
+      "envelope": {
+        "level0": 11022,
+        "level1": 9533
+      },
+      "extracted": "flashswf/arts/new/Codex素材源稿/CF6教学炮塔/bitmaps/fire-sound-1169.mp3",
+      "extractedSha256": "b5a94b729ae2e50b22049afddbd870afb44941303e0ac1f5435751ddebe1e83c",
+      "importAsset": "flashswf/arts/new/Codex素材源稿/CF6教学炮塔/bitmaps/fire-sound-1169.import.mp3",
+      "importSha256": "4d042c4e7e3ae242f32f357bdda66b575be4abe6f0c647d443a0d648bffe2a0a",
+      "importBytes": 2392,
+      "note": "r14 extracted 原件2396B保留，其中前4B是错误保留的SWF头字段；真实CS6导入仅用importAsset的2392B原始MP3帧，与独立FFDec导出逐字节一致，无重编码。"
+    },
+    "muzzleMarker": {
+      "name": "枪口位置2",
+      "charId": 359,
+      "local": {
+        "x": 105.25,
+        "y": -12.55
+      },
+      "events": "load: localToGlobal→gameworld.globalToLocal→shootX/shootY→射击1()；enterFrame: 每帧刷新 shootX/shootY；unload: clearInterval(keepshooting)（r15 FFDec 交叉核对补记，r14 漏列）。CF7 侧等价清理由 Cf6TutorialTurretService.removeOwned/teardown 承担。"
+    },
+    "muzzleFlash": {
+      "charId": 506,
+      "frames": 3,
+      "local": {
+        "x": 112.45,
+        "y": -70.5
+      },
+      "behavior": "gotoAndStop(random(3)+1)",
+      "bitmapCharId": 502,
+      "note": "503/504/505 的真实渲染位图为 502（DefineBitsLossless2 43x30 ARGB）；三形状 FillStyleArray 中的 0xFFFF 是死条目，无任何 edge 选用，按原语义不渲染不替代。"
+    },
+    "frame1Placement": {
+      "charId": 1590,
+      "depth": 1,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        20.55,
+        -49.45
+      ],
+      "hasFilterList": true
+    },
+    "bitmapRefs": {
+      "1589": [
+        1588,
+        927
+      ],
+      "503": [
+        502
+      ],
+      "504": [
+        502
+      ],
+      "505": [
+        502
+      ]
+    },
+    "bodyClosure": [
+      277,
+      359,
+      502,
+      503,
+      504,
+      505,
+      506,
+      927,
+      1169,
+      1588,
+      1589,
+      1590,
+      1591
+    ],
+    "deadFillEntries": [
+      65535
+    ],
+    "parserArtifactsRemoved": [
+      1536
+    ],
+    "nativeSourceDir": "flashswf/arts/new/Codex素材源稿/CF6教学炮塔",
+    "nativeSourceManifestSha256": "47a1c707fd5a1824c0b080135ce2a1291f96a36335570b8cbddacb3ca531aa03",
+    "assetSwf": {
+      "xfl": "flashswf/backgrounds/cf6/CF6_A01_Turret/CF6_A01_Turret.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A01_Turret.swf",
+      "assetUrl": "flashswf/backgrounds/cf6/CF6_A01_Turret.swf",
+      "linkage": "CF6教学炮塔-A01自动炮",
+      "builder": "tools/cf6-tutorial-turrets/build-turret-xfl.py（--extract/--jsfl/--assemble/--check）",
+      "note": "linkage 仅存在于该独立 SWF 自有命名空间；不登记进 things-new 资产注册表。"
+    }
+  },
+  "instances": [
+    {
+      "id": "turretA",
+      "originalDepth": 152,
+      "x": 133.8,
+      "y": 202.4,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        133.8,
+        202.4
+      ],
+      "facing": "right",
+      "runtimeDepthOriginal": "swapDepths(_y*100) → 20240"
+    },
+    {
+      "id": "turretB",
+      "originalDepth": 160,
+      "x": 249.8,
+      "y": 430.9,
+      "matrix": [
+        1,
+        0,
+        0,
+        1,
+        249.8,
+        430.9
+      ],
+      "facing": "right",
+      "runtimeDepthOriginal": "swapDepths(_y*100) → 43090"
+    }
+  ],
+  "behaviorOriginal": {
+    "controllable": false,
+    "input": null,
+    "enterLeaveConditions": null,
+    "tutorialTrigger": null,
+    "fire": {
+      "function": "_root.汽车_子弹区域shoot",
+      "args": [
+        "无",
+        1,
+        15,
+        "无",
+        "普通可见子弹",
+        10,
+        20,
+        "无声火花",
+        "发射者名",
+        "shootX",
+        "shootY"
+      ],
+      "intervalSeconds": 0.6,
+      "angleDeg": 0,
+      "scatterDeg": 15,
+      "pellets": 1,
+      "power": 10,
+      "speedPxPerFrame30fps": 20,
+      "muzzleEffect": "无",
+      "sound": "无",
+      "mapHitEffect": "无声火花",
+      "bulletPool": "gameworld.子弹区域（友方池）",
+      "maxRangePx": 800
+    },
+    "damage": {
+      "hurtsPlayer": false,
+      "targets": "仅 aw-僵尸-可被炮台打（sprite630）每帧自检子弹区域并扣血（hp200，威力10→20发）",
+      "note": "普通 aw-僵尸(sprite477) 无子弹区域自检；CF7 子弹按阵营统一命中，语义差异见 integrationRequirements。"
+    },
+    "recovery": "无 hp/死亡/回收；随房间卸载消失。子弹离开发射者 800px 或命中地图即 removeMovieClip。",
+    "killCountInteraction": {
+      "counter": "_root.电梯死亡敌人计数",
+      "a01Exit": {
+        "charId": 1587,
+        "需要杀死数": 20,
+        "目标帧": "s2"
+      },
+      "note": "炮塔击杀 630 计入出口计数；CF7 出口结算权威不归本片段，仅记录原作事实。"
+    }
+  },
+  "cf7Defaults": {
+    "bulletType": "普通子弹",
+    "hitMapEffect": "无声火花",
+    "assetAvailability": "两者均已存在于 data/items/asset_source_map.xml（原版素材库-子弹.swf）"
+  },
+  "integrationRequirements": [
+    "坐标为原作原生世界坐标；r15 起由 build-chapter.py 在现役 viewport 装配边界乘地图倍率 128/75 一次写入 mechanism.turrets（audit 同时记录 native/world/scale），运行时与服务不再乘任何倍率。",
+    "资产 XFL 源已确定性生成，主控串行执行即可，无手工装配：① CS6 运行 tools/cf6-tutorial-turrets/generated/import-assets.jsfl（新建并保存 flashswf/backgrounds/cf6/CF6_A01_Turret/CF6_A01_Turret.xfl，原生导入 3 PNG+1 MP3，脚本拒绝覆盖已有 XFL）② python tools/cf6-tutorial-turrets/build-turret-xfl.py --assemble ③ python tools/cf6-tutorial-turrets/build-turret-xfl.py --check ④ scripts/compile_test.ps1 -Target flashswf/backgrounds/cf6/CF6_A01_Turret/CF6_A01_Turret.xfl -PublishOnly -VerifySwf flashswf/backgrounds/cf6/CF6_A01_Turret.swf，要求本轮新鲜 Compiler 0/0。",
+    "运行时挂接：Cf6TutorialTurretService.beginRoom(world, identity, mapId, spec)；spec 由 Cf6MapMechanism 从章节节点 mechanism.turrets 透传，坐标已是房间世界坐标。gameworld 直属 wrapper 在创建时持普通 Object 凭据，每实例独占 MovieClipLoader，只载入自己的 payload 子剪辑；回调不向未知 wrapper 补身份。不新增全局 linkage。",
+    "原作炮塔子弹只伤 sprite630 专用僵尸（aw-僵尸-可被炮台打）；主控已决定保留该语义。r15 已实接线（maps lane）：BulletQueueProcessor 阶段2 主命中循环与 injectHit 外部注入入口均消费 子弹.仅命中目标标记 vs 目标.目标标记，拒绝发生在伤害/命中次数/击退/死亡任何副作用之前，不带标记的子弹完全走原路径；全局开关为 BulletQueueProcessor.targetFilterEnabled（默认 true，fail-closed：!==true 时带标记子弹一律拒绝，不存在静默放行）。生成侧由 build-sting-fragments.py 仅对 A01 的 zombie_turret（sprite630 等价体→兵种461）注入 Parameters.目标标记=cf6-a01-turret-zombie；普通 sprite477 僵尸同用兵种461但不加标记，严禁全体461加标记。能力边界：仅覆盖普通子弹主队列路径，服务 normalizeSpec 显式拒绝 bulletType!=\"普通子弹\"，换 bulletType 不能绕过过滤。未接线时服务显式拒绝进入射击态，绝不默认伤所有敌人。",
+    "原作每 0.6s（30fps×18帧）自动射击。r15 实际语义：开火、枪口动画与帧12事件枪声由服务同一 onEnterFrame 时钟驱动（服务 inner.gotoAndStop((frame%18)+1) 推进元件时间轴，fireFrameOffset=11 即第12帧同拍开火，枪口焰/枪声随该帧展示触发）；_root.暂停===true 时整帧冻结——不推进帧计数、不开火、无枪声，恢复后相位不漂移、无双枪声（冻结而非跳过不补）。",
+    "本 lane 未编译任何 SWF/XFL。地图接线已由本 lane 完成：Cf6MapMechanism.beginRoom 消费 mechanism.turrets（仅 A01，非 A01 携带即 fail），章节生成链 build-sting-fragments.py → build-chapter.py（native×128/75 一次换算入 mechanism.turrets）→ build-book-definition.py（runtime schema 校验）均已落地并有 --check/定向测试。CS6 导入（import-assets.jsfl）→ --assemble → --check（r15 起含包络/滤镜/帧结构语义断言）→ compile_test.ps1 -PublishOnly -VerifySwf 与 TestLoader 实跑为明晨集成项。"
+  ],
+  "evidence": {
+    "a01WorldLoad": {
+      "path": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/frame_66/PlaceObject2_1592_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "268b97e9dc1ac3c4166b7df5a43aa007e116058bf1e1ba63b1ff2b634e6b46f9"
+    },
+    "bulletPoolShoot": {
+      "path": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/frame_12/DoAction.as",
+      "sha256": "da8403d2135566583ef7baf6a1351c820f5bcb78a31c633a95066e239aa04e01"
+    },
+    "turretMuzzleLoad": {
+      "path": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1591/frame_12/PlaceObject2_359_5/CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "dfef840b5ad2455a226c9b04e6e7154185dbdaaef62bd806ebd10a305d71cb25"
+    },
+    "turretMuzzleEnterFrame": {
+      "path": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1591/frame_12/PlaceObject2_359_5/CLIPACTIONRECORD onClipEvent(enterFrame).as",
+      "sha256": "cfc2b77485827e11d848b49ad4ebfc396df91fb8692cf3f3c4de273342015f74"
+    },
+    "turretMuzzleUnload": {
+      "path": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1591/frame_12/PlaceObject2_359_5/CLIPACTIONRECORD onClipEvent(unload).as",
+      "sha256": "1551331254fb3125a1ae599262e323f9d4e85c53e993922994b36f9102a47f7a"
+    },
+    "turretFrame1": {
+      "path": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1591/frame_1/DoAction.as",
+      "sha256": "31b3f9121d36c472007d4f839c45795cd4fefd6ec9f9a75a705a95def210c498"
+    },
+    "turretZombieSpawnerLoad": {
+      "path": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1592/frame_1/PlaceObject2_1585_146/CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "53c2a8510276dac85bc87cc2594c557033d2eacebdc39660e7b81b0c856ac344"
+    },
+    "turretZombieStaticLoad": {
+      "path": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1592/frame_1/PlaceObject2_630_aw-僵尸-可被炮台打_168/CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "37f85c79093ba0a852fa9738ea3b54299852055fba2dfee210bf456dabb0da9e"
+    },
+    "a01ExitLoad": {
+      "path": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1592/frame_1/PlaceObject2_1587_148/CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "b9ec73836dd4f74b1d7bbb8727fcad9401ae13e557c10bab219201a130f756ad"
+    },
+    "tutorialWorldLoad": {
+      "path": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/frame_58/PlaceObject2_1499_1/CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "39f92e2c0c35d33084af16a547494d6ed741cf852d0fb13b53c96082605e7f1f"
+    },
+    "verifyDecodeR14": {
+      "path": "tools/cf6-tutorial-turrets/evidence/verify-decode-r14.json",
+      "sha256": "7ee8709621ff7d88318088b521ec30cd20705c8eba653a1d40ca73be43d1587f"
+    },
+    "geometryR14": {
+      "path": "tools/cf6-tutorial-turrets/generated/geometry-r14.json",
+      "sha256": "974aef8594e6cee0941cfad789dda250398acf270e7a1cdf2bc561836c64019c"
+    },
+    "ffdecCrosscheckR15": {
+      "path": "tools/cf6-tutorial-turrets/evidence/ffdec-crosscheck-r15.json",
+      "sha256": "206686ddf1dc40dc5ddc92847156045e554adc95573f945b32c4f5a88a85400f"
+    }
+  }
+}

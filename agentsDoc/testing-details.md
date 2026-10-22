@@ -491,6 +491,7 @@ direct 有现成夹具时顺带目视，存盘/重启回读与数值对账尽量
 
 - `node tools/test-arena-portrait-coverage.js`
 - `node tools/test-arena-meta-portraits.js`
+- `node tools/test-arena-combat-eligibility.js`（#160：自动池排除 NPC 保护、同素材解锁隔离、原始剧情组合保留、标准整队/混编/人形回退与正常三姐妹）
 - `node tools/audit-arena-portrait-coverage.js --check`
 - `node tools/derive-arena-meta-teams.js --check`
 - `node tools/derive-arena-factions.js --check`

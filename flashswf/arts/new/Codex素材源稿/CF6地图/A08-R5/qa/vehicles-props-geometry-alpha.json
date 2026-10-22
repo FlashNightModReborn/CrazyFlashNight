@@ -1,0 +1,533 @@
+{
+  "alpha": {
+    "1823": {
+      "original_size": [
+        411,
+        144
+      ],
+      "new_size": [
+        411,
+        144
+      ],
+      "alpha_mismatch_pixels": 2114,
+      "max_alpha_difference": 255,
+      "visible_rgb_changed_pixels": 41812,
+      "visible_pixels": 41996
+    },
+    "1420": {
+      "original_size": [
+        144,
+        176
+      ],
+      "new_size": [
+        144,
+        176
+      ],
+      "alpha_mismatch_pixels": 0,
+      "max_alpha_difference": 0,
+      "visible_rgb_changed_pixels": 21836,
+      "visible_pixels": 21836
+    },
+    "1828": {
+      "original_size": [
+        55,
+        44
+      ],
+      "new_size": [
+        55,
+        44
+      ],
+      "alpha_mismatch_pixels": 0,
+      "max_alpha_difference": 0,
+      "visible_rgb_changed_pixels": 1224,
+      "visible_pixels": 1224
+    },
+    "1833": {
+      "original_size": [
+        52,
+        89
+      ],
+      "new_size": [
+        52,
+        89
+      ],
+      "alpha_mismatch_pixels": 0,
+      "max_alpha_difference": 0,
+      "visible_rgb_changed_pixels": 4368,
+      "visible_pixels": 4368
+    }
+  },
+  "shape_clip_audit": [
+    {
+      "id": 1421,
+      "viewBox": [
+        -71.5,
+        -88.0,
+        143.0,
+        176.0
+      ],
+      "fills": [
+        {
+          "type": "bitmap",
+          "bitmapId": 1420,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            -71.5,
+            -88.0
+          ],
+          "path": "M-71.5,-88.0 L48.5,-88.0 L48.5,-56.6 L48.0,-56.6 L48.0,-10.6 L48.5,-10.6 L48.5,-7.1 L71.5,-7.1 L71.5,10.9 L48.5,10.9 L48.5,88.0 L-71.5,88.0 L-71.5,-88.0 Z M-65.0,80.9 L39.5,80.9 L39.5,-60.6 L-65.0,-60.6 L-65.0,80.9 Z"
+        },
+        {
+          "type": "solid",
+          "path": "M39.5,80.9 L-65.0,80.9 L-65.0,-60.6 L39.5,-60.6 L39.5,80.9 Z"
+        }
+      ]
+    },
+    {
+      "id": 1422,
+      "viewBox": [
+        -51.5,
+        -36.5,
+        103.0,
+        73.0
+      ],
+      "fills": [
+        {
+          "type": "bitmap",
+          "bitmapId": 1420,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            -58.5,
+            -63.4
+          ],
+          "path": "M51.5,36.5 L-51.5,36.5 L-51.5,-36.5 L51.5,-36.5 L51.5,36.5 Z"
+        }
+      ]
+    },
+    {
+      "id": 1423,
+      "viewBox": [
+        -51.5,
+        -35.5,
+        103.0,
+        71.0
+      ],
+      "fills": [
+        {
+          "type": "bitmap",
+          "bitmapId": 1420,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            -58.5,
+            -133.9
+          ],
+          "path": "M51.5,-35.5 L51.5,35.5 L-51.5,35.5 L-51.5,-35.5 L51.5,-35.5 Z"
+        }
+      ]
+    },
+    {
+      "id": 1424,
+      "viewBox": [
+        -11.75,
+        -23.0,
+        23.5,
+        46.0
+      ],
+      "fills": [
+        {
+          "type": "bitmap",
+          "bitmapId": 1420,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            -131.25,
+            -54.4
+          ],
+          "path": "M-11.75,-23.0 L11.75,-23.0 L11.75,23.0 L-11.75,23.0 L-11.75,-23.0 Z"
+        }
+      ]
+    },
+    {
+      "id": 1829,
+      "viewBox": [
+        -16.8,
+        -8.0,
+        31.5,
+        44.0
+      ],
+      "fills": [
+        {
+          "type": "bitmap",
+          "bitmapId": 1828,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            -16.8,
+            -8.0
+          ],
+          "path": "M-16.8,-8.0 L14.7,-8.0 L14.7,36.0 L-16.8,36.0 L-16.8,-8.0 Z"
+        }
+      ]
+    },
+    {
+      "id": 1830,
+      "viewBox": [
+        -14.05,
+        -8.0,
+        23.5,
+        44.0
+      ],
+      "fills": [
+        {
+          "type": "bitmap",
+          "bitmapId": 1828,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            -45.55,
+            -8.0
+          ],
+          "path": "M9.45,36.0 L-14.05,36.0 L-14.05,-8.0 L9.45,-8.0 L9.45,36.0 Z"
+        }
+      ]
+    },
+    {
+      "id": 1831,
+      "viewBox": [
+        -14.8,
+        -8.0,
+        31.5,
+        44.0
+      ],
+      "fills": [
+        {
+          "type": "bitmap",
+          "bitmapId": 1828,
+          "matrix": [
+            -1.0,
+            0.0,
+            0.0,
+            1.0,
+            16.7,
+            -8.0
+          ],
+          "path": "M16.7,-8.0 L-14.8,-8.0 L-14.8,36.0 L16.7,36.0 L16.7,-8.0 Z"
+        }
+      ]
+    },
+    {
+      "id": 1834,
+      "viewBox": [
+        -26.0,
+        -44.5,
+        52.0,
+        89.0
+      ],
+      "fills": [
+        {
+          "type": "bitmap",
+          "bitmapId": 1833,
+          "matrix": [
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            -26.0,
+            -44.5
+          ],
+          "path": "M-26.0,-44.5 L26.0,-44.5 L26.0,44.5 L-26.0,44.5 L-26.0,-44.5 Z"
+        }
+      ]
+    },
+    {
+      "id": 1835,
+      "viewBox": [
+        -51.3,
+        -58.25,
+        122.3,
+        96.0
+      ],
+      "fills": [
+        {
+          "type": "bitmap",
+          "bitmapId": 1833,
+          "matrix": [
+            0.6821746826171875,
+            0.0,
+            0.0,
+            0.6821746826171875,
+            20.9,
+            -56.2
+          ],
+          "path": "M56.4,-56.2 L56.4,-36.0 L41.7,-41.9 L38.65,-56.2 L56.4,-56.2 Z"
+        },
+        {
+          "type": "bitmap",
+          "bitmapId": 1833,
+          "matrix": [
+            0.6821746826171875,
+            0.0,
+            0.0,
+            0.6821746826171875,
+            -51.3,
+            -58.25
+          ],
+          "path": "M-32.85,-42.9 Q-41.05,-29.6 -50.95,-17.35 L-51.3,-17.5 L-51.3,-58.25 L-33.55,-58.25 L-30.95,-46.2 L-32.85,-42.9 Z"
+        },
+        {
+          "type": "bitmap",
+          "bitmapId": 1833,
+          "matrix": [
+            0.6821746826171875,
+            0.0,
+            0.0,
+            0.6821746826171875,
+            35.5,
+            -31.55
+          ],
+          "path": "M71.0,-11.35 L71.0,9.35 L46.0,-4.05 L52.0,-13.05 L60.15,-15.7 L71.0,-11.35 Z"
+        },
+        {
+          "type": "bitmap",
+          "bitmapId": 1833,
+          "matrix": [
+            0.6821746826171875,
+            0.0,
+            0.0,
+            0.6821746826171875,
+            16.05,
+            -22.95
+          ],
+          "path": "M40.9,12.25 L51.55,17.95 L51.55,37.75 L35.15,37.75 L34.15,11.85 L40.9,12.25 Z"
+        },
+        {
+          "type": "bitmap",
+          "bitmapId": 1833,
+          "matrix": [
+            0.6821746826171875,
+            0.0,
+            0.0,
+            0.6821746826171875,
+            -51.3,
+            -32.4
+          ],
+          "path": "M-41.8,-3.55 L-38.0,-3.4 L-37.4,-3.1 L-33.15,2.95 L-32.2,28.3 L-51.3,28.3 L-51.3,8.35 L-50.95,8.5 Q-46.15,2.6 -41.8,-3.55 Z"
+        }
+      ]
+    },
+    {
+      "id": 1836,
+      "viewBox": [
+        -118.65,
+        -65.95,
+        236.10000000000002,
+        98.85
+      ],
+      "fills": [
+        {
+          "type": "bitmap",
+          "bitmapId": 1833,
+          "matrix": [
+            0.1151275634765625,
+            0.4296417236328125,
+            -0.4296417236328125,
+            0.1151275634765625,
+            95.85,
+            -76.05
+          ],
+          "path": "M101.85,-53.75 L89.15,-50.35 L90.35,-60.55 L98.85,-64.9 L101.85,-53.75 Z"
+        },
+        {
+          "type": "bitmap",
+          "bitmapId": 1833,
+          "matrix": [
+            0.283843994140625,
+            -0.283843994140625,
+            0.283843994140625,
+            0.283843994140625,
+            -118.65,
+            -58.55
+          ],
+          "path": "M-104.55,-59.85 Q-102.4,-50.9 -101.45,-41.65 L-101.65,-41.55 L-118.65,-58.55 L-111.25,-65.95 L-105.1,-62.0 L-104.55,-59.85 Z"
+        },
+        {
+          "type": "bitmap",
+          "bitmapId": 1833,
+          "matrix": [
+            0.120269775390625,
+            0.4488525390625,
+            -0.4488525390625,
+            0.120269775390625,
+            123.5,
+            -22.25
+          ],
+          "path": "M116.55,4.6 L102.9,8.25 L107.3,-10.55 L114.3,-8.2 L117.45,-3.25 L116.55,4.6 Z"
+        },
+        {
+          "type": "bitmap",
+          "bitmapId": 1833,
+          "matrix": [
+            0.1287078857421875,
+            0.4803314208984375,
+            -0.4803314208984375,
+            0.1287078857421875,
+            117.9,
+            -3.6
+          ],
+          "path": "M97.85,20.55 L95.8,29.15 L81.9,32.9 L78.8,21.35 L96.85,15.75 L97.85,20.55 Z"
+        },
+        {
+          "type": "bitmap",
+          "bitmapId": 1833,
+          "matrix": [
+            0.0,
+            -0.5043182373046875,
+            0.5043182373046875,
+            0.0,
+            -136.9,
+            15.75
+          ],
+          "path": "M-115.55,8.75 L-115.45,5.95 L-115.25,5.5 L-110.75,2.35 L-92.0,1.65 L-92.0,15.75 L-106.75,15.75 L-106.65,15.5 Q-111.0,12.0 -115.55,8.75 Z"
+        }
+      ]
+    },
+    {
+      "id": 1837,
+      "viewBox": [
+        -181.35,
+        -34.4,
+        361.9,
+        63.599999999999994
+      ],
+      "fills": [
+        {
+          "type": "bitmap",
+          "bitmapId": 1833,
+          "matrix": [
+            -0.2082672119140625,
+            0.0558013916015625,
+            -0.0558013916015625,
+            -0.2082672119140625,
+            185.95,
+            -26.15
+          ],
+          "path": "M175.15,-23.25 L173.5,-29.4 L178.4,-28.8 L180.55,-24.7 L175.15,-23.25 Z"
+        },
+        {
+          "type": "bitmap",
+          "bitmapId": 1833,
+          "matrix": [
+            -0.0610809326171875,
+            -0.227996826171875,
+            0.2280120849609375,
+            -0.0610809326171875,
+            -179.75,
+            -26.55
+          ],
+          "path": "M-176.25,-34.1 Q-171.1,-32.55 -166.1,-30.35 L-166.1,-30.2 L-179.75,-26.55 L-181.35,-32.5 L-177.55,-34.4 L-176.25,-34.1 Z"
+        },
+        {
+          "type": "bitmap",
+          "bitmapId": 1833,
+          "matrix": [
+            -0.2198944091796875,
+            0.126953125,
+            -0.126953125,
+            -0.2198944091796875,
+            183.5,
+            10.2
+          ],
+          "path": "M168.35,10.3 L164.5,3.6 L175.05,3.25 L174.75,7.25 L172.6,9.65 L168.35,10.3 Z"
+        },
+        {
+          "type": "bitmap",
+          "bitmapId": 1833,
+          "matrix": [
+            -0.279876708984375,
+            0.0749969482421875,
+            -0.0749969482421875,
+            -0.279876708984375,
+            151.55,
+            40.9
+          ],
+          "path": "M137.45,29.2 L132.45,28.0 L130.25,19.9 L137.0,18.1 L140.25,28.65 L137.45,29.2 Z"
+        },
+        {
+          "type": "bitmap",
+          "bitmapId": 1833,
+          "matrix": [
+            -0.2818756103515625,
+            -0.1627349853515625,
+            0.162750244140625,
+            -0.2818756103515625,
+            -150.0,
+            37.9
+          ],
+          "path": "M-147.05,23.65 Q-147.8,23.2 -148.6,22.7 L-148.75,22.45 L-149.05,18.95 L-143.4,8.25 L-135.5,12.8 L-140.25,21.05 L-140.4,20.9 Q-143.8,22.2 -147.05,23.65 Z"
+        }
+      ]
+    }
+  ],
+  "animated_roots": [
+    {
+      "sprite": 1430,
+      "frames": 59,
+      "raw_distinct_display_states": 44,
+      "unclipped_visible_leaf_union_ltrb": [
+        -71.5,
+        -135.2,
+        71.5,
+        156.05
+      ],
+      "matrix_clipDepth_colorMult_colorAdd": "unchanged in original reference, passed to main scene assembly"
+    },
+    {
+      "sprite": 1832,
+      "frames": 147,
+      "raw_distinct_display_states": 4,
+      "unclipped_visible_leaf_union_ltrb": [
+        -16.8,
+        -8.0,
+        16.7,
+        36.0
+      ],
+      "matrix_clipDepth_colorMult_colorAdd": "unchanged in original reference, passed to main scene assembly"
+    },
+    {
+      "sprite": 1838,
+      "frames": 16,
+      "raw_distinct_display_states": 11,
+      "unclipped_visible_leaf_union_ltrb": [
+        -181.35,
+        -65.95,
+        180.54999999999998,
+        44.5
+      ],
+      "matrix_clipDepth_colorMult_colorAdd": "unchanged in original reference, passed to main scene assembly"
+    }
+  ],
+  "review_iteration": "r5",
+  "external_review_applied": [
+    "Chunky dark windowed wheel hubs replace dense silver radial spokes",
+    "Upper car shell has continuous curved reflection instead of hard triangular armor face",
+    "R3 uses native project M134 barrels plus same-source reconstructed receiver/motor, vehicle mounts, and solid curved braces",
+    "Drum formed ribs flattened and narrower bright lip; cylindrical dark side retained",
+    "Door center lighting restored upper-left convex gradient"
+  ],
+  "art_source": "R3 car: native project M134 barrel SVG plus newly authored car/receiver paths and grain. Body outline uses smooth SVG; other props preserve upstream alpha."
+}

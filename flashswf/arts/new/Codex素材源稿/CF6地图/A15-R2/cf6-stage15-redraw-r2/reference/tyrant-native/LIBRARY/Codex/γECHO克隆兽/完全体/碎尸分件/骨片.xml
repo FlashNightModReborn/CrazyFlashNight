@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/γECHO克隆兽/完全体/碎尸分件/骨片" itemID="6aa00000-5b4ba354" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="骨片">
+      <layers>
+        <DOMLayer name="原生碎片绘制" color="#9A5E59">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#D3C8B4"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1.1" scaleMode="normal" caps="none" joints="round">
+                        <fill>
+                          <SolidColor color="#43352F"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-300 40|-240 100|-140 140|0 60|140 100|200 0|300 -80|220 -160|80 -100|-120 -40|-220 -80|-300 40" fillStyle0="1" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#F5EBD9"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-220 20|-120 80|20 20|160 -20|200 -100|140 -80|-60 0|-140 -20|-220 20" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#8D3C37"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-300 40|-200 80|-160 -20|-220 -60|-300 40" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -10,40 +10,62 @@ internal static class PlayerHudResourceOverlay
     internal static void ShieldRing(SKCanvas canvas, PlayerHudVitals value, int frame = 0,
         PlayerHudResourceMotion.Channel? motion = null, float startAngleDegrees = -90)
     {
-        if (!value.ShieldPresent) return;
+        var alpha = value.ShieldPresent
+            ? (motion is { Presence: > 0f } ? motion.Presence : 1f)
+            : (motion?.Presence ?? 0f);
+        if (alpha <= 0f) return;
+        var isExpiredGhost = !value.ShieldPresent && motion is { InGraceOrRelease: true };
+        var alphaByte = (byte)Math.Clamp(Math.Round(255 * alpha), 0, 255);
+        var ghostAlphaByte = (byte)Math.Clamp(Math.Round(108 * alpha), 0, 255);
+        var trackAlphaByte = (byte)Math.Clamp(Math.Round(255 * alpha * alpha), 0, 255);
+        var breakPulse = motion?.BreakPulse ?? 0f;
+        var breakAlphaByte = (byte)Math.Clamp(Math.Round(175 * breakPulse * alpha), 0, 255);
         const float radius = 42.55f;
         var circle = new SKRect(-radius,-radius,radius,radius);
         using var metalShader = SKShader.CreateLinearGradient(new SKPoint(0,-radius),new SKPoint(0,radius),
-            [new SKColor(104,126,132),new SKColor(30,44,49)],[0f,1f],SKShaderTileMode.Clamp);
-        using var fillShader = SKShader.CreateLinearGradient(new SKPoint(0,-radius),new SKPoint(0,radius),
-            [new SKColor(0,255,255),new SKColor(0,163,163)],[0f,1f],SKShaderTileMode.Clamp);
+            [new SKColor(104,126,132,trackAlphaByte),new SKColor(30,44,49,trackAlphaByte)],[0f,1f],SKShaderTileMode.Clamp);
+        using var fillShader = isExpiredGhost
+            ? SKShader.CreateLinearGradient(new SKPoint(0,-radius),new SKPoint(0,radius),
+                [new SKColor(124,150,154,ghostAlphaByte),new SKColor(68,88,92,ghostAlphaByte)],[0f,1f],SKShaderTileMode.Clamp)
+            : SKShader.CreateLinearGradient(new SKPoint(0,-radius),new SKPoint(0,radius),
+                [new SKColor(0,255,255,alphaByte),new SKColor(0,163,163,alphaByte)],[0f,1f],SKShaderTileMode.Clamp);
         using var track = new SKPaint {IsAntialias=true,Style=SKPaintStyle.Stroke,StrokeWidth=5.2f,Shader=metalShader};
         using var fill = new SKPaint {IsAntialias=true,Style=SKPaintStyle.Stroke,StrokeWidth=3.5f,Shader=fillShader};
         using var sheen = new SKPaint {IsAntialias=true,Style=SKPaintStyle.Stroke,StrokeWidth=1.3f};
+        using var breakPaint = new SKPaint {IsAntialias=true,Style=SKPaintStyle.Stroke,StrokeWidth=2.0f,
+            Color=new SKColor(226,250,255,breakAlphaByte)};
         using var trail = new SKPaint {IsAntialias=true,Style=SKPaintStyle.Stroke,StrokeWidth=1.5f,
-            Color=new SKColor(151,194,211,(byte)(110*(motion?.Loss??0)))};
-        var remaining = PlayerHudResourceMotion.ShieldFraction(value)*24;
+            Color=new SKColor(151,194,211,(byte)(110*(motion?.Loss??0)*alpha))};
+        var fillFraction = motion != null && (!value.ShieldPresent || motion.HoldingLayer)
+            ? motion.DisplayFraction
+            : PlayerHudResourceMotion.ShieldFraction(value);
+        var remaining = fillFraction * 24;
         var oldRemaining = (motion?.Trail??0)*24;
-        var phase = (frame%120)/120f*24;
+        var effectiveFrame = PlayerHudMotionSettings.ReducedMotion ? 0 : frame;
+        var phase = (effectiveFrame%120)/120f*24;
         var charging = value.ShieldDetail?.Recovery.State == "charging";
+        var sweepIntensity = charging || (motion?.Gain ?? 0) > 0f ? 105f : 48f;
         for(var segment=0;segment<24;segment++)
         {
             // Follow the authored HP counterclockwise fill. Depletion and recovery keep the same origin.
             var start = startAngleDegrees-segment*15-1.5f;
             canvas.DrawArc(circle,start,-12,false,track);
+            if(breakAlphaByte>0 && (segment%2==0 || oldRemaining>segment))
+                canvas.DrawArc(circle,start,-12,false,breakPaint);
             var fraction = Math.Clamp(remaining-segment,0,1);
             var oldFraction = Math.Clamp(oldRemaining-segment,0,1);
             if(oldFraction>fraction && trail.Color.Alpha>0)
                 canvas.DrawArc(circle,start-12*fraction,-12*(oldFraction-fraction),false,trail);
             if(fraction<=0) continue;
             canvas.DrawArc(circle,start,-12*fraction,false,fill);
+            if(isExpiredGhost || (PlayerHudMotionSettings.ReducedMotion && !charging && (motion?.Gain ?? 0) <= 0f)) continue;
             var distance = Math.Abs(segment+fraction/2-phase);
             distance = Math.Min(distance,24-distance);
-            var light = Math.Clamp(1-distance/2.5f,0,1)*105;
+            var light = Math.Clamp(1-distance/2.5f,0,1)*sweepIntensity;
             if(remaining-segment<=1)
                 light = Math.Max(light,charging?170:170*(motion?.Gain??0));
-            sheen.Color = new SKColor(206,255,255,(byte)light);
-            if(light>0) canvas.DrawArc(circle,start,-12*fraction,false,sheen);
+            sheen.Color = new SKColor(206,255,255,(byte)Math.Clamp(light*alpha,0,255));
+            if(sheen.Color.Alpha>0) canvas.DrawArc(circle,start,-12*fraction,false,sheen);
         }
     }
 
@@ -76,7 +98,8 @@ internal static class PlayerHudResourceOverlay
         using var wash = new SKPaint {Color=new SKColor(143,219,255,170)};
         canvas.DrawRect(new SKRect(bounds.Left,bounds.Top,bounds.Right,bounds.Bottom),wash);
         using var line = new SKPaint {IsAntialias=true,Color=new SKColor(232,251,255,235),StrokeWidth=1.3f};
-        var drift = (frame%30)/30f*5;
+        var effectiveFrame = PlayerHudMotionSettings.ReducedMotion ? 0 : frame;
+        var drift = (effectiveFrame%30)/30f*5;
         for(var x=bounds.Left-bounds.Height-5+drift;x<bounds.Right;x+=5)
             canvas.DrawLine(x,bounds.Bottom,x+bounds.Height,bounds.Top,line);
         line.StrokeWidth=1.6f;canvas.DrawLine(end-0.8f,bounds.Top,end-0.8f,bounds.Bottom,line);

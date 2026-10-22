@@ -129,6 +129,18 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
     public static var _rayPersistent:Boolean = true;
 
     /**
+     * 逐弹目标过滤能力声明与运行期开关（CF6 A01 教学炮塔专用通道，r15 实接线）。
+     * 子弹携带 仅命中目标标记（字符串）时，主命中循环与 injectHit 只结算
+     * 目标标记 与之一致的目标，拒绝发生在伤害/命中次数/击退/死亡任何副作用之前；
+     * 本开关 !== true 时带标记子弹拒绝结算一切目标（fail-closed，不退化为伤所有敌人）。
+     * 不带标记的子弹走原路径，行为零变化。
+     * 覆盖范围：凡进入主命中循环的弹种（普通/穿透/联弹等）与 injectHit 旁路注入；
+     * 射线 settleRayHit 批处理路不读该标记——带过滤语义的发射方不得使用射线弹种
+     * （发射侧规格拒绝，见 Cf6TutorialTurretService.normalizeSpec）。
+     */
+    public static var targetFilterEnabled:Boolean = true;
+
+    /**
      * no-death 等价测试探针（仅 RayPipelineEquivalenceTest 用；生产恒 null）。
      * 非 null 时 settleHit 录 (hitTarget, dmgMult) 并短路返回 —— 纯比对 selection，
      * 不跑 calculateDamage/事件/死亡（batch settleRayHit 与 greedy injectHit 均汇聚 settleHit）。
@@ -838,6 +850,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                      fireLegacyHitHook:Boolean):Object {
         // 合法性兜底（§5.6：外部注入须自排自身，此处再守一道——hp>0 / 防止无限飞 / 非自身）
         if (target == bullet || !(target.hp > 0) || target.防止无限飞 == true) {
+            _injectCtx.actualHit = false;
+            return null;
+        }
+        // 逐弹目标过滤兜底：带 仅命中目标标记 的注入命中同样只结算 目标标记 一致的目标，
+        // 开关断开时拒绝一切（fail-closed）；外部注入不能绕过主命中循环同款守卫。
+        var injectMarker:String = bullet.仅命中目标标记;
+        if (injectMarker !== undefined
+                && (targetFilterEnabled !== true || target.目标标记 !== injectMarker)) {
             _injectCtx.actualHit = false;
             return null;
         }
@@ -2972,6 +2992,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var bulletIndex:Number;             // 子弹数组遍历索引（原idx）
         var bullet:MovieClip;               // 当前处理的子弹实例
         var flags:Number;                   // 子弹类型标志位（联弹、近战、穿透等）
+        var filterMarker:String;            // 逐弹目标过滤标记（仅命中目标标记；undefined=不过滤）
+        var filterArmed:Boolean;            // 过滤开关逐弹缓存（targetFilterEnabled===true）
         var areaAABB:AABBCollider;          // 子弹的AABB碰撞检测器
         var isPointSet:Boolean;             // 是否需要精确多边形碰撞检测（旋转联弹）
         var rot:Number;                     // 子弹旋转角度（仅联弹需要）
@@ -3197,6 +3219,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 bullet = sortedArr[bulletIndex];
                 flags = bullet.flags;
                 areaAABB = bullet.aabbCollider;
+
+                // 逐弹目标过滤：每弹一次缓存不变量（标记 + 开关），不在目标循环内重读
+                filterMarker = bullet.仅命中目标标记;
+                filterArmed = targetFilterEnabled === true;
                 
                 // 每次弹体循环初始化销毁路径标志
                 wantDestroy = false;
@@ -3320,6 +3346,13 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     // ----------- 命中循环（带右边界截断） -----------
                     for (unitIndex = startIndex; unitIndex < len && unitLeftKeys[unitIndex] <= Rb; ++unitIndex) {
                         hitTarget = unitMap[unitIndex];  // 只读取目标，延迟写入
+
+                        // 逐弹目标过滤：带标记子弹只结算 目标标记 一致的目标；开关断开时
+                        // 带标记子弹拒绝一切目标（fail-closed）。拒绝先于 hp/碰撞/伤害等一切副作用。
+                        if (filterMarker !== undefined
+                                && (!filterArmed || hitTarget.目标标记 !== filterMarker)) {
+                            continue;
+                        }
 
                         // --- UnitBullet 碰撞诊断（调试完成后注释） ---
                         // if (hitTarget.element != undefined && hitTarget.element === hitTarget) {

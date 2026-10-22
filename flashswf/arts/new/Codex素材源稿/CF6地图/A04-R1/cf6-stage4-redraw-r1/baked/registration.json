@@ -1,0 +1,113 @@
+{
+  "bitmapReplacements": [
+    {
+      "id": 1701,
+      "png": "bitmap-1701.png",
+      "size": [
+        306,
+        251
+      ],
+      "originalBitmapFillMatrices": "unchanged"
+    },
+    {
+      "id": 1702,
+      "png": "bitmap-1702.png",
+      "size": [
+        228,
+        197
+      ],
+      "originalBitmapFillMatrices": "unchanged"
+    },
+    {
+      "id": 1704,
+      "png": "bitmap-1704.png",
+      "size": [
+        69,
+        94
+      ],
+      "originalBitmapFillMatrices": "unchanged"
+    },
+    {
+      "id": 1708,
+      "png": "bitmap-1708.png",
+      "size": [
+        143,
+        179
+      ],
+      "originalBitmapFillMatrices": "unchanged"
+    },
+    {
+      "id": 1717,
+      "png": "bitmap-1717.png",
+      "size": [
+        101,
+        179
+      ],
+      "originalBitmapFillMatrices": "unchanged"
+    },
+    {
+      "id": 1724,
+      "png": "bitmap-1724.png",
+      "size": [
+        105,
+        178
+      ],
+      "originalBitmapFillMatrices": "unchanged"
+    },
+    {
+      "id": 1731,
+      "png": "bitmap-1731.png",
+      "size": [
+        52,
+        89
+      ],
+      "originalBitmapFillMatrices": "unchanged"
+    }
+  ],
+  "background": {
+    "png": "background-1728.png",
+    "viewBox": [
+      -676.95,
+      -240.5,
+      1508.95,
+      483.3
+    ],
+    "worldPlacement": [
+      673.5,
+      207.1
+    ],
+    "includesWallLightsAndOriginalGlow": true
+  },
+  "foreground": {
+    "png": "foreground-1727.png",
+    "viewBox": [
+      111,
+      0.55,
+      1211.95,
+      178.75
+    ],
+    "cameraParallax": 1.2
+  },
+  "worldLogicalSize": [
+    1300,
+    450
+  ],
+  "viewport": [
+    600,
+    350
+  ],
+  "authoredPlayerLoadFormulaOnly": [
+    0,
+    -77.2
+  ],
+  "arrivalOverridesRealPlayer": [
+    668.45,
+    226.95
+  ],
+  "initialRuntimeCamera": "unverified; arrival scripts change player position",
+  "door1714": "9 original frames/matrices and clipDepth retained; no game execution",
+  "exit1720": "174 original frames incl unchanged player and masks; static samples only",
+  "arrival1729": "174 original frames incl unchanged player and masks; seven static samples",
+  "barrel1736": "16 original frames; new material through original fragment clips; five static samples",
+  "runtime": "not imported; no realtime SVG or animation acceptance; use original bitmap fill pipeline where possible"
+}
