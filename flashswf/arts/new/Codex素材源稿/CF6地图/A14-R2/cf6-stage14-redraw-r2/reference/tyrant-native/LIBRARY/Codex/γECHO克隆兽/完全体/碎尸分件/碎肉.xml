@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/γECHO克隆兽/完全体/碎尸分件/碎肉" itemID="6aa00000-ff13d6dc" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="碎肉">
+      <layers>
+        <DOMLayer name="原生碎片绘制" color="#9A5E59">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#844A49"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1.3" scaleMode="normal" caps="none" joints="round">
+                        <fill>
+                          <SolidColor color="#301215"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-260 -80|-160 120|20 200|200 140|280 -40|160 -220|0 -160|-160 -200|-260 -80" fillStyle0="1" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#8E3038"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1.3" scaleMode="normal" caps="none" joints="round">
+                        <fill>
+                          <SolidColor color="#301215"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-240 -20|-160 80|-40 140|140 120|220 20|160 -120|20 -60|-120 -100|-240 -20" fillStyle0="1" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#CB5A59"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-120 -60|-140 40|-60 60|-40 -40|-120 -60" fillStyle0="1"/>
+                    <Edge edges="!60 -40|80 80|160 40|120 -60|60 -40" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#E4BF9F"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="0.8" scaleMode="normal" caps="none" joints="round">
+                        <fill>
+                          <SolidColor color="#301215"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-40 -40|-20 40|40 40|80 -20|20 -80|-40 -40" fillStyle0="1" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
