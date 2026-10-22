@@ -1,0 +1,30 @@
+{
+  "revision": "R5",
+  "canvas": [
+    411,
+    144
+  ],
+  "changed_pixels": 6228,
+  "scope": "cockpit, silver shoulder transition, connected front bonnet and supports; wheels/livery/rear aero unchanged",
+  "outside_local_scope": 0,
+  "glass": "Editable separate fill-opacity .16-.22 overlays over opaque cabin, not background transparency",
+  "windshield_anchors": {
+    "previous_front_lower": [
+      311,
+      47
+    ],
+    "new_front_lower": [
+      319,
+      60
+    ],
+    "new_front_upper": [
+      322,
+      30
+    ],
+    "original_basis": "visual estimate on source raster, not recovered vector path"
+  },
+  "gun_order": "far weapon before body; near weapon after body; far translated 4 units down for hidden lower saddle",
+  "brace": "Short triangular receiver support attached to gun cradle; not identified as windshield reinforcement",
+  "runtimeTested": false,
+  "otherMapsChanged": false
+}

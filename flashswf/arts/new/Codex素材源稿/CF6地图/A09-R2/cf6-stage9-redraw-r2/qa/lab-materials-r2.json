@@ -1,0 +1,53 @@
+{
+  "revision": "r2",
+  "method": "Hand-authored native SVG geometry and lettering; new deterministic multiscale grain only. Original RGB never enters art generation.",
+  "bitmap_sizes": {
+    "1446": [
+      57,
+      57
+    ],
+    "1842": [
+      231,
+      70
+    ],
+    "1844": [
+      87,
+      114
+    ],
+    "1848": [
+      131,
+      161
+    ]
+  },
+  "fonts": "DejaVu Sans Bold Oblique outlines for KEEP OUT; C.T is custom editable path.",
+  "registration": "Top-left bitmap coordinates; original fill matrices and clip paths retained by assembler.",
+  "shape_ids": [
+    1447,
+    1843,
+    1845,
+    1849,
+    1852,
+    1853,
+    1854,
+    1855,
+    1857,
+    1858,
+    1859,
+    1860,
+    1861
+  ],
+  "door": {
+    "sprite": 1862,
+    "frames": 18,
+    "distinct_display_states": 13,
+    "mask_shape": 86,
+    "mask_depth": 2,
+    "clip_depth": 6
+  },
+  "outputs": {
+    "1446": "3b9dc3b75ad1dc81bf5956f44a167dd92be5ae935a1bf8b1eaa5160469aa3a91",
+    "1842": "27701175bda54167fab5bf70bde27ad3a4fac7c41f24627975182ac85f82906f",
+    "1844": "1d909b10a7bd260b2e31321af167fcf20836c4551a0c7642bd0c8715fdb5e914",
+    "1848": "576bfeae53b82b69f7aec4485608a382418eaf204639537101d09e392b19e5b9"
+  }
+}
