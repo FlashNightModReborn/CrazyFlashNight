@@ -11,7 +11,7 @@ async function startServer(root) {
         catch (_) { res.writeHead(400); res.end(); return; }
         if (!file.startsWith(base + path.sep)) { res.writeHead(403); res.end(); return; }
         const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json',
-            '.glb': 'model/gltf-binary', '.png': 'image/png', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
+            '.glb': 'model/gltf-binary', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
         fs.readFile(file, (error, bytes) => {
             res.writeHead(error ? 404 : 200, { 'content-type': types[path.extname(file)] || 'application/octet-stream', 'cache-control': 'no-store' });
             res.end(error ? '' : bytes);

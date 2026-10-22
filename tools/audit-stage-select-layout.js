@@ -50,6 +50,8 @@ function audit(manifest, golden) {
     const decorations = [];
     const missingBackgroundAssets = [];
     const missingPreviewAssets = [];
+    const missingHdPreviewAssets = [];
+    let hdPreviewCount = 0;
     const missingDecorationAssets = [];
     const outOfBoundsButtons = [];
 
@@ -83,6 +85,12 @@ function audit(manifest, golden) {
                 stageNamesMissingFromManifest.push(button.stageName);
             }
             if (!assetExists(button.previewUrl)) missingPreviewAssets.push(button.stageName);
+            const hdUrl = typeof button.bannerUrl === 'string' && button.bannerUrl
+                ? button.bannerUrl : (typeof button.hdPreviewUrl === 'string' ? button.hdPreviewUrl : '');
+            if (hdUrl) {
+                hdPreviewCount += 1;
+                if (!assetExists(hdUrl)) missingHdPreviewAssets.push(button.stageName);
+            }
             if (button.x < -320 || button.x > 1024 || button.y < -90 || button.y > 576) {
                 outOfBoundsButtons.push(button.id);
             }
@@ -120,6 +128,8 @@ function audit(manifest, golden) {
         backgroundFallbacks: manifest.assetReport && manifest.assetReport.backgroundFallbacks || [],
         derivedBackgrounds: manifest.assetReport && manifest.assetReport.derivedBackgrounds || [],
         previewAssetMissing: missingPreviewAssets,
+        hdPreviewCount: hdPreviewCount,
+        hdPreviewAssetMissing: missingHdPreviewAssets,
         previewSources: manifest.assetReport && manifest.assetReport.previewSources || {},
         previewFallbacks: manifest.assetReport && manifest.assetReport.previewFallbacks || 0,
         outOfBoundsButtons: outOfBoundsButtons
@@ -136,6 +146,7 @@ function audit(manifest, golden) {
     if (result.backgroundAssetMissing.length) failures.push('missing background assets: ' + result.backgroundAssetMissing.join(', '));
     if (result.decorationAssetMissing.length) failures.push('missing decoration assets: ' + result.decorationAssetMissing.join(', '));
     if (result.previewAssetMissing.length) failures.push('missing preview assets: ' + result.previewAssetMissing.join(', '));
+    if (result.hdPreviewAssetMissing.length) failures.push('missing HD preview assets: ' + result.hdPreviewAssetMissing.join(', '));
     if (result.outOfBoundsButtons.length) failures.push('button anchors outside expected guard band: ' + result.outOfBoundsButtons.join(', '));
 
     // 计数基线全部来自 golden 单一真值；golden 中的键必须在 result 有同名指标且数值相等。

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>关卡缩略图 · 精修验收</title>
+<style>
+:root{color-scheme:dark;font-family:"Microsoft YaHei",sans-serif;background:#11151b;color:#e6ebf1}*{box-sizing:border-box}body{margin:0}header{position:sticky;top:0;z-index:5;background:#151c25f5;border-bottom:1px solid #354154;padding:20px 28px;backdrop-filter:blur(10px)}h1{font-size:23px;margin:0 0 8px;letter-spacing:1px}.intro{color:#aeb9c9;margin:0 0 16px;font-size:13px}.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap}input,select,button{font:inherit;font-size:14px;color:inherit;background:#202b39;border:1px solid #44566b;border-radius:5px;padding:8px 12px}input[type=search]{width:260px}label{font-size:14px;display:flex;gap:6px;align-items:center}#count{margin-left:auto;color:#9fc5bd;font-size:13px}main{max-width:1280px;margin:24px auto;padding:0 22px}article{margin:0 0 24px;border:1px solid #354154;border-radius:8px;background:#18202a;overflow:hidden}.row-head{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;padding:15px 18px 8px}h2{font-size:18px;margin:0}.id{font-family:monospace;color:#a8b6c9;font-size:13px}.tag{padding:3px 8px;background:#2a3c3a;color:#acd8c8;border-radius:3px;font-size:12px}.note{padding:0 18px;margin:0 0 14px;color:#b9c6d5;font-size:13px;line-height:1.6}.comparison{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:0 18px 18px}.column-title{font-size:13px;color:#bcc5d4;margin-bottom:8px}.column:last-child .column-title{color:#a1e1bd}.main-image{display:block;width:100%;aspect-ratio:644/276;object-fit:contain;background:#080b10;border:1px solid #34445a;cursor:zoom-in}.column:last-child .main-image{border-color:#63a481}.thumb-line{margin-top:10px;min-height:82px;display:flex;align-items:flex-start;gap:8px}.thumb{width:161px;height:69px;object-fit:fill;max-width:none;background:#080b10}.size{font-size:11px;color:#7e8ea3;padding-top:8px}details{border-top:1px solid #2c394b;padding:10px 18px;font-size:12px;color:#a6b6c8}summary{cursor:pointer}.sources{line-height:1.8;white-space:pre-wrap}dialog{max-width:96vw;width:1080px;background:#151c25;color:#e6ebf1;border:1px solid #52657b;border-radius:8px;padding:20px}dialog::backdrop{background:#05080ddd}.modal-head{display:flex;align-items:center;gap:15px;justify-content:space-between;margin-bottom:14px}#large{display:block;max-width:100%;width:100%;height:auto;object-fit:contain}.error{padding:30px;color:#ffb6a7}.empty{padding:50px;text-align:center;color:#a5b6c7}@media(max-width:800px){header{padding:16px}main{padding:0 12px}.comparison{gap:8px;padding:0 10px 14px}.thumb-line{display:block}.thumb{max-width:100%;height:auto}.row-head{padding-left:12px}.note{padding-left:12px}#count{margin-left:0}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+<header>
+  <h1>关卡缩略图 · 精修验收</h1>
+  <p class="intro">逐关比较现役旧图、上一版 V6 与本轮候选。点击图片可放大；下方保留 161 × 69 实寸。面板截图来自现有界面的独立预览。当前均待你验收。</p>
+  <div class="controls">
+    <input id="search" type="search" aria-label="搜索关卡" placeholder="搜索名称或关卡编号">
+    <select id="region" aria-label="选择区域"><option value="">全部区域</option></select>
+    <label><input id="changed" type="checkbox" checked>只看本轮调整</label>
+    <span id="count"></span>
+  </div>
+</header>
+<main id="rows" aria-live="polite"></main>
+<dialog id="zoom"><div class="modal-head"><span id="zoom-title"></span><button id="close">关闭放大</button></div><img id="large" alt=""></dialog>
+<template id="row-template"><article><div class="row-head"><h2></h2><span class="id"></span><span class="tag"></span></div><p class="note"></p><div class="comparison"></div><details><summary>素材与选择说明</summary><div class="sources"></div></details></article></template>
+<script>
+'use strict';
+let manifest;
+const rows=document.querySelector('#rows'), search=document.querySelector('#search'), region=document.querySelector('#region'), changed=document.querySelector('#changed');
+function showImage(url,title){const dialog=document.querySelector('#zoom');document.querySelector('#large').src=url;document.querySelector('#large').alt=title;document.querySelector('#zoom-title').textContent=title;dialog.showModal();}
+function draw(){
+ const query=search.value.trim().toLowerCase();
+ const matches=manifest.stages.filter(s=>(!region.value||s.region===region.value)&&(!changed.checked||s.decision==='refined')&&(!query||(s.id+' '+s.stageName).toLowerCase().includes(query)));
+ rows.replaceChildren();
+ for(const s of matches){
+  const row=document.querySelector('#row-template').content.cloneNode(true);
+  row.querySelector('h2').textContent=s.stageName;row.querySelector('.id').textContent=s.id+' · '+s.region;row.querySelector('.tag').textContent=s.decision==='refined'?'本轮调整':'沿用 V6';
+  row.querySelector('.note').textContent=s.changeReason||'保留上一版构图与像素，本轮核对交付身份与文件完整性。';
+  if(s.hasConsumerCapture){const button=document.createElement('button');button.className='consumer-button';button.textContent='选关面板截图';button.addEventListener('click',()=>showImage('/image/consumer/'+s.id,s.stageName+' · 选关面板独立预览'));row.querySelector('.row-head').append(button);}
+  if(s.noPreviewSurface){const note=document.createElement('span');note.className='tag';note.textContent='当前直达副本入口不显示预览图';row.querySelector('.row-head').append(note);}
+  for(const [kind,label] of [['original','现役旧图'],['baseline','上一版 V6'],['candidate','本轮候选']]){
+   const column=document.createElement('div');column.className='column';const title=document.createElement('div');title.className='column-title';title.textContent=label;column.append(title);
+   const image=document.createElement('img');image.className='main-image';image.src='/image/'+kind+'/'+s.id;image.alt=s.stageName+' · '+label;image.loading='lazy';image.tabIndex=0;image.addEventListener('click',()=>showImage(image.src,image.alt));image.addEventListener('keydown',e=>{if(e.key==='Enter')showImage(image.src,image.alt)});column.append(image);
+   const small=document.createElement('div');small.className='thumb-line';const thumb=document.createElement('img');thumb.className='thumb';thumb.alt=image.alt+' 实寸';thumb.loading='lazy';thumb.src=kind==='candidate'?'/image/thumb/'+s.id:image.src;small.append(thumb);const size=document.createElement('span');size.className='size';size.textContent='161 × 69';small.append(size);column.append(small);row.querySelector('.comparison').append(column);
+  }
+  row.querySelector('.sources').textContent='主体：'+((s.subjects||[]).map(n=>n.replace(/^敌人-/, '')).join('、')||'地标／徽章')+'\n取景：'+(s.composition?.selected_bg||s.composition?.bg_stem||'沿用已冻结 V6 构图')+'\n选择：'+(s.subjectPolicy||'本轮候选，等待人类视觉验收');rows.append(row);
+ }
+ if(!matches.length){const p=document.createElement('p');p.className='empty';p.textContent='没有匹配的关卡。';rows.append(p)}
+ document.querySelector('#count').textContent='显示 '+matches.length+' / '+manifest.stages.length+' 关 · '+manifest.stages.filter(s=>s.decision==='refined').length+' 关调整';
+}
+for(const el of [search,region,changed])el.addEventListener(el===search?'input':'change',draw);
+document.querySelector('#close').addEventListener('click',()=>document.querySelector('#zoom').close());
+fetch('/manifest').then(r=>{if(!r.ok)throw Error('无法读取候选清单');return r.json()}).then(data=>{manifest=data;for(const name of [...new Set(data.stages.map(s=>s.region))]){const option=document.createElement('option');option.value=name;option.textContent=name;region.append(option)}draw()}).catch(error=>{rows.textContent=error.message;rows.className='error'});
+</script>
+</html>

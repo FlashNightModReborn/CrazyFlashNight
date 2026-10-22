@@ -1885,7 +1885,13 @@ var StageSelectHarnessQA = (function() {
                     api.assert(!!modPod && !modPod.hidden, 'modifier pod visible in normal mode');
                     api.assertEqual(panel.getAttribute('data-accent'), 'ash', '基地车库 (堕落城) uses ash tone');
                     var previewWrap = document.querySelector('.stage-select-preview-wrap');
-                    api.assertEqual(previewWrap && previewWrap.getAttribute('data-preview-tier'), 'legacy', 'legacy preview tier set by default');
+                    api.assertEqual(previewWrap && previewWrap.getAttribute('data-preview-tier'), 'hd', 'accepted garage preview uses HD tier');
+                    var garagePreview = previewWrap.querySelector('.stage-select-preview');
+                    var garageBanner = StageSelectData.getFrame('基地车库').stageButtons[0].bannerUrl;
+                    api.assert(garageBanner && garagePreview.getAttribute('src').indexOf(garageBanner) >= 0, 'HD preview uses the installed banner asset');
+                    StageSelectPanel._debugSetFrame('沙漠虫洞', 'qa-legacy-preview');
+                    var legacyWrap = document.querySelector('.stage-select-preview-wrap');
+                    api.assertEqual(legacyWrap && legacyWrap.getAttribute('data-preview-tier'), 'legacy', 'unmigrated region retains legacy preview tier');
 
                     StageSelectPanel._debugSetFrame('基地门口', 'qa-accent-base');
                     api.assertEqual(panel.getAttribute('data-accent'), 'signal', '基地门口 uses signal tone');

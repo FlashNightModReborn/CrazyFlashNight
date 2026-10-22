@@ -1,0 +1,507 @@
+{
+  "schema": "cfn.stage-preview-native-sources.v1",
+  "ffdecSha256": "7f75b47152d955be5ccc853eb259a1a7910ea9a0bd2b41cf9b9085bcfb003952",
+  "inputs": [
+    {
+      "output": "boss_hires_poses/敌人-方舟兽王_c803_clean/DefineSprite_803/13.png",
+      "kind": "sprite",
+      "source": "flashswf/arts/things5.swf",
+      "sprite": 803,
+      "frame": 13,
+      "zoom": 4.5,
+      "keepDepths": [
+        1,
+        3,
+        7,
+        9,
+        11,
+        13,
+        15,
+        17,
+        19,
+        23,
+        25,
+        27,
+        29,
+        33,
+        37,
+        40,
+        56,
+        59,
+        63,
+        65,
+        67
+      ],
+      "sourceSha256": "2091034d4278de1c5435531f71f01c245be4798d605e19b78b314e308d5ac8a9",
+      "size": [
+        4492,
+        1552
+      ],
+      "pixelSha256": "b2e68a24c662f6a33a5e31629f98b2d925c01456b3361a767ee0faf949f87128"
+    },
+    {
+      "output": "boss_hires_poses/敌人-终结者T800_c1762_9x/DefineSprite_1762/1.png",
+      "kind": "sprite",
+      "source": "flashswf/arts/things1.swf",
+      "sprite": 1762,
+      "frame": 1,
+      "zoom": 9,
+      "sourceSha256": "1b19edbe15d56f449b7c4f1cb2dcc53df5cc2cc39680b95b6945c747b929a485",
+      "size": [
+        947,
+        1647
+      ],
+      "pixelSha256": "dd08efdf9b4bdeb213fe9f731349f62bca24883c74433cf7f482d19f9c1f1ad7"
+    },
+    {
+      "output": "boss_hires_poses/敌人-铠甲勇士战马形态_c1839/DefineSprite_1839/13.png",
+      "kind": "sprite",
+      "source": "flashswf/arts/things5.swf",
+      "sprite": 1839,
+      "frame": 13,
+      "zoom": 4.0,
+      "sourceSha256": "2091034d4278de1c5435531f71f01c245be4798d605e19b78b314e308d5ac8a9",
+      "size": [
+        2361,
+        1974
+      ],
+      "pixelSha256": "02a44a0b9aa545671940bb8c586b8f704d77b9f82109bdebc7e228b293c496fb"
+    },
+    {
+      "output": "raw_bgs/_ffdec_ciyuanta_魔神图专用_806c71/1.png",
+      "kind": "background",
+      "source": "flashswf/backgrounds/ciyuanta_魔神图专用.swf",
+      "sourceSha256": "720acc449357314330a8d74c78cb34eb855b772f6fbc4cce9768407976886a11",
+      "size": [
+        2296,
+        3188
+      ],
+      "pixelSha256": "04b355b58467b0657a14ce77ca4e3cb4688ae9b6004e4653c32d786b6e76d22d"
+    },
+    {
+      "output": "raw_bgs/_ffdec_gk10_1_BG_b9e77b/1.png",
+      "kind": "background",
+      "source": "flashswf/backgrounds/gk10_1_BG.swf",
+      "sourceSha256": "acecf43d925c5b0e704cc638ccd404cb32c4d09d81731d64ef8e06e13ca16474",
+      "size": [
+        2584,
+        1126
+      ],
+      "pixelSha256": "b69f7ee5508fffb0945a8283c5fd6f16753431ad330d7cd6965e29456eebb861"
+    },
+    {
+      "output": "raw_bgs/_ffdec_gk20_1_BG_围攻_refine/1.png",
+      "kind": "background",
+      "source": "flashswf/backgrounds/gk20_1_BG_围攻.swf",
+      "sourceSha256": "bca8abfdf791bef2081fdb23cb12b6f09e63695c8e1d63775ca00ea23c83d355",
+      "size": [
+        2054,
+        726
+      ],
+      "pixelSha256": "c5047936abafa20fc45d34bdfb4b75c7db125d06270976789414751533cfbb0f"
+    },
+    {
+      "output": "raw_bgs/_ffdec_gk23_2_BG_adb860/1.png",
+      "kind": "background",
+      "source": "flashswf/backgrounds/gk23_2_BG.swf",
+      "sourceSha256": "d6843b3173e86e71d3000520c0020e31f9c05a5e829db9b75bce3b394fa3e692",
+      "size": [
+        1858,
+        660
+      ],
+      "pixelSha256": "c00a488a769faad307b1b0f56c377b8f71a88be0ce5180a396f591ce546a1de7"
+    },
+    {
+      "output": "raw_bgs/_ffdec_gk3_4_BG_33c713/1.png",
+      "kind": "background",
+      "source": "flashswf/backgrounds/gk3_4_BG.swf",
+      "sourceSha256": "50c38c7facf0c7303853370e584952bb037c7cb9cb6dfdaa096970e2f580d906",
+      "size": [
+        1546,
+        641
+      ],
+      "pixelSha256": "b2601fc9655d1a0ffbeeece8b0790493222848bed6a0de8910d66a835e7e0c5c"
+    },
+    {
+      "output": "raw_bgs/_ffdec_gk7_2_BG_1fa1fe/1.png",
+      "kind": "background",
+      "source": "flashswf/backgrounds/gk7_2_BG.swf",
+      "sourceSha256": "cdde896060c7d3fb03382fcfafc6ef2170e477b30325948e76db8faca63613d3",
+      "size": [
+        2557,
+        1216
+      ],
+      "pixelSha256": "23346549d63e08ceeb7cc5deb557dc8ef8212e610711b65ade15b094f11b2908"
+    },
+    {
+      "output": "raw_bgs/_ffdec_gk9_2_BG_73b8a3/1.png",
+      "kind": "background",
+      "source": "flashswf/backgrounds/gk9_2_BG.swf",
+      "sourceSha256": "e60f887d77e6df82cac4503f8758be65dac3acf64c7834fe884cb3a0e49a6779",
+      "size": [
+        2592,
+        1069
+      ],
+      "pixelSha256": "b2b56c1299e5766c3f9696a1145014d33909a04b39c5086f8ef4894ce523d124"
+    },
+    {
+      "output": "raw_bgs/_ffdec_hthhltnb_3_BG_0a6144/1.png",
+      "kind": "background",
+      "source": "flashswf/backgrounds/hthhltnb_3_BG.swf",
+      "sourceSha256": "f76ca23cb3420d35ca90fac57fc2c485e0ba8840317c118f27ead2e6759bea61",
+      "size": [
+        2035,
+        762
+      ],
+      "pixelSha256": "b9a589301e244d3866037c5ca6bcbf958a38e659c4f440d018f0ee7626a7d0dd"
+    },
+    {
+      "output": "raw_bgs/_ffdec_nyqxjdfydd_4_BG_e340b5/1.png",
+      "kind": "background",
+      "source": "flashswf/backgrounds/nyqxjdfydd_4_BG.swf",
+      "sourceSha256": "a73ae3d86a8b73245a946057524a43a805e0043e1fef2d434033c8da3845bd85",
+      "size": [
+        2152,
+        968
+      ],
+      "pixelSha256": "aff769752e2e0ad39f4b80ce2f43245f399882c1a5629c35ac96a186030a47b7"
+    },
+    {
+      "output": "raw_bgs/_ffdec_nyqxjdjzzd_5_BG_4ca1cb/1.png",
+      "kind": "background",
+      "source": "flashswf/backgrounds/nyqxjdjzzd_5_BG.swf",
+      "sourceSha256": "bf24b96aa4dc81c30fb1408a7b46227637aa9e9a86b6c845065643c13e035e02",
+      "size": [
+        2811,
+        1167
+      ],
+      "pixelSha256": "dfa328c2fe3311992ce2829c9b637a41a9d664391ecad6c51727802c861a4932"
+    },
+    {
+      "output": "raw_bgs/_ffdec_nyxssj_2_BG_9caffd/1.png",
+      "kind": "background",
+      "source": "flashswf/backgrounds/nyxssj_2_BG.swf",
+      "sourceSha256": "36091537861d6dfb436af9f564ffe7f826df4e5731d53d5df7876b0a09b5584a",
+      "size": [
+        2018,
+        903
+      ],
+      "pixelSha256": "b21a8027797fc96a0271f4da95d74d3c8d09db3c9fbe5dc06813d5ee664f78b6"
+    },
+    {
+      "output": "raw_bgs/_ffdec_地图-幸存者营地_ef0aa8/DefineSprite_105/1.png",
+      "kind": "sprite",
+      "source": "flashswf/levels/地图-幸存者营地.swf",
+      "sprite": 105,
+      "frame": 1,
+      "zoom": 1.0,
+      "sourceSha256": "cc0ed21314514062bb454472a9ccff460f7c0e10cb9f4e3f6415f046a384d6c3",
+      "size": [
+        4227,
+        1902
+      ],
+      "pixelSha256": "7e883299490e165649078258d2620b57a81298d2a79bdaff9d7c6e9e17e8622c"
+    },
+    {
+      "output": "raw_bgs/_ffdec_核电站反应室冷却池_26cf84/1.png",
+      "kind": "background",
+      "source": "flashswf/backgrounds/核电站反应室冷却池.swf",
+      "sourceSha256": "738f99e48fb3ef232c2a796c74d7fbd7d3ade76aa7e8090d79df7e908ebcdf35",
+      "size": [
+        1792,
+        965
+      ],
+      "pixelSha256": "b4fd48693f55b515dc035673db66542fab844db880bb26228c847e9bb607cdbe"
+    },
+    {
+      "output": "raw_monsters/敌人-兽化改造僵尸_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/76d2535536dacb27c6f9fb9b.png",
+      "portraitRef": "敌人-兽化改造僵尸",
+      "sourceSha256": "76d2535536dacb27c6f9fb9b17673aa97715e5b9b16644e3305e0ba76499114f",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "99b181fd1cf23b6ad1fc1e63a09d225b74441ea36cb637f73277cb34f4e8cb01"
+    },
+    {
+      "output": "raw_monsters/敌人-军阀突击兵_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/da6c976cc72a6e07cabf0186.png",
+      "portraitRef": "敌人-军阀突击兵",
+      "sourceSha256": "da6c976cc72a6e07cabf0186986934d5692ffe0270f11720b55f2ace587f02e7",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "5358d22d986c456453845741ad51831a1297fa5401f17ba87fda2b3f727064c5"
+    },
+    {
+      "output": "raw_monsters/敌人-军阀重装兵_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/44000aac1ee898e73ec3dfa4.png",
+      "portraitRef": "敌人-军阀重装兵",
+      "sourceSha256": "44000aac1ee898e73ec3dfa45cd1cca3bdb29884e55a4772a9775a0e1d1776b1",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "56c81c9422fbb16891b3827e6bde81c6f02a5117e9d0d9f5a5b7093fed57e4fe"
+    },
+    {
+      "output": "raw_monsters/敌人-凤凰眷属武士_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/b37d6051e3fefa39c0fb273c.png",
+      "portraitRef": "敌人-凤凰眷属武士",
+      "sourceSha256": "b37d6051e3fefa39c0fb273c430b6b01cbc3999b060ba74881bedf53e2874ca2",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "499df8bdc0de7a449e01da1c637552f21d62faffeff031d9c3315fcac02fa5b6"
+    },
+    {
+      "output": "raw_monsters/敌人-凤凰眷属火精灵_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/762b3b5c01052c22f5530ed2.png",
+      "portraitRef": "敌人-凤凰眷属火精灵",
+      "sourceSha256": "762b3b5c01052c22f5530ed2fcfabfdbe0dd5b2a777c2db50675800c06120117",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "99462bb90110212bbf3e04746f9b5c460ed414522cd67af46b07a5861ad612f3"
+    },
+    {
+      "output": "raw_monsters/敌人-士兵奔跑僵尸1_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/ba9295200eaa9f6f8bac86b4.png",
+      "portraitRef": "敌人-士兵奔跑僵尸1",
+      "sourceSha256": "ba9295200eaa9f6f8bac86b488be5b45caedac372cafa13a302aa782d9bae04d",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "11ad0fc0c56fc2b734e44e2699c682ade24de36c7353c01b0403e867dadfe1a6"
+    },
+    {
+      "output": "raw_monsters/敌人-帽子瘦僵尸1_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/d38cf4b24c84c20b582572b6.png",
+      "portraitRef": "敌人-帽子瘦僵尸1",
+      "sourceSha256": "d38cf4b24c84c20b582572b6180cb2f28ddbf6223bc19a78bdaa80a7ff14bcad",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "78715bd29f868fefdbf816e97ac4a1c5707f8033b18de0ebb34a3ad304028d37"
+    },
+    {
+      "output": "raw_monsters/敌人-方舟护士_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/c6f523ab97378f90c7512eda.png",
+      "portraitRef": "敌人-方舟护士",
+      "sourceSha256": "c6f523ab97378f90c7512eda80191663d92aaf1d4b1885f9eeed9f346f44ebe9",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "b9bcfbe813003054b5e557b87fcc4b9ffd8c181c81bd11d6f30791f53f8da530"
+    },
+    {
+      "output": "raw_monsters/敌人-方舟无人机_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/85181b4d4b901f4905eeb68c.png",
+      "portraitRef": "敌人-方舟无人机",
+      "sourceSha256": "85181b4d4b901f4905eeb68c9be69b5b408f44531aa10214406beaeb5060890f",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "f25bb7cce51c2462043fbef931e991dfd03dc2f8edb15e06aec9c77cf3c98878"
+    },
+    {
+      "output": "raw_monsters/敌人-眼镜僵尸1_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/0b857a3f2bfa94b16af56ab0.png",
+      "portraitRef": "敌人-眼镜僵尸1",
+      "sourceSha256": "0b857a3f2bfa94b16af56ab0e9991963650404fcbd1741e2987aa55480a8dbb2",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "fbf7e59f4620eaf4cfc18b694de4010d85b97677388b3da7c2f73ad356b7fd1a"
+    },
+    {
+      "output": "raw_monsters/敌人-胖僵尸1_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/8e52373a345174448c7381a0.png",
+      "portraitRef": "敌人-胖僵尸1",
+      "sourceSha256": "8e52373a345174448c7381a0c3b9516d3a2ae63d9d5cdb351b358f16bf557394",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "ec64bf15cca48caf20ee525270d86f4905f7323154eae12e951d70cb7bce9558"
+    },
+    {
+      "output": "raw_monsters/敌人-裸体兽化僵尸1_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/969ef0672a5118f2b6310c25.png",
+      "portraitRef": "敌人-裸体兽化僵尸1",
+      "sourceSha256": "969ef0672a5118f2b6310c25fb89a74ff7a59f46a64009f72c7bd5d861d1da33",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "5875125e46046b9e7ff22812dba0b8c47ef58c7779c8c0187f86345129ba8345"
+    },
+    {
+      "output": "raw_monsters/敌人-重型改造僵尸_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/cc9d3f413da3684ee28a3a8d.png",
+      "portraitRef": "敌人-重型改造僵尸",
+      "sourceSha256": "cc9d3f413da3684ee28a3a8d2d75991c2fa258da1eba9519d1584811816b621a",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "4f975b33e312af121d7f6192feee6281a04386dc2fa3333fea5b01a402f1246c"
+    },
+    {
+      "output": "raw_monsters/敌人-金发红衣服女僵尸1_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/1dcc1dca64f01817d96d5de3.png",
+      "portraitRef": "敌人-金发红衣服女僵尸1",
+      "sourceSha256": "1dcc1dca64f01817d96d5de33d604be04613096f7b2d8f31166932924e55bd1f",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "75927869cf8a505781a0ff4e539023d455bff4e281ea06d943420ffecc2dce68"
+    },
+    {
+      "output": "raw_monsters/敌人-防爆服僵尸_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/2a74d6a0d4bab6cf8fe6bde9.png",
+      "portraitRef": "敌人-防爆服僵尸",
+      "sourceSha256": "2a74d6a0d4bab6cf8fe6bde91e2d32b88be2626da8117160c554100ffae3166a",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "b3ecd13844769dcc7f60cd4f5ca1e7ea272b3a53c98779aaaac6c17609e18a38"
+    },
+    {
+      "output": "raw_skybox/废城阴间天空/1.png",
+      "kind": "background",
+      "source": "flashswf/skybox/废城阴间天空.swf",
+      "sourceSha256": "dd288b017c81291bdf677a870b4e1af30375712d967ba9da2994d4be4663e907",
+      "size": [
+        1827,
+        682
+      ],
+      "pixelSha256": "e279f530f2c18881a509dd8dc9e6dfd7b79078506052abd0088f38b35375ef8f"
+    },
+    {
+      "output": "refine_sources/bar_decor/DefineSprite_181_地图-堕落城酒吧/1.png",
+      "kind": "sprite",
+      "source": "flashswf/levels/地图-堕落城酒吧.swf",
+      "sprite": 181,
+      "frame": 1,
+      "zoom": 1.5,
+      "keepDepths": [
+        1,
+        41,
+        61
+      ],
+      "sourceSha256": "ea9bd0d8ac7f5e2aa618f9e1f4c6714670c81500219d3f34ce0c39de843bb6bc",
+      "size": [
+        2665,
+        1301
+      ],
+      "pixelSha256": "97a7dd2fe92a69facab2db3a51cf058d31dea476f22792a42540f02eb15dc05f"
+    },
+    {
+      "output": "raw_monsters/敌人-黄色衣服男僵尸1_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/297c4f54460ae29a7e35dbc6.png",
+      "portraitRef": "敌人-黄色衣服男僵尸1",
+      "sourceSha256": "297c4f54460ae29a7e35dbc64d4a5c9321be659844129c838bd937b215c10151",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "5c200339c7bafa5d042c1ffa649a77a6f22e6c8dcce659096072d98437e1c08e"
+    },
+    {
+      "output": "raw_monsters/敌人-光头军人僵尸1_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/65bdb5d8fbae670ee1fc4110.png",
+      "portraitRef": "敌人-光头军人僵尸1",
+      "sourceSha256": "65bdb5d8fbae670ee1fc411053036956ec326b1bc70db749d3d524f1c787e526",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "a1eda17be5b0d4eac19a3fcb7ece2158a1d3aee79ac8a63694a9f4cdc8940da2"
+    },
+    {
+      "output": "raw_monsters/敌人-兽化变种_bust.png",
+      "kind": "copy",
+      "source": "launcher/web/assets/enemy-portraits/subjects/9d8f0f89a1b7417d46b35500.png",
+      "portraitRef": "敌人-兽化变种",
+      "sourceSha256": "9d8f0f89a1b7417d46b35500fd162921aa54a775770f399e29c2dba39467806b",
+      "size": [
+        512,
+        512
+      ],
+      "pixelSha256": "c6435dae91a1c04f13277f3174b75f8d2d13963ee5ac7262a7a9e40cceaad3c6"
+    },
+    {
+      "output": "raw_bgs/_ffdec_gk2_1_BG_051cbf/1.png",
+      "kind": "background",
+      "source": "flashswf/backgrounds/gk2_1_BG.swf",
+      "sourceSha256": "9b8b197b1e029bdfd6f09fb12401e1747ab5aac7a149fcc78765643516e8b642",
+      "size": [
+        2016,
+        967
+      ],
+      "pixelSha256": "85702b98f9f392fa93b7113c1ad4fb0d307d381896df4f3f950a92791b336c53"
+    },
+    {
+      "output": "raw_bgs/_ffdec_废城环线地图3_3c28d9/1.png",
+      "kind": "background",
+      "source": "flashswf/backgrounds/废城环线地图3.swf",
+      "sourceSha256": "0822ad717c42e221489565deeedeaaeb404f9a7386d181f26b65fffb308ba77f",
+      "size": [
+        2808,
+        731
+      ],
+      "pixelSha256": "f8d6ff6f401ba9ab6bdd33a7a9d3d884c815d3d89dd0634a4b4e04dd4acc562b"
+    },
+    {
+      "output": "raw_skybox/废城远处巨大多高楼/1.png",
+      "kind": "background",
+      "source": "flashswf/skybox/废城远处巨大多高楼.swf",
+      "sourceSha256": "ba67d4084c2af8ce0743b9263c427bed4e5136467b2ddf421c5c34031d193e80",
+      "size": [
+        839,
+        326
+      ],
+      "pixelSha256": "267c345051b0433d5821779b2f4561b9ebc010dba3b5bd3a23d54a7bcfa0db2a"
+    },
+    {
+      "output": "raw_skybox/废城环线树林/1.png",
+      "kind": "background",
+      "source": "flashswf/skybox/废城环线树林.swf",
+      "sourceSha256": "29db1a58e9340b13344cf33cbe1eaa6e88e2487be4a7f9b39d2051fc279171a7",
+      "size": [
+        2869,
+        327
+      ],
+      "pixelSha256": "a253d17de4debe4fe5b7a44c6e255f86c86bea8a2cb9c97706ccb92fbb88c0ce"
+    }
+  ]
+}
