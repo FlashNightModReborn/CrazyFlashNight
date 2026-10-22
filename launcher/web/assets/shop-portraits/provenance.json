@@ -11,8 +11,8 @@
   "toolchain": {
     "generator": {
       "path": "tools/bake-shop-portraits.py",
-      "sha256": "a4f2d354373fd151adf4cb6096578ba12c34c91f7d83df58ce2c5ece84d2e17b",
-      "bytes": 37106
+      "sha256": "0272eac1b4306d7de249ba17dae028f187df0c6acabbe9359950fdb27f4cd0e1",
+      "bytes": 37358
     },
     "dialogueBaker": {
       "path": "tools/bake-dialogue-portraits.py",
@@ -41,11 +41,11 @@
   "activeShopSource": {
     "list": {
       "path": "data/shops/list.xml",
-      "sha256": "af61eed4947f63afeb5d313644c6c87bbf80e5d0729cdadda908992b6f1b8bd9",
-      "bytes": 1547
+      "sha256": "23dbde49cf37df71eb517e54d9e47ca91e93cb26c146b47ccd92380391688c0d",
+      "bytes": 1891
     },
-    "listedCount": 40,
-    "activeCount": 39,
+    "listedCount": 45,
+    "activeCount": 44,
     "excludedShopIds": [
       "幸存老兵-暂时停用"
     ],
@@ -249,19 +249,44 @@
         "path": "data/shops/npcs/阿卡.json",
         "sha256": "656f00f91c7daafed130439bbd9eecf1b0ae359c9d6103e920f4c1fb8263d6ad",
         "bytes": 119
+      },
+      {
+        "path": "data/shops/npcs/书中-CF6毒刺-35级.json",
+        "sha256": "49acb05936d1bd938a81197bb092d51a8eeb73b3324772a669df56622f84d3cc",
+        "bytes": 490
+      },
+      {
+        "path": "data/shops/npcs/书中-CF6毒刺-40级.json",
+        "sha256": "d00f2623ff20dea6ab8cb5fcec359074a7444e4891e0099ba0c775099998a3d6",
+        "bytes": 735
+      },
+      {
+        "path": "data/shops/npcs/书中-CF6毒刺-45级.json",
+        "sha256": "b9d6ff0cee1361306868e5c2efbdec4a88587f243bf4b88ba30eb2da6e0b0ab8",
+        "bytes": 880
+      },
+      {
+        "path": "data/shops/npcs/书中-CF6毒刺-55级.json",
+        "sha256": "1befaaea1fd0d297f20ad8e71c619c22a3eec85edbe569ef152b8bfa0ab65c38",
+        "bytes": 1049
+      },
+      {
+        "path": "data/shops/npcs/书中-CF6毒刺-60级.json",
+        "sha256": "a28b4a5a52f95121e9e8e42284468120db48fda3469c301c857488c267c958c8",
+        "bytes": 1172
       }
     ]
   },
   "dialogueManifest": {
     "path": "launcher/web/assets/dialogue-portraits/manifest.json",
-    "sha256": "92a791191f1f4fae143da80b9295d66fcdf0255b6b884f6629c2cf085142d44e",
-    "bytes": 103562
+    "sha256": "6bf3fd2bf145b2d949fbc01ce7030eef8203b259d4aa45f2f6eecfed9aeb9286",
+    "bytes": 107220
   },
   "sourcePartition": {
     "externalDialogue": 35,
     "internalDialogue": 2,
     "exactXflSwfPilot": 1,
-    "sharedShopPortrait": 1
+    "sharedShopPortrait": 6
   },
   "sources": {
     "Andy Law": {
@@ -1221,6 +1246,91 @@
           "height": 182
         },
         "sha256": "a874393fff7c81f38717eb5df9e03c0ac50d74fc311a428bd3e38ac4cf50d32f"
+      }
+    },
+    "书中-CF6毒刺-35级": {
+      "kind": "shared-shop-portrait",
+      "sourceShopId": "迷之盔甲君",
+      "extractedPngSha256": "b1631c240888b05dccf30cf9b21daf64bce99f9a75beec05af49700e40d610dc",
+      "output": {
+        "uri": "subjects/243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 35,
+          "width": 224,
+          "height": 185
+        },
+        "sha256": "243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf"
+      }
+    },
+    "书中-CF6毒刺-40级": {
+      "kind": "shared-shop-portrait",
+      "sourceShopId": "迷之盔甲君",
+      "extractedPngSha256": "b1631c240888b05dccf30cf9b21daf64bce99f9a75beec05af49700e40d610dc",
+      "output": {
+        "uri": "subjects/243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 35,
+          "width": 224,
+          "height": 185
+        },
+        "sha256": "243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf"
+      }
+    },
+    "书中-CF6毒刺-45级": {
+      "kind": "shared-shop-portrait",
+      "sourceShopId": "迷之盔甲君",
+      "extractedPngSha256": "b1631c240888b05dccf30cf9b21daf64bce99f9a75beec05af49700e40d610dc",
+      "output": {
+        "uri": "subjects/243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 35,
+          "width": 224,
+          "height": 185
+        },
+        "sha256": "243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf"
+      }
+    },
+    "书中-CF6毒刺-55级": {
+      "kind": "shared-shop-portrait",
+      "sourceShopId": "迷之盔甲君",
+      "extractedPngSha256": "b1631c240888b05dccf30cf9b21daf64bce99f9a75beec05af49700e40d610dc",
+      "output": {
+        "uri": "subjects/243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 35,
+          "width": 224,
+          "height": 185
+        },
+        "sha256": "243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf"
+      }
+    },
+    "书中-CF6毒刺-60级": {
+      "kind": "shared-shop-portrait",
+      "sourceShopId": "迷之盔甲君",
+      "extractedPngSha256": "b1631c240888b05dccf30cf9b21daf64bce99f9a75beec05af49700e40d610dc",
+      "output": {
+        "uri": "subjects/243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 35,
+          "width": 224,
+          "height": 185
+        },
+        "sha256": "243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf"
       }
     }
   },
