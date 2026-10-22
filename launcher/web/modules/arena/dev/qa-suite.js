@@ -2794,9 +2794,10 @@ var ArenaHarnessQA = (function() {
     function caseFallenModeCards(api, host) {
         // buildFallenCards 派生结果（2026-08 数据 + FALLEN_BAND_WINDOW=15）：按 (levelMin,levelMax) 升序
         var EXPECTED = [
+            ['军阀势力', 35, 50], ['摇滚公园', 35, 50],
             ['波斯军', 44, 59], ['不死军团', 44, 59], ['日本军', 45, 60], ['亡灵/僵尸', 45, 60],
             ['天网', 45, 60], ['黑铁会', 45, 60], ['忍者', 45, 60], ['雪山', 45, 60],
-            ['军阀势力', 45, 60], ['摇滚公园', 45, 60], ['狂野玫瑰', 45, 60], ['堕落城', 45, 60],
+            ['狂野玫瑰', 45, 60], ['堕落城', 45, 60],
             ['虫群', 45, 60], ['方舟', 45, 60], ['异形', 85, 100], ['铁血', 85, 100],
             ['凤凰眷属', 85, 100], ['魔神', 85, 100]
         ];
@@ -2852,7 +2853,7 @@ var ArenaHarnessQA = (function() {
                 // FALLEN_MIN_UNITS=4 过滤效果：联合大学/斯巴达各仅 1 单位，即使全量已知也不出卡
                 api.assert(findCardIndexByFaction(cards, '联合大学') < 0, '联合大学（1 单位）应被 FALLEN_MIN_UNITS 过滤');
                 api.assert(findCardIndexByFaction(cards, '斯巴达') < 0, '斯巴达（1 单位）应被 FALLEN_MIN_UNITS 过滤');
-                // 波斯军（排序后首卡）字段派生钉死：benchLevel 缺省回退 levelMax=59，
+                // 波斯军字段派生钉死：benchLevel 缺省回退 levelMax=59，
                 // count=clamp(3+⌊59/25⌋,4,6)=5，奖金=59×5×800=236000，押金=roundTo(奖金×0.4)=94000
                 var persiaIdx = findCardIndexByFaction(cards, '波斯军');
                 var c = cards[persiaIdx];
@@ -3093,6 +3094,13 @@ var ArenaHarnessQA = (function() {
                     api.assert(cards[i].isEscalation === true, cards[i].faction + ' 爬升卡应带 isEscalation 标记');
                     api.assert(cards[i].isFallen === true, cards[i].faction + ' 爬升卡应复用堕落卡视觉（isFallen=true）');
                 }
+                // #160：剧情三姐妹不再撑高自动池等级，按合法战斗池派生爬升卡。
+                var rock = cards[findCardIndexByFaction(cards, '摇滚公园')];
+                api.assert(!!rock, '合法三姐妹仍应保留摇滚公园爬升卡');
+                api.assertEqual(rock.levelMin, 35, '摇滚公园合法池挑战带下限');
+                api.assertEqual(rock.levelMax, 50, '摇滚公园合法池挑战带上限');
+                api.assertEqual(rock.deposit, 125000, '摇滚公园按合法池推导押金');
+                api.assertEqual(rock.reward, 125000, '摇滚公园按合法池推导基础波奖励');
                 // 波斯军：scale=large → maxWaves 10；waveBase=roundTo(59×5×500,100)=147500，
                 // deposit=roundTo(waveBase,1000)=148000，reward=waveBase=147500
                 cardIdx = findCardIndexByFaction(cards, '波斯军');
