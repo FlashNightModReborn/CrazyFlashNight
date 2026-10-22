@@ -2976,7 +2976,34 @@ class Program
 
             interjectOverlay.SendRequested += text => interjectController.Submit(text);
             interjectOverlay.StartRequested += () => interjectController.RequestTerminalStart();
-            interjectOverlay.ConfigRequested += () => showInterjectConfig(false);
+            // 头条齿轮：终端在线直接开设置；离线先拉起终端再开，避免打开空白的 7077 页面。
+            interjectOverlay.ConfigRequested += delegate
+            {
+                if (ragTerminalService.IsReady)
+                {
+                    showInterjectConfig(false);
+                    return;
+                }
+                System.Threading.ThreadPool.QueueUserWorkItem(delegate
+                {
+                    try
+                    {
+                        var ready = ragTerminalService.EnsureReadyAsync().GetAwaiter().GetResult();
+                        if (!ready.Success)
+                        {
+                            LogManager.Log("[DialogueInterject] settings start failed: " + ready.Error);
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        LogManager.Log("[DialogueInterject] settings start threw: " + ex.Message);
+                        return;
+                    }
+                    try { form.BeginInvoke(new Action(delegate { showInterjectConfig(false); })); }
+                    catch { }
+                });
+            };
             dialogueInterject.ConfigRequired += () => showInterjectConfig(true);
             dialogueInterject.InputStateChanged += state =>
                 dialogueInterjectInput.Apply(state, dialogueInterject.PlaceholderFor(state));
