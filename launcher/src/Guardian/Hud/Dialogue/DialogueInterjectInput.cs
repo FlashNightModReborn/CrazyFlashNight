@@ -214,6 +214,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
         private Rectangle _chevronRect = Rectangle.Empty;
         private Rectangle _actionRect = Rectangle.Empty;
+        private Rectangle _settingsRect = Rectangle.Empty;
+        private bool _settingsHover;
         private Rectangle _fieldRect = Rectangle.Empty;
         private Rectangle _counterRect = Rectangle.Empty;
         // 选项态：草案确认轮最后一条 add 上，正文区切成「我接了 / 我不接 / 单行输入」三行。
@@ -331,6 +333,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
         internal Rectangle ToggleBoundsForTest { get { return _chevronRect; } }
         internal Rectangle ActionBoundsForTest { get { return _actionRect; } }
+        internal Rectangle SettingsBoundsForTest { get { return _settingsRect; } }
         internal Rectangle FieldBoundsForTest { get { return _fieldRect; } }
 
         /// <summary>几何单测用：不依赖窗口可见/激活，直接进入展开布局。</summary>
@@ -442,7 +445,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         private void UpdateCursor()
         {
             bool clickable = _expanded
-                ? (_chevronHover || (_actionHover && ActionEnabled)
+                ? (_settingsHover || _chevronHover || (_actionHover && ActionEnabled)
                     || ((_acceptHover || _rejectHover) && _model.Enabled))
                 : (_chevronHover && CanToggle);
             Cursor = clickable ? Cursors.Hand : Cursors.Default;
@@ -783,8 +786,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             int cut = Math.Max(4, (int)Math.Round(6 * ui));
             using (Pen chamfer = new Pen(Color.FromArgb(110, _headerFore), Math.Max(1f, ui)))
                 g.DrawLine(chamfer, w - cut, 0, w - 1, cut);
-            PaintHeaderHatch(g, w - Math.Max(66, (int)Math.Round(96 * ui)),
-                w - cut - Math.Max(6, (int)Math.Round(8 * ui)), headerH, ui);
+            int hatchRight = _settingsRect.IsEmpty
+                ? w - cut - Math.Max(6, (int)Math.Round(8 * ui))
+                : _settingsRect.Left - Math.Max(4, (int)Math.Round(6 * ui));
+            PaintHeaderHatch(g, hatchRight - Math.Max(66, (int)Math.Round(96 * ui)),
+                hatchRight, headerH, ui);
 
             // 正文：与对话框一致的浅灰平涂底，不再做纸面渐变/纹理。
             Rectangle bodyRect = new Rectangle(0, headerH, w, Math.Max(1, footerTop - headerH));
@@ -792,6 +798,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 g.FillRectangle(body, bodyRect);
 
             PaintHeaderTitle(g, headerH);
+            PaintSettingsButton(g, _settingsRect);
 
             // 选项态：两个选项行与输入槽同宽等高；主选项黑底白字，次选项浅底黑边。
             if (_askAccept)
@@ -910,6 +917,49 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             TextRenderer.DrawText(g, "插话", _headerFont,
                 new Rectangle(textLeft, 0, Math.Max(20, ClientSize.Width - textLeft - Pad), headerH),
                 _headerFore, TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+        }
+
+        /// <summary>头条右侧的齿轮：任何时候都能打开插话设置；悬停加一层淡白底。</summary>
+        private void PaintSettingsButton(Graphics g, Rectangle rect)
+        {
+            if (rect.Width <= 0 || rect.Height <= 0) return;
+            if (_settingsHover)
+            {
+                using (SolidBrush hover = new SolidBrush(Color.FromArgb(46, _headerFore)))
+                    g.FillRectangle(hover, rect);
+            }
+            float cx = rect.Left + rect.Width / 2f;
+            float cy = rect.Top + rect.Height / 2f;
+            float outer = Math.Max(4f, Math.Min(rect.Width, rect.Height) * 0.32f);
+            using (GraphicsPath gear = BuildGearPath(cx, cy, outer, outer * 0.72f, outer * 0.30f, 8))
+            using (SolidBrush brush = new SolidBrush(_headerFore))
+                g.FillPath(brush, gear);
+        }
+
+        /// <summary>8 齿齿轮轮廓：外齿 + 圆环主体，中心孔用 Alternate 填充规则挖空。</summary>
+        private static GraphicsPath BuildGearPath(float cx, float cy, float outer,
+            float body, float hole, int teeth)
+        {
+            GraphicsPath path = new GraphicsPath(FillMode.Alternate);
+            PointF[] points = new PointF[teeth * 4];
+            float step = (float)(Math.PI * 2 / teeth);
+            for (int i = 0; i < teeth; i++)
+            {
+                float a = i * step;
+                points[i * 4] = PolarPoint(cx, cy, outer, a + step * 0.10f);
+                points[i * 4 + 1] = PolarPoint(cx, cy, outer, a + step * 0.40f);
+                points[i * 4 + 2] = PolarPoint(cx, cy, body, a + step * 0.60f);
+                points[i * 4 + 3] = PolarPoint(cx, cy, body, a + step * 0.90f);
+            }
+            path.AddPolygon(points);
+            path.AddEllipse(cx - hole, cy - hole, hole * 2f, hole * 2f);
+            return path;
+        }
+
+        private static PointF PolarPoint(float cx, float cy, float radius, float angle)
+        {
+            return new PointF(cx + (float)Math.Cos(angle) * radius,
+                cy + (float)Math.Sin(angle) * radius);
         }
 
         private void PaintCounter(Graphics g)
@@ -1045,33 +1095,50 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             Invalidate();
         }
 
-        /// <summary>收起态整块是展开按钮；展开态只响应箭头、操作按钮与输入区。</summary>
+        /// <summary>收起态整块是展开按钮；展开态只响应箭头、齿轮、操作按钮与输入区。</summary>
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
             NoteInteraction();
             if (e.Button != MouseButtons.Left) return;
+            HandleClick(e.Location);
+        }
+
+        /// <summary>鼠标左键落点裁决（拆出来供单测直接调用）。</summary>
+        internal void HandleClick(Point location)
+        {
             if (!_expanded)
             {
                 if (CanToggle) Expand();
                 return;
             }
-            if (_chevronRect.Contains(e.Location))
+            if (TryHandleSettingsClick(location)) return;
+            if (_chevronRect.Contains(location))
             {
                 Collapse(true);
                 return;
             }
             if (_askAccept)
             {
-                if (_acceptRect.Contains(e.Location)) { ChooseAccept(true); return; }
-                if (_rejectRect.Contains(e.Location)) { ChooseAccept(false); return; }
+                if (_acceptRect.Contains(location)) { ChooseAccept(true); return; }
+                if (_rejectRect.Contains(location)) { ChooseAccept(false); return; }
             }
-            if (_actionRect.Contains(e.Location) && ActionEnabled)
+            if (_actionRect.Contains(location) && ActionEnabled)
             {
                 PerformAction();
                 return;
             }
             if (_model.Enabled) FocusInput();
+        }
+
+        /// <summary>头条齿轮：与输入可用性无关，任何时候都能打开插话设置。</summary>
+        internal bool TryHandleSettingsClick(Point location)
+        {
+            if (!_expanded || _settingsRect.IsEmpty || !_settingsRect.Contains(location))
+                return false;
+            Action handler = ConfigRequested;
+            if (handler != null) { try { handler(); } catch { } }
+            return true;
         }
 
         protected override void OnMouseMove(MouseEventArgs e)
@@ -1081,13 +1148,16 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             bool actionHover = _expanded && _actionRect.Contains(e.Location) && ActionEnabled;
             bool acceptHover = _expanded && _askAccept && _acceptRect.Contains(e.Location);
             bool rejectHover = _expanded && _askAccept && _rejectRect.Contains(e.Location);
+            bool settingsHover = _expanded && _settingsRect.Contains(e.Location);
             if (chevronHover != _chevronHover || actionHover != _actionHover
-                || acceptHover != _acceptHover || rejectHover != _rejectHover)
+                || acceptHover != _acceptHover || rejectHover != _rejectHover
+                || settingsHover != _settingsHover)
             {
                 _chevronHover = chevronHover;
                 _actionHover = actionHover;
                 _acceptHover = acceptHover;
                 _rejectHover = rejectHover;
+                _settingsHover = settingsHover;
                 UpdateCursor();
                 Invalidate();
             }
@@ -1096,12 +1166,13 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            if (_chevronHover || _actionHover || _acceptHover || _rejectHover)
+            if (_chevronHover || _actionHover || _acceptHover || _rejectHover || _settingsHover)
             {
                 _chevronHover = false;
                 _actionHover = false;
                 _acceptHover = false;
                 _rejectHover = false;
+                _settingsHover = false;
                 UpdateCursor();
                 Invalidate();
             }
@@ -1212,6 +1283,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 _counterRect = Rectangle.Empty;
                 _acceptRect = Rectangle.Empty;
                 _rejectRect = Rectangle.Empty;
+                _settingsRect = Rectangle.Empty;
+                _settingsHover = false;
                 BackColor = _headerBack;
                 if (_placeholderLabel != null) _placeholderLabel.Visible = false;
                 ApplyWindowRegion();
@@ -1228,6 +1301,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             int pad = Pad;
             int gap = Math.Max(4, (int)Math.Round(6 * ui));
             int footerTop = h - footerH;
+
+            // 齿轮常驻头条右端：首次配置之后仍从这里再次打开插话设置。
+            int gearSize = Math.Max(16, (int)Math.Round(18 * ui));
+            int gearY = Math.Max(1, (headerH - gearSize) / 2);
+            _settingsRect = new Rectangle(w - pad - gearSize, gearY, gearSize, gearSize);
 
             // 正文区：普通态整块给输入框；选项态三等分（两个按钮 + 单行输入），面板总高不变。
             int bodyTop = headerH + gap;

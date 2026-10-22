@@ -205,6 +205,37 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void HeaderSettingsGearOpensConfigEvenWhenInputDisabled()
+        {
+            using var overlay = new DialogueInterjectInputOverlay();
+            overlay.ClientSize = new Size(420, 200);
+            overlay.ExpandForTest();
+
+            Rectangle gear = overlay.SettingsBoundsForTest;
+            Assert.False(gear.IsEmpty);
+            Assert.True(gear.Left > overlay.ClientSize.Width / 2);
+            Assert.True(gear.Top >= 0);
+            Assert.True(gear.Bottom <= overlay.FieldBoundsForTest.Top);   // 齿轮只在头条内
+
+            int opened = 0;
+            overlay.ConfigRequested += () => opened++;
+            overlay.SetInputEnabled(false);
+            Point center = new Point(gear.Left + gear.Width / 2, gear.Top + gear.Height / 2);
+            overlay.HandleClick(center);
+            Assert.Equal(1, opened);
+            Assert.True(overlay.IsExpanded);
+
+            // 头条其余位置不触发设置；收起态没有齿轮，点原位置也不会开设置。
+            overlay.HandleClick(new Point(gear.Left - 160, gear.Top + 2));
+            Assert.Equal(1, opened);
+            overlay.Collapse(false);
+            Assert.True(overlay.SettingsBoundsForTest.IsEmpty);
+            overlay.HandleClick(center);
+            Assert.Equal(1, opened);
+            Assert.False(overlay.IsExpanded);
+        }
+
+        [Fact]
         public void PlaceholderFrameAlternatesDotsWithoutTypingFinished()
         {
             long clock = 1000;
