@@ -764,6 +764,36 @@ check('reveal payload derivation honors the frozen protocol surfaces', function(
         {kind:'choiceSelect', offerId:'o1', optionId:'missing'}, {command:'stashChoose'}, null), null);
 });
 
+check('choice reads reject superseded and retired callbacks and settle an unissued read', function() {
+    const Choice = require('../launcher/web/modules/character-build/character-build-choice-rewards.js');
+    const callbacks = [], applied = [];
+    const view = {state:'idle', destroyed:false, document:{activeElement:null}, updateState:function() {},
+        setSnapshot:function(data) { applied.push(data); }};
+    const controller = {_choiceRewards:view, _itemUse:{requestChoices:function(callback) {
+        callbacks.push(callback); return 'read.' + callbacks.length;
+    }}};
+    Choice.install(controller);
+    controller._refreshChoiceRewards(null, false, true);
+    controller._refreshChoiceRewards();
+    callbacks[0]({offers:[], revision:1});
+    assert.strictEqual(view.readPending, true);
+    assert.deepStrictEqual(applied, []);
+    const latest = {offers:[], revision:2};
+    callbacks[1](latest);
+    assert.deepStrictEqual(applied, [latest]);
+    assert.strictEqual(view.readPending, false);
+    assert.strictEqual(view.readFeedback, '');
+    controller._refreshChoiceRewards(null, false, true);
+    view.destroyed = true;
+    callbacks[2]({offers:[], revision:3});
+    assert.deepStrictEqual(applied, [latest]);
+    view.destroyed = false;
+    controller._itemUse.requestChoices = function() { return null; };
+    controller._refreshChoiceRewards();
+    assert.strictEqual(view.readPending, false);
+    assert.deepStrictEqual(applied, [latest, null]);
+});
+
 check('committed settlements stay inline; the reveal layer is dormant pending the protocol extension', function() {
     const reveals = [];
     const controller = {
@@ -789,7 +819,7 @@ check('committed settlements stay inline; the reveal layer is dormant pending th
                 items:[{itemName:'UZI', displayName:'UZI', quantity:2, level:7, icon:'UZI'},
                     {itemName:'普通手雷', displayName:'普通手雷', quantity:4, level:0}],
                 skills:[]}
-        ]}], kpoints:0}, updateState:function() {}}
+        ]}], kpoints:0}, updateState:function() {}, setSnapshot:function(data) { this.snapshot = data; }}
     };
     ItemUseChannel.install(controller);
     controller._showItemUseReveal = function(result) { reveals.push(result); return true; };
@@ -842,7 +872,7 @@ check('inline result messages carry the granted content list', function() {
         _choiceRewards:{snapshot:{offers:[{offerId:'o2', options:[
             {optionId:'s1', title:'霸体入门', grade:'low', kCost:0, items:[],
                 skills:[{skillKey:'霸体', level:2, currentLevel:0, description:'获得霸体。'}]}
-        ]}], kpoints:0}, updateState:function() {}}
+        ]}], kpoints:0}, updateState:function() {}, setSnapshot:function(data) { this.snapshot = data; }}
     };
     ItemUseChannel.install(controller);
     controller._showItemUseReveal = function(result) { reveals.push(result); return true; };

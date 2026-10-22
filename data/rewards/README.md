@@ -41,6 +41,8 @@
 
 领取提交确认后，Web 重新读取选择列表和同一暂存库摘要；两者都无待办且通道空闲时自动返回构筑。有其他选择、溢出物资、读失败或未知结果时保留处理入口。单纯打开或刷新空列表不触发自动返回。
 
+Web 的“更新领取状态”只重读候选、K点余额及领取资格，不重新抽取；页面明确说明候选已固定、可在本局内稍后选择。读取期间显示进度并禁用重复读取与领取，手动读取成功且候选不变也明确反馈；失败显示“重试读取”且禁止凭旧数据领取。领取结果未知时，普通读取不覆盖待核对提示、不解锁写入，仍须通过“核对领取结果”处理原操作。
+
 候选使用独立单调 offer ID，保存冻结的完整物品实例、技能等级和K点价格；后续配置调整不改已经抽出的候选。书中绑定临时槽、书籍 ID、seed 与 startedAt；换普通存档或开启另一局不可领取。此持久性保护不代表肉鸽支持中途续玩。
 
 `grade` 已全链接线（2026-10-08 CS6 批次）：choice-rewards.json 显式声明 → `ChoiceRewardDefinition.as` 派生目录 → `ChoiceRewardService.open` 冻结进候选（目录非法值按 `invalid_reward_pack` 失败关闭）→ `snapshot` 投影（旧冻结候选无该键时读边省略）→ `ItemUseTask.RewardChoice.cs` 白名单（可选封闭枚举）→ Web 卡片/揭晓层按 `option.grade` 着色。`ChoiceRewardStore.normalize` 拒收非法冻结 grade（`invalid_choice_store`）。编辑源改动后跑 `build-choice-rewards.py`（及书籍生成器，若凭证选项受影响），AS2 源改动须走 CS6 `-Target publish` 并复核 `.as` BOM。

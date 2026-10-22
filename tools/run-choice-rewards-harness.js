@@ -147,7 +147,7 @@ async function main() {
                             else { qa.offers=qa.offers.filter(o=>o.offerId!==qa.receipt.offerId);qa.stock=!qa.noOverflow;qa.revision++;response.data={state:'committed',result:qa.receipt}; }
                         } else throw new Error('unexpected fixture command '+message.cmd);
                         router.handleResponse(response);
-                    }, 0);
+                    }, message.cmd === 'stashChoices' ? qa.readDelay || 0 : 0);
                     return true;
                 }
                 control._itemUse=new CharacterBuildItemUse.Controller({send:send,router:router,operationNonce:'choice.ui',
@@ -220,8 +220,41 @@ async function main() {
             if(width===1024) await page.screenshot({path:path.join(out,'pending-entry-1024x576.png')});
             await page.locator('[data-choice-rewards-open]').click();
             await page.waitForFunction(() => __choiceQa.control._choiceRewards.snapshot.offers.length === 1);
+            await page.waitForFunction(() => !__choiceQa.control._choiceRewards.readPending);
             assert.deepStrictEqual(await page.evaluate(() => ({offer:__choiceQa.control._choiceRewards.offerId,
                 selected:__choiceQa.control._choiceRewards.selected,options:JSON.stringify(__choiceQa.offers)})), saved);
+            // Manual status reads keep frozen cards and selection, and always acknowledge unchanged data.
+            assert((await dialog.textContent()).includes('开包后候选已确定，不能重新抽取。'));
+            assert((await dialog.textContent()).includes('可在本局内返回构筑，稍后继续选择。'));
+            const readsBefore = await page.evaluate(() => {
+                const qa = __choiceQa, view = qa.control._choiceRewards;
+                qa.cardBeforeRead = view.cards.firstElementChild;
+                qa.scrollBeforeRead = view.cards.scrollTop;
+                view.grantedNote = '上次领取已完成。';
+                qa.readDelay = 350;
+                return qa.sent.filter(message => message.cmd === 'stashChoices').length;
+            });
+            await page.locator('[data-choice-refresh]').click();
+            assert(await page.locator('[data-choice-refresh]').isDisabled());
+            assert(await page.locator('[data-choice-confirm]').isDisabled());
+            assert((await dialog.textContent()).includes('正在更新领取状态…'));
+            assert.strictEqual(await page.locator('.character-build-choice-cards').getAttribute('aria-busy'), 'true');
+            await page.evaluate(() => __choiceQa.control._choiceRewards.refresh.click());
+            if (width === 1024) await page.screenshot({path:path.join(out,'status-loading-1024x576.png')});
+            await page.waitForFunction(() => !__choiceQa.control._choiceRewards.readPending);
+            assert((await dialog.textContent()).includes('领取状态已更新，候选不会重新抽取。'));
+            assert.deepStrictEqual(await page.evaluate(() => ({offer:__choiceQa.control._choiceRewards.offerId,
+                selected:__choiceQa.control._choiceRewards.selected,options:JSON.stringify(__choiceQa.offers)})), saved);
+            assert(await page.evaluate(() => {
+                const qa = __choiceQa, view = qa.control._choiceRewards;
+                return qa.cardBeforeRead === view.cards.firstElementChild && qa.scrollBeforeRead === view.cards.scrollTop;
+            }), 'unchanged reads preserve card DOM and scrolling');
+            assert(await page.evaluate(() => document.activeElement === __choiceQa.control._choiceRewards.refresh),
+                'manual status read returns focus to its action');
+            assert.strictEqual(await page.evaluate(() => __choiceQa.sent.filter(message => message.cmd === 'stashChoices').length), readsBefore + 1);
+            await page.evaluate(() => { __choiceQa.readDelay = 0; });
+            await assertCardBoundaries(page);
+            await page.screenshot({path:path.join(out,'status-updated-'+width+'x'+height+'.png')});
             // Keyboard scope and pointer occlusion must agree.
             for (let tab=0;tab<10;tab++) {
                 await page.keyboard.press('Tab');
@@ -246,11 +279,19 @@ async function main() {
             await page.evaluate(() => {__choiceQa.failRead=true;__choiceQa.control._refreshChoiceRewards();});
             await page.waitForFunction(() => __choiceQa.control._choiceRewards.loadFailed === true);
             assert(await page.locator('[data-choice-confirm]').isDisabled());
-            await page.evaluate(() => {__choiceQa.failRead=false;__choiceQa.mode='unknown';__choiceQa.control._refreshChoiceRewards();});
+            assert.strictEqual(await page.locator('[data-choice-refresh]').textContent(), '重试读取');
+            await page.locator('[data-choice-refresh]').focus();
+            if (width === 1024) await page.screenshot({path:path.join(out,'status-read-failed-1024x576.png')});
+            await page.evaluate(() => {__choiceQa.failRead=false;__choiceQa.mode='unknown';});
+            await page.getByRole('button',{name:'重试读取',exact:true}).click();
             await page.locator('[data-choice-confirm]').click();
             await page.waitForFunction(() => __choiceQa.control._itemUse.debugState().state === 'needs_reconcile');
-            await page.getByRole('button',{name:'刷新',exact:true}).click();
+            await page.locator('[data-choice-refresh]').click();
+            await page.waitForFunction(() => !__choiceQa.control._choiceRewards.readPending);
             assert(await page.locator('[data-choice-confirm]').isDisabled());
+            assert((await dialog.textContent()).includes('上次操作结果待确认，请先核对。'));
+            assert(!(await page.locator('.character-build-choice-footer [role="status"]').textContent()).includes('领取状态已更新'));
+            if (width === 1024) await page.screenshot({path:path.join(out,'status-needs-reconcile-1024x576.png')});
             await page.evaluate(() => {__choiceQa.mode='commit';});
             await page.getByRole('button',{name:'核对领取结果',exact:true}).click();
             await page.waitForFunction(() => __choiceQa.control._choiceRewards.snapshot.offers.length === 0);
@@ -314,14 +355,16 @@ async function main() {
             assert((await dialog.textContent()).includes('K点不足'));
             await page.locator('[data-choice-option]').nth(1).click();
             assert(await page.locator('[data-choice-confirm]').isEnabled());
-            await page.evaluate(() => {__choiceQa.kpoints=400;__choiceQa.control._refreshChoiceRewards();});
+            await page.evaluate(() => {__choiceQa.kpoints=400;});
+            await page.locator('[data-choice-refresh]').click();
             await page.waitForFunction(() => __choiceQa.control._choiceRewards.snapshot.kpoints===400);
             await page.locator('[data-choice-option]').first().click();
             assert(await page.locator('[data-choice-confirm]').isEnabled());
             assert((await page.locator('[data-choice-confirm]').textContent()).includes('支付 300 K点'));
             await assertIconsRendered(page, '[data-choice-option] img[data-icon-name="闪现"]', 'paid skill icon');
             await page.screenshot({path:path.join(out,'paid-skill-'+width+'x'+height+'.png')});
-            await page.evaluate(() => {__choiceQa.offers[0].options[0].available=false;__choiceQa.control._refreshChoiceRewards();});
+            await page.evaluate(() => {__choiceQa.offers[0].options[0].available=false;});
+            await page.locator('[data-choice-refresh]').click();
             await page.waitForFunction(() => __choiceQa.control._choiceRewards.snapshot.offers[0].options[0].available===false);
             assert(await page.locator('[data-choice-confirm]').isDisabled());
             await page.evaluate(() => {
@@ -514,7 +557,7 @@ async function main() {
                 timeBudget:{inlineInteractiveMs:Math.round(inlineInteractiveMs * 100) / 100,
                     inlineVisibleMs:Math.round(inlineVisibleMs * 100) / 100,
                     interactiveCeilingMs:100, visibleCeilingMs:300},
-                checks:['backpack open','frozen reopen','keyboard focus','read failure','unknown write','exact query','stash navigation','multiple offers','2-4 cards','long content scroll','grade coloring','paid price chip','skill icon and description row','choiceSelect converges inline','fixed pack inline','chooseOne pack inline with budget','openMany inline','dormant reveal renderer coverage','inline time budget','inline instant terminal','icons rendered and decoded','rich tooltip channel']});
+                checks:['backpack open','frozen reopen','keyboard focus','read pending and duplicate suppression','unchanged read feedback and stable cards','read failure and retry','unknown write survives status read','exact query','stash navigation','multiple offers','2-4 cards','long content scroll','grade coloring','paid price chip','skill icon and description row','choiceSelect converges inline','fixed pack inline','chooseOne pack inline with budget','openMany inline','dormant reveal renderer coverage','inline time budget','inline instant terminal','icons rendered and decoded','rich tooltip channel']});
             await page.close();
         }
         fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');
