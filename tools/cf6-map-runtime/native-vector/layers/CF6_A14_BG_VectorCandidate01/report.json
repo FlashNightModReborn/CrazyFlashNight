@@ -1,0 +1,5948 @@
+{
+  "schema": "cf6-native-layer-candidate.v1",
+  "name": "CF6_A14_BG_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/parts/environment-a14-backdrop.svg",
+  "sourceSha256": "d15101e37aa48c3e95a829efd65ee1a4bcd6ea64dc00864b670c101a655c1078",
+  "nativeShapes": 29052,
+  "nativeSymbols": 4466,
+  "intrinsicTextures": 8,
+  "masks": [
+    {
+      "id": "n2b1921_0__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_1__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_2__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f6",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_3__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f8",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_4__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f10",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_5__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f12",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_6__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f14",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_7__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f16",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_8__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f18",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_9__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f20",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_10__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f22",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_11__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f24",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_12__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f26",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_13__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f28",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_14__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f30",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_15__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f32",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_16__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f34",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_17__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f36",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_18__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f38",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_19__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f40",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_20__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f42",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_21__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f44",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_22__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f46",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_23__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f48",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_24__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f50",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_25__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f52",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_26__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f54",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_27__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f56",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_28__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f58",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_29__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f60",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_30__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f62",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_31__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f64",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_32__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f66",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_33__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f68",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_34__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f70",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_35__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f72",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_36__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f74",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_37__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f76",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_38__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f78",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_39__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f80",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_40__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f82",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_41__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f84",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_42__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f86",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_43__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f88",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_44__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f90",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_45__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f92",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_46__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f94",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_47__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f96",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_48__source-alpha-1902",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2c1921f98",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_49__source-alpha-1902",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2c1921f100",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_50__source-alpha-1902",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2c1921f102",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_51__source-alpha-1902",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2c1921f104",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_52__source-alpha-1902",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2c1921f106",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_53__source-alpha-1902",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2c1921f108",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_54__wallgrainmask",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2b1921_54__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2c1921f110",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_55__shieldpaint",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_55__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2c1921f112",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_56__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f114",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_57__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f116",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_58__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f118",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_59__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f120",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_60__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f122",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_61__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f124",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_62__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f126",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_63__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f128",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_64__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f130",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_65__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f132",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_66__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f134",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_67__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f136",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_68__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f138",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_69__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f140",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_70__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f142",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_71__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f144",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_72__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f146",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_73__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f148",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_74__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f150",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_75__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f152",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_76__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f154",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_77__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f156",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_78__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f158",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1921_79__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1921f160",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n5b1443_0__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n5c1443f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n6b1413_0__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n6c1413f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n8b1878_0__rear-left-voltage-front",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n8b1878_0__rear-left-voltage-side",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n8b1878_0__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n8c1878f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n9b1883_0__front-left-voltage-front",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n9b1883_0__front-left-voltage-side",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n9b1883_0__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n9c1883f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_0__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_1__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_2__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f6",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_3__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f8",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_4__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f10",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_5__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f12",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_6__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f14",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_7__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f16",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_8__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f18",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_9__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f20",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_10__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f22",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_11__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f24",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_12__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f26",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_13__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f28",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_14__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f30",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_15__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f32",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_16__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f34",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_17__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f36",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_18__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f38",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_19__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f40",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_20__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f42",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_21__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f44",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_22__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f46",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_23__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f48",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_24__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f50",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_25__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f52",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_26__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f54",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_27__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f56",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_28__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f58",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_29__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f60",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_30__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f62",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_31__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f64",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_32__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f66",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_33__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f68",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_34__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f70",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10b1922_35__tileClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n10c1922f72",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n15b1901_0__upperface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n15b1901_0__lowerface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n15c1901f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n17d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n17d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n18d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n18d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n19d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n19d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n20d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n20d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n21d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n21d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n22d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n22d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n23d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n23d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n24d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n24d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n25d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n25d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n26d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n26d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n27d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n27d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n28d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n28d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n29d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n29d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n30d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n30d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n31d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n31d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n32d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n32d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n33d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n33d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n34d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n34d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n35b1901_0__upperface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n35b1901_0__lowerface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n35c1901f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n37d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n37d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n38d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n38d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n39d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n39d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n40d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n40d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n41d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n41d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n42d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n42d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n43d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n43d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n44d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n44d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n45d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n45d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n46d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n46d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n47d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n47d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n48d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n48d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n49d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n49d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n50d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n50d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n51d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n51d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n52d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n52d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n53d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n53d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n54d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n54d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n55b1901_0__upperface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n55b1901_0__lowerface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n55c1901f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n57d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n58d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n58d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n59d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n59d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n60d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n60d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n61d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n61d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n62d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n62d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n63d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n63d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n64d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n64d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n65d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n65d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n66d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n66d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n67d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n67d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n68d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n68d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n69d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n69d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n70d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n70d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n71d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n71d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n72d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n72d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n73d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n73d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n74d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n74d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n75b1901_0__upperface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n75b1901_0__lowerface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n75c1901f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n77d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n77d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n78d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n78d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n79d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n79d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n80d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n80d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n81d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n81d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n82d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n82d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n83d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n83d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n84d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n84d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n85d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n85d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n86d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n86d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n87d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n87d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n88d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n88d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n89d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n89d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n90d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n90d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n91d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n91d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n92d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n92d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n93d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n93d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n94d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n94d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n95b1901_0__upperface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n95b1901_0__lowerface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n95c1901f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n97d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n97d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n98d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n98d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n99d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n99d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n100d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n100d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n101d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n101d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n102d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n102d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n103d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n103d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n104d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n104d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n105d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n105d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n106d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n106d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n107d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n107d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n108d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n108d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n109d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n109d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n110d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n110d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n111d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n111d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n112d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n112d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n113d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n113d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n114d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n114d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n115b1901_0__upperface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n115b1901_0__lowerface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n115c1901f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n117d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n117d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n118d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n118d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n119d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n119d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n120d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n120d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n121d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n121d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n122d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n122d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n123d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n123d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n124d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n124d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n125d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n125d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n126d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n126d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n127d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n127d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n128d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n128d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n129d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n129d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n130d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n130d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n131d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n131d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n132d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n132d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n133d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n133d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n134d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n134d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n135b1901_0__upperface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n135b1901_0__lowerface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n135c1901f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n137d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n137d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n138d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n138d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n139d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n139d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n140d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n140d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n141d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n141d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n142d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n142d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n143d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n143d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n144d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n144d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n145d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n145d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n146d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n146d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n147d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n147d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n148d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n148d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n149d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n149d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n150d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n150d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n151d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n151d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n152d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n152d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n153d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n153d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n154d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n154d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n155b1901_0__upperface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n155b1901_0__lowerface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n155c1901f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n157d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n157d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n158d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n158d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n159d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n159d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n160d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n160d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n161d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n161d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n162d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n162d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n163d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n163d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n164d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n164d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n165d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n165d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n166d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n166d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n167d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n167d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n168d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n168d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n169d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n169d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n170d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n170d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n171d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n171d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n172d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n172d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n173d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n173d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n174d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n174d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n175b1901_0__upperface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n175b1901_0__lowerface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n175c1901f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n177d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n177d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n178d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n178d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n179d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n179d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n180d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n180d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n181d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n181d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n182d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n182d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n183d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n183d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n184d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n184d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n185d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n185d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n186d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n186d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n187d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n187d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n188d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n188d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n189d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n189d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n190d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n190d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n191d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n191d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n192d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n192d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n193d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n193d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n194d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n194d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n195b1413_0__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n195c1413f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n196b1901_0__upperface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n196b1901_0__lowerface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n196c1901f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n198d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n198d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n199d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n199d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n200d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n200d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n201d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n201d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n202d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n202d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n203d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n203d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n204d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n204d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n205d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n205d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n206d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n206d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n207d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n207d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n208d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n208d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n209d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n209d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n210d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n210d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n211d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n211d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n212d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n212d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n213d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n213d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n214d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n214d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n215d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n215d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n216b1901_0__upperface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n216b1901_0__lowerface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n216c1901f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n218d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n218d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n219d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n219d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n220d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n220d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n221d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n221d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n222d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n222d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n223d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n223d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n224d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n224d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n225d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n225d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n226d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n226d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n227d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n227d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n228d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n228d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n229d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n229d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n230d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n230d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n231d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n231d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n232d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n232d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n233d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n233d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n234d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n234d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n235d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n235d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n268b1901_0__upperface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n268b1901_0__lowerface",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n268c1901f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n270d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n270d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n271d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n271d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n272d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n272d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n273d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n273d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n274d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n274d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n275d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n275d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n276d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n276d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n277d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n277d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n278d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n278d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n279d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n279d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n280d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n280d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n281d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n281d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n282d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n282d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n283d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n283d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n284d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n284d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n285d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n285d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n286d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n286d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n287d2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n287d1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    }
+  ],
+  "maskImages": [],
+  "imagePlacements": [
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-284dc3064799385627ec5136.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-74a5ca93eeabd7126ade7bac.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        1.0,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-284dc3064799385627ec5136.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-74a5ca93eeabd7126ade7bac.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        1.0,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-284dc3064799385627ec5136.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-74a5ca93eeabd7126ade7bac.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        1.0,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-284dc3064799385627ec5136.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-74a5ca93eeabd7126ade7bac.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        1.0,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-284dc3064799385627ec5136.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-74a5ca93eeabd7126ade7bac.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        1.0,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-284dc3064799385627ec5136.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-74a5ca93eeabd7126ade7bac.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        52.0,
+        89.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        1.0,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-d453200c45c400bc8c656872.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        231.0,
+        70.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "col12",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            1.0,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            0.37890625,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col12",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col14",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            1.0,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            0.37890625,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col14",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    }
+  ],
+  "patterns": [
+    {
+      "id": "n2b1921_54__plaster",
+      "texture": "intrinsic-7306457526928ec9a3ea3e4a.png",
+      "sourceTile": [
+        600.0,
+        225.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n2b1921_55__paintgrain",
+      "texture": "intrinsic-3836de63b32bea5064149496.png",
+      "sourceTile": [
+        133.0,
+        162.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n6b1413_0__grain",
+      "texture": "intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sourceTile": [
+        63.0,
+        27.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n8b1878_0__grain",
+      "texture": "intrinsic-b2fb7d7f5070acd7093c768b.png",
+      "sourceTile": [
+        480.0,
+        453.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n9b1883_0__grain",
+      "texture": "intrinsic-83614aa0c319c35d1bff6907.png",
+      "sourceTile": [
+        480.0,
+        388.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n195b1413_0__grain",
+      "texture": "intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sourceTile": [
+        63.0,
+        27.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "gradientFallbacks": [],
+  "blendModes": [],
+  "sourceViewport": [
+    -287.95,
+    -107.1,
+    2269.95,
+    600.46
+  ],
+  "registrationMatrix": [
+    1.0,
+    0,
+    0,
+    1.0,
+    287.95,
+    107.1
+  ],
+  "state": "native XFL assembled; actual CS6 compile and rendering still pending",
+  "limits": [
+    "SVG filter-region clipping is reported per filter and not yet reproduced.",
+    "Native Gaussian blur is a three-pass approximation.",
+    "Root SVG viewport crop must be compared at the original edge."
+  ]
+}

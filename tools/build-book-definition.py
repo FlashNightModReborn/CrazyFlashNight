@@ -1,6 +1,7 @@
 """Validate editable book data and generate its AS2 definition. --check is read-only."""
 import argparse
 import json
+import math
 import re
 from pathlib import Path
 import shutil
@@ -12,6 +13,200 @@ SOURCE = ROOT / 'data/stages/books/repair-campus.json'
 OUTPUT = ROOT / 'scripts/类定义/org/flashNight/arki/scene/BookDefinition.as'
 PACK_OUTPUT = ROOT / 'data/items/消耗品_书中配给.xml'
 RECIPE_OUTPUT = ROOT / 'data/crafting/书中配给.json'
+CF6_SOURCE = ROOT / 'data/stages/books/cf6-sting.json'
+
+
+def validate_cf6(data, items, skills, units, require_backgrounds=True):
+    """CF6 uses authored native stages; campus random loot and boss rules do not apply."""
+    if (data.get('schema'), data.get('id'), data.get('routeId'), data.get('stageName')) != (
+            'playable-book.v1', 'cf6-sting', 'historical', '书中历险-毒刺行动'):
+        raise ValueError('unsupported CF6 chapter/route identity')
+    def tree(value, depth=0):
+        if depth > 24: raise ValueError('CF6 data nesting exceeds limit')
+        if isinstance(value, dict):
+            if any(k in ('__proto__', 'constructor', 'prototype') for k in value): raise ValueError('unsafe CF6 key')
+            for child in value.values(): tree(child, depth+1)
+        elif isinstance(value, list):
+            if len(value) > 512: raise ValueError('oversized CF6 array')
+            for child in value: tree(child, depth+1)
+        elif isinstance(value, (int, float)) and not isinstance(value, bool):
+            if not math.isfinite(value) or abs(value) > 1000000000: raise ValueError('invalid CF6 numeric value')
+        elif isinstance(value, str):
+            if len(value) > 4096: raise ValueError('oversized CF6 text')
+        elif value is not None and not isinstance(value, bool): raise ValueError('invalid CF6 value')
+    tree(data)
+    if not isinstance(data.get('title'), str) or not data['title']: raise ValueError('missing CF6 title')
+    bounded_integer(data['startingMoney'], 0, 10000000, 'CF6 starting money')
+    bounded_integer(data['startingSkillPoints'], 0, 10000, 'CF6 spendable SP')
+    actor = data['actor']
+    if actor['level'] != 60 or actor['experience'] != 157526193 or actor['gender'] != '男':
+        raise ValueError('historical actor must start at level 60 with matching XP')
+    bounded_integer(actor['height'],100,250,'actor height')
+    if any(not isinstance(actor[k], str) or not actor[k] for k in ('name','face')) or not isinstance(actor['hair'],str): raise ValueError('invalid actor appearance')
+    slots = {'头部装备','上装装备','下装装备','手部装备','脚部装备','颈部装备','刀','长枪','手枪','手枪2'}
+    used = set()
+    if not 1 <= len(actor['equipment']) <= 10: raise ValueError('invalid initial equipment')
+    for entry in actor['equipment']:
+        if set(entry) != {'slot','name','enhancement'} or entry['slot'] not in slots or entry['slot'] in used:
+            raise ValueError('invalid initial equipment slot')
+        used.add(entry['slot'])
+        item = items.get(entry['name'])
+        expected_use = '手枪' if entry['slot'] == '手枪2' else entry['slot']
+        if item is None or item.findtext('use') != expected_use or entry['enhancement'] != 11:
+            raise ValueError('initial equipment identity/slot/enhancement mismatch')
+        if int(item.findtext('data/level','0')) > 60: raise ValueError('initial equipment level too high')
+    skill_catalog = {s.findtext('Name'):s for s in skills}
+    used = set()
+    if not 1 <= len(actor['skills']) <= 80: raise ValueError('invalid fixed skill list')
+    for entry in actor['skills']:
+        meta = skill_catalog.get(entry['name'])
+        if set(entry) != {'name','level'} or meta is None or entry['name'] in used or not meta.findtext('Type'):
+            raise ValueError('unknown/duplicate fixed skill')
+        if entry['name'] == '驾驶' or entry['level'] != int(meta.findtext('MaxLevel','0')):
+            raise ValueError('historical fixed skills must be max level and exclude driving')
+        used.add(entry['name'])
+    maps = data['maps']
+    if not isinstance(maps,list) or not 1 <= len(maps) <= 32: raise ValueError('invalid CF6 map count')
+    ids = set()
+    map_order = ['TUTORIAL'] + ['A%02d'%n for n in range(1,23) if n not in (7,21)]
+    previous_position = -1
+    for stage in maps:
+        identity = stage['id']
+        if identity in ids or identity in ('A07','A21') or not re.fullmatch(r'(TUTORIAL|A(?:0[1-689]|1[0-9]|20|22))',identity):
+            raise ValueError('duplicate/unsupported CF6 map identity')
+        ids.add(identity)
+        position = map_order.index(identity)
+        if position <= previous_position: raise ValueError('CF6 maps must follow historical route order')
+        previous_position = position
+        background = stage['background']
+        expected_background = 'cf6/CF6_Tutorial_BG.swf' if identity == 'TUTORIAL' else 'cf6/CF6_' + identity + '_BG.swf'
+        if (not isinstance(background,str) or background != expected_background
+                or (identity != 'TUTORIAL' and not re.fullmatch(r'cf6/CF6_A(?:0[1-689]|1[0-9]|20|22)_BG\.swf',background))):
+            raise ValueError('CF6 background must match the exact registered map identity')
+        if require_backgrounds and not (ROOT/'flashswf/backgrounds'/background).is_file(): raise ValueError('missing CF6 background '+background)
+        presentation = stage.get('presentation')
+        if (not isinstance(presentation, dict) or set(presentation) != {'scale','backgroundX','backgroundY'}
+                or any(type(v) not in (int,float) or not math.isfinite(v) for v in presentation.values())
+                or not 0 < presentation['scale'] < 4
+                or abs(presentation['backgroundX']) >= 4000 or abs(presentation['backgroundY']) >= 4000
+                or stage.get('mechanism',{}).get('assetScale') != presentation['scale']):
+            raise ValueError('CF6 map presentation transform missing or inconsistent')
+        if not isinstance(stage['title'],str) or not isinstance(stage['dialogue'],list) or len(stage['dialogue']) > 32:
+            raise ValueError('invalid CF6 map title/dialogue')
+        for line in stage['dialogue']:
+            if set(line) != {'speaker','text'} or not isinstance(line['speaker'],str) or len(line['speaker']) > 40 or not isinstance(line['text'],str) or not 1 <= len(line['text']) <= 160:
+                raise ValueError('invalid CF6 dialogue')
+        native = stage['stage']
+        waves = native['Wave']['SubWave']
+        if not isinstance(waves,list) or not 1 <= len(waves) <= 64: raise ValueError('invalid authored CF6 waves')
+        for wave in waves:
+            enemies = wave['EnemyGroup']['Enemy']
+            if not isinstance(enemies,list) or len(enemies) > 128: raise ValueError('invalid authored CF6 enemies')
+            for enemy in enemies:
+                kind = enemy['Type']
+                if not isinstance(kind,str) or not kind.startswith('兵种') or int(kind[2:]) not in units:
+                    raise ValueError('unknown CF6 enemy '+str(kind))
+                bounded_integer(enemy['Level'],1,60,'CF6 enemy level')
+                bounded_integer(enemy['Quantity'],1,100,'CF6 authored count')
+                for drop in enemy.get('Parameters',{}).get('掉落物',[]):
+                    if drop['名字'] not in items: raise ValueError('unknown CF6 drop '+drop['名字'])
+        if native.get('BasicInformation',{}).get('BookBoss') is not None:
+            raise ValueError('CF6 must not use campus reinforcement controller')
+        validate_cf6_turrets(stage)
+        validate_cf6_boss(stage, units, items)
+    from cf6_economy import validate_economy
+    validate_economy(data, items)
+
+
+def validate_cf6_turrets(stage):
+    """Assembled-chapter gate for the A01 tutorial turret wiring (r15).
+
+    The mechanism.turrets spec feeds Cf6MapMechanism.beginRoom directly, so the
+    identity fields are pinned exactly; world coordinates must already carry the
+    single viewport transform (native x 128/75). The asset-existence gate lives
+    in build-chapter.py strict mode and is not duplicated here."""
+    spec = stage.get('mechanism', {}).get('turrets')
+    if stage['id'] != 'A01':
+        if spec is not None:
+            raise ValueError('non-A01 CF6 map carries turret wiring')
+        return
+    if not isinstance(spec, dict) or set(spec) != {
+            'assetUrl', 'linkage', 'filterMarker', 'fireIntervalFrames', 'fireFrameOffset', 'turrets'}:
+        raise ValueError('A01 turret spec fields mismatch')
+    if (spec['assetUrl'] != 'flashswf/backgrounds/cf6/CF6_A01_Turret.swf'
+            or spec['linkage'] != 'CF6教学炮塔-A01自动炮'
+            or spec['filterMarker'] != 'cf6-a01-turret-zombie'):
+        raise ValueError('A01 turret identity fields mismatch')
+    if spec['fireIntervalFrames'] != 18 or spec['fireFrameOffset'] != 11:
+        raise ValueError('A01 turret fire cadence mismatch (original frame 12 of 18)')
+    rows = spec['turrets']
+    if not isinstance(rows, list) or len(rows) != 2:
+        raise ValueError('A01 must carry exactly two tutorial turrets')
+    for row in rows:
+        if set(row) != {'x', 'y', 'facing'} or row['facing'] != 'right':
+            raise ValueError('invalid A01 turret row')
+        for axis in ('x', 'y'):
+            if type(row[axis]) not in (int, float) or not math.isfinite(row[axis]) \
+                    or not 0 <= row[axis] <= 5000:
+                raise ValueError('invalid A01 turret coordinate')
+
+
+def validate_cf6_boss(stage, units, items):
+    plan = stage.get('bossEncounter')
+    if plan is None: return
+    bosses = {'A06':463, 'A17':472, 'A20':473, 'A22':474}
+    identity = stage['id']
+    if identity not in bosses or set(plan) != {'instanceName','maxAlive','maxRanged','intervalFrames','groups'}:
+        raise ValueError('invalid CF6 boss map/plan')
+    if plan['instanceName'] != 'cf6Boss_'+identity: raise ValueError('invalid CF6 boss instance identity')
+    bounded_integer(plan['maxAlive'],1,8,'CF6 boss support cap')
+    bounded_integer(plan['maxRanged'],0,plan['maxAlive'],'CF6 ranged cap')
+    bounded_integer(plan['intervalFrames'],1,1800,'CF6 support interval')
+    waves = stage['stage']['Wave']['SubWave']
+    if len(waves) != 1 or len(waves[0]['EnemyGroup']['Enemy']) != 1:
+        raise ValueError('CF6 boss main wave contains only one boss')
+    boss = waves[0]['EnemyGroup']['Enemy'][0]
+    if boss['Type'] != '兵种'+str(bosses[identity]) or boss['Quantity'] != 1 or boss.get('InstanceName') != plan['instanceName']:
+        raise ValueError('CF6 boss main wave identity mismatch')
+    if identity == 'A20' and boss.get('Parameters',{}).get('老头变身') is not False:
+        raise ValueError('A20 human elder must not transform')
+    if not isinstance(plan['groups'],list) or not 1 <= len(plan['groups']) <= 16:
+        raise ValueError('invalid CF6 finite support groups')
+    previous, total = 2, 0
+    for group in plan['groups']:
+        ratio = group['hpRatio']
+        if set(group) != {'hpRatio','enemies'} or type(ratio) not in (int,float) or not 0 < ratio <= 1 or not ratio < previous:
+            raise ValueError('CF6 support thresholds must descend')
+        previous = ratio
+        if not isinstance(group['enemies'],list) or not 1 <= len(group['enemies']) <= 32:
+            raise ValueError('invalid CF6 support entries')
+        for enemy in group['enemies']:
+            if set(enemy) - {'Type','Level','Quantity','ranged','SpawnIndex','x','y','Parameters'}:
+                raise ValueError('CF6 support names and ownership are controller-owned')
+            if not re.fullmatch(r'兵种[0-9]+',enemy['Type']) or int(enemy['Type'][2:]) not in units:
+                raise ValueError('unknown CF6 support type')
+            bounded_integer(enemy['Level'],1,60,'CF6 support level')
+            bounded_integer(enemy['Quantity'],1,128,'CF6 support quantity')
+            if type(enemy['ranged']) is not bool: raise ValueError('CF6 support requires ranged boolean')
+            if enemy['ranged'] and plan['maxRanged'] == 0: raise ValueError('CF6 ranged queue cannot make progress')
+            spawn = enemy.get('SpawnIndex')
+            points = stage['stage'].get('SpawnPoint',{}).get('Point',[])
+            if spawn not in ('left','right') and not (type(spawn) is int and 0 <= spawn < len(points)):
+                raise ValueError('invalid CF6 support spawn point')
+            for axis in ('x','y'):
+                if axis in enemy and (type(enemy[axis]) not in (int,float) or not math.isfinite(enemy[axis])):
+                    raise ValueError('invalid CF6 support coordinate')
+            parameters = enemy.get('Parameters',{})
+            if not isinstance(parameters,dict) or any(k in parameters for k in ('cf6BossOwnerToken','cf6SupportIdentity','publishStageEvent','产生源','InstanceName')):
+                raise ValueError('CF6 support ownership parameters are reserved')
+            for drop in parameters.get('掉落物',[]):
+                if drop['名字'] not in items: raise ValueError('unknown CF6 support drop')
+            total += enemy['Quantity']
+    if total > 128: raise ValueError('CF6 support finite budget exceeds 128')
+
+
+def generated_cf6(data):
+    return {ROOT/'data/stages/books/cf6-sting.runtime.json': (json.dumps(data,ensure_ascii=False,indent=2)+'\n').encode('utf-8')}
 
 
 def load_mods():
@@ -314,6 +509,10 @@ def main():
     outputs[ROOT / 'data/stages/books/repair-campus.runtime.json'] = (json.dumps(data, ensure_ascii=False, indent=2) + '\n').encode('utf-8')
     content = b'\xef\xbb\xbf' + text.replace('\n', '\r\n').encode('utf-8')
     outputs[OUTPUT] = content
+    if CF6_SOURCE.is_file():
+        cf6 = json.loads(CF6_SOURCE.read_text(encoding='utf-8-sig'))
+        validate_cf6(cf6, items, ET.parse(ROOT/'data/skills/skills.xml').findall('Skill'), units)
+        outputs.update(generated_cf6(cf6))
     for path, content in outputs.items():
         if args.check:
             if not path.is_file() or path.read_bytes() != content:
@@ -322,7 +521,7 @@ def main():
             if path == OUTPUT and not path.exists():
                 shutil.copyfile(ROOT / 'scripts/类定义/org/flashNight/arki/scene/StageReturnFlow.as', OUTPUT)
             path.write_bytes(content)
-    print('book definition: 7 maps, 8 finite loadouts and matching ammo verified')
+    print('book definition: campus verified; CF6 ' + ('authored chapter verified' if CF6_SOURCE.is_file() else 'not installed'))
 
 
 if __name__ == '__main__':

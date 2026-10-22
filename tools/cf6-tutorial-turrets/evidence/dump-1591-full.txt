@@ -1,0 +1,42 @@
+===== frame_1\DoAction.as
+var §\x01§ = 737;
+var §\x0f§ = 1;
+this.swapDepths(this._y * 100);
+
+===== frame_12\PlaceObject2_359_5\CLIPACTIONRECORD onClipEvent(enterFrame).as
+onClipEvent(enterFrame){
+   var §\x01§ = 602;
+   var §\x0f§ = 1;
+   var myPoint = {x:0,y:0};
+   this.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+}
+
+===== frame_12\PlaceObject2_359_5\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   function 射击1()
+   {
+      _root.汽车_子弹区域shoot("无",1,15,"无","普通可见子弹",10,20,"无声火花",_parent._name,myPoint.x,myPoint.y);
+   }
+   var §\x01§ = 899;
+   var §\x0f§ = 1;
+   var myPoint = {x:0,y:0};
+   this.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   射击1();
+}
+
+===== frame_12\PlaceObject2_359_5\CLIPACTIONRECORD onClipEvent(unload).as
+onClipEvent(unload){
+   clearInterval(keepshooting);
+}
+
+===== frame_12\PlaceObject2_506_7\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   gotoAndStop(random(3) + 1);
+}
+

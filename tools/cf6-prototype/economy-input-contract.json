@@ -1,0 +1,27 @@
+{
+  "schema": "cf6-economy-input.v1",
+  "chapterField": "economy",
+  "requiredFields": ["randomWeapons", "eliteWeapons", "choices"],
+  "randomWeapons": {
+    "fields": ["mapId", "choices"],
+    "choices": [{"weapon": "existing long-gun item name", "ammo": "weapon data/clipname", "ammoCount": 3}],
+    "limits": "one row per map; 2..16 distinct weapons; ammoCount integer 1..30; weapon level <=60; no E1-E5 candidate weapon in any random or choice pool"
+  },
+  "eliteWeapons": {
+    "fields": ["mapId", "quota", "choices"],
+    "quotaMaps": {"E1": "A09", "E2": "A13", "E3": "A14", "E4": "A17", "E5": "A19"},
+    "choices": [{"weapon": "existing long-gun item name", "ammo": "weapon data/clipname", "ammoCount": 3}],
+    "carrier": "exactly one Quantity=1 enemy of Type 兵种466 or 兵种467 per quota, tagged Parameters.cf6EliteQuota=E1..E5, in stage.Wave.SubWave or bossEncounter.groups; support entries must not have InstanceName",
+    "limits": "E1 1..16 candidates; E2-E5 2..16; no weapon appears in two quota pools; all direct weapon/ammo drops on this carrier are replaced by one selected weapon enhancement 1 and selected ammo; 不掉装备=true; equipped 长枪=selected weapon#1"
+  },
+  "choices": {
+    "fields": ["mapId", "poolId", "itemName"],
+    "limits": "one delivery per map; exact cf6-sting book scope and itemName from choice-rewards.fragment.json; all skills absent from actor.skills; no elite candidate weapon; each delivery creates one existing playerChoice reward-pack item"
+  },
+  "choiceCatalogSource": "data/stages/books/cf6-sting-source/choice-rewards.fragment.json",
+  "choiceCatalogSchema": "choice-rewards.v1 with exact schema,bundles,pools fields; unchanged shared authoring fields; bundle/pool IDs prefixed cf6.; only scope {kind:book,bookId:cf6-sting}; kCost=0 for first prototype",
+  "placement": "all generated random weapon, ammunition and choice pickups use the exact finite world-space BasicInformation.PlayerX and PlayerY already validated as the map spawn; no offset and no second coordinate transform. Authored fixed pickups remain root assembler-owned.",
+  "randomness": "BookRunRules seed selects once at full plan generation, traversing maps before startAt too; same seed/debug jump retains same later choices; config remains immutable",
+  "integration": "root adds chapter.economy from economy fragment, tags elite carriers, removes duplicate fixed pickups for these weapon/choice sources; foundation owns validators and runtime consumption; boss plan must be passed from the generated stage rather than unmodified config",
+  "authority": "no new reward or save endpoint; native pickup/item use/ChoiceRewardService/RewardStashService and exact operation unknown-write fences remain authoritative; no external SP/K/gold"
+}

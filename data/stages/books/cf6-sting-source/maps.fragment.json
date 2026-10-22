@@ -1,0 +1,2947 @@
+{
+ "schema": "cf6-sting-maps.v2",
+ "status": "candidate",
+ "coordinateSpace": "native-original",
+ "coordinateNote": "全部spawn/敌人/拾取/生成点x/y均为原版native坐标;主控最终集成时统一变换一次,不要与runtime-index已变换坐标混用",
+ "placementAdaptation": {
+  "file": "placement-adaptation.v1.json",
+  "schema": "cf6-placement-adaptation.v1",
+  "applied": 5,
+  "status": "adopted-trial(主控试作采纳;真实消费者待验,不称原作完全复现)",
+  "note": "r6几何失败5落点的有界源数据适配(原字段路径/原坐标/目的世界坐标/反算native/碰撞理由见该文件);事实表与原坐标保持历史来源不变;未适配项(A06/A17屏外对称增援、A17 Boss原作高度、教学既有门)保持不改,列该文件unchangedPendingOnMachine实机待核"
+ },
+ "chapterContract": {
+  "schema": "playable-book.v1",
+  "id": "cf6-sting",
+  "routeId": "historical",
+  "stageName": "书中历险-毒刺行动"
+ },
+ "actorSource": "tools/cf6-actor-template/actor.fragment.json (主控集成时并入)",
+ "merchantNote": "商人NPC不进maps:坐标由主控几何集成;模板与落点见shops.fragment.json",
+ "maps": [
+  {
+   "id": "TUTORIAL",
+   "title": "行动前训练",
+   "background": "cf6/CF6_Tutorial_BG.swf",
+   "dialogue": [
+    {
+     "speaker": "Andy",
+     "text": "先确认移动、切换武器、射击和换弹的操作。按键沿用你当前的设置，可在设置里查看。"
+    },
+    {
+     "speaker": "Andy",
+     "text": "长枪和刀已经在你的初始装备里，这里不再发枪。地面备有一份长枪弹药和一份急救包，走近执行拾取；状态良好时无需消耗。"
+    },
+    {
+     "speaker": "Andy",
+     "text": "熟悉操作后从右侧大门离开。门外就是A01第一现场，第一场战斗在那里开始。"
+    }
+   ],
+   "stage": {
+    "BasicInformation": {
+     "Background": "flashswf/backgrounds/cf6/CF6_Tutorial_BG.swf",
+     "PlayerX": 347.5,
+     "PlayerY": 270.5,
+     "EndFrame": "房间",
+     "BGM": {
+      "Command": "play",
+      "Title": "Moan",
+      "Loop": true
+     }
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "SpawnPoint": {
+     "Point": []
+    },
+    "Pickups": {
+     "Pickup": [
+      {
+       "Name": "战场长枪弹药包",
+       "Value": 1,
+       "x": 431,
+       "y": 360
+      },
+      {
+       "Name": "战场复合急救包",
+       "Value": 1,
+       "x": 626,
+       "y": 409
+      }
+     ]
+    },
+    "Event": [
+     {
+      "EventName": "Start",
+      "Guidance": "引导-拾取",
+      "Message": "行动前训练：移动并切换初始长枪试射。靠近地面补给后执行拾取；药品或弹药已满时无需消耗。"
+     },
+     {
+      "EventName": "Clear",
+      "Message": "训练结束，右侧大门已经开放。走出去即进入A01第一现场，战斗教学由第一战承担。"
+     }
+    ],
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": []
+       }
+      }
+     ]
+    }
+   },
+   "sourceNote": {
+    "provenance": "tools/cf6-tutorial/tutorial-map.fragment.json（独立教学室装配产物，直接复用）",
+    "notes": [
+     "初始M4A1战术版+镜之虎彻已在actor,教学不发第二把枪/其他免费枪",
+     "教学室不安排额外敌人；移动、装备与补给引导后正常出门，首场战斗教学在A01",
+     "教学布局以tools/cf6-tutorial原作几何与素材装配为准；不采用旧事实草案中的教学出生点候选"
+    ]
+   }
+  },
+  {
+   "id": "A01",
+   "title": "外围入口",
+   "background": "cf6/CF6_A01_BG.swf",
+   "dialogue": [],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 317.4,
+     "PlayerY": 281.9
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种461",
+          "Level": 35,
+          "Quantity": 1,
+          "x": 708.2,
+          "y": 310.2
+         },
+         {
+          "Type": "兵种461",
+          "Level": 35,
+          "Quantity": 1,
+          "x": 617.0,
+          "y": 319.0,
+          "Parameters": {
+           "目标标记": "cf6-a01-turret-zombie"
+          }
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种461",
+          "Level": 35,
+          "Quantity": 5,
+          "Interval": 100,
+          "SpawnIndex": 0,
+          "Parameters": {
+           "目标标记": "cf6-a01-turret-zombie"
+          }
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种461",
+          "Level": 35,
+          "Quantity": 5,
+          "Interval": 100,
+          "SpawnIndex": 1,
+          "Parameters": {
+           "目标标记": "cf6-a01-turret-zombie"
+          }
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种461",
+          "Level": 35,
+          "Quantity": 5,
+          "Interval": 100,
+          "SpawnIndex": 2,
+          "Parameters": {
+           "目标标记": "cf6-a01-turret-zombie"
+          }
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种461",
+          "Level": 35,
+          "Quantity": 3,
+          "Interval": 100,
+          "SpawnIndex": 3,
+          "Parameters": {
+           "目标标记": "cf6-a01-turret-zombie"
+          }
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": [
+      {
+       "Name": "极品UZI战术版",
+       "Value": 1,
+       "x": 75.1,
+       "y": 427.4
+      },
+      {
+       "Name": "冲锋枪达姆弹弹药",
+       "Value": 3,
+       "x": 115.1,
+       "y": 427.4
+      }
+     ]
+    },
+    "SpawnPoint": {
+     "Point": [
+      {
+       "x": 783.95,
+       "y": 323.1,
+       "QuantityMax": 5
+      },
+      {
+       "x": 783.95,
+       "y": 323.1,
+       "QuantityMax": 5
+      },
+      {
+       "x": 783.95,
+       "y": 323.1,
+       "QuantityMax": 5
+      },
+      {
+       "x": 783.95,
+       "y": 323.1,
+       "QuantityMax": 5
+      }
+     ]
+    }
+   },
+   "turrets": {
+    "coordinateSpace": "native-original",
+    "coordinateNote": "x/y为原作native坐标;主控build-chapter统一乘viewport装配倍率128/75一次后写入mechanism.turrets,勿与runtime坐标混用",
+    "assetUrl": "flashswf/backgrounds/cf6/CF6_A01_Turret.swf",
+    "linkage": "CF6教学炮塔-A01自动炮",
+    "filterMarker": "cf6-a01-turret-zombie",
+    "fireIntervalFrames": 18,
+    "fireFrameOffset": 11,
+    "instances": [
+     {
+      "name": "turretA",
+      "x": 133.8,
+      "y": 202.4,
+      "facing": "right"
+     },
+     {
+      "name": "turretB",
+      "x": 249.8,
+      "y": 430.9,
+      "facing": "right"
+     }
+    ],
+    "source": "tools/cf6-tutorial-turrets/tutorial-turrets.fragment.json"
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1592,
+    "exitRule": [
+     {
+      "charId": 1587,
+      "depth": 148,
+      "type": "killCount",
+      "required": 20,
+      "bossInstance": null,
+      "targetFrame": "s2"
+     }
+    ],
+    "originalKillThreshold": 20,
+    "levelRange": [
+     35,
+     36
+    ],
+    "notes": [
+     "prototypeDerived:A01=静态2+增援18共20只461(分组5/5/5/3),以原出口20死亡阈值有限化;原自由生成器死亡预算15出兵不减、补位不裁,实发量unknown;休眠模板(僵尸15/光头男5)无激活证据不投送",
+     "r15接线:静态630等价体(617.0,319.0)与4组增援均携带Parameters.目标标记=cf6-a01-turret-zombie;A01两门教学炮塔(133.8,202.4)/(249.8,430.9)经Cf6TutorialTurretService逐弹过滤只伤该标记目标",
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-僵尸 预算15/并发5);原版是否可激活=unknown",
+     "补给 极品UZI战术版:副武器补给(手枪位)"
+    ]
+   }
+  },
+  {
+   "id": "A02",
+   "title": "废车场",
+   "background": "cf6/CF6_A02_BG.swf",
+   "dialogue": [],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 91.5,
+     "PlayerY": 353.7
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种468",
+          "Level": 37,
+          "Quantity": 1,
+          "x": 890.1,
+          "y": 267.9
+         },
+         {
+          "Type": "兵种461",
+          "Level": 36,
+          "Quantity": 1,
+          "x": 640.8,
+          "y": 317.0
+         },
+         {
+          "Type": "兵种461",
+          "Level": 36,
+          "Quantity": 1,
+          "x": 738.8,
+          "y": 367.9
+         },
+         {
+          "Type": "兵种461",
+          "Level": 36,
+          "Quantity": 1,
+          "x": 828.5,
+          "y": 404.1
+         },
+         {
+          "Type": "兵种468",
+          "Level": 37,
+          "Quantity": 1,
+          "x": 990.1,
+          "y": 398.9
+         },
+         {
+          "Type": "兵种461",
+          "Level": 36,
+          "Quantity": 1,
+          "x": 1085.5,
+          "y": 405.1
+         },
+         {
+          "Type": "兵种461",
+          "Level": 36,
+          "Quantity": 1,
+          "x": 1052.8,
+          "y": 271.9
+         },
+         {
+          "Type": "兵种462",
+          "Level": 36,
+          "Quantity": 1,
+          "x": 535.1,
+          "y": 333.1
+         },
+         {
+          "Type": "兵种462",
+          "Level": 36,
+          "Quantity": 1,
+          "x": 884.1,
+          "y": 350.4
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": [
+      {
+       "Name": "AWP",
+       "Value": 1,
+       "x": 488.6,
+       "y": 274.4
+      },
+      {
+       "Name": "狙击步枪通用弹药",
+       "Value": 3,
+       "x": 528.5,
+       "y": 274.4
+      }
+     ]
+    }
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1695,
+    "exitRule": [
+     {
+      "charId": 1617,
+      "depth": 128,
+      "type": "killCount",
+      "required": 7,
+      "bossInstance": null,
+      "targetFrame": "s3"
+     }
+    ],
+    "originalKillThreshold": 7,
+    "levelRange": [
+     36,
+     37
+    ],
+    "notes": [
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown",
+     "补给 AWP:搜索点远距打法",
+     "CF7适配[A02-wave-0-3]:原作摆放位于原始 even-odd 填充体内;CF7 环境语义把填充转为实体 Collision,出生点落入多边形内部、玩家不可达(r6 fail#1);移至native(828.5,404.1)=世界(871.95,380.0),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移37.8px;事实表原坐标保留不改(placement-adaptation.v1.json)",
+     "CF7适配[A02-wave-0-5]:同 r6 fail#2:填充体内摆放,转换后落入实体 Collision,玩家不可达;移至native(1085.5,405.1)=世界(1128.95,381.0),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移58.8px;事实表原坐标保留不改(placement-adaptation.v1.json)"
+    ]
+   }
+  },
+  {
+   "id": "A03",
+   "title": "室内第一段",
+   "background": "cf6/CF6_A03_BG.swf",
+   "dialogue": [],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 34.5,
+     "PlayerY": 317.2
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种468",
+          "Level": 38,
+          "Quantity": 1,
+          "x": 549.1,
+          "y": 404.1
+         },
+         {
+          "Type": "兵种461",
+          "Level": 37,
+          "Quantity": 1,
+          "x": 863.7,
+          "y": 263.5
+         },
+         {
+          "Type": "兵种461",
+          "Level": 37,
+          "Quantity": 1,
+          "x": 297.8,
+          "y": 303.5
+         },
+         {
+          "Type": "兵种461",
+          "Level": 37,
+          "Quantity": 1,
+          "x": 241.8,
+          "y": 367.5
+         },
+         {
+          "Type": "兵种462",
+          "Level": 37,
+          "Quantity": 1,
+          "x": 669.1,
+          "y": 335.6
+         },
+         {
+          "Type": "兵种468",
+          "Level": 38,
+          "Quantity": 5,
+          "Interval": 100,
+          "SpawnIndex": 0,
+          "Parameters": {
+           "publishStageEvent": true
+          }
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": [
+      {
+       "Name": "AA12战术版",
+       "Value": 1,
+       "x": 378.1,
+       "y": 444.0
+      },
+      {
+       "Name": "00号鹿弹",
+       "Value": 3,
+       "x": 418.1,
+       "y": 444.0
+      }
+     ]
+    },
+    "SpawnPoint": {
+     "Point": [
+      {
+       "x": 524.5,
+       "y": 210.9,
+       "QuantityMax": 2
+      }
+     ]
+    }
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1723,
+    "exitRule": [
+     {
+      "charId": 1720,
+      "depth": 28,
+      "type": "killCount",
+      "required": 9,
+      "bossInstance": null,
+      "targetFrame": "a4"
+     }
+    ],
+    "originalKillThreshold": 9,
+    "levelRange": [
+     37,
+     38
+    ],
+    "notes": [
+     "door1门生成器(敌人-光头男):波次敌人带Parameters.publishStageEvent=true,木门按实际UnitSpawn播放;坐标为原生门口点",
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown",
+     "补给 AA12战术版:地面近距清场"
+    ]
+   }
+  },
+  {
+   "id": "A04",
+   "title": "室内第二段",
+   "background": "cf6/CF6_A04_BG.swf",
+   "dialogue": [],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 34.5,
+     "PlayerY": 317.2
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种468",
+          "Level": 39,
+          "Quantity": 1,
+          "x": 1068.1,
+          "y": 371.6
+         },
+         {
+          "Type": "兵种461",
+          "Level": 38,
+          "Quantity": 1,
+          "x": 245.1,
+          "y": 408.9
+         },
+         {
+          "Type": "兵种462",
+          "Level": 38,
+          "Quantity": 1,
+          "x": 535.1,
+          "y": 333.1
+         },
+         {
+          "Type": "兵种462",
+          "Level": 38,
+          "Quantity": 1,
+          "x": 897.1,
+          "y": 291.1
+         },
+         {
+          "Type": "兵种468",
+          "Level": 39,
+          "Quantity": 5,
+          "Interval": 100,
+          "SpawnIndex": 0,
+          "Parameters": {
+           "publishStageEvent": true
+          }
+         },
+         {
+          "Type": "兵种461",
+          "Level": 38,
+          "Quantity": 15,
+          "Interval": 100,
+          "SpawnIndex": 1,
+          "Parameters": {
+           "publishStageEvent": true
+          }
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": [
+      {
+       "Name": "突击步枪通用弹药",
+       "Value": 3,
+       "x": 753.5,
+       "y": 357.6
+      }
+     ]
+    },
+    "SpawnPoint": {
+     "Point": [
+      {
+       "x": 524.5,
+       "y": 210.9,
+       "QuantityMax": 2
+      },
+      {
+       "x": 929.5,
+       "y": 210.9,
+       "QuantityMax": 5
+      }
+     ]
+    }
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1737,
+    "exitRule": [
+     {
+      "charId": 1720,
+      "depth": 28,
+      "type": "killCount",
+      "required": 22,
+      "bossInstance": null,
+      "targetFrame": "a5"
+     }
+    ],
+    "originalKillThreshold": 22,
+    "levelRange": [
+     38,
+     39
+    ],
+    "notes": [
+     "door1门生成器(敌人-光头男):波次敌人带Parameters.publishStageEvent=true,木门按实际UnitSpawn播放;坐标为原生门口点",
+     "door2门生成器(aw-僵尸):波次敌人带Parameters.publishStageEvent=true,木门按实际UnitSpawn播放;坐标为原生门口点",
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:未命名(aw-异形 预算5/并发2);原版是否可激活=unknown",
+     "补给 突击步枪通用弹药:固定弹药"
+    ]
+   }
+  },
+  {
+   "id": "A05",
+   "title": "室内深处",
+   "background": "cf6/CF6_A05_BG.swf",
+   "dialogue": [],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 34.5,
+     "PlayerY": 317.2
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种468",
+          "Level": 40,
+          "Quantity": 1,
+          "x": 528.1,
+          "y": 386.6
+         },
+         {
+          "Type": "兵种461",
+          "Level": 39,
+          "Quantity": 1,
+          "x": 361.8,
+          "y": 260.9
+         },
+         {
+          "Type": "兵种468",
+          "Level": 40,
+          "Quantity": 1,
+          "x": 944.1,
+          "y": 270.6
+         },
+         {
+          "Type": "兵种468",
+          "Level": 40,
+          "Quantity": 1,
+          "x": 836.7,
+          "y": 356.6
+         },
+         {
+          "Type": "兵种461",
+          "Level": 39,
+          "Quantity": 1,
+          "x": 699.8,
+          "y": 366.9
+         },
+         {
+          "Type": "兵种461",
+          "Level": 39,
+          "Quantity": 1,
+          "x": 454.8,
+          "y": 243.9
+         },
+         {
+          "Type": "兵种462",
+          "Level": 39,
+          "Quantity": 1,
+          "x": 623.1,
+          "y": 354.1
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": [
+      {
+       "Name": "强化石",
+       "Value": 2,
+       "x": 288.7,
+       "y": 230.5
+      },
+      {
+       "Name": "普通hp药剂",
+       "Value": 2,
+       "x": 318.6,
+       "y": 251.7
+      }
+     ]
+    }
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1752,
+    "exitRule": [
+     {
+      "charId": 1750,
+      "depth": 88,
+      "type": "killCount",
+      "required": 5,
+      "bossInstance": null,
+      "targetFrame": "a6"
+     }
+    ],
+    "originalKillThreshold": 5,
+    "levelRange": [
+     39,
+     40
+    ],
+    "notes": [
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);敌人生成器2(aw-僵尸 预算15/并发5);原版是否可激活=unknown"
+    ]
+   }
+  },
+  {
+   "id": "A06",
+   "title": "蛮斧刽子手",
+   "background": "cf6/CF6_A06_BG.swf",
+   "dialogue": [
+    {
+     "speaker": "Wings",
+     "text": "Andy！救我！"
+    }
+   ],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 843.5,
+     "PlayerY": 408.7
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种463",
+          "Level": 42,
+          "Quantity": 1,
+          "x": 859.6,
+          "y": 207.6,
+          "InstanceName": "cf6Boss_A06",
+          "Parameters": {
+           "称号": "Boss",
+           "保留屏外尸体": true
+          }
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": []
+    }
+   },
+   "bossEncounter": {
+    "instanceName": "cf6Boss_A06",
+    "maxAlive": 2,
+    "maxRanged": 2,
+    "intervalFrames": 45,
+    "groups": [
+     {
+      "hpRatio": 1.0,
+      "enemies": [
+       {
+        "Type": "兵种461",
+        "Level": 40,
+        "Quantity": 1,
+        "ranged": false,
+        "SpawnIndex": "left",
+        "x": 556.5,
+        "y": 263.5
+       },
+       {
+        "Type": "兵种461",
+        "Level": 40,
+        "Quantity": 1,
+        "ranged": false,
+        "SpawnIndex": "left",
+        "x": 417.4,
+        "y": 258.3
+       },
+       {
+        "Type": "兵种461",
+        "Level": 40,
+        "Quantity": 1,
+        "ranged": false,
+        "SpawnIndex": "right",
+        "x": 1264.4,
+        "y": 278.7
+       },
+       {
+        "Type": "兵种468",
+        "Level": 40,
+        "Quantity": 1,
+        "ranged": false,
+        "SpawnIndex": "right",
+        "x": 1273.2,
+        "y": 371.1
+       },
+       {
+        "Type": "兵种468",
+        "Level": 40,
+        "Quantity": 1,
+        "ranged": false,
+        "SpawnIndex": "left",
+        "x": 366.3,
+        "y": 380.2
+       },
+       {
+        "Type": "兵种466",
+        "Level": 41,
+        "Quantity": 1,
+        "ranged": true,
+        "SpawnIndex": "left",
+        "x": 5.0,
+        "y": 305.4,
+        "Parameters": {
+         "长枪": "G36",
+         "特种兵初始阶段": 2
+        }
+       },
+       {
+        "Type": "兵种466",
+        "Level": 41,
+        "Quantity": 1,
+        "ranged": true,
+        "SpawnIndex": "right",
+        "x": 1491.7,
+        "y": 305.4,
+        "Parameters": {
+         "长枪": "G36",
+         "特种兵初始阶段": 2
+        }
+       }
+      ]
+     },
+     {
+      "hpRatio": 0.8,
+      "enemies": [
+       {
+        "Type": "兵种466",
+        "Level": 41,
+        "Quantity": 4,
+        "ranged": true,
+        "SpawnIndex": "left",
+        "Parameters": {
+         "长枪": "G36",
+         "特种兵初始阶段": 2
+        }
+       },
+       {
+        "Type": "兵种466",
+        "Level": 41,
+        "Quantity": 4,
+        "ranged": true,
+        "SpawnIndex": "right",
+        "Parameters": {
+         "长枪": "G36",
+         "特种兵初始阶段": 2
+        }
+       }
+      ]
+     },
+     {
+      "hpRatio": 0.6,
+      "enemies": [
+       {
+        "Type": "兵种466",
+        "Level": 41,
+        "Quantity": 4,
+        "ranged": true,
+        "SpawnIndex": "left",
+        "Parameters": {
+         "长枪": "G36",
+         "特种兵初始阶段": 2
+        }
+       },
+       {
+        "Type": "兵种466",
+        "Level": 41,
+        "Quantity": 4,
+        "ranged": true,
+        "SpawnIndex": "right",
+        "Parameters": {
+         "长枪": "G36",
+         "特种兵初始阶段": 2
+        }
+       }
+      ]
+     },
+     {
+      "hpRatio": 0.4,
+      "enemies": [
+       {
+        "Type": "兵种466",
+        "Level": 41,
+        "Quantity": 3,
+        "ranged": true,
+        "SpawnIndex": "left",
+        "Parameters": {
+         "长枪": "G36",
+         "特种兵初始阶段": 2
+        }
+       },
+       {
+        "Type": "兵种466",
+        "Level": 41,
+        "Quantity": 3,
+        "ranged": true,
+        "SpawnIndex": "right",
+        "Parameters": {
+         "长枪": "G36",
+         "特种兵初始阶段": 2
+        }
+       }
+      ]
+     },
+     {
+      "hpRatio": 0.2,
+      "enemies": [
+       {
+        "Type": "兵种466",
+        "Level": 41,
+        "Quantity": 3,
+        "ranged": true,
+        "SpawnIndex": "left",
+        "Parameters": {
+         "长枪": "G36",
+         "特种兵初始阶段": 2
+        }
+       },
+       {
+        "Type": "兵种466",
+        "Level": 41,
+        "Quantity": 3,
+        "ranged": true,
+        "SpawnIndex": "right",
+        "Parameters": {
+         "长枪": "G36",
+         "特种兵初始阶段": 2
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1778,
+    "exitRule": [
+     {
+      "charId": 1766,
+      "depth": 182,
+      "type": "bossKill",
+      "required": null,
+      "bossInstance": "boss",
+      "targetFrame": "s4"
+     }
+    ],
+    "originalKillThreshold": null,
+    "levelRange": [
+     40,
+     41
+    ],
+    "notes": [
+     "Boss死亡即取消未发与现存增援,取消不产奖励(控制器语义);原自由生成器死亡预算仅作有限上限",
+     "prototypeDerived:特种兵上限30=原两路死亡预算各15(出兵不减预算,实发量unknown);初始2+增援28。摆放5杂兵按原坐标。",
+     "停止态模板2个无激活证据,不投送(unknown)"
+    ]
+   }
+  },
+  {
+   "id": "A08",
+   "title": "抵达设施",
+   "background": "cf6/CF6_A08_BG.swf",
+   "dialogue": [
+    {
+     "speaker": "Wings",
+     "text": "到达地下实验室入口了，你要从这里进入，找到电梯才能到达地下！"
+    },
+    {
+     "speaker": "Wings",
+     "text": "你就从这里攻进去，我去配电房入侵他们内部网络，把资料下载下来！"
+    },
+    {
+     "speaker": "Andy Law",
+     "text": "攻击的事交给我了！"
+    }
+   ],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 240.6,
+     "PlayerY": 268.3
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": []
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": [
+      {
+       "Name": "普通hp药剂",
+       "Value": 2,
+       "x": 932.5,
+       "y": 228.2
+      },
+      {
+       "Name": "突击步枪通用弹药",
+       "Value": 2,
+       "x": 1018.5,
+       "y": 225.2
+      }
+     ]
+    }
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1841,
+    "exitRule": [
+     {
+      "charId": 1430,
+      "depth": 120,
+      "type": "killCount",
+      "required": 0,
+      "bossInstance": null,
+      "targetFrame": "a9"
+     }
+    ],
+    "originalKillThreshold": 0,
+    "levelRange": [
+     42,
+     43
+    ],
+    "notes": [
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);敌人生成器2(aw-僵尸 预算15/并发5);原版是否可激活=unknown"
+    ]
+   }
+  },
+  {
+   "id": "A09",
+   "title": "设施外围",
+   "background": "cf6/CF6_A09_BG.swf",
+   "dialogue": [],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 91.2,
+     "PlayerY": 271.5
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种466",
+          "Level": 45,
+          "Quantity": 1,
+          "x": 384.5,
+          "y": 282.7,
+          "InstanceName": "elite_e1",
+          "Parameters": {
+           "称号": "E1精英",
+           "cf6EliteQuota": "E1",
+           "长枪": "SAI GRY 幽灵",
+           "不掉装备": true,
+           "保留屏外尸体": true,
+           "掉落物": [
+            {
+             "名字": "SAI GRY 幽灵",
+             "概率": 100,
+             "最小数量": 1,
+             "最大数量": 1,
+             "总数": 1
+            },
+            {
+             "名字": "突击步枪通用弹药",
+             "概率": 100,
+             "最小数量": 3,
+             "最大数量": 3,
+             "总数": 3
+            }
+           ],
+           "特种兵初始阶段": 2
+          }
+         },
+         {
+          "Type": "兵种468",
+          "Level": 44,
+          "Quantity": 1,
+          "x": 326.1,
+          "y": 363.2
+         },
+         {
+          "Type": "兵种461",
+          "Level": 44,
+          "Quantity": 1,
+          "x": 1022.4,
+          "y": 322.5
+         },
+         {
+          "Type": "兵种461",
+          "Level": 44,
+          "Quantity": 1,
+          "x": 1024.3,
+          "y": 411.5
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种467",
+          "Level": 45,
+          "Quantity": 5,
+          "Interval": 100,
+          "SpawnIndex": 0,
+          "Parameters": {
+           "长枪": "AK47"
+          }
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": []
+    },
+    "SpawnPoint": {
+     "Point": [
+      {
+       "x": 696.5,
+       "y": 260.3,
+       "QuantityMax": 2
+      }
+     ]
+    }
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1869,
+    "exitRule": [
+     {
+      "charId": 1430,
+      "depth": 89,
+      "type": "killCount",
+      "required": 9,
+      "bossInstance": null,
+      "targetFrame": "a10"
+     }
+    ],
+    "originalKillThreshold": 9,
+    "levelRange": [
+     43,
+     45
+    ],
+    "notes": [
+     "E1: 既有静态带盾特种兵×1转为无盾入口466,占原467名额,图敌人总数不变(设计配额适配;r5核对A09总数9)",
+     "生成器敌人生成器1原由触发区(1868)玩家踩区激活,本片段改为顺序第二波次(适配)",
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);原版是否可激活=unknown"
+    ]
+   }
+  },
+  {
+   "id": "A10",
+   "title": "第一段升降战",
+   "background": "cf6/CF6_A10_BG.swf",
+   "dialogue": [],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 172.5,
+     "PlayerY": 278.6
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种469",
+          "Level": 45,
+          "Quantity": 1,
+          "x": 418.0,
+          "y": 284.7
+         },
+         {
+          "Type": "兵种461",
+          "Level": 45,
+          "Quantity": 1,
+          "x": 331.1,
+          "y": 293.2
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": [
+      {
+       "Name": "CAR冲锋枪",
+       "Value": 1,
+       "x": 232.5,
+       "y": 278.6
+      },
+      {
+       "Name": "冲锋枪达姆弹弹药",
+       "Value": 3,
+       "x": 272.5,
+       "y": 278.6
+      }
+     ]
+    }
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1885,
+    "exitRule": [
+     {
+      "charId": 1587,
+      "depth": 100,
+      "type": "killCount",
+      "required": 2,
+      "bossInstance": null,
+      "targetFrame": "a11"
+     }
+    ],
+    "originalKillThreshold": 2,
+    "levelRange": [
+     44,
+     46
+    ],
+    "notes": [
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown",
+     "补给 CAR冲锋枪:到站达45级后提供"
+    ]
+   }
+  },
+  {
+   "id": "A11",
+   "title": "实验区入口",
+   "background": "cf6/CF6_A11_BG.swf",
+   "dialogue": [
+    {
+     "speaker": "Andy Law",
+     "text": "我靠，这是什么？"
+    },
+    {
+     "speaker": "Andy Law",
+     "text": "强行兽化装甲……这是幼体吗？看来速度和智慧更高的武器终于被造出来了！"
+    },
+    {
+     "speaker": "Andy Law",
+     "text": "还是赶快找到达中央服务器，摧毁这里吧！"
+    }
+   ],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 753.5,
+     "PlayerY": 249.1
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种462",
+          "Level": 46,
+          "Quantity": 1,
+          "x": 931.1,
+          "y": 371.1
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": []
+    }
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1910,
+    "exitRule": [
+     {
+      "charId": 1617,
+      "depth": 129,
+      "type": "killCount",
+      "required": 0,
+      "bossInstance": null,
+      "targetFrame": "a12"
+     }
+    ],
+    "originalKillThreshold": 0,
+    "levelRange": [
+     45,
+     47
+    ],
+    "notes": [
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown"
+    ]
+   }
+  },
+  {
+   "id": "A12",
+   "title": "实验区推进",
+   "background": "cf6/CF6_A12_BG.swf",
+   "dialogue": [],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 1233.5,
+     "PlayerY": 307.2
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种469",
+          "Level": 47,
+          "Quantity": 1,
+          "x": 345.1,
+          "y": 336.4
+         },
+         {
+          "Type": "兵种466",
+          "Level": 48,
+          "Quantity": 1,
+          "x": 380.2,
+          "y": 428.6,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          }
+         },
+         {
+          "Type": "兵种469",
+          "Level": 47,
+          "Quantity": 1,
+          "x": 240.1,
+          "y": 333.4
+         },
+         {
+          "Type": "兵种468",
+          "Level": 47,
+          "Quantity": 1,
+          "x": 191.1,
+          "y": 431.4
+         },
+         {
+          "Type": "兵种466",
+          "Level": 48,
+          "Quantity": 1,
+          "x": 428.2,
+          "y": 325.3,
+          "Parameters": {
+           "长枪": "AK47",
+           "特种兵初始阶段": 2
+          }
+         },
+         {
+          "Type": "兵种461",
+          "Level": 47,
+          "Quantity": 10,
+          "Interval": 100,
+          "SpawnIndex": 0
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": [
+      {
+       "Name": "普通hp药剂",
+       "Value": 1,
+       "x": 933.5,
+       "y": 228.2
+      },
+      {
+       "Name": "突击步枪钨芯穿甲弹",
+       "Value": 2,
+       "x": 402.9,
+       "y": 226.3
+      }
+     ]
+    },
+    "SpawnPoint": {
+     "Point": [
+      {
+       "x": 617.5,
+       "y": 215.7,
+       "QuantityMax": 3
+      }
+     ]
+    }
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1917,
+    "exitRule": [
+     {
+      "charId": 1430,
+      "depth": 183,
+      "type": "killCount",
+      "required": 15,
+      "bossInstance": null,
+      "targetFrame": "a13"
+     }
+    ],
+    "originalKillThreshold": 15,
+    "levelRange": [
+     46,
+     48
+    ],
+    "notes": [
+     "生成器原挂door2门演出;机关线未接,首版直接生成",
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:未命名(敌人-光头男 预算5/并发2);未命名(aw-异形 预算5/并发2);未命名(敌人-光头男 预算5/并发2);原版是否可激活=unknown"
+    ]
+   }
+  },
+  {
+   "id": "A13",
+   "title": "第二段升降与盾兵战",
+   "background": "cf6/CF6_A13_BG.swf",
+   "dialogue": [],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 172.5,
+     "PlayerY": 278.6
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种467",
+          "Level": 49,
+          "Quantity": 1,
+          "x": 413.8,
+          "y": 278.5,
+          "InstanceName": "elite_e2",
+          "Parameters": {
+           "称号": "E2精英",
+           "cf6EliteQuota": "E2",
+           "长枪": "TTI Gen 12",
+           "不掉装备": true,
+           "保留屏外尸体": true,
+           "掉落物": [
+            {
+             "名字": "TTI Gen 12",
+             "概率": 100,
+             "最小数量": 1,
+             "最大数量": 1,
+             "总数": 1
+            },
+            {
+             "名字": "00号鹿弹",
+             "概率": 100,
+             "最小数量": 3,
+             "最大数量": 3,
+             "总数": 3
+            }
+           ]
+          }
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": []
+    }
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1920,
+    "exitRule": [
+     {
+      "charId": 1587,
+      "depth": 145,
+      "type": "killCount",
+      "required": 1,
+      "bossInstance": null,
+      "targetFrame": "a14"
+     }
+    ],
+    "originalKillThreshold": 1,
+    "levelRange": [
+     48,
+     49
+    ],
+    "notes": [
+     "E2: 持盾队长、小Boss;两阶段最终死亡后掉落,不在破盾时发",
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown"
+    ]
+   }
+  },
+  {
+   "id": "A14",
+   "title": "实验设施深部",
+   "background": "cf6/CF6_A14_BG.swf",
+   "dialogue": [
+    {
+     "speaker": "Andy Law",
+     "text": "我靠，看来已经到达兽化兵生产线了……"
+    },
+    {
+     "speaker": "Andy Law",
+     "text": "我要快点找到BLOODY那个老混蛋，把它解决掉，把这里轰掉！"
+    }
+   ],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 270.9,
+     "PlayerY": 233.3
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种466",
+          "Level": 51,
+          "Quantity": 1,
+          "x": 1307.5,
+          "y": 295.1,
+          "InstanceName": "elite_e3",
+          "Parameters": {
+           "称号": "E3精英",
+           "cf6EliteQuota": "E3",
+           "长枪": "HK416战术版",
+           "不掉装备": true,
+           "保留屏外尸体": true,
+           "掉落物": [
+            {
+             "名字": "HK416战术版",
+             "概率": 100,
+             "最小数量": 1,
+             "最大数量": 1,
+             "总数": 1
+            },
+            {
+             "名字": "突击步枪通用弹药",
+             "概率": 100,
+             "最小数量": 3,
+             "最大数量": 3,
+             "总数": 3
+            }
+           ],
+           "特种兵初始阶段": 2
+          }
+         },
+         {
+          "Type": "兵种467",
+          "Level": 51,
+          "Quantity": 1,
+          "x": 1305.5,
+          "y": 442.1,
+          "Parameters": {
+           "长枪": "AK47"
+          }
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种469",
+          "Level": 50,
+          "Quantity": 7,
+          "Interval": 100,
+          "SpawnIndex": 0
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": []
+    },
+    "SpawnPoint": {
+     "Point": [
+      {
+       "x": 1108.4,
+       "y": 285.1,
+       "QuantityMax": 2
+      }
+     ]
+    }
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1927,
+    "exitRule": [
+     {
+      "charId": 1617,
+      "depth": 416,
+      "type": "killCount",
+      "required": 9,
+      "bossInstance": null,
+      "targetFrame": "a15"
+     }
+    ],
+    "originalKillThreshold": 9,
+    "levelRange": [
+     49,
+     51
+    ],
+    "notes": [
+     "E3: 既有静态带盾特种兵×2中指定1名转无盾入口466,占原467名额,图敌人总数不变(r5核对A14总数9)",
+     "生成器敌人生成器x原由触发区(1868)玩家踩区激活,本片段改为顺序第二波次(适配)",
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown"
+    ]
+   }
+  },
+  {
+   "id": "A15",
+   "title": "深部推进",
+   "background": "cf6/CF6_A15_BG.swf",
+   "dialogue": [],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 185.9,
+     "PlayerY": 398.8
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种460",
+          "Level": 50,
+          "Quantity": 5,
+          "Interval": 300
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": [
+      {
+       "Name": "战术-QBZ-192",
+       "Value": 1,
+       "x": 245.9,
+       "y": 398.8
+      },
+      {
+       "Name": "突击步枪通用弹药",
+       "Value": 3,
+       "x": 285.9,
+       "y": 398.8
+      }
+     ]
+    }
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1940,
+    "exitRule": [
+     {
+      "charId": 1617,
+      "depth": 668,
+      "type": "killCount",
+      "required": 5,
+      "bossInstance": null,
+      "targetFrame": "a16"
+     }
+    ],
+    "originalKillThreshold": 5,
+    "levelRange": [
+     50,
+     53
+    ],
+    "notes": [
+     "异形卵×5:原版走近孵化各1只hp200异形;本片段按只数直接投送(460主控试作采纳prototype-reuse,真实消费者待验)",
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器1(aw-异形 预算5/并发2);敌人生成器x(敌人-光头男 预算5/并发2);原版是否可激活=unknown",
+     "补给 战术-QBZ-192:图末达52级后提供,手枪位"
+    ]
+   }
+  },
+  {
+   "id": "A16",
+   "title": "大头战前整备",
+   "background": "cf6/CF6_A16_BG.swf",
+   "dialogue": [
+    {
+     "speaker": "Andy Law",
+     "text": "这里应该是机房了，我靠，这大头娃不会是主机吧？咦，BLOODY也在！"
+    },
+    {
+     "speaker": "R_server",
+     "text": "入侵等级升至一级，应急预案F启动！"
+    },
+    {
+     "speaker": "bloody",
+     "text": "呵呵，没想到你突破重围竟然来到这里！"
+    },
+    {
+     "speaker": "bloody",
+     "text": "连联合国特工部队也无法攻破的堡垒竟然被一个人突破，你就像传说中一样厉害啊，Andy Law！"
+    },
+    {
+     "speaker": "Andy Law",
+     "text": "Bloody！今天我就要消灭你和你的军队！"
+    },
+    {
+     "speaker": "R_server",
+     "text": "攻坚队到位！立刻对入侵者进行终结！"
+    }
+   ],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 273.9,
+     "PlayerY": 378.1
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": []
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": []
+    }
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1950,
+    "exitRule": [
+     {
+      "charId": 1617,
+      "depth": 617,
+      "type": "killCount",
+      "required": 0,
+      "bossInstance": null,
+      "targetFrame": "a12"
+     }
+    ],
+    "originalKillThreshold": 0,
+    "levelRange": [
+     52,
+     55
+    ],
+    "notes": [
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器1(aw-异形 预算5/并发2);敌人生成器x(敌人-光头男 预算5/并发2);原版是否可激活=unknown",
+     "模板出口需要杀死数0→a12为复制模板;对白链实际目标a17(encounter-review确认);章节按路线顺序A16→A17,不回A12"
+    ]
+   }
+  },
+  {
+   "id": "A17",
+   "title": "大头机器人与护卫",
+   "background": "cf6/CF6_A17_BG.swf",
+   "dialogue": [],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 663.9,
+     "PlayerY": 289.1
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种472",
+          "Level": 57,
+          "Quantity": 1,
+          "x": 675.6,
+          "y": 226.7,
+          "InstanceName": "cf6Boss_A17",
+          "Parameters": {
+           "称号": "Boss",
+           "保留屏外尸体": true,
+           "长枪": "G36"
+          }
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": []
+    }
+   },
+   "bossEncounter": {
+    "instanceName": "cf6Boss_A17",
+    "maxAlive": 4,
+    "maxRanged": 2,
+    "intervalFrames": 45,
+    "groups": [
+     {
+      "hpRatio": 1.0,
+      "enemies": [
+       {
+        "Type": "兵种467",
+        "Level": 56,
+        "Quantity": 1,
+        "ranged": true,
+        "SpawnIndex": "left",
+        "x": 161.1,
+        "y": 372.6,
+        "Parameters": {
+         "称号": "E4精英",
+         "cf6EliteQuota": "E4",
+         "长枪": "战术-QBU-191",
+         "不掉装备": true,
+         "保留屏外尸体": true,
+         "掉落物": [
+          {
+           "名字": "战术-QBU-191",
+           "概率": 100,
+           "最小数量": 1,
+           "最大数量": 1,
+           "总数": 1
+          },
+          {
+           "名字": "突击步枪钨芯穿甲弹",
+           "概率": 100,
+           "最小数量": 3,
+           "最大数量": 3,
+           "总数": 3
+          }
+         ]
+        }
+       },
+       {
+        "Type": "兵种465",
+        "Level": 56,
+        "Quantity": 1,
+        "ranged": false,
+        "SpawnIndex": "left",
+        "x": 112.8,
+        "y": 428.5
+       },
+       {
+        "Type": "兵种465",
+        "Level": 56,
+        "Quantity": 1,
+        "ranged": false,
+        "SpawnIndex": "right",
+        "x": 1296.2,
+        "y": 448.4
+       },
+       {
+        "Type": "兵种469",
+        "Level": 56,
+        "Quantity": 1,
+        "ranged": false,
+        "SpawnIndex": "left",
+        "x": 247.7,
+        "y": 468.5
+       },
+       {
+        "Type": "兵种461",
+        "Level": 55,
+        "Quantity": 1,
+        "ranged": false,
+        "SpawnIndex": "right",
+        "x": 1365.4,
+        "y": 389.6
+       },
+       {
+        "Type": "兵种460",
+        "Level": 55,
+        "Quantity": 5,
+        "ranged": false,
+        "SpawnIndex": "right"
+       },
+       {
+        "Type": "兵种469",
+        "Level": 56,
+        "Quantity": 1,
+        "ranged": false,
+        "SpawnIndex": "left",
+        "x": 4.0,
+        "y": 369.9
+       },
+       {
+        "Type": "兵种469",
+        "Level": 56,
+        "Quantity": 1,
+        "ranged": false,
+        "SpawnIndex": "right",
+        "x": 1546.9,
+        "y": 416.3
+       }
+      ]
+     },
+     {
+      "hpRatio": 0.8,
+      "enemies": [
+       {
+        "Type": "兵种469",
+        "Level": 56,
+        "Quantity": 4,
+        "ranged": false,
+        "SpawnIndex": "left"
+       },
+       {
+        "Type": "兵种469",
+        "Level": 56,
+        "Quantity": 4,
+        "ranged": false,
+        "SpawnIndex": "right"
+       }
+      ]
+     },
+     {
+      "hpRatio": 0.6,
+      "enemies": [
+       {
+        "Type": "兵种469",
+        "Level": 56,
+        "Quantity": 4,
+        "ranged": false,
+        "SpawnIndex": "left"
+       },
+       {
+        "Type": "兵种469",
+        "Level": 56,
+        "Quantity": 4,
+        "ranged": false,
+        "SpawnIndex": "right"
+       }
+      ]
+     },
+     {
+      "hpRatio": 0.4,
+      "enemies": [
+       {
+        "Type": "兵种469",
+        "Level": 56,
+        "Quantity": 3,
+        "ranged": false,
+        "SpawnIndex": "left"
+       },
+       {
+        "Type": "兵种469",
+        "Level": 56,
+        "Quantity": 3,
+        "ranged": false,
+        "SpawnIndex": "right"
+       }
+      ]
+     },
+     {
+      "hpRatio": 0.2,
+      "enemies": [
+       {
+        "Type": "兵种469",
+        "Level": 56,
+        "Quantity": 3,
+        "ranged": false,
+        "SpawnIndex": "left"
+       },
+       {
+        "Type": "兵种469",
+        "Level": 56,
+        "Quantity": 3,
+        "ranged": false,
+        "SpawnIndex": "right"
+       }
+      ]
+     }
+    ]
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1954,
+    "exitRule": [
+     {
+      "charId": 1766,
+      "depth": 985,
+      "type": "bossKill",
+      "required": null,
+      "bossInstance": "boss",
+      "targetFrame": "s6"
+     }
+    ],
+    "originalKillThreshold": null,
+    "levelRange": [
+     55,
+     56
+    ],
+    "notes": [
+     "原版boss gunname=g36,候选映射Parameters.长枪=G36;该参数在兵种472的消费未见资产README文档,待主控实机核",
+     "Boss死亡即取消未发与现存增援,取消不产奖励(控制器语义);原自由生成器死亡预算仅作有限上限",
+     "持盾重装精英,既有静态带盾特种兵×1;在bossEncounter hpRatio=1组(禁InstanceName,以cf6EliteQuota标记)",
+     "prototypeDerived:变身保安上限31=摆放1+原两路预算各15;异形5=卵数(460主控试作采纳prototype-reuse,外观/体型/行为与原作异形不同源,真实消费者待验);E4精英替代既有静态盾兵。",
+     "停止态模板2个无激活证据,不投送(unknown)"
+    ]
+   }
+  },
+  {
+   "id": "A18",
+   "title": "Wings混合遭遇",
+   "background": "cf6/CF6_A18_BG.swf",
+   "dialogue": [],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 72.5,
+     "PlayerY": 228.6
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种467",
+          "Level": 59,
+          "Quantity": 1,
+          "x": 903.1,
+          "y": 334.2,
+          "Parameters": {
+           "长枪": "AK47"
+          }
+         },
+         {
+          "Type": "兵种464",
+          "Level": 59,
+          "Quantity": 1,
+          "x": 994.4,
+          "y": 325.9
+         },
+         {
+          "Type": "兵种461",
+          "Level": 57,
+          "Quantity": 1,
+          "x": 436.4,
+          "y": 227.1
+         },
+         {
+          "Type": "兵种461",
+          "Level": 57,
+          "Quantity": 1,
+          "x": 459.4,
+          "y": 283.1
+         },
+         {
+          "Type": "兵种461",
+          "Level": 57,
+          "Quantity": 1,
+          "x": 467.4,
+          "y": 347.1
+         },
+         {
+          "Type": "兵种464",
+          "Level": 59,
+          "Quantity": 1,
+          "x": 1171.4,
+          "y": 249.8
+         },
+         {
+          "Type": "兵种464",
+          "Level": 59,
+          "Quantity": 1,
+          "x": 1274.4,
+          "y": 363.1
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种463",
+          "Level": 59,
+          "Quantity": 5,
+          "Interval": 100,
+          "SpawnIndex": 0
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": []
+    },
+    "SpawnPoint": {
+     "Point": [
+      {
+       "x": 856.5,
+       "y": 214.6,
+       "QuantityMax": 2
+      }
+     ]
+    }
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1977,
+    "exitRule": [
+     {
+      "charId": 1617,
+      "depth": 60,
+      "type": "killCount",
+      "required": 12,
+      "bossInstance": null,
+      "targetFrame": "a19"
+     }
+    ],
+    "originalKillThreshold": 12,
+    "levelRange": [
+     56,
+     59
+    ],
+    "notes": [
+     "原版敌人-wings携带g36;该兵种无文档化长枪参数,仅记录不挂参",
+     "原版敌人-wings携带g36;该兵种无文档化长枪参数,仅记录不挂参",
+     "原版敌人-wings携带g36;该兵种无文档化长枪参数,仅记录不挂参",
+     "生成器敌人生成器1原由触发区(1868)玩家踩区激活,本片段改为顺序第二波次(适配)",
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);原版是否可激活=unknown",
+     "CF7适配[A18-spawnpoint-0]:r6 fail#3/#4:生成点落在墙带填充内,转换后为实体 Collision;引擎出生仅 +2y(WaveSpawner Offset)不足以脱出,引用它的 Wave[1][0](SpawnIndex=0)随本点一并修复;移至native(856.5,214.6)=世界(885.0,232.05),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移23.4px;事实表原坐标保留不改(placement-adaptation.v1.json)"
+    ]
+   }
+  },
+  {
+   "id": "A19",
+   "title": "终战前混合精英",
+   "background": "cf6/CF6_A19_BG.swf",
+   "dialogue": [],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 42.5,
+     "PlayerY": 278.7
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种467",
+          "Level": 60,
+          "Quantity": 1,
+          "x": 370.7,
+          "y": 243.2,
+          "InstanceName": "elite_e5",
+          "Parameters": {
+           "称号": "E5精英",
+           "cf6EliteQuota": "E5",
+           "长枪": "远古诛神枪",
+           "不掉装备": true,
+           "保留屏外尸体": true,
+           "掉落物": [
+            {
+             "名字": "远古诛神枪",
+             "概率": 100,
+             "最小数量": 1,
+             "最大数量": 1,
+             "总数": 1
+            },
+            {
+             "名字": "突击步枪钨芯穿甲弹",
+             "概率": 100,
+             "最小数量": 3,
+             "最大数量": 3,
+             "总数": 3
+            }
+           ]
+          }
+         },
+         {
+          "Type": "兵种465",
+          "Level": 60,
+          "Quantity": 1,
+          "x": 1066.5,
+          "y": 344.7
+         },
+         {
+          "Type": "兵种463",
+          "Level": 60,
+          "Quantity": 1,
+          "x": 1084.2,
+          "y": 259.4
+         },
+         {
+          "Type": "兵种467",
+          "Level": 60,
+          "Quantity": 1,
+          "x": 413.7,
+          "y": 315.0,
+          "Parameters": {
+           "长枪": "AK47"
+          }
+         },
+         {
+          "Type": "兵种469",
+          "Level": 59,
+          "Quantity": 5,
+          "Interval": 100,
+          "SpawnIndex": 0
+         },
+         {
+          "Type": "兵种464",
+          "Level": 60,
+          "Quantity": 10,
+          "Interval": 100,
+          "SpawnIndex": 1
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": []
+    },
+    "SpawnPoint": {
+     "Point": [
+      {
+       "x": 1296.5,
+       "y": 240.6,
+       "QuantityMax": 2
+      },
+      {
+       "x": 544.6,
+       "y": 172.2,
+       "QuantityMax": 3
+      }
+     ]
+    }
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1985,
+    "exitRule": [
+     {
+      "charId": 1982,
+      "depth": 47,
+      "type": "killCount",
+      "required": 19,
+      "bossInstance": null,
+      "targetFrame": "a20"
+     }
+    ],
+    "originalKillThreshold": 19,
+    "levelRange": [
+     58,
+     60
+    ],
+    "notes": [
+     "E5: 终战前强精英,既有静态带盾特种兵×2中指定1名,保留原入口467",
+     "原版敌人-大刀机器人携带g36;该兵种无文档化长枪参数,仅记录不挂参",
+     "生成器原挂door2门演出;机关线未接,首版直接生成",
+     "生成器原挂door1门演出;机关线未接,首版直接生成"
+    ]
+   }
+  },
+  {
+   "id": "A20",
+   "title": "老头人形战",
+   "background": "cf6/CF6_A20_BG.swf",
+   "dialogue": [],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 42.5,
+     "PlayerY": 278.7
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种473",
+          "Level": 60,
+          "Quantity": 1,
+          "x": 648.4,
+          "y": 201.7,
+          "InstanceName": "cf6Boss_A20",
+          "Parameters": {
+           "称号": "Boss",
+           "保留屏外尸体": true,
+           "老头变身": false,
+           "长枪": "G36"
+          }
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": [
+      {
+       "Name": "普通hp药剂",
+       "Value": 2,
+       "x": 1189.0,
+       "y": 410.9
+      },
+      {
+       "Name": "突击步枪钨芯穿甲弹",
+       "Value": 2,
+       "x": 864.8,
+       "y": 185.9
+      }
+     ]
+    }
+   },
+   "bossEncounter": {
+    "instanceName": "cf6Boss_A20",
+    "maxAlive": 4,
+    "maxRanged": 2,
+    "intervalFrames": 45,
+    "groups": [
+     {
+      "hpRatio": 1.0,
+      "enemies": [
+       {
+        "Type": "兵种467",
+        "Level": 60,
+        "Quantity": 2,
+        "ranged": true,
+        "SpawnIndex": "left",
+        "x": 184.5,
+        "y": 177.6,
+        "Parameters": {
+         "长枪": "AK47"
+        }
+       },
+       {
+        "Type": "兵种464",
+        "Level": 60,
+        "Quantity": 2,
+        "ranged": true,
+        "SpawnIndex": "right",
+        "x": 1414.9,
+        "y": 455.7
+       },
+       {
+        "Type": "兵种461",
+        "Level": 60,
+        "Quantity": 1,
+        "ranged": false,
+        "SpawnIndex": "right",
+        "x": 1104.0,
+        "y": 225.8
+       },
+       {
+        "Type": "兵种469",
+        "Level": 60,
+        "Quantity": 1,
+        "ranged": false,
+        "SpawnIndex": "right",
+        "x": 1251.0,
+        "y": 338.8
+       }
+      ]
+     },
+     {
+      "hpRatio": 0.75,
+      "enemies": [
+       {
+        "Type": "兵种461",
+        "Level": 60,
+        "Quantity": 4,
+        "ranged": false,
+        "SpawnIndex": "left"
+       },
+       {
+        "Type": "兵种469",
+        "Level": 60,
+        "Quantity": 4,
+        "ranged": false,
+        "SpawnIndex": "right"
+       },
+       {
+        "Type": "兵种467",
+        "Level": 60,
+        "Quantity": 2,
+        "ranged": true,
+        "SpawnIndex": "left",
+        "Parameters": {
+         "长枪": "AK47"
+        }
+       },
+       {
+        "Type": "兵种464",
+        "Level": 60,
+        "Quantity": 2,
+        "ranged": true,
+        "SpawnIndex": "right"
+       }
+      ]
+     },
+     {
+      "hpRatio": 0.5,
+      "enemies": [
+       {
+        "Type": "兵种461",
+        "Level": 60,
+        "Quantity": 5,
+        "ranged": false,
+        "SpawnIndex": "left"
+       },
+       {
+        "Type": "兵种469",
+        "Level": 60,
+        "Quantity": 5,
+        "ranged": false,
+        "SpawnIndex": "right"
+       },
+       {
+        "Type": "兵种467",
+        "Level": 60,
+        "Quantity": 1,
+        "ranged": true,
+        "SpawnIndex": "left",
+        "Parameters": {
+         "长枪": "AK47"
+        }
+       },
+       {
+        "Type": "兵种464",
+        "Level": 60,
+        "Quantity": 1,
+        "ranged": true,
+        "SpawnIndex": "right"
+       }
+      ]
+     },
+     {
+      "hpRatio": 0.25,
+      "enemies": [
+       {
+        "Type": "兵种461",
+        "Level": 60,
+        "Quantity": 5,
+        "ranged": false,
+        "SpawnIndex": "left"
+       },
+       {
+        "Type": "兵种469",
+        "Level": 60,
+        "Quantity": 5,
+        "ranged": false,
+        "SpawnIndex": "right"
+       }
+      ]
+     }
+    ]
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 1992,
+    "exitRule": [
+     {
+      "charId": 1766,
+      "depth": 215,
+      "type": "bossKill",
+      "required": null,
+      "bossInstance": "boss",
+      "targetFrame": "a21"
+     }
+    ],
+    "originalKillThreshold": null,
+    "levelRange": [
+     60,
+     60
+    ],
+    "notes": [
+     "A20老头人形关闭自动变身(Parameters.老头变身=false,elder-assets文档);A21由机关线演出",
+     "原版boss gunname=g36,候选映射Parameters.长枪=G36;该参数在兵种473的消费未见资产README文档,待主控实机核",
+     "Boss死亡即取消未发与现存增援,取消不产奖励(控制器语义);原自由生成器死亡预算仅作有限上限",
+     "prototypeDerived:四路上限=原各门死亡预算(盾5/Wings5/僵尸15/变身15);原门触发演出(door1/2/4)属机关线,首版按血量阈值发兵。",
+     "停止态模板2个无激活证据,不投送(unknown)",
+     "CF7适配[A20-boss-0-0]:r6 fail#5:门刷点在墙内填充体,转换后落入实体 Collision,玩家不可达;移至native(184.5,177.6)=世界(263.0,201.05),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移15.6px;事实表原坐标保留不改(placement-adaptation.v1.json)"
+    ]
+   }
+  },
+  {
+   "id": "A22",
+   "title": "老头机器人战",
+   "background": "cf6/CF6_A22_BG.swf",
+   "dialogue": [],
+   "stage": {
+    "BasicInformation": {
+     "PlayerX": 545.5,
+     "PlayerY": 251.1
+    },
+    "Wave": {
+     "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种474",
+          "Level": 60,
+          "Quantity": 1,
+          "x": 687.0,
+          "y": 249.9,
+          "InstanceName": "cf6Boss_A22",
+          "Parameters": {
+           "称号": "Boss",
+           "保留屏外尸体": true,
+           "长枪": "G36"
+          }
+         }
+        ]
+       }
+      }
+     ]
+    },
+    "Instances": {
+     "Instance": []
+    },
+    "Pickups": {
+     "Pickup": [
+      {
+       "Name": "普通hp药剂",
+       "Value": 2,
+       "x": 564.5,
+       "y": 402.4
+      }
+     ]
+    }
+   },
+   "bossEncounter": {
+    "instanceName": "cf6Boss_A22",
+    "maxAlive": 4,
+    "maxRanged": 2,
+    "intervalFrames": 45,
+    "groups": [
+     {
+      "hpRatio": 1.0,
+      "enemies": [
+       {
+        "Type": "兵种463",
+        "Level": 60,
+        "Quantity": 1,
+        "ranged": false,
+        "SpawnIndex": "right",
+        "x": 1414.9,
+        "y": 455.7
+       },
+       {
+        "Type": "兵种472",
+        "Level": 60,
+        "Quantity": 1,
+        "ranged": true,
+        "SpawnIndex": "right",
+        "x": 1104.0,
+        "y": 225.8
+       },
+       {
+        "Type": "兵种460",
+        "Level": 60,
+        "Quantity": 1,
+        "ranged": false,
+        "SpawnIndex": "right",
+        "x": 1251.0,
+        "y": 338.8
+       },
+       {
+        "Type": "兵种465",
+        "Level": 60,
+        "Quantity": 1,
+        "ranged": true,
+        "SpawnIndex": "left",
+        "x": 184.5,
+        "y": 177.6
+       }
+      ]
+     },
+     {
+      "hpRatio": 0.75,
+      "enemies": [
+       {
+        "Type": "兵种463",
+        "Level": 60,
+        "Quantity": 5,
+        "ranged": false,
+        "SpawnIndex": "left"
+       },
+       {
+        "Type": "兵种472",
+        "Level": 60,
+        "Quantity": 5,
+        "ranged": true,
+        "SpawnIndex": "right"
+       },
+       {
+        "Type": "兵种460",
+        "Level": 60,
+        "Quantity": 5,
+        "ranged": false,
+        "SpawnIndex": "left"
+       },
+       {
+        "Type": "兵种465",
+        "Level": 60,
+        "Quantity": 5,
+        "ranged": true,
+        "SpawnIndex": "right"
+       }
+      ]
+     },
+     {
+      "hpRatio": 0.5,
+      "enemies": [
+       {
+        "Type": "兵种463",
+        "Level": 60,
+        "Quantity": 5,
+        "ranged": false,
+        "SpawnIndex": "left"
+       },
+       {
+        "Type": "兵种472",
+        "Level": 60,
+        "Quantity": 5,
+        "ranged": true,
+        "SpawnIndex": "right"
+       },
+       {
+        "Type": "兵种460",
+        "Level": 60,
+        "Quantity": 5,
+        "ranged": false,
+        "SpawnIndex": "left"
+       },
+       {
+        "Type": "兵种465",
+        "Level": 60,
+        "Quantity": 5,
+        "ranged": true,
+        "SpawnIndex": "right"
+       }
+      ]
+     },
+     {
+      "hpRatio": 0.25,
+      "enemies": [
+       {
+        "Type": "兵种463",
+        "Level": 60,
+        "Quantity": 4,
+        "ranged": false,
+        "SpawnIndex": "left"
+       },
+       {
+        "Type": "兵种472",
+        "Level": 60,
+        "Quantity": 4,
+        "ranged": true,
+        "SpawnIndex": "right"
+       },
+       {
+        "Type": "兵种460",
+        "Level": 60,
+        "Quantity": 4,
+        "ranged": false,
+        "SpawnIndex": "left"
+       },
+       {
+        "Type": "兵种465",
+        "Level": 60,
+        "Quantity": 4,
+        "ranged": true,
+        "SpawnIndex": "right"
+       }
+      ]
+     }
+    ]
+   },
+   "sourceNote": {
+    "coordinateSpace": "native-original",
+    "originalWorldSprite": 2011,
+    "exitRule": [
+     {
+      "charId": 1766,
+      "depth": 180,
+      "type": "bossKill",
+      "required": null,
+      "bossInstance": "boss",
+      "targetFrame": "s7"
+     }
+    ],
+    "originalKillThreshold": null,
+    "levelRange": [
+     60,
+     60
+    ],
+    "notes": [
+     "原版boss gunname=g36,候选映射Parameters.长枪=G36;该参数在兵种474的消费未见资产README文档,待主控实机核",
+     "补给 普通hp药剂:原版A22救护包×2同位置",
+     "Boss死亡即取消未发与现存增援,取消不产奖励(控制器语义);原自由生成器死亡预算仅作有限上限",
+     "474仅由主Wave生成,增援组不含474",
+     "prototypeDerived:四路上限各15=原各门死亡预算;474不在增援组(Boss唯一,主Wave生成);异形为460主控试作采纳prototype-reuse(非原版异形等价,真实消费者待验)。",
+     "停止态模板2个无激活证据,不投送(unknown)",
+     "CF7适配[A22-boss-0-3]:r6 fail#6:同 A20 boss[0][0] 的门内墙填充问题;移至native(184.5,177.6)=世界(263.0,201.05),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移15.6px;事实表原坐标保留不改(placement-adaptation.v1.json)"
+    ]
+   }
+  }
+ ]
+}

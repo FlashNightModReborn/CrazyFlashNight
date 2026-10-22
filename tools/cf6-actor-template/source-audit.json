@@ -1,0 +1,549 @@
+{
+  "schema": "cf6-actor-source-audit.v1",
+  "status": "source_verified_pending_runtime",
+  "npcUnitId": 213,
+  "hostileMirrorId": 275,
+  "teacherKey": "Andy Law",
+  "sampling": {
+    "name": "Andy",
+    "level": 60,
+    "hasBlade": true,
+    "hasGun": true,
+    "explicitSkillOverride": false,
+    "note": "Fixed skill membership is sampled from the source NPC equipment, independently of the player starting gun choice."
+  },
+  "model": {
+    "baseBudget": 2050,
+    "selectedBaseCost": 545,
+    "allEligibleBaseCost": 640,
+    "lcg": {
+      "A": 1664525,
+      "C": 1013904223,
+      "M": 4294967296
+    },
+    "selectionCount": 15,
+    "sourceModelOnly": true,
+    "actualAvm1Executed": false
+  },
+  "teacherCount": 24,
+  "npcSelected": [
+    "震地",
+    "凶斩",
+    "兴奋剂",
+    "瞬步斩",
+    "踩人",
+    "龙斩",
+    "地震",
+    "铁布衫",
+    "翻滚换弹",
+    "闪现",
+    "日字冲拳",
+    "虎拳",
+    "能量盾",
+    "觉醒霸体",
+    "组合拳"
+  ],
+  "additionalSkills": [
+    "震地",
+    "兴奋剂",
+    "踩人",
+    "地震",
+    "铁布衫",
+    "闪现",
+    "日字冲拳",
+    "虎拳",
+    "能量盾",
+    "觉醒霸体",
+    "组合拳"
+  ],
+  "skillCount": 35,
+  "teacherSpEquivalent": 9900,
+  "totalSpEquivalent": 12310,
+  "spIsSpendableGrant": false,
+  "skills": [
+    {
+      "name": "迅斩",
+      "level": 10,
+      "type": "剑术-锋利度",
+      "source": "teacher",
+      "spEquivalent": 105
+    },
+    {
+      "name": "瞬步斩",
+      "level": 10,
+      "type": "剑术-锋利度&内力",
+      "source": "teacher_and_npc",
+      "spEquivalent": 200
+    },
+    {
+      "name": "凶斩",
+      "level": 10,
+      "type": "剑术-锋利度&内力",
+      "source": "teacher_and_npc",
+      "spEquivalent": 250
+    },
+    {
+      "name": "火舞旋风",
+      "level": 10,
+      "type": "剑术-锋利度&内力",
+      "source": "teacher",
+      "spEquivalent": 350
+    },
+    {
+      "name": "拔刀术",
+      "level": 10,
+      "type": "剑术-锋利度&内力",
+      "source": "teacher",
+      "spEquivalent": 320
+    },
+    {
+      "name": "龙斩",
+      "level": 10,
+      "type": "武术&剑术-内力&锋利度",
+      "source": "teacher_and_npc",
+      "spEquivalent": 550
+    },
+    {
+      "name": "六连",
+      "level": 10,
+      "type": "剑术-锋利度&内力",
+      "source": "teacher",
+      "spEquivalent": 640
+    },
+    {
+      "name": "空间斩",
+      "level": 10,
+      "type": "剑术-锋利度&内力",
+      "source": "teacher",
+      "spEquivalent": 1000
+    },
+    {
+      "name": "追猎射击",
+      "level": 10,
+      "type": "枪术-子弹威力",
+      "source": "teacher",
+      "spEquivalent": 255
+    },
+    {
+      "name": "翻滚换弹",
+      "level": 10,
+      "type": "枪术",
+      "source": "teacher_and_npc",
+      "spEquivalent": 160
+    },
+    {
+      "name": "火力支援",
+      "level": 10,
+      "type": "枪术-轰炸",
+      "source": "teacher",
+      "spEquivalent": 320
+    },
+    {
+      "name": "战术目镜",
+      "level": 10,
+      "type": "枪术-子弹威力",
+      "source": "teacher",
+      "spEquivalent": 550
+    },
+    {
+      "name": "死亡绽放",
+      "level": 10,
+      "type": "枪术-子弹威力",
+      "source": "teacher",
+      "spEquivalent": 500
+    },
+    {
+      "name": "上帝之杖",
+      "level": 10,
+      "type": "枪术-轰炸",
+      "source": "teacher",
+      "spEquivalent": 1000
+    },
+    {
+      "name": "刀剑攻击",
+      "level": 20,
+      "type": "被动",
+      "source": "teacher",
+      "spEquivalent": 400
+    },
+    {
+      "name": "上挑",
+      "level": 10,
+      "type": "被动",
+      "source": "teacher",
+      "spEquivalent": 300
+    },
+    {
+      "name": "下劈",
+      "level": 10,
+      "type": "被动",
+      "source": "teacher",
+      "spEquivalent": 200
+    },
+    {
+      "name": "刀剑空中连招",
+      "level": 10,
+      "type": "被动",
+      "source": "teacher",
+      "spEquivalent": 385
+    },
+    {
+      "name": "枪械攻击",
+      "level": 20,
+      "type": "被动",
+      "source": "teacher",
+      "spEquivalent": 400
+    },
+    {
+      "name": "移动射击",
+      "level": 10,
+      "type": "被动&主动",
+      "source": "teacher",
+      "spEquivalent": 215
+    },
+    {
+      "name": "枪械师",
+      "level": 10,
+      "type": "被动",
+      "source": "teacher",
+      "spEquivalent": 500
+    },
+    {
+      "name": "轰炸专家",
+      "level": 10,
+      "type": "被动",
+      "source": "teacher",
+      "spEquivalent": 500
+    },
+    {
+      "name": "独行者",
+      "level": 10,
+      "type": "被动",
+      "source": "teacher",
+      "spEquivalent": 300
+    },
+    {
+      "name": "冲击连携",
+      "level": 10,
+      "type": "被动",
+      "source": "teacher",
+      "spEquivalent": 500
+    },
+    {
+      "name": "震地",
+      "level": 10,
+      "type": "武术-内力",
+      "source": "npc",
+      "spEquivalent": 250
+    },
+    {
+      "name": "兴奋剂",
+      "level": 10,
+      "type": "内功",
+      "source": "npc",
+      "spEquivalent": 200
+    },
+    {
+      "name": "踩人",
+      "level": 10,
+      "type": "武术-空手&内力",
+      "source": "npc",
+      "spEquivalent": 150
+    },
+    {
+      "name": "地震",
+      "level": 10,
+      "type": "武术-内力",
+      "source": "npc",
+      "spEquivalent": 500
+    },
+    {
+      "name": "铁布衫",
+      "level": 10,
+      "type": "内功-内力",
+      "source": "npc",
+      "spEquivalent": 200
+    },
+    {
+      "name": "闪现",
+      "level": 10,
+      "type": "武术-内力",
+      "source": "npc",
+      "spEquivalent": 200
+    },
+    {
+      "name": "日字冲拳",
+      "level": 10,
+      "type": "武术-空手&内力",
+      "source": "npc",
+      "spEquivalent": 200
+    },
+    {
+      "name": "虎拳",
+      "level": 10,
+      "type": "武术-空手",
+      "source": "npc",
+      "spEquivalent": 300
+    },
+    {
+      "name": "能量盾",
+      "level": 10,
+      "type": "科技",
+      "source": "npc",
+      "spEquivalent": 210
+    },
+    {
+      "name": "觉醒霸体",
+      "level": 1,
+      "type": "神功-内力",
+      "source": "npc",
+      "spEquivalent": 150
+    },
+    {
+      "name": "组合拳",
+      "level": 10,
+      "type": "武术-空手",
+      "source": "npc",
+      "spEquivalent": 50
+    }
+  ],
+  "equipment": [
+    {
+      "slot": "头部装备",
+      "name": "Andy领子-NPC",
+      "npcOriginal": "Andy领子-NPC",
+      "requiredLevel": 1,
+      "source": "data/items/防具_0-19级.xml",
+      "icon": "Andy领子-NPC",
+      "dressup": "男变装-Andy领子",
+      "helmet": true,
+      "ammo": null,
+      "lifecycle": null,
+      "iconSource": null,
+      "dressupSource": {
+        "id": "男变装-Andy领子",
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "0.防具相关/01.Andy套装相关/男变装-Andy领子"
+      }
+    },
+    {
+      "slot": "上装装备",
+      "name": "Andy上装-NPC",
+      "npcOriginal": "Andy上装-NPC",
+      "requiredLevel": 1,
+      "source": "data/items/防具_0-19级.xml",
+      "icon": "Andy上装-NPC",
+      "dressup": "变装-Andy上装",
+      "helmet": false,
+      "ammo": null,
+      "lifecycle": null,
+      "iconSource": null,
+      "dressupSource": null
+    },
+    {
+      "slot": "下装装备",
+      "name": "Andy下装-NPC",
+      "npcOriginal": "Andy下装-NPC",
+      "requiredLevel": 1,
+      "source": "data/items/防具_0-19级.xml",
+      "icon": "Andy下装-NPC",
+      "dressup": "变装-Andy下装",
+      "helmet": false,
+      "ammo": null,
+      "lifecycle": null,
+      "iconSource": null,
+      "dressupSource": null
+    },
+    {
+      "slot": "手部装备",
+      "name": "Andy装手套-NPC",
+      "npcOriginal": "Andy装手套-NPC",
+      "requiredLevel": 1,
+      "source": "data/items/防具_0-19级.xml",
+      "icon": "Andy装手套-NPC",
+      "dressup": "男变装-Andy装手套",
+      "helmet": false,
+      "ammo": null,
+      "lifecycle": null,
+      "iconSource": null,
+      "dressupSource": null
+    },
+    {
+      "slot": "脚部装备",
+      "name": "黑色板鞋",
+      "npcOriginal": "黑色板鞋",
+      "requiredLevel": 15,
+      "source": "data/items/防具_0-19级.xml",
+      "icon": "黑色板鞋",
+      "dressup": "男变装-黑色板鞋",
+      "helmet": false,
+      "ammo": null,
+      "lifecycle": null,
+      "iconSource": {
+        "id": "图标-黑色板鞋",
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "0.防具相关/01.Andy套装相关/图标-黑色板鞋"
+      },
+      "dressupSource": {
+        "id": "男变装-黑色板鞋",
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "0.防具相关/01.Andy套装相关/男变装-黑色板鞋"
+      }
+    },
+    {
+      "slot": "颈部装备",
+      "name": "东区最强战士项链",
+      "npcOriginal": "东区最强战士项链",
+      "requiredLevel": 1,
+      "source": "data/items/防具_颈部装备.xml",
+      "icon": "东区最强战士项链",
+      "dressup": "",
+      "helmet": false,
+      "ammo": null,
+      "lifecycle": null,
+      "iconSource": null,
+      "dressupSource": null
+    },
+    {
+      "slot": "长枪",
+      "name": "M4A1战术版",
+      "npcOriginal": "黄金QBZ的Andy版",
+      "requiredLevel": 35,
+      "source": "data/items/武器_长枪_突击步枪.xml",
+      "icon": "M4A1战术版",
+      "dressup": "枪-长枪-M4A1战术版",
+      "helmet": false,
+      "ammo": "突击步枪通用弹药",
+      "lifecycle": null,
+      "iconSource": {
+        "id": "图标-M4A1战术版",
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "1.枪械相关/长枪/图标-M4A1战术版"
+      },
+      "dressupSource": {
+        "id": "枪-长枪-M4A1战术版",
+        "swf": "flashswf/arts/things.swf",
+        "symbolName": "1.枪械相关/长枪/枪-长枪-M4A1战术版"
+      }
+    },
+    {
+      "slot": "刀",
+      "name": "镜之虎彻",
+      "npcOriginal": "绝地武士佩剑",
+      "requiredLevel": 21,
+      "source": "data/items/武器_刀_长刀.xml",
+      "icon": "镜之虎彻",
+      "dressup": "刀-镜之虎彻",
+      "helmet": false,
+      "ammo": null,
+      "lifecycle": "<lifecycle>\n        <attr_0>\n          <skillInteraction>independent</skillInteraction>\n          <init>\n            <initRoutines>镜之虎彻初始化</initRoutines>\n            <initParam>\n              <precent>2</precent>\n              <duration>0.25</duration>\n              <basicRate>5</basicRate>\n              <speed>360</speed>\n              <borderLength>180</borderLength>\n              <damageRate>40</damageRate>\n              <bulletrename>镜闪</bulletrename>\n            </initParam>\n          </init>\n          <cycle>\n            <cycleRoutines>镜之虎彻周期</cycleRoutines>\n          </cycle>\n        </attr_0>\n      <attr_环境光>\n        <skillInteraction>independent</skillInteraction>\n        <init>\n          <initRoutines>装备自发光初始化</initRoutines>\n          <initParam>\n            <group>blade</group>\n            <radius>115</radius>\n            <energy>0.61</energy>\n            <color>14938111</color>\n          </initParam>\n        </init>\n        <cycle>\n          <cycleRoutines>装备自发光周期</cycleRoutines>\n        </cycle>\n      </attr_环境光>\n      </lifecycle>\n      ",
+      "iconSource": {
+        "id": "图标-镜之虎彻",
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "冷兵/锐器/刀剑/镜之虎彻/图标-镜之虎彻"
+      },
+      "dressupSource": {
+        "id": "刀-镜之虎彻",
+        "swf": "flashswf/arts/things切割.swf",
+        "symbolName": "冷兵/锐器/刀剑/镜之虎彻/刀-镜之虎彻"
+      }
+    }
+  ],
+  "omittedEquipment": [],
+  "firstPrototypeGun": {
+    "name": "M4A1战术版",
+    "role": "approved-first-prototype-candidate",
+    "deliveryPolicy": "actor equipment is the single starting allocation; do not grant a second free gun",
+    "ammo": "突击步枪通用弹药"
+  },
+  "originalNpcGun": {
+    "name": "黄金QBZ的Andy版",
+    "requiredLevel": 70,
+    "source": "data/items/武器_长枪_霰弹枪.xml",
+    "inherited": false
+  },
+  "unresolved": [
+    "Starting ammunition quantity belongs to chapter economy; no additional free gun accompanies the same initial allocation.",
+    "Several NPC equipment icons have no asset-source-map entry; actual fallback presentation has not been verified."
+  ],
+  "conditions": [
+    "Andy head has helmet=true; renderer clears hairstyle.",
+    "Mirror katana keeps its authored skill multipliers and MP-consuming lifecycle; no passive attributes are rewritten.",
+    "Player energy shield still consumes one energy battery; NPC exemption is not copied.",
+    "Active skill shortcuts are not invented. Fixed skills enter the regular player skill table."
+  ],
+  "sourceFiles": [
+    {
+      "path": "data/equipment/equipment_config.xml",
+      "sha256": "b11686465ad471b62d9c6e3d36d390716f8afdf3f62b41e7e6117e5382b4471e"
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sha256": "5f62ddc3f2a4e13bf169d6bb4fd9e3279be7d7ce0fb57a6d9f21a4d31739b122"
+    },
+    {
+      "path": "data/items/list.xml",
+      "sha256": "310a0e6e4c83e3e0945a5be136350145cc97390040470a42eb480182c1f07cab"
+    },
+    {
+      "path": "data/items/武器_刀_长刀.xml",
+      "sha256": "a31d3d6bf8aa3bc90ff64a753b8945a0472bcfcd19f4f681710b27fb5a792c45"
+    },
+    {
+      "path": "data/items/武器_长枪_突击步枪.xml",
+      "sha256": "2c237308b5df33b3bf151ae5b9399eaa04755d8b513388fff31f4485292340a0"
+    },
+    {
+      "path": "data/items/武器_长枪_霰弹枪.xml",
+      "sha256": "5666c7d17611b0d7a682812d7718e6ff1a7b291be5cb3d9736ca46f63b5e8b19"
+    },
+    {
+      "path": "data/items/消耗品_弹夹.xml",
+      "sha256": "7afc054811da6395867f9322da65ebfa8150cd998a1e142f868d1ab3ea5cc7da"
+    },
+    {
+      "path": "data/items/防具_0-19级.xml",
+      "sha256": "e181f1a94bf44b7f55f012fc2ef2679389701d48c608735cb6660dd0f9dfebc7"
+    },
+    {
+      "path": "data/items/防具_颈部装备.xml",
+      "sha256": "dc161502dae73074895651089b418c5c30cbf488562f1709ec34f92b3bf6f349"
+    },
+    {
+      "path": "data/skills/npc_skills.json",
+      "sha256": "24d326a17572509abf12424f248c4889c4bef2963487e51c6c5fab0f6cabd515"
+    },
+    {
+      "path": "data/skills/skills.xml",
+      "sha256": "36864255cdcd6ce7b8b03190784fb6b837bdcdd71eda55140bf54189bbc64659"
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "ec144c69719d9e97273e0126713b892e4040829faec307811f96381af2cb3f8d"
+    },
+    {
+      "path": "scripts/引擎/引擎_lsy_等级与经验值.as",
+      "sha256": "ea68bb164b576bd3847e310176e091aa073a48fe7be844f6ecd3046cd325f77a"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/DressupInitializer.as",
+      "sha256": "d66e7a035a680d1e5198af7bfd777ae626ae38f6ee6c68a445a11b8b01aeeb62"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as",
+      "sha256": "71240e9a13cba00e85f0314e2c45c9a70d31954d6128183a0fd5375794972fc4"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
+      "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+    },
+    {
+      "path": "scripts/逻辑/装备函数/镜之虎彻.as",
+      "sha256": "1ae368f4165da96205f913efbf01a5d9a78083494cd71d49104a08566d9cf0f6"
+    },
+    {
+      "path": "scripts/逻辑系统分区/兵种系统_兼容.as",
+      "sha256": "32a713064ed573c42379463634ccd07c7bd53c2542e797ad8e5d03ab70cd6487"
+    }
+  ]
+}

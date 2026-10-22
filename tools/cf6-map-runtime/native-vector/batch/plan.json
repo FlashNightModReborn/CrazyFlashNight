@@ -1,0 +1,1232 @@
+{
+  "schema": "cf6-native-batch-plan.v2",
+  "generatedBy": "tools/cf6-map-runtime/native-vector/batch/batch-plan.py",
+  "generatedAt": "2026-10-21T17:48:11",
+  "maps": [
+    "A09",
+    "A10",
+    "A11",
+    "A12",
+    "A13",
+    "A14",
+    "A15",
+    "A16",
+    "A17",
+    "A18",
+    "A19",
+    "A20",
+    "A22"
+  ],
+  "mapInput": {
+    "path": "tools/cf6-map-source/generated/map-input.json",
+    "sha256": "056c50dd321debee3545d2988b891d140b07cfec864b5d461bd062e44d29ba95"
+  },
+  "runtimeIndex": {
+    "path": "tools/cf6-map-runtime/generated/runtime-index.json",
+    "sha256": "7aafd2377cdd6f1aec96b311f2d34bfad32ddd53b372d2a7057c6851b63ee24a"
+  },
+  "importNamePattern": "^CF6_A(0[1-689]|1[0-9]|20|22)_[A-Za-z0-9_-]+$",
+  "signal": {
+    "present": true,
+    "sha256": "d2ae83e5cb181ce5fd1b786b32bab3cd304bfed87871b703cc47d28f81acbcd1",
+    "schema": "cf6-native-converter-ready.v1",
+    "status": "ready_for_K3_source_preparation",
+    "converterBundleSha256": "69bf33f7769966e03a1c89835c8e248fcf759862f79d2efe8f9952f0258e7be2",
+    "dependencies": {
+      "tools/cf6-map-runtime/native-vector/build-a01.py": {
+        "sha256": "ad1cde5d1e97ac23aabdb12d5dafb8ee30974c6c8c92c51b92a5d581824533f6",
+        "bytes": 29328
+      },
+      "tools/cf6-map-runtime/native-vector/build-layer.py": {
+        "sha256": "baf6fc519e27584130cbde6cb07d86a4b3600158d3096db3995a7ba80b1c3da8",
+        "bytes": 9287
+      },
+      "tools/cf6-map-runtime/native_xfl.py": {
+        "sha256": "2e386b9499f211be696d3a9bfc57778b4a9b07f689668920ec4e50d07dfc7cd9",
+        "bytes": 5191
+      },
+      "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py": {
+        "sha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655",
+        "bytes": 18556
+      },
+      "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/reference/vehicles-props-DejaVuSans-Bold.ttf": {
+        "sha256": "a4c5bc453ca281d90ea079e596da7ae0dfeb5777497c29ec254e76d97ff6f890",
+        "bytes": 708920
+      },
+      "tools/cf6-map-runtime/build.py": {
+        "sha256": "5738a4c2e8f1719c637217182831a0b14029dda262e07f29ac55073738f1c01d",
+        "bytes": 17374
+      }
+    },
+    "jobs": 17
+  },
+  "extraction": "decode existing PNG/JPEG data URI bytes only; no scene rasterization, no per-frame PNG",
+  "uniqueTextures": 33,
+  "cs6Operator": "root only; this line never runs CS6",
+  "targets": [
+    {
+      "name": "CF6_A09_BG_VectorCandidate01",
+      "map": "A09",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/environment-a09-backdrop.svg",
+      "sourceSha256": "f3bc78269dbccf2889cf97e2a4a659569d45fd3fcc7200099fe80519773d9b29",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A09_BG_VectorCandidate01/CF6_A09_BG_VectorCandidate01.xfl",
+      "swf": "CF6_A09_BG_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A09_BG_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 7,
+      "textures": [
+        {
+          "sha256": "21bf95049e7f77ed8869f22c8045e16f92b07472aa62ecd3c7de8cf9f96438e9",
+          "bytes": 272112,
+          "kind": "png"
+        },
+        {
+          "sha256": "3836de63b32bea50641494963bf74228b0efccfb3510c25fa1f34f028abf4349",
+          "bytes": 387395,
+          "kind": "png"
+        },
+        {
+          "sha256": "7306457526928ec9a3ea3e4a277055695f4e7a9d9503caea98c81e672f77b486",
+          "bytes": 2466576,
+          "kind": "png"
+        },
+        {
+          "sha256": "785e044604178bfb67bed99bbd99b08422b2f32eae94dbb8ba8e7d58b7f8d4b1",
+          "bytes": 117770,
+          "kind": "png"
+        },
+        {
+          "sha256": "8a387a87fedb647e6e61daac308b63c42b5a10ee848280a102e2d01cd2e0214a",
+          "bytes": 107182,
+          "kind": "png"
+        },
+        {
+          "sha256": "8bb617baabd8ac95dc850ad198cdd396c93e0f1c57ce37aef1a53f3ab2f3985f",
+          "bytes": 16996,
+          "kind": "png"
+        },
+        {
+          "sha256": "9edb117c5bad8a9942697b57084f212bccb36817751a72a4fd4cdf2eb1dcb771",
+          "bytes": 70586,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 11620,
+        "rect": 313,
+        "ellipse": 3828,
+        "circle": 216,
+        "polygon": 18,
+        "image": 57,
+        "linearGradient": 21,
+        "radialGradient": 6,
+        "clipPath": 113,
+        "mask": 12,
+        "pattern": 7
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "skipped(--only)",
+      "gaps": [],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A09_BG_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory"
+    },
+    {
+      "name": "CF6_A10_BG_VectorCandidate01",
+      "map": "A10",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/parts/environment-a10-backdrop.svg",
+      "sourceSha256": "c6f17eee56c1aee9add129e8aa9231ad55fe2ae051df6c9a0827ab458c69db21",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A10_BG_VectorCandidate01/CF6_A10_BG_VectorCandidate01.xfl",
+      "swf": "CF6_A10_BG_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A10_BG_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 1,
+      "textures": [
+        {
+          "sha256": "e7b842602deb6cc0fc52453c818f9b45b7e2a9906eb3fe7095645d20b3246b00",
+          "bytes": 2047566,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 1003,
+        "rect": 35,
+        "circle": 72,
+        "image": 1,
+        "linearGradient": 9,
+        "clipPath": 3,
+        "mask": 1,
+        "pattern": 1
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "skipped(--only)",
+      "gaps": [],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A10_BG_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory"
+    },
+    {
+      "name": "CF6_A10_elevator-scroll_VectorCandidate01",
+      "map": "A10",
+      "layer": "elevator-scroll",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/parts/elevator-1875-tile.svg",
+      "sourceSha256": "a1f9b64d4d704dbbc202df59baad5e130ea1f5ce989fa26683b2839d3200162c",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A10_elevator-scroll_VectorCandidate01/CF6_A10_elevator-scroll_VectorCandidate01.xfl",
+      "swf": "CF6_A10_elevator-scroll_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A10_elevator-scroll_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 2,
+      "textures": [
+        {
+          "sha256": "326f8bd62a9888c43adf445cfbab16a785789cc67ef52ec2ba190799ee4fabe0",
+          "bytes": 697401,
+          "kind": "png"
+        },
+        {
+          "sha256": "bad42f8ab9ad860db40dba27767a78f883bb2613115d864df5cf222f2fa2a84e",
+          "bytes": 16792,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 1306,
+        "rect": 23,
+        "circle": 24,
+        "image": 5,
+        "linearGradient": 170,
+        "radialGradient": 2,
+        "clipPath": 5,
+        "mask": 5,
+        "pattern": 5
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "skipped(--only)",
+      "gaps": [],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A10_elevator-scroll_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory"
+    },
+    {
+      "name": "CF6_A10_foreground_VectorCandidate01",
+      "map": "A10",
+      "layer": "foreground",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/parts/foreground-1884.svg",
+      "sourceSha256": "ce2ecb42680236ac1ded252798a34ca99f4fb9021c7f69c0f1a5f117fdbe30a2",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A10_foreground_VectorCandidate01/CF6_A10_foreground_VectorCandidate01.xfl",
+      "swf": "CF6_A10_foreground_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A10_foreground_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 1,
+      "textures": [
+        {
+          "sha256": "e461790d76e4f1a84e7736fbccc46b14b1fbb401f3de17d4f3757f994ea21724",
+          "bytes": 1758255,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 498,
+        "rect": 16,
+        "circle": 48,
+        "image": 1,
+        "linearGradient": 9,
+        "clipPath": 3,
+        "mask": 1,
+        "pattern": 1
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "skipped(--only)",
+      "gaps": [],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A10_foreground_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory"
+    },
+    {
+      "name": "CF6_A11_BG_VectorCandidate01",
+      "map": "A11",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/parts/environment-a11-backdrop.svg",
+      "sourceSha256": "8b3152d2f0c0cf169cc0934f1cd984fdc22758fbaff9815cec4f5f038ab40671",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A11_BG_VectorCandidate01/CF6_A11_BG_VectorCandidate01.xfl",
+      "swf": "CF6_A11_BG_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A11_BG_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 14,
+      "textures": [
+        {
+          "sha256": "21bf95049e7f77ed8869f22c8045e16f92b07472aa62ecd3c7de8cf9f96438e9",
+          "bytes": 272112,
+          "kind": "png"
+        },
+        {
+          "sha256": "3836de63b32bea50641494963bf74228b0efccfb3510c25fa1f34f028abf4349",
+          "bytes": 387395,
+          "kind": "png"
+        },
+        {
+          "sha256": "51b11bf2ce2d5077dbc21848e193ce3b4cf3dfd0baef026450a5b4ac3a8a706d",
+          "bytes": 975,
+          "kind": "png"
+        },
+        {
+          "sha256": "7306457526928ec9a3ea3e4a277055695f4e7a9d9503caea98c81e672f77b486",
+          "bytes": 2466576,
+          "kind": "png"
+        },
+        {
+          "sha256": "785e044604178bfb67bed99bbd99b08422b2f32eae94dbb8ba8e7d58b7f8d4b1",
+          "bytes": 117770,
+          "kind": "png"
+        },
+        {
+          "sha256": "83614aa0c319c35d1bff6907fdc28fa0a733c547d00f5da444ed686b7d62528b",
+          "bytes": 1790518,
+          "kind": "png"
+        },
+        {
+          "sha256": "9579f1a200075776adefc6392f822ccb8895d2e9a444d91e824d09a246fad1aa",
+          "bytes": 50223,
+          "kind": "png"
+        },
+        {
+          "sha256": "9b9c1497bee995524be11b656d22eecd130b624c975fd1fab2e4a228b9cbc812",
+          "bytes": 10238,
+          "kind": "png"
+        },
+        {
+          "sha256": "9edb117c5bad8a9942697b57084f212bccb36817751a72a4fd4cdf2eb1dcb771",
+          "bytes": 70586,
+          "kind": "png"
+        },
+        {
+          "sha256": "b2fb7d7f5070acd7093c768bcfce1b7c18cfe557ab3b085d44cfbdc74e10a6d3",
+          "bytes": 2086610,
+          "kind": "png"
+        },
+        {
+          "sha256": "d453200c45c400bc8c656872a4c31867ba711dacd8683cb5eb6e8daae4aca82e",
+          "bytes": 128795,
+          "kind": "png"
+        },
+        {
+          "sha256": "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6",
+          "bytes": 16955,
+          "kind": "png"
+        },
+        {
+          "sha256": "f73320ef971862e5120db0e914d1e91bff1088246daef3f3953fbe2d2666e26a",
+          "bytes": 18459,
+          "kind": "png"
+        },
+        {
+          "sha256": "fdcdcdef41face8ac7bd71ba8568bf555de5ff6a347fecdfc278cfc0dc45cf14",
+          "bytes": 171562,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 12975,
+        "rect": 431,
+        "ellipse": 3898,
+        "circle": 348,
+        "polygon": 13,
+        "image": 61,
+        "linearGradient": 139,
+        "radialGradient": 14,
+        "clipPath": 138,
+        "mask": 30,
+        "filter": 10,
+        "pattern": 14
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "skipped(--only)",
+      "gaps": [],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A11_BG_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory"
+    },
+    {
+      "name": "CF6_A12_BG_VectorCandidate01",
+      "map": "A12",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/environment-a12-backdrop.svg",
+      "sourceSha256": "ee410623c440d8c0ccddb9ac57f7137e78f18cce0f0db1641a539d522841c33a",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A12_BG_VectorCandidate01/CF6_A12_BG_VectorCandidate01.xfl",
+      "swf": "CF6_A12_BG_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A12_BG_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 6,
+      "textures": [
+        {
+          "sha256": "21bf95049e7f77ed8869f22c8045e16f92b07472aa62ecd3c7de8cf9f96438e9",
+          "bytes": 272112,
+          "kind": "png"
+        },
+        {
+          "sha256": "3836de63b32bea50641494963bf74228b0efccfb3510c25fa1f34f028abf4349",
+          "bytes": 387395,
+          "kind": "png"
+        },
+        {
+          "sha256": "7306457526928ec9a3ea3e4a277055695f4e7a9d9503caea98c81e672f77b486",
+          "bytes": 2466576,
+          "kind": "png"
+        },
+        {
+          "sha256": "785e044604178bfb67bed99bbd99b08422b2f32eae94dbb8ba8e7d58b7f8d4b1",
+          "bytes": 117770,
+          "kind": "png"
+        },
+        {
+          "sha256": "9edb117c5bad8a9942697b57084f212bccb36817751a72a4fd4cdf2eb1dcb771",
+          "bytes": 70586,
+          "kind": "png"
+        },
+        {
+          "sha256": "d453200c45c400bc8c656872a4c31867ba711dacd8683cb5eb6e8daae4aca82e",
+          "bytes": 128795,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 12000,
+        "rect": 323,
+        "ellipse": 5636,
+        "circle": 192,
+        "polygon": 26,
+        "image": 57,
+        "linearGradient": 20,
+        "radialGradient": 6,
+        "clipPath": 114,
+        "mask": 17,
+        "filter": 4,
+        "pattern": 9
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "skipped(--only)",
+      "gaps": [],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A12_BG_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory"
+    },
+    {
+      "name": "CF6_A13_BG_VectorCandidate01",
+      "map": "A13",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/parts/environment-a13-backdrop.svg",
+      "sourceSha256": "82f7f9e41b9298acbbf52c657363d8788bc16a04a0e52ba183f77b01edd7394b",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A13_BG_VectorCandidate01/CF6_A13_BG_VectorCandidate01.xfl",
+      "swf": "CF6_A13_BG_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A13_BG_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 1,
+      "textures": [
+        {
+          "sha256": "b2fb7d7f5070acd7093c768bcfce1b7c18cfe557ab3b085d44cfbdc74e10a6d3",
+          "bytes": 2086610,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 1003,
+        "rect": 35,
+        "circle": 72,
+        "image": 1,
+        "linearGradient": 9,
+        "clipPath": 3,
+        "mask": 1,
+        "pattern": 1
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "skipped(--only)",
+      "gaps": [],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A13_BG_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory"
+    },
+    {
+      "name": "CF6_A13_elevator-scroll_VectorCandidate01",
+      "map": "A13",
+      "layer": "elevator-scroll",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/parts/elevator-1875-tile.svg",
+      "sourceSha256": "47bc4dc5df0710317029e08c1f7c48e3d8df9fa2cca5cdadd949f1c151c7849f",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A13_elevator-scroll_VectorCandidate01/CF6_A13_elevator-scroll_VectorCandidate01.xfl",
+      "swf": "CF6_A13_elevator-scroll_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A13_elevator-scroll_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 2,
+      "textures": [
+        {
+          "sha256": "76d531101673d7f9b5a7ba753584d8bcd7068f544b3f582143cd954f814977f6",
+          "bytes": 712479,
+          "kind": "png"
+        },
+        {
+          "sha256": "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6",
+          "bytes": 16955,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 1306,
+        "rect": 23,
+        "circle": 24,
+        "image": 5,
+        "linearGradient": 170,
+        "radialGradient": 2,
+        "clipPath": 5,
+        "mask": 5,
+        "pattern": 5
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "skipped(--only)",
+      "gaps": [],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A13_elevator-scroll_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory"
+    },
+    {
+      "name": "CF6_A13_foreground_VectorCandidate01",
+      "map": "A13",
+      "layer": "foreground",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/parts/foreground-1884.svg",
+      "sourceSha256": "97496ebd913f45391db8c948a4900c7889220131483826433b686be4da0e3703",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A13_foreground_VectorCandidate01/CF6_A13_foreground_VectorCandidate01.xfl",
+      "swf": "CF6_A13_foreground_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A13_foreground_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 1,
+      "textures": [
+        {
+          "sha256": "83614aa0c319c35d1bff6907fdc28fa0a733c547d00f5da444ed686b7d62528b",
+          "bytes": 1790518,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 498,
+        "rect": 16,
+        "circle": 48,
+        "image": 1,
+        "linearGradient": 9,
+        "clipPath": 3,
+        "mask": 1,
+        "pattern": 1
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "skipped(--only)",
+      "gaps": [],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A13_foreground_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory"
+    },
+    {
+      "name": "CF6_A14_BG_VectorCandidate01",
+      "map": "A14",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/parts/environment-a14-backdrop.svg",
+      "sourceSha256": "d15101e37aa48c3e95a829efd65ee1a4bcd6ea64dc00864b670c101a655c1078",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A14_BG_VectorCandidate01/CF6_A14_BG_VectorCandidate01.xfl",
+      "swf": "CF6_A14_BG_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A14_BG_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 8,
+      "textures": [
+        {
+          "sha256": "284dc3064799385627ec51362a64e044910ba3c3e2121211477886d82e8193b4",
+          "bytes": 53210,
+          "kind": "png"
+        },
+        {
+          "sha256": "3836de63b32bea50641494963bf74228b0efccfb3510c25fa1f34f028abf4349",
+          "bytes": 387395,
+          "kind": "png"
+        },
+        {
+          "sha256": "7306457526928ec9a3ea3e4a277055695f4e7a9d9503caea98c81e672f77b486",
+          "bytes": 2466576,
+          "kind": "png"
+        },
+        {
+          "sha256": "74a5ca93eeabd7126ade7baceaa0ad6a645f1e2906ac5fe4cd8a93008fab2411",
+          "bytes": 1067,
+          "kind": "png"
+        },
+        {
+          "sha256": "83614aa0c319c35d1bff6907fdc28fa0a733c547d00f5da444ed686b7d62528b",
+          "bytes": 1790518,
+          "kind": "png"
+        },
+        {
+          "sha256": "b2fb7d7f5070acd7093c768bcfce1b7c18cfe557ab3b085d44cfbdc74e10a6d3",
+          "bytes": 2086610,
+          "kind": "png"
+        },
+        {
+          "sha256": "d453200c45c400bc8c656872a4c31867ba711dacd8683cb5eb6e8daae4aca82e",
+          "bytes": 128795,
+          "kind": "png"
+        },
+        {
+          "sha256": "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6",
+          "bytes": 16955,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 34952,
+        "rect": 181,
+        "ellipse": 2174,
+        "circle": 576,
+        "polygon": 5,
+        "image": 126,
+        "linearGradient": 578,
+        "radialGradient": 34,
+        "clipPath": 630,
+        "mask": 22,
+        "filter": 10,
+        "pattern": 6
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "skipped(--only)",
+      "gaps": [],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A14_BG_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory"
+    },
+    {
+      "name": "CF6_A15_BG_VectorCandidate01",
+      "map": "A15",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/parts/environment-a15-backdrop.svg",
+      "sourceSha256": "e4c7c4a206c6834ebff7abbe1e33f5f01cebaaf7507ee93b015f60881ee354ff",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A15_BG_VectorCandidate01/CF6_A15_BG_VectorCandidate01.xfl",
+      "swf": "CF6_A15_BG_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A15_BG_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 3,
+      "textures": [
+        {
+          "sha256": "bd390a38e397a6693d65a0327552bc4e6692ed305bc6d612ac8c6856dcf20342",
+          "bytes": 995480,
+          "kind": "png"
+        },
+        {
+          "sha256": "d453200c45c400bc8c656872a4c31867ba711dacd8683cb5eb6e8daae4aca82e",
+          "bytes": 128795,
+          "kind": "png"
+        },
+        {
+          "sha256": "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6",
+          "bytes": 16955,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 49434,
+        "rect": 279,
+        "ellipse": 624,
+        "circle": 1083,
+        "image": 134,
+        "linearGradient": 1168,
+        "radialGradient": 68,
+        "clipPath": 1052,
+        "mask": 15,
+        "pattern": 12
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "skipped(--only)",
+      "gaps": [],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A15_BG_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory"
+    },
+    {
+      "name": "CF6_A16_BG_VectorCandidate01",
+      "map": "A16",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/parts/environment-a16-backdrop.svg",
+      "sourceSha256": "f7b53e3dc1879c01d4ab5ffb6abf1890a88e0d580c6daedd66f61912475eaa80",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A16_BG_VectorCandidate01/CF6_A16_BG_VectorCandidate01.xfl",
+      "swf": "CF6_A16_BG_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A16_BG_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 5,
+      "textures": [
+        {
+          "sha256": "3836de63b32bea50641494963bf74228b0efccfb3510c25fa1f34f028abf4349",
+          "bytes": 387395,
+          "kind": "png"
+        },
+        {
+          "sha256": "7306457526928ec9a3ea3e4a277055695f4e7a9d9503caea98c81e672f77b486",
+          "bytes": 2466576,
+          "kind": "png"
+        },
+        {
+          "sha256": "9edb117c5bad8a9942697b57084f212bccb36817751a72a4fd4cdf2eb1dcb771",
+          "bytes": 70586,
+          "kind": "png"
+        },
+        {
+          "sha256": "d453200c45c400bc8c656872a4c31867ba711dacd8683cb5eb6e8daae4aca82e",
+          "bytes": 128795,
+          "kind": "png"
+        },
+        {
+          "sha256": "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6",
+          "bytes": 16955,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 51329,
+        "rect": 417,
+        "ellipse": 6246,
+        "circle": 684,
+        "polygon": 13,
+        "image": 142,
+        "linearGradient": 1022,
+        "radialGradient": 87,
+        "clipPath": 871,
+        "mask": 43,
+        "filter": 18,
+        "pattern": 22
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "skipped(--only)",
+      "gaps": [],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A16_BG_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory"
+    },
+    {
+      "name": "CF6_A17_BG_VectorCandidate01",
+      "map": "A17",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/environment-a17-backdrop.svg",
+      "sourceSha256": "c25930912c3d21543f0489f18ebc091ad9090acd5014fd1836628d595f61a6cf",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A17_BG_VectorCandidate01/CF6_A17_BG_VectorCandidate01.xfl",
+      "swf": "CF6_A17_BG_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A17_BG_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 5,
+      "textures": [
+        {
+          "sha256": "3836de63b32bea50641494963bf74228b0efccfb3510c25fa1f34f028abf4349",
+          "bytes": 387395,
+          "kind": "png"
+        },
+        {
+          "sha256": "7306457526928ec9a3ea3e4a277055695f4e7a9d9503caea98c81e672f77b486",
+          "bytes": 2466576,
+          "kind": "png"
+        },
+        {
+          "sha256": "9edb117c5bad8a9942697b57084f212bccb36817751a72a4fd4cdf2eb1dcb771",
+          "bytes": 70586,
+          "kind": "png"
+        },
+        {
+          "sha256": "d453200c45c400bc8c656872a4c31867ba711dacd8683cb5eb6e8daae4aca82e",
+          "bytes": 128795,
+          "kind": "png"
+        },
+        {
+          "sha256": "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6",
+          "bytes": 16955,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 46594,
+        "rect": 377,
+        "ellipse": 6116,
+        "circle": 684,
+        "polygon": 13,
+        "image": 142,
+        "linearGradient": 807,
+        "radialGradient": 77,
+        "clipPath": 706,
+        "mask": 43,
+        "filter": 18,
+        "pattern": 22
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "skipped(--only)",
+      "gaps": [],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A17_BG_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory"
+    },
+    {
+      "name": "CF6_A18_BG_VectorCandidate01",
+      "map": "A18",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/parts/environment-a18-backdrop.svg",
+      "sourceSha256": "a456f0a4b110a7161133584672cb26f0c6ffaeaf25aa5c4531d8f2a900e8b842",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A18_BG_VectorCandidate01/CF6_A18_BG_VectorCandidate01.xfl",
+      "swf": "CF6_A18_BG_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A18_BG_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 11,
+      "textures": [
+        {
+          "sha256": "25c98ecabc10ce7141c2780d70e7c80f5a52c8f2ffee9e323b1b769036c85449",
+          "bytes": 37757,
+          "kind": "png"
+        },
+        {
+          "sha256": "3836de63b32bea50641494963bf74228b0efccfb3510c25fa1f34f028abf4349",
+          "bytes": 387395,
+          "kind": "png"
+        },
+        {
+          "sha256": "47b5d7e8fa3ea02bf4a50a0878fc45a4ca6f4fbc7711bcfdb53c473bcc4c1f34",
+          "bytes": 11245,
+          "kind": "png"
+        },
+        {
+          "sha256": "7be9af367109c0913fbfa11203e0f8ba879c3e1fd6a489186f00ea4e7bf63238",
+          "bytes": 140585,
+          "kind": "png"
+        },
+        {
+          "sha256": "84a06159f67e42f946b9c8a9240c3f85ac47dd8edb18a07dfc21cee85d3cd471",
+          "bytes": 20434,
+          "kind": "png"
+        },
+        {
+          "sha256": "96c44bc08121cad6ebb3861f854d9226f64da8b7720e89e10395f6af1ca4ea0c",
+          "bytes": 724023,
+          "kind": "png"
+        },
+        {
+          "sha256": "b0cd38be1e80051ec5eac71728747e95be52b84f1bdc25bd14b69f428a6ce083",
+          "bytes": 9007,
+          "kind": "png"
+        },
+        {
+          "sha256": "bd330c92cb5c4b31de7cbc97b3665f52f5db0aaf4acce40797466b51b714f568",
+          "bytes": 316065,
+          "kind": "png"
+        },
+        {
+          "sha256": "c015876b695754db68bb11b90b814dc0e0bd9e589dc9ed62151ec60d9ec240b3",
+          "bytes": 131197,
+          "kind": "png"
+        },
+        {
+          "sha256": "c46c43e5011a1acbe0176f7bfdda024ffe0debcda5196d84d0cb9ad9d3c9a46d",
+          "bytes": 9749,
+          "kind": "png"
+        },
+        {
+          "sha256": "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6",
+          "bytes": 16955,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 1742,
+        "rect": 131,
+        "ellipse": 61,
+        "circle": 48,
+        "polygon": 5,
+        "image": 14,
+        "use": 15,
+        "linearGradient": 65,
+        "radialGradient": 17,
+        "clipPath": 24,
+        "mask": 11,
+        "filter": 14,
+        "pattern": 14
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "reused",
+      "gaps": [
+        "ValueError: pattern must be one intrinsic image",
+        "unsupported SVG feature localized: <pattern id=\"n2floor_lattice_1959\"> has a single vector <g> child instead of one intrinsic image; referenced as rect fill=url(#n2floor_lattice_1959); converter build-a01.py paint() only supports a one-image intrinsic pattern. No SVG graphics removed, no converter change, no scene raster fallback."
+      ],
+      "builder": {
+        "script": "tools/cf6-map-runtime/native-vector/batch/build-pattern-layer.py",
+        "adapter": "tools/cf6-map-runtime/native-vector/batch/pattern_adapter.py",
+        "args": [
+          "--map",
+          "A18"
+        ],
+        "reason": "vector-pattern-fill n2floor_lattice_1959"
+      },
+      "vectorPatterns": [
+        "n2floor_lattice_1959"
+      ],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A18_BG_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory",
+      "featureGap": "vector-pattern-fill",
+      "reuseEvidence": "source snapshots + manifest + texture original bytes verified"
+    },
+    {
+      "name": "CF6_A19_BG_VectorCandidate01",
+      "map": "A19",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/parts/environment-a19-backdrop.svg",
+      "sourceSha256": "55484d30da86fa68e5004712859a1aa0e3f73ae522bb689d7c5cce190ace5f89",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A19_BG_VectorCandidate01/CF6_A19_BG_VectorCandidate01.xfl",
+      "swf": "CF6_A19_BG_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A19_BG_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 10,
+      "textures": [
+        {
+          "sha256": "25c98ecabc10ce7141c2780d70e7c80f5a52c8f2ffee9e323b1b769036c85449",
+          "bytes": 37757,
+          "kind": "png"
+        },
+        {
+          "sha256": "3836de63b32bea50641494963bf74228b0efccfb3510c25fa1f34f028abf4349",
+          "bytes": 387395,
+          "kind": "png"
+        },
+        {
+          "sha256": "47b5d7e8fa3ea02bf4a50a0878fc45a4ca6f4fbc7711bcfdb53c473bcc4c1f34",
+          "bytes": 11245,
+          "kind": "png"
+        },
+        {
+          "sha256": "7be9af367109c0913fbfa11203e0f8ba879c3e1fd6a489186f00ea4e7bf63238",
+          "bytes": 140585,
+          "kind": "png"
+        },
+        {
+          "sha256": "84a06159f67e42f946b9c8a9240c3f85ac47dd8edb18a07dfc21cee85d3cd471",
+          "bytes": 20434,
+          "kind": "png"
+        },
+        {
+          "sha256": "96c44bc08121cad6ebb3861f854d9226f64da8b7720e89e10395f6af1ca4ea0c",
+          "bytes": 724023,
+          "kind": "png"
+        },
+        {
+          "sha256": "b0cd38be1e80051ec5eac71728747e95be52b84f1bdc25bd14b69f428a6ce083",
+          "bytes": 9007,
+          "kind": "png"
+        },
+        {
+          "sha256": "c015876b695754db68bb11b90b814dc0e0bd9e589dc9ed62151ec60d9ec240b3",
+          "bytes": 131197,
+          "kind": "png"
+        },
+        {
+          "sha256": "c46c43e5011a1acbe0176f7bfdda024ffe0debcda5196d84d0cb9ad9d3c9a46d",
+          "bytes": 9749,
+          "kind": "png"
+        },
+        {
+          "sha256": "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6",
+          "bytes": 16955,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 1825,
+        "rect": 120,
+        "ellipse": 57,
+        "circle": 60,
+        "polygon": 5,
+        "image": 14,
+        "use": 16,
+        "linearGradient": 70,
+        "radialGradient": 14,
+        "clipPath": 24,
+        "mask": 11,
+        "filter": 10,
+        "pattern": 15
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "reused",
+      "gaps": [
+        "ValueError: pattern must be one intrinsic image",
+        "unsupported SVG feature localized: <pattern id=\"n2floor_lattice_1978\"> has a single vector <g> child instead of one intrinsic image; referenced as rect fill=url(#n2floor_lattice_1978); converter build-a01.py paint() only supports a one-image intrinsic pattern. No SVG graphics removed, no converter change, no scene raster fallback."
+      ],
+      "builder": {
+        "script": "tools/cf6-map-runtime/native-vector/batch/build-pattern-layer.py",
+        "adapter": "tools/cf6-map-runtime/native-vector/batch/pattern_adapter.py",
+        "args": [
+          "--map",
+          "A19"
+        ],
+        "reason": "vector-pattern-fill n2floor_lattice_1978"
+      },
+      "vectorPatterns": [
+        "n2floor_lattice_1978"
+      ],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A19_BG_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory",
+      "featureGap": "vector-pattern-fill",
+      "reuseEvidence": "source snapshots + manifest + texture original bytes verified"
+    },
+    {
+      "name": "CF6_A20_BG_VectorCandidate01",
+      "map": "A20",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/environment-a20-backdrop.svg",
+      "sourceSha256": "646bfcad9dc5609fd29d7e7fe1578f1a0bef5365046964e75030d76cac1e8b5b",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A20_BG_VectorCandidate01/CF6_A20_BG_VectorCandidate01.xfl",
+      "swf": "CF6_A20_BG_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A20_BG_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 8,
+      "textures": [
+        {
+          "sha256": "25c98ecabc10ce7141c2780d70e7c80f5a52c8f2ffee9e323b1b769036c85449",
+          "bytes": 37757,
+          "kind": "png"
+        },
+        {
+          "sha256": "3836de63b32bea50641494963bf74228b0efccfb3510c25fa1f34f028abf4349",
+          "bytes": 387395,
+          "kind": "png"
+        },
+        {
+          "sha256": "7be9af367109c0913fbfa11203e0f8ba879c3e1fd6a489186f00ea4e7bf63238",
+          "bytes": 140585,
+          "kind": "png"
+        },
+        {
+          "sha256": "84a06159f67e42f946b9c8a9240c3f85ac47dd8edb18a07dfc21cee85d3cd471",
+          "bytes": 20434,
+          "kind": "png"
+        },
+        {
+          "sha256": "96c44bc08121cad6ebb3861f854d9226f64da8b7720e89e10395f6af1ca4ea0c",
+          "bytes": 724023,
+          "kind": "png"
+        },
+        {
+          "sha256": "bd330c92cb5c4b31de7cbc97b3665f52f5db0aaf4acce40797466b51b714f568",
+          "bytes": 316065,
+          "kind": "png"
+        },
+        {
+          "sha256": "c015876b695754db68bb11b90b814dc0e0bd9e589dc9ed62151ec60d9ec240b3",
+          "bytes": 131197,
+          "kind": "png"
+        },
+        {
+          "sha256": "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6",
+          "bytes": 16955,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 2351,
+        "rect": 122,
+        "ellipse": 100,
+        "circle": 72,
+        "polygon": 10,
+        "image": 17,
+        "use": 16,
+        "linearGradient": 81,
+        "radialGradient": 12,
+        "clipPath": 26,
+        "mask": 12,
+        "filter": 6,
+        "pattern": 17
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "reused",
+      "gaps": [
+        "ValueError: pattern must be one intrinsic image",
+        "unsupported SVG feature localized: <pattern id=\"n2floor_lattice_1986\"> has a single vector <g> child instead of one intrinsic image; referenced as rect fill=url(#n2floor_lattice_1986); converter build-a01.py paint() only supports a one-image intrinsic pattern. No SVG graphics removed, no converter change, no scene raster fallback."
+      ],
+      "builder": {
+        "script": "tools/cf6-map-runtime/native-vector/batch/build-pattern-layer.py",
+        "adapter": "tools/cf6-map-runtime/native-vector/batch/pattern_adapter.py",
+        "args": [
+          "--map",
+          "A20"
+        ],
+        "reason": "vector-pattern-fill n2floor_lattice_1986"
+      },
+      "vectorPatterns": [
+        "n2floor_lattice_1986"
+      ],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A20_BG_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory",
+      "featureGap": "vector-pattern-fill",
+      "reuseEvidence": "source snapshots + manifest + texture original bytes verified"
+    },
+    {
+      "name": "CF6_A22_BG_VectorCandidate01",
+      "map": "A22",
+      "layer": "background",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/parts/environment-a22-backdrop.svg",
+      "sourceSha256": "646bfcad9dc5609fd29d7e7fe1578f1a0bef5365046964e75030d76cac1e8b5b",
+      "xfl": "flashswf/backgrounds/cf6/CF6_A22_BG_VectorCandidate01/CF6_A22_BG_VectorCandidate01.xfl",
+      "swf": "CF6_A22_BG_VectorCandidate01.swf",
+      "importRecipe": "tools/cf6-map-runtime/native-vector/layers/CF6_A22_BG_VectorCandidate01/import-textures.jsfl",
+      "textureCount": 8,
+      "textures": [
+        {
+          "sha256": "25c98ecabc10ce7141c2780d70e7c80f5a52c8f2ffee9e323b1b769036c85449",
+          "bytes": 37757,
+          "kind": "png"
+        },
+        {
+          "sha256": "3836de63b32bea50641494963bf74228b0efccfb3510c25fa1f34f028abf4349",
+          "bytes": 387395,
+          "kind": "png"
+        },
+        {
+          "sha256": "7be9af367109c0913fbfa11203e0f8ba879c3e1fd6a489186f00ea4e7bf63238",
+          "bytes": 140585,
+          "kind": "png"
+        },
+        {
+          "sha256": "84a06159f67e42f946b9c8a9240c3f85ac47dd8edb18a07dfc21cee85d3cd471",
+          "bytes": 20434,
+          "kind": "png"
+        },
+        {
+          "sha256": "96c44bc08121cad6ebb3861f854d9226f64da8b7720e89e10395f6af1ca4ea0c",
+          "bytes": 724023,
+          "kind": "png"
+        },
+        {
+          "sha256": "bd330c92cb5c4b31de7cbc97b3665f52f5db0aaf4acce40797466b51b714f568",
+          "bytes": 316065,
+          "kind": "png"
+        },
+        {
+          "sha256": "c015876b695754db68bb11b90b814dc0e0bd9e589dc9ed62151ec60d9ec240b3",
+          "bytes": 131197,
+          "kind": "png"
+        },
+        {
+          "sha256": "f3a8c21228ae0a9ab8450242f64174df5c064c50ac9be56d62e17e0c1b5765e6",
+          "bytes": 16955,
+          "kind": "png"
+        }
+      ],
+      "features": {
+        "path": 2351,
+        "rect": 122,
+        "ellipse": 100,
+        "circle": 72,
+        "polygon": 10,
+        "image": 17,
+        "use": 16,
+        "linearGradient": 81,
+        "radialGradient": 12,
+        "clipPath": 26,
+        "mask": 12,
+        "filter": 6,
+        "pattern": 17
+      },
+      "assetDir": "tools/cf6-map-runtime/native-vector/batch/assets",
+      "queue": [
+        "import",
+        "assemble",
+        "publish"
+      ],
+      "status": "reused",
+      "gaps": [
+        "ValueError: pattern must be one intrinsic image",
+        "unsupported SVG feature localized: <pattern id=\"n2floor_lattice_1986\"> has a single vector <g> child instead of one intrinsic image; referenced as rect fill=url(#n2floor_lattice_1986); converter build-a01.py paint() only supports a one-image intrinsic pattern. No SVG graphics removed, no converter change, no scene raster fallback."
+      ],
+      "builder": {
+        "script": "tools/cf6-map-runtime/native-vector/batch/build-pattern-layer.py",
+        "adapter": "tools/cf6-map-runtime/native-vector/batch/pattern_adapter.py",
+        "args": [
+          "--map",
+          "A22"
+        ],
+        "reason": "vector-pattern-fill n2floor_lattice_1986"
+      },
+      "vectorPatterns": [
+        "n2floor_lattice_1986"
+      ],
+      "exitCode": null,
+      "batchLog": "tools/cf6-map-runtime/native-vector/batch/logs/CF6_A22_BG_VectorCandidate01-20261021-171053.log",
+      "reuseRejected": "no existing layer directory",
+      "featureGap": "vector-pattern-fill",
+      "reuseEvidence": "source snapshots + manifest + texture original bytes verified"
+    }
+  ],
+  "lastBatch": {
+    "log": "tools/cf6-map-runtime/native-vector/batch/logs/batch-20261021-174826.log",
+    "signalSha256": "d2ae83e5cb181ce5fd1b786b32bab3cd304bfed87871b703cc47d28f81acbcd1",
+    "mapInputSha256": "056c50dd321debee3545d2988b891d140b07cfec864b5d461bd062e44d29ba95",
+    "startedAt": "20261021-174826"
+  }
+}

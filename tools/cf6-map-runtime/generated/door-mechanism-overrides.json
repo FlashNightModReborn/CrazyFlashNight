@@ -1,0 +1,172 @@
+{
+  "schema": "cf6-map-mechanism-overrides.v1",
+  "coordinateSpace": "native world; convert exactly once",
+  "sourceManifest": "tools/cf6-map-runtime/generated/door-runtime-index.json",
+  "sourceManifestSha256": "693d5ab8e137e16d6448b57a4fec94bc53bda90341c1be75d956e3a289abcc4a",
+  "maps": {
+    "A03": {
+      "layers": [
+        {
+          "id": "wood1714-21",
+          "role": "door-spawn-sequence",
+          "url": "flashswf/backgrounds/cf6/CF6_DoorWood1714.swf",
+          "xfl": "flashswf/backgrounds/cf6/CF6_DoorWood1714/CF6_DoorWood1714.xfl",
+          "frames": 9,
+          "x": 451.45000000000005,
+          "y": 14.950000000000003,
+          "width": 170,
+          "height": 240,
+          "depth": 21,
+          "basis": {
+            "geometry": "tools/cf6-map-runtime/generated/A03-original-geometry.json",
+            "geometrySha256": "cab50969d269a27388dc709d7bea06c6fe74866a91393d3d04ad8a15b9747cb1",
+            "originalDepth": 21,
+            "originalSprite": 1714,
+            "viewBox": [
+              -85,
+              -100,
+              170,
+              240
+            ],
+            "scope": "isolated display only; no original actor, spawn, transition or save actions",
+            "generatorDepth": 182,
+            "targetDoor": "door1",
+            "generatorLoad": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1723/frame_1/PlaceObject2_1434_182/CLIPACTIONRECORD onClipEvent(load).as",
+            "generatorLoadSha256": "fa8538d9bd87cf2a7c765e0bfa494e2e62af031562666480ad3a108c3ff4dcb5",
+            "radiusPolicy": "prototype association radius 100px; nearest actual enemy event, no enemy creation"
+          },
+          "spawnX": 524.5,
+          "spawnY": 210.9,
+          "spawnRadius": 100
+        },
+        {
+          "id": "exit1720-28",
+          "role": "door-exit-sequence",
+          "url": "flashswf/backgrounds/cf6/CF6_DoorExit1720.swf",
+          "xfl": "flashswf/backgrounds/cf6/CF6_DoorExit1720/CF6_DoorExit1720.xfl",
+          "frames": 50,
+          "x": 1113.4,
+          "y": 12.400000000000006,
+          "width": 170,
+          "height": 240,
+          "depth": 28,
+          "basis": {
+            "geometry": "tools/cf6-map-runtime/generated/A03-original-geometry.json",
+            "geometrySha256": "cab50969d269a27388dc709d7bea06c6fe74866a91393d3d04ad8a15b9747cb1",
+            "originalDepth": 28,
+            "originalSprite": 1720,
+            "viewBox": [
+              -85,
+              -100,
+              170,
+              240
+            ],
+            "scope": "isolated display only; no original actor, spawn, transition or save actions"
+          }
+        }
+      ],
+      "kind": "door"
+    },
+    "A04": {
+      "layers": [
+        {
+          "id": "wood1714-21",
+          "role": "door-spawn-sequence",
+          "url": "flashswf/backgrounds/cf6/CF6_DoorWood1714.swf",
+          "xfl": "flashswf/backgrounds/cf6/CF6_DoorWood1714/CF6_DoorWood1714.xfl",
+          "frames": 9,
+          "x": 451.45000000000005,
+          "y": 14.950000000000003,
+          "width": 170,
+          "height": 240,
+          "depth": 21,
+          "basis": {
+            "geometry": "tools/cf6-map-runtime/generated/A04-original-geometry.json",
+            "geometrySha256": "94b02c4026c1e2397b91e324b5bb1d63540eafea30a65722f3b44695f0ba2874",
+            "originalDepth": 21,
+            "originalSprite": 1714,
+            "viewBox": [
+              -85,
+              -100,
+              170,
+              240
+            ],
+            "scope": "isolated display only; no original actor, spawn, transition or save actions",
+            "generatorDepth": 251,
+            "targetDoor": "door1",
+            "generatorLoad": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1737/frame_1/PlaceObject2_1434_251/CLIPACTIONRECORD onClipEvent(load).as",
+            "generatorLoadSha256": "fa8538d9bd87cf2a7c765e0bfa494e2e62af031562666480ad3a108c3ff4dcb5",
+            "radiusPolicy": "prototype association radius 100px; nearest actual enemy event, no enemy creation"
+          },
+          "spawnX": 524.5,
+          "spawnY": 210.9,
+          "spawnRadius": 100
+        },
+        {
+          "id": "wood1714-89",
+          "role": "door-spawn-sequence",
+          "url": "flashswf/backgrounds/cf6/CF6_DoorWood1714.swf",
+          "xfl": "flashswf/backgrounds/cf6/CF6_DoorWood1714/CF6_DoorWood1714.xfl",
+          "frames": 9,
+          "x": 860.45,
+          "y": 14.950000000000003,
+          "width": 170,
+          "height": 240,
+          "depth": 89,
+          "basis": {
+            "geometry": "tools/cf6-map-runtime/generated/A04-original-geometry.json",
+            "geometrySha256": "94b02c4026c1e2397b91e324b5bb1d63540eafea30a65722f3b44695f0ba2874",
+            "originalDepth": 89,
+            "originalSprite": 1714,
+            "viewBox": [
+              -85,
+              -100,
+              170,
+              240
+            ],
+            "scope": "isolated display only; no original actor, spawn, transition or save actions",
+            "generatorDepth": 255,
+            "targetDoor": "door2",
+            "generatorLoad": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1737/frame_1/PlaceObject2_1434_255/CLIPACTIONRECORD onClipEvent(load).as",
+            "generatorLoadSha256": "980f5d909b6bb14c01a4ef0fbb1c9a727a09a60cda74d4e1d6478626d8b22f0e",
+            "radiusPolicy": "prototype association radius 100px; nearest actual enemy event, no enemy creation"
+          },
+          "spawnX": 929.5,
+          "spawnY": 210.9,
+          "spawnRadius": 100
+        }
+      ],
+      "kind": "exit"
+    },
+    "A05": {
+      "layers": [
+        {
+          "id": "grand1750-88",
+          "role": "door-exit-sequence",
+          "url": "flashswf/backgrounds/cf6/CF6_DoorGrand1750.swf",
+          "xfl": "flashswf/backgrounds/cf6/CF6_DoorGrand1750/CF6_DoorGrand1750.xfl",
+          "frames": 40,
+          "x": 453.70000000000005,
+          "y": 2.950000000000003,
+          "width": 400,
+          "height": 280,
+          "depth": 88,
+          "basis": {
+            "geometry": "tools/cf6-map-runtime/generated/A05-original-geometry.json",
+            "geometrySha256": "2e3b970b694a4ed16be34197e7fe193d12c09be9c44af071751b6f36de10c4b4",
+            "originalDepth": 88,
+            "originalSprite": 1750,
+            "viewBox": [
+              -200,
+              -110,
+              400,
+              280
+            ],
+            "scope": "isolated display only; no original actor, spawn, transition or save actions"
+          }
+        }
+      ],
+      "kind": "door"
+    }
+  }
+}

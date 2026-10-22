@@ -51,10 +51,30 @@ _root.通过影片剪辑外框绘制地图碰撞箱 = function(mc:MovieClip) {
 	org.flashNight.arki.scene.SceneCollisionManager.instance.addMovieClipCollision(mc, rect);
 }
 
-_root.贴背景图 = function(){
+_root.贴背景图 = function(force:Boolean){
 	// if(_root.无限过图模式) _root.配置无限过图背景参数(); //弃用
 	var 游戏世界 = _root.gameworld;
 	var 背景层 = 游戏世界.背景;
+	// CF6复杂矢量小图也会主动烘焙；凭据只属于当前世界和当前加载URL。
+	var cf6BakeOwner:Object = null;
+	var cf6BakeSource:String = "";
+	if (_root._saveExt.bookRun.bookId === "cf6-sting"
+			&& _root._saveExt.bookRun.routeId === "historical"
+			&& _root._saveExt.bookRun.outcome === "active"
+			&& _root._saveExt.bookRun.slot === String(_root.savePath)
+			&& _root.当前关卡名 === "书中历险-毒刺行动") {
+		cf6BakeOwner = org.flashNight.arki.scene.StageReturnFlow.worldIdentity(游戏世界);
+		cf6BakeSource = String(游戏世界.场景背景url || "");
+		var oldBake:Object = 游戏世界.__cf6BackgroundBake;
+		if (oldBake.drawCompleted === true && oldBake.worldIdentity === cf6BakeOwner
+				&& oldBake.sourceUrl === cf6BakeSource && cf6BakeSource != ""
+				&& oldBake.background === 背景层 && 背景层._width === 0 && 背景层._height === 0) {
+			return org.flashNight.arki.scene.Cf6MapPresentation.matchesBake(游戏世界, cf6BakeOwner, 背景层, oldBake);
+		}
+	}
+	if (force === true && (背景层 == undefined || !(背景层._width > 0) || !(背景层._height > 0))) return;
+	if (cf6BakeOwner != null
+			&& !org.flashNight.arki.scene.Cf6MapPresentation.applyBackground(游戏世界, cf6BakeOwner, 背景层)) return false;
 	var 天气系统:WeatherSystem = WeatherSystem.getInstance();
 
 	// 排查：背景元件未命名为"背景"（如散放在"背景"图层）时 gameworld.背景 为 undefined，该图背景无法转位图
@@ -82,7 +102,7 @@ _root.贴背景图 = function(){
 	_global.ASSetPropFlags(游戏世界, ["已更新天气"], 1, false);
 
 
-	if (背景层._width <= 1300) return;
+	if (背景层._width <= 1300 && force !== true) return;
 
 	// ── Bake：把 背景 烤进 deadbody.layers[0] ──
 	// 兼容作者随手摆 _x/_y/_xscale/_yscale，包括负坐标背景：
@@ -96,6 +116,9 @@ _root.贴背景图 = function(){
 
 	SceneManager.getInstance().ensureBodyLayerBounds(b.xMin, b.yMin, b.xMax, b.yMax);
 	var bd:flash.display.BitmapData = deadbody.layers[0];
+	// AVM1 对缺失对象的方法调用可能静默返回，不能据此记已绘制并卸载矢量。
+	if ((force === true || cf6BakeOwner != null)
+			&& (!(bd instanceof flash.display.BitmapData) || !(bd.width > 0) || !(bd.height > 0))) return false;
 
 	var bgMat:flash.geom.Matrix = 背景层.transform.matrix.clone();
 	var dbMat:flash.geom.Matrix = deadbody.transform.matrix.clone();
@@ -105,6 +128,15 @@ _root.贴背景图 = function(){
 	背景层._visible = true;
 	bd.draw(背景层, bgMat, new flash.geom.ColorTransform(), "normal", undefined, true);
 	背景层._visible = false;
+	// 仅记录已实际完成的draw。unload可能结束来源MovieClip的调用栈，消费者还须核空壳。
+	if (cf6BakeOwner != null && cf6BakeSource != "" && 游戏世界 === _root.gameworld
+			&& cf6BakeOwner === org.flashNight.arki.scene.StageReturnFlow.worldIdentity(游戏世界)
+			&& cf6BakeSource === String(游戏世界.场景背景url || "") && 背景层 === 游戏世界.背景) {
+		游戏世界.__cf6BackgroundBake = {worldIdentity:cf6BakeOwner, sourceUrl:cf6BakeSource,
+			background:背景层, drawCompleted:true,
+			assetMatrix:{x:背景层._x,y:背景层._y,scaleX:背景层._xscale,scaleY:背景层._yscale}};
+		_global.ASSetPropFlags(游戏世界, ["__cf6BackgroundBake"], 1, false);
+	}
 
 	// 背景已烤进 deadbody 位图，unloadMovie 清空原背景夹、释放全部矢量子级内存
 	// （对时间轴负深度实例同样有效；外部图则连 外部动画加载壳mc 一并清；留空壳故 gameworld.背景 不会变 undefined）
@@ -186,6 +218,7 @@ _root.配置场景环境信息 = function(){
 
 _root.加载场景背景 = function (动画名){
 	var 游戏世界 = _root.gameworld;
+	delete 游戏世界.__cf6BackgroundBake; // 新加载即退役旧烘焙凭据，含同URL重载。
 	var 背景层 = 游戏世界.背景;
 	背景层.attachMovie("外部动画加载壳mc","外部动画加载壳mc",背景层.getNextHighestDepth());
 	var list = 动画名.split("/")

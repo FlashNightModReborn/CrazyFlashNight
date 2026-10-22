@@ -1,0 +1,144 @@
+{
+  "schema": "cf6-map-runtime-overrides.v1",
+  "maps": {
+    "A01": {
+      "worldScale": 1,
+      "walkBounds": [
+        50.0,
+        150.0,
+        790.0,
+        450.0
+      ],
+      "spawn": [
+        317.45,
+        281.85
+      ],
+      "collisions": [
+        [
+          [
+            50.0,
+            150.0
+          ],
+          [
+            790.0,
+            150.0
+          ],
+          [
+            790.0,
+            164.0
+          ],
+          [
+            50.0,
+            164.0
+          ]
+        ],
+        [
+          [
+            57.0,
+            164.0
+          ],
+          [
+            208.0,
+            164.0
+          ],
+          [
+            208.0,
+            204.0
+          ],
+          [
+            57.0,
+            204.0
+          ]
+        ],
+        [
+          [
+            178.0,
+            386.0
+          ],
+          [
+            319.0,
+            386.0
+          ],
+          [
+            319.0,
+            449.95
+          ],
+          [
+            178.0,
+            449.95
+          ]
+        ],
+        [
+          [
+            711.95,
+            447.95
+          ],
+          [
+            790.0,
+            447.95
+          ],
+          [
+            790.0,
+            449.95
+          ],
+          [
+            711.95,
+            449.95
+          ]
+        ],
+        [
+          [
+            50.0,
+            449.95
+          ],
+          [
+            790.0,
+            449.95
+          ],
+          [
+            790.0,
+            450.0
+          ],
+          [
+            50.0,
+            450.0
+          ]
+        ]
+      ],
+      "leftSpawnLine": [
+        59,
+        210,
+        61,
+        435
+      ],
+      "rightSpawnLine": [
+        779,
+        170,
+        781,
+        435
+      ],
+      "exit": {
+        "direction": "右",
+        "rect": [
+          740,
+          214,
+          790,
+          440
+        ]
+      },
+      "layerSourceKinds": {
+        "background": "background"
+      },
+      "geometryStatus": "originalStaticGeometryWithPrototypeDerivedExit",
+      "geometryBasis": {
+        "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+        "evidence": "tools/cf6-map-runtime/generated/A01-original-geometry.json",
+        "walkBounds": "decoded original world1592 load",
+        "spawn": "original man1 PlaceObject2 matrix",
+        "collision": "shape1583 solid outer contour minus hole; exact rectilinear decomposition inside walkBounds",
+        "worldScale": "1; original equipped player body approx134.17px, current CF7 gun pose138.38px; actual gameplay camera/scale pending",
+        "exit": "prototypeDerived: original counter20 auto-transition replaced by standard CF7 right-hand manual exit; not an original visible door"
+      }
+    }
+  }
+}

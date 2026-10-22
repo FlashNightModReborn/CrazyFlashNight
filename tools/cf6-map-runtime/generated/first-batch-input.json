@@ -1,0 +1,559 @@
+{
+  "schema": "cf6-map-input.v1",
+  "maps": [
+    {
+      "id": "A01",
+      "stage": "A01",
+      "revision": "R4",
+      "package": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/",
+      "nativeBounds": [
+        -3.45,
+        -5.85,
+        800,
+        452
+      ],
+      "worldScale": 1,
+      "worldScaleBasis": "worldScale=1 已核：CF7 175cm 裸模站姿 145.19 局部px / 原 CF6 man1 外框约 134.17px（tools/cf6-map-runtime/README.md 标尺节）；不按屏宽缩放",
+      "layers": [
+        {
+          "id": "background",
+          "role": "background",
+          "sourceKind": "background",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/baked/background-1580-r4-800x452.png",
+          "x": -3.45,
+          "y": -5.85,
+          "width": 800,
+          "height": 452,
+          "depth": 0,
+          "pixelSize": [
+            800,
+            452
+          ],
+          "source": {
+            "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/background-1581.svg",
+            "partsSvg": [
+              "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/01-night-soil.svg",
+              "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/02-wreck-pile.svg",
+              "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/03-metal-floor.svg",
+              "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/04-wall.svg",
+              "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/05-markings-lights.svg"
+            ],
+            "matrix": [
+              1,
+              0,
+              0,
+              1,
+              -676.95,
+              -212.95
+            ],
+            "placementInGameworld": [
+              673.5,
+              207.1
+            ]
+          },
+          "basis": "source/scene-layout.json viewBox + baked/registration.json；reference/scene-identification.txt §二（gameworld1592 世界范围 -3.45,-5.85,800,452）"
+        },
+        {
+          "id": "yellow-lamp-glow",
+          "role": "background",
+          "sourceKind": "isolated-part",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/baked/prop-1411.png",
+          "x": -46.7,
+          "y": -57.3,
+          "width": 199.8,
+          "height": 169.5,
+          "depth": 1,
+          "pixelSize": [
+            400,
+            339
+          ],
+          "source": {
+            "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/prop-1411.svg",
+            "matrix": [
+              1,
+              0,
+              0,
+              1,
+              -620.3,
+              -179.65
+            ],
+            "matrixSpace": "symbol-1582 内部 translate；world=background_placement+matrix"
+          },
+          "basis": "reference/scene-identification.txt §二：光晕1411为原生矢量，与黄灯同在1582内部translate(-620.3,-179.65)；Chrome 候选烘焙（render-manifest.json）"
+        },
+        {
+          "id": "yellow-lamp",
+          "role": "background",
+          "sourceKind": "isolated-part",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/baked/prop-1410.png",
+          "x": -15.8,
+          "y": 14.95,
+          "width": 138,
+          "height": 25,
+          "depth": 2,
+          "pixelSize": [
+            276,
+            50
+          ],
+          "source": {
+            "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/prop-1410.svg",
+            "matrix": [
+              1,
+              0,
+              0,
+              1,
+              -620.3,
+              -179.65
+            ],
+            "matrixSpace": "symbol-1582 内部 translate；world=background_placement+matrix"
+          },
+          "basis": "reference/scene-identification.txt §二：独立黄灯 shape1410→bitmap1409；source/scene-layout.json lamp_world；Chrome 候选烘焙"
+        }
+      ],
+      "walkBounds": [
+        50.0,
+        150.0,
+        790.0,
+        450.0
+      ],
+      "spawn": [
+        317.45,
+        281.85
+      ],
+      "exit": {
+        "direction": "右",
+        "rect": [
+          740,
+          165,
+          790,
+          440
+        ]
+      },
+      "collisions": [
+        [
+          [
+            50.0,
+            150.0
+          ],
+          [
+            790.0,
+            150.0
+          ],
+          [
+            790.0,
+            164.0
+          ],
+          [
+            50.0,
+            164.0
+          ]
+        ],
+        [
+          [
+            57.0,
+            164.0
+          ],
+          [
+            208.0,
+            164.0
+          ],
+          [
+            208.0,
+            204.0
+          ],
+          [
+            57.0,
+            204.0
+          ]
+        ],
+        [
+          [
+            178.0,
+            386.0
+          ],
+          [
+            319.0,
+            386.0
+          ],
+          [
+            319.0,
+            449.95
+          ],
+          [
+            178.0,
+            449.95
+          ]
+        ],
+        [
+          [
+            711.95,
+            447.95
+          ],
+          [
+            790.0,
+            447.95
+          ],
+          [
+            790.0,
+            449.95
+          ],
+          [
+            711.95,
+            449.95
+          ]
+        ],
+        [
+          [
+            50.0,
+            449.95
+          ],
+          [
+            790.0,
+            449.95
+          ],
+          [
+            790.0,
+            450.0
+          ],
+          [
+            50.0,
+            450.0
+          ]
+        ]
+      ],
+      "props": [
+        {
+          "id": "turret-1591",
+          "kind": "dynamic-unit",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/prop-1591.svg",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/baked/prop-1591.png",
+          "viewBox": [
+            -80,
+            -94.923,
+            183.175,
+            97.923
+          ],
+          "logicalSize": [
+            183.175,
+            97.923
+          ],
+          "pixelSize": [
+            366,
+            196
+          ],
+          "instances": [
+            {
+              "x": 133.8,
+              "y": 202.4,
+              "depth": 152
+            },
+            {
+              "x": 249.8,
+              "y": 430.9,
+              "depth": 160
+            }
+          ],
+          "frames": 18,
+          "registration": "original-native-symbol-space；PNG 左上角 world = 实例点 + viewBox 原点",
+          "basis": "scene-identification.txt §三B：同一 sprite1591 两份实例；PNG 为重绘首帧（qa/props-symbol-coordinate-map.json），第12帧枪口效果506保留原矢量未烘"
+        },
+        {
+          "id": "crate-1442",
+          "kind": "breakable-crate",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/prop-1442.svg",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/baked/prop-1442.png",
+          "viewBox": [
+            -34,
+            -61.5,
+            68,
+            63
+          ],
+          "logicalSize": [
+            68,
+            63
+          ],
+          "pixelSize": [
+            136,
+            126
+          ],
+          "instances": [
+            {
+              "x": 75.1,
+              "y": 427.35,
+              "depth": 212
+            }
+          ],
+          "frames": 11,
+          "registration": "original-native-symbol-space；PNG 左上角 world = 实例点 + viewBox 原点",
+          "basis": "scene-identification.txt §三C：破坏箱11帧，完好1436+破碎1437-1441；PNG 为完好帧，碎片 SVG 在 parts/shape-1436..1441.svg"
+        }
+      ],
+      "undeliveredDynamics": [],
+      "deferredLayers": [],
+      "unknowns": [],
+      "notes": [
+        "隐形地图 shape1583(sprite1584, depth5, alpha=0) 为原逻辑资产；走区/碰撞/出口几何已由 Astra 从原 SWF 提取（见 geometrySource），本包不再标未知",
+        "炮台/破坏箱为游戏单位（原 depth 152/160/212），PNG 交付为首帧独立部件，由玩法配置生成，不烘入静态底图",
+        "baked 底图由画师 Inkscape 管线随包交付；道具 PNG 为本机 Chrome headless 候选烘焙"
+      ],
+      "alternateLayers": [
+        {
+          "id": "background-without-glow",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/baked/background-1580-r4-without-glow-800x452.png",
+          "note": "无青光晕底图，与独立青晕叠加等价于默认底图"
+        },
+        {
+          "id": "cyan-glow",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/baked/cyan-glow-800x452.png",
+          "x": -3.45,
+          "y": -5.85,
+          "width": 800,
+          "height": 452,
+          "note": "半透明青晕（alpha 0-73），叠加层；源 parts/06-optional-light-glow.svg"
+        }
+      ],
+      "leftSpawnLine": [
+        59,
+        210,
+        61,
+        435
+      ],
+      "rightSpawnLine": [
+        779,
+        170,
+        781,
+        435
+      ],
+      "geometryStatus": "originalStaticFillWithPrototypeDerivedEntryExit",
+      "geometryBasis": {
+        "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+        "evidence": "tools/cf6-map-runtime/generated/A01-original-geometry.json",
+        "walkBounds": "decoded original root world load",
+        "originalAuthoredSpawn": [
+          317.45,
+          281.85
+        ],
+        "spawnAdjusted": false,
+        "spawnAdjustment": null,
+        "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+        "approximations": [],
+        "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+        "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+        "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+      },
+      "geometrySource": "tools/cf6-map-runtime/route-geometry-overrides.json（Astra 绑定原 SWF/脚本摘要提取；入口/出口为原型适配，见 geometryStatus/geometryBasis）"
+    },
+    {
+      "id": "A02",
+      "nativeBounds": [
+        -43.450000000000045,
+        0,
+        1330.9,
+        500
+      ],
+      "worldScale": 1,
+      "walkBounds": null,
+      "spawn": null,
+      "exit": null,
+      "collisions": [],
+      "layers": [
+        {
+          "id": "sky-0",
+          "role": "background",
+          "sourceKind": "background",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A02-R3/cf6-stage2-redraw-r3/baked/bitmap-1595.png",
+          "x": 0,
+          "y": 0,
+          "width": 600,
+          "height": 187,
+          "depth": 0
+        },
+        {
+          "id": "sky-1",
+          "role": "background",
+          "sourceKind": "background",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A02-R3/cf6-stage2-redraw-r3/baked/bitmap-1595.png",
+          "x": 600,
+          "y": 0,
+          "width": 600,
+          "height": 187,
+          "depth": 1
+        },
+        {
+          "id": "sky-2",
+          "role": "background",
+          "sourceKind": "background",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A02-R3/cf6-stage2-redraw-r3/baked/bitmap-1595.png",
+          "x": 1200,
+          "y": 0,
+          "width": 600,
+          "height": 187,
+          "depth": 2
+        },
+        {
+          "id": "city",
+          "role": "background",
+          "sourceKind": "background",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A02-R3/cf6-stage2-redraw-r3/baked/city-shape-1598.png",
+          "x": 0,
+          "y": 109,
+          "width": 1441.4,
+          "height": 66.45,
+          "depth": 5
+        },
+        {
+          "id": "background",
+          "role": "background",
+          "sourceKind": "background",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A02-R3/cf6-stage2-redraw-r3/baked/background-1613.png",
+          "x": -43.450000000000045,
+          "y": 24.099999999999994,
+          "width": 1330.9,
+          "height": 469.8,
+          "depth": 10
+        }
+      ],
+      "artProvenance": {
+        "registration": "flashswf/arts/new/Codex素材源稿/CF6地图/A02-R3/cf6-stage2-redraw-r3/baked/registration.json",
+        "sha256": "1f7599c385db2156d9540c19e6fd00ce69c8fa728335ef2c705fdfd6239b2dd0",
+        "independentBackground": "background-1613.png",
+        "notScenePreview": true
+      }
+    },
+    {
+      "id": "A03",
+      "nativeBounds": [
+        -3.4500000000000455,
+        -33.650000000000006,
+        1508.95,
+        483.55
+      ],
+      "worldScale": 1,
+      "walkBounds": null,
+      "spawn": null,
+      "exit": null,
+      "collisions": [],
+      "layers": [
+        {
+          "id": "background",
+          "role": "background",
+          "sourceKind": "background",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A03-R1/cf6-stage3-redraw-r1/baked/background-1706.png",
+          "x": -3.4500000000000455,
+          "y": -33.650000000000006,
+          "width": 1508.95,
+          "height": 483.55,
+          "depth": 10
+        },
+        {
+          "id": "foreground",
+          "role": "foreground",
+          "sourceKind": "isolated-part",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A03-R1/cf6-stage3-redraw-r1/baked/foreground-1727.png",
+          "x": 111,
+          "y": 0.55,
+          "width": 1211.95,
+          "height": 178.75,
+          "depth": 20,
+          "parallax": 1.2
+        }
+      ],
+      "artProvenance": {
+        "registration": "flashswf/arts/new/Codex素材源稿/CF6地图/A03-R1/cf6-stage3-redraw-r1/baked/registration.json",
+        "sha256": "df7535df6a31623f1384d26afd2425667b263b517718a4b193e9d5f31ece0236",
+        "independentBackground": "background-1706.png",
+        "notScenePreview": true
+      }
+    },
+    {
+      "id": "A04",
+      "nativeBounds": [
+        -3.4500000000000455,
+        -33.400000000000006,
+        1508.95,
+        483.3
+      ],
+      "worldScale": 1,
+      "walkBounds": null,
+      "spawn": null,
+      "exit": null,
+      "collisions": [],
+      "layers": [
+        {
+          "id": "background",
+          "role": "background",
+          "sourceKind": "background",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A04-R1/cf6-stage4-redraw-r1/baked/background-1728.png",
+          "x": -3.4500000000000455,
+          "y": -33.400000000000006,
+          "width": 1508.95,
+          "height": 483.3,
+          "depth": 10
+        },
+        {
+          "id": "foreground",
+          "role": "foreground",
+          "sourceKind": "isolated-part",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A04-R1/cf6-stage4-redraw-r1/baked/foreground-1727.png",
+          "x": 111,
+          "y": 0.55,
+          "width": 1211.95,
+          "height": 178.75,
+          "depth": 20,
+          "parallax": 1.2
+        }
+      ],
+      "artProvenance": {
+        "registration": "flashswf/arts/new/Codex素材源稿/CF6地图/A04-R1/cf6-stage4-redraw-r1/baked/registration.json",
+        "sha256": "c2686db29178e8d1a68ae4af7817738cc1d91dd7001a877deed5c6158c2f8806",
+        "independentBackground": "background-1728.png",
+        "notScenePreview": true
+      }
+    },
+    {
+      "id": "A05",
+      "nativeBounds": [
+        -11.25,
+        -33.400000000000006,
+        1516.75,
+        483.3
+      ],
+      "worldScale": 1,
+      "walkBounds": null,
+      "spawn": null,
+      "exit": null,
+      "collisions": [],
+      "layers": [
+        {
+          "id": "background",
+          "role": "background",
+          "sourceKind": "background",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A05-R3/cf6-stage5-redraw-r3/baked/background-1745.png",
+          "x": -11.25,
+          "y": -33.400000000000006,
+          "width": 1516.75,
+          "height": 483.3,
+          "depth": 10
+        },
+        {
+          "id": "foreground",
+          "role": "foreground",
+          "sourceKind": "isolated-part",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A05-R3/cf6-stage5-redraw-r3/baked/foreground-1727.png",
+          "x": 111,
+          "y": 0.55,
+          "width": 1211.95,
+          "height": 178.75,
+          "depth": 20,
+          "parallax": 1.2
+        }
+      ],
+      "artProvenance": {
+        "registration": "flashswf/arts/new/Codex素材源稿/CF6地图/A05-R3/cf6-stage5-redraw-r3/baked/registration.json",
+        "sha256": "ff0523213d171cfc8c765e323346dfbb54bb1dce62ad6edefb7d4501f9cf9901",
+        "independentBackground": "background-1745.png",
+        "notScenePreview": true
+      }
+    }
+  ]
+}

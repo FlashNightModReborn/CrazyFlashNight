@@ -1,0 +1,22 @@
+{
+  "schema": "cf6-native-door-candidate.v1",
+  "name": "CF6_DoorExit1720_VectorCandidate01",
+  "frames": 50,
+  "sourceSprite": 1720,
+  "nativeShapesProcessed": 404,
+  "nativeSymbols": 81,
+  "originalClipDepths": [],
+  "sourceInputs": [
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A03-R1/cf6-stage3-redraw-r1/reference/environment-original-nodes.json",
+      "sha256": "39b7986dcee648081ebbbcfcb515f3050713894fe60b47285b8a421b1b476fba"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A03-R1/cf6-stage3-redraw-r1/parts/shape-1718.svg",
+      "sha256": "5540a77d6c8edf1b24c19165c5a18a74887a233fe2ae1cb960d6307395f4cd26"
+    }
+  ],
+  "textureCount": 0,
+  "nativeRootScripts": "stop only; mask wrappers initialize native setMask; no inherited game actions",
+  "state": "native XFL source only; CS6 compile and nine-frame actual playback required"
+}

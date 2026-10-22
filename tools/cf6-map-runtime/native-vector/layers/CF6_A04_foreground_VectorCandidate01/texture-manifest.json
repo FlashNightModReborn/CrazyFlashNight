@@ -1,0 +1,15 @@
+{
+  "schema": "cf6-native-layer-input.v1",
+  "map": "A04",
+  "layer": "foreground",
+  "name": "CF6_A04_foreground_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A04-R1/cf6-stage4-redraw-r1/parts/foreground-1727.svg",
+  "sourceSha256": "6c886059c67355963ef46f2d6f75ed2c6e183f8bae8d1cd25f0cabb43c0f8c6f",
+  "inputIndex": "tools/cf6-map-source/generated/map-input.json",
+  "inputIndexSha256": "056c50dd321debee3545d2988b891d140b07cfec864b5d461bd062e44d29ba95",
+  "extraction": "decode existing PNG/JPEG data URI bytes only; no image rasterization or modification",
+  "inputs": [],
+  "textures": {},
+  "xfl": "flashswf/backgrounds/cf6/CF6_A04_foreground_VectorCandidate01/CF6_A04_foreground_VectorCandidate01.xfl",
+  "swf": "CF6_A04_foreground_VectorCandidate01.swf"
+}

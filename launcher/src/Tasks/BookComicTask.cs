@@ -11,6 +11,9 @@ namespace CF7Launcher.Tasks {
             public JObject Data;
             public string Instance;
             public bool Retired, Finishing;
+            public bool AwaitingClose, SuccessorAllowed;
+            public JObject Successor;
+            public Func<JObject,bool> OpenSuccessor;
         }
         sealed class Request {
             public Session Session;
@@ -33,7 +36,7 @@ namespace CF7Launcher.Tasks {
             invoke=i;
             close=c;
         }
-        static readonly HashSet<string> Pages=new HashSet<string>(StringComparer.Ordinal){"prologue","boss","lee-ambush","lee-breakout","lee-ending-normal","lee-ending-hidden"};
+        static readonly HashSet<string> Pages=new HashSet<string>(StringComparer.Ordinal){"prologue","boss","lee-ambush","lee-breakout","lee-ending-normal","lee-ending-hidden","cf6-s1","cf6-s2","cf6-s3","cf6-s4","cf6-s5","cf6-s6","cf6-s7","cf6-end"};
         static string Text(JToken t)=>t?.Type==JTokenType.String?t.Value<string>():null;
         static bool Exact(JObject o,params string[] k)=>o!=null&&o.Count==k.Length&&k.All(x=>o.Property(x,StringComparison.Ordinal)!=null);
         static bool CallId(JToken t){
@@ -69,12 +72,42 @@ namespace CF7Launcher.Tasks {
         }
         public bool Reserve(JObject data){
             lock(gate){
-                if(disposed||!pending.IsReady()||retired.Count>=4096||retired.Contains(Key(data))||current!=null&&!current.Retired)return false;
+                if(disposed||!pending.IsReady()||retired.Count>=4096||retired.Contains(Key(data))||current!=null&&(!current.Retired||current.AwaitingClose))return false;
                 current=new Session{
                     Data=(JObject)data.DeepClone()
                 }
                 ;
                 return true;
+            }
+        }
+        // Only an acknowledged, normally finished comic may hand off to its one
+        // authored successor while the exact old surface is still closing.
+        public bool TryQueueSuccessor(JObject data,string activePanel,string activeInstance,Func<JObject,bool> open){
+            lock(gate){
+                var s=current;
+                if(disposed||!pending.IsReady()||s==null||!s.Retired||!s.AwaitingClose||!s.SuccessorAllowed
+                    ||s.Successor!=null||open==null||activePanel!="book-comic"||activeInstance!=s.Instance
+                    ||string.IsNullOrEmpty(s.Instance)||data==null
+                    ||BuildOpenData("book_chapter",data.ToString(Formatting.None))==null||retired.Contains(Key(data))
+                    ||Text(data["presentationId"])==Text(s.Data["presentationId"])
+                    ||Text(data["slot"])!=Text(s.Data["slot"])||Text(data["sceneId"])!=Text(s.Data["sceneId"]))return false;
+                var before=Text(s.Data["pageId"]);var after=Text(data["pageId"]);
+                if(!(before=="cf6-s4"&&after=="cf6-s5"||before=="cf6-s7"&&after=="cf6-end"))return false;
+                s.Successor=(JObject)data.DeepClone();s.OpenSuccessor=open;
+                return true;
+            }
+        }
+        public void OnPresentationClosed(string instance,bool closed){
+            lock(gate){
+                var s=current;
+                if(s==null||s.Instance!=instance||!s.AwaitingClose)return;
+                var next=s.Successor;var open=s.OpenSuccessor;
+                s.AwaitingClose=false;s.SuccessorAllowed=false;s.Successor=null;s.OpenSuccessor=null;
+                if(next==null)return;
+                if(disposed||!closed||!pending.IsReady()||retired.Contains(Key(next))){retired.Add(Key(next));return;}
+                // The router rechecks idle admission and then uses its original
+                // Reserve/Open/Bind path. No successor can rebind the old instance.
+                if(!open(next))retired.Add(Key(next));
             }
         }
         public bool CanOpen(string json){
@@ -150,7 +183,12 @@ namespace CF7Launcher.Tasks {
                             return;
                         }
                         retired.Add(Key(m));
-                        if(current!=null&&Tuple(current.Data,m))Retire(current);
+                        if(current!=null&&Tuple(current.Data,m)){
+                            if(current.Successor!=null)retired.Add(Key(current.Successor));
+                            current.SuccessorAllowed=false;current.AwaitingClose=false;
+                            current.Successor=null;current.OpenSuccessor=null;
+                            Retire(current);
+                        }
                     }
                     respond?.Invoke(null);
                     return;
@@ -165,11 +203,15 @@ namespace CF7Launcher.Tasks {
                 bool terminal=valid&&m.Value<bool>("success")&&(Text(m["phase"])=="finished"||Text(m["phase"])=="expired")&&c.Context.Operation=="finish";
                 bool prepared=valid&&m.Value<bool>("success")&&Text(m["phase"])=="presenting"&&(c.Context.Operation=="prepared"||c.Context.Operation=="cue");
                 if(!s.Retired&&ReferenceEquals(current,s)){
-                    if(terminal)Retire(s);
+                    if(terminal){
+                        s.SuccessorAllowed=Text(m["phase"])=="finished"
+                            &&(c.Context.Reason=="continue"||c.Context.Reason=="skip");
+                        Retire(s);
+                    }
                     else{
                         if(c.Context.Operation!="cue")s.Finishing=false;
                         Post(new JObject{
-                            ["type"]="panel_resp",["panel"]="book-comic",["domain"]="book-comic",["panelInstanceId"]=s.Instance,["presentationId"]=s.Data["presentationId"],["callId"]=c.WebCallId,["cmd"]=c.Context.Reason,["success"]=prepared,["error"]=prepared?"":valid?Text(m["error"]):"malformed_response"
+                            ["type"]="panel_resp",["panel"]="book-comic",["domain"]="book-comic",["panelInstanceId"]=s.Instance,["presentationId"]=s.Data["presentationId"],["callId"]=c.WebCallId,["cmd"]=c.Context.Reason,["success"]=prepared,["error"]=valid?Text(m["error"]):"malformed_response"
                         }
                         );
                     }
@@ -181,6 +223,7 @@ namespace CF7Launcher.Tasks {
             s.Retired=true;
             retired.Add(Key(s.Data));
             var instance=s.Instance;
+            s.AwaitingClose=instance!=null&&s.SuccessorAllowed;
             if(instance!=null)Dispatch(()=>close?.Invoke(instance));
         }
         public void OnHostClosed(string instance){
@@ -194,6 +237,11 @@ namespace CF7Launcher.Tasks {
         }
         public void OnDisconnected(){
             lock(gate){
+                if(current!=null){
+                    if(current.Successor!=null)retired.Add(Key(current.Successor));
+                    current.SuccessorAllowed=false;current.AwaitingClose=false;
+                    current.Successor=null;current.OpenSuccessor=null;
+                }
                 if(current!=null&&!current.Retired)Retire(current);
                 pending.Clear();
             }
@@ -223,6 +271,7 @@ namespace CF7Launcher.Tasks {
         public void Dispose(){
             lock(gate){
                 disposed=true;
+                if(current!=null){current.Successor=null;current.OpenSuccessor=null;current.AwaitingClose=false;}
                 pending.Dispose();
             }
         }

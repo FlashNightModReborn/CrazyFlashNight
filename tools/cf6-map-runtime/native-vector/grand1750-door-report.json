@@ -1,0 +1,30 @@
+{
+  "schema": "cf6-native-door-candidate.v1",
+  "name": "CF6_DoorGrand1750_VectorCandidate01",
+  "frames": 40,
+  "sourceSprite": 1750,
+  "nativeShapesProcessed": 1567,
+  "nativeSymbols": 65,
+  "originalClipDepths": [],
+  "sourceInputs": [
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A05-R3/cf6-stage5-redraw-r3/reference/environment-original-nodes.json",
+      "sha256": "828eff94607c41947ba0e9448cf6d496cc37686e50ead83244ef6b1ed7f420e0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A05-R3/cf6-stage5-redraw-r3/parts/shape-1747.svg",
+      "sha256": "a75ab86a297dbdac067adba44e57b5e4ffed0f1d27682fd58bfb46138e0694a9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A05-R3/cf6-stage5-redraw-r3/parts/shape-1748.svg",
+      "sha256": "b0cc395a55c8ba79144939d34505d92de4abfd89053885527ac9cd2b2b02bcee"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A05-R3/cf6-stage5-redraw-r3/parts/shape-1749.svg",
+      "sha256": "6fc24ea6d4ba8ba7428da94ddbdfa1af28e4054ed3db397a4e87f82703d1f11a"
+    }
+  ],
+  "textureCount": 0,
+  "nativeRootScripts": "stop only; mask wrappers initialize native setMask; no inherited game actions",
+  "state": "native XFL source only; CS6 compile and nine-frame actual playback required"
+}

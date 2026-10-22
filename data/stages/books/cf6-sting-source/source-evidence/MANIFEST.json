@@ -1,0 +1,25 @@
+{
+ "schema": "cf6-sting-source-evidence.v1",
+ "note": "逐图实例解析切片(最小原作事实),由build-encounter-facts.py产生;完整反编译树与SWF/EXE原件保留tmp与原EXE只读路径,不入版本目录",
+ "exe": {
+  "path": "CrazyFlasherSeries/exes/crazyflasher6-cn_secure.exe",
+  "sha256": "3523806f0e250ebf8ffe32683d027c7712578711ec99803d341673a22253d18c"
+ },
+ "swf": {
+  "flashBodyOffset": 9430688,
+  "swfBytes": 16439094,
+  "sha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01"
+ },
+ "extractor": {
+  "script": "tools/cf6-roguelike-content/build-encounter-facts.py",
+  "sha256": "931d1ffbb03735869411cdc130434a52596ff33a2f5678165ce1595600c2c39e"
+ },
+ "factsFile": {
+  "path": "data/stages/books/cf6-sting-source/encounter-facts.v1.json",
+  "sha256": "b1c39aa89a5b6c0d35eb3b984830ed50af0f0e43e276b8abe0f7c2513429bdb9"
+ },
+ "reviewBinding": {
+  "path": "tmp/cf6-roguelike-20261021/orchestration/encounter-review.json",
+  "note": "主控逐图审查(originalFacts/unknownEdges/proposedFiniteAdaptation),绑定源hash"
+ }
+}

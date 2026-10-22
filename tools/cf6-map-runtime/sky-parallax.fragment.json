@@ -1,0 +1,56 @@
+{
+  "schema": "cf6-sky-parallax-fragment.v1",
+  "coordinateSpace": "root-stage",
+  "mergePolicy": "For each map, remove existing mechanism.layers entries whose id is listed in replaceLayerIds, then append layers in their declared order. Reject any remaining duplicate id or duplicate screen-fixed/city-parallax role. Do not change the base background URL or transform these root-stage coordinates with world geometry conversion.",
+  "resourceState": "Native sources and consumers under construction; all referenced canonical SWFs require fresh compile before playable acceptance.",
+  "maps": {
+    "A02": {
+      "replaceLayerIds": ["sky", "city-parallax"],
+      "layers": [
+        {
+          "id": "sky",
+          "role": "screen-fixed",
+          "coordinateSpace": "root-stage",
+          "url": "flashswf/backgrounds/cf6/CF6_A02_sky.swf",
+          "x": 0,
+          "y": 0,
+          "width": 600,
+          "height": 187,
+          "depth": 0
+        },
+        {
+          "id": "city-parallax",
+          "role": "city-parallax",
+          "coordinateSpace": "root-stage",
+          "url": "flashswf/backgrounds/cf6/CF6_A02_city-parallax.swf",
+          "x": 0,
+          "y": 109,
+          "width": 1441.4,
+          "height": 66.45,
+          "depth": 1
+        }
+      ]
+    },
+    "A06": {
+      "replaceLayerIds": ["sky"],
+      "layers": [
+        {
+          "id": "sky",
+          "role": "screen-fixed",
+          "coordinateSpace": "root-stage",
+          "url": "flashswf/backgrounds/cf6/CF6_A06_sky.swf",
+          "x": 0,
+          "y": -20,
+          "width": 800,
+          "height": 187,
+          "depth": 0
+        }
+      ]
+    }
+  },
+  "placementContract": {
+    "screen-fixed": "Root-stage fixed x/y with original source width/height; no worldScale conversion and no SpeedRate=0.",
+    "city-parallax": "A02 steady original enterFrame placement: x = gameworld._x / 2 + layer.x; y = gameworld._y + layer.y. The independent city SWF has viewBox top 109 normalized to zero, so layer.y adds it exactly once. Initial source placement (-0.75,108) is superseded before reveal by this steady camera pose.",
+    "parent": "Owned child of the existing _root.天空盒 back-plane; compensate its translation and scale without changing the shared parent's camera state. Sky depth 0, city depth 1 inside the owned holder."
+  }
+}

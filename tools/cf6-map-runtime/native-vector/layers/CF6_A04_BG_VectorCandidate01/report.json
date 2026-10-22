@@ -1,0 +1,397 @@
+{
+  "schema": "cf6-native-layer-candidate.v1",
+  "name": "CF6_A04_BG_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A04-R1/cf6-stage4-redraw-r1/parts/background-1728.svg",
+  "sourceSha256": "3a9bbd15181e80a9cecb7987daa19ee73c4533c3f0c216ced9c2cb9a547c4c8b",
+  "nativeShapes": 396,
+  "nativeSymbols": 141,
+  "intrinsicTextures": 2,
+  "masks": [
+    {
+      "id": "n2_fill0",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2_fill1",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2_fill2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2_fill3",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2_fill4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2_fill5",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2_fill6",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2_fill7",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2_fill8",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2_fill9",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2_fill10",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n3_fill0",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n6_fill0",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n9_fill0",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n12_fill0",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    }
+  ],
+  "maskImages": [],
+  "imagePlacements": [
+    {
+      "texture": "intrinsic-b162eb77a5e79a8f8fdfd8bf.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        228.0,
+        197.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-37a61419c8fb9dc698ee0ab6.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        306.0,
+        251.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "n3_b1704_softShadow",
+      "operations": [
+        {
+          "kind": "BlurFilter",
+          "sourceStdDeviation": [
+            1.1,
+            1.1
+          ],
+          "blur": [
+            2.2,
+            2.2
+          ],
+          "quality": 3,
+          "mapping": "three-pass native approximation; actual visual comparison required"
+        }
+      ],
+      "sourceRegion": {
+        "id": "n3_b1704_softShadow",
+        "x": "-1",
+        "y": "-.1",
+        "width": "3",
+        "height": "1.5"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col5",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.0,
+            0,
+            0,
+            0,
+            255.0,
+            0,
+            0.0,
+            0,
+            0,
+            255.0,
+            0,
+            0,
+            0.0,
+            0,
+            153.0,
+            0,
+            0,
+            0,
+            1.0,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col5",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "n6_b1704_softShadow",
+      "operations": [
+        {
+          "kind": "BlurFilter",
+          "sourceStdDeviation": [
+            1.1,
+            1.1
+          ],
+          "blur": [
+            2.2,
+            2.2
+          ],
+          "quality": 3,
+          "mapping": "three-pass native approximation; actual visual comparison required"
+        }
+      ],
+      "sourceRegion": {
+        "id": "n6_b1704_softShadow",
+        "x": "-1",
+        "y": "-.1",
+        "width": "3",
+        "height": "1.5"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col8",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.0,
+            0,
+            0,
+            0,
+            255.0,
+            0,
+            0.0,
+            0,
+            0,
+            255.0,
+            0,
+            0,
+            0.0,
+            0,
+            153.0,
+            0,
+            0,
+            0,
+            1.0,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col8",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "n9_b1704_softShadow",
+      "operations": [
+        {
+          "kind": "BlurFilter",
+          "sourceStdDeviation": [
+            1.1,
+            1.1
+          ],
+          "blur": [
+            2.2,
+            2.2
+          ],
+          "quality": 3,
+          "mapping": "three-pass native approximation; actual visual comparison required"
+        }
+      ],
+      "sourceRegion": {
+        "id": "n9_b1704_softShadow",
+        "x": "-1",
+        "y": "-.1",
+        "width": "3",
+        "height": "1.5"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col11",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.0,
+            0,
+            0,
+            0,
+            255.0,
+            0,
+            0.0,
+            0,
+            0,
+            255.0,
+            0,
+            0,
+            0.0,
+            0,
+            153.0,
+            0,
+            0,
+            0,
+            1.0,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col11",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "n12_b1704_softShadow",
+      "operations": [
+        {
+          "kind": "BlurFilter",
+          "sourceStdDeviation": [
+            1.1,
+            1.1
+          ],
+          "blur": [
+            2.2,
+            2.2
+          ],
+          "quality": 3,
+          "mapping": "three-pass native approximation; actual visual comparison required"
+        }
+      ],
+      "sourceRegion": {
+        "id": "n12_b1704_softShadow",
+        "x": "-1",
+        "y": "-.1",
+        "width": "3",
+        "height": "1.5"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col14",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.0,
+            0,
+            0,
+            0,
+            255.0,
+            0,
+            0.0,
+            0,
+            0,
+            255.0,
+            0,
+            0,
+            0.0,
+            0,
+            153.0,
+            0,
+            0,
+            0,
+            1.0,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col14",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    }
+  ],
+  "patterns": [],
+  "gradientFallbacks": [],
+  "sourceViewport": [
+    -676.95,
+    -240.5,
+    1508.95,
+    483.3
+  ],
+  "registrationMatrix": [
+    1.0,
+    0,
+    0,
+    1.0,
+    676.95,
+    240.5
+  ],
+  "state": "native XFL assembled; actual CS6 compile and rendering still pending",
+  "limits": [
+    "SVG filter-region clipping is reported per filter and not yet reproduced.",
+    "Native Gaussian blur is a three-pass approximation.",
+    "Root SVG viewport crop must be compared at the original edge."
+  ]
+}

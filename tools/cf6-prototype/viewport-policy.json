@@ -1,0 +1,9 @@
+{
+  "schema": "cf6-viewport-policy.v1",
+  "targetViewport": [1024, 512],
+  "sourceViewport": [600, 350],
+  "cameraBaseScale": 1,
+  "actorScale": 1,
+  "worldOrigin": [0, 0],
+  "policy": "Uniform map assembly scale covers the default CF7 viewport. Restore original world coordinates and camera canvas; keep actors and camera settings unchanged. Native visual resources retain their existing local coordinates and receive one explicit asset transform before baking."
+}

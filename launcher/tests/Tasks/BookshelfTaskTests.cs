@@ -172,7 +172,7 @@ namespace Launcher.Tests.Tasks
             Assert.True(sent[0].Value<bool>("missingRun")); Assert.Null(sent[0]["snapshot"]);
         }
         [Theory]
-        [InlineData("repair-campus")][InlineData("lee-trial")]
+        [InlineData("repair-campus")][InlineData("lee-trial")][InlineData("cf6-sting")]
         public void PlayUsesHostGeneratedRunSlotAndDeduplicates(string bookId)
         {
             var sent = new List<JObject>(); var posted = new List<JObject>();
@@ -184,6 +184,7 @@ namespace Launcher.Tests.Tasks
         }
         [Theory]
         [InlineData("lee-trial-unknown")][InlineData("../lee-trial")][InlineData("")]
+        [InlineData("cf6-sting-61")][InlineData("CF6-sting")][InlineData("../cf6-sting")]
         public void UnknownTrialCannotMintARunSlot(string bookId)
         {
             var sent = new List<JObject>(); var posted = new List<JObject>();
@@ -209,6 +210,54 @@ namespace Launcher.Tests.Tasks
             task.HandleFlashResponse(receipt, _ => { });
             Assert.Equal(valid, posted[0].Value<string>("error") != "malformed_response");
             Assert.True(task.IsReturning);
+        }
+        [Theory]
+        [InlineData(0, "clear", true)]
+        [InlineData(0, "incomplete", true)]
+        [InlineData(0, "pending", true)]
+        [InlineData(1, "clear", false)]
+        [InlineData(-1, "clear", false)]
+        public void Cf6HistoricalReturnKeepsLocalProgressOutOfPermanentRewards(int sp, string reason, bool valid)
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>();
+            using var task = Create(sent, posted);
+            task.HandleWebRequest("commit", Request("commit", kind:"return"));
+            var receipt = Response(sent[0], "switching", active:"bookrun_fixture", kind:"return");
+            receipt["returningResult"] = new JObject { ["runId"]="bookrun_fixture", ["bookId"]="cf6-sting",
+                ["outcome"]="victory", ["elapsedMs"]=7000, ["completedAt"]=0,
+                ["sp"]=sp, ["reason"]=reason, ["debug"]=false };
+            task.HandleFlashResponse(receipt, _ => { });
+            Assert.Equal(valid, posted[0].Value<string>("error") != "malformed_response");
+            Assert.True(task.IsReturning);
+            Assert.True(posted[0].Value<bool>("requiresReconcile"));
+        }
+        [Theory]
+        [InlineData("valid", true)]
+        [InlineData("foreign_book", false)]
+        [InlineData("paid_sp", false)]
+        [InlineData("private_route", false)]
+        [InlineData("duplicate", false)]
+        [InlineData("invalid_best", false)]
+        public void Cf6HistoryProjectionIsClosedAndCannotBorrowCampusRecords(string fault, bool valid)
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>();
+            using var task = Create(sent, posted);
+            task.HandleWebRequest("commit", Request("commit", kind:"return"));
+            var receipt = Response(sent[0], "switching", active:"bookrun_fixture", kind:"return");
+            var record = new JObject { ["runId"]="bookrun_historical", ["bookId"]="cf6-sting",
+                ["outcome"]="victory", ["elapsedMs"]=7000, ["completedAt"]=10,
+                ["sp"]=0, ["reason"]="clear", ["debug"]=false };
+            if (fault == "foreign_book") record["bookId"] = "repair-campus";
+            if (fault == "paid_sp") record["sp"] = 45;
+            if (fault == "private_route") record["routeId"] = "historical";
+            var history = new JArray(record);
+            if (fault == "duplicate") history.Add(record.DeepClone());
+            receipt["cf6Records"] = new JObject { ["bestMs"]=fault == "invalid_best" ? -1 : 7000,
+                ["clears"]=1, ["history"]=history };
+            task.HandleFlashResponse(receipt, _ => { });
+            Assert.Equal(valid, posted[0].Value<string>("error") != "malformed_response");
+            Assert.True(task.IsReturning);
+            Assert.True(posted[0].Value<bool>("requiresReconcile"));
         }
         [Fact]
         public void ForeignTrialBookIdentityDoesNotUnlockAnUnknownReturn()

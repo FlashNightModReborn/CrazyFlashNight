@@ -310,6 +310,7 @@ namespace CF7Launcher.Tasks
                     state = message["lastTrialRecord"] is JObject trialRecord
                         && Text(trialRecord["bookId"]) == "lee-trial" && ValidResult(trialRecord, false);
                 if (state && message["records"] != null) state = ValidRecords(message["records"] as JObject);
+                if (state && message["cf6Records"] != null) state = ValidCf6Records(message["cf6Records"] as JObject);
                 if (state && message["returningResult"]?.Type != JTokenType.Null && message["returningResult"] != null)
                     state = ValidResult(message["returningResult"] as JObject, true);
                 if (state && phase == "switching" && request.Kind == "play" && _contextObservation == null)
@@ -382,7 +383,7 @@ namespace CF7Launcher.Tasks
                 if(admission!=null && admission.Context.Slot==slot && admission.Owner==owner)return admission;
             return null;
         }
-        private static bool IsPlayableBook(string bookId) => bookId == "repair-campus" || bookId == "lee-trial";
+        private static bool IsPlayableBook(string bookId) => bookId == "repair-campus" || bookId == "lee-trial" || bookId == "cf6-sting";
         private static bool BoundedInteger(JToken value, long maximum)
             => value?.Type == JTokenType.Integer && long.TryParse(value.ToString(), out long number) && number >= 0 && number <= maximum;
         private static bool ValidResult(JObject result, bool pending)
@@ -390,6 +391,7 @@ namespace CF7Launcher.Tasks
             if (result == null || !Exact(result, "runId", "bookId", "outcome", "elapsedMs", "completedAt", "sp", "reason", "debug")) return false;
             return Text(result["runId"]) is string run && SaveSlotKey.IsValidExisting(run)
                 && IsPlayableBook(Text(result["bookId"]))
+                && (Text(result["bookId"]) != "cf6-sting" || BoundedInteger(result["sp"], 0))
                 && (Text(result["bookId"]) != "lee-trial" || BoundedInteger(result["sp"], 0)
                     && result["debug"]?.Type == JTokenType.Boolean && result.Value<bool>("debug")
                     && (Text(result["reason"]) == "debug" || pending && Text(result["reason"]) == "pending"))
@@ -404,6 +406,8 @@ namespace CF7Launcher.Tasks
                 && BoundedInteger(records["bestMs"], 86399999) && BoundedInteger(records["clears"], 9007199254740991)
                 && records["history"] is JArray history && history.Count <= 20 && history.All(r => ValidResult(r as JObject, false))
                 && history.Select(r => Text(r["runId"])).Distinct(StringComparer.Ordinal).Count() == history.Count;
+        private static bool ValidCf6Records(JObject records)
+            => ValidRecords(records) && ((JArray)records["history"]).All(r => Text(r["bookId"]) == "cf6-sting");
         private void RejectAndRemember(string call, string cmd, string instance, string error)
         { if (_pending.TryRememberRejected(call)) Send(new JObject { ["success"] = false, ["error"] = error }, call, cmd, instance); }
         private void Send(JObject result, string call, string cmd, string instance)

@@ -1,0 +1,33 @@
+{
+  "schema": "cf6-native-layer-input.v1",
+  "map": "A02",
+  "layer": "background",
+  "name": "CF6_A02_BG_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A02-R3/cf6-stage2-redraw-r3/parts/background-1613.svg",
+  "sourceSha256": "3f8d47aa8bd76d5a5d7d74a2315863edc2dd84e54a44afb8b71df3d448c180b9",
+  "inputIndex": "tools/cf6-map-source/generated/map-input.json",
+  "inputIndexSha256": "056c50dd321debee3545d2988b891d140b07cfec864b5d461bd062e44d29ba95",
+  "extraction": "decode existing PNG/JPEG data URI bytes only; no image rasterization or modification",
+  "inputs": [
+    {
+      "path": "tools/cf6-map-runtime/native-vector/assets/intrinsic-a379b9aee02af9ca67d993ce.png",
+      "sha256": "a379b9aee02af9ca67d993ce15248578795a35d95570052cbc0712af3bb66361",
+      "bytes": 707821,
+      "pixels": [
+        648,
+        600
+      ]
+    }
+  ],
+  "textures": {
+    "a379b9aee02af9ca67d993ce15248578795a35d95570052cbc0712af3bb66361": {
+      "name": "intrinsic-a379b9aee02af9ca67d993ce.png",
+      "pixels": [
+        648,
+        600
+      ]
+    }
+  },
+  "xfl": "flashswf/backgrounds/cf6/CF6_A02_BG_VectorCandidate01/CF6_A02_BG_VectorCandidate01.xfl",
+  "swf": "CF6_A02_BG_VectorCandidate01.swf"
+}

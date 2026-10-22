@@ -245,8 +245,8 @@ class org.flashNight.arki.scene.WaveSpawnWheel {
 
         var wrapper:Object = this.minHeap[len - 1];
         for(var i:Number = 0; i < this.minHeapSpeed; i++){
-            this.waveSpawner.spawn(wrapper.attribute, wrapper.index, wrapper.waveIndex, wrapper.quantity);
-            wrapper.quantity--;
+            // 并发上限等暂拒不消耗待生成数量；保留任务，下帧继续受五次预算约束重试。
+            if(this.waveSpawner.spawn(wrapper.attribute, wrapper.index, wrapper.waveIndex, wrapper.quantity)) wrapper.quantity--;
             if(wrapper.quantity <= 0) {
                 len--;
                 if(len <= 0){

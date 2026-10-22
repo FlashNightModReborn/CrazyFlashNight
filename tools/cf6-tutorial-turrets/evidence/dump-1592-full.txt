@@ -1,0 +1,165 @@
+===== frame_1\PlaceObject2_1433_11\CLIPACTIONRECORD onClipEvent(enterFrame).as
+onClipEvent(enterFrame){
+   var §\x01§ = 322;
+   var §\x0f§ = 1;
+   if(this.hitTest(_root.gameworld.man1.area))
+   {
+      _root.gameworld.man1._x += 20;
+   }
+}
+
+===== frame_1\PlaceObject2_1433_13\CLIPACTIONRECORD onClipEvent(enterFrame).as
+onClipEvent(enterFrame){
+   var §\x01§ = 288;
+   var §\x0f§ = 1;
+   if(this.hitTest(_root.gameworld.man1.area))
+   {
+      _root.gameworld.man1._x -= 20;
+   }
+}
+
+===== frame_1\PlaceObject2_1433_7\CLIPACTIONRECORD onClipEvent(enterFrame).as
+onClipEvent(enterFrame){
+   var §\x01§ = 166;
+   var §\x0f§ = 1;
+   if(this.hitTest(_root.gameworld.man1.area))
+   {
+      _root.gameworld.man1._y += 20;
+   }
+}
+
+===== frame_1\PlaceObject2_1433_9\CLIPACTIONRECORD onClipEvent(enterFrame).as
+onClipEvent(enterFrame){
+   var §\x01§ = 704;
+   var §\x0f§ = 1;
+   if(this.hitTest(_root.gameworld.man1.area))
+   {
+      _root.gameworld.man1._y -= 20;
+   }
+}
+
+===== frame_1\PlaceObject2_1434_100\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   stop();
+   兵种 = "aw-僵尸";
+   僵尸型敌人总个数 = 15;
+   僵尸型敌人上场个数 = 5;
+   击中效果 = "飙血";
+   近身距离 = 50;
+   近身率 = 3;
+   击倒率 = 8;
+   hp = 200;
+   x速度 = 1;
+   y速度 = 0.1;
+   AI = 5;
+   攻击力 = 20;
+}
+
+===== frame_1\PlaceObject2_1434_98\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   stop();
+   兵种 = "敌人-光头男";
+   僵尸型敌人总个数 = 5;
+   僵尸型敌人上场个数 = 2;
+   击中效果 = "飙血";
+   近身距离 = 180;
+   近身率 = 3;
+   击倒率 = 5;
+   hp = 100;
+   x速度 = 5;
+   y速度 = 2.5;
+   AI = 5;
+   枪声音 = "无";
+   霰弹值 = 3;
+   子弹散射度 = 15;
+   子弹种类 = "敌人普通子弹";
+   子弹威力 = 10;
+   子弹速度 = 20;
+}
+
+===== frame_1\PlaceObject2_1442_212\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   内部物 = "救护包";
+}
+
+===== frame_1\PlaceObject2_1498_233\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   this.swapDepths(100000);
+}
+
+===== frame_1\PlaceObject2_1585_146\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   兵种 = "aw-僵尸-可被炮台打";
+   僵尸型敌人总个数 = 15;
+   僵尸型敌人上场个数 = 5;
+   击中效果 = "飙血";
+   近身距离 = 50;
+   近身率 = 3;
+   击倒率 = 8;
+   hp = 200;
+   x速度 = 1;
+   y速度 = 0.1;
+   AI = 5;
+   攻击力 = 20;
+}
+
+===== frame_1\PlaceObject2_1587_148\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   需要杀死数 = 20;
+   目标帧 = "s2";
+}
+
+===== frame_1\PlaceObject2_255_弃枪_219\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   var §\x01§ = 547;
+   var §\x0f§ = 1;
+   gunname = "ump";
+   弹夹内子弹 = 50;
+   长枪威力 = 20;
+   射击速度 = 140;
+   长枪是否单发 = 0;
+   长枪子弹散射度 = 6;
+   长枪散弹值 = 1;
+   长枪声音 = "ump";
+}
+
+===== frame_1\PlaceObject2_255_弃枪_223\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   gunname = "mp5-pdw";
+   弹夹内子弹 = 60;
+   长枪威力 = 20;
+   射击速度 = 110;
+   长枪是否单发 = 0;
+   长枪子弹散射度 = 4;
+   长枪散弹值 = 1;
+   长枪声音 = "mp5";
+}
+
+===== frame_1\PlaceObject2_477_aw-僵尸_102\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   产生源 = "无";
+   击中效果 = "飙血";
+   近身距离 = 50;
+   近身率 = 3;
+   击倒率 = 8;
+   hp = 200;
+   x速度 = 1;
+   y速度 = 0.5;
+   AI = 5;
+   攻击力 = 20;
+}
+
+===== frame_1\PlaceObject2_630_aw-僵尸-可被炮台打_168\CLIPACTIONRECORD onClipEvent(load).as
+onClipEvent(load){
+   产生源 = "无";
+   击中效果 = "飙血";
+   近身距离 = 50;
+   近身率 = 3;
+   击倒率 = 8;
+   hp = 200;
+   x速度 = 1;
+   y速度 = 0.5;
+   AI = 5;
+   攻击力 = 20;
+}
+

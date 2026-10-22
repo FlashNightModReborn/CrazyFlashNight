@@ -26,12 +26,14 @@ function fixture() {
         sp:index===0 ? 0 : index===1 ? 45 : index%3 ? 5 : 0,
         reason:index===0 ? 'incomplete' : index===1 ? 'first_clear' : index%3 ? 'clear' : 'incomplete', debug:index===19
     }))};
+    qa.cf6Records = {bestMs:191250, clears:2, history:[{runId:'cf6.previous',bookId:'cf6-sting',outcome:'victory',elapsedMs:191250,completedAt:1791172800000,sp:0,reason:'clear',debug:false}]};
     if (scenario==='empty') qa.records={bestMs:87250,clears:8,history:[]};
-    qa.returningResult = ['return','trial-return','lee-failure','lee-retreat'].includes(scenario) ? {
+    qa.returningResult = ['return','trial-return','lee-failure','lee-retreat','cf6-return'].includes(scenario) ? {
         runId:'pending.victory', bookId:'repair-campus', outcome:'victory', elapsedMs:123450,
         completedAt:0, sp:0, reason:'pending', debug:false
     } : null;
     if (['trial-return','lee-failure','lee-retreat'].includes(scenario)) { qa.returningResult.bookId='lee-trial'; qa.returningResult.debug=true; qa.returningResult.outcome=scenario==='lee-failure'?'failure':scenario==='lee-retreat'?'retreat':'victory'; }
+    if (scenario==='cf6-return') qa.returningResult.bookId='cf6-sting';
     window.Toast = {add:function(){}};
     window.Bridge = {
         on:(type, handler)=>(handlers[type]||(handlers[type]=[])).push(handler),
@@ -51,14 +53,14 @@ function fixture() {
                     error:message.cmd==='prepare'?'not_owned':undefined};
                 setTimeout(()=>qa.emit('panel_resp',response),8); return true;
             }
-            const inRun=['return','trial-return','lee-failure','lee-retreat'].includes(scenario) && !qa.done;
+            const inRun=['return','trial-return','lee-failure','lee-retreat','cf6-return'].includes(scenario) && !qa.done;
             const base={type:'panel_resp',panel:'bookshelf',domain:'bookshelf',cmd:message.cmd,
                 callId:message.callId,panelInstanceId:message.panelInstanceId,v:1,token:message.payload.token,
-                phase:'editing',success:true,kind:message.payload.kind || (['return','trial-return','lee-failure','lee-retreat'].includes(scenario)?'return':'settle'),
+                phase:'editing',success:true,kind:message.payload.kind || (['return','trial-return','lee-failure','lee-retreat','cf6-return'].includes(scenario)?'return':'settle'),
                 activeSlot:inRun?'bookrun_fixture':'fixture_a',role:inRun?'Andy Law':'测试角色',inRun,
                 originSlot:'fixture_a',exitRequired:inRun,canSwitch:true,unlocked:scenario!=='trial',leeEntry:scenario==='trial',
-                bookId:inRun ? (['trial-return','lee-failure','lee-retreat'].includes(scenario)?'lee-trial':'repair-campus') : '', pendingBookId:qa.pending?'repair-campus':'',
-                pendingRun:qa.pending?'bookrun_fixture':'',lastReward:0,records:qa.records,
+                bookId:inRun ? (scenario==='cf6-return'?'cf6-sting':['trial-return','lee-failure','lee-retreat'].includes(scenario)?'lee-trial':'repair-campus') : '', pendingBookId:qa.pending?'repair-campus':'',
+                pendingRun:qa.pending?'bookrun_fixture':'',lastReward:0,records:qa.records,cf6Records:qa.cf6Records,
                 lastTrialRecord:qa.lastTrialRecord || null, returningResult:qa.returningResult,slots:scenario==='overview'
                     ? ['fixture_a','fixture_b','fixture_c','fixture_d','fixture_e'].map((slot,i)=>({slot,name:'测试角色'+'ABCDE'[i]}))
                     : [{slot:'fixture_a',name:'测试角色'}]};
@@ -68,23 +70,24 @@ function fixture() {
             } else if(message.cmd==='commit') {
                 qa.writes++;
                 if(message.payload.kind==='play') Object.assign(base,{phase:'switching'});
-                else if(['return','trial-return','lee-failure','lee-retreat'].includes(scenario)) {
+                else if(['return','trial-return','lee-failure','lee-retreat','cf6-return'].includes(scenario)) {
                     if(qa.writes===1) Object.assign(base,{phase:undefined,success:false,error:'save_unavailable'});
                     else { Object.assign(base,{phase:'switching'}); setTimeout(()=>qa.transition(),20); }
                 } else Object.assign(base,{phase:'save_pending',success:false,requiresReconcile:true,recoveryToken:message.payload.token});
             } else if(message.cmd==='query') {
                 qa.queries++;
-                if(['return','trial-return','lee-failure','lee-retreat'].includes(scenario) && !qa.allowReturn) {
+                if(['return','trial-return','lee-failure','lee-retreat','cf6-return'].includes(scenario) && !qa.allowReturn) {
                     Object.assign(base,qa.queries===1 ? {phase:undefined,success:false,error:'disconnected'} : {phase:'switching',kind:'return'});
                 } else if(scenario==='unknown' && qa.queries===1) {
                     Object.assign(base,{phase:'save_pending',success:false,requiresReconcile:true});
                 } else {
-                    if(['return','trial-return','lee-failure','lee-retreat'].includes(scenario)) {
+                    if(['return','trial-return','lee-failure','lee-retreat','cf6-return'].includes(scenario)) {
                         qa.records.history.unshift({runId:'saved.return',bookId:'repair-campus',outcome:'victory',
                             elapsedMs:86250,completedAt:1791176400000,sp:45,reason:'first_clear',debug:false});
                         qa.records.history=qa.records.history.slice(0,20);
                         qa.records.bestMs=86250; qa.records.clears=9;
                     }
+                    if (scenario==='cf6-return') { qa.cf6Records.history.unshift({runId:'cf6.return',bookId:'cf6-sting',outcome:'victory',elapsedMs:123450,completedAt:1791176400000,sp:0,reason:'clear',debug:false}); qa.cf6Records.bestMs=123450; qa.cf6Records.clears=3; }
                     if (qa.returningResult && qa.returningResult.bookId==='lee-trial') qa.lastTrialRecord=Object.assign({},qa.returningResult,{reason:'debug',completedAt:1791176400000});
                     qa.pending=false; qa.done=true; qa.returningResult=null;
                     Object.assign(base,{phase:'applied',pendingRun:'',nextToken:'bookshelf.fixture.next'});
@@ -101,6 +104,9 @@ const server = http.createServer((req,res)=>{
     if(path.relative(ROOT,file).startsWith('..')){res.writeHead(403);res.end();return;}
     fs.readFile(file,(err,data)=>{
         if(err){res.writeHead(404);res.end();return;}
+        if(url.pathname.endsWith('/assets/bookshelf/catalog.json') && /scenario=cf6(?:&|$|-)/.test(req.headers.referer || '')) {
+            const catalog=JSON.parse(data);catalog.books.find(b=>b.id==='crazy-flasher').chapters[5].remake={id:'cf6-sting',available:true};data=Buffer.from(JSON.stringify(catalog));
+        }
         if(url.pathname.endsWith('/bookshelf/dev/harness.html')) data=Buffer.from(data.toString('utf8').replace(/<script>[\s\S]*?<\/script>/,'<script>('+fixture.toString()+')();</script>'));
         const type={'.html':'text/html','.js':'text/javascript','.mjs':'text/javascript','.json':'application/json','.css':'text/css','.svg':'image/svg+xml'}[path.extname(file)];
         res.setHeader('Content-Type',(type||'application/octet-stream')+'; charset=utf-8');res.end(data);
@@ -167,7 +173,7 @@ async function main(){
         .map(p=>path.join(p,'Microsoft/Edge/Application/msedge.exe')).find(fs.existsSync);
     const browser=await chromium.launch({headless:true,executablePath:edge,ignoreDefaultArgs:['--hide-scrollbars']}),report=[];
     try {
-        for(const [width,height] of [[640,360],[1024,576],[1600,900]]) for(const scenario of ['overview','settle','unknown','readfail','return','series','records','empty','trial','trial-return','lee-failure','lee-retreat']) {
+        for(const [width,height] of [[640,360],[1024,576],[1600,900]]) for(const scenario of ['overview','settle','unknown','readfail','return','series','records','empty','trial','trial-return','lee-failure','lee-retreat','cf6','cf6-return']) {
             const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'}),errors=[];
             page.on('pageerror',e=>errors.push(e.message));
             await page.goto('http://127.0.0.1:'+server.address().port+'/launcher/web/modules/bookshelf/dev/harness.html?scenario='+scenario);
@@ -212,6 +218,38 @@ async function main(){
                 await page.screenshot({path:path.join(out,'lee-settled-'+scenario+'-'+width+'x'+height+'.png')});
                 assert.strictEqual(await page.evaluate(()=>__bookQa.sent.filter(m=>m.cmd==='commit').length),2,'settlement never replays return');
 
+            } else if(scenario==='cf6' || scenario==='cf6-return') {
+                if(scenario==='cf6') {
+                    await page.locator('[data-book="crazy-flasher"]').click();
+                    await page.locator('[data-chapter="6"]').click();
+                    assert.strictEqual(await primary.textContent(),'进入重制版');
+                    assert(!(await primary.isDisabled()));
+                    assert((await page.locator('[data-edition="remake-description"]').textContent()).includes('60 级 Andy'));
+                    assert((await page.locator('[data-edition="remake-note"]').textContent()).includes('不提供 SP 奖励'));
+                    assert(!(await page.locator('.bookshelf-run-records').textContent()).includes('45 SP'));
+                    assert((await page.locator('.bookshelf-record-summary').textContent()).includes('2 次'));
+                    await assertPrimaryReadability(page,true);
+                    await page.screenshot({path:path.join(out,'cf6-entry-'+width+'x'+height+'.png')});
+                    await primary.click();
+                    await page.waitForFunction(()=>__bookQa.writes===1);
+                    assert.deepStrictEqual(await page.evaluate(()=>__bookQa.sent.filter(m=>m.cmd==='commit').map(m=>[m.payload.kind,m.payload.target])),[['play','cf6-sting']]);
+                } else {
+                    await page.waitForFunction(()=>__bookQa.writes===1 && !document.querySelector('.bookshelf-primary').disabled);
+                    assert.strictEqual(await page.locator('[data-chapter="6"]').getAttribute('aria-pressed'),'true');
+                    assert.strictEqual(await primary.textContent(),'结束旅程，返回原角色');
+                    assert.strictEqual(await page.locator('.bookshelf-run-records').getAttribute('aria-label'),'毒刺行动史实路线记录');
+                    await primary.click();
+                    await page.waitForFunction(()=>__bookQa.transitionAcks.some(a=>a.payload.kind==='covered'));
+                    await page.evaluate(()=>__bookQa.transition({phase:'reveal',revision:2,revealAllowed:true}));
+                    await page.waitForFunction(()=>__bookQa.transitionAcks.some(a=>a.payload.kind==='revealed'));
+                    await page.evaluate(()=>{__bookQa.allowReturn=true;__bookQa.emit('bookshelf_transition_complete',{panelInstanceId:'bookshelf.preview.1',requestId:'tr:1',revision:2,generation:4});});
+                    await page.waitForFunction(()=>__bookQa.done && document.querySelector('.bookshelf-primary').textContent==='进入重制版');
+                    assert.strictEqual(await page.locator('[data-chapter="6"]').getAttribute('aria-pressed'),'true');
+                    assert((await page.locator('.bookshelf-record-summary').textContent()).includes('3 次'));
+                    assert(!(await page.locator('.bookshelf-run-records').textContent()).includes('+45'));
+                    assert.deepStrictEqual(await page.evaluate(()=>__bookQa.sent.filter(m=>m.cmd==='commit').map(m=>[m.payload.kind,m.payload.target])),[['return','fixture_a'],['return','fixture_a']]);
+                    await page.screenshot({path:path.join(out,'cf6-return-'+width+'x'+height+'.png')});
+                }
             } else if(scenario==='series') {
                 await page.locator('[data-book="crazy-flasher"]').click();
                 await primary.waitFor();
@@ -222,8 +260,15 @@ async function main(){
                 await page.screenshot({path:path.join(out,'series-'+width+'x'+height+'.png')});
                 for(let chapter=2;chapter<=6;chapter++) {
                     await page.locator('[data-chapter="'+chapter+'"]').click();
-                    assert(await primary.isDisabled());assert.strictEqual(await primary.textContent(),'尚未制作');
-                    await assertPrimaryReadability(page,false);
+                    if(chapter===6) {
+                        await page.waitForFunction(()=>document.querySelector('.bookshelf-primary').textContent==='进入重制版');
+                        assert(!(await primary.isDisabled()));
+                        assert((await page.locator('[data-edition="remake-note"]').textContent()).includes('不提供 SP 奖励'));
+                        await assertPrimaryReadability(page,true);
+                    } else {
+                        assert(await primary.isDisabled());assert.strictEqual(await primary.textContent(),'尚未制作');
+                        await assertPrimaryReadability(page,false);
+                    }
                     const language=page.locator('[data-action="language"]');await language.selectOption('en');
                     await page.locator('[data-action="original"]').click();
                     await page.waitForFunction(()=>document.querySelector('.bookshelf-original-status').textContent.includes('未拥有'));

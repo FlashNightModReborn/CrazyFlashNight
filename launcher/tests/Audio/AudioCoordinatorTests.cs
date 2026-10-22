@@ -2003,7 +2003,7 @@ namespace CF7Launcher.Tests.Audio
             }
         }
 
-        private static AudioCoordinator Coordinator(
+        internal static AudioCoordinator Coordinator(
             FakeAudioNativeV2 native,
             bool enableRuntimePolling = true)
         {
@@ -2104,7 +2104,7 @@ namespace CF7Launcher.Tests.Audio
                 "cf7-audio-coordinator-tests"));
         }
 
-        private sealed class FakeAudioNativeV2 : IAudioNativeV2
+        internal sealed class FakeAudioNativeV2 : IAudioNativeV2
         {
             private readonly IList<string> _events;
             private readonly object _lock = new object();
@@ -2147,6 +2147,7 @@ namespace CF7Launcher.Tests.Audio
             internal int InitializeFailuresRemaining { get; set; }
             internal int SubmitBgmDeviceLostRemaining { get; set; }
             internal int SubmitBgmNotReadyRemaining { get; set; }
+            internal int SubmitBgmNullResultRemaining { get; set; }
             internal string QueryRuntimeFailureMode { get; set; }
             internal bool FailedInitializeAdvancesDeviceGeneration
                 { get; set; }
@@ -2432,6 +2433,11 @@ namespace CF7Launcher.Tests.Audio
                     }
                     lock (_lock)
                     {
+                        if (SubmitBgmNullResultRemaining > 0)
+                        {
+                            SubmitBgmNullResultRemaining--;
+                            return null;
+                        }
                         if (SubmitBgmNotReadyRemaining > 0)
                         {
                             SubmitBgmNotReadyRemaining--;

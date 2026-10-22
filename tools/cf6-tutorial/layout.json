@@ -1,0 +1,169 @@
+{
+  "schema": "cf6-tutorial-layout.v1",
+  "mapId": "TUTORIAL",
+  "title": "行动前训练",
+  "background": "cf6/CF6_Tutorial_BG.swf",
+  "world": {
+    "width": 1000,
+    "height": 450,
+    "walkBounds": [
+      50,
+      150,
+      1000,
+      500
+    ],
+    "note": "walkBounds 为原作根帧58 gameworld load 脚本 Xmin/Ymin/Xmax/Ymax 原值；height=450 为原作背景高。实际可行走带由 original-tutorial-geometry.json 中名为 地图 的碰撞子树填充决定（后缘 y≈204、前缘 y≈449.95、右墙斜边）。"
+  },
+  "dormToWorld": {
+    "scale": 1.383,
+    "tx": -207.45,
+    "ty": -224.73,
+    "anchor": "仅房间壳沿宿舍走区映射；床架、门及门灯按各自worldScale与明确世界锚点装配。"
+  },
+  "spawn": [
+    347.5,
+    270.5
+  ],
+  "spawnEvidence": "原作 gameworld 内 man1 时间轴放置点；经 safe_spawn 校验落在可行走带内",
+  "exit": {
+    "direction": "右",
+    "derive": "geometry.manual_exit：可行走带内最右自由走廊的 CF7 标准手动路障出口；不宣称原作自动转场",
+    "originalDoor": [
+      853.6,
+      225.9
+    ],
+    "originalExitChain": "门1430 → 切镜 → 根标签 s1 → a1（原作第一关）；本作经章节顺序子关进入 A01"
+  },
+  "doorAnchor": {
+    "worldRight": 1005,
+    "worldBottom": 449.95,
+    "note": "出口门图右下对齐行走带前缘右端，门口与 env Door 区重叠"
+  },
+  "placements": [
+    {
+      "role": "房间壳",
+      "group": "房间壳",
+      "source": {
+        "xfl": "flashswf/levels/基地场景合集",
+        "item": "sprite/Symbol 2577"
+      },
+      "dorm": [
+        1241.05,
+        304.75
+      ],
+      "evidence": "宿舍房间.xml 背景层原样摆放（含滤镜）"
+    },
+    {
+      "role": "高架床",
+      "group": "高架床",
+      "source": {
+        "xfl": "flashswf/levels/基地场景合集",
+        "item": "房间摆件/生活设施"
+      },
+      "evidence": "原生生活设施组合；真实Player11首版上缘裁切后按138px角色标尺缩至0.9，底边对齐204，保留组合内桌面与床架",
+      "worldBottomLeft": [
+        190,
+        204
+      ],
+      "worldScale": 0.9
+    },
+    {
+      "role": "门灯左",
+      "group": "门灯",
+      "source": {
+        "xfl": "flashswf/arts/new/素材库-地图元件",
+        "item": "门灯光+排气扇"
+      },
+      "worldTopLeft": [
+        43,
+        25
+      ],
+      "evidence": "原作左灯管1410+光晕1411 世界 x≈43..181、y≈-58..111",
+      "worldScale": 1.0
+    },
+    {
+      "role": "门灯右",
+      "group": "门灯",
+      "source": {
+        "xfl": "flashswf/arts/new/素材库-地图元件",
+        "item": "门灯光+排气扇"
+      },
+      "worldTopLeft": [
+        430,
+        25
+      ],
+      "evidence": "原作右灯管+光晕组 世界 x≈430..630",
+      "worldScale": 1.0
+    },
+    {
+      "role": "出口门",
+      "group": "门",
+      "source": {
+        "xfl": "flashswf/arts/new/素材库-地图元件",
+        "item": "门2"
+      },
+      "worldBottomRight": [
+        1005,
+        449.95
+      ],
+      "evidence": "原门2保留竖边比例0.9，水平边沿右侧墙面倾斜；右下锚点仍为原型出口边缘，实际通行待验",
+      "worldScale": 0.9,
+      "worldLinear": [
+        0.8,
+        0.65,
+        0,
+        0.9
+      ]
+    }
+  ],
+  "pickups": [
+    {
+      "Name": "战场长枪弹药包",
+      "Value": 1,
+      "x": 431,
+      "y": 360
+    },
+    {
+      "Name": "战场复合急救包",
+      "Value": 1,
+      "x": 626,
+      "y": 409
+    }
+  ],
+  "pickupsEvidence": "原作补给箱世界位置 (431.45,359.25) 与 (626.0,409.0)；原作为场景脚本箱，本作为标准地面拾取物",
+  "dialogue": [
+    {
+      "speaker": "Andy",
+      "text": "先确认移动、切换武器、射击和换弹的操作。按键沿用你当前的设置，可在设置里查看。"
+    },
+    {
+      "speaker": "Andy",
+      "text": "长枪和刀已经在你的初始装备里，这里不再发枪。地面备有一份长枪弹药和一份急救包，走近执行拾取；状态良好时无需消耗。"
+    },
+    {
+      "speaker": "Andy",
+      "text": "熟悉操作后从右侧大门离开。门外就是A01第一现场，第一场战斗在那里开始。"
+    }
+  ],
+  "dialogueEvidence": "第一句改为中性操作确认：不写死按键（当前默认 R 换弹，玩家可自定义），旧 J/K/空格 提示不进入成品；后两句按现行合同改写：不重复发枪、战斗教学由 A01 承担",
+  "events": {
+    "start": "行动前训练：移动并切换初始长枪试射。靠近地面补给后执行拾取；药品或弹药已满时无需消耗。",
+    "clear": "训练结束，右侧大门已经开放。走出去即进入A01第一现场，战斗教学由第一战承担。"
+  },
+  "bgm": {
+    "Command": "play",
+    "Title": "Moan",
+    "Loop": true
+  },
+  "bgmEvidence": "沿用前一版教学占位与新手练习场第一子关的现役 BGM 名",
+  "wave": {
+    "Duration": 0,
+    "FinishRequirement": 0
+  },
+  "waveNote": "空波次：教学房不安排敌人；正常机关空波次清关即开放出口（根代理已修复并真实通过空波次早清关竞争）",
+  "layoutReview": {
+    "basis": "真实FP11首版：床上缘裁切、门过大、独立button2588实际是储物箱；首版截图和编译产物保留在validation/tutorial-canonical-r1",
+    "changes": "移除独立储物箱，保留房间壳自带桌面；床与灯具按角色标尺完整入画；门采用侧墙仿射摆放。原源未改。",
+    "status": "revision awaiting actual-player review"
+  }
+}

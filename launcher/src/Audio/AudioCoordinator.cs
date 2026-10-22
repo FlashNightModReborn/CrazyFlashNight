@@ -880,6 +880,9 @@ namespace CF7Launcher.Audio
         private PendingBgm _bootstrapPending;
         private AudioNativeBgmCommandV2 _latestBgmIntent;
         private bool _latestBgmPaused;
+        private string _bgmLeaseId;
+        private string _bgmLeaseIntentRequestId;
+        private bool _bgmLeaseResumeOnRelease;
         private AudioNativeBgmCommandV2 _pendingRecoveryIntent;
         private bool _pendingRecoveryPaused;
         private AudioCatalogQualificationHookV2 _catalogQualificationHook;
@@ -1954,7 +1957,7 @@ namespace CF7Launcher.Audio
                 SafeRespond(respond, StaleResult(request, observed));
                 return;
             }
-            if (!observed.IsReady)
+            if (!observed.IsReady && !IsBgmLeaseRequestId(request.RequestId))
             {
                 SafeRespond(respond, UnavailableResult(request, observed));
                 return;
@@ -2318,7 +2321,7 @@ namespace CF7Launcher.Audio
                 SafeRespond(respond, StaleResult(request, current));
                 return;
             }
-            if (!current.IsReady)
+            if (!current.IsReady && !IsBgmLeaseRequestId(request.RequestId))
             {
                 SafeRespond(respond, UnavailableResult(request, current));
                 return;
@@ -2353,8 +2356,219 @@ namespace CF7Launcher.Audio
                 SafeRespond(respond, ToWireResult(request, invalid));
                 return;
             }
-            AudioNativeCallResultV2 result = ExecuteBgmCore(command, true);
+            AudioNativeCallResultV2 result = IsBgmLeaseRequestId(command.RequestId)
+                ? ExecuteBgmLeaseCore(command)
+                : ExecuteBgmCore(command, true);
             SafeRespond(respond, ToWireResult(request, result));
+        }
+
+        private const string BgmLeaseRequestMarker = "bgm.as2.lease";
+        private const string BgmLeaseRequestPrefix = BgmLeaseRequestMarker + ".";
+
+        private AudioNativeCallResultV2 ExecuteBgmLeaseCore(
+            AudioNativeBgmCommandV2 command)
+        {
+            string leaseId;
+            bool acquire;
+            if (!TryParseBgmLeaseRequestId(command, out leaseId, out acquire) ||
+                (acquire && command.Operation != AudioNativeV2.OperationBgmPause) ||
+                (!acquire && command.Operation != AudioNativeV2.OperationBgmResume))
+            {
+                return InvalidBgmResult(command.Operation, "audio.bgm.lease_invalid");
+            }
+            return acquire
+                ? AcquireBgmLeaseCore(command, leaseId)
+                : ReleaseBgmLeaseCore(command, leaseId);
+        }
+
+        private AudioNativeCallResultV2 AcquireBgmLeaseCore(
+            AudioNativeBgmCommandV2 command,
+            string leaseId)
+        {
+            if (!Snapshot.IsReady)
+            {
+                return AudioNativeCallResultV2.Failure(
+                    AudioNativeV2.ResultNotReady,
+                    command.Operation,
+                    AudioNativeV2.StageAdmission,
+                    _audioSessionId,
+                    _audioReadyGeneration,
+                    _deviceGeneration,
+                    "audio.not_ready");
+            }
+            if (string.Equals(_bgmLeaseId, leaseId, StringComparison.Ordinal))
+                return BgmLeaseNoopResult(command);
+
+            string intentRequestId = null;
+            bool resumeOnRelease = false;
+            bool pauseAlreadyOwned = false;
+            if (_bgmLeaseResumeOnRelease && _latestBgmPaused &&
+                HasRequestId(_latestBgmIntent, _bgmLeaseIntentRequestId))
+            {
+                intentRequestId = _bgmLeaseIntentRequestId;
+                resumeOnRelease = true;
+                pauseAlreadyOwned = true;
+            }
+            else
+            {
+                intentRequestId = _latestBgmIntent == null
+                    ? null
+                    : _latestBgmIntent.RequestId;
+                resumeOnRelease = _latestBgmIntent != null && !_latestBgmPaused;
+            }
+
+            AudioNativeCallResultV2 result = pauseAlreadyOwned ||
+                _latestBgmIntent == null || _latestBgmPaused
+                ? BgmLeaseNoopResult(command)
+                : ExecuteBgmCore(command, true);
+            if (result.IsOk)
+            {
+                _bgmLeaseId = leaseId;
+                _bgmLeaseIntentRequestId = intentRequestId;
+                _bgmLeaseResumeOnRelease = resumeOnRelease;
+            }
+            return result;
+        }
+
+        private AudioNativeCallResultV2 ReleaseBgmLeaseCore(
+            AudioNativeBgmCommandV2 command,
+            string leaseId)
+        {
+            if (!string.Equals(_bgmLeaseId, leaseId, StringComparison.Ordinal))
+                return BgmLeaseNoopResult(command);
+            if (!Snapshot.IsReady)
+            {
+                AbandonBgmLease();
+                return BgmLeaseNoopResult(command);
+            }
+
+            bool resume = _bgmLeaseResumeOnRelease && _latestBgmPaused &&
+                HasRequestId(_latestBgmIntent, _bgmLeaseIntentRequestId);
+            if (!resume)
+            {
+                ClearBgmLease();
+                return BgmLeaseNoopResult(command);
+            }
+
+            AudioNativeCallResultV2 result = ExecuteBgmCore(command, true);
+            if (result.IsOk) ClearBgmLease();
+            else AbandonBgmLease();
+            return result;
+        }
+
+        private void InvalidateBgmLeaseForExternalCommand(
+            AudioNativeBgmCommandV2 command)
+        {
+            if (command.Operation == AudioNativeV2.OperationBgmPlay ||
+                command.Operation == AudioNativeV2.OperationBgmStop ||
+                command.Operation == AudioNativeV2.OperationBgmPause ||
+                command.Operation == AudioNativeV2.OperationBgmResume)
+            {
+                ClearBgmLease();
+            }
+        }
+
+        private void AbandonBgmLease()
+        {
+            if (_bgmLeaseResumeOnRelease &&
+                HasRequestId(_latestBgmIntent, _bgmLeaseIntentRequestId) &&
+                _latestBgmPaused)
+            {
+                _latestBgmPaused = false;
+            }
+            if (_bgmLeaseResumeOnRelease &&
+                HasRequestId(_pendingRecoveryIntent, _bgmLeaseIntentRequestId) &&
+                _pendingRecoveryPaused)
+            {
+                _pendingRecoveryPaused = false;
+            }
+            ClearBgmLease();
+        }
+
+        private void ClearBgmLease()
+        {
+            _bgmLeaseId = null;
+            _bgmLeaseIntentRequestId = null;
+            _bgmLeaseResumeOnRelease = false;
+        }
+
+        private AudioNativeCallResultV2 BgmLeaseNoopResult(
+            AudioNativeBgmCommandV2 command)
+        {
+            return new AudioNativeCallResultV2(
+                AudioNativeV2.ResultOk,
+                command.Operation,
+                AudioNativeV2.StageNone,
+                0,
+                0,
+                AudioNativeV2.CompletionStopped,
+                _audioSessionId,
+                _audioReadyGeneration,
+                _deviceGeneration,
+                "audio.bgm.lease_noop",
+                "none");
+        }
+
+        private static bool IsBgmLeaseRequestId(string requestId)
+        {
+            return !string.IsNullOrEmpty(requestId) && requestId.StartsWith(
+                BgmLeaseRequestMarker,
+                StringComparison.Ordinal);
+        }
+
+        private static bool TryParseBgmLeaseRequestId(
+            AudioNativeBgmCommandV2 command,
+            out string leaseId,
+            out bool acquire)
+        {
+            leaseId = null;
+            acquire = false;
+            if (command == null || !IsBgmLeaseRequestId(command.RequestId))
+                return false;
+            string expectedPrefix = BgmLeaseRequestPrefix +
+                command.AudioSessionId + ".";
+            if (!command.RequestId.StartsWith(expectedPrefix, StringComparison.Ordinal))
+                return false;
+
+            const string acquireSuffix = ".acquire";
+            const string releaseSuffix = ".release";
+            string suffix;
+            if (command.RequestId.EndsWith(acquireSuffix, StringComparison.Ordinal))
+            {
+                suffix = acquireSuffix;
+                acquire = true;
+            }
+            else if (command.RequestId.EndsWith(releaseSuffix, StringComparison.Ordinal))
+            {
+                suffix = releaseSuffix;
+            }
+            else
+            {
+                return false;
+            }
+
+            int sequenceStart = expectedPrefix.Length;
+            int sequenceLength = command.RequestId.Length - sequenceStart - suffix.Length;
+            if (sequenceLength <= 0) return false;
+            string sequence = command.RequestId.Substring(sequenceStart, sequenceLength);
+            ulong parsed;
+            if (!ulong.TryParse(
+                    sequence,
+                    System.Globalization.NumberStyles.None,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out parsed) ||
+                parsed == 0uL ||
+                !string.Equals(
+                    parsed.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                    sequence,
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+            leaseId = command.RequestId.Substring(
+                0,
+                command.RequestId.Length - suffix.Length);
+            return true;
         }
 
         private void DispatchSfxOnOwner(AudioSfxBatchV2 batch)
@@ -2406,7 +2620,11 @@ namespace CF7Launcher.Audio
             AudioNativeBgmCommandV2 command,
             bool rememberIntent)
         {
-            return ExecuteBgmCore(command, rememberIntent, false, false);
+            AudioNativeCallResultV2 result = ExecuteBgmCore(
+                command, rememberIntent, false, false);
+            if (result.IsOk && !IsBgmLeaseRequestId(command.RequestId))
+                InvalidateBgmLeaseForExternalCommand(command);
+            return result;
         }
 
         private AudioNativeCallResultV2 ExecuteRecoveryBgmCore(
@@ -3036,6 +3254,7 @@ namespace CF7Launcher.Audio
             string fallbackMessageKey)
         {
             EndDeviceRecoverySequenceCore();
+            AbandonBgmLease();
             _catalogQualificationPending = false;
             _pendingRecoveryIntent = null;
             _pendingRecoveryPaused = false;
@@ -3214,6 +3433,7 @@ namespace CF7Launcher.Audio
             _itemByHandle = new Dictionary<int, AudioCatalogItemV2>();
             _nextHandle = 1;
             _legacyBatchSequence = 0uL;
+            AbandonBgmLease();
             _latestBgmIntent = null;
             _latestBgmPaused = false;
             _pendingRecoveryIntent = null;
@@ -3276,6 +3496,7 @@ namespace CF7Launcher.Audio
             try
             {
                 EndDeviceRecoverySequenceCore();
+                AbandonBgmLease();
                 SupersedeBootstrapPending();
                 if (_nativeTouched) BestEffortNativeShutdown();
                 Publish(CreateSnapshot(

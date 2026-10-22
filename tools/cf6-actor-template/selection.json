@@ -1,0 +1,30 @@
+{
+  "schema": "cf6-actor-selection.v1",
+  "npcUnitId": 213,
+  "hostileMirrorId": 275,
+  "teacherKey": "Andy Law",
+  "name": "Andy",
+  "level": 60,
+  "enhancement": 11,
+  "meleeOverride": "镜之虎彻",
+  "omitNpcWeaponsAbovePlayerLevel": true,
+  "expectedSkillCount": 35,
+  "expectedSpEquivalent": 12310,
+  "npcSkillAlgorithmSha256": "e341004cb2f76943a3de02fd78a4f818f9432631769e95866f2095aa568d86f5",
+  "expectedAdditionalSkills": [
+    "震地",
+    "兴奋剂",
+    "踩人",
+    "地震",
+    "铁布衫",
+    "闪现",
+    "日字冲拳",
+    "虎拳",
+    "能量盾",
+    "觉醒霸体",
+    "组合拳"
+  ],
+  "primaryOverride": "M4A1战术版",
+  "primaryOverrideRole": "approved-first-prototype-candidate",
+  "initialGunDeliveryPolicy": "actor equipment is the single starting allocation; do not grant a second free gun"
+}

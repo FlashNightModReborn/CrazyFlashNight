@@ -1,0 +1,26 @@
+{
+  "schema": "cf6-native-sky-candidate.v1",
+  "name": "CF6_A06_sky_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A06-R2/cf6-stage6-redraw-r2/parts/bitmap-1753.svg",
+  "sourceSha256": "de4b6be9d07f765523ce0f98c55f66db3553cb626cc9ed1417217b28b18075fd",
+  "nativeShapes": 1,
+  "nativeSymbols": 4,
+  "intrinsicTextures": 1,
+  "size": [
+    800,
+    187
+  ],
+  "proceduralEffects": [],
+  "frozenCoreBundleSha256": "69bf33f7769966e03a1c89835c8e248fcf759862f79d2efe8f9952f0258e7be2",
+  "specializedInputs": [
+    {
+      "path": "tools/cf6-map-runtime/native-vector/build-sky.py",
+      "sha256": "b0f4e1c0db7afc5132262e33e2c362edec49796ef5bc667fca0142039c946211"
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/sky_filter.py",
+      "sha256": "ba374fb2c869a82d90f18c6cdf6d620ef35f736b33d27ae44795135b13d6dee1"
+    }
+  ],
+  "state": "native XFL assembled; real CS6 compile and consumer verification still pending"
+}

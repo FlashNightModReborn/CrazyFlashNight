@@ -23,7 +23,7 @@ _root.根据等级计算获得技能点 = function(等级):Number{
 
 _root.健身房主角是否升级 = function()
 {
-	if (isNaN(_root.经验值) || isNaN(_root.等级) || _root.等级 >= _root.等级限制) return;
+	if (isNaN(_root.经验值) || isNaN(_root.等级) || _root.等级 >= _root.等级限制 || org.flashNight.arki.scene.BookRunService.playerLevelCapReached()) return;
 
 	var 是否升级 = false;
 	var 是否完成全部升级 = false;
@@ -32,7 +32,7 @@ _root.健身房主角是否升级 = function()
 		_root.升级需要经验值 = _root.根据等级得升级所需经验(_root.等级);
 		_root.上次升级需要经验值 = _root.等级 > 1 ? _root.根据等级得升级所需经验(_root.等级 - 1) : 0;
 		_root.玩家信息界面.刷新经验值显示();
-		if (_root.升级需要经验值 <= _root.经验值)
+		if (_root.升级需要经验值 <= _root.经验值 && !org.flashNight.arki.scene.BookRunService.playerLevelCapReached())
 		{
 			_root.玩家信息界面.主角经验值显示界面.frame = 100;
 			_root.等级++;
@@ -74,7 +74,7 @@ _root.投影已提交任务成长 = function(提交前等级) {
 
 _root.主角是否升级 = function(当前等级, 当前经验值)
 {
-	if (isNaN(当前经验值) || isNaN(当前等级) || 当前等级 >= _root.等级限制) return;
+	if (isNaN(当前经验值) || isNaN(当前等级) || 当前等级 >= _root.等级限制 || org.flashNight.arki.scene.BookRunService.playerLevelCapReached()) return;
 
 	var 是否升级 = false;
 	var 是否完成全部升级 = false;
@@ -86,7 +86,7 @@ _root.主角是否升级 = function(当前等级, 当前经验值)
 		_root.上次升级需要经验值 = _root.等级 > 1 ? _root.根据等级得升级所需经验(_root.等级 - 1) : 0;
 		_root.玩家信息界面.刷新经验值显示();
 
-		if (_root.升级需要经验值 <= 当前经验值 && _root.等级 < _root.等级限制)
+		if (_root.升级需要经验值 <= 当前经验值 && _root.等级 < _root.等级限制 && !org.flashNight.arki.scene.BookRunService.playerLevelCapReached())
 		{
 			_root.玩家信息界面.主角经验值显示界面.frame = 100;
 			_root.等级++;
@@ -169,7 +169,7 @@ _root.经验值计算 = function(最小经验值, 最大经验值, 怪物等级,
 	}
 
 	_root.等级 = Number(_root.等级);
-	if (_root.等级 < _root.等级限制){
+	if (_root.等级 < _root.等级限制 && !org.flashNight.arki.scene.BookRunService.playerLevelCapReached()){
 		if (isNaN(_root.经验值)) _root.经验值 = _root.等级 > 1 ? 根据等级得升级所需经验(_root.等级 - 1) : 0;
 
 		if (_root.等级 > 怪物等级)

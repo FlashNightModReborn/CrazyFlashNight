@@ -1,0 +1,16 @@
+﻿trace("FocusedTestRunId cf6-prototype Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.BookRunRulesTest.runAllTests();
+org.flashNight.arki.ui.BookshelfPanelServiceTest.runAllTests();
+org.flashNight.arki.scene.BookIterationTest.runAllTests();
+org.flashNight.arki.scene.BookComicServiceTest.runAllTests();
+org.flashNight.arki.scene.Cf6BossEncounterTest.runAllTests();
+org.flashNight.arki.scene.Cf6MapMechanismTest.runAllTests();
+org.flashNight.arki.scene.Cf6MapPresentationTest.runAllTests();
+org.flashNight.arki.scene.Cf6EconomyRulesTest.runAllTests();
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.component.Effect.*;
+org.flashNight.arki.scene.Cf6LevelCapTest.captureRoot();
+#include "引擎/引擎_lsy_等级与经验值.as"
+org.flashNight.arki.scene.Cf6LevelCapTest.runAllTests();
+org.flashNight.arki.scene.Cf6SceneInstanceTest.runAllTests();
+trace("FocusedTestRunId cf6-prototype Complete: __FOCUSED_RUN_ID__");

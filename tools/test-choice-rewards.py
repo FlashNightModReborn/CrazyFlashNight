@@ -3,13 +3,42 @@ import copy
 import json
 import unittest
 import xml.etree.ElementTree as ET
-from choice_reward_catalog import ROOT, load, validate, validate_loadout, item_catalog, runtime_catalog, resolve_book_choices
+from choice_reward_catalog import ROOT, SOURCE, load, validate, validate_loadout, item_catalog, runtime_catalog, resolve_book_choices, merge_catalogs
 
 
 class ChoiceCatalogTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.catalog = load()
+        cls.catalog = validate(json.loads(SOURCE.read_text(encoding='utf-8')))
+
+    def fragment(self):
+        return {'schema':'choice-rewards.v1', 'bundles':[
+            {'id':'cf6.supply.'+str(i), 'name':'TEST '+str(i), 'title':'TEST', 'description':'TEST ONLY',
+             'grade':'low', 'items':[{'itemName':'普通hp药剂','quantity':i+1}]} for i in range(3)],
+            'pools':[{'id':'cf6.supply', 'version':1, 'title':'TEST ONLY', 'itemName':'CF6 TEST ONLY',
+                      'scope':{'kind':'book','bookId':'cf6-sting'}, 'maxItemLevel':60, 'chooseCount':1,
+                      'rerolls':0, 'groups':[{'id':'supplies','draw':2,'entries':[
+                          {'bundleId':'cf6.supply.'+str(i),'weight':1} for i in range(3)]}]}]}
+
+    def test_explicit_chapter_merge_preserves_legacy_rows_and_runtime(self):
+        merged = merge_catalogs(self.catalog, [('cf6-sting', self.fragment())])
+        self.assertEqual(merged['bundles'][:len(self.catalog['bundles'])], self.catalog['bundles'])
+        self.assertEqual(runtime_catalog(merged)[:len(self.catalog['pools'])], runtime_catalog(self.catalog))
+        self.assertEqual(runtime_catalog(merged)[-1]['scope'], {'kind':'book','bookId':'cf6-sting'})
+        validate(load())
+
+    def test_chapter_merge_rejects_foreign_scope_namespace_and_price(self):
+        for mutate in [lambda f:f['pools'][0]['scope'].update(bookId='repair-campus'),
+                       lambda f:f['pools'][0].update(id='campus.supply'),
+                       lambda f:f['bundles'][0].update(kCost=300),
+                       lambda f:f['pools'][0].update(itemName='普通hp药剂'),
+                       lambda f:f['pools'][0].update(itemName=self.catalog['pools'][0]['itemName'])]:
+            fragment=self.fragment();mutate(fragment)
+            with self.assertRaises(ValueError): merge_catalogs(self.catalog,[('cf6-sting',fragment)])
+
+    def test_chapter_merge_rejects_duplicate_fragment(self):
+        with self.assertRaises(ValueError):
+            merge_catalogs(self.catalog,[('cf6-sting',self.fragment()),('cf6-sting',self.fragment())])
 
     def reject(self, mutate):
         data = copy.deepcopy(self.catalog)

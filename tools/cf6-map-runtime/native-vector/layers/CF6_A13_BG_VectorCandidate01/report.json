@@ -1,0 +1,74 @@
+{
+  "schema": "cf6-native-layer-candidate.v1",
+  "name": "CF6_A13_BG_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/parts/environment-a13-backdrop.svg",
+  "sourceSha256": "82f7f9e41b9298acbbf52c657363d8788bc16a04a0e52ba183f77b01edd7394b",
+  "nativeShapes": 1110,
+  "nativeSymbols": 32,
+  "intrinsicTextures": 1,
+  "masks": [
+    {
+      "id": "n2b1878_0__rear-left-voltage-front",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1878_0__rear-left-voltage-side",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2b1878_0__coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2c1878f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    }
+  ],
+  "maskImages": [],
+  "imagePlacements": [],
+  "filters": [],
+  "patterns": [
+    {
+      "id": "n2b1878_0__grain",
+      "texture": "intrinsic-b2fb7d7f5070acd7093c768b.png",
+      "sourceTile": [
+        480.0,
+        453.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "gradientFallbacks": [],
+  "blendModes": [],
+  "sourceViewport": [
+    64.0,
+    -30.25,
+    480.0,
+    453.0
+  ],
+  "registrationMatrix": [
+    1.0,
+    0,
+    0,
+    1.0,
+    50.0,
+    60.0
+  ],
+  "state": "native XFL assembled; actual CS6 compile and rendering still pending",
+  "limits": [
+    "SVG filter-region clipping is reported per filter and not yet reproduced.",
+    "Native Gaussian blur is a three-pass approximation.",
+    "Root SVG viewport crop must be compared at the original edge."
+  ]
+}

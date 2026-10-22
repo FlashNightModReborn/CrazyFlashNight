@@ -1,0 +1,1038 @@
+{
+  "schema": "cf6-native-layer-candidate.v1",
+  "name": "CF6_A18_BG_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/parts/environment-a18-backdrop.svg",
+  "sourceSha256": "a456f0a4b110a7161133584672cb26f0c6ffaeaf25aa5c4531d8f2a900e8b842",
+  "nativeShapes": 1799,
+  "nativeSymbols": 314,
+  "intrinsicTextures": 11,
+  "masks": [
+    {
+      "id": "n2material_1959_1958_nativeBounds",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2material_1959_1958_coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2c1959f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2material_1959_1231_cavityClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2material_1959_1231_ribClip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2material_1959_1231_nativeBounds",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2material_1959_1231_coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n2c1959f4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1959f6",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1959f8",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2c1959f10",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n2floor_union_1959",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7material_1892_1821_shieldpaint",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7material_1892_1821_alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n7c1892f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n12material_1963_1962_nativeBounds",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n12material_1963_1962_coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n12c1963f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n33material_1967_1966_nativeBounds",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n33material_1967_1966_coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n33c1967f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n33material_1967_1965_nativeBounds",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n33material_1967_1965_coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n33c1967f4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n33material_1967_1964_nativeBounds",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n33material_1967_1964_coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n33c1967f6",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n34material_1413_1412_coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n34c1413f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n35material_1413_1412_coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n35c1413f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n36material_1413_1412_coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n36c1413f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n37material_1413_1412_coverage",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n37c1413f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    }
+  ],
+  "maskImages": [],
+  "imagePlacements": [
+    {
+      "texture": "intrinsic-bd330c92cb5c4b31de7cbc97.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        135.0,
+        169.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.25,
+        0,
+        0,
+        0.25,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "col4",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.66015625,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            1.0,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col4",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col6",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.66015625,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            1.0,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col6",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col9",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            1.0,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            0.58984375,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col9",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col11",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            1.0,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            0.58984375,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col11",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col14",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.66015625,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            1.0,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col14",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col16",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.66015625,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            1.0,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col16",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col18",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.66015625,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            1.0,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col18",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col20",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.66015625,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            1.0,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col20",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col22",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.66015625,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            1.0,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col22",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col24",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.66015625,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            1.0,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col24",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col26",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.66015625,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            1.0,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col26",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col28",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.66015625,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            1.0,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col28",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col30",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.66015625,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            1.0,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col30",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "col32",
+      "operations": [
+        {
+          "kind": "ColorMatrixFilter",
+          "matrix": [
+            0.66015625,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            1.0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            1.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            1.0,
+            0.0
+          ],
+          "mapping": "linear component transfer"
+        }
+      ],
+      "sourceRegion": {
+        "id": "col32",
+        "color-interpolation-filters": "sRGB"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    }
+  ],
+  "patterns": [
+    {
+      "id": "n2material_1959_1231_grain",
+      "texture": "intrinsic-96c44bc08121cad6ebb3861f.png",
+      "sourceTile": [
+        482.0,
+        166.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n2material_1959_1231_cavitygrain",
+      "texture": "intrinsic-25c98ecabc10ce7141c2780d.png",
+      "sourceTile": [
+        24.0,
+        121.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n2material_1959_1231_ribgrain",
+      "texture": "intrinsic-c015876b695754db68bb11b9.png",
+      "sourceTile": [
+        64.0,
+        166.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n2material_1959_1957_floorgrain",
+      "texture": "intrinsic-7be9af367109c0913fbfa112.png",
+      "sourceTile": [
+        207.0,
+        128.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n2floor_lattice_1959",
+      "kind": "native-vector-lattice",
+      "policy": "one reusable clipped native tile symbol instanced on the source lattice, masked by the original paint geometry; per-tile single-pass clip verified against a real browser engine; actual Flash rendering comparison still required",
+      "tile": [
+        207.0,
+        128.0
+      ],
+      "origin": [
+        0.0,
+        0.0
+      ],
+      "patternTransform": [
+        1.0,
+        0.0,
+        -0.21875,
+        1.0,
+        -674.0,
+        -44.0
+      ],
+      "paintBounds": [
+        -703.0,
+        -210.0,
+        1031.9,
+        211.95
+      ],
+      "columns": [
+        -1,
+        8
+      ],
+      "rows": [
+        -2,
+        1
+      ],
+      "tileInstances": 40
+    },
+    {
+      "id": "n7material_1892_1821_paintgrain",
+      "texture": "intrinsic-3836de63b32bea5064149496.png",
+      "sourceTile": [
+        133.0,
+        162.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n12material_1963_1962_grain",
+      "texture": "intrinsic-84a06159f67e42f946b9c8a9.png",
+      "sourceTile": [
+        48.0,
+        30.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n33material_1967_1966_grain",
+      "texture": "intrinsic-b0cd38be1e80051ec5eac717.png",
+      "sourceTile": [
+        31.0,
+        27.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n33material_1967_1965_grain",
+      "texture": "intrinsic-c46c43e5011a1acbe0176f7b.png",
+      "sourceTile": [
+        41.0,
+        26.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n33material_1967_1964_grain",
+      "texture": "intrinsic-47b5d7e8fa3ea02bf4a50a08.png",
+      "sourceTile": [
+        38.0,
+        32.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n34material_1413_1412_grain",
+      "texture": "intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sourceTile": [
+        63.0,
+        27.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n35material_1413_1412_grain",
+      "texture": "intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sourceTile": [
+        63.0,
+        27.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n36material_1413_1412_grain",
+      "texture": "intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sourceTile": [
+        63.0,
+        27.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n37material_1413_1412_grain",
+      "texture": "intrinsic-f3a8c21228ae0a9ab8450242.png",
+      "sourceTile": [
+        63.0,
+        27.0
+      ],
+      "nativeMatrix": [
+        6.666666666666666,
+        0.0,
+        0.0,
+        6.666666666666666,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "gradientFallbacks": [],
+  "blendModes": [],
+  "sourceViewport": [
+    -28.5,
+    -17.45,
+    1732.9,
+    435.5
+  ],
+  "registrationMatrix": [
+    1.0,
+    0,
+    0,
+    1.0,
+    28.5,
+    17.45
+  ],
+  "state": "native XFL assembled; actual CS6 compile and rendering still pending",
+  "limits": [
+    "SVG filter-region clipping is reported per filter and not yet reproduced.",
+    "Native Gaussian blur is a three-pass approximation.",
+    "Root SVG viewport crop must be compared at the original edge."
+  ],
+  "vectorPatterns": [
+    {
+      "id": "n2floor_lattice_1959",
+      "kind": "native-vector-lattice",
+      "policy": "one reusable clipped native tile symbol instanced on the source lattice, masked by the original paint geometry; per-tile single-pass clip verified against a real browser engine; actual Flash rendering comparison still required",
+      "tile": [
+        207.0,
+        128.0
+      ],
+      "origin": [
+        0.0,
+        0.0
+      ],
+      "patternTransform": [
+        1.0,
+        0.0,
+        -0.21875,
+        1.0,
+        -674.0,
+        -44.0
+      ],
+      "paintBounds": [
+        -703.0,
+        -210.0,
+        1031.9,
+        211.95
+      ],
+      "columns": [
+        -1,
+        8
+      ],
+      "rows": [
+        -2,
+        1
+      ],
+      "tileInstances": 40
+    }
+  ],
+  "specializedConverterInputs": [
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/pattern_adapter.py",
+      "sha256": "9e0d00cc6e4606c1e2369e2aab982633b76b901ccef19cf2cb625db070a2bb43",
+      "bytes": 7822
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/batch/build-pattern-layer.py",
+      "sha256": "04bc97d85525877bde5949c09048afb1ef3d0220038eeae70ad35fd53d3ffeca",
+      "bytes": 5342
+    }
+  ],
+  "baselineConverterBundleSha256": "69bf33f7769966e03a1c89835c8e248fcf759862f79d2efe8f9952f0258e7be2",
+  "baselineSignalSha256": "d2ae83e5cb181ce5fd1b786b32bab3cd304bfed87871b703cc47d28f81acbcd1",
+  "preExistingProductSnapshot": {
+    "receipt": "tools/cf6-map-runtime/native-vector/batch/snapshots/pre-pattern-CF6_A18_BG_VectorCandidate01-20261021T101115Z.json",
+    "files": 350
+  },
+  "visualEvidenceScope": "Tile clip semantics verified on 2026-10-21 against a real browser engine with a translucent three-tile probe; native candidate still requires root CS6 compile and actual Flash visual comparison."
+}

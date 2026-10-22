@@ -1,0 +1,5 @@
+﻿trace("FocusedTestRunId cf6-tutorial-turret Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.Cf6TutorialTurretServiceTest.setCompletionCallback(function():Void {
+    trace("FocusedTestRunId cf6-tutorial-turret Complete: __FOCUSED_RUN_ID__");
+});
+org.flashNight.arki.scene.Cf6TutorialTurretServiceTest.runAllTests();

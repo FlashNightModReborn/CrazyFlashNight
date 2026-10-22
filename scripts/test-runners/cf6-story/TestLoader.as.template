@@ -1,0 +1,5 @@
+﻿trace("FocusedTestRunId cf6-story Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.BookComicServiceTest.runAllTests();
+org.flashNight.arki.scene.Cf6StoryServiceTest.runAllTests();
+org.flashNight.arki.scene.Cf6BookRunStoryTest.runAllTests();
+trace("FocusedTestRunId cf6-story Complete: __FOCUSED_RUN_ID__");

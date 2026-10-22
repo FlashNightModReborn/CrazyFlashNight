@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="CF6Vector/00122-native-vent-wear" symbolType="movie clip"><timeline><DOMTimeline name="native-vent-wear"><layers><DOMLayer name="native-vent-wear"><frames><DOMFrame index="0" duration="1" keyMode="9728"><Actionscript><script>stop();
+var bounds=content.getBounds(this);
+var left=Math.floor(bounds.xMin),top=Math.floor(bounds.yMin);
+var width=Math.ceil(bounds.xMax)-left,height=Math.ceil(bounds.yMax)-top;
+if(width&gt;0 &amp;&amp; height&gt;0 &amp;&amp; width&lt;=512 &amp;&amp; height&lt;=128) {
+  this.__cf6NoiseBitmap=new flash.display.BitmapData(width,height,true,0xFF000000);
+  this.__cf6NoiseBitmap.perlinNoise(1.25,1.25,2,786,false,false,1,true,[new flash.geom.Point(left,top),new flash.geom.Point(left,top)]);
+  this.__cf6NoiseBitmap.applyFilter(this.__cf6NoiseBitmap,new flash.geom.Rectangle(0,0,width,height),new flash.geom.Point(0,0),new flash.filters.ColorMatrixFilter([0.0,0.0,0.0,0.0,51.0,0.0,0.0,0.0,0.0,51.0,0.0,0.0,0.0,0.0,45.9,0.9,0.0,0.0,0.0,-81.60000000000001]));
+  var noise=this.createEmptyMovieClip("nativeVentWear",this.getNextHighestDepth());
+  noise._x=left;noise._y=top;noise.attachBitmap(this.__cf6NoiseBitmap,0,"auto",true);
+  content.cacheAsBitmap=true;noise.cacheAsBitmap=true;noise.setMask(content);
+  this.onUnload=function(){this.__cf6NoiseBitmap.dispose();};
+} else {trace("CF6_VECTOR_VENT_NOISE_BOUNDS_UNSUPPORTED");}
+</script></Actionscript><elements><DOMSymbolInstance libraryItemName="CF6Vector/00121-vent-wear-source" symbolType="movie clip" name="content"><matrix><Matrix a="1" b="0" c="0" d="1" tx="0" ty="0" /></matrix></DOMSymbolInstance></elements></DOMFrame></frames></DOMLayer></layers></DOMTimeline></timeline></DOMSymbolItem>

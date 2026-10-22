@@ -1,0 +1,25 @@
+{
+  "schema": "cf6-viewport-probe.v1",
+  "runId": "morning-a05-a06-a08-r6",
+  "maps": 3,
+  "viewport": [
+    1024,
+    512
+  ],
+  "mapIds": [
+    "A05",
+    "A06",
+    "A08"
+  ],
+  "purpose": "actual Flash display-list coverage only; no full-game, combat or player acceptance",
+  "assets": {
+    "flashswf/backgrounds/cf6/CF6_A05_BG.swf": "f594a4e71677f58b91a97eef7305e699df18754574865a2bd7a7ea09b9565870",
+    "flashswf/backgrounds/cf6/CF6_A05_foreground.swf": "b23fb749cc9124c0b4fea54d1ab9b06f70579fa9cdddabba0f11376caf137a2b",
+    "flashswf/backgrounds/cf6/CF6_DoorGrand1750.swf": "8ab3f7286118660db82f5115bef371dd72c07da8dc88702057e0c85388fd7168",
+    "flashswf/backgrounds/cf6/CF6_A06_BG.swf": "6d777f1d67a83b6c23cc56ab222ac88602bf7cc4b579e5fc27a9354d02f01387",
+    "flashswf/backgrounds/cf6/CF6_A06_sky.swf": "7b73914415fc358b094909022cbd22ab2893c7781e7a7941531ad82094be7d33",
+    "flashswf/backgrounds/cf6/CF6_A08_BG.swf": "62458992b652552ebe4bfe5439bfa9ff69b652ee53453300065a6ee79fa86a46"
+  },
+  "chapterSha256": "ccece968fec088ac3a55a8202fd8c2371bbe823f2e13403cf2a3c79a084928ce",
+  "templateSha256": "a2dfa5724f17594bb483d0b320985c48e6e206a16f8dff85f302caefb0fb141d"
+}

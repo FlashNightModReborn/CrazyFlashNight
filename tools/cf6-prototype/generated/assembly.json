@@ -1,0 +1,2581 @@
+{
+  "schema": "cf6-chapter-assembly.v1",
+  "bookId": "cf6-sting",
+  "routeId": "historical",
+  "maps": [
+    "TUTORIAL",
+    "A01",
+    "A02",
+    "A03",
+    "A04",
+    "A05",
+    "A06",
+    "A08",
+    "A09",
+    "A10",
+    "A11",
+    "A12",
+    "A13",
+    "A14",
+    "A15",
+    "A16",
+    "A17",
+    "A18",
+    "A19",
+    "A20",
+    "A22"
+  ],
+  "inputs": [
+    {
+      "path": "data/stages/books/cf6-sting-source/maps.fragment.json",
+      "sha256": "bda62ba12929bcc0004038624527b40dc093d52111a992934a15de1b9bc58ec1"
+    },
+    {
+      "path": "data/stages/books/cf6-sting-source/economy.fragment.json",
+      "sha256": "37fd61c4060b727a99bb373d175193a02bc80a82ff52fc7a1211eca024b3086e"
+    },
+    {
+      "path": "tools/cf6-actor-template/actor.fragment.json",
+      "sha256": "229e0d9abdc77fd9d4f8df0592810fbe4fe6afa66f772c51248d924a17335cc9"
+    },
+    {
+      "path": "tools/cf6-tutorial/tutorial-map.fragment.json",
+      "sha256": "8524116e1be310261d246d6c8ea1895a610e706e624f1451b5d9554b4c14b3ec"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/runtime-index.json",
+      "sha256": "7aafd2377cdd6f1aec96b311f2d34bfad32ddd53b372d2a7057c6851b63ee24a"
+    },
+    {
+      "path": "tools/cf6-map-source/generated/map-input.json",
+      "sha256": "056c50dd321debee3545d2988b891d140b07cfec864b5d461bd062e44d29ba95"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/environment.fragment.xml",
+      "sha256": "62a4772ae4b579659460ae8dee03055835063217a586e14091fefb6ad7fa73c5"
+    },
+    {
+      "path": "tools/cf6-prototype/balance-input.json",
+      "sha256": "cf6b3a63b84a143af2a4b6762cf1787343cb69125c13717bc606c3fc6dae11a8"
+    },
+    {
+      "path": "data/stages/books/cf6-sting-source/shops.fragment.json",
+      "sha256": "52d8d395ee8454f0c024b500742a95bdf1e32c89c49eaf92cda27dcd9a8071bb"
+    },
+    {
+      "path": "tools/cf6-map-runtime/sky-parallax.fragment.json",
+      "sha256": "1fb99294dd62c11102b270f5c31733b4a4f52000231c6ef803e5b7d6381fea38"
+    },
+    {
+      "path": "tools/cf6-tutorial/environment.fragment.xml",
+      "sha256": "626115e1f6459f640fc44d26d4fe64e859e8c666b8876c1aa0d36d3dff175883"
+    },
+    {
+      "path": "tools/cf6-tutorial/provenance.json",
+      "sha256": "9be58d0270c5ed87943baf4511c55f6b0d27bf9f9ff274763ff4497a33caff58"
+    },
+    {
+      "path": "tools/cf6-tutorial/layout.json",
+      "sha256": "950ba610f415696b36665bfa855cf53e72489538e22e6b7e40595b58a45959f0"
+    },
+    {
+      "path": "tools/cf6-tutorial/assemble.py",
+      "sha256": "87664e3b7d425530568129839a3b5013901d1b7d6701d2836edbfa128cd46f9e"
+    },
+    {
+      "path": "tools/cf6-prototype/viewport-policy.json",
+      "sha256": "888974f33b49d97c4adaf796499a154ac487484c7ea11a740031c4f73c9d635a"
+    },
+    {
+      "path": "tools/cf6-prototype/viewport-assembly.py",
+      "sha256": "28644f0317c907951daf852be74598b43a518bfeab96ceb00142a43e51062e8f"
+    },
+    {
+      "path": "tools/cf6-prototype/generated/original-camera-layout.json",
+      "sha256": "97a3f44ed25d91acc82d4bf5003a98b5787f1f7502ad25eb9a6f5cbaa6e3fd1c"
+    },
+    {
+      "path": "tools/cf6-tutorial/original-tutorial-geometry.json",
+      "sha256": "183abb3e10bd003a117f3addcc6edf52968d7c9a290d45f2fbd5ccce767a50e1"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A01-original-geometry.json",
+      "sha256": "8b4238181e3842305c6db6cfe524c090d87c7df612966d4d67651fc0221dc70f"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A02-original-geometry.json",
+      "sha256": "c97f2d235af2d964d1e3fc8be8c18961ebdbedd51d9efba33d84ed8ef10372e2"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A03-original-geometry.json",
+      "sha256": "cab50969d269a27388dc709d7bea06c6fe74866a91393d3d04ad8a15b9747cb1"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A04-original-geometry.json",
+      "sha256": "94b02c4026c1e2397b91e324b5bb1d63540eafea30a65722f3b44695f0ba2874"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A05-original-geometry.json",
+      "sha256": "2e3b970b694a4ed16be34197e7fe193d12c09be9c44af071751b6f36de10c4b4"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A06-original-geometry.json",
+      "sha256": "a55a1d925579d95ca5d1d093aa81d84dd44cae4332e6cf7997b630137c1481b8"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A08-original-geometry.json",
+      "sha256": "4d7719897720dffd7ca63864d8c956d692f0d9ae2d39ca534e001912d46ec0a6"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A09-original-geometry.json",
+      "sha256": "9b1f0ca9bd93c3d77954ee359b36776356cee215e1e980b592caefee9b7cae98"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A10-original-geometry.json",
+      "sha256": "8b4d360d1c7b93d79d0afa804aeaf86f3a4d1a258ca9d7057cdab5a93d4bcc01"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A11-original-geometry.json",
+      "sha256": "7d8cb8fe2d21e1fcf9f82ad214a4e4eb99fe183efccd45a22ac27c506877439e"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A12-original-geometry.json",
+      "sha256": "de77a5dd3fddb5ae21709e3142013c78e9389043781f63d3706cfb6895ad8579"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A13-original-geometry.json",
+      "sha256": "ba86943557fcffba3d4f3b21f308b6f3e1801b9cc083735806df3ad9fdeb2e54"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A14-original-geometry.json",
+      "sha256": "28aad5d91f896a2eb57678bba5de4061933a15a7787e6cbdd8cb3bdf83df2997"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A15-original-geometry.json",
+      "sha256": "9cfa1ec6defd1a970ed05c61107a5e8b34b749a486571466e3aefd852303d0b0"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A16-original-geometry.json",
+      "sha256": "81e5ce8f83e49836f9281b062e91b86fdf0dcff748dd8683791e34b14ce0453c"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A17-original-geometry.json",
+      "sha256": "fa1c4b9753aa817712b4fa1addb9e6eedbf48f083dfc25bd60a75e7cc77dfb7d"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A18-original-geometry.json",
+      "sha256": "e706e17e65a4dc676a52645358eb2e524195208f1b8c9d2fd65d5d2dbbb9101e"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A19-original-geometry.json",
+      "sha256": "621ac9d88225910ce63222ee6493c70ca6b975668440745bdc2b3db534e0ef93"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A20-original-geometry.json",
+      "sha256": "a3505d85bd3ab8abf62147ef08be6dac072cc27bbb8bcf9ded0b1272396eb8bb"
+    },
+    {
+      "path": "tools/cf6-map-runtime/generated/A22-original-geometry.json",
+      "sha256": "c7e2de217f6ae939f2d5b5f56eb18de9f47947a2b9abe9106d5688974d5fa0cf"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/source-manifest.json",
+      "sha256": "57cbbc1980eeeaa272e30d7711bc57d7459456f3c0a53ca2775087bf0ceee5e4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-058.as.txt",
+      "sha256": "39f92e2c0c35d33084af16a547494d6ed741cf852d0fb13b53c96082605e7f1f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-066.as.txt",
+      "sha256": "268b97e9dc1ac3c4166b7df5a43aa007e116058bf1e1ba63b1ff2b634e6b46f9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-073.as.txt",
+      "sha256": "5543363a1b0aa0997cf4d90ed91ad0a29370a3f7adea7a6ec128ceebcb4596a4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-078.as.txt",
+      "sha256": "f2fdf403861af2edad0eafcd117dd25a5393f1545e806f9f060ef94f9161d15c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-082.as.txt",
+      "sha256": "87267c857b3c3321c9948ab1bcaabc14055b998cb853fea95ca4d3e7a6b6129e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-086.as.txt",
+      "sha256": "25960d803452466163b075f046cddd32a4456a3f1bd705532433cddef68cb594"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-092.as.txt",
+      "sha256": "4b3a2f45992b2b16ac7fdb0a84b26ce797840de267faa839333e04ac762aad28"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-108.as.txt",
+      "sha256": "8c9de92d3f3c0cdb78aeff8681843d73769dfdfba80400024555e609d3ce8203"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-116.as.txt",
+      "sha256": "c23ee01be0df37891427d78ccdc98dd2268f1fea30e70b6d9ade764a85f2e065"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-131.as.txt",
+      "sha256": "2caa80180a7fb7879f8d346f090a610e32c8cfdb7149b4540691e3b7c13e3fe1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-138.as.txt",
+      "sha256": "9b82f24019abe400252cc5c659aa9ae46cfc62933b1ba36df736428a187ce99a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-143.as.txt",
+      "sha256": "f0a3513986fea18975fd155522dd2f373dc70f7760a8e0a33b1945240732fe3d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-148.as.txt",
+      "sha256": "010e3220bb582d33308a5f4d9b0af556aaeae5ceacfec5fd6ac03e70a7f71f61"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-152.as.txt",
+      "sha256": "5791d17e21bb4188f84f7bcbf1cd7cabb958971cd544b03bdef57848aad68df5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-157.as.txt",
+      "sha256": "8d4d6433ccbb22f710fab7b4648a36ec64315e8ca616932caadb0e9512a96de5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-162.as.txt",
+      "sha256": "1527b3e9fd4410d47ad46ecea4cfe7bbb9cc260174e225670ff1c43be2d7b226"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-169.as.txt",
+      "sha256": "3c11c7ef3942c9876a5945dfcdbdb162c3e0fddb447b4fc11bc12dd15e856fb3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-178.as.txt",
+      "sha256": "4ba9ed6366fefac05c1286f1eec46c0f3f95c9bb9b20dfb966627a3ffe3ecc4c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-183.as.txt",
+      "sha256": "1ddd253b9f7ae7b69cec30fcfa7e0b20a07a2cd7ae97dbba418ac459ab3a9a85"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-188.as.txt",
+      "sha256": "1148d4cbbfdfade049ce37c6a0ec9ffdac29bb84ba06218100427bd728c845e0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/frame-198.as.txt",
+      "sha256": "f6523bf35879d68b8eb686959de5ea19e9f8453618c5ad8b66e339c8e5448dbe"
+    },
+    {
+      "path": "data/skills/skills.xml",
+      "sha256": "c1fd19aed12be870a78b6af1a1e533ac19d55bf5ab5ad6f92ff998d480767628"
+    },
+    {
+      "path": "data/items/list.xml",
+      "sha256": "310a0e6e4c83e3e0945a5be136350145cc97390040470a42eb480182c1f07cab"
+    },
+    {
+      "path": "data/rewards/choice-rewards.json",
+      "sha256": "a941b08e3eacd63e88da8878fdbbcc7e4aa38dd3294c048c0c963e64fc8f2464"
+    },
+    {
+      "path": "data/stages/books/cf6-sting-source/choice-rewards.fragment.json",
+      "sha256": "6fada31c60cc1716885792a5774514464565ac95b50f5ba082a93e7a30635228"
+    },
+    {
+      "path": "tools/cf6-tutorial-turrets/tutorial-turrets.fragment.json",
+      "sha256": "a728ffd4bb29e3554c2408edc1751df1d7bee5948c19dbd4908d492c66a732d6"
+    },
+    {
+      "path": "data/items/消耗品_货币.xml",
+      "sha256": "6c42ef823ffc2db4f2279303c0daf753cf309a05697007bf4fac147ac16148c5"
+    },
+    {
+      "path": "data/items/消耗品_弹夹.xml",
+      "sha256": "7afc054811da6395867f9322da65ebfa8150cd998a1e142f868d1ab3ea5cc7da"
+    },
+    {
+      "path": "data/items/消耗品_药剂.xml",
+      "sha256": "dda70d541217333a7d499de92d7db1676bc7301065fe1514858d89e286e32207"
+    },
+    {
+      "path": "data/items/消耗品_药剂_食品.xml",
+      "sha256": "431d31b569a911fd614ed7260e720bfd459fcdfe85f0811943654f857cb2db4f"
+    },
+    {
+      "path": "data/items/消耗品_药剂_九龙.xml",
+      "sha256": "a9b4a15ca280075e91c95f49fd6ac8ea40a54234d5aa0b43bfe6bb4095feaf90"
+    },
+    {
+      "path": "data/items/消耗品_战场补给.xml",
+      "sha256": "5ecaeb9f814e2e3e5fb9c534e58cbd74d01e20a0f22566f347d5b5f97467a005"
+    },
+    {
+      "path": "data/items/收集品_材料.xml",
+      "sha256": "14ff9160ec792bc4a36677397e1030f7b38c48ea1562d30e3780d6b6012aaa3b"
+    },
+    {
+      "path": "data/items/收集品_材料_插件.xml",
+      "sha256": "17c2a1b9f20ccfc52f9e0c381bbb7646f64d80803c99cd0e83e9d83fdd71b856"
+    },
+    {
+      "path": "data/items/消耗品_手雷.xml",
+      "sha256": "192e8630d7673fc34f777bd9271828f08abf46cf539ca3715f176d83631f2e0f"
+    },
+    {
+      "path": "data/items/消耗品_礼包.xml",
+      "sha256": "30dac5d88ddfb40f95cd8cd928b21adb7c042d3d04b15e94619937452d34eb07"
+    },
+    {
+      "path": "data/items/消耗品_材料_食材.xml",
+      "sha256": "fba0d92b29582f12e978ec3e83f0ce5821eea25fb7592ef964c124592573e80c"
+    },
+    {
+      "path": "data/items/消耗品_酒水.xml",
+      "sha256": "210b0326a8d84ab47c5cdab3949c47a22e192d19724f3a01e9c2109dcd589795"
+    },
+    {
+      "path": "data/items/收集品_情报.xml",
+      "sha256": "3c5d4cb260cc8a10fa66c8ab0ca5e8e48c1206adc921e5f0fc6ac42fafc63ef2"
+    },
+    {
+      "path": "data/items/防具_颈部装备.xml",
+      "sha256": "dc161502dae73074895651089b418c5c30cbf488562f1709ec34f92b3bf6f349"
+    },
+    {
+      "path": "data/items/防具_0-19级.xml",
+      "sha256": "e181f1a94bf44b7f55f012fc2ef2679389701d48c608735cb6660dd0f9dfebc7"
+    },
+    {
+      "path": "data/items/防具_20-39级.xml",
+      "sha256": "6220201e0fd9969bfaf2421d796be33410c7d4a2a82460156988fe4370afa550"
+    },
+    {
+      "path": "data/items/防具_40+级.xml",
+      "sha256": "49fa47186c032f540bfd1bf7040d5f837766a518a430d66aaa8904b56fcb4726"
+    },
+    {
+      "path": "data/items/武器_刀_默认.xml",
+      "sha256": "6a7827f9ab624151ff3f0603f57cd0dc1a3093a9906e5fb5f9e471bf28257cb6"
+    },
+    {
+      "path": "data/items/武器_刀_直剑.xml",
+      "sha256": "d36da20c96e60a69550b9ae69eadb53b932d58a956fa107bdfcee7f28ec2d5ee"
+    },
+    {
+      "path": "data/items/武器_刀_长刀.xml",
+      "sha256": "a31d3d6bf8aa3bc90ff64a753b8945a0472bcfcd19f4f681710b27fb5a792c45"
+    },
+    {
+      "path": "data/items/武器_刀_刀剑.xml",
+      "sha256": "13cfe9b89ed46e267d15acc048738dc1ccbc2a97ae17fc4e4c475ab3636e9779"
+    },
+    {
+      "path": "data/items/武器_刀_重斩.xml",
+      "sha256": "412813a8361865e2839266ab89a2816664545c8e64a56c46250c32910379fd61"
+    },
+    {
+      "path": "data/items/武器_刀_狂野.xml",
+      "sha256": "e985751474193e2da9e0e52f0440775bdcf8af729f7eae6f3d746aaaed75d647"
+    },
+    {
+      "path": "data/items/武器_刀_短兵.xml",
+      "sha256": "d8b1e0d024c6b7429d5fe8c10ac6ba77b97f1813fb6a9ab1aacd323d63f302de"
+    },
+    {
+      "path": "data/items/武器_刀_短柄.xml",
+      "sha256": "2ad4be08e83f8941ce7c342c5251e7417cbe8a8b94c381b29486904ac702583b"
+    },
+    {
+      "path": "data/items/武器_刀_镰刀.xml",
+      "sha256": "55e253bd29ea888db5bff9093ac150b361f40dc06b0f28ee03864b33025c1d6c"
+    },
+    {
+      "path": "data/items/武器_刀_长枪.xml",
+      "sha256": "9cc07d71224c80a11dedf336885c46661cc56c2951cb4b769df9e42f5c70b378"
+    },
+    {
+      "path": "data/items/武器_刀_长柄.xml",
+      "sha256": "63a4654f8f44f388579280ccc91758407c591bfee2594351f27e1d2b8931a312"
+    },
+    {
+      "path": "data/items/武器_刀_长棍.xml",
+      "sha256": "de3abbf8890962ad4a8c605885b4e3476c6c5daeb9a73a4c93c09cd671a9cd54"
+    },
+    {
+      "path": "data/items/武器_刀_双刀.xml",
+      "sha256": "6d45577ec9f43776a8a04b70e9a77761d9d9307bac3b39e42a5b4eb13a826f85"
+    },
+    {
+      "path": "data/items/武器_刀_迅捷.xml",
+      "sha256": "8411b1b9d499837bf96935681693635590154ea825c32f77b71b5baa5b6cff0b"
+    },
+    {
+      "path": "data/items/武器_刀_棍棒.xml",
+      "sha256": "f6b8167729c85e143273d57848a65a8beb66bc7181fd997196966aaf7c648c56"
+    },
+    {
+      "path": "data/items/武器_刀_疾影.xml",
+      "sha256": "3efa9437fdd6d827f33f002143d489916fc3f6f2cc84c65ae4eab42a7b5552d7"
+    },
+    {
+      "path": "data/items/武器_手枪_冲锋枪.xml",
+      "sha256": "d97df65b9b771bd9787de9cad860d78994435bfe2a274a7f300f125c4ef6ff83"
+    },
+    {
+      "path": "data/items/武器_手枪_压制冲锋枪.xml",
+      "sha256": "f1f95ce5ed2ce8b04c6e7461f74b4cd493c3207fa3ca5fe76fb8339923e1934e"
+    },
+    {
+      "path": "data/items/武器_手枪_压制机枪.xml",
+      "sha256": "b0a9b29ad9ff628eb992591eeb1d2451296b832e31d7ad30bdbcfb3e0f07ca0f"
+    },
+    {
+      "path": "data/items/武器_手枪_反器材武器.xml",
+      "sha256": "abda8608c4cce45e82119b7245c28a57bf048d03f5d09e781cfdc0c14f298c78"
+    },
+    {
+      "path": "data/items/武器_手枪_发射器.xml",
+      "sha256": "ffe1f1aca621eb2c890afcc5abbc5062d1ed93fc229490e15ccb7a17dfeb983b"
+    },
+    {
+      "path": "data/items/武器_手枪_大威力手枪.xml",
+      "sha256": "9fc68c4193af3809819e4a6ede3e357e9d1785a825218d3ab5ec3c9a3f277510"
+    },
+    {
+      "path": "data/items/武器_手枪_手枪.xml",
+      "sha256": "4dfd394c4dcacb39cc9993fa2718fae791efc3d3027d8915f98b2cc0d5dfaa47"
+    },
+    {
+      "path": "data/items/武器_手枪_特殊.xml",
+      "sha256": "7e339dc595b8f7d49c2182ce98634f3015f1a19a23f9fefb63f34de6e90962c1"
+    },
+    {
+      "path": "data/items/武器_手枪_突击步枪.xml",
+      "sha256": "cdd4f1ff66e29e32187fe6299fa10f366a4b3255f5625f9f5f7775ce07b0c512"
+    },
+    {
+      "path": "data/items/武器_手枪_霰弹枪.xml",
+      "sha256": "12dc32504dee18dffb0cc9df7902b892dab069417c4c5dee28b82ac43980b6ee"
+    },
+    {
+      "path": "data/items/武器_长枪_冲锋枪.xml",
+      "sha256": "269681648a3e322d86962411d14690ed96030f497dbba45b0a2f2a408bbfe923"
+    },
+    {
+      "path": "data/items/武器_长枪_压制机枪.xml",
+      "sha256": "4425c7efa66422947fef8878afb22a6882e9f506dce6bfcf2e25937bbf9d93c9"
+    },
+    {
+      "path": "data/items/武器_长枪_压制近战.xml",
+      "sha256": "619dbec449c9cf61edb6fbee6104ed45483c4d17d3ee71a32c7bc9cdce30e758"
+    },
+    {
+      "path": "data/items/武器_长枪_反器材武器.xml",
+      "sha256": "642248550003e7a634ec6531ba9405486a3adc213e2f796d8cb1f817ee245bb0"
+    },
+    {
+      "path": "data/items/武器_长枪_发射器.xml",
+      "sha256": "46eed0544dc3d69f143cc9a2f5ec022aa70ce5f2651a903c4d3651da9ccce07f"
+    },
+    {
+      "path": "data/items/武器_长枪_弓弩.xml",
+      "sha256": "e95b89601ba0d635942de60a6a36fc1fa7ad0b044c9007d79b2dbd18cf83b719"
+    },
+    {
+      "path": "data/items/武器_长枪_战斗步枪.xml",
+      "sha256": "f49a2b70027d233ae75c95913ad0331e78b1e29fc046bb44492f5c7f5fbb60a4"
+    },
+    {
+      "path": "data/items/武器_长枪_机枪.xml",
+      "sha256": "bcda8f418c7901096c2043711ea3d2e2ef5fa91695ffc299d31d1d24982bd359"
+    },
+    {
+      "path": "data/items/武器_长枪_特殊.xml",
+      "sha256": "b2d20358caca255a0e10ee7f524947f2676caeb7e37177f76f1242c52352994d"
+    },
+    {
+      "path": "data/items/武器_长枪_狙击步枪.xml",
+      "sha256": "0dcdf9aff5f8bbc4b7e7d57c169f61056f353bb34fc168aeeb41c4d55a1747b5"
+    },
+    {
+      "path": "data/items/武器_长枪_突击步枪.xml",
+      "sha256": "2c237308b5df33b3bf151ae5b9399eaa04755d8b513388fff31f4485292340a0"
+    },
+    {
+      "path": "data/items/武器_长枪_近战.xml",
+      "sha256": "8d3d8a556cb6838740462d9a56dd326adb8251b5dd0c4221aa16b11643482ff9"
+    },
+    {
+      "path": "data/items/武器_长枪_霰弹枪.xml",
+      "sha256": "5666c7d17611b0d7a682812d7718e6ff1a7b291be5cb3d9736ca46f63b5e8b19"
+    },
+    {
+      "path": "data/items/消耗品_书中配给.xml",
+      "sha256": "ed7681414d0fc9fb71d5f63b7001da2339f4b26aa8588585b98f3641e6a88b4a"
+    },
+    {
+      "path": "data/items/消耗品_自选配给.xml",
+      "sha256": "9bc1ab2f7d077e068c7c9ccdd698fa9a84e74a1ee5c691415d8f780d5c7cd488"
+    }
+  ],
+  "scope": "authored playable prototype; no full-route gameplay acceptance",
+  "economyAssembly": {
+    "goldPlan": "beforeFinalMerchant",
+    "nominalGold": 910000,
+    "actualGoldReceipt": "requires real pickup observation",
+    "merchants": [
+      {
+        "mapId": "A01",
+        "shopId": "书中-CF6毒刺-35级",
+        "anchor": [
+          621.7813,
+          481.024
+        ],
+        "maxItemLevel": 35,
+        "goods": 13,
+        "skills": [
+          "寸拳",
+          "旋风腿",
+          "龟派气功",
+          "口才",
+          "气动波",
+          "裂地拳",
+          "拳脚空中连招",
+          "铁匠",
+          "兽王崩拳",
+          "径庭拳/黑闪",
+          "内力爆发",
+          "一瞬千击",
+          "扭转乾坤"
+        ]
+      },
+      {
+        "mapId": "A08",
+        "shopId": "书中-CF6毒刺-40级",
+        "anchor": [
+          490.5387,
+          457.8987
+        ],
+        "maxItemLevel": 40,
+        "goods": 21,
+        "skills": [
+          "寸拳",
+          "旋风腿",
+          "龟派气功",
+          "口才",
+          "气动波",
+          "裂地拳",
+          "拳脚空中连招",
+          "铁匠",
+          "兽王崩拳",
+          "径庭拳/黑闪",
+          "内力爆发",
+          "一瞬千击",
+          "扭转乾坤"
+        ]
+      },
+      {
+        "mapId": "A11",
+        "shopId": "书中-CF6毒刺-45级",
+        "anchor": [
+          1285.9733,
+          470.0453
+        ],
+        "maxItemLevel": 45,
+        "goods": 26,
+        "skills": [
+          "寸拳",
+          "旋风腿",
+          "龟派气功",
+          "口才",
+          "气动波",
+          "裂地拳",
+          "拳脚空中连招",
+          "铁匠",
+          "兽王崩拳",
+          "径庭拳/黑闪",
+          "内力爆发",
+          "一瞬千击",
+          "扭转乾坤"
+        ]
+      },
+      {
+        "mapId": "A16",
+        "shopId": "书中-CF6毒刺-55级",
+        "anchor": [
+          547.456,
+          645.376
+        ],
+        "maxItemLevel": 55,
+        "goods": 32,
+        "skills": [
+          "寸拳",
+          "旋风腿",
+          "龟派气功",
+          "口才",
+          "气动波",
+          "裂地拳",
+          "拳脚空中连招",
+          "铁匠",
+          "兽王崩拳",
+          "径庭拳/黑闪",
+          "内力爆发",
+          "一瞬千击",
+          "觉醒震地",
+          "扭转乾坤"
+        ]
+      },
+      {
+        "mapId": "A19",
+        "shopId": "书中-CF6毒刺-60级",
+        "anchor": [
+          199.4667,
+          477.8667
+        ],
+        "maxItemLevel": 60,
+        "goods": 36,
+        "skills": [
+          "寸拳",
+          "旋风腿",
+          "龟派气功",
+          "口才",
+          "气动波",
+          "裂地拳",
+          "拳脚空中连招",
+          "铁匠",
+          "兽王崩拳",
+          "径庭拳/黑闪",
+          "内力爆发",
+          "一瞬千击",
+          "觉醒震地",
+          "扭转乾坤"
+        ]
+      }
+    ],
+    "fixedPickupsReplacedBySeededSources": []
+  },
+  "skyParallaxLayers": {
+    "A02": {
+      "replaced": [
+        "sky",
+        "city-parallax"
+      ],
+      "layers": [
+        "sky",
+        "city-parallax"
+      ]
+    },
+    "A06": {
+      "replaced": [
+        "sky"
+      ],
+      "layers": [
+        "sky"
+      ]
+    }
+  },
+  "viewportAssembly": [
+    {
+      "id": "TUTORIAL",
+      "nativeOrigin": [
+        0,
+        0
+      ],
+      "originalCanvas": [
+        1000.0,
+        450.0
+      ],
+      "cameraCanvas": [
+        1000.0,
+        450.0
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A01",
+      "nativeOrigin": [
+        -3.45,
+        -5.85
+      ],
+      "originalCanvas": [
+        790.0,
+        450.0
+      ],
+      "cameraCanvas": [
+        790.0,
+        446.15
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A02",
+      "nativeOrigin": [
+        -43.45,
+        24.1
+      ],
+      "originalCanvas": [
+        1250.0,
+        450.0
+      ],
+      "cameraCanvas": [
+        1250.0,
+        450.0
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A03",
+      "nativeOrigin": [
+        -3.45,
+        -33.65
+      ],
+      "originalCanvas": [
+        1300.0,
+        450.0
+      ],
+      "cameraCanvas": [
+        1300.0,
+        449.90000000000003
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A04",
+      "nativeOrigin": [
+        -3.45,
+        -33.4
+      ],
+      "originalCanvas": [
+        1300.0,
+        450.0
+      ],
+      "cameraCanvas": [
+        1300.0,
+        449.90000000000003
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A05",
+      "nativeOrigin": [
+        -11.25,
+        -33.4
+      ],
+      "originalCanvas": [
+        1300.0,
+        450.0
+      ],
+      "cameraCanvas": [
+        1300.0,
+        449.90000000000003
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A06",
+      "nativeOrigin": [
+        -3.45,
+        -33.4
+      ],
+      "originalCanvas": [
+        1500.0,
+        450.0
+      ],
+      "cameraCanvas": [
+        1500.0,
+        449.90000000000003
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A08",
+      "nativeOrigin": [
+        0,
+        0
+      ],
+      "originalCanvas": [
+        1150.0,
+        410.0
+      ],
+      "cameraCanvas": [
+        1150.0,
+        410.0
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A09",
+      "nativeOrigin": [
+        -275.95,
+        -49.2
+      ],
+      "originalCanvas": [
+        1150.0,
+        490.0
+      ],
+      "cameraCanvas": [
+        1150.0,
+        490.0
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A10",
+      "nativeOrigin": [
+        -50.0,
+        -60.0
+      ],
+      "originalCanvas": [
+        800.0,
+        800.0
+      ],
+      "cameraCanvas": [
+        600.0,
+        350.0
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "existing elevator window mask at original world [0,0,600,350]; not generic 800x800 metadata"
+    },
+    {
+      "id": "A11",
+      "nativeOrigin": [
+        -287.95,
+        -105.75
+      ],
+      "originalCanvas": [
+        990.0,
+        450.0
+      ],
+      "cameraCanvas": [
+        990.0,
+        450.0
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A12",
+      "nativeOrigin": [
+        -275.95,
+        -49.2
+      ],
+      "originalCanvas": [
+        1340.0,
+        490.0
+      ],
+      "cameraCanvas": [
+        1340.0,
+        490.0
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A13",
+      "nativeOrigin": [
+        -50.0,
+        -60.0
+      ],
+      "originalCanvas": [
+        800.0,
+        800.0
+      ],
+      "cameraCanvas": [
+        600.0,
+        350.0
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "existing elevator window mask at original world [0,0,600,350]; not generic 800x800 metadata"
+    },
+    {
+      "id": "A14",
+      "nativeOrigin": [
+        -287.95,
+        -107.1
+      ],
+      "originalCanvas": [
+        1500.0,
+        490.0
+      ],
+      "cameraCanvas": [
+        1500.0,
+        490.0
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A15",
+      "nativeOrigin": [
+        -287.95,
+        -87.6
+      ],
+      "originalCanvas": [
+        1500.0,
+        490.0
+      ],
+      "cameraCanvas": [
+        1500.0,
+        490.0
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A16",
+      "nativeOrigin": [
+        -287.95,
+        -69.2
+      ],
+      "originalCanvas": [
+        970.0,
+        450.0
+      ],
+      "cameraCanvas": [
+        970.0,
+        450.0
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A17",
+      "nativeOrigin": [
+        -287.95,
+        -79.2
+      ],
+      "originalCanvas": [
+        1500.0,
+        520.0
+      ],
+      "cameraCanvas": [
+        1500.0,
+        520.0
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A18",
+      "nativeOrigin": [
+        -28.5,
+        -17.45
+      ],
+      "originalCanvas": [
+        1550.0,
+        410.0
+      ],
+      "cameraCanvas": [
+        1550.0,
+        410.0
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A19",
+      "nativeOrigin": [
+        -28.5,
+        -17.45
+      ],
+      "originalCanvas": [
+        1550.0,
+        410.0
+      ],
+      "cameraCanvas": [
+        1550.0,
+        410.0
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A20",
+      "nativeOrigin": [
+        -78.5,
+        -23.45
+      ],
+      "originalCanvas": [
+        1490.0,
+        540.0
+      ],
+      "cameraCanvas": [
+        1490.0,
+        540.0
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    },
+    {
+      "id": "A22",
+      "nativeOrigin": [
+        -78.5,
+        -23.45
+      ],
+      "originalCanvas": [
+        1490.0,
+        540.0
+      ],
+      "cameraCanvas": [
+        1490.0,
+        540.0
+      ],
+      "mapScale": 1.7066666666666668,
+      "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+    }
+  ],
+  "turretAssembly": {
+    "A01": {
+      "scale": 1.7066666666666668,
+      "assetUrl": "flashswf/backgrounds/cf6/CF6_A01_Turret.swf",
+      "filterMarker": "cf6-a01-turret-zombie",
+      "instances": [
+        {
+          "name": "turretA",
+          "native": [
+            133.8,
+            202.4
+          ],
+          "world": [
+            228.352,
+            345.4293
+          ]
+        },
+        {
+          "name": "turretB",
+          "native": [
+            249.8,
+            430.9
+          ],
+          "world": [
+            426.3253,
+            735.4027
+          ]
+        }
+      ],
+      "assetPresent": true
+    }
+  },
+  "pendingPresentation": {
+    "A01": {
+      "pendingDynamics": [],
+      "deferredLayers": [],
+      "runtimeProps": [
+        {
+          "id": "turret-1591",
+          "kind": "dynamic-unit",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/baked/prop-1591.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/prop-1591.svg",
+          "viewBox": [
+            -80,
+            -94.923,
+            183.175,
+            97.923
+          ],
+          "frames": 18,
+          "instances": [
+            {
+              "x": 137.25,
+              "y": 208.25,
+              "depth": 152
+            },
+            {
+              "x": 253.25,
+              "y": 436.75,
+              "depth": 160
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "crate-1442",
+          "kind": "breakable-crate",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/baked/prop-1442.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/prop-1442.svg",
+          "viewBox": [
+            -34,
+            -61.5,
+            68,
+            63
+          ],
+          "frames": 11,
+          "instances": [
+            {
+              "x": 78.55,
+              "y": 433.2,
+              "depth": 212
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        }
+      ]
+    },
+    "A02": {
+      "pendingDynamics": [],
+      "deferredLayers": [
+        {
+          "id": "sky",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A02-R3/cf6-stage2-redraw-r3/baked/bitmap-1595.png",
+          "note": "原作为屏幕固定层 600x187（registration.json sky 项），无世界坐标注册；不虚构世界放置，是否以 CF7 天空/静态层补偿由主控决定"
+        }
+      ],
+      "runtimeProps": [
+        {
+          "id": "crate-1442",
+          "kind": "breakable-crate",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A02-R3/cf6-stage2-redraw-r3/baked/prop-1442.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A02-R3/cf6-stage2-redraw-r3/parts/prop-1442.svg",
+          "viewBox": [
+            -34,
+            -61.5,
+            68,
+            63
+          ],
+          "frames": 11,
+          "instances": [
+            {
+              "x": 532.0,
+              "y": 250.3,
+              "depth": 499
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        }
+      ]
+    },
+    "A03": {
+      "pendingDynamics": [],
+      "deferredLayers": [],
+      "runtimeProps": [
+        {
+          "id": "crate-1442",
+          "kind": "breakable-crate",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/baked/prop-1442.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/prop-1442.svg",
+          "viewBox": [
+            -34,
+            -61.5,
+            68,
+            63
+          ],
+          "frames": 11,
+          "instances": [
+            {
+              "x": 381.55,
+              "y": 477.65,
+              "depth": 349
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        }
+      ]
+    },
+    "A04": {
+      "pendingDynamics": [
+        {
+          "id": "arrival1729",
+          "world": [
+            668.45,
+            226.95
+          ],
+          "depth": 96,
+          "frames": 174,
+          "basis": "registration.json arrival1729/arrivalOverridesRealPlayer",
+          "reason": "入场演出不烘入静态底图"
+        },
+        {
+          "id": "barrel1736",
+          "world": [
+            [
+              816.7,
+              204.95
+            ],
+            [
+              1070.7,
+              204.95
+            ],
+            [
+              403.75,
+              208.95
+            ]
+          ],
+          "depth": [
+            336,
+            343,
+            350
+          ],
+          "frames": 16,
+          "basis": "registration.json barrel1736（16原帧，新材质经原碎片clip）；材质 baked/bitmap-1731.png 已交付",
+          "reason": "桶体帧序列未装配为 PNG"
+        }
+      ],
+      "deferredLayers": [],
+      "runtimeProps": []
+    },
+    "A05": {
+      "pendingDynamics": [
+        {
+          "id": "arrival1729",
+          "world": [
+            1190.45,
+            231.4
+          ],
+          "depth": 26,
+          "frames": 174,
+          "basis": "registration.json arrival1729/arrivalOverridesRealPlayer",
+          "reason": "入场演出不烘入静态底图"
+        }
+      ],
+      "deferredLayers": [],
+      "runtimeProps": [
+        {
+          "id": "crate-1442",
+          "kind": "breakable-crate",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/baked/prop-1442.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/prop-1442.svg",
+          "viewBox": [
+            -34,
+            -61.5,
+            68,
+            63
+          ],
+          "frames": 11,
+          "instances": [
+            {
+              "x": 299.95,
+              "y": 263.9,
+              "depth": 474
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        }
+      ]
+    },
+    "A06": {
+      "pendingDynamics": [
+        {
+          "id": "sprite1585",
+          "world": [
+            [
+              5.0,
+              305.45
+            ],
+            [
+              1491.7,
+              305.45
+            ]
+          ],
+          "depth": [
+            91,
+            93
+          ],
+          "basis": "geometry display depth91/93 id1585；本包未识别其语义/未重绘",
+          "reason": "无源码依据，标未知"
+        }
+      ],
+      "deferredLayers": [
+        {
+          "id": "sky",
+          "svg": "sprite 1754（包 reference/environment-original-nodes.json）",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A06-R2/cf6-stage6-redraw-r2/baked/bitmap-1740.png",
+          "note": "天空为独立 sprite，包预览按 translate(400,73.5) 屏幕位放置、宽景才横向延展；无世界注册依据，不虚构放置（assemble_scene.py 注释）"
+        }
+      ],
+      "runtimeProps": []
+    },
+    "A08": {
+      "pendingDynamics": [],
+      "deferredLayers": [],
+      "runtimeProps": [
+        {
+          "id": "door-1430",
+          "kind": "animated-door",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/baked/prop-1430-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/parts/prop-1430-f1.svg",
+          "viewBox": [
+            -85,
+            -145,
+            170,
+            315
+          ],
+          "frames": 59,
+          "instances": [
+            {
+              "x": 688.75,
+              "y": 116.2,
+              "depth": 120,
+              "colorMult": [
+                210,
+                210,
+                210,
+                256
+              ]
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "camera-1832",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/baked/prop-1832-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/parts/prop-1832-f1.svg",
+          "viewBox": [
+            -90,
+            -60,
+            180,
+            120
+          ],
+          "frames": 147,
+          "instances": [
+            {
+              "x": 515.5,
+              "y": 0.95,
+              "depth": 118
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "barrel-1838",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/baked/prop-1838-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/parts/prop-1838-f1.svg",
+          "viewBox": [
+            -190,
+            -75,
+            380,
+            130
+          ],
+          "frames": 16,
+          "instances": [
+            {
+              "x": 1096.4,
+              "y": 182.2,
+              "depth": 137
+            },
+            {
+              "x": 1146.4,
+              "y": 184.2,
+              "depth": 144
+            },
+            {
+              "x": 450.4,
+              "y": 173.15,
+              "depth": 151
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "crate-1442",
+          "kind": "breakable-crate",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/baked/prop-1442.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/prop-1442.svg",
+          "viewBox": [
+            -34,
+            -61.5,
+            68,
+            63
+          ],
+          "frames": 11,
+          "instances": [
+            {
+              "x": 932.5,
+              "y": 228.2,
+              "depth": 130
+            },
+            {
+              "x": 1018.5,
+              "y": 225.2,
+              "depth": 205
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        }
+      ]
+    },
+    "A09": {
+      "pendingDynamics": [],
+      "deferredLayers": [],
+      "runtimeProps": [
+        {
+          "id": "sprite-1443",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-1443-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-1443-f1.svg",
+          "viewBox": [
+            -568.45,
+            -178.2,
+            57.00000000000006,
+            73.99999999999999
+          ],
+          "frames": 1,
+          "instances": [
+            {
+              "x": 1000.75,
+              "y": 278.1,
+              "depth": 67
+            },
+            {
+              "x": 924.75,
+              "y": 278.1,
+              "depth": 73
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "sprite-1448",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-1448-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-1448-f1.svg",
+          "viewBox": [
+            -28.5,
+            -28.5,
+            57.0,
+            57.0
+          ],
+          "frames": 105,
+          "instances": [
+            {
+              "x": 460.8,
+              "y": 85.4,
+              "depth": 68
+            },
+            {
+              "x": 384.8,
+              "y": 85.4,
+              "depth": 74
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "door-1862",
+          "kind": "animated-door",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-1862-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-1862-f1.svg",
+          "viewBox": [
+            -65.5,
+            -80.5,
+            131.0,
+            161.0
+          ],
+          "frames": 18,
+          "instances": [
+            {
+              "x": 708.95,
+              "y": 185.2,
+              "depth": 79
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "camera-1832",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-1832-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-1832-f1.svg",
+          "viewBox": [
+            -16.8,
+            -8.0,
+            31.5,
+            44.0
+          ],
+          "frames": 147,
+          "instances": [
+            {
+              "x": 791.45,
+              "y": 50.15,
+              "depth": 87
+            },
+            {
+              "x": 1402.0,
+              "y": 50.15,
+              "depth": 100
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "door-1430",
+          "kind": "animated-door",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-1430-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-1430-f1.svg",
+          "viewBox": [
+            -145.45,
+            -88.0,
+            290.45,
+            198.5
+          ],
+          "frames": 59,
+          "instances": [
+            {
+              "x": 1318.75,
+              "y": 174.15,
+              "depth": 89,
+              "colorMult": [
+                210,
+                210,
+                210,
+                256
+              ]
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "sprite-1868",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-1868-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-1868-f1.svg",
+          "viewBox": [
+            -295.7502533220686,
+            -227.45,
+            564.4588196324185,
+            481.1289094178006
+          ],
+          "frames": 29,
+          "instances": [
+            {
+              "x": 972.55,
+              "y": 301.2,
+              "depth": 112
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "sprite-255",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/baked/prop-255-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/prop-255-f1.svg",
+          "viewBox": [
+            -28.44985580444336,
+            -4.1971435546875,
+            28.049571990966797,
+            13.931829833984377
+          ],
+          "frames": 14,
+          "instances": [
+            {
+              "x": 537.45,
+              "y": 277.4,
+              "depth": 370
+            },
+            {
+              "x": 1112.4,
+              "y": 498.5,
+              "depth": 374
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        }
+      ]
+    },
+    "A10": {
+      "pendingDynamics": [],
+      "deferredLayers": [],
+      "runtimeProps": []
+    },
+    "A11": {
+      "pendingDynamics": [],
+      "deferredLayers": [],
+      "runtimeProps": [
+        {
+          "id": "camera-1832",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/baked/prop-1832-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/parts/prop-1832-f1.svg",
+          "viewBox": [
+            -16.8,
+            -8.0,
+            31.5,
+            44.0
+          ],
+          "frames": 147,
+          "instances": [
+            {
+              "x": 632.45,
+              "y": 105.2,
+              "depth": 117
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "crate-1442",
+          "kind": "breakable-crate",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/baked/prop-1442-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/parts/prop-1442-f1.svg",
+          "viewBox": [
+            -34.0,
+            -61.5,
+            68.0,
+            63.0
+          ],
+          "frames": 11,
+          "instances": [
+            {
+              "x": 1188.0,
+              "y": 407.8,
+              "depth": 244
+            },
+            {
+              "x": 1170.0,
+              "y": 439.1,
+              "depth": 251
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "sprite-255",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/baked/prop-255-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/parts/prop-255-f1.svg",
+          "viewBox": [
+            -28.44985580444336,
+            -4.1971435546875,
+            28.049571990966797,
+            13.931829833984377
+          ],
+          "frames": 14,
+          "instances": [
+            {
+              "x": 833.8,
+              "y": 557.1,
+              "depth": 258
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "barrel-1838",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/baked/prop-1838-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/parts/prop-1838-f1.svg",
+          "viewBox": [
+            -26.0,
+            -44.5,
+            52.0,
+            89.0
+          ],
+          "frames": 16,
+          "instances": [
+            {
+              "x": 740.1,
+              "y": 319.65,
+              "depth": 262
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        }
+      ]
+    },
+    "A12": {
+      "pendingDynamics": [],
+      "deferredLayers": [],
+      "runtimeProps": [
+        {
+          "id": "door-1862",
+          "kind": "animated-door",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/prop-1862-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/prop-1862-f1.svg",
+          "viewBox": [
+            -65.5,
+            -80.5,
+            131.0,
+            161.0
+          ],
+          "frames": 18,
+          "instances": [
+            {
+              "x": 903.95,
+              "y": 180.2,
+              "depth": 167,
+              "name": "door2"
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "camera-1832",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/prop-1832-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/prop-1832-f1.svg",
+          "viewBox": [
+            -16.8,
+            -8.0,
+            31.5,
+            44.0
+          ],
+          "frames": 147,
+          "instances": [
+            {
+              "x": 791.45,
+              "y": 50.15,
+              "depth": 181
+            },
+            {
+              "x": 1478.4,
+              "y": 50.15,
+              "depth": 221
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "door-1430",
+          "kind": "animated-door",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/prop-1430-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/prop-1430-f1.svg",
+          "viewBox": [
+            -145.45,
+            -88.0,
+            290.45,
+            198.5
+          ],
+          "frames": 59,
+          "instances": [
+            {
+              "x": 425.75,
+              "y": 174.4,
+              "depth": 183,
+              "colorMult": [
+                210,
+                210,
+                210,
+                256
+              ]
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "crate-1442",
+          "kind": "breakable-crate",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/prop-1442-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/prop-1442-f1.svg",
+          "viewBox": [
+            -34.0,
+            -61.5,
+            68.0,
+            63.0
+          ],
+          "frames": 11,
+          "instances": [
+            {
+              "x": 1209.45,
+              "y": 277.4,
+              "depth": 193
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "barrel-1838",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/prop-1838-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/prop-1838-f1.svg",
+          "viewBox": [
+            -26.0,
+            -44.5,
+            52.0,
+            89.0
+          ],
+          "frames": 16,
+          "instances": [
+            {
+              "x": 1106.35,
+              "y": 239.4,
+              "depth": 200
+            },
+            {
+              "x": 999.35,
+              "y": 449.35,
+              "depth": 207
+            },
+            {
+              "x": 841.35,
+              "y": 239.35,
+              "depth": 214
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "sprite-255",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/baked/prop-255-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/prop-255-f1.svg",
+          "viewBox": [
+            -28.44985580444336,
+            -4.1971435546875,
+            28.049571990966797,
+            13.931829833984377
+          ],
+          "frames": 14,
+          "instances": [
+            {
+              "x": 678.9,
+              "y": 275.5,
+              "depth": 407
+            },
+            {
+              "x": 1043.9,
+              "y": 269.55,
+              "depth": 411
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        }
+      ]
+    },
+    "A13": {
+      "pendingDynamics": [],
+      "deferredLayers": [],
+      "runtimeProps": []
+    },
+    "A14": {
+      "pendingDynamics": [],
+      "deferredLayers": [],
+      "runtimeProps": [
+        {
+          "id": "camera-1832",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/baked/prop-1832-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/parts/prop-1832-f1.svg",
+          "viewBox": [
+            -16.8,
+            -8.0,
+            31.5,
+            44.0
+          ],
+          "frames": 147,
+          "instances": [
+            {
+              "x": 632.45,
+              "y": 106.55,
+              "depth": 404
+            },
+            {
+              "x": 1658.65,
+              "y": 106.55,
+              "depth": 503
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "sprite-1868",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/baked/prop-1868-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/parts/prop-1868-f1.svg",
+          "viewBox": [
+            -295.7502533220686,
+            -227.45,
+            564.4588196324185,
+            481.1289094178006
+          ],
+          "frames": 29,
+          "instances": [
+            {
+              "x": 1333.95,
+              "y": 386.5,
+              "depth": 505
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        }
+      ]
+    },
+    "A15": {
+      "pendingDynamics": [],
+      "deferredLayers": [
+        {
+          "id": "ui-gogogo-1700",
+          "note": "根时间轴 ui_overlay（placedAt 帧157，translate(308.5,76.45)，9帧，role=ui_overlay，name=gogogo）；非环境层，无世界注册依据，不虚构放置（演出/UI 资产，待主控决策归属）"
+        }
+      ],
+      "runtimeProps": [
+        {
+          "id": "camera-1832",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/baked/prop-1832-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/parts/prop-1832-f1.svg",
+          "viewBox": [
+            -16.8,
+            -8.0,
+            31.5,
+            44.0
+          ],
+          "frames": 147,
+          "instances": [
+            {
+              "x": 632.45,
+              "y": 87.05,
+              "depth": 656
+            },
+            {
+              "x": 1658.65,
+              "y": 87.05,
+              "depth": 755
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "sprite-1939",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/baked/prop-1939-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/parts/prop-1939-f1.svg",
+          "viewBox": [
+            -120.75011014658958,
+            -187.0,
+            245.43149470724165,
+            311.6032790184021
+          ],
+          "frames": 25,
+          "instances": [
+            {
+              "x": 817.95,
+              "y": 451.35,
+              "depth": 759
+            },
+            {
+              "x": 1039.95,
+              "y": 451.25,
+              "depth": 828
+            },
+            {
+              "x": 1222.95,
+              "y": 451.25,
+              "depth": 897
+            },
+            {
+              "x": 1436.95,
+              "y": 451.25,
+              "depth": 966
+            },
+            {
+              "x": 1653.95,
+              "y": 451.25,
+              "depth": 1035
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        }
+      ]
+    },
+    "A16": {
+      "pendingDynamics": [],
+      "deferredLayers": [],
+      "runtimeProps": [
+        {
+          "id": "camera-1832",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/baked/prop-1832-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/parts/prop-1832-f1.svg",
+          "viewBox": [
+            -16.8,
+            -8.0,
+            31.5,
+            44.0
+          ],
+          "frames": 147,
+          "instances": [
+            {
+              "x": 632.45,
+              "y": 68.65,
+              "depth": 605
+            },
+            {
+              "x": 1658.65,
+              "y": 68.65,
+              "depth": 708
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "sprite-255",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/baked/prop-255-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/parts/prop-255-f1.svg",
+          "viewBox": [
+            -28.44985580444336,
+            -4.1971435546875,
+            28.049571990966797,
+            13.931829833984377
+          ],
+          "frames": 14,
+          "instances": [
+            {
+              "x": 709.4,
+              "y": 324.6,
+              "depth": 702
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        }
+      ]
+    },
+    "A17": {
+      "pendingDynamics": [],
+      "deferredLayers": [
+        {
+          "id": "ui-overlay-1783",
+          "note": "根时间轴 ui_overlay（placedAt 帧169，translate(111,23)，1帧，role=ui_overlay）；非环境层，无世界注册依据，不虚构放置"
+        }
+      ],
+      "runtimeProps": [
+        {
+          "id": "camera-1832",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/baked/prop-1832-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/prop-1832-f1.svg",
+          "viewBox": [
+            -16.8,
+            -8.0,
+            31.5,
+            44.0
+          ],
+          "frames": 147,
+          "instances": [
+            {
+              "x": 632.45,
+              "y": 78.65,
+              "depth": 500
+            },
+            {
+              "x": 1658.65,
+              "y": 78.65,
+              "depth": 591
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "sprite-1939",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/baked/prop-1939-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/prop-1939-f1.svg",
+          "viewBox": [
+            -120.75011014658958,
+            -187.0,
+            245.43149470724165,
+            311.6032790184021
+          ],
+          "frames": 25,
+          "instances": [
+            {
+              "x": 478.5,
+              "y": 383.35,
+              "depth": 516
+            },
+            {
+              "x": 1204.45,
+              "y": 379.35,
+              "depth": 595
+            },
+            {
+              "x": 1367.95,
+              "y": 379.35,
+              "depth": 664
+            },
+            {
+              "x": 1533.3,
+              "y": 379.35,
+              "depth": 733
+            },
+            {
+              "x": 1716.95,
+              "y": 373.35,
+              "depth": 802
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "sprite-255",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/baked/prop-255-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/prop-255-f1.svg",
+          "viewBox": [
+            -28.44985580444336,
+            -4.1971435546875,
+            28.049571990966797,
+            13.931829833984377
+          ],
+          "frames": 14,
+          "instances": [
+            {
+              "x": 454.75,
+              "y": 384.6,
+              "depth": 585
+            },
+            {
+              "x": 733.9,
+              "y": 327.45,
+              "depth": 1181
+            },
+            {
+              "x": 1252.9,
+              "y": 408.45,
+              "depth": 1185
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        }
+      ]
+    },
+    "A18": {
+      "pendingDynamics": [],
+      "deferredLayers": [
+        {
+          "id": "root-1956",
+          "note": "根时间轴固定层（placedAt 178，translate(300,75)，源 600x200）；包 rebuild.py panorama_note：fixed root 1956 covers only source 600x200 and is never repeated or stretched；无世界注册依据，不虚构放置（同 A02 天空先例，待主控决策补偿）"
+        }
+      ],
+      "runtimeProps": [
+        {
+          "id": "sprite-1868",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/baked/prop-1868-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/parts/prop-1868-f1.svg",
+          "viewBox": [
+            -295.7502533220686,
+            -227.45,
+            564.4588196324185,
+            481.1289094178006
+          ],
+          "frames": 29,
+          "instances": [
+            {
+              "x": 893.6,
+              "y": 222.45,
+              "depth": 147
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "crate-1442",
+          "kind": "breakable-crate",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/baked/prop-1442-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/parts/prop-1442-f1.svg",
+          "viewBox": [
+            -34.0,
+            -61.5,
+            68.0,
+            63.0
+          ],
+          "frames": 11,
+          "instances": [
+            {
+              "x": 1364.05,
+              "y": 205.25,
+              "depth": 606
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "sprite-255",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/baked/prop-255-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/parts/prop-255-f1.svg",
+          "viewBox": [
+            -28.44985580444336,
+            -4.1971435546875,
+            28.049571990966797,
+            13.931829833984377
+          ],
+          "frames": 14,
+          "instances": [
+            {
+              "x": 661.15,
+              "y": 202.75,
+              "depth": 613
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "sprite-1976",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/baked/prop-1976-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/parts/prop-1976-f1.svg",
+          "viewBox": [
+            -26.0,
+            -44.5,
+            52.0,
+            89.0
+          ],
+          "frames": 16,
+          "instances": [
+            {
+              "x": 1018.05,
+              "y": 199.65,
+              "depth": 617
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        }
+      ]
+    },
+    "A19": {
+      "pendingDynamics": [],
+      "deferredLayers": [],
+      "runtimeProps": [
+        {
+          "id": "sprite-1982",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/baked/prop-1982-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/parts/prop-1982-f1.svg",
+          "viewBox": [
+            -145.45,
+            -80.5,
+            290.45,
+            191.0
+          ],
+          "frames": 32,
+          "instances": [
+            {
+              "x": 1489.95,
+              "y": 280.35,
+              "depth": 47,
+              "matrix": [
+                0.6240386962890625,
+                0.481689453125,
+                0.0,
+                1.0,
+                1461.45,
+                262.9
+              ]
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "door-1862",
+          "kind": "animated-door",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/baked/prop-1862-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/parts/prop-1862-f1.svg",
+          "viewBox": [
+            -65.5,
+            -80.5,
+            131.0,
+            161.0
+          ],
+          "frames": 18,
+          "instances": [
+            {
+              "x": 580.5,
+              "y": 102.45,
+              "depth": 54,
+              "name": "door1"
+            },
+            {
+              "x": 1346.5,
+              "y": 178.45,
+              "depth": 62,
+              "matrix": [
+                0.603057861328125,
+                0.4695587158203125,
+                0.0,
+                1.0,
+                1318.0,
+                161.0
+              ],
+              "name": "door2"
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "crate-1442",
+          "kind": "breakable-crate",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/baked/prop-1442-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/parts/prop-1442-f1.svg",
+          "viewBox": [
+            -34.0,
+            -61.5,
+            68.0,
+            63.0
+          ],
+          "frames": 11,
+          "instances": [
+            {
+              "x": 489.6,
+              "y": 205.3,
+              "depth": 342
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "sprite-255",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/baked/prop-255-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/parts/prop-255-f1.svg",
+          "viewBox": [
+            -28.44985580444336,
+            -4.1971435546875,
+            28.049571990966797,
+            13.931829833984377
+          ],
+          "frames": 14,
+          "instances": [
+            {
+              "x": 252.4,
+              "y": 201.7,
+              "depth": 349
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        }
+      ]
+    },
+    "A20": {
+      "pendingDynamics": [],
+      "deferredLayers": [
+        {
+          "id": "root-1956",
+          "note": "根时间轴固定层（placedAt 188，translate(300,75)，源 600x200）；包 rebuild.py panorama_note：fixed root 1956 covers only source 600x200 and is never repeated or stretched；无世界注册依据，不虚构放置（同 A02 天空先例，待主控决策补偿）"
+        }
+      ],
+      "runtimeProps": [
+        {
+          "id": "door-1862",
+          "kind": "animated-door",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/baked/prop-1862-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/prop-1862-f1.svg",
+          "viewBox": [
+            -65.5,
+            -80.5,
+            131.0,
+            161.0
+          ],
+          "frames": 18,
+          "instances": [
+            {
+              "x": 273.5,
+              "y": 104.45,
+              "depth": 51,
+              "name": "door1"
+            },
+            {
+              "x": 1193.5,
+              "y": 173.45,
+              "depth": 59,
+              "matrix": [
+                0.603057861328125,
+                0.4695587158203125,
+                0.0,
+                1.0,
+                1115.0,
+                150.0
+              ],
+              "name": "door2"
+            },
+            {
+              "x": 1339.5,
+              "y": 285.45,
+              "depth": 67,
+              "matrix": [
+                0.603057861328125,
+                0.4695587158203125,
+                0.0,
+                1.0,
+                1261.0,
+                262.0
+              ],
+              "name": "door3"
+            },
+            {
+              "x": 1511.5,
+              "y": 411.45,
+              "depth": 75,
+              "matrix": [
+                0.603057861328125,
+                0.4695587158203125,
+                0.0,
+                1.0,
+                1433.0,
+                388.0
+              ],
+              "name": "door4"
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "sprite-255",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/baked/prop-255-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/prop-255-f1.svg",
+          "viewBox": [
+            -28.44985580444336,
+            -4.1971435546875,
+            28.049571990966797,
+            13.931829833984377
+          ],
+          "frames": 14,
+          "instances": [
+            {
+              "x": 1267.45,
+              "y": 434.3,
+              "depth": 227
+            },
+            {
+              "x": 943.3,
+              "y": 209.35,
+              "depth": 231
+            },
+            {
+              "x": 248.5,
+              "y": 303.45,
+              "depth": 235
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "sprite-1976",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/baked/prop-1976-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/prop-1976-f1.svg",
+          "viewBox": [
+            -26.0,
+            -44.5,
+            52.0,
+            89.0
+          ],
+          "frames": 16,
+          "instances": [
+            {
+              "x": 995.4,
+              "y": 213.45,
+              "depth": 239
+            },
+            {
+              "x": 366.6,
+              "y": 207.45,
+              "depth": 246
+            },
+            {
+              "x": 1065.55,
+              "y": 163.45,
+              "depth": 253
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        }
+      ]
+    },
+    "A22": {
+      "pendingDynamics": [],
+      "deferredLayers": [],
+      "runtimeProps": [
+        {
+          "id": "door-1862",
+          "kind": "animated-door",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/baked/prop-1862-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/parts/prop-1862-f1.svg",
+          "viewBox": [
+            -65.5,
+            -80.5,
+            131.0,
+            161.0
+          ],
+          "frames": 18,
+          "instances": [
+            {
+              "x": 273.5,
+              "y": 104.45,
+              "depth": 51
+            },
+            {
+              "x": 1193.5,
+              "y": 173.45,
+              "depth": 59,
+              "matrix": [
+                0.603057861328125,
+                0.4695587158203125,
+                0.0,
+                1.0,
+                1115.0,
+                150.0
+              ]
+            },
+            {
+              "x": 1339.5,
+              "y": 285.45,
+              "depth": 67,
+              "matrix": [
+                0.603057861328125,
+                0.4695587158203125,
+                0.0,
+                1.0,
+                1261.0,
+                262.0
+              ]
+            },
+            {
+              "x": 1511.5,
+              "y": 411.45,
+              "depth": 75,
+              "matrix": [
+                0.603057861328125,
+                0.4695587158203125,
+                0.0,
+                1.0,
+                1433.0,
+                388.0
+              ]
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        },
+        {
+          "id": "sprite-481",
+          "kind": "animated-prop",
+          "png": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/baked/prop-481-f1.png",
+          "svg": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/parts/prop-481-f1.svg",
+          "viewBox": [
+            -18.7,
+            -16.0,
+            33.0,
+            31.0
+          ],
+          "frames": 11,
+          "instances": [
+            {
+              "x": 642.95,
+              "y": 425.85,
+              "depth": 233
+            },
+            {
+              "x": 979.95,
+              "y": 238.9,
+              "depth": 237
+            }
+          ],
+          "status": "separate gameplay consumer required; not flattened into background"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,1034 @@
+{
+  "schema": "cf6-native-layer-candidate.v1",
+  "name": "CF6_A08_BG_VectorCandidate01",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/parts/environment-a8-backdrop.svg",
+  "sourceSha256": "457f62c93f4a8db4b2ca13f6efecd88f443e5239d329370175ca8305f0237248",
+  "nativeShapes": 7320,
+  "nativeSymbols": 253,
+  "intrinsicTextures": 8,
+  "masks": [
+    {
+      "id": "n3b1818_0__wallgrainmask",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n3b1818_0__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n3c1818f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n3b1818_1__wallgrainmask",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n3b1818_1__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n3c1818f4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n4b1822_0__shieldpaint",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n4b1822_0__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n4c1822f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n4b1822_1__shieldpaint",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n4b1822_1__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n4c1822f4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n4b1822_2__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n4c1822f6",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n4b1822_3__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n4c1822f8",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n4b1822_4__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n4c1822f10",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n4b1822_5__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n4c1822f12",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n4b1822_6__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n4c1822f14",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n5c1788f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n6c1788f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n7c1788f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n8b1824_0__circuit-interior",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n8b1824_0__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n8c1824f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n8b1824_1__circuit-interior",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n8b1824_1__alpha",
+      "kind": "mask",
+      "policy": "runtime cached alpha mask from original grayscale stops"
+    },
+    {
+      "id": "n8c1824f4",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n8b1824_2__cockpit-apertures-r5",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n8b1824_2__cockpit-apertures-r5",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n8b1824_2__car-body-envelope-r3",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n8c1824f6",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "n9c1788f2",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    }
+  ],
+  "maskImages": [],
+  "imagePlacements": [
+    {
+      "texture": "intrinsic-09a14a376c144c6e9e6e8f4c.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        326.0,
+        216.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.5,
+        0,
+        0,
+        0.5,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-09a14a376c144c6e9e6e8f4c.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        326.0,
+        216.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.5,
+        0,
+        0,
+        0.5,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-09a14a376c144c6e9e6e8f4c.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        326.0,
+        216.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.5,
+        0,
+        0,
+        0.5,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-9cf4e84606dcc6c67aba2cb1.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        411.0,
+        144.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.3333333333333333,
+        0,
+        0,
+        0.3333333333333333,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-09a14a376c144c6e9e6e8f4c.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        326.0,
+        216.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        0.5,
+        0,
+        0,
+        0.5,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "filters": [
+    {
+      "id": "n8b1824_2__softReflect",
+      "operations": [
+        {
+          "kind": "BlurFilter",
+          "sourceStdDeviation": [
+            1.05,
+            1.05
+          ],
+          "blur": [
+            2.1,
+            2.1
+          ],
+          "quality": 3,
+          "mapping": "three-pass native approximation; actual visual comparison required"
+        }
+      ],
+      "sourceRegion": {
+        "id": "n8b1824_2__softReflect",
+        "x": "-.1",
+        "y": "-.3",
+        "width": "1.2",
+        "height": "1.6"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "n8b1824_2__softReflect",
+      "operations": [
+        {
+          "kind": "BlurFilter",
+          "sourceStdDeviation": [
+            1.05,
+            1.05
+          ],
+          "blur": [
+            2.1,
+            2.1
+          ],
+          "quality": 3,
+          "mapping": "three-pass native approximation; actual visual comparison required"
+        }
+      ],
+      "sourceRegion": {
+        "id": "n8b1824_2__softReflect",
+        "x": "-.1",
+        "y": "-.3",
+        "width": "1.2",
+        "height": "1.6"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "n8b1824_2__softReflect",
+      "operations": [
+        {
+          "kind": "BlurFilter",
+          "sourceStdDeviation": [
+            1.05,
+            1.05
+          ],
+          "blur": [
+            2.1,
+            2.1
+          ],
+          "quality": 3,
+          "mapping": "three-pass native approximation; actual visual comparison required"
+        }
+      ],
+      "sourceRegion": {
+        "id": "n8b1824_2__softReflect",
+        "x": "-.1",
+        "y": "-.3",
+        "width": "1.2",
+        "height": "1.6"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "n8b1824_2__softReflect",
+      "operations": [
+        {
+          "kind": "BlurFilter",
+          "sourceStdDeviation": [
+            1.05,
+            1.05
+          ],
+          "blur": [
+            2.1,
+            2.1
+          ],
+          "quality": 3,
+          "mapping": "three-pass native approximation; actual visual comparison required"
+        }
+      ],
+      "sourceRegion": {
+        "id": "n8b1824_2__softReflect",
+        "x": "-.1",
+        "y": "-.3",
+        "width": "1.2",
+        "height": "1.6"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "n8b1824_2__softReflect",
+      "operations": [
+        {
+          "kind": "BlurFilter",
+          "sourceStdDeviation": [
+            1.05,
+            1.05
+          ],
+          "blur": [
+            2.1,
+            2.1
+          ],
+          "quality": 3,
+          "mapping": "three-pass native approximation; actual visual comparison required"
+        }
+      ],
+      "sourceRegion": {
+        "id": "n8b1824_2__softReflect",
+        "x": "-.1",
+        "y": "-.3",
+        "width": "1.2",
+        "height": "1.6"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "n8b1824_2__broadReflect",
+      "operations": [
+        {
+          "kind": "BlurFilter",
+          "sourceStdDeviation": [
+            2.0,
+            2.0
+          ],
+          "blur": [
+            4.0,
+            4.0
+          ],
+          "quality": 3,
+          "mapping": "three-pass native approximation; actual visual comparison required"
+        }
+      ],
+      "sourceRegion": {
+        "id": "n8b1824_2__broadReflect",
+        "x": "-.2",
+        "y": "-.3",
+        "width": "1.4",
+        "height": "1.6"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "n8b1824_2__broadReflect",
+      "operations": [
+        {
+          "kind": "BlurFilter",
+          "sourceStdDeviation": [
+            2.0,
+            2.0
+          ],
+          "blur": [
+            4.0,
+            4.0
+          ],
+          "quality": 3,
+          "mapping": "three-pass native approximation; actual visual comparison required"
+        }
+      ],
+      "sourceRegion": {
+        "id": "n8b1824_2__broadReflect",
+        "x": "-.2",
+        "y": "-.3",
+        "width": "1.4",
+        "height": "1.6"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    },
+    {
+      "id": "n8b1824_2__softReflect",
+      "operations": [
+        {
+          "kind": "BlurFilter",
+          "sourceStdDeviation": [
+            1.05,
+            1.05
+          ],
+          "blur": [
+            2.1,
+            2.1
+          ],
+          "quality": 3,
+          "mapping": "three-pass native approximation; actual visual comparison required"
+        }
+      ],
+      "sourceRegion": {
+        "id": "n8b1824_2__softReflect",
+        "x": "-.1",
+        "y": "-.3",
+        "width": "1.2",
+        "height": "1.6"
+      },
+      "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+    }
+  ],
+  "patterns": [
+    {
+      "id": "n3b1818_0__plaster",
+      "texture": "intrinsic-94cc8a3c45b94f2ba6c940df.png",
+      "sourceTile": [
+        600.0,
+        225.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n3b1818_1__plaster",
+      "texture": "intrinsic-94cc8a3c45b94f2ba6c940df.png",
+      "sourceTile": [
+        600.0,
+        225.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n4b1822_0__paintgrain",
+      "texture": "intrinsic-a5da1ec8404cd005351b79dd.png",
+      "sourceTile": [
+        133.0,
+        162.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n4b1822_1__paintgrain",
+      "texture": "intrinsic-a5da1ec8404cd005351b79dd.png",
+      "sourceTile": [
+        133.0,
+        162.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n4b1822_4__metalgrain",
+      "texture": "intrinsic-50c1e8e716691a75eb182c8e.png",
+      "sourceTile": [
+        85.0,
+        50.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n4b1822_6__iron",
+      "texture": "intrinsic-9248fd593a969f8503c6b42a.png",
+      "sourceTile": [
+        57.0,
+        171.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n8b1824_0__grime",
+      "texture": "intrinsic-d0f267edb28d897261c8dfbd.png",
+      "sourceTile": [
+        74.0,
+        91.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "id": "n8b1824_1__grime",
+      "texture": "intrinsic-b0a1a1e4ec86f1e987c6d11b.png",
+      "sourceTile": [
+        118.0,
+        134.0
+      ],
+      "nativeMatrix": [
+        5.0,
+        0.0,
+        0.0,
+        5.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "gradientFallbacks": [],
+  "blendModes": [],
+  "sourceViewport": [
+    0.0,
+    0.0,
+    1150.0,
+    410.0
+  ],
+  "registrationMatrix": [
+    1.0,
+    0,
+    0,
+    1.0,
+    0.0,
+    0.0
+  ],
+  "state": "native XFL assembled; actual CS6 compile and rendering still pending",
+  "limits": [
+    "SVG filter-region clipping is reported per filter and not yet reproduced.",
+    "Native Gaussian blur is a three-pass approximation.",
+    "Root SVG viewport crop must be compared at the original edge."
+  ],
+  "localProceduralApproximations": [
+    {
+      "id": "n5b1788_0__wear",
+      "scope": "A08 isolated vent-wear overlay only; source vector silhouette retained",
+      "sourceFrequency": [
+        0.8,
+        0.8
+      ],
+      "sourceOctaves": 2,
+      "sourceSeed": 786,
+      "nativeBaseSize": [
+        1.25,
+        1.25
+      ],
+      "maxRuntimePixels": [
+        512,
+        128
+      ],
+      "nativeColorMatrix": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        51.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        51.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        45.9,
+        0.9,
+        0.0,
+        0.0,
+        0.0,
+        -81.60000000000001
+      ],
+      "difference": "Flash perlinNoise and SVG feTurbulence need not yield identical grain; local approximation requires visual comparison",
+      "storage": "runtime-only bounded BitmapData; no generated PNG and no whole-layer flattening",
+      "sourceBounds": [
+        9.0,
+        103.0,
+        146.0,
+        117.0
+      ]
+    },
+    {
+      "id": "n5b1788_0__wear",
+      "scope": "A08 isolated vent-wear overlay only; source vector silhouette retained",
+      "sourceFrequency": [
+        0.8,
+        0.8
+      ],
+      "sourceOctaves": 2,
+      "sourceSeed": 786,
+      "nativeBaseSize": [
+        1.25,
+        1.25
+      ],
+      "maxRuntimePixels": [
+        512,
+        128
+      ],
+      "nativeColorMatrix": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        51.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        51.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        45.9,
+        0.9,
+        0.0,
+        0.0,
+        0.0,
+        -81.60000000000001
+      ],
+      "difference": "Flash perlinNoise and SVG feTurbulence need not yield identical grain; local approximation requires visual comparison",
+      "storage": "runtime-only bounded BitmapData; no generated PNG and no whole-layer flattening",
+      "sourceBounds": [
+        174.0,
+        103.0,
+        313.0,
+        117.0
+      ]
+    },
+    {
+      "id": "n6b1788_0__wear",
+      "scope": "A08 isolated vent-wear overlay only; source vector silhouette retained",
+      "sourceFrequency": [
+        0.8,
+        0.8
+      ],
+      "sourceOctaves": 2,
+      "sourceSeed": 786,
+      "nativeBaseSize": [
+        1.25,
+        1.25
+      ],
+      "maxRuntimePixels": [
+        512,
+        128
+      ],
+      "nativeColorMatrix": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        51.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        51.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        45.9,
+        0.9,
+        0.0,
+        0.0,
+        0.0,
+        -81.60000000000001
+      ],
+      "difference": "Flash perlinNoise and SVG feTurbulence need not yield identical grain; local approximation requires visual comparison",
+      "storage": "runtime-only bounded BitmapData; no generated PNG and no whole-layer flattening",
+      "sourceBounds": [
+        9.0,
+        103.0,
+        146.0,
+        117.0
+      ]
+    },
+    {
+      "id": "n6b1788_0__wear",
+      "scope": "A08 isolated vent-wear overlay only; source vector silhouette retained",
+      "sourceFrequency": [
+        0.8,
+        0.8
+      ],
+      "sourceOctaves": 2,
+      "sourceSeed": 786,
+      "nativeBaseSize": [
+        1.25,
+        1.25
+      ],
+      "maxRuntimePixels": [
+        512,
+        128
+      ],
+      "nativeColorMatrix": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        51.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        51.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        45.9,
+        0.9,
+        0.0,
+        0.0,
+        0.0,
+        -81.60000000000001
+      ],
+      "difference": "Flash perlinNoise and SVG feTurbulence need not yield identical grain; local approximation requires visual comparison",
+      "storage": "runtime-only bounded BitmapData; no generated PNG and no whole-layer flattening",
+      "sourceBounds": [
+        174.0,
+        103.0,
+        313.0,
+        117.0
+      ]
+    },
+    {
+      "id": "n7b1788_0__wear",
+      "scope": "A08 isolated vent-wear overlay only; source vector silhouette retained",
+      "sourceFrequency": [
+        0.8,
+        0.8
+      ],
+      "sourceOctaves": 2,
+      "sourceSeed": 786,
+      "nativeBaseSize": [
+        1.25,
+        1.25
+      ],
+      "maxRuntimePixels": [
+        512,
+        128
+      ],
+      "nativeColorMatrix": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        51.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        51.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        45.9,
+        0.9,
+        0.0,
+        0.0,
+        0.0,
+        -81.60000000000001
+      ],
+      "difference": "Flash perlinNoise and SVG feTurbulence need not yield identical grain; local approximation requires visual comparison",
+      "storage": "runtime-only bounded BitmapData; no generated PNG and no whole-layer flattening",
+      "sourceBounds": [
+        9.0,
+        103.0,
+        146.0,
+        117.0
+      ]
+    },
+    {
+      "id": "n7b1788_0__wear",
+      "scope": "A08 isolated vent-wear overlay only; source vector silhouette retained",
+      "sourceFrequency": [
+        0.8,
+        0.8
+      ],
+      "sourceOctaves": 2,
+      "sourceSeed": 786,
+      "nativeBaseSize": [
+        1.25,
+        1.25
+      ],
+      "maxRuntimePixels": [
+        512,
+        128
+      ],
+      "nativeColorMatrix": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        51.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        51.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        45.9,
+        0.9,
+        0.0,
+        0.0,
+        0.0,
+        -81.60000000000001
+      ],
+      "difference": "Flash perlinNoise and SVG feTurbulence need not yield identical grain; local approximation requires visual comparison",
+      "storage": "runtime-only bounded BitmapData; no generated PNG and no whole-layer flattening",
+      "sourceBounds": [
+        174.0,
+        103.0,
+        313.0,
+        117.0
+      ]
+    },
+    {
+      "id": "n9b1788_0__wear",
+      "scope": "A08 isolated vent-wear overlay only; source vector silhouette retained",
+      "sourceFrequency": [
+        0.8,
+        0.8
+      ],
+      "sourceOctaves": 2,
+      "sourceSeed": 786,
+      "nativeBaseSize": [
+        1.25,
+        1.25
+      ],
+      "maxRuntimePixels": [
+        512,
+        128
+      ],
+      "nativeColorMatrix": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        51.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        51.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        45.9,
+        0.9,
+        0.0,
+        0.0,
+        0.0,
+        -81.60000000000001
+      ],
+      "difference": "Flash perlinNoise and SVG feTurbulence need not yield identical grain; local approximation requires visual comparison",
+      "storage": "runtime-only bounded BitmapData; no generated PNG and no whole-layer flattening",
+      "sourceBounds": [
+        9.0,
+        103.0,
+        146.0,
+        117.0
+      ]
+    },
+    {
+      "id": "n9b1788_0__wear",
+      "scope": "A08 isolated vent-wear overlay only; source vector silhouette retained",
+      "sourceFrequency": [
+        0.8,
+        0.8
+      ],
+      "sourceOctaves": 2,
+      "sourceSeed": 786,
+      "nativeBaseSize": [
+        1.25,
+        1.25
+      ],
+      "maxRuntimePixels": [
+        512,
+        128
+      ],
+      "nativeColorMatrix": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        51.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        51.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        45.9,
+        0.9,
+        0.0,
+        0.0,
+        0.0,
+        -81.60000000000001
+      ],
+      "difference": "Flash perlinNoise and SVG feTurbulence need not yield identical grain; local approximation requires visual comparison",
+      "storage": "runtime-only bounded BitmapData; no generated PNG and no whole-layer flattening",
+      "sourceBounds": [
+        174.0,
+        103.0,
+        313.0,
+        117.0
+      ]
+    }
+  ],
+  "specializedConverterSha256": "cada035854ad2cdaee76e080b1861c843f1733f94371cacd6eb5142fbeaa9b83",
+  "noiseHelperSha256": "b535bfa1c6f2407ed6ebf7fdbe1ac475741d92d906db16509d254cb6e5d4f054"
+}

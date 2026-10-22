@@ -1,0 +1,4837 @@
+{
+  "schema": "playable-book.v1",
+  "id": "cf6-sting",
+  "routeId": "historical",
+  "title": "闪客快打6：毒刺行动",
+  "stageName": "书中历险-毒刺行动",
+  "startingMoney": 30000,
+  "startingSkillPoints": 0,
+  "externalRewards": 0,
+  "actor": {
+    "name": "Andy",
+    "gender": "男",
+    "height": 185,
+    "face": "男变装-基本脸型",
+    "hair": "",
+    "level": 60,
+    "experience": 157526193,
+    "equipment": [
+      {
+        "slot": "头部装备",
+        "name": "Andy领子-NPC",
+        "enhancement": 11
+      },
+      {
+        "slot": "上装装备",
+        "name": "Andy上装-NPC",
+        "enhancement": 11
+      },
+      {
+        "slot": "下装装备",
+        "name": "Andy下装-NPC",
+        "enhancement": 11
+      },
+      {
+        "slot": "手部装备",
+        "name": "Andy装手套-NPC",
+        "enhancement": 11
+      },
+      {
+        "slot": "脚部装备",
+        "name": "黑色板鞋",
+        "enhancement": 11
+      },
+      {
+        "slot": "颈部装备",
+        "name": "东区最强战士项链",
+        "enhancement": 11
+      },
+      {
+        "slot": "长枪",
+        "name": "M4A1战术版",
+        "enhancement": 11
+      },
+      {
+        "slot": "刀",
+        "name": "镜之虎彻",
+        "enhancement": 11
+      }
+    ],
+    "skills": [
+      {
+        "name": "迅斩",
+        "level": 10
+      },
+      {
+        "name": "瞬步斩",
+        "level": 10
+      },
+      {
+        "name": "凶斩",
+        "level": 10
+      },
+      {
+        "name": "火舞旋风",
+        "level": 10
+      },
+      {
+        "name": "拔刀术",
+        "level": 10
+      },
+      {
+        "name": "龙斩",
+        "level": 10
+      },
+      {
+        "name": "六连",
+        "level": 10
+      },
+      {
+        "name": "空间斩",
+        "level": 10
+      },
+      {
+        "name": "追猎射击",
+        "level": 10
+      },
+      {
+        "name": "翻滚换弹",
+        "level": 10
+      },
+      {
+        "name": "火力支援",
+        "level": 10
+      },
+      {
+        "name": "战术目镜",
+        "level": 10
+      },
+      {
+        "name": "死亡绽放",
+        "level": 10
+      },
+      {
+        "name": "上帝之杖",
+        "level": 10
+      },
+      {
+        "name": "刀剑攻击",
+        "level": 20
+      },
+      {
+        "name": "上挑",
+        "level": 10
+      },
+      {
+        "name": "下劈",
+        "level": 10
+      },
+      {
+        "name": "刀剑空中连招",
+        "level": 10
+      },
+      {
+        "name": "枪械攻击",
+        "level": 20
+      },
+      {
+        "name": "移动射击",
+        "level": 10
+      },
+      {
+        "name": "枪械师",
+        "level": 10
+      },
+      {
+        "name": "轰炸专家",
+        "level": 10
+      },
+      {
+        "name": "独行者",
+        "level": 10
+      },
+      {
+        "name": "冲击连携",
+        "level": 10
+      },
+      {
+        "name": "震地",
+        "level": 10
+      },
+      {
+        "name": "兴奋剂",
+        "level": 10
+      },
+      {
+        "name": "踩人",
+        "level": 10
+      },
+      {
+        "name": "地震",
+        "level": 10
+      },
+      {
+        "name": "铁布衫",
+        "level": 10
+      },
+      {
+        "name": "闪现",
+        "level": 10
+      },
+      {
+        "name": "日字冲拳",
+        "level": 10
+      },
+      {
+        "name": "虎拳",
+        "level": 10
+      },
+      {
+        "name": "能量盾",
+        "level": 10
+      },
+      {
+        "name": "觉醒霸体",
+        "level": 1
+      },
+      {
+        "name": "组合拳",
+        "level": 10
+      }
+    ]
+  },
+  "maps": [
+    {
+      "id": "TUTORIAL",
+      "title": "行动前训练",
+      "background": "cf6/CF6_Tutorial_BG.swf",
+      "mechanism": {
+        "kind": "exit",
+        "layers": [],
+        "assetScale": 1.7066666666666668
+      },
+      "dialogue": [
+        {
+          "speaker": "Andy",
+          "text": "先确认移动、切换武器、射击和换弹的操作。按键沿用你当前的设置，可在设置里查看。"
+        },
+        {
+          "speaker": "Andy",
+          "text": "长枪和刀已经在你的初始装备里，这里不再发枪。地面备有一份长枪弹药和一份急救包，走近执行拾取；状态良好时无需消耗。"
+        },
+        {
+          "speaker": "Andy",
+          "text": "熟悉操作后从右侧大门离开。门外就是A01第一现场，第一场战斗在那里开始。"
+        }
+      ],
+      "stage": {
+        "BasicInformation": {
+          "Background": "flashswf/backgrounds/cf6/CF6_Tutorial_BG.swf",
+          "PlayerX": 593.0667,
+          "PlayerY": 461.6533,
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Moan",
+            "Loop": true
+          }
+        },
+        "Instances": {
+          "Instance": []
+        },
+        "SpawnPoint": {
+          "Point": []
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "战场长枪弹药包",
+              "Value": 1,
+              "x": 735.5733,
+              "y": 614.4
+            },
+            {
+              "Name": "战场复合急救包",
+              "Value": 1,
+              "x": 1068.3733,
+              "y": 698.0267
+            }
+          ]
+        },
+        "Event": [
+          {
+            "EventName": "Start",
+            "Guidance": "引导-拾取",
+            "Message": "行动前训练：移动并切换初始长枪试射。靠近地面补给后执行拾取；药品或弹药已满时无需消耗。"
+          },
+          {
+            "EventName": "Clear",
+            "Message": "训练结束，右侧大门已经开放。走出去即进入A01第一现场，战斗教学由第一战承担。"
+          }
+        ],
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": []
+              }
+            }
+          ]
+        }
+      },
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": 0.0,
+        "backgroundY": 0.0
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "geometryBasis": {
+        "nativeNormalizedInput": null,
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            1000.0,
+            450.0
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      }
+    },
+    {
+      "id": "A01",
+      "title": "外围入口",
+      "background": "cf6/CF6_A01_BG.swf",
+      "dialogue": [],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 541.7813,
+          "PlayerY": 481.024,
+          "Background": "flashswf/backgrounds/cf6/CF6_A01_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种461",
+                    "Level": 35,
+                    "Quantity": 1,
+                    "x": 1208.6613,
+                    "y": 529.408
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 35,
+                    "Quantity": 1,
+                    "x": 1053.0133,
+                    "y": 544.4267,
+                    "Parameters": {
+                      "目标标记": "cf6-a01-turret-zombie"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种461",
+                    "Level": 35,
+                    "Quantity": 5,
+                    "Interval": 100,
+                    "SpawnIndex": 0,
+                    "Parameters": {
+                      "目标标记": "cf6-a01-turret-zombie"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种461",
+                    "Level": 35,
+                    "Quantity": 5,
+                    "Interval": 100,
+                    "SpawnIndex": 1,
+                    "Parameters": {
+                      "目标标记": "cf6-a01-turret-zombie"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种461",
+                    "Level": 35,
+                    "Quantity": 5,
+                    "Interval": 100,
+                    "SpawnIndex": 2,
+                    "Parameters": {
+                      "目标标记": "cf6-a01-turret-zombie"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种461",
+                    "Level": 35,
+                    "Quantity": 3,
+                    "Interval": 100,
+                    "SpawnIndex": 3,
+                    "Parameters": {
+                      "目标标记": "cf6-a01-turret-zombie"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": [
+            {
+              "Identifier": "生存战-迷之盔甲君",
+              "x": 621.7813,
+              "y": 481.024,
+              "InitializeParametersBeforeAttach": true,
+              "Parameters": {
+                "商店检索名": "书中-CF6毒刺-35级",
+                "技能检索名": "书中-CF6毒刺-35级",
+                "可学的技能": {
+                  "0": "寸拳",
+                  "1": "旋风腿",
+                  "2": "龟派气功",
+                  "3": "口才",
+                  "4": "气动波",
+                  "5": "裂地拳",
+                  "6": "拳脚空中连招",
+                  "7": "铁匠",
+                  "8": "兽王崩拳",
+                  "9": "径庭拳/黑闪",
+                  "10": "内力爆发",
+                  "11": "一瞬千击",
+                  "12": "扭转乾坤"
+                },
+                "任务名": "书中-CF6毒刺-35级",
+                "默认对话": []
+              }
+            }
+          ]
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "极品UZI战术版",
+              "Value": 1,
+              "x": 128.1707,
+              "y": 729.4293
+            },
+            {
+              "Name": "冲锋枪达姆弹弹药",
+              "Value": 3,
+              "x": 196.4373,
+              "y": 729.4293
+            },
+            {
+              "Name": "金币",
+              "Value": 15000,
+              "x": 541.7813,
+              "y": 481.024
+            }
+          ]
+        },
+        "SpawnPoint": {
+          "Point": [
+            {
+              "x": 1337.9413,
+              "y": 551.424,
+              "QuantityMax": 5
+            },
+            {
+              "x": 1337.9413,
+              "y": 551.424,
+              "QuantityMax": 5
+            },
+            {
+              "x": 1337.9413,
+              "y": 551.424,
+              "QuantityMax": 5
+            },
+            {
+              "x": 1337.9413,
+              "y": 551.424,
+              "QuantityMax": 5
+            }
+          ]
+        }
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1592,
+        "exitRule": [
+          {
+            "charId": 1587,
+            "depth": 148,
+            "type": "killCount",
+            "required": 20,
+            "bossInstance": null,
+            "targetFrame": "s2"
+          }
+        ],
+        "originalKillThreshold": 20,
+        "levelRange": [
+          35,
+          36
+        ],
+        "notes": [
+          "prototypeDerived:A01=静态2+增援18共20只461(分组5/5/5/3),以原出口20死亡阈值有限化;原自由生成器死亡预算15出兵不减、补位不裁,实发量unknown;休眠模板(僵尸15/光头男5)无激活证据不投送",
+          "r15接线:静态630等价体(617.0,319.0)与4组增援均携带Parameters.目标标记=cf6-a01-turret-zombie;A01两门教学炮塔(133.8,202.4)/(249.8,430.9)经Cf6TutorialTurretService逐弹过滤只伤该标记目标",
+          "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-僵尸 预算15/并发5);原版是否可激活=unknown",
+          "补给 极品UZI战术版:副武器补给(手枪位)"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [],
+        "assetScale": 1.7066666666666668,
+        "turrets": {
+          "assetUrl": "flashswf/backgrounds/cf6/CF6_A01_Turret.swf",
+          "linkage": "CF6教学炮塔-A01自动炮",
+          "filterMarker": "cf6-a01-turret-zombie",
+          "fireIntervalFrames": 18,
+          "fireFrameOffset": 11,
+          "turrets": [
+            {
+              "x": 228.352,
+              "y": 345.4293,
+              "facing": "right"
+            },
+            {
+              "x": 426.3253,
+              "y": 735.4027,
+              "facing": "right"
+            }
+          ]
+        }
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A01-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            317.45,
+            281.85
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            790.0,
+            446.15
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -5.888,
+        "backgroundY": -9.984
+      }
+    },
+    {
+      "id": "A02",
+      "title": "废车场",
+      "background": "cf6/CF6_A02_BG.swf",
+      "dialogue": [],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 156.16,
+          "PlayerY": 603.648,
+          "Background": "flashswf/backgrounds/cf6/CF6_A02_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种468",
+                    "Level": 37,
+                    "Quantity": 1,
+                    "x": 1519.104,
+                    "y": 457.216
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 36,
+                    "Quantity": 1,
+                    "x": 1093.632,
+                    "y": 541.0133
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 36,
+                    "Quantity": 1,
+                    "x": 1260.8853,
+                    "y": 627.8827
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 36,
+                    "Quantity": 1,
+                    "x": 1413.9733,
+                    "y": 689.664
+                  },
+                  {
+                    "Type": "兵种468",
+                    "Level": 37,
+                    "Quantity": 1,
+                    "x": 1689.7707,
+                    "y": 680.7893
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 36,
+                    "Quantity": 1,
+                    "x": 1852.5867,
+                    "y": 691.3707
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 36,
+                    "Quantity": 1,
+                    "x": 1796.7787,
+                    "y": 464.0427
+                  },
+                  {
+                    "Type": "兵种462",
+                    "Level": 36,
+                    "Quantity": 1,
+                    "x": 913.2373,
+                    "y": 568.4907
+                  },
+                  {
+                    "Type": "兵种462",
+                    "Level": 36,
+                    "Quantity": 1,
+                    "x": 1508.864,
+                    "y": 598.016
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": []
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "AWP",
+              "Value": 1,
+              "x": 833.8773,
+              "y": 468.3093
+            },
+            {
+              "Name": "狙击步枪通用弹药",
+              "Value": 3,
+              "x": 901.9733,
+              "y": 468.3093
+            },
+            {
+              "Name": "金币",
+              "Value": 20000,
+              "x": 156.16,
+              "y": 603.648
+            }
+          ]
+        }
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1695,
+        "exitRule": [
+          {
+            "charId": 1617,
+            "depth": 128,
+            "type": "killCount",
+            "required": 7,
+            "bossInstance": null,
+            "targetFrame": "s3"
+          }
+        ],
+        "originalKillThreshold": 7,
+        "levelRange": [
+          36,
+          37
+        ],
+        "notes": [
+          "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown",
+          "补给 AWP:搜索点远距打法",
+          "CF7适配[A02-wave-0-3]:原作摆放位于原始 even-odd 填充体内;CF7 环境语义把填充转为实体 Collision,出生点落入多边形内部、玩家不可达(r6 fail#1);移至native(828.5,404.1)=世界(871.95,380.0),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移37.8px;事实表原坐标保留不改(placement-adaptation.v1.json)",
+          "CF7适配[A02-wave-0-5]:同 r6 fail#2:填充体内摆放,转换后落入实体 Collision,玩家不可达;移至native(1085.5,405.1)=世界(1128.95,381.0),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移58.8px;事实表原坐标保留不改(placement-adaptation.v1.json)"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [
+          {
+            "id": "sky",
+            "role": "screen-fixed",
+            "coordinateSpace": "root-stage",
+            "url": "flashswf/backgrounds/cf6/CF6_A02_sky.swf",
+            "x": 0,
+            "y": 0,
+            "width": 600,
+            "height": 187,
+            "depth": 0
+          },
+          {
+            "id": "city-parallax",
+            "role": "city-parallax",
+            "coordinateSpace": "root-stage",
+            "url": "flashswf/backgrounds/cf6/CF6_A02_city-parallax.swf",
+            "x": 0,
+            "y": 109,
+            "width": 1441.4,
+            "height": 66.45,
+            "depth": 1
+          }
+        ],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A02-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            91.5,
+            353.7
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [
+            {
+              "shape": 1614,
+              "reason": "curved collision geometry is not an exact polygon",
+              "curveTolerance": 0.25,
+              "ignoredStrokeWidths": []
+            }
+          ],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            1250.0,
+            450.0
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -74.1547,
+        "backgroundY": 41.1307
+      }
+    },
+    {
+      "id": "A03",
+      "title": "室内第一段",
+      "background": "cf6/CF6_A03_BG.swf",
+      "dialogue": [],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 119.4667,
+          "PlayerY": 546.1333,
+          "Background": "flashswf/backgrounds/cf6/CF6_A03_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种468",
+                    "Level": 38,
+                    "Quantity": 1,
+                    "x": 937.1307,
+                    "y": 689.664,
+                    "Parameters": {
+                      "publishStageEvent": true
+                    }
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 37,
+                    "Quantity": 1,
+                    "x": 1474.048,
+                    "y": 449.7067,
+                    "Parameters": {
+                      "publishStageEvent": true
+                    }
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 37,
+                    "Quantity": 1,
+                    "x": 508.2453,
+                    "y": 517.9733,
+                    "Parameters": {
+                      "publishStageEvent": true
+                    }
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 37,
+                    "Quantity": 1,
+                    "x": 412.672,
+                    "y": 627.2,
+                    "Parameters": {
+                      "publishStageEvent": true
+                    }
+                  },
+                  {
+                    "Type": "兵种462",
+                    "Level": 37,
+                    "Quantity": 1,
+                    "x": 1141.9307,
+                    "y": 572.7573,
+                    "Parameters": {
+                      "publishStageEvent": true
+                    }
+                  },
+                  {
+                    "Type": "兵种468",
+                    "Level": 38,
+                    "Quantity": 5,
+                    "Interval": 100,
+                    "SpawnIndex": 0,
+                    "Parameters": {
+                      "publishStageEvent": true
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": []
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "AA12战术版",
+              "Value": 1,
+              "x": 645.2907,
+              "y": 757.76
+            },
+            {
+              "Name": "00号鹿弹",
+              "Value": 3,
+              "x": 713.5573,
+              "y": 757.76
+            },
+            {
+              "Name": "金币",
+              "Value": 25000,
+              "x": 119.4667,
+              "y": 546.1333
+            }
+          ]
+        },
+        "SpawnPoint": {
+          "Point": [
+            {
+              "x": 895.1467,
+              "y": 359.936,
+              "QuantityMax": 2
+            }
+          ]
+        }
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1723,
+        "exitRule": [
+          {
+            "charId": 1720,
+            "depth": 28,
+            "type": "killCount",
+            "required": 9,
+            "bossInstance": null,
+            "targetFrame": "a4"
+          }
+        ],
+        "originalKillThreshold": 9,
+        "levelRange": [
+          37,
+          38
+        ],
+        "notes": [
+          "door1门生成器(敌人-光头男):波次敌人带Parameters.publishStageEvent=true,木门按实际UnitSpawn播放;坐标为原生门口点",
+          "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown",
+          "补给 AA12战术版:地面近距清场"
+        ]
+      },
+      "mechanism": {
+        "kind": "door",
+        "layers": [
+          {
+            "id": "foreground",
+            "role": "foreground",
+            "url": "flashswf/backgrounds/cf6/CF6_A03_foreground.swf",
+            "x": 189.44,
+            "y": 0.9387,
+            "width": 2068.3947,
+            "height": 305.0667,
+            "depth": 10
+          },
+          {
+            "id": "wood1714-21",
+            "role": "door-spawn-sequence",
+            "url": "flashswf/backgrounds/cf6/CF6_DoorWood1714.swf",
+            "frames": 9,
+            "x": 770.4747,
+            "y": 25.5147,
+            "width": 290.1333,
+            "height": 409.6,
+            "depth": 21,
+            "spawnX": 895.1467,
+            "spawnY": 359.936,
+            "spawnRadius": 170.6667
+          },
+          {
+            "id": "exit1720-28",
+            "role": "door-exit-sequence",
+            "url": "flashswf/backgrounds/cf6/CF6_DoorExit1720.swf",
+            "frames": 50,
+            "x": 1900.2027,
+            "y": 21.1627,
+            "width": 290.1333,
+            "height": 409.6,
+            "depth": 28
+          }
+        ],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A03-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            34.55,
+            317.2
+          ],
+          "spawnAdjusted": true,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": "nearest 10px grid position with 20px X edge margin when authored point is outside walkable region",
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            1300.0,
+            449.90000000000003
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -5.888,
+        "backgroundY": -57.4293
+      }
+    },
+    {
+      "id": "A04",
+      "title": "室内第二段",
+      "background": "cf6/CF6_A04_BG.swf",
+      "dialogue": [],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 1140.8213,
+          "PlayerY": 387.328,
+          "Background": "flashswf/backgrounds/cf6/CF6_A04_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种468",
+                    "Level": 39,
+                    "Quantity": 1,
+                    "x": 1822.8907,
+                    "y": 634.1973,
+                    "Parameters": {
+                      "publishStageEvent": true
+                    }
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 38,
+                    "Quantity": 1,
+                    "x": 418.304,
+                    "y": 697.856,
+                    "Parameters": {
+                      "publishStageEvent": true
+                    }
+                  },
+                  {
+                    "Type": "兵种462",
+                    "Level": 38,
+                    "Quantity": 1,
+                    "x": 913.2373,
+                    "y": 568.4907,
+                    "Parameters": {
+                      "publishStageEvent": true
+                    }
+                  },
+                  {
+                    "Type": "兵种462",
+                    "Level": 38,
+                    "Quantity": 1,
+                    "x": 1531.0507,
+                    "y": 496.8107,
+                    "Parameters": {
+                      "publishStageEvent": true
+                    }
+                  },
+                  {
+                    "Type": "兵种468",
+                    "Level": 39,
+                    "Quantity": 5,
+                    "Interval": 100,
+                    "SpawnIndex": 0,
+                    "Parameters": {
+                      "publishStageEvent": true
+                    }
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 38,
+                    "Quantity": 15,
+                    "Interval": 100,
+                    "SpawnIndex": 1,
+                    "Parameters": {
+                      "publishStageEvent": true
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": []
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "突击步枪通用弹药",
+              "Value": 3,
+              "x": 1285.9733,
+              "y": 610.304
+            },
+            {
+              "Name": "金币",
+              "Value": 30000,
+              "x": 1140.8213,
+              "y": 387.328
+            }
+          ]
+        },
+        "SpawnPoint": {
+          "Point": [
+            {
+              "x": 895.1467,
+              "y": 359.936,
+              "QuantityMax": 2
+            },
+            {
+              "x": 1586.3467,
+              "y": 359.936,
+              "QuantityMax": 5
+            }
+          ]
+        }
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1737,
+        "exitRule": [
+          {
+            "charId": 1720,
+            "depth": 28,
+            "type": "killCount",
+            "required": 22,
+            "bossInstance": null,
+            "targetFrame": "a5"
+          }
+        ],
+        "originalKillThreshold": 22,
+        "levelRange": [
+          38,
+          39
+        ],
+        "notes": [
+          "door1门生成器(敌人-光头男):波次敌人带Parameters.publishStageEvent=true,木门按实际UnitSpawn播放;坐标为原生门口点",
+          "door2门生成器(aw-僵尸):波次敌人带Parameters.publishStageEvent=true,木门按实际UnitSpawn播放;坐标为原生门口点",
+          "停止态生成器无脚本触发源(全SWF已穷举),不投送:未命名(aw-异形 预算5/并发2);原版是否可激活=unknown",
+          "补给 突击步枪通用弹药:固定弹药"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [
+          {
+            "id": "foreground",
+            "role": "foreground",
+            "url": "flashswf/backgrounds/cf6/CF6_A04_foreground.swf",
+            "x": 189.44,
+            "y": 0.9387,
+            "width": 2068.3947,
+            "height": 305.0667,
+            "depth": 10
+          },
+          {
+            "id": "wood1714-21",
+            "role": "door-spawn-sequence",
+            "url": "flashswf/backgrounds/cf6/CF6_DoorWood1714.swf",
+            "frames": 9,
+            "x": 770.4747,
+            "y": 25.5147,
+            "width": 290.1333,
+            "height": 409.6,
+            "depth": 21,
+            "spawnX": 895.1467,
+            "spawnY": 359.936,
+            "spawnRadius": 170.6667
+          },
+          {
+            "id": "wood1714-89",
+            "role": "door-spawn-sequence",
+            "url": "flashswf/backgrounds/cf6/CF6_DoorWood1714.swf",
+            "frames": 9,
+            "x": 1468.5013,
+            "y": 25.5147,
+            "width": 290.1333,
+            "height": 409.6,
+            "depth": 89,
+            "spawnX": 1586.3467,
+            "spawnY": 359.936,
+            "spawnRadius": 170.6667
+          }
+        ],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A04-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            34.55,
+            317.2
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": {
+            "sprite": 1729,
+            "worldPlacement": [
+              668.45,
+              226.95
+            ],
+            "script": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1729/frame_1/DoAction.as",
+            "sha256": "a8101964e71d869657bfcb7b59560e7da9467aef5331cc8e3a5d721d1ab28f9b",
+            "meaning": "explicit original arrival script assigns hero to this direct-world instance position"
+          },
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            1300.0,
+            449.90000000000003
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -5.888,
+        "backgroundY": -57.0027
+      }
+    },
+    {
+      "id": "A05",
+      "title": "室内深处",
+      "background": "cf6/CF6_A05_BG.swf",
+      "dialogue": [],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 2031.7013,
+          "PlayerY": 394.9227,
+          "Background": "flashswf/backgrounds/cf6/CF6_A05_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种468",
+                    "Level": 40,
+                    "Quantity": 1,
+                    "x": 901.2907,
+                    "y": 659.7973
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 39,
+                    "Quantity": 1,
+                    "x": 617.472,
+                    "y": 445.2693
+                  },
+                  {
+                    "Type": "兵种468",
+                    "Level": 40,
+                    "Quantity": 1,
+                    "x": 1611.264,
+                    "y": 461.824
+                  },
+                  {
+                    "Type": "兵种468",
+                    "Level": 40,
+                    "Quantity": 1,
+                    "x": 1427.968,
+                    "y": 608.5973
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 39,
+                    "Quantity": 1,
+                    "x": 1194.3253,
+                    "y": 626.176
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 39,
+                    "Quantity": 1,
+                    "x": 776.192,
+                    "y": 416.256
+                  },
+                  {
+                    "Type": "兵种462",
+                    "Level": 39,
+                    "Quantity": 1,
+                    "x": 1063.424,
+                    "y": 604.3307
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": []
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "强化石",
+              "Value": 2,
+              "x": 492.7147,
+              "y": 393.3867
+            },
+            {
+              "Name": "普通hp药剂",
+              "Value": 2,
+              "x": 543.744,
+              "y": 429.568
+            },
+            {
+              "Name": "金币",
+              "Value": 40000,
+              "x": 2031.7013,
+              "y": 394.9227
+            }
+          ]
+        }
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1752,
+        "exitRule": [
+          {
+            "charId": 1750,
+            "depth": 88,
+            "type": "killCount",
+            "required": 5,
+            "bossInstance": null,
+            "targetFrame": "a6"
+          }
+        ],
+        "originalKillThreshold": 5,
+        "levelRange": [
+          39,
+          40
+        ],
+        "notes": [
+          "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);敌人生成器2(aw-僵尸 预算15/并发5);原版是否可激活=unknown"
+        ]
+      },
+      "mechanism": {
+        "kind": "door",
+        "layers": [
+          {
+            "id": "foreground",
+            "role": "foreground",
+            "url": "flashswf/backgrounds/cf6/CF6_A05_foreground.swf",
+            "x": 189.44,
+            "y": 0.9387,
+            "width": 2068.3947,
+            "height": 305.0667,
+            "depth": 10
+          },
+          {
+            "id": "grand1750-88",
+            "role": "door-exit-sequence",
+            "url": "flashswf/backgrounds/cf6/CF6_DoorGrand1750.swf",
+            "frames": 40,
+            "x": 774.3147,
+            "y": 5.0347,
+            "width": 682.6667,
+            "height": 477.8667,
+            "depth": 88
+          }
+        ],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A05-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            34.55,
+            317.2
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": {
+            "sprite": 1729,
+            "worldPlacement": [
+              1190.45,
+              231.4
+            ],
+            "script": "tmp/cf6-soldier-20261016/knife-audit/deobfuscated-export/scripts/DefineSprite_1729/frame_1/DoAction.as",
+            "sha256": "a8101964e71d869657bfcb7b59560e7da9467aef5331cc8e3a5d721d1ab28f9b",
+            "meaning": "explicit original arrival script assigns hero to this direct-world instance position"
+          },
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            1300.0,
+            449.90000000000003
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -19.2,
+        "backgroundY": -57.0027
+      }
+    },
+    {
+      "id": "A06",
+      "title": "蛮斧刽子手",
+      "background": "cf6/CF6_A06_BG.swf",
+      "dialogue": [
+        {
+          "speaker": "Wings",
+          "text": "Andy！救我！"
+        }
+      ],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 1439.488,
+          "PlayerY": 697.5147,
+          "Background": "flashswf/backgrounds/cf6/CF6_A06_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种463",
+                    "Level": 42,
+                    "Quantity": 1,
+                    "x": 1467.0507,
+                    "y": 354.304,
+                    "InstanceName": "cf6Boss_A06",
+                    "Parameters": {
+                      "称号": "Boss",
+                      "保留屏外尸体": true
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": []
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "金币",
+              "Value": 50000,
+              "x": 1439.488,
+              "y": 697.5147
+            }
+          ]
+        }
+      },
+      "bossEncounter": {
+        "instanceName": "cf6Boss_A06",
+        "maxAlive": 2,
+        "maxRanged": 2,
+        "intervalFrames": 45,
+        "groups": [
+          {
+            "hpRatio": 1.0,
+            "enemies": [
+              {
+                "Type": "兵种461",
+                "Level": 40,
+                "Quantity": 1,
+                "ranged": false,
+                "SpawnIndex": "left",
+                "x": 949.76,
+                "y": 449.7067
+              },
+              {
+                "Type": "兵种461",
+                "Level": 40,
+                "Quantity": 1,
+                "ranged": false,
+                "SpawnIndex": "left",
+                "x": 712.3627,
+                "y": 440.832
+              },
+              {
+                "Type": "兵种461",
+                "Level": 40,
+                "Quantity": 1,
+                "ranged": false,
+                "SpawnIndex": "right",
+                "x": 2157.9093,
+                "y": 475.648
+              },
+              {
+                "Type": "兵种468",
+                "Level": 40,
+                "Quantity": 1,
+                "ranged": false,
+                "SpawnIndex": "right",
+                "x": 2172.928,
+                "y": 633.344
+              },
+              {
+                "Type": "兵种468",
+                "Level": 40,
+                "Quantity": 1,
+                "ranged": false,
+                "SpawnIndex": "left",
+                "x": 625.152,
+                "y": 648.8747
+              },
+              {
+                "Type": "兵种466",
+                "Level": 41,
+                "Quantity": 1,
+                "ranged": true,
+                "SpawnIndex": "left",
+                "x": 8.5333,
+                "y": 521.216,
+                "Parameters": {
+                  "长枪": "G36",
+                  "特种兵初始阶段": 2
+                }
+              },
+              {
+                "Type": "兵种466",
+                "Level": 41,
+                "Quantity": 1,
+                "ranged": true,
+                "SpawnIndex": "right",
+                "x": 2545.8347,
+                "y": 521.216,
+                "Parameters": {
+                  "长枪": "G36",
+                  "特种兵初始阶段": 2
+                }
+              }
+            ]
+          },
+          {
+            "hpRatio": 0.8,
+            "enemies": [
+              {
+                "Type": "兵种466",
+                "Level": 41,
+                "Quantity": 4,
+                "ranged": true,
+                "SpawnIndex": "left",
+                "Parameters": {
+                  "长枪": "G36",
+                  "特种兵初始阶段": 2
+                }
+              },
+              {
+                "Type": "兵种466",
+                "Level": 41,
+                "Quantity": 4,
+                "ranged": true,
+                "SpawnIndex": "right",
+                "Parameters": {
+                  "长枪": "G36",
+                  "特种兵初始阶段": 2
+                }
+              }
+            ]
+          },
+          {
+            "hpRatio": 0.6,
+            "enemies": [
+              {
+                "Type": "兵种466",
+                "Level": 41,
+                "Quantity": 4,
+                "ranged": true,
+                "SpawnIndex": "left",
+                "Parameters": {
+                  "长枪": "G36",
+                  "特种兵初始阶段": 2
+                }
+              },
+              {
+                "Type": "兵种466",
+                "Level": 41,
+                "Quantity": 4,
+                "ranged": true,
+                "SpawnIndex": "right",
+                "Parameters": {
+                  "长枪": "G36",
+                  "特种兵初始阶段": 2
+                }
+              }
+            ]
+          },
+          {
+            "hpRatio": 0.4,
+            "enemies": [
+              {
+                "Type": "兵种466",
+                "Level": 41,
+                "Quantity": 3,
+                "ranged": true,
+                "SpawnIndex": "left",
+                "Parameters": {
+                  "长枪": "G36",
+                  "特种兵初始阶段": 2
+                }
+              },
+              {
+                "Type": "兵种466",
+                "Level": 41,
+                "Quantity": 3,
+                "ranged": true,
+                "SpawnIndex": "right",
+                "Parameters": {
+                  "长枪": "G36",
+                  "特种兵初始阶段": 2
+                }
+              }
+            ]
+          },
+          {
+            "hpRatio": 0.2,
+            "enemies": [
+              {
+                "Type": "兵种466",
+                "Level": 41,
+                "Quantity": 3,
+                "ranged": true,
+                "SpawnIndex": "left",
+                "Parameters": {
+                  "长枪": "G36",
+                  "特种兵初始阶段": 2
+                }
+              },
+              {
+                "Type": "兵种466",
+                "Level": 41,
+                "Quantity": 3,
+                "ranged": true,
+                "SpawnIndex": "right",
+                "Parameters": {
+                  "长枪": "G36",
+                  "特种兵初始阶段": 2
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1778,
+        "exitRule": [
+          {
+            "charId": 1766,
+            "depth": 182,
+            "type": "bossKill",
+            "required": null,
+            "bossInstance": "boss",
+            "targetFrame": "s4"
+          }
+        ],
+        "originalKillThreshold": null,
+        "levelRange": [
+          40,
+          41
+        ],
+        "notes": [
+          "Boss死亡即取消未发与现存增援,取消不产奖励(控制器语义);原自由生成器死亡预算仅作有限上限",
+          "prototypeDerived:特种兵上限30=原两路死亡预算各15(出兵不减预算,实发量unknown);初始2+增援28。摆放5杂兵按原坐标。",
+          "停止态模板2个无激活证据,不投送(unknown)"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [
+          {
+            "id": "sky",
+            "role": "screen-fixed",
+            "coordinateSpace": "root-stage",
+            "url": "flashswf/backgrounds/cf6/CF6_A06_sky.swf",
+            "x": 0,
+            "y": -20,
+            "width": 800,
+            "height": 187,
+            "depth": 0
+          }
+        ],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A06-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            843.45,
+            408.7
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            1500.0,
+            449.90000000000003
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -5.888,
+        "backgroundY": -57.0027
+      }
+    },
+    {
+      "id": "A08",
+      "title": "抵达设施",
+      "background": "cf6/CF6_A08_BG.swf",
+      "dialogue": [
+        {
+          "speaker": "Wings",
+          "text": "到达地下实验室入口了，你要从这里进入，找到电梯才能到达地下！"
+        },
+        {
+          "speaker": "Wings",
+          "text": "你就从这里攻进去，我去配电房入侵他们内部网络，把资料下载下来！"
+        },
+        {
+          "speaker": "Andy Law",
+          "text": "攻击的事交给我了！"
+        }
+      ],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 410.5387,
+          "PlayerY": 457.8987,
+          "Background": "flashswf/backgrounds/cf6/CF6_A08_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": []
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": [
+            {
+              "Identifier": "生存战-迷之盔甲君",
+              "x": 490.5387,
+              "y": 457.8987,
+              "InitializeParametersBeforeAttach": true,
+              "Parameters": {
+                "商店检索名": "书中-CF6毒刺-40级",
+                "技能检索名": "书中-CF6毒刺-40级",
+                "可学的技能": {
+                  "0": "寸拳",
+                  "1": "旋风腿",
+                  "2": "龟派气功",
+                  "3": "口才",
+                  "4": "气动波",
+                  "5": "裂地拳",
+                  "6": "拳脚空中连招",
+                  "7": "铁匠",
+                  "8": "兽王崩拳",
+                  "9": "径庭拳/黑闪",
+                  "10": "内力爆发",
+                  "11": "一瞬千击",
+                  "12": "扭转乾坤"
+                },
+                "任务名": "书中-CF6毒刺-40级",
+                "默认对话": []
+              }
+            }
+          ]
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "普通hp药剂",
+              "Value": 2,
+              "x": 1591.4667,
+              "y": 389.4613
+            },
+            {
+              "Name": "突击步枪通用弹药",
+              "Value": 2,
+              "x": 1738.24,
+              "y": 384.3413
+            },
+            {
+              "Name": "金币",
+              "Value": 40000,
+              "x": 410.5387,
+              "y": 457.8987
+            }
+          ]
+        }
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1841,
+        "exitRule": [
+          {
+            "charId": 1430,
+            "depth": 120,
+            "type": "killCount",
+            "required": 0,
+            "bossInstance": null,
+            "targetFrame": "a9"
+          }
+        ],
+        "originalKillThreshold": 0,
+        "levelRange": [
+          42,
+          43
+        ],
+        "notes": [
+          "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);敌人生成器2(aw-僵尸 预算15/并发5);原版是否可激活=unknown"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A08-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            240.55,
+            268.3
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            1150.0,
+            410.0
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": 0.0,
+        "backgroundY": 0.0
+      }
+    },
+    {
+      "id": "A09",
+      "title": "设施外围",
+      "background": "cf6/CF6_A09_BG.swf",
+      "dialogue": [],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 155.7333,
+          "PlayerY": 463.36,
+          "Background": "flashswf/backgrounds/cf6/CF6_A09_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种466",
+                    "Level": 45,
+                    "Quantity": 1,
+                    "x": 656.2133,
+                    "y": 482.4747,
+                    "InstanceName": "elite_e1",
+                    "Parameters": {
+                      "称号": "E1精英",
+                      "cf6EliteQuota": "E1",
+                      "长枪": "SAI GRY 幽灵",
+                      "不掉装备": true,
+                      "保留屏外尸体": true,
+                      "掉落物": [
+                        {
+                          "名字": "SAI GRY 幽灵",
+                          "概率": 100,
+                          "最小数量": 1,
+                          "最大数量": 1,
+                          "总数": 1
+                        },
+                        {
+                          "名字": "突击步枪通用弹药",
+                          "概率": 100,
+                          "最小数量": 3,
+                          "最大数量": 3,
+                          "总数": 3
+                        }
+                      ],
+                      "特种兵初始阶段": 2
+                    }
+                  },
+                  {
+                    "Type": "兵种468",
+                    "Level": 44,
+                    "Quantity": 1,
+                    "x": 556.544,
+                    "y": 619.8613
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 44,
+                    "Quantity": 1,
+                    "x": 1744.896,
+                    "y": 550.4
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 44,
+                    "Quantity": 1,
+                    "x": 1748.1387,
+                    "y": 702.2933
+                  }
+                ]
+              }
+            },
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种467",
+                    "Level": 45,
+                    "Quantity": 5,
+                    "Interval": 100,
+                    "SpawnIndex": 0,
+                    "Parameters": {
+                      "长枪": "AK47"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": []
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "金币",
+              "Value": 45000,
+              "x": 155.7333,
+              "y": 463.36
+            }
+          ]
+        },
+        "SpawnPoint": {
+          "Point": [
+            {
+              "x": 1188.6933,
+              "y": 444.2453,
+              "QuantityMax": 2
+            }
+          ]
+        }
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1869,
+        "exitRule": [
+          {
+            "charId": 1430,
+            "depth": 89,
+            "type": "killCount",
+            "required": 9,
+            "bossInstance": null,
+            "targetFrame": "a10"
+          }
+        ],
+        "originalKillThreshold": 9,
+        "levelRange": [
+          43,
+          45
+        ],
+        "notes": [
+          "E1: 既有静态带盾特种兵×1转为无盾入口466,占原467名额,图敌人总数不变(设计配额适配;r5核对A09总数9)",
+          "生成器敌人生成器1原由触发区(1868)玩家踩区激活,本片段改为顺序第二波次(适配)",
+          "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);原版是否可激活=unknown"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A09-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            91.25,
+            271.5
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            1150.0,
+            490.0
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -470.9547,
+        "backgroundY": -83.968
+      }
+    },
+    {
+      "id": "A10",
+      "title": "第一段升降战",
+      "background": "cf6/CF6_A10_BG.swf",
+      "dialogue": [],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 294.4,
+          "PlayerY": 475.392,
+          "Background": "flashswf/backgrounds/cf6/CF6_A10_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种469",
+                    "Level": 45,
+                    "Quantity": 1,
+                    "x": 713.3867,
+                    "y": 485.888
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 45,
+                    "Quantity": 1,
+                    "x": 565.0773,
+                    "y": 500.3947
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": []
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "CAR冲锋枪",
+              "Value": 1,
+              "x": 396.8,
+              "y": 475.4773
+            },
+            {
+              "Name": "冲锋枪达姆弹弹药",
+              "Value": 3,
+              "x": 465.0667,
+              "y": 475.4773
+            },
+            {
+              "Name": "金币",
+              "Value": 45000,
+              "x": 294.4,
+              "y": 475.392
+            }
+          ]
+        }
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1885,
+        "exitRule": [
+          {
+            "charId": 1587,
+            "depth": 100,
+            "type": "killCount",
+            "required": 2,
+            "bossInstance": null,
+            "targetFrame": "a11"
+          }
+        ],
+        "originalKillThreshold": 2,
+        "levelRange": [
+          44,
+          46
+        ],
+        "notes": [
+          "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown",
+          "补给 CAR冲锋枪:到站达45级后提供"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [
+          {
+            "id": "elevator-scroll",
+            "role": "elevator-scroll",
+            "url": "flashswf/backgrounds/cf6/CF6_A10_elevator-scroll.swf",
+            "x": -85.3333,
+            "y": -102.4,
+            "width": 1194.6667,
+            "height": 926.6347,
+            "depth": 0,
+            "loopHeight": 924.928,
+            "clip": [
+              85.3333,
+              102.4,
+              1024.0,
+              597.3333
+            ]
+          },
+          {
+            "id": "foreground",
+            "role": "foreground",
+            "url": "flashswf/backgrounds/cf6/CF6_A10_foreground.swf",
+            "x": 103.168,
+            "y": 11.008,
+            "width": 819.2,
+            "height": 662.1867,
+            "depth": 10
+          }
+        ],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A10-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            172.5,
+            278.55
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            600.0,
+            350.0
+          ],
+          "basis": "existing elevator window mask at original world [0,0,600,350]; not generic 800x800 metadata"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -85.3333,
+        "backgroundY": -102.4
+      }
+    },
+    {
+      "id": "A11",
+      "title": "实验区入口",
+      "background": "cf6/CF6_A11_BG.swf",
+      "dialogue": [
+        {
+          "speaker": "Andy Law",
+          "text": "我靠，这是什么？"
+        },
+        {
+          "speaker": "Andy Law",
+          "text": "强行兽化装甲……这是幼体吗？看来速度和智慧更高的武器终于被造出来了！"
+        },
+        {
+          "speaker": "Andy Law",
+          "text": "还是赶快找到达中央服务器，摧毁这里吧！"
+        }
+      ],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 1285.9733,
+          "PlayerY": 425.0453,
+          "Background": "flashswf/backgrounds/cf6/CF6_A11_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种462",
+                    "Level": 46,
+                    "Quantity": 1,
+                    "x": 1589.0773,
+                    "y": 633.344
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": [
+            {
+              "Identifier": "生存战-迷之盔甲君",
+              "x": 1285.9733,
+              "y": 470.0453,
+              "InitializeParametersBeforeAttach": true,
+              "Parameters": {
+                "商店检索名": "书中-CF6毒刺-45级",
+                "技能检索名": "书中-CF6毒刺-45级",
+                "可学的技能": {
+                  "0": "寸拳",
+                  "1": "旋风腿",
+                  "2": "龟派气功",
+                  "3": "口才",
+                  "4": "气动波",
+                  "5": "裂地拳",
+                  "6": "拳脚空中连招",
+                  "7": "铁匠",
+                  "8": "兽王崩拳",
+                  "9": "径庭拳/黑闪",
+                  "10": "内力爆发",
+                  "11": "一瞬千击",
+                  "12": "扭转乾坤"
+                },
+                "任务名": "书中-CF6毒刺-45级",
+                "默认对话": []
+              }
+            }
+          ]
+        },
+        "Pickups": {
+          "Pickup": []
+        }
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1910,
+        "exitRule": [
+          {
+            "charId": 1617,
+            "depth": 129,
+            "type": "killCount",
+            "required": 0,
+            "bossInstance": null,
+            "targetFrame": "a12"
+          }
+        ],
+        "originalKillThreshold": 0,
+        "levelRange": [
+          45,
+          47
+        ],
+        "notes": [
+          "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A11-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            753.5,
+            249.05
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [
+            {
+              "shape": 1908,
+              "reason": "collision shape has stroked geometry",
+              "curveTolerance": 0.25,
+              "ignoredStrokeWidths": [
+                0.05
+              ]
+            }
+          ],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            990.0,
+            450.0
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -491.4347,
+        "backgroundY": -180.48
+      }
+    },
+    {
+      "id": "A12",
+      "title": "实验区推进",
+      "background": "cf6/CF6_A12_BG.swf",
+      "dialogue": [],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 2105.2587,
+          "PlayerY": 524.3733,
+          "Background": "flashswf/backgrounds/cf6/CF6_A12_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种469",
+                    "Level": 47,
+                    "Quantity": 1,
+                    "x": 588.9707,
+                    "y": 574.1227
+                  },
+                  {
+                    "Type": "兵种466",
+                    "Level": 48,
+                    "Quantity": 1,
+                    "x": 648.8747,
+                    "y": 731.4773,
+                    "Parameters": {
+                      "长枪": "G36",
+                      "特种兵初始阶段": 2
+                    }
+                  },
+                  {
+                    "Type": "兵种469",
+                    "Level": 47,
+                    "Quantity": 1,
+                    "x": 409.7707,
+                    "y": 569.0027
+                  },
+                  {
+                    "Type": "兵种468",
+                    "Level": 47,
+                    "Quantity": 1,
+                    "x": 326.144,
+                    "y": 736.256
+                  },
+                  {
+                    "Type": "兵种466",
+                    "Level": 48,
+                    "Quantity": 1,
+                    "x": 730.7947,
+                    "y": 555.1787,
+                    "Parameters": {
+                      "长枪": "AK47",
+                      "特种兵初始阶段": 2
+                    }
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 47,
+                    "Quantity": 10,
+                    "Interval": 100,
+                    "SpawnIndex": 0
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": []
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "普通hp药剂",
+              "Value": 1,
+              "x": 1593.1733,
+              "y": 389.4613
+            },
+            {
+              "Name": "突击步枪钨芯穿甲弹",
+              "Value": 2,
+              "x": 687.616,
+              "y": 386.2187
+            },
+            {
+              "Name": "金币",
+              "Value": 50000,
+              "x": 2105.2587,
+              "y": 524.3733
+            }
+          ]
+        },
+        "SpawnPoint": {
+          "Point": [
+            {
+              "x": 1053.8667,
+              "y": 368.128,
+              "QuantityMax": 3
+            }
+          ]
+        }
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1917,
+        "exitRule": [
+          {
+            "charId": 1430,
+            "depth": 183,
+            "type": "killCount",
+            "required": 15,
+            "bossInstance": null,
+            "targetFrame": "a13"
+          }
+        ],
+        "originalKillThreshold": 15,
+        "levelRange": [
+          46,
+          48
+        ],
+        "notes": [
+          "生成器原挂door2门演出;机关线未接,首版直接生成",
+          "停止态生成器无脚本触发源(全SWF已穷举),不投送:未命名(敌人-光头男 预算5/并发2);未命名(aw-异形 预算5/并发2);未命名(敌人-光头男 预算5/并发2);原版是否可激活=unknown"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A12-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            1233.55,
+            307.25
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            1340.0,
+            490.0
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -470.9547,
+        "backgroundY": -83.968
+      }
+    },
+    {
+      "id": "A13",
+      "title": "第二段升降与盾兵战",
+      "background": "cf6/CF6_A13_BG.swf",
+      "dialogue": [],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 294.4,
+          "PlayerY": 475.392,
+          "Background": "flashswf/backgrounds/cf6/CF6_A13_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种467",
+                    "Level": 49,
+                    "Quantity": 1,
+                    "x": 706.2187,
+                    "y": 475.3067,
+                    "InstanceName": "elite_e2",
+                    "Parameters": {
+                      "称号": "E2精英",
+                      "cf6EliteQuota": "E2",
+                      "长枪": "TTI Gen 12",
+                      "不掉装备": true,
+                      "保留屏外尸体": true,
+                      "掉落物": [
+                        {
+                          "名字": "TTI Gen 12",
+                          "概率": 100,
+                          "最小数量": 1,
+                          "最大数量": 1,
+                          "总数": 1
+                        },
+                        {
+                          "名字": "00号鹿弹",
+                          "概率": 100,
+                          "最小数量": 3,
+                          "最大数量": 3,
+                          "总数": 3
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": []
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "金币",
+              "Value": 60000,
+              "x": 294.4,
+              "y": 475.392
+            }
+          ]
+        }
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1920,
+        "exitRule": [
+          {
+            "charId": 1587,
+            "depth": 145,
+            "type": "killCount",
+            "required": 1,
+            "bossInstance": null,
+            "targetFrame": "a14"
+          }
+        ],
+        "originalKillThreshold": 1,
+        "levelRange": [
+          48,
+          49
+        ],
+        "notes": [
+          "E2: 持盾队长、小Boss;两阶段最终死亡后掉落,不在破盾时发",
+          "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [
+          {
+            "id": "elevator-scroll",
+            "role": "elevator-scroll",
+            "url": "flashswf/backgrounds/cf6/CF6_A13_elevator-scroll.swf",
+            "x": -85.3333,
+            "y": -102.4,
+            "width": 1194.6667,
+            "height": 926.6347,
+            "depth": 0,
+            "loopHeight": 924.928,
+            "clip": [
+              85.3333,
+              102.4,
+              1024.0,
+              597.3333
+            ]
+          },
+          {
+            "id": "foreground",
+            "role": "foreground",
+            "url": "flashswf/backgrounds/cf6/CF6_A13_foreground.swf",
+            "x": 103.168,
+            "y": 11.008,
+            "width": 819.2,
+            "height": 662.1867,
+            "depth": 10
+          }
+        ],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A13-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            172.5,
+            278.55
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            600.0,
+            350.0
+          ],
+          "basis": "existing elevator window mask at original world [0,0,600,350]; not generic 800x800 metadata"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -85.3333,
+        "backgroundY": -102.4
+      }
+    },
+    {
+      "id": "A14",
+      "title": "实验设施深部",
+      "background": "cf6/CF6_A14_BG.swf",
+      "dialogue": [
+        {
+          "speaker": "Andy Law",
+          "text": "我靠，看来已经到达兽化兵生产线了……"
+        },
+        {
+          "speaker": "Andy Law",
+          "text": "我要快点找到BLOODY那个老混蛋，把它解决掉，把这里轰掉！"
+        }
+      ],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 462.336,
+          "PlayerY": 398.1653,
+          "Background": "flashswf/backgrounds/cf6/CF6_A14_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种466",
+                    "Level": 51,
+                    "Quantity": 1,
+                    "x": 2231.4667,
+                    "y": 503.6373,
+                    "InstanceName": "elite_e3",
+                    "Parameters": {
+                      "称号": "E3精英",
+                      "cf6EliteQuota": "E3",
+                      "长枪": "HK416战术版",
+                      "不掉装备": true,
+                      "保留屏外尸体": true,
+                      "掉落物": [
+                        {
+                          "名字": "HK416战术版",
+                          "概率": 100,
+                          "最小数量": 1,
+                          "最大数量": 1,
+                          "总数": 1
+                        },
+                        {
+                          "名字": "突击步枪通用弹药",
+                          "概率": 100,
+                          "最小数量": 3,
+                          "最大数量": 3,
+                          "总数": 3
+                        }
+                      ],
+                      "特种兵初始阶段": 2
+                    }
+                  },
+                  {
+                    "Type": "兵种467",
+                    "Level": 51,
+                    "Quantity": 1,
+                    "x": 2228.0533,
+                    "y": 754.5173,
+                    "Parameters": {
+                      "长枪": "AK47"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种469",
+                    "Level": 50,
+                    "Quantity": 7,
+                    "Interval": 100,
+                    "SpawnIndex": 0
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": []
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "金币",
+              "Value": 65000,
+              "x": 462.336,
+              "y": 398.1653
+            }
+          ]
+        },
+        "SpawnPoint": {
+          "Point": [
+            {
+              "x": 1891.6693,
+              "y": 486.5707,
+              "QuantityMax": 2
+            }
+          ]
+        }
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1927,
+        "exitRule": [
+          {
+            "charId": 1617,
+            "depth": 416,
+            "type": "killCount",
+            "required": 9,
+            "bossInstance": null,
+            "targetFrame": "a15"
+          }
+        ],
+        "originalKillThreshold": 9,
+        "levelRange": [
+          49,
+          51
+        ],
+        "notes": [
+          "E3: 既有静态带盾特种兵×2中指定1名转无盾入口466,占原467名额,图敌人总数不变(r5核对A14总数9)",
+          "生成器敌人生成器x原由触发区(1868)玩家踩区激活,本片段改为顺序第二波次(适配)",
+          "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A14-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            270.9,
+            233.3
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [
+            {
+              "shape": 1925,
+              "reason": "collision shape has stroked geometry",
+              "curveTolerance": null,
+              "ignoredStrokeWidths": [
+                0.05
+              ]
+            }
+          ],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            1500.0,
+            490.0
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -491.4347,
+        "backgroundY": -182.784
+      }
+    },
+    {
+      "id": "A15",
+      "title": "深部推进",
+      "background": "cf6/CF6_A15_BG.swf",
+      "dialogue": [],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 317.3547,
+          "PlayerY": 680.6187,
+          "Background": "flashswf/backgrounds/cf6/CF6_A15_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种460",
+                    "Level": 50,
+                    "Quantity": 5,
+                    "Interval": 300
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": []
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "战术-QBZ-192",
+              "Value": 1,
+              "x": 419.6693,
+              "y": 680.6187
+            },
+            {
+              "Name": "突击步枪通用弹药",
+              "Value": 3,
+              "x": 487.936,
+              "y": 680.6187
+            },
+            {
+              "Name": "金币",
+              "Value": 65000,
+              "x": 317.3547,
+              "y": 680.6187
+            }
+          ]
+        }
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1940,
+        "exitRule": [
+          {
+            "charId": 1617,
+            "depth": 668,
+            "type": "killCount",
+            "required": 5,
+            "bossInstance": null,
+            "targetFrame": "a16"
+          }
+        ],
+        "originalKillThreshold": 5,
+        "levelRange": [
+          50,
+          53
+        ],
+        "notes": [
+          "异形卵×5:原版走近孵化各1只hp200异形;本片段按只数直接投送(460主控试作采纳prototype-reuse,真实消费者待验)",
+          "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器1(aw-异形 预算5/并发2);敌人生成器x(敌人-光头男 预算5/并发2);原版是否可激活=unknown",
+          "补给 战术-QBZ-192:图末达52级后提供,手枪位"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A15-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            185.95,
+            398.8
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [
+            {
+              "shape": 1931,
+              "reason": "collision shape has stroked geometry",
+              "curveTolerance": null,
+              "ignoredStrokeWidths": [
+                0.05
+              ]
+            }
+          ],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            1500.0,
+            490.0
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -491.4347,
+        "backgroundY": -149.504
+      }
+    },
+    {
+      "id": "A16",
+      "title": "大头战前整备",
+      "background": "cf6/CF6_A16_BG.swf",
+      "dialogue": [
+        {
+          "speaker": "Andy Law",
+          "text": "这里应该是机房了，我靠，这大头娃不会是主机吧？咦，BLOODY也在！"
+        },
+        {
+          "speaker": "R_server",
+          "text": "入侵等级升至一级，应急预案F启动！"
+        },
+        {
+          "speaker": "bloody",
+          "text": "呵呵，没想到你突破重围竟然来到这里！"
+        },
+        {
+          "speaker": "bloody",
+          "text": "连联合国特工部队也无法攻破的堡垒竟然被一个人突破，你就像传说中一样厉害啊，Andy Law！"
+        },
+        {
+          "speaker": "Andy Law",
+          "text": "Bloody！今天我就要消灭你和你的军队！"
+        },
+        {
+          "speaker": "R_server",
+          "text": "攻坚队到位！立刻对入侵者进行终结！"
+        }
+      ],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 467.456,
+          "PlayerY": 645.376,
+          "Background": "flashswf/backgrounds/cf6/CF6_A16_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": []
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": [
+            {
+              "Identifier": "生存战-迷之盔甲君",
+              "x": 547.456,
+              "y": 645.376,
+              "InitializeParametersBeforeAttach": true,
+              "Parameters": {
+                "商店检索名": "书中-CF6毒刺-55级",
+                "技能检索名": "书中-CF6毒刺-55级",
+                "可学的技能": {
+                  "0": "寸拳",
+                  "1": "旋风腿",
+                  "2": "龟派气功",
+                  "3": "口才",
+                  "4": "气动波",
+                  "5": "裂地拳",
+                  "6": "拳脚空中连招",
+                  "7": "铁匠",
+                  "8": "兽王崩拳",
+                  "9": "径庭拳/黑闪",
+                  "10": "内力爆发",
+                  "11": "一瞬千击",
+                  "12": "觉醒震地",
+                  "13": "扭转乾坤"
+                },
+                "任务名": "书中-CF6毒刺-55级",
+                "默认对话": []
+              }
+            }
+          ]
+        },
+        "Pickups": {
+          "Pickup": []
+        }
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1950,
+        "exitRule": [
+          {
+            "charId": 1617,
+            "depth": 617,
+            "type": "killCount",
+            "required": 0,
+            "bossInstance": null,
+            "targetFrame": "a12"
+          }
+        ],
+        "originalKillThreshold": 0,
+        "levelRange": [
+          52,
+          55
+        ],
+        "notes": [
+          "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器1(aw-异形 预算5/并发2);敌人生成器x(敌人-光头男 预算5/并发2);原版是否可激活=unknown",
+          "模板出口需要杀死数0→a12为复制模板;对白链实际目标a17(encounter-review确认);章节按路线顺序A16→A17,不回A12"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A16-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            273.9,
+            378.15
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            970.0,
+            450.0
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -491.4347,
+        "backgroundY": -118.1013
+      }
+    },
+    {
+      "id": "A17",
+      "title": "大头机器人与护卫",
+      "background": "cf6/CF6_A17_BG.swf",
+      "dialogue": [],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 1132.9707,
+          "PlayerY": 493.312,
+          "Background": "flashswf/backgrounds/cf6/CF6_A17_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种472",
+                    "Level": 57,
+                    "Quantity": 1,
+                    "x": 1153.024,
+                    "y": 386.9013,
+                    "InstanceName": "cf6Boss_A17",
+                    "Parameters": {
+                      "称号": "Boss",
+                      "保留屏外尸体": true,
+                      "长枪": "G36"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": []
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "金币",
+              "Value": 90000,
+              "x": 1132.9707,
+              "y": 493.312
+            }
+          ]
+        }
+      },
+      "bossEncounter": {
+        "instanceName": "cf6Boss_A17",
+        "maxAlive": 4,
+        "maxRanged": 2,
+        "intervalFrames": 45,
+        "groups": [
+          {
+            "hpRatio": 1.0,
+            "enemies": [
+              {
+                "Type": "兵种467",
+                "Level": 56,
+                "Quantity": 1,
+                "ranged": true,
+                "SpawnIndex": "left",
+                "x": 274.944,
+                "y": 635.904,
+                "Parameters": {
+                  "称号": "E4精英",
+                  "cf6EliteQuota": "E4",
+                  "长枪": "战术-QBU-191",
+                  "不掉装备": true,
+                  "保留屏外尸体": true,
+                  "掉落物": [
+                    {
+                      "名字": "战术-QBU-191",
+                      "概率": 100,
+                      "最小数量": 1,
+                      "最大数量": 1,
+                      "总数": 1
+                    },
+                    {
+                      "名字": "突击步枪钨芯穿甲弹",
+                      "概率": 100,
+                      "最小数量": 3,
+                      "最大数量": 3,
+                      "总数": 3
+                    }
+                  ]
+                }
+              },
+              {
+                "Type": "兵种465",
+                "Level": 56,
+                "Quantity": 1,
+                "ranged": false,
+                "SpawnIndex": "left",
+                "x": 192.512,
+                "y": 731.3067
+              },
+              {
+                "Type": "兵种465",
+                "Level": 56,
+                "Quantity": 1,
+                "ranged": false,
+                "SpawnIndex": "right",
+                "x": 2212.1813,
+                "y": 765.2693
+              },
+              {
+                "Type": "兵种469",
+                "Level": 56,
+                "Quantity": 1,
+                "ranged": false,
+                "SpawnIndex": "left",
+                "x": 422.7413,
+                "y": 799.5733
+              },
+              {
+                "Type": "兵种461",
+                "Level": 55,
+                "Quantity": 1,
+                "ranged": false,
+                "SpawnIndex": "right",
+                "x": 2330.2827,
+                "y": 664.9173
+              },
+              {
+                "Type": "兵种460",
+                "Level": 55,
+                "Quantity": 5,
+                "ranged": false,
+                "SpawnIndex": "right"
+              },
+              {
+                "Type": "兵种469",
+                "Level": 56,
+                "Quantity": 1,
+                "ranged": false,
+                "SpawnIndex": "left",
+                "x": 6.8267,
+                "y": 631.296
+              },
+              {
+                "Type": "兵种469",
+                "Level": 56,
+                "Quantity": 1,
+                "ranged": false,
+                "SpawnIndex": "right",
+                "x": 2640.0427,
+                "y": 710.4853
+              }
+            ]
+          },
+          {
+            "hpRatio": 0.8,
+            "enemies": [
+              {
+                "Type": "兵种469",
+                "Level": 56,
+                "Quantity": 4,
+                "ranged": false,
+                "SpawnIndex": "left"
+              },
+              {
+                "Type": "兵种469",
+                "Level": 56,
+                "Quantity": 4,
+                "ranged": false,
+                "SpawnIndex": "right"
+              }
+            ]
+          },
+          {
+            "hpRatio": 0.6,
+            "enemies": [
+              {
+                "Type": "兵种469",
+                "Level": 56,
+                "Quantity": 4,
+                "ranged": false,
+                "SpawnIndex": "left"
+              },
+              {
+                "Type": "兵种469",
+                "Level": 56,
+                "Quantity": 4,
+                "ranged": false,
+                "SpawnIndex": "right"
+              }
+            ]
+          },
+          {
+            "hpRatio": 0.4,
+            "enemies": [
+              {
+                "Type": "兵种469",
+                "Level": 56,
+                "Quantity": 3,
+                "ranged": false,
+                "SpawnIndex": "left"
+              },
+              {
+                "Type": "兵种469",
+                "Level": 56,
+                "Quantity": 3,
+                "ranged": false,
+                "SpawnIndex": "right"
+              }
+            ]
+          },
+          {
+            "hpRatio": 0.2,
+            "enemies": [
+              {
+                "Type": "兵种469",
+                "Level": 56,
+                "Quantity": 3,
+                "ranged": false,
+                "SpawnIndex": "left"
+              },
+              {
+                "Type": "兵种469",
+                "Level": 56,
+                "Quantity": 3,
+                "ranged": false,
+                "SpawnIndex": "right"
+              }
+            ]
+          }
+        ]
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1954,
+        "exitRule": [
+          {
+            "charId": 1766,
+            "depth": 985,
+            "type": "bossKill",
+            "required": null,
+            "bossInstance": "boss",
+            "targetFrame": "s6"
+          }
+        ],
+        "originalKillThreshold": null,
+        "levelRange": [
+          55,
+          56
+        ],
+        "notes": [
+          "原版boss gunname=g36,候选映射Parameters.长枪=G36;该参数在兵种472的消费未见资产README文档,待主控实机核",
+          "Boss死亡即取消未发与现存增援,取消不产奖励(控制器语义);原自由生成器死亡预算仅作有限上限",
+          "持盾重装精英,既有静态带盾特种兵×1;在bossEncounter hpRatio=1组(禁InstanceName,以cf6EliteQuota标记)",
+          "prototypeDerived:变身保安上限31=摆放1+原两路预算各15;异形5=卵数(460主控试作采纳prototype-reuse,外观/体型/行为与原作异形不同源,真实消费者待验);E4精英替代既有静态盾兵。",
+          "停止态模板2个无激活证据,不投送(unknown)"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A17-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            663.85,
+            289.05
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            1500.0,
+            520.0
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -491.4347,
+        "backgroundY": -135.168
+      }
+    },
+    {
+      "id": "A18",
+      "title": "Wings混合遭遇",
+      "background": "cf6/CF6_A18_BG.swf",
+      "dialogue": [],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 123.7333,
+          "PlayerY": 390.0587,
+          "Background": "flashswf/backgrounds/cf6/CF6_A18_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种467",
+                    "Level": 59,
+                    "Quantity": 1,
+                    "x": 1541.2907,
+                    "y": 570.368,
+                    "Parameters": {
+                      "长枪": "AK47"
+                    }
+                  },
+                  {
+                    "Type": "兵种464",
+                    "Level": 59,
+                    "Quantity": 1,
+                    "x": 1697.1093,
+                    "y": 556.2027
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 57,
+                    "Quantity": 1,
+                    "x": 744.7893,
+                    "y": 387.584
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 57,
+                    "Quantity": 1,
+                    "x": 784.0427,
+                    "y": 483.1573
+                  },
+                  {
+                    "Type": "兵种461",
+                    "Level": 57,
+                    "Quantity": 1,
+                    "x": 797.696,
+                    "y": 592.384
+                  },
+                  {
+                    "Type": "兵种464",
+                    "Level": 59,
+                    "Quantity": 1,
+                    "x": 1999.1893,
+                    "y": 426.3253
+                  },
+                  {
+                    "Type": "兵种464",
+                    "Level": 59,
+                    "Quantity": 1,
+                    "x": 2174.976,
+                    "y": 619.6907
+                  }
+                ]
+              }
+            },
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种463",
+                    "Level": 59,
+                    "Quantity": 5,
+                    "Interval": 100,
+                    "SpawnIndex": 0
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": []
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "金币",
+              "Value": 90000,
+              "x": 123.7333,
+              "y": 390.0587
+            }
+          ]
+        },
+        "SpawnPoint": {
+          "Point": [
+            {
+              "x": 1461.76,
+              "y": 366.2507,
+              "QuantityMax": 2
+            }
+          ]
+        }
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1977,
+        "exitRule": [
+          {
+            "charId": 1617,
+            "depth": 60,
+            "type": "killCount",
+            "required": 12,
+            "bossInstance": null,
+            "targetFrame": "a19"
+          }
+        ],
+        "originalKillThreshold": 12,
+        "levelRange": [
+          56,
+          59
+        ],
+        "notes": [
+          "原版敌人-wings携带g36;该兵种无文档化长枪参数,仅记录不挂参",
+          "原版敌人-wings携带g36;该兵种无文档化长枪参数,仅记录不挂参",
+          "原版敌人-wings携带g36;该兵种无文档化长枪参数,仅记录不挂参",
+          "生成器敌人生成器1原由触发区(1868)玩家踩区激活,本片段改为顺序第二波次(适配)",
+          "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);原版是否可激活=unknown",
+          "CF7适配[A18-spawnpoint-0]:r6 fail#3/#4:生成点落在墙带填充内,转换后为实体 Collision;引擎出生仅 +2y(WaveSpawner Offset)不足以脱出,引用它的 Wave[1][0](SpawnIndex=0)随本点一并修复;移至native(856.5,214.6)=世界(885.0,232.05),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移23.4px;事实表原坐标保留不改(placement-adaptation.v1.json)"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A18-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            72.5,
+            228.55
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            1550.0,
+            410.0
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -48.64,
+        "backgroundY": -29.7813
+      }
+    },
+    {
+      "id": "A19",
+      "title": "终战前混合精英",
+      "background": "cf6/CF6_A19_BG.swf",
+      "dialogue": [],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 119.4667,
+          "PlayerY": 477.8667,
+          "Background": "flashswf/backgrounds/cf6/CF6_A19_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种467",
+                    "Level": 60,
+                    "Quantity": 1,
+                    "x": 632.6613,
+                    "y": 415.0613,
+                    "InstanceName": "elite_e5",
+                    "Parameters": {
+                      "称号": "E5精英",
+                      "cf6EliteQuota": "E5",
+                      "长枪": "远古诛神枪",
+                      "不掉装备": true,
+                      "保留屏外尸体": true,
+                      "掉落物": [
+                        {
+                          "名字": "远古诛神枪",
+                          "概率": 100,
+                          "最小数量": 1,
+                          "最大数量": 1,
+                          "总数": 1
+                        },
+                        {
+                          "名字": "突击步枪钨芯穿甲弹",
+                          "概率": 100,
+                          "最小数量": 3,
+                          "最大数量": 3,
+                          "总数": 3
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "Type": "兵种465",
+                    "Level": 60,
+                    "Quantity": 1,
+                    "x": 1820.16,
+                    "y": 588.288
+                  },
+                  {
+                    "Type": "兵种463",
+                    "Level": 60,
+                    "Quantity": 1,
+                    "x": 1850.368,
+                    "y": 442.7093
+                  },
+                  {
+                    "Type": "兵种467",
+                    "Level": 60,
+                    "Quantity": 1,
+                    "x": 706.048,
+                    "y": 537.6,
+                    "Parameters": {
+                      "长枪": "AK47"
+                    }
+                  },
+                  {
+                    "Type": "兵种469",
+                    "Level": 59,
+                    "Quantity": 5,
+                    "Interval": 100,
+                    "SpawnIndex": 0
+                  },
+                  {
+                    "Type": "兵种464",
+                    "Level": 60,
+                    "Quantity": 10,
+                    "Interval": 100,
+                    "SpawnIndex": 1
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": [
+            {
+              "Identifier": "生存战-迷之盔甲君",
+              "x": 199.4667,
+              "y": 477.8667,
+              "InitializeParametersBeforeAttach": true,
+              "Parameters": {
+                "商店检索名": "书中-CF6毒刺-60级",
+                "技能检索名": "书中-CF6毒刺-60级",
+                "可学的技能": {
+                  "0": "寸拳",
+                  "1": "旋风腿",
+                  "2": "龟派气功",
+                  "3": "口才",
+                  "4": "气动波",
+                  "5": "裂地拳",
+                  "6": "拳脚空中连招",
+                  "7": "铁匠",
+                  "8": "兽王崩拳",
+                  "9": "径庭拳/黑闪",
+                  "10": "内力爆发",
+                  "11": "一瞬千击",
+                  "12": "觉醒震地",
+                  "13": "扭转乾坤"
+                },
+                "任务名": "书中-CF6毒刺-60级",
+                "默认对话": []
+              }
+            }
+          ]
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "金币",
+              "Value": 180000,
+              "x": 119.4667,
+              "y": 477.8667
+            }
+          ]
+        },
+        "SpawnPoint": {
+          "Point": [
+            {
+              "x": 2212.6933,
+              "y": 410.624,
+              "QuantityMax": 2
+            },
+            {
+              "x": 929.4507,
+              "y": 293.888,
+              "QuantityMax": 3
+            }
+          ]
+        }
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1985,
+        "exitRule": [
+          {
+            "charId": 1982,
+            "depth": 47,
+            "type": "killCount",
+            "required": 19,
+            "bossInstance": null,
+            "targetFrame": "a20"
+          }
+        ],
+        "originalKillThreshold": 19,
+        "levelRange": [
+          58,
+          60
+        ],
+        "notes": [
+          "E5: 终战前强精英,既有静态带盾特种兵×2中指定1名,保留原入口467",
+          "原版敌人-大刀机器人携带g36;该兵种无文档化长枪参数,仅记录不挂参",
+          "生成器原挂door2门演出;机关线未接,首版直接生成",
+          "生成器原挂door1门演出;机关线未接,首版直接生成"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A19-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            42.5,
+            278.7
+          ],
+          "spawnAdjusted": true,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": "nearest 10px grid position with 20px X edge margin when authored point is outside walkable region",
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            1550.0,
+            410.0
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -48.64,
+        "backgroundY": -29.7813
+      }
+    },
+    {
+      "id": "A20",
+      "title": "老头人形战",
+      "background": "cf6/CF6_A20_BG.swf",
+      "dialogue": [],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 119.4667,
+          "PlayerY": 477.8667,
+          "Background": "flashswf/backgrounds/cf6/CF6_A20_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种473",
+                    "Level": 60,
+                    "Quantity": 1,
+                    "x": 1106.6027,
+                    "y": 344.2347,
+                    "InstanceName": "cf6Boss_A20",
+                    "Parameters": {
+                      "称号": "Boss",
+                      "保留屏外尸体": true,
+                      "老头变身": false,
+                      "长枪": "G36"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": []
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "普通hp药剂",
+              "Value": 2,
+              "x": 2029.2267,
+              "y": 701.2693
+            },
+            {
+              "Name": "突击步枪钨芯穿甲弹",
+              "Value": 2,
+              "x": 1475.9253,
+              "y": 317.2693
+            }
+          ]
+        }
+      },
+      "bossEncounter": {
+        "instanceName": "cf6Boss_A20",
+        "maxAlive": 4,
+        "maxRanged": 2,
+        "intervalFrames": 45,
+        "groups": [
+          {
+            "hpRatio": 1.0,
+            "enemies": [
+              {
+                "Type": "兵种467",
+                "Level": 60,
+                "Quantity": 2,
+                "ranged": true,
+                "SpawnIndex": "left",
+                "x": 314.88,
+                "y": 303.104,
+                "Parameters": {
+                  "长枪": "AK47"
+                }
+              },
+              {
+                "Type": "兵种464",
+                "Level": 60,
+                "Quantity": 2,
+                "ranged": true,
+                "SpawnIndex": "right",
+                "x": 2414.7627,
+                "y": 777.728
+              },
+              {
+                "Type": "兵种461",
+                "Level": 60,
+                "Quantity": 1,
+                "ranged": false,
+                "SpawnIndex": "right",
+                "x": 1884.16,
+                "y": 385.3653
+              },
+              {
+                "Type": "兵种469",
+                "Level": 60,
+                "Quantity": 1,
+                "ranged": false,
+                "SpawnIndex": "right",
+                "x": 2135.04,
+                "y": 578.2187
+              }
+            ]
+          },
+          {
+            "hpRatio": 0.75,
+            "enemies": [
+              {
+                "Type": "兵种461",
+                "Level": 60,
+                "Quantity": 4,
+                "ranged": false,
+                "SpawnIndex": "left"
+              },
+              {
+                "Type": "兵种469",
+                "Level": 60,
+                "Quantity": 4,
+                "ranged": false,
+                "SpawnIndex": "right"
+              },
+              {
+                "Type": "兵种467",
+                "Level": 60,
+                "Quantity": 2,
+                "ranged": true,
+                "SpawnIndex": "left",
+                "Parameters": {
+                  "长枪": "AK47"
+                }
+              },
+              {
+                "Type": "兵种464",
+                "Level": 60,
+                "Quantity": 2,
+                "ranged": true,
+                "SpawnIndex": "right"
+              }
+            ]
+          },
+          {
+            "hpRatio": 0.5,
+            "enemies": [
+              {
+                "Type": "兵种461",
+                "Level": 60,
+                "Quantity": 5,
+                "ranged": false,
+                "SpawnIndex": "left"
+              },
+              {
+                "Type": "兵种469",
+                "Level": 60,
+                "Quantity": 5,
+                "ranged": false,
+                "SpawnIndex": "right"
+              },
+              {
+                "Type": "兵种467",
+                "Level": 60,
+                "Quantity": 1,
+                "ranged": true,
+                "SpawnIndex": "left",
+                "Parameters": {
+                  "长枪": "AK47"
+                }
+              },
+              {
+                "Type": "兵种464",
+                "Level": 60,
+                "Quantity": 1,
+                "ranged": true,
+                "SpawnIndex": "right"
+              }
+            ]
+          },
+          {
+            "hpRatio": 0.25,
+            "enemies": [
+              {
+                "Type": "兵种461",
+                "Level": 60,
+                "Quantity": 5,
+                "ranged": false,
+                "SpawnIndex": "left"
+              },
+              {
+                "Type": "兵种469",
+                "Level": 60,
+                "Quantity": 5,
+                "ranged": false,
+                "SpawnIndex": "right"
+              }
+            ]
+          }
+        ]
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 1992,
+        "exitRule": [
+          {
+            "charId": 1766,
+            "depth": 215,
+            "type": "bossKill",
+            "required": null,
+            "bossInstance": "boss",
+            "targetFrame": "a21"
+          }
+        ],
+        "originalKillThreshold": null,
+        "levelRange": [
+          60,
+          60
+        ],
+        "notes": [
+          "A20老头人形关闭自动变身(Parameters.老头变身=false,elder-assets文档);A21由机关线演出",
+          "原版boss gunname=g36,候选映射Parameters.长枪=G36;该参数在兵种473的消费未见资产README文档,待主控实机核",
+          "Boss死亡即取消未发与现存增援,取消不产奖励(控制器语义);原自由生成器死亡预算仅作有限上限",
+          "prototypeDerived:四路上限=原各门死亡预算(盾5/Wings5/僵尸15/变身15);原门触发演出(door1/2/4)属机关线,首版按血量阈值发兵。",
+          "停止态模板2个无激活证据,不投送(unknown)",
+          "CF7适配[A20-boss-0-0]:r6 fail#5:门刷点在墙内填充体,转换后落入实体 Collision,玩家不可达;移至native(184.5,177.6)=世界(263.0,201.05),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移15.6px;事实表原坐标保留不改(placement-adaptation.v1.json)"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A20-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            42.5,
+            278.7
+          ],
+          "spawnAdjusted": true,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": "nearest 10px grid position with 20px X edge margin when authored point is outside walkable region",
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            1490.0,
+            540.0
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -133.9733,
+        "backgroundY": -40.0213
+      }
+    },
+    {
+      "id": "A22",
+      "title": "老头机器人战",
+      "background": "cf6/CF6_A22_BG.swf",
+      "dialogue": [],
+      "stage": {
+        "BasicInformation": {
+          "PlayerX": 930.9013,
+          "PlayerY": 428.544,
+          "Background": "flashswf/backgrounds/cf6/CF6_A22_BG.swf",
+          "EndFrame": "房间",
+          "BGM": {
+            "Command": "play",
+            "Title": "Bulletproof",
+            "Loop": true
+          }
+        },
+        "Wave": {
+          "SubWave": [
+            {
+              "WaveInformation": {
+                "Duration": 0,
+                "FinishRequirement": 0
+              },
+              "EnemyGroup": {
+                "Enemy": [
+                  {
+                    "Type": "兵种474",
+                    "Level": 60,
+                    "Quantity": 1,
+                    "x": 1172.48,
+                    "y": 426.496,
+                    "InstanceName": "cf6Boss_A22",
+                    "Parameters": {
+                      "称号": "Boss",
+                      "保留屏外尸体": true,
+                      "长枪": "G36"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "Instances": {
+          "Instance": []
+        },
+        "Pickups": {
+          "Pickup": [
+            {
+              "Name": "普通hp药剂",
+              "Value": 2,
+              "x": 963.4133,
+              "y": 686.7627
+            }
+          ]
+        }
+      },
+      "bossEncounter": {
+        "instanceName": "cf6Boss_A22",
+        "maxAlive": 4,
+        "maxRanged": 2,
+        "intervalFrames": 45,
+        "groups": [
+          {
+            "hpRatio": 1.0,
+            "enemies": [
+              {
+                "Type": "兵种463",
+                "Level": 60,
+                "Quantity": 1,
+                "ranged": false,
+                "SpawnIndex": "right",
+                "x": 2414.7627,
+                "y": 777.728
+              },
+              {
+                "Type": "兵种472",
+                "Level": 60,
+                "Quantity": 1,
+                "ranged": true,
+                "SpawnIndex": "right",
+                "x": 1884.16,
+                "y": 385.3653
+              },
+              {
+                "Type": "兵种460",
+                "Level": 60,
+                "Quantity": 1,
+                "ranged": false,
+                "SpawnIndex": "right",
+                "x": 2135.04,
+                "y": 578.2187
+              },
+              {
+                "Type": "兵种465",
+                "Level": 60,
+                "Quantity": 1,
+                "ranged": true,
+                "SpawnIndex": "left",
+                "x": 314.88,
+                "y": 303.104
+              }
+            ]
+          },
+          {
+            "hpRatio": 0.75,
+            "enemies": [
+              {
+                "Type": "兵种463",
+                "Level": 60,
+                "Quantity": 5,
+                "ranged": false,
+                "SpawnIndex": "left"
+              },
+              {
+                "Type": "兵种472",
+                "Level": 60,
+                "Quantity": 5,
+                "ranged": true,
+                "SpawnIndex": "right"
+              },
+              {
+                "Type": "兵种460",
+                "Level": 60,
+                "Quantity": 5,
+                "ranged": false,
+                "SpawnIndex": "left"
+              },
+              {
+                "Type": "兵种465",
+                "Level": 60,
+                "Quantity": 5,
+                "ranged": true,
+                "SpawnIndex": "right"
+              }
+            ]
+          },
+          {
+            "hpRatio": 0.5,
+            "enemies": [
+              {
+                "Type": "兵种463",
+                "Level": 60,
+                "Quantity": 5,
+                "ranged": false,
+                "SpawnIndex": "left"
+              },
+              {
+                "Type": "兵种472",
+                "Level": 60,
+                "Quantity": 5,
+                "ranged": true,
+                "SpawnIndex": "right"
+              },
+              {
+                "Type": "兵种460",
+                "Level": 60,
+                "Quantity": 5,
+                "ranged": false,
+                "SpawnIndex": "left"
+              },
+              {
+                "Type": "兵种465",
+                "Level": 60,
+                "Quantity": 5,
+                "ranged": true,
+                "SpawnIndex": "right"
+              }
+            ]
+          },
+          {
+            "hpRatio": 0.25,
+            "enemies": [
+              {
+                "Type": "兵种463",
+                "Level": 60,
+                "Quantity": 4,
+                "ranged": false,
+                "SpawnIndex": "left"
+              },
+              {
+                "Type": "兵种472",
+                "Level": 60,
+                "Quantity": 4,
+                "ranged": true,
+                "SpawnIndex": "right"
+              },
+              {
+                "Type": "兵种460",
+                "Level": 60,
+                "Quantity": 4,
+                "ranged": false,
+                "SpawnIndex": "left"
+              },
+              {
+                "Type": "兵种465",
+                "Level": 60,
+                "Quantity": 4,
+                "ranged": true,
+                "SpawnIndex": "right"
+              }
+            ]
+          }
+        ]
+      },
+      "sourceNote": {
+        "coordinateSpace": "native-original",
+        "originalWorldSprite": 2011,
+        "exitRule": [
+          {
+            "charId": 1766,
+            "depth": 180,
+            "type": "bossKill",
+            "required": null,
+            "bossInstance": "boss",
+            "targetFrame": "s7"
+          }
+        ],
+        "originalKillThreshold": null,
+        "levelRange": [
+          60,
+          60
+        ],
+        "notes": [
+          "原版boss gunname=g36,候选映射Parameters.长枪=G36;该参数在兵种474的消费未见资产README文档,待主控实机核",
+          "补给 普通hp药剂:原版A22救护包×2同位置",
+          "Boss死亡即取消未发与现存增援,取消不产奖励(控制器语义);原自由生成器死亡预算仅作有限上限",
+          "474仅由主Wave生成,增援组不含474",
+          "prototypeDerived:四路上限各15=原各门死亡预算;474不在增援组(Boss唯一,主Wave生成);异形为460主控试作采纳prototype-reuse(非原版异形等价,真实消费者待验)。",
+          "停止态模板2个无激活证据,不投送(unknown)",
+          "CF7适配[A22-boss-0-3]:r6 fail#6:同 A20 boss[0][0] 的门内墙填充问题;移至native(184.5,177.6)=世界(263.0,201.05),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移15.6px;事实表原坐标保留不改(placement-adaptation.v1.json)"
+        ]
+      },
+      "mechanism": {
+        "kind": "exit",
+        "layers": [],
+        "assetScale": 1.7066666666666668
+      },
+      "geometryBasis": {
+        "nativeNormalizedInput": {
+          "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+          "evidence": "tools/cf6-map-runtime/generated/A22-original-geometry.json",
+          "walkBounds": "decoded original root world load",
+          "originalAuthoredSpawn": [
+            545.45,
+            251.1
+          ],
+          "spawnAdjusted": false,
+          "explicitOriginalArrival": null,
+          "spawnAdjustment": null,
+          "collision": "original named 地图 shape fill transformed to world; even-odd contour holes decomposed into nonoverlapping convex trapezoids",
+          "approximations": [],
+          "exit": "prototypeDerived CF7 manual exit in a free rightmost reachable corridor; not original automatic transition or visible door",
+          "spawnLines": "prototypeDerived generic left/right WaveSpawner safe intervals; original named spawn instances retain content-line authority",
+          "scale": "1; original and CF7 body size comparable; camera/character-scale consumer validation pending"
+        },
+        "presentation": {
+          "restoredOriginalOrigin": [
+            0,
+            0
+          ],
+          "mapScale": 1.7066666666666668,
+          "cameraCanvas": [
+            1490.0,
+            540.0
+          ],
+          "basis": "original explicit camera canvas, capped at available native bottom/right artwork"
+        }
+      },
+      "sourceCoordinateSpace": "native-original world origin; uniformly map-scaled once, actors and camera remain 1",
+      "presentation": {
+        "scale": 1.7066666666666668,
+        "backgroundX": -133.9733,
+        "backgroundY": -40.0213
+      }
+    }
+  ],
+  "economy": {
+    "randomWeapons": [
+      {
+        "mapId": "A04",
+        "choices": [
+          {
+            "weapon": "DD MK18战术版",
+            "ammo": "突击步枪钨芯穿甲弹",
+            "ammoCount": 3
+          },
+          {
+            "weapon": "诺亚方舟护士狙击步枪",
+            "ammo": "狙击步枪通用弹药",
+            "ammoCount": 3
+          }
+        ]
+      },
+      {
+        "mapId": "A08",
+        "choices": [
+          {
+            "weapon": "M60E3",
+            "ammo": "机枪贫铀穿甲弹",
+            "ammoCount": 3
+          },
+          {
+            "weapon": "追月连弩",
+            "ammo": "箭矢",
+            "ammoCount": 3
+          },
+          {
+            "weapon": "NA45",
+            "ammo": "内爆弹",
+            "ammoCount": 3
+          }
+        ]
+      },
+      {
+        "mapId": "A11",
+        "choices": [
+          {
+            "weapon": "OPDW17EXL",
+            "ammo": "高温自锐式针弹",
+            "ammoCount": 3
+          },
+          {
+            "weapon": "XM25",
+            "ammo": "能量电池",
+            "ammoCount": 3
+          }
+        ]
+      },
+      {
+        "mapId": "A12",
+        "choices": [
+          {
+            "weapon": "AA12丧尸",
+            "ammo": "00号鹿弹",
+            "ammoCount": 3
+          },
+          {
+            "weapon": "非规格步枪",
+            "ammo": "能量电池",
+            "ammoCount": 3
+          }
+        ]
+      },
+      {
+        "mapId": "A17",
+        "choices": [
+          {
+            "weapon": "高斯枪",
+            "ammo": "能量电池",
+            "ammoCount": 3
+          },
+          {
+            "weapon": "FSC7",
+            "ammo": "火箭弹弹药",
+            "ammoCount": 3
+          }
+        ]
+      },
+      {
+        "mapId": "A18",
+        "choices": [
+          {
+            "weapon": "RShG4",
+            "ammo": "复合火箭弹弹药",
+            "ammoCount": 3
+          },
+          {
+            "weapon": "G1111",
+            "ammo": "能量电池",
+            "ammoCount": 3
+          }
+        ]
+      }
+    ],
+    "eliteWeapons": [
+      {
+        "mapId": "A09",
+        "quota": "E1",
+        "choices": [
+          {
+            "weapon": "SAI GRY 幽灵",
+            "ammo": "突击步枪通用弹药",
+            "ammoCount": 3
+          }
+        ]
+      },
+      {
+        "mapId": "A13",
+        "quota": "E2",
+        "choices": [
+          {
+            "weapon": "TTI Gen 12",
+            "ammo": "00号鹿弹",
+            "ammoCount": 3
+          },
+          {
+            "weapon": "T181C",
+            "ammo": "机枪通用弹药",
+            "ammoCount": 3
+          }
+        ]
+      },
+      {
+        "mapId": "A14",
+        "quota": "E3",
+        "choices": [
+          {
+            "weapon": "HK416战术版",
+            "ammo": "突击步枪通用弹药",
+            "ammoCount": 3
+          },
+          {
+            "weapon": "PKM战术版",
+            "ammo": "机枪贫铀穿甲弹",
+            "ammoCount": 3
+          }
+        ]
+      },
+      {
+        "mapId": "A17",
+        "quota": "E4",
+        "choices": [
+          {
+            "weapon": "战术-QBU-191",
+            "ammo": "突击步枪钨芯穿甲弹",
+            "ammoCount": 3
+          },
+          {
+            "weapon": "钛合金QJZ171",
+            "ammo": "机枪贫铀穿甲弹",
+            "ammoCount": 3
+          }
+        ]
+      },
+      {
+        "mapId": "A19",
+        "quota": "E5",
+        "choices": [
+          {
+            "weapon": "远古诛神枪",
+            "ammo": "突击步枪钨芯穿甲弹",
+            "ammoCount": 3
+          },
+          {
+            "weapon": "量子能量枪",
+            "ammo": "能量电池",
+            "ammoCount": 3
+          }
+        ]
+      }
+    ],
+    "choices": [
+      {
+        "mapId": "A04",
+        "poolId": "cf6.sting.t1",
+        "itemName": "书中CF6毒刺自选配给包·一"
+      },
+      {
+        "mapId": "A08",
+        "poolId": "cf6.sting.t2",
+        "itemName": "书中CF6毒刺自选配给包·二"
+      },
+      {
+        "mapId": "A12",
+        "poolId": "cf6.sting.t3",
+        "itemName": "书中CF6毒刺自选配给包·三"
+      },
+      {
+        "mapId": "A16",
+        "poolId": "cf6.sting.t4",
+        "itemName": "书中CF6毒刺自选配给包·四"
+      },
+      {
+        "mapId": "A19",
+        "poolId": "cf6.sting.t5",
+        "itemName": "书中CF6毒刺自选配给包·五"
+      }
+    ]
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "id": "TUTORIAL",
+  "title": "行动前训练",
+  "background": "gk1_1_BG.swf",
+  "mechanism": {
+    "kind": "exit",
+    "layers": []
+  },
+  "dialogue": [
+    {
+      "speaker": "Andy",
+      "text": "正式行动前，先确认移动与射击操作。M4A1战术版和镜之虎彻已经在初始装备里，训练区不会再发一把枪。"
+    },
+    {
+      "speaker": "Andy",
+      "text": "切换到长枪，向右找到训练目标。靠近地面的补给后执行拾取，检查弹药与恢复反馈；具体按键沿用你当前的操作设置。"
+    },
+    {
+      "speaker": "Andy",
+      "text": "清理目标后，上方路障会开放。沿箭头离开训练区，进入行动第一现场。"
+    }
+  ],
+  "stage": {
+    "BasicInformation": {
+      "Background": "flashswf/backgrounds/gk1_1_BG.swf",
+      "PlayerX": 152,
+      "PlayerY": 461,
+      "EndFrame": "房间",
+      "BGM": {
+        "Command": "play",
+        "Title": "Moan",
+        "Loop": true
+      }
+    },
+    "Instances": {
+      "Instance": []
+    },
+    "SpawnPoint": {
+      "Point": []
+    },
+    "Pickups": {
+      "Pickup": [
+        {
+          "Name": "战场长枪弹药包",
+          "Value": 1,
+          "x": 500,
+          "y": 460
+        },
+        {
+          "Name": "战场复合急救包",
+          "Value": 1,
+          "x": 780,
+          "y": 460
+        }
+      ]
+    },
+    "Event": [
+      {
+        "EventName": "Start",
+        "Guidance": "引导-拾取",
+        "Message": "行动前训练：向右移动，切换长枪并试射。靠近补给后执行拾取；药品或弹药已满时无需消耗。"
+      },
+      {
+        "EventName": "Clear",
+        "Message": "训练目标已清理。完成补给检查后，走到上方路障的箭头区域，进入毒刺行动。"
+      }
+    ],
+    "Wave": {
+      "SubWave": [
+        {
+          "WaveInformation": {
+            "Duration": 0
+          },
+          "EnemyGroup": {
+            "Enemy": [
+              {
+                "Type": "兵种2",
+                "Interval": 100,
+                "Quantity": 1,
+                "Level": 2,
+                "x": 711,
+                "y": 476,
+                "Parameters": {
+                  "掉落物": []
+                }
+              },
+              {
+                "Type": "兵种6",
+                "Interval": 100,
+                "Quantity": 1,
+                "Level": 2,
+                "x": 1642,
+                "y": 531,
+                "Parameters": {
+                  "掉落物": []
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
