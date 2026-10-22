@@ -164,7 +164,7 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             }
         }
 
-        // 显示 curve 曲线压缩
+        // 显示 curve 的压缩或柔性增加
         if (statsObj.curve) {
             var sortedList = TooltipTextBuilder.getSortedAttrList(statsObj.curve);
             for (var i = 0; i < sortedList.length; i++) {
@@ -616,6 +616,14 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
 
         if (curveType == "sqrtScale" || curveType == "sqrt") {
             result.push(TooltipConstants.LBL_CURVE_COMPRESSION_LEVEL, " ", calculateCurveCompressionLevel(coefficient));
+        } else if (curveType == "saturatingAdd") {
+            var amount:Number = Number(curveConfig.amount);
+            if (!isNaN(amount) && isFinite(amount) && amount >= 0) {
+                result.push("柔性增加，最多 +", amount);
+                if (key == "interval") result.push("毫秒");
+            } else {
+                result.push("柔性增加");
+            }
         } else {
             result.push(curveType);
         }

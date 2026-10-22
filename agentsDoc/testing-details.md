@@ -156,6 +156,8 @@ AS2 必须证明目标只扫描一次、来源/目标各一次 revision 与 inde
 - `CraftingPanelServiceTest` 185/185 + `SynthesisIndexTest` 18/18（机器钉死；此处按 commit `e582cf62da63b8e1b6057df88aa0caf4eadf85b9` 加 2026-10-21 Issue 152 工作树核对现役 runner）。
 - `NpcShopPanelServiceTest` 108/108（机器钉死）。
 
+胶囊实际发射/扣除与临时店级资格改动另运行 `scripts/run-npc-capsule-shop-tests.ps1`；该 runner 从生产手雷片段及胶囊落地脚本构建真实 MovieClip 专项，阈值以 tracked template 为准，同时复跑 NPC suite。它覆盖一次性消耗、同路径重绑、迟到及投递未知，不代签正常游戏投掷/购买；发布还须明确编译 things0、things-new 与 asLoader 的各自目标。
+
 物品格协议施工须看到 `InventoryPanelServiceTest` 的现役机器钉值、合成/材料来源与用途施工须看到 `CraftingPanelServiceTest` + `SynthesisIndexTest` 的新鲜 Output Panel/trace 证据，不能只凭 publish marker。`-SkipCompile` 只证明静态合同。
 
 **装备调制最终态门**：`powershell -ExecutionPolicy Bypass -File scripts/run-equipment-tuning-tests.ps1 -TimeoutSeconds 240` 现役计数为 Equipment Tuning **88/88** + Inventory **170/170**（机器钉死），覆盖已穿戴进阶/安装/替换/卸下/卸下全部配件后的有效等级门、exact 等级边界、preview→commit 等级竞态零写、背包高等级进阶继续允许、`replace_mod` 拆件后容量拒绝与 after 容量投影。

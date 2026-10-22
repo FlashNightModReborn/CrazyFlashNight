@@ -1,0 +1,9 @@
+﻿trace("FocusedTestRunId npc-capsule-shop Start: __FOCUSED_RUN_ID__");
+_root.preloaders = _root.preloaders || [];
+_root.loaders = _root.loaders || [];
+#include "逻辑系统分区/商店系统_兼容.as"
+org.flashNight.arki.item.NpcShopPanelServiceTest.runAllTests();
+_root.__capsuleTestFinished = function():Void {
+    trace("FocusedTestRunId npc-capsule-shop Complete: __FOCUSED_RUN_ID__");
+};
+org.flashNight.arki.item.NpcCapsuleShopServiceTest.runAllTests();

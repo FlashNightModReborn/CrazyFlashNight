@@ -31,6 +31,12 @@ var SkillsPanel = (function() {
     var _config = (typeof window !== 'undefined' && window.__SKILLS_CONFIG__) || {};
     var LOADOUT_CONFIRMATION_KEY = 'cf7.skills.loadoutConfirmationMode';
     var _loadoutConfirmationMode = readLoadoutConfirmationMode();
+    var _responseTrace = Diagnostics.createResponseTrace({
+        send:function(message) { return Bridge.send(message); },
+        now:function() { return performance.now(); },
+        requestFrame:function(callback) { return requestAnimationFrame(callback); },
+        cancelFrame:function(handle) { cancelAnimationFrame(handle); }
+    });
 
     var _coordinator = new SkillRuntime.SkillCoordinator({
         send: function(message) { return Bridge.send(message); },
@@ -39,6 +45,7 @@ var SkillsPanel = (function() {
         onState: onCoordinatorState,
         onSnapshot: onAuthoritativeSnapshot,
         onError: onCoordinatorError,
+        onResponseReceived:function(response) { _responseTrace.received(response); },
         validateSnapshot: function(snapshot) { return validateSnapshot(snapshot, _view); }
     });
 
@@ -104,6 +111,7 @@ var SkillsPanel = (function() {
         _tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
             ? PanelTooltip.createScope('skills', {profile:'dense-inspect'}) : null;
         _initData = initData || {};
+        _responseTrace.open(String(_initData.panelInstanceId || ''));
         _view = _initData.view === 'trainer' ? 'trainer' : 'manage';
         _snapshot = null;
         _selectedKey = typeof _initData.focusSkillKey === 'string' ? _initData.focusSkillKey : '';
@@ -721,11 +729,9 @@ var SkillsPanel = (function() {
                 toast(errorMessage(response.error)); cue('rejected');
                 if (response.error === 'stale_state' || response.error === 'not_learned' || response.error === 'skill_not_found') requestSnapshot();
             } else { toast(response.changed === false ? '状态未变化。' : successMessage(cmd)); cue('success'); }
-            renderAll();
         });
         // 本地拦截（协调器忙）保持静默 toast：调用方已播意图音（activate/toggle），避免同手势双响（契约 §5.2）
         if (!callId) toast('当前暂时不能修改技能，请稍后重试。');
-        renderAll();
         return callId;
     }
 
@@ -738,7 +744,11 @@ var SkillsPanel = (function() {
         });
     }
 
-    function onAuthoritativeSnapshot(snapshot) {
+    function onAuthoritativeSnapshot(snapshot, source, response) {
+        _responseTrace.refresh(response, function() { applyAuthoritativeSnapshot(snapshot); });
+    }
+
+    function applyAuthoritativeSnapshot(snapshot) {
         var validation = validateSnapshot(snapshot, _view);
         if (!validation.ok) {
             cancelPreviewWork(); _snapshot = null; _schemaError = validation.error; clearPreviewState();
@@ -794,9 +804,11 @@ var SkillsPanel = (function() {
             : typeof entry.level === 'number' && Array.isArray(entry.equippedSlots);
     }
 
-    function onCoordinatorState() {
-        if (_leftRoot && _rightRoot) renderAll();
-        else refreshStateControls();
+    function onCoordinatorState(state, reason) {
+        // Snapshots own list/metric refreshes. State-only changes update actions;
+        // a successful snapshot has already rendered the settled controls once.
+        if (_leftRoot && _rightRoot && reason !== 'write_success' && reason !== 'reconciled') renderDetail();
+        refreshStateControls();
     }
     function onCoordinatorError(response, source) {
         if (handleTrainerExpired(response, source)) return;
@@ -1056,6 +1068,7 @@ var SkillsPanel = (function() {
     }
 
     function cleanupView(detachScale) {
+        _responseTrace.close();
         cancelSwitchWait();
         cancelPreviewWork();
         if (_drag) { _drag.destroy(); _drag = null; }

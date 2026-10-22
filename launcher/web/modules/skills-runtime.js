@@ -79,6 +79,9 @@
                     payload:clonePayload(context.payload)};
             },
             validateResponse:function(data, entry, session) {
+                // Both the shared Bridge router and direct harness delivery reach
+                // this boundary; observing only SkillCoordinator.handleResponse misses production.
+                try { if (typeof options.onResponseReceived === 'function') options.onResponseReceived(data); } catch (error) {}
                 return data && data.type === 'panel_resp' && data.panel === 'skills'
                     && data.domain === 'skills' && data.callId === entry.callId
                     && data.cmd === entry.cmd
@@ -166,7 +169,8 @@
         this._mux = new RequestMux({
             send: options.send,
             timeoutMs: options.timeoutMs,
-            sessionNonce: options.sessionNonce
+            sessionNonce: options.sessionNonce,
+            onResponseReceived: options.onResponseReceived
         });
         this._state = 'closed';
         this._panelInstanceId = '';
@@ -266,6 +270,10 @@
         var writeEpoch = finiteInt(response && response.writeEpoch, -1);
         if (revision >= 0) this._lastAppliedRevision = Math.max(this._lastAppliedRevision, revision);
         if (writeEpoch >= 0) this._lastAppliedWriteEpoch = Math.max(this._lastAppliedWriteEpoch, writeEpoch);
+        // Only a validated, current write/reconcile snapshot may settle the gate. The
+        // synchronous presenter must see idle so its next read-only preview is allowed.
+        if (source === 'reconcile') this._activeReconcile = null;
+        if (source === 'write' || source === 'reconcile') this._state = 'idle';
         this._onSnapshot(snapshot, source || 'snapshot', response || {});
         return true;
     };
@@ -313,7 +321,6 @@
             self._activeWrite = null;
             if (response.success === true && response.snapshot && typeof response.snapshot === 'object') {
                 if (self._applySnapshot(response.snapshot, response, 'write')) {
-                    self._state = 'idle';
                     self._emitState('write_success');
                     if (callback) callback(response);
                     self._flushRebind();
@@ -377,8 +384,6 @@
                 if (callback) callback(response, false);
                 return;
             }
-            self._activeReconcile = null;
-            self._state = 'idle';
             self._emitState('reconciled');
             if (callback) callback(response, true);
             self._flushRebind();

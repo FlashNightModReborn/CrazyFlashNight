@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using Xunit;
 using CF7Launcher.Guardian;
 using CF7Launcher.Tasks;
+using CF7Launcher.Diagnostic;
 
 namespace Launcher.Tests.Tasks
 {
@@ -1306,6 +1307,52 @@ namespace Launcher.Tests.Tasks
                 "expectedLearnTokenRef="
                     + AuthorityLogFormatter.CreateReference(secret),
                 flashLog);
+        }
+
+        [Fact]
+        public void ResponseStagesDistinguishQueueEntryAndPostWithoutHoldingTheWriteGate()
+        {
+            var lines = new List<string>(); var queued = new List<Action>(); JObject sent = null;
+            using (var task = NewTask(value => { sent = ParseWire(value); return true; }))
+            {
+                task.SetResponseDiagnostics(new SkillResponseDiagnostics(lines.Add));
+                task.SetInvoker(queued.Add);
+                task.SetTryPostToWeb(_ => false);
+                task.HandleWebRequest("equip", Request("equip", "skill.trace.write"));
+                task.HandleFlashResponse(WriteSuccess((int)sent["callId"], true, 13, Snapshot(13, 4, "闪现")), null);
+                Assert.Equal("idle", task.WriteState);
+                Assert.Single(lines);
+                Assert.Contains("stage=ui_dispatch_requested", lines[0]);
+                queued[0]();
+                Assert.Equal(4, lines.Count);
+                Assert.Contains("stage=ui_dispatch_enter", lines[1]);
+                Assert.Contains("stage=web_post_begin", lines[2]);
+                Assert.Contains("stage=web_post_rejected", lines[3]);
+                Assert.Equal("idle", task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void ResponseDiagnosticCannotReleaseAnUnknownWriteOrAcceptAnInactiveOwner()
+        {
+            var lines = new List<string>(); JObject sent = null;
+            using (var task = NewTask(value => { sent = ParseWire(value); return true; }))
+            {
+                task.SetResponseDiagnostics(new SkillResponseDiagnostics(lines.Add));
+                task.SetTryPostToWeb(_ => true);
+                task.HandleWebRequest("equip", Request("equip", "skill.trace.unknown"));
+                task.HandleFlashResponse(new JObject { ["task"] = "skill_response", ["callId"] = sent["callId"], ["success"] = true }, null);
+                Assert.Equal("needs_reconcile", task.WriteState);
+                var report = new JObject { ["type"] = "skill_response_diag", ["panel"] = "skills",
+                    ["panelInstanceId"] = "skills.instance.1", ["callId"] = "skill.trace.unknown", ["cmd"] = "equip",
+                    ["writeEpoch"] = task.WriteEpoch, ["stage"] = "frame_callback", ["durationMs"] = 2 };
+                Assert.True(task.HandleResponseDiagnostic(report));
+                Assert.Equal("needs_reconcile", task.WriteState);
+                report["panelInstanceId"] = "replacement";
+                Assert.False(task.HandleResponseDiagnostic(report));
+                Assert.False(task.HandleResponseDiagnostic(new JObject { ["type"] = new JObject() }));
+                Assert.Equal("needs_reconcile", task.WriteState);
+            }
         }
 
         private static SkillTask NewTask(Func<string, bool> send, List<JObject> web = null, int timeout = 10000)

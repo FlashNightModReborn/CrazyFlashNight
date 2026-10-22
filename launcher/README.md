@@ -479,6 +479,8 @@ Bootstrap 存档编辑器当前提供 schema 驱动的简易系统设置、原�
 | Audio 无声 | Host audio 状态、存档音量、endpoint generation；H2 按专项流程处理 |
 | candidate/正式身份不符 | verifier 输出、process path、manifest、identity、closure 和 consensus |
 Flash/AS2 变更的编译与 smoke 必须遵守 [Flash CS6 自动化说明](../scripts/FlashCS6自动化编译.md)；没有新鲜 trace、Output Panel 或 IDE 复核时，不声称“已编译通过”。
+技能学习回包的 `skill_response_stage` 分段观测与单次列表刷新见[技能记录](../docs/reports/技能学习界面刷新与分段诊断-隔离施工-2026-10-22.md)；胶囊资格、联合候选与实机阻塞见[联合复验记录](../docs/reports/胶囊便携商店资格与联合复验-2026-10-23.md)。诊断不充当业务 ACK、写锁释放或像素显示证明。
+
 ## 维护规则
 
 - Core/Bootstrap 入口、参数或启动阶段变化；`AppConfig` key、环境覆盖或用户偏好写入边界变化；

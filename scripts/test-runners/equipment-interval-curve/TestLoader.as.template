@@ -1,0 +1,5 @@
+﻿trace("FocusedTestRunId equipment-interval-curve Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.item.equipment.EquipmentIntervalCurveTest.onComplete = function():Void {
+    trace("FocusedTestRunId equipment-interval-curve Complete: __FOCUSED_RUN_ID__");
+};
+org.flashNight.arki.item.equipment.EquipmentIntervalCurveTest.runAllTests();

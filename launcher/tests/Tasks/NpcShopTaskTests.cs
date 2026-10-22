@@ -224,12 +224,162 @@ namespace CF7Launcher.Tests.Tasks
             task.HandleFlashResponse(TradePreviewResponse((int)flash["callId"]), null);
         }
 
+        private static JObject CapsuleRequest(string cmd, string callId, string owner = OwnerA)
+        {
+            JObject request = Request(cmd, callId, owner);
+            if (request["payload"]["shopId"] != null)
+                request["payload"]["shopId"] = "迷之盔甲君";
+            return request;
+        }
+
+        private static void PrimeCapsuleCatalog(NpcShopTask task, Func<JObject> latestSent)
+        {
+            task.HandleWebRequest("snapshot", CapsuleRequest("snapshot", PrimeCallId("capsule.catalog")));
+            JObject state = StateResponse((int)latestSent()["callId"]);
+            state["shopId"] = "迷之盔甲君";
+            state["layout"]["title"] = "便携商店";
+            task.HandleFlashResponse(state, null);
+        }
+
         private static void PrimeBatch(NpcShopTask task, Func<JObject> latestSent)
         {
             task.HandleWebRequest("batchPreview", Request("batchPreview", PrimeCallId("batch")));
             JObject flash = latestSent();
             Assert.NotNull(flash);
             task.HandleFlashResponse(BatchPreviewResponse((int)flash["callId"]), null);
+        }
+
+        [Fact]
+        public void CapsuleOpening_IsPrivateAndBoundOnlyAfterExactOwnerAdmission()
+        {
+            var sent = new List<JObject>();
+            using (var task = new NpcShopTask(() => true, json => { sent.Add(ParseSent(json)); return true; }))
+            {
+                var init = new JObject { ["mode"] = "runtime", ["shopId"] = "迷之盔甲君",
+                    ["source"] = "npc_shop_refresh", ["capsuleOpenId"] = "capsule.1.1" };
+                JObject webInit = JObject.Parse(task.EnrichPanelInitData(init.ToString(), OwnerA));
+                Assert.Null(webInit["capsuleOpenId"]);
+                task.HandleWebRequest("snapshot", CapsuleRequest("snapshot", "capsule.before.admission"));
+                Assert.Null(sent[0]["capsuleOpenId"]);
+                task.BindMaterialShopNavigationOwner("npcshop", OwnerA);
+                task.HandleWebRequest("snapshot", CapsuleRequest("snapshot", "capsule.after.admission"));
+                Assert.Equal("capsule.1.1", (string)sent[1]["capsuleOpenId"]);
+                Assert.Equal(OwnerA, (string)sent[1]["capsulePanelInstanceId"]);
+            }
+        }
+
+        [Fact]
+        public void CapsuleRebind_RetiresOnlyOutgoingIdentityAndKeepsIncomingPreparation()
+        {
+            var sent = new List<JObject>();
+            using (var task = new NpcShopTask(() => true, json => { sent.Add(ParseSent(json)); return true; }))
+            {
+                task.EnrichPanelInitData("{shopId:'迷之盔甲君',source:'npc_shop_refresh',capsuleOpenId:'capsule.old'}", OwnerA);
+                task.BindMaterialShopNavigationOwner("npcshop", OwnerA);
+                task.EnrichPanelInitData("{shopId:'迷之盔甲君',source:'npc_shop_refresh',capsuleOpenId:'capsule.new'}", OwnerB);
+                Assert.Empty(sent);
+                task.ClearPending(OwnerB);
+                Assert.Single(sent);
+                Assert.Equal("npcShopCapsuleRetire", (string)sent[0]["action"]);
+                Assert.Equal("capsule.old", (string)sent[0]["capsuleOpenId"]);
+                task.BindMaterialShopNavigationOwner("npcshop", OwnerB);
+                task.HandleWebRequest("snapshot", CapsuleRequest("snapshot", "capsule.new.snapshot", OwnerB));
+                Assert.Equal("capsule.new", (string)sent[1]["capsuleOpenId"]);
+                Assert.Equal(OwnerB, (string)sent[1]["capsulePanelInstanceId"]);
+                task.ClearPending();
+                task.ClearPending();
+                Assert.Equal(3, sent.Count);
+                Assert.Equal("capsule.new", (string)sent[2]["capsuleOpenId"]);
+            }
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("another.incoming.owner")]
+        public void CapsulePreparation_DefaultOrForeignRetirementCannotRevivePendingOpening(string incoming)
+        {
+            var sent = new List<JObject>();
+            using (var task = new NpcShopTask(() => true, json => { sent.Add(ParseSent(json)); return true; }))
+            {
+                task.EnrichPanelInitData("{shopId:'迷之盔甲君',source:'npc_shop_refresh',capsuleOpenId:'capsule.stale'}", OwnerA);
+                task.ClearPending(incoming);
+                task.BindMaterialShopNavigationOwner("npcshop", OwnerA);
+                task.HandleWebRequest("snapshot", CapsuleRequest("snapshot", "capsule.stale.preparation"));
+                Assert.Null(Assert.Single(sent)["capsuleOpenId"]);
+            }
+        }
+
+        [Theory]
+        [InlineData("{shopId:'迷之盔甲君',source:'world_npc',capsuleOpenId:'capsule.1'}")]
+        [InlineData("{shopId:'前治安官',source:'npc_shop_refresh',capsuleOpenId:'capsule.1'}")]
+        [InlineData("{shopId:'迷之盔甲君',source:'npc_shop_refresh',capsuleOpenId:null}")]
+        [InlineData("{shopId:'迷之盔甲君',source:'npc_shop_refresh',capsuleOpenId:'bad token'}")]
+        public void CapsuleOpening_RejectsMalformedOrWrongTuple(string json)
+        {
+            using (var task = new NpcShopTask(() => true, _ => true))
+                Assert.Throws<InvalidOperationException>(() => task.EnrichPanelInitData(json, OwnerA));
+        }
+
+        [Fact]
+        public void CapsuleOwner_ForeignRequestCannotBorrowPrivateCorrelation()
+        {
+            var sent = new List<JObject>();
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent.Add(ParseSent(json)); return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.EnrichPanelInitData("{shopId:'迷之盔甲君',source:'npc_shop_refresh',capsuleOpenId:'capsule.owner'}", OwnerA);
+                task.BindMaterialShopNavigationOwner("npcshop", OwnerA);
+                task.HandleWebRequest("snapshot", CapsuleRequest("snapshot", "capsule.foreign", OwnerB));
+                Assert.Empty(sent);
+                Assert.Equal("panel_instance_expired", (string)JObject.Parse(posted)["error"]);
+            }
+        }
+
+        [Fact]
+        public void CapsuleRetirement_DoesNotReleaseUnknownWriteOrReplayIt()
+        {
+            var sent = new List<JObject>();
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json =>
+            {
+                JObject message = ParseSent(json);
+                sent.Add(message);
+                return (string)message["action"] != "npcShopCapsuleRetire";
+            }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                task.EnrichPanelInitData("{shopId:'迷之盔甲君',source:'npc_shop_refresh',capsuleOpenId:'capsule.write'}", OwnerA);
+                task.BindMaterialShopNavigationOwner("npcshop", OwnerA);
+                PrimeCapsuleCatalog(task, () => sent[sent.Count - 1]);
+                task.HandleWebRequest("buy", CapsuleRequest("buy", "capsule.pending.write"));
+                Assert.Equal("write_pending", task.WriteState);
+                task.ClearPending();
+                Assert.Equal("needs_reconcile", task.WriteState);
+                int calls = sent.Count;
+                task.EnrichPanelInitData("{shopId:'迷之盔甲君',source:'npc_shop_refresh',capsuleOpenId:'capsule.next'}", OwnerB);
+                task.BindMaterialShopNavigationOwner("npcshop", OwnerB);
+                task.HandleWebRequest("buy", CapsuleRequest("buy", "capsule.replay.refused", OwnerB));
+                Assert.Equal(calls, sent.Count);
+                Assert.Equal("reconcile_required", (string)JObject.Parse(posted)["error"]);
+                Assert.Equal("needs_reconcile", task.WriteState);
+            }
+        }
+
+        [Fact]
+        public void CapsuleCorrelation_CannotBeInjectedThroughWebPayload()
+        {
+            var sent = new List<JObject>();
+            string posted = null;
+            using (var task = new NpcShopTask(() => true, json => { sent.Add(ParseSent(json)); return true; }))
+            {
+                task.SetPostToWeb(json => posted = json);
+                JObject request = CapsuleRequest("snapshot", "capsule.injected");
+                request["payload"]["capsuleOpenId"] = "forged";
+                task.HandleWebRequest("snapshot", request);
+                Assert.Empty(sent);
+                Assert.Equal("invalid_payload", (string)JObject.Parse(posted)["error"]);
+            }
         }
 
         [Fact]

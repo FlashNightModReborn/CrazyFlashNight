@@ -111,10 +111,12 @@ else
 		子弹属性.血量上限击溃 = _parent.手雷击溃;
 	}
 	子弹属性.手雷检测 = true;
-	_root.子弹区域shoot传递(子弹属性);
-	换弹夹();
+	var 实际手雷弹体 = _root.子弹区域shoot传递(子弹属性);
+	var 胶囊使用 = 子弹属性.子弹种类 === "谜之胶囊"
+		? _root.物品UI函数.登记胶囊投掷(_parent, 实际手雷弹体) : null;
+	换弹夹(胶囊使用);
 }
-function 换弹夹()
+function 换弹夹(胶囊使用)
 {
 	if (_root.控制目标 == _parent._name)
 	{
@@ -130,6 +132,7 @@ function 换弹夹()
 				{source:"weapon_cost", reason:"grenade_throw", mergeScope:"operation"});
 			if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 			_root.玩家信息界面.玩家必要信息界面.弹夹数 = 剩余显示手雷数;
+			if (胶囊使用 != null) _root.物品UI函数.确认胶囊投掷(胶囊使用);
 		}
 	}
 	gotoAndPlay("换弹夹");
@@ -254,10 +257,12 @@ else
 		子弹属性.血量上限击溃 = _parent.手雷击溃;
 	}
 	子弹属性.手雷检测 = true;
-	_root.子弹区域shoot传递(子弹属性);
-	换弹夹();
+	var 实际手雷弹体 = _root.子弹区域shoot传递(子弹属性);
+	var 胶囊使用 = 子弹属性.子弹种类 === "谜之胶囊"
+		? _root.物品UI函数.登记胶囊投掷(_parent, 实际手雷弹体) : null;
+	换弹夹(胶囊使用);
 }
-function 换弹夹()
+function 换弹夹(胶囊使用)
 {
 	if (_root.控制目标 == _parent._name)
 	{
@@ -273,6 +278,7 @@ function 换弹夹()
 				{source:"weapon_cost", reason:"grenade_lob", mergeScope:"operation"});
 			if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 			_root.玩家信息界面.玩家必要信息界面.弹夹数 = 剩余显示手雷数;
+			if (胶囊使用 != null) _root.物品UI函数.确认胶囊投掷(胶囊使用);
 		}
 	}
 	gotoAndPlay("低抛换弹夹");
@@ -398,10 +404,12 @@ this.gotoAndPlay(跳转帧);]]></script>
 		子弹属性.血量上限击溃 = _parent.手雷击溃;
 	}
 	子弹属性.手雷检测 = true;
-	_root.子弹区域shoot传递(子弹属性);
-	换弹夹();
+	var 实际手雷弹体 = _root.子弹区域shoot传递(子弹属性);
+	var 胶囊使用 = 子弹属性.子弹种类 === "谜之胶囊"
+		? _root.物品UI函数.登记胶囊投掷(_parent, 实际手雷弹体) : null;
+	换弹夹(胶囊使用);
 }
-function 换弹夹()
+function 换弹夹(胶囊使用)
 {
 	if (_root.控制目标 == _parent._name)
 	{
@@ -417,6 +425,7 @@ function 换弹夹()
 				{source:"weapon_cost", reason:"throwing_weapon", mergeScope:"operation"});
 			if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 			_root.玩家信息界面.玩家必要信息界面.弹夹数 = 剩余显示手雷数;
+			if (胶囊使用 != null) _root.物品UI函数.确认胶囊投掷(胶囊使用);
 		}
 	}
 	gotoAndPlay("暗器换弹夹");
@@ -537,10 +546,12 @@ else
 		子弹属性.血量上限击溃 = _parent.手雷击溃;
 	}
 	子弹属性.手雷检测 = true;
-	_root.子弹区域shoot传递(子弹属性);
-	换弹夹();
+	var 实际手雷弹体 = _root.子弹区域shoot传递(子弹属性);
+	var 胶囊使用 = 子弹属性.子弹种类 === "谜之胶囊"
+		? _root.物品UI函数.登记胶囊投掷(_parent, 实际手雷弹体) : null;
+	换弹夹(胶囊使用);
 }
-function 换弹夹()
+function 换弹夹(胶囊使用)
 {
 	if (_root.控制目标 == _parent._name)
 	{
@@ -556,6 +567,7 @@ function 换弹夹()
 				{source:"weapon_cost", reason:"throwing_weapon_lob", mergeScope:"operation"});
 			if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
 			_root.玩家信息界面.玩家必要信息界面.弹夹数 = 剩余显示手雷数;
+			if (胶囊使用 != null) _root.物品UI函数.确认胶囊投掷(胶囊使用);
 		}
 	}
 	gotoAndPlay("暗器低抛换弹夹");

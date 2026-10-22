@@ -2525,6 +2525,8 @@ class Program
                     return skillTask.EnrichPanelInitData(initDataJson, panelInstanceId);
                 if (panelName == "gym")
                     return gymTrainingTask.BindPanelOpenData(initDataJson, panelInstanceId);
+                if (panelName == "npcshop")
+                    return npcShopTask.EnrichPanelInitData(initDataJson, panelInstanceId);
                 return initDataJson;
             });
             panelHost.SetPanelCloseObserver(delegate(string panelName, string panelInstanceId)

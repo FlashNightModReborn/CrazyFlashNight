@@ -52,6 +52,11 @@ namespace CF7Launcher.Tasks
         private static readonly Regex ValidLease = new Regex("^[A-Za-z0-9._-]{1,160}$", RegexOptions.Compiled);
 
         private readonly PanelPendingCallTracker<PendingRequest> _pendingCalls;
+        private readonly Func<string, bool> _capsuleTrySend;
+        private string _pendingCapsuleInstance;
+        private string _pendingCapsuleOpenId;
+        private string _capsuleInstance;
+        private string _capsuleOpenId;
         private readonly object _lock = new object();
         private readonly Dictionary<string, CatalogAuthority> _catalogAuthorities =
             new Dictionary<string, CatalogAuthority>(StringComparer.Ordinal);
@@ -75,6 +80,7 @@ namespace CF7Launcher.Tasks
 
         public NpcShopTask(Func<bool> isClientReady, Func<string, bool> trySend, int timeoutMs = DefaultTimeoutMs)
         {
+            _capsuleTrySend = trySend;
             _pendingCalls = new PanelPendingCallTracker<PendingRequest>(
                 isClientReady,
                 trySend,
@@ -86,12 +92,71 @@ namespace CF7Launcher.Tasks
         public void SetInvoker(Action<Action> invoker) { _invokeOnUI = invoker; }
         internal string WriteState { get { lock (_lock) return _writeState; } }
 
+        internal string EnrichPanelInitData(string initDataJson, string panelInstanceId)
+        {
+            JObject data = JObject.Parse(initDataJson);
+            JToken token = data["capsuleOpenId"];
+            string openId = token != null && token.Type == JTokenType.String
+                ? token.Value<string>() : null;
+            if (token != null && (openId == null || !ValidCallId.IsMatch(openId)
+                || data.Value<string>("shopId") != "迷之盔甲君"
+                || data.Value<string>("source") != "npc_shop_refresh"))
+                throw new InvalidOperationException("Invalid capsule shop opening correlation");
+            if (string.IsNullOrEmpty(panelInstanceId) || !ValidPanelInstanceId.IsMatch(panelInstanceId))
+                throw new InvalidOperationException("Missing exact NPC shop instance");
+            // 仅 Host 保留关联；Web 不持有或回传开店资格。实际 owner 交接后才激活。
+            data.Remove("capsuleOpenId");
+            lock (_lock)
+            {
+                if (_disposed) throw new ObjectDisposedException(nameof(NpcShopTask));
+                _pendingCapsuleInstance = panelInstanceId;
+                _pendingCapsuleOpenId = openId;
+            }
+            return data.ToString(Formatting.None);
+        }
+
+        private JObject RetireCapsuleLocked()
+        {
+            if (_capsuleOpenId == null || _capsuleInstance == null)
+            {
+                _capsuleOpenId = null;
+                _capsuleInstance = null;
+                return null;
+            }
+            JObject retirement = PanelBridge.BuildFlashCommand("npcShopCapsuleRetire", 0,
+                new JObject { ["capsuleOpenId"] = _capsuleOpenId,
+                    ["capsulePanelInstanceId"] = _capsuleInstance });
+            _capsuleOpenId = null;
+            _capsuleInstance = null;
+            return retirement;
+        }
+
+        private void SendCapsuleRetirement(JObject retirement)
+        {
+            if (retirement == null) return;
+            try
+            {
+                bool sent = _capsuleTrySend != null
+                    && _capsuleTrySend(retirement.ToString(Formatting.None) + "\0");
+                LogManager.Log("event=npc_capsule_retire_requested sent=" + sent);
+            }
+            catch
+            {
+                // 资格回收是单向通知；不把失败解释为交易未执行，也不解除未知写门。
+                LogManager.Log("event=npc_capsule_retire_delivery_unknown");
+            }
+        }
+
         public void Dispose()
         {
+            JObject retirement;
             lock (_lock)
             {
                 if (_disposed) return;
                 _disposed = true;
+                retirement = RetireCapsuleLocked();
+                _pendingCapsuleInstance = null;
+                _pendingCapsuleOpenId = null;
                 _navigationGeneration++;
                 _navigationLeaseToken = null;
                 _navigationLeaseTransferred = false;
@@ -102,12 +167,14 @@ namespace CF7Launcher.Tasks
                 _tradeAuthorities.Clear();
                 _pendingCalls.Dispose();
             }
+            SendCapsuleRetirement(retirement);
         }
 
         internal void BindMaterialShopNavigationOwner(
             string panelName,
             string panelInstanceId)
         {
+            JObject retirement;
             lock (_lock)
             {
                 if (_disposed) return;
@@ -119,12 +186,21 @@ namespace CF7Launcher.Tasks
                 {
                     return;
                 }
+                retirement = RetireCapsuleLocked();
+                if (panelName == "npcshop" && panelInstanceId == _pendingCapsuleInstance)
+                {
+                    _capsuleInstance = panelInstanceId;
+                    _capsuleOpenId = _pendingCapsuleOpenId;
+                    _pendingCapsuleInstance = null;
+                    _pendingCapsuleOpenId = null;
+                }
                 _navigationLeaseToken = null;
                 _navigationLeaseTransferred = false;
                 _navigationOwnerPanel = panelName;
                 _navigationOwnerPanelInstanceId = panelInstanceId;
                 _navigationGeneration++;
             }
+            SendCapsuleRetirement(retirement);
         }
 
         internal bool TryAcquireMaterialShopNavigationLease(
@@ -356,6 +432,12 @@ namespace CF7Launcher.Tasks
                 RejectAndRemember(callId, cmd, ownerPanel, ownerPanelInstanceId, "unsupported_version");
                 return;
             }
+            if (payload.Property("capsuleOpenId") != null
+                || payload.Property("capsulePanelInstanceId") != null)
+            {
+                RejectAndRemember(callId, cmd, ownerPanel, ownerPanelInstanceId, "invalid_payload");
+                return;
+            }
             JObject normalized;
             if (!TryNormalizePayload(cmd, payload, out normalized))
             {
@@ -369,9 +451,21 @@ namespace CF7Launcher.Tasks
             }
 
             int fid;
+            string capsuleOpenId = null;
+            string capsuleInstance = null;
             lock (_lock)
             {
                 if (_pendingCalls.IsKnownWebCallId(callId)) return;
+                if (_capsuleOpenId != null)
+                {
+                    if (ownerPanel != "npcshop" || ownerPanelInstanceId != _capsuleInstance)
+                    {
+                        RejectAndRemember(callId, cmd, ownerPanel, ownerPanelInstanceId, "panel_instance_expired");
+                        return;
+                    }
+                    capsuleOpenId = _capsuleOpenId;
+                    capsuleInstance = _capsuleInstance;
+                }
                 if (_navigationLeaseToken != null)
                 {
                     RespondError(callId, cmd, ownerPanel, ownerPanelInstanceId, "busy");
@@ -453,6 +547,11 @@ namespace CF7Launcher.Tasks
             }
 
             JObject flash = PanelBridge.BuildFlashCommand(action, fid, normalized);
+            if (capsuleOpenId != null)
+            {
+                flash["capsuleOpenId"] = capsuleOpenId;
+                flash["capsulePanelInstanceId"] = capsuleInstance;
+            }
             string json = flash.ToString(Formatting.None);
             LogManager.Log(AuthorityLogFormatter.FormatAuthorityFlashCallBound(
                 "NpcShopTask", callId, fid, ownerPanel, ownerPanelInstanceId,
@@ -588,8 +687,22 @@ namespace CF7Launcher.Tasks
 
         public void ClearPending()
         {
+            ClearPending(null);
+        }
+
+        internal void ClearPending(string preservePreparedForInstance)
+        {
+            JObject retirement;
             lock (_lock)
             {
+                retirement = RetireCapsuleLocked();
+                // 仅真实 owner→owner 交接可保留 exact incoming intent；断线/导航/普通关闭不保留。
+                if (preservePreparedForInstance == null
+                    || _pendingCapsuleInstance != preservePreparedForInstance)
+                {
+                    _pendingCapsuleInstance = null;
+                    _pendingCapsuleOpenId = null;
+                }
                 _navigationGeneration++;
                 _navigationLeaseToken = null;
                 _navigationLeaseTransferred = false;
@@ -600,6 +713,7 @@ namespace CF7Launcher.Tasks
                 _tradeAuthorities.Clear();
                 _pendingCalls.Clear();
             }
+            SendCapsuleRetirement(retirement);
         }
 
         private static bool TryResolveCommand(string cmd, out string action, out bool isWrite)

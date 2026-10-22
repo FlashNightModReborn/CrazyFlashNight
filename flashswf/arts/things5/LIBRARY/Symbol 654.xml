@@ -175,7 +175,7 @@ function 攻击(x轴攻击范围, y轴攻击范围, x轴保持距离)
          {
             _parent.方向改变("右");
          }
-         _parent.gotoAndStop(_parent.攻击模式 + "攻击");
+         _parent.状态改变(_parent.攻击模式 + "攻击");
          if(_root.gameworld[_parent.攻击目标].hp <= 0)
          {
             _parent.攻击目标 = "无";

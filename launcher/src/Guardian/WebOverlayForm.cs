@@ -3120,6 +3120,14 @@ namespace CF7Launcher.Guardian
                     // C# 响应回到 JS：{ type:'taskResult', task, callId, ...原响应 }
                     HandleWebTaskMessage(parsed, json);
                 }
+                else if (type == "skill_response_diag")
+                {
+                    if (_panelHost != null && _panelHost.ActivePanelName == "skills"
+                        && JToken.DeepEquals(parsed?["panelInstanceId"], new JValue(_panelHost.ActivePanelInstanceId))
+                        && CanAcceptPanelDocumentMessages && ReferenceEquals(sender, _webView?.CoreWebView2)
+                        && string.Equals(args.Source, _webView?.Source?.AbsoluteUri, StringComparison.OrdinalIgnoreCase))
+                        _skillTask?.HandleResponseDiagnostic(parsed);
+                }
                 else if (type == "panel-toast")
                 {
                     // 面板 toast 桥接：web 面板模块 Toast.add 上送原始 Flash htmlText 子集，
@@ -4772,7 +4780,8 @@ namespace CF7Launcher.Guardian
                     out retiredPanel,
                     out retiredInstance))
             {
-                RetirePanelRequestOwner(retiredPanel);
+                RetirePanelRequestOwner(retiredPanel,
+                    panelName == "npcshop" ? panelInstanceId : null);
             }
             BindMaterialShopNavigationOwners(
                 panelName,
@@ -4794,14 +4803,14 @@ namespace CF7Launcher.Guardian
                 _mercTask.ClearPanelInstance();
         }
 
-        private void RetirePanelRequestOwner(string panelName)
+        private void RetirePanelRequestOwner(string panelName, string incomingNpcShopInstanceId = null)
         {
             if (!IsInventoryOwnerPanel(panelName)) return;
             if (_inventoryTask != null) _inventoryTask.ClearPending();
             if (panelName == "kshop" && _shopTask != null)
                 _shopTask.ClearPending();
             else if (panelName == "npcshop" && _npcShopTask != null)
-                _npcShopTask.ClearPending();
+                _npcShopTask.ClearPending(incomingNpcShopInstanceId);
             else if (panelName == "crafting" && _craftingTask != null)
                 _craftingTask.ClearPending();
         }
@@ -5097,7 +5106,7 @@ namespace CF7Launcher.Guardian
         public void SetSkillTask(SkillTask task)
         {
             _skillTask = task;
-            task.SetPostToWeb(PostToWeb);
+            task.SetTryPostToWeb(TryPostToWeb);
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 

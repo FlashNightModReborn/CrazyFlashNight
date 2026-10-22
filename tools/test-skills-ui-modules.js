@@ -8,6 +8,7 @@ const Loadout = require('../launcher/web/modules/skills-loadout.js');
 const Interactions = require('../launcher/web/modules/skills-interactions.js');
 const Presenter = require('../launcher/web/modules/skills-render.js');
 const Diagnostics = require('../launcher/web/modules/skills-diagnostics.js');
+const Runtime = require('../launcher/web/modules/skills-runtime.js');
 
 let checks = 0;
 function equal(actual, expected, message) {
@@ -207,6 +208,97 @@ equal({
     reason:'malformed',view:'trainer',selectedSkill:'闪现',
     trainerExpired:true,pendingCount:2,diagnostics:[{code:'bad_row'}]
 }, 'diagnostic record is stable and capability-free');
+// Exercise the production coordinator's synchronous presenter callback, including
+// malformed and late snapshots that must never unlock a write.
+const requests = [], observedStates = [];
+const coordinator = new Runtime.SkillCoordinator({
+    send(message) { requests.push(message); return true; },
+    validateSnapshot(value) { return value.valid !== false; },
+    onResponseReceived() { throw new Error('diagnostic unavailable'); },
+    onSnapshot(value, source) {
+        observedStates.push(coordinator.getState());
+        if (source === 'write') coordinator.requestPreview({skillKey:'next'}, () => {});
+    }
+});
+coordinator.open({panelInstanceId:'panel.trace',view:'trainer',trainerSession:'secret'});
+function reply(request, extra) {
+    return Object.assign({type:'panel_resp',panel:'skills',domain:'skills',cmd:request.cmd,
+        callId:request.callId,panelInstanceId:'panel.trace',writeEpoch:1}, extra);
+}
+coordinator.write('learnCommit', {expectedLearnToken:'secret'});
+coordinator.handleResponse(reply(requests[0], {success:true,snapshot:{revision:2}}));
+equal(observedStates, ['idle'], 'validated write snapshot renders only after the gate settles');
+equal(requests.map(x => x.cmd), ['learnCommit','learnPreview'], 'presenter may issue the next preview without a new gesture');
+coordinator.close();
+coordinator.open({panelInstanceId:'panel.trace',view:'trainer',trainerSession:'secret'});
+requests.length = 0; observedStates.length = 0;
+coordinator.write('learnCommit', {expectedLearnToken:'secret'});
+coordinator.handleResponse(reply(requests[0], {success:true,snapshot:{revision:3,valid:false}}));
+equal({state:coordinator.getState(),renders:observedStates.length}, {state:'needs_reconcile',renders:0},
+    'malformed success keeps the unknown-write gate and never renders an unlocked snapshot');
+coordinator.close();
+coordinator.open({panelInstanceId:'panel.trace',view:'trainer',trainerSession:'secret',writeEpoch:4});
+requests.length = 0;
+coordinator.write('learnCommit', {expectedLearnToken:'secret'});
+coordinator.handleResponse(reply(requests[0], {success:true,snapshot:{revision:1}}));
+equal(coordinator.getState(), 'needs_reconcile', 'an older write epoch cannot settle the gate');
+coordinator.close();
+coordinator.open({panelInstanceId:'panel.trace',view:'trainer',trainerSession:'secret',writeState:'needs_reconcile',
+    reconcileAfterCallId:'old.write'});
+requests.length = 0; observedStates.length = 0;
+coordinator.retryReconcile();
+coordinator.handleResponse(reply(requests[0], {success:true,revision:5,reconciled:true,
+    reconcileId:requests[0].payload.reconcileId}));
+equal(observedStates, ['idle'], 'a matching reconcile also presents an already settled gate');
+coordinator.close();
+
+for (const source of ['write','reconcile']) {
+    const sent = [];
+    const current = new Runtime.SkillCoordinator({send(message) { sent.push(message); return true; },
+        onSnapshot(value, appliedSource) { if (appliedSource === source) current.write('equip', {slot:1}); }});
+    current.open({panelInstanceId:'panel.trace',view:'trainer',trainerSession:'secret',
+        writeState:source === 'reconcile' ? 'needs_reconcile' : 'idle',reconcileAfterCallId:'old.write'});
+    if (source === 'write') current.write('learnCommit', {expectedLearnToken:'secret'});
+    else current.retryReconcile();
+    current.handleResponse(reply(sent[0], source === 'write'
+        ? {success:true,snapshot:{revision:6}}
+        : {success:true,revision:6,reconciled:true,reconcileId:sent[0].payload.reconcileId}));
+    equal({state:current.getState(),activeCall:current.debugState().activeWrite.callId,
+        reconcile:current.debugState().activeReconcile},
+        {state:'write_pending',activeCall:sent[1].callId,reconcile:null},
+        source + ' presentation cannot overwrite the gate of a reentrant new write');
+    current.close();
+}
+
+const reports = [], callbacks = [], cancelled = [];
+let now = 10;
+const trace = Diagnostics.createResponseTrace({send(value) { reports.push(value); },now:() => now,
+    requestFrame(callback) { callbacks.push(callback); return callbacks.length; },cancelFrame(handle) { cancelled.push(handle); }});
+trace.open('panel.trace');
+const response = {type:'panel_resp',panel:'skills',domain:'skills',panelInstanceId:'panel.trace',
+    callId:'write.1',cmd:'learnCommit',writeEpoch:1,snapshot:{trainerSession:'secret',learnToken:'secret'}};
+trace.received(response);
+trace.refresh(response, () => { now += 4; }); callbacks[0]();
+equal(reports.map(x => x.stage), ['web_received','dom_refresh_begin','dom_refresh_end','frame_callback'],
+    'response trace separates reception, synchronous DOM work and the later frame callback');
+equal(reports[2].durationMs, 4, 'Web duration uses its own monotonic interval');
+equal(Object.keys(reports[0]).sort(), ['callId','cmd','durationMs','panel','panelInstanceId','stage','type','writeEpoch'].sort(),
+    'diagnostics copy only correlation metadata and never snapshot capabilities');
+const beforeForeign = reports.length;
+trace.received(Object.assign({}, response, {panelInstanceId:'foreign'}));
+equal(reports.length, beforeForeign, 'foreign instances are not reported');
+for (let i=0;i<10;i++) trace.refresh(response, () => {});
+equal(cancelled.length, 2, 'pending diagnostic frame callbacks have a fixed capacity');
+trace.close(); const beforeLate = reports.length; callbacks.slice(1).forEach(callback => callback());
+equal(reports.length, beforeLate, 'closed instances cannot report late frame callbacks');
+let rendered = 0;
+const brokenTrace = Diagnostics.createResponseTrace({send() { throw new Error('offline'); },now:() => 0});
+brokenTrace.open('panel.trace'); brokenTrace.refresh(response, () => { rendered++; });
+equal(rendered, 1, 'logging failures do not prevent a successful render');
+trace.open('panel.trace');
+assert.throws(() => trace.refresh(response, () => { throw new Error('renderer failed'); }), /renderer failed/);
+equal(reports.at(-1).stage, 'dom_refresh_failed', 'render failures are observed without converting them to success');
+trace.close();
 assert.throws(() => Presenter.create(null), /explicit state and intent ports/);
 checks += 1;
 

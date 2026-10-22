@@ -102,6 +102,51 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Theory]
+        [InlineData("world_npc", "{shopId:'迷之盔甲君',capsuleOpenId:'capsule.router'}")]
+        [InlineData("npc_shop_refresh", "{shopId:'前治安官',capsuleOpenId:'capsule.router'}")]
+        [InlineData("npc_shop_refresh", "{shopId:'迷之盔甲君',capsuleOpenId:null}")]
+        [InlineData("npc_shop_refresh", "{shopId:'迷之盔甲君',unexpected:'capsule.router'}")]
+        [InlineData("npc_shop_refresh", "{shopId:'迷之盔甲君',capsuleOpenId:'bad correlation'}")]
+        public void CapsuleNpcShopOpening_RejectsInvalidExtrasOrTuple(string source, string extras)
+        {
+            var router = MakeRouter(new Capture());
+            using var task = new NpcShopTask(() => true, _ => true);
+            using var harness = new HostHarness(router);
+            harness.Host.SetInitDataEnricher((panel, data, instance) => panel == "npcshop"
+                ? task.EnrichPanelInitData(data, instance) : data);
+            router.RequestOpenPanel("npcshop", source, null, null, null, null, null, extras);
+            Assert.Null(harness.Host.ActivePanelName);
+        }
+
+        [Fact]
+        public void CapsuleNpcShopOpening_RoutesPrivateCorrelationThroughExactHostInstance()
+        {
+            var sent = new List<JObject>();
+            var router = MakeRouter(new Capture());
+            using var task = new NpcShopTask(() => true, json =>
+            { sent.Add(JObject.Parse(json.TrimEnd('\0'))); return true; });
+            using var harness = new HostHarness(router);
+            harness.Host.SetInitDataEnricher((panel, data, instance) => panel == "npcshop"
+                ? task.EnrichPanelInitData(data, instance) : data);
+            harness.Host.PanelChanged += (panel, instance) =>
+                task.BindMaterialShopNavigationOwner(panel, instance);
+            router.RequestOpenPanel("npcshop", "npc_shop_refresh", null, null, null, null, null,
+                "{shopId:'迷之盔甲君',capsuleOpenId:'capsule.router.valid'}");
+            Assert.Equal("npcshop", harness.Host.ActivePanelName);
+            string owner = harness.Host.ActivePanelInstanceId;
+            Assert.DoesNotContain("capsule.router.valid", harness.Host.LastOpenPayloadForTest);
+            task.HandleWebRequest("snapshot", new JObject
+            {
+                ["type"] = "panel", ["panel"] = "npcshop", ["domain"] = "npcshop",
+                ["panelInstanceId"] = owner, ["cmd"] = "snapshot", ["callId"] = "capsule.router.snapshot",
+                ["payload"] = new JObject { ["v"] = 1, ["shopId"] = "迷之盔甲君" }
+            });
+            JObject flash = Assert.Single(sent);
+            Assert.Equal("capsule.router.valid", (string)flash["capsuleOpenId"]);
+            Assert.Equal(owner, (string)flash["capsulePanelInstanceId"]);
+        }
+
+        [Theory]
         [InlineData("SHOP", "shopPanelOpen", "shopPanelClose")]
         [InlineData("TASK_UI", "taskPanelOpen", "taskPanelClose")]
         [InlineData("NEW_TASK_UI", "taskPanelOpen", "taskPanelClose")]

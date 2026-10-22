@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Bus;
 using CF7Launcher.Guardian;
+using CF7Launcher.Diagnostic;
 
 namespace CF7Launcher.Tasks
 {
@@ -100,6 +101,8 @@ namespace CF7Launcher.Tasks
             new Dictionary<string, LearnTokenBinding>(StringComparer.Ordinal);
         private readonly object _lock = new object();
         private Action<string> _postToWeb;
+        private Func<string, bool> _tryPostToWeb;
+        private SkillResponseDiagnostics _responseDiagnostics = new SkillResponseDiagnostics(LogManager.Log);
         private Action<Action> _invokeOnUI;
         private Action _onCoordinatorSettled;
         private PendingRequest _queuedReconcile;
@@ -147,6 +150,15 @@ namespace CF7Launcher.Tasks
         }
 
         public void SetPostToWeb(Action<string> post) { _postToWeb = post; }
+        public void SetTryPostToWeb(Func<string, bool> post) { _tryPostToWeb = post; }
+        internal void SetResponseDiagnostics(SkillResponseDiagnostics diagnostics) { _responseDiagnostics = diagnostics; }
+        public bool HandleResponseDiagnostic(JObject message)
+        {
+            string instance;
+            lock (_lock) instance = _panelInstanceId;
+            try { return instance != null && _responseDiagnostics.TryRecordWeb(message, instance); }
+            catch { return false; }
+        }
         public void SetInvoker(Action<Action> invoker) { _invokeOnUI = invoker; }
         public void SetCoordinatorSettled(Action callback) { _onCoordinatorSettled = callback; }
         internal string WriteState { get { lock (_lock) return _writeState; } }
@@ -1306,7 +1318,7 @@ namespace CF7Launcher.Tasks
             web["callId"] = entry.WebCallId;
             web["panelInstanceId"] = entry.PanelInstanceId;
             web["writeEpoch"] = entry.WriteEpoch;
-            PostToWeb(web.ToString(Formatting.None));
+            PostToWeb(web.ToString(Formatting.None), entry);
         }
 
         private void RespondError(string callId, string cmd, string error, bool requiresReconcile,
@@ -1322,10 +1334,28 @@ namespace CF7Launcher.Tasks
             PostToWeb(response.ToString(Formatting.None));
         }
 
-        private void PostToWeb(string json)
+        private void PostToWeb(string json, PendingRequest entry = null)
         {
-            if (_invokeOnUI != null) _invokeOnUI(delegate { if (_postToWeb != null) _postToWeb(json); });
-            else if (_postToWeb != null) _postToWeb(json);
+            var trace = entry == null ? null : _responseDiagnostics.Begin(
+                entry.WebCallId, entry.PanelInstanceId, entry.WebCmd, entry.WriteEpoch, entry.FlashCallId);
+            Action post = delegate
+            {
+                _responseDiagnostics.Record(trace, "ui_dispatch_enter");
+                _responseDiagnostics.Record(trace, "web_post_begin");
+                try
+                {
+                    if (_tryPostToWeb != null)
+                        _responseDiagnostics.Record(trace, _tryPostToWeb(json) ? "web_post_returned" : "web_post_rejected");
+                    else if (_postToWeb != null)
+                    {
+                        _postToWeb(json);
+                        _responseDiagnostics.Record(trace, "web_post_returned_unobserved");
+                    }
+                    else _responseDiagnostics.Record(trace, "web_post_rejected");
+                }
+                catch { _responseDiagnostics.Record(trace, "web_post_failed"); throw; }
+            };
+            if (_invokeOnUI != null) _invokeOnUI(post); else post();
         }
 
         private void NotifyCoordinatorSettled()

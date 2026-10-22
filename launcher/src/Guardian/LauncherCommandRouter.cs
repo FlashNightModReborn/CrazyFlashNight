@@ -3963,9 +3963,11 @@ namespace CF7Launcher.Guardian
             try
             {
                 JObject extras = JObject.Parse(initDataExtrasJson);
-                if (extras.Count != 1
+                if ((extras.Count != 1 && extras.Count != 2)
                     || extras.Property("shopId") == null
-                    || extras["shopId"].Type != JTokenType.String)
+                    || extras["shopId"].Type != JTokenType.String
+                    || (extras.Count == 2 && (extras.Property("capsuleOpenId") == null
+                        || extras["capsuleOpenId"].Type != JTokenType.String)))
                 {
                     LogManager.Log(
                         "[Router] OpenNpcShopPanel rejected non-whitelisted extras");
@@ -3987,6 +3989,14 @@ namespace CF7Launcher.Guardian
                     ["source"] = source,
                     ["debug"] = false
                 };
+                if (extras.Property("capsuleOpenId") != null)
+                {
+                    string openId = extras.Value<string>("capsuleOpenId");
+                    if (shopId != "迷之盔甲君" || source != "npc_shop_refresh"
+                        || string.IsNullOrEmpty(openId) || openId.Length > 96)
+                        return;
+                    initData["capsuleOpenId"] = openId;
+                }
                 OpenPanel("npcshop", initData.ToString(Formatting.None));
             }
             catch (Exception ex)

@@ -91,7 +91,7 @@ class org.flashNight.arki.item.equipment.PropertyOperators {
     }
 
     /**
-     * 对属性应用曲线压缩。
+     * 对乘区后的当前属性值应用曲线。
      *
      * 当前支持 sqrtScale（默认）：
      *   result = round(coefficient * sqrt(current))
@@ -101,6 +101,10 @@ class org.flashNight.arki.item.equipment.PropertyOperators {
      * - 只压缩不放大，current 为 0/1 或曲线结果更差时保留原值
      * - 数值写法：<curve><diffusion>1.414</diffusion></curve>
      * - 对象写法：<curve><diffusion><type>sqrtScale</type><coefficient>1.414</coefficient><min>1</min></diffusion></curve>
+     *
+     * saturatingAdd 是独立的正向类型：x + amount*x/(x+pivot)。
+     * 只处理有限正数，amount >= 0、pivot > 0；不会把当前值减小。
+     * 输入已包含 percentage / multiplier，后续 flat 仍在曲线之后相加。
      *
      * @param prop 要被修改的属性对象。
      * @param curveProp 曲线配置对象。
@@ -141,9 +145,20 @@ class org.flashNight.arki.item.equipment.PropertyOperators {
             if (isNaN(minValue)) minValue = 1;
 
             var curvedVal:Number;
+            var amplifying:Boolean = false;
             if (curveType == "sqrtScale" || curveType == "sqrt") {
                 if (currentVal < 0) continue;
                 curvedVal = coefficient * Math.sqrt(currentVal);
+            } else if (curveType == "saturatingAdd") {
+                var amount:Number = Number(curveConfig.amount);
+                var pivot:Number = Number(curveConfig.pivot);
+                if (!isFinite(currentVal) || currentVal <= 0 ||
+                    isNaN(amount) || !isFinite(amount) || amount < 0 ||
+                    isNaN(pivot) || !isFinite(pivot) || pivot <= 0) continue;
+                // 等价于 amount*x/(x+pivot)，避免乘积中间值溢出。
+                curvedVal = currentVal + amount / (1 + pivot / currentVal);
+                if (!isFinite(curvedVal)) continue;
+                amplifying = true;
             } else {
                 continue;
             }
@@ -154,8 +169,9 @@ class org.flashNight.arki.item.equipment.PropertyOperators {
 
             var roundedVal:Number = roundByProperty(key, curvedVal);
 
-            // 压缩型曲线不应把低散射/零散射武器变差。
-            if (roundedVal > currentVal) {
+            // 两种方向分别守边界；不改变旧 sqrtScale 的只压缩合同。
+            if ((!amplifying && roundedVal > currentVal) ||
+                (amplifying && roundedVal < currentVal)) {
                 roundedVal = currentVal;
             }
 

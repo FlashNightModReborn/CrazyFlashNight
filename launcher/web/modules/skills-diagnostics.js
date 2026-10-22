@@ -75,5 +75,69 @@
         return fallbackCopyText(value, options.document);
     }
 
-    return {redact:redact, buildRecord:buildRecord, copyText:copyText};
+    /** Bounded, best-effort response observations; never a write acknowledgement. */
+    function createResponseTrace(options) {
+        options = options || {};
+        var owner = '', generation = 0, frames = [];
+        var commands = /^(snapshot|learnPreview|learnCommit|equip|unequip|moveSlot|setPassive|reorder)$/;
+        function clock() {
+            try { return Number(options.now()); } catch (error) { return 0; }
+        }
+        function valid(response) {
+            return !!(owner && response && response.type === 'panel_resp' && response.panel === 'skills'
+                && response.domain === 'skills' && response.panelInstanceId === owner
+                && typeof response.callId === 'string' && typeof response.cmd === 'string'
+                && /^[A-Za-z0-9._-]{1,96}$/.test(response.callId || '') && commands.test(response.cmd || '')
+                && typeof response.writeEpoch === 'number' && isFinite(response.writeEpoch)
+                && response.writeEpoch >= 0 && response.writeEpoch <= 2147483647 && response.writeEpoch % 1 === 0);
+        }
+        function send(response, stage, elapsed) {
+            if (!valid(response) || typeof options.send !== 'function') return;
+            elapsed = Math.max(0, Math.min(600000, Number(elapsed) || 0));
+            try {
+                options.send({type:'skill_response_diag', panel:'skills', panelInstanceId:owner,
+                    callId:response.callId, cmd:response.cmd, writeEpoch:response.writeEpoch,
+                    stage:stage, durationMs:elapsed});
+            } catch (error) {} // A diagnostic failure cannot interrupt presentation or replay a write.
+        }
+        function cancel(frame) {
+            try { if (typeof options.cancelFrame === 'function') options.cancelFrame(frame.handle); } catch (error) {}
+        }
+        function close() {
+            generation++; owner = '';
+            frames.forEach(cancel); frames = [];
+        }
+        return {
+            open:function(instance) { close(); owner = String(instance || ''); },
+            close:close,
+            received:function(response) { send(response, 'web_received', 0); },
+            refresh:function(response, render) {
+                // Keep only correlation metadata alive until RAF, never the full snapshot.
+                response = valid(response) ? {type:'panel_resp',panel:'skills',domain:'skills',
+                    panelInstanceId:response.panelInstanceId,callId:response.callId,
+                    cmd:response.cmd,writeEpoch:response.writeEpoch} : null;
+                var started = clock(), capturedGeneration = generation;
+                send(response, 'dom_refresh_begin', 0);
+                try { render(); }
+                catch (error) { send(response, 'dom_refresh_failed', clock() - started); throw error; }
+                send(response, 'dom_refresh_end', clock() - started);
+                if (!valid(response) || typeof options.requestFrame !== 'function') return;
+                if (frames.length >= 8) cancel(frames.shift());
+                var frame = {handle:null}; frames.push(frame);
+                try {
+                    frame.handle = options.requestFrame(function() {
+                        var index = frames.indexOf(frame);
+                        if (index < 0 || capturedGeneration !== generation) return;
+                        frames.splice(index, 1);
+                        // RAF callback execution is not proof of pixels being presented.
+                        send(response, 'frame_callback', clock() - started);
+                    });
+                } catch (error) {
+                    var index = frames.indexOf(frame); if (index >= 0) frames.splice(index, 1);
+                }
+            }
+        };
+    }
+
+    return {redact:redact, buildRecord:buildRecord, copyText:copyText, createResponseTrace:createResponseTrace};
 });

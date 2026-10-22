@@ -505,27 +505,31 @@
                 <bulletrename>常规穿甲弹</bulletrename>
             </merge>
             <useSwitch>
-                <!-- 机枪专用矫正：抵消基础公式，改为纯×2，统一损失50%射弹密度 -->
+                <!-- 命名分支不叠加default：机枪直接使用纯×2，射弹密度减半 -->
                 <use name="机枪,压制机枪">
-                    <flat>
-                        <interval>-50</interval>
-                    </flat>
                     <percentage>
-                        <interval>80</interval>
+                        <interval>100</interval>
                     </percentage>
                 </use>
-                <!-- default：其他武器基础惩罚 (I + 50) × 1.2 -->
+                <!-- 常规枪保留+20%乘区；x为乘区后的间隔，柔性附加32x/(x+48)。
+                     单装本插件时约为1.2I+32I/(I+40)，两端倍率趋近2与1.2。 -->
                 <use>
-                    <flat>
-                        <interval>50</interval>
-                    </flat>
                     <percentage>
                         <interval>20</interval>
                     </percentage>
+                    <curve>
+                        <interval>
+                            <type>saturatingAdd</type>
+                            <amount>32</amount>
+                            <pivot>48</pivot>
+                        </interval>
+                    </curve>
                 </use>
             </useSwitch>
         </stats>
-        <description>拥有穿刺能力的弹药，能在未经适配的武器上发射，代价是降低一定射速。</description>
+        <description>赋予弹药穿刺能力，代价是降低射速。
+        常规枪械的射速惩罚随原始射速平滑变化，高射速端趋近减半，慢速端趋近降低六分之一；具体变化可在改装预览中查看。
+        机枪与压制机枪的射击间隔直接加倍，射弹密度减半。</description>
         <tag>弹药</tag>
     </mod>
     <!-- ========== 射线子弹插件 ========== -->

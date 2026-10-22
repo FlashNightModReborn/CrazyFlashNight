@@ -139,6 +139,19 @@ _root.物品UI函数.初始化药剂栏图标 = function():Void {
 		快捷药剂界面, Number(_root.药剂组切换键), _root);
 };
 
+// 胶囊资格只沿真实手雷弹体与既有扣除回执链进入，不借 source 字符串放行。
+_root.物品UI函数.登记胶囊投掷 = function(unit:MovieClip, projectile:MovieClip):Object {
+    return org.flashNight.arki.item.NpcCapsuleShopService.registerShot(unit, projectile);
+};
+_root.物品UI函数.确认胶囊投掷 = function(shot:Object):Boolean {
+    return org.flashNight.arki.item.NpcCapsuleShopService.confirmShot(shot);
+};
+_root.物品UI函数.打开胶囊便携商店 = function(projectile:MovieClip):Boolean {
+    var opened:Boolean = org.flashNight.arki.item.NpcCapsuleShopService.openProjectile(projectile);
+    if (!opened && typeof _root.发布消息 == "function") _root.发布消息("商店面板暂时不可用");
+    return opened;
+};
+
 /**
  * 老地图/平板入口只做 shopId 解析；失败时不得再打开 Flash 商店。
  */

@@ -125,6 +125,7 @@ namespace CF7Launcher.Guardian
                 ["tradeToken"] = "tradeToken",
                 ["expectedLearnToken"] = "expectedLearnToken",
                 ["learnToken"] = "learnToken",
+                ["capsuleOpenId"] = "capsuleOpenId",
                 ["expectedLease"] = "expectedLease",
                 ["slotLease"] = "slotLease",
                 ["closeLease"] = "closeLease",
@@ -136,7 +137,7 @@ namespace CF7Launcher.Guardian
             "expectedTuningToken", "tuningToken", "expectedCheckoutToken",
             "checkoutToken", "expectedPurchasedToken", "purchasedToken",
             "expectedCraftToken", "craftToken", "expectedBatchToken", "batchToken",
-            "expectedTradeToken", "tradeToken", "expectedLearnToken", "learnToken",
+            "expectedTradeToken", "tradeToken", "expectedLearnToken", "learnToken", "capsuleOpenId",
             "expectedLease", "slotLease", "closeLease", "transactionId"
         };
 

@@ -343,12 +343,16 @@ namespace CF7Launcher.Tests.Guardian
 
             string retire = Slice(
                 source,
-                "private void RetirePanelRequestOwner(string panelName)",
+                "private void RetirePanelRequestOwner(",
                 "private void RetireAllInventoryOwnerRequests()");
             Assert.Contains("_inventoryTask.ClearPending();", retire);
             Assert.Contains("_shopTask.ClearPending();", retire);
-            Assert.Contains("_npcShopTask.ClearPending();", retire);
+            Assert.Contains("_npcShopTask.ClearPending(incomingNpcShopInstanceId);", retire);
             Assert.Contains("_craftingTask.ClearPending();", retire);
+            string changed = Slice(source,
+                "private void OnAuthoritativePanelChanged(",
+                "private void BindTeamPanelOwners(");
+            Assert.Contains("panelName == \"npcshop\" ? panelInstanceId : null", changed);
         }
 
         [Fact]

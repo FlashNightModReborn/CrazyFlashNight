@@ -277,8 +277,10 @@ _root.UI系统.NPC商店WebView.beginCollectionSnapshot = function(shopId:String
     this.batchPlan = null;
     this.tradePlan = null;
     if (this.activeShopId == shopId && this.sessionNonce != undefined && this.sessionNonce != ""
-            && org.flashNight.arki.item.NpcShopAccessService.isContextCurrent(this.accessContext)) return;
+            && org.flashNight.arki.item.NpcShopAccessService.isContextCurrent(this.accessContext)
+            && String(this.sessionAccessKey || "") === String(this.requestAccessKey || "")) return;
     this.accessContext = org.flashNight.arki.item.NpcShopAccessService.captureContext();
+    this.sessionAccessKey = String(this.requestAccessKey || "");
     this.sessionSeq++;
     this.leaseSeq = 0;
     this.sessionNonce = "npc" + getTimer() + "." + this.sessionSeq;
@@ -1726,12 +1728,25 @@ _root.UI系统.NPC商店WebView.executeTradeCommit = function(params:Object):Obj
 };
 
 _root.UI系统.NPC商店WebView.execute = function(commandName:String, params:Object):Object {
-    // 每次预览与首写前重新核对当前模式；旧 snapshot / tradeToken 不保留书中服务资格。
-    if (commandName != "tooltip"
-            && !org.flashNight.arki.item.NpcShopAccessService.canAccess(
-                commandName == "batchPreview" ? String(this.activeShopId) : String(params.shopId))) {
-        return this.fail("access_denied");
+    // 胶囊不是普通远程访问权；Host 私有开店关联与 exact instance 必须每次复证。
+    var requestAccessKey:String = "";
+    if (commandName != "tooltip") {
+        var shopId:String = commandName == "batchPreview" ? String(this.activeShopId) : String(params.shopId);
+        var capsuleRequest:Boolean = params.capsuleOpenId !== undefined || params.capsulePanelInstanceId !== undefined;
+        if (capsuleRequest) {
+            if (!org.flashNight.arki.item.NpcCapsuleShopService.authorize(shopId,
+                    params.capsuleOpenId, params.capsulePanelInstanceId, commandName == "snapshot")) {
+                return this.fail("access_denied");
+            }
+            requestAccessKey = params.capsuleOpenId + "/" + params.capsulePanelInstanceId;
+        } else if (!org.flashNight.arki.item.NpcShopAccessService.canAccess(shopId)) {
+            return this.fail("access_denied");
+        }
+        if (commandName != "snapshot" && String(this.sessionAccessKey || "") !== requestAccessKey) {
+            return this.fail("stale_state");
+        }
     }
+    this.requestAccessKey = requestAccessKey;
     if (this.busy && commandName != "snapshot" && commandName != "tooltip" && commandName != "tradePreview") return this.fail("busy");
     if (commandName != "snapshot" && commandName != "tooltip" && this.accessContext != undefined
             && !org.flashNight.arki.item.NpcShopAccessService.isContextCurrent(this.accessContext)) {
@@ -1778,6 +1793,9 @@ _root.gameCommands = _root.gameCommands || {};
 // Inventory registry. Remove any stale hot-reload binding; tradeCommit is the
 // sole production sale write.
 delete _root.gameCommands["npcShopSell"];
+_root.gameCommands["npcShopCapsuleRetire"] = function(params):Void {
+    org.flashNight.arki.item.NpcCapsuleShopService.retire(params.capsuleOpenId, params.capsulePanelInstanceId);
+};
 _root.gameCommands["npcShopSnapshot"] = function(params) { _root.UI系统.NPC商店WebView.handle("snapshot", params); };
 _root.gameCommands["npcShopTooltip"] = function(params) { _root.UI系统.NPC商店WebView.handle("tooltip", params); };
 _root.gameCommands["npcShopBuy"] = function(params) { _root.UI系统.NPC商店WebView.handle("buy", params); };

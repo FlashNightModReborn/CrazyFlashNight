@@ -1,0 +1,9 @@
+﻿_root.敌人函数={};
+__ENEMY_STATE_CHANGE_SOURCE__
+__ENEMY_ANIMATION_DONE_SOURCE__
+_root.__blackDragonExpectLegacy=__EXPECT_LEGACY__;
+trace("FocusedTestRunId black-dragon-attack Start: __FOCUSED_RUN_ID__");
+_root.blackDragonAttackComplete=function():Void {
+    trace("FocusedTestRunId black-dragon-attack Complete: __FOCUSED_RUN_ID__");
+};
+org.flashNight.arki.unit.Action.Input.BlackDragonAttackTimelineTest.runAllTests();

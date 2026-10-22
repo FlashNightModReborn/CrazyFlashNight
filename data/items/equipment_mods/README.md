@@ -328,9 +328,9 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 
 ---
 
-#### 6. curve - 曲线压缩
+#### 6. curve - 曲线变换
 
-**运算方式：** 对当前属性值应用非线性压缩，当前默认曲线为平方根压缩：
+**运算方式：** 对乘区后的当前属性值应用非线性变换；默认 `sqrtScale` 保持只压缩语义：
 
 ```
 新值 = round(系数 × sqrt(当前值))
@@ -381,6 +381,30 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 
 **用途：** 为顶级压枪、稳定化等配件提供非线性收益，避免低扩散武器过度受益。
 
+**正向饱和类型 `saturatingAdd`：** `新值 = round(x + amount*x/(x+pivot))`。
+`x` 已包含 percentage 和 multiplier，尚未包含 flat；仅有限正数参加运算，
+`amount` 必须有限且非负，`pivot` 必须有限且大于零。零值、负值和坏配置保持原值；
+该类型不会减小当前值，旧 `sqrtScale` 的只压缩边界不变。
+
+```xml
+<percentage><interval>20</interval></percentage>
+<curve>
+    <interval><type>saturatingAdd</type><amount>32</amount><pivot>48</pivot></interval>
+</curve>
+```
+
+这是磁稳贯穿弹常规枪档：单装时先把原间隔 I 乘 1.2 并取整，再柔性增加最多 32 ms；
+连续模型等价于 `1.2I + 32I/(I+40)`，高速/低速极限倍率分别为 2/1.2，TTI 的 140 ms 变为 193 ms。
+机枪/压制机枪命中独立分支，直接使用 interval +100%，不叠加 default。
+其他 percentage 仍与 +20% 加算，独立乘区先于曲线、flat 后于曲线；
+同属性的多个 curve 沿既有合同按 mods 遍历顺序后者覆盖前者，不自动复合。
+Tooltip 显示“柔性增加，最多 +32毫秒”，预览继续投影最终发/秒。
+
+离线检查：`python -X utf8 -B tools/validate-equipment-interval-curve.py`；
+真实 XML/AVM1 与说明、预览：`scripts/run-equipment-interval-curve-tests.ps1`。
+实际编译须先取得 CS6/TestLoader 交接，验证与参数依据见
+[本项记录](../../../docs/reports/磁稳贯穿弹-有界射速惩罚-实现与验证-2026-10-22.md)。
+
 ---
 
 #### 7. cap - 上限/下限值
@@ -415,7 +439,7 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
     ↓
 2. multiplier（独立乘区） ← 在percentage之后应用（乘法增幅）
     ↓
-3. curve（曲线压缩）      ← 在乘区后压缩当前值
+3. curve（曲线变换）      ← 在乘区后变换当前值
     ↓
 4. flat（固定值）
     ↓
@@ -433,7 +457,7 @@ merge 对**所有字符串属性**应用前缀保留拼接规则，适用于任�
 **为什么这样排序？**
 - percentage先行：基于基础值和强化等级计算百分比增幅（加法合并，抑制膨胀）
 - multiplier次之：在percentage基础上应用独立乘区（乘法增幅，精细控制）
-- curve在乘区后：对已经形成的当前值做非线性压缩，适合高数值更强收益的属性
+- curve在乘区后：输入是已形成的当前值；按类型压缩或柔性增加，不包含后续flat
 - flat再次：在所有百分比计算后加固定值
 - softOverride设定宿主基础档：会改写原生值，但不与专用覆盖插件争夺最终解释权
 - override覆盖：可以完全改变前面的计算结果，用于改变本质属性
