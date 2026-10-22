@@ -34,8 +34,10 @@ internal readonly record struct PlayerHudCooldown(bool Ready, double Step, doubl
     internal double Fraction => Ready ? 1 : Total > 0 ? Math.Clamp(Step / Total, 0, 1) : 0;
 }
 internal sealed record PlayerHudBuff(string Id, bool Timed, double Total, double Remaining);
+internal sealed record PlayerHudColdSkill(string Name, string Icon, string Key, int Level, PlayerHudCooldown Cooldown, bool Blocked);
 internal sealed record PlayerHudSnapshot(long Epoch, long Sequence, PlayerHudVitals Vitals,
-    PlayerHudCombat Combat, PlayerHudLoadout Loadout, PlayerHudCooldown[] Cooldowns, PlayerHudBuff[] Buffs, PlayerHudResourceHints? Resources = null);
+    PlayerHudCombat Combat, PlayerHudLoadout Loadout, PlayerHudCooldown[] Cooldowns, PlayerHudBuff[] Buffs, PlayerHudResourceHints? Resources = null,
+    PlayerHudColdSkill[]? ColdSkills = null);
 internal sealed record PlayerHudActionResult(string ActionId, bool Success, string Error, bool Changed);
 
 /// <summary>One atomic adoption point. Missing groups retain data only inside an established epoch.</summary>
@@ -99,7 +101,7 @@ internal sealed class PlayerHudState
                 Changed?.Invoke(); return true;
             }
             var incoming = Object(packet["groups"]);
-            Keys(incoming, "vitals", "combat", "loadout", "cooldowns", "buffs", "resources");
+            Keys(incoming, "vitals", "combat", "loadout", "cooldowns", "buffs", "resources", "coldSkills");
             var candidate = full ? new Dictionary<string, JToken>(StringComparer.Ordinal)
                 : new Dictionary<string, JToken>(_groups, StringComparer.Ordinal);
             foreach (var property in incoming.Properties()) candidate[property.Name] = property.Value;
@@ -114,7 +116,9 @@ internal sealed class PlayerHudState
                 previous != null && incoming["cooldowns"] == null ? previous.Cooldowns : ReadCooldowns(candidate["cooldowns"]),
                 previous != null && incoming["buffs"] == null ? previous.Buffs : ReadBuffs(candidate["buffs"]),
                 previous != null && incoming["resources"] == null ? previous.Resources
-                    : candidate.TryGetValue("resources", out var resources) ? ReadResources(resources) : null);
+                    : candidate.TryGetValue("resources", out var resources) ? ReadResources(resources) : null,
+                previous != null && incoming["coldSkills"] == null ? previous.ColdSkills
+                    : candidate.TryGetValue("coldSkills", out var coldSkills) ? ReadColdSkills(coldSkills) : null);
             var dirty = epoch != _epoch || Snapshot == null || candidate.Any(p => !_groups.TryGetValue(p.Key, out var old) || !JToken.DeepEquals(old, p.Value));
             _groups.Clear(); foreach (var pair in candidate) _groups.Add(pair.Key, pair.Value);
             Snapshot = next; _epoch = epoch; _sequence = sequence;
@@ -282,6 +286,27 @@ internal sealed class PlayerHudState
             var total = Number(b["total"]); var remain = Number(b["remaining"]);
             if (total < 0 || remain < 0) throw new FormatException("buff_timer");
             return new PlayerHudBuff(id, Boolean(b["timed"]), total, remain);
+        }).ToArray();
+    }
+
+    private static PlayerHudColdSkill[] ReadColdSkills(JToken token)
+    {
+        if (token is not JArray rows || rows.Count > 12) throw new FormatException("cold_skill_count");
+        var names = new HashSet<string>(StringComparer.Ordinal);
+        return rows.Select(t =>
+        {
+            var c = Object(t); Keys(c, "name", "icon", "key", "level", "ready", "step", "total", "blocked");
+            var name = Text(c["name"], 128);
+            if (name.Length == 0 || !names.Add(name)) throw new FormatException("cold_skill_name");
+            var icon = OptionalText(c["icon"], 128);
+            if (icon.Length == 0) icon = name;
+            var key = Text(c["key"], 32);
+            var level = c["level"] == null || c["level"]!.Type == JTokenType.Null ? 1 : (int)Integer(c["level"], 1, 9999);
+            var ready = Boolean(c["ready"]);
+            var step = Number(c["step"]);
+            var total = Number(c["total"]);
+            if (step < 0 || total < 0 || (!ready && total <= 0)) throw new FormatException("cold_skill_cooldown");
+            return new PlayerHudColdSkill(name, icon, key, level, new PlayerHudCooldown(ready, step, total), Boolean(c["blocked"]));
         }).ToArray();
     }
 

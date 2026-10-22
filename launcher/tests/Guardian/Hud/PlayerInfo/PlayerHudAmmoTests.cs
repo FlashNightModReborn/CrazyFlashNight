@@ -122,7 +122,7 @@ public sealed class PlayerHudAmmoTests
                     using var bitmap=new Bitmap(1024,576,PixelFormat.Format32bppPArgb);
                     using(var graphics=Graphics.FromImage(bitmap)){graphics.Clear(Color.FromArgb(35,39,44));bottom.Paint(graphics,1,origin);}
                     var changed=0;
-                    for(var y=515;y<564;y++)for(var x=488;x<575;x++)
+                    for(var y=515;y<564;y++)for(var x=484;x<588;x++)
                         if(bitmap.GetPixel(x,y)!=baseline.GetPixel(x,y))changed++;
                     Assert.True(changed>20,"Source tint must visibly alter the existing ammunition text.");
                     var target=bottom.CapturePointerTarget(new Point(origin.X+522,origin.Y+532));
@@ -134,6 +134,70 @@ public sealed class PlayerHudAmmoTests
                         bitmap.Save(Path.Combine(folder,captures[index]+".png"),ImageFormat.Png);
                     }
                 }
+                var evidenceDir=Environment.GetEnvironmentVariable("CF7_EVIDENCE_ROOT");
+                if(!string.IsNullOrWhiteSpace(evidenceDir))
+                {
+                    using var hdOwner=new Form {ClientSize=new Size(1920,1080)};
+                    using var hdAnchor=new Panel {Dock=DockStyle.Fill};
+                    hdOwner.Controls.Add(hdAnchor);hdOwner.CreateControl();hdAnchor.CreateControl();
+                    using var hdBottom=new PlayerHudBottomWidget(hdAnchor,controller,Path.Combine(root,"launcher","web","icons"));
+                    var folder=Path.Combine(evidenceDir,"ammo-hud");Directory.CreateDirectory(folder);
+
+                    void SaveCrop(JObject pkt, string fileName)
+                    {
+                        Assert.Equal("",controller.TakeUiData("pi:"+PlayerHudStateTests.Encode(pkt)));
+                        using var hd=new Bitmap(1920,1080,PixelFormat.Format32bppPArgb);
+                        using(var g=Graphics.FromImage(hd)){g.Clear(Color.FromArgb(35,39,44));hdBottom.Paint(g,1.875f,hdAnchor.PointToScreen(Point.Empty));}
+                        using var crop=hd.Clone(new Rectangle(895,955,225,120),PixelFormat.Format32bppPArgb);
+                        crop.Save(Path.Combine(folder,fileName),ImageFormat.Png);
+                    }
+
+                    // 1. Subweapon mode (50/0 cap 50, 13/0 cap 17)
+                    var subPacket=PlayerHudStateTests.Full();
+                    subPacket["seq"]=10;
+                    var subCombat=(JObject)subPacket["groups"]["combat"];
+                    subCombat["mode"]="长枪副武器";
+                    subCombat["ammo"]=new JArray("45","0","13","0");
+                    subCombat["ammoDetails"]=new JArray(
+                        new JObject{["capacity"]=50,["loaded"]=45,["normal"]=45,["chamber"]=0,["ghost"]=0,["reward"]=0,["reserve"]=0,["spread"]=1.0,["overflow"]=0},
+                        new JObject{["capacity"]=17,["loaded"]=13,["normal"]=13,["chamber"]=0,["ghost"]=0,["reward"]=0,["reserve"]=0,["spread"]=1.0,["overflow"]=0});
+                    SaveCrop(subPacket, "subweapon-hollow-aligned-1080p.png");
+
+                    // 2. Single-gun mode WITHOUT active weapon skill (9000/0 cap 9000) -> hides 战技, expands to full width
+                    var singleNoSkill=PlayerHudStateTests.Full();
+                    singleNoSkill["seq"]=11;
+                    var snsCombat=(JObject)singleNoSkill["groups"]["combat"];
+                    snsCombat["mode"]="长枪";
+                    snsCombat["weapon"]["visible"]=false;
+                    snsCombat["ammo"]=new JArray("9000","0","","");
+                    snsCombat["ammoDetails"]=new JArray(
+                        new JObject{["capacity"]=9000,["loaded"]=9000,["normal"]=9000,["chamber"]=0,["ghost"]=0,["reward"]=0,["reserve"]=0,["spread"]=1.0,["overflow"]=0},
+                        JValue.CreateNull());
+                    SaveCrop(singleNoSkill, "single-no-skill-1080p.png");
+
+                    // 3. Single-gun mode WITH active weapon skill (45/2 cap 50) -> shows 战技 on right, compact cards on left
+                    var singleWithSkill=PlayerHudStateTests.Full();
+                    singleWithSkill["seq"]=12;
+                    var swsCombat=(JObject)singleWithSkill["groups"]["combat"];
+                    swsCombat["mode"]="长枪";
+                    swsCombat["weapon"]["visible"]=true;
+                    swsCombat["ammo"]=new JArray("45","2","","");
+                    swsCombat["ammoDetails"]=new JArray(
+                        new JObject{["capacity"]=50,["loaded"]=45,["normal"]=45,["chamber"]=0,["ghost"]=0,["reward"]=0,["reserve"]=100,["spread"]=1.0,["overflow"]=0},
+                        JValue.CreateNull());
+                    SaveCrop(singleWithSkill, "single-with-skill-1080p.png");
+
+                    // 4. Subweapon mode matching low/empty screenshot (0/0 cap 50, 6/0 cap 36) -> co-tinted icons & breathable layout
+                    var subLowEmpty=PlayerHudStateTests.Full();
+                    subLowEmpty["seq"]=13;
+                    var sleCombat=(JObject)subLowEmpty["groups"]["combat"];
+                    sleCombat["mode"]="长枪副武器";
+                    sleCombat["ammo"]=new JArray("0","0","6","0");
+                    sleCombat["ammoDetails"]=new JArray(
+                        new JObject{["capacity"]=50,["loaded"]=0,["normal"]=0,["chamber"]=0,["ghost"]=0,["reward"]=0,["reserve"]=0,["spread"]=1.0,["overflow"]=0},
+                        new JObject{["capacity"]=36,["loaded"]=6,["normal"]=6,["chamber"]=0,["ghost"]=0,["reward"]=0,["reserve"]=0,["spread"]=1.0,["overflow"]=0});
+                    SaveCrop(subLowEmpty, "subweapon-low-empty-1080p.png");
+                }
                 Assert.Equal(0,sends);
             }
             catch(Exception error){failure=error;}
@@ -141,5 +205,75 @@ public sealed class PlayerHudAmmoTests
         thread.SetApartmentState(ApartmentState.STA);thread.Start();
         Assert.True(thread.Join(TimeSpan.FromSeconds(30)),"Ammo rendering must finish.");
         if(failure!=null)System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(failure).Throw();
+    }
+
+    [Fact]
+    public void ReserveColorAndYieldingPreservePrimaryBudgetAcrossExtremeCapacities()
+    {
+        Assert.Equal(PlayerHudAmmoPainter.ReserveNormalText, PlayerHudBottomWidget.ReserveAmmoColor("15"));
+        Assert.Equal(PlayerHudAmmoPainter.ReserveNormalText, PlayerHudBottomWidget.ReserveAmmoColor("无限"));
+        Assert.Equal(PlayerHudAmmoPainter.ReserveLowText, PlayerHudBottomWidget.ReserveAmmoColor("2"));
+        Assert.Equal(PlayerHudAmmoPainter.ReserveLowText, PlayerHudBottomWidget.ReserveAmmoColor("1"));
+        Assert.Equal(PlayerHudAmmoPainter.ReserveEmptyText, PlayerHudBottomWidget.ReserveAmmoColor("0"));
+
+        float MonospaceMeasure(string s) => s.Length * 7f;
+        var full9999 = PlayerHudAmmoPainter.FormatPrimaryLoaded("9999", MonospaceMeasure, 38f, 9999);
+        var low5Of9999 = PlayerHudAmmoPainter.FormatPrimaryLoaded("5", MonospaceMeasure, 38f, 9999);
+        Assert.Equal("9999", full9999.Text);
+        Assert.Equal("5", low5Of9999.Text);
+        Assert.Equal(full9999.ReservedWidth, low5Of9999.ReservedWidth);
+
+        Assert.Equal("350", PlayerHudAmmoPainter.FormatReserveWithYield("350", MonospaceMeasure, 24f));
+        Assert.Equal("1234", PlayerHudAmmoPainter.FormatReserveWithYield("1234", MonospaceMeasure, 30f));
+        Assert.Equal("999+", PlayerHudAmmoPainter.FormatReserveWithYield("1234", MonospaceMeasure, 25f));
+        Assert.Equal("1.23万", PlayerHudAmmoPainter.FormatReserveWithYield("12345", MonospaceMeasure, 40f));
+        Assert.Equal("1.2万", PlayerHudAmmoPainter.FormatReserveWithYield("12345", MonospaceMeasure, 32f));
+        Assert.Equal("1万+", PlayerHudAmmoPainter.FormatReserveWithYield("12345", MonospaceMeasure, 24f));
+
+        Assert.Equal(544.5f, PlayerHudAmmoPainter.ResolveDualMagazineIconX(500.5f, 583.0f, 21f, 18f, 544.5f));
+        Assert.Equal(544.5f, PlayerHudAmmoPainter.ResolveDualMagazineIconX(500.5f, 583.0f, 28f, 18f, 544.5f));
+        var fiveDigitSplit = PlayerHudAmmoPainter.ResolveDualMagazineIconX(500.5f, 583.0f, 42f, 24f, 544.5f);
+        Assert.True(fiveDigitSplit > 544.5f && fiveDigitSplit <= 583.0f - 24f);
+    }
+
+    [Fact]
+    public void MagazineBarRendersDiscreteAndContinuousTiersAcrossSingleAndDualModes()
+    {
+        using var surface = new Bitmap(240, 60, PixelFormat.Format32bppPArgb);
+        using var g = Graphics.FromImage(surface);
+        g.Clear(Color.Black);
+
+        // Tier 1: 8-round discrete 1:1 cells
+        PlayerHudAmmoPainter.PaintMagazineBar(g, new RectangleF(10, 5, 80, 3), 1f,
+            new PlayerHudAmmoDetail(8, 6, 6, 0, 0, 0, 0, 1.0, 0), "6", 8);
+        var gapPixels = 0;
+        var filledPixels = 0;
+        for (var x = 10; x < 90; x++)
+        {
+            var c = surface.GetPixel(x, 6);
+            if (c.R > 180 && c.G > 180) filledPixels++;
+            else if (c.R < 30 && c.G < 30 && x < 65) gapPixels++;
+        }
+        Assert.True(filledPixels > 35);
+        Assert.True(gapPixels >= 5, "Discrete 8-round bar must keep 1px physical cell gaps");
+
+        var spentTopBorder = surface.GetPixel(84, 5);
+        var spentInterior = surface.GetPixel(84, 6);
+        var spentBottomBorder = surface.GetPixel(84, 7);
+        Assert.True(spentTopBorder.R >= 50 && spentBottomBorder.R >= 50 && spentInterior.R < 25,
+            $"Spent discrete cell must render as hollow slot (top={spentTopBorder}, mid={spentInterior}, bot={spentBottomBorder})");
+
+        // Tier 3: 9999-round continuous bar with 20% quintile notches and leading cursor edge
+        PlayerHudAmmoPainter.PaintMagazineBar(g, new RectangleF(10, 20, 100, 3), 1f,
+            new PlayerHudAmmoDetail(9999, 5000, 5000, 0, 0, 0, 0, 1.0, 0), "5000", 9999);
+        var notchAt20Pct = surface.GetPixel(10 + 20, 21);
+        var fillBetweenNotches = surface.GetPixel(10 + 10, 21);
+        Assert.True(fillBetweenNotches.R > 180 && notchAt20Pct.R < 40, "Quintile notch at 20% must be carved on continuous bar");
+
+        var contSpentTop = surface.GetPixel(10 + 75, 20);
+        var contSpentMid = surface.GetPixel(10 + 75, 21);
+        var contSpentBot = surface.GetPixel(10 + 75, 22);
+        Assert.True(contSpentTop.R >= 50 && contSpentBot.R >= 50 && contSpentMid.R < 25,
+            $"Spent right portion of continuous bar must render as hollow trough (top={contSpentTop}, mid={contSpentMid}, bot={contSpentBot})");
     }
 }

@@ -616,7 +616,14 @@ _root.技能函数.冷技能冷却键 = function(技能名:String):String {
 	return "skill:" + 技能名;
 };
 
-// 指令键 → 提示文本（C# 侧原样画在格子顶部）
+_root.技能函数.冷技能已装入快捷栏 = function(技能名:String):Boolean {
+	for (var i:Number = 1; i <= 12; i++) {
+		if (String(_root["快捷技能栏" + i]) == 技能名) return true;
+	}
+	return false;
+};
+
+// 指令键 → 提示文本（C# 侧原样画在格子底部键位栏）
 _root.技能函数.冷技能键位 = {
 	上: "↑B", 下: "↓B", 前: "→B", 下前: "↓↘B", 上前: "↑↗B", shift前: "⇧→B"
 };
@@ -626,24 +633,30 @@ _root.技能函数.冷技能_HUD键 = [];
 _root.技能函数.冷技能_HUD值 = [];
 _root.技能函数.冷技能_HUD名 = [];
 _root.技能函数.冷技能_HUD键位 = [];
+_root.技能函数.冷技能_HUD等级 = [];
+
+// 显示闸门：只有真正处在冷兵器战斗状态时才显示第二排额外技能栏。
+_root.技能函数._冷技能面板可显示 = function(单位:Object):Boolean {
+	if (单位 == null) return false;
+	if (单位.攻击模式 != "兵器") return false;
+	if (单位.刀 == null) return false;
+	if (单位.倒地 == true) return false;
+	return true;
+};
 
 /**
- * 冷兵器主动技能的 HUD 投影。返回可直接 JSON 化的行数组：
- *   [{name:"迅斩", key:"↑B", ready:true, current:0, total:0, blocked:false}, ...]
+ * 冷兵器主动技能的原生 HUD 投影（第二排额外技能栏）。返回可直接 JSON 化的行数组：
+ *   [{name:"迅斩", icon:"迅斩", key:"↑B", level:5, ready:true, step:0, total:0, blocked:false}, ...]
  *
- * - **未学会的技能不入表** ⇒ C# 侧天然不显示（「未学会不显示」的唯一权威）。
- * - current / total 是 ManualCooldownService 的步（≈33.33ms/步），与既有
- *   cooldowns 组同一口径，C# 复用 PlayerHudCooldownText 格式化。
- * - blocked = 已就绪但 MP 不够（C# 画红字/红边）。
- * - 暂停（面板、对话）时返回空表，原生面板随之隐藏。
- *
- * 注意：行对象每帧新建而不是就地改。addGroup 用 sameProjection 做变更检测，
- * 若复用同一批对象，上一次快照会被就地改掉，永远比不出差异（永不下发）。
+ * - 未学会的技能不入表，且已装备在 1..12 快捷技能栏的技能自动去重不重复显示（A1 合同）。
+ * - step / total 是 ManualCooldownService 的步（≈33.33ms/步），与既有
+ *   cooldowns 组同一口径，C# 复用 PlayerHudCooldownText 格式化并复用技能槽绘制。
+ * - blocked = 已就绪但 MP 不够（C# 复用技能槽缺蓝封印效果）。
  */
 _root.技能函数.冷技能HUD快照 = function(单位:Object):Array {
 	var 表:Array = _root.技能函数.黑猫技能表;
 	if (表 == null) return [];
-	if (_root.暂停 === true) return [];
+	if (!_root.技能函数._冷技能面板可显示(单位)) return [];
 
 	var 查等级:Function = _root.根据技能名查找主角技能等级;
 	if (typeof 查等级 != "function") return [];
@@ -651,12 +664,16 @@ _root.技能函数.冷技能HUD快照 = function(单位:Object):Array {
 	var 键:Array = _root.技能函数.冷技能_HUD键;
 	var 名表:Array = _root.技能函数.冷技能_HUD名;
 	var 键位:Array = _root.技能函数.冷技能_HUD键位;
-	键.length = 0; 名表.length = 0; 键位.length = 0;
+	var 等级表:Array = _root.技能函数.冷技能_HUD等级;
+	键.length = 0; 名表.length = 0; 键位.length = 0; 等级表.length = 0;
 	for (var i:Number = 0; i < 表.length; i++) {
 		var 名:String = 表[i].技能;
-		if (!(Number(查等级(名)) > 0)) continue;
+		var 等级:Number = Number(查等级(名));
+		if (!(等级 > 0)) continue;
+		if (_root.技能函数.冷技能已装入快捷栏(名)) continue;
 		名表.push(名);
 		键位.push(String(_root.技能函数.冷技能键位[表[i].键]));
+		等级表.push(Math.floor(等级));
 		键.push(_root.技能函数.冷技能冷却键(名));
 	}
 	if (名表.length == 0) return [];
@@ -673,9 +690,11 @@ _root.技能函数.冷技能HUD快照 = function(单位:Object):Array {
 		var 缺蓝:Boolean = 就绪 && 数据 != null && mp < Number(数据.MP);
 		结果.push({
 			name: 技能名,
+			icon: 技能名,
 			key: 键位[k],
+			level: 等级表[k],
 			ready: 就绪,
-			current: Number(值[k * 3 + 1]),
+			step: Number(值[k * 3 + 1]),
 			total: Number(值[k * 3 + 2]),
 			blocked: 缺蓝
 		});
@@ -683,210 +702,12 @@ _root.技能函数.冷技能HUD快照 = function(单位:Object):Array {
 	return 结果;
 };
 
-// ============================================================================
-// 自绘面板：纯色白底 + 黑色外框 + 技能名，贴在快捷技能栏正上方
-//
-//   字形：沿用游戏里其它 AS2 动态文本的口径（CutsceneService 的「跳过动画」
-//   提示）——设备字体 _sans、不开 embedFonts。之前那版 8~9px 中文看不见，
-//   主因是字号太小 + 底色透明；这里字号提到 10、底改成纯白不透明。
-//
-//   坐标：面板挂在 _root 上（不挂进 玩家信息界面，避免被原生 HUD 的垫片
-//   对象遮挡），位置由「快捷技能栏1」的全局左上角反推：底边 = 槽位顶边 - 6。
-// ============================================================================
-_root.技能函数.冷技能面板_格宽 = 44;
-_root.技能函数.冷技能面板_格高 = 34;
-_root.技能函数.冷技能面板_间距 = 4;
-_root.技能函数.冷技能面板_离栏 = 6;
-_root.技能函数.冷技能面板_字号 = 10;
-
-// 找技能栏：优先直挂，其次 玩家信息界面 子级，最后扫一遍 _root 子剪辑。
-// 原生 HUD 会把 _root.玩家信息界面 换成垫片对象，原剪辑仍留在显示列表里，
-// 所以最后那步兜底是有意义的；只在没命中时才扫，开销可忽略。
-_root.技能函数._冷技能面板找栏 = function():MovieClip {
-	var 直挂:MovieClip = _root.快捷技能界面;
-	if (直挂 != null && 直挂.快捷技能栏1 != null) return 直挂;
-	var 面板:Object = _root.玩家信息界面;
-	if (面板 != null && 面板.快捷技能界面 != null) return 面板.快捷技能界面;
-	for (var 名:String in _root) {
-		var 子:Object = _root[名];
-		if (typeof 子 != "movieclip") continue;
-		if (子._name == "冷技能冷却面板") continue;
-		if (子.快捷技能界面 != null) return 子.快捷技能界面;
-	}
-	return null;
-};
-
-_root.技能函数._冷技能面板定位 = function(容器:MovieClip):Void {
-	var 格宽:Number = _root.技能函数.冷技能面板_格宽;
-	var 格高:Number = _root.技能函数.冷技能面板_格高;
-	var x:Number;
-	var y:Number;
-	var 栏:MovieClip = _root.技能函数._冷技能面板找栏();
-	if (栏 != null && 栏.快捷技能栏1 != null) {
-		var 槽:MovieClip = 栏.快捷技能栏1;
-		// AS2 的 localToGlobal 是「就地改写传入的点对象、返回 Void」，
-		// 不能写成 var 角 = 栏.localToGlobal(...)（会报 Void→Object 类型不匹配）。
-		var 角:Object = {x: 槽._x, y: 槽._y};
-		栏.localToGlobal(角);
-		x = Math.round(角.x);
-		y = Math.round(角.y - 格高 - _root.技能函数.冷技能面板_离栏);
-	} else {
-		// 兜底：贴着屏幕底部一栏的高度往上放，横向偏右（技能栏原位置）。
-		var 屏宽:Number = (Stage.width > 0) ? Stage.width : 1024;
-		var 屏高:Number = (Stage.height > 0) ? Stage.height : 576;
-		x = Math.round(屏宽 * 0.58);
-		y = Math.round(屏高 - 64 - 格高 - 12);
-	}
-	if (容器._x != x || 容器._y != y) {
-		容器._x = x;
-		容器._y = y;
-		// 面板是 _root 的直接子级，只要在兄弟里排最上面就不会被单位/场景盖住
-		// （单位在 游戏世界 容器内部，和这里不是同一层深度空间）。
-		容器.swapDepths(_root.getNextHighestDepth());
-	}
-};
-
-// 画格子底 + 名字。只在「技能列表变了」时调用一次，不逐帧重画。
-_root.技能函数._冷技能面板画格 = function(格:MovieClip, 名:String):Void {
-	var 格宽:Number = _root.技能函数.冷技能面板_格宽;
-	var 格高:Number = _root.技能函数.冷技能面板_格高;
-	格.clear();
-	格.lineStyle(1, 0x000000, 100);
-	格.beginFill(0xFFFFFF, 100);
-	格.moveTo(0.5, 0.5);
-	格.lineTo(格宽 - 0.5, 0.5);
-	格.lineTo(格宽 - 0.5, 格高 - 0.5);
-	格.lineTo(0.5, 格高 - 0.5);
-	格.lineTo(0.5, 0.5);
-	格.endFill();
-
-	var 行高:Number = _root.技能函数.冷技能面板_字号 + 4;
-	var 格式:TextFormat = new TextFormat("_sans", _root.技能函数.冷技能面板_字号, 0x000000, true);
-	格式.align = "center";
-	var 文本:TextField = 格.名;
-	文本.embedFonts = false;
-	文本.selectable = false;
-	文本.wordWrap = false;
-	文本.text = 名;
-	文本.setTextFormat(格式);
-	文本._x = 1;
-	文本._y = Math.round((格高 - 行高) / 2);
-	文本._width = 格宽 - 2;
-	文本._height = 行高;
-};
-
-// 显示闸门：只有真正处在冷兵器战斗状态时才画面板。
-//   ① 攻击模式 != "兵器"：空手 / 手枪 / 双枪 / 长枪 / 手雷 都没有冷兵器搓招，
-//      留着面板只会误导（这些模式下按方向+B 是别的动作）。
-//   ② 刀 槽为空：攻击模式切换("兵器") 本身就要求 刀 存在，但「切到兵器模式后
-//      再把刀卸了」会让 攻击模式 残留在 "兵器" ⇒ 光看模式会留一块空面板。
-//   ③ 倒地：趴着不能搓招。
-// 三个条件都查一遍，任何一个不成立就藏板（不销毁格子，只关 _visible，
-// 重新满足条件时按原样显示，不用重建）。
-_root.技能函数._冷技能面板可显示 = function(单位:Object):Boolean {
-	if (单位 == null) return false;
-	if (单位.攻击模式 != "兵器") return false;
-	if (单位.刀 == null) return false;
-	if (单位.倒地 == true) return false;
-	return true;
-};
-
-_root.技能函数._冷技能面板帧 = function():Void {
-	var 容器:MovieClip = _root.冷技能冷却面板;
-	if (容器 == null) return;
-
-	var 单位:MovieClip = TargetCacheManager.findHero();
-	if (!_root.技能函数._冷技能面板可显示(单位)) {
-		容器._visible = false;
-		return;
-	}
-
-	var 行:Array = _root.技能函数.冷技能HUD快照(单位);
-	if (行 == null) 行 = [];
-	if (行.length == 0) {
-		容器._visible = false;
-		容器.名字签名 = "";
-		return;
-	}
-
-	_root.技能函数._冷技能面板定位(容器);
-
-	var 格宽:Number = _root.技能函数.冷技能面板_格宽;
-	var 格高:Number = _root.技能函数.冷技能面板_格高;
-	var 字号:Number = _root.技能函数.冷技能面板_字号;
-
-	var 签名:String = "";
-	var i:Number;
-	for (i = 0; i < 行.length; i++) 签名 += 行[i].name + "|";
-	if (容器.名字签名 != 签名) {
-		容器.名字签名 = 签名;
-		for (var d:Number = 行.length; d < 12; d++) {
-			var 旧:MovieClip = 容器["格" + d];
-			if (旧 != null) 旧.removeMovieClip();
-		}
-		for (i = 0; i < 行.length; i++) {
-			var 格:MovieClip = 容器["格" + i];
-			if (格 == null) {
-				格 = 容器.createEmptyMovieClip("格" + i, i + 1);
-				格.createEmptyMovieClip("遮罩", 1);
-				格.createTextField("名", 2, 1, 0, 格宽 - 2, 字号 + 4);
-			}
-			格._x = i * (格宽 + _root.技能函数.冷技能面板_间距);
-			格._y = 0;
-			格.文字色 = -1;
-			_root.技能函数._冷技能面板画格(格, 行[i].name);
-		}
-	}
-
-	for (i = 0; i < 行.length; i++) {
-		var 当前格:MovieClip = 容器["格" + i];
-		if (当前格 == null) continue;
-		var 数据:Object = 行[i];
-
-		// 冷却遮罩：格内顶部往下压，高度占比 = 剩余冷却比例。
-		var 比例:Number = 0;
-		if (数据.ready !== true && Number(数据.total) > 0) {
-			比例 = Number(数据.current) / Number(数据.total);
-			if (!(比例 > 0)) 比例 = 0;
-			if (比例 > 1) 比例 = 1;
-		}
-		var 遮:MovieClip = 当前格.遮罩;
-		遮.clear();
-		if (比例 > 0.002) {
-			var 底:Number = 1 + (格高 - 2) * 比例;
-			遮.beginFill(0x000000, 30);
-			遮.moveTo(1, 1);
-			遮.lineTo(格宽 - 1, 1);
-			遮.lineTo(格宽 - 1, 底);
-			遮.lineTo(1, 底);
-			遮.lineTo(1, 1);
-			遮.endFill();
-		}
-
-		var 色:Number = 0x000000;
-		if (数据.blocked === true) 色 = 0xB03A2E;
-		else if (数据.ready !== true) 色 = 0x3A3A3A;
-		if (当前格.文字色 != 色) {
-			当前格.文字色 = 色;
-			var 格式:TextFormat = new TextFormat("_sans", 字号, 色, true);
-			格式.align = "center";
-			当前格.名.setTextFormat(格式);
-		}
-	}
-
-	容器._visible = true;
-};
-
-if (_root.冷技能面板驱动 == undefined) {
-	var 驱动:MovieClip = _root.createEmptyMovieClip("冷技能面板驱动", _root.getNextHighestDepth());
-	驱动.onEnterFrame = function():Void {
-		if (_root.冷技能冷却面板 == undefined) {
-			if (typeof TargetCacheManager != "function" && typeof TargetCacheManager != "object") return;
-			var 容器:MovieClip = _root.createEmptyMovieClip("冷技能冷却面板", _root.getNextHighestDepth());
-			容器._visible = false;
-			容器.名字签名 = "";
-			容器.tabEnabled = false;
-		}
-		_root.技能函数._冷技能面板帧();
-	};
+// 旧 AS2 自绘临时白框面板已迁移至 C# 原生 HUD 第二排技能栏，若存在旧实例则清理隐藏。
+if (_root.冷技能面板驱动 != undefined) {
+	delete _root.冷技能面板驱动.onEnterFrame;
+	_root.冷技能面板驱动.removeMovieClip();
+}
+if (_root.冷技能冷却面板 != undefined) {
+	_root.冷技能冷却面板._visible = false;
+	_root.冷技能冷却面板.removeMovieClip();
 }

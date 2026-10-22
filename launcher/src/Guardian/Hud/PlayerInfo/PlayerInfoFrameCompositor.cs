@@ -405,21 +405,39 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             }
 
             DrawLayer(canvas, RequireLayer(layers, HpBackplate), plan);
-            DrawHpFill(canvas, plan, hpFrame);
+            var targetHpFrame = visualState.Hp.TargetVirtualFrame;
+            if (live != null && hpFrame < targetHpFrame)
+            {
+                ValidateVirtualFrame(_hp, targetHpFrame);
+                DrawHpDamageTrail(canvas, plan, targetHpFrame, hpFrame);
+                DrawHpFill(canvas, plan, targetHpFrame);
+            }
+            else if (live != null && hpFrame > targetHpFrame)
+            {
+                ValidateVirtualFrame(_hp, targetHpFrame);
+                DrawHpHealPreview(canvas, plan, targetHpFrame, hpFrame);
+                DrawHpFill(canvas, plan, hpFrame);
+            }
+            else
+            {
+                DrawHpFill(canvas, plan, hpFrame);
+            }
             if (live == null) DrawLayer(canvas, RequireLayer(layers, HpRim), plan);
             else
             {
                 _liveMotion ??= new PlayerHudHpMotion();
                 var rimPlan = FindLayerPlan(plan, HpRim);
+                var motionFrame = PlayerHudMotionSettings.ReducedMotion ? 0 : liveFrame;
                 // Extra vitality supplies only the color behind the original moving cutouts.
                 DrawHpOverflow(canvas,plan,live);
+                DrawLowHpPulse(canvas, plan, live, motionFrame);
                 if (hpFrame != _hp.FrameMap.EmptyVirtualFrame)
-                    DrawInGaugeCoordinates(canvas, plan, _hp, () => _liveMotion.DrawLight(canvas, liveFrame));
+                    DrawInGaugeCoordinates(canvas, plan, _hp, () => _liveMotion.DrawLight(canvas, motionFrame));
                 DrawBitmap(canvas, _liveMotion.Raster("hp-motion-base", plan, rimPlan), HpRim, plan);
-                DrawInGaugeCoordinates(canvas, plan, _hp, () => _liveMotion.DrawMotifs(canvas, liveFrame));
+                DrawInGaugeCoordinates(canvas, plan, _hp, () => _liveMotion.DrawMotifs(canvas, motionFrame));
                 DrawBitmap(canvas, _liveMotion.Raster("hp-motion-center", plan, rimPlan), HpRim, plan);
-                DrawInGaugeCoordinates(canvas, plan, _hp, () => _liveMotion.DrawGrid(canvas, liveFrame));
-                DrawInGaugeCoordinates(canvas, plan, _hp, () => PlayerHudResourceOverlay.ShieldRing(canvas,live,liveFrame,resourceMotion?.Shield,
+                DrawInGaugeCoordinates(canvas, plan, _hp, () => _liveMotion.DrawGrid(canvas, motionFrame));
+                DrawInGaugeCoordinates(canvas, plan, _hp, () => PlayerHudResourceOverlay.ShieldRing(canvas,live,motionFrame,resourceMotion?.Shield,
                     (float)_hp.Clip!.StartAngleDegrees));
                 canvas.Restore();
             }
@@ -520,6 +538,200 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
                 IsAntialias = true,
                 Style = SKPaintStyle.Fill,
                 Shader = shader
+            };
+            canvas.DrawPath(hpPaint.CoveragePath, paint);
+        }
+        finally
+        {
+            canvas.Restore();
+        }
+    }
+
+    private void DrawHpDamageTrail(
+        SKCanvas canvas,
+        PlayerInfoRasterPlan plan,
+        int targetVirtualFrame,
+        int trailVirtualFrame)
+    {
+        var trailFraction = (_hp.FrameMap.EmptyVirtualFrame - trailVirtualFrame) /
+            (double)_hp.FrameMap.StepCount;
+        var targetFraction = (_hp.FrameMap.EmptyVirtualFrame - targetVirtualFrame) /
+            (double)_hp.FrameMap.StepCount;
+        trailFraction = Math.Clamp(trailFraction, 0, 1);
+        targetFraction = Math.Clamp(targetFraction, 0, 1);
+        if (trailFraction <= targetFraction)
+        {
+            return;
+        }
+
+        var layerPlan = FindLayerPlan(plan, HpFill);
+        var target = ToLocalRect(
+            layerPlan.PhysicalBounds,
+            plan.TightPhysicalBounds);
+        var transform = layerPlan.SourceToBitmap;
+        var hpPaint = _hpPaint ??
+            throw new ObjectDisposedException(nameof(PlayerInfoFrameCompositor));
+
+        canvas.Save();
+        try
+        {
+            canvas.Translate(
+                target.Left + (float)transform.TranslateX,
+                target.Top + (float)transform.TranslateY);
+            canvas.Scale(
+                (float)transform.ScaleX,
+                (float)transform.ScaleY);
+            if (trailFraction < 1)
+            {
+                using var trailSector = BuildHpSector(trailFraction);
+                canvas.ClipPath(
+                    trailSector,
+                    SKClipOperation.Intersect,
+                    antialias: true);
+            }
+            if (targetFraction > 0)
+            {
+                using var targetSector = BuildHpSector(targetFraction);
+                canvas.ClipPath(
+                    targetSector,
+                    SKClipOperation.Difference,
+                    antialias: true);
+            }
+
+            var bounds = hpPaint.CoveragePath.Bounds;
+            using var shade = SKShader.CreateLinearGradient(
+                new SKPoint(bounds.MidX, bounds.Top),
+                new SKPoint(bounds.MidX, bounds.Bottom),
+                [new SKColor(255, 196, 128, 195), new SKColor(214, 72, 48, 180)],
+                [0f, 1f],
+                SKShaderTileMode.Clamp);
+            using var paint = new SKPaint
+            {
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill,
+                Shader = shade
+            };
+            canvas.DrawPath(hpPaint.CoveragePath, paint);
+        }
+        finally
+        {
+            canvas.Restore();
+        }
+    }
+
+    private void DrawHpHealPreview(
+        SKCanvas canvas,
+        PlayerInfoRasterPlan plan,
+        int targetVirtualFrame,
+        int currentVirtualFrame)
+    {
+        var currentFraction = (_hp.FrameMap.EmptyVirtualFrame - currentVirtualFrame) /
+            (double)_hp.FrameMap.StepCount;
+        var targetFraction = (_hp.FrameMap.EmptyVirtualFrame - targetVirtualFrame) /
+            (double)_hp.FrameMap.StepCount;
+        currentFraction = Math.Clamp(currentFraction, 0, 1);
+        targetFraction = Math.Clamp(targetFraction, 0, 1);
+        if (targetFraction <= currentFraction)
+        {
+            return;
+        }
+
+        var layerPlan = FindLayerPlan(plan, HpFill);
+        var target = ToLocalRect(
+            layerPlan.PhysicalBounds,
+            plan.TightPhysicalBounds);
+        var transform = layerPlan.SourceToBitmap;
+        var hpPaint = _hpPaint ??
+            throw new ObjectDisposedException(nameof(PlayerInfoFrameCompositor));
+
+        canvas.Save();
+        try
+        {
+            canvas.Translate(
+                target.Left + (float)transform.TranslateX,
+                target.Top + (float)transform.TranslateY);
+            canvas.Scale(
+                (float)transform.ScaleX,
+                (float)transform.ScaleY);
+            if (targetFraction < 1)
+            {
+                using var targetSector = BuildHpSector(targetFraction);
+                canvas.ClipPath(
+                    targetSector,
+                    SKClipOperation.Intersect,
+                    antialias: true);
+            }
+            if (currentFraction > 0)
+            {
+                using var currentSector = BuildHpSector(currentFraction);
+                canvas.ClipPath(
+                    currentSector,
+                    SKClipOperation.Difference,
+                    antialias: true);
+            }
+
+            var bounds = hpPaint.CoveragePath.Bounds;
+            using var shade = SKShader.CreateLinearGradient(
+                new SKPoint(bounds.MidX, bounds.Top),
+                new SKPoint(bounds.MidX, bounds.Bottom),
+                [new SKColor(150, 255, 200, 195), new SKColor(52, 205, 130, 175)],
+                [0f, 1f],
+                SKShaderTileMode.Clamp);
+            using var paint = new SKPaint
+            {
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill,
+                Shader = shade
+            };
+            canvas.DrawPath(hpPaint.CoveragePath, paint);
+        }
+        finally
+        {
+            canvas.Restore();
+        }
+    }
+
+    private void DrawLowHpPulse(
+        SKCanvas canvas,
+        PlayerInfoRasterPlan plan,
+        PlayerHudVitals value,
+        int liveFrame)
+    {
+        if (PlayerHudMotionSettings.ReducedMotion || value.Hp <= 0 || value.HpMax <= 0)
+        {
+            return;
+        }
+        var ratio = value.Hp / value.HpMax;
+        if (ratio > 0.25d)
+        {
+            return;
+        }
+
+        var hpPaint = _hpPaint ?? throw new ObjectDisposedException(nameof(PlayerInfoFrameCompositor));
+        var layer = FindLayerPlan(plan, HpFill);
+        var target = ToLocalRect(layer.PhysicalBounds, plan.TightPhysicalBounds);
+        var transform = layer.SourceToBitmap;
+        var wave = 0.5f + 0.5f * MathF.Sin(liveFrame * 0.22f);
+        var severity = Math.Clamp((float)((0.25d - ratio) / 0.25d), 0.2f, 1f);
+        var alpha = (byte)Math.Clamp(Math.Round((18f + 46f * wave) * severity), 10d, 68d);
+
+        canvas.Save();
+        try
+        {
+            canvas.Translate(target.Left + (float)transform.TranslateX, target.Top + (float)transform.TranslateY);
+            canvas.Scale((float)transform.ScaleX, (float)transform.ScaleY);
+            var bounds = hpPaint.CoveragePath.Bounds;
+            using var shade = SKShader.CreateRadialGradient(
+                new SKPoint(bounds.MidX, bounds.MidY),
+                Math.Max(bounds.Width, bounds.Height) * 0.55f,
+                [new SKColor(255, 64, 52, (byte)(alpha * 0.45f)), new SKColor(255, 36, 28, alpha)],
+                [0.2f, 1f],
+                SKShaderTileMode.Clamp);
+            using var paint = new SKPaint
+            {
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill,
+                Shader = shade
             };
             canvas.DrawPath(hpPaint.CoveragePath, paint);
         }

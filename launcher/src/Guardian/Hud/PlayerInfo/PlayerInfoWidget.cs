@@ -29,6 +29,7 @@ internal sealed class PlayerInfoWidget : IDisposable
 
     private PlayerHudVitals? _liveVitals;
     private readonly PlayerHudResourceMotion _resourceMotion = new();
+    internal PlayerHudResourceMotion ResourceMotion => _resourceMotion;
     internal PlayerHudDenialMotion Denial { get; } = new();
     internal PlayerHudDecorationBudget DecorationBudget { get; } = new();
     internal PlayerHudVitals? LiveVitals
@@ -44,10 +45,11 @@ internal sealed class PlayerInfoWidget : IDisposable
     private int _liveMilliseconds;
     internal int LiveFrame => _liveMilliseconds * 3 / 100;
     // The legacy decorations flag describes Flash's tier, not the cost of this native surface.
-    internal bool WantsLiveDecoration => LiveVitals is { Hp: > 0 } && VisualState.HasRenderableState;
+    internal bool WantsLiveDecoration => LiveVitals is { Hp: > 0 } && VisualState.HasRenderableState
+        && (!PlayerHudMotionSettings.ReducedMotion || _resourceMotion.Active || Denial.Active);
     internal void ResetLiveClock()
     {
-        _liveMilliseconds = 0; _resourceMotion.Reset(); Denial.Observe(null); DecorationBudget.Reset();
+        _liveMilliseconds = 0; _resourceMotion.Reset(); if (LiveVitals is { Hp: > 0 }) _resourceMotion.Observe(LiveVitals); Denial.Observe(null); DecorationBudget.Reset();
     }
     internal void ClearResourceFeedback()
     {
@@ -58,6 +60,13 @@ internal sealed class PlayerInfoWidget : IDisposable
     internal bool AdvanceLiveDecoration(int elapsedMs)
     {
         if (!WantsLiveDecoration || elapsedMs <= 0) return false;
+        if (PlayerHudMotionSettings.ReducedMotion)
+        {
+            var wasActive = _resourceMotion.Active || Denial.Active;
+            _resourceMotion.Advance(elapsedMs);
+            Denial.Advance(elapsedMs);
+            return wasActive;
+        }
         var stride = _resourceMotion.Active || Denial.Active ? 1 : DecorationBudget.FrameStride;
         var before = LiveFrame / stride;
         // LCM of the authored 100/11/216-frame loops at 30 fps.
@@ -78,7 +87,7 @@ internal sealed class PlayerInfoWidget : IDisposable
         var compositor = _compositor ??
             throw new ObjectDisposedException(nameof(PlayerInfoWidget));
         var result = compositor.Paint(destination, batch, plan, VisualState, LiveVitals, LiveFrame, _resourceMotion);
-        if (LiveVitals is { } live && (!live.ShieldReady || live.ShieldPresent))
+        if (LiveVitals is { } live && (!live.ShieldReady || live.ShieldPresent || _resourceMotion.Shield.Presence > 0f))
         {
             _shieldReadout ??= new PlayerHudShieldReadout();
             using var graphics = Graphics.FromImage(destination);
@@ -86,7 +95,7 @@ internal sealed class PlayerInfoWidget : IDisposable
             graphics.TranslateTransform(plan.FlashViewportPhysical.Left-plan.TightPhysicalBounds.Left,
                 plan.FlashViewportPhysical.Top-plan.TightPhysicalBounds.Top);
             graphics.ScaleTransform((float)plan.PhysicalScale,(float)plan.PhysicalScale);
-            _shieldReadout.Paint(graphics,live,(float)plan.PhysicalScale);
+            _shieldReadout.Paint(graphics,live,(float)plan.PhysicalScale,_resourceMotion);
         }
         if (Denial.MpAlpha > 0)
         {

@@ -336,13 +336,14 @@ class org.flashNight.arki.hud.PlayerHudService {
         var secondaryDetail:Object = null;
         if (ammoDetailsEnabled) {
             var primarySlot:String = mode == "双枪" ? "手枪" : (mode == "长枪副武器" ? "长枪" : mode);
+            var secondarySlot:String = mode == "双枪" ? "手枪2" : (mode == "长枪副武器" ? "长枪副武器" : "");
             primaryDetail = WeaponAmmoHudProjection.read(unit, primarySlot, oldDetails[0]);
-            if (mode == "双枪") secondaryDetail = WeaponAmmoHudProjection.read(unit, "手枪2", oldDetails[1]);
-            if (primaryDetail != null) {
+            if (secondarySlot != "") secondaryDetail = WeaponAmmoHudProjection.read(unit, secondarySlot, oldDetails[1]);
+            if (primaryDetail != null && unit[primarySlot].value.ammoState.v == 1) {
                 var primaryData:Object = unit[primarySlot + "属性"];
                 firstAmmo = text(primaryDetail.loaded * (org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil.isVertical(primaryData.bullet) ? primaryData.split : 1));
             }
-            if (secondaryDetail != null) {
+            if (secondaryDetail != null && secondarySlot == "手枪2" && unit.手枪2.value.ammoState.v == 1) {
                 var secondaryData:Object = unit.手枪2属性;
                 secondAmmo = text(secondaryDetail.loaded * (org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil.isVertical(secondaryData.bullet) ? secondaryData.split : 1));
             }
@@ -496,10 +497,10 @@ class org.flashNight.arki.hud.PlayerHudService {
      * 未安装该投影（或它不可用）时返回空表，原生面板随之隐藏。
      */
     private static function readColdSkills(unit:Object):Array {
-        // 冷兵器技能冷却面板已改回 AS2 自绘（单位函数_黑猫_技能搓招指令.as 末尾），
-        // 原生 C# 的 coldSkills 组下线：这里恒返回空表，PlayerHudColdSkillWidget
-        // 收不到行就不会画，避免两套 UI 叠在一起。
-        return [];
+        var fn:Object = _root.技能函数;
+        if (fn == null || typeof fn.冷技能HUD快照 != "function") return [];
+        var rows:Array = fn.冷技能HUD快照(unit);
+        return rows instanceof Array ? rows : [];
     }
     private static function validContext(p:Object):Boolean {
         var unit:Object = hero();
@@ -584,6 +585,19 @@ class org.flashNight.arki.hud.PlayerHudService {
                     var resourceHint:Object = SkillResourceService.quick(hero(), parts.name, Number(current.skills[slot-1].mp));
                     NativeTooltipBridge.show(NativeTooltipDocument.buildSkill(parts.name,
                         parts.intro + SkillResourceService.describe(resourceHint), parts.description), null, "top", anchor);
+                    break;
+                }
+            }
+        } else if (p.kind == "coldSkill" && slot > 0 && slot < 13 && Math.floor(slot) == slot) {
+            var coldRows:Array = _root.主角技能表;
+            for (var c:Number = 0; c < coldRows.length; c++) {
+                if (coldRows[c][0] === p.key) {
+                    var coldParts:Object = org.flashNight.gesh.tooltip.SkillTooltipComposer.describeLoadout(c);
+                    var coldData:Object = (_root.技能表对象 == undefined) ? null : _root.技能表对象[p.key];
+                    var coldMp:Number = coldData == null ? 0 : finiteValue(coldData.MP);
+                    var coldHint:Object = SkillResourceService.quick(hero(), coldParts.name, coldMp);
+                    NativeTooltipBridge.show(NativeTooltipDocument.buildSkill(coldParts.name,
+                        coldParts.intro + SkillResourceService.describe(coldHint), coldParts.description), null, "top", anchor);
                     break;
                 }
             }

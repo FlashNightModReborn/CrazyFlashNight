@@ -62,7 +62,7 @@ internal sealed class PlayerHudHpMotion : IDisposable
         if (key < 0 || key >= _light.Length) return;
         var centers = PlayerHudHpMotionData.LightCenters;
         using var gradient = SKShader.CreateRadialGradient(new SKPoint(centers[key*2],centers[key*2+1]),48.425f,
-            [new SKColor(255,255,255,0),new SKColor(255,255,255,153),new SKColor(255,255,255,0)],
+            [new SKColor(255,255,255,0),new SKColor(255,255,255,96),new SKColor(255,255,255,0)],
             [0.4745098f,0.7764706f,1f],SKShaderTileMode.Clamp);
         using var paint = new SKPaint { IsAntialias=true,Shader=gradient,BlendMode=SKBlendMode.Overlay };
         canvas.Save(); canvas.Translate(-40.4f,-45.85f);

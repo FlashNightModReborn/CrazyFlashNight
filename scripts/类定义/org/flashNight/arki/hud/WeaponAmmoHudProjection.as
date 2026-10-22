@@ -4,16 +4,34 @@
 class org.flashNight.arki.hud.WeaponAmmoHudProjection {
     public static function read(unit:Object, slot:String, previous:Object):Object {
         var value:Object = unit[slot].value;
-        var state:Object = value.ammoState;
+        if (value == null && slot == "长枪副武器") value = unit.长枪副武器状态;
         var cap:Number = WeaponAmmoRuntime.capacity(unit, slot);
-        if (!state || state.v != 1 || !(cap > 0)) return null;
-        var loaded:Number = WeaponAmmoRuntime.count(cap - value.shot);
-        var ordinary:Number = WeaponAmmoRuntime.normal(value, cap);
-        var chamber:Number = WeaponAmmoRuntime.count(state.chamber);
-        var ghost:Number = WeaponAmmoRuntime.count(state.ghost);
-        var reward:Number = WeaponAmmoRuntime.count(state.reward);
-        var reserve:Number = WeaponAmmoRuntime.reserve(unit, slot);
-        var spread:Number = WeaponAmmoRuntime.ghostMultiplier(unit, slot);
+        if (!(cap > 0) && slot == "长枪副武器") cap = WeaponAmmoRuntime.count(unit.长枪副武器状态.capacity);
+        if (value == null || !(cap > 0)) return null;
+        var state:Object = value.ammoState;
+        var loaded:Number;
+        var ordinary:Number;
+        var chamber:Number = 0;
+        var ghost:Number = 0;
+        var reward:Number = 0;
+        var reserve:Number = 0;
+        var spread:Number = 1;
+        if (state && state.v == 1) {
+            loaded = WeaponAmmoRuntime.count(cap - value.shot);
+            ordinary = WeaponAmmoRuntime.normal(value, cap);
+            chamber = WeaponAmmoRuntime.count(state.chamber);
+            ghost = WeaponAmmoRuntime.count(state.ghost);
+            reward = WeaponAmmoRuntime.count(state.reward);
+            reserve = WeaponAmmoRuntime.reserve(unit, slot);
+            spread = WeaponAmmoRuntime.ghostMultiplier(unit, slot);
+        } else {
+            var rawShot:Number = Number(value.shot);
+            if (!isFinite(rawShot)) return null;
+            loaded = Math.min(cap * 2, WeaponAmmoRuntime.count(cap - rawShot));
+            ordinary = Math.min(cap, loaded);
+            reward = Math.max(0, loaded - ordinary);
+            reserve = unit[slot] != null ? WeaponAmmoRuntime.reserve(unit, slot) : 0;
+        }
         var overflow:Number = Math.max(0, loaded - cap);
         if (previous != null && previous.capacity === cap && previous.loaded === loaded
                 && previous.normal === ordinary && previous.chamber === chamber
