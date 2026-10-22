@@ -68,6 +68,14 @@
 | F-10 | 零有效 | 修复重试一次、仍零→`error`、回原对话 |
 | F-11 | 部分有效后流断 | 已播保留、无 plan、回原对话当前点 |
 | F-12 | 关闭/取消 | 真取消、未播不落库、finalize 按已播收尾 |
+| F-13 | 赠送精确名成功 | `action(item_grant)`→Host 回执→最终台词；账本/本组明细 |
+| F-14 | 赠送超量自动降量 | 传话上限、`floor` 降量、金币/经验 500 取整 |
+| F-15 | 赠送 1 个都超限 | 不发 `action`、不记账、模型拒绝 |
+| F-16 | 索取精确名 + 点赠送 | `item_claim(pending)`、两按钮、真实扣除、`item_take_accept` |
+| F-17 | 索取子 Agent 再查一次 | 金币第一、抽选+池概况、`search` 仅一次、返回命中池 |
+| F-18 | 索取拒绝/取消 | 玩家拒绝/模型取消、`item_claim(closed)`、不记账 |
+| F-19 | 任务接受直连 | `action(task_accept)` 跳过路由轮、最终台词、不重复弹选项 |
+| F-20 | 装备索取与强化度 | 只取背包、最低强化度、选项文案、`item_level`、完成描述三档 |
 
 ---
 
@@ -609,6 +617,270 @@ data: {"code":"stream_failed","message":"…","valid_lines":1}
 - 期望：任务前 `AddTask` 已先于对话、任务后奖励已先于 finish_conversation，提前关闭不破坏任务状态。
 - 不得用 `advance_past_end` 冒充提前关闭；组末才用原始最后一行 `finalIndex`。
 - finalize 仍按实际已播 transcript 对账；未播改写/新增不落库；响应形状同场景 A。
+
+---
+
+### F-13 赠送精确名成功
+
+**请求（关键字段）**
+
+```json
+{
+  "mode": "daily",
+  "dialogue_instance_id": "11111111-1111-4111-8111-111111111111",
+  "turn_id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+  "npc": "Andy Law",
+  "player_input": "你要是手头宽裕，送我点药呗。",
+  "dialogue": {"kind": "daily", "group_id": "daily_andy_items", "played": [], "remaining": [], "reference_continuation": []},
+  "task_context": null,
+  "limits": {"line_hard_max": 165, "line_prompt_max": 135}
+}
+```
+
+**工具轮（假 LLM）**
+
+```text
+tool_call: give_item_to_player({"name":"普通hp药剂","quantity":3,"keyword":"","instruction":""})
+```
+
+池命中精确名；单价 250，阶段 1、好感 40 → 上限 30000，总价 750 通过；实际数量 3。
+
+**期望 SSE（第一轮）**
+
+```text
+event: status
+data: {"stage":"thinking"}
+
+event: action
+data: {"action_id":"<uuid>","kind":"item_grant","npc":"Andy Law","item_name":"普通hp药剂","quantity":3,"requested_quantity":3}
+
+（Host 执行 AS2 成功并 POST action-result；后端继续）
+
+event: line
+data: {"kind":"add","text":"拿着，别浪费。","emotion":"普通","speaker":"Andy Law","seq":0}
+
+event: done
+data: {"dialogue_instance_id":"11111111-1111-4111-8111-111111111111","session_id":"<新 id>","usage":{}}
+```
+
+**期望 Host**
+
+- 收到 `action` 后调 AS2 `npcItemGrant`，成功才回执；回执前不把“已赠送”当已发生。
+- AS2 成功后左下消息显示“Andy Law赠送了你3个普通hp药剂”。
+- 最终台词在回执成功后才上屏；若 AS2 失败/回执超时，不显示“已赠送”，按失败拒绝。
+
+**期望后端**
+
+- 工具结果成功：`已成功赠送 3 个普通hp药剂`；账本 `give/普通hp药剂 +3`；本组明细 `第1轮：3个普通hp药剂`。
+- 同一 action_id 重复回执只生效一次。
+
+---
+
+### F-14 赠送超量自动降量
+
+**工具轮**
+
+```text
+tool_call: give_item_to_player({"name":"普通hp药剂","quantity":200,"keyword":"","instruction":""})
+```
+
+单价 250，上限 30000 → 200×250=50000 超限；降为 `30000//250=120`。若物品为金币，50000 → 30000（已按 500 取整）。
+
+**期望 SSE**
+
+- `action.quantity=120`，`requested_quantity=200`；最终台词只能说 120 个，并说明“多了拿不了/只给这些”。
+- 账本/本组明细记 120，不记 200。
+
+**期望后端**
+
+- 工具结果：`已成功赠送 120 个普通hp药剂（原请求 200，因价值上限调整）`。
+- 金币/经验值降量后再 `//500*500`；降到 0 走 F-15。
+
+---
+
+### F-15 赠送 1 个都超限
+
+**工具轮**
+
+```text
+tool_call: give_item_to_player({"name":"测试物品-单价超上限","quantity":1,...})
+```
+
+测试物品单价 40000 > 阶段 1 上限 30000。
+
+**期望 SSE**
+
+- 不发 `action`；工具结果为 `你选择了赠送测试物品-单价超上限，因价值过高，赠送失败。`
+- 最终 LLM 只输出角色化的拒绝台词（如“这我可给不起。”），不得说已送。
+- 账本/本组明细不变。
+
+**期望 Host/后端**
+
+- Host 不执行 AS2；后端不记账；日志记录 `gift_value_exceeded` 与实际单价/上限。
+
+---
+
+### F-16 索取精确名 + 点赠送
+
+**第一轮请求**：同 F-13，`player_input` 改为“我这儿有些药，你要吗？”；工具轮：
+
+```text
+tool_call: request_item_from_player({"name":"普通hp药剂","quantity":2,"keyword":"","instruction":""})
+```
+
+**期望 SSE（第一轮）**
+
+```text
+event: status
+data: {"stage":"thinking"}
+
+event: item_claim
+data: {"state":"pending","claim_id":"<uuid>","npc":"Andy Law","item_name":"普通hp药剂","quantity":2}
+
+event: line
+data: {"kind":"add","text":"行，给我两瓶。","emotion":"普通","speaker":"Andy Law","seq":0}
+
+event: done
+```
+
+**期望 Host（第一轮）**
+
+- 收到 claim 后查 AS2 持有：假设背包 5 瓶 → 按钮“赠送2个普通hp药剂（当前持有5）”可用，“不赠送”可用；输入框保持“说点什么…”。
+- 两按钮在本轮最后一条 add 上显示；claim 跨轮保留。
+
+**玩家点“赠送”**
+
+- Host 先调 AS2 `npcItemTake` 扣 2 瓶（金币则扣金币）；成功后才发第二轮请求：
+
+```json
+{
+  "mode": "daily",
+  "turn_id": "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee",
+  "player_input": "【赠送2个普通hp药剂 给Andy Law】",
+  "action": {"kind":"item_take_accept","action_id":"<uuid>","claim_id":"<uuid>","item_name":"普通hp药剂","quantity":2}
+}
+```
+
+**期望 SSE（第二轮）**
+
+```text
+event: item_claim
+data: {"state":"closed","claim_id":"<uuid>","npc":"Andy Law","item_name":"普通hp药剂","quantity":2}
+
+event: line
+data: {"kind":"add","text":"算你识相。","emotion":"普通","speaker":"Andy Law","seq":0}
+
+event: done
+```
+
+**期望后端**
+
+- 校验 claim 匹配；账本 `receive/普通hp药剂 +2`；清 claim；最终 LLM 看到“玩家已经把2个普通hp药剂交给了你”，并附物品信息块。
+- 第一轮索取工具结果原文：`你现在要索取物品：2个普通hp药剂，该物品确认有效，可以索取。现在，请用符合你身份且符合上下文的语句，向玩家索要物品或询问玩家是否要把该物品给你。`（后附物品信息块）
+- 扣除失败：不发成功 action，不记账；Host 提示失败，claim 保留或按失败矩阵关闭，模型按失败回应。
+
+---
+
+### F-17 索取子 Agent 再查一次
+
+**工具轮**
+
+```text
+tool_call: request_item_from_player({"name":"","quantity":1,"keyword":"治疗","instruction":"能回血的消耗品"})
+```
+
+**解析**
+
+- 关键词“治疗”在索取池无命中；抽选 10–20 条，索取池抽选**金币固定第一位**；附本轮候选之外剩余池的分类计数（武器/防具/消耗品/材料/其他/金币）与有效池总数。
+- 子 Agent 第一轮返回 `{"action":"search","keyword":"药剂"}`；后端只再查一次，得“普通hp药剂”等候选。
+- 子 Agent 第二轮返回 `{"action":"pick","name":"普通hp药剂"}`。
+
+**期望**
+
+- 只发一次 `search`；第二轮不再允许 search；返回名必须命中索取池。
+- 成功后走 F-16 的 claim 流程；找不到则 `item_claim` 不出现，工具结果告诉模型“无法索取”。
+
+---
+
+### F-18 索取拒绝/取消
+
+**场景 A：玩家点“不赠送”**
+
+- Host 发 `action.kind=item_take_decline`，`player_input="【不赠送】"`。
+- 后端清 claim、发 `item_claim(closed)`、不记账；最终 LLM 看到“玩家拒绝赠送”，只回应，不再弹选项。
+
+**场景 B：玩家打字“不行”，模型取消**
+
+- 请求不带 action；prompt 带 pending claim 块。
+- 模型工具轮调用 `cancel_item_request()`；后端清 claim、发 `item_claim(closed)`，工具结果“索取已取消”；最终 LLM 正常回话。
+- 账本不变；最近拒绝信息保留 2–3 轮。
+
+---
+
+### F-19 任务接受直连
+
+**请求（关键字段）**
+
+```json
+{
+  "mode": "task",
+  "dialogue_instance_id": "22222222-2222-4222-8222-222222222222",
+  "turn_id": "ffffffff-ffff-4fff-8fff-ffffffffffff",
+  "npc": "Andy Law",
+  "player_input": "我接了",
+  "dialogue": {"kind": "task_pre", "group_id": "task_text_key", "played": [], "remaining": [], "reference_continuation": []},
+  "task_context": {"completed": null, "upcoming": {"task_id": 200124, "title": "…", "npc": "Andy Law", "objectives": ["…"], "rewards": ["…"]}},
+  "action": {"kind": "task_accept", "action_id": "<uuid>"}
+}
+```
+
+**期望**
+
+- 后端在进入 LLM 前执行现有 `_run_confirm`；不注册 `route_task_confirm`，不产生路由轮。
+- 发布成功：结果块“这份委托已经正式派给玩家了”；最终 LLM 只输出确认台词＋结束语。
+- 发布失败：结果块说明失败；模型正常回应；Host 本轮不再重复弹“我接了/我不接”。
+- 只对插话输入条生效；终端手打“我接了”仍走原链路。
+
+---
+
+### F-20 装备索取与强化度
+
+**场景**
+
+- 日常插话，NPC 索取 `M4A1`，数量 1。
+- 玩家持有：穿戴中 `M4A1` +10；背包内 `M4A1` +2、`M4A1` +6。
+- 可索取只看背包：Y=2，最低强化度 Z=2；穿戴中的 +10 不参与，也不会被扣。
+
+**第一轮 claim 与选项**
+
+```text
+event: item_claim
+data: {"state":"pending","claim_id":"<uuid>","npc":"Andy Law","item_name":"M4A1","quantity":1}
+```
+
+- Host 按钮：`赠送 1 个 M4A1 （当前持有2个;强化度为2）`，可用；`不赠送` 可用；输入框保持“说点什么…”。
+- 若背包最低强化度为 1（未强化），按钮退回 `赠送1个M4A1（当前持有1）`，不显示强化度。
+
+**玩家点赠送**
+
+- Host 重新查询背包，扣掉 +2 那一件（不是穿戴中的 +10，也不是 +6），成功后发：
+
+```json
+{
+  "action": {"kind":"item_take_accept","action_id":"<uuid>","claim_id":"<uuid>","item_name":"M4A1","quantity":1,"item_level":2}
+}
+```
+
+**期望后端**
+
+- 校验 claim 与数量（装备固定 1）；账本 `receive/M4A1 +1`，不记强化度；清 claim；发 `item_claim(closed)`。
+- 最终 LLM 看到：`玩家把 1 个 M4A1（强化度2，经过了一定幅度的强化）交给了你`，附物品信息块；最近成功块保留 2–3 轮同样信息。
+- 描述分档：Z<5 `经过了一定幅度的强化`；5≤Z≤8 `经过了较高成本的强化`；Z≥9 `经过了极高成本的强化`；Z≤1 不加强化度与描述。
+
+**失败边界**
+
+- 点击时背包已无该装备、只剩穿戴中、或扣除失败：按“持有不足/扣除失败”处理，不记账、不说已收到，claim 保留或关闭，模型按失败回应。
+- 装备数量固定 1；模型请求多件时按 1 件处理并在工具结果说明。
 
 ---
 
