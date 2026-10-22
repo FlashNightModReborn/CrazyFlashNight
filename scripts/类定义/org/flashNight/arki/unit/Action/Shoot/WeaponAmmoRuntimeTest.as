@@ -79,6 +79,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntimeTest {
             testDualRoundSegmentKeepsHalfReloadPolicy();
             testRewardExpiresOutsideEquippedSlots();
             testHeldTriggersAndLastPacket();
+            testPlainWeaponInitialization();
             testPauseBeforeFrameControlAdmission();
         } catch (error) { check(false, "unexpected exception: " + error); }
         ItemUtil.singleSubmit=oldSubmit; ItemUtil.getTotal=oldTotal; ItemUtil.singleContain=oldContain;
@@ -491,6 +492,56 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntimeTest {
         check(ReloadManager.handleReloadInput(m,u),"loaded long-gun subweapon can interrupt empty primary reload");
         assertNumber(1,m.subAttempts,"K routes to subweapon rather than empty primary");
         check(!m.换弹标签,"subweapon cancellation clears primary frame driver");
+    }
+
+    private static function rejectPlainShot(owner:Object, slot:String, props:Object):Boolean {
+        owner.__plainShotAdmitted = true;
+        return false;
+    }
+
+    private static function testPlainWeaponInitialization():Void {
+        var slots:Array = ["长枪", "手枪", "手枪2"];
+        var invalid:Array = [NaN, Infinity, -Infinity, null, "bad", -1];
+        for (var i:Number = 0; i < slots.length; i++) {
+            var slot:String = slots[i];
+            var u:MovieClip = unit(8,0);
+            var fresh:BaseItem = new BaseItem("测试普通枪", {level:1, mods:[]});
+            var saved:Object = fresh.toObject();
+            check(saved.value.shot === undefined, slot + " fresh saved gun has no shot field");
+            u[slot] = new BaseItem(saved.name, saved.value, saved.lastUpdate);
+            u[slot + "属性"] = {capacity:8, clipname:"测试弹匣"};
+            u[slot + "弹匣容量"] = 8;
+            check(WeaponAmmoRuntime.ensure(u,slot) == null, slot + " plain gun keeps legacy ammo contract");
+            var value:Object = u[slot].value;
+            assertNumber(0,value.shot,slot + " missing counter initializes to zero");
+            assertNumber(8,8-value.shot,slot + " fresh plain gun has finite full ammo");
+            check(value.ammoState === undefined, slot + " initialization invents no typed overload state");
+            u.__plainShotAdmitted = false;
+            WeaponFireCore.executeShot(u,slot,null,{},WeaponAmmoRuntimeTest.rejectPlainShot);
+            check(u.__plainShotAdmitted,slot + " fresh gun passes real fire-core ammo admission");
+            assertNumber(0,value.shot,slot + " rejecting shot guard consumes no ammo");
+            value.shot = 3;
+            WeaponAmmoRuntime.ensure(u,slot);
+            WeaponAmmoRuntime.ensure(u,slot);
+            assertNumber(3,value.shot,slot + " repeated initialization preserves partial magazine");
+            saved = u[slot].toObject();
+            u[slot] = new BaseItem(saved.name,saved.value,saved.lastUpdate);
+            WeaponAmmoRuntime.ensure(u,slot);
+            value = u[slot].value;
+            assertNumber(3,value.shot,slot + " serialized partial magazine restores unchanged");
+            value.shot = 8;
+            u.__plainShotAdmitted = false;
+            WeaponFireCore.executeShot(u,slot,null,{},WeaponAmmoRuntimeTest.rejectPlainShot);
+            check(!u.__plainShotAdmitted,slot + " genuinely empty gun stays blocked");
+            check(ReloadManager.commitMagazine(u,slot,"测试弹匣"),slot + " plain empty gun reloads through production commit");
+            assertNumber(0,value.shot,slot + " plain reload resets real counter");
+            assertNumber(9,packs,slot + " plain reload consumes exactly one packet");
+            for (var j:Number = 0; j < invalid.length; j++) {
+                value.shot = invalid[j];
+                WeaponAmmoRuntime.ensure(u,slot);
+                assertNumber(0,value.shot,slot + " invalid plain counter repaired case " + j);
+            }
+        }
     }
 
     private static function testPauseBeforeFrameControlAdmission():Void {

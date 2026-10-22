@@ -28,6 +28,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoDataTest {
     public static function runAllTests():Void {
         passed=0;failed=0;index=0;items={};mods=[];
         paths=["武器_长枪_霰弹枪.xml","武器_手枪_霰弹枪.xml","武器_长枪_反器材武器.xml",
+            "武器_长枪_机枪.xml","武器_长枪_战斗步枪.xml",
             "武器_手枪_手枪.xml","equipment_mods/中等材料_枪械专用.xml","equipment_mods/高等材料_枪械专用.xml"];
         config={levelStatList:EquipmentConfigManager.getLevelStatList(),
             tierNameToKeyDict:EquipmentConfigManager.getTierNameToKeyDict()};
@@ -65,6 +66,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoDataTest {
     }
     private static function runCases():Void {
         ModRegistry.loadModData(mods);
+        testReportedPlainWeapons();
         var inner:String="枪械内构强化套件";
         var choke:String="霰弹枪口收束器";
         var nonbolt:String="非栓式机构";
@@ -125,5 +127,23 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoDataTest {
         }
         same(44,shotguns,"all shotgun records covered");
         same(9,ghosts,"ghost whitelist not inferred from tube or semi-auto");
+    }
+
+    private static function testReportedPlainWeapons():Void {
+        var names:Array=["M1915Chauchat","Type56R"];
+        var capacities:Array=[20,10];
+        for(var i:Number=0;i<names.length;i++) {
+            var data:Object=calc(names[i],[],1,null);
+            var u:Object=actor(data);
+            delete u.长枪.value.shot;
+            same(capacities[i],data.capacity,names[i]+" real XML capacity preserved");
+            check(WeaponAmmoRuntime.ensure(u,"长枪")==null,names[i]+" follows ordinary ammo branch");
+            same(0,u.长枪.value.shot,names[i]+" missing shot initialized");
+            same(capacities[i],data.capacity-u.长枪.value.shot,names[i]+" real data yields finite full ammo");
+            check(u.长枪.value.ammoState===undefined,names[i]+" gains no overload entitlement");
+            u.长枪.value.shot=2;
+            WeaponAmmoRuntime.ensure(u,"长枪");
+            same(capacities[i]-2,data.capacity-u.长枪.value.shot,names[i]+" existing spent ammo preserved");
+        }
     }
 }
