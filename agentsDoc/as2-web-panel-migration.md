@@ -237,7 +237,7 @@ A3 自动准入以 [testing-guide.md](testing-guide.md) 的 `PG-IDENTITY-TRIPLE`
 
 ### NPC 商店的店级资格（Issue 152）
 
-本节最后核对代码基线：commit `e582cf62da63b8e1b6057df88aa0caf4eadf85b9` 加 2026-10-21 Issue 152 工作树；本节不授予正式 runtime 发布结论。
+本节最后核对代码基线：commit `412d95cd6775fda91b8168c5d384a0447264890e`（2026-10-22）；实现与两轮正式推广已入主线，实际运行身份及限定五档自动验收见[发布与自动验收](../docs/issue-152-发布与自动验收-2026-10-21.md)。本节描述现役规则，不将推广代签全部入口的业务验收。
 
 `NpcShopAccessService` 是材料来源、配方采购、直接打开及 NPC 预览/提交共用的店级判定。书中店只接受 exact `书中-迷之盔甲君`、`repair-campus`、`outcome=active`、当前 `savePath` 和该书配置的关卡名；Lee、结束局、异槽和异关卡均拒绝。来源索引可见不代表可交易，不按名称包含“书中”授权，也不删除全局目录。
 
@@ -246,6 +246,8 @@ A3 自动准入以 [testing-guide.md](testing-guide.md) 的 `PG-IDENTITY-TRIPLE`
 资格随同一地图事实投影返回 AS2，并绑定地图内容摘要。AS2 在导航与每次业务执行前以 `MapDomainBridge.isCurrent()` 复证；换槽或替换存档权威会推进 scene epoch 并退休旧资格。商店会话另绑定槽位、存档对象、书中局次与 scene epoch，旧 snapshot / collection lease / tradeToken 不能跨角色继承。预览后资格变化必须在首写前拒绝；未知写仍按既有流程核对，不因刷新或资格撤销而解除。
 
 合格商店继续开放完整目录，保留既有价格、情报锁、容量、限购及混合买卖；K 点商城不套用 NPC 地区条件。车辆资格由 `InfrastructureVehicleAccess` 统一解释：接受自有键中的合法有限整数、兼容旧数字串与布尔值，拒绝缺失、非法值、Infinity、对象强制转换和继承键；只读取，不修写玩家存档。
+
+2026-10-22 测试员反馈[胶囊入口无法打开盔甲君商店](https://github.com/FlashNightModReborn/CrazyFlashNight/issues/152#issuecomment-6332461815)。该入口尚无同身份复验及因果闭环，继续由 #152 跟踪；不能用已有大学/Lee 验收证明胶囊路径可用，也不能据此直接放开店级资格或重复交易。
 
 
 ### 武器平衡展示摘要（只读附加字段）
