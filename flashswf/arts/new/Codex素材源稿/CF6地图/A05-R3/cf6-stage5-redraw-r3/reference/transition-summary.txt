@@ -1,0 +1,16 @@
+CF6 a4 -> next playable static audit
+
+Actual sequence: a4/root82/world1737 -> exit1720 frame174 -> transition1281 frame21 -> a5/root86/world1752.
+The a4 exit placement explicitly assigns required kills=22 and target="a5". Its shared exit gate additionally requires player-area collision; counter22 alone does not jump the root timeline. The transition bridge autosaves then gotoAndStop(target). No separate story label is targeted.
+
+a5 scene: world1752 at root depth1, foreground1727 at root depth544. World backdrop1745 at local (673.5,207.1), arrival1729 at depth26 local (1190.45,231.4), exit1750 at depth88 local (653.7,112.95), invisible map1751 at depth150, player1106/man1 at authored depth160 local (34.55,317.2). No separate root city layer.
+
+Geometry: backdrop1745 declared transformed shape-bounds union is x[-11.25,1505.5], y[-33.4,449.9], excluding filters and runtime changes. These overhanging artwork bounds differ from camera logical dimensions.
+
+Camera: logical scene 1300x450, stage600x350, Xmin50 Xmax1250 Ymin150 Ymax500. Camera assignment ranges are strictly -700<x<0 and -100<y<0, with candidate rejection rather than clamping. Facing-right screen target(150,240), facing-left(450,240), other control target(300,240). Load applies full displacement; enterFrame divides it by5. Root foreground XY=worldXY*1.2. The decoded bodies are normalized and verified to match the previous a4 camera rules.
+
+Critical startup override: arrival1729 frames1/2/3 put real man1 into empty frame265("失效") and overwrite man1 local XY to (1190.45,231.4). Arrival frame122 restores man1 frame1; arrival frame174 stops. The authored player placement is not the initial playable position. A display-list-only image with both authored man1 and arrival graphics is not an actual gameplay frame.
+
+Illustrative arithmetic only: ignoring arrival, authored player with right-facing load would yield world(0,-77.2). If load instead reads the arrival-assigned position at authored world origin, both candidates fail the strict camera ranges and world(0,0) remains. Event order, enterFrame progression, saved state and held input were not executed; neither case is claimed as the actual initial viewport.
+
+Evidence files: transition-evidence.json (exit/gate/bridge/root), transition-camera-evidence.json, transition-arrival-evidence.json, transition-man1-placement.json, transition-actions.txt, transition-validation.json. transition-audit.py and transition-reader.py reproduce these records. All parsing is read-only on the original source and writes only this audit folder. No ActionScript/SWF execution and no production modifications.

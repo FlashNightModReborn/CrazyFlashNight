@@ -1,0 +1,93 @@
+{
+  "revision": "R3",
+  "native_size": [
+    65,
+    211
+  ],
+  "technique": "AI-reconstructed non-nude upper-body bitmap, continuously registered; editable SVG lower-body anatomy and shadows; two public-domain marble material-only crops. Original game RGB is not rendered. This is not a pure-vector asset or an unaltered photograph.",
+  "generation": {
+    "tool": "OpenAI built-in image_gen",
+    "scope": "Only upper crop y=0..80 of the original 65x211 statue. No generated lower body.",
+    "original_output_size": [
+      1131,
+      1391
+    ],
+    "retained_offline_input": "reference/statue-r3-upper-ai.png",
+    "retained_size": [
+      780,
+      960
+    ],
+    "seed": null,
+    "seed_note": "The built-in tool supplied no seed. Generation itself is not promised reproducible. Offline rebuild uses the retained actual generated image and is deterministic.",
+    "prompt": "Use case: precise-object-edit. Restore a cropped upper-body marble museum sculpture game asset. This output is ONLY the cropped head, shoulders, arms and fabric-covered chest shown in image 1; do not extend below its crop. No lower body is requested.\nImage 1 is the exact edit target and must retain its viewpoint, silhouette, arm gestures, head tilt, dark-light pattern and composition. Increase sculptural detail and clarity, with smoothly connected anatomical masses and believable carved aged ivory marble. Image 2 is material and carving reference only, its viewpoint differs and must not replace the edit target.\nPreserve the diagonal bent forearm behind the hair and the vertical raised arm on screen-right; preserve the triangular negative-space gap. Preserve the head leaning down toward screen-left in three-quarter view, closed eyes, carved curly hair, nose facing left-down, clearly modelled cheek and under-chin. Preserve the bent screen-left elbow and ONE near hand lying horizontally across the folded chest bands, four fingers pointing screen-right and a tucked thumb. One pair of arms and one pair of hands only. Keep the original horizontal upper and lower folds across the chest. Selective deep occlusion under the chin, folds, finger contact and armpit, smooth round lit stone planes elsewhere. Warm muted antique beige/ochre marble with subtle mineral pores, not a shiny plastic surface.\nExactly the same cropped bust composition as image 1, no pedestal added, no lower body extension. True transparent background. No labels, writing, border, extra limbs, duplicated hands, all-around outlines or abstract faceted patches.",
+    "original_output_sha256": "bf2cf678d59977491567fd62174d2d126df554209d090b9334f01616c1298eb8",
+    "retained_sha256": "fc3b592131bfc0afa921e2c513e1014f2c1aff13d830713979cdb72af0874b81"
+  },
+  "source_material": {
+    "creator": "Marie-Lan Nguyen / Jastrow",
+    "date": "2007",
+    "license": "Photographer's public-domain dedication",
+    "source_page": "https://commons.wikimedia.org/wiki/File:Dying_slave_Louvre_MR_1590.jpg",
+    "original_size": [
+      1450,
+      3625
+    ],
+    "subject": "Michelangelo, Dying Slave, 1513–1515, Louvre MR1590",
+    "crops": [
+      {
+        "path": "reference/statue-r3-stone-crop.jpg",
+        "source_box": [
+          800,
+          2070,
+          1030,
+          2370
+        ],
+        "role": "Low-contrast material grain only; no anatomical/photo projection",
+        "sha256": "9c861755557e1dbeca7e89b0b5e6677fdf770970fe8e8b56c1ba589c04dbff44"
+      },
+      {
+        "path": "reference/statue-r3-rough-crop.jpg",
+        "source_box": [
+          150,
+          2700,
+          480,
+          3370
+        ],
+        "role": "Rough-stone chisel grain only",
+        "sha256": "fb184c72dcd21b9d0997ea5515cd0fc441c1c77636a034f52566d9b6251c6a70"
+      }
+    ],
+    "source_full_photo_required_for_rebuild": false,
+    "original_sha256": "987ec8e65a29d2cb87f4175fbb4e32f20abacee78c785301e1790e694b60c38b"
+  },
+  "registration": {
+    "original_reference": "reference/bitmap-1740-original.png",
+    "alpha": "Smooth fitted original-game alpha, all layers clipped to original silhouette",
+    "upper_method": "One continuous thin-plate spline with smoothing 1.1; landmarks stored in source/statue_r3.py; no individual facial-feature or finger collage",
+    "lower_method": "Hand-authored SVG paths and smooth gradients from source/statue.py; all previous original-RGB isophotes omitted; new selective knee/calf/contact shadows authored in statue_r3.py"
+  },
+  "known_deviations": [
+    "The generated face is slightly more frontal than the tiny original, and the chest hand fingers point somewhat farther downward.",
+    "Upper-body raster detail exceeds the entirely vector-modelled lower anatomy; the final asset is offered as the reviewed refinement candidate rather than a recovered original photograph."
+  ],
+  "rebuild": {
+    "command": "python source/statue_r3.py",
+    "dependencies": [
+      "Pillow",
+      "numpy",
+      "scipy",
+      "matplotlib",
+      "Inkscape",
+      "source/statue.py",
+      "source/svg_native.py"
+    ],
+    "reference_files": [
+      "reference/bitmap-1740-original.png",
+      "reference/r2-1740.svg",
+      "reference/statue-r3-upper-ai.png",
+      "reference/statue-r3-stone-crop.jpg",
+      "reference/statue-r3-rough-crop.jpg"
+    ],
+    "notes": "r2-1740.svg is only needed for QA triptychs; not for final asset rendering. Large Jastrow photos and original full-size AI output are research records outside the final source package."
+  }
+}

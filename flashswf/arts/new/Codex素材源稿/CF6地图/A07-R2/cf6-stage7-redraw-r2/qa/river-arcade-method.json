@@ -1,0 +1,31 @@
+{
+  "method": "Manually authored editable SVG architecture, independently synthesized multiscale mineral PNG surface patterns, editable river waves. Source alpha only traced into vector clip to retain exact original footprint. No original RGB sampled, filtered or embedded.",
+  "reference_assistance": "Original images inspected for silhouette, landmark proportions, warm palette, arch thickness and building arrangement. Exact source alpha trace is disclosed.",
+  "passes": [
+    "Pass 0: first image inspected at native and 4x; coarse texture, regular windows and flat river found.",
+    "Pass 1: reduced stone noise, restored form shadows, irregularized gallery windows, rebuilt directional water reflection.",
+    "Pass 2: inspected native and 4x side by side; softened brick joints, individually varied window recesses/shutters, added facade wear and broken brighter water ribbons. Independent review requested round column volume, unequal arch bevel lighting, blunt sill stones, brown pier depth and crisper ripples. All addressed; independent final visual review accepted as a composite candidate with no new silhouette/connectivity defect."
+  ],
+  "assets": {
+    "1784": {
+      "native": [
+        345,
+        187
+      ],
+      "svg_sha256": "bc6a51816e3f1dc3f39333bde5fea7d2d1019214d36d1c91b2d43b307095c41c"
+    },
+    "1789": {
+      "native": [
+        238,
+        219
+      ],
+      "svg_sha256": "76fddaef6fb43b13c874e4754d4aa488178467f04eefdc08544479d3c88c4bac"
+    }
+  },
+  "validation": "Both native-size rendered alpha channels exactly equal supplied originals: zero differing pixels. Native sizes 345x187 and 238x219. XML valid; no external image links.",
+  "review_caveats": [
+    "The new arcade is less warm/dark and its highlights are more regular than the original.",
+    "Foreground water is smoother; building window rhythm is still more regular and bridge detail is simplified.",
+    "Independent reviewer considers these user-evaluation differences rather than geometry blockers."
+  ]
+}

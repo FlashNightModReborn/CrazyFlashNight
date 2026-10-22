@@ -1,0 +1,1944 @@
+{
+  "source": {
+    "path": "/workspace/scratch/1fc166b42c80/cf6-handoff-input/extracted/crazyflasher6-cn_secure.swf",
+    "sha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "method": "Static tag parsing, immediate-value/constant-pool decoding and branch-offset resolution only; no SWF or ActionScript execution."
+  },
+  "conclusion": "a1 (root66/gameworld1592) -> s2 (root39/story1308) -> a2 (root73/gameworld1695).",
+  "rootLabels": [
+    {
+      "frame": 39,
+      "label": "s2"
+    },
+    {
+      "frame": 66,
+      "label": "a1"
+    },
+    {
+      "frame": 73,
+      "label": "a2"
+    }
+  ],
+  "rootDisplays": {
+    "39": {
+      "2127": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0.0,
+          0.0
+        ],
+        "placedAt": 1,
+        "id": 30
+      },
+      "1294": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          -175.05,
+          23.95
+        ],
+        "placedAt": 11,
+        "id": 94,
+        "ratio": 10,
+        "name": "音乐循环播放器"
+      },
+      "1267": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          15.15,
+          -21.5
+        ],
+        "placedAt": 31,
+        "id": 1244,
+        "ratio": 30,
+        "name": "单发枪间隔时间控制"
+      },
+      "1270": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          -48.0,
+          -21.25
+        ],
+        "placedAt": 31,
+        "id": 1249,
+        "ratio": 30
+      },
+      "1274": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          300.0,
+          98.8
+        ],
+        "placedAt": 31,
+        "id": 1252,
+        "ratio": 30,
+        "name": "过关提示"
+      },
+      "1277": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          300.0,
+          121.8
+        ],
+        "placedAt": 31,
+        "id": 1265,
+        "ratio": 30,
+        "name": "死亡提示"
+      },
+      "1297": {
+        "matrix": [
+          8.099563598632812,
+          0,
+          0,
+          8.099563598632812,
+          300.0,
+          175.0
+        ],
+        "placedAt": 31,
+        "id": 1281,
+        "ratio": 30,
+        "name": "切镜"
+      },
+      "37": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          300.0,
+          175.0
+        ],
+        "placedAt": 37,
+        "id": 1294,
+        "ratio": 36
+      },
+      "39": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          488.8,
+          333.0
+        ],
+        "placedAt": 37,
+        "id": 1295
+      },
+      "1": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0.0,
+          0.0
+        ],
+        "placedAt": 39,
+        "id": 1308,
+        "ratio": 38
+      }
+    },
+    "66": {
+      "2127": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0.0,
+          0.0
+        ],
+        "placedAt": 1,
+        "id": 30
+      },
+      "1294": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          -175.05,
+          23.95
+        ],
+        "placedAt": 11,
+        "id": 94,
+        "ratio": 10,
+        "name": "音乐循环播放器"
+      },
+      "1267": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          15.15,
+          -21.5
+        ],
+        "placedAt": 31,
+        "id": 1244,
+        "ratio": 30,
+        "name": "单发枪间隔时间控制"
+      },
+      "1270": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          -48.0,
+          -21.25
+        ],
+        "placedAt": 31,
+        "id": 1249,
+        "ratio": 30
+      },
+      "1274": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          300.0,
+          98.8
+        ],
+        "placedAt": 31,
+        "id": 1252,
+        "ratio": 30,
+        "name": "过关提示"
+      },
+      "1277": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          300.0,
+          121.8
+        ],
+        "placedAt": 31,
+        "id": 1265,
+        "ratio": 30,
+        "name": "死亡提示"
+      },
+      "1297": {
+        "matrix": [
+          8.099563598632812,
+          0,
+          0,
+          8.099563598632812,
+          300.0,
+          175.0
+        ],
+        "placedAt": 31,
+        "id": 1281,
+        "ratio": 30,
+        "name": "切镜"
+      },
+      "1204": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          221.8,
+          318.35
+        ],
+        "placedAt": 58,
+        "id": 1523,
+        "ratio": 57,
+        "name": "ui"
+      },
+      "1238": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          -50.85,
+          27.75
+        ],
+        "placedAt": 58,
+        "id": 1551,
+        "ratio": 57,
+        "name": "买枪器"
+      },
+      "1251": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          342.45,
+          176.4
+        ],
+        "placedAt": 58,
+        "id": 1555,
+        "ratio": 57
+      },
+      "2128": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          187.5,
+          -54.45
+        ],
+        "placedAt": 58,
+        "id": 1577,
+        "ratio": 57,
+        "name": "修改器"
+      },
+      "2157": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          582.15,
+          17.95
+        ],
+        "placedAt": 58,
+        "id": 1579,
+        "ratio": 57
+      },
+      "1": {
+        "matrix": [
+          1.000030517578125,
+          0,
+          0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "placedAt": 66,
+        "id": 1592,
+        "ratio": 65,
+        "name": "gameworld"
+      },
+      "235": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          433.95,
+          12.45
+        ],
+        "placedAt": 66,
+        "id": 1593,
+        "ratio": 65
+      },
+      "236": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          514.95,
+          12.45
+        ],
+        "placedAt": 66,
+        "id": 1594,
+        "ratio": 65
+      }
+    },
+    "73": {
+      "2127": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0.0,
+          0.0
+        ],
+        "placedAt": 1,
+        "id": 30
+      },
+      "1294": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          -175.05,
+          23.95
+        ],
+        "placedAt": 11,
+        "id": 94,
+        "ratio": 10,
+        "name": "音乐循环播放器"
+      },
+      "1267": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          15.15,
+          -21.5
+        ],
+        "placedAt": 31,
+        "id": 1244,
+        "ratio": 30,
+        "name": "单发枪间隔时间控制"
+      },
+      "1270": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          -48.0,
+          -21.25
+        ],
+        "placedAt": 31,
+        "id": 1249,
+        "ratio": 30
+      },
+      "1274": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          300.0,
+          98.8
+        ],
+        "placedAt": 31,
+        "id": 1252,
+        "ratio": 30,
+        "name": "过关提示"
+      },
+      "1277": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          300.0,
+          121.8
+        ],
+        "placedAt": 31,
+        "id": 1265,
+        "ratio": 30,
+        "name": "死亡提示"
+      },
+      "1297": {
+        "matrix": [
+          8.099563598632812,
+          0,
+          0,
+          8.099563598632812,
+          300.0,
+          175.0
+        ],
+        "placedAt": 31,
+        "id": 1281,
+        "ratio": 30,
+        "name": "切镜"
+      },
+      "1204": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          221.8,
+          318.35
+        ],
+        "placedAt": 58,
+        "id": 1523,
+        "ratio": 57,
+        "name": "ui"
+      },
+      "1238": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          -50.85,
+          27.75
+        ],
+        "placedAt": 58,
+        "id": 1551,
+        "ratio": 57,
+        "name": "买枪器"
+      },
+      "1251": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          342.45,
+          176.4
+        ],
+        "placedAt": 58,
+        "id": 1555,
+        "ratio": 57
+      },
+      "2128": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          187.5,
+          -54.45
+        ],
+        "placedAt": 58,
+        "id": 1577,
+        "ratio": 57,
+        "name": "修改器"
+      },
+      "2157": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          582.15,
+          17.95
+        ],
+        "placedAt": 58,
+        "id": 1579,
+        "ratio": 57
+      },
+      "1": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          0.0,
+          0.0
+        ],
+        "placedAt": 73,
+        "id": 1596
+      },
+      "2": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          -0.75,
+          -1.0
+        ],
+        "placedAt": 73,
+        "id": 1599,
+        "ratio": 72
+      },
+      "4": {
+        "matrix": [
+          1.000030517578125,
+          0,
+          0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        "placedAt": 73,
+        "id": 1695,
+        "ratio": 72,
+        "name": "gameworld"
+      },
+      "619": {
+        "matrix": [
+          1,
+          0,
+          0,
+          1,
+          308.5,
+          76.45
+        ],
+        "placedAt": 73,
+        "id": 1700,
+        "ratio": 72,
+        "name": "gogogo"
+      }
+    }
+  },
+  "a1ExitTriggerPlacement": {
+    "payloadOffset": 14701491,
+    "length": 74,
+    "flags": 134,
+    "depth": 148,
+    "characterId": 1587,
+    "matrix": [
+      1,
+      0,
+      0,
+      1,
+      362.0,
+      -62.2
+    ],
+    "allEventFlags": 1,
+    "clipActionRecords": [
+      {
+        "eventFlags": 1,
+        "eventName": "load",
+        "offset": 14701515,
+        "length": 46,
+        "rawHex": "96 16 00 00 e9 9c 80 e8 a6 81 e6 9d 80 e6 ad bb e6 95 b0 00 07 14 00 00 00 1d 96 0f 00 00 e7 9b ae e6 a0 87 e5 b8 a7 00 00 73 32 00 1d 00",
+        "actions": [
+          {
+            "offset": 14701515,
+            "opcode": "0x96",
+            "op": "Push",
+            "byteLength": 25,
+            "values": [
+              "需要杀死数",
+              20
+            ]
+          },
+          {
+            "offset": 14701540,
+            "opcode": "0x1d",
+            "op": "SetVariable",
+            "byteLength": 1
+          },
+          {
+            "offset": 14701541,
+            "opcode": "0x96",
+            "op": "Push",
+            "byteLength": 18,
+            "values": [
+              "目标帧",
+              "s2"
+            ]
+          },
+          {
+            "offset": 14701559,
+            "opcode": "0x1d",
+            "op": "SetVariable",
+            "byteLength": 1
+          },
+          {
+            "offset": 14701560,
+            "opcode": "0x0",
+            "op": "End",
+            "byteLength": 1
+          }
+        ]
+      }
+    ]
+  },
+  "s2Placement": {
+    "payloadOffset": 12559016,
+    "length": 79,
+    "flags": 150,
+    "depth": 1,
+    "characterId": 1308,
+    "matrix": [
+      1,
+      0,
+      0,
+      1,
+      0.0,
+      0.0
+    ],
+    "allEventFlags": 1,
+    "clipActionRecords": [
+      {
+        "eventFlags": 1,
+        "eventName": "load",
+        "offset": 12559038,
+        "length": 53,
+        "rawHex": "96 0f 00 00 e7 9b ae e6 a0 87 e5 b8 a7 00 00 61 32 00 1d 96 12 00 06 00 00 00 00 00 00 00 00 00 5f 70 61 72 65 6e 74 00 1c 96 06 00 00 73 74 6f 70 00 52 17 00",
+        "actions": [
+          {
+            "offset": 12559038,
+            "opcode": "0x96",
+            "op": "Push",
+            "byteLength": 18,
+            "values": [
+              "目标帧",
+              "a2"
+            ]
+          },
+          {
+            "offset": 12559056,
+            "opcode": "0x1d",
+            "op": "SetVariable",
+            "byteLength": 1
+          },
+          {
+            "offset": 12559057,
+            "opcode": "0x96",
+            "op": "Push",
+            "byteLength": 21,
+            "values": [
+              0.0,
+              "_parent"
+            ]
+          },
+          {
+            "offset": 12559078,
+            "opcode": "0x1c",
+            "op": "GetVariable",
+            "byteLength": 1
+          },
+          {
+            "offset": 12559079,
+            "opcode": "0x96",
+            "op": "Push",
+            "byteLength": 9,
+            "values": [
+              "stop"
+            ]
+          },
+          {
+            "offset": 12559088,
+            "opcode": "0x52",
+            "op": "CallMethod",
+            "byteLength": 1
+          },
+          {
+            "offset": 12559089,
+            "opcode": "0x17",
+            "op": "Pop",
+            "byteLength": 1
+          },
+          {
+            "offset": 12559090,
+            "opcode": "0x0",
+            "op": "End",
+            "byteLength": 1
+          }
+        ]
+      }
+    ]
+  },
+  "a1Exit": {
+    "ownerSprite": 1587,
+    "frame": 59,
+    "protectedTag": {
+      "frame": 59,
+      "code": 253,
+      "headerOffset": 14681674,
+      "offset": 14681680,
+      "length": 206
+    },
+    "doAction": {
+      "frame": 59,
+      "code": 12,
+      "headerOffset": 14681886,
+      "offset": 14681892,
+      "length": 1258
+    },
+    "constantPool": {
+      "offset": 14682747,
+      "values": [
+        "_root",
+        "切镜",
+        "gotoAndPlay",
+        "目标帧"
+      ],
+      "rawHex": "88 25 00 04 00 5f 72 6f 6f 74 00 e5 88 87 e9 95 9c 00 67 6f 74 6f 41 6e 64 50 6c 61 79 00 e7 9b ae e6 a0 87 e5 b8 a7 00"
+    },
+    "instructionWindowOffset": 14681825,
+    "instructionWindowRawHex": "96 0c 00 07 02 00 00 00 07 01 00 00 00 08 00 1c 96 02 00 08 01 4e 96 02 00 08 02 52 17 96 02 00 08 00 1c 96 02 00 08 01 4e 96 04 00 08 03 08 03 1c 4f 07 99 02 00 1b 01 99 02 00 c3 ff",
+    "instructions": [
+      {
+        "offset": 14681825,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 15,
+        "values": [
+          2,
+          1,
+          {
+            "constantIndex": 0,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 14681840,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 14681841,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 1,
+            "resolved": "切镜"
+          }
+        ]
+      },
+      {
+        "offset": 14681846,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 14681847,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 2,
+            "resolved": "gotoAndPlay"
+          }
+        ]
+      },
+      {
+        "offset": 14681852,
+        "opcode": "0x52",
+        "op": "CallMethod",
+        "byteLength": 1
+      },
+      {
+        "offset": 14681853,
+        "opcode": "0x17",
+        "op": "Pop",
+        "byteLength": 1
+      },
+      {
+        "offset": 14681854,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 0,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 14681859,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 14681860,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 1,
+            "resolved": "切镜"
+          }
+        ]
+      },
+      {
+        "offset": 14681865,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 14681866,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 7,
+        "values": [
+          {
+            "constantIndex": 3,
+            "resolved": "目标帧"
+          },
+          {
+            "constantIndex": 3,
+            "resolved": "目标帧"
+          }
+        ]
+      },
+      {
+        "offset": 14681873,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 14681874,
+        "opcode": "0x4f",
+        "op": "SetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 14681875,
+        "opcode": "0x7",
+        "op": "Stop",
+        "byteLength": 1
+      },
+      {
+        "offset": 14681876,
+        "opcode": "0x99",
+        "op": "Jump",
+        "byteLength": 5,
+        "relativeOffset": 283,
+        "branchTarget": 14682164
+      },
+      {
+        "offset": 14681881,
+        "opcode": "0x99",
+        "op": "Jump",
+        "byteLength": 5,
+        "relativeOffset": -61,
+        "branchTarget": 14681825
+      }
+    ],
+    "crossTagIncomingJumps": [
+      {
+        "offset": 14682159,
+        "target": 14681881,
+        "rawHex": "99 02 00 e5 fe"
+      }
+    ]
+  },
+  "s2Exit": {
+    "ownerSprite": 1308,
+    "frame": 9,
+    "protectedTag": {
+      "frame": 9,
+      "code": 253,
+      "headerOffset": 12557788,
+      "offset": 12557794,
+      "length": 249
+    },
+    "doAction": {
+      "frame": 9,
+      "code": 12,
+      "headerOffset": 12558043,
+      "offset": 12558049,
+      "length": 949
+    },
+    "constantPool": {
+      "offset": 12558316,
+      "values": [
+        "_root",
+        "切镜",
+        "gotoAndPlay",
+        "目标帧"
+      ],
+      "rawHex": "88 25 00 04 00 5f 72 6f 6f 74 00 e5 88 87 e9 95 9c 00 67 6f 74 6f 41 6e 64 50 6c 61 79 00 e7 9b ae e6 a0 87 e5 b8 a7 00"
+    },
+    "instructionWindowOffset": 12557982,
+    "instructionWindowRawHex": "96 0c 00 07 02 00 00 00 07 01 00 00 00 08 00 1c 96 02 00 08 01 4e 96 02 00 08 02 52 17 96 02 00 08 00 1c 96 02 00 08 01 4e 96 04 00 08 03 08 03 1c 4f 07 99 02 00 a7 02 99 02 00 c3 ff",
+    "instructions": [
+      {
+        "offset": 12557982,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 15,
+        "values": [
+          2,
+          1,
+          {
+            "constantIndex": 0,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 12557997,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 12557998,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 1,
+            "resolved": "切镜"
+          }
+        ]
+      },
+      {
+        "offset": 12558003,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 12558004,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 2,
+            "resolved": "gotoAndPlay"
+          }
+        ]
+      },
+      {
+        "offset": 12558009,
+        "opcode": "0x52",
+        "op": "CallMethod",
+        "byteLength": 1
+      },
+      {
+        "offset": 12558010,
+        "opcode": "0x17",
+        "op": "Pop",
+        "byteLength": 1
+      },
+      {
+        "offset": 12558011,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 0,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 12558016,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 12558017,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 1,
+            "resolved": "切镜"
+          }
+        ]
+      },
+      {
+        "offset": 12558022,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 12558023,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 7,
+        "values": [
+          {
+            "constantIndex": 3,
+            "resolved": "目标帧"
+          },
+          {
+            "constantIndex": 3,
+            "resolved": "目标帧"
+          }
+        ]
+      },
+      {
+        "offset": 12558030,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 12558031,
+        "opcode": "0x4f",
+        "op": "SetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 12558032,
+        "opcode": "0x7",
+        "op": "Stop",
+        "byteLength": 1
+      },
+      {
+        "offset": 12558033,
+        "opcode": "0x99",
+        "op": "Jump",
+        "byteLength": 5,
+        "relativeOffset": 679,
+        "branchTarget": 12558717
+      },
+      {
+        "offset": 12558038,
+        "opcode": "0x99",
+        "op": "Jump",
+        "byteLength": 5,
+        "relativeOffset": -61,
+        "branchTarget": 12557982
+      }
+    ],
+    "crossTagIncomingJumps": [
+      {
+        "offset": 12558712,
+        "target": 12558038,
+        "rawHex": "99 02 00 59 fd"
+      }
+    ]
+  },
+  "transitionBridge": {
+    "ownerSprite": 1281,
+    "frame": 21,
+    "protectedTag": {
+      "frame": 21,
+      "code": 253,
+      "headerOffset": 11968776,
+      "offset": 11968782,
+      "length": 415
+    },
+    "doAction": {
+      "frame": 21,
+      "code": 12,
+      "headerOffset": 11969197,
+      "offset": 11969203,
+      "length": 1268
+    },
+    "constantPool": {
+      "offset": 11969704,
+      "values": [
+        "_root",
+        "自动存盘",
+        "目标帧",
+        "gotoAndStop"
+      ],
+      "rawHex": "88 2b 00 04 00 5f 72 6f 6f 74 00 e8 87 aa e5 8a a8 e5 ad 98 e7 9b 98 00 e7 9b ae e6 a0 87 e5 b8 a7 00 67 6f 74 6f 41 6e 64 53 74 6f 70 00"
+    },
+    "instructionWindowOffset": 11969141,
+    "instructionWindowRawHex": "96 0b 00 06 00 00 00 00 00 00 00 00 08 00 1c 96 02 00 08 01 52 17 96 02 00 08 02 1c 96 07 00 07 01 00 00 00 08 00 1c 96 02 00 08 03 52 17 99 02 00 ce 01 99 02 00 c8 ff",
+    "instructions": [
+      {
+        "offset": 11969141,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 14,
+        "values": [
+          0.0,
+          {
+            "constantIndex": 0,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 11969155,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 11969156,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 1,
+            "resolved": "自动存盘"
+          }
+        ]
+      },
+      {
+        "offset": 11969161,
+        "opcode": "0x52",
+        "op": "CallMethod",
+        "byteLength": 1
+      },
+      {
+        "offset": 11969162,
+        "opcode": "0x17",
+        "op": "Pop",
+        "byteLength": 1
+      },
+      {
+        "offset": 11969163,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 2,
+            "resolved": "目标帧"
+          }
+        ]
+      },
+      {
+        "offset": 11969168,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 11969169,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 10,
+        "values": [
+          1,
+          {
+            "constantIndex": 0,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 11969179,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 11969180,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 3,
+            "resolved": "gotoAndStop"
+          }
+        ]
+      },
+      {
+        "offset": 11969185,
+        "opcode": "0x52",
+        "op": "CallMethod",
+        "byteLength": 1
+      },
+      {
+        "offset": 11969186,
+        "opcode": "0x17",
+        "op": "Pop",
+        "byteLength": 1
+      },
+      {
+        "offset": 11969187,
+        "opcode": "0x99",
+        "op": "Jump",
+        "byteLength": 5,
+        "relativeOffset": 462,
+        "branchTarget": 11969654
+      },
+      {
+        "offset": 11969192,
+        "opcode": "0x99",
+        "op": "Jump",
+        "byteLength": 5,
+        "relativeOffset": -56,
+        "branchTarget": 11969141
+      }
+    ],
+    "crossTagIncomingJumps": [
+      {
+        "offset": 11969649,
+        "target": 11969192,
+        "rawHex": "99 02 00 32 fe"
+      }
+    ]
+  },
+  "s2FrameActions": [
+    {
+      "frame": 1,
+      "code": 12,
+      "headerOffset": 12554880,
+      "offset": 12554886,
+      "length": 38,
+      "actions": [
+        {
+          "offset": 12554886,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 17,
+          "values": [
+            "myx",
+            0.0
+          ]
+        },
+        {
+          "offset": 12554903,
+          "opcode": "0x1d",
+          "op": "SetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 12554904,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 17,
+          "values": [
+            "myy",
+            0.0
+          ]
+        },
+        {
+          "offset": 12554921,
+          "opcode": "0x1d",
+          "op": "SetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 12554922,
+          "opcode": "0x7",
+          "op": "Stop",
+          "byteLength": 1
+        },
+        {
+          "offset": 12554923,
+          "opcode": "0x0",
+          "op": "End",
+          "byteLength": 1
+        }
+      ]
+    },
+    {
+      "frame": 2,
+      "code": 12,
+      "headerOffset": 12557529,
+      "offset": 12557535,
+      "length": 29,
+      "actions": [
+        {
+          "offset": 12557535,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 13,
+          "values": [
+            "myx",
+            -250
+          ]
+        },
+        {
+          "offset": 12557548,
+          "opcode": "0x1d",
+          "op": "SetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 12557549,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 13,
+          "values": [
+            "myy",
+            -4
+          ]
+        },
+        {
+          "offset": 12557562,
+          "opcode": "0x1d",
+          "op": "SetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 12557563,
+          "opcode": "0x0",
+          "op": "End",
+          "byteLength": 1
+        }
+      ]
+    },
+    {
+      "frame": 3,
+      "code": 12,
+      "headerOffset": 12557566,
+      "offset": 12557572,
+      "length": 29,
+      "actions": [
+        {
+          "offset": 12557572,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 13,
+          "values": [
+            "myx",
+            -240
+          ]
+        },
+        {
+          "offset": 12557585,
+          "opcode": "0x1d",
+          "op": "SetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 12557586,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 13,
+          "values": [
+            "myy",
+            -100
+          ]
+        },
+        {
+          "offset": 12557599,
+          "opcode": "0x1d",
+          "op": "SetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 12557600,
+          "opcode": "0x0",
+          "op": "End",
+          "byteLength": 1
+        }
+      ]
+    },
+    {
+      "frame": 4,
+      "code": 12,
+      "headerOffset": 12557603,
+      "offset": 12557609,
+      "length": 29,
+      "actions": [
+        {
+          "offset": 12557609,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 13,
+          "values": [
+            "myx",
+            -6
+          ]
+        },
+        {
+          "offset": 12557622,
+          "opcode": "0x1d",
+          "op": "SetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 12557623,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 13,
+          "values": [
+            "myy",
+            -390
+          ]
+        },
+        {
+          "offset": 12557636,
+          "opcode": "0x1d",
+          "op": "SetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 12557637,
+          "opcode": "0x0",
+          "op": "End",
+          "byteLength": 1
+        }
+      ]
+    },
+    {
+      "frame": 5,
+      "code": 12,
+      "headerOffset": 12557640,
+      "offset": 12557646,
+      "length": 29,
+      "actions": [
+        {
+          "offset": 12557646,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 13,
+          "values": [
+            "myx",
+            -150
+          ]
+        },
+        {
+          "offset": 12557659,
+          "opcode": "0x1d",
+          "op": "SetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 12557660,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 13,
+          "values": [
+            "myy",
+            -365
+          ]
+        },
+        {
+          "offset": 12557673,
+          "opcode": "0x1d",
+          "op": "SetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 12557674,
+          "opcode": "0x0",
+          "op": "End",
+          "byteLength": 1
+        }
+      ]
+    },
+    {
+      "frame": 6,
+      "code": 12,
+      "headerOffset": 12557677,
+      "offset": 12557683,
+      "length": 29,
+      "actions": [
+        {
+          "offset": 12557683,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 13,
+          "values": [
+            "myx",
+            -200
+          ]
+        },
+        {
+          "offset": 12557696,
+          "opcode": "0x1d",
+          "op": "SetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 12557697,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 13,
+          "values": [
+            "myy",
+            -627
+          ]
+        },
+        {
+          "offset": 12557710,
+          "opcode": "0x1d",
+          "op": "SetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 12557711,
+          "opcode": "0x0",
+          "op": "End",
+          "byteLength": 1
+        }
+      ]
+    },
+    {
+      "frame": 7,
+      "code": 12,
+      "headerOffset": 12557714,
+      "offset": 12557720,
+      "length": 29,
+      "actions": [
+        {
+          "offset": 12557720,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 13,
+          "values": [
+            "myx",
+            -250
+          ]
+        },
+        {
+          "offset": 12557733,
+          "opcode": "0x1d",
+          "op": "SetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 12557734,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 13,
+          "values": [
+            "myy",
+            -354
+          ]
+        },
+        {
+          "offset": 12557747,
+          "opcode": "0x1d",
+          "op": "SetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 12557748,
+          "opcode": "0x0",
+          "op": "End",
+          "byteLength": 1
+        }
+      ]
+    },
+    {
+      "frame": 8,
+      "code": 12,
+      "headerOffset": 12557751,
+      "offset": 12557757,
+      "length": 29,
+      "actions": [
+        {
+          "offset": 12557757,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 13,
+          "values": [
+            "myx",
+            -250
+          ]
+        },
+        {
+          "offset": 12557770,
+          "opcode": "0x1d",
+          "op": "SetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 12557771,
+          "opcode": "0x96",
+          "op": "Push",
+          "byteLength": 13,
+          "values": [
+            "myy",
+            -433
+          ]
+        },
+        {
+          "offset": 12557784,
+          "opcode": "0x1d",
+          "op": "SetVariable",
+          "byteLength": 1
+        },
+        {
+          "offset": 12557785,
+          "opcode": "0x0",
+          "op": "End",
+          "byteLength": 1
+        }
+      ]
+    }
+  ],
+  "s2StoryTexts": [
+    {
+      "characterId": 1298,
+      "text": "这些丧尸穿着制服，难道已 经规模化产生了？"
+    },
+    {
+      "characterId": 1299,
+      "text": "这可能和最近的恐怖组织 事件有关，详细情况Commander.M 会向你说明的。"
+    },
+    {
+      "characterId": 1300,
+      "text": "Commander.M，联合国秘密特工局 指挥官？看来有大事将要发生 了。"
+    },
+    {
+      "characterId": 1301,
+      "text": "我已经把通讯转接过来 了。"
+    },
+    {
+      "characterId": 1302,
+      "text": "你好Andy Law，我是联合国 秘密特工局指挥官Commander.M。 我们这次行动名为“毒刺行动”。最近 发生的多起事件都是由一个叫C.T的 恐怖组织引起的。他们占领了政府的 秘密地下研究所，计划使用生化武器 统治地球。我们的一名特工潜入该组织 调查，身份暴露而被困在欧洲某城市 的废墟。 如果线索断了就会使C.T 的野心得逞。到时候情况会比现在 更遭。各国政府不方便公开处理这个事件，希望 能秘密解决，所以通过特工局来接手，我知道你是这方 面的专家，所以希望能由你来接手这个任务，救出被困 的特工并彻底摧毁C&T组织，当然报酬绝对不会少，而 且据说C.T的头目杀人如麻，凶狠残暴，在世界各地都 有他的势力，并收买了大量政府的官员，对你来说也是 个不错的挑战，如果你能完成这个任务， 各国政府在各方面都会给予你们基地 很大的援助。这对双方都没有任何损失。"
+    },
+    {
+      "characterId": 1304,
+      "text": "如果这个任务能达到我所 期望的刺激，我可以接 手，但酬劳要由我说的 算，先付50%。"
+    },
+    {
+      "characterId": 1306,
+      "text": "很好！成交！酬劳方面 不是问题，任务具体事项也可 以由你自行安排。这是我们派出 的特工最后和我们失去联络的 地方，相信会对你有所帮助。 祝你顺利完成任务！"
+    }
+  ],
+  "s2SpriteFrameCount": 13,
+  "s2ExitFrame": 9,
+  "deathCountGate": {
+    "ownerSprite": 1587,
+    "frame": 1,
+    "constantPool": {
+      "offset": 14680830,
+      "values": [
+        "_root",
+        "电梯死亡敌人计数",
+        "_parent",
+        "需要杀死数",
+        "等待",
+        "gameworld",
+        "man1",
+        "gotoAndStop",
+        "play"
+      ],
+      "rawHex": "88 60 00 09 00 5f 72 6f 6f 74 00 e7 94 b5 e6 a2 af e6 ad bb e4 ba a1 e6 95 8c e4 ba ba e8 ae a1 e6 95 b0 00 5f 70 61 72 65 6e 74 00 e9 9c 80 e8 a6 81 e6 9d 80 e6 ad bb e6 95 b0 00 e7 ad 89 e5 be 85 00 67 61 6d 65 77 6f 72 6c 64 00 6d 61 6e 31 00 67 6f 74 6f 41 6e 64 53 74 6f 70 00 70 6c 61 79 00"
+    },
+    "instructions": [
+      {
+        "offset": 14680017,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 0,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 14680022,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 14680023,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 1,
+            "resolved": "电梯死亡敌人计数"
+          }
+        ]
+      },
+      {
+        "offset": 14680028,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 14680029,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 2,
+            "resolved": "_parent"
+          }
+        ]
+      },
+      {
+        "offset": 14680034,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 14680035,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 3,
+            "resolved": "需要杀死数"
+          }
+        ]
+      },
+      {
+        "offset": 14680040,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 14680041,
+        "opcode": "0x48",
+        "op": "Less2",
+        "byteLength": 1
+      },
+      {
+        "offset": 14680042,
+        "opcode": "0x12",
+        "op": "Not",
+        "byteLength": 1
+      },
+      {
+        "offset": 14680043,
+        "opcode": "0x12",
+        "op": "Not",
+        "byteLength": 1
+      },
+      {
+        "offset": 14680044,
+        "opcode": "0x9d",
+        "op": "If",
+        "byteLength": 5,
+        "relativeOffset": 54,
+        "branchTarget": 14680103
+      },
+      {
+        "offset": 14680049,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 12,
+        "values": [
+          {
+            "constantIndex": 4,
+            "resolved": "等待"
+          },
+          1,
+          {
+            "constantIndex": 0,
+            "resolved": "_root"
+          }
+        ]
+      },
+      {
+        "offset": 14680061,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 14680062,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 5,
+            "resolved": "gameworld"
+          }
+        ]
+      },
+      {
+        "offset": 14680067,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 14680068,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 6,
+            "resolved": "man1"
+          }
+        ]
+      },
+      {
+        "offset": 14680073,
+        "opcode": "0x4e",
+        "op": "GetMember",
+        "byteLength": 1
+      },
+      {
+        "offset": 14680074,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 7,
+            "resolved": "gotoAndStop"
+          }
+        ]
+      },
+      {
+        "offset": 14680079,
+        "opcode": "0x52",
+        "op": "CallMethod",
+        "byteLength": 1
+      },
+      {
+        "offset": 14680080,
+        "opcode": "0x17",
+        "op": "Pop",
+        "byteLength": 1
+      },
+      {
+        "offset": 14680081,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 14,
+        "values": [
+          0.0,
+          {
+            "constantIndex": 2,
+            "resolved": "_parent"
+          }
+        ]
+      },
+      {
+        "offset": 14680095,
+        "opcode": "0x1c",
+        "op": "GetVariable",
+        "byteLength": 1
+      },
+      {
+        "offset": 14680096,
+        "opcode": "0x96",
+        "op": "Push",
+        "byteLength": 5,
+        "values": [
+          {
+            "constantIndex": 8,
+            "resolved": "play"
+          }
+        ]
+      },
+      {
+        "offset": 14680101,
+        "opcode": "0x52",
+        "op": "CallMethod",
+        "byteLength": 1
+      },
+      {
+        "offset": 14680102,
+        "opcode": "0x17",
+        "op": "Pop",
+        "byteLength": 1
+      },
+      {
+        "offset": 14680103,
+        "opcode": "0x99",
+        "op": "Jump",
+        "byteLength": 5,
+        "relativeOffset": 233,
+        "branchTarget": 14680341
+      },
+      {
+        "offset": 14680108,
+        "opcode": "0x99",
+        "op": "Jump",
+        "byteLength": 5,
+        "relativeOffset": -96,
+        "branchTarget": 14680017
+      }
+    ],
+    "pseudocode": "if (_root.电梯死亡敌人计数 >= _parent.需要杀死数) { _root.gameworld.man1.gotoAndStop(\"等待\"); _parent.play(); }"
+  }
+}

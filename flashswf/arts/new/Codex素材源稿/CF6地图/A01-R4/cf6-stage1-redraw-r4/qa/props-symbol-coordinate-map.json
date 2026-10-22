@@ -1,0 +1,92 @@
+{
+  "prop1591": {
+    "part": "parts/prop-1591.svg",
+    "replace": "complete sprite1591 first visible frame",
+    "originalChild": "shape1589",
+    "childToPropMatrix": [
+      1,
+      0,
+      0,
+      1,
+      20.55,
+      -49.45
+    ]
+  },
+  "shape1589": {
+    "part": "parts/shape-1589.svg",
+    "replace": "leaf shape1589, keeping all original sprite matrices",
+    "propToLeafMatrix": [
+      1,
+      0,
+      0,
+      1,
+      -20.55,
+      49.45
+    ],
+    "viewBox": [
+      -100.55,
+      -45.45,
+      183.15,
+      97.9
+    ]
+  },
+  "crate1442": {
+    "frames": [
+      {
+        "frames": [
+          1
+        ],
+        "depth": 1,
+        "shape": 1436
+      },
+      {
+        "frames": [
+          2,
+          3
+        ],
+        "depth": 6,
+        "shape": 1437
+      },
+      {
+        "frames": [
+          4,
+          5
+        ],
+        "depth": 6,
+        "shape": 1438
+      },
+      {
+        "frames": [
+          6,
+          7
+        ],
+        "depth": 6,
+        "shape": 1439
+      },
+      {
+        "frames": [
+          8,
+          9
+        ],
+        "depth": 6,
+        "shape": 1440
+      },
+      {
+        "frames": [
+          10,
+          11
+        ],
+        "depth": 6,
+        "shape": 1441
+      }
+    ],
+    "preserveOriginalTimelineMatrices": true,
+    "frame1AreaDepth2": "sprite360 gameplay area; not redrawn",
+    "noSupplyDropInArtwork": true
+  },
+  "turretAnimation": {
+    "frame12OriginalMuzzleFlash": "sprite506 (original shapes503–505), retain without redraw",
+    "keepOriginalTiming": true
+  },
+  "provenance": "Source SVGs copied from actual SWF export. Native shape1437–1441 clipping paths and matrices are consumed directly. No original SWF is needed to rebuild."
+}

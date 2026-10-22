@@ -1,0 +1,154 @@
+{
+  "bitmapReplacements": [
+    {
+      "bitmapId": 1595,
+      "svg": "parts/bitmap-1595.svg",
+      "png": "baked/bitmap-1595.png",
+      "originalNativePixels": [
+        600,
+        187
+      ],
+      "registration": "replace original bitmap content; preserve original bitmap-fill matrix and clip"
+    },
+    {
+      "bitmapId": 1597,
+      "svg": "parts/bitmap-1597.svg",
+      "png": "baked/bitmap-1597.png",
+      "originalNativePixels": [
+        176,
+        75
+      ],
+      "registration": "replace original bitmap content; preserve original bitmap-fill matrix and clip"
+    },
+    {
+      "bitmapId": 1600,
+      "svg": "parts/bitmap-1600.svg",
+      "png": "baked/bitmap-1600.png",
+      "originalNativePixels": [
+        350,
+        152
+      ],
+      "registration": "replace original bitmap content; preserve original bitmap-fill matrix and clip"
+    },
+    {
+      "bitmapId": 1602,
+      "svg": "parts/bitmap-1602.svg",
+      "png": "baked/bitmap-1602.png",
+      "originalNativePixels": [
+        118,
+        50
+      ],
+      "registration": "replace original bitmap content; preserve original bitmap-fill matrix and clip"
+    },
+    {
+      "bitmapId": 1603,
+      "svg": "parts/bitmap-1603.svg",
+      "png": "baked/bitmap-1603.png",
+      "originalNativePixels": [
+        150,
+        56
+      ],
+      "registration": "replace original bitmap content; preserve original bitmap-fill matrix and clip"
+    },
+    {
+      "bitmapId": 1604,
+      "svg": "parts/bitmap-1604.svg",
+      "png": "baked/bitmap-1604.png",
+      "originalNativePixels": [
+        150,
+        52
+      ],
+      "registration": "replace original bitmap content; preserve original bitmap-fill matrix and clip"
+    },
+    {
+      "bitmapId": 1606,
+      "svg": "parts/bitmap-1606.svg",
+      "png": "baked/bitmap-1606.png",
+      "originalNativePixels": [
+        170,
+        75
+      ],
+      "registration": "replace original bitmap content; preserve original bitmap-fill matrix and clip"
+    },
+    {
+      "bitmapId": 1607,
+      "svg": "parts/bitmap-1607.svg",
+      "png": "baked/bitmap-1607.png",
+      "originalNativePixels": [
+        204,
+        99
+      ],
+      "registration": "replace original bitmap content; preserve original bitmap-fill matrix and clip"
+    },
+    {
+      "bitmapId": 1608,
+      "svg": "parts/bitmap-1608.svg",
+      "png": "baked/bitmap-1608.png",
+      "originalNativePixels": [
+        185,
+        104
+      ],
+      "registration": "replace original bitmap content; preserve original bitmap-fill matrix and clip"
+    },
+    {
+      "bitmapId": 1609,
+      "svg": "parts/bitmap-1609.svg",
+      "png": "baked/bitmap-1609.png",
+      "originalNativePixels": [
+        118,
+        88
+      ],
+      "registration": "replace original bitmap content; preserve original bitmap-fill matrix and clip"
+    },
+    {
+      "bitmapId": 1610,
+      "svg": "parts/bitmap-1610.svg",
+      "png": "baked/bitmap-1610.png",
+      "originalNativePixels": [
+        164,
+        57
+      ],
+      "registration": "replace original bitmap content; preserve original bitmap-fill matrix and clip"
+    },
+    {
+      "bitmapId": 1611,
+      "svg": "parts/bitmap-1611.svg",
+      "png": "baked/bitmap-1611.png",
+      "originalNativePixels": [
+        324,
+        300
+      ],
+      "registration": "replace original bitmap content; preserve original bitmap-fill matrix and clip"
+    }
+  ],
+  "optionalFlattenedBackground": {
+    "png": "background-1613.png",
+    "nativeViewBox": [
+      -716.95,
+      -183,
+      1330.9,
+      469.8
+    ],
+    "pixelSize": [
+      1331,
+      470
+    ],
+    "worldPlacement": [
+      673.5,
+      207.1
+    ],
+    "note": "Keep native viewBox scale; excludes root sky/city and interactive crate. Do not stretch to logical1250x450."
+  },
+  "optionalCityLayer": {
+    "png": "city-shape-1598.png",
+    "nativeViewBox": [
+      0,
+      109,
+      1441.4,
+      66.45
+    ],
+    "note": "separate root parallax layer; use source viewBox scale, not rounded PNG width"
+  },
+  "sky": "bitmap-1595.png fixed screen600x187",
+  "runtime": "Not installed or runtime tested. SVG filters intentionally baked to PNG; no Flash SVG filter support/performance guarantee."
+}

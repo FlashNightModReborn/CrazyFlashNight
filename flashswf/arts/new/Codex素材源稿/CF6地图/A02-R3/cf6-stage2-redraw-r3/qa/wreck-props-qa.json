@@ -1,0 +1,139 @@
+{
+  "revision": "R2",
+  "visualReviewRounds": 2,
+  "assets": [
+    {
+      "symbol": 1606,
+      "nativeSize": [
+        170,
+        75
+      ],
+      "referenceSize": [
+        170,
+        75
+      ],
+      "originalAlphaBounds": [
+        0,
+        0,
+        170,
+        75
+      ],
+      "r2AlphaBounds": [
+        1,
+        0,
+        170,
+        75
+      ],
+      "paths": 135,
+      "ellipses": 60,
+      "embeddedImages": 0,
+      "filters": 0,
+      "sha256": "85c16ad936d9c2fa5766d1c95ce3f0ea070f09225415944f700e430d597ec5b8",
+      "alphaAreaOriginal": 6627,
+      "alphaAreaR2": 6218,
+      "alphaSilhouetteIoU": 0.8594
+    },
+    {
+      "symbol": 1607,
+      "nativeSize": [
+        204,
+        99
+      ],
+      "referenceSize": [
+        204,
+        99
+      ],
+      "originalAlphaBounds": [
+        0,
+        0,
+        204,
+        99
+      ],
+      "r2AlphaBounds": [
+        1,
+        1,
+        204,
+        98
+      ],
+      "paths": 74,
+      "ellipses": 9,
+      "embeddedImages": 0,
+      "filters": 0,
+      "sha256": "6498f7e6fe40ab2fc63bb0e2860bd37a753a79e7b98616080865be8ac9dd5aa7",
+      "alphaAreaOriginal": 9490,
+      "alphaAreaR2": 8703,
+      "alphaSilhouetteIoU": 0.8521
+    },
+    {
+      "symbol": 1608,
+      "nativeSize": [
+        185,
+        104
+      ],
+      "referenceSize": [
+        185,
+        104
+      ],
+      "originalAlphaBounds": [
+        0,
+        0,
+        185,
+        104
+      ],
+      "r2AlphaBounds": [
+        0,
+        0,
+        184,
+        104
+      ],
+      "paths": 136,
+      "ellipses": 28,
+      "embeddedImages": 0,
+      "filters": 0,
+      "sha256": "0038d59cf5259032e8133bc41e93e3d3051246782cce4da81eb7e0172667ffdf",
+      "alphaAreaOriginal": 10460,
+      "alphaAreaR2": 9187,
+      "alphaSilhouetteIoU": 0.8545
+    },
+    {
+      "symbol": 1609,
+      "nativeSize": [
+        118,
+        88
+      ],
+      "referenceSize": [
+        118,
+        88
+      ],
+      "originalAlphaBounds": [
+        0,
+        0,
+        118,
+        88
+      ],
+      "r2AlphaBounds": [
+        0,
+        0,
+        118,
+        88
+      ],
+      "paths": 113,
+      "ellipses": 26,
+      "embeddedImages": 0,
+      "filters": 0,
+      "sha256": "48572bd9b1acb1ed5b8783650198fe63c5b40a7d374b3e7f7edbcbdacc665ce8",
+      "alphaAreaOriginal": 2877,
+      "alphaAreaR2": 2977,
+      "alphaSilhouetteIoU": 0.7985
+    }
+  ],
+  "structuralChanges": {
+    "1606": "One consistent projected plane per wheel; concentric disk/rim/hub, true in-disk openings, connected axle yoke, continuous engine and frame.",
+    "1607": "Continuous tail and underbody; integrated shallow intake and nose instead of separate oval/cylindrical armour; original absent rotor and glazing retained.",
+    "1608": "Continuous curved shell, inset oval sensor, oblique radial caps with uneven light, attached collar ribs, open thin truss supports.",
+    "1609": "Continuous main boom without a fictional middle hinge; anchored cylinders and correct separate stick/bucket pins; thin crawler top and shadowed wheel bay."
+  },
+  "limitations": "Source pixels cannot resolve exact hidden roller counts or every fine fitting; no such count is asserted. SVGs remain independently authored geometric interpretations, not traced pixels. Source script needs only svg_native.py, Pillow and Inkscape in the package workflow; no R1 or audit-directory access is needed to rebuild assets.",
+  "alphaNote": "Alpha IoU is measured at 128 only as a geometric diagnostic, not a pass criterion or substitute for visual review.",
+  "finalAlphaReview": "Helicopter opaque lower cockpit pillar and small under-engine seam restored. Minimal backing M118 60 L131 60 131 65.2 118 65.2Z only; native x119\u2013130/y60\u201364 verified alpha255, consistent with original. Actual cockpit windows remain open."
+}
