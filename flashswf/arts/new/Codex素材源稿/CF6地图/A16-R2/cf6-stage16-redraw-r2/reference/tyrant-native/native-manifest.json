@@ -1,0 +1,1105 @@
+{
+  "schema": "gamma-echo.native-import.v1",
+  "owner": "flashswf\\arts\\new\\Codex专用素材",
+  "approvedInput": "flashswf\\arts\\new\\Codex素材源稿\\γ-ECHO克隆兽-R3",
+  "variants": [
+    {
+      "variant": "延寿型",
+      "displayName": "λ型克隆兽",
+      "root": "Codex/γECHO克隆兽/延寿型/敌人-延寿克隆兽",
+      "linkage": "敌人-延寿克隆兽",
+      "stage": 8,
+      "parts": [
+        {
+          "id": 262,
+          "name": "Codex/γECHO克隆兽/延寿型/分件/上臂",
+          "shapes": 13,
+          "segments": 618,
+          "masks": 2
+        },
+        {
+          "id": 263,
+          "name": "Codex/γECHO克隆兽/延寿型/分件/小腿",
+          "shapes": 13,
+          "segments": 616,
+          "masks": 2
+        },
+        {
+          "id": 264,
+          "name": "Codex/γECHO克隆兽/延寿型/分件/膝部尖刺护片",
+          "shapes": 13,
+          "segments": 439,
+          "masks": 2
+        },
+        {
+          "id": 265,
+          "name": "Codex/γECHO克隆兽/延寿型/分件/大腿",
+          "shapes": 14,
+          "segments": 649,
+          "masks": 2
+        },
+        {
+          "id": 266,
+          "name": "Codex/γECHO克隆兽/延寿型/分件/躯干",
+          "shapes": 26,
+          "segments": 1841,
+          "masks": 2
+        },
+        {
+          "id": 267,
+          "name": "Codex/γECHO克隆兽/延寿型/分件/颈肩",
+          "shapes": 16,
+          "segments": 970,
+          "masks": 2
+        },
+        {
+          "id": 268,
+          "name": "Codex/γECHO克隆兽/延寿型/分件/下颌",
+          "shapes": 15,
+          "segments": 851,
+          "masks": 2
+        },
+        {
+          "id": 269,
+          "name": "Codex/γECHO克隆兽/延寿型/分件/头部",
+          "shapes": 33,
+          "segments": 1627,
+          "masks": 2
+        },
+        {
+          "id": 270,
+          "name": "Codex/γECHO克隆兽/延寿型/分件/前臂一",
+          "shapes": 15,
+          "segments": 604,
+          "masks": 2
+        },
+        {
+          "id": 271,
+          "name": "Codex/γECHO克隆兽/延寿型/分件/前臂二",
+          "shapes": 14,
+          "segments": 642,
+          "masks": 2
+        },
+        {
+          "id": 272,
+          "name": "Codex/γECHO克隆兽/延寿型/分件/正向爪手",
+          "shapes": 17,
+          "segments": 616,
+          "masks": 2
+        },
+        {
+          "id": 273,
+          "name": "Codex/γECHO克隆兽/延寿型/分件/侧向爪手",
+          "shapes": 17,
+          "segments": 641,
+          "masks": 2
+        },
+        {
+          "id": 274,
+          "name": "Codex/γECHO克隆兽/延寿型/分件/脚掌",
+          "shapes": 18,
+          "segments": 743,
+          "masks": 2
+        }
+      ],
+      "connections": [
+        {
+          "partId": 267,
+          "nativeShapesAdded": 3,
+          "tracedIslandContoursRemoved": 20
+        },
+        {
+          "partId": 268,
+          "nativeShapesAdded": 2,
+          "tracedIslandContoursRemoved": 0
+        },
+        {
+          "partId": 269,
+          "nativeShapesAdded": 2,
+          "tracedIslandContoursRemoved": 44
+        },
+        {
+          "partId": 271,
+          "nativeShapesAdded": 0,
+          "tracedIslandContoursRemoved": 4
+        },
+        {
+          "partId": 272,
+          "nativeShapesAdded": 3,
+          "tracedIslandContoursRemoved": 16
+        },
+        {
+          "partId": 273,
+          "nativeShapesAdded": 3,
+          "tracedIslandContoursRemoved": 16
+        },
+        {
+          "partId": 274,
+          "nativeShapesAdded": 4,
+          "tracedIslandContoursRemoved": 13
+        }
+      ],
+      "death": {
+        "parts": {
+          "小腿断件": "Codex/γECHO克隆兽/延寿型/碎尸分件/小腿断件",
+          "大腿残段": "Codex/γECHO克隆兽/延寿型/碎尸分件/大腿残段",
+          "断臂上段": "Codex/γECHO克隆兽/延寿型/碎尸分件/断臂上段",
+          "肩部裂口": "Codex/γECHO克隆兽/延寿型/碎尸分件/肩部裂口",
+          "碎肉": "Codex/γECHO克隆兽/延寿型/碎尸分件/碎肉",
+          "骨片": "Codex/γECHO克隆兽/延寿型/碎尸分件/骨片"
+        },
+        "replacedKeyframes": {
+          "小腿断件": 10,
+          "大腿残段": 10,
+          "断臂上段": 21,
+          "肩部裂口": 21
+        },
+        "labelsZeroBased": {
+          "a0": 0,
+          "a1": 47,
+          "a2": 78
+        },
+        "callbackFramesZeroBased": [
+          45,
+          76,
+          108
+        ]
+      }
+    },
+    {
+      "variant": "完全体",
+      "displayName": "暴君克隆兽",
+      "root": "Codex/γECHO克隆兽/完全体/敌人-完全体克隆兽",
+      "linkage": "敌人-完全体克隆兽",
+      "stage": 9,
+      "parts": [
+        {
+          "id": 262,
+          "name": "Codex/γECHO克隆兽/完全体/分件/上臂",
+          "shapes": 13,
+          "segments": 618,
+          "masks": 2
+        },
+        {
+          "id": 263,
+          "name": "Codex/γECHO克隆兽/完全体/分件/小腿",
+          "shapes": 13,
+          "segments": 616,
+          "masks": 2
+        },
+        {
+          "id": 264,
+          "name": "Codex/γECHO克隆兽/完全体/分件/膝部尖刺护片",
+          "shapes": 13,
+          "segments": 439,
+          "masks": 2
+        },
+        {
+          "id": 265,
+          "name": "Codex/γECHO克隆兽/完全体/分件/大腿",
+          "shapes": 14,
+          "segments": 649,
+          "masks": 2
+        },
+        {
+          "id": 266,
+          "name": "Codex/γECHO克隆兽/完全体/分件/躯干",
+          "shapes": 26,
+          "segments": 1841,
+          "masks": 2
+        },
+        {
+          "id": 267,
+          "name": "Codex/γECHO克隆兽/完全体/分件/颈肩",
+          "shapes": 16,
+          "segments": 970,
+          "masks": 2
+        },
+        {
+          "id": 268,
+          "name": "Codex/γECHO克隆兽/完全体/分件/下颌",
+          "shapes": 15,
+          "segments": 851,
+          "masks": 2
+        },
+        {
+          "id": 269,
+          "name": "Codex/γECHO克隆兽/完全体/分件/头部",
+          "shapes": 33,
+          "segments": 1627,
+          "masks": 2
+        },
+        {
+          "id": 270,
+          "name": "Codex/γECHO克隆兽/完全体/分件/前臂一",
+          "shapes": 15,
+          "segments": 604,
+          "masks": 2
+        },
+        {
+          "id": 271,
+          "name": "Codex/γECHO克隆兽/完全体/分件/前臂二",
+          "shapes": 14,
+          "segments": 642,
+          "masks": 2
+        },
+        {
+          "id": 272,
+          "name": "Codex/γECHO克隆兽/完全体/分件/正向爪手",
+          "shapes": 17,
+          "segments": 616,
+          "masks": 2
+        },
+        {
+          "id": 273,
+          "name": "Codex/γECHO克隆兽/完全体/分件/侧向爪手",
+          "shapes": 17,
+          "segments": 641,
+          "masks": 2
+        },
+        {
+          "id": 274,
+          "name": "Codex/γECHO克隆兽/完全体/分件/脚掌",
+          "shapes": 18,
+          "segments": 743,
+          "masks": 2
+        }
+      ],
+      "connections": [
+        {
+          "partId": 267,
+          "nativeShapesAdded": 3,
+          "tracedIslandContoursRemoved": 20
+        },
+        {
+          "partId": 268,
+          "nativeShapesAdded": 2,
+          "tracedIslandContoursRemoved": 0
+        },
+        {
+          "partId": 269,
+          "nativeShapesAdded": 2,
+          "tracedIslandContoursRemoved": 44
+        },
+        {
+          "partId": 271,
+          "nativeShapesAdded": 0,
+          "tracedIslandContoursRemoved": 4
+        },
+        {
+          "partId": 272,
+          "nativeShapesAdded": 3,
+          "tracedIslandContoursRemoved": 16
+        },
+        {
+          "partId": 273,
+          "nativeShapesAdded": 3,
+          "tracedIslandContoursRemoved": 16
+        },
+        {
+          "partId": 274,
+          "nativeShapesAdded": 4,
+          "tracedIslandContoursRemoved": 13
+        }
+      ],
+      "death": {
+        "parts": {
+          "小腿断件": "Codex/γECHO克隆兽/完全体/碎尸分件/小腿断件",
+          "大腿残段": "Codex/γECHO克隆兽/完全体/碎尸分件/大腿残段",
+          "断臂上段": "Codex/γECHO克隆兽/完全体/碎尸分件/断臂上段",
+          "肩部裂口": "Codex/γECHO克隆兽/完全体/碎尸分件/肩部裂口",
+          "碎肉": "Codex/γECHO克隆兽/完全体/碎尸分件/碎肉",
+          "骨片": "Codex/γECHO克隆兽/完全体/碎尸分件/骨片"
+        },
+        "replacedKeyframes": {
+          "小腿断件": 10,
+          "大腿残段": 10,
+          "断臂上段": 21,
+          "肩部裂口": 21
+        },
+        "labelsZeroBased": {
+          "a0": 0,
+          "a1": 47,
+          "a2": 78
+        },
+        "callbackFramesZeroBased": [
+          45,
+          76,
+          108
+        ]
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/上臂-遮罩1.xml",
+      "sha256": "2875b46a78b14bf029389787069c439f2f1d4f9950d4657627263506695ae036",
+      "bytes": 5794
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/上臂-遮罩0.xml",
+      "sha256": "f507aa39206d49d3a29a7bbcbd85bde2dd1a1a0994cfa06544c4de8bf2015fb9",
+      "bytes": 10465
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/上臂.xml",
+      "sha256": "4e8139de9a20330666a381eab8b4470933da9a101de9e3886d794e38701f4825",
+      "bytes": 4311
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/小腿-遮罩1.xml",
+      "sha256": "97451f3102b37d44c335898c7323ba3af2d3a10fb0f7923bc53eeee321e4a99a",
+      "bytes": 5625
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/小腿-遮罩0.xml",
+      "sha256": "30620c3a4b102fda2995f433f684fe1195663662df73c681927b37f7955a100b",
+      "bytes": 10672
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/小腿.xml",
+      "sha256": "96e86a387d12b2971089d2f7f256e259624263eec6acafd1611d06804191453f",
+      "bytes": 4235
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/膝部尖刺护片-遮罩1.xml",
+      "sha256": "0ae1dabbef5d75b36fffc5d360b9befe7fc0a643e574c8c72ff2653a86aa1b43",
+      "bytes": 4208
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/膝部尖刺护片-遮罩0.xml",
+      "sha256": "337422ce18e7a0a792ee5e93884df40a57b889b8ba895b768e59470fb6016cfe",
+      "bytes": 8315
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/膝部尖刺护片.xml",
+      "sha256": "8c2c8db6cf96893cd1996d855e39db4352afdbd4a708f0ddaf5722767d5d829e",
+      "bytes": 6604
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/大腿-遮罩1.xml",
+      "sha256": "08a57699922ffa1c2e999bd085a23a85d7cc65b16ca3f53b0bc7b54dd9d2d419",
+      "bytes": 6492
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/大腿-遮罩0.xml",
+      "sha256": "dad624674711a0b3c389a7f4d3350744a0917b233ae3fa7d55bd6eec8836e9b5",
+      "bytes": 10674
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/大腿.xml",
+      "sha256": "2aa35e52efa68ebc99f7192b181d6b199c386509d72747aa7a6f0a13846f67c1",
+      "bytes": 4607
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/躯干-遮罩1.xml",
+      "sha256": "ce780799a0b593a00831ff3b8190d02a51a806eeb30965d6cd801cf5a1c0b2f0",
+      "bytes": 16044
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/躯干-遮罩0.xml",
+      "sha256": "25fc9cfffe1d44871ac7f7a2c1865a8e0acabcde427a65c5e635f3050ab987e2",
+      "bytes": 30731
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/躯干.xml",
+      "sha256": "ec7ae9ea1dcd4ebf20e290ac91adc4391d58334610ae46c6681511b313938510",
+      "bytes": 7693
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/颈肩-遮罩1.xml",
+      "sha256": "36600207b81473e7ecbe75cdc430a278f58ccf81559885584aaa3aea3dc1d82a",
+      "bytes": 5444
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/颈肩-遮罩0.xml",
+      "sha256": "792a6845937f07ac94c99b65ed728703011a62e9e70014350881c569b0167765",
+      "bytes": 12827
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/颈肩.xml",
+      "sha256": "89a1d6b83a2e4a4368bc1334e580dcc1751b32c56546ba2df648ba3cbc634fd9",
+      "bytes": 11773
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/下颌-遮罩1.xml",
+      "sha256": "f5b3342f3092a53a5c563b82478dc21cd072f7d38381be2b78c4319826eb1af0",
+      "bytes": 3768
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/下颌-遮罩0.xml",
+      "sha256": "dc897eb75a343d58c92210d32b8cdaf4c3429c94d2ff58c54e4425dacd9ce2af",
+      "bytes": 13930
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/下颌.xml",
+      "sha256": "68b7df8d5a06218ad0e09f2c78e8ed0956dce9556a4e0c05eb46869fc5ca1769",
+      "bytes": 10566
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/头部-遮罩1.xml",
+      "sha256": "cdf1105264b4c90f8055c6809841b3201671a6cddd185bd2f5c4e0e3977f1fd1",
+      "bytes": 14733
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/头部-遮罩0.xml",
+      "sha256": "a7404369a815e6722559e8add3f69a73e8416c06cd0fdbc65c08ecac1cf1091b",
+      "bytes": 16900
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/头部.xml",
+      "sha256": "a3f39e777b3eb8cd642d068583949c6ebb29facd5f341d0ab1199f2a39397bbe",
+      "bytes": 18679
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/前臂一-遮罩1.xml",
+      "sha256": "18eed42fcc1711cffd49c13a74f21ebdf697933c7e1ce22d2cd4698f5a9478ea",
+      "bytes": 6687
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/前臂一-遮罩0.xml",
+      "sha256": "d94a0607898b73a649f1741d9bbecbd3851a64b855a0e6010f058edb389004be",
+      "bytes": 9347
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/前臂一.xml",
+      "sha256": "d5f852eaae107b17df2486400348a9c3060cc9baebbffca68f0d441b3f6e9886",
+      "bytes": 6406
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/前臂二-遮罩1.xml",
+      "sha256": "a58483fbd6f1d14ad9806b13c87bf4efc7778e1d6d40f53d4af6522eee0e513a",
+      "bytes": 5682
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/前臂二-遮罩0.xml",
+      "sha256": "25f922007e52fb588aefe3494a6adfcc6ce4c7eab82556b495b6f910a127617c",
+      "bytes": 9968
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/前臂二.xml",
+      "sha256": "e6ed7476887964b07f29335f1643f3c936670f2423f6433c8c55e609b1ba6647",
+      "bytes": 5796
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/正向爪手-遮罩1.xml",
+      "sha256": "889c914300e56050ff85c756c91c2f6c0f29c3abf21cf36f4c4cb31cb5d8ae69",
+      "bytes": 5527
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/正向爪手-遮罩0.xml",
+      "sha256": "5e55edf9a5db512d202351ceadff7bd6f3fccafd495762bd3e1102a76c8025aa",
+      "bytes": 7904
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/正向爪手.xml",
+      "sha256": "d834258bfa1b9b74eb6deb631c6d64fc461ceb63c980f1228e3e504353e1dfc6",
+      "bytes": 11284
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/侧向爪手-遮罩1.xml",
+      "sha256": "1bcd02e9b1df24bcbd43083c573f5b868c380ccce67a9098c31f6b21576392de",
+      "bytes": 5524
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/侧向爪手-遮罩0.xml",
+      "sha256": "3e5d4a5a0090905fb3a6548b9230b6b4b9ecec11b3e03494e0a224d96659a33c",
+      "bytes": 7928
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/侧向爪手.xml",
+      "sha256": "e4f5834c9b4edd5b963432ed7588f176a0ee738b12b7dbb9bf4073a2e01a4077",
+      "bytes": 10923
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/脚掌-遮罩1.xml",
+      "sha256": "2d65a57283ca3e05e3809d7c027711166c209a5432a695ba0822820dc4007c9c",
+      "bytes": 7040
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/脚掌-遮罩0.xml",
+      "sha256": "d4d6f9658d1299ebe6768d774a5e0d2763c036d8eb76f3cba59a4bd93adfc704",
+      "bytes": 9712
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/分件/脚掌.xml",
+      "sha256": "3b4cdbf1a9e8fb29cc5081903e9b6861603e10d94e416be2d272e6ef295ad96e",
+      "bytes": 11040
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/碎尸分件/小腿断件.xml",
+      "sha256": "56b068723ff3807679a96865cd54feecff591afff7f819e69b9a6149007b0397",
+      "bytes": 7947
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/碎尸分件/大腿残段.xml",
+      "sha256": "8bc6c61cf16b9664a362216ae40f333008fa60a4c37c9bf91855424ccb14c229",
+      "bytes": 8104
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/碎尸分件/断臂上段.xml",
+      "sha256": "0fdfc5261ef4c87a31d1d3f1cd2a70da319ffaf1baf56cce417b89e9b0b6338a",
+      "bytes": 8024
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/碎尸分件/肩部裂口.xml",
+      "sha256": "06c7cdc5263acb15f9156e06ba09fae3b42e0e35e4a459c6e254f62e27f418f1",
+      "bytes": 6662
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/碎尸分件/碎肉.xml",
+      "sha256": "55496947520b7754eae98ee9602d447161e55afac4a188c41cf0e03fda9d0a24",
+      "bytes": 3545
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/碎尸分件/骨片.xml",
+      "sha256": "f977470790d1ba5e8e799689440aa9a9e98bfd6d16e95e1678389adb4ab7d914",
+      "bytes": 2267
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/敌人-延寿克隆兽.xml",
+      "sha256": "a1589d2fd05d8713fa2b88c475f5711bcb3fe4e6513f77ca31c0fb47a17a2cf1",
+      "bytes": 34297
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/怪物通用模板/血条与名称/新版血条位置示意.xml",
+      "sha256": "5680fa73c67f7e42588b0575260ec29144023beb19c34ef96efa01ddf59ce5f4",
+      "bytes": 11488
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/area框/hitbox-area框载体.xml",
+      "sha256": "0596c92993af16a871499b4e76a33ac35610a5fdf511a6850062a546b3165dae",
+      "bytes": 1102
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml",
+      "sha256": "dc84ef05d821353384616220df55fe21266b869595264234b005a85e1cb8bde1",
+      "bytes": 1148
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/area框/索敌框载体.xml",
+      "sha256": "ff3f24de65254b37c2289ce347d1578e44a969d3b1be528f8e5433051e507c98",
+      "bytes": 1379
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/思考标签.xml",
+      "sha256": "4f5011ab80767e3f99fa443d0bd76eee1e3373126449c8d850d7c958ead5ccba",
+      "bytes": 1499
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/通用ai元件/行走ai载体.xml",
+      "sha256": "8d7ff06239d3b99eea2389c28df2cd419e3f6284ed939e27ca1570970efc9a3c",
+      "bytes": 1095
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/静止动作.xml",
+      "sha256": "7f30d995104046b60849d195ec3a9fcad993697d68dc96d6a95234a4e8d9e603",
+      "bytes": 45324
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/走路.xml",
+      "sha256": "390234d08249527197eb2cfb83154156934542eca55301770089d924e5436413",
+      "bytes": 233994
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/跑步.xml",
+      "sha256": "4e4be71e15cd298c0321ece9d45c19854f4583a4a18cc4d052417f7651d6815b",
+      "bytes": 85549
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/攻击动作.xml",
+      "sha256": "c14a1951a99501703e47ab26df91d1b8eea70624a98d0cc0a307b03e54586d6e",
+      "bytes": 1059861
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml",
+      "sha256": "e98b51dad6b066f72f10a44a02bd23882a1435cbe2ce1e41cb3726528c9ae32e",
+      "bytes": 1681
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/黑铁人马/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml",
+      "sha256": "e6c73afd57752ed0855cc4183d8a68c2ca9d72146fad890b3e12485921baf458",
+      "bytes": 1158
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/黑铁人马/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml",
+      "sha256": "c67d474930c84702d7d68148752f47946daafdcb3484ce82c7c17471f1f94f06",
+      "bytes": 1161
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/方舟指挥官/透明控件.xml",
+      "sha256": "72736acea477bce17b29ae6102ec33d03d7ef6864bba9455413231afafdd9302",
+      "bytes": 1071
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/普通攻击动作.xml",
+      "sha256": "b96f8127a97c473918ce8693b176770037451bc2ae7f7b3066097537d74e7901",
+      "bytes": 97423
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/部件/Symbol 283.xml",
+      "sha256": "ff895a21f751014c72aa83f4ef76b57982dcd9346e3ff0fc066489eb66dd6808",
+      "bytes": 1075
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/部件/Symbol 270.xml",
+      "sha256": "01264137fc249dffa336f79e352c04068126b6c2cf6efb66e3abc1e74217abc5",
+      "bytes": 1135
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/被击.xml",
+      "sha256": "8d65d0736eddfb34fe752b6e8bff3661616dde1132b0c3aaa6e077da8471655b",
+      "bytes": 28097
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/击飞.xml",
+      "sha256": "d50ae993ff9bfea1b10ad107ae3f4d5b9cd53f30409a6b9f378a53c2682ba9a7",
+      "bytes": 20025
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/起身.xml",
+      "sha256": "3ccea2b4c320b5d4fedbae6f92ba98011e8cf23f6edf36f09a7c799c80497ea9",
+      "bytes": 247673
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/死亡.xml",
+      "sha256": "28c2159e0b1fe00c42789d28e8ebba20b36442aefe92af6eac1dfdcf8ca0a928",
+      "bytes": 964721
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/部件/Symbol 305.xml",
+      "sha256": "155e8c9c65d2ab29d68be3445d2c68ac57878ae72c47a8d57d60b2469a0d9c58",
+      "bytes": 2525
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/部件/Symbol 306.xml",
+      "sha256": "ebe0ff1a7ee192029ad29c4ef0b3c6a9cd1b7ce27a9fff443902644e61bf1f07",
+      "bytes": 3804
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/部件/Symbol 307.xml",
+      "sha256": "96b549b9e4d3931a34ad880ce1d967945733162353c7d8ef9fbe33d6c5b33e7d",
+      "bytes": 4723
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/部件/Symbol 308.xml",
+      "sha256": "2a9ccd7f086c9696f7431a82b27a984c24b0918084a4e90146f26048cc6aa043",
+      "bytes": 3906
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/部件/Symbol 309.xml",
+      "sha256": "c70daabea50095b9b94a5da7f0847b7a47aab33377005f0656ff05c1da1162d8",
+      "bytes": 2564
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/部件/Symbol 312.xml",
+      "sha256": "bd28096ffcb4bf1953af5c35a3ffdf703284accd5f16c811761685139346fcf7",
+      "bytes": 3409
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/部件/Symbol 313.xml",
+      "sha256": "c5e9c89576b6b321eab18ba8b445c0bac275d168c56d56a7ada5d842a3b911fd",
+      "bytes": 2893
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/部件/Symbol 314.xml",
+      "sha256": "c652fb3cdff56863dd7cc148897d3073217cb980b40f0d5e7b5cd77afe1cd5c8",
+      "bytes": 2227
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/阴影.xml",
+      "sha256": "f15e31efc080cf397e6d493a4e3075fdaf204fb9f75fae01cd214b0feb3a633c",
+      "bytes": 2569
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/上臂-遮罩1.xml",
+      "sha256": "da624b1c9b07e3123fd6bf76d022455b576aa16598992b4a44d85845954a57c3",
+      "bytes": 5794
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/上臂-遮罩0.xml",
+      "sha256": "0ac4ba0fcdd3b7474d8bfc69fdb27d45b8328f7d434f0905096c443620dbbe66",
+      "bytes": 10465
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/上臂.xml",
+      "sha256": "a5d89565e276b6af18dd29a3b7660c45b2ea39ba17a5c417052436f5909f2804",
+      "bytes": 4311
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/小腿-遮罩1.xml",
+      "sha256": "e6239d6c1ac6bf10cf712f51f3d112cab328a9521ca5f8c8ea1a736e1a532eb1",
+      "bytes": 5625
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/小腿-遮罩0.xml",
+      "sha256": "1fbc59de763779a9b9e7b489201adda148a2caa4916b9b86e302e0702a8160ee",
+      "bytes": 10672
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/小腿.xml",
+      "sha256": "10a51741a1a8654227a41ff72e3e4ef0650d06aaeeaad713cbbc3f8b6a5401b5",
+      "bytes": 4235
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/膝部尖刺护片-遮罩1.xml",
+      "sha256": "4ef34823c4b123cfc90be675a9872e7fb2c856c72fdcb6bfd67c0ad447950970",
+      "bytes": 4208
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/膝部尖刺护片-遮罩0.xml",
+      "sha256": "2c187428479422ad8d40b48b398b72b906d176f4d855062a746b7c581d5c8aa6",
+      "bytes": 8315
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/膝部尖刺护片.xml",
+      "sha256": "3c0f879d8bb70b21f1d77b4e7fefd7c449b438487a6ede028c714f0ab5b62fa9",
+      "bytes": 6604
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/大腿-遮罩1.xml",
+      "sha256": "6fad64c037cbf0d25e19a079216f218bb5197ac8de3aa34005c27ac2a17edb97",
+      "bytes": 6492
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/大腿-遮罩0.xml",
+      "sha256": "1d716903e6718ac02fc85de3f5ca05a20ec996075050849c65e823288d64df7c",
+      "bytes": 10674
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/大腿.xml",
+      "sha256": "6ab97c313258037a10dcd32b0b849ad0451493d522c1b08e622c5565074c22da",
+      "bytes": 4607
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/躯干-遮罩1.xml",
+      "sha256": "582ba79fe267ac975fddffe12440b8dbb954674c61bc043c450e085767e9bbc4",
+      "bytes": 16044
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/躯干-遮罩0.xml",
+      "sha256": "f02214f2c26195e17bb4efe95f05dbf59b8964e1661cd8ad6d4ed5be86a3f9c9",
+      "bytes": 30731
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/躯干.xml",
+      "sha256": "203751266a3072aa33e98c63e84f469ce05cf9ace3e62ffcb8a33557967d97cc",
+      "bytes": 7693
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/颈肩-遮罩1.xml",
+      "sha256": "cfce7e74c9f565df46c177b7e4ec4354ad5e49f019eabd81116191701c106b76",
+      "bytes": 5444
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/颈肩-遮罩0.xml",
+      "sha256": "893f42c16e4d209e53554c3974b8b640b33f9fda9318013ab7997e84c3885b63",
+      "bytes": 12827
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/颈肩.xml",
+      "sha256": "06cd43a8f0ca44390adb4b21c0bbcce0d57fdb17d8e9f6bfe7093aa3b36beef8",
+      "bytes": 11773
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/下颌-遮罩1.xml",
+      "sha256": "e467418c8d65b69ddd2400f03d5cdb647067417b8bed6ded31b7ea1a25bdd248",
+      "bytes": 3768
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/下颌-遮罩0.xml",
+      "sha256": "46cbf7f50f2c7f4af6429cbf4a7fc1577d6164486d125ec4019bf7d99f8fbd46",
+      "bytes": 13930
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/下颌.xml",
+      "sha256": "89d34b977ecdd8ee6e280171e8ca42277000903072e2e19962486bfca5994a28",
+      "bytes": 10566
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/头部-遮罩1.xml",
+      "sha256": "0703ef8752d3c817a411773b5160f90643f0f03372e4b4ce39e84d71c1213d81",
+      "bytes": 14733
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/头部-遮罩0.xml",
+      "sha256": "4e427006517578926d22ec0522c989b1abd0280ce44fd527d9e62041fff3e086",
+      "bytes": 16900
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/头部.xml",
+      "sha256": "e7298608d823357aaaade3cd36ddb9f6640d0d503acc78390bc2b0eff2cf70f9",
+      "bytes": 18679
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂一-遮罩1.xml",
+      "sha256": "5e1c4baa849d3a96c3a6239328bebb7115b76b5466a1d56565ca140c655cf574",
+      "bytes": 6687
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂一-遮罩0.xml",
+      "sha256": "c6a94fde0a60a46703abd5680da5fc1ab598c9117a6abe1b7a2cd2e07328620b",
+      "bytes": 9347
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂一.xml",
+      "sha256": "b90d4702aca63db7d808e09eca5d9b99223b0a2e919c49574c790aa929cea5e6",
+      "bytes": 6406
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂二-遮罩1.xml",
+      "sha256": "121574b031e86b48d4fc842bf24bb37a9bd724c7d78477b94c5d2455a87f913f",
+      "bytes": 5682
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂二-遮罩0.xml",
+      "sha256": "38fd9f6321223747f39883f61bb7c29d7c0df211f467a181045609feca0b1f9f",
+      "bytes": 9968
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂二.xml",
+      "sha256": "53e6a3d93db286f1bc1efb0e4cfba850ea85f6d15669395b3683bef4e5b033d1",
+      "bytes": 5796
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/正向爪手-遮罩1.xml",
+      "sha256": "687695f0d6bb76507c2459d35f76b7fdaadf1af8aa8a9632df846abbcb8e3353",
+      "bytes": 5527
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/正向爪手-遮罩0.xml",
+      "sha256": "3737f16bd3ea27bfe8fef900f9ab7fdbd9d32f449577773ef11d41615359c849",
+      "bytes": 7904
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/正向爪手.xml",
+      "sha256": "9edf982f3d60ce5032ccfdeb8f7cca6965e6064e48dc6c4d1d95bef05ce74c7a",
+      "bytes": 11284
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/侧向爪手-遮罩1.xml",
+      "sha256": "9e077d6cdf1a342d7790555adaff14ee06f03ea7298c90712ba339a5b7874882",
+      "bytes": 5524
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/侧向爪手-遮罩0.xml",
+      "sha256": "05ecdfc83c1d8d49d1c52d73aef18cf10d3b50169dc47b8772bd2ddbd4066943",
+      "bytes": 7928
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/侧向爪手.xml",
+      "sha256": "7aebaa8ed75496b5e4beb0f4ba1834443e0cc707000a6940503ff331d371fc07",
+      "bytes": 10923
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/脚掌-遮罩1.xml",
+      "sha256": "0436943439f06e4cc839d39903ede9ac38fbeecf4548da02ae36a114abbf72ef",
+      "bytes": 7040
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/脚掌-遮罩0.xml",
+      "sha256": "58f84d7c4af3907aa6d7feca85bf78b475f55700233178d3c3a7f85c3c3fc10c",
+      "bytes": 9712
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/分件/脚掌.xml",
+      "sha256": "ec9a5d13820fda174afadbee813b03fc4f28f77383c4bc8ef0e26daf0cda4255",
+      "bytes": 11040
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/碎尸分件/小腿断件.xml",
+      "sha256": "796fd0eee2a392f0173695b163bfdc27b3c14dfa5c2fec4c004f2ff682de8654",
+      "bytes": 7947
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/碎尸分件/大腿残段.xml",
+      "sha256": "0f48d3116f7623555305764b1709b625ac03abb7de166fd91463c56a20968813",
+      "bytes": 8104
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/碎尸分件/断臂上段.xml",
+      "sha256": "09eb13f6ef10ec4c4dab6252c8b21da7b7b402adca720792e6813f6e27406e7b",
+      "bytes": 8024
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/碎尸分件/肩部裂口.xml",
+      "sha256": "75cba09c0672b7937edd06864ae165615b2c9e1661b0942ac07c50c44a006548",
+      "bytes": 6662
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/碎尸分件/碎肉.xml",
+      "sha256": "a40cd60bcefaef95ff5ee7e3374793ca1973dfad7e389dff688a3aba8c022de9",
+      "bytes": 3545
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/碎尸分件/骨片.xml",
+      "sha256": "8013786defb10572b4724d201bcc84aed4f65845cbbece2efd0b69dc3c12f9c3",
+      "bytes": 2267
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/敌人-完全体克隆兽.xml",
+      "sha256": "c6844a5e56a588be0cafac0cd7f878ae40f915b5f9db7df32b664e8ad5d51c5a",
+      "bytes": 34305
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/怪物通用模板/血条与名称/新版血条位置示意.xml",
+      "sha256": "da45d52d544df4a519032f564b88badcdfcfcde78e27220186d49590002e1576",
+      "bytes": 11488
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/area框/hitbox-area框载体.xml",
+      "sha256": "32f75cb97113be83ebb7808fe12552505b3532c44f4d317083e76bb670731f1a",
+      "bytes": 1102
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml",
+      "sha256": "404b5bead41bcff4ae4ff860c550e1c308d31002f3b51ec04bd74fa80f700da0",
+      "bytes": 1148
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/area框/索敌框载体.xml",
+      "sha256": "c1f904940f1cb7db77b924a73b440c0b232903106b0f0e74d417dc0a8aaab15e",
+      "bytes": 1379
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/思考标签.xml",
+      "sha256": "c59f2750a974def66e96e09afd70f1e98e34ad9100d2729e586208fea6aede83",
+      "bytes": 1499
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/通用ai元件/行走ai载体.xml",
+      "sha256": "f4ecf946b26f28675b7b9f5baf9d909184600d8cc5dfd1a1a12a84616ec2d43d",
+      "bytes": 1095
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/静止动作.xml",
+      "sha256": "ec681a3f29b1e357951f4d09e0d0b0cea2af4ad93d87565ca6e9414a8d4e6435",
+      "bytes": 45324
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/走路.xml",
+      "sha256": "96cec2aa7d6e81ca06e52a15de5ccc155af50a4f4e8d88b9894938c6802be964",
+      "bytes": 233994
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/跑步.xml",
+      "sha256": "53796c4959c7420c334dcc265b3f2e38e13b80cd78d661130f7cbcab3c0d86a2",
+      "bytes": 85549
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/攻击动作.xml",
+      "sha256": "a07da031a4e7efed4e078866f17cd704049f2fff89e979a56ca7f357e45ea686",
+      "bytes": 1059861
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/怪物通用模板/新近战子弹定位元件/近战子弹定位用.xml",
+      "sha256": "0d8283cd5dc8b972ef4a9dfd66cd9f8627d6c8cb2bc5fc2a8bb24bafa131519b",
+      "bytes": 1681
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/黑铁人马/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 14.xml",
+      "sha256": "d8456f9c0dc3c4e5d0154cf0112c4ffaa6b99b53f4dc757c3b4f43f698b2c25a",
+      "bytes": 1158
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/黑铁人马/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml",
+      "sha256": "b1f43740a66ae20b8d407cd5ca0c9e2e6c63582153030fccb2579c345a801e67",
+      "bytes": 1161
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/方舟指挥官/透明控件.xml",
+      "sha256": "b416193124a606f854773df8288a9935cabc68823ea18e30b0a6d7dfe04e8262",
+      "bytes": 1071
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/普通攻击动作.xml",
+      "sha256": "9b653afd09dbb5a6573c6e841524b85842613236d21632384c42f39188de78b0",
+      "bytes": 97423
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/部件/Symbol 283.xml",
+      "sha256": "eecff3d6fb20e6a2c81142bdca996ff3412577917765a1802d42614abe4e2dc6",
+      "bytes": 1075
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/部件/Symbol 270.xml",
+      "sha256": "fb204bf9cc64f2d629f25cee45a698d40d59ee8c5502557268caf7bf1833f018",
+      "bytes": 1135
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/被击.xml",
+      "sha256": "793a706b2b2b0710f3527efcc387b6b36bf3685a09512c103d949fb6da882b11",
+      "bytes": 28097
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/击飞.xml",
+      "sha256": "46f577369f74b26d153eb56da01e32a03df5f2433e4f2d690b3aa25c7ee33fcb",
+      "bytes": 20025
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/起身.xml",
+      "sha256": "a2f354370cedc9718c3d982a1fe4d47bfc3f2e2e98031c3475659125d4f2eb9b",
+      "bytes": 247673
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/死亡.xml",
+      "sha256": "25f0284af1402bb0dad6a086a2d4baf1a06c32ebb582aaeb5f7a3423a79cea8e",
+      "bytes": 964721
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/部件/Symbol 305.xml",
+      "sha256": "ff1e2c06d1314d4656bbb5c0bf2daaac7ff3f3a9096ef1a40a16396aa733bab4",
+      "bytes": 2525
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/部件/Symbol 306.xml",
+      "sha256": "4a250bc918a038057678cef98c6047d95538a42763672cbccb4a331540d9d8cb",
+      "bytes": 3804
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/部件/Symbol 307.xml",
+      "sha256": "749d0586d3c9259643b4df56da60da65a6256ad211c3535ffd5558b52e39ed47",
+      "bytes": 4723
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/部件/Symbol 308.xml",
+      "sha256": "b2c36460fd65e8e0278599fd4beb3d85105b5e726ef178128e055b721baba826",
+      "bytes": 3906
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/部件/Symbol 309.xml",
+      "sha256": "22c64be649d366beefaca01175ecd2341de564d0aa8fec69c930b2819a5b0d67",
+      "bytes": 2564
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/部件/Symbol 312.xml",
+      "sha256": "d6afbfaa386e60c7b92f0c0428b2483e948cc7c480944f9ea8b8a0900fd9c0d1",
+      "bytes": 3409
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/部件/Symbol 313.xml",
+      "sha256": "d3dce7b33f8ef9e64e266072c80ef770986a8a6142f97f8d265221f19454e1b5",
+      "bytes": 2893
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/部件/Symbol 314.xml",
+      "sha256": "7bdd2f5b33035fb5de332d7f9f8cb600cc3027c7a6f190c416d406044528360a",
+      "bytes": 2227
+    },
+    {
+      "path": "LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/阴影.xml",
+      "sha256": "24ec6793238d3d6ec5490584109fa2839d7f516c472000a1cff73ca44c525c7e",
+      "bytes": 2569
+    }
+  ],
+  "sourceNoahRootSha256": "c63d009cf2a61520d6ecf3810be08e4f6f58bf432c89042f8711f2bf87a73a4e",
+  "aiSourceSha256": "0e81a64388dd3e53e082312fd206de841f61ab166482a5972a4172d4c1ddb062",
+  "deathSourceSha256": "5f45c2cd700641298d08de113e0889c6460b4d90cc738c99a344ef6c34c40954",
+  "nativeSymbolCount": 152,
+  "connectionSourceSha256": "4b00a8ba087f3b12e00628ca2381f0555b748c6b24a072790a7aae5be1406ab9",
+  "notes": [
+    "26 native vector body parts; SVG clipping preserved by native mask layers",
+    "Noah attack/hit windows retained; original three death timelines restored with native wound parts and debris",
+    "No bitmaps; no existing enemy replacement; only two exported enemy linkages"
+  ]
+}
