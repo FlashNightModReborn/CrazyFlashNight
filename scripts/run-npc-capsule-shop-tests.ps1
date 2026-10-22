@@ -21,10 +21,10 @@ $focusedRun = @{
     ExpectedTracePatterns = @(
         '(?m)^NpcShopPanelServiceTest Tests Passed: 108\r?$',
         '(?m)^NpcShopPanelServiceTest Tests Failed: 0\r?$',
-        '(?m)^NpcCapsuleShopServiceTest Tests Passed: 59\r?$',
+        '(?m)^NpcCapsuleShopServiceTest Tests Passed: 66\r?$',
         '(?m)^NpcCapsuleShopServiceTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'NPC 108/108; capsule service 59/59 including delayed binding and real MC retargeting'
+    SuccessSummary = 'NPC 108/108; capsule service 66/66 including production BaseItem binding, delayed binding and real MC retargeting'
     TimeoutSeconds = $TimeoutSeconds
     AsyncBehaviorTimeoutSeconds = 90
     SkipCompile = $SkipCompile

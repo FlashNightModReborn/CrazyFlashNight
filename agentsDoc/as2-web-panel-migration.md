@@ -247,9 +247,9 @@ A3 自动准入以 [testing-guide.md](testing-guide.md) 的 `PG-IDENTITY-TRIPLE`
 
 合格商店继续开放完整目录，保留既有价格、情报锁、容量、限购及混合买卖；K 点商城不套用 NPC 地区条件。车辆资格由 `InfrastructureVehicleAccess` 统一解释：接受自有键中的合法有限整数、兼容旧数字串与布尔值，拒绝缺失、非法值、Infinity、对象强制转换和继承键；只读取，不修写玩家存档。
 
-合法 `谜之胶囊` 的临时服务资格归 `NpcCapsuleShopService`。共享手雷时间轴只为当前受控角色、真实装备及真实弹体登记私有 seal，在原扣除量与装备修订号回执一致后武装；落地仅能消费一次并固定打开 `迷之盔甲君`。该资格绑定当前槽、存档权威对象、书中局次、场景和独立对象戳，不借 caller 的 `source` 或任意商店字符串放行。Host 只在实际 admission 后将私有 opening 绑定 exact `panelInstanceId`，不向 Web 暴露 opening；AS2 在 snapshot、quote、commit 均复证，关闭、重绑、断线或上下文失效会退休资格，旧请求不得回退为普通授权。未知交易的写锁及对账不因退休而解除。普通远程盔甲君仍要求主线 ≥32，材料来源/配方采购不能借胶囊临时资格扩权。开店投递未知不退款、不重放。
+合法 `谜之胶囊` 的临时服务资格归 `NpcCapsuleShopService`。共享手雷时间轴只为当前受控角色、真实装备及真实弹体登记私有 seal。角色的 `手雷` 字段必须是装备栏当前持有的同一 `BaseItem` 对象；正式装配保留该引用，名称字符串或同名对象副本均不能代替。在原扣除量与装备修订号回执一致后武装；落地仅能消费一次并固定打开 `迷之盔甲君`。该资格绑定当前槽、存档权威对象、书中局次、场景和独立对象戳，不借 caller 的 `source` 或任意商店字符串放行。Host 只在实际 admission 后将私有 opening 绑定 exact `panelInstanceId`，不向 Web 暴露 opening；AS2 在 snapshot、quote、commit 均复证，关闭、重绑、断线或上下文失效会退休资格，旧请求不得回退为普通授权。未知交易的写锁及对账不因退休而解除。普通远程盔甲君仍要求主线 ≥32，材料来源/配方采购不能借胶囊临时资格扩权。开店投递未知不退款、不重放。
 
-2026-10-22 测试员的[胶囊入口反馈](https://github.com/FlashNightModReborn/CrazyFlashNight/issues/152#issuecomment-6332461815)已完成上述窄修复和真实 AVM1 专项门；源链、编译产物、Host 拒绝边界及实机捕获阻塞见[联合复验记录](../docs/reports/胶囊便携商店资格与联合复验-2026-10-23.md)。正常投掷及购买的同身份游戏复验仍未完成，#152 继续开放；旧大学/Lee 验收不代签本入口，正式 runtime 也尚未推广本次 Host 改动。
+2026-10-22 测试员的[胶囊入口反馈](https://github.com/FlashNightModReborn/CrazyFlashNight/issues/152#issuecomment-6332461815)已实施上述窄修复。2026-10-23 用户实际投掷暴露首版错误地将装备对象与名称字符串严格比较，原 59 项夹具也错误使用字符串；补入正式 `DressupInitializer` 装配后，真实 AVM1 反例为 61 通过、3 失败，修复后胶囊 66/66、NPC 108/108。源链、编译产物、Host 拒绝边界及真实游戏边界见[联合复验记录](../docs/reports/胶囊便携商店资格与联合复验-2026-10-23.md)。正常投掷及购买的同身份游戏复验仍未完成，#152 继续开放；旧大学/Lee 验收不代签本入口，正式 runtime 也尚未推广本次 Host 改动。
 
 
 ### 武器平衡展示摘要（只读附加字段）

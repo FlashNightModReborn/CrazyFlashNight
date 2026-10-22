@@ -29,7 +29,7 @@ class org.flashNight.arki.item.NpcCapsuleShopServiceTest {
         world = _root.createEmptyMovieClip("__capsuleFixtureWorld", _root.getNextHighestDepth());
         world.createEmptyMovieClip("子弹区域", 1);
         hero = world.createEmptyMovieClip("capsuleHero", 2);
-        hero.手雷 = CAPSULE;
+        hero.手雷 = null;
         hero.是否为敌人 = false;
         _root.gameworld = world;
         _root.控制目标 = hero._name;
@@ -37,6 +37,7 @@ class org.flashNight.arki.item.NpcCapsuleShopServiceTest {
     }
     private static function stock(value):Void {
         _root.物品栏.装备栏 = new EquipmentInventory({手雷:new BaseItem(CAPSULE, value, 0)});
+        bindProductionEquipment();
     }
     private static function projectile(name:String):MovieClip {
         var clip:MovieClip = world.子弹区域.createEmptyMovieClip(name, ++sequence);
@@ -80,11 +81,44 @@ class org.flashNight.arki.item.NpcCapsuleShopServiceTest {
         NpcShopAccessFixture.deny(SHOP, true);
         _root.暂停 = false;
         newWorld();
+        testProductionEquipmentBinding();
         testConsumptionAndOpaqueIdentity();
         testQualificationAndTransactions();
         testDeliveryOutcomeBoundary();
         testContextAndRealMovieClipReuse();
         prepareLateBoundary();
+    }
+
+    private static function bindProductionEquipment():Void {
+        org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.loadEquipmentData(
+            hero, "手雷", org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.loadHeroEquipment, 1);
+    }
+
+    private static function testProductionEquipmentBinding():Void {
+        stock(3);
+        var item:BaseItem = _root.物品栏.装备栏.getItem("手雷");
+        check(hero.手雷 === item, "production dressup binds the authoritative equipped item reference");
+        check(hero.手雷 instanceof BaseItem, "production grenade field holds BaseItem rather than its name string");
+        var clip:MovieClip = projectile("production.item");
+        var token:Object = NpcCapsuleShopService.registerShot(hero, clip);
+        check(token != null, "production BaseItem registers the real capsule projectile");
+        var armed:Boolean = false;
+        var opened:Boolean = false;
+        if (token != null) {
+            _root.物品栏.装备栏.addValue("手雷", -1);
+            armed = NpcCapsuleShopService.confirmShot(token);
+            opened = NpcCapsuleShopService.openProjectile(clip);
+        }
+        check(armed, "production equipped object confirms exactly one original decrement");
+        check(opened, "production equipped object opens after a confirmed landing");
+        stock(3);
+        hero.手雷 = CAPSULE;
+        check(NpcCapsuleShopService.registerShot(hero, projectile("name.only")) == null,
+            "name string cannot impersonate the authoritative equipped object");
+        stock(3);
+        hero.手雷 = new BaseItem(CAPSULE, 3, 0);
+        check(NpcCapsuleShopService.registerShot(hero, projectile("same.name.copy")) == null,
+            "same-name BaseItem copy cannot impersonate the equipped original");
     }
 
     private static function testConsumptionAndOpaqueIdentity():Void {
@@ -212,7 +246,7 @@ class org.flashNight.arki.item.NpcCapsuleShopServiceTest {
         NpcCapsuleShopService.authorize(SHOP,id,"owner.unit",true);
         var oldHero:MovieClip = hero;
         hero.removeMovieClip();
-        hero = world.createEmptyMovieClip("capsuleHero",2); hero.手雷 = CAPSULE;
+        hero = world.createEmptyMovieClip("capsuleHero",2); bindProductionEquipment();
         check(oldHero === hero, "real AVM1 unit reference retargets at same path");
         check(!NpcCapsuleShopService.authorize(SHOP,id,"owner.unit",true), "unit seal rejects old service after rebind");
         newWorld();

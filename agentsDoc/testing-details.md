@@ -156,7 +156,7 @@ AS2 必须证明目标只扫描一次、来源/目标各一次 revision 与 inde
 - `CraftingPanelServiceTest` 185/185 + `SynthesisIndexTest` 18/18（机器钉死；此处按 commit `e582cf62da63b8e1b6057df88aa0caf4eadf85b9` 加 2026-10-21 Issue 152 工作树核对现役 runner）。
 - `NpcShopPanelServiceTest` 108/108（机器钉死）。
 
-胶囊实际发射/扣除与临时店级资格改动另运行 `scripts/run-npc-capsule-shop-tests.ps1`；该 runner 从生产手雷片段及胶囊落地脚本构建真实 MovieClip 专项，阈值以 tracked template 为准，同时复跑 NPC suite。它覆盖一次性消耗、同路径重绑、迟到及投递未知，不代签正常游戏投掷/购买；发布还须明确编译 things0、things-new 与 asLoader 的各自目标。
+胶囊实际发射/扣除与临时店级资格改动另运行 `scripts/run-npc-capsule-shop-tests.ps1`；该 runner 使用真实 MovieClip、生产 `DressupInitializer` 装配和权威装备栏，执行胶囊服务与 NPC suite，现役阈值为胶囊 66/66、NPC 108/108。它覆盖正式 `BaseItem` 同一引用、字符串/同名副本拒绝、一次性消耗、同路径重绑、迟到及投递未知。弹体与落地由夹具驱动，没有执行完整生产手雷时间轴或胶囊资源，相关源链另行核对，不能代签正常游戏投掷/购买。发布目标按实际改动归属选择：手雷时间轴、胶囊资源及逻辑分别归 things0、things-new 与 asLoader；仅改逻辑类时只发布 asLoader，不重复编译未改资源。
 
 物品格协议施工须看到 `InventoryPanelServiceTest` 的现役机器钉值、合成/材料来源与用途施工须看到 `CraftingPanelServiceTest` + `SynthesisIndexTest` 的新鲜 Output Panel/trace 证据，不能只凭 publish marker。`-SkipCompile` 只证明静态合同。
 

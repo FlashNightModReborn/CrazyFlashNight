@@ -35,14 +35,15 @@ class org.flashNight.arki.item.NpcCapsuleShopService {
         var equipment:Object = _root.物品栏.装备栏;
         if (_root.暂停 || _root.存档系统 == undefined || typeof world != "movieclip"
                 || typeof unit != "movieclip" || unit !== world[_root.控制目标]
-                || unit._parent !== world || unit.是否为敌人 === true || unit.手雷 !== CAPSULE
+                || unit._parent !== world || unit.是否为敌人 === true
                 || typeof projectile != "movieclip" || projectile._parent !== world.子弹区域
                 || projectile.子弹种类 !== CAPSULE || projectile.发射者 !== unit._name
                 || projectile.__capsuleShopShot != undefined || _shots.length > 7) return null;
         var item:Object = equipment.getItem("手雷");
         var count:Number = item.value;
         var definition:Object = org.flashNight.arki.item.ItemUtil.getItemData(CAPSULE);
-        if (item == null || item.name !== CAPSULE || typeof item.value != "number"
+        // 主角装配持有的是装备栏原始 BaseItem；名称强转不能代替真实装备身份。
+        if (item == null || unit.手雷 !== item || item.name !== CAPSULE || typeof item.value != "number"
                 || !(count > 0 && count < 9007199254740992) || Math.floor(count) != count
                 || definition.use !== "手雷" || definition.data.bullet !== CAPSULE
                 || typeof equipment.getMutationRevision != "function") return null;
