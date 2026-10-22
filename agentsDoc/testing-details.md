@@ -988,6 +988,8 @@ AS2 只发送逐段结算事实，C# `HitNumberRuntime` / `HitNumberOverlay` 是
 
 按 [Flash 编译核心](#flash-core) 三层先选 `-Target publish|test|main`。
 
+- 装填打断与射速生命周期：`scripts/run-shoot-reload-timeline-tests.ps1` 从现役 `things0.swf` 附加角色，读取逐发装填 53 式与整匣战术巴雷特数据，通过生产射击/换弹绑定驱动真实换弹标签与时间轮，并串行执行精确时序、枪械师 1／5／10 级双枪按法切换、弹药、双持后摇和手动输入 suite。输入标志与库存/弹体出口为隔离夹具，不能代签物理键盘、标准游戏入口与手感。单独逻辑入口为 `scripts/run-shoot-reload-cadence-tests.ps1`；RSL 相对路径、临时宿主与恢复约束见 [runner 说明](../scripts/test-runners/shoot-reload-timeline/README.md)。
+
 - 托管长枪/装扮引用：`scripts/run-managed-longgun-tests.ps1`（机器钉死 ManagedLongGun 126/126；并须同时取得 DressupReferenceManager 70/70（待核）、EventBus `All tests completed`、fresh trace/output/errors、Compiler 0/0、32K retry 0）。新增 attach 相位合同固定真实 loader 返回栈只校验 placement/exact registration/initObject 槽身份，资源计划在 Dressup/Extra/Buff 后消费；
   generic 非人形允许 MP 字段双缺省，T800 `hasDressup` 固定合法 `0/0`；spawn 满 HP、preserve 绝对资源、upgrade 满 HP 保 MP，并继续覆盖同步 null/throw/身份错误时保留旧单位。真人先后发现的全宠首次出战 `deploy_failed` 与「休息后单位消失但 flag 回滚」均已明确推翻旧同步 mock 的业务通过解释；退场现对已确认由 `gameworld.attachMovie` 动态创建的单位只发一次 bare `removeMovieClip`，以原生请求受理作为提交边界；禁止用同栈 `_parent` 或父级软别名回滚已经发出的删除。
   现役 `delete/world_adopt` 分别只撤目标 slot、只部署新 slot，禁止同栈全场 remove 后按旧 canonical 名全量 attach。

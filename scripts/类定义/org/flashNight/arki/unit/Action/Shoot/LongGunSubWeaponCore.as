@@ -376,7 +376,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
     public static function startManualReloadAnimation(unit:Object):Boolean {
         if (!canReloadManual(unit)) return false;
 
-        org.flashNight.arki.unit.Action.Shoot.ShootCore.cleanup(unit);
+        org.flashNight.arki.unit.Action.Shoot.ShootCore.stopForReload(unit);
         var targetState:String = getNormalizedLongGunActionState(unit);
         if (targetState != unit.状态) {
             unit.行走冷却帧 = 2;

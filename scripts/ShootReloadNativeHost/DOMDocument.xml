@@ -1,0 +1,9 @@
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" frameRate="30" width="800" height="500" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481">
+ <symbols><Include href="Import0.xml" itemID="6af00000-16400001" loadImmediate="false"/></symbols>
+ <timelines><DOMTimeline name="射速回归"><layers><DOMLayer name="生产共享库"><frames><DOMFrame index="0" keyMode="9728">
+  <Actionscript><script><![CDATA[stop();
+#include "../scripts/TestLoader.as"
+]]></script></Actionscript>
+  <elements><DOMSymbolInstance libraryItemName="Import0" name="__cadenceRsl"/></elements>
+ </DOMFrame></frames></DOMLayer></layers></DOMTimeline></timelines>
+</DOMDocument>

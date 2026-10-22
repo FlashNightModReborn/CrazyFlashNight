@@ -1,6 +1,8 @@
 # 70002 新人救援：关卡与原生美术施工入口
 
-本轮在 `main` 施工，不创建工作树、不提交、不推送，不部署 Host runtime。
+原施工批次在 `main` 完成；“不创建工作树、不提交、不推送、不部署 Host runtime”是该批次当时的授权边界。后续关卡、美术及验证说明已由提交 `b702dc0d1c` 进入主线，不再属于未提交草稿。
+
+当前跟踪：[70001 流程验收 #50](https://github.com/FlashNightModReborn/CrazyFlashNight/issues/50)、[70002 剩余验收 #51](https://github.com/FlashNightModReborn/CrazyFlashNight/issues/51)。八段关卡与原生专项证据已落地；完整标准入口、实战平衡、退出重进与存档验收仍按下文范围执行，不把专项通过改写成整关验收。
 
 ## 当前范围
 
