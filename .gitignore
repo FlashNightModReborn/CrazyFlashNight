@@ -266,5 +266,10 @@ tools/input-hook-diagnostic/obj/
 # 地图批次的审阅图和接触表是现场生成物，不入库
 /map-production/packages/**/review/
 
+# 任务台的组员日志要随仓库共享；只放行 map-production/logs，其他 logs/ 仍忽略
+!/map-production/logs/
+!/map-production/logs/*.md
+!/map-production/logs/.gitkeep
+
 # 本机生成/候选图，不进入仓库
 /vibe_images/
