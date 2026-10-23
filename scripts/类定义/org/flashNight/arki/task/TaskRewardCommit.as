@@ -54,7 +54,7 @@ class org.flashNight.arki.task.TaskRewardCommit {
         var operationId:String = RewardStashService.nextOperationId("quest_finish");
         var context:Object = {source:"quest_reward", reason:"quest_complete", operationId:operationId, mergeScope:"operation"};
         var domain:Object = {taskId:taskId, taskData:taskData, beforeLevel:Number(_root.等级), challenge:challenge,
-            overflowMoney:0, hasOverflow:false};
+            overflowMoney:0, hasOverflow:false,growthOwner:org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery.captureIntentOwner(operationId)};
         if (!RewardStashService.begin(operationId, context, resolved, domain)) return fail(RewardStashService.lastError);
         try {
             if (submit != null && submit.length > 0 && !ItemUtil.submit(submit,
@@ -126,7 +126,7 @@ class org.flashNight.arki.task.TaskRewardCommit {
     private static function resolved(committed:Boolean, domain:Object):Boolean {
         if (!committed) return true;
         // 每个可选消费者独立保护，任何失败不能重开已经完成的任务。
-        try { _root.投影已提交任务成长(domain.beforeLevel); } catch (growthError) { trace("[TaskRewardCommit] growth projection: " + growthError); }
+        try { _root.投影已提交任务成长(domain.beforeLevel,domain.growthOwner); } catch (growthError) { trace("[TaskRewardCommit] growth projection: " + growthError); }
         try { _root.播放音效("levelup-2.wav"); } catch (audioError) { }
         try {
             if (domain.hasOverflow) _root.发布消息(domain.overflowMoney > 0

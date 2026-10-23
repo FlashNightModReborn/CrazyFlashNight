@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CF7Launcher.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -38,6 +39,89 @@ namespace Launcher.Tests.Tasks
             return new JObject
             { ["stationId"] = "dummy", ["snapshotJson"] = snapshot.ToString(Formatting.None) }
                 .ToString(Formatting.None);
+        }
+
+        private static JObject SavedProjection(string status = "failed", string reason = "injected")
+        {
+            return new JObject {
+                ["sessionToken"] = "gym.session.saved.1", ["stationId"] = "dummy",
+                ["projectId"] = "dummy.0", ["phase"] = "applied",
+                ["projection"] = new JObject { ["status"] = status, ["reason"] = reason }
+            };
+        }
+
+        [Fact]
+        public void CurrentAs2ReadySnapshotIncludesNullPendingProjection()
+        {
+            // prepareOpen always emits this key, even before any training.
+            JObject snapshot = Snapshot();
+            snapshot["pendingProjection"] = JValue.CreateNull();
+            JObject opened = GymPreviewOpenData.Build("world_gym", Extras(snapshot));
+            Assert.NotNull(opened);
+            Assert.Equal(JTokenType.Null, opened["snapshot"]["pendingProjection"].Type);
+        }
+
+        [Theory]
+        [InlineData("failed", "injected")]
+        [InlineData("pending", "revision_pending")]
+        public void SavedProjectionPassesRealOpenerThenBindsProjectionOnlyRecovery(string status, string reason)
+        {
+            JObject snapshot = Snapshot();
+            snapshot["pendingProjection"] = SavedProjection(status, reason);
+            JObject opened = GymPreviewOpenData.Build("world_gym", Extras(snapshot));
+            Assert.NotNull(opened);
+            var sent = new List<JObject>();
+            using var task = new GymTrainingTask(() => true,
+                text => { sent.Add(JObject.Parse(text.TrimEnd('\0'))); return true; },
+                () => 0, 1000, () => false, false);
+            task.BindPanelOpenData(opened.ToString(Formatting.None), "panel.gym.reopened");
+            task.HandleWebRequest("query", new JObject {
+                ["type"] = "panel", ["panel"] = "gym", ["domain"] = "gym",
+                ["cmd"] = "query", ["callId"] = "projection.reopen.query",
+                ["panelInstanceId"] = "panel.gym.reopened",
+                ["payload"] = new JObject { ["v"] = 1, ["recoverProjection"] = true }
+            });
+            Assert.Single(sent);
+            Assert.Equal("gymQuery", sent[0].Value<string>("action"));
+            Assert.Equal("gym.session.saved.1", sent[0].Value<string>("sessionToken"));
+            Assert.True(sent[0].Value<bool>("recoverProjection"));
+        }
+
+        [Theory]
+        [InlineData("stationId", "\"squat\"")]
+        [InlineData("projectId", "\"dummy.99\"")]
+        [InlineData("phase", "\"save_pending\"")]
+        [InlineData("sessionToken", "\"bad token\"")]
+        [InlineData("projection.status", "\"applied\"")]
+        [InlineData("projection.status", "\"unchanged\"")]
+        [InlineData("projection.status", "\"unknown\"")]
+        [InlineData("projection.reason", "1")]
+        public void RejectsForeignOrMalformedSavedProjection(string field, string raw)
+        {
+            JObject snapshot = Snapshot();
+            snapshot["pendingProjection"] = SavedProjection();
+            snapshot["pendingProjection"].SelectToken(field).Replace(JToken.Parse(raw));
+            Assert.Null(GymPreviewOpenData.Build("world_gym", Extras(snapshot)));
+        }
+
+        [Fact]
+        public void PendingProjectionCannotCarryAnotherSaveOwnerOrExtraAuthority()
+        {
+            JObject snapshot = Snapshot();
+            snapshot["pendingProjection"] = SavedProjection();
+            snapshot["pendingSession"] = new JObject {
+                ["sessionToken"] = "gym.session.unsaved.1", ["stationId"] = "dummy",
+                ["projectId"] = "dummy.0", ["phase"] = "save_pending"
+            };
+            Assert.Null(GymPreviewOpenData.Build("world_gym", Extras(snapshot)));
+            snapshot["pendingSession"] = JValue.CreateNull();
+            snapshot["pendingProjection"]["commit"] = true;
+            Assert.Null(GymPreviewOpenData.Build("world_gym", Extras(snapshot)));
+            snapshot["pendingProjection"] = SavedProjection("pending", "pending_actor");
+            Assert.Null(GymPreviewOpenData.Build("world_gym", Extras(snapshot)));
+            snapshot["pendingProjection"] = JValue.CreateNull();
+            snapshot["commit"] = true;
+            Assert.Null(GymPreviewOpenData.Build("world_gym", Extras(snapshot)));
         }
 
         [Fact]

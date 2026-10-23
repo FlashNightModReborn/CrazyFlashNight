@@ -1367,6 +1367,10 @@ class org.flashNight.arki.merc.PetPanelService {
         }
         org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
 
+        if(_root.宠物信息[slot][4]==1) {
+            var statCoordinator:org.flashNight.arki.unit.PlayerStatRefreshCoordinator=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production();
+            statCoordinator.invalidate(1,"companion",statCoordinator.contextToken());statCoordinator.flush("world_pet_committed");
+        }
         // 成就记账（对齐 handleAdopt 埋点 #9）
         try {
             if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {

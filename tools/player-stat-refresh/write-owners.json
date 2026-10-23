@@ -1,0 +1,16 @@
+{
+  "schema": "cf7.stat-write-owners.v1",
+  "purpose": "有限 owner 路由表，不豁免明确禁用模式；未登记命中保留为人工审读候选",
+  "owners": [
+    {"owner":"persistent_projection","paths":["scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/DressupInitializer.as","scripts/类定义/org/flashNight/arki/unit/PlayerStatRefreshCoordinator.as"],"reason":"稳定输入投影与显式 full 子阶段；按函数审读，不允许普通 STATS 重建或 tick"},
+    {"owner":"full_lifecycle","paths":["scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as","scripts/引擎/引擎_lsy_场景转换.as","scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/StaticInitializer.as"],"reason":"出生、转场及计划内完整装备 owner，最终屏障位于外层"},
+    {"owner":"skill_domain","paths":["scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as"],"reason":"技能事实及成功提交；prepare 不发布成长投影"},
+    {"owner":"growth_domain","paths":["scripts/类定义/org/flashNight/arki/ui/GymTrainingPanelService.as","scripts/类定义/org/flashNight/arki/ui/MeridianPanelService.as","scripts/引擎/引擎_lsy_等级与经验值.as","scripts/类定义/org/flashNight/arki/unit/Action/Regeneration/LevelUpRecovery.as","scripts/类定义/org/flashNight/arki/task/TaskRewardCommit.as"],"reason":"Gym durable、Meridian memory-first、升级一次性 owner；保存与投影结果分开"},
+    {"owner":"equipment_domain","paths":["scripts/类定义/org/flashNight/arki/item/CharacterBuildService.as","scripts/类定义/org/flashNight/arki/item/EquipmentTuningService.as","scripts/类定义/org/flashNight/arki/item/ItemUtil.as","scripts/类定义/org/flashNight/arki/unit/Action/PickUp/PickUpManager.as"],"reason":"真实容器提交后声明 EQUIPMENT；保留原 proof、费用与资产守恒"},
+    {"owner":"context_domain","paths":["scripts/类定义/org/flashNight/neur/Server/SaveManager.as","scripts/类定义/org/flashNight/arki/scene/BookRunService.as","scripts/类定义/org/flashNight/arki/scene/WarlordActionEncounterService.as","scripts/类定义/org/flashNight/arki/ui/BookshelfPanelService.as"],"reason":"真正 authority 替换前 detach；临时玩法不产生玩家持久写"},
+    {"owner":"companion_domain","paths":["scripts/类定义/org/flashNight/arki/merc/MercPanelService.as","scripts/类定义/org/flashNight/arki/merc/PetPanelService.as","scripts/引擎/引擎_lsy_战宠系统.as"],"reason":"只在决定独行者谓词的权威 flag 成功变化后通知"},
+    {"owner":"combat_resources","paths":["scripts/类定义/org/flashNight/arki/component/Damage/**","scripts/类定义/org/flashNight/arki/component/Buff/BuffManager.as","scripts/类定义/org/flashNight/arki/unit/Action/Regeneration/**"],"reason":"伤害、治疗及运行态上限损伤是合法直接资源写，不能泛化为持久输入"},
+    {"owner":"legacy_ui_public_wrapper","paths":["flashswf/UI/物品与技能相关界面/LIBRARY/sprite/悬浮UI/旧版物品栏界面.xml","flashswf/UI/物品与技能相关界面/LIBRARY/sprite/技能图标.xml"],"reason":"现有历史调用经公共刷新 owner 的 ticket 收口；未据词法证明不可达，不批量重写。增量新增 UI 直调仍硬失败"},
+    {"owner":"equipment_runtime","paths":["scripts/逻辑/装备函数/**"],"reason":"运行态 alias/真实模式命令有自身 owner；普通投影只读来源，不重放弹药迁移"}
+  ]
+}

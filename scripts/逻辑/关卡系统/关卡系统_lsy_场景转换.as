@@ -15,28 +15,16 @@ EventBus.getInstance().subscribe("SceneReady", function(readyWorld:Object, arriv
 	org.flashNight.arki.scene.StageRunSession.onSceneReady(readyWorld, arrivalToken, readyIdentity);
 }, null);
 
+// HP/MP 在实际清场的最终写入边界采样；这里仅保留原攻击模式选择。
 _root.转场景记录数据 = function(){
-	_root.转场景记录数据第一次记录 = true;
-
-	var 操控对象 = _root.gameworld[_root.控制目标];
-	if (!isNaN(操控对象.hp)) _root.转场景数据[0] = 操控对象.hp;
-	if (!isNaN(操控对象.mp)) _root.转场景数据[1] = 操控对象.mp;
-	_root.转场景数据[2] = 操控对象.攻击模式;
-	// _root.转场景数据[3] = 操控对象.长枪射击次数;
-	// _root.转场景数据[4] = 操控对象.手枪射击次数;
-	// _root.转场景数据[5] = 操控对象.手枪2射击次数;
-
-	佣兵同伴血量记录 = [-1, -1, -1];
-	var _loc3_ = 0;
-	while (_loc3_ < _root.同伴数){
-		if (_root.gameworld["同伴" + _loc3_].hp > 0){
-			佣兵同伴血量记录[_loc3_] = _root.gameworld["同伴" + _loc3_].hp;
-		}
-		_loc3_ += 1;
-	}
+    _root.转场景记录数据第一次记录 = true;
+    _root.转场景数据[2] = _root.gameworld[_root.控制目标].攻击模式;
 }
 
 _root.转场景数据传递 = function(){
+    var 属性场景协调器:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator;
+    var 属性场景范围:Object=属性场景协调器.beginSceneInitialization(_root.gameworld);
+    try {
 	_root.加载我方人物(_root.场景进入横坐标,_root.场景进入纵坐标);
 	if (_root.新出生){
 		_root.转场景数据 = [0, 0, "空手"];
@@ -48,34 +36,6 @@ _root.转场景数据传递 = function(){
 
 	var 操控对象 = _root.gameworld[_root.控制目标];
 
-	if(_root.当前为战斗地图) {
-		if (_root.转场景数据[0] > 0){
-			操控对象.hp = _root.转场景数据[0];
-		}
-		if (_root.转场景数据[1] > 0){
-			操控对象.mp = _root.转场景数据[1];
-		}
-
-		// 个别情况下mp会变成NaN，导致无法恢复，具体原因未知，在传递参数的时候加了NaN判断
-
-		/*
-		_root.服务器.发布服务器消息(_root.当前为战斗地图 + " " +
-					  操控对象.hp + " " +
-					  _root.转场景数据[0] + " " +
-					  操控对象.mp + " " +
-					  _root.转场景数据[1]);
-		*/
-
-	} else {
-		if(操控对象.hp > 0) {
-			_root.转场景数据[0] = 操控对象.hp;
-		}
-
-		if(操控对象.mp >= 0) {
-			_root.转场景数据[1] = 操控对象.mp;
-		}
-	}
-
 	if (转场景记录数据第一次记录){
 		操控对象.攻击模式切换(_root.转场景数据[2]);
 		操控对象.攻击模式 = _root.转场景数据[2];
@@ -84,16 +44,10 @@ _root.转场景数据传递 = function(){
 		// 操控对象.手枪2射击次数 = _root.转场景数据[5];
 	}
 
-	var i = 0;
-	while (i < _root.同伴数){
-		if (_root.佣兵同伴血量记录[i] > 0){
-			_root.gameworld["同伴" + i].hp = _root.佣兵同伴血量记录[i];
-		}
-		i ++;
-	}
-
 	// 重置场景切换冷却计数，防止加载期间持续按键导致的穿墙问题
 	_root.场景转换函数.上次切换帧数 = _root.帧计时器.当前帧数;
+    } catch(属性场景错误) {属性场景协调器.failSceneInitialization(属性场景范围,属性场景错误);throw 属性场景错误;}
+    finally {属性场景协调器.endSceneInitialization(属性场景范围);}
 }
 
 _root.转场景数据 = [0, 0, "空手"];
@@ -108,6 +62,10 @@ _root.转场景记录数据第一次记录 = false;
 // }
 
 _root.加载我方人物 = function(地点X, 地点Y){
+    org.flashNight.arki.scene.PlayerResourceTransferBridge.prepareScene(_root.gameworld,true);
+    var 属性加载协调器:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator;
+    var 属性加载范围:Object=属性加载协调器.beginSceneInitialization(_root.gameworld);
+    try {
 	var 就绪世界:MovieClip = _root.gameworld;
 	var 就绪身份:Object = org.flashNight.arki.scene.StageReturnFlow.worldIdentity(就绪世界);
 	var 到达令牌:String = 就绪世界.__stageReturnToken;
@@ -121,11 +79,19 @@ _root.加载我方人物 = function(地点X, 地点Y){
 	_root.加载佣兵(地点X,地点Y);
 	_root.加载宠物(地点X,地点Y);
 
-    org.flashNight.arki.camera.HorizontalScroller.onPlayerBound(就绪世界,就绪身份,就绪世界[_root.控制目标]);
-	EventBus.instance.publish("SceneReady", 就绪世界, 到达令牌, 就绪身份);
+
+    } catch(属性加载错误) {属性加载协调器.failSceneInitialization(属性加载范围,属性加载错误);throw 属性加载错误;}
+    finally {
+        属性加载协调器.endSceneInitialization(属性加载范围);
+        org.flashNight.arki.scene.PlayerResourceTransferBridge.finishSceneSetup(就绪世界);
+    }
 }
 
 _root.加载主角和战宠 = function(地点X, 地点Y){
+    org.flashNight.arki.scene.PlayerResourceTransferBridge.prepareScene(_root.gameworld,false);
+    var 属性特例协调器:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator;
+    var 属性特例范围:Object=属性特例协调器.beginSceneInitialization(_root.gameworld);
+    try {
     var 玩家世界:MovieClip = _root.gameworld;
     var 玩家世界身份:Object = 玩家世界.__stageReturnWorldIdentity;
 	var 出生配置:Object = org.flashNight.arki.scene.ControlledEnemyLifecycle.createSpawn(_root, 地点X, 地点Y, true);
@@ -135,7 +101,12 @@ _root.加载主角和战宠 = function(地点X, 地点Y){
 	_root.玩家信息界面.刷新mp显示();
 	// _root.添加其他玩家();
 	_root.加载宠物(地点X,地点Y);
-    org.flashNight.arki.camera.HorizontalScroller.onPlayerBound(玩家世界,玩家世界身份,玩家世界[_root.控制目标]);
+
+    } catch(属性特例错误) {属性特例协调器.failSceneInitialization(属性特例范围,属性特例错误);throw 属性特例错误;}
+    finally {
+        属性特例协调器.endSceneInitialization(属性特例范围);
+        org.flashNight.arki.scene.PlayerResourceTransferBridge.finishSceneSetup(玩家世界);
+    }
 }
 
 // issue #7 bug4：从 加载佣兵 抽出的「单佣兵进场」，供 handleDeploy 即时上人复用。
@@ -180,51 +151,7 @@ _root.加载佣兵 = function(地点X, 地点Y){
 	if((!_root.限制系统.limitLevel || _root.难度等级 >= _root.限制系统.limitLevel) && _root.限制系统.DisableCompanion) return;
 	// 标记本场景托管佣兵（issue #7 bug4：handleDeploy 即时上/撤人据此判定）
 	_root.gameworld.佣兵已进场 = true;
-	_root.帧计时器.添加单次任务(function() {
-		for(var i = 0; i < _root.佣兵个数限制; i++){
-			var 同伴信息 = _root.同伴数据[i];
-			if (_root.佣兵是否出战信息[i] == 1 && 同伴信息[1] != undefined && 同伴信息[1] != "undefined"){
-				/*if (同伴信息[17] == "男") 同伴信息[17] = "主角-男";
-				if (同伴信息[17] == "女") 同伴信息[17] = "主角-女";
-				*/
-				//主角模型已经统一
-				// 佣兵装备托管一期：与 加载单个佣兵 同步，attach 前解析托管/预设（docs/佣兵装备托管-设计-2026-08-23.md §5）
-				var 装备解析 = org.flashNight.arki.merc.MercLoadoutService.buildSpawnLoadout(同伴信息);
-				var 当前佣兵 = _root.加载游戏世界人物("主角-男","同伴" + i,_root.gameworld.getNextHighestDepth(),{
-					_x:地点X + random(10), 
-					_y:地点Y + random(10), 
-					用户ID:同伴信息[2], 
-					是否为敌人:false, 
-					身高:同伴信息[3], 
-					名字:同伴信息[1], 
-					等级:同伴信息[0], 
-					脸型:同伴信息[4], 
-					发型:同伴信息[5], 
-					头部装备:装备解析.头部装备,
-					上装装备:装备解析.上装装备,
-					手部装备:装备解析.手部装备,
-					下装装备:装备解析.下装装备,
-					脚部装备:装备解析.脚部装备,
-					颈部装备:装备解析.颈部装备,
-					长枪:装备解析.长枪,
-					手枪:装备解析.手枪,
-					手枪2:装备解析.手枪2,
-					刀:装备解析.刀,
-					手雷:同伴信息[16], 
-					性别:同伴信息[17], 
-					是否为佣兵:true, 
-					佣兵是否出战信息id:i
-				});
-				// if(同伴信息[19].装备强化度){
-				// 	当前佣兵.装备强化度 = 同伴信息[19].装备强化度;
-				// }
-				if(同伴信息[19]){
-					当前佣兵.佣兵参数 = 同伴信息[19];
-				}
-				
-			}
-		}
-	}, 33);
+    org.flashNight.arki.scene.PlayerResourceTransferBridge.scheduleMercs(地点X,地点Y);
 }
 
 _root.删除场景上佣兵 = function(){
@@ -480,6 +407,7 @@ _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, 
 	}else{
 		initObject.兵种 = id;
 	}
+    org.flashNight.arki.scene.PlayerResourceTransferBridge.prepareSpawn(id,name,initObject);
 	return _root.gameworld.attachMovie(id, name, depth, initObject);
 }
 
@@ -692,10 +620,11 @@ _root.场景转换函数.切换场景 = function(对应门名, 目标场景帧, 
 				return;
 			}
 			if (开门效果 == null || 开门效果 == ""){
-				_root.淡出动画.淡出跳转帧(目标场景帧);
+				if (!org.flashNight.arki.scene.PlayerResourceTransferBridge.requestFade(目标场景帧)) return;
 				this.gotoAndStop(3);
 			}else{
 				if (!org.flashNight.arki.scene.SceneTransitionGuard.prepareDoor(目标场景帧)) return;
+                if (!org.flashNight.arki.scene.PlayerResourceTransferBridge.recordAdmittedDoor(目标场景帧)) return;
 				游戏世界[开门效果].play();
 				this.gotoAndStop(3);
 			}
@@ -739,10 +668,11 @@ _root.场景转换函数.打开Web选关 = function(对应门名, 目标场景�
 			}
 
 			if (开门效果 == null || 开门效果 == ""){
-				_root.淡出动画.淡出跳转帧(目标场景帧);
+				if (!org.flashNight.arki.scene.PlayerResourceTransferBridge.requestFade(目标场景帧)) return;
 				this.gotoAndStop(3);
 			}else{
 				if (!org.flashNight.arki.scene.SceneTransitionGuard.prepareDoor(目标场景帧)) return;
+                if (!org.flashNight.arki.scene.PlayerResourceTransferBridge.recordAdmittedDoor(目标场景帧)) return;
 				游戏世界[开门效果].play();
 				this.gotoAndStop(3);
 			}
@@ -902,12 +832,16 @@ _root.清除游戏世界组件 = function(清理请求:Object):Boolean{
 	if (清理请求 == undefined) 清理请求 = org.flashNight.arki.scene.SceneTransitionGuard.captureCleanup();
 	if (!org.flashNight.arki.scene.SceneTransitionGuard.allowCleanup(清理请求)) return false;
 	// 彻底移除gameworld
-	if (!SceneManager.instance.removeGameWorld()) {
+	if (!SceneManager.instance.removeGameWorld(清理请求)) {
 		// 淡出动画 frame 5 之后会在 frame 12 无条件跳图；先钉停当前时间线，
 		// 仅在权威 journal/effects/transport 全部收敛并完成 teardown 后续播。
 		if (_root.淡出动画 != undefined && typeof _root.淡出动画.stop == "function") {
 			_root.淡出动画.stop();
 		}
+        if (SceneManager.instance.cleanupBlockedReason === "resource_invalid"
+                || SceneManager.instance.cleanupBlockedReason === "resource_identity_invalid") {
+            org.flashNight.arki.scene.SceneTransitionGuard.cancelCleanup(清理请求,SceneManager.instance.cleanupBlockedReason);
+        }
         if (SceneManager.instance.cleanupBlockedReason === "loot_pending")
             _root.__安排游戏世界清理重试(清理请求);
 		return false;

@@ -409,6 +409,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
             行走X速度:4,
             hp满血值:100,
             mp满血值:50,
+            hp:80,mp:40,
             防御力:10,
             魔法抗性:{基础:10},
             主动战技:{},
@@ -439,10 +440,20 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         }
         RuntimeEquipmentProjection.beginCanonical(hero);
         RuntimeEquipmentProjection.completeCanonical(hero);
-        root.刷新人物装扮 = function(targetName:String):Void {
+        root.刷新人物装扮 = function(targetName:String,ticket:Object):Void {
             root.refreshCalls++;
             if (root.refreshMode == "throw") throw "fixture_refresh";
             var target:Object = root.gameworld[targetName];
+            var coordinator:Object=root.__statCoordinatorForTests;
+            var identity:Object=org.flashNight.arki.scene.StageReturnFlow.worldIdentity(root.gameworld);
+            if(ticket!=null) {
+                coordinator.startEquipmentTransition(ticket,target);
+                target.__playerStatInitPlan={actor:target,ticket:ticket,context:coordinator.contextToken(),world:identity,
+                    body:ticket.targetBody,ownerResources:ticket.recoveryResources==undefined ?
+                        {hp:target.hp,mp:target.mp,oldMax:target.hp满血值,stage:"captured"} : ticket.recoveryResources};
+            } else {
+                target.__playerStatBody={};coordinator.bindHero(target,identity,target.__playerStatBody,coordinator.contextToken());
+            }
             var oldHeadData:Object = target.头部装备数据;
             RuntimeEquipmentProjection.releaseAliases(target);
             if (root.refreshMode != "same_dispatcher") {
@@ -487,7 +498,29 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 root.lastRefreshHero = target;
                 root.gameworld[targetName] = {_parent:root.gameworld};
             }
+            target.__playerStatFullReady=target.__playerStatBody;
+            var accepted:Boolean=coordinator.notifyReady(target,identity,target.__playerStatBody,coordinator.contextToken(),ticket);
+            if(ticket!=null) target.__playerStatInitPlan.failed=!accepted;
+            else {coordinator.invalidate(3,"equipment",coordinator.contextToken());coordinator.flush("fixture_external_full");}
         };
+        var c:org.flashNight.arki.unit.PlayerStatRefreshCoordinator=new org.flashNight.arki.unit.PlayerStatRefreshCoordinator();
+        var context:Object=c.resetContext(root,"character-test",{});
+        c.setAdapter(coordinatorFixtureAdapter(root));root.__statCoordinatorForTests=c;
+        hero.__playerStatBody={};hero.__playerStatFullReady=hero.__playerStatBody;
+        var worldIdentity:Object=org.flashNight.arki.scene.StageReturnFlow.worldIdentity(gameworld);
+        c.bindHero(hero,worldIdentity,hero.__playerStatBody,context);c.notifyReady(hero,worldIdentity,hero.__playerStatBody,context,null);
+        c.flush("fixture_baseline");
+    }
+    /** 领域协议夹具的真实协调器；数值/资源仍由 P1 的真实 adapter 单独证明。 */
+    private static function coordinatorFixtureAdapter(r:Object):Object {
+        return {isCurrent:function(s:Object):Boolean {return r.gameworld[r.控制目标]===s.actor
+                    && s.actor.__playerStatBody===s.body && org.flashNight.arki.scene.StageReturnFlow.worldIdentity(r.gameworld)===s.world;},
+            compute:function():Object {return {};},captureResources:function():Object {return {};},
+            commit:function():Void {},settleResources:function():Void {},derive:function():Void {},verify:function():Boolean {return true;},
+            verifyEquipmentInput:function(t:Object):Boolean {return t.owner.verifyInput(t.proof);},
+            rebuild:function(t:Object):Void {t.owner.rebuild(t);},
+            verifyEquipment:function(t:Object):Boolean {return t.actor.__playerStatFullReady===t.targetBody && t.owner.verifyOutput(t.proof);},
+            abortEquipment:function(t:Object):Void {t.actor.__fixtureRecoveryAborted=true;}};
     }
 
     private static function callbacks(globalResult, saveResult):Object {
@@ -4499,10 +4532,16 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         for (var i:Number = 0; i < modes.length; i++) {
             root.refreshMode = modes[i];
             var failed:Object = CharacterBuildService.flushLive(
-                opened.sessionGeneration, dirty.loadoutRevision);
+                opened.sessionGeneration, dirty.loadoutRevision,true);
             check(!failed.success && failed.error == "flush_failed"
                     && failed.liveRevision == 0 && failed.liveRefreshDirty,
                 "flushLive postcondition 反例: " + modes[i]);
+            if(i==0) {
+                var attempts:Number=root.refreshCalls;
+                var ordinaryRetry:Object=CharacterBuildService.flushLive(opened.sessionGeneration,dirty.loadoutRevision);
+                check(!ordinaryRetry.success && root.refreshCalls==attempts,
+                    "started full projection requires the original explicit owner recovery and ordinary flush does not initialize again");
+            }
             if (modes[i] == "replace_hero") {
                 root.gameworld[root.控制目标] = root.lastRefreshHero;
             }
@@ -4515,12 +4554,13 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         root.refreshMode = "success";
         var beforeSuccessCalls:Number = root.refreshCalls;
         var flushed:Object = CharacterBuildService.flushLive(
-            opened.sessionGeneration, dirty.loadoutRevision);
+            opened.sessionGeneration, dirty.loadoutRevision,true);
         check(flushed.success && flushed.changed
                 && flushed.liveRevision == flushed.loadoutRevision
                 && !flushed.liveRefreshDirty
                 && root.refreshCalls == beforeSuccessCalls + 1,
-            "全部后置条件成立后恰好一次刷新并清 live dirty");
+            "全部后置条件成立后恰好一次刷新并清 live dirty reason="+root.__statCoordinatorForTests.diagnostics().reason
+                +" stage="+root.__statCoordinatorForTests.diagnostics().stage+" calls="+root.refreshCalls+" expected="+(beforeSuccessCalls+1));
 
         var afterSuccessCalls:Number = root.refreshCalls;
         var repeated:Object = CharacterBuildService.flushLive(

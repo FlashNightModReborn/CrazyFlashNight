@@ -108,6 +108,43 @@ try {
     $actual=Get-Content -LiteralPath (Join-Path $repoRoot 'launcher\webview2-runtime.lock.json') -Raw -Encoding UTF8 | ConvertFrom-Json
     [void](Get-Cf7WebViewLayout -ProjectRoot C:\cf7v147 -Spec $actual)
     $passed++; Write-Host '[PASS] real locked 257-file default projection (no extraction)'
+    # Exercise the actual worker argument/preflight function with the real lock,
+    # including the request/worker/job/src nesting missed by the short-root case.
+    $workerPath=Join-Path $repoRoot 'tools\invoke-runtime-build-worker.ps1'
+    $workerTokens=$null; $workerErrors=$null
+    $workerAst=[Management.Automation.Language.Parser]::ParseFile($workerPath,[ref]$workerTokens,[ref]$workerErrors)
+    Assert-Test ($workerErrors.Count -eq 0) 'Runtime worker does not parse'
+    $workerFunction=@($workerAst.FindAll({param($node) $node -is [Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -ceq 'Get-Cf7WorkerProducerArguments'},$true))
+    Assert-Test ($workerFunction.Count -eq 1) 'Missing unique worker path preflight'
+    . ([scriptblock]::Create($workerFunction[0].Extent.Text))
+    $root=New-Case
+    $checkout=Join-Path $root 'runtime-build-checkouts\123456789abc-1234567890-12345678\src'
+    [void][IO.Directory]::CreateDirectory((Join-Path $checkout 'tools'))
+    [void][IO.Directory]::CreateDirectory((Join-Path $checkout 'launcher'))
+    Copy-Item -LiteralPath (Join-Path $repoRoot 'tools\runtime-webview-paths.ps1') -Destination (Join-Path $checkout 'tools\runtime-webview-paths.ps1')
+    Copy-Item -LiteralPath (Join-Path $repoRoot 'launcher\webview2-runtime.lock.json') -Destination (Join-Path $checkout 'launcher\webview2-runtime.lock.json')
+    $candidate=Join-Path $root 'candidate'
+    Reject-WithoutWrites 'real worker nested default rejects before producer launch' {
+        Get-Cf7WorkerProducerArguments -Checkout $checkout -CandidateRoot $candidate -BuilderId 'fixture'
+    } '240 UTF-16'
+    $shortCache=Join-Path ([IO.Path]::GetPathRoot($fixture)) ('w2-ci-'+[guid]::NewGuid().ToString('N').Substring(0,8))
+    $before=Get-Snapshot
+    $workerArguments=@(Get-Cf7WorkerProducerArguments -Checkout $checkout -CandidateRoot $candidate -BuilderId 'fixture' -WebView2CacheDirectory $shortCache)
+    $cacheIndex=[Array]::IndexOf($workerArguments,'-WebView2CacheDirectory')
+    Assert-Test ($cacheIndex -ge 0 -and $workerArguments[$cacheIndex+1] -ceq $shortCache) 'Worker did not forward the validated cache'
+    Assert-Test ($workerArguments[[Array]::IndexOf($workerArguments,'-File')+1] -ceq (Join-Path $checkout 'launcher\build-runtime-candidate.ps1')) 'Worker selected a different producer'
+    Assert-Test ((Get-Snapshot) -ceq $before -and -not (Test-Path -LiteralPath $shortCache)) 'Worker preflight wrote files'
+    $passed++; Write-Host '[PASS] real worker nested layout with explicit short cache (zero writes)'
+    Reject-WithoutWrites 'worker rejects overlong explicit cache before producer launch' {
+        Get-Cf7WorkerProducerArguments -Checkout $checkout -CandidateRoot $candidate -BuilderId 'fixture' -WebView2CacheDirectory ('C:\'+('x'*100))
+    } '240 UTF-16'
+    Reject-WithoutWrites 'worker rejects cache inside candidate before producer launch' {
+        Get-Cf7WorkerProducerArguments -Checkout $checkout -CandidateRoot 'C:\w2-ci-candidate' -BuilderId 'fixture' -WebView2CacheDirectory 'C:\w2-ci-candidate\cache'
+    } 'overlap'
+    $workerText=[IO.File]::ReadAllText($workerPath)
+    Assert-Test ($workerText.Contains('$producerArguments = Get-Cf7WorkerProducerArguments -Checkout $checkout') -and
+        $workerText.Contains('-Arguments $producerArguments -WorkingDirectory $checkout')) 'Default worker bypasses path preflight or validated producer arguments'
+    $passed++; Write-Host '[PASS] default worker launch uses the checked arguments'
     $inputs=Get-Content -LiteralPath (Join-Path $repoRoot 'config\build\runtime-inputs.v2.json') -Raw -Encoding UTF8|ConvertFrom-Json
     Assert-Test (@($inputs.domains.policy.fixedFiles | Where-Object {$_ -ceq 'tools/test-runtime-webview-paths.ps1'}).Count -eq 1) 'Test missing exact policy binding'
     $gate=Get-Content -LiteralPath (Join-Path $repoRoot 'config\build\native-change-gate.v1.json') -Raw -Encoding UTF8|ConvertFrom-Json

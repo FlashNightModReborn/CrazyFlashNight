@@ -204,7 +204,7 @@ class org.flashNight.arki.scene.SceneManager {
         return SharedScenePlacement.preflightDetach(gameworld,cleanupWorldIdentity)
             && org.flashNight.arki.camera.HorizontalScroller.canReleaseScene(gameworld,cleanupWorldIdentity);
     }
-    public function removeGameWorld():Boolean{
+    public function removeGameWorld(cleanupTicket:Object):Boolean{
         cleanupBlockedReason = "";
         // transient loot 必须先于 target/dispatcher 销毁进入 EXPIRED，并释放 recovery 强引用。
         // pending journal / mandatory effect / transport handoff 尚未收敛时必须保持整个
@@ -228,11 +228,22 @@ class org.flashNight.arki.scene.SceneManager {
             publishSceneLifecycleDiagnostic(cleanupBlockedReason,SharedScenePlacement.lastError);
             return false;
         }
+        // Loot 与 placement 预检通过后，第一项不可逆 teardown 之前读取最终 HP/MP。
+        var resourceTicket:Object=org.flashNight.arki.scene.PlayerResourceTransferBridge.captureCleanup(
+            cleanupTicket,gameworld,org.flashNight.arki.scene.StageManager.instance.currentStage);
+        if(resourceTicket===false) {
+            cleanupBlockedReason=org.flashNight.arki.scene.PlayerResourceTransferBridge.cleanupFailureReason();
+            publishSceneLifecycleDiagnostic(cleanupBlockedReason,
+                org.flashNight.arki.scene.PlayerResourceTransferBridge.cleanupFailureDetail());
+            return false;
+        }
+        try {
         var releasedIdentity:Object = cleanupWorldIdentity;
         var scope:Object = org.flashNight.arki.camera.HorizontalScroller.sceneScope(gameworld,releasedIdentity);
         if (gameworld != null && (!SharedScenePlacement.returnSlot(gameworld,releasedIdentity)
                 || !org.flashNight.arki.camera.HorizontalScroller.releaseScene(gameworld,releasedIdentity,scope))) {
             cleanupBlockedReason = "placement_invariant";
+            org.flashNight.arki.scene.PlayerResourceTransferBridge.abortCleanup(resourceTicket);
             return false;
         }
 
@@ -297,7 +308,12 @@ class org.flashNight.arki.scene.SceneManager {
         DepthManager.instance = null;
         gameworld = null;
         cleanupWorldIdentity = undefined;
+        org.flashNight.arki.scene.PlayerResourceTransferBridge.commitCleanup(resourceTicket);
         return true;
+        } catch(resourceTeardownError) {
+            org.flashNight.arki.scene.PlayerResourceTransferBridge.abortCleanup(resourceTicket);
+            throw resourceTeardownError;
+        }
     }
 
     /**

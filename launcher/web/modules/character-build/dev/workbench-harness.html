@@ -2164,6 +2164,8 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                 document.querySelector('[data-build-tuning-return]').click();
                 check('issue156 exact return settles', await until(function() {
                     return !issue156State().tuning.active
+                        && issue156State().view.candidateState.kind === 'ready'
+                        && !issue156State().view.candidateScopePending
                         && !!document.querySelector('[data-build-action="tune"]');
                 }));
             }
@@ -2172,7 +2174,9 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
                 check('issue156 tuning resolves exact ' + kind + ' source', await until(function() {
                     var tuning = issue156State().tuning;
                     var source = tuning && tuning.tuning && tuning.tuning.source;
-                    return tuning.active && !tuning.tuning.readPending && source
+                    // snapshot 回包后还可能排队生成首个 preview；等真实 source 能力开放再测切源。
+                    return tuning.active && !tuning.tuning.readPending
+                        && tuning.tuning.interaction.source && source
                         && source.sourceKind === kind
                         && (kind === 'inventory'
                             ? source.slot === 9

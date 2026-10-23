@@ -37,14 +37,8 @@ _root.重建主角被动技能领域 = function(){
 };
 
 _root.技能系统投影Hero = function(){
-	if(typeof TargetCacheManager == "undefined" || typeof TargetCacheManager.findHero != "function") return false;
-	var hero:Object = TargetCacheManager.findHero();
-	if(hero){
-		hero.被动技能 = _root.主角被动技能;
-		if(typeof hero.读取被动效果 == "function") hero.读取被动效果();
-		return true;
-	}
-	return false;
+	var result:Object=SkillLoadoutService.flushProjection();
+	return result.status=="applied" || result.status=="unchanged";
 };
 
 _root.更新主角被动技能 = function(){
@@ -52,7 +46,7 @@ _root.更新主角被动技能 = function(){
 		if(typeof _root.发布调试消息 == "function") _root.发布调试消息("技能表对象未加载，延迟更新被动技能");
 		return;
 	}
-	_root.技能系统投影Hero();
+	SkillLoadoutService.declareSkillProjection();
 	_root.技能系统投影快捷栏();
 };
 
@@ -74,7 +68,6 @@ _root.动态更新技能冷却 = function(){
 
 _root.排列技能图标 = function(){
 	_root.技能系统投影快捷栏();
-	_root.技能系统投影Hero();
 };
 
 _root.根据技能名查找全部属性 = function(技能名){

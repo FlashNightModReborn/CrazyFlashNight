@@ -24,6 +24,7 @@ namespace CF7Launcher.Tasks
             public string Operation, Instance, OpenToken, SessionToken, ProjectId;
             public long ExpectedDurationMs;
             public bool Automatic;
+            public bool RecoverProjection;
         }
 
         private sealed class Session
@@ -92,6 +93,9 @@ namespace CF7Launcher.Tasks
             JToken pendingToken = snapshot?["pendingSession"];
             JObject pendingSession = pendingToken as JObject;
             string pendingProject = Text(pendingSession?["projectId"]);
+            JToken projectionToken = snapshot?["pendingProjection"];
+            JObject pendingProjection = projectionToken as JObject;
+            string projectionProject = Text(pendingProjection?["projectId"]);
             bool valid = Safe(instance)
                 && Text(data?["mode"]) == "preview"
                 && Text(data?["source"]) == "world_gym"
@@ -99,6 +103,13 @@ namespace CF7Launcher.Tasks
                 && Token(snapshot?["openToken"], "gym.open.")
                 && Text(data?["stationId"]) == Text(snapshot?["stationId"])
                 && pendingToken != null
+                && (projectionToken == null || projectionToken.Type == JTokenType.Null
+                    || (pendingToken.Type == JTokenType.Null
+                        && Exact(pendingProjection,"sessionToken","stationId","projectId","phase","projection")
+                        && Token(pendingProjection["sessionToken"],"gym.session.")
+                        && Text(pendingProjection["stationId"]) == Text(snapshot["stationId"])
+                        && Text(pendingProjection["phase"]) == "applied"
+                        && ProjectionPending(pendingProjection)))
                 && (pendingToken.Type == JTokenType.Null
                     || (Exact(pendingSession, "sessionToken", "stationId",
                             "projectId", "phase")
@@ -142,7 +153,17 @@ namespace CF7Launcher.Tasks
                     _session.LastTick = _clock();
                     _session.LastTickActive = false;
                 }
-                else if (valid && pendingToken.Type == JTokenType.Null)
+                else if (valid && pendingProjection != null && _projectDurations.ContainsKey(projectionProject))
+                {
+                    _session = new Session { Token=Text(pendingProjection["sessionToken"]),
+                        ProjectId=projectionProject,OwnerInstance=instance,Phase="applied",
+                        DurationMs=_projectDurations[projectionProject],ElapsedMs=_projectDurations[projectionProject],
+                        LastTick=_clock(),LastTickActive=false,PendingReopenUnqueried=false };
+                    _session.LastResult=new JObject { ["v"]=1,["success"]=true,["phase"]="applied",["saved"]=true,
+                        ["error"]=JValue.CreateNull(),["sessionToken"]=_session.Token,["projectId"]=projectionProject,
+                        ["durationMs"]=_session.DurationMs,["projection"]=pendingProjection["projection"].DeepClone() };
+                }
+                else if (valid && pendingToken.Type == JTokenType.Null && pendingProjection == null)
                 {
                     // Fresh AS2 snapshot supersedes any prior terminal or
                     // unknown Host-only state. No business write is replayed.
@@ -197,9 +218,13 @@ namespace CF7Launcher.Tasks
                 .Contains(cmd))
             { Reject(callId, cmd, instance, "unsupported_cmd"); return; }
             JObject payload = message["payload"] as JObject;
+            bool recoverProjection = cmd == "query" && payload?["recoverProjection"] != null;
             if (!Exact(payload, cmd == "start"
-                    ? new[] { "v", "projectId" } : new[] { "v" })
+                    ? new[] { "v", "projectId" } : recoverProjection
+                        ? new[] { "v", "recoverProjection" } : new[] { "v" })
                 || !Integer(payload?["v"], 1, 1)
+                || (recoverProjection && (payload["recoverProjection"].Type != JTokenType.Boolean
+                    || !payload.Value<bool>("recoverProjection")))
                 || (cmd == "start" && !Safe(Text(payload["projectId"]))))
             { Reject(callId, cmd, instance, "invalid_payload"); return; }
 
@@ -220,7 +245,8 @@ namespace CF7Launcher.Tasks
                         || !_projectDurations.ContainsKey(project))
                         error = "invalid_project";
                     else if (_inFlight != null || (_session != null
-                        && _session.Phase != "applied" && _session.Phase != "cancelled"))
+                        && ((_session.Phase != "applied" && _session.Phase != "cancelled")
+                            || ProjectionPending(_session.LastResult))))
                         error = "busy";
                     else if (!_pending.IsReady()) error = "disconnected";
                     else
@@ -256,13 +282,16 @@ namespace CF7Launcher.Tasks
                 }
                 else if (cmd == "query")
                 {
-                    if (_session == null || (_session.Phase != "needs_reconcile"
-                        && _session.Phase != "save_pending"))
+                    if (_session == null || (recoverProjection
+                        ? _session.Phase != "applied" || !ProjectionPending(_session.LastResult)
+                        : _session.Phase != "needs_reconcile" && _session.Phase != "save_pending"))
                         error = "query_not_required";
                     else if (_inFlight != null) error = "busy";
                     else if (!_pending.IsReady()) error = "disconnected";
                     else { request = SessionRequestLocked("query", instance);
-                        flashPayload = SessionPayloadLocked(); }
+                        request.RecoverProjection = recoverProjection;
+                        flashPayload = SessionPayloadLocked();
+                        if (recoverProjection) flashPayload["recoverProjection"] = true; }
                 }
                 else if (cmd == "retrySave")
                 {
@@ -425,6 +454,7 @@ namespace CF7Launcher.Tasks
 
         private static bool ValidResponse(JObject value, Pending request)
         {
+            if (value?["projection"] != null && !ValidProjection(value["projection"])) return false;
             if (Text(value?["task"]) != "gym_training_response"
                 || !Integer(value?["v"], 1, 1)
                 || Text(value?["operation"]) != request.Operation
@@ -452,7 +482,8 @@ namespace CF7Launcher.Tasks
                 || value.Value<long>("durationMs") != request.ExpectedDurationMs
                 || Text(value["projectId"]) != request.ProjectId) return false;
             if (phase == "applied")
-                return success && value.Value<bool>("saved");
+                return success && value.Value<bool>("saved")
+                    && (!request.RecoverProjection || ValidProjection(value["projection"]));
             if (phase == "save_pending")
                 return !success && !value.Value<bool>("saved")
                     && Text(value["error"]) == "save_pending";
@@ -462,6 +493,22 @@ namespace CF7Launcher.Tasks
                 return !value.Value<bool>("saved")
                     && (success || Text(value["error"]) != null);
             return false;
+        }
+
+        internal static bool ValidProjection(JToken token)
+        {
+            JObject value=token as JObject;
+            if (!Exact(value,"status","reason") || value["status"]?.Type != JTokenType.String
+                || value["reason"]?.Type != JTokenType.String || value.Value<string>("reason").Length > 160)
+                return false;
+            string status=value.Value<string>("status");
+            return status == "applied" || status == "unchanged" || status == "pending" || status == "failed";
+        }
+        internal static bool ProjectionPending(JObject result)
+        {
+            var value=result?["projection"] as JObject;
+            return ValidProjection(value) && (Text(value["status"]) == "failed"
+                || (Text(value["status"]) == "pending" && Text(value["reason"]) != "pending_actor"));
         }
 
         private static bool FullState(JObject value)

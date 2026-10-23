@@ -30,7 +30,11 @@ namespace CF7Launcher.Tasks
             JObject snapshot;
             try { snapshot = JObject.Parse(raw, StrictJson); }
             catch (JsonException) { return null; }
-            if (!Exact(snapshot, "v", "openToken", "stationId", "balances", "portrait", "projects", "pendingSession")
+            // Legacy v2 omits pendingProjection; current AS2 always emits it.
+            // Keep both shapes closed so a recovery descriptor cannot smuggle
+            // another write or bypass the exact station/project owner.
+            if ((!Exact(snapshot, "v", "openToken", "stationId", "balances", "portrait", "projects", "pendingSession")
+                    && !Exact(snapshot, "v", "openToken", "stationId", "balances", "portrait", "projects", "pendingSession", "pendingProjection"))
                 || !Integer(snapshot["v"], 2, 2)
                 || !ValidToken(snapshot["openToken"], "gym.open.")
                 || Text(snapshot["stationId"], 16) != station
@@ -38,7 +42,9 @@ namespace CF7Launcher.Tasks
                 || !ValidPortrait(snapshot["portrait"] as JObject)
                 || !ValidProjects(snapshot["projects"] as JArray, station)
                 || !ValidPendingSession(snapshot["pendingSession"], station,
-                    snapshot["projects"] as JArray)) return null;
+                    snapshot["projects"] as JArray)
+                || !ValidPendingProjection(snapshot["pendingProjection"], snapshot["pendingSession"],
+                    station, snapshot["projects"] as JArray)) return null;
             return new JObject
             {
                 ["mode"] = "preview", ["source"] = source,
@@ -114,6 +120,22 @@ namespace CF7Launcher.Tasks
                 || !ValidToken(session["sessionToken"], "gym.session.")
                 || Text(session["stationId"], 16) != station
                 || Text(session["phase"], 16) != "save_pending") return false;
+            string projectId = Text(session["projectId"], 32);
+            return projectId != null && projects.Any(project =>
+                Text(project?["id"], 32) == projectId);
+        }
+
+        private static bool ValidPendingProjection(
+            JToken pending, JToken pendingSave, string station, JArray projects)
+        {
+            if (pending == null || pending.Type == JTokenType.Null) return true;
+            var session = pending as JObject;
+            if (pendingSave?.Type != JTokenType.Null
+                || !Exact(session, "sessionToken", "stationId", "projectId", "phase", "projection")
+                || !ValidToken(session["sessionToken"], "gym.session.")
+                || Text(session["stationId"], 16) != station
+                || Text(session["phase"], 16) != "applied"
+                || !GymTrainingTask.ProjectionPending(session)) return false;
             string projectId = Text(session["projectId"], 32);
             return projectId != null && projects.Any(project =>
                 Text(project?["id"], 32) == projectId);

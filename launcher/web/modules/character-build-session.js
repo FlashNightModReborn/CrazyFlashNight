@@ -534,12 +534,14 @@
 
     CharacterBuildSession.prototype._requestFlush = function(callback) {
         if (this._state !== 'idle' && this._state !== 'flush_failed') return null;
+        var recoverProjection = this._state === 'flush_failed';
         this._mux.cancelKind('candidates'); this._mux.cancelKind('snapshot'); this._mux.cancelKind('stats');
         this._cancelLoadoutTooltip('flush_start');
         this._state = 'flush_pending';
         this._emit('flush_start');
         var payload = this._basePayload();
         payload.expectedLoadoutRevision = this._loadoutRevision;
+        if (recoverProjection) payload.recoverProjection = true;
         var self = this;
         return this._mux.request('flushLive', payload, {
             kind:'flushLive',
@@ -597,6 +599,7 @@
         this._cancelLoadoutTooltip('finalize_start');
         var payload = this._basePayload();
         payload.expectedLoadoutRevision = this._loadoutRevision;
+        if (this._state === 'flush_failed') payload.recoverProjection = true;
         if (retry) payload.reconcileAfterCallId = this._unknown.callId;
         this._state = 'flush_pending';
         this._emit(retry ? 'finalize_retry' : 'finalize_start');

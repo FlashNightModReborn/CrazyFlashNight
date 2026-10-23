@@ -217,6 +217,10 @@ class org.flashNight.arki.merc.MercPanelService {
     // ═══════════════════════════════════════════════════════════
     // handleDeploy — 切换出战/休息
     // ═══════════════════════════════════════════════════════════
+    private static function notifyCompanionStats():Void {
+        var c:org.flashNight.arki.unit.PlayerStatRefreshCoordinator=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production();
+        c.invalidate(1,"companion",c.contextToken());c.flush("merc_flag_committed");
+    }
     public static function handleDeploy(params:Object):Void {
         var callId = params.callId;
         var mercIndex:Number = Number(params.mercIndex);
@@ -243,6 +247,8 @@ class org.flashNight.arki.merc.MercPanelService {
         _root.佣兵是否出战信息[mercIndex] = newState;
         // Plan A audit: handleDeploy 写 佣兵是否出战信息（save-relevant），必须标脏
         _root.存档系统.dirtyMark = true;
+
+        notifyCompanionStats();
 
         // issue #7 bug4：即时上/撤人。原实现仅改标志，实体只在场景切换的 加载佣兵 里生成，
         // 故切换后当前场景不刷新。仅当「本场景已托管佣兵」(gameworld.佣兵已进场) 时即时同步该佣兵；
@@ -1169,6 +1175,7 @@ class org.flashNight.arki.merc.MercPanelService {
         }
         org.flashNight.arki.item.PlayerAssetTransaction.commit(assetTransaction);
 
+        notifyCompanionStats();
         // 成就记账（对齐 handleHire 埋点 #12）
         try {
             if (org.flashNight.arki.achievement.AchievementMetrics != undefined) {

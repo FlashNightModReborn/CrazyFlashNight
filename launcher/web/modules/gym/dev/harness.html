@@ -56,11 +56,14 @@
                 base.phase = 'cancelled';
             } else if (message.cmd === 'query') {
                 if (state) state.queryRequired = false;
+                if (state && message.payload.recoverProjection === true)
+                    state.projection = {status:'unchanged', reason:''};
                 Object.assign(base, state || {phase:'preview'});
             } else if (message.cmd === 'retrySave') {
                 if (state) {
                     state.phase = 'applied';
                     state.saved = true;
+                    state.projection = {status:'unchanged', reason:''};
                     Object.assign(base, state);
                 } else { base.success = false; base.phase = 'preview'; base.error = 'stale_token'; }
             }
@@ -440,6 +443,7 @@
         window.chrome.webview.dispatch({type:'panel_event',panel:'gym',domain:'gym',event:'settled',
             panelInstanceId:'gym-visual-001',sessionToken:secondToken,projectId:'dummy.1',
             success:true,phase:'applied',saved:true,balances:{money:845000,kpoint:6450},
+            projection:{status:'applied',reason:''},
             current:21,cap:500,award:{kind:'stat',amount:9,baseExperience:10000,capExperience:0}});
         check(GymPanel.debugState().phase === 'applied'
                 && document.querySelector('.gym-progress-amount').textContent.indexOf('永久加成 +9') >= 0,
@@ -462,6 +466,43 @@
         }, 2500);
         check(GymPanel.debugState().motion.playbackRate === 1,
             'celebration restores the normal playback rate');
+
+        var failedProjection = {phase:'applied',saved:true,success:true,
+            sessionToken:secondToken,projectId:'dummy.1',durationMs:10000,elapsedMs:10000,paused:false,
+            projection:{status:'failed',reason:'injected'},balances:{money:845000,kpoint:6450},
+            current:21,cap:500,award:{kind:'stat',amount:9,baseExperience:10000,capExperience:0}};
+        window.__gymMockSessions['gym-visual-001'] = failedProjection;
+        window.chrome.webview.dispatch(Object.assign({type:'panel_event',panel:'gym',domain:'gym',event:'settled',
+            panelInstanceId:'gym-visual-001'}, failedProjection));
+        check(GymPanel.debugState().phase === 'applied'
+                && document.querySelector('.gym-start-button').textContent === '重试属性更新'
+                && document.querySelector('.gym-progress-status').textContent.indexOf('收益已保存') >= 0,
+            'saved domain outcome is retained while projection failure is explicit');
+        var beforeProjectionClose = window.__gymPostedMessages.length;
+        document.querySelector('.gym-close-button').click();
+        check(window.__gymPostedMessages.length === beforeProjectionClose,
+            'projection failure cannot resume gameplay by ordinary close');
+        var paidCommandsBefore = window.__gymPostedMessages.filter(function(message) {
+            return message.cmd === 'start' || message.cmd === 'retrySave';
+        }).length;
+        document.querySelector('.gym-start-button').click();
+        await waitFor(function() { return document.querySelector('.gym-start-button').textContent !== '重试属性更新'; }, 1000);
+        var projectionQuery = window.__gymPostedMessages.filter(function(message) {
+            return message.cmd === 'query' && message.payload.recoverProjection === true;
+        }).slice(-1)[0];
+        check(!!projectionQuery && Object.keys(projectionQuery.payload).sort().join('|') === 'recoverProjection|v'
+                && window.__gymPostedMessages.filter(function(message) {
+                    return message.cmd === 'start' || message.cmd === 'retrySave';
+                }).length === paidCommandsBefore,
+            'projection retry sends only the explicit query flag and never starts or saves training again');
+        check(document.querySelectorAll('.gym-balances .gym-balance-value')[1].textContent === '6,450',
+            'projection-only recovery preserves the already committed balance');
+        var projectionOpen = fixture('gym-projection-header');
+        projectionOpen.snapshot.pendingProjection = {sessionToken:'gym.session.saved.1',stationId:'dummy',projectId:'dummy.1',
+            phase:'applied',projection:{status:'failed',reason:'injected'}};
+        check(!!GymPanel.normalizeOpenData(projectionOpen), 'saved projection owner has a closed reopen envelope');
+        projectionOpen.snapshot.pendingProjection.projection.extra = true;
+        check(!GymPanel.normalizeOpenData(projectionOpen), 'reopen rejects unknown projection fields');
 
         var closeButton = document.querySelector('.gym-close-button');
         if (closeButton) closeButton.click();

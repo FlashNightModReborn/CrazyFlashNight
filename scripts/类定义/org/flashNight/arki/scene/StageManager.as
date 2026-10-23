@@ -467,6 +467,8 @@ class org.flashNight.arki.scene.StageManager {
         _global.ASSetPropFlags(gameworld, unIterables, 1, false);
 
         if (!isWarlordAction && isCalibrationHostStage()) {
+            gameworld.__resourceTransferBypass="calibration";
+            org.flashNight.arki.scene.PlayerResourceTransferBridge.retire("calibration_host");
             initCalibrationHostStage(basicInfo, initStageToken);
             return;
         }
@@ -512,6 +514,9 @@ class org.flashNight.arki.scene.StageManager {
             }
         }
 
+        // 完整属性与资源均就绪后才允许 SceneReady/Start/波次启动。
+        var resourceGate:Object;
+        if(!isWarlordAction) resourceGate=org.flashNight.arki.scene.PlayerResourceTransferBridge.beginStage(gameworld,currentStage,this);
         // 加载玩家
         if (!isWarlordAction) {
             gameworld.出生地.是否从门加载角色();
@@ -531,13 +536,18 @@ class org.flashNight.arki.scene.StageManager {
         // 先绑定本图坐标与深度，波次仍在 Start 之后才启动。
         if (!isWarlordAction) spawner.prepareScene(currentStageInfo);
 
-        // 发布开始事件
-        gameworld.dispatcher.publish("Start");
+        if(isWarlordAction) gameworld.dispatcher.publish("Start");
+        else org.flashNight.arki.scene.PlayerResourceTransferBridge.finishStageSetup(resourceGate);
+    }
 
-        // 开始刷怪
-        if(!isWarlordAction && currentStageInfo.waveInfo != null) {
-            spawner.init(currentStageInfo);
-        }
+    /** 只接受本次世界/关卡的完成闩锁；事件重入后再次检查身份。 */
+    public function onResourcesReady(gate:Object):Void {
+        var bridge:Object=org.flashNight.arki.scene.PlayerResourceTransferBridge;
+        if(gate.manager!==this || !bridge.isReady(gate) || gate.published!==true || gate.started===true) return;
+        gate.started=true;
+        gameworld.dispatcher.publish("Start");
+        if(!bridge.isReady(gate)) return;
+        if(currentStageInfo.waveInfo!=null) spawner.init(currentStageInfo);
     }
 
     /** Warlord runner 的业务终态；Slice 1 只有一个 SubStage。 */
@@ -1032,6 +1042,8 @@ class org.flashNight.arki.scene.StageManager {
             finishStage();
         }else{
             try {
+                // 共享场景 SWF 的门自带旧函数；在开放出口时接管，避免其首帧覆盖早期绑定。
+                bindStageExit(gameworld);
                 gameworld.允许通行 = true;
                 var hero:MovieClip = TargetCacheManager.findHero();
                 EffectSystem.Effect("小过关提示动画", hero._x, hero._y, 100);
@@ -1087,19 +1099,45 @@ class org.flashNight.arki.scene.StageManager {
         }
     }
 
-    public function nextStage():Void{
-        if(!isActive || isFinished || isFailed) return;
-        if (!org.flashNight.arki.scene.LeeAssaultService.canAdvance()) return;
+    /** 旧共享场景门保留方向/鼠标命中语义；受理统一交给 nextStage。 */
+    public function bindStageExit(world:MovieClip):Void {
+        var door:MovieClip=world.门1;
+        if(door==undefined) return;
+        var manager:StageManager=this;
+        var worldIdentity:Object=StageReturnFlow.worldIdentity(world);
+        door.切换场景=function(entry,frame,effect,direction:String):Void {
+            var current:MovieClip=_root.gameworld;
+            if(current!==this._parent || manager.gameworld!==current || current.允许通行!==true
+                    || StageReturnFlow.worldIdentity(current)!==worldIdentity || frame!=="wuxianguotu_1") return;
+            var actor:MovieClip=current[_root.控制目标];
+            if(!(actor.hp>0) || !this.hitTest(actor.area)) return;
+            var keyCode:Number=_root.右键;
+            if(direction=="上") keyCode=_root.上键;
+            else if(direction=="左") keyCode=_root.左键;
+            else if(direction=="下") keyCode=_root.下键;
+            var requested:Boolean=_root.全鼠标控制
+                ? (this.hitTest(_root.鼠标) && this.被点击) : Key.isDown(keyCode);
+            var point:Object={x:0,y:0};actor.localToGlobal(point);
+            if(requested && this.hitTest(point.x,point.y,true) && manager.nextStage()) this.gotoAndStop(3);
+            if(_root.全鼠标控制 && this.hitTest(point.x,point.y,true) && this.hitTest(_root.鼠标))
+                _root.鼠标.gotoAndPlay("开门");
+        };
+    }
+
+    public function nextStage():Boolean{
+        if(!isActive || isFinished || isFailed) return false;
+        if (!org.flashNight.arki.scene.LeeAssaultService.canAdvance()) return false;
         if (stageMode == "warlord") {
             trace("[StageManager] Warlord nextStage rejected; typed result required");
-            return;
+            return false;
         }
         if(currentStage < stageInfoList.length - 1){
             _root.场景进入位置名 = "出生地";
             _root.转场景记录数据();
-            _root.淡出动画.淡出跳转帧("wuxianguotu_1");
+            return org.flashNight.arki.scene.PlayerResourceTransferBridge.requestFade("wuxianguotu_1");
         }else{
             _root.返回基地();
+            return true;
         }
     }
 

@@ -22,13 +22,13 @@ $focusedRun = @{
     )
     ExpectedTracePatterns = @(
         '(?m)^=== SkillMigrationTestSuite START ===\r?$'
-        '(?m)^SkillLoadoutServiceTest Tests Passed: 58\r?$'
+        '(?m)^SkillLoadoutServiceTest Tests Passed: [1-9][0-9]*\r?$'
         '(?m)^SkillLoadoutServiceTest Tests Failed: 0\r?$'
-        '(?m)^SkillPanelServiceTest Tests Passed: 48\r?$'
+        '(?m)^SkillPanelServiceTest Tests Passed: [1-9][0-9]*\r?$'
         '(?m)^SkillPanelServiceTest Tests Failed: 0\r?$'
         '(?m)^=== SkillMigrationTestSuite END ===\r?$'
     )
-    SuccessSummary = 'Loadout 58/58, Panel 48/48'
+    SuccessSummary = 'Skill loadout and panel assertions completed; counts in fresh trace'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

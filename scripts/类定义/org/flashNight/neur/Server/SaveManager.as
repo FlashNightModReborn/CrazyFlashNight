@@ -247,6 +247,7 @@ class org.flashNight.neur.Server.SaveManager {
     private var _rewardLogRepeat:Number = 0;
     private var _saveInFlight:Boolean = false; // 重入护栏
     private var _beforeLocalCommitHookForTests:Function = null;
+    private var _beforeRewardExposureHookForTests:Function = null;
     private var _flushResultOverrideForTests:Object = undefined;
     // 存盘物理量分桶（存盘风暴止血 ADR 2026-09-03 Commit 0）：领域层调用计数
     // 之外的物理真相，防 wrapper 假通过；测试经专用访问器读取，生产只累计。
@@ -512,6 +513,10 @@ class org.flashNight.neur.Server.SaveManager {
                 (typeof config.beforeLocalCommit == "function")
                 ? config.beforeLocalCommit
                 : null;
+        }
+        if (config.hasOwnProperty("beforeRewardExposure")) {
+            _beforeRewardExposureHookForTests = typeof config.beforeRewardExposure=="function"
+                ? config.beforeRewardExposure : null;
         }
         if (config.hasOwnProperty("flushResult")) {
             _flushResultOverrideForTests = config.flushResult;
@@ -1339,6 +1344,8 @@ class org.flashNight.neur.Server.SaveManager {
             if (exactReward.owner !== exactAttempt.owner || exactReward.so !== so
                     || exactReward.savePath !== exactAttempt.slot || exactReward.role !== exactAttempt.role)
                 throw new Error("reward_context_changed");
+            // 只供隔离测试注入已知的曝光前拒绝；曝光后的 false/throw 仍保持未知结果合同。
+            if (_beforeRewardExposureHookForTests!=null) _beforeRewardExposureHookForTests();
             // 完整 after 与独立曝光副本都在触碰真实 SO 前准备完毕。
             var after:Object = org.flashNight.gesh.object.PersistedSnapshot.cloneData(exactReward.before);
             after[SAVE_KEY] = mydata;
@@ -1940,6 +1947,7 @@ class org.flashNight.neur.Server.SaveManager {
      * 前复用，避免 frame 91 未执行时把旧角色领域带入新存档。
      */
     private function resetPerCharacterMemory():Void {
+        org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production().resetContext(this,String(_root.savePath),_root._saveExt);
         // 旧角色尚未触发的 debounce 不能在 fresh draft 写到一半时突然落盘。
         if (_dispatchToken != undefined) {
             EnhancedCooldownWheel.I().removeTask(_dispatchToken);
@@ -1990,6 +1998,7 @@ class org.flashNight.neur.Server.SaveManager {
         var initialDrugFeature:Object = DrugSlotAffinityService.normalizeSavedFeature(
             null, {}, persistedDrugKeyValidator()).feature;
         _root._saveExt = {drugLoadout:initialDrugFeature};
+        org.flashNight.arki.ui.MeridianPanelService.resetContext();
         RewardInboxService.resetSession();
         _root.虚拟币 = 0;
         _root.全局健身HP加成 = 0;
@@ -2875,6 +2884,8 @@ class org.flashNight.neur.Server.SaveManager {
 
         if (主角储存数据 == undefined) return false;
 
+        org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production().resetContext(this,String(_root.savePath),_root._saveExt);
+
         // 主角数据
         _root.角色名 = 主角储存数据[0];
         _root.性别 = 主角储存数据[1];
@@ -3016,6 +3027,7 @@ class org.flashNight.neur.Server.SaveManager {
 
         // 预留命名空间恢复
         _root._saveExt = (mydata.ext != undefined) ? mydata.ext : {};
+        org.flashNight.arki.ui.MeridianPanelService.resetContext();
         RewardInboxService.resetSession();
 
         // ext 与全部玩家资产均已重建后，恢复未完成的关卡结算 authority。

@@ -1,0 +1,19 @@
+﻿trace("FocusedTestRunId player-stat-refresh Start: __FOCUSED_RUN_ID__");
+// 与 E1 共用真实保存/容器/装备闭包；所有原断言照跑，再叠加数值与生命周期组合。
+var 原生容器类型:Object=_global.org.flashNight.arki.item.itemCollection;
+trace("StatInventoryInheritanceReady: "+typeof(原生容器类型.Inventory.prototype.getItem)+":"+typeof(原生容器类型.ArrayInventory.prototype.getItem)+":"+typeof(原生容器类型.EquipmentInventory.prototype.getItem));
+org.flashNight.arki.ui.MeridianGetterRegistrationTest.runAllTests();
+org.flashNight.neur.Server.test.SaveManagerTest.runAllTests();
+org.flashNight.arki.item.itemCollection.EquipmentInventoryTest.runAllTests();
+org.flashNight.arki.item.InventoryPanelServiceTest.runAllTests();
+org.flashNight.arki.item.CharacterBuildTransactionSpikeTest.runAllTests();
+org.flashNight.arki.unit.UnitComponent.Initializer.test.RuntimeEquipmentProjectionTest.runAllTests();
+org.flashNight.arki.item.CharacterBuildServiceTest.runAllTests();
+org.flashNight.arki.unit.PlayerInfoProviderTest.runAllTests();
+org.flashNight.arki.unit.PlayerStatProjectionTest.runAllTests();
+org.flashNight.arki.ui.MeridianPanelServiceTest.runAllTests();
+org.flashNight.arki.unit.PlayerStatRefreshCoordinatorTest.runAllTests();
+org.flashNight.arki.unit.PlayerStatProductionAdapterTest.runAllTests();
+org.flashNight.arki.unit.PlayerStatLifecycleTest.runAllTests();
+org.flashNight.arki.unit.Action.Regeneration.HealApplierTest.runTests();
+trace("FocusedTestRunId player-stat-refresh Complete: __FOCUSED_RUN_ID__");

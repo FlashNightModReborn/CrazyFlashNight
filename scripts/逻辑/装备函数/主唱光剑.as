@@ -2,6 +2,9 @@
 {
     EquipmentEmissionState.bind(ref, "vocalist");
    var target:MovieClip = ref.自机;
+    target.__statVocalRef = ref;
+    ref.属性投影身体 = target.__playerStatBody;
+    ref.初始化参数 = param;
     org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.bindEquipment(ref, "vocal");
     ref.rockBlade = param.rockBlade;
 
@@ -35,9 +38,6 @@
    ref.weaponMode = wv.weaponMode || "光剑";
    ref.weaponValue = wv;
    wv.weaponMode = ref.weaponMode;
-   if (ref.weaponMode == "话筒支架") {
-       target.刀属性.power = ref.baseDamage * 0.8;
-   }
 
    // 根据当前武器形态设置动作模组
    target.兵器动作类型 = (ref.weaponMode == "光剑") ? ref.actionTypeSaber : ref.actionTypeMic;
@@ -185,12 +185,10 @@ _root.装备生命周期函数.主唱光剑切换武器形态 = function(ref:Obj
    if (ref.weaponMode == "光剑") {
        // 切换为话筒支架
        ref.weaponMode = "话筒支架";
-       target.刀属性.power = ref.baseDamage * 0.8;
        target.兵器动作类型 = ref.actionTypeMic;
    } else {
        // 切换为光剑
        ref.weaponMode = "光剑";
-       target.刀属性.power = ref.baseDamage;
        target.兵器动作类型 = ref.actionTypeSaber;
    }
 
@@ -198,6 +196,7 @@ _root.装备生命周期函数.主唱光剑切换武器形态 = function(ref:Obj
 
    // 保存武器类型到 item.value
    if (ref.weaponValue) ref.weaponValue.weaponMode = ref.weaponMode;
+    org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.applyMusicModeCommand(ref);
 };
 
 // 动画控制函数 - 负责决定动画状态

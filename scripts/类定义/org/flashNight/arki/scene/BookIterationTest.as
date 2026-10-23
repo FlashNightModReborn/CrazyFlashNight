@@ -86,9 +86,15 @@ class org.flashNight.arki.scene.BookIterationTest {
         check(_root.__bookSpawns.length == 0 && _root.__bookClears == 0, "retreat cancels rather than winning");
     }
     private static function testGrowthAndPickup():Void {
-        var unit:Object = {hp:0,mp:7,hp满血值:100,mp满血值:50,根据等级初始数值:function(level:Number):Void {
+        // 成长领域现在校验现役 Hero/body；生命规则夹具也使用该真实 MC 身份。
+        // 完整 Dressup/尾部和一次性恢复故障另由玩家属性组合 runner 验证。
+        _root.控制目标="hero";_root.存档系统={};
+        org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production().resetContext(_root.存档系统,String(_root.savePath),_root._saveExt);
+        var unit:Object = _root.gameworld.hero;
+        unit.__playerStatBody={};unit.hp=0;unit.mp=7;unit.hp满血值=100;unit.mp满血值=50;
+        unit.根据等级初始数值=function(level:Number):Void {
             this.hp满血值 = level * 100; this.mp满血值 = level * 50; this.hp = 999; this.mp = 999;
-        }};
+        };
         LevelUpRecovery.refresh(unit, 2);
         check(unit.hp == 0 && unit.mp == 7 && unit.等级 == 2, "zero-HP level up changes level without revival");
         unit.hp = -20; LevelUpRecovery.refresh(unit, 3);
@@ -132,7 +138,7 @@ class org.flashNight.arki.scene.BookIterationTest {
     }
     public static function runAllTests():Void {
         passed = 0; failed = 0;
-        var keys:Array = ["gameworld","兵种库","暂停","singleAcquire","_saveExt","__bookSpawns","__bookClears","__bookCloses","__bookDelayed","__bookLate","__bookAcquired","__bookConsumed","savePath","当前关卡名","等级","isEasyMode","isChallengeMode"];
+        var keys:Array = ["gameworld","兵种库","暂停","singleAcquire","_saveExt","__bookSpawns","__bookClears","__bookCloses","__bookDelayed","__bookLate","__bookAcquired","__bookConsumed","savePath","当前关卡名","等级","isEasyMode","isChallengeMode","控制目标","存档系统"];
         var saved:Object = {};
         for (var i:Number = 0; i < keys.length; i++) saved[keys[i]] = _root[keys[i]];
         var stageClass:Object = StageManager, wheelClass:Object = WaveSpawner;

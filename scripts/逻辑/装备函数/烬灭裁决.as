@@ -84,6 +84,8 @@ _root.装备生命周期函数.烬灭裁决_应用形态 = function(ref, 目标�
 {
     var unit = ref.自机;
     var 目标物品名 = 目标双刀 ? "烬灭裁决双刀" : "烬灭裁决";
+    if(ref.已应用形态 === 目标双刀 && ref.属性投影身体 === unit.__playerStatBody) return;
+    ref.已应用形态=目标双刀;ref.属性投影身体=unit.__playerStatBody;
 
     if (目标双刀) {
         unit.刀_装扮 = "刀-烬灭裁决主剑";
@@ -97,55 +99,11 @@ _root.装备生命周期函数.烬灭裁决_应用形态 = function(ref, 目标�
         unit.装载主动战技({skillname:"回旋裂地", cd:7000, hp:"0", mp:"50"}, "兵器");
     }
 
-    // 从 XML 读取目标形态完整数据块，覆盖 unit.刀属性（power 按比例保留强化等级）
-    var 目标物品数据 = _root.getItemData(目标物品名);
-    if (unit.刀属性 && 目标物品数据 && 目标物品数据.data) {
-        var oldData = unit.刀属性;
-        var newXml = 目标物品数据.data;
+    var changed:Boolean = unit[ref.装备类型].value.长柄形态 !== !目标双刀;
+    unit[ref.装备类型].value.长柄形态 = !目标双刀;
+    if(changed && ref.是否为主角 && typeof _root.存档系统.markDirty=="function") _root.存档系统.markDirty();
+    org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.requestPersistentRefresh(unit,"morph");
 
-        // 记录旧值 → 单位总属性差值重算
-        var oldHp   = oldData.hp   ? oldData.hp   : 0;
-        var oldMp   = oldData.mp   ? oldData.mp   : 0;
-        var oldDef  = oldData.defence ? oldData.defence : 0;
-        var oldVamp = oldData.vampirism ? oldData.vampirism : 0;
-        var oldRout = oldData.rout ? oldData.rout : 0;
-        var oldPower = oldData.power;
-
-        // 覆盖全部属性到 unit.刀属性
-        for (var key in newXml) {
-            oldData[key] = newXml[key];
-        }
-
-        // power 按比例缩放，保留强化等级
-        var srcBasePower = 目标双刀 ? 565 : 531;
-        if (oldPower && srcBasePower) {
-            oldData.power = Math.floor(oldPower * newXml.power / srcBasePower);
-        }
-
-        // 新值
-        var newHp   = newXml.hp   ? newXml.hp   : 0;
-        var newMp   = newXml.mp   ? newXml.mp   : 0;
-        var newDef  = newXml.defence ? newXml.defence : 0;
-        var newVamp = newXml.vampirism ? newXml.vampirism : 0;
-        var newRout = newXml.rout ? newXml.rout : 0;
-
-        // 差值重算单位总属性
-        unit.hp满血值装备加层 += (newHp - oldHp);
-        unit.mp满血值装备加层 += (newMp - oldMp);
-        unit.装备防御力 += (newDef - oldDef);
-        unit.吸血 += (newVamp - oldVamp);
-        unit.击溃 += (newRout - oldRout);
-
-        unit.hp满血值 = unit.hp基本满血值 + unit.hp满血值装备加层;
-        unit.mp满血值 = unit.mp基本满血值 + unit.mp满血值装备加层;
-        unit.防御力 = unit.基本防御力 + unit.装备防御力;
-
-        // 当前 hp/mp 不超新上限
-        if (unit.hp > unit.hp满血值) unit.hp = unit.hp满血值;
-        if (unit.mp > unit.mp满血值) unit.mp = unit.mp满血值;
-    }
-
-    unit[ref.装备类型].value.长柄形态 = !目标双刀;  // 持久化到当前 item 实例的 value
     _root.装备引用配置.刷新所有装扮(unit);          // 重挂 刀_引用（首例运行时刀切换）
     if (unit.刀2_引用) unit.刀2_引用._visible = 目标双刀;  // 副刀可见性
     if (ref.是否为主角) {                            // 标记挂在 ref 上，不是 unit 上

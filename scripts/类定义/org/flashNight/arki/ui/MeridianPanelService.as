@@ -34,6 +34,49 @@ class org.flashNight.arki.ui.MeridianPanelService {
     private static var _raw:Object = {innerPower:0, hp:0, mp:0, defense:0};
     private static var _dirty:Boolean = true;
     private static var _skillMods:Object = {};
+    private static var _contextOwner:Object;
+    private static var _contextSlot:String;
+    private static var _contextExt:Object;
+    private static var _contextToken:Object;
+    private static var _contextStatToken:Object;
+
+    /** 只在角色权威替换时调用；普通保存不清配置，也不清其他领域回执。 */
+    public static function resetContext():Void {
+        _contextOwner = undefined;
+        _contextSlot = undefined;
+        _contextExt = undefined;
+        _contextToken = {};
+        _contextStatToken = undefined;
+        clearContextCache();
+    }
+
+    private static function clearContextCache():Void {
+        _lightResults = {};
+        _cache = {innerPower:0, hp:0, mp:0, defense:0};
+        _raw = {innerPower:0, hp:0, mp:0, defense:0};
+        _skillMods = {};
+        _dirty = true;
+    }
+
+    private static function ensureContext():Void {
+        if (_root._saveExt == undefined) _root._saveExt = {};
+        var owner:Object = _root.存档系统;
+        var slot:String = String(_root.savePath);
+        var ext:Object = _root._saveExt;
+        var statToken:Object = org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production().contextToken();
+        if (_contextToken != undefined && _contextOwner === owner
+                && _contextSlot === slot && _contextStatToken === statToken) {
+            // 同一角色的奖励事务会克隆整个 ext；重读收益，但不能丢失该角色的精确保存回执。
+            if (_contextExt !== ext) {_contextExt=ext;_dirty=true;}
+            return;
+        }
+        clearContextCache();
+        _contextOwner = owner;
+        _contextSlot = slot;
+        _contextExt = ext;
+        _contextToken = {};
+        _contextStatToken = statToken;
+    }
 
     public static function install():Void {
         if (_installed) return;
@@ -45,19 +88,19 @@ class org.flashNight.arki.ui.MeridianPanelService {
         _root.gameCommands["meridianLight"] = function(params) {
             org.flashNight.arki.ui.MeridianPanelService.handleLight(params);
         };
-        // 收益 getter：任何写入路径都会拿到当前配置重算值；本服务之外不得对这些属性赋值。
+        // AVM1 addProperty 必须显式传 null setter，否则注册返回 false。只读收益始终按当前上下文重算。
         _root.addProperty("经脉内力加成", function() {
             return org.flashNight.arki.ui.MeridianPanelService.getBonus("innerPower");
-        });
+        }, null);
         _root.addProperty("经脉HP加成", function() {
             return org.flashNight.arki.ui.MeridianPanelService.getBonus("hp");
-        });
+        }, null);
         _root.addProperty("经脉MP加成", function() {
             return org.flashNight.arki.ui.MeridianPanelService.getBonus("mp");
-        });
+        }, null);
         _root.addProperty("经脉防御加成", function() {
             return org.flashNight.arki.ui.MeridianPanelService.getBonus("defense");
-        });
+        }, null);
         startConfigLoad();
     }
 
@@ -77,6 +120,9 @@ class org.flashNight.arki.ui.MeridianPanelService {
         _caps = readCaps(raw == null ? null : raw.bonusCaps);
         _config = sanitizeConfig(raw == null ? null : raw.meridians);
         _dirty = true;
+        // 配置是共享只读数据；只有已在等待的当前角色可声明自己的活体失效。
+        if(_contextToken!=undefined && _contextOwner===_root.存档系统 && _contextSlot===String(_root.savePath)
+                && _contextStatToken===org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production().contextToken()) recomputeActor("config");
         flushStateWaiters();
     }
 
@@ -185,7 +231,7 @@ class org.flashNight.arki.ui.MeridianPanelService {
     // ========== 点亮状态（存档 ext 透传） ==========
 
     private static function getLitNodes():Object {
-        if (_root._saveExt == undefined) _root._saveExt = {};
+        ensureContext();
         var stored:Object = _root._saveExt.meridians;
         if (stored == null || typeof stored != "object"
                 || stored.nodes == null || typeof stored.nodes != "object") {
@@ -243,6 +289,7 @@ class org.flashNight.arki.ui.MeridianPanelService {
 
     /** 实际发放值（已按该类型预算截断），供 _root 的四个经脉加成 getter 读取。 */
     public static function getBonus(bonusType:String):Number {
+        ensureContext();
         if (_dirty) recomputeBonuses();
         if (!isBonusType(bonusType)) return 0;
         return _cache[bonusType];
@@ -250,6 +297,7 @@ class org.flashNight.arki.ui.MeridianPanelService {
 
     /** 原始累加值（未截断）：预算门槛按它判定，避免截断值把后续穴位误放行。 */
     private static function getRawBonus(bonusType:String):Number {
+        ensureContext();
         if (_dirty) recomputeBonuses();
         if (!isBonusType(bonusType)) return 0;
         return _raw[bonusType];
@@ -262,6 +310,7 @@ class org.flashNight.arki.ui.MeridianPanelService {
 
     /** 四类预算快照：state 与 light 结果都挂它，面板只需读一份口径。 */
     private static function buildBonusSnapshot():Object {
+        ensureContext();
         if (_dirty) recomputeBonuses();
         var caps:Object = {};
         var used:Object = {};
@@ -283,6 +332,7 @@ class org.flashNight.arki.ui.MeridianPanelService {
      * 本期配置不含 skillMod、战斗公式未接入；后续接线只改调用方。
      */
     public static function getSkillModifier(skillName:String):Object {
+        ensureContext();
         if (skillName == undefined || skillName == "") return null;
         if (_dirty) recomputeBonuses();
         var mod:Object = _skillMods[skillName];
@@ -329,7 +379,16 @@ class org.flashNight.arki.ui.MeridianPanelService {
         result.bonusUsed = snapshot.bonusUsed;
         result.bonusApplied = snapshot.bonusApplied;
         result.bonusRemaining = snapshot.bonusRemaining;
+        // 节点事实、保存结果和现场投影分别上报；读取只续可重试的数值尾部。
+        result.projection = projectionStatus();
         return result;
+    }
+
+    private static function projectionStatus():Object {
+        try {
+            var p:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production().flush("meridian_read");
+            return {status:String(p.status),reason:String(p.reason==undefined ? "" : p.reason).substr(0,160)};
+        } catch(error) {return {status:"failed",reason:"projection_exception"};}
     }
 
     private static function readInfoValues():Object {
@@ -352,6 +411,8 @@ class org.flashNight.arki.ui.MeridianPanelService {
     }
 
     private static function executeLight(nodeId:String):Object {
+        ensureContext();
+        var context:Object = _contextToken;
         if (nodeId == undefined || nodeId == "") return failLight("invalid_payload");
         if (_config == null) {
             startConfigLoad();
@@ -361,7 +422,12 @@ class org.flashNight.arki.ui.MeridianPanelService {
         if (entry == null) return failLight("node_unknown");
         var node:Object = entry.node;
         var cached:Object = _lightResults[nodeId];
-        if (cached != null) return copyPending(cached, node);
+        if (cached != null) {
+            retryPendingSave(cached);
+            ensureContext();
+            if (_contextToken !== context) return failLight("context_changed");
+            return copyPending(cached, node);
+        }
         if (isLit(nodeId)) return failLight("already_lit");
 
         var missingInfo:Array = findMissingInfo(entry.meridianId);
@@ -405,6 +471,8 @@ class org.flashNight.arki.ui.MeridianPanelService {
         }
         try { saveOwner.markDirty(); }
         catch (dirtyError) { return failLight("save_unavailable"); }
+        ensureContext();
+        if (_contextToken !== context) return failLight("context_changed");
 
         // 内存原子事务：扣费与写点亮集之间没有可中断窗口。
         _root.虚拟币 = balance - node.cost;
@@ -421,6 +489,8 @@ class org.flashNight.arki.ui.MeridianPanelService {
             if (typeof _root.获取虚拟币值 == "function") _root.获取虚拟币值();
         } catch (balanceUiError) { trace("[Meridian] K-point display refresh failed"); }
 
+        ensureContext();
+        if (_contextToken !== context) return failLight("context_changed");
         recomputeActor();
 
         var serial:Number = org.flashNight.neur.Server.SaveManager.getInstance().fullSaveSerial();
@@ -429,8 +499,10 @@ class org.flashNight.arki.ui.MeridianPanelService {
             saved = saveOwner.flushDurableNow("ui.meridian_paid") === true;
         } catch (saveError) {
             saved = org.flashNight.neur.Server.SaveManager.getInstance()
-                .fullSaveConfirmedAfter(serial, saveOwner, String(_root.savePath));
+                .fullSaveConfirmedAfter(serial, saveOwner, _contextSlot);
         }
+        ensureContext();
+        if (_contextToken !== context) return failLight("context_changed");
         var result:Object = attachBonuses({
             success:saved, v:1, applied:true, nodeId:nodeId,
             bonusType:node.bonusType, bonusAmount:node.bonusAmount,
@@ -439,6 +511,25 @@ class org.flashNight.arki.ui.MeridianPanelService {
         if (!saved) result.error = "save_pending";
         _lightResults[nodeId] = result;
         return copyPending(result, node);
+    }
+
+    /** 同一操作的恢复仅重试保存；不重跑扣费、节点写入或数值投影。 */
+    private static function retryPendingSave(result:Object):Void {
+        if (result.savePending !== true) return;
+        var context:Object = _contextToken;
+        var owner:Object = _contextOwner;
+        var slot:String = _contextSlot;
+        var manager = org.flashNight.neur.Server.SaveManager.getInstance();
+        if (!manager.settingsWriteAllowed() || typeof owner.flushDurableNow != "function") return;
+        var serial:Number = manager.fullSaveSerial();
+        var saved:Boolean = false;
+        try { saved = owner.flushDurableNow("ui.meridian_paid") === true; }
+        catch (saveError) { saved = manager.fullSaveConfirmedAfter(serial, owner, slot); }
+        ensureContext();
+        if (_contextToken !== context || !saved) return;
+        result.success = true;
+        result.savePending = false;
+        result.error = null;
     }
 
     /** 幂等重放：只回传本穴身份与当前预算快照，不缓存过期的累加值。 */
@@ -488,12 +579,11 @@ class org.flashNight.arki.ui.MeridianPanelService {
         return missing;
     }
 
-    private static function recomputeActor():Void {
+    private static function recomputeActor(reason:String):Void {
         try {
-            var actor = _root.gameworld != undefined ? _root.gameworld[_root.控制目标] : undefined;
-            if (actor != null && actor.hasDressup === true) {
-                org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.updateProperties(actor);
-            }
+            var c:org.flashNight.arki.unit.PlayerStatRefreshCoordinator=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production();
+            c.invalidate(1,reason=="config" ? "config" : "meridian",c.contextToken());
+            c.flush("meridian");
         } catch (refreshError) { trace("[Meridian] actor recompute failed"); }
     }
 

@@ -1250,9 +1250,7 @@ _root.主动战技函数.兵器.狂瀑扎 = {初始化: null,
                 脚部装备 = 自机.脚部装备;
             }
             if (!自机.转换的冷兵器加成 && 自机.空手攻击力 > 100 && 头部装备 == "黑犀头甲" && 上装装备 == "黑犀胸甲" && 手部装备 == "黑犀手甲" && 下装装备 == "黑犀腿甲" && 脚部装备 == "黑犀鞋") {
-                自机.转换的冷兵器加成 = 自机.空手攻击力 - 100;
-                自机.空手攻击力 -= 自机.转换的冷兵器加成;
-                自机.刀属性.power += 自机.转换的冷兵器加成;
+                if (!org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.beginBlackRhinoTransfer(自机)) return;
                 EffectSystem.Effect("紫金增幅", 自机._x, 自机._y + 30, 100);
                 EffectSystem.Effect("刀虚影特效", 自机._x, 自机._y + 30, 100);
                 _root.发布消息("空手攻击力转换为冷兵器加成");
@@ -1281,9 +1279,7 @@ _root.主动战技函数.空手.狂瀑顶 = {初始化: null,
                 脚部装备 = 自机.脚部装备;
             }
             if (自机.转换的冷兵器加成 && 头部装备 == "黑犀头甲" && 上装装备 == "黑犀胸甲" && 手部装备 == "黑犀手甲" && 下装装备 == "黑犀腿甲" && 脚部装备 == "黑犀鞋") {
-                自机.空手攻击力 += 自机.转换的冷兵器加成;
-                自机.刀属性.power -= 自机.转换的冷兵器加成;
-                自机.转换的冷兵器加成 = 0;
+                if (!org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.endBlackRhinoTransfer(自机)) return;
                 EffectSystem.Effect("紫金增幅", 自机._x, 自机._y + 30, 100);
                 EffectSystem.Effect("拳虚影特效", 自机._x, 自机._y + 30, 100);
                 _root.发布消息("已转换的冷兵器加成转换回空手攻击力");

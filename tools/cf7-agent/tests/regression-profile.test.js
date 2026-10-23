@@ -111,3 +111,24 @@ test("timed Launcher movement is regression-only and leaves legacy key arguments
   const legacy=new TrustedRuntimeController({schema:"legacy"},{});
   await assert.rejects(legacy.pressKey({targetKind:"launcher",key:"s",durationMs:50}),e=>e.code==="trusted_runtime_input_kind_invalid");
 });
+
+
+test("Meridian structured opener is closed to non-regression clients and forwards only its panel name", async () => {
+  const {TrustedRuntimeController}=require("../../workbench-live-e2e/material-shop/trusted-runtime-controller");
+  const root=path.resolve(__dirname,"../../..");
+  const prep={schema:Profile.SCHEMA,resourcesRoot:root,candidateId,slots:{targetSlot:Profile.SLOTS[0]}};
+  const controller=new TrustedRuntimeController(prep,{});
+  let sent, captured=0;
+  controller._withFreshActionCapture=async(kind,action)=>{assert.equal(kind,"launcher");captured++;return action({});};
+  controller._perform=async(method,capture,lease,args)=>{assert.equal(method,"panel.open");assert.equal(lease,"structured_action");sent=args;return {};};
+  await controller.openPanel("meridians","Open current test role's production Meridian panel");
+  assert.deepEqual(sent,{panel:"meridians"});
+  assert.equal(captured,1);
+  const ordinary=new TrustedRuntimeController({resourcesRoot:root,slots:{targetSlot:"cf7_agent_a5_material_shop_run"}},{});
+  ordinary._withFreshActionCapture=async()=>{throw new Error("must reject before observation or dispatch");};
+  await assert.rejects(ordinary.openPanel("meridians"),e=>e.code==="trusted_runtime_panel_invalid");
+  for(const near of ["Meridians","meridians?debug=true","meridian","../meridians"])
+    await assert.rejects(controller.openPanel(near),e=>e.code==="trusted_runtime_panel_invalid");
+  const foreign=new TrustedRuntimeController({...prep,slots:{targetSlot:"crazyflasher7_saves"}},{});
+  await assert.rejects(foreign.openPanel("meridians"),/closed test cohort/);
+});

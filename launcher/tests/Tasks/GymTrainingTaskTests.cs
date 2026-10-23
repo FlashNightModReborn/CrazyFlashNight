@@ -90,7 +90,7 @@ namespace Launcher.Tests.Tasks
 
             public void Dispose() { Task.Dispose(); }
 
-            private static string OpenData()
+            internal static string OpenData()
             {
                 return new JObject {
                     ["mode"] = "preview", ["source"] = "world_gym",
@@ -105,6 +105,56 @@ namespace Launcher.Tests.Tasks
                     }
                 }.ToString(Formatting.None);
             }
+        }
+
+        [Fact]
+        public void SavedProjectionFailureRetainsDomainAndUsesExplicitProjectionOnlyQuery()
+        {
+            using var f=new Fixture();f.Start();f.Advance(10000);
+            var saved=f.Response(1,"finish","applied");
+            saved["projection"]=new JObject{["status"]="failed",["reason"]="injected"};
+            f.Task.HandleFlashResponse(saved,_=>{});
+            Assert.Equal("applied",f.Web[^1].Value<string>("phase"));Assert.True(f.Web[^1].Value<bool>("saved"));
+            f.Request("start","new.training",new JObject{["v"]=1,["projectId"]="dummy.0"});
+            Assert.Equal(2,f.Flash.Count);Assert.Equal("busy",f.Web[^1].Value<string>("error"));
+            f.Request("query","projection.retry",new JObject{["v"]=1,["recoverProjection"]=true});
+            Assert.Equal("gymQuery",f.Flash[2].Value<string>("action"));
+            Assert.True(f.Flash[2].Value<bool>("recoverProjection"));
+            Assert.Equal("gym.session.1.1",f.Flash[2].Value<string>("sessionToken"));
+            // 畸形成功仍需对账，不能把未知当成新的完整重建许可。
+            f.Reply(2,"query","applied");
+            Assert.Equal("needs_reconcile",f.Web[^1].Value<string>("phase"));
+            f.Request("query","projection.reconcile");
+            Assert.Null(f.Flash[3]["recoverProjection"]);
+            var clean=f.Response(3,"query","applied");
+            clean["projection"]=new JObject{["status"]="unchanged",["reason"]=""};
+            f.Task.HandleFlashResponse(clean,_=>{});
+            Assert.Equal("applied",f.Web[^1].Value<string>("phase"));
+            Assert.Equal(4,f.Flash.Count);
+        }
+        [Theory]
+        [InlineData("1")]
+        [InlineData("\"true\"")]
+        [InlineData("null")]
+        [InlineData("false")]
+        public void ProjectionRecoveryRequiresExactPositiveBoolean(string raw)
+        {
+            using var f=new Fixture();
+            f.Request("query","bad.projection",new JObject{["v"]=1,["recoverProjection"]=JToken.Parse(raw)});
+            Assert.Empty(f.Flash);Assert.Equal("invalid_payload",f.Web[^1].Value<string>("error"));
+        }
+        [Fact]
+        public void ReopenRetainsExactSavedProjectionOwnerWithoutStartingOrSavingAgain()
+        {
+            using var f=new Fixture();var open=JObject.Parse(Fixture.OpenData());
+            open["snapshot"]["pendingProjection"]=new JObject{
+                ["sessionToken"]="gym.session.saved.1",["stationId"]="dummy",["projectId"]="dummy.0",["phase"]="applied",
+                ["projection"]=new JObject{["status"]="failed",["reason"]="injected"}};
+            f.Task.BindPanelOpenData(open.ToString(Formatting.None),"panel.2");
+            f.Request("query","reopened.projection",new JObject{["v"]=1,["recoverProjection"]=true},"panel.2");
+            Assert.Single(f.Flash);Assert.Equal("gymQuery",f.Flash[0].Value<string>("action"));
+            Assert.Equal("gym.session.saved.1",f.Flash[0].Value<string>("sessionToken"));
+            Assert.True(f.Flash[0].Value<bool>("recoverProjection"));
         }
 
         [Fact]

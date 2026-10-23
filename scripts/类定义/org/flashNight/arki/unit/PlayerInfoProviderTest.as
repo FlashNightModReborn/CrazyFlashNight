@@ -15,6 +15,7 @@ class org.flashNight.arki.unit.PlayerInfoProviderTest {
     private static var _oldExperience;
     private static var _oldKillStats;
     private static var _oldLevelFormula:Function;
+    private static var _oldProjectionBarrier:Function;
 
     public static function runAllTests():Void {
         _passed = 0;
@@ -28,6 +29,7 @@ class org.flashNight.arki.unit.PlayerInfoProviderTest {
         testStyledTitleProjection();
         testLegacyRendererParity();
         testExtremeAndInvalidNumbers();
+        testProjectionReadGate();
         testMissingHeroFailsClosed();
         restoreFixture();
 
@@ -47,6 +49,8 @@ class org.flashNight.arki.unit.PlayerInfoProviderTest {
     }
 
     private static function installFixture():Void {
+        // 本 suite 冻结纯呈现字段；真实数值 adapter/身体水位由 PlayerStat P1 验证。
+        _oldProjectionBarrier=org.flashNight.arki.unit.PlayerInfoProvider.testOnlySetProjectionBarrier(function():Object {return {status:"unchanged"};});
         _oldGameworld = _root.gameworld;
         _oldControlTarget = _root.控制目标;
         _oldHeight = _root.身高;
@@ -110,6 +114,7 @@ class org.flashNight.arki.unit.PlayerInfoProviderTest {
     }
 
     private static function restoreFixture():Void {
+        org.flashNight.arki.unit.PlayerInfoProvider.testOnlySetProjectionBarrier(_oldProjectionBarrier);
         _root.gameworld = _oldGameworld;
         _root.控制目标 = _oldControlTarget;
         _root.身高 = _oldHeight;
@@ -218,12 +223,14 @@ class org.flashNight.arki.unit.PlayerInfoProviderTest {
             data:{hp:100, mp:20, toughness:50, evasion:5}
         };
 
-        DressupInitializer.updateProperties(target);
+        // 此夹具只验证完整装扮子阶段的公式；公共冷刷新由真实 coordinator suite 覆盖。
+        var initializationApi:Object=DressupInitializer;
+        initializationApi.initializeEquipmentProperties(target);
         var firstToughness:Number = target.韧性系数;
         var firstDodge:Number = target.躲闪率;
         var firstHpMax:Number = target.hp满血值;
         var firstMpMax:Number = target.mp满血值;
-        DressupInitializer.updateProperties(target);
+        initializationApi.initializeEquipmentProperties(target);
 
         check(Math.abs(firstToughness - 2.04) < 0.0001
                 && Math.abs(target.韧性系数 - firstToughness) < 0.0001
@@ -542,6 +549,16 @@ class org.flashNight.arki.unit.PlayerInfoProviderTest {
         _hero.重量 = originalWeight;
     }
 
+    private static function testProjectionReadGate():Void {
+        var previous:Function=org.flashNight.arki.unit.PlayerInfoProvider.testOnlySetProjectionBarrier(function():Object {return {status:"failed",reason:"injected_projection"};});
+        var snapshot:Object=org.flashNight.arki.unit.PlayerInfoProvider.getPlayerInfoSnapshot();
+        var target:MovieClip=makeLegacyTarget("keep");org.flashNight.arki.unit.PlayerInfoProvider.populatePlayerInfo(target);
+        check(snapshot.stateHealth=="unavailable" && snapshot.diagnostics[0]=="stat_projection_failed"
+                && snapshot.groups.length==0,"failed numeric read barrier cannot publish a clean detail snapshot");
+        check(target.sentinel=="keep" && target.身高体重===undefined,
+            "legacy detail renderer also retains its previous display when projection is blocked");
+        org.flashNight.arki.unit.PlayerInfoProvider.testOnlySetProjectionBarrier(previous);
+    }
     private static function testMissingHeroFailsClosed():Void {
         var fixtureWorld:Object = _root.gameworld;
         var fixtureTarget = _root.控制目标;
