@@ -1320,6 +1320,23 @@ namespace CF7Launcher.Tasks
             });
         }
 
+        /// <summary>终端就绪态变化或面板展开：把停在 Offline 的输入条按当前真实状态重算。</summary>
+        internal void RefreshTerminalState()
+        {
+            if (_session == null || _closing || _terminalStarting) return;
+            if (!_groupAllowsInterject || _playerLinePlaying) return;
+            if (_terminalReady == null) return;
+            if (!_terminalReady())
+            {
+                if (_inputState == DialogueInterjectInputState.Offline) return;
+                SetInputState(DialogueInterjectInputState.Offline);
+                return;
+            }
+            if (_inputState != DialogueInterjectInputState.Offline) return;
+            SetInputState(ReadyOrMuted());
+            ProbeLlmConfig(false);
+        }
+
         /// <summary>终端已在线时的配置核对（不弹窗）：缺配置则输入条显示“请配置模型API”。</summary>
         private void ProbeLlmConfig(bool openDialogOnMissing)
         {

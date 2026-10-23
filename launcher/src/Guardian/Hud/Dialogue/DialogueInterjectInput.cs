@@ -840,14 +840,6 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 : (_chevronHover ? Color.FromArgb(225, 225, 225) : Color.FromArgb(118, 118, 118)));
 
             DrawChevron(g, r.Width / 2f, r.Height / 2f, CanToggle ? _headerFore : _muted, r.Height);
-
-            if (_startRequired || _configRequired)
-            {
-                float dot = Math.Max(4f, 5f * _uiScale);
-                float x = r.Width - dot - Math.Max(4f, 5f * _uiScale);
-                using (SolidBrush warn = new SolidBrush(Color.FromArgb(230, 230, 230)))
-                    g.FillEllipse(warn, x, 4f, dot, dot);
-            }
         }
 
         /// <summary>展开态：沿用原版对话框的黑色斜切头条 + 平直浅灰面板 + 方角输入槽。</summary>

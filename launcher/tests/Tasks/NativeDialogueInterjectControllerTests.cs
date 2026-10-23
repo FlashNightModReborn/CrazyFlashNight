@@ -2100,6 +2100,24 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void TerminalReadinessChangeRefreshesStaleOfflineInputState()
+        {
+            using var h = new Harness(
+                llmConfigured: () => Task.FromResult(true),
+                terminalReady: false);
+            h.AdoptBook("又是你。");
+            Assert.Equal(DialogueInterjectInputState.Offline, h.Controller.InputState);
+
+            h.TerminalReady = true;
+            h.Controller.RefreshTerminalState();
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+
+            h.TerminalReady = false;
+            h.Controller.RefreshTerminalState();
+            Assert.Equal(DialogueInterjectInputState.Offline, h.Controller.InputState);
+        }
+
+        [Fact]
         public void AlreadyRunningTerminalWithoutConfigLocksWithoutAutoDialog()
         {
             int dialogs = 0;

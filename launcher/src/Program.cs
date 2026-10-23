@@ -2946,6 +2946,20 @@ class Program
                 ensureBound: playerName => ragTerminalService.EnsureInterjectBindingAsync(playerName),
                 itemExchange: npcItemExchangeTask);
             var interjectController = dialogueInterject;
+            // 终端就绪态变化（含自动拉起后的后台补探）：把停在“请先启动聊天终端”的输入条即时重算。
+            ragTerminalService.ReadyChanged += delegate
+            {
+                if (form.IsDisposed) return;
+                try
+                {
+                    form.BeginInvoke(new Action(delegate
+                    {
+                        interjectController.RefreshTerminalState();
+                    }));
+                }
+                catch (ObjectDisposedException) { }
+                catch (InvalidOperationException) { }
+            };
 
             Action<bool> showInterjectConfig = delegate(bool autoMode)
             {
@@ -3027,6 +3041,11 @@ class Program
                 else interjectOverlay.SetItemClaim(view);
             };
             interjectOverlay.ChoiceRequested += accept => interjectController.SubmitChoice(accept);
+            // 首次展开时重算一次：对话组开始后终端可能已由别的入口拉起。
+            interjectOverlay.ExpandedChanged += delegate
+            {
+                if (interjectOverlay.IsExpanded) interjectController.RefreshTerminalState();
+            };
             dialogueInterject.Attach();
             Func<bool> interjectForegroundProbe = () =>
                 interjectOverlay.ShouldKeepHudPresented()

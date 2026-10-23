@@ -47,7 +47,25 @@ namespace CF7Launcher.RagTerminal
         internal int ShutdownRequestTimeoutMs { get; set; } = 1500;
 
         /// <summary>最近一次 EnsureReady 是否成功；插话输入据此决定“可输入/先启动终端”。</summary>
-        internal bool IsReady { get; private set; }
+        internal bool IsReady
+        {
+            get { return _ready; }
+            private set
+            {
+                if (_ready == value) return;
+                _ready = value;
+                Action handler = ReadyChanged;
+                if (handler == null) return;
+                try { handler(); }
+                catch (Exception ex) { LogManager.Log("[RagTerminal] ReadyChanged throw: " + ex.Message); }
+            }
+        }
+
+        /// <summary>就绪态变化（含后台自动拉起后转就绪）：插话输入条据此即时重算。</summary>
+        internal event Action ReadyChanged;
+
+        private volatile bool _ready;
+        private volatile bool _disposed;
 
         private readonly object _bindCacheGate = new object();
         /// <summary>最近收到的存档投影（AS2 rag_bind_refresh / 面板打开）。exe 离线时也保留，
@@ -319,12 +337,44 @@ namespace CF7Launcher.RagTerminal
                     RagTerminalPrepareResult result = EnsureReadyAsync().GetAwaiter().GetResult();
                     LogManager.Log("event=rag_terminal_autostart ok=" + result.Success
                         + (result.Success ? "" : " error=" + result.Error));
+                    // exe 首启可能超过 20 秒就绪上限：继续后台探活，避免输入条一直停在“请先启动聊天终端”。
+                    if (!result.Success && ResolveExePath() != null) PollHealthUntilReady();
                 }
                 catch (Exception ex)
                 {
                     LogManager.Log("[RagTerminal] autostart threw: " + ex.Message);
                 }
             });
+        }
+
+        /// <summary>自动拉起失败后的补探：每 2 秒一次、最多 5 分钟；探到健康即置就绪并通知。</summary>
+        private void PollHealthUntilReady()
+        {
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                PollHealthUntilReadyAsync().GetAwaiter().GetResult();
+            });
+        }
+
+        private async Task PollHealthUntilReadyAsync()
+        {
+            for (int attempt = 0; attempt < 150; attempt++)
+            {
+                await Task.Delay(2000).ConfigureAwait(false);
+                if (_disposed || IsReady) return;
+                JObject health;
+                try { health = await ProbeHealthAsync().ConfigureAwait(false); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[RagTerminal] autostart retry probe: " + ex.Message);
+                    continue;
+                }
+                if (health == null) continue;
+                IsReady = true;
+                LogManager.Log("[RagTerminal] health ready after autostart retry attempt="
+                    + attempt + " mode=" + health.Value<string>("mode"));
+                return;
+            }
         }
 
         /// <summary>best-effort 解绑（socket 断连等生命周期落点）；失败仅记日志。</summary>
@@ -595,6 +645,7 @@ namespace CF7Launcher.RagTerminal
 
         public void Dispose()
         {
+            _disposed = true;
             _http.Dispose();
         }
     }
