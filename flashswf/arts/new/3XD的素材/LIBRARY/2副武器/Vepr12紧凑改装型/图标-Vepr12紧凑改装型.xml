@@ -1,0 +1,73 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2副武器/Vepr12紧凑改装型/图标-Vepr12紧凑改装型" itemID="6adaf69c-00000f8f" linkageExportForAS="true" linkageIdentifier="图标-Vepr12紧凑改装型" lastModified="1792734880">
+  <timeline>
+    <DOMTimeline name="图标-Vepr12紧凑改装型" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#A953E5" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#6DD664" locked="true" layerType="mask">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2副武器/Vepr12紧凑改装型/阴影所用" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#2C78FA" parentLayerIndex="1" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2副武器/Vepr12紧凑改装型/枪-手枪-Vepr12紧凑改装型" selected="true" centerPoint3DX="112.85" centerPoint3DY="56.95">
+                  <matrix>
+                    <Matrix a="0.1279296875" b="-0.121841430664063" c="0.121841430664063" d="0.1279296875" tx="-2.95" ty="10.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#19E7E2" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2副武器/Vepr12紧凑改装型/阴影所用" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2副武器/Vepr12紧凑改装型/枪-手枪-Vepr12紧凑改装型" centerPoint3DX="119.05" centerPoint3DY="55.7">
+                  <matrix>
+                    <Matrix a="0.299148559570313" b="0.0128631591796875" c="-0.0128631591796875" d="0.299148559570313" tx="3.25" ty="9.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
