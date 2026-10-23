@@ -262,3 +262,9 @@ tools/input-hook-diagnostic/obj/
 /tools/cf6-map-runtime/native-vector/diagnostics/
 /tools/cf6-map-runtime/native-vector/generated/LIBRARY/
 /tools/cf6-map-runtime/native-vector/layers/*/LIBRARY/
+
+# 地图批次的审阅图和接触表是现场生成物，不入库
+/map-production/packages/**/review/
+
+# 本机生成/候选图，不进入仓库
+/vibe_images/
