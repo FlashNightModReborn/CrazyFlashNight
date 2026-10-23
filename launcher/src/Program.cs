@@ -2744,6 +2744,10 @@ class Program
         taskTask.SetDeliveryPresenter(rightContext);
         IntelligenceTask intelligenceTask = new IntelligenceTask(projectRoot, socketServer);
         MeridiansTask meridiansTask = new MeridiansTask(socketServer);
+        // 插话物品交接：命令走既有 cmd 通道，AS2 以 npc_item_response + requestId 回包。
+        NpcItemExchangeTask npcItemExchangeTask = new NpcItemExchangeTask(
+            data => socketServer.IsClientReady && socketServer.TrySend(data));
+        socketServer.OnClientDisconnected += npcItemExchangeTask.HandleTransportDisconnected;
         // 黑市鉴定（匿名影子测试）：AS2 权威注释通道，仅 tooltip 一跳
         BlackMarketTask blackMarketTask = new BlackMarketTask(socketServer);
         ArchiveTask archiveTask;
@@ -2939,7 +2943,8 @@ class Program
                     // 探测失败（旧 exe 无端点/瞬断）按已配置处理，避免把输入永久锁死。
                     return config == null || config.Configured;
                 },
-                ensureBound: playerName => ragTerminalService.EnsureInterjectBindingAsync(playerName));
+                ensureBound: playerName => ragTerminalService.EnsureInterjectBindingAsync(playerName),
+                itemExchange: npcItemExchangeTask);
             var interjectController = dialogueInterject;
 
             Action<bool> showInterjectConfig = delegate(bool autoMode)
@@ -3015,6 +3020,13 @@ class Program
                 dialogueInterjectInput.Apply(state, dialogueInterject.PlaceholderFor(state));
             // 草案确认轮的最后一条 add：输入条切成「我接了 / 我不接 / 单行输入」三行。
             dialogueInterject.AskAcceptChanged += accept => interjectOverlay.SetAskAccept(accept);
+            // 待处理索取：同一组按钮改用「赠送 X 个…（当前持有Y）/ 不赠送」，输入框与占位不变。
+            dialogueInterject.ItemClaimChanged += view =>
+            {
+                if (view == null) interjectOverlay.ClearItemClaim();
+                else interjectOverlay.SetItemClaim(view);
+            };
+            interjectOverlay.ChoiceRequested += accept => interjectController.SubmitChoice(accept);
             dialogueInterject.Attach();
             Func<bool> interjectForegroundProbe = () =>
                 interjectOverlay.ShouldKeepHudPresented()
@@ -3043,7 +3055,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, subwaySelectTask, eggStageSelectTask, sleepTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask, tabletTask, meridiansTask);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, subwaySelectTask, eggStageSelectTask, sleepTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask, tabletTask, meridiansTask, npcItemExchangeTask);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 

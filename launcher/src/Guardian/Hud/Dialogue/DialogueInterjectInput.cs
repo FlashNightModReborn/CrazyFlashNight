@@ -222,6 +222,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         private Rectangle _acceptRect = Rectangle.Empty;
         private Rectangle _rejectRect = Rectangle.Empty;
         private bool _askAccept;
+        private DialogueInterjectItemClaimView _itemClaim;
         private bool _acceptHover;
         private bool _rejectHover;
         private int _toggleWidthPx;
@@ -235,6 +236,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
         /// <summary>玩家发送：参数为已裁剪到 150 字的文本（调用方负责再去空白）。</summary>
         public event Action<string> SendRequested;
+
+        /// <summary>选项点击（true=接受/赠送，false=拒绝/不赠送）；由宿主决定任务直连或物品扣除。</summary>
+        internal event Action<bool> ChoiceRequested;
 
         /// <summary>终端未启动时点击展开后的“启动”：只拉起聊天终端，不发送输入。</summary>
         internal event Action StartRequested;
@@ -335,6 +339,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         internal Rectangle ActionBoundsForTest { get { return _actionRect; } }
         internal Rectangle SettingsBoundsForTest { get { return _settingsRect; } }
         internal Rectangle FieldBoundsForTest { get { return _fieldRect; } }
+        internal Rectangle AcceptBoundsForTest { get { return _acceptRect; } }
+        internal Rectangle RejectBoundsForTest { get { return _rejectRect; } }
 
         /// <summary>几何单测用：不依赖窗口可见/激活，直接进入展开布局。</summary>
         internal void ExpandForTest()
@@ -446,7 +452,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         {
             bool clickable = _expanded
                 ? (_settingsHover || _chevronHover || (_actionHover && ActionEnabled)
-                    || ((_acceptHover || _rejectHover) && _model.Enabled))
+                    || _acceptHover || _rejectHover)
                 : (_chevronHover && CanToggle);
             Cursor = clickable ? Cursors.Hand : Cursors.Default;
         }
@@ -481,13 +487,74 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             _askAccept = value;
             _acceptHover = false;
             _rejectHover = false;
-            if (_textBox != null) _textBox.WordWrap = !value;   // 选项态单行：超出横向滚动
+            SyncChoiceLayout();
+        }
+
+        /// <summary>
+        /// 待处理索取：两按钮＋原输入框，面板总高/占位文案不变。
+        /// 按钮可用性只由 claim＋真实持有决定，不跟随输入框可用性。
+        /// </summary>
+        internal void SetItemClaim(DialogueInterjectItemClaimView view)
+        {
+            _itemClaim = view;
+            _acceptHover = false;
+            _rejectHover = false;
+            SyncChoiceLayout();
+        }
+
+        internal void ClearItemClaim()
+        {
+            if (_itemClaim == null) return;
+            _itemClaim = null;
+            _acceptHover = false;
+            _rejectHover = false;
+            SyncChoiceLayout();
+        }
+
+        private bool ShowChoices { get { return _askAccept || _itemClaim != null; } }
+
+        // 物品选项不跟随输入框可用性：主按钮只由真实持有决定，次按钮在扣除在途时锁住。
+        private bool AcceptEnabled
+        {
+            get { return _itemClaim != null ? _itemClaim.Enough : _model.Enabled; }
+        }
+
+        private bool RejectEnabled
+        {
+            get { return _itemClaim != null ? !_itemClaim.Busy : _model.Enabled; }
+        }
+
+        private bool ItemShortage
+        {
+            get
+            {
+                return _itemClaim != null
+                    && _itemClaim.Count < Math.Max(1, _itemClaim.Quantity);
+            }
+        }
+
+        private void SyncChoiceLayout()
+        {
+            bool show = ShowChoices;
+            if (_textBox != null) _textBox.WordWrap = !show;
             ApplyLayout();
             Invalidate();
         }
 
         /// <summary>当前是否处于选项态（测试观测）。</summary>
         internal bool AskAcceptForTest { get { return _askAccept; } }
+
+        /// <summary>当前物品索取视图（测试观测）。</summary>
+        internal DialogueInterjectItemClaimView ItemClaimForTest { get { return _itemClaim; } }
+
+        /// <summary>选项点击落点（测试观测）：返回 true 表示命中并已派发。</summary>
+        internal bool ClickChoiceForTest(bool accept)
+        {
+            Rectangle rect = accept ? _acceptRect : _rejectRect;
+            if (!ShowChoices || rect.IsEmpty) return false;
+            HandleClick(new Point(rect.Left + rect.Width / 2, rect.Top + rect.Height / 2));
+            return true;
+        }
 
         /// <summary>当前文本（只读观测）。</summary>
         public string GetInputText()
@@ -677,10 +744,23 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             if (_model.CanSend) SendCurrentText();
         }
 
-        /// <summary>选项点击：固定文案当玩家输入发出去，与手动打字发送同一个出口（SendRequested）。</summary>
+        /// <summary>
+        /// 选项点击：物品索取只派发决定（赠送前由宿主查真实持有并扣除）；
+        /// 任务选项派发后仍由宿主走动作直连。旧接线没有 ChoiceRequested 时保持发固定文案。
+        /// </summary>
         private void ChooseAccept(bool accept)
         {
-            if (!_model.Enabled) return;
+            bool enabled = _itemClaim != null ? (accept ? _itemClaim.Enough : true) : _model.Enabled;
+            if (!enabled) return;
+            Action<bool> choice = ChoiceRequested;
+            if (choice != null)
+            {
+                if (_itemClaim == null) ClearInput();
+                try { choice(accept); }
+                catch { }
+                return;
+            }
+            if (_itemClaim != null) return;
             Action<string> handler = SendRequested;
             if (handler == null) return;
             ClearInput();
@@ -801,10 +881,22 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             PaintSettingsButton(g, _settingsRect);
 
             // 选项态：两个选项行与输入槽同宽等高；主选项黑底白字，次选项浅底黑边。
-            if (_askAccept)
+            if (ShowChoices)
             {
-                PaintChoiceRow(g, _acceptRect, "我接了", true, _acceptHover);
-                PaintChoiceRow(g, _rejectRect, "我不接", false, _rejectHover);
+                if (_itemClaim != null)
+                {
+                    PaintChoiceRow(g, _acceptRect, _itemClaim.AcceptText, true,
+                        _acceptHover, AcceptEnabled, ItemShortage ? _accent : (Color?)null);
+                    PaintChoiceRow(g, _rejectRect, _itemClaim.RejectText, false,
+                        _rejectHover, RejectEnabled, null);
+                }
+                else
+                {
+                    PaintChoiceRow(g, _acceptRect, "我接了", true, _acceptHover,
+                        _model.Enabled, null);
+                    PaintChoiceRow(g, _rejectRect, "我不接", false, _rejectHover,
+                        _model.Enabled, null);
+                }
             }
 
             // 输入槽：方角灰/黑边；聚焦只加粗为黑色 2px，不加颜色光晕。
@@ -840,11 +932,12 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 Math.Max(6, (int)Math.Round(12 * ui)), Color.FromArgb(190, _bodyFore));
         }
 
-        /// <summary>选项行：主选项黑底白字（与「发送」同色系），次选项浅底黑边；禁用时整体压灰。</summary>
-        private void PaintChoiceRow(Graphics g, Rectangle rect, string label, bool primary, bool hover)
+        /// <summary>选项行：主选项黑底白字（与「发送」同色系），次选项浅底黑边；禁用时整体压灰。
+        /// 物品不足时把按钮文案（含当前持有数）压成红字，尺寸与普通禁用态一致。</summary>
+        private void PaintChoiceRow(Graphics g, Rectangle rect, string label, bool primary,
+            bool hover, bool enabled, Color? foreOverride)
         {
             if (rect.Width <= 0 || rect.Height <= 0) return;
-            bool enabled = _model.Enabled;
             Color back, fore;
             if (primary)
             {
@@ -858,6 +951,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                     : (hover ? Color.FromArgb(226, 223, 216) : _fieldBack);
                 fore = enabled ? _bodyFore : _muted;
             }
+            if (foreOverride.HasValue) fore = foreOverride.Value;
             using (SolidBrush fill = new SolidBrush(back))
                 g.FillRectangle(fill, rect);
             using (Pen edge = new Pen(primary ? back : _fieldBorder, Math.Max(1f, _uiScale)))
@@ -1118,7 +1212,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 Collapse(true);
                 return;
             }
-            if (_askAccept)
+            if (ShowChoices)
             {
                 if (_acceptRect.Contains(location)) { ChooseAccept(true); return; }
                 if (_rejectRect.Contains(location)) { ChooseAccept(false); return; }
@@ -1146,8 +1240,10 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             base.OnMouseMove(e);
             bool chevronHover = _chevronRect.Contains(e.Location);
             bool actionHover = _expanded && _actionRect.Contains(e.Location) && ActionEnabled;
-            bool acceptHover = _expanded && _askAccept && _acceptRect.Contains(e.Location);
-            bool rejectHover = _expanded && _askAccept && _rejectRect.Contains(e.Location);
+            bool acceptHover = _expanded && ShowChoices && AcceptEnabled
+                && _acceptRect.Contains(e.Location);
+            bool rejectHover = _expanded && ShowChoices && RejectEnabled
+                && _rejectRect.Contains(e.Location);
             bool settingsHover = _expanded && _settingsRect.Contains(e.Location);
             if (chevronHover != _chevronHover || actionHover != _actionHover
                 || acceptHover != _acceptHover || rejectHover != _rejectHover
@@ -1312,7 +1408,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             int bodyBottom = footerTop - gap;
             int fieldH = Math.Max(1, bodyBottom - bodyTop);
             int innerW = Math.Max(80, w - pad * 2);
-            if (_askAccept)
+            if (ShowChoices)
             {
                 int rowGap = Math.Max(3, (int)Math.Round(4 * ui));
                 int rowH = Math.Max(1, (fieldH - rowGap * 2) / 3);
@@ -1331,7 +1427,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
             int insetX = Math.Max(8, (int)Math.Round(12 * ui));
             // 选项态只有一行高：上下内缩压到 3px，保证 14px 字形在一行里完整可见。
-            int insetY = _askAccept
+            int insetY = ShowChoices
                 ? Math.Max(2, (int)Math.Round(3 * ui))
                 : Math.Max(4, (int)Math.Round(6 * ui));
             int textH = Math.Max(1, _fieldRect.Height - insetY * 2);

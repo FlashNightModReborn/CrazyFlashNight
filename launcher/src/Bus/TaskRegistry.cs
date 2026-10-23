@@ -497,7 +497,8 @@ namespace CF7Launcher.Bus
             SceneTransitionTask sceneTransitionTask = null,
             BookComicTask bookComicTask = null,
             TabletTask tabletTask = null,
-            MeridiansTask meridiansTask = null)
+            MeridiansTask meridiansTask = null,
+            NpcItemExchangeTask npcItemExchangeTask = null)
         {
             // 平板面板 domain 回包路由（tabletInfraSync/Upgrade、tabletOpenNpcShop、
             // openRagTerminal 均经 socket task "tablet_response" + callId 回执）
@@ -645,6 +646,11 @@ namespace CF7Launcher.Bus
                 router.RegisterAsync("native_dialogue", nativeDialogueTask.HandleAsync);
                 router.RegisterSync("dialogue_portrait_result", nativeDialogueTask.HandlePortraitResult);
             }
+
+            // 日常插话物品交接（Host→AS2 cmd、AS2→Host 回包）。只允许 Host 内部调用，
+            // 不注册 httpCallable，也不向 Web 开放。
+            if (npcItemExchangeTask != null)
+                router.RegisterSync(NpcItemExchangeTask.ResponseTask, npcItemExchangeTask.Handle);
 
             // 选关面板回包路由
             if (stageSelectTask != null)
@@ -989,6 +995,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "lutlab.grabFrame","json_async","Web->C#", false, first);
             first = AppendTask(sb, "lutlab.bakeXml", "json_async","Web->C#", false, first);
             first = AppendTask(sb, "native_dialogue","json_async", "AS2->C#", false, first);
+            first = AppendTask(sb, "npc_item_response","json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "native_guidance","json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "scene_transition","json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "dialogue_portrait_result","json_sync", "Web->C#", false, first);

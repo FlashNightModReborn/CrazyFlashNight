@@ -18,7 +18,11 @@ namespace CF7Launcher.RagTerminal
         Line,
         Plan,
         Done,
-        Error
+        Error,
+        /// <summary>物品动作旁路事件（item_grant）：非终态，Host 执行 AS2 后回执。</summary>
+        Action,
+        /// <summary>待处理索取（pending/closed）：非终态，只驱动输入条选项。</summary>
+        ItemClaim
     }
 
     /// <summary>一条已解析的 SSE 事件。</summary>
@@ -154,6 +158,8 @@ namespace CF7Launcher.RagTerminal
                 case "plan": return DialogueInterjectEventKind.Plan;
                 case "done": return DialogueInterjectEventKind.Done;
                 case "error": return DialogueInterjectEventKind.Error;
+                case "action": return DialogueInterjectEventKind.Action;
+                case "item_claim": return DialogueInterjectEventKind.ItemClaim;
                 default: return DialogueInterjectEventKind.Unknown;
             }
         }
@@ -166,6 +172,8 @@ namespace CF7Launcher.RagTerminal
         Task<Stream> OpenAsync(string requestJson, CancellationToken cancellationToken);
         /// <summary>POST finalize（已播对账，幂等）；返回后端回执 JSON。</summary>
         Task<JObject> PostFinalizeAsync(string requestJson, CancellationToken cancellationToken);
+        /// <summary>POST action-result（物品发放回执，同 action_id 幂等）；返回后端回执 JSON。</summary>
+        Task<JObject> PostActionResultAsync(string requestJson, CancellationToken cancellationToken);
     }
 
     /// <summary>
@@ -201,6 +209,9 @@ namespace CF7Launcher.RagTerminal
         /// <summary>finalize 端点 = 插话端点 + /finalize（协议 5.1）。</summary>
         internal string FinalizeUrl { get { return _url + "/finalize"; } }
 
+        /// <summary>物品发放回执端点 = 插话端点 + /action-result（协议 7.5.9）。</summary>
+        internal string ActionResultUrl { get { return _url + "/action-result"; } }
+
         public async Task<Stream> OpenAsync(string requestJson, CancellationToken cancellationToken)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, _url)
@@ -222,7 +233,20 @@ namespace CF7Launcher.RagTerminal
 
         public async Task<JObject> PostFinalizeAsync(string requestJson, CancellationToken cancellationToken)
         {
-            using (var request = new HttpRequestMessage(HttpMethod.Post, FinalizeUrl))
+            return await PostJsonAsync(FinalizeUrl, "finalize", requestJson, cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        public async Task<JObject> PostActionResultAsync(string requestJson, CancellationToken cancellationToken)
+        {
+            return await PostJsonAsync(ActionResultUrl, "action-result", requestJson, cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        private async Task<JObject> PostJsonAsync(string url, string label, string requestJson,
+            CancellationToken cancellationToken)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Post, url))
             {
                 request.Content = new StringContent(requestJson ?? "{}", Encoding.UTF8, "application/json");
                 using (HttpResponseMessage response = await _http.SendAsync(request,
@@ -230,7 +254,7 @@ namespace CF7Launcher.RagTerminal
                 {
                     string body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
                     if (!response.IsSuccessStatusCode)
-                        throw new HttpRequestException("dialogue-interject finalize http "
+                        throw new HttpRequestException("dialogue-interject " + label + " http "
                             + (int)response.StatusCode);
                     return string.IsNullOrEmpty(body) ? new JObject() : JObject.Parse(body);
                 }

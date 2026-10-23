@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId npc-item-exchange Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.item.NpcItemExchangeServiceTest.runAllTests();
+trace("FocusedTestRunId npc-item-exchange Complete: __FOCUSED_RUN_ID__");

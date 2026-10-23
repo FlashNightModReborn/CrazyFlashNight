@@ -900,4 +900,8 @@ _root.gameCommands["agentDialogueChanged"] = function(params:Object):Void {
     _root.agent.处理对话覆盖层变更(params);
 };
 
+// 日常插话的物品交接命令（Host 调用、结果走 npc_item_response 回包）。
+// 命令与实现都放在类里，帧脚本被卸载后回调仍可解析。
+org.flashNight.arki.item.NpcItemExchangeService.install();
+
 _root.agent.检测npc状态库文件();

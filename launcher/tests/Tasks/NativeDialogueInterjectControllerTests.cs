@@ -29,6 +29,7 @@ namespace CF7Launcher.Tests.Tasks
             internal string LastRequest;
             internal readonly List<string> Requests = new List<string>();
             internal readonly List<string> Finalizes = new List<string>();
+            internal readonly List<string> ActionResults = new List<string>();
             internal int OpenCount;
             internal Func<string, Task<Stream>> OpenAsyncOverride;
 
@@ -60,6 +61,12 @@ namespace CF7Launcher.Tests.Tasks
                     ["appended"] = 0,
                     ["total"] = 0
                 });
+            }
+
+            public Task<JObject> PostActionResultAsync(string requestJson, CancellationToken cancellationToken)
+            {
+                ActionResults.Add(requestJson);
+                return Task.FromResult(new JObject { ["ok"] = true });
             }
         }
 
@@ -105,6 +112,117 @@ namespace CF7Launcher.Tests.Tasks
             }
         }
 
+        /// <summary>
+        /// AS2 假桥：send 时按 action 同步回包，避免控制器等待 4 秒超时；
+        /// 记录每条下发命令供断言（summary/count/take/grant）。
+        /// </summary>
+        private sealed class FakeItemBridge
+        {
+            private readonly NpcItemExchangeTask _task;
+            internal readonly List<JObject> Requests = new List<JObject>();
+
+            internal int Count;
+            internal int MinLevel;
+            internal bool Equipment;
+            internal bool TakeSuccess = true;
+            internal int TakeActual;
+            internal int TakeLevel;
+            internal bool TakeEquipment;
+            internal bool GrantSuccess = true;
+            internal string GrantError = "inventory_full";
+            internal bool SummarySuccess = true;
+            internal readonly List<string> ItemNames = new List<string> { "苹果", "铁剑" };
+
+            internal FakeItemBridge()
+            {
+                NpcItemExchangeTask task = null;
+                task = new NpcItemExchangeTask(wire =>
+                {
+                    JObject command = JObject.Parse(wire.TrimEnd('\0'));
+                    Requests.Add(command);
+                    JObject response = Respond(command);
+                    response["requestId"] = command.Value<string>("requestId");
+                    task.Handle(response);
+                    return true;
+                }, () => "item-fixed");
+                _task = task;
+            }
+
+            internal NpcItemExchangeTask Task { get { return _task; } }
+
+            internal JObject Last(string action)
+            {
+                for (int i = Requests.Count - 1; i >= 0; i--)
+                {
+                    if (string.Equals(Requests[i].Value<string>("action"), action,
+                        StringComparison.Ordinal)) return Requests[i];
+                }
+                return null;
+            }
+
+            internal int RequestCount(string action)
+            {
+                int count = 0;
+                for (int i = 0; i < Requests.Count; i++)
+                {
+                    if (string.Equals(Requests[i].Value<string>("action"), action,
+                        StringComparison.Ordinal)) count++;
+                }
+                return count;
+            }
+
+            private JObject Respond(JObject command)
+            {
+                string action = command.Value<string>("action") ?? "";
+                if (action == "npcItemSummary")
+                {
+                    if (!SummarySuccess)
+                        return new JObject { ["op"] = "summary", ["success"] = false };
+                    var items = new JArray();
+                    for (int i = 0; i < ItemNames.Count; i++)
+                        items.Add(new JObject { ["name"] = ItemNames[i], ["count"] = 1 });
+                    return new JObject
+                    {
+                        ["op"] = "summary", ["success"] = true, ["items"] = items,
+                        ["equipment"] = new JArray(), ["gold"] = 100
+                    };
+                }
+                if (action == "npcItemCount")
+                {
+                    return new JObject
+                    {
+                        ["op"] = "count", ["success"] = true, ["count"] = Count,
+                        ["equipment"] = Equipment, ["minLevel"] = MinLevel
+                    };
+                }
+                if (action == "npcItemTake")
+                {
+                    if (!TakeSuccess)
+                        return new JObject { ["op"] = "take", ["success"] = false, ["error"] = "insufficient" };
+                    int quantity = command.Value<int?>("quantity") ?? 1;
+                    int actual = TakeActual > 0 ? TakeActual : quantity;
+                    return new JObject
+                    {
+                        ["op"] = "take", ["success"] = true, ["quantity"] = actual,
+                        ["actual"] = actual, ["equipment"] = TakeEquipment,
+                        ["itemLevel"] = TakeLevel
+                    };
+                }
+                if (action == "npcItemGrant")
+                {
+                    if (!GrantSuccess)
+                        return new JObject { ["op"] = "grant", ["success"] = false, ["error"] = GrantError };
+                    int quantity = command.Value<int?>("quantity") ?? 1;
+                    return new JObject
+                    {
+                        ["op"] = "grant", ["success"] = true, ["quantity"] = quantity,
+                        ["actual"] = quantity
+                    };
+                }
+                return new JObject { ["op"] = "", ["success"] = false, ["error"] = "unknown_action" };
+            }
+        }
+
         private sealed class Harness : IDisposable
         {
             internal readonly Control Anchor;
@@ -140,7 +258,7 @@ namespace CF7Launcher.Tests.Tasks
 
             internal Harness(bool inline = true, Func<Task<bool>> ensureReady = null,
                 Func<Task<bool>> llmConfigured = null, bool terminalReady = true,
-                Func<string, Task> ensureBound = null)
+                Func<string, Task> ensureBound = null, NpcItemExchangeTask itemExchange = null)
             {
                 TerminalReady = terminalReady;
                 Anchor = new Control { Size = new Size(1024, 576) };
@@ -157,7 +275,8 @@ namespace CF7Launcher.Tests.Tasks
                         BoundPlayers.Add(name);
                         return ensureBound != null ? ensureBound(name)
                             : System.Threading.Tasks.Task.CompletedTask;
-                    });
+                    },
+                    itemExchange: itemExchange);
                 Controller.WatchdogScheduler = (delay, callback) =>
                 {
                     WatchdogDelays.Add(delay);
@@ -1992,6 +2111,259 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.Equal(DialogueInterjectInputState.NeedsConfig, h.Controller.InputState);
             Assert.Equal(0, dialogs);   // 非“从插话处启动”：只锁输入，不自动弹窗
+        }
+
+        // ── P6：物品赠送/索取与选项直连 ───────────────────────────────────
+
+        [Fact]
+        public void DailyRequestCarriesPlayerItemNamesFromBridgeSnapshot()
+        {
+            var bridge = new FakeItemBridge();
+            using var h = new Harness(itemExchange: bridge.Task);
+            h.AdoptBook("又是你。");
+
+            Assert.Equal(1, bridge.RequestCount("npcItemSummary"));
+            Assert.Equal(new[] { "苹果", "铁剑" }, h.Controller.PlayerItemNamesForTest);
+
+            h.Transport.Script(AddLine("嗯。", 0) + Done());
+            Assert.True(h.Controller.Submit("你好"));
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            Assert.Equal("daily", request.Value<string>("mode"));
+            Assert.Equal(new[] { "苹果", "铁剑" },
+                request["player_item_names"].Values<string>());
+        }
+
+        [Fact]
+        public void TaskModeNeverQueriesOrSendsPlayerItemNames()
+        {
+            var bridge = new FakeItemBridge();
+            using var h = new Harness(itemExchange: bridge.Task);
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。");
+
+            Assert.Equal(0, bridge.RequestCount("npcItemSummary"));
+            Assert.Empty(h.Controller.PlayerItemNamesForTest);
+
+            h.Transport.Script(AddLine("嗯。", 0) + Done());
+            Assert.True(h.Controller.Submit("你好"));
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            Assert.Equal("task", request.Value<string>("mode"));
+            Assert.Null(request["player_item_names"]);
+        }
+
+        [Fact]
+        public void TaskChoiceSendsActionWithoutPlayerInput()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "先别急着答应。");
+            h.Transport.Script(
+                AddLine("接不接，你给个话。", 0)
+                + AddLine("不接就算了。", 1, "closing")
+                + "event: plan\ndata: {\"mute\":false}\n\n"
+                + Done());
+
+            Assert.True(h.Controller.Submit("你说。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.True(h.Controller.AskAccept);
+
+            h.Controller.SubmitChoice(true);
+
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            Assert.Equal("", request.Value<string>("player_input"));
+            Assert.Equal("task_accept", request["action"].Value<string>("kind"));
+            Assert.False(string.IsNullOrEmpty(request["action"].Value<string>("action_id")));
+            Assert.False(h.Controller.AskAccept);
+            Assert.Null(request["player_item_names"]);
+        }
+
+        [Fact]
+        public void ItemClaimPendingShowsRealHoldingsAndShortage()
+        {
+            var bridge = new FakeItemBridge { Count = 2 };
+            using var h = new Harness(itemExchange: bridge.Task);
+            h.AdoptBook("又是你。");
+
+            h.Controller.OnEvent(Evt(DialogueInterjectEventKind.ItemClaim,
+                "{\"state\":\"pending\",\"claim_id\":\"c1\",\"npc\":\"Andy Law\","
+                + "\"item_name\":\"苹果\",\"quantity\":3}"));
+
+            Assert.NotNull(h.Controller.PendingItemClaimForTest);
+            DialogueInterjectItemClaimView view = h.Controller.ItemClaimViewForTest;
+            Assert.NotNull(view);
+            Assert.Equal(2, view.Count);
+            Assert.False(view.Enough);
+            Assert.Equal("赠送3个苹果（当前持有2）", view.AcceptText);
+            Assert.Equal("不赠送", view.RejectText);
+            Assert.Equal(1, bridge.RequestCount("npcItemCount"));
+
+            h.Controller.OnEvent(Evt(DialogueInterjectEventKind.ItemClaim,
+                "{\"state\":\"closed\"}"));
+            Assert.Null(h.Controller.PendingItemClaimForTest);
+            Assert.Null(h.Controller.ItemClaimViewForTest);
+        }
+
+        [Fact]
+        public void NewGroupClearsPreviousItemClaim()
+        {
+            var bridge = new FakeItemBridge { Count = 5 };
+            using var h = new Harness(itemExchange: bridge.Task);
+            h.AdoptBook("第一组。");
+            h.Controller.OnEvent(Evt(DialogueInterjectEventKind.ItemClaim,
+                "{\"state\":\"pending\",\"claim_id\":\"c1\",\"npc\":\"Andy Law\","
+                + "\"item_name\":\"苹果\",\"quantity\":1}"));
+            Assert.NotNull(h.Controller.PendingItemClaimForTest);
+
+            h.AdoptBookInMode(8, "ordinary", null, "换一场戏。");
+
+            Assert.Null(h.Controller.PendingItemClaimForTest);
+            Assert.Null(h.Controller.ItemClaimViewForTest);
+        }
+
+        [Fact]
+        public void ItemClaimDeclineSendsActionWithoutDeduction()
+        {
+            var bridge = new FakeItemBridge { Count = 5 };
+            using var h = new Harness(itemExchange: bridge.Task);
+            h.AdoptBook("又是你。");
+            h.Controller.OnEvent(Evt(DialogueInterjectEventKind.ItemClaim,
+                "{\"state\":\"pending\",\"claim_id\":\"c1\",\"npc\":\"Andy Law\","
+                + "\"item_name\":\"苹果\",\"quantity\":3}"));
+
+            h.Controller.SubmitChoice(false);
+
+            Assert.Equal(0, bridge.RequestCount("npcItemTake"));
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            Assert.Equal("item_take_decline", request["action"].Value<string>("kind"));
+            Assert.Equal("c1", request["action"].Value<string>("claim_id"));
+            Assert.Equal("苹果", request["action"].Value<string>("item_name"));
+            Assert.Equal(3, request["action"].Value<int>("quantity"));
+            Assert.Null(h.Controller.PendingItemClaimForTest);
+        }
+
+        [Fact]
+        public void ItemClaimAcceptDeductsFirstThenSendsEquipmentLevel()
+        {
+            var bridge = new FakeItemBridge
+            {
+                Count = 1, Equipment = true, MinLevel = 6,
+                TakeEquipment = true, TakeLevel = 6
+            };
+            using var h = new Harness(itemExchange: bridge.Task);
+            h.AdoptBook("又是你。");
+            h.Controller.OnEvent(Evt(DialogueInterjectEventKind.ItemClaim,
+                "{\"state\":\"pending\",\"claim_id\":\"c1\",\"npc\":\"Andy Law\","
+                + "\"item_name\":\"铁剑\",\"quantity\":1}"));
+
+            h.Controller.SubmitChoice(true);
+
+            JObject take = bridge.Last("npcItemTake");
+            Assert.NotNull(take);
+            Assert.Equal("铁剑", take.Value<string>("name"));
+            Assert.Equal(1, take.Value<int>("quantity"));
+            Assert.StartsWith("take:", take.Value<string>("operationId"));
+            Assert.Null(h.Controller.PendingItemClaimForTest);
+
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            Assert.Equal("item_take_accept", request["action"].Value<string>("kind"));
+            Assert.Equal("c1", request["action"].Value<string>("claim_id"));
+            Assert.Equal(1, request["action"].Value<int>("quantity"));
+            Assert.Equal(6, request["action"].Value<int>("item_level"));
+        }
+
+        [Fact]
+        public void ItemClaimAcceptBlockedWhenHoldingsInsufficient()
+        {
+            var bridge = new FakeItemBridge { Count = 0 };
+            using var h = new Harness(itemExchange: bridge.Task);
+            h.AdoptBook("又是你。");
+            h.Controller.OnEvent(Evt(DialogueInterjectEventKind.ItemClaim,
+                "{\"state\":\"pending\",\"claim_id\":\"c1\",\"npc\":\"Andy Law\","
+                + "\"item_name\":\"苹果\",\"quantity\":2}"));
+
+            h.Controller.SubmitChoice(true);
+
+            Assert.Equal(0, bridge.RequestCount("npcItemTake"));
+            Assert.NotNull(h.Controller.PendingItemClaimForTest);
+        }
+
+        [Fact]
+        public void ItemClaimTakeFailureKeepsClaimAndSendsNoAccept()
+        {
+            var bridge = new FakeItemBridge { Count = 5, TakeSuccess = false };
+            using var h = new Harness(itemExchange: bridge.Task);
+            h.AdoptBook("又是你。");
+            h.Controller.OnEvent(Evt(DialogueInterjectEventKind.ItemClaim,
+                "{\"state\":\"pending\",\"claim_id\":\"c1\",\"npc\":\"Andy Law\","
+                + "\"item_name\":\"苹果\",\"quantity\":3}"));
+
+            h.Controller.SubmitChoice(true);
+
+            Assert.Equal(1, bridge.RequestCount("npcItemTake"));
+            Assert.NotNull(h.Controller.PendingItemClaimForTest);
+            Assert.True(h.Transport.LastRequest == null
+                || h.Transport.LastRequest.IndexOf("item_take_accept", StringComparison.Ordinal) < 0);
+        }
+
+        [Fact]
+        public void GrantActionExecutesOnceAndPostsAck()
+        {
+            var bridge = new FakeItemBridge();
+            using var h = new Harness(itemExchange: bridge.Task);
+            h.AdoptBook("又是你。");
+
+            DialogueInterjectEvent grant = Evt(DialogueInterjectEventKind.Action,
+                "{\"action_id\":\"g1\",\"kind\":\"item_grant\",\"npc\":\"Andy Law\","
+                + "\"item_name\":\"苹果\",\"quantity\":2}");
+            h.Controller.OnEvent(grant);
+            h.Controller.OnEvent(grant);   // 重复事件不得二次发放
+
+            Assert.Equal(1, bridge.RequestCount("npcItemGrant"));
+            JObject command = bridge.Last("npcItemGrant");
+            Assert.Equal("g1", command.Value<string>("operationId"));
+            Assert.Equal("苹果", command.Value<string>("name"));
+            Assert.Equal(2, command.Value<int>("quantity"));
+
+            Assert.Single(h.Transport.ActionResults);
+            JObject ack = JObject.Parse(h.Transport.ActionResults[0]);
+            Assert.Equal("g1", ack.Value<string>("action_id"));
+            Assert.True(ack.Value<bool>("success"));
+            Assert.Equal(2, ack.Value<int>("actual_quantity"));
+        }
+
+        [Fact]
+        public void GrantFailurePostsFailureAck()
+        {
+            var bridge = new FakeItemBridge { GrantSuccess = false };
+            using var h = new Harness(itemExchange: bridge.Task);
+            h.AdoptBook("又是你。");
+
+            h.Controller.OnEvent(Evt(DialogueInterjectEventKind.Action,
+                "{\"action_id\":\"g2\",\"kind\":\"item_grant\",\"npc\":\"Andy Law\","
+                + "\"item_name\":\"苹果\",\"quantity\":2}"));
+
+            Assert.Single(h.Transport.ActionResults);
+            JObject ack = JObject.Parse(h.Transport.ActionResults[0]);
+            Assert.Equal("g2", ack.Value<string>("action_id"));
+            Assert.False(ack.Value<bool>("success"));
+            Assert.Equal("inventory_full", ack.Value<string>("error"));
+        }
+
+        [Fact]
+        public void GrantWithoutBridgeAcksHostUnavailable()
+        {
+            using var h = new Harness();
+            h.AdoptBook("又是你。");
+
+            h.Controller.OnEvent(Evt(DialogueInterjectEventKind.Action,
+                "{\"action_id\":\"g3\",\"kind\":\"item_grant\",\"npc\":\"Andy Law\","
+                + "\"item_name\":\"苹果\",\"quantity\":1}"));
+
+            Assert.Single(h.Transport.ActionResults);
+            JObject ack = JObject.Parse(h.Transport.ActionResults[0]);
+            Assert.False(ack.Value<bool>("success"));
+            Assert.Equal("host_unavailable", ack.Value<string>("error"));
         }
 
     }

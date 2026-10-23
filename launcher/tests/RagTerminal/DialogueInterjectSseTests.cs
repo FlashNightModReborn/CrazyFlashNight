@@ -46,6 +46,12 @@ namespace CF7Launcher.Tests.RagTerminal
             {
                 return Task.FromResult(new Newtonsoft.Json.Linq.JObject { ["ok"] = true });
             }
+
+            public Task<Newtonsoft.Json.Linq.JObject> PostActionResultAsync(
+                string requestJson, CancellationToken cancellationToken)
+            {
+                return Task.FromResult(new Newtonsoft.Json.Linq.JObject { ["ok"] = true });
+            }
         }
 
         /// <summary>可观测 Dispose 的只读流（证明取消会真正断流）。</summary>
@@ -319,6 +325,12 @@ namespace CF7Launcher.Tests.RagTerminal
             }
 
             public Task<Newtonsoft.Json.Linq.JObject> PostFinalizeAsync(
+                string requestJson, CancellationToken cancellationToken)
+            {
+                return Task.FromResult(new Newtonsoft.Json.Linq.JObject { ["ok"] = true });
+            }
+
+            public Task<Newtonsoft.Json.Linq.JObject> PostActionResultAsync(
                 string requestJson, CancellationToken cancellationToken)
             {
                 return Task.FromResult(new Newtonsoft.Json.Linq.JObject { ["ok"] = true });

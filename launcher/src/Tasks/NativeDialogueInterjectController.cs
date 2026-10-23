@@ -167,6 +167,25 @@ namespace CF7Launcher.Tasks
         /// <summary>已应用、但播放进度还没越过的 remove 的原始行号（下一轮转参考续写）。</summary>
         private readonly List<int> _appliedRemoves = new List<int>();
 
+        // ── 物品往来（P6）──
+        /// <summary>Host→AS2 物品命令桥；null = 未接线（物品动作按不可用处理）。</summary>
+        private readonly NpcItemExchangeTask _itemExchange;
+        /// <summary>后端待处理索取；跨轮保留，closed/error/断线/组结束清空。</summary>
+        private JObject _pendingItemClaim;
+        private DialogueInterjectItemClaimView _itemClaimView;
+        private int _itemClaimGeneration;
+        private bool _itemDecisionBusy;
+        /// <summary>已执行过的发放 action_id：SSE 重发不得二次发放。</summary>
+        private readonly HashSet<string> _executedGrants = new HashSet<string>(StringComparer.Ordinal);
+        /// <summary>本组玩家可索取物品名快照（只用于后端索取池）。</summary>
+        private List<string> _playerItemNames;
+        private int _playerNamesGeneration;
+        /// <summary>本轮已点过任务选项：不再重复弹「我接了/我不接」。</summary>
+        private bool _taskActionSent;
+        /// <summary>已真实扣除、但本轮可能没送达后端的 item_take_accept：失败时用同 action_id 重试一次。</summary>
+        private JObject _unackedItemAction;
+        private string _itemActionRetriedId;
+
         // ── 本轮 ──
         private string _turnId;
         private DialogueInterjectStream _stream;
@@ -237,6 +256,9 @@ namespace CF7Launcher.Tasks
         /// <summary>选项态切换（订阅方据此在「三行选项」与普通输入条之间换布局）。</summary>
         internal event Action<bool> AskAcceptChanged;
 
+        /// <summary>待处理索取视图变化（null＝清空）：订阅方据此显示两按钮＋原输入框。</summary>
+        internal event Action<DialogueInterjectItemClaimView> ItemClaimChanged;
+
         /// <summary>当前是否应显示「我接了/我不接」选项行（草案确认轮的最后一条 add）。</summary>
         internal bool AskAccept { get { return _askAccept; } }
 
@@ -262,7 +284,8 @@ namespace CF7Launcher.Tasks
             Func<DateTime> clock = null,
             Func<bool> terminalReady = null,
             Func<Task<bool>> llmConfigured = null,
-            Func<string, Task> ensureBound = null)
+            Func<string, Task> ensureBound = null,
+            NpcItemExchangeTask itemExchange = null)
         {
             _task = task ?? throw new ArgumentNullException(nameof(task));
             _widget = widget ?? throw new ArgumentNullException(nameof(widget));
@@ -274,6 +297,7 @@ namespace CF7Launcher.Tasks
             _clock = clock ?? (() => DateTime.Now);
             _terminalReady = terminalReady;
             _llmConfigured = llmConfigured;
+            _itemExchange = itemExchange;
         }
 
         internal DialogueInterjectInputState InputState { get { return _inputState; } }
@@ -284,6 +308,12 @@ namespace CF7Launcher.Tasks
         internal int PlayedCount { get { return _played.Count; } }
         internal NativeDialogueBookSession SessionForTest { get { return _session; } }
         internal bool ClosingForTest { get { return _closing; } }
+        internal JObject PendingItemClaimForTest { get { return _pendingItemClaim; } }
+        internal DialogueInterjectItemClaimView ItemClaimViewForTest { get { return _itemClaimView; } }
+        internal IList<string> PlayerItemNamesForTest
+        {
+            get { return _playerItemNames != null ? (IList<string>)_playerItemNames : new string[0]; }
+        }
 
         /// <summary>挂接 task/widget 钩子；只允许一次。</summary>
         internal void Attach()
@@ -311,6 +341,15 @@ namespace CF7Launcher.Tasks
             _planApplied = false;
             _abandonedOriginalTail = false;
             _appliedRemoves.Clear();
+            // 跨组不得沿用上一组的索取按钮：先显式清视图，再重置本地状态。
+            ClearItemClaim();
+            _itemDecisionBusy = false;
+            _playerItemNames = null;
+            _playerNamesGeneration++;
+            _taskActionSent = false;
+            _unackedItemAction = null;
+            _itemActionRetriedId = null;
+            _executedGrants.Clear();
             if (_taskMode)
             {
                 // 任务组门控（协议 4.1）：provider 拿到 task_context 才开放，否则 fail-closed。
@@ -346,6 +385,8 @@ namespace CF7Launcher.Tasks
             SetInputState(DialogueInterjectInputState.Hidden);
             // 终端已经在线时也核对一次配置（不自动弹窗；输入条会显示“请配置模型API”）。
             if (_terminalReady != null && _terminalReady()) ProbeLlmConfig(false);
+            // 组开始刷新玩家持有名快照：后端索取池只按名字建池，不查背包实例。
+            RefreshPlayerItemNames();
         }
 
         private void OnSessionEnded(NativeDialogueBookSession session)
@@ -374,6 +415,13 @@ namespace CF7Launcher.Tasks
             _playerLineOnScreen = false;
             _lastAiLineInterim = false;
             SetAskAccept(false);
+            ClearItemClaim();
+            _playerItemNames = null;
+            _playerNamesGeneration++;
+            _taskActionSent = false;
+            _unackedItemAction = null;
+            _itemActionRetriedId = null;
+            _executedGrants.Clear();
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
@@ -411,6 +459,9 @@ namespace CF7Launcher.Tasks
             _playerLineOnScreen = false;
             _lastAiLineInterim = false;
             SetAskAccept(false);
+            ClearItemClaim();
+            _unackedItemAction = null;
+            _itemActionRetriedId = null;
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
@@ -595,6 +646,8 @@ namespace CF7Launcher.Tasks
             _planApplied = false;
             // 选项态只属于上一轮的最后一条 add：发送即收掉，新的回复按新轮重新判定。
             SetAskAccept(false);
+            _taskActionSent = false;
+            _unackedItemAction = null;
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
@@ -777,7 +830,8 @@ namespace CF7Launcher.Tasks
         }
 
         private string BuildRequest(string playerInput, string npc, string dialogueInstanceId,
-            string turnId, List<PlayedRow> played, JArray remaining, List<ReferenceItem> unplayed)
+            string turnId, List<PlayedRow> played, JArray remaining, List<ReferenceItem> unplayed,
+            JObject action = null)
         {
             var playedArray = new JArray();
             foreach (PlayedRow row in played) playedArray.Add(row.ToJson());
@@ -812,6 +866,13 @@ namespace CF7Launcher.Tasks
                     ["line_prompt_max"] = LinePromptMax
                 }
             };
+            if (action != null) request["action"] = action;
+            if (!_taskMode && _playerItemNames != null)
+            {
+                var names = new JArray();
+                for (int i = 0; i < _playerItemNames.Count; i++) names.Add(_playerItemNames[i]);
+                request["player_item_names"] = names;
+            }
             return request.ToString(Formatting.None);
         }
 
@@ -1089,6 +1150,12 @@ namespace CF7Launcher.Tasks
                     break;
                 case DialogueInterjectEventKind.Plan:
                     AcceptPlan(evt);
+                    break;
+                case DialogueInterjectEventKind.Action:
+                    AcceptItemGrantAction(evt);
+                    break;
+                case DialogueInterjectEventKind.ItemClaim:
+                    AcceptItemClaim(evt);
                     break;
                 case DialogueInterjectEventKind.Done:
                     CompleteTurn();
@@ -1685,6 +1752,8 @@ namespace CF7Launcher.Tasks
         private void CompleteTurn()
         {
             if (!_turnActive) return;
+            // done = 后端已处理本轮动作请求；不再需要“已扣未送达”的重试。
+            _unackedItemAction = null;
             // 本轮不会再有新台词：没有结束语时，靠这个信号判定“最后一条 add”。
             _turnLinesDone = true;
             // 任务模式：没有 add 但有完整 plan 也算成功（协议 4.5 / F-08）。
@@ -1739,6 +1808,480 @@ namespace CF7Launcher.Tasks
             Finalize("turn_done");
         }
 
+        // ════════════════ 选项直连与物品往来（P6） ════════════════
+
+        /// <summary>
+        /// 输入条选项点击入口：有待处理索取时走物品决定，否则按任务确认/拒绝直连。
+        /// 终端与普通打字不经过这里。
+        /// </summary>
+        internal void SubmitChoice(bool accept)
+        {
+            if (_pendingItemClaim != null)
+            {
+                SubmitItemDecision(accept);
+                return;
+            }
+            if (!_askAccept || _taskActionSent) return;
+            SubmitTaskDecision(accept);
+        }
+
+        /// <summary>任务确认/拒绝：省掉路由轮，确认文案生成那一次 LLM 保留。</summary>
+        private void SubmitTaskDecision(bool accept)
+        {
+            if (_taskActionSent) return;
+            _taskActionSent = true;
+            SetAskAccept(false);
+            var action = new JObject
+            {
+                ["kind"] = accept ? "task_accept" : "task_decline",
+                ["action_id"] = _newId()
+            };
+            if (!SubmitAction(action))
+            {
+                _taskActionSent = false;
+                LogManager.Log("[DialogueInterject] task action not started: "
+                    + action.Value<string>("kind"));
+            }
+        }
+
+        /// <summary>
+        /// 物品索取决定：点“赠送”先让 AS2 真实扣除（装备取背包最低强化度），
+        /// 成功后才发 item_take_accept；点“不赠送”直接发 decline，不扣任何物品。
+        /// </summary>
+        private void SubmitItemDecision(bool accept)
+        {
+            JObject claim = _pendingItemClaim;
+            if (claim == null || _itemDecisionBusy) return;
+            string claimId = claim.Value<string>("claim_id") ?? "";
+            string itemName = claim.Value<string>("item_name") ?? "";
+            int quantity = claim.Value<int?>("quantity") ?? 1;
+            if (claimId.Length == 0 || itemName.Length == 0) return;
+
+            if (!accept)
+            {
+                var decline = new JObject
+                {
+                    ["kind"] = "item_take_decline",
+                    ["action_id"] = _newId(),
+                    ["claim_id"] = claimId,
+                    ["item_name"] = itemName,
+                    ["quantity"] = Math.Max(1, quantity)
+                };
+                ClearItemClaim();
+                if (!SubmitAction(decline))
+                    LogManager.Log("[DialogueInterject] item decline not started");
+                return;
+            }
+
+            DialogueInterjectItemClaimView view = _itemClaimView;
+            if (view == null || !view.Enough) return;
+            if (_itemExchange == null)
+            {
+                LogManager.Log("[DialogueInterject] item take unavailable (no AS2 bridge)");
+                return;
+            }
+
+            _itemDecisionBusy = true;
+            DialogueInterjectItemClaimView busy = CopyClaimView(view);
+            busy.Busy = true;
+            RaiseItemClaim(busy);
+            string takeOperationId = "take:" + _newId();
+            TaskRunner(async () =>
+            {
+                JObject result = null;
+                try
+                {
+                    var args = new JObject
+                    {
+                        ["name"] = itemName,
+                        ["quantity"] = Math.Max(1, quantity),
+                        ["operationId"] = takeOperationId
+                    };
+                    result = await _itemExchange.RequestAsync("npcItemTake", args,
+                        CancellationToken.None).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[DialogueInterject] item take failed: " + ex.Message);
+                }
+                bool ok = result != null && result.Value<bool?>("success") == true;
+                if (!ok)
+                {
+                    string error = result != null
+                        ? (result.Value<string>("error") ?? "take_failed") : "take_unavailable";
+                    LogManager.Log("[DialogueInterject] item take rejected: " + error);
+                    Post(() =>
+                    {
+                        _itemDecisionBusy = false;
+                        // 扣除失败：不记账、不发动作；保留选项并按最新持有刷新（可能置灰）。
+                        RefreshItemClaimHoldings();
+                    });
+                    return;
+                }
+
+                int actual = result.Value<int?>("actual") ?? Math.Max(1, quantity);
+                if (actual < 1) actual = Math.Max(1, quantity);
+                bool equipment = result.Value<bool?>("equipment") == true;
+                var action = new JObject
+                {
+                    ["kind"] = "item_take_accept",
+                    ["action_id"] = _newId(),
+                    ["claim_id"] = claimId,
+                    ["item_name"] = itemName,
+                    ["quantity"] = actual
+                };
+                if (equipment)
+                    action["item_level"] = result.Value<int?>("itemLevel") ?? 0;
+                Post(() =>
+                {
+                    _itemDecisionBusy = false;
+                    ClearItemClaim();
+                    // 物品已真实扣除：请求若没送达，后端未记账；失败时用同 action_id 重试一次。
+                    _unackedItemAction = (JObject)action.DeepClone();
+                    if (!SubmitAction(action))
+                        LogManager.Log("[DialogueInterject] item accept not started; "
+                            + "item already deducted, action can be retried");
+                    RefreshPlayerItemNames();
+                });
+            });
+        }
+
+        /// <summary>
+        /// 选项直连轮：不发 $PC，直接以 action 请求开启一轮；后端预执行动作后只生成最终台词。
+        /// 返回 false 表示当前不允许（无会话/组不允许/已关闭/无 NPC）。
+        /// </summary>
+        private bool SubmitAction(JObject action)
+        {
+            if (action == null) return false;
+            if (_session == null || !_groupAllowsInterject || _closing) return false;
+            if (_session.State != NativeDialogueBookSession.HostState.Active) return false;
+            string npc = _npcName;
+            if (string.IsNullOrEmpty(npc)) return false;
+
+            List<PlayedRow> playedSnapshot;
+            lock (_playedGate) { playedSnapshot = new List<PlayedRow>(_played); }
+            int wireResume = _session.CurrentWireIndex + 1;
+            List<ReferenceItem> unplayed = CollectUnplayedTurnLines(wireResume);
+
+            StopStream();
+            _turnActive = false;
+            _finalizePending = false;
+            _resumeAfterFailure = false;
+            _pendingPlan = null;
+            _planApplied = false;
+            SetAskAccept(false);
+            _turnLinesDone = false;
+            _presentedLineKind = null;
+            _presentedLineInterim = false;
+            _sawInterim = false;
+            _sawDrafting = false;
+            _appliedRemoves.RemoveAll(wire => wire < wireResume);
+
+            var remaining = BuildRemaining(wireResume);
+            string dialogueInstanceId = _dialogueInstanceId ?? (_dialogueInstanceId = _newId());
+            string turnId = _newId();
+            string requestJson = BuildRequest("", npc, dialogueInstanceId, turnId,
+                playedSnapshot, remaining, unplayed, action);
+
+            // 没有 $PC：AI 行直接接在当前行之后，玩家点“下一条”逐句看。
+            _turnTailIndex = _session.Index + 1;
+            _wireResume = wireResume;
+            _turnId = turnId;
+            _turnActive = true;
+            _aiLineShown = false;
+            _lastAiLineInterim = false;
+            _preparing = false;
+            _turnStatusText = null;
+            _queued.Clear();
+            _insertedLines.Clear();
+            LastFailure = null;
+            LastReferenceCount = unplayed.Count;
+            SetInputState(DialogueInterjectInputState.Hidden);
+            _turnStartedAt = _lastActivityAt = _clock();
+            ArmWatchdog(_turnStartedAt);
+            StartStream(requestJson);
+            return true;
+        }
+
+        /// <summary>SSE action：item_grant 必须真实发放并回执，不得只播台词。</summary>
+        private void AcceptItemGrantAction(DialogueInterjectEvent evt)
+        {
+            if (!string.Equals(evt.Text("kind"), "item_grant", StringComparison.Ordinal)) return;
+            string actionId = evt.Text("action_id");
+            if (actionId.Length == 0) return;
+            lock (_executedGrants)
+            {
+                if (_executedGrants.Contains(actionId)) return;
+                _executedGrants.Add(actionId);
+            }
+            string itemName = evt.Text("item_name");
+            int quantity = evt.Int("quantity", 0);
+            if (itemName.Length == 0 || quantity < 1)
+            {
+                PostActionResult(actionId, new JObject
+                {
+                    ["action_id"] = actionId, ["success"] = false,
+                    ["error"] = "malformed_action"
+                });
+                return;
+            }
+            ExecuteItemGrant(actionId, evt.Text("npc"), itemName, quantity);
+        }
+
+        private void ExecuteItemGrant(string actionId, string npc, string itemName, int quantity)
+        {
+            if (_itemExchange == null)
+            {
+                PostActionResult(actionId, new JObject
+                {
+                    ["action_id"] = actionId, ["success"] = false, ["error"] = "host_unavailable"
+                });
+                return;
+            }
+            TaskRunner(async () =>
+            {
+                JObject result = null;
+                try
+                {
+                    var args = new JObject
+                    {
+                        ["npc"] = npc,
+                        ["name"] = itemName,
+                        ["quantity"] = quantity,
+                        ["operationId"] = actionId
+                    };
+                    result = await _itemExchange.RequestAsync("npcItemGrant", args,
+                        CancellationToken.None).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[DialogueInterject] item grant failed: " + ex.Message);
+                }
+
+                bool ok = result != null && result.Value<bool?>("success") == true;
+                var ack = new JObject { ["action_id"] = actionId };
+                if (ok)
+                {
+                    ack["success"] = true;
+                    ack["actual_quantity"] = result.Value<int?>("actual") ?? quantity;
+                    int overflow = result.Value<int?>("overflowMoney") ?? 0;
+                    if (overflow > 0) ack["overflow_money"] = overflow;
+                }
+                else
+                {
+                    ack["success"] = false;
+                    ack["error"] = result != null
+                        ? (result.Value<string>("error") ?? "grant_failed") : "as2_unavailable";
+                }
+                PostActionResult(actionId, ack);
+                if (ok) Post(RefreshPlayerItemNames);
+            });
+        }
+
+        /// <summary>回执丢失重试：同 action_id 最多 3 次；仍失败只记日志供人工对账。</summary>
+        private void PostActionResult(string actionId, JObject ack)
+        {
+            string json = ack.ToString(Formatting.None);
+            TaskRunner(async () =>
+            {
+                for (int attempt = 0; attempt < 3; attempt++)
+                {
+                    try
+                    {
+                        IDialogueInterjectTransport transport = _transportFactory();
+                        if (transport != null)
+                        {
+                            var disposable = transport as IDisposable;
+                            try
+                            {
+                                await transport.PostActionResultAsync(json, CancellationToken.None)
+                                    .ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                if (disposable != null) disposable.Dispose();
+                            }
+                            LogManager.Log("[DialogueInterject] action-result " + actionId
+                                + " success=" + (ack.Value<bool?>("success") == true));
+                            return;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        LogManager.Log("[DialogueInterject] action-result retry "
+                            + (attempt + 1) + " failed: " + ex.Message);
+                    }
+                    if (attempt < 2)
+                        await Task.Delay(400 * (attempt + 1)).ConfigureAwait(false);
+                }
+                LogManager.Log("[DialogueInterject] action-result lost, reconcile manually: " + json);
+            });
+        }
+
+        /// <summary>SSE item_claim：pending 显示两按钮，closed 清空。</summary>
+        private void AcceptItemClaim(DialogueInterjectEvent evt)
+        {
+            string state = evt.Text("state");
+            if (string.Equals(state, "closed", StringComparison.Ordinal))
+            {
+                ClearItemClaim();
+                return;
+            }
+            if (!string.Equals(state, "pending", StringComparison.Ordinal)) return;
+            string claimId = evt.Text("claim_id");
+            string itemName = evt.Text("item_name");
+            if (claimId.Length == 0 || itemName.Length == 0) return;
+            _pendingItemClaim = new JObject
+            {
+                ["claim_id"] = claimId,
+                ["npc"] = evt.Text("npc"),
+                ["item_name"] = itemName,
+                ["quantity"] = Math.Max(1, evt.Int("quantity", 1))
+            };
+            _itemDecisionBusy = false;
+            SetAskAccept(false);      // 物品索取优先于任务选项
+            RefreshItemClaimHoldings();
+        }
+
+        /// <summary>实时查询背包（装备只算背包、给最低强化度）并生成按钮文案。</summary>
+        private void RefreshItemClaimHoldings()
+        {
+            JObject claim = _pendingItemClaim;
+            if (claim == null) return;
+            int generation = ++_itemClaimGeneration;
+            string itemName = claim.Value<string>("item_name") ?? "";
+            if (_itemExchange == null)
+            {
+                RaiseItemClaim(BuildClaimView(claim, 0, false, 0));
+                return;
+            }
+            TaskRunner(async () =>
+            {
+                JObject result = null;
+                try
+                {
+                    result = await _itemExchange.RequestAsync("npcItemCount",
+                        new JObject { ["name"] = itemName },
+                        CancellationToken.None).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[DialogueInterject] item count failed: " + ex.Message);
+                }
+                int count = 0;
+                int minLevel = 0;
+                bool equipment = false;
+                if (result != null && result.Value<bool?>("success") != false)
+                {
+                    count = result.Value<int?>("count") ?? 0;
+                    equipment = result.Value<bool?>("equipment") == true;
+                    minLevel = result.Value<int?>("minLevel") ?? 0;
+                }
+                Post(() =>
+                {
+                    if (generation != _itemClaimGeneration || _pendingItemClaim == null) return;
+                    RaiseItemClaim(BuildClaimView(claim, count, equipment, minLevel));
+                });
+            });
+        }
+
+        private static DialogueInterjectItemClaimView BuildClaimView(JObject claim,
+            int count, bool equipment, int minLevel)
+        {
+            int quantity = claim.Value<int?>("quantity") ?? 1;
+            if (equipment) quantity = 1;      // 装备数量固定 1
+            return new DialogueInterjectItemClaimView
+            {
+                ClaimId = claim.Value<string>("claim_id") ?? "",
+                Npc = claim.Value<string>("npc") ?? "",
+                ItemName = claim.Value<string>("item_name") ?? "",
+                Quantity = Math.Max(1, quantity),
+                Count = Math.Max(0, count),
+                MinLevel = Math.Max(0, minLevel),
+                Equipment = equipment
+            };
+        }
+
+        private static DialogueInterjectItemClaimView CopyClaimView(
+            DialogueInterjectItemClaimView source)
+        {
+            return new DialogueInterjectItemClaimView
+            {
+                ClaimId = source.ClaimId,
+                Npc = source.Npc,
+                ItemName = source.ItemName,
+                Quantity = source.Quantity,
+                Count = source.Count,
+                MinLevel = source.MinLevel,
+                Equipment = source.Equipment,
+                Busy = source.Busy
+            };
+        }
+
+        private void RaiseItemClaim(DialogueInterjectItemClaimView view)
+        {
+            _itemClaimView = view;
+            Action<DialogueInterjectItemClaimView> handler = ItemClaimChanged;
+            if (handler == null) return;
+            try { handler(view); }
+            catch (Exception ex)
+            {
+                LogManager.Log("[DialogueInterject] ItemClaimChanged throw: " + ex.Message);
+            }
+        }
+
+        private void ClearItemClaim()
+        {
+            _itemClaimGeneration++;
+            _itemDecisionBusy = false;
+            if (_pendingItemClaim == null && _itemClaimView == null) return;
+            _pendingItemClaim = null;
+            RaiseItemClaim(null);
+        }
+
+        /// <summary>刷新玩家持有名快照：只给后端索取池用，不代表数量、不进台词。</summary>
+        private void RefreshPlayerItemNames()
+        {
+            if (_itemExchange == null || _taskMode || _session == null) return;
+            int generation = ++_playerNamesGeneration;
+            TaskRunner(async () =>
+            {
+                var names = new List<string>();
+                try
+                {
+                    JObject result = await _itemExchange.RequestAsync("npcItemSummary",
+                        new JObject(), CancellationToken.None).ConfigureAwait(false);
+                    if (result != null && result.Value<bool?>("success") == true)
+                    {
+                        CollectItemNames(result["items"] as JArray, names);
+                        CollectItemNames(result["equipment"] as JArray, names);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[DialogueInterject] item snapshot failed: " + ex.Message);
+                }
+                Post(() =>
+                {
+                    if (generation != _playerNamesGeneration) return;
+                    _playerItemNames = names;
+                });
+            });
+        }
+
+        private static void CollectItemNames(JArray rows, List<string> names)
+        {
+            if (rows == null) return;
+            for (int i = 0; i < rows.Count; i++)
+            {
+                var row = rows[i] as JObject;
+                if (row == null) continue;
+                string name = (row.Value<string>("name") ?? "").Trim();
+                if (name.Length == 0 || names.Contains(name)) continue;
+                names.Add(name);
+            }
+        }
+
         // ════════════════ 失败 / 取消 / 收尾 ════════════════
 
         /// <summary>
@@ -1759,6 +2302,24 @@ namespace CF7Launcher.Tasks
 
         private void FailTurnCore(string code)
         {
+            // 已真实扣除、但本轮可能没送达后端：同 action_id 重试一次，绝不重复扣除。
+            JObject retry = _unackedItemAction;
+            if (retry != null)
+            {
+                _unackedItemAction = null;
+                string retryId = retry.Value<string>("action_id") ?? "";
+                if (retryId.Length > 0 && retryId != _itemActionRetriedId && SubmitAction(retry))
+                {
+                    _itemActionRetriedId = retryId;
+                    LogManager.Log("[DialogueInterject] item accept retried after stream failure: "
+                        + retryId);
+                    return;
+                }
+                LogManager.Log("[DialogueInterject] item accept retry failed; reconcile manually: "
+                    + retryId);
+            }
+            // error 等同组内失败：待处理索取不再可靠，清掉选项。
+            ClearItemClaim();
             LastFailure = code;
             _stream = null;
             _turnActive = false;
@@ -1963,6 +2524,7 @@ namespace CF7Launcher.Tasks
             // 派活轮判定三选一：task 组有 plan；daily 组看 status(drafting) 或过渡话。
             bool draftTurn = _planApplied || _sawDrafting || _sawInterim;
             bool eligible = draftTurn && !_closing && !_playerLineOnScreen
+                && _pendingItemClaim == null && !_taskActionSent
                 && _session != null
                 && _session.State == NativeDialogueBookSession.HostState.Active;
             if (eligible && current != null && !current.IsPlayer && !_presentedLineInterim

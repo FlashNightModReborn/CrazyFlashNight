@@ -236,6 +236,57 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void ItemClaimReusesChoiceGeometryAndGatesAcceptOnHoldings()
+        {
+            using var overlay = new DialogueInterjectInputOverlay();
+            overlay.ClientSize = new Size(420, 200);
+            overlay.ExpandForTest();
+
+            overlay.SetAskAccept(true);
+            Rectangle taskField = overlay.FieldBoundsForTest;
+            Rectangle taskAccept = overlay.AcceptBoundsForTest;
+            Rectangle taskReject = overlay.RejectBoundsForTest;
+            Assert.True(taskAccept.Height > 0);
+            Assert.True(taskField.Height > 0);
+
+            overlay.SetAskAccept(false);
+            Assert.True(overlay.FieldBoundsForTest.Height > taskField.Height);
+
+            overlay.SetItemClaim(new DialogueInterjectItemClaimView
+            {
+                ClaimId = "c1", Npc = "Andy Law", ItemName = "苹果",
+                Quantity = 3, Count = 2
+            });
+            Assert.Equal(taskField, overlay.FieldBoundsForTest);
+            Assert.Equal(taskAccept, overlay.AcceptBoundsForTest);
+            Assert.Equal(taskReject, overlay.RejectBoundsForTest);
+
+            int choices = 0;
+            bool accepted = false;
+            overlay.ChoiceRequested += ok => { choices++; accepted = ok; };
+
+            // 持有不足：主按钮置灰、命中也不派发；次按钮照常可用。
+            Assert.True(overlay.ClickChoiceForTest(true));
+            Assert.Equal(0, choices);
+            Assert.True(overlay.ClickChoiceForTest(false));
+            Assert.Equal(1, choices);
+            Assert.False(accepted);
+
+            overlay.SetItemClaim(new DialogueInterjectItemClaimView
+            {
+                ClaimId = "c1", Npc = "Andy Law", ItemName = "苹果",
+                Quantity = 3, Count = 5
+            });
+            Assert.True(overlay.ClickChoiceForTest(true));
+            Assert.Equal(2, choices);
+            Assert.True(accepted);
+
+            overlay.ClearItemClaim();
+            Assert.Null(overlay.ItemClaimForTest);
+            Assert.True(overlay.FieldBoundsForTest.Height > taskField.Height);
+        }
+
+        [Fact]
         public void PlaceholderFrameAlternatesDotsWithoutTypingFinished()
         {
             long clock = 1000;
