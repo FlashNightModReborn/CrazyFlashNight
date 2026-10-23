@@ -208,8 +208,14 @@ class AuthorBuildTests(unittest.TestCase):
         for map_id in ('A01', 'A03', 'A10'):
             merged = maps[map_id]['mechanism']
             self.assertEqual(merged['kind'], runtime[map_id]['mechanism']['kind'])
-            self.assertEqual([(l['id'], l['url']) for l in merged['layers']],
-                             [(l['id'], l['url']) for l in runtime[map_id]['mechanism']['layers']])
+            retained = [l for l in merged['layers'] if l['role'] not in ('traversal-layer', 'actor-mask')]
+            original = [l for l in runtime[map_id]['mechanism']['layers']
+                        if map_id != 'A03' or l['role'] != 'door-exit-sequence']
+            self.assertEqual([(l['id'], l['url']) for l in retained],
+                             [(l['id'], l['url']) for l in original])
+            if map_id == 'A03':
+                self.assertEqual({l['id'] for l in merged['layers'] if l.get('traversalMode')=='depart'},
+                                 {'A03-depart-back', 'A03-depart-front', 'A03-depart-mask'})
             self.assertAlmostEqual(merged['assetScale'], 128/75)
         self.assertEqual(maps['A02']['background'], 'cf6/CF6_A02_BG.swf')
         manifest = json.loads(outputs[bc.HERE / 'generated/assembly.json'].decode('utf-8'))

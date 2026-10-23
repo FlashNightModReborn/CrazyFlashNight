@@ -16,6 +16,11 @@
 /flashswf/backgrounds/cf6/** -text whitespace=cr-at-eol
 /tools/cf6-actor-template/** -text whitespace=cr-at-eol
 /tools/cf6-live-e2e/** -text whitespace=cr-at-eol
+/tools/cf6-prop-layout/** -text whitespace=cr-at-eol
+/tools/cf6-scene-completion/** -text whitespace=cr-at-eol
+/tools/cf6-body-scale/** -text whitespace=cr-at-eol
+/tools/cf6-field-combat/** -text whitespace=cr-at-eol
+/tools/cf6-item-visuals/** -text whitespace=cr-at-eol
 /tools/cf6-map-runtime/** -text whitespace=cr-at-eol
 /tools/cf6-map-source/** -text whitespace=cr-at-eol
 /tools/cf6-prototype/** -text whitespace=cr-at-eol
@@ -33,6 +38,25 @@
 /tools/build-book-definition.py -text whitespace=cr-at-eol
 /tools/book-definition-runtime.as.inc -text whitespace=cr-at-eol
 /scripts/类定义/org/flashNight/arki/scene/BookDefinition.as -text whitespace=cr-at-eol
+# Generated CF6 classes are compared byte-for-byte with their owned templates.
+/scripts/类定义/org/flashNight/arki/scene/Cf6DoorAdvanceTest.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/Cf6ElevatorRules.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/Cf6InteractivePropService.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/Cf6InteractivePropTest.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/Cf6SceneCompletionTest.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/Cf6TraversalLifecycleTest.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/Cf6TraversalRules.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/Cf6TraversalService.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/Cf6VehicleRules.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/Cf6MapMechanism.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/Cf6MapMechanismTest.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/Cf6FieldCombatData.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/Cf6FieldCombatTest.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/Cf6ItemVisualTest.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/unit/Cf6BodyScaleRules.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/unit/Cf6BodyScaleNativeData.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/unit/Cf6BodyScaleNativeTest.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/unit/Cf6BodyScaleLiveProbe.as -text whitespace=cr-at-eol
 /tools/build-choice-rewards.py -text whitespace=cr-at-eol
 /tools/choice_reward_catalog.py -text whitespace=cr-at-eol
 /scripts/类定义/org/flashNight/arki/item/ChoiceRewardDefinition.as -text whitespace=cr-at-eol

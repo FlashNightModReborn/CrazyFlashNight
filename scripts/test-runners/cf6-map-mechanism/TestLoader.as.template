@@ -1,3 +1,3 @@
 ﻿trace("FocusedTestRunId cf6-map-mechanism Start: __FOCUSED_RUN_ID__");
+_root.cf6MapMechanismTestsComplete=function():Void {trace("FocusedTestRunId cf6-map-mechanism Complete: __FOCUSED_RUN_ID__");};
 org.flashNight.arki.scene.Cf6MapMechanismTest.runAllTests();
-trace("FocusedTestRunId cf6-map-mechanism Complete: __FOCUSED_RUN_ID__");

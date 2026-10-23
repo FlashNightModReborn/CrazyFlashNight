@@ -1,0 +1,18 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 243;
+   var §\x0f§ = 1;
+   _parent._x -= 20;
+   if(this.hitTest(_parent._parent.消失块))
+   {
+      _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
+      _parent.removeMovieClip();
+      _parent.gotoAndStop("消失");
+   }
+   if(this.hitTest(_root.gameworld.man1.area))
+   {
+      firesound = new Sound();
+      firesound.attachSound("Metal Hits" + random(4));
+      firesound.start(o,1);
+      _parent.gotoAndStop("倒");
+   }
+}

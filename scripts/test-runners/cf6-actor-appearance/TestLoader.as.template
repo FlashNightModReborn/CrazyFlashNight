@@ -1,0 +1,5 @@
+﻿trace("FocusedTestRunId cf6-actor-appearance Start: __FOCUSED_RUN_ID__");
+_root.cf6ActorAppearanceComplete=function():Void {
+    trace("FocusedTestRunId cf6-actor-appearance Complete: __FOCUSED_RUN_ID__");
+};
+org.flashNight.arki.scene.Cf6ActorAppearanceTest.runAllTests();

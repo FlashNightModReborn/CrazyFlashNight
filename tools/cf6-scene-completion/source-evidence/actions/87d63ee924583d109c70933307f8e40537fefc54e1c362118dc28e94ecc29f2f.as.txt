@@ -1,0 +1,12 @@
+onClipEvent(load){
+   var §\x01§ = 273;
+   var §\x0f§ = 1;
+   _root.电梯死亡敌人计数++;
+   _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
+   _root.gameworld[_parent.产生源].僵尸型敌人总个数--;
+   firesound = new Sound();
+   firesound.attachSound("boydeadsound" + random(6));
+   firesound.start(o,1);
+   gotoAndPlay("a" + random(3));
+   _root.金钱 += 100;
+}

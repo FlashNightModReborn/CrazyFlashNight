@@ -1,0 +1,5 @@
+var §\x01§ = 286;
+var §\x0f§ = 1;
+_root.gameworld.man1.gotoAndStop("失效");
+_root.gameworld.man1._x = this._x;
+_root.gameworld.man1._y = this._y;

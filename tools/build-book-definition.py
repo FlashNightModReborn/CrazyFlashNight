@@ -1,5 +1,6 @@
 """Validate editable book data and generate its AS2 definition. --check is read-only."""
 import argparse
+import copy
 import json
 import math
 import re
@@ -94,8 +95,13 @@ def validate_cf6(data, items, skills, units, require_backgrounds=True):
         if not isinstance(stage['title'],str) or not isinstance(stage['dialogue'],list) or len(stage['dialogue']) > 32:
             raise ValueError('invalid CF6 map title/dialogue')
         for line in stage['dialogue']:
-            if set(line) != {'speaker','text'} or not isinstance(line['speaker'],str) or len(line['speaker']) > 40 or not isinstance(line['text'],str) or not 1 <= len(line['text']) <= 160:
+            if set(line) not in ({'speaker','text'}, {'speaker','text','char'}) or not isinstance(line['speaker'],str) or len(line['speaker']) > 40 or not isinstance(line['text'],str) or not 1 <= len(line['text']) <= 160:
                 raise ValueError('invalid CF6 dialogue')
+            if 'char' in line:
+                if line['speaker'] not in ('Andy','Andy Law') or line['char'] not in {
+                        'Andy Law#普通','Andy Law#微笑','Andy Law#挑战','Andy Law#惊讶','Andy Law#侦察',
+                        'Andy Law#严肃','Andy Law#愤怒'}:
+                    raise ValueError('invalid CF6 dialogue portrait')
         native = stage['stage']
         waves = native['Wave']['SubWave']
         if not isinstance(waves,list) or not 1 <= len(waves) <= 64: raise ValueError('invalid authored CF6 waves')
@@ -113,9 +119,149 @@ def validate_cf6(data, items, skills, units, require_backgrounds=True):
         if native.get('BasicInformation',{}).get('BookBoss') is not None:
             raise ValueError('CF6 must not use campus reinforcement controller')
         validate_cf6_turrets(stage)
+        validate_cf6_transport(stage)
         validate_cf6_boss(stage, units, items)
+    if any(m.get('mechanism',{}).get('elderFinale') is True for m in maps):
+        if maps[-1]['id'] != 'A20' or 'A22' in ids:
+            raise ValueError('merged elder finale must be the only final room')
+    validate_cf6_interactive_props(data)
     from cf6_economy import validate_economy
     validate_economy(data, items)
+
+
+def validate_cf6_transport(stage):
+    """A transport gates exactly one existing second-wave budget and adds no units."""
+    spec = stage.get('mechanism', {}).get('transport')
+    waves = stage['stage']['Wave']['SubWave']
+    events = [(wi, ei, enemy) for wi, wave in enumerate(waves)
+              for ei, enemy in enumerate(wave['EnemyGroup']['Enemy'])
+              if enemy.get('TriggerEvent', {}).get('EventName') == 'Cf6TransportReady']
+    if spec is None:
+        if events: raise ValueError('transport event has no owning presentation')
+        return
+    expected = {'A09':(112,'兵种467',45,5), 'A14':(505,'兵种469',50,7), 'A18':(147,'兵种463',59,5)}
+    fields = {'schema','id','sourceSprite','url','x','y','sortY','artMatrix','hitBounds','frames','dispatchFrame','subWaveIndex'}
+    if stage['id'] not in expected or not isinstance(spec, dict) or set(spec) != fields:
+        raise ValueError('unreviewed transport map or fields')
+    depth, kind, level, quantity = expected[stage['id']]
+    token = stage['id']+'-transport-'+str(depth)
+    if (spec['schema'] != 'cf6-transport.v1' or spec['id'] != token
+            or spec['sourceSprite'] != 1868 or type(spec['sourceSprite']) is not int
+            or spec['url'] != 'flashswf/backgrounds/cf6/preparation/CF6_Transport1868.swf'
+            or any(type(spec[k]) is not int or spec[k] != v for k,v in [('frames',29),('dispatchFrame',29),('subWaveIndex',1)])):
+        raise ValueError('transport native identity or timeline changed')
+    def finite(v): return type(v) in (int,float) and math.isfinite(v) and abs(v)<1000000
+    if any(not finite(spec[k]) for k in ('x','y','sortY')):
+        raise ValueError('invalid transport world coordinate')
+    for key, size in [('artMatrix',6),('hitBounds',4)]:
+        if not isinstance(spec[key],list) or len(spec[key]) != size or any(not finite(v) for v in spec[key]):
+            raise ValueError('invalid transport geometry')
+    m, b = spec['artMatrix'], spec['hitBounds']
+    if abs(m[0]*m[3]-m[1]*m[2])<=0.000001 or b[0]>=b[2] or b[1]>=b[3]:
+        raise ValueError('degenerate transport geometry')
+    if len(waves)!=2 or len(waves[1]['EnemyGroup']['Enemy'])!=1 or [(w,e) for w,e,_ in events]!=[(1,0)]:
+        raise ValueError('transport must gate only its existing second-wave entry')
+    enemy = events[0][2]
+    if (tuple(enemy.get(k) for k in ('Type','Level','Quantity','Interval','SpawnIndex')) != (kind,level,quantity,400,0)
+            or enemy['TriggerEvent'] != {'EventName':'Cf6TransportReady','Parameters':[token]}):
+        raise ValueError('transport budget or event ownership changed')
+
+
+def validate_cf6_interactive_props(data):
+    """Bind the authored interactive instances to existing enemy budgets."""
+    maps = {stage['id']: stage for stage in data['maps']}
+    if not any('interactiveProps' in stage.get('mechanism', {}) for stage in maps.values()):
+        return
+    placements = {
+        'A04': (1736, [336,343,350]), 'A08': (1838, [137,144,151]),
+        'A11': (1838, [262]), 'A12': (1838, [200,207,214]),
+        'A15': (1939, [759,828,897,966,1035]),
+        'A17': (1939, [516,595,664,733,802]),
+        'A18': (1976, [617]), 'A20': (1976, [239,246,253]),
+    }
+    def finite(value):
+        return type(value) in (int, float) and math.isfinite(value)
+    for identity, stage in maps.items():
+        spec = stage.get('mechanism', {}).get('interactiveProps')
+        if identity not in placements:
+            if spec is not None: raise ValueError('interactive props on an unreviewed map')
+            continue
+        sprite, depths = placements[identity]
+        kind = 'pod' if sprite == 1939 else 'barrel'
+        expected = {f'{identity}-{kind}-{depth}' for depth in depths}
+        if (not isinstance(spec, dict) or set(spec) != {'schema','props'}
+                or spec['schema'] != 'cf6-interactive-props.v1'
+                or not isinstance(spec['props'], list) or len(spec['props']) != len(expected)):
+            raise ValueError('incomplete authored interactive props: '+identity)
+        actual = {}
+        for prop in spec['props']:
+            fields = {'id','kind','sourceSprite','url','x','y','sortY','artMatrix','hitBounds','frames'}
+            if kind == 'pod': fields.add('spawnAuthority')
+            else: fields.add('groundY')
+            if (not isinstance(prop, dict) or set(prop) != fields
+                    or prop['id'] not in expected or prop['id'] in actual
+                    or prop['kind'] != kind or prop['sourceSprite'] != sprite
+                    or prop['frames'] != (25 if kind == 'pod' else 16)):
+                raise ValueError('interactive prop identity or frame contract mismatch')
+            asset_kind = 'Pod' if kind == 'pod' else 'Barrel'
+            if prop['url'] != f'flashswf/backgrounds/cf6/preparation/CF6_Interactive{asset_kind}{sprite}.swf':
+                raise ValueError('interactive prop source resource mismatch')
+            if any(not finite(prop[key]) or abs(prop[key]) >= 10000 for key in ('x','y','sortY')):
+                raise ValueError('interactive prop position must be finite world coordinates')
+            if kind == 'barrel' and (not finite(prop['groundY']) or abs(prop['groundY']) >= 10000):
+                raise ValueError('barrel ground axis must be explicit and finite')
+            matrix, bounds = prop['artMatrix'], prop['hitBounds']
+            if (not isinstance(matrix, list) or len(matrix) != 6
+                    or any(not finite(v) or abs(v) >= 10000 for v in matrix)
+                    or any(abs(v) > 4 for v in matrix[:4])
+                    or abs(matrix[0]*matrix[3]-matrix[1]*matrix[2]) < 0.000001):
+                raise ValueError('interactive prop art matrix is invalid')
+            if (not isinstance(bounds, list) or len(bounds) != 4
+                    or any(not finite(v) or abs(v) >= 2000 for v in bounds)
+                    or bounds[0] >= bounds[2] or bounds[1] >= bounds[3]):
+                raise ValueError('interactive prop hit area is invalid')
+            if kind == 'pod' and prop['spawnAuthority'] != ('wave' if identity == 'A15' else 'boss'):
+                raise ValueError('clone pod spawn authority mismatch')
+            actual[prop['id']] = prop
+        if set(actual) != expected: raise ValueError('interactive instance inventory mismatch')
+        if kind != 'pod': continue
+        if identity == 'A15':
+            waves = stage['stage']['Wave']['SubWave']
+            if len(waves) != 1: raise ValueError('A15 must retain one counted wave')
+            enemies = waves[0]['EnemyGroup']['Enemy']
+            if len(enemies) != 5: raise ValueError('A15 pod budget must remain five')
+        else:
+            plan = stage['bossEncounter']
+            if plan['maxAlive'] != 4 or plan['intervalFrames'] != 45:
+                raise ValueError('A17 existing support cadence or cap changed')
+            enemies = [enemy for group in plan['groups'] for enemy in group['enemies']
+                       if enemy['Type'] == '兵种460' or 'podId' in enemy]
+            if len(enemies) != 5: raise ValueError('A17 pod budget must remain five')
+            if any('podId' in enemy for group in plan['groups'][1:] for enemy in group['enemies']):
+                raise ValueError('A17 pods must stay in the original initial support group')
+        seen = set()
+        for enemy in enemies:
+            if enemy['Type'] != '兵种460' or enemy['Level'] != (50 if identity == 'A15' else 55) or enemy['Quantity'] != 1:
+                raise ValueError('clone pod must consume one existing clone of the same level')
+            if identity == 'A15':
+                event = enemy.get('TriggerEvent')
+                if (not isinstance(event, dict) or set(event) != {'EventName','Parameters'}
+                        or event['EventName'] != 'Cf6PodReady' or not isinstance(event['Parameters'], list)
+                        or len(event['Parameters']) != 1):
+                    raise ValueError('A15 pod event must be exact and counted')
+                pod_id = event['Parameters'][0]
+                parameters = enemy.get('Parameters', {})
+                if parameters.get('cf6PodId') != pod_id or parameters.get('publishStageEvent') is not True:
+                    raise ValueError('A15 pod needs its actual birth acknowledgement')
+            else:
+                pod_id = enemy.get('podId')
+                if enemy['ranged'] is not False: raise ValueError('A17 clone pod cannot consume ranged quota')
+            if pod_id not in actual or pod_id in seen:
+                raise ValueError('clone pod budget is duplicate or unbound')
+            seen.add(pod_id)
+            if any(not finite(enemy.get(axis)) or abs(enemy[axis]-actual[pod_id][axis]) > 0.0001 for axis in ('x','y')):
+                raise ValueError('clone pod spawn must use its exact world registration point')
+        if seen != expected: raise ValueError('clone pod budget is not one per authored instance')
 
 
 def validate_cf6_turrets(stage):
@@ -143,22 +289,38 @@ def validate_cf6_turrets(stage):
     if not isinstance(rows, list) or len(rows) != 2:
         raise ValueError('A01 must carry exactly two tutorial turrets')
     for row in rows:
-        if set(row) != {'x', 'y', 'facing'} or row['facing'] != 'right':
+        if set(row) != {'x', 'y', 'facing', 'ownFootprint'} or row['facing'] != 'right':
             raise ValueError('invalid A01 turret row')
+        rect = row['ownFootprint']
+        if (not isinstance(rect, list) or len(rect) != 4
+                or any(type(v) not in (int,float) or not math.isfinite(v) for v in rect)
+                or not rect[0] < row['x'] < rect[2] or not rect[1] < row['y'] < rect[3]):
+            raise ValueError('A01 turret own footprint must contain the emitter holder')
         for axis in ('x', 'y'):
             if type(row[axis]) not in (int, float) or not math.isfinite(row[axis]) \
                     or not 0 <= row[axis] <= 5000:
                 raise ValueError('invalid A01 turret coordinate')
 
 
-def validate_cf6_boss(stage, units, items):
+def validate_cf6_boss(stage, units, items, successor=False):
+    flag = stage.get('mechanism',{}).get('elderFinale')
+    if 'elderFinale' in stage.get('mechanism',{}) and type(flag) is not bool:
+        raise ValueError('elder finale switch must be boolean')
+    if flag is True and stage['id'] != 'A20' and not successor:
+        raise ValueError('elder finale switch belongs only to A20')
     plan = stage.get('bossEncounter')
-    if plan is None: return
+    if plan is None:
+        if flag is True: raise ValueError('elder finale requires its two-phase controller plan')
+        return
     bosses = {'A06':463, 'A17':472, 'A20':473, 'A22':474}
     identity = stage['id']
-    if identity not in bosses or set(plan) != {'instanceName','maxAlive','maxRanged','intervalFrames','groups'}:
+    fields = {'instanceName','maxAlive','maxRanged','intervalFrames','groups'}
+    phased = identity == 'A20' and not successor and stage.get('mechanism',{}).get('elderFinale') is True
+    if phased: fields.add('nextPhase')
+    if identity not in bosses or set(plan) != fields:
         raise ValueError('invalid CF6 boss map/plan')
-    if plan['instanceName'] != 'cf6Boss_'+identity: raise ValueError('invalid CF6 boss instance identity')
+    expected_name = 'cf6Boss_A20__elderbot' if successor else 'cf6Boss_'+identity
+    if plan['instanceName'] != expected_name: raise ValueError('invalid CF6 boss instance identity')
     bounded_integer(plan['maxAlive'],1,8,'CF6 boss support cap')
     bounded_integer(plan['maxRanged'],0,plan['maxAlive'],'CF6 ranged cap')
     bounded_integer(plan['intervalFrames'],1,1800,'CF6 support interval')
@@ -168,8 +330,16 @@ def validate_cf6_boss(stage, units, items):
     boss = waves[0]['EnemyGroup']['Enemy'][0]
     if boss['Type'] != '兵种'+str(bosses[identity]) or boss['Quantity'] != 1 or boss.get('InstanceName') != plan['instanceName']:
         raise ValueError('CF6 boss main wave identity mismatch')
-    if identity == 'A20' and boss.get('Parameters',{}).get('老头变身') is not False:
-        raise ValueError('A20 human elder must not transform')
+    if identity == 'A20' and boss.get('Parameters',{}).get('老头变身') is not phased:
+        raise ValueError('A20 human elder transform must match its two-phase plan')
+    if phased:
+        next_stage = copy.deepcopy(stage)
+        next_stage['id'] = 'A22'
+        next_stage['bossEncounter'] = plan['nextPhase']
+        next_stage['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'] = [{
+            'Type':'兵种474', 'Level':boss['Level'], 'Quantity':1,
+            'InstanceName':'cf6Boss_A20__elderbot'}]
+        validate_cf6_boss(next_stage, units, items, successor=True)
     if not isinstance(plan['groups'],list) or not 1 <= len(plan['groups']) <= 16:
         raise ValueError('invalid CF6 finite support groups')
     previous, total = 2, 0
@@ -181,8 +351,11 @@ def validate_cf6_boss(stage, units, items):
         if not isinstance(group['enemies'],list) or not 1 <= len(group['enemies']) <= 32:
             raise ValueError('invalid CF6 support entries')
         for enemy in group['enemies']:
-            if set(enemy) - {'Type','Level','Quantity','ranged','SpawnIndex','x','y','Parameters'}:
+            if set(enemy) - {'Type','Level','Quantity','ranged','SpawnIndex','x','y','Parameters','podId'}:
                 raise ValueError('CF6 support names and ownership are controller-owned')
+            if 'podId' in enemy and (identity != 'A17' or enemy['Type'] != '兵种460'
+                    or enemy['Quantity'] != 1 or not isinstance(enemy['podId'], str)):
+                raise ValueError('unreviewed CF6 boss pod binding')
             if not re.fullmatch(r'兵种[0-9]+',enemy['Type']) or int(enemy['Type'][2:]) not in units:
                 raise ValueError('unknown CF6 support type')
             bounded_integer(enemy['Level'],1,60,'CF6 support level')

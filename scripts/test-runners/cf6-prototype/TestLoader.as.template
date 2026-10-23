@@ -1,4 +1,9 @@
 ﻿trace("FocusedTestRunId cf6-prototype Start: __FOCUSED_RUN_ID__");
+var cf6PrototypeSynchronousDone:Boolean=false,cf6PrototypeMechanismDone:Boolean=false;
+_root.cf6MapMechanismTestsComplete=function():Void {
+    cf6PrototypeMechanismDone=true;
+    if(cf6PrototypeSynchronousDone) trace("FocusedTestRunId cf6-prototype Complete: __FOCUSED_RUN_ID__");
+};
 org.flashNight.arki.scene.BookRunRulesTest.runAllTests();
 org.flashNight.arki.ui.BookshelfPanelServiceTest.runAllTests();
 org.flashNight.arki.scene.BookIterationTest.runAllTests();
@@ -13,4 +18,5 @@ org.flashNight.arki.scene.Cf6LevelCapTest.captureRoot();
 #include "引擎/引擎_lsy_等级与经验值.as"
 org.flashNight.arki.scene.Cf6LevelCapTest.runAllTests();
 org.flashNight.arki.scene.Cf6SceneInstanceTest.runAllTests();
-trace("FocusedTestRunId cf6-prototype Complete: __FOCUSED_RUN_ID__");
+cf6PrototypeSynchronousDone=true;
+if(cf6PrototypeMechanismDone) _root.cf6MapMechanismTestsComplete();

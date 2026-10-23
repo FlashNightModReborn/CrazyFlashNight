@@ -1,0 +1,65 @@
+{
+  "schema": "cf6-body-alpha-probe.v1",
+  "supersample": 4,
+  "alphaMinimum": 128,
+  "as2ApiReferences": [
+    "https://open-flash.github.io/mirrors/as2-language-reference/flash/display/BitmapData.html",
+    "https://open-flash.github.io/mirrors/as2-language-reference/flash/geom/Rectangle.html",
+    "https://open-flash.github.io/mirrors/as2-language-reference/flash/geom/Matrix.html"
+  ],
+  "heightToleranceLogicalPixels": 1,
+  "scaleTolerancePercentagePoints": 0.02,
+  "policySha256": "66c5787baea7d9fc7dc6c844c2678199f0cdda18c6bb7ec4d55026277d6687e8",
+  "rows": [
+    {
+      "linkage": "敌人-CF6普通男僵尸",
+      "label": "空手站立",
+      "heightCm": 175,
+      "name": "CF6黄衣僵尸",
+      "expectedPixels": 145.192765
+    },
+    {
+      "linkage": "敌人-CF6女僵尸",
+      "label": "空手站立",
+      "heightCm": 175,
+      "name": "CF6红衣僵尸",
+      "expectedPixels": 145.192765
+    },
+    {
+      "linkage": "敌人-CF6Wings",
+      "label": "空手站立",
+      "heightCm": 190,
+      "name": "Wings",
+      "expectedPixels": 157.63785914285717
+    },
+    {
+      "linkage": "敌人-CF6特种兵",
+      "label": "长枪站立",
+      "heightCm": 175,
+      "name": "CF6特种兵·二阶段",
+      "expectedPixels": 145.192765
+    },
+    {
+      "linkage": "敌人-CF6持盾特种兵",
+      "label": "持盾站立",
+      "heightCm": 175,
+      "name": "CF6特种兵·持盾一阶段",
+      "expectedPixels": 145.192765
+    },
+    {
+      "linkage": "敌人-CF6光头保安",
+      "label": "空手站立",
+      "heightCm": 175,
+      "name": "CF6光头保安·普通型",
+      "expectedPixels": 145.192765
+    },
+    {
+      "linkage": "敌人-CF6变身光头保安",
+      "label": "空手站立",
+      "heightCm": 175,
+      "name": "CF6光头保安·变身型",
+      "expectedPixels": 145.192765
+    }
+  ],
+  "basis": "Frozen policy body targets; 4x alpha threshold raster bounds, two boundary quantization plus AA/matrix budget. No tolerance adjustment based on test output."
+}

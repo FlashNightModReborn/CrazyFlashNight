@@ -276,8 +276,8 @@ class BookDefinitionTests(unittest.TestCase):
     CF6_TURRET_SPEC = dict(assetUrl='flashswf/backgrounds/cf6/CF6_A01_Turret.swf',
                            linkage='CF6教学炮塔-A01自动炮', filterMarker='cf6-a01-turret-zombie',
                            fireIntervalFrames=18, fireFrameOffset=11,
-                           turrets=[dict(x=228.352, y=345.4293, facing='right'),
-                                    dict(x=426.3253, y=735.4027, facing='right')])
+                           turrets=[dict(x=228.352, y=345.4293, facing='right',ownFootprint=[97.28,279.8933,354.9867,348.16]),
+                                    dict(x=426.3253, y=735.4027, facing='right',ownFootprint=[303.7867,658.7733,544.4267,767.9147])])
 
     def cf6_fixture(self):
         # Test-only single room: never installed as playable content.
@@ -425,6 +425,42 @@ class BookDefinitionTests(unittest.TestCase):
         chapter=json.loads((ROOT/'data/stages/books/cf6-sting.json').read_text(encoding='utf-8-sig'))
         units={u['id'] for u in json.loads((ROOT/'data/units/units.json').read_text('utf-8-sig'))}
         builder.validate_cf6(chapter,self.items,self.skills,units,require_backgrounds=False)
+
+
+class Cf6TransportContractTests(unittest.TestCase):
+    def setUp(self):
+        chapter=json.loads((ROOT/'data/stages/books/cf6-sting.runtime.json').read_text(encoding='utf-8-sig'))
+        if not any('transport' in m['mechanism'] for m in chapter['maps']):
+            transport_spec=importlib.util.spec_from_file_location('transport_assembly',ROOT/'tools/cf6-prototype/transport-assembly.py')
+            transport=importlib.util.module_from_spec(transport_spec);transport_spec.loader.exec_module(transport)
+            transport.adapt(chapter,require_swfs=False)
+        self.maps={m['id']:m for m in chapter['maps']}
+
+    def test_actual_three_transport_budgets_and_events(self):
+        for identity in ('A09','A14','A18'):
+            builder.validate_cf6_transport(self.maps[identity])
+
+    def test_transport_geometry_and_native_identity_rejected(self):
+        mutations=[lambda s:s.update(id='foreign'),lambda s:s.update(sourceSprite=1869),
+            lambda s:s.update(frames=28),lambda s:s.update(dispatchFrame=28),
+            lambda s:s.update(subWaveIndex=0),lambda s:s.update(x=float('nan')),
+            lambda s:s.update(artMatrix=[0,0,0,0,0,0]),lambda s:s.update(hitBounds=[0,0,0,0]),
+            lambda s:s.update(extra=True),lambda s:s.update(url='flashswf/foreign.swf')]
+        for mutate in mutations:
+            stage=copy.deepcopy(self.maps['A09']);mutate(stage['mechanism']['transport'])
+            with self.assertRaises(ValueError):builder.validate_cf6_transport(stage)
+
+    def test_transport_event_owner_and_conserved_quantity_rejected(self):
+        for kind in ('missingOwner','missingEvent','foreignToken','quantity','duplicateEvent','interval','unreviewedMap'):
+            stage=copy.deepcopy(self.maps['A09']);enemy=stage['stage']['Wave']['SubWave'][1]['EnemyGroup']['Enemy'][0]
+            if kind=='missingOwner':del stage['mechanism']['transport']
+            elif kind=='missingEvent':del enemy['TriggerEvent']
+            elif kind=='foreignToken':enemy['TriggerEvent']['Parameters']=['foreign']
+            elif kind=='quantity':enemy['Quantity']+=1
+            elif kind=='interval':enemy['Interval']=100
+            elif kind=='duplicateEvent':stage['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0]['TriggerEvent']=copy.deepcopy(enemy['TriggerEvent'])
+            else:stage['id']='A08'
+            with self.subTest(kind=kind),self.assertRaises(ValueError):builder.validate_cf6_transport(stage)
 
 
 if __name__ == '__main__':

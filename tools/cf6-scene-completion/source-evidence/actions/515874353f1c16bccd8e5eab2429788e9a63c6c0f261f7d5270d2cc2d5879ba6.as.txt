@@ -1,0 +1,9 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 936;
+   var §\x0f§ = 1;
+   var myPoint = {x:0,y:0};
+   this.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+}

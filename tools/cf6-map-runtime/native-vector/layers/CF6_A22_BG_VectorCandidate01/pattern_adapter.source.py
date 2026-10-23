@@ -72,10 +72,71 @@ def lattice_tiles(base, pattern, bbox):
                       'tileInstances': len(matrices)}
 
 
+
+def split_floor_union(base, clip):
+    """Split only the reviewed same-winding nonzero floor-cell UNION into fills.
+
+    The generic legacy compound-path writer assumes evenodd and guesses holes
+    from each contour's first vertex. These floor cells overlap at seams, so a
+    cell corner can lie inside its neighbour without that cell being a hole.
+    Independent native filled rects preserve the union without changing that
+    shared writer or the original SVG.
+    """
+    if not re.fullmatch(r'n[0-9]+floor_union_(?:1959|1978|1986)', clip.get('id', '')):
+        return None
+    if clip.tag != SVG+'clipPath' or set(clip.attrib) != {'id'} or len(clip) != 1:
+        raise ValueError('floor union requires one untransformed clip path')
+    path = clip[0]
+    if path.tag != SVG+'path' or set(path.attrib) != {'d', 'clip-rule'} or path.get('clip-rule') != 'nonzero':
+        raise ValueError('floor union requires explicit nonzero path')
+    parts = base.primitive(path)
+    if not 1 <= len(parts) <= 64:
+        raise ValueError('floor union rectangle count outside reviewed bound')
+    rects = []; orientation = None
+    for start, segments, closed in parts:
+        if not closed or any(segment[0] != 'L' for segment in segments):
+            raise ValueError('floor union contour must be a closed straight rectangle')
+        points = [start]+[segment[-1] for segment in segments]
+        if points[-1] == points[0]:points.pop()
+        if len(points) != 4 or len(set(points)) != 4 or not all(math.isfinite(v) for point in points for v in point):
+            raise ValueError('floor union requires four finite distinct corners')
+        xs, ys = sorted({p[0] for p in points}), sorted({p[1] for p in points})
+        rectangle = len(xs)==2 and len(ys)==2 and set(points)=={(x,y) for x in xs for y in ys}
+        edges = list(zip(points,points[1:]+points[:1]))
+        turns = [(points[(i+1)%4][0]-points[i][0])*(points[(i+2)%4][1]-points[(i+1)%4][1])
+                 -(points[(i+1)%4][1]-points[i][1])*(points[(i+2)%4][0]-points[(i+1)%4][0]) for i in range(4)]
+        if not all(v>0 for v in turns) and not all(v<0 for v in turns):
+            raise ValueError('floor union requires convex non-self-crossing cells')
+        area = sum(a[0]*b[1]-b[0]*a[1] for a,b in edges)
+        sign = 1 if area>0 else -1
+        if area==0 or orientation is not None and sign!=orientation:
+            raise ValueError('floor union holes or mixed contour winding rejected')
+        orientation = sign
+        if rectangle:
+            rects.append(ET.Element(SVG+'rect',{'x':base.fmt(xs[0]),'y':base.fmt(ys[0]),
+                'width':base.fmt(xs[1]-xs[0]),'height':base.fmt(ys[1]-ys[0])}))
+        else:
+            # 1978/1986 have one right-corner cut cell. Keep its exact four vertices;
+            # replacing it by a bounding rectangle would fill outside the original floor.
+            rects.append(ET.Element(SVG+'polygon',{'points':' '.join(base.fmt(x)+','+base.fmt(y) for x,y in points)}))
+    return rects
+
+
 def candidate_class(api):
     base = api.base
 
     class PatternCandidate(api.Candidate):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.floor_union_reports = []
+            for node in list(self.root.iter()):
+                rects = split_floor_union(base, node)
+                if rects is None:continue
+                for child in list(node):node.remove(child)
+                node.extend(rects)
+                self.floor_union_reports.append({'id':node.get('id'),'cells':len(rects),
+                    'policy':'same-winding nonzero union preserved as independent native rect/convex-corner fills'})
+
         def vector_pattern(self, node, attrs, pattern, mask_mode):
             if mask_mode is True:
                 raise ValueError('pattern luminance masks require explicit support')

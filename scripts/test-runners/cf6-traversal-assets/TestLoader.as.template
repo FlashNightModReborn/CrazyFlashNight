@@ -1,0 +1,5 @@
+﻿trace("FocusedTestRunId cf6-traversal-assets Start: __FOCUSED_RUN_ID__");
+_root.cf6TraversalAssetsComplete=function():Void {
+    trace("FocusedTestRunId cf6-traversal-assets Complete: __FOCUSED_RUN_ID__");
+};
+org.flashNight.arki.scene.Cf6TraversalAssetsTest.runAllTests();

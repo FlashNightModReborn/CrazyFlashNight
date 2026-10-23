@@ -3,7 +3,7 @@
   "name": "CF6_A19_BG_VectorCandidate01",
   "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/parts/environment-a19-backdrop.svg",
   "sourceSha256": "55484d30da86fa68e5004712859a1aa0e3f73ae522bb689d7c5cce190ace5f89",
-  "nativeShapes": 1821,
+  "nativeShapes": 1835,
   "nativeSymbols": 292,
   "intrinsicTextures": 10,
   "masks": [
@@ -872,8 +872,8 @@
   "specializedConverterInputs": [
     {
       "path": "tools/cf6-map-runtime/native-vector/batch/pattern_adapter.py",
-      "sha256": "9e0d00cc6e4606c1e2369e2aab982633b76b901ccef19cf2cb625db070a2bb43",
-      "bytes": 7822
+      "sha256": "bffba10139407b32894f1df9f93d1078fc848468b1c75cbe996c40f9c574e8d7",
+      "bytes": 11611
     },
     {
       "path": "tools/cf6-map-runtime/native-vector/batch/build-pattern-layer.py",
@@ -884,8 +884,8 @@
   "baselineConverterBundleSha256": "69bf33f7769966e03a1c89835c8e248fcf759862f79d2efe8f9952f0258e7be2",
   "baselineSignalSha256": "d2ae83e5cb181ce5fd1b786b32bab3cd304bfed87871b703cc47d28f81acbcd1",
   "preExistingProductSnapshot": {
-    "receipt": "tools/cf6-map-runtime/native-vector/batch/snapshots/pre-pattern-CF6_A19_BG_VectorCandidate01-20261021T101209Z.json",
-    "files": 326
+    "receipt": "tools/cf6-map-runtime/native-vector/batch/snapshots/pre-pattern-CF6_A19_BG_VectorCandidate01-20261023T120342Z.json",
+    "files": 618
   },
   "visualEvidenceScope": "Tile clip semantics verified on 2026-10-21 against a real browser engine with a translucent three-tile probe; native candidate still requires root CS6 compile and actual Flash visual comparison."
 }

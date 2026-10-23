@@ -1,0 +1,2672 @@
+{
+  "schema": "cf6-native-depth-props.v1",
+  "state": "native source prepared; fresh CS6 plus actual sorted-holder consumer required",
+  "groups": [
+    {
+      "name": "CF6_Prop_A06_StatueLeft",
+      "assemblyId": "A06-00806-g",
+      "memberIds": [
+        "A06-00806-g"
+      ],
+      "mapId": "A06",
+      "xfl": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/CF6_Prop_A06_StatueLeft.xfl",
+      "swf": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft.swf",
+      "worldPivot": [
+        841.5573333333335,
+        394.15466666666674
+      ],
+      "layer": {
+        "id": "CF6_Prop_A06_StatueLeft",
+        "role": "depth-prop",
+        "url": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft.swf",
+        "x": 841.5573333333335,
+        "y": 394.15466666666674,
+        "sortY": 394.15466666666674,
+        "visualScale": 1,
+        "pivot": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "nativeSymbols": 246,
+      "intrinsicBitmaps": 3,
+      "registration": "root local origin is world ground pivot; all per-part holder-local matrices already include map calibration",
+      "excludedBackgroundInstances": [
+        {
+          "id": "A06-00806-g",
+          "xflDirectory": "flashswf/backgrounds/cf6/CF6_A06_BG",
+          "parentFile": "LIBRARY/CF6Vector/00807-g.xml",
+          "instanceIndex": 5,
+          "symbol": "CF6Vector/00806-g"
+        }
+      ],
+      "nativeInputs": [
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/intrinsic-42d49358a17e0a7d29fb38b2.jpg",
+          "sha256": "42d49358a17e0a7d29fb38b21952068aaad277da02d6b29758cebe9f465c6298",
+          "bytes": 49389
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/intrinsic-4e54a27d240b81f16f082f50.png",
+          "sha256": "4e54a27d240b81f16f082f5087a382a0d083c9f12976fe8d267d6f9f2138140b",
+          "bytes": 364897
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/intrinsic-78d3c0c5961053da9331584d.jpg",
+          "sha256": "78d3c0c5961053da9331584d48c4ba93d6c3a5a1fa82fac95fb9d8f77fadd806",
+          "bytes": 51601
+        }
+      ],
+      "files": [
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/bin/M 28 1792570453.dat",
+          "bytes": 51617,
+          "sha256": "ebc9c03c30e5f0b433d2468e2eeef05af6127c4de3f887eb3f2e19b6e736c844"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/bin/M 29 1792570453.dat",
+          "bytes": 49405,
+          "sha256": "0125233aa5375823c8bfa1e8bba21196a332815a305c81408560e8a15e43be65"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/bin/M 30 1792570453.dat",
+          "bytes": 474920,
+          "sha256": "4e44ad29d092b8b0e9190147118f12f27cfa864841a163bb46db98a8a0be8c29"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/CF6_Prop_A06_StatueLeft.xfl",
+          "bytes": 9,
+          "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/DOMDocument.xml",
+          "bytes": 21564,
+          "sha256": "0842ab7ac14faeab35e22b6639ed239f847c359d56ced0c7c2252b1d52cb8b65"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00561-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 3918,
+          "sha256": "80708ba757ba2bc11104cf8eb436dab24306404ef4f7b4b371359cc7a8544c92"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00562-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1229,
+          "sha256": "f2bf16318b48c155aae8975da6ebd5969fa3e796a068fc41e01d84dc53203e96"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00563-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1012,
+          "sha256": "74806cc7c23651bfeb83bcd6c1ea11484b06a1286cd2725aac3ca2d925a5c4e5"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00564-ellipse.xml",
+          "bytes": 563,
+          "sha256": "2b3d7e05c40bf597ee217699ecda0a37ffd9b56c33ac02f9466338b0a532310d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00565-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 881,
+          "sha256": "48f76a0da96d53b18b8eb456d0234213d8b651b18ab79b45c363f7c4b181ff5f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00566-path.xml",
+          "bytes": 554,
+          "sha256": "e70e43753a0166b466da3933225bca311b1237dcfd85bb2a1394d77ba59b2667"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00567-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1302,
+          "sha256": "30383703eaaf630ef9520da6463a60ab4d8542e714bedea8b28a3faaf1d3d53a"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00568-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 888,
+          "sha256": "0fa5b42093c5509908413b4c3f62b5118ff96ef22761bd81ff4750b68afe4970"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00569-path.xml",
+          "bytes": 554,
+          "sha256": "360e19e4854c462d51d5622d9d9b2aeeaf47c7f5237f5259146985a53c8b601f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00570-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 894,
+          "sha256": "926299db70b92314d0e6d2d1a8e2ec2db19585d7edcc1fdf886d46b73a26cb90"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00571-path.xml",
+          "bytes": 554,
+          "sha256": "4e0178794f4b607523fcaac8c94b76f001149b34f771e811a845c1900225d823"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00572-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1241,
+          "sha256": "a7256140fa5145f4642e948d255a66c56999804c032270c9416868713d54231a"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00573-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 867,
+          "sha256": "9bb0031a6fa304f81cd3aecbe7dbd6da103ce110d8f8f77ef06591c07c3b59b9"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00574-path.xml",
+          "bytes": 554,
+          "sha256": "eb702618c22ad8c20ef2672cd7757e49470f5faec088339d4fbc5b8958096439"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00575-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1532,
+          "sha256": "29a275593e8510c109f18066753d3e31cf7404a19bd1f0cb33af3747b101e3ba"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00576-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 906,
+          "sha256": "2b34024b47c52a2055470d5607737ae8778b72979e10115897e32749384fa08a"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00577-path.xml",
+          "bytes": 554,
+          "sha256": "68f32158341426ddf3253e68a47f33b90409f0f448768cef1bb1c205a1963f6d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00578-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1541,
+          "sha256": "cff4029e6e96013915c92339d90db3964ada00b67d24f8b4b756b1855301153d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00579-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 846,
+          "sha256": "09f7e38bdfd15ff77a7ee354dc71eddfc9432c1fd73a7cf9ee59434e2d532f01"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00580-path.xml",
+          "bytes": 554,
+          "sha256": "2e3f1ccb1e39d25944dfd1a82d7ffe8f0b10676b0a5d0e01d48e36efcc1b55e7"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00581-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 903,
+          "sha256": "f401328db9bda846e3ff282a9d8fc6989e2b07704c6aee354ac40e1e150d84f6"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00582-path.xml",
+          "bytes": 554,
+          "sha256": "79a28a637ac558118a471ea310d57ba6e5d604d56c231a473c98eaa6fd4805dc"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00583-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1087,
+          "sha256": "28122f86d34257ecf16cafb42602d9459fabc95c2351201eb8b55bc6028a1b77"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00584-ellipse.xml",
+          "bytes": 563,
+          "sha256": "936526f3b77bf248354d3a9dc5262513cd6535901d0d4fcd9529886c68de3eef"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00585-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 816,
+          "sha256": "2472b91967cbd91b00763cda1b3e32f4d324065426e7e776ed39d68742fe93c6"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00586-path.xml",
+          "bytes": 554,
+          "sha256": "3d01f749dd7eceeca20200f8707849c2c947553508c6c080728e896bed8edc08"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00587-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 807,
+          "sha256": "7ddf31d8b22abd7f24c6f6b36da70a7b72c99308862e8ff09c193eb9a93c1e9b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00588-path.xml",
+          "bytes": 554,
+          "sha256": "66975079dd8bd5e4f1eabeec27092eac09c0c2c7dab12b8c3356cbdbfd818168"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00589-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 873,
+          "sha256": "04a9fe26d9372e0b05c9b3799ca5d495c35011dc7ec3633be8468b3eec071b61"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00590-path.xml",
+          "bytes": 554,
+          "sha256": "e16af202a8439a283c8efba8e85572b99422bd43a51b14a2101fc5dabadc3066"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00591-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1371,
+          "sha256": "362935937f7c677fe7f707b8b52ae7a50b86e6d9dc78858a54eec7f399d7bb8c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00592-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 906,
+          "sha256": "f0ce5ded66df5c395086052fcfded0a534098a3f3fb4cbf14cb856171ebf94f5"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00593-path.xml",
+          "bytes": 554,
+          "sha256": "2de275673e6bd8178c839f536142cd3e2eaa2582066917fb7dc50b7221d0f3d8"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00594-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 881,
+          "sha256": "6a9a059d40b4aa58c51df6d8c9bfffb3b7aca41ef0c746922b532a7aa804eb8f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00595-path.xml",
+          "bytes": 554,
+          "sha256": "0b3685e64ab7784131138ee17c6ad38f2326bdb01ad6c2d3cbfba88b8c80c790"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00596-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1085,
+          "sha256": "406a8e93dad99b8821b23331182b20a893ae38b5be885513040470a02638b4fa"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00597-ellipse.xml",
+          "bytes": 563,
+          "sha256": "d2855f9ae10bf3c3bcc8239b92111733c284529bc2f8cad492658fbf3c1ca446"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00598-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1092,
+          "sha256": "e6c57cb0d4b5e1e97b00eb3bc7d7a12bcab3bfff8ad4bc3cfeac9167f5d3dc03"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00599-ellipse.xml",
+          "bytes": 563,
+          "sha256": "1d98780be378f93d0503abf63f1d169260e8fcf37d66dd523e32b30857a094ff"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00600-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 834,
+          "sha256": "15e90401152dd68261bd7208f44ab5480482c07a0847d3a5bcbc725919a56584"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00601-path.xml",
+          "bytes": 554,
+          "sha256": "9d0c6fd0cb7c19db2c9b4c71dcdf02ac467d1043ba4d2551e76bb95cb48e77ea"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00602-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 855,
+          "sha256": "5951181a2e3bcd3fcf55df56c04d84dd8b5d63129ba6570ca8a6b0440af3d6f0"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00603-path.xml",
+          "bytes": 554,
+          "sha256": "7703735ef6cded37dd1d98683355a048036c5979e6e3b2730236ffa26d80bb99"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00604-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 855,
+          "sha256": "2bc678ac61f5f02494712977c46561ea85f950a131607d044d8f2fc6e6c9a544"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00605-path.xml",
+          "bytes": 554,
+          "sha256": "4c27e2f18d149ae2599751d92f0470b03effb22a73595197c2760a63c0670c5d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00606-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1016,
+          "sha256": "0583b603b284e4144dae7960b14438e7902aadd4ed79a85fae961abcf1bf1877"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00607-ellipse.xml",
+          "bytes": 563,
+          "sha256": "efdf9e7ff95b979a51fafa2b47a76079338b68c0ac0557073b69bd275cddd157"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00608-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 762,
+          "sha256": "a2c58e7352bc0985b1d358d1746dc7fd25b2159cf5f31458e7156d9ccaf53769"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00609-path.xml",
+          "bytes": 554,
+          "sha256": "4965f22c0ad28747bebcd6e492fccf57468c3380a9836d272c793c015b84d6e8"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00610-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 819,
+          "sha256": "4bf39916154c9c253b5493fe38f93f421c69cf7c597a18652bbebade1c478b25"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00611-path.xml",
+          "bytes": 554,
+          "sha256": "093b15c65dcef111815d969438f57a3a8e0cccd404fa8e03485c00353a2e7f2e"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00612-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 756,
+          "sha256": "06d6323714a7cc97fae2a1a6c80609c3c3ea1ccd1debfeb0941b27b4b9083fd1"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00613-path.xml",
+          "bytes": 554,
+          "sha256": "75489c12bded2d7755ca1dcc1fda61b9a8de18c725e31225bd50b2b889e266dd"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00614-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1287,
+          "sha256": "6b5edef758acf5d1fd4a7429b40d33c97a48a5dba2f0d8037fe8e4f15a35a675"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00615-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1147,
+          "sha256": "0333a79eee087cc0f8538040999d53d1b5d2a60d2cc0e78758e56d99c676e702"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00616-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 864,
+          "sha256": "aeb6d671e57c12fda20f598d7a6f877b3bb91e0460bcbbde7dc8aaa8275c449d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00617-path.xml",
+          "bytes": 554,
+          "sha256": "f6ec516af7e7345ea530f1a89fdb45ca55ad884cf590007650c1f0e98449b57c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00618-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 870,
+          "sha256": "7927329b976ceda02d58e0c9cc6a5070201f22237f36b4f60eca19c6e618343e"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00619-path.xml",
+          "bytes": 554,
+          "sha256": "6687d561e09ae30d0a0076ee32864750eae503b81f6d91059fac3174a84102a3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00620-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 816,
+          "sha256": "3c1c8aa804990f33159b310c11a5fdc593a8a96324bccb8ef16d4b6b4b285162"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00621-path.xml",
+          "bytes": 554,
+          "sha256": "2e7fcd4505f6d5824193e103015aa8582013e8e52589a8bc2666e2e48e36fcfe"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00622-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 792,
+          "sha256": "736aea23506f44ca68e40cb96671c464b73d0a261b4edc1a52d85fc36b529b12"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00623-path.xml",
+          "bytes": 554,
+          "sha256": "c8e04406ced8abe90838cb0f2841f10a442b67331dcbed98e907e487dcdeacf7"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00624-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1243,
+          "sha256": "b2788eb64b70fbfe032f8d9f7a01eaa2d8a7ebd495fb5c98bcd2646d3b3519cb"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00625-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 788,
+          "sha256": "b8b1ff3376c32bd0b5fdc08e072e91524dd53680b1c2030d6607dca2f8fb9639"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00626-path.xml",
+          "bytes": 554,
+          "sha256": "9a4b4f1555c6c22528d7a97d9d2fce462c23f4bbd0879482fc6e1f25bed507e1"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00627-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 852,
+          "sha256": "90efc023e56c7451f287138545cc7b22aaa94c4b0d0cf2a93998ac33ee4a8a9e"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00628-path.xml",
+          "bytes": 554,
+          "sha256": "48a4106461ddf10681a3df3c39fbd9381ef7025c9c65d329962f0dba0b591cad"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00629-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1302,
+          "sha256": "b74df63cec6404d86596fa6480eeea02c14e1a9a36900d91d84dd4db9e25ab9d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00630-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 897,
+          "sha256": "c364c00e9a52f3ec0dd27f6ec8e77a212f8a4caa592904ac7007fe3c457c53b6"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00631-path.xml",
+          "bytes": 554,
+          "sha256": "cc31421c3fb0fedfb7c71d72311dd38f54a7d27be6fa8407121c696178a53ab5"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00632-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 834,
+          "sha256": "bf4d65e0cae93897216d268b75eb336b5cffb56174903345e14fa1f25a72b5e4"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00633-path.xml",
+          "bytes": 554,
+          "sha256": "f3caacd982176237e1f8ca3095b3b1c4b05f6678c82b65f5ae4629065fb61e37"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00634-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1315,
+          "sha256": "6e3c67e62a421718156fa08e518b034b6b7d78c044f5e979dd0fa5db2aaf8cfb"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00635-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1281,
+          "sha256": "9c09e565323a80443e17632408e7c7f8f46223a029041cb14fafe72cd03b7853"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00636-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 798,
+          "sha256": "59a1af3e97dae7f21948f341a2f77aa7e944c452f6e8c7735b4427e3b2918bde"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00637-path.xml",
+          "bytes": 554,
+          "sha256": "ee0f152772b55055ca092080c7aaf2cbef61b29a484df877707b3b17ea514b0e"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00638-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1292,
+          "sha256": "0f24effab59e895a8dc19a3afecb308cc45106d1ac05bf92b979ba7691623c65"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00639-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 825,
+          "sha256": "1a52f54f75026350e9216a14ac1107acf7989c3a73a2153984d776553c9429fd"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00640-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 900,
+          "sha256": "d1d1e6b4e6643e4c34a42b3d33c68a9d945a041d81dd553035ba698e5b6566d4"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00641-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1201,
+          "sha256": "bfd86621e6e54a187375b334fdf83a745b2b59bf0b595df339810db19da598a3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00642-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 876,
+          "sha256": "96dcbd1fa256d2f1d1f37b92af53f6045f0014bce34c2c662a4a17146ca1345b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00643-path.xml",
+          "bytes": 554,
+          "sha256": "bebe15edb9634d53d109a7c098c6776d3ce85d308842dc62d58c1b215147fbd1"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00644-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 788,
+          "sha256": "b70a6781db8313dc6a7bb8baec65f58485c2d878a54d77a653d2b74dc71a2c3e"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00645-path.xml",
+          "bytes": 554,
+          "sha256": "337a5f54eb44d15573f71fc8c8eee40add4e5b6f45be6eac1b79f54220f86b3b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00646-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 804,
+          "sha256": "647f3a4defe2dcefa8d757c96778306e3147704457644a2efd387adb41512eff"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00647-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 740,
+          "sha256": "aad884ecaf4869712c2f6b05815a5b64ef48efd34f79e1ca1601e6f65ba00bd5"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00648-path.xml",
+          "bytes": 554,
+          "sha256": "3736a51f21ab46b7e2214bcdb2fb92dd613dbc154f8ac7828e8f40b15e7281cf"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00649-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "a6538b8e3bb42d64965473bf80a2a96d8308893d82a8f1d4bb0b436b7e8d2610"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00650-path.xml",
+          "bytes": 554,
+          "sha256": "3ecbf68e23d120fb664a7300eefaf6df7186089c9ab95a8ad920676edaa82eeb"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00651-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 788,
+          "sha256": "6571efcd6e0c31d9ce4093798235cf4ab3ce632a79298360c9ccfc926a6ce044"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00652-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "9be59c46f18a15aff0a7e4653d1640a7e3ee94cde9f4e2be7af23675e475a6a4"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00653-ellipse.xml",
+          "bytes": 563,
+          "sha256": "52936449d81473a5f3f08d57c6efcff8a72d74e81d12fb933b321b9875baa831"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00654-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "69783d9b00442bb40b8d8c90267601df79fb387dc5dd60cff478c426522631fa"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00655-ellipse.xml",
+          "bytes": 563,
+          "sha256": "5a1aac87602a1de3824dac16c5d95855ea0728970904cf03461b1ca8c666a701"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00656-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "04af96efaa0ba100314bb35bef3e96ca43686744ed359a81dc38fd5154a13f71"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00657-ellipse.xml",
+          "bytes": 563,
+          "sha256": "123f71dfcb43b47de512f5e8fb18c4bd3d39e0046e4cd80c49b8ab8b387270ae"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00658-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "08d2027a4ab469c0e3ec5c01e95ea86e8408213e5216b88078c68e340edfc866"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00659-ellipse.xml",
+          "bytes": 563,
+          "sha256": "04e4130762cf7eded3ec13cf18b6b6d8ca841d31799532b1a729f1e7bf0e7229"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00660-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "c2bca181d46ddc6c354c00f0be452bd324872797fb44d4e8b9a9b64a59b9c34f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00661-ellipse.xml",
+          "bytes": 563,
+          "sha256": "c59f858ba1195b0e800e3ba2df46332449f68fd0208349d114a909bcbdeef1d0"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00662-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "692912f7fffa64ad6c2bfb3a9de682234041ba44b3abd564ce5b267ac5cfb17a"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00663-ellipse.xml",
+          "bytes": 563,
+          "sha256": "8ababc86c83c3186973c0391e05399f02dffd6dcede22da30e3cec66e4ca807f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00664-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "49fb1026180e22669dc3851609fd0a611091e840cf4dc3bcd75c911f5b535c26"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00665-ellipse.xml",
+          "bytes": 563,
+          "sha256": "0e97f6b20c28df03c41eb668649ebcefec41817ca6737b9050a1c02ba961f6a4"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00666-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "07fa9ce4f1dbfedc115109c7256cf860e02f5ed5a7835e11befef9cb9077c5b0"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00667-ellipse.xml",
+          "bytes": 563,
+          "sha256": "ba66c80e246ebf25dfa2cbb10268d89e5e8a3157868191eb048131ad988c60dc"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00668-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "fd5c2b12ca64837ffa3234632569101a74f19d14b4a019ba44fd15b5b6cf98f9"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00669-ellipse.xml",
+          "bytes": 563,
+          "sha256": "f07c28b4366e01f2d2626275f5052b92f1ae72064813fa8b377896fd12bf58a8"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00670-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "b1ea7ca3161297ff59475f288529643f24f89b3586303dbe0b52a981e0a3a67f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00671-ellipse.xml",
+          "bytes": 563,
+          "sha256": "9b34be81d34d911355d1a0a80e11a1b914cc36dbcbb1271dfc59c06ff0706dcb"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00672-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "21105e4e609bfa7aec92cf7d1831083641f2e71cff722a4b0390a4ecb972f70f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00673-ellipse.xml",
+          "bytes": 563,
+          "sha256": "d0037ee45480cf7d3b8789b6266b9786684e411ca5f8ad09ecb51af6c7b39dfb"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00674-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "03302d98a47cd68e9286987688bdacbb72d0476490969c9d841b5c3cab53b763"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00675-ellipse.xml",
+          "bytes": 563,
+          "sha256": "acd60fab81f20a069259c4f6f4962d00f8cfa22bee5c2d33671f0bc4ffcee61d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00676-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "0db3f7c2096dd196b2c0aa9d5477870038f64f148917627553238111e40d719a"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00677-ellipse.xml",
+          "bytes": 563,
+          "sha256": "9f1fceaf9a035ac842ee0a41253169e0f2673dc923c8e321ac524e05fce130ed"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00678-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "d517821eea9e919c0c73d68c5d36e6828ab53dac14e9d05f59f37112c03a80d7"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00679-ellipse.xml",
+          "bytes": 563,
+          "sha256": "91567b6602bc5408af64b85acd31369a0bcea3aa87bff2896c735e56fdddf3e0"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00680-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "da97e3fccd86f2f6e3249ef5add5473ff47626150ef37eaa3af6b56235315f17"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00681-ellipse.xml",
+          "bytes": 563,
+          "sha256": "b0d3e5c4e69b2ec7b9ddb25596a567a87c06662d9b32a3007805245f6e80c768"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00682-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "91a3418abbb73ea658ab0609da5c5d2ea5b24b534027d1b1f682bdf17bba105d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00683-ellipse.xml",
+          "bytes": 563,
+          "sha256": "fcde67a5719d93e0b7ca120fdc3938eb4c6fdeb48b330f0c747d60b185f71975"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00684-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "8c44fd9906c57fd0defc52560101156111f4c3b87d1b41f69fe4236e7ee647cc"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00685-ellipse.xml",
+          "bytes": 563,
+          "sha256": "ea6bd32f47c1e1c7a5354c94251fdfb62f35b4862d6934a3adc6c34943590d37"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00686-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "153bb10753606e9f9a14bb84a5df460488dac808b11926ea2f4f65d470cee3ea"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00687-ellipse.xml",
+          "bytes": 563,
+          "sha256": "d3e36a83bd86801e5bb9272ac8d16a2a485b73a6d71cc022ad402ff35cfe0b8e"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00688-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 764,
+          "sha256": "1cb326dba8fe6d454d456a79cf0a02100c628ad63dfa1903a1c4061856dd6167"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00689-path.xml",
+          "bytes": 554,
+          "sha256": "4a5466a010c451600a65cfed37e459c1189169c2ae33ea36ff0f92d56608b9c1"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00690-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 764,
+          "sha256": "1d7ab2b9bbe0dd9f59bf4de50a179e5ffd0437c21518e491a5321885a6518ae5"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00691-path.xml",
+          "bytes": 554,
+          "sha256": "6a95f02afdf2aa1802be2b44b01cf06719a01a6c56695c3123db4a90b6036084"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00692-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 804,
+          "sha256": "ec3ffd903865d551af0b871396006480e52ac7191e8bd43e3a0bae440c6df38d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00693-path.xml",
+          "bytes": 554,
+          "sha256": "48477c37c039be85e80986de03002cb0450d629f0857a94444e4a6e3a486e9e1"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00694-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 756,
+          "sha256": "01826cb3b6e5412a39c66cf1c2f62c64458a325b525a2c4e51ad4b2705288339"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00695-path.xml",
+          "bytes": 554,
+          "sha256": "4bb4f9ba9a694cd12d1500b4376bb387f5e81c9b71f7f94d2719c86d42e99483"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00696-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 788,
+          "sha256": "9d139ed5326346906e67ccfe7fe93cbb512d42eea1baac66579e316fcf6ff773"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00697-path.xml",
+          "bytes": 554,
+          "sha256": "15076b37aa478eeaa28dfceb5af75a1d19e28012c8bb4201cd49537768266af2"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00698-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 764,
+          "sha256": "589ede07de9d5cf9394e429ddaff31916188c04b222972ec343567dac8f1749b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00699-path.xml",
+          "bytes": 554,
+          "sha256": "92e24b2af2f16cda3cfd10e1aa1d16b00e986f2caaadc7ff47f8adaf2832a100"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00700-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 780,
+          "sha256": "f2588a27346fd8e92064c0680a5c502da76df890e52ca380a383d463b74cdd9b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00701-path.xml",
+          "bytes": 554,
+          "sha256": "ed1f5db85279cc7f61a2129765f14bc8de33a062c880d5410bb8a1dfeb15773f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00702-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 764,
+          "sha256": "48ce587d2529b929e33a7e7028bd6db28493e39105a1b0604927f4734fe8aea3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00703-path.xml",
+          "bytes": 554,
+          "sha256": "e420b58a0270daeaaa3c962d7719e2cb50be496b83f03408dde9ce81de0ba101"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00704-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 804,
+          "sha256": "cd9c9241c368fde4e2d7c1462bd391f5dc2606a94faac44737406f1816e6fe95"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00705-path.xml",
+          "bytes": 554,
+          "sha256": "9e377fc84816b883378e4ed80df6ab38b35c06ae768d0aa5577c852af83441e2"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00706-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 861,
+          "sha256": "cd3d4a6c873c151e6fe130a3c614be59b9215b274fe8ba2e901a5d0c9dc66694"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00707-path.xml",
+          "bytes": 554,
+          "sha256": "966977c600c72f4ab2f10225dfc70354f9d427d8b9e7a59e1d7ba3829ab0ea0b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00708-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 834,
+          "sha256": "b0cf6fa4eff53e86e6fc5e0a04250afa992a44adcff8a1695a22438088607b42"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00709-path.xml",
+          "bytes": 554,
+          "sha256": "6bdf5e1934fdc616d68a986d55092b7cda3343bf1061b75b8ab069c2079a7762"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00710-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 861,
+          "sha256": "6a541fa8670c75b1b3cfd7a95c92a1029a7e7d71aa8923ba3f28385c5e4e6443"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00711-path.xml",
+          "bytes": 554,
+          "sha256": "b4823123425cd44b656ce0b2d7e484adac2746c4085feaae88bd86de0b7e07f7"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00712-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 864,
+          "sha256": "31b3bb8491b4ad7b6691a79f58cfa011a211e04c21552df8d829e59d69e93414"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00713-path.xml",
+          "bytes": 554,
+          "sha256": "009de878bd2b44fcb2df29642ed99672000b57586b3cfd4eae724ba17cfec5d3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00714-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 834,
+          "sha256": "3cc1b670c48168d66005286c3334c362437e39d0f808be23b68a17677f644123"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00715-path.xml",
+          "bytes": 554,
+          "sha256": "a53b9a213f7e6fdf395754aba57c85d232a918c95758d7df61c8278447498420"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00716-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 843,
+          "sha256": "5f7bd613be380649aa21da7886b807f0f28990b30fa81e70724471e56efbb280"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00717-path.xml",
+          "bytes": 554,
+          "sha256": "7bffa098edf6408ab76f53680f07e092e27f9c1cb89d9f521ad826ed000c658b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00718-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 807,
+          "sha256": "b9ed34fc5dfdcf25e5f1cf59f0a53576d8ebe1c68f1e5f41486347bee203555d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00719-path.xml",
+          "bytes": 554,
+          "sha256": "ce9efc715b1a86ab62fb141cd06ee118b18f0c7533df253389c456ee52373add"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00720-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 789,
+          "sha256": "a60eaaee45d6495801ededffa0ed2a8435de6b8ec82c01da97279cd75be0a8c7"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00721-path.xml",
+          "bytes": 554,
+          "sha256": "75c6246dea2a99167ac00e5624ef5c75e025a357b61b52690724c4e39ed19a5b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00722-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 762,
+          "sha256": "229dda93303c3298a12035e3e6e99165168316cd8e239eed109a26ad91a81812"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00723-path.xml",
+          "bytes": 554,
+          "sha256": "36100f48de5279c5dac86168a34bf163f0c1eea65823d0bc16e40c5f7648bb41"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00724-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 834,
+          "sha256": "ac62635a9c594fbb2efd983904fe6e12bb4f80effafa9435d4ff9677b74c58b4"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00725-path.xml",
+          "bytes": 554,
+          "sha256": "51bcb757dc5e209722317dc1f77af9539f981b5ebaa52b4c85a151450c80e373"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00726-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1088,
+          "sha256": "e81e54a21f80006c518634cc59cf126071644f4af7828ee1b83d201d6f4c4e5e"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00727-ellipse.xml",
+          "bytes": 563,
+          "sha256": "399482805baea34d9985b26cc0e87851d38b90c5aadc1a45d32a200cb6f60352"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00728-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 871,
+          "sha256": "e484b4bbf0e0a7467c7820d6b3ab17bc1b68f82731e6bc140fa3dd189e718fd2"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00729-path.xml",
+          "bytes": 554,
+          "sha256": "2ee250fe0e18eeb10acebf8e9e73e46a429d490eedd1266214232d02b0eab9a5"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00730-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 798,
+          "sha256": "b0240044066f32a3f17f5a6c3b29e0e970c7d65166f10e562cc7af25844a324f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00731-path.xml",
+          "bytes": 554,
+          "sha256": "d9d9fe569cb665462f708b1976945d443837bc4c547a9f75ad1995c24847f9e5"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00732-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 834,
+          "sha256": "2592627b36ad25600a41c7ff015abf32f64837b92d9ea88011134af947b3a6d3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00733-path.xml",
+          "bytes": 554,
+          "sha256": "f984c8a18041fca7e555b9ff2f9f02f06ce784f1bca13374d34ec037ab2c4ae4"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00734-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 807,
+          "sha256": "bc47be675ee91e68ebc2c4ff34872a5a28321289e8f63ca0af5fe645e7d93742"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00735-path.xml",
+          "bytes": 554,
+          "sha256": "b893e7d174ed8bacd0690c02f085a60148af17a4a9f8f27bbdca06ec03c81601"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00736-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 879,
+          "sha256": "afa0f4c6eb5d557bf46a21ee14c327c042df8b6a3a59d1eae12ad3d312f1f848"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00737-path.xml",
+          "bytes": 554,
+          "sha256": "4fd4c805a9ca327a00d53372f22bd58aae19869cd72946563761036d3fb9f5ef"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00738-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 762,
+          "sha256": "929df813c1769717dc6a7eb023256a7c943da5dad7ffac73dc03879f1bce030c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00739-path.xml",
+          "bytes": 554,
+          "sha256": "0fbcb28e4918d739e275991a60d5ed4205e5a618f6d627ce3a478ce5e5bb84d8"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00740-n6_b1759_5__base-sculptural-occlusi.xml",
+          "bytes": 6963,
+          "sha256": "6f922777e3fd1ad0c89f60adcf8f5cc542b050e477398260ae607f193c257741"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00741-n6_b1759_5__editable-lower-anatomy.xml",
+          "bytes": 17634,
+          "sha256": "272063f10ef019a73a2c539364ab56e8139827baefb54fb62d935bc5807d70ed"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00742-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 1099,
+          "sha256": "dc7363ca553826693e64dc773c914700a663a49e8325484f09d78d60db7b42f0"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00743-path.xml",
+          "bytes": 554,
+          "sha256": "c61e8b309f4200bbca48bd8da039a183f75e195004e4fad1adaee4283bbdeeba"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00744-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 1275,
+          "sha256": "dff90817e841a17e14595c83dd2d27d5c0804bed92e2d3d4562150812b23e4d6"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00745-path.xml",
+          "bytes": 554,
+          "sha256": "dcb9eb90776bcfbe0f37b3258c492e1ad111740cfa16ee24d86a683e80d6f72a"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00746-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 963,
+          "sha256": "ddf46c3a6299677a8155193cd0ecfbf2255d8b5970a08dd159183deb6f637dc3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00747-path.xml",
+          "bytes": 554,
+          "sha256": "4f95e9cc93eb72a0fe7165f195c668b18ef200dcf4ac9fc41cd00e04beab1320"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00748-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 1107,
+          "sha256": "5e5221a2cd5e7aaad079a8923910ed32f081dd6ac9065aa1c06723b0a993b0c1"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00749-path.xml",
+          "bytes": 554,
+          "sha256": "83b01cbd18d328b6a97eb4ce72cbac5e30858e1471a1fdff2bb65b01b705b1b0"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00750-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 1158,
+          "sha256": "f440a0e270aa88b8b7d8e78cba2bffd0a36d2053085c94537af8f65aee8578d3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00751-path.xml",
+          "bytes": 554,
+          "sha256": "93fee6dcc080e11c1c229bbc2657e4716d3a68c37b22d975120aab71b272014b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00752-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 1243,
+          "sha256": "c3403d8912adeba0c820781aa7dbfff1e8ee45852a43f75d4f983ed45f87b476"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00753-path.xml",
+          "bytes": 554,
+          "sha256": "afd6c0b2d6ec3ce12816f6cd7186248dd60ac471ab72559ed6fbb236ac6a1f78"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00754-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 1127,
+          "sha256": "3af08796220ea599b1cd9076235a572843dc4ea4bf34b84a56d98aead3053571"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00755-path.xml",
+          "bytes": 554,
+          "sha256": "6b0c3ed5e15f0d432ebea943474872320df9016250747d5b0a3d55497379a57f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00756-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 983,
+          "sha256": "3280499df9567af1cdfb4478beabd7bdd2bedbaa8b5502ed2bf131dd6ef40da5"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00757-path.xml",
+          "bytes": 554,
+          "sha256": "8341bef679125db86fc86fe4dbc7d7031b1b6f702053f965ebec0ee55ef20027"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00758-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 963,
+          "sha256": "1f8e96fc096782494b0cb1e2f860be8209b3b8b52a387f41f51caedab5e5118f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00759-path.xml",
+          "bytes": 554,
+          "sha256": "31c85a7d7bbc7fcf361d1f02fb4d4a4f3ea4fbad675ce569d9b57f742aa57912"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00760-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1349,
+          "sha256": "446d4db92a00b36c5c8fa8470f367a2915cfc3f73916369187cf524ad6e35362"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00761-path.xml",
+          "bytes": 554,
+          "sha256": "d00cf569f9bde977c8b895976470ad25a2e3a8f5d2cef8089041b99a533c3cd6"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00762-filter-n6_b1759_5__r3-roll.xml",
+          "bytes": 1092,
+          "sha256": "b003f7f5de4b6a3f496151f98fd67029fd1beb646d06a179598289e0522e5184"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00763-path.xml",
+          "bytes": 554,
+          "sha256": "4e568fc0febdd8583e73d113c5e1e54da8c2e921e881c6e704a4594e88e2cbc7"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00764-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 833,
+          "sha256": "b2fc73670b1d05d14e8ecccef3dc5973ae2b347343bf6bebb0397de5b199e204"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00765-path.xml",
+          "bytes": 554,
+          "sha256": "275355d90dacea3561417b84d2b2cb4a752b6b98c8da483e837ef5f4011e7f47"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00766-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 882,
+          "sha256": "88170188bc42fc93771483999fed756a1aca1f644fc51caf9cf5aa4dd185cc1b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00767-path.xml",
+          "bytes": 554,
+          "sha256": "28f987153f82cbd89bd9038334e2a4bab403b13e79632834595fe5b0834f6286"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00768-n6_b1759_5__editable-lower-volume.xml",
+          "bytes": 6060,
+          "sha256": "51883ea4583757dd1a2a7c9499d21f5d05e333c21221fd21aca8f7675b189c1d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00769-image.xml",
+          "bytes": 540,
+          "sha256": "d973ab520efa30b9be6687c7b9fff7da24f4c5c7dce687169955f8811da1e04b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00770-clip-path-content.xml",
+          "bytes": 645,
+          "sha256": "e307051f3994f3d5659c9fd7365dcd8266d804254b11b6c4529b128cd3797117"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00771-n6_b1759_5__rough-r3.xml",
+          "bytes": 992,
+          "sha256": "651b2bf4869cdbd6379f944777941eff2e117cea812be0d3db7457250ec88f8b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00772-clip-path-shape.xml",
+          "bytes": 669,
+          "sha256": "478b4368f0f45f411d992be1e98fa2e9221478ae4ae29f7fdebaf73c85f08bf4"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00773-clip-path-n6_b1759_5__rough-r3.xml",
+          "bytes": 916,
+          "sha256": "07f44a574946603e276959cca5e813c07cc5203250800e761219edf25da63c6c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00774-image.xml",
+          "bytes": 561,
+          "sha256": "34d5fcc3e93f4973b260ceedbd5cb563da27794a9d149c2a4f4a69b0c63c70e3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00775-image.xml",
+          "bytes": 556,
+          "sha256": "d016612715a8ef1941513ea6eb8f566331b24a2992994aa082aa643d43a64838"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00776-clip-path-content.xml",
+          "bytes": 648,
+          "sha256": "71d667ca4a7715267dd2b8f259dd1a9e16beee4a67b000245fe26f4024d0422d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00777-clip-path-n6_b1759_5__rough-r3.xml",
+          "bytes": 916,
+          "sha256": "dbc65bdfdee0da377ff4b59d25214075bf5f67acf1d84b4131a2a0801bc11d62"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00778-image.xml",
+          "bytes": 561,
+          "sha256": "979bca59bd2b4badf5cbf693d680e58e83bd048524729138db270a410c51a64f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00779-clip-path-content.xml",
+          "bytes": 1447,
+          "sha256": "d3feb74280158c07d1bb1c8ae92ac4f694fdc143cbe64e5a60d5eb1b54885cf0"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00780-n6_b1759_5__lower-r3.xml",
+          "bytes": 618,
+          "sha256": "feaac474ca1d9a0567d865325447cdb0558ca89bc8ea3996ca13e869c84a0587"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00781-clip-path-shape.xml",
+          "bytes": 669,
+          "sha256": "77ad589d380adf9c508f0c6e90e360cdfd7c202a12fb481f19ad6d7f05efdf8f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00782-clip-path-n6_b1759_5__lower-r3.xml",
+          "bytes": 916,
+          "sha256": "60e08001fe798fe34898dfd84607f8f2b45b04680a1954e04d9e4088acb5baf1"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00783-n6_b1759_5__PD-material-only.xml",
+          "bytes": 712,
+          "sha256": "98df3a89b2c61ff193a1137df4a8b6fd9d497d9b307eee4a2dd63fdfc8ac0c9c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00784-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 1080,
+          "sha256": "c22ece1977991ac73c840a667cdb8a4e0be55ae151d7a2c909afeea25dbe2fa5"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00785-path.xml",
+          "bytes": 554,
+          "sha256": "de0f23e66edc1396748cf91573fc2b1705bface9415053aac8d921d7d457dbf3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00786-filter-n6_b1759_5__r3-soft.xml",
+          "bytes": 1085,
+          "sha256": "c29d457308245c3a06806b894b4195e499a0963e2513a3e4030cb850ba746b4b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00787-path.xml",
+          "bytes": 554,
+          "sha256": "4ecacc646fa5919a1c9fc9238fa9f6f54b4e653b8ccb6199dd63760f78ef72df"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00788-n6_b1759_5__editable-bust-lighting.xml",
+          "bytes": 2713,
+          "sha256": "a866c5e636ef4824af6f9294b5ee2600a561a002af2002b15b0e8e50adb83829"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00789-filter-n6_b1759_5__r3-contact.xml",
+          "bytes": 868,
+          "sha256": "e01dd8e11573758d5244364055ac9aaad419452537effe921618cfe876e285fd"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00790-path.xml",
+          "bytes": 557,
+          "sha256": "15cdb4a057810444753a4c1142e82d2ea47ccf21e2aa1aaed2a2bf08348be44f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00791-filter-n6_b1759_5__r3-contact.xml",
+          "bytes": 796,
+          "sha256": "b1997a3055fa15090054063680d631f119b984e339d3ae7f8088b414915cb08b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00792-path.xml",
+          "bytes": 557,
+          "sha256": "af9361a7fa32da4a843e9275cb4a95550adbdbe6f7661f52ac66f9b970c9d95e"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00793-filter-n6_b1759_5__r3-contact.xml",
+          "bytes": 814,
+          "sha256": "a4698c65c456b8c2b01a46a12c28b85db3aa11e3c257bb0d6c8a63a0cb9b0012"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00794-path.xml",
+          "bytes": 557,
+          "sha256": "8c33ede9cd1a4c189f54fbda064faeee0e85b9985c79a1ebc4fd90d239b98cd3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00795-n6_b1759_5__editable-selective-cros.xml",
+          "bytes": 1220,
+          "sha256": "99126ecd783e4eae901868a70254b3e60d03748f3f13f5a030f526f14925f68b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00796-clip-path-content.xml",
+          "bytes": 1736,
+          "sha256": "b9cf9cd4751e902a5bf78c61f5fcb8ab6d592d322a6e1131508b4a0dc6a4ce33"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00797-n6_b1759_5__outer-r3.xml",
+          "bytes": 7785,
+          "sha256": "717cbc93ae8bff34ae3e8e456fc0732c861eb6e530f8123a3a0812931cf4c931"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00798-clip-path-shape.xml",
+          "bytes": 669,
+          "sha256": "0b38fe06f006ea8586975a24fdbcddf408fa33593d307695f0aef48b176515d6"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00799-clip-path-n6_b1759_5__outer-r3.xml",
+          "bytes": 916,
+          "sha256": "6de79fb97b3b1979718c558a47420a5de69f98a6873bf2ace5ec1f3134352243"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00800-g.xml",
+          "bytes": 549,
+          "sha256": "7b1cbb8ab33792d0d1cfbda4405502bb8de11d68e8984aba755c7f9f0251b89a"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00801-g.xml",
+          "bytes": 552,
+          "sha256": "0006dbde815f65c35cf5aab0ab254ef91f70e8c70b97861ec3249174fe31f57d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00802-clip-path-content.xml",
+          "bytes": 667,
+          "sha256": "d4b895bc2825fa86f97b82e37aafe4e32ce85d7a3b69dd929ad6142c638c70b6"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00803-n6_c1759f12.xml",
+          "bytes": 606,
+          "sha256": "12353345a234bacde74d9e26b6c9fa76a934be3a9895bb6d37c18528d3d9cd9f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00804-clip-path-shape.xml",
+          "bytes": 660,
+          "sha256": "95341597c78410cc86c2a9df993d1d6f993aabf8e2ff320f0827fcb37f576c7e"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00805-clip-path-n6_c1759f12.xml",
+          "bytes": 889,
+          "sha256": "c2fb416421d6c1ef433e7a437777810a45a8a6d9f6c3d28565e8952e1536ad40"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/CF6Vector/00806-g.xml",
+          "bytes": 540,
+          "sha256": "19246fbecb5e13f15962c29ebcab52c96ae7d64e3b4652db13dd4d4a5ed4fe6f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/intrinsic-42d49358a17e0a7d29fb38b2.jpg",
+          "bytes": 49389,
+          "sha256": "42d49358a17e0a7d29fb38b21952068aaad277da02d6b29758cebe9f465c6298"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/intrinsic-4e54a27d240b81f16f082f50.png",
+          "bytes": 364897,
+          "sha256": "4e54a27d240b81f16f082f5087a382a0d083c9f12976fe8d267d6f9f2138140b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/LIBRARY/intrinsic-78d3c0c5961053da9331584d.jpg",
+          "bytes": 51601,
+          "sha256": "78d3c0c5961053da9331584d48c4ba93d6c3a5a1fa82fac95fb9d8f77fadd806"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/PublishSettings.xml",
+          "bytes": 7873,
+          "sha256": "9c04ff3140bfba8283c0726fc89ea419e98836207742eebdb6b77e8b33e11121"
+        }
+      ]
+    },
+    {
+      "name": "CF6_Prop_A06_StatueRight",
+      "assemblyId": "A06-01072-g",
+      "memberIds": [
+        "A06-01072-g"
+      ],
+      "mapId": "A06",
+      "xfl": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/CF6_Prop_A06_StatueRight.xfl",
+      "swf": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight.swf",
+      "worldPivot": [
+        2024.192,
+        394.15466666666674
+      ],
+      "layer": {
+        "id": "CF6_Prop_A06_StatueRight",
+        "role": "depth-prop",
+        "url": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight.swf",
+        "x": 2024.192,
+        "y": 394.15466666666674,
+        "sortY": 394.15466666666674,
+        "visualScale": 1,
+        "pivot": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      "nativeSymbols": 246,
+      "intrinsicBitmaps": 3,
+      "registration": "root local origin is world ground pivot; all per-part holder-local matrices already include map calibration",
+      "excludedBackgroundInstances": [
+        {
+          "id": "A06-01072-g",
+          "xflDirectory": "flashswf/backgrounds/cf6/CF6_A06_BG",
+          "parentFile": "LIBRARY/CF6Vector/01073-g.xml",
+          "instanceIndex": 1,
+          "symbol": "CF6Vector/01072-g"
+        }
+      ],
+      "nativeInputs": [
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/intrinsic-42d49358a17e0a7d29fb38b2.jpg",
+          "sha256": "42d49358a17e0a7d29fb38b21952068aaad277da02d6b29758cebe9f465c6298",
+          "bytes": 49389
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/intrinsic-4e54a27d240b81f16f082f50.png",
+          "sha256": "4e54a27d240b81f16f082f5087a382a0d083c9f12976fe8d267d6f9f2138140b",
+          "bytes": 364897
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/intrinsic-78d3c0c5961053da9331584d.jpg",
+          "sha256": "78d3c0c5961053da9331584d48c4ba93d6c3a5a1fa82fac95fb9d8f77fadd806",
+          "bytes": 51601
+        }
+      ],
+      "files": [
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/bin/M 28 1792570453.dat",
+          "bytes": 51617,
+          "sha256": "ebc9c03c30e5f0b433d2468e2eeef05af6127c4de3f887eb3f2e19b6e736c844"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/bin/M 29 1792570453.dat",
+          "bytes": 49405,
+          "sha256": "0125233aa5375823c8bfa1e8bba21196a332815a305c81408560e8a15e43be65"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/bin/M 30 1792570453.dat",
+          "bytes": 474920,
+          "sha256": "4e44ad29d092b8b0e9190147118f12f27cfa864841a163bb46db98a8a0be8c29"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/CF6_Prop_A06_StatueRight.xfl",
+          "bytes": 9,
+          "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/DOMDocument.xml",
+          "bytes": 21695,
+          "sha256": "dbb209a1755ff0f734102dae08c43f979bb910fa0854922cd9d6ef43687b53a2"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00769-image.xml",
+          "bytes": 540,
+          "sha256": "d973ab520efa30b9be6687c7b9fff7da24f4c5c7dce687169955f8811da1e04b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00770-clip-path-content.xml",
+          "bytes": 645,
+          "sha256": "e307051f3994f3d5659c9fd7365dcd8266d804254b11b6c4529b128cd3797117"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00775-image.xml",
+          "bytes": 556,
+          "sha256": "d016612715a8ef1941513ea6eb8f566331b24a2992994aa082aa643d43a64838"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00776-clip-path-content.xml",
+          "bytes": 648,
+          "sha256": "71d667ca4a7715267dd2b8f259dd1a9e16beee4a67b000245fe26f4024d0422d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00831-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 3921,
+          "sha256": "37d0c24bac9fd0a991988c0bd67c818bc1f7334cd70b81b564a7db852aff467b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00832-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1232,
+          "sha256": "8f5cec91bd60ce4c85c9d4edb522463e898f067807d0be35f5a86260e151e859"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00833-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1015,
+          "sha256": "268937617fb605261284a0140e544b2a12992a423269d39a474ea1cdb418efae"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00834-ellipse.xml",
+          "bytes": 564,
+          "sha256": "ee8b4cd0058b90945c1dd0f4043b494b53170b1c6b75ffbea6dd9a44f780eb6d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00835-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 884,
+          "sha256": "b7451090f2e1ed598d4d439c560dcdd12f741584bef1e7251a129ce54f124e71"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00836-path.xml",
+          "bytes": 555,
+          "sha256": "2373bba85379f449368fda79175baf9e116f7a47f414aa99b9533348a92bf20d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00837-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1305,
+          "sha256": "459abadd1e38ebc00115c72c4ac393997c8e799f00ca27157dd13cee44f5dbcc"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00838-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 891,
+          "sha256": "12304085324ee371810e7bf15ee9fc0ba14f2ca7efa3b672c006effbd4fa30d7"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00839-path.xml",
+          "bytes": 555,
+          "sha256": "3bbbfac6aafc807bf1b58ebe998b417f2065363150b19b86b4c3e94535449d04"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00840-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 897,
+          "sha256": "e2b128ebb96cc76c21b64f22abdf3a048f253132f1c2376f1ff1ba9c8cc99535"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00841-path.xml",
+          "bytes": 555,
+          "sha256": "ccda3792bcf9919c897dd99e6b8747aa70e9e6d2ea8dee32303a6c3e46bf71ec"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00842-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1244,
+          "sha256": "53df06fe943cb4fd09268ab31726e46d6c39526f287f47bea885437f9c1ea554"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00843-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 870,
+          "sha256": "54c2b19cf2ac868e3c0125f51078e90181809a1effe82a03583eb4e7c4e9d9c7"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00844-path.xml",
+          "bytes": 555,
+          "sha256": "0a1994cc067adf2a878ed382a4cc73f5ec21ff9b2e8875fe504fa7638448750f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00845-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1535,
+          "sha256": "40df8816d5c2b06b71c67f2bdf845d745c79e47669a85cbcb178ba7075d8ec7c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00846-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 909,
+          "sha256": "0b346e1f87c737fe874dc8679855c2ed6551e9d76cc094ee58e68ef5f82cdfae"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00847-path.xml",
+          "bytes": 555,
+          "sha256": "ebaa07285da3b3295edcbc3f180ad5f997f10847f958a634d2ad3156431999ef"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00848-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1544,
+          "sha256": "5459bf71258bd1c3951451b15f9815c4f31017954407cd500735a14a2b719943"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00849-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 849,
+          "sha256": "79d67f152c042e9f482601e66fa84c613ad45781ed88872daf389cb3a3a3d8c6"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00850-path.xml",
+          "bytes": 555,
+          "sha256": "27228d3ef2395d67bc632dfb6767f1c715fe3e5b9f366cbf283229fa3901aca3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00851-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 906,
+          "sha256": "648cc79146326d36c797238dca1a272693158a9de5404942c16655be6cf2a402"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00852-path.xml",
+          "bytes": 555,
+          "sha256": "b6303452fd05dfe21c195097a94b8d335fcb524ac5f07315eaa6ef4d956e1db6"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00853-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1090,
+          "sha256": "bc8452f2fc3ec612a2b896d6b1befdee91e74b37f56c6b8e67a484fe7a44c08b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00854-ellipse.xml",
+          "bytes": 564,
+          "sha256": "2800e4a123c5eb70122d8993062c9e5cbe0737d450f57a0cc621ab9e084f2353"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00855-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 819,
+          "sha256": "07db1a7f5bc327572fd82e6d5513c2f97612a0e5c2a4d135616be4c84ba44deb"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00856-path.xml",
+          "bytes": 555,
+          "sha256": "83ff182af1eba753270650704d4dccd60e04ea3a9d7629a47b16f4d02e265d35"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00857-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 810,
+          "sha256": "eb0f47cb1ab3d475c27f0f5bcbbdb2aee26daa1d5a8c23c1e3eadf2e305d3372"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00858-path.xml",
+          "bytes": 555,
+          "sha256": "4f5c222ce04d27261bf35173e1b8482c02e6a91ad442a0fdb7f46ada97841d8c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00859-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 876,
+          "sha256": "387acb9280f43100942d2d53169c947c665e0f3a14b68d994bba5826a24fea2d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00860-path.xml",
+          "bytes": 555,
+          "sha256": "ad8d5f0109c250adb2c84e09c6d89371870d3d0d84b72ce5170c09c14fa84f98"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00861-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1374,
+          "sha256": "68db29927410946eb31c04698076275064d63b1b29904314eaded74e3941cf35"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00862-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 909,
+          "sha256": "e4f3db3cfae86ae1bc389fdee45630e32db6441d350d85a4be3b14689266b204"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00863-path.xml",
+          "bytes": 555,
+          "sha256": "12b67bc0b2c50a931628e7a0502ff0c7b401a97527c02e7374ebc7e64ada99dc"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00864-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 884,
+          "sha256": "1d74740028e1bad6fbd6da578f38bd230360b60d9431e3284d1ad930a3ee9295"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00865-path.xml",
+          "bytes": 555,
+          "sha256": "1da6aef2d787a4f4dfe2d3b914366820a3817932e942966adaafe6496ce42ad5"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00866-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1088,
+          "sha256": "37c90aaacae9a35735109c308bb409a68b5eed57a9282ce8e505eef6124f1bdf"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00867-ellipse.xml",
+          "bytes": 564,
+          "sha256": "66e9fb3bfbda8c088d5aee9218c409cec7268fbe4443495642bdae83eb865f5f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00868-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1095,
+          "sha256": "4a2457b815e653a3151fae7b03cf88d6369633fe9289f6a34f55c6de9a533c57"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00869-ellipse.xml",
+          "bytes": 564,
+          "sha256": "136fbfa46b62376bd8fc0dc303967078619ba77460e3d0b0751480f12186f5b9"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00870-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 837,
+          "sha256": "1ab3105c995a9edbfa945b5280444bff4c41cac36835ca1c159a823fa2b93d36"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00871-path.xml",
+          "bytes": 555,
+          "sha256": "ec36c1b147145067e1763caeddef14c33500e1137d98915db705d87c460a2eb6"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00872-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 858,
+          "sha256": "2c21c8338baa375baaa516b288ef881134b9eded1f9530eea0902ccfbc3f5bf8"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00873-path.xml",
+          "bytes": 555,
+          "sha256": "666957cc9433aca0d0bd56eec6bf40f47e869bd37ef42cd7417411df834eda55"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00874-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 858,
+          "sha256": "fdf6c8614adfa830e7a8cabf236a40b0614f1ca80c8c07e7c745e49f927a1105"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00875-path.xml",
+          "bytes": 555,
+          "sha256": "c66ad57ef3a56d51392eb1926f3ce23e601d9a1cd7d3f9dbb21ba8625741faf5"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00876-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1019,
+          "sha256": "599a47feea18ffccd2352119ed9b36e942e85cb5878dda0481f6466051e0eec3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00877-ellipse.xml",
+          "bytes": 564,
+          "sha256": "ef6bafcf4fd337baaf14e666564479296cb6f69aab81a3d3a81bf1c9cc864f24"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00878-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 765,
+          "sha256": "d5fcc778176fcfdc47725f0a681a08c09eb511f6bc73ff2a3cba59b1bbc5d71c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00879-path.xml",
+          "bytes": 555,
+          "sha256": "5806f6674a79d0c750032a4bcfd3596a4096b8d5c591c53e6edd489cd330e061"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00880-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 822,
+          "sha256": "bed74f373801ca5667252192e4f3d0680ba1605166e2194334444fc54592be79"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00881-path.xml",
+          "bytes": 555,
+          "sha256": "c415e80e0e3aff7429b3002d03fac0833fb5ee0d3e1a757892c6b262c16d773a"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00882-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 759,
+          "sha256": "dd08e6148fd6e30d79fc0d0fb5ac7fb41ee58139fb44ef4ec3a3d521ca5dde35"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00883-path.xml",
+          "bytes": 555,
+          "sha256": "73edb9115db9c0182883749133ff0ad8089d5a25e121d4762c56fee7f7f71158"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00884-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1290,
+          "sha256": "db7e664429ae1fd67beb576e7293e60f0546583279f6c5f9f42eb792d6bd999a"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00885-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1150,
+          "sha256": "cdc0d73d784dd9b2d8080c539a88a6c0f3e9ac3b88505d8f0ec0408ca3ab3f1c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00886-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 867,
+          "sha256": "58a0cfe094a5e00d6f8eb995624d9fd84280497e77004621291b66789b0cd5ff"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00887-path.xml",
+          "bytes": 555,
+          "sha256": "61b906ccbbe781fbb71879457c2ef7ca995bad4fe2d9649396046811570c5632"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00888-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 873,
+          "sha256": "6234a0e3519686fdc42f0b76e71fb0fb7e2e560076d53576c9168a295d04c60b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00889-path.xml",
+          "bytes": 555,
+          "sha256": "11e5a1cb71ebedee1b41609371c374e82672fa29357b8ab8acf31c1f102b49f8"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00890-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 819,
+          "sha256": "6daab75b3a1736139088e044a10613a61972f381e7fe42c8c5e5b74fbbed0b65"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00891-path.xml",
+          "bytes": 555,
+          "sha256": "ee97fcf213871eb9f4473f1fdf92137c7bcff52b843a65304c6beca9c6007dd9"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00892-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 795,
+          "sha256": "93af1662a20fc920dc1eee8aa7da5c4cc53562702152c2923e11c9ecc2b1eb93"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00893-path.xml",
+          "bytes": 555,
+          "sha256": "0054f4bc113842e09e2a2d71fef32686d9516fc1d79d240377eb41849ebbd43b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00894-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1246,
+          "sha256": "a5c54586996d73c025af130ff51c67507baa3dcfe8294162ceecff01bbc16422"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00895-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 791,
+          "sha256": "540cd2bc7c8c2dcc02ee3627217f58279afe3b2be9834e2235c4efaaeab0ce3d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00896-path.xml",
+          "bytes": 555,
+          "sha256": "f370a91b2a9f1ee8bfa9ad113dd670dd23f864f18a5334646638a65da39c6fb9"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00897-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 855,
+          "sha256": "713d5b2467b461e41470e8f23be675628913bf426d7025c5646ad39e2405dc63"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00898-path.xml",
+          "bytes": 555,
+          "sha256": "3bb61ed139f6d1a942fa8ccf376d96c35e538a0072b411e2a9b07b7d4d6307f9"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00899-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1305,
+          "sha256": "d749e1513e9037e60ca2a8700907027a35e5ff374f91b6087b30150ce7918736"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00900-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 900,
+          "sha256": "ef19e2d6706c8aa724aab6639bd4ce35482d1c6c46afd06b733331e23165d6df"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00901-path.xml",
+          "bytes": 555,
+          "sha256": "ba5ec91e4236097ce93d560670f3b5f88c0a99d331e86c83708c71c3f0e97d41"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00902-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 837,
+          "sha256": "fa13bdca04ffa3602f349ede27aeb24c597a6e3afc822249f7e23f278f168318"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00903-path.xml",
+          "bytes": 555,
+          "sha256": "40f119443bf762686183e138f28433f4d7685c63deae085a21c3f21bbf8c9158"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00904-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1318,
+          "sha256": "530ac7dedbae24bc709f290965fe34832faa4339f52368ce9b096cc2e2438ae9"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00905-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1284,
+          "sha256": "f55f491cc8b205eab9c2d860f8f1320a5acf6f0e46c4d33ac0625ddaba43659c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00906-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 801,
+          "sha256": "6a36d295a1b54f895dca875e383ae14687a6a29f9f0301113953fa9f73df05f4"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00907-path.xml",
+          "bytes": 555,
+          "sha256": "43a8e9f2254278b78d30c02638f562a41b9e16c0afb8c27726e9a9641a89a3a1"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00908-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1295,
+          "sha256": "8930bfcb6fc6a07fee46729139ac3d47948c94a7fb0eb891a90b1e08b6f16173"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00909-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 828,
+          "sha256": "81e1dc86bbdc784645ce5a1230f4afa04b04315c94892d7ff275eb920c7ea333"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00910-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 903,
+          "sha256": "0431cebd69cc225e6dfd784e9eb3c6d93696c5da16547ccf3c5b958cbdbd1709"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00911-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1204,
+          "sha256": "ae156e1766c3d3a54e526752f77b4f543f1980f9931942a3396c54350373683d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00912-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 879,
+          "sha256": "17b97855388a77a2cf420ecbd4b36b1a847988d00705809730041d932932f326"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00913-path.xml",
+          "bytes": 555,
+          "sha256": "e92a1d3836789716311917574098f961dc3187d86bda448dbb8e953866df34f0"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00914-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 791,
+          "sha256": "4ee2e00da6a67bdc5ceae21d8acc26aed10f0f06cd7f3548d3dfc7bcc30f7ed7"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00915-path.xml",
+          "bytes": 555,
+          "sha256": "7693d020807b7e3e27e6066113f9bc0edc658b768be742ca10ef7182353c5109"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00916-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 807,
+          "sha256": "d42e4de9327f338fc5c3d03419b904c35623835d9309be4a9a0be5fb15155458"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00917-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 743,
+          "sha256": "17f98025919afa3050408f1339abda1d01b08d56a21f84db093f63150730c1de"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00918-path.xml",
+          "bytes": 555,
+          "sha256": "1bea8fa94cdad1376510e2d600b5b01dab82a6544fd080da4ac92bf33cb342d4"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00919-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "465f73d9f1090ca11fc894b6b811d204177ba030e96038fc9ce8a60c016926f9"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00920-path.xml",
+          "bytes": 555,
+          "sha256": "bc6ef401091992f81ffe2605ffba5aa8e003def86e9f2959969376093a42ad40"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00921-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 791,
+          "sha256": "cf35fba4db837bb1ee6644d91afc95eeffb6b744f28206ad16e303a25aaaa2ee"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00922-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "88d07e33f3e462bf50a0cce6f9c3235c3c4c5d1e04fd66ba8574bc0f93a963f4"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00923-ellipse.xml",
+          "bytes": 564,
+          "sha256": "f891df69acc6beff313d4ad24274effe62d60b09b4407775737468b1247032ae"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00924-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "04e609037b2d22d7c052d68d4b9fb824bdaced4562c2a2d392203ecdffabc88b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00925-ellipse.xml",
+          "bytes": 564,
+          "sha256": "f07de1f11da0d66023e3720284b1415265aa9dc095b6512931aaff3f6b711ce8"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00926-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "0c156a937f0903bbe2294c93d1fe2b712ccafffa129c35d177d8fef912418e69"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00927-ellipse.xml",
+          "bytes": 564,
+          "sha256": "d928dd4897e57eb8039060e51e8d15ad527ad71ac32212550e8cee0804db0a26"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00928-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "48a0fb07cd2840aef57b6b9a89b22a4ef0bbd1aee62341cc6612189109e90822"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00929-ellipse.xml",
+          "bytes": 564,
+          "sha256": "03aa745f4ce95770821c0f0034afdd781e8c9ee018c7dc21b94ae5131a4287ed"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00930-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "5e53b2093ae3d92b79d4738ced54152a479c6387d03462eefba2067f79233814"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00931-ellipse.xml",
+          "bytes": 564,
+          "sha256": "e6acf5051bd64d25bef1d2f52e9fa11e903768300ce8e95295e74924ee96471e"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00932-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "8eb93bfb01d2ce7f3f5146ec16f47d051e44528e5204adab4d9ac683fe08a8cb"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00933-ellipse.xml",
+          "bytes": 564,
+          "sha256": "8a4c0dbb4301533283bbdd354cc79c6fcc5c97ebf4bf7d784ed3d999f5c70325"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00934-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "a0428e9be18a362c75c7d8a13265a216b38e18f168da12c51d70ee7b10e0f7be"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00935-ellipse.xml",
+          "bytes": 564,
+          "sha256": "cb5058684115e69d016ac07da98fd40b7bf1450e0b322a7e1fed50dca2f40956"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00936-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "010f5336b11da95bd86c2b025cb77fbf951ff48a81274db71691dfe89e470e9f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00937-ellipse.xml",
+          "bytes": 564,
+          "sha256": "8659643ae4278e9f9858eb333b6d732f4a0fa60883b9a6508e275363846a4a91"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00938-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "d5516cd74313d1b64e797f056db428ab8efcfc743c19b76f6e057c637dd92d9c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00939-ellipse.xml",
+          "bytes": 564,
+          "sha256": "7864ec63e2dc7c3e0f0e87013de36a1cd9bca6a9b6e24054a37fc9ffd8447c44"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00940-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "bbf57595752149b361398bc7f94fdab03b492088f2f52167e3a935e5343459c8"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00941-ellipse.xml",
+          "bytes": 564,
+          "sha256": "82211b221d5645969394c0986a9e8e31c9104b9870371c976dfe92f70acb86fe"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00942-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "8b08aa4586761332adc463bccaab91c9e2b8bd3d675efb18ec2eb3dc5187530d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00943-ellipse.xml",
+          "bytes": 564,
+          "sha256": "ddf5c99290f2d712edc327352c8e93cfe4dae5694cfdc3a49cb08d32b6eca602"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00944-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "69b70ea34d51dc1675f625aa8519d99d5a35bfd0fa4c53baacdb97236c3029e8"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00945-ellipse.xml",
+          "bytes": 564,
+          "sha256": "ff84de7243c4c141bf391d076f44eaaab55115c0eddb4f400536b24f4f14703c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00946-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "45a14d957da8422b81f2704605cdc3d1b773820adeb1717ebe3998a297c1a751"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00947-ellipse.xml",
+          "bytes": 564,
+          "sha256": "816fe3c08501ea80a55dcaed7504f5a46c677ffe39a173aaf1332bd3bc760e62"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00948-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "0f6af09a60da899f529e48da614756e0d669b067fc39d9a035612a9d715c886d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00949-ellipse.xml",
+          "bytes": 564,
+          "sha256": "16a2b71319843fa7afe8d5127cbf29db2bed5f3a0a4ef694b7b05374d3dff356"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00950-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "a198ca49326837cc82d369cc6bd9d9ca670af52fb2ed897b3b55047c7b0a263b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00951-ellipse.xml",
+          "bytes": 564,
+          "sha256": "3f3222bdfdc063565fb56afd19d22161b08adeac79a491ebfe210fe66df5b99b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00952-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "97a37dcfe3ebe8e3041368029986e6fd5364dd7aab184196d40d2da1fcbab1d2"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00953-ellipse.xml",
+          "bytes": 564,
+          "sha256": "8482e3da3dea8789c0005449523b85075329ac9881b172e6335882da6a5900a0"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00954-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "9b1e015c854ff8762e770f94d92d96b7ec3d0a1e07707d78f3b1fa85c4612f2d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00955-ellipse.xml",
+          "bytes": 564,
+          "sha256": "8b6a35a7d67a81a56b94b5bad223dbd84ede16a7e73bbdda576c3452e5f2e254"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00956-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "fb8d4bf3083aa022819c8ac31d99fa240aeb11fef5995ccb949916d41fb431a8"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00957-ellipse.xml",
+          "bytes": 564,
+          "sha256": "b7e569912e0d1d6fab23727b7a3462f62757a8400501a77b9f2b11de958066d6"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00958-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 767,
+          "sha256": "556a764fc73d1fcbce2c363255ae386403d87bf87885e51fabda3874025416b4"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00959-path.xml",
+          "bytes": 555,
+          "sha256": "a9631d29cf2d38d587413fbeb56d7648a181b6527935d18098b85c101bc61d15"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00960-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 767,
+          "sha256": "e16de99486c86363bef2a4525df1c9049fdd67df1a828bc35d85c2a4b4f91d5c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00961-path.xml",
+          "bytes": 555,
+          "sha256": "6f43f155eb85b78164c2562f13b8b326be276a45752e2cc007894f933b453a4b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00962-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 807,
+          "sha256": "52cb45693be570a42ed2fa87a9e2a14fbc95dcc487c77683355df954f51cd2f9"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00963-path.xml",
+          "bytes": 555,
+          "sha256": "e8bb832537bfc2598dd452c045d34ac02fa1dfb7788419eebf020acadedaf111"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00964-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 759,
+          "sha256": "9f1966f1a6e6fed40397789014ea506f7edd95df7ae4b3b1c4548edee6df7f8f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00965-path.xml",
+          "bytes": 555,
+          "sha256": "b3bba41b40bd09858360a3f6634b67e00ef8b5369eddfe25a3f9b4caa529ed34"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00966-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 791,
+          "sha256": "324a3807a9b9bc6b47100a4d00c84a095ff3ec36d8082f5ed985e2799e4b84bd"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00967-path.xml",
+          "bytes": 555,
+          "sha256": "8bfe4c2d0b5b5cfb02bb15cc1ed46b6f4b39090c742252f44fdbc7434b50f5aa"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00968-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 767,
+          "sha256": "6b29043ffcb3acf55d239a450fe1d8c78f617172491994971707e78dc1c7e58e"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00969-path.xml",
+          "bytes": 555,
+          "sha256": "05ac250c594dd78d8b2b2ff230c6b8fdb01777bc30b9ff1d3a31caa3bd72240f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00970-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 783,
+          "sha256": "078c6faf47b7d18ff80c70d0cef37f08d2ef14c7ac5769e9f2bb75bc3a321b04"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00971-path.xml",
+          "bytes": 555,
+          "sha256": "7a98fc60accb94d42082921b923171851aaf94845ba3002eeb390df2f1beb442"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00972-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 767,
+          "sha256": "8462174787b4aea9b1b672b09fdd5d0c2e4bc3b72de99d53c0bc3cf31fe1e61a"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00973-path.xml",
+          "bytes": 555,
+          "sha256": "7844d15341358a50a9cf9b57031e3ef17efe53db7a1a8e39c6b1c5e5ddded7f4"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00974-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 807,
+          "sha256": "9d1eaf3eb31ebabbd6c3315cfa1df22dd77a625fde205917cbd76967f9cd56e4"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00975-path.xml",
+          "bytes": 555,
+          "sha256": "2ca5a2eee808b7f361472c8466a63ecfbff3d1daeb18f6241ea7f1b9016d84ea"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00976-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 864,
+          "sha256": "0aa5bada855ee67d7f3f510bd55c97ca1bd44fe2145213ac2e78eb858184f502"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00977-path.xml",
+          "bytes": 555,
+          "sha256": "da0727dc2e1e5a16ced4b9b669b2bcdbc7b9f7f0d6409c836544cd81d477f09c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00978-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 837,
+          "sha256": "37e3dc25174a2b4088b3c55c0282c7cb0a55d06fa1ca6f6507cc95a76f1fc5d9"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00979-path.xml",
+          "bytes": 555,
+          "sha256": "49dcc71a7a126e9cbd9fbb448a2d61ec42e8bb463786253724070a6e16dc9126"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00980-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 864,
+          "sha256": "2f1782913cbaa52938291fd8cf1e680bba2d0883fbe8ae1c3ad38f63a296d6d3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00981-path.xml",
+          "bytes": 555,
+          "sha256": "3b4c1fab866f0f0c440ef51eeda3ce0ca92b9cd6858106f0259e2671f845bda5"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00982-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 867,
+          "sha256": "dbbc00887d8b0bbb10af88a88e8acba6767ffc80d9d18c2d76a460ca77fd87c3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00983-path.xml",
+          "bytes": 555,
+          "sha256": "60cf4b417f437c4d80e34325121afbe65ad5e3dd2f5c126b589b76071ab878ee"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00984-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 837,
+          "sha256": "b1f0a61c9a470100d66da43a610edc74df744dd761c3007c80556e7f9738c42c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00985-path.xml",
+          "bytes": 555,
+          "sha256": "4b8a15962e34f55d7d1949aa243300a6985540dd3d0df465d184d7fbe5887233"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00986-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 846,
+          "sha256": "e86b421ef275ec64910d47cf4e832df899e4d401469781b5dc1a299096b90648"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00987-path.xml",
+          "bytes": 555,
+          "sha256": "32e6bb1c39d7fa0b2e15eb512ca04638d76f552995f8971cba4f0edc3b04bad5"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00988-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 810,
+          "sha256": "21bd46568e3b3337719e2c627aaa183dfc0492954d8b7d8719133767fd650ec9"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00989-path.xml",
+          "bytes": 555,
+          "sha256": "53f2b73090501091d1986a1cbc3f8036fa651cd07e96946265c940fe8018b95a"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00990-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 792,
+          "sha256": "4777214bf6931f43e12a1cae26de971e91c4a657ebf5f117bbfba4cf156fc72d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00991-path.xml",
+          "bytes": 555,
+          "sha256": "d4738f8d7bb025b3aae920212b900087badbb6bac6be2c74d644d5266fef31ff"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00992-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 765,
+          "sha256": "a7c9534e9ee1afbfd1c10182a5b10b49d95ecac51d1a593f47d52da958bd70cb"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00993-path.xml",
+          "bytes": 555,
+          "sha256": "b7343e1d9164114d6d5b07232a014a52a6364b6f787bfb2504c0907d11714f5d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00994-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 837,
+          "sha256": "2a15fbca7d9447425770e1b8ecb38469d89c701f644771f599c24f3b60e5199b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00995-path.xml",
+          "bytes": 555,
+          "sha256": "c17d8c3d36756024357694cac7eeab3de9dd1be13ebd7954a84da3af5575d454"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00996-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1091,
+          "sha256": "4b60c96048d9336d1c32c441b760e62f79e0f840798fc77022ffee42360a56d5"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00997-ellipse.xml",
+          "bytes": 564,
+          "sha256": "eccdd91935749d09fe58afe54d9be66e23b822e63db1cda2152da0c86ffc10a1"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00998-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 874,
+          "sha256": "d69346c848c765db6097c832db62c6961e8e3afa6d23decfc2016758d7fb2ca3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/00999-path.xml",
+          "bytes": 555,
+          "sha256": "610d8267b63597e71040065bbfb6c6112fa8533446f9654778846323b99ff33d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01000-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 801,
+          "sha256": "23fee933c31c9e36f90b93013c3130f519a38fd00fa2095c24edd90dbf82a126"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01001-path.xml",
+          "bytes": 555,
+          "sha256": "2f4fe27a79da8c15265007ad33b0c811941d9bf6ce2c7d0c33d7460db3e58117"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01002-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 837,
+          "sha256": "6ef0835eecbc4053bd18b6da6d9146e035d317eb509f7e1abe83bcfc6995a025"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01003-path.xml",
+          "bytes": 555,
+          "sha256": "e25b0748f81c2dc3df656fade4500282dbb0974a1bda9ebdec294a51cbbd4ec1"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01004-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 810,
+          "sha256": "65de0e655edfb296c9e0b63224b738e129662664cb7a55b7fd83858aa59beb96"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01005-path.xml",
+          "bytes": 555,
+          "sha256": "95256427ea50f4ebab54325982ead3504f28c4853b5b61b52c621cc341892e23"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01006-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 882,
+          "sha256": "48531e05ac819868736faa1d492ada1d5e2894e5160ca0724bdf258d82fcfc13"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01007-path.xml",
+          "bytes": 555,
+          "sha256": "cd0f734c123e53da52a514a1d008a5bf531aa175ee5af65d67ab2a1c1601616b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01008-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 765,
+          "sha256": "1eef5d4c37797d92f189ce0ea374c766522f774d05fceb88107387103fbb7927"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01009-path.xml",
+          "bytes": 555,
+          "sha256": "34711c0ea9e7be837a3059b4e9417791b77f3dd5860405205ed8dee8861fe599"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01010-n10_b1760_1__base-sculptural-occlus.xml",
+          "bytes": 6965,
+          "sha256": "d61e1fb83dda090f5291138b550b721e234fd3164a0609fd78c982d0fd88e7b9"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01011-n10_b1760_1__editable-lower-anatomy.xml",
+          "bytes": 17656,
+          "sha256": "888c613f5018f855ce6e0cef7fc0334fedc81cdae749e3f1a0cb8fdb11e5d722"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01012-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 1102,
+          "sha256": "4ab53b7f3202d8f31d719f4618d65aa633a45ab1e17a38d40481b8b3cb120615"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01013-path.xml",
+          "bytes": 555,
+          "sha256": "06aaeb9bf538fd454b9736c413f751c4318a52534cbdde184971e54cdd6b5f59"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01014-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 1278,
+          "sha256": "be5b2d180c3aab5b47ca91f04d9b210ecf81b135a1a45a9aaad666ea8d282c88"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01015-path.xml",
+          "bytes": 555,
+          "sha256": "9a6d5d272281316906d6f48ca7589df9eab945e7bd40f23ee942eaa180e46d9c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01016-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 966,
+          "sha256": "6aa0fb25efe5adb18e770e55ab20f2398c32a780bf11c7c16983cceda0ed9e47"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01017-path.xml",
+          "bytes": 555,
+          "sha256": "927a85ade70dc2bd7eef431916bd14c74422112adb10544e985b5d44a50a029b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01018-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 1110,
+          "sha256": "38625c79074a2821e8f4b1903e878b619162914eb17fc47e5fb676c6ee940c1b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01019-path.xml",
+          "bytes": 555,
+          "sha256": "6fe1037e0919abe2ccd0773ea8153821f0d51e0f6eb77cfded148cd63179e6fc"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01020-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 1161,
+          "sha256": "7390ae536e6090fff111e26f697e9d6d0c0f8f6c9f008bdea0683430aa8c6448"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01021-path.xml",
+          "bytes": 555,
+          "sha256": "c252d9fbac5d58bb74386091fb80bb92e5261b95f2019953364ce995e1287d2a"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01022-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 1246,
+          "sha256": "356aac392e1134926c327a013c20dbff5602ddc7c393327f834ffa77b8db9678"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01023-path.xml",
+          "bytes": 555,
+          "sha256": "1f17c5196015d1b1171169369d9bd81bf49517a0ee8515a14af0a233ec3e18ee"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01024-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 1130,
+          "sha256": "03b5f1f7841883257c4f3e857b9588a6110f51376c1f11efd7a397f6cadf5104"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01025-path.xml",
+          "bytes": 555,
+          "sha256": "488c80ba7d95015d6cebc06bfe511befa1f6706cdf2191b97af75073bcd8f59c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01026-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 986,
+          "sha256": "3c32f9ff8467e2992e23069b4655411b3264c8279bdf737c85ac9fda4fd1c1c5"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01027-path.xml",
+          "bytes": 555,
+          "sha256": "98d935a5032bd6af9495cca73ed22e3f12ce62bad6618de49705265b23910206"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01028-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 966,
+          "sha256": "a22816f63bde8a1d008020f49efefe2797b72cd6c6f3e54e7e8c5dde1a9cd4b7"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01029-path.xml",
+          "bytes": 555,
+          "sha256": "880d2ee87c50488374474b3a27332c1857f3037d0619df10b95acf65d9be54a9"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01030-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1352,
+          "sha256": "16d802948c5fa9edd3b361585577f3825bdcfdae55866bb62b018eaabecaf2ec"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01031-path.xml",
+          "bytes": 555,
+          "sha256": "b0c01ecca1dc5448bbde48ae95c5296183f0fa0fc3e0c3d7cf0617dc67c63348"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01032-filter-n10_b1760_1__r3-roll.xml",
+          "bytes": 1095,
+          "sha256": "cf042a83bda197ef3820bf24dd58e7134adb4096d6cc298ca6a99250a587e9af"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01033-path.xml",
+          "bytes": 555,
+          "sha256": "ed985e72c57e993d8826e92e47898e4c54d9fedc37df289cfbdc4b4f7d648ba9"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01034-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 836,
+          "sha256": "b6ec85a94624b9c43c6f21cf57b88812e01c09d2f91947baba7beebeb2815688"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01035-path.xml",
+          "bytes": 555,
+          "sha256": "6ad4c01eceb08ffe04e59ad59eda6c3f1cc614c767aa19d6ee4d9bc3baa246d7"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01036-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 885,
+          "sha256": "cac9157d229a837c06fcba017671ddf531bead1d8ee30f1548595e1d85765b8d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01037-path.xml",
+          "bytes": 555,
+          "sha256": "13f89ed80d36cb468fa6fe11163ed22d12fa462fb121f4ec293f7f93277a71b3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01038-n10_b1760_1__editable-lower-volume.xml",
+          "bytes": 6063,
+          "sha256": "df91c35702643ccf1ad8306348a7b154f36a70d5d326424d40e32c2fbffe3275"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01039-n10_b1760_1__rough-r3.xml",
+          "bytes": 995,
+          "sha256": "1f6251a021b75c46ecc26916f5ba8e8569ed631dc5c7da0987fa345bf324dc13"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01040-clip-path-shape.xml",
+          "bytes": 670,
+          "sha256": "8e637702db261b29e6f30c8982f4d23696a359abc18998b1149733978a304eb8"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01041-clip-path-n10_b1760_1__rough-r3.xml",
+          "bytes": 919,
+          "sha256": "bccf473333b815a387c6fa2801ceb06f977d1c19de55a03a9960dd784f61bf5d"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01042-image.xml",
+          "bytes": 562,
+          "sha256": "97d85ad1edf1a54b2ddf1b89727e3ba1ecbe2ee10b50c00484ddae52c4314843"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01043-clip-path-n10_b1760_1__rough-r3.xml",
+          "bytes": 919,
+          "sha256": "b3846475c719e9cea3562d4602fae74f57405227891710f32fc55b72fc53bd1f"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01044-image.xml",
+          "bytes": 562,
+          "sha256": "25c3ea559ea55747b7ace29c0ae3912f2b44b291920b036b4f02270584be882a"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01045-clip-path-content.xml",
+          "bytes": 1447,
+          "sha256": "3ed5ce41a27ac1b0cfb3f798ede0219af82cd295c9b49f3150adf3216c990250"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01046-n10_b1760_1__lower-r3.xml",
+          "bytes": 621,
+          "sha256": "5de3eb91d84a085b041ab247f2c7a88a4f38a2d1d11fd421713837341b33a971"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01047-clip-path-shape.xml",
+          "bytes": 670,
+          "sha256": "beefd87e033ee1dbe7bba859416816f966070cc8ee28f1eca8781f25e99ef3ee"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01048-clip-path-n10_b1760_1__lower-r3.xml",
+          "bytes": 919,
+          "sha256": "19efe957419779d0cc6449f1863355ef490b092dd123b26c9c57a1ce01960610"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01049-n10_b1760_1__PD-material-only.xml",
+          "bytes": 716,
+          "sha256": "33cbd25f67bfe8f9bd9af7ad14554b8bc1495c755b5ecabe18cb33136553534a"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01050-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 1083,
+          "sha256": "c2f03dc667a80af547338c4b210fb92ebc0ed95e87f26fdcff81df45da314df0"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01051-path.xml",
+          "bytes": 555,
+          "sha256": "c48865fc782c07e78dffab2e97d2b68a9184500ff27d87e9e4eec84be1bad2fc"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01052-filter-n10_b1760_1__r3-soft.xml",
+          "bytes": 1088,
+          "sha256": "c6b5e51663e2d24d529fc1f47186f3ffe5b63614cc9496eadd003761e9e2ce69"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01053-path.xml",
+          "bytes": 555,
+          "sha256": "87fd86592329dbe45c1b2225de62553f47267aecf3bcb36c782d3cb27ea2e843"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01054-n10_b1760_1__editable-bust-lighting.xml",
+          "bytes": 2716,
+          "sha256": "34466ea045ad37b8ee24efc81d8c62a0379b4cb586a682e838285fe54cdeeae9"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01055-filter-n10_b1760_1__r3-contact.xml",
+          "bytes": 871,
+          "sha256": "44cf8fd33360fdf9ee74faa4dd87837a23f2acd91484341387a02ea5140b78e0"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01056-path.xml",
+          "bytes": 558,
+          "sha256": "d550a7a0e43468ab266a25708274beb05902f3c952566768186159a51bad33ee"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01057-filter-n10_b1760_1__r3-contact.xml",
+          "bytes": 799,
+          "sha256": "e182ad14651d19b9ac36ef308d26ff5db9d3bd49c026f1abd15cfd17a9680014"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01058-path.xml",
+          "bytes": 558,
+          "sha256": "9372b4cee21210b0f518afa0d1d86bf819e29312a3d92bf591aca610322254f3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01059-filter-n10_b1760_1__r3-contact.xml",
+          "bytes": 817,
+          "sha256": "91297de5bd229f1e71e90557042483ab3ff0d0c1f1b7a7224e54e070642f9a2a"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01060-path.xml",
+          "bytes": 558,
+          "sha256": "840cb6263698f550faa5e0852caa5a0b90948e2624ceb1b45074a503b41abd9a"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01061-n10_b1760_1__editable-selective-cro.xml",
+          "bytes": 1222,
+          "sha256": "0f5b1ff57fc49602c3882d46257211725b9e607387f67ac2cd8c3d066ed4a1c8"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01062-clip-path-content.xml",
+          "bytes": 1740,
+          "sha256": "fca4ef0053cbfec3e3c0fcfab4b2c800f902a45d8d405f535e6ba3d1e3815c6c"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01063-n10_b1760_1__outer-r3.xml",
+          "bytes": 7788,
+          "sha256": "1e7d00160c0953c508bf80086370de01fe158fee462c4abfa27f12994f1d3ccc"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01064-clip-path-shape.xml",
+          "bytes": 670,
+          "sha256": "8d48ea84a4360f4adfb918d6a0e2495ccba77b22148584d605d7dd5c1e7335f3"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01065-clip-path-n10_b1760_1__outer-r3.xml",
+          "bytes": 919,
+          "sha256": "9d40bc0c2d3ca4ce1ff228a561509f624b75b2e1dcedf221a77c36b7dc9e6c39"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01066-g.xml",
+          "bytes": 550,
+          "sha256": "a5367b97f8f230ae797a22e12006aa59a94cb8826bb8a5e718410f3030d9acd9"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01067-g.xml",
+          "bytes": 552,
+          "sha256": "801ac3c79b8ae2e6c9f77f2f1ec288435c81b2b83f4b50715ec985e0a71484e5"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01068-clip-path-content.xml",
+          "bytes": 667,
+          "sha256": "8375c185e5a5a959953c4ddfce2ebcddfd9c0cc138a3294671f013c405f3c536"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01069-n10_c1760f4.xml",
+          "bytes": 604,
+          "sha256": "87436cbe40a6f2e4ead0f145e8a51843c5379245ded21602ff7440992a724228"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01070-clip-path-shape.xml",
+          "bytes": 660,
+          "sha256": "7ca492ed73c33994469f98ed05da4f38708416ceae28c222968cb405ac4529ff"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01071-clip-path-n10_c1760f4.xml",
+          "bytes": 889,
+          "sha256": "0323b77be6f2afffdfc7fff84de202458ade14a4333512ca25188b4d1d762960"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/CF6Vector/01072-g.xml",
+          "bytes": 540,
+          "sha256": "940f30e29d2bfaabb9de6e8e960b4c85b1cfbf876ec6226a03059b15bfd1a26e"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/intrinsic-42d49358a17e0a7d29fb38b2.jpg",
+          "bytes": 49389,
+          "sha256": "42d49358a17e0a7d29fb38b21952068aaad277da02d6b29758cebe9f465c6298"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/intrinsic-4e54a27d240b81f16f082f50.png",
+          "bytes": 364897,
+          "sha256": "4e54a27d240b81f16f082f5087a382a0d083c9f12976fe8d267d6f9f2138140b"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/LIBRARY/intrinsic-78d3c0c5961053da9331584d.jpg",
+          "bytes": 51601,
+          "sha256": "78d3c0c5961053da9331584d48c4ba93d6c3a5a1fa82fac95fb9d8f77fadd806"
+        },
+        {
+          "path": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/PublishSettings.xml",
+          "bytes": 7874,
+          "sha256": "a4e0083a3af9b00b64a944d203e37cafceba2f765bb0293d5e0a9b5869cd24ee"
+        }
+      ]
+    }
+  ]
+}

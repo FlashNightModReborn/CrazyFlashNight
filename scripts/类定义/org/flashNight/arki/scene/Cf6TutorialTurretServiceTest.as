@@ -422,8 +422,8 @@ class org.flashNight.arki.scene.Cf6TutorialTurretServiceTest {
     private static function advanceAim(w:MovieClip,shot:Object,ticks:Number):MovieClip {
         var projectile:MovieClip=w.createEmptyMovieClip("__crossRowProjectile",w.getNextHighestDepth());
         projectile._x=shot.shootX;projectile._y=shot.shootY;projectile.Z轴坐标=shot.shootZ;
-        var movement:LinearBulletMovement=LinearBulletMovement.create(shot.速度X,shot.速度Y,shot.ZY比例);
-        for(var i:Number=0;i<ticks;i++) movement.updateMovement(projectile);
+        Cf6TutorialTurretService.bindFlight(w,StageReturnFlow.worldIdentity(w),projectile,shot);
+        for(var i:Number=0;i<ticks;i++) projectile.updateMovement(projectile);
         trace("[CF6_AIM_MOVEMENT] ticks="+ticks+" endpoint="+projectile._x+","+projectile._y+","+projectile.Z轴坐标
             +" initial="+shot.shootX+","+shot.shootY+","+shot.shootZ
             +" velocity="+shot.速度X+","+shot.速度Y+" ratio="+shot.ZY比例);
@@ -443,7 +443,7 @@ class org.flashNight.arki.scene.Cf6TutorialTurretServiceTest {
             "upper-row aim keeps the normal bullet and exact target filter");
         var projectile:MovieClip=advanceAim(w,shot,10);
         check(near(projectile._x,enemy._x) && movementEndNear(projectile,enemy._y-50,enemy.Z轴坐标,10,shot.ZY比例),
-            "real LinearBulletMovement reaches upper-row center and ground Z together");
+            "local affine flight reaches upper-row center and ground Z together");
         projectile.removeMovieClip();
         enemy._y=352.4;enemy.Z轴坐标=352.4;
         shot=shotAfter(a,18);

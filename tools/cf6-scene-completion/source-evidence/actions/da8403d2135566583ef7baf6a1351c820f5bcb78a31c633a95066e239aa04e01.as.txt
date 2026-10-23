@@ -1,0 +1,444 @@
+function 子弹区域shoot(声音, 霰弹值, 子弹散射度, 发射效果, 子弹种类, 子弹威力, 子弹速度, 击中地图效果, 发射者, shootX, shootY)
+{
+   if(_root.暂停 == 0)
+   {
+      firesound = new Sound();
+      firesound.attachSound(声音);
+      firesound.start(o,1);
+      _root.弹夹内子弹--;
+      i = 1;
+      while(i <= 霰弹值)
+      {
+         depth++;
+         if(depth > 100)
+         {
+            depth = 0;
+         }
+         if(_root.gameworld.man1._xscale > 0)
+         {
+            射击角度 = 0;
+         }
+         else
+         {
+            射击角度 = 180;
+         }
+         if(random(2) == 0)
+         {
+            散射角度 = 射击角度 - random(子弹散射度);
+         }
+         else
+         {
+            散射角度 = 射击角度 + random(子弹散射度);
+         }
+         f_name = "f" + depth;
+         _root.gameworld.效果.attachMovie(发射效果,f_name,random(20));
+         _root.gameworld.效果[f_name]._rotation = _root.gameworld[发射者].gun._rotation;
+         _root.gameworld.效果[f_name]._x = shootX;
+         _root.gameworld.效果[f_name]._y = shootY;
+         angle = 散射角度 * 3.14 / 180;
+         b_name = "zidan" + depth;
+         _root.gameworld.子弹区域.attachMovie(子弹种类,b_name,_root.gameworld.子弹区域.getNextHighestDepth());
+         _root.gameworld.子弹区域[b_name].发射者名 = 发射者;
+         _root.gameworld.子弹区域[b_name].子弹威力 = 子弹威力;
+         _root.gameworld.子弹区域[b_name]._rotation = _root.gameworld[发射者].gun._rotation;
+         _root.gameworld.子弹区域[b_name]._x = shootX;
+         _root.gameworld.子弹区域[b_name]._y = shootY;
+         _root.gameworld.子弹区域[b_name].xmov = 子弹速度 * Math.cos(angle);
+         _root.gameworld.子弹区域[b_name].ymov = 子弹速度 * Math.sin(angle);
+         _root.gameworld.子弹区域[b_name].onEnterFrame = function()
+         {
+            i = 0;
+            while(i < 100)
+            {
+               var _loc3_ = {x:0,y:0};
+               this.localToGlobal(_loc3_);
+               for(§each§ in _root.gameworld)
+               {
+                  if(_root.gameworld[eval("each")].area.hitTest(_loc3_.x,_loc3_.y,true) and _root.gameworld[eval("each")]._name != "man1")
+                  {
+                     if(_root.主角mp < _root.主角mp最大值)
+                     {
+                        _root.主角mp += 2;
+                     }
+                     if(_root.当前长型武器 == "无")
+                     {
+                        _root.gameworld[eval("each")].hp -= _root.手枪威力;
+                        _root.金钱 += _root.手枪威力;
+                     }
+                     else
+                     {
+                        _root.gameworld[eval("each")].hp -= _root.长枪威力;
+                        _root.金钱 += _root.长枪威力;
+                     }
+                     if(_root.gameworld[eval("each")].hp <= 0)
+                     {
+                        _root.gameworld[eval("each")].gotoAndStop("死");
+                     }
+                     else
+                     {
+                        _root.gameworld[eval("each")].gotoAndStop("被击中");
+                        _root.gameworld[eval("each")].被击中.gotoAndPlay("a" + random(2));
+                     }
+                     方向 = _root.gameworld[发射者]._xscale;
+                     效果(_root.gameworld[eval("each")].击中效果,this._x,this._y,方向);
+                     if(_root.gameworld[eval("each")].击中效果 == "飙血")
+                     {
+                        子弹碎片2depth = random(50);
+                        子弹碎片2b_name = "zidan子弹碎片2" + 子弹碎片2depth;
+                        _root.gameworld.效果.attachMovie("子弹碎片2",子弹碎片2b_name,_root.gameworld.效果.getNextHighestDepth(),{_x:this._x,_y:this._y - 90});
+                     }
+                     线名 = "xian" + random(10);
+                     _root.gameworld.效果.attachMovie("射击线",线名,_root.gameworld.效果.getNextHighestDepth());
+                     _root.gameworld.效果[线名]._x = _root.gameworld.man1._x;
+                     _root.gameworld.效果[线名]._y = _root.gameworld.man1._y;
+                     if(_root.gameworld.man1._xscale > 0)
+                     {
+                        _root.gameworld.效果[线名].线._xscale = 100;
+                        _root.gameworld.效果[线名].线._rotation = 散射角度;
+                        _root.gameworld.效果[线名]._width = Math.abs(this._x - _root.gameworld.man1._x);
+                     }
+                     else
+                     {
+                        _root.gameworld.效果[线名]._xscale = -100;
+                        _root.gameworld.效果[线名].线._rotation = 180 - 散射角度;
+                        _root.gameworld.效果[线名].线._width = Math.abs(this._x - _root.gameworld.man1._x);
+                     }
+                     this.removeMovieClip();
+                     i = 100;
+                  }
+               }
+               if(_root.gameworld.地图.hitTest(_loc3_.x,_loc3_.y,true))
+               {
+                  firesound = new Sound();
+                  firesound.attachSound("hit" + random(5));
+                  firesound.start(o,1);
+                  效果(击中地图效果,this._x,this._y);
+                  子弹碎片depth = random(50);
+                  子弹碎片b_name = "zidan子弹碎片" + 子弹碎片depth;
+                  _root.gameworld.效果.attachMovie("子弹碎片",子弹碎片b_name,_root.gameworld.效果.getNextHighestDepth(),{_x:this._x,_y:this._y - 90});
+                  线名 = "xian" + random(10);
+                  _root.gameworld.效果.attachMovie("射击线",线名,_root.gameworld.效果.getNextHighestDepth());
+                  _root.gameworld.效果[线名]._x = _root.gameworld.man1._x;
+                  _root.gameworld.效果[线名]._y = _root.gameworld.man1._y;
+                  if(_root.gameworld.man1._xscale > 0)
+                  {
+                     _root.gameworld.效果[线名].线._xscale = 100;
+                     _root.gameworld.效果[线名].线._rotation = 散射角度;
+                     _root.gameworld.效果[线名]._width = Math.abs(this._x - _root.gameworld.man1._x);
+                  }
+                  else
+                  {
+                     _root.gameworld.效果[线名]._xscale = -100;
+                     _root.gameworld.效果[线名].线._rotation = 180 - 散射角度;
+                     _root.gameworld.效果[线名].线._width = Math.abs(this._x - _root.gameworld.man1._x);
+                  }
+                  this.removeMovieClip();
+                  i = 100;
+               }
+               if(this._currentframe == 1)
+               {
+                  this._x += this.xmov;
+                  this._y += this.ymov;
+               }
+               if(Math.abs(this._x - _root.gameworld[发射者]._x) > 800 || Math.abs(this._y - _root.gameworld[发射者]._y) > 800)
+               {
+                  线名 = "xian" + random(10);
+                  _root.gameworld.效果.attachMovie("射击线",线名,_root.gameworld.效果.getNextHighestDepth());
+                  _root.gameworld.效果[线名]._x = _root.gameworld.man1._x;
+                  _root.gameworld.效果[线名]._y = _root.gameworld.man1._y;
+                  if(_root.gameworld.man1._xscale > 0)
+                  {
+                     _root.gameworld.效果[线名].线._xscale = 100;
+                     _root.gameworld.效果[线名].线._rotation = 散射角度;
+                     _root.gameworld.效果[线名]._width = Math.abs(this._x - _root.gameworld.man1._x);
+                  }
+                  else
+                  {
+                     _root.gameworld.效果[线名]._xscale = -100;
+                     _root.gameworld.效果[线名].线._rotation = 180 - 散射角度;
+                     _root.gameworld.效果[线名].线._width = Math.abs(this._x - _root.gameworld.man1._x);
+                  }
+                  this.removeMovieClip();
+                  i = 100;
+               }
+               i++;
+            }
+         };
+         i++;
+      }
+   }
+}
+function 子弹区域2shoot(声音, 霰弹值, 子弹散射度, 发射效果, 子弹种类, 子弹威力, 子弹速度, 击中地图效果, 发射者, shootX, shootY)
+{
+   if(_root.暂停 == 0)
+   {
+      firesound = new Sound();
+      firesound.attachSound(声音);
+      firesound.start(o,1);
+      i = 1;
+      while(i <= 霰弹值)
+      {
+         depth++;
+         if(depth > 100)
+         {
+            depth = 0;
+         }
+         if(_root.gameworld[发射者]._xscale > 0)
+         {
+            射击角度 = 0;
+         }
+         else
+         {
+            射击角度 = 180;
+         }
+         if(random(2) == 0)
+         {
+            angle = 射击角度 - random(子弹散射度);
+         }
+         else
+         {
+            angle = 射击角度 + random(子弹散射度);
+         }
+         f_name = "f" + depth;
+         _root.gameworld.效果.attachMovie(发射效果,f_name,random(20));
+         _root.gameworld.效果[f_name]._rotation = _root.gameworld[发射者].gun._rotation;
+         _root.gameworld.效果[f_name]._x = shootX;
+         _root.gameworld.效果[f_name]._y = shootY;
+         angle = angle * 3.14 / 180;
+         b_name = "zidan" + depth;
+         _root.gameworld.子弹区域2.attachMovie(子弹种类,b_name,_root.gameworld.子弹区域2.getNextHighestDepth());
+         _root.gameworld.子弹区域2[b_name].发射者名 = 发射者;
+         _root.gameworld.子弹区域2[b_name].子弹威力 = 子弹威力;
+         _root.gameworld.子弹区域2[b_name]._rotation = _root.gameworld[发射者].gun._rotation;
+         _root.gameworld.子弹区域2[b_name]._x = shootX;
+         _root.gameworld.子弹区域2[b_name]._y = shootY;
+         _root.gameworld.子弹区域2[b_name].xmov = 子弹速度 * Math.cos(angle);
+         _root.gameworld.子弹区域2[b_name].ymov = 子弹速度 * Math.sin(angle);
+         _root.gameworld.子弹区域2[b_name].onEnterFrame = function()
+         {
+            var _loc3_ = {x:0,y:0};
+            this.localToGlobal(_loc3_);
+            if(_root.gameworld.地图.hitTest(_loc3_.x,_loc3_.y,true))
+            {
+               效果(击中地图效果,this._x,this._y);
+               this.removeMovieClip();
+            }
+            if(this._currentframe == 1)
+            {
+               this._x += this.xmov;
+               this._y += this.ymov;
+            }
+            if(Math.abs(this._x - _root.gameworld[发射者]._x) > 800 || Math.abs(this._y - _root.gameworld[发射者]._y) > 800)
+            {
+               this.removeMovieClip();
+            }
+         };
+         i++;
+      }
+   }
+}
+function 汽车_子弹区域shoot(声音, 霰弹值, 子弹散射度, 发射效果, 子弹种类, 子弹威力, 子弹速度, 击中地图效果, 发射者, shootX, shootY)
+{
+   if(_root.暂停 == 0)
+   {
+      firesound = new Sound();
+      firesound.attachSound(声音);
+      firesound.start(o,1);
+      i = 1;
+      while(i <= 霰弹值)
+      {
+         depth++;
+         if(depth > 100)
+         {
+            depth = 0;
+         }
+         if(_root.gameworld[发射者]._xscale > 0)
+         {
+            射击角度 = 0;
+         }
+         else
+         {
+            射击角度 = 180;
+         }
+         if(random(2) == 0)
+         {
+            angle = 射击角度 - random(子弹散射度);
+         }
+         else
+         {
+            angle = 射击角度 + random(子弹散射度);
+         }
+         f_name = "f" + depth;
+         _root.gameworld.效果.attachMovie(发射效果,f_name,random(20));
+         _root.gameworld.效果[f_name]._rotation = _root.gameworld[发射者].gun._rotation;
+         _root.gameworld.效果[f_name]._x = shootX;
+         _root.gameworld.效果[f_name]._y = shootY;
+         angle = angle * 3.14 / 180;
+         b_name = "zidan" + depth;
+         _root.gameworld.子弹区域.attachMovie(子弹种类,b_name,_root.gameworld.子弹区域.getNextHighestDepth());
+         _root.gameworld.子弹区域[b_name].发射者名 = 发射者;
+         _root.gameworld.子弹区域[b_name].子弹威力 = 子弹威力;
+         _root.gameworld.子弹区域[b_name]._rotation = _root.gameworld[发射者].gun._rotation;
+         _root.gameworld.子弹区域[b_name]._x = shootX;
+         _root.gameworld.子弹区域[b_name]._y = shootY;
+         _root.gameworld.子弹区域[b_name].xmov = 子弹速度 * Math.cos(angle);
+         _root.gameworld.子弹区域[b_name].ymov = 子弹速度 * Math.sin(angle);
+         _root.gameworld.子弹区域[b_name].onEnterFrame = function()
+         {
+            var _loc3_ = {x:0,y:0};
+            this.localToGlobal(_loc3_);
+            if(_root.gameworld.地图.hitTest(_loc3_.x,_loc3_.y,true))
+            {
+               效果(击中地图效果,this._x,this._y);
+               this.removeMovieClip();
+            }
+            if(this._currentframe == 1)
+            {
+               this._x += this.xmov;
+               this._y += this.ymov;
+            }
+            if(Math.abs(this._x - _root.gameworld[发射者]._x) > 800 || Math.abs(this._y - _root.gameworld[发射者]._y) > 800)
+            {
+               this.removeMovieClip();
+            }
+         };
+         i++;
+      }
+   }
+}
+function 扔雷_子弹区域shoot(声音, 霰弹值, 子弹散射度, 发射效果, 子弹种类, 子弹威力, 子弹速度, 击中地图效果, 发射者, shootX, shootY)
+{
+   if(_root.暂停 == 0)
+   {
+      firesound = new Sound();
+      firesound.attachSound(声音);
+      firesound.start(o,1);
+      i = 1;
+      while(i <= 霰弹值)
+      {
+         depth++;
+         if(depth > 100)
+         {
+            depth = 0;
+         }
+         if(_root.gameworld[发射者]._xscale > 0)
+         {
+            射击角度 = 0;
+         }
+         else
+         {
+            射击角度 = 180;
+         }
+         if(random(2) == 0)
+         {
+            angle = 射击角度 - random(子弹散射度);
+         }
+         else
+         {
+            angle = 射击角度 + random(子弹散射度);
+         }
+         f_name = "f" + depth;
+         _root.gameworld.效果.attachMovie(发射效果,f_name,random(20));
+         _root.gameworld.效果[f_name]._rotation = _root.gameworld[发射者].gun._rotation;
+         _root.gameworld.效果[f_name]._x = shootX;
+         _root.gameworld.效果[f_name]._y = shootY;
+         angle = angle * 3.14 / 180;
+         b_name = "zidan" + depth;
+         _root.gameworld.子弹区域.attachMovie(子弹种类,b_name,_root.gameworld.子弹区域.getNextHighestDepth());
+         _root.gameworld.子弹区域[b_name].发射者名 = 发射者;
+         _root.gameworld.子弹区域[b_name].子弹威力 = 子弹威力;
+         _root.gameworld.子弹区域[b_name]._rotation = _root.gameworld[发射者].gun._rotation;
+         _root.gameworld.子弹区域[b_name]._x = shootX;
+         _root.gameworld.子弹区域[b_name]._y = shootY;
+         _root.gameworld.子弹区域[b_name].xmov = 子弹速度 * Math.cos(angle);
+         _root.gameworld.子弹区域[b_name].ymov = 子弹速度 * Math.sin(angle);
+         _root.gameworld.子弹区域[b_name].onEnterFrame = function()
+         {
+            var _loc3_ = {x:0,y:0};
+            this.localToGlobal(_loc3_);
+            if(_root.gameworld.地图.hitTest(_loc3_.x,_loc3_.y,true))
+            {
+               效果(击中地图效果,this._x,this._y + 90);
+               this.removeMovieClip();
+            }
+            for(§each§ in _root.gameworld)
+            {
+               if(_root.gameworld[eval("each")].area.hitTest(_loc3_.x,_loc3_.y,true) and _root.gameworld[eval("each")]._name != "man1")
+               {
+                  this.gotoAndStop(2);
+               }
+            }
+            if(this._currentframe == 1)
+            {
+               this._x += this.xmov;
+               this._y += this.ymov;
+            }
+            if(Math.abs(this._x - _root.gameworld[发射者]._x) > 800 || Math.abs(this._y - _root.gameworld[发射者]._y) > 800)
+            {
+               this.removeMovieClip();
+            }
+         };
+         i++;
+      }
+   }
+}
+function 效果(效果种类, myX, myY, 方向)
+{
+   效果深度 = random(100);
+   效果名 = "mc" + 效果深度;
+   _root.gameworld.效果.attachMovie(效果种类,效果名,_root.gameworld.效果.getNextHighestDepth());
+   _root.gameworld.效果[效果名]._x = myX;
+   _root.gameworld.效果[效果名]._y = myY - 90;
+   _root.gameworld.效果[效果名]._xscale = 方向;
+}
+function 自动存盘()
+{
+   mysave = SharedObject.getLocal("crazyflasher6_save");
+   mysave.data.金钱 = _root.金钱;
+   mysave.flush();
+   _root.say = "Game saved!";
+   _root.提示框.gotoAndStop("say");
+}
+function 读取存盘()
+{
+   aa = SharedObject.getLocal("crazyflasher6_save");
+   if(aa.data.金钱 != undefined)
+   {
+      _root.金钱 = aa.data.金钱;
+   }
+}
+function 重新游戏初始值()
+{
+   _root.金钱 = 0;
+}
+var §\x01§ = 928;
+var §\x0f§ = 1;
+_root.左键 = 65;
+_root.右键 = 68;
+_root.上键 = 87;
+_root.下键 = 83;
+_root.A键 = 74;
+_root.B键 = 75;
+_root.金钱 = 0;
+_root.读取存盘();
+_root.主角hp最大值 = 200;
+_root.主角hp = 200;
+_root.主角mp最大值 = 100;
+_root.主角mp = 100;
+_root.重力加速度 = 1;
+_root.boy1xspeed = 8;
+_root.boy1yspeed = 4;
+_root.boy1滚动速度 = 15;
+_root.近战轻击威力 = 10;
+_root.近战中击威力 = 20;
+_root.近战重击威力 = 50;
+_root.手雷威力 = 100;
+_root.击倒率 = 5;
+_root.当前长型武器 = "无";
+_root.当前武器 = "m9";
+_root.手枪声音 = "glock";
+_root.手枪弹夹容量 = 12;
+_root.手枪威力 = 15;
+_root.弹夹内子弹 = _root.手枪弹夹容量;
+_root.敌人AI = 5;
+depth = 0;

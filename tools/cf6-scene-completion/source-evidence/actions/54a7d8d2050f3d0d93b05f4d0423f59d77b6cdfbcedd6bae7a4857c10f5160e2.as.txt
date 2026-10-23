@@ -1,0 +1,12 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 108;
+   var §\x0f§ = 1;
+   if(_root.当前长型武器 == "无")
+   {
+      this._visible = 0;
+   }
+   else
+   {
+      this._visible = 1;
+   }
+}

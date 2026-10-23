@@ -1,0 +1,10 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 823;
+   var §\x0f§ = 1;
+   _parent._x -= 20;
+   if(this.hitTest(_parent._parent.消失块))
+   {
+      _parent.removeMovieClip();
+      _parent.gotoAndStop("消失");
+   }
+}

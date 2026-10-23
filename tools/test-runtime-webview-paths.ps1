@@ -145,6 +145,15 @@ try {
     Assert-Test ($workerText.Contains('$producerArguments = Get-Cf7WorkerProducerArguments -Checkout $checkout') -and
         $workerText.Contains('-Arguments $producerArguments -WorkingDirectory $checkout')) 'Default worker bypasses path preflight or validated producer arguments'
     $passed++; Write-Host '[PASS] default worker launch uses the checked arguments'
+    $deepDevRoot = 'C:\' + ('r' * 89)
+    $devCache = Join-Path $env:LOCALAPPDATA 'CF7BuildCache\w2'
+    $before = Get-Snapshot
+    $devLayout = Get-Cf7WebViewLayout -ProjectRoot $deepDevRoot -Spec $actual -CacheDirectory $devCache
+    Assert-Test ($devLayout.cache -ceq $devCache) 'Explicit current-user dev cache was not preserved'
+    Assert-Test ((Get-Snapshot) -ceq $before) 'Actual-lock dev preflight wrote filesystem state'
+    $passed++; Write-Host '[PASS] 92-unit development root with user-local cache (no extraction)'
+    Reject-WithoutWrites 'non-Windows cache remains rejected by lower preflight' { Get-Cf7WebViewLayout -ProjectRoot $repoRoot -Spec $actual -CacheDirectory '/not-a-windows-cache' }
+
     $inputs=Get-Content -LiteralPath (Join-Path $repoRoot 'config\build\runtime-inputs.v2.json') -Raw -Encoding UTF8|ConvertFrom-Json
     Assert-Test (@($inputs.domains.policy.fixedFiles | Where-Object {$_ -ceq 'tools/test-runtime-webview-paths.ps1'}).Count -eq 1) 'Test missing exact policy binding'
     $gate=Get-Content -LiteralPath (Join-Path $repoRoot 'config\build\native-change-gate.v1.json') -Raw -Encoding UTF8|ConvertFrom-Json

@@ -1,0 +1,15 @@
+onClipEvent(load){
+   function 射击1()
+   {
+      _root.汽车_子弹区域shoot("ump",1,5,"无","普通可见子弹",20,20,"火花",_parent._name,myPoint.x,myPoint.y);
+   }
+   var §\x01§ = 528;
+   var §\x0f§ = 1;
+   var myPoint = {x:0,y:0};
+   this.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   射击1();
+   keepshooting = setInterval(射击1,150);
+}

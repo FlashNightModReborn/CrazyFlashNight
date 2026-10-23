@@ -1,0 +1,128 @@
+{
+  "schema": "cf6-item-visual-native-fixture.v1",
+  "state": "source-prepared-not-executed",
+  "expectedAssertions": 54,
+  "inputs": {
+    "tools/cf6-item-visuals/prepare.py": {
+      "sha256": "ee86c0d8d9edca00bcbe71e97ee909d0c8b048edc7c681122a363ee9646c3994",
+      "bytes": 8758
+    },
+    "tools/cf6-item-visuals/run-tests.ps1": {
+      "sha256": "f0bc502bf742a0abead7e55b62bf2988d845aafc72b3ab10fb8c33cd0fc19321",
+      "bytes": 1493
+    },
+    "tools/cf6-item-visuals/check-fixture.py": {
+      "sha256": "8f7dd9c09e2d24d2acda1b883cd610216aeb536ca9a5aba1ac68edd1a4be401a",
+      "bytes": 3485
+    },
+    "data/items/武器_长枪_突击步枪.xml": {
+      "sha256": "49518dca381192198be35eec4f27ef6d8832f3317a11bd128868e1453ade4436",
+      "bytes": 119493
+    },
+    "data/items/asset_source_map.xml": {
+      "sha256": "5f62ddc3f2a4e13bf169d6bb4fd9e3279be7d7ce0fb57a6d9f21a4d31739b122",
+      "bytes": 864502
+    },
+    "tools/cf6-story-migration/cf6swf.py": {
+      "sha256": "26142e12843b8b91231da29e017828c51f77f5819b4ef024e5dd2a4c133dc7ae",
+      "bytes": 17022
+    },
+    "flashswf/arts/new/3102&Leave.swf": {
+      "sha256": "83445b6ed130cb158d02158d12cb02d9f26f7b2ded05df61df5d442e3f46e2a1",
+      "bytes": 491453
+    },
+    "flashswf/arts/things0.swf": {
+      "sha256": "3780f4e803a9326f0e53fea4ee994f9b7d3a5ed6733c9e5840849f2663e67ba8",
+      "bytes": 5394810
+    },
+    "flashswf/arts/things.swf": {
+      "sha256": "2dbd29856125c156e9e0402b86b1d1dc1fc403f1e7c5c4ecb7783ac18aff11ef",
+      "bytes": 2908207
+    },
+    "flashswf/arts/things0/LIBRARY/主角-男.xml": {
+      "sha256": "b1a01afafa4a799ea3d634f38b9e82e6b0e59a8d8627c418741c14602ccce7dd",
+      "bytes": 85269
+    },
+    "flashswf/arts/things0/LIBRARY/移动射击动画层/长枪-手枪2行走右腿.xml": {
+      "sha256": "826826660e43d30bfa994f50e6e6476c4f4c30cb1ec93b4794b2d79b4ae7ba31",
+      "bytes": 24881
+    },
+    "flashswf/arts/things0/LIBRARY/移动射击动画层/长枪-手枪行走左腿.xml": {
+      "sha256": "fd7c5ff217a5b1a98fc4c6ac2383c26c219a59024c5c305fee9273ab77c3fbe9",
+      "bytes": 25800
+    },
+    "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Dressup/DressupReferenceManager.as": {
+      "sha256": "60a6ada589624ebffad2f439b9d5f39210e02214c16bd4707c92e2d717055863",
+      "bytes": 15528
+    },
+    "scripts/Cf6ActorAppearanceNativeHost/Cf6ActorAppearanceNativeHost.xfl": {
+      "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38",
+      "bytes": 9
+    },
+    "scripts/Cf6ActorAppearanceNativeHost/PublishSettings.xml": {
+      "sha256": "ba081cd8fff49622a270c24fde2c91fc1327bf527d8bca53e06d441b2b5a7dcf",
+      "bytes": 8024
+    },
+    "tools/cf6-item-visuals/Cf6ItemVisualTest.as.txt": {
+      "sha256": "45f40eae601a3bde5f64fda93a5f4ae779f22133f7ebd82dc9640cf6b2047fd7",
+      "bytes": 15891
+    }
+  },
+  "nativeWalkingLegs": {
+    "移动射击动画层/长枪-手枪2行走右腿": {
+      "authoredFrames": 22,
+      "heroFrameIndex": 151,
+      "runtimeIdentity": "direct unnamed child, exact frame count; require exactly two"
+    },
+    "移动射击动画层/长枪-手枪行走左腿": {
+      "authoredFrames": 22,
+      "heroFrameIndex": 151,
+      "runtimeIdentity": "direct unnamed child, exact frame count; require exactly two"
+    }
+  },
+  "actualRslExports": {
+    "图标-CAR": 82,
+    "枪-长枪-CAR": 83
+  },
+  "target": "tmp-cf6-item-visuals-host/Cf6ItemVisualNativeHost.xfl",
+  "swf": "Cf6ItemVisualNativeHost.swf",
+  "boundary": "Actual production XMLParser and native hero gun rack; does not certify full soldier initialization, combat, physical drops or player acceptance.",
+  "outputs": {
+    "tmp-cf6-item-visuals-host/LIBRARY/ItemImportHero.xml": {
+      "sha256": "c6a10e3319126a85a0e1da0d949f607adadf8838c48f7ca608a9cea58ee35282",
+      "bytes": 457
+    },
+    "tmp-cf6-item-visuals-host/LIBRARY/ItemImportBase.xml": {
+      "sha256": "b48c5f4cfb24a64fed39749bb194cc2acf69ddd310c535062543e52a93cda5e8",
+      "bytes": 454
+    },
+    "tmp-cf6-item-visuals-host/LIBRARY/ItemImportCarGun.xml": {
+      "sha256": "9d06c21471f4013e78431700c17053254bf80a3f14f0aae4103a4bfc4c1ab25c",
+      "bytes": 472
+    },
+    "tmp-cf6-item-visuals-host/LIBRARY/ItemImportCarIcon.xml": {
+      "sha256": "6a865f2104c405621b8f65f179811c93f609d52404f742bf43f1fdd4778fadf3",
+      "bytes": 470
+    },
+    "tmp-cf6-item-visuals-host/DOMDocument.xml": {
+      "sha256": "8555778235d915d107d365ada1ecf535fd9608de5867d89bc0c5b9a3cc4ed359",
+      "bytes": 1099
+    },
+    "tmp-cf6-item-visuals-host/Cf6ItemVisualNativeHost.xfl": {
+      "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38",
+      "bytes": 9
+    },
+    "tmp-cf6-item-visuals-host/PublishSettings.xml": {
+      "sha256": "dedab76f02bbdd30c7350b690605abc02abb87c871551c2d3f463ed6a8cba014",
+      "bytes": 8019
+    },
+    "scripts/类定义/org/flashNight/arki/scene/Cf6ItemVisualTest.as": {
+      "sha256": "8ec93b59ccf6749d32861aa08e0fd008e2d0b9d8ce35d5ee772fd02d33c816dc",
+      "bytes": 15894
+    },
+    "tools/cf6-item-visuals/TestLoader.as.template": {
+      "sha256": "5f45db2967175b4a74a3919f5e4a7ff7db960f510825ff8113272bf91e2e2372",
+      "bytes": 252
+    }
+  }
+}

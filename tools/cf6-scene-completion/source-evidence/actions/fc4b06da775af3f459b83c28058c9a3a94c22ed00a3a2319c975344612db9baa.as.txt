@@ -1,0 +1,12 @@
+onClipEvent(load){
+   var §\x01§ = 474;
+   var §\x0f§ = 1;
+   var myPoint = {x:0,y:0};
+   this.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   效果深度 = random(100);
+   效果名 = "mc" + 效果深度;
+   _root.gameworld.效果.attachMovie("爆炸",效果名,_root.gameworld.效果.getNextHighestDepth(),{_x:shootX,_y:shootY});
+}

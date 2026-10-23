@@ -176,6 +176,19 @@ class org.flashNight.arki.pause.PauseManager {
     //----------------------------------
 
     // 读当前 _root.暂停（=== true 严格比较避免 truthy 噪音）
+    /** Read-only: exempt exactly one live true claim, never an owner category. */
+    public static function isPausedExcept(claimId:String):Boolean {
+        if (PauseManager._rewardCommitPending) return true;
+        if (!PauseManager._initialized || typeof claimId != "string" || PauseManager._claimCount < 1
+                || !PauseManager._claims.hasOwnProperty(claimId)
+                || PauseManager._claims[claimId] == undefined) return PauseManager.isPaused();
+        if (PauseManager._unownedPause) return true;
+        for (var key:String in PauseManager._claims) if (key !== claimId) return true;
+        for (var leaseKey:String in PauseManager._leases)
+            if (PauseManager._leases[leaseKey].leasedValue === true) return true;
+        return false;
+    }
+
     public static function isPaused():Boolean {
         return _root.暂停 === true;
     }

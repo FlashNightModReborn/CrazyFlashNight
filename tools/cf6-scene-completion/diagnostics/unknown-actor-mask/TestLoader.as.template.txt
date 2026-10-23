@@ -1,0 +1,5 @@
+﻿trace("FocusedTestRunId cf6-actor-mask-presentation Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.Cf6ActorMaskPresentationTest.runAllTests();
+_root.cf6ActorMaskPresentationComplete=function():Void {
+    trace("FocusedTestRunId cf6-actor-mask-presentation Complete: __FOCUSED_RUN_ID__");
+};

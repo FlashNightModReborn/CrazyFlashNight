@@ -7,6 +7,7 @@ from pathlib import Path
 import argparse
 from datetime import datetime,timezone
 import hashlib
+import importlib.util
 import json
 import os
 import shutil
@@ -93,6 +94,12 @@ def main():
         dest=safe(staging/relative,staging);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(source,dest)
         if sha(dest)!=item['sha256']:raise ValueError('source changed during snapshot copy')
     finalize(staging/(name+'.xfl'),name+'.swf',inputs)
+    calibration_spec=importlib.util.spec_from_file_location('cf6_prop_calibration',ROOT/'tools/cf6-prop-layout/calibrate.py')
+    calibration=importlib.util.module_from_spec(calibration_spec);calibration_spec.loader.exec_module(calibration)
+    staged_bytes={target/p.relative_to(staging):p.read_bytes() for p in staging.rglob('*') if p.is_file()}
+    for canonical_path,content in calibration.overlay_outputs(staged_bytes).items():
+        (staging/canonical_path.relative_to(target)).write_bytes(content)
+    audit(staging/(name+'.xfl'),inputs)
     if closure(candidate,candidate_name)!=source_rows:raise ValueError('candidate changed during source assembly')
     new_rows=inventory(staging)
     current=inventory(target)

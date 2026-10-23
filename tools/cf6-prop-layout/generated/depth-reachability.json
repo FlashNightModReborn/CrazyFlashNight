@@ -1,0 +1,4967 @@
+{
+  "schema": "cf6-prop-depth-reachability.v1",
+  "environmentSha256": "0ff7265e0669f0df6beb3ea4ee3511f6fad369498e77eb535ba854c41f37befa",
+  "chapterSha256": "35de35ce51f03bda6cce97df1bea41dd9dbdc523b893abd71b7fc9804122a61f",
+  "probe": {
+    "gridStepWorldPx": 16,
+    "footRadiusWorldPx": 12,
+    "frontBackOffsetsWorldPx": [
+      24,
+      40,
+      64
+    ],
+    "widthSamples": "center, quarters, inset edges",
+    "meaning": "static 4-neighbor connected walk grid plus nine-point clearance; not runtime actor collision acceptance"
+  },
+  "groups": [
+    {
+      "assemblyId": "tutorial-loft-bed",
+      "mapId": "TUTORIAL",
+      "memberIds": [
+        "tutorial-loft-bed"
+      ],
+      "worldPivot": [
+        324.2666666666667,
+        348.1600000000001
+      ],
+      "visualWorldX": [
+        324.2666666666667,
+        620.5916666666667
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        1706.6667,
+        853.3333
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            546.5104166666667,
+            388.1600000000001
+          ],
+          [
+            546.5104166666667,
+            412.1600000000001
+          ],
+          [
+            608.5916666666667,
+            388.1600000000001
+          ],
+          [
+            608.5916666666667,
+            412.1600000000001
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        593.0667,
+        461.6533
+      ],
+      "gridStart": [
+        597.3333,
+        464.0
+      ]
+    },
+    {
+      "assemblyId": "A05-00349-g",
+      "mapId": "A05",
+      "memberIds": [
+        "A05-00349-g"
+      ],
+      "worldPivot": [
+        1381.632,
+        378.79466666666667
+      ],
+      "visualWorldX": [
+        1349.132,
+        1414.132
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2133.3333,
+        853.3333
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            1361.132,
+            402.79466666666667
+          ],
+          [
+            1361.132,
+            418.79466666666667
+          ],
+          [
+            1361.132,
+            442.79466666666667
+          ],
+          [
+            1365.382,
+            402.79466666666667
+          ],
+          [
+            1365.382,
+            418.79466666666667
+          ],
+          [
+            1365.382,
+            442.79466666666667
+          ],
+          [
+            1381.632,
+            402.79466666666667
+          ],
+          [
+            1381.632,
+            418.79466666666667
+          ],
+          [
+            1381.632,
+            442.79466666666667
+          ],
+          [
+            1397.882,
+            402.79466666666667
+          ],
+          [
+            1397.882,
+            418.79466666666667
+          ],
+          [
+            1397.882,
+            442.79466666666667
+          ],
+          [
+            1402.132,
+            402.79466666666667
+          ],
+          [
+            1402.132,
+            418.79466666666667
+          ],
+          [
+            1402.132,
+            442.79466666666667
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        2024.1075,
+        509.9377
+      ],
+      "gridStart": [
+        2021.3333,
+        512.0
+      ]
+    },
+    {
+      "assemblyId": "A05-00807-g",
+      "mapId": "A05",
+      "memberIds": [
+        "A05-00807-g"
+      ],
+      "worldPivot": [
+        820.9066666666668,
+        366.848
+      ],
+      "visualWorldX": [
+        788.4066666666668,
+        853.4066666666668
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2133.3333,
+        853.3333
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            800.4066666666668,
+            390.848
+          ],
+          [
+            800.4066666666668,
+            406.848
+          ],
+          [
+            800.4066666666668,
+            430.848
+          ],
+          [
+            804.6566666666668,
+            390.848
+          ],
+          [
+            804.6566666666668,
+            406.848
+          ],
+          [
+            804.6566666666668,
+            430.848
+          ],
+          [
+            820.9066666666668,
+            390.848
+          ],
+          [
+            820.9066666666668,
+            406.848
+          ],
+          [
+            820.9066666666668,
+            430.848
+          ],
+          [
+            837.1566666666668,
+            390.848
+          ],
+          [
+            837.1566666666668,
+            406.848
+          ],
+          [
+            837.1566666666668,
+            430.848
+          ],
+          [
+            841.4066666666668,
+            390.848
+          ],
+          [
+            841.4066666666668,
+            406.848
+          ],
+          [
+            841.4066666666668,
+            430.848
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        2024.1075,
+        509.9377
+      ],
+      "gridStart": [
+        2021.3333,
+        512.0
+      ]
+    },
+    {
+      "assemblyId": "A06-00164-g",
+      "mapId": "A06",
+      "memberIds": [
+        "A06-00164-g"
+      ],
+      "worldPivot": [
+        122.19733333333326,
+        370.9078418079096
+      ],
+      "visualWorldX": [
+        97.28435068595516,
+        147.11031598071142
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        853.3333
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            109.28435068595516,
+            394.9078418079096
+          ],
+          [
+            109.28435068595516,
+            410.9078418079096
+          ],
+          [
+            109.28435068595516,
+            434.9078418079096
+          ],
+          [
+            109.74084200964423,
+            394.9078418079096
+          ],
+          [
+            109.74084200964423,
+            410.9078418079096
+          ],
+          [
+            109.74084200964423,
+            434.9078418079096
+          ],
+          [
+            122.19733333333329,
+            394.9078418079096
+          ],
+          [
+            122.19733333333329,
+            410.9078418079096
+          ],
+          [
+            122.19733333333329,
+            434.9078418079096
+          ],
+          [
+            134.65382465702237,
+            394.9078418079096
+          ],
+          [
+            134.65382465702237,
+            410.9078418079096
+          ],
+          [
+            134.65382465702237,
+            434.9078418079096
+          ],
+          [
+            135.11031598071142,
+            394.9078418079096
+          ],
+          [
+            135.11031598071142,
+            410.9078418079096
+          ],
+          [
+            135.11031598071142,
+            434.9078418079096
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1439.488,
+        697.5147
+      ],
+      "gridStart": [
+        1445.3333,
+        704.0
+      ]
+    },
+    {
+      "assemblyId": "A06-00806-g",
+      "mapId": "A06",
+      "memberIds": [
+        "A06-00806-g"
+      ],
+      "worldPivot": [
+        841.5573333333335,
+        394.15466666666674
+      ],
+      "visualWorldX": [
+        809.0573333333335,
+        874.0573333333335
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        853.3333
+      ],
+      "reachableSamples": {
+        "behind": [
+          [
+            821.0573333333335,
+            370.15466666666674
+          ],
+          [
+            825.3073333333335,
+            370.15466666666674
+          ],
+          [
+            841.5573333333335,
+            370.15466666666674
+          ],
+          [
+            857.8073333333335,
+            370.15466666666674
+          ],
+          [
+            862.0573333333335,
+            370.15466666666674
+          ]
+        ],
+        "front": [
+          [
+            821.0573333333335,
+            418.15466666666674
+          ],
+          [
+            821.0573333333335,
+            434.15466666666674
+          ],
+          [
+            821.0573333333335,
+            458.15466666666674
+          ],
+          [
+            825.3073333333335,
+            418.15466666666674
+          ],
+          [
+            825.3073333333335,
+            434.15466666666674
+          ],
+          [
+            825.3073333333335,
+            458.15466666666674
+          ],
+          [
+            841.5573333333335,
+            418.15466666666674
+          ],
+          [
+            841.5573333333335,
+            434.15466666666674
+          ],
+          [
+            841.5573333333335,
+            458.15466666666674
+          ],
+          [
+            857.8073333333335,
+            418.15466666666674
+          ],
+          [
+            857.8073333333335,
+            434.15466666666674
+          ],
+          [
+            857.8073333333335,
+            458.15466666666674
+          ],
+          [
+            862.0573333333335,
+            418.15466666666674
+          ],
+          [
+            862.0573333333335,
+            434.15466666666674
+          ],
+          [
+            862.0573333333335,
+            458.15466666666674
+          ]
+        ]
+      },
+      "needsDepthSplit": true,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal demonstrated; depth split candidate",
+      "spawn": [
+        1439.488,
+        697.5147
+      ],
+      "gridStart": [
+        1445.3333,
+        704.0
+      ]
+    },
+    {
+      "assemblyId": "A06-01072-g",
+      "mapId": "A06",
+      "memberIds": [
+        "A06-01072-g"
+      ],
+      "worldPivot": [
+        2024.192,
+        394.15466666666674
+      ],
+      "visualWorldX": [
+        1991.692,
+        2056.692
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        853.3333
+      ],
+      "reachableSamples": {
+        "behind": [
+          [
+            2003.692,
+            370.15466666666674
+          ],
+          [
+            2007.942,
+            370.15466666666674
+          ],
+          [
+            2024.192,
+            370.15466666666674
+          ],
+          [
+            2040.442,
+            370.15466666666674
+          ],
+          [
+            2044.692,
+            370.15466666666674
+          ]
+        ],
+        "front": [
+          [
+            2003.692,
+            418.15466666666674
+          ],
+          [
+            2003.692,
+            434.15466666666674
+          ],
+          [
+            2003.692,
+            458.15466666666674
+          ],
+          [
+            2007.942,
+            418.15466666666674
+          ],
+          [
+            2007.942,
+            434.15466666666674
+          ],
+          [
+            2007.942,
+            458.15466666666674
+          ],
+          [
+            2024.192,
+            418.15466666666674
+          ],
+          [
+            2024.192,
+            434.15466666666674
+          ],
+          [
+            2024.192,
+            458.15466666666674
+          ],
+          [
+            2040.442,
+            418.15466666666674
+          ],
+          [
+            2040.442,
+            434.15466666666674
+          ],
+          [
+            2040.442,
+            458.15466666666674
+          ],
+          [
+            2044.692,
+            418.15466666666674
+          ],
+          [
+            2044.692,
+            434.15466666666674
+          ],
+          [
+            2044.692,
+            458.15466666666674
+          ]
+        ]
+      },
+      "needsDepthSplit": true,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal demonstrated; depth split candidate",
+      "spawn": [
+        1439.488,
+        697.5147
+      ],
+      "gridStart": [
+        1445.3333,
+        704.0
+      ]
+    },
+    {
+      "assemblyId": "A06-01111-g",
+      "mapId": "A06",
+      "memberIds": [
+        "A06-01111-g"
+      ],
+      "worldPivot": [
+        378.1973333333335,
+        370.9078418079096
+      ],
+      "visualWorldX": [
+        353.2843506859554,
+        403.1103159807116
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        853.3333
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            365.2843506859554,
+            394.9078418079096
+          ],
+          [
+            365.2843506859554,
+            410.9078418079096
+          ],
+          [
+            365.2843506859554,
+            434.9078418079096
+          ],
+          [
+            365.74084200964444,
+            394.9078418079096
+          ],
+          [
+            365.74084200964444,
+            410.9078418079096
+          ],
+          [
+            365.74084200964444,
+            434.9078418079096
+          ],
+          [
+            378.1973333333335,
+            394.9078418079096
+          ],
+          [
+            378.1973333333335,
+            410.9078418079096
+          ],
+          [
+            378.1973333333335,
+            434.9078418079096
+          ],
+          [
+            390.6538246570226,
+            394.9078418079096
+          ],
+          [
+            390.6538246570226,
+            410.9078418079096
+          ],
+          [
+            390.6538246570226,
+            434.9078418079096
+          ],
+          [
+            391.1103159807116,
+            394.9078418079096
+          ],
+          [
+            391.1103159807116,
+            410.9078418079096
+          ],
+          [
+            391.1103159807116,
+            434.9078418079096
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1439.488,
+        697.5147
+      ],
+      "gridStart": [
+        1445.3333,
+        704.0
+      ]
+    },
+    {
+      "assemblyId": "A06-01131-g",
+      "mapId": "A06",
+      "memberIds": [
+        "A06-01131-g"
+      ],
+      "worldPivot": [
+        593.1520000000002,
+        370.9078418079096
+      ],
+      "visualWorldX": [
+        568.239017352622,
+        618.0649826473783
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        853.3333
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            580.239017352622,
+            394.9078418079096
+          ],
+          [
+            580.239017352622,
+            410.9078418079096
+          ],
+          [
+            580.239017352622,
+            434.9078418079096
+          ],
+          [
+            580.6955086763111,
+            394.9078418079096
+          ],
+          [
+            580.6955086763111,
+            410.9078418079096
+          ],
+          [
+            580.6955086763111,
+            434.9078418079096
+          ],
+          [
+            593.1520000000002,
+            394.9078418079096
+          ],
+          [
+            593.1520000000002,
+            410.9078418079096
+          ],
+          [
+            593.1520000000002,
+            434.9078418079096
+          ],
+          [
+            605.6084913236892,
+            394.9078418079096
+          ],
+          [
+            605.6084913236892,
+            410.9078418079096
+          ],
+          [
+            605.6084913236892,
+            434.9078418079096
+          ],
+          [
+            606.0649826473783,
+            394.9078418079096
+          ],
+          [
+            606.0649826473783,
+            410.9078418079096
+          ],
+          [
+            606.0649826473783,
+            434.9078418079096
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1439.488,
+        697.5147
+      ],
+      "gridStart": [
+        1445.3333,
+        704.0
+      ]
+    },
+    {
+      "assemblyId": "A06-01312-g",
+      "mapId": "A06",
+      "memberIds": [
+        "A06-01312-g"
+      ],
+      "worldPivot": [
+        2282.666666666667,
+        370.9078418079096
+      ],
+      "visualWorldX": [
+        2257.753684019289,
+        2307.579649314045
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        853.3333
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            2269.753684019289,
+            394.9078418079096
+          ],
+          [
+            2269.753684019289,
+            410.9078418079096
+          ],
+          [
+            2269.753684019289,
+            434.9078418079096
+          ],
+          [
+            2270.210175342978,
+            394.9078418079096
+          ],
+          [
+            2270.210175342978,
+            410.9078418079096
+          ],
+          [
+            2270.210175342978,
+            434.9078418079096
+          ],
+          [
+            2282.666666666667,
+            394.9078418079096
+          ],
+          [
+            2282.666666666667,
+            410.9078418079096
+          ],
+          [
+            2282.666666666667,
+            434.9078418079096
+          ],
+          [
+            2295.123157990356,
+            394.9078418079096
+          ],
+          [
+            2295.123157990356,
+            410.9078418079096
+          ],
+          [
+            2295.123157990356,
+            434.9078418079096
+          ],
+          [
+            2295.579649314045,
+            394.9078418079096
+          ],
+          [
+            2295.579649314045,
+            410.9078418079096
+          ],
+          [
+            2295.579649314045,
+            434.9078418079096
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1439.488,
+        697.5147
+      ],
+      "gridStart": [
+        1445.3333,
+        704.0
+      ]
+    },
+    {
+      "assemblyId": "A06-01332-g",
+      "mapId": "A06",
+      "memberIds": [
+        "A06-01332-g"
+      ],
+      "worldPivot": [
+        2535.3386666666665,
+        370.9078418079096
+      ],
+      "visualWorldX": [
+        2510.4256840192884,
+        2560.2516493140447
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        853.3333
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            2522.4256840192884,
+            394.9078418079096
+          ],
+          [
+            2522.4256840192884,
+            410.9078418079096
+          ],
+          [
+            2522.4256840192884,
+            434.9078418079096
+          ],
+          [
+            2522.8821753429775,
+            394.9078418079096
+          ],
+          [
+            2522.8821753429775,
+            410.9078418079096
+          ],
+          [
+            2522.8821753429775,
+            434.9078418079096
+          ],
+          [
+            2535.3386666666665,
+            394.9078418079096
+          ],
+          [
+            2535.3386666666665,
+            410.9078418079096
+          ],
+          [
+            2535.3386666666665,
+            434.9078418079096
+          ],
+          [
+            2547.7951579903556,
+            394.9078418079096
+          ],
+          [
+            2547.7951579903556,
+            410.9078418079096
+          ],
+          [
+            2547.7951579903556,
+            434.9078418079096
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1439.488,
+        697.5147
+      ],
+      "gridStart": [
+        1445.3333,
+        704.0
+      ]
+    },
+    {
+      "assemblyId": "A08-00243-g",
+      "mapId": "A08",
+      "memberIds": [
+        "A08-00243-g"
+      ],
+      "worldPivot": [
+        328.94378264759786,
+        447.9146666666667
+      ],
+      "visualWorldX": [
+        133.85321328052095,
+        524.0343520146747
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2133.3333,
+        853.3333
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            145.85321328052095,
+            471.9146666666667
+          ],
+          [
+            145.85321328052095,
+            487.9146666666667
+          ],
+          [
+            145.85321328052095,
+            511.9146666666667
+          ],
+          [
+            231.3984979640594,
+            471.9146666666667
+          ],
+          [
+            231.3984979640594,
+            487.9146666666667
+          ],
+          [
+            231.3984979640594,
+            511.9146666666667
+          ],
+          [
+            328.9437826475978,
+            471.9146666666667
+          ],
+          [
+            328.9437826475978,
+            487.9146666666667
+          ],
+          [
+            328.9437826475978,
+            511.9146666666667
+          ],
+          [
+            426.48906733113625,
+            471.9146666666667
+          ],
+          [
+            426.48906733113625,
+            487.9146666666667
+          ],
+          [
+            426.48906733113625,
+            511.9146666666667
+          ],
+          [
+            512.0343520146747,
+            471.9146666666667
+          ],
+          [
+            512.0343520146747,
+            487.9146666666667
+          ],
+          [
+            512.0343520146747,
+            511.9146666666667
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        410.5387,
+        457.8987
+      ],
+      "gridStart": [
+        405.3333,
+        464.0
+      ]
+    },
+    {
+      "assemblyId": "A11-pod-82",
+      "mapId": "A11",
+      "memberIds": [
+        "A11-source-depth-82",
+        "A11-source-depth-115"
+      ],
+      "worldPivot": [
+        427.26399999999995,
+        419.66933333333344
+      ],
+      "visualWorldX": [
+        348.66399999999993,
+        505.8639999999999
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        1689.6,
+        853.3333
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            360.66399999999993,
+            443.66933333333344
+          ],
+          [
+            360.66399999999993,
+            459.66933333333344
+          ],
+          [
+            360.66399999999993,
+            483.66933333333344
+          ],
+          [
+            387.96399999999994,
+            443.66933333333344
+          ],
+          [
+            387.96399999999994,
+            459.66933333333344
+          ],
+          [
+            387.96399999999994,
+            483.66933333333344
+          ],
+          [
+            427.2639999999999,
+            443.66933333333344
+          ],
+          [
+            427.2639999999999,
+            459.66933333333344
+          ],
+          [
+            427.2639999999999,
+            483.66933333333344
+          ],
+          [
+            466.5639999999999,
+            443.66933333333344
+          ],
+          [
+            466.5639999999999,
+            459.66933333333344
+          ],
+          [
+            466.5639999999999,
+            483.66933333333344
+          ],
+          [
+            493.8639999999999,
+            443.66933333333344
+          ],
+          [
+            493.8639999999999,
+            459.66933333333344
+          ],
+          [
+            493.8639999999999,
+            483.66933333333344
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1285.9733,
+        425.0453
+      ],
+      "gridStart": [
+        1285.3333,
+        432.0
+      ]
+    },
+    {
+      "assemblyId": "A14-pod-128",
+      "mapId": "A14",
+      "memberIds": [
+        "A14-source-depth-128",
+        "A14-source-depth-129"
+      ],
+      "worldPivot": [
+        1280.0,
+        183.29600000000002
+      ],
+      "visualWorldX": [
+        1201.4,
+        1358.6
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        462.336,
+        398.1653
+      ],
+      "gridStart": [
+        469.3333,
+        400.0
+      ]
+    },
+    {
+      "assemblyId": "A14-pod-149",
+      "mapId": "A14",
+      "memberIds": [
+        "A14-source-depth-149",
+        "A14-source-depth-150"
+      ],
+      "worldPivot": [
+        1636.7786666666666,
+        183.29600000000002
+      ],
+      "visualWorldX": [
+        1558.1786666666667,
+        1715.3786666666665
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        462.336,
+        398.1653
+      ],
+      "gridStart": [
+        469.3333,
+        400.0
+      ]
+    },
+    {
+      "assemblyId": "A14-pod-170",
+      "mapId": "A14",
+      "memberIds": [
+        "A14-source-depth-170",
+        "A14-source-depth-171"
+      ],
+      "worldPivot": [
+        1998.592,
+        183.29600000000002
+      ],
+      "visualWorldX": [
+        1919.9920000000002,
+        2077.192
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        462.336,
+        398.1653
+      ],
+      "gridStart": [
+        469.3333,
+        400.0
+      ]
+    },
+    {
+      "assemblyId": "A14-pod-191",
+      "mapId": "A14",
+      "memberIds": [
+        "A14-source-depth-191",
+        "A14-source-depth-192"
+      ],
+      "worldPivot": [
+        1372.16,
+        280.576
+      ],
+      "visualWorldX": [
+        1293.5600000000002,
+        1450.76
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        462.336,
+        398.1653
+      ],
+      "gridStart": [
+        469.3333,
+        400.0
+      ]
+    },
+    {
+      "assemblyId": "A14-pod-212",
+      "mapId": "A14",
+      "memberIds": [
+        "A14-source-depth-212",
+        "A14-source-depth-213"
+      ],
+      "worldPivot": [
+        1728.9386666666667,
+        280.576
+      ],
+      "visualWorldX": [
+        1650.3386666666668,
+        1807.5386666666666
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        462.336,
+        398.1653
+      ],
+      "gridStart": [
+        469.3333,
+        400.0
+      ]
+    },
+    {
+      "assemblyId": "A14-pod-233",
+      "mapId": "A14",
+      "memberIds": [
+        "A14-source-depth-233",
+        "A14-source-depth-234"
+      ],
+      "worldPivot": [
+        2090.752,
+        280.576
+      ],
+      "visualWorldX": [
+        2012.152,
+        2169.352
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        462.336,
+        398.1653
+      ],
+      "gridStart": [
+        469.3333,
+        400.0
+      ]
+    },
+    {
+      "assemblyId": "A14-pod-254",
+      "mapId": "A14",
+      "memberIds": [
+        "A14-source-depth-254",
+        "A14-source-depth-255"
+      ],
+      "worldPivot": [
+        1427.5413333333336,
+        396.62933333333336
+      ],
+      "visualWorldX": [
+        1348.9413333333337,
+        1506.1413333333335
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            1360.9413333333337,
+            420.62933333333336
+          ],
+          [
+            1360.9413333333337,
+            436.62933333333336
+          ],
+          [
+            1360.9413333333337,
+            460.62933333333336
+          ],
+          [
+            1388.2413333333336,
+            420.62933333333336
+          ],
+          [
+            1388.2413333333336,
+            436.62933333333336
+          ],
+          [
+            1388.2413333333336,
+            460.62933333333336
+          ],
+          [
+            1427.5413333333336,
+            420.62933333333336
+          ],
+          [
+            1427.5413333333336,
+            436.62933333333336
+          ],
+          [
+            1427.5413333333336,
+            460.62933333333336
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        462.336,
+        398.1653
+      ],
+      "gridStart": [
+        469.3333,
+        400.0
+      ]
+    },
+    {
+      "assemblyId": "A14-pod-275",
+      "mapId": "A14",
+      "memberIds": [
+        "A14-source-depth-275",
+        "A14-source-depth-276"
+      ],
+      "worldPivot": [
+        2380.8853333333336,
+        183.29600000000002
+      ],
+      "visualWorldX": [
+        2302.2853333333337,
+        2459.4853333333335
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        462.336,
+        398.1653
+      ],
+      "gridStart": [
+        469.3333,
+        400.0
+      ]
+    },
+    {
+      "assemblyId": "A14-pod-296",
+      "mapId": "A14",
+      "memberIds": [
+        "A14-source-depth-296",
+        "A14-source-depth-297"
+      ],
+      "worldPivot": [
+        2473.0453333333335,
+        280.576
+      ],
+      "visualWorldX": [
+        2394.4453333333336,
+        2551.6453333333334
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        462.336,
+        398.1653
+      ],
+      "gridStart": [
+        469.3333,
+        400.0
+      ]
+    },
+    {
+      "assemblyId": "A14-pod-319",
+      "mapId": "A14",
+      "memberIds": [
+        "A14-source-depth-319",
+        "A14-source-depth-320"
+      ],
+      "worldPivot": [
+        2528.4266666666667,
+        396.62933333333336
+      ],
+      "visualWorldX": [
+        2449.826666666667,
+        2607.0266666666666
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            2461.826666666667,
+            420.62933333333336
+          ],
+          [
+            2461.826666666667,
+            436.62933333333336
+          ],
+          [
+            2461.826666666667,
+            460.62933333333336
+          ],
+          [
+            2489.126666666667,
+            420.62933333333336
+          ],
+          [
+            2489.126666666667,
+            436.62933333333336
+          ],
+          [
+            2489.126666666667,
+            460.62933333333336
+          ],
+          [
+            2528.4266666666667,
+            420.62933333333336
+          ],
+          [
+            2528.4266666666667,
+            436.62933333333336
+          ],
+          [
+            2528.4266666666667,
+            460.62933333333336
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        462.336,
+        398.1653
+      ],
+      "gridStart": [
+        469.3333,
+        400.0
+      ]
+    },
+    {
+      "assemblyId": "A14-pod-340",
+      "mapId": "A14",
+      "memberIds": [
+        "A14-source-depth-340",
+        "A14-source-depth-341"
+      ],
+      "worldPivot": [
+        1784.3200000000002,
+        396.62933333333336
+      ],
+      "visualWorldX": [
+        1705.7200000000003,
+        1862.92
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        462.336,
+        398.1653
+      ],
+      "gridStart": [
+        469.3333,
+        400.0
+      ]
+    },
+    {
+      "assemblyId": "A14-pod-401",
+      "mapId": "A14",
+      "memberIds": [
+        "A14-source-depth-401",
+        "A14-source-depth-402"
+      ],
+      "worldPivot": [
+        2146.1333333333337,
+        396.62933333333336
+      ],
+      "visualWorldX": [
+        2067.5333333333338,
+        2224.7333333333336
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            2106.833333333334,
+            420.62933333333336
+          ],
+          [
+            2106.833333333334,
+            436.62933333333336
+          ],
+          [
+            2106.833333333334,
+            460.62933333333336
+          ],
+          [
+            2146.1333333333337,
+            420.62933333333336
+          ],
+          [
+            2146.1333333333337,
+            436.62933333333336
+          ],
+          [
+            2146.1333333333337,
+            460.62933333333336
+          ],
+          [
+            2185.4333333333334,
+            420.62933333333336
+          ],
+          [
+            2185.4333333333334,
+            436.62933333333336
+          ],
+          [
+            2185.4333333333334,
+            460.62933333333336
+          ],
+          [
+            2212.7333333333336,
+            420.62933333333336
+          ],
+          [
+            2212.7333333333336,
+            436.62933333333336
+          ],
+          [
+            2212.7333333333336,
+            460.62933333333336
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        462.336,
+        398.1653
+      ],
+      "gridStart": [
+        469.3333,
+        400.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-133",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-133",
+        "A15-source-depth-134"
+      ],
+      "worldPivot": [
+        1280.0,
+        183.29600000000002
+      ],
+      "visualWorldX": [
+        1201.4,
+        1358.6
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-154",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-154",
+        "A15-source-depth-155"
+      ],
+      "worldPivot": [
+        1636.7786666666666,
+        183.29600000000002
+      ],
+      "visualWorldX": [
+        1558.1786666666667,
+        1715.3786666666665
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-175",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-175",
+        "A15-source-depth-176"
+      ],
+      "worldPivot": [
+        1998.592,
+        183.29600000000002
+      ],
+      "visualWorldX": [
+        1919.9920000000002,
+        2077.192
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-196",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-196",
+        "A15-source-depth-197"
+      ],
+      "worldPivot": [
+        1372.16,
+        280.576
+      ],
+      "visualWorldX": [
+        1293.5600000000002,
+        1450.76
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-217",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-217",
+        "A15-source-depth-218"
+      ],
+      "worldPivot": [
+        1728.9386666666667,
+        280.576
+      ],
+      "visualWorldX": [
+        1650.3386666666668,
+        1807.5386666666666
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-238",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-238",
+        "A15-source-depth-239"
+      ],
+      "worldPivot": [
+        2090.752,
+        280.576
+      ],
+      "visualWorldX": [
+        2012.152,
+        2169.352
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-259",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-259",
+        "A15-source-depth-260"
+      ],
+      "worldPivot": [
+        1456.554666666667,
+        430.7626666666667
+      ],
+      "visualWorldX": [
+        1377.954666666667,
+        1535.1546666666668
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            1389.954666666667,
+            454.7626666666667
+          ],
+          [
+            1389.954666666667,
+            470.7626666666667
+          ],
+          [
+            1389.954666666667,
+            494.7626666666667
+          ],
+          [
+            1417.254666666667,
+            454.7626666666667
+          ],
+          [
+            1417.254666666667,
+            470.7626666666667
+          ],
+          [
+            1417.254666666667,
+            494.7626666666667
+          ],
+          [
+            1456.554666666667,
+            454.7626666666667
+          ],
+          [
+            1456.554666666667,
+            470.7626666666667
+          ],
+          [
+            1456.554666666667,
+            494.7626666666667
+          ],
+          [
+            1495.8546666666668,
+            454.7626666666667
+          ],
+          [
+            1495.8546666666668,
+            470.7626666666667
+          ],
+          [
+            1495.8546666666668,
+            494.7626666666667
+          ],
+          [
+            1523.1546666666668,
+            454.7626666666667
+          ],
+          [
+            1523.1546666666668,
+            470.7626666666667
+          ],
+          [
+            1523.1546666666668,
+            494.7626666666667
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-280",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-280",
+        "A15-source-depth-281"
+      ],
+      "worldPivot": [
+        2380.8853333333336,
+        183.29600000000002
+      ],
+      "visualWorldX": [
+        2302.2853333333337,
+        2459.4853333333335
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-301",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-301",
+        "A15-source-depth-302"
+      ],
+      "worldPivot": [
+        2473.0453333333335,
+        280.576
+      ],
+      "visualWorldX": [
+        2394.4453333333336,
+        2551.6453333333334
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-322",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-322",
+        "A15-source-depth-323"
+      ],
+      "worldPivot": [
+        2557.44,
+        430.7626666666667
+      ],
+      "visualWorldX": [
+        2478.84,
+        2636.04
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            2490.84,
+            454.7626666666667
+          ],
+          [
+            2490.84,
+            470.7626666666667
+          ],
+          [
+            2490.84,
+            494.7626666666667
+          ],
+          [
+            2518.1400000000003,
+            454.7626666666667
+          ],
+          [
+            2518.1400000000003,
+            470.7626666666667
+          ],
+          [
+            2518.1400000000003,
+            494.7626666666667
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-343",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-343",
+        "A15-source-depth-344"
+      ],
+      "worldPivot": [
+        1813.3333333333335,
+        430.7626666666667
+      ],
+      "visualWorldX": [
+        1734.7333333333336,
+        1891.9333333333334
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            1746.7333333333336,
+            454.7626666666667
+          ],
+          [
+            1746.7333333333336,
+            470.7626666666667
+          ],
+          [
+            1746.7333333333336,
+            494.7626666666667
+          ],
+          [
+            1774.0333333333335,
+            454.7626666666667
+          ],
+          [
+            1774.0333333333335,
+            470.7626666666667
+          ],
+          [
+            1774.0333333333335,
+            494.7626666666667
+          ],
+          [
+            1813.3333333333335,
+            454.7626666666667
+          ],
+          [
+            1813.3333333333335,
+            470.7626666666667
+          ],
+          [
+            1813.3333333333335,
+            494.7626666666667
+          ],
+          [
+            1852.6333333333334,
+            454.7626666666667
+          ],
+          [
+            1852.6333333333334,
+            470.7626666666667
+          ],
+          [
+            1852.6333333333334,
+            494.7626666666667
+          ],
+          [
+            1879.9333333333334,
+            454.7626666666667
+          ],
+          [
+            1879.9333333333334,
+            470.7626666666667
+          ],
+          [
+            1879.9333333333334,
+            494.7626666666667
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-364",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-364",
+        "A15-source-depth-365"
+      ],
+      "worldPivot": [
+        2175.146666666667,
+        430.7626666666667
+      ],
+      "visualWorldX": [
+        2096.546666666667,
+        2253.746666666667
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            2108.546666666667,
+            454.7626666666667
+          ],
+          [
+            2108.546666666667,
+            470.7626666666667
+          ],
+          [
+            2108.546666666667,
+            494.7626666666667
+          ],
+          [
+            2135.8466666666673,
+            454.7626666666667
+          ],
+          [
+            2135.8466666666673,
+            470.7626666666667
+          ],
+          [
+            2135.8466666666673,
+            494.7626666666667
+          ],
+          [
+            2175.146666666667,
+            454.7626666666667
+          ],
+          [
+            2175.146666666667,
+            470.7626666666667
+          ],
+          [
+            2175.146666666667,
+            494.7626666666667
+          ],
+          [
+            2214.4466666666667,
+            454.7626666666667
+          ],
+          [
+            2214.4466666666667,
+            470.7626666666667
+          ],
+          [
+            2214.4466666666667,
+            494.7626666666667
+          ],
+          [
+            2241.746666666667,
+            454.7626666666667
+          ],
+          [
+            2241.746666666667,
+            470.7626666666667
+          ],
+          [
+            2241.746666666667,
+            494.7626666666667
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-385",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-385",
+        "A15-source-depth-386"
+      ],
+      "worldPivot": [
+        901.12,
+        183.29600000000002
+      ],
+      "visualWorldX": [
+        822.52,
+        979.72
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-406",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-406",
+        "A15-source-depth-407"
+      ],
+      "worldPivot": [
+        993.2800000000001,
+        280.576
+      ],
+      "visualWorldX": [
+        914.6800000000001,
+        1071.88
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-427",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-427",
+        "A15-source-depth-428"
+      ],
+      "worldPivot": [
+        1077.6746666666668,
+        430.7626666666667
+      ],
+      "visualWorldX": [
+        999.0746666666668,
+        1156.2746666666667
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            1011.0746666666668,
+            454.7626666666667
+          ],
+          [
+            1011.0746666666668,
+            470.7626666666667
+          ],
+          [
+            1011.0746666666668,
+            494.7626666666667
+          ],
+          [
+            1038.3746666666668,
+            454.7626666666667
+          ],
+          [
+            1038.3746666666668,
+            470.7626666666667
+          ],
+          [
+            1038.3746666666668,
+            494.7626666666667
+          ],
+          [
+            1077.6746666666668,
+            454.7626666666667
+          ],
+          [
+            1077.6746666666668,
+            470.7626666666667
+          ],
+          [
+            1077.6746666666668,
+            494.7626666666667
+          ],
+          [
+            1116.9746666666667,
+            454.7626666666667
+          ],
+          [
+            1116.9746666666667,
+            470.7626666666667
+          ],
+          [
+            1116.9746666666667,
+            494.7626666666667
+          ],
+          [
+            1144.2746666666667,
+            454.7626666666667
+          ],
+          [
+            1144.2746666666667,
+            470.7626666666667
+          ],
+          [
+            1144.2746666666667,
+            494.7626666666667
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-448",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-448",
+        "A15-source-depth-449"
+      ],
+      "worldPivot": [
+        522.2400000000001,
+        183.29600000000002
+      ],
+      "visualWorldX": [
+        443.6400000000001,
+        600.8400000000001
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-469",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-469",
+        "A15-source-depth-470"
+      ],
+      "worldPivot": [
+        614.4000000000001,
+        280.576
+      ],
+      "visualWorldX": [
+        535.8000000000001,
+        693.0000000000001
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-490",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-490",
+        "A15-source-depth-491"
+      ],
+      "worldPivot": [
+        201.47200000000004,
+        183.29600000000002
+      ],
+      "visualWorldX": [
+        122.87200000000009,
+        280.0720000000001
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-511",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-511",
+        "A15-source-depth-512"
+      ],
+      "worldPivot": [
+        293.6320000000001,
+        280.576
+      ],
+      "visualWorldX": [
+        215.0320000000001,
+        372.2320000000001
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-532",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-532",
+        "A15-source-depth-533"
+      ],
+      "worldPivot": [
+        364.37333333333345,
+        439.296
+      ],
+      "visualWorldX": [
+        285.7733333333334,
+        442.97333333333347
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-553",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-553",
+        "A15-source-depth-554"
+      ],
+      "worldPivot": [
+        698.7946666666669,
+        430.7626666666667
+      ],
+      "visualWorldX": [
+        620.1946666666669,
+        777.3946666666669
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            632.1946666666669,
+            454.7626666666667
+          ],
+          [
+            632.1946666666669,
+            470.7626666666667
+          ],
+          [
+            632.1946666666669,
+            494.7626666666667
+          ],
+          [
+            659.494666666667,
+            454.7626666666667
+          ],
+          [
+            659.494666666667,
+            470.7626666666667
+          ],
+          [
+            659.494666666667,
+            494.7626666666667
+          ],
+          [
+            698.7946666666669,
+            454.7626666666667
+          ],
+          [
+            698.7946666666669,
+            470.7626666666667
+          ],
+          [
+            698.7946666666669,
+            494.7626666666667
+          ],
+          [
+            738.0946666666669,
+            454.7626666666667
+          ],
+          [
+            738.0946666666669,
+            470.7626666666667
+          ],
+          [
+            738.0946666666669,
+            494.7626666666667
+          ],
+          [
+            765.3946666666669,
+            454.7626666666667
+          ],
+          [
+            765.3946666666669,
+            470.7626666666667
+          ],
+          [
+            765.3946666666669,
+            494.7626666666667
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-574",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-574",
+        "A15-source-depth-575"
+      ],
+      "worldPivot": [
+        -122.79466666666666,
+        183.29600000000002
+      ],
+      "visualWorldX": [
+        -201.3946666666666,
+        -44.194666666666606
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-595",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-595",
+        "A15-source-depth-596"
+      ],
+      "worldPivot": [
+        -30.63466666666665,
+        280.576
+      ],
+      "visualWorldX": [
+        -109.2346666666666,
+        47.965333333333405
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-pod-616",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-616",
+        "A15-source-depth-617"
+      ],
+      "worldPivot": [
+        24.746666666666766,
+        396.62933333333336
+      ],
+      "visualWorldX": [
+        -53.85333333333318,
+        103.34666666666682
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A15-armored-van",
+      "mapId": "A15",
+      "memberIds": [
+        "A15-source-depth-636",
+        "A15-source-depth-637",
+        "A15-source-depth-638",
+        "A15-source-depth-639",
+        "A15-source-depth-640"
+      ],
+      "worldPivot": [
+        165.97333333333344,
+        554.8373333333334
+      ],
+      "visualWorldX": [
+        -19.526666666666557,
+        351.47333333333347
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            165.97333333333347,
+            578.8373333333334
+          ],
+          [
+            165.97333333333347,
+            594.8373333333334
+          ],
+          [
+            165.97333333333347,
+            618.8373333333334
+          ],
+          [
+            258.72333333333347,
+            578.8373333333334
+          ],
+          [
+            258.72333333333347,
+            594.8373333333334
+          ],
+          [
+            258.72333333333347,
+            618.8373333333334
+          ],
+          [
+            339.47333333333347,
+            578.8373333333334
+          ],
+          [
+            339.47333333333347,
+            594.8373333333334
+          ],
+          [
+            339.47333333333347,
+            618.8373333333334
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        317.3547,
+        680.6187
+      ],
+      "gridStart": [
+        325.3333,
+        688.0
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-266",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-266",
+        "A16-source-depth-267"
+      ],
+      "worldPivot": [
+        1483.0933333333335,
+        400.0426666666668
+      ],
+      "visualWorldX": [
+        1404.4933333333336,
+        1561.6933333333334
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            1416.4933333333336,
+            440.0426666666668
+          ],
+          [
+            1416.4933333333336,
+            464.0426666666668
+          ],
+          [
+            1443.7933333333335,
+            440.0426666666668
+          ],
+          [
+            1443.7933333333335,
+            464.0426666666668
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-287",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-287",
+        "A16-source-depth-288"
+      ],
+      "worldPivot": [
+        1747.5413333333331,
+        386.3893333333334
+      ],
+      "visualWorldX": [
+        1668.9413333333332,
+        1826.141333333333
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-308",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-308",
+        "A16-source-depth-309"
+      ],
+      "worldPivot": [
+        2153.898666666667,
+        386.3893333333334
+      ],
+      "visualWorldX": [
+        2075.298666666667,
+        2232.498666666667
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-329",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-329",
+        "A16-source-depth-330"
+      ],
+      "worldPivot": [
+        1880.832,
+        449.7066666666668
+      ],
+      "visualWorldX": [
+        1802.2320000000002,
+        1959.432
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-350",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-350",
+        "A16-source-depth-351"
+      ],
+      "worldPivot": [
+        2263.1253333333334,
+        455.168
+      ],
+      "visualWorldX": [
+        2184.5253333333335,
+        2341.7253333333333
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-371",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-371",
+        "A16-source-depth-372"
+      ],
+      "worldPivot": [
+        2536.192,
+        386.3893333333334
+      ],
+      "visualWorldX": [
+        2457.592,
+        2614.792
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-392",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-392",
+        "A16-source-depth-393"
+      ],
+      "worldPivot": [
+        2597.632,
+        450.048
+      ],
+      "visualWorldX": [
+        2519.032,
+        2676.232
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-413",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-413",
+        "A16-source-depth-414"
+      ],
+      "worldPivot": [
+        676.3520000000001,
+        386.3893333333334
+      ],
+      "visualWorldX": [
+        597.7520000000001,
+        754.9520000000001
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            637.0520000000001,
+            410.3893333333334
+          ],
+          [
+            637.0520000000001,
+            426.3893333333334
+          ],
+          [
+            637.0520000000001,
+            450.3893333333334
+          ],
+          [
+            676.3520000000001,
+            410.3893333333334
+          ],
+          [
+            676.3520000000001,
+            426.3893333333334
+          ],
+          [
+            676.3520000000001,
+            450.3893333333334
+          ],
+          [
+            715.652,
+            410.3893333333334
+          ],
+          [
+            715.652,
+            426.3893333333334
+          ],
+          [
+            715.652,
+            450.3893333333334
+          ],
+          [
+            742.9520000000001,
+            410.3893333333334
+          ],
+          [
+            742.9520000000001,
+            426.3893333333334
+          ],
+          [
+            742.9520000000001,
+            450.3893333333334
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-434",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-434",
+        "A16-source-depth-435"
+      ],
+      "worldPivot": [
+        356.7786666666668,
+        386.3893333333334
+      ],
+      "visualWorldX": [
+        278.1786666666668,
+        435.37866666666685
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            423.37866666666685,
+            450.3893333333334
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-455",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-455",
+        "A16-source-depth-456"
+      ],
+      "worldPivot": [
+        472.83200000000005,
+        455.168
+      ],
+      "visualWorldX": [
+        394.232,
+        551.432
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            433.53200000000004,
+            479.168
+          ],
+          [
+            433.53200000000004,
+            495.168
+          ],
+          [
+            433.53200000000004,
+            519.168
+          ],
+          [
+            472.832,
+            479.168
+          ],
+          [
+            472.832,
+            495.168
+          ],
+          [
+            472.832,
+            519.168
+          ],
+          [
+            512.1320000000001,
+            479.168
+          ],
+          [
+            512.1320000000001,
+            495.168
+          ],
+          [
+            512.1320000000001,
+            519.168
+          ],
+          [
+            539.432,
+            479.168
+          ],
+          [
+            539.432,
+            495.168
+          ],
+          [
+            539.432,
+            519.168
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-476",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-476",
+        "A16-source-depth-477"
+      ],
+      "worldPivot": [
+        32.51200000000002,
+        386.3893333333334
+      ],
+      "visualWorldX": [
+        -46.08799999999993,
+        111.11200000000008
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-497",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-497",
+        "A16-source-depth-498"
+      ],
+      "worldPivot": [
+        151.9786666666667,
+        461.4826666666668
+      ],
+      "visualWorldX": [
+        73.37866666666675,
+        230.57866666666675
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-518",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-518",
+        "A16-source-depth-519"
+      ],
+      "worldPivot": [
+        289.36533333333347,
+        550.8266666666667
+      ],
+      "visualWorldX": [
+        210.76533333333344,
+        367.96533333333343
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            222.76533333333344,
+            574.8266666666667
+          ],
+          [
+            222.76533333333344,
+            590.8266666666667
+          ],
+          [
+            222.76533333333344,
+            614.8266666666667
+          ],
+          [
+            250.06533333333346,
+            574.8266666666667
+          ],
+          [
+            250.06533333333346,
+            590.8266666666667
+          ],
+          [
+            250.06533333333346,
+            614.8266666666667
+          ],
+          [
+            289.3653333333334,
+            574.8266666666667
+          ],
+          [
+            289.3653333333334,
+            590.8266666666667
+          ],
+          [
+            289.3653333333334,
+            614.8266666666667
+          ],
+          [
+            328.6653333333334,
+            574.8266666666667
+          ],
+          [
+            328.6653333333334,
+            590.8266666666667
+          ],
+          [
+            328.6653333333334,
+            614.8266666666667
+          ],
+          [
+            355.96533333333343,
+            574.8266666666667
+          ],
+          [
+            355.96533333333343,
+            590.8266666666667
+          ],
+          [
+            355.96533333333343,
+            614.8266666666667
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-539",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-539",
+        "A16-source-depth-540"
+      ],
+      "worldPivot": [
+        1606.0586666666668,
+        550.7413333333335
+      ],
+      "visualWorldX": [
+        1527.4586666666669,
+        1684.6586666666667
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            1539.4586666666669,
+            574.7413333333335
+          ],
+          [
+            1539.4586666666669,
+            590.7413333333335
+          ],
+          [
+            1539.4586666666669,
+            614.7413333333335
+          ],
+          [
+            1566.7586666666668,
+            574.7413333333335
+          ],
+          [
+            1566.7586666666668,
+            590.7413333333335
+          ],
+          [
+            1566.7586666666668,
+            614.7413333333335
+          ],
+          [
+            1606.0586666666668,
+            574.7413333333335
+          ],
+          [
+            1606.0586666666668,
+            590.7413333333335
+          ],
+          [
+            1606.0586666666668,
+            614.7413333333335
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-560",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-560",
+        "A16-source-depth-561"
+      ],
+      "worldPivot": [
+        1935.872,
+        540.5013333333335
+      ],
+      "visualWorldX": [
+        1857.2720000000002,
+        2014.472
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-581",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-581",
+        "A16-source-depth-582"
+      ],
+      "worldPivot": [
+        2152.704,
+        543.9146666666668
+      ],
+      "visualWorldX": [
+        2074.1040000000003,
+        2231.304
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A16-pod-602",
+      "mapId": "A16",
+      "memberIds": [
+        "A16-source-depth-602",
+        "A16-source-depth-603"
+      ],
+      "worldPivot": [
+        2482.0906666666665,
+        543.9146666666668
+      ],
+      "visualWorldX": [
+        2403.4906666666666,
+        2560.6906666666664
+      ],
+      "walkBounds": [
+        85.3333,
+        341.3333,
+        1655.4667,
+        768.0
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        467.456,
+        645.376
+      ],
+      "gridStart": [
+        469.3333,
+        645.3333
+      ]
+    },
+    {
+      "assemblyId": "A17-pod-266",
+      "mapId": "A17",
+      "memberIds": [
+        "A17-source-depth-266",
+        "A17-source-depth-267"
+      ],
+      "worldPivot": [
+        1483.0933333333335,
+        382.97600000000006
+      ],
+      "visualWorldX": [
+        1404.4933333333336,
+        1561.6933333333334
+      ],
+      "walkBounds": [
+        85.3333,
+        426.6667,
+        2560.0,
+        887.4667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            1416.4933333333336,
+            446.97600000000006
+          ],
+          [
+            1443.7933333333335,
+            446.97600000000006
+          ],
+          [
+            1483.0933333333335,
+            446.97600000000006
+          ],
+          [
+            1522.3933333333334,
+            446.97600000000006
+          ],
+          [
+            1549.6933333333334,
+            446.97600000000006
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1132.9707,
+        493.312
+      ],
+      "gridStart": [
+        1125.3333,
+        490.6667
+      ]
+    },
+    {
+      "assemblyId": "A17-pod-287",
+      "mapId": "A17",
+      "memberIds": [
+        "A17-source-depth-287",
+        "A17-source-depth-288"
+      ],
+      "worldPivot": [
+        1747.5413333333331,
+        369.32266666666675
+      ],
+      "visualWorldX": [
+        1668.9413333333332,
+        1826.141333333333
+      ],
+      "walkBounds": [
+        85.3333,
+        426.6667,
+        2560.0,
+        887.4667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1132.9707,
+        493.312
+      ],
+      "gridStart": [
+        1125.3333,
+        490.6667
+      ]
+    },
+    {
+      "assemblyId": "A17-pod-308",
+      "mapId": "A17",
+      "memberIds": [
+        "A17-source-depth-308",
+        "A17-source-depth-309"
+      ],
+      "worldPivot": [
+        2153.898666666667,
+        369.32266666666675
+      ],
+      "visualWorldX": [
+        2075.298666666667,
+        2232.498666666667
+      ],
+      "walkBounds": [
+        85.3333,
+        426.6667,
+        2560.0,
+        887.4667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1132.9707,
+        493.312
+      ],
+      "gridStart": [
+        1125.3333,
+        490.6667
+      ]
+    },
+    {
+      "assemblyId": "A17-pod-329",
+      "mapId": "A17",
+      "memberIds": [
+        "A17-source-depth-329",
+        "A17-source-depth-330"
+      ],
+      "worldPivot": [
+        1880.832,
+        432.6400000000001
+      ],
+      "visualWorldX": [
+        1802.2320000000002,
+        1959.432
+      ],
+      "walkBounds": [
+        85.3333,
+        426.6667,
+        2560.0,
+        887.4667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            1814.2320000000002,
+            456.6400000000001
+          ],
+          [
+            1814.2320000000002,
+            472.6400000000001
+          ],
+          [
+            1814.2320000000002,
+            496.6400000000001
+          ],
+          [
+            1841.5320000000002,
+            456.6400000000001
+          ],
+          [
+            1841.5320000000002,
+            472.6400000000001
+          ],
+          [
+            1841.5320000000002,
+            496.6400000000001
+          ],
+          [
+            1880.832,
+            456.6400000000001
+          ],
+          [
+            1880.832,
+            472.6400000000001
+          ],
+          [
+            1880.832,
+            496.6400000000001
+          ],
+          [
+            1920.132,
+            456.6400000000001
+          ],
+          [
+            1920.132,
+            472.6400000000001
+          ],
+          [
+            1920.132,
+            496.6400000000001
+          ],
+          [
+            1947.432,
+            456.6400000000001
+          ],
+          [
+            1947.432,
+            472.6400000000001
+          ],
+          [
+            1947.432,
+            496.6400000000001
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1132.9707,
+        493.312
+      ],
+      "gridStart": [
+        1125.3333,
+        490.6667
+      ]
+    },
+    {
+      "assemblyId": "A17-pod-350",
+      "mapId": "A17",
+      "memberIds": [
+        "A17-source-depth-350",
+        "A17-source-depth-351"
+      ],
+      "worldPivot": [
+        2263.1253333333334,
+        438.10133333333334
+      ],
+      "visualWorldX": [
+        2184.5253333333335,
+        2341.7253333333333
+      ],
+      "walkBounds": [
+        85.3333,
+        426.6667,
+        2560.0,
+        887.4667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            2196.5253333333335,
+            462.10133333333334
+          ],
+          [
+            2196.5253333333335,
+            478.10133333333334
+          ],
+          [
+            2196.5253333333335,
+            502.10133333333334
+          ],
+          [
+            2223.825333333333,
+            462.10133333333334
+          ],
+          [
+            2223.825333333333,
+            478.10133333333334
+          ],
+          [
+            2223.825333333333,
+            502.10133333333334
+          ],
+          [
+            2263.1253333333334,
+            462.10133333333334
+          ],
+          [
+            2263.1253333333334,
+            478.10133333333334
+          ],
+          [
+            2263.1253333333334,
+            502.10133333333334
+          ],
+          [
+            2302.4253333333336,
+            462.10133333333334
+          ],
+          [
+            2302.4253333333336,
+            478.10133333333334
+          ],
+          [
+            2302.4253333333336,
+            502.10133333333334
+          ],
+          [
+            2329.7253333333333,
+            462.10133333333334
+          ],
+          [
+            2329.7253333333333,
+            478.10133333333334
+          ],
+          [
+            2329.7253333333333,
+            502.10133333333334
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1132.9707,
+        493.312
+      ],
+      "gridStart": [
+        1125.3333,
+        490.6667
+      ]
+    },
+    {
+      "assemblyId": "A17-pod-371",
+      "mapId": "A17",
+      "memberIds": [
+        "A17-source-depth-371",
+        "A17-source-depth-372"
+      ],
+      "worldPivot": [
+        2536.192,
+        369.32266666666675
+      ],
+      "visualWorldX": [
+        2457.592,
+        2614.792
+      ],
+      "walkBounds": [
+        85.3333,
+        426.6667,
+        2560.0,
+        887.4667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1132.9707,
+        493.312
+      ],
+      "gridStart": [
+        1125.3333,
+        490.6667
+      ]
+    },
+    {
+      "assemblyId": "A17-pod-392",
+      "mapId": "A17",
+      "memberIds": [
+        "A17-source-depth-392",
+        "A17-source-depth-393"
+      ],
+      "worldPivot": [
+        2597.632,
+        432.98133333333334
+      ],
+      "visualWorldX": [
+        2519.032,
+        2676.232
+      ],
+      "walkBounds": [
+        85.3333,
+        426.6667,
+        2560.0,
+        887.4667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            2531.032,
+            456.98133333333334
+          ],
+          [
+            2531.032,
+            472.98133333333334
+          ],
+          [
+            2531.032,
+            496.98133333333334
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1132.9707,
+        493.312
+      ],
+      "gridStart": [
+        1125.3333,
+        490.6667
+      ]
+    },
+    {
+      "assemblyId": "A17-pod-413",
+      "mapId": "A17",
+      "memberIds": [
+        "A17-source-depth-413",
+        "A17-source-depth-414"
+      ],
+      "worldPivot": [
+        676.3520000000001,
+        369.32266666666675
+      ],
+      "visualWorldX": [
+        597.7520000000001,
+        754.9520000000001
+      ],
+      "walkBounds": [
+        85.3333,
+        426.6667,
+        2560.0,
+        887.4667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1132.9707,
+        493.312
+      ],
+      "gridStart": [
+        1125.3333,
+        490.6667
+      ]
+    },
+    {
+      "assemblyId": "A17-pod-434",
+      "mapId": "A17",
+      "memberIds": [
+        "A17-source-depth-434",
+        "A17-source-depth-435"
+      ],
+      "worldPivot": [
+        356.7786666666668,
+        369.32266666666675
+      ],
+      "visualWorldX": [
+        278.1786666666668,
+        435.37866666666685
+      ],
+      "walkBounds": [
+        85.3333,
+        426.6667,
+        2560.0,
+        887.4667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1132.9707,
+        493.312
+      ],
+      "gridStart": [
+        1125.3333,
+        490.6667
+      ]
+    },
+    {
+      "assemblyId": "A17-pod-455",
+      "mapId": "A17",
+      "memberIds": [
+        "A17-source-depth-455",
+        "A17-source-depth-456"
+      ],
+      "worldPivot": [
+        472.83200000000005,
+        438.10133333333334
+      ],
+      "visualWorldX": [
+        394.232,
+        551.432
+      ],
+      "walkBounds": [
+        85.3333,
+        426.6667,
+        2560.0,
+        887.4667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            406.232,
+            462.10133333333334
+          ],
+          [
+            406.232,
+            478.10133333333334
+          ],
+          [
+            406.232,
+            502.10133333333334
+          ],
+          [
+            433.53200000000004,
+            462.10133333333334
+          ],
+          [
+            433.53200000000004,
+            478.10133333333334
+          ],
+          [
+            433.53200000000004,
+            502.10133333333334
+          ],
+          [
+            472.832,
+            462.10133333333334
+          ],
+          [
+            472.832,
+            478.10133333333334
+          ],
+          [
+            472.832,
+            502.10133333333334
+          ],
+          [
+            512.1320000000001,
+            462.10133333333334
+          ],
+          [
+            512.1320000000001,
+            478.10133333333334
+          ],
+          [
+            512.1320000000001,
+            502.10133333333334
+          ],
+          [
+            539.432,
+            462.10133333333334
+          ],
+          [
+            539.432,
+            478.10133333333334
+          ],
+          [
+            539.432,
+            502.10133333333334
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1132.9707,
+        493.312
+      ],
+      "gridStart": [
+        1125.3333,
+        490.6667
+      ]
+    },
+    {
+      "assemblyId": "A17-pod-476",
+      "mapId": "A17",
+      "memberIds": [
+        "A17-source-depth-476",
+        "A17-source-depth-477"
+      ],
+      "worldPivot": [
+        32.51200000000002,
+        369.32266666666675
+      ],
+      "visualWorldX": [
+        -46.08799999999993,
+        111.11200000000008
+      ],
+      "walkBounds": [
+        85.3333,
+        426.6667,
+        2560.0,
+        887.4667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1132.9707,
+        493.312
+      ],
+      "gridStart": [
+        1125.3333,
+        490.6667
+      ]
+    },
+    {
+      "assemblyId": "A17-pod-497",
+      "mapId": "A17",
+      "memberIds": [
+        "A17-source-depth-497",
+        "A17-source-depth-498"
+      ],
+      "worldPivot": [
+        151.9786666666667,
+        444.4160000000001
+      ],
+      "visualWorldX": [
+        73.37866666666675,
+        230.57866666666675
+      ],
+      "walkBounds": [
+        85.3333,
+        426.6667,
+        2560.0,
+        887.4667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            112.67866666666674,
+            468.4160000000001
+          ],
+          [
+            112.67866666666674,
+            484.4160000000001
+          ],
+          [
+            112.67866666666674,
+            508.4160000000001
+          ],
+          [
+            151.97866666666675,
+            468.4160000000001
+          ],
+          [
+            151.97866666666675,
+            484.4160000000001
+          ],
+          [
+            151.97866666666675,
+            508.4160000000001
+          ],
+          [
+            191.27866666666677,
+            468.4160000000001
+          ],
+          [
+            191.27866666666677,
+            484.4160000000001
+          ],
+          [
+            191.27866666666677,
+            508.4160000000001
+          ],
+          [
+            218.57866666666675,
+            468.4160000000001
+          ],
+          [
+            218.57866666666675,
+            484.4160000000001
+          ],
+          [
+            218.57866666666675,
+            508.4160000000001
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1132.9707,
+        493.312
+      ],
+      "gridStart": [
+        1125.3333,
+        490.6667
+      ]
+    },
+    {
+      "assemblyId": "A11-barrel-fill-0",
+      "mapId": "A11",
+      "memberIds": [
+        "A11-barrel-fill-0"
+      ],
+      "worldPivot": [
+        676.8640000000001,
+        397.4826666666668
+      ],
+      "visualWorldX": [
+        650.8640000000001,
+        702.8640000000001
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        1689.6,
+        853.3333
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            662.8640000000001,
+            421.4826666666668
+          ],
+          [
+            662.8640000000001,
+            437.4826666666668
+          ],
+          [
+            662.8640000000001,
+            461.4826666666668
+          ],
+          [
+            663.8640000000001,
+            421.4826666666668
+          ],
+          [
+            663.8640000000001,
+            437.4826666666668
+          ],
+          [
+            663.8640000000001,
+            461.4826666666668
+          ],
+          [
+            676.8640000000001,
+            421.4826666666668
+          ],
+          [
+            676.8640000000001,
+            437.4826666666668
+          ],
+          [
+            676.8640000000001,
+            461.4826666666668
+          ],
+          [
+            689.8640000000001,
+            421.4826666666668
+          ],
+          [
+            689.8640000000001,
+            437.4826666666668
+          ],
+          [
+            689.8640000000001,
+            461.4826666666668
+          ],
+          [
+            690.8640000000001,
+            421.4826666666668
+          ],
+          [
+            690.8640000000001,
+            437.4826666666668
+          ],
+          [
+            690.8640000000001,
+            461.4826666666668
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1285.9733,
+        425.0453
+      ],
+      "gridStart": [
+        1285.3333,
+        432.0
+      ]
+    },
+    {
+      "assemblyId": "A11-barrel-fill-2",
+      "mapId": "A11",
+      "memberIds": [
+        "A11-barrel-fill-2"
+      ],
+      "worldPivot": [
+        794.5386666666667,
+        380.4160000000001
+      ],
+      "visualWorldX": [
+        768.5386666666667,
+        820.5386666666667
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        1689.6,
+        853.3333
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            780.5386666666667,
+            420.4160000000001
+          ],
+          [
+            780.5386666666667,
+            444.4160000000001
+          ],
+          [
+            781.5386666666667,
+            420.4160000000001
+          ],
+          [
+            781.5386666666667,
+            444.4160000000001
+          ],
+          [
+            794.5386666666667,
+            420.4160000000001
+          ],
+          [
+            794.5386666666667,
+            444.4160000000001
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1285.9733,
+        425.0453
+      ],
+      "gridStart": [
+        1285.3333,
+        432.0
+      ]
+    },
+    {
+      "assemblyId": "A11-barrel-fill-3",
+      "mapId": "A11",
+      "memberIds": [
+        "A11-barrel-fill-3"
+      ],
+      "worldPivot": [
+        736.5973333333335,
+        409.42933333333343
+      ],
+      "visualWorldX": [
+        710.5973333333335,
+        762.5973333333335
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        1689.6,
+        853.3333
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": [
+          [
+            722.5973333333335,
+            433.42933333333343
+          ],
+          [
+            722.5973333333335,
+            449.42933333333343
+          ],
+          [
+            722.5973333333335,
+            473.42933333333343
+          ],
+          [
+            723.5973333333335,
+            433.42933333333343
+          ],
+          [
+            723.5973333333335,
+            449.42933333333343
+          ],
+          [
+            723.5973333333335,
+            473.42933333333343
+          ],
+          [
+            736.5973333333335,
+            433.42933333333343
+          ],
+          [
+            736.5973333333335,
+            449.42933333333343
+          ],
+          [
+            736.5973333333335,
+            473.42933333333343
+          ],
+          [
+            749.5973333333335,
+            433.42933333333343
+          ],
+          [
+            749.5973333333335,
+            449.42933333333343
+          ],
+          [
+            749.5973333333335,
+            473.42933333333343
+          ],
+          [
+            750.5973333333335,
+            433.42933333333343
+          ],
+          [
+            750.5973333333335,
+            449.42933333333343
+          ],
+          [
+            750.5973333333335,
+            473.42933333333343
+          ]
+        ]
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        1285.9733,
+        425.0453
+      ],
+      "gridStart": [
+        1285.3333,
+        432.0
+      ]
+    },
+    {
+      "assemblyId": "A14-six-drum-stack",
+      "mapId": "A14",
+      "memberIds": [
+        "A14-barrel-fill-48",
+        "A14-barrel-fill-49",
+        "A14-barrel-fill-50",
+        "A14-barrel-fill-51",
+        "A14-barrel-fill-52",
+        "A14-barrel-fill-53"
+      ],
+      "worldPivot": [
+        1054.8480000000002,
+        196.09600000000003
+      ],
+      "visualWorldX": [
+        992.3730000000002,
+        1117.323
+      ],
+      "walkBounds": [
+        85.3333,
+        256.0,
+        2560.0,
+        836.2667
+      ],
+      "reachableSamples": {
+        "behind": [],
+        "front": []
+      },
+      "needsDepthSplit": false,
+      "criterion": "front/back traversal only; interaction requirements assessed separately",
+      "interactionAssessment": "not assessed",
+      "decision": "front/back traversal not demonstrated; no depth split required by this criterion",
+      "spawn": [
+        462.336,
+        398.1653
+      ],
+      "gridStart": [
+        469.3333,
+        400.0
+      ]
+    }
+  ],
+  "eligibleGroups": 2
+}

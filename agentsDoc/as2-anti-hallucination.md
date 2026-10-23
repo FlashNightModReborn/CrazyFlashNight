@@ -87,6 +87,8 @@
 - AS2 `var` 有函数作用域（类似 JS），无 `let`/`const`
 - AS2 方法中 `this` 指向调用者，但回调中 `this` 容易丢失
 - 绑定 `this` 的方式：`org.flashNight.neur.Event.Delegate` 可用，但实践中闭包更常用（`var self = this;`）
+- 将 `_root` 定义的函数赋给单位后，调用者虽是该单位，裸标识符仍可能取定义作用域。单位字段明确使用 `this.等级`、`this.方向`、`this.状态`、`this.myxscale`；不要靠根对象恰好具有同值掩盖错误。共享初始化与方向切换应以根对象和多个单位持有不同值的真实AVM1用例验证。
+- `MovieClipLoader.loadClip` 完成后，加载前设置的外部 `setMask` 绑定可能已被清除；在 `onLoadInit` 核对目标与遮罩归属后重绑。像素验证同时检查颜色/纹理与窗口外透明，只有alpha非零会把遮罩自身的纯黑填充误判为正常背景。
 
 ### 帧脚本闭包陷阱（asLoader 架构）
 - 帧脚本通过 `#include` 注入 asLoader 的 as链接影片剪辑，加载完成后该 MovieClip 被 `removeMovieClip()` 移除

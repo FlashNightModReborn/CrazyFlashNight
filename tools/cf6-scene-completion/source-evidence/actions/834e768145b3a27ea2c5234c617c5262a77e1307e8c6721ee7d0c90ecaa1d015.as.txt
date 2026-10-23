@@ -1,0 +1,8 @@
+onClipEvent(load){
+   var §\x01§ = 766;
+   var §\x0f§ = 1;
+   firesound = new Sound();
+   firesound.attachSound("男-主角-" + random(3));
+   firesound.start(o,1);
+   _root.金钱 += 100;
+}

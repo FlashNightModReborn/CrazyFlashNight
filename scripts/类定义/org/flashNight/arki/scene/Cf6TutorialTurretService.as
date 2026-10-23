@@ -95,7 +95,15 @@ class org.flashNight.arki.scene.Cf6TutorialTurretService {
                 if (typeof r.name != "string" || r.name.length == 0 || r.name.length > 64) return null;
                 needsAdopt = true;
             }
-            out.turrets.push({x: x, y: y, facing: r.facing, name: r.name});
+            var footprint:Array=undefined;
+            if(r.ownFootprint!==undefined) {
+                if(!(r.ownFootprint instanceof Array) || r.ownFootprint.length!=4) return null;
+                footprint=r.ownFootprint.concat();
+                for(var bi:Number=0;bi<4;bi++) if(typeof footprint[bi]!="number" || (footprint[bi]-footprint[bi])!=0) return null;
+                if(!(footprint[2]>footprint[0]) || !(footprint[3]>footprint[1])
+                    || footprint[2]-footprint[0]>500 || footprint[3]-footprint[1]>200) return null;
+            }
+            out.turrets.push({x: x, y: y, facing: r.facing, name: r.name,ownFootprint:footprint});
         }
         // 收养模式必须配归属凭据：凭据由放置方写在实例 __cf6TurretAdoptToken 上。
         if (needsAdopt) {
@@ -150,7 +158,7 @@ class org.flashNight.arki.scene.Cf6TutorialTurretService {
         var name:String = row.name != undefined ? row.name : "__cf6Turret" + index;
         var holder:MovieClip = world[name];
         var t:Object = {name: name, holder: null, token: {}, inner: undefined, loaded: false,
-            facing: row.facing, groundY:row.y, frame: 0, owned: false, loadTicket: null,
+            facing: row.facing, groundY:row.y, ownFootprint:row.ownFootprint, frame: 0, owned: false, loadTicket: null,
             loader: null, listener: null, retired:false, payload: null, payloadName:"__cf6TurretPayload",
             muzzleLocal: {x: 112.45, y: -70.5}};
         if (holder != undefined) {
@@ -337,12 +345,51 @@ class org.flashNight.arki.scene.Cf6TutorialTurretService {
         s.world.globalToLocal(p);
         if ((p.x - p.x) != 0 || (p.y - p.y) != 0) return;
         var bullet:Object = makeBullet(s, t, p.x, p.y);
+        if(!placeEmission(s,t,bullet)) return;
         applyCrossRowAim(s, t, bullet);
         // 目标搜索不持久保存 MC；发射提交前再验普通对象世界身份及本 wrapper 凭据。
         if (!current(s) || s.failed || t.retired === true || !ownsHolder(s, t) || !filterWired()) return;
         if (typeof _root.子弹区域shoot传递 != "function") { fail(s, "子弹发射入口缺失"); return; }
-        _root.子弹区域shoot传递(bullet);
+        var projectile:Object=_root.子弹区域shoot传递(bullet);
+        if(projectile!=undefined && bullet.速度Z!==undefined) bindFlight(s.world,s.owner,projectile,bullet);
         s.fired++;
+    }
+
+    /** Only escape the explicitly authored own-footprint; never skip an unrelated wall. */
+    public static function placeEmission(s:Object,t:Object,bullet:Object):Boolean {
+        var layer:Object=_root.collisionLayer;
+        if(typeof layer.hitTest!="function" || !layer.hitTest(bullet.shootX,bullet.shootZ,true)) return true;
+        var box:Array=t.ownFootprint;
+        if(box==undefined || !(bullet.shootX>box[0] && bullet.shootX<box[2]
+            && bullet.shootZ>box[1] && bullet.shootZ<box[3]
+            && t.holder._x>box[0] && t.holder._x<box[2] && t.groundY>box[1] && t.groundY<box[3])) return true;
+        var exitX:Number=t.facing=="left" ? box[0]-1 : box[2]+1;
+        var distance:Number=Math.abs(exitX-bullet.shootX);
+        if(!(distance>0) || distance>32 || layer.hitTest(exitX,bullet.shootZ,true)) return false;
+        bullet.shootX=exitX;
+        return true;
+    }
+    /** Bind only this factory-produced projectile. Shared bullet movement/lifecycle stay unchanged. */
+    public static function bindFlight(world:MovieClip,identity:Object,projectile:Object,shot:Object):Boolean {
+        var vx:Number=shot.速度X,vy:Number=shot.速度Y,vz:Number=shot.速度Z;
+        if(world!==_root.gameworld || identity==null || world.__stageReturnWorldIdentity!==identity || projectile==undefined
+            || ((vx-vx)+(vy-vy)+(vz-vz))!=0 || ((shot.shootX-shot.shootX)+(shot.shootY-shot.shootY)+(shot.shootZ-shot.shootZ))!=0
+            || projectile.__cf6TurretFlight!==undefined) return false;
+        var flight:Object={world:world,identity:identity,token:{},x:shot.shootX,y:shot.shootY,z:shot.shootZ,
+            vx:vx,vy:vy,vz:vz,ticks:0};
+        projectile.__cf6TurretFlight=flight;projectile.updateMovement=flightCallback(flight);
+        projectile.xmov=vx;projectile.ymov=vy;
+        return true;
+    }
+    private static function flightCallback(flight:Object):Function {
+        return function(projectile:Object):Void {
+            if(projectile.__cf6TurretFlight!==flight || flight.world!==_root.gameworld
+                || flight.identity!==_root.gameworld.__stageReturnWorldIdentity) return;
+            flight.ticks++;
+            projectile._x=flight.x+flight.vx*flight.ticks;
+            projectile._y=flight.y+flight.vy*flight.ticks;
+            projectile.Z轴坐标=flight.z+flight.vz*flight.ticks;
+        };
     }
 
     /**
@@ -369,6 +416,7 @@ class org.flashNight.arki.scene.Cf6TutorialTurretService {
         bullet.速度X = finalAim.speedX;
         bullet.速度Y = finalAim.speedY;
         bullet.ZY比例 = finalAim.zyRatio;
+        bullet.速度Z = finalAim.speedZ;
     }
 
     private static function targetAim(s:Object, t:Object, bullet:Object, target):Object {
@@ -398,7 +446,7 @@ class org.flashNight.arki.scene.Cf6TutorialTurretService {
         }
         var zyRatio:Number = targetZ / centerY;
         if ((speedX - speedX) != 0 || (speedY - speedY) != 0 || (zyRatio - zyRatio) != 0) return null;
-        return {speedX: speedX, speedY: speedY, zyRatio: zyRatio, distanceSq: distanceSq};
+        return {speedX: speedX, speedY: speedY, speedZ:speedX*dz/dx, zyRatio: zyRatio, distanceSq: distanceSq};
     }
 
     /**

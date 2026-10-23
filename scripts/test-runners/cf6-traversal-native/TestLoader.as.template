@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId cf6-traversal-native Start: __FOCUSED_RUN_ID__");
+_root.cf6TraversalNativeComplete=function():Void {trace("FocusedTestRunId cf6-traversal-native Complete: __FOCUSED_RUN_ID__");};
+org.flashNight.arki.scene.Cf6TraversalNativeTest.runAllTests();

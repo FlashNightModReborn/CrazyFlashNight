@@ -27,12 +27,28 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
     private var nextName:Number;
     private var stopped:Boolean;
     private var bossMark:Object;
+    private var elderStarted:Boolean;
+    private var elderWaiting:Boolean;
+    private var elderPhase:Object;
+    private var elderParentMark:Object;
+    private var elderWaitFrames:Number;
+    private var elderError:String;
+    private var finalDying:Boolean;
+    private var finalDeathReady:Object;
+    private var finalDeathRemoved:Boolean;
+    private var finalDeathOriginal:Function;
+    private var finalDeathWrapper:Function;
     public static function install():Void {
         if (installed) return;
         installed = true;
         org.flashNight.arki.interaction.NativeInteractionContext.onSceneTeardown(cancel);
     }
     public static function cancel():Void { if (active != null) active.finish(false); }
+    /** First-form death is not a completed room, including late wave clear callbacks. */
+    public static function blocksClear(w:MovieClip, m:Object):Boolean {
+        return active != null && active.current() && active.world === w && active.manager === m
+            && (active.plan.nextPhase != null || active.elderStarted === true);
+    }
     public static function start(w:MovieClip, identity:Object, p:Object):Void {
         install();
         if (w == undefined || w !== _root.gameworld || identity == null
@@ -51,6 +67,7 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
         manager=StageManager.instance; stage=manager.currentStage; spawner=WaveSpawner.instance; plan=p;
         token="cf6BossSupport"+(++serial); living={}; issued={}; queue=[];
         groupIndex=0; waitFrames=0; nextName=0; stopped=false;
+        elderStarted=false;elderWaiting=false;elderWaitFrames=0;finalDying=false;finalDeathRemoved=false;
         clock=w.createEmptyMovieClip("__cf6BossEncounter",w.getNextHighestDepth());
         clock.cf6BossOwnerToken=token;
         var self:Cf6BossEncounter=this;
@@ -87,9 +104,16 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
     }
     private function tick():Void {
         if (!current()) { finish(false); return; }
+        if(elderError!=undefined) return;
         for (var name:String in living) refreshGuard(living[name]);
         bindBoss();
-        if (bossDead()) { finish(true); return; }
+        if (finalDeathRemoved) {finish(true);return;}
+        if (elderWaiting) { advanceElder(); return; }
+        if (bossDead()) {
+            if (plan.nextPhase != null) { beginElder(); advanceElder(); return; }
+            if (elderStarted) { beginFinalDeath(); return; }
+            finish(true); return;
+        }
         if (_root.暂停 === true || _root.场景转换中 === true) return;
         var hero:MovieClip=TargetCacheManager.findHero();
         var boss:MovieClip=world[plan.instanceName];
@@ -104,20 +128,120 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
         for (name in living) { count++; if (living[name].ranged) ranged++; }
         if (count >= plan.maxAlive || queue.length == 0) return;
         var index:Number=-1;
-        for (i=0;i<queue.length;i++) if (!queue[i].ranged || ranged < plan.maxRanged) { index=i; break; }
+        for (i=0;i<queue.length;i++) {
+            if(queue[i].ranged && !(ranged < plan.maxRanged)) continue;
+            if(queue[i].podId!=undefined && !org.flashNight.arki.scene.Cf6InteractivePropService.podReady(world,queue[i].podId)) continue;
+            index=i;break;
+        }
         if (index < 0) return;
         var source:Object=queue.splice(index,1)[0], enemy:Object={}, parameters:Object={};
         for (var key:String in source) enemy[key]=source[key];
         for (key in source.Parameters) parameters[key]=source.Parameters[key];
         name=token+"_"+(nextName++);
         parameters.cf6BossOwnerToken=token; parameters.publishStageEvent=true; parameters.产生源="无";
+        if(source.podId!=undefined) parameters.cf6PodId=source.podId;
         enemy.Parameters=parameters; enemy.InstanceName=name; enemy.Quantity=1;
         var record:Object={name:name,ranged:source.ranged,kind:source.Type};
         living[name]=record; issued[name]=record; waitFrames=plan.intervalFrames;
+        // Claim after reserving the original slot; unknown delivery retains that slot and is never replayed.
+        if(source.podId!=undefined && !org.flashNight.arki.scene.Cf6InteractivePropService.claimPod(world,source.podId,token,name)) {
+            finish(false);return;
+        }
         var event:StageEvent=new StageEvent({EventName:"Cf6FiniteSupport",Enemy:[enemy]});
         event.execute();
         // 同步 attach 返回后补绑；若资源延迟，UnitSpawn 仍保留预占人数。
         bind(record);
+    }
+    private function beginElder():Void {
+        if (elderStarted || !bossDead() || plan.nextPhase == null) return;
+        elderStarted=true;elderWaiting=true;elderParentMark=bossMark;
+        queue=[];waitFrames=0;
+        // Each form owns its finite budget. Pending first-form deliveries remain tombstoned.
+        for (var name:String in living) {
+            living[name].retired=true;
+            retireRecord(living[name]);
+        }
+        living={};
+        trace("[CF6_FINALE_PHASE] human-defeated; waiting for native elder successor");
+    }
+    private function failElder(reason:String):Void {
+        if (elderError != undefined) return;
+        elderError=reason;
+        trace("[CF6_FINALE_PHASE_ERROR] "+reason);
+        if (typeof _root.发布消息=="function") _root.发布消息("元老变形接续未完成，请保留现场并退出本次历险。");
+    }
+    private function advanceElder():Void {
+        if (!elderWaiting || elderError != undefined || !current()
+                || _root.暂停 === true || _root.场景转换中 === true) return;
+        elderWaitFrames++;
+        var parent:MovieClip=world[plan.instanceName];
+        if (elderPhase == null && parent.cf6BossIdentity === elderParentMark) {
+            var observed:Object=parent.elderTransform;
+            if (observed != null && parent.老头变身 === true
+                    && observed.parentIdentity === parent.elderIdentity) elderPhase=observed;
+        }
+        var phase:Object=elderPhase;
+        if (phase == null) {
+            if (elderWaitFrames >= 600) failElder("native-transform-not-started");
+            return;
+        }
+        if (phase.world !== world || phase.worldIdentity !== world.__elderWorldIdentity
+                || phase.name !== plan.instanceName+"__elderbot"
+                || phase.name !== plan.nextPhase.instanceName || phase.spawnIdentity == null) {
+            failElder("native-transform-identity-mismatch");return;
+        }
+        if (phase.error != undefined) {failElder("native-transform-"+phase.error);return;}
+        var child:MovieClip=phase.child;
+        if (phase.attempted === true && (child._parent !== world || child._name !== phase.name
+                || world[phase.name] !== child || child.elderSpawnIdentity !== phase.spawnIdentity)) {
+            failElder("native-successor-identity-mismatch");return;
+        }
+        if (phase.retired !== true || phase.attempted !== true || child._visible !== true
+                || child.__unitInitializedVersion == null || child.__unitInitializedVersion !== child.version
+                || child.兵种 !== "敌人-CF6老头机器人" || child.等级 !== phase.level
+                || child.是否为敌人 !== phase.side || child.产生源 !== phase.source
+                || !finite(child.hp) || !finite(child.hp满血值) || !(child.hp满血值 > 0)) {
+            if (elderWaitFrames >= 600) failElder("native-successor-not-ready");
+            return;
+        }
+        // Native unit code alone creates and counts the successor; this controller binds it.
+        plan=plan.nextPhase;bossMark={};child.cf6BossIdentity=bossMark;child.publishStageEvent=true;
+        bindFinalDeath(child);
+        groupIndex=0;waitFrames=0;elderWaiting=false;
+        trace("[CF6_FINALE_PHASE] robot-ready; native successor="+child._name);
+    }
+    private function beginFinalDeath():Void {
+        if(finalDying) return;finalDying=true;queue=[];
+        for(var name:String in living) {living[name].retired=true;retireRecord(living[name]);}
+        living={};
+    }
+    private function bindFinalDeath(child:MovieClip):Void {
+        if(typeof child.死亡检测!="function") {failElder("successor-death-handler-missing");return;}
+        finalDeathOriginal=child.死亡检测;
+        finalDeathWrapper=finalDeathCallback(this,bossMark,finalDeathOriginal);
+        child.死亡检测=finalDeathWrapper;
+    }
+    private static function finalDeathCallback(controller:Cf6BossEncounter,mark:Object,original:Function):Function {
+        return function(options:Object):Void {
+            controller.observeFinalDeath(this,mark);
+            original.call(this,options);
+        };
+    }
+    private function observeFinalDeath(child:MovieClip,mark:Object):Void {
+        if(!current() || elderError!=undefined || !elderStarted || elderWaiting || mark!==bossMark
+                || child!==world[plan.instanceName] || child.cf6BossIdentity!==mark
+                || !finite(child.hp) || child.hp>0) return;
+        var body:MovieClip=child.man;
+        if(body.elderMode!=="death" || body._currentframe!==body._totalframes
+                || body.cf6CorpseFinished!==true || body.尸体碎片.cf6Settled!==true) return;
+        // Captured before native removeMovieClip invalidates the actor reference.
+        finalDeathReady={mark:mark,owner:owner,name:plan.instanceName};
+    }
+    private function victoryReady():Boolean {
+        if(elderStarted && plan.nextPhase==null)
+            return elderError==undefined && finalDeathRemoved && finalDeathReady.mark===bossMark && finalDeathReady.owner===owner
+                && finalDeathReady.name===plan.instanceName;
+        return bossDead();
     }
     private function bind(record:Object):MovieClip {
         var unit:MovieClip=world[record.name];
@@ -157,11 +281,18 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
         var record:Object=issued[name];
         if (record == null) return;
         bind(record);
-        if (stopped) retireRecord(record);
+        if (stopped || record.retired === true) retireRecord(record);
     }
     private function onDeath(name:String):Void {
         if (!current()) return;
-        if (name === plan.instanceName) { if (bossDead()) finish(true); return; }
+        if (name === plan.instanceName) {
+            if (bossDead()) {
+                if (plan.nextPhase != null) beginElder();
+                else if(elderStarted) beginFinalDeath();
+                else finish(true);
+            }
+            return;
+        }
         for (var key:String in living) {
             var record:Object=living[key]; refreshGuard(record);
             if (name === record.childName) {
@@ -177,20 +308,30 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
     }
     private function onRemoved(name:String):Void {
         if (!current()) return;
+        if(elderStarted && !elderWaiting && name===plan.instanceName) {
+            if(elderError==undefined && finalDeathReady.mark===bossMark && finalDeathReady.owner===owner
+                    && finalDeathReady.name===name) finalDeathRemoved=true;
+            else failElder("robot-removed-before-native-death-completion");
+            return;
+        }
         // 未知消失不冒充死亡，也不重放；最多保留一个预占位置直至本场结束。
         for (var key:String in living) refreshGuard(living[key]);
     }
     private function finish(victory:Boolean):Void {
         if (stopped) return;
-        var mayWin:Boolean=victory && current() && bossDead();
+        var mayWin:Boolean=victory && current() && victoryReady();
         stopped=true; queue=[];
         if (!worldOwned()) return;
+        var boss:MovieClip=world[plan.instanceName];
+        if(boss.cf6BossIdentity===bossMark && boss.死亡检测===finalDeathWrapper && finalDeathOriginal!=undefined)
+            boss.死亡检测=finalDeathOriginal;
+        org.flashNight.arki.scene.Cf6InteractivePropService.cancelBossPods(world);
         if (clock.cf6BossOwnerToken === token) delete clock.onEnterFrame;
         world.dispatcher.unsubscribe("UnitDeath",onDeath,this);
         world.dispatcher.unsubscribe("UnitRemoved",onRemoved,this);
         // UnitSpawn 留下仅本场 token 的墓碑，以处理已发出但迟到的增援。
         if (mayWin && WaveSpawner.instance === spawner) spawner.close();
-        for (var name:String in living) retireRecord(living[name]);
+        for (var name:String in living) {living[name].retired=true;retireRecord(living[name]);}
         living={};
         if (mayWin && scope()) manager.clearStage();
     }

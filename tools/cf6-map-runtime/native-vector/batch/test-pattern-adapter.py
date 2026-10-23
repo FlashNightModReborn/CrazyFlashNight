@@ -178,5 +178,52 @@ class RejectionBranches(unittest.TestCase):
         self.assertEqual([r for r in converter.pattern_reports if r.get('kind') == 'native-vector-lattice'], [])
 
 
+class FloorUnionRegression(unittest.TestCase):
+    def clip(self, path='M0 0L20 0L20 10L0 10Z M19 0L39 0L39 10L19 10Z', rule='nonzero'):
+        return ET.fromstring('<clipPath xmlns="http://www.w3.org/2000/svg" id="n2floor_union_1959"><path clip-rule="'+rule+'" d="'+path+'"/></clipPath>')
+
+    def test_overlapping_cells_remain_two_positive_filled_shapes(self):
+        clip=self.clip();parts=adapter.split_floor_union(base,clip)
+        self.assertEqual(len(parts),2)
+        converter,_=convert()
+        shapes=[converter.primitive(rect,{'fill':'#FFFFFF'})[0] for rect in parts]
+        self.assertTrue(all(len(list(shape.iter(api.N+'Edge')))==1 for shape in shapes))
+        # Both native exteriors are negative signed screen area. The old combined
+        # evenodd guess wrongly treats the second contour as a hole at (19,0).
+        normalized=[base.normalize(base.primitive(rect),True)[0] for rect in parts]
+        areas=[]
+        for path in normalized:
+            pts=base.flattened(path);areas.append(sum(a[0]*b[1]-b[0]*a[1] for a,b in zip(pts,pts[1:]+pts[:1])))
+        self.assertTrue(all(area<0 for area in areas))
+        old=base.normalize(base.primitive(clip[0]),True)
+        self.assertTrue(any(sum(a[0]*b[1]-b[0]*a[1] for a,b in zip(base.flattened(path),base.flattened(path)[1:]+base.flattened(path)[:1]))>0 for path in old))
+
+    def test_evenodd_holes_are_not_silently_rewritten(self):
+        with self.assertRaisesRegex(ValueError,'nonzero'):
+            adapter.split_floor_union(base,self.clip(rule='evenodd'))
+
+    def test_mixed_winding_is_not_a_union(self):
+        with self.assertRaisesRegex(ValueError,'mixed'):
+            adapter.split_floor_union(base,self.clip('M0 0L20 0L20 10L0 10Z M19 0L19 10L39 10L39 0Z'))
+
+    def test_nonrectangular_path_is_rejected(self):
+        with self.assertRaisesRegex(ValueError,'four'):
+            adapter.split_floor_union(base,self.clip('M0 0L20 0L10 10Z'))
+
+    def test_cut_corner_keeps_exact_four_vertices(self):
+        clip=self.clip('M0 0L10 0L12 10L0 10Z')
+        cells=adapter.split_floor_union(base,clip)
+        self.assertEqual(cells[0].tag,adapter.SVG+'polygon')
+        self.assertEqual(cells[0].get('points'),'0,0 10,0 12,10 0,10')
+
+    def test_concave_cell_is_rejected(self):
+        with self.assertRaisesRegex(ValueError,'convex'):
+            adapter.split_floor_union(base,self.clip('M0 0L20 0L5 5L0 10Z'))
+
+    def test_unrelated_mask_remains_owned_by_general_converter(self):
+        clip=self.clip();clip.set('id','other-mask')
+        self.assertIsNone(adapter.split_floor_union(base,clip))
+
+
 if __name__ == '__main__':
     unittest.main()

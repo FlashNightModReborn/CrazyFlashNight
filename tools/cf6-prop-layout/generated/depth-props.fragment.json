@@ -1,0 +1,36 @@
+{
+  "schema": "cf6-depth-props-fragment.v1",
+  "coordinateSpace": "final-world; asset root uses holder-local art matrices; no further viewport scaling",
+  "maps": {
+    "A06": {
+      "layers": [
+        {
+          "id": "CF6_Prop_A06_StatueLeft",
+          "role": "depth-prop",
+          "url": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft.swf",
+          "x": 841.5573333333335,
+          "y": 394.15466666666674,
+          "sortY": 394.15466666666674,
+          "visualScale": 1,
+          "pivot": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "id": "CF6_Prop_A06_StatueRight",
+          "role": "depth-prop",
+          "url": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight.swf",
+          "x": 2024.192,
+          "y": 394.15466666666674,
+          "sortY": 394.15466666666674,
+          "visualScale": 1,
+          "pivot": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ]
+    }
+  }
+}

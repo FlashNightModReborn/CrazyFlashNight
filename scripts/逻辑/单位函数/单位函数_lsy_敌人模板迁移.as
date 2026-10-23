@@ -213,11 +213,11 @@ _root.敌人函数.方向改变 = function(新方向) {
         return;
     if (新方向 === "右") {
         this.方向 = "右";
-        this._xscale = myxscale;
+        this._xscale = this.myxscale;
         this.新版人物文字信息._xscale = 100;
     } else if (新方向 === "左") {
         this.方向 = "左";
-        this._xscale = -myxscale;
+        this._xscale = -this.myxscale;
         this.新版人物文字信息._xscale = -100;
     }
 };
@@ -717,10 +717,10 @@ _root.初始化敌人模板 = function() {
     this.remainingImpactForce = 0;
 
     //转换身高，调整层级
-    var 身高转换值 = UnitUtil.getHeightPercentage(this.身高);
+    var 身高转换值 = org.flashNight.arki.unit.Cf6BodyScaleRules.heightScale(this.兵种, this.身高, UnitUtil.getHeightPercentage(this.身高));
     this._xscale = 身高转换值;
     this._yscale = 身高转换值;
-    myxscale = this._xscale;
+    this.myxscale = this._xscale;
     this.Z轴坐标 = this._y;
     // swapDepths 已由 DepthManager 在 StaticInitializer.initializeUnit 中统一处理
 
@@ -746,7 +746,7 @@ _root.初始化敌人模板 = function() {
     }
 
     // 应用初始器
-    this.根据等级初始数值(等级);
+    this.根据等级初始数值(this.等级);
     this.宠物属性初始化();
     StaticInitializer.initializeUnit(this);
 
@@ -756,10 +756,10 @@ _root.初始化敌人模板 = function() {
     // 初始化完毕
     // 必须在离开初始化帧前接入：玩家与AI Lee使用同一动作入口。
     if (this.兵种 == "敌人-李小龙") _root.敌人动作.installLee(this);
-    this.方向改变(方向);
+    this.方向改变(this.方向);
     if(this.__enemyActionPlayer===true && this.__resourceSpawn!=undefined)
-        org.flashNight.arki.scene.PlayerResourceTransferBridge.finishEnemyState(this,状态);
-    else this.gotoAndStop(状态);
+        org.flashNight.arki.scene.PlayerResourceTransferBridge.finishEnemyState(this,this.状态);
+    else this.gotoAndStop(this.状态);
 }
 
 //对初始化单位的函数进行包装

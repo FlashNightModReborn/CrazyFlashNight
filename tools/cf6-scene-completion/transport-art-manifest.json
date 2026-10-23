@@ -1,0 +1,1293 @@
+{
+  "schema": "cf6-transport-native-source.v1",
+  "state": "native-source-assembled; CS6 compile pending",
+  "textureSeed": "flashswf/backgrounds/cf6/preparation/CF6_TransportTextureSeed/CF6_TransportTextureSeed.xfl",
+  "textures": [
+    {
+      "path": "tools/cf6-scene-completion/transport-art/textures/intrinsic-bd390a38e397a6693d65a032.png",
+      "sha256": "bd390a38e397a6693d65a0327552bc4e6692ed305bc6d612ac8c6856dcf20342",
+      "bytes": 995480,
+      "pixels": [
+        1113,
+        708
+      ]
+    }
+  ],
+  "inputs": {
+    "tools/cf6-scene-completion/build_transport_art.py": "c92cee1ae44717c2d88d900d2bb583dcf152b125a672a6add6f694058515c6c7",
+    "tools/cf6-map-runtime/native-vector/build-a01.py": "ad1cde5d1e97ac23aabdb12d5dafb8ee30974c6c8c92c51b92a5d581824533f6",
+    "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/reference/vehicles-props-DejaVuSans-Bold.ttf": "a4c5bc453ca281d90ea079e596da7ae0dfeb5777497c29ec254e76d97ff6f890",
+    "flashswf/backgrounds/cf6/CF6_A01_BG/DOMDocument.xml": "2dffded73e766c8d945b075827b0b884e818598adc6eddd4717cba60cbee14f1",
+    "flashswf/backgrounds/cf6/CF6_A01_BG/PublishSettings.xml": "73eb106d6bb4814f95bbd320e8d54b771fca8ebf2b86495e7cecd1d09259ab7b",
+    "flashswf/backgrounds/cf6/CF6_A01_BG/CF6_A01_BG.xfl": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/reference/environment-original-nodes.json": "b5d1c11dcc64f531d6b89302628e7c1c94bbb4662d4204adfb08b9cdee51226e",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/shape-1809.svg": "9cf215ac828f425be901b4fe1e69ced680f880a054cd5f77d7be6a295eb9785d",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/shape-1866.svg": "08a49e30dc0408b26709b915979f2661bfff85f25561ad0a2885396a1a29b97e",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/shape-1867.svg": "abd703c66e4e6a1e7b7298728fa76de703f60a1ae66f3a0accfe97c16a379c14",
+    "tools/cf6-map-runtime/build.py": "5738a4c2e8f1719c637217182831a0b14029dda262e07f29ac55073738f1c01d",
+    "flashswf/backgrounds/cf6/preparation/CF6_TransportTextureSeed/DOMDocument.xml": "ec67d453339fabd305af7a918bfb00f36f2a57fe1c46b0f167051f672b9781a7",
+    "tools/cf6-prop-layout/scale-policy.json": "66c5787baea7d9fc7dc6c844c2678199f0cdda18c6bb7ec4d55026277d6687e8",
+    "tools/cf6-scene-completion/pod_scale.py": "7d3bedea8bc6708e50b09a412b2dde9abec49493f0a4f007f3e8564d51319c74",
+    "flashswf/backgrounds/cf6/preparation/CF6_TransportTextureSeed/bin/M 1 1792759383.dat": "f4f6f3e723f62d95e6c44f8d9fd02208681a062f87b4d513d317e05ef7329e47",
+    "flashswf/backgrounds/cf6/preparation/CF6_TransportTextureSeed/bin/SymDepend.cache": "288f612e011b69d682105d76edb9fa204c26b10872a1738ced98444c6439155d",
+    "tools/cf6-map-runtime/extract-geometry.py": "49989c9ab3aa76136c92db4f9f5fd67df05a5609ed8fdaf771b802582ab6d1d6",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/crazyflasher6-cn.swf": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01"
+  },
+  "originalSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "assets": [
+    {
+      "name": "CF6_Transport1868",
+      "sourceSprite": 1868,
+      "frames": 29,
+      "behavior": "transport",
+      "xfl": "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/CF6_Transport1868.xfl",
+      "swf": "flashswf/backgrounds/cf6/preparation/CF6_Transport1868.swf",
+      "frame1VisualBounds": [
+        -188.15,
+        -227.45,
+        182.85,
+        5.349999999999994
+      ],
+      "frame1VisualBoundsBasis": "conservative union of new SVG viewBox rectangles through complete original frame-1 local matrices, excluding logic markers; not rendered opaque pixels",
+      "excludedLogicSprites": [
+        277,
+        1433
+      ],
+      "allFramesNonEmpty": true,
+      "dispatchFrame": 29,
+      "filterConversions": [],
+      "sourceActionExcluded": "all legacy transitions, kills, saves and controls; only generated stop/native shape filters remain",
+      "registration": "original symbol origin (0,0); no normalization or viewport scale; frame29 assigns the generator this._x/this._y, with current free-foot spawn adjustment recorded separately",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "localCompensation": [
+        0,
+        0
+      ],
+      "visualScale": 1
+    }
+  ],
+  "placements": [
+    {
+      "mapId": "A09",
+      "mainFrame": 116,
+      "worldSprite": 1869,
+      "worldDepth": 1,
+      "sourceSprite": 1868,
+      "sourceDepth": 112,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        696.6,
+        252.0
+      ],
+      "coordinateSpace": "original gameworld; transform once in scene assembly"
+    },
+    {
+      "mapId": "A14",
+      "mainFrame": 152,
+      "worldSprite": 1927,
+      "worldDepth": 1,
+      "sourceSprite": 1868,
+      "sourceDepth": 505,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1046.0,
+        279.4
+      ],
+      "coordinateSpace": "original gameworld; transform once in scene assembly"
+    },
+    {
+      "mapId": "A18",
+      "mainFrame": 178,
+      "worldSprite": 1977,
+      "worldDepth": 2,
+      "sourceSprite": 1868,
+      "sourceDepth": 147,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        865.1,
+        205.0
+      ],
+      "coordinateSpace": "original gameworld; transform once in scene assembly"
+    }
+  ],
+  "triggers": {
+    "1868": {
+      "markerSprite": 1433,
+      "sourceDepth": 6,
+      "markerMatrix": [
+        2.7669525146484375,
+        0.0,
+        0.0,
+        3.1519012451171875,
+        -295.75,
+        -42.6
+      ],
+      "leafShape": 277,
+      "leafBounds": [
+        -16.5,
+        -12.0,
+        16.5,
+        12.0
+      ],
+      "leafMatrix": [
+        6.18182373046875,
+        0.0,
+        0.0,
+        3.9166717529296875,
+        102.0,
+        47.0
+      ],
+      "localAabb": [
+        -295.7502533220686,
+        -42.600192376784975,
+        268.70856631034985,
+        253.6789094178006
+      ],
+      "basis": "original nested marker shape bounds transformed into asset local space; original uses bounding-box hitTest, not shapeFlag"
+    }
+  },
+  "authority": "Art only. Proximity starts the native 29-frame performance; frame29 queues one event for the existing declared SubWave budget after its subscription is ready. No original spawn actions or new enemy quantities.",
+  "outputs": {
+    "tools/cf6-scene-completion/transport-art/textures/intrinsic-bd390a38e397a6693d65a032.png": {
+      "sha256": "bd390a38e397a6693d65a0327552bc4e6692ed305bc6d612ac8c6856dcf20342",
+      "bytes": 995480
+    },
+    "tools/cf6-scene-completion/transport-art/import-textures.jsfl": {
+      "sha256": "0b83e5d282fea66f8dba0ec59ed324a8b4a5eb8122f42cd5cbc34de3d25c509d",
+      "bytes": 2902
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00001-g.xml": {
+      "sha256": "64437161dc9b31a3e2f14dfbdfdc929b517f019dd58e95d61f62c2522203d666",
+      "bytes": 1772
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00002-g.xml": {
+      "sha256": "a8bf0833ec2a86156039ac434d60a9d8d8654b6cfc83a6613f7fe953cc068480",
+      "bytes": 64089
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00003-clip-path-content.xml": {
+      "sha256": "e6441d24ad9a6baecacd270c351bae75073ea651d166ed93449a79bf6ad37d97",
+      "bytes": 663
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00004-c1809f2.xml": {
+      "sha256": "18ace6eea76c9afbe3aa64bee7e965c55e84c23e5a2d52c25deebc54e31f551f",
+      "bytes": 581
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00005-clip-path-shape.xml": {
+      "sha256": "773491002b2b1bdc853da70cda54f04a1574c60bf2e1011770b0a5d71cae9b83",
+      "bytes": 655
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00006-clip-path-c1809f2.xml": {
+      "sha256": "54a7b33202bd7db6f51836cfaa7409246c1b86443e62700386afd3666c3a8772",
+      "bytes": 876
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00007-g.xml": {
+      "sha256": "71d53c73cc95d6b8f95ff76020b442299c8121ac9c610dea63ca6a63f36305fc",
+      "bytes": 535
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00008-svg.xml": {
+      "sha256": "e4755b65f9c93ffd543ed59ef1e4588116c582d56014f977f41c533b9d0a6bbc",
+      "bytes": 557
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00009-part-1809.xml": {
+      "sha256": "78f38120494b91f6d31ff4d4891e53b1163c1d3e503cada9605f27c67578c3a0",
+      "bytes": 577
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00010-image.xml": {
+      "sha256": "535f20fac719cdcdea2cf65205d2ee1e68933e1740a131e9192b27f40860b99c",
+      "bytes": 548
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00011-clip-path-content.xml": {
+      "sha256": "6176d4e83670520be67fb72dcbfefd63c0ff3720cc5f5d26cdf500639b4a6700",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00012-b1866_0__bodyClip.xml": {
+      "sha256": "873242775196331759af506844d8fed9b9fb30760b850fb48e03b3731980fcce",
+      "bytes": 1230
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00013-clip-path-shape.xml": {
+      "sha256": "7fb74ee2c7a546c50edcf075960872d1f1363c7989720fc2bbc73fad5226e084",
+      "bytes": 665
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00014-clip-path-b1866_0__bodyClip.xml": {
+      "sha256": "9197b0a40fc615b20a5a091a272866445ecbdb7e79074b824ad14cf9184bca05",
+      "bytes": 906
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00015-g.xml": {
+      "sha256": "133696489c56c86cf1ae7efdce5aef02e9b5a3798f658a72f3983b8ebd871c75",
+      "bytes": 545
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00016-path.xml": {
+      "sha256": "926b4596213bf569b6938b279c18d301ab2559ba693cdfb2b4eb78e60249c4f4",
+      "bytes": 851
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00017-path.xml": {
+      "sha256": "5f9fc71601ee88d3372d0dd0187223da549241f7f966d89ef1192c82d8272085",
+      "bytes": 1365
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00018-g.xml": {
+      "sha256": "c15a096fa159cb0a0608e7a165539b08770b78c5cd018c3830be1d55ef575e73",
+      "bytes": 1246
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00019-path.xml": {
+      "sha256": "1a388edda0f026f4c856f5eadca712d9847ddd150ac45c91860b5ea0b3351664",
+      "bytes": 1361
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00020-g.xml": {
+      "sha256": "45d843cb2cae02e892379f18e512684e2119a562189399b878babda9da5e1264",
+      "bytes": 1758
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00021-path.xml": {
+      "sha256": "abdb8e3e5d3e18aec4798711c242cc2eb3e78174d9f5633bbd66c474eb3f2455",
+      "bytes": 899
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00022-path.xml": {
+      "sha256": "40250886c22326577c064875a8ef3e9d20b1f19b71c146c5d5af10a6a9a8927f",
+      "bytes": 907
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00023-g.xml": {
+      "sha256": "a7b91befe68da6746cdc51e1d7570e81405bdd35f1a99edf7a8f096cbff986fc",
+      "bytes": 1533
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00024-mask-content.xml": {
+      "sha256": "25b228ba8307049e6019eb09ebeeb5b0af52eb960b36f7e6f1b67d0bfc096fd9",
+      "bytes": 1107
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00025-b1866_0__stencilInk.xml": {
+      "sha256": "5e64367a0827bd9a71429b6a4d5f1aeca40192bae982816aa3742b8262fe1ebb",
+      "bytes": 112381
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00026-mask-shape.xml": {
+      "sha256": "c1263ff7378655400238173c6c15c686fd735990574a6c46b63ff10ac712b1d2",
+      "bytes": 652
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00027-mask-b1866_0__stencilInk.xml": {
+      "sha256": "2d23eb9cd337813782ff66db7b170a1dfb4beacab3f01a1eac65ce9dea7d8b5a",
+      "bytes": 943
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00028-g.xml": {
+      "sha256": "547504f437f9542160127673b67be9bb1cac8474b63ab12781b0a426ca93ea31",
+      "bytes": 542
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00029-g.xml": {
+      "sha256": "58ee555e05eb9e7d5777bea6d2782e57c2c49ec740a4a69dc050b42a02c8fdb1",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00030-g.xml": {
+      "sha256": "c52155b7218eae927f86221420c794c55ad9b0ac72c1fdd9a5bd240728a27c63",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00031-g.xml": {
+      "sha256": "97b2e1440b81e02ee95228be5ffc33ac8cea52548f7189f24c76fafc8ab2e0b3",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00032-g.xml": {
+      "sha256": "fbee9bbe01ebbbf0b84eb3b72c561029507bacaf850866c80cd17d400e479f38",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00033-g.xml": {
+      "sha256": "a7eef6ed282461d554fd8f1b331e846d86a3e2e02304e18f761d96891fab1d2d",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00034-g.xml": {
+      "sha256": "9cb874f6db0ed1199542a9658d88f2761a4f3586e6b6ef67dbc188df175497e9",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00035-g.xml": {
+      "sha256": "8f44e39e4975aad33cf2318375694252aa69fed107996a0d927bf872f43683d4",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00036-g.xml": {
+      "sha256": "18a090941c3c8144bec1cfb325515b15927a3de01dfbf690fc64393f28ac10d2",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00037-g.xml": {
+      "sha256": "604bda8e838a40326a8363095cc85819505c16f6a28d64717710e5e136f6a344",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00038-g.xml": {
+      "sha256": "8ff9a9d086369b4aaeec4c9e8d717517eeb67770a7346999e0add9363de43923",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00039-g.xml": {
+      "sha256": "5b0d776e8fba736bc65f76e4e3e32e92b9f6260de9d557786d3727315eca37f4",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00040-g.xml": {
+      "sha256": "83cbec70e89927c840adda01c973771c224fe68c21975a157075dcf7ca9a283f",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00041-g.xml": {
+      "sha256": "c5d2366e246a315026c635dd2ae44edc3c2a8b119c2d8329c7b3175e668feaa4",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00042-g.xml": {
+      "sha256": "197c2e863691559fec26cfd56ae9b5a650ad0682f5093b00f89c5db32d7655fe",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00043-g.xml": {
+      "sha256": "5d0d3760fcf8ab771e78c6fe4bd0b58c21cd038e93b416564bffb50c95a9f580",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00044-g.xml": {
+      "sha256": "67ba7483d6c2ece7eb468118ecd04bdc3f777fff3467d071e34f4dac53dfa5f4",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00045-g.xml": {
+      "sha256": "e3c52cc5da204fd8846bb56a147c3875e28094ce3476e729e88d018a753df4fc",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00046-g.xml": {
+      "sha256": "6aa742724c8d0846eae7cd83fcb9ccea5c958c000921fce4e03d42167dc9b99c",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00047-g.xml": {
+      "sha256": "7edf287d6d381a2704dbf1a29c5503c6d560a6f63c803a473e8f158f1d259a79",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00048-g.xml": {
+      "sha256": "d2d1c2b16c879fc143c704be17eb1094392063e186367663c4b9937e76a993c5",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00049-g.xml": {
+      "sha256": "d02d7357608a234b65c1f44f0968481d46370d24e1558847ddc3e14a53964ac8",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00050-g.xml": {
+      "sha256": "d62497af14997b8fe5c4f4708b0ad0df2026ae6b7dae76bfd84c4235dbea3cc5",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00051-g.xml": {
+      "sha256": "683e8983069dc28ffc47fa52148d6eef4c6c1daa9005bd32f30e2ebaaeb0e3c2",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00052-g.xml": {
+      "sha256": "00278d24b7b053673073a9e9de230ebb7ab4ad41dd3fcf5316f4192a65f7e536",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00053-g.xml": {
+      "sha256": "63cd093847912a7164189bc1c2273b4a23e3109bace8aade318205495737c697",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00054-g.xml": {
+      "sha256": "bdd652b977841940126bf4f35346fec3077a50aa3a71d0e4d5714b2df2c411da",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00055-g.xml": {
+      "sha256": "598f3ed54939e40857fb9e4afcbad276913fb023b4c5070e72180f16412edb60",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00056-g.xml": {
+      "sha256": "419c5958c95ba33645ac76fd52cbdf8109daba2d2031087a391eb43bc0a8305f",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00057-g.xml": {
+      "sha256": "0064b1fc7f7ad71fbddd2f2d67fad2004b109895dbc995c7504bc316fa3e0b50",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00058-g.xml": {
+      "sha256": "91791db966f8bedd67b7a370922edaea663c4b129e77fe7b58e84e454d6142a7",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00059-g.xml": {
+      "sha256": "ee653eadfaf03c4843310d54a44fd19894a07c8f3bd1af73ecaab22d3376b9be",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00060-g.xml": {
+      "sha256": "971afd35b727a7779755e97fe15c4a24730dce92d600f9db30fb5195654584fb",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00061-g.xml": {
+      "sha256": "8715ea92606ef86b13364c256dcdbe1499e938392fcdbbbc50b57b9592c2c65d",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00062-g.xml": {
+      "sha256": "b240d88ab0457a4e38f3a86677af214a26dd5c38548304d5a1e701effcf5cdd0",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00063-g.xml": {
+      "sha256": "c64f2e6a5437660465849e0688c35b491e4460498773cc57e044c548ee4a8ca2",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00064-g.xml": {
+      "sha256": "4b5405014406b84f545823c3a623625a45289d9d5a01e54a3a00b6305c891221",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00065-g.xml": {
+      "sha256": "665288f3e58ceab178dcb03442b6dbab40269abcf7dd27e42849b99affced38e",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00066-g.xml": {
+      "sha256": "5bbb43605cc4ea55cb90bd464f5a4dbc52209afb29690227c54d8313bbae2044",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00067-g.xml": {
+      "sha256": "6a5ae70ae0a3b7d3d0851d066425f729ea1bd21a9b3368c3121b4dd91481efa6",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00068-g.xml": {
+      "sha256": "64291be4a7ff9cdd504b69de7c2237f41fa45967b7364e7ad404c6441b7e2c86",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00069-g.xml": {
+      "sha256": "482e4a3923780d9674821608f87d5903db493c2879fc13c27ffa523b516e4718",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00070-g.xml": {
+      "sha256": "adcc7a9125b8987ba67bbbfa57a6709084c39653c62b2f6f0799bda045c2b040",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00071-g.xml": {
+      "sha256": "40b54ead5749853830af45c36446367511b1b60c37302521a653331225fcc272",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00072-g.xml": {
+      "sha256": "5de538a54f1f0ad017a06918a3a896d68393f8d8a116f0f5d2f83cc02b6f93b5",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00073-g.xml": {
+      "sha256": "07d71afde1fc4b456f18db2ee47c49092e52444ebda64c84592d1316bd2c9097",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00074-g.xml": {
+      "sha256": "3d28c5254607b9ad1f4dc8e425b3fd739838daed653bb2bb6f13dc2bfd67388a",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00075-g.xml": {
+      "sha256": "bb8ded3c3690fe7d82f99101696245cd451155643c73a3eaaf8dbbf47e9b54e5",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00076-g.xml": {
+      "sha256": "9103f248b4065b94809e6c26a14c97879419c2aaef936bba99b8ede2f9f02196",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00077-g.xml": {
+      "sha256": "2afcc1a9cc5827bb55139135241f5d78a9d0130f184cad0b67d4f3a32e253f49",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00078-g.xml": {
+      "sha256": "320047a188de4159dc4fcddfe158ec60b93b0469532cabcd4ef87d9931f6000c",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00079-g.xml": {
+      "sha256": "6b03a5c593c2fcf37ae42ca475895ee466f0b99231f7175c90612c62f848fd16",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00080-g.xml": {
+      "sha256": "f3eb637fd84a32da95b602b8f7b03c8f8be396b1d6d9c263cc88f729ff56363e",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00081-g.xml": {
+      "sha256": "4dbd27df2c07269f76e990dfdb36b6e76ce29c620ef27d90b9063455e62cb7a4",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00082-g.xml": {
+      "sha256": "f0fac040e9164d488ce163df77f6f623874fca39c11323c62dbb69b92eec7276",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00083-g.xml": {
+      "sha256": "69c474b151608e191d7c2b0e649a6175699e13dee51eb4f2a23c4ab6cda623d0",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00084-g.xml": {
+      "sha256": "1d9f46b43fca5462ab8f4e8724d904ab534c9f6d6604d4909e17e72fb18cf25f",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00085-g.xml": {
+      "sha256": "49ce066850726203632e15d66eb30418ea18323b892a854b65efc67990b15b74",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00086-g.xml": {
+      "sha256": "70ef0809f12a386a59df6ebc67502b82106c73ff536501561c694b80b4927903",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00087-g.xml": {
+      "sha256": "15b1a63ad9a5b204386b2274301fda6bc5a73d737335cb181137afbd3168ab9e",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00088-g.xml": {
+      "sha256": "f7ea3d6831d18984c59fde7fcc0256057a3c0b07e1401b6de148ea8172e722dc",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00089-g.xml": {
+      "sha256": "3c694869deec00c01495e800d6f777972a8d3aa220dac43f905855f14e7326dd",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00090-g.xml": {
+      "sha256": "f1cbcb916e38253dbc8bf69be83e8ffe3bdf561ae1e0aabf00cf1b5ec2319e2f",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00091-g.xml": {
+      "sha256": "d5db2345faf7b9f46c0b6d2071c6333a4b566b8858dbde010381e72c0157de03",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00092-g.xml": {
+      "sha256": "30f70da72b889c0efe51f5db5ac919121b152f106e0f6ba06ce264b8d627b54b",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00093-g.xml": {
+      "sha256": "867eaf1d926b17f4fa047f07902cf2e9e3dea27dda8e3184173759b17ac38072",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00094-g.xml": {
+      "sha256": "2f6d48cffc3dc66c53bf06fb46f35efd8b7cb7ed7b1f446ff8da26594c222973",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00095-g.xml": {
+      "sha256": "d1da1891207b11047eff33fa9ff6e76aca78c8af0f92aca2a7b76d2bafa72ea3",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00096-g.xml": {
+      "sha256": "2f341ac1a90552a4c8e6a1994cf991cb84a440ace8c13b5f5f49bc1513b6ecde",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00097-g.xml": {
+      "sha256": "4c2d514ad3b0359717b5d9a92129832cc365ba97cc333207b726cce91ea807cf",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00098-g.xml": {
+      "sha256": "60ad111768c9987f54ac8e30b18e17122e75d18088aea2cd5b6a758552f4e6e5",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00099-g.xml": {
+      "sha256": "9b759b2e907e47f200a8617aecc65e67b35d69b8ae4d9df9188e408c472cdf4f",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00100-g.xml": {
+      "sha256": "a7babdbff0c5e9afa55732d866a5b1968dd5bfa15c0e71d8abb274d31b37b075",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00101-g.xml": {
+      "sha256": "5428a4b881c68d0e53171e02c1d6bd9ed82a9e72ffa07d88c8f4ed02aedb4b08",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00102-g.xml": {
+      "sha256": "315709bcfd278e89daf70cb9b5fa9d3e24dce9ce3afe7e2c8342d3061e25e1c0",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00103-g.xml": {
+      "sha256": "a07b9489c40c037965813f54ab5c89dac14e7497e4354b557528fcced1782324",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00104-g.xml": {
+      "sha256": "376ecbc2c6c9ae06340a2f87339bf0f7e2ea871c236c2d663b35b8c85e688c6d",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00105-g.xml": {
+      "sha256": "5d186cbc32aa4e30e21e38fe6e889a9dfdc804b71327ed69b72ee7e76e7334ca",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00106-g.xml": {
+      "sha256": "e3450288da2905f11cc0722f0a56d152d4ff341bf52f37a525ebd4c7d7a317b7",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00107-g.xml": {
+      "sha256": "6f92b07c666e0fd4282336d8e3b39c39d9b8508609246d7a9e8186f5444e25be",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00108-g.xml": {
+      "sha256": "54d547febd737bb53352022679f4bfb1bfea137ab7ff820e0508aa040998c08d",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00109-g.xml": {
+      "sha256": "595665186937d9c0c993cc849522c76e3178a1f2b8590f31e506c280b378f6ec",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00110-g.xml": {
+      "sha256": "566baaccf83a4f6efb7c422a39d7cf224534ed43b34941adb026f4c16f1db524",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00111-g.xml": {
+      "sha256": "a567ea839d854971a54bd56a66d21b40bd69acfe4d86f9888dbda0ebf9fc3a32",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00112-g.xml": {
+      "sha256": "0e2a1fd9c1db4c6631e9dacfdb4250ed8489a30d740a81a66e22b5e6a2e2f8dc",
+      "bytes": 126115
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00113-clip-path-content.xml": {
+      "sha256": "17d9fa1c244355d31b9b1fa64deb07d5abb9b6902be10a89bf450c786db1992b",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00114-c1866f2.xml": {
+      "sha256": "f6a1158ba020b0d1181df467af8ed3b2fdf77ae9583fa27afe6fc6ae601d787a",
+      "bytes": 2535
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00115-clip-path-shape.xml": {
+      "sha256": "a8d805091fc06e668224d332dd0875aa1a3ac934de0d76f877c60f106e0befb8",
+      "bytes": 655
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00116-clip-path-c1866f2.xml": {
+      "sha256": "c38b44ed5eef4edb1147bffd662634e2ff927a52e1735d88e7deff5697aef8f4",
+      "bytes": 876
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00117-g.xml": {
+      "sha256": "b1b93989b6b214c38ef1830613a518b54eae27bb9ff5a681e67d8ae0f3f6b586",
+      "bytes": 535
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00118-svg.xml": {
+      "sha256": "dc0626768e6f10ab9da2b18690900fc0856e8cda0ab80330ee6cf0f67b736fd7",
+      "bytes": 823
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00119-part-1866.xml": {
+      "sha256": "4053e1d9189336af50833fb0a17981943f9e545acdc2418383342f22e183e731",
+      "bytes": 577
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00120-b1867_0__bodyClip.xml": {
+      "sha256": "3dff04432089e3102eb7ddfce0de5b780fd7bf1dd93b608acf1a06f2adbfeaf6",
+      "bytes": 1230
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00121-clip-path-shape.xml": {
+      "sha256": "b2891511912aa844d4e466462b39818841bec40c51eb3ba050b80839e84f56b2",
+      "bytes": 665
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00122-clip-path-b1867_0__bodyClip.xml": {
+      "sha256": "1689ea0268e18a8349be1dca24f765e73ed7f9cbc5e97379351b0fdb4829ff54",
+      "bytes": 906
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00123-g.xml": {
+      "sha256": "43c1ff47d6e7bd67643bed203e701e74c14cde766f6c0c5f34379da467e28bea",
+      "bytes": 545
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00124-b1867_0__stencilInk.xml": {
+      "sha256": "efb735367650a8de34b6fb5c0859702ac7286f9e37bb0724e4c4f311bdad2ca1",
+      "bytes": 112381
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00125-mask-shape.xml": {
+      "sha256": "7c9d1d07106ddfd8a0a16a4aedf34326eaa87051d7e3412095fc00adfd587f84",
+      "bytes": 652
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00126-mask-b1867_0__stencilInk.xml": {
+      "sha256": "7b80dfb287bcaaf4a200cd1730220668f4de4bf8a878bf95b86ac6c440824fb4",
+      "bytes": 943
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00127-g.xml": {
+      "sha256": "a0bc247f3943dadd8d46d0d0e778e17be36a3fc0be97a6681ba9e6b834c3b8b4",
+      "bytes": 542
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00128-g.xml": {
+      "sha256": "57077856cdb7ba0ef6a324376c8f754a3872a4537de27d7391dc816b092d9052",
+      "bytes": 126115
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00129-clip-path-content.xml": {
+      "sha256": "572200691feb51baf7a6c994cd36c9a804eae075270887f2024b5b07694e0575",
+      "bytes": 663
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00130-c1867f1.xml": {
+      "sha256": "6b7c8aa284194643bdf07a660977a51dc3d08b750cb12dea72d1bebb6eca0793",
+      "bytes": 627
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00131-clip-path-shape.xml": {
+      "sha256": "482844d26d2246a3b2188d92238231642ae8bbc4a4e7210700f6109fbbe9800f",
+      "bytes": 655
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00132-clip-path-c1867f1.xml": {
+      "sha256": "c8b4f66c91ca6d2e60a3f74cac8d2bd93120bcad28f00b34f69340cd87fd104e",
+      "bytes": 876
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00133-g.xml": {
+      "sha256": "58ae92b4daafe8bdd9d869783f766bef57134503ba1074cddd27e352c6b987e1",
+      "bytes": 535
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00134-svg.xml": {
+      "sha256": "a12693794f6635d7f41b980c387304c0a96bf18bdb271d1c1c193bb8bff2b400",
+      "bytes": 557
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/CF6Vector/00135-part-1867.xml": {
+      "sha256": "29d18fa10fa8f7848244fe8c794f06649e0d4812695d16b5ad275ca5ce6c4134",
+      "bytes": 577
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/DOMDocument.xml": {
+      "sha256": "68032ea959e73cf36fb3df36a0fcfdc496b3db4214f8660aea99392287fa6805",
+      "bytes": 44603
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/CF6_Transport1868.xfl": {
+      "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38",
+      "bytes": 9
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/PublishSettings.xml": {
+      "sha256": "5aaa3dd519c1a329c1fbf34dc31c83201eaf8a1a11350ad56031b58152b3a935",
+      "bytes": 7863
+    },
+    "tools/cf6-scene-completion/transport-art/CF6_Transport1868/LIBRARY/intrinsic-bd390a38e397a6693d65a032.png": {
+      "sha256": "bd390a38e397a6693d65a0327552bc4e6692ed305bc6d612ac8c6856dcf20342",
+      "bytes": 995480
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00001-g.xml": {
+      "sha256": "64437161dc9b31a3e2f14dfbdfdc929b517f019dd58e95d61f62c2522203d666",
+      "bytes": 1772
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00002-g.xml": {
+      "sha256": "a8bf0833ec2a86156039ac434d60a9d8d8654b6cfc83a6613f7fe953cc068480",
+      "bytes": 64089
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00003-clip-path-content.xml": {
+      "sha256": "e6441d24ad9a6baecacd270c351bae75073ea651d166ed93449a79bf6ad37d97",
+      "bytes": 663
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00004-c1809f2.xml": {
+      "sha256": "18ace6eea76c9afbe3aa64bee7e965c55e84c23e5a2d52c25deebc54e31f551f",
+      "bytes": 581
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00005-clip-path-shape.xml": {
+      "sha256": "773491002b2b1bdc853da70cda54f04a1574c60bf2e1011770b0a5d71cae9b83",
+      "bytes": 655
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00006-clip-path-c1809f2.xml": {
+      "sha256": "54a7b33202bd7db6f51836cfaa7409246c1b86443e62700386afd3666c3a8772",
+      "bytes": 876
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00007-g.xml": {
+      "sha256": "71d53c73cc95d6b8f95ff76020b442299c8121ac9c610dea63ca6a63f36305fc",
+      "bytes": 535
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00008-svg.xml": {
+      "sha256": "e4755b65f9c93ffd543ed59ef1e4588116c582d56014f977f41c533b9d0a6bbc",
+      "bytes": 557
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00009-part-1809.xml": {
+      "sha256": "78f38120494b91f6d31ff4d4891e53b1163c1d3e503cada9605f27c67578c3a0",
+      "bytes": 577
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00010-image.xml": {
+      "sha256": "535f20fac719cdcdea2cf65205d2ee1e68933e1740a131e9192b27f40860b99c",
+      "bytes": 548
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00011-clip-path-content.xml": {
+      "sha256": "6176d4e83670520be67fb72dcbfefd63c0ff3720cc5f5d26cdf500639b4a6700",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00012-b1866_0__bodyClip.xml": {
+      "sha256": "873242775196331759af506844d8fed9b9fb30760b850fb48e03b3731980fcce",
+      "bytes": 1230
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00013-clip-path-shape.xml": {
+      "sha256": "7fb74ee2c7a546c50edcf075960872d1f1363c7989720fc2bbc73fad5226e084",
+      "bytes": 665
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00014-clip-path-b1866_0__bodyClip.xml": {
+      "sha256": "9197b0a40fc615b20a5a091a272866445ecbdb7e79074b824ad14cf9184bca05",
+      "bytes": 906
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00015-g.xml": {
+      "sha256": "133696489c56c86cf1ae7efdce5aef02e9b5a3798f658a72f3983b8ebd871c75",
+      "bytes": 545
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00016-path.xml": {
+      "sha256": "926b4596213bf569b6938b279c18d301ab2559ba693cdfb2b4eb78e60249c4f4",
+      "bytes": 851
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00017-path.xml": {
+      "sha256": "5f9fc71601ee88d3372d0dd0187223da549241f7f966d89ef1192c82d8272085",
+      "bytes": 1365
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00018-g.xml": {
+      "sha256": "c15a096fa159cb0a0608e7a165539b08770b78c5cd018c3830be1d55ef575e73",
+      "bytes": 1246
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00019-path.xml": {
+      "sha256": "1a388edda0f026f4c856f5eadca712d9847ddd150ac45c91860b5ea0b3351664",
+      "bytes": 1361
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00020-g.xml": {
+      "sha256": "45d843cb2cae02e892379f18e512684e2119a562189399b878babda9da5e1264",
+      "bytes": 1758
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00021-path.xml": {
+      "sha256": "abdb8e3e5d3e18aec4798711c242cc2eb3e78174d9f5633bbd66c474eb3f2455",
+      "bytes": 899
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00022-path.xml": {
+      "sha256": "40250886c22326577c064875a8ef3e9d20b1f19b71c146c5d5af10a6a9a8927f",
+      "bytes": 907
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00023-g.xml": {
+      "sha256": "a7b91befe68da6746cdc51e1d7570e81405bdd35f1a99edf7a8f096cbff986fc",
+      "bytes": 1533
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00024-mask-content.xml": {
+      "sha256": "25b228ba8307049e6019eb09ebeeb5b0af52eb960b36f7e6f1b67d0bfc096fd9",
+      "bytes": 1107
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00025-b1866_0__stencilInk.xml": {
+      "sha256": "5e64367a0827bd9a71429b6a4d5f1aeca40192bae982816aa3742b8262fe1ebb",
+      "bytes": 112381
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00026-mask-shape.xml": {
+      "sha256": "c1263ff7378655400238173c6c15c686fd735990574a6c46b63ff10ac712b1d2",
+      "bytes": 652
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00027-mask-b1866_0__stencilInk.xml": {
+      "sha256": "2d23eb9cd337813782ff66db7b170a1dfb4beacab3f01a1eac65ce9dea7d8b5a",
+      "bytes": 943
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00028-g.xml": {
+      "sha256": "547504f437f9542160127673b67be9bb1cac8474b63ab12781b0a426ca93ea31",
+      "bytes": 542
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00029-g.xml": {
+      "sha256": "58ee555e05eb9e7d5777bea6d2782e57c2c49ec740a4a69dc050b42a02c8fdb1",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00030-g.xml": {
+      "sha256": "c52155b7218eae927f86221420c794c55ad9b0ac72c1fdd9a5bd240728a27c63",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00031-g.xml": {
+      "sha256": "97b2e1440b81e02ee95228be5ffc33ac8cea52548f7189f24c76fafc8ab2e0b3",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00032-g.xml": {
+      "sha256": "fbee9bbe01ebbbf0b84eb3b72c561029507bacaf850866c80cd17d400e479f38",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00033-g.xml": {
+      "sha256": "a7eef6ed282461d554fd8f1b331e846d86a3e2e02304e18f761d96891fab1d2d",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00034-g.xml": {
+      "sha256": "9cb874f6db0ed1199542a9658d88f2761a4f3586e6b6ef67dbc188df175497e9",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00035-g.xml": {
+      "sha256": "8f44e39e4975aad33cf2318375694252aa69fed107996a0d927bf872f43683d4",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00036-g.xml": {
+      "sha256": "18a090941c3c8144bec1cfb325515b15927a3de01dfbf690fc64393f28ac10d2",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00037-g.xml": {
+      "sha256": "604bda8e838a40326a8363095cc85819505c16f6a28d64717710e5e136f6a344",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00038-g.xml": {
+      "sha256": "8ff9a9d086369b4aaeec4c9e8d717517eeb67770a7346999e0add9363de43923",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00039-g.xml": {
+      "sha256": "5b0d776e8fba736bc65f76e4e3e32e92b9f6260de9d557786d3727315eca37f4",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00040-g.xml": {
+      "sha256": "83cbec70e89927c840adda01c973771c224fe68c21975a157075dcf7ca9a283f",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00041-g.xml": {
+      "sha256": "c5d2366e246a315026c635dd2ae44edc3c2a8b119c2d8329c7b3175e668feaa4",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00042-g.xml": {
+      "sha256": "197c2e863691559fec26cfd56ae9b5a650ad0682f5093b00f89c5db32d7655fe",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00043-g.xml": {
+      "sha256": "5d0d3760fcf8ab771e78c6fe4bd0b58c21cd038e93b416564bffb50c95a9f580",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00044-g.xml": {
+      "sha256": "67ba7483d6c2ece7eb468118ecd04bdc3f777fff3467d071e34f4dac53dfa5f4",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00045-g.xml": {
+      "sha256": "e3c52cc5da204fd8846bb56a147c3875e28094ce3476e729e88d018a753df4fc",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00046-g.xml": {
+      "sha256": "6aa742724c8d0846eae7cd83fcb9ccea5c958c000921fce4e03d42167dc9b99c",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00047-g.xml": {
+      "sha256": "7edf287d6d381a2704dbf1a29c5503c6d560a6f63c803a473e8f158f1d259a79",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00048-g.xml": {
+      "sha256": "d2d1c2b16c879fc143c704be17eb1094392063e186367663c4b9937e76a993c5",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00049-g.xml": {
+      "sha256": "d02d7357608a234b65c1f44f0968481d46370d24e1558847ddc3e14a53964ac8",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00050-g.xml": {
+      "sha256": "d62497af14997b8fe5c4f4708b0ad0df2026ae6b7dae76bfd84c4235dbea3cc5",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00051-g.xml": {
+      "sha256": "683e8983069dc28ffc47fa52148d6eef4c6c1daa9005bd32f30e2ebaaeb0e3c2",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00052-g.xml": {
+      "sha256": "00278d24b7b053673073a9e9de230ebb7ab4ad41dd3fcf5316f4192a65f7e536",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00053-g.xml": {
+      "sha256": "63cd093847912a7164189bc1c2273b4a23e3109bace8aade318205495737c697",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00054-g.xml": {
+      "sha256": "bdd652b977841940126bf4f35346fec3077a50aa3a71d0e4d5714b2df2c411da",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00055-g.xml": {
+      "sha256": "598f3ed54939e40857fb9e4afcbad276913fb023b4c5070e72180f16412edb60",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00056-g.xml": {
+      "sha256": "419c5958c95ba33645ac76fd52cbdf8109daba2d2031087a391eb43bc0a8305f",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00057-g.xml": {
+      "sha256": "0064b1fc7f7ad71fbddd2f2d67fad2004b109895dbc995c7504bc316fa3e0b50",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00058-g.xml": {
+      "sha256": "91791db966f8bedd67b7a370922edaea663c4b129e77fe7b58e84e454d6142a7",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00059-g.xml": {
+      "sha256": "ee653eadfaf03c4843310d54a44fd19894a07c8f3bd1af73ecaab22d3376b9be",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00060-g.xml": {
+      "sha256": "971afd35b727a7779755e97fe15c4a24730dce92d600f9db30fb5195654584fb",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00061-g.xml": {
+      "sha256": "8715ea92606ef86b13364c256dcdbe1499e938392fcdbbbc50b57b9592c2c65d",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00062-g.xml": {
+      "sha256": "b240d88ab0457a4e38f3a86677af214a26dd5c38548304d5a1e701effcf5cdd0",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00063-g.xml": {
+      "sha256": "c64f2e6a5437660465849e0688c35b491e4460498773cc57e044c548ee4a8ca2",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00064-g.xml": {
+      "sha256": "4b5405014406b84f545823c3a623625a45289d9d5a01e54a3a00b6305c891221",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00065-g.xml": {
+      "sha256": "665288f3e58ceab178dcb03442b6dbab40269abcf7dd27e42849b99affced38e",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00066-g.xml": {
+      "sha256": "5bbb43605cc4ea55cb90bd464f5a4dbc52209afb29690227c54d8313bbae2044",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00067-g.xml": {
+      "sha256": "6a5ae70ae0a3b7d3d0851d066425f729ea1bd21a9b3368c3121b4dd91481efa6",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00068-g.xml": {
+      "sha256": "64291be4a7ff9cdd504b69de7c2237f41fa45967b7364e7ad404c6441b7e2c86",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00069-g.xml": {
+      "sha256": "482e4a3923780d9674821608f87d5903db493c2879fc13c27ffa523b516e4718",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00070-g.xml": {
+      "sha256": "adcc7a9125b8987ba67bbbfa57a6709084c39653c62b2f6f0799bda045c2b040",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00071-g.xml": {
+      "sha256": "40b54ead5749853830af45c36446367511b1b60c37302521a653331225fcc272",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00072-g.xml": {
+      "sha256": "5de538a54f1f0ad017a06918a3a896d68393f8d8a116f0f5d2f83cc02b6f93b5",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00073-g.xml": {
+      "sha256": "07d71afde1fc4b456f18db2ee47c49092e52444ebda64c84592d1316bd2c9097",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00074-g.xml": {
+      "sha256": "3d28c5254607b9ad1f4dc8e425b3fd739838daed653bb2bb6f13dc2bfd67388a",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00075-g.xml": {
+      "sha256": "bb8ded3c3690fe7d82f99101696245cd451155643c73a3eaaf8dbbf47e9b54e5",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00076-g.xml": {
+      "sha256": "9103f248b4065b94809e6c26a14c97879419c2aaef936bba99b8ede2f9f02196",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00077-g.xml": {
+      "sha256": "2afcc1a9cc5827bb55139135241f5d78a9d0130f184cad0b67d4f3a32e253f49",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00078-g.xml": {
+      "sha256": "320047a188de4159dc4fcddfe158ec60b93b0469532cabcd4ef87d9931f6000c",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00079-g.xml": {
+      "sha256": "6b03a5c593c2fcf37ae42ca475895ee466f0b99231f7175c90612c62f848fd16",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00080-g.xml": {
+      "sha256": "f3eb637fd84a32da95b602b8f7b03c8f8be396b1d6d9c263cc88f729ff56363e",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00081-g.xml": {
+      "sha256": "4dbd27df2c07269f76e990dfdb36b6e76ce29c620ef27d90b9063455e62cb7a4",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00082-g.xml": {
+      "sha256": "f0fac040e9164d488ce163df77f6f623874fca39c11323c62dbb69b92eec7276",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00083-g.xml": {
+      "sha256": "69c474b151608e191d7c2b0e649a6175699e13dee51eb4f2a23c4ab6cda623d0",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00084-g.xml": {
+      "sha256": "1d9f46b43fca5462ab8f4e8724d904ab534c9f6d6604d4909e17e72fb18cf25f",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00085-g.xml": {
+      "sha256": "49ce066850726203632e15d66eb30418ea18323b892a854b65efc67990b15b74",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00086-g.xml": {
+      "sha256": "70ef0809f12a386a59df6ebc67502b82106c73ff536501561c694b80b4927903",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00087-g.xml": {
+      "sha256": "15b1a63ad9a5b204386b2274301fda6bc5a73d737335cb181137afbd3168ab9e",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00088-g.xml": {
+      "sha256": "f7ea3d6831d18984c59fde7fcc0256057a3c0b07e1401b6de148ea8172e722dc",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00089-g.xml": {
+      "sha256": "3c694869deec00c01495e800d6f777972a8d3aa220dac43f905855f14e7326dd",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00090-g.xml": {
+      "sha256": "f1cbcb916e38253dbc8bf69be83e8ffe3bdf561ae1e0aabf00cf1b5ec2319e2f",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00091-g.xml": {
+      "sha256": "d5db2345faf7b9f46c0b6d2071c6333a4b566b8858dbde010381e72c0157de03",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00092-g.xml": {
+      "sha256": "30f70da72b889c0efe51f5db5ac919121b152f106e0f6ba06ce264b8d627b54b",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00093-g.xml": {
+      "sha256": "867eaf1d926b17f4fa047f07902cf2e9e3dea27dda8e3184173759b17ac38072",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00094-g.xml": {
+      "sha256": "2f6d48cffc3dc66c53bf06fb46f35efd8b7cb7ed7b1f446ff8da26594c222973",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00095-g.xml": {
+      "sha256": "d1da1891207b11047eff33fa9ff6e76aca78c8af0f92aca2a7b76d2bafa72ea3",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00096-g.xml": {
+      "sha256": "2f341ac1a90552a4c8e6a1994cf991cb84a440ace8c13b5f5f49bc1513b6ecde",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00097-g.xml": {
+      "sha256": "4c2d514ad3b0359717b5d9a92129832cc365ba97cc333207b726cce91ea807cf",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00098-g.xml": {
+      "sha256": "60ad111768c9987f54ac8e30b18e17122e75d18088aea2cd5b6a758552f4e6e5",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00099-g.xml": {
+      "sha256": "9b759b2e907e47f200a8617aecc65e67b35d69b8ae4d9df9188e408c472cdf4f",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00100-g.xml": {
+      "sha256": "a7babdbff0c5e9afa55732d866a5b1968dd5bfa15c0e71d8abb274d31b37b075",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00101-g.xml": {
+      "sha256": "5428a4b881c68d0e53171e02c1d6bd9ed82a9e72ffa07d88c8f4ed02aedb4b08",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00102-g.xml": {
+      "sha256": "315709bcfd278e89daf70cb9b5fa9d3e24dce9ce3afe7e2c8342d3061e25e1c0",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00103-g.xml": {
+      "sha256": "a07b9489c40c037965813f54ab5c89dac14e7497e4354b557528fcced1782324",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00104-g.xml": {
+      "sha256": "376ecbc2c6c9ae06340a2f87339bf0f7e2ea871c236c2d663b35b8c85e688c6d",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00105-g.xml": {
+      "sha256": "5d186cbc32aa4e30e21e38fe6e889a9dfdc804b71327ed69b72ee7e76e7334ca",
+      "bytes": 666
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00106-g.xml": {
+      "sha256": "e3450288da2905f11cc0722f0a56d152d4ff341bf52f37a525ebd4c7d7a317b7",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00107-g.xml": {
+      "sha256": "6f92b07c666e0fd4282336d8e3b39c39d9b8508609246d7a9e8186f5444e25be",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00108-g.xml": {
+      "sha256": "54d547febd737bb53352022679f4bfb1bfea137ab7ff820e0508aa040998c08d",
+      "bytes": 706
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00109-g.xml": {
+      "sha256": "595665186937d9c0c993cc849522c76e3178a1f2b8590f31e506c280b378f6ec",
+      "bytes": 662
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00110-g.xml": {
+      "sha256": "566baaccf83a4f6efb7c422a39d7cf224534ed43b34941adb026f4c16f1db524",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00111-g.xml": {
+      "sha256": "a567ea839d854971a54bd56a66d21b40bd69acfe4d86f9888dbda0ebf9fc3a32",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00112-g.xml": {
+      "sha256": "0e2a1fd9c1db4c6631e9dacfdb4250ed8489a30d740a81a66e22b5e6a2e2f8dc",
+      "bytes": 126115
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00113-clip-path-content.xml": {
+      "sha256": "17d9fa1c244355d31b9b1fa64deb07d5abb9b6902be10a89bf450c786db1992b",
+      "bytes": 667
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00114-c1866f2.xml": {
+      "sha256": "f6a1158ba020b0d1181df467af8ed3b2fdf77ae9583fa27afe6fc6ae601d787a",
+      "bytes": 2535
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00115-clip-path-shape.xml": {
+      "sha256": "a8d805091fc06e668224d332dd0875aa1a3ac934de0d76f877c60f106e0befb8",
+      "bytes": 655
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00116-clip-path-c1866f2.xml": {
+      "sha256": "c38b44ed5eef4edb1147bffd662634e2ff927a52e1735d88e7deff5697aef8f4",
+      "bytes": 876
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00117-g.xml": {
+      "sha256": "b1b93989b6b214c38ef1830613a518b54eae27bb9ff5a681e67d8ae0f3f6b586",
+      "bytes": 535
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00118-svg.xml": {
+      "sha256": "dc0626768e6f10ab9da2b18690900fc0856e8cda0ab80330ee6cf0f67b736fd7",
+      "bytes": 823
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00119-part-1866.xml": {
+      "sha256": "4053e1d9189336af50833fb0a17981943f9e545acdc2418383342f22e183e731",
+      "bytes": 577
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00120-b1867_0__bodyClip.xml": {
+      "sha256": "3dff04432089e3102eb7ddfce0de5b780fd7bf1dd93b608acf1a06f2adbfeaf6",
+      "bytes": 1230
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00121-clip-path-shape.xml": {
+      "sha256": "b2891511912aa844d4e466462b39818841bec40c51eb3ba050b80839e84f56b2",
+      "bytes": 665
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00122-clip-path-b1867_0__bodyClip.xml": {
+      "sha256": "1689ea0268e18a8349be1dca24f765e73ed7f9cbc5e97379351b0fdb4829ff54",
+      "bytes": 906
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00123-g.xml": {
+      "sha256": "43c1ff47d6e7bd67643bed203e701e74c14cde766f6c0c5f34379da467e28bea",
+      "bytes": 545
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00124-b1867_0__stencilInk.xml": {
+      "sha256": "efb735367650a8de34b6fb5c0859702ac7286f9e37bb0724e4c4f311bdad2ca1",
+      "bytes": 112381
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00125-mask-shape.xml": {
+      "sha256": "7c9d1d07106ddfd8a0a16a4aedf34326eaa87051d7e3412095fc00adfd587f84",
+      "bytes": 652
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00126-mask-b1867_0__stencilInk.xml": {
+      "sha256": "7b80dfb287bcaaf4a200cd1730220668f4de4bf8a878bf95b86ac6c440824fb4",
+      "bytes": 943
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00127-g.xml": {
+      "sha256": "a0bc247f3943dadd8d46d0d0e778e17be36a3fc0be97a6681ba9e6b834c3b8b4",
+      "bytes": 542
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00128-g.xml": {
+      "sha256": "57077856cdb7ba0ef6a324376c8f754a3872a4537de27d7391dc816b092d9052",
+      "bytes": 126115
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00129-clip-path-content.xml": {
+      "sha256": "572200691feb51baf7a6c994cd36c9a804eae075270887f2024b5b07694e0575",
+      "bytes": 663
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00130-c1867f1.xml": {
+      "sha256": "6b7c8aa284194643bdf07a660977a51dc3d08b750cb12dea72d1bebb6eca0793",
+      "bytes": 627
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00131-clip-path-shape.xml": {
+      "sha256": "482844d26d2246a3b2188d92238231642ae8bbc4a4e7210700f6109fbbe9800f",
+      "bytes": 655
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00132-clip-path-c1867f1.xml": {
+      "sha256": "c8b4f66c91ca6d2e60a3f74cac8d2bd93120bcad28f00b34f69340cd87fd104e",
+      "bytes": 876
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00133-g.xml": {
+      "sha256": "58ae92b4daafe8bdd9d869783f766bef57134503ba1074cddd27e352c6b987e1",
+      "bytes": 535
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00134-svg.xml": {
+      "sha256": "a12693794f6635d7f41b980c387304c0a96bf18bdb271d1c1c193bb8bff2b400",
+      "bytes": 557
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/CF6Vector/00135-part-1867.xml": {
+      "sha256": "29d18fa10fa8f7848244fe8c794f06649e0d4812695d16b5ad275ca5ce6c4134",
+      "bytes": 577
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/DOMDocument.xml": {
+      "sha256": "68032ea959e73cf36fb3df36a0fcfdc496b3db4214f8660aea99392287fa6805",
+      "bytes": 44603
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/CF6_Transport1868.xfl": {
+      "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38",
+      "bytes": 9
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/PublishSettings.xml": {
+      "sha256": "5aaa3dd519c1a329c1fbf34dc31c83201eaf8a1a11350ad56031b58152b3a935",
+      "bytes": 7863
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/LIBRARY/intrinsic-bd390a38e397a6693d65a032.png": {
+      "sha256": "bd390a38e397a6693d65a0327552bc4e6692ed305bc6d612ac8c6856dcf20342",
+      "bytes": 995480
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/bin/M 1 1792759383.dat": {
+      "sha256": "f4f6f3e723f62d95e6c44f8d9fd02208681a062f87b4d513d317e05ef7329e47",
+      "bytes": 995875
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_Transport1868/bin/SymDepend.cache": {
+      "sha256": "288f612e011b69d682105d76edb9fa204c26b10872a1738ced98444c6439155d",
+      "bytes": 28
+    }
+  }
+}

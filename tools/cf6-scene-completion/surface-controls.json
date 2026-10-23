@@ -1,0 +1,375 @@
+{
+  "schema": "cf6-native-surface-controls.v1",
+  "sourceCommit": "56eb0c15d5dee285692b07eb1028f4ced93088f3",
+  "sourceDescription": "Existing historical CS6 SWFs before floor-union correction; exact Git blobs, never rebuilt or modified. Upper/lower points and native mask transforms preserve the original 40-assertion fixture.",
+  "controls": [
+    {
+      "id": "A18",
+      "upper": [
+        [
+          132,
+          245
+        ],
+        [
+          335,
+          245
+        ],
+        [
+          542,
+          245
+        ],
+        [
+          746,
+          245
+        ],
+        [
+          949,
+          245
+        ],
+        [
+          1153,
+          245
+        ],
+        [
+          1360,
+          245
+        ],
+        [
+          1564,
+          245
+        ]
+      ],
+      "lower": [
+        [
+          104,
+          372
+        ],
+        [
+          307,
+          372
+        ],
+        [
+          514,
+          372
+        ],
+        [
+          718,
+          372
+        ],
+        [
+          921,
+          372
+        ],
+        [
+          1125,
+          372
+        ],
+        [
+          1332,
+          372
+        ],
+        [
+          1536,
+          372
+        ]
+      ],
+      "oldSwf": "tmp/cf6-fieldfix-20261023/traversal/old-native/CF6_A18_BG.swf",
+      "oldSha256": "9fdc51ea48db51593b6762c698126ca31ceaafa4b8d74f1326bab1d24e36c680",
+      "newSwf": "flashswf/backgrounds/cf6/CF6_A18_BG.swf",
+      "maskSymbol": "CF6Vector/00074-n2floor_union_1959",
+      "maskWorldMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        702.0,
+        224.54999999999998
+      ],
+      "sourceGitPath": "flashswf/backgrounds/cf6/CF6_A18_BG.swf",
+      "sourceBlob": "9ead4146018e0ea4f98231008c12da62bbfec1ce",
+      "oldBytes": 1966385
+    },
+    {
+      "id": "A19",
+      "upper": [
+        [
+          132,
+          245
+        ],
+        [
+          335,
+          245
+        ],
+        [
+          540,
+          245
+        ],
+        [
+          745,
+          245
+        ],
+        [
+          949,
+          245
+        ],
+        [
+          1153,
+          245
+        ],
+        [
+          1360,
+          245
+        ]
+      ],
+      "lower": [
+        [
+          104,
+          372
+        ],
+        [
+          307,
+          372
+        ],
+        [
+          514,
+          372
+        ],
+        [
+          718,
+          372
+        ],
+        [
+          1499,
+          371
+        ],
+        [
+          921,
+          372
+        ],
+        [
+          1125,
+          372
+        ],
+        [
+          1332,
+          372
+        ]
+      ],
+      "oldSwf": "tmp/cf6-fieldfix-20261023/traversal/old-native/CF6_A19_BG.swf",
+      "oldSha256": "d2f8f30c3095298a05ad402c990c1258b866e23063cf9f0614bd68ce3574e12e",
+      "newSwf": "flashswf/backgrounds/cf6/CF6_A19_BG.swf",
+      "maskSymbol": "CF6Vector/00076-n2floor_union_1978",
+      "maskWorldMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        702.0,
+        224.54999999999998
+      ],
+      "sourceGitPath": "flashswf/backgrounds/cf6/CF6_A19_BG.swf",
+      "sourceBlob": "050e3eab5c712631944f02c76e00f04ca2b30db6",
+      "oldBytes": 1660771
+    },
+    {
+      "id": "A20",
+      "upper": [
+        [
+          155,
+          246
+        ],
+        [
+          359,
+          246
+        ],
+        [
+          566,
+          246
+        ],
+        [
+          770,
+          246
+        ],
+        [
+          973,
+          246
+        ],
+        [
+          1176,
+          246
+        ]
+      ],
+      "lower": [
+        [
+          104,
+          500
+        ],
+        [
+          307,
+          500
+        ],
+        [
+          514,
+          500
+        ],
+        [
+          718,
+          500
+        ],
+        [
+          1499,
+          500
+        ],
+        [
+          921,
+          500
+        ],
+        [
+          1125,
+          500
+        ],
+        [
+          1332,
+          500
+        ]
+      ],
+      "oldSwf": "tmp/cf6-fieldfix-20261023/traversal/old-native/CF6_A20_BG.swf",
+      "oldSha256": "4a7348dc72639edd9e175d8739a482bebc014364bd4931516d84521f00eb8bb8",
+      "newSwf": "flashswf/backgrounds/cf6/CF6_A20_BG.swf",
+      "maskSymbol": "CF6Vector/00013-n2floor_union_1986",
+      "maskWorldMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        752.0,
+        230.54999999999998
+      ],
+      "sourceGitPath": "flashswf/backgrounds/cf6/CF6_A20_BG.swf",
+      "sourceBlob": "4a1d5b6b5058efc396f4f1eb66a4f8d61cf435e3",
+      "oldBytes": 1926637
+    },
+    {
+      "id": "A22",
+      "upper": [
+        [
+          155,
+          246
+        ],
+        [
+          359,
+          246
+        ],
+        [
+          566,
+          246
+        ],
+        [
+          770,
+          246
+        ],
+        [
+          973,
+          246
+        ],
+        [
+          1176,
+          246
+        ]
+      ],
+      "lower": [
+        [
+          104,
+          500
+        ],
+        [
+          307,
+          500
+        ],
+        [
+          514,
+          500
+        ],
+        [
+          718,
+          500
+        ],
+        [
+          1499,
+          500
+        ],
+        [
+          921,
+          500
+        ],
+        [
+          1125,
+          500
+        ],
+        [
+          1332,
+          500
+        ]
+      ],
+      "oldSwf": "tmp/cf6-fieldfix-20261023/traversal/old-native/CF6_A22_BG.swf",
+      "oldSha256": "89d2208a70fe3d4074f1ebf282992896c05becec4a5b5f30470186f1a5e44a03",
+      "newSwf": "flashswf/backgrounds/cf6/CF6_A22_BG.swf",
+      "maskSymbol": "CF6Vector/00013-n2floor_union_1986",
+      "maskWorldMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        752.0,
+        230.54999999999998
+      ],
+      "sourceGitPath": "flashswf/backgrounds/cf6/CF6_A22_BG.swf",
+      "sourceBlob": "85afe6bfb032b54701a138c16fff9ce0316cf62b",
+      "oldBytes": 1926637
+    }
+  ],
+  "shaftProbes": [
+    {
+      "id": "A10",
+      "kind": "shaft",
+      "version": "current",
+      "url": "../flashswf/backgrounds/cf6/CF6_A10_elevator-scroll.swf",
+      "upper": [
+        [
+          350,
+          100
+        ],
+        [
+          350,
+          250
+        ],
+        [
+          350,
+          400
+        ]
+      ],
+      "lower": []
+    },
+    {
+      "id": "A13",
+      "kind": "shaft",
+      "version": "current",
+      "url": "../flashswf/backgrounds/cf6/CF6_A13_elevator-scroll.swf",
+      "upper": [
+        [
+          350,
+          100
+        ],
+        [
+          350,
+          250
+        ],
+        [
+          350,
+          400
+        ]
+      ],
+      "lower": []
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "schema": "cf6-native-appearance-fixture.v1",
+  "state": "source-only",
+  "inputs": {
+    "tools/cf6-scene-completion/build_actor_appearance_fixture.py": "187f08875b12965f9c9a7a277f00fe09f18dffaffd83e3a8799b7373a3aa4a4b",
+    "scripts/ShootReloadNativeHost/DOMDocument.xml": "c67da319d5e66698a6c8adb5ded9b8c015dca32e05de1cc609d9c9a650f052a9",
+    "scripts/ShootReloadNativeHost/LIBRARY/Import0.xml": "e4c23b488fceb3c7f0baf4b63a6df0b1284af4e6ed5d040d6ee4beea194a455d",
+    "flashswf/arts/things0/LIBRARY/特效与子弹/目镜特效.xml": "4ec3f730f8857c94564018b3bc1af53d5cbd880894238adb4a95da7d018e4dea",
+    "flashswf/arts/things0/LIBRARY/特效与子弹/战术目镜特效.xml": "954c9969c02ce7dfe0a3471ea5beb73532825c72fc94921741a06e409539648b",
+    "scripts/ShootReloadNativeHost/PublishSettings.xml": "dda88e215911482cce09074378c54118a8372c2035bc260428b35d63e3208948",
+    "scripts/ShootReloadNativeHost/ShootReloadNativeHost.xfl": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38"
+  },
+  "limits": "Native hero and declared XML fixture equipment; no real slot, game bootstrap or complete-game claim.",
+  "outputs": {
+    "scripts/Cf6ActorAppearanceNativeHost/LIBRARY/Import0.xml": {
+      "sha256": "e4c23b488fceb3c7f0baf4b63a6df0b1284af4e6ed5d040d6ee4beea194a455d",
+      "bytes": 652
+    },
+    "scripts/Cf6ActorAppearanceNativeHost/LIBRARY/Import1.xml": {
+      "sha256": "53c4bf23c647a073e0ba12ca6cd88fbcfbaf4ab297568321e6057fd43631d2a4",
+      "bytes": 595
+    },
+    "scripts/Cf6ActorAppearanceNativeHost/LIBRARY/特效与子弹/目镜特效.xml": {
+      "sha256": "4ec3f730f8857c94564018b3bc1af53d5cbd880894238adb4a95da7d018e4dea",
+      "bytes": 7272
+    },
+    "scripts/Cf6ActorAppearanceNativeHost/LIBRARY/特效与子弹/战术目镜特效.xml": {
+      "sha256": "954c9969c02ce7dfe0a3471ea5beb73532825c72fc94921741a06e409539648b",
+      "bytes": 443842
+    },
+    "scripts/Cf6ActorAppearanceNativeHost/LIBRARY/Cf6NativeAuthoredMask.xml": {
+      "sha256": "421f31142f3bbc6a59cc15a2c418c0c52d9c5ecdcbcdb190dcbb341d0f8910bb",
+      "bytes": 654
+    },
+    "scripts/Cf6ActorAppearanceNativeHost/DOMDocument.xml": {
+      "sha256": "ba9cbe5ffe0173d84482d4a190f9ebf07c1a6d1594f3757bfe1082b55a79b77a",
+      "bytes": 1158
+    },
+    "scripts/Cf6ActorAppearanceNativeHost/PublishSettings.xml": {
+      "sha256": "ba081cd8fff49622a270c24fde2c91fc1327bf527d8bca53e06d441b2b5a7dcf",
+      "bytes": 8024
+    },
+    "scripts/Cf6ActorAppearanceNativeHost/Cf6ActorAppearanceNativeHost.xfl": {
+      "sha256": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38",
+      "bytes": 9
+    }
+  }
+}

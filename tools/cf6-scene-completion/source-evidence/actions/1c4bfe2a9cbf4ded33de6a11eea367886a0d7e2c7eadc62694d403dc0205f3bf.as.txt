@@ -1,0 +1,9 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 359;
+   var §\x0f§ = 1;
+   this._x -= 20;
+   if(this.hitTest(_parent.man1.area))
+   {
+      _root.gotoAndStop("s5");
+   }
+}

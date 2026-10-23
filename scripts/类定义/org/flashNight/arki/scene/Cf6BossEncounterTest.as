@@ -162,6 +162,115 @@ class org.flashNight.arki.scene.Cf6BossEncounterTest {
         g=guardSetup(); Cf6BossEncounter.cancel(); frames(10);
         check(_root.gameworld[g.name]==undefined && clears==0 && closes==0,"cancel during transform removes owned parent without winning");
     }
+    private static function podFixture():Object {
+        var w:MovieClip=_root.gameworld,managerClass:Object=org.flashNight.arki.scene.StageManager;
+        var room:Object={world:w,owner:StageReturnFlow.worldIdentity(w),stageManager:managerClass.instance,
+            stageIndex:managerClass.instance.currentStage,slot:String(_root.savePath),stageName:_root.当前关卡名,
+            runIdentity:_root._saveExt.bookRun,mapId:"A17",phase:"combat"};
+        w.__cf6Mechanism=room;
+        var session:Object={room:room,manager:org.flashNight.gesh.depth.DepthManager.instance,rows:[],closed:false,failed:false};
+        room.interactivePropsSession=session;
+        var h:MovieClip=w.createEmptyMovieClip("podFixture",w.getNextHighestDepth()),token:Object={};h.__cf6InteractiveOwner=token;
+        var row:Object={spec:{id:"pod-a",kind:"pod",spawnAuthority:"boss"},name:h._name,holder:h,token:token,phase:"idle",attempted:false};
+        session.rows.push(row);return row;
+    }
+    private static function pods():Void {
+        var p:Object=plan();p.maxAlive=4;p.intervalFrames=1;
+        p.groups=[{hpRatio:1,enemies:[{Type:"兵种461",Level:1,Quantity:1,ranged:false,podId:"pod-a"},
+            {Type:"兵种461",Level:1,Quantity:4,ranged:false}]}];
+        setup(p);var row:Object=podFixture();frames(10);
+        check(spawned.length==4 && spawned[0].p.cf6PodId==undefined,"unready pod does not block ordinary support behind it");
+        row.phase="ready-to-spawn";frames(5);
+        check(spawned.length==4 && !row.attempted,"ready pod preserves original four-person live cap before claim");
+        death(spawned[0].name);frames(2);
+        check(spawned.length==5 && spawned[4].p.cf6PodId=="pod-a","reserved pod keeps exact id through original StageEvent");
+        check(row.attempted && row.bossToken===spawned[4].p.cf6BossOwnerToken && row.spawnName===spawned[4].name,"pod claim binds original issued owner and unique actor name");
+        death(spawned[4].name);frames(20);
+        check(spawned.length==5,"consumed pod budget never refills");
+        setup(p);row=podFixture();row.phase="ready-to-spawn";delayed=true;frames(1);
+        check(row.attempted && spawned.length==1,"unknown attach reserves original live slot and pod claim once");
+        death(p.instanceName);arrive(spawned[0]);frames(3);
+        check(row.phase=="cancelled" && _root.gameworld[spawned[0].name]==undefined,"boss victory cancels pending pod and retires late owned actor");
+        setup(p);row=podFixture();death(p.instanceName);frames(5);
+        check(!row.attempted && row.phase=="cancelled" && spawned.length==0,"boss death before proximity consumes no pod spawn");
+        setup(p);row=podFixture();row.phase="ready-to-spawn";
+        row.holder.removeMovieClip();_root.gameworld.createEmptyMovieClip("podFixture",_root.gameworld.getNextHighestDepth());frames(1);
+        check(spawned.length==1 && spawned[0].p.cf6PodId==undefined,"same-name pod replacement cannot borrow ready claim");
+    }
+    private static function elderPlan():Object {
+        var p:Object=plan();p.instanceName="cf6Boss_A20";
+        p.nextPhase={instanceName:"cf6Boss_A20__elderbot",maxAlive:1,maxRanged:1,intervalFrames:1,
+            groups:[{hpRatio:1,enemies:[{Type:"兵种466",Level:60,Quantity:2,ranged:true,SpawnIndex:"right",Parameters:{}}]}]};
+        return p;
+    }
+    private static function elderMetadata(p:Object):Object {
+        var w:MovieClip=_root.gameworld,parent:MovieClip=w[p.instanceName];
+        w.__elderWorldIdentity={};parent.elderIdentity={};parent.老头变身=true;
+        var phase:Object={world:w,worldIdentity:w.__elderWorldIdentity,parentIdentity:parent.elderIdentity,
+            spawnIdentity:{},name:p.nextPhase.instanceName,level:60,side:true,source:"fixture-main-wave",
+            attempted:false,retired:false};
+        parent.elderTransform=phase;return phase;
+    }
+    private static function elderChild(phase:Object):MovieClip {
+        var child:MovieClip=actor(phase.name,100);phase.attempted=true;phase.child=child;
+        child.elderSpawnIdentity=phase.spawnIdentity;child.兵种="敌人-CF6老头机器人";
+        child.等级=phase.level;child.是否为敌人=phase.side;child.产生源=phase.source;
+        child.死亡检测=function(options:Object):Void {
+            _root.gameworld.dispatcher.publish("UnitRemoved",this._name);this.removeMovieClip();
+        };
+        child.version=51;child._visible=false;return child;
+    }
+    private static function elders():Void {
+        var p:Object=elderPlan();setup(p);frames(1);
+        var phase:Object=elderMetadata(p), first:Object=spawned[0];
+        delayed=true;frames(2);var late:Object=spawned[1];delayed=false;
+        check(Cf6BossEncounter.blocksClear(_root.gameworld,StageManager.instance),"two-form room rejects early clear while human is alive");
+        check(Cf6MapMechanism.interceptClear(StageManager.instance,_root.gameworld),"actual map clear interceptor consumes the active finale gate");
+        death(p.instanceName);frames(1);
+        check(clears==0 && closes==0,"human death never clears room or closes main spawner");
+        check(_root.gameworld[first.name]==undefined,"human supports retire before transformation without a second budget");
+        arrive(late);check(_root.gameworld[late.name]==undefined,"late first-form support remains tombstoned through phase transition");
+        var child:MovieClip=elderChild(phase);frames(5);
+        check(spawned.length==2 && child.cf6BossIdentity==undefined,"initializing successor cannot activate robot support");
+        child.__unitInitializedVersion=child.version;phase.retired=true;child._visible=true;
+        _root.暂停=true;frames(5);
+        check(child.cf6BossIdentity==undefined,"paused successor handoff waits without replay");
+        _root.暂停=false;frames(2);
+        check(child.cf6BossIdentity!=undefined && spawned.length==3,"native initialized visible successor binds and releases phase-two budget once");
+        check(spawned[2].p.cf6BossOwnerToken==first.p.cf6BossOwnerToken && child.产生源=="fixture-main-wave",
+            "support ownership stays local while native successor retains its counted source");
+        _root.gameworld.dispatcher.publish("UnitDeath",p.instanceName);frames(4);
+        check(clears==0 && closes==0 && spawned.length==3,"late parent death cannot clear robot phase or bypass ranged cap");
+        death(spawned[2].name);frames(2);
+        check(spawned.length==4,"robot support consumes its original finite second entry");
+        death(phase.name);frames(10);
+        check(clears==0 && closes==0,"robot HP death waits for native death presentation and removal");
+        check(Cf6MapMechanism.interceptClear(StageManager.instance,_root.gameworld),"actual map interceptor holds the final death animation before terminal callback");
+        // Logical completion receipt only; the field-native suite owns the actual 111-frame asset proof.
+        var body:Object={_currentframe:111,_totalframes:111};child.man=body;
+        body.elderMode="death";body.cf6CorpseFinished=true;body.尸体碎片={cf6Settled:true};
+        var api:Object=org.flashNight.arki.scene.Cf6BossEncounter,c:Object=api.active;
+        trace("[CF6_FINAL_DEATH_FIXTURE] current="+c.current()+" waiting="+c.elderWaiting
+            +" identity="+(child.cf6BossIdentity===c.bossMark)+" frame="+body._currentframe+"/"+body._totalframes);
+        child.死亡检测();frames(10);
+        check(clears==1 && closes==1,"completed robot death presentation plus native removal clears exactly once");
+        check(!Cf6BossEncounter.blocksClear(_root.gameworld,StageManager.instance),"finished finale releases the clear gate");
+        p=elderPlan();setup(p);phase=elderMetadata(p);death(p.instanceName);frames(1);child=elderChild(phase);
+        child.hp=0;child.__unitInitializedVersion=child.version;child._visible=true;phase.retired=true;frames(2);
+        check(child.cf6BossIdentity!=undefined && clears==0,"successor killed during initialization still binds its pending native death presentation");
+        p=elderPlan();setup(p);phase=elderMetadata(p);death(p.instanceName);frames(1);child=elderChild(phase);
+        child.elderSpawnIdentity={};child.__unitInitializedVersion=child.version;child._visible=true;phase.retired=true;frames(2);
+        check(clears==0 && child.cf6BossIdentity==undefined && Cf6BossEncounter.blocksClear(_root.gameworld,StageManager.instance),
+            "wrong successor token cannot borrow completion or release the room");
+        p=elderPlan();setup(p);phase=elderMetadata(p);death(p.instanceName);frames(1);child=elderChild(phase);
+        child.removeMovieClip();var foreign:MovieClip=actor(phase.name,0);frames(3);
+        check(clears==0 && foreign._name==phase.name,"same-name successor replacement is preserved and never counted as victory");
+        p=elderPlan();setup(p);phase=elderMetadata(p);death(p.instanceName);phase.error="spawn-returned-empty";frames(10);
+        check(clears==0 && spawned.length==0,"native unknown spawn result is held without retry or victory");
+        StageManager.instance.currentStage++;frames(1);
+        check(!Cf6BossEncounter.blocksClear(_root.gameworld,StageManager.instance) && closes==0,
+            "leaving the owning stage cancels the phase without closing another spawner");
+    }
     public static function runAllTests():Void {
         passed=0; failed=0;
         var keys:Array=["gameworld","savePath","当前关卡名","_saveExt","暂停","场景转换中","兵种库"];
@@ -171,7 +280,7 @@ class org.flashNight.arki.scene.Cf6BossEncounterTest {
         var target:Object=org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
         var beforeFind:Function=target.findHero; target.findHero=function():MovieClip { return _root.gameworld.hero; };
         _root.gameworld=undefined;
-        try { lifecycle(); boundaries(); scopes(); guards(); }
+        try { lifecycle(); boundaries(); scopes(); guards(); pods(); elders(); }
         finally {
             Cf6BossEncounter.cancel(); _root.gameworld.removeMovieClip();
             manager.instance=beforeManager; wheel.instance=beforeWheel; target.findHero=beforeFind;

@@ -183,7 +183,7 @@ def apply_sky_parallax(chapter, fragment, require_swfs):
     return audit
 
 
-def apply_turrets(chapter, fragment, require_swfs):
+def apply_turrets(chapter, fragment, require_swfs, environment_fragment):
     """A01 tutorial turrets: native-original points scaled by the SAME viewport
     factor exactly once (net native x 128/75, identical to enemy placements),
     then moved into mechanism.turrets for Cf6MapMechanism.beginRoom.
@@ -193,6 +193,11 @@ def apply_turrets(chapter, fragment, require_swfs):
     symbol = fragment['turretSymbol']
     asset = symbol['assetSwf']
     audit = {}
+    environments = ET.fromstring(environment_fragment)
+    environment = next(e for e in environments.findall('Environment')
+                       if e.findtext('BackgroundURL') == 'CF6_A01_BG.swf')
+    polygons = [[tuple(float(v) for v in p.text.split(',')) for p in c.findall('Point')]
+                for c in environment.findall('Collision')]
     for node in chapter['maps']:
         block = node.pop('turrets', None)
         if block is None:
@@ -234,8 +239,16 @@ def apply_turrets(chapter, fragment, require_swfs):
             native_src = source_instances[inst['name']]
             if [inst['x'], inst['y']] != [native_src['x'], native_src['y']]:
                 raise ValueError('turret native coordinate drift: ' + inst['name'])
-            rows.append({'x': round(inst['x'] * scale, 4), 'y': round(inst['y'] * scale, 4),
-                         'facing': inst['facing']})
+            x, y = round(inst['x'] * scale, 4), round(inst['y'] * scale, 4)
+            bodies = [p for p in polygons if inside((x, y), p)]
+            if len(bodies) != 1:
+                raise ValueError('turret must bind one exact own collision footprint')
+            xs, ys = zip(*bodies[0])
+            footprint = [min(xs), min(ys), max(xs), max(ys)]
+            corners = {(footprint[a], footprint[b]) for a in (0, 2) for b in (1, 3)}
+            if len(bodies[0]) != 4 or set(bodies[0]) != corners:
+                raise ValueError('turret own collision footprint is not the authored rectangle')
+            rows.append({'x': x, 'y': y, 'facing': inst['facing'], 'ownFootprint': footprint})
         if require_swfs and not (ROOT / block['assetUrl']).is_file():
             raise ValueError('missing turret asset SWF ' + block['assetUrl']
                              + ' (run the tools/cf6-tutorial-turrets CS6 chain first)')
@@ -248,9 +261,115 @@ def apply_turrets(chapter, fragment, require_swfs):
         audit[node['id']] = {'scale': scale, 'assetUrl': block['assetUrl'],
                              'filterMarker': block['filterMarker'],
                              'instances': [{'name': i['name'], 'native': [i['x'], i['y']],
-                                            'world': [r['x'], r['y']]}
+                                            'world': [r['x'], r['y']], 'ownFootprint': r['ownFootprint']}
                                            for i, r in zip(instances, rows)],
                              'assetPresent': (ROOT / block['assetUrl']).is_file()}
+    return audit
+
+
+def apply_dialogue_portraits(chapter):
+    """Use the existing portrait catalog; never infer a portrait from display text at runtime."""
+    spec = read(HERE / 'dialogue-portraits.json')
+    catalog = read(ROOT / 'launcher/web/assets/dialogue-portraits/manifest.json')
+    if spec['schema'] != 'cf6-dialogue-portraits.v1' or spec['character'] != 'Andy Law':
+        raise ValueError('unexpected CF6 dialogue portrait identity')
+    character = spec['character']
+    expressions = catalog['entries'][character]['expressions']
+    used = []
+    for node in chapter['maps']:
+        choices = spec['maps'].get(node['id'])
+        lines = node['dialogue']
+        if choices is not None and len(choices) != len(lines):
+            raise ValueError('CF6 dialogue portrait line count changed: ' + node['id'])
+        for index, line in enumerate(lines):
+            is_andy = line['speaker'] in ('Andy', 'Andy Law')
+            expression = choices[index] if choices is not None else None
+            if not is_andy:
+                if expression is not None: raise ValueError('Andy portrait assigned to another speaker')
+                continue
+            if expression not in expressions:
+                raise ValueError('missing approved Andy expression: ' + node['id'])
+            asset = expressions[expression]
+            path = ROOT / 'launcher/web/assets/dialogue-portraits' / asset['uri']
+            if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != asset['sha256']:
+                raise ValueError('Andy portrait asset differs from its catalog')
+            line['char'] = character + '#' + expression
+            used.append({'mapId':node['id'], 'line':index, 'char':line['char']})
+    return used
+
+
+def merge_elder_finale(chapter, environments):
+    """A20 owns both forms; preserve the original A22 reinforcement budget in phase two."""
+    maps = {m['id']:m for m in chapter['maps']}
+    human, robot = maps['A20'], maps['A22']
+    if chapter['maps'][-2:] != [human, robot]:
+        raise ValueError('elder finale must be the last two authored scenes')
+    left, right = environments['CF6_A20_BG.swf'], environments['CF6_A22_BG.swf']
+    for key in ('Xmin','Xmax','Ymin','Ymax','LeftSpawnLine','RightSpawnLine'):
+        if ET.tostring(left.find(key)) != ET.tostring(right.find(key)):
+            raise ValueError('elder phase geometry changed: ' + key)
+    if ([ET.tostring(c) for c in left.findall('Collision')]
+            != [ET.tostring(c) for c in right.findall('Collision')]
+            or human['presentation'] != robot['presentation']):
+        raise ValueError('elder phases no longer share the same room geometry')
+    boss = human['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0]
+    next_boss = robot['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0]
+    if (boss['Type'] != '兵种473' or next_boss['Type'] != '兵种474'
+            or boss['Level'] != next_boss['Level'] or boss['Quantity'] != 1 or next_boss['Quantity'] != 1):
+        raise ValueError('elder phase boss identity mismatch')
+    boss['Parameters']['老头变身'] = True
+    successor = copy.deepcopy(robot['bossEncounter'])
+    successor['instanceName'] = boss['InstanceName'] + '__elderbot'
+    human['bossEncounter']['nextPhase'] = successor
+    human['mechanism']['elderFinale'] = True
+    human['title'] = '元老终战 · 人形与机器人'
+    human['stage']['Pickups']['Pickup'].extend(copy.deepcopy(robot['stage']['Pickups']['Pickup']))
+    human['sourceNote']['notes'].append(
+        '2026-10-23采用同房间两阶段：473开启老头变身，原93帧链只生成一次474；'
+        'A22增援预算及补给迁入第二阶段，末形态死亡后才结束本章。')
+    human['sourceNote']['mergedPhase'] = 'A22'
+    for key in ('randomWeapons','eliteWeapons','choices'):
+        if any(row['mapId'] == 'A22' for row in chapter.get('economy',{}).get(key,[])):
+            raise ValueError('A22 has a seeded supply that requires an explicit phase transfer')
+    chapter['maps'].pop()
+    return {'room':'A20', 'sourcePhases':['A20','A22'],
+            'successor':successor['instanceName'], 'transitionFrames':93,
+            'humanSupportBudget':sum(e['Quantity'] for g in human['bossEncounter']['groups'] for e in g['enemies']),
+            'robotSupportBudget':sum(e['Quantity'] for g in successor['groups'] for e in g['enemies']),
+            'playableRooms':len(chapter['maps'])}
+
+
+def apply_exit_guides(chapter, environments):
+    audit = []
+    for node in chapter['maps']:
+        mechanism = node['mechanism']
+        if mechanism.get('elderFinale') is True:
+            continue
+        if mechanism.get('traversal',{}).get('depart') is not None:
+            audit.append({'mapId':node['id'], 'basis':'authored traversal acquisition gate'})
+            continue
+        environment = environments[Path(node['background']).name]
+        door = environment.find('Door')
+        if door is None: raise ValueError('no authoritative exit for guide: ' + node['id'])
+        rect = [float(door.findtext(k)) for k in ('x0','y0','x1','y1')]
+        bounds = [float(environment.findtext(k)) for k in ('Xmin','Ymin','Xmax','Ymax')]
+        polygons = [[tuple(float(v) for v in p.text.split(',')) for p in c.findall('Point')]
+                    for c in environment.findall('Collision')]
+        center = ((rect[0]+rect[2])/2, (rect[1]+rect[3])/2)
+        def free(x,y):
+            return all(bounds[0] < x+dx < bounds[2] and bounds[1] < y+dy < bounds[3]
+                       and not any(inside((x+dx,y+dy),p) for p in polygons)
+                       for dx in (-18,0,18) for dy in (-9,0,9))
+        points = [center] + [(x,y) for x in range(math.ceil(rect[0])+1,math.floor(rect[2]),8)
+                             for y in range(math.ceil(rect[1])+1,math.floor(rect[3]),8)]
+        choices = sorted((p for p in points if free(*p)),
+                         key=lambda p:(p[0]-center[0])**2+(p[1]-center[1])**2)
+        if not choices: raise ValueError('exit guide has no free actor foot area: ' + node['id'])
+        point = choices[0]
+        mechanism['guidePoint'] = {'x':round(point[0],4),'z':round(point[1],4),
+                                   'direction':door.findtext('Direction')}
+        audit.append({'mapId':node['id'],'basis':'actual exit rectangle; free 36x18 actor foot area',
+                      'point':mechanism['guidePoint']})
     return audit
 
 
@@ -464,6 +583,18 @@ def environment_bytes(existing, fragment):
     return (b'\xef\xbb\xbf' if bom else b'') + result.encode('utf-8')
 
 
+def assemble_scenes(chapter, environment_fragment, require_swfs=True):
+    """One choreography boundary, separately observable from later encounter adapters."""
+    spec = importlib.util.spec_from_file_location('cf6_scene_assembly', HERE / 'scene-assembly.py')
+    scene = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(scene)
+    environment_fragment, audit = scene.adapt(chapter, environment_fragment, require_swfs)
+    inputs = [HERE / 'scene-assembly.py', scene.PLAN, scene.ART, scene.DEPTH_PROPS, scene.AUX,
+              scene.ELEVATOR_EXIT_SOURCE,
+              TOOLS / 'cf6-prop-layout/recipe.json', TOOLS / 'cf6-prop-layout/calibrate.py']
+    return environment_fragment, audit, inputs
+
+
 def build(require_swfs=True):
     inputs = [SOURCE / 'maps.fragment.json', SOURCE / 'economy.fragment.json',
               TOOLS / 'cf6-actor-template/actor.fragment.json',
@@ -503,29 +634,58 @@ def build(require_swfs=True):
     viewport = importlib.util.module_from_spec(viewport_spec)
     viewport_spec.loader.exec_module(viewport)
     environment_fragment, viewport_audit = viewport.adapt(chapter, environment_fragment, native_maps)
-    turret_audit = apply_turrets(chapter, read(TURRET_FRAGMENT), require_swfs=require_swfs)
+    environment_fragment, scene_audit, scene_inputs = assemble_scenes(chapter, environment_fragment, require_swfs)
+    inputs.extend(scene_inputs)
+    interactive_spec = importlib.util.spec_from_file_location('cf6_interactive_assembly', HERE / 'interactive-assembly.py')
+    interactive = importlib.util.module_from_spec(interactive_spec)
+    interactive_spec.loader.exec_module(interactive)
+    interactive_audit = interactive.adapt(chapter, require_swfs)
+    inputs.extend([HERE / 'interactive-assembly.py', interactive.MANIFEST, interactive.EXPLOSION_SOURCE, interactive.PROJECTION_SOURCE])
+    transport_spec = importlib.util.spec_from_file_location('cf6_transport_assembly', HERE / 'transport-assembly.py')
+    transport = importlib.util.module_from_spec(transport_spec)
+    transport_spec.loader.exec_module(transport)
+    transport_audit = transport.adapt(chapter, require_swfs)
+    inputs.extend([HERE / 'transport-assembly.py', transport.MANIFEST])
+    turret_audit = apply_turrets(chapter, read(TURRET_FRAGMENT), require_swfs, environment_fragment)
     inputs.extend(viewport.geometry_path(map_id) for map_id in ['TUTORIAL'] + ROUTE)
     inputs.append(viewport.REFERENCES)
     inputs.extend(ROOT / row['decodedLoad'] for row in viewport.load()[1].values())
     environments = {node.findtext('BackgroundURL'):node for node in ET.fromstring(environment_fragment).findall('Environment')}
     shops, economy_audit = install_economy(chapter, economy, read(inputs[7]), read(inputs[8]), items, skills, environments)
     sky_audit = apply_sky_parallax(chapter, load_sky_parallax(inputs[9]), require_swfs=require_swfs)
+    dialogue_audit = apply_dialogue_portraits(chapter)
+    finale_audit = merge_elder_finale(chapter, environments)
+    spawn_spec = importlib.util.spec_from_file_location('cf6_spawn_assembly', HERE / 'spawn-assembly.py')
+    spawn = importlib.util.module_from_spec(spawn_spec)
+    spawn_spec.loader.exec_module(spawn)
+    spawn_audit = spawn.adapt(chapter, environments)
+    inputs.append(HERE / 'spawn-assembly.py')
+    guide_audit = apply_exit_guides(chapter, environments)
     units = {int(row['id']) for row in read(ROOT / 'data/units/units.json')}
     validator.validate_cf6(chapter, items, skills, units,
                            require_backgrounds=require_swfs)
     inputs.extend([ROOT / 'data/skills/skills.xml', ROOT / 'data/items/list.xml',
                    ROOT / 'data/rewards/choice-rewards.json', SOURCE / 'choice-rewards.fragment.json',
-                   TURRET_FRAGMENT])
+                   TURRET_FRAGMENT, HERE / 'dialogue-portraits.json',
+                   ROOT / 'launcher/web/assets/dialogue-portraits/manifest.json'])
     inputs.extend(ROOT / 'data/items' / node.text for node in ET.parse(ROOT / 'data/items/list.xml').findall('items'))
     manifest = {'schema': 'cf6-chapter-assembly.v1', 'bookId': chapter['id'],
-                'routeId': chapter['routeId'], 'maps': ['TUTORIAL'] + ROUTE,
+                'routeId': chapter['routeId'], 'maps': [m['id'] for m in chapter['maps']],
+                'sourceMaps':['TUTORIAL'] + ROUTE,
                 'inputs': [{'path': str(p.relative_to(ROOT)).replace('\\', '/'),
                             'sha256': hashlib.sha256(p.read_bytes()).hexdigest()} for p in inputs],
                 'scope': 'authored playable prototype; no full-route gameplay acceptance',
                 'economyAssembly': economy_audit,
+                'dialoguePortraits': dialogue_audit,
+                'elderFinale': finale_audit,
+                'spawnAssembly': spawn_audit,
+                'exitGuidance': guide_audit,
                 'skyParallaxLayers': sky_audit,
                 'viewportAssembly': viewport_audit,
                 'turretAssembly': turret_audit,
+                'sceneAssembly': scene_audit,
+                'interactivePropsAssembly': interactive_audit,
+                'transportAssembly': transport_audit,
                 'pendingPresentation': {m: {key: ready[m].get(key, []) for key in
                                            ('pendingDynamics', 'deferredLayers', 'runtimeProps')}
                                         for m in ROUTE}}

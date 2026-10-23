@@ -1,0 +1,11 @@
+﻿import org.flashNight.arki.corpse.DeathEffectRenderer;
+import org.flashNight.arki.spatial.transform.SceneCoordinateManager;
+import org.flashNight.arki.collision.CollisionLayerRenderer;
+import org.flashNight.arki.weather.WeatherSystem;
+import org.flashNight.arki.scene.SceneManager;
+import org.flashNight.gesh.depth.DepthManager;
+import org.flashNight.sara.util.Vector;
+#include "逻辑/关卡系统/关卡系统_lsy_add2map_加载背景.as"
+trace("FocusedTestRunId cf6-elevator-composite Start: __FOCUSED_RUN_ID__");
+_root.cf6ElevatorCompositeComplete=function():Void {trace("FocusedTestRunId cf6-elevator-composite Complete: __FOCUSED_RUN_ID__");};
+org.flashNight.arki.scene.Cf6ElevatorCompositeTest.runAllTests();

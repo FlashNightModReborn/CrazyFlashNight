@@ -123,9 +123,9 @@ WeaponAmmoRuntime 用当前普通弹容折算一包，不是“一包一发”�
 源码依据：
 
 - [enhancement](../../scripts/类定义/org/flashNight/arki/item/EquipmentTuningService.as)：当前源SHA-256 `cd3d5318a25aa23ccd56cb56cba275514409b5c0dc46fbb08e39cef81e9fe910`。
-- [ammo](../../scripts/类定义/org/flashNight/arki/unit/Action/Shoot/WeaponAmmoRuntime.as)：当前源SHA-256 `b23266474006d82171d998af4558d155c812ca9720518096223f23032eebb7cb`。
-- [shop](../../scripts/逻辑系统分区/商店系统_兼容.as)：当前源SHA-256 `8494520c9dc82f604880b486662e7a79a28859db0e4a95e3a48f8451b5afd88c`。
-- [pickup](../../scripts/类定义/org/flashNight/arki/unit/Action/PickUp/PickUpManager.as)：当前源SHA-256 `9cc47a9b3524c884bd0c7b5f219e6b6ecf226375f2433f51df1ab11e63827ec8`。
+- [ammo](../../scripts/类定义/org/flashNight/arki/unit/Action/Shoot/WeaponAmmoRuntime.as)：当前源SHA-256 `841640f06ed53456607de7defee2d62d7fc601e689a4c3c09592a2ba97ebee0e`。
+- [shop](../../scripts/逻辑系统分区/商店系统_兼容.as)：当前源SHA-256 `87531d586f1b554514cb572452c72d313d18afc5a34adf0daa18469ce2b1f210`。
+- [pickup](../../scripts/类定义/org/flashNight/arki/unit/Action/PickUp/PickUpManager.as)：当前源SHA-256 `553b32abb43415a72977a52cbf3e79b3799e7fd847afc2edda0a96e444e7ea47`。
 - [actor](../../tools/cf6-actor-template/actor.fragment.json)：当前源SHA-256 `229e0d9abdc77fd9d4f8df0592810fbe4fe6afa66f772c51248d924a17335cc9`。
 
 现价、弹药类型、普通弹容与药效来自以下运行XML；其SHA-256另包含在 `--json` 的sourceHashes中：

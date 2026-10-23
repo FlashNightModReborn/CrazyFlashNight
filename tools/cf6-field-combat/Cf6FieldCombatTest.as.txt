@@ -1,0 +1,568 @@
+import org.flashNight.arki.scene.*;
+import org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer;
+import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEventComponent;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
+import org.flashNight.arki.bullet.BulletComponent.Collider.AABBColliderFactory;
+import org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor;
+import org.flashNight.arki.bullet.BulletComponent.Loader.InfoLoader;
+import org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle;
+import org.flashNight.arki.component.Collider.ColliderFactoryRegistry;
+import org.flashNight.arki.component.Damage.DamageManagerFactory;
+import org.flashNight.arki.collision.CollisionLayerRenderer;
+import org.flashNight.gesh.depth.DepthManager;
+import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.gesh.xml.XMLParser;
+import org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader;
+import org.flashNight.neur.Event.EventDispatcher;
+import org.flashNight.naki.RandomNumberEngine.PinkNoiseEngine;
+import flash.display.BitmapData;
+import flash.geom.Matrix;
+
+/** Isolated native RSL consumer: actual projectile factory, lifecycle, queue and wave/clone initialization. */
+class org.flashNight.arki.scene.Cf6FieldCombatTest {
+    private static var passed:Number,failed:Number,phase:Number,age:Number,frame:Number;
+    private static var driver:MovieClip,world:MovieClip,hero:MovieClip;
+    private static var props:Object,room:Object,wave:WaveSpawner;
+    private static var born:Array,readyAt:Number,bornAt:Number,firstVisible:Number,holdFrames:Number;
+    private static var xmlReady:Boolean,bulletDataReady:Boolean,xmlCount:Number,mode:Number,turretIndex:Number,projectile:MovieClip,target:MovieClip;
+    private static var precheck:Function,shotStart:Object,shotAge:Number,held:Array;
+    private static var bossClock:Function,bossActor:MovieClip,bossPlan:Object,clears:Number,maxLive:Number,releasedAt:Number;
+    private static var elder:MovieClip,elderPhase:Object,elderChild:MovieClip,deathAt:Number,lateBirths:Number,clearAt:Number;
+    private static var wallShot:Boolean,wallSeen:Boolean,wallHp:Number;
+    private static var terminalObservations:Object,finished:Boolean;
+    private static var observation:Object,targetSerial:Number,levelCalculator:Function,levelSamples:Number;
+    private static var nativeInitializer:Function,lateInit:Object;
+    private static var nativeBossCase:Number,guardActor:MovieClip,guardPhase:Object,guardChild:MovieClip,nativePodCase:Object;
+    private static function check(ok:Boolean,label:String):Void {
+        if(ok) passed++;else {failed++;trace("[FAIL] Cf6FieldCombat: "+label);}
+    }
+    private static function rect(mc:MovieClip,b:Array):Void {
+        mc.beginFill(0xFFFFFF);mc.moveTo(b[0],b[1]);mc.lineTo(b[2],b[1]);mc.lineTo(b[2],b[3]);mc.lineTo(b[0],b[3]);mc.endFill();
+    }
+    private static function pixels(mc:MovieClip):Number {
+        if(mc==undefined || !mc._visible || mc._alpha<=0) return 0;
+        var b:Object=mc.getBounds(mc),m:Matrix=new Matrix();m.translate(-b.xMin+2,-b.yMin+2);
+        var image:BitmapData=new BitmapData(600,600,true,0);image.draw(mc,m);
+        var r:Object=image.getColorBoundsRect(0xFF000000,0,false),count:Number=r.width*r.height;image.dispose();return count;
+    }
+    private static function realStats(unit:MovieClip):Boolean {
+        var row:Object=_root.敌人属性表[unit.兵种];
+        var expected:Number=_root.根据等级计算值(row.hp_min,row.hp_max,unit.等级)*_root.难度等级;
+        trace("[CF6_FIELD_NATIVE_STATS] name="+unit._name+" kind="+unit.兵种+" level="+unit.等级
+            +" min="+unit.hp_min+" max="+unit.hp_max+" hpMax="+unit.hp满血值+" expected="+expected+" rootLevel="+_root.等级);
+        return _root.等级===7 && expected>100 && unit.hp满血值===expected;
+    }
+    private static function fresh():Void {
+        Cf6BossEncounter.cancel();
+        Cf6TutorialTurretService.teardown();Cf6InteractivePropService.end(props);props=null;
+        if(wave!=null) wave.close();wave=null;
+        if(world!=undefined) world.removeMovieClip();
+        world=_root.createEmptyMovieClip("__cf6FieldWorld"+frame,_root.getNextHighestDepth());_root.gameworld=world;
+        world.__stageReturnWorldIdentity={};world.dispatcher=new EventDispatcher();
+        var next:Number=900000;world.getNextHighestDepth=function():Number {return next++;};
+        DepthManager.instance=new DepthManager(world,0,870655,16);DepthManager.instance.calibrate(0,1000);
+        world.createEmptyMovieClip("地图",world.getNextHighestDepth());world.地图.僵尸型敌人总个数=0;world.地图.僵尸型敌人场上实际人数=0;
+        world.createEmptyMovieClip("子弹区域",world.getNextHighestDepth());
+        hero=world.createEmptyMovieClip("hero",world.getNextHighestDepth());hero.hp=1000;hero.是否为敌人=false;hero._x=100;hero._y=hero.Z轴坐标=500;
+        rect(hero.createEmptyMovieClip("area",1),[-3,-3,3,3]);_root.控制目标="hero";
+        _root.collisionLayer.clear();_root.Xmin=0;_root.Xmax=4000;_root.Ymin=0;_root.Ymax=1000;
+        clears=0;clearAt=-1;
+        var api:Object=StageManager;api.instance={currentStage:0,isActive:true,isFailed:false,isFinished:false,spawnPoints:[],environment:{},clearStage:function():Void {
+            if(Cf6BossEncounter.blocksClear(world,this))return;
+            clears++;clearAt=frame;
+        }};
+        api=SceneManager;api.instance={gameworld:world};
+        room={world:world,owner:world.__stageReturnWorldIdentity,mapId:"A15",stageManager:StageManager.instance,stageIndex:0,
+            slot:String(_root.savePath),stageName:_root.当前关卡名,runIdentity:_root._saveExt.bookRun,phase:"combat"};world.__cf6Mechanism=room;
+        BulletQueueProcessor.reset();age=0;
+    }
+    public static function runAllTests():Void {
+        passed=failed=frame=age=phase=0;mode=0;born=[];held=[];xmlCount=2;finished=false;bulletDataReady=false;targetSerial=0;levelSamples=0;
+        driver=_root.createEmptyMovieClip("__cf6FieldDriver",_root.getNextHighestDepth());
+        driver.onEnterFrame=function():Void {
+            try {Cf6FieldCombatTest.tick();}catch(e) {Cf6FieldCombatTest.abort("frame phase="+phase+" "+e);}
+        };
+        try {initialize();}catch(e) {abort("initialize "+e);}
+    }
+    private static function initialize():Void {
+        trace("[CF6_FIELD_INIT] begin");
+        // RSL definitions remain registered; destroy only the host's display anchors and their demo bodies.
+        var anchors:Array=["__fieldCodexRsl","__fieldBulletRsl","__fieldElderRsl","__fieldGuardRsl","__fieldHeadbotRsl"];
+        for(var ai:Number=0;ai<anchors.length;ai++) {_root[anchors[ai]]._visible=false;_root[anchors[ai]].unloadMovie();}
+        _root.暂停=false;_root.场景转换中=false;_root.是否阴影=false;_root.savePath="cf6.field.combat.fixture";_root.当前关卡名="书中历险-毒刺行动";
+        _root._saveExt={bookRun:{bookId:"cf6-sting",routeId:"historical",slot:_root.savePath,seed:79,startedAt:100,outcome:"active"}};
+        _root.帧计时器={当前帧数:1,unitUpdateWheel:{add:function():Number {return 1;},remove:function():Void {}}};
+        _root.最大等级=60;_root.等级=7;_root.难度等级=1;_root.duplicateOf=ObjectUtil.clone;_root.配置数据为数组=ObjectUtil.toArray;
+        _root.主角函数={};_root.播放音效=function():Void {};_root.soundEffectManager={playSound:function():Void {}};
+        // Explicit observation-only sinks: no player progression, persistence or corpse baking in this isolated host.
+        terminalObservations={experience:0,level:0,corpse:0,pickups:0};
+        _root.经验值计算=function():Void {terminalObservations.experience++;};
+        _root.主角是否升级=function():Void {terminalObservations.level++;};
+        _root.add2map=function():Void {terminalObservations.corpse++;};
+        _root.pickupItemManager={createCollectible:function():Void {terminalObservations.pickups++;}};
+        _root.getItemData=function():Object {return null;};
+        _root.发布消息=function(s):Void {trace("[FIELD_MESSAGE] "+s);};
+        _root.兵种库={};_root.兵种库["兵种460"]=Cf6FieldCombatData.cloneAttributes();
+        _root.兵种库["兵种473"]=Cf6FieldCombatData.humanAttributes();_root.兵种库["兵种474"]=Cf6FieldCombatData.robotAttributes();
+        _root.兵种库["兵种469"]=Cf6FieldCombatData.guardAttributes();_root.兵种库["兵种472"]=Cf6FieldCombatData.headbotAttributes();
+        _root.collisionLayer=_root.createEmptyMovieClip("__cf6FieldCollision",_root.getNextHighestDepth());
+        // The included production projectile bridge already owns DamageManagerFactory.init().
+        ColliderFactoryRegistry.init();StaticInitializer.factory=new AABBColliderFactory(64);FactionManager.initialize();BulletQueueProcessor.initialize();PinkNoiseEngine.getInstance();
+        InfoLoader.getInstance().onLoad(function(data:Object):Void {bulletDataReady=data.attributeData!=undefined && data.movementData!=undefined;});
+        _root.敌人属性表={};
+        EnemyPropertiesLoader.getInstance().loadEnemyProperties(function(data:Object):Void {
+            _root.敌人属性表=data;
+            var clone:Object=data["敌人-完全体克隆兽"],robot:Object=data["敌人-CF6老头机器人"];
+            check(clone.hp_min>100 && clone.hp_max>clone.hp_min && robot.hp_min>100 && robot.hp_max>robot.hp_min,"actual EnemyPropertiesLoader merges numeric clone and robot records");
+            trace("[CF6_FIELD_PROPERTIES] clone="+clone.hp_min+"/"+clone.hp_max+" robot="+robot.hp_min+"/"+robot.hp_max);
+            xmlReady=true;
+        },function():Void {abort("actual EnemyPropertiesLoader failed");});
+        levelCalculator=_root.根据等级计算值;_root.根据等级计算值=observeLevel(levelCalculator);
+        nativeInitializer=_root.初始化敌人模板;_root.初始化敌人模板=beforeNativeInitializer(nativeInitializer);
+        trace("[CF6_FIELD_INIT] awaiting actual EnemyPropertiesLoader and bullet data");
+    }
+    private static function observeLevel(original:Function):Function {
+        return function():Number {
+            var value:Number=original.apply(this,arguments);
+            if(levelSamples++<18)trace("[CF6_FIELD_LEVEL] min="+arguments[0]+" max="+arguments[1]+" level="+arguments[2]+" result="+value);
+            return value;
+        };
+    }
+    private static function beforeNativeInitializer(original:Function):Function {
+        return function():Void {
+            var injection:Object=lateInit,api:Object=Cf6BossEncounter,controller:Object=api.active;
+            if(injection!=null && !injection.triggered && injection.world===world && this._parent===world
+                && this.cf6BossOwnerToken===injection.ownerToken && controller.issued[this._name]!=undefined) {
+                injection.triggered=true;injection.name=this._name;injection.versionAtEntry=this.version;
+                injection.record=controller.issued[this._name];injection.entries=(injection.entries|0)+1;
+                trace("[CF6_FIELD_INJECTION] parent death before issued support native initializer: "+this._name);
+                if(injection.kind=="headbot") Cf6FieldCombatTest.killHeadbotDuringPendingSupport();
+                else Cf6FieldCombatTest.killHumanDuringPendingSupport();
+                // Real controller cancellation has removed the pending native actor. Do not force a removed
+                // MovieClip through an external initializer merely to demand a post-cancellation UnitSpawn.
+                if(injection.record.retired===true && (this._parent!==world || world[injection.name]!==this
+                    || this.cf6BossOwnerToken!==injection.ownerToken)) {
+                    injection.cancelledBeforeInit=true;
+                    trace("[CF6_FIELD_CANCELLED_INIT] issued="+injection.name+" versionAtEntry="+injection.versionAtEntry);
+                    return;
+                }
+            }
+            original.apply(this,arguments);
+        };
+    }
+    public static function killHumanDuringPendingSupport():Void {
+        elder.hp=0;elder.状态改变("血腥死");elder._killed=true;deathAt=frame;
+        elderPhase=elder.elderTransform;DeathEventComponent.onDeath(elder);controllerTick();
+        check(elderPhase!=null && elderPhase.active && clears==0 && Cf6BossEncounter.blocksClear(world,StageManager.instance),"real human death starts authored phase and cannot clear room");
+        phase=11;age=0;
+    }
+    private static function observeBirth(scope:Object):Function {
+        return function(name:String):Void {Cf6FieldCombatTest.recordBirth(scope,name);};
+    }
+    public static function recordBirth(scope:Object,name:String):Void {
+        if(scope!==observation || scope.world!==world || scope.owner!==world.__stageReturnWorldIdentity)return;
+        var unit:MovieClip=world[name],expected:Object=scope.expected[name];
+        var controllerApi:Object=Cf6BossEncounter,controller:Object=controllerApi.active;
+        if(scope.mode=="wave") {
+            if(expected==undefined || unit.cf6PodId!==expected.podId || unit.产生源!=="地图")return;
+        }else if(expected==undefined) {
+            if(controller==null || controller.world!==world || controller.issued[name]==undefined
+                || unit.cf6BossOwnerToken!==controller.token)return;
+        }
+        if(unit._parent!==world || unit.publishStageEvent!==true || unit.version==undefined)return;
+        if(scope.seen[name]!=undefined) {
+            if(unit.__fieldBirthObservation!==scope.seen[name])trace("[CF6_FIELD_FOREIGN_BIRTH] "+name);
+            return;
+        }
+        var mark:Object={};scope.seen[name]=mark;unit.__fieldBirthObservation=mark;born.push(name);
+        if(bornAt<0)bornAt=frame;
+        if(scope.mode=="elder" && deathAt>=0 && controller.issued[name]!=undefined)lateBirths++;
+        trace("[CF6_FIELD_BIRTH] mode="+scope.mode+" name="+name+" version="+unit.version+" hp="+unit.hp+" level="+unit.等级);
+    }
+    public static function abort(reason:String):Void {
+        check(false,"exception "+reason);finish();
+    }
+    private static function beginPods():Void {
+        fresh();born=[];readyAt=bornAt=firstVisible=-1;holdFrames=0;
+        var config:Object=Cf6FieldCombatData.podSpec(),entries:Array=[];
+        observation={world:world,owner:world.__stageReturnWorldIdentity,mode:"wave",expected:{},seen:{}};
+        for(var i:Number=0;i<config.props.length;i++) {
+            var p:Object=config.props[i];entries.push({Type:"兵种460",Level:50,Quantity:1,Interval:mode==0?300:0,Delay:0,x:p.x,y:p.y,
+                TriggerEvent:{EventName:"Cf6PodReady",Parameters:p.id},Parameters:{cf6PodId:p.id,publishStageEvent:true,unitAIType:"None",掉落物:[]}});
+            observation.expected["暴君克隆兽_0_"+(i+1)+"_1"]={podId:p.id};
+        }
+        WaveSpawnWheel.getInstance();wave=WaveSpawner.getInstance();
+        world.dispatcher.subscribe("Cf6PodReady",function():Void {readyAt=frame;},null);
+        world.dispatcher.subscribe("UnitSpawn",observeBirth(observation),null);
+        wave.init(new StageInfo({BasicInformation:{Environment:{}},Wave:{SubWave:{WaveInformation:{},EnemyGroup:{Enemy:entries}}}}));
+        props=Cf6InteractivePropService.begin(room,config);phase=1;
+    }
+    private static function podTick():Void {
+        wave.tick();
+        if(props.failed) {check(false,"native pod session remains valid");finish();return;}
+        if(props.pending>0) return;
+        var row:Object=props.rows[0];
+        if(age==1 || hero._x!=row.holder._x) {hero._x=row.holder._x;hero._y=row.holder._y;}
+        Cf6InteractivePropService.tick(props);
+        if(row.frame==24 && row.phase!="spent") {
+            holdFrames++;
+            if(holdFrames==1) check(row.art._currentframe==23 && pixels(row.art)>0,"visible source frame23 survives asynchronous birth gap mode "+mode);
+        }
+        if(born.length>0) {
+            var actor:MovieClip=world[born[0]];
+            if(firstVisible<0 && actor.__unitInitializedVersion===actor.version && actor.version!=undefined && pixels(actor.man)>0) firstVisible=frame;
+        }
+        if(row.phase=="spent") {
+            var gap:Number=bornAt-readyAt;
+            trace("[CF6_FIELD_POD] mode="+mode+" ready="+readyAt+" born="+bornAt+" visible="+firstVisible+" held="+holdFrames+" gap="+gap);
+            check(mode==0 ? gap>=9 && gap<=12 : gap>=0 && gap<=1,"actual wheel birth timing mode "+mode);
+            check(firstVisible>=bornAt && firstVisible>=0 && row.art._currentframe==25 && realStats(world[born[0]]),"source clears only with actual initialized clone pixels and source numeric stats mode "+mode);
+            check(born.length==1 && world.地图.僵尸型敌人总个数==5 && world.地图.僵尸型敌人场上实际人数==1,"one contact consumes one of original five reserved births mode "+mode);
+            phase=2;age=0;
+        }
+    }
+    private static function beginTurrets():Void {
+        fresh();room.mapId="A01";_root.Xmin=85.3333;_root.Xmax=1348.2667;_root.Ymin=256;_root.Ymax=768;
+        var boxes=Cf6FieldCombatData.walls();for(var i:Number=0;i<boxes.length;i++) rect(_root.collisionLayer,boxes[i]);
+        check(Cf6TutorialTurretService.beginRoom(world,world.__stageReturnWorldIdentity,"A01",Cf6FieldCombatData.turrets()),"native A01 turret service begins");
+        var mixed:Object=Cf6FieldCombatData.turrets();delete mixed.turrets[1].ownFootprint;
+        check(Cf6TutorialTurretService.normalizeSpec(mixed).turrets[1].ownFootprint==undefined,"optional second footprint never inherits previous row");
+        turretIndex=0;phase=3;
+    }
+    private static function startShot():Void {
+        var session:Object=world.__cf6TutorialTurrets,t:Object=session.turrets[turretIndex];
+        for(var i:Number=0;i<session.turrets.length;i++) delete session.turrets[i].holder.onEnterFrame;
+        if(target!=undefined) {delete target.目标标记;target.removeMovieClip();}
+        target=world.createEmptyMovieClip("fieldTarget"+(++targetSerial),world.getNextHighestDepth());target._x=t.holder._x+600;target._y=target.Z轴坐标=turretIndex==0 ? 500 : 560;
+        rect(target.createEmptyMovieClip("area",1),[-20,-120,20,0]);
+        target.unitAIType="None";StaticInitializer.initializeMapElementFast(target,null,true,true);
+        target.hp=target.hp满血值=1000;target.是否为敌人=true;target.防御力=0;target.躲闪率=0;target.无敌=false;
+        target.目标标记=session.spec.filterMarker;target.身高=175;target.命中率=100000;
+        TargetCacheManager.addUnit(target);
+        var targets:Array=TargetCacheManager.getCachedEnemy(t.holder,0),cached:Boolean=false;
+        for(var ci:Number=0;ci<targets.length;ci++)if(targets[ci]===target)cached=true;
+        trace("[CF6_FIELD_TARGET_CACHE] turret="+turretIndex+" target="+target._name+" cached="+cached+" count="+targets.length);
+        var origin:MovieClip=t.inner,pt:Object={x:t.muzzleLocal.x,y:t.muzzleLocal.y};origin.localToGlobal(pt);world.globalToLocal(pt);
+        var original:Object=Cf6TutorialTurretService.makeBullet(session,t,pt.x,pt.y);
+        var raw:MovieClip=_root.子弹区域shoot传递(original);delete raw.onEnterFrame;
+        check(typeof raw=="movieclip" && raw.area!=undefined && NormalBulletLifecycle.BASIC.shouldDestroy(raw),"actual old muzzle projectile collides with authored own wall "+turretIndex);raw.removeMovieClip();
+        t.frame=session.spec.fireFrameOffset-1;t.frameCallback.call(t.holder);
+        projectile=undefined;
+        for(var name:String in world.子弹区域) if(world.子弹区域[name].__cf6TurretFlight!=undefined) projectile=world.子弹区域[name];
+        check(typeof projectile=="movieclip" && projectile.area!=undefined && cached,"service emitted native ordinary projectile with real target registry "+turretIndex);
+        precheck=projectile.onEnterFrame;delete projectile.onEnterFrame;
+        shotStart={x:projectile._x,y:projectile._y,z:projectile.Z轴坐标,flight:projectile.__cf6TurretFlight};shotAge=0;
+        trace("[CF6_FIELD_SHOT_START] turret="+turretIndex+" xyz="+shotStart.x+","+shotStart.y+","+shotStart.z
+            +" velocity="+shotStart.flight.vx+","+shotStart.flight.vy+","+shotStart.flight.vz+" target="+target._name+":"+target._x+","+target._y+","+target.Z轴坐标);
+        check(projectile._x>t.ownFootprint[2] && projectile._x-pt.x<=32 && !NormalBulletLifecycle.BASIC.shouldDestroy(projectile),"actual lifecycle accepts bounded own-footprint exit "+turretIndex);
+        phase=4;age=0;
+    }
+    private static function shotTick():Void {
+        if(shotAge==1) check(Math.abs(projectile.Z轴坐标-(shotStart.z+shotStart.flight.vz))<0.1,"first ground step uses source Z and affine delta "+turretIndex);
+        if(target.hp<1000 || projectile._name==undefined || age>50) {
+            if(!wallShot)check(target.hp<1000,"real queue and damage settle cross-row turret shot "+turretIndex);
+            trace("[CF6_FIELD_TURRET] index="+turretIndex+" frames="+shotAge+" hp="+target.hp);
+            if(wallShot) {
+                check(wallSeen && target.hp==wallHp,"actual later foreign wall still destroys projectile without target damage");
+                beginBossPod();
+            }else if(++turretIndex<2) {phase=5;age=0;}else turretBoundaries();
+        }
+    }
+    private static function turretBoundaries():Void {
+        var session:Object=world.__cf6TutorialTurrets,t:Object=session.turrets[0],before:Number=session.fired;
+        var firing:Array=[];t.frame=0;
+        for(var i:Number=1;i<=36;i++) {
+            t.frameCallback.call(t.holder);
+            if(session.fired>before){firing.push(i);before=session.fired;}
+        }
+        check(firing.length==2 && firing[1]-firing[0]==18,"actual native turret clock retains 18-frame cadence");
+        _root.暂停=true;for(i=0;i<36;i++)t.frameCallback.call(t.holder);_root.暂停=false;
+        check(session.fired==before && t.frame==36,"pause freezes actual native turret chronology");
+        for(var key:String in world.子弹区域) if(typeof world.子弹区域[key]=="movieclip")world.子弹区域[key].removeMovieClip();
+        var exitX:Number=t.ownFootprint[2]+1;
+        rect(_root.collisionLayer,[exitX-1,t.groundY-10,exitX+30,t.groundY+10]);
+        t.frame=session.spec.fireFrameOffset-1;t.frameCallback.call(t.holder);
+        check(session.fired==before,"foreign wall covering candidate exit refuses emission");
+        _root.collisionLayer.clear();var boxes=Cf6FieldCombatData.walls();for(i=0;i<boxes.length;i++)rect(_root.collisionLayer,boxes[i]);
+        rect(_root.collisionLayer,[exitX+150,280,exitX+190,750]);
+        turretIndex=0;startShot();wallShot=true;wallSeen=false;wallHp=target.hp;
+    }
+    private static function idleWave():Void {
+        WaveSpawnWheel.getInstance();wave=WaveSpawner.getInstance();
+        wave.init(new StageInfo({BasicInformation:{Environment:{}},Wave:{SubWave:{WaveInformation:{},EnemyGroup:{Enemy:[
+            {Type:"兵种460",Level:50,Quantity:1,Interval:0,Delay:0,TriggerEvent:{EventName:"FieldNeverSpawn"},Parameters:{unitAIType:"None"}}
+        ]}}}}));
+    }
+    private static function bindBossClock():Void {
+        bossClock=world.__cf6BossEncounter.onEnterFrame;delete world.__cf6BossEncounter.onEnterFrame;
+    }
+    private static function controllerTick():Void {bossClock.call(world.__cf6BossEncounter);}
+    private static function liveSupports():Number {
+        var n:Number=0;for(var name:String in world) if(typeof world[name]=="movieclip" && world[name].cf6BossOwnerToken!=undefined && world[name].hp>0)n++;
+        return n;
+    }
+    private static function beginBossPod():Void {
+        fresh();room.mapId="A17";born=[];maxLive=0;releasedAt=-1;holdFrames=0;
+        idleWave();var config:Object=Cf6FieldCombatData.bossPodSpec();config.props=[config.props[0]];
+        props=Cf6InteractivePropService.begin(room,config);
+        bossActor=world.createEmptyMovieClip("cf6Boss_A17",world.getNextHighestDepth());bossActor.hp=bossActor.hp满血值=1000;
+        var p:Object=config.props[0];
+        bossPlan={instanceName:bossActor._name,maxAlive:4,maxRanged:2,intervalFrames:45,groups:[{hpRatio:1,enemies:[
+            {Type:"兵种460",Level:55,Quantity:4,ranged:false,x:1000,y:650,Parameters:{unitAIType:"None",掉落物:[]}},
+            {Type:"兵种460",Level:55,Quantity:1,ranged:false,x:p.x,y:p.y,podId:p.id,Parameters:{unitAIType:"None",掉落物:[]}}
+        ]}]};
+        observation={world:world,owner:world.__stageReturnWorldIdentity,mode:"boss",expected:{},seen:{}};
+        world.dispatcher.subscribe("UnitSpawn",observeBirth(observation),null);
+        Cf6BossEncounter.start(world,world.__stageReturnWorldIdentity,bossPlan);bindBossClock();phase=6;age=0;
+    }
+    private static function bossPodTick():Void {
+        wave.tick();controllerTick();if(props.pending>0)return;Cf6InteractivePropService.tick(props);
+        var live:Number=liveSupports();if(live>maxLive)maxLive=live;
+        if(age%30==0)for(var ni:Number=0;ni<born.length;ni++) {
+            var observed:MovieClip=world[born[ni]];
+            trace("[CF6_FIELD_SUPPORT_STATE] name="+born[ni]+" exists="+(observed._parent===world)+" hp="+observed.hp+" rootFrame="+observed._currentframe+" state="+observed.状态);
+        }
+        var row:Object=props.rows[0];
+        if(phase==6 && born.length==4 && world[born[3]].version!=undefined && world[born[3]].__unitInitializedVersion===world[born[3]].version) {
+            check(live==4 && row.phase=="idle","four actual native bodies occupy original A17 live cap before contact");
+            hero._x=row.holder._x;hero._y=row.holder._y;phase=7;age=0;
+        }else if(phase==7 && row.frame==24) {
+            holdFrames++;
+            if(holdFrames>=60) {
+                check(born.length==4 && !row.attempted && row.art._currentframe==1 && pixels(row.art)>0,"capacity wait beyond45 keeps sealed chamber without outside ghost or fifth actor");
+                var victim:MovieClip=world[born[0]];victim.hp=0;victim._killed=true;
+                DeathEventComponent.onDeath(victim);releasedAt=frame;phase=8;age=0;
+            }
+        }else if(phase==8 && row.phase=="spent") {
+            var child:MovieClip=world[row.spawnName];
+            check(born.length==5 && child.cf6PodId==row.spec.id && child.cf6BossOwnerToken==row.bossToken,"original boss owner issues exact pod birth after actual death frees slot");
+            check(maxLive<=4 && liveSupports()==4,"pending and initialized native pod retain four-live ceiling");
+            check(child.__unitInitializedVersion===child.version && pixels(child.man)>0 && row.art._currentframe==25 && realStats(child),"A17 clears source pose only after real successor body and numeric stats appear");
+            trace("[CF6_FIELD_A17] release="+releasedAt+" visible="+frame+" born="+born.length+" maxLive="+maxLive);
+            phase=9;age=0;
+        }else if(phase==9 && age>=60) {
+            check(born.length==5,"spent boss pod does not refill finite native budget");beginElder();
+        }
+    }
+    private static function beginElder():Void {
+        fresh();room.mapId="A20";born=[];lateBirths=0;elderPhase=null;elderChild=null;deathAt=-1;lateInit=null;
+        WaveSpawnWheel.getInstance();wave=WaveSpawner.getInstance();
+        wave.init(new StageInfo({BasicInformation:{Environment:{}},Wave:{SubWave:{WaveInformation:{},EnemyGroup:{Enemy:[
+            {Type:"兵种473",InstanceName:"cf6Boss_A20",Level:60,Quantity:1,Interval:0,Delay:0,x:800,y:650,
+                Parameters:{unitAIType:"None",老头变身:true,publishStageEvent:true,掉落物:[]}}
+        ]}}}}));
+        observation={world:world,owner:world.__stageReturnWorldIdentity,mode:"elder",expected:{cf6Boss_A20:{},cf6Boss_A20__elderbot:{}},seen:{}};
+        world.dispatcher.subscribe("UnitSpawn",observeBirth(observation),null);
+        bossPlan={instanceName:"cf6Boss_A20",maxAlive:4,maxRanged:2,intervalFrames:45,groups:[{hpRatio:1,enemies:[
+            {Type:"兵种460",Level:50,Quantity:1,ranged:false,x:1200,y:650,Parameters:{unitAIType:"None",掉落物:[]}}
+        ]}],nextPhase:{instanceName:"cf6Boss_A20__elderbot",maxAlive:4,maxRanged:2,intervalFrames:45,groups:[]}};
+        phase=10;age=0;
+    }
+    private static function elderTick():Void {
+        if(wave.isActive)wave.tick();
+        if(phase==10) {
+            if(lateInit!=null)return;
+            elder=world.cf6Boss_A20;
+            if(elder.__unitInitializedVersion==undefined || elder.__unitInitializedVersion!==elder.version || pixels(elder.man)==0)return;
+            check(elder.兵种=="敌人-CF6老头人形" && elder.老头变身===true && world.地图.僵尸型敌人总个数==1 && realStats(elder),"real counted human enters same-room two-form fixture with source numeric stats");
+            Cf6BossEncounter.start(world,world.__stageReturnWorldIdentity,bossPlan);bindBossClock();
+            lateInit={world:world,ownerToken:world.__cf6BossEncounter.cf6BossOwnerToken,triggered:false};
+            controllerTick();return;
+        }
+        controllerTick();
+        if(phase==11) {
+            if(age==45)check(clears==0 && world.地图.僵尸型敌人总个数==1 && elder.man._currentframe>1 && elder.man._currentframe<93,"native mid-transform retains original counted source");
+            if(elderPhase.retired===true) {
+                elderChild=world.cf6Boss_A20__elderbot;
+                check(elderChild===elderPhase.child && elderChild.兵种=="敌人-CF6老头机器人" && elderChild.__unitInitializedVersion===elderChild.version && elderChild._visible && pixels(elderChild.man)>0 && realStats(elderChild),"actual93-frame transition produces native robot with source numeric stats");
+                check(elderChild.产生源=="地图" && world.地图.僵尸型敌人总个数==1 && clears==0,"native successor preserves original source budget without early clear");
+                var controllerApi:Object=Cf6BossEncounter,controller:Object=controllerApi.active,issuedCount:Number=0;
+                for(var issuedName:String in controller.issued)issuedCount++;
+                check(lateInit.triggered && lateInit.entries==1 && lateInit.versionAtEntry==undefined
+                    && lateInit.cancelledBeforeInit===true && lateInit.record.retired===true
+                    && world[lateInit.name]==undefined && issuedCount==1 && liveSupports()==0 && lateBirths==0,
+                    "one actual issued pending initializer is cancelled without residual actor, fabricated birth or replay");
+                phase=12;age=0;
+            }
+        }else if(phase==12 && age>=3) {
+            check(elderChild.cf6BossIdentity!=undefined && Cf6BossEncounter.blocksClear(world,StageManager.instance),"controller binds exact real successor as final form");
+            elderChild.hp=0;elderChild.状态改变("血腥死");elderChild._killed=true;DeathEventComponent.onDeath(elderChild);deathAt=frame;
+            controllerTick();check(clears==0,"robot lethal event does not skip authored death presentation");phase=13;age=0;
+        }else if(phase==13) {
+            if(age==60)check(clears==0 && elderChild.man._currentframe>1 && elderChild.man._currentframe<=111,"final corpse timeline remains before room clear");
+            if(clears>0) {
+                check(clears==1 && frame-deathAt>=111 && !wave.isActive,"one final clear waits for actual death and fragments completion");
+                trace("[CF6_FIELD_ELDER] death="+deathAt+" clear="+clearAt+" lateBirths="+lateBirths+" pendingInitCancelled="+lateInit.cancelledBeforeInit+" sourceCount="+world.地图.僵尸型敌人总个数);
+                phase=14;age=0;
+            }
+        }else if(phase==14 && age>=20) {
+            check(clears==1,"terminal controller never repeats final room clear");nativeBossCase=0;beginNativeBoss();
+        }
+    }
+    private static function ownedSlots():Number {
+        var api:Object=Cf6BossEncounter,c:Object=api.active,n:Number=0;
+        for(var key:String in c.living)n++;return n;
+    }
+    private static function beginNativeBoss():Void {
+        lateInit=null;fresh();room.mapId="A17";born=[];guardActor=null;guardPhase=null;guardChild=null;holdFrames=0;
+        world.地图.watch("僵尸型敌人总个数",function(key:String,oldValue,newValue,receipt:Object) {
+            trace("[CF6_FIELD_SOURCE_COUNT] case="+receipt.caseId+" frame="+frame+" world="+receipt.worldName
+                +" current="+_root.gameworld._name+" old="+oldValue+" new="+newValue);
+            return newValue;
+        },{caseId:nativeBossCase,worldName:world._name});
+        var config:Object=Cf6FieldCombatData.bossPodSpec();props=Cf6InteractivePropService.begin(room,config);
+        var first:Object=config.props[0],source:Object=Cf6FieldCombatData.headbotPlan();
+        bossPlan={instanceName:source.instanceName,maxAlive:source.maxAlive,maxRanged:source.maxRanged,intervalFrames:source.intervalFrames,groups:[{hpRatio:1,enemies:[]}]};
+        if(nativeBossCase==0) {
+            bossPlan.groups[0].enemies.push({Type:"兵种469",Level:56,Quantity:1,ranged:false,x:900,y:650,Parameters:{unitAIType:"None",光头保安变身:true,掉落物:[]}});
+            bossPlan.groups[0].enemies.push({Type:"兵种460",Level:55,Quantity:3,ranged:false,x:1200,y:650,Parameters:{unitAIType:"None",掉落物:[]}});
+        }
+        bossPlan.groups[0].enemies.push({Type:"兵种460",Level:55,Quantity:1,ranged:false,x:first.x,y:first.y,podId:first.id,Parameters:{unitAIType:"None",掉落物:[]}});
+        WaveSpawnWheel.getInstance();wave=WaveSpawner.getInstance();
+        wave.init(new StageInfo({BasicInformation:{Environment:{}},Wave:{SubWave:{WaveInformation:{},EnemyGroup:{Enemy:[
+            {Type:"兵种472",InstanceName:source.instanceName,Level:57,Quantity:1,Interval:0,Delay:0,x:800,y:650,
+                Parameters:{unitAIType:"None",publishStageEvent:true,掉落物:[]}}
+        ]}}}}));
+        StageManager.instance.clearStage=function():Void {if(this.isCleared===true)return;clears++;clearAt=frame;this.isCleared=true;};
+        observation={world:world,owner:world.__stageReturnWorldIdentity,mode:"native-boss",expected:{},seen:{}};
+        world.dispatcher.subscribe("UnitSpawn",observeBirth(observation),null);
+        // Production order: controller exists while the counted RSL actor is still awaiting its native first frame.
+        Cf6BossEncounter.start(world,world.__stageReturnWorldIdentity,bossPlan);bindBossClock();phase=15;age=0;
+        trace("[CF6_FIELD_HEADBOT_CASE] case="+nativeBossCase+" actualBoss=472 guard=469 maxAlive="+bossPlan.maxAlive+" interval="+bossPlan.intervalFrames);
+    }
+    private static function killHeadbot():Void {
+        bossActor.hp=0;bossActor.状态改变("血腥死");bossActor._killed=true;
+        DeathEventComponent.onDeath(bossActor);controllerTick();
+    }
+    public static function killHeadbotDuringPendingSupport():Void {
+        nativePodCase=props.rows[0];
+        check(nativePodCase.attempted && nativePodCase.phase=="awaiting-spawn" && nativePodCase.art._currentframe==23,
+            "actual headbot pending initializer begins only after one exact pod claim and handoff pose");
+        killHeadbot();phase=23;age=0;
+    }
+    private static function nativeHeadbotRetired():Boolean {
+        // A corpse can outlive the combat-clear event. Keep its original world current until native
+        // death/fragment completion removes it and settles both source counters; never reset counters.
+        return world===_root.gameworld && world[bossPlan.instanceName]==undefined && bossActor._parent!==world
+            && world.地图.僵尸型敌人总个数===0 && world.地图.僵尸型敌人场上实际人数===0;
+    }
+    private static function nativeBossTick():Void {
+        if(wave.isActive)wave.tick();controllerTick();
+        if(props.pending>0)return;
+        Cf6InteractivePropService.tick(props);
+        if(props.failed) {check(false,"native headbot pod session remains valid: "+props.reason);finish();return;}
+        var row:Object=props.rows[0];
+        if(phase==15) {
+            bossActor=world[bossPlan.instanceName];
+            if(bossActor.__unitInitializedVersion==undefined || bossActor.__unitInitializedVersion!==bossActor.version || pixels(bossActor.man)==0)return;
+            trace("[CF6_FIELD_HEADBOT_INIT] case="+nativeBossCase+" frame="+frame+" age="+age
+                +" world="+world._name+" actualParent="+bossActor._parent._name+" source="+bossActor.产生源
+                +" total="+world.地图.僵尸型敌人总个数+" live="+world.地图.僵尸型敌人场上实际人数
+                +" rootLevel="+_root.等级+" hp="+bossActor.hp+" version="+bossActor.version
+                +" initialized="+bossActor.__unitInitializedVersion+" waveTick="+wave.tickCount);
+            check(bossActor.兵种=="敌人-CF6大头机器人" && realStats(bossActor) && world.地图.僵尸型敌人总个数==1,
+                "counted real headbot initializes under production controller-before-RSL order case "+nativeBossCase);
+            if(nativeBossCase==0) {phase=16;age=0;}
+            else if(nativeBossCase==1) {
+                killHeadbot();
+                check(clears==1 && !row.attempted && row.phase=="cancelled" && row.art._currentframe==1,
+                    "rapid real headbot death cancels untriggered pod without opening it or consuming budget");
+                phase=22;age=0;
+            } else {
+                lateInit={kind:"headbot",world:world,ownerToken:world.__cf6BossEncounter.cf6BossOwnerToken,triggered:false};
+                hero._x=row.holder._x;hero._y=row.holder._y;phase=21;age=0;
+            }
+        } else if(phase==16 && born.length==4) {
+            var ready:Boolean=true;
+            for(var bi:Number=0;bi<born.length;bi++) {
+                var u:MovieClip=world[born[bi]];if(u.__unitInitializedVersion==undefined || u.__unitInitializedVersion!==u.version)ready=false;
+                if(u.兵种=="敌人-CF6变身光头保安")guardActor=u;
+            }
+            if(!ready)return;
+            check(guardActor._parent===world && guardActor.光头保安变身===true && ownedSlots()==4 && realStats(guardActor),
+                "real transforming guard and three initialized clones occupy original four logical slots");
+            hero._x=row.holder._x;hero._y=row.holder._y;phase=17;age=0;
+        } else if(phase==17 && row.frame==24) {
+            if(++holdFrames<60)return;
+            check(!row.attempted && row.art._currentframe==1 && born.length==4 && ownedSlots()==4,
+                "living real boss with four native supports holds approached pod inside chamber beyond cadence");
+            guardActor.hp=0;guardActor.状态改变("血腥死");guardActor._killed=true;DeathEventComponent.onDeath(guardActor);
+            guardPhase=guardActor.guardTransform;controllerTick();
+            check(guardPhase.active===true && ownedSlots()==4 && !row.attempted,
+                "real guard first lethal event retains logical slot while authored transform runs");
+            phase=18;age=0;
+        } else if(phase==18 && guardPhase.retired===true) {
+            guardChild=guardPhase.child;
+            check(guardPhase.attempted===true && guardChild.__unitInitializedVersion===guardChild.version && guardChild._visible
+                && guardChild.兵种=="敌人-完全体克隆兽" && realStats(guardChild) && pixels(guardChild.man)>0,
+                "actual70-frame guard transform yields one initialized native tyrant successor");
+            check(ownedSlots()==4 && born.length==4 && !row.attempted && world.地图.僵尸型敌人总个数==1,
+                "guard corpse removal and successor handoff preserve original slot and counted boss budget");
+            guardChild.hp=0;guardChild.状态改变("血腥死");guardChild._killed=true;DeathEventComponent.onDeath(guardChild);
+            check(ownedSlots()==3,"native successor death event releases exactly one finite support slot before corpse disposal");
+            phase=19;age=0;
+        } else if(phase==19 && row.phase=="spent") {
+            var newborn:MovieClip=world[row.spawnName];
+            check(born.length==5 && ownedSlots()==4 && newborn.__unitInitializedVersion===newborn.version && realStats(newborn)
+                && row.art._currentframe==25 && pixels(newborn.man)>0,
+                "pod resumes after real guard successor death with one actual body and no extra budget");
+            killHeadbot();
+            check(clears==1 && row.phase=="cancelled" && row.art._currentframe==25 && ownedSlots()==0,
+                "real headbot death cancels completed presentation and retires its remaining owned supports once");
+            phase=22;age=0;
+        } else if(phase==22 && age>=40 && nativeHeadbotRetired()) {
+            check(clears==1 && ownedSlots()==0 && liveSupports()==0 && !props.failed && nativeHeadbotRetired(),
+                "native headbot corpse retires with zero source counters and no support or repeated clear case "+nativeBossCase);
+            trace("[CF6_FIELD_HEADBOT_RETIRED] case="+nativeBossCase+" frame="+frame+" waited="+age+" world="+world._name+" total="+world.地图.僵尸型敌人总个数+" live="+world.地图.僵尸型敌人场上实际人数);
+            if(++nativeBossCase<3)beginNativeBoss();else finish();
+        } else if(phase==23 && age>=40 && nativeHeadbotRetired()) {
+            check(lateInit.triggered===true && lateInit.entries==1 && lateInit.versionAtEntry==undefined
+                && lateInit.record.retired===true && lateInit.cancelledBeforeInit===true && world[lateInit.name]==undefined,
+                "real headbot death during issued native initialization cancels exact actor without fabricated birth or replay");
+            check(clears==1 && born.length==0 && nativePodCase.phase=="cancelled" && nativePodCase.art._currentframe==25
+                && nativePodCase.attempted && ownedSlots()==0 && liveSupports()==0 && nativeHeadbotRetired(),
+                "cancelled claimed pod retains its one-attempt fence until native corpse retires and source counters settle");
+            trace("[CF6_FIELD_HEADBOT_RETIRED] case="+nativeBossCase+" frame="+frame+" waited="+age+" world="+world._name+" total="+world.地图.僵尸型敌人总个数+" live="+world.地图.僵尸型敌人场上实际人数);
+            finish();
+        }
+    }
+    public static function tick():Void {
+        if(finished)return;
+        frame++;age++;_root.帧计时器.当前帧数++;
+        var wasShot:Boolean=phase==4;
+        if(age>600) {check(false,"phase timeout "+phase);finish();return;}
+        if(phase==0 && xmlReady && bulletDataReady) beginPods();
+        else if(phase==1) podTick();
+        else if(phase==2) {
+            wave.tick();Cf6InteractivePropService.tick(props);
+            if(age>=20) {check(born.length==1,"spent native pod does not replay mode "+mode);if(++mode<2)beginPods();else beginTurrets();}
+        }else if(phase==3 && Cf6TutorialTurretService.debugState().loaded==2) startShot();
+        else if(phase==4) {
+            if(wallShot && projectile._name!=undefined && NormalBulletLifecycle.BASIC.shouldDestroy(projectile))wallSeen=true;
+            if(projectile._name!=undefined && (shotAge<2 || shotAge%6==0))trace("[CF6_FIELD_FLIGHT] turret="+turretIndex+" tick="+shotAge
+                +" xyz="+projectile._x+","+projectile._y+","+projectile.Z轴坐标+" destroy="+NormalBulletLifecycle.BASIC.shouldDestroy(projectile));
+            if(projectile._name!=undefined) {precheck.call(projectile);shotAge++;}
+        }
+        else if(phase==5 && age>2) startShot();
+        else if(phase>=6 && phase<=9)bossPodTick();
+        else if(phase>=10 && phase<=14)elderTick();
+        else if(phase>=15 && phase<=23)nativeBossTick();
+        if(finished)return;
+        // One actual consumer tail per fixture frame, including the native robot's transparent death burst.
+        BulletQueueProcessor.processQueue();
+        if(wasShot && !finished)shotTick();
+    }
+    private static function finish():Void {
+        if(finished)return;finished=true;
+        delete driver.onEnterFrame;
+        try {
+            Cf6BossEncounter.cancel();Cf6TutorialTurretService.teardown();Cf6InteractivePropService.end(props);if(wave!=null)wave.close();
+            BulletQueueProcessor.processQueue();BulletQueueProcessor.reset();
+            if(world!=undefined)world.removeMovieClip();_root.collisionLayer.removeMovieClip();driver.removeMovieClip();
+            _root.根据等级计算值=levelCalculator;_root.初始化敌人模板=nativeInitializer;
+        }catch(e) {check(false,"cleanup exception "+e);}
+        trace("[CF6_FIELD_TERMINAL_OBSERVERS] experience="+terminalObservations.experience+" level="+terminalObservations.level+" corpse="+terminalObservations.corpse+" pickups="+terminalObservations.pickups);
+        trace("Cf6FieldCombatTest Tests Passed: "+passed);trace("Cf6FieldCombatTest Tests Failed: "+failed);_root.cf6FieldCombatComplete();
+    }
+}
