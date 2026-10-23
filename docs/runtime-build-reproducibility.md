@@ -183,6 +183,8 @@ attest job 同时上传两个 signed artifact：大包 `runtime-cloud-builder-<c
 
 Actions artifact 只是短期交接介质：unsigned candidate/envelope 保留 1 天；失败 bootstrap diagnostics 保留 7 天；signed candidate/envelope/Sigstore bundle 大包与 attestation-only 小包均保留 7 天。超过 signed 窗口仍未 promotion 时重新 dispatch，不能把 artifact retention 当长期证据仓。promotion 后 tracked v2 consensus 内嵌的验证材料才是仓库审计记录。
 
+本地 worker 的 `-WebView2CacheDirectory` 可把固定 WebView2 缓存放到本列车专用的短本机目录（如 `C:\w2r`），直接传给冻结源码中的 canonical producer；不需要自定义 `-BuildCommand`。默认仍使用 checkout 下的 `tmp\w2`，深层 checkout 应显式传短缓存。worker 在启动 producer 前按冻结 lock 投影缓存、解压后全部文件及候选 chunk 路径；240 UTF-16 上限、reparse 与路径交叠检查保持不变。普通 `path-budget` CI 只扫描受跟踪 Git 路径，不能替代这项生成路径检查；`Runtime native audit` 的 WebView2 回归覆盖真实依赖 lock、request/worker/job/src 嵌套、短缓存正例、默认/显式超长负例及参数转发。缓存应由本列车独占使用，完成后按本地保留策略清理。
+
 ### 政策 receipt 与 promotion
 
 在与 request tree 完全一致、tracked 内容干净的工作树中运行。正式 receipt / X509 proof / promotion 链固定由 Windows PowerShell 5.1（`$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe`）承载：当前 `pwsh` 7 的 `ConvertFrom-Json` 会把 attestation 的 ISO `createdAtUtc` 字符串自动解析成 `DateTime`，若在该宿主内直接调用 promotion，会改变 canonical payload 复算字节并按预期 fail closed。新机经 winget 安装 GitHub CLI 后，先用同一 5.1 进程确认 `Get-Command gh`；若旧父进程尚未继承新的用户级 `PATH`，重启父进程或只给本次发布进程显式补入已核验的安装目录，不复制 token、证明或私钥来绕过环境门。

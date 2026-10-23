@@ -2,6 +2,7 @@ param(
     [string]$ProjectRoot,
     [string]$QueueRoot,
     [string]$CheckoutRoot = $env:CF7_RUNTIME_CHECKOUT_ROOT,
+    [string]$WebView2CacheDirectory,
     [Parameter(Mandatory=$true)][string]$WorkerId,
     [string]$CertificateThumbprint,
     [string]$RegistryPath,
@@ -151,6 +152,26 @@ function Quote-Cf7WorkerArgument {
     return '"' + (($Value -replace '(\\*)"', '$1$1\"') -replace '(\\+)$', '$1$1') + '"'
 }
 
+function Get-Cf7WorkerProducerArguments {
+    param(
+        [Parameter(Mandatory=$true)][string]$Checkout,
+        [Parameter(Mandatory=$true)][string]$CandidateRoot,
+        [Parameter(Mandatory=$true)][string]$BuilderId,
+        [string]$WebView2CacheDirectory
+    )
+    # The Git-tree budget cannot cover paths generated below a per-job checkout.
+    # Project every file from the frozen dependency lock before starting a producer.
+    . (Join-Path $Checkout 'tools\runtime-webview-paths.ps1')
+    $spec = Get-Content -LiteralPath (Join-Path $Checkout 'launcher\webview2-runtime.lock.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+    $layout = Get-Cf7WebViewLayout -ProjectRoot $Checkout -Spec $spec `
+        -CacheDirectory $WebView2CacheDirectory `
+        -DestinationDirectory (Join-Path $CandidateRoot 'runtime\webview2') -DeploymentRoot $CandidateRoot
+    return @('-NoProfile','-ExecutionPolicy','Bypass','-File',
+        (Join-Path $Checkout 'launcher\build-runtime-candidate.ps1'),
+        '-BuilderId',$BuilderId,'-CandidateRoot',$CandidateRoot,
+        '-WebView2CacheDirectory',$layout.cache)
+}
+
 function Invoke-Cf7WorkerProcess {
     param(
         [Parameter(Mandatory=$true)][string]$FileName,
@@ -281,7 +302,9 @@ function Invoke-Cf7OneWorkerTurnCore {
             }
         } else {
             $hostExe = (Get-Process -Id $PID).Path
-            Invoke-Cf7WorkerProcess -FileName $hostExe -Arguments @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $checkout 'launcher\build-runtime-candidate.ps1'),'-BuilderId',$WorkerId,'-CandidateRoot',$candidate) -WorkingDirectory $checkout -Lease $lease
+            $producerArguments = Get-Cf7WorkerProducerArguments -Checkout $checkout -CandidateRoot $candidate `
+                -BuilderId $WorkerId -WebView2CacheDirectory $WebView2CacheDirectory
+            Invoke-Cf7WorkerProcess -FileName $hostExe -Arguments $producerArguments -WorkingDirectory $checkout -Lease $lease
         }
         if (-not (Test-Path -LiteralPath $candidate -PathType Container)) { throw 'Build command did not create the requested candidate root.' }
         $workerPhases.buildFinishedAtUtc = [DateTime]::UtcNow.ToString('o')
