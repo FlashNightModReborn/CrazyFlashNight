@@ -130,6 +130,9 @@ flashswf/portraits/illustration/
 data/task/agent_tasks.json
 data/task/text/agent_text.json
 data/rag/sync_state.json
+# NPC 状态库＝后端运行时数据（好感度/关系随玩家变化）。首启由 exe 种子生成，
+# 启动时只补缺失 NPC 与空字段，不重置已有好感与关系；不要入库。
+data/rag/npc_state_db.json
 # 按存档的 Agent 增量目录（data/rag/agent_saves/<slotKey>/，后端 bind 后按需生成，整目录不入库）
 data/rag/agent_saves/
 

@@ -2118,17 +2118,26 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void AlreadyRunningTerminalWithoutConfigLocksWithoutAutoDialog()
+        public void AlreadyRunningTerminalWithoutConfigAutoSyncsOnce()
         {
             int dialogs = 0;
+            bool configured = false;
             using var h = new Harness(
-                llmConfigured: () => Task.FromResult(false),
+                llmConfigured: () => System.Threading.Tasks.Task.FromResult(configured),
                 terminalReady: true);
             h.Controller.ConfigRequired += () => dialogs++;
             h.AdoptBook("又是你。");
 
             Assert.Equal(DialogueInterjectInputState.NeedsConfig, h.Controller.InputState);
-            Assert.Equal(0, dialogs);   // 非“从插话处启动”：只锁输入，不自动弹窗
+            Assert.Equal(1, dialogs);   // exe 重启后内存配置为空：自动拉一次小窗同步 localStorage
+
+            h.Controller.RefreshTerminalState();
+            Assert.Equal(1, dialogs);   // 仍缺配置时不反复弹窗
+
+            configured = true;          // 小窗/终端页已把 localStorage 配置同步回后端
+            h.Controller.RefreshTerminalState();
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Equal(1, dialogs);
         }
 
         // ── P6：物品赠送/索取与选项直连 ───────────────────────────────────

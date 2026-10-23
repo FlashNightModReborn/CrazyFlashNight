@@ -2,7 +2,7 @@
  * org.flashNight.aven.Promise.ListLoaderTest
  *
  * ListLoader / LoaderPromise 基础设施测试 + 迁移后 API 契约回归测试。
- * 22 个测试用例，覆盖基础设施、领域加载器契约、真实数据一致性与性能。
+ * 24 个测试用例，覆盖基础设施、领域加载器契约、真实数据一致性与性能。
  */
 import org.flashNight.aven.Promise.Promise;
 import org.flashNight.aven.Promise.LoaderPromise;
@@ -71,7 +71,7 @@ class org.flashNight.aven.Promise.ListLoaderTest {
         _total = 0;
         _timerSeq = 0;
         _reported = false;
-        _expectedTests = 22; // 基础设施 3 + ListLoader 5 + 契约回归 3 + 数据一致性 9 + 性能 2
+        _expectedTests = 24; // 基础设施 3 + ListLoader 7 + 契约回归 3 + 数据一致性 9 + 性能 2
 
         trace("=== ListLoader Infrastructure Tests ===");
 
@@ -209,6 +209,36 @@ class org.flashNight.aven.Promise.ListLoaderTest {
             .onCatch(function(r:Object):Void {
                 assert("listloader-concurrency1", false, "rejected: " + r);
             });
+
+        // 9. optionalEntries：登记文件缺失时按空数据继续，不 reject
+        ListLoader.loadChildren({
+            entries:      ["__missing_optional__.json"],
+            basePath:     "data/task/",
+            childType:    "json",
+            optionalEntries: ["__missing_optional__.json"],
+            mergeFn:      ListLoader.concatField("tasks"),
+            initialValue: []
+        }).then(function(result:Object):Void {
+            var resArr = result;
+            assert("listloader-optional-missing",
+                (result instanceof Array) && resArr.length == 0,
+                "length=" + resArr.length);
+        }).onCatch(function(r:Object):Void {
+            assert("listloader-optional-missing", false, "rejected: " + r);
+        });
+
+        // 10. 非可选文件缺失仍然 reject：真实数据损坏不能被吞
+        ListLoader.loadChildren({
+            entries:      ["__missing_required__.json"],
+            basePath:     "data/task/",
+            childType:    "json",
+            mergeFn:      ListLoader.concatField("tasks"),
+            initialValue: []
+        }).then(function(result:Object):Void {
+            assert("listloader-required-missing-rejects", false, "should have rejected");
+        }).onCatch(function(r:Object):Void {
+            assert("listloader-required-missing-rejects", true, "");
+        });
     }
 
     // ================================================================

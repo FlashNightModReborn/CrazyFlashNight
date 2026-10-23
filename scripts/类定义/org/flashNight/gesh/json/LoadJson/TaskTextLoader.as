@@ -68,6 +68,8 @@ class org.flashNight.gesh.json.LoadJson.TaskTextLoader extends BaseXMLLoader {
                 entries:      entries,
                 basePath:     path,
                 childType:    "json",
+                // 按存档的 Agent 文本文件不入库：缺失/损坏时按空数据启动，不卡住整机。
+                optionalEntries: ["agent_text.json"],
                 mergeFn:      function(acc:Object, childData:Object, index:Number, entry:String):Object {
                     sources[entry] = childData;
                     return merge(acc, childData, index, entry);
@@ -143,6 +145,7 @@ class org.flashNight.gesh.json.LoadJson.TaskTextLoader extends BaseXMLLoader {
             changed:      owned,
             basePath:     path,
             childType:    "json",
+            optionalEntries: ["agent_text.json"],
             mergeFn:      ListLoader.dictMerge(),
             initialValue: {}
         }).then(function(result:Object):Void {

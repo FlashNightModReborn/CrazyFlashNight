@@ -39,6 +39,8 @@ class org.flashNight.aven.Promise.ListLoader {
      *                           默认：basePath + entry
      *   mergeFn:Function      — function(accumulator, childData, index, entry):Object
      *   initialValue:Object   — 累加器初始值（[] 或 {}）
+     *   optionalEntries:Array — 可选条目白名单：这些文件加载失败时按空数据跳过，
+     *                           其余条目仍整批失败（不吞真实数据损坏）
      * @return Promise 合并后的结果
      */
     public static function loadChildren(config:Object):Promise {
@@ -57,6 +59,7 @@ class org.flashNight.aven.Promise.ListLoader {
         var pathBuilder:Function = config.pathBuilder;
         var mergeFn:Function = config.mergeFn;
         var acc:Object = config.initialValue;
+        var optionalMap:Object = ListLoader._makeOptionalMap(config.optionalEntries);
 
         // 选择加载函数
         var loaderFn:Function;
@@ -69,7 +72,7 @@ class org.flashNight.aven.Promise.ListLoader {
         return ListLoader._chainBatches(
             entries, basePath, concurrency,
             loaderFn, mergeFn, acc,
-            pathBuilder, 0
+            pathBuilder, 0, optionalMap
         );
     }
 
@@ -130,11 +133,13 @@ class org.flashNight.aven.Promise.ListLoader {
      *   concurrency:Number — 并发窗口大小（默认 4）
      *   mergeFn:Function   — 与 loadChildren 相同的合并函数
      *   initialValue:Object— 累加器初值，必须是全新对象（会被就地合并）
+     *   optionalEntries:Array — 可选条目白名单（文件被删时按空处理）
      * @return Promise 重新合并后的结果
      */
     public static function reloadChanged(config:Object):Promise {
         var sources:Object = config.sources;
         var changed:Array = config.changed;
+        var optionalMap:Object = ListLoader._makeOptionalMap(config.optionalEntries);
         if (changed == null || changed.length == 0) {
             return Promise.resolve(ListLoader._remerge(config.entries, sources, config.mergeFn, config.initialValue));
         }
@@ -146,18 +151,38 @@ class org.flashNight.aven.Promise.ListLoader {
             ? ListLoader._makeJSONLoader(config.parseType)
             : LoaderPromise.loadXML;
         return ListLoader._chainBatches(changed, config.basePath, concurrency,
-                loaderFn, ListLoader._makeSourceStorer(sources), null, null, 0)
+                loaderFn, ListLoader._makeSourceStorer(sources), null, null, 0, optionalMap)
             .then(ListLoader._makeRemerger(config.entries, sources, config.mergeFn, config.initialValue));
     }
 
-    /** 按 entries 原顺序用缓存重合并；缺失条目跳过，不改变既有合并语义。 */
+    /** 按 entries 原顺序用缓存重合并；缺失/空条目跳过，不改变既有合并语义。 */
     private static function _remerge(entries:Array, sources:Object, mergeFn:Function, initialValue:Object):Object {
         var acc:Object = initialValue;
         for (var i:Number = 0; i < entries.length; i++) {
             var childData:Object = sources[entries[i]];
-            if (childData !== undefined) acc = mergeFn(acc, childData, i, entries[i]);
+            if (childData != null) acc = mergeFn(acc, childData, i, entries[i]);
         }
         return acc;
+    }
+
+    /** 可选条目白名单 → 查找表；未配置时返回 null（保持严格模式）。 */
+    private static function _makeOptionalMap(optionalEntries:Object):Object {
+        if (!(optionalEntries instanceof Array)) return null;
+        var map:Object = {};
+        var i:Number = 0;
+        while (i < optionalEntries.length) {
+            map[String(optionalEntries[i])] = true;
+            i++;
+        }
+        return map;
+    }
+
+    /** 可选条目加载失败时吞掉 reject 并返回 null；合并阶段会跳过 null。 */
+    private static function _makeOptionalFallback(entry:String):Function {
+        return function(reason:Object):Object {
+            trace("[ListLoader] 可选文件加载失败，按空数据继续: " + entry + " (" + reason + ")");
+            return null;
+        };
     }
 
     private static function _makeSourceStorer(sources:Object):Function {
@@ -256,12 +281,13 @@ class org.flashNight.aven.Promise.ListLoader {
      * @param acc         当前累加器
      * @param pathBuilder 路径构建函数（可为 null）
      * @param offset      当前批起始索引
+     * @param optionalMap 可选条目查找表（可为 null）
      * @return Promise 最终累加器
      */
     private static function _chainBatches(
         entries:Array, basePath:String, batchSize:Number,
         loaderFn:Function, mergeFn:Function, acc:Object,
-        pathBuilder:Function, offset:Number
+        pathBuilder:Function, offset:Number, optionalMap:Object
     ):Promise {
         if (offset >= entries.length) {
             return Promise.resolve(acc);
@@ -281,14 +307,18 @@ class org.flashNight.aven.Promise.ListLoader {
             } else {
                 childPath = basePath + entries[i];
             }
-            batch.push(loaderFn(childPath));
+            var request:Promise = loaderFn(childPath);
+            if (optionalMap != null && optionalMap[entries[i]] === true) {
+                request = request.onCatch(ListLoader._makeOptionalFallback(String(entries[i])));
+            }
+            batch.push(request);
             i++;
         }
 
         // 捕获当前批的 offset 和 end 供合并回调使用
         return Promise.all(batch).then(
             ListLoader._makeBatchMerger(entries, basePath, batchSize,
-                loaderFn, mergeFn, acc, pathBuilder, offset, end)
+                loaderFn, mergeFn, acc, pathBuilder, offset, end, optionalMap)
         );
     }
 
@@ -299,19 +329,22 @@ class org.flashNight.aven.Promise.ListLoader {
     private static function _makeBatchMerger(
         entries:Array, basePath:String, batchSize:Number,
         loaderFn:Function, mergeFn:Function, acc:Object,
-        pathBuilder:Function, offset:Number, end:Number
+        pathBuilder:Function, offset:Number, end:Number, optionalMap:Object
     ):Function {
         return function(results:Object):Object {
             var arr = results;
             var j:Number = 0;
             while (j < arr.length) {
-                acc = mergeFn(acc, arr[j], offset + j, entries[offset + j]);
+                // 可选条目失败时结果为 null：跳过，不参与合并。
+                if (arr[j] != null) {
+                    acc = mergeFn(acc, arr[j], offset + j, entries[offset + j]);
+                }
                 j++;
             }
             return ListLoader._chainBatches(
                 entries, basePath, batchSize,
                 loaderFn, mergeFn, acc,
-                pathBuilder, end
+                pathBuilder, end, optionalMap
             );
         };
     }

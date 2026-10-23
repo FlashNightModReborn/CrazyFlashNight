@@ -138,6 +138,9 @@ namespace CF7Launcher.Tasks
         /// <summary>终端已就绪但模型 API 未配置：输入禁用，等配置小窗保存。</summary>
         private bool _needsConfig;
         private bool _configProbeInFlight;
+        // 每个终端就绪周期只自动拉一次配置小窗：小窗会从 localStorage 读回旧配置，
+        // 已有配置时屏外关闭并解锁；玩家取消后不再反复弹。
+        private bool _autoConfigSyncTried;
         private readonly Func<string> _newId;
         private readonly Func<DateTime> _clock;
 
@@ -1310,6 +1313,8 @@ namespace CF7Launcher.Tasks
                     _needsConfig = !configured;
                     if (_needsConfig)
                     {
+                        // 手动启动路径已经直接弹了小窗，不再让后续探测重复自动拉。
+                        _autoConfigSyncTried = true;
                         if (_groupAllowsInterject && !_playerLinePlaying)
                             SetInputState(ReadyOrMuted());
                         RaiseConfigRequired();
@@ -1328,11 +1333,19 @@ namespace CF7Launcher.Tasks
             if (_terminalReady == null) return;
             if (!_terminalReady())
             {
+                _autoConfigSyncTried = false;
                 if (_inputState == DialogueInterjectInputState.Offline) return;
                 SetInputState(DialogueInterjectInputState.Offline);
                 return;
             }
+            if (_inputState == DialogueInterjectInputState.NeedsConfig)
+            {
+                // 展开/就绪变化时重探：终端页或配置小窗可能刚把 localStorage 配置同步到后端。
+                ProbeLlmConfig(false);
+                return;
+            }
             if (_inputState != DialogueInterjectInputState.Offline) return;
+            _autoConfigSyncTried = false;
             SetInputState(ReadyOrMuted());
             ProbeLlmConfig(false);
         }
@@ -1362,10 +1375,14 @@ namespace CF7Launcher.Tasks
                             SetInputState(ReadyOrMuted());
                         return;
                     }
+                    // 后端内存配置在 exe 重启后会清空；首次缺配置时自动拉一次小窗，
+                    // 由小窗把 localStorage 里的旧配置同步回来（已有配置＝屏外关闭并解锁）。
+                    bool autoSync = !_autoConfigSyncTried;
+                    if (autoSync) _autoConfigSyncTried = true;
                     if (_groupAllowsInterject && !_playerLinePlaying
                         && _inputState != DialogueInterjectInputState.Muted)
                         SetInputState(DialogueInterjectInputState.NeedsConfig);
-                    if (openDialogOnMissing) RaiseConfigRequired();
+                    if (openDialogOnMissing || autoSync) RaiseConfigRequired();
                 });
             });
         }
