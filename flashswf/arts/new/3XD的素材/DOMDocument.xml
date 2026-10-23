@@ -4,7 +4,7 @@
           <DOMFolderItem name="1主武器/AA12普通" itemID="6ac866f8-0000072e"/>
           <DOMFolderItem name="1主武器/AA12普通/aa12素材" itemID="6ac8670d-00000756"/>
           <DOMFolderItem name="1主武器/AA12丧尸" itemID="6973017c-00000429"/>
-          <DOMFolderItem name="1主武器/AA12战术版" itemID="6ac866fe-00000730" isExpanded="true"/>
+          <DOMFolderItem name="1主武器/AA12战术版" itemID="6ac866fe-00000730"/>
           <DOMFolderItem name="1主武器/AA12战术版/aa12素材" itemID="6ac863ef-00000108"/>
           <DOMFolderItem name="1主武器/ak74金线" itemID="672b77ae-000000e8"/>
           <DOMFolderItem name="1主武器/ak74金线/部件1" itemID="6705dd3a-00000215"/>
@@ -38,6 +38,13 @@
           <DOMFolderItem name="1主武器/rpg武器/其他/shape" itemID="65a6bb2a-00001374"/>
           <DOMFolderItem name="1主武器/rpg武器/其他/其他部件" itemID="6707c597-00000090"/>
           <DOMFolderItem name="1主武器/rpg武器/图标" itemID="686ce10f-00001292"/>
+          <DOMFolderItem name="1主武器/Vepr12" itemID="6adaeae6-00000262" isExpanded="true"/>
+          <DOMFolderItem name="1主武器/vepr12素材" itemID="6adaf6ae-00000f90"/>
+          <DOMFolderItem name="1主武器/vepr12素材/vepr12素材" itemID="6adaeb17-00000270"/>
+          <DOMFolderItem name="1主武器/vepr12素材/vepr12素材/Pins" itemID="6ada3507-00000ee8"/>
+          <DOMFolderItem name="1主武器/vepr12素材/vepr12素材/红外" itemID="6adae4f6-00000b25"/>
+          <DOMFolderItem name="1主武器/vepr12素材/vepr12素材/无AS链接" itemID="6ada3231-00000283"/>
+          <DOMFolderItem name="1主武器/Vepr12战术版" itemID="6adaea5d-0000011c" isExpanded="true"/>
           <DOMFolderItem name="1主武器/巴雷特印花集" itemID="6705dad4-0000017e"/>
           <DOMFolderItem name="1主武器/巴雷特印花集/瞄具" itemID="67226567-000004a2"/>
           <DOMFolderItem name="1主武器/巴雷特印花集/瞄具/部件2" itemID="67226313-0000027f"/>
@@ -104,9 +111,10 @@
           <DOMFolderItem name="2副武器" itemID="6976d736-00001fef" isExpanded="true"/>
           <DOMFolderItem name="2副武器/Origin12" itemID="6ac866b3-0000024b"/>
           <DOMFolderItem name="2副武器/Origin12/origin12素材" itemID="6ac865bb-000001fa"/>
-          <DOMFolderItem name="2副武器/Origin12战术版" itemID="6ac866a8-00000247" isExpanded="true"/>
+          <DOMFolderItem name="2副武器/Origin12战术版" itemID="6ac866a8-00000247"/>
           <DOMFolderItem name="2副武器/Origin12战术版/origin12素材" itemID="6ac86722-00000784"/>
           <DOMFolderItem name="2副武器/Origin12战术版/origin12素材/红外" itemID="6ac8661e-0000021c"/>
+          <DOMFolderItem name="2副武器/Vepr12紧凑改装型" itemID="6adaea59-0000011a" isExpanded="true"/>
           <DOMFolderItem name="2副武器/沧蓝陨铁手炮" itemID="69e73845-00000426"/>
           <DOMFolderItem name="2副武器/沧蓝陨铁手炮/沧蓝陨铁手炮文件" itemID="69e7381b-00000417"/>
           <DOMFolderItem name="2副武器/大赦" itemID="6a9b8c1f-0000052d"/>
@@ -346,7 +354,7 @@
           <Include href="1主武器/AA12丧尸/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="6972ec06-0000044c" lastModified="1720533000"/>
           <Include href="1主武器/AA12丧尸/枪-长枪-AA12丧尸.xml" itemID="6972e9f9-00000200" lastModified="1769144977"/>
           <Include href="1主武器/AA12丧尸/图标-AA12丧尸.xml" itemID="6972ea02-00000201" lastModified="1769400478"/>
-          <Include href="1主武器/AA12战术版/aa12素材/aa12普通.xml" itemIcon="1" loadImmediate="false" itemID="6ac60ebb-000001d7" lastModified="1791519988"/>
+          <Include href="1主武器/AA12战术版/aa12素材/aa12普通.xml" itemIcon="1" loadImmediate="false" itemID="6ac60ebb-000001d7" lastModified="1792735719"/>
           <Include href="1主武器/AA12战术版/aa12素材/光.xml" itemIcon="1" loadImmediate="false" itemID="6ac79c38-00001037" lastModified="1791466557"/>
           <Include href="1主武器/AA12战术版/aa12素材/手电筒.xml" itemIcon="1" loadImmediate="false" itemID="6ac79c35-00001036" lastModified="1791466557"/>
           <Include href="1主武器/AA12战术版/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="6ac86704-00000747" lastModified="1720533000"/>
@@ -467,6 +475,32 @@
           <Include href="1主武器/rpg武器/图标/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-000005b7" lastModified="1720533000"/>
           <Include href="1主武器/rpg武器/图标/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="68d21d80-0000043d" lastModified="1720533000"/>
           <Include href="1主武器/rpg武器/图标/图标-RPG.xml" itemID="686ce0fb-00001283" lastModified="1758602685"/>
+          <Include href="1主武器/Vepr12/Symbol 13.xml" loadImmediate="false" itemID="6adaf332-0000058b" lastModified="1720533000"/>
+          <Include href="1主武器/Vepr12/枪-长枪-Vepr12.xml" itemID="6adaeac4-0000024d" lastModified="1792736348"/>
+          <Include href="1主武器/Vepr12/图标-Vepr12.xml" itemID="6adaf625-0000056f" lastModified="1792735700"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/Pins/Pin3.xml" itemIcon="1" loadImmediate="false" itemID="609349e2-00001546" lastModified="1620265442"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/vepr12.xml" itemIcon="1" loadImmediate="false" itemID="6ad83547-0000017b" lastModified="1792730515"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/vepr12 副武器.xml" itemIcon="1" loadImmediate="false" itemID="6adae544-00000b71" lastModified="1792730496"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/vepr12 战术版.xml" itemIcon="1" loadImmediate="false" itemID="6adae53f-00000b70" lastModified="1792730510"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/弹鼓.xml" itemIcon="1" loadImmediate="false" itemID="6ad6dd1a-00000146" lastModified="1792466236"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/弹夹.xml" itemIcon="1" loadImmediate="false" itemID="6ad5dddc-00000123" lastModified="1792400860"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/红外/Symbol 3721.xml" itemIcon="1" loadImmediate="false" itemID="65f68a66-00001019" lastModified="1792685410"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/红外/Symbol 3722.xml" loadImmediate="false" itemID="65f68a66-0000101a" lastModified="1710653981"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/护木.xml" itemIcon="1" loadImmediate="false" itemID="6ad6dd4f-00000148" lastModified="1792555133"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/护木0.xml" itemIcon="1" loadImmediate="false" itemID="6ad83502-00000168" lastModified="1792554242"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/瞄具.xml" itemIcon="1" loadImmediate="false" itemID="6ada2ac2-000001d9" lastModified="1792684492"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/枪托.xml" itemIcon="1" loadImmediate="false" itemID="6ad6d68b-00000130" lastModified="1792555238"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/无AS链接/Symbol 3735.xml" loadImmediate="false" itemID="6adaf332-00000586" lastModified="1792686571"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/无AS链接/Symbol 4024.xml" loadImmediate="false" itemID="668e7c1e-00000ffe" lastModified="1720533000"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/无AS链接/Symbol 4028.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00001002" lastModified="1720533000"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="6ad6e047-00000157" lastModified="1792467016"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/元件 2.xml" itemIcon="1" loadImmediate="false" itemID="6ada2424-00000130" lastModified="1792681771"/>
+          <Include href="1主武器/vepr12素材/vepr12素材/元件 4.xml" itemIcon="1" loadImmediate="false" itemID="6ada3a76-00000aec" lastModified="1792687396"/>
+          <Include href="1主武器/Vepr12战术版/Symbol 4.xml" itemIcon="1" loadImmediate="false" itemID="6adaf332-0000058d" lastModified="1720533000"/>
+          <Include href="1主武器/Vepr12战术版/Symbol 12.xml" itemIcon="1" loadImmediate="false" itemID="6adaf332-0000058c" lastModified="1720533000"/>
+          <Include href="1主武器/Vepr12战术版/Symbol 16.xml" itemIcon="1" loadImmediate="false" itemID="6adaf332-0000058e" lastModified="1720533000"/>
+          <Include href="1主武器/Vepr12战术版/枪-长枪-Vepr12战术版.xml" itemID="6adaea3e-00000116" lastModified="1792736457"/>
+          <Include href="1主武器/Vepr12战术版/图标-Vepr12战术版.xml" itemID="6adaf4b5-000005a8" lastModified="1792734389"/>
           <Include href="1主武器/巴雷特印花集/瞄具/部件2/Symbol 3722.xml" loadImmediate="false" itemID="67225fe2-0000013c" lastModified="1728437314"/>
           <Include href="1主武器/巴雷特印花集/瞄具/部件4/Symbol 4028.xml" itemIcon="1" loadImmediate="false" itemID="67225fe2-0000013b" lastModified="1710653981"/>
           <Include href="1主武器/巴雷特印花集/未命名文件夹 1/元件 2.xml" loadImmediate="false" itemID="67039c83-00000152" lastModified="1728289923"/>
@@ -622,14 +656,18 @@
           <Include href="2副武器/Origin12/枪-手枪-Origin12.xml" itemID="6ac866b7-0000024e" lastModified="1791518393"/>
           <Include href="2副武器/Origin12/图标-Origin12.xml" itemID="6ac866b5-0000024d" lastModified="1791518396"/>
           <Include href="2副武器/Origin12/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="6ac86718-00000774" lastModified="1791518562"/>
-          <Include href="2副武器/Origin12战术版/origin12素材/origin12.xml" itemIcon="1" loadImmediate="false" itemID="6ac86722-00000789" lastModified="1791519975"/>
+          <Include href="2副武器/Origin12战术版/origin12素材/origin12.xml" itemIcon="1" loadImmediate="false" itemID="6ac86722-00000789" lastModified="1792734146"/>
           <Include href="2副武器/Origin12战术版/origin12素材/弹鼓.xml" itemIcon="1" loadImmediate="false" itemID="6ac76f05-000001a7" lastModified="1791466567"/>
           <Include href="2副武器/Origin12战术版/origin12素材/弹夹.xml" itemIcon="1" loadImmediate="false" itemID="6ac86722-0000078d" lastModified="1791466567"/>
           <Include href="2副武器/Origin12战术版/origin12素材/红外/Symbol 3721.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000f2b" lastModified="1791466567"/>
           <Include href="2副武器/Origin12战术版/判定使用.xml" loadImmediate="false" itemID="6ac86722-0000078a" lastModified="1791518527"/>
-          <Include href="2副武器/Origin12战术版/枪-手枪-Origin12战术版.xml" itemID="6ac866ad-0000024a" lastModified="1791518381"/>
+          <Include href="2副武器/Origin12战术版/枪-手枪-Origin12战术版.xml" itemID="6ac866ad-0000024a" lastModified="1792734159"/>
           <Include href="2副武器/Origin12战术版/图标-Origin12战术版.xml" itemID="6ac866ab-00000249" lastModified="1791518379"/>
           <Include href="2副武器/Origin12战术版/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="6ac86722-0000078c" lastModified="1791518562"/>
+          <Include href="2副武器/Vepr12紧凑改装型/判定使用.xml" loadImmediate="false" itemID="6adaf332-00000585" lastModified="1792731581"/>
+          <Include href="2副武器/Vepr12紧凑改装型/枪-手枪-Vepr12紧凑改装型.xml" itemID="6adaea34-00000114" lastModified="1792734423"/>
+          <Include href="2副武器/Vepr12紧凑改装型/图标-Vepr12紧凑改装型.xml" itemID="6adaf69c-00000f8f" lastModified="1792734880"/>
+          <Include href="2副武器/Vepr12紧凑改装型/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="6adaf332-00000588" lastModified="1792731582"/>
           <Include href="2副武器/沧蓝陨铁手炮/沧蓝陨铁手炮文件/部件1.xml" itemIcon="1" loadImmediate="false" itemID="69874aea-00000142" lastModified="1770474218"/>
           <Include href="2副武器/沧蓝陨铁手炮/沧蓝陨铁手炮文件/沧蓝陨铁手炮素材.xml" itemIcon="1" loadImmediate="false" itemID="6987e4a3-000001f5" lastModified="1770513571"/>
           <Include href="2副武器/沧蓝陨铁手炮/沧蓝陨铁手炮文件/元件 1.xml" itemIcon="1" loadImmediate="false" itemID="69874af9-00000144" lastModified="1770474233"/>
@@ -1307,6 +1345,11 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2043614" publishTime="1792736451"/>
+          <PublishItem publishSize="2043427" publishTime="1792736328"/>
+          <PublishItem publishSize="2043493" publishTime="1792734915"/>
+          <PublishItem publishSize="2043497" publishTime="1792734856"/>
+          <PublishItem publishSize="2045186" publishTime="1792734174"/>
           <PublishItem publishSize="1959417" publishTime="1791519662"/>
           <PublishItem publishSize="1959200" publishTime="1791518600"/>
           <PublishItem publishSize="1959201" publishTime="1791518580"/>
@@ -1322,10 +1365,5 @@
           <PublishItem publishSize="1887029" publishTime="1777252037"/>
           <PublishItem publishSize="1886807" publishTime="1777251205"/>
           <PublishItem publishSize="1886927" publishTime="1777218053"/>
-          <PublishItem publishSize="1886790" publishTime="1777217973"/>
-          <PublishItem publishSize="1886888" publishTime="1777217815"/>
-          <PublishItem publishSize="1886960" publishTime="1777217741"/>
-          <PublishItem publishSize="1886944" publishTime="1777217676"/>
-          <PublishItem publishSize="1887033" publishTime="1777217190"/>
      </publishHistory>
 </DOMDocument>
