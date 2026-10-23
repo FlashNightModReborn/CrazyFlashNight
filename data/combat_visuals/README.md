@@ -44,9 +44,9 @@ F `\x07` 是十二种射线风格的有序原生表现事件，配对能力缺�
 源码接口已实现不代表现役正式 runtime 已更新。
 施工、机器验证与候选/GPU状态见[本轮记录](../../docs/子弹与全量射线原生迁移-施工-2026-09-28.md)。
 
-`effects.v1.json` 和 `effects-atlas.png` 是弹壳/枪火的独立白名单与图集，生成、
+`effects.v1.json` 和 `effects-atlas.png` 是弹壳/枪火/命中特效/普通血滴的独立白名单与图集，生成、
 脚本适配、资源上限和验证命令见[资源工具](../../tools/combat-fx-assets/README.md)。
-Host 校验图集和源 SWF，GPU 纹理就绪后才发送 `combat_fx_caps` v1；AS2 使用返回的
+Host 校验图集和源 SWF，发送 `combat_fx_caps` v1 目录能力；GPU 纹理就绪后才声明 `native=true`。AS2 使用返回的
 样式索引，不另维护启用清单。新增 F `\x06` 段在子弹段之后：
 
 ```text
@@ -54,19 +54,33 @@ epoch|sequence|gameTick|paused
 ;s,style,x,y,scaleXPercent,scaleYPercent,groundY,count,seed,0
 ;m,style,x,y,scaleXPercent,scaleYPercent,rotation,seed,0
 ;i,style,x,y,scaleXPercent,scaleYPercent,rotation,seed,0
+;p,birthId,style,x,y,groundZ,scaleXPercent,seed,gravity
 ;a,settlementId,drawn
 ;l,id,kind,x,y,dx,dy,length,halfWidth,energy,r,g,b,nearX,nearY,nearRadius,nearEnergy
 ```
 
-`s/m/i/a` 是有序出生/贴图回执事件，不能按 latest-wins 丢弃中间 F 包；`l` 是本包的完整装备光源快照，未出现的旧 id 立即移除。native 绘制快照可以更新覆盖。
-每帧最多 32 个发射事件、独立的 32 个命中事件和 64 个回执；每个弹壳事件最多展开 64 颗，
-C# 活动上限为 256 弹壳、64 枪火、128 命中特效，与子弹预算分离。游戏 tick 控制物理和帧序列；暂停冻结，
+`s/m/i/p/a` 是有序出生/贴图回执事件，不能按 latest-wins 丢弃中间 F 包；`l` 是本包的完整装备光源快照，未出现的旧 id 立即移除。native 绘制快照可以更新覆盖。
+每帧最多 32 个发射事件、独立的 32 个命中事件、64 个普通血滴出生和 64 个回执；每个弹壳事件最多展开 64 颗，
+C# 活动上限为 256 弹壳、64 枪火、128 命中特效和独立的 64 血滴，合计 512，与子弹预算分离。游戏 tick 控制物理和帧序列；暂停冻结，
 大于 8 tick 的缺口清理旧装饰，不用墙钟无限追赶。
 
 C# 首次触地通过 `combat_fx_events` 提示声音；落稳回传世界位姿，每批至多 8 项。
 AS2 每帧最多贴 4 项、队列 64、每图 4096、每 64×64 格 32；源位图最多缓存 32 种。
 贴图回执使原生落稳精灵短暂保留并渐隐；缺回执有超时，旧连接/旧场景不能贴入新图。
 弹壳和屎花参与世界调色，枪火及火花类自发光；绘制顺序为弹壳→子弹→射线→命中特效→枪火。
+
+`combat_fx_caps.bloodVersion=1` 声明普通血滴协议；`native` 另表示当前可呈现性。
+已声明的普通血滴在 `none`、不可用或超预算时可丢弃，不创建 AS2 MC；未声明的旧配对仍走原入口。
+`p` 记录只发出生，`gravity` 可省略（缺省 1）；C# 使用独立视觉随机、普通数值累计、15/30/45 tick 早退与 60 tick 硬回收。
+落地反馈为 `combat_fx_events.bloodLandings: [[stampId,variant,x,y],...]`，每批至多 8；
+`stampId` 在本场景按落地输出顺序递增，与出生 id 分离。AS2 按高水位去重、最多排队 64、每帧处理 4，
+复用原第 0 层 `copyPixels` 和 origin 补偿；弹壳仍使用第 2 层变暗 `draw` 与回执。
+普通血液允许小幅视觉差异与预算丢弃，不以逐值 AVM1 等价作为生产门；酸血玩法仍由 AS2 持有。
+`soundAtBirth=true` 的命中样式在 AS2 原出生调用内，经根播放入口即时发声，保留静音语义；AS2 与 C# 用同一 `seed % variantCount` 选中画面/声音。已准入声音先于纯视觉 32 项队列上限处理，仍受现有 SFX 批次/声道预算约束；none、暂停与无效请求不补播。Host 不回传这些出生声音，避免往返延迟与重复播放。
+`variantSounds` 使用音库完整文件名，普通血液 1/3/4 对应实际 `.mp3`，其余为 `.wav`。派生的 20 个原时间轴声音在 `soundAssets` 绑定源库/DefineSound id、相对路径、SHA-256 与体积；单项上限 256 KiB、合计 2 MiB。Host 校验其完整性和当前 SFX pack 的精确注册名。
+`combat_fx_events.sounds` 仍是最多 8 个非出生/旧配对目录白名单声音名；过期 generation/epoch 或重复 sequence 不重播，出生声不经此反馈通道。
+空手火花保留嵌套平移与 Glow，随机旋转使用独立视觉随机；非单位父倍率仍保留原 MC 路径（`none` 始终消费）。
+本批来源、验证及人验边界见[施工记录](../../docs/普通血液与简单特效迁移-2026-10-23.md)。
 
 命中特效只从已审核、不使用返回 MovieClip 的命中入口准入，普通/射线/地图终止、弹道取消
 与单位受击仍执行原来的结算逻辑。`EffectSystem.Effect` 第六参数显式传 `true` 才尝试接管；

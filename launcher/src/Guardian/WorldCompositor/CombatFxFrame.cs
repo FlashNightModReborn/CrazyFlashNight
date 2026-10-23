@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace CF7Launcher.Guardian.WorldCompositor
 {
-    // F section 6: epoch|sequence|gameTick|paused; s,... / m,... / i,... / a,... / l,...
+    // F section 6: epoch|sequence|gameTick|paused; s/m/i/p births, a acknowledgements, l lights.
     // s/m/i/a are one-shot visual events, not a latest-wins position snapshot.
     // l records instead carry the complete resident equipment light snapshot.
     internal sealed class CombatFxFrame
@@ -14,15 +14,16 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal readonly CombatFxSpawn[] Spawns;
         internal readonly CombatFxAck[] Acks;
         internal readonly CombatFxEquipmentLight[] EquipmentLights;
-        private CombatFxFrame(int epoch,int sequence,int tick,bool paused,CombatFxSpawn[] spawns,CombatFxAck[] acks,CombatFxEquipmentLight[] lights)
-        { Epoch=epoch;Sequence=sequence;GameTick=tick;Paused=paused;Spawns=spawns;Acks=acks;EquipmentLights=lights; }
+        internal readonly BloodVisualEvent[] BloodEvents;
+        private CombatFxFrame(int epoch,int sequence,int tick,bool paused,CombatFxSpawn[] spawns,CombatFxAck[] acks,CombatFxEquipmentLight[] lights,BloodVisualEvent[] blood)
+        { Epoch=epoch;Sequence=sequence;GameTick=tick;Paused=paused;Spawns=spawns;Acks=acks;EquipmentLights=lights;BloodEvents=blood; }
 
         internal static bool TryParse(string payload,CombatFxCatalog catalog,out CombatFxFrame frame)
         {
             frame=null;
             if (catalog==null || string.IsNullOrEmpty(payload) || payload.Length>32768) return false;
             string[] records=payload.Split(';');
-            if (records.Length>193) return false;
+            if (records.Length>257) return false;
             string[] header=records[0].Split('|');
             if (header.Length!=4 || !Int(header[0],0,1000000000,out int epoch)
                 || !Int(header[1],0,1000000000,out int sequence)
@@ -31,10 +32,23 @@ namespace CF7Launcher.Guardian.WorldCompositor
             var acks=new List<CombatFxAck>();
             var lights=new List<CombatFxEquipmentLight>();
             var lightIds=new HashSet<int>();
+            var blood=new List<BloodVisualEvent>();
             int shooting=0,impacts=0;
             for (int i=1;i<records.Length;i++)
             {
                 string[] f=records[i].Split(',');
+                if(f[0]=="p")
+                {
+                    double gravity=1;
+                    if((f.Length!=8 && f.Length!=9) || blood.Count>=BloodVisualEngine.Limit || !Int(f[1],1,int.MaxValue,out int id)
+                        || !Int(f[2],0,catalog.Styles.Length-1,out int bloodStyle) || !catalog.Styles[bloodStyle].IsBlood
+                        || !Double(f[3],-1000000,1000000,out double bx) || !Double(f[4],-1000000,1000000,out double by)
+                        || !Double(f[5],-1000000,1000000,out double bz) || !Double(f[6],-1000,1000,out double scale)
+                        || scale==0 || !Int(f[7],1,int.MaxValue,out int bloodSeed)
+                        || (f.Length==9 && !Double(f[8],0,100,out gravity)))return false;
+                    blood.Add(BloodVisualEvent.Birth(id,bloodStyle,bx,by,bz,scale,(uint)bloodSeed,gravity));
+                    continue;
+                }
                 if (f[0]=="a")
                 {
                     if (f.Length!=3 || acks.Count>=64 || !Int(f[1],1,int.MaxValue,out int id)
@@ -72,7 +86,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 if ((!casing && !impact && f[0]!="m") || f.Length!=(casing?10:9)
                     || (impact?++impacts>32:++shooting>32)
                     || !Int(f[1],0,catalog.Styles.Length-1,out int style)
-                    || catalog.Styles[style].IsCasing!=casing
+                    || catalog.Styles[style].IsBlood || catalog.Styles[style].IsCasing!=casing
                     || catalog.Styles[style].IsImpact!=impact
                     || !Float(f[2],-1000000,1000000,out float x) || !Float(f[3],-1000000,1000000,out float y)
                     || !Float(f[4],-1000,1000,out float sx) || !Float(f[5],0.01f,1000,out float sy)
@@ -85,13 +99,15 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 else if (!Int(f[7],1,int.MaxValue,out seed) || f[8]!="0") return false;
                 spawns.Add(new CombatFxSpawn(style,x,y,sx*.01f,sy*.01f,argument,count,(uint)seed));
             }
-            frame=new CombatFxFrame(epoch,sequence,tick,paused!=0,spawns.ToArray(),acks.ToArray(),lights.ToArray());
+            frame=new CombatFxFrame(epoch,sequence,tick,paused!=0,spawns.ToArray(),acks.ToArray(),lights.ToArray(),blood.ToArray());
             return true;
         }
         private static bool Int(string s,int min,int max,out int v) =>
             int.TryParse(s,NumberStyles.None,CultureInfo.InvariantCulture,out v) && v>=min && v<=max;
         private static bool Float(string s,float min,float max,out float v) =>
             float.TryParse(s,NumberStyles.Float,CultureInfo.InvariantCulture,out v) && float.IsFinite(v) && v>=min && v<=max;
+        private static bool Double(string s,double min,double max,out double v) =>
+            double.TryParse(s,NumberStyles.Float,CultureInfo.InvariantCulture,out v) && double.IsFinite(v) && v>=min && v<=max;
         private static bool Unit(float x,float y) { float m=x*x+y*y; return m>=0.99f && m<=1.01f; }
     }
 

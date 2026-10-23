@@ -16,12 +16,17 @@ class org.flashNight.arki.component.Effect.BulletEffectHandler {
     ):Void {
         var fragment:String = BLOOD_EFFECT_MAP[hitTarget.击中效果] || ""; // 直接属性访问+短路运算
         if (fragment.length) { // 利用长度检查排除空字符串
-            EffectSystem.Effect(
+            if(fragment=="子弹碎片-飞血" && org.flashNight.arki.render.BloodVisualBridge.trySpawn(
+                originX,originY,hitTarget.Z轴坐标,xscale))return;
+            var effect:MovieClip=EffectSystem.Effect(
                 fragment, 
                 originX, 
                 originY, 
                 xscale
-            ).出血来源 = hitTarget._name;
+            );
+            if(effect) {
+                effect.出血来源=hitTarget._name;
+            }
         }
     }
 

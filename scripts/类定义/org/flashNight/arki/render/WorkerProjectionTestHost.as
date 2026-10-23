@@ -33,8 +33,8 @@ class org.flashNight.arki.render.WorkerProjectionTestHost {
         RayVisualBridge.configure({version:1,generation:generation,native:true,digest:digest,styles:rayStyles,
             maxArcs:1024,drawLimit:4096,configLimit:1024,channelVersion:1,lightingVersion:1});
         CombatFxBridge.disconnect();CombatFxBridge.configure({version:1,generation:generation,native:true,digest:digest,
-            sceneLightsDigest:digest,equipmentLights:2,equipmentRadialLights:1,sceneLightsVersion:1,
-            styles:[{index:0,linkage:"测试弹壳",kind:"casing"},{index:1,linkage:"测试枪火",kind:"muzzle"},{index:2,linkage:"测试命中",kind:"impact"}]});
+            sceneLightsDigest:digest,equipmentLights:2,equipmentRadialLights:1,sceneLightsVersion:1,bloodVersion:1,
+            styles:[{index:0,linkage:"测试弹壳",kind:"casing"},{index:1,linkage:"测试枪火",kind:"muzzle"},{index:2,linkage:"测试命中",kind:"impact"},{index:3,linkage:"子弹碎片-飞血",kind:"blood"}]});
         var consumers:Object={playerHud:none?"none":"full",ordinaryBullet:none?"none":"full",ray:none?"none":"full",
             chain:none?"none":"full",combatDecoration:none?"none":"full",sceneLighting:"full",equipmentLighting:"full"};
         var hash:String="sha256:"+digest.toLowerCase();

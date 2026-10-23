@@ -1,7 +1,7 @@
 {
   "schema": "cf7-combat-bullet-styles.v1",
   "generator": "tools/combat-bullet-visuals/build.py",
-  "generatorSha256": "6750498bb7389e3a6d37db9c4e16f56aa06c46dc0e4457d58674464353ecf152",
+  "generatorSha256": "961a8b3a08bf1bc33d2251e4558149bf26f068a0fb57277cf0934c8456a20ac9",
   "sourceSwf": "flashswf/arts/原版素材库-子弹.swf",
   "sourceSwfSha256": "d03534c889a743d1becf97f1b31db39ac6e97d9d86c513f17ac4c74ab9776f2e",
   "sources": [
@@ -89,11 +89,15 @@
   "tools": [
     {
       "path": "tools/combat-bullet-visuals/build.py",
-      "sha256": "6750498bb7389e3a6d37db9c4e16f56aa06c46dc0e4457d58674464353ecf152"
+      "sha256": "961a8b3a08bf1bc33d2251e4558149bf26f068a0fb57277cf0934c8456a20ac9"
     },
     {
       "path": "tools/combat-fx-assets/build.py",
-      "sha256": "11e3dcb70a103437e769e3eee6a83e2f7c34f560d83ac12f461ccac88d2a9682"
+      "sha256": "037a4d86d263622550110768a45cd39588b78b4e9a37e0b0147a5fce79c62985"
+    },
+    {
+      "path": "tools/combat-fx-assets/source_recipes.py",
+      "sha256": "3f8d3f2931a730e0f5cf25e9bf2af374a1eed377966d9815f2c618cd2b9b3d1f"
     },
     {
       "path": "tools/combat-bullet-visuals/BulletSpriteExporter.java",
@@ -472,6 +476,6 @@
     "width": 1024,
     "height": 24,
     "scale": 2,
-    "pillowVersion": "12.1.0"
+    "pillowVersion": "12.2.0"
   }
 }

@@ -10,14 +10,16 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal const int CasingLimit=256, MuzzleLimit=64, ImpactLimit=128, LightLimit=16, StampBatchLimit=8, LightStride=16;
         private const int TotalLimit=CasingLimit+MuzzleLimit+ImpactLimit;
         private readonly CombatFxCatalog _catalog;
+        private readonly BloodVisualEngine _blood;
         private readonly Particle[] _particles=new Particle[TotalLimit];
         private readonly FlashLight[] _lights=new FlashLight[LightLimit];
         private readonly CombatFxEquipmentLight[] _resident=new CombatFxEquipmentLight[LightLimit];
-        private readonly CombatFxDrawFrame _draw=new CombatFxDrawFrame(TotalLimit);
+        private readonly CombatFxDrawFrame _draw=new CombatFxDrawFrame(TotalLimit+BloodVisualEngine.Limit);
         private NativeVisualBudget _visualBudget;
         private int _generation=-1,_epoch=-1,_sequence=-1,_tick,_nextId,_eventSequence;
         private long _nextLightId;
         private readonly List<CombatFxSettlement> _settled=new List<CombatFxSettlement>(StampBatchLimit);
+        private readonly List<string> _sounds=new List<string>(StampBatchLimit);
         private int _groundHits;
         internal int Dropped { get; private set; }
         internal int ImpactDropped { get; private set; }
@@ -27,13 +29,13 @@ namespace CF7Launcher.Guardian.WorldCompositor
         {
             get
             {
-                if (_settled.Count != 0 || _groundHits != 0) return true;
+                if (_settled.Count != 0 || _groundHits != 0 || _blood.HasState || _sounds.Count!=0) return true;
                 foreach (var particle in _particles) if (particle.Phase != 0) return true;
                 foreach (var light in _lights) if (light.Ticks != 0) return true;
                 return false;
             }
         }
-        internal CombatFxEngine(CombatFxCatalog catalog) { _catalog=catalog ?? throw new ArgumentNullException(nameof(catalog)); }
+        internal CombatFxEngine(CombatFxCatalog catalog) { _catalog=catalog ?? throw new ArgumentNullException(nameof(catalog));_blood=new BloodVisualEngine(catalog); }
 
         // Existing particles keep their motion, settlement and acknowledgement
         // lifecycle. A lower budget only prevents new decorative casings.
@@ -58,8 +60,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
 
         internal void Reset()
         {
+            _blood.Reset();
             Array.Clear(_particles);Array.Clear(_lights);Array.Clear(_resident);_generation=-1;_epoch=-1;_sequence=-1;
-            _tick=0;_nextId=0;_nextLightId=0;_eventSequence=0;_settled.Clear();_groundHits=0;
+            _tick=0;_nextId=0;_nextLightId=0;_eventSequence=0;_settled.Clear();_sounds.Clear();_groundHits=0;
             _draw.Count=0;_draw.CasingCount=0;_draw.ImpactCount=0;_draw.LightCount=0;
             _draw.ResidentLightCount=0;_draw.CandidateLightCount=0;
         }
@@ -71,11 +74,13 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (!fresh && (frame.Epoch<_epoch || frame.Sequence<=_sequence || frame.GameTick<_tick)) return false;
             if (fresh)
             {
+                _blood.Reset();
                 Array.Clear(_particles);Array.Clear(_lights);Array.Clear(_resident);_epoch=frame.Epoch;_sequence=-1;_tick=frame.GameTick;
                 _nextId=0;_nextLightId=0;_eventSequence=0;_generation=generation;
             }
-            _settled.Clear();_groundHits=0;
+            _settled.Clear();_sounds.Clear();_groundHits=0;
             int elapsed=frame.Paused?0:frame.GameTick-_tick;
+            int bloodElapsed=elapsed;
             _tick=frame.GameTick;_sequence=frame.Sequence;
             // A disconnected/stalled visual stream must not replay a long burst on recovery.
             if (elapsed>8) { Array.Clear(_particles);Array.Clear(_lights);Array.Clear(_resident);elapsed=0; }
@@ -87,6 +92,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                         _particles[i].FadeTicks=3;break;
                     }
             ApplyEquipmentLights(frame.EquipmentLights);
+            _blood.Apply(frame.Paused?Array.Empty<BloodVisualEvent>():frame.BloodEvents,bloodElapsed);
             for (int step=0;step<elapsed;step++) Advance();
             int availableCasings=-1;
             if (!frame.Paused)
@@ -105,6 +111,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
         {
             CombatFxStyle style=_catalog.Styles[spawn.Style];
             if (style.SkipOriginYZero && spawn.Y==0) return;
+            // A rotating nested child under non-uniform scaling needs an affine quad.
+            // The audited AS2 route keeps those uncommon transforms in Flash.
+            if(style.RandomRotation && (Math.Abs(spawn.ScaleX)!=1 || spawn.ScaleY!=1 || spawn.Argument!=0))return;
             // A muzzle flash can have an authored empty visual variant. The shot still
             // emits its light; neither sprite capacity nor chosen frame controls lighting.
             if(style.IsMuzzle) SpawnLight(spawn,style.Light);
@@ -133,7 +142,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 ref Particle p=ref _particles[cursor++];
                 _nextId=_nextId==int.MaxValue?1:_nextId+1;
                 p=default;p.Phase=1;p.Id=_nextId;p.Style=spawn.Style;
-                p.X=spawn.X;p.Y=spawn.Y;p.ScaleX=spawn.ScaleX;p.ScaleY=spawn.ScaleY;
+                p.X=spawn.X+style.NestedTransform[4]*spawn.ScaleX;
+                p.Y=spawn.Y+style.NestedTransform[5]*spawn.ScaleY;p.ScaleX=spawn.ScaleX;p.ScaleY=spawn.ScaleY;
                 if (style.IsCasing)
                 {
                     float ox=spawn.Count>1?(Random(ref random)*2-1)*8:0;
@@ -145,7 +155,14 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 else
                 {
                     p.Rotation=spawn.Argument;
-                    p.Variant=Math.Min(style.Variants.Length-1,(int)(Random(ref random)*style.Variants.Length));
+                    // AS2 plays audited birth sounds in the originating game frame.
+                    // Positive integer modulo chooses the same sound/picture without
+                    // an extra Host -> AS2 -> Host audio round trip or hidden clip.
+                    p.Variant=style.SoundAtBirth?(int)(spawn.Seed%(uint)style.Variants.Length)
+                        :Math.Min(style.Variants.Length-1,(int)(Random(ref random)*style.Variants.Length));
+                    if(style.RandomRotation) p.Rotation+=Random(ref random)*360*(spawn.ScaleX<0?-1:1);
+                    if(!style.SoundAtBirth && style.VariantSounds.Length!=0 && _sounds.Count<StampBatchLimit)
+                        _sounds.Add(style.VariantSounds[p.Variant]);
                 }
             }
         }
@@ -245,6 +262,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
             int count=0,casings=0,impacts=0;
             for (int order=0;order<TotalLimit;order++)
             {
+                if(order==CasingLimit+ImpactLimit)
+                {
+                    int before=count;count=_blood.AppendDraw(_draw,count);impacts+=count-before;
+                }
                 // Draw order: casings, impacts, muzzles. Native inserts bullets after casings.
                 int i=order<CasingLimit?order:(order<CasingLimit+ImpactLimit?order+MuzzleLimit:order-ImpactLimit);
                 ref Particle p=ref _particles[i];if(p.Phase==0)continue;
@@ -296,9 +317,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
 
         internal CombatFxEvents TakeEvents()
         {
-            if (_settled.Count==0 && _groundHits==0) return null;
-            var events=new CombatFxEvents(_epoch,++_eventSequence,_groundHits,_settled.ToArray());
-            _settled.Clear();_groundHits=0;return events;
+            if (_settled.Count==0 && _groundHits==0 && _blood.PendingLandings==0 && _sounds.Count==0) return null;
+            var events=new CombatFxEvents(_epoch,++_eventSequence,_groundHits,_settled.ToArray(),_blood.TakeLandings(),_sounds.ToArray());
+            _settled.Clear();_sounds.Clear();_groundHits=0;return events;
         }
         private static float Random(ref uint s)
         { s^=s<<13;s^=s>>17;s^=s<<5;return (s>>8)*(1f/16777216f); }
@@ -320,8 +341,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
     {
         internal readonly int Epoch,Sequence,GroundHits;
         internal readonly CombatFxSettlement[] Settled;
-        internal CombatFxEvents(int epoch,int sequence,int hits,CombatFxSettlement[] settled)
-        { Epoch=epoch;Sequence=sequence;GroundHits=hits;Settled=settled; }
+        internal readonly BloodVisualLanding[] BloodLandings;
+        internal readonly string[] Sounds;
+        internal CombatFxEvents(int epoch,int sequence,int hits,CombatFxSettlement[] settled,BloodVisualLanding[] blood,string[] sounds)
+        { Epoch=epoch;Sequence=sequence;GroundHits=hits;Settled=settled;BloodLandings=blood;Sounds=sounds; }
     }
     internal readonly struct CombatFxSettlement
     {

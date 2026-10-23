@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.render.DecalStampQueue;
 import org.flashNight.arki.render.VisualRandom;
 import org.flashNight.arki.audio.AudioBridge;
+import org.flashNight.arki.render.BloodVisualBridge;
 
 // 只提交出生事件与游戏时钟；不创建活动弹壳 MC，也不逐粒子更新或回传。
 import org.flashNight.arki.render.EquipmentLightBridge;
@@ -12,6 +13,8 @@ class org.flashNight.arki.render.CombatFxBridge {
     private static var digest:String = "";
     private static var byName:Object = {};
     private static var styles:Array = [];
+    private static var sounds:Object = {};
+    private static var birthSounds:Object = {};
     private static var epoch:Number = 0;
     private static var sequence:Number = 0;
     private static var gameTick:Number = 0;
@@ -25,7 +28,9 @@ class org.flashNight.arki.render.CombatFxBridge {
         return enabled && generation == expectedGeneration ? org.flashNight.arki.render.WorkerProjectionPolicy.adoptedCatalogDigest(digest) : "";
     }
     public static function isDecorationClean():Boolean {
-        return spawns.length == 0 && impacts.length == 0 && acks.length == 0 && DecalStampQueue.getStats().pending == 0;
+        return spawns.length == 0 && impacts.length == 0 && acks.length == 0
+            && DecalStampQueue.getStats().pending == 0 && BloodVisualBridge.getStats().queued == 0
+            && BloodVisualBridge.getStats().pendingStamps == 0;
     }
 
     public static function configure(caps:Object):Void {
@@ -40,10 +45,12 @@ class org.flashNight.arki.render.CombatFxBridge {
         if (caps.generation < generation) return;
         var names:Object = {};
         var next:Array = [];
+        var nextSounds:Object = {};
+        var nextBirthSounds:Object = {};
         for (var i:Number = 0; i < caps.styles.length; i++) {
             var item:Object = caps.styles[i];
             if (item.index !== i || typeof item.linkage != "string" || item.linkage.length < 1
-                || item.linkage.length > 128 || (item.kind != "casing" && item.kind != "muzzle" && item.kind != "impact")
+                || item.linkage.length > 128 || (item.kind != "casing" && item.kind != "muzzle" && item.kind != "impact" && item.kind != "blood")
                 || names[item.linkage] != undefined
                 || (item.kind == "casing" && item.linkage.substr(item.linkage.length - 2) != "弹壳")) {
                 disconnect();
@@ -51,6 +58,16 @@ class org.flashNight.arki.render.CombatFxBridge {
             }
             next[i] = item;
             names[item.linkage] = item;
+            if(item.variantSounds instanceof Array && item.variantSounds.length<=16)
+                for(var soundIndex:Number=0;soundIndex<item.variantSounds.length;soundIndex++) {
+                    var sound:String=item.variantSounds[soundIndex];
+                    if(typeof sound=="string" && sound.length>0 && sound.length<=128
+                        && sound.indexOf("..")<0 && sound.indexOf("/")<0 && sound.indexOf("\\")<0
+                        && sound.indexOf(":")<0) {
+                        if(item.soundAtBirth===true)nextBirthSounds[sound]=true;
+                        else nextSounds[sound]=true;
+                    }
+                }
         }
         var active:Boolean = caps["native"] === true;
         if (generation != caps.generation || enabled != active || digest != caps.digest) resetScene();
@@ -59,13 +76,18 @@ class org.flashNight.arki.render.CombatFxBridge {
         digest = caps.digest;
         byName = names;
         styles = next;
+        sounds = nextSounds;
+        birthSounds = nextBirthSounds;
         enabled = active;
+        var blood:Object=names["子弹碎片-飞血"];
+        BloodVisualBridge.configure(active && caps.bloodVersion === 1,
+            blood != undefined && blood.kind == "blood" && caps.bloodVersion === 1 ? blood.index : -1);
         EquipmentLightBridge.configure(caps);
         SceneLightBridge.configureCaps(caps);
     }
 
     public static function isEnabled():Boolean { return enabled; }
-    public static function disconnect():Void { enabled = false; generation = -1; EquipmentLightBridge.disconnect(); SceneLightBridge.configureCaps({}); resetScene(); }
+    public static function disconnect():Void { enabled = false; generation = -1; EquipmentLightBridge.disconnect(); SceneLightBridge.configureCaps({}); resetScene(); BloodVisualBridge.disconnect(); }
 
     public static function resetScene():Void {
         epoch++;
@@ -76,6 +98,7 @@ class org.flashNight.arki.render.CombatFxBridge {
         impacts.length = 0;
         acks.length = 0;
         DecalStampQueue.resetScene();
+        BloodVisualBridge.resetScene();
         EquipmentLightBridge.resetScene();
     }
 
@@ -127,22 +150,45 @@ class org.flashNight.arki.render.CombatFxBridge {
         var style:Object = byName[linkage];
         if (style == undefined || style.kind != "impact") return false;
         if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("combatDecoration")) return true;
+        // Nested random rotation is representable by the current quad for unit parent scale.
+        if (style.randomRotation === true && Math.abs(scale) != 100) return false;
         // 已接管的纯装饰在暂停/断连时丢弃，不重新分配 AS2 MC。
         if (!enabled) return true;
         if (_root.暂停 || (!_root.是否视觉元素 && !forceTrigger) || !visible(x, y)) return true;
         if (!isFinite(x + y + scale) || Math.abs(scale) > 1000 || scale == 0) return true;
         if (style.skipOriginYZero === true && y == 0) return true;
+        // Auditory hit feedback is admitted with the hit, before a sprite-only cap.
+        if(style.soundAtBirth===true)playImpactBirthSound(style,seed);
         if (impacts.length >= 32) { impactDropped++; return true; }
         impacts[impacts.length] = "i," + style.index + "," + x + "," + y + "," + scale + ",100,0," + seed + ",0";
         return true;
     }
 
+    private static function playImpactBirthSound(style:Object,seed:Number):Void {
+        if(style.soundAtBirth!==true || !(style.variantSounds instanceof Array)
+            || style.variantSounds.length<1 || style.variantSounds.length>16)return;
+        var sound:String=style.variantSounds[seed%style.variantSounds.length];
+        if(typeof sound!="string" || birthSounds[sound]!==true)return;
+        // The root manager owns mute semantics. A bare focused fixture may omit it.
+        if(typeof _root.播放音效=="function")_root.播放音效(sound);
+        else AudioBridge.playSound(sound);
+    }
+
     public static function receiveEvents(data:Object):Void {
         if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("combatDecoration")) return;
-        if (!enabled || data.version !== 1 || data.generation !== generation || data.epoch !== epoch
+        if (!enabled || data == null || data.version !== 1 || data.generation !== generation || data.epoch !== epoch
             || typeof data.sequence != "number" || !isFinite(data.sequence) || data.sequence <= lastEvent
-            || !(data.settled instanceof Array) || data.settled.length > 8) return;
+            || data.sequence != Math.floor(data.sequence) || data.sequence > 1000000000
+            || !(data.settled instanceof Array) || data.settled.length > 8
+            || (data.bloodLandings != undefined && (!(data.bloodLandings instanceof Array) || data.bloodLandings.length > 8))
+            || (data.sounds != undefined && (!(data.sounds instanceof Array) || data.sounds.length > 8))) return;
         lastEvent = data.sequence;
+        if(data.bloodLandings != undefined)BloodVisualBridge.receiveLandings(data.bloodLandings);
+        if(data.sounds instanceof Array)
+            for(var soundIndex:Number=0;soundIndex<data.sounds.length;soundIndex++) {
+                var sound:String=data.sounds[soundIndex];
+                if(typeof sound=="string" && sounds[sound]===true)AudioBridge.playSound(sound);
+            }
         var hits:Number = Number(data.groundHits);
         if (isFinite(hits) && hits > 0 && hits <= 3) {
             for (var h:Number = 0; h < hits; h++) AudioBridge.playSound("shell-hit-ground.mp3");
@@ -180,6 +226,7 @@ class org.flashNight.arki.render.CombatFxBridge {
         for (var spawnIndex:Number = 0; spawnIndex < spawns.length; spawnIndex++) payload += ";" + spawns[spawnIndex];
         for (var hitIndex:Number = 0; hitIndex < impacts.length; hitIndex++) payload += ";" + impacts[hitIndex];
         for (var ackIndex:Number = 0; ackIndex < acks.length; ackIndex++) payload += ";" + acks[ackIndex];
+        payload += BloodVisualBridge.flush();
         spawns.length = 0;
         impacts.length = 0;
         acks.length = 0;

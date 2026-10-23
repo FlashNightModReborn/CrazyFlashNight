@@ -199,6 +199,7 @@ def recipe():
 
 def tool_records():
     tools = [Path(__file__), ROOT / "tools/combat-fx-assets/build.py",
+             ROOT / "tools/combat-fx-assets/source_recipes.py",
              ROOT / "tools/combat-bullet-visuals/BulletSpriteExporter.java",
              ROOT / "tools/swf-audit/swfscan.py", ROOT / "tools/ffdec/ffdec.jar"]
     tools += sorted((ROOT / "tools/ffdec/lib").glob("*.jar"))

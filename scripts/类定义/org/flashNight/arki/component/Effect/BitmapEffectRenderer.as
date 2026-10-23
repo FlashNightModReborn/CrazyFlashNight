@@ -46,9 +46,18 @@ class org.flashNight.arki.component.Effect.BitmapEffectRenderer
 
 
     public static function renderBloodstain(x:Number, y:Number):Void{
-        var bitmapInfo = bloodstainInfos[random(8)];
+        renderBloodstainVariant(x, y, random(8));
+    }
+
+    // Native decoration already selected the variant; keep the existing layer/pixels.
+    public static function renderBloodstainVariant(x:Number, y:Number, index:Number):Boolean{
+        if(!isFinite(x + y + index) || index < 0 || index > 7 || index != Math.floor(index)) return false;
+        if(!bloodstainInfos || !bitmapDict || !_root.gameworld) return false;
+        var bitmapInfo = bloodstainInfos[index];
+        if(bitmapInfo == undefined) return false;
         var bitmap = bitmapDict[bitmapInfo.id];
         var deadbody:MovieClip = _root.gameworld.deadbody;
+        if(!bitmap || !deadbody || !deadbody.layers || !deadbody.layers[0]) return false;
         var originX:Number = isNaN(deadbody.layerOriginX) ? 0 : deadbody.layerOriginX;
         var originY:Number = isNaN(deadbody.layerOriginY) ? 0 : deadbody.layerOriginY;
         // 渲染到尸体层第0层
@@ -60,6 +69,7 @@ class org.flashNight.arki.component.Effect.BitmapEffectRenderer
             null,
             true
         );
+        return true;
     }
 
 }

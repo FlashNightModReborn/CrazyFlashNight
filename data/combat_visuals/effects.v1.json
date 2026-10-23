@@ -5,10 +5,381 @@
   "atlas": {
     "path": "data/combat_visuals/effects-atlas.png",
     "width": 2048,
-    "height": 1760,
-    "sha256": "ec2d00349a15c3de85d68fb9aa39060d12e6966d5397fa485d10a7cc18c47b88"
+    "height": 2792,
+    "sha256": "e1e455853700294bd1ef7d61375d329e60aecf71dc357006e2cac907dae16747"
   },
+  "soundAssets": [
+    {
+      "id": "cfnfx-stock-1.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 1,
+      "sourceSeekSamples": 1677,
+      "sampleRate": 44100,
+      "sampleFrames": 48510,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-1.wav",
+      "sha256": "d7a75239128da0a1ceefa72a0122a5187533fb74d1474bb14d6e9e4a30330188",
+      "bytes": 97064
+    },
+    {
+      "id": "cfnfx-stock-2.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 2,
+      "sourceSeekSamples": 1677,
+      "sampleRate": 44100,
+      "sampleFrames": 48510,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-2.wav",
+      "sha256": "88928558f0c92c7d26ce0505141fce656773a8ebf4b858bb9e223e266c0a6365",
+      "bytes": 97064
+    },
+    {
+      "id": "cfnfx-stock-3.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 3,
+      "sourceSeekSamples": 1677,
+      "sampleRate": 44100,
+      "sampleFrames": 48510,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-3.wav",
+      "sha256": "caab54ee89ada7c9cc39c05ff6b9af9c2be50d88af864337c18ebb925d789b0b",
+      "bytes": 97064
+    },
+    {
+      "id": "cfnfx-stock-4.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 4,
+      "sourceSeekSamples": 1677,
+      "sampleRate": 44100,
+      "sampleFrames": 48510,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-4.wav",
+      "sha256": "329a3d443f516ec1d2a3a2188174f175b4dd370d7b8563e4a67735253af99701",
+      "bytes": 97064
+    },
+    {
+      "id": "cfnfx-stock-5.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 5,
+      "sourceSeekSamples": 1669,
+      "sampleRate": 11025,
+      "sampleFrames": 4732,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-5.wav",
+      "sha256": "67953ab50036e533951f73895f994ac03746c69055d5773f63f28441a5681b1f",
+      "bytes": 9508
+    },
+    {
+      "id": "cfnfx-stock-6.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 6,
+      "sourceSeekSamples": 1669,
+      "sampleRate": 11025,
+      "sampleFrames": 4108,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-6.wav",
+      "sha256": "cae6547a3de6551cf384ddb3a7934a96baa0e6ba5e5c48505f7002a717b5b603",
+      "bytes": 8260
+    },
+    {
+      "id": "cfnfx-stock-7.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 7,
+      "sourceSeekSamples": 1669,
+      "sampleRate": 11025,
+      "sampleFrames": 3868,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-7.wav",
+      "sha256": "89503a05d268e77190e0de00cb2e4f29cedf3c375e894190ef0c297e388a1ebc",
+      "bytes": 7780
+    },
+    {
+      "id": "cfnfx-stock-8.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 8,
+      "sourceSeekSamples": 1669,
+      "sampleRate": 11025,
+      "sampleFrames": 3834,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-8.wav",
+      "sha256": "e9ba1b7d13ecdcdda0aefd4926a831dacb7888ecf514674e2e78570f1ce13929",
+      "bytes": 7712
+    },
+    {
+      "id": "cfnfx-stock-9.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 9,
+      "sourceSeekSamples": 1677,
+      "sampleRate": 44100,
+      "sampleFrames": 36791,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-9.wav",
+      "sha256": "da488db86e5b15b076c2bd4782b3832e98b7fb400f9b0a246c84ac925b67db3f",
+      "bytes": 73626
+    },
+    {
+      "id": "cfnfx-stock-10.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 10,
+      "sourceSeekSamples": 1677,
+      "sampleRate": 44100,
+      "sampleFrames": 36791,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-10.wav",
+      "sha256": "efdb4cc9da2544daacaee40a994d5627143be97ba9652c5a32eb6682a228d3d3",
+      "bytes": 73626
+    },
+    {
+      "id": "cfnfx-stock-11.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 11,
+      "sourceSeekSamples": 1677,
+      "sampleRate": 44100,
+      "sampleFrames": 42823,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-11.wav",
+      "sha256": "756e7263c1cfff54d8cae4f249eb3d723135d6dab5ddfe064b4c3673fd49929c",
+      "bytes": 85690
+    },
+    {
+      "id": "cfnfx-stock-12.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 12,
+      "sourceSeekSamples": 1677,
+      "sampleRate": 44100,
+      "sampleFrames": 42046,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-12.wav",
+      "sha256": "6c799e3776cfdf6fd511b93b5e3aa9cce88118810bc23738daf0ad91072e85bd",
+      "bytes": 84136
+    },
+    {
+      "id": "cfnfx-stock-13.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 13,
+      "sourceSeekSamples": 1677,
+      "sampleRate": 44100,
+      "sampleFrames": 29611,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-13.wav",
+      "sha256": "984c876ead004f759577f9a74fc8e4995199895eb0da60f69a5895fcdb236404",
+      "bytes": 59266
+    },
+    {
+      "id": "cfnfx-stock-454.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 454,
+      "sourceSeekSamples": 1677,
+      "sampleRate": 44100,
+      "sampleFrames": 56341,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-454.wav",
+      "sha256": "3c350131f278da2fe789b951ec15855a28b89b64812dc445571985eea176db3c",
+      "bytes": 112726
+    },
+    {
+      "id": "cfnfx-stock-530.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 530,
+      "sourceSeekSamples": 0,
+      "sampleRate": 11025,
+      "sampleFrames": 11520,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-530.wav",
+      "sha256": "3a9da4357cc47fbcb1ab5996bf19334767fbfc32d3a42918a2ee43575014a7c6",
+      "bytes": 23084
+    },
+    {
+      "id": "cfnfx-stock-531.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 531,
+      "sourceSeekSamples": 1669,
+      "sampleRate": 11025,
+      "sampleFrames": 10002,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-531.wav",
+      "sha256": "3b6232e39461229a3b28ca942006b466df91117aa4f4bb86c2d808b6f47bb9c2",
+      "bytes": 20048
+    },
+    {
+      "id": "cfnfx-stock-532.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 532,
+      "sourceSeekSamples": 1669,
+      "sampleRate": 11025,
+      "sampleFrames": 10044,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-532.wav",
+      "sha256": "85dbaed8448703a07f6936fb0de71ada173d43b71b1a84220be8697c7f40846e",
+      "bytes": 20132
+    },
+    {
+      "id": "cfnfx-stock-533.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 533,
+      "sourceSeekSamples": 1669,
+      "sampleRate": 11025,
+      "sampleFrames": 8794,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-533.wav",
+      "sha256": "c5da10db5c2abf8488e94e8571f7c4b86170f151e6e98690ff2f19b39541c574",
+      "bytes": 17632
+    },
+    {
+      "id": "cfnfx-stock-534.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 534,
+      "sourceSeekSamples": 1669,
+      "sampleRate": 11025,
+      "sampleFrames": 13834,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-534.wav",
+      "sha256": "0eba8a6d39f38de8c77c811ee05bff7dc5af43a82ed63b659ad64bab95110c50",
+      "bytes": 27712
+    },
+    {
+      "id": "cfnfx-stock-535.wav",
+      "sourceKey": "stock",
+      "sourceSoundId": 535,
+      "sourceSeekSamples": 1669,
+      "sampleRate": 11025,
+      "sampleFrames": 8462,
+      "channels": 1,
+      "pcmBits": 16,
+      "path": "sounds/export/特效/cfnfx-stock-535.wav",
+      "sha256": "82265c6f5d2ebe7dee66643798e929d13d8780654c89e95aca7bfefdd988dffb",
+      "bytes": 16968
+    }
+  ],
+  "sourceLibraries": [
+    {
+      "key": "stock",
+      "swf": "flashswf/arts/原版素材库-子弹.swf",
+      "libraryRoot": "flashswf/arts/原版素材库-子弹/LIBRARY"
+    },
+    {
+      "key": "mist",
+      "swf": "flashswf/arts/new/雾人整合特效.swf",
+      "libraryRoot": "flashswf/arts/new/雾人整合特效/LIBRARY"
+    },
+    {
+      "key": "fs",
+      "swf": "flashswf/arts/new/fs配置素材.swf",
+      "libraryRoot": "flashswf/arts/new/fs配置素材/LIBRARY"
+    }
+  ],
   "sources": [
+    {
+      "path": "flashswf/arts/new/fs配置素材/LIBRARY/长枪/铁枪/铁枪能量弹枪火.xml",
+      "sha256": "2385f5e2a2091bdd6c4586b8ebdf4538405784061c8e8d6a87f59989fdf2f318"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/冰汽/Graphic/shape 637.xml",
+      "sha256": "e3dff63101c6e6df3f3326c324d370da0c92e2e89fb047227ee38f52adccc231"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/冰汽/Graphic/shape 638.xml",
+      "sha256": "71dfce569c4cd646565a444d61f1b08f33d26151d8eeca9bc34925bf4e523964"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/冰汽/Graphic/shape 639.xml",
+      "sha256": "f75e457d6cc48e261a2d2601b8958360d4c75f54e0d7cf5829fe77ede3395db3"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/冰汽/Graphic/shape 640.xml",
+      "sha256": "cefa6846b9a132dc48f831450e4320f9a2f6fb41eb82e82354f5acf4ddbc60d3"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/冰汽/冰汽.xml",
+      "sha256": "f940c577815887eb5fd7ecf556007f1ea0ad7dd1cb2702628323e828086c4c03"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/烈焰火花/Graphic/shape 771.xml",
+      "sha256": "059647753990bd0ad37741ba537b074436d282104a267a2c92d7f6e37c7aa54e"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/烈焰火花/Graphic/shape 772.xml",
+      "sha256": "480d4220d322fa0a74f987cdfb9e3d943421fa7e42a989b9d4f35632879017bb"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/烈焰火花/Graphic/shape 773.xml",
+      "sha256": "a4344d8e07fab354a29ae3e3378fc6f355af8bfc9dccdfd4b712cd6cda6f5129"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/烈焰火花/Graphic/shape 774.xml",
+      "sha256": "3fc6d526cfb431db9e039d5eed90346fa75d25a5b5cc9d9db108b14baac7e33b"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/烈焰火花/Graphic/shape 775.xml",
+      "sha256": "b47bf7e9db25ebac98a7cea811e60a753334e75bf71386f09eb853f855c0e94c"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/烈焰火花/Graphic/shape 776.xml",
+      "sha256": "c37b54300b270e27c4f4f8d60b87bee99ede8271797ed930ac164f6a719bd630"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/烈焰火花/Graphic/shape 777.xml",
+      "sha256": "a01a52e4d8c78839e202100e9cd058a8b62528bb953724ff99c8511c7fdcfa41"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/烈焰火花/烈焰火花.xml",
+      "sha256": "b1c7c698952825f5205fb5e0d8eff58289eb8d357351f314269c9b0628bdf1de"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/能量火花/Graphic/shape 771.xml",
+      "sha256": "36fdce827f98de449d374608993ee8c83fc0cff4d1fff5a8c502ee9273ced839"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/能量火花/Graphic/shape 772.xml",
+      "sha256": "b186082bfce14d6b8a998770b0920345755ce23f50869ea3c712a5f838826421"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/能量火花/Graphic/shape 773.xml",
+      "sha256": "0b3533757f7fcce505c56125244a82b534d48a714c16010c23c6f1453fd8373c"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/能量火花/Graphic/shape 774.xml",
+      "sha256": "74dcfb9ea0d7d44dac7ed57448276a47ec661429e34c1208eb9d656a9e1ef8d1"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/能量火花/Graphic/shape 775.xml",
+      "sha256": "ea871faed00214a4f40b5e42e7746118e589710f650ba87dd9a8a711711de67f"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/能量火花/Graphic/shape 776.xml",
+      "sha256": "9bc869a6473746f8688aae9cb0f5cb7b2cdbfc2584658d1a7d390788d82767dd"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/能量火花/Graphic/shape 777.xml",
+      "sha256": "7ac05935d5eebe7aed67063c9e2e237fe077319d822b1f17834a3ac71a69a7ad"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效/LIBRARY/1.特效文件夹/14.远程子弹/能量火花/能量火花.xml",
+      "sha256": "d4fa19c3f36bf8510d705ab47368038bd47d4e36a34c5e98237b2ff1b949658c"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/DOMDocument.xml",
+      "sha256": "0ec14b1f93e1f70a0235ae05958ebcda2b14ae4da19dd0d32218ff7d0540b920"
+    },
     {
       "path": "flashswf/arts/原版素材库-子弹/LIBRARY/弹壳/全威力弹壳.xml",
       "sha256": "66e6f3b6c0b86cd5772a95aa9fb48b0384d509442132ece51e4ce1c9053782ef"
@@ -162,6 +533,54 @@
       "sha256": "b4932bfbd00aa48b207bc1337c4a444c71463f616dcdee3503240bb0639392da"
     },
     {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 327.xml",
+      "sha256": "ad142b6049f1bbc097bed52ff1ecb2fe0a2c2e80b71da48d5227ccd611ab82b4"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 340.xml",
+      "sha256": "b0b71fd0c60bc7c74ccf8037aa4605f86b703a14bedda5e41982984b977d9d51"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 351.xml",
+      "sha256": "7c6203427a3d53e59ce24428a8fac5cb7da5dd418e8f19a3d461aff6b1f43987"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 359.xml",
+      "sha256": "8339845fc3863837afad21cec94e91a67369fcf42df63fb0c2c06dfebc5ecde6"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 368.xml",
+      "sha256": "e75202d239435d5897c118d49ca3f2c8847e75ef026460e3aa0b5b53c6544835"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 370.xml",
+      "sha256": "968c5a263b5742b5f14683edcdac029a8625b94b9c9b6eea99a3cb2139e78cc1"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 371.xml",
+      "sha256": "82980c278967daea5b4c128f75578285a04a019370631e6540c7df28bd969e6a"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 372.xml",
+      "sha256": "ad10dd672fccb15bd6f1ccfc3b7780b68d19049fcb74b905e305abce1a79ee81"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 373.xml",
+      "sha256": "502ffb94620bd7eb24b9bb6885aabc1c468a30507a62025c3c0dd07958a2ed9b"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 374.xml",
+      "sha256": "6507543319542356cd99222ddde83592a2fdf09b3b575f54601915a87cd128f2"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 375.xml",
+      "sha256": "79d2d02e923b63250240507fe7a64d96288f798a39153282ae171339cf559dc9"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 617.xml",
+      "sha256": "82911abfce43dd0657f3fc56c0725e7984c323f78b958e96a2d2953300fe2b5a"
+    },
+    {
       "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/Symbol 727.xml",
       "sha256": "de00c1440f63d5992e68b269678fd67340f2e42b00832b590fc1018b630fa4b8"
     },
@@ -206,6 +625,10 @@
       "sha256": "a22c0b3fc5785d16d63454aa26b059bd7cf29e838ec61f25e066fcc9a273a838"
     },
     {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/无AS链接/飞血动画.xml",
+      "sha256": "d4ba1a04394a2b9a43a4ca8fa51208dd26cc401dbd2775060fb3c071f75de6c5"
+    },
+    {
       "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-击中效果组/击中金属.xml",
       "sha256": "5d717f2b5afcdd087627bbeb17d260ebc1fab665ddcb38c92a82213e60b07c02"
     },
@@ -228,6 +651,10 @@
     {
       "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-击中效果组/火花.xml",
       "sha256": "86e37fc5109f95d21119463f70988a0fb57f2203371a9374f9931e90b842415d"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-击中效果组/空手攻击火花.xml",
+      "sha256": "54a1541961b64dbf5c7ff6344e9c27575a6a2507a936205087c162c2472bc95b"
     },
     {
       "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-击中效果组/铁枪能量弹火花.xml",
@@ -274,18 +701,46 @@
       "sha256": "5f00a2f86f7630acd7756f63940a99de1e6353e31b83070ad9dc29b3694ca360"
     },
     {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-血液组/子弹碎片-飞血.xml",
+      "sha256": "dfc6dcadb2a825d308cbed4d31f249c6703aa3e8849359669281a196bf1d53d4"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/特效-血液组/飙血.xml",
+      "sha256": "4df9d8640093978cf57a59b37ac853ae8ea429aee5972b5bf926407f12bf64cc"
+    },
+    {
       "path": "flashswf/arts/原版素材库-子弹.swf",
       "sha256": "d03534c889a743d1becf97f1b31db39ac6e97d9d86c513f17ac4c74ab9776f2e"
+    },
+    {
+      "path": "flashswf/arts/new/雾人整合特效.swf",
+      "sha256": "885b284a4348b58bc78574cf0007f78a5e497dfd65b1eedcbc55ab8edc3a7d13"
+    },
+    {
+      "path": "flashswf/arts/new/fs配置素材.swf",
+      "sha256": "81546b7b6dd98ebb8edd166e5dba8f1bd2931c6efdcc6d5665a952a841130b45"
     }
   ],
   "tools": [
     {
       "path": "tools/combat-fx-assets/build.py",
-      "sha256": "11e3dcb70a103437e769e3eee6a83e2f7c34f560d83ac12f461ccac88d2a9682"
+      "sha256": "037a4d86d263622550110768a45cd39588b78b4e9a37e0b0147a5fce79c62985"
+    },
+    {
+      "path": "tools/combat-fx-assets/source_recipes.py",
+      "sha256": "3f8d3f2931a730e0f5cf25e9bf2af374a1eed377966d9815f2c618cd2b9b3d1f"
     },
     {
       "path": "tools/combat-fx-assets/CombatSpriteExporter.java",
-      "sha256": "4e41c8f18710530296c94d44111168c8caa410b5dd4082fcd4d77ab5b2e07860"
+      "sha256": "cd51ad742a5e05af7197889658d846d3fddc1e2b61566e4651cf3d21763441cb"
+    },
+    {
+      "path": "tools/combat-fx-assets/CombatSoundExporter.java",
+      "sha256": "b9bb3f3d010794da0a2e95b510ff1f6fbd72547653d3c7cd1fbf51102c42c728"
+    },
+    {
+      "path": "tools/swf-audit/swfscan.py",
+      "sha256": "020953fd72461e5cf12cf6281af447d8c3d1bdc3f6013e0c7e100f19e2a97fa7"
     },
     {
       "path": "tools/ffdec/ffdec-cli.jar",
@@ -429,7 +884,7 @@
     }
   ],
   "rasterizer": {
-    "pillowVersion": "12.1.0",
+    "pillowVersion": "12.2.0",
     "pixelsPerUnit": 2,
     "duplicateFrames": "exact-rgba-sha256"
   },
@@ -444,7 +899,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/全威力弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "全威力弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 1,
@@ -456,7 +919,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/加强全威力弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "加强全威力弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 2,
@@ -468,7 +939,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/加强弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "加强弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 3,
@@ -480,7 +959,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/加强手枪弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "加强手枪弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 4,
@@ -492,7 +979,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/加强榴弹弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "加强榴弹弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 5,
@@ -504,7 +999,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/加强重机枪弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "加强重机枪弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 6,
@@ -516,7 +1019,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/加强霰弹弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "加强霰弹弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 7,
@@ -528,7 +1039,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/手枪弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "手枪弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 8,
@@ -540,7 +1059,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/榴弹弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "榴弹弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 9,
@@ -552,7 +1079,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/步枪弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "步枪弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 10,
@@ -564,7 +1099,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/能量全威力弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "能量全威力弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 11,
@@ -576,7 +1119,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/能量弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "能量弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 12,
@@ -588,7 +1139,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/能量手枪弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "能量手枪弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 13,
@@ -600,7 +1159,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/能量榴弹弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "能量榴弹弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 14,
@@ -612,7 +1179,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/能量重机枪弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "能量重机枪弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 15,
@@ -624,7 +1199,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/能量霰弹弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "能量霰弹弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 16,
@@ -636,7 +1219,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/重机枪弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "重机枪弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 17,
@@ -648,7 +1239,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/霰弹弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "霰弹弹壳",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 18,
@@ -662,7 +1261,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": false
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/冲锋枪枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "冲锋枪枪火",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 19,
@@ -679,7 +1286,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": false
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/反器材枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "反器材枪火",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 20,
@@ -694,7 +1309,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": false
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/发射器枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "发射器枪火",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 21,
@@ -719,7 +1342,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": false
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/巴雷特枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "巴雷特枪火",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 22,
@@ -735,7 +1366,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": false
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/战斗步枪枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "战斗步枪枪火",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 23,
@@ -753,7 +1392,15 @@
         ]
       ],
       "skipOriginYZero": true,
-      "worldLit": false
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "枪火",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 24,
@@ -767,7 +1414,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": false
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/突击步枪枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "突击步枪枪火",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 25,
@@ -781,7 +1436,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": false
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/紧凑手枪枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "紧凑手枪枪火",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 26,
@@ -796,7 +1459,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": false
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/霰弹枪枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "霰弹枪枪火",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 27,
@@ -810,7 +1481,15 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": false
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/马格南手枪枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "马格南手枪枪火",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 28,
@@ -907,7 +1586,21 @@
         ]
       ],
       "skipOriginYZero": true,
-      "worldLit": false
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-击中效果组/火花",
+      "adapter": "sequence",
+      "variantSounds": [
+        "cfnfx-stock-13.wav",
+        "cfnfx-stock-12.wav",
+        "cfnfx-stock-11.wav",
+        "cfnfx-stock-10.wav",
+        "cfnfx-stock-9.wav"
+      ],
+      "soundAtBirth": true,
+      "renderLinkage": "火花",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 29,
@@ -985,7 +1678,20 @@
         ]
       ],
       "skipOriginYZero": true,
-      "worldLit": false
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-击中效果组/击中金属",
+      "adapter": "sequence",
+      "variantSounds": [
+        "cfnfx-stock-8.wav",
+        "cfnfx-stock-7.wav",
+        "cfnfx-stock-6.wav",
+        "cfnfx-stock-5.wav"
+      ],
+      "soundAtBirth": true,
+      "renderLinkage": "击中金属",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 30,
@@ -1072,7 +1778,15 @@
         ]
       ],
       "skipOriginYZero": true,
-      "worldLit": false
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-击中效果组/无声火花",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "无声火花",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 31,
@@ -1186,7 +1900,22 @@
         ]
       ],
       "skipOriginYZero": true,
-      "worldLit": false
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-击中效果组/拼刀火花",
+      "adapter": "sequence",
+      "variantSounds": [
+        "cfnfx-stock-530.wav",
+        "cfnfx-stock-531.wav",
+        "cfnfx-stock-532.wav",
+        "cfnfx-stock-533.wav",
+        "cfnfx-stock-534.wav",
+        "cfnfx-stock-535.wav"
+      ],
+      "soundAtBirth": true,
+      "renderLinkage": "拼刀火花",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 32,
@@ -1210,7 +1939,17 @@
         ]
       ],
       "skipOriginYZero": false,
-      "worldLit": false
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-击中效果组/战术巴雷特击中特效",
+      "adapter": "sequence",
+      "variantSounds": [
+        "cfnfx-stock-454.wav"
+      ],
+      "soundAtBirth": true,
+      "renderLinkage": "战术巴雷特击中特效",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 33,
@@ -1235,7 +1974,15 @@
         ]
       ],
       "skipOriginYZero": true,
-      "worldLit": false
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-击中效果组/铁枪能量弹火花",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "铁枪能量弹火花",
+      "renderChild": "",
+      "renderMode": "legacy"
     },
     {
       "index": 34,
@@ -1322,7 +2069,377 @@
         ]
       ],
       "skipOriginYZero": true,
-      "worldLit": true
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-击中效果组/屎花",
+      "adapter": "sequence",
+      "variantSounds": [
+        "cfnfx-stock-4.wav",
+        "cfnfx-stock-3.wav",
+        "cfnfx-stock-2.wav",
+        "cfnfx-stock-1.wav"
+      ],
+      "soundAtBirth": true,
+      "renderLinkage": "屎花",
+      "renderChild": "",
+      "renderMode": "legacy"
+    },
+    {
+      "index": 35,
+      "linkage": "冰汽",
+      "kind": "impact",
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "sourceKey": "mist",
+      "sourceSymbol": "1.特效文件夹/14.远程子弹/冰汽/冰汽",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "冰汽",
+      "renderChild": "",
+      "renderMode": "padded"
+    },
+    {
+      "index": 36,
+      "linkage": "烈焰火花",
+      "kind": "impact",
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "sourceKey": "mist",
+      "sourceSymbol": "1.特效文件夹/14.远程子弹/烈焰火花/烈焰火花",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "烈焰火花",
+      "renderChild": "",
+      "renderMode": "legacy"
+    },
+    {
+      "index": 37,
+      "linkage": "能量火花",
+      "kind": "impact",
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "sourceKey": "mist",
+      "sourceSymbol": "1.特效文件夹/14.远程子弹/能量火花/能量火花",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "能量火花",
+      "renderChild": "",
+      "renderMode": "legacy"
+    },
+    {
+      "index": 38,
+      "linkage": "空手攻击火花",
+      "kind": "impact",
+      "variants": [
+        [
+          0,
+          1,
+          2
+        ]
+      ],
+      "skipOriginYZero": true,
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "无AS链接/Symbol 617",
+      "adapter": "nested-spin",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "空手攻击火花",
+      "renderChild": "火花",
+      "renderMode": "nested-scaled",
+      "nestedTransform": [
+        1,
+        0,
+        0,
+        1,
+        -1.2,
+        -1.7
+      ],
+      "sourceNestedTransform": [
+        0.284439086914063,
+        0.0,
+        0.0,
+        0.284439086914063,
+        -1.2,
+        -1.7
+      ],
+      "randomRotation": true,
+      "unitScaleXOnly": true
+    },
+    {
+      "index": 39,
+      "linkage": "铁枪能量弹枪火",
+      "kind": "muzzle",
+      "variants": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        [
+          7,
+          8,
+          9
+        ],
+        [
+          11,
+          12,
+          13,
+          14
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "sourceKey": "fs",
+      "sourceSymbol": "长枪/铁枪/铁枪能量弹枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "铁枪能量弹枪火",
+      "renderChild": "",
+      "renderMode": "legacy"
+    },
+    {
+      "index": 40,
+      "linkage": "飙血",
+      "kind": "impact",
+      "variants": [
+        [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        [
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23
+        ],
+        [
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32
+        ],
+        [
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57
+        ],
+        [
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73,
+          74,
+          75,
+          76
+        ],
+        [
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110,
+          111,
+          112,
+          113,
+          114,
+          115,
+          116
+        ],
+        [
+          118,
+          119,
+          120,
+          121,
+          122,
+          123,
+          124,
+          125,
+          126,
+          127,
+          128,
+          129,
+          130,
+          131,
+          132,
+          133,
+          134,
+          135
+        ]
+      ],
+      "skipOriginYZero": true,
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-血液组/飙血",
+      "adapter": "blood-impact",
+      "variantSounds": [
+        "blood1.mp3",
+        "blood2.wav",
+        "blood3.mp3",
+        "blood4.mp3",
+        "blood5.wav",
+        "blood6.wav",
+        "blood7.wav"
+      ],
+      "soundAtBirth": true,
+      "renderLinkage": "飙血",
+      "renderChild": "",
+      "renderMode": "legacy"
+    },
+    {
+      "index": 41,
+      "linkage": "子弹碎片-飞血",
+      "kind": "blood",
+      "variants": [
+        [
+          0
+        ],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          3
+        ],
+        [
+          4
+        ]
+      ],
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "无AS链接/飞血动画",
+      "adapter": "blood-static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "renderLinkage": "子弹碎片-飞血",
+      "renderChild": "飞血",
+      "renderMode": "child"
     }
   ],
   "styles": [
@@ -1332,6 +2449,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/全威力弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1340,8 +2462,8 @@
             -0.05
           ],
           "rect": [
-            1441,
-            1703,
+            781,
+            2767,
             25,
             4
           ]
@@ -1359,6 +2481,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/加强全威力弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1367,8 +2494,8 @@
             -0.05
           ],
           "rect": [
-            1470,
-            1703,
+            810,
+            2767,
             25,
             4
           ]
@@ -1386,6 +2513,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/加强弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1394,8 +2526,8 @@
             -0.05
           ],
           "rect": [
-            1528,
-            1703,
+            868,
+            2767,
             20,
             4
           ]
@@ -1413,6 +2545,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/加强手枪弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1421,8 +2558,8 @@
             -0.05
           ],
           "rect": [
-            1600,
-            1703,
+            940,
+            2767,
             10,
             3
           ]
@@ -1440,6 +2577,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/加强榴弹弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1448,8 +2590,8 @@
             -0.05
           ],
           "rect": [
-            955,
-            1703,
+            295,
+            2767,
             34,
             14
           ]
@@ -1467,6 +2609,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/加强重机枪弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1475,8 +2622,8 @@
             -0.05
           ],
           "rect": [
-            1342,
-            1703,
+            682,
+            2767,
             29,
             6
           ]
@@ -1494,6 +2641,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/加强霰弹弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1502,8 +2654,8 @@
             -0.05
           ],
           "rect": [
-            1216,
-            1703,
+            556,
+            2767,
             26,
             7
           ]
@@ -1521,6 +2673,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/手枪弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1529,8 +2686,8 @@
             -0.05
           ],
           "rect": [
-            1614,
-            1703,
+            954,
+            2767,
             10,
             3
           ]
@@ -1548,6 +2705,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/榴弹弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1556,8 +2718,8 @@
             -0.05
           ],
           "rect": [
-            993,
-            1703,
+            333,
+            2767,
             34,
             14
           ]
@@ -1575,6 +2737,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/步枪弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1583,8 +2750,8 @@
             4.05
           ],
           "rect": [
-            1552,
-            1703,
+            892,
+            2767,
             20,
             4
           ]
@@ -1602,6 +2769,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/能量全威力弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1610,8 +2782,8 @@
             -0.05
           ],
           "rect": [
-            1499,
-            1703,
+            839,
+            2767,
             25,
             4
           ]
@@ -1629,6 +2801,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/能量弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1637,8 +2814,8 @@
             -0.05
           ],
           "rect": [
-            1576,
-            1703,
+            916,
+            2767,
             20,
             4
           ]
@@ -1656,6 +2833,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/能量手枪弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1664,8 +2846,8 @@
             -0.05
           ],
           "rect": [
-            1628,
-            1703,
+            968,
+            2767,
             10,
             3
           ]
@@ -1683,6 +2865,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/能量榴弹弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1691,8 +2878,8 @@
             -0.05
           ],
           "rect": [
-            1031,
-            1703,
+            371,
+            2767,
             33,
             14
           ]
@@ -1710,6 +2897,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/能量重机枪弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1718,8 +2910,8 @@
             -0.05
           ],
           "rect": [
-            1375,
-            1703,
+            715,
+            2767,
             29,
             6
           ]
@@ -1737,6 +2929,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/能量霰弹弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1745,8 +2942,8 @@
             -0.05
           ],
           "rect": [
-            1246,
-            1703,
+            586,
+            2767,
             26,
             7
           ]
@@ -1764,6 +2961,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/重机枪弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1772,8 +2974,8 @@
             -0.05
           ],
           "rect": [
-            1408,
-            1703,
+            748,
+            2767,
             29,
             6
           ]
@@ -1791,6 +2993,11 @@
       "kind": "casing",
       "skipOriginYZero": false,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "弹壳/霰弹弹壳",
+      "adapter": "static",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1799,8 +3006,8 @@
             0.55
           ],
           "rect": [
-            1276,
-            1703,
+            616,
+            2767,
             22,
             7
           ]
@@ -1818,6 +3025,11 @@
       "kind": "muzzle",
       "skipOriginYZero": false,
       "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/冲锋枪枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1826,8 +3038,8 @@
             -11.5
           ],
           "rect": [
-            546,
-            1703,
+            1536,
+            2707,
             50,
             45
           ]
@@ -1839,8 +3051,8 @@
             -14.0
           ],
           "rect": [
-            1830,
-            1619,
+            724,
+            2707,
             65,
             51
           ]
@@ -1852,8 +3064,8 @@
             -1.5
           ],
           "rect": [
-            1302,
-            1703,
+            642,
+            2767,
             36,
             6
           ]
@@ -1873,6 +3085,11 @@
       "kind": "muzzle",
       "skipOriginYZero": false,
       "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/反器材枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1881,8 +3098,8 @@
             -38.45
           ],
           "rect": [
-            705,
-            1206,
+            645,
+            1845,
             129,
             156
           ]
@@ -1894,8 +3111,8 @@
             -37.45
           ],
           "rect": [
-            838,
-            1206,
+            964,
+            1845,
             147,
             147
           ]
@@ -1907,8 +3124,8 @@
             -45.95
           ],
           "rect": [
-            987,
-            1003,
+            759,
+            1469,
             199,
             183
           ]
@@ -1920,8 +3137,8 @@
             -31.450000000000003
           ],
           "rect": [
-            515,
-            1377,
+            1173,
+            2159,
             137,
             125
           ]
@@ -1933,8 +3150,8 @@
             -21.450000000000003
           ],
           "rect": [
-            964,
-            1516,
+            443,
+            2527,
             96,
             89
           ]
@@ -1946,8 +3163,8 @@
             -10.950000000000003
           ],
           "rect": [
-            454,
-            1703,
+            1444,
+            2707,
             88,
             45
           ]
@@ -1970,6 +3187,11 @@
       "kind": "muzzle",
       "skipOriginYZero": false,
       "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/发射器枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -1978,8 +3200,8 @@
             -36.3
           ],
           "rect": [
-            1243,
-            1206,
+            1584,
+            1845,
             87,
             143
           ]
@@ -1991,8 +3213,8 @@
             -39.3
           ],
           "rect": [
-            1460,
-            1206,
+            2,
+            2014,
             116,
             141
           ]
@@ -2004,8 +3226,8 @@
             -31.299999999999997
           ],
           "rect": [
-            842,
-            1377,
+            1606,
+            2159,
             84,
             122
           ]
@@ -2017,8 +3239,8 @@
             -22.799999999999997
           ],
           "rect": [
-            1064,
-            1516,
+            543,
+            2527,
             111,
             88
           ]
@@ -2039,6 +3261,11 @@
       "kind": "muzzle",
       "skipOriginYZero": false,
       "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/巴雷特枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -2047,8 +3274,8 @@
             -35.25
           ],
           "rect": [
-            1580,
-            1206,
+            122,
+            2014,
             69,
             141
           ]
@@ -2203,8 +3430,8 @@
             -113.75
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -2216,8 +3443,8 @@
             -113.75
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -2248,6 +3475,11 @@
       "kind": "muzzle",
       "skipOriginYZero": false,
       "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/战斗步枪枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -2256,8 +3488,8 @@
             -25.35
           ],
           "rect": [
-            1923,
-            1377,
+            654,
+            2417,
             104,
             102
           ]
@@ -2269,8 +3501,8 @@
             -24.85
           ],
           "rect": [
-            194,
-            1516,
+            1524,
+            2417,
             164,
             97
           ]
@@ -2282,8 +3514,8 @@
             -18.35
           ],
           "rect": [
-            553,
-            1619,
+            862,
+            2625,
             196,
             69
           ]
@@ -2295,8 +3527,8 @@
             -11.850000000000001
           ],
           "rect": [
-            246,
-            1703,
+            1157,
+            2707,
             204,
             46
           ]
@@ -2308,8 +3540,8 @@
             -1.8500000000000014
           ],
           "rect": [
-            1068,
-            1703,
+            408,
+            2767,
             144,
             7
           ]
@@ -2331,6 +3563,11 @@
       "kind": "muzzle",
       "skipOriginYZero": true,
       "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 1,
@@ -2339,8 +3576,8 @@
             -26.8
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -2352,8 +3589,8 @@
             -19.3
           ],
           "rect": [
-            1645,
-            1516,
+            1247,
+            2527,
             148,
             81
           ]
@@ -2365,8 +3602,8 @@
             -26.8
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -2390,6 +3627,11 @@
       "kind": "muzzle",
       "skipOriginYZero": false,
       "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/突击步枪枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -2398,8 +3640,8 @@
             -19.65
           ],
           "rect": [
-            156,
-            1619,
+            121,
+            2625,
             132,
             77
           ]
@@ -2411,8 +3653,8 @@
             -14.649999999999999
           ],
           "rect": [
-            1343,
-            1619,
+            2,
+            2707,
             158,
             56
           ]
@@ -2424,8 +3666,8 @@
             -6.649999999999999
           ],
           "rect": [
-            771,
-            1703,
+            2,
+            2767,
             163,
             23
           ]
@@ -2445,6 +3687,11 @@
       "kind": "muzzle",
       "skipOriginYZero": false,
       "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/紧凑手枪枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -2453,8 +3700,8 @@
             -5.0
           ],
           "rect": [
-            734,
-            1703,
+            1898,
+            2707,
             33,
             26
           ]
@@ -2466,8 +3713,8 @@
             -11.5
           ],
           "rect": [
-            151,
-            1703,
+            979,
+            2707,
             52,
             49
           ]
@@ -2479,8 +3726,8 @@
             -6.5
           ],
           "rect": [
-            938,
-            1703,
+            169,
+            2767,
             13,
             23
           ]
@@ -2500,6 +3747,11 @@
       "kind": "muzzle",
       "skipOriginYZero": false,
       "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/霰弹枪枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -2508,8 +3760,8 @@
             -28.3
           ],
           "rect": [
-            1836,
-            1377,
+            903,
+            2295,
             83,
             113
           ]
@@ -2521,8 +3773,8 @@
             -30.8
           ],
           "rect": [
-            1614,
-            1377,
+            681,
+            2295,
             111,
             113
           ]
@@ -2534,8 +3786,8 @@
             -16.8
           ],
           "rect": [
-            753,
-            1619,
+            1262,
+            2625,
             80,
             66
           ]
@@ -2547,8 +3799,8 @@
             -11.8
           ],
           "rect": [
-            2,
-            1703,
+            830,
+            2707,
             145,
             50
           ]
@@ -2569,6 +3821,11 @@
       "kind": "muzzle",
       "skipOriginYZero": false,
       "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-枪火组/马格南手枪枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 0,
@@ -2577,8 +3834,8 @@
             -25.25
           ],
           "rect": [
-            523,
-            1516,
+            2,
+            2527,
             101,
             94
           ]
@@ -2590,8 +3847,8 @@
             -16.25
           ],
           "rect": [
-            1085,
-            1619,
+            1594,
+            2625,
             97,
             62
           ]
@@ -2603,8 +3860,8 @@
             -15.25
           ],
           "rect": [
-            1239,
-            1619,
+            1798,
+            2625,
             48,
             58
           ]
@@ -2624,6 +3881,17 @@
       "kind": "impact",
       "skipOriginYZero": true,
       "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-击中效果组/火花",
+      "adapter": "sequence",
+      "variantSounds": [
+        "cfnfx-stock-13.wav",
+        "cfnfx-stock-12.wav",
+        "cfnfx-stock-11.wav",
+        "cfnfx-stock-10.wav",
+        "cfnfx-stock-9.wav"
+      ],
+      "soundAtBirth": true,
       "frames": [
         {
           "sourceFrame": 1,
@@ -2632,8 +3900,8 @@
             -16.0
           ],
           "rect": [
-            837,
-            1619,
+            1346,
+            2625,
             64,
             66
           ]
@@ -2645,8 +3913,8 @@
             -16.0
           ],
           "rect": [
-            837,
-            1619,
+            1346,
+            2625,
             64,
             66
           ]
@@ -2658,8 +3926,8 @@
             -22.5
           ],
           "rect": [
-            437,
-            1516,
+            1933,
+            2417,
             82,
             95
           ]
@@ -2671,8 +3939,8 @@
             -22.5
           ],
           "rect": [
-            437,
-            1516,
+            1933,
+            2417,
             82,
             95
           ]
@@ -2684,8 +3952,8 @@
             -26.5
           ],
           "rect": [
-            1263,
-            1377,
+            212,
+            2295,
             80,
             117
           ]
@@ -2697,8 +3965,8 @@
             -26.5
           ],
           "rect": [
-            1263,
-            1377,
+            212,
+            2295,
             80,
             117
           ]
@@ -2710,8 +3978,8 @@
             -27.5
           ],
           "rect": [
-            423,
-            1377,
+            382,
+            2159,
             88,
             129
           ]
@@ -2723,8 +3991,8 @@
             -27.5
           ],
           "rect": [
-            423,
-            1377,
+            382,
+            2159,
             88,
             129
           ]
@@ -2736,8 +4004,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -2749,8 +4017,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -2762,8 +4030,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -2775,8 +4043,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -2788,8 +4056,8 @@
             -14.5
           ],
           "rect": [
-            1186,
-            1619,
+            1745,
+            2625,
             49,
             58
           ]
@@ -2801,8 +4069,8 @@
             -14.5
           ],
           "rect": [
-            1186,
-            1619,
+            1745,
+            2625,
             49,
             58
           ]
@@ -2814,8 +4082,8 @@
             -15.5
           ],
           "rect": [
-            905,
-            1619,
+            1414,
+            2625,
             60,
             66
           ]
@@ -2827,8 +4095,8 @@
             -15.5
           ],
           "rect": [
-            905,
-            1619,
+            1414,
+            2625,
             60,
             66
           ]
@@ -2840,8 +4108,8 @@
             -16.0
           ],
           "rect": [
-            351,
-            1619,
+            316,
+            2625,
             69,
             76
           ]
@@ -2853,8 +4121,8 @@
             -16.0
           ],
           "rect": [
-            351,
-            1619,
+            316,
+            2625,
             69,
             76
           ]
@@ -2866,8 +4134,8 @@
             -16.0
           ],
           "rect": [
-            2,
-            1619,
+            1778,
+            2527,
             73,
             80
           ]
@@ -2879,8 +4147,8 @@
             -16.0
           ],
           "rect": [
-            2,
-            1619,
+            1778,
+            2527,
             73,
             80
           ]
@@ -2892,8 +4160,8 @@
             -15.5
           ],
           "rect": [
-            1867,
-            1516,
+            1598,
+            2527,
             65,
             81
           ]
@@ -2905,8 +4173,8 @@
             -15.5
           ],
           "rect": [
-            1867,
-            1516,
+            1598,
+            2527,
             65,
             81
           ]
@@ -2918,8 +4186,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -2931,8 +4199,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -2944,8 +4212,8 @@
             -12.5
           ],
           "rect": [
-            207,
-            1703,
+            1035,
+            2707,
             35,
             49
           ]
@@ -2957,8 +4225,8 @@
             -12.5
           ],
           "rect": [
-            207,
-            1703,
+            1035,
+            2707,
             35,
             49
           ]
@@ -2970,8 +4238,8 @@
             -16.5
           ],
           "rect": [
-            1033,
-            1619,
+            1542,
+            2625,
             48,
             65
           ]
@@ -2983,8 +4251,8 @@
             -16.5
           ],
           "rect": [
-            1033,
-            1619,
+            1542,
+            2625,
             48,
             65
           ]
@@ -2996,8 +4264,8 @@
             -19.5
           ],
           "rect": [
-            292,
-            1619,
+            257,
+            2625,
             55,
             77
           ]
@@ -3009,8 +4277,8 @@
             -19.5
           ],
           "rect": [
-            292,
-            1619,
+            257,
+            2625,
             55,
             77
           ]
@@ -3022,8 +4290,8 @@
             -20.5
           ],
           "rect": [
-            1394,
-            1516,
+            996,
+            2527,
             60,
             82
           ]
@@ -3035,8 +4303,8 @@
             -20.5
           ],
           "rect": [
-            1394,
-            1516,
+            996,
+            2527,
             60,
             82
           ]
@@ -3048,8 +4316,8 @@
             -21.0
           ],
           "rect": [
-            1252,
-            1516,
+            731,
+            2527,
             62,
             87
           ]
@@ -3061,8 +4329,8 @@
             -21.0
           ],
           "rect": [
-            1252,
-            1516,
+            731,
+            2527,
             62,
             87
           ]
@@ -3074,8 +4342,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3087,8 +4355,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3100,8 +4368,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3113,8 +4381,8 @@
             -19.0
           ],
           "rect": [
-            1179,
-            1516,
+            658,
+            2527,
             69,
             88
           ]
@@ -3126,8 +4394,8 @@
             -19.0
           ],
           "rect": [
-            1179,
-            1516,
+            658,
+            2527,
             69,
             88
           ]
@@ -3139,8 +4407,8 @@
             -24.5
           ],
           "rect": [
-            1429,
-            1377,
+            496,
+            2295,
             95,
             114
           ]
@@ -3152,8 +4420,8 @@
             -24.5
           ],
           "rect": [
-            1429,
-            1377,
+            496,
+            2295,
             95,
             114
           ]
@@ -3165,8 +4433,8 @@
             -26.0
           ],
           "rect": [
-            930,
-            1377,
+            1694,
+            2159,
             113,
             121
           ]
@@ -3178,8 +4446,8 @@
             -26.0
           ],
           "rect": [
-            930,
-            1377,
+            1694,
+            2159,
             113,
             121
           ]
@@ -3191,8 +4459,8 @@
             -27.5
           ],
           "rect": [
-            2,
-            1377,
+            1462,
+            2014,
             121,
             135
           ]
@@ -3204,8 +4472,8 @@
             -27.5
           ],
           "rect": [
-            2,
-            1377,
+            1462,
+            2014,
             121,
             135
           ]
@@ -3217,8 +4485,8 @@
             -17.5
           ],
           "rect": [
-            1704,
-            1619,
+            363,
+            2707,
             122,
             54
           ]
@@ -3230,8 +4498,8 @@
             -17.5
           ],
           "rect": [
-            1704,
-            1619,
+            363,
+            2707,
             122,
             54
           ]
@@ -3243,8 +4511,8 @@
             -5.5
           ],
           "rect": [
-            600,
-            1703,
+            1590,
+            2707,
             130,
             37
           ]
@@ -3256,8 +4524,8 @@
             -5.5
           ],
           "rect": [
-            600,
-            1703,
+            1590,
+            2707,
             130,
             37
           ]
@@ -3269,8 +4537,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3282,8 +4550,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3295,8 +4563,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3308,8 +4576,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3321,8 +4589,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3334,8 +4602,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3347,8 +4615,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3360,8 +4628,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3373,8 +4641,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3386,8 +4654,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3399,8 +4667,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3412,8 +4680,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3425,8 +4693,8 @@
             -14.5
           ],
           "rect": [
-            1291,
-            1619,
+            1850,
+            2625,
             48,
             58
           ]
@@ -3438,8 +4706,8 @@
             -14.5
           ],
           "rect": [
-            1291,
-            1619,
+            1850,
+            2625,
             48,
             58
           ]
@@ -3451,8 +4719,8 @@
             -15.5
           ],
           "rect": [
-            969,
-            1619,
+            1478,
+            2625,
             60,
             66
           ]
@@ -3464,8 +4732,8 @@
             -15.5
           ],
           "rect": [
-            969,
-            1619,
+            1478,
+            2625,
             60,
             66
           ]
@@ -3477,8 +4745,8 @@
             -16.0
           ],
           "rect": [
-            424,
-            1619,
+            389,
+            2625,
             69,
             76
           ]
@@ -3490,8 +4758,8 @@
             -16.0
           ],
           "rect": [
-            424,
-            1619,
+            389,
+            2625,
             69,
             76
           ]
@@ -3503,8 +4771,8 @@
             -16.0
           ],
           "rect": [
-            79,
-            1619,
+            1855,
+            2527,
             73,
             80
           ]
@@ -3516,8 +4784,8 @@
             -16.0
           ],
           "rect": [
-            79,
-            1619,
+            1855,
+            2527,
             73,
             80
           ]
@@ -3529,8 +4797,8 @@
             -15.5
           ],
           "rect": [
-            1797,
-            1516,
+            1528,
+            2527,
             66,
             81
           ]
@@ -3542,8 +4810,8 @@
             -15.5
           ],
           "rect": [
-            1797,
-            1516,
+            1528,
+            2527,
             66,
             81
           ]
@@ -3555,8 +4823,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3568,8 +4836,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3581,8 +4849,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3594,8 +4862,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3607,8 +4875,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3620,8 +4888,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3633,8 +4901,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3737,6 +5005,16 @@
       "kind": "impact",
       "skipOriginYZero": true,
       "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-击中效果组/击中金属",
+      "adapter": "sequence",
+      "variantSounds": [
+        "cfnfx-stock-8.wav",
+        "cfnfx-stock-7.wav",
+        "cfnfx-stock-6.wav",
+        "cfnfx-stock-5.wav"
+      ],
+      "soundAtBirth": true,
       "frames": [
         {
           "sourceFrame": 1,
@@ -3745,8 +5023,8 @@
             -16.0
           ],
           "rect": [
-            837,
-            1619,
+            1346,
+            2625,
             64,
             66
           ]
@@ -3758,8 +5036,8 @@
             -16.0
           ],
           "rect": [
-            837,
-            1619,
+            1346,
+            2625,
             64,
             66
           ]
@@ -3771,8 +5049,8 @@
             -22.5
           ],
           "rect": [
-            437,
-            1516,
+            1933,
+            2417,
             82,
             95
           ]
@@ -3784,8 +5062,8 @@
             -22.5
           ],
           "rect": [
-            437,
-            1516,
+            1933,
+            2417,
             82,
             95
           ]
@@ -3797,8 +5075,8 @@
             -26.5
           ],
           "rect": [
-            1263,
-            1377,
+            212,
+            2295,
             80,
             117
           ]
@@ -3810,8 +5088,8 @@
             -26.5
           ],
           "rect": [
-            1263,
-            1377,
+            212,
+            2295,
             80,
             117
           ]
@@ -3823,8 +5101,8 @@
             -27.5
           ],
           "rect": [
-            423,
-            1377,
+            382,
+            2159,
             88,
             129
           ]
@@ -3836,8 +5114,8 @@
             -27.5
           ],
           "rect": [
-            423,
-            1377,
+            382,
+            2159,
             88,
             129
           ]
@@ -3849,8 +5127,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3862,8 +5140,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3875,8 +5153,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3888,8 +5166,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -3901,8 +5179,8 @@
             -14.5
           ],
           "rect": [
-            1186,
-            1619,
+            1745,
+            2625,
             49,
             58
           ]
@@ -3914,8 +5192,8 @@
             -14.5
           ],
           "rect": [
-            1186,
-            1619,
+            1745,
+            2625,
             49,
             58
           ]
@@ -3927,8 +5205,8 @@
             -15.5
           ],
           "rect": [
-            905,
-            1619,
+            1414,
+            2625,
             60,
             66
           ]
@@ -3940,8 +5218,8 @@
             -15.5
           ],
           "rect": [
-            905,
-            1619,
+            1414,
+            2625,
             60,
             66
           ]
@@ -3953,8 +5231,8 @@
             -16.0
           ],
           "rect": [
-            351,
-            1619,
+            316,
+            2625,
             69,
             76
           ]
@@ -3966,8 +5244,8 @@
             -16.0
           ],
           "rect": [
-            351,
-            1619,
+            316,
+            2625,
             69,
             76
           ]
@@ -3979,8 +5257,8 @@
             -16.0
           ],
           "rect": [
-            2,
-            1619,
+            1778,
+            2527,
             73,
             80
           ]
@@ -3992,8 +5270,8 @@
             -16.0
           ],
           "rect": [
-            2,
-            1619,
+            1778,
+            2527,
             73,
             80
           ]
@@ -4005,8 +5283,8 @@
             -15.5
           ],
           "rect": [
-            1867,
-            1516,
+            1598,
+            2527,
             65,
             81
           ]
@@ -4018,8 +5296,8 @@
             -15.5
           ],
           "rect": [
-            1867,
-            1516,
+            1598,
+            2527,
             65,
             81
           ]
@@ -4031,8 +5309,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4044,8 +5322,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4057,8 +5335,8 @@
             -12.5
           ],
           "rect": [
-            207,
-            1703,
+            1035,
+            2707,
             35,
             49
           ]
@@ -4070,8 +5348,8 @@
             -12.5
           ],
           "rect": [
-            207,
-            1703,
+            1035,
+            2707,
             35,
             49
           ]
@@ -4083,8 +5361,8 @@
             -16.5
           ],
           "rect": [
-            1033,
-            1619,
+            1542,
+            2625,
             48,
             65
           ]
@@ -4096,8 +5374,8 @@
             -16.5
           ],
           "rect": [
-            1033,
-            1619,
+            1542,
+            2625,
             48,
             65
           ]
@@ -4109,8 +5387,8 @@
             -19.5
           ],
           "rect": [
-            292,
-            1619,
+            257,
+            2625,
             55,
             77
           ]
@@ -4122,8 +5400,8 @@
             -19.5
           ],
           "rect": [
-            292,
-            1619,
+            257,
+            2625,
             55,
             77
           ]
@@ -4135,8 +5413,8 @@
             -20.5
           ],
           "rect": [
-            1394,
-            1516,
+            996,
+            2527,
             60,
             82
           ]
@@ -4148,8 +5426,8 @@
             -20.5
           ],
           "rect": [
-            1394,
-            1516,
+            996,
+            2527,
             60,
             82
           ]
@@ -4161,8 +5439,8 @@
             -21.0
           ],
           "rect": [
-            1252,
-            1516,
+            731,
+            2527,
             62,
             87
           ]
@@ -4174,8 +5452,8 @@
             -21.0
           ],
           "rect": [
-            1252,
-            1516,
+            731,
+            2527,
             62,
             87
           ]
@@ -4187,8 +5465,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4200,8 +5478,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4213,8 +5491,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4226,8 +5504,8 @@
             -19.0
           ],
           "rect": [
-            1179,
-            1516,
+            658,
+            2527,
             69,
             88
           ]
@@ -4239,8 +5517,8 @@
             -19.0
           ],
           "rect": [
-            1179,
-            1516,
+            658,
+            2527,
             69,
             88
           ]
@@ -4252,8 +5530,8 @@
             -24.5
           ],
           "rect": [
-            1429,
-            1377,
+            496,
+            2295,
             95,
             114
           ]
@@ -4265,8 +5543,8 @@
             -24.5
           ],
           "rect": [
-            1429,
-            1377,
+            496,
+            2295,
             95,
             114
           ]
@@ -4278,8 +5556,8 @@
             -26.0
           ],
           "rect": [
-            930,
-            1377,
+            1694,
+            2159,
             113,
             121
           ]
@@ -4291,8 +5569,8 @@
             -26.0
           ],
           "rect": [
-            930,
-            1377,
+            1694,
+            2159,
             113,
             121
           ]
@@ -4304,8 +5582,8 @@
             -27.5
           ],
           "rect": [
-            2,
-            1377,
+            1462,
+            2014,
             121,
             135
           ]
@@ -4317,8 +5595,8 @@
             -27.5
           ],
           "rect": [
-            2,
-            1377,
+            1462,
+            2014,
             121,
             135
           ]
@@ -4330,8 +5608,8 @@
             -17.5
           ],
           "rect": [
-            1704,
-            1619,
+            363,
+            2707,
             122,
             54
           ]
@@ -4343,8 +5621,8 @@
             -17.5
           ],
           "rect": [
-            1704,
-            1619,
+            363,
+            2707,
             122,
             54
           ]
@@ -4356,8 +5634,8 @@
             -5.5
           ],
           "rect": [
-            600,
-            1703,
+            1590,
+            2707,
             130,
             37
           ]
@@ -4369,8 +5647,8 @@
             -5.5
           ],
           "rect": [
-            600,
-            1703,
+            1590,
+            2707,
             130,
             37
           ]
@@ -4382,8 +5660,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4395,8 +5673,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4408,8 +5686,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4421,8 +5699,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4434,8 +5712,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4447,8 +5725,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4460,8 +5738,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4473,8 +5751,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4486,8 +5764,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4499,8 +5777,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4512,8 +5790,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4525,8 +5803,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4610,6 +5888,11 @@
       "kind": "impact",
       "skipOriginYZero": true,
       "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-击中效果组/无声火花",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 1,
@@ -4618,8 +5901,8 @@
             -16.0
           ],
           "rect": [
-            837,
-            1619,
+            1346,
+            2625,
             64,
             66
           ]
@@ -4631,8 +5914,8 @@
             -16.0
           ],
           "rect": [
-            837,
-            1619,
+            1346,
+            2625,
             64,
             66
           ]
@@ -4644,8 +5927,8 @@
             -22.5
           ],
           "rect": [
-            437,
-            1516,
+            1933,
+            2417,
             82,
             95
           ]
@@ -4657,8 +5940,8 @@
             -22.5
           ],
           "rect": [
-            437,
-            1516,
+            1933,
+            2417,
             82,
             95
           ]
@@ -4670,8 +5953,8 @@
             -26.5
           ],
           "rect": [
-            1263,
-            1377,
+            212,
+            2295,
             80,
             117
           ]
@@ -4683,8 +5966,8 @@
             -26.5
           ],
           "rect": [
-            1263,
-            1377,
+            212,
+            2295,
             80,
             117
           ]
@@ -4696,8 +5979,8 @@
             -27.5
           ],
           "rect": [
-            423,
-            1377,
+            382,
+            2159,
             88,
             129
           ]
@@ -4709,8 +5992,8 @@
             -27.5
           ],
           "rect": [
-            423,
-            1377,
+            382,
+            2159,
             88,
             129
           ]
@@ -4722,8 +6005,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4735,8 +6018,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4748,8 +6031,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4761,8 +6044,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4774,8 +6057,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4787,8 +6070,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4800,8 +6083,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4813,8 +6096,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4826,8 +6109,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4839,8 +6122,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4852,8 +6135,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4865,8 +6148,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4878,8 +6161,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -4891,8 +6174,8 @@
             -14.5
           ],
           "rect": [
-            1186,
-            1619,
+            1745,
+            2625,
             49,
             58
           ]
@@ -4904,8 +6187,8 @@
             -14.5
           ],
           "rect": [
-            1186,
-            1619,
+            1745,
+            2625,
             49,
             58
           ]
@@ -4917,8 +6200,8 @@
             -15.5
           ],
           "rect": [
-            905,
-            1619,
+            1414,
+            2625,
             60,
             66
           ]
@@ -4930,8 +6213,8 @@
             -15.5
           ],
           "rect": [
-            905,
-            1619,
+            1414,
+            2625,
             60,
             66
           ]
@@ -4943,8 +6226,8 @@
             -16.0
           ],
           "rect": [
-            351,
-            1619,
+            316,
+            2625,
             69,
             76
           ]
@@ -4956,8 +6239,8 @@
             -16.0
           ],
           "rect": [
-            351,
-            1619,
+            316,
+            2625,
             69,
             76
           ]
@@ -4969,8 +6252,8 @@
             -16.0
           ],
           "rect": [
-            2,
-            1619,
+            1778,
+            2527,
             73,
             80
           ]
@@ -4982,8 +6265,8 @@
             -16.0
           ],
           "rect": [
-            2,
-            1619,
+            1778,
+            2527,
             73,
             80
           ]
@@ -4995,8 +6278,8 @@
             -15.5
           ],
           "rect": [
-            1867,
-            1516,
+            1598,
+            2527,
             65,
             81
           ]
@@ -5008,8 +6291,8 @@
             -15.5
           ],
           "rect": [
-            1867,
-            1516,
+            1598,
+            2527,
             65,
             81
           ]
@@ -5021,8 +6304,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5034,8 +6317,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5047,8 +6330,8 @@
             -12.5
           ],
           "rect": [
-            207,
-            1703,
+            1035,
+            2707,
             35,
             49
           ]
@@ -5060,8 +6343,8 @@
             -12.5
           ],
           "rect": [
-            207,
-            1703,
+            1035,
+            2707,
             35,
             49
           ]
@@ -5073,8 +6356,8 @@
             -16.5
           ],
           "rect": [
-            1033,
-            1619,
+            1542,
+            2625,
             48,
             65
           ]
@@ -5086,8 +6369,8 @@
             -16.5
           ],
           "rect": [
-            1033,
-            1619,
+            1542,
+            2625,
             48,
             65
           ]
@@ -5099,8 +6382,8 @@
             -19.5
           ],
           "rect": [
-            292,
-            1619,
+            257,
+            2625,
             55,
             77
           ]
@@ -5112,8 +6395,8 @@
             -19.5
           ],
           "rect": [
-            292,
-            1619,
+            257,
+            2625,
             55,
             77
           ]
@@ -5125,8 +6408,8 @@
             -20.5
           ],
           "rect": [
-            1394,
-            1516,
+            996,
+            2527,
             60,
             82
           ]
@@ -5138,8 +6421,8 @@
             -20.5
           ],
           "rect": [
-            1394,
-            1516,
+            996,
+            2527,
             60,
             82
           ]
@@ -5151,8 +6434,8 @@
             -21.0
           ],
           "rect": [
-            1252,
-            1516,
+            731,
+            2527,
             62,
             87
           ]
@@ -5164,8 +6447,8 @@
             -21.0
           ],
           "rect": [
-            1252,
-            1516,
+            731,
+            2527,
             62,
             87
           ]
@@ -5177,8 +6460,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5190,8 +6473,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5203,8 +6486,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5216,8 +6499,8 @@
             -19.0
           ],
           "rect": [
-            1179,
-            1516,
+            658,
+            2527,
             69,
             88
           ]
@@ -5229,8 +6512,8 @@
             -19.0
           ],
           "rect": [
-            1179,
-            1516,
+            658,
+            2527,
             69,
             88
           ]
@@ -5242,8 +6525,8 @@
             -24.5
           ],
           "rect": [
-            1429,
-            1377,
+            496,
+            2295,
             95,
             114
           ]
@@ -5255,8 +6538,8 @@
             -24.5
           ],
           "rect": [
-            1429,
-            1377,
+            496,
+            2295,
             95,
             114
           ]
@@ -5268,8 +6551,8 @@
             -26.0
           ],
           "rect": [
-            930,
-            1377,
+            1694,
+            2159,
             113,
             121
           ]
@@ -5281,8 +6564,8 @@
             -26.0
           ],
           "rect": [
-            930,
-            1377,
+            1694,
+            2159,
             113,
             121
           ]
@@ -5294,8 +6577,8 @@
             -27.5
           ],
           "rect": [
-            2,
-            1377,
+            1462,
+            2014,
             121,
             135
           ]
@@ -5307,8 +6590,8 @@
             -27.5
           ],
           "rect": [
-            2,
-            1377,
+            1462,
+            2014,
             121,
             135
           ]
@@ -5320,8 +6603,8 @@
             -17.5
           ],
           "rect": [
-            1704,
-            1619,
+            363,
+            2707,
             122,
             54
           ]
@@ -5333,8 +6616,8 @@
             -17.5
           ],
           "rect": [
-            1704,
-            1619,
+            363,
+            2707,
             122,
             54
           ]
@@ -5346,8 +6629,8 @@
             -5.5
           ],
           "rect": [
-            600,
-            1703,
+            1590,
+            2707,
             130,
             37
           ]
@@ -5359,8 +6642,8 @@
             -5.5
           ],
           "rect": [
-            600,
-            1703,
+            1590,
+            2707,
             130,
             37
           ]
@@ -5372,8 +6655,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5385,8 +6668,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5398,8 +6681,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5411,8 +6694,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5424,8 +6707,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5437,8 +6720,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5450,8 +6733,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5463,8 +6746,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5476,8 +6759,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5489,8 +6772,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5502,8 +6785,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5515,8 +6798,8 @@
             -27.5
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5609,6 +6892,18 @@
       "kind": "impact",
       "skipOriginYZero": true,
       "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-击中效果组/拼刀火花",
+      "adapter": "sequence",
+      "variantSounds": [
+        "cfnfx-stock-530.wav",
+        "cfnfx-stock-531.wav",
+        "cfnfx-stock-532.wav",
+        "cfnfx-stock-533.wav",
+        "cfnfx-stock-534.wav",
+        "cfnfx-stock-535.wav"
+      ],
+      "soundAtBirth": true,
       "frames": [
         {
           "sourceFrame": 1,
@@ -5617,8 +6912,8 @@
             -45.150000000000006
           ],
           "rect": [
-            2,
-            1206,
+            1497,
+            1665,
             161,
             167
           ]
@@ -5630,8 +6925,8 @@
             -45.150000000000006
           ],
           "rect": [
-            2,
-            1206,
+            1497,
+            1665,
             161,
             167
           ]
@@ -5643,7 +6938,7 @@
             -61.150000000000006
           ],
           "rect": [
-            150,
+            621,
             748,
             207,
             241
@@ -5656,7 +6951,7 @@
             -61.150000000000006
           ],
           "rect": [
-            150,
+            621,
             748,
             207,
             241
@@ -5669,7 +6964,7 @@
             -71.15
           ],
           "rect": [
-            709,
+            974,
             431,
             203,
             297
@@ -5682,7 +6977,7 @@
             -71.15
           ],
           "rect": [
-            709,
+            974,
             431,
             203,
             297
@@ -5721,8 +7016,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5734,8 +7029,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5747,8 +7042,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5760,8 +7055,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5773,8 +7068,8 @@
             -40.650000000000006
           ],
           "rect": [
-            989,
-            1206,
+            1115,
+            1845,
             123,
             145
           ]
@@ -5786,8 +7081,8 @@
             -40.650000000000006
           ],
           "rect": [
-            989,
-            1206,
+            1115,
+            1845,
             123,
             145
           ]
@@ -5799,8 +7094,8 @@
             -43.650000000000006
           ],
           "rect": [
-            1789,
-            1003,
+            1034,
+            1665,
             151,
             169
           ]
@@ -5812,8 +7107,8 @@
             -43.650000000000006
           ],
           "rect": [
-            1789,
-            1003,
+            1034,
+            1665,
             151,
             169
           ]
@@ -5825,8 +7120,8 @@
             -44.150000000000006
           ],
           "rect": [
-            628,
-            1003,
+            1827,
+            1263,
             176,
             192
           ]
@@ -5838,8 +7133,8 @@
             -44.150000000000006
           ],
           "rect": [
-            628,
-            1003,
+            1827,
+            1263,
             176,
             192
           ]
@@ -5851,8 +7146,8 @@
             -44.150000000000006
           ],
           "rect": [
-            1472,
-            748,
+            1843,
+            1028,
             186,
             202
           ]
@@ -5864,8 +7159,8 @@
             -44.150000000000006
           ],
           "rect": [
-            1472,
-            748,
+            1843,
+            1028,
             186,
             202
           ]
@@ -5877,8 +7172,8 @@
             -44.150000000000006
           ],
           "rect": [
-            1130,
-            748,
+            1501,
+            1028,
             167,
             207
           ]
@@ -5890,8 +7185,8 @@
             -44.150000000000006
           ],
           "rect": [
-            1130,
-            748,
+            1501,
+            1028,
             167,
             207
           ]
@@ -5903,8 +7198,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5916,8 +7211,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -5929,8 +7224,8 @@
             -35.650000000000006
           ],
           "rect": [
-            656,
-            1377,
+            1314,
+            2159,
             88,
             124
           ]
@@ -5942,8 +7237,8 @@
             -35.650000000000006
           ],
           "rect": [
-            656,
-            1377,
+            1314,
+            2159,
             88,
             124
           ]
@@ -5955,8 +7250,8 @@
             -46.650000000000006
           ],
           "rect": [
-            167,
-            1206,
+            2,
+            1845,
             120,
             165
           ]
@@ -5968,8 +7263,8 @@
             -46.650000000000006
           ],
           "rect": [
-            167,
-            1206,
+            2,
+            1845,
             120,
             165
           ]
@@ -5981,8 +7276,8 @@
             -53.650000000000006
           ],
           "rect": [
-            348,
-            1003,
+            1547,
+            1263,
             140,
             194
           ]
@@ -5994,8 +7289,8 @@
             -53.650000000000006
           ],
           "rect": [
-            348,
-            1003,
+            1547,
+            1263,
             140,
             194
           ]
@@ -6007,8 +7302,8 @@
             -56.650000000000006
           ],
           "rect": [
-            972,
-            748,
+            1074,
+            1028,
             154,
             210
           ]
@@ -6020,8 +7315,8 @@
             -56.650000000000006
           ],
           "rect": [
-            972,
-            748,
+            1074,
+            1028,
             154,
             210
           ]
@@ -6033,8 +7328,8 @@
             -58.150000000000006
           ],
           "rect": [
-            811,
-            748,
+            431,
+            1028,
             157,
             223
           ]
@@ -6046,8 +7341,8 @@
             -58.150000000000006
           ],
           "rect": [
-            811,
-            748,
+            431,
+            1028,
             157,
             223
           ]
@@ -6059,8 +7354,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6072,8 +7367,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6085,8 +7380,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6098,8 +7393,8 @@
             -52.650000000000006
           ],
           "rect": [
-            632,
-            748,
+            252,
+            1028,
             175,
             223
           ]
@@ -6111,8 +7406,8 @@
             -52.650000000000006
           ],
           "rect": [
-            632,
-            748,
+            252,
+            1028,
             175,
             223
           ]
@@ -6124,7 +7419,7 @@
             -67.15
           ],
           "rect": [
-            916,
+            1181,
             431,
             241,
             292
@@ -6137,7 +7432,7 @@
             -67.15
           ],
           "rect": [
-            916,
+            1181,
             431,
             241,
             292
@@ -6202,8 +7497,8 @@
             -48.650000000000006
           ],
           "rect": [
-            1653,
-            1206,
+            759,
+            2014,
             311,
             137
           ]
@@ -6215,8 +7510,8 @@
             -48.650000000000006
           ],
           "rect": [
-            1653,
-            1206,
+            759,
+            2014,
             311,
             137
           ]
@@ -6228,8 +7523,8 @@
             -17.650000000000006
           ],
           "rect": [
-            628,
-            1516,
+            107,
+            2527,
             332,
             93
           ]
@@ -6241,8 +7536,8 @@
             -17.650000000000006
           ],
           "rect": [
-            628,
-            1516,
+            107,
+            2527,
             332,
             93
           ]
@@ -6254,8 +7549,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6267,8 +7562,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6280,8 +7575,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6293,8 +7588,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6306,8 +7601,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6319,8 +7614,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6332,8 +7627,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6345,8 +7640,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6358,8 +7653,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6371,8 +7666,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6384,8 +7679,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6397,8 +7692,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6410,8 +7705,8 @@
             -40.650000000000006
           ],
           "rect": [
-            1116,
-            1206,
+            1242,
+            1845,
             123,
             145
           ]
@@ -6423,8 +7718,8 @@
             -40.650000000000006
           ],
           "rect": [
-            1116,
-            1206,
+            1242,
+            1845,
             123,
             145
           ]
@@ -6436,8 +7731,8 @@
             -43.650000000000006
           ],
           "rect": [
-            1633,
-            1003,
+            878,
+            1665,
             152,
             169
           ]
@@ -6449,8 +7744,8 @@
             -43.650000000000006
           ],
           "rect": [
-            1633,
-            1003,
+            878,
+            1665,
             152,
             169
           ]
@@ -6462,8 +7757,8 @@
             -44.150000000000006
           ],
           "rect": [
-            808,
-            1003,
+            2,
+            1469,
             175,
             192
           ]
@@ -6475,8 +7770,8 @@
             -44.150000000000006
           ],
           "rect": [
-            808,
-            1003,
+            2,
+            1469,
             175,
             192
           ]
@@ -6488,8 +7783,8 @@
             -44.150000000000006
           ],
           "rect": [
-            1662,
-            748,
+            2,
+            1263,
             186,
             202
           ]
@@ -6501,8 +7796,8 @@
             -44.150000000000006
           ],
           "rect": [
-            1662,
-            748,
+            2,
+            1263,
             186,
             202
           ]
@@ -6514,8 +7809,8 @@
             -44.150000000000006
           ],
           "rect": [
-            1301,
-            748,
+            1672,
+            1028,
             167,
             207
           ]
@@ -6527,8 +7822,8 @@
             -44.150000000000006
           ],
           "rect": [
-            1301,
-            748,
+            1672,
+            1028,
             167,
             207
           ]
@@ -6540,8 +7835,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6553,8 +7848,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6566,8 +7861,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6579,8 +7874,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6592,8 +7887,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6605,8 +7900,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6618,8 +7913,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6631,8 +7926,8 @@
             -52.650000000000006
           ],
           "rect": [
-            632,
-            748,
+            252,
+            1028,
             175,
             223
           ]
@@ -6644,8 +7939,8 @@
             -52.650000000000006
           ],
           "rect": [
-            632,
-            748,
+            252,
+            1028,
             175,
             223
           ]
@@ -6657,7 +7952,7 @@
             -67.15
           ],
           "rect": [
-            916,
+            1181,
             431,
             241,
             292
@@ -6670,7 +7965,7 @@
             -67.15
           ],
           "rect": [
-            916,
+            1181,
             431,
             241,
             292
@@ -6735,8 +8030,8 @@
             -48.650000000000006
           ],
           "rect": [
-            1653,
-            1206,
+            759,
+            2014,
             311,
             137
           ]
@@ -6748,8 +8043,8 @@
             -48.650000000000006
           ],
           "rect": [
-            1653,
-            1206,
+            759,
+            2014,
             311,
             137
           ]
@@ -6761,8 +8056,8 @@
             -17.650000000000006
           ],
           "rect": [
-            628,
-            1516,
+            107,
+            2527,
             332,
             93
           ]
@@ -6774,8 +8069,8 @@
             -17.650000000000006
           ],
           "rect": [
-            628,
-            1516,
+            107,
+            2527,
             332,
             93
           ]
@@ -6787,8 +8082,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6800,8 +8095,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6813,8 +8108,8 @@
             -74.65
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -6934,6 +8229,13 @@
       "kind": "impact",
       "skipOriginYZero": false,
       "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-击中效果组/战术巴雷特击中特效",
+      "adapter": "sequence",
+      "variantSounds": [
+        "cfnfx-stock-454.wav"
+      ],
+      "soundAtBirth": true,
       "frames": [
         {
           "sourceFrame": 0,
@@ -6942,8 +8244,8 @@
             -49.0
           ],
           "rect": [
-            152,
-            1003,
+            1198,
+            1263,
             192,
             197
           ]
@@ -6955,8 +8257,8 @@
             -49.0
           ],
           "rect": [
-            152,
-            1003,
+            1198,
+            1263,
             192,
             197
           ]
@@ -6968,7 +8270,7 @@
             -58.0
           ],
           "rect": [
-            361,
+            832,
             748,
             267,
             235
@@ -6981,7 +8283,7 @@
             -58.0
           ],
           "rect": [
-            361,
+            832,
             748,
             267,
             235
@@ -6994,8 +8296,8 @@
             -68.0
           ],
           "rect": [
-            1531,
-            431,
+            2,
+            748,
             319,
             276
           ]
@@ -7007,8 +8309,8 @@
             -68.0
           ],
           "rect": [
-            1531,
-            431,
+            2,
+            748,
             319,
             276
           ]
@@ -7020,7 +8322,7 @@
             -72.0
           ],
           "rect": [
-            1161,
+            1426,
             431,
             366,
             290
@@ -7033,7 +8335,7 @@
             -72.0
           ],
           "rect": [
-            1161,
+            1426,
             431,
             366,
             290
@@ -7046,8 +8348,8 @@
             -73.0
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7059,8 +8361,8 @@
             -73.0
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7072,8 +8374,8 @@
             -73.0
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7085,8 +8387,8 @@
             -49.0
           ],
           "rect": [
-            152,
-            1003,
+            1198,
+            1263,
             192,
             197
           ]
@@ -7098,8 +8400,8 @@
             -49.0
           ],
           "rect": [
-            152,
-            1003,
+            1198,
+            1263,
             192,
             197
           ]
@@ -7129,6 +8431,11 @@
       "kind": "impact",
       "skipOriginYZero": true,
       "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-击中效果组/铁枪能量弹火花",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
       "frames": [
         {
           "sourceFrame": 1,
@@ -7137,8 +8444,8 @@
             -22.049999999999997
           ],
           "rect": [
-            1936,
-            1516,
+            1667,
+            2527,
             52,
             81
           ]
@@ -7150,8 +8457,8 @@
             -40.05
           ],
           "rect": [
-            291,
-            1206,
+            126,
+            1845,
             120,
             164
           ]
@@ -7163,8 +8470,8 @@
             -64.05
           ],
           "rect": [
-            1854,
-            431,
+            325,
+            748,
             144,
             251
           ]
@@ -7176,8 +8483,8 @@
             -31.049999999999997
           ],
           "rect": [
-            1347,
-            1377,
+            296,
+            2295,
             78,
             116
           ]
@@ -7189,8 +8496,8 @@
             -42.05
           ],
           "rect": [
-            583,
-            1206,
+            523,
+            1845,
             118,
             157
           ]
@@ -7202,8 +8509,8 @@
             -40.05
           ],
           "rect": [
-            415,
-            1206,
+            250,
+            1845,
             164,
             158
           ]
@@ -7215,8 +8522,8 @@
             -12.049999999999997
           ],
           "rect": [
-            1899,
-            1619,
+            793,
+            2707,
             33,
             51
           ]
@@ -7228,8 +8535,8 @@
             -32.55
           ],
           "rect": [
-            331,
-            1377,
+            206,
+            2159,
             88,
             131
           ]
@@ -7241,8 +8548,8 @@
             -50.55
           ],
           "rect": [
-            2,
-            1003,
+            1048,
+            1263,
             146,
             199
           ]
@@ -7254,7 +8561,7 @@
             -63.05
           ],
           "rect": [
-            2,
+            473,
             748,
             144,
             251
@@ -7286,6 +8593,16 @@
       "kind": "impact",
       "skipOriginYZero": true,
       "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-击中效果组/屎花",
+      "adapter": "sequence",
+      "variantSounds": [
+        "cfnfx-stock-4.wav",
+        "cfnfx-stock-3.wav",
+        "cfnfx-stock-2.wav",
+        "cfnfx-stock-1.wav"
+      ],
+      "soundAtBirth": true,
       "frames": [
         {
           "sourceFrame": 1,
@@ -7294,8 +8611,8 @@
             -27.4
           ],
           "rect": [
-            2,
-            1516,
+            1332,
+            2417,
             95,
             99
           ]
@@ -7307,8 +8624,8 @@
             -27.4
           ],
           "rect": [
-            2,
-            1516,
+            1332,
+            2417,
             95,
             99
           ]
@@ -7320,8 +8637,8 @@
             -36.4
           ],
           "rect": [
-            1334,
-            1206,
+            1675,
+            1845,
             122,
             142
           ]
@@ -7333,8 +8650,8 @@
             -36.4
           ],
           "rect": [
-            1334,
-            1206,
+            1675,
+            1845,
             122,
             142
           ]
@@ -7346,8 +8663,8 @@
             -42.4
           ],
           "rect": [
-            1364,
-            1003,
+            189,
+            1665,
             119,
             175
           ]
@@ -7359,8 +8676,8 @@
             -42.4
           ],
           "rect": [
-            1364,
-            1003,
+            189,
+            1665,
             119,
             175
           ]
@@ -7372,8 +8689,8 @@
             -44.4
           ],
           "rect": [
-            492,
-            1003,
+            1691,
+            1263,
             132,
             194
           ]
@@ -7385,8 +8702,8 @@
             -44.4
           ],
           "rect": [
-            492,
-            1003,
+            1691,
+            1263,
             132,
             194
           ]
@@ -7398,8 +8715,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7411,8 +8728,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7424,8 +8741,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7437,8 +8754,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7450,8 +8767,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7463,8 +8780,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7476,8 +8793,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7489,8 +8806,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7502,8 +8819,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7515,8 +8832,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7528,8 +8845,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7541,8 +8858,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7554,8 +8871,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7567,8 +8884,8 @@
             -24.9
           ],
           "rect": [
-            1318,
-            1516,
+            797,
+            2527,
             72,
             86
           ]
@@ -7580,8 +8897,8 @@
             -24.9
           ],
           "rect": [
-            1318,
-            1516,
+            797,
+            2527,
             72,
             86
           ]
@@ -7593,8 +8910,8 @@
             -26.4
           ],
           "rect": [
-            101,
-            1516,
+            1431,
+            2417,
             89,
             99
           ]
@@ -7606,8 +8923,8 @@
             -26.4
           ],
           "rect": [
-            101,
-            1516,
+            1431,
+            2417,
             89,
             99
           ]
@@ -7619,8 +8936,8 @@
             -26.9
           ],
           "rect": [
-            1729,
-            1377,
+            796,
+            2295,
             103,
             113
           ]
@@ -7632,8 +8949,8 @@
             -26.9
           ],
           "rect": [
-            1729,
-            1377,
+            796,
+            2295,
             103,
             113
           ]
@@ -7645,8 +8962,8 @@
             -26.9
           ],
           "rect": [
-            1150,
-            1377,
+            1914,
+            2159,
             109,
             119
           ]
@@ -7658,8 +8975,8 @@
             -26.9
           ],
           "rect": [
-            1150,
-            1377,
+            1914,
+            2159,
             109,
             119
           ]
@@ -7671,8 +8988,8 @@
             -26.4
           ],
           "rect": [
-            1047,
-            1377,
+            1811,
+            2159,
             99,
             121
           ]
@@ -7684,8 +9001,8 @@
             -26.4
           ],
           "rect": [
-            1047,
-            1377,
+            1811,
+            2159,
             99,
             121
           ]
@@ -7697,8 +9014,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7710,8 +9027,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7723,8 +9040,8 @@
             -21.4
           ],
           "rect": [
-            497,
-            1619,
+            598,
+            2625,
             52,
             73
           ]
@@ -7736,8 +9053,8 @@
             -21.4
           ],
           "rect": [
-            497,
-            1619,
+            598,
+            2625,
             52,
             73
           ]
@@ -7749,8 +9066,8 @@
             -27.9
           ],
           "rect": [
-            362,
-            1516,
+            1692,
+            2417,
             71,
             97
           ]
@@ -7762,8 +9079,8 @@
             -27.9
           ],
           "rect": [
-            362,
-            1516,
+            1692,
+            2417,
             71,
             97
           ]
@@ -7775,8 +9092,8 @@
             -31.9
           ],
           "rect": [
-            1528,
-            1377,
+            595,
+            2295,
             82,
             114
           ]
@@ -7788,8 +9105,8 @@
             -31.9
           ],
           "rect": [
-            1528,
-            1377,
+            595,
+            2295,
             82,
             114
           ]
@@ -7801,8 +9118,8 @@
             -33.9
           ],
           "rect": [
-            748,
-            1377,
+            1406,
+            2159,
             90,
             123
           ]
@@ -7814,8 +9131,8 @@
             -33.9
           ],
           "rect": [
-            748,
-            1377,
+            1406,
+            2159,
             90,
             123
           ]
@@ -7827,8 +9144,8 @@
             -34.9
           ],
           "rect": [
-            234,
-            1377,
+            109,
+            2159,
             93,
             131
           ]
@@ -7840,8 +9157,8 @@
             -34.9
           ],
           "rect": [
-            234,
-            1377,
+            109,
+            2159,
             93,
             131
           ]
@@ -7853,8 +9170,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7866,8 +9183,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7879,8 +9196,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -7892,8 +9209,8 @@
             -31.9
           ],
           "rect": [
-            127,
-            1377,
+            2,
+            2159,
             103,
             132
           ]
@@ -7905,8 +9222,8 @@
             -31.9
           ],
           "rect": [
-            127,
-            1377,
+            2,
+            2159,
             103,
             132
           ]
@@ -7918,8 +9235,8 @@
             -39.9
           ],
           "rect": [
-            1487,
-            1003,
+            312,
+            1665,
             142,
             171
           ]
@@ -7931,8 +9248,8 @@
             -39.9
           ],
           "rect": [
-            1487,
-            1003,
+            312,
+            1665,
             142,
             171
           ]
@@ -7944,8 +9261,8 @@
             -42.4
           ],
           "rect": [
-            1190,
-            1003,
+            1142,
+            1469,
             170,
             182
           ]
@@ -7957,8 +9274,8 @@
             -42.4
           ],
           "rect": [
-            1190,
-            1003,
+            1142,
+            1469,
             170,
             182
           ]
@@ -7970,8 +9287,8 @@
             -44.4
           ],
           "rect": [
-            1852,
-            748,
+            192,
+            1263,
             181,
             202
           ]
@@ -7983,8 +9300,8 @@
             -44.4
           ],
           "rect": [
-            1852,
-            748,
+            192,
+            1263,
             181,
             202
           ]
@@ -7996,8 +9313,8 @@
             -29.4
           ],
           "rect": [
-            1458,
-            1516,
+            1060,
+            2527,
             183,
             81
           ]
@@ -8009,8 +9326,8 @@
             -29.4
           ],
           "rect": [
-            1458,
-            1516,
+            1060,
+            2527,
             183,
             81
           ]
@@ -8022,8 +9339,8 @@
             -10.899999999999999
           ],
           "rect": [
-            1505,
-            1619,
+            164,
+            2707,
             195,
             55
           ]
@@ -8035,8 +9352,8 @@
             -10.899999999999999
           ],
           "rect": [
-            1505,
-            1619,
+            164,
+            2707,
             195,
             55
           ]
@@ -8048,8 +9365,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -8061,8 +9378,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -8074,8 +9391,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -8087,8 +9404,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -8100,8 +9417,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -8113,8 +9430,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -8126,8 +9443,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -8139,8 +9456,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -8152,8 +9469,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -8165,8 +9482,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -8178,8 +9495,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -8191,8 +9508,8 @@
             -44.4
           ],
           "rect": [
-            1642,
-            1703,
+            982,
+            2767,
             1,
             1
           ]
@@ -8276,6 +9593,2618 @@
           67,
           68,
           69
+        ]
+      ]
+    },
+    {
+      "index": 35,
+      "linkage": "冰汽",
+      "kind": "impact",
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "sourceKey": "mist",
+      "sourceSymbol": "1.特效文件夹/14.远程子弹/冰汽/冰汽",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -38.5,
+            -21.200000000000003
+          ],
+          "rect": [
+            1399,
+            2527,
+            125,
+            81
+          ]
+        },
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -46.5,
+            -26.200000000000003
+          ],
+          "rect": [
+            309,
+            2417,
+            129,
+            103
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -46.5,
+            -26.200000000000003
+          ],
+          "rect": [
+            309,
+            2417,
+            129,
+            103
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            -50.0,
+            -29.200000000000003
+          ],
+          "rect": [
+            1666,
+            2295,
+            125,
+            108
+          ]
+        },
+        {
+          "sourceFrame": 4,
+          "offset": [
+            -50.0,
+            -29.200000000000003
+          ],
+          "rect": [
+            1666,
+            2295,
+            125,
+            108
+          ]
+        },
+        {
+          "sourceFrame": 5,
+          "offset": [
+            -51.0,
+            -29.700000000000003
+          ],
+          "rect": [
+            990,
+            2295,
+            109,
+            111
+          ]
+        },
+        {
+          "sourceFrame": 6,
+          "offset": [
+            -78.5,
+            -61.7
+          ],
+          "rect": [
+            982,
+            2767,
+            1,
+            1
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      ]
+    },
+    {
+      "index": 36,
+      "linkage": "烈焰火花",
+      "kind": "impact",
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "sourceKey": "mist",
+      "sourceSymbol": "1.特效文件夹/14.远程子弹/烈焰火花/烈焰火花",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -52.650000000000006,
+            -31.75
+          ],
+          "rect": [
+            865,
+            2159,
+            150,
+            126
+          ]
+        },
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -62.650000000000006,
+            -51.75
+          ],
+          "rect": [
+            1840,
+            1469,
+            183,
+            176
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -72.65,
+            -51.25
+          ],
+          "rect": [
+            377,
+            1263,
+            217,
+            201
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            -78.65,
+            -51.25
+          ],
+          "rect": [
+            592,
+            1028,
+            237,
+            220
+          ]
+        },
+        {
+          "sourceFrame": 4,
+          "offset": [
+            -80.15,
+            -51.75
+          ],
+          "rect": [
+            1605,
+            748,
+            246,
+            231
+          ]
+        },
+        {
+          "sourceFrame": 5,
+          "offset": [
+            -80.65,
+            -52.25
+          ],
+          "rect": [
+            1103,
+            748,
+            247,
+            231
+          ]
+        },
+        {
+          "sourceFrame": 6,
+          "offset": [
+            -80.65,
+            -52.25
+          ],
+          "rect": [
+            1103,
+            748,
+            247,
+            231
+          ]
+        },
+        {
+          "sourceFrame": 7,
+          "offset": [
+            -64.65,
+            -34.25
+          ],
+          "rect": [
+            458,
+            1665,
+            206,
+            169
+          ]
+        },
+        {
+          "sourceFrame": 8,
+          "offset": [
+            -64.65,
+            -34.25
+          ],
+          "rect": [
+            458,
+            1665,
+            206,
+            169
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      ]
+    },
+    {
+      "index": 37,
+      "linkage": "能量火花",
+      "kind": "impact",
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "sourceKey": "mist",
+      "sourceSymbol": "1.特效文件夹/14.远程子弹/能量火花/能量火花",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -52.650000000000006,
+            -31.75
+          ],
+          "rect": [
+            1019,
+            2159,
+            150,
+            126
+          ]
+        },
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -62.650000000000006,
+            -51.75
+          ],
+          "rect": [
+            2,
+            1665,
+            183,
+            176
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -72.65,
+            -51.25
+          ],
+          "rect": [
+            598,
+            1263,
+            217,
+            201
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            -78.65,
+            -51.25
+          ],
+          "rect": [
+            833,
+            1028,
+            237,
+            220
+          ]
+        },
+        {
+          "sourceFrame": 4,
+          "offset": [
+            -80.15,
+            -51.75
+          ],
+          "rect": [
+            2,
+            1028,
+            246,
+            231
+          ]
+        },
+        {
+          "sourceFrame": 5,
+          "offset": [
+            -80.65,
+            -52.25
+          ],
+          "rect": [
+            1354,
+            748,
+            247,
+            231
+          ]
+        },
+        {
+          "sourceFrame": 6,
+          "offset": [
+            -80.65,
+            -52.25
+          ],
+          "rect": [
+            1354,
+            748,
+            247,
+            231
+          ]
+        },
+        {
+          "sourceFrame": 7,
+          "offset": [
+            -64.65,
+            -34.25
+          ],
+          "rect": [
+            668,
+            1665,
+            206,
+            169
+          ]
+        },
+        {
+          "sourceFrame": 8,
+          "offset": [
+            -64.65,
+            -34.25
+          ],
+          "rect": [
+            668,
+            1665,
+            206,
+            169
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ]
+      ]
+    },
+    {
+      "index": 38,
+      "linkage": "空手攻击火花",
+      "kind": "impact",
+      "skipOriginYZero": true,
+      "worldLit": false,
+      "sourceKey": "stock",
+      "sourceSymbol": "无AS链接/Symbol 617",
+      "adapter": "nested-spin",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "nestedTransform": [
+        1,
+        0,
+        0,
+        1,
+        -1.2,
+        -1.7
+      ],
+      "sourceNestedTransform": [
+        0.284439086914063,
+        0.0,
+        0.0,
+        0.284439086914063,
+        -1.2,
+        -1.7
+      ],
+      "randomRotation": true,
+      "unitScaleXOnly": true,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -25.150000000000006,
+            -31.299999999999997
+          ],
+          "rect": [
+            474,
+            2159,
+            94,
+            128
+          ]
+        },
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -41.150000000000006,
+            -50.3
+          ],
+          "rect": [
+            1394,
+            1263,
+            149,
+            194
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -63.650000000000006,
+            -75.8
+          ],
+          "rect": [
+            709,
+            431,
+            261,
+            299
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "index": 39,
+      "linkage": "铁枪能量弹枪火",
+      "kind": "muzzle",
+      "skipOriginYZero": false,
+      "worldLit": false,
+      "sourceKey": "fs",
+      "sourceSymbol": "长枪/铁枪/铁枪能量弹枪火",
+      "adapter": "sequence",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "frames": [
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -0.050000000000000044,
+            -15.649999999999999
+          ],
+          "rect": [
+            568,
+            2707,
+            74,
+            52
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -0.050000000000000044,
+            -44.65
+          ],
+          "rect": [
+            1189,
+            1665,
+            132,
+            168
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            -0.050000000000000044,
+            -44.65
+          ],
+          "rect": [
+            418,
+            1845,
+            101,
+            158
+          ]
+        },
+        {
+          "sourceFrame": 4,
+          "offset": [
+            -0.050000000000000044,
+            -45.15
+          ],
+          "rect": [
+            1799,
+            1665,
+            132,
+            166
+          ]
+        },
+        {
+          "sourceFrame": 5,
+          "offset": [
+            1.45,
+            -6.649999999999999
+          ],
+          "rect": [
+            1724,
+            2707,
+            54,
+            26
+          ]
+        },
+        {
+          "sourceFrame": 7,
+          "offset": [
+            0.95,
+            -14.149999999999999
+          ],
+          "rect": [
+            489,
+            2707,
+            75,
+            52
+          ]
+        },
+        {
+          "sourceFrame": 8,
+          "offset": [
+            -0.55,
+            -39.15
+          ],
+          "rect": [
+            1662,
+            1665,
+            133,
+            166
+          ]
+        },
+        {
+          "sourceFrame": 9,
+          "offset": [
+            1.45,
+            -6.649999999999999
+          ],
+          "rect": [
+            1782,
+            2707,
+            54,
+            26
+          ]
+        },
+        {
+          "sourceFrame": 11,
+          "offset": [
+            -0.050000000000000044,
+            -11.649999999999999
+          ],
+          "rect": [
+            646,
+            2707,
+            74,
+            51
+          ]
+        },
+        {
+          "sourceFrame": 12,
+          "offset": [
+            -0.55,
+            -30.65
+          ],
+          "rect": [
+            298,
+            2159,
+            80,
+            130
+          ]
+        },
+        {
+          "sourceFrame": 13,
+          "offset": [
+            -0.050000000000000044,
+            -20.15
+          ],
+          "rect": [
+            1723,
+            2527,
+            51,
+            81
+          ]
+        },
+        {
+          "sourceFrame": 14,
+          "offset": [
+            1.45,
+            -6.649999999999999
+          ],
+          "rect": [
+            1840,
+            2707,
+            54,
+            26
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        [
+          5,
+          6,
+          7
+        ],
+        [
+          8,
+          9,
+          10,
+          11
+        ]
+      ]
+    },
+    {
+      "index": 40,
+      "linkage": "飙血",
+      "kind": "impact",
+      "skipOriginYZero": true,
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "特效-血液组/飙血",
+      "adapter": "blood-impact",
+      "variantSounds": [
+        "blood1.mp3",
+        "blood2.wav",
+        "blood3.mp3",
+        "blood4.mp3",
+        "blood5.wav",
+        "blood6.wav",
+        "blood7.wav"
+      ],
+      "soundAtBirth": true,
+      "frames": [
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -24.849999999999994,
+            -17.950000000000003
+          ],
+          "rect": [
+            777,
+            2625,
+            81,
+            70
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -24.849999999999994,
+            -17.950000000000003
+          ],
+          "rect": [
+            777,
+            2625,
+            81,
+            70
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            -38.849999999999994,
+            -19.450000000000003
+          ],
+          "rect": [
+            2,
+            2625,
+            115,
+            78
+          ]
+        },
+        {
+          "sourceFrame": 4,
+          "offset": [
+            -38.849999999999994,
+            -19.450000000000003
+          ],
+          "rect": [
+            2,
+            2625,
+            115,
+            78
+          ]
+        },
+        {
+          "sourceFrame": 5,
+          "offset": [
+            -48.349999999999994,
+            -18.950000000000003
+          ],
+          "rect": [
+            462,
+            2625,
+            132,
+            75
+          ]
+        },
+        {
+          "sourceFrame": 6,
+          "offset": [
+            -48.349999999999994,
+            -18.950000000000003
+          ],
+          "rect": [
+            462,
+            2625,
+            132,
+            75
+          ]
+        },
+        {
+          "sourceFrame": 7,
+          "offset": [
+            -65.85,
+            -24.950000000000003
+          ],
+          "rect": [
+            857,
+            2417,
+            184,
+            100
+          ]
+        },
+        {
+          "sourceFrame": 8,
+          "offset": [
+            -65.85,
+            -24.950000000000003
+          ],
+          "rect": [
+            857,
+            2417,
+            184,
+            100
+          ]
+        },
+        {
+          "sourceFrame": 9,
+          "offset": [
+            -74.35,
+            -27.950000000000003
+          ],
+          "rect": [
+            2,
+            2295,
+            206,
+            118
+          ]
+        },
+        {
+          "sourceFrame": 10,
+          "offset": [
+            -74.35,
+            -27.950000000000003
+          ],
+          "rect": [
+            2,
+            2295,
+            206,
+            118
+          ]
+        },
+        {
+          "sourceFrame": 11,
+          "offset": [
+            -45.349999999999994,
+            -33.95
+          ],
+          "rect": [
+            1842,
+            2014,
+            159,
+            134
+          ]
+        },
+        {
+          "sourceFrame": 12,
+          "offset": [
+            -45.349999999999994,
+            -33.95
+          ],
+          "rect": [
+            1842,
+            2014,
+            159,
+            134
+          ]
+        },
+        {
+          "sourceFrame": 14,
+          "offset": [
+            -15.849999999999994,
+            -10.950000000000003
+          ],
+          "rect": [
+            1074,
+            2707,
+            79,
+            48
+          ]
+        },
+        {
+          "sourceFrame": 15,
+          "offset": [
+            -15.849999999999994,
+            -10.950000000000003
+          ],
+          "rect": [
+            1074,
+            2707,
+            79,
+            48
+          ]
+        },
+        {
+          "sourceFrame": 16,
+          "offset": [
+            -32.349999999999994,
+            -17.450000000000003
+          ],
+          "rect": [
+            873,
+            2527,
+            119,
+            85
+          ]
+        },
+        {
+          "sourceFrame": 17,
+          "offset": [
+            -32.349999999999994,
+            -17.450000000000003
+          ],
+          "rect": [
+            873,
+            2527,
+            119,
+            85
+          ]
+        },
+        {
+          "sourceFrame": 18,
+          "offset": [
+            -53.349999999999994,
+            -26.950000000000003
+          ],
+          "rect": [
+            2,
+            2417,
+            161,
+            106
+          ]
+        },
+        {
+          "sourceFrame": 19,
+          "offset": [
+            -53.349999999999994,
+            -26.950000000000003
+          ],
+          "rect": [
+            2,
+            2417,
+            161,
+            106
+          ]
+        },
+        {
+          "sourceFrame": 20,
+          "offset": [
+            -67.35,
+            -24.950000000000003
+          ],
+          "rect": [
+            442,
+            2417,
+            208,
+            102
+          ]
+        },
+        {
+          "sourceFrame": 21,
+          "offset": [
+            -67.35,
+            -24.950000000000003
+          ],
+          "rect": [
+            442,
+            2417,
+            208,
+            102
+          ]
+        },
+        {
+          "sourceFrame": 22,
+          "offset": [
+            -77.85,
+            -26.450000000000003
+          ],
+          "rect": [
+            167,
+            2417,
+            138,
+            106
+          ]
+        },
+        {
+          "sourceFrame": 23,
+          "offset": [
+            -77.85,
+            -26.450000000000003
+          ],
+          "rect": [
+            167,
+            2417,
+            138,
+            106
+          ]
+        },
+        {
+          "sourceFrame": 25,
+          "offset": [
+            -17.349999999999994,
+            -9.950000000000003
+          ],
+          "rect": [
+            1365,
+            2707,
+            75,
+            46
+          ]
+        },
+        {
+          "sourceFrame": 26,
+          "offset": [
+            -17.349999999999994,
+            -9.950000000000003
+          ],
+          "rect": [
+            1365,
+            2707,
+            75,
+            46
+          ]
+        },
+        {
+          "sourceFrame": 27,
+          "offset": [
+            -20.349999999999994,
+            -27.450000000000003
+          ],
+          "rect": [
+            1103,
+            2295,
+            89,
+            111
+          ]
+        },
+        {
+          "sourceFrame": 28,
+          "offset": [
+            -20.349999999999994,
+            -27.450000000000003
+          ],
+          "rect": [
+            1103,
+            2295,
+            89,
+            111
+          ]
+        },
+        {
+          "sourceFrame": 29,
+          "offset": [
+            -36.849999999999994,
+            -50.95
+          ],
+          "rect": [
+            1611,
+            1469,
+            225,
+            176
+          ]
+        },
+        {
+          "sourceFrame": 30,
+          "offset": [
+            -36.849999999999994,
+            -50.95
+          ],
+          "rect": [
+            1611,
+            1469,
+            225,
+            176
+          ]
+        },
+        {
+          "sourceFrame": 31,
+          "offset": [
+            -28.349999999999994,
+            -38.95
+          ],
+          "rect": [
+            330,
+            2014,
+            141,
+            139
+          ]
+        },
+        {
+          "sourceFrame": 32,
+          "offset": [
+            -28.349999999999994,
+            -38.95
+          ],
+          "rect": [
+            330,
+            2014,
+            141,
+            139
+          ]
+        },
+        {
+          "sourceFrame": 34,
+          "offset": [
+            -17.349999999999994,
+            -17.950000000000003
+          ],
+          "rect": [
+            1185,
+            2625,
+            73,
+            67
+          ]
+        },
+        {
+          "sourceFrame": 35,
+          "offset": [
+            -17.349999999999994,
+            -17.950000000000003
+          ],
+          "rect": [
+            1185,
+            2625,
+            73,
+            67
+          ]
+        },
+        {
+          "sourceFrame": 36,
+          "offset": [
+            -17.349999999999994,
+            -17.950000000000003
+          ],
+          "rect": [
+            1185,
+            2625,
+            73,
+            67
+          ]
+        },
+        {
+          "sourceFrame": 37,
+          "offset": [
+            -25.349999999999994,
+            -30.450000000000003
+          ],
+          "rect": [
+            1500,
+            2159,
+            102,
+            122
+          ]
+        },
+        {
+          "sourceFrame": 38,
+          "offset": [
+            -25.349999999999994,
+            -30.450000000000003
+          ],
+          "rect": [
+            1500,
+            2159,
+            102,
+            122
+          ]
+        },
+        {
+          "sourceFrame": 39,
+          "offset": [
+            -25.349999999999994,
+            -30.450000000000003
+          ],
+          "rect": [
+            1500,
+            2159,
+            102,
+            122
+          ]
+        },
+        {
+          "sourceFrame": 40,
+          "offset": [
+            -35.349999999999994,
+            -32.45
+          ],
+          "rect": [
+            195,
+            2014,
+            131,
+            140
+          ]
+        },
+        {
+          "sourceFrame": 41,
+          "offset": [
+            -35.349999999999994,
+            -32.45
+          ],
+          "rect": [
+            195,
+            2014,
+            131,
+            140
+          ]
+        },
+        {
+          "sourceFrame": 42,
+          "offset": [
+            -35.349999999999994,
+            -32.45
+          ],
+          "rect": [
+            195,
+            2014,
+            131,
+            140
+          ]
+        },
+        {
+          "sourceFrame": 43,
+          "offset": [
+            -45.849999999999994,
+            -26.950000000000003
+          ],
+          "rect": [
+            778,
+            1845,
+            182,
+            148
+          ]
+        },
+        {
+          "sourceFrame": 44,
+          "offset": [
+            -45.849999999999994,
+            -26.950000000000003
+          ],
+          "rect": [
+            778,
+            1845,
+            182,
+            148
+          ]
+        },
+        {
+          "sourceFrame": 45,
+          "offset": [
+            -45.849999999999994,
+            -26.950000000000003
+          ],
+          "rect": [
+            778,
+            1845,
+            182,
+            148
+          ]
+        },
+        {
+          "sourceFrame": 46,
+          "offset": [
+            -58.849999999999994,
+            -13.950000000000003
+          ],
+          "rect": [
+            1219,
+            2014,
+            239,
+            135
+          ]
+        },
+        {
+          "sourceFrame": 47,
+          "offset": [
+            -58.849999999999994,
+            -13.950000000000003
+          ],
+          "rect": [
+            1219,
+            2014,
+            239,
+            135
+          ]
+        },
+        {
+          "sourceFrame": 48,
+          "offset": [
+            -58.849999999999994,
+            -13.950000000000003
+          ],
+          "rect": [
+            1219,
+            2014,
+            239,
+            135
+          ]
+        },
+        {
+          "sourceFrame": 49,
+          "offset": [
+            -50.349999999999994,
+            -5.950000000000003
+          ],
+          "rect": [
+            1801,
+            1845,
+            234,
+            141
+          ]
+        },
+        {
+          "sourceFrame": 50,
+          "offset": [
+            -50.349999999999994,
+            -5.950000000000003
+          ],
+          "rect": [
+            1801,
+            1845,
+            234,
+            141
+          ]
+        },
+        {
+          "sourceFrame": 51,
+          "offset": [
+            -50.349999999999994,
+            -5.950000000000003
+          ],
+          "rect": [
+            1801,
+            1845,
+            234,
+            141
+          ]
+        },
+        {
+          "sourceFrame": 52,
+          "offset": [
+            -55.849999999999994,
+            5.549999999999997
+          ],
+          "rect": [
+            1587,
+            2014,
+            251,
+            134
+          ]
+        },
+        {
+          "sourceFrame": 53,
+          "offset": [
+            -55.849999999999994,
+            5.549999999999997
+          ],
+          "rect": [
+            1587,
+            2014,
+            251,
+            134
+          ]
+        },
+        {
+          "sourceFrame": 54,
+          "offset": [
+            -55.849999999999994,
+            5.549999999999997
+          ],
+          "rect": [
+            1587,
+            2014,
+            251,
+            134
+          ]
+        },
+        {
+          "sourceFrame": 55,
+          "offset": [
+            -37.349999999999994,
+            12.549999999999997
+          ],
+          "rect": [
+            1369,
+            1845,
+            211,
+            143
+          ]
+        },
+        {
+          "sourceFrame": 56,
+          "offset": [
+            -37.349999999999994,
+            12.549999999999997
+          ],
+          "rect": [
+            1369,
+            1845,
+            211,
+            143
+          ]
+        },
+        {
+          "sourceFrame": 57,
+          "offset": [
+            -37.349999999999994,
+            12.549999999999997
+          ],
+          "rect": [
+            1369,
+            1845,
+            211,
+            143
+          ]
+        },
+        {
+          "sourceFrame": 59,
+          "offset": [
+            -23.349999999999994,
+            -29.950000000000003
+          ],
+          "rect": [
+            1767,
+            2417,
+            79,
+            96
+          ]
+        },
+        {
+          "sourceFrame": 60,
+          "offset": [
+            -23.349999999999994,
+            -29.950000000000003
+          ],
+          "rect": [
+            1767,
+            2417,
+            79,
+            96
+          ]
+        },
+        {
+          "sourceFrame": 61,
+          "offset": [
+            -23.349999999999994,
+            -29.950000000000003
+          ],
+          "rect": [
+            1767,
+            2417,
+            79,
+            96
+          ]
+        },
+        {
+          "sourceFrame": 62,
+          "offset": [
+            -28.349999999999994,
+            -29.450000000000003
+          ],
+          "rect": [
+            1196,
+            2295,
+            101,
+            109
+          ]
+        },
+        {
+          "sourceFrame": 63,
+          "offset": [
+            -28.349999999999994,
+            -29.450000000000003
+          ],
+          "rect": [
+            1196,
+            2295,
+            101,
+            109
+          ]
+        },
+        {
+          "sourceFrame": 64,
+          "offset": [
+            -28.349999999999994,
+            -29.450000000000003
+          ],
+          "rect": [
+            1196,
+            2295,
+            101,
+            109
+          ]
+        },
+        {
+          "sourceFrame": 65,
+          "offset": [
+            -33.349999999999994,
+            -37.45
+          ],
+          "rect": [
+            1795,
+            2295,
+            108,
+            107
+          ]
+        },
+        {
+          "sourceFrame": 66,
+          "offset": [
+            -33.349999999999994,
+            -37.45
+          ],
+          "rect": [
+            1795,
+            2295,
+            108,
+            107
+          ]
+        },
+        {
+          "sourceFrame": 67,
+          "offset": [
+            -33.349999999999994,
+            -37.45
+          ],
+          "rect": [
+            1795,
+            2295,
+            108,
+            107
+          ]
+        },
+        {
+          "sourceFrame": 68,
+          "offset": [
+            -37.849999999999994,
+            -38.95
+          ],
+          "rect": [
+            1406,
+            2295,
+            126,
+            108
+          ]
+        },
+        {
+          "sourceFrame": 69,
+          "offset": [
+            -37.849999999999994,
+            -38.95
+          ],
+          "rect": [
+            1406,
+            2295,
+            126,
+            108
+          ]
+        },
+        {
+          "sourceFrame": 70,
+          "offset": [
+            -37.849999999999994,
+            -38.95
+          ],
+          "rect": [
+            1406,
+            2295,
+            126,
+            108
+          ]
+        },
+        {
+          "sourceFrame": 71,
+          "offset": [
+            -36.849999999999994,
+            -35.95
+          ],
+          "rect": [
+            617,
+            2014,
+            138,
+            138
+          ]
+        },
+        {
+          "sourceFrame": 72,
+          "offset": [
+            -36.849999999999994,
+            -35.95
+          ],
+          "rect": [
+            617,
+            2014,
+            138,
+            138
+          ]
+        },
+        {
+          "sourceFrame": 73,
+          "offset": [
+            -36.849999999999994,
+            -35.95
+          ],
+          "rect": [
+            617,
+            2014,
+            138,
+            138
+          ]
+        },
+        {
+          "sourceFrame": 74,
+          "offset": [
+            -39.349999999999994,
+            6.049999999999997
+          ],
+          "rect": [
+            654,
+            2625,
+            119,
+            70
+          ]
+        },
+        {
+          "sourceFrame": 75,
+          "offset": [
+            -39.349999999999994,
+            6.049999999999997
+          ],
+          "rect": [
+            654,
+            2625,
+            119,
+            70
+          ]
+        },
+        {
+          "sourceFrame": 76,
+          "offset": [
+            -39.349999999999994,
+            6.049999999999997
+          ],
+          "rect": [
+            654,
+            2625,
+            119,
+            70
+          ]
+        },
+        {
+          "sourceFrame": 78,
+          "offset": [
+            -6.849999999999994,
+            -12.450000000000003
+          ],
+          "rect": [
+            1695,
+            2625,
+            46,
+            62
+          ]
+        },
+        {
+          "sourceFrame": 79,
+          "offset": [
+            -6.849999999999994,
+            -12.450000000000003
+          ],
+          "rect": [
+            1695,
+            2625,
+            46,
+            62
+          ]
+        },
+        {
+          "sourceFrame": 80,
+          "offset": [
+            -6.849999999999994,
+            -12.450000000000003
+          ],
+          "rect": [
+            1695,
+            2625,
+            46,
+            62
+          ]
+        },
+        {
+          "sourceFrame": 81,
+          "offset": [
+            -17.849999999999994,
+            -19.950000000000003
+          ],
+          "rect": [
+            762,
+            2417,
+            91,
+            102
+          ]
+        },
+        {
+          "sourceFrame": 82,
+          "offset": [
+            -17.849999999999994,
+            -19.950000000000003
+          ],
+          "rect": [
+            762,
+            2417,
+            91,
+            102
+          ]
+        },
+        {
+          "sourceFrame": 83,
+          "offset": [
+            -17.849999999999994,
+            -19.950000000000003
+          ],
+          "rect": [
+            762,
+            2417,
+            91,
+            102
+          ]
+        },
+        {
+          "sourceFrame": 84,
+          "offset": [
+            -25.349999999999994,
+            -25.950000000000003
+          ],
+          "rect": [
+            378,
+            2295,
+            114,
+            115
+          ]
+        },
+        {
+          "sourceFrame": 85,
+          "offset": [
+            -25.349999999999994,
+            -25.950000000000003
+          ],
+          "rect": [
+            378,
+            2295,
+            114,
+            115
+          ]
+        },
+        {
+          "sourceFrame": 86,
+          "offset": [
+            -25.349999999999994,
+            -25.950000000000003
+          ],
+          "rect": [
+            378,
+            2295,
+            114,
+            115
+          ]
+        },
+        {
+          "sourceFrame": 87,
+          "offset": [
+            -34.349999999999994,
+            -35.45
+          ],
+          "rect": [
+            1074,
+            2014,
+            141,
+            137
+          ]
+        },
+        {
+          "sourceFrame": 88,
+          "offset": [
+            -34.349999999999994,
+            -35.45
+          ],
+          "rect": [
+            1074,
+            2014,
+            141,
+            137
+          ]
+        },
+        {
+          "sourceFrame": 89,
+          "offset": [
+            -34.349999999999994,
+            -35.45
+          ],
+          "rect": [
+            1074,
+            2014,
+            141,
+            137
+          ]
+        },
+        {
+          "sourceFrame": 90,
+          "offset": [
+            -42.849999999999994,
+            -45.95
+          ],
+          "rect": [
+            1325,
+            1665,
+            168,
+            167
+          ]
+        },
+        {
+          "sourceFrame": 91,
+          "offset": [
+            -42.849999999999994,
+            -45.95
+          ],
+          "rect": [
+            1325,
+            1665,
+            168,
+            167
+          ]
+        },
+        {
+          "sourceFrame": 92,
+          "offset": [
+            -42.849999999999994,
+            -45.95
+          ],
+          "rect": [
+            1325,
+            1665,
+            168,
+            167
+          ]
+        },
+        {
+          "sourceFrame": 93,
+          "offset": [
+            -49.349999999999994,
+            -42.95
+          ],
+          "rect": [
+            962,
+            1469,
+            176,
+            183
+          ]
+        },
+        {
+          "sourceFrame": 94,
+          "offset": [
+            -49.349999999999994,
+            -42.95
+          ],
+          "rect": [
+            962,
+            1469,
+            176,
+            183
+          ]
+        },
+        {
+          "sourceFrame": 95,
+          "offset": [
+            -49.349999999999994,
+            -42.95
+          ],
+          "rect": [
+            962,
+            1469,
+            176,
+            183
+          ]
+        },
+        {
+          "sourceFrame": 96,
+          "offset": [
+            -66.35,
+            -41.95
+          ],
+          "rect": [
+            819,
+            1263,
+            225,
+            199
+          ]
+        },
+        {
+          "sourceFrame": 97,
+          "offset": [
+            -66.35,
+            -41.95
+          ],
+          "rect": [
+            819,
+            1263,
+            225,
+            199
+          ]
+        },
+        {
+          "sourceFrame": 98,
+          "offset": [
+            -66.35,
+            -41.95
+          ],
+          "rect": [
+            819,
+            1263,
+            225,
+            199
+          ]
+        },
+        {
+          "sourceFrame": 99,
+          "offset": [
+            -75.85,
+            -36.95
+          ],
+          "rect": [
+            1232,
+            1028,
+            265,
+            209
+          ]
+        },
+        {
+          "sourceFrame": 100,
+          "offset": [
+            -75.85,
+            -36.95
+          ],
+          "rect": [
+            1232,
+            1028,
+            265,
+            209
+          ]
+        },
+        {
+          "sourceFrame": 101,
+          "offset": [
+            -75.85,
+            -36.95
+          ],
+          "rect": [
+            1232,
+            1028,
+            265,
+            209
+          ]
+        },
+        {
+          "sourceFrame": 102,
+          "offset": [
+            -76.85,
+            -20.450000000000003
+          ],
+          "rect": [
+            181,
+            1469,
+            279,
+            191
+          ]
+        },
+        {
+          "sourceFrame": 103,
+          "offset": [
+            -76.85,
+            -20.450000000000003
+          ],
+          "rect": [
+            181,
+            1469,
+            279,
+            191
+          ]
+        },
+        {
+          "sourceFrame": 104,
+          "offset": [
+            -76.85,
+            -20.450000000000003
+          ],
+          "rect": [
+            181,
+            1469,
+            279,
+            191
+          ]
+        },
+        {
+          "sourceFrame": 105,
+          "offset": [
+            -76.35,
+            -9.450000000000003
+          ],
+          "rect": [
+            464,
+            1469,
+            291,
+            187
+          ]
+        },
+        {
+          "sourceFrame": 106,
+          "offset": [
+            -76.35,
+            -9.450000000000003
+          ],
+          "rect": [
+            464,
+            1469,
+            291,
+            187
+          ]
+        },
+        {
+          "sourceFrame": 107,
+          "offset": [
+            -76.35,
+            -9.450000000000003
+          ],
+          "rect": [
+            464,
+            1469,
+            291,
+            187
+          ]
+        },
+        {
+          "sourceFrame": 108,
+          "offset": [
+            -74.85,
+            0.5499999999999972
+          ],
+          "rect": [
+            1316,
+            1469,
+            291,
+            181
+          ]
+        },
+        {
+          "sourceFrame": 109,
+          "offset": [
+            -74.85,
+            0.5499999999999972
+          ],
+          "rect": [
+            1316,
+            1469,
+            291,
+            181
+          ]
+        },
+        {
+          "sourceFrame": 110,
+          "offset": [
+            -74.85,
+            0.5499999999999972
+          ],
+          "rect": [
+            1316,
+            1469,
+            291,
+            181
+          ]
+        },
+        {
+          "sourceFrame": 111,
+          "offset": [
+            -73.35,
+            17.049999999999997
+          ],
+          "rect": [
+            572,
+            2159,
+            289,
+            127
+          ]
+        },
+        {
+          "sourceFrame": 112,
+          "offset": [
+            -73.35,
+            17.049999999999997
+          ],
+          "rect": [
+            572,
+            2159,
+            289,
+            127
+          ]
+        },
+        {
+          "sourceFrame": 113,
+          "offset": [
+            -73.35,
+            17.049999999999997
+          ],
+          "rect": [
+            572,
+            2159,
+            289,
+            127
+          ]
+        },
+        {
+          "sourceFrame": 114,
+          "offset": [
+            -64.35,
+            33.55
+          ],
+          "rect": [
+            1045,
+            2417,
+            283,
+            99
+          ]
+        },
+        {
+          "sourceFrame": 115,
+          "offset": [
+            -64.35,
+            33.55
+          ],
+          "rect": [
+            1045,
+            2417,
+            283,
+            99
+          ]
+        },
+        {
+          "sourceFrame": 116,
+          "offset": [
+            -64.35,
+            33.55
+          ],
+          "rect": [
+            1045,
+            2417,
+            283,
+            99
+          ]
+        },
+        {
+          "sourceFrame": 118,
+          "offset": [
+            -23.349999999999994,
+            -19.950000000000003
+          ],
+          "rect": [
+            1850,
+            2417,
+            79,
+            96
+          ]
+        },
+        {
+          "sourceFrame": 119,
+          "offset": [
+            -23.349999999999994,
+            -19.950000000000003
+          ],
+          "rect": [
+            1850,
+            2417,
+            79,
+            96
+          ]
+        },
+        {
+          "sourceFrame": 120,
+          "offset": [
+            -23.349999999999994,
+            -19.950000000000003
+          ],
+          "rect": [
+            1850,
+            2417,
+            79,
+            96
+          ]
+        },
+        {
+          "sourceFrame": 121,
+          "offset": [
+            -28.349999999999994,
+            -26.950000000000003
+          ],
+          "rect": [
+            1301,
+            2295,
+            101,
+            109
+          ]
+        },
+        {
+          "sourceFrame": 122,
+          "offset": [
+            -28.349999999999994,
+            -26.950000000000003
+          ],
+          "rect": [
+            1301,
+            2295,
+            101,
+            109
+          ]
+        },
+        {
+          "sourceFrame": 123,
+          "offset": [
+            -28.349999999999994,
+            -26.950000000000003
+          ],
+          "rect": [
+            1301,
+            2295,
+            101,
+            109
+          ]
+        },
+        {
+          "sourceFrame": 124,
+          "offset": [
+            -33.349999999999994,
+            -17.950000000000003
+          ],
+          "rect": [
+            1907,
+            2295,
+            108,
+            107
+          ]
+        },
+        {
+          "sourceFrame": 125,
+          "offset": [
+            -33.349999999999994,
+            -17.950000000000003
+          ],
+          "rect": [
+            1907,
+            2295,
+            108,
+            107
+          ]
+        },
+        {
+          "sourceFrame": 126,
+          "offset": [
+            -33.349999999999994,
+            -17.950000000000003
+          ],
+          "rect": [
+            1907,
+            2295,
+            108,
+            107
+          ]
+        },
+        {
+          "sourceFrame": 127,
+          "offset": [
+            -37.849999999999994,
+            -16.950000000000003
+          ],
+          "rect": [
+            1536,
+            2295,
+            126,
+            108
+          ]
+        },
+        {
+          "sourceFrame": 128,
+          "offset": [
+            -37.849999999999994,
+            -16.950000000000003
+          ],
+          "rect": [
+            1536,
+            2295,
+            126,
+            108
+          ]
+        },
+        {
+          "sourceFrame": 129,
+          "offset": [
+            -37.849999999999994,
+            -16.950000000000003
+          ],
+          "rect": [
+            1536,
+            2295,
+            126,
+            108
+          ]
+        },
+        {
+          "sourceFrame": 130,
+          "offset": [
+            -36.849999999999994,
+            -35.45
+          ],
+          "rect": [
+            475,
+            2014,
+            138,
+            139
+          ]
+        },
+        {
+          "sourceFrame": 131,
+          "offset": [
+            -36.849999999999994,
+            -35.45
+          ],
+          "rect": [
+            475,
+            2014,
+            138,
+            139
+          ]
+        },
+        {
+          "sourceFrame": 132,
+          "offset": [
+            -36.849999999999994,
+            -35.45
+          ],
+          "rect": [
+            475,
+            2014,
+            138,
+            139
+          ]
+        },
+        {
+          "sourceFrame": 133,
+          "offset": [
+            -39.349999999999994,
+            -42.95
+          ],
+          "rect": [
+            1062,
+            2625,
+            119,
+            69
+          ]
+        },
+        {
+          "sourceFrame": 134,
+          "offset": [
+            -39.349999999999994,
+            -42.95
+          ],
+          "rect": [
+            1062,
+            2625,
+            119,
+            69
+          ]
+        },
+        {
+          "sourceFrame": 135,
+          "offset": [
+            -39.349999999999994,
+            -42.95
+          ],
+          "rect": [
+            1062,
+            2625,
+            119,
+            69
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        [
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21
+        ],
+        [
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        [
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53
+        ],
+        [
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71
+        ],
+        [
+          72,
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          86,
+          87,
+          88,
+          89,
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          103,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110
+        ],
+        [
+          111,
+          112,
+          113,
+          114,
+          115,
+          116,
+          117,
+          118,
+          119,
+          120,
+          121,
+          122,
+          123,
+          124,
+          125,
+          126,
+          127,
+          128
+        ]
+      ]
+    },
+    {
+      "index": 41,
+      "linkage": "子弹碎片-飞血",
+      "kind": "blood",
+      "skipOriginYZero": false,
+      "worldLit": true,
+      "sourceKey": "stock",
+      "sourceSymbol": "无AS链接/飞血动画",
+      "adapter": "blood-static",
+      "variantSounds": [],
+      "soundAtBirth": false,
+      "frames": [
+        {
+          "sourceFrame": 0,
+          "offset": [
+            -2.1500000000000004,
+            -5.15
+          ],
+          "rect": [
+            282,
+            2767,
+            9,
+            20
+          ]
+        },
+        {
+          "sourceFrame": 1,
+          "offset": [
+            -5.15,
+            -5.15
+          ],
+          "rect": [
+            186,
+            2767,
+            20,
+            20
+          ]
+        },
+        {
+          "sourceFrame": 2,
+          "offset": [
+            -5.15,
+            -5.15
+          ],
+          "rect": [
+            210,
+            2767,
+            20,
+            20
+          ]
+        },
+        {
+          "sourceFrame": 3,
+          "offset": [
+            -5.15,
+            -5.15
+          ],
+          "rect": [
+            234,
+            2767,
+            20,
+            20
+          ]
+        },
+        {
+          "sourceFrame": 4,
+          "offset": [
+            -5.15,
+            -5.15
+          ],
+          "rect": [
+            258,
+            2767,
+            20,
+            20
+          ]
+        }
+      ],
+      "variants": [
+        [
+          0
+        ],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          3
+        ],
+        [
+          4
         ]
       ]
     }

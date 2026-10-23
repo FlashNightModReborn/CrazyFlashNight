@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param([int]$TimeoutSeconds=300)
 $ErrorActionPreference='Stop'
 chcp.com 65001 | Out-Null
@@ -15,6 +15,8 @@ $run=@{
   'scripts/类定义/org/flashNight/arki/render/ChainVisualBridge.as',
   'scripts/类定义/org/flashNight/arki/render/RayVisualBridge.as',
   'scripts/类定义/org/flashNight/arki/render/CombatFxBridge.as',
+  'scripts/类定义/org/flashNight/arki/render/BloodVisualBridge.as',
+  'scripts/类定义/org/flashNight/arki/component/Effect/BitmapEffectRenderer.as',
   'scripts/类定义/org/flashNight/arki/render/SceneLightBridge.as',
   'scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as',
   'scripts/类定义/org/flashNight/arki/corpse/DeathEffectRenderer.as',
@@ -25,9 +27,10 @@ $run=@{
  ExpectedTracePatterns=@(
   '(?m)^WorkerProjectionTest Tests Passed: [1-9][0-9]*\r?$',
   '(?m)^WorkerProjectionTest Tests Failed: 0\r?$',
+  '(?m)^\[WORKER_BLOOD_NONE\] births=4096 queued=0 pendingStamps=0 clean=true\r?$',
   '(?m)^\[WORKER_CHAIN_BOUND\] groupsBorn=45000 unitsBorn=360000 peakLiveGroups=1 peakReserved=8 projectionRows=0 finalGroups=0 '
  )
- SuccessSummary='Actual root EnterFrame installation, full/none Chain authority equality and bounded no-consumer production'
+ SuccessSummary='Actual root EnterFrame installation, full/none Chain authority equality and bounded no-consumer production including ordinary blood'
  AsyncBehaviorTimeoutSeconds=600
  TimeoutSeconds=$TimeoutSeconds
 }

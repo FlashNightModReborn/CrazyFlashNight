@@ -47,7 +47,25 @@ namespace CF7Launcher.Guardian.WorldCompositor
             byte[] png=File.ReadAllBytes(Path.Combine(root,AtlasPath));
             if (png.Length>4*1024*1024 || !HashMatches(png,atlas.GetProperty("sha256").GetString()))
                 throw new InvalidDataException("Effect atlas integrity mismatch");
-            bool boundSwf=false;
+            var libraries=new Dictionary<string,(string Swf,string Library)>(StringComparer.Ordinal) {
+                ["stock"]=(BulletVisualCatalog.SourceSwf,"flashswf/arts/原版素材库-子弹/LIBRARY"),
+                ["mist"]=("flashswf/arts/new/雾人整合特效.swf","flashswf/arts/new/雾人整合特效/LIBRARY"),
+                ["fs"]=("flashswf/arts/new/fs配置素材.swf","flashswf/arts/new/fs配置素材/LIBRARY") };
+            var declared=new HashSet<string>(StringComparer.Ordinal) {"stock"};
+            if(data.TryGetProperty("sourceLibraries",out JsonElement libraryList))
+            {
+                declared.Clear();
+                if(libraryList.GetArrayLength()<1 || libraryList.GetArrayLength()>3)throw new InvalidDataException("Invalid source libraries");
+                foreach(JsonElement entry in libraryList.EnumerateArray())
+                {
+                    string key=entry.GetProperty("key").GetString();
+                    if(key==null || !libraries.TryGetValue(key,out var source) || !declared.Add(key)
+                        || entry.GetProperty("swf").GetString()!=source.Swf
+                        || entry.GetProperty("libraryRoot").GetString()!=source.Library)
+                        throw new InvalidDataException("Unsupported source library");
+                }
+            }
+            var bound=new HashSet<string>(StringComparer.Ordinal);
             var sourceNames=new HashSet<string>(StringComparer.Ordinal);
             foreach (JsonElement source in data.GetProperty("sources").EnumerateArray())
             {
@@ -56,16 +74,22 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 if (path==null || path.Contains("..",StringComparison.Ordinal) || !sourceNames.Add(path)
                     || hash==null || hash.Length!=64 || !IsHex(hash))
                     throw new InvalidDataException("Invalid effect source identity");
-                if (path==BulletVisualCatalog.SourceSwf)
+                bool supported=false;
+                foreach(string key in declared)
                 {
-                    if (!HashMatches(File.ReadAllBytes(Path.Combine(root,path)),hash))
-                        throw new InvalidDataException("Effect source SWF differs from catalog");
-                    boundSwf=true;
+                    var library=libraries[key];
+                    if(path==library.Swf)
+                    {
+                        if(!HashMatches(File.ReadAllBytes(Path.Combine(root,path)),hash))
+                            throw new InvalidDataException("Effect source SWF differs from catalog");
+                        bound.Add(key);supported=true;break;
+                    }
+                    if(path.StartsWith(library.Library+"/",StringComparison.Ordinal)
+                        || path==library.Library.Substring(0,library.Library.Length-"LIBRARY".Length)+"DOMDocument.xml")supported=true;
                 }
-                else if (!path.StartsWith("flashswf/arts/原版素材库-子弹/LIBRARY/",StringComparison.Ordinal))
-                    throw new InvalidDataException("Unsupported effect source");
+                if(!supported)throw new InvalidDataException("Unsupported effect source");
             }
-            if (!boundSwf || sourceNames.Count>256) throw new InvalidDataException("Incomplete effect source closure");
+            if(!bound.SetEquals(declared) || sourceNames.Count>256)throw new InvalidDataException("Incomplete effect source closure");
             JsonElement rawStyles=data.GetProperty("styles");
             if (rawStyles.GetArrayLength()<1 || rawStyles.GetArrayLength()>64)
                 throw new InvalidDataException("Invalid effect style count");
@@ -76,10 +100,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
             {
                 string linkage=s.GetProperty("linkage").GetString(),kind=s.GetProperty("kind").GetString();
                 if (s.GetProperty("index").GetInt32()!=index || string.IsNullOrEmpty(linkage)
-                    || linkage.Length>128 || !names.Add(linkage) || (kind!="casing" && kind!="muzzle" && kind!="impact"))
+                    || linkage.Length>128 || !names.Add(linkage) || (kind!="casing" && kind!="muzzle" && kind!="impact" && kind!="blood"))
                     throw new InvalidDataException("Invalid effect style identity");
                 JsonElement rawFrames=s.GetProperty("frames");
-                if (rawFrames.GetArrayLength()<1 || rawFrames.GetArrayLength()>120)
+                if (rawFrames.GetArrayLength()<1 || rawFrames.GetArrayLength()>256)
                     throw new InvalidDataException("Invalid animation frame count");
                 var frames=new CombatFxImage[rawFrames.GetArrayLength()];
                 int frameIndex=0;
@@ -112,10 +136,43 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 }
                 if (kind=="casing" && (frames.Length!=1 || variants.Length!=1 || variants[0].Length!=1))
                     throw new InvalidDataException("A casing must be a static stamp");
+                if(kind=="blood" && (variants.Length!=5 || Array.Exists(variants,v=>v.Length!=1)))
+                    throw new InvalidDataException("Blood requires five static authored variants");
                 styles[index]=new CombatFxStyle(index,linkage,kind,s.GetProperty("worldLit").GetBoolean(),
                     s.GetProperty("skipOriginYZero").GetBoolean(),frames,variants);
+                if(s.TryGetProperty("sourceKey",out JsonElement sourceKey) && !declared.Contains(sourceKey.GetString()??""))
+                    throw new InvalidDataException("Unknown style source");
+                if(s.TryGetProperty("variantSounds",out JsonElement sounds))
+                {
+                    if(sounds.GetArrayLength()!=0 && sounds.GetArrayLength()!=variants.Length)
+                        throw new InvalidDataException("Sound variants differ from animation");
+                    var values=new string[sounds.GetArrayLength()];
+                    for(int i=0;i<values.Length;i++)
+                    {
+                        string value=sounds[i].GetString();
+                        if(string.IsNullOrEmpty(value)||value.Length>128||value.Contains("..",StringComparison.Ordinal)
+                            ||value.IndexOfAny(new[]{'/','\\',':'})>=0)throw new InvalidDataException("Invalid authored sound");
+                        values[i]=value;
+                    }
+                    styles[index].VariantSounds=values;
+                }
+                if(s.TryGetProperty("soundAtBirth",out JsonElement soundAtBirth))
+                    styles[index].SoundAtBirth=soundAtBirth.GetBoolean();
+                if(styles[index].SoundAtBirth && (!styles[index].IsImpact || styles[index].VariantSounds.Length!=variants.Length))
+                    throw new InvalidDataException("Birth sound requires one cue per impact variant");
+                if(s.TryGetProperty("randomRotation",out JsonElement randomRotation))styles[index].RandomRotation=randomRotation.GetBoolean();
+                if(s.TryGetProperty("nestedTransform",out JsonElement transform))
+                {
+                    if(transform.GetArrayLength()!=6)throw new InvalidDataException("Invalid nested transform");
+                    var matrix=new float[6];
+                    for(int i=0;i<6;i++)matrix[i]=Number(transform[i],-100,100);
+                    if(matrix[0]!=1||matrix[1]!=0||matrix[2]!=0||matrix[3]!=1)
+                        throw new InvalidDataException("Nested scale must be baked in the authored texture");
+                    styles[index].NestedTransform=matrix;
+                }
                 index++;
             }
+            VerifySoundAssets(root,data,styles,declared);
             using var decoded=SKBitmap.Decode(png) ?? throw new InvalidDataException("Invalid atlas PNG");
             if (decoded.Width!=width || decoded.Height!=height) throw new InvalidDataException("Atlas metadata size mismatch");
             using var bitmap=new SKBitmap(new SKImageInfo(width,height,SKColorType.Bgra8888,SKAlphaType.Premul));
@@ -124,6 +181,63 @@ namespace CF7Launcher.Guardian.WorldCompositor
             Marshal.Copy(bitmap.GetPixels(),pixels,0,pixels.Length);
             var result=new CombatFxCatalog(Convert.ToHexString(SHA256.HashData(bytes)),styles,width,height,ppu,pixels);
             result.LoadLights(root);return result;
+        }
+
+        // Derived timeline sounds live in the existing SFX pack. They retain exact
+        // source-SWF identity and never rely on guessing a Flash library item's name.
+        private static void VerifySoundAssets(string root,JsonElement data,CombatFxStyle[] styles,HashSet<string> libraries)
+        {
+            var assets=new Dictionary<string,string>(StringComparer.Ordinal);
+            long totalBytes=0;
+            if(data.TryGetProperty("soundAssets",out JsonElement list))
+            {
+                if(list.ValueKind!=JsonValueKind.Array || list.GetArrayLength()>64)
+                    throw new InvalidDataException("Invalid derived sound count");
+                foreach(JsonElement asset in list.EnumerateArray())
+                {
+                    string id=asset.GetProperty("id").GetString(),path=asset.GetProperty("path").GetString();
+                    string key=asset.GetProperty("sourceKey").GetString();
+                    int sourceId=asset.GetProperty("sourceSoundId").GetInt32();
+                    long length=asset.GetProperty("bytes").GetInt64();
+                    string extension=Path.GetExtension(id??"");
+                    if(key==null || !libraries.Contains(key) || sourceId<1 || sourceId>65535
+                        || (extension!=".mp3" && extension!=".wav")
+                        || id!="cfnfx-"+key+"-"+sourceId.ToString(CultureInfo.InvariantCulture)+extension
+                        || path!="sounds/export/特效/"+id || !assets.TryAdd(id,path)
+                        || length<1 || length>256*1024 || (totalBytes+=length)>2*1024*1024)
+                        throw new InvalidDataException("Invalid derived sound identity or budget");
+                    string fullPath=Path.Combine(root,path);
+                    if(new FileInfo(fullPath).Length!=length
+                        || !HashMatches(File.ReadAllBytes(fullPath),asset.GetProperty("sha256").GetString()))
+                        throw new InvalidDataException("Derived effect sound integrity mismatch");
+                }
+            }
+            // Match AudioCoordinator's exact basename keys and override order.
+            var available=new Dictionary<string,string>(StringComparer.Ordinal);
+            foreach(string pack in new[]{"武器","特效","人物"})
+            {
+                string directory=Path.Combine(root,"sounds","export",pack);
+                if(Directory.Exists(directory))
+                    foreach(string file in Directory.GetFiles(directory))available[Path.GetFileName(file)]=file;
+            }
+            var used=new HashSet<string>(StringComparer.Ordinal);
+            foreach(CombatFxStyle style in styles)
+            {
+                if(!style.SoundAtBirth)continue;
+                foreach(string id in style.VariantSounds)
+                {
+                    if(!available.TryGetValue(id,out string file))
+                        throw new InvalidDataException("Effect sound is not registered by its exact SFX filename: "+id);
+                    if(id.StartsWith("cfnfx-",StringComparison.Ordinal))
+                    {
+                        if(!assets.TryGetValue(id,out string path)
+                            || !string.Equals(Path.GetFullPath(file),Path.GetFullPath(Path.Combine(root,path)),StringComparison.OrdinalIgnoreCase))
+                            throw new InvalidDataException("Derived effect sound missing or overridden");
+                        used.Add(id);
+                    }
+                }
+            }
+            if(used.Count!=assets.Count)throw new InvalidDataException("Unreferenced derived effect sound");
         }
 
         private void LoadLights(string root)
@@ -166,12 +280,15 @@ namespace CF7Launcher.Guardian.WorldCompositor
     {
         internal readonly int Index;
         internal readonly string Linkage;
-        internal readonly bool IsCasing, IsMuzzle, IsImpact, WorldLit, SkipOriginYZero;
+        internal readonly bool IsCasing, IsMuzzle, IsImpact, IsBlood, WorldLit, SkipOriginYZero;
+        internal bool RandomRotation,SoundAtBirth;
+        internal float[] NestedTransform = {1,0,0,1,0,0};
+        internal string[] VariantSounds=Array.Empty<string>();
         internal CombatFxLightProfile Light;
         internal readonly CombatFxImage[] Frames;
         internal readonly int[][] Variants;
         internal CombatFxStyle(int index,string linkage,string kind,bool worldLit,bool skipZero,CombatFxImage[] frames,int[][] variants)
-        { Index=index;Linkage=linkage;IsCasing=kind=="casing";IsMuzzle=kind=="muzzle";IsImpact=kind=="impact";
+        { Index=index;Linkage=linkage;IsCasing=kind=="casing";IsMuzzle=kind=="muzzle";IsImpact=kind=="impact";IsBlood=kind=="blood";
             WorldLit=worldLit;SkipOriginYZero=skipZero;Frames=frames;Variants=variants; }
     }
 

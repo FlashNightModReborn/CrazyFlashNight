@@ -119,8 +119,14 @@ class org.flashNight.arki.render.WorkerProjectionTest {
             var ray:Object=RayVisualBridge.getStats();check(ray.active==0&&ray.configs==0&&ray.queued==0&&RayVisualBridge.flush()==null,"none ray records/configs/queues stay empty beyond prior 1024 limit");
             var consumed:Boolean=true;
             for(n=0;n<4096;n++) consumed=CombatFxBridge.tryShell("测试弹壳",NaN,NaN,100,3,0)
-                &&CombatFxBridge.tryMuzzle("测试枪火",NaN,NaN,100,0)&&CombatFxBridge.tryImpact("测试命中",NaN,NaN,100,false)&&consumed;
-            check(consumed,"audited decoration is consumed before coordinate checks");
+                &&CombatFxBridge.tryMuzzle("测试枪火",NaN,NaN,100,0)&&CombatFxBridge.tryImpact("测试命中",NaN,NaN,100,false)
+                &&BloodVisualBridge.trySpawn(NaN,NaN,NaN,100)&&consumed;
+            check(consumed,"audited decoration including ordinary blood is consumed before coordinate checks");
+            var bloodState:Object=BloodVisualBridge.getStats();
+            var bloodClean:Boolean=CombatFxBridge.isDecorationClean();
+            check(bloodState.enabled===true&&bloodState.style==3&&bloodState.queued==0&&bloodState.pendingStamps==0&&bloodClean,
+                "actual installed none blood capability produces no queued births, stamps or decoration residue");
+            trace("[WORKER_BLOOD_NONE] births=4096 queued="+bloodState.queued+" pendingStamps="+bloodState.pendingStamps+" clean="+bloodClean);
             check(!CombatFxBridge.tryShell("unknown",0,0,100,1,100)&&!CombatFxBridge.tryImpact("unknown",0,0,100,false),"unknown/MC-return effects retain old route");
             CombatFxBridge.receiveEvents({version:1,generation:1002,epoch:1,sequence:1,groundHits:3,settled:[]});
             check(CombatFxBridge.isDecorationClean(),"none ignores old feedback and builds no decoration state");

@@ -2261,9 +2261,10 @@ class Program
             var fxStyles=new List<object>();
             foreach(var style in combatFxCatalog.Styles)
                 fxStyles.Add(new { index=style.Index,linkage=style.Linkage,
-                    kind=style.IsCasing?"casing":(style.IsImpact?"impact":"muzzle"),skipOriginYZero=style.SkipOriginYZero });
+                    kind=style.IsCasing?"casing":(style.IsBlood?"blood":(style.IsImpact?"impact":"muzzle")),skipOriginYZero=style.SkipOriginYZero,
+                    variantSounds=style.VariantSounds,soundAtBirth=style.SoundAtBirth,randomRotation=style.RandomRotation });
             bool PublishFxCaps(bool available,int generation) => socketServer.TrySendIfGen(JsonSerializer.Serialize(new {
-                task="combat_fx_caps",version=1,generation,native=available,equipmentLights=available?2:0,equipmentRadialLights=available?1:0,sceneLightsVersion=available?1:0,digest=combatFxCatalog.Sha256,sceneLightsDigest=workerSceneLightDigest,styles=fxStyles
+                task="combat_fx_caps",version=1,generation,native=available,bloodVersion=1,equipmentLights=available?2:0,equipmentRadialLights=available?1:0,sceneLightsVersion=available?1:0,digest=combatFxCatalog.Sha256,sceneLightsDigest=workerSceneLightDigest,styles=fxStyles
             })+"\0",generation);
             Action<int> readyFx=generation => {
                 Volatile.Write(ref fxCapsGeneration,generation);
@@ -2284,9 +2285,12 @@ class Program
                 var poses=new List<object>();
                 foreach(var pose in events.Settled)
                     poses.Add(new object[]{pose.Id,pose.Style,pose.X,pose.Y,pose.Rotation,pose.ScaleX,pose.ScaleY});
+                var bloodPoses=new List<object>();
+                foreach(var pose in events.BloodLandings)
+                    bloodPoses.Add(new object[]{pose.Id,pose.Variant,pose.X,pose.Y});
                 socketServer.TrySendIfGen(JsonSerializer.Serialize(new {
                     task="combat_fx_events",version=1,generation,epoch=events.Epoch,sequence=events.Sequence,
-                    groundHits=events.GroundHits,settled=poses
+                    groundHits=events.GroundHits,settled=poses,bloodLandings=bloodPoses,sounds=events.Sounds
                 })+"\0",generation);
             };
             if(socketServer.TryGetReadyGeneration(out int readyFxGeneration)) readyFx(readyFxGeneration);
