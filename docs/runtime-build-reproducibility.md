@@ -1242,3 +1242,10 @@ strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124
 Issue #152 已完成两轮正式推广。第二轮冻结源 `c1d9ab2576937aa2fa4eee8037a941bc5d69cb33`、tag `runtime-build-v2/20261021-issue152-v2`，部署提交 `255d9741ac0cdcac681c09e56472c076395f36e6`；本机 X509 与 GitHub OIDC 独立故障域对同一 43 文件 closure 达成双 signer 共识，strict production policy **47/47**，唯一 writer 原子推广及部署 CI 成功。当前身份以 manifest/consensus 为准。
 
 正式 runtime 现复用受信五档 runner，启动与限定测试不依赖人工开发者注册；保留 exact peer、槽位、会话、能力与未知写边界。已实际执行商人门槛、换档、无载具现场、大学临时交易和大学/Lee 正常返回，并完成正式生产 SOL/shadow 读回；无参数启动另跑有限入口冒烟。完整身份、发布证明、回归限制与每段证据见[本次发布与自动验收](issue-152-发布与自动验收-2026-10-21.md)。全量 Host 仍有 120 项既有缺失 evidence root 的失败，真人观感与托盘系统外壳实体交互未补签，不由 promotion 反向代签。
+
+<a id="capsule-skills-release-20261023"></a>
+## 2026-10-23 胶囊资格、技能界面与联合修复正式推广
+
+用户明确要求完成正式发布列车。冻结源 `3cfdaf8bed63cda927e7b9e0c4a0ee8f29841260`、标签 `runtime-build-v2/20261023-capsule-skills-v2` 的完整 production policy **47/47**；本机 X509 与 [GitHub OIDC 独立构建 39882412683](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/39882412683) 证明同一 43 文件闭包，唯一 writer 已原子推广，最终 bundle、双 signer / 双 faultDomain consensus 和安装入口 `--verify-only` exit **0**。精确 request、身份、失败首轮、恢复路径及复验见[联合施工记录](reports/胶囊便携商店资格与联合复验-2026-10-23.md#正式部署与标准入口只读复验)，现役机器值仍读 manifest/consensus。
+
+同字节候选已完成真实技能初学/连续升级和胶囊一次投掷/一次交易/原生冷读；正式入口另以默认 Agent Runtime 完成自有槽读取、材料/技能面板只读 smoke 和原生结果复核，未重放业务。普通窗口关闭不代签 authenticated shutdown，标准入口完整业务、迟到/重绑/未知写现场注入、黑龙完整实战、次级穿刺手感和旧测试员卡顿根因仍保留各自边界。部署提交的远端 `Runtime native audit` 单独核对，源码 `source-ahead` 不是部署证据。
