@@ -49,27 +49,30 @@ _root.健身房主角是否升级 = function()
 	if (是否升级) {
 		_root.身价 = _root.基础身价值 * _root.等级;
 		var 控制对象 = TargetCacheManager.findHero();
-		org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery.refresh(控制对象, _root.等级);
+		var 健身升级投影:Object=org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery.refresh(控制对象, _root.等级);
 		_root.玩家信息界面.刷新hp显示();
 		_root.玩家信息界面.刷新mp显示();
-		EffectSystem.Effect("升级动画",控制对象._x,控制对象._y,100);
+		if(健身升级投影.playEffect) EffectSystem.Effect("升级动画",控制对象._x,控制对象._y,100);
 		// 资产事务内的升级延迟到领域提交后强存盘，避免奖励已落盘而任务完成态尚未落盘。
 		org.flashNight.arki.item.PlayerAssetTransaction.requestStrongSave();
 	}
 }
 
 // 任务成长的等级/SP/身价已经与奖励同盘提交；这里只同步当前单位和动效。
-_root.投影已提交任务成长 = function(提交前等级) {
+_root.投影已提交任务成长 = function(提交前等级,成长归属:Object) {
+    var 控制对象 = TargetCacheManager.findHero();
+    var 成长投影:Object=_root.等级>提交前等级
+        ? org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery.refresh(控制对象,_root.等级,成长归属)
+        : {status:"unchanged",reason:"",playEffect:false};
+    try {
     _root.升级需要经验值 = _root.根据等级得升级所需经验(_root.等级);
     _root.上次升级需要经验值 = _root.等级 > 1 ? _root.根据等级得升级所需经验(_root.等级 - 1) : 0;
     _root.玩家信息界面.刷新经验值显示();
-    if (_root.等级 <= 提交前等级) return;
-    var 控制对象 = TargetCacheManager.findHero();
-    if (控制对象 == undefined) return;
-    org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery.refresh(控制对象, _root.等级);
     _root.玩家信息界面.刷新hp显示();
     _root.玩家信息界面.刷新mp显示();
-    EffectSystem.Effect("升级动画", 控制对象._x, 控制对象._y, 100);
+    if(成长投影.playEffect) EffectSystem.Effect("升级动画", 控制对象._x, 控制对象._y, 100);
+    } catch(成长显示错误) {trace("[Growth] optional display failed after projection");}
+    return 成长投影;
 }
 
 _root.主角是否升级 = function(当前等级, 当前经验值)
@@ -103,10 +106,10 @@ _root.主角是否升级 = function(当前等级, 当前经验值)
 	if (是否升级) {
 		_root.身价 = _root.基础身价值 * _root.等级;
 		var 控制对象 = TargetCacheManager.findHero();
-		org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery.refresh(控制对象, _root.等级);
+		var 战斗升级投影:Object=org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery.refresh(控制对象, _root.等级);
 		_root.玩家信息界面.刷新hp显示();
 		_root.玩家信息界面.刷新mp显示();
-		EffectSystem.Effect("升级动画",控制对象._x,控制对象._y,100);
+		if(战斗升级投影.playEffect) EffectSystem.Effect("升级动画",控制对象._x,控制对象._y,100);
 		// 资产事务内的升级延迟到领域提交后强存盘；普通战斗/健身路径仍立即执行。
 		org.flashNight.arki.item.PlayerAssetTransaction.requestStrongSave();
 	}

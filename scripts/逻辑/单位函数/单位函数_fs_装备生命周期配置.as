@@ -61,7 +61,7 @@
                 ? "set:" + setId + ":" + effectId + ":" + 装备类型 + ":" + componentId
                 : 装备名称 + "_" + 装备类型 +  "_" + cycleRoutineName + each; // init-only 生命周期也生成确定标签
 
-            var 反射对象 = {标签名:标签名,
+            var 反射对象 = {属性投影身体:this.__playerStatBody,标签名:标签名,
                            初始化函数:initRoutineName,
                            初始化参数:init ? init.initParam : undefined,
                            生命周期函数:cycleRoutineName,

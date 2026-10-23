@@ -21,6 +21,13 @@ import org.flashNight.arki.unit.UnitAI.core.AIEnvironment;
  *
  */
 class org.flashNight.arki.unit.PlayerInfoProvider {
+    private static var projectionBarrierForTests:Function;
+    public static function testOnlySetProjectionBarrier(value:Function):Function {
+        var previous:Function=projectionBarrierForTests;projectionBarrierForTests=value;return previous;
+    }
+    private static function statReadBarrier():Object {
+        return projectionBarrierForTests==undefined ? org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production().flush("player_info") : projectionBarrierForTests();
+    }
 
     // ========================================
     // 防御系统
@@ -820,8 +827,13 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
      * 每次调用都返回新对象；缺少 hero 或存在不可序列化数值时 fail-closed。
      */
     public static function getPlayerInfoSnapshot():Object {
+        var hero:MovieClip=TargetCacheManager.findHero();
+        if(hero==null) return org.flashNight.arki.unit.PlayerInfoSnapshotBuilder.unavailable("hero_not_found");
+        var projection:Object=statReadBarrier();
+        if(projection.status!="applied" && projection.status!="unchanged")
+            return org.flashNight.arki.unit.PlayerInfoSnapshotBuilder.unavailable("stat_projection_"+projection.status);
         return org.flashNight.arki.unit.PlayerInfoSnapshotBuilder.build(
-            TargetCacheManager.findHero());
+            hero);
     }
 
     private static function indexSnapshotValues(snapshot:Object):Object {
@@ -1067,6 +1079,10 @@ class org.flashNight.arki.unit.PlayerInfoProvider {
      */
     public static function populatePlayerInfo(target:MovieClip):Void {
         var heroUnit:MovieClip = TargetCacheManager.findHero();
+        if(heroUnit!=null) {
+            var projection:Object=statReadBarrier();
+            if(projection.status!="applied" && projection.status!="unchanged") return;
+        }
         var snapshot:Object =
             org.flashNight.arki.unit.PlayerInfoSnapshotBuilder.build(heroUnit);
         if (snapshot.stateHealth == "ok") {

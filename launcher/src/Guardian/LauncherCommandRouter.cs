@@ -376,6 +376,9 @@ namespace CF7Launcher.Guardian
                 case "intelligence":
                     return _regressionAutomation && OpenPanel("intelligence",
                         BuildIntelligenceProductionInitData().ToString(Formatting.None));
+                case "meridians":
+                    return _regressionAutomation && OpenPanel("meridians",
+                        BuildMeridiansProductionInitData().ToString(Formatting.None));
                 default:
                     return false;
             }

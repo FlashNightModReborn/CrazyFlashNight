@@ -106,6 +106,28 @@ async function main() {
         Runner.expectSkillDelta(gold, skill, skillResult);
         assert.throws(() => Runner.expectSkillDelta(before, gold, skillResult), /differs/);
     });
+    test('cancel selection retains exact ready or unaffordable state without weakening zero-ledger checks', () => {
+        const project = { id:'dummy.1', currency:'kpoint', cost:6000 };
+        const idle = { progress:{ status:'尚未开始训练' },
+            start:{ present:true, disabled:true, text:'余额不足' },
+            projects:[{ id:'dummy.1', selected:true }] };
+        assert.strictEqual(Runner.isCancelledSelection(idle, project, {kpoint:1250}), true);
+        assert.strictEqual(Runner.isCancelledSelection(idle, project, {kpoint:6000}), false);
+        const ready = JSON.parse(JSON.stringify(idle));
+        ready.start = {present:true, disabled:false, text:'开始训练'};
+        assert.strictEqual(Runner.isCancelledSelection(ready, project, {kpoint:6000}), true);
+        assert.strictEqual(Runner.isCancelledSelection(ready, project, {kpoint:1250}), false);
+        for (const alter of [
+            state => { state.progress.status = '已进行 1 / 10 秒'; },
+            state => { state.start.present = false; },
+            state => { state.projects[0].selected = false; },
+            state => { state.start.text = '核实本次结果'; },
+            state => { state.start.disabled = false; }
+        ]) {
+            const invalid = JSON.parse(JSON.stringify(idle)); alter(invalid);
+            assert.strictEqual(Runner.isCancelledSelection(invalid, project, {kpoint:1250}), false);
+        }
+    });
     test('Gym source closure covers Host, AS2 SWF, Web, and fixed input', () => {
         const root = path.resolve(__dirname, '..', '..');
         const closure = SourceClosure.capture(root);

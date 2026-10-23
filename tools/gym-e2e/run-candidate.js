@@ -27,6 +27,9 @@ const EXPECTED_PROJECTS = Object.freeze({
         durationMs:1000, rewardLabel:'技能点', cap:null }
 });
 
+const CANCEL_PROJECT = Object.freeze({ id:'dummy.1', currency:'kpoint', cost:6000,
+    rewardAmount:9, durationMs:10000, rewardLabel:'空手攻击力', cap:500 });
+
 function fail(code, message, details) {
     const error = new Error(message);
     error.code = code;
@@ -147,6 +150,8 @@ async function openGym(runtime, writer, input, excludedInstance) {
             EXPECTED_PROJECTS.goldStat);
         const skill = assertProject((snapshot.projects || []).find(row => row.id === 'dummy.7'),
             EXPECTED_PROJECTS.kSkill);
+        const cancel = assertProject((snapshot.projects || []).find(row => row.id === 'dummy.1'),
+            CANCEL_PROJECT);
         const visible = await input.readState();
         if (visible.url !== 'https://overlay.local/overlay.html'
                 || visible.panel !== 'gym' || visible.hidden
@@ -154,7 +159,7 @@ async function openGym(runtime, writer, input, excludedInstance) {
                 || !visible.projects.some(row => row.id === gold.id && row.selected)
                 || !visible.projects.some(row => row.id === skill.id)) return null;
         return { instanceId:active.instanceId, openSequence:open.sequence,
-            balances:snapshot.balances, projects:{ gold, skill }, visible };
+            balances:snapshot.balances, projects:{ gold, skill, cancel }, visible };
     });
 }
 
@@ -202,6 +207,18 @@ async function closeGym(runtime, input, writer, expectedInstance) {
                 closedInstance:expectedInstance } : null;
     });
     return { click, closed };
+}
+
+function isCancelledSelection(state, project, balances) {
+    if (!state || !project || !balances
+            || !Number.isSafeInteger(balances[project.currency])
+            || !Number.isSafeInteger(project.cost) || project.cost < 1) return false;
+    const affordable = balances[project.currency] >= project.cost;
+    return state.progress?.status === '尚未开始训练'
+        && state.start?.present === true
+        && state.start.disabled === !affordable
+        && state.start.text === (affordable ? '开始训练' : '余额不足')
+        && state.projects?.some(row => row.id === project.id && row.selected) === true;
 }
 
 function expectSameLedger(before, after, phase) {
@@ -410,13 +427,19 @@ async function main(argv) {
                 ? state : null;
         });
         expectSameLedger(before, Ledger.capture(ROOT, Preflight.TARGET_SLOT), 'switch_armed');
+        const cancelWatermark = writer.events.length;
         await clickAndProve(writer, input, 'switchConfirm');
         const cancelled = await until('cancel', 10000, 150, async () => {
             const state = await input.readState();
-            return state.progress.status === '尚未开始训练'
-                && state.start.text === '开始训练'
-                && state.projects.some(row => row.id === 'dummy.1' && row.selected)
-                ? state : null;
+            const response = writer.events.find(entry => entry.sequence > cancelWatermark
+                && messageOf(entry)?.type === 'panel_resp'
+                && messageOf(entry)?.panel === 'gym' && messageOf(entry)?.cmd === 'cancel'
+                && messageOf(entry)?.panelInstanceId === open1.instanceId
+                && messageOf(entry)?.projectId === open1.projects.gold.id
+                && messageOf(entry)?.success === true && messageOf(entry)?.phase === 'cancelled');
+            return response && isCancelledSelection(state, open1.projects.cancel, before.values)
+                ? { visible:state, response:{ sequence:response.sequence,
+                    eventHash:response.eventHash, result:messageOf(response) } } : null;
         });
         expectSameLedger(before, Ledger.capture(ROOT, Preflight.TARGET_SLOT), 'cancel');
         const close1 = await closeGym(first, input, writer, open1.instanceId);
@@ -531,7 +554,7 @@ async function main(argv) {
 }
 
 module.exports = { EXPECTED_PROJECTS, parseArgs, assertProject,
-    expectGoldDelta, expectSkillDelta, expectSameLedger };
+    expectGoldDelta, expectSkillDelta, expectSameLedger, isCancelledSelection };
 
 if (require.main === module) {
     main(process.argv.slice(2)).catch(error => {

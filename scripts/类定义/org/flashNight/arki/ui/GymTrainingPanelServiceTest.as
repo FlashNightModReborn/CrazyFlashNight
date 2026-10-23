@@ -356,9 +356,26 @@ class org.flashNight.arki.ui.GymTrainingPanelServiceTest {
             刷新mp显示:function():Void { _root.__gymHudMp++; },
             刷新经验值显示:function():Void {}
         };
-        org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.updateProperties(actor);
         actor.hp = 700;
         actor.mp = 40;
+        actor.hp满血值=1000;actor.mp满血值=100;
+        actor.__playerStatBody={};actor.enableShoot=true;actor.被动技能={};
+        var projection:Object=org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;
+        var slots:Array=org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection.getSlotKeys();
+        for(i=0;i<slots.length;i++) {
+            var slot:String=slots[i];var itemSource:Object={name:"gym-test:"+slot,value:{level:1,mods:[]}};
+            actor[slot]=itemSource;
+            projection.recordNumericSource(actor,slot,itemSource,actor[slot+"数据"]);
+            if(slot=="长枪" || slot=="手枪" || slot=="手枪2" || slot=="刀" || slot=="手雷") actor[slot+"属性"]={};
+        }
+        org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection.beginCanonical(actor);
+        org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection.completeCanonical(actor);
+        var coordinator:org.flashNight.arki.unit.PlayerStatRefreshCoordinator=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production();
+        var worldIdentity:Object=org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld);
+        coordinator.bindHero(actor,worldIdentity,actor.__playerStatBody,coordinator.contextToken());
+        coordinator.notifyReady(actor,worldIdentity,actor.__playerStatBody,coordinator.contextToken(),null);
+        coordinator.flush("gym_fixture_initial");
+        _root.__gymHudHp=_root.__gymHudMp=0;
         var beforeAttack:Number = Number(actor.空手攻击力);
         var beforeInner:Number = Number(actor.内力);
         var beforeDefense:Number = Number(actor.防御力);
@@ -400,6 +417,15 @@ class org.flashNight.arki.ui.GymTrainingPanelServiceTest {
         var pending:Object = invoke("finish", pendingRun.sessionToken);
         check(pending.phase == "save_pending" && actor.空手攻击力 == beforeAttack + 3
             && _root.__gymBuffSync == 5, "failed durable save does not project an unconfirmed live reward");
+        coordinator.invalidate(2,"skills",coordinator.contextToken());
+        check(coordinator.flush("cross_domain_pending").reason=="gym_save_pending"
+            && actor.空手攻击力==beforeAttack+3 && _root.__gymBuffSync==5,
+            "another domain cannot consume Gym's in-memory growth before its exact durable confirmation");
+        var sceneRefused:Boolean=false;var equipmentRefused:Boolean=false;
+        try {org.flashNight.arki.unit.PlayerStatRefreshCoordinator.beginSceneInitialization(_root.gameworld);} catch(sceneError) {sceneRefused=true;}
+        try {org.flashNight.arki.unit.PlayerStatRefreshCoordinator.beginOuterInitialization(actor,null);} catch(equipmentError) {equipmentRefused=true;}
+        check(sceneRefused && equipmentRefused && actor.__playerStatInitializing!==true,
+            "registered Gym read gate also refuses scene and full-equipment admission while growth is not durable");
         _root.__gymSaveSucceeds = true;
         var retried:Object = invoke("retrySave", pendingRun.sessionToken);
         check(retried.saved && actor.空手攻击力 == beforeAttack + 6
@@ -408,6 +434,31 @@ class org.flashNight.arki.ui.GymTrainingPanelServiceTest {
         invoke("query", pendingRun.sessionToken);
         check(actor.空手攻击力 == beforeAttack + 6 && _root.__gymBuffSync == 6,
             "duplicate receipts never reproject live stats");
+        var savedMoney:Number=_root.金钱;var savedFlushes:Number=_root.__gymFlush;var savedFeeds:Number=_root.__gymFeed;
+        _root.__gymProjectionFails=true;
+        actor.shield.refreshStanceResistance=function():Void {_root.__gymShieldSync++;if(_root.__gymProjectionFails) throw new Error("gym_saved_projection_fault");};
+        GymTrainingPanelService._setNowForTests(200000);
+        var projectionRun:Object=start(open("dummy"),"dummy.0");GymTrainingPanelService._setNowForTests(230000);
+        var projectionFailed:Object=invoke("finish",projectionRun.sessionToken);
+        check(projectionFailed.saved && projectionFailed.phase=="applied" && projectionFailed.projection.status=="failed"
+            && _root.__gymFlush==savedFlushes+1 && _root.__gymFeed==savedFeeds+1,
+            "durable paid result keeps domain success and exposes actual native projection failure separately");
+        var shieldAttempts:Number=_root.__gymShieldSync;
+        var queried:Object=invoke("query",projectionRun.sessionToken);invoke("finish",projectionRun.sessionToken);
+        check(queried.projection.status=="failed" && _root.__gymShieldSync==shieldAttempts && _root.__gymFlush==savedFlushes+1,
+            "cached finish and ordinary query neither retry full projection nor replay the durable save");
+        var reopened:Object=open("squat");
+        check(reopened.pendingProjection.sessionToken==projectionRun.sessionToken && reopened.stationId=="dummy"
+            && start(reopened,"dummy.0").error=="busy","reopen binds the exact saved failed projection and refuses a replacement paid operation");
+        _root.__gymProjectionFails=false;
+        var recovered:Object=GymTrainingPanelService.execute("query",{v:1,sessionToken:projectionRun.sessionToken,recoverProjection:true});
+        check(recovered.saved && (recovered.projection.status=="applied" || recovered.projection.status=="unchanged")
+            && actor.空手攻击力==beforeAttack+9 && actor.hp==700 && actor.mp==40
+            && _root.__gymFlush==savedFlushes+1 && _root.__gymFeed==savedFeeds+1 && _root.金钱==savedMoney-60000,
+            "explicit original-session recovery retries only actual numeric projection without charging, saving or healing again");
+        GymTrainingPanelService.execute("query",{v:1,sessionToken:projectionRun.sessionToken,recoverProjection:true});
+        check(_root.__gymFlush==savedFlushes+1 && _root.__gymFeed==savedFeeds+1 && actor.空手攻击力==beforeAttack+9,
+            "repeated explicit projection recovery remains idempotent after success");
         actor.removeMovieClip();
     }
 
@@ -442,8 +493,9 @@ class org.flashNight.arki.ui.GymTrainingPanelServiceTest {
         };
         done = invoke("finish",running.sessionToken);
         _root.投影已提交任务成长 = previousProjection;
-        check(done.saved && replacement.phase == "running" && invoke("query",replacement.sessionToken).phase == "running",
-            "projection reentry cannot clear replacement training session");
+        check(done.saved && done.projection.status=="failed" && replacement.error=="busy"
+            && invoke("query",running.sessionToken).projection.status=="failed",
+            "projection reentry keeps the original saved session and refuses replacement training until its failed projection is recovered");
         check(invoke("finish",running.sessionToken).saved && _root.__gymFeed == 1,"old projection receipt remains idempotent");
     }
 

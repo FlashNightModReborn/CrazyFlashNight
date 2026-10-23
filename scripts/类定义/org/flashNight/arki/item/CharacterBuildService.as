@@ -57,6 +57,7 @@ class org.flashNight.arki.item.CharacterBuildService {
     private static var _liveRefreshDirty:Boolean = false;
     // 一次刷新只要抛错或后验失败，就禁止仅凭 equipment stamp 自动采信其半完成结果。
     private static var _liveRefreshRetryRequired:Boolean = false;
+    private static var _statTicket:Object;
     private static var _writeInProgress:Boolean = false;
     private static var _writeAuthorityTouched:Boolean = false;
     private static var _capturedPauseLease = undefined;
@@ -341,6 +342,7 @@ class org.flashNight.arki.item.CharacterBuildService {
         slotKey:String,
         expectedLoadoutRevision:Number):Object {
         if (SLOT_ALLOWLIST[slotKey] !== true) return fail("invalid_slot");
+        if(equipmentRecoveryOpen()) return fail("write_busy");
         var current:Object = synchronize(expectedGeneration);
         if (!current.success) return current;
         if (!wholeNumber(expectedLoadoutRevision)
@@ -413,6 +415,7 @@ class org.flashNight.arki.item.CharacterBuildService {
             // 还原到旧 canonical，旧派生数据也不能冒充本次写后已完成刷新。
             _liveRevision = beforeLiveRevision;
             _liveRefreshDirty = true;
+            declareEquipmentProjection();
             synced.liveRevision = _liveRevision;
             synced.liveRefreshDirty = true;
         }
@@ -429,35 +432,95 @@ class org.flashNight.arki.item.CharacterBuildService {
      * 同步 live barrier：只有刷新后的可观测不变量全部成立才清 dirty。
      */
     public static function flushLive(expectedGeneration:Number,
-                                     expectedLoadoutRevision:Number):Object {
+                                     expectedLoadoutRevision:Number,recover:Boolean):Object {
         var sync:Object = synchronize(expectedGeneration);
         if (!sync.success) return sync;
         if (Number(expectedLoadoutRevision) != _loadoutRevision) {
             return fail("stale_state");
         }
         if (!_liveRefreshDirty && _liveRevision == _loadoutRevision) {
+            var cleanProjection:Object=statCoordinator();
+            if(cleanProjection==null) return liveFailure();
+            var cleanBarrier:Object=cleanProjection.flush("character_clean");
+            if(cleanBarrier.status!="applied" && cleanBarrier.status!="unchanged") return liveFailure();
             return liveResult(false);
         }
         if (!_liveRefreshDirty) return liveFailure();
-        var context:Object = null;
+        var c:Object=statCoordinator();if(c==null) return liveFailure();
         try {
-            context = liveContext(root(), _slotRefs);
-        } catch (preError) {
-            return liveFailure();
-        }
-        if (context == null) return liveFailure();
-        var postValid:Boolean = false;
-        try {
-            context.root.刷新人物装扮(context.controlTarget);
-            postValid = livePostcondition(context);
+            if(_statTicket!=null && _statTicket.context!==c.contextToken()) _statTicket=null;
+            if(_statTicket!=null && _statTicket.status=="aborted") _statTicket=null;
+            if(_statTicket==null) {
+                var context:Object=liveContext(root(),_slotRefs);
+                if(context==null) return liveFailure();
+                var proof:Object={context:c.contextToken(),generation:_sessionGeneration,revision:_loadoutRevision,
+                    signature:_signature,inventory:_equipmentInventory,refs:_slotRefs.concat(),live:context};
+                var owner:Object=equipmentProjectionOwner(proof);
+                _statTicket=c.prepareEquipmentTransition(proof,owner);
+                if(_statTicket==null) return liveFailure();
+                declareEquipmentProjection();
+            }
+            var ticket:Object=_statTicket;
+            if(ticket.status=="started" || ticket.actor.__playerStatInitPlan.failed===true) {
+                if(recover!==true) return liveFailure();
+                if(ticket.actor.__playerStatInitPlan.tailCheckpoint!=undefined) {
+                    var tail:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.resumeFullInitialization(ticket,ticket.owner);
+                    if(tail.status!="applied" && tail.status!="unchanged") return liveFailure();
+                } else {
+                    var resources:Object=c.fullRecoveryResources(ticket,ticket.owner);
+                    if(resources==null || !c.abortEquipmentTransition(ticket,ticket.owner)) return liveFailure();
+                    refreshEquipmentAttemptProof(ticket.proof);
+                    _statTicket=c.prepareEquipmentTransition(ticket.proof,ticket.owner);
+                    if(_statTicket==null) return liveFailure();
+                    _statTicket.recoveryResources=resources;ticket=_statTicket;
+                    declareEquipmentProjection();
+                }
+            }
+            var result:Object=c.flush("character_equipment");
+            if(result.status!="applied" && result.status!="unchanged") return liveFailure();
+            if(ticket.status!="completed" || ticket.actor.__playerStatFullReady!==ticket.targetBody
+                    || !equipmentProofCurrent(ticket.proof) || !livePostcondition(ticket.proof.live)) return liveFailure();
         } catch (error) {
             return liveFailure();
         }
-        if (!postValid) return liveFailure();
         _liveRevision = _loadoutRevision;
         _liveRefreshDirty = false;
         _liveRefreshRetryRequired = false;
+        _statTicket=null;
         return liveResult(true);
+    }
+    private static function statCoordinator():Object {
+        return _testRoot==null ? org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production() : _testRoot.__statCoordinatorForTests;
+    }
+    private static function declareEquipmentProjection():Void {
+        var c:Object=statCoordinator();if(c!=null && (c.diagnostics().dirtyMask & 4)==0) c.invalidate(4,"equipment",c.contextToken());
+    }
+    private static function equipmentRecoveryOpen():Boolean {
+        var c:Object=statCoordinator();if(c==null) return false;
+        var ticket:Object=c.equipmentTransition();
+        return ticket!=null && (ticket.status=="started" || ticket.actor.__playerStatInitPlan.failed===true);
+    }
+    private static function equipmentProofCurrent(proof:Object):Boolean {
+        var c:Object=statCoordinator();
+        if(c==null || proof.context!==c.contextToken() || proof.generation!==_sessionGeneration
+                || proof.revision!==_loadoutRevision || proof.signature!==_signature
+                || proof.inventory!==_equipmentInventory || !sameRefs(proof.refs,_slotRefs)
+                || root()!==proof.live.root || root().gameworld!==proof.live.gameworld
+                || root().gameworld[proof.live.controlTarget]!==proof.live.hero) return false;
+        var scan:Object=scanLoadout(_equipmentInventory);
+        return scan.success && scan.signature===proof.signature && sameRefs(scan.refs,proof.refs);
+    }
+    private static function refreshEquipmentAttemptProof(proof:Object):Void {
+        var previous:Object=proof.live;var actor:Object=previous.hero;var data:Array=[];
+        for(var i:Number=0;i<SLOT_DATA_KEYS.length;i++) data[i]=actor[SLOT_DATA_KEYS[i]];
+        proof.live={root:previous.root,controlTarget:previous.controlTarget,gameworld:previous.gameworld,hero:actor,
+            oldDispatcher:actor.dispatcher,oldBuffManager:actor.buffManager,oldDataRefs:data};
+    }
+    private static function equipmentProjectionOwner(proof:Object):Object {
+        return {verifyInput:function(p:Object):Boolean {return p===proof && CharacterBuildService.equipmentProofCurrent(p);},
+            rebuild:function(ticket:Object):Void {proof.live.root.刷新人物装扮(proof.live.controlTarget,ticket);},
+            verifyOutput:function(p:Object):Boolean {return p===proof && CharacterBuildService.equipmentProofCurrent(p)
+                && CharacterBuildService.livePostcondition(p.live);}};
     }
 
     /**
@@ -466,12 +529,12 @@ class org.flashNight.arki.item.CharacterBuildService {
      * 成功后只保存最近一次 exact generation/revision proof 供丢包重试。
      */
     public static function finalize(expectedGeneration:Number,
-                                    expectedLoadoutRevision:Number):Object {
+                                    expectedLoadoutRevision:Number,recover:Boolean):Object {
         var replay:Object = replayFinalizeReceipt(
             expectedGeneration, expectedLoadoutRevision);
         if (replay != null) return replay;
 
-        var live:Object = flushLive(expectedGeneration, expectedLoadoutRevision);
+        var live:Object = flushLive(expectedGeneration, expectedLoadoutRevision,recover);
         if (!live.success) return finalizeFailure(live, false);
         var globalDirty:Object = invokeBoolean("isGlobalDirty");
         if (!globalDirty.known) {
@@ -1296,9 +1359,11 @@ class org.flashNight.arki.item.CharacterBuildService {
         if (r.存档系统 == null) return fail("service_not_ready");
 
         if (commandName == "equipEquipment") {
+            if(equipmentRecoveryOpen()) return fail("write_busy");
             return mutateEquipEquipment(params);
         }
         if (commandName == "unequipEquipment") {
+            if(equipmentRecoveryOpen()) return fail("write_busy");
             return mutateUnequipEquipment(params);
         }
         if (commandName == "equipDrug") {
@@ -1693,6 +1758,7 @@ class org.flashNight.arki.item.CharacterBuildService {
         _loadoutRevision++;
         _liveRefreshDirty = true;
         markSaveDirty();
+        declareEquipmentProjection();
         invalidateBackpackSlot(backpackSlot);
         publishCommittedPlan(plan);
         return buildMutationSuccess(commandName, backpackSlot, true, false);
@@ -2220,17 +2286,20 @@ class org.flashNight.arki.item.CharacterBuildService {
     }
 
     private static function executeFlushLive(params:Object):Object {
+        if(params.recoverProjection!=undefined && typeof params.recoverProjection!="boolean") return fail("invalid_payload");
         var identity:Object = panelGate(String(params.panelInstanceId));
         if (!identity.success) return identity;
         return flushLive(Number(params.sessionGeneration),
-            Number(params.expectedLoadoutRevision));
+            Number(params.expectedLoadoutRevision),params.recoverProjection===true);
     }
 
     private static function executeFinalize(params:Object):Object {
+        if(params.recoverProjection!=undefined && typeof params.recoverProjection!="boolean") return fail("invalid_payload");
+        if(params.recoverProjection===true && params.reconcileAfterCallId!=undefined) return fail("invalid_payload");
         var identity:Object = panelGate(String(params.panelInstanceId));
         if (!identity.success) return identity;
         return finalize(Number(params.sessionGeneration),
-            Number(params.expectedLoadoutRevision));
+            Number(params.expectedLoadoutRevision),params.recoverProjection===true);
     }
 
     private static function attachSnapshotProjection(
@@ -3132,6 +3201,8 @@ class org.flashNight.arki.item.CharacterBuildService {
                     || !validBuffManager(hero.buffManager)) {
                 return RuntimeEquipmentProjection.STATUS_INVALID;
             }
+            if(hero.__playerStatBody==null || hero.__playerStatFullReady!==hero.__playerStatBody
+                    || hero.__playerStatInitializing===true) return RuntimeEquipmentProjection.STATUS_MISMATCH;
             var projectionStatus:String = RuntimeEquipmentProjection.getStatus(hero, refs);
             if (projectionStatus == RuntimeEquipmentProjection.STATUS_INVALID) {
                 return projectionStatus;
@@ -3355,6 +3426,7 @@ class org.flashNight.arki.item.CharacterBuildService {
     }
 
     private static function clearSession():Void {
+        _statTicket=null;
         _appearanceProjectionEnabled = false;
         _sessionGeneration = 0;
         _active = false;

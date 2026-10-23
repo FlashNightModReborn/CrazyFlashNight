@@ -1,4 +1,31 @@
-﻿
+﻿// 供独立武器 SWF 使用的命名窄入口；不把命令的弹药迁移当成普通属性刷新。
+if (_root.玩家属性投影 == undefined) _root.玩家属性投影 = {};
+_root.玩家属性投影.允许遗留装备变更 = function():Boolean {
+    return org.flashNight.arki.unit.PlayerStatRefreshCoordinator.admitLegacyEquipmentMutation();
+};
+_root.玩家属性投影.刷新当前模式 = function(target:Object):Object {
+    return org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.requestPersistentRefresh(target,"morph");
+};
+_root.玩家属性投影.模式组件就绪 = function(target:Object,body:Object):Void {
+    org.flashNight.arki.unit.PlayerStatRefreshCoordinator.notifyModeComponentReady(target,body);
+};
+_root.玩家属性投影.恢复遗留装备 = function():Object {
+    var result:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.recoverLegacyEquipment(_root.gameworld[_root.控制目标]);
+    if(result.status=="applied" || result.status=="unchanged") org.flashNight.arki.unit.Action.PickUp.PickUpManager.resumePendingEquipmentMode(_root.gameworld[_root.控制目标]);
+    return result;
+};
+_root.玩家属性投影.恢复已提交成长 = function(owner:Object):Object {
+    var result:Object=owner==null ? org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery.recoverLatest()
+        : org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery.recoverCommitted(owner);
+    var target:Object=_root.gameworld[_root.控制目标];
+    if(result.playEffect && target!=undefined) {
+        try {EffectSystem.Effect("升级动画",target._x,target._y,100);}
+        catch(成长展示错误) {trace("[LevelUpRecovery] committed effect display failed");}
+    }
+    return result;
+};
+
+
 // _root.玩家与佣兵区分装扮刷新 = false;
 // 诊断按需开启；武器评分的缓存维护独立于这两个开关。
 _root.AI调试模式 = false;
@@ -154,16 +181,24 @@ _root.技能缓存["尾上世莉架_40"].push({技能名: "拔刀术", 点数: 5
    _root.佣兵装备位映射数组[16] = "手雷";
  */
 
-_root.刷新人物装扮 = function(目标) {
+_root.刷新人物装扮 = function(目标,属性重建凭据:Object) {
     var 目标人物 = _root.gameworld[目标];
+    var 属性协调器:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator;
+    if(属性重建凭据==null && 目标人物._name===_root.控制目标
+            && 目标人物.__playerStatBody!=null && 目标人物.__playerStatInitializing!==true) {
+        return 属性协调器.refreshLegacyEquipment(目标人物);
+    }
+    var 属性初始化范围:Object=属性协调器.beginOuterInitialization(目标人物,属性重建凭据);
+    try {
     目标人物.hasDressup = true;
     目标人物.enableShoot = true;
 
     // 装备刷新重建最大值，但当前资源遵循绝对值语义：升上限不回血，降上限不制造溢出。
     // 旧治疗上界内已有的临时生命保留绝对点数并受新治疗上界约束；越界污染回退普通满血。
-    var 旧hp:Number = Number(目标人物.hp);
-    var 旧hp满血值:Number = Number(目标人物.hp满血值);
-    var 旧mp:Number = Number(目标人物.mp);
+    var 完整资源计划:Object=属性初始化范围.plan.ownerResources;
+    var 旧hp:Number = 完整资源计划==undefined ? Number(目标人物.hp) : 完整资源计划.hp;
+    var 旧hp满血值:Number = 完整资源计划==undefined ? Number(目标人物.hp满血值) : 完整资源计划.oldMax;
+    var 旧mp:Number = 完整资源计划==undefined ? Number(目标人物.mp) : 完整资源计划.mp;
 
     if (!目标人物.新版人物文字信息) {
         目标人物.新版人物文字信息 = 目标人物.人物文字信息;
@@ -180,10 +215,18 @@ _root.刷新人物装扮 = function(目标) {
     目标人物.buff.初始();
     目标人物.buff.更新();
 
-    目标人物.hp = org.flashNight.arki.unit.Action.Regeneration.HealApplier.settleHpAfterMaxChange(
-        旧hp, 旧hp满血值, Number(目标人物.hp满血值));
-    目标人物.mp = org.flashNight.arki.unit.Action.Regeneration.HealApplier.settleMpAfterMaxChange(
-        旧mp, Number(目标人物.mp满血值));
+    属性协调器.prepareFullNumeric(目标人物,属性初始化范围);
+    属性协调器.validateSpawnResourceSeed(目标人物);
+
+    var 完整结算hp:Number=org.flashNight.arki.unit.Action.Regeneration.HealApplier.settleHpAfterMaxChange(旧hp,旧hp满血值,Number(目标人物.hp满血值));
+    var 完整结算mp:Number=org.flashNight.arki.unit.Action.Regeneration.HealApplier.settleMpAfterMaxChange(旧mp,Number(目标人物.mp满血值));
+    if(完整资源计划!=undefined) {完整资源计划.settledHp=完整结算hp;完整资源计划.hpAttempted=true;}
+    目标人物.hp=完整结算hp;
+    if(完整资源计划!=undefined) {完整资源计划.hpDone=true;完整资源计划.settledMp=完整结算mp;完整资源计划.mpAttempted=true;}
+    目标人物.mp=完整结算mp;
+    if(完整资源计划!=undefined) {
+        完整资源计划.mpDone=true;完整资源计划.stage="settled";
+    }
 
     // remainingImpactForce / lastHitTime / 绝对衰减基线都留在同一个 MovieClip 上，
     // 无需重投影；装备属性变化后只重建依赖当前 HP/防御/韧性的派生显示。
@@ -200,10 +243,11 @@ _root.刷新人物装扮 = function(目标) {
     // 跳回安全帧：容器态必须回到"容器"，普通态回到对应状态
     // 优先级：__stateGotoLabel（容器="容器"） > 状态 > "空手站立"
     var safeFrame:String = 目标人物.__stateGotoLabel || 目标人物.状态 || "空手站立";
-    目标人物.gotoAndStop(safeFrame);
-
-    // 刷新所有已注册的装扮引用（解决容器状态下换装不更新的问题）
-    _root.装备引用配置.刷新所有装扮(目标人物);
+    属性协调器.finishOuterAfterState(目标人物,safeFrame,属性初始化范围);
+    } catch(属性初始化错误) {
+        属性协调器.failOuterInitialization(属性初始化范围,属性初始化错误);
+        throw 属性初始化错误;
+    }
 };
 
 
@@ -1652,7 +1696,12 @@ _root.主角函数.死亡检测 = function() {
             }
         }
         if (是佣兵) {
+            var 佣兵谓词改变:Boolean=_root.佣兵是否出战信息[佣兵是否出战信息id]==1;
             _root.佣兵是否出战信息[佣兵是否出战信息id] = -1;
+            if(佣兵谓词改变) {
+                var 佣兵属性协调器:org.flashNight.arki.unit.PlayerStatRefreshCoordinator=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production();
+                佣兵属性协调器.invalidate(1,"companion",佣兵属性协调器.contextToken());佣兵属性协调器.flush("merc_death_flag");
+            }
             // 旧 Flash 佣兵信息界面 已退役不实例化（佣兵管理迁 web 战队页）；此处刷新调用为死 no-op，删除。
             this.新版人物文字信息._visible = false;
             if(this.死亡撤退){
@@ -1759,6 +1808,8 @@ _root.主角函数.刀口位置生成子弹 = BladeShootCore.shoot;
 
 //释放技能与战技
 _root.主角函数.释放技能 = function(技能名, 消耗mp, 技能按键值) {
+    if(!org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.nonnegative(消耗mp))
+        return org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.reject(this,"skill_cost_invalid");
     // 统一校验原始空值、已学习技能、技能数据与 MP 消耗，禁止无效名称进入默认技能路由。
     var 技能释放信息:Object = SkillReleaseGuard.resolve(_root, 技能名, 消耗mp);
     if (!技能释放信息)
@@ -1766,7 +1817,7 @@ _root.主角函数.释放技能 = function(技能名, 消耗mp, 技能按键值)
 
     技能名 = 技能释放信息.skillName;
     消耗mp = 技能释放信息.mpCost;
-    if (this.hp <= 0) return false;
+    if(!org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.canPayMp(this,消耗mp)) return false;
     if (this.mp < 消耗mp)
         return org.flashNight.arki.skill.SkillResourceService.reject(this, "mp");
 
@@ -1775,6 +1826,8 @@ _root.主角函数.释放技能 = function(技能名, 消耗mp, 技能按键值)
     var 释放条件函数 = _root.技能函数.释放条件[技能名] ? _root.技能函数.释放条件[技能名] : _root.技能函数.释放条件.默认;
     var 释放许可 = 释放条件函数.apply(this);
     if (释放许可) {
+        if(!org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.canPayMp(this,消耗mp)) return false;
+        if(this.mp < 消耗mp) return org.flashNight.arki.skill.SkillResourceService.reject(this,"mp");
         this.temp_y = (this.浮空 || this.倒地) ? this._y : 0; //记录临时y轴
         this.mp -= 消耗mp;
         //用函数托管技能的释放行为，配合buff系统实装后部分不需要进技能动画即可释放的技能
@@ -1832,11 +1885,21 @@ _root.主角函数.释放主动战技 = function() {
     if (isNaN(技能点数余额)) 技能点数余额 = 0;
 
     if (战技函数.原子释放 !== true) {
+        if(!org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.canPayMp(this,当前战技.消耗mp)
+                || !org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.nonnegative(当前战技.消耗hp))
+            return org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.reject(this,"weapon_skill_cost_invalid");
         if (this.hp <= 当前战技.消耗hp) return false;
         if (this.mp < 当前战技.消耗mp) return org.flashNight.arki.skill.SkillResourceService.reject(this, "mp");
         if (技能点数余额 < 消耗sp) return false;
     }
     if (战技函数.释放许可判定(this)) {
+        // 许可回调可能修改余额/费用；实际扣款前再验证最终值，任何一项坏值都不写。
+        if(战技函数.原子释放 !== true) {
+            if(!org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.canPayMp(this,当前战技.消耗mp)
+                    || !org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.nonnegative(当前战技.消耗hp))
+                return org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.reject(this,"weapon_skill_payment_invalid");
+            if(this.hp <= 当前战技.消耗hp || this.mp < 当前战技.消耗mp) return false;
+        }
         if (this.浮空) {
             this.temp_y = this._y;
         } else {
@@ -1919,37 +1982,7 @@ _root.主角函数.装载副武器控制槽 = function(副武器信息, 攻击�
     this.主动战技[攻击模式] = 当前战技;
 }
 _root.主角函数.读取基础被动效果 = function() {
-    //独行者
-    if (this.被动技能.独行者 && this.被动技能.独行者.启用) {
-        var 是否独行 = true;
-        //若禁用同伴词条开启则无需额外判定，否则遍历佣兵与宠物出战情况
-        if (!(!_root.限制系统.limitLevel || _root.难度等级 >= _root.限制系统.limitLevel) || !_root.限制系统.DisableCompanion) {
-            for (var i = 0; i < _root.宠物信息.length; i++) {
-                var 当前宠物信息 = _root.宠物信息[i];
-                if (当前宠物信息[4] == 1) {
-                    是否独行 = false;
-                    break;
-                }
-            }
-            for (var i = 0; i < _root.佣兵个数限制; i++) {
-                var 同伴信息 = _root.同伴数据[i];
-                if (_root.佣兵是否出战信息[i] == 1 && 同伴信息[1] != undefined && 同伴信息[1] != "undefined") {
-                    是否独行 = false;
-                    break;
-                }
-            }
-        }
-        if (是否独行) {
-            if (this.hp == this.hp满血值)
-                this.hp += this.被动技能.独行者.等级 * 50;
-            this.hp满血值 += this.被动技能.独行者.等级 * 50;
-            if (this.mp == this.mp满血值)
-                this.mp += this.被动技能.独行者.等级 * 50;
-            this.mp满血值 += this.被动技能.独行者.等级 * 50;
-            this.伤害加成 += this.被动技能.独行者.等级 * 10;
-            this.防御力 += this.被动技能.独行者.等级 * 30;
-        }
-    }
+    org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.applyBasePassiveContribution(this);
 }
 
 _root.主角函数.读取被动效果 = function() {
@@ -2082,6 +2115,9 @@ _root.反转数组 = function(arr) {
 
 //初始化玩家模板
 _root.初始化玩家模板 = function() {
+    var 属性模板协调器:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator;
+    var 属性模板范围:Object=属性模板协调器.beginOuterInitialization(this,null);
+    try {
     // this.循环切换攻击模式 = _root.主角函数.循环切换攻击模式;
     this.随机切换攻击模式 = _root.主角函数.随机切换攻击模式;
     this.攻击呐喊 = _root.主角函数.攻击呐喊;
@@ -2310,7 +2346,11 @@ _root.初始化玩家模板 = function() {
     }
 
     方向改变(方向);
-    gotoAndStop(状态);
+    属性模板协调器.finishOuterAfterState(this,状态,属性模板范围);
+    } catch(属性模板错误) {
+        属性模板协调器.failOuterInitialization(属性模板范围,属性模板错误);
+        throw 属性模板错误;
+    }
 };
 
 
@@ -2730,6 +2770,9 @@ _root.计算AI参数 = function(p:Object):Void {
 };
 
 _root.初始化佣兵NPC模板 = function() {
+    var 佣兵模板协调器:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator;
+    var 佣兵模板范围:Object=佣兵模板协调器.beginOuterInitialization(this,null);
+    try {
     this.获取佣兵装备属性 = _root.主角函数.获取佣兵装备属性;
 
     this.动画完毕 = _root.主角函数.动画完毕;
@@ -2802,5 +2845,8 @@ _root.初始化佣兵NPC模板 = function() {
 
     根据等级初始数值(等级);
     方向改变(方向);
-    gotoAndStop(状态);
+    佣兵模板协调器.finishOuterAfterState(this,状态,佣兵模板范围);
+    } catch(佣兵模板错误) {
+        佣兵模板协调器.failOuterInitialization(佣兵模板范围,佣兵模板错误);throw 佣兵模板错误;
+    }
 };

@@ -209,6 +209,29 @@ class 主角模板数值buff
 		}
 	}
 
+	/** 显式未 Buff 输入；不采样 live、不更新时间表、不重装射击任务。 */
+	public function buildPersistentRebase(input:Object,gunBonus):Object {
+		var base:Object = {hp满血值:input.hp满血值,mp满血值:input.mp满血值,魔法抗性:{}};
+		var weapons:Object = {长枪威力:"长枪属性",手枪威力:"手枪属性",手枪2威力:"手枪2属性",刀锋利度:"刀属性"};
+		for (var name:String in weapons) if (input[weapons[name]].power != undefined) base[name] = input[weapons[name]].power;
+		for (var resistance:String in input.魔法抗性) base.魔法抗性[resistance] = input.魔法抗性[resistance];
+		var values:Object = {};
+		for (name in base) {
+			var mult:Number = this.buff限时倍率[name] !== undefined ? Number(this.buff限时倍率[name]) : (this.buff倍率[name] !== undefined ? Number(this.buff倍率[name]) : 1);
+			var plus:Number = this.buff限时加算[name] !== undefined ? Number(this.buff限时加算[name]) : (this.buff加算[name] !== undefined ? Number(this.buff加算[name]) : 0);
+			if(gunBonus!==undefined && (name=="手枪威力" || name=="手枪2威力") && this.buff限时加算[name]===undefined) plus=Number(gunBonus);
+			if (name == "魔法抗性") {
+				values[name] = {};
+				for (resistance in base[name]) values[name][resistance] = base[name][resistance] * mult + plus;
+			} else values[name] = base[name] * mult + plus;
+		}
+		return {base:base,values:values};
+	}
+
+	public function acceptPersistentRebase(record:Object):Void {
+		this.基础值 = record.base;
+	}
+
 	function 赋值(属性名, 类型, 数值, 增减类型, 换算上限, 换算下限)
 	{
 		// 桥接属性代理到BuffManager

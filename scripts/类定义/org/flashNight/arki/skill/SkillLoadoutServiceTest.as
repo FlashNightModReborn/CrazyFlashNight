@@ -56,6 +56,8 @@ class org.flashNight.arki.skill.SkillLoadoutServiceTest {
         testMoveShotZeroAndTenBoundary();
         testQuickHudRendererRebuildsReplaceAndClear();
         testAllOptionalRenderersMissing();
+        testProjectionSuccessBoundary();
+        testCooldownProjectionKeepsRunningTimer();
         SkillLoadoutService.testOnlyReset();
         trace("SkillLoadoutServiceTest Tests Passed: " + passed);
         trace("SkillLoadoutServiceTest Tests Failed: " + failed);
@@ -468,6 +470,12 @@ class org.flashNight.arki.skill.SkillLoadoutServiceTest {
             && r.技能表对象.一瞬千击.CD == 2000 && r.技能表对象.一瞬千击.MP == 10
             && r.技能表对象.移动射击.CD == 1000,
             "move-shot level 10 independently activates 1s cooldown while burst values restore");
+        r.主角被动技能.移动射击.等级=1;
+        check(SkillLoadoutService.recalculateDynamicCooldownDomain() && r.技能表对象.移动射击.CD==2000
+            ,"10 to 1 restores original cooldown metadata");
+        r.主角被动技能.移动射击.等级=10; SkillLoadoutService.recalculateDynamicCooldownDomain();
+        r.主角被动技能.移动射击.启用=false;
+        check(SkillLoadoutService.recalculateDynamicCooldownDomain() && r.技能表对象.移动射击.CD==2000,"disabling full-level move-shot restores original CD");
     }
 
     private static function testMoveShotZeroAndTenBoundary():Void {
@@ -538,6 +546,46 @@ class org.flashNight.arki.skill.SkillLoadoutServiceTest {
         r.技能系统投影快捷栏 = function():Void { this.hudCalls++; };
         SkillLoadoutService.testOnlyUseRoot(r);
         return r;
+    }
+    private static function projectionPort(state:Object):Function {
+        return function(mask:Number):Object {
+            if(mask!=0) {state.calls++;state.mask=mask;}
+            return {status:state.status,reason:state.status=="failed" ? "injected_projection" : "",stage:"test_adapter"};
+        };
+    }
+    private static function testProjectionSuccessBoundary():Void {
+        var r:Object=fixture(80);var state:Object={calls:0,status:"failed"};
+        SkillLoadoutService.testOnlySetProjection(projectionPort(state));
+        var cache:Object=r.主角被动技能;
+        var result:Object=SkillLoadoutService.commitLearn("内力爆发",1,20,SkillLoadoutService.getRevision());
+        check(result.success && r.技能点数==80 && state.calls==1 && state.mask==2 && cache===r.主角被动技能,
+            "committed skill survives failed required projection and charges SP once");
+        state.status="applied";SkillLoadoutService.flushProjection();
+        check(state.calls==1 && r.技能点数==80,"projection-only recovery never replays the learning mutation");
+        SkillLoadoutService.setPassive("内力爆发",false,SkillLoadoutService.getRevision());
+        var count:Number=state.calls;
+        SkillLoadoutService.setPassive("内力爆发",false,SkillLoadoutService.getRevision());
+        check(count==2 && state.calls==count,"passive disable notifies once and repeated no-op stays free");
+        learn(r,1,"闪现",1);r.easy=true;
+        SkillLoadoutService.equip("闪现",1,SkillLoadoutService.getRevision());
+        SkillLoadoutService.moveSlot(1,2,SkillLoadoutService.getRevision());
+        SkillLoadoutService.unequip(2,SkillLoadoutService.getRevision());
+        SkillLoadoutService.reorder("闪现",3,SkillLoadoutService.getRevision());
+        SkillLoadoutService.runOptionalRenderers();
+        check(state.calls==count && r.heroCalls==0,"display-only slot/reorder work and optional HUD never initialize the hero");
+    }
+    private static function testCooldownProjectionKeepsRunningTimer():Void {
+        var r:Object=fixture(80);r.技能表对象.移动射击.CD=20000;
+        var cooldown:Object=org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
+        cooldown.resetForTests();cooldown.setSchedulerForTests(function(callback:Function):Void {});
+        var key:String=cooldown.skillKey("移动射击");cooldown.start(key,20000);
+        var before:Object=cooldown.getSnapshot(key);
+        r.主角被动技能.移动射击={等级:10,启用:true};SkillLoadoutService.recalculateDynamicCooldownDomain();
+        r.主角被动技能.移动射击.等级=1;SkillLoadoutService.recalculateDynamicCooldownDomain();
+        var after:Object=cooldown.getSnapshot(key);
+        check(r.技能表对象.移动射击.CD==20000 && !after.ready && after.totalSteps==before.totalSteps && after.currentStep==before.currentStep,
+            "real running ManualCooldown retains progress when 20000 CD configuration returns from full-level mode");
+        cooldown.resetForTests();
     }
 
     private static function meta(name:String, type:String, passive:Boolean, equippable:Boolean):Object {

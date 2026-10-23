@@ -564,7 +564,10 @@ class TrustedRuntimeController {
   }
 
   async openPanel(panel, reason) {
-    if (!["help", "map", "tasks", "team", "jukebox", "settings", "settings_camera_preview", "materials", "bookshelf", "intelligence"].includes(panel)) {
+    const regressionMeridians = panel === "meridians"
+      && !!require("../../cf7-agent/regression-profile").resolve(this.preparation);
+    if (!regressionMeridians
+      && !["help", "map", "tasks", "team", "jukebox", "settings", "settings_camera_preview", "materials", "bookshelf", "intelligence"].includes(panel)) {
       fail("trusted_runtime_panel_invalid", "Only a registered structured panel may be opened");
     }
     return this._withFreshActionCapture(TARGET_KINDS.launcher, (capture) =>

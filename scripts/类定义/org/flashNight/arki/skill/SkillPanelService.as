@@ -62,6 +62,8 @@ class org.flashNight.arki.skill.SkillPanelService {
         if (commandName == "reorder") return executeWrite("reorder", params);
         if (commandName == "close") {
             if (params.trainerSession != undefined && !safeOpaque(params.trainerSession, 160)) return fail("invalid_payload");
+            var projection:Object=SkillLoadoutService.flushProjection();
+            if(projection.status=="failed" || (projection.status=="pending" && projection.reason!="pending_actor")) return fail("busy");
             // 带 session 的 tracked cleanup 只能撤销同一 capability；迟到的旧 cleanup 对新 session 幂等 no-op。
             if (params.trainerSession == undefined) closeSession();
             else {
@@ -124,6 +126,7 @@ class org.flashNight.arki.skill.SkillPanelService {
         } else if (params.trainerSession != undefined) {
             return fail("invalid_payload");
         }
+        SkillLoadoutService.flushProjection();
         return SkillLoadoutService.buildSnapshot(view, trainer);
     }
 

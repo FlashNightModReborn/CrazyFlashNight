@@ -26,6 +26,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         // 排除从非gameworld召唤出的单位
         if(target._parent !== _root.gameworld) return;
 
+        org.flashNight.arki.unit.PlayerStatRefreshCoordinator.activateInitialization(target);
+
         // 在任何属性重建前抓取旧资源；满血初始化奖励不能被“降低上限后变满血”套利。
         var wasReinitializing:Boolean = target.dispatcher != undefined;
         var hpBeforeRebuild:Number = Number(target.hp);
@@ -58,6 +60,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer imple
         ComponentInitializer.initialize(target);
         // BuffManager 需要在模板重初始化前先清空，否则换装/重刷可能遗留旧 Buff
         BuffManagerInitializer.reset(target);
+        target.__crumbleCeilingLoss = 0;
+        target.转换的冷兵器加成 = 0;
         ParameterInitializer.initialize(target);
         EventInitializer.initialize(target);
 

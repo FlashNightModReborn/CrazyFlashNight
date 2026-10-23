@@ -141,6 +141,19 @@
 
 各领域自己的 runner、工作目录、参数、现役阈值与固定覆盖点。阈值口径适用本文开头的「计数口径」：标注「机器钉死」的以 runner 脚本内 `ExpectedTracePatterns`/断言常量为准；其余文本计数保留义务并标待核。跨域共享的持久写合同见 [持久写与恢复](#save)，协议/生命周期合同见 [跨层协议与权威](#cross-layer)，编译与恢复见 [Flash 编译核心](#flash-core) / [focused runner 事务与恢复合同](#flash-recovery)。
 
+<a id="suite-player-stat-refresh"></a>
+### 玩家持久属性组合
+
+接口和资源例外以 [玩家属性合同](../docs/player-stat-refresh-contract.md) 为唯一正文。施工先用 `node tools/player-stat-refresh/run-source-probes.js --source . --mode fixed --output <报告路径>` 验证当前提取函数及明确替身，再用 `powershell -File scripts/run-player-stat-refresh-tests.ps1 -TimeoutSeconds 600` 运行真实 AS2 数值、新旧 Buff、身份、部分失败、计划内 ticket、完整外层及一次性成长组合。原审计 ZIP 缺失时保留重建来源，不称复跑原包。测试计数读取本轮 suite 输出，不写死历史通过数。
+
+P1 先调用真实 `MeridianPanelService.install()` 验证根级四种只读收益 getter；AVM1 的 `addProperty` 必须显式传第三个参数 `null`，省略时注册失败。该夹具仅使用内存存档 owner，不收费、不访问玩家 SharedObject。只查此接缝可运行 `scripts/run-meridian-getter-tests.ps1`，仍须保留 fresh CS6 行为和 Compiler 证据。
+
+命中领域才追加 skill-migration、gym-preview、character-build、merc-loadout、buff-manager 的现有 focused runner 及对应 Node 门；它们共用 Flash mutex，不能并发修改 scratch。变更帧闭包先 assemble→check→BOM→equip coverage，再真实 `compile_test.ps1 -Target publish`；独立武器 XFL 分别按真实归属编译及 readback。codeSize 和编译 0/0 不能证明模式动作已在实际资源中运行。
+
+治理门为 `node tools/player-stat-refresh/test-check-writes.js` 与 `node tools/player-stat-refresh/check-writes.js --output <报告路径>`；首次基线分类用 `--baseline`。检查器覆盖 AS2/引擎及 XFL CDATA 的有限模式，人工候选不冒充错误或可达性证明。
+
+最终实际旅程至少覆盖命中的技能升级/撤销、健身 durable/unknown、经脉 memory-first、混合装备/调制/拾取、佣兵宠物 flag、同槽重读/书中返回、连续升级/死亡、模式/黑犀/击溃及射击装填中数值变化。使用既有隔离测试槽，保存重启只对该槽；记录 exact candidate identity/closure 与实际路径。物理输入/人类体验前置未满足时保留 pending，不用对象夹具补签。Host 字段变化按单域严格 schema 验证，原未知写不因投影恢复而解除。
+
 <a id="suite-inventory"></a>
 ### 库存、背包与批量转移
 
@@ -158,11 +171,11 @@ AS2 必须证明目标只扫描一次、来源/目标各一次 revision 与 inde
 
 物品格协议施工须看到 `InventoryPanelServiceTest` 的现役机器钉值、合成/材料来源与用途施工须看到 `CraftingPanelServiceTest` + `SynthesisIndexTest` 的新鲜 Output Panel/trace 证据，不能只凭 publish marker。`-SkipCompile` 只证明静态合同。
 
-**装备调制最终态门**：`powershell -ExecutionPolicy Bypass -File scripts/run-equipment-tuning-tests.ps1 -TimeoutSeconds 240` 现役计数为 Equipment Tuning **88/88** + Inventory **170/170**（机器钉死），覆盖已穿戴进阶/安装/替换/卸下/卸下全部配件后的有效等级门、exact 等级边界、preview→commit 等级竞态零写、背包高等级进阶继续允许、`replace_mod` 拆件后容量拒绝与 after 容量投影。
+**装备调制最终态门**：`powershell -ExecutionPolicy Bypass -File scripts/run-equipment-tuning-tests.ps1 -TimeoutSeconds 600` 的 `ExpectedTracePatterns` 是现役断言计数真源。穿戴夹具必须同时满足 canonical 与最终 body ready，先证明打开时 clean，再验证完整回滚。覆盖已穿戴进阶/安装/替换/卸下/卸下全部配件后的有效等级门、exact 等级边界、preview→commit 等级竞态零写、背包高等级进阶继续允许、`replace_mod` 拆件后容量拒绝与 after 容量投影。
 绿灯只证明 focused TestLoader + Inventory 行为与新鲜 Compiler/SWF 门，不代签真实游戏业务旅程、asLoader publish、runtime promotion 或 `standard_entry_verified`。
 
 **装备调制 Web 体验门**：`node tools/run-equipment-tuning-harness.js` 必须在 `1024×576 / 1366×768 / 1920×1080` 各通过（文本阈值 147/147，待核：阈值来源为历史文本，未找到当前机器真源），覆盖 loadout 四入口同排、不可用进阶隐藏、缺料空态、不可用候选只写 Web status。`node tools/test-character-build-session.js` 必须覆盖 finalize 在状态切换前取消 pending candidates；
-`node tools/run-character-build-workbench-harness.js` 必须通过生产控制器三视口、hidden-body、整备菜单（文本阈值 1110/1110 + 12/12 + 18/18，待核），覆盖 send-refused Web notice、迟到候选隔离与正常 finalize。该门只证明 source Web/会话/harness，不代签 Launcher candidate、真实 Flash socket、游戏内手工旅程、promotion 或 `standard_entry_verified`。
+`node tools/run-character-build-workbench-harness.js` 必须通过生产控制器三视口、hidden-body、整备菜单及 exact-source 回归，计数读取本轮输出。切源前等待真实 source 能力开放，退出后等待候选读取 ready，不能把 snapshot 回包误当首个 preview 完成。覆盖 send-refused Web notice、迟到候选隔离与正常 finalize。该门只证明 source Web/会话/harness，不代签 Launcher candidate、真实 Flash socket、游戏内手工旅程、promotion 或 `standard_entry_verified`。
 
 **已穿戴强化度交换、稀疏配件库存与候选调制切槽门**：配件测试数据必须同时包含持有数大于 0 与等于 0 的兼容候选，fresh open 断言 `modFilterPath=ownership/owned` 且只显示前者，玩家显式返回「持有」根后再断言全目录与数量 0 标识。
 loadout convert 必须覆盖 exact loadout source + exact 背包 target、双 receipt 交换、第二侧失败全回滚、stale target 零写、Character authority 已观察后 `needs_reconcile`、Host 对 changed/no-op 快照数分支校验，以及 Web 确定成功/未知结果的 loadout + 背包对账和旧 target lease 清理。从背包候选进入调制后，选择另一件已穿戴且可调制装备必须在原 tuning session 内原子 rebind；

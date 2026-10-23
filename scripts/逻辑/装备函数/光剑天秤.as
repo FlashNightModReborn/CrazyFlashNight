@@ -36,6 +36,7 @@ _root.装备生命周期函数.光剑天秤初始化 = function(ref:Object, para
 {
     EquipmentEmissionState.bind(ref, "libra");
     var target:MovieClip = ref.自机;
+    target.__statBalanceRef=ref;ref.属性投影身体=target.__playerStatBody;
 
     // 配置参数（帧数，30fps）
     ref.attackCooldownFrames = 8;      // 攻击时天秤转换冷却（8帧 ≈ 250ms）

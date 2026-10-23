@@ -1120,6 +1120,7 @@ class org.flashNight.arki.scene.WarlordActionEncounterService {
 
     private static function restoreGlobals(snapshot:Object):Void {
         if (snapshot == null || !(snapshot.keys instanceof Array)) return;
+        org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production().resetContext(_root.存档系统,String(_root.savePath),_root._saveExt);
         for (var i:Number = 0; i < snapshot.keys.length; i++) {
             var key:String = String(snapshot.keys[i]);
             if (snapshot.present[key] === true) {
@@ -1142,6 +1143,7 @@ class org.flashNight.arki.scene.WarlordActionEncounterService {
     }
 
     private static function applyEncounterGlobals():Void {
+        org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production().resetContext(_root.存档系统,String(_root.savePath),_root._saveExt);
         _root.当前为战斗地图 = true;
         _root.无限过图模式 = false;
         _root.敌人同伴数 = 0;

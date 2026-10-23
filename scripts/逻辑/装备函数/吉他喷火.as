@@ -1,6 +1,9 @@
 ﻿_root.装备生命周期函数.吉他喷火初始化 = function(ref:Object, param:Object)
 {
     var target:MovieClip = ref.自机;
+    target.__statGuitarRef = ref;
+    ref.属性投影身体 = target.__playerStatBody;
+    ref.初始化参数 = param;
     org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.bindEquipment(ref, "guitar");
     ref.rockBlade = param.rockBlade;
 
@@ -269,67 +272,20 @@ _root.装备生命周期函数.吉他喷火是否枪形态 = function(ref:Object
 };
 
 // ===== 应用喷火器属性 =====
-_root.装备生命周期函数.吉他喷火应用喷火器属性 = function(ref:Object)
-{
-    var target:MovieClip = ref.自机;
-    var base:Object = ref.baseGunProps;
-
-    ref.weaponMode = "喷火器";
-    target.长枪属性.impact = base.impact;
-    target.长枪属性.bullethit = base.bullethit;
-    target.长枪属性.muzzle = base.muzzle;
-    target.长枪属性.sound = base.sound;
-    target.长枪属性.bullet = base.bullet;
-    target.长枪属性.velocity = base.velocity;
-    target.长枪属性.interval = base.interval;
-    target.长枪属性.diffusion = base.diffusion;
-    target.长枪属性.split = base.split;
-    target.长枪属性.capacity = base.capacity;
-    target.长枪弹匣容量 = base.capacity;
-
-    // 弹药转换：机枪弹药 → 喷火器弹药
-    target.长枪.value.shot = Math.floor(target.长枪.value.shot / ref.机枪弹容倍率);
-
-    // 更新buff系统
-    target.buff.基础值.长枪威力 = target.长枪.getData().data.power * 1 + target.装备枪械威力加成;
-    target.buff.更新("长枪威力");
-
-    // 重新初始化射击函数
-    if (target.man.初始化长枪射击函数) {
-        target.man.初始化长枪射击函数();
-    }
+_root.装备生命周期函数.吉他喷火应用喷火器属性 = function(ref:Object) {
+    var target:MovieClip=ref.自机;
+    ref.weaponMode="喷火器";
+    if(ref.weaponValue) ref.weaponValue.weaponMode=ref.weaponMode;
+    target.长枪.value.shot=Math.floor(target.长枪.value.shot/ref.机枪弹容倍率);
+    org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.applyMusicModeCommand(ref);
 };
 
-// ===== 应用机枪属性 =====
-_root.装备生命周期函数.吉他喷火应用机枪属性 = function(ref:Object)
-{
-    var target:MovieClip = ref.自机;
-    var base:Object = ref.baseGunProps;
-
-    ref.weaponMode = "机枪";
-    target.长枪属性.impact = ref.机枪击倒力;
-    target.长枪属性.bullethit = ref.机枪命中效果;
-    target.长枪属性.muzzle = ref.机枪枪口焰;
-    target.长枪属性.sound = ref.机枪音效;
-    target.长枪属性.bullet = ref.机枪子弹;
-    target.长枪属性.velocity = base.velocity * ref.机枪速度倍率;
-    target.长枪属性.interval = Math.floor(base.interval / ref.机枪射击间隔除数);
-    target.长枪属性.diffusion = Math.floor(base.diffusion / ref.机枪散射度除数);
-    target.长枪属性.split = base.split * ref.机枪霰弹值倍率;
-    target.长枪属性.capacity = base.capacity * ref.机枪弹容倍率;
-    target.长枪弹匣容量 = target.长枪属性.capacity;
-
-    // 弹药转换：喷火器弹药 → 机枪弹药
-    target.长枪.value.shot = target.长枪.value.shot * ref.机枪弹容倍率;
-
-    // 更新buff系统
-    target.buff.基础值.长枪威力 = target.长枪.getData().data.power * ref.机枪威力系数 + target.装备枪械威力加成;
-    target.buff.更新("长枪威力");
-
-    // 重新初始化射击函数
-    if (target.man.初始化长枪射击函数) {
-        target.man.初始化长枪射击函数();
-    }
+_root.装备生命周期函数.吉他喷火应用机枪属性 = function(ref:Object) {
+    var target:MovieClip=ref.自机;
+    ref.weaponMode="机枪";
+    if(ref.weaponValue) ref.weaponValue.weaponMode=ref.weaponMode;
+    target.长枪.value.shot=target.长枪.value.shot*ref.机枪弹容倍率;
+    org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.applyMusicModeCommand(ref);
 };
 
 // ===== 切换武器形态 =====

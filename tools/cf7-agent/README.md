@@ -464,9 +464,15 @@ Regression response audits retain verified frame metadata/hashes without copying
 binary pixel responses; request the full audit at a checkpoint instead of after
 each click. Existing A5 return values and transcript handling are unchanged.
 The new cohort additionally permits the real `openBookshelf` AS2 opener and the
-production intelligence panel through `panel.open`; the default production
-allow-list is unchanged. Bookshelf role destinations and book-run origins stay
-inside this cohort. Existing A5 qualification and artifact gates remain separate.
+production intelligence and Meridian panels through `panel.open`. Meridian uses
+exactly the existing `mode:"prod", source:"runtime", debug:false` Host init and
+normal panel instance/lease admission; the client admits it only for the closed
+five-slot regression profile, and the Host requires that same regression launch.
+Opening the panel does not issue a node-light, charge, save, or generic stat
+command. This is a test opener; it does not attest a public preparation-menu route.
+The default production allow-list is unchanged. Bookshelf role destinations and
+book-run origins stay inside this cohort. Existing A5 qualification and artifact
+gates remain separate.
 The Host's `web_overlay` target follows the exact active help/intelligence
 composition endpoint supplied by `PanelHostController`. It never falls back to
 the hidden legacy WebView while a composition panel is selected but unavailable.

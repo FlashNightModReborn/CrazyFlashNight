@@ -149,8 +149,9 @@
                 || !Object.prototype.hasOwnProperty.call(STATIONS, data.stationId)) return null;
         var instance = readText(data.panelInstanceId, 160, false);
         var input = data.snapshot;
-        if (instance === null || !hasExactKeys(input, ['v','stationId','openToken','pendingSession',
-                'balances','portrait','projects'])
+        var snapshotKeys = ['v','stationId','openToken','pendingSession','balances','portrait','projects'];
+        if (input && Object.prototype.hasOwnProperty.call(input, 'pendingProjection')) snapshotKeys.push('pendingProjection');
+        if (instance === null || !hasExactKeys(input, snapshotKeys)
                 || input.v !== 2 || input.stationId !== data.stationId
                 || !/^gym\.open\.[A-Za-z0-9._~-]{1,119}$/.test(input.openToken)
                 || !hasExactKeys(input.balances, ['money','kpoint'])) return null;
@@ -185,6 +186,18 @@
                 phase:'save_pending'
             };
         }
+        var pendingProjection = null;
+        if (input.pendingProjection != null) {
+            var projection = input.pendingProjection;
+            if (pendingSession || !hasExactKeys(projection, ['sessionToken','stationId','projectId','phase','projection'])
+                    || !/^gym\.session\.[A-Za-z0-9._~-]{1,116}$/.test(projection.sessionToken)
+                    || projection.stationId !== data.stationId || projection.phase !== 'applied'
+                    || !normalizeProjection(projection.projection)
+                    || !projectionNeedsRecovery(projection.projection)
+                    || !projects.some(function(project) { return project.id === projection.projectId; })) return null;
+            pendingProjection = {sessionToken:projection.sessionToken, stationId:projection.stationId,
+                projectId:projection.projectId, phase:'applied', projection:normalizeProjection(projection.projection)};
+        }
         return {
             panelInstanceId:instance,
             stationId:data.stationId,
@@ -194,11 +207,25 @@
                 stationId:data.stationId,
                 openToken:input.openToken,
                 pendingSession:pendingSession,
+                pendingProjection:pendingProjection,
                 balances:{ money:money, kpoint:kpoint },
                 portrait:portrait,
                 projects:projects
             }
         };
+    }
+    function normalizeProjection(value) {
+        if (!hasExactKeys(value, ['status','reason'])
+                || ['applied','unchanged','pending','failed'].indexOf(value.status) < 0
+                || typeof value.reason !== 'string' || value.reason.length > 160) return null;
+        return {status:value.status, reason:value.reason};
+    }
+    function projectionNeedsRecovery(value) {
+        return value && (value.status === 'failed'
+            || value.status === 'pending' && value.reason !== 'pending_actor');
+    }
+    function projectionPending() {
+        return session && session.phase === 'applied' && projectionNeedsRecovery(session.projection);
     }
 
     function element(tag, className, text) {
@@ -288,7 +315,7 @@
         else if (phase === 'save_pending') shell.setStatus('等待保存', 'warning');
         else if (phase === 'needs_reconcile') shell.setStatus('结果待核实', 'warning');
         else if (phase === 'outcome_unavailable') shell.setStatus('请重新打开', 'error');
-        else if (phase === 'applied') shell.setStatus('训练完成', 'ready');
+        else if (phase === 'applied') shell.setStatus(projectionPending() ? '已保存 · 属性待更新' : '训练完成', projectionPending() ? 'warning' : 'ready');
         else if (selectedProject() && !canAfford(selectedProject()))
             shell.setStatus('余额不足', 'warning');
         else shell.setStatus('', 'idle');
@@ -322,6 +349,9 @@
         } else if (state === 'outcome_unavailable') {
             model = { label:'请重新打开核对', status:'无法核实旧训练结果',
                 state:'error', canCommit:false, disabled:true };
+        } else if (projectionPending()) {
+            model = { label:'重试属性更新', status:'收益已保存 · 只恢复属性，不重复扣费或发奖',
+                state:'ready', canCommit:true, disabled:false };
         } else if (!project) {
             model = { label:'开始训练', status:'暂无可训练项目',
                 state:'blocked', canCommit:false, disabled:true };
@@ -476,7 +506,7 @@
             status.textContent = '无法核实旧训练结果';
             amount.textContent = '请关闭后重新打开，核对余额和永久加成。';
         } else if (session.phase === 'applied') {
-            status.textContent = '训练完成 · 已结算并保存';
+            status.textContent = projectionPending() ? '训练收益已保存 · 角色属性待更新' : '训练完成 · 已结算并保存';
             var award = session.award;
             if (award && award.kind === 'stat') {
                 amount.textContent = '本次永久加成 +' + formatCount(award.amount)
@@ -695,6 +725,8 @@
             durationMs:duration, elapsedMs:elapsed === undefined ? 0 : elapsed,
             paused:data.paused === true, award:data.award || null
         };
+        if (data.phase === 'applied') session.projection = normalizeProjection(data.projection)
+            || {status:'failed', reason:'projection_status_unavailable'};
         renderProgress();
         updateStartButton();
         return true;
@@ -718,7 +750,10 @@
         } else if (data.phase === 'applied' && data.saved === true) {
             var wasApplied = session.phase === 'applied';
             session.phase = 'applied';
+            session.projection = normalizeProjection(data.projection)
+                || {status:'failed', reason:'projection_status_unavailable'};
             snapshot.pendingSession = null;
+            if (!projectionPending()) snapshot.pendingProjection = null;
             session.award = data.award || null;
             updateBalances(data.balances);
             var project = findProject(session.projectId);
@@ -730,7 +765,7 @@
                 updateRowStates();
                 renderDetails(root.querySelector('.gym-project-detail'));
             }
-            setNotice('', 'success');
+            setNotice(projectionPending() ? '收益已保存，角色属性尚未更新；请重试属性更新，不会重复收费。' : '', projectionPending() ? 'warning' : 'success');
             if (!wasApplied) celebrateApplied();
         } else if (data.phase === 'cancelled') {
             clearSwitchArm();
@@ -834,6 +869,7 @@
             requestGym('retrySave', {v:1});
             return;
         }
+        if (projectionPending()) { requestGym('query', {v:1, recoverProjection:true}); return; }
         var project = selectedProject();
         if (!project || !canAfford(project) || session && session.phase === 'running') return;
         requestGym('start', {v:1, projectId:project.id}, project.id);
@@ -849,6 +885,7 @@
             setNotice('正在确认上一项操作，请稍候切换。', 'info');
             return false;
         }
+        if (projectionPending()) { setNotice('请先恢复已保存训练的角色属性，再切换项目。', 'warning'); return false; }
         if (session && (session.phase === 'settling' || session.phase === 'needs_reconcile'
                 || session.phase === 'save_pending' || session.phase === 'outcome_unavailable')) {
             setNotice('本次结算尚未确认，请先核实或保存。', 'warning');
@@ -1030,6 +1067,7 @@
 
     function requestClose() {
         if (!panelInstanceId || typeof Bridge === 'undefined' || !Bridge || !Bridge.send) return false;
+        if (projectionPending()) { setNotice('收益已保存；请先重试属性更新，再关闭面板。', 'warning'); return false; }
         if (session && (session.phase === 'settling' || session.phase === 'needs_reconcile'
                 || session.phase === 'save_pending')) {
             setNotice('本次结算尚未确认，请先核实或保存。', 'warning');
@@ -1133,17 +1171,19 @@
         snapshot = normalized.snapshot;
         debugState = { stationId:normalized.stationId, selectedProjectId:'', motionMounted:false };
         selectedIndex = 0;
-        if (snapshot.pendingSession) {
+        var pendingResult = snapshot.pendingSession || snapshot.pendingProjection;
+        if (pendingResult) {
             for (var index = 0; index < snapshot.projects.length; index++) {
-                if (snapshot.projects[index].id === snapshot.pendingSession.projectId) {
+                if (snapshot.projects[index].id === pendingResult.projectId) {
                     selectedIndex = index;
                     break;
                 }
             }
             session = {
-                sessionToken:snapshot.pendingSession.sessionToken,
-                projectId:snapshot.pendingSession.projectId,
-                phase:'needs_reconcile',
+                sessionToken:pendingResult.sessionToken,
+                projectId:pendingResult.projectId,
+                phase:snapshot.pendingSession ? 'needs_reconcile' : 'applied',
+                projection:pendingResult.projection || null,
                 durationMs:snapshot.projects[selectedIndex].durationMs,
                 elapsedMs:snapshot.projects[selectedIndex].durationMs,
                 paused:true,
@@ -1299,6 +1339,8 @@
         renderProgress();
         if (snapshot.pendingSession)
             setNotice('正在恢复上次训练的保存结果；请先核实，不会重复扣费。', 'warning');
+        else if (snapshot.pendingProjection)
+            setNotice('上次训练收益已保存；请恢复角色属性，不会重复收费。', 'warning');
         mountMotion(stageNode);
         requestGym('status', {v:1});
         return true;

@@ -16,6 +16,8 @@ class org.flashNight.arki.skill.SkillLoadoutService {
     private static var _testRejectNextCommit:Boolean = false;
     private static var _testRejectedState:Object = null;
     private static var _rendererDiagnostics:Array = [];
+    private static var _projectionStatus:Object;
+    private static var _testProjection:Function;
     private static var _hudInputs:Array;
     private static var _hudDescriptors:Object;
     private static var _hudMetadataKeys:Array = ["MaxLevel", "UnlockLevel", "UnlockSP", "UpgradeSP", "Type", "Passive", "Equippable", "MP", "CD"];
@@ -85,6 +87,8 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         var loadout:Array = [];
         for (var slot:Number = 1; slot <= QUICK_SLOT_COUNT; slot++) loadout.push(projectLoadoutWire(descriptorFromScan(slot, scan)));
         var diagnostics:Array = scan.diagnostics.concat();
+        if(_projectionStatus!=null && _projectionStatus.status!="applied" && _projectionStatus.status!="unchanged")
+            addDiagnostic(diagnostics,{code:"renderer_failed",message:projectionMessage(_projectionStatus)});
         for (var rd:Number = 0; rd < _rendererDiagnostics.length; rd++) addDiagnostic(diagnostics, _rendererDiagnostics[rd]);
         var trainerWire:Object = null;
         if (trainer != null) {
@@ -418,11 +422,14 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         if (_rewardState != null || !(grants instanceof Array) || grants.length < 1 || grants.length > 2
                 || org.flashNight.neur.Server.SaveManager.getInstance().rewardCommitOperationId() == "") return false;
         var before:Object = captureTransactionState();
+        org.flashNight.arki.unit.PlayerStatRefreshCoordinator.setSkillRewardReadGate(rewardProjectionPending);
+        // 候选技能必须可打包保存，但未知保存期间不能被别域的冷投影消费。
+        _rewardState = before;
         var keys:Array = [];
         for (var i:Number = 0; i < grants.length; i++) {
             var grant:Object = grants[i];
             var plan:Object = rewardSkillStatus(String(grant.skillKey), Number(grant.level));
-            if (!plan.success) { restoreTransactionState(before); return false; }
+            if (!plan.success) { restoreTransactionState(before); _rewardState=null; return false; }
             var metadata:Object = root().技能表对象[grant.skillKey];
             var table:Array = root().主角技能表;
             if (plan.currentLevel == 0) {
@@ -431,10 +438,10 @@ class org.flashNight.arki.skill.SkillLoadoutService {
             } else table[plan.index][1] = grant.level;
             keys.push(grant.skillKey);
         }
-        if (!finishMutation(keys, before).success) return false;
-        _rewardState = before;
+        if (!finishMutation(keys, before, true).success) {_rewardState=null;return false;}
         return true;
     }
+    private static function rewardProjectionPending():Boolean {return _rewardState!=null;}
     public static function committedRewardSkillLevel(skillKey:String):Number {
         if (_rewardState == null) {
             var current:Object = inspectSkill(skillKey);
@@ -451,7 +458,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         var before:Object = _rewardState;
         _rewardState = null;
         if (!committed) restoreTransactionState(before);
-        else runOptionalRenderers();
+        else {projectCommittedSkills(skillProjectionMask(before));runOptionalRenderers();}
         return true;
     }
     private static function writeGate(expectedRevision:Number):Object {
@@ -463,7 +470,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         return {success:true, scan:sync.scan, revision:_revision};
     }
 
-    private static function finishMutation(affectedKeys:Array, before:Object):Object {
+    private static function finishMutation(affectedKeys:Array, before:Object, preparingReward:Boolean):Object {
         deriveFlagsForKeys(affectedKeys);
         if (!rebuildDomainState()) {
             restoreTransactionState(before);
@@ -474,9 +481,52 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         _lastScan = newScan;
         _revision++;
         markDirty();
+        if(preparingReward!==true) projectCommittedSkills(skillProjectionMask(before));
         var snapshot:Object = buildSnapshot("manage", null);
         return {success:true, v:1, changed:true, revision:_revision, snapshot:snapshot};
     }
+
+    /** 按技能身份比较等级/启用事实；行重排和普通快捷槽移动不失效人物数值。 */
+    private static function skillProjectionMask(before:Object):Number {
+        var old:Object={};var table:Array=root().主角技能表;var i:Number;
+        for(i=0;i<before.rows.length;i++) {
+            var row:Object=before.rows[i].values;
+            if(row instanceof Array && typeof row[0]=="string" && row[0]!="") old["$"+row[0]]=row;
+        }
+        for(i=0;i<Math.min(SKILL_ROW_COUNT,table.length);i++) {
+            row=table[i];if(!(row instanceof Array) || typeof row[0]!="string" || row[0]=="") continue;
+            var previous:Object=old["$"+row[0]];
+            if(previous==undefined || Number(previous[1])!=Number(row[1])) return 2;
+            var metadata:Object=root().技能表对象[row[0]];
+            if(isPassive(metadata) && parseLegacyBoolean(previous[4]).value!==parseLegacyBoolean(row[4]).value) return 2;
+            delete old["$"+row[0]];
+        }
+        for(var key:String in old) return 2;
+        return 0;
+    }
+    private static function projectionMessage(value:Object):String {
+        return sanitizeLayout("player_stat:"+value.status+":"+value.reason+":"+value.stage
+            +":"+value.projectedRevision+"/"+value.statRevision,512);
+    }
+    private static function projectCommittedSkills(mask:Number):Object {
+        if(mask==0) return {status:"unchanged",reason:"display_only"};
+        return projectSkills(mask);
+    }
+    private static function projectSkills(mask:Number):Object {
+        try {
+            if(_testRoot!=null) _projectionStatus=_testProjection==undefined ? {status:"pending",reason:"pending_actor"} : _testProjection(mask);
+            else {
+                var c:org.flashNight.arki.unit.PlayerStatRefreshCoordinator=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production();
+                if(mask!=0) c.invalidate(mask,"skills",c.contextToken());
+                _projectionStatus=c.flush("skills");
+            }
+        } catch(error) {_projectionStatus={status:"failed",reason:String(error),stage:"skills_barrier"};}
+        return _projectionStatus;
+    }
+    /** 读取/关窗只追平已提交 dirty；不重放 learn 或 SP 扣除。 */
+    public static function flushProjection():Object {return projectSkills(0);}
+    public static function declareSkillProjection():Object {return projectSkills(2);}
+    public static function testOnlySetProjection(value:Function):Void {_testProjection=value;}
 
     private static function writeNoop(view:String, trainer:Object):Object {
         return {success:true, v:1, changed:false, revision:_revision, snapshot:buildSnapshot(view, trainer)};
@@ -942,11 +992,14 @@ class org.flashNight.arki.skill.SkillLoadoutService {
                 nextMP = baseMP;
             }
         } else if (mode == "move") {
-            // 保留旧语义：元数据存在即记录原值；仅移动射击自身启用且满级时将 CD 设为 1s。
+            // 原始元数据属于当前角色上下文；降级/停用必须恢复，不改正在运行的计时器。
             createOriginal = !originalExists;
             if (effectLevel >= 10) {
                 writeCD = true;
                 nextCD = 1000;
+            } else {
+                writeCD = true;
+                nextCD = baseCD;
             }
         } else {
             return {success:false};
@@ -971,7 +1024,6 @@ class org.flashNight.arki.skill.SkillLoadoutService {
     public static function runOptionalRenderers():Void {
         var r:Object = root();
         _rendererDiagnostics = [];
-        runRenderer(r, "技能系统投影Hero", "hero");
         runRenderer(r, "技能系统投影快捷栏", "quick_slot");
     }
 
@@ -1227,8 +1279,8 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         return true;
     }
 
-    public static function testOnlyUseRoot(value:Object):Void { _testRoot = value; _signature = null; _lastScan = null; _revision = 0; _testRejectNextCommit = false; _testRejectedState = null; _rendererDiagnostics = []; }
+    public static function testOnlyUseRoot(value:Object):Void { _testRoot = value; _signature = null; _lastScan = null; _revision = 0; _testRejectNextCommit = false; _testRejectedState = null; _rendererDiagnostics = []; _projectionStatus=null; _testProjection=undefined; }
     public static function testOnlyRejectNextCommit():Void { _testRejectNextCommit = true; }
     public static function testOnlyRejectedState():Object { return _testRejectedState; }
-    public static function testOnlyReset():Void { _testRoot = null; _signature = null; _lastScan = null; _revision = 0; _testRejectNextCommit = false; _testRejectedState = null; _rendererDiagnostics = []; }
+    public static function testOnlyReset():Void { _testRoot = null; _signature = null; _lastScan = null; _revision = 0; _testRejectNextCommit = false; _testRejectedState = null; _rendererDiagnostics = []; _projectionStatus=null; _testProjection=undefined; }
 }

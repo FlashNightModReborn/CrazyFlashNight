@@ -183,6 +183,14 @@ class org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.PileBunkerM7C
         trace("[打桩机M7] 姿态读取失败，保留普通射击：" + error);
     }
 
+    /** STATS 只重建本组件持有的刀槽数字；不触及姿态、燃料、装填或任务。 */
+    public function projectPersistentBlade(output:Object):Void {
+        if(!isCurrent() || !ownsBlade()) return;
+        var bladeBonus:Number=Number(output.装备刀锋利度加成);
+        if(!isFinite(bladeBonus)) throw new Error("stat_m7_blade_bonus_invalid");
+        output.刀属性={power:Math.floor(combat.bladePower*EquipmentConfigManager.getLevelMultiplier(equipment.value.level))+bladeBonus};
+    }
+
     private function configureAlias():Void {
         var supported:Boolean = ref.是否为主角 || unit.装备能力.复合枪械 === true;
         if (!supported || typeof _root.刀配置 != "function") return;

@@ -185,6 +185,23 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProject
         return SLOT_KEYS.concat();
     }
 
+    /** 未叠人物贡献的数据来源版本；弹药和实时模式由各自 owner 管理。 */
+    public static function numericSourceSignature(item:Object):String {
+        if (item == null) return "empty";
+        if (typeof item.name != "string") return null;
+        var value:Object = item.value;
+        return valueToken(item.name) + "|" + valueToken(value.level) + "|"
+            + valueToken(value.tier) + "|" + modifierToken(value.mods);
+    }
+
+    /** 数值来源只接受 canonical ref；合法运行别名由命名装备 adapter 另行投影。 */
+    public static function numericSourceRef(target:Object, slot:String) {
+        var state:Object = readState(target);
+        if (state == null) return target[slot];
+        var index:Number = slotIndex(slot);
+        return index < 0 ? undefined : state.refs[index];
+    }
+
     /**
      * 只覆盖需要重建派生装备数据的语义；弹药、换弹、当前战技、形态和 lastUpdate
      * 都不是 live projection identity。

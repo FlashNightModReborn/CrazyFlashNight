@@ -33,6 +33,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController {
             effects:{},
             routines:[],
             templates:[],
+            staticContributions:[],
             rollbackPlan:newPlan(),
             teardownPlan:newPlan(),
             failed:false
@@ -77,7 +78,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController {
      * 在任何单件 lifecycle 装载前建立 effect/group record 与 gate。
      */
     public static function prepare(target:MovieClip):Void {
-        var controller:Object = {target:target, groups:{}, effects:{}, activeGates:{}};
+        var controller:Object = {target:target, groups:{}, effects:{}, activeGates:{}, staticContributions:[]};
         target.__setEffectController = controller;
 
         var counts:Object = countEquippedSets(target);
@@ -326,6 +327,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController {
         if (finalValue == undefined) return false;
 
         target.魔法抗性[attribute] = finalValue;
+        group.staticContributions.push({attribute:attribute,baseIfMissing:Number(params.baseIfMissing),value:Number(params.value)});
         group.rollbackPlan.resourceStack.push(function():Void {
             if (hadValue) target.魔法抗性[attribute] = oldValue;
             else delete target.魔法抗性[attribute];
@@ -369,6 +371,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController {
             }
 
             group.status = "committed";
+            for (var contributionIndex:Number=0; contributionIndex<group.staticContributions.length; contributionIndex++) {
+                controller.staticContributions.push({group:group,contribution:group.staticContributions[contributionIndex]});
+            }
             group.rollbackPlan.stopStack.length = 0;
             group.rollbackPlan.resourceStack.length = 0;
 
@@ -402,5 +407,19 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController {
 
     public static function clearController(target:MovieClip):Void {
         if (target) target.__setEffectController = null;
+    }
+
+    /** 只重放已成功激活的模板数字；保持 finalize 的实际覆盖/缺省顺序。 */
+    public static function projectStaticResistance(owner:Object, output:Object):Void {
+        var controller:Object = owner.__setEffectController;
+        if (!controller) return;
+        for (var i:Number=0; i<controller.staticContributions.length; i++) {
+            var record:Object = controller.staticContributions[i];
+            if (record.group.status != "committed" || record.group.failed === true) continue;
+            var contribution:Object = record.contribution;
+            var value = calculateAdditiveResistance(output.魔法抗性[contribution.attribute],contribution.baseIfMissing,contribution.value);
+            if (value == undefined) throw new Error("stat_set_resistance_invalid");
+            output.魔法抗性[contribution.attribute] = value;
+        }
     }
 }

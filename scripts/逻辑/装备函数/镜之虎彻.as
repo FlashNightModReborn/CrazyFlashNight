@@ -57,10 +57,18 @@ _root.装备生命周期函数.镜之虎彻周期 = function(reflector:Object, p
                 Mover.enforceScreenBounds(target);
             }
 
+            if(!org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.positive(target.mp满血值)) {
+
+                org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.reject(target,"equipment_mp_max_invalid");return;
+
+            }
+
             var mpCount:Number = Math.floor(target.mp满血值 / 100 * reflector.precent);
-            if(target.mp >= mpCount)
+
+            if(!org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.canPayMp(target,mpCount)) return;
+            if (org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.payMp(target,mpCount))
             {
-                target.mp -= mpCount;
+
                 var myPoint = {x:this._x,y:this._y};
                 _parent.localToGlobal(myPoint);
                 _root.gameworld.globalToLocal(myPoint);

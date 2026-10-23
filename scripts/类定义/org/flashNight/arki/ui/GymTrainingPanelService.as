@@ -11,11 +11,15 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
     private static var _last:Object = null;
     private static var _lastOwner:Object = null;
     private static var _lastSlot:String = null;
+    private static var _lastExt:Object;
+    private static var _lastStatContext:Object;
+    private static var _lastProjectionSession:Object;
     private static var _json:LiteJSON;
     private static var _testNow:Number = -1;
     private static var MAX_SAFE_INTEGER:Number = 9007199254740991;
 
     public static function install():Void {
+        installReadGate();
         if (_installed) return;
         _installed = true;
         if (_root.gameCommands == undefined) _root.gameCommands = {};
@@ -27,18 +31,24 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
     }
 
     public static function prepareOpen(stationId:String):Object {
+        installReadGate();
         var pending:Boolean = _session != null && _session.phase == "save_pending";
         if (pending && !sameSaveContext()) return fail("open", "context_changed", null);
+        var projectionPending:Boolean=_lastProjectionSession!=null && sameProjectionContext(_lastProjectionSession)
+            && needsProjectionRecovery(_lastProjectionSession.projection);
         // 完成后的待保存结果属于原器材；别的器材入口也回到该结果，避免玩家失去重试入口。
-        var effectiveStation:String = pending ? _session.stationId : stationId;
+        var effectiveStation:String = pending ? _session.stationId : projectionPending ? _lastProjectionSession.stationId : stationId;
         var preview:Object = GymPreviewProjection.buildPreview(effectiveStation);
         if (preview == null || preview.error != undefined) return preview;
         if (_session != null && _session.phase == "running") retireRunning();
         var token:String = "gym.open." + now() + "." + (++_sequence);
         _open = {
             token:token, stationId:effectiveStation, world:_root.gameworld,
+            worldToken:org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld),
             actor:_root.gameworld[_root.控制目标], actorKey:String(_root.控制目标),
             saveOwner:_root.存档系统, slotKey:String(_root.savePath),
+            statContext:org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production().contextToken(),sourceExt:_root._saveExt,
+            actorBody:_root.gameworld[_root.控制目标].__playerStatBody,
             sceneEpoch:org.flashNight.arki.map.MapDomainBridge.getSceneEpoch(),
             sceneStamp:sceneStamp()
         };
@@ -47,6 +57,10 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
         preview.pendingSession = pending ? {
             sessionToken:_session.token, stationId:_session.stationId,
             projectId:_session.projectId, phase:"save_pending"
+        } : null;
+        preview.pendingProjection=projectionPending && !pending ? {
+            sessionToken:_lastProjectionSession.token,stationId:_lastProjectionSession.stationId,
+            projectId:_lastProjectionSession.projectId,phase:"applied",projection:copyProjection(_lastProjectionSession.projection)
         } : null;
         for (var i:Number = 0; i < preview.projects.length; i++) {
             var project:Object = preview.projects[i];
@@ -72,20 +86,25 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
     }
 
     public static function execute(operation:String, params:Object):Object {
+        installReadGate();
         if (operation != "start" && operation != "cancel" && operation != "finish"
                 && operation != "query" && operation != "retrySave") return fail(operation, "unsupported_cmd", params);
         if (params == null || params.v !== 1) return fail(operation, "unsupported_version", params);
+        if(params.recoverProjection!=undefined && (operation!="query" || params.recoverProjection!==true)) return fail(operation,"invalid_payload",params);
         if (operation == "start") return start(params);
         if (typeof params.sessionToken != "string" || params.sessionToken == "") {
             return fail(operation, "invalid_payload", params);
         }
         if (_last != null && params.sessionToken === _last.sessionToken) {
-            if (_lastOwner !== _root.存档系统 || _lastSlot !== String(_root.savePath)) return fail(operation, "context_changed", params);
+            if (_lastOwner !== _root.存档系统 || _lastSlot !== String(_root.savePath) || _lastExt!==_root._saveExt
+                    || _lastStatContext!==org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production().contextToken()) return fail(operation, "context_changed", params);
+            if(params.recoverProjection===true) return retryProjection(_lastProjectionSession);
             return copyResult(_last, operation);
         }
         if (_session == null || params.sessionToken !== _session.token) {
             return fail(operation, "stale_token", params);
         }
+        if(params.recoverProjection===true) return fail(operation,"projection_not_pending",params);
         if (operation == "query") return query();
         if (operation == "cancel") return cancel();
         if (operation == "retrySave") return retrySave();
@@ -98,6 +117,8 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
         if (_open == null || params.openToken !== _open.token
                 || params.stationId !== _open.stationId) return fail("start", "stale_open", params);
         if (_session != null && _session.phase == "save_pending") return fail("start", "save_pending", params);
+        if(_lastProjectionSession!=null && sameProjectionContext(_lastProjectionSession)
+                && needsProjectionRecovery(_lastProjectionSession.projection)) return fail("start","busy",params);
         if (_session != null && _session.phase == "running") {
             if (_session.openToken === params.openToken && _session.projectId === params.projectId) {
                 return resultFor(_session, "start");
@@ -119,7 +140,10 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
             token:"gym.session." + now() + "." + (++_sequence),
             openToken:_open.token, stationId:_open.stationId, projectId:project.id,
             world:_open.world, actor:_open.actor, actorKey:_open.actorKey,
+            worldToken:_open.worldToken,
             saveOwner:_open.saveOwner, slotKey:_open.slotKey,
+            statContext:_open.statContext,sourceExt:_open.sourceExt,
+            actorBody:_open.actorBody,
             sceneEpoch:_open.sceneEpoch, sceneStamp:_open.sceneStamp,
             project:copyProject(project), phase:"running", startMs:now(),
             durationMs:project.durationMs, award:award
@@ -239,41 +263,51 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
         }
         var response:Object = resultFor(s, operation);
         if (saved) {
-            _last = copyResult(response, "finish");
             _lastOwner = s.saveOwner; _lastSlot = s.slotKey;
+            _lastExt=s.sourceExt;_lastStatContext=s.statContext;
             if (_session === s) _session = null;
-            projectSavedState(s);
+            s.projection={status:"pending",reason:"projecting"};_lastProjectionSession=s;
+            s.projection=projectSavedState(s);response.projection=copyProjection(s.projection);
+            _last = copyResult(response, "finish");
         }
         return response;
     }
 
-    private static function projectSavedState(session:Object):Void {
+    private static function sameProjectionContext(session:Object):Boolean {
+        return session!=null && session.saveOwner===_root.存档系统 && session.slotKey===String(_root.savePath)
+            && session.sourceExt===_root._saveExt
+            && session.statContext===org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production().contextToken();
+    }
+    private static function copyProjection(p:Object):Object {return {status:String(p.status),reason:String(p.reason==undefined ? "" : p.reason).substr(0,160)};}
+    private static function needsProjectionRecovery(p:Object):Boolean {return p.status=="failed" || (p.status=="pending" && p.reason!="pending_actor");}
+    private static function retryProjection(session:Object):Object {
+        if(session==null || !sameProjectionContext(session)) return fail("query","context_changed",{sessionToken:session.token});
+        var p:Object;
+        if(session.applied.level>session.levelBefore) {
+            p=_root.玩家属性投影.恢复已提交成长(session.growthOwner);
+            if(p==undefined) p=org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery.recoverCommitted(session.growthOwner);
+        } else p=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production().flush("gym_projection_recovery");
+        session.projection=copyProjection(p);_last.projection=copyProjection(p);
+        return copyResult(_last,"query");
+    }
+    private static function projectSavedState(session:Object):Object {
+        if(session.saveOwner!==_root.存档系统 || session.slotKey!==String(_root.savePath)
+                || session.sourceExt!==_root._saveExt
+                || session.statContext!==org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production().contextToken()) return {status:"failed",reason:"context_changed"};
         try {
             if (session.applied.level > session.levelBefore
                     && typeof _root.投影已提交任务成长 == "function") {
-                _root.投影已提交任务成长(session.levelBefore);
+                session.growthOwner={operationId:session.token,context:session.statContext,
+                    actor:session.actor,body:session.actorBody,world:session.worldToken};
+                var growth:Object=_root.投影已提交任务成长(session.levelBefore,session.growthOwner);
+                return growth==undefined ? copyProjection(org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production().flush("gym_growth")) : copyProjection(growth);
             } else {
                 // 完成保存后，同场景的普通属性训练立即重算当前角色；升级已走成长投影。
                 if (session.award.kind == "stat" && session.saveOwner === _root.存档系统
-                        && session.slotKey === String(_root.savePath) && session.world === _root.gameworld) {
-                    var actor:MovieClip = session.actor;
-                    if (actor != null && actor.hasDressup === true
-                            && typeof actor.根据模式重新读取武器加成 == "function") {
-                        var oldHp:Number = Number(actor.hp);
-                        var oldMaxHp:Number = Number(actor.hp满血值);
-                        var oldMp:Number = Number(actor.mp);
-                        org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.updateProperties(actor);
-                        actor.hp = org.flashNight.arki.unit.Action.Regeneration.HealApplier.settleHpAfterMaxChange(
-                            oldHp, oldMaxHp, Number(actor.hp满血值));
-                        actor.mp = org.flashNight.arki.unit.Action.Regeneration.HealApplier.settleMpAfterMaxChange(
-                            oldMp, Number(actor.mp满血值));
-                        org.flashNight.arki.component.StatHandler.ImpactHandler.refreshImpactDerived(actor);
-                        if (_root.玩家信息界面 != undefined) {
-                            if (typeof _root.玩家信息界面.刷新hp显示 == "function")
-                                _root.玩家信息界面.刷新hp显示();
-                            if (typeof _root.玩家信息界面.刷新mp显示 == "function")
-                                _root.玩家信息界面.刷新mp显示();
-                        }
+                        && session.slotKey === String(_root.savePath) && session.sourceExt===_root._saveExt) {
+                    var c:org.flashNight.arki.unit.PlayerStatRefreshCoordinator=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production();
+                    if(c.contextToken()===session.statContext) {
+                        c.invalidate(1,"gym",session.statContext);c.flush("gym_durable");
                     }
                 }
                 if (session.award.baseExperience + session.award.capExperience > 0
@@ -282,7 +316,8 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
                     _root.玩家信息界面.刷新经验值显示();
                 }
             }
-        } catch (displayError) { trace("[GymTraining] saved result display refresh failed"); }
+            return copyProjection(org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production().flush("gym_projection_status"));
+        } catch (displayError) { trace("[GymTraining] saved result display refresh failed");return {status:"failed",reason:"projection_exception"}; }
     }
 
     private static function resultFor(session:Object, operation:String):Object {
@@ -384,6 +419,7 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
         return _open != null && _open.world === _root.gameworld
             && _open.actorKey === String(_root.控制目标)
             && _open.actor === _root.gameworld[_root.控制目标]
+            && _open.actorBody===_open.actor.__playerStatBody && _open.sourceExt===_root._saveExt
             && _open.saveOwner === _root.存档系统
             && _open.slotKey === String(_root.savePath)
             && _open.sceneEpoch === org.flashNight.arki.map.MapDomainBridge.getSceneEpoch()
@@ -394,6 +430,7 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
         return _session != null && _session.world === _root.gameworld
             && _session.actorKey === String(_root.控制目标)
             && _session.actor === _root.gameworld[_root.控制目标]
+            && _session.actorBody===_session.actor.__playerStatBody
             && _session.sceneEpoch === org.flashNight.arki.map.MapDomainBridge.getSceneEpoch()
             && _session.sceneStamp === sceneStamp()
             && sameSaveContext();
@@ -401,7 +438,7 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
 
     private static function sameSaveContext():Boolean {
         return _session != null && _session.saveOwner === _root.存档系统
-            && _session.slotKey === String(_root.savePath);
+            && _session.slotKey === String(_root.savePath) && _session.sourceExt===_root._saveExt;
     }
 
     private static function saveAvailable():Boolean {
@@ -409,6 +446,17 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
             && typeof _root.存档系统.markDirty == "function"
             && typeof _root.存档系统.flushDurableNow == "function"
             && typeof _root.记录玩家货币变化 == "function";
+    }
+
+    /** 仅阻止读取这份尚未确认的成长候选，不改变保存未知态及其他查询权威。 */
+    private static function installReadGate():Void {
+        org.flashNight.arki.unit.PlayerStatRefreshCoordinator.setGymGrowthReadGate(function():Boolean {
+            return org.flashNight.arki.ui.GymTrainingPanelService.hasUnconfirmedGrowth();
+        });
+    }
+    public static function hasUnconfirmedGrowth():Boolean {
+        return _session!=null && _session.phase=="save_pending" && sameSaveContext()
+            && _session.sourceExt===_root._saveExt;
     }
 
     private static function sameProjectTerms(a:Object, b:Object):Boolean {
@@ -470,11 +518,14 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
         if (source.balances != null) result.balances = {
             money:Number(source.balances.money), kpoint:Number(source.balances.kpoint)
         };
+        if(source.projection!=null) result.projection=copyProjection(source.projection);
         return result;
     }
 
     public static function _setNowForTests(value:Number):Void { _testNow = value; }
     public static function _resetForTests():Void {
         _open = null; _session = null; _last = null; _lastOwner = null; _lastSlot = null; _testNow = -1;
+        _lastExt=undefined;_lastStatContext=undefined;
+        _lastProjectionSession=null;
     }
 }

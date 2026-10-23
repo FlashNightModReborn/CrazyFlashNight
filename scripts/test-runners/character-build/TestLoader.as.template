@@ -1,4 +1,6 @@
 ﻿trace("FocusedTestRunId character-build Start: __FOCUSED_RUN_ID__");
+var 原生容器类型:Object=_global.org.flashNight.arki.item.itemCollection;
+trace("StatInventoryInheritanceReady: "+typeof(原生容器类型.Inventory.prototype.getItem)+":"+typeof(原生容器类型.ArrayInventory.prototype.getItem)+":"+typeof(原生容器类型.EquipmentInventory.prototype.getItem));
 org.flashNight.neur.Server.test.SaveManagerTest.runAllTests();
 org.flashNight.arki.item.itemCollection.EquipmentInventoryTest.runAllTests();
 org.flashNight.arki.item.InventoryPanelServiceTest.runAllTests();
@@ -6,4 +8,7 @@ org.flashNight.arki.item.CharacterBuildTransactionSpikeTest.runAllTests();
 org.flashNight.arki.unit.UnitComponent.Initializer.test.RuntimeEquipmentProjectionTest.runAllTests();
 org.flashNight.arki.item.CharacterBuildServiceTest.runAllTests();
 org.flashNight.arki.unit.PlayerInfoProviderTest.runAllTests();
+// 同一个真实容器/资产初始化闭包验收快捷拾取，不使用数值夹具替代容器。
+trace("StatEquipmentCollectionReady: "+typeof(原生容器类型.EquipmentInventory.prototype.getItem));
+org.flashNight.arki.unit.PlayerStatLifecycleTest.runAllTests();
 trace("FocusedTestRunId character-build Complete: __FOCUSED_RUN_ID__");

@@ -210,6 +210,16 @@ class org.flashNight.arki.scene.SceneTransitionGuard {
             && org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld) === ticket.worldIdentity;
     }
     /** 无效请求停在清场之前，保留当前世界并撤下遮罩；旧重试则直接失效。 */
+    public static function cancelCleanup(ticket:Object,reason:String):Void {
+        if(!ownsFade(ticket)) return;
+        var fade:Object=_root.淡出动画;
+        fade.__sceneCleanupTicket=undefined;fade.__returnFadeActive=false;
+        fade.跳转中=false;fade.__stageReturnToken=undefined;
+        fade.gotoAndStop("空");
+        trace("[SceneTransition] cleanup_cancelled "+reason);
+        if(typeof _root.发布消息=="function") _root.发布消息(reason=="resource_invalid"
+            ? "当前生命或能量数据异常，场景切换已取消。" : "场景切换状态已失效，请重新尝试。");
+    }
     public static function allowCleanup(ticket:Object):Boolean {
         if (!isCurrent(ticket)) return false;
         if (org.flashNight.arki.scene.StageReturnFlow.canBeginSceneLoad(ticket.token, ticket.frame)) return true;

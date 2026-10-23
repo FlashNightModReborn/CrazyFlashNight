@@ -405,6 +405,39 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void RegressionMeridianOpenerKeepsOrdinaryAgentClosed()
+        {
+            var capture = new Capture();
+            var router = MakeRouter(capture);
+            using var harness = new HostHarness(router);
+            Assert.False(router.TryOpenAgentPanel("meridians"));
+            Assert.False(harness.Host.IsPanelOpen);
+            Assert.Empty(capture.Posts);
+        }
+
+        [Fact]
+        public void RegressionMeridianOpenerUsesExactProductionInitAndNoGameWrite()
+        {
+            var capture = new Capture();
+            var router = MakeRouter(capture);
+            using var harness = new HostHarness(router);
+            var commands = new List<string>();
+            router.SetGameCommandSenderForTests(value => { commands.Add(value); return true; });
+            router.EnableRegressionAutomation();
+            Assert.True(router.TryOpenAgentPanel("meridians"));
+            Assert.Equal("meridians", harness.Host.ActivePanelName);
+            var init = Assert.IsType<JObject>(harness.LastOpenPayload["initData"]);
+            Assert.Equal(new[] {"debug", "mode", "panelInstanceId", "source"},
+                init.Properties().Select(property => property.Name).OrderBy(name => name).ToArray());
+            Assert.Equal(harness.Host.ActivePanelInstanceId, init.Value<string>("panelInstanceId"));
+            Assert.Matches("^panel_[A-Za-z0-9_-]{24}$", init.Value<string>("panelInstanceId"));
+            Assert.Equal("prod", init.Value<string>("mode"));
+            Assert.Equal("runtime", init.Value<string>("source"));
+            Assert.False(init.Value<bool>("debug"));
+            Assert.Empty(commands); // Only the real panel owns state/light requests.
+        }
+
+        [Fact]
         public void AgentPanelOpen_MaterialsReturnsFalseWhenAuthoritySendFails()
         {
             Capture c = new Capture();
