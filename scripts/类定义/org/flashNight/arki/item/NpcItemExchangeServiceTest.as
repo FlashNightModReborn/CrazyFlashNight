@@ -294,20 +294,26 @@ class org.flashNight.arki.item.NpcItemExchangeServiceTest {
         _root.收集品栏.情报.add("测试情报", 6);
 
         var result:Object = invoke("npcItemTake", {
-            requestId:"t1", name:"测试药剂", quantity:6, operationId:"op-take-drug"
+            requestId:"t1", npc:"测试NPC", name:"测试药剂", quantity:6,
+            operationId:"op-take-drug"
         });
         check(result != null && result.success === true && result.actual == 6,
             "take ordinary across bag and drugs");
         check(_root.物品栏.背包.getItem(0) == null
             && _root.物品栏.药剂栏.getValue(0) == 1,
             "take ordinary removes exact quantities");
+        check(messages.length == 1
+            && String(messages[0]) == "你赠送给测试NPC6个测试药剂",
+            "take publishes player gift message");
 
         var replay:Object = invoke("npcItemTake", {
-            requestId:"t1-retry", name:"测试药剂", quantity:6, operationId:"op-take-drug"
+            requestId:"t1-retry", npc:"测试NPC", name:"测试药剂", quantity:6,
+            operationId:"op-take-drug"
         });
         check(replay != null && replay.success === true && replay.actual == 6,
             "repeat take returns first result");
         check(_root.物品栏.药剂栏.getValue(0) == 1, "repeat take does not deduct twice");
+        check(messages.length == 1, "repeat take does not publish twice");
 
         result = invoke("npcItemTake", {
             requestId:"t2", name:"测试材料", quantity:3, operationId:"op-take-material"

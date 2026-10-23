@@ -185,9 +185,14 @@ namespace CF7Launcher.Tasks
         private int _playerNamesGeneration;
         /// <summary>本轮已点过任务选项：不再重复弹「我接了/我不接」。</summary>
         private bool _taskActionSent;
-        /// <summary>已真实扣除、但本轮可能没送达后端的 item_take_accept：失败时用同 action_id 重试一次。</summary>
+        /// <summary>已真实扣除、但本轮可能没送达后端的 item_take_accept：失败/关闭时用同 action_id 补送。</summary>
         private JObject _unackedItemAction;
+        /// <summary>提交时的完整请求：关闭时不再依赖会话状态，按同一 turn_id/action_id 补送。</summary>
+        private string _unackedItemRequestJson;
         private string _itemActionRetriedId;
+        /// <summary>正在后台补送的物品动作：同一 action_id 不并发重复发送。</summary>
+        private string _headlessItemActionId;
+        private const int HeadlessItemActionTimeoutSeconds = 60;
 
         // ── 本轮 ──
         private string _turnId;
@@ -351,7 +356,9 @@ namespace CF7Launcher.Tasks
             _playerNamesGeneration++;
             _taskActionSent = false;
             _unackedItemAction = null;
+            _unackedItemRequestJson = null;
             _itemActionRetriedId = null;
+            _headlessItemActionId = null;
             _executedGrants.Clear();
             if (_taskMode)
             {
@@ -423,6 +430,7 @@ namespace CF7Launcher.Tasks
             _playerNamesGeneration++;
             _taskActionSent = false;
             _unackedItemAction = null;
+            _unackedItemRequestJson = null;
             _itemActionRetriedId = null;
             _executedGrants.Clear();
             _turnLinesDone = false;
@@ -462,8 +470,11 @@ namespace CF7Launcher.Tasks
             _playerLineOnScreen = false;
             _lastAiLineInterim = false;
             SetAskAccept(false);
+            // 物品已真实扣除：关闭不再有 UI，但后端仍需按同一 action_id 收下并记账。
+            FlushUnackedItemAction("session_closing:" + (reason ?? ""));
             ClearItemClaim();
             _unackedItemAction = null;
+            _unackedItemRequestJson = null;
             _itemActionRetriedId = null;
             _turnLinesDone = false;
             _presentedLineKind = null;
@@ -650,7 +661,10 @@ namespace CF7Launcher.Tasks
             // 选项态只属于上一轮的最后一条 add：发送即收掉，新的回复按新轮重新判定。
             SetAskAccept(false);
             _taskActionSent = false;
+            // 新一轮覆盖在途物品动作前，先把“已扣未确认”补送到后端。
+            FlushUnackedItemAction("new_turn");
             _unackedItemAction = null;
+            _unackedItemRequestJson = null;
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
@@ -991,9 +1005,11 @@ namespace CF7Launcher.Tasks
         private NativeDialogueBookSession.Line BuildEndHoldLine()
         {
             if (_session == null || _closing) return null;
-            if (!_turnActive && !_finalizePending && !_preparing) return null;
+            // 物品已扣除但动作轮还没起来/没确认：先占住末行，等后端收下再收组。
+            bool itemPending = _unackedItemAction != null;
+            if (!_turnActive && !_finalizePending && !_preparing && !itemPending) return null;
             // 已有普通 AI 行可播时按原语义直接收组；只有过渡话之后才继续等最终确认。
-            if (_aiLineShown && !_lastAiLineInterim) return null;
+            if (!itemPending && _aiLineShown && !_lastAiLineInterim) return null;
             NativeDialogueBookSession.Line template = FindNpcTemplate();
             return new NativeDialogueBookSession.Line
             {
@@ -1034,6 +1050,7 @@ namespace CF7Launcher.Tasks
             var stream = new DialogueInterjectStream(transport, OnEvent, _dispatch);
             _stream = stream;
             string playerName = _session != null ? _session.PlayerName : "";
+            LogManager.Log("[DialogueInterject] stream start len=" + requestJson.Length);
             TaskRunner(async () =>
             {
                 try
@@ -1043,6 +1060,7 @@ namespace CF7Launcher.Tasks
                         bool ready = await _ensureReady().ConfigureAwait(false);
                         if (!ready)
                         {
+                            LogManager.Log("[DialogueInterject] stream not started: terminal_unavailable");
                             Post(() => { if (ReferenceEquals(_stream, stream)) FailTurn("terminal_unavailable"); });
                             return;
                         }
@@ -1058,6 +1076,8 @@ namespace CF7Launcher.Tasks
                         }
                     }
                     await stream.RunAsync(requestJson, CancellationToken.None).ConfigureAwait(false);
+                    LogManager.Log("[DialogueInterject] stream end terminal=" + stream.SawTerminal
+                        + " cancelled=" + stream.Cancelled);
                     Post(() =>
                     {
                         if (!ReferenceEquals(_stream, stream)) return;
@@ -1786,8 +1806,9 @@ namespace CF7Launcher.Tasks
         private void CompleteTurn()
         {
             if (!_turnActive) return;
-            // done = 后端已处理本轮动作请求；不再需要“已扣未送达”的重试。
+            // done = 后端已处理本轮动作请求；不再需要“已扣未送达”的补送。
             _unackedItemAction = null;
+            _unackedItemRequestJson = null;
             // 本轮不会再有新台词：没有结束语时，靠这个信号判定“最后一条 add”。
             _turnLinesDone = true;
             // 任务模式：没有 add 但有完整 plan 也算成功（协议 4.5 / F-08）。
@@ -1920,6 +1941,18 @@ namespace CF7Launcher.Tasks
             busy.Busy = true;
             RaiseItemClaim(busy);
             string takeOperationId = "take:" + _newId();
+            string actionId = _newId();
+            // 扣除结果回来前对话可能已结束：先用点击时的会话快照留一份可补送请求。
+            string clickTimeFallback = BuildFallbackActionRequest(new JObject
+            {
+                ["kind"] = "item_take_accept",
+                ["action_id"] = actionId,
+                ["claim_id"] = claimId,
+                ["item_name"] = itemName,
+                ["quantity"] = Math.Max(1, quantity)
+            });
+            LogManager.Log("[DialogueInterject] item decision accept claim=" + claimId
+                + " item=" + itemName + " qty=" + quantity + " action=" + actionId);
             TaskRunner(async () =>
             {
                 JObject result = null;
@@ -1927,6 +1960,7 @@ namespace CF7Launcher.Tasks
                 {
                     var args = new JObject
                     {
+                        ["npc"] = _npcName ?? "",
                         ["name"] = itemName,
                         ["quantity"] = Math.Max(1, quantity),
                         ["operationId"] = takeOperationId
@@ -1959,7 +1993,7 @@ namespace CF7Launcher.Tasks
                 var action = new JObject
                 {
                     ["kind"] = "item_take_accept",
-                    ["action_id"] = _newId(),
+                    ["action_id"] = actionId,
                     ["claim_id"] = claimId,
                     ["item_name"] = itemName,
                     ["quantity"] = actual
@@ -1970,11 +2004,22 @@ namespace CF7Launcher.Tasks
                 {
                     _itemDecisionBusy = false;
                     ClearItemClaim();
-                    // 物品已真实扣除：请求若没送达，后端未记账；失败时用同 action_id 重试一次。
+                    // 物品已真实扣除：请求若没送达，后端未记账；关闭/失败时用同 action_id 补送。
                     _unackedItemAction = (JObject)action.DeepClone();
+                    _unackedItemRequestJson = null;
+                    string actionId = action.Value<string>("action_id") ?? "";
+                    LogManager.Log("[DialogueInterject] item take ok action=" + actionId
+                        + " item=" + itemName + " actual=" + actual);
                     if (!SubmitAction(action))
+                    {
+                        string fallback = BuildFallbackActionRequest(action) ?? clickTimeFallback;
+                        _unackedItemRequestJson = fallback;
                         LogManager.Log("[DialogueInterject] item accept not started; "
-                            + "item already deducted, action can be retried");
+                            + "item already deducted, headless fallback="
+                            + (!string.IsNullOrEmpty(fallback)));
+                        if (!string.IsNullOrEmpty(fallback))
+                            DeliverItemActionHeadless(fallback, actionId, "action_not_started");
+                    }
                     RefreshPlayerItemNames();
                 });
             });
@@ -1987,10 +2032,34 @@ namespace CF7Launcher.Tasks
         private bool SubmitAction(JObject action)
         {
             if (action == null) return false;
-            if (_session == null || !_groupAllowsInterject || _closing) return false;
-            if (_session.State != NativeDialogueBookSession.HostState.Active) return false;
+            string actionKind = action.Value<string>("kind") ?? "";
+            string actionId = action.Value<string>("action_id") ?? "";
+            if (_session == null)
+            {
+                LogActionRejected(actionKind, actionId, "no_session");
+                return false;
+            }
+            if (!_groupAllowsInterject)
+            {
+                LogActionRejected(actionKind, actionId, "group_locked");
+                return false;
+            }
+            if (_closing)
+            {
+                LogActionRejected(actionKind, actionId, "closing");
+                return false;
+            }
+            if (_session.State != NativeDialogueBookSession.HostState.Active)
+            {
+                LogActionRejected(actionKind, actionId, "session_" + _session.State);
+                return false;
+            }
             string npc = _npcName;
-            if (string.IsNullOrEmpty(npc)) return false;
+            if (string.IsNullOrEmpty(npc))
+            {
+                LogActionRejected(actionKind, actionId, "no_npc");
+                return false;
+            }
 
             List<PlayedRow> playedSnapshot;
             lock (_playedGate) { playedSnapshot = new List<PlayedRow>(_played); }
@@ -2016,6 +2085,10 @@ namespace CF7Launcher.Tasks
             string turnId = _newId();
             string requestJson = BuildRequest("", npc, dialogueInstanceId, turnId,
                 playedSnapshot, remaining, unplayed, action);
+            if (string.Equals(actionKind, "item_take_accept", StringComparison.Ordinal))
+                _unackedItemRequestJson = requestJson;
+            LogManager.Log("[DialogueInterject] action start kind=" + actionKind
+                + " action=" + actionId + " turn=" + turnId);
 
             // 没有 $PC：AI 行直接接在当前行之后，玩家点“下一条”逐句看。
             _turnTailIndex = _session.Index + 1;
@@ -2035,6 +2108,106 @@ namespace CF7Launcher.Tasks
             ArmWatchdog(_turnStartedAt);
             StartStream(requestJson);
             return true;
+        }
+
+        private void LogActionRejected(string kind, string actionId, string reason)
+        {
+            LogManager.Log("[DialogueInterject] action rejected: " + reason
+                + " kind=" + kind + " action=" + actionId);
+        }
+
+        /// <summary>
+        /// 物品动作的兜底请求：只带当前已播/剩余，不消费待播队列；用于 UI 轮无法启动
+        /// 或对话已关闭时，仍让后端按同一 action_id 完成收下与记账。
+        /// </summary>
+        private string BuildFallbackActionRequest(JObject action)
+        {
+            if (action == null || _session == null || string.IsNullOrEmpty(_npcName)) return null;
+            List<PlayedRow> playedSnapshot;
+            lock (_playedGate) { playedSnapshot = new List<PlayedRow>(_played); }
+            int wireResume = _session.CurrentWireIndex + 1;
+            var remaining = BuildRemaining(wireResume);
+            string dialogueInstanceId = _dialogueInstanceId ?? (_dialogueInstanceId = _newId());
+            string turnId = _newId();
+            return BuildRequest("", _npcName, dialogueInstanceId, turnId, playedSnapshot,
+                remaining, new List<ReferenceItem>(), action);
+        }
+
+        /// <summary>已扣未确认的物品动作：关闭/新轮/失败时用同一 action_id 后台补送。</summary>
+        private void FlushUnackedItemAction(string reason)
+        {
+            JObject action = _unackedItemAction;
+            if (action == null) return;
+            string actionId = action.Value<string>("action_id") ?? "";
+            string requestJson = _unackedItemRequestJson;
+            if (string.IsNullOrEmpty(requestJson))
+                requestJson = BuildFallbackActionRequest(action);
+            LogManager.Log("[DialogueInterject] item action unacked (" + reason + ") action="
+                + actionId + " resend=" + (!string.IsNullOrEmpty(requestJson)));
+            if (!string.IsNullOrEmpty(requestJson))
+                DeliverItemActionHeadless(requestJson, actionId, reason);
+        }
+
+        /// <summary>
+        /// 不再依赖会话与 UI 的补送：同 turn_id/action_id 幂等重放，只等后端终态。
+        /// 物品扣除已发生，补送失败也不能回滚；日志用于区分没发出与被取消。
+        /// </summary>
+        private void DeliverItemActionHeadless(string requestJson, string actionId, string reason)
+        {
+            if (string.IsNullOrEmpty(requestJson) || string.IsNullOrEmpty(actionId)) return;
+            if (string.Equals(_headlessItemActionId, actionId, StringComparison.Ordinal)) return;
+            _headlessItemActionId = actionId;
+            TaskRunner(async () =>
+            {
+                bool terminal = false;
+                bool done = false;
+                try
+                {
+                    IDialogueInterjectTransport transport = _transportFactory();
+                    if (transport == null)
+                    {
+                        LogManager.Log("[DialogueInterject] item action headless no transport: "
+                            + actionId);
+                        return;
+                    }
+                    using (var stream = new DialogueInterjectStream(transport, evt =>
+                        {
+                            if (evt.Kind == DialogueInterjectEventKind.Done) done = true;
+                        }, _ => { }))
+                    using (var cts = new CancellationTokenSource(
+                        TimeSpan.FromSeconds(HeadlessItemActionTimeoutSeconds)))
+                    {
+                        await stream.RunAsync(requestJson, cts.Token).ConfigureAwait(false);
+                        terminal = stream.SawTerminal;
+                    }
+                    if (done)
+                    {
+                        Post(() =>
+                        {
+                            if (_unackedItemAction != null
+                                && string.Equals(_unackedItemAction.Value<string>("action_id"),
+                                    actionId, StringComparison.Ordinal))
+                            {
+                                _unackedItemAction = null;
+                                _unackedItemRequestJson = null;
+                            }
+                        });
+                    }
+                    LogManager.Log("[DialogueInterject] item action headless done action="
+                        + actionId + " reason=" + reason + " terminal=" + terminal
+                        + " confirmed=" + done);
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[DialogueInterject] item action headless failed action="
+                        + actionId + " reason=" + reason + ": " + ex.Message);
+                }
+                finally
+                {
+                    if (string.Equals(_headlessItemActionId, actionId, StringComparison.Ordinal))
+                        _headlessItemActionId = null;
+                }
+            });
         }
 
         /// <summary>SSE action：item_grant 必须真实发放并回执，不得只播台词。</summary>
@@ -2338,9 +2511,11 @@ namespace CF7Launcher.Tasks
         {
             // 已真实扣除、但本轮可能没送达后端：同 action_id 重试一次，绝不重复扣除。
             JObject retry = _unackedItemAction;
+            string retryJson = _unackedItemRequestJson;
             if (retry != null)
             {
                 _unackedItemAction = null;
+                _unackedItemRequestJson = null;
                 string retryId = retry.Value<string>("action_id") ?? "";
                 if (retryId.Length > 0 && retryId != _itemActionRetriedId && SubmitAction(retry))
                 {
@@ -2349,8 +2524,12 @@ namespace CF7Launcher.Tasks
                         + retryId);
                     return;
                 }
-                LogManager.Log("[DialogueInterject] item accept retry failed; reconcile manually: "
-                    + retryId);
+                string fallback = !string.IsNullOrEmpty(retryJson)
+                    ? retryJson : BuildFallbackActionRequest(retry);
+                LogManager.Log("[DialogueInterject] item accept retry failed; headless="
+                    + (!string.IsNullOrEmpty(fallback)) + ": " + retryId);
+                if (!string.IsNullOrEmpty(fallback))
+                    DeliverItemActionHeadless(fallback, retryId, "turn_retry_failed");
             }
             // error 等同组内失败：待处理索取不再可靠，清掉选项。
             ClearItemClaim();
@@ -2412,6 +2591,9 @@ namespace CF7Launcher.Tasks
         internal void CancelTurn(string reason)
         {
             bool wasActive = _turnActive || _finalizePending;
+            FlushUnackedItemAction("cancel:" + reason);
+            _unackedItemAction = null;
+            _unackedItemRequestJson = null;
             StopStream();
             DisarmWatchdog();
             _turnActive = false;

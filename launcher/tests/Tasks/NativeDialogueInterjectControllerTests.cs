@@ -132,6 +132,8 @@ namespace CF7Launcher.Tests.Tasks
             internal string GrantError = "inventory_full";
             internal bool SummarySuccess = true;
             internal readonly List<string> ItemNames = new List<string> { "苹果", "铁剑" };
+            /// <summary>扣物响应回包前触发（模拟扣除成功后、动作发出前对话已关闭）。</summary>
+            internal Action<JObject> BeforeTakeResponse;
 
             internal FakeItemBridge()
             {
@@ -142,6 +144,10 @@ namespace CF7Launcher.Tests.Tasks
                     Requests.Add(command);
                     JObject response = Respond(command);
                     response["requestId"] = command.Value<string>("requestId");
+                    if (BeforeTakeResponse != null
+                        && string.Equals(command.Value<string>("action"), "npcItemTake",
+                            StringComparison.Ordinal))
+                        BeforeTakeResponse(command);
                     task.Handle(response);
                     return true;
                 }, () => "item-fixed");
@@ -2297,6 +2303,29 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("c1", request["action"].Value<string>("claim_id"));
             Assert.Equal(1, request["action"].Value<int>("quantity"));
             Assert.Equal(6, request["action"].Value<int>("item_level"));
+        }
+
+        [Fact]
+        public void ItemClaimAcceptClosedDuringDeductionStillResendsHeadless()
+        {
+            var bridge = new FakeItemBridge { Count = 1 };
+            using var h = new Harness(itemExchange: bridge.Task);
+            h.AdoptBook("又是你。");
+            h.Controller.OnEvent(Evt(DialogueInterjectEventKind.ItemClaim,
+                "{\"state\":\"pending\",\"claim_id\":\"c1\",\"npc\":\"Andy Law\","
+                + "\"item_name\":\"苹果\",\"quantity\":1}"));
+            // 扣除回包前对话已推进到关闭：动作轮无法再起，只能靠后台补送记账。
+            bridge.BeforeTakeResponse = _ => h.Close();
+            h.Transport.Script(Done());
+
+            h.Controller.SubmitChoice(true);
+
+            Assert.Equal(1, bridge.RequestCount("npcItemTake"));
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            Assert.Equal("item_take_accept", request["action"].Value<string>("kind"));
+            Assert.Equal("c1", request["action"].Value<string>("claim_id"));
+            Assert.Equal("苹果", request["action"].Value<string>("item_name"));
+            Assert.Null(h.Controller.PendingItemClaimForTest);
         }
 
         [Fact]

@@ -187,6 +187,8 @@ namespace CF7Launcher.Tests.Tasks
         [InlineData("gym_training")]
         [InlineData("appearance_service")]
         [InlineData("player_revive")]
+        [InlineData("npc_gift")]
+        [InlineData("npc_take")]
         [InlineData("cheat")]
         [InlineData("system_reward")]
         [InlineData("reward_inbox")]

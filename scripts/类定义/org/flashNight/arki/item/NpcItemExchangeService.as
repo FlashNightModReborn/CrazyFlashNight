@@ -157,6 +157,7 @@ class org.flashNight.arki.item.NpcItemExchangeService {
         if (operationId == "") return {success:false, error:"invalid_operation"};
         var cached:Object = recall(operationId);
         if (cached != null) return cached;
+        var npc:String = text(params == null ? null : params.npc, 100);
 
         var context:Object = {
             source:"npc_take", reason:"dialogue_gift", operationId:operationId
@@ -173,7 +174,12 @@ class org.flashNight.arki.item.NpcItemExchangeService {
         } else {
             result = takeOrdinary(name, quantity, context);
         }
-        return remember(operationId, result);
+        result = remember(operationId, result);
+        if (result != null && result.success === true) {
+            var actual:Number = result.actual == undefined ? quantity : Number(result.actual);
+            if (!isNaN(actual) && actual > 0) publishTakeNotice(npc, name, actual);
+        }
+        return result;
     }
 
     // ==================== 扣除实现 ====================
@@ -474,6 +480,19 @@ class org.flashNight.arki.item.NpcItemExchangeService {
         }
         try { _root.发布消息(npc + "赠送了你" + quantity + "个" + display); }
         catch (noticeError) { trace("[NpcItemExchange] gift notice failed: " + noticeError); }
+    }
+
+    private static function publishTakeNotice(npc:String, name:String, quantity:Number):Void {
+        if (npc == "") return;
+        if (typeof _root.发布消息 != "function") return;
+        var display:String = name;
+        var data:Object = ItemUtil.getRawItemData(name);
+        if (data != null && data.displayname != undefined
+                && String(data.displayname).length > 0) {
+            display = String(data.displayname);
+        }
+        try { _root.发布消息("你赠送给" + npc + quantity + "个" + display); }
+        catch (noticeError) { trace("[NpcItemExchange] take notice failed: " + noticeError); }
     }
 
     private static function recall(operationId:String):Object {
