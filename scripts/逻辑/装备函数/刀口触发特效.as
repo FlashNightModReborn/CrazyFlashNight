@@ -252,7 +252,7 @@ _root.刀口触发特效.秋月特效 = function(状态名)
     var 特效许可 = (状态名 == "兵器二段中");
     if (特效许可)
     {
-        if (unit.mp >= 耗蓝量)
+        if (org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.canPayMp(unit,耗蓝量) && unit.mp >= 耗蓝量)
         {
             _root.刀口触发特效.__发射火子弹(unit, "金起", 耗蓝量 * 50);
         }
@@ -271,7 +271,7 @@ _root.刀口触发特效.秋月特效 = function(状态名)
     }
     if (特效许可)
     {
-        if (unit.mp >= 耗蓝量)
+        if (org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.canPayMp(unit,耗蓝量) && unit.mp >= 耗蓝量)
         {
             _root.刀口触发特效.__发射火子弹(unit, "黄金集气", 耗蓝量 * 15);
         }
@@ -285,9 +285,8 @@ _root.刀口触发特效.秋月特效 = function(状态名)
     特效许可 = (状态名 == "兵器三段中" || 状态名 == "兵器冲击");
     if (特效许可)
     {
-        if (unit.mp >= 耗蓝量)
+        if (org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.payMp(unit,耗蓝量))
         {
-            unit.mp -= 耗蓝量;
             _root.刀口触发特效.__发射火子弹(unit, "圣刺", 耗蓝量 * 75);
         }
         else if (是控制目标)
@@ -305,9 +304,8 @@ _root.刀口触发特效.秋月特效 = function(状态名)
     }
     if (特效许可)
     {
-        if (unit.mp >= 耗蓝量)
+        if (org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.payMp(unit,耗蓝量))
         {
-            unit.mp -= 耗蓝量;
             _root.刀口触发特效.__发射火子弹(unit, "圣爆", 耗蓝量 * 70);
         }
     }

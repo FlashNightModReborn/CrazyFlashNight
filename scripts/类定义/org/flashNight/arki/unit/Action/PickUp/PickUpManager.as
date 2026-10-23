@@ -72,14 +72,21 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
      * 拾取物品
      */
     public function pickup(target:MovieClip, 拾取者:Object, 播放拾取动画:Boolean):Void {
+        if(target.__pickupClaimed===true) return;
+        target.__pickupClaimed=true;
+        // 实体级同步占用先于领域调用；异常可能已经取得物品，不能把未知结果改成可再次领取。
+        // 明确的零写拒绝才释放占用。成功实体随后沿原动画卸载。
+        if(pickupOwned(target,拾取者,播放拾取动画)!==true) target.__pickupClaimed=false;
+    }
+    private function pickupOwned(target:MovieClip, 拾取者:Object, 播放拾取动画:Boolean):Boolean {
         // 鼠标与快捷键共用此权威门；拒绝时保留实体，也不能触发升级或快捷换装。
         var actor:Object = 拾取者 == undefined ? TargetCacheManager.findHero() : 拾取者;
-        if (actor == undefined || !(actor.hp > 0)) return;
+        if (actor == undefined || !(actor.hp > 0)) return false;
         // 同一领取 ID 即使因重复配置同时生成多个实体，也只允许首个成功进入背包。
         if (PickUpManager.isOneTimeClaimed(target.一次性领取ID)) {
             target.gotoAndPlay("消失");
             delete this.pickupItemDict[target.index];
-            return;
+            return true;
         }
 
         var str:String = "获得";
@@ -112,7 +119,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             ], {source:"pickup", reason:"world_pickup"});
             if (!settlement.success) {
                 _root.发布消息("情报结算失败，暂时无法拾取！");
-                return;
+                return false;
             }
             var conversion:Object = settlement.conversions[0];
             var accepted:Number = Number(conversion.accepted || 0);
@@ -131,7 +138,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             // 战场即时补给：不入包，由 service 现场结算并自己播报收益/拒绝原因。
             // 仅 applied 复用下方实体收尾；通用获得播报与 loot feed 不适用（无资产变化）。
             var outcome:String = PickupEffectService.tryClaim(target);
-            if (outcome != "applied") return;
+            if (outcome != "applied") return false;
             lootKind = "supply";
         } else if (!拾取者 && Key.isDown(_root.组合键) && this.拾取并装备(itemName, value)) {
             str = "已拾取" + itemName;
@@ -147,7 +154,7 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             lootKind = "item";
         } else {
             _root.发布消息("物品栏空间不足，无法拾取！");
-            return;
+            return false;
         }
 
         // 金币/K 点与快捷装备分支不经过 ItemUtil.acquire()，成功拾取后也必须落脏。
@@ -172,21 +179,27 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
         // 发布Pickup事件
         _root.gameworld.dispatcher.publish("Pickup", itemName);
         
-        if (!拾取者 && 播放拾取动画) {
+        if (!拾取者 && 播放拾取动画 && 控制对象.__playerStatProjectionBlocked!==true
+                && 控制对象.__playerStatInitializing!==true) {
             控制对象.拾取();
         }
+        return true;
     }
     
     /**
      * 拾取并装备物品
      */
     public function 拾取并装备(itemName:String, value:Number):Boolean {
+        var coordinator:org.flashNight.arki.unit.PlayerStatRefreshCoordinator=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production();
+        if(coordinator.equipmentTransition()!=null) return false;
+        var admission:Object=coordinator.flush("pickup_equipment_admission");
+        if(admission.status!="applied" && admission.status!="unchanged") return false;
         var itemData:Object = _root.getItemData(itemName);
         var type = itemData.type;
         var use = itemData.use;
         
         if (type == "武器" || type == "防具" || use == "手雷") {
-            var 装备:Object = _root.物品栏.装备栏.getNameString(use);
+            var 装备:Object = _root.物品栏.装备栏.getItem(use);
             
             if (itemData.data.level > _root.等级) {
                 return false;
@@ -194,18 +207,14 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
 
             // 同名手雷交还 ItemUtil.acquire 统一合并；快捷拾取不再把旧堆
             // 强行挪入背包后创建一份新堆。
-            if (use == "手雷" && 装备 == itemName) {
+            if (use == "手雷" && 装备.name == itemName) {
                 return false;
             }
             
             if (!装备 && use) {
                 // 装备栏为空，直接装备
-                _root.物品栏.装备栏.add(use, BaseItem.create(itemName, value));
-                _root.刷新人物装扮(_root.控制目标);
-                
-                if (type == "武器" || use == "手雷") {
-                    TargetCacheManager.findHero().攻击模式切换(use);
-                }
+                var candidate:BaseItem=BaseItem.create(itemName,value);
+                if(!_root.物品栏.装备栏.add(use,candidate)) return false;
             } else if (装备 && use) {
                 // 装备栏有装备，需要替换
                 var 背包:Object = _root.物品栏.背包;
@@ -221,11 +230,10 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
                     return false;
                 }
                 
-                _root.物品栏.装备栏.add(use, BaseItem.create(itemName, value));
-                _root.刷新人物装扮(_root.控制目标);
-                
-                if (type == "武器" || use == "手雷") {
-                    TargetCacheManager.findHero().攻击模式切换(use);
+                if(!_root.物品栏.装备栏.add(use, BaseItem.create(itemName, value))) {
+                    // 卸下已完成，仍须投影这个真实变化；新物品交原调用方尝试入包。
+                    projectCommittedEquipment(null);
+                    return false;
                 }
             } else {
                 return false;
@@ -234,7 +242,44 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             return false;
         }
         
+        // 容器已成功，异常不能被上层当成未拾取而再次 acquire。
+        projectCommittedEquipment(type=="武器" || use=="手雷" ? String(use) : null);
         return true;
+    }
+
+    /** 只投影已经完成的装备变化；失败后的恢复绝不再移动物品。 */
+    private static function projectCommittedEquipment(mode:String):Void {
+        if(_root.存档系统!=undefined) _root.存档系统.dirtyMark=true;
+        var c:org.flashNight.arki.unit.PlayerStatRefreshCoordinator=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production();
+        var target:Object=_root.gameworld[_root.控制目标];
+        var receipt:Object={context:c.contextToken(),world:org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld),actor:target,mode:mode};
+        var result:Object;
+        try {result=_root.刷新人物装扮(_root.控制目标);}
+        catch(error) {trace("[PickUpManager] committed equipment projection: "+error);}
+        if(receipt.context!==c.contextToken() || receipt.world!==org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld)
+                || _root.gameworld[_root.控制目标]!==target) return;
+        var ticket:Object=c.equipmentTransition();
+        if(ticket!=null && ticket.context===receipt.context && ticket.actor===target
+                && ticket.owner===target.__legacyStatEquipmentOwner) {receipt.body=ticket.targetBody;receipt.ticket=ticket;}
+        else if(result.status=="applied" || result.status=="unchanged") receipt.body=target.__playerStatBody;
+        if(receipt.body==null || mode==null) return;
+        target.__pickupEquipmentModeReceipt=receipt;
+        resumePendingEquipmentMode(target);
+    }
+    /** 原 legacy owner 的显式恢复完成后才恢复原定模式；迟到/新体回执不执行。 */
+    public static function resumePendingEquipmentMode(target:Object):Void {
+        var receipt:Object=target.__pickupEquipmentModeReceipt;
+        if(receipt==null) return;
+        var c:org.flashNight.arki.unit.PlayerStatRefreshCoordinator=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production();
+        if(receipt.context!==c.contextToken() || receipt.world!==org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld)
+                || receipt.actor!==target || target.__playerStatBody!==receipt.body
+                || _root.gameworld[_root.控制目标]!==target) return;
+        if(c.equipmentTransition()!=null || target.__playerStatFullReady!==receipt.body
+                || target.__playerStatProjectionBlocked===true || target.__playerStatInitializing===true) return;
+        var barrier:Object=c.flush("pickup_mode");
+        if(barrier.status!="applied" && barrier.status!="unchanged") return;
+        delete target.__pickupEquipmentModeReceipt;
+        target.攻击模式切换(receipt.mode);
     }
     
     /**

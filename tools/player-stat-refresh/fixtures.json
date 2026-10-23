@@ -1,0 +1,8 @@
+{
+  "schema": "cf7.player-stat-refresh-fixtures.v1",
+  "loner": {"baseHp": 1000, "oldLevel": 3, "newLevel": 4, "targetHp": 1200},
+  "weapon": {"basePower": 100, "gunpower": 5, "targetPower": 105},
+  "managed": {"damageBase": 10, "damageBuff": 22, "damageTarget": 32, "defenseBase": 120, "defenseBuff": -13, "defenseTarget": 107},
+  "resource": {"oldMax": 1000, "newMax": 800, "ordinaryHp": 900, "overflowHp": 1300, "ordinaryTarget": 800, "overflowTarget": 1200},
+  "moveCooldown": {"baseCD": 20000, "maxLevelCD": 1000}
+}

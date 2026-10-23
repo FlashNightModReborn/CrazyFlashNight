@@ -1,6 +1,7 @@
 ﻿// 文件路径：org/flashNight/arki/unit/Action/Skill/SkillReleaseGuard.as
 
 import org.flashNight.arki.skill.SkillLoadoutService;
+import org.flashNight.arki.unit.Action.Regeneration.ResourceNumber;
 
 /**
  * @class SkillReleaseGuard
@@ -46,8 +47,8 @@ class org.flashNight.arki.unit.Action.Skill.SkillReleaseGuard {
         var skillData:Object = root.根据技能名查找全部属性(skillName);
         if (!skillData) return null;
 
-        var mpCost:Number = Number(rawMpCost);
-        if (isNaN(mpCost) || mpCost < 0) return null;
+        if(!ResourceNumber.nonnegative(rawMpCost)) return null;
+        var mpCost:Number = rawMpCost;
 
         // 保留旧行为：异常超上限等级按 1 级执行，但不存在/未学习技能不再伪装成 1 级。
         if (skillLevel > 10) skillLevel = 1;
@@ -67,9 +68,7 @@ class org.flashNight.arki.unit.Action.Skill.SkillReleaseGuard {
         if (!skillSlot || skillSlot.是否装备 != 1) return false;
         if (normalizeSkillName(skillSlot.已装备名) == null) return false;
 
-        var mpCost:Number = Number(skillSlot.消耗mp);
-        var cooldownTime:Number = Number(skillSlot.冷却时间);
-        return !isNaN(mpCost) && mpCost >= 0
-            && !isNaN(cooldownTime) && cooldownTime >= 0;
+        return ResourceNumber.nonnegative(skillSlot.消耗mp)
+            && ResourceNumber.nonnegative(skillSlot.冷却时间);
     }
 }

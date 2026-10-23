@@ -5556,6 +5556,46 @@ namespace CF7Launcher.Tests.Guardian
             }
         }
 
+        [Theory]
+        [InlineData("flushLive")]
+        [InlineData("finalize")]
+        public void ExplicitProjectionRecoveryIsForwardedOnlyAsAnExactBoolean(string command)
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();harness.Web.Clear();
+                JObject payload = ProductionPayload(command);
+                payload["recoverProjection"] = true;
+                harness.Task.HandleWebRequest(command, WebRequest(command,"prod.projection.recover",payload));
+                JObject forwarded = Assert.Single(harness.Flash);
+                Assert.Equal(JTokenType.Boolean, forwarded["recoverProjection"].Type);
+                Assert.True(forwarded.Value<bool>("recoverProjection"));
+            }
+            foreach (JToken invalid in new JToken[] {new JValue("true"),new JValue(1),new JObject(),JValue.CreateNull()})
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();harness.Web.Clear();
+                JObject payload = ProductionPayload(command);payload["recoverProjection"] = invalid;
+                harness.Task.HandleWebRequest(command,WebRequest(command,"prod.projection.invalid",payload));
+                Assert.Empty(harness.Flash);
+                Assert.Equal("invalid_payload",Assert.Single(harness.Web).Value<string>("error"));
+            }
+        }
+
+        [Fact]
+        public void UnknownFinalizeReconciliationCannotAlsoAuthorizeProjectionRestart()
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();harness.Web.Clear();
+                JObject payload=ProductionPayload("finalize");
+                payload["recoverProjection"]=true;payload["reconcileAfterCallId"]="prod.unknown.previous";
+                harness.Task.HandleWebRequest("finalize",WebRequest("finalize","prod.projection.unknown",payload));
+                Assert.Empty(harness.Flash);
+                Assert.Equal("invalid_payload",Assert.Single(harness.Web).Value<string>("error"));
+            }
+        }
+
         private static ProductionHarness OpenProductionHarness(
             int timeoutMs = 1000)
         {

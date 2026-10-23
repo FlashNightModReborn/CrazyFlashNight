@@ -62,6 +62,7 @@ fresh TestLoader SWF 还运行 `node tools/swf-function-sizes.js scripts/TestLoa
 **归属条件：** 装备函数/帧汇编/BOOT_SOURCES 改动追加 assemble→check→BOM→coverage；
 SWF 编译后执行增量类归属，最终打包/CI 核对生产闭包；strict single-ownership 不以 child-only 检查替代。
 **热点条件：** HUD 分组／技能显示缓存、Buff 调度、冷却、资源提示、AI 诊断、地图观察或判空清理命中时，追加 [只读热点 runner](testing-details.md#as2-hotpath-suites)。
+**持久属性条件：** 玩家成长、被动、装备稳定输入、运行态损伤或最终 ready 变更时，执行 [属性组合门](testing-details.md#suite-player-stat-refresh)，按命中领域扩展；源码探针、原生 suite 与真实 Host/游戏旅程分别记证。
 **正文：** [Flash 核心](testing-details.md#flash-core)、[focused runner 与恢复](testing-details.md#flash-recovery)、
 [业务 suite](testing-details.md#domain-suites)。本页没有授权启动编译或覆盖未保存的 CS6 文档。
 

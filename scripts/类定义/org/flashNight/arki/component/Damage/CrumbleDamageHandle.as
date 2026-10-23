@@ -109,7 +109,12 @@ class org.flashNight.arki.component.Damage.CrumbleDamageHandle extends BaseDamag
             result._crumbleDamage = pairedDamage + crumbleAmount;
 
             // 减少满血值并增加损伤值
-            target.hp满血值 -= crumbleAmount;
+            if (typeof target.buffManager.recordCrumbleCeilingLoss == "function") {
+                target.buffManager.recordCrumbleCeilingLoss(crumbleAmount);
+            } else {
+                target.__crumbleCeilingLoss = Number(target.__crumbleCeilingLoss || 0)+crumbleAmount;
+                target.hp满血值 -= crumbleAmount;
+            }
             target.损伤值 += crumbleAmount;
 
 

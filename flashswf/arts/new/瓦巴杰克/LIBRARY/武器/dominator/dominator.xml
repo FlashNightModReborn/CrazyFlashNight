@@ -16,6 +16,8 @@
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
 	var 自机 = _root.获得父节点(this, 5);
+	var 属性投影身体:Object=自机.__playerStatBody;
+	this.属性投影身体=属性投影身体;
 	var 自机类型 = _root.获得父节点(this, 2)._name;
 	var 时间戳名 = 自机.手枪.name + "时间戳";
 	var 动画帧名 = 自机.手枪.name + "动画帧";
@@ -27,93 +29,24 @@
 	var 分解模式动画帧上限 = 95;
 	var 分解模式弹容倍率 = 0.06;
 	自机.变形手枪 = this;
-	this.切换为麻醉模式 = function(type)
-	{
-		if (自机.手枪.name == "dominator")
-		{
-			自机[武器类型名] = "麻醉模式";
-			自机.手枪属性.impact = 自机[基础属性名].基础击倒力;
-			//自机.手枪属性.power = 自机[基础属性名].基础伤害;
-			//自机.裸装手枪威力 = 自机.手枪.getData().data.power;
-			自机.buff.基础值.手枪威力 = 自机.手枪.getData().data.power * 1 + 自机.装备枪械威力加成;
-			自机.buff.更新("手枪威力");
-			/*if(自机.被动技能.枪械师 && 自机.被动技能.枪械师.启用 && 自机.被动技能.枪械师.等级){
-				自机.手枪属性.power += 自机.被动技能.枪械师.等级 * 5 * (1-1);
-			}*/
-			自机.手枪属性.bullethit = 自机[基础属性名].基础命中效果;
-			自机.手枪属性.muzzle = 自机[基础属性名].基础枪口焰;
-			自机.手枪属性.sound = 自机[基础属性名].基础音效;
-			自机.手枪属性.bullet = 自机[基础属性名].基础子弹;
-			自机.手枪属性.velocity = 自机[基础属性名].基础速度;
-			自机.手枪属性.interval = 自机[基础属性名].基础射击间隔;
-			自机.手枪属性.diffusion = 自机[基础属性名].基础散射度;
-			自机.手枪属性.split = 自机[基础属性名].基础霰弹值;
-			自机.手枪属性.capacity = 自机[基础属性名].基础弹容;
-			自机.手枪弹匣容量 = 自机.手枪属性.capacity;
-			if(type!="进图读取"){
-				自机.手枪.value.shot = Math.ceil(自机.手枪.value.shot / 分解模式弹容倍率);
-			}
-			自机.手枪伤害类型 = "物理";
-			自机.man.初始化手枪射击函数();
-		}
+	// 数值由 asLoader 的稳定来源投影；这些命令只保留真实切换的弹药转换。
+	this.切换为麻醉模式 = function(type) {
+		if(自机.手枪.name != "dominator") return;
+		自机[武器类型名]="麻醉模式";
+		if(type!="进图读取") 自机.手枪.value.shot=Math.ceil(自机.手枪.value.shot/分解模式弹容倍率);
+		_root.玩家属性投影.刷新当前模式(自机);
 	};
-	this.切换为击杀模式 = function(type)
-	{
-		if (自机.手枪.name == "dominator")
-		{
-			自机[武器类型名] = "击杀模式";
-			自机.手枪属性.bullet = "普通微波子弹";
-			自机.手枪属性.impact = 15;
-			//自机.裸装手枪威力 = 自机.手枪.getData().data.power;
-			自机.buff.基础值.手枪威力 = 自机.手枪.getData().data.power * 7 + 自机.装备枪械威力加成;
-			自机.buff.更新("手枪威力");
-			if(自机.被动技能.枪械师 && 自机.被动技能.枪械师.启用 && 自机.被动技能.枪械师.等级){
-				自机.手枪属性.power += 自机.被动技能.枪械师.等级 * 5 * 7;
-			}
-			自机.手枪属性.bullethit = "火花";
-			自机.手枪属性.muzzle = "枪火";
-			自机.手枪属性.sound = "dominator枪声2.wav";
-			自机.手枪属性.velocity = 自机[基础属性名].基础速度 * 1.2;
-			自机.手枪属性.interval = 自机[基础属性名].基础射击间隔;
-			自机.手枪属性.diffusion = Math.floor(自机[基础属性名].基础散射度 / 1.5);
-			自机.手枪属性.split = 自机[基础属性名].基础霰弹值;
-			自机.手枪属性.capacity = Math.floor(自机[基础属性名].基础弹容 * 击杀模式弹容倍率);
-			自机.手枪弹匣容量 = 自机.手枪属性.capacity;
-			if(type!="进图读取"){
-				自机.手枪.value.shot = Math.ceil(自机.手枪.value.shot * 击杀模式弹容倍率);
-			}
-			自机.手枪伤害类型 = "物理";
-			自机.man.初始化手枪射击函数();
-		}
+	this.切换为击杀模式 = function(type) {
+		if(自机.手枪.name != "dominator") return;
+		自机[武器类型名]="击杀模式";
+		if(type!="进图读取") 自机.手枪.value.shot=Math.ceil(自机.手枪.value.shot*击杀模式弹容倍率);
+		_root.玩家属性投影.刷新当前模式(自机);
 	};
-	this.切换为分解模式 = function(type)
-	{
-		if (自机.手枪.name == "dominator")
-		{
-			自机[武器类型名] = "分解模式";
-			自机.手枪属性.bullet = "电浆球";
-			自机.手枪属性.impact = 0.5;
-			//自机.裸装手枪威力 = 自机.手枪.getData().data.power;
-			自机.buff.基础值.手枪威力 = 自机.手枪.getData().data.power * 28 + 自机.装备枪械威力加成;
-			自机.buff.更新("手枪威力");
-			if(自机.被动技能.枪械师 && 自机.被动技能.枪械师.启用 && 自机.被动技能.枪械师.等级){
-				自机.手枪属性.power += 自机.被动技能.枪械师.等级 * 5 * 10;
-			}
-			自机.手枪属性.bullethit = "火花";
-			自机.手枪属性.muzzle = "枪火";
-			自机.手枪属性.sound = "dominator枪声2.wav";
-			自机.手枪属性.velocity = 自机[基础属性名].基础速度 * 1.2;
-			自机.手枪属性.interval = Math.floor(自机[基础属性名].基础射击间隔 * 1.5);
-			自机.手枪属性.diffusion = 0;
-			自机.手枪属性.split = 自机[基础属性名].基础霰弹值;
-			自机.手枪属性.capacity = Math.floor(自机[基础属性名].基础弹容 * 分解模式弹容倍率);
-			自机.手枪弹匣容量 = 自机.手枪属性.capacity;
-			if(type!="进图读取"){
-				自机.手枪.value.shot =  Math.ceil(自机.手枪.value.shot * 分解模式弹容倍率);
-			}
-			自机.手枪伤害类型 = "真伤";
-			自机.man.初始化手枪射击函数();
-		}
+	this.切换为分解模式 = function(type) {
+		if(自机.手枪.name != "dominator") return;
+		自机[武器类型名]="分解模式";
+		if(type!="进图读取") 自机.手枪.value.shot=Math.ceil(自机.手枪.value.shot*分解模式弹容倍率);
+		_root.玩家属性投影.刷新当前模式(自机);
 	};
 	this.保存武装类型 = function()
 	{
@@ -284,6 +217,7 @@
 			this.切换为分解模式()
 		}*/
 	};
+	_root.玩家属性投影.模式组件就绪(自机,属性投影身体);
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>

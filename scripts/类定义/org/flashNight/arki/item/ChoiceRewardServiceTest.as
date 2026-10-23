@@ -7,6 +7,7 @@ class org.flashNight.arki.item.ChoiceRewardServiceTest {
     private static var passed:Number;
     private static var failed:Number;
     private static var sequence:Number;
+    private static function rejectBeforeExposure():Void {throw new Error("choice_test_before_exposure");}
     private static function check(ok:Boolean, label:String):Void {
         if (ok) { passed++; trace("[PASS] " + label); }
         else { failed++; trace("[FAIL] " + label); }
@@ -63,7 +64,7 @@ class org.flashNight.arki.item.ChoiceRewardServiceTest {
         ItemUseService.setContextValidator(function(panel:String,generation:Number):Object {return {success:panel=="choice.test"&&generation==1,error:"stale_session"};});
         RewardInboxService.resetForTests();
         try {
-            sm._configureSaveFlowForTest({saveInFlight:false,flushResult:true});
+            sm._configureSaveFlowForTest({saveInFlight:false,flushResult:true,beforeRewardExposure:null});
             _root.物品栏.背包.add(0,BaseItem.create("选择测试礼包",5));
             var capability:Object=ItemUseService.buildCandidateUseAction(_root.物品栏.背包.getItem(0),ItemUtil.itemDataDict["选择测试礼包"],0,"lease",0);
             check(capability.useAction.command=="openChoice","choice pack has a distinct non-bulk capability");
@@ -78,11 +79,11 @@ class org.flashNight.arki.item.ChoiceRewardServiceTest {
             check(!ItemUseService.execute("stashOpen",bad).success,"stale source is rejected");
             bad=openRequest();bad.panelInstanceId="other";
             check(!ItemUseService.execute("stashOpen",bad).success,"foreign panel cannot open");
-            sm._configureSaveFlowForTest({flushResult:false});
+            sm._configureSaveFlowForTest({flushResult:true,beforeRewardExposure:rejectBeforeExposure});
             var rejectedOpen:Object=ItemUseService.execute("stashOpen",openRequest());
             check(!rejectedOpen.success&&rejectedOpen.error=="save_not_committed","failed durable open is rejected at the save boundary");
             check(_root.物品栏.背包.getItem(0).value==5&&snap().offers.length==0,"failed open restores pack and no choices leak");
-            sm._configureSaveFlowForTest({flushResult:"pending"});
+            sm._configureSaveFlowForTest({flushResult:"pending",beforeRewardExposure:null});
             ChoiceRewardService.setRandomValuesForTests([0,0,0.99]);
             var opening:Object=openRequest();
             var result:Object=ItemUseService.execute("stashOpen",opening);
@@ -93,7 +94,7 @@ class org.flashNight.arki.item.ChoiceRewardServiceTest {
             check(!ItemUseService.execute("stashOpen",openRequest()).success,"pending open blocks another draw");
             var query:Object={task:"cmd",action:"itemUseStashQuery",callId:++sequence,v:2,panelInstanceId:"choice.test",sessionGeneration:1,
                 operationId:opening.operationId,storeId:opening.storeId,expectedRevision:opening.expectedRevision};
-            sm._configureSaveFlowForTest({flushResult:true});
+            sm._configureSaveFlowForTest({flushResult:true,beforeRewardExposure:null});
             result=ItemUseService.execute("stashQuery",query);
             check(result.success&&result.data.state=="committed"&&result.data.result.kind=="choiceOpen","exact query resolves the opening receipt");
             check(new LiteJSON().stringify(RewardStashService.peek().choiceOffers)==frozen,"query preserves exact frozen candidates");
@@ -126,16 +127,16 @@ class org.flashNight.arki.item.ChoiceRewardServiceTest {
                 &&_root.物品栏.背包.getItem(0).value==4&&snap().offers.length==1,"invalid catalog grade fails closed without consuming the pack or shadowing the pending offer");
             ChoiceRewardService.setPoolsForTests(catalog());
             for(var fill:Number=1;fill<50;fill++) _root.物品栏.背包.add(fill,BaseItem.create("选择测试刀",1));
-            sm._configureSaveFlowForTest({flushResult:false});
+            sm._configureSaveFlowForTest({flushResult:true,beforeRewardExposure:rejectBeforeExposure});
             check(!ItemUseService.execute("stashChoose",choiceRequest(offer,"bundle.0")).success,"failed selection does not claim success");
             check(snap().offers.length==1&&RewardStashService.peek().entries.length==0,"failed selection restores offer and stock together");
-            sm._configureSaveFlowForTest({flushResult:"pending"});
+            sm._configureSaveFlowForTest({flushResult:"pending",beforeRewardExposure:null});
             var selecting:Object=choiceRequest(offer,"bundle.0");
             result=ItemUseService.execute("stashChoose",selecting);
             check(!result.success&&result.error=="commit_pending","pending selection retains the write fence");
             check(snap().offers.length==1,"pending selection only projects committed choices");
             check(!ItemUseService.execute("stashChoose",choiceRequest(offer,"bundle.1")).success,"another choice cannot race an unknown result");
-            sm._configureSaveFlowForTest({flushResult:true});
+            sm._configureSaveFlowForTest({flushResult:true,beforeRewardExposure:null});
             query.operationId=selecting.operationId;query.storeId=selecting.storeId;query.expectedRevision=selecting.expectedRevision;query.callId=++sequence;
             result=ItemUseService.execute("stashQuery",query);
             check(result.success&&result.data.result.kind=="choiceSelect","selection query returns the original receipt");
@@ -176,19 +177,23 @@ class org.flashNight.arki.item.ChoiceRewardServiceTest {
             _root.虚拟币=200;
             result=ItemUseService.execute("stashChoose",choiceRequest(paidOffer,"skill.1"));
             check(!result.success&&result.error=="insufficient_kpoints"&&_root.虚拟币==200&&_root.主角技能表.length==0,"insufficient K neither teaches nor consumes the offer");
-            _root.虚拟币=400;sm._configureSaveFlowForTest({flushResult:false});
+            _root.虚拟币=400;sm._configureSaveFlowForTest({flushResult:true,beforeRewardExposure:rejectBeforeExposure});
             result=ItemUseService.execute("stashChoose",choiceRequest(paidOffer,"skill.1"));
             check(!result.success&&_root.虚拟币==400&&_root.主角技能表.length==0,"rejected save rolls back paid skill and K together");
-            sm._configureSaveFlowForTest({flushResult:"pending"});
+            sm._configureSaveFlowForTest({flushResult:"pending",beforeRewardExposure:null});
             var paidRequest:Object=choiceRequest(paidOffer,"skill.1");
             result=ItemUseService.execute("stashChoose",paidRequest);
             check(!result.success&&result.error=="commit_pending"&&snap().kpoints==400,"unknown commit projects the committed K balance");
+            check(!org.flashNight.arki.unit.PlayerStatRefreshCoordinator._inputsReadableForTests(),
+                "actual prepared reward skill closes the cross-domain numerical read gate");
             check(!SkillLoadoutService.buildSnapshot("manage",null).success,"uncommitted skill grant is not exposed as a learned skill snapshot");
             check(SkillLoadoutService.commitLearn("测试战技",3,20,SkillLoadoutService.getRevision()).error=="commit_pending","ordinary skill edits cannot race a pending paid grant");
-            sm._configureSaveFlowForTest({flushResult:true});
+            sm._configureSaveFlowForTest({flushResult:true,beforeRewardExposure:null});
             query.operationId=paidRequest.operationId;query.storeId=paidRequest.storeId;query.expectedRevision=paidRequest.expectedRevision;query.callId=++sequence;
             result=ItemUseService.execute("stashQuery",query);
             check(result.success&&_root.虚拟币==100&&_root.主角技能表[0][1]==2&&_root.技能点数==0,"exact query commits the named level once without SP cost or trainer unlock");
+            check(org.flashNight.arki.unit.PlayerStatRefreshCoordinator._inputsReadableForTests(),
+                "exact committed reward clears its numerical read gate before live projection");
             check(_root.主角技能表[0][2]===false&&_root.主角技能表[0][4]===false,"active reward skill does not overwrite player quick slots");
             check(ItemUseService.execute("stashChoose",paidRequest).success&&_root.虚拟币==100,"duplicate paid selection cannot charge twice");
             _root.物品栏.背包.addValue("0",3);
@@ -200,10 +205,10 @@ class org.flashNight.arki.item.ChoiceRewardServiceTest {
             result=ItemUseService.execute("stashOpen",openRequest());
             var upgraded:Object=snap().offers[snap().offers.length-1];
             check(result.success&&upgraded.options[0].skills[0].currentLevel==2&&upgraded.options[0].skills[0].level==3,"higher fixed-level reward remains eligible");
-            sm._configureSaveFlowForTest({flushResult:false});
+            sm._configureSaveFlowForTest({flushResult:true,beforeRewardExposure:rejectBeforeExposure});
             result=ItemUseService.execute("stashChoose",choiceRequest(upgraded,"skill.1"));
             check(!result.success&&_root.虚拟币==700&&_root.主角技能表[0][1]==2,"upgrade rejection preserves previous skill level");
-            sm._configureSaveFlowForTest({flushResult:true});
+            sm._configureSaveFlowForTest({flushResult:true,beforeRewardExposure:null});
             result=ItemUseService.execute("stashChoose",choiceRequest(upgraded,"skill.1"));
             check(result.success&&_root.虚拟币==400&&_root.主角技能表[0][1]==3,"upgrade replaces level instead of adding levels or refunding SP");
             corrupt=PersistedSnapshot.clone(RewardStashService.peek());corrupt.choiceOffers.offers[0].options[0].kCost=-1;
@@ -218,10 +223,10 @@ class org.flashNight.arki.item.ChoiceRewardServiceTest {
             var dualRequest:Object=choiceRequest(dualOffer,"bundle.0");
             _root.物品栏.背包.remove(49);
             var ammoBefore:Number=_root.收集品栏.材料.getValue("选择测试弹");
-            sm._configureSaveFlowForTest({flushResult:false});
+            sm._configureSaveFlowForTest({flushResult:true,beforeRewardExposure:rejectBeforeExposure});
             result=ItemUseService.execute("stashChoose",dualRequest);
             check(!result.success&&RewardStashStore.ownedQuantity(RewardStashService.peek(),"选择测试短枪")==0&&_root.物品栏.背包.getItem(49)==null&&_root.收集品栏.材料.getValue("选择测试弹")==ammoBefore,"failed split delivery restores backpack, stash and materials together");
-            sm._configureSaveFlowForTest({flushResult:true});
+            sm._configureSaveFlowForTest({flushResult:true,beforeRewardExposure:null});
             dualRequest=choiceRequest(dualOffer,"bundle.0");
             result=ItemUseService.execute("stashChoose",dualRequest);
             check(result.success&&RewardStashStore.ownedQuantity(RewardStashService.peek(),"选择测试短枪")==1&&_root.物品栏.背包.getItem(49).name=="选择测试短枪","one free slot receives one gun; only the second gun overflows");
@@ -237,8 +242,8 @@ class org.flashNight.arki.item.ChoiceRewardServiceTest {
             check(result.success&&_root.物品栏.背包.getItem(48).name=="选择测试刀"&&RewardStashService.peek().entries.length==stashCount,"available backpack space receives the complete equipment instance without new stash rows");
             check(so.data[SaveManager.SAVE_KEY].ext.rewardInbox.choiceOffers.offers.length==RewardStashService.peek().choiceOffers.offers.length,"direct inventory delivery and offer retirement share one durable save");
         } finally {
-            if(RewardStashService.pendingOperationId()!="") {sm._configureSaveFlowForTest({flushResult:true});RewardStashService.resume(RewardStashService.pendingOperationId());}
-            sm._configureSaveFlowForTest({flushResult:undefined,saveInFlight:false});so.clear();
+            if(RewardStashService.pendingOperationId()!="") {sm._configureSaveFlowForTest({flushResult:true,beforeRewardExposure:null});RewardStashService.resume(RewardStashService.pendingOperationId());}
+            sm._configureSaveFlowForTest({flushResult:undefined,saveInFlight:false,beforeRewardExposure:null});so.clear();
             ItemUseService.setContextValidator(null);ChoiceRewardService.setPoolsForTests(null);ChoiceRewardService.setRandomValuesForTests(null);
             ItemUtil.itemDataDict=meta;ItemUtil.equipmentDict=equipment;ItemUtil.materialDict=materials;ItemUtil.informationMaxValueDict=info;
             for(var r:Number=0;r<keys.length;r++) _root[keys[r]]=before[keys[r]];

@@ -186,6 +186,10 @@ class org.flashNight.arki.hud.PlayerHudService {
         if (!online) { connected = false; weaponVisualsEnabled = false; ammoDetailsEnabled = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; coldSkillsEnabled = false; forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
         if (!connected) { connected = true; forceFull = true; }
         var unit:Object = hero();
+        // 热路径只观察外层屏障；重算仍由领域冷路及显式读取负责。
+        if(unit.__playerStatInitializing===true || unit.__playerStatProjectionBlocked===true) {
+            if(wasVisible || forceFull) {clear();forceFull=false;}return;
+        }
         if (!ensureContext(unit) || typeof _root.gameworld != "movieclip") {
             if (wasVisible || forceFull) { clear(); forceFull = false; }
             return;

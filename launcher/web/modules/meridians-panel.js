@@ -191,6 +191,7 @@ var MeridiansPanel = (function() {
     var _selectedNode = null;
     var _requireKey = null;   // 右栏情报清单的内容签名，内容没变就不重建 DOM
     var _busyNodes = {};
+    var _projection = null;
     var _scaleHandle = null;
     var _panelInstanceId = '';
     var _zoom = 1, _panX = 0, _panY = 0;
@@ -477,6 +478,7 @@ var MeridiansPanel = (function() {
         _selectedNode = null;
         _requireKey = null;
         _busyNodes = {};
+        _projection = null;
         resetView();
         showStatus('正在读取经脉状态…');
         showError('');
@@ -535,6 +537,7 @@ var MeridiansPanel = (function() {
     }
 
     function applyState(resp) {
+        adoptProjection(resp.projection);
         _meridians = resp.meridians || [];
         _lit = resp.lit || {};
         _kpoint = Number(resp.kpoint) || 0;
@@ -548,11 +551,13 @@ var MeridiansPanel = (function() {
     }
 
     function lightNode(nodeId) {
+        if (needsProjectionRecovery()) { requestState(); return; }
         if (_busyNodes[nodeId]) return;
         _busyNodes[nodeId] = true;
         sendRequest('light', { nodeId: nodeId }, function(resp) {
             delete _busyNodes[nodeId];
             if (resp && resp.applied === true) {
+                adoptProjection(resp.projection);
                 _lit[nodeId] = true;
                 applyBonusSnapshot(resp);
                 _kpoint = Number(resp.kpoint);
@@ -563,6 +568,8 @@ var MeridiansPanel = (function() {
                 }
                 if (resp.savePending === true) {
                     showError('已贯通，存档写入结果未确认；请勿重复点亮，稍后重开面板核对。');
+                } else if (needsProjectionRecovery()) {
+                    showError('已贯通，角色属性尚未更新；请重试属性更新。不会再次扣除 K 点。');
                 } else {
                     showError('');
                 }
@@ -843,6 +850,16 @@ var MeridiansPanel = (function() {
         var index = meridian && _selectedNode ? nodeIndexOf(meridian, _selectedNode) : -1;
         var node = index >= 0 ? meridian.nodes[index] : null;
         box.className = 'mer-action' + (node ? ' is-' + nodeState(meridian, index) : ' is-empty');
+        if (needsProjectionRecovery()) {
+            var recoveryHint = document.createElement('div');
+            recoveryHint.className = 'mer-action-state';
+            recoveryHint.textContent = '已点亮的节点保持生效记录；角色属性待更新。';
+            var recoveryButton = document.createElement('button');
+            recoveryButton.type = 'button'; recoveryButton.className = 'mer-action-btn';
+            recoveryButton.textContent = '重试属性更新';
+            recoveryButton.addEventListener('click', requestState);
+            box.appendChild(recoveryHint); box.appendChild(recoveryButton); return;
+        }
         if (!node) return;
         var state = nodeState(meridian, index);
         var busy = !!_busyNodes[node.id];
@@ -870,6 +887,18 @@ var MeridiansPanel = (function() {
             if (!holdsInfo(required[r])) return false;
         }
         return true;
+    }
+    function adoptProjection(value) {
+        var valid = value && typeof value === 'object' && !Array.isArray(value)
+            && Object.keys(value).sort().join('|') === 'reason|status'
+            && ['applied', 'unchanged', 'pending', 'failed'].indexOf(value.status) >= 0
+            && typeof value.reason === 'string' && value.reason.length <= 160;
+        _projection = valid ? {status:value.status, reason:value.reason}
+            : {status:'failed', reason:'projection_status_unavailable'};
+    }
+    function needsProjectionRecovery() {
+        return _projection && (_projection.status === 'failed'
+            || _projection.status === 'pending' && _projection.reason !== 'pending_actor');
     }
 
     // ── 人体经脉图：蓝轮廓 / 白未贯通 / 绿已贯通，选中脉高亮 ──

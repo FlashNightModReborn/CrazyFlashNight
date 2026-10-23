@@ -1392,4 +1392,26 @@ test('Host requiresReconcile marker preserves the exact mutation watermark', () 
     assert.strictEqual(fixture.session.getState(), 'needs_reconcile');
 });
 
+test('explicit retry after definitive full-projection failure carries recovery authority only for that request', () => {
+    const fixture=createFixture();openClean(fixture,{loadout:4,live:3,dirty:true});
+    fixture.session.finalize(()=>{});const first=fixture.messages[1];
+    assert.strictEqual(first.payload.recoverProjection,undefined);
+    fixture.mux.handleResponse(responseFor(first,{success:false,error:'flush_failed',
+        loadoutRevision:4,liveRevision:3,liveRefreshDirty:true,closed:false,liveChanged:false,
+        persistence:{success:false,changed:false}}));
+    assert.strictEqual(fixture.session.getState(),'flush_failed');
+    fixture.session.finalize(()=>{});const retry=fixture.messages[2];
+    assert.strictEqual(retry.payload.recoverProjection,true);
+    assert.strictEqual(retry.payload.expectedLoadoutRevision,4);
+    assert.strictEqual(retry.payload.reconcileAfterCallId,undefined);
+});
+
+test('uncertain full-projection outcome never receives automatic restart authority', () => {
+    const fixture=createFixture();openClean(fixture);
+    fixture.session.finalize(()=>{});fixture.timers.expireLatest();
+    fixture.session.finalize(()=>{});const retry=fixture.messages[2];
+    assert.strictEqual(retry.payload.recoverProjection,undefined);
+    assert.strictEqual(retry.payload.reconcileAfterCallId,fixture.messages[1].callId);
+});
+
 process.stdout.write('Character-build session ' + passed + '/' + passed + ' passed\n');

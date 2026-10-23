@@ -420,6 +420,7 @@ $focusedRun = @{
         'scripts\类定义\org\flashNight\arki\unit\UnitComponent\Initializer\test\RuntimeEquipmentProjectionTest.as'
         'scripts\类定义\org\flashNight\arki\item\CharacterBuildServiceTest.as'
         'scripts\类定义\org\flashNight\arki\unit\PlayerInfoProviderTest.as'
+        'scripts\类定义\org\flashNight\arki\unit\PlayerStatLifecycleTest.as'
     )
     SuiteFqns = @(
         'org.flashNight.neur.Server.test.SaveManagerTest'
@@ -429,12 +430,14 @@ $focusedRun = @{
         'org.flashNight.arki.unit.UnitComponent.Initializer.test.RuntimeEquipmentProjectionTest'
         'org.flashNight.arki.item.CharacterBuildServiceTest'
         'org.flashNight.arki.unit.PlayerInfoProviderTest'
+        'org.flashNight.arki.unit.PlayerStatLifecycleTest'
     )
     AdditionalAsRelativePaths = @(
         'scripts\类定义\org\flashNight\arki\unit\PlayerInfoProvider.as'
         'scripts\类定义\org\flashNight\arki\unit\PlayerInfoSnapshotBuilder.as'
     )
     ExpectedTracePatterns = @(
+        '(?m)^StatInventoryInheritanceReady: function:function:function\r?$'
         '(?m)^========== SaveManagerTest END: (?<savePassed>[1-9][0-9]*)/\k<savePassed> passed, 0 failed ==========\r?$'
         '(?m)^SaveManagerQuickItem4Tests END: 13/13 passed, 0 failed\r?$'
         '(?m)^EquipmentInventoryTest Tests Passed: [1-9][0-9]*\r?$'
@@ -449,6 +452,9 @@ $focusedRun = @{
         '(?m)^CharacterBuildServiceTest Tests Failed: 0\r?$'
         '(?m)^PlayerInfoProviderTest Tests Passed: [1-9][0-9]*\r?$'
         '(?m)^PlayerInfoProviderTest Tests Failed: 0\r?$'
+        '(?m)^StatEquipmentCollectionReady: function\r?$'
+        '(?m)^PlayerStatLifecycleTest Tests Passed: [1-9][0-9]*\r?$'
+        '(?m)^PlayerStatLifecycleTest Tests Failed: 0\r?$'
     )
     SuccessSummary = 'SaveManager, EquipmentInventory, InventoryPanelService, transaction spike, RuntimeEquipmentProjection, CharacterBuildService, and PlayerInfoProvider suites completed with zero failures'
     TimeoutSeconds = $TimeoutSeconds

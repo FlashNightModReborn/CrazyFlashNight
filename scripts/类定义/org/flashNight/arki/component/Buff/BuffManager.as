@@ -124,6 +124,43 @@ class org.flashNight.arki.component.Buff.BuffManager {
     private var _metaBuffs:Array;
     private var _standalonePodBuffs:Array;
     private var _propertyContainers:Object;        // 属性容器映射 {propName: PropertyContainer}
+    // 击溃记录已发生的 final 点数损失。独立叶子承接 Buff 结果，外层只扣运行损失。
+    // 不改乘加/override 算法，也不把 final -= 写回 base。
+    private var _crumbleCeilingBinding:Object;
+
+    public function hasCrumbleCeilingBinding():Boolean { return this._crumbleCeilingBinding != null; }
+
+    public function recordCrumbleCeilingLoss(amount:Number):Void {
+        if (!(amount > 0) || !isFinite(amount)) return;
+        if (this._crumbleCeilingBinding == null) {
+            var container:PropertyContainer = ensurePropertyContainerExists("hp满血值");
+            if (container == null) {
+                this._target.__crumbleCeilingLoss = Number(this._target.__crumbleCeilingLoss || 0)+amount;
+                this._target.hp满血值 -= amount;
+                return;
+            }
+            var holder:Object = {hp满血值:container.getBaseValue()};
+            container.syncAccessTarget(holder,container.getBaseValue());
+            this._crumbleCeilingBinding = {holder:holder};
+            var self:BuffManager = this;
+            this._target.addProperty("hp满血值",function():Number {
+                return self.readCrumbleCeiling();
+            },function(value:Number):Void { self.setBaseValue("hp满血值",value); });
+        }
+        this._target.__crumbleCeilingLoss = Number(this._target.__crumbleCeilingLoss || 0)+amount;
+    }
+
+    private function readCrumbleCeiling():Number {
+        return Math.max(1,Number(this._crumbleCeilingBinding.holder.hp满血值)-Number(this._target.__crumbleCeilingLoss || 0));
+    }
+
+    private function detachCrumbleCeiling():Void {
+        if (this._crumbleCeilingBinding == null) return;
+        var value:Number = this.readCrumbleCeiling();
+        delete this._target.hp满血值;
+        this._target.hp满血值 = value;
+        this._crumbleCeilingBinding = null;
+    }
     private var _pendingRemovals:Array;            // 待移除的Buff ID列表
 
     // [Phase B] ID命名空间完全分离（废弃_idMap）
@@ -673,6 +710,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * 【契约】仅在update()外部调用，update期间调用可能导致状态不一致
      */
     public function unmanageProperty(propertyName:String, finalize:Boolean):Void {
+        if (propertyName == "hp满血值") this.detachCrumbleCeiling();
         // [v2.6] DEBUG警告
         if (DEBUG && this._inUpdate) {
             trace("[BuffManager] 警告：update期间调用unmanageProperty可能导致状态不一致");
@@ -750,6 +788,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
      * 【契约】仅在update()外部调用，update期间调用可能导致状态不一致
      */
     public function destroy():Void {
+        this.detachCrumbleCeiling();
         // [v2.6] DEBUG警告
         if (DEBUG && this._inUpdate) {
             trace("[BuffManager] 警告：update期间调用destroy可能导致状态不一致");

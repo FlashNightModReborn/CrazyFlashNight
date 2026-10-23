@@ -116,9 +116,13 @@ _root.装备生命周期函数.斩马刀周期 = function(ref:Object, param:Obje
             target.man.攻击时可改变移动方向(1);
 
             // 按最大蓝量百分比消耗
+            if(!org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.positive(target.mp满血值)) {
+                org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.reject(target,"equipment_mp_max_invalid");return;
+            }
             var mpCost:Number = Math.floor(target.mp满血值 * ref.mpRatio * 0.01);
+            if(!org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.canPayMp(target,mpCost)) return;
 
-            if (target.mp >= mpCost)
+            if (org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.payMp(target,mpCost))
             {
                 var 子弹属性:Object = _root.子弹属性初始化(attackPoint, ref.bulletName, target);
                 // —— 子弹参数（按原意保持不变，可按需再调）——
@@ -130,7 +134,7 @@ _root.装备生命周期函数.斩马刀周期 = function(ref:Object, param:Obje
 
                 _root.子弹区域shoot传递(子弹属性);
 
-                target.mp -= mpCost;
+
             }
             else if (target == _root.gameworld[_root.控制目标])
             {

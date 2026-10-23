@@ -101,7 +101,8 @@ namespace CF7Launcher.Tasks
             {
                 try
                 {
-                    ForwardPassThroughResponse(entry.WebCallId, entry.WebCmd, msg);
+                    if (!ValidProjection(msg)) RespondError(entry.WebCallId, entry.WebCmd, "invalid_response");
+                    else ForwardPassThroughResponse(entry.WebCallId, entry.WebCmd, msg);
                 }
                 catch (Exception ex)
                 {
@@ -182,6 +183,19 @@ namespace CF7Launcher.Tasks
             msg["cmd"] = webCmd;
             msg["callId"] = webCallId;
             PostToWeb(msg.ToString(Formatting.None));
+        }
+
+        // 既有业务字段仍由 Flash 裁决；新增投影诊断是封闭的独立结果，不改变 applied/savePending。
+        internal static bool ValidProjection(JObject response)
+        {
+            JToken token = response?["projection"];
+            if (token == null) return true; // 既有错误回包无投影字段；Web 不据缺省推断 clean。
+            JObject value = token as JObject;
+            if (value == null || value.Count != 2 || value["status"]?.Type != JTokenType.String
+                || value["reason"]?.Type != JTokenType.String || value.Value<string>("reason").Length > 160)
+                return false;
+            string status = value.Value<string>("status");
+            return status == "applied" || status == "unchanged" || status == "pending" || status == "failed";
         }
 
         private void RespondError(string webCallId, string webCmd, string error)

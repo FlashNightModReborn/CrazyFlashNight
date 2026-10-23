@@ -2124,9 +2124,13 @@ namespace CF7Launcher.Guardian
             if (command == "flushLive")
             {
                 long expectedLoadout;
+                bool hasRecovery = payload["recoverProjection"] != null;
+                HashSet<string> flushKeys = Set("v", "sessionGeneration", "expectedLoadoutRevision");
+                if (hasRecovery) flushKeys.Add("recoverProjection");
                 if (!IsExactObject(
                         payload,
-                        Set("v", "sessionGeneration", "expectedLoadoutRevision"))
+                        flushKeys)
+                    || (hasRecovery && payload["recoverProjection"].Type != JTokenType.Boolean)
                     || !TryReadInteger(
                         payload["expectedLoadoutRevision"],
                         0,
@@ -2137,6 +2141,7 @@ namespace CF7Launcher.Guardian
                     return false;
                 }
                 result["expectedLoadoutRevision"] = expectedLoadout;
+                if (hasRecovery) result["recoverProjection"] = payload["recoverProjection"].Value<bool>();
                 normalized = result;
                 return true;
             }
@@ -2176,8 +2181,11 @@ namespace CF7Launcher.Guardian
                     ? Set("v", "sessionGeneration", "expectedLoadoutRevision",
                         "reconcileAfterCallId")
                     : Set("v", "sessionGeneration", "expectedLoadoutRevision");
+                bool hasRecovery = payload["recoverProjection"] != null;
+                if (hasRecovery) expectedKeys.Add("recoverProjection");
                 long expectedLoadout;
                 if (!IsExactObject(payload, expectedKeys)
+                    || (hasRecovery && (hasReconcile || payload["recoverProjection"].Type != JTokenType.Boolean))
                     || !TryReadInteger(
                         payload["expectedLoadoutRevision"],
                         0,
@@ -2199,6 +2207,7 @@ namespace CF7Launcher.Guardian
                     }
                     result["reconcileAfterCallId"] = reconcileAfterCallId;
                 }
+                if (hasRecovery) result["recoverProjection"] = payload["recoverProjection"].Value<bool>();
                 normalized = result;
                 return true;
             }

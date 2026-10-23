@@ -1,6 +1,9 @@
 ﻿_root.装备生命周期函数.键盘镰刀初始化 = function(ref:Object, param:Object)
 {
     var target:MovieClip = ref.自机;
+    target.__statKeyboardRef = ref;
+    ref.属性投影身体 = target.__playerStatBody;
+    ref.初始化参数 = param;
     org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.bindEquipment(ref, "keyboard");
     ref.rockBlade = param.rockBlade;
 
@@ -67,9 +70,6 @@
     ref.weaponMode = wv.weaponMode || "镰刀";
     ref.weaponValue = wv;
     wv.weaponMode = ref.weaponMode;
-    if (ref.weaponMode == "键盘") {
-        target.刀属性.power = ref.baseDamage * ref.keyboardDamageMultiplier;
-    }
     // 根据当前武器形态设置动作模组
     target.兵器动作类型 = (ref.weaponMode == "镰刀") ? ref.actionTypeScythe : ref.actionTypeKeyboard;
 
@@ -296,12 +296,10 @@ _root.装备生命周期函数.键盘镰刀切换武器形态 = function(ref:Obj
     if (ref.weaponMode == "镰刀") {
         // 切换为键盘
         ref.weaponMode = "键盘";
-        target.刀属性.power = ref.baseDamage * ref.keyboardDamageMultiplier;
         target.兵器动作类型 = ref.actionTypeKeyboard;
     } else {
         // 切换为镰刀
         ref.weaponMode = "镰刀";
-        target.刀属性.power = ref.baseDamage;
         target.兵器动作类型 = ref.actionTypeScythe;
     }
 
@@ -309,6 +307,7 @@ _root.装备生命周期函数.键盘镰刀切换武器形态 = function(ref:Obj
 
     // 保存武器类型到 item.value
     if (ref.weaponValue) ref.weaponValue.weaponMode = ref.weaponMode;
+    org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer.applyMusicModeCommand(ref);
 
     // 重新装载战技
     if (ref.装载战技) ref.装载战技(ref.获取目标战技());

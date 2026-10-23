@@ -17,6 +17,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.BuffManagerInitializer 
     private static function initializePropertyChangeHandlers():Object {
         var handlers:Object = {};
         handlers["韧性系数"] = function(target:MovieClip, newValue:Number):Void {
+            if (target.__statProjectionCommit === true) { target.__statImpactPending = true; return; }
             ImpactHandler.refreshImpactDerived(target);
         };
         return handlers;

@@ -130,6 +130,7 @@ class org.flashNight.arki.scene.StageRunSession {
         org.flashNight.arki.scene.StageReturnFlow.begin(origin);
         org.flashNight.arki.scene.StageReturnSelection.reset();
         org.flashNight.arki.scene.StageReturnOptions.reset();
+        org.flashNight.arki.scene.PlayerResourceTransferBridge.retire("new_run");
         _runSeq++;
         _run = {
             v:1,
@@ -345,6 +346,7 @@ class org.flashNight.arki.scene.StageRunSession {
     public static function finish(outcome:String):Void {
         if (_run == null || (outcome != "victory" && outcome != "failure")) return;
         if (_run.outcome != "active") return;
+        org.flashNight.arki.scene.PlayerResourceTransferBridge.retire("run_finished");
         _run.outcome = outcome;
         org.flashNight.arki.scene.BookRunService.finish(outcome);
         bumpRevision();
@@ -365,6 +367,7 @@ class org.flashNight.arki.scene.StageRunSession {
     /** 死亡检测可能每帧重入；只有 alive -> dead 会推进一次状态。 */
     public static function onHeroDeath():Void {
         if (_run == null || _returnRequested || _run.life != "alive") return;
+        org.flashNight.arki.scene.PlayerResourceTransferBridge.retire("hero_dead");
         _run.life = "dead";
         bumpRevision();
         pushState();
@@ -381,6 +384,7 @@ class org.flashNight.arki.scene.StageRunSession {
         org.flashNight.arki.scene.LeeAssaultService.onRespawn(target);
         if (target.__controlledEnemyContext != null) target.__controlledEnemyContext.handled = false;
         _run.life = "alive";
+        org.flashNight.arki.scene.PlayerResourceTransferBridge.onHeroRespawn(target);
         bumpRevision();
         pushState();
     }
@@ -578,14 +582,16 @@ class org.flashNight.arki.scene.StageRunSession {
         var spentExactlyOne:Boolean = coinsBefore >= 1
             && coinsAfterSpend == coinsBefore - 1;
         if (!submitAccepted && !spentExactlyOne) {
-            _run.life = "dead";
+            org.flashNight.arki.scene.PlayerResourceTransferBridge.retire("hero_dead");
+        _run.life = "dead";
             bumpRevision();
             pushState();
             return {success:false, error:coinsBefore < 1
                 ? "no_revive_coin" : "revive_asset_failed"};
         }
         if (submitAccepted && !spentExactlyOne) {
-            _run.life = "dead";
+            org.flashNight.arki.scene.PlayerResourceTransferBridge.retire("hero_dead");
+        _run.life = "dead";
             bumpRevision();
             pushState();
             return {success:false, error:"revive_asset_ambiguous"};
@@ -615,6 +621,7 @@ class org.flashNight.arki.scene.StageRunSession {
             // 同样按材料 before/after 判定退款是否真实落地。
         }
         var refundExact:Boolean = reviveCoinCount() == coinsBefore;
+        org.flashNight.arki.scene.PlayerResourceTransferBridge.retire("hero_dead");
         _run.life = "dead";
         bumpRevision();
         pushState();
@@ -694,6 +701,7 @@ class org.flashNight.arki.scene.StageRunSession {
                 || _root.场景转换中 === true
                 || (_returnRequested && !isRunTerminal() && !canRetryReturnBase())
                 || (_returnFailure != null && !canRetryReturnBase())) return false;
+        org.flashNight.arki.scene.PlayerResourceTransferBridge.retire("return_started");
         _returnAttempt = {run:_run, world:_root.gameworld};
         _returnFailure = null;
         bumpRevision();

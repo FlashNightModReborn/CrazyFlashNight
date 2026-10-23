@@ -136,7 +136,11 @@ _root.装备生命周期函数.烈焰斩马刀周期 = function(ref:Object, para
     if (!canCycle) return;
 
     // 扣蓝（按最大蓝量百分比）
+    if(!org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.positive(target.mp满血值)) {
+        org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.reject(target,"equipment_mp_max_invalid");return;
+    }
     var mpCost:Number = Math.floor(target.mp满血值 * ref.mpRatio * 0.01);
+    if(!org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.canPayMp(target,mpCost)) return;
 
     // 公共子弹基础参数
     var baseSpeed:Number = 0;
@@ -147,7 +151,7 @@ _root.装备生命周期函数.烈焰斩马刀周期 = function(ref:Object, para
     var st:String = target.getSmallState();
     if (st == "兵器一段中" || st == "兵器冲击")
     {
-        if (target.mp >= mpCost)
+        if (org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.payMp(target,mpCost))
         {
             var attackPoint1:MovieClip = saber.刀口位置3;
             if (attackPoint1 != undefined)
@@ -164,7 +168,7 @@ _root.装备生命周期函数.烈焰斩马刀周期 = function(ref:Object, para
                 // prop1.子弹敌我属性值 = target.是否为敌人 ? false : true;
 
                 _root.子弹区域shoot传递(prop1);
-                target.mp -= mpCost;
+
             }
         }
         else if (target == _root.gameworld[_root.控制目标])
@@ -176,7 +180,7 @@ _root.装备生命周期函数.烈焰斩马刀周期 = function(ref:Object, para
     // —— 段 4：兵器四段中 / 兵器冲击 -> 烈炎斜升（带随机偏移）——
     if (st == "兵器四段中" || st == "兵器冲击")
     {
-        if (target.mp >= mpCost)
+        if (org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.payMp(target,mpCost))
         {
             var attackPoint4:MovieClip = saber.刀口位置3;
             if (attackPoint4 != undefined)
@@ -205,7 +209,7 @@ _root.装备生命周期函数.烈焰斩马刀周期 = function(ref:Object, para
                 prop4.Z轴坐标 = target._y; // 原 FLA 用自机._y 作为 Z 坐标
 
                 _root.子弹区域shoot传递(prop4);
-                target.mp -= mpCost;
+
             }
         }
         else if (target == _root.gameworld[_root.控制目标])
@@ -217,7 +221,7 @@ _root.装备生命周期函数.烈焰斩马刀周期 = function(ref:Object, para
     // —— 段 5：兵器五段中 / 兵器冲击 -> 终极打击（带随机偏移）——
     if (st == "兵器五段中" || st == "兵器冲击")
     {
-        if (target.mp >= mpCost)
+        if (org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.payMp(target,mpCost))
         {
             var attackPoint5:MovieClip = saber.刀口位置3;
             if (attackPoint5 != undefined)
@@ -244,7 +248,7 @@ _root.装备生命周期函数.烈焰斩马刀周期 = function(ref:Object, para
                 prop5.Z轴坐标 = target._y;
 
                 _root.子弹区域shoot传递(prop5);
-                target.mp -= mpCost;
+
             }
         }
         else if (target == _root.gameworld[_root.控制目标])

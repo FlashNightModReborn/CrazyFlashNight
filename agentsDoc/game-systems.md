@@ -28,6 +28,7 @@
 ## 2. Buff/属性系统
 - **位置**：`scripts/类定义/org/flashNight/arki/component/`
 - **核心**：BuffCalculator 等组件
+- **持久属性更新**：领域提交、三 bit 冷投影、完整 lifecycle ticket、资源及失败恢复统一见 [玩家属性合同](../docs/player-stat-refresh-contract.md)；新增内容在领域成功收口接一次，不在 UI 自行拼装刷新序列。
 - **审查文档**：`tools/BuffSystem_Review_Prompt_CN.md`、`tools/BuffSystem_NestedProperty_Review_Prompt_CN.md`（v2）
 
 ## 3. 事件系统

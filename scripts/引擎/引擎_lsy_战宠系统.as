@@ -37,6 +37,10 @@ _root.加载宠物 = function(地点X, 地点Y){
 	_root.宠物mc库 = [];
 	_root.出战宠物id库 = [];
 	var 全部加载:Boolean = true;
+	var 出战谓词改变:Boolean=false;
+	var 宠物属性协调器:org.flashNight.arki.unit.PlayerStatRefreshCoordinator=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production();
+	var 宠物加载批次:Object=宠物属性协调器.beginBatch(宠物属性协调器.contextToken());
+	try {
 	
 	for (var i = 0; i < _root.宠物信息.length; i++){
 		var 当前宠物信息 = _root.宠物信息[i];
@@ -48,11 +52,13 @@ _root.加载宠物 = function(地点X, 地点Y){
 					// 否则后续退场按钮找不到 mc，又会把 flag 回滚为 1，形成永久假出战。
 					_root.存档系统.dirtyMark = true;
 					当前宠物信息[4] = 0;
+					出战谓词改变=true;
 					全部加载 = false;
 				}
 			}else{
 				_root.存档系统.dirtyMark = true;
 				当前宠物信息[4] = 0;
+				出战谓词改变=true;
 				全部加载 = false;
 				try{
 					_root.发布消息(_root.获得翻译("宠物体力不足，无法出战！"));
@@ -68,6 +74,10 @@ _root.加载宠物 = function(地点X, 地点Y){
 		}
 	}catch(图标刷新错误){}
 	return 全部加载;
+	} finally {
+		if(出战谓词改变) 宠物属性协调器.invalidate(1,"companion",宠物加载批次.context);
+		宠物属性协调器.endBatch(宠物加载批次,"pet_load_flags");
+	}
 }
 
 _root.战宠UI函数.计算战宠升级所需经验 = function(兵种,等级){
@@ -432,6 +442,10 @@ _root.战宠UI函数.尝试切换宠物出战状态 = function(id:Number, 是否
 	当前宠物信息[4] = 是否出战 ? 1 : 0;
 	var success:Boolean = _root.战宠UI函数.设置宠物出战(id, 是否出战, 地点X, 地点Y);
 	if(!success) 当前宠物信息[4] = 原状态;
+	if(success && (原状态==1)!=(当前宠物信息[4]==1)) {
+		var 宠物出战协调器:org.flashNight.arki.unit.PlayerStatRefreshCoordinator=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.production();
+		宠物出战协调器.invalidate(1,"companion",宠物出战协调器.contextToken());宠物出战协调器.flush("pet_flag_committed");
+	}
 	return success;
 }
 

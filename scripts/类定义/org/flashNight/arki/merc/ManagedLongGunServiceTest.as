@@ -346,8 +346,10 @@ class org.flashNight.arki.merc.ManagedLongGunServiceTest {
             slot:0,
             expectedLease:String(snapshot.slots[0].slotLease)
         };
-        var beforeItems:Object = bag.getItems();
-        var beforeTree:Object = bag.getTreeSet();
+        // 现役 public getter 返回独立快照；事务的内部引用原子性用只读 Object 视图验证。
+        var rawBag:Object=bag;
+        var beforeItems:Object = rawBag.items;
+        var beforeTree:Object = rawBag.indexes;
         var beforeIndexes:String = String(bag.getIndexes());
         var beforeRevision:Number = bag.getMutationRevision();
 
@@ -359,8 +361,8 @@ class org.flashNight.arki.merc.ManagedLongGunServiceTest {
             bag._setTransactionWriteFaultHookForTests(null);
         }
         check(failed != null && failed.success !== true && failed.error == "commit_failed"
-                && bag.getItem("0") === original && bag.getItems() === beforeItems
-                && bag.getTreeSet() === beforeTree
+                && bag.getItem("0") === original && rawBag.items === beforeItems
+                && rawBag.indexes === beforeTree
                 && String(bag.getIndexes()) == beforeIndexes
                 && bag.size() == 1 && bag.getFirstVacancy() == 1
                 && bag.getMutationRevision() == beforeRevision
@@ -393,8 +395,9 @@ class org.flashNight.arki.merc.ManagedLongGunServiceTest {
         };
         var seeded:Object = ManagedLongGunService.handoff(t800, source);
         var beforeCustody:Object = t800[5].托管长枪;
-        var beforeItems:Object = bag.getItems();
-        var beforeTree:Object = bag.getTreeSet();
+        var rawBag:Object=bag;
+        var beforeItems:Object = rawBag.items;
+        var beforeTree:Object = rawBag.indexes;
         var beforeIndexes:String = String(bag.getIndexes());
         var beforeRevision:Number = bag.getMutationRevision();
         _root.存档系统.dirtyMark = false;
@@ -408,9 +411,9 @@ class org.flashNight.arki.merc.ManagedLongGunServiceTest {
         }
         check(seeded != null && seeded.success === true
                 && failed != null && failed.success !== true && failed.error == "commit_failed"
-                && bag.getItem("0") == null && bag.getItems() === beforeItems
+                && bag.getItem("0") == null && rawBag.items === beforeItems
                 && !bag.getItems().hasOwnProperty("0")
-                && bag.getTreeSet() === beforeTree
+                && rawBag.indexes === beforeTree
                 && String(bag.getIndexes()) == beforeIndexes
                 && bag.size() == 0 && bag.getFirstVacancy() == 0
                 && bag.getMutationRevision() == beforeRevision
@@ -664,7 +667,9 @@ class org.flashNight.arki.merc.ManagedLongGunServiceTest {
         }
 
         _root.控制目标 = "__managedDifferentHero";
-        DressupInitializer.updateProperties(target);
+        // 敌人模板首次建基属于完整初始化子阶段；不拿缺少稳定输入的夹具冒充普通 STATS。
+        var initializationApi:Object=DressupInitializer;
+        initializationApi.initializeEquipmentProperties(target);
         check(target.hp基本满血值 == 6000 && target.hp满血值 == 18000
                 && isFinite(Number(target.hp满血值))
                 && target.mp基本满血值 == 0 && target.mp满血值 == 0
@@ -689,7 +694,7 @@ class org.flashNight.arki.merc.ManagedLongGunServiceTest {
             "T800 装备投影保留敌人难度空攻及电/装甲/机械权威抗性，不注入人类模板标签");
 
         target.hp = 9000;
-        DressupInitializer.updateProperties(target);
+        initializationApi.initializeEquipmentProperties(target);
         check(target.hp满血值 == 18000 && target.mp满血值 == 0
                 && target.空手攻击力 == 240 && target.魔法抗性.电 == -100
                 && target.魔法抗性.装甲 == 25 && target.魔法抗性.机械 == 20,
@@ -711,9 +716,9 @@ class org.flashNight.arki.merc.ManagedLongGunServiceTest {
         human.魔法抗性 = {基础:999, 电:999}; // 首次已有表也不是非生物模板权威
         human.根据模式重新读取武器加成 = function(mode:String):Void {};
         for (i = 0; i < dataKeys.length; i++) human[dataKeys[i]] = {data:{}};
-        DressupInitializer.updateProperties(human);
+        initializationApi.initializeEquipmentProperties(human);
         human.等级 = 70;
-        DressupInitializer.updateProperties(human);
+        initializationApi.initializeEquipmentProperties(human);
         check(human.魔法抗性.基础 == 17 && human.魔法抗性.电 == 17
                 && human.魔法抗性.人类 == 70
                 && human.装备投影含模板魔法抗性 === false,

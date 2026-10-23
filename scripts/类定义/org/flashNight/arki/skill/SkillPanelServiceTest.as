@@ -414,8 +414,8 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
 
     private static function testExplicitRendererFailureDoesNotRollbackOrStickBusy():Void {
         var f:Object = fixture(); learn(f.root, 0, "闪现", 1);
-        f.root.技能系统投影Hero = function():Object{return {success:false,error:"fixture_failure"};};
-        f.root.技能系统投影快捷栏 = function():Boolean{return false;};
+        f.root.技能系统投影Hero = function():Boolean{return false;};
+        f.root.技能系统投影快捷栏 = function():Object{return {success:false,error:"fixture_failure"};};
         var first:Object = SkillPanelService.execute("equip", {v:1, view:"manage", skillKey:"闪现", slot:2,
             expectedRevision:SkillLoadoutService.getRevision()});
         var second:Object = SkillPanelService.execute("unequip", {v:1, view:"manage", slot:2, expectedRevision:first.revision});

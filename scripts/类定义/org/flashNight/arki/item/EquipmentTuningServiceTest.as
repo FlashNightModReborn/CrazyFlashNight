@@ -1545,9 +1545,14 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         }
         RuntimeEquipmentProjection.beginCanonical(hero);
         RuntimeEquipmentProjection.completeCanonical(hero);
+        // 此夹具代表已完成整次初始化的穿戴身体；canonical 只是其中一个阶段。
+        hero.__playerStatBody = {};
+        hero.__playerStatFullReady = hero.__playerStatBody;
 
         CharacterBuildService.testOnlyUseRoot(_root);
         var opened:Object = CharacterBuildService.open();
+        assertTrue(opened.success && !opened.liveRefreshDirty,
+            "worn 调制回滚夹具从最终就绪且干净的身体开始");
         return {
             added:added,
             opened:opened,

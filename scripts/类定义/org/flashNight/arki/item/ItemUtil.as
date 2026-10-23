@@ -545,6 +545,9 @@ class org.flashNight.arki.item.ItemUtil{
     // 将物品移入装备栏
     public static function moveItemToEquipment(icon, equipmentIcon, index):Boolean{
         if(index != equipmentIcon.index) return false;
+        // BaseItem/容器依赖本类；经已安装的 root 窄接缝准入，避免反向装载整个人物初始化闭包。
+        if(typeof _root.玩家属性投影.允许遗留装备变更!="function"
+                || _root.玩家属性投影.允许遗留装备变更()!==true) return false;
         var itemData = icon.item.getData();
         if (itemData.data.level > _root.等级){
             _root.发布消息("等级低于装备限制，无法装备！");
@@ -552,6 +555,11 @@ class org.flashNight.arki.item.ItemUtil{
         }
         var result = ItemUtil.moveItemToInventory(icon,equipmentIcon);
         if(!result) return false;
+        // 真实资产先落脏并进入完整 owner；可选的声音/消息失败不能跳过属性失效。
+        try {
+            var projection:Object=_root.刷新人物装扮(_root.控制目标);
+            if(projection.status=="failed" || projection.status=="pending") trace("[ItemUtil] equipment committed; projection "+projection.status+":"+projection.reason);
+        } catch(projectionError) {trace("[ItemUtil] equipment committed; projection owner recovery required: "+projectionError);}
         //
         var 音效 = "9mmclip2.wav";
         var use = itemData.use;
@@ -563,9 +571,10 @@ class org.flashNight.arki.item.ItemUtil{
             //     _root.玩家称号 = 控制对象.称号;
             // }
         }
-        _root.soundEffectManager.playSound(音效);
-        _root.发布消息("成功装备[" + use + "][" + itemData.displayname + "]");
-        _root.刷新人物装扮(_root.控制目标);
+        try {_root.soundEffectManager.playSound(音效);}
+        catch(soundError) {trace("[ItemUtil] committed equipment sound failed");}
+        try {_root.发布消息("成功装备[" + use + "][" + itemData.displayname + "]");}
+        catch(messageError) {trace("[ItemUtil] committed equipment display failed");}
         _root.存档系统.dirtyMark = true;
         return true;
     }

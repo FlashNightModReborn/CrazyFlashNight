@@ -23,6 +23,7 @@
  * @see RegenEffect            (applyHpCapped + applyMpCapped tick 回调)
  * @see RegenerationCore       (applyHpCapped + applyMpCapped 通用回血)
  */
+import org.flashNight.arki.unit.Action.Regeneration.ResourceNumber;
 class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
 
     // ========== 溢出治疗曲线参数（项目级单一来源） ==========
@@ -144,6 +145,10 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
      */
     public static function applyHpCapped(target:Object, amount:Number, capValue:Number):Number {
         if (!target) return 0;
+        if(!ResourceNumber.finite(target.hp)
+                || !ResourceNumber.finite(amount) || !ResourceNumber.finite(capValue)) {
+            ResourceNumber.reject(target,"applyHpCapped_invalid");return 0;
+        }
         var current:Number = target.hp;
         if (current <= 0) return 0;
         if (!(amount > 0)) return 0; // 同时挡 NaN / 负数 / 0
@@ -177,6 +182,10 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
      */
     public static function applyHpOverflow(target:Object, amount:Number, baseMax:Number):Number {
         if (!target) return 0;
+        if(!ResourceNumber.finite(target.hp)
+                || !ResourceNumber.finite(amount) || !ResourceNumber.finite(baseMax) || !ResourceNumber.positive(OVERFLOW_CAP_RATIO) || !ResourceNumber.positive(OVERFLOW_INITIAL_EFFICIENCY)) {
+            ResourceNumber.reject(target,"applyHpOverflow_invalid");return 0;
+        }
         var current:Number = target.hp;
         if (current <= 0) return 0;
         if (!(amount > 0)) return 0;
@@ -184,6 +193,7 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
 
         var M:Number = baseMax;
         var C:Number = M * OVERFLOW_CAP_RATIO;
+        if(!ResourceNumber.positive(C)) {ResourceNumber.reject(target,"hp_cap_product_invalid");return 0;}
 
         // 满血以下段：100% 效率
         var roomToMax:Number = M - current;
@@ -201,6 +211,7 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
         var healed:Number = (part1 + part2) | 0;
         if (healed <= 0) return 0;
 
+        if(!ResourceNumber.positive(current+healed)) {ResourceNumber.reject(target,"hp_heal_result_invalid");return 0;}
         target.hp = current + healed;
         requestHeroHpDisplayRefresh(target);
         return healed;
@@ -220,6 +231,10 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
      */
     public static function applyMpCapped(target:Object, amount:Number, capValue:Number):Number {
         if (!target) return 0;
+        if(!ResourceNumber.finite(target.hp) || !ResourceNumber.nonnegative(target.mp)
+                || !ResourceNumber.finite(amount) || !ResourceNumber.finite(capValue)) {
+            ResourceNumber.reject(target,"applyMpCapped_invalid");return 0;
+        }
         if (target.hp <= 0) return 0;
         if (!(amount > 0)) return 0;
         if (!(capValue > 0)) return 0;
@@ -256,12 +271,17 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
      */
     public static function applyMpOverflow(target:Object, amount:Number, mpBase:Number, capRatio:Number):Number {
         if (!target) return 0;
+        if(!ResourceNumber.finite(target.hp) || !ResourceNumber.nonnegative(target.mp)
+                || !ResourceNumber.finite(amount) || !ResourceNumber.finite(mpBase) || !ResourceNumber.nonnegative(capRatio)) {
+            ResourceNumber.reject(target,"applyMpOverflow_invalid");return 0;
+        }
         if (target.hp <= 0) return 0;
         if (!(amount > 0)) return 0;
         if (!(mpBase > 0)) return 0;
         if (!(capRatio >= 1)) capRatio = 1; // 同时挡 NaN / <1 / 0
 
         var capValue:Number = mpBase * capRatio;
+        if(!ResourceNumber.finite(capValue)) {ResourceNumber.reject(target,"mp_cap_product_invalid");return 0;}
         var current:Number = target.mp;
         if (current >= capValue) return 0;
 
