@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" frameRate="30" width="600" height="600" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481">
+ <symbols><Include href="Import0.xml" itemID="6af00000-16400001" loadImmediate="false" /><Include href="Import1.xml" loadImmediate="false" /><Include href="特效与子弹/目镜特效.xml" loadImmediate="false" /><Include href="特效与子弹/战术目镜特效.xml" loadImmediate="false" /><Include href="Cf6NativeAuthoredMask.xml" loadImmediate="false" /></symbols>
+ <timelines><DOMTimeline name="CF6 Native Appearance"><layers><DOMLayer name="生产共享库"><frames><DOMFrame index="0" keyMode="9728">
+  <Actionscript><script>stop();
+#include "../scripts/TestLoader.as"
+</script></Actionscript>
+  <elements><DOMSymbolInstance libraryItemName="Import0" name="__cadenceRsl" /><DOMSymbolInstance libraryItemName="Import1" name="__appearanceEquipmentRsl" /></elements>
+ </DOMFrame></frames></DOMLayer></layers></DOMTimeline></timelines>
+</DOMDocument>

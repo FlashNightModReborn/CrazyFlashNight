@@ -21,6 +21,8 @@ class org.flashNight.arki.scene.BookRunRulesTest {
             fixture.maps[0].mechanism={assetScale:1,layers:[]};
             definition._cf6=null;
             check(BookDefinition.valid(fixture),"CF6 authored single-room fixture accepts without campus economy");
+            testCf6RuntimeGates(fixture);
+            testCf6TransportGates(fixture);
             var wrongBackground:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(fixture);
             wrongBackground.maps[0].background="cf6/../CF6_A01_BG.swf";
             check(!BookDefinition.valid(wrongBackground),"CF6 background rejects traversal under the isolated directory");
@@ -64,12 +66,121 @@ class org.flashNight.arki.scene.BookRunRulesTest {
             definition._cf6=original;_root._saveExt=oldExt;_root.savePath=oldSlot;_root.等级=oldLevel;
         }
     }
+    private static function testCf6TransportGates(base:Object):Void {
+        var names:Array=["A09","A14","A18"],depths:Array=[112,505,147],types:Array=["兵种467","兵种469","兵种463"],levels:Array=[45,50,59],counts:Array=[5,7,5];
+        var complete:Object;
+        for(var i:Number=0;i<3;i++) {
+            var fixture:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(base),m:Object=fixture.maps[0];
+            m.id=names[i];m.background="cf6/CF6_"+m.id+"_BG.swf";
+            var token:String=m.id+"-transport-"+depths[i];
+            m.mechanism.transport={schema:"cf6-transport.v1",id:token,sourceSprite:1868,url:"flashswf/backgrounds/cf6/preparation/CF6_Transport1868.swf",
+                x:300,y:300,sortY:305.35,artMatrix:[1,0,0,1,0,0],hitBounds:[-295,-42,268,253],frames:29,dispatchFrame:29,subWaveIndex:1};
+            m.stage.Wave.SubWave.push({EnemyGroup:{Enemy:[{Type:types[i],Level:levels[i],Quantity:counts[i],Interval:400,SpawnIndex:0,
+                TriggerEvent:{EventName:"Cf6TransportReady",Parameters:[token]}}]}});
+            check(BookDefinition.valid(fixture),"CF6 exact transport budget/event accepts "+names[i]);
+            if(i==0)complete=fixture;
+        }
+        var cases:Array=["map","extra","matrix","bounds","native","frame","wave","event","token","duplicate","quantity","interval","owner"];
+        for(i=0;i<cases.length;i++) {
+            var bad:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(complete);m=bad.maps[0];
+            var p:Object=m.mechanism.transport,e:Object=m.stage.Wave.SubWave[1].EnemyGroup.Enemy[0],key:String=cases[i];
+            if(key=="map"){m.id="A08";m.background="cf6/CF6_A08_BG.swf";}
+            else if(key=="extra")p.extra=true;
+            else if(key=="matrix")p.artMatrix=[0,0,0,0,0,0];
+            else if(key=="bounds")p.hitBounds=[0,0,0,0];
+            else if(key=="native")p.sourceSprite=1869;
+            else if(key=="frame")p.dispatchFrame=28;
+            else if(key=="wave")p.subWaveIndex=0;
+            else if(key=="event")delete e.TriggerEvent;
+            else if(key=="token")e.TriggerEvent.Parameters=["foreign"];
+            else if(key=="duplicate")m.stage.Wave.SubWave[0].EnemyGroup.Enemy[0].TriggerEvent=e.TriggerEvent;
+            else if(key=="quantity")e.Quantity=6;
+            else if(key=="interval")e.Interval=100;
+            else if(key=="owner")delete m.mechanism.transport;
+            check(!BookDefinition.valid(bad),"CF6 transport rejects "+key);
+        }
+    }
     private static function findDrop(enemy:Object, name:String):Object {
         var rules:Array = enemy.Parameters.掉落物;
         for (var i:Number = 0; i < rules.length; i++) {
             if (rules[i].名字 == name) return rules[i];
         }
         return null;
+    }
+    private static function testCf6RuntimeGates(base:Object):Void {
+        var merged:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(base);
+        var room:Object=merged.maps[0];room.id="A20";room.background="cf6/CF6_A20_BG.swf";
+        room.mechanism.elderFinale=true;
+        room.stage.Wave.SubWave=[{EnemyGroup:{Enemy:[{Type:"兵种473",Level:60,Quantity:1,
+            InstanceName:"cf6Boss_A20",Parameters:{老头变身:true}}]}}];
+        room.bossEncounter={instanceName:"cf6Boss_A20",maxAlive:2,maxRanged:0,intervalFrames:30,
+            groups:[{hpRatio:1,enemies:[{Type:"兵种461",Level:60,Quantity:1,ranged:false,SpawnIndex:"left",Parameters:{}}]}]};
+        room.bossEncounter.nextPhase=org.flashNight.gesh.object.PersistedSnapshot.clone(room.bossEncounter);
+        room.bossEncounter.nextPhase.instanceName="cf6Boss_A20__elderbot";
+        check(BookDefinition.valid(merged),"CF6 same-room human/robot plan accepts exact native successor identity");
+        var old:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(merged);
+        old.maps[0].mechanism.elderFinale=false;delete old.maps[0].bossEncounter.nextPhase;
+        old.maps[0].stage.Wave.SubWave[0].EnemyGroup.Enemy[0].Parameters.老头变身=false;
+        check(BookDefinition.valid(old),"CF6 non-phased authored fixture retains explicit disabled transform contract");
+        var invalid:Array=["missingPlan","missingNext","switchFalse","switchOffNext","nextName","nestedNext",
+            "duplicateA22","nextCap","nextRanged","nextBudget","nextSpawn","nextPod"];
+        for(var i:Number=0;i<invalid.length;i++) {
+            var bad:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(merged);
+            var map:Object=bad.maps[0],p:Object=map.bossEncounter,child:Object=p.nextPhase;
+            var key:String=invalid[i];
+            if(key=="missingPlan") delete map.bossEncounter;
+            else if(key=="missingNext") delete p.nextPhase;
+            else if(key=="switchFalse") map.stage.Wave.SubWave[0].EnemyGroup.Enemy[0].Parameters.老头变身=false;
+            else if(key=="switchOffNext") {
+                map.mechanism.elderFinale=false;map.stage.Wave.SubWave[0].EnemyGroup.Enemy[0].Parameters.老头变身=false;
+            } else if(key=="nextName") child.instanceName="cf6Boss_A22";
+            else if(key=="nestedNext") child.nextPhase={};
+            else if(key=="duplicateA22") {
+                var last:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(map);
+                last.id="A22";last.background="cf6/CF6_A22_BG.swf";delete last.mechanism.elderFinale;
+                last.bossEncounter=org.flashNight.gesh.object.PersistedSnapshot.clone(child);last.bossEncounter.instanceName="cf6Boss_A22";
+                last.stage.Wave.SubWave[0].EnemyGroup.Enemy=[{Type:"兵种474",Level:60,Quantity:1,InstanceName:"cf6Boss_A22"}];
+                bad.maps.push(last);
+            } else if(key=="nextCap") child.maxAlive=0;
+            else if(key=="nextRanged") child.groups[0].enemies[0].ranged=true;
+            else if(key=="nextBudget") child.groups[0].enemies[0].Quantity=129;
+            else if(key=="nextSpawn") child.groups[0].enemies[0].SpawnIndex=0;
+            else if(key=="nextPod") child.groups[0].enemies[0].podId="foreign-pod";
+            check(!BookDefinition.valid(bad),"CF6 merged finale rejects "+key);
+        }
+        var ownership:Array=["cf6BossOwnerToken","cf6SupportIdentity","publishStageEvent","产生源","InstanceName"];
+        for(i=0;i<ownership.length;i++) {
+            bad=org.flashNight.gesh.object.PersistedSnapshot.clone(merged);
+            bad.maps[0].bossEncounter.nextPhase.groups[0].enemies[0].Parameters[ownership[i]]=null;
+            check(!BookDefinition.valid(bad),"CF6 next-phase ownership field presence is forbidden even when null: "+ownership[i]);
+        }
+        var expressions:Array=["普通","微笑","挑战","惊讶","侦察","严肃","愤怒"];
+        for(i=0;i<expressions.length;i++) {
+            bad=org.flashNight.gesh.object.PersistedSnapshot.clone(base);
+            bad.maps[0].dialogue=[{speaker:"Andy",text:"test",char:"Andy Law#"+expressions[i]}];
+            check(BookDefinition.valid(bad),"CF6 exact approved Andy expression accepts: "+expressions[i]);
+        }
+        bad.maps[0].dialogue[0].speaker="other";
+        check(!BookDefinition.valid(bad),"CF6 explicit Andy portrait cannot attach to another speaker");
+        bad.maps[0].dialogue[0].speaker="Andy Law";bad.maps[0].dialogue[0].char="Andy Law#unreviewed";
+        check(!BookDefinition.valid(bad),"CF6 unknown expression rejected");
+        bad.maps[0].dialogue[0].char="Andy Law#普通";bad.maps[0].dialogue[0].portrait="injected";
+        check(!BookDefinition.valid(bad),"CF6 dialogue cannot carry an alternate portrait field");
+        delete bad.maps[0].dialogue[0].portrait;bad.maps[0].dialogue[0].char=null;
+        check(!BookDefinition.valid(bad),"CF6 explicit null char cannot masquerade as omitted fallback");
+        var turret:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(base);
+        turret.maps[0].mechanism.turrets={assetUrl:"flashswf/backgrounds/cf6/CF6_A01_Turret.swf",
+            linkage:"CF6教学炮塔-A01自动炮",filterMarker:"cf6-a01-turret-zombie",fireIntervalFrames:18,fireFrameOffset:11,
+            turrets:[{x:100,y:100,facing:"right",ownFootprint:[90,90,110,110]},
+                {x:200,y:100,facing:"right",ownFootprint:[190,90,210,110]}]};
+        check(BookDefinition.valid(turret),"CF6 A01 exact turret emitter lies strictly inside its own footprint");
+        var footprints:Array=[null,[90,90,110],[100,90,110,110],["90",90,110,110],[90,90,90,110],[Number.NaN,90,110,110]];
+        for(i=0;i<footprints.length;i++) {
+            bad=org.flashNight.gesh.object.PersistedSnapshot.clone(turret);
+            if(i==0) delete bad.maps[0].mechanism.turrets.turrets[0].ownFootprint;
+            else bad.maps[0].mechanism.turrets.turrets[0].ownFootprint=footprints[i];
+            check(!BookDefinition.valid(bad),"CF6 A01 rejects missing/malformed/noncontaining own footprint case "+i);
+        }
     }
     private static function carrier(wave:Object):Object {
         var enemies:Array = wave.EnemyGroup.Enemy;

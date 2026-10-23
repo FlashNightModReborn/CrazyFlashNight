@@ -1,10 +1,12 @@
 ﻿import org.flashNight.arki.scene.*;
 import org.flashNight.gesh.object.PersistedSnapshot;
+import flash.display.BitmapData;
 
 /** Must run in real CS6/TestLoader. Pure steps are supplemented by same-path MovieClip replacement. */
 class org.flashNight.arki.scene.Cf6MapMechanismTest {
     private static var passed:Number;
     private static var failed:Number;
+    private static var pixelProbe:Object,finished:Boolean,probeSerial:Number=0;
     private static function check(value:Boolean,message:String):Void {
         if(value) passed++;else {failed++;trace("[FAIL] Cf6MapMechanism: "+message);}
     }
@@ -73,7 +75,8 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
     }
     private static function testLifecycle():Void {
         var w:MovieClip=fixture();var identity:Object=StageReturnFlow.worldIdentity(w);
-        var manager:Object={calls:0};
+        var manager:Object={calls:0,currentStage:0};
+        var managerClass:Object=org.flashNight.arki.scene.StageManager;managerClass.instance=manager;
         manager.clearStage=function():Void {
             if(!org.flashNight.arki.scene.Cf6MapMechanism.interceptClear(this,_root.gameworld)) this.calls++;
         };
@@ -105,7 +108,8 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
     }
     private static function testLogicalRunIdentity():Void {
         var w:MovieClip=fixture();var identity:Object=StageReturnFlow.worldIdentity(w);
-        var manager:Object={calls:0};
+        var manager:Object={calls:0,currentStage:0};
+        var managerClass:Object=org.flashNight.arki.scene.StageManager;managerClass.instance=manager;
         manager.clearStage=function():Void {
             if(!org.flashNight.arki.scene.Cf6MapMechanism.interceptClear(this,_root.gameworld)) this.calls++;
         };
@@ -349,11 +353,13 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
         var proto:Object=MovieClipLoader.prototype;var original:Function=proto.loadClip;
         proto.loadClip=function(url:String,target:MovieClip):Boolean {return true;};
         try {
+            var manager:Object={calls:0,currentStage:0};
+            var managerClass:Object=org.flashNight.arki.scene.StageManager;managerClass.instance=manager;
+            manager.clearStage=function():Void {this.calls++;};
             Cf6MapMechanism.beginRoom(w,StageReturnFlow.worldIdentity(w),"A06",backdropConfig("A06"));
             var s:Object=w.__cf6Mechanism;finishBackdropLoads(s);Cf6MapMechanism.tick();
             var point:Object=rootPoint(s.layers[0].holder.art,0,0);
             check(near(point.x,0) && near(point.y,-20),"A06 uses original 1753 sky at root 0,-20");
-            var manager:Object={calls:0};manager.clearStage=function():Void {this.calls++;};
             Cf6MapMechanism.interceptClear(manager,w);_root.暂停=true;Cf6MapMechanism.tick();
             check(s.phase=="combat" && manager.calls==0,"external pause does not start A06 transfer");
             _root.暂停=false;Cf6MapMechanism.tick();
@@ -534,21 +540,234 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
             Cf6MapMechanism.teardown();
         } finally {proto.loadClip=original;Cf6TutorialTurretService.teardown();Cf6MapMechanism.teardown();w.removeMovieClip();}
     }
+    private static function testTraversalWiring():Void {
+        var w:MovieClip=fixture(),identity:Object=StageReturnFlow.worldIdentity(w);
+        _root.控制目标="hero";w.hero._x=100;w.hero._y=w.hero.Z轴坐标=20;
+        // The wiring fixture needs a real upper-body MC for semantic idle ownership.
+        // Native label/frame behavior is covered by Cf6TraversalNativeTest.
+        w.hero.createEmptyMovieClip("man",1);
+        w.hero.方向="右";w.hero.攻击模式="长枪";
+        w.hero.状态改变=function(value:String):Void {this.状态=value;};
+        w.hero.方向改变=function(value:String):Void {this.方向=value;};
+        var manager:Object={calls:0,currentStage:0};
+        var managerClass:Object=org.flashNight.arki.scene.StageManager;managerClass.instance=manager;
+        manager.clearStage=function():Void {
+            if(!org.flashNight.arki.scene.Cf6MapMechanism.interceptClear(this,_root.gameworld)) this.calls++;
+        };
+        var path:Object={mode:"depart",fps:30,durationFrames:4,gate:{x:10,z:20,radius:12},exit:{x:60,z:30},samples:[
+            {frame:1,x:10,z:20,visible:true,action:"walk"},{frame:2,x:20,z:20,visible:true,action:"walk"},
+            {frame:3,x:30,z:20,visible:true,action:"walk"},{frame:4,x:40,z:20,visible:false,action:"stand"}]};
+        check(Cf6MapMechanism.beginRoom(w,identity,"A03",{kind:"door",layers:[],traversal:{depart:path}}),"production binds actor-owned departure");
+        Cf6MapMechanism.tick();Cf6MapMechanism.interceptClear(manager,w);Cf6MapMechanism.tick();
+        var s:Object=w.__cf6Mechanism;
+        check(s.phase=="combat" && !_root.暂停 && manager.calls==0,"real clear away from gate retains player control");
+        w.hero._x=10;Cf6MapMechanism.tick();
+        check(s.phase=="traversal-depart" && s.departure.acquired,"at gate starts production actor traversal");
+        var pauseId:String=org.flashNight.arki.pause.PauseManager.lease(true,"dialogue");
+        Cf6MapMechanism.tick();check(s.departure.rules.frame==1,"production trajectory respects foreign pause");
+        org.flashNight.arki.pause.PauseManager.releaseLease(pauseId);
+        Cf6MapMechanism.tick();Cf6MapMechanism.tick();Cf6MapMechanism.tick();
+        check(s.phase=="ready" && manager.calls==1 && w.hero._visible,"production traversal returns standard clear once");
+        check(w.hero._x==60 && w.hero.Z轴坐标==30 && !_root.暂停,"production handoff places live actor at standard exit");
+        Cf6MapMechanism.tick();check(manager.calls==1,"late production tick cannot duplicate clear");
+        Cf6MapMechanism.teardown();
+        path.mode="arrive";path.actorReleaseFrame=2;
+        Cf6MapMechanism.beginRoom(w,identity,"A04",{layers:[],traversal:{arrive:path}});
+        Cf6MapMechanism.tick();Cf6MapMechanism.tick();
+        s=w.__cf6Mechanism;
+        check(!s.arrival.acquired && !_root.暂停 && s.arrival.rules.frame==2,"arrival releases before remaining door frames");
+        w.hero._x=77;Cf6MapMechanism.tick();Cf6MapMechanism.tick();
+        check(w.hero._x==77 && s.phase=="combat","remaining arrival door frames never reclaim actor");
+        Cf6MapMechanism.teardown();w.removeMovieClip();
+    }
+    private static function testTraversalAssetClosure():Void {
+        var prefix:String="flashswf/backgrounds/cf6/preparation/";
+        var p:Object={url:prefix+"CF6_Traversal1720_Front.swf",role:"traversal-layer",traversalMode:"depart",frames:174};
+        check(Cf6MapMechanism.traversalAssetInfo(p).first==74,"1720 front has an authored empty opening");
+        p.url=prefix+"CF6_Traversal1720_Mask.swf";p.role="actor-mask";
+        check(Cf6MapMechanism.traversalAssetInfo(p).first==136,"1720 actor mask starts at exact source frame");
+        p.url=prefix+"CF6_Traversal1729_Front.swf";p.role="traversal-layer";p.traversalMode="arrive";
+        check(Cf6MapMechanism.traversalAssetInfo(p).last==101,"1729 front ends at exact source frame");
+        p.url=prefix+"CF6_Traversal1729_Mask.swf";p.role="actor-mask";
+        check(Cf6MapMechanism.traversalAssetInfo(p).last==39,"1729 mask empty tail is allowed only by source range");
+        p.url=prefix+"CF6_Traversal1750_Front.swf";p.role="traversal-layer";p.traversalMode="depart";p.frames=40;
+        check(Cf6MapMechanism.traversalAssetInfo(p).first==0,"1750 intentionally empty front is explicit");
+        p.url=prefix+"CF6_Traversal1750_Mask.swf";p.role="actor-mask";
+        check(Cf6MapMechanism.traversalAssetInfo(p)==null,"1750 empty actor mask is forbidden");
+        p.url=prefix+"unknown.swf";p.role="traversal-layer";
+        check(Cf6MapMechanism.traversalAssetInfo(p)==null,"unknown resource cannot bypass empty-asset check");
+        p.url=prefix+"CF6_Traversal1720_Back.swf";p.frames=174;p.traversalMode="arrive";
+        check(Cf6MapMechanism.traversalAssetInfo(p)==null,"departure asset cannot claim arrival contract");
+        p.traversalMode="depart";p.frames=40;
+        check(Cf6MapMechanism.traversalAssetInfo(p)==null,"frame count must match exact asset");
+        p.url=prefix+"CF6_AuxDoor1430.swf";p.frames=59;
+        check(Cf6MapMechanism.traversalAssetInfo(p).duration==58,"1430 preserves frame58 cut with full59 frame asset");
+    }
+    private static function testImmediateOwnershipAndArt():Void {
+        var w:MovieClip=fixture(),managerClass:Object=org.flashNight.arki.scene.StageManager;
+        var manager:Object={currentStage:0};managerClass.instance=manager;
+        Cf6MapMechanism.beginRoom(w,StageReturnFlow.worldIdentity(w),"A01",{layers:[]});Cf6MapMechanism.tick();
+        var s:Object=w.__cf6Mechanism;s.phase="ready";w.允许通行=true;
+        managerClass.instance={currentStage:0};
+        check(Cf6MapMechanism.interceptClear(manager,w) && w.允许通行===true,
+            "retired ready manager cannot pass clear or write replacement owner before next tick");
+        var pending:Object={ready:false,row:{spec:{id:"late",role:"foreground"},remaining:1}};
+        s.pending=1;var art:MovieClip=w.createEmptyMovieClip("lateArt",30);
+        Cf6MapMechanism.loaded(s,pending,art);
+        check(!pending.ready && s.pending==1,"late loader rejects manager replacement immediately");
+        Cf6MapMechanism.teardown();w.removeMovieClip();
+        check(Cf6MapMechanism.artTransformValid({artMatrix:[1,0.25,0,1,-20,-30]}),"finite shear and pivot transform accepted once");
+        check(!Cf6MapMechanism.artTransformValid({artMatrix:[1,1,1,1,0,0]}),"singular art matrix rejected");
+        check(!Cf6MapMechanism.artTransformValid({artMatrix:[1,0,0,1,Number.NaN,0]}),"NaN art translation rejected");
+        check(Cf6MapMechanism.artTransformValid({colorMult:[210,210,210,256]}),"original 256-unit instance tint accepted");
+        check(!Cf6MapMechanism.artTransformValid({colorMult:["210",210,210,256]}),"coerced string tint rejected");
+    }
+    private static function testEarlyBirthWindow():Void {
+        var w:MovieClip=fixture(),identity:Object=StageReturnFlow.worldIdentity(w);
+        var managerClass:Object=org.flashNight.arki.scene.StageManager;managerClass.instance={currentStage:0,gameworld:w,isActive:true};
+        w.dispatcher={subscriptions:0,removals:0,subscribe:function(e:String,f:Function,o:Object):Void {this.subscriptions++;},unsubscribe:function(e:String,f:Function,o:Object):Void {this.removals++;}};
+        var p:Object=Cf6MapMechanism.captureSpawnWindow(w,null,identity);
+        check(p!=null && w.dispatcher.subscriptions==1,"SceneReady opens exact early spawn window");
+        check(Cf6MapMechanism.captureSpawnWindow(w,null,identity)===p && w.dispatcher.subscriptions==1,"duplicate SceneReady does not duplicate listener");
+        var unit:MovieClip=w.createEmptyMovieClip("enemy",100);unit.hp=10;unit.是否为敌人=true;unit.publishStageEvent=true;unit._x=15;unit._y=25;
+        Cf6MapMechanism.observeBirth(p,"enemy");Cf6MapMechanism.observeBirth(p,"enemy");
+        check(p.records.length==1,"same instance duplicate birth suppressed");
+        unit._x=90;unit._y=95;
+        check(p.records[0].x==15 && p.records[0].y==25,"birth coordinates survive later movement");
+        unit.removeMovieClip();unit=w.createEmptyMovieClip("enemy",100);unit.hp=10;unit.是否为敌人=true;unit.publishStageEvent=true;
+        Cf6MapMechanism.observeBirth(p,"enemy");
+        check(p.records.length==2,"same-name replacement has a distinct birth stamp");
+        check(Cf6MapMechanism.beginRoom(w,identity,"A01",{layers:[]}),"precise room consumes early window");
+        check(w.__cf6Mechanism.spawnSeen.enemy===true && p.closed && p.records.length==0,"transfer uses current stamped actor then disposes records");
+        check(unit.__cf6DoorBirthStamp==undefined && w.dispatcher.removals==1,"transfer removes only own stamp and listener");
+        Cf6MapMechanism.teardown();p=Cf6MapMechanism.captureSpawnWindow(w,null,identity);
+        for(var i:Number=0;i<257;i++) {var u:MovieClip=w.createEmptyMovieClip("birth"+i,200+i);u.hp=1;u.是否为敌人=true;u.publishStageEvent=true;Cf6MapMechanism.observeBirth(p,u._name);}
+        check(p.records.length==256 && p.truncated===true,"early cache has deterministic bounded capacity");
+        managerClass.instance={currentStage:0,gameworld:w,isActive:true};Cf6MapMechanism.observeBirth(p,"enemy");
+        check(p.records.length==256,"manager replacement cannot append retired births");
+        Cf6MapMechanism.teardown();
+        check(p.closed && p.records.length==0 && w.birth0.__cf6DoorBirthStamp==undefined,"teardown discards bounded cache and owned stamps");
+        w.removeMovieClip();
+    }
+    private static function testLateSceneReadyArrival():Void {
+        var w:MovieClip=fixture(),definition:Object=BookDefinition,previous=definition._cf6;
+        w.dispatcher=new org.flashNight.neur.Event.EventDispatcher();
+        var managerClass:Object=StageManager;managerClass.instance={gameworld:w,currentStage:0,isActive:true,isFailed:false,isFinished:false,isCleared:false};
+        _root.控制目标="hero";var hero:MovieClip=w.hero;
+        hero.攻击模式="长枪";hero.方向="右";hero._x=80;hero._y=hero.Z轴坐标=40;
+        hero.createEmptyMovieClip("man",1);
+        hero.状态改变=function(v:String):Void {this.状态=v;};
+        hero.方向改变=function(v:String):Void {if(!this.锁定方向)this.方向=v;};
+        var init:Object=Cf6ActorMaskState.prepare(w,StageReturnFlow.worldIdentity(w),"hero",{});
+        for(var key:String in init) hero[key]=init[key];Cf6ActorMaskState.bind(hero,init);
+        var config:Object={layers:[],traversal:{arrive:{mode:"arrive",fps:30,durationFrames:2,samples:[
+            {frame:1,x:10,z:40,visible:true,action:"walk"},{frame:2,x:20,z:40,visible:true,action:"walk"}]}}};
+        definition._cf6={maps:[{id:"A01",mechanism:config}]};
+        try {
+            Cf6MapMechanism.beginRoom(w,StageReturnFlow.worldIdentity(w),"A01",config);
+            var state:Object=w.__cf6Mechanism;
+            Cf6MapMechanism.captureSpawnWindow(w,null,w.__stageReturnWorldIdentity);
+            check(state.arrival.rules.frame==0 && !hero._visible && hero.__cf6ArrivalPreparationOwner!=undefined,
+                "real SceneReady handler prepares a room that was bound before the actor-ready event");
+            Cf6MapMechanism.tick();Cf6MapMechanism.captureSpawnWindow(w,null,w.__stageReturnWorldIdentity);
+            var playingVisible:Boolean=hero._visible && hero._x==10 && state.arrival.rules.frame==1;
+            Cf6MapMechanism.tick();Cf6MapMechanism.captureSpawnWindow(w,null,w.__stageReturnWorldIdentity);
+            check(playingVisible && hero._visible && hero._x==20 && state.arrival.rules.phase=="complete",
+                "real repeated SceneReady neither re-hides a playing arrival nor restarts a completed one");
+        } finally {Cf6MapMechanism.teardown();definition._cf6=previous;w.removeMovieClip();}
+    }
+    private static function testLoadedElevatorMask():Void {
+        var w:MovieClip=fixture();
+        Cf6MapMechanism.beginRoom(w,StageReturnFlow.worldIdentity(w),"A01",{layers:[]});Cf6MapMechanism.tick();
+        var s:Object=w.__cf6Mechanism;s.assetScale=1;s.pending=1;
+        // Root-owned isolated geometry survives the synchronous room teardown and
+        // later suites. Real display-list commits require actual enterFrame turns.
+        var name:String="__cf6LoadedMaskProbe"+(++probeSerial);
+        while(_root[name]!=undefined) name="__cf6LoadedMaskProbe"+(++probeSerial);
+        var holder:MovieClip=_root.createEmptyMovieClip(name,_root.getNextHighestDepth());
+        var token:Object={};holder.__cf6LoadedMaskTestOwner=token;
+        pixelProbe={holder:holder,name:name,token:token,turns:0,armed:false};
+        var art:MovieClip=holder.createEmptyMovieClip("art",0);
+        art.beginFill(0x00AA66);art.moveTo(0,0);art.lineTo(40,0);art.lineTo(40,40);art.lineTo(0,40);art.endFill();
+        var mask:MovieClip=holder.createEmptyMovieClip("windowMask",2);
+        mask.beginFill(0);mask.moveTo(0,0);mask.lineTo(20,0);mask.lineTo(20,20);mask.lineTo(0,20);mask.endFill();
+        var layer:Object={holder:holder,spec:{id:"actual-loaded-mask",role:"elevator-scroll"},remaining:1,loads:[]};
+        var entry:Object={ready:false,row:layer};
+        Cf6MapMechanism.loaded(s,entry,art);
+        check(entry.ready && layer.ready && s.pending==0 && layer.remaining==0,"production loaded callback completes owned elevator tile");
+        Cf6MapMechanism.loaded(s,entry,art);
+        check(s.pending==0 && layer.remaining==0,"duplicate loaded callback cannot consume completion twice");
+        var foreign:MovieClip=holder.createEmptyMovieClip("foreign",8);
+        check(!Cf6MapMechanism.bindLoadedElevatorMask(holder,foreign),"foreign child cannot borrow elevator mask");
+        foreign.removeMovieClip();
+        // Missing-mask negative control must not dismantle the deferred positive control.
+        var missing:MovieClip=w.createEmptyMovieClip("missingMask",w.getNextHighestDepth());
+        var missingArt:MovieClip=missing.createEmptyMovieClip("art",0);
+        missingArt.beginFill(0x00AA66);missingArt.moveTo(0,0);missingArt.lineTo(40,0);missingArt.lineTo(40,40);missingArt.lineTo(0,40);missingArt.endFill();
+        check(!Cf6MapMechanism.bindLoadedElevatorMask(missing,missingArt),"missing current mask cannot be accepted");
+        entry={ready:false,row:{holder:missing,spec:{id:"missing-loaded-mask",role:"elevator-scroll"},remaining:1,loads:[]}};s.pending=1;
+        Cf6MapMechanism.loaded(s,entry,missingArt);
+        check(s.failed===true && !entry.ready,"production loaded callback fails closed when its mask is missing");
+        var watchName:String=name+"Watch";
+        while(_root[watchName]!=undefined) watchName+="_";
+        var watch:MovieClip=_root.createEmptyMovieClip(watchName,_root.getNextHighestDepth());
+        watch.__cf6LoadedMaskTestOwner=token;pixelProbe.driver=watch;pixelProbe.driverName=watchName;
+        watch.onEnterFrame=function():Void {org.flashNight.arki.scene.Cf6MapMechanismTest.pixelTick();};
+        pixelProbe.armed=true;
+        Cf6MapMechanism.teardown();w.removeMovieClip();
+    }
+    public static function pixelTick():Void {
+        if(finished || pixelProbe==null) return;
+        if(++pixelProbe.turns<2) return;
+        var pixels:BitmapData;
+        try {
+            var holder:MovieClip=pixelProbe.holder;
+            if(holder._parent!==_root || _root[pixelProbe.name]!==holder || holder.__cf6LoadedMaskTestOwner!==pixelProbe.token)
+                throw new Error("isolated pixel probe ownership replaced");
+            pixels=new BitmapData(45,45,true,0);pixels.draw(holder);
+            var inside:Number=pixels.getPixel32(10,10),outside:Number=pixels.getPixel32(30,30);
+            trace("Cf6MapMechanism LoadedMaskPixels: turns="+pixelProbe.turns+" inside="+inside+" outside="+outside);
+            check((inside&0xFFFFFF)==0x00AA66 && (inside>>>24)==255,"production loaded callback hides black mask and preserves actual art color");
+            check((outside>>>24)==0,"production loaded callback actually clips outside its window");
+        } catch(error) {
+            check(false,"deferred loaded-mask color probe exception: "+error);
+            check(false,"deferred loaded-mask clipping probe unavailable");
+        } finally {
+            if(pixels!=null) pixels.dispose();finishTests();
+        }
+    }
+    private static function finishTests():Void {
+        if(finished) return;finished=true;
+        if(pixelProbe!=null && pixelProbe.holder._parent===_root && _root[pixelProbe.name]===pixelProbe.holder
+                && pixelProbe.holder.__cf6LoadedMaskTestOwner===pixelProbe.token) {
+            delete pixelProbe.holder.onEnterFrame;pixelProbe.holder.removeMovieClip();
+        }
+        if(pixelProbe!=null && pixelProbe.driver._parent===_root && _root[pixelProbe.driverName]===pixelProbe.driver
+                && pixelProbe.driver.__cf6LoadedMaskTestOwner===pixelProbe.token) {
+            delete pixelProbe.driver.onEnterFrame;pixelProbe.driver.removeMovieClip();
+        }
+        pixelProbe=null;
+        trace("Cf6MapMechanismTest Tests Passed: "+passed);
+        trace("Cf6MapMechanismTest Tests Failed: "+failed);
+        if(typeof _root.cf6MapMechanismTestsComplete=="function") _root.cf6MapMechanismTestsComplete();
+    }
     public static function runAllTests():Void {
-        passed=0;failed=0;
-        var keys:Array=["gameworld","_saveExt","savePath","当前关卡名","暂停","发布消息","贴背景图","__cf6TestBakeCalls","天空盒"];
+        passed=0;failed=0;finished=false;pixelProbe=null;
+        var savedManagerClass:Object=org.flashNight.arki.scene.StageManager;
+        var savedManager:Object=savedManagerClass.instance;
+        var keys:Array=["gameworld","_saveExt","savePath","当前关卡名","暂停","发布消息","贴背景图","__cf6TestBakeCalls","天空盒","控制目标"];
         var saved:Object={};
         for(var i:Number=0;i<keys.length;i++) saved[keys[i]]=_root[keys[i]];
         var targetClass:Object=org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
         var oldFind:Function=targetClass.findHero;
         targetClass.findHero=function():MovieClip {return _root.gameworld.hero;};
         _root.暂停=false;_root.发布消息=function(message:String):Void {trace(message);};
-        try {testPhases();testLifecycle();testLogicalRunIdentity();testElevatorBake();testBakeReceipts();testDoorSequences();testBackdropLoading();testBackdropFailuresAndIdentity();testBackdropTransfer();testEarlyEmptyWave();testTurretWiring();}
+        try {testPhases();testLifecycle();testLogicalRunIdentity();testElevatorBake();testBakeReceipts();testDoorSequences();testBackdropLoading();testBackdropFailuresAndIdentity();testBackdropTransfer();testEarlyEmptyWave();testTurretWiring();testTraversalWiring();testTraversalAssetClosure();testImmediateOwnershipAndArt();testEarlyBirthWindow();testLateSceneReadyArrival();testLoadedElevatorMask();}
+        catch(error) {check(false,"synchronous suite exception: "+error);}
         finally {
-            Cf6MapMechanism.teardown();Cf6TutorialTurretService.teardown();targetClass.findHero=oldFind;
+            Cf6MapMechanism.teardown();Cf6TutorialTurretService.teardown();targetClass.findHero=oldFind;savedManagerClass.instance=savedManager;
             for(i=0;i<keys.length;i++) _root[keys[i]]=saved[keys[i]];
         }
-        trace("Cf6MapMechanismTest Tests Passed: "+passed);
-        trace("Cf6MapMechanismTest Tests Failed: "+failed);
+        if(pixelProbe==null || !pixelProbe.armed) finishTests();
     }
 }

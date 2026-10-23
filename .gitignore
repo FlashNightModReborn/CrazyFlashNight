@@ -62,6 +62,16 @@ scripts/优化随笔/性能基准评估/测试.swf
 # Test loader (SWF is generated)
 scripts/TestLoader.swf
 /ShootReloadNativeHost.swf
+/Cf6ActorAppearanceNativeHost.swf
+/Cf6InteractiveNativeHost.swf
+/Cf6TraversalNativeHost.swf
+/Cf6FieldCombatNativeHost.swf
+/Cf6BodyScaleNativeHost.swf
+/Cf6TransportNativeHost.swf
+/tmp-cf6-transport-native-host/
+/scripts/tmp-cf6-field-combat-host/
+/scripts/tmp-cf6-body-scale-host/
+/scripts/tmp-cf6-interactive-host/
 /ShootReloadLegacyHost.swf
 scripts/Cf6SoldierNativeHost.swf
 scripts/RockQueenNativeHost.swf
@@ -273,3 +283,11 @@ tools/input-hook-diagnostic/obj/
 
 # 本机生成/候选图，不进入仓库
 /vibe_images/
+
+/Cf6FieldCombat3NativeHost.swf
+
+/scripts/tmp-cf6-field-combat3-host/
+
+/Cf6ItemVisualNativeHost.swf
+
+/tmp-cf6-item-visuals-host/

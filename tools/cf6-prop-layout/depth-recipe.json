@@ -1,0 +1,22 @@
+{
+  "schema": "cf6-depth-prop-exclusions.v1",
+  "enabled": true,
+  "groups": [
+    {
+      "name": "CF6_Prop_A06_StatueLeft",
+      "memberIds": [
+        "A06-00806-g"
+      ],
+      "mapId": "A06",
+      "swf": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft.swf"
+    },
+    {
+      "name": "CF6_Prop_A06_StatueRight",
+      "memberIds": [
+        "A06-01072-g"
+      ],
+      "mapId": "A06",
+      "swf": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight.swf"
+    }
+  ]
+}

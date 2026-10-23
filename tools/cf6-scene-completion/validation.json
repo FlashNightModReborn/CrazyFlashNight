@@ -1,0 +1,53 @@
+{
+  "schema": "cf6-scene-preparation-validation.v1",
+  "date": "2026-10-23",
+  "baseCommit": "cc5cd91d5ae96fac4532401188dc077151d8de7d",
+  "state": "source_prepared_offline_checked",
+  "sourceIdentity": {
+    "scripts/类定义/org/flashNight/arki/scene/Cf6ElevatorRules.as": "95d630b550848bd5ebddb8f94e59b27204c52b21544dce69d5670529080fecc4",
+    "scripts/类定义/org/flashNight/arki/scene/Cf6SceneCompletionTest.as": "0ec990048e9b16f5794e4a819dd5e82536bfeb8099047b9301b45b3bb90b6f49",
+    "scripts/类定义/org/flashNight/arki/scene/Cf6TraversalRules.as": "4feb59dc30590995e677ac071acdba713540c0c93ced6dfe9cf4e598302b90da",
+    "scripts/类定义/org/flashNight/arki/scene/Cf6VehicleRules.as": "401a3d3035f402a2f9578be0554cc5642b4db6470dd21f94dae87a2ad66cb95e",
+    "tools/cf6-scene-completion/build_plan.py": "dc3d3a1151cec6caa8174150505399deb0cd6ee105d0165192627ef83ed82cf4",
+    "tools/cf6-scene-completion/build_traversal_art.py": "6471586e66b27d203894c5635dd2a4a5d0c9ec895f6893a5c47cfa96d363a260",
+    "tools/cf6-scene-completion/Cf6ElevatorRules.as.txt": "60b2754be4fb1d72cb64352f4bf3677b670d04d91df3cdf90b978bd8e094668c",
+    "tools/cf6-scene-completion/Cf6SceneCompletionTest.as.txt": "f7b21e1b6af9f95f8cd1f4e529e468c8ca6f4a6940ee3888b271288be0d1b0e1",
+    "tools/cf6-scene-completion/Cf6TraversalRules.as.txt": "b524735f33230414a1264ad536d73d39474b0368a2e89759d1e16faaa0fe1eef",
+    "tools/cf6-scene-completion/Cf6VehicleRules.as.txt": "a4cc37787911caeb4ec4df7d816731f759c8813cfd70ab5d0639fb7f0ed49cf4",
+    "tools/cf6-scene-completion/completion-plan.json": "7280036cb467d97aed49ddaf713eb8ec5cb8d09e75c6339bd40006c978198665",
+    "tools/cf6-scene-completion/extract_source.py": "b2ea7f0d58293f11ce4811ec95ca45c49bdfe4c11a3db63eaf35a2242d012d81",
+    "tools/cf6-scene-completion/install_rules.py": "fd3fc1dc425c53a746315c40f56ccd414aea61c2a793cef14e24a6eb9f82b368",
+    "tools/cf6-scene-completion/prepare_vehicle_art.py": "e31172b6055a6a8cd0360aa06b6f87cd6e187b68b7583558c13fa737291b2c59",
+    "tools/cf6-scene-completion/run-native-tests.ps1": "1320ee1cadb9b985cfe305ce7cbb75c738b279e8d9b83f57840151be3f1e5ace",
+    "tools/cf6-scene-completion/test-rules-reference.js": "96417576b6f4fdc35b72a1c0ec97dd00c8613586c767697f667f32afe94cabc0",
+    "tools/cf6-scene-completion/TestLoader.as.template": "ff29825e6fac3c4cf77040e27366fd63d23089629a716cf3205e20e5f61775d8",
+    "tools/cf6-scene-completion/traversal-art-manifest.json": "4505b053955e9df5c9748d63d12258dce148c29859e64536b214b2c0a07a15f7",
+    "tools/cf6-scene-completion/vehicle-art-manifest.json": "2de302bc997ab9e823e2a5e833c38cda78fbc41ab78f2c3b7e6e37d058633252",
+    "tools/cf6-scene-completion/verify.py": "4b2900894c32a9c09c742bc52ba3595af188856359e163d1568ee41cc2109543"
+  },
+  "checks": {
+    "source_capture_recheck": "passed",
+    "plan_and_BOM_classes": "passed",
+    "artifact_integrity": "passed",
+    "door_deterministic_rebuild": "passed",
+    "vehicle_deterministic_rebuild": "passed",
+    "existing_XFL_audit": {
+      "passed": 9,
+      "failed": 0
+    },
+    "reference_model": {
+      "assertions": 51,
+      "authoredTrajectories": 5,
+      "failed": 0,
+      "runtime": "Node; not AVM1"
+    },
+    "documentation_governance": "passed with existing non-blocking repository warnings",
+    "diff_whitespace": "passed",
+    "native_runner_syntax": "parsed only"
+  },
+  "nativeCS6": "not_run; reserved by user-named chat",
+  "productionWiring": "not_changed",
+  "candidateExecution": "not_run",
+  "visualAcceptance": "not_run",
+  "commitPushRelease": "not_performed"
+}

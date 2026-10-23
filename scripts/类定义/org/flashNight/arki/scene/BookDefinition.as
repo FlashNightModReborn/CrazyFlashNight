@@ -105,6 +105,7 @@ class org.flashNight.arki.scene.BookDefinition {
         }
         var mapOrder:String="|TUTORIAL|A01|A02|A03|A04|A05|A06|A08|A09|A10|A11|A12|A13|A14|A15|A16|A17|A18|A19|A20|A22|";
         var previousPosition:Number=-1;
+        var mergedFinale:Boolean=false;
         for (var i:Number=0;i<data.maps.length;i++) {
             var map:Object=data.maps[i];
             var position:Number=mapOrder.indexOf("|"+map.id+"|");
@@ -117,6 +118,7 @@ class org.flashNight.arki.scene.BookDefinition {
                     || !(map.stage.Wave.SubWave instanceof Array) || map.stage.Wave.SubWave.length < 1
                     || map.stage.Wave.SubWave.length > 64) return false;
             seen["map."+map.id]=true;
+            if(map.mechanism.elderFinale===true) mergedFinale=true;
             previousPosition=position;
             for (var w:Number=0;w<map.stage.Wave.SubWave.length;w++) {
                 var enemies:Array=map.stage.Wave.SubWave[w].EnemyGroup.Enemy;
@@ -130,14 +132,49 @@ class org.flashNight.arki.scene.BookDefinition {
             }
             if (map.stage.BasicInformation.BookBoss != null) return false;
             if (!validCf6Turrets(map)) return false;
+            if (!validCf6Transport(map)) return false;
             if (!validCf6Boss(map)) return false;
             for (var l:Number=0;l<map.dialogue.length;l++) {
                 var line:Object=map.dialogue[l];
-                if (typeof line.speaker != "string" || line.speaker.length > 40 || typeof line.text != "string"
+                if (!cf6Fields(line,{speaker:true,text:true,char:true})
+                        || typeof line.speaker != "string" || line.speaker.length > 40 || typeof line.text != "string"
                         || line.text.length < 1 || line.text.length > 160) return false;
+                if(line.char!==undefined && ((line.speaker!=="Andy" && line.speaker!=="Andy Law")
+                        || typeof line.char!="string"
+                        || ("|Andy Law#普通|Andy Law#微笑|Andy Law#挑战|Andy Law#惊讶|Andy Law#侦察|Andy Law#严肃|Andy Law#愤怒|")
+                            .indexOf("|"+line.char+"|")<0 || line.char.indexOf("|")>=0)) return false;
             }
         }
+        if(mergedFinale && (data.maps[data.maps.length-1].id!=="A20" || seen["map.A22"]===true)) return false;
         return org.flashNight.arki.scene.Cf6EconomyRules.valid(data);
+    }
+    private static function cf6Fields(value:Object,allowed:Object):Boolean {
+        if(value==null || typeof value!="object" || value instanceof Array) return false;
+        for(var field:String in value) if(allowed[field]!==true) return false;
+        return true;
+    }
+    private static function validCf6Transport(map:Object):Boolean {
+        var spec:Object=map.mechanism.transport;
+        var waves:Array=map.stage.Wave.SubWave;
+        var found:Number=0;
+        for(var wi:Number=0;wi<waves.length;wi++) {
+            var entries:Array=waves[wi].EnemyGroup.Enemy;
+            for(var ei:Number=0;ei<entries.length;ei++) if(entries[ei].TriggerEvent.EventName==="Cf6TransportReady") {
+                found++;
+                if(spec==null || wi!==1 || ei!==0) return false;
+            }
+        }
+        if(spec==null) return found===0;
+        if(!cf6Fields(spec,{schema:true,id:true,sourceSprite:true,url:true,x:true,y:true,sortY:true,artMatrix:true,hitBounds:true,frames:true,dispatchFrame:true,subWaveIndex:true})
+                || !org.flashNight.arki.scene.Cf6TransportService.validSpec(map.id,spec)
+                || found!==1 || waves.length!==2 || waves[1].EnemyGroup.Enemy.length!==1) return false;
+        var expected:Object=map.id==="A09"?{kind:"兵种467",level:45,count:5}
+            :map.id==="A14"?{kind:"兵种469",level:50,count:7}:{kind:"兵种463",level:59,count:5};
+        var enemy:Object=waves[1].EnemyGroup.Enemy[0],event:Object=enemy.TriggerEvent;
+        return enemy.Type===expected.kind && enemy.Level===expected.level && enemy.Quantity===expected.count
+            && enemy.Interval===400 && enemy.SpawnIndex===0
+            && cf6Fields(event,{EventName:true,Parameters:true}) && event.Parameters instanceof Array
+            && event.Parameters.length===1 && event.Parameters[0]===spec.id;
     }
     private static function validCf6Turrets(map:Object):Boolean {
         // A01 教学炮塔挂接规格(r15):有则校验,无则通过(测试夹具/旧存档投影不带)。
@@ -152,46 +189,66 @@ class org.flashNight.arki.scene.BookDefinition {
                 || !(spec.turrets instanceof Array) || spec.turrets.length !== 2) return false;
         for (var i:Number = 0; i < 2; i++) {
             var t:Object = spec.turrets[i];
-            if (typeof t.x != "number" || typeof t.y != "number" || isNaN(t.x) || isNaN(t.y)
+            if (!cf6Fields(t,{x:true,y:true,facing:true,ownFootprint:true})
+                    || typeof t.x != "number" || typeof t.y != "number" || isNaN(t.x) || isNaN(t.y)
                     || !isFinite(t.x) || !isFinite(t.y)
                     || t.x < 0 || t.x > 5000 || t.y < 0 || t.y > 5000
                     || t.facing !== "right") return false;
+            var rect:Array=t.ownFootprint;
+            if(!(rect instanceof Array) || rect.length!=4) return false;
+            for(var r:Number=0;r<4;r++) if(typeof rect[r]!="number" || !isFinite(rect[r]) || isNaN(rect[r])) return false;
+            if(!(rect[0]<t.x && t.x<rect[2] && rect[1]<t.y && t.y<rect[3])) return false;
         }
         return true;
     }
     private static function validCf6Boss(map:Object):Boolean {
+        if(map.mechanism.elderFinale!==undefined && typeof map.mechanism.elderFinale!="boolean") return false;
+        if(map.mechanism.elderFinale===true && map.id!=="A20") return false;
         var plan:Object=map.bossEncounter;
-        if (plan == null) return true;
+        var phased:Boolean=map.id==="A20" && map.mechanism.elderFinale===true;
+        if (plan == null) return !phased;
         var types:Object={A06:"兵种463",A17:"兵种472",A20:"兵种473",A22:"兵种474"};
-        if (types[map.id] == undefined || plan.instanceName !== "cf6Boss_"+map.id
-                || !whole(plan.maxAlive,1,8) || !whole(plan.maxRanged,0,plan.maxAlive)
-                || !whole(plan.intervalFrames,1,1800) || !(plan.groups instanceof Array)
-                || plan.groups.length < 1 || plan.groups.length > 16) return false;
+        if(types[map.id]==undefined || !validCf6SupportPlan(plan,map,"cf6Boss_"+map.id,phased)) return false;
         var waves:Array=map.stage.Wave.SubWave;
         if (waves.length != 1 || waves[0].EnemyGroup.Enemy.length != 1) return false;
         var boss:Object=waves[0].EnemyGroup.Enemy[0];
         if (boss.Type !== types[map.id] || boss.Quantity !== 1 || boss.InstanceName !== plan.instanceName
-                || (map.id === "A20" && boss.Parameters.老头变身 !== false)) return false;
+                || (map.id === "A20" && boss.Parameters.老头变身 !== phased)) return false;
+        return !phased || validCf6SupportPlan(plan.nextPhase,map,"cf6Boss_A20__elderbot",false);
+    }
+    private static function validCf6SupportPlan(plan:Object,map:Object,name:String,allowNext:Boolean):Boolean {
+        var fields:Object={instanceName:true,maxAlive:true,maxRanged:true,intervalFrames:true,groups:true};
+        if(allowNext) fields.nextPhase=true;
+        if(!cf6Fields(plan,fields) || plan.instanceName!==name
+                || !whole(plan.maxAlive,1,8) || !whole(plan.maxRanged,0,plan.maxAlive)
+                || !whole(plan.intervalFrames,1,1800) || !(plan.groups instanceof Array)
+                || plan.groups.length<1 || plan.groups.length>16 || (allowNext && plan.nextPhase==null)) return false;
         var previous:Number=2, total:Number=0;
         for (var g:Number=0;g<plan.groups.length;g++) {
             var group:Object=plan.groups[g];
-            if (typeof group.hpRatio != "number" || !(group.hpRatio > 0) || group.hpRatio > 1
+            if (!cf6Fields(group,{hpRatio:true,enemies:true})
+                    || typeof group.hpRatio != "number" || !(group.hpRatio > 0) || group.hpRatio > 1
                     || !(group.hpRatio < previous) || !(group.enemies instanceof Array)
                     || group.enemies.length < 1 || group.enemies.length > 32) return false;
             previous=group.hpRatio;
             for (var n:Number=0;n<group.enemies.length;n++) {
                 var enemy:Object=group.enemies[n];
-                if (typeof enemy.Type != "string" || enemy.Type.substr(0,2) !== "兵种"
+                if (!cf6Fields(enemy,{Type:true,Level:true,Quantity:true,ranged:true,SpawnIndex:true,x:true,y:true,Parameters:true,podId:true})
+                        || typeof enemy.Type != "string" || enemy.Type.substr(0,2) !== "兵种"
                         || !whole(Number(enemy.Type.substr(2)),0,1000000) || !whole(enemy.Level,1,60)
                         || !whole(enemy.Quantity,1,128) || typeof enemy.ranged != "boolean"
                         || (enemy.ranged && plan.maxRanged == 0) || enemy.InstanceName != undefined) return false;
+                if(enemy.podId!==undefined && (map.id!=="A17" || enemy.Type!=="兵种460"
+                        || enemy.Quantity!==1 || typeof enemy.podId!="string")) return false;
                 var spawn=enemy.SpawnIndex;
                 if (spawn !== "left" && spawn !== "right"
                         && (!(map.stage.SpawnPoint.Point instanceof Array)
                             || !whole(spawn,0,map.stage.SpawnPoint.Point.length-1))) return false;
                 var p:Object=enemy.Parameters;
-                if (p.cf6BossOwnerToken != undefined || p.cf6SupportIdentity != undefined
-                        || p.publishStageEvent != undefined || p.产生源 != undefined || p.InstanceName != undefined) return false;
+                if(p===undefined) p={};
+                if(p==null || typeof p!="object" || p instanceof Array) return false;
+                var forbidden:Object={cf6BossOwnerToken:true,cf6SupportIdentity:true,publishStageEvent:true,产生源:true,InstanceName:true};
+                for(var key:String in p) if(forbidden[key]===true) return false;
                 if ((enemy.x != undefined && typeof enemy.x != "number")
                         || (enemy.y != undefined && typeof enemy.y != "number")) return false;
                 total+=enemy.Quantity;

@@ -2,13 +2,89 @@
 const fs = require('fs'), path = require('path');
 const E = require('../workbench-live-e2e/lib/evidence-artifact');
 const Swf = require('../swf-metadata');
+const {parseStrictJson}=require('../cf7-agent/lib/strict-json');
 const ORIGINAL_SWF='flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/crazyflasher6-cn.swf';
 const FILES = [
+    'scripts/逻辑/关卡系统/关卡系统_lsy_场景转换.as',
+    'scripts/类定义/org/flashNight/arki/scene/StageReturnFlow.as',
+    'scripts/类定义/org/flashNight/arki/scene/StageRunSession.as',
+    'scripts/类定义/org/flashNight/arki/scene/SceneTransitionGuard.as',
+    'scripts/类定义/org/flashNight/arki/scene/PlayerResourceTransfer.as',
+    'scripts/类定义/org/flashNight/arki/scene/PlayerResourceTransferBridge.as',
+    'scripts/类定义/org/flashNight/arki/unit/PlayerStatRefreshCoordinator.as',
+    'scripts/类定义/org/flashNight/arki/unit/Action/Regeneration/LevelUpRecovery.as',
+    'scripts/类定义/org/flashNight/arki/unit/Action/Regeneration/ResourceNumber.as',
+    'scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/DressupInitializer.as',
+    'scripts/类定义/org/flashNight/arki/ui/SceneTransitionService.as',
+    'CRAZYFLASHER7MercenaryEmpire/LIBRARY/sprite/淡出动画.xml',
+
+    'scripts/类定义/org/flashNight/arki/scene/Cf6TraversalRules.as',
+    'scripts/类定义/org/flashNight/arki/scene/Cf6TraversalService.as',
+    'scripts/类定义/org/flashNight/arki/scene/Cf6TransportService.as',
+    'scripts/类定义/org/flashNight/arki/scene/Cf6PropDepthService.as',
+    'scripts/类定义/org/flashNight/arki/scene/Cf6ActorMaskPresentation.as',
+    'scripts/类定义/org/flashNight/arki/scene/Cf6ExitGuideService.as',
+    'scripts/类定义/org/flashNight/arki/unit/Cf6BodyScaleRules.as',
+    'scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as',
+    'scripts/类定义/org/flashNight/arki/pause/PauseManager.as',
+    'scripts/类定义/org/flashNight/gesh/depth/DepthManager.as',
+    'tools/cf7-agent/lib/strict-json.js',
+    'tools/cf6-prototype/scene-assembly.py',
+    'tools/cf6-prototype/interactive-assembly.py',
+    'tools/cf6-prototype/transport-assembly.py',
+    'tools/cf6-prototype/spawn-assembly.py',
+    'flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/reference/environment-original-nodes.json',
+    'tools/cf6-scene-completion/source-evidence/actions/da8403d2135566583ef7baf6a1351c820f5bcb78a31c633a95066e239aa04e01.as.txt',
+    'flashswf/arts/things3/LIBRARY/地瓜手雷.xml',
+    'flashswf/arts/原版素材库-子弹/LIBRARY/手雷/地瓜手雷/地瓜手雷.xml',
+    'tools/cf6-scene-completion/completion-plan.json',
+    'tools/cf6-prop-layout/calibrate.py',
+    'tools/cf6-prop-layout/scale-policy.json',
+    'tools/cf6-prop-layout/build_unit_scale.py',
+    'tools/cf6-prop-layout/derive_laboratory.py',
+    'tools/cf6-prop-layout/derive_tutorial.py',
+    'tools/cf6-scene-completion/pod_scale.py',
+    'tools/cf6-map-runtime/native-vector/batch/pattern_adapter.py',
+    'tools/cf6-prop-layout/build_depth_props.py',
+    'tools/cf6-prop-layout/recipe.json',
+    'tools/cf6-prop-layout/depth-recipe.json',
+    'tools/cf6-prop-layout/generated/instance-layout.json',
+    'tools/cf6-prop-layout/generated/depth-props.fragment.json',
+    'tools/cf6-scene-completion/build_traversal_art.py',
+    'tools/cf6-scene-completion/build_auxiliary_doors.py',
+    'tools/cf6-scene-completion/build_interactive_art.py',
+    'tools/cf6-scene-completion/build_transport_art.py',
+    'scripts/类定义/org/flashNight/arki/component/Damage/DamageCalculator.as',
+    'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Collider/AABBCollider.as',
+    'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Collider/AABBColliderFactory.as',
+    'scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/ComponentInitializer.as',
+    'scripts/类定义/org/flashNight/neur/Event/EventDispatcher.as',
+    'scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/StaticInitializer.as',
+    'scripts/类定义/org/flashNight/arki/unit/UnitComponent/Deinitializer/StaticDeinitializer.as',
+    'scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/EventInitializer.as',
+    'scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/ElementComponent/BasicAttributeInitializer.as',
+    'scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/EventComponent/HitEventComponent.as',
+    'scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/EventComponent/KillEventComponent.as',
+    'scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/EventComponent/DeathEventComponent.as',
+    'scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/EventComponent/UpdateEventComponent.as',
+    'scripts/类定义/org/flashNight/arki/unit/UnitComponent/Targetcache/TargetCacheManager.as',
+    'scripts/类定义/org/flashNight/arki/unit/UnitComponent/Targetcache/FactionManager.as',
+    'tools/cf6-scene-completion/install_rules.py',
+
     'flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/source-manifest.json',
     'automation/start.ps1','launcher/src/Tasks/AgentControlTask.cs','launcher/src/Program.cs',
     'launcher/src/Tasks/BookshelfTask.cs','launcher/src/FixedWebViewRuntime.cs','launcher/webview2-runtime.lock.json',
     'scripts/类定义/org/flashNight/arki/ui/BookshelfPanelService.as',
     'scripts/类定义/org/flashNight/arki/scene/BookRunService.as',
+    'scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueService.as',
+    'scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueAppearance.as',
+    'launcher/src/Tasks/NativeDialogueTask.cs',
+    'launcher/src/Guardian/Dialogue/DialoguePortraitService.cs',
+    'launcher/src/Guardian/Dialogue/NativeDialogueSourceAssembler.cs',
+    'tools/cf6-elder-assets/ElderTransform.as',
+    'tools/cf6-elder-assets/ElderAI.as',
+    'flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头人形.xml',
+    'flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头机器人.xml',
     'scripts/类定义/org/flashNight/arki/scene/BookRunRules.as',
     'scripts/类定义/org/flashNight/arki/scene/BookDefinition.as',
     'scripts/类定义/org/flashNight/arki/scene/Cf6BossEncounter.as',
@@ -61,6 +137,7 @@ const FILES = [
     'data/stages/books/cf6-sting-source/choice-rewards.fragment.json',
     'data/stages/books/cf6-sting-source/economy.fragment.json','data/stages/books/cf6-sting-source/maps.fragment.json',
     'tools/cf6-prototype/balance-input.json','tools/cf6-prototype/build-chapter.py',
+    'tools/cf6-prototype/dialogue-portraits.json',
     'tools/cf6-prototype/viewport-policy.json','tools/cf6-prototype/viewport-assembly.py',
     'tools/cf6-prototype/generated/original-camera-layout.json',
     'tools/cf6-prototype/generated/assembly.json','tools/cf6-roguelike-content/build-sting-fragments.py',
@@ -176,7 +253,8 @@ function capture(root) {
         ref=relative(ref);inside(root,ref);
         const key=ref.toLowerCase();if(folded.has(key)&&folded.get(key)!==ref)throw Error('case-aliased closure resource: '+ref);
         folded.set(key,ref);pending.add(ref);
-        if(pending.size>4096)throw Error('closure resource count exceeded');
+        // Four full interactive timelines require a larger but finite whole-journey inventory.
+        if(pending.size>8192)throw Error('closure resource count exceeded');
         if(owner)edges.push({owner,target:ref,kind});return ref;
     }
     function read(ref){
@@ -188,7 +266,7 @@ function capture(root) {
         if(rows.has(ref)&&rows.get(ref).sha256!==row.sha256)throw Error('closure resource changed during discovery');
         rows.set(ref,row);return file.bytes;
     }
-    const json=ref=>JSON.parse(read(ref).toString('utf8').replace(/^\uFEFF/,''));
+    const json=ref=>parseStrictJson(read(ref).toString('utf8').replace(/^\uFEFF/,''),{maximumDepth:64});
     const digest=value=>typeof value==='string'&&/^[0-9a-f]{64}$/.test(value);
     function bound(row,base,owner,kind){
         if(!row||!digest(row.sha256))throw Error('invalid declared asset digest: '+owner);
@@ -290,11 +368,217 @@ function capture(root) {
         assetRows(media,base+'bitmaps/',geometryPath,'turret_media');
         sourceTree('flashswf/backgrounds/cf6/CF6_A01_Turret');
     }
+    function attributes(xml,tag){
+        if(/<!DOCTYPE|<!ENTITY/i.test(xml))throw Error('non-closed native XML');
+        const clean=xml.replace(/<!--[\s\S]*?-->|<!\[CDATA\[[\s\S]*?\]\]>/g,'');
+        return [...clean.matchAll(new RegExp('<(?:[A-Za-z_][\\w.-]*:)?'+tag+'\\b([^>]*)>','g'))].map(match=>{
+            const out={};for(const a of match[1].matchAll(/([\w:.-]+)\s*=\s*(["'])([\s\S]*?)\2/g)){
+                if(Object.hasOwn(out,a[1]))throw Error('duplicate native XML attribute');out[a[1]]=xmlText(a[3]);
+            }return out;
+        });
+    }
+    function nativeClosure(xfl,declared,owner){
+        const base=path.posix.dirname(relative(xfl));
+        const need=ref=>{ref=relative(ref);if(!declared.has(ref))throw Error('omitted native source dependency: '+ref);return read(ref).toString('utf8');};
+        need(xfl);need(base+'/PublishSettings.xml');const doc=need(base+'/DOMDocument.xml');
+        const includes=new Set(),media=new Set();
+        for(const item of attributes(doc,'Include')){
+            const ref=relative(base+'/LIBRARY/'+relative(item.href));if(includes.has(ref))throw Error('duplicate native Include');includes.add(ref);need(ref);
+        }
+        for(const item of attributes(doc,'DOMBitmapItem')){
+            if(typeof item.name!=='string'||media.has(item.name))throw Error('duplicate or invalid bitmap name');media.add(item.name);
+            need(base+'/LIBRARY/'+relative(item.href));need(base+'/bin/'+relative(item.bitmapDataHRef));
+        }
+        for(const ref of [base+'/DOMDocument.xml',...includes]){
+            const xml=need(ref);
+            for(const instance of attributes(xml,'DOMSymbolInstance')){
+                const target=relative(base+'/LIBRARY/'+relative(instance.libraryItemName)+'.xml');
+                if(!includes.has(target))throw Error('native symbol reference missing Include: '+target);
+            }
+            for(const instance of attributes(xml,'DOMBitmapInstance'))if(!media.has(instance.libraryItemName))throw Error('native bitmap reference missing media');
+            for(const fill of attributes(xml,'BitmapFill'))if(!media.has(fill.bitmapPath))throw Error('native fill reference missing media');
+        }
+    }
+    function tableEntries(table,owner,maximum=4096){
+        if(!table||Array.isArray(table)||typeof table!=='object'||!Object.keys(table).length||Object.keys(table).length>maximum)
+            throw Error('invalid scene asset table: '+owner);
+        const seen=new Set();return Object.entries(table).map(([raw,value])=>{
+            const ref=relative(raw),key=ref.toLowerCase();if(seen.has(key))throw Error('duplicate scene asset path: '+ref);seen.add(key);
+            if(ref===owner)throw Error('self-bound scene manifest');
+            const row=typeof value==='string'?{path:ref,sha256:value}:{...value,path:ref};
+            if(!digest(row.sha256))throw Error('invalid scene asset digest: '+ref);
+            return row;
+        });
+    }
+    function sceneManifest(ref,schema,used,kind){
+        const auxiliary=kind===true,interactive=kind==='interactive',transport=kind==='transport',textured=auxiliary||interactive||transport;
+        add(ref);const manifest=json(ref);
+        if((interactive||transport)&&manifest.originalSha256!==rows.get(ORIGINAL_SWF).sha256)throw Error(kind+' original source digest mismatch');
+        if(manifest.schema!==schema||!Array.isArray(manifest.assets)||!manifest.assets.length||manifest.assets.length>32)
+            throw Error('invalid native scene manifest');
+        const known=new Map(),names=new Set(),selected=[];
+        for(const asset of manifest.assets){
+            const name=asset.name;
+            if(typeof name!=='string'||!(transport?/^CF6_Transport1868$/:interactive?/^CF6_Interactive(?:Barrel(?:1736|1838|1976)|Pod1939)$/:auxiliary?/^CF6_Aux[A-Za-z0-9_]+$/:/^CF6_Traversal(?:1720|1729|1750)_(?:Back|Front|Mask)$/).test(name)
+                    ||auxiliary&&![1430,1862,1832].includes(asset.sourceSprite)||names.has(name.toLowerCase()))throw Error('invalid or duplicate native scene asset');
+            if(interactive&&(name!=='CF6_Interactive'+(asset.sourceSprite===1939?'Pod':'Barrel')+asset.sourceSprite
+                    ||![1736,1838,1976,1939].includes(asset.sourceSprite)||asset.frames!==(asset.sourceSprite===1939?25:16)))throw Error('invalid interactive sprite/frame binding');
+            if(transport&&(asset.sourceSprite!==1868||asset.frames!==29||asset.dispatchFrame!==29))throw Error('invalid transport sprite/frame binding');
+            names.add(name.toLowerCase());const base='flashswf/backgrounds/cf6/preparation/'+name;
+            if(asset.xfl!==base+'/'+name+'.xfl')throw Error('native scene XFL path mismatch');
+            const swf='flashswf/backgrounds/cf6/preparation/'+name+'.swf';
+            if(asset.swf!==undefined&&asset.swf!==swf)throw Error('native scene SWF path mismatch');
+            known.set(swf,asset);if(used.has(swf))selected.push(asset);
+        }
+        const prefix=transport?'CF6_Transport':interactive?'CF6_Interactive':auxiliary?'CF6_Aux':'CF6_Traversal';
+        for(const url of used)if(url.startsWith('flashswf/backgrounds/cf6/preparation/'+prefix)&&!known.has(url))throw Error('runtime native asset absent from manifest: '+url);
+        const inputs=tableEntries(manifest.inputs,ref),outputs=tableEntries(manifest.outputs,ref);
+        const seedName=transport?'CF6_TransportTextureSeed':interactive?'CF6_InteractiveTextureSeed':'CF6_AuxiliaryTextureSeed';
+        const seedBase='flashswf/backgrounds/cf6/preparation/'+seedName;
+        const seedRows=inputs.filter(row=>row.path.startsWith(seedBase+'/'));
+        if(transport&&(!seedRows.length||!inputs.some(row=>row.path===ORIGINAL_SWF&&row.sha256===manifest.originalSha256)))throw Error('omitted transport original or texture seed binding');
+        if(seedRows.length){
+            if(!textured||manifest.textureSeed!==seedBase+'/'+seedName+'.xfl')throw Error('invalid native texture seed binding');
+            const declared=new Set(seedRows.map(row=>row.path)),doc=seedBase+'/DOMDocument.xml';
+            if(!declared.has(doc))throw Error('omitted native texture seed descriptor');
+            const allowed=new Set([doc,seedBase+'/bin/SymDepend.cache']);
+            for(const item of attributes(read(doc).toString('utf8'),'DOMBitmapItem')){
+                const cache=seedBase+'/bin/'+relative(item.bitmapDataHRef);
+                if(!declared.has(cache))throw Error('omitted native texture seed cache: '+cache);
+                allowed.add(cache);
+            }
+            for(const row of seedRows)if(!allowed.has(row.path))throw Error('unreviewed native texture seed input: '+row.path);
+        }
+        for(const row of inputs){
+            if(!seedRows.includes(row)&&row.path!=='tools/cf6-prop-layout/scale-policy.json'&&!/^(tools\/(?:cf6-scene-completion|cf6-map-runtime|cf6-map-source|tesla-map-assets)\/|flashswf\/arts\/new\/Codex素材源稿\/CF6地图\/|flashswf\/backgrounds\/cf6\/CF6_A01_BG\/)/.test(row.path)||/\/(?:A07[^/]*|vehicle-art)(?:\/|$)/.test(row.path)||/\/(?:traversal-art-manifest|auxiliary-art-manifest|interactive-art-manifest|transport-art-manifest)\.json$/.test(row.path))throw Error('unreviewed native scene input path');
+        }
+        const fragments='tools/cf6-scene-completion/'+(transport?'transport-art':interactive?'interactive-art':'auxiliary-art')+'/';
+        const selectedNames=new Set(selected.map(a=>a.name));
+        const admitted=new Set();
+        for(const row of outputs){
+            if(!Number.isSafeInteger(row.bytes)||row.bytes<1||/\.swf$/i.test(row.path))throw Error('native output requires exact source size');
+            const native=manifest.assets.map(a=>a.name).find(name=>row.path.startsWith('flashswf/backgrounds/cf6/preparation/'+name+'/'));
+            const fragment=textured&&manifest.assets.map(a=>a.name).find(name=>row.path.startsWith(fragments+name+'/'));
+            const shared=textured&&(row.path.startsWith(fragments+'textures/')||row.path===fragments+'import-textures.jsfl');
+            if(!native&&!fragment&&!shared)throw Error('unreviewed native output path: '+row.path);
+            if(selectedNames.has(native)||selectedNames.has(fragment)||shared&&selected.length){bound(row,'',ref,'native_scene_output');admitted.add(row.path);}
+        }
+        if(selected.length)for(const row of inputs)bound(row,'',ref,'native_scene_input');
+        for(const asset of selected)nativeClosure(asset.xfl,admitted,ref);
+        return selected.length;
+    }
+    function propSources(used){
+        const base='tools/cf6-prop-layout/',recipePath=base+'recipe.json',depthPath=base+'depth-recipe.json';
+        const recipe=json(recipePath),depth=json(depthPath);
+        if(recipe.schema!=='cf6-prop-calibration-recipe.v1'||!Array.isArray(recipe.instances)||!recipe.instances.length||recipe.instances.length>1024
+                ||depth.schema!=='cf6-depth-prop-exclusions.v1'||typeof depth.enabled!=='boolean'||!Array.isArray(depth.groups))throw Error('invalid prop recipes');
+        const ids=new Map(),selectors=new Set(),pins=new Map(),parents=new Map();
+        for(const item of recipe.instances){
+            if(typeof item.id!=='string'||ids.has(item.id)||!/^flashswf\/backgrounds\/cf6\/CF6_(?:Tutorial|A\d{2})_BG$/.test(item.xflDirectory)
+                    ||typeof item.parentFile!=='string'||!/^LIBRARY\/.+\.xml$/.test(item.parentFile)||!Number.isSafeInteger(item.instanceIndex)||item.instanceIndex<0
+                    ||typeof item.symbol!=='string'||!item.symbol||!Number.isFinite(item.localVisualScale)||item.localVisualScale<=0
+                    ||!Array.isArray(item.pivotNative)||item.pivotNative.length!==2||!item.pivotNative.every(Number.isFinite))throw Error('invalid or duplicate calibrated instance');
+            const selector=item.xflDirectory+'/'+relative(item.parentFile)+'#'+item.instanceIndex;
+            if(selectors.has(selector))throw Error('duplicate calibrated instance selector');selectors.add(selector);ids.set(item.id,item);
+            if(typeof item.baseline!=='string'||!/^baselines\/[^/]+\.xml$/.test(item.baseline))throw Error('unreviewed prop baseline path');
+            const ref=relative(base+item.baseline);
+            if(pins.has(ref)&&pins.get(ref)!==item.baselineSha256)throw Error('conflicting prop baseline digest');pins.set(ref,item.baselineSha256);
+            bound({path:ref,sha256:item.baselineSha256},'',recipePath,'prop_baseline');
+            const instance=attributes(read(ref).toString('utf8'),'DOMSymbolInstance')[item.instanceIndex];
+            if(!instance||instance.libraryItemName!==item.symbol)throw Error('prop baseline selector mismatch');
+            const current=relative(item.xflDirectory+'/'+item.parentFile);add(current,recipePath,'calibrated_background');read(current);
+            const originalNames=attributes(read(ref).toString('utf8'),'DOMSymbolInstance').map(n=>n.libraryItemName);
+            if(parents.has(current)&&E.canonicalJson(parents.get(current))!==E.canonicalJson(originalNames))throw Error('conflicting background parent baselines');parents.set(current,originalNames);
+        }
+        const manifestPath=base+'generated/depth-props-manifest.json';add(manifestPath);const manifest=json(manifestPath);
+        if(manifest.schema!=='cf6-native-depth-props.v1'||!Array.isArray(manifest.groups)||manifest.groups.length>32)throw Error('invalid depth prop manifest');
+        const groups=new Map(),groupNames=new Set(),memberSet=new Set();
+        for(const group of manifest.groups){
+            const name=group.name,dir='flashswf/backgrounds/cf6/props/'+name;
+            if(typeof name!=='string'||!/^CF6_Prop_[A-Za-z0-9_]+$/.test(name)||groupNames.has(name.toLowerCase())||group.xfl!==dir+'/'+name+'.xfl'||group.swf!==dir+'.swf'
+                    ||!Array.isArray(group.files)||!group.files.length||group.files.length>2048||!Array.isArray(group.memberIds)||!group.memberIds.length)throw Error('invalid or duplicate depth prop group');
+            groups.set(name,group);groupNames.add(name.toLowerCase());
+            for(const id of group.memberIds){if(!ids.has(id)||memberSet.has(id))throw Error('unknown or duplicate depth prop member');memberSet.add(id);}
+            const seen=new Set();
+            for(const row of group.files){
+                const ref=relative(row.path);if(!ref.startsWith(dir+'/')||/\.swf$/i.test(ref)||seen.has(ref.toLowerCase())||!Number.isSafeInteger(row.bytes)||row.bytes<1)throw Error('invalid or duplicate depth source file');seen.add(ref.toLowerCase());
+            }
+            if(used.has(group.swf)){
+                const declared=new Set();for(const row of group.files){bound(row,'',manifestPath,'depth_prop_source');declared.add(relative(row.path));}
+                nativeClosure(group.xfl,declared,manifestPath);
+            }
+        }
+        for(const url of used)if(url.startsWith('flashswf/backgrounds/cf6/props/')&&![...groups.values()].some(g=>g.swf===url))throw Error('unbound depth prop runtime resource');
+        const active=new Set();
+        for(const group of depth.groups){
+            const declared=groups.get(group.name);
+            if(active.has(group.name)||!declared||group.swf!==declared.swf||!Array.isArray(group.memberIds)
+                    ||E.canonicalJson(group.memberIds)!==E.canonicalJson(declared.memberIds))throw Error('depth exclusions do not match extracted source');
+            active.add(group.name);if(depth.enabled&&!used.has(group.swf))throw Error('background prop excluded without runtime consumer');
+        }
+        for(const group of groups.values())if(used.has(group.swf)&&(!depth.enabled||!active.has(group.name)))throw Error('depth runtime prop still duplicated in background recipe');
+        const removed=new Map();
+        if(depth.enabled)for(const group of depth.groups)for(const id of group.memberIds){
+            const item=ids.get(id),parent=item.xflDirectory+'/'+item.parentFile;
+            if(!removed.has(parent))removed.set(parent,new Set());removed.get(parent).add(item.instanceIndex);
+        }
+        for(const [parent,names] of parents){
+            const expected=names.filter((_name,index)=>!removed.get(parent)?.has(index));
+            const actual=attributes(read(parent).toString('utf8'),'DOMSymbolInstance').map(n=>n.libraryItemName);
+            if(E.canonicalJson(expected)!==E.canonicalJson(actual))throw Error('calibrated background instance inventory mismatch: '+parent);
+        }
+
+    }
+    function sceneConsumers(){
+        const base='scripts/类定义/org/flashNight/arki/scene/',queue=FILES.filter(p=>p.startsWith(base)&&/\/Cf6[^/]+\.as$/.test(p)),seen=new Set();
+        while(queue.length){const ref=queue.shift();if(seen.has(ref))continue;seen.add(ref);if(seen.size>64)throw Error('CF6 consumer dependency bound exceeded');
+            const source=read(ref).toString('utf8').replace(/\/\*[\s\S]*?\*\/|\/\/[^\r\n]*/g,'');
+            for(const match of source.matchAll(/\borg\.flashNight\.arki\.scene\.(Cf6[A-Za-z0-9_]+)\b/g)){
+                const child=base+match[1]+'.as';if(child!==ref)add(child,ref,'cf6_scene_consumer');queue.push(child);
+            }
+        }
+    }
+    function scaleSources(){
+        const ref='tools/cf6-prop-layout/scale-policy.json',policy=json(ref);
+        const types=['敌人-CF6普通男僵尸','敌人-CF6女僵尸','敌人-CF6Wings','敌人-CF6特种兵',
+            '敌人-CF6持盾特种兵','敌人-CF6光头保安','敌人-CF6变身光头保安'];
+        if(policy.schema!=='cf6-local-scale-policy.v1'||!Array.isArray(policy.humanoids)
+            ||E.canonicalJson(policy.humanoids.map(row=>row.linkage))!==E.canonicalJson(types))throw Error('invalid bounded CF6 body scale source set');
+        for(const body of policy.humanoids){
+            const entries=Object.entries(body.nativeSources||{});
+            if(!entries.length||entries.length>128)throw Error('invalid native body source count');
+            for(const [raw,sha256] of entries){const target=relative(raw);
+                if(!/^flashswf\/arts\/new\/(?:Antigravity专用素材|CodexWings素材|Codex特种兵素材|Codex光头保安素材)\/LIBRARY\/.+\.xml$/.test(target))
+                    throw Error('unreviewed native body measurement input');
+                bound({path:target,sha256},'',ref,'native_body_measurement');
+            }
+        }
+    }
+    function portraitSources(chapter){
+        const chars=new Set(chapter.maps.flatMap(m=>(m.dialogue||[]).map(line=>line.char).filter(Boolean)));
+        if(!chars.size)return;
+        const base='launcher/web/assets/dialogue-portraits/',ref=base+'manifest.json';
+        add(ref,'data/stages/books/cf6-sting.runtime.json','dialogue_catalog');const catalog=json(ref);
+        for(const char of chars){
+            if(typeof char!=='string'||!/^Andy Law#[^#]{1,12}$/.test(char))throw Error('unreviewed CF6 dialogue portrait');
+            const expression=char.slice(9),asset=catalog.entries?.['Andy Law']?.expressions?.[expression];
+            if(!asset||!/^external\/p_[a-f0-9]+\/e_[a-f0-9]+\.webp$/.test(asset.uri))throw Error('missing exact CF6 dialogue expression');
+            bound({path:asset.uri,sha256:asset.sha256,bytes:asset.bytes},base,ref,'dialogue_expression');
+        }
+    }
     FILES.forEach(ref=>add(ref));
     const chapterPath='data/stages/books/cf6-sting.runtime.json';
     const chapter=JSON.parse(read(chapterPath).toString('utf8').replace(/^\uFEFF/,''));
     chapterResources(chapter).forEach(ref=>add(ref,chapterPath,'chapter_resource'));
     comicAssets();turretAssets();
+    scaleSources();portraitSources(chapter);
+    const used=new Set(chapterResources(chapter));
+    sceneConsumers();
+    sceneManifest('tools/cf6-scene-completion/traversal-art-manifest.json','cf6-traversal-native-source.v1',used,false);
+    sceneManifest('tools/cf6-scene-completion/auxiliary-art-manifest.json','cf6-auxiliary-native-source.v1',used,true);
+    sceneManifest('tools/cf6-scene-completion/interactive-art-manifest.json','cf6-interactive-native-source.v1',used,'interactive');
+    sceneManifest('tools/cf6-scene-completion/transport-art-manifest.json','cf6-transport-native-source.v1',used,'transport');
+    propSources(used);
     const cameraPath='tools/cf6-prototype/generated/original-camera-layout.json';
     const camera=JSON.parse(read(cameraPath).toString('utf8').replace(/^\uFEFF/,''));
     if(camera.schema!=='cf6-original-camera-layout.v1'||!Array.isArray(camera.maps)||!camera.maps.length||camera.maps.length>32)

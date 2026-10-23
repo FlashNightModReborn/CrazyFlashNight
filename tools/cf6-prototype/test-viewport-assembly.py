@@ -34,13 +34,31 @@ class ViewportTests(unittest.TestCase):
         cls.runtime = {m['id']: m for m in bc.read(bc.TOOLS/'cf6-map-runtime/generated/runtime-index.json')['maps']}
         cls.native = bc.read(bc.TOOLS/'cf6-map-source/generated/map-input.json')['maps']
 
-    def test_default_viewport_covered_for_all_21_maps(self):
-        self.assertEqual(list(self.maps), vp.ROUTE)
-        for mid in vp.ROUTE:
+    def test_default_viewport_covered_for_all_playable_rooms(self):
+        self.assertEqual(list(self.maps), [m for m in vp.ROUTE if m != 'A22'])
+        for mid in self.maps:
             env = self.env[Path(self.maps[mid]['background']).name]
             self.assertGreaterEqual(float(env.findtext('Width')), 1024)
             self.assertGreaterEqual(float(env.findtext('Height')), 512)
             self.assertAlmostEqual(self.maps[mid]['presentation']['scale'], 128/75)
+
+    def test_elder_finale_uses_native_successor_and_preserves_both_budgets(self):
+        human = self.maps['A20']
+        self.assertTrue(human['mechanism']['elderFinale'])
+        self.assertTrue(human['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0]['Parameters']['老头变身'])
+        original = {m['id']:m for m in bc.read(bc.SOURCE/'maps.fragment.json')['maps']}
+        for phase, expected in ((human['bossEncounter'],'A20'),(human['bossEncounter']['nextPhase'],'A22')):
+            self.assertEqual(sum(e['Quantity'] for g in phase['groups'] for e in g['enemies']),
+                             sum(e['Quantity'] for g in original[expected]['bossEncounter']['groups'] for e in g['enemies']))
+        self.assertEqual(human['bossEncounter']['nextPhase']['instanceName'],'cf6Boss_A20__elderbot')
+        self.assertNotIn('A22', self.maps)
+        self.assertNotIn('guidePoint', human['mechanism'])
+
+    def test_andy_lines_resolve_existing_expression_assets(self):
+        rows = [line for m in self.maps.values() for line in m['dialogue'] if line['speaker'] in ('Andy','Andy Law')]
+        self.assertEqual(len(rows),11)
+        self.assertTrue(all(line['char'].startswith('Andy Law#') for line in rows))
+        self.assertGreater(len({line['char'] for line in rows}),4)
 
     def test_actor_dimensions_and_build_are_unchanged(self):
         self.assertEqual(self.chapter['actor'], bc.read(bc.TOOLS/'cf6-actor-template/actor.fragment.json')['actor'])
@@ -105,7 +123,9 @@ class ViewportTests(unittest.TestCase):
         self.assertEqual(spec['fireFrameOffset'], 11)
         # 原生两点 (133.8,202.4)/(249.8,430.9) 乘装配倍率 128/75 恰一次;
         # 实例名只进装配审计,运行时规格不带 name(服务 load 模式自命名 holder)。
-        self.assertEqual([list(t) for t in spec['turrets']], [['x', 'y', 'facing']]*2)
+        self.assertEqual([list(t) for t in spec['turrets']], [['x', 'y', 'facing', 'ownFootprint']]*2)
+        self.assertEqual([t['ownFootprint'] for t in spec['turrets']],
+                         [[97.28,279.8933,354.9867,348.16],[303.7867,658.7733,544.4267,767.9147]])
         self.assertAlmostEqual(spec['turrets'][0]['x'], 228.352, places=4)
         self.assertAlmostEqual(spec['turrets'][0]['y'], 345.4293, places=4)
         self.assertAlmostEqual(spec['turrets'][1]['x'], 426.3253, places=4)

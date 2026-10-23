@@ -22,6 +22,28 @@
     "A17",
     "A18",
     "A19",
+    "A20"
+  ],
+  "sourceMaps": [
+    "TUTORIAL",
+    "A01",
+    "A02",
+    "A03",
+    "A04",
+    "A05",
+    "A06",
+    "A08",
+    "A09",
+    "A10",
+    "A11",
+    "A12",
+    "A13",
+    "A14",
+    "A15",
+    "A16",
+    "A17",
+    "A18",
+    "A19",
     "A20",
     "A22"
   ],
@@ -72,7 +94,7 @@
     },
     {
       "path": "tools/cf6-tutorial/provenance.json",
-      "sha256": "9be58d0270c5ed87943baf4511c55f6b0d27bf9f9ff274763ff4497a33caff58"
+      "sha256": "887844adc5d956e8473236fba90f33a4100dcd9cce4d57580a39febe669766f4"
     },
     {
       "path": "tools/cf6-tutorial/layout.json",
@@ -80,7 +102,7 @@
     },
     {
       "path": "tools/cf6-tutorial/assemble.py",
-      "sha256": "87664e3b7d425530568129839a3b5013901d1b7d6701d2836edbfa128cd46f9e"
+      "sha256": "fe42579aeb2d69cde1a02b31c9eeb3a140e8531fbbc36ce5ddbbfe475afc3aac"
     },
     {
       "path": "tools/cf6-prototype/viewport-policy.json",
@@ -93,6 +115,62 @@
     {
       "path": "tools/cf6-prototype/generated/original-camera-layout.json",
       "sha256": "97a3f44ed25d91acc82d4bf5003a98b5787f1f7502ad25eb9a6f5cbaa6e3fd1c"
+    },
+    {
+      "path": "tools/cf6-prototype/scene-assembly.py",
+      "sha256": "7759afb706057c7b3eab39492f0e778f1a29bcf92c9de41edda576eb0edbbbe3"
+    },
+    {
+      "path": "tools/cf6-scene-completion/completion-plan.json",
+      "sha256": "5c4553e7dbbedca9a43c9afa00505bf98f36f55f85da715d9bde18bbe2dff7db"
+    },
+    {
+      "path": "tools/cf6-scene-completion/traversal-art-manifest.json",
+      "sha256": "1633008d4a61ef3b45440da8fcb492b3962bb8a5057a82fd0a9a37a73c6a2acf"
+    },
+    {
+      "path": "tools/cf6-prop-layout/generated/depth-props.fragment.json",
+      "sha256": "64f69c204729d55db67f36885581b9dbee8e103cfb17696c889b2108ba283259"
+    },
+    {
+      "path": "tools/cf6-scene-completion/auxiliary-art-manifest.json",
+      "sha256": "54b0b02da896406beda2dad5ee68a93f1c9969a66b3392ad544676b19e14ff6c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/reference/environment-original-nodes.json",
+      "sha256": "133fd7aa4e2a84802ff4e7723a7da5d1fa0e0634f897ffa9abe3562888c80202"
+    },
+    {
+      "path": "tools/cf6-prop-layout/recipe.json",
+      "sha256": "e090ed623d1ca68ec3ae6cce5887ef1015b99ba91e4db477051eefb160926b9b"
+    },
+    {
+      "path": "tools/cf6-prop-layout/calibrate.py",
+      "sha256": "d9e5252e5b8b3435db33bb766a6a44783a04acebcdf257934329127356902ea9"
+    },
+    {
+      "path": "tools/cf6-prototype/interactive-assembly.py",
+      "sha256": "fd7d73fc8b09ed9a7d48c046d61b4c615d68e30bee41c76d77e8d20bc91c53de"
+    },
+    {
+      "path": "tools/cf6-scene-completion/interactive-art-manifest.json",
+      "sha256": "3d94e074328911b2a44000feee9ad4b8a047f25bb440bab416e8611a6823640f"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹/LIBRARY/手雷/地瓜手雷/地瓜手雷.xml",
+      "sha256": "9bd51eadd7d1446049abb65495b08126e9fea9d6314494dbf26897745201d825"
+    },
+    {
+      "path": "tools/cf6-scene-completion/source-evidence/actions/da8403d2135566583ef7baf6a1351c820f5bcb78a31c633a95066e239aa04e01.as.txt",
+      "sha256": "da8403d2135566583ef7baf6a1351c820f5bcb78a31c633a95066e239aa04e01"
+    },
+    {
+      "path": "tools/cf6-prototype/transport-assembly.py",
+      "sha256": "1800c4007c10a9b22f4fb59ccbcd258a8cd8e3dabb5aaee40a9b163c27d86da3"
+    },
+    {
+      "path": "tools/cf6-scene-completion/transport-art-manifest.json",
+      "sha256": "0a9b1ee0adf74544df9e9c02350b216c4087d0daa1dd71451dbb7d14a7e9e321"
     },
     {
       "path": "tools/cf6-tutorial/original-tutorial-geometry.json",
@@ -267,6 +345,10 @@
       "sha256": "f6523bf35879d68b8eb686959de5ea19e9f8453618c5ad8b66e339c8e5448dbe"
     },
     {
+      "path": "tools/cf6-prototype/spawn-assembly.py",
+      "sha256": "a7f367392205a5d0799187a7043c0f9c346fe9f92b8e4b5f291a793f4d33102c"
+    },
+    {
       "path": "data/skills/skills.xml",
       "sha256": "c1fd19aed12be870a78b6af1a1e533ac19d55bf5ab5ad6f92ff998d480767628"
     },
@@ -285,6 +367,14 @@
     {
       "path": "tools/cf6-tutorial-turrets/tutorial-turrets.fragment.json",
       "sha256": "a728ffd4bb29e3554c2408edc1751df1d7bee5948c19dbd4908d492c66a732d6"
+    },
+    {
+      "path": "tools/cf6-prototype/dialogue-portraits.json",
+      "sha256": "1863cc5abb78d0d985530cc69c303c3d31dd712a4cc5a14d617e94b2c4f07437"
+    },
+    {
+      "path": "launcher/web/assets/dialogue-portraits/manifest.json",
+      "sha256": "92a791191f1f4fae143da80b9295d66fcdf0255b6b884f6629c2cf085142d44e"
     },
     {
       "path": "data/items/消耗品_货币.xml",
@@ -456,7 +546,7 @@
     },
     {
       "path": "data/items/武器_手枪_霰弹枪.xml",
-      "sha256": "12dc32504dee18dffb0cc9df7902b892dab069417c4c5dee28b82ac43980b6ee"
+      "sha256": "b4e5318c0d737bd55b0866ce1c2b60085c8fffda33ebac8e8f09d1c4d00948d5"
     },
     {
       "path": "data/items/武器_长枪_冲锋枪.xml",
@@ -500,7 +590,7 @@
     },
     {
       "path": "data/items/武器_长枪_突击步枪.xml",
-      "sha256": "2c237308b5df33b3bf151ae5b9399eaa04755d8b513388fff31f4485292340a0"
+      "sha256": "49518dca381192198be35eec4f27ef6d8832f3317a11bd128868e1453ade4436"
     },
     {
       "path": "data/items/武器_长枪_近战.xml",
@@ -508,7 +598,7 @@
     },
     {
       "path": "data/items/武器_长枪_霰弹枪.xml",
-      "sha256": "5666c7d17611b0d7a682812d7718e6ff1a7b291be5cb3d9736ca46f63b5e8b19"
+      "sha256": "e078125801cd8305c4dc8a8748058a4df0ec07731840f78b783314536cb0015f"
     },
     {
       "path": "data/items/消耗品_书中配给.xml",
@@ -655,6 +745,2132 @@
     ],
     "fixedPickupsReplacedBySeededSources": []
   },
+  "dialoguePortraits": [
+    {
+      "mapId": "TUTORIAL",
+      "line": 0,
+      "char": "Andy Law#普通"
+    },
+    {
+      "mapId": "TUTORIAL",
+      "line": 1,
+      "char": "Andy Law#普通"
+    },
+    {
+      "mapId": "TUTORIAL",
+      "line": 2,
+      "char": "Andy Law#微笑"
+    },
+    {
+      "mapId": "A08",
+      "line": 2,
+      "char": "Andy Law#挑战"
+    },
+    {
+      "mapId": "A11",
+      "line": 0,
+      "char": "Andy Law#惊讶"
+    },
+    {
+      "mapId": "A11",
+      "line": 1,
+      "char": "Andy Law#侦察"
+    },
+    {
+      "mapId": "A11",
+      "line": 2,
+      "char": "Andy Law#严肃"
+    },
+    {
+      "mapId": "A14",
+      "line": 0,
+      "char": "Andy Law#侦察"
+    },
+    {
+      "mapId": "A14",
+      "line": 1,
+      "char": "Andy Law#愤怒"
+    },
+    {
+      "mapId": "A16",
+      "line": 0,
+      "char": "Andy Law#惊讶"
+    },
+    {
+      "mapId": "A16",
+      "line": 4,
+      "char": "Andy Law#愤怒"
+    }
+  ],
+  "elderFinale": {
+    "room": "A20",
+    "sourcePhases": [
+      "A20",
+      "A22"
+    ],
+    "successor": "cf6Boss_A20__elderbot",
+    "transitionFrames": 93,
+    "humanSupportBudget": 40,
+    "robotSupportBudget": 60,
+    "playableRooms": 20
+  },
+  "spawnAssembly": {
+    "schema": "cf6-spawn-assembly.v1",
+    "intervalMs": 400,
+    "phaseMs": 200,
+    "wheelQuantumMs": 100,
+    "recurringEffectiveMs": 500,
+    "waveQueues": [
+      {
+        "mapId": "A01",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 5,
+        "event": null
+      },
+      {
+        "mapId": "A01",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 5,
+        "event": null
+      },
+      {
+        "mapId": "A01",
+        "waveIndex": 3,
+        "entryIndex": 0,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 5,
+        "event": null
+      },
+      {
+        "mapId": "A01",
+        "waveIndex": 4,
+        "entryIndex": 0,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A03",
+        "waveIndex": 0,
+        "entryIndex": 5,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 5,
+        "event": null
+      },
+      {
+        "mapId": "A04",
+        "waveIndex": 0,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 5,
+        "event": null
+      },
+      {
+        "mapId": "A04",
+        "waveIndex": 0,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 15,
+        "event": null
+      },
+      {
+        "mapId": "A09",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 400,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 5,
+        "event": {
+          "EventName": "Cf6TransportReady",
+          "Parameters": [
+            "A09-transport-112"
+          ]
+        }
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 0,
+        "entryIndex": 5,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 10,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 400,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 7,
+        "event": {
+          "EventName": "Cf6TransportReady",
+          "Parameters": [
+            "A14-transport-505"
+          ]
+        }
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 400,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 5,
+        "event": {
+          "EventName": "Cf6TransportReady",
+          "Parameters": [
+            "A18-transport-147"
+          ]
+        }
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 0,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 5,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 0,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 10,
+        "event": null
+      }
+    ],
+    "spawnPoints": [
+      {
+        "mapId": "A01",
+        "index": 0,
+        "entrance": "existing-right-edge-with-original-cap",
+        "position": [
+          1337.9413,
+          551.424
+        ],
+        "quantityMax": 5,
+        "bias": [
+          0,
+          0
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "cadence only; jitter envelope not proven safe"
+      },
+      {
+        "mapId": "A01",
+        "index": 1,
+        "entrance": "existing-right-edge-with-original-cap",
+        "position": [
+          1337.9413,
+          551.424
+        ],
+        "quantityMax": 5,
+        "bias": [
+          0,
+          0
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "cadence only; jitter envelope not proven safe"
+      },
+      {
+        "mapId": "A01",
+        "index": 2,
+        "entrance": "existing-right-edge-with-original-cap",
+        "position": [
+          1337.9413,
+          551.424
+        ],
+        "quantityMax": 5,
+        "bias": [
+          0,
+          0
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "cadence only; jitter envelope not proven safe"
+      },
+      {
+        "mapId": "A01",
+        "index": 3,
+        "entrance": "existing-right-edge-with-original-cap",
+        "position": [
+          1337.9413,
+          551.424
+        ],
+        "quantityMax": 5,
+        "bias": [
+          0,
+          0
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "cadence only; jitter envelope not proven safe"
+      },
+      {
+        "mapId": "A03",
+        "index": 0,
+        "entrance": "wood1714-21",
+        "position": [
+          895.1467,
+          359.936
+        ],
+        "quantityMax": 2,
+        "bias": [
+          8,
+          4
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A04",
+        "index": 0,
+        "entrance": "wood1714-21",
+        "position": [
+          895.1467,
+          359.936
+        ],
+        "quantityMax": 2,
+        "bias": [
+          8,
+          4
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A04",
+        "index": 1,
+        "entrance": "wood1714-89",
+        "position": [
+          1586.3467,
+          359.936
+        ],
+        "quantityMax": 5,
+        "bias": [
+          8,
+          4
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A09",
+        "index": 0,
+        "entrance": "A09-transport-112",
+        "position": [
+          1188.6933,
+          444.2453
+        ],
+        "quantityMax": 2,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A12",
+        "index": 0,
+        "entrance": "A12-aux-1862-167",
+        "position": [
+          1053.8667,
+          368.128
+        ],
+        "quantityMax": 3,
+        "bias": [
+          0,
+          0
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "cadence only; jitter envelope not proven safe"
+      },
+      {
+        "mapId": "A14",
+        "index": 0,
+        "entrance": "A14-transport-505",
+        "position": [
+          1891.6693,
+          486.5707
+        ],
+        "quantityMax": 2,
+        "bias": [
+          0,
+          0
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "cadence only; jitter envelope not proven safe"
+      },
+      {
+        "mapId": "A18",
+        "index": 0,
+        "entrance": "A18-transport-147",
+        "position": [
+          1461.76,
+          366.2507
+        ],
+        "quantityMax": 2,
+        "bias": [
+          12,
+          6
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A19",
+        "index": 0,
+        "entrance": "A19-aux-1862-62",
+        "position": [
+          2212.6933,
+          410.624
+        ],
+        "quantityMax": 2,
+        "bias": [
+          12,
+          6
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A19",
+        "index": 1,
+        "entrance": "A19-aux-1862-54",
+        "position": [
+          929.4507,
+          293.888
+        ],
+        "quantityMax": 3,
+        "bias": [
+          0,
+          0
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "cadence only; jitter envelope not proven safe"
+      }
+    ],
+    "bossEntries": [
+      {
+        "mapId": "A06",
+        "phase": 0,
+        "group": 0,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          949.76,
+          449.7067
+        ],
+        "after": [
+          102.4,
+          449.7067
+        ],
+        "quantity": 1,
+        "line": [
+          100.6933,
+          358.4,
+          104.1067,
+          750.9333
+        ],
+        "footEnvelope": [
+          90.4,
+          443.7067,
+          114.4,
+          455.7067
+        ],
+        "entrance": "left-validated-edge"
+      },
+      {
+        "mapId": "A06",
+        "phase": 0,
+        "group": 0,
+        "entry": 1,
+        "side": "left",
+        "before": [
+          712.3627,
+          440.832
+        ],
+        "after": [
+          102.4,
+          440.832
+        ],
+        "quantity": 1,
+        "line": [
+          100.6933,
+          358.4,
+          104.1067,
+          750.9333
+        ],
+        "footEnvelope": [
+          90.4,
+          434.832,
+          114.4,
+          446.832
+        ],
+        "entrance": "left-validated-edge"
+      },
+      {
+        "mapId": "A06",
+        "phase": 0,
+        "group": 0,
+        "entry": 2,
+        "side": "right",
+        "before": [
+          2157.9093,
+          475.648
+        ],
+        "after": [
+          2542.9334,
+          475.648
+        ],
+        "quantity": 1,
+        "line": [
+          2541.2267,
+          358.4,
+          2544.64,
+          750.9333
+        ],
+        "footEnvelope": [
+          2530.9334,
+          469.648,
+          2554.9334,
+          481.648
+        ],
+        "entrance": "right-validated-edge"
+      },
+      {
+        "mapId": "A06",
+        "phase": 0,
+        "group": 0,
+        "entry": 3,
+        "side": "right",
+        "before": [
+          2172.928,
+          633.344
+        ],
+        "after": [
+          2542.9334,
+          633.344
+        ],
+        "quantity": 1,
+        "line": [
+          2541.2267,
+          358.4,
+          2544.64,
+          750.9333
+        ],
+        "footEnvelope": [
+          2530.9334,
+          627.344,
+          2554.9334,
+          639.344
+        ],
+        "entrance": "right-validated-edge"
+      },
+      {
+        "mapId": "A06",
+        "phase": 0,
+        "group": 0,
+        "entry": 4,
+        "side": "left",
+        "before": [
+          625.152,
+          648.8747
+        ],
+        "after": [
+          102.4,
+          648.8747
+        ],
+        "quantity": 1,
+        "line": [
+          100.6933,
+          358.4,
+          104.1067,
+          750.9333
+        ],
+        "footEnvelope": [
+          90.4,
+          642.8747,
+          114.4,
+          654.8747
+        ],
+        "entrance": "left-validated-edge"
+      },
+      {
+        "mapId": "A06",
+        "phase": 0,
+        "group": 0,
+        "entry": 5,
+        "side": "left",
+        "before": [
+          8.5333,
+          521.216
+        ],
+        "after": [
+          102.4,
+          521.216
+        ],
+        "quantity": 1,
+        "line": [
+          100.6933,
+          358.4,
+          104.1067,
+          750.9333
+        ],
+        "footEnvelope": [
+          90.4,
+          515.216,
+          114.4,
+          527.216
+        ],
+        "entrance": "left-validated-edge"
+      },
+      {
+        "mapId": "A06",
+        "phase": 0,
+        "group": 0,
+        "entry": 6,
+        "side": "right",
+        "before": [
+          2545.8347,
+          521.216
+        ],
+        "after": [
+          2542.9334,
+          521.216
+        ],
+        "quantity": 1,
+        "line": [
+          2541.2267,
+          358.4,
+          2544.64,
+          750.9333
+        ],
+        "footEnvelope": [
+          2530.9334,
+          515.216,
+          2554.9334,
+          527.216
+        ],
+        "entrance": "right-validated-edge"
+      },
+      {
+        "mapId": "A06",
+        "phase": 0,
+        "group": 1,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          102.4,
+          554.6667
+        ],
+        "quantity": 4,
+        "line": [
+          100.6933,
+          358.4,
+          104.1067,
+          750.9333
+        ],
+        "footEnvelope": [
+          90.4,
+          548.6667,
+          114.4,
+          560.6667
+        ],
+        "entrance": "left-validated-edge"
+      },
+      {
+        "mapId": "A06",
+        "phase": 0,
+        "group": 1,
+        "entry": 1,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          2542.9334,
+          554.6667
+        ],
+        "quantity": 4,
+        "line": [
+          2541.2267,
+          358.4,
+          2544.64,
+          750.9333
+        ],
+        "footEnvelope": [
+          2530.9334,
+          548.6667,
+          2554.9334,
+          560.6667
+        ],
+        "entrance": "right-validated-edge"
+      },
+      {
+        "mapId": "A06",
+        "phase": 0,
+        "group": 2,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          102.4,
+          554.6667
+        ],
+        "quantity": 4,
+        "line": [
+          100.6933,
+          358.4,
+          104.1067,
+          750.9333
+        ],
+        "footEnvelope": [
+          90.4,
+          548.6667,
+          114.4,
+          560.6667
+        ],
+        "entrance": "left-validated-edge"
+      },
+      {
+        "mapId": "A06",
+        "phase": 0,
+        "group": 2,
+        "entry": 1,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          2542.9334,
+          554.6667
+        ],
+        "quantity": 4,
+        "line": [
+          2541.2267,
+          358.4,
+          2544.64,
+          750.9333
+        ],
+        "footEnvelope": [
+          2530.9334,
+          548.6667,
+          2554.9334,
+          560.6667
+        ],
+        "entrance": "right-validated-edge"
+      },
+      {
+        "mapId": "A06",
+        "phase": 0,
+        "group": 3,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          102.4,
+          554.6667
+        ],
+        "quantity": 3,
+        "line": [
+          100.6933,
+          358.4,
+          104.1067,
+          750.9333
+        ],
+        "footEnvelope": [
+          90.4,
+          548.6667,
+          114.4,
+          560.6667
+        ],
+        "entrance": "left-validated-edge"
+      },
+      {
+        "mapId": "A06",
+        "phase": 0,
+        "group": 3,
+        "entry": 1,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          2542.9334,
+          554.6667
+        ],
+        "quantity": 3,
+        "line": [
+          2541.2267,
+          358.4,
+          2544.64,
+          750.9333
+        ],
+        "footEnvelope": [
+          2530.9334,
+          548.6667,
+          2554.9334,
+          560.6667
+        ],
+        "entrance": "right-validated-edge"
+      },
+      {
+        "mapId": "A06",
+        "phase": 0,
+        "group": 4,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          102.4,
+          554.6667
+        ],
+        "quantity": 3,
+        "line": [
+          100.6933,
+          358.4,
+          104.1067,
+          750.9333
+        ],
+        "footEnvelope": [
+          90.4,
+          548.6667,
+          114.4,
+          560.6667
+        ],
+        "entrance": "left-validated-edge"
+      },
+      {
+        "mapId": "A06",
+        "phase": 0,
+        "group": 4,
+        "entry": 1,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          2542.9334,
+          554.6667
+        ],
+        "quantity": 3,
+        "line": [
+          2541.2267,
+          358.4,
+          2544.64,
+          750.9333
+        ],
+        "footEnvelope": [
+          2530.9334,
+          548.6667,
+          2554.9334,
+          560.6667
+        ],
+        "entrance": "right-validated-edge"
+      },
+      {
+        "mapId": "A17",
+        "phase": 0,
+        "group": 0,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          274.944,
+          635.904
+        ],
+        "after": [
+          102.4,
+          635.904
+        ],
+        "quantity": 1,
+        "line": [
+          100.6933,
+          452.2667,
+          104.1067,
+          861.8667
+        ],
+        "footEnvelope": [
+          90.4,
+          629.904,
+          114.4,
+          641.904
+        ],
+        "entrance": "left-validated-edge"
+      },
+      {
+        "mapId": "A17",
+        "phase": 0,
+        "group": 0,
+        "entry": 1,
+        "side": "left",
+        "before": [
+          192.512,
+          731.3067
+        ],
+        "after": [
+          102.4,
+          731.3067
+        ],
+        "quantity": 1,
+        "line": [
+          100.6933,
+          452.2667,
+          104.1067,
+          861.8667
+        ],
+        "footEnvelope": [
+          90.4,
+          725.3067,
+          114.4,
+          737.3067
+        ],
+        "entrance": "left-validated-edge"
+      },
+      {
+        "mapId": "A17",
+        "phase": 0,
+        "group": 0,
+        "entry": 2,
+        "side": "right",
+        "before": [
+          2212.1813,
+          765.2693
+        ],
+        "after": [
+          2542.9334,
+          765.2693
+        ],
+        "quantity": 1,
+        "line": [
+          2541.2267,
+          452.2667,
+          2544.64,
+          861.8667
+        ],
+        "footEnvelope": [
+          2530.9334,
+          759.2693,
+          2554.9334,
+          771.2693
+        ],
+        "entrance": "right-validated-edge"
+      },
+      {
+        "mapId": "A17",
+        "phase": 0,
+        "group": 0,
+        "entry": 3,
+        "side": "left",
+        "before": [
+          422.7413,
+          799.5733
+        ],
+        "after": [
+          102.4,
+          799.5733
+        ],
+        "quantity": 1,
+        "line": [
+          100.6933,
+          452.2667,
+          104.1067,
+          861.8667
+        ],
+        "footEnvelope": [
+          90.4,
+          793.5733,
+          114.4,
+          805.5733
+        ],
+        "entrance": "left-validated-edge"
+      },
+      {
+        "mapId": "A17",
+        "phase": 0,
+        "group": 0,
+        "entry": 4,
+        "side": "right",
+        "before": [
+          2330.2827,
+          664.9173
+        ],
+        "after": [
+          2542.9334,
+          664.9173
+        ],
+        "quantity": 1,
+        "line": [
+          2541.2267,
+          452.2667,
+          2544.64,
+          861.8667
+        ],
+        "footEnvelope": [
+          2530.9334,
+          658.9173,
+          2554.9334,
+          670.9173
+        ],
+        "entrance": "right-validated-edge"
+      },
+      {
+        "mapId": "A17",
+        "phase": 0,
+        "group": 0,
+        "entry": 10,
+        "side": "left",
+        "before": [
+          6.8267,
+          631.296
+        ],
+        "after": [
+          102.4,
+          631.296
+        ],
+        "quantity": 1,
+        "line": [
+          100.6933,
+          452.2667,
+          104.1067,
+          861.8667
+        ],
+        "footEnvelope": [
+          90.4,
+          625.296,
+          114.4,
+          637.296
+        ],
+        "entrance": "left-validated-edge"
+      },
+      {
+        "mapId": "A17",
+        "phase": 0,
+        "group": 0,
+        "entry": 11,
+        "side": "right",
+        "before": [
+          2640.0427,
+          710.4853
+        ],
+        "after": [
+          2542.9334,
+          710.4853
+        ],
+        "quantity": 1,
+        "line": [
+          2541.2267,
+          452.2667,
+          2544.64,
+          861.8667
+        ],
+        "footEnvelope": [
+          2530.9334,
+          704.4853,
+          2554.9334,
+          716.4853
+        ],
+        "entrance": "right-validated-edge"
+      },
+      {
+        "mapId": "A17",
+        "phase": 0,
+        "group": 1,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          102.4,
+          657.0667
+        ],
+        "quantity": 4,
+        "line": [
+          100.6933,
+          452.2667,
+          104.1067,
+          861.8667
+        ],
+        "footEnvelope": [
+          90.4,
+          651.0667,
+          114.4,
+          663.0667
+        ],
+        "entrance": "left-validated-edge"
+      },
+      {
+        "mapId": "A17",
+        "phase": 0,
+        "group": 1,
+        "entry": 1,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          2542.9334,
+          657.0667
+        ],
+        "quantity": 4,
+        "line": [
+          2541.2267,
+          452.2667,
+          2544.64,
+          861.8667
+        ],
+        "footEnvelope": [
+          2530.9334,
+          651.0667,
+          2554.9334,
+          663.0667
+        ],
+        "entrance": "right-validated-edge"
+      },
+      {
+        "mapId": "A17",
+        "phase": 0,
+        "group": 2,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          102.4,
+          657.0667
+        ],
+        "quantity": 4,
+        "line": [
+          100.6933,
+          452.2667,
+          104.1067,
+          861.8667
+        ],
+        "footEnvelope": [
+          90.4,
+          651.0667,
+          114.4,
+          663.0667
+        ],
+        "entrance": "left-validated-edge"
+      },
+      {
+        "mapId": "A17",
+        "phase": 0,
+        "group": 2,
+        "entry": 1,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          2542.9334,
+          657.0667
+        ],
+        "quantity": 4,
+        "line": [
+          2541.2267,
+          452.2667,
+          2544.64,
+          861.8667
+        ],
+        "footEnvelope": [
+          2530.9334,
+          651.0667,
+          2554.9334,
+          663.0667
+        ],
+        "entrance": "right-validated-edge"
+      },
+      {
+        "mapId": "A17",
+        "phase": 0,
+        "group": 3,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          102.4,
+          657.0667
+        ],
+        "quantity": 3,
+        "line": [
+          100.6933,
+          452.2667,
+          104.1067,
+          861.8667
+        ],
+        "footEnvelope": [
+          90.4,
+          651.0667,
+          114.4,
+          663.0667
+        ],
+        "entrance": "left-validated-edge"
+      },
+      {
+        "mapId": "A17",
+        "phase": 0,
+        "group": 3,
+        "entry": 1,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          2542.9334,
+          657.0667
+        ],
+        "quantity": 3,
+        "line": [
+          2541.2267,
+          452.2667,
+          2544.64,
+          861.8667
+        ],
+        "footEnvelope": [
+          2530.9334,
+          651.0667,
+          2554.9334,
+          663.0667
+        ],
+        "entrance": "right-validated-edge"
+      },
+      {
+        "mapId": "A17",
+        "phase": 0,
+        "group": 4,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          102.4,
+          657.0667
+        ],
+        "quantity": 3,
+        "line": [
+          100.6933,
+          452.2667,
+          104.1067,
+          861.8667
+        ],
+        "footEnvelope": [
+          90.4,
+          651.0667,
+          114.4,
+          663.0667
+        ],
+        "entrance": "left-validated-edge"
+      },
+      {
+        "mapId": "A17",
+        "phase": 0,
+        "group": 4,
+        "entry": 1,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          2542.9334,
+          657.0667
+        ],
+        "quantity": 3,
+        "line": [
+          2541.2267,
+          452.2667,
+          2544.64,
+          861.8667
+        ],
+        "footEnvelope": [
+          2530.9334,
+          651.0667,
+          2554.9334,
+          663.0667
+        ],
+        "entrance": "right-validated-edge"
+      },
+      {
+        "mapId": "A20",
+        "phase": 0,
+        "group": 0,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          314.88,
+          303.104
+        ],
+        "after": [
+          314.88,
+          303.104
+        ],
+        "quantity": 2,
+        "entrance": "A20-aux-1862-51",
+        "sourceDoorPosition": [
+          314.88,
+          303.104
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 0,
+        "group": 0,
+        "entry": 1,
+        "side": "right",
+        "before": [
+          2414.7627,
+          777.728
+        ],
+        "after": [
+          2414.7627,
+          777.728
+        ],
+        "quantity": 2,
+        "entrance": "A20-aux-1862-75",
+        "sourceDoorPosition": [
+          2414.7627,
+          777.728
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 0,
+        "group": 0,
+        "entry": 2,
+        "side": "right",
+        "before": [
+          1884.16,
+          385.3653
+        ],
+        "after": [
+          1884.16,
+          385.3653
+        ],
+        "quantity": 1,
+        "entrance": "A20-aux-1862-59",
+        "sourceDoorPosition": [
+          1884.16,
+          385.3653
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 0,
+        "group": 0,
+        "entry": 3,
+        "side": "right",
+        "before": [
+          2135.04,
+          578.2187
+        ],
+        "after": [
+          2135.04,
+          578.2187
+        ],
+        "quantity": 1,
+        "entrance": "A20-aux-1862-67",
+        "sourceDoorPosition": [
+          2135.04,
+          578.2187
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 0,
+        "group": 1,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          314.88,
+          303.104
+        ],
+        "quantity": 4,
+        "entrance": "A20-aux-1862-51",
+        "sourceDoorPosition": [
+          314.88,
+          303.104
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 0,
+        "group": 1,
+        "entry": 1,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          2135.04,
+          578.2187
+        ],
+        "quantity": 4,
+        "entrance": "A20-aux-1862-67",
+        "sourceDoorPosition": [
+          2135.04,
+          578.2187
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 0,
+        "group": 1,
+        "entry": 2,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          314.88,
+          303.104
+        ],
+        "quantity": 2,
+        "entrance": "A20-aux-1862-51",
+        "sourceDoorPosition": [
+          314.88,
+          303.104
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 0,
+        "group": 1,
+        "entry": 3,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          2414.7627,
+          777.728
+        ],
+        "quantity": 2,
+        "entrance": "A20-aux-1862-75",
+        "sourceDoorPosition": [
+          2414.7627,
+          777.728
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 0,
+        "group": 2,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          314.88,
+          303.104
+        ],
+        "quantity": 5,
+        "entrance": "A20-aux-1862-51",
+        "sourceDoorPosition": [
+          314.88,
+          303.104
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 0,
+        "group": 2,
+        "entry": 1,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          2135.04,
+          578.2187
+        ],
+        "quantity": 5,
+        "entrance": "A20-aux-1862-67",
+        "sourceDoorPosition": [
+          2135.04,
+          578.2187
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 0,
+        "group": 2,
+        "entry": 2,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          314.88,
+          303.104
+        ],
+        "quantity": 1,
+        "entrance": "A20-aux-1862-51",
+        "sourceDoorPosition": [
+          314.88,
+          303.104
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 0,
+        "group": 2,
+        "entry": 3,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          2414.7627,
+          777.728
+        ],
+        "quantity": 1,
+        "entrance": "A20-aux-1862-75",
+        "sourceDoorPosition": [
+          2414.7627,
+          777.728
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 0,
+        "group": 3,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          314.88,
+          303.104
+        ],
+        "quantity": 5,
+        "entrance": "A20-aux-1862-51",
+        "sourceDoorPosition": [
+          314.88,
+          303.104
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 0,
+        "group": 3,
+        "entry": 1,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          2135.04,
+          578.2187
+        ],
+        "quantity": 5,
+        "entrance": "A20-aux-1862-67",
+        "sourceDoorPosition": [
+          2135.04,
+          578.2187
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 1,
+        "group": 0,
+        "entry": 0,
+        "side": "right",
+        "before": [
+          2414.7627,
+          777.728
+        ],
+        "after": [
+          2414.7627,
+          777.728
+        ],
+        "quantity": 1,
+        "entrance": "A20-aux-1862-75",
+        "sourceDoorPosition": [
+          2414.7627,
+          777.728
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 1,
+        "group": 0,
+        "entry": 1,
+        "side": "right",
+        "before": [
+          1884.16,
+          385.3653
+        ],
+        "after": [
+          1884.16,
+          385.3653
+        ],
+        "quantity": 1,
+        "entrance": "A20-aux-1862-59",
+        "sourceDoorPosition": [
+          1884.16,
+          385.3653
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 1,
+        "group": 0,
+        "entry": 2,
+        "side": "right",
+        "before": [
+          2135.04,
+          578.2187
+        ],
+        "after": [
+          2135.04,
+          578.2187
+        ],
+        "quantity": 1,
+        "entrance": "A20-aux-1862-67",
+        "sourceDoorPosition": [
+          2135.04,
+          578.2187
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 1,
+        "group": 0,
+        "entry": 3,
+        "side": "left",
+        "before": [
+          314.88,
+          303.104
+        ],
+        "after": [
+          314.88,
+          303.104
+        ],
+        "quantity": 1,
+        "entrance": "A20-aux-1862-51",
+        "sourceDoorPosition": [
+          314.88,
+          303.104
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 1,
+        "group": 1,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          314.88,
+          303.104
+        ],
+        "quantity": 5,
+        "entrance": "A20-aux-1862-51",
+        "sourceDoorPosition": [
+          314.88,
+          303.104
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 1,
+        "group": 1,
+        "entry": 1,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          1884.16,
+          385.3653
+        ],
+        "quantity": 5,
+        "entrance": "A20-aux-1862-59",
+        "sourceDoorPosition": [
+          1884.16,
+          385.3653
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 1,
+        "group": 1,
+        "entry": 2,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          314.88,
+          303.104
+        ],
+        "quantity": 5,
+        "entrance": "A20-aux-1862-51",
+        "sourceDoorPosition": [
+          314.88,
+          303.104
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 1,
+        "group": 1,
+        "entry": 3,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          1884.16,
+          385.3653
+        ],
+        "quantity": 5,
+        "entrance": "A20-aux-1862-59",
+        "sourceDoorPosition": [
+          1884.16,
+          385.3653
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 1,
+        "group": 2,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          314.88,
+          303.104
+        ],
+        "quantity": 5,
+        "entrance": "A20-aux-1862-51",
+        "sourceDoorPosition": [
+          314.88,
+          303.104
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 1,
+        "group": 2,
+        "entry": 1,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          1884.16,
+          385.3653
+        ],
+        "quantity": 5,
+        "entrance": "A20-aux-1862-59",
+        "sourceDoorPosition": [
+          1884.16,
+          385.3653
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 1,
+        "group": 2,
+        "entry": 2,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          314.88,
+          303.104
+        ],
+        "quantity": 5,
+        "entrance": "A20-aux-1862-51",
+        "sourceDoorPosition": [
+          314.88,
+          303.104
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 1,
+        "group": 2,
+        "entry": 3,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          1884.16,
+          385.3653
+        ],
+        "quantity": 5,
+        "entrance": "A20-aux-1862-59",
+        "sourceDoorPosition": [
+          1884.16,
+          385.3653
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 1,
+        "group": 3,
+        "entry": 0,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          314.88,
+          303.104
+        ],
+        "quantity": 4,
+        "entrance": "A20-aux-1862-51",
+        "sourceDoorPosition": [
+          314.88,
+          303.104
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 1,
+        "group": 3,
+        "entry": 1,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          1884.16,
+          385.3653
+        ],
+        "quantity": 4,
+        "entrance": "A20-aux-1862-59",
+        "sourceDoorPosition": [
+          1884.16,
+          385.3653
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 1,
+        "group": 3,
+        "entry": 2,
+        "side": "left",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          314.88,
+          303.104
+        ],
+        "quantity": 4,
+        "entrance": "A20-aux-1862-51",
+        "sourceDoorPosition": [
+          314.88,
+          303.104
+        ]
+      },
+      {
+        "mapId": "A20",
+        "phase": 1,
+        "group": 3,
+        "entry": 3,
+        "side": "right",
+        "before": [
+          null,
+          null
+        ],
+        "after": [
+          1884.16,
+          385.3653
+        ],
+        "quantity": 4,
+        "entrance": "A20-aux-1862-59",
+        "sourceDoorPosition": [
+          1884.16,
+          385.3653
+        ]
+      }
+    ],
+    "authorityBeforeSha256": "914ddc4e8701b788492a7d26fe801b17c4e7b4852617b8ee7aaec13958cf4feb",
+    "authorityAfterSha256": "914ddc4e8701b788492a7d26fe801b17c4e7b4852617b8ee7aaec13958cf4feb",
+    "preservedInitialEntries": 56,
+    "preservedInitialSha256": "7a8852093cc95b26d0fe131e26c7daa46c227f25acac24909dca89f57d6b2904",
+    "preservedPodEntries": 10,
+    "preservedPodSha256": "475ffdf5835f69cb2be2170976bfe477afbf5ddf1315a43fecad2a9cf8897097"
+  },
+  "exitGuidance": [
+    {
+      "mapId": "TUTORIAL",
+      "basis": "actual exit rectangle; free 36x18 actor foot area",
+      "point": {
+        "x": 1646.9333,
+        "z": 742.4,
+        "direction": "右"
+      }
+    },
+    {
+      "mapId": "A01",
+      "basis": "actual exit rectangle; free 36x18 actor foot area",
+      "point": {
+        "x": 1305.6,
+        "z": 516.2667,
+        "direction": "右"
+      }
+    },
+    {
+      "mapId": "A02",
+      "basis": "actual exit rectangle; free 36x18 actor foot area",
+      "point": {
+        "x": 2090.6667,
+        "z": 546.1333,
+        "direction": "右"
+      }
+    },
+    {
+      "mapId": "A03",
+      "basis": "authored traversal acquisition gate"
+    },
+    {
+      "mapId": "A04",
+      "basis": "authored traversal acquisition gate"
+    },
+    {
+      "mapId": "A05",
+      "basis": "authored traversal acquisition gate"
+    },
+    {
+      "mapId": "A06",
+      "basis": "actual exit rectangle; free 36x18 actor foot area",
+      "point": {
+        "x": 2517.3333,
+        "z": 558.9334,
+        "direction": "右"
+      }
+    },
+    {
+      "mapId": "A08",
+      "basis": "authored traversal acquisition gate"
+    },
+    {
+      "mapId": "A09",
+      "basis": "authored traversal acquisition gate"
+    },
+    {
+      "mapId": "A10",
+      "basis": "authored traversal acquisition gate"
+    },
+    {
+      "mapId": "A11",
+      "basis": "actual exit rectangle; free 36x18 actor foot area",
+      "point": {
+        "x": 120.32,
+        "z": 603.651,
+        "direction": "左"
+      }
+    },
+    {
+      "mapId": "A12",
+      "basis": "authored traversal acquisition gate"
+    },
+    {
+      "mapId": "A13",
+      "basis": "authored traversal acquisition gate"
+    },
+    {
+      "mapId": "A14",
+      "basis": "actual exit rectangle; free 36x18 actor foot area",
+      "point": {
+        "x": 2517.3333,
+        "z": 605.8667,
+        "direction": "右"
+      }
+    },
+    {
+      "mapId": "A15",
+      "basis": "actual exit rectangle; free 36x18 actor foot area",
+      "point": {
+        "x": 2517.3333,
+        "z": 618.6667,
+        "direction": "右"
+      }
+    },
+    {
+      "mapId": "A16",
+      "basis": "actual exit rectangle; free 36x18 actor foot area",
+      "point": {
+        "x": 1595.7333,
+        "z": 648.5333,
+        "direction": "右"
+      }
+    },
+    {
+      "mapId": "A17",
+      "basis": "actual exit rectangle; free 36x18 actor foot area",
+      "point": {
+        "x": 2517.3333,
+        "z": 657.0666,
+        "direction": "右"
+      }
+    },
+    {
+      "mapId": "A18",
+      "basis": "actual exit rectangle; free 36x18 actor foot area",
+      "point": {
+        "x": 2602.6667,
+        "z": 477.8667,
+        "direction": "右"
+      }
+    },
+    {
+      "mapId": "A19",
+      "basis": "actual exit rectangle; free 36x18 actor foot area",
+      "point": {
+        "x": 2517.3333,
+        "z": 648.5333,
+        "direction": "右"
+      }
+    }
+  ],
   "skyParallaxLayers": {
     "A02": {
       "replaced": [
@@ -1049,6 +3265,12 @@
           "world": [
             228.352,
             345.4293
+          ],
+          "ownFootprint": [
+            97.28,
+            279.8933,
+            354.9867,
+            348.16
           ]
         },
         {
@@ -1060,12 +3282,1472 @@
           "world": [
             426.3253,
             735.4027
+          ],
+          "ownFootprint": [
+            303.7867,
+            658.7733,
+            544.4267,
+            767.9147
           ]
         }
       ],
       "assetPresent": true
     }
   },
+  "sceneAssembly": [
+    {
+      "id": "A03-depart",
+      "sourceSprite": 1720,
+      "thresholdLocal": [
+        0,
+        87.55
+      ],
+      "thresholdWorld": [
+        2045.2693,
+        341.248
+      ],
+      "visualScale": 1,
+      "gate": {
+        "x": 2047.6755,
+        "z": 376.4044,
+        "radius": 42
+      },
+      "sourceFrames": 174,
+      "actorReleaseFrame": null,
+      "basis": "source local track and art share fixed world threshold; standard exit aligned to authored gate"
+    },
+    {
+      "id": "A04-arrive",
+      "sourceSprite": 1729,
+      "thresholdLocal": [
+        0,
+        -26.45
+      ],
+      "thresholdWorld": [
+        1140.8213,
+        342.1867
+      ],
+      "visualScale": 1,
+      "gate": {
+        "x": 1133.2275,
+        "z": 502.3431,
+        "radius": 42
+      },
+      "sourceFrames": 174,
+      "actorReleaseFrame": 122,
+      "basis": "source local track and art share fixed world threshold; standard exit aligned to authored gate"
+    },
+    {
+      "id": "A04-depart",
+      "sourceSprite": 1720,
+      "thresholdLocal": [
+        0,
+        87.55
+      ],
+      "thresholdWorld": [
+        183.4667,
+        342.1867
+      ],
+      "visualScale": 1,
+      "gate": {
+        "x": 185.8729,
+        "z": 377.3431,
+        "radius": 42
+      },
+      "sourceFrames": 174,
+      "actorReleaseFrame": null,
+      "basis": "source local track and art share fixed world threshold; standard exit aligned to authored gate"
+    },
+    {
+      "id": "A05-arrive",
+      "sourceSprite": 1729,
+      "thresholdLocal": [
+        0,
+        -26.45
+      ],
+      "thresholdWorld": [
+        2031.7013,
+        349.7813
+      ],
+      "visualScale": 1,
+      "gate": {
+        "x": 2024.1075,
+        "z": 509.9377,
+        "radius": 42
+      },
+      "sourceFrames": 174,
+      "actorReleaseFrame": 122,
+      "basis": "source local track and art share fixed world threshold; standard exit aligned to authored gate"
+    },
+    {
+      "id": "A05-depart",
+      "sourceSprite": 1750,
+      "thresholdLocal": [
+        2.5,
+        89.5
+      ],
+      "thresholdWorld": [
+        1119.9147,
+        345.5147
+      ],
+      "visualScale": 1.12,
+      "gate": {
+        "x": 1119.8097,
+        "z": 382.7058,
+        "radius": 42
+      },
+      "sourceFrames": 40,
+      "actorReleaseFrame": null,
+      "basis": "source local track and art share fixed world threshold; standard exit aligned to authored gate"
+    },
+    {
+      "id": "A11",
+      "sourceSprite": 1617,
+      "sourceDepth": 129,
+      "sourceWorld": 1910,
+      "sourceTriggerBounds": [
+        -4.9999542236328125,
+        219.16889503095297,
+        90.99995422363281,
+        488.2346663704142
+      ],
+      "standardExitDirection": "左",
+      "standardExitBounds": [
+        85.3333,
+        374.0482,
+        155.3066,
+        833.2538
+      ],
+      "nextMap": "A12",
+      "basis": "original1617->1616->277 hit-test area intersected with final walk bounds; standard clear/navigation authority unchanged"
+    },
+    {
+      "id": "A10",
+      "platformBoarding": [
+        [
+          294.4,
+          475.392
+        ],
+        [
+          371.2,
+          475.392
+        ]
+      ],
+      "platformAlighting": [
+        [
+          725.3333,
+          490.6667
+        ],
+        [
+          793.6,
+          490.6667
+        ]
+      ],
+      "basis": "CF7 continuous staging; existing shaft/foreground retained; no fabricated gate leaf"
+    },
+    {
+      "id": "A13",
+      "platformBoarding": [
+        [
+          294.4,
+          475.392
+        ],
+        [
+          371.2,
+          475.392
+        ]
+      ],
+      "platformAlighting": [
+        [
+          725.3333,
+          490.6667
+        ],
+        [
+          793.6,
+          490.6667
+        ]
+      ],
+      "basis": "CF7 continuous staging; existing shaft/foreground retained; no fabricated gate leaf"
+    },
+    {
+      "id": "A08-aux-1832-118",
+      "mapId": "A08",
+      "sourceSprite": 1832,
+      "sourceDepth": 118,
+      "groundPivot": [
+        0,
+        0
+      ],
+      "worldPivot": [
+        879.7867,
+        1.6213
+      ],
+      "visualScale": 1,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        515.5,
+        0.95
+      ],
+      "role": "ambient-loop",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A08-aux-1430-120",
+      "mapId": "A08",
+      "sourceSprite": 1430,
+      "sourceDepth": 120,
+      "groundPivot": [
+        -12.74568138,
+        88
+      ],
+      "worldPivot": [
+        1153.714,
+        348.5013
+      ],
+      "visualScale": 1.12,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        688.75,
+        116.2
+      ],
+      "role": "traversal-layer",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A09-aux-1862-79",
+      "mapId": "A09",
+      "sourceSprite": 1862,
+      "sourceDepth": 79,
+      "groundPivot": [
+        -7.075,
+        80.5
+      ],
+      "worldPivot": [
+        726.912,
+        369.4933
+      ],
+      "visualScale": 1.3,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        433.0,
+        136.0
+      ],
+      "role": "depth-prop",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A09-aux-1832-87",
+      "mapId": "A09",
+      "sourceSprite": 1832,
+      "sourceDepth": 87,
+      "groundPivot": [
+        0,
+        0
+      ],
+      "worldPivot": [
+        879.7867,
+        1.6213
+      ],
+      "visualScale": 1,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        515.5,
+        0.95
+      ],
+      "role": "ambient-loop",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A09-aux-1430-89",
+      "mapId": "A09",
+      "sourceSprite": 1430,
+      "sourceDepth": 89,
+      "groundPivot": [
+        -12.74568138,
+        88
+      ],
+      "worldPivot": [
+        1757.9594,
+        363.4347
+      ],
+      "visualScale": 1.12,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1042.8,
+        124.95
+      ],
+      "role": "traversal-layer",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A09-aux-1832-100",
+      "mapId": "A09",
+      "sourceSprite": 1832,
+      "sourceDepth": 100,
+      "groundPivot": [
+        0,
+        0
+      ],
+      "worldPivot": [
+        1921.792,
+        1.6213
+      ],
+      "visualScale": 1,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1126.05,
+        0.95
+      ],
+      "role": "ambient-loop",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A12-aux-1862-167",
+      "mapId": "A12",
+      "sourceSprite": 1862,
+      "sourceDepth": 167,
+      "groundPivot": [
+        -7.075,
+        80.5
+      ],
+      "worldPivot": [
+        1059.712,
+        360.96
+      ],
+      "visualScale": 1.3,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        628.0,
+        131.0
+      ],
+      "role": "door-spawn-sequence",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A12-aux-1832-181",
+      "mapId": "A12",
+      "sourceSprite": 1832,
+      "sourceDepth": 181,
+      "groundPivot": [
+        0,
+        0
+      ],
+      "worldPivot": [
+        879.7867,
+        1.6213
+      ],
+      "visualScale": 1,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        515.5,
+        0.95
+      ],
+      "role": "ambient-loop",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A12-aux-1430-183",
+      "mapId": "A12",
+      "sourceSprite": 1430,
+      "sourceDepth": 183,
+      "groundPivot": [
+        -12.74568138,
+        88
+      ],
+      "worldPivot": [
+        233.906,
+        363.8613
+      ],
+      "visualScale": 1.12,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        149.8,
+        125.2
+      ],
+      "role": "traversal-layer",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A12-aux-1832-221",
+      "mapId": "A12",
+      "sourceSprite": 1832,
+      "sourceDepth": 221,
+      "groundPivot": [
+        0,
+        0
+      ],
+      "worldPivot": [
+        2052.1813,
+        1.6213
+      ],
+      "visualScale": 1,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1202.45,
+        0.95
+      ],
+      "role": "ambient-loop",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A19-aux-1862-54",
+      "mapId": "A19",
+      "sourceSprite": 1862,
+      "sourceDepth": 54,
+      "groundPivot": [
+        -7.075,
+        80.5
+      ],
+      "worldPivot": [
+        930.0053,
+        282.4533
+      ],
+      "visualScale": 1.3,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        552.0,
+        85.0
+      ],
+      "role": "door-spawn-sequence",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A19-aux-1862-62",
+      "mapId": "A19",
+      "sourceSprite": 1862,
+      "sourceDepth": 62,
+      "groundPivot": [
+        -7.075,
+        80.5
+      ],
+      "worldPivot": [
+        2242.1049,
+        406.4902
+      ],
+      "visualScale": 1.3,
+      "nativeMatrix": [
+        0.603057861328125,
+        0.4695587158203125,
+        0.0,
+        1.0,
+        1318.0,
+        161.0
+      ],
+      "role": "door-spawn-sequence",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A20-aux-1862-51",
+      "mapId": "A20",
+      "sourceSprite": 1862,
+      "sourceDepth": 51,
+      "groundPivot": [
+        -7.075,
+        80.5
+      ],
+      "worldPivot": [
+        320.7253,
+        275.6267
+      ],
+      "visualScale": 1.3,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        195.0,
+        81.0
+      ],
+      "role": "door-spawn-sequence",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A20-aux-1862-59",
+      "mapId": "A20",
+      "sourceSprite": 1862,
+      "sourceDepth": 59,
+      "groundPivot": [
+        -7.075,
+        80.5
+      ],
+      "worldPivot": [
+        1895.6516,
+        387.7169
+      ],
+      "visualScale": 1.3,
+      "nativeMatrix": [
+        0.603057861328125,
+        0.4695587158203125,
+        0.0,
+        1.0,
+        1115.0,
+        150.0
+      ],
+      "role": "door-spawn-sequence",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A20-aux-1862-67",
+      "mapId": "A20",
+      "sourceSprite": 1862,
+      "sourceDepth": 67,
+      "groundPivot": [
+        -7.075,
+        80.5
+      ],
+      "worldPivot": [
+        2144.8249,
+        578.8636
+      ],
+      "visualScale": 1.3,
+      "nativeMatrix": [
+        0.603057861328125,
+        0.4695587158203125,
+        0.0,
+        1.0,
+        1261.0,
+        262.0
+      ],
+      "role": "door-spawn-sequence",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A20-aux-1862-75",
+      "mapId": "A20",
+      "sourceSprite": 1862,
+      "sourceDepth": 75,
+      "groundPivot": [
+        -7.075,
+        80.5
+      ],
+      "worldPivot": [
+        2438.3716,
+        793.9036
+      ],
+      "visualScale": 1.3,
+      "nativeMatrix": [
+        0.603057861328125,
+        0.4695587158203125,
+        0.0,
+        1.0,
+        1433.0,
+        388.0
+      ],
+      "role": "door-spawn-sequence",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A22-aux-1862-51",
+      "mapId": "A22",
+      "sourceSprite": 1862,
+      "sourceDepth": 51,
+      "groundPivot": [
+        -7.075,
+        80.5
+      ],
+      "worldPivot": [
+        320.7253,
+        275.6267
+      ],
+      "visualScale": 1.3,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        195.0,
+        81.0
+      ],
+      "role": "door-spawn-sequence",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A22-aux-1862-59",
+      "mapId": "A22",
+      "sourceSprite": 1862,
+      "sourceDepth": 59,
+      "groundPivot": [
+        -7.075,
+        80.5
+      ],
+      "worldPivot": [
+        1895.6516,
+        387.7169
+      ],
+      "visualScale": 1.3,
+      "nativeMatrix": [
+        0.603057861328125,
+        0.4695587158203125,
+        0.0,
+        1.0,
+        1115.0,
+        150.0
+      ],
+      "role": "door-spawn-sequence",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A22-aux-1862-67",
+      "mapId": "A22",
+      "sourceSprite": 1862,
+      "sourceDepth": 67,
+      "groundPivot": [
+        -7.075,
+        80.5
+      ],
+      "worldPivot": [
+        2144.8249,
+        578.8636
+      ],
+      "visualScale": 1.3,
+      "nativeMatrix": [
+        0.603057861328125,
+        0.4695587158203125,
+        0.0,
+        1.0,
+        1261.0,
+        262.0
+      ],
+      "role": "door-spawn-sequence",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A22-aux-1862-75",
+      "mapId": "A22",
+      "sourceSprite": 1862,
+      "sourceDepth": 75,
+      "groundPivot": [
+        -7.075,
+        80.5
+      ],
+      "worldPivot": [
+        2438.3716,
+        793.9036
+      ],
+      "visualScale": 1.3,
+      "nativeMatrix": [
+        0.603057861328125,
+        0.4695587158203125,
+        0.0,
+        1.0,
+        1433.0,
+        388.0
+      ],
+      "role": "door-spawn-sequence",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A11-aux-1832-117",
+      "mapId": "A11",
+      "sourceSprite": 1832,
+      "sourceDepth": 117,
+      "groundPivot": [
+        0,
+        0
+      ],
+      "worldPivot": [
+        587.9467,
+        -0.9387
+      ],
+      "visualScale": 1,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        344.5,
+        -0.55
+      ],
+      "role": "ambient-loop",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A14-aux-1832-404",
+      "mapId": "A14",
+      "sourceSprite": 1832,
+      "sourceDepth": 404,
+      "groundPivot": [
+        0,
+        0
+      ],
+      "worldPivot": [
+        587.9467,
+        -0.9387
+      ],
+      "visualScale": 1,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        344.5,
+        -0.55
+      ],
+      "role": "ambient-loop",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A14-aux-1832-503",
+      "mapId": "A14",
+      "sourceSprite": 1832,
+      "sourceDepth": 503,
+      "groundPivot": [
+        0,
+        0
+      ],
+      "worldPivot": [
+        2339.328,
+        -0.9387
+      ],
+      "visualScale": 1,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1370.7,
+        -0.55
+      ],
+      "role": "ambient-loop",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A15-aux-1832-656",
+      "mapId": "A15",
+      "sourceSprite": 1832,
+      "sourceDepth": 656,
+      "groundPivot": [
+        0,
+        0
+      ],
+      "worldPivot": [
+        587.9467,
+        -0.9387
+      ],
+      "visualScale": 1,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        344.5,
+        -0.55
+      ],
+      "role": "ambient-loop",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A15-aux-1832-755",
+      "mapId": "A15",
+      "sourceSprite": 1832,
+      "sourceDepth": 755,
+      "groundPivot": [
+        0,
+        0
+      ],
+      "worldPivot": [
+        2339.328,
+        -0.9387
+      ],
+      "visualScale": 1,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1370.7,
+        -0.55
+      ],
+      "role": "ambient-loop",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A16-aux-1832-605",
+      "mapId": "A16",
+      "sourceSprite": 1832,
+      "sourceDepth": 605,
+      "groundPivot": [
+        0,
+        0
+      ],
+      "worldPivot": [
+        587.9467,
+        -0.9387
+      ],
+      "visualScale": 1,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        344.5,
+        -0.55
+      ],
+      "role": "ambient-loop",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A16-aux-1832-708",
+      "mapId": "A16",
+      "sourceSprite": 1832,
+      "sourceDepth": 708,
+      "groundPivot": [
+        0,
+        0
+      ],
+      "worldPivot": [
+        2339.328,
+        -0.9387
+      ],
+      "visualScale": 1,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1370.7,
+        -0.55
+      ],
+      "role": "ambient-loop",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A17-aux-1832-500",
+      "mapId": "A17",
+      "sourceSprite": 1832,
+      "sourceDepth": 500,
+      "groundPivot": [
+        0,
+        0
+      ],
+      "worldPivot": [
+        587.9467,
+        -0.9387
+      ],
+      "visualScale": 1,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        344.5,
+        -0.55
+      ],
+      "role": "ambient-loop",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "A17-aux-1832-591",
+      "mapId": "A17",
+      "sourceSprite": 1832,
+      "sourceDepth": 591,
+      "groundPivot": [
+        0,
+        0
+      ],
+      "worldPivot": [
+        2339.328,
+        -0.9387
+      ],
+      "visualScale": 1,
+      "nativeMatrix": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1370.7,
+        -0.55
+      ],
+      "role": "ambient-loop",
+      "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
+    },
+    {
+      "id": "CF6_Prop_A06_StatueLeft",
+      "mapId": "A06",
+      "sortY": 394.15466666666674,
+      "basis": "background duplicate removed; native grouped art uses final world footpoint"
+    },
+    {
+      "id": "CF6_Prop_A06_StatueRight",
+      "mapId": "A06",
+      "sortY": 394.15466666666674,
+      "basis": "background duplicate removed; native grouped art uses final world footpoint"
+    }
+  ],
+  "interactivePropsAssembly": [
+    {
+      "id": "A04-barrel-336",
+      "sourceSprite": 1736,
+      "sourceDepth": 336,
+      "registrationWorld": [
+        1393.8347,
+        349.7813
+      ],
+      "sortY": 394.2813,
+      "visualScale": 1,
+      "hitBounds": [
+        -29.9416,
+        -68.5,
+        28.0416,
+        45.5
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
+    },
+    {
+      "id": "A04-barrel-343",
+      "sourceSprite": 1736,
+      "sourceDepth": 343,
+      "registrationWorld": [
+        1827.328,
+        349.7813
+      ],
+      "sortY": 394.2813,
+      "visualScale": 1,
+      "hitBounds": [
+        -29.9416,
+        -68.5,
+        28.0416,
+        45.5
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
+    },
+    {
+      "id": "A04-barrel-350",
+      "sourceSprite": 1736,
+      "sourceDepth": 350,
+      "registrationWorld": [
+        689.0667,
+        356.608
+      ],
+      "sortY": 401.108,
+      "visualScale": 1,
+      "hitBounds": [
+        -29.9416,
+        -68.5,
+        28.0416,
+        45.5
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
+    },
+    {
+      "id": "A08-barrel-137",
+      "sourceSprite": 1838,
+      "sourceDepth": 137,
+      "registrationWorld": [
+        1871.1893,
+        310.9547
+      ],
+      "sortY": 355.4547,
+      "visualScale": 1,
+      "hitBounds": [
+        -29.9416,
+        -68.5,
+        28.0416,
+        45.5
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
+    },
+    {
+      "id": "A08-barrel-144",
+      "sourceSprite": 1838,
+      "sourceDepth": 144,
+      "registrationWorld": [
+        1956.5227,
+        314.368
+      ],
+      "sortY": 358.868,
+      "visualScale": 1,
+      "hitBounds": [
+        -29.9416,
+        -68.5,
+        28.0416,
+        45.5
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
+    },
+    {
+      "id": "A08-barrel-151",
+      "sourceSprite": 1838,
+      "sourceDepth": 151,
+      "registrationWorld": [
+        768.6827,
+        295.5093
+      ],
+      "sortY": 340.0093,
+      "visualScale": 1,
+      "hitBounds": [
+        -29.9416,
+        -68.5,
+        28.0416,
+        45.5
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
+    },
+    {
+      "id": "A11-barrel-262",
+      "sourceSprite": 1838,
+      "sourceDepth": 262,
+      "registrationWorld": [
+        771.6693,
+        365.056
+      ],
+      "sortY": 409.556,
+      "visualScale": 1,
+      "hitBounds": [
+        -29.9416,
+        -68.5,
+        28.0416,
+        45.5
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
+    },
+    {
+      "id": "A12-barrel-200",
+      "sourceSprite": 1838,
+      "sourceDepth": 200,
+      "registrationWorld": [
+        1417.216,
+        324.608
+      ],
+      "sortY": 369.108,
+      "visualScale": 1,
+      "hitBounds": [
+        -29.9416,
+        -68.5,
+        28.0416,
+        45.5
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
+    },
+    {
+      "id": "A12-barrel-207",
+      "sourceSprite": 1838,
+      "sourceDepth": 207,
+      "registrationWorld": [
+        1234.6027,
+        682.9227
+      ],
+      "sortY": 727.4227,
+      "visualScale": 1,
+      "hitBounds": [
+        -29.9416,
+        -68.5,
+        28.0416,
+        45.5
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
+    },
+    {
+      "id": "A12-barrel-214",
+      "sourceSprite": 1838,
+      "sourceDepth": 214,
+      "registrationWorld": [
+        964.9493,
+        324.5227
+      ],
+      "sortY": 369.0227,
+      "visualScale": 1,
+      "hitBounds": [
+        -29.9416,
+        -68.5,
+        28.0416,
+        45.5
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
+    },
+    {
+      "id": "A15-pod-759",
+      "sourceSprite": 1939,
+      "sourceDepth": 759,
+      "registrationWorld": [
+        904.5333,
+        620.8
+      ],
+      "sortY": 630.6841,
+      "visualScale": 1,
+      "hitBounds": [
+        -206.0802,
+        -192.1709,
+        212.7896,
+        212.6563
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "original map area scaled once"
+    },
+    {
+      "id": "A15-pod-828",
+      "sourceSprite": 1939,
+      "sourceDepth": 828,
+      "registrationWorld": [
+        1283.4133,
+        620.6293
+      ],
+      "sortY": 630.5134,
+      "visualScale": 1,
+      "hitBounds": [
+        -206.0802,
+        -192.1709,
+        212.7896,
+        212.6563
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "original map area scaled once"
+    },
+    {
+      "id": "A15-pod-897",
+      "sourceSprite": 1939,
+      "sourceDepth": 897,
+      "registrationWorld": [
+        1595.7333,
+        620.6293
+      ],
+      "sortY": 630.5134,
+      "visualScale": 1,
+      "hitBounds": [
+        -206.0802,
+        -192.1709,
+        212.7896,
+        212.6563
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "original map area scaled once"
+    },
+    {
+      "id": "A15-pod-966",
+      "sourceSprite": 1939,
+      "sourceDepth": 966,
+      "registrationWorld": [
+        1960.96,
+        620.6293
+      ],
+      "sortY": 630.5134,
+      "visualScale": 1,
+      "hitBounds": [
+        -206.0802,
+        -192.1709,
+        212.7896,
+        212.6563
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "original map area scaled once"
+    },
+    {
+      "id": "A15-pod-1035",
+      "sourceSprite": 1939,
+      "sourceDepth": 1035,
+      "registrationWorld": [
+        2331.3067,
+        620.6293
+      ],
+      "sortY": 630.5134,
+      "visualScale": 1,
+      "hitBounds": [
+        -206.0802,
+        -192.1709,
+        212.7896,
+        212.6563
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "original map area scaled once"
+    },
+    {
+      "id": "A17-pod-516",
+      "sourceSprite": 1939,
+      "sourceDepth": 516,
+      "registrationWorld": [
+        325.2053,
+        519.0827
+      ],
+      "sortY": 528.9668,
+      "visualScale": 1,
+      "hitBounds": [
+        -206.0802,
+        -192.1709,
+        212.7896,
+        212.6563
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "original map area scaled once"
+    },
+    {
+      "id": "A17-pod-595",
+      "sourceSprite": 1939,
+      "sourceDepth": 595,
+      "registrationWorld": [
+        1564.16,
+        512.256
+      ],
+      "sortY": 522.1401,
+      "visualScale": 1,
+      "hitBounds": [
+        -206.0802,
+        -192.1709,
+        212.7896,
+        212.6563
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "original map area scaled once"
+    },
+    {
+      "id": "A17-pod-664",
+      "sourceSprite": 1939,
+      "sourceDepth": 664,
+      "registrationWorld": [
+        1843.2,
+        512.256
+      ],
+      "sortY": 522.1401,
+      "visualScale": 1,
+      "hitBounds": [
+        -206.0802,
+        -192.1709,
+        212.7896,
+        212.6563
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "original map area scaled once"
+    },
+    {
+      "id": "A17-pod-733",
+      "sourceSprite": 1939,
+      "sourceDepth": 733,
+      "registrationWorld": [
+        2125.3973,
+        512.256
+      ],
+      "sortY": 522.1401,
+      "visualScale": 1,
+      "hitBounds": [
+        -206.0802,
+        -192.1709,
+        212.7896,
+        212.6563
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "original map area scaled once"
+    },
+    {
+      "id": "A17-pod-802",
+      "sourceSprite": 1939,
+      "sourceDepth": 802,
+      "registrationWorld": [
+        2438.8267,
+        502.016
+      ],
+      "sortY": 511.9001,
+      "visualScale": 1,
+      "hitBounds": [
+        -206.0802,
+        -192.1709,
+        212.7896,
+        212.6563
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "original map area scaled once"
+    },
+    {
+      "id": "A18-barrel-617",
+      "sourceSprite": 1976,
+      "sourceDepth": 617,
+      "registrationWorld": [
+        1688.832,
+        310.9547
+      ],
+      "sortY": 355.4547,
+      "visualScale": 1,
+      "hitBounds": [
+        -29.9416,
+        -68.5,
+        28.0416,
+        45.5
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
+    },
+    {
+      "id": "A20-barrel-239",
+      "sourceSprite": 1976,
+      "sourceDepth": 239,
+      "registrationWorld": [
+        1564.8427,
+        324.2667
+      ],
+      "sortY": 368.7667,
+      "visualScale": 1,
+      "hitBounds": [
+        -29.9416,
+        -68.5,
+        28.0416,
+        45.5
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
+    },
+    {
+      "id": "A20-barrel-246",
+      "sourceSprite": 1976,
+      "sourceDepth": 246,
+      "registrationWorld": [
+        491.6907,
+        314.0267
+      ],
+      "sortY": 358.5267,
+      "visualScale": 1,
+      "hitBounds": [
+        -29.9416,
+        -68.5,
+        28.0416,
+        45.5
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
+    },
+    {
+      "id": "A20-barrel-253",
+      "sourceSprite": 1976,
+      "sourceDepth": 253,
+      "registrationWorld": [
+        1684.5653,
+        238.9333
+      ],
+      "sortY": 283.4333,
+      "visualScale": 1,
+      "hitBounds": [
+        -29.9416,
+        -68.5,
+        28.0416,
+        45.5
+      ],
+      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
+    }
+  ],
+  "transportAssembly": [
+    {
+      "id": "A09-transport-112",
+      "sourceSprite": 1868,
+      "sourceDepth": 112,
+      "frames": 29,
+      "registrationWorld": [
+        1188.864,
+        430.08
+      ],
+      "visualScale": 1,
+      "hitBounds": [
+        -504.7471,
+        -72.7043,
+        458.596,
+        432.9453
+      ],
+      "enemyType": "兵种467",
+      "level": 45,
+      "existingQuantity": 5,
+      "finalQuantity": 5,
+      "subWaveIndex": 1,
+      "spawnIndex": 0,
+      "intervalMs": 400,
+      "effectiveRepeatMs": 500,
+      "spawnPolicy": "preserve current free-foot spawn point; counted WaveSpawnWheel owns quantities",
+      "dispatchPolicy": "frame29 latch; exact same second-wave owner after listener registration; once only"
+    },
+    {
+      "id": "A14-transport-505",
+      "sourceSprite": 1868,
+      "sourceDepth": 505,
+      "frames": 29,
+      "registrationWorld": [
+        1785.1733,
+        476.8427
+      ],
+      "visualScale": 1,
+      "hitBounds": [
+        -504.7471,
+        -72.7043,
+        458.596,
+        432.9453
+      ],
+      "enemyType": "兵种469",
+      "level": 50,
+      "existingQuantity": 7,
+      "finalQuantity": 7,
+      "subWaveIndex": 1,
+      "spawnIndex": 0,
+      "intervalMs": 400,
+      "effectiveRepeatMs": 500,
+      "spawnPolicy": "preserve current free-foot spawn point; counted WaveSpawnWheel owns quantities",
+      "dispatchPolicy": "frame29 latch; exact same second-wave owner after listener registration; once only"
+    },
+    {
+      "id": "A18-transport-147",
+      "sourceSprite": 1868,
+      "sourceDepth": 147,
+      "frames": 29,
+      "registrationWorld": [
+        1476.4373,
+        349.8667
+      ],
+      "visualScale": 1,
+      "hitBounds": [
+        -504.7471,
+        -72.7043,
+        458.596,
+        432.9453
+      ],
+      "enemyType": "兵种463",
+      "level": 59,
+      "existingQuantity": 5,
+      "finalQuantity": 5,
+      "subWaveIndex": 1,
+      "spawnIndex": 0,
+      "intervalMs": 400,
+      "effectiveRepeatMs": 500,
+      "spawnPolicy": "preserve current free-foot spawn point; counted WaveSpawnWheel owns quantities",
+      "dispatchPolicy": "frame29 latch; exact same second-wave owner after listener registration; once only"
+    }
+  ],
   "pendingPresentation": {
     "A01": {
       "pendingDynamics": [],

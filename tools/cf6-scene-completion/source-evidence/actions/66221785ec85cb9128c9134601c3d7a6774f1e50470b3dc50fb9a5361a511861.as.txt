@@ -1,0 +1,6 @@
+onClipEvent(enterFrame){
+   if(_root.gameworld.man1.是否抓人 != 1)
+   {
+      _parent.gotoAndStop("站1");
+   }
+}

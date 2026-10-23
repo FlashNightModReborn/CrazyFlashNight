@@ -1,0 +1,14 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 290;
+   var §\x0f§ = 1;
+   if(_root.电梯死亡敌人计数 >= _parent.需要杀死数)
+   {
+      _root.gogogo.gotoAndStop("gogogo");
+      _parent.箭头._visible = 1;
+      if(this.hitTest(_root.gameworld.man1.area))
+      {
+         _root.gameworld.man1.gotoAndStop("失效");
+         _parent.play();
+      }
+   }
+}

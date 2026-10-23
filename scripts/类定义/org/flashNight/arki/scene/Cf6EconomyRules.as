@@ -34,6 +34,10 @@ class org.flashNight.arki.scene.Cf6EconomyRules {
             enemies=map.bossEncounter.groups[g].enemies;
             for (n=0;n<enemies.length;n++) result.push(enemies[n]);
         }
+        for (g=0;g<map.bossEncounter.nextPhase.groups.length;g++) {
+            enemies=map.bossEncounter.nextPhase.groups[g].enemies;
+            for (n=0;n<enemies.length;n++) result.push(enemies[n]);
+        }
         return result;
     }
     public static function valid(config:Object):Boolean {

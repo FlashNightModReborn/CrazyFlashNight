@@ -1,0 +1,1221 @@
+{
+  "schema": "cf6-vehicle-art-preparation.v1",
+  "state": "source-only; no native texture import performed",
+  "fontSha256": "c3753f2ed6bc673f15846dc45addbeb3b9c872f32fb18fd53a21f1bef1ed7676",
+  "inputs": {
+    "tools/cf6-scene-completion/prepare_vehicle_art.py": "e31172b6055a6a8cd0360aa06b6f87cd6e187b68b7583558c13fa737291b2c59",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/reference/vehicles-props-DejaVuSans-Bold.ttf": "a4c5bc453ca281d90ea079e596da7ae0dfeb5777497c29ec254e76d97ff6f890",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A07-R2/cf6-stage7-redraw-r2/source/armored_vehicle.py": "6fb990e2e1a2657af7cbafb23949fed37684e2402b214fc18adc0053af65540d",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A07-R2/cf6-stage7-redraw-r2/source/svg_native.py": "ef4418c2c1596bfe3d933998d12adea36e78daa0772a39526ce34836e8dcb356",
+    "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655",
+    "tools/cf6-map-runtime/native-vector/build-a01.py": "ad1cde5d1e97ac23aabdb12d5dafb8ee30974c6c8c92c51b92a5d581824533f6",
+    "tools/cf6-map-runtime/build.py": "5738a4c2e8f1719c637217182831a0b14029dda262e07f29ac55073738f1c01d",
+    "tools/cf6-map-runtime/native-vector/build-a08.py": "cada035854ad2cdaee76e080b1861c843f1733f94371cacd6eb5142fbeaa9b83",
+    "tools/cf6-map-runtime/native-vector/procedural_filter.py": "b535bfa1c6f2407ed6ebf7fdbe1ac475741d92d906db16509d254cb6e5d4f054",
+    "tools/cf6-scene-completion/vehicle-art/bitmap-1806.svg": "febe8c042edc287b893398c032222b891701f898f7e21acbe4e40f4f39bba8ac",
+    "tools/cf6-scene-completion/vehicle-art/bitmap-1808.svg": "d1b37724e367b29e725a6ecb24fcbefc337913686645eef859333d246f615edf",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/parts/bitmap-1823.svg": "e842c952acdeff895fb28781f702561e893de0eb643a6871ebf0fc1e470ca93e",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/parts/bitmap-1786.svg": "f41d26e12783dfd6929d089b362aee7bbf5fbbc88e2c2361bcf5cbe46c3bf076"
+  },
+  "assets": [
+    {
+      "role": "ArmoredBody",
+      "source": "tools/cf6-scene-completion/vehicle-art/bitmap-1806.svg",
+      "sourceSha256": "febe8c042edc287b893398c032222b891701f898f7e21acbe4e40f4f39bba8ac",
+      "state": "vector-fragments-ready; native texture import/assembly/CS6 still required",
+      "name": "CF6_A07_ArmoredBody_Prepared",
+      "targetXfl": "flashswf/backgrounds/cf6/preparation/CF6_A07_ArmoredBody_Prepared/CF6_A07_ArmoredBody_Prepared.xfl",
+      "intrinsicTextures": [
+        {
+          "path": "tools/cf6-scene-completion/vehicle-art/textures/intrinsic-97dd9d26764bd021496b86ce.png",
+          "sha256": "97dd9d26764bd021496b86cec49f88c7e397411920d09d99ce16f9a2dd7a2b05",
+          "bytes": 933403,
+          "pixels": [
+            1113,
+            708
+          ]
+        }
+      ],
+      "viewBox": [
+        0.0,
+        0.0,
+        371.0,
+        236.0
+      ],
+      "symbols": 104,
+      "shapes": 890,
+      "filters": [],
+      "proceduralApproximations": [],
+      "limits": [
+        "native filter region/blur require actual comparison",
+        "player car is a static R5 art base; wheels/fire/death are not yet assembled"
+      ]
+    },
+    {
+      "role": "ArmoredWheel",
+      "source": "tools/cf6-scene-completion/vehicle-art/bitmap-1808.svg",
+      "sourceSha256": "d1b37724e367b29e725a6ecb24fcbefc337913686645eef859333d246f615edf",
+      "state": "vector-fragments-ready; native texture import/assembly/CS6 still required",
+      "name": "CF6_A07_ArmoredWheel_Prepared",
+      "targetXfl": "flashswf/backgrounds/cf6/preparation/CF6_A07_ArmoredWheel_Prepared/CF6_A07_ArmoredWheel_Prepared.xfl",
+      "intrinsicTextures": [],
+      "viewBox": [
+        0.0,
+        0.0,
+        45.0,
+        45.0
+      ],
+      "symbols": 3,
+      "shapes": 324,
+      "filters": [],
+      "proceduralApproximations": [],
+      "limits": [
+        "native filter region/blur require actual comparison",
+        "player car is a static R5 art base; wheels/fire/death are not yet assembled"
+      ]
+    },
+    {
+      "role": "PlayerCar",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/parts/bitmap-1823.svg",
+      "sourceSha256": "e842c952acdeff895fb28781f702561e893de0eb643a6871ebf0fc1e470ca93e",
+      "state": "vector-fragments-ready; native texture import/assembly/CS6 still required",
+      "name": "CF6_A07_PlayerCar_Prepared",
+      "targetXfl": "flashswf/backgrounds/cf6/preparation/CF6_A07_PlayerCar_Prepared/CF6_A07_PlayerCar_Prepared.xfl",
+      "intrinsicTextures": [
+        {
+          "path": "tools/cf6-scene-completion/vehicle-art/textures/intrinsic-9cf4e84606dcc6c67aba2cb1.png",
+          "sha256": "9cf4e84606dcc6c67aba2cb148141f699a40f87e667db0d35eedad2703e19668",
+          "bytes": 580393,
+          "pixels": [
+            1233,
+            432
+          ]
+        }
+      ],
+      "viewBox": [
+        0.0,
+        0.0,
+        411.0,
+        144.0
+      ],
+      "symbols": 64,
+      "shapes": 827,
+      "filters": [
+        {
+          "id": "softReflect",
+          "operations": [
+            {
+              "kind": "BlurFilter",
+              "sourceStdDeviation": [
+                1.05,
+                1.05
+              ],
+              "blur": [
+                2.1,
+                2.1
+              ],
+              "quality": 3,
+              "mapping": "three-pass native approximation; actual visual comparison required"
+            }
+          ],
+          "sourceRegion": {
+            "id": "softReflect",
+            "x": "-.1",
+            "y": "-.3",
+            "width": "1.2",
+            "height": "1.6"
+          },
+          "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+        },
+        {
+          "id": "softReflect",
+          "operations": [
+            {
+              "kind": "BlurFilter",
+              "sourceStdDeviation": [
+                1.05,
+                1.05
+              ],
+              "blur": [
+                2.1,
+                2.1
+              ],
+              "quality": 3,
+              "mapping": "three-pass native approximation; actual visual comparison required"
+            }
+          ],
+          "sourceRegion": {
+            "id": "softReflect",
+            "x": "-.1",
+            "y": "-.3",
+            "width": "1.2",
+            "height": "1.6"
+          },
+          "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+        },
+        {
+          "id": "softReflect",
+          "operations": [
+            {
+              "kind": "BlurFilter",
+              "sourceStdDeviation": [
+                1.05,
+                1.05
+              ],
+              "blur": [
+                2.1,
+                2.1
+              ],
+              "quality": 3,
+              "mapping": "three-pass native approximation; actual visual comparison required"
+            }
+          ],
+          "sourceRegion": {
+            "id": "softReflect",
+            "x": "-.1",
+            "y": "-.3",
+            "width": "1.2",
+            "height": "1.6"
+          },
+          "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+        },
+        {
+          "id": "softReflect",
+          "operations": [
+            {
+              "kind": "BlurFilter",
+              "sourceStdDeviation": [
+                1.05,
+                1.05
+              ],
+              "blur": [
+                2.1,
+                2.1
+              ],
+              "quality": 3,
+              "mapping": "three-pass native approximation; actual visual comparison required"
+            }
+          ],
+          "sourceRegion": {
+            "id": "softReflect",
+            "x": "-.1",
+            "y": "-.3",
+            "width": "1.2",
+            "height": "1.6"
+          },
+          "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+        },
+        {
+          "id": "softReflect",
+          "operations": [
+            {
+              "kind": "BlurFilter",
+              "sourceStdDeviation": [
+                1.05,
+                1.05
+              ],
+              "blur": [
+                2.1,
+                2.1
+              ],
+              "quality": 3,
+              "mapping": "three-pass native approximation; actual visual comparison required"
+            }
+          ],
+          "sourceRegion": {
+            "id": "softReflect",
+            "x": "-.1",
+            "y": "-.3",
+            "width": "1.2",
+            "height": "1.6"
+          },
+          "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+        },
+        {
+          "id": "broadReflect",
+          "operations": [
+            {
+              "kind": "BlurFilter",
+              "sourceStdDeviation": [
+                2.0,
+                2.0
+              ],
+              "blur": [
+                4.0,
+                4.0
+              ],
+              "quality": 3,
+              "mapping": "three-pass native approximation; actual visual comparison required"
+            }
+          ],
+          "sourceRegion": {
+            "id": "broadReflect",
+            "x": "-.2",
+            "y": "-.3",
+            "width": "1.4",
+            "height": "1.6"
+          },
+          "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+        },
+        {
+          "id": "broadReflect",
+          "operations": [
+            {
+              "kind": "BlurFilter",
+              "sourceStdDeviation": [
+                2.0,
+                2.0
+              ],
+              "blur": [
+                4.0,
+                4.0
+              ],
+              "quality": 3,
+              "mapping": "three-pass native approximation; actual visual comparison required"
+            }
+          ],
+          "sourceRegion": {
+            "id": "broadReflect",
+            "x": "-.2",
+            "y": "-.3",
+            "width": "1.4",
+            "height": "1.6"
+          },
+          "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+        },
+        {
+          "id": "softReflect",
+          "operations": [
+            {
+              "kind": "BlurFilter",
+              "sourceStdDeviation": [
+                1.05,
+                1.05
+              ],
+              "blur": [
+                2.1,
+                2.1
+              ],
+              "quality": 3,
+              "mapping": "three-pass native approximation; actual visual comparison required"
+            }
+          ],
+          "sourceRegion": {
+            "id": "softReflect",
+            "x": "-.1",
+            "y": "-.3",
+            "width": "1.2",
+            "height": "1.6"
+          },
+          "limit": "source filter-region crop is not yet reproduced; verify no visible spill at intended boundary"
+        }
+      ],
+      "proceduralApproximations": [],
+      "limits": [
+        "native filter region/blur require actual comparison",
+        "player car is a static R5 art base; wheels/fire/death are not yet assembled"
+      ]
+    },
+    {
+      "role": "Road",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/parts/bitmap-1786.svg",
+      "sourceSha256": "f41d26e12783dfd6929d089b362aee7bbf5fbbc88e2c2361bcf5cbe46c3bf076",
+      "state": "vector-fragments-ready; native texture import/assembly/CS6 still required",
+      "name": "CF6_A07_Road_Prepared",
+      "targetXfl": "flashswf/backgrounds/cf6/preparation/CF6_A07_Road_Prepared/CF6_A07_Road_Prepared.xfl",
+      "intrinsicTextures": [
+        {
+          "path": "tools/cf6-scene-completion/vehicle-art/textures/intrinsic-09a14a376c144c6e9e6e8f4c.png",
+          "sha256": "09a14a376c144c6e9e6e8f4c292d62e5a09335244129c39f033fc3bb4a85ae56",
+          "bytes": 470860,
+          "pixels": [
+            652,
+            432
+          ]
+        }
+      ],
+      "viewBox": [
+        0.0,
+        0.0,
+        326.0,
+        216.0
+      ],
+      "symbols": 6,
+      "shapes": 4,
+      "filters": [],
+      "proceduralApproximations": [
+        {
+          "id": "wear",
+          "scope": "A08 isolated vent-wear overlay only; source vector silhouette retained",
+          "sourceFrequency": [
+            0.8,
+            0.8
+          ],
+          "sourceOctaves": 2,
+          "sourceSeed": 786,
+          "nativeBaseSize": [
+            1.25,
+            1.25
+          ],
+          "maxRuntimePixels": [
+            512,
+            128
+          ],
+          "nativeColorMatrix": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            51.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            51.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            45.9,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            -81.60000000000001
+          ],
+          "difference": "Flash perlinNoise and SVG feTurbulence need not yield identical grain; local approximation requires visual comparison",
+          "storage": "runtime-only bounded BitmapData; no generated PNG and no whole-layer flattening",
+          "sourceBounds": [
+            9.0,
+            103.0,
+            146.0,
+            117.0
+          ]
+        },
+        {
+          "id": "wear",
+          "scope": "A08 isolated vent-wear overlay only; source vector silhouette retained",
+          "sourceFrequency": [
+            0.8,
+            0.8
+          ],
+          "sourceOctaves": 2,
+          "sourceSeed": 786,
+          "nativeBaseSize": [
+            1.25,
+            1.25
+          ],
+          "maxRuntimePixels": [
+            512,
+            128
+          ],
+          "nativeColorMatrix": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            51.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            51.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            45.9,
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            -81.60000000000001
+          ],
+          "difference": "Flash perlinNoise and SVG feTurbulence need not yield identical grain; local approximation requires visual comparison",
+          "storage": "runtime-only bounded BitmapData; no generated PNG and no whole-layer flattening",
+          "sourceBounds": [
+            174.0,
+            103.0,
+            313.0,
+            117.0
+          ]
+        }
+      ],
+      "limits": [
+        "native filter region/blur require actual comparison",
+        "player car is a static R5 art base; wheels/fire/death are not yet assembled"
+      ]
+    }
+  ],
+  "originalAnimationSource": "source-evidence/original.json and archived A07 environment-original-nodes.json",
+  "outputs": {
+    "tools/cf6-scene-completion/vehicle-art/fonts/DejaVuSerif-Bold.ttf": {
+      "sha256": "c3753f2ed6bc673f15846dc45addbeb3b9c872f32fb18fd53a21f1bef1ed7676",
+      "bytes": 355692
+    },
+    "tools/cf6-scene-completion/vehicle-art/fonts/LICENSE_DEJAVU": {
+      "sha256": "d75938dec098f06f0ac3c00853065d94f020be1c3c62ef1dc2975ba15b4d9b0e",
+      "bytes": 4816
+    },
+    "tools/cf6-scene-completion/vehicle-art/bitmap-1806.svg": {
+      "sha256": "febe8c042edc287b893398c032222b891701f898f7e21acbe4e40f4f39bba8ac",
+      "bytes": 1338051
+    },
+    "tools/cf6-scene-completion/vehicle-art/bitmap-1808.svg": {
+      "sha256": "d1b37724e367b29e725a6ecb24fcbefc337913686645eef859333d246f615edf",
+      "bytes": 39664
+    },
+    "tools/cf6-scene-completion/vehicle-art/textures/intrinsic-97dd9d26764bd021496b86ce.png": {
+      "sha256": "97dd9d26764bd021496b86cec49f88c7e397411920d09d99ce16f9a2dd7a2b05",
+      "bytes": 933403
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/timeline.xml": {
+      "sha256": "8abfebba2d8484aec968cd541ed609fc816cc23056b05ff789998114b72dd529",
+      "bytes": 558
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00001-image.xml": {
+      "sha256": "cc91690ea21c9760a7bf28ed2ab47ac8a028706eb283753d34a0c738f725001b",
+      "bytes": 548
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00002-clip-path-content.xml": {
+      "sha256": "7a606806f9587be52e3fa5d2b7355d0c403ad3d0032ea537762d35947a2a291b",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00003-bodyClip.xml": {
+      "sha256": "31ea1f0749bb24e4ee1afd49ce029a8ba384771257805f2c8133389f5e523a0e",
+      "bytes": 1203
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00004-clip-path-shape.xml": {
+      "sha256": "3f307a912c23aab7428ca6bcd6a4a8bbda9192e8b35acb3ae551541ac10150a5",
+      "bytes": 656
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00005-clip-path-bodyClip.xml": {
+      "sha256": "3b6941d8bae856c67c82e2a34b1993f70ae98cf0595cee4c7ac623961d828a00",
+      "bytes": 879
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00006-g.xml": {
+      "sha256": "f042dc4aaec2207afe100a05209d681ffa2d12fd37b6f71162e8380f5674f8b8",
+      "bytes": 536
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00007-path.xml": {
+      "sha256": "899fbcacb759fe3815ce24fec54ba925f0bd0e93ac779a30e5f4353358c32f51",
+      "bytes": 851
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00008-path.xml": {
+      "sha256": "6629fc60b4349d834fea3a91a9ca3e951087e6cc574515a0099dc85904a2a09c",
+      "bytes": 1365
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00009-g.xml": {
+      "sha256": "27e4762fd9770aaed9a753c9b9c8d10cfe10272d3e1e5a061b2c876258bcd28e",
+      "bytes": 1246
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00010-path.xml": {
+      "sha256": "b4330c1544ff7b2bc9c6046337053873604b1b7b800f08d67ff3d7974b8c5328",
+      "bytes": 1361
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00011-g.xml": {
+      "sha256": "a0a699a215a1e3930847d4b606586faea8d273fa6bc2455b94d2f42aa2a8af82",
+      "bytes": 1758
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00012-path.xml": {
+      "sha256": "12c299b4fc1e80f825e14581294c45892e4a8aa8c862524b7c9a69e54d1e4de5",
+      "bytes": 899
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00013-path.xml": {
+      "sha256": "ffd35e9a0c3f3b704792a5aeef5957bf5b84b56aeccb1e11a93c62296b826802",
+      "bytes": 907
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00014-g.xml": {
+      "sha256": "c22b1bd7851c0d1a93ce36d562f439630966282383a162d28a1f5f6a8bbff9fc",
+      "bytes": 1533
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00015-mask-content.xml": {
+      "sha256": "0de6f905a791afca7713cb8f598fa470779945b969fa2fd9afe7e98513675f1e",
+      "bytes": 1107
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00016-stencilInk.xml": {
+      "sha256": "4b356fc420e35ce88ba39eb94eeaae257982cf7b76fb868f70cf8f30cba6191c",
+      "bytes": 112354
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00017-mask-shape.xml": {
+      "sha256": "c59013f4eef4d9456eed8331f57831baf18e453b59e8fe68ecc721a56f8b743e",
+      "bytes": 643
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00018-mask-stencilInk.xml": {
+      "sha256": "d6d9d8664443ec2b94cb94cf31a346d3476cc4a817bd113d73204bde94dd16ac",
+      "bytes": 916
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00019-g.xml": {
+      "sha256": "0f76a478b95712ea66fba458775d3f143b077c973ca8a9db51d806b797da61c9",
+      "bytes": 533
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00020-g.xml": {
+      "sha256": "2676bfa4c360740e626f630f7898966a7fbaf3bcfe312ecd43d57d046984ab9a",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00021-g.xml": {
+      "sha256": "e9e252a88a2ad90cf451a51138626e74fca55dd0d9e55cc5ab7d3658405b4792",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00022-g.xml": {
+      "sha256": "c63ec7c8a5e61851cb81de7bc0042656c7eb41247cbea869ab28157260c1723c",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00023-g.xml": {
+      "sha256": "ba4c1b1c2f34fc322c5f0c91f4bd913ea6324e8f9507ba9420a746df79116db5",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00024-g.xml": {
+      "sha256": "6dab3d899d5c5665f4437fc42750a897df248fc80551a1b74d31b3b53af6ac6b",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00025-g.xml": {
+      "sha256": "47f2e5e62b381b8d02654df54788d579bdfccf62ad1be5db95d5b2c03660ff46",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00026-g.xml": {
+      "sha256": "3d05c2d3c3a231bbc1561f03e734f72862d9633aa72c65afcd095b0ea22acf57",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00027-g.xml": {
+      "sha256": "218b7ba9dacce80bea0897c4e18039c63f0ca6a6140ab1cc64ab6a91bd9c8832",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00028-g.xml": {
+      "sha256": "e152e07f1425b9267dd8bd0b4ece7e54c1f63e743d37af483ff3983d3b8523a9",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00029-g.xml": {
+      "sha256": "1bf8933e74da61d0dc1d6dda33e00c1149ca9f2fe2cabf9a1ca062f4cb6201eb",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00030-g.xml": {
+      "sha256": "7532de09c3115ba4486a454e9981050a4c02804b92312f48ef6865a78c3d9bdf",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00031-g.xml": {
+      "sha256": "6bbebc1ab5e2901cb1f5a535341609ca0b8e2b717653c82f2018b909d52cffd3",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00032-g.xml": {
+      "sha256": "614b61901a1a290bf1c963fe6c96b71fb50c5787b930a7e007d175e10efa5485",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00033-g.xml": {
+      "sha256": "1024b05b5468f3b5ae7f6b51b36489a4dc3e558174f3a392e4ff3ea48db1a479",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00034-g.xml": {
+      "sha256": "6701ae7bf62cb88d251b75ccbf73b62b7312b7ea5d2388b70e62d2ffeeea2516",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00035-g.xml": {
+      "sha256": "e0a888d1ade17987522c545726e483b6955884126631708f1362bee3dc6e6571",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00036-g.xml": {
+      "sha256": "08e38bbab69c5897019980f90cbc5ba5323ac1125a9882f928683a52242922f9",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00037-g.xml": {
+      "sha256": "92287dec7ec48b0a6037c776e0ce9e715700e05d98238d1d8f040bd04ab79ddf",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00038-g.xml": {
+      "sha256": "3add86a0c81519b56540538bc76988de65ebad794d1cc5971f3ad1d2197f0382",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00039-g.xml": {
+      "sha256": "77a035d0024a5dba4df8250b25bbd31009700a1ef7b02f7815168394cf1d09b8",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00040-g.xml": {
+      "sha256": "c01379abf3bf64f6239d7ba2384dd8690154ed5a18002c51d4039ff53198fabb",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00041-g.xml": {
+      "sha256": "1c14514bb2b08514cf057fb6be08f72892bd3478eff1c2b74946683fd82d0d0e",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00042-g.xml": {
+      "sha256": "5ac9b9c30e036ca0f9782b7b5b4ba3318e3f849e12479be3daa988dea4225587",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00043-g.xml": {
+      "sha256": "6c9b5c9e9f3a4f885b3165165565754701f6d1546af13720787f8211cb52a9ff",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00044-g.xml": {
+      "sha256": "6ade4b4015d58bd710793b6b787f18d0fbfe069eb707bfa31863c6d29e767a04",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00045-g.xml": {
+      "sha256": "de9e7a9ec36836f8433efaa6a14ba4805cdcd79f5f9c7a7013ee912105bcf999",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00046-g.xml": {
+      "sha256": "b9285fdeffe4583590a4bc87f98b447052ddac92d8204e4b30b83ec50051ea21",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00047-g.xml": {
+      "sha256": "4c956e1f2e2a2f0ca76e0ffaae330dddf8737e753424d95f2aba86c0efbc367d",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00048-g.xml": {
+      "sha256": "e361876a219035a581c7fa27df5a9df23c2a115e5aadf0ba050c5ddf96d357c0",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00049-g.xml": {
+      "sha256": "5d4ae958ec4be036d22aeb5fcb250a82b346d8bd041e1695d9d51e9027fdd25f",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00050-g.xml": {
+      "sha256": "85ad0a1eaf11bec4617fcf9668859d33bc50c24e55bf102c02646f034a03d554",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00051-g.xml": {
+      "sha256": "4fe20ac1fee506b64a90ed597b5586b47e253be3fcce2472dfaa093c561dfc03",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00052-g.xml": {
+      "sha256": "11d3f18eaf6ba1248e5cbd12e80c36d5d7f1672e863a6c39191873e68ec80289",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00053-g.xml": {
+      "sha256": "5f54f15c4b74c705b735ed5ae914a30dc318c6a5aa183f3bc8280ebd0525cc8d",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00054-g.xml": {
+      "sha256": "6df83b4c8290aae1c389631da07bdec239da4239a662f5007f6bdf63c4d9237d",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00055-g.xml": {
+      "sha256": "329ded0e52a0a592dd60ebcc26fff7ced882b792195204f1d1b1d356b0f37dd6",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00056-g.xml": {
+      "sha256": "f8eedbe256db65abf4d1d6b80acf87957ffd7bb322fab85fe878f7893976a03d",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00057-g.xml": {
+      "sha256": "f3a21544a0a130ecbb98ee53281b43f603a73d67dbf59e9c023e7e4bd8508c01",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00058-g.xml": {
+      "sha256": "1f8488fc4faca1014f9529508cd21546dfecebcfaa791f7028f77624d0265cd2",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00059-g.xml": {
+      "sha256": "49bd75d57a99a1d7c8dafda271cbdaae189cea4c71f18edb3617faae3c0b87ea",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00060-g.xml": {
+      "sha256": "ccabe6cc81199e0b1b5cd0451f4f10cceb62d641dd931276ae7ec73ba025f245",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00061-g.xml": {
+      "sha256": "7a6eeb8f2c6699bee5691bb5aad3edeca04383902eae09ea319d67d7adb8ea7d",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00062-g.xml": {
+      "sha256": "8ca0070f51c3444f2db85411db1cfae02df022fb0dd31d4b3a382bad09b2a2a5",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00063-g.xml": {
+      "sha256": "eae156fbc4f69d52a6c31d333f2e5f81f402ddffee67e292a1986db77cae07d7",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00064-g.xml": {
+      "sha256": "529adaecbe36d75ee69b412b1a4575fb76e3046feb672d32d0339940955ba8a5",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00065-g.xml": {
+      "sha256": "c19675a1ea9d49ce67170186d0460b882deac6cc7de603b0b09955a1b580b20e",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00066-g.xml": {
+      "sha256": "70cab0beb2fd4ce431f868b5fc563f74cd5ee58f0882032d158d7dc347dacdc6",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00067-g.xml": {
+      "sha256": "00ec9e37db19e64c48c8506d5761f4ff9e038320efac2586645df50b9a9fd976",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00068-g.xml": {
+      "sha256": "de998044c51d4f43a987b1acc2c81a442ddb9a38f20da3e643de48eb8b99e348",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00069-g.xml": {
+      "sha256": "083dceee3894320aea0d756d23870c6cad35e0b631c54650057e5e36d2fb770f",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00070-g.xml": {
+      "sha256": "789f8d4c371595f3ff09d838d718f550e9ba8eab238599b2b586ea62c580bf1c",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00071-g.xml": {
+      "sha256": "93f37ff3bb26968c6716390e4a4cb2c69234708cb7f16769b920683d68153bb0",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00072-g.xml": {
+      "sha256": "297ac9e072596c9ff1c214d9b3cfd90fb1e43faae90a10eb8d086a30af326e52",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00073-g.xml": {
+      "sha256": "da9963e0b734891d944b380c2348dff7558e50d32a1cdf2f81d152ff9d9f58d0",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00074-g.xml": {
+      "sha256": "93ec6122a94c237f6936bef27dd53b8b40ff717c97c0e7b203d0861f1aabfc7c",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00075-g.xml": {
+      "sha256": "09796cac351010518c7dcd8604a8679cccd636cebd5c530e849269bf1e932296",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00076-g.xml": {
+      "sha256": "538184c34efe37d113c9264488c70733208fe461acce93acbf36b5ac18b8c5ab",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00077-g.xml": {
+      "sha256": "dec936137970027460ab6f9a3f80458d10e0f2aac13c0134bbef2a203398427f",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00078-g.xml": {
+      "sha256": "c8a483cb1364cda0adf245561ece96b65c7d2843deddf7b8e6727c4aa0ec584f",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00079-g.xml": {
+      "sha256": "14cc260c95c992820e93f90915144f82737d68dba79df8e384ee8d696c795744",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00080-g.xml": {
+      "sha256": "971ff2ee0d600714c8d91aca56b2ba4a57bc8588c3209e1f44047d8634ee3913",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00081-g.xml": {
+      "sha256": "bb2dc9b1e330760a012e0ddb114892de3790f3e6618496da90f0fac0b1c170bd",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00082-g.xml": {
+      "sha256": "099ff7fb7450602196ebb3ad03b5ded0484028e9bcc0af42612760f6629d9a13",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00083-g.xml": {
+      "sha256": "7c3fe77c09388f7d44889b5983ef0d1e38eb09a3ff228cbf983176942bae2b6a",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00084-g.xml": {
+      "sha256": "4330fc2e83fd83ef19a3e4e0fbeee9df43aa5f231c7cb21e0d019dc578e18fc4",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00085-g.xml": {
+      "sha256": "650055efa7c69709c70fcaa899d9f4f84bf8debafd832b0275dc0d9df7b0fa51",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00086-g.xml": {
+      "sha256": "c040c12863254984b4b4088b56524ae0a8a867997162f8c2f156f093e115133e",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00087-g.xml": {
+      "sha256": "af3ebf7d903b9b61c06af8870018a850a646ad36021490bbb2d5f94a1d26f031",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00088-g.xml": {
+      "sha256": "94b19cec12c9f0164dd1820e962a3fcdea52b585e1b8d4d0d87b37d4eb641846",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00089-g.xml": {
+      "sha256": "f2179665998c77fa048c21b486d125ac4cf20f5f3dd8ed2b77bf65841c391971",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00090-g.xml": {
+      "sha256": "8391f18e2ba076672dad5c2cabf5fb0737a7f70b23ed8c3c647f4b4a11056293",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00091-g.xml": {
+      "sha256": "c644afeec7b52fbd8ba7fdd527d557f88ab41ac66a17844e8e9a665e4d3c7962",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00092-g.xml": {
+      "sha256": "59cd95c83d3465873c84c3e1c88bfb62e8258500c6244f706b944bd60da0b773",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00093-g.xml": {
+      "sha256": "78fea7a9192d0e757b1497024a42c1034ed0047a1a7d5519d83a036142ba7e0a",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00094-g.xml": {
+      "sha256": "7b402763d2d904b07dc21f97100ef44ab27f0a9cccc64bab26c9db5956c52491",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00095-g.xml": {
+      "sha256": "7ecbfb16457656193be348ede06415ccdad8a3c2317290a8966e93b4e7b6bf28",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00096-g.xml": {
+      "sha256": "bef09f9496fa211183326212058e58e00d488493814a79588789949ceb505c32",
+      "bytes": 666
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00097-g.xml": {
+      "sha256": "877d9c0d685c94bb55f3d61934600dd302035dd9ddafcff09015836582b003b2",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00098-g.xml": {
+      "sha256": "4f184b75612e6f67efc4ccc9a9c0e5950357eee1b3ebd1620c41ef51cabbd232",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00099-g.xml": {
+      "sha256": "6cd5e131af989525f1a5b34328f707a96a7582faebcb2578814f300b58e538e6",
+      "bytes": 706
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00100-g.xml": {
+      "sha256": "af3c9e91c10d7756a35a8bea12b534192c9b65dafab16954797046958294e8b8",
+      "bytes": 662
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00101-g.xml": {
+      "sha256": "6fd0601de075222010858ed94a8820e44afac1913b7b69da48c107b433a5ab6e",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00102-g.xml": {
+      "sha256": "3ad829e1b21b236db302523cde269fb7f7a9eabcdcd6e9aac2892aa3142d2ae9",
+      "bytes": 667
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00103-svg.xml": {
+      "sha256": "cef32b38ac79d88d36d5a0e4c3726f056f12a885dac65a198ff97cbb530e2f7a",
+      "bytes": 126121
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/LIBRARY/CF6Vector/00104-registered-art.xml": {
+      "sha256": "1c9aeebe24e633e90da26718b54e7c01aabd8a196ff574f369e86978d86b0cca",
+      "bytes": 592
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredBody/import-textures.jsfl": {
+      "sha256": "669ee5149968422b9f6d0c19461671f456d0794f4dac39c69f55024aed36e6ef",
+      "bytes": 2920
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredWheel/timeline.xml": {
+      "sha256": "f99d74c4726fae8e132f76cbb60e81948144f83007fc4bd89ab5569b19e60213",
+      "bytes": 560
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredWheel/LIBRARY/CF6Vector/00001-g.xml": {
+      "sha256": "64437161dc9b31a3e2f14dfbdfdc929b517f019dd58e95d61f62c2522203d666",
+      "bytes": 1772
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredWheel/LIBRARY/CF6Vector/00002-svg.xml": {
+      "sha256": "fa1c58da4e73abac2651f48bf5427848d984995ac89427a50b7fd9789df8d3d6",
+      "bytes": 64095
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredWheel/LIBRARY/CF6Vector/00003-registered-art.xml": {
+      "sha256": "ea1ff5f9849906f062e82ecbddb6e607c66475060e0037d6c020fb06430c450a",
+      "bytes": 592
+    },
+    "tools/cf6-scene-completion/vehicle-art/ArmoredWheel/import-textures.jsfl": {
+      "sha256": "ee926b781c29e23e96f0ec7d8a5937fb8603efb2e12c9b156c2878ff4a0caa06",
+      "bytes": 2651
+    },
+    "tools/cf6-scene-completion/vehicle-art/textures/intrinsic-9cf4e84606dcc6c67aba2cb1.png": {
+      "sha256": "9cf4e84606dcc6c67aba2cb148141f699a40f87e667db0d35eedad2703e19668",
+      "bytes": 580393
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/timeline.xml": {
+      "sha256": "d2a4746edfc9ecf0e1754577eb9d95b2c2a66b0017d1305cda588725bc75e93a",
+      "bytes": 554
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00001-gun-cradle-brace-true-r5.xml": {
+      "sha256": "fd56a6b109a94310e64e6630f91b78904f28d4bf2c10b96e485a44f27c5c656e",
+      "bytes": 5007
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00002-g.xml": {
+      "sha256": "cecbf6ba79a849449d216c087b87f821f2b12b4d97092506c819a5609851ef9e",
+      "bytes": 28954
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00003-g.xml": {
+      "sha256": "7e7af8cc7ffd351e54a4c4c0ff624ab034243e24889afae91bcdddf0fd320d89",
+      "bytes": 1896
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00004-g.xml": {
+      "sha256": "7d6e63b04864d3cb9b7a59036959dbfa7e4584a5b4e8d300f2b9bbfcc561298b",
+      "bytes": 1896
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00005-g.xml": {
+      "sha256": "51ec22ff7111d9180b6767c20a79376825e80004a1ec85fbd5216eab147f86e8",
+      "bytes": 1892
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00006-g.xml": {
+      "sha256": "d670c715b85ce2298b4f7332dce279593fd6eb8c61b1092babac1c96cef0916c",
+      "bytes": 1897
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00007-g.xml": {
+      "sha256": "809d0460e21915174c630032d0d59335165bc297e157cd0c25eee809c37ba4f1",
+      "bytes": 1897
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00008-g.xml": {
+      "sha256": "1e92aa50afae18e9f5df84571948457222f04bac9ba5018e43026b6f99eb579b",
+      "bytes": 1896
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00009-g.xml": {
+      "sha256": "45975414d7268cf4c82510286538d9c11e72343cfb18aa57509d58c5f6960f73",
+      "bytes": 1727
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00010-g.xml": {
+      "sha256": "42f78ead86d45a221c83c759796dd90b054c6d737369dfd6a27d2ef206c6438c",
+      "bytes": 1806
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00011-m134far_character.xml": {
+      "sha256": "2288e1156a6a794ca15a710fa34d857dc7b99c7a7ec666800723a26916ddfc07",
+      "bytes": 809
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00012-g.xml": {
+      "sha256": "74f3b8937dc3b14f672ad4669dd1babaa2e2e8eeace84a3f7c7d0794cf76b53a",
+      "bytes": 567
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00013-m134far-project-core.xml": {
+      "sha256": "f44e706cdab9a65dcc76aec705af652b75430f4515680b74d963444c39456108",
+      "bytes": 18398
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00014-far-gun-behind-body-r5.xml": {
+      "sha256": "27438675a014352223850c1d51573d57f240ffd6d2f91fe994926082c4c1af30",
+      "bytes": 1812
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00015-filter-softReflect.xml": {
+      "sha256": "816c9b2305f897b0b51a1df3fe63b89c26a712ec3a476c84ac7a19d4446292b0",
+      "bytes": 740
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00016-path.xml": {
+      "sha256": "d49f83b607a019988b190fe7dcaf0d4ce02870332c87fadd03f13afb68089706",
+      "bytes": 545
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00017-filter-softReflect.xml": {
+      "sha256": "e667914acb18e52c13180bb79a5ffdc6f1d4b2dd8cb767a15cbb43afc4ce011b",
+      "bytes": 746
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00018-path.xml": {
+      "sha256": "8b390cc7e6617eb7fdff7306ee24b562331b35185fed6844ac4455b5e99e6e46",
+      "bytes": 545
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00019-rear-aero-r3.xml": {
+      "sha256": "84ebf7e6815d520e920ac2033dcb0c0ea57746714799f23f19ec7bef5bab6f32",
+      "bytes": 9931
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00020-ellipse.xml": {
+      "sha256": "2d588e87179a02518e4593c899676e81f406e66c37b6801ac095b04230cdafce",
+      "bytes": 798
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00021-clip-path-content.xml": {
+      "sha256": "785e14324b2956ae69a2164d9eb026b3f6b771cdd733f21d3b181470d724d66e",
+      "bytes": 5136
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00022-cockpit-apertures-r5.xml": {
+      "sha256": "66a53825c0ef40e9b38e3fff2846f8c3d391d3100892b6cfe0fbb0e853f3dd2b",
+      "bytes": 894
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00023-clip-path-shape.xml": {
+      "sha256": "20398cc5d24faf0064f70af05aec60411a933ed6830836a93f2e1edd27b987aa",
+      "bytes": 668
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00024-clip-path-cockpit-apertures-r5.xml": {
+      "sha256": "a633d625188cdec9089c1b507accf9fa8efb498b5d2eca666595dd275d1a10a4",
+      "bytes": 915
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00025-cockpit-interior-r5.xml": {
+      "sha256": "7b13b1f531b77cc6a80792cc24f67e6096876d7056cafb9ad8119a61e6e34025",
+      "bytes": 602
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00026-clip-path-content.xml": {
+      "sha256": "ffd4cee6173d2b88e40bcbf030d464d289a1dd350e72780650fdefcbe8055802",
+      "bytes": 1761
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00027-clip-path-cockpit-apertures-r5.xml": {
+      "sha256": "be3081c99ea7ca79fbf59e39f6b9b58287ac2f58f56a5d6884104f756161b6b3",
+      "bytes": 915
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00028-cockpit-glass-r5.xml": {
+      "sha256": "761ed0483ae042b13d924ba0ce7c26b532f9e71d3913b0f8f9c41a647b11057f",
+      "bytes": 593
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00029-cockpit-frame-r5.xml": {
+      "sha256": "280809e8db1e36f2f0c4b25c3e3ae7935873c60f7901411b157cec73f0a63c65",
+      "bytes": 1772
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00030-filter-softReflect.xml": {
+      "sha256": "d00327ca6cacbbd038bd86345f09bb5035cf077d9d35ea1d3685351fa4070329",
+      "bytes": 775
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00031-path.xml": {
+      "sha256": "49f0805048e08a03341c1c36a6c24bb921a38a7dd604121c77393919ed1c520b",
+      "bytes": 545
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00032-filter-softReflect.xml": {
+      "sha256": "535ff1d328cb548e0115d4261811bce0228acd2eb657dcc3baaf00a3b9e22afb",
+      "bytes": 771
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00033-path.xml": {
+      "sha256": "61ea52147e1318b31d08a35d6626612d7472875616414779caa81bd76145a593",
+      "bytes": 545
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00034-filter-softReflect.xml": {
+      "sha256": "4e95d4a8a47b7d698e5e289f713409e88490d33df81cc5ff647303ebebfce6d9",
+      "bytes": 785
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00035-path.xml": {
+      "sha256": "ffb90d192ba2e3b4d5e925ba12353aa979e7271708fd5d7c9e446635d86e403a",
+      "bytes": 545
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00036-filter-broadReflect.xml": {
+      "sha256": "8d4ad7429f430bb5161d3b5a1623eff5236a1f2f0088d8440ff7441a4d49e2dc",
+      "bytes": 767
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00037-path.xml": {
+      "sha256": "a0d6efddba3d317ec1598996a0fa29b64c12f10665fcc6fc7b5eec1f3cec5cb6",
+      "bytes": 546
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00038-filter-broadReflect.xml": {
+      "sha256": "94772a6bad941811cb217281168902eb5e2baba110a34f888bc640bf37130f8c",
+      "bytes": 810
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00039-path.xml": {
+      "sha256": "2b4de05e33ff9545d99c5a231c58b341b8753974361bc187f831f76919dd7c5c",
+      "bytes": 546
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00040-filter-softReflect.xml": {
+      "sha256": "40b036a5fc5d667f23e408d1ed3635f1c1b553a520eeebd35cd43d2cc0079610",
+      "bytes": 828
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00041-path.xml": {
+      "sha256": "5715354cd8298ee1a26688281578819e496fe8cece94d46b02ec212baa1343b2",
+      "bytes": 545
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00042-path.xml": {
+      "sha256": "a277bbafffe4e9e654f2ffaba9e4e014b5e4145da01e2bb662cb03c872a0f1b9",
+      "bytes": 1139
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00043-g.xml": {
+      "sha256": "6a37f3f2de993635d29c96e2e0f3838522c23111531a2c05cd921095b9b3e860",
+      "bytes": 1552
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00044-path.xml": {
+      "sha256": "92c10d1c939149a932ff621bbab4a65e73efc9cefc3ce8d0a074d24289679a14",
+      "bytes": 665
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00045-path.xml": {
+      "sha256": "204834b1b081573462332050001c5b2b21602c58cc50adc1d35fce58b2f986aa",
+      "bytes": 951
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00046-path.xml": {
+      "sha256": "f5a3e174d07bba5a6c441e42a5ed437d84f4382f5ddbeb1ee151281c5553abfa",
+      "bytes": 674
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00047-g.xml": {
+      "sha256": "6ba6505f767ba3bae60aace42325164a472dcb7817062d77ab2557aecf879548",
+      "bytes": 1724
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00048-g.xml": {
+      "sha256": "865495b9a69dfe015e4134f6a7b10d1cfa13ae60a13253cfd5ddaf86917c8dee",
+      "bytes": 615
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00049-g.xml": {
+      "sha256": "d5c84370049966683256906a5e280d273cb9b8e99e13618a127b976d1881272e",
+      "bytes": 968
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00050-g.xml": {
+      "sha256": "3bad6b2c96689f21ab52ef96bdfe436957547a9229acea49d2aab2aacd270d52",
+      "bytes": 2317
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00051-g.xml": {
+      "sha256": "ad3212fae68e3b68d96046b6192ff7dc2cd7c8a650549e1bee385b262a884561",
+      "bytes": 2503
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00052-g.xml": {
+      "sha256": "151a8d13dfea88120e325bcf24b8fb6403ad8128826f65b8b3def0362a40035c",
+      "bytes": 2087
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00053-g.xml": {
+      "sha256": "20efc448dc0d4f6a35f56bcb174b65591ae29c608256e85ea192c0676d24bd8a",
+      "bytes": 24146
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00054-clip-path-content.xml": {
+      "sha256": "11eb3935b30798d929fe40e4895fe5a5f271f45d2b857afc0c2470c20056e67a",
+      "bytes": 35471
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00055-car-body-envelope-r3.xml": {
+      "sha256": "e9d54527a283698d13104491a5b354039199b95caade76dd3fd2fc7fdd74aa47",
+      "bytes": 1831
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00056-clip-path-shape.xml": {
+      "sha256": "260e6f717f7bb202b4d9f474eaadfb2ab8e77308fcfef7d84fc158a9bd4b6d6f",
+      "bytes": 668
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00057-clip-path-car-body-envelope-r3.xml": {
+      "sha256": "ce9bcd5d5e9b27ecfee677e320ac5a7f9b8b64b9e31280fee3b9edc43487e2b7",
+      "bytes": 915
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00058-g.xml": {
+      "sha256": "6b21911fadb1d5c0f2dfa8a1f8bc66174422f4cee3f8442f6ee856be1a4452b1",
+      "bytes": 548
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00059-gun-cradle-brace-false-r5.xml": {
+      "sha256": "dc7da272b332ccda99fa2656b41ffa90546378d478fb0ccef6613cba4ac90018",
+      "bytes": 5010
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00060-m134near_character.xml": {
+      "sha256": "42fc048b1600bdf28783dff0637c6ea25e2fe360dacb2da0ae628d6533f5c012",
+      "bytes": 812
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00061-g.xml": {
+      "sha256": "e9cce55a1ecf330666db0870ab35c36e168a29250c900be2d838ed2c11bfef19",
+      "bytes": 568
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00062-m134near-project-core.xml": {
+      "sha256": "b970be499e3a950668bd7ef3bd4e45212f1d44e00049fe7eadaf9a9174d306eb",
+      "bytes": 18401
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00063-svg.xml": {
+      "sha256": "c0eebbc48b2cf112b2c51ef4956a8ab70d7207dd3bb2af7f682b5f48676b10d4",
+      "bytes": 4826
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/LIBRARY/CF6Vector/00064-registered-art.xml": {
+      "sha256": "2601484aadfd58a4181188bce43a809acd98c4f2fcdf02c221e0296011a432a5",
+      "bytes": 592
+    },
+    "tools/cf6-scene-completion/vehicle-art/PlayerCar/import-textures.jsfl": {
+      "sha256": "8b0f6769a1afd7c45cc66ef0ff9eae286a38c0d0ecd5d0feb28603003202a5b2",
+      "bytes": 2912
+    },
+    "tools/cf6-scene-completion/vehicle-art/textures/intrinsic-09a14a376c144c6e9e6e8f4c.png": {
+      "sha256": "09a14a376c144c6e9e6e8f4c292d62e5a09335244129c39f033fc3bb4a85ae56",
+      "bytes": 470860
+    },
+    "tools/cf6-scene-completion/vehicle-art/Road/timeline.xml": {
+      "sha256": "6fa9ce0035cbcbd20db8bffa614797acfe9242013b9f37a24ed6a8e8a51add57",
+      "bytes": 544
+    },
+    "tools/cf6-scene-completion/vehicle-art/Road/LIBRARY/CF6Vector/00001-vent-wear-source.xml": {
+      "sha256": "05ab96556412bd0bc150aa1cc9eb7d34b16130b94056478d2b7c21288c928ef5",
+      "bytes": 680
+    },
+    "tools/cf6-scene-completion/vehicle-art/Road/LIBRARY/CF6Vector/00002-native-vent-wear.xml": {
+      "sha256": "7f8111ea473b8ee72b9a9117e1be080afd60f9af221d1badb26d58d5623ddcdc",
+      "bytes": 1770
+    },
+    "tools/cf6-scene-completion/vehicle-art/Road/LIBRARY/CF6Vector/00003-vent-wear-source.xml": {
+      "sha256": "22dafeaaf4743b766117f814fd334e57fbbcd8e9f9d88447bfa911b99317606d",
+      "bytes": 683
+    },
+    "tools/cf6-scene-completion/vehicle-art/Road/LIBRARY/CF6Vector/00004-native-vent-wear.xml": {
+      "sha256": "5aa51c77613814c5edd387a674ce52010752f5cf18461387fb58742bfbea9cd7",
+      "bytes": 1770
+    },
+    "tools/cf6-scene-completion/vehicle-art/Road/LIBRARY/CF6Vector/00005-svg.xml": {
+      "sha256": "6eba66cf70dcda3904848faf1e41e86b0a19d525417a275c0a19fcfd6a3473a6",
+      "bytes": 1761
+    },
+    "tools/cf6-scene-completion/vehicle-art/Road/LIBRARY/CF6Vector/00006-registered-art.xml": {
+      "sha256": "c185eaa778d42df6e02d2797b204cdd176146815527d028a15c0210ce2c60d62",
+      "bytes": 592
+    },
+    "tools/cf6-scene-completion/vehicle-art/Road/import-textures.jsfl": {
+      "sha256": "5ff92f2d4552ece0399d179620c04e7682dfd8f2eff884b8b07bfb5aee499ea2",
+      "bytes": 2891
+    }
+  }
+}

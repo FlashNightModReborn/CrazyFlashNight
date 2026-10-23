@@ -1,0 +1,264 @@
+import org.flashNight.arki.scene.*;
+import org.flashNight.arki.pause.PauseManager;
+import org.flashNight.gesh.depth.DepthManager;
+
+/** Real MovieClip identity fixtures; no save data or production map is used. */
+class org.flashNight.arki.scene.Cf6TraversalLifecycleTest {
+    private static var passed:Number;
+    private static var failed:Number;
+    private static function check(value:Boolean,label:String):Void {
+        if(value) passed++;else {failed++;trace("[FAIL] Cf6TraversalLifecycle: "+label);}
+    }
+    private static function noop():Void {}
+    private static function other():Void {}
+    private static function spec(mode:String):Object {
+        return {mode:mode,fps:30,durationFrames:4,actorReleaseFrame:mode=="arrive" ? 2 : null,
+            gate:{x:10,z:20,radius:12},exit:{x:60,z:30},samples:[
+            {frame:1,x:10,z:20,visible:true,action:"walk"},
+            {frame:2,x:20,z:20,visible:true,action:"walk"},
+            {frame:3,x:30,z:20,visible:false,action:"stand"},
+            {frame:4,x:40,z:20,visible:false,action:"stand"}]};
+    }
+    private static function fixture():Object {
+        var w:MovieClip=_root.createEmptyMovieClip("__cf6TraversalFixture",_root.getNextHighestDepth());
+        _root.gameworld=w;_root.控制目标="hero";
+        w.__stageReturnWorldIdentity={};
+        var h:MovieClip=w.createEmptyMovieClip("hero",10);
+        h.createEmptyMovieClip("控制块",1);h.控制块.onEnterFrame=noop;
+        h.createEmptyMovieClip("man",2);
+        h.man.gotoAndStop=function(value):Void {this.lastTraversalLabel=value;};
+        h.man.play=function():Void {this.wholeTimelinePlayCalls=1;};
+        h.hp=100;h._x=10;h._y=h.Z轴坐标=20;h._visible=true;h.方向="右";h.攻击模式="长枪";
+        h.行走=noop;h.按键控制攻击模式=noop;h.按键检测=other;
+        h.状态改变=function(value:String):Void {this.状态=value;};
+        h.方向改变=function(value:String):Void {if(this.锁定方向)return;this.方向=value;this.__directionCalls=this.__directionCalls==undefined?1:this.__directionCalls+1;};
+        var manager:Object={currentStage:2,isFailed:false,isFinished:false};
+        var managerClass:Object=org.flashNight.arki.scene.StageManager;managerClass.instance=manager;
+        var room:Object={world:w,owner:w.__stageReturnWorldIdentity,stageManager:manager,stageIndex:2};
+        w.__cf6Mechanism=room;
+        return {room:room,hero:h,world:w};
+    }
+    private static function testPause():Void {
+        _root.暂停=false;
+        var own:String=PauseManager.lease(true,"same");
+        check(!PauseManager.isPausedExcept(own),"one live own claim can advance");
+        check(PauseManager.isPausedExcept("invalid"),"invalid claim cannot exempt pause");
+        var peer:String=PauseManager.lease(true,"same");
+        check(PauseManager.isPausedExcept(own),"same owner second claim still blocks");
+        PauseManager.releaseLease(peer);
+        _root.暂停=true;check(PauseManager.isPausedExcept(own),"manual pause under claim blocks");
+        _root.暂停=false;check(!PauseManager.isPausedExcept(own),"manual resume leaves own claim exempt");
+        PauseManager.setRewardCommitPending(true);
+        check(PauseManager.isPausedExcept(own),"pending reward is never exempt");
+        PauseManager.setRewardCommitPending(false);
+        PauseManager.releaseLease(own);
+        check(!PauseManager.isPausedExcept(own),"released ID follows actual unpaused state");
+        _root.暂停=true;
+        check(PauseManager.isPausedExcept("toString"),"prototype property is never a live pause claim");
+        check(PauseManager.isPausedExcept(own),"released ID cannot exempt a later manual pause");
+        _root.暂停=false;
+    }
+    private static function testActor():Void {
+        var f:Object=fixture(),authored:Object=spec("depart"),t:Object=Cf6TraversalService.create(f.room,authored);
+        authored.gate.x=999;authored.exit.x=999;
+        check(Cf6TraversalService.tick(t,f.hero,false)=="waiting","time without clear cannot acquire");
+        f.hero._x=100;
+        check(Cf6TraversalService.tick(t,f.hero,true)=="waiting","clear away from gate cannot acquire");
+        f.hero._x=10;
+        check(Cf6TraversalService.tick(t,f.hero,true)=="playing","clear at gate acquires");
+        check(f.hero.__cf6TraversalOwner===t.token && _root.暂停,"actor token and own input lease");
+        check(f.hero.状态=="长枪行走","current equipped pose is retained");
+        check(f.hero.man.lastTraversalLabel=="空闲","gun upper body uses idle label, never numeric walk frames");
+        var heldFrame:Number=t.rules.frame;
+        var peer:String=PauseManager.lease(true,"dialogue");
+        Cf6TraversalService.tick(t,f.hero,true);
+        check(t.rules.frame==heldFrame,"external pause freezes trajectory");
+        PauseManager.releaseLease(peer);
+        Cf6TraversalService.tick(t,f.hero,true);Cf6TraversalService.tick(t,f.hero,true);
+        check(!f.hero._visible,"source visibility applied while owned");
+        check(Cf6TraversalService.tick(t,f.hero,true)=="complete","departure completes at exact frame");
+        check(t.acquired && t.awaitingAdvance && f.hero._x==40 && _root.暂停,"terminal pose remains owned until standard authority decides");
+        Cf6TraversalService.finishAdvance(t,"rejected",{status:"rejected",manualAllowed:true});
+        check(f.hero._visible && f.hero._x==60 && f.hero.Z轴坐标==30,"visible standard exit handoff");
+        check(f.hero.控制块.onEnterFrame===noop && !_root.暂停,"callback and own pause restored");
+        check(f.hero.man.wholeTimelinePlayCalls==undefined && f.hero.man.__cf6TraversalAnimationOwner==undefined,
+            "release removes own animation token without playing fire/reload timeline");
+        check(f.hero.行走===noop && f.hero.按键控制攻击模式===noop && f.hero.按键检测===other,"actor-local input gap slots restored by CAS");
+        check(Cf6TraversalService.tick(t,f.hero,true)=="complete" && !t.acquired,"completion does not reacquire");
+        f.world.removeMovieClip();
+        f=fixture();t=Cf6TraversalService.create(f.room,spec("arrive"));
+        Cf6TraversalService.tick(t,f.hero,false);Cf6TraversalService.tick(t,f.hero,false);
+        check(t.rules.frame==2 && !t.acquired && !_root.暂停,"arrival releases actor at authored release frame");
+        f.hero._x=97;Cf6TraversalService.tick(t,f.hero,false);
+        check(f.hero._x==97,"door tail never writes released actor");
+        Cf6TraversalService.cancel(t);f.world.removeMovieClip();
+    }
+    private static function testReplacement():Void {
+        var f:Object=fixture(),t:Object=Cf6TraversalService.create(f.room,spec("depart"));
+        Cf6TraversalService.tick(t,f.hero,true);
+        f.hero.控制块.onEnterFrame=other;f.hero.状态="外部接管";
+        Cf6TraversalService.cancel(t);
+        check(f.hero.控制块.onEnterFrame===other,"foreign callback write survives cancellation");
+        check(f.hero.状态=="外部接管","cancellation cannot rebuild an external pose after callback takeover");
+        f.world.removeMovieClip();f=fixture();t=Cf6TraversalService.create(f.room,spec("depart"));
+        Cf6TraversalService.tick(t,f.hero,true);
+        f.hero.removeMovieClip();var replacement:MovieClip=f.world.createEmptyMovieClip("hero",10);
+        replacement._visible=false;replacement.hp=100;
+        check(Cf6TraversalService.tick(t,replacement,true)=="cancelled","same-path actor replacement cancels");
+        check(!replacement._visible && replacement.__cf6TraversalOwner==undefined,"same-path actor not restored through alias");
+        check(!_root.暂停,"replacement releases only old lease");
+        f.world.removeMovieClip();f=fixture();t=Cf6TraversalService.create(f.room,spec("depart"));
+        f.hero.控制块.removeMovieClip();f.hero.createEmptyMovieClip("控制块",1);
+        Cf6TraversalService.tick(t,f.hero,true);
+        check(t.acquired && f.hero.控制块.__cf6TraversalOwner==undefined,"uninitialized native control block is not overwritten");
+        f.hero.控制块.onEnterFrame=noop;Cf6TraversalService.tick(t,f.hero,true);
+        check(t.acquired && f.hero.控制块.__cf6TraversalOwner===t.token,"late native load callback can be safely claimed");
+        Cf6TraversalService.cancel(t);f.world.removeMovieClip();f=fixture();t=Cf6TraversalService.create(f.room,spec("depart"));
+        Cf6TraversalService.tick(t,f.hero,true);f.hero.hp=0;
+        check(Cf6TraversalService.tick(t,f.hero,true)=="cancelled" && !_root.暂停,"death cancels and returns own pause");
+        f.world.removeMovieClip();f=fixture();t=Cf6TraversalService.create(f.room,spec("depart"));
+        Cf6TraversalService.tick(t,f.hero,true);
+        // The first sample moved hero to depth 20. Creating second at 20 deletes hero in AVM1.
+        var switched:MovieClip=f.world.createEmptyMovieClip("second",f.world.getNextHighestDepth());switched.hp=100;switched._visible=false;
+        _root.控制目标="second";
+        check(Cf6TraversalService.tick(t,switched,true)=="cancelled","control target replacement cancels");
+        check(f.world.hero===f.hero && f.hero._parent===f.world && f.hero.getDepth()!=switched.getDepth()
+            && f.hero.行走===noop && !switched._visible,"surviving original actor restores own slots; new control stays untouched");
+        f.world.removeMovieClip();f=fixture();t=Cf6TraversalService.create(f.room,spec("depart"));
+        Cf6TraversalService.tick(t,f.hero,true);f.room.stageManager.currentStage++;
+        check(Cf6TraversalService.tick(t,f.hero,true)=="cancelled","stage replacement cancels");
+        check(f.hero.控制块.onEnterFrame===noop,"stage change restores only still-owned callback");
+        f.world.removeMovieClip();f=fixture();t=Cf6TraversalService.create(f.room,spec("depart"));
+        Cf6TraversalService.tick(t,f.hero,true);f.world.removeMovieClip();
+        var nw:MovieClip=_root.createEmptyMovieClip("__cf6TraversalFixture",_root.getNextHighestDepth());
+        _root.gameworld=nw;nw.__stageReturnWorldIdentity={};
+        var nh:MovieClip=nw.createEmptyMovieClip("hero",10);nh._visible=false;nh.hp=100;
+        check(Cf6TraversalService.tick(t,nh,true)=="cancelled","same-path world replacement cancels");
+        check(!nh._visible && !_root.暂停,"replacement world remains untouched");
+        nw.removeMovieClip();
+    }
+    private static function testDepthOwnership():Void {
+        var saved:DepthManager=DepthManager.instance;
+        var f:Object=fixture(),a:Object=spec("arrive");a.actorSortY=70;
+        var counter:Number=900000;f.world.getNextHighestDepth=function():Number {return counter++;};
+        DepthManager.instance=new DepthManager(f.world,0,870655,8);DepthManager.instance.calibrate(0,100);
+        var t:Object=Cf6TraversalService.create(f.room,a);
+        Cf6TraversalService.tick(t,f.hero,false);
+        var held:Number=f.hero.getDepth();
+        check(t.depthManager===DepthManager.instance && f.hero.__cf6TraversalDepthOwner===t.token,"fixed actor sort claims current manager and actor token");
+        check(f.hero.Z轴坐标==20 && t.spec.actorSortY==70,"fixed sort leaves authored shoe coordinates intact");
+        Cf6TraversalService.tick(t,f.hero,false);
+        check(!t.acquired && f.hero.getDepth()<held && f.hero.__cf6TraversalDepthOwner==undefined,"release frame returns managed depth to true Z");
+        f.world.removeMovieClip();f=fixture();counter=900000;f.world.getNextHighestDepth=function():Number {return counter++;};
+        DepthManager.instance=new DepthManager(f.world,0,870655,8);DepthManager.instance.calibrate(0,100);
+        t=Cf6TraversalService.create(f.room,a);Cf6TraversalService.tick(t,f.hero,false);
+        DepthManager.instance.updateDepth(f.hero,90);held=f.hero.getDepth();Cf6TraversalService.cancel(t);
+        check(f.hero.getDepth()==held,"foreign managed depth survives cancellation CAS");
+        f.world.removeMovieClip();f=fixture();counter=900000;f.world.getNextHighestDepth=function():Number {return counter++;};
+        DepthManager.instance=new DepthManager(f.world,0,870655,8);DepthManager.instance.calibrate(0,100);
+        t=Cf6TraversalService.create(f.room,a);Cf6TraversalService.tick(t,f.hero,false);held=f.hero.getDepth();
+        DepthManager.instance=undefined;Cf6TraversalService.cancel(t);
+        check(f.hero.getDepth()==held,"manager replacement never restores through retired manager");
+        f.world.removeMovieClip();DepthManager.instance=saved;
+        f=fixture();a=spec("depart");a.samples[0].action="stand";
+        f.hero.状态改变=function(value:String):Void {this.状态=value;this.控制块.removeMovieClip();this.createEmptyMovieClip("控制块",1);};
+        t=Cf6TraversalService.create(f.room,a);Cf6TraversalService.tick(t,f.hero,true);
+        f.hero.控制块.onEnterFrame=noop;Cf6TraversalService.tick(t,f.hero,true);
+        f.hero.控制块.onEnterFrame=noop;Cf6TraversalService.tick(t,f.hero,true);
+        check(!t.closed && t.acquired,"self-authored pose changes tolerate delayed native control initialization");
+        Cf6TraversalService.cancel(t);f.world.removeMovieClip();
+    }
+    private static function preparedFixture(hidden:Boolean):Object {
+        Cf6TraversalService.cancelPreparedArrival(null,null);
+        var f:Object=fixture(),a:Object=spec("arrive");a.actorReleaseFrame=null;
+        f.room.mapId="A10";f.room.stageManager.gameworld=f.world;f.room.stageManager.isActive=true;
+        f.hero._x=250;f.hero._visible=!hidden;
+        var init:Object=Cf6ActorMaskState.prepare(f.world,f.room.owner,"hero",{});
+        for(var key:String in init) f.hero[key]=init[key];Cf6ActorMaskState.bind(f.hero,init);
+        _root.savePath="cf6.arrival.fixture";_root.当前关卡名="书中历险-毒刺行动";
+        _root._saveExt={bookRun:{bookId:"cf6-sting",routeId:"historical",slot:String(_root.savePath),seed:23,startedAt:100,outcome:"active"}};
+        var definition:Object=BookDefinition;definition._cf6={maps:[{},{},{id:"A10",mechanism:{traversal:{arrive:a}}}]};
+        f.spec=a;return f;
+    }
+    private static function testPreparedArrival():Void {
+        _root.暂停=false;
+        var f:Object=preparedFixture(false),p:Object=Cf6TraversalService.prepareArrival(f.world,f.room.owner,f.room.stageManager);
+        check(p!=null && !f.hero._visible && f.hero.锁定方向===true && !_root.暂停,"SceneReady preparation hides before any render without a curtain-blocking pause");
+        check(Cf6TraversalService.prepareArrival(f.world,f.room.owner,f.room.stageManager)===p,"duplicate early preparation retains one exact owner");
+        for(var n:Number=0;n<5;n++) Cf6TraversalService.observePreparedArrival();
+        check(!f.hero._visible && f.hero._x==250 && f.hero.__cf6TraversalOwner==undefined,"resource/story wait cannot expose or prematurely animate default spawn");
+        var t:Object=Cf6TraversalService.create(f.room,f.spec);
+        check(t.preparation===p && t.rules.frame==0 && !f.hero._visible,"arrival adopts early visibility responsibility before assets finish");
+        check(Cf6TraversalService.create(f.room,f.spec)==null,"same prepared actor cannot be claimed by a second traversal");
+        var peer:String=PauseManager.lease(true,"foreign-dialogue");Cf6TraversalService.tick(t,f.hero,false);
+        check(t.rules.frame==0 && !f.hero._visible,"foreign pause keeps prepared actor hidden at frame zero");PauseManager.releaseLease(peer);
+        Cf6TraversalService.tick(t,f.hero,false);
+        check(t.rules.frame==1 && f.hero._visible && f.hero._x==10 && p.closed,"first visibility follows successful authored pose application, never default spawn");
+        for(n=0;n<3;n++) Cf6TraversalService.tick(t,f.hero,false);
+        check(!t.acquired && f.hero._visible && f.hero.锁定方向!==true && !_root.暂停,"arrival completes with original visibility and direction responsibility returned");
+        Cf6TraversalService.cancel(t);f.world.removeMovieClip();f=preparedFixture(false);
+        p=Cf6TraversalService.prepareArrival(f.world,f.room.owner,f.room.stageManager);t=Cf6TraversalService.create(f.room,f.spec);Cf6TraversalService.cancel(t);
+        check(p.closed && f.hero._visible && f.hero.锁定方向!==true,"failure before first sample restores only its own early hide and direction lock");
+        f.world.removeMovieClip();f=preparedFixture(true);p=Cf6TraversalService.prepareArrival(f.world,f.room.owner,f.room.stageManager);
+        t=Cf6TraversalService.create(f.room,f.spec);Cf6TraversalService.tick(t,f.hero,false);Cf6TraversalService.cancel(t);
+        check(!f.hero._visible,"actor already hidden by another owner is never forced visible");
+        f.world.removeMovieClip();f=preparedFixture(false);p=Cf6TraversalService.prepareArrival(f.world,f.room.owner,f.room.stageManager);
+        var mask:MovieClip=f.world.createEmptyMovieClip("foreignMask",90);f.hero.setMask(mask);Cf6TraversalService.observePreparedArrival();
+        check(p.closed && !f.hero._visible && !Cf6ActorMaskState.isKnownNone(f.hero) && f.hero.__cf6ActorMaskState.calls==1,"foreign root mask retires preparation without unmasking or forcing visibility");
+        f.world.removeMovieClip();f=preparedFixture(false);p=Cf6TraversalService.prepareArrival(f.world,f.room.owner,f.room.stageManager);
+        f.world.removeMovieClip();var replacement:MovieClip=_root.createEmptyMovieClip("__cf6TraversalFixture",_root.getNextHighestDepth());_root.gameworld=replacement;replacement.__stageReturnWorldIdentity={};
+        var other:MovieClip=replacement.createEmptyMovieClip("hero",10);other._visible=false;other.锁定方向=true;
+        Cf6TraversalService.observePreparedArrival();check(!other._visible && other.锁定方向===true,"same-path replacement world does not inherit visibility or lock restoration");replacement.removeMovieClip();
+        f=preparedFixture(false);var definition:Object=BookDefinition;definition._cf6.maps[2].mechanism.traversal={};
+        check(Cf6TraversalService.prepareArrival(f.world,f.room.owner,f.room.stageManager)==null && f.hero._visible,"rooms without an arrival track never hide their actor");
+        f.world.removeMovieClip();f=preparedFixture(false);p=Cf6TraversalService.prepareArrival(f.world,f.room.owner,f.room.stageManager);
+        _root._saveExt.bookRun.seed++;Cf6TraversalService.observePreparedArrival();
+        check(p.closed && f.hero._visible && f.hero.__cf6ArrivalPreparationOwner==undefined,"logical run replacement releases exact old presentation responsibility");f.world.removeMovieClip();
+        f=preparedFixture(false);t=Cf6TraversalService.create(f.room,f.spec);f.room.arrival=t;
+        p=Cf6TraversalService.prepareArrival(f.world,f.room.owner,f.room.stageManager);
+        check(p!=null && !f.hero._visible && t.rules.frame==0,"room created before SceneReady still hides an unacquired waiting arrival");
+        Cf6TraversalService.tick(t,f.hero,false);
+        check(p.closed && t.acquired && f.hero._visible && f.hero._x==10
+            && Cf6TraversalService.prepareArrival(f.world,f.room.owner,f.room.stageManager)==null,
+            "late preparation transfers to exact existing traversal and playing SceneReady cannot re-hide it");
+        for(n=0;n<3;n++) Cf6TraversalService.tick(t,f.hero,false);
+        check(Cf6TraversalService.prepareArrival(f.world,f.room.owner,f.room.stageManager)==null && f.hero._visible,
+            "completed arrival ignores duplicate SceneReady without another visibility claim");
+        Cf6TraversalService.cancel(t);f.world.removeMovieClip();
+    }
+    private static function testStableFacing():Void {
+        var f:Object=fixture(),a:Object=spec("depart");
+        for(var i:Number=0;i<4;i++) {a.samples[i].visible=true;a.samples[i].action="walk";a.samples[i].x=i%2==0?20.03:19.97;a.samples[i].z=20+i*10;}
+        var t:Object=Cf6TraversalService.create(f.room,a);
+        check(t.rules.heading==null,"vertical source shoe oscillation is not a facing direction");
+        for(i=0;i<4;i++) Cf6TraversalService.tick(t,f.hero,true);
+        check(f.hero.方向=="右" && f.hero.__directionCalls==undefined,"fractional native MovieClip positions cannot flip a vertical traversal");
+        Cf6TraversalService.cancel(t);f.world.removeMovieClip();f=fixture();a=spec("depart");f.hero.方向="左";
+        for(i=0;i<4;i++) {a.samples[i].visible=true;a.samples[i].action="walk";a.samples[i].x=10+i*10;a.samples[i].z=20;}
+        t=Cf6TraversalService.create(f.room,a);Cf6TraversalService.tick(t,f.hero,true);
+        check(t.rules.heading=="右" && f.hero.方向=="右" && f.hero.锁定方向===true,"horizontal boarding chooses one authored heading and owns its direction lock");
+        f.hero.方向改变("左");check(f.hero.方向=="右","ordinary player direction request cannot fight the owned presentation");
+        f.hero._x=1000;Cf6TraversalService.tick(t,f.hero,true);
+        check(f.hero.方向=="右" && f.hero._x==20,"runtime displacement does not reverse authored facing");
+        Cf6TraversalService.tick(t,f.hero,true);Cf6TraversalService.tick(t,f.hero,true);
+        Cf6TraversalService.finishAdvance(t,"rejected",{status:"rejected",manualAllowed:true});
+        check(f.hero.方向=="左" && f.hero.锁定方向!==true,"cancelled/rejected handoff restores admitted orientation and lock");
+        f.world.removeMovieClip();f=fixture();a.mode="arrive";f.hero.方向="左";t=Cf6TraversalService.create(f.room,a);
+        for(i=0;i<4;i++) Cf6TraversalService.tick(t,f.hero,false);
+        check(f.hero.方向=="右" && !t.acquired && f.hero.锁定方向!==true,"completed arrival keeps its final authored facing instead of snapping back");f.world.removeMovieClip();
+    }
+    public static function runAllTests():Void {
+        passed=0;failed=0;
+        var previousWorld=_root.gameworld,previousControl=_root.控制目标,previousPause=_root.暂停;
+        var managerClass:Object=org.flashNight.arki.scene.StageManager,previousManager=managerClass.instance;
+        var definition:Object=BookDefinition,previousDefinition=definition._cf6;
+        var previousExt=_root._saveExt,previousSlot=_root.savePath,previousStage=_root.当前关卡名;
+        PauseManager.install();
+        try {testPause();testActor();testReplacement();testDepthOwnership();testPreparedArrival();testStableFacing();}
+        finally {Cf6TraversalService.cancelPreparedArrival(null,null);definition._cf6=previousDefinition;
+            _root._saveExt=previousExt;_root.savePath=previousSlot;_root.当前关卡名=previousStage;
+            _root.gameworld=previousWorld;_root.控制目标=previousControl;managerClass.instance=previousManager;_root.暂停=previousPause;}
+        trace("Cf6TraversalLifecycleTest Tests Passed: "+passed);
+        trace("Cf6TraversalLifecycleTest Tests Failed: "+failed);
+    }
+}

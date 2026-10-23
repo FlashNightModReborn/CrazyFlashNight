@@ -426,6 +426,8 @@ def build_provenance(layout, geo, placements, stats, provenance, symbols, media_
                for p in sorted(set(stats["sourceFiles"]))]
     extras = [LAYOUT, EVIDENCE, A01 / "DOMDocument.xml", A01 / "PublishSettings.xml", SOURCE_DOM]
     extras += [ROOT / rel for rel in TOOL_SOURCES]
+    extras += [ROOT / 'tools/cf6-prop-layout' / rel
+               for rel in ('calibrate.py', 'recipe.json', 'depth-recipe.json')]
     extras += [SOURCE_XFL / "bin" / pin["cache"] for pin in MEDIA_CACHE_PIN.values()]
     for extra in extras:
         sources.append({"path": str(extra.relative_to(ROOT)).replace("\\", "/"),
@@ -439,6 +441,8 @@ def build_provenance(layout, geo, placements, stats, provenance, symbols, media_
         "symbolMapping": provenance,
         "placements": placements,
         "componentSizesWorldPx": sizes,
+        "placementMeasurementSpace": "before the per-instance calibration overlay and final chapter viewport transform",
+        "instanceCalibration": "tools/cf6-prop-layout/generated/instance-layout.json contains final world sizes and unchanged ground pivots",
         "characterReference": "CF7 持枪站姿约 138.38px（tools/cf6-map-runtime/README.md §输入与坐标）；worldScale=1",
         "original": {
             "swfSha256": geo["evidence"]["originalSwfSha256"],
@@ -511,6 +515,11 @@ def render_outputs():
     outputs[HERE / "provenance.json"] = (
         json.dumps(build_provenance(layout, geo, placements, stats, provenance, symbols, media_manifest),
                    ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    calibration_spec = importlib.util.spec_from_file_location(
+        "cf6_prop_calibration", ROOT / "tools/cf6-prop-layout/calibrate.py")
+    calibration = importlib.util.module_from_spec(calibration_spec)
+    calibration_spec.loader.exec_module(calibration)
+    outputs = calibration.overlay_outputs(outputs)
     return outputs, layout, geo, symbols, placements, refs, media_manifest
 
 

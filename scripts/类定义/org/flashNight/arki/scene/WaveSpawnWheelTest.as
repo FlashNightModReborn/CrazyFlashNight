@@ -11,13 +11,13 @@ class org.flashNight.arki.scene.WaveSpawnWheelTest {
     }
     private static function spawner(capacity:Number):Object {
         var result:Object = {capacity:capacity, live:0, attempts:0, created:0,
-            accepted:[], seen:[], failAll:false};
+            accepted:[], acceptedSteps:[], seen:[], slotStep:0, failAll:false};
         result.spawn = function(attribute, index:Number, waveIndex:Number, quantity:Number):Boolean {
             this.attempts++;
             this.seen.push({attribute:attribute, index:index, waveIndex:waveIndex, quantity:quantity});
             if (this.failAll || !(this.live < this.capacity)) return false;
             this.live++; this.created++;
-            this.accepted.push(quantity);
+            this.accepted.push(quantity);this.acceptedSteps.push(this.slotStep);
             return true;
         };
         return result;
@@ -86,6 +86,39 @@ class org.flashNight.arki.scene.WaveSpawnWheelTest {
                 "completed wrapper hands remaining frame budget to the previous task");
             scheduler.minHeapTick();
             check(fake.created == 7 && fake.attempts == 7, "multiple tasks drain exactly once");
+            // Actual AVM1 slot scheduler; each slot step is the production 3-frame/100ms quantum.
+            fake=spawner(20);scheduler=wheel(fake);scheduler.addTask(3,400,0,{},0,0);
+            for(var si:Number=0;si<40;si++) {fake.slotStep=si;scheduler.slotTick();scheduler.minHeapTick();}
+            check(fake.created==3,"400ms slot queue eventually delivers all original quantity");
+            check(fake.accepted.join(",")=="3,2,1","slot requeue preserves every remaining-count transition");
+            check(fake.acceptedSteps.join(",")=="4,9,14","explicit interval retains existing wheel quantum: first400ms then500ms");
+            check(fake.attempts==3,"completed slot queue never replays");
+            var schedulerApi:Object=scheduler;var slots:Object=schedulerApi.slots;
+            check(slots instanceof Array && slots["NaN"]==undefined,"actual scheduler slots contain no orphaned NaN task");
+            trace("[WAVE_SLOT_REPEAT] created="+fake.created+" steps="+fake.acceptedSteps.join(",")+" nanSlot="+(slots["NaN"]!=undefined));
+
+            fake=spawner(1);scheduler=wheel(fake);scheduler.addTask(3,400,0,{},0,0);
+            for(si=0;si<20;si++) {fake.slotStep=si;scheduler.slotTick();}
+            check(fake.created==1 && fake.live==1,"full capacity blocks timed requeues without overproduction");
+            check(fake.seen[fake.seen.length-1].quantity==2,"timed rejection retains two unconsumed reservations");
+            for(si=20;si<60;si++) {fake.slotStep=si;fake.live=0;scheduler.slotTick();}
+            check(fake.created==3,"timed capacity retry resumes after actual fixture capacity becomes free");
+            check(fake.accepted.join(",")=="3,2,1","timed capacity retries neither lose nor duplicate quantities");
+
+            fake=spawner(20);scheduler=wheel(fake);
+            scheduler.addTask(2,400,0,{},0,0);scheduler.addTask(2,400,200,{},1,0);
+            for(si=0;si<40;si++) {fake.slotStep=si;scheduler.slotTick();}
+            check(fake.created==4,"two staggered same-wave queues both exhaust");
+            check(fake.acceptedSteps[0]==4 && fake.acceptedSteps[1]==6,"200ms phase offset separates first admissions");
+            check(fake.acceptedSteps.join(",")=="4,6,9,11","staggered recurring admissions never share a slot");
+            check(fake.seen[0].index==0 && fake.seen[1].index==1 && fake.seen[2].index==0 && fake.seen[3].index==1,
+                "staggering preserves original queue identities");
+
+            fake=spawner(20);scheduler=wheel(fake);scheduler.addTask(2,400,6000,{},0,0);
+            for(si=0;si<6;si++)scheduler.longDelaySlotTick();
+            check(fake.created==1,"long initial delay delivers exactly its first reservation");
+            for(si=0;si<20;si++){fake.slotStep=si;scheduler.slotTick();}
+            check(fake.created==2 && fake.accepted.join(",")=="2,1","long-delay task reenters ordinary interval slots without losing its tail");
         } finally {
             if (WaveSpawnWheel.instance != null) WaveSpawnWheel.instance.dispose();
             WaveSpawnWheel.instance = savedWheel;

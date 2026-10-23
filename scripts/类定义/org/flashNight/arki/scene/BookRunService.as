@@ -144,7 +144,8 @@ class org.flashNight.arki.scene.BookRunService {
         var rows:Array = [];
         for (var i:Number = 0; i < lines.length; i++) {
             rows.push({name:lines[i].speaker, title:"", text:lines[i].text,
-                char:lines[i].speaker == "Andy" ? "$PC_CHAR" : "", target:null, imageurl:""});
+                char:typeof lines[i].char == "string" ? lines[i].char
+                    : lines[i].speaker == "Andy" ? "$PC_CHAR" : "", target:null, imageurl:""});
         }
         org.flashNight.arki.dialogue.NativeDialogueService.beginStage(rows, null);
     }

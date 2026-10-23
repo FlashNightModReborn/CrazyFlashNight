@@ -161,8 +161,8 @@
     },
     {
       "path": "tools/cf6-tutorial/assemble.py",
-      "sha256": "87664e3b7d425530568129839a3b5013901d1b7d6701d2836edbfa128cd46f9e",
-      "bytes": 37400
+      "sha256": "fe42579aeb2d69cde1a02b31c9eeb3a140e8531fbbc36ce5ddbbfe475afc3aac",
+      "bytes": 38107
     },
     {
       "path": "tools/cf6-map-runtime/build-tutorial.py",
@@ -183,6 +183,21 @@
       "path": "tools/cf6-map-runtime/geometry.py",
       "sha256": "4c2c043b30ec6cf66083d9f22a285af480b638df67530dc2895e0d8ae5b4e211",
       "bytes": 6771
+    },
+    {
+      "path": "tools/cf6-prop-layout/calibrate.py",
+      "sha256": "d9e5252e5b8b3435db33bb766a6a44783a04acebcdf257934329127356902ea9",
+      "bytes": 13984
+    },
+    {
+      "path": "tools/cf6-prop-layout/recipe.json",
+      "sha256": "e090ed623d1ca68ec3ae6cce5887ef1015b99ba91e4db477051eefb160926b9b",
+      "bytes": 236086
+    },
+    {
+      "path": "tools/cf6-prop-layout/depth-recipe.json",
+      "sha256": "7992c6040f99b120c006b9d1f10655481881dc57175b1e7105491e6fb4269f11",
+      "bytes": 490
     },
     {
       "path": "flashswf/levels/基地场景合集/bin/M 6 1736924415.dat",
@@ -517,6 +532,8 @@
       "worldHeight": 270.8
     }
   },
+  "placementMeasurementSpace": "before the per-instance calibration overlay and final chapter viewport transform",
+  "instanceCalibration": "tools/cf6-prop-layout/generated/instance-layout.json contains final world sizes and unchanged ground pivots",
   "characterReference": "CF7 持枪站姿约 138.38px（tools/cf6-map-runtime/README.md §输入与坐标）；worldScale=1",
   "original": {
     "swfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",

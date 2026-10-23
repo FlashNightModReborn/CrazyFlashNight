@@ -1,0 +1,3 @@
+trace("FocusedTestRunId cf6-body-scale Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Cf6BodyScaleRulesTest.runAllTests();
+trace("FocusedTestRunId cf6-body-scale Complete: __FOCUSED_RUN_ID__");

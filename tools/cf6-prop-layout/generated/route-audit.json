@@ -1,0 +1,383 @@
+{
+  "depthProps": [
+    {
+      "name": "CF6_Prop_A06_StatueLeft",
+      "xfl": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/CF6_Prop_A06_StatueLeft.xfl",
+      "swf": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft.swf"
+    },
+    {
+      "name": "CF6_Prop_A06_StatueRight",
+      "xfl": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/CF6_Prop_A06_StatueRight.xfl",
+      "swf": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight.swf"
+    }
+  ],
+  "schema": "cf6-prop-route-audit.v1",
+  "enabledMaps": 20,
+  "tutorialAdditional": 1,
+  "maps": [
+    {
+      "mapId": "TUTORIAL",
+      "category": "furniture",
+      "decision": "高架床与组合书桌按既有人模校准体量恢复；房间壳不缩；门由通行装配共同处理。",
+      "source": "tools/cf6-tutorial/layout.json",
+      "sourceSha256": "950ba610f415696b36665bfa855cf53e72489538e22e6b7e40595b58a45959f0",
+      "calibratedInstances": 13,
+      "status": "native-source-calibrated",
+      "changedParentXml": [
+        "LIBRARY/Tutorial/房间壳-Symbol 2577.xml",
+        "LIBRARY/Tutorial/教学室场景.xml"
+      ],
+      "xfl": "flashswf/backgrounds/cf6/CF6_Tutorial_BG/CF6_Tutorial_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_Tutorial_BG.swf",
+      "needsFreshCs6": true,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A01",
+      "category": "environment-composite",
+      "decision": "残骸堆与大门墙面是整体环境边缘，未将残骸外框当单辆车；地板/土面/墙体/灯光保持地图覆盖。运行时独立道具不由此底图工具修改。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A01-R4/cf6-stage1-redraw-r4/parts/background-1581.svg",
+      "sourceSha256": "2cca92518011e900264db4901fdd74fd5fae03544c0be0ea1e11b560eae060a6",
+      "calibratedInstances": 0,
+      "status": "audited-retained",
+      "changedParentXml": [],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A01_BG/CF6_A01_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A01_BG.swf",
+      "needsFreshCs6": false,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A02",
+      "category": "environment-composite",
+      "decision": "废车堆、远景工程机械共用背景轮廓与遮罩，透视层级不同；保留废料地形，不套用A08完整赛车的现实长度。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A02-R3/cf6-stage2-redraw-r3/parts/background-1613.svg",
+      "sourceSha256": "3f8d47aa8bd76d5a5d7d74a2315863edc2dd84e54a44afb8b71df3d448c180b9",
+      "calibratedInstances": 0,
+      "status": "audited-retained",
+      "changedParentXml": [],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A02_BG/CF6_A02_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A02_BG.swf",
+      "needsFreshCs6": false,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A03",
+      "category": "architecture",
+      "decision": "背景仅连续墙纸/地板/壁灯；门框、门叶、人物与mask由通行装配统一变换。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A03-R1/cf6-stage3-redraw-r1/parts/background-1706.svg",
+      "sourceSha256": "23747a9650fa887b053e31ec40bf668a306ffbbdbcc5984a8de4a32f0e942a36",
+      "calibratedInstances": 0,
+      "status": "audited-retained",
+      "changedParentXml": [],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A03_BG/CF6_A03_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A03_BG.swf",
+      "needsFreshCs6": false,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A04",
+      "category": "architecture",
+      "decision": "背景仅连续墙纸/地板/壁灯；入口与出口由通行装配分别围绕门槛校准。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A04-R1/cf6-stage4-redraw-r1/parts/background-1728.svg",
+      "sourceSha256": "3a9bbd15181e80a9cecb7987daa19ee73c4533c3f0c216ced9c2cb9a547c4c8b",
+      "calibratedInstances": 0,
+      "status": "audited-retained",
+      "changedParentXml": [],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A04_BG/CF6_A04_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A04_BG.swf",
+      "needsFreshCs6": false,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A05",
+      "category": "statue",
+      "decision": "两尊雕像恢复210.85px；地毯、画框、墙体不缩，金双门另走统一通行变换。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A05-R3/cf6-stage5-redraw-r3/parts/background-1745.svg",
+      "sourceSha256": "5790620a9e09ed1b26cfcbe74891976adc8e6ea582291df8f0e53747febcb9c0",
+      "calibratedInstances": 2,
+      "status": "native-source-calibrated",
+      "changedParentXml": [
+        "LIBRARY/CF6Vector/00883-g.xml",
+        "LIBRARY/CF6Vector/00884-svg.xml"
+      ],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A05_BG/CF6_A05_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A05_BG.swf",
+      "needsFreshCs6": true,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A06",
+      "category": "statue-and-armor",
+      "decision": "两尊雕像恢复210.85px并因前后可达迁出为独立原生depth-prop，底图排除；五套盔甲陈列按175cm裸模145.19px定高；建筑窗帘与墙窗/地毯保留。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A06-R2/cf6-stage6-redraw-r2/parts/background-1762.svg",
+      "sourceSha256": "9387e79025e1e00c70c6ffef12697c877a3b3c89b2df8b212625ba79afccb63c",
+      "calibratedInstances": 7,
+      "status": "native-source-calibrated",
+      "changedParentXml": [
+        "LIBRARY/CF6Vector/00807-g.xml",
+        "LIBRARY/CF6Vector/01073-g.xml",
+        "LIBRARY/CF6Vector/01494-g.xml"
+      ],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A06_BG/CF6_A06_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A06_BG.swf",
+      "needsFreshCs6": true,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A08",
+      "category": "vehicle",
+      "decision": "整辆赛车包含车轮/车身/枪/遮罩同变换，恢复约390.18px长；道路与墙体不缩。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/parts/environment-a8-backdrop.svg",
+      "sourceSha256": "457f62c93f4a8db4b2ca13f6efecd88f443e5239d329370175ca8305f0237248",
+      "calibratedInstances": 1,
+      "status": "native-source-calibrated",
+      "changedParentXml": [
+        "LIBRARY/CF6Vector/00244-g.xml"
+      ],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A08_BG/CF6_A08_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A08_BG.swf",
+      "needsFreshCs6": true,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A09",
+      "category": "architecture",
+      "decision": "连续墙/灯/排气口/安全标识与地面；无已识别大型独立家具，保留。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A09-R2/cf6-stage9-redraw-r2/parts/environment-a09-backdrop.svg",
+      "sourceSha256": "f3bc78269dbccf2889cf97e2a4a659569d45fd3fcc7200099fe80519773d9b29",
+      "calibratedInstances": 0,
+      "status": "audited-retained",
+      "changedParentXml": [],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A09_BG/CF6_A09_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A09_BG.swf",
+      "needsFreshCs6": false,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A10",
+      "category": "elevator-architecture",
+      "decision": "整套电梯是地面/护栏/外框/移动幕布的通行结构；不能当道具缩小，否则与电梯窗口、移动地面脱离。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A10-R2/cf6-stage10-redraw-r2/parts/environment-a10-backdrop.svg",
+      "sourceSha256": "c6f17eee56c1aee9add129e8aa9231ad55fe2ae051df6c9a0827ab458c69db21",
+      "calibratedInstances": 0,
+      "status": "audited-retained",
+      "changedParentXml": [],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A10_BG/CF6_A10_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A10_BG.swf",
+      "needsFreshCs6": false,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A11",
+      "category": "laboratory",
+      "decision": "培养舱1901和内部人像1906同pivot校准，舱壳约366.28px，与现役230cm克隆兽相称；三个89px油桶校准；固定电柜与电梯结构保留。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/parts/environment-a11-backdrop.svg",
+      "sourceSha256": "8b3152d2f0c0cf169cc0934f1cd984fdc22758fbaff9815cec4f5f038ab40671",
+      "calibratedInstances": 5,
+      "status": "native-source-calibrated",
+      "changedParentXml": [
+        "LIBRARY/CF6Vector/00502-g.xml",
+        "LIBRARY/CF6Vector/01200-g.xml"
+      ],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A11_BG/CF6_A11_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A11_BG.swf",
+      "needsFreshCs6": true,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A12",
+      "category": "architecture",
+      "decision": "连续墙/排气口/安全标识与地面，无已识别大型独立家具，保留。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A12-R2/cf6-stage12-redraw-r2/parts/environment-a12-backdrop.svg",
+      "sourceSha256": "ee410623c440d8c0ccddb9ac57f7137e78f18cce0f0db1641a539d522841c33a",
+      "calibratedInstances": 0,
+      "status": "audited-retained",
+      "changedParentXml": [],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A12_BG/CF6_A12_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A12_BG.swf",
+      "needsFreshCs6": false,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A13",
+      "category": "elevator-architecture",
+      "decision": "整电梯通行结构保留，活动幕布与站台坐标由电梯业务统一处理。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A13-R2/cf6-stage13-redraw-r2/parts/environment-a13-backdrop.svg",
+      "sourceSha256": "82f7f9e41b9298acbbf52c657363d8788bc16a04a0e52ba183f77b01edd7394b",
+      "calibratedInstances": 0,
+      "status": "audited-retained",
+      "changedParentXml": [],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A13_BG/CF6_A13_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A13_BG.swf",
+      "needsFreshCs6": false,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A14",
+      "category": "laboratory",
+      "decision": "十二组培养舱及内部人像同步缩放；六桶堆叠作为整组共享脚点；电梯与地面不缩。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A14-R2/cf6-stage14-redraw-r2/parts/environment-a14-backdrop.svg",
+      "sourceSha256": "d15101e37aa48c3e95a829efd65ee1a4bcd6ea64dc00864b670c101a655c1078",
+      "calibratedInstances": 30,
+      "status": "native-source-calibrated",
+      "changedParentXml": [
+        "LIBRARY/CF6Vector/00819-g.xml",
+        "LIBRARY/CF6Vector/04464-g.xml"
+      ],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A14_BG/CF6_A14_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A14_BG.swf",
+      "needsFreshCs6": true,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A15",
+      "category": "laboratory-and-vehicle",
+      "decision": "二十四组培养舱同步缩放；装甲车体/车头/三车轮五实例按共同接地pivot校准。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A15-R2/cf6-stage15-redraw-r2/parts/environment-a15-backdrop.svg",
+      "sourceSha256": "e4c7c4a206c6834ebff7abbe1e33f5f01cebaaf7507ee93b015f60881ee354ff",
+      "calibratedInstances": 53,
+      "status": "native-source-calibrated",
+      "changedParentXml": [
+        "LIBRARY/CF6Vector/07577-g.xml"
+      ],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A15_BG/CF6_A15_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A15_BG.swf",
+      "needsFreshCs6": true,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A16",
+      "category": "laboratory",
+      "decision": "十七组培养舱同步缩放；中心服务器墙柜及地板/墙体保留，不把连墙结构视为独立家具。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A16-R2/cf6-stage16-redraw-r2/parts/environment-a16-backdrop.svg",
+      "sourceSha256": "f7b53e3dc1879c01d4ab5ffb6abf1890a88e0d580c6daedd66f61912475eaa80",
+      "calibratedInstances": 34,
+      "status": "native-source-calibrated",
+      "changedParentXml": [
+        "LIBRARY/CF6Vector/06227-g.xml"
+      ],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A16_BG/CF6_A16_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A16_BG.swf",
+      "needsFreshCs6": true,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A17",
+      "category": "laboratory",
+      "decision": "十二组培养舱同步缩放；中心服务器墙柜及地板/墙体保留。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A17-R2/cf6-stage17-redraw-r2/parts/environment-a17-backdrop.svg",
+      "sourceSha256": "c25930912c3d21543f0489f18ebc091ad9090acd5014fd1836628d595f61a6cf",
+      "calibratedInstances": 24,
+      "status": "native-source-calibrated",
+      "changedParentXml": [
+        "LIBRARY/CF6Vector/05007-g.xml"
+      ],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A17_BG/CF6_A17_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A17_BG.swf",
+      "needsFreshCs6": true,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A18",
+      "category": "architecture",
+      "decision": "成片墙面、竖灯、狭长门孔、栅格地板；门孔是墙体部分，未独立缩孔留下破洞。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A18-R2/cf6-stage18-redraw-r2/parts/environment-a18-backdrop.svg",
+      "sourceSha256": "a456f0a4b110a7161133584672cb26f0c6ffaeaf25aa5c4531d8f2a900e8b842",
+      "calibratedInstances": 0,
+      "status": "audited-retained",
+      "changedParentXml": [],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A18_BG/CF6_A18_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A18_BG.swf",
+      "needsFreshCs6": false,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A19",
+      "category": "architecture",
+      "decision": "转角墙/竖灯/墙内门孔/栅格地板连续，保留地形与建筑尺度。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A19-R2/cf6-stage19-redraw-r2/parts/environment-a19-backdrop.svg",
+      "sourceSha256": "55484d30da86fa68e5004712859a1aa0e3f73ae522bb689d7c5cce190ace5f89",
+      "calibratedInstances": 0,
+      "status": "audited-retained",
+      "changedParentXml": [],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A19_BG/CF6_A19_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A19_BG.swf",
+      "needsFreshCs6": false,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A20",
+      "category": "architecture",
+      "decision": "连续转角墙/栅格地板/墙内门孔与标志；保持碰撞和建筑接口。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A20-R2/cf6-stage20-redraw-r2/parts/environment-a20-backdrop.svg",
+      "sourceSha256": "646bfcad9dc5609fd29d7e7fe1578f1a0bef5365046964e75030d76cac1e8b5b",
+      "calibratedInstances": 0,
+      "status": "audited-retained",
+      "changedParentXml": [],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A20_BG/CF6_A20_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A20_BG.swf",
+      "needsFreshCs6": false,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    },
+    {
+      "mapId": "A22",
+      "category": "architecture",
+      "decision": "与A20同类的转角墙/地板/门孔，保留；不以末关整景缩放代替局部校准。",
+      "source": "flashswf/arts/new/Codex素材源稿/CF6地图/A22-R2/cf6-stage22-redraw-r2/parts/environment-a22-backdrop.svg",
+      "sourceSha256": "646bfcad9dc5609fd29d7e7fe1578f1a0bef5365046964e75030d76cac1e8b5b",
+      "calibratedInstances": 0,
+      "status": "audited-retained",
+      "changedParentXml": [],
+      "xfl": "flashswf/backgrounds/cf6/CF6_A22_BG/CF6_A22_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A22_BG.swf",
+      "needsFreshCs6": false,
+      "validationBoundary": "源文件/原图与静态层级审计；未代替实机截图、穿行与人工比例验收。"
+    }
+  ],
+  "compileTargets": [
+    {
+      "xfl": "flashswf/backgrounds/cf6/CF6_Tutorial_BG/CF6_Tutorial_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_Tutorial_BG.swf"
+    },
+    {
+      "xfl": "flashswf/backgrounds/cf6/CF6_A05_BG/CF6_A05_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A05_BG.swf"
+    },
+    {
+      "xfl": "flashswf/backgrounds/cf6/CF6_A06_BG/CF6_A06_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A06_BG.swf"
+    },
+    {
+      "xfl": "flashswf/backgrounds/cf6/CF6_A08_BG/CF6_A08_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A08_BG.swf"
+    },
+    {
+      "xfl": "flashswf/backgrounds/cf6/CF6_A11_BG/CF6_A11_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A11_BG.swf"
+    },
+    {
+      "xfl": "flashswf/backgrounds/cf6/CF6_A14_BG/CF6_A14_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A14_BG.swf"
+    },
+    {
+      "xfl": "flashswf/backgrounds/cf6/CF6_A15_BG/CF6_A15_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A15_BG.swf"
+    },
+    {
+      "xfl": "flashswf/backgrounds/cf6/CF6_A16_BG/CF6_A16_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A16_BG.swf"
+    },
+    {
+      "xfl": "flashswf/backgrounds/cf6/CF6_A17_BG/CF6_A17_BG.xfl",
+      "swf": "flashswf/backgrounds/cf6/CF6_A17_BG.swf"
+    },
+    {
+      "xfl": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft/CF6_Prop_A06_StatueLeft.xfl",
+      "swf": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueLeft.swf"
+    },
+    {
+      "xfl": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight/CF6_Prop_A06_StatueRight.xfl",
+      "swf": "flashswf/backgrounds/cf6/props/CF6_Prop_A06_StatueRight.swf"
+    }
+  ]
+}

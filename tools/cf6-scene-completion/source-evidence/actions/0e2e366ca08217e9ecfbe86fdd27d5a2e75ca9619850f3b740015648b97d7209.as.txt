@@ -1,0 +1,11 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 954;
+   var §\x0f§ = 1;
+   if(this.hitTest(_root.gameworld.man1.area))
+   {
+      firesound = new Sound();
+      firesound.attachSound("Metal Hits" + random(4));
+      firesound.start(o,1);
+      _parent.gotoAndStop("倒");
+   }
+}

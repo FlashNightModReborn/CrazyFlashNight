@@ -3,6 +3,7 @@ param(
     [string]$ProjectRoot,
     [string]$BuilderId = $env:CF7_RUNTIME_BUILDER_ID,
     [string]$CandidateRoot,
+    [string]$WebView2CacheDirectory,
     [string]$ReleaseTreeOid = 'HEAD',
     [string]$PolicyReceiptPath,
     [switch]$SkipPrepare,
@@ -11,6 +12,9 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+if ($PSBoundParameters.ContainsKey('WebView2CacheDirectory') -and [string]::IsNullOrWhiteSpace($WebView2CacheDirectory)) {
+    throw '-WebView2CacheDirectory must not be explicitly empty or whitespace.'
+}
 $launcherDir = $PSScriptRoot
 if (-not $ProjectRoot) { $ProjectRoot = Split-Path -Parent $launcherDir }
 $ProjectRoot = (Resolve-Path -LiteralPath $ProjectRoot).Path.TrimEnd('\')
@@ -147,6 +151,9 @@ Write-Host '=== CF7 Runtime Payload Producer ===' -ForegroundColor Cyan
 $producerArguments = @{
     BuilderId = $BuilderId
     CandidateRoot = $CandidateRoot
+}
+if (-not [string]::IsNullOrWhiteSpace($WebView2CacheDirectory)) {
+    $producerArguments.WebView2CacheDirectory = $WebView2CacheDirectory
 }
 if ($ForceReplace) { $producerArguments.ForceReplace = $true }
 & (Join-Path $launcherDir 'build-runtime-candidate.ps1') @producerArguments

@@ -1,0 +1,12 @@
+﻿[CmdletBinding()]
+param([ValidateRange(1, 3600)][int]$TimeoutSeconds = 360, [switch]$SkipCompile)
+$ErrorActionPreference = 'Stop'
+& (Join-Path $PSScriptRoot 'test-runners/run-focused-testloader.ps1') `
+    -DomainId 'cf6-actor-mask-presentation' `
+    -TemplateRelativePath 'scripts/test-runners/cf6-actor-mask-presentation/TestLoader.as.template' `
+    -SuiteRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6ActorMaskPresentationTest.as') `
+    -SuiteFqns @('org.flashNight.arki.scene.Cf6ActorMaskPresentationTest') `
+    -AdditionalAsRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6ActorMaskPresentation.as','scripts/类定义/org/flashNight/arki/scene/Cf6PropDepthService.as') `
+    -ExpectedTracePatterns @('(?m)^Cf6ActorMaskPresentationTest Tests Passed: 40\r?$', '(?m)^Cf6ActorMaskPresentationTest Tests Failed: 0\r?$') `
+    -SuccessSummary '40/40 real AVM1 proxy geometry and ownership assertions; real door resource and player appearance acceptance separate' `
+    -AsyncBehaviorTimeoutSeconds 60 -TimeoutSeconds $TimeoutSeconds -SkipCompile:$SkipCompile

@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId cf6-item-visuals Start: __FOCUSED_RUN_ID__");
+_root.cf6ItemVisualComplete=function():Void {trace("FocusedTestRunId cf6-item-visuals Complete: __FOCUSED_RUN_ID__");};
+org.flashNight.arki.scene.Cf6ItemVisualTest.runAllTests();

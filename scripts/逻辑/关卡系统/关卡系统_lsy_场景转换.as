@@ -408,6 +408,19 @@ _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, 
 		initObject.兵种 = id;
 	}
     org.flashNight.arki.scene.PlayerResourceTransferBridge.prepareSpawn(id,name,initObject);
+	// Only a newly born, currently controlled historical-CF6 hero gets mask history.
+	// Existing actors and other routes are never retroactively declared mask-free.
+	var maskRun:Object = _root._saveExt.bookRun;
+	if (id === "主角-男" && name === _root.控制目标
+		&& _root.当前关卡名 === "书中历险-毒刺行动"
+		&& maskRun.bookId === "cf6-sting" && maskRun.routeId === "historical"
+		&& maskRun.outcome === "active" && maskRun.slot === String(_root.savePath)) {
+		var maskInit:Object = org.flashNight.arki.scene.Cf6ActorMaskState.prepare(
+			_root.gameworld, _root.gameworld.__stageReturnWorldIdentity, name, initObject);
+		var maskActor:MovieClip = _root.gameworld.attachMovie(id, name, depth, maskInit);
+		org.flashNight.arki.scene.Cf6ActorMaskState.bind(maskActor, maskInit);
+		return maskActor;
+	}
 	return _root.gameworld.attachMovie(id, name, depth, initObject);
 }
 

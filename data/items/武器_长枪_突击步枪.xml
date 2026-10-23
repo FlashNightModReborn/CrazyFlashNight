@@ -2751,7 +2751,8 @@
   <item weapontype="突击步枪">
     <name>SAI GRY 幽灵</name>
     <displayname>SAI GRY 幽灵</displayname>
-    <icon>SAI GRY 幽灵</icon>
+    <!-- 原专属图标与持枪 linkage 尚未发布，沿用现役 Web 的 CAR 兼容外观；物品名与数值保持。 -->
+    <icon>CAR</icon>
     <type>武器</type>
     <use>长枪</use>
     <price>260000</price>
@@ -2762,7 +2763,7 @@
     <data>
       <level>40</level>
       <weight>4</weight>
-      <dressup>枪-长枪-SAI GRY 幽灵</dressup>
+      <dressup>枪-长枪-CAR</dressup>
       <capacity>40</capacity>
       <overload><chamber>1</chamber><ghost>0</ghost></overload>
       <split>1</split>

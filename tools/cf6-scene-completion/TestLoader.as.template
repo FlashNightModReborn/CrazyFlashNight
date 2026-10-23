@@ -1,0 +1,5 @@
+﻿trace("FocusedTestRunId cf6-scene-completion Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.Cf6SceneCompletionTest.runAllTests();
+org.flashNight.arki.scene.Cf6TraversalLifecycleTest.runAllTests();
+org.flashNight.arki.scene.Cf6DoorAdvanceTest.runAllTests();
+trace("FocusedTestRunId cf6-scene-completion Complete: __FOCUSED_RUN_ID__");

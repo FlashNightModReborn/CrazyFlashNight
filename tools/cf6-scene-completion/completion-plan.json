@@ -1,0 +1,5527 @@
+{
+  "schema": "cf6-scene-completion-plan.v1",
+  "status": "source reference plan; production bindings live in scene-assembly.py; A07 remains preparation-only",
+  "originalSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "evidenceSha256": "14d0209481025b6ce2b792819c59de61ea5490cde99f069c163e8a31ca4dc194",
+  "productionChapterSha256": "41d22d6a5efa9ef3c2fd74249274057c4d4db25c2cb6d45b9d19df683a00669b",
+  "traversals": [
+    {
+      "id": "A03-depart",
+      "mapId": "A03",
+      "mode": "depart",
+      "sourceSprite": 1720,
+      "sourceDepth": 28,
+      "sourcePlacement": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1198.4,
+        112.4
+      ],
+      "coordinateSpace": "original symbol local; no viewport multiplier applied",
+      "durationFrames": 174,
+      "fps": 30,
+      "actorReleaseFrame": null,
+      "trigger": "cleared-and-player-at-authored-gate",
+      "terminal": "request-standard-next-stage",
+      "nextMap": "A04",
+      "samples": [
+        {
+          "frame": 1,
+          "visible": false,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 2,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 3,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 4,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 5,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 6,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 7,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 8,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 9,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 10,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 11,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 12,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 13,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 14,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 15,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 16,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 17,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 18,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 19,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 20,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 21,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 22,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 23,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 24,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 25,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 26,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 27,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 28,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 29,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 30,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 31,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 32,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 33,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 34,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 35,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 36,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 37,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 38,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 39,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 40,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 41,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 42,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 43,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 44,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 45,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 46,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 47,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 48,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 49,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 50,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 51,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 52,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 53,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 54,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 55,
+          "visible": true,
+          "x": 2.10622,
+          "z": 121.15638,
+          "action": "walk"
+        },
+        {
+          "frame": 56,
+          "visible": true,
+          "x": 1.85622,
+          "z": 119.65638,
+          "action": "walk"
+        },
+        {
+          "frame": 57,
+          "visible": true,
+          "x": 1.55622,
+          "z": 118.10638,
+          "action": "walk"
+        },
+        {
+          "frame": 58,
+          "visible": true,
+          "x": -3.81564,
+          "z": 111.95638,
+          "action": "walk"
+        },
+        {
+          "frame": 59,
+          "visible": true,
+          "x": -4.11564,
+          "z": 110.40638,
+          "action": "walk"
+        },
+        {
+          "frame": 60,
+          "visible": true,
+          "x": -4.36564,
+          "z": 108.90638,
+          "action": "walk"
+        },
+        {
+          "frame": 61,
+          "visible": true,
+          "x": -4.66564,
+          "z": 107.35638,
+          "action": "walk"
+        },
+        {
+          "frame": 62,
+          "visible": true,
+          "x": 3.5177,
+          "z": 103.28147,
+          "action": "walk"
+        },
+        {
+          "frame": 63,
+          "visible": true,
+          "x": 3.2177,
+          "z": 101.73147,
+          "action": "walk"
+        },
+        {
+          "frame": 64,
+          "visible": true,
+          "x": 2.9177,
+          "z": 100.18147,
+          "action": "walk"
+        },
+        {
+          "frame": 65,
+          "visible": true,
+          "x": 2.6677,
+          "z": 98.68147,
+          "action": "walk"
+        },
+        {
+          "frame": 66,
+          "visible": true,
+          "x": 2.3677,
+          "z": 97.13147,
+          "action": "walk"
+        },
+        {
+          "frame": 67,
+          "visible": true,
+          "x": -8.53725,
+          "z": 101.30462,
+          "action": "walk"
+        },
+        {
+          "frame": 68,
+          "visible": true,
+          "x": -8.83725,
+          "z": 99.75462,
+          "action": "walk"
+        },
+        {
+          "frame": 69,
+          "visible": true,
+          "x": -9.08725,
+          "z": 98.25462,
+          "action": "walk"
+        },
+        {
+          "frame": 70,
+          "visible": true,
+          "x": -9.38725,
+          "z": 96.70462,
+          "action": "walk"
+        },
+        {
+          "frame": 71,
+          "visible": true,
+          "x": -9.63725,
+          "z": 95.20462,
+          "action": "walk"
+        },
+        {
+          "frame": 72,
+          "visible": true,
+          "x": -2.59378,
+          "z": 95.20638,
+          "action": "walk"
+        },
+        {
+          "frame": 73,
+          "visible": true,
+          "x": -2.89378,
+          "z": 93.65638,
+          "action": "walk"
+        },
+        {
+          "frame": 74,
+          "visible": true,
+          "x": -3.14378,
+          "z": 92.15638,
+          "action": "walk"
+        },
+        {
+          "frame": 75,
+          "visible": true,
+          "x": -3.44378,
+          "z": 90.60638,
+          "action": "walk"
+        },
+        {
+          "frame": 76,
+          "visible": true,
+          "x": -8.81564,
+          "z": 84.45638,
+          "action": "walk"
+        },
+        {
+          "frame": 77,
+          "visible": true,
+          "x": -9.11564,
+          "z": 82.90638,
+          "action": "walk"
+        },
+        {
+          "frame": 78,
+          "visible": true,
+          "x": -9.36564,
+          "z": 81.40638,
+          "action": "walk"
+        },
+        {
+          "frame": 79,
+          "visible": true,
+          "x": -9.66564,
+          "z": 79.85638,
+          "action": "walk"
+        },
+        {
+          "frame": 80,
+          "visible": true,
+          "x": -1.4823,
+          "z": 75.78147,
+          "action": "walk"
+        },
+        {
+          "frame": 81,
+          "visible": true,
+          "x": -1.7823,
+          "z": 74.23147,
+          "action": "walk"
+        },
+        {
+          "frame": 82,
+          "visible": true,
+          "x": -2.0823,
+          "z": 72.68147,
+          "action": "walk"
+        },
+        {
+          "frame": 83,
+          "visible": true,
+          "x": -2.3323,
+          "z": 71.18147,
+          "action": "walk"
+        },
+        {
+          "frame": 84,
+          "visible": true,
+          "x": -2.6323,
+          "z": 69.63147,
+          "action": "walk"
+        },
+        {
+          "frame": 85,
+          "visible": true,
+          "x": -13.53725,
+          "z": 73.80462,
+          "action": "walk"
+        },
+        {
+          "frame": 86,
+          "visible": true,
+          "x": -13.83725,
+          "z": 72.25462,
+          "action": "walk"
+        },
+        {
+          "frame": 87,
+          "visible": true,
+          "x": -14.08725,
+          "z": 70.75462,
+          "action": "walk"
+        },
+        {
+          "frame": 88,
+          "visible": true,
+          "x": -14.38725,
+          "z": 69.20462,
+          "action": "walk"
+        },
+        {
+          "frame": 89,
+          "visible": true,
+          "x": -14.63725,
+          "z": 67.70462,
+          "action": "walk"
+        },
+        {
+          "frame": 90,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "walk"
+        },
+        {
+          "frame": 91,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 92,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 93,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 94,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 95,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 96,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 97,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 98,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 99,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 100,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 101,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 102,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 103,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 104,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 105,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 106,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 107,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 108,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 109,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 110,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 111,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 112,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 113,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 114,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 115,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 116,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 117,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 118,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 119,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 120,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 121,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 122,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 123,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 124,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 125,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 126,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 127,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 128,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 129,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 130,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 131,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 132,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 133,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 134,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 135,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 136,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 137,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.60638,
+          "action": "walk"
+        },
+        {
+          "frame": 138,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.25638,
+          "action": "walk"
+        },
+        {
+          "frame": 139,
+          "visible": true,
+          "x": -7.59378,
+          "z": 66.65638,
+          "action": "walk"
+        },
+        {
+          "frame": 140,
+          "visible": true,
+          "x": -7.59378,
+          "z": 65.80638,
+          "action": "walk"
+        },
+        {
+          "frame": 141,
+          "visible": true,
+          "x": -7.59378,
+          "z": 64.75638,
+          "action": "walk"
+        },
+        {
+          "frame": 142,
+          "visible": true,
+          "x": -7.59378,
+          "z": 63.45638,
+          "action": "walk"
+        },
+        {
+          "frame": 143,
+          "visible": true,
+          "x": -7.59378,
+          "z": 61.95638,
+          "action": "walk"
+        },
+        {
+          "frame": 144,
+          "visible": true,
+          "x": -7.59378,
+          "z": 60.15638,
+          "action": "walk"
+        },
+        {
+          "frame": 145,
+          "visible": true,
+          "x": -7.59378,
+          "z": 58.15638,
+          "action": "walk"
+        },
+        {
+          "frame": 146,
+          "visible": true,
+          "x": -7.59378,
+          "z": 55.95638,
+          "action": "walk"
+        },
+        {
+          "frame": 147,
+          "visible": true,
+          "x": -7.59378,
+          "z": 53.45638,
+          "action": "walk"
+        },
+        {
+          "frame": 148,
+          "visible": true,
+          "x": -7.59378,
+          "z": 50.75638,
+          "action": "walk"
+        },
+        {
+          "frame": 149,
+          "visible": true,
+          "x": -7.59378,
+          "z": 47.80638,
+          "action": "walk"
+        },
+        {
+          "frame": 150,
+          "visible": true,
+          "x": -7.59378,
+          "z": 44.60638,
+          "action": "walk"
+        },
+        {
+          "frame": 151,
+          "visible": true,
+          "x": -7.59378,
+          "z": 41.20638,
+          "action": "walk"
+        },
+        {
+          "frame": 152,
+          "visible": true,
+          "x": -7.59378,
+          "z": 37.55638,
+          "action": "walk"
+        },
+        {
+          "frame": 153,
+          "visible": true,
+          "x": -7.59378,
+          "z": 33.70638,
+          "action": "walk"
+        },
+        {
+          "frame": 154,
+          "visible": true,
+          "x": -7.59378,
+          "z": 29.55638,
+          "action": "walk"
+        },
+        {
+          "frame": 155,
+          "visible": true,
+          "x": -7.59378,
+          "z": 25.20638,
+          "action": "walk"
+        },
+        {
+          "frame": 156,
+          "visible": true,
+          "x": -7.59378,
+          "z": 20.60638,
+          "action": "walk"
+        },
+        {
+          "frame": 157,
+          "visible": true,
+          "x": -7.59378,
+          "z": 15.80638,
+          "action": "walk"
+        },
+        {
+          "frame": 158,
+          "visible": true,
+          "x": -7.59378,
+          "z": 10.70638,
+          "action": "walk"
+        },
+        {
+          "frame": 159,
+          "visible": true,
+          "x": -7.59378,
+          "z": 5.40638,
+          "action": "walk"
+        },
+        {
+          "frame": 160,
+          "visible": true,
+          "x": -7.59378,
+          "z": -0.09362,
+          "action": "walk"
+        },
+        {
+          "frame": 161,
+          "visible": true,
+          "x": -7.59378,
+          "z": -5.89362,
+          "action": "walk"
+        },
+        {
+          "frame": 162,
+          "visible": true,
+          "x": -7.59378,
+          "z": -11.89362,
+          "action": "walk"
+        },
+        {
+          "frame": 163,
+          "visible": true,
+          "x": -7.59378,
+          "z": -18.09362,
+          "action": "walk"
+        },
+        {
+          "frame": 164,
+          "visible": true,
+          "x": -7.59378,
+          "z": -24.59362,
+          "action": "walk"
+        },
+        {
+          "frame": 165,
+          "visible": true,
+          "x": -7.59378,
+          "z": -31.29362,
+          "action": "walk"
+        },
+        {
+          "frame": 166,
+          "visible": true,
+          "x": -7.59378,
+          "z": -38.24362,
+          "action": "walk"
+        },
+        {
+          "frame": 167,
+          "visible": true,
+          "x": -7.59378,
+          "z": -45.44362,
+          "action": "walk"
+        },
+        {
+          "frame": 168,
+          "visible": true,
+          "x": -7.59378,
+          "z": -52.84362,
+          "action": "walk"
+        },
+        {
+          "frame": 169,
+          "visible": true,
+          "x": -7.59378,
+          "z": -60.49362,
+          "action": "walk"
+        },
+        {
+          "frame": 170,
+          "visible": true,
+          "x": -7.59378,
+          "z": -68.39362,
+          "action": "walk"
+        },
+        {
+          "frame": 171,
+          "visible": true,
+          "x": -7.59378,
+          "z": -76.49362,
+          "action": "walk"
+        },
+        {
+          "frame": 172,
+          "visible": true,
+          "x": -7.59378,
+          "z": -84.89362,
+          "action": "walk"
+        },
+        {
+          "frame": 173,
+          "visible": true,
+          "x": -7.59378,
+          "z": -93.44362,
+          "action": "walk"
+        },
+        {
+          "frame": 174,
+          "visible": true,
+          "x": -7.59378,
+          "z": -102.29362,
+          "action": "walk"
+        }
+      ],
+      "actorPolicy": "reuse live CF7 appearance and walk/stand; original body shapes are reference only",
+      "art": {
+        "back": "CF6_Traversal1720_Back",
+        "front": "CF6_Traversal1720_Front",
+        "mask": "CF6_Traversal1720_Mask"
+      },
+      "status": "candidate; foot anchor/depth/collision and frame pacing require native validation"
+    },
+    {
+      "id": "A04-arrive",
+      "mapId": "A04",
+      "mode": "arrive",
+      "sourceSprite": 1729,
+      "sourceDepth": 96,
+      "sourcePlacement": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        668.45,
+        226.95
+      ],
+      "coordinateSpace": "original symbol local; no viewport multiplier applied",
+      "durationFrames": 174,
+      "fps": 30,
+      "actorReleaseFrame": 122,
+      "trigger": "scene-ready",
+      "terminal": "restore-control",
+      "nextMap": null,
+      "samples": [
+        {
+          "frame": 1,
+          "visible": true,
+          "x": -7.59378,
+          "z": 133.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 2,
+          "visible": true,
+          "x": -7.59378,
+          "z": 124.35638,
+          "action": "walk"
+        },
+        {
+          "frame": 3,
+          "visible": true,
+          "x": -7.59378,
+          "z": 115.25638,
+          "action": "walk"
+        },
+        {
+          "frame": 4,
+          "visible": true,
+          "x": -7.59378,
+          "z": 106.40638,
+          "action": "walk"
+        },
+        {
+          "frame": 5,
+          "visible": true,
+          "x": -7.59378,
+          "z": 97.80638,
+          "action": "walk"
+        },
+        {
+          "frame": 6,
+          "visible": true,
+          "x": -7.59378,
+          "z": 89.45638,
+          "action": "walk"
+        },
+        {
+          "frame": 7,
+          "visible": true,
+          "x": -7.59378,
+          "z": 81.35638,
+          "action": "walk"
+        },
+        {
+          "frame": 8,
+          "visible": true,
+          "x": -7.59378,
+          "z": 73.50638,
+          "action": "walk"
+        },
+        {
+          "frame": 9,
+          "visible": true,
+          "x": -7.59378,
+          "z": 65.90638,
+          "action": "walk"
+        },
+        {
+          "frame": 10,
+          "visible": true,
+          "x": -7.59378,
+          "z": 58.55638,
+          "action": "walk"
+        },
+        {
+          "frame": 11,
+          "visible": true,
+          "x": -7.59378,
+          "z": 51.45638,
+          "action": "walk"
+        },
+        {
+          "frame": 12,
+          "visible": true,
+          "x": -7.59378,
+          "z": 44.55638,
+          "action": "walk"
+        },
+        {
+          "frame": 13,
+          "visible": true,
+          "x": -7.59378,
+          "z": 37.95638,
+          "action": "walk"
+        },
+        {
+          "frame": 14,
+          "visible": true,
+          "x": -7.59378,
+          "z": 31.60638,
+          "action": "walk"
+        },
+        {
+          "frame": 15,
+          "visible": true,
+          "x": -7.59378,
+          "z": 25.50638,
+          "action": "walk"
+        },
+        {
+          "frame": 16,
+          "visible": true,
+          "x": -7.59378,
+          "z": 19.65638,
+          "action": "walk"
+        },
+        {
+          "frame": 17,
+          "visible": true,
+          "x": -7.59378,
+          "z": 14.05638,
+          "action": "walk"
+        },
+        {
+          "frame": 18,
+          "visible": true,
+          "x": -7.59378,
+          "z": 8.65638,
+          "action": "walk"
+        },
+        {
+          "frame": 19,
+          "visible": true,
+          "x": -7.59378,
+          "z": 3.55638,
+          "action": "walk"
+        },
+        {
+          "frame": 20,
+          "visible": true,
+          "x": -7.59378,
+          "z": -1.29362,
+          "action": "walk"
+        },
+        {
+          "frame": 21,
+          "visible": true,
+          "x": -7.59378,
+          "z": -5.89362,
+          "action": "walk"
+        },
+        {
+          "frame": 22,
+          "visible": true,
+          "x": -7.59378,
+          "z": -10.24362,
+          "action": "walk"
+        },
+        {
+          "frame": 23,
+          "visible": true,
+          "x": -7.59378,
+          "z": -14.39362,
+          "action": "walk"
+        },
+        {
+          "frame": 24,
+          "visible": true,
+          "x": -7.59378,
+          "z": -18.24362,
+          "action": "walk"
+        },
+        {
+          "frame": 25,
+          "visible": true,
+          "x": -7.59378,
+          "z": -21.84362,
+          "action": "walk"
+        },
+        {
+          "frame": 26,
+          "visible": true,
+          "x": -7.59378,
+          "z": -25.24362,
+          "action": "walk"
+        },
+        {
+          "frame": 27,
+          "visible": true,
+          "x": -7.59378,
+          "z": -28.34362,
+          "action": "walk"
+        },
+        {
+          "frame": 28,
+          "visible": true,
+          "x": -7.59378,
+          "z": -31.19362,
+          "action": "walk"
+        },
+        {
+          "frame": 29,
+          "visible": true,
+          "x": -7.59378,
+          "z": -33.84362,
+          "action": "walk"
+        },
+        {
+          "frame": 30,
+          "visible": true,
+          "x": -7.59378,
+          "z": -36.19362,
+          "action": "walk"
+        },
+        {
+          "frame": 31,
+          "visible": true,
+          "x": -7.59378,
+          "z": -38.29362,
+          "action": "walk"
+        },
+        {
+          "frame": 32,
+          "visible": true,
+          "x": -7.59378,
+          "z": -40.19362,
+          "action": "walk"
+        },
+        {
+          "frame": 33,
+          "visible": true,
+          "x": -7.59378,
+          "z": -41.79362,
+          "action": "walk"
+        },
+        {
+          "frame": 34,
+          "visible": true,
+          "x": -7.59378,
+          "z": -43.19362,
+          "action": "walk"
+        },
+        {
+          "frame": 35,
+          "visible": true,
+          "x": -7.59378,
+          "z": -44.29362,
+          "action": "walk"
+        },
+        {
+          "frame": 36,
+          "visible": true,
+          "x": -7.59378,
+          "z": -45.19362,
+          "action": "walk"
+        },
+        {
+          "frame": 37,
+          "visible": true,
+          "x": -7.59378,
+          "z": -45.79362,
+          "action": "walk"
+        },
+        {
+          "frame": 38,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.19362,
+          "action": "walk"
+        },
+        {
+          "frame": 39,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "walk"
+        },
+        {
+          "frame": 40,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 41,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 42,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 43,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 44,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 45,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 46,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 47,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 48,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 49,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 50,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 51,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 52,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 53,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 54,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 55,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 56,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 57,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 58,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 59,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 60,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 61,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 62,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 63,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 64,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 65,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 66,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 67,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 68,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 69,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 70,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 71,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 72,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 73,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 74,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 75,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 76,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 77,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 78,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 79,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 80,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 81,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 82,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 83,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 84,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 85,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 86,
+          "visible": true,
+          "x": -7.29378,
+          "z": -44.74362,
+          "action": "walk"
+        },
+        {
+          "frame": 87,
+          "visible": true,
+          "x": -7.04378,
+          "z": -43.24362,
+          "action": "walk"
+        },
+        {
+          "frame": 88,
+          "visible": true,
+          "x": -6.74378,
+          "z": -41.69362,
+          "action": "walk"
+        },
+        {
+          "frame": 89,
+          "visible": true,
+          "x": -11.61564,
+          "z": -44.84362,
+          "action": "walk"
+        },
+        {
+          "frame": 90,
+          "visible": true,
+          "x": -11.31564,
+          "z": -43.29362,
+          "action": "walk"
+        },
+        {
+          "frame": 91,
+          "visible": true,
+          "x": -11.06564,
+          "z": -41.79362,
+          "action": "walk"
+        },
+        {
+          "frame": 92,
+          "visible": true,
+          "x": -10.76564,
+          "z": -40.24362,
+          "action": "walk"
+        },
+        {
+          "frame": 93,
+          "visible": true,
+          "x": -2.0823,
+          "z": -41.31853,
+          "action": "walk"
+        },
+        {
+          "frame": 94,
+          "visible": true,
+          "x": -1.7823,
+          "z": -39.76853,
+          "action": "walk"
+        },
+        {
+          "frame": 95,
+          "visible": true,
+          "x": -1.4823,
+          "z": -38.21853,
+          "action": "walk"
+        },
+        {
+          "frame": 96,
+          "visible": true,
+          "x": -1.2323,
+          "z": -36.71853,
+          "action": "walk"
+        },
+        {
+          "frame": 97,
+          "visible": true,
+          "x": -0.9323,
+          "z": -35.16853,
+          "action": "walk"
+        },
+        {
+          "frame": 98,
+          "visible": true,
+          "x": -11.33725,
+          "z": -27.99538,
+          "action": "walk"
+        },
+        {
+          "frame": 99,
+          "visible": true,
+          "x": -11.03725,
+          "z": -26.44538,
+          "action": "walk"
+        },
+        {
+          "frame": 100,
+          "visible": true,
+          "x": -10.78725,
+          "z": -24.94538,
+          "action": "walk"
+        },
+        {
+          "frame": 101,
+          "visible": true,
+          "x": -10.48725,
+          "z": -23.39538,
+          "action": "walk"
+        },
+        {
+          "frame": 102,
+          "visible": true,
+          "x": -10.23725,
+          "z": -21.89538,
+          "action": "walk"
+        },
+        {
+          "frame": 103,
+          "visible": true,
+          "x": -2.59378,
+          "z": -18.79362,
+          "action": "walk"
+        },
+        {
+          "frame": 104,
+          "visible": true,
+          "x": -2.29378,
+          "z": -17.24362,
+          "action": "walk"
+        },
+        {
+          "frame": 105,
+          "visible": true,
+          "x": -2.04378,
+          "z": -15.74362,
+          "action": "walk"
+        },
+        {
+          "frame": 106,
+          "visible": true,
+          "x": -1.74378,
+          "z": -14.19362,
+          "action": "walk"
+        },
+        {
+          "frame": 107,
+          "visible": true,
+          "x": -6.61564,
+          "z": -17.34362,
+          "action": "walk"
+        },
+        {
+          "frame": 108,
+          "visible": true,
+          "x": -6.31564,
+          "z": -15.79362,
+          "action": "walk"
+        },
+        {
+          "frame": 109,
+          "visible": true,
+          "x": -6.06564,
+          "z": -14.29362,
+          "action": "walk"
+        },
+        {
+          "frame": 110,
+          "visible": true,
+          "x": -5.76564,
+          "z": -12.74362,
+          "action": "walk"
+        },
+        {
+          "frame": 111,
+          "visible": true,
+          "x": 2.9177,
+          "z": -13.81853,
+          "action": "walk"
+        },
+        {
+          "frame": 112,
+          "visible": true,
+          "x": 3.2177,
+          "z": -12.26853,
+          "action": "walk"
+        },
+        {
+          "frame": 113,
+          "visible": true,
+          "x": 3.5177,
+          "z": -10.71853,
+          "action": "walk"
+        },
+        {
+          "frame": 114,
+          "visible": true,
+          "x": 3.7677,
+          "z": -9.21853,
+          "action": "walk"
+        },
+        {
+          "frame": 115,
+          "visible": true,
+          "x": 4.0677,
+          "z": -7.66853,
+          "action": "walk"
+        },
+        {
+          "frame": 116,
+          "visible": true,
+          "x": -6.33725,
+          "z": -0.49538,
+          "action": "walk"
+        },
+        {
+          "frame": 117,
+          "visible": true,
+          "x": -6.03725,
+          "z": 1.05462,
+          "action": "walk"
+        },
+        {
+          "frame": 118,
+          "visible": true,
+          "x": -5.78725,
+          "z": 2.55462,
+          "action": "walk"
+        },
+        {
+          "frame": 119,
+          "visible": true,
+          "x": -5.48725,
+          "z": 4.10462,
+          "action": "walk"
+        },
+        {
+          "frame": 120,
+          "visible": true,
+          "x": -5.23725,
+          "z": 5.60462,
+          "action": "walk"
+        },
+        {
+          "frame": 121,
+          "visible": true,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "walk"
+        },
+        {
+          "frame": 122,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 123,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 124,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 125,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 126,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 127,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 128,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 129,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 130,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 131,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 132,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 133,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 134,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 135,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 136,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 137,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 138,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 139,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 140,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 141,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 142,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 143,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 144,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 145,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 146,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 147,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 148,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 149,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 150,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 151,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 152,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 153,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 154,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 155,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 156,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 157,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 158,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 159,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 160,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 161,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 162,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 163,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 164,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 165,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 166,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 167,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 168,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 169,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 170,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 171,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 172,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 173,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 174,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        }
+      ],
+      "actorPolicy": "reuse live CF7 appearance and walk/stand; original body shapes are reference only",
+      "art": {
+        "back": "CF6_Traversal1729_Back",
+        "front": "CF6_Traversal1729_Front",
+        "mask": "CF6_Traversal1729_Mask"
+      },
+      "status": "candidate; foot anchor/depth/collision and frame pacing require native validation"
+    },
+    {
+      "id": "A04-depart",
+      "mapId": "A04",
+      "mode": "depart",
+      "sourceSprite": 1720,
+      "sourceDepth": 28,
+      "sourcePlacement": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        107.5,
+        112.95
+      ],
+      "coordinateSpace": "original symbol local; no viewport multiplier applied",
+      "durationFrames": 174,
+      "fps": 30,
+      "actorReleaseFrame": null,
+      "trigger": "cleared-and-player-at-authored-gate",
+      "terminal": "request-standard-next-stage",
+      "nextMap": "A05",
+      "samples": [
+        {
+          "frame": 1,
+          "visible": false,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 2,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 3,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 4,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 5,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 6,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 7,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 8,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 9,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 10,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 11,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 12,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 13,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 14,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 15,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 16,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 17,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 18,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 19,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 20,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 21,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 22,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 23,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 24,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 25,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 26,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 27,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 28,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 29,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 30,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 31,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 32,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 33,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 34,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 35,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 36,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 37,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 38,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 39,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 40,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 41,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 42,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 43,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 44,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 45,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 46,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 47,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 48,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 49,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 50,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 51,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 52,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 53,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 54,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 55,
+          "visible": true,
+          "x": 2.10622,
+          "z": 121.15638,
+          "action": "walk"
+        },
+        {
+          "frame": 56,
+          "visible": true,
+          "x": 1.85622,
+          "z": 119.65638,
+          "action": "walk"
+        },
+        {
+          "frame": 57,
+          "visible": true,
+          "x": 1.55622,
+          "z": 118.10638,
+          "action": "walk"
+        },
+        {
+          "frame": 58,
+          "visible": true,
+          "x": -3.81564,
+          "z": 111.95638,
+          "action": "walk"
+        },
+        {
+          "frame": 59,
+          "visible": true,
+          "x": -4.11564,
+          "z": 110.40638,
+          "action": "walk"
+        },
+        {
+          "frame": 60,
+          "visible": true,
+          "x": -4.36564,
+          "z": 108.90638,
+          "action": "walk"
+        },
+        {
+          "frame": 61,
+          "visible": true,
+          "x": -4.66564,
+          "z": 107.35638,
+          "action": "walk"
+        },
+        {
+          "frame": 62,
+          "visible": true,
+          "x": 3.5177,
+          "z": 103.28147,
+          "action": "walk"
+        },
+        {
+          "frame": 63,
+          "visible": true,
+          "x": 3.2177,
+          "z": 101.73147,
+          "action": "walk"
+        },
+        {
+          "frame": 64,
+          "visible": true,
+          "x": 2.9177,
+          "z": 100.18147,
+          "action": "walk"
+        },
+        {
+          "frame": 65,
+          "visible": true,
+          "x": 2.6677,
+          "z": 98.68147,
+          "action": "walk"
+        },
+        {
+          "frame": 66,
+          "visible": true,
+          "x": 2.3677,
+          "z": 97.13147,
+          "action": "walk"
+        },
+        {
+          "frame": 67,
+          "visible": true,
+          "x": -8.53725,
+          "z": 101.30462,
+          "action": "walk"
+        },
+        {
+          "frame": 68,
+          "visible": true,
+          "x": -8.83725,
+          "z": 99.75462,
+          "action": "walk"
+        },
+        {
+          "frame": 69,
+          "visible": true,
+          "x": -9.08725,
+          "z": 98.25462,
+          "action": "walk"
+        },
+        {
+          "frame": 70,
+          "visible": true,
+          "x": -9.38725,
+          "z": 96.70462,
+          "action": "walk"
+        },
+        {
+          "frame": 71,
+          "visible": true,
+          "x": -9.63725,
+          "z": 95.20462,
+          "action": "walk"
+        },
+        {
+          "frame": 72,
+          "visible": true,
+          "x": -2.59378,
+          "z": 95.20638,
+          "action": "walk"
+        },
+        {
+          "frame": 73,
+          "visible": true,
+          "x": -2.89378,
+          "z": 93.65638,
+          "action": "walk"
+        },
+        {
+          "frame": 74,
+          "visible": true,
+          "x": -3.14378,
+          "z": 92.15638,
+          "action": "walk"
+        },
+        {
+          "frame": 75,
+          "visible": true,
+          "x": -3.44378,
+          "z": 90.60638,
+          "action": "walk"
+        },
+        {
+          "frame": 76,
+          "visible": true,
+          "x": -8.81564,
+          "z": 84.45638,
+          "action": "walk"
+        },
+        {
+          "frame": 77,
+          "visible": true,
+          "x": -9.11564,
+          "z": 82.90638,
+          "action": "walk"
+        },
+        {
+          "frame": 78,
+          "visible": true,
+          "x": -9.36564,
+          "z": 81.40638,
+          "action": "walk"
+        },
+        {
+          "frame": 79,
+          "visible": true,
+          "x": -9.66564,
+          "z": 79.85638,
+          "action": "walk"
+        },
+        {
+          "frame": 80,
+          "visible": true,
+          "x": -1.4823,
+          "z": 75.78147,
+          "action": "walk"
+        },
+        {
+          "frame": 81,
+          "visible": true,
+          "x": -1.7823,
+          "z": 74.23147,
+          "action": "walk"
+        },
+        {
+          "frame": 82,
+          "visible": true,
+          "x": -2.0823,
+          "z": 72.68147,
+          "action": "walk"
+        },
+        {
+          "frame": 83,
+          "visible": true,
+          "x": -2.3323,
+          "z": 71.18147,
+          "action": "walk"
+        },
+        {
+          "frame": 84,
+          "visible": true,
+          "x": -2.6323,
+          "z": 69.63147,
+          "action": "walk"
+        },
+        {
+          "frame": 85,
+          "visible": true,
+          "x": -13.53725,
+          "z": 73.80462,
+          "action": "walk"
+        },
+        {
+          "frame": 86,
+          "visible": true,
+          "x": -13.83725,
+          "z": 72.25462,
+          "action": "walk"
+        },
+        {
+          "frame": 87,
+          "visible": true,
+          "x": -14.08725,
+          "z": 70.75462,
+          "action": "walk"
+        },
+        {
+          "frame": 88,
+          "visible": true,
+          "x": -14.38725,
+          "z": 69.20462,
+          "action": "walk"
+        },
+        {
+          "frame": 89,
+          "visible": true,
+          "x": -14.63725,
+          "z": 67.70462,
+          "action": "walk"
+        },
+        {
+          "frame": 90,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "walk"
+        },
+        {
+          "frame": 91,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 92,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 93,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 94,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 95,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 96,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 97,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 98,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 99,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 100,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 101,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 102,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 103,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 104,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 105,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 106,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 107,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 108,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 109,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 110,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 111,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 112,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 113,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 114,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 115,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 116,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 117,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 118,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 119,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 120,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 121,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 122,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 123,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 124,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 125,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 126,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 127,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 128,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 129,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 130,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 131,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 132,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 133,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 134,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 135,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 136,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 137,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.60638,
+          "action": "walk"
+        },
+        {
+          "frame": 138,
+          "visible": true,
+          "x": -7.59378,
+          "z": 67.25638,
+          "action": "walk"
+        },
+        {
+          "frame": 139,
+          "visible": true,
+          "x": -7.59378,
+          "z": 66.65638,
+          "action": "walk"
+        },
+        {
+          "frame": 140,
+          "visible": true,
+          "x": -7.59378,
+          "z": 65.80638,
+          "action": "walk"
+        },
+        {
+          "frame": 141,
+          "visible": true,
+          "x": -7.59378,
+          "z": 64.75638,
+          "action": "walk"
+        },
+        {
+          "frame": 142,
+          "visible": true,
+          "x": -7.59378,
+          "z": 63.45638,
+          "action": "walk"
+        },
+        {
+          "frame": 143,
+          "visible": true,
+          "x": -7.59378,
+          "z": 61.95638,
+          "action": "walk"
+        },
+        {
+          "frame": 144,
+          "visible": true,
+          "x": -7.59378,
+          "z": 60.15638,
+          "action": "walk"
+        },
+        {
+          "frame": 145,
+          "visible": true,
+          "x": -7.59378,
+          "z": 58.15638,
+          "action": "walk"
+        },
+        {
+          "frame": 146,
+          "visible": true,
+          "x": -7.59378,
+          "z": 55.95638,
+          "action": "walk"
+        },
+        {
+          "frame": 147,
+          "visible": true,
+          "x": -7.59378,
+          "z": 53.45638,
+          "action": "walk"
+        },
+        {
+          "frame": 148,
+          "visible": true,
+          "x": -7.59378,
+          "z": 50.75638,
+          "action": "walk"
+        },
+        {
+          "frame": 149,
+          "visible": true,
+          "x": -7.59378,
+          "z": 47.80638,
+          "action": "walk"
+        },
+        {
+          "frame": 150,
+          "visible": true,
+          "x": -7.59378,
+          "z": 44.60638,
+          "action": "walk"
+        },
+        {
+          "frame": 151,
+          "visible": true,
+          "x": -7.59378,
+          "z": 41.20638,
+          "action": "walk"
+        },
+        {
+          "frame": 152,
+          "visible": true,
+          "x": -7.59378,
+          "z": 37.55638,
+          "action": "walk"
+        },
+        {
+          "frame": 153,
+          "visible": true,
+          "x": -7.59378,
+          "z": 33.70638,
+          "action": "walk"
+        },
+        {
+          "frame": 154,
+          "visible": true,
+          "x": -7.59378,
+          "z": 29.55638,
+          "action": "walk"
+        },
+        {
+          "frame": 155,
+          "visible": true,
+          "x": -7.59378,
+          "z": 25.20638,
+          "action": "walk"
+        },
+        {
+          "frame": 156,
+          "visible": true,
+          "x": -7.59378,
+          "z": 20.60638,
+          "action": "walk"
+        },
+        {
+          "frame": 157,
+          "visible": true,
+          "x": -7.59378,
+          "z": 15.80638,
+          "action": "walk"
+        },
+        {
+          "frame": 158,
+          "visible": true,
+          "x": -7.59378,
+          "z": 10.70638,
+          "action": "walk"
+        },
+        {
+          "frame": 159,
+          "visible": true,
+          "x": -7.59378,
+          "z": 5.40638,
+          "action": "walk"
+        },
+        {
+          "frame": 160,
+          "visible": true,
+          "x": -7.59378,
+          "z": -0.09362,
+          "action": "walk"
+        },
+        {
+          "frame": 161,
+          "visible": true,
+          "x": -7.59378,
+          "z": -5.89362,
+          "action": "walk"
+        },
+        {
+          "frame": 162,
+          "visible": true,
+          "x": -7.59378,
+          "z": -11.89362,
+          "action": "walk"
+        },
+        {
+          "frame": 163,
+          "visible": true,
+          "x": -7.59378,
+          "z": -18.09362,
+          "action": "walk"
+        },
+        {
+          "frame": 164,
+          "visible": true,
+          "x": -7.59378,
+          "z": -24.59362,
+          "action": "walk"
+        },
+        {
+          "frame": 165,
+          "visible": true,
+          "x": -7.59378,
+          "z": -31.29362,
+          "action": "walk"
+        },
+        {
+          "frame": 166,
+          "visible": true,
+          "x": -7.59378,
+          "z": -38.24362,
+          "action": "walk"
+        },
+        {
+          "frame": 167,
+          "visible": true,
+          "x": -7.59378,
+          "z": -45.44362,
+          "action": "walk"
+        },
+        {
+          "frame": 168,
+          "visible": true,
+          "x": -7.59378,
+          "z": -52.84362,
+          "action": "walk"
+        },
+        {
+          "frame": 169,
+          "visible": true,
+          "x": -7.59378,
+          "z": -60.49362,
+          "action": "walk"
+        },
+        {
+          "frame": 170,
+          "visible": true,
+          "x": -7.59378,
+          "z": -68.39362,
+          "action": "walk"
+        },
+        {
+          "frame": 171,
+          "visible": true,
+          "x": -7.59378,
+          "z": -76.49362,
+          "action": "walk"
+        },
+        {
+          "frame": 172,
+          "visible": true,
+          "x": -7.59378,
+          "z": -84.89362,
+          "action": "walk"
+        },
+        {
+          "frame": 173,
+          "visible": true,
+          "x": -7.59378,
+          "z": -93.44362,
+          "action": "walk"
+        },
+        {
+          "frame": 174,
+          "visible": true,
+          "x": -7.59378,
+          "z": -102.29362,
+          "action": "walk"
+        }
+      ],
+      "actorPolicy": "reuse live CF7 appearance and walk/stand; original body shapes are reference only",
+      "art": {
+        "back": "CF6_Traversal1720_Back",
+        "front": "CF6_Traversal1720_Front",
+        "mask": "CF6_Traversal1720_Mask"
+      },
+      "status": "candidate; foot anchor/depth/collision and frame pacing require native validation"
+    },
+    {
+      "id": "A05-arrive",
+      "mapId": "A05",
+      "mode": "arrive",
+      "sourceSprite": 1729,
+      "sourceDepth": 26,
+      "sourcePlacement": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        1190.45,
+        231.4
+      ],
+      "coordinateSpace": "original symbol local; no viewport multiplier applied",
+      "durationFrames": 174,
+      "fps": 30,
+      "actorReleaseFrame": 122,
+      "trigger": "scene-ready",
+      "terminal": "restore-control",
+      "nextMap": null,
+      "samples": [
+        {
+          "frame": 1,
+          "visible": true,
+          "x": -7.59378,
+          "z": 133.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 2,
+          "visible": true,
+          "x": -7.59378,
+          "z": 124.35638,
+          "action": "walk"
+        },
+        {
+          "frame": 3,
+          "visible": true,
+          "x": -7.59378,
+          "z": 115.25638,
+          "action": "walk"
+        },
+        {
+          "frame": 4,
+          "visible": true,
+          "x": -7.59378,
+          "z": 106.40638,
+          "action": "walk"
+        },
+        {
+          "frame": 5,
+          "visible": true,
+          "x": -7.59378,
+          "z": 97.80638,
+          "action": "walk"
+        },
+        {
+          "frame": 6,
+          "visible": true,
+          "x": -7.59378,
+          "z": 89.45638,
+          "action": "walk"
+        },
+        {
+          "frame": 7,
+          "visible": true,
+          "x": -7.59378,
+          "z": 81.35638,
+          "action": "walk"
+        },
+        {
+          "frame": 8,
+          "visible": true,
+          "x": -7.59378,
+          "z": 73.50638,
+          "action": "walk"
+        },
+        {
+          "frame": 9,
+          "visible": true,
+          "x": -7.59378,
+          "z": 65.90638,
+          "action": "walk"
+        },
+        {
+          "frame": 10,
+          "visible": true,
+          "x": -7.59378,
+          "z": 58.55638,
+          "action": "walk"
+        },
+        {
+          "frame": 11,
+          "visible": true,
+          "x": -7.59378,
+          "z": 51.45638,
+          "action": "walk"
+        },
+        {
+          "frame": 12,
+          "visible": true,
+          "x": -7.59378,
+          "z": 44.55638,
+          "action": "walk"
+        },
+        {
+          "frame": 13,
+          "visible": true,
+          "x": -7.59378,
+          "z": 37.95638,
+          "action": "walk"
+        },
+        {
+          "frame": 14,
+          "visible": true,
+          "x": -7.59378,
+          "z": 31.60638,
+          "action": "walk"
+        },
+        {
+          "frame": 15,
+          "visible": true,
+          "x": -7.59378,
+          "z": 25.50638,
+          "action": "walk"
+        },
+        {
+          "frame": 16,
+          "visible": true,
+          "x": -7.59378,
+          "z": 19.65638,
+          "action": "walk"
+        },
+        {
+          "frame": 17,
+          "visible": true,
+          "x": -7.59378,
+          "z": 14.05638,
+          "action": "walk"
+        },
+        {
+          "frame": 18,
+          "visible": true,
+          "x": -7.59378,
+          "z": 8.65638,
+          "action": "walk"
+        },
+        {
+          "frame": 19,
+          "visible": true,
+          "x": -7.59378,
+          "z": 3.55638,
+          "action": "walk"
+        },
+        {
+          "frame": 20,
+          "visible": true,
+          "x": -7.59378,
+          "z": -1.29362,
+          "action": "walk"
+        },
+        {
+          "frame": 21,
+          "visible": true,
+          "x": -7.59378,
+          "z": -5.89362,
+          "action": "walk"
+        },
+        {
+          "frame": 22,
+          "visible": true,
+          "x": -7.59378,
+          "z": -10.24362,
+          "action": "walk"
+        },
+        {
+          "frame": 23,
+          "visible": true,
+          "x": -7.59378,
+          "z": -14.39362,
+          "action": "walk"
+        },
+        {
+          "frame": 24,
+          "visible": true,
+          "x": -7.59378,
+          "z": -18.24362,
+          "action": "walk"
+        },
+        {
+          "frame": 25,
+          "visible": true,
+          "x": -7.59378,
+          "z": -21.84362,
+          "action": "walk"
+        },
+        {
+          "frame": 26,
+          "visible": true,
+          "x": -7.59378,
+          "z": -25.24362,
+          "action": "walk"
+        },
+        {
+          "frame": 27,
+          "visible": true,
+          "x": -7.59378,
+          "z": -28.34362,
+          "action": "walk"
+        },
+        {
+          "frame": 28,
+          "visible": true,
+          "x": -7.59378,
+          "z": -31.19362,
+          "action": "walk"
+        },
+        {
+          "frame": 29,
+          "visible": true,
+          "x": -7.59378,
+          "z": -33.84362,
+          "action": "walk"
+        },
+        {
+          "frame": 30,
+          "visible": true,
+          "x": -7.59378,
+          "z": -36.19362,
+          "action": "walk"
+        },
+        {
+          "frame": 31,
+          "visible": true,
+          "x": -7.59378,
+          "z": -38.29362,
+          "action": "walk"
+        },
+        {
+          "frame": 32,
+          "visible": true,
+          "x": -7.59378,
+          "z": -40.19362,
+          "action": "walk"
+        },
+        {
+          "frame": 33,
+          "visible": true,
+          "x": -7.59378,
+          "z": -41.79362,
+          "action": "walk"
+        },
+        {
+          "frame": 34,
+          "visible": true,
+          "x": -7.59378,
+          "z": -43.19362,
+          "action": "walk"
+        },
+        {
+          "frame": 35,
+          "visible": true,
+          "x": -7.59378,
+          "z": -44.29362,
+          "action": "walk"
+        },
+        {
+          "frame": 36,
+          "visible": true,
+          "x": -7.59378,
+          "z": -45.19362,
+          "action": "walk"
+        },
+        {
+          "frame": 37,
+          "visible": true,
+          "x": -7.59378,
+          "z": -45.79362,
+          "action": "walk"
+        },
+        {
+          "frame": 38,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.19362,
+          "action": "walk"
+        },
+        {
+          "frame": 39,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "walk"
+        },
+        {
+          "frame": 40,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 41,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 42,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 43,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 44,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 45,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 46,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 47,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 48,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 49,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 50,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 51,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 52,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 53,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 54,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 55,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 56,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 57,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 58,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 59,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 60,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 61,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 62,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 63,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 64,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 65,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 66,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 67,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 68,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 69,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 70,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 71,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 72,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 73,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 74,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 75,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 76,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 77,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 78,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 79,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 80,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 81,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 82,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 83,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 84,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 85,
+          "visible": true,
+          "x": -7.59378,
+          "z": -46.29362,
+          "action": "stand"
+        },
+        {
+          "frame": 86,
+          "visible": true,
+          "x": -7.29378,
+          "z": -44.74362,
+          "action": "walk"
+        },
+        {
+          "frame": 87,
+          "visible": true,
+          "x": -7.04378,
+          "z": -43.24362,
+          "action": "walk"
+        },
+        {
+          "frame": 88,
+          "visible": true,
+          "x": -6.74378,
+          "z": -41.69362,
+          "action": "walk"
+        },
+        {
+          "frame": 89,
+          "visible": true,
+          "x": -11.61564,
+          "z": -44.84362,
+          "action": "walk"
+        },
+        {
+          "frame": 90,
+          "visible": true,
+          "x": -11.31564,
+          "z": -43.29362,
+          "action": "walk"
+        },
+        {
+          "frame": 91,
+          "visible": true,
+          "x": -11.06564,
+          "z": -41.79362,
+          "action": "walk"
+        },
+        {
+          "frame": 92,
+          "visible": true,
+          "x": -10.76564,
+          "z": -40.24362,
+          "action": "walk"
+        },
+        {
+          "frame": 93,
+          "visible": true,
+          "x": -2.0823,
+          "z": -41.31853,
+          "action": "walk"
+        },
+        {
+          "frame": 94,
+          "visible": true,
+          "x": -1.7823,
+          "z": -39.76853,
+          "action": "walk"
+        },
+        {
+          "frame": 95,
+          "visible": true,
+          "x": -1.4823,
+          "z": -38.21853,
+          "action": "walk"
+        },
+        {
+          "frame": 96,
+          "visible": true,
+          "x": -1.2323,
+          "z": -36.71853,
+          "action": "walk"
+        },
+        {
+          "frame": 97,
+          "visible": true,
+          "x": -0.9323,
+          "z": -35.16853,
+          "action": "walk"
+        },
+        {
+          "frame": 98,
+          "visible": true,
+          "x": -11.33725,
+          "z": -27.99538,
+          "action": "walk"
+        },
+        {
+          "frame": 99,
+          "visible": true,
+          "x": -11.03725,
+          "z": -26.44538,
+          "action": "walk"
+        },
+        {
+          "frame": 100,
+          "visible": true,
+          "x": -10.78725,
+          "z": -24.94538,
+          "action": "walk"
+        },
+        {
+          "frame": 101,
+          "visible": true,
+          "x": -10.48725,
+          "z": -23.39538,
+          "action": "walk"
+        },
+        {
+          "frame": 102,
+          "visible": true,
+          "x": -10.23725,
+          "z": -21.89538,
+          "action": "walk"
+        },
+        {
+          "frame": 103,
+          "visible": true,
+          "x": -2.59378,
+          "z": -18.79362,
+          "action": "walk"
+        },
+        {
+          "frame": 104,
+          "visible": true,
+          "x": -2.29378,
+          "z": -17.24362,
+          "action": "walk"
+        },
+        {
+          "frame": 105,
+          "visible": true,
+          "x": -2.04378,
+          "z": -15.74362,
+          "action": "walk"
+        },
+        {
+          "frame": 106,
+          "visible": true,
+          "x": -1.74378,
+          "z": -14.19362,
+          "action": "walk"
+        },
+        {
+          "frame": 107,
+          "visible": true,
+          "x": -6.61564,
+          "z": -17.34362,
+          "action": "walk"
+        },
+        {
+          "frame": 108,
+          "visible": true,
+          "x": -6.31564,
+          "z": -15.79362,
+          "action": "walk"
+        },
+        {
+          "frame": 109,
+          "visible": true,
+          "x": -6.06564,
+          "z": -14.29362,
+          "action": "walk"
+        },
+        {
+          "frame": 110,
+          "visible": true,
+          "x": -5.76564,
+          "z": -12.74362,
+          "action": "walk"
+        },
+        {
+          "frame": 111,
+          "visible": true,
+          "x": 2.9177,
+          "z": -13.81853,
+          "action": "walk"
+        },
+        {
+          "frame": 112,
+          "visible": true,
+          "x": 3.2177,
+          "z": -12.26853,
+          "action": "walk"
+        },
+        {
+          "frame": 113,
+          "visible": true,
+          "x": 3.5177,
+          "z": -10.71853,
+          "action": "walk"
+        },
+        {
+          "frame": 114,
+          "visible": true,
+          "x": 3.7677,
+          "z": -9.21853,
+          "action": "walk"
+        },
+        {
+          "frame": 115,
+          "visible": true,
+          "x": 4.0677,
+          "z": -7.66853,
+          "action": "walk"
+        },
+        {
+          "frame": 116,
+          "visible": true,
+          "x": -6.33725,
+          "z": -0.49538,
+          "action": "walk"
+        },
+        {
+          "frame": 117,
+          "visible": true,
+          "x": -6.03725,
+          "z": 1.05462,
+          "action": "walk"
+        },
+        {
+          "frame": 118,
+          "visible": true,
+          "x": -5.78725,
+          "z": 2.55462,
+          "action": "walk"
+        },
+        {
+          "frame": 119,
+          "visible": true,
+          "x": -5.48725,
+          "z": 4.10462,
+          "action": "walk"
+        },
+        {
+          "frame": 120,
+          "visible": true,
+          "x": -5.23725,
+          "z": 5.60462,
+          "action": "walk"
+        },
+        {
+          "frame": 121,
+          "visible": true,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "walk"
+        },
+        {
+          "frame": 122,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 123,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 124,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 125,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 126,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 127,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 128,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 129,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 130,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 131,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 132,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 133,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 134,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 135,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 136,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 137,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 138,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 139,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 140,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 141,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 142,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 143,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 144,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 145,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 146,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 147,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 148,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 149,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 150,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 151,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 152,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 153,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 154,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 155,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 156,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 157,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 158,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 159,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 160,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 161,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 162,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 163,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 164,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 165,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 166,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 167,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 168,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 169,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 170,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 171,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 172,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 173,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 174,
+          "visible": false,
+          "x": 2.40622,
+          "z": 8.70638,
+          "action": "stand"
+        }
+      ],
+      "actorPolicy": "reuse live CF7 appearance and walk/stand; original body shapes are reference only",
+      "art": {
+        "back": "CF6_Traversal1729_Back",
+        "front": "CF6_Traversal1729_Front",
+        "mask": "CF6_Traversal1729_Mask"
+      },
+      "status": "candidate; foot anchor/depth/collision and frame pacing require native validation"
+    },
+    {
+      "id": "A05-depart",
+      "mapId": "A05",
+      "mode": "depart",
+      "sourceSprite": 1750,
+      "sourceDepth": 88,
+      "sourcePlacement": [
+        1.0,
+        0.0,
+        0.0,
+        1.0,
+        653.7,
+        112.95
+      ],
+      "coordinateSpace": "original symbol local; no viewport multiplier applied",
+      "durationFrames": 40,
+      "fps": 30,
+      "actorReleaseFrame": null,
+      "trigger": "cleared-and-player-at-authored-gate",
+      "terminal": "request-standard-next-stage",
+      "nextMap": "A06",
+      "samples": [
+        {
+          "frame": 1,
+          "visible": false,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 2,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 3,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 4,
+          "visible": true,
+          "x": 2.40622,
+          "z": 122.70638,
+          "action": "stand"
+        },
+        {
+          "frame": 5,
+          "visible": true,
+          "x": 2.45622,
+          "z": 121.70638,
+          "action": "walk"
+        },
+        {
+          "frame": 6,
+          "visible": true,
+          "x": 2.50622,
+          "z": 120.70638,
+          "action": "walk"
+        },
+        {
+          "frame": 7,
+          "visible": true,
+          "x": 2.55622,
+          "z": 119.70638,
+          "action": "walk"
+        },
+        {
+          "frame": 8,
+          "visible": true,
+          "x": -2.51564,
+          "z": 114.05638,
+          "action": "walk"
+        },
+        {
+          "frame": 9,
+          "visible": true,
+          "x": -2.41564,
+          "z": 113.05638,
+          "action": "walk"
+        },
+        {
+          "frame": 10,
+          "visible": true,
+          "x": -2.36564,
+          "z": 112.05638,
+          "action": "walk"
+        },
+        {
+          "frame": 11,
+          "visible": true,
+          "x": -2.31564,
+          "z": 111.05638,
+          "action": "walk"
+        },
+        {
+          "frame": 12,
+          "visible": true,
+          "x": 6.1677,
+          "z": 107.48147,
+          "action": "walk"
+        },
+        {
+          "frame": 13,
+          "visible": true,
+          "x": 6.2177,
+          "z": 106.48147,
+          "action": "walk"
+        },
+        {
+          "frame": 14,
+          "visible": true,
+          "x": 6.2677,
+          "z": 105.48147,
+          "action": "walk"
+        },
+        {
+          "frame": 15,
+          "visible": true,
+          "x": 6.3177,
+          "z": 104.48147,
+          "action": "walk"
+        },
+        {
+          "frame": 16,
+          "visible": true,
+          "x": 6.3677,
+          "z": 103.48147,
+          "action": "walk"
+        },
+        {
+          "frame": 17,
+          "visible": true,
+          "x": -4.23725,
+          "z": 108.15462,
+          "action": "walk"
+        },
+        {
+          "frame": 18,
+          "visible": true,
+          "x": -4.13725,
+          "z": 107.15462,
+          "action": "walk"
+        },
+        {
+          "frame": 19,
+          "visible": true,
+          "x": -4.08725,
+          "z": 106.15462,
+          "action": "walk"
+        },
+        {
+          "frame": 20,
+          "visible": true,
+          "x": -4.03725,
+          "z": 105.15462,
+          "action": "walk"
+        },
+        {
+          "frame": 21,
+          "visible": true,
+          "x": -3.98725,
+          "z": 104.15462,
+          "action": "walk"
+        },
+        {
+          "frame": 22,
+          "visible": true,
+          "x": 3.40622,
+          "z": 104.70638,
+          "action": "walk"
+        },
+        {
+          "frame": 23,
+          "visible": true,
+          "x": 3.45622,
+          "z": 103.70638,
+          "action": "walk"
+        },
+        {
+          "frame": 24,
+          "visible": true,
+          "x": 3.50622,
+          "z": 102.70638,
+          "action": "walk"
+        },
+        {
+          "frame": 25,
+          "visible": true,
+          "x": 3.55622,
+          "z": 101.70638,
+          "action": "walk"
+        },
+        {
+          "frame": 26,
+          "visible": true,
+          "x": -1.51564,
+          "z": 96.05638,
+          "action": "walk"
+        },
+        {
+          "frame": 27,
+          "visible": true,
+          "x": -1.41564,
+          "z": 95.05638,
+          "action": "walk"
+        },
+        {
+          "frame": 28,
+          "visible": true,
+          "x": -1.36564,
+          "z": 94.05638,
+          "action": "walk"
+        },
+        {
+          "frame": 29,
+          "visible": true,
+          "x": -1.31564,
+          "z": 93.05638,
+          "action": "walk"
+        },
+        {
+          "frame": 30,
+          "visible": true,
+          "x": 7.1677,
+          "z": 89.48147,
+          "action": "walk"
+        },
+        {
+          "frame": 31,
+          "visible": true,
+          "x": 7.2177,
+          "z": 88.48147,
+          "action": "walk"
+        },
+        {
+          "frame": 32,
+          "visible": true,
+          "x": 7.2677,
+          "z": 87.48147,
+          "action": "walk"
+        },
+        {
+          "frame": 33,
+          "visible": true,
+          "x": 7.3177,
+          "z": 86.48147,
+          "action": "walk"
+        },
+        {
+          "frame": 34,
+          "visible": true,
+          "x": 7.3677,
+          "z": 85.48147,
+          "action": "walk"
+        },
+        {
+          "frame": 35,
+          "visible": true,
+          "x": -3.23725,
+          "z": 90.15462,
+          "action": "walk"
+        },
+        {
+          "frame": 36,
+          "visible": true,
+          "x": -3.13725,
+          "z": 89.15462,
+          "action": "walk"
+        },
+        {
+          "frame": 37,
+          "visible": true,
+          "x": -3.08725,
+          "z": 88.15462,
+          "action": "walk"
+        },
+        {
+          "frame": 38,
+          "visible": true,
+          "x": -3.03725,
+          "z": 87.15462,
+          "action": "walk"
+        },
+        {
+          "frame": 39,
+          "visible": true,
+          "x": -2.98725,
+          "z": 86.15462,
+          "action": "walk"
+        },
+        {
+          "frame": 40,
+          "visible": true,
+          "x": 4.40622,
+          "z": 86.70638,
+          "action": "walk"
+        }
+      ],
+      "actorPolicy": "reuse live CF7 appearance and walk/stand; original body shapes are reference only",
+      "art": {
+        "back": "CF6_Traversal1750_Back",
+        "front": "CF6_Traversal1750_Front",
+        "mask": null
+      },
+      "status": "candidate; foot anchor/depth/collision and frame pacing require native validation"
+    }
+  ],
+  "elevators": [
+    {
+      "id": "A10",
+      "beforeMap": "A09",
+      "afterMap": "A11",
+      "rules": {
+        "mapId": "A10",
+        "closeFrames": 24,
+        "stopFrames": 30,
+        "openFrames": 24,
+        "scrollFrames": 37
+      },
+      "timingBasis": "gate/stop timing inherited from existing CF7 mechanism; not claimed as original boarding animation timing",
+      "existingLayers": [
+        {
+          "id": "elevator-scroll",
+          "role": "elevator-scroll",
+          "url": "flashswf/backgrounds/cf6/CF6_A10_elevator-scroll.swf",
+          "x": -85.3333,
+          "y": -102.4,
+          "width": 1194.6667,
+          "height": 926.6347,
+          "depth": 0,
+          "loopHeight": 924.928,
+          "clip": [
+            85.3333,
+            102.4,
+            1024.0,
+            597.3333
+          ]
+        },
+        {
+          "id": "foreground",
+          "role": "foreground",
+          "url": "flashswf/backgrounds/cf6/CF6_A10_foreground.swf",
+          "x": 103.168,
+          "y": 11.008,
+          "width": 819.2,
+          "height": 662.1867,
+          "depth": 10
+        }
+      ],
+      "originalScrollSprite": 1876,
+      "originalScrollFrames": 37,
+      "originalClearMonitor": 1587,
+      "originalExitFrames": 59,
+      "sequence": [
+        "walk-onto-platform",
+        "close-gate",
+        "combat-travel",
+        "stop-at-floor",
+        "open-gate",
+        "walk-off-platform",
+        "restore-control"
+      ],
+      "adaptation": "continuous actor boarding/alighting is new CF7 staging around the original room cut; not claimed as recovered original choreography",
+      "needs": [
+        "platform/gate anchor and clipping against actual scaled map",
+        "direction and loop seam in actual Flash",
+        "original encounter completion authority retained"
+      ],
+      "completion": "actual existing StageManager clear; never elapsed-time victory"
+    },
+    {
+      "id": "A13",
+      "beforeMap": "A12",
+      "afterMap": "A14",
+      "rules": {
+        "mapId": "A13",
+        "closeFrames": 24,
+        "stopFrames": 30,
+        "openFrames": 24,
+        "scrollFrames": 37
+      },
+      "timingBasis": "gate/stop timing inherited from existing CF7 mechanism; not claimed as original boarding animation timing",
+      "existingLayers": [
+        {
+          "id": "elevator-scroll",
+          "role": "elevator-scroll",
+          "url": "flashswf/backgrounds/cf6/CF6_A13_elevator-scroll.swf",
+          "x": -85.3333,
+          "y": -102.4,
+          "width": 1194.6667,
+          "height": 926.6347,
+          "depth": 0,
+          "loopHeight": 924.928,
+          "clip": [
+            85.3333,
+            102.4,
+            1024.0,
+            597.3333
+          ]
+        },
+        {
+          "id": "foreground",
+          "role": "foreground",
+          "url": "flashswf/backgrounds/cf6/CF6_A13_foreground.swf",
+          "x": 103.168,
+          "y": 11.008,
+          "width": 819.2,
+          "height": 662.1867,
+          "depth": 10
+        }
+      ],
+      "originalScrollSprite": 1876,
+      "originalScrollFrames": 37,
+      "originalClearMonitor": 1587,
+      "originalExitFrames": 59,
+      "sequence": [
+        "walk-onto-platform",
+        "close-gate",
+        "combat-travel",
+        "stop-at-floor",
+        "open-gate",
+        "walk-off-platform",
+        "restore-control"
+      ],
+      "adaptation": "continuous actor boarding/alighting is new CF7 staging around the original room cut; not claimed as recovered original choreography",
+      "needs": [
+        "platform/gate anchor and clipping against actual scaled map",
+        "direction and loop seam in actual Flash",
+        "original encounter completion authority retained"
+      ],
+      "completion": "actual existing StageManager clear; never elapsed-time victory"
+    }
+  ],
+  "vehicle": {
+    "mapId": "A07",
+    "fps": 30,
+    "originalWorld": 1816,
+    "playerSprite": 1803,
+    "playerFrames": 29,
+    "roadSprite": 1791,
+    "roadFrames": 49,
+    "bossSprite": 1813,
+    "bossFrames": 209,
+    "bossLoopFrames": 120,
+    "bossThrowFrame": 19,
+    "bossDeathFirstFrame": 121,
+    "bossExitFrame": 208,
+    "roadKillThreshold": 30,
+    "roadToBossFrames": 59,
+    "fireIntervalMs": 150,
+    "barrels": 2,
+    "originalProjectilePower": 20,
+    "originalProjectileSpeed": 20,
+    "originalBossHp": 5000,
+    "hazardStepPerFrame": 20,
+    "roadSpawnBudgets": [
+      200,
+      15,
+      200
+    ],
+    "roadSpawnConcurrency": [
+      1,
+      1,
+      1
+    ],
+    "budgetNote": "original remaining-death generator budgets; not a promise of 415 kills; progress uses 30 final deaths",
+    "tail": {
+      "guard612": 2,
+      "shield629": 5,
+      "obstacle627": 2,
+      "completion": "actual tail trigger reached; no timed auto-clear"
+    },
+    "phases": [
+      "road",
+      "boss-intro",
+      "boss",
+      "boss-death",
+      "tail",
+      "complete"
+    ],
+    "route": [
+      "A06",
+      "cf6-s4",
+      "A07",
+      "cf6-s5",
+      "A08"
+    ],
+    "economy": {
+      "relocateGold": 40000,
+      "from": "A08",
+      "to": "A07",
+      "policy": "one existing chapter allowance; no direct legacy kill-money writes",
+      "currentProductionUnchanged": true
+    },
+    "healthPolicy": "adapter receives current chapter actor health; separate vehicle durability is not invented",
+    "balance": "original constants are reference inputs, not accepted CF7 difficulty",
+    "needs": [
+      "player wheel/gun/fire/death animation assembly from A08 art",
+      "damage/death authority adapter, dedicated collision variants",
+      "stage/actor input takeover and exact scene/run cancellation",
+      "route ID compatibility and all shifted story indices",
+      "actual CS6/game validation"
+    ]
+  },
+  "reuse": [
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A07-R2/cf6-stage7-redraw-r2/source/armored_vehicle.py",
+      "sha256": "6fb990e2e1a2657af7cbafb23949fed37684e2402b214fc18adc0053af65540d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A07-R2/cf6-stage7-redraw-r2/reference/environment-original-nodes.json",
+      "sha256": "5a4a1325cffbbca0a76964ca3563c6e55e2438d5d4845ea71641a718c22278ac"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/parts/bitmap-1823.svg",
+      "sha256": "e842c952acdeff895fb28781f702561e893de0eb643a6871ebf0fc1e470ca93e"
+    }
+  ]
+}

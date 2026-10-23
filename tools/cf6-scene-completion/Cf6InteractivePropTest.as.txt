@@ -1,0 +1,321 @@
+import org.flashNight.arki.scene.*;
+import org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager;
+import org.flashNight.arki.unit.UnitBattleRecord;
+import org.flashNight.arki.bullet.BulletComponent.Collider.AABBColliderFactory;
+import org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor;
+import org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue;
+import org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider;
+import org.flashNight.arki.component.Shield.AdaptiveShield;
+import org.flashNight.gesh.xml.XMLParser;
+import org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager;
+import org.flashNight.arki.component.Damage.DamageManagerFactory;
+import org.flashNight.naki.RandomNumberEngine.PinkNoiseEngine;
+import org.flashNight.gesh.depth.DepthManager;
+import org.flashNight.neur.Event.EventDispatcher;
+
+/** Actual MovieClips/SWFs and real DamageCalculator via settleHit; never writes saves or inventory. */
+class org.flashNight.arki.scene.Cf6InteractivePropTest {
+    private static var passed:Number;
+    private static var failed:Number;
+    private static var saved:Object;
+    private static var session:Object;
+    private static var driver:MovieClip;
+    private static var phase:Number;
+    private static var age:Number;
+    private static var blasts:Array;
+    private static var podEvents:Number;
+    private static var savedFind:Function;
+    private static var replacementRow:Object,replacementName:String,replacementForeign:MovieClip,replacementMarker:Object;
+    private static var clothing:Object,gun:Object,nativeHero:MovieClip,geometryIndex:Number,xmlPending:Number;
+    private static function check(ok:Boolean,label:String):Void {
+        if(ok) passed++;else {failed++;trace("[FAIL] Cf6InteractiveProp: "+label);}
+    }
+    private static function spec(id:String,kind:String,sprite:Number,x:Number):Object {
+        return {id:id,kind:kind,sourceSprite:sprite,url:"flashswf/backgrounds/cf6/preparation/CF6_Interactive"+(kind=="pod" ? "Pod" : "Barrel")+sprite+".swf",
+            x:x,y:200,sortY:244.5,groundY:244.5,artMatrix:[1,0,0,1,0,0],hitBounds:kind=="pod" ? [-120.7501,-112.6,124.6814,124.6033] : [-29.9416,-68.5,28.0416,45.5],frames:kind=="pod" ? 25 : 16,spawnAuthority:"wave"};
+    }
+    private static function actor(name:String,side:Boolean):MovieClip {
+        var h:MovieClip=_root.gameworld.createEmptyMovieClip(name,_root.gameworld.getNextHighestDepth());
+        h.hp=h.hp满血值=1000;h.是否为敌人=side;h.等级=50;h.命中率=100000;h.伤害加成=0;h.方向="右";
+        h.shield=AdaptiveShield.acquireDormantFromPool(name);h.shield.setOwner(h);h.躲闪率=0;
+        h.dispatcher=new EventDispatcher();h._x=800;h._y=h.Z轴坐标=200;
+        var a:MovieClip=h.createEmptyMovieClip("area",1);a.beginFill(0);a.moveTo(-3,-3);a.lineTo(3,-3);a.lineTo(3,3);a.lineTo(-3,3);a.endFill();
+        var body:MovieClip=h.createEmptyMovieClip("man",2);body.beginFill(0xFFFFFF);body.moveTo(0,0);body.lineTo(10,0);body.lineTo(10,20);body.lineTo(0,20);body.endFill();
+        return h;
+    }
+    private static function begin(mid:String,props:Array):Void {
+        Cf6InteractivePropService.end(session);_root.gameworld.removeMovieClip();
+        var w:MovieClip=_root.createEmptyMovieClip("__cf6InteractiveFixture",_root.getNextHighestDepth());
+        _root.gameworld=w;w.__stageReturnWorldIdentity={};w.dispatcher=new EventDispatcher();
+        var counter:Number=900000;w.getNextHighestDepth=function():Number {return counter++;};
+        DepthManager.instance=new DepthManager(w,0,870655,16);DepthManager.instance.calibrate(0,500);
+        _root.savePath="cf6.interactive.fixture";_root.当前关卡名="书中历险-毒刺行动";
+        _root._saveExt={bookRun:{bookId:"cf6-sting",routeId:"historical",slot:_root.savePath,seed:17,startedAt:100,outcome:"active"}};
+        var api:Object=org.flashNight.arki.scene.StageManager;
+        api.instance={currentStage:0,isActive:true,isFailed:false,isFinished:false};
+        var wheel:Object=org.flashNight.arki.scene.WaveSpawner;
+        wheel.instance={gameworld:w,isActive:true,isFinished:false,currentWave:0,tickCount:0};
+        var room:Object={world:w,owner:w.__stageReturnWorldIdentity,mapId:mid,stageManager:api.instance,stageIndex:0,
+            slot:String(_root.savePath),stageName:_root.当前关卡名,runIdentity:_root._saveExt.bookRun,phase:"combat"};
+        w.__cf6Mechanism=room;
+        actor("hero",false);actor("enemyShooter",true);_root.控制目标="hero";
+        session=Cf6InteractivePropService.begin(room,{schema:"cf6-interactive-props.v1",props:props});
+        age=0;
+    }
+    private static function steps(n:Number):Void {for(var i:Number=0;i<n;i++) Cf6InteractivePropService.tick(session);}
+    private static function contains(items:Array,unit:MovieClip):Boolean {
+        for(var i:Number=0;i<items.length;i++) if(items[i]===unit) return true;
+        return false;
+    }
+    private static function damage(target:MovieClip,shooter:MovieClip,power:Number,flags:Number):Object {
+        var b:Object={伤害类型:"物理",子弹威力:power,固伤:0,百分比伤害:0,霰弹值:1,hitCount:0,flags:flags,
+            命中率:100000,是否为敌人:shooter.是否为敌人};
+        b.damageManager=DamageManagerFactory.Basic.getDamageManager(b);
+        return BulletQueueProcessor.injectHit(b,shooter,target,target._x,target._y,1);
+    }
+    private static function observedPod(id:String):Void {
+        podEvents++;
+        var child:MovieClip=actor("wavePodChild",true);child.cf6PodId=id;child.publishStageEvent=true;child.version=1;
+        _root.gameworld.dispatcher.publish("UnitSpawn",child._name);
+    }
+    private static function waveAndDamage():Void {
+        check(session.pending==0 && session.rows.length==4,"four actual native timelines loaded through production service");
+        var pod:Object=session.rows[3],hero:MovieClip=_root.gameworld.hero;
+        _root.gameworld.dispatcher.subscribe("Cf6PodReady",observedPod,null);
+        hero._x=pod.holder._x;hero._y=200;
+        steps(2);check(pod.frame==1 && podEvents==0,"unstarted WaveSpawner cannot lose a one-shot event");
+        var api:Object=org.flashNight.arki.scene.WaveSpawner;api.instance.tickCount=1;
+        steps(1);check(pod.frame==2,"exact area contact starts only after first initialized wave tick");
+        _root.暂停=true;steps(20);check(pod.frame==2,"pause freezes source chronology");_root.暂停=false;
+        steps(22);check(pod.frame==24 && podEvents==1 && pod.phase=="born-pending","frame24 emits exact once and records real early UnitSpawn");
+        steps(3);check(pod.frame==24,"early UnitSpawn alone is not full initialization");
+        _root.gameworld.wavePodChild.__unitInitializedVersion=1;steps(1);
+        check(pod.frame==25 && pod.phase=="spent","completed exact actor initialization releases terminal frame");
+        steps(40);check(podEvents==1,"spent pod never adds another budget");
+        hero._x=800;
+        for(var i:Number=0;i<3;i++) {
+            var row:Object=session.rows[i],h:MovieClip=row.holder;
+            var shooter:MovieClip=i==1 ? _root.gameworld.enemyShooter : hero;
+            check(h.hp==30 && h.element!=undefined && h.兵种==undefined && h.publishStageEvent===false,"barrel "+i+" starts 30hp without enemy budget identity");
+            check(FactionManager.areUnitsEnemies(shooter,h),"real faction selection admits "+i+" neutral barrel");
+            check(contains(TargetCacheManager.getCachedEnemy(shooter,0),h),"production target cache includes neutral barrel route "+i);
+            damage(h,shooter,5,i==2 ? 256 : 0);
+            check(h.hp<30 && h.hp>20 && row.phase=="idle","real settleHit partial physical damage route "+i);
+            damage(h,shooter,100,i==2 ? 256 : 0);
+            check(h.hp==0 && h._killed && row.phase=="breaking" && !UnitBattleRecord.claimPlayerKill(h),"real lethal gun or melee keeps map-element kill exclusion "+i);
+        }
+        steps(5);check(blasts.length==0,"barrel explosion cannot occur before source frame7");
+        steps(1);check(blasts.length==3,"each barrel reaches one frame7 damage authority call");
+        var shot:Object=blasts[0],emitter:MovieClip=_root.gameworld[shot.发射者];
+        check(shot.子弹种类=="普通爆炸" && shot.子弹威力==100 && shot.Z轴攻击范围==80 && shot.击倒率==0.5,"explicit existing grenade adaptation values");
+        check(!FactionManager.areUnitsEnemies(emitter,hero) && FactionManager.areUnitsEnemies(emitter,_root.gameworld.enemyShooter),"explosion emitter targets enemy faction and excludes player");
+        check(shot.shootZ===session.rows[0].spec.groundY && session.rows[0].holder._y===200,"physical ground axis does not move source display origin");
+        check(_root.gameworld.enemyShooter.hp<1000 && hero.hp===1000,"captured explosion command reaches real enemy damage settlement without player damage");
+        steps(30);check(blasts.length==3 && session.rows[0].frame==16,"spent barrel stops at16 without damage replay");
+        replacementRow=session.rows[0];replacementName=replacementRow.name;
+        trace("[CF6_PROP_REMOVE_REQUEST] name="+replacementName+" depth="+replacementRow.holder.getDepth()
+            +" native="+(replacementRow.holder.removeMovieClip===MovieClip.prototype.removeMovieClip));
+        replacementRow.holder.removeMovieClip();
+    }
+    private static function finishReplacement():Void {
+        var slot:MovieClip=_root.gameworld[replacementName];
+        check(slot.marker===replacementMarker && slot.__cf6InteractiveOwner==undefined,
+            "replacement is visibly installed in the current named slot without old owner token");
+        var replacementResult:String=Cf6InteractivePropService.tick(session);
+        if(replacementResult!="failed") trace("[CF6_PROP_REPLACE] result="+replacementResult+" slotToken="+(slot.__cf6InteractiveOwner===replacementRow.token));
+        check(replacementResult=="failed","same-path prop replacement invalidates owned session");
+        Cf6InteractivePropService.end(session);
+        check(replacementForeign.marker===replacementMarker,"teardown preserves same-name foreign replacement");
+    }
+    private static function bossPod():Void {
+        var row:Object=session.rows[0],w:MovieClip=_root.gameworld;
+        w.hero._x=row.holder._x;steps(23);
+        check(row.frame==24 && Cf6InteractivePropService.podReady(w,row.spec.id),"boss pod waits at24 for original finite owner");
+        check(Cf6InteractivePropService.claimPod(w,row.spec.id,"owner-a","born-a"),"exact boss controller can claim once");
+        check(!Cf6InteractivePropService.claimPod(w,row.spec.id,"owner-a","born-a"),"unknown boss delivery cannot replay claim");
+        var child:MovieClip=actor("wrong",true);child.cf6PodId=row.spec.id;child.publishStageEvent=true;child.cf6BossOwnerToken="owner-a";
+        w.dispatcher.publish("UnitSpawn","wrong");check(row.phase=="awaiting-spawn","wrong actor name cannot confirm boss birth");
+        child=actor("born-a",true);child.cf6PodId=row.spec.id;child.publishStageEvent=true;child.cf6BossOwnerToken="owner-a";child.version=2;
+        w.dispatcher.publish("UnitSpawn","born-a");check(row.phase=="born-pending","right owner and name awaits complete initializer");
+        child.removeMovieClip();actor("born-a",true);check(Cf6InteractivePropService.tick(session)=="failed","same-name newborn replacement cannot complete receipt");
+    }
+    private static function timeoutPod():Void {
+        var row:Object=session.rows[0],w:MovieClip=_root.gameworld;w.hero._x=row.holder._x;steps(23);
+        Cf6InteractivePropService.claimPod(w,row.spec.id,"owner-b","neverBorn");steps(901);
+        check(session.failed && row.attempted && row.frame==24,"spawn timeout stays unknown and never advances/replays");
+        var oldSession:Object=session,oldRow:Object=row;Cf6InteractivePropService.end(session);
+        var child:MovieClip=actor("neverBorn",true);child.cf6PodId=row.spec.id;child.cf6BossOwnerToken="owner-b";child.publishStageEvent=true;
+        Cf6InteractivePropService.spawned(oldSession,child._name);check(oldRow.phase=="awaiting-spawn","closed late spawn cannot revive a retired prop");
+    }
+    public static function runAllTests():Void {
+        passed=failed=0;phase=0;blasts=[];podEvents=0;xmlPending=2;
+        saved={};var keys:Array=["gameworld","savePath","当前关卡名","_saveExt","暂停","场景转换中","控制目标","帧计时器","子弹区域shoot传递","装备引用配置","主角函数","初始化玩家模板","初始化主角模板","是否阴影","播放音效"];
+        saved.keys=keys;for(var i:Number=0;i<keys.length;i++) saved[keys[i]]=_root[keys[i]];
+        saved.depth=DepthManager.instance;saved.factory=StaticInitializer.factory;
+        var managerApi:Object=org.flashNight.arki.scene.StageManager,waveApi:Object=org.flashNight.arki.scene.WaveSpawner;
+        saved.manager=managerApi.instance;saved.wave=waveApi.instance;
+        var targetApi:Object=org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;savedFind=targetApi.findHero;
+        targetApi.findHero=function():MovieClip {return _root.gameworld.hero;};
+        _root.暂停=false;_root.场景转换中=false;
+        _root.帧计时器={当前帧数:1,unitUpdateWheel:{add:function():Number {return 1;},remove:function():Void {}}};
+        _root.子弹区域shoot传递=function(b:Object):Void {
+            blasts.push(b);
+            Cf6InteractivePropTest.damage(_root.gameworld.enemyShooter,_root.gameworld[b.发射者],b.子弹威力,512);
+        };
+        StaticInitializer.factory=new AABBColliderFactory(16);DamageManagerFactory.init();PinkNoiseEngine.getInstance();FactionManager.initialize();
+        var good:Object=spec("valid","pod",1939,500);
+        check(Cf6InteractivePropService.validSpec(good),"valid source pod contract");good.frames=16;
+        check(!Cf6InteractivePropService.validSpec(good),"truncated pod timeline rejected");good.frames=25;good.hitBounds=[0,0,NaN,1];
+        check(!Cf6InteractivePropService.validSpec(good),"nonfinite hit bounds rejected");
+        var remote:Object=spec("bad-url","barrel",1736,100);remote.url="https://invalid/"+remote.url;
+        check(!Cf6InteractivePropService.validSpec(remote),"only four exact local source assets are admitted");
+        var barrel:Object=spec("bad-ground","barrel",1736,100);delete barrel.groundY;
+        check(!Cf6InteractivePropService.validSpec(barrel),"barrel requires explicit physical ground axis");
+        _root.gameworld=undefined;
+        driver=_root.createEmptyMovieClip("__cf6InteractiveTestWatch",_root.getNextHighestDepth());
+        driver.onEnterFrame=function():Void {Cf6InteractivePropTest.tick();};
+        loadXml("data/items/防具_0-19级.xml","clothing");loadXml("data/items/武器_长枪_突击步枪.xml","gun");
+        begin("A15",[spec("barrel-a","barrel",1736,100),spec("barrel-b","barrel",1838,200),spec("barrel-c","barrel",1976,300),spec("pod-wave","pod",1939,500)]);
+    }
+    public static function tick():Void {
+        age++;
+        if(session==null || session.failed || age>900) {check(false,"actual asset load or initializer failed:"+session.reason);finish();return;}
+        if(session.pending>0 || xmlPending>0) return;
+        if(phase==0) {waveAndDamage();phase=0.5;age=0;}
+        else if(phase==0.5) {
+            var slot:MovieClip=_root.gameworld[replacementName];
+            if(age<4 || age==30) trace("[CF6_PROP_UNLOAD_WAIT] age="+age+" name="+slot._name+" depth="+slot.getDepth()+" owned="+(slot.__cf6InteractiveOwner===replacementRow.token));
+            if(slot._name!=undefined && age<30) return;
+            check(slot._name==undefined,"managed barrel unload completes before same-name recreation");
+            if(slot._name!=undefined) {finish();return;}
+            replacementMarker={};replacementForeign=_root.gameworld.createEmptyMovieClip(replacementName,_root.gameworld.getNextHighestDepth());
+            replacementForeign.marker=replacementMarker;phase=0.6;age=0;
+        }
+        else if(phase==0.6) {
+            finishReplacement();phase=1;var p:Object=spec("pod-boss","pod",1939,500);p.spawnAuthority="boss";begin("A17",[p]);
+        }
+        else if(phase==1) {bossPod();phase=2;p=spec("pod-timeout","pod",1939,500);p.spawnAuthority="boss";begin("A17",[p]);}
+        else if(phase==2) {
+            timeoutPod();phase=2.1;p=spec("pod-load-cancel","pod",1939,500);p.spawnAuthority="boss";begin("A17",[p]);
+            Cf6InteractivePropService.cancelBossPods(_root.gameworld);
+            check(session.bossPodsCancelled===true && session.rows[0].phase=="cancelled","boss cancellation is latched before actual resource onLoadInit");
+        }
+        else if(phase==2.1) {
+            var cancelRow:Object=session.rows[0];
+            check(cancelRow.ready && cancelRow.phase=="cancelled" && cancelRow.art._currentframe==1,"late actual load cannot reopen cancelled untriggered chamber");
+            _root.gameworld.hero._x=cancelRow.holder._x;steps(80);
+            check(!cancelRow.attempted && cancelRow.art._currentframe==1 && !Cf6InteractivePropService.podReady(_root.gameworld,cancelRow.spec.id),"cancelled sealed chamber cannot claim after later contact");
+            phase=2.2;p=spec("pod-cap-cancel","pod",1939,500);p.spawnAuthority="boss";begin("A17",[p]);
+        }
+        else if(phase==2.2) {
+            cancelRow=session.rows[0];_root.gameworld.hero._x=cancelRow.holder._x;steps(90);
+            check(cancelRow.frame==24 && cancelRow.art._currentframe==1 && !cancelRow.attempted,"unclaimed capacity wait holds source chamber instead of standing outside pose");
+            Cf6InteractivePropService.claimPod(_root.gameworld,cancelRow.spec.id,"cancel-owner","cancel-birth");
+            check(cancelRow.art._currentframe==23 && cancelRow.attempted,"exact reservation starts the short outside handoff pose");
+            Cf6InteractivePropService.cancelBossPods(_root.gameworld);steps(30);
+            check(cancelRow.phase=="cancelled" && cancelRow.art._currentframe==25 && cancelRow.attempted,"boss cancellation clears outside pose without releasing attempt fence");
+            var lateChild:MovieClip=actor("cancel-birth",true);lateChild.cf6PodId=cancelRow.spec.id;lateChild.cf6BossOwnerToken="cancel-owner";lateChild.publishStageEvent=true;
+            _root.gameworld.dispatcher.publish("UnitSpawn",lateChild._name);
+            check(cancelRow.phase=="cancelled" && cancelRow.bornToken==undefined,"late birth event cannot revive cancelled presentation");
+            phase=2.3;p=spec("pod-clear-first","pod",1939,500);p.spawnAuthority="boss";begin("A17",[p]);
+        }
+        else if(phase==2.3) {
+            cancelRow=session.rows[0];_root.gameworld.hero._x=cancelRow.holder._x;steps(23);
+            session.room.stageManager.isCleared=true;steps(1);
+            check(cancelRow.phase=="cancelled" && cancelRow.art._currentframe==25 && !cancelRow.attempted,"native wave clear before controller tick clears waiting art without spawning");
+            phase=3;geometryIndex=0;begin("A15",[spec("geometry-barrel","barrel",1736,500)]);
+        }
+        else if(phase==3) {startNative();phase=4;age=0;}
+        else if(phase==4 && age==3) {nativeHero.stop();nativeHero.man.gotoAndStop(geometryIndex==0 ? 1 : 5);}
+        else if(phase==4 && age>5) {
+            geometryCase();
+            if(++geometryIndex==2) {
+                session.room.stageManager.isCleared=true;
+                var barrelRow:Object=session.rows[0],beforeBlasts:Number=blasts.length;
+                damage(barrelRow.holder,nativeHero,100,0);steps(6);
+                check(blasts.length==beforeBlasts+1 && barrelRow.frame==7,"cleared active room still permits one real barrel explosion");
+                steps(30);check(blasts.length==beforeBlasts+1 && barrelRow.frame==16,"cleared room barrel completes without replay or half-broken state");
+                finish();return;
+            }
+            nativeHero.removeMovieClip();startNative();age=0;
+        }
+    }
+    private static function loadXml(url:String,key:String):Void {
+        var doc:XML=new XML();doc.ignoreWhite=true;
+        doc.onLoad=xmlCallback(key);doc.load(url);
+    }
+    private static function xmlCallback(key:String):Function {
+        return function(ok:Boolean):Void {Cf6InteractivePropTest.xmlReady(key,ok,this);};
+    }
+    public static function xmlReady(key:String,ok:Boolean,doc:XML):Void {
+        check(ok,"actual XML loaded for muzzle geometry "+key);
+        var rows:Array=XMLParser.configureDataAsArray(XMLParser.parseXMLNode(doc.firstChild).item);
+        for(var i:Number=0;i<rows.length;i++) if(rows[i].name==(key=="gun" ? "M4A1" : "Andy上装-NPC")) {
+            if(key=="gun") gun=rows[i];else clothing=rows[i];
+        }
+        check(key=="gun" ? gun.data.dressup=="枪-长枪-M4A1" : clothing.data.dressup=="变装-Andy上装","actual muzzle equipment mapping "+key);
+        xmlPending--;
+    }
+    public static function initNative(u:MovieClip):Void {
+        u.stop();u.hp=u.hp满血值=1000;u.身高=175;u.性别="男";u.操控编号=-1;u.是否为敌人=false;
+        u.hasDressup=true;u.syncRefs={};u.dispatcher=new EventDispatcher();u.被动技能={};u.version=geometryIndex+1;
+        u.攻击模式="长枪";u.状态="长枪站立";u.方向="右";u.myxscale=100;u.伤害加成=0;u.命中率=100000;u.等级=50;
+        u.动作A=u.动作B=u.动作C=false;u.行走=function():Void {};u.行走冷却帧=0;
+        u.身体="男"+clothing.data.dressup+"身体";u.上臂="男"+clothing.data.dressup+"上臂";
+        u.左下臂="男"+clothing.data.dressup+"左下臂";u.右下臂="男"+clothing.data.dressup+"右下臂";
+        u.长枪_装扮=gun.data.dressup;u.长枪属性=gun.data;u.长枪弹匣容量=gun.data.capacity;
+        u.长枪={name:gun.name,value:{level:1,shot:0}};u.上装装备={name:clothing.name,value:{level:1}};
+        u.头部装备数据={};u.生命周期函数列表=[];
+    }
+    private static function startNative():Void {
+        _root.装备引用配置={配置装扮:DressupReferenceManager.attach,刷新所有装扮:DressupReferenceManager.refreshAll};
+        _root.主角函数={};_root.是否阴影=false;_root.播放音效=function():Void {};
+        _root.初始化玩家模板=function():Void {Cf6InteractivePropTest.initNative(this);};
+        _root.初始化主角模板=_root.初始化玩家模板;
+        nativeHero=_root.gameworld.attachMovie("主角-男","muzzleHero",_root.gameworld.getNextHighestDepth(),{_x:100,_y:244.5,Z轴坐标:244.5,性别:"男"});
+        initNative(nativeHero);nativeHero._x=100;nativeHero._y=nativeHero.Z轴坐标=244.5;
+        nativeHero.gotoAndStop(geometryIndex==0 ? "长枪站立" : "长枪行走");
+    }
+    private static function mainLoop(target:MovieClip,shooter:MovieClip,y:Number,z:Number):Object {
+        var api:Object=org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor;
+        var before:Object={queues:api.activeQueues,fake:api.fakeUnits,ids:api.queueUIDs,probe:api._raySettleProbe};
+        var q:BulletQueue=new BulletQueue();api.activeQueues={cf6Prop:q};api.fakeUnits={cf6Prop:shooter};api.queueUIDs={cf6Prop:23};api._raySettleProbe=null;
+        var b:Object={_name:"cf6GeometryBullet",_x:target._x,_y:y,_xscale:100,flags:0,stateFlags:0,
+            Z轴坐标:z,Z轴攻击范围:50,xmov:20,ymov:0,发射者名:shooter._name,hitCount:0,伤害类型:"物理",
+            命中率:100000,霰弹值:1,子弹威力:3,固伤:0,百分比伤害:0,击中后子弹的效果:"无",击中地图效果:"无",chainGroup:{shotgun:null}};
+        b.aabbCollider=new AABBCollider(target._x-2,target._x+2,y-1,y+1);
+        b.damageManager=DamageManagerFactory.Basic.getDamageManager(b);
+        b.updateMovement=function():Void {};b.shouldDestroy=function():Boolean {return false;};
+        b.removeMovieClip=function():Void {};b.gotoAndPlay=function():Void {};
+        q.add(b);_root.帧计时器.当前帧数++;
+        try {api.processQueue();} finally {api.activeQueues=before.queues;api.fakeUnits=before.fake;api.queueUIDs=before.ids;api._raySettleProbe=before.probe;}
+        return b;
+    }
+    private static function geometryCase():Void {
+        var muzzle:MovieClip=nativeHero.长枪_引用.枪口位置;
+        check(typeof muzzle=="movieclip" && nativeHero.man._totalframes>1,"actual dressed M4A1 muzzle in production pose "+geometryIndex);
+        var point:Object={x:0,y:0};muzzle.localToGlobal(point);_root.gameworld.globalToLocal(point);
+        trace("[CF6_PROP_MUZZLE] pose="+nativeHero._currentframe+" dx="+(point.x-nativeHero._x)+" dy="+(point.y-nativeHero.Z轴坐标));
+        var h:MovieClip=session.rows[0].holder,beforeHp:Number=h.hp;
+        var shot:Object=mainLoop(h,nativeHero,point.y,h.Z轴坐标);
+        check(shot.hitCount>0 && h.hp<beforeHp && h.hp>0,"real BQP cache/geometry/settleHit accepts ordinary muzzle height "+geometryIndex);
+        beforeHp=h.hp;shot=mainLoop(h,nativeHero,h.Z轴坐标-200,h.Z轴坐标);
+        check(shot.hitCount==0 && h.hp===beforeHp,"real main loop rejects projectile above body "+geometryIndex);
+        shot=mainLoop(h,nativeHero,point.y,h.Z轴坐标+200);
+        check(shot.hitCount==0 && h.hp===beforeHp,"real main loop rejects wrong ground row "+geometryIndex);
+    }
+    private static function finish():Void {
+        delete driver.onEnterFrame;Cf6InteractivePropService.end(session);_root.gameworld.removeMovieClip();
+        var api:Object=org.flashNight.arki.scene.StageManager;api.instance=saved.manager;
+        api=org.flashNight.arki.scene.WaveSpawner;api.instance=saved.wave;
+        api=org.flashNight.gesh.depth.DepthManager;api.instance=saved.depth;
+        api=org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer;api.factory=saved.factory;
+        api=org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;api.findHero=savedFind;
+        for(var i:Number=0;i<saved.keys.length;i++) _root[saved.keys[i]]=saved[saved.keys[i]];
+        driver.removeMovieClip();
+        trace("Cf6InteractivePropTest Tests Passed: "+passed);trace("Cf6InteractivePropTest Tests Failed: "+failed);
+        _root.cf6InteractivePropComplete();
+    }
+}

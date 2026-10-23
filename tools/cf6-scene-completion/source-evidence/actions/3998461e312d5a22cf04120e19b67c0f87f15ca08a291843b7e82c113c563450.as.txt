@@ -1,0 +1,6 @@
+onClipEvent(load){
+   var §\x01§ = 9;
+   var §\x0f§ = 1;
+   a = this._totalframes;
+   gotoAndPlay(random(a));
+}

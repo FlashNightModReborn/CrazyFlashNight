@@ -4,11 +4,25 @@ param(
     [switch]$BuildOnly,
     [switch]$ReuseOnly,
     [switch]$Status,
-    [string]$CandidateLeaf
+    [string]$CandidateLeaf,
+    [string]$WebView2CacheDirectory
 )
 
 $ErrorActionPreference = 'Stop'
 $candidateLeafSpecified = $PSBoundParameters.ContainsKey('CandidateLeaf')
+if ($PSBoundParameters.ContainsKey('WebView2CacheDirectory') -and [string]::IsNullOrWhiteSpace($WebView2CacheDirectory)) {
+    throw '-WebView2CacheDirectory must not be explicitly empty or whitespace.'
+}
+
+function Resolve-Cf7DevWebViewCacheDirectory {
+    param([string]$ExplicitDirectory)
+    if (-not [string]::IsNullOrWhiteSpace($ExplicitDirectory)) { return $ExplicitDirectory }
+    if ([string]::IsNullOrWhiteSpace($env:LOCALAPPDATA)) {
+        throw 'LOCALAPPDATA is unavailable; specify -WebView2CacheDirectory with a short local Windows path.'
+    }
+    # Resolve only when building. Producer preflight still validates every cache path.
+    return Join-Path $env:LOCALAPPDATA 'CF7BuildCache\w2'
+}
 
 if ($Status -and ($ForceBuild -or $BuildOnly -or $ReuseOnly -or $candidateLeafSpecified)) {
     throw '-Status cannot be combined with -ForceBuild, -BuildOnly, -ReuseOnly, or -CandidateLeaf.'
@@ -400,6 +414,7 @@ try {
             BuilderId = 'local-dev'
             SkipPrepare = $true
             SkipPolicy = $true
+            WebView2CacheDirectory = Resolve-Cf7DevWebViewCacheDirectory -ExplicitDirectory $WebView2CacheDirectory
         }
         if ($null -ne $requestedCandidateRoot) {
             $buildArguments.CandidateRoot = $requestedCandidateRoot

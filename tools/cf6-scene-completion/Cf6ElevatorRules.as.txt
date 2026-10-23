@@ -1,0 +1,52 @@
+/** Boarding/arrival sequencing around the existing elevator combat authority. */
+class org.flashNight.arki.scene.Cf6ElevatorRules {
+    private static function frames(value):Boolean {
+        return typeof value == "number" && !isNaN(value) && isFinite(value)
+            && value > 0 && value < 601 && Math.floor(value) == value;
+    }
+    public static function create(spec:Object, owner:Object):Object {
+        if (spec == null || owner == null || typeof owner != "object" || spec.mapId != "A10" && spec.mapId != "A13"
+                || !frames(spec.closeFrames) || !frames(spec.stopFrames) || !frames(spec.openFrames)
+                || spec.scrollFrames !== 37) return null;
+        return {owner:owner,mapId:spec.mapId,phase:"boarding",frame:0,travelFrame:0,clearSeen:false,
+            closeFrames:spec.closeFrames,stopFrames:spec.stopFrames,openFrames:spec.openFrames,
+            scrollFrames:spec.scrollFrames,delivered:false};
+    }
+    /** boarded/offboarded must come from the current actor motion adapter, not a timeout. */
+    public static function advance(s:Object, owner:Object, paused:Boolean, boarded:Boolean,
+                                   combatCleared:Boolean, offboarded:Boolean):String {
+        if (s == null || s.phase == "cancelled" || s.phase == "complete") return "";
+        if (owner !== s.owner) {s.phase="cancelled";return "cancel";}
+        if (combatCleared === true) s.clearSeen=true;
+        if (paused) return "";
+        if (s.phase == "boarding") {
+            if (!boarded) return "";
+            s.phase="closing";s.frame=0;return "close-gate";
+        }
+        if (s.phase == "offboarding") {
+            if (!offboarded) return "";
+            s.phase="complete";return "complete";
+        }
+        s.frame++;
+        if (s.phase == "closing" && s.frame == s.closeFrames) {
+            s.phase="moving";s.frame=0;return "begin-combat-travel";
+        }
+        if (s.phase == "moving") {
+            s.travelFrame=(s.travelFrame+1)%s.scrollFrames;
+            if (s.clearSeen) {s.phase="stopping";s.frame=0;return "stop-at-floor";}
+        } else if (s.phase == "stopping" && s.frame == s.stopFrames) {
+            s.phase="opening";s.frame=0;return "open-gate";
+        } else if (s.phase == "opening" && s.frame == s.openFrames) {
+            s.phase="offboarding";s.frame=0;return "walk-off-platform";
+        }
+        return "";
+    }
+    public static function takeCompletion(s:Object, owner:Object):Boolean {
+        if (s == null || owner !== s.owner || s.phase != "complete" || s.delivered) return false;
+        s.delivered=true;return true;
+    }
+    public static function cancel(s:Object, owner:Object):Boolean {
+        if (s == null || owner !== s.owner || s.phase == "cancelled" || s.delivered) return false;
+        s.phase="cancelled";return true;
+    }
+}

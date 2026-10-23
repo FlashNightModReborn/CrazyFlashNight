@@ -116,6 +116,54 @@ Assert-Cf7DevContains $cmdSource 'pause' 'root CMD must preserve a double-click 
 Assert-Cf7DevEntry -Condition ($cmdSource.IndexOf('CRAZYFLASHER7MercenaryEmpire.exe', [StringComparison]::OrdinalIgnoreCase) -lt 0) `
     -Message 'root CMD must not bypass the controlled development entry'
 
+# Execute only the real cache-resolution/argument statements, never a native build.
+$devAst = [Management.Automation.Language.Parser]::ParseFile($devPath, [ref]$tokens, [ref]$parseErrors)
+$cacheFunction = @($devAst.FindAll({ param($node)
+    $node -is [Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -ceq 'Resolve-Cf7DevWebViewCacheDirectory'
+}, $true))
+$cacheArguments = @($devAst.FindAll({ param($node)
+    $node -is [Management.Automation.Language.AssignmentStatementAst] -and $node.Left.Extent.Text -ceq '$buildArguments'
+}, $true))
+Assert-Cf7DevEntry ($cacheFunction.Count -eq 1 -and $cacheArguments.Count -eq 1) 'exact dev cache resolver/build handoff must exist'
+. ([scriptblock]::Create($cacheFunction[0].Extent.Text))
+$cacheArgumentCode = [scriptblock]::Create($cacheArguments[0].Extent.Text)
+$cacheProbe = Join-Path $ProjectRoot ('tmp\dev-cache-readonly-' + [guid]::NewGuid().ToString('N'))
+$cacheLocalAppDataBefore = $env:LOCALAPPDATA
+try {
+    $env:LOCALAPPDATA = $cacheProbe
+    $projectRoot = $ProjectRoot
+    $WebView2CacheDirectory = $null
+    . $cacheArgumentCode
+    Assert-Cf7DevEntry ($buildArguments.WebView2CacheDirectory -ceq (Join-Path $cacheProbe 'CF7BuildCache\w2')) 'dev default must resolve current-user short cache'
+    $WebView2CacheDirectory = Join-Path $cacheProbe 'explicit'
+    . $cacheArgumentCode
+    Assert-Cf7DevEntry ($buildArguments.WebView2CacheDirectory -ceq $WebView2CacheDirectory) 'explicit dev cache must reach build arguments unchanged'
+    $WebView2CacheDirectory = '/not-a-windows-cache'
+    . $cacheArgumentCode
+    Assert-Cf7DevEntry ($buildArguments.WebView2CacheDirectory -ceq $WebView2CacheDirectory) 'dev must not normalize a non-Windows path into an accepted path'
+    Assert-Cf7DevEntry (-not (Test-Path -LiteralPath $cacheProbe)) 'resolving cache defaults/arguments must perform zero filesystem writes'
+} finally { $env:LOCALAPPDATA = $cacheLocalAppDataBefore }
+$launcherBuildPath = Join-Path $ProjectRoot 'launcher\build.ps1'
+$launcherAst = [Management.Automation.Language.Parser]::ParseFile($launcherBuildPath, [ref]$tokens, [ref]$parseErrors)
+Assert-Cf7DevEntry ($parseErrors.Count -eq 0) 'launcher wrapper must parse'
+$cacheForward = @($launcherAst.EndBlock.Statements | Where-Object {
+    $_.Extent.Text -match '^if .*IsNullOrWhiteSpace\(\$WebView2CacheDirectory\)' -and $_.Extent.Text.Contains('$producerArguments.WebView2CacheDirectory')
+})
+Assert-Cf7DevEntry ($cacheForward.Count -eq 1) 'exact launcher producer cache handoff must exist'
+$forwardCode = [scriptblock]::Create($cacheForward[0].Extent.Text)
+$producerArguments = @{}; $WebView2CacheDirectory = $null; . $forwardCode
+Assert-Cf7DevEntry (-not $producerArguments.ContainsKey('WebView2CacheDirectory')) 'omitted wrapper cache must preserve formal producer default'
+$WebView2CacheDirectory = 'C:\explicit-cache'; . $forwardCode
+Assert-Cf7DevEntry ($producerArguments.WebView2CacheDirectory -ceq $WebView2CacheDirectory) 'wrapper must forward explicit cache unchanged'
+foreach ($entry in @($devPath, $launcherBuildPath)) {
+    foreach ($emptyCache in @('', '   ')) {
+        $rejected = $false
+        try { & $entry -WebView2CacheDirectory $emptyCache | Out-Null }
+        catch { $rejected = $_.Exception.Message -like '*WebView2CacheDirectory*explicitly empty*' }
+        Assert-Cf7DevEntry $rejected 'explicit empty cache must reject before any build or cache creation'
+    }
+}
+
 # Exercise the exact File.Replace contract under Windows PowerShell/.NET Framework.
 # A null backup path is accepted by some modern runtimes but throws there, which would
 # turn an otherwise successful real launch into a false failure on the second pointer write.
@@ -206,7 +254,7 @@ try {
             (Join-Path $fixtureRuntime 'CRAZYFLASHER7MercenaryEmpire.Core.dll'),
             [byte[]]@($index + 1))
     }
-    $equivocationOutput = @(& $devPath -Status)
+    $equivocationOutput = @(& $devPath -Status -WebView2CacheDirectory $cacheProbe)
     $equivocationRecords = @($equivocationOutput | Where-Object {
         $null -ne $_ -and [string]$_.schema -ceq 'cf7-local-dev-runtime-status.v1'
     })
@@ -218,6 +266,12 @@ try {
         -Message 'equivocation status must not return a reusable candidate'
     Assert-Cf7DevEntry -Condition ([int]$equivocationRecords[0].matchingPayloadClosureCount -gt 1) `
         -Message 'equivocation status must expose the conflicting closure count'
+    $reuseRejected = $false
+    try { & $devPath -ReuseOnly -BuildOnly -WebView2CacheDirectory $cacheProbe | Out-Null }
+    catch { $reuseRejected = $_.Exception.Message -like '*Multiple payload closures*' }
+    Assert-Cf7DevEntry $reuseRejected 'ReuseOnly must reject ambiguous candidates without invoking a build'
+    Assert-Cf7DevEntry (-not (Test-Path -LiteralPath $cacheProbe)) 'actual Status and ReuseOnly must not create the supplied cache'
+
 } finally {
     foreach ($fixtureRoot in $fixtureRoots) {
         $resolvedFixture = [IO.Path]::GetFullPath($fixtureRoot).TrimEnd('\')

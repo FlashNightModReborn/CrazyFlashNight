@@ -1,0 +1,5 @@
+﻿trace("FocusedTestRunId cf6-auxiliary-assets Start: __FOCUSED_RUN_ID__");
+_root.cf6AuxiliaryAssetsComplete=function():Void {
+    trace("FocusedTestRunId cf6-auxiliary-assets Complete: __FOCUSED_RUN_ID__");
+};
+org.flashNight.arki.scene.Cf6AuxiliaryAssetsTest.runAllTests();

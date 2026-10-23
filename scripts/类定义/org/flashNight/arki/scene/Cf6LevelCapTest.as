@@ -3,7 +3,7 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 import org.flashNight.arki.component.Effect.EffectSystem;
 import org.flashNight.arki.item.PlayerAssetTransaction;
 
-/** 真正 include 经验引擎后的根函数回归；只替换存盘、动效与查找演员外围。 */
+/** 真实经验引擎与LevelUpRecovery；隔离协调器身份，替换存盘、动效与演员数值外围。 */
 class org.flashNight.arki.scene.Cf6LevelCapTest {
     private static var passed:Number;
     private static var failed:Number;
@@ -18,6 +18,10 @@ class org.flashNight.arki.scene.Cf6LevelCapTest {
     private static var oldFind:Function;
     private static var oldEffect:Function;
     private static var oldSave:Function;
+    private static var oldProduction:Function;
+    private static var coordinator:org.flashNight.arki.unit.PlayerStatRefreshCoordinator;
+    private static var growthState:Object;
+    private static var growthPresence:Object;
     private static function check(value:Boolean,label:String):Void {
         if (value) passed++; else { failed++; trace("[FAIL] Cf6LevelCap: "+label); }
     }
@@ -27,18 +31,22 @@ class org.flashNight.arki.scene.Cf6LevelCapTest {
             "健身房主角是否升级","投影已提交任务成长","主角是否升级","经验值计算","宠物升级加载",
             "等级","经验值","技能点数","升级需要经验值","上次升级需要经验值","身价","基础身价值",
             "玩家信息界面","isChallengeMode","存档系统","出战宠物id库","宠物mc库","宠物信息",
-            "战宠UI函数","宠物库","难度等级","_saveExt","savePath","当前关卡名","gameworld"];
+            "战宠UI函数","宠物库","难度等级","_saveExt","savePath","当前关卡名","gameworld","控制目标"];
         saved={}; present={};
         for (var i:Number=0;i<keys.length;i++) { saved[keys[i]]=_root[keys[i]]; present[keys[i]]=_root.hasOwnProperty(keys[i]); }
     }
     private static function setup(book:String, route:String, sameSlot:Boolean):Void {
         _root.gameworld=fixture;
+        _root.控制目标="hero";
+        fixture.__stageReturnWorldIdentity={};fixture.hero.__playerStatBody={};fixture.hero.hasDressup=false;
         _root.savePath="bookrun_0123456789abcdef01234567";
         _root._saveExt=book=="" ? {} : {bookRun:{bookId:book,routeId:route,
             slot:sameSlot ? _root.savePath : "bookrun_ffffffffffffffffffffffff",outcome:"active"}};
         _root.当前关卡名=book=="cf6-sting" ? "书中历险-毒刺行动" : "fixture-other-stage";
         _root.等级=60; _root.经验值=157526193; _root.技能点数=0; _root.身价=600; _root.基础身价值=10;
         _root.存档系统={dirtyMark:false}; _root.出战宠物id库=[]; _root.宠物mc库=[]; _root.宠物信息=[];
+        coordinator=new org.flashNight.arki.unit.PlayerStatRefreshCoordinator();
+        coordinator.resetContext(_root.存档系统,String(_root.savePath),_root._saveExt);
         _root.宠物库=[]; _root.战宠UI函数={}; _root.难度等级=1;
         _root.isChallengeMode=function():Boolean { return false; };
         _root.玩家信息界面={主角经验值显示界面:{frame:0},刷新经验值显示:function():Void { refreshes++; },
@@ -142,6 +150,12 @@ class org.flashNight.arki.scene.Cf6LevelCapTest {
         fixture.removeMovieClip();
         var target:Object=TargetCacheManager,effect:Object=EffectSystem,transaction:Object=PlayerAssetTransaction;
         target.findHero=oldFind; effect.Effect=oldEffect; transaction.requestStrongSave=oldSave;
+        var statApi:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator;
+        var growthApi:Object=org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery;
+        statApi.production=oldProduction;
+        for(var growthKey:String in growthState) {
+            if(growthPresence[growthKey]) growthApi[growthKey]=growthState[growthKey];else delete growthApi[growthKey];
+        }
         for (var i:Number=0;i<keys.length;i++) {
             if (present[keys[i]]) _root[keys[i]]=saved[keys[i]]; else delete _root[keys[i]];
         }
@@ -151,6 +165,16 @@ class org.flashNight.arki.scene.Cf6LevelCapTest {
         if (saved==null) { trace("[FAIL] Cf6LevelCap captureRoot must precede include"); trace("Cf6LevelCapTest Tests Passed: 0"); trace("Cf6LevelCapTest Tests Failed: 1"); return; }
         var target:Object=TargetCacheManager,effect:Object=EffectSystem,transaction:Object=PlayerAssetTransaction;
         oldFind=target.findHero; oldEffect=effect.Effect; oldSave=transaction.requestStrongSave;
+        var statApi:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator;
+        var growthApi:Object=org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery;
+        oldProduction=statApi.production;growthState={};growthPresence={};
+        var growthKeys:Array=["context","claimedLevel","latest","queued"];
+        for(var gi:Number=0;gi<growthKeys.length;gi++) {
+            growthState[growthKeys[gi]]=growthApi[growthKeys[gi]];
+            growthPresence[growthKeys[gi]]=growthApi.hasOwnProperty(growthKeys[gi]);
+        }
+        // Keep the real growth transaction, with a fresh in-memory owner for each case.
+        statApi.production=function():org.flashNight.arki.unit.PlayerStatRefreshCoordinator {return coordinator;};
         fixture=_root.createEmptyMovieClip("__cf6LevelCapFixture",_root.getNextHighestDepth());
         fixture.createEmptyMovieClip("hero",1);
         target.findHero=function():MovieClip { return fixture.hero; };
@@ -165,8 +189,9 @@ class org.flashNight.arki.scene.Cf6LevelCapTest {
             if (present[keys[i]] && _root[keys[i]] !== saved[keys[i]]) restored=false;
         }
         check(restored,"fixture restores exact root values and original property presence after production include");
-        check(target.findHero===oldFind && effect.Effect===oldEffect && transaction.requestStrongSave===oldSave,
-            "fixture restores all three overridden class functions");
+        check(target.findHero===oldFind && effect.Effect===oldEffect && transaction.requestStrongSave===oldSave
+                && statApi.production===oldProduction,
+            "fixture restores all four overridden class functions");
         saved=null;
         trace("Cf6LevelCapTest Tests Passed: "+passed);
         trace("Cf6LevelCapTest Tests Failed: "+failed);

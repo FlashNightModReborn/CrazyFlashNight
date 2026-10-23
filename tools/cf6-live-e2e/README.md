@@ -32,6 +32,12 @@ node tools/cf6-live-e2e/preflight.js `
 CS6 原生创建的 `CF6_A01_Turret/MobileSettings.xml` 可以为空，但仍按普通文件读取并记录字节数与摘要；
 该例外只适用于这一明确的附属文件，必要源文件、媒体与其他空文件继续拒绝。运行期间该文件变化同样使闭包校验失败。
 
+本轮通行与摆件还绑定 TraversalRules/Service、PropDepthService、ActorMaskPresentation、PauseManager/DepthManager、scene-assembly 和比例/提取配方；生产 Cf6 scene 类的直接引用按有界集合继续追踪，覆盖后续出生遮罩消费者而不递归扫描整个源码仓。按实际章节 SWF 选择 traversal/auxiliary/interactive 清单资产，逐项校验声明输入 SHA 与原生输出 SHA/bytes，并沿 DOM Include、bitmap href/bin 检查漏项；未消费的辅助资产及 A07/vehicle 准备内容不展开。depth-props 清单完整绑定独立源闭包，比例 baseline pin、实际背景父XML和排除成员共同核验，缺失消费者或背景仍重复绘制均拒绝。清单自引用、重复 JSON key、路径逃逸/大小写别名、伪造摘要/体积不作为可恢复缺省值。
+
+辅助与交互资产的真实纹理母版分别只准入 `CF6_AuxiliaryTextureSeed`、`CF6_InteractiveTextureSeed`，不可跨用：清单须精确绑定 seed XFL 路径，DOMDocument 和其引用的每个 bin cache 必须入输入摘要，额外只接纳 `SymDepend.cache`；不扩大为任意 preparation 目录。交互资产限定1736/1838/1976桶与1939培养舱，名称、源角色ID、16/25帧及原作SWF摘要一并核验；真实伤害与地图元件初始化的相关权威源也纳入身份。
+
+运输资产单独限定 `CF6_Transport1868`、29帧及第29帧派发，唯一纹理母版为 `CF6_TransportTextureSeed`，片段仅接受 `transport-art` 对应资源；原作SWF、输入、原生文档、纹理与缓存逐项绑定。它不扩大为A07驾驶资源。人体比例的七个原生站姿XML、比例政策及实际使用的Andy对白表情WebP同样进入来源闭包。
+
 闭包只证明本次输入身份和运行期间是否变化。源码准备、真实 CS6 编译、候选运行和完整玩法验收仍分别记录；离线夹具通过不能证明炮塔或漫画已在游戏中执行。
 
 只验证生产书架 opener、真实 WebView 和关闭路径：

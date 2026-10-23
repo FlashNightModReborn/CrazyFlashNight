@@ -1,0 +1,72 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="600" height="500" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="59.1837342884091" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
+     <media>
+          <DOMBitmapItem name="intrinsic-0218dc0032af7ecb9b2c3f3d.png" itemID="6adafa97-00008471" sourceExternalFilepath="./LIBRARY/intrinsic-0218dc0032af7ecb9b2c3f3d.png" sourceLastImported="1792735620" externalFileSize="907" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="intrinsic-0218dc0032af7ecb9b2c3f3d.png" bitmapDataHRef="M 3 1792735895.dat" frameRight="1100" frameBottom="880"/>
+          <DOMBitmapItem name="intrinsic-250ce7389ff41e034c138f20.png" itemID="6adafa96-00008469" sourceExternalFilepath="./LIBRARY/intrinsic-250ce7389ff41e034c138f20.png" sourceLastImported="1792735620" externalFileSize="721" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="intrinsic-250ce7389ff41e034c138f20.png" bitmapDataHRef="M 1 1792735894.dat" frameRight="2880" frameBottom="3520"/>
+          <DOMBitmapItem name="intrinsic-787f796d813f82f6ccd147c7.png" itemID="6adafa96-0000846d" sourceExternalFilepath="./LIBRARY/intrinsic-787f796d813f82f6ccd147c7.png" sourceLastImported="1792735620" externalFileSize="286274" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="intrinsic-787f796d813f82f6ccd147c7.png" bitmapDataHRef="M 2 1792735894.dat" frameRight="8640" frameBottom="10560"/>
+          <DOMBitmapItem name="intrinsic-82ab6fde4d714a5cc31fb541.png" itemID="6adafa97-00008475" sourceExternalFilepath="./LIBRARY/intrinsic-82ab6fde4d714a5cc31fb541.png" sourceLastImported="1792735620" externalFileSize="24424" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="intrinsic-82ab6fde4d714a5cc31fb541.png" bitmapDataHRef="M 4 1792735895.dat" frameRight="3300" frameBottom="2640"/>
+          <DOMBitmapItem name="intrinsic-a1c6fa6d7b9016b598bacb13.png" itemID="6adafa97-00008479" sourceExternalFilepath="./LIBRARY/intrinsic-a1c6fa6d7b9016b598bacb13.png" sourceLastImported="1792735620" externalFileSize="163347" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="intrinsic-a1c6fa6d7b9016b598bacb13.png" bitmapDataHRef="M 5 1792735895.dat" frameRight="7860" frameBottom="9660"/>
+     </media>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="stop" color="#808080" current="true" isSelected="true" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[stop();]]></script>
+                                   </Actionscript>
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="texture-4" color="#4FFFFF" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMBitmapInstance libraryItemName="intrinsic-a1c6fa6d7b9016b598bacb13.png"/>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="texture-3" color="#FF4FFF" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMBitmapInstance libraryItemName="intrinsic-82ab6fde4d714a5cc31fb541.png"/>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="texture-2" color="#FF800A" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMBitmapInstance libraryItemName="intrinsic-0218dc0032af7ecb9b2c3f3d.png"/>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="texture-1" color="#9933CC" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMBitmapInstance libraryItemName="intrinsic-787f796d813f82f6ccd147c7.png"/>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="texture-0" color="#4FFF4F" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMBitmapInstance libraryItemName="intrinsic-250ce7389ff41e034c138f20.png"/>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <PrinterSettings/>
+     <publishHistory/>
+</DOMDocument>

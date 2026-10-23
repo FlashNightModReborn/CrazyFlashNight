@@ -1,0 +1,289 @@
+import flash.geom.Matrix;
+import flash.geom.Transform;
+import org.flashNight.arki.scene.BookRunRules;
+import org.flashNight.arki.scene.StageManager;
+import org.flashNight.arki.scene.WaveSpawner;
+import org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
+import org.flashNight.gesh.depth.DepthManager;
+import org.flashNight.neur.Event.EventDispatcher;
+
+/** Owns only source-authored map props. Enemy budgets remain WaveSpawner/BossEncounter authority. */
+class org.flashNight.arki.scene.Cf6InteractivePropService {
+    private static var serial:Number=0;
+    private static function finite(n):Boolean {return typeof n=="number" && (n-n)==0 && Math.abs(n)<1000000;}
+    private static function vector(a:Object,n:Number):Boolean {
+        if(!(a instanceof Array) || a.length!=n) return false;
+        for(var i:Number=0;i<n;i++) if(!finite(a[i])) return false;
+        return true;
+    }
+    public static function validSpec(p:Object):Boolean {
+        if(typeof p.id!="string" || p.id.length==0 || p.id.length>80 || p.id=="__proto__" || p.id=="constructor") return false;
+        var expected:String="flashswf/backgrounds/cf6/preparation/CF6_Interactive"+(p.kind=="pod" ? "Pod" : "Barrel")+p.sourceSprite+".swf";
+        if(p.url!==expected || !finite(p.x) || !finite(p.y) || !finite(p.sortY)
+            || !vector(p.artMatrix,6) || !vector(p.hitBounds,4)
+            || !(p.hitBounds[2]>p.hitBounds[0]) || !(p.hitBounds[3]>p.hitBounds[1])
+            || !(Math.abs(p.artMatrix[0]*p.artMatrix[3]-p.artMatrix[1]*p.artMatrix[2])>0.000001)) return false;
+        if(p.kind=="barrel") return (p.sourceSprite==1736 || p.sourceSprite==1838 || p.sourceSprite==1976) && p.frames===16 && finite(p.groundY);
+        return p.kind=="pod" && p.sourceSprite===1939 && p.frames===25 && (p.spawnAuthority=="wave" || p.spawnAuthority=="boss");
+    }
+    public static function current(s:Object):Boolean {
+        var r:Object=s.room;
+        return s!=null && !s.closed && !s.failed && r.world===_root.gameworld && r.owner===_root.gameworld.__stageReturnWorldIdentity
+            && r.world.__cf6Mechanism===r && r.interactivePropsSession===s && !r.failed
+            && r.stageManager===StageManager.instance && r.stageIndex===r.stageManager.currentStage
+            && r.stageManager.isActive===true && r.stageManager.isFailed!==true && r.stageManager.isFinished!==true
+            && r.slot===String(_root.savePath) && r.stageName===_root.当前关卡名
+            && BookRunRules.sameCf6Run(r.runIdentity,_root._saveExt.bookRun) && s.manager===DepthManager.instance;
+    }
+    public static function owns(s:Object,row:Object):Boolean {
+        return current(s) && row.token!=null && row.holder.__cf6InteractiveOwner===row.token
+            && row.holder._parent===s.room.world && s.room.world[row.name]===row.holder
+            && s.room.world[row.name].__cf6InteractiveOwner===row.token;
+    }
+    public static function begin(room:Object,config:Object):Object {
+        if(config.schema!=="cf6-interactive-props.v1" || !(config.props instanceof Array) || config.props.length==0
+            || config.props.length>32 || DepthManager.instance==undefined) return null;
+        var specs:Array=[],ids:Object={};
+        for(var i:Number=0;i<config.props.length;i++) {
+            var p:Object=config.props[i];
+            if(!validSpec(p) || ids[p.id]===true || p.kind=="pod" && (p.spawnAuthority=="wave" ? room.mapId!="A15" : room.mapId!="A17")) return null;
+            ids[p.id]=true;
+            specs.push({id:p.id,kind:p.kind,sourceSprite:p.sourceSprite,url:p.url,x:p.x,y:p.y,sortY:p.sortY,groundY:p.groundY,
+                artMatrix:p.artMatrix.concat(),hitBounds:p.hitBounds.concat(),frames:p.frames,spawnAuthority:p.spawnAuthority});
+        }
+        var s:Object={room:room,manager:DepthManager.instance,spawner:WaveSpawner.instance,rows:[],pending:specs.length,ticks:0,closed:false,failed:false,token:{}};
+        room.interactivePropsSession=s;
+        if(!current(s)) {s.closed=true;return null;}
+        if(typeof room.world.dispatcher.subscribe!="function") {s.closed=true;return null;}
+        s.spawnListener=spawnListener(s);room.world.dispatcher.subscribe("UnitSpawn",s.spawnListener,s);
+        for(i=0;i<specs.length;i++) {
+            var row:Object={spec:specs[i],token:{},frame:1,phase:"loading",ready:false,attempted:false,wait:0};
+            row.name="__cf6Interactive"+(++serial);
+            row.holder=room.world.createEmptyMovieClip(row.name,room.world.getNextHighestDepth());
+            row.holder.__cf6InteractiveOwner=row.token;row.holder._x=row.spec.x;row.holder._y=row.spec.y;
+            row.holder.Z轴坐标=row.spec.y;row.holder.createEmptyMovieClip("element",1);
+            row.art=row.holder.element.createEmptyMovieClip("art",1);
+            s.rows.push(row);
+            row.loader=new MovieClipLoader();row.listener=loadListener(s,row);row.loader.addListener(row.listener);
+            if(!row.loader.loadClip(row.spec.url,row.art)) {fail(s,"load-request:"+row.spec.id);break;}
+        }
+        return s;
+    }
+    private static function loadListener(s:Object,row:Object):Object {
+        return {onLoadInit:function(art:MovieClip):Void {Cf6InteractivePropService.loaded(s,row,art);},
+            onLoadError:function(art:MovieClip,why:String):Void {if(Cf6InteractivePropService.owns(s,row)) Cf6InteractivePropService.fail(s,"load:"+why);}};
+    }
+    private static function drawArea(holder:MovieClip,b:Array):Void {
+        var a:MovieClip=holder.createEmptyMovieClip("area",2);
+        a.beginFill(0,0);a.moveTo(b[0],b[1]);a.lineTo(b[2],b[1]);a.lineTo(b[2],b[3]);a.lineTo(b[0],b[3]);a.lineTo(b[0],b[1]);a.endFill();
+        a._visible=false;
+    }
+    public static function loaded(s:Object,row:Object,art:MovieClip):Void {
+        if(!owns(s,row) || row.ready || art!==row.holder.element.art || art._parent!==row.holder.element) return;
+        row.loader.removeListener(row.listener);
+        if(art._totalframes!==row.spec.frames) {fail(s,"asset-frames:"+row.spec.id);return;}
+        row.art=art;art.gotoAndStop(1);
+        var m:Array=row.spec.artMatrix;
+        var transform:Transform=new Transform(art);
+        transform.matrix=new Matrix(m[0],m[1],m[2],m[3],m[4],m[5]);
+        drawArea(row.holder,row.spec.hitBounds);
+        if(row.spec.kind=="barrel") {
+            if(StaticInitializer.factory==undefined) {fail(s,"collider-factory");return;}
+            initializeBarrel(s,row);
+        } else if(!s.manager.updateDepth(row.holder,row.spec.sortY)) {fail(s,"pod-depth");return;}
+        if(!owns(s,row)) return;
+        row.ready=true;row.phase="idle";s.pending--;
+        if(row.spec.spawnAuthority=="boss" && s.bossPodsCancelled===true) cancelPod(s,row);
+    }
+    /** Normal map collider/target registration; only this owned instance gets damage-based handlers. */
+    private static function initializeBarrel(s:Object,row:Object):Void {
+        var h:MovieClip=row.holder;
+        h.obstacle=false;h.interactionEnabled=false;h.pickupEnabled=false;
+        h.已加经验值=true;h.publishStageEvent=false;h.兵种=undefined;h.产生源=undefined;
+        StaticInitializer.initializeMapElementFast(h,null,true,true);
+        h.Z轴坐标=row.spec.groundY;
+        h.hp=h.hp满血值=30;h.防御力=0;h.基础躲闪率=h.躲闪率=0;
+        h.是否为敌人=null;h.刚体=true;h.无敌=false;h.无敌标签=false;h.等级=1;
+        h._killed=false;h.掉落物=[];h.已加经验值=true;h.publishStageEvent=false;
+        h.兵种=undefined;h.产生源=undefined;
+        row.hit=hitListener(s,row);row.death=deathListener(s,row);
+        h.dispatcher.subscribeSingle("hit",row.hit,h);
+        h.dispatcher.subscribeSingle("kill",row.death,h);
+        h.dispatcher.subscribeSingle("death",row.death,h);
+        // Unit update must not overwrite authored sortY with the display origin.
+        row.update=depthListener(s,row);h.dispatcher.subscribeSingle("UpdateEventComponent",row.update,h);
+        if(!s.manager.updateDepth(h,row.spec.sortY) || h.aabbCollider==undefined) fail(s,"barrel-collider-depth");
+    }
+    private static function depthListener(s:Object,row:Object):Function {
+        return function():Void {if(Cf6InteractivePropService.owns(s,row)) s.manager.updateDepth(row.holder,row.spec.sortY);};
+    }
+    private static function hitListener(s:Object,row:Object):Function {
+        return function(target:MovieClip):Void {if(target===row.holder) Cf6InteractivePropService.breakBarrel(s,row);};
+    }
+    private static function deathListener(s:Object,row:Object):Function {
+        return function(target:MovieClip):Void {if(target===row.holder) Cf6InteractivePropService.breakBarrel(s,row);};
+    }
+    public static function breakBarrel(s:Object,row:Object):Void {
+        if(!owns(s,row) || row.spec.kind!="barrel" || row.phase!="idle" || !finite(row.holder.hp) || row.holder.hp>0) return;
+        // DamageCalculator has already deducted the real damage. Never decrement HP a second time.
+        row.phase="breaking";row.holder._killed=true;
+        TargetCacheManager.removeUnit(row.holder);
+    }
+    private static function waveReady(s:Object):Boolean {
+        var w:Object=s.spawner;
+        return w===WaveSpawner.instance && w.gameworld===s.room.world && w.isActive===true && w.isFinished!==true
+            && s.room.stageManager.isCleared!==true && finite(w.currentWave) && w.currentWave>-1 && finite(w.tickCount) && w.tickCount>0;
+    }
+    private static function paused(s:Object):Boolean {
+        return _root.暂停===true || _root.场景转换中===true || s.room.phase=="loading" || s.room.phase=="cancelled";
+    }
+    public static function tick(s:Object):String {
+        if(s==null) return "ready";
+        if(s.failed) return "failed";
+        if(!current(s)) {end(s);return "cancelled";}
+        if(s.pending>0) {if(++s.ticks>900) fail(s,"load-timeout");return s.failed ? "failed" : "loading";}
+        // Ownership is checked even while paused or without a live hero; neither can hide replacement.
+        for(var oi:Number=0;oi<s.rows.length;oi++) {
+            if(!owns(s,s.rows[oi])) {fail(s,"instance-replaced:"+s.rows[oi].spec.id);return "failed";}
+        }
+        if(paused(s)) return "ready";
+        var hero:MovieClip=TargetCacheManager.findHero();
+        if(!finite(hero.hp) || !(hero.hp>0) || hero._parent!==s.room.world) return "ready";
+        for(var i:Number=0;i<s.rows.length;i++) {
+            var row:Object=s.rows[i];
+            if(!owns(s,row)) {fail(s,"instance-replaced:"+row.spec.id);return "failed";}
+            if(row.spec.kind=="pod" && s.room.stageManager.isCleared===true) {cancelPod(s,row);continue;}
+            if(row.spec.kind=="barrel") breakBarrel(s,row);
+            else if(row.phase=="idle" && (row.spec.spawnAuthority!="wave" || waveReady(s))
+                && typeof hero.area=="movieclip" && row.holder.area.hitTest(hero.area)) row.phase="breaking";
+            if(row.phase=="breaking") {
+                row.frame++;
+                // Root frames21-23 contain direct creature parts after nested1938 ends.
+                // Wave pods keep pose23 for their counted producer. Boss pods keep the sealed tube until a finite slot is claimed.
+                row.art.gotoAndStop(row.spec.spawnAuthority=="boss" && !row.attempted ? 1 : (row.spec.kind=="pod" && row.frame>23 ? 23 : row.frame));
+                if(row.spec.kind=="barrel" && row.frame==7) explode(s,row);
+                else if(row.spec.kind=="pod" && row.frame==24) {
+                    row.phase="ready-to-spawn";
+                    if(row.spec.spawnAuthority=="wave") dispatchWave(s,row);
+                }
+                if(row.frame==row.spec.frames) row.phase="spent";
+            } else if(row.phase=="ready-to-spawn" && row.spec.spawnAuthority=="wave") {
+                dispatchWave(s,row);
+            } else if(row.phase=="awaiting-spawn") {
+                if(++row.wait>900) {fail(s,"spawn-unknown:"+row.spec.id);return "failed";}
+            } else if(row.phase=="born-pending") {
+                var child:MovieClip=s.room.world[row.spawnName];
+                if(child.__cf6PodBirthOwner!==row.bornToken || child._parent!==s.room.world) {fail(s,"born-instance-replaced");return "failed";}
+                if(finite(child.version) && child.__unitInitializedVersion===child.version
+                    && child._visible!==false && child._alpha>0 && child.man._visible!==false
+                    && child.man._width>0 && child.man._height>0) {
+                    row.frame=25;row.art.gotoAndStop(25);row.phase="spent";
+                } else if(++row.wait>900) {fail(s,"initialization-unknown");return "failed";}
+            }
+            if(s.failed || !current(s)) return "failed";
+        }
+        return "ready";
+    }
+    private static function dispatchWave(s:Object,row:Object):Void {
+        if(!owns(s,row) || row.attempted || row.phase!="ready-to-spawn" || !waveReady(s)) return;
+        row.attempted=true;row.phase="awaiting-spawn";
+        // Event consumption may already have committed before an exception; never replay it.
+        try {s.room.world.dispatcher.publish("Cf6PodReady",row.spec.id);}
+        catch(e) {fail(s,"wave-delivery-unknown:"+row.spec.id);}
+    }
+    private static function findPod(world:MovieClip,id:String):Object {
+        var s:Object=world.__cf6Mechanism.interactivePropsSession;
+        if(!current(s) || world!==s.room.world || paused(s) || s.room.stageManager.isCleared===true) return null;
+        for(var i:Number=0;i<s.rows.length;i++) {
+            var row:Object=s.rows[i];
+            if(row.spec.id===id && row.spec.kind=="pod" && row.spec.spawnAuthority=="boss" && owns(s,row)) return row;
+        }
+        return null;
+    }
+    public static function podReady(world:MovieClip,id:String):Boolean {
+        var row:Object=findPod(world,id);
+        return row!=null && row.phase=="ready-to-spawn" && !row.attempted;
+    }
+    public static function claimPod(world:MovieClip,id:String,ownerToken:String,name:String):Boolean {
+        var row:Object=findPod(world,id);
+        if(row==null || row.phase!="ready-to-spawn" || row.attempted || typeof ownerToken!="string" || typeof name!="string") return false;
+        row.attempted=true;row.phase="awaiting-spawn";row.bossToken=ownerToken;row.spawnName=name;
+        // Only a reserved finite slot may show the outside handoff pose. Capacity wait stays inside the tube.
+        row.art.gotoAndStop(23);return true;
+    }
+    private static function cancelPod(s:Object,row:Object):Void {
+        if(!owns(s,row) || row.spec.kind!="pod") return;
+        row.phase="cancelled";
+        // Keep untouched chambers sealed; an already started presentation must not leave an outside creature.
+        if(row.ready && row.frame>1) {row.frame=25;row.art.gotoAndStop(25);}
+    }
+    public static function cancelBossPods(world:MovieClip):Void {
+        var s:Object=world.__cf6Mechanism.interactivePropsSession;
+        if(!current(s) || world!==s.room.world) return;
+        s.bossPodsCancelled=true;
+        for(var i:Number=0;i<s.rows.length;i++) {
+            var row:Object=s.rows[i];
+            if(row.spec.kind=="pod" && row.spec.spawnAuthority=="boss") cancelPod(s,row);
+        }
+    }
+    private static function spawnListener(s:Object):Function {
+        return function(name:String):Void {Cf6InteractivePropService.spawned(s,name);};
+    }
+    public static function spawned(s:Object,name:String):Void {
+        if(!current(s) || s.room.stageManager.isCleared===true) return;
+        var unit:MovieClip=s.room.world[name];
+        if(typeof unit!="movieclip" || unit._parent!==s.room.world || unit.是否为敌人!==true || !finite(unit.hp) || !(unit.hp>0)
+            || unit.publishStageEvent!==true) return;
+        for(var i:Number=0;i<s.rows.length;i++) {
+            var row:Object=s.rows[i];
+            if(row.phase!="awaiting-spawn" || unit.cf6PodId!==row.spec.id || !owns(s,row)) continue;
+            if(row.spec.spawnAuthority=="boss" && (name!==row.spawnName || unit.cf6BossOwnerToken!==row.bossToken)) continue;
+            row.bornToken={};unit.__cf6PodBirthOwner=row.bornToken;row.phase="born-pending";row.spawnName=name;
+        }
+    }
+    /** Current CF7 地瓜手雷 adapter: physical 100, Z80, knockdown .5; original used global 手雷威力. */
+    public static function explosionBullet(emitter:MovieClip,row:Object):Object {
+        return {声音:"",霰弹值:1,子弹散射度:0,发射效果:"",子弹种类:"普通爆炸",子弹威力:100,
+            子弹速度:0,Z轴攻击范围:80,击倒率:0.5,击中地图效果:"",击中后子弹的效果:"",伤害类型:"物理",
+            发射者:emitter._name,shootX:row.holder._x,shootY:row.holder.Z轴坐标,shootZ:row.holder.Z轴坐标};
+    }
+    private static function explode(s:Object,row:Object):Void {
+        if(!owns(s,row) || row.attempted || row.phase!="breaking") return;
+        row.attempted=true;
+        if(typeof _root.子弹区域shoot传递!="function") {fail(s,"explosion-authority-missing");return;}
+        if(s.emitter==undefined) {
+            s.emitterName="__cf6Explosion"+(++serial);
+            s.emitter=s.room.world.createEmptyMovieClip(s.emitterName,s.room.world.getNextHighestDepth());
+            s.emitter.__cf6InteractiveOwner=s.token;s.emitter.是否为敌人=false;s.emitter.等级=1;
+            s.emitter.命中率=100000;s.emitter.伤害加成=0;s.emitter.方向="右";
+            s.emitter.dispatcher=new EventDispatcher();
+        }
+        if(s.emitter.__cf6InteractiveOwner!==s.token || s.room.world[s.emitterName]!==s.emitter) {fail(s,"emitter-replaced");return;}
+        s.emitter._x=row.holder._x;s.emitter._y=s.emitter.Z轴坐标=row.holder.Z轴坐标;
+        try {_root.子弹区域shoot传递(explosionBullet(s.emitter,row));}
+        catch(e) {fail(s,"explosion-delivery-unknown");}
+    }
+    private static function fail(s:Object,why:String):Void {
+        if(s==null || s.failed || s.closed) return;
+        s.failed=true;s.reason=why;trace("[Cf6InteractiveProp] stopped "+why);
+    }
+    public static function end(s:Object):Void {
+        if(s==null || s.closed) return;
+        s.closed=true;
+        s.room.world.dispatcher.unsubscribe("UnitSpawn",s.spawnListener,s);
+        var sameWorld:Boolean=s.room.world===_root.gameworld && s.room.owner===_root.gameworld.__stageReturnWorldIdentity;
+        for(var i:Number=0;i<s.rows.length;i++) {
+            var row:Object=s.rows[i];row.loader.removeListener(row.listener);
+            if(sameWorld && row.bornToken!=undefined && s.room.world[row.spawnName].__cf6PodBirthOwner===row.bornToken)
+                delete s.room.world[row.spawnName].__cf6PodBirthOwner;
+            if(sameWorld && row.holder.__cf6InteractiveOwner===row.token && s.room.world[row.name].__cf6InteractiveOwner===row.token
+                && row.holder._parent===s.room.world) {
+                if(row.ready && row.spec.kind=="barrel") TargetCacheManager.removeUnit(row.holder);
+                if(s.manager===DepthManager.instance) s.manager.removeMovieClip(row.holder);
+                row.holder.removeMovieClip();
+            }
+        }
+        if(sameWorld && s.emitter.__cf6InteractiveOwner===s.token) {s.emitter.dispatcher.destroy();s.emitter.removeMovieClip();}
+    }
+}

@@ -1,0 +1,14 @@
+onClipEvent(load){
+   var §\x01§ = 432;
+   var §\x0f§ = 1;
+   stop();
+   if(_root.当前长型武器 == "无")
+   {
+      this._visible = 0;
+   }
+   else
+   {
+      gotoAndStop(_root.大腿枪);
+      this._visible = 1;
+   }
+}

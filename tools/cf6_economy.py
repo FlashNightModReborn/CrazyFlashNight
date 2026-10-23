@@ -10,6 +10,8 @@ def enemies(stage):
         yield from wave['EnemyGroup']['Enemy']
     for group in stage.get('bossEncounter', {}).get('groups', []):
         yield from group['enemies']
+    for group in stage.get('bossEncounter', {}).get('nextPhase', {}).get('groups', []):
+        yield from group['enemies']
 
 
 def validate_economy(book, items, catalog=None):

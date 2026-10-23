@@ -1,0 +1,355 @@
+import org.flashNight.arki.scene.Cf6TraversalRules;
+import org.flashNight.arki.pause.PauseManager;
+import org.flashNight.gesh.depth.DepthManager;
+
+/** Owns only the live actor presentation. No save, reward or next-stage authority. */
+class org.flashNight.arki.scene.Cf6TraversalService {
+    private static var preparedArrival:Object;
+    /** Synchronous SceneReady ownership, before the curtain can reveal a default spawn. */
+    public static function prepareArrival(world:MovieClip,owner:Object,manager:Object):Object {
+        var run:Object=_root._saveExt.bookRun;
+        var map:Object=org.flashNight.arki.scene.BookDefinition.get("cf6-sting").maps[manager.currentStage];
+        var spec:Object=map.mechanism.traversal.arrive;
+        if(world!==_root.gameworld || owner==null || world.__stageReturnWorldIdentity!==owner
+                || manager!==org.flashNight.arki.scene.StageManager.instance || manager.gameworld!==world
+                || manager.isActive!==true || manager.isFailed===true || manager.isFinished===true
+                || !org.flashNight.arki.scene.BookRunRules.sameCf6Run(run,run)
+                || run.slot!==String(_root.savePath) || _root.当前关卡名!=="书中历险-毒刺行动"
+                || !Cf6TraversalRules.valid(spec) || spec.mode!="arrive") return null;
+        var existing:Object=world.__cf6Mechanism;
+        if(existing.world===world && existing.owner===owner && existing.stageManager===manager) {
+            if(existing.failed===true) return null;
+            var arrival:Object=existing.arrival;
+            if(arrival!=null && (arrival.closed || arrival.acquired || arrival.rules.phase!="waiting")) return null;
+        }
+        if(preparationCurrent(preparedArrival) && preparedArrival.world===world) return preparedArrival;
+        releasePreparation(preparedArrival,true);preparedArrival=null;
+        var hero:MovieClip=world[_root.控制目标];
+        if(typeof hero!="movieclip" || hero._parent!==world || hero.__cf6TraversalOwner!=undefined
+                || hero.__cf6ArrivalPreparationOwner!=undefined
+                || !org.flashNight.arki.scene.Cf6ActorMaskState.isKnownNone(hero)) return null;
+        var p:Object={world:world,owner:owner,manager:manager,stage:manager.currentStage,mapId:map.id,spec:spec,
+            actor:hero,name:hero._name,controlName:_root.控制目标,token:{},closed:false,
+            visible:hero._visible,direction:hero.方向,directionLock:hero.锁定方向,
+            maskBirth:org.flashNight.arki.scene.Cf6ActorMaskState.identity(hero),slot:String(_root.savePath),
+            runIdentity:{bookId:run.bookId,routeId:run.routeId,slot:run.slot,seed:run.seed,startedAt:run.startedAt,planSeed:run.planSeed}};
+        hero.__cf6ArrivalPreparationOwner=p.token;world.__cf6ArrivalPreparation=p;
+        hero._visible=false;hero.锁定方向=true;preparedArrival=p;
+        return p;
+    }
+    private static function preparationOwned(p:Object):Boolean {
+        return p!=null && !p.closed && p.world.__stageReturnWorldIdentity===p.owner
+            && p.world.__cf6ArrivalPreparation===p && p.actor._parent===p.world
+            && p.world[p.name]===p.actor && p.actor.__cf6ArrivalPreparationOwner===p.token;
+    }
+    private static function preparationCurrent(p:Object):Boolean {
+        return preparationOwned(p) && p.world===_root.gameworld
+            && p.manager===org.flashNight.arki.scene.StageManager.instance && p.manager.currentStage===p.stage
+            && p.manager.isFailed!==true && p.manager.isFinished!==true && p.slot===String(_root.savePath)
+            && _root.当前关卡名==="书中历险-毒刺行动" && _root.控制目标===p.controlName
+            && org.flashNight.arki.scene.BookRunRules.sameCf6Run(p.runIdentity,_root._saveExt.bookRun);
+    }
+    private static function releasePreparation(p:Object,restore:Boolean):Void {
+        if(p==null || p.closed) return;
+        if(preparationOwned(p)) {
+            // A foreign root mask or previously hidden actor is never forced visible.
+            if(restore && p.actor._visible===false
+                    && org.flashNight.arki.scene.Cf6ActorMaskState.identity(p.actor)===p.maskBirth) p.actor._visible=p.visible;
+            if(p.actor.锁定方向===true) p.actor.锁定方向=p.directionLock;
+            delete p.actor.__cf6ArrivalPreparationOwner;
+            if(p.world.__cf6ArrivalPreparation===p) delete p.world.__cf6ArrivalPreparation;
+        }
+        p.closed=true;if(preparedArrival===p) preparedArrival=null;
+    }
+    public static function observePreparedArrival():Void {
+        var p:Object=preparedArrival;
+        if(p==null) return;
+        if(!preparationCurrent(p)) {releasePreparation(p,true);return;}
+        if(p.actor._visible!==false || p.actor.锁定方向!==true
+                || org.flashNight.arki.scene.Cf6ActorMaskState.identity(p.actor)!==p.maskBirth)
+            releasePreparation(p,false);
+    }
+    /** Preserve only the exact SceneReady handoff being adopted by beginRoom. */
+    public static function cancelPreparedArrival(preserveWorld:MovieClip,preserveOwner:Object):Void {
+        if(preparationCurrent(preparedArrival) && preparedArrival.world===preserveWorld && preparedArrival.owner===preserveOwner) return;
+        releasePreparation(preparedArrival,true);
+    }
+    private static function finite(value):Boolean {
+        return typeof value=="number" && (value-value)==0 && Math.abs(value)<1000000;
+    }
+    public static function create(room:Object,spec:Object):Object {
+        if(spec.mode=="depart" && (!finite(spec.gate.x) || !finite(spec.gate.z)
+                || !finite(spec.gate.radius) || !(spec.gate.radius>0) || !(spec.gate.radius<300)
+                || !finite(spec.exit.x) || !finite(spec.exit.z))) return null;
+        if(spec.actorSortY!==undefined && !finite(spec.actorSortY)) return null;
+        var rules:Object=Cf6TraversalRules.create(spec,room.owner);
+        if(rules==null) return null;
+        var frozen:Object={mode:spec.mode,preserveActorPosition:spec.preserveActorPosition===true,actorSortY:spec.actorSortY};
+        if(spec.mode=="depart") {
+            frozen.gate={x:spec.gate.x,z:spec.gate.z,radius:spec.gate.radius};
+            frozen.exit={x:spec.exit.x,z:spec.exit.z};
+        }
+        var t:Object={room:room,spec:frozen,sourceSpec:spec,rules:rules,closed:false,acquired:false};
+        var p:Object=room.world.__cf6ArrivalPreparation;
+        if(spec.mode=="arrive" && p!=null && !p.closed) {
+            if(!preparationCurrent(p) || p.owner!==room.owner || p.mapId!==room.mapId || p.spec!==spec || p.claimed!=undefined) return null;
+            p.claimed=t;t.preparation=p;if(preparedArrival===p) preparedArrival=null;
+        }
+        return t;
+    }
+    public static function bindMask(t:Object,depthSession:Object,ticket:Object,frames:Array):Boolean {
+        if(t==null || t.maskTicket!=undefined || ticket==null || !(frames instanceof Array) || frames.length==0) return false;
+        var previous:Number=0;
+        for(var i:Number=0;i<frames.length;i++) {
+            if(!finite(frames[i]) || frames[i]!=Math.floor(frames[i]) || !(frames[i]>previous)
+                    || frames[i]>t.rules.duration) return false;
+            previous=frames[i];
+        }
+        t.depthSession=depthSession;t.maskTicket=ticket;t.maskActiveFrames=frames.concat();
+        return true;
+    }
+    private static function maskActive(t:Object):Boolean {
+        for(var i:Number=0;i<t.maskActiveFrames.length;i++)
+            if(t.maskActiveFrames[i]===t.rules.frame) return true;
+        return false;
+    }
+    private static function releaseMask(t:Object):Void {
+        if(t.maskView!=undefined) org.flashNight.arki.scene.Cf6ActorMaskPresentation.release(t.maskView);
+        t.maskView=undefined;
+    }
+    public static function current(t:Object):Boolean {
+        var s:Object=t.room;
+        return t!=null && !t.closed && s.world===_root.gameworld
+            && s.owner===_root.gameworld.__stageReturnWorldIdentity
+            && s.world.__cf6Mechanism===s
+            && s.stageManager===org.flashNight.arki.scene.StageManager.instance
+            && s.stageIndex===s.stageManager.currentStage
+            && s.stageManager.isFailed!==true && s.stageManager.isFinished!==true;
+    }
+    public static function atGate(spec:Object,hero:Object):Boolean {
+        var g:Object=spec.gate;
+        if(hero==undefined || !(hero.hp>0) || !(g.radius>0) || !(g.radius<300)) return false;
+        var dx:Number=hero._x-g.x, dz:Number=hero.Z轴坐标-g.z;
+        return dx*dx+dz*dz<g.radius*g.radius;
+    }
+    private static function actorOwned(t:Object):Boolean {
+        return t.room.world===_root.gameworld && t.room.owner===_root.gameworld.__stageReturnWorldIdentity
+            && t.acquired && t.actor.__cf6TraversalOwner===t.token
+            && t.actor===t.room.world[t.actorName];
+    }
+    private static function idle():Void {}
+    private static function deny():Boolean {return false;}
+    private static function ownControl(t:Object):Boolean {
+        var block:MovieClip=t.actor.控制块;
+        if(block==undefined || typeof block.onEnterFrame!="function") {restoreControl(t);return true;}
+        if(block.__cf6TraversalOwner===t.token) return block.onEnterFrame===idle;
+        if(block.__cf6TraversalOwner!=undefined) return false;
+        // A new pose legitimately creates a fresh control block. Never restore through its old alias.
+        restoreControl(t);
+        t.block=block;t.blockCallback=block.onEnterFrame;
+        block.__cf6TraversalOwner=t.token;block.onEnterFrame=idle;
+        return true;
+    }
+    private static function restoreControl(t:Object):Void {
+        if(t.block.__cf6TraversalOwner===t.token && t.token!=undefined) {
+            if(t.block.onEnterFrame===idle) t.block.onEnterFrame=t.blockCallback;
+            delete t.block.__cf6TraversalOwner;
+        }
+        t.block=undefined;
+    }
+    private static function acquire(t:Object,hero:MovieClip):Boolean {
+        if(!current(t) || hero==undefined || !(hero.hp>0)
+                || hero!==t.room.world[_root.控制目标]
+                || hero.__cf6TraversalOwner!=undefined || typeof hero.状态改变!="function"
+                || typeof hero.方向改变!="function" || hero.浮空 || hero.飞行浮空) return false;
+        var pauseApi:Object=org.flashNight.arki.pause.PauseManager;
+        if(typeof pauseApi.isPausedExcept!="function") return false;
+        t.actor=hero;t.actorName=hero._name;t.controlName=_root.控制目标;
+        t.startX=hero._x;t.startZ=hero.Z轴坐标;
+        t.stateChange=hero.状态改变;t.directionChange=hero.方向改变;
+        // beginRoom may precede SceneReady in an uncovered entry. Adopt the
+        // later synchronous preparation only through the same frozen source identity.
+        var p:Object=t.preparation;
+        if(p==null && t.spec.mode=="arrive") {
+            var late:Object=t.room.world.__cf6ArrivalPreparation;
+            if(late!=null && !late.closed) {
+                if(!preparationCurrent(late) || late.owner!==t.room.owner || late.mapId!==t.room.mapId
+                        || late.spec!==t.sourceSpec || late.claimed!=undefined) return false;
+                late.claimed=t;t.preparation=late;p=late;
+                if(preparedArrival===late) preparedArrival=null;
+            }
+        }
+        if(p!=null && (!preparationCurrent(p) || p.actor!==hero || hero._visible!==false
+                || hero.锁定方向!==true || org.flashNight.arki.scene.Cf6ActorMaskState.identity(hero)!==p.maskBirth)) return false;
+        t.token={};t.visible=p==null?hero._visible:p.visible;t.direction=p==null?hero.方向:p.direction;
+        t.directionLock=p==null?hero.锁定方向:p.directionLock;
+        t.maskBirth=org.flashNight.arki.scene.Cf6ActorMaskState.identity(hero);
+        t.lastVisible=hero._visible;t.lastDirection=hero.方向;
+        hero.锁定方向=true;
+        if(p!=null) {
+            delete hero.__cf6ArrivalPreparationOwner;
+            if(p.world.__cf6ArrivalPreparation===p) delete p.world.__cf6ArrivalPreparation;
+            p.closed=true;t.preparation=null;
+        }
+        t.acquired=true;hero.__cf6TraversalOwner=t.token;
+        // Native onClipEvent(load) may initialize a new control block on the next frame.
+        // These actor-local CAS slots cover that gap without replacing global input.
+        t.walk=hero.行走;t.switchMode=hero.按键控制攻击模式;t.keyCheck=hero.按键检测;
+        hero.行走=idle;hero.按键控制攻击模式=idle;hero.按键检测=deny;
+        t.lease=PauseManager.lease(true,"cf6_traversal");
+        hero.左行=hero.右行=hero.上行=hero.下行=false;
+        hero.动作A=hero.动作B=hero.动作C=false;
+        hero.按住奔跑键=hero.强制奔跑=false;
+        return true;
+    }
+    public static function isPaused(t:Object):Boolean {
+        var pauseApi:Object=org.flashNight.arki.pause.PauseManager;
+        return typeof pauseApi.isPausedExcept!="function" || pauseApi.isPausedExcept(t.lease);
+    }
+    /** Returns waiting/playing/released/complete/cancelled; all positions are final world coordinates. */
+    public static function tick(t:Object,hero:MovieClip,cleared:Boolean):String {
+        if(!current(t)) {cancel(t);return "cancelled";}
+        if(t.rules.phase=="complete") return "complete";
+        if(t.acquired && (!actorOwned(t) || _root.控制目标!==t.controlName || hero!==t.actor || !(t.actor.hp>0))) {cancel(t);return "cancelled";}
+        if(isPaused(t)) return t.rules.phase;
+        var gate:Boolean=t.spec.mode=="arrive" || atGate(t.spec,hero);
+        if(t.rules.phase=="waiting") {
+            if(t.spec.mode=="depart" && (!cleared || !gate)) return "waiting";
+            if(!acquire(t,hero)) {
+                t.waitFrames=t.waitFrames==undefined ? 1 : t.waitFrames+1;
+                if(t.waitFrames>300) {cancel(t);return "cancelled";}
+                return "waiting";
+            }
+        }
+        var cue:String=Cf6TraversalRules.advance(t.rules,t.room.owner,false,cleared,gate);
+        var row:Object=Cf6TraversalRules.sample(t.rules,t.room.owner);
+        if(row!=null && actorOwned(t) && !applySample(t,row)) {cancel(t);return "cancelled";}
+        if(cue=="release-actor") releaseActor(t,false);
+        if(cue=="complete") {
+            Cf6TraversalRules.takeCompletion(t.rules,t.room.owner);
+            if(t.spec.mode=="depart") t.awaitingAdvance=true;
+            else releaseActor(t,false);
+            return "complete";
+        }
+        return cue=="release-actor" ? "released" : t.rules.phase;
+    }
+    private static function applySample(t:Object,row:Object):Boolean {
+        var hero:MovieClip=t.actor;
+        if(t.maskBirth!=null && org.flashNight.arki.scene.Cf6ActorMaskState.identity(hero)!==t.maskBirth) return false;
+        if(hero._visible!==t.lastVisible || hero.状态改变!==t.stateChange || hero.方向改变!==t.directionChange
+                || t.lastAction!==undefined && hero.状态!==t.lastAction
+                || t.block!==undefined && (t.block.__cf6TraversalOwner!==t.token || t.block.onEnterFrame!==idle)) return false;
+        if(hero.锁定方向!==true || hero.方向!==t.lastDirection) return false;
+        var direction:String=t.spec.preserveActorPosition || t.rules.heading==null || t.directionLock===true ? t.direction : t.rules.heading;
+        var action:String=hero.攻击模式+(row.action=="walk" ? "行走" : "站立");
+        if(hero.状态!==action) {restoreControl(t);hero.状态改变(action);}
+        t.lastAction=hero.状态;
+        if(direction!=hero.方向) {
+            hero.锁定方向=false;t.directionChange.call(hero,direction);hero.锁定方向=true;
+        }
+        t.lastDirection=hero.方向;
+        if(!ownControl(t)) return false;
+        var footX:Number=t.spec.preserveActorPosition ? t.startX : row.x;
+        var footZ:Number=t.spec.preserveActorPosition ? t.startZ : row.z;
+        hero._x=footX;hero._y=hero.Z轴坐标=footZ;
+        var sortY:Number=t.spec.actorSortY===undefined ? footZ : t.spec.actorSortY;
+        if(t.spec.actorSortY!==undefined) {
+            var dm:Object=DepthManager.instance;
+            if(dm==undefined || t.depthManager!==undefined && (dm!==t.depthManager || hero.__cf6TraversalDepthOwner!==t.token || hero.getDepth()!==t.lastDepth)) return false;
+            if(!dm.updateDepth(hero,sortY)) return false;
+            t.depthManager=dm;hero.__cf6TraversalDepthOwner=t.token;t.lastDepth=hero.getDepth();
+        } else hero.swapDepths(footZ);
+        if(typeof hero.aabbCollider.updateFromUnitArea=="function") hero.aabbCollider.updateFromUnitArea(hero);
+        // Held-gun man is the UPPER-body action timeline (fire/up/down/reload),
+        // not a walk cycle. The root pose selects independently authored leg clips;
+        // their native enterFrame handlers advance the actual walk animation.
+        if(hero.攻击模式=="长枪" || hero.攻击模式=="手枪"
+                || hero.攻击模式=="手枪2" || hero.攻击模式=="双枪") {
+            if(hero.man==undefined || hero.man.__cf6TraversalAnimationOwner!=undefined
+                    && hero.man.__cf6TraversalAnimationOwner!==t.token) return false;
+            hero.man.__cf6TraversalAnimationOwner=t.token;
+            hero.man.gotoAndStop("空闲");
+        }
+        if(row.visible && t.visible && maskActive(t)) {
+            if(!org.flashNight.arki.scene.Cf6PropDepthService.valid(t.maskTicket)) return false;
+            t.maskTicket.holder.art.gotoAndStop(t.rules.frame);
+            if(t.maskView==undefined) t.maskView=org.flashNight.arki.scene.Cf6ActorMaskPresentation.create(t,t.depthSession,t.maskTicket);
+            if(t.maskView==null || !org.flashNight.arki.scene.Cf6ActorMaskPresentation.render(t.maskView,sortY,t.lastVisible)) return false;
+            hero._visible=false;t.lastVisible=false;
+        } else {
+            releaseMask(t);
+            hero._visible=row.visible && t.visible;t.lastVisible=hero._visible;
+        }
+        return true;
+    }
+    private static function restoreGate(t:Object):Void {
+        if(!actorOwned(t) || !(t.actor.hp>0) || !current(t)) return;
+        t.actor._x=t.spec.preserveActorPosition ? t.startX : t.spec.exit.x;
+        t.actor._y=t.actor.Z轴坐标=t.spec.preserveActorPosition ? t.startZ : t.spec.exit.z;
+        if(t.spec.actorSortY===undefined) t.actor.swapDepths(t.actor.Z轴坐标);
+        if(typeof t.actor.aabbCollider.updateFromUnitArea=="function") t.actor.aabbCollider.updateFromUnitArea(t.actor);
+    }
+    /** Accepted handoff retains the final pose/mask until the standard covered scene teardown. */
+    public static function finishAdvance(t:Object,status:String,receipt:Object):Void {
+        if(t==null || !t.awaitingAdvance || t.advanceStatus!=undefined) return;
+        t.awaitingAdvance=false;
+        if(status=="accepted" && receipt.status=="accepted" && receipt.projection!=null) {
+            t.advanceStatus="accepted";t.projection=receipt.projection;t.advanceTicks=0;return;
+        }
+        t.advanceStatus=status=="rejected" ? "rejected" : "unknown";
+        restoreGate(t);releaseActor(t,true);
+    }
+    /** Presentation watchdog only: never retries navigation or clears any persistence fence. */
+    public static function observeAdvance(t:Object,hero:MovieClip):String {
+        if(t==null || t.advanceStatus!="accepted") return "";
+        if(!current(t) || !actorOwned(t) || hero!==t.actor || !(hero.hp>0)) {cancel(t);return "cancelled";}
+        t.advanceTicks++;
+        var fade:Object=_root.淡出动画;
+        if(fade.__transitionProjectionIdentity!==t.projection || fade.__returnFadeActive!==true || t.advanceTicks>900) {
+            // A lost/failed visual receipt is not proof that the original request did not execute.
+            t.advanceStatus="presentation-ended";restoreGate(t);releaseActor(t,true);return "presentation-ended";
+        }
+        return "accepted";
+    }
+    private static function releaseActor(t:Object,cancelled:Boolean):Void {
+        if(t==null || !t.acquired) return;
+        releaseMask(t);
+        if(actorOwned(t)) {
+            var controlOwned:Boolean=t.block==undefined || t.block.__cf6TraversalOwner===t.token && t.block.onEnterFrame===idle;
+            restoreControl(t);
+            var hero:MovieClip=t.actor;
+            if(hero.__cf6TraversalDepthOwner===t.token) {
+                if(t.depthManager===DepthManager.instance && hero.getDepth()===t.lastDepth && finite(hero.Z轴坐标))
+                    t.depthManager.updateDepth(hero,hero.Z轴坐标);
+                delete hero.__cf6TraversalDepthOwner;
+            }
+            if(hero.行走===idle) hero.行走=t.walk;
+            if(hero.按键控制攻击模式===idle) hero.按键控制攻击模式=t.switchMode;
+            if(hero.按键检测===deny) hero.按键检测=t.keyCheck;
+            if(hero._visible===t.lastVisible && (t.maskBirth==null
+                    || org.flashNight.arki.scene.Cf6ActorMaskState.identity(hero)===t.maskBirth)) hero._visible=t.visible;
+            if(hero.锁定方向===true) {
+                hero.锁定方向=t.directionLock;
+                if(cancelled && hero.方向===t.lastDirection && hero.hp>0 && hero.方向改变===t.directionChange)
+                    hero.方向改变(t.direction);
+            }
+            if(hero.man.__cf6TraversalAnimationOwner===t.token) {
+                delete hero.man.__cf6TraversalAnimationOwner;
+                // Do not play the whole upper-body timeline: idle is followed by fire/reload.
+                // Restored input and the standard pose state machine own subsequent actions.
+            }
+            if(!cancelled && controlOwned && hero.hp>0 && current(t)
+                    && hero.状态===t.lastAction && hero.状态改变===t.stateChange) hero.状态改变(hero.攻击模式+"站立");
+            delete hero.__cf6TraversalOwner;
+        }
+        // Lease IDs are independent ordinary strings: always release only our responsibility.
+        if(t.lease!=undefined) PauseManager.releaseLease(t.lease);
+        t.lease=undefined;t.acquired=false;
+    }
+    public static function cancel(t:Object):Void {
+        if(t==null || t.closed) return;
+        releasePreparation(t.preparation,true);t.preparation=null;
+        releaseActor(t,true);
+        Cf6TraversalRules.cancel(t.rules,t.room.owner);t.closed=true;
+    }
+}

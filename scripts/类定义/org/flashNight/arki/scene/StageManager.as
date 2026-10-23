@@ -1124,6 +1124,75 @@ class org.flashNight.arki.scene.StageManager {
         };
     }
 
+    /** One-shot CF6 choreography handoff. This does not clear a stage or alter legacy nextStage. */
+    public function requestCf6DoorAdvance(world:MovieClip,identity:Object,expectedStage:Number):String {
+        if(this!==StageManager.instance || world!==gameworld || world!==_root.gameworld
+                || identity==null || identity!==world.__stageReturnWorldIdentity
+                || !isActive || !isCleared || isFailed || isFinished || stageMode=="warlord"
+                || typeof expectedStage!="number" || (expectedStage-expectedStage)!=0
+                || expectedStage!==currentStage || expectedStage<0 || expectedStage!=Math.floor(expectedStage)
+                || !(stageInfoList instanceof Array) || !(currentStage<stageInfoList.length-1)) return "rejected";
+        var receipt:Object=org.flashNight.arki.scene.Cf6MapMechanism.consumeDoorAdvance(this,world,identity,expectedStage);
+        if(receipt==null) return "rejected";
+        // The exact receipt is issued BEFORE any query/callback with side effects. Never replay unknown.
+        try {
+            var canBegin=StageReturnFlow.canBeginSceneLoad(undefined,"wuxianguotu_1");
+            var externalPause=org.flashNight.arki.pause.PauseManager.isPausedExcept(receipt.pauseLease);
+            var persisted=StageRunSession.hasPersistedSettlementPending();
+            var settlement=org.flashNight.arki.item.LootContainerService.hasStageSettlementPending();
+            if(typeof canBegin!="boolean" || typeof externalPause!="boolean"
+                    || typeof persisted!="boolean" || typeof settlement!="boolean") {
+                receipt.status="unknown";return "unknown";
+            }
+            if(!canBegin || externalPause || persisted || settlement) {receipt.status="rejected";return "rejected";}
+            var save:Object=org.flashNight.neur.Server.SaveManager.getInstance();
+            if(typeof save.hasRewardCommitPending!="function" || typeof save.isRecoveryPending!="function"
+                    || typeof save.isRepairPending!="function") {receipt.status="unknown";return "unknown";}
+            var rewardPending=save.hasRewardCommitPending(), recovery=save.isRecoveryPending(), repair=save.isRepairPending();
+            if(typeof rewardPending!="boolean" || typeof recovery!="boolean" || typeof repair!="boolean") {
+                receipt.status="unknown";return "unknown";
+            }
+            if(rewardPending || recovery || repair) {
+                receipt.status="rejected";return "rejected";
+            }
+            var fade:Object=_root.淡出动画;
+            if(typeof _root.转场景记录数据!="function" || typeof fade.淡出跳转帧!="function"
+                    || fade.__returnFadeActive===true || fade.跳转中标签) {
+                receipt.status="rejected";return "rejected";
+            }
+            if(!org.flashNight.arki.scene.Cf6MapMechanism.doorAdvanceReceiptCurrent(receipt)) {
+                receipt.status="unknown";return "unknown";
+            }
+            var previousProjection:Object=fade.__transitionProjectionIdentity;
+            receipt.manualAllowed=true;
+            _root.场景进入位置名="出生地";
+            _root.转场景记录数据();
+            if(!org.flashNight.arki.scene.Cf6MapMechanism.doorAdvanceReceiptCurrent(receipt)) {
+                receipt.manualAllowed=false;receipt.status="unknown";return "unknown";
+            }
+            var accepted=fade.淡出跳转帧("wuxianguotu_1");
+            if(accepted===false) {receipt.status="rejected";return "rejected";}
+            if(accepted===true && org.flashNight.arki.scene.Cf6MapMechanism.doorAdvanceReceiptCurrent(receipt)
+                    && fade===_root.淡出动画 && fade.__returnFadeActive===true
+                    && fade.跳转帧==="wuxianguotu_1" && fade.__stageReturnToken===undefined
+                    && typeof fade.__transitionProjectionIdentity=="object"
+                    && !(fade.__transitionProjectionIdentity instanceof Array)
+                    && fade.__transitionProjectionIdentity!=null
+                    && fade.__transitionProjectionIdentity!==previousProjection) {
+                // The accepted choreography also owns the upstream HP/MP transfer intent.
+                // A post-acceptance refusal is unknown: the fade has already been issued.
+                if(!org.flashNight.arki.scene.PlayerResourceTransferBridge.recordAdmittedDoor("wuxianguotu_1")) {
+                    receipt.manualAllowed=false;receipt.status="unknown";return "unknown";
+                }
+                receipt.projection=fade.__transitionProjectionIdentity;
+                receipt.status="accepted";return "accepted";
+            }
+        } catch(doorAdvanceError) {
+            trace("[CF6DoorAdvance] unknown stage="+expectedStage);
+        }
+        receipt.manualAllowed=false;receipt.status="unknown";return "unknown";
+    }
+
     public function nextStage():Boolean{
         if(!isActive || isFinished || isFailed) return false;
         if (!org.flashNight.arki.scene.LeeAssaultService.canAdvance()) return false;

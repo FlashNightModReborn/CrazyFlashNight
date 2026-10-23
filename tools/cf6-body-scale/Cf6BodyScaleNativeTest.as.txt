@@ -1,0 +1,162 @@
+import org.flashNight.arki.unit.*;
+import org.flashNight.arki.scene.*;
+import org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager;
+import org.flashNight.arki.bullet.BulletComponent.Collider.AABBColliderFactory;
+import org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor;
+import org.flashNight.arki.component.Collider.ColliderFactoryRegistry;
+import org.flashNight.gesh.depth.DepthManager;
+import org.flashNight.gesh.object.ObjectUtil;
+import org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader;
+import org.flashNight.arki.bullet.BulletComponent.Loader.InfoLoader;
+import org.flashNight.neur.Event.EventDispatcher;
+import org.flashNight.naki.RandomNumberEngine.PinkNoiseEngine;
+
+class org.flashNight.arki.unit.Cf6BodyScaleNativeTest {
+    private static var driver:MovieClip,world:MovieClip;
+    private static var actors:Array,rows:Array;
+    private static var frame:Number,phase:Number,readyAt:Number;
+    private static var xmlReady:Boolean,bulletReady:Boolean,done:Boolean;
+    private static var identities:Array,hiddenWeapons:Array;
+    private static var passed:Number,failed:Number;
+    public static function runAllTests():Void {
+        frame=phase=passed=failed=0;readyAt=-1;done=false;xmlReady=bulletReady=false;actors=[];identities=[];hiddenWeapons=[];rows=Cf6BodyScaleNativeData.rows();
+        driver=_root.createEmptyMovieClip("__cf6BodyScaleDriver",_root.getNextHighestDepth());
+        driver.onEnterFrame=function():Void {try {Cf6BodyScaleNativeTest.tick();}catch(e){Cf6BodyScaleNativeTest.fail("tick "+e);}};
+        try {initialize();}catch(e){fail("initialize "+e);}
+    }
+    private static function initialize():Void {
+        for(var ai:Number=0;ai<Cf6BodyScaleNativeData.anchorCount();ai++) {
+            _root["__bodyRsl"+ai]._visible=false;_root["__bodyRsl"+ai].unloadMovie();
+        }
+        _root.暂停=false;_root.场景转换中=false;_root.是否阴影=false;
+        _root.savePath="cf6.body.scale.fixture";_root.当前关卡名="书中历险-毒刺行动";
+        _root._saveExt={bookRun:{bookId:"cf6-sting",routeId:"historical",slot:_root.savePath,seed:79,startedAt:100,outcome:"active"}};
+        _root.帧计时器={当前帧数:1,unitUpdateWheel:{add:function():Number{return 1;},remove:function():Void{}}};
+        _root.最大等级=60;_root.等级=7;_root.难度等级=1;_root.duplicateOf=ObjectUtil.clone;_root.配置数据为数组=ObjectUtil.toArray;
+        _root.主角函数={};_root.播放音效=function():Void{};_root.soundEffectManager={playSound:function():Void{}};
+        _root.发布消息=function(s):Void{trace("[BODY_SCALE_MESSAGE] "+s);};
+        _root.collisionLayer=_root.createEmptyMovieClip("__cf6BodyScaleCollision",_root.getNextHighestDepth());
+        ColliderFactoryRegistry.init();StaticInitializer.factory=new AABBColliderFactory(64);FactionManager.initialize();BulletQueueProcessor.initialize();PinkNoiseEngine.getInstance();
+        InfoLoader.getInstance().onLoad(function(data:Object):Void {bulletReady=data.attributeData!=undefined;});
+        world=_root.createEmptyMovieClip("__cf6BodyScaleWorld",_root.getNextHighestDepth());_root.gameworld=world;
+        world.__stageReturnWorldIdentity={};world.dispatcher=new EventDispatcher();
+        var next:Number=900000;world.getNextHighestDepth=function():Number{return next++;};
+        DepthManager.instance=new DepthManager(world,0,870655,16);DepthManager.instance.calibrate(0,1000);
+        world.createEmptyMovieClip("地图",world.getNextHighestDepth());world.地图.僵尸型敌人总个数=0;world.地图.僵尸型敌人场上实际人数=0;
+        world.createEmptyMovieClip("子弹区域",world.getNextHighestDepth());
+        var hero:MovieClip=world.createEmptyMovieClip("hero",world.getNextHighestDepth());hero.hp=1000;hero.是否为敌人=false;hero._x=0;hero._y=hero.Z轴坐标=0;_root.控制目标="hero";
+        _root.Xmin=0;_root.Xmax=4000;_root.Ymin=0;_root.Ymax=1000;
+        var api:Object=StageManager;api.instance={currentStage:0,isActive:true,isFailed:false,isFinished:false,spawnPoints:[],environment:{}};
+        api=SceneManager;api.instance={gameworld:world};
+        _root.敌人属性表={};
+        EnemyPropertiesLoader.getInstance().loadEnemyProperties(function(data:Object):Void {
+            _root.敌人属性表=data;
+            for(var i:Number=0;i<rows.length;i++) {
+                var r:Object=data[rows[i].linkage];
+                if(!(r.hp_min>100 && r.hp_max>r.hp_min)) {fail("source numeric properties "+rows[i].linkage);return;}
+            }
+            xmlReady=true;
+        },function():Void {fail("actual EnemyPropertiesLoader failed");});
+    }
+    private static function freeze(mc:MovieClip):Void {
+        mc.stop();
+        for(var key:String in mc) {
+            var child=mc[key];if(typeof(child)=="movieclip" && child._parent===mc) freeze(child);
+        }
+    }
+    private static function hideWeapons(mc:MovieClip):Void {
+        for(var key:String in mc) {
+            var child=mc[key];if(typeof(child)!="movieclip" || child._parent!==mc)continue;
+            var name:String=child._name;
+            if(name=="枪" || name=="guardGun" || name=="wingsGun3_0" || name=="wingsGun7_0") {
+                hiddenWeapons.push({clip:child,visible:child._visible});child._visible=false;
+            }else hideWeapons(child);
+        }
+    }
+    private static function restoreWeapons():Void {
+        for(var i:Number=hiddenWeapons.length-1;i>=0;i--)hiddenWeapons[i].clip._visible=hiddenWeapons[i].visible;
+        hiddenWeapons=[];
+    }
+    private static function validUnit(index:Number):Boolean {
+        var u:MovieClip=actors[index],row:Object=rows[index],stamp:Object=identities[index];
+        var props:Object=_root.敌人属性表[row.linkage];
+        var hp:Number=_root.根据等级计算值(props.hp_min,props.hp_max,50)*_root.难度等级;
+        trace("[CF6_BODY_NATIVE_IDENTITY] name="+u._name+" type="+u.兵种+" level="+u.等级+" hpMax="+u.hp满血值
+            +" expectedHp="+hp+" version="+u.version+" completed="+u.__unitInitializedVersion);
+        return u._parent===world && world[stamp.name]===u && u.__bodyFixtureOwner===stamp.token
+            && u.兵种===row.linkage && u.等级===50 && u.身高===row.heightCm && u.是否为敌人===true
+            && _root.等级===7 && u.version!=undefined && u.__unitInitializedVersion===u.version && u.hp满血值===hp && hp>100 && u.hp>0;
+    }
+    private static function checkDirection(unit:MovieClip,label:String,negative:Boolean):Void {
+        var expected:Number=Cf6BodyScaleRules.heightScale(unit.兵种,unit.身高,100);
+        var good:Boolean=(negative ? unit._xscale<0 : unit._xscale>0)
+            && Math.abs(Math.abs(unit._xscale)-expected)<0.02 && Math.abs(unit._yscale-expected)<0.02
+            && Math.abs(unit.myxscale-expected)<0.02;
+        if(good)passed++;else {failed++;trace("[FAIL] Cf6BodyScaleNativeTest owned scale after direction "+unit.兵种+" "+label);}
+        trace("[CF6_BODY_FACING] type="+unit.兵种+" direction="+label+" xscale="+unit._xscale+" yscale="+unit._yscale
+            +" local="+unit.myxscale+" expected="+expected+" rootSentinel="+_root.myxscale+" ok="+good);
+    }
+    private static function testDirections():Void {
+        var priorRoot=_root.myxscale;
+        try {
+            for(var i:Number=0;i<actors.length;i++) {
+                var unit:MovieClip=actors[i],priorDirection:String=unit.方向;
+                try {
+                    _root.myxscale=13;unit.方向改变("左");checkDirection(unit,"左",true);
+                    _root.myxscale=17;unit.方向改变("右");checkDirection(unit,"右",false);
+                }finally {unit.方向改变(priorDirection);}
+            }
+        }finally {if(priorRoot==undefined)delete _root.myxscale;else _root.myxscale=priorRoot;}
+    }
+    public static function tick():Void {
+        if(done)return;frame++;_root.帧计时器.当前帧数++;
+        if(frame>300){fail("fixture timeout phase "+phase);return;}
+        if(phase==0 && xmlReady && bulletReady) {
+            for(var i:Number=0;i<rows.length;i++) {
+                var row:Object=rows[i];
+                var token:Object={},instanceName:String="body"+i;
+                var init:Object={兵种:row.linkage,名字:row.name,身高:row.heightCm,等级:50,是否为敌人:true,__bodyFixtureOwner:token,
+                    _x:200+i*200,_y:500,unitAIType:"None",掉落物:[],产生源:"地图",长枪:"AK47",publishStageEvent:false};
+                var actor:MovieClip=_root.加载游戏世界人物(row.linkage,instanceName,world.getNextHighestDepth(),init);
+                if(actor==undefined){fail("attach real RSL "+row.linkage);return;}actors.push(actor);identities.push({name:instanceName,token:token});
+            }
+            phase=1;return;
+        }
+        if(phase==1) {
+            for(var j:Number=0;j<actors.length;j++) if(actors[j].version==undefined || actors[j].__unitInitializedVersion!==actors[j].version)return;
+            for(j=0;j<actors.length;j++) {
+                if(!validUnit(j)){fail("native identity/numeric initialization "+rows[j].linkage);return;}
+                identities[j].version=actors[j].version;
+                actors[j].gotoAndStop(rows[j].label);
+                actors[j].状态=rows[j].label;
+            }
+            readyAt=frame;phase=2;return;
+        }
+        if(phase==2) {
+            for(var k:Number=0;k<actors.length;k++){actors[k].man.gotoAndStop(1);freeze(actors[k]);}
+            if(frame-readyAt<2)return;
+            for(k=0;k<actors.length;k++)if(!validUnit(k) || actors[k].version!==identities[k].version){fail("unit changed during standing wait");return;}
+            testDirections();
+            hiddenWeapons=[];var measured:Object;
+            try {
+                for(k=0;k<actors.length;k++)hideWeapons(actors[k].man);
+                trace("[CF6_BODY_WEAPONS] temporarily hidden="+hiddenWeapons.length);
+                measured=Cf6BodyScaleLiveProbe.measure(actors);
+            }finally {restoreWeapons();}
+            trace("Cf6BodyScaleNativeTest Tests Passed: "+(passed+measured.passed));
+            trace("Cf6BodyScaleNativeTest Tests Failed: "+(failed+measured.failed));finish();
+        }
+    }
+    public static function fail(message:String):Void {
+        if(done)return;trace("[FAIL] Cf6BodyScaleNativeTest "+message);
+        trace("Cf6BodyScaleNativeTest Tests Passed: 0");trace("Cf6BodyScaleNativeTest Tests Failed: 1");finish();
+    }
+    private static function finish():Void {
+        done=true;delete driver.onEnterFrame;
+        restoreWeapons();BulletQueueProcessor.reset();
+        if(world!=undefined)world.removeMovieClip();
+        _root.collisionLayer.removeMovieClip();driver.removeMovieClip();
+        _root.cf6BodyScaleComplete();
+    }
+}

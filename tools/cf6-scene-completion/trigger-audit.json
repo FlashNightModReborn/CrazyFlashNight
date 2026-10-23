@@ -1,0 +1,199 @@
+{
+  "schema": "cf6-trigger-source-audit.v1",
+  "evidenceState": "source audit, not AVM1/game acceptance",
+  "originalSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "capturedTimelines": 19,
+  "actionRecords": 216,
+  "uniqueActionBytes": 174,
+  "actionRecordPartition": {
+    "vehicle": 91,
+    "doors": 52,
+    "elevatorsAndCameras": 30,
+    "A09A12WorldSetup": 41,
+    "sharedRootFrame12": 2
+  },
+  "pendingPresentationSnapshot": {
+    "types": 48,
+    "instances": 87,
+    "limits": "raw assembly backlog is historical input, not automatic remaining-task count; compare actual production layers"
+  },
+  "rows": [
+    {
+      "id": "full-character-doors",
+      "maps": [
+        "A03",
+        "A04",
+        "A05"
+      ],
+      "sprites": [
+        1720,
+        1729,
+        1750
+      ],
+      "classification": "production-source-wired-awaiting-current-native-regression",
+      "trigger": "actual clear AND authored gate; arrival scene-ready; 1729 release122",
+      "consumer": "Cf6MapMechanism + Cf6TraversalService + owned actor mask presentation",
+      "evidence": [
+        "source-evidence/original.json",
+        "../../scripts/类定义/org/flashNight/arki/scene/Cf6TraversalService.as"
+      ]
+    },
+    {
+      "id": "sliding-exit-1430",
+      "maps": [
+        "A08",
+        "A09",
+        "A12"
+      ],
+      "sprites": [
+        1430
+      ],
+      "classification": "confirmed-missing-original-gate-presentation; auxiliary-native-source-now-prepared",
+      "trigger": "actual clear thresholds0/9/15 AND player area hitTest, source cut frame58",
+      "consumerPlan": "58 stationary live-actor samples (CF7 adaptation), full59f native door, standard exit authority",
+      "evidence": [
+        "source-evidence/actions/256952d2ecc64633b9faabc1b88dfa8da2a3124262e51f97f333368f4827d642.as.txt",
+        "source-evidence/actions/46364e86b59414936d511e2cd1ea41916b56f634a347ec9758888ebb40421629.as.txt",
+        "auxiliary-art-manifest.json"
+      ]
+    },
+    {
+      "id": "wood-spawn-door",
+      "maps": [
+        "A03",
+        "A04"
+      ],
+      "sprites": [
+        1714
+      ],
+      "classification": "existing-production-spawn-pulse",
+      "trigger": "actual UnitSpawn nearby; source first frame stopped",
+      "consumer": "Cf6MapMechanism.unitSpawned; no independent spawn/death budget"
+    },
+    {
+      "id": "lab-spawn-door",
+      "maps": [
+        "A12",
+        "A19",
+        "A20",
+        "A22"
+      ],
+      "sprites": [
+        1862
+      ],
+      "classification": "confirmed-missing-spawn-presentation; auxiliary-native-source-now-prepared",
+      "trigger": "actual UnitSpawn for existing target-door generator only; no new enemies",
+      "consumerPlan": "reuse door-spawn-sequence with explicit source door names and world spawn anchors",
+      "evidence": [
+        "source-evidence/actions/937c6b477edd0e8f659993b3fa33c25a6cce5079e38aa501bb6d77c41f79a2a1.as.txt",
+        "source-evidence/actions/ca7d5997363aba05d88b7609e7d89665b380de0fa57afc2aaff6377faf1532b4.as.txt",
+        "../../data/stages/books/cf6-sting-source/encounter-facts.v1.json"
+      ]
+    },
+    {
+      "id": "elevator",
+      "maps": [
+        "A10",
+        "A13"
+      ],
+      "sprites": [
+        1587,
+        1876,
+        1885,
+        1920
+      ],
+      "classification": "source-wired; continuous boarding is explicit CF7 adaptation",
+      "trigger": "real encounter clear, never timed victory",
+      "limits": "original source has no independent sliding gate leaves; close/open are timing names only"
+    },
+    {
+      "id": "camera",
+      "sprites": [
+        1832
+      ],
+      "classification": "ambient-animation-not-interactive; auxiliary-native-source-prepared",
+      "trigger": "147-frame original loop; zero own action records in captured closure",
+      "consumerPlan": "ambient-loop advances only on unpaused room ticks"
+    },
+    {
+      "id": "floor-trigger-zones",
+      "maps": [
+        "A09",
+        "A14",
+        "A18"
+      ],
+      "sprites": [
+        1868
+      ],
+      "classification": "explicit-existing-adaptation-awaiting-separate-wave-integration",
+      "trigger": "original player hitTest activates named generator; current route uses sequential second wave",
+      "evidence": [
+        "../../tools/cf6-roguelike-content/build-encounter-facts.py",
+        "../../tools/cf6-roguelike-content/build-sting-fragments.py"
+      ],
+      "limits": "1868 own script is outside these19 captured timelines; evidence also uses existing full-SWF encounter audit"
+    },
+    {
+      "id": "alien-eggs",
+      "maps": [
+        "A15",
+        "A17"
+      ],
+      "sprites": [
+        1939
+      ],
+      "classification": "explicit-existing-adaptation-awaiting-separate-encounter-integration",
+      "trigger": "original proximity hatches; current finite adapted encounter emits creatures directly",
+      "limits": "do not activate static eggs or duplicate encounter budgets from animated-prop tag"
+    },
+    {
+      "id": "barrels-crates-and-unclassified-props",
+      "sprites": [
+        1442,
+        1736,
+        1838,
+        255,
+        1976,
+        1982,
+        481
+      ],
+      "classification": "insufficient-own-script-evidence-in-this19-timeline-capture",
+      "trigger": "not inferred from frames/kind/name",
+      "limits": "runtimeProps metadata is not a production consumer or authorization to attach arbitrary hit/damage/spawn handlers"
+    },
+    {
+      "id": "deferred-root-layers",
+      "maps": [
+        "A18",
+        "A20",
+        "A15",
+        "A17"
+      ],
+      "sprites": [
+        1956,
+        1700,
+        1783
+      ],
+      "classification": "display/UI ownership, not gameplay interaction",
+      "limits": "1956 fixed root panorama absent in current closure; old gogogo/health UI should use current chapter UI rather than execute legacy root scripts"
+    },
+    {
+      "id": "vehicle",
+      "maps": [
+        "A07"
+      ],
+      "sprites": [
+        1791,
+        1800,
+        1801,
+        1803,
+        1805,
+        1810,
+        1813,
+        1816
+      ],
+      "classification": "prepared-only-outside-active-route",
+      "limits": "91 captured action records are vehicle scope; do not activate A07 or move40000 allowance"
+    }
+  ]
+}

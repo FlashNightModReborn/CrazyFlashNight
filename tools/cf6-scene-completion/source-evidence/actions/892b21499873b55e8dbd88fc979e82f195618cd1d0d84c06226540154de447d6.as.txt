@@ -1,0 +1,8 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 500;
+   var §\x0f§ = 1;
+   if(this.hitTest(_root.gameworld.man1.area))
+   {
+      _root.gameworld.man1._y += 20;
+   }
+}

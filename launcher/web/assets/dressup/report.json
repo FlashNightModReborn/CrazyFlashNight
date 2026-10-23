@@ -1,127 +1,95 @@
 {
   "schema": "cf7-dressup-report-v1",
   "counts": {
-    "items": 1401,
-    "skinKeys": 2937,
-    "coveredSkinKeys": 2792,
-    "aliasCoveredSkinKeys": 9,
-    "coveredExcludingAliasSkinKeys": 2783,
-    "missingSkinKeys": 145,
+    "items": 1416,
+    "skinKeys": 2967,
+    "coveredSkinKeys": 2799,
+    "aliasCoveredSkinKeys": 8,
+    "coveredExcludingAliasSkinKeys": 2791,
+    "missingSkinKeys": 168,
     "holdersMale": 21,
     "holdersFemale": 21,
     "battleStates": 7,
     "battleAuditErrors": 0,
-    "compatAliasSkinKeys": 9,
-    "manualCompatAliasSkinKeys": 9,
+    "compatAliasSkinKeys": 8,
+    "manualCompatAliasSkinKeys": 8,
     "autoOppositeGenderCompatAliasSkinKeys": 0,
-    "missingExportSkinKeys": 0,
-    "exportedSkinKeys": 0,
-    "exportedFrames": 3069,
-    "exportedBasicKeys": 23,
-    "exportedBasicFrames": 32,
-    "metadataErrors": 0,
-    "timelineScriptErrors": 0,
-    "spriteGraphErrors": 0,
-    "staticStopSkinKeys": 0,
-    "staticStopCollapsedFrames": 0,
-    "purgedStaleFrames": 0,
-    "nestedAnimationSkinKeys": 25,
-    "nestedLayerUnsupportedDescendants": 0,
-    "nestedLayerCompositedDescendants": 0,
-    "exportedNestedLayerKeys": 0,
-    "exportedNestedLayerFrames": 0,
-    "uniqueFrameImages": 2906,
-    "duplicateFrameRefs": 217,
-    "timelineLogicalFrames": 3123,
-    "timelineFrameEntries": 2908,
-    "timelineCompressedFrameRefs": 215,
-    "conditionalVariantSkinKeys": 0,
-    "conditionalVariantFrames": 0,
-    "conditionalVariantRemovedPlaceObjects": 0,
-    "expressionSkinKeys": 0,
-    "expressionFrames": 0,
-    "expressionFrameImages": 0,
-    "missingExpressionFrame": 0,
+    "preservedSkinKeyExports": 2795,
+    "preservedBasicHolderExports": 231,
     "animatedSkinKeys": 17,
     "staticCollapsedSkinKeys": 25,
-    "preservedSkinKeyExports": 2792,
-    "preservedBasicHolderExports": 231,
-    "orphanAssetsPurged": 0
+    "nestedAnimationSkinKeys": 25,
+    "uniqueFrameImages": 2905,
+    "duplicateFrameRefs": 217,
+    "timelineLogicalFrames": 3122,
+    "timelineFrameEntries": 2907,
+    "timelineCompressedFrameRefs": 215,
+    "exportedFrames": 3068
   },
   "missingSummary": {
     "byUse": {
-      "上装装备": 77,
-      "下装装备": 64,
-      "手枪": 2,
+      "上装装备": 85,
+      "下装装备": 76,
+      "头部装备": 1,
+      "手枪": 1,
+      "手部装备": 2,
+      "脚部装备": 1,
       "长枪": 2
     },
     "byPrefix": {
-      "女变装-": 59,
-      "枪-手枪-": 2,
+      "女变装-": 71,
+      "枪-手枪-": 1,
       "枪-长枪-": 2,
-      "男变装-": 82
+      "男变装-": 94
     }
   },
   "missingSourceAudit": {
     "byReason": {
-      "exact_exported_linkage_not_in_asset_map": 4,
+      "exact_exported_linkage_not_in_asset_map": 3,
       "exact_xml_without_as_linkage": 3,
-      "no_matching_source": 3,
-      "opposite_gender_only": 135
+      "no_matching_source": 23,
+      "opposite_gender_only": 139
     },
     "actionableSkinKeys": [
-      "枪-手枪-Origin12",
-      "枪-手枪-Origin12战术版",
-      "枪-长枪-AA12",
-      "枪-长枪-AA12战术版"
+      "枪-手枪-Vepr12紧凑改装型",
+      "枪-长枪-Vepr12",
+      "枪-长枪-Vepr12战术版"
     ],
     "samples": {
       "exact_exported_linkage_not_in_asset_map": [
         {
-          "skinKey": "枪-手枪-Origin12",
+          "skinKey": "枪-手枪-Vepr12紧凑改装型",
           "reason": "exact_exported_linkage_not_in_asset_map",
           "exactXmlMatches": [
             {
-              "path": "flashswf/arts/new/3XD的素材/LIBRARY/2副武器/Origin12/枪-手枪-Origin12.xml",
+              "path": "flashswf/arts/new/3XD的素材/LIBRARY/2副武器/Vepr12紧凑改装型/枪-手枪-Vepr12紧凑改装型.xml",
               "linkageExportForAS": true,
-              "linkageIdentifier": "枪-手枪-Origin12",
-              "symbolName": "2副武器/Origin12/枪-手枪-Origin12"
+              "linkageIdentifier": "枪-手枪-Vepr12紧凑改装型",
+              "symbolName": "2副武器/Vepr12紧凑改装型/枪-手枪-Vepr12紧凑改装型"
             }
           ]
         },
         {
-          "skinKey": "枪-手枪-Origin12战术版",
+          "skinKey": "枪-长枪-Vepr12",
           "reason": "exact_exported_linkage_not_in_asset_map",
           "exactXmlMatches": [
             {
-              "path": "flashswf/arts/new/3XD的素材/LIBRARY/2副武器/Origin12战术版/枪-手枪-Origin12战术版.xml",
+              "path": "flashswf/arts/new/3XD的素材/LIBRARY/1主武器/Vepr12/枪-长枪-Vepr12.xml",
               "linkageExportForAS": true,
-              "linkageIdentifier": "枪-手枪-Origin12战术版",
-              "symbolName": "2副武器/Origin12战术版/枪-手枪-Origin12战术版"
+              "linkageIdentifier": "枪-长枪-Vepr12",
+              "symbolName": "1主武器/Vepr12/枪-长枪-Vepr12"
             }
           ]
         },
         {
-          "skinKey": "枪-长枪-AA12",
+          "skinKey": "枪-长枪-Vepr12战术版",
           "reason": "exact_exported_linkage_not_in_asset_map",
           "exactXmlMatches": [
             {
-              "path": "flashswf/arts/new/3XD的素材/LIBRARY/1主武器/AA12普通/枪-长枪-AA12.xml",
+              "path": "flashswf/arts/new/3XD的素材/LIBRARY/1主武器/Vepr12战术版/枪-长枪-Vepr12战术版.xml",
               "linkageExportForAS": true,
-              "linkageIdentifier": "枪-长枪-AA12",
-              "symbolName": "1主武器/AA12普通/枪-长枪-AA12"
-            }
-          ]
-        },
-        {
-          "skinKey": "枪-长枪-AA12战术版",
-          "reason": "exact_exported_linkage_not_in_asset_map",
-          "exactXmlMatches": [
-            {
-              "path": "flashswf/arts/new/3XD的素材/LIBRARY/1主武器/AA12战术版/枪-长枪-AA12战术版.xml",
-              "linkageExportForAS": true,
-              "linkageIdentifier": "枪-长枪-AA12战术版",
-              "symbolName": "1主武器/AA12战术版/枪-长枪-AA12战术版"
+              "linkageIdentifier": "枪-长枪-Vepr12战术版",
+              "symbolName": "1主武器/Vepr12战术版/枪-长枪-Vepr12战术版"
             }
           ]
         }
@@ -166,15 +134,35 @@
       ],
       "no_matching_source": [
         {
-          "skinKey": "男变装-二阶军绿防弹衣上臂",
+          "skinKey": "女变装-3XF特勤上臂",
           "reason": "no_matching_source"
         },
         {
-          "skinKey": "男变装-二阶军绿防弹衣右下臂",
+          "skinKey": "女变装-3XF特勤右下臂",
           "reason": "no_matching_source"
         },
         {
-          "skinKey": "男变装-二阶军绿防弹衣左下臂",
+          "skinKey": "女变装-3XF特勤右大腿",
+          "reason": "no_matching_source"
+        },
+        {
+          "skinKey": "女变装-3XF特勤小腿",
+          "reason": "no_matching_source"
+        },
+        {
+          "skinKey": "女变装-3XF特勤屁股",
+          "reason": "no_matching_source"
+        },
+        {
+          "skinKey": "女变装-3XF特勤左下臂",
+          "reason": "no_matching_source"
+        },
+        {
+          "skinKey": "女变装-3XF特勤左大腿",
+          "reason": "no_matching_source"
+        },
+        {
+          "skinKey": "女变装-3XF特勤身体",
           "reason": "no_matching_source"
         }
       ],
@@ -254,6 +242,214 @@
       ]
     },
     "entries": {
+      "女变装-3XF特勤上臂": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤上装",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
+      },
+      "女变装-3XF特勤右下臂": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤上装",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
+      },
+      "女变装-3XF特勤右大腿": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤下装",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "leg"
+              }
+            ]
+          }
+        ]
+      },
+      "女变装-3XF特勤小腿": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤下装",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "leg"
+              }
+            ]
+          }
+        ]
+      },
+      "女变装-3XF特勤屁股": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤下装",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "leg"
+              }
+            ]
+          }
+        ]
+      },
+      "女变装-3XF特勤左下臂": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤上装",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
+      },
+      "女变装-3XF特勤左大腿": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤下装",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "leg"
+              }
+            ]
+          }
+        ]
+      },
+      "女变装-3XF特勤身体": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤上装",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
+      },
       "女变装-BOSS4上臂": {
         "reason": "opposite_gender_only",
         "references": [
@@ -528,6 +724,98 @@
           "key": "男变装-Boy下装左大腿",
           "swf": "flashswf/arts/new/pigboy.swf",
           "symbolName": "精灵导入/Symbol 28"
+        }
+      },
+      "女变装-Codex-Andy工装裤右大腿": {
+        "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "Andy工装裤",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
+        "oppositeGenderAsset": {
+          "key": "男变装-Codex-Andy工装裤右大腿",
+          "swf": "flashswf/arts/new/Codex专用素材.swf",
+          "symbolName": "Codex/Andy工装裤/男变装-Codex-Andy工装裤右大腿"
+        }
+      },
+      "女变装-Codex-Andy工装裤小腿": {
+        "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "Andy工装裤",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
+        "oppositeGenderAsset": {
+          "key": "男变装-Codex-Andy工装裤小腿",
+          "swf": "flashswf/arts/new/Codex专用素材.swf",
+          "symbolName": "Codex/Andy工装裤/男变装-Codex-Andy工装裤小腿"
+        }
+      },
+      "女变装-Codex-Andy工装裤屁股": {
+        "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "Andy工装裤",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
+        "oppositeGenderAsset": {
+          "key": "男变装-Codex-Andy工装裤屁股",
+          "swf": "flashswf/arts/new/Codex专用素材.swf",
+          "symbolName": "Codex/Andy工装裤/男变装-Codex-Andy工装裤屁股"
+        }
+      },
+      "女变装-Codex-Andy工装裤左大腿": {
+        "reason": "opposite_gender_only",
+        "references": [
+          {
+            "item": "Andy工装裤",
+            "use": "下装装备",
+            "sourceFile": "防具_0-19级.xml",
+            "fields": [
+              {
+                "gender": "女",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 0,
+            "mercUsageSamples": []
+          }
+        ],
+        "oppositeGenderAsset": {
+          "key": "男变装-Codex-Andy工装裤左大腿",
+          "swf": "flashswf/arts/new/Codex专用素材.swf",
+          "symbolName": "Codex/Andy工装裤/男变装-Codex-Andy工装裤左大腿"
         }
       },
       "女变装-Pig上装上臂": {
@@ -1799,11 +2087,11 @@
           "symbolName": "待整理防具相关汇总/男变装-黑短袖左下臂"
         }
       },
-      "枪-手枪-Origin12": {
+      "枪-手枪-Vepr12紧凑改装型": {
         "reason": "exact_exported_linkage_not_in_asset_map",
         "references": [
           {
-            "item": "Origin12",
+            "item": "Vepr12紧凑改装型",
             "use": "手枪",
             "sourceFile": "武器_手枪_霰弹枪.xml",
             "fields": [
@@ -1834,60 +2122,18 @@
         ],
         "exactXmlMatches": [
           {
-            "path": "flashswf/arts/new/3XD的素材/LIBRARY/2副武器/Origin12/枪-手枪-Origin12.xml",
+            "path": "flashswf/arts/new/3XD的素材/LIBRARY/2副武器/Vepr12紧凑改装型/枪-手枪-Vepr12紧凑改装型.xml",
             "linkageExportForAS": true,
-            "linkageIdentifier": "枪-手枪-Origin12",
-            "symbolName": "2副武器/Origin12/枪-手枪-Origin12"
+            "linkageIdentifier": "枪-手枪-Vepr12紧凑改装型",
+            "symbolName": "2副武器/Vepr12紧凑改装型/枪-手枪-Vepr12紧凑改装型"
           }
         ]
       },
-      "枪-手枪-Origin12战术版": {
+      "枪-长枪-Vepr12": {
         "reason": "exact_exported_linkage_not_in_asset_map",
         "references": [
           {
-            "item": "Origin12战术版",
-            "use": "手枪",
-            "sourceFile": "武器_手枪_霰弹枪.xml",
-            "fields": [
-              {
-                "gender": "男",
-                "field": "手枪_装扮"
-              },
-              {
-                "gender": "男",
-                "field": "手枪2_装扮"
-              },
-              {
-                "gender": "女",
-                "field": "手枪_装扮"
-              },
-              {
-                "gender": "女",
-                "field": "手枪2_装扮"
-              },
-              {
-                "gender": "<dressup>",
-                "field": "dressup"
-              }
-            ],
-            "mercUsageCount": 0,
-            "mercUsageSamples": []
-          }
-        ],
-        "exactXmlMatches": [
-          {
-            "path": "flashswf/arts/new/3XD的素材/LIBRARY/2副武器/Origin12战术版/枪-手枪-Origin12战术版.xml",
-            "linkageExportForAS": true,
-            "linkageIdentifier": "枪-手枪-Origin12战术版",
-            "symbolName": "2副武器/Origin12战术版/枪-手枪-Origin12战术版"
-          }
-        ]
-      },
-      "枪-长枪-AA12": {
-        "reason": "exact_exported_linkage_not_in_asset_map",
-        "references": [
-          {
-            "item": "AA12",
+            "item": "Vepr12",
             "use": "长枪",
             "sourceFile": "武器_长枪_霰弹枪.xml",
             "fields": [
@@ -1910,18 +2156,18 @@
         ],
         "exactXmlMatches": [
           {
-            "path": "flashswf/arts/new/3XD的素材/LIBRARY/1主武器/AA12普通/枪-长枪-AA12.xml",
+            "path": "flashswf/arts/new/3XD的素材/LIBRARY/1主武器/Vepr12/枪-长枪-Vepr12.xml",
             "linkageExportForAS": true,
-            "linkageIdentifier": "枪-长枪-AA12",
-            "symbolName": "1主武器/AA12普通/枪-长枪-AA12"
+            "linkageIdentifier": "枪-长枪-Vepr12",
+            "symbolName": "1主武器/Vepr12/枪-长枪-Vepr12"
           }
         ]
       },
-      "枪-长枪-AA12战术版": {
+      "枪-长枪-Vepr12战术版": {
         "reason": "exact_exported_linkage_not_in_asset_map",
         "references": [
           {
-            "item": "AA12战术版",
+            "item": "Vepr12战术版",
             "use": "长枪",
             "sourceFile": "武器_长枪_霰弹枪.xml",
             "fields": [
@@ -1944,10 +2190,346 @@
         ],
         "exactXmlMatches": [
           {
-            "path": "flashswf/arts/new/3XD的素材/LIBRARY/1主武器/AA12战术版/枪-长枪-AA12战术版.xml",
+            "path": "flashswf/arts/new/3XD的素材/LIBRARY/1主武器/Vepr12战术版/枪-长枪-Vepr12战术版.xml",
             "linkageExportForAS": true,
-            "linkageIdentifier": "枪-长枪-AA12战术版",
-            "symbolName": "1主武器/AA12战术版/枪-长枪-AA12战术版"
+            "linkageIdentifier": "枪-长枪-Vepr12战术版",
+            "symbolName": "1主武器/Vepr12战术版/枪-长枪-Vepr12战术版"
+          }
+        ]
+      },
+      "男变装-3XF特勤上臂": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤上装",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "上臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
+      },
+      "男变装-3XF特勤右下臂": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤上装",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
+      },
+      "男变装-3XF特勤右大腿": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤下装",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右大腿"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "leg"
+              }
+            ]
+          }
+        ]
+      },
+      "男变装-3XF特勤右手": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤手套",
+            "use": "手部装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "右手"
+              },
+              {
+                "gender": "女",
+                "field": "右手"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "hand"
+              }
+            ]
+          }
+        ]
+      },
+      "男变装-3XF特勤头盔": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤头盔",
+            "use": "头部装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "面具"
+              },
+              {
+                "gender": "女",
+                "field": "面具"
+              },
+              {
+                "gender": "<dressup>",
+                "field": "dressup"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "head"
+              }
+            ]
+          }
+        ]
+      },
+      "男变装-3XF特勤小腿": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤下装",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "小腿"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "leg"
+              }
+            ]
+          }
+        ]
+      },
+      "男变装-3XF特勤屁股": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤下装",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "屁股"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "leg"
+              }
+            ]
+          }
+        ]
+      },
+      "男变装-3XF特勤左下臂": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤上装",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左下臂"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
+          }
+        ]
+      },
+      "男变装-3XF特勤左大腿": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤下装",
+            "use": "下装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左大腿"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "leg"
+              }
+            ]
+          }
+        ]
+      },
+      "男变装-3XF特勤左手": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤手套",
+            "use": "手部装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "左手"
+              },
+              {
+                "gender": "女",
+                "field": "左手"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "hand"
+              }
+            ]
+          }
+        ]
+      },
+      "男变装-3XF特勤脚": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤军靴",
+            "use": "脚部装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "脚"
+              },
+              {
+                "gender": "女",
+                "field": "脚"
+              },
+              {
+                "gender": "<dressup>",
+                "field": "dressup"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "foot"
+              }
+            ]
+          }
+        ]
+      },
+      "男变装-3XF特勤身体": {
+        "reason": "no_matching_source",
+        "references": [
+          {
+            "item": "3XF特勤上装",
+            "use": "上装装备",
+            "sourceFile": "防具_20-39级.xml",
+            "fields": [
+              {
+                "gender": "男",
+                "field": "身体"
+              }
+            ],
+            "mercUsageCount": 1,
+            "mercUsageSamples": [
+              {
+                "id": 5663,
+                "name": "暗杀部队",
+                "level": 25,
+                "gender": "男",
+                "slot": "body"
+              }
+            ]
           }
         ]
       },
@@ -4133,11 +4715,10 @@
   },
   "compatAliasAudit": {
     "byMode": {
-      "manual": 9
+      "manual": 8
     },
     "byReason": {
       "manual_compat_mirrored_limb": 1,
-      "manual_compat_nearest_assault_rifle": 1,
       "manual_compat_nearest_same_family_limb": 4,
       "manual_compat_nearest_wave_blade": 1,
       "manual_compat_opposite_gender_mirrored_limb": 1,
@@ -4163,41 +4744,6 @@
                 {
                   "gender": "女",
                   "field": "右下臂"
-                }
-              ],
-              "mercUsageCount": 0,
-              "mercUsageSamples": []
-            }
-          ]
-        }
-      ],
-      "manual_compat_nearest_assault_rifle": [
-        {
-          "skinKey": "枪-长枪-SAI GRY 幽灵",
-          "sourceKey": "枪-长枪-CAR",
-          "mode": "manual",
-          "reason": "manual_compat_nearest_assault_rifle",
-          "asset": {
-            "swf": "flashswf/arts/new/3102&Leave.swf",
-            "symbolName": "TTF2/枪-长枪-CAR"
-          },
-          "references": [
-            {
-              "item": "SAI GRY 幽灵",
-              "use": "长枪",
-              "sourceFile": "武器_长枪_突击步枪.xml",
-              "fields": [
-                {
-                  "gender": "男",
-                  "field": "长枪_装扮"
-                },
-                {
-                  "gender": "女",
-                  "field": "长枪_装扮"
-                },
-                {
-                  "gender": "<dressup>",
-                  "field": "dressup"
                 }
               ],
               "mercUsageCount": 0,
@@ -4591,38 +5137,6 @@
           }
         ]
       },
-      "枪-长枪-SAI GRY 幽灵": {
-        "sourceKey": "枪-长枪-CAR",
-        "mode": "manual",
-        "reason": "manual_compat_nearest_assault_rifle",
-        "asset": {
-          "swf": "flashswf/arts/new/3102&Leave.swf",
-          "symbolName": "TTF2/枪-长枪-CAR"
-        },
-        "references": [
-          {
-            "item": "SAI GRY 幽灵",
-            "use": "长枪",
-            "sourceFile": "武器_长枪_突击步枪.xml",
-            "fields": [
-              {
-                "gender": "男",
-                "field": "长枪_装扮"
-              },
-              {
-                "gender": "女",
-                "field": "长枪_装扮"
-              },
-              {
-                "gender": "<dressup>",
-                "field": "dressup"
-              }
-            ],
-            "mercUsageCount": 0,
-            "mercUsageSamples": []
-          }
-        ]
-      },
       "男变装-废城军装上装右下臂": {
         "sourceKey": "男变装-废城防弹军装上装右下臂",
         "mode": "manual",
@@ -4714,6 +5228,110 @@
     }
   },
   "missingSkinKeys": {
+    "女变装-3XF特勤上臂": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "3XF特勤上装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "女变装-3XF特勤右下臂": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "3XF特勤上装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "女变装-3XF特勤右大腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "3XF特勤下装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "女变装-3XF特勤小腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "3XF特勤下装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "女变装-3XF特勤屁股": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "3XF特勤下装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "女变装-3XF特勤左下臂": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "3XF特勤上装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "女变装-3XF特勤左大腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "3XF特勤下装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "女变装-3XF特勤身体": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "3XF特勤上装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
     "女变装-BOSS4上臂": {
       "covered": false,
       "asset": null,
@@ -4865,6 +5483,58 @@
       ],
       "items": [
         "Boy下装-NPC"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "女变装-Codex-Andy工装裤右大腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "Andy工装裤"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "女变装-Codex-Andy工装裤小腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "Andy工装裤"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "女变装-Codex-Andy工装裤屁股": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "Andy工装裤"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ]
+    },
+    "女变装-Codex-Andy工装裤左大腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "Andy工装裤"
       ],
       "sourceFiles": [
         "防具_0-19级.xml"
@@ -5485,56 +6155,199 @@
         "防具_0-19级.xml"
       ]
     },
-    "枪-手枪-Origin12": {
+    "枪-手枪-Vepr12紧凑改装型": {
       "covered": false,
       "asset": null,
       "uses": [
         "手枪"
       ],
       "items": [
-        "Origin12"
+        "Vepr12紧凑改装型"
       ],
       "sourceFiles": [
         "武器_手枪_霰弹枪.xml"
       ]
     },
-    "枪-手枪-Origin12战术版": {
-      "covered": false,
-      "asset": null,
-      "uses": [
-        "手枪"
-      ],
-      "items": [
-        "Origin12战术版"
-      ],
-      "sourceFiles": [
-        "武器_手枪_霰弹枪.xml"
-      ]
-    },
-    "枪-长枪-AA12": {
+    "枪-长枪-Vepr12": {
       "covered": false,
       "asset": null,
       "uses": [
         "长枪"
       ],
       "items": [
-        "AA12"
+        "Vepr12"
       ],
       "sourceFiles": [
         "武器_长枪_霰弹枪.xml"
       ]
     },
-    "枪-长枪-AA12战术版": {
+    "枪-长枪-Vepr12战术版": {
       "covered": false,
       "asset": null,
       "uses": [
         "长枪"
       ],
       "items": [
-        "AA12战术版"
+        "Vepr12战术版"
       ],
       "sourceFiles": [
         "武器_长枪_霰弹枪.xml"
+      ]
+    },
+    "男变装-3XF特勤上臂": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "3XF特勤上装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "男变装-3XF特勤右下臂": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "3XF特勤上装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "男变装-3XF特勤右大腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "3XF特勤下装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "男变装-3XF特勤右手": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "手部装备"
+      ],
+      "items": [
+        "3XF特勤手套"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "男变装-3XF特勤头盔": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "头部装备"
+      ],
+      "items": [
+        "3XF特勤头盔"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "男变装-3XF特勤小腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "3XF特勤下装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "男变装-3XF特勤屁股": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "3XF特勤下装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "男变装-3XF特勤左下臂": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "3XF特勤上装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "男变装-3XF特勤左大腿": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "3XF特勤下装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "男变装-3XF特勤左手": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "手部装备"
+      ],
+      "items": [
+        "3XF特勤手套"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "男变装-3XF特勤脚": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "脚部装备"
+      ],
+      "items": [
+        "3XF特勤军靴"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
+      ]
+    },
+    "男变装-3XF特勤身体": {
+      "covered": false,
+      "asset": null,
+      "uses": [
+        "上装装备"
+      ],
+      "items": [
+        "3XF特勤上装"
+      ],
+      "sourceFiles": [
+        "防具_20-39级.xml"
       ]
     },
     "男变装-JK校服上臂": {
@@ -6794,66 +7607,8 @@
     }
   },
   "assetExport": {
-    "selectedSkinKeys": 0,
-    "resolvedSkinKeys": 0,
-    "exportedSkinKeys": 0,
-    "exportedFrames": 0,
-    "resolvedBasicKeys": 23,
-    "exportedBasicKeys": 23,
-    "exportedBasicFrames": 32,
-    "missingSymbol": [],
-    "missingBasicSymbol": [
-      {
-        "linkageId": "女变装-基本脸型",
-        "swf": "flashswf/UI/对话框界面.swf"
-      }
-    ],
-    "symbolErrors": [],
-    "exportErrors": [],
-    "metadataErrors": [],
-    "exportFallbacks": [],
-    "missingFrame": [],
-    "missingBasicFrame": [],
-    "timelineScriptErrors": [],
-    "spriteGraphErrors": [],
-    "staticStopSkinKeys": 0,
-    "staticStopCollapsedFrames": 0,
-    "purgedStaleFrames": 0,
-    "staticStopSamples": [],
-    "nestedAnimationSkinKeys": 0,
-    "nestedAnimationSamples": [],
-    "nestedLayerUnsupportedDescendants": 0,
-    "nestedLayerCompositedDescendants": 0,
-    "exportedNestedLayerKeys": 0,
-    "exportedNestedLayerFrames": 0,
-    "missingNestedLayerFrame": [],
-    "uniqueFrameImages": 28,
-    "duplicateFrameRefs": 4,
-    "timelineLogicalFrames": 32,
-    "timelineFrameEntries": 28,
-    "timelineCompressedFrameRefs": 4,
-    "timelineCompressionSamples": [
-      {
-        "owner": "basic:男变装-基本脸型",
-        "logicalFrames": 10,
-        "timelineFrames": 6,
-        "savedFrameEntries": 4,
-        "uniqueUris": 6,
-        "longestHoldFrames": 5
-      }
-    ],
-    "conditionalVariantSkinKeys": 0,
-    "conditionalVariantFrames": 0,
-    "conditionalVariantRemovedPlaceObjects": 0,
-    "conditionalVariantSamples": [],
-    "expressionSkinKeys": 0,
-    "expressionFrames": 0,
-    "expressionFrameImages": 0,
-    "missingExpressionFrame": [],
-    "preservedSkinKeyExports": 2792,
-    "preservedBasicHolderExports": 231,
-    "orphanAssetsPurged": 0,
-    "orphanAssetSamples": []
+    "preservedSkinKeyExports": 2795,
+    "preservedBasicHolderExports": 231
   },
   "animatedSkinKeys": [
     {
@@ -7688,16 +8443,5 @@
       ],
       "uri": "skins/46391d29_1.png"
     }
-  ],
-  "workbenchUpdate": {
-    "jobId": "3c31d1678cd24ac7b9e73534b9c90598",
-    "item": "Andy工装裤",
-    "skinKeys": [
-      "男变装-Codex-Andy工装裤右大腿",
-      "男变装-Codex-Andy工装裤小腿",
-      "男变装-Codex-Andy工装裤屁股",
-      "男变装-Codex-Andy工装裤左大腿"
-    ],
-    "validation": "selected_images_frames_origins"
-  }
+  ]
 }

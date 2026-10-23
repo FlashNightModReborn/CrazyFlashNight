@@ -1,0 +1,21 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 262;
+   var §\x0f§ = 1;
+   _parent.swapDepths(_parent._y * 100);
+   if(_root.gameworld.man1._x + 近身距离 < _parent._x)
+   {
+      _parent._x -= 2 * _parent.x速度;
+   }
+   else if(_root.gameworld.man1._x + 近身距离 > _parent._x)
+   {
+      _parent._x += _parent.x速度;
+   }
+   if(_root.gameworld.man1._y > _parent._y)
+   {
+      _parent._y += _parent.y速度;
+   }
+   else if(_root.gameworld.man1._y < _parent._y)
+   {
+      _parent._y -= _parent.y速度;
+   }
+}

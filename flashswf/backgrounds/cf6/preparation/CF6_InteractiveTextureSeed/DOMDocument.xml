@@ -1,0 +1,62 @@
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" width="600" height="500" frameRate="30" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="59.1837342884091" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
+     <media>
+          <DOMBitmapItem name="intrinsic-284dc3064799385627ec5136.png" itemID="6adb0e20-00009a24" sourceExternalFilepath="./LIBRARY/intrinsic-284dc3064799385627ec5136.png" sourceLastImported="1792740784" externalFileSize="53210" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="intrinsic-284dc3064799385627ec5136.png" bitmapDataHRef="M 4 1792740896.dat" frameRight="3120" frameBottom="5340"/>
+          <DOMBitmapItem name="intrinsic-51b11bf2ce2d5077dbc21848.png" itemID="6adb0e20-00009a18" sourceExternalFilepath="./LIBRARY/intrinsic-51b11bf2ce2d5077dbc21848.png" sourceLastImported="1792740784" externalFileSize="975" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="intrinsic-51b11bf2ce2d5077dbc21848.png" bitmapDataHRef="M 1 1792740896.dat" frameRight="1040" frameBottom="1780"/>
+          <DOMBitmapItem name="intrinsic-9579f1a200075776adefc639.png" itemID="6adb0e20-00009a1c" sourceExternalFilepath="./LIBRARY/intrinsic-9579f1a200075776adefc639.png" sourceLastImported="1792740784" externalFileSize="50223" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="intrinsic-9579f1a200075776adefc639.png" bitmapDataHRef="M 2 1792740896.dat" frameRight="3120" frameBottom="5340"/>
+          <DOMBitmapItem name="intrinsic-d0d9690fc727299c3ce48153.png" itemID="6adb0e20-00009a20" sourceExternalFilepath="./LIBRARY/intrinsic-d0d9690fc727299c3ce48153.png" sourceLastImported="1792740784" externalFileSize="1056" allowSmoothing="true" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="intrinsic-d0d9690fc727299c3ce48153.png" bitmapDataHRef="M 3 1792740896.dat" frameRight="1040" frameBottom="1780"/>
+     </media>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers>
+                    <DOMLayer name="stop" color="#4FFFFF" current="true" isSelected="true" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <Actionscript>
+                                        <script><![CDATA[stop();]]></script>
+                                   </Actionscript>
+                                   <elements/>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="texture-3" color="#FF4FFF" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMBitmapInstance libraryItemName="intrinsic-284dc3064799385627ec5136.png"/>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="texture-2" color="#FF800A" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMBitmapInstance libraryItemName="intrinsic-d0d9690fc727299c3ce48153.png"/>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="texture-1" color="#9933CC" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMBitmapInstance libraryItemName="intrinsic-9579f1a200075776adefc639.png"/>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+                    <DOMLayer name="texture-0" color="#4FFF4F" autoNamed="false">
+                         <frames>
+                              <DOMFrame index="0" keyMode="9728">
+                                   <elements>
+                                        <DOMBitmapInstance libraryItemName="intrinsic-51b11bf2ce2d5077dbc21848.png"/>
+                                   </elements>
+                              </DOMFrame>
+                         </frames>
+                    </DOMLayer>
+               </layers>
+          </DOMTimeline>
+     </timelines>
+     <PrinterSettings/>
+     <publishHistory/>
+</DOMDocument>
