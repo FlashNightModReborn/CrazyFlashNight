@@ -1250,4 +1250,11 @@ Issue #152 已完成两轮正式推广。第二轮冻结源 `c1d9ab2576937aa2fa4
 
 同字节候选已完成真实技能初学/连续升级和胶囊一次投掷/一次交易/原生冷读；正式入口另以默认 Agent Runtime 完成自有槽读取、材料/技能面板只读 smoke 和原生结果复核，未重放业务。普通窗口关闭不代签 authenticated shutdown，标准入口完整业务、迟到/重绑/未知写现场注入、黑龙完整实战、次级穿刺手感和旧测试员卡顿根因仍保留各自边界。部署提交的远端 `Runtime native audit` 单独核对，源码 `source-ahead` 不是部署证据。
 
+## 2026-10-23 普通血液、简单效果与命中原声正式推广
+
+维护者验收配对候选后明确授权二进制发布列车。冻结源 `59d5882e55252da7fd845dc6ba23c7276a489cd0`、受控标签 `runtime-build-v2/20261023-combat-fx-blood` 完成 production policy **47/47**；注册本机 X509 与 [GitHub hosted 构建 39914700092](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/39914700092) 在独立故障域证明同一已验收 Core / 43 文件闭包。
+唯一 writer 于 `2026-10-23T07:13:24.1623551Z` 原子推广，部署后完整 bundle、双 signer / 双 faultDomain consensus 与 bootstrap `--verify-only` 均通过。精确 request、身份、负向首轮和恢复路径归[本批记录](普通血液与简单特效迁移-2026-10-23.md#正式发布2026-10-23)，现役字节读取 manifest / consensus。
+
+本批已补回原时间轴内嵌的 20 个命中原声，普通血液及五种简单效果纳入原生绘制；酸血玩法继续由 AS2 权威。隔离实战验收、正式推广与标准入口复验分别记账；本次发布不代签弱机收益、全库 Audio H1/H2 或 Issue #125 的全部范围。
+
 部署提交 `4d738f149ba0382b67c86bcf1b5a486416a91d0b` 已普通快进推送；[远端 Audit 39885587056](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/39885587056) **success**，独立重放 `state=promoted / deploymentChanged=true`、`mode=Index / signers=2 / faultDomains=2` 和同一 43 文件 closure。发布状态反例、生成路径回归及 [Path budget 39885586581](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/39885586581) 均通过。
