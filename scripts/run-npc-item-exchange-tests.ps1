@@ -16,10 +16,10 @@ $focusedRun = @{
         'scripts\类定义\org\flashNight\arki\item\NpcItemExchangeService.as'
     )
     ExpectedTracePatterns = @(
-        '(?m)^NpcItemExchangeServiceTest Tests Passed: 65\r?$',
+        '(?m)^NpcItemExchangeServiceTest Tests Passed: 67\r?$',
         '(?m)^NpcItemExchangeServiceTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'NPC item exchange 65/65 covering grant, gold, overflow, full bag, take and equipment lowest-level selection'
+    SuccessSummary = 'NPC item exchange 67/67 covering grant, gold, overflow, full bag, take, take notice and equipment lowest-level selection'
     TimeoutSeconds = $TimeoutSeconds
     AsyncBehaviorTimeoutSeconds = 90
     SkipCompile = $SkipCompile
