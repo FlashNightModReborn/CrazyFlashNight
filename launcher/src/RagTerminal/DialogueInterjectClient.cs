@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CF7Launcher.Guardian;
 using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.RagTerminal
@@ -367,10 +368,19 @@ namespace CF7Launcher.RagTerminal
             {
                 lock (_gate) { _cancelled = true; }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // 断流/协议错误：已交付的 line 保留，调用方按 D-17 回原对话。
-                lock (_gate) { _terminal = true; }
+                LogManager.Log("[DialogueInterject] stream failed: " + ex.Message);
+                Deliver(new DialogueInterjectEvent
+                {
+                    Kind = DialogueInterjectEventKind.Error,
+                    EventName = "error",
+                    Data = new JObject
+                    {
+                        ["code"] = "stream_failed",
+                        ["message"] = ex.Message
+                    }
+                });
             }
             finally
             {

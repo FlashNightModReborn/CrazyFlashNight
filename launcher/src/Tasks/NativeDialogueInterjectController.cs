@@ -2019,6 +2019,13 @@ namespace CF7Launcher.Tasks
                 };
                 if (equipment)
                     action["item_level"] = result.Value<int?>("itemLevel") ?? 0;
+                if (!string.IsNullOrEmpty(clickTimeFallback))
+                {
+                    JObject fallbackRequest = JObject.Parse(clickTimeFallback);
+                    fallbackRequest["player_input"] = BuildActionPlayerInput(action, _npcName ?? "");
+                    fallbackRequest["action"] = (JObject)action.DeepClone();
+                    clickTimeFallback = fallbackRequest.ToString(Formatting.None);
+                }
                 Post(() =>
                 {
                     _itemDecisionBusy = false;
@@ -2045,10 +2052,10 @@ namespace CF7Launcher.Tasks
         }
 
         /// <summary>
-        /// 选项直连轮：不发 $PC，直接以 action 请求开启一轮；后端预执行动作后只生成最终台词。
+        /// 选项直连轮：$PC 动作描写上屏并随 action 发送；后端预执行动作后只生成最终台词。
         /// 返回 false 表示当前不允许（无会话/组不允许/已关闭/无 NPC）。
         /// </summary>
-        private bool SubmitAction(JObject action)
+        private bool SubmitAction(JObject action, bool showPlayerLine = true)
         {
             if (action == null) return false;
             string actionKind = action.Value<string>("kind") ?? "";
@@ -2079,7 +2086,9 @@ namespace CF7Launcher.Tasks
                 LogActionRejected(actionKind, actionId, "no_npc");
                 return false;
             }
+            string playerInput = BuildActionPlayerInput(action, npc);
 
+            if (showPlayerLine) _widget.CompleteCurrentLineTyping();
             List<PlayedRow> playedSnapshot;
             lock (_playedGate) { playedSnapshot = new List<PlayedRow>(_played); }
             int wireResume = _session.CurrentWireIndex + 1;
@@ -2102,15 +2111,25 @@ namespace CF7Launcher.Tasks
             var remaining = BuildRemaining(wireResume);
             string dialogueInstanceId = _dialogueInstanceId ?? (_dialogueInstanceId = _newId());
             string turnId = _newId();
-            string requestJson = BuildRequest("", npc, dialogueInstanceId, turnId,
+            string requestJson = BuildRequest(playerInput, npc, dialogueInstanceId, turnId,
                 playedSnapshot, remaining, unplayed, action);
+
+            int insertAt = _session.Index + 1;
+            if (showPlayerLine)
+            {
+                if (!_session.ReplaceFrom(insertAt, new[] { BuildPcLine(playerInput) }, null))
+                {
+                    LastFailure = "splice_failed";
+                    return false;
+                }
+                _pcRevision = _session.Revision;
+            }
             if (string.Equals(actionKind, "item_take_accept", StringComparison.Ordinal))
                 _unackedItemRequestJson = requestJson;
             LogManager.Log("[DialogueInterject] action start kind=" + actionKind
                 + " action=" + actionId + " turn=" + turnId);
 
-            // 没有 $PC：AI 行直接接在当前行之后，玩家点“下一条”逐句看。
-            _turnTailIndex = _session.Index + 1;
+            _turnTailIndex = showPlayerLine ? insertAt + 1 : insertAt;
             _wireResume = wireResume;
             _turnId = turnId;
             _turnActive = true;
@@ -2127,6 +2146,18 @@ namespace CF7Launcher.Tasks
             ArmWatchdog(_turnStartedAt);
             StartStream(requestJson);
             return true;
+        }
+
+        private static string BuildActionPlayerInput(JObject action, string npc)
+        {
+            string kind = action.Value<string>("kind") ?? "";
+            if (string.Equals(kind, "task_accept", StringComparison.Ordinal)) return "我接了";
+            if (string.Equals(kind, "task_decline", StringComparison.Ordinal)) return "我不接";
+            if (string.Equals(kind, "item_take_decline", StringComparison.Ordinal))
+                return "【没有赠送物品】";
+            int quantity = Math.Max(1, action.Value<int?>("quantity") ?? 1);
+            string itemName = action.Value<string>("item_name") ?? "";
+            return "【赠送了" + quantity + "个" + itemName + "给" + npc + "】";
         }
 
         private void LogActionRejected(string kind, string actionId, string reason)
@@ -2148,7 +2179,8 @@ namespace CF7Launcher.Tasks
             var remaining = BuildRemaining(wireResume);
             string dialogueInstanceId = _dialogueInstanceId ?? (_dialogueInstanceId = _newId());
             string turnId = _newId();
-            return BuildRequest("", _npcName, dialogueInstanceId, turnId, playedSnapshot,
+            string playerInput = BuildActionPlayerInput(action, _npcName);
+            return BuildRequest(playerInput, _npcName, dialogueInstanceId, turnId, playedSnapshot,
                 remaining, new List<ReferenceItem>(), action);
         }
 
@@ -2192,7 +2224,7 @@ namespace CF7Launcher.Tasks
                     using (var stream = new DialogueInterjectStream(transport, evt =>
                         {
                             if (evt.Kind == DialogueInterjectEventKind.Done) done = true;
-                        }, _ => { }))
+                        }, null))
                     using (var cts = new CancellationTokenSource(
                         TimeSpan.FromSeconds(HeadlessItemActionTimeoutSeconds)))
                     {
@@ -2541,10 +2573,9 @@ namespace CF7Launcher.Tasks
             string retryJson = _unackedItemRequestJson;
             if (retry != null)
             {
-                _unackedItemAction = null;
-                _unackedItemRequestJson = null;
                 string retryId = retry.Value<string>("action_id") ?? "";
-                if (retryId.Length > 0 && retryId != _itemActionRetriedId && SubmitAction(retry))
+                if (retryId.Length > 0 && retryId != _itemActionRetriedId
+                    && SubmitAction(retry, false))
                 {
                     _itemActionRetriedId = retryId;
                     LogManager.Log("[DialogueInterject] item accept retried after stream failure: "
