@@ -2,6 +2,8 @@
 
 本目录把已审查的角色、遭遇、经济和地图输入装成 `data/stages/books/cf6-sting.json`，同时生成五档商店、商店登记块与地图环境登记块。它只更新本章拥有的块，保留其他关卡与商店内容。玩法范围及验收边界见[设计基线](../../docs/闪客快打6肉鸽-首版设计与施工拆分-2026-10-21.md)。
 
+五档商店商品变化后，还须执行 `python tools/refresh-shop-portrait-sources.py` 和 `python tools/test-shop-portrait-assets.py`，更新只消费 `shopId` 的来源摘要；该工具保持商店身份顺序、渲染来源、头像图片和运行时 manifest 不变。商店 JSON 按 `.gitattributes` 固定 LF，避免跨机检出破坏原始字节摘要；不以重新烘焙头像或修改旧验收记录替代此检查。
+
 输入分工：
 
 - `tools/cf6-actor-template/actor.fragment.json`：固定 60 级 Andy 初装与技能。

@@ -146,7 +146,8 @@ launcher/app.manifest text eol=lf
 /launcher/web/assets/shop-portraits/provenance.json text eol=lf
 /launcher/web/assets/shop-portraits/promotion-receipt.json text eol=lf
 /launcher/web/assets/shop-portraits/manifest.json text eol=lf
-/data/shops/npcs/Pig.json text eol=lf
+# Shop portrait provenance binds every shop document's canonical Git bytes.
+/data/shops/npcs/*.json text eol=lf
 
 # Tesla G08 source and reviewed converter are bound by raw SHA-256 provenance.
 /flashswf/arts/new/Codex素材源稿/磁暴坦克G08/source/P22-neutral.svg text eol=lf whitespace=-blank-at-eol
