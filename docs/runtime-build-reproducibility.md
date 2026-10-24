@@ -1289,3 +1289,5 @@ Issue #152 已完成两轮正式推广。第二轮冻结源 `c1d9ab2576937aa2fa4
 云端首轮[40077434153](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40077434153)在取源码时收到GitHub空响应，尚未编译；新dispatch的40077621575完成独立构建和签名。本地查询期间的连接超时/EOF通过同一run的 `ResumeRunId` 续接，未重复触发该任务。所有后续证明与最终receipt绑定v4，未降低门槛或复用失败receipt。
 
 基础HUD B0-06仍未通过，旧Flash oracle缺失，Host全量仍有120项既有Windows证据根缺失及30项未执行；这些缺口与本次47项发布政策分别记录。完整章节、车辆手感和Boss/Buff/刘海同时显示的最终观感继续交给测试员反馈。
+
+部署提交 [`afed2f2cd657e642b6f0f99880bbe17d719554f5`](https://github.com/FlashNightModReborn/CrazyFlashNight/commit/afed2f2cd657e642b6f0f99880bbe17d719554f5) 已普通快进推送；[Runtime native audit 40079405600](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40079405600) **success**，远端独立重放 `state=promoted / deploymentChanged=true`、`mode=Index / signers=2 / faultDomains=2` 和同一43文件闭包。发布状态反例55项、生成路径45项及[Path budget 40079405613](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40079405613)均通过。
