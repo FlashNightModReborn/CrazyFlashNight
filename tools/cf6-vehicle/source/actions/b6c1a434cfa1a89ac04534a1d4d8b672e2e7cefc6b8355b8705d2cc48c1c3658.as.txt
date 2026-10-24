@@ -1,0 +1,10 @@
+var §\x01§ = 643;
+var §\x0f§ = 1;
+if(this._y == 0)
+{
+   this.removeMovieClip();
+}
+firesound = new Sound();
+firesound.attachSound("blood" + random(6));
+firesound.start(o,1);
+gotoAndPlay("a" + random(6));

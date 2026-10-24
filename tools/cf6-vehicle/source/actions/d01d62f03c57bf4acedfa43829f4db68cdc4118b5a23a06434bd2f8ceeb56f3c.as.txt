@@ -1,0 +1,4 @@
+var §\x01§ = 352;
+var §\x0f§ = 1;
+b_name = this._name + random(30);
+_root.gameworld.子弹区域2.attachMovie("战车手雷",b_name,_root.gameworld.子弹区域2.getNextHighestDepth(),{_x:this._x,_y:this._y});

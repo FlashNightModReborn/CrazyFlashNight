@@ -10,7 +10,7 @@
       {"mapId":"A01","value":15000}, {"mapId":"A02","value":20000},
       {"mapId":"A03","value":25000}, {"mapId":"A04","value":30000},
       {"mapId":"A05","value":40000}, {"mapId":"A06","value":50000},
-      {"mapId":"A08","value":40000}, {"mapId":"A09","value":45000},
+      {"mapId":"A07","value":40000}, {"mapId":"A08","value":0}, {"mapId":"A09","value":45000},
       {"mapId":"A10","value":45000}, {"mapId":"A11","value":0},
       {"mapId":"A12","value":50000}, {"mapId":"A13","value":60000},
       {"mapId":"A14","value":65000}, {"mapId":"A15","value":65000},
@@ -22,7 +22,7 @@
       {"mapId":"A01","value":15000}, {"mapId":"A02","value":20000},
       {"mapId":"A03","value":25000}, {"mapId":"A04","value":30000},
       {"mapId":"A05","value":40000}, {"mapId":"A06","value":50000},
-      {"mapId":"A08","value":40000}, {"mapId":"A09","value":45000},
+      {"mapId":"A07","value":40000}, {"mapId":"A08","value":0}, {"mapId":"A09","value":45000},
       {"mapId":"A10","value":45000}, {"mapId":"A11","value":0},
       {"mapId":"A12","value":50000}, {"mapId":"A13","value":60000},
       {"mapId":"A14","value":65000}, {"mapId":"A15","value":65000},
@@ -34,7 +34,7 @@
   "goldPickupContract": {
     "name": "金币",
     "placement": "one native Pickup at exact validated PlayerX/PlayerY on map entry; zero values emit no pickup",
-    "a07TransitionOwner": "A08 only; no A07 playable node and no second relocation grant",
+    "a07TransitionOwner": "A07 only; restored vehicle room owns the original 40000 standard Pickup, A08 grants zero",
     "nominalTotal": 910000,
     "actualCreditedAmount": "unknown until live pickup; do not treat Value as a durable money receipt",
     "exactCurrencyOverride": false,
@@ -43,15 +43,15 @@
   "commonShopItems": ["技能点","K点","强化石","普通hp药剂","普通mp药剂","大HP药剂","大MP药剂"],
   "merchantNodes": [
     {"mapId":"A01","shopId":"书中-CF6毒刺-35级","title":"毒刺整备 · 初战","maxItemLevel":35,
-     "addWeapons":["M4A1科技白","M4A1战术版","AR57"]},
+     "addWeapons":["M4A1科技白","M4A1战术版","AK74战术版","HKSL8EX","HKSL8GOLD"]},
     {"mapId":"A08","shopId":"书中-CF6毒刺-40级","title":"毒刺整备 · 补充火力","maxItemLevel":40,
-     "addWeapons":["DD MK18战术版","M60E3"]},
+     "addWeapons":["DD MK18战术版","M60E3","Desert Eagle改装版","战术版莫斯伯格590"]},
     {"mapId":"A11","shopId":"书中-CF6毒刺-45级","title":"毒刺整备 · 进入实验区","maxItemLevel":45,
-     "addWeapons":["CAR冲锋枪","钛合金P90","AA12丧尸"]},
+     "addWeapons":["TTI Gen 12","AA12丧尸","SPAS12"]},
     {"mapId":"A16","shopId":"书中-CF6毒刺-55级","title":"毒刺整备 · 重装迎战","maxItemLevel":55,
-     "addWeapons":["PKM战术版","HK416战术版","高斯枪","钛合金QJZ171","战术-QBU-191"]},
+     "addWeapons":["PKM战术版","HK416战术版","高斯枪","MG42战术版","M134暴力版","能量狙击枪","战术巴雷特","M82A1加强版"]},
     {"mapId":"A19","shopId":"书中-CF6毒刺-60级","title":"毒刺整备 · 最后补给","maxItemLevel":60,
-     "addWeapons":["RShG4","M134暴力版的PIG版"]}
+     "addWeapons":["量子能量枪","战术版喷火器","紫色幻想","轻量化量子能量枪"]}
   ],
   "shopRules": {
     "cumulativeCatalog": true,
@@ -68,16 +68,16 @@
   "shoppingRoute": [
     {"mapId":"A01","purchaseWeapon":null,"ammoWeapon":"M4A1战术版","ammoPacks":24,"largeHP":6,"largeMP":4,"secondaryEnhancementTarget":5},
     {"mapId":"A08","purchaseWeapon":"DD MK18战术版","ammoWeapon":"DD MK18战术版","ammoPacks":24,"largeHP":6,"largeMP":4,"secondaryEnhancementTarget":5},
-    {"mapId":"A11","purchaseWeapon":"CAR冲锋枪","ammoWeapon":"CAR冲锋枪","ammoPacks":24,"largeHP":6,"largeMP":4,"secondaryEnhancementTarget":5},
+    {"mapId":"A11","purchaseWeapon":"SPAS12","ammoWeapon":"SPAS12","ammoPacks":24,"largeHP":6,"largeMP":4,"secondaryEnhancementTarget":5},
     {"mapId":"A16","purchaseWeapon":"PKM战术版","ammoWeapon":"PKM战术版","ammoPacks":12,"largeHP":8,"largeMP":4,"secondaryEnhancementTarget":5},
-    {"mapId":"A19","purchaseWeapon":"M134暴力版的PIG版","ammoWeapon":"M134暴力版的PIG版","ammoPacks":4,"largeHP":10,"largeMP":4,"secondaryEnhancementTarget":5}
+    {"mapId":"A19","purchaseWeapon":"量子能量枪","ammoWeapon":"量子能量枪","ammoPacks":4,"largeHP":10,"largeMP":4,"secondaryEnhancementTarget":5}
   ],
   "stressPurchases": [
     {"mapId":"A08","weapon":"M60E3","ammoPacks":12,"largeHP":6,"largeMP":4,"secondaryEnhancementTarget":5},
     {"mapId":"A11","weapon":"AA12丧尸","ammoPacks":24,"largeHP":6,"largeMP":4,"secondaryEnhancementTarget":5},
-    {"mapId":"A16","weapon":"钛合金QJZ171","ammoPacks":12,"largeHP":8,"largeMP":4,"secondaryEnhancementTarget":5},
+    {"mapId":"A16","weapon":"MG42战术版","ammoPacks":12,"largeHP":8,"largeMP":4,"secondaryEnhancementTarget":5},
     {"mapId":"A16","weapon":"高斯枪","ammoPacks":6,"largeHP":8,"largeMP":4,"secondaryEnhancementTarget":5},
-    {"mapId":"A19","weapon":"RShG4","ammoPacks":12,"largeHP":10,"largeMP":4,"secondaryEnhancementTarget":5}
+    {"mapId":"A19","weapon":"战术版喷火器","ammoPacks":12,"largeHP":10,"largeMP":4,"secondaryEnhancementTarget":5}
   ],
   "modelBoundaries": [
     "This is a static nominal-cash affordability model, not survival or weapon balance acceptance.",

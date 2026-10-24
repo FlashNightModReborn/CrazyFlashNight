@@ -1,0 +1,6 @@
+onClipEvent(load){
+   var §\x01§ = 429;
+   var §\x0f§ = 1;
+   _parent._parent.gotoAndStop("走");
+   近身距离 = random(_parent._parent.近身距离);
+}

@@ -49,6 +49,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         testLongGunGrenadeWriterPersistence();
         testLootAcquireProjectsOnNewSession();
         testEquipmentMutationMoveSwapAndUnequip();
+        testEquipmentLoopbackRetainsPendingProjection();
         testGrenadeMutationMergeAndFullBackpackUnequip();
         testDrugMutationMoveSwapMergeAndUnequip();
         testMutationPreflightFailuresAndNoSideEffects();
@@ -2998,6 +2999,40 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                                             requiredLevel:Number):Void {
         setCatalogData(root, name,
             catalog(majorType, useName, requiredLevel));
+    }
+
+    private static function testEquipmentLoopbackRetainsPendingProjection():Void {
+        var root:Object=fixtureRoot(1);
+        __activeMutationRoot=root;
+        var original:Object=root.物品栏.装备栏.getItem("长枪");
+        var other:Object=equipment("回环长枪",1,"",[],41);
+        root.物品栏.背包.items["8"]=other;
+        registerCatalog(root,other.name,"武器","长枪",1);
+        var panel:String="workbench.equipment.loopback";
+        var fixture:Object=mutationFixture(root,panel);
+        var opened:Object=fixture.opened;
+        var first:Object=CharacterBuildService.execute("equipEquipment",
+            equipmentMutationParams("equipEquipment",panel,opened,"长枪",8));
+        var params:Object=equipmentMutationParams("equipEquipment",panel,first,"长枪",8);
+        params.requestCallId=panel+".second";
+        var second:Object=CharacterBuildService.execute("equipEquipment",params);
+        check(first.success && second.success && second.loadoutRevision==2
+                && root.物品栏.装备栏.getItem("长枪")===original,
+            "same source slot A-B-A commits twice and restores the original canonical ref");
+        var c:Object=root.__statCoordinatorForTests;
+        var aligned:Object=CharacterBuildService.synchronize(second.sessionGeneration);
+        check(aligned.success && aligned.liveRefreshDirty && aligned.liveRevision==0
+                && (c.diagnostics().dirtyMask & 4)!=0 && c.equipmentTransition()==null,
+            "aligned refs cannot erase an unconsumed equipment invalidation");
+        var before:Number=root.refreshCalls;
+        var result:Object=CharacterBuildService.finalize(second.sessionGeneration,second.loadoutRevision,false);
+        check(result.success && result.liveChanged && result.liveRevision==2
+                && !result.liveRefreshDirty && c.diagnostics().dirtyMask==0
+                && root.refreshCalls==before+1,
+            "A-B-A finalize prepares a ticket and completes one full refresh");
+        var replay:Object=CharacterBuildService.finalize(second.sessionGeneration,second.loadoutRevision,false);
+        check(replay.success && root.refreshCalls==before+1,"A-B-A exact close replay never repeats the refresh");
+        CharacterBuildService.testOnlyReset();
     }
 
     private static function testEquipmentMutationMoveSwapAndUnequip():Void {

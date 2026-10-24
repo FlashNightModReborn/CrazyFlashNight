@@ -1,0 +1,291 @@
+import org.flashNight.arki.scene.Cf6VehicleRules;
+import org.flashNight.arki.scene.Cf6VehicleData;
+import org.flashNight.arki.scene.Cf6VehicleActorAdapter;
+import org.flashNight.arki.scene.Cf6VehicleTimeline;
+import org.flashNight.arki.scene.Cf6VehicleCombat;
+import org.flashNight.arki.scene.BookRunRules;
+import org.flashNight.arki.pause.PauseManager;
+import org.flashNight.arki.hud.FocusTargetHudService;
+import org.flashNight.neur.Event.EventDispatcher;
+import org.flashNight.gesh.depth.DepthManager;
+
+/** A07 fixed car encounter. Scene transition, reward, save and failure authority stay outside. */
+class org.flashNight.arki.scene.Cf6VehicleService {
+    private static var serial:Number=0;
+    private static function readInput():Object {
+        return {x:(Key.isDown(_root.右键)?1:0)-(Key.isDown(_root.左键)?1:0),
+            z:(Key.isDown(_root.下键)?1:0)-(Key.isDown(_root.上键)?1:0),fire:Key.isDown(_root.A键)};
+    }
+    public static function begin(room:Object,spec:Object):Object {
+        if(room==null || room.mapId!=="A07" || !Cf6VehicleRules.validSpec(spec)
+                || room.world!==_root.gameworld || room.owner!==room.world.__stageReturnWorldIdentity
+                || room.world.__cf6VehicleSession!==undefined
+                || room.stageManager!==org.flashNight.arki.scene.StageManager.instance
+                || room.stageManager.gameworld!==room.world || room.stageManager.isActive!==true
+                || room.stageManager.isFailed===true || room.stageManager.isFinished===true) return null;
+        var run:Object=_root._saveExt.bookRun;
+        if(!BookRunRules.sameCf6Run(run,run) || run.slot!==String(_root.savePath)
+                || _root.当前关卡名!=="书中历险-毒刺行动") return null;
+        var adapter:Object=Cf6VehicleActorAdapter.acquire(room.world,room.owner);
+        if(adapter==null) return null;
+        var s:Object={room:room,world:room.world,owner:room.owner,spec:spec,token:{},actorAdapter:adapter,
+            manager:room.stageManager,stage:room.stageManager.currentStage,slot:String(_root.savePath),
+            runIdentity:{bookId:run.bookId,routeId:run.routeId,slot:run.slot,seed:run.seed,startedAt:run.startedAt,planSeed:run.planSeed},
+            status:"loading",closed:false,age:0,serial:(++serial)*100000,actors:[],projectiles:[],grenades:[],effects:[],
+            generators:[],data:Cf6VehicleData.create(),shots:0,bossHits:0,grenadeHits:0,reason:"",rng:Math.max(1,Number(run.seed)%2147483647)};
+        s.rules=Cf6VehicleRules.create(spec.rules,s.token,adapter.hero.hp,spec.speedX,spec.speedZ);
+        if(s.rules==null) {Cf6VehicleActorAdapter.release(adapter);return null;}
+        s.loadingLease=PauseManager.lease(true,"cf6_vehicle_loading");
+        s.world.__cf6VehicleSession=s;
+        return s;
+    }
+    private static function current(s:Object):Boolean {
+        return s!=null && !s.closed && s.world===_root.gameworld && s.world.__cf6VehicleSession===s
+            && s.world.__stageReturnWorldIdentity===s.owner && s.manager===org.flashNight.arki.scene.StageManager.instance
+            && s.manager.currentStage===s.stage && s.slot===String(_root.savePath)
+            && _root.当前关卡名==="书中历险-毒刺行动" && BookRunRules.sameCf6Run(s.runIdentity,_root._saveExt.bookRun);
+    }
+    private static function attach(s:Object,symbol:String,kind:String,x:Number,y:Number):MovieClip {
+        var name:String="__cf6Vehicle"+kind+(++s.serial);
+        var clip:MovieClip=s.world.attachMovie(symbol,name,s.world.getNextHighestDepth());
+        if(typeof clip!="movieclip") return null;
+        clip.__cf6VehicleOwner=s.token;clip._x=x*s.spec.scale;clip._y=y*s.spec.scale;
+        clip._xscale=clip._yscale=100*s.spec.scale;clip.Z轴坐标=clip._y;clip.stop();return clip;
+    }
+    private static function releaseLoading(s:Object):Void {
+        if(s.loadingLease!==undefined) {PauseManager.releaseLease(s.loadingLease);s.loadingLease=undefined;}
+    }
+    private static function start(s:Object):Boolean {
+        if(s.player==undefined) s.player=attach(s,s.spec.symbols.player,"Player",s.spec.sourcePlayerSpawn[0],s.spec.sourcePlayerSpawn[1]);
+        if(s.road==undefined) s.road=attach(s,s.spec.symbols.road,"Road",s.spec.sourceRoadOrigin[0],s.spec.sourceRoadOrigin[1]);
+        if(!Cf6VehicleCombat.owned(s,s.player) || !Cf6VehicleCombat.owned(s,s.road)) return false;
+        if(s.player.__cf6SourceId!==1803 || s.road.__cf6SourceId!==1791) return false;
+        s.road.swapDepths(-14000);
+        for(var i:Number=0;i<s.data.generators.length;i++) {
+            var source:Object=s.data.generators[i];s.generators.push({kind:source.kind,x:source.x,hp:source.hp,remaining:source.budget,active:null});
+        }
+        for(i=0;i<s.data.initial.length;i++) if(spawn(s,s.data.initial[i],-1)==null) return false;
+        syncPlayer(s);s.status="playing";s.age=0;releaseLoading(s);return true;
+    }
+    private static function spawn(s:Object,source:Object,generator:Number):Object {
+        var clip:MovieClip=attach(s,s.spec.symbols[source.kind],source.kind,source.x,source.y);
+        if(clip==null) {s.reason="vehicle-linkage-missing-"+source.kind;return null;}
+        clip.hp=source.hp===undefined?(source.kind=="raider"?10:200):source.hp;
+        clip.hp满血值=clip.hp;
+        var row:Object={clip:clip,kind:source.kind,generator:generator,identity:clip._name,age:0,resolved:false,closed:false,hitAge:0};
+        if(source.kind=="raider" || source.kind=="shield") {
+            row.variantPending=true;row.variant=Math.max(1,Cf6VehicleCombat.nextRandom(s,15));row.variantSource=source.kind=="raider"?595:562;
+        }
+        s.actors.push(row);return row;
+    }
+    private static function randomY(s:Object):Number {
+        s.rng=(s.rng*16807)%2147483647;
+        return 280+(s.rng%220);
+    }
+    private static function generators(s:Object):Void {
+        // Source 1585 produces at frame 10, then loops 24 -> 2 (23-frame period).
+        if(s.rules.phase!="road" || s.age<10 || (s.age-10)%23!==0) return;
+        for(var i:Number=0;i<s.generators.length;i++) {
+            var g:Object=s.generators[i];
+            if(g.remaining>0 && (g.active==null || g.active.closed)) {
+                g.active=spawn(s,{kind:g.kind,x:g.x,y:randomY(s),hp:g.hp},i);
+            }
+        }
+    }
+    private static function syncPlayer(s:Object):Void {
+        if(!Cf6VehicleCombat.owned(s,s.player)) return;
+        s.player._x=s.actorAdapter.hero._x;s.player._y=s.actorAdapter.hero.Z轴坐标;
+        s.player.Z轴坐标=s.player._y;
+        if(DepthManager.instance!=undefined) DepthManager.instance.updateDepth(s.player,s.player._y);
+        else s.player.swapDepths(Math.floor(s.player._y)+1);
+    }
+    private static function actors(s:Object):Void {
+        var hx:Number=s.actorAdapter.hero._x/s.spec.scale,hy:Number=s.actorAdapter.hero.Z轴坐标/s.spec.scale;
+        for(var i:Number=s.actors.length-1;i>=0;i--) {
+            var row:Object=s.actors[i];
+            if(!Cf6VehicleCombat.owned(s,row.clip)) {row.closed=true;s.reason="owned-road-actor-replaced";continue;}
+            row.previousX=row.clip._x/s.spec.scale;row.previousY=row.clip._y/s.spec.scale;
+            row.age++;
+            if(row.kind!="obstacle" || !row.resolved) row.clip._x-=s.spec.hazardSpeed*s.spec.scale;
+            if(row.resolved && row.kind=="raider") {
+                if(row.knockdown===true) row.clip._x+=row.knockDirection*10*s.spec.scale;
+                else if(row.variant===78) row.clip._x+=row.knockDirection*5*s.spec.scale;
+            }
+            if(!row.resolved) {
+                if(Cf6VehicleCombat.overlap(s.data[row.kind],row.clip._x/s.spec.scale,row.clip._y/s.spec.scale,s.data.player,hx,hy)) {
+                    Cf6VehicleCombat.hitRoad(s,row,true);
+                }
+            }
+            if(Cf6VehicleCombat.overlap(s.data[row.kind],row.clip._x/s.spec.scale,row.clip._y/s.spec.scale,s.data.escape,0,0)) {
+                if(row.generator>=0 && s.generators[row.generator].active===row) s.generators[row.generator].active=null;
+                Cf6VehicleCombat.retire(s,row);s.actors.splice(i,1);continue;
+            }
+            var appliedVariant:Boolean=false;
+            if(row.variantPending && row.clip.p1.__cf6SourceId===row.variantSource) {
+                row.clip.p1.gotoAndStop(row.variant);row.variantPending=false;
+                appliedVariant=true;
+            }
+            // Target-frame Actionscript refreshes __cf6Next after this action
+            // stack. Do not immediately advance using the previous frame's data.
+            if(!appliedVariant) Cf6VehicleTimeline.advance(row.clip,true);
+            if(DepthManager.instance!=undefined) DepthManager.instance.updateDepth(row.clip,row.clip._y);
+            if(row.resolved && (row.age>=300 || row.clip.__cf6RetireVisual===true)) {
+                Cf6VehicleCombat.retire(s,row);s.actors.splice(i,1);
+            }
+        }
+    }
+    private static function spawnBoss(s:Object):Void {
+        s.boss=attach(s,s.spec.symbols.boss,"Boss",1489.4,410.8);
+        if(s.boss==null) {s.reason="boss-linkage-missing";return;}
+        s.boss.hp=s.boss.hp满血值=s.spec.rules.originalBossHp;s.boss.是否为敌人=true;
+        s.rules.bossFrame=1;
+        s.boss.等级=1;s.boss.命中率=100000;s.boss.伤害加成=0;s.boss.方向="左";s.boss.dispatcher=new EventDispatcher();
+        s.hudIdentity={};s.boss.__cf6HudIdentity=s.hudIdentity;
+        s.hudLease=FocusTargetHudService.bind(s.world,s.owner,s.boss,"__cf6HudIdentity",s.hudIdentity,"boss","装甲战车");
+        if(s.hudLease==null) s.reason="boss-hud-owner-rejected";
+    }
+    private static function boss(s:Object,intent:Object):Void {
+        if(s.rules.phase!="boss" && s.rules.phase!="boss-death") return;
+        if(!Cf6VehicleCombat.owned(s,s.boss)) {s.reason="owned-boss-replaced";return;}
+        s.bossPreviousX=s.boss._x/s.spec.scale;s.bossPreviousY=s.boss._y/s.spec.scale;
+        var hx:Number=s.actorAdapter.hero._x/s.spec.scale,hy:Number=s.actorAdapter.hero.Z轴坐标/s.spec.scale;
+        if(s.rules.phase=="boss") {
+            if(hx+500<s.boss._x/s.spec.scale) s.boss._x-=4*s.spec.scale;
+            else if(hx+500>s.boss._x/s.spec.scale) s.boss._x+=2*s.spec.scale;
+            if(hy>s.boss._y/s.spec.scale) s.boss._y+=s.spec.scale;
+            else if(hy<s.boss._y/s.spec.scale) s.boss._y-=s.spec.scale;
+            var push:Array=[[0,5],[0,-5],[5,0],[-5,0]];
+            for(var i:Number=0;i<4;i++) if(Cf6VehicleCombat.overlap(s.data.bossWalls[i],s.boss._x/s.spec.scale,s.boss._y/s.spec.scale,s.data.player,hx,hy))
+                Cf6VehicleActorAdapter.move(s.actorAdapter,push[i][0],push[i][1],s.spec.scale,s.data.player,s.data.walls);
+            if(intent.bossThrow) {
+                var clip:MovieClip=attach(s,s.spec.symbols.grenade,"Grenade",s.boss._x/s.spec.scale,s.boss._y/s.spec.scale);
+                if(clip==null) {s.reason="grenade-linkage-missing";return;}
+                s.grenades.push({clip:clip,frame:1,attempted:false,closed:false});
+            }
+        } else {
+            s.boss._x-=10*s.spec.scale;s.boss._y+=5*s.spec.scale;
+            if(s.rules.bossFrame==121) Cf6VehicleCombat.playCue(s,"vehicleDeath");
+            if(s.rules.bossFrame==131 || s.rules.bossFrame==142) Cf6VehicleCombat.playCue(s,"explosion");
+        }
+        Cf6VehicleTimeline.pose(s.boss,s.rules.bossFrame);Cf6VehicleTimeline.advance(s.boss,true);
+        if(DepthManager.instance!=undefined) DepthManager.instance.updateDepth(s.boss,s.boss._y);
+    }
+    private static function grenades(s:Object):Void {
+        for(var i:Number=s.grenades.length-1;i>=0;i--) {
+            var g:Object=s.grenades[i];
+            if(!Cf6VehicleCombat.owned(s,g.clip)) {s.reason="owned-grenade-replaced";continue;}
+            if(g.frame==31) {
+                var hx:Number=s.actorAdapter.hero._x/s.spec.scale,hy:Number=s.actorAdapter.hero.Z轴坐标/s.spec.scale;
+                if(Cf6VehicleCombat.overlap(s.data.grenade,g.clip._x/s.spec.scale,g.clip._y/s.spec.scale,s.data.player,hx,hy)) Cf6VehicleCombat.damageHero(s,g);
+                Cf6VehicleCombat.effect(s,"explosion",g.clip._x/s.spec.scale-452.65,g.clip._y/s.spec.scale+0.95);
+            }
+            Cf6VehicleTimeline.pose(g.clip,g.frame);Cf6VehicleTimeline.advance(g.clip,true);g.frame++;
+            if(g.frame>61) {Cf6VehicleCombat.retire(s,g);s.grenades.splice(i,1);}
+        }
+    }
+    private static function tail(s:Object):Void {
+        for(var i:Number=0;i<s.actors.length;i++) Cf6VehicleCombat.retire(s,s.actors[i]);s.actors=[];
+        for(i=0;i<s.projectiles.length;i++) Cf6VehicleCombat.retire(s,s.projectiles[i]);s.projectiles=[];
+        for(i=0;i<s.grenades.length;i++) Cf6VehicleCombat.retire(s,s.grenades[i]);s.grenades=[];
+        FocusTargetHudService.clear(s.hudLease);s.hudLease=null;
+        if(Cf6VehicleCombat.owned(s,s.boss)) {s.boss.dispatcher.destroy();s.boss.removeMovieClip();}
+        s.boss=null;
+        for(i=0;i<s.data.tail.length;i++) spawn(s,s.data.tail[i],-1);
+        s.tailX=s.data.endpoint.x;
+    }
+    private static function enterDead(s:Object):String {
+        if(s.status=="dead") return s.status;
+        s.resumeStatus=s.status;s.deadCarFrame=s.player._currentframe;
+        if(!s.heroDeathSound) {Cf6VehicleCombat.playCue(s,"vehicleDeath",true);s.heroDeathSound=true;}
+        s.deadHold=Cf6VehicleActorAdapter.park(s.actorAdapter);
+        if(s.deadHold==null) {s.reason="dead-presentation-owner-changed";dispose(s);return "cancelled";}
+        releaseLoading(s);FocusTargetHudService.clear(s.hudLease);s.hudLease=null;
+        s.status="dead";Cf6VehicleTimeline.pose(s.player,16);
+        return s.status;
+    }
+    private static function resumeDead(s:Object):String {
+        if(!Cf6VehicleActorAdapter.parked(s.deadHold)) {s.reason="dead-actor-owner-changed";dispose(s);return "cancelled";}
+        if(!(s.deadHold.hero.hp>0)) {s.deadHold.hero._visible=false;return "dead";}
+        var adapter:Object=Cf6VehicleActorAdapter.resume(s.deadHold);
+        if(adapter==null) {s.reason="revived-actor-owner-rejected";dispose(s);return "cancelled";}
+        s.actorAdapter=adapter;s.deadHold=null;s.status=s.resumeStatus;s.heroDeathSound=false;
+        Cf6VehicleTimeline.pose(s.player,s.deadCarFrame);syncPlayer(s);
+        if(s.status=="loading")s.loadingLease=PauseManager.lease(true,"cf6_vehicle_loading");
+        if(Cf6VehicleCombat.owned(s,s.boss)) {
+            s.hudLease=FocusTargetHudService.bind(s.world,s.owner,s.boss,"__cf6HudIdentity",s.hudIdentity,"boss","装甲战车");
+            if(s.hudLease==null) {s.reason="revived-boss-hud-owner-rejected";s.status="failed";}
+        }
+        return s.status;
+    }
+    public static function tick(s:Object):String {
+        if(s==null || s.closed) return "cancelled";
+        if(!current(s)) {dispose(s);return "cancelled";}
+        if(s.status=="failed") return s.status;
+        if(s.status=="dead") return resumeDead(s);
+        if(!(s.actorAdapter.hero.hp>0)) return enterDead(s);
+        if(s.status=="complete") return s.status;
+        if(!Cf6VehicleActorAdapter.current(s.actorAdapter)) {s.reason="actor-owner-changed";dispose(s);return "cancelled";}
+        if(s.status=="loading") {
+            if(PauseManager.isPausedExcept(s.loadingLease)) return s.status;
+            s.age++;
+            if(!start(s) && (s.reason!="" || s.age>180)) {
+                s.status="failed";if(s.reason=="") s.reason="asset-loading-timeout";releaseLoading(s);
+            }
+            return s.status;
+        }
+        if(PauseManager.isPaused() || _root.场景转换中===true) return s.status;
+        s.age++;
+        var input:Object={x:0,z:0,fire:false};
+        if(s.rules.phase!="boss-intro") {
+            input=readInput();
+        }
+        // The real hero/boss clips are the only health authorities. Pure legacy
+        // hit helpers remain testable but are not used for production deduction.
+        Cf6VehicleRules.observeHealth(s.rules,s.token,s.actorAdapter.hero.hp,s.boss==null?undefined:s.boss.hp);
+        var intent:Object=Cf6VehicleRules.tick(s.rules,s.token,false,input);
+        Cf6VehicleActorAdapter.move(s.actorAdapter,intent.dx,intent.dz,s.spec.scale,s.data.player,s.data.walls);
+        Cf6VehicleTimeline.pose(s.player,input.fire?8:1);Cf6VehicleTimeline.advance(s.player,true);
+        Cf6VehicleTimeline.advance(s.road,false);generators(s);actors(s);
+        if(intent.cue=="spawn-boss") spawnBoss(s);
+        if(intent.shots>0) Cf6VehicleCombat.fire(s);
+        boss(s,intent);Cf6VehicleCombat.projectiles(s);grenades(s);Cf6VehicleCombat.effects(s);
+        if(intent.cue=="spawn-tail") tail(s);
+        if(s.rules.phase=="tail") {
+            var oldX:Number=s.tailX;s.tailX-=20;
+            var rect:Array=s.data.endpoint.rect;
+            var swept:Array=[s.tailX+rect[0],rect[1],oldX+rect[2],rect[3]];
+            if(Cf6VehicleCombat.overlap(swept,0,s.data.endpoint.y,s.data.player,s.actorAdapter.hero._x/s.spec.scale,s.actorAdapter.hero.Z轴坐标/s.spec.scale)) {
+                Cf6VehicleRules.reachTail(s.rules,s.token,true);s.status="complete";
+            }
+        }
+        syncPlayer(s);
+        if(!(s.actorAdapter.hero.hp>0)) return enterDead(s);
+        else if(s.reason!="") s.status="failed";
+        return s.status;
+    }
+    public static function snapshot(s:Object):Object {
+        return s==null?{status:"cancelled"}:{status:s.status,phase:s.rules.phase,roadKills:s.rules.roadKills,
+            bossFrame:s.rules.bossFrame,bossHp:s.boss.hp,heroHp:s.actorAdapter.hero.hp,shots:s.shots,
+            bossHits:s.bossHits,grenadeHits:s.grenadeHits,actors:s.actors.length,projectiles:s.projectiles.length,
+            grenades:s.grenades.length,effects:s.effects.length,tailX:s.tailX,reason:s.reason,loadingLease:s.loadingLease};
+    }
+    public static function dispose(s:Object):Void {
+        if(s==null || s.closed) return;
+        FocusTargetHudService.clear(s.hudLease);releaseLoading(s);
+        for(var i:Number=0;i<s.actors.length;i++) Cf6VehicleCombat.retire(s,s.actors[i]);
+        for(i=0;i<s.projectiles.length;i++) Cf6VehicleCombat.retire(s,s.projectiles[i]);
+        for(i=0;i<s.grenades.length;i++) Cf6VehicleCombat.retire(s,s.grenades[i]);
+        for(i=0;i<s.effects.length;i++) Cf6VehicleCombat.retire(s,s.effects[i]);
+        var clips:Array=[s.player,s.road,s.boss];
+        for(i=0;i<clips.length;i++) if(Cf6VehicleCombat.owned(s,clips[i])) {
+            if(clips[i].dispatcher!=undefined) clips[i].dispatcher.destroy();
+            if(DepthManager.instance!=undefined) DepthManager.instance.removeMovieClip(clips[i]);
+            if(clips[i].getDepth()<0) clips[i].swapDepths(s.world.getNextHighestDepth());
+            clips[i].removeMovieClip();
+        }
+        Cf6VehicleActorAdapter.release(s.actorAdapter);
+        Cf6VehicleActorAdapter.releaseParked(s.deadHold);
+        if(s.world.__cf6VehicleSession===s) delete s.world.__cf6VehicleSession;
+        s.closed=true;s.status="cancelled";
+    }
+}

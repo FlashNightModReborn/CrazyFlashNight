@@ -53,12 +53,12 @@ $focusedRun = @{
     ExpectedTracePatterns = @(
         '(?m)^BookComicServiceTest Tests Passed: 45\r?$'
         '(?m)^BookComicServiceTest Tests Failed: 0\r?$'
-        '(?m)^Cf6StoryServiceTest Tests Passed: 94\r?$'
+        '(?m)^Cf6StoryServiceTest Tests Passed: 108\r?$'
         '(?m)^Cf6StoryServiceTest Tests Failed: 0\r?$'
-        '(?m)^Cf6BookRunStoryTest Tests Passed: 32\r?$'
+        '(?m)^Cf6BookRunStoryTest Tests Passed: 51\r?$'
         '(?m)^Cf6BookRunStoryTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = '171/171 assertions; real BookRun/CF6/BookComic preparation, room and outcome lifecycle fixtures'
+    SuccessSummary = '204/204 assertions; separate S4-A07/S5-A08/S6-A18 chapter gates, generic sequence preparation and unchanged final outcome lifecycle'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

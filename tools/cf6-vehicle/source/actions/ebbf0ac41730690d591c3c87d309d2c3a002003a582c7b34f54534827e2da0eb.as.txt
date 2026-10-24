@@ -1,0 +1,24 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 58;
+   var §\x0f§ = 1;
+   if(_root.gameworld.man1._xscale > 0)
+   {
+      _parent._parent._xscale = -100;
+      _parent._parent._x = _root.gameworld.man1._x + 50;
+   }
+   else
+   {
+      _parent._parent._xscale = 100;
+      _parent._parent._x = _root.gameworld.man1._x - 50;
+   }
+   if(this.hitTest(_root.gameworld.man1.man.顶膝))
+   {
+      _parent._parent.hp -= _root.近战轻击威力;
+      _parent.play();
+   }
+   else if(this.hitTest(_root.gameworld.man1.man.踢飞))
+   {
+      _parent._parent.hp -= _root.近战中击威力;
+      _parent._parent.gotoAndStop("倒");
+   }
+}

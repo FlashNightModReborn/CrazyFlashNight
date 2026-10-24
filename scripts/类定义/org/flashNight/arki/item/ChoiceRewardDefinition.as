@@ -1653,7 +1653,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
     private static function pool6():Object {
         return {
     id: "cf6.sting.t1",
-    version: 1,
+    version: 2,
     title: "毒刺行动 · 阶段配给一",
     itemName: "书中CF6毒刺自选配给包·一",
     scope: {
@@ -1667,11 +1667,126 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
             draw: 3,
             entries: [
                 {
-                    id: "cf6.sting.t1.gun",
+                    id: "cf6.sting.weapon.e979cdf622a7",
                     weight: 1,
-                    title: "巴雷特 装载",
-                    description: "巴雷特一把,附配套弹药与急救。史实候选,未实测平衡。",
-                    grade: "low",
+                    title: "M4A1战术版",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "M4A1战术版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.8d42d5e3c287",
+                    weight: 1,
+                    title: "AK74战术版",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "AK74战术版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.35a4c901aaff",
+                    weight: 1,
+                    title: "HKSL8EX",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "HKSL8EX",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.aa784b31eda5",
+                    weight: 1,
+                    title: "HKSL8GOLD",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "HKSL8GOLD",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.af4d118ef318",
+                    weight: 1,
+                    title: "WA2000",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "WA2000",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.053510041d14",
+                    weight: 1,
+                    title: "巴雷特",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
                     entries: [
                         {
                             itemName: "巴雷特",
@@ -1690,10 +1805,156 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     kCost: 0
                 },
                 {
+                    id: "cf6.sting.weapon.d75249510647",
+                    weight: 1,
+                    title: "龙炎",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "龙炎",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "00号鹿弹",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.b5fbdec0ef8a",
+                    weight: 1,
+                    title: "战术版莫斯伯格590",
+                    description: "双持两把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "战术版莫斯伯格590",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "战术版莫斯伯格590",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "00号鹿弹",
+                            quantity: 12
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.f9dd84d8c0d7",
+                    weight: 1,
+                    title: "Desert Eagle改装版",
+                    description: "双持两把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "Desert Eagle改装版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "Desert Eagle改装版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "马格南手枪弹药",
+                            quantity: 12
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.9691393bbfa1",
+                    weight: 1,
+                    title: "DD MK18战术版",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "DD MK18战术版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪钨芯穿甲弹",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.271057a72cfd",
+                    weight: 1,
+                    title: "M60E3",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "M60E3",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "机枪贫铀穿甲弹",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.20eb61a3e508",
+                    weight: 1,
+                    title: "M4A1科技白",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "M4A1科技白",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
                     id: "cf6.sting.t1.supply",
                     weight: 1,
                     title: "阶段补给 · 一",
-                    description: "弹药/治疗/强化石组合,按阶段梯度。",
+                    description: "弹药、治疗与强化石组合。",
                     grade: "low",
                     entries: [
                         {
@@ -1716,7 +1977,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     id: "cf6.sting.t1.skill",
                     weight: 1,
                     title: "技能传授 · 小跳",
-                    description: "直接传授1级小跳(史实Andy未满技能)。",
+                    description: "直接传授1级小跳。",
                     grade: "low",
                     entries: [],
                     skills: [
@@ -1735,7 +1996,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
     private static function pool7():Object {
         return {
     id: "cf6.sting.t2",
-    version: 1,
+    version: 2,
     title: "毒刺行动 · 阶段配给二",
     itemName: "书中CF6毒刺自选配给包·二",
     scope: {
@@ -1749,14 +2010,229 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
             draw: 3,
             entries: [
                 {
-                    id: "cf6.sting.t2.gun",
+                    id: "cf6.sting.weapon.e979cdf622a7",
                     weight: 1,
-                    title: "G111 装载",
-                    description: "G111一把,附配套弹药与急救。史实候选,未实测平衡。",
+                    title: "M4A1战术版",
+                    description: "一把，附配套弹药与急救。",
                     grade: "medium",
                     entries: [
                         {
-                            itemName: "G111",
+                            itemName: "M4A1战术版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.8d42d5e3c287",
+                    weight: 1,
+                    title: "AK74战术版",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "AK74战术版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.35a4c901aaff",
+                    weight: 1,
+                    title: "HKSL8EX",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "HKSL8EX",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.aa784b31eda5",
+                    weight: 1,
+                    title: "HKSL8GOLD",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "HKSL8GOLD",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.af4d118ef318",
+                    weight: 1,
+                    title: "WA2000",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "WA2000",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.053510041d14",
+                    weight: 1,
+                    title: "巴雷特",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "巴雷特",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.d75249510647",
+                    weight: 1,
+                    title: "龙炎",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "龙炎",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "00号鹿弹",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.b5fbdec0ef8a",
+                    weight: 1,
+                    title: "战术版莫斯伯格590",
+                    description: "双持两把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "战术版莫斯伯格590",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "战术版莫斯伯格590",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "00号鹿弹",
+                            quantity: 12
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.f9dd84d8c0d7",
+                    weight: 1,
+                    title: "Desert Eagle改装版",
+                    description: "双持两把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "Desert Eagle改装版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "Desert Eagle改装版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "马格南手枪弹药",
+                            quantity: 12
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.9691393bbfa1",
+                    weight: 1,
+                    title: "DD MK18战术版",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "DD MK18战术版",
                             quantity: 1
                         },
                         {
@@ -1772,10 +2248,56 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     kCost: 0
                 },
                 {
+                    id: "cf6.sting.weapon.271057a72cfd",
+                    weight: 1,
+                    title: "M60E3",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "M60E3",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "机枪贫铀穿甲弹",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.20eb61a3e508",
+                    weight: 1,
+                    title: "M4A1科技白",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "M4A1科技白",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
                     id: "cf6.sting.t2.supply",
                     weight: 1,
                     title: "阶段补给 · 二",
-                    description: "弹药/治疗/强化石组合,按阶段梯度。",
+                    description: "弹药、治疗与强化石组合。",
                     grade: "medium",
                     entries: [
                         {
@@ -1798,7 +2320,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     id: "cf6.sting.t2.skill",
                     weight: 1,
                     title: "技能传授 · 拳脚攻击",
-                    description: "直接传授1级拳脚攻击(史实Andy未满技能)。",
+                    description: "直接传授1级拳脚攻击。",
                     grade: "medium",
                     entries: [],
                     skills: [
@@ -1817,7 +2339,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
     private static function pool8():Object {
         return {
     id: "cf6.sting.t3",
-    version: 1,
+    version: 2,
     title: "毒刺行动 · 阶段配给三",
     itemName: "书中CF6毒刺自选配给包·三",
     scope: {
@@ -1831,14 +2353,367 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
             draw: 3,
             entries: [
                 {
-                    id: "cf6.sting.t3.gun",
+                    id: "cf6.sting.weapon.e979cdf622a7",
                     weight: 1,
-                    title: "M134暴力版 装载",
-                    description: "M134暴力版一把,附配套弹药与急救。史实候选,未实测平衡。",
+                    title: "M4A1战术版",
+                    description: "一把，附配套弹药与急救。",
                     grade: "medium",
                     entries: [
                         {
-                            itemName: "M134暴力版",
+                            itemName: "M4A1战术版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.8d42d5e3c287",
+                    weight: 1,
+                    title: "AK74战术版",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "AK74战术版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.eff2dbcf5bf2",
+                    weight: 1,
+                    title: "黄金QBZ",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "high",
+                    entries: [
+                        {
+                            itemName: "黄金QBZ",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "00号鹿弹",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.35a4c901aaff",
+                    weight: 1,
+                    title: "HKSL8EX",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "HKSL8EX",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.aa784b31eda5",
+                    weight: 1,
+                    title: "HKSL8GOLD",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "HKSL8GOLD",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.af4d118ef318",
+                    weight: 1,
+                    title: "WA2000",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "WA2000",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.053510041d14",
+                    weight: 1,
+                    title: "巴雷特",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "巴雷特",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.6a77e2f204c5",
+                    weight: 1,
+                    title: "M82A1加强版",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "high",
+                    entries: [
+                        {
+                            itemName: "M82A1加强版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.d30f01a12324",
+                    weight: 1,
+                    title: "战术巴雷特",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "high",
+                    entries: [
+                        {
+                            itemName: "战术巴雷特",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.d75249510647",
+                    weight: 1,
+                    title: "龙炎",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "龙炎",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "00号鹿弹",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.b5fbdec0ef8a",
+                    weight: 1,
+                    title: "战术版莫斯伯格590",
+                    description: "双持两把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "战术版莫斯伯格590",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "战术版莫斯伯格590",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "00号鹿弹",
+                            quantity: 12
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.482420c1e898",
+                    weight: 1,
+                    title: "高斯枪",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "high",
+                    entries: [
+                        {
+                            itemName: "高斯枪",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "能量电池",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.fcf5e82c7b35",
+                    weight: 1,
+                    title: "能量狙击枪",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "high",
+                    entries: [
+                        {
+                            itemName: "能量狙击枪",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "能量电池",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.f9dd84d8c0d7",
+                    weight: 1,
+                    title: "Desert Eagle改装版",
+                    description: "双持两把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "Desert Eagle改装版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "Desert Eagle改装版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "马格南手枪弹药",
+                            quantity: 12
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.9691393bbfa1",
+                    weight: 1,
+                    title: "DD MK18战术版",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "DD MK18战术版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪钨芯穿甲弹",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.271057a72cfd",
+                    weight: 1,
+                    title: "M60E3",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "M60E3",
                             quantity: 1
                         },
                         {
@@ -1854,10 +2729,33 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     kCost: 0
                 },
                 {
+                    id: "cf6.sting.weapon.20eb61a3e508",
+                    weight: 1,
+                    title: "M4A1科技白",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "M4A1科技白",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
                     id: "cf6.sting.t3.supply",
                     weight: 1,
                     title: "阶段补给 · 三",
-                    description: "弹药/治疗/强化石组合,按阶段梯度。",
+                    description: "弹药、治疗与强化石组合。",
                     grade: "medium",
                     entries: [
                         {
@@ -1880,7 +2778,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     id: "cf6.sting.t3.skill",
                     weight: 1,
                     title: "技能传授 · 升龙拳",
-                    description: "直接传授1级升龙拳(史实Andy未满技能)。",
+                    description: "直接传授1级升龙拳。",
                     grade: "medium",
                     entries: [],
                     skills: [
@@ -1899,7 +2797,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
     private static function pool9():Object {
         return {
     id: "cf6.sting.t4",
-    version: 1,
+    version: 2,
     title: "毒刺行动 · 阶段配给四",
     itemName: "书中CF6毒刺自选配给包·四",
     scope: {
@@ -1913,14 +2811,390 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
             draw: 3,
             entries: [
                 {
-                    id: "cf6.sting.t4.gun",
+                    id: "cf6.sting.weapon.e979cdf622a7",
                     weight: 1,
-                    title: "战术-QBZ-191 装载",
-                    description: "战术-QBZ-191一把,附配套弹药与急救。史实候选,未实测平衡。",
+                    title: "M4A1战术版",
+                    description: "一把，附配套弹药与急救。",
                     grade: "medium",
                     entries: [
                         {
-                            itemName: "战术-QBZ-191",
+                            itemName: "M4A1战术版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.8d42d5e3c287",
+                    weight: 1,
+                    title: "AK74战术版",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "AK74战术版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.eff2dbcf5bf2",
+                    weight: 1,
+                    title: "黄金QBZ",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "high",
+                    entries: [
+                        {
+                            itemName: "黄金QBZ",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "00号鹿弹",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.35a4c901aaff",
+                    weight: 1,
+                    title: "HKSL8EX",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "HKSL8EX",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.aa784b31eda5",
+                    weight: 1,
+                    title: "HKSL8GOLD",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "HKSL8GOLD",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.af4d118ef318",
+                    weight: 1,
+                    title: "WA2000",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "WA2000",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.053510041d14",
+                    weight: 1,
+                    title: "巴雷特",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "巴雷特",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.6a77e2f204c5",
+                    weight: 1,
+                    title: "M82A1加强版",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "high",
+                    entries: [
+                        {
+                            itemName: "M82A1加强版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.d30f01a12324",
+                    weight: 1,
+                    title: "战术巴雷特",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "high",
+                    entries: [
+                        {
+                            itemName: "战术巴雷特",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.d75249510647",
+                    weight: 1,
+                    title: "龙炎",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "龙炎",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "00号鹿弹",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.b5fbdec0ef8a",
+                    weight: 1,
+                    title: "战术版莫斯伯格590",
+                    description: "双持两把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "战术版莫斯伯格590",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "战术版莫斯伯格590",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "00号鹿弹",
+                            quantity: 12
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.482420c1e898",
+                    weight: 1,
+                    title: "高斯枪",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "high",
+                    entries: [
+                        {
+                            itemName: "高斯枪",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "能量电池",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.fcf5e82c7b35",
+                    weight: 1,
+                    title: "能量狙击枪",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "high",
+                    entries: [
+                        {
+                            itemName: "能量狙击枪",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "能量电池",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.f9dd84d8c0d7",
+                    weight: 1,
+                    title: "Desert Eagle改装版",
+                    description: "双持两把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "Desert Eagle改装版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "Desert Eagle改装版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "马格南手枪弹药",
+                            quantity: 12
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.9691393bbfa1",
+                    weight: 1,
+                    title: "DD MK18战术版",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "DD MK18战术版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪钨芯穿甲弹",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.271057a72cfd",
+                    weight: 1,
+                    title: "M60E3",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "M60E3",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "机枪贫铀穿甲弹",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.20eb61a3e508",
+                    weight: 1,
+                    title: "M4A1科技白",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "M4A1科技白",
                             quantity: 1
                         },
                         {
@@ -1939,7 +3213,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     id: "cf6.sting.t4.supply",
                     weight: 1,
                     title: "阶段补给 · 四",
-                    description: "弹药/治疗/强化石组合,按阶段梯度。",
+                    description: "弹药、治疗与强化石组合。",
                     grade: "medium",
                     entries: [
                         {
@@ -1962,7 +3236,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     id: "cf6.sting.t4.skill",
                     weight: 1,
                     title: "技能传授 · 聚气",
-                    description: "直接传授1级聚气(史实Andy未满技能)。",
+                    description: "直接传授1级聚气。",
                     grade: "medium",
                     entries: [],
                     skills: [
@@ -1981,7 +3255,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
     private static function pool10():Object {
         return {
     id: "cf6.sting.t5",
-    version: 1,
+    version: 2,
     title: "毒刺行动 · 阶段配给五",
     itemName: "书中CF6毒刺自选配给包·五",
     scope: {
@@ -1995,10 +3269,340 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
             draw: 3,
             entries: [
                 {
-                    id: "cf6.sting.t5.gun",
+                    id: "cf6.sting.weapon.e979cdf622a7",
                     weight: 1,
-                    title: "紫色幻想 装载",
-                    description: "紫色幻想一把,附配套弹药与急救。史实候选,未实测平衡。",
+                    title: "M4A1战术版",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "M4A1战术版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.8d42d5e3c287",
+                    weight: 1,
+                    title: "AK74战术版",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "AK74战术版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.eff2dbcf5bf2",
+                    weight: 1,
+                    title: "黄金QBZ",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "high",
+                    entries: [
+                        {
+                            itemName: "黄金QBZ",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "00号鹿弹",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.35a4c901aaff",
+                    weight: 1,
+                    title: "HKSL8EX",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "HKSL8EX",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.aa784b31eda5",
+                    weight: 1,
+                    title: "HKSL8GOLD",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "HKSL8GOLD",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.af4d118ef318",
+                    weight: 1,
+                    title: "WA2000",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "WA2000",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.053510041d14",
+                    weight: 1,
+                    title: "巴雷特",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "巴雷特",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.6a77e2f204c5",
+                    weight: 1,
+                    title: "M82A1加强版",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "high",
+                    entries: [
+                        {
+                            itemName: "M82A1加强版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.d30f01a12324",
+                    weight: 1,
+                    title: "战术巴雷特",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "high",
+                    entries: [
+                        {
+                            itemName: "战术巴雷特",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "狙击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.d75249510647",
+                    weight: 1,
+                    title: "龙炎",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "龙炎",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "00号鹿弹",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.b5fbdec0ef8a",
+                    weight: 1,
+                    title: "战术版莫斯伯格590",
+                    description: "双持两把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "战术版莫斯伯格590",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "战术版莫斯伯格590",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "00号鹿弹",
+                            quantity: 12
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.482420c1e898",
+                    weight: 1,
+                    title: "高斯枪",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "high",
+                    entries: [
+                        {
+                            itemName: "高斯枪",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "能量电池",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.fcf5e82c7b35",
+                    weight: 1,
+                    title: "能量狙击枪",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "high",
+                    entries: [
+                        {
+                            itemName: "能量狙击枪",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "能量电池",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.35a2716045f2",
+                    weight: 1,
+                    title: "轻量化量子能量枪",
+                    description: "双持两把，附配套弹药与急救。",
+                    grade: "high",
+                    entries: [
+                        {
+                            itemName: "轻量化量子能量枪",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "轻量化量子能量枪",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "能量电池",
+                            quantity: 12
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.cf2c0372fbfd",
+                    weight: 1,
+                    title: "紫色幻想",
+                    description: "一把，附配套弹药与急救。",
                     grade: "high",
                     entries: [
                         {
@@ -2018,10 +3622,106 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     kCost: 0
                 },
                 {
+                    id: "cf6.sting.weapon.f9dd84d8c0d7",
+                    weight: 1,
+                    title: "Desert Eagle改装版",
+                    description: "双持两把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "Desert Eagle改装版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "Desert Eagle改装版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "马格南手枪弹药",
+                            quantity: 12
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.9691393bbfa1",
+                    weight: 1,
+                    title: "DD MK18战术版",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "DD MK18战术版",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪钨芯穿甲弹",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.271057a72cfd",
+                    weight: 1,
+                    title: "M60E3",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "M60E3",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "机枪贫铀穿甲弹",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
+                    id: "cf6.sting.weapon.20eb61a3e508",
+                    weight: 1,
+                    title: "M4A1科技白",
+                    description: "一把，附配套弹药与急救。",
+                    grade: "medium",
+                    entries: [
+                        {
+                            itemName: "M4A1科技白",
+                            quantity: 1
+                        },
+                        {
+                            itemName: "突击步枪通用弹药",
+                            quantity: 6
+                        },
+                        {
+                            itemName: "普通hp药剂",
+                            quantity: 2
+                        }
+                    ],
+                    skills: [],
+                    kCost: 0
+                },
+                {
                     id: "cf6.sting.t5.supply",
                     weight: 1,
                     title: "阶段补给 · 五",
-                    description: "弹药/治疗/强化石组合,按阶段梯度。",
+                    description: "弹药、治疗与强化石组合。",
                     grade: "high",
                     entries: [
                         {
@@ -2044,7 +3744,7 @@ class org.flashNight.arki.item.ChoiceRewardDefinition {
                     id: "cf6.sting.t5.skill",
                     weight: 1,
                     title: "技能传授 · 霸体",
-                    description: "直接传授1级霸体(史实Andy未满技能)。",
+                    description: "直接传授1级霸体。",
                     grade: "high",
                     entries: [],
                     skills: [

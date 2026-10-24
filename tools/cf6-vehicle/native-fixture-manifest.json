@@ -1,0 +1,113 @@
+{
+  "schema": "cf6-vehicle-native-fixture.v1",
+  "nativeSwf": "flashswf/arts/new/CF6Vehicle.swf",
+  "nativeSha256": "876b2955bbf486d5a82fa15142738f6a23887577d717e947143707d4ed600855",
+  "nativeStructure": {
+    "shapes": 398,
+    "bitmaps": 45,
+    "public": {
+      "CF6VehiclePlayer": {
+        "sourceId": 1803,
+        "frames": 29,
+        "closureNodes": 86,
+        "reachableShapes": 62
+      },
+      "CF6VehicleArmoredBoss": {
+        "sourceId": 1813,
+        "frames": 209,
+        "closureNodes": 146,
+        "reachableShapes": 130
+      },
+      "CF6VehicleRoad": {
+        "sourceId": 1791,
+        "frames": 49,
+        "closureNodes": 125,
+        "reachableShapes": 99
+      },
+      "CF6VehicleRaider": {
+        "sourceId": 612,
+        "frames": 97,
+        "closureNodes": 98,
+        "reachableShapes": 86
+      },
+      "CF6VehicleShield": {
+        "sourceId": 629,
+        "frames": 98,
+        "closureNodes": 117,
+        "reachableShapes": 100
+      },
+      "CF6VehicleRoadblock": {
+        "sourceId": 627,
+        "frames": 17,
+        "closureNodes": 13,
+        "reachableShapes": 11
+      },
+      "CF6VehicleGrenade": {
+        "sourceId": 361,
+        "frames": 61,
+        "closureNodes": 2,
+        "reachableShapes": 1
+      },
+      "CF6VehicleBullet": {
+        "sourceId": 356,
+        "frames": 1,
+        "closureNodes": 5,
+        "reachableShapes": 2
+      },
+      "CF6VehicleSpark": {
+        "sourceId": 115,
+        "frames": 140,
+        "closureNodes": 21,
+        "reachableShapes": 20
+      },
+      "CF6VehicleExplosion": {
+        "sourceId": 391,
+        "frames": 133,
+        "closureNodes": 15,
+        "reachableShapes": 14
+      }
+    },
+    "boundary": "structure only; real pixels and production consumer remain required"
+  },
+  "exports": [
+    "CF6Vehicle",
+    "CF6VehicleArmoredBoss",
+    "CF6VehicleBullet",
+    "CF6VehicleExplosion",
+    "CF6VehicleGrenade",
+    "CF6VehiclePlayer",
+    "CF6VehicleRaider",
+    "CF6VehicleRoad",
+    "CF6VehicleRoadblock",
+    "CF6VehicleShield",
+    "CF6VehicleSpark"
+  ],
+  "resourceSourceManifestSha256": "2a7167122ae42f296d9a4b95ed41bdd2c826e273c6d546d562d8d75b9b7f635f",
+  "runtimeManifestSha256": "72d8583a9f1484d9443d3f3c3aaa369beb61c2a2008b3551a917b148ac4a494a",
+  "fixtureInputs": {
+    "tools/cf6-vehicle/prepare_tests.py": "3581f93a867de8ba68515a782e9028b97039f41f3792ba2d9cd78defa7f54f38",
+    "tools/cf6-vehicle/native_graph.py": "00d1f4d74a137350393bab64ff4b66f56858e255e06c274673ead86e45154cd9",
+    "tools/cf6-vehicle/Cf6VehicleTest.as.txt": "43145c99fa3586c20b50a56ad2a1396319e476a467743ef9859d4a0384a32477",
+    "tools/cf6-vehicle/chapter_fragment.py": "af633fe0d92cb510dd4318ee4075c172752da7ff7e75b411a0e6e418a744702f"
+  },
+  "generated": {
+    "scripts/tmp-cf6-vehicle-host/LIBRARY/ImportVehicle0.xml": "c77b14bbbf93f6a0d8d22042753ec90eefa8cbddfadb12ef6fc155112f15d646",
+    "scripts/tmp-cf6-vehicle-host/LIBRARY/ImportVehicle1.xml": "63dc5d1c0b5d27b9d84dd3e2c41d7b64397b8691de31bfd4755005aca5b52f1c",
+    "scripts/tmp-cf6-vehicle-host/LIBRARY/ImportVehicle2.xml": "e758c944e6e6b1d0377591d85a83d5204a607d8b1b11e55f4c82779c551c9b44",
+    "scripts/tmp-cf6-vehicle-host/LIBRARY/ImportVehicle3.xml": "a8e8d8298d8a06d3aef41dc142c96fc27f69ef932a230d66ce47d76899990d04",
+    "scripts/tmp-cf6-vehicle-host/LIBRARY/ImportVehicle4.xml": "4ed6854f17cc4b05c3401eca2603220babb767852e0eb232ba0e3e99864b5666",
+    "scripts/tmp-cf6-vehicle-host/LIBRARY/ImportVehicle5.xml": "f558607f0961adf4f5ee89005b2f20d3b6816fa7e9921eafd722f313094b09d2",
+    "scripts/tmp-cf6-vehicle-host/LIBRARY/ImportVehicle6.xml": "afc2363c8615325b3bec51f91f0ac8a9cb97f181bc1a0b312607b046794b7891",
+    "scripts/tmp-cf6-vehicle-host/LIBRARY/ImportVehicle7.xml": "2c2da6ccbaf9a5531efcb505bbacb7f0542fc972122e6ba1ed002ea7e67e3c61",
+    "scripts/tmp-cf6-vehicle-host/LIBRARY/ImportVehicle8.xml": "79e9cb94a38aca2bd44a65a15ed20f659d6bfe9c3846dc0b6159534c6e797eac",
+    "scripts/tmp-cf6-vehicle-host/LIBRARY/ImportVehicle9.xml": "487d25a488bd949c55a0a2272b2900197ade9223eef6f96a038a0ee3d035553d",
+    "scripts/tmp-cf6-vehicle-host/LIBRARY/ImportVehicle10.xml": "b0c107f5c0a1ad4cd34b75dfb6d0dd03d4bb776b7e537468ae00af9b9b642db6",
+    "scripts/tmp-cf6-vehicle-host/LIBRARY/VehicleIntroClockReference.xml": "22d1eda0f45627641318e213fdd36e2af1723e1faf33c42cfdabcf9218e31ab4",
+    "scripts/tmp-cf6-vehicle-host/DOMDocument.xml": "12ddb043c3a40911b4945642cb84b512b1769c53a2ba85da82e13efc05b1840c",
+    "scripts/tmp-cf6-vehicle-host/Cf6VehicleNativeHost.xfl": "29ac2e403620428ee4130686b456aefb0cc6d45e3be6e9c3191af906c1301f38",
+    "scripts/tmp-cf6-vehicle-host/PublishSettings.xml": "2f1b3916e22d7789ea308cf2f02bc4e1c785292d49d85cbbc68cc5c909d3ee8e",
+    "tools/cf6-vehicle/TestLoader.as.template": "1375808a90dbb587895251084e2a8f8902e0b6945278e2b0368cdfdd7e60a655",
+    "scripts/类定义/org/flashNight/arki/scene/Cf6VehicleTestData.as": "08cb9e3a79777d952d303f9d7f71f241971ef0186c5f6a0846fc2a175f6eaaa1"
+  },
+  "boundary": "direct real-RSL fixture; production things-new import chain and actual player initialization are separate gates"
+}

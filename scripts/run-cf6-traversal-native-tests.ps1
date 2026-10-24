@@ -21,6 +21,6 @@ $text=[IO.File]::ReadAllText($publish,[Text.Encoding]::UTF8).Replace('Cf6ActorAp
     -SuiteRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6TraversalNativeTest.as') `
     -SuiteFqns @('org.flashNight.arki.scene.Cf6TraversalNativeTest') `
     -AdditionalAsRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6TraversalService.as','scripts/类定义/org/flashNight/arki/scene/Cf6TraversalRules.as','scripts/类定义/org/flashNight/arki/scene/Cf6MapMechanism.as','scripts/类定义/org/flashNight/arki/scene/Cf6ActorMaskState.as','scripts/类定义/org/flashNight/arki/unit/UnitComponent/Routing/StateTransition.as') `
-    -ExpectedTracePatterns @('(?m)^Cf6TraversalNativeTest Tests Passed: 97\r?$', '(?m)^Cf6TraversalNativeTest Tests Failed: 0\r?$') `
-    -SuccessSummary '97 native player/state/traversal assertions: three gun modes across 174-frame doors and 30-frame elevators, native walking legs and no upper-body reload traversal; no full-game acceptance' `
+    -ExpectedTracePatterns @('(?m)^Cf6TraversalNativeTest Tests Passed: 112\r?$', '(?m)^Cf6TraversalNativeTest Tests Failed: 0\r?$') `
+    -SuccessSummary '112 native player/state/traversal assertions with elevator standing hold: three gun modes across 174-frame doors and 30-frame elevators, native walking legs and no upper-body reload traversal; no full-game acceptance' `
     -AsyncBehaviorTimeoutSeconds 180 -TimeoutSeconds $TimeoutSeconds -SkipCompile:$SkipCompile

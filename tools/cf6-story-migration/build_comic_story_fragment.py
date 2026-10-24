@@ -4,7 +4,7 @@
 
 Closed schema cf6-comic-story.fragment.v1. Every segment carries original
 frame/label/trigger evidence, route before/after against the current
-TUTORIAL→A01-A06→A08-A20→A22 route (A07 excluded, A21 performance kept),
+TUTORIAL→A01-A20 route (A07 vehicle gameplay retained; original A21/A22 finale stays in A20),
 per-page assets/text/input semantics and a single continuation. Anything not
 found in the source is marked "unknown" — never invented.
 
@@ -31,9 +31,8 @@ FPS = 30.0
 VIEWPORT_W = 600.0
 VIEWPORT_H = 350.0
 
-# Current route (主控给定): TUTORIAL→A01-A06→A08-A20→A22; A07 excluded; A21 = performance map.
-ROUTE_MAPS = ["TUTORIAL", "A01", "A02", "A03", "A04", "A05", "A06", "A08", "A09", "A10",
-              "A11", "A12", "A13", "A14", "A15", "A16", "A17", "A18", "A19", "A20", "A22"]
+# Current runtime rooms; original A21 transformation and A22 second form share A20.
+ROUTE_MAPS = ["TUTORIAL"] + ["A%02d" % i for i in range(1, 21)]
 
 # Route anchoring per comic. beforeTrigger evidence comes from batch-1 facts
 # (exit config charIds) and deobfuscated scripts (目标帧 assignments).
@@ -49,20 +48,20 @@ ROUTE = {
                "after": {"map": "A03", "originalTargetLabel": "a3"}},
     "cf6-s4": {"before": {"map": "A06", "exit": "boss(aw-蛮蛮) hp<=0 → 1766 monitor frame70 切镜",
                           "evidenceCharId": 1766, "evidence": "DefineSprite_1778/frame_1/PlaceObject2_1766_182"},
-               "after": {"map": "unknown", "originalTargetLabel": "a7",
-                         "note": "原作续接 A07 车辆段；现行路线排除 A07，续接目标需主控裁决（候选 A08）"}},
-    "cf6-s5": {"before": {"map": "unknown",
+               "after": {"map": "A07", "originalTargetLabel": "a7",
+                         "note": "s4 完成后进入 A07 车辆玩法；剧情路由不代替车辆通关权威"}},
+    "cf6-s5": {"before": {"map": "A07",
                           "note": "原作由 A07 车辆段内撞击事件 gotoAndStop(s5) 触发"
-                                  "（DefineSprite_1816/frame_3/PlaceObject2_1795_365）；A07 不入现行路线，挂点需主控裁决",
+                                  "（DefineSprite_1816/frame_3/PlaceObject2_1795_365）；现役由真实车辆尾段完成后交给标准 A08 章节入口",
                           "evidence": "DefineSprite_1816/frame_3/PlaceObject2_1795_365"},
                "after": {"map": "A08", "originalTargetLabel": "a8"}},
     "cf6-s6": {"before": {"map": "A17", "exit": "boss(敌人-大头机器人) hp<=0 → 1766 切镜",
                           "evidenceCharId": 1766, "evidence": "DefineSprite_1954/frame_1/PlaceObject2_1766_985"},
                "after": {"map": "A18", "originalTargetLabel": "a18"}},
-    "cf6-s7": {"before": {"map": "A22", "exit": "boss(敌人-老头机器人) hp<=0 → 1766 切镜",
+    "cf6-s7": {"before": {"map": "A20", "sourceMap": "A22", "runtimeRoom": "A20", "runtimePhase": "second-form", "exit": "boss(敌人-老头机器人) hp<=0 → 1766 切镜",
                           "evidenceCharId": 1766, "evidence": "DefineSprite_2011/frame_1/PlaceObject2_1766_180"},
                "after": {"map": "unknown", "originalTargetLabel": "end",
-                         "note": "原作续接 end 制作名单后回游戏封面；书中路线续接胜利结算，需主控裁决"}},
+                         "note": "原作续接 end 制作名单后回游戏封面；现役 beginFinal 仍串联 s7/end，再沿既有 outcome 屏障结算"}},
 }
 
 USE_RE = re.compile(
@@ -149,7 +148,7 @@ def build():
         "bookId": "cf6-sting",
         "routeId": "historical",
         "routeMaps": ROUTE_MAPS,
-        "routeExclusions": ["A07"],
+        "routeExclusions": [],
         "source": {
             "swf": index["source"]["swf"],
             "sha256": index["source"]["sha256"],
@@ -162,11 +161,11 @@ def build():
         "performances": [],
         "unknowns": [],
         "integrationNotes": [
-            "Host launcher/src/Tasks/BookComicTask.cs Pages 白名单需加 cf6-s1..cf6-s7（冻结文件，主控改）",
-            "Web launcher/web/modules/book-comic-content.js 需合入 cf6 页内容（冻结文件，主控改）；本 fragment 的 consumerMapping 逐段给出可直连字段",
-            "AS2 侧接线：BookRunService.presentChapter 的 cf6 分支在章节边界调 Cf6StoryService.begin(pageId, continuation)；continuation 即 showChapterDialogue 等价物（主控改共享入口）",
+            "现役章节边界：7 仅 s4→A07；8 仅 s5→A08；18 仅 s6→A18；s5 须等待车辆玩法完成后由标准章节入口调度",
+            "Web 独立内容由 build_cf6_web_content.py 派生为 book-comic-cf6-content.js；consumerMapping 保留原页字段与媒体",
+            "AS2 侧接线：BookRunService.presentChapter 在章节边界调 Cf6StoryService.beginChapter；通关权威仍由车辆/地图机关持有，剧情不跳过 A07",
             "原作完成/跳过殊途同归（均走切镜→目标帧）；fragment continuation 两者同一目标，取消/过期不推进",
-            "旁白为连续音频流 narration.mp3，与页推进同步；现有面板无音频通道，cue 通道 cf6 默认静音（Cf6StoryService.cueSound 留表）",
+            "旁白 narration.mp3 按原首个音频块偏移与页时钟同步；音乐和 BGM lease 沿现役独立音频通道，漫画自身不扩展战斗或持久写权威",
             "切镜(1281) frame21 原作做 自动存盘；迁移后持久化归现役 AS2 权威，漫画服务本身零持久写",
         ],
     }
@@ -318,9 +317,6 @@ def build():
         })
 
     frag["unknowns"] = [
-        "cf6-s4.after：原作目标 a7 被现行路线排除，续接目标需主控裁决",
-        "cf6-s5.before：原作触发在 A07 内，现行路线无挂点，需主控裁决",
-        "cf6-s7.after / cf6-end.before-after：原作进名单回封面；书中胜利结算接线需主控裁决",
         "各漫画旁白与页内文本的逐句对齐（哪句配哪页）：原作无数据标记，仅有时间流，标 unknown 不猜",
         "漫画画面对话气泡的说话人身份：原作无文本标记，speaker 一律留空",
     ]
@@ -338,6 +334,10 @@ def check(frag):
         errors.append("schema")
     if frag["source"]["sha256"] != "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01":
         errors.append("source sha")
+    if frag["routeMaps"] != ROUTE_MAPS or frag["routeExclusions"] != []:
+        errors.append("runtime route must retain A07 and end in combined A20")
+    if {segment["id"]: segment["route"] for segment in frag["segments"]} != ROUTE:
+        errors.append("story route bindings differ from current source")
     manifest = json.load(io.open(os.path.join(ASSETS, "MANIFEST.json"), encoding="utf-8"))
     for seg in frag["segments"]:
         n_pages = len(seg["pages"])

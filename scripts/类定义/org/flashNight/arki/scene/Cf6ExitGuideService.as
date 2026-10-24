@@ -1,4 +1,5 @@
-﻿/** Visual-only exit guidance. Clear/navigation authority remains with StageManager. */
+﻿import org.flashNight.arki.component.Effect.EffectSystem;
+/** Visual-only exit guidance. Clear/navigation authority remains with StageManager. */
 class org.flashNight.arki.scene.Cf6ExitGuideService {
     private static var serial:Number=0;
     private static function finite(value):Boolean {
@@ -13,6 +14,30 @@ class org.flashNight.arki.scene.Cf6ExitGuideService {
             && s.stageIndex===s.stageManager.currentStage
             && s.stageManager.isFailed!==true && s.stageManager.isFinished!==true
             && h.clip.__cf6ExitGuideOwner===h.token && h.clip._parent===h.world;
+    }
+    private static function roomCurrent(room:Object):Boolean {
+        return room!=null && room.world===_root.gameworld && room.owner!==undefined
+            && room.owner===room.world.__stageReturnWorldIdentity && room.world.__cf6Mechanism===room
+            && room.stageManager===org.flashNight.arki.scene.StageManager.instance
+            && room.stageIndex===room.stageManager.currentStage
+            && room.stageManager.isFailed!==true && room.stageManager.isFinished!==true && room.failed!==true;
+    }
+    /** Projection receipt only; it never opens the exit or publishes Clear. */
+    public static function showClearCue(room:Object,hero:MovieClip):Boolean {
+        if(!roomCurrent(room) || room.clearRequested!==true || room.clearCueIssued===true
+                || hero==undefined || hero._parent!==room.world || !(hero.hp>0) || !hero._visible
+                || !finite(hero._x) || !finite(hero._y)) return false;
+        // Latch before the visual call: a partially created effect must not be replayed.
+        room.clearCueIssued=true;
+        try {EffectSystem.Effect("小过关提示动画",hero._x,hero._y,100);}
+        catch(error) {trace("[CF6] clear cue projection failed: "+error);}
+        return true;
+    }
+    /** StageManager calls this before its ordinary clear animation, after real clear. */
+    public static function hasClearCue(manager:Object,world:MovieClip):Boolean {
+        var room:Object=world.__cf6Mechanism;
+        return roomCurrent(room) && room.stageManager===manager && room.world===world
+            && room.clearRequested===true && room.clearCueIssued===true;
     }
     public static function begin(room:Object,guidePoint:Object):Object {
         if(room==null || room.world!==_root.gameworld || room.owner!==room.world.__stageReturnWorldIdentity

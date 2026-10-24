@@ -1,0 +1,6 @@
+onClipEvent(enterFrame){
+   if(this.hitTest(_root.gameworld.man1.area))
+   {
+      _parent.gotoAndStop("倒");
+   }
+}

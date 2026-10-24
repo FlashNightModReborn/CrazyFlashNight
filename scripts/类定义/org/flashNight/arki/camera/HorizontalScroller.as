@@ -201,6 +201,21 @@ class org.flashNight.arki.camera.HorizontalScroller {
         if (!instance || instance.focusStack.length == 0) return;
         instance.focusStack.pop(); instance.recomputeExpiry();
     }
+    /** Optional authored framing belongs to one existing focus; it never adds another camera driver. */
+    public static function setFocusViewport(handle:Object,screenX:Number,screenY:Number,bounds:Array):Boolean {
+        if(!instance || handle==null || !instance.validFocus(handle,instance.frameTimer.当前帧数)
+                || !currentWorld(instance.gameWorld,instance.worldIdentity)) return false;
+        var found:Boolean=false;
+        for(var i:Number=0;i<instance.focusStack.length;i++) if(instance.focusStack[i]===handle) {found=true;break;}
+        if(!found || typeof screenX!="number" || typeof screenY!="number"
+                || (screenX-screenX)!=0 || (screenY-screenY)!=0
+                || screenX<0 || screenX>1 || screenY<0 || screenY>1
+                || !(bounds instanceof Array) || bounds.length!==4) return false;
+        for(i=0;i<4;i++) if(typeof bounds[i]!="number" || (bounds[i]-bounds[i])!=0 || Math.abs(bounds[i])>1000000) return false;
+        if(bounds[0]>bounds[2] || bounds[1]>bounds[3] || bounds[2]>0 || bounds[3]>0) return false;
+        handle.viewport={x:screenX,y:screenY,minX:bounds[0],minY:bounds[1],maxX:bounds[2],maxY:bounds[3]};
+        return true;
+    }
     public static function releaseFocus(handle:Object):Boolean {
         if (!instance || handle == undefined || handle.scope !== instance.cameraScope || handle.released === true) return false;
         var found:Boolean = false;
@@ -305,6 +320,8 @@ class org.flashNight.arki.camera.HorizontalScroller {
         var tx:Number = stageWidth * 0.5 + (scrollObj._xscale > 0 ? -directionOffset : directionOffset);
         var ty:Number = stageHeight - 100;
         if (currentFocus != undefined) { tx += currentFocus.biasX; ty += currentFocus.biasY; }
+        var viewport:Object=currentFocus.viewport;
+        if(viewport!=undefined) {tx=stageWidth*viewport.x;ty=stageHeight*viewport.y;}
         var idealX:Number = tx - scrollObj._x * newScale;
         var idealY:Number = ty - scrollObj._y * newScale;
         var snap:Boolean = initialSnapPending || reframePending || currentFocus.snapPending === true;
@@ -320,8 +337,13 @@ class org.flashNight.arki.camera.HorizontalScroller {
         }
         // 可呈现整数边界，避免小数边缘取整后反复越界。
         var minX:Number = boundsMinX; var minY:Number = boundsMinY;
-        x = stageWidth < boundsEffBgW ? (x < minX ? minX : (x > 0 ? 0 : x)) : 0;
-        y = stageHeight < boundsEffBgH ? (y < minY ? minY : (y > 0 ? 0 : y)) : 0;
+        var maxX:Number=0,maxY:Number=0;
+        if(viewport!=undefined) {
+            minX=Math.max(minX,Math.ceil(viewport.minX*newScale));minY=Math.max(minY,Math.ceil(viewport.minY*newScale));
+            maxX=Math.max(minX,Math.floor(viewport.maxX*newScale));maxY=Math.max(minY,Math.floor(viewport.maxY*newScale));
+        }
+        x = stageWidth < boundsEffBgW ? (x < minX ? minX : (x > maxX ? maxX : x)) : 0;
+        y = stageHeight < boundsEffBgH ? (y < minY ? minY : (y > maxY ? maxY : y)) : 0;
         logicalWorldX = x; logicalWorldY = y;
         lastWrittenX = x < 0 ? ((x-0.5)|0) : ((x+0.5)|0);
         lastWrittenY = y < 0 ? ((y-0.5)|0) : ((y+0.5)|0);

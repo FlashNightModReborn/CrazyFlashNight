@@ -1,0 +1,9 @@
+onClipEvent(load){
+   var §\x01§ = 100;
+   var §\x0f§ = 1;
+   if(_root.gameworld.man1.area.hitTest(this))
+   {
+      _root.gameworld.man1.car.gotoAndPlay("击中");
+      _root.主角hp -= 30;
+   }
+}

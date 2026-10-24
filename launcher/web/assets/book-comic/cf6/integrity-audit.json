@@ -132,7 +132,7 @@
     {
       "bytes": 14008,
       "path": "launcher/web/assets/book-comic/cf6/manifest.json",
-      "sha256": "1491963e75212ddad85968b463096c714b900b4abd2af78142150b1e93519806"
+      "sha256": "93d493aa240e4cfef604636b8c13be320489ff07c0d22cd2b367e1e2d2861873"
     },
     {
       "bytes": 3526740,
@@ -150,14 +150,14 @@
       "sha256": "76d3427c67b32547529db3af4f5dd47a63e53110dd3cd23218696e92c2759b91"
     },
     {
-      "bytes": 112644,
+      "bytes": 112670,
       "path": "launcher/web/modules/book-comic-cf6-content.js",
-      "sha256": "14bf99c6c75c6ca949a86149d9eaf55d589457b26f99f449d16556a70d1a0b4e"
+      "sha256": "e04eb29821d9bff9d278b26c5526c452d3fef20319814757203078043194d002"
     },
     {
-      "bytes": 112610,
+      "bytes": 112636,
       "path": "tools/cf6-story-migration/generated/cf6-web-content.json",
-      "sha256": "71a541ffc6477e6d107f35253516ed5553147f11425bcae2852e673d2abc5ee3"
+      "sha256": "2e3fa10ad1524b9ffa2bf0e45ec1435a13d198407efb4f45379e3cfaf5daf006"
     }
   ],
   "maxFileBytes": 3526740,
@@ -254,6 +254,6 @@
     }
   ],
   "schema": "cf6-book-comic-integrity-audit.v1",
-  "sourceBindingSha256": "afd74ed558bce5383adf37c63ef98debbc10da24f65b212db9a456b790d4f687",
+  "sourceBindingSha256": "be35adf003b4a62a071e1719d940150a0654cf20cd1a3b5cae443c9997068041",
   "totalBytes": 9296482
 }

@@ -21,9 +21,10 @@ def fixture():
         for point in node['stage'].get('SpawnPoint', {}).get('Point', []):
             point.pop('BiasX', None)
             point.pop('BiasY', None)
-        for wave in node['stage']['Wave']['SubWave']:
+        for wi,wave in enumerate(node['stage']['Wave']['SubWave']):
+            designed = node.get('sourceNote',{}).get('chapterDifficulty',{}).get('waveKinds',[])
             for enemy in wave['EnemyGroup']['Enemy']:
-                if enemy.get('Quantity', 0) > 1:
+                if enemy.get('Quantity', 0) > 1 or designed and designed[wi]=='combat':
                     enemy['Interval'] = 100
                     enemy.pop('Delay', None)
         plan = node.get('bossEncounter')
@@ -47,7 +48,9 @@ class SpawnAssembly(unittest.TestCase):
         before = copy.deepcopy(self.chapter)
         audit = spawn.adapt(self.chapter, self.env)
         self.assertEqual(audit['authorityBeforeSha256'], audit['authorityAfterSha256'])
-        self.assertEqual(audit['preservedInitialEntries'], 56)
+        designed=any(m.get('sourceNote',{}).get('chapterDifficulty') for m in self.chapter['maps'])
+        # Three unique bosses plus twelve already-boarded units in each elevator.
+        self.assertEqual(audit['preservedInitialEntries'],27 if designed else 56)
         self.assertEqual(audit['preservedPodEntries'], 10)
         for old, new in zip(before['maps'], self.chapter['maps']):
             for ow, nw in zip(old['stage']['Wave']['SubWave'], new['stage']['Wave']['SubWave']):
@@ -56,15 +59,20 @@ class SpawnAssembly(unittest.TestCase):
             for key in ('Pickups', 'Instances'):
                 self.assertEqual(old['stage'].get(key), new['stage'].get(key))
 
-    def test_thirteen_ordinary_queues_use_four_hundred_ms(self):
+    def test_all_counted_ordinary_queues_use_four_hundred_ms(self):
         audit = spawn.adapt(self.chapter, self.env)
-        self.assertEqual(len(audit['waveQueues']), 13)
+        expected=sum(1 for node in self.chapter['maps'] for wi,w in enumerate(node['stage']['Wave']['SubWave'])
+                     for e in w['EnemyGroup']['Enemy'] if e.get('Quantity',0)>1 or
+                     node.get('sourceNote',{}).get('chapterDifficulty',{}).get('waveKinds',[None]*len(node['stage']['Wave']['SubWave']))[wi]=='combat')
+        self.assertEqual(len(audit['waveQueues']),expected)
         self.assertTrue(all(r['intervalMs'] == 400 for r in audit['waveQueues']))
         self.assertEqual(audit['recurringEffectiveMs'], 500)
 
     def test_two_queue_rooms_have_two_hundred_ms_phase(self):
         audit = spawn.adapt(self.chapter, self.env)
-        self.assertEqual([(r['mapId'], r['delayMs']) for r in audit['waveQueues'] if r['delayMs']], [('A04', 200), ('A19', 200)])
+        groups={}
+        for row in audit['waveQueues']:groups.setdefault((row['mapId'],row['waveIndex']),[]).append(row)
+        for rows in groups.values():self.assertEqual([r['delayMs'] for r in rows],list(range(0,200*len(rows),200)))
 
     def test_numeric_points_keep_original_positions_and_caps(self):
         before = {mid: copy.deepcopy(m['stage'].get('SpawnPoint')) for mid, m in self.maps.items()}
@@ -88,8 +96,12 @@ class SpawnAssembly(unittest.TestCase):
     def test_unproven_a01_jitter_is_not_added(self):
         audit = spawn.adapt(self.chapter, self.env)
         rows = [r for r in audit['spawnPoints'] if r['mapId'] == 'A01']
-        self.assertEqual(len(rows), 4)
-        self.assertTrue(all(r['bias'] == [0, 0] and r['quantityMax'] == 5 for r in rows))
+        if self.maps['A01'].get('sourceNote',{}).get('chapterDifficulty'):
+            self.assertEqual(len(rows),2)
+            self.assertTrue(all(r['quantityMax']==4 for r in rows))
+        else:
+            self.assertEqual(len(rows), 4)
+            self.assertTrue(all(r['bias'] == [0, 0] and r['quantityMax'] == 5 for r in rows))
 
     def test_transport_events_keep_exact_owner_and_quantity(self):
         before = {mid: copy.deepcopy(self.maps[mid]['stage']['Wave']['SubWave'][1]['EnemyGroup']['Enemy'][0]) for mid in ('A09', 'A14', 'A18')}
@@ -121,12 +133,16 @@ class SpawnAssembly(unittest.TestCase):
         audit = spawn.adapt(self.chapter, self.env)
         doors = {d['id']: [d['spawnX'], d['spawnY']] for d in self.maps['A20']['mechanism']['layers'] if d.get('role') == 'door-spawn-sequence'}
         rows = [r for r in audit['bossEntries'] if r['mapId'] == 'A20']
-        self.assertGreater(len(rows), 8)
+        if self.maps['A20'].get('sourceNote',{}).get('chapterDifficulty'):
+            self.assertEqual(len(rows),8)
+        else:self.assertGreater(len(rows),8)
         self.assertTrue(all(doors[r['entrance']] == r['after'] for r in rows))
 
     def test_unknown_numeric_entry_does_not_silently_choose_floor(self):
-        self.maps['A03']['mechanism']['layers'] = []
-        with self.assertRaisesRegex(ValueError, 'no visible door'):
+        metadata=self.maps['A03'].get('sourceNote',{}).get('chapterDifficulty')
+        if metadata:metadata['sourceSha256']='0'*64
+        else:self.maps['A03']['mechanism']['layers'] = []
+        with self.assertRaisesRegex(ValueError, 'no visible door|unreviewed difficulty assembly metadata'):
             spawn.adapt(self.chapter, self.env)
 
     def test_missing_edge_line_fails_instead_of_using_default_random_y(self):

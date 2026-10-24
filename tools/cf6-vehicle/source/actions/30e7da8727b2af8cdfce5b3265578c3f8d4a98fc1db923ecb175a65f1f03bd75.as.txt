@@ -1,0 +1,5 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 394;
+   var §\x0f§ = 1;
+   _parent.swapDepths(_parent._y * 100);
+}

@@ -1,0 +1,64 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 834;
+   var §\x0f§ = 1;
+   _parent.swapDepths(_parent._y * 100);
+   var myPoint = {x:0,y:0};
+   _parent.localToGlobal(myPoint);
+   xx = myPoint.x;
+   yy = myPoint.y;
+   if(Key.isDown(_root.A键))
+   {
+      _parent.gotoAndStop("射击");
+   }
+   else
+   {
+      _parent.gotoAndStop("不射击");
+   }
+   if(Key.isDown(_root.下键))
+   {
+      if(_root.gameworld.地图.hitTest(xx,yy + 2 * _root.boy1yspeed,true))
+      {
+         _parent._y -= 2 * _root.boy1yspeed;
+      }
+      else
+      {
+         _parent._y += _root.boy1yspeed;
+      }
+   }
+   else if(Key.isDown(_root.上键))
+   {
+      if(_root.gameworld.地图.hitTest(xx,yy - 2 * _root.boy1yspeed,true))
+      {
+         _parent._y += 2 * _root.boy1yspeed;
+      }
+      else
+      {
+         _parent._y -= _root.boy1yspeed;
+      }
+   }
+   if(Key.isDown(_root.右键) and xx + 2 * _root.boy1xspeed < _root.gameworld.背景长)
+   {
+      if(_root.gameworld.地图.hitTest(xx + 2 * _root.boy1xspeed,yy,true))
+      {
+         _parent._x -= 2 * _root.boy1xspeed;
+      }
+      else
+      {
+         _parent._x += _root.boy1xspeed;
+      }
+   }
+   else if(Key.isDown(_root.左键) and xx + 2 * _root.boy1xspeed > 0)
+   {
+      if(_root.gameworld.地图.hitTest(xx - 2 * _root.boy1xspeed,yy,true))
+      {
+         _parent._x += 2 * _root.boy1xspeed;
+      }
+      else
+      {
+         _parent._x -= _root.boy1xspeed;
+      }
+   }
+   if(Key.isDown(_root.右键) or Key.isDown(_root.左键) or Key.isDown(_root.下键) or Key.isDown(_root.上键))
+   {
+   }
+}

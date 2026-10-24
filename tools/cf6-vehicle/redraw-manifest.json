@@ -1,0 +1,67 @@
+{
+  "schema": "cf6-vehicle-redraw.v1",
+  "inputs": {
+    "tools/cf6-vehicle/prepare_redraw.py": "631419ad0260a08e24c089dbfd00c04971d44035397e9bc899ed9d22473b3d7f",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A07-R2/cf6-stage7-redraw-r2/source/sky_material.py": "6677034dd285a1b86fa911967461b83981ecb82048686f9093ccb7f86fb98cb0",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A07-R2/cf6-stage7-redraw-r2/source/river_arcade.py": "895f7161d78b0eacb4e9da185157b0afe969695e5e73522b82cec513f762fd9a",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A07-R2/cf6-stage7-redraw-r2/source/svg_native.py": "ef4418c2c1596bfe3d933998d12adea36e78daa0772a39526ce34836e8dcb356",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A07-R2/cf6-stage7-redraw-r2/reference/environment-original-nodes.json": "5a4a1325cffbbca0a76964ca3563c6e55e2438d5d4845ea71641a718c22278ac",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A07-R2/cf6-stage7-redraw-r2/reference/environment-shape-details.json": "2fd111f36b5d682784d2f10e7ef2bdb8d34b8198710bfc576c1fa958830bab2f",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/parts/bitmap-1823.svg": "e842c952acdeff895fb28781f702561e893de0eb643a6871ebf0fc1e470ca93e",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/A08-R5/parts/bitmap-1786.svg": "f41d26e12783dfd6929d089b362aee7bbf5fbbc88e2c2361bcf5cbe46c3bf076",
+    "tools/cf6-scene-completion/vehicle-art/bitmap-1806.svg": "febe8c042edc287b893398c032222b891701f898f7e21acbe4e40f4f39bba8ac",
+    "tools/cf6-scene-completion/vehicle-art/bitmap-1808.svg": "d1b37724e367b29e725a6ecb24fcbefc337913686645eef859333d246f615edf"
+  },
+  "authority": "R2 armored/architecture/cloud and R5 player/asphalt; vehicle animation comes from pinned original matrices",
+  "playerWheels": "R5 body wheels removed and independently re-used in original rear/front animated slots",
+  "outputs": {
+    "tools/cf6-vehicle/source/redraw/player-body.svg": {
+      "sha256": "7ae465ab5e1b263196e08cdf1ded6613793aeea11d29591596e0276ed1c46b04",
+      "bytes": 933999
+    },
+    "tools/cf6-vehicle/source/redraw/player-wheel-0.svg": {
+      "sha256": "a256dc71f14324bdbc38529f9e4a285e50176def2aadd69460c421af3c8b1e27",
+      "bytes": 66713
+    },
+    "tools/cf6-vehicle/source/redraw/player-wheel-1.svg": {
+      "sha256": "bf87680c1ba17deeea0ac7d9ebfc7af112e6c3599bd9e00da5ea11ed845428c6",
+      "bytes": 66714
+    },
+    "tools/cf6-vehicle/source/redraw/armored-body.svg": {
+      "sha256": "febe8c042edc287b893398c032222b891701f898f7e21acbe4e40f4f39bba8ac",
+      "bytes": 1338051
+    },
+    "tools/cf6-vehicle/source/redraw/armored-wheel.svg": {
+      "sha256": "d1b37724e367b29e725a6ecb24fcbefc337913686645eef859333d246f615edf",
+      "bytes": 39664
+    },
+    "tools/cf6-vehicle/source/redraw/asphalt.svg": {
+      "sha256": "f41d26e12783dfd6929d089b362aee7bbf5fbbc88e2c2361bcf5cbe46c3bf076",
+      "bytes": 628674
+    },
+    "tools/cf6-vehicle/source/redraw/reference/1784.png": {
+      "sha256": "b3abeb4aa6fe8d11119837cb127aa245a6f5c4b4b58986d1ff873381f0a3905f",
+      "bytes": 50379
+    },
+    "tools/cf6-vehicle/source/redraw/reference/1789.png": {
+      "sha256": "07b1c23f9a2c97c84c2ca730c75fde19245226f41327c63501031b7f7cf8f1e5",
+      "bytes": 36142
+    },
+    "tools/cf6-vehicle/source/redraw/parts/bitmap-1784.svg": {
+      "sha256": "cf91c2f142ae026d6f76e48d0e4734288374b358808e7218cf02d744f1ad27f1",
+      "bytes": 3347587
+    },
+    "tools/cf6-vehicle/source/redraw/parts/bitmap-1789.svg": {
+      "sha256": "b582e2b240e3e5e6f6473680c586e951066355bb65be8acbb223d013a438b63c",
+      "bytes": 741773
+    },
+    "tools/cf6-vehicle/source/redraw/sky.svg": {
+      "sha256": "fae948fb43d05e88f0b6b4cb035b476c73ba0b20b1a54377ba82546ffd9fd8f5",
+      "bytes": 333009
+    },
+    "tools/cf6-vehicle/source/redraw/sky-extension.svg": {
+      "sha256": "53508c7c93003cd139b703e58fe449eaf530203f9158973cbadf9a3e225e41c3",
+      "bytes": 337206
+    }
+  }
+}

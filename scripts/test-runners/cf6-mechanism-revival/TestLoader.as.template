@@ -1,0 +1,5 @@
+﻿trace("FocusedTestRunId cf6-mechanism-revival Start: __FOCUSED_RUN_ID__");
+_root.cf6MechanismRevivalComplete=function():Void {
+    trace("FocusedTestRunId cf6-mechanism-revival Complete: __FOCUSED_RUN_ID__");
+};
+org.flashNight.arki.scene.Cf6MechanismRevivalTest.runAllTests();

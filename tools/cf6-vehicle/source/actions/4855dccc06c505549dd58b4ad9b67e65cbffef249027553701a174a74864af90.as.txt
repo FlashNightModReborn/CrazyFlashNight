@@ -1,0 +1,32 @@
+onClipEvent(load){
+   function 子弹区域击中检测(检测目标, 击中效果)
+   {
+      if(_root.gameworld.子弹区域.hitTest(检测目标))
+      {
+         for(§each§ in _root.gameworld.子弹区域)
+         {
+            if(_root.gameworld.子弹区域[eval("each")].area.hitTest(检测目标))
+            {
+               power = _root.gameworld.子弹区域[eval("each")].子弹威力;
+               子弹发射者名 = _root.gameworld.子弹区域[eval("each")].发射者名;
+               if(_root.gameworld[子弹发射者名]._x > _root.gameworld.man1._x)
+               {
+                  _parent.击中移动方向 = "左";
+               }
+               else
+               {
+                  _parent.击中移动方向 = "右";
+               }
+               _root.效果(击中效果,_root.gameworld.子弹区域[eval("each")]._x,_root.gameworld.子弹区域[eval("each")]._y);
+               _parent.hp -= _root.gameworld.子弹区域[eval("each")].子弹威力;
+               removeMovieClip(_root.gameworld.子弹区域[eval("each")]);
+               _parent.gotoAndStop("倒");
+               return power;
+            }
+         }
+      }
+   }
+   var §\x01§ = 364;
+   var §\x0f§ = 1;
+   _parent.swapDepths(_parent._y * 100);
+}

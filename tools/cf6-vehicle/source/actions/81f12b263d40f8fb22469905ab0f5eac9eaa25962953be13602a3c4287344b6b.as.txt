@@ -1,0 +1,16 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 326;
+   var §\x0f§ = 1;
+   if(_root.gameworld.man1.area.hitTest(this))
+   {
+      k = random(_parent._parent.AI);
+      if(k == 0)
+      {
+         _parent.gotoAndPlay("hit");
+      }
+      else
+      {
+         _parent.play();
+      }
+   }
+}

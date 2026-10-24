@@ -1,6 +1,7 @@
 """Validate editable book data and generate its AS2 definition. --check is read-only."""
 import argparse
 import copy
+import importlib.util
 import json
 import math
 import re
@@ -69,11 +70,11 @@ def validate_cf6(data, items, skills, units, require_backgrounds=True):
     maps = data['maps']
     if not isinstance(maps,list) or not 1 <= len(maps) <= 32: raise ValueError('invalid CF6 map count')
     ids = set()
-    map_order = ['TUTORIAL'] + ['A%02d'%n for n in range(1,23) if n not in (7,21)]
+    map_order = ['TUTORIAL'] + ['A%02d'%n for n in range(1,23) if n != 21]
     previous_position = -1
     for stage in maps:
         identity = stage['id']
-        if identity in ids or identity in ('A07','A21') or not re.fullmatch(r'(TUTORIAL|A(?:0[1-689]|1[0-9]|20|22))',identity):
+        if identity in ids or identity == 'A21' or not re.fullmatch(r'(TUTORIAL|A(?:0[1-9]|1[0-9]|20|22))',identity):
             raise ValueError('duplicate/unsupported CF6 map identity')
         ids.add(identity)
         position = map_order.index(identity)
@@ -82,7 +83,7 @@ def validate_cf6(data, items, skills, units, require_backgrounds=True):
         background = stage['background']
         expected_background = 'cf6/CF6_Tutorial_BG.swf' if identity == 'TUTORIAL' else 'cf6/CF6_' + identity + '_BG.swf'
         if (not isinstance(background,str) or background != expected_background
-                or (identity != 'TUTORIAL' and not re.fullmatch(r'cf6/CF6_A(?:0[1-689]|1[0-9]|20|22)_BG\.swf',background))):
+                or (identity != 'TUTORIAL' and not re.fullmatch(r'cf6/CF6_A(?:0[1-9]|1[0-9]|20|22)_BG\.swf',background))):
             raise ValueError('CF6 background must match the exact registered map identity')
         if require_backgrounds and not (ROOT/'flashswf/backgrounds'/background).is_file(): raise ValueError('missing CF6 background '+background)
         presentation = stage.get('presentation')
@@ -103,6 +104,7 @@ def validate_cf6(data, items, skills, units, require_backgrounds=True):
                         'Andy Law#严肃','Andy Law#愤怒'}:
                     raise ValueError('invalid CF6 dialogue portrait')
         native = stage['stage']
+        validate_cf6_vehicle(stage)
         waves = native['Wave']['SubWave']
         if not isinstance(waves,list) or not 1 <= len(waves) <= 64: raise ValueError('invalid authored CF6 waves')
         for wave in waves:
@@ -127,6 +129,25 @@ def validate_cf6(data, items, skills, units, require_backgrounds=True):
     validate_cf6_interactive_props(data)
     from cf6_economy import validate_economy
     validate_economy(data, items)
+
+
+def validate_cf6_vehicle(stage):
+    mechanism = stage.get('mechanism', {})
+    if stage['id'] != 'A07':
+        if 'vehicle' in mechanism:
+            raise ValueError('vehicle encounter is only supported in A07')
+        return
+    path = ROOT / 'tools/cf6-vehicle/chapter_fragment.py'
+    spec = importlib.util.spec_from_file_location('cf6_vehicle_validation', path)
+    vehicle = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(vehicle)
+    expected, _, _ = vehicle.build(False)
+    if (mechanism.get('vehicle') != expected['mechanism']['vehicle']
+            or mechanism.get('kind') != 'plain' or mechanism.get('layers') != expected['mechanism']['layers']
+            or stage['presentation'] != expected['presentation']
+            or stage['stage'].get('Wave') != expected['stage']['Wave']
+            or stage.get('bossEncounter') is not None):
+        raise ValueError('A07 requires its exact authored vehicle encounter and empty ordinary wave')
 
 
 def validate_cf6_transport(stage):
@@ -159,10 +180,11 @@ def validate_cf6_transport(stage):
     m, b = spec['artMatrix'], spec['hitBounds']
     if abs(m[0]*m[3]-m[1]*m[2])<=0.000001 or b[0]>=b[2] or b[1]>=b[3]:
         raise ValueError('degenerate transport geometry')
-    if len(waves)!=2 or len(waves[1]['EnemyGroup']['Enemy'])!=1 or [(w,e) for w,e,_ in events]!=[(1,0)]:
+    if not 2 <= len(waves) <= 6 or len(waves[1]['EnemyGroup']['Enemy'])!=1 or [(w,e) for w,e,_ in events]!=[(1,0)]:
         raise ValueError('transport must gate only its existing second-wave entry')
     enemy = events[0][2]
-    if (tuple(enemy.get(k) for k in ('Type','Level','Quantity','Interval','SpawnIndex')) != (kind,level,quantity,400,0)
+    if (type(enemy.get('SpawnIndex')) is not int
+            or tuple(enemy.get(k) for k in ('Type','Level','Quantity','Interval','SpawnIndex')) != (kind,level,quantity,400,0)
             or enemy['TriggerEvent'] != {'EventName':'Cf6TransportReady','Parameters':[token]}):
         raise ValueError('transport budget or event ownership changed')
 
@@ -227,9 +249,14 @@ def validate_cf6_interactive_props(data):
         if kind != 'pod': continue
         if identity == 'A15':
             waves = stage['stage']['Wave']['SubWave']
-            if len(waves) != 1: raise ValueError('A15 must retain one counted wave')
+            if not 1 <= len(waves) <= 6: raise ValueError('A15 requires its counted pod wave and bounded later waves')
             enemies = waves[0]['EnemyGroup']['Enemy']
             if len(enemies) != 5: raise ValueError('A15 pod budget must remain five')
+            for later in waves[1:]:
+                for enemy in later['EnemyGroup']['Enemy']:
+                    if ('podId' in enemy or 'cf6PodId' in enemy.get('Parameters', {})
+                            or enemy.get('TriggerEvent', {}).get('EventName') == 'Cf6PodReady'):
+                        raise ValueError('A15 later waves cannot repeat the original pod budget')
         else:
             plan = stage['bossEncounter']
             if plan['maxAlive'] != 4 or plan['intervalFrames'] != 45:
@@ -302,6 +329,32 @@ def validate_cf6_turrets(stage):
                 raise ValueError('invalid A01 turret coordinate')
 
 
+def validate_cf6_boss_prelude(stage, waves, primary_type):
+    """Required standard waves carry the authored threat before the unique boss."""
+    def zero(value): return type(value) in (int, float) and value == 0
+    def counted(value): return value is False or zero(value)
+    if not 1 <= len(waves) <= 6:
+        raise ValueError('CF6 boss encounter requires one to six standard waves')
+    points = stage['stage'].get('SpawnPoint', {}).get('Point', [])
+    if not isinstance(points, list):
+        raise ValueError('CF6 boss prelude spawn points must be an array')
+    if len(waves) > 1 and any(not isinstance(point, dict) or not counted(point.get('NoCount', False)) for point in points):
+        raise ValueError('CF6 boss prelude cannot use uncounted spawn points')
+    reserved = {'cf6BossOwnerToken', 'cf6SupportIdentity', 'InstanceName', '产生源', '老头变身'}
+    for wave in waves[:-1]:
+        info = wave.get('WaveInformation', {})
+        enemies = wave.get('EnemyGroup', {}).get('Enemy', [])
+        if (not zero(info.get('Duration')) or not zero(info.get('FinishRequirement'))
+                or not counted(info.get('MapNoCount', False))
+                or not isinstance(enemies, list) or not 1 <= len(enemies) <= 32):
+            raise ValueError('CF6 boss prelude must be a nonempty mandatory clear wave')
+        for enemy in enemies:
+            parameters = enemy.get('Parameters', {})
+            if ('InstanceName' in enemy or enemy['Type'] in (primary_type, '兵种473', '兵种474')
+                    or not isinstance(parameters, dict) or reserved.intersection(parameters)):
+                raise ValueError('CF6 boss prelude cannot duplicate the boss or controller ownership')
+
+
 def validate_cf6_boss(stage, units, items, successor=False):
     flag = stage.get('mechanism',{}).get('elderFinale')
     if 'elderFinale' in stage.get('mechanism',{}) and type(flag) is not bool:
@@ -325,9 +378,10 @@ def validate_cf6_boss(stage, units, items, successor=False):
     bounded_integer(plan['maxRanged'],0,plan['maxAlive'],'CF6 ranged cap')
     bounded_integer(plan['intervalFrames'],1,1800,'CF6 support interval')
     waves = stage['stage']['Wave']['SubWave']
-    if len(waves) != 1 or len(waves[0]['EnemyGroup']['Enemy']) != 1:
-        raise ValueError('CF6 boss main wave contains only one boss')
-    boss = waves[0]['EnemyGroup']['Enemy'][0]
+    validate_cf6_boss_prelude(stage, waves, '兵种'+str(bosses[identity]))
+    if len(waves[-1]['EnemyGroup']['Enemy']) != 1:
+        raise ValueError('CF6 boss final wave contains only one boss')
+    boss = waves[-1]['EnemyGroup']['Enemy'][0]
     if boss['Type'] != '兵种'+str(bosses[identity]) or boss['Quantity'] != 1 or boss.get('InstanceName') != plan['instanceName']:
         raise ValueError('CF6 boss main wave identity mismatch')
     if identity == 'A20' and boss.get('Parameters',{}).get('老头变身') is not phased:
@@ -336,9 +390,10 @@ def validate_cf6_boss(stage, units, items, successor=False):
         next_stage = copy.deepcopy(stage)
         next_stage['id'] = 'A22'
         next_stage['bossEncounter'] = plan['nextPhase']
-        next_stage['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'] = [{
-            'Type':'兵种474', 'Level':boss['Level'], 'Quantity':1,
-            'InstanceName':'cf6Boss_A20__elderbot'}]
+        next_stage['stage']['Wave']['SubWave'] = [{
+            'WaveInformation':{'Duration':0, 'FinishRequirement':0},
+            'EnemyGroup':{'Enemy':[{'Type':'兵种474', 'Level':boss['Level'], 'Quantity':1,
+                                  'InstanceName':'cf6Boss_A20__elderbot'}]}}]
         validate_cf6_boss(next_stage, units, items, successor=True)
     if not isinstance(plan['groups'],list) or not 1 <= len(plan['groups']) <= 16:
         raise ValueError('invalid CF6 finite support groups')

@@ -49,7 +49,10 @@
 **读取**（按 manifest，不读死数据）：
 - `data/task/list.xml` → 各 `*_tasks.json` 的 `tasks` 数组合并
 - `data/task/text/list.xml` → 各 `*_text(s).json` dictMerge → `task_texts`
+
 - 解析规则镜像 AS2 `TaskUtil.getTaskText`：`$` 前缀查 `task_texts`，否则字面量
+
+2026-10-24：两份旧Agent可选源 `data/task/agent_tasks.json` 与 `data/task/text/agent_text.json` 在未随仓库提供时允许缺失；任务/成就派生与Host `MapTaskCatalog` 使用相同边界。存在但损坏、链接/目录、读取失败或重复登记仍拒绝，不创建空占位文件。Node共用 `tools/lib/optional-agent-source.js`，纳入runtime发布policy输入；`tools/test-derive-task-conditions.js` 保留正反例。
 
 **闭包校验器（关键，审计 Phase 1 前置硬门控）**：
 - 对每个任务的 `title` / `description` / `get_conversation` / `finish_conversation`，若值以 `$` 开头则该键**必须存在**于合并后的 `task_texts`，否则 `exit 1`（防 `$KEY` 缺失运行时显示原始键）。

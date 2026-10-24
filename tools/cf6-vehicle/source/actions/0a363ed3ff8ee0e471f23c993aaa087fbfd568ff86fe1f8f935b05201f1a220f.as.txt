@@ -1,0 +1,165 @@
+onClipEvent(load){
+   function §\x04\x05§()
+   {
+      set("\x03",1543 % 511 * 5);
+      return eval("\x03");
+   }
+   var §\x01§ = 318 + "\x04\x05"();
+   while(true)
+   {
+      if(eval("\x01") == 368)
+      {
+         set("\x01",eval("\x01") - 213);
+         §§push(true);
+      }
+      else if(eval("\x01") == 68)
+      {
+         set("\x01",eval("\x01") + 684);
+      }
+      else
+      {
+         if(eval("\x01") == 391)
+         {
+            set("\x01",eval("\x01") + 83);
+            var myPoint = {x:0,y:0};
+            this.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
+            shootX = myPoint.x;
+            shootY = myPoint.y;
+            效果深度 = random(100);
+            效果名 = "mc" + 效果深度;
+            _root.gameworld.效果.attachMovie("爆炸",效果名,_root.gameworld.效果.getNextHighestDepth(),{_x:shootX,_y:shootY});
+            break;
+         }
+         if(eval("\x01") == 647)
+         {
+            set("\x01",eval("\x01") - 362);
+            §§push("\x0f");
+            §§push(1);
+         }
+         else if(eval("\x01") == 358)
+         {
+            set("\x01",eval("\x01") + 33);
+         }
+         else if(eval("\x01") == 693)
+         {
+            set("\x01",eval("\x01") - 110);
+            §§push(eval(function §\x04\x05§()
+            {
+               set("\x03",1543 % 511 * 5);
+               return eval("\x03");
+            }));
+         }
+         else
+         {
+            if(eval("\x01") == 474)
+            {
+               set("\x01",eval("\x01") - 474);
+               break;
+            }
+            if(eval("\x01") == 155)
+            {
+               set("\x01",eval("\x01") + 562);
+               if(function §\x04\x05§()
+               {
+                  set("\x03",1543 % 511 * 5);
+                  return eval("\x03");
+               })
+               {
+                  set("\x01",eval("\x01") - 649);
+               }
+            }
+            else if(eval("\x01") == 551)
+            {
+               set("\x01",eval("\x01") - 193);
+               if(function §\x04\x05§()
+               {
+                  set("\x03",1543 % 511 * 5);
+                  return eval("\x03");
+               })
+               {
+                  set("\x01",eval("\x01") + 33);
+               }
+            }
+            else
+            {
+               if(eval("\x01") == 717)
+               {
+                  set("\x01",eval("\x01") - 649);
+                  play();
+                  §§push(§§pop() < function §\x04\x05§()
+                  {
+                     set("\x03",1543 % 511 * 5);
+                     return eval("\x03");
+                  });
+                  break;
+               }
+               if(eval("\x01") == 752)
+               {
+                  set("\x01",eval("\x01") - 390);
+                  §§push(true);
+               }
+               else if(eval("\x01") == 854)
+               {
+                  set("\x01",eval("\x01") - 102);
+               }
+               else if(eval("\x01") == 84)
+               {
+                  set("\x01",eval("\x01") + 563);
+               }
+               else
+               {
+                  if(eval("\x01") == 735)
+                  {
+                     set("\x01",eval("\x01") - 651);
+                     break;
+                  }
+                  if(eval("\x01") == 758)
+                  {
+                     set("\x01",eval("\x01") - 111);
+                  }
+                  else if(eval("\x01") == 362)
+                  {
+                     set("\x01",eval("\x01") + 373);
+                     if(function §\x04\x05§()
+                     {
+                        set("\x03",1543 % 511 * 5);
+                        return eval("\x03");
+                     })
+                     {
+                        set("\x01",eval("\x01") - 651);
+                     }
+                  }
+                  else if(eval("\x01") == 655)
+                  {
+                     set("\x01",eval("\x01") + 38);
+                     §§push("\x0f");
+                  }
+                  else if(eval("\x01") == 583)
+                  {
+                     set("\x01",eval("\x01") - 32);
+                     §§push(!function §\x04\x05§()
+                     {
+                        set("\x03",1543 % 511 * 5);
+                        return eval("\x03");
+                     });
+                  }
+                  else
+                  {
+                     if(eval("\x01") != 285)
+                     {
+                        break;
+                     }
+                     set("\x01",eval("\x01") + 370);
+                     var §§pop() = function §\x04\x05§()
+                     {
+                        set("\x03",1543 % 511 * 5);
+                        return eval("\x03");
+                     };
+                  }
+               }
+            }
+         }
+      }
+   }
+}

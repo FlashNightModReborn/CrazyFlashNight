@@ -91,7 +91,15 @@ const CASES = [
     { name: '【单向跨链】B#2 要 A 进度 1，A#1 独立（应通过）', expect: null,
       tasks: [task(1, 'A#1'), task(2, 'B#1'), task(3, 'B#2', { get_requirements: [2], conditions: [cp('A', 1)] })] },
     { name: '【taskFinished 正向引用独立任务】（应通过）', expect: null,
-      tasks: [task(1, 'A#1', { conditions: [tf(2)] }), task(2, 'B#1')] }
+      tasks: [task(1, 'A#1', { conditions: [tf(2)] }), task(2, 'B#1')] },
+    { name: '两份旧Agent可选源缺失不阻断正式目录', expect: null, legacy: true, tasks: [task(1, 'A#1')] },
+    { name: '存在的Agent任务仍参加重复ID检查', expect: 'duplicate task id', legacy: true,
+      agentTasks: JSON.stringify({ tasks: [task(1, 'B#1')] }), tasks: [task(1, 'A#1')] },
+    { name: '存在的Agent任务JSON损坏仍失败', expect: 'invalid JSON', legacy: true, agentTasks: '{', tasks: [task(1, 'A#1')] },
+    { name: '存在的Agent文本JSON损坏仍失败', expect: 'invalid JSON', legacy: true, agentText: '{', tasks: [task(1, 'A#1')] },
+    { name: '同名目录不能被当成缺失可选文件', expect: 'must be a regular file', legacy: true, agentDirectory: true, tasks: [task(1, 'A#1')] },
+    { name: '普通必需源缺失继续失败', expect: 'cannot read', missingRequired: true, tasks: [] },
+    { name: '缺失的可选源重复登记仍失败', expect: 'duplicate manifest source', legacy: true, duplicateAgent: true, tasks: [task(1, 'A#1')] }
 ];
 
 // ── 夹具写盘 + 跑 derive ──
@@ -103,7 +111,20 @@ fs.writeFileSync(path.join(textDir, 'list.xml'), '<root><text>texts.json</text><
 fs.writeFileSync(path.join(textDir, 'texts.json'), '{}', 'utf8');
 
 function runCase(c) {
-    fs.writeFileSync(path.join(tmpRoot, 'tasks.json'), JSON.stringify({ tasks: c.tasks }, null, 2), 'utf8');
+    for (const file of [path.join(tmpRoot, 'agent_tasks.json'), path.join(textDir, 'agent_text.json')]) {
+        if (!fs.existsSync(file)) continue;
+        if (fs.lstatSync(file).isDirectory()) fs.rmdirSync(file); else fs.unlinkSync(file);
+    }
+    fs.writeFileSync(path.join(tmpRoot, 'list.xml'), '<root><task>tasks.json</task>'
+        + (c.legacy ? '<task>agent_tasks.json</task>' : '')
+        + (c.duplicateAgent ? '<task>agent_tasks.json</task>' : '') + '</root>', 'utf8');
+    fs.writeFileSync(path.join(textDir, 'list.xml'), '<root><text>texts.json</text>'
+        + (c.legacy ? '<text>agent_text.json</text>' : '') + '</root>', 'utf8');
+    if (c.agentTasks !== undefined) fs.writeFileSync(path.join(tmpRoot, 'agent_tasks.json'), c.agentTasks);
+    if (c.agentText !== undefined) fs.writeFileSync(path.join(textDir, 'agent_text.json'), c.agentText);
+    if (c.agentDirectory) fs.mkdirSync(path.join(tmpRoot, 'agent_tasks.json'));
+    if (c.missingRequired) fs.unlinkSync(path.join(tmpRoot, 'tasks.json'));
+    else fs.writeFileSync(path.join(tmpRoot, 'tasks.json'), JSON.stringify({ tasks: c.tasks }, null, 2), 'utf8');
     let res;
     try {
         execFileSync('node', [derive, '--check', '--task-dir', tmpRoot], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], cwd: projectRoot });

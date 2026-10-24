@@ -11,6 +11,34 @@ class org.flashNight.arki.scene.Cf6ExitGuideTest {
             departure:{spec:{gate:{x:120,z:230,radius:42}},rules:{phase:"waiting"}}};world.__cf6Mechanism=room;
         return room;
     }
+    private static function testClearCue():Void {
+        var effectClass:Object=org.flashNight.arki.component.Effect.EffectSystem;
+        var previousEffect:Function=effectClass.Effect,previousCalls=_root.__cf6CueCalls;
+        _root.__cf6CueCalls=0;
+        effectClass.Effect=function(name:String,x:Number,y:Number,scale:Number):Void {_root.__cf6CueCalls++;};
+        var s:Object=fixture(),hero:MovieClip=s.world.createEmptyMovieClip("hero",7);
+        hero.hp=100;hero._x=150;hero._y=240;
+        check(!Cf6ExitGuideService.showClearCue(s,hero) && _root.__cf6CueCalls==0,"uncleared combat cannot issue cue");
+        s.clearRequested=true;hero._visible=false;
+        check(!Cf6ExitGuideService.showClearCue(s,hero),"hidden arrival waits for actual visible actor");
+        hero._visible=true;hero.hp=0;
+        check(!Cf6ExitGuideService.showClearCue(s,hero),"dead actor gets no victory cue");
+        hero.hp=100;
+        check(Cf6ExitGuideService.showClearCue(s,hero) && _root.__cf6CueCalls==1,"real clear request issues existing cue before final clear");
+        check(Cf6ExitGuideService.hasClearCue(s.stageManager,s.world),"final clear can observe exact presentation receipt");
+        check(!Cf6ExitGuideService.showClearCue(s,hero) && _root.__cf6CueCalls==1,"repeated ticks cannot duplicate cue");
+        check(!s.world.允许通行 && !s.world.关卡结束,"early cue cannot grant clear or navigation");
+        check(!Cf6ExitGuideService.hasClearCue({},s.world),"foreign manager cannot suppress its own cue");
+        s.stageManager.currentStage++;
+        check(!Cf6ExitGuideService.hasClearCue(s.stageManager,s.world),"later stage cannot consume old cue");
+        s.world.removeMovieClip();s=fixture();hero=s.world.createEmptyMovieClip("hero",7);hero.hp=100;s.clearRequested=true;
+        effectClass.Effect=function():Void {_root.__cf6CueCalls++;throw "partial projection fixture";};
+        check(Cf6ExitGuideService.showClearCue(s,hero) && _root.__cf6CueCalls==2,"partially failed projection is still single-attempt");
+        check(!Cf6ExitGuideService.showClearCue(s,hero) && Cf6ExitGuideService.hasClearCue(s.stageManager,s.world),"partial projection cannot replay at final clear");
+        var original:Object=s.owner;s.world.__stageReturnWorldIdentity={};
+        check(!Cf6ExitGuideService.hasClearCue(s.stageManager,s.world),"world identity replacement invalidates cue receipt");
+        s.world.removeMovieClip();effectClass.Effect=previousEffect;_root.__cf6CueCalls=previousCalls;
+    }
     public static function runAllTests():Void {
         passed=failed=0;var previousWorld=_root.gameworld,cls:Object=StageManager,previousManager=cls.instance;
         var s:Object=fixture(),h:Object=Cf6ExitGuideService.begin(s,{x:900,z:900,direction:"右"});
@@ -37,7 +65,7 @@ class org.flashNight.arki.scene.Cf6ExitGuideTest {
         _root.gameworld=replacement;replacement.__stageReturnWorldIdentity={};
         var sameName:MovieClip=replacement.createEmptyMovieClip(oldName,1);sameName.__cf6ExitGuideOwner={};
         Cf6ExitGuideService.tick(h);check(h.closed && sameName._parent===replacement,"same-path world replacement stays untouched");
-        replacement.removeMovieClip();_root.gameworld=previousWorld;cls.instance=previousManager;
+        replacement.removeMovieClip();testClearCue();_root.gameworld=previousWorld;cls.instance=previousManager;
         trace("Cf6ExitGuideTest Tests Passed: "+passed);trace("Cf6ExitGuideTest Tests Failed: "+failed);
     }
 }

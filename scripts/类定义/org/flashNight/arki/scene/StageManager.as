@@ -1046,7 +1046,9 @@ class org.flashNight.arki.scene.StageManager {
                 bindStageExit(gameworld);
                 gameworld.允许通行 = true;
                 var hero:MovieClip = TargetCacheManager.findHero();
-                EffectSystem.Effect("小过关提示动画", hero._x, hero._y, 100);
+                if (!org.flashNight.arki.scene.Cf6ExitGuideService.hasClearCue(this, gameworld)) {
+                    EffectSystem.Effect("小过关提示动画", hero._x, hero._y, 100);
+                }
             } catch (clearProjectionError) {
                 trace("[StageManager] clear projection failed: " + clearProjectionError);
             }
@@ -1124,15 +1126,23 @@ class org.flashNight.arki.scene.StageManager {
         };
     }
 
-    /** One-shot CF6 choreography handoff. This does not clear a stage or alter legacy nextStage. */
+    /** One-shot CF6 choreography handoff; both callers use the same transition writer. */
     public function requestCf6DoorAdvance(world:MovieClip,identity:Object,expectedStage:Number):String {
-        if(this!==StageManager.instance || world!==gameworld || world!==_root.gameworld
+        return StageManager.requestCf6ChoreographyAdvance(this,world,identity,expectedStage,false);
+    }
+    public function requestCf6VehicleAdvance(world:MovieClip,identity:Object,expectedStage:Number):String {
+        return StageManager.requestCf6ChoreographyAdvance(this,world,identity,expectedStage,true);
+    }
+    private static function requestCf6ChoreographyAdvance(manager:Object,world:MovieClip,identity:Object,expectedStage:Number,vehicle:Boolean):String {
+        if(manager!==StageManager.instance || world!==manager.gameworld || world!==_root.gameworld
                 || identity==null || identity!==world.__stageReturnWorldIdentity
-                || !isActive || !isCleared || isFailed || isFinished || stageMode=="warlord"
+                || !manager.isActive || !manager.isCleared || manager.isFailed || manager.isFinished || manager.stageMode=="warlord"
                 || typeof expectedStage!="number" || (expectedStage-expectedStage)!=0
-                || expectedStage!==currentStage || expectedStage<0 || expectedStage!=Math.floor(expectedStage)
-                || !(stageInfoList instanceof Array) || !(currentStage<stageInfoList.length-1)) return "rejected";
-        var receipt:Object=org.flashNight.arki.scene.Cf6MapMechanism.consumeDoorAdvance(this,world,identity,expectedStage);
+                || expectedStage!==manager.currentStage || expectedStage<0 || expectedStage!=Math.floor(expectedStage)
+                || !(manager.stageInfoList instanceof Array) || !(manager.currentStage<manager.stageInfoList.length-1)) return "rejected";
+        var receipt:Object=vehicle
+            ? org.flashNight.arki.scene.Cf6MapMechanism.consumeVehicleAdvance(manager,world,identity,expectedStage)
+            : org.flashNight.arki.scene.Cf6MapMechanism.consumeDoorAdvance(manager,world,identity,expectedStage);
         if(receipt==null) return "rejected";
         // The exact receipt is issued BEFORE any query/callback with side effects. Never replay unknown.
         try {
@@ -1160,19 +1170,29 @@ class org.flashNight.arki.scene.StageManager {
                     || fade.__returnFadeActive===true || fade.跳转中标签) {
                 receipt.status="rejected";return "rejected";
             }
-            if(!org.flashNight.arki.scene.Cf6MapMechanism.doorAdvanceReceiptCurrent(receipt)) {
+            if(!org.flashNight.arki.scene.Cf6MapMechanism.choreographyAdvanceReceiptCurrent(receipt)) {
                 receipt.status="unknown";return "unknown";
             }
             var previousProjection:Object=fade.__transitionProjectionIdentity;
             receipt.manualAllowed=true;
             _root.场景进入位置名="出生地";
             _root.转场景记录数据();
-            if(!org.flashNight.arki.scene.Cf6MapMechanism.doorAdvanceReceiptCurrent(receipt)) {
+            if(!org.flashNight.arki.scene.Cf6MapMechanism.choreographyAdvanceReceiptCurrent(receipt)) {
+                receipt.manualAllowed=false;receipt.status="unknown";return "unknown";
+            }
+            // The memory-transfer callback can synchronously open another owner or fail this stage.
+            // Recheck the same admission fences before the first navigation call.
+            if(StageReturnFlow.canBeginSceneLoad(undefined,"wuxianguotu_1")!==true
+                    || org.flashNight.arki.pause.PauseManager.isPausedExcept(receipt.pauseLease)!==false
+                    || StageRunSession.hasPersistedSettlementPending()!==false
+                    || org.flashNight.arki.item.LootContainerService.hasStageSettlementPending()!==false
+                    || save.hasRewardCommitPending()!==false || save.isRecoveryPending()!==false || save.isRepairPending()!==false
+                    || !org.flashNight.arki.scene.Cf6MapMechanism.choreographyAdvanceReceiptCurrent(receipt)) {
                 receipt.manualAllowed=false;receipt.status="unknown";return "unknown";
             }
             var accepted=fade.淡出跳转帧("wuxianguotu_1");
             if(accepted===false) {receipt.status="rejected";return "rejected";}
-            if(accepted===true && org.flashNight.arki.scene.Cf6MapMechanism.doorAdvanceReceiptCurrent(receipt)
+            if(accepted===true && org.flashNight.arki.scene.Cf6MapMechanism.choreographyAdvanceReceiptCurrent(receipt)
                     && fade===_root.淡出动画 && fade.__returnFadeActive===true
                     && fade.跳转帧==="wuxianguotu_1" && fade.__stageReturnToken===undefined
                     && typeof fade.__transitionProjectionIdentity=="object"
@@ -1188,7 +1208,7 @@ class org.flashNight.arki.scene.StageManager {
                 receipt.status="accepted";return "accepted";
             }
         } catch(doorAdvanceError) {
-            trace("[CF6DoorAdvance] unknown stage="+expectedStage);
+            trace("[CF6ChoreographyAdvance] unknown stage="+expectedStage);
         }
         receipt.manualAllowed=false;receipt.status="unknown";return "unknown";
     }

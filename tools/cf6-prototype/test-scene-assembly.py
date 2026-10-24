@@ -53,6 +53,21 @@ class SceneAssemblyTests(unittest.TestCase):
             self.assertEqual([(r['frame'],r['action'],r['visible']) for r in actual['samples']],
                              [(r['frame'],r['action'],r['visible']) for r in source['samples']])
 
+    def test_vehicle_is_between_boss_rescue_and_car_side_wings(self):
+        order=[row['id'] for row in self.chapter['maps']]
+        position=order.index('A07')
+        self.assertEqual(order[position-1:position+2],['A06','A07','A08'])
+        vehicle=self.maps['A07']
+        self.assertIn('vehicle',vehicle['mechanism'])
+        self.assertNotIn('guidePoint',vehicle['mechanism'])
+        self.assertEqual(vehicle['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'],[])
+
+    def test_vehicle_allowance_moves_once_without_changing_total_cash(self):
+        cash=lambda node:[p['Value'] for p in node['stage'].get('Pickups',{}).get('Pickup',[]) if p['Name']=='金币']
+        self.assertEqual(cash(self.maps['A07']),[40000])
+        self.assertEqual(cash(self.maps['A08']),[])
+        self.assertEqual(sum(sum(cash(node)) for node in self.maps.values()),910000)
+
     def test_real_gate_is_standard_exit_not_remote_right_edge(self):
         for map_id in ('A03','A04','A05'):
             m = self.maps[map_id]
@@ -176,7 +191,8 @@ class SceneAssemblyTests(unittest.TestCase):
                         if not enemy['Parameters']:
                             del enemy['Parameters']
             self.assertEqual(actual_wave,old_wave)
-        self.assertEqual(sorted(observation_flags),[('A12',0),('A19',0),('A19',1)])
+        designed=any(m.get('sourceNote',{}).get('chapterDifficulty') for m in original['maps'])
+        self.assertEqual(sorted(observation_flags),[] if designed else [('A12',0),('A19',0),('A19',1)])
         for key in ('startingMoney','startingSkillPoints','externalRewards','actor'):
             self.assertEqual(self.after_scene[key],original[key])
 
@@ -191,10 +207,12 @@ class SceneAssemblyTests(unittest.TestCase):
             kind='pod' if row['sourceSprite']==1939 else 'barrel'
             prop=props[f'{row["mapId"]}-{kind}-{row["sourceDepth"]}']
             self.assertEqual(prop['artMatrix'],row['nativeMatrix'][:4]+[0,0])
-            for axis,index in (('x',4),('y',5)):
-                self.assertAlmostEqual(prop[axis],row['nativeMatrix'][index]*128/75,places=3)
+            self.assertAlmostEqual(prop['x'],row['nativeMatrix'][4]*128/75,places=3)
+            if kind=='pod':
+                self.assertAlmostEqual(prop['y'],row['nativeMatrix'][5]*128/75,places=3)
             self.assertEqual(prop['frames'],25 if kind=='pod' else 16)
             if kind=='barrel':
+                self.assertAlmostEqual(prop['groundY'],(row['nativeMatrix'][5]+44.5)*128/75,places=3)
                 self.assertAlmostEqual(prop['groundY']-prop['y'],44.5,places=3)
                 self.assertAlmostEqual(prop['sortY'],prop['groundY'],places=4)
                 self.assertAlmostEqual(prop['hitBounds'][1],21.5-90,places=4)
@@ -240,7 +258,34 @@ class SceneAssemblyTests(unittest.TestCase):
         missing=ROOT/asset['swf'];real_is_file=Path.is_file
         with patch.object(Path,'is_file',lambda p:False if p==missing else real_is_file(p)):
             with self.assertRaisesRegex(ValueError,'fresh CS6 interactive resource'):
-                bc.build(require_swfs=True)
+                interactive.adapt(copy.deepcopy(self.after_scene),require_swfs=True)
+
+    def test_scenic_wings_retains_original_positions_and_no_combat_authority(self):
+        actors=[(m['id'],l) for m in self.chapter['maps'] for l in m['mechanism']['layers'] if l['role']=='scenic-actor']
+        self.assertEqual([mid for mid,_ in actors],['A06','A08'])
+        source=scene.read(scene.SCENIC_WINGS)
+        for (mid,actor),origin in zip(actors,source['placements']):
+            self.assertEqual(mid,origin['mapId'])
+            self.assertAlmostEqual(actor['x'],origin['nativeMatrix'][4]*128/75,places=3)
+            self.assertAlmostEqual(actor['y'],origin['nativeMatrix'][5]*128/75,places=3)
+            self.assertEqual(actor['sortY'],actor['y'])
+            self.assertAlmostEqual(actor['artMatrix'][0],origin['nativeMatrix'][0]*source['bodyScale'],places=8)
+            self.assertEqual(actor['frames'],15)
+            self.assertFalse(set(actor)&{'hp','unitId','Type','team','spawnAuthority'})
+        self.assertEqual(actors[0][1]['speech'],'Andy！救我！')
+        self.assertNotIn('speech',actors[1][1])
+
+    def test_scenic_wings_is_native_script_free_and_requires_own_resource(self):
+        source=scene.read(scene.SCENIC_WINGS)
+        for name in source['outputs']:
+            if not name.endswith('.xml') or 'PublishSettings' in name:continue
+            root=ET.parse(ROOT/name).getroot()
+            self.assertFalse(any(n.tag.endswith('Actionscript') for n in root.iter()))
+            self.assertFalse(any(k.startswith('linkage') for n in root.iter() for k in n.attrib))
+        missing=ROOT/source['swf'];real_is_file=Path.is_file
+        with patch.object(Path,'is_file',lambda p:False if p==missing else real_is_file(p)):
+            with self.assertRaisesRegex(ValueError,'fresh CS6 scenic Wings resource'):
+                scene.scenic_wings(copy.deepcopy(self.maps),[],True)
 
     def test_auxiliary_side_wall_doors_keep_native_shear(self):
         side = [l for m in self.chapter['maps'] for l in m['mechanism']['layers']

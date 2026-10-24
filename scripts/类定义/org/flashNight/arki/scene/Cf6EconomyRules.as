@@ -12,16 +12,17 @@ class org.flashNight.arki.scene.Cf6EconomyRules {
         var x=map.stage.BasicInformation.PlayerX,y=map.stage.BasicInformation.PlayerY;
         return typeof x == "number" && typeof y == "number" && isFinite(x) && isFinite(y) && !isNaN(x) && !isNaN(y);
     }
-    private static function names(row:Object, minimum:Number, reserved:Object):Boolean {
+    private static function names(row:Object, minimum:Number, reserved:Object, collect:Boolean):Boolean {
         if (!list(row.choices,16) || row.choices.length < minimum) return false;
         var seen:Object={};
         for (var i:Number=0;i<row.choices.length;i++) {
             var choice:Object=row.choices[i];
             if (!text(choice.weapon) || !text(choice.ammo) || !whole(choice.ammoCount,1,30)
                     || seen["w."+choice.weapon] === true || reserved["w."+choice.weapon] === true) return false;
+            if (choice.weaponCount !== undefined && !whole(choice.weaponCount,1,collect ? 1 : 2)) return false;
             seen["w."+choice.weapon]=true;
         }
-        for (var name:String in seen) reserved[name]=true;
+        if (collect) for (var name:String in seen) reserved[name]=true;
         return true;
     }
     private static function allEnemies(map:Object):Array {
@@ -61,16 +62,18 @@ class org.flashNight.arki.scene.Cf6EconomyRules {
             var row:Object=economy.eliteWeapons[q];
             if (quotaMaps[row.quota] !== row.mapId || markers[row.quota] == undefined
                     || used[row.quota] === true || !anchor(maps["m."+row.mapId])
-                    || !names(row,row.quota === "E1" ? 1 : 2,reserved)) return false;
+                    || !names(row,row.quota === "E1" ? 1 : 2,reserved,true)) return false;
             used[row.quota]=true;
         }
         for (var marker:String in markers) if (used[marker] !== true) return false;
+        var eliteReserved:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(reserved);
         used={};
         for (var r:Number=0;r<economy.randomWeapons.length;r++) {
             row=economy.randomWeapons[r];
             if (maps["m."+row.mapId] == undefined || used["m."+row.mapId] === true
-                    || !anchor(maps["m."+row.mapId]) || !names(row,2,reserved)) return false;
+                    || !anchor(maps["m."+row.mapId]) || !names(row,2,eliteReserved,false)) return false;
             used["m."+row.mapId]=true;
+            for (var n:Number=0;n<row.choices.length;n++) reserved["w."+row.choices[n].weapon]=true;
         }
         used={};
         var pools:Array=org.flashNight.arki.item.ChoiceRewardDefinition.get();
@@ -90,7 +93,7 @@ class org.flashNight.arki.scene.Cf6EconomyRules {
                     var bundle:Object=group.entries[b];
                     if (bundle.kCost !== 0) return false;
                     for (s=0;s<bundle.skills.length;s++) if (maxed["s."+bundle.skills[s].skillKey] === true) return false;
-                    for (var d:Number=0;d<bundle.entries.length;d++) if (reserved["w."+bundle.entries[d].itemName] === true) return false;
+                    for (var d:Number=0;d<bundle.entries.length;d++) if (eliteReserved["w."+bundle.entries[d].itemName] === true) return false;
                 }
             }
             used["m."+row.mapId]=true;used["p."+row.poolId]=true;choiceNames["p."+row.itemName]=true;
@@ -138,7 +141,8 @@ class org.flashNight.arki.scene.Cf6EconomyRules {
                 var row:Object=economy.randomWeapons[r];
                 if (row.mapId !== map.id) continue;
                 var chosen:Object=select(state,row.choices);
-                pickups.push({Name:chosen.weapon,Value:1,x:x,y:y});
+                var count:Number=chosen.weaponCount === undefined ? 1 : chosen.weaponCount;
+                for (var instance:Number=0;instance<count;instance++) pickups.push({Name:chosen.weapon,Value:1,x:x,y:y});
                 pickups.push({Name:chosen.ammo,Value:chosen.ammoCount,x:x,y:y});
             }
             for (var q:Number=0;q<economy.eliteWeapons.length;q++) {

@@ -1,0 +1,13 @@
+onClipEvent(load){
+   var §\x01§ = 105;
+   var §\x0f§ = 1;
+   if(_root.gameworld.man1._x > _parent._parent._x)
+   {
+      _parent._parent._xscale = 100;
+   }
+   else
+   {
+      _parent._parent._xscale = -100;
+   }
+   撞飞速度 = 10;
+}

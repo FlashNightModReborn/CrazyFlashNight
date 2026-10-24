@@ -1,0 +1,5 @@
+﻿trace("FocusedTestRunId cf6-scenic-wings-assets Start: __FOCUSED_RUN_ID__");
+_root.cf6ScenicWingsAssetsComplete=function():Void {
+    trace("FocusedTestRunId cf6-scenic-wings-assets Complete: __FOCUSED_RUN_ID__");
+};
+org.flashNight.arki.scene.Cf6ScenicWingsAssetsTest.runAllTests();

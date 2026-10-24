@@ -113,7 +113,7 @@ try {
         if ($trace -notmatch ('(?m)^'+$test+' Tests Passed: [1-9][0-9]*\r?$') -or $trace -notmatch ('(?m)^'+$test+' Tests Failed: 0\r?$')) { throw "Missing suite terminal: $test" }
     }
     $counts=switch ($Suite) {
-        'camera' { @{CameraLifecycleTest=166} }
+        'camera' { @{CameraLifecycleTest=180} }
         'scene-transition' { @{SceneTransitionServiceTest=107} }
         'stage-return' { @{StageReturnFlowTest=119} }
         'arena-worker-protocol' { @{ArenaWorkerProtocolTest=52} }

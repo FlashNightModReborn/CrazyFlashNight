@@ -13,9 +13,10 @@ class org.flashNight.arki.scene.Cf6StoryService {
         if (index == 1) return ["cf6-s1"];
         if (index == 2) return ["cf6-s2"];
         if (index == 3) return ["cf6-s3"];
-        // 本版跳过 A07 车辆玩法；s4、s5 仅在本迁移路线中于 A06 后、A08 前串联。
-        if (index == 7) return ["cf6-s4", "cf6-s5"];
-        if (index == 17) return ["cf6-s6"];
+        // S4 enters A07. Only the vehicle authority's completed tail can reach the next A08 chapter.
+        if (index == 7) return ["cf6-s4"];
+        if (index == 8) return ["cf6-s5"];
+        if (index == 18) return ["cf6-s6"];
         return [];
     }
     public static function hasChapterStory(index:Number):Boolean {

@@ -50,6 +50,7 @@ class org.flashNight.arki.camera.CameraLifecycleTest {
         _root.天空盒.地平线高度 = 240;
         trace("CameraLifecycleRun Start: " + runId);
         semanticTests();
+        framingTests();
         closeWorld();
         lowDepth = _root.gameworld层级定位器.getDepth();
         check(lowDepth < 0,"authored anchor begins in negative timeline slot");
@@ -155,6 +156,34 @@ class org.flashNight.arki.camera.CameraLifecycleTest {
         HorizontalScroller.pushFocus(target,1,false,5,0,0,0,0,{});step();
         check(info().focusDepth===0,"small-map early return cannot prevent focus expiry");
         check(w._x===0,"small map X axis is pinned to origin");
+        closeWorld();
+    }
+    private static function framingTests():Void {
+        var w:MovieClip=fixture(2400);w.hero._x=500;w.hero._y=450;
+        var f:Object=HorizontalScroller.pushFocus(w.hero,0,true,5,0,0,0,0,{});
+        var forged:Object={target:f.target,identity:f.identity,scope:f.scope,released:false};
+        check(!HorizontalScroller.setFocusViewport(forged,0.25,0.8,[-550,-100,0,0]),"matching fields cannot fabricate a focus capability");
+        check(HorizontalScroller.setFocusViewport(f,0.25,0.8,[-550,-100,0,0]),"authored framing accepts its exact live focus");
+        step();
+        check(Math.abs(w._x-(Stage.width*0.25-500))<0.6,"authored target uses viewport quarter rather than ordinary direction bias");
+        check(Math.abs(w._y-((Stage.height-64)*0.8-450))<0.6,"authored vertical framing respects the playable viewport");
+        var viewport:Object=f.viewport;
+        check(!HorizontalScroller.setFocusViewport(f,-1,0.8,[-550,-100,0,0]) && f.viewport===viewport,"invalid screen fraction preserves current framing");
+        check(!HorizontalScroller.setFocusViewport(f,0.25,0.8,[NaN,-100,0,0]) && f.viewport===viewport,"NaN camera boundary is rejected atomically");
+        check(!HorizontalScroller.setFocusViewport(f,0.25,0.8,[10,-100,0,0]),"inverted authored boundary is rejected");
+        var before:Number=w._x;w.hero._x+=20;step();
+        check(Math.abs(w._x-before+4)<0.6,"authored focus follows with the original divide-by-five easing");
+        w.hero._x=w.hero._y=4000;f.snapPending=true;step();
+        check(w._x===-550 && w._y===-100,"authored world limits clamp both axes");
+        _root.basicZoomScale=2;f.snapPending=true;step();
+        check(w._x===-1100 && w._y===-200,"authored boundaries scale once with the live camera zoom");
+        check(HorizontalScroller.releaseFocus(f),"authored framing releases through its existing focus handle");
+        check(!HorizontalScroller.setFocusViewport(f,0.25,0.8,[-550,-100,0,0]),"released framing cannot be resurrected");
+        w=fixture(100);w.hero._x=20;w.hero._y=400;
+        var tiny:Object=HorizontalScroller.pushFocus(w.hero,0,true,5,0,0,0,0,{});
+        HorizontalScroller.setFocusViewport(tiny,0.25,0.8,[-550,-100,0,0]);step();
+        check(w._x===0,"authored bounds cannot reveal space beyond a smaller background");
+        check(!HorizontalScroller.setFocusViewport(f,0.25,0.8,[-550,-100,0,0]),"old-world framing cannot alter a new scene");
         closeWorld();
     }
     private static function menuPixels(occluded:Boolean):Void {

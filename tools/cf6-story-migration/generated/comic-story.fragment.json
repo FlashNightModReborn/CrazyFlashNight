@@ -11,6 +11,7 @@
   "A04",
   "A05",
   "A06",
+  "A07",
   "A08",
   "A09",
   "A10",
@@ -23,12 +24,9 @@
   "A17",
   "A18",
   "A19",
-  "A20",
-  "A22"
+  "A20"
  ],
- "routeExclusions": [
-  "A07"
- ],
+ "routeExclusions": [],
  "source": {
   "swf": "tmp/cf6-roguelike-20261021/kimi-content/extract/crazyflasher6-cn.swf",
   "sha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
@@ -1680,9 +1678,9 @@
      "evidence": "DefineSprite_1778/frame_1/PlaceObject2_1766_182"
     },
     "after": {
-     "map": "unknown",
+     "map": "A07",
      "originalTargetLabel": "a7",
-     "note": "原作续接 A07 车辆段；现行路线排除 A07，续接目标需主控裁决（候选 A08）"
+     "note": "s4 完成后进入 A07 车辆玩法；剧情路由不代替车辆通关权威"
     }
    },
    "pages": [
@@ -1992,8 +1990,8 @@
     ]
    },
    "continuation": {
-    "onComplete": "unknown",
-    "onSkip": "unknown",
+    "onComplete": "A07",
+    "onSkip": "A07",
     "equivalence": "原作跳过与看完同归切镜→目标帧",
     "authority": "as2",
     "staleRule": "过期/取消/异档回调一律 expire，不推进新关"
@@ -2067,8 +2065,8 @@
    },
    "route": {
     "before": {
-     "map": "unknown",
-     "note": "原作由 A07 车辆段内撞击事件 gotoAndStop(s5) 触发（DefineSprite_1816/frame_3/PlaceObject2_1795_365）；A07 不入现行路线，挂点需主控裁决",
+     "map": "A07",
+     "note": "原作由 A07 车辆段内撞击事件 gotoAndStop(s5) 触发（DefineSprite_1816/frame_3/PlaceObject2_1795_365）；现役由真实车辆尾段完成后交给标准 A08 章节入口",
      "evidence": "DefineSprite_1816/frame_3/PlaceObject2_1795_365"
     },
     "after": {
@@ -3924,7 +3922,10 @@
    },
    "route": {
     "before": {
-     "map": "A22",
+     "map": "A20",
+     "sourceMap": "A22",
+     "runtimeRoom": "A20",
+     "runtimePhase": "second-form",
      "exit": "boss(敌人-老头机器人) hp<=0 → 1766 切镜",
      "evidenceCharId": 1766,
      "evidence": "DefineSprite_2011/frame_1/PlaceObject2_1766_180"
@@ -3932,7 +3933,7 @@
     "after": {
      "map": "unknown",
      "originalTargetLabel": "end",
-     "note": "原作续接 end 制作名单后回游戏封面；书中路线续接胜利结算，需主控裁决"
+     "note": "原作续接 end 制作名单后回游戏封面；现役 beginFinal 仍串联 s7/end，再沿既有 outcome 屏障结算"
     }
    },
    "pages": [
@@ -5122,18 +5123,15 @@
   }
  ],
  "unknowns": [
-  "cf6-s4.after：原作目标 a7 被现行路线排除，续接目标需主控裁决",
-  "cf6-s5.before：原作触发在 A07 内，现行路线无挂点，需主控裁决",
-  "cf6-s7.after / cf6-end.before-after：原作进名单回封面；书中胜利结算接线需主控裁决",
   "各漫画旁白与页内文本的逐句对齐（哪句配哪页）：原作无数据标记，仅有时间流，标 unknown 不猜",
   "漫画画面对话气泡的说话人身份：原作无文本标记，speaker 一律留空"
  ],
  "integrationNotes": [
-  "Host launcher/src/Tasks/BookComicTask.cs Pages 白名单需加 cf6-s1..cf6-s7（冻结文件，主控改）",
-  "Web launcher/web/modules/book-comic-content.js 需合入 cf6 页内容（冻结文件，主控改）；本 fragment 的 consumerMapping 逐段给出可直连字段",
-  "AS2 侧接线：BookRunService.presentChapter 的 cf6 分支在章节边界调 Cf6StoryService.begin(pageId, continuation)；continuation 即 showChapterDialogue 等价物（主控改共享入口）",
+  "现役章节边界：7 仅 s4→A07；8 仅 s5→A08；18 仅 s6→A18；s5 须等待车辆玩法完成后由标准章节入口调度",
+  "Web 独立内容由 build_cf6_web_content.py 派生为 book-comic-cf6-content.js；consumerMapping 保留原页字段与媒体",
+  "AS2 侧接线：BookRunService.presentChapter 在章节边界调 Cf6StoryService.beginChapter；通关权威仍由车辆/地图机关持有，剧情不跳过 A07",
   "原作完成/跳过殊途同归（均走切镜→目标帧）；fragment continuation 两者同一目标，取消/过期不推进",
-  "旁白为连续音频流 narration.mp3，与页推进同步；现有面板无音频通道，cue 通道 cf6 默认静音（Cf6StoryService.cueSound 留表）",
+  "旁白 narration.mp3 按原首个音频块偏移与页时钟同步；音乐和 BGM lease 沿现役独立音频通道，漫画自身不扩展战斗或持久写权威",
   "切镜(1281) frame21 原作做 自动存盘；迁移后持久化归现役 AS2 权威，漫画服务本身零持久写"
  ]
 }

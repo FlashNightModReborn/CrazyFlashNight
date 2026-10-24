@@ -1,0 +1,10 @@
+var §\x01§ = 429;
+var §\x0f§ = 1;
+if(this._y == 0)
+{
+   this.removeMovieClip();
+}
+firesound = new Sound();
+firesound.attachSound("Metal Hits" + random(4));
+firesound.start(o,1);
+gotoAndPlay("a" + random(4));

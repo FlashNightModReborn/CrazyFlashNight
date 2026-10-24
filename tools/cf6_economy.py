@@ -1,5 +1,7 @@
 """CF6 economy authoring checks. No inventory/save writes or random authority."""
 import math
+import json
+from pathlib import Path
 from choice_reward_catalog import exact, integer, load, validate
 
 QUOTA_MAPS = {'E1': 'A09', 'E2': 'A13', 'E3': 'A14', 'E4': 'A17', 'E5': 'A19'}
@@ -14,12 +16,51 @@ def enemies(stage):
         yield from group['enemies']
 
 
+def historical_allowlist():
+    source = json.loads((Path(__file__).parent / 'cf6-roguelike-content/weapon-pools.source.json').read_text('utf-8'))
+    policy = source['historicalPolicy']
+    if policy['selection'] != 'strict-historical' or policy['allowedTierNames']:
+        raise ValueError('historical weapon eligibility is not frozen')
+    return set(policy['acceptedWeaponNames'])
+
+
+def check_historical_names(names, items, where):
+    allowed = historical_allowlist()
+    for name in names:
+        meta = items.get(name)
+        if meta is None: raise ValueError('unknown item in historical ' + where + ': ' + str(name))
+        if meta is not None and meta.findtext('type') == '武器' and meta.findtext('use') in ('长枪','手枪') and name not in allowed:
+            raise ValueError('later or unresolved weapon in historical ' + where + ': ' + name)
+
+
+def validate_historical_budget(budget, items):
+    names = list(budget['commonShopItems'])
+    for node in budget['merchantNodes']: names.extend(node['addWeapons'])
+    for row in budget['shoppingRoute']:
+        names.extend(name for name in [row.get('purchaseWeapon'),row.get('ammoWeapon')] if name)
+    names.extend(row['weapon'] for row in budget['stressPurchases'])
+    check_historical_names(names, items, 'shop/budget')
+
+
 def validate_economy(book, items, catalog=None):
     economy = book.get('economy')
     if economy is None:
         return
     exact(economy, 'randomWeapons eliteWeapons choices', 'CF6 economy')
     maps = {m['id']: m for m in book['maps']}
+    historical = book.get('id') == 'cf6-sting' and book.get('routeId') == 'historical'
+    if historical:
+        names = [e['name'] for e in book.get('actor',{}).get('equipment',[])]
+        for section in ('randomWeapons','eliteWeapons'):
+            names.extend(option['weapon'] for row in economy[section] for option in row['choices'])
+        for stage in maps.values():
+            names.extend(p['Name'] for p in stage['stage'].get('Pickups',{}).get('Pickup',[]))
+            for enemy in enemies(stage):
+                params = enemy.get('Parameters',{})
+                names.extend(drop['名字'] for drop in params.get('掉落物',[]))
+                names.extend(params[key].split('#')[0] for key in ('长枪','手枪','手枪2') if type(params.get(key)) is str)
+        check_historical_names(names,items,'actor/fixed/random/elite/enemy')
+
     for key in economy:
         if type(economy[key]) is not list or len(economy[key]) > 20:
             raise ValueError('invalid CF6 economy rows')
@@ -34,7 +75,7 @@ def validate_economy(book, items, catalog=None):
                     raise ValueError('CF6 elite must be one existing soldier')
                 marked[quota] = enemy
 
-    def row_choices(row, minimum):
+    def row_choices(row, minimum, short_guns=False):
         if row['mapId'] not in maps: raise ValueError('unknown CF6 economy map')
         validate_anchor(maps[row['mapId']])
         options = row['choices']
@@ -42,10 +83,14 @@ def validate_economy(book, items, catalog=None):
             raise ValueError('CF6 random weapon pool needs real alternatives')
         names = set()
         for option in options:
-            exact(option, 'weapon ammo ammoCount', 'CF6 weapon choice')
+            exact(option, 'weapon ammo ammoCount' + (' weaponCount' if 'weaponCount' in option else ''), 'CF6 weapon choice')
             gun = items.get(option['weapon'])
-            if gun is None or gun.findtext('type') != '武器' or gun.findtext('use') != '长枪':
+            if gun is None or gun.findtext('type') != '武器' or gun.findtext('use') not in (('长枪','手枪') if short_guns else ('长枪',)):
                 raise ValueError('CF6 weapon must be an existing long gun')
+            count = option.get('weaponCount', 1)
+            integer(count, 1, 2, 'CF6 weapon count')
+            if count != (2 if gun.findtext('use') == '手枪' else 1):
+                raise ValueError('CF6 short guns require two independent instances')
             integer(int(gun.findtext('data/level', '999')), 1, 60, 'CF6 weapon level')
             ammo = items.get(option['ammo'])
             if ammo is None or ammo.findtext('use') != '弹夹' or gun.findtext('data/clipname') != option['ammo']:
@@ -78,8 +123,8 @@ def validate_economy(book, items, catalog=None):
     random_maps, random_names = set(), set()
     for row in economy['randomWeapons']:
         exact(row, 'mapId choices', 'CF6 random economy')
-        names = row_choices(row, 2)
-        if row['mapId'] in random_maps or names & (reserved | random_names):
+        names = row_choices(row, 2, True)
+        if row['mapId'] in random_maps or names & reserved:
             raise ValueError('duplicate CF6 weapon delivery source')
         random_maps.add(row['mapId']); random_names |= names
     # Existing authored fixed pickups must not also deliver a reserved random/elite gun.
@@ -117,7 +162,8 @@ def validate_economy(book, items, catalog=None):
                     raise ValueError('CF6 card contains a historical maxed skill')
                 contents = bundle.get('items', [])
                 names = {r['itemName'] for r in contents} | ({bundle['weapon']} if 'weapon' in bundle else set())
-                if names & (reserved | random_names): raise ValueError('CF6 card duplicates reserved weapon delivery')
+                if names & reserved: raise ValueError('CF6 card duplicates reserved weapon delivery')
+                if historical: check_historical_names(names,items,'choice')
                 if not bundle.get('skills') and ('consumables' in bundle or any(items[n].findtext('type') not in ('武器','防具') for n in names)):
                     guaranteed += 1
             guaranteed_total += min(group['draw'], guaranteed)

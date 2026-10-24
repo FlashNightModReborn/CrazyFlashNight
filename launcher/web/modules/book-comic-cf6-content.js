@@ -3160,7 +3160,7 @@ window.BOOK_COMIC_CF6_CONTENT = {
     }
   ],
   "schema": "cf6-book-comic-web-content.v1",
-  "sourceBindingSha256": "afd74ed558bce5383adf37c63ef98debbc10da24f65b212db9a456b790d4f687",
-  "vehicleAdaptation": "s4/s5 are chained between A06 and A08 because A07 vehicle gameplay is excluded in this migration"
+  "sourceBindingSha256": "be35adf003b4a62a071e1719d940150a0654cf20cd1a3b5cae443c9997068041",
+  "vehicleAdaptation": "s4 precedes A07; only actual A07 vehicle-tail completion reaches s5 before A08; story routing grants no vehicle completion"
 }
 ;

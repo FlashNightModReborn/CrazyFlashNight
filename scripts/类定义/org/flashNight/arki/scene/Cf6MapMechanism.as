@@ -4,7 +4,7 @@ import org.flashNight.arki.pause.PauseManager;
 import org.flashNight.arki.interaction.NativeInteractionContext;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 
-/** CF6 room presentation owns no rewards, save writes, next-room calls or boss spawning. */
+/** CF6 room choreography delegates rewards, durable writes and navigation to their existing owners. */
 class org.flashNight.arki.scene.Cf6MapMechanism {
     private static var installed:Boolean = false;
     private static var active:Object;
@@ -60,6 +60,8 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
         world.允许通行=false;
         if (typeof s.assetScale != "number" || !(s.assetScale > 0) || !(s.assetScale < 4)
                 || (s.assetScale-s.assetScale) != 0) {fail(s,"地图视觉倍率无效");return true;}
+        if(mapId=="A07" && !org.flashNight.arki.scene.Cf6VehicleRules.validSpec(config.vehicle)
+                || mapId!="A07" && config.vehicle!==undefined) {fail(s,"赛车配置与房间不匹配");return true;}
         if(s.kind=="elevator" && !prepareElevatorBackground(s)) return true;
         armWatch();
         var layers:Array=[];
@@ -67,6 +69,10 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
         if(mapId=="A20" && config.elderFinale!==true) layers.push({id:"a21actor",role:"transformation",
             url:"flashswf/backgrounds/cf6/CF6_A21_Transform.swf",x:0,y:0});
         loadLayers(s,layers);
+        if(!s.failed && s.kind=="vehicle") {
+            s.vehicle=org.flashNight.arki.scene.Cf6VehicleService.begin(s,config.vehicle);
+            if(s.vehicle==null) {fail(s,"赛车未能取得本房间控制权");return true;}
+        }
         if(!s.failed && s.hasSpawnDoor) {
             s.dispatcher=world.dispatcher;
             if(s.dispatcher==undefined) {fail(s,"木门缺少实际单位出生事件源");return true;}
@@ -206,20 +212,20 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
 
     public static function knownMap(mapId:String):Boolean {
         return mapId=="tutorial" || mapId=="TUTORIAL" || mapId.length==3
-            && ("|A01|A02|A03|A04|A05|A06|A08|A09|A10|A11|A12|A13|A14|A15|A16|A17|A18|A19|A20|A22|")
+            && ("|A01|A02|A03|A04|A05|A06|A07|A08|A09|A10|A11|A12|A13|A14|A15|A16|A17|A18|A19|A20|A22|")
                 .indexOf("|"+mapId+"|")>-1;
     }
 
     /** Pure state seam shared by production tick and AVM1 focused tests. */
     public static function createState(mapId:String, config:Object):Object {
         var kind:String = mapId=="A10" || mapId=="A13" ? "elevator"
-            : mapId=="A06" ? "transfer" : mapId=="A20" && config.elderFinale!==true ? "transform" : config.kind=="door" ? "door" : "exit";
+            : mapId=="A07" ? "vehicle" : mapId=="A20" && config.elderFinale!==true ? "transform" : config.kind=="door" ? "door" : "exit";
         return {mapId:mapId,kind:kind,phase:"loading",frame:0,travelFrame:0,animationFrame:0,
             clearRequested:false,delivered:false,failed:false,config:config};
     }
 
     public static function advance(s:Object, paused:Boolean):String {
-        if (s.failed || s.phase=="ready" || paused) return "";
+        if (s.failed || s.phase=="ready" || paused || s.kind=="vehicle") return "";
         s.frame++;
         if (s.phase=="loading") { s.phase=s.kind=="elevator" ? "closing" : "combat";s.frame=0;return "start"; }
         if (s.phase=="closing" && s.frame>23) {s.phase="moving";s.frame=0;return "release";}
@@ -228,10 +234,10 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
             if(s.clearRequested) {s.phase="stopping";s.frame=0;return "hold";}
         } else if (s.phase=="combat" && s.clearRequested) {
             if(s.kind=="exit") {s.phase="ready";return "complete";}
-            s.phase=s.kind=="transfer" ? "transfer" : s.kind=="transform" ? "transform" : "opening";
+            s.phase=s.kind=="transform" ? "transform" : "opening";
             s.frame=0;return "hold";
         } else if(s.phase=="stopping" && s.frame>29) {s.phase="opening";s.frame=0;}
-        else if(s.phase=="opening" && s.frame>23 || s.phase=="transfer" && s.frame>89 || s.phase=="transform" && s.frame>179) {
+        else if(s.phase=="opening" && s.frame>23 || s.phase=="transform" && s.frame>179) {
             s.phase="ready";s.frame=0;return "complete";
         }
         return "";
@@ -243,6 +249,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
             && s.stageName===_root.当前关卡名
             && s.stageManager===org.flashNight.arki.scene.StageManager.instance
             && s.stageIndex===s.stageManager.currentStage
+            && s.stageManager.isActive!==false && s.stageManager.isFailed!==true && s.stageManager.isFinished!==true
             && s.owner===StageReturnFlow.worldIdentity(_root.gameworld);
     }
 
@@ -277,7 +284,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
             return true;
         }
         if(manager!==s.stageManager || manager.currentStage!==s.stageIndex) return true;
-        if(s.phase=="ready") return false;
+        if(s.lifeSuspension==null && s.phase=="ready" && (s.kind!="vehicle" || s.vehicle.status==="complete" && s.delivered===true)) return false;
         s.clearRequested=true; s.manager=manager;
         world.允许通行=false;
         return true;
@@ -285,21 +292,35 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
 
     /** Consumed only by the current manager after its real clearStage has completed. */
     public static function consumeDoorAdvance(manager:Object,world:MovieClip,identity:Object,stage:Number):Object {
+        return consumeChoreographyAdvance(manager,world,identity,stage,false);
+    }
+    public static function consumeVehicleAdvance(manager:Object,world:MovieClip,identity:Object,stage:Number):Object {
+        return consumeChoreographyAdvance(manager,world,identity,stage,true);
+    }
+    private static function consumeChoreographyAdvance(manager:Object,world:MovieClip,identity:Object,stage:Number,vehicle:Boolean):Object {
         var s:Object=active;
         if(s==null || !current(s) || manager!==s.stageManager || manager!==org.flashNight.arki.scene.StageManager.instance
                 || world!==s.world || identity!==s.owner || stage!==s.stageIndex
                 || manager.isCleared!==true || s.clearRequested!==true || s.delivered!==true
-                || s.phase!="ready" || s.advanceIssued===true || s.departure==null
-                || s.departure.rules.phase!="complete" || s.departure.rules.delivered!==true
+                || s.phase!="ready" || s.advanceIssued===true) return null;
+        if(vehicle) {
+            if(s.kind!=="vehicle" || s.vehicle.status!=="complete" || s.lease===undefined) return null;
+        } else if(s.departure==null || s.departure.rules.phase!="complete" || s.departure.rules.delivered!==true
                 || s.departure.acquired!==true || s.departure.awaitingAdvance!==true) return null;
         s.advanceIssued=true;
-        s.advanceReceipt={owner:s.owner,manager:manager,stage:stage,pauseLease:s.departure.lease,
+        s.advanceReceipt={owner:s.owner,manager:manager,stage:stage,kind:vehicle ? "vehicle" : "door",pauseLease:vehicle ? s.lease : s.departure.lease,
             status:"issued",manualAllowed:false};
         return s.advanceReceipt;
     }
     public static function doorAdvanceReceiptCurrent(receipt:Object):Boolean {
+        return receipt.kind==="door" && choreographyAdvanceReceiptCurrent(receipt);
+    }
+    public static function choreographyAdvanceReceiptCurrent(receipt:Object):Boolean {
         return receipt!=null && active!=null && current(active) && active.advanceReceipt===receipt
-            && active.advanceIssued===true && active.departure.acquired===true;
+            && active.stageManager.isActive===true && active.stageManager.isCleared===true
+            && active.stageManager.isFailed!==true && active.stageManager.isFinished!==true
+            && active.advanceIssued===true && (receipt.kind==="door" && active.departure.acquired===true
+                || receipt.kind==="vehicle" && active.vehicle.status==="complete" && active.lease===receipt.pauseLease);
     }
     private static function validPendingContext(manager:Object,world:MovieClip):Boolean {
         var run:Object=_root._saveExt.bookRun;
@@ -327,7 +348,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
     }
     public static function backdropSpecValid(mapId:String,p:Object):Boolean {
         if(!isBackdropRole(p.role) || p.coordinateSpace!="root-stage"
-                || mapId!="A02" && mapId!="A06" || p.role=="city-parallax" && mapId!="A02") return false;
+                || mapId!="A02" && mapId!="A06" && mapId!="A07" || p.role=="city-parallax" && mapId!="A02") return false;
         var fields:Array=["x","y","width","height"];
         for(var i:Number=0;i<fields.length;i++) {
             var value=p[fields[i]];
@@ -425,6 +446,12 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
             if(spec.role=="ambient-loop" && (spec.url!=="flashswf/backgrounds/cf6/preparation/CF6_AuxCamera1832.swf" || spec.frames!==147)) {
                 fail(s,"环境动画不在明确源闭包内");return;
             }
+            if(spec.role=="scenic-actor" && (s.mapId!="A06" && s.mapId!="A08"
+                    || spec.id!==s.mapId+"-scenic-wings" || spec.url!=="flashswf/backgrounds/cf6/preparation/CF6_ScenicWings.swf"
+                    || spec.frames!==15 || typeof spec.sortY!="number"
+                    || spec.speech!==undefined && (s.mapId!="A06" || spec.speech!=="Andy！救我！"))) {
+                fail(s,"场景人物来源或房间不匹配");return;
+            }
             if(spec.role=="depth-prop" && typeof spec.sortY!="number") {fail(s,"静态物件缺少脚点");return;}
             if(spec.visualScale!==undefined && (typeof spec.visualScale!="number" || !(spec.visualScale>0) || !(spec.visualScale<4))) {
                 fail(s,"物件视觉倍率无效");return;
@@ -498,7 +525,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
                 holder.art.setMask(mask);holder.art2.setMask(mask2);
             }
         }
-        if((s.mapId=="A02" || s.mapId=="A06") && seenBackdrop["screen-fixed"]!==true) fail(s,"地图缺少独立固定天空");
+        if((s.mapId=="A02" || s.mapId=="A06" || s.mapId=="A07") && seenBackdrop["screen-fixed"]!==true) fail(s,"地图缺少独立固定天空");
         if(s.mapId=="A02" && seenBackdrop["city-parallax"]!==true) fail(s,"地图缺少独立城市视差");
         if(s.kind=="elevator" && !hasScroll) fail(s,"电梯缺少独立升降背景，未跳过机关");
         if(s.kind=="door" && s.departure==null && !(hasLeft && hasRight) && !hasExitSequence) fail(s,"门缺少独立门叶或开门序列，未跳过机关");
@@ -544,7 +571,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
         }
         if((row.row.spec.role=="door-exit-sequence" || row.row.spec.role=="door-spawn-sequence")
                 && mc._totalframes!=row.row.spec.frames) {fail(s,"门序列实际帧数不符: "+row.row.spec.id);return;}
-        if(row.row.spec.role=="ambient-loop" && mc._totalframes!==row.row.spec.frames) {
+        if((row.row.spec.role=="ambient-loop" || row.row.spec.role=="scenic-actor") && mc._totalframes!==row.row.spec.frames) {
             fail(s,"环境动画实际帧数不符");return;
         }
         row.ready=true;s.pending--;row.row.remaining--;
@@ -565,6 +592,15 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
             tint.setTransform({ra:cm[0]*100/256,ga:cm[1]*100/256,ba:cm[2]*100/256,aa:cm[3]*100/256,rb:0,gb:0,bb:0,ab:0});
         }
         mc.stop();
+        if(row.row.spec.role=="scenic-actor" && row.row.spec.speech!==undefined) {
+            var holder:MovieClip=row.row.holder;
+            holder.createTextField("speech",1,-100,-198,200,26);
+            var text:TextField=holder.speech;
+            text.selectable=false;text.autoSize="center";text.text=row.row.spec.speech;
+            text.background=true;text.backgroundColor=0x20252B;text.border=true;text.borderColor=0xE4D796;
+            var format:TextFormat=new TextFormat("_sans",15,0xFFF3BD,true);format.align="center";
+            text.setTextFormat(format);
+        }
         if(row.row.spec.role=="transformation") mc.actor.stop();
     }
     public static function loadFailed(s:Object,row:Object,error:String):Void {
@@ -608,6 +644,9 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
     private static function fail(s:Object,message:String):Void {
         if(s.failed) return;
         s.failed=true;s.phase="failed";s.world.允许通行=false;
+        forgetDeath(s);
+        org.flashNight.arki.scene.Cf6VehicleService.dispose(s.vehicle);
+        org.flashNight.arki.camera.HorizontalScroller.releaseFocus(s.vehicleCamera);
         org.flashNight.arki.scene.Cf6ExitGuideService.end(s.exitGuide);
         org.flashNight.arki.scene.Cf6TransportService.end(s.transport);
         disposeBirthWindow(s.initialBirths,true);s.initialBirths=null;
@@ -624,11 +663,100 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
         release(s);
         _root.发布消息("CF6 "+s.mapId+": "+message+"。出口关闭，可撤退。");
     }
+    private static function idleElevator():Void {}
+    private static function denyElevator():Boolean {return false;}
+    private static function elevatorActorCurrent(s:Object,t:Object):Boolean {
+        return s.world===_root.gameworld && s.owner===s.world.__stageReturnWorldIdentity
+            && s.world.__cf6Mechanism===s && t.actor===s.world[t.name]
+            && t.actor.__cf6ElevatorPoseOwner===t.token;
+    }
+    /** Native standing pose replaces walking legs; stop() on the old walking frame cannot do this. */
+    public static function holdElevatorActor(s:Object,hero:MovieClip):Boolean {
+        if(s.kind!="elevator" || s.world!==_root.gameworld || s.owner!==s.world.__stageReturnWorldIdentity
+                || s.world.__cf6Mechanism!==s || hero._parent!==s.world || !(hero.hp>0)
+                || hero.__cf6TraversalOwner!==undefined || typeof hero.状态改变!="function"
+                || s.arrival!=null && s.arrival.rules.phase!="complete") return false;
+        var t:Object=s.standingActor;
+        if(t!=null) {
+            if(t.abandoned===true) return false;
+            if(!elevatorActorCurrent(s,t) || hero!==t.actor || hero.状态改变!==t.stateChange
+                    || hero.状态!==t.state || hero.行走!==idleElevator
+                    || hero.按键控制攻击模式!==idleElevator || hero.按键检测!==denyElevator
+                    || t.block!==undefined && (t.block.__cf6ElevatorPoseOwner!==t.token || t.block.onEnterFrame!==idleElevator)) {
+                releaseElevatorActor(s);s.standingActor={abandoned:true};return false;
+            }
+            return true;
+        }
+        if(hero.__cf6ElevatorPoseOwner!==undefined || hero.浮空 || hero.飞行浮空) return false;
+        t={actor:hero,name:hero._name,token:{},stateChange:hero.状态改变,
+            walk:hero.行走,switchMode:hero.按键控制攻击模式,keyCheck:hero.按键检测};
+        s.standingActor=t;hero.__cf6ElevatorPoseOwner=t.token;
+        var state:String=hero.攻击模式+"站立";
+        if(hero.状态!==state) hero.状态改变(state);
+        t.state=hero.状态;
+        if(t.state!==state) {releaseElevatorActor(s);s.standingActor={abandoned:true};return false;}
+        hero.行走=idleElevator;hero.按键控制攻击模式=idleElevator;hero.按键检测=denyElevator;
+        var block:MovieClip=hero.控制块;
+        if(block!==undefined && typeof block.onEnterFrame=="function") {
+            if(block.__cf6ElevatorPoseOwner!==undefined) {releaseElevatorActor(s);s.standingActor={abandoned:true};return false;}
+            t.block=block;t.callback=block.onEnterFrame;block.__cf6ElevatorPoseOwner=t.token;block.onEnterFrame=idleElevator;
+        }
+        if(hero.攻击模式=="长枪" || hero.攻击模式=="手枪" || hero.攻击模式=="手枪2" || hero.攻击模式=="双枪")
+            hero.man.gotoAndStop("空闲");
+        return true;
+    }
+    public static function releaseElevatorActor(s:Object):Void {
+        var t:Object=s.standingActor;s.standingActor=null;
+        if(t==null || t.abandoned===true || !elevatorActorCurrent(s,t)) return;
+        var hero:MovieClip=t.actor;
+        if(t.block.__cf6ElevatorPoseOwner===t.token) {
+            if(t.block.onEnterFrame===idleElevator) t.block.onEnterFrame=t.callback;
+            delete t.block.__cf6ElevatorPoseOwner;
+        }
+        if(hero.行走===idleElevator) hero.行走=t.walk;
+        if(hero.按键控制攻击模式===idleElevator) hero.按键控制攻击模式=t.switchMode;
+        if(hero.按键检测===denyElevator) hero.按键检测=t.keyCheck;
+        // Leave the current pose to restored input; never resurrect an old walking/death pose.
+        delete hero.__cf6ElevatorPoseOwner;
+    }
     private static function hold(s:Object):Void {
         if(s.lease==undefined) s.lease=PauseManager.lease(true,"cf6_map_mechanism");
+        if(s.kind=="elevator") holdElevatorActor(s,TargetCacheManager.findHero());
     }
     private static function release(s:Object):Void {
+        releaseElevatorActor(s);
         if(s.lease!=undefined) {PauseManager.releaseLease(s.lease);s.lease=undefined;}
+    }
+    private static function forgetDeath(s:Object):Void {
+        var life:Object=s.lifeSuspension;
+        if(life!=null && life.actor.__cf6MechanismDeathOwner===life.token)
+            delete life.actor.__cf6MechanismDeathOwner;
+        s.lifeSuspension=null;
+    }
+    private static function suspendDeath(s:Object,hero:MovieClip):Void {
+        if(s.lifeSuspension!=null) return;
+        if(hero.__cf6MechanismDeathOwner!==undefined) {fail(s,"死亡人物的房间归属已变化");return;}
+        var token:Object={};hero.__cf6MechanismDeathOwner=token;
+        s.lifeSuspension={actor:hero,name:hero._name,controlName:_root.控制目标,token:token};
+        s.world.允许通行=false;
+        org.flashNight.arki.scene.Cf6TraversalService.cancelPreparedArrival(null,null);
+        org.flashNight.arki.scene.Cf6TraversalService.suspendForDeath(s.arrival);
+        org.flashNight.arki.scene.Cf6TraversalService.suspendForDeath(s.departure);
+        release(s);
+    }
+    private static function resumeDeath(s:Object,hero:MovieClip):Boolean {
+        var life:Object=s.lifeSuspension;
+        if(life==null) return true;
+        if(hero==undefined || !(hero.hp>0)) return false;
+        if(hero._parent!==s.world || s.world[life.name]!==hero || _root.控制目标!==life.controlName
+                || hero.__cf6MechanismDeathOwner!==life.token) {
+            fail(s,"复活人物或控制目标已替换");return false;
+        }
+        forgetDeath(s);
+        if(s.kind=="elevator" && (s.phase=="closing" || s.phase=="stopping" || s.phase=="opening")) hold(s);
+        if(s.phase=="ready" && s.delivered===true && s.advanceIssued!==true && s.stageManager.isCleared===true)
+            s.world.允许通行=true;
+        return true;
     }
     public static function tick():Void {
         org.flashNight.arki.scene.Cf6TraversalService.observePreparedArrival();
@@ -644,7 +772,10 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
             fail(s,"提前清场的关卡身份已变化，取消旧请求");return;
         }
         var hero:MovieClip=TargetCacheManager.findHero();
-        if(hero!=undefined && !(hero.hp>0)) {teardown();return;}
+        if(s.kind=="vehicle") {tickVehicle(s,hero);return;}
+        if(hero!=undefined && !(hero.hp>0)) {suspendDeath(s,hero);return;}
+        if(!resumeDeath(s,hero)) return;
+        if(s.kind=="elevator" && s.lease!==undefined) holdElevatorActor(s,hero);
         if(s.departure.advanceStatus=="accepted") {
             var advanceState:String=org.flashNight.arki.scene.Cf6TraversalService.observeAdvance(s.departure,hero);
             if(advanceState=="presentation-ended" && current(s)) {
@@ -680,6 +811,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
             if(arrivalCue!="complete") return;
             paused=PauseManager.isPausedExcept(s.lease);
         }
+        if(!paused) org.flashNight.arki.scene.Cf6ExitGuideService.showClearCue(s,hero);
         // Doors wait for BOTH the real clear and the actor reaching the authored gate.
         // Lifts retain their existing stop/open sequence before the CF7 alighting extension.
         if(s.departure!=null && s.clearRequested
@@ -705,12 +837,76 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
             s.delivered=true;s.earlyClear=null;release(s);
             if(current(s) && s.manager!=undefined) s.manager.clearStage();
             if(current(s) && s.departure!=null && s.departure.awaitingAdvance===true) {
+                // Lock before callbacks: they can fail or replace the stage before the final scope check.
+                s.world.允许通行=false;
                 var result:String="rejected";
                 if(typeof s.manager.requestCf6DoorAdvance=="function")
                     result=s.manager.requestCf6DoorAdvance(s.world,s.owner,s.stageIndex);
                 org.flashNight.arki.scene.Cf6TraversalService.finishAdvance(s.departure,result,s.advanceReceipt);
                 // Once automatic handoff is accepted, the legacy key-driven gate must not issue a second fade.
                 if(current(s)) s.world.允许通行=result=="rejected" && s.advanceReceipt.manualAllowed===true;
+            }
+        }
+    }
+    private static function tickVehicle(s:Object,hero:MovieClip):Void {
+        if(hero!=undefined && !(hero.hp>0)) {
+            org.flashNight.arki.scene.Cf6VehicleService.tick(s.vehicle);
+            if(!current(s)) {teardown();return;}
+            s.world.允许通行=false;release(s);
+            return;
+        }
+        if(!alignBackdrop(s)) return;
+        if(s.pending>0) {
+            if(++s.loadFrames>900) fail(s,"赛车天空加载超时");
+            return;
+        }
+        if(s.vehicleBootReleased!==true) {
+            s.vehicleCamera=org.flashNight.arki.camera.HorizontalScroller.pushFocus(hero,0,false,5,0,0,0,0,s);
+            var bounds:Array=s.config.vehicle.sourceCameraRange;
+            var scale:Number=s.assetScale;
+            if(!org.flashNight.arki.camera.HorizontalScroller.setFocusViewport(s.vehicleCamera,0.25,0.8,
+                    [bounds[0]*scale,bounds[1]*scale,bounds[2]*scale,bounds[3]*scale])) {
+                fail(s,"赛车镜头未能绑定当前场景");return;
+            }
+            s.vehicleBootReleased=true;release(s);
+        }
+        var state:String=org.flashNight.arki.scene.Cf6VehicleService.tick(s.vehicle);
+        if(!current(s)) {teardown();return;}
+        if(state=="cancelled") {teardown();return;}
+        if(state=="dead" || hero!=undefined && !(hero.hp>0)) {s.world.允许通行=false;release(s);return;}
+        if(state=="failed") {fail(s,"赛车已停止:"+s.vehicle.reason);return;}
+        if(state!="loading" && state!="playing" && state!="complete") {fail(s,"赛车返回了无效状态");return;}
+        if(!PauseManager.isPausedExcept(s.lease)) s.animationFrame++;
+        render(s);
+        if(s.failed || state!="complete") return;
+        if(s.delivered!==true) {
+            // Only the dedicated service's real tail collision can consume the empty ordinary wave.
+            s.phase="ready";s.clearRequested=true;s.delivered=true;s.earlyClear=null;s.manager=s.stageManager;
+            s.manager.clearStage();
+            if(!current(s)) return;
+            s.world.允许通行=false;
+        }
+        if(s.vehicleAdvanceStatus===undefined) {
+            if(!(hero.hp>0) || PauseManager.isPausedExcept(s.lease)) return;
+            hold(s);
+            var result:String="rejected";
+            if(typeof s.manager.requestCf6VehicleAdvance=="function")
+                result=s.manager.requestCf6VehicleAdvance(s.world,s.owner,s.stageIndex);
+            if(!current(s)) return;
+            s.world.允许通行=false;s.vehicleAdvanceStatus=result;s.vehicleAdvanceTicks=0;
+            if(result!=="accepted") {
+                // No automatic replay of a rejected/unknown transition. Standard retreat remains available.
+                fail(s,result=="unknown" ? "赛车转场结果未确定，请使用过场界面的恢复或撤退"
+                    : "赛车转场未获受理，请解除当前操作后撤退");
+            }
+            return;
+        }
+        if(s.vehicleAdvanceStatus=="accepted") {
+            var fade:Object=_root.淡出动画;s.vehicleAdvanceTicks++;
+            if(fade.__transitionProjectionIdentity!==s.advanceReceipt.projection
+                    || fade.__returnFadeActive!==true || s.vehicleAdvanceTicks>900) {
+                s.vehicleAdvanceStatus="presentation-ended";
+                fail(s,"赛车过场未完成，请使用过场界面的重试或返回；不会重复转场");
             }
         }
     }
@@ -734,7 +930,11 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
                     fail(s,"通行图层活动帧缺失: "+p.id);return;
                 }
             }
-            else if(p.role=="ambient-loop") row.holder.art.gotoAndStop(1+s.animationFrame%p.frames);
+            else if(p.role=="ambient-loop" || p.role=="scenic-actor") {
+                row.holder.art.gotoAndStop(1+s.animationFrame%p.frames);
+                if(p.role=="scenic-actor" && row.holder.speech!==undefined)
+                    row.holder.speech._visible=s.clearRequested!==true;
+            }
             else if(p.role=="screen-fixed") {
                 var skyScale:Number=Math.max(s.assetScale,Stage.width/p.width);
                 row.holder._x=p.x*s.assetScale;row.holder._y=p.y*s.assetScale;
@@ -760,7 +960,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
                 }
             }
         }
-        if(s.phase=="transfer" || s.phase=="transform") {
+        if(s.phase=="transform") {
             showCard(s);
             // Caption remains visible below the display-only actor.
             for(var ai:Number=0;ai<s.layers.length;ai++) if(s.layers[ai].spec.role=="transformation")
@@ -773,14 +973,13 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
             s.card=_root.createEmptyMovieClip("__cf6TransitionCard",_root.getNextHighestDepth());
             var c:MovieClip=s.card;
             c.beginFill(0x081018,94);c.moveTo(0,0);c.lineTo(Stage.width,0);c.lineTo(Stage.width,Stage.height);c.lineTo(0,Stage.height);c.endFill();
-            c.createTextField("caption",1,Stage.width*0.1,s.phase=="transform" ? Stage.height*0.76 : Stage.height*0.4,Stage.width*0.8,Stage.height*0.23);
+            c.createTextField("caption",1,Stage.width*0.1,Stage.height*0.76,Stage.width*0.8,Stage.height*0.23);
             c.caption.multiline=true;c.caption.wordWrap=true;c.caption.selectable=false;
             var format:TextFormat=new TextFormat();format.font="Microsoft YaHei";format.size=26;format.color=0xDDEFFF;format.align="center";
             c.caption.setNewTextFormat(format);
         }
         s.card._visible=true;
-        s.card.caption.text=s.phase=="transfer" ? "毒刺行动 · 转移\nAndy 驾车穿过封锁区，抵达下一处设施。"
-            : s.frame<60 ? "毒刺行动 · A21\n倒下的身影开始发生异变……"
+        s.card.caption.text=s.frame<60 ? "毒刺行动 · A21\n倒下的身影开始发生异变……"
             : s.frame<120 ? "机械装甲展开，巨大的躯体从烟尘中站起。"
             : "最后一道防线已经开启。\n前往核心区域，终结毒刺行动。";
     }
@@ -793,6 +992,9 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
         org.flashNight.arki.scene.Cf6TutorialTurretService.teardown();
         var s:Object=active;active=null;
         if(s==null) {if(watch!=undefined) delete watch.onEnterFrame;return;}
+        forgetDeath(s);
+        org.flashNight.arki.scene.Cf6VehicleService.dispose(s.vehicle);
+        org.flashNight.arki.camera.HorizontalScroller.releaseFocus(s.vehicleCamera);
         org.flashNight.arki.scene.Cf6ExitGuideService.end(s.exitGuide);
         org.flashNight.arki.scene.Cf6TransportService.end(s.transport);
         disposeBirthWindow(s.initialBirths,true);s.initialBirths=null;

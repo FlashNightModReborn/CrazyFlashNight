@@ -9,6 +9,10 @@ import copy
 import hashlib
 import json
 import math
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "cf6-roguelike-content"))
+import difficulty_plan
 
 INTERVAL_MS = 400
 PHASE_MS = 200
@@ -95,7 +99,7 @@ def adapt(chapter, environments):
     """Mutate only approved placement/timing fields and return a self-contained audit."""
     audit = {'schema': 'cf6-spawn-assembly.v1', 'intervalMs': INTERVAL_MS,
              'phaseMs': PHASE_MS, 'wheelQuantumMs': 100,
-             'recurringEffectiveMs': 500, 'waveQueues': [], 'spawnPoints': [], 'bossEntries': []}
+             'recurringEffectiveMs': 500, 'waveQueues': [], 'spawnPoints': [], 'bossEntries': [], 'observationFlags': []}
     before_authority, after_authority, initial, pods = [], [], [], []
     for node in chapter['maps']:
         if not node['id'].startswith('A'):
@@ -106,19 +110,25 @@ def adapt(chapter, environments):
         environment = environments[node['background'].split('/')[-1]]
         stage = node['stage']
         points = stage.get('SpawnPoint', {}).get('Point', [])
+        difficulty = difficulty_plan.metadata(node)
+        point_roles = {r['index']:r['side'] for r in difficulty['spawnPointRoles']} if difficulty else {}
         doors = [p for p in node['mechanism'].get('layers', []) if p.get('role') == 'door-spawn-sequence']
         used_points = set()
+        observed_points = set()
+        queue_authority_index = {}
         for wi, wave in enumerate(stage['Wave']['SubWave']):
             queue_index = 0
             for ei, enemy in enumerate(wave['EnemyGroup']['Enemy']):
                 key = [mid, wi, ei]
                 original = copy.deepcopy(enemy)
                 is_pod = enemy.get('TriggerEvent', {}).get('EventName') == 'Cf6PodReady'
+                is_static = enemy.get('Quantity') == 1 and 'SpawnIndex' not in enemy and 'TriggerEvent' not in enemy
+                designed_queue = difficulty is not None and difficulty['waveKinds'][wi] == 'combat'
                 if is_pod:
                     pods.append([key, original])
-                elif wi == 0 and enemy.get('Quantity') == 1 and 'SpawnIndex' not in enemy and 'TriggerEvent' not in enemy:
+                elif is_static:
                     initial.append([key, original])
-                elif enemy.get('Quantity', 0) > 1:
+                elif enemy.get('Quantity', 0) > 1 or designed_queue:
                     spawn = enemy.get('SpawnIndex')
                     if type(spawn) is not int or not 0 <= spawn < len(points):
                         raise ValueError('unreviewed ordinary reinforcement entrance: ' + str(key))
@@ -128,7 +138,7 @@ def adapt(chapter, environments):
                     allowed_intervals = (100, INTERVAL_MS) if event == 'Cf6TransportReady' else (100,)
                     if enemy.get('Interval') not in allowed_intervals or event not in (None, 'Cf6TransportReady'):
                         raise ValueError('unreviewed reinforcement timing/event: ' + str(key))
-                    if queue_index > 1 or enemy.get('Delay', 0) != 0:
+                    if queue_index >= (16 if designed_queue else 2) or enemy.get('Delay', 0) != 0:
                         raise ValueError('unreviewed same-wave phase inventory: ' + str(key))
                     enemy['Interval'] = INTERVAL_MS
                     if queue_index:
@@ -140,17 +150,34 @@ def adapt(chapter, environments):
                         'intervalMs': INTERVAL_MS, 'delayMs': enemy.get('Delay', 0),
                         'quantity': enemy['Quantity'], 'event': copy.deepcopy(enemy.get('TriggerEvent'))})
                 before_authority.append([key, protected(original, {'Interval', 'Delay'})])
-                after_authority.append([key, protected(enemy, {'Interval', 'Delay'})])
-                if is_pod or (wi == 0 and enemy.get('Quantity') == 1 and 'SpawnIndex' not in enemy and 'TriggerEvent' not in enemy):
+                after_authority.append([key, protected(copy.deepcopy(enemy), {'Interval', 'Delay'})])
+                queue_authority_index[(wi,ei)] = len(after_authority)-1
+                if is_pod or is_static:
                     if enemy != original:
                         raise AssertionError('preplaced/pod entry changed')
         for pi in sorted(used_points):
             point = points[pi]
             original = copy.deepcopy(point)
             x, y = point['x'], point['y']
+            reviewed_entrance = None
+            if pi in point_roles:
+                side = point_roles[pi]
+                middle = (float(environment.findtext('Xmin')) + float(environment.findtext('Xmax'))) / 2
+                candidates = [d for d in doors if (d['spawnX'] < middle) == (side == 'left')
+                              and safe_box(environment,[d['spawnX']-12,d['spawnY']-6,d['spawnX']+12,d['spawnY']+6])]
+                if candidates:
+                    door = sorted(candidates,key=lambda d:d['spawnX'],reverse=side=='right')[0]
+                    x,y=door['spawnX'],door['spawnY'];reviewed_entrance=door['id']
+                else:
+                    (x,y), proof = edge_anchor(environment,side,y)
+                    reviewed_entrance='difficulty-'+side+'-validated-edge'
+                point['x'],point['y']=x,y
             matches = [door for door in doors if abs(door['spawnX'] - x) < 0.001 and abs(door['spawnY'] - y) < 0.001]
             vehicle = node['mechanism'].get('transport')
-            if matches:
+            if reviewed_entrance is not None:
+                entrance = reviewed_entrance
+                if reviewed_entrance in {d['id'] for d in doors}: observed_points.add(pi)
+            elif matches:
                 entrance = matches[0]['id']
             elif vehicle and abs(vehicle['x'] - x) <= 150 and abs(vehicle['y'] - y) <= 32:
                 entrance = vehicle['id']
@@ -166,11 +193,29 @@ def adapt(chapter, environments):
                     point.update(BiasX=bx, BiasY=by)
                     bias = [bx, by]
                     break
-            if protected(point, {'BiasX', 'BiasY'}) != original:
+            allowed_point_fields = {'BiasX','BiasY','x','y'} if pi in point_roles else {'BiasX','BiasY'}
+            if protected(point, allowed_point_fields) != protected(original, allowed_point_fields):
                 raise AssertionError('spawn point position/cap changed')
             audit['spawnPoints'].append({'mapId': mid, 'index': pi, 'entrance': entrance,
                 'position': [x, y], 'quantityMax': point.get('QuantityMax'), 'bias': bias,
                 'footEnvelope': [12, 6], 'reason': 'collision-safe jitter' if any(bias) else 'cadence only; jitter envelope not proven safe'})
+        # These reviewed points acquire their actual door binding after scene assembly.
+        # Add only the existing observation event, preserving every authoritative field.
+        for wi,wave in enumerate(stage['Wave']['SubWave']):
+            for ei,enemy in enumerate(wave['EnemyGroup']['Enemy']):
+                if enemy.get('SpawnIndex') not in observed_points: continue
+                params=enemy.setdefault('Parameters',{})
+                if params.get('publishStageEvent') is True: continue
+                if 'publishStageEvent' in params: raise ValueError('difficulty cannot override an explicit observation policy')
+                params['publishStageEvent']=True
+                index=queue_authority_index[(wi,ei)]
+                projected=copy.deepcopy(enemy);projected['Parameters'].pop('publishStageEvent')
+                if not projected['Parameters'] and 'Parameters' not in before_authority[index][1]: del projected['Parameters']
+                projected=protected(projected,{'Interval','Delay'})
+                if projected!=before_authority[index][1]: raise AssertionError('door observation changed enemy authority')
+                after_authority[index][1]=projected
+                audit['observationFlags'].append({'mapId':mid,'waveIndex':wi,'entryIndex':ei,
+                    'spawnIndex':enemy['SpawnIndex'],'field':'Parameters.publishStageEvent','value':True})
         plan = node.get('bossEncounter')
         phase_index = 0
         while plan:

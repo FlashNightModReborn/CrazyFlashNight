@@ -1,0 +1,5 @@
+var §\x01§ = 361;
+var §\x0f§ = 1;
+firesound = new Sound();
+firesound.attachSound("男-主角-" + random(3));
+firesound.start(o,1);

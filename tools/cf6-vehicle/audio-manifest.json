@@ -1,0 +1,315 @@
+{
+  "schema": "cf6-vehicle-audio.v1",
+  "sourceSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "inputs": {
+    "tools/cf6-vehicle/prepare_audio.py": "7c148659403527317127a3911c125a8de124e43ed72cfae21e1f925afc88f101",
+    "tools/cf6-audio/source.py": "cee56f73bbdc49e91711bbee8c9e135e592eb4b121c02f0ae997b2981fbd7e64",
+    "tools/swf-audit/swfscan.py": "020953fd72461e5cf12cf6281af447d8c3d1bdc3f6013e0c7e100f19e2a97fa7",
+    "flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/crazyflasher6-cn.swf": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "tools/cf6-audio/assets.json": "7b0d4d18135b3eb43d7145f2b7c71e8423f81dcdd87971763b2e0f4b446d1543"
+  },
+  "outputs": {
+    "sounds/export/人物/CF6Vehicle_0626.mp3": {
+      "sha256": "c983d0e339d3153ae4e294cba82686338f746197ad70083511e8a516c12ea3f1",
+      "bytes": 1664
+    },
+    "sounds/export/人物/CF6Vehicle_1160.wav": {
+      "sha256": "43c621bbb3bd23092e97ae874111ba90e2a9c0899aeb3de45c10e455b658398c",
+      "bytes": 15380
+    },
+    "sounds/export/人物/CF6Vehicle_1161.wav": {
+      "sha256": "e6055698cd832214ed891b8cf05fcabdf067ce72fff32e6330f82b8a451796e4",
+      "bytes": 15516
+    },
+    "sounds/export/人物/CF6Vehicle_1162.wav": {
+      "sha256": "cb892e1618e66b54880ae5cc7a6ae00fbdf08c640caa22baeab7ee4e4ec3c9ef",
+      "bytes": 16476
+    },
+    "sounds/export/人物/CF6Vehicle_1163.wav": {
+      "sha256": "c57f38e1b911c5502ae9a4bf1efe618928c49422b6ff7a266784caaad7ef66ad",
+      "bytes": 18972
+    },
+    "sounds/export/人物/CF6Vehicle_1169.mp3": {
+      "sha256": "4d042c4e7e3ae242f32f357bdda66b575be4abe6f0c647d443a0d648bffe2a0a",
+      "bytes": 2392
+    }
+  },
+  "new": [
+    {
+      "path": "sounds/export/人物/CF6Vehicle_0626.mp3",
+      "name": "CF6Vehicle_0626.mp3",
+      "soundId": 626,
+      "sha256": "c983d0e339d3153ae4e294cba82686338f746197ad70083511e8a516c12ea3f1",
+      "bytes": 1664,
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 6401,
+        "soundId": 626,
+        "linkage": null,
+        "bodySha256": "5f41f4f8ad101801c32c7eb14423e2733af74812f3b0ffdabf62cdcbcded8648",
+        "mp3Bytes": 1664,
+        "mp3Sha256": "c983d0e339d3153ae4e294cba82686338f746197ad70083511e8a516c12ea3f1"
+      },
+      "derivation": "unchanged original MP3 payload"
+    },
+    {
+      "path": "sounds/export/人物/CF6Vehicle_1160.wav",
+      "name": "CF6Vehicle_1160.wav",
+      "soundId": 1160,
+      "sha256": "43c621bbb3bd23092e97ae874111ba90e2a9c0899aeb3de45c10e455b658398c",
+      "bytes": 15380,
+      "source": {
+        "codec": 3,
+        "rate": 22050,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 7671,
+        "soundId": 1160,
+        "linkage": "Metal Hits0",
+        "bodySha256": "e74fcf253489121f9a139bb826e736aee1f2eb42970790a0a923c5f5aa98b7f2",
+        "actualPcmFrames": 7668,
+        "declaredMinusActualFrames": 3,
+        "pcmSha256": "557d73b4d9dff804eaf37e9e051f2f1f995b882f34bfde300f1710baf4326dc4"
+      },
+      "derivation": "unchanged original little-endian PCM samples with RIFF header"
+    },
+    {
+      "path": "sounds/export/人物/CF6Vehicle_1161.wav",
+      "name": "CF6Vehicle_1161.wav",
+      "soundId": 1161,
+      "sha256": "e6055698cd832214ed891b8cf05fcabdf067ce72fff32e6330f82b8a451796e4",
+      "bytes": 15516,
+      "source": {
+        "codec": 3,
+        "rate": 22050,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 7738,
+        "soundId": 1161,
+        "linkage": "Metal Hits1",
+        "bodySha256": "a5763cd4e509a4c22e3595b97f7585410c3a67c833067ea015b51fcbe9a2cdc6",
+        "actualPcmFrames": 7736,
+        "declaredMinusActualFrames": 2,
+        "pcmSha256": "b70bc5f8cf515d2407cd4b03253881719b9d18d9acf23c243e0c7e64faef218b"
+      },
+      "derivation": "unchanged original little-endian PCM samples with RIFF header"
+    },
+    {
+      "path": "sounds/export/人物/CF6Vehicle_1162.wav",
+      "name": "CF6Vehicle_1162.wav",
+      "soundId": 1162,
+      "sha256": "cb892e1618e66b54880ae5cc7a6ae00fbdf08c640caa22baeab7ee4e4ec3c9ef",
+      "bytes": 16476,
+      "source": {
+        "codec": 3,
+        "rate": 22050,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 8216,
+        "soundId": 1162,
+        "linkage": "Metal Hits2",
+        "bodySha256": "1826f25e7d5bb1f9f2bd4546c2fd67f3e6231d3607d311994f8ce80a073626f1",
+        "actualPcmFrames": 8216,
+        "declaredMinusActualFrames": 0,
+        "pcmSha256": "0bb073db0743b918360e5ec0ea434c07fc8110170dd385ec800add85df02474a"
+      },
+      "derivation": "unchanged original little-endian PCM samples with RIFF header"
+    },
+    {
+      "path": "sounds/export/人物/CF6Vehicle_1163.wav",
+      "name": "CF6Vehicle_1163.wav",
+      "soundId": 1163,
+      "sha256": "c57f38e1b911c5502ae9a4bf1efe618928c49422b6ff7a266784caaad7ef66ad",
+      "bytes": 18972,
+      "source": {
+        "codec": 3,
+        "rate": 22050,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 9466,
+        "soundId": 1163,
+        "linkage": "Metal Hits3",
+        "bodySha256": "9b720948276a7feb2758a5fcdcca92c5942e15861511fb851923af2798b94ae6",
+        "actualPcmFrames": 9464,
+        "declaredMinusActualFrames": 2,
+        "pcmSha256": "4f551dfb04c5c8f4799f29b09f90adbb7583891bd4595b638345a80616731a1d"
+      },
+      "derivation": "unchanged original little-endian PCM samples with RIFF header"
+    },
+    {
+      "path": "sounds/export/人物/CF6Vehicle_1169.mp3",
+      "name": "CF6Vehicle_1169.mp3",
+      "soundId": 1169,
+      "sha256": "4d042c4e7e3ae242f32f357bdda66b575be4abe6f0c647d443a0d648bffe2a0a",
+      "bytes": 2392,
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 10688,
+        "soundId": 1169,
+        "linkage": "ump",
+        "bodySha256": "a999abaa557b7117ddaef4a31905f1885bc08e946d16f831fbc836cfbba267ad",
+        "mp3Bytes": 2392,
+        "mp3Sha256": "4d042c4e7e3ae242f32f357bdda66b575be4abe6f0c647d443a0d648bffe2a0a"
+      },
+      "derivation": "unchanged original MP3 payload"
+    }
+  ],
+  "reused": [
+    {
+      "path": "sounds/export/人物/CF6_0915.mp3",
+      "name": "CF6_0915.mp3",
+      "soundId": 915,
+      "sha256": "e2643cc8830b0f36c57fa23e1b95675b351c853a29916f93ce5667d6bcef52db",
+      "bytes": 5096
+    },
+    {
+      "path": "sounds/export/人物/CF6_1009.mp3",
+      "name": "CF6_1009.mp3",
+      "soundId": 1009,
+      "sha256": "15c2809547a6ac47c8552e7b31d944d4302947f5373650fd698dc9400b298436",
+      "bytes": 3432
+    },
+    {
+      "path": "sounds/export/人物/CF6_1121.mp3",
+      "name": "CF6_1121.mp3",
+      "soundId": 1121,
+      "sha256": "c78670619065a5b47644bd663e939580909233f173a9971a2b0f24ce5c2f522b",
+      "bytes": 1040
+    },
+    {
+      "path": "sounds/export/人物/CF6_1135.mp3",
+      "name": "CF6_1135.mp3",
+      "soundId": 1135,
+      "sha256": "2d783930898280a3f2edcfe7920a5b28347237ce283eb72cae033ef59a532c4c",
+      "bytes": 1456
+    },
+    {
+      "path": "sounds/export/人物/CF6_1144.mp3",
+      "name": "CF6_1144.mp3",
+      "soundId": 1144,
+      "sha256": "520a7851041ecefef3ad75b083c9669457482f9d634cfd415d8a182c1af2669b",
+      "bytes": 1976
+    },
+    {
+      "path": "sounds/export/人物/CF6_1123.mp3",
+      "name": "CF6_1123.mp3",
+      "soundId": 1123,
+      "sha256": "44db07b892fa6ab5f9b0d0a6e5535104df01cf53b62d8e8ac24b35d2434505ea",
+      "bytes": 1872
+    },
+    {
+      "path": "sounds/export/人物/CF6_1137.mp3",
+      "name": "CF6_1137.mp3",
+      "soundId": 1137,
+      "sha256": "4ee7c0a56c614bae3e5dfc2bcf68f25fd556ac8346fa51165cfb8bc67859237a",
+      "bytes": 2496
+    },
+    {
+      "path": "sounds/export/人物/CF6_1146.mp3",
+      "name": "CF6_1146.mp3",
+      "soundId": 1146,
+      "sha256": "7e6f0e0944373f4c85cc3ad0e62b72354ca201b1b59ae474fc0ed21d5aa1a68f",
+      "bytes": 1352
+    },
+    {
+      "path": "sounds/export/人物/CF6_1151.mp3",
+      "name": "CF6_1151.mp3",
+      "soundId": 1151,
+      "sha256": "945dc8d35d90bd92ef1e79497795831fdff22a110e26ba38f148879e79972445",
+      "bytes": 3432
+    },
+    {
+      "path": "sounds/export/人物/CF6_1154.mp3",
+      "name": "CF6_1154.mp3",
+      "soundId": 1154,
+      "sha256": "423e6edf86535278e1ee18381d58e2a70ace893f166dcc2ddf2b97af693f7535",
+      "bytes": 3224
+    },
+    {
+      "path": "sounds/export/人物/CF6_1157.mp3",
+      "name": "CF6_1157.mp3",
+      "soundId": 1157,
+      "sha256": "b3a91644404e1dcc257a855309608927f4c48c340805b64ef33ff87a6c09f79c",
+      "bytes": 2184
+    }
+  ],
+  "cues": {
+    "gun": [
+      "CF6Vehicle_1169.mp3"
+    ],
+    "metal": [
+      "CF6Vehicle_1160.wav",
+      "CF6Vehicle_1161.wav",
+      "CF6Vehicle_1162.wav",
+      "CF6Vehicle_1163.wav"
+    ],
+    "raiderDown": [
+      "CF6_1121.mp3",
+      "CF6_1135.mp3",
+      "CF6_1144.mp3"
+    ],
+    "raiderDeath": [
+      "CF6_1123.mp3",
+      "CF6_1137.mp3",
+      "CF6_1146.mp3",
+      "CF6_1151.mp3",
+      "CF6_1154.mp3",
+      "CF6_1157.mp3"
+    ],
+    "obstacle": [
+      "CF6Vehicle_0626.mp3"
+    ],
+    "vehicleDeath": [
+      "CF6_0915.mp3"
+    ],
+    "explosion": [
+      "CF6_1009.mp3"
+    ]
+  },
+  "events": [
+    {
+      "source": "global 汽车_子弹区域shoot / source1803 frame8 two muzzle intervals",
+      "cue": "gun",
+      "delivery": "two barrels, immediately and every 150ms while firing"
+    },
+    {
+      "source": "sprite612/627 contact and sprite115 frame1",
+      "cue": "metal",
+      "delivery": "once per contact or source spark instance"
+    },
+    {
+      "source": "sprite612 frame70 child599 load",
+      "cue": "raiderDown",
+      "delivery": "one terminal road knockdown"
+    },
+    {
+      "source": "sprite612 frame77 child611 load",
+      "cue": "raiderDeath",
+      "delivery": "one terminal shot death"
+    },
+    {
+      "source": "StartSound sprite627 frame3 sound626",
+      "cue": "obstacle",
+      "delivery": "one obstacle break"
+    },
+    {
+      "source": "StartSound sprite1803 frame16 and sprite1813 frame121 sound915",
+      "cue": "vehicleDeath",
+      "delivery": "once on actual player/boss death"
+    },
+    {
+      "source": "StartSound sprite1813 frames131,142 and script sprite391 frame2 sound1009",
+      "cue": "explosion",
+      "delivery": "source boss departure frames and each grenade explosion"
+    }
+  ],
+  "delivery": "existing _root.播放音效 -> AudioBridge; no embedded SWF audio",
+  "catalog": "AudioCoordinator.ScanDefaultCatalog enumerates sounds/export packs at startup; full filename is linkage ID; restart required",
+  "validationBoundary": "file identity and consumer calls are distinct; no speaker/listening qualification claimed"
+}

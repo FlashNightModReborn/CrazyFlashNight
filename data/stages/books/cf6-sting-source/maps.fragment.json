@@ -127,19 +127,26 @@
          {
           "Type": "兵种461",
           "Level": 35,
-          "Quantity": 1,
-          "x": 708.2,
-          "y": 310.2
+          "Quantity": 8,
+          "Parameters": {
+           "目标标记": "cf6-a01-turret-zombie"
+          },
+          "SpawnIndex": 5,
+          "Interval": 100
          },
          {
           "Type": "兵种461",
           "Level": 35,
-          "Quantity": 1,
-          "x": 617.0,
-          "y": 319.0,
-          "Parameters": {
-           "目标标记": "cf6-a01-turret-zombie"
-          }
+          "Quantity": 4,
+          "SpawnIndex": 4,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 35,
+          "Quantity": 4,
+          "SpawnIndex": 5,
+          "Interval": 100
          }
         ]
        }
@@ -154,12 +161,26 @@
          {
           "Type": "兵种461",
           "Level": 35,
-          "Quantity": 5,
-          "Interval": 100,
-          "SpawnIndex": 0,
+          "Quantity": 6,
           "Parameters": {
            "目标标记": "cf6-a01-turret-zombie"
-          }
+          },
+          "SpawnIndex": 5,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 35,
+          "Quantity": 4,
+          "SpawnIndex": 4,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 35,
+          "Quantity": 4,
+          "SpawnIndex": 5,
+          "Interval": 100
          }
         ]
        }
@@ -174,12 +195,26 @@
          {
           "Type": "兵种461",
           "Level": 35,
-          "Quantity": 5,
-          "Interval": 100,
-          "SpawnIndex": 1,
+          "Quantity": 6,
           "Parameters": {
            "目标标记": "cf6-a01-turret-zombie"
-          }
+          },
+          "SpawnIndex": 5,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 35,
+          "Quantity": 6,
+          "SpawnIndex": 4,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 35,
+          "Quantity": 6,
+          "SpawnIndex": 5,
+          "Interval": 100
          }
         ]
        }
@@ -194,32 +229,16 @@
          {
           "Type": "兵种461",
           "Level": 35,
-          "Quantity": 5,
-          "Interval": 100,
-          "SpawnIndex": 2,
-          "Parameters": {
-           "目标标记": "cf6-a01-turret-zombie"
-          }
-         }
-        ]
-       }
-      },
-      {
-       "WaveInformation": {
-        "Duration": 0,
-        "FinishRequirement": 0
-       },
-       "EnemyGroup": {
-        "Enemy": [
+          "Quantity": 9,
+          "SpawnIndex": 4,
+          "Interval": 100
+         },
          {
           "Type": "兵种461",
           "Level": 35,
-          "Quantity": 3,
-          "Interval": 100,
-          "SpawnIndex": 3,
-          "Parameters": {
-           "目标标记": "cf6-a01-turret-zombie"
-          }
+          "Quantity": 9,
+          "SpawnIndex": 5,
+          "Interval": 100
          }
         ]
        }
@@ -238,8 +257,14 @@
        "y": 427.4
       },
       {
+       "Name": "极品UZI战术版",
+       "Value": 1,
+       "x": 75.1,
+       "y": 427.4
+      },
+      {
        "Name": "冲锋枪达姆弹弹药",
-       "Value": 3,
+       "Value": 6,
        "x": 115.1,
        "y": 427.4
       }
@@ -266,6 +291,16 @@
        "x": 783.95,
        "y": 323.1,
        "QuantityMax": 5
+      },
+      {
+       "x": -50,
+       "y": 314.6,
+       "QuantityMax": 4
+      },
+      {
+       "x": 5000,
+       "y": 314.6,
+       "QuantityMax": 4
       }
      ]
     }
@@ -316,8 +351,37 @@
      "prototypeDerived:A01=静态2+增援18共20只461(分组5/5/5/3),以原出口20死亡阈值有限化;原自由生成器死亡预算15出兵不减、补位不裁,实发量unknown;休眠模板(僵尸15/光头男5)无激活证据不投送",
      "r15接线:静态630等价体(617.0,319.0)与4组增援均携带Parameters.目标标记=cf6-a01-turret-zombie;A01两门教学炮塔(133.8,202.4)/(249.8,430.9)经Cf6TutorialTurretService逐弹过滤只伤该标记目标",
      "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-僵尸 预算15/并发5);原版是否可激活=unknown",
-     "补给 极品UZI战术版:副武器补给(手枪位)"
-    ]
+     "补给 极品UZI战术版:副武器补给(手枪位)",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "combat",
+      "combat",
+      "combat",
+      "combat"
+     ],
+     "spawnPointRoles": [
+      {
+       "index": 4,
+       "side": "left"
+      },
+      {
+       "index": 5,
+       "side": "right"
+      }
+     ],
+     "screenLimit": 8,
+     "baseline": {
+      "primaryWave": 20,
+      "optionalSupport": 0,
+      "enemyAuthoritySha256": "84d85b26c44120c446859759a24d9f2e9da8fef4c87d492399a3a433258ce28b"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -340,67 +404,108 @@
        "EnemyGroup": {
         "Enemy": [
          {
-          "Type": "兵种468",
-          "Level": 37,
-          "Quantity": 1,
-          "x": 890.1,
-          "y": 267.9
+          "Type": "兵种461",
+          "Level": 36,
+          "Quantity": 5,
+          "SpawnIndex": 0,
+          "Interval": 100
          },
          {
           "Type": "兵种461",
           "Level": 36,
-          "Quantity": 1,
-          "x": 640.8,
-          "y": 317.0
-         },
-         {
-          "Type": "兵种461",
-          "Level": 36,
-          "Quantity": 1,
-          "x": 738.8,
-          "y": 367.9
-         },
-         {
-          "Type": "兵种461",
-          "Level": 36,
-          "Quantity": 1,
-          "x": 828.5,
-          "y": 404.1
+          "Quantity": 5,
+          "SpawnIndex": 1,
+          "Interval": 100
          },
          {
           "Type": "兵种468",
           "Level": 37,
           "Quantity": 1,
-          "x": 990.1,
-          "y": 398.9
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 37,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种461",
+          "Level": 36,
+          "Quantity": 4,
+          "SpawnIndex": 0,
+          "Interval": 100
          },
          {
           "Type": "兵种461",
           "Level": 36,
-          "Quantity": 1,
-          "x": 1085.5,
-          "y": 405.1
+          "Quantity": 4,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 37,
+          "Quantity": 3,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 37,
+          "Quantity": 3,
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种461",
+          "Level": 36,
+          "Quantity": 3,
+          "SpawnIndex": 0,
+          "Interval": 100
          },
          {
           "Type": "兵种461",
           "Level": 36,
-          "Quantity": 1,
-          "x": 1052.8,
-          "y": 271.9
+          "Quantity": 3,
+          "SpawnIndex": 1,
+          "Interval": 100
          },
          {
-          "Type": "兵种462",
-          "Level": 36,
-          "Quantity": 1,
-          "x": 535.1,
-          "y": 333.1
+          "Type": "兵种468",
+          "Level": 37,
+          "Quantity": 5,
+          "SpawnIndex": 0,
+          "Interval": 100
          },
          {
-          "Type": "兵种462",
-          "Level": 36,
-          "Quantity": 1,
-          "x": 884.1,
-          "y": 350.4
+          "Type": "兵种468",
+          "Level": 37,
+          "Quantity": 5,
+          "SpawnIndex": 1,
+          "Interval": 100
          }
         ]
        }
@@ -423,6 +528,20 @@
        "Value": 3,
        "x": 528.5,
        "y": 274.4
+      }
+     ]
+    },
+    "SpawnPoint": {
+     "Point": [
+      {
+       "x": -50,
+       "y": 350.4,
+       "QuantityMax": 5
+      },
+      {
+       "x": 5000,
+       "y": 350.4,
+       "QuantityMax": 5
       }
      ]
     }
@@ -449,8 +568,36 @@
      "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown",
      "补给 AWP:搜索点远距打法",
      "CF7适配[A02-wave-0-3]:原作摆放位于原始 even-odd 填充体内;CF7 环境语义把填充转为实体 Collision,出生点落入多边形内部、玩家不可达(r6 fail#1);移至native(828.5,404.1)=世界(871.95,380.0),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移37.8px;事实表原坐标保留不改(placement-adaptation.v1.json)",
-     "CF7适配[A02-wave-0-5]:同 r6 fail#2:填充体内摆放,转换后落入实体 Collision,玩家不可达;移至native(1085.5,405.1)=世界(1128.95,381.0),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移58.8px;事实表原坐标保留不改(placement-adaptation.v1.json)"
-    ]
+     "CF7适配[A02-wave-0-5]:同 r6 fail#2:填充体内摆放,转换后落入实体 Collision,玩家不可达;移至native(1085.5,405.1)=世界(1128.95,381.0),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移58.8px;事实表原坐标保留不改(placement-adaptation.v1.json)",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "combat",
+      "combat",
+      "combat"
+     ],
+     "spawnPointRoles": [
+      {
+       "index": 0,
+       "side": "left"
+      },
+      {
+       "index": 1,
+       "side": "right"
+      }
+     ],
+     "screenLimit": 10,
+     "baseline": {
+      "primaryWave": 9,
+      "optionalSupport": 0,
+      "enemyAuthoritySha256": "f8a711379f46245ac51a6b8ae5566c2fc43bcabf29399ac7acb5a95fcf15b408"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -473,49 +620,108 @@
        "EnemyGroup": {
         "Enemy": [
          {
-          "Type": "兵种468",
-          "Level": 38,
-          "Quantity": 1,
-          "x": 549.1,
-          "y": 404.1
+          "Type": "兵种461",
+          "Level": 37,
+          "Quantity": 6,
+          "SpawnIndex": 1,
+          "Interval": 100
          },
          {
           "Type": "兵种461",
           "Level": 37,
-          "Quantity": 1,
-          "x": 863.7,
-          "y": 263.5
-         },
-         {
-          "Type": "兵种461",
-          "Level": 37,
-          "Quantity": 1,
-          "x": 297.8,
-          "y": 303.5
-         },
-         {
-          "Type": "兵种461",
-          "Level": 37,
-          "Quantity": 1,
-          "x": 241.8,
-          "y": 367.5
-         },
-         {
-          "Type": "兵种462",
-          "Level": 37,
-          "Quantity": 1,
-          "x": 669.1,
-          "y": 335.6
+          "Quantity": 6,
+          "SpawnIndex": 2,
+          "Interval": 100
          },
          {
           "Type": "兵种468",
           "Level": 38,
-          "Quantity": 5,
-          "Interval": 100,
-          "SpawnIndex": 0,
-          "Parameters": {
-           "publishStageEvent": true
-          }
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 38,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种461",
+          "Level": 37,
+          "Quantity": 4,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 37,
+          "Quantity": 4,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 38,
+          "Quantity": 4,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 38,
+          "Quantity": 4,
+          "SpawnIndex": 2,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种461",
+          "Level": 37,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 37,
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 38,
+          "Quantity": 7,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 38,
+          "Quantity": 7,
+          "SpawnIndex": 2,
+          "Interval": 100
          }
         ]
        }
@@ -547,6 +753,16 @@
        "x": 524.5,
        "y": 210.9,
        "QuantityMax": 2
+      },
+      {
+       "x": -50,
+       "y": 335.6,
+       "QuantityMax": 5
+      },
+      {
+       "x": 5000,
+       "y": 335.6,
+       "QuantityMax": 5
       }
      ]
     }
@@ -572,8 +788,36 @@
     "notes": [
      "door1门生成器(敌人-光头男):波次敌人带Parameters.publishStageEvent=true,木门按实际UnitSpawn播放;坐标为原生门口点",
      "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown",
-     "补给 AA12战术版:地面近距清场"
-    ]
+     "补给 AA12战术版:地面近距清场",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "combat",
+      "combat",
+      "combat"
+     ],
+     "spawnPointRoles": [
+      {
+       "index": 1,
+       "side": "left"
+      },
+      {
+       "index": 2,
+       "side": "right"
+      }
+     ],
+     "screenLimit": 10,
+     "baseline": {
+      "primaryWave": 10,
+      "optionalSupport": 0,
+      "enemyAuthoritySha256": "18f40e558c6d5850ca0608277e2846d7e76d317b9cbed1001f03e5e41a5ab2b6"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -596,52 +840,146 @@
        "EnemyGroup": {
         "Enemy": [
          {
-          "Type": "兵种468",
-          "Level": 39,
-          "Quantity": 1,
-          "x": 1068.1,
-          "y": 371.6
-         },
-         {
           "Type": "兵种461",
           "Level": 38,
-          "Quantity": 1,
-          "x": 245.1,
-          "y": 408.9
-         },
-         {
-          "Type": "兵种462",
-          "Level": 38,
-          "Quantity": 1,
-          "x": 535.1,
-          "y": 333.1
-         },
-         {
-          "Type": "兵种462",
-          "Level": 38,
-          "Quantity": 1,
-          "x": 897.1,
-          "y": 291.1
-         },
-         {
-          "Type": "兵种468",
-          "Level": 39,
           "Quantity": 5,
-          "Interval": 100,
-          "SpawnIndex": 0,
-          "Parameters": {
-           "publishStageEvent": true
-          }
+          "SpawnIndex": 2,
+          "Interval": 100
          },
          {
           "Type": "兵种461",
           "Level": 38,
-          "Quantity": 15,
-          "Interval": 100,
-          "SpawnIndex": 1,
-          "Parameters": {
-           "publishStageEvent": true
-          }
+          "Quantity": 5,
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 39,
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 39,
+          "Quantity": 1,
+          "SpawnIndex": 3,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种461",
+          "Level": 38,
+          "Quantity": 4,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 38,
+          "Quantity": 4,
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 39,
+          "Quantity": 4,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 39,
+          "Quantity": 4,
+          "SpawnIndex": 3,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种461",
+          "Level": 38,
+          "Quantity": 4,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 38,
+          "Quantity": 4,
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 39,
+          "Quantity": 4,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 39,
+          "Quantity": 3,
+          "SpawnIndex": 3,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种461",
+          "Level": 38,
+          "Quantity": 3,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 38,
+          "Quantity": 3,
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 39,
+          "Quantity": 6,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 39,
+          "Quantity": 6,
+          "SpawnIndex": 3,
+          "Interval": 100
          }
         ]
        }
@@ -672,6 +1010,16 @@
        "x": 929.5,
        "y": 210.9,
        "QuantityMax": 5
+      },
+      {
+       "x": -50,
+       "y": 352.35,
+       "QuantityMax": 6
+      },
+      {
+       "x": 5000,
+       "y": 352.35,
+       "QuantityMax": 6
       }
      ]
     }
@@ -698,8 +1046,37 @@
      "door1门生成器(敌人-光头男):波次敌人带Parameters.publishStageEvent=true,木门按实际UnitSpawn播放;坐标为原生门口点",
      "door2门生成器(aw-僵尸):波次敌人带Parameters.publishStageEvent=true,木门按实际UnitSpawn播放;坐标为原生门口点",
      "停止态生成器无脚本触发源(全SWF已穷举),不投送:未命名(aw-异形 预算5/并发2);原版是否可激活=unknown",
-     "补给 突击步枪通用弹药:固定弹药"
-    ]
+     "补给 突击步枪通用弹药:固定弹药",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "combat",
+      "combat",
+      "combat",
+      "combat"
+     ],
+     "spawnPointRoles": [
+      {
+       "index": 2,
+       "side": "left"
+      },
+      {
+       "index": 3,
+       "side": "right"
+      }
+     ],
+     "screenLimit": 12,
+     "baseline": {
+      "primaryWave": 24,
+      "optionalSupport": 0,
+      "enemyAuthoritySha256": "5718a91cbb73d8666bdaa6c1d0727631528ca8fe00f179b331204663a6ba191a"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -724,51 +1101,106 @@
          {
           "Type": "兵种468",
           "Level": 40,
-          "Quantity": 1,
-          "x": 528.1,
-          "y": 386.6
-         },
-         {
-          "Type": "兵种461",
-          "Level": 39,
-          "Quantity": 1,
-          "x": 361.8,
-          "y": 260.9
+          "Quantity": 4,
+          "SpawnIndex": 0,
+          "Interval": 100
          },
          {
           "Type": "兵种468",
           "Level": 40,
-          "Quantity": 1,
-          "x": 944.1,
-          "y": 270.6
+          "Quantity": 4,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 39,
+          "Quantity": 3,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 39,
+          "Quantity": 3,
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种468",
+          "Level": 40,
+          "Quantity": 6,
+          "SpawnIndex": 0,
+          "Interval": 100
          },
          {
           "Type": "兵种468",
           "Level": 40,
-          "Quantity": 1,
-          "x": 836.7,
-          "y": 356.6
+          "Quantity": 6,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 39,
+          "Quantity": 2,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 39,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种468",
+          "Level": 40,
+          "Quantity": 7,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 40,
+          "Quantity": 7,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 39,
+          "Quantity": 2,
+          "SpawnIndex": 0,
+          "Interval": 100
          },
          {
           "Type": "兵种461",
           "Level": 39,
           "Quantity": 1,
-          "x": 699.8,
-          "y": 366.9
-         },
-         {
-          "Type": "兵种461",
-          "Level": 39,
-          "Quantity": 1,
-          "x": 454.8,
-          "y": 243.9
-         },
-         {
-          "Type": "兵种462",
-          "Level": 39,
-          "Quantity": 1,
-          "x": 623.1,
-          "y": 354.1
+          "SpawnIndex": 1,
+          "Interval": 100
          }
         ]
        }
@@ -793,6 +1225,20 @@
        "y": 251.7
       }
      ]
+    },
+    "SpawnPoint": {
+     "Point": [
+      {
+       "x": -50,
+       "y": 354.1,
+       "QuantityMax": 5
+      },
+      {
+       "x": 5000,
+       "y": 354.1,
+       "QuantityMax": 5
+      }
+     ]
     }
    },
    "sourceNote": {
@@ -814,8 +1260,36 @@
      40
     ],
     "notes": [
-     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);敌人生成器2(aw-僵尸 预算15/并发5);原版是否可激活=unknown"
-    ]
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);敌人生成器2(aw-僵尸 预算15/并发5);原版是否可激活=unknown",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "combat",
+      "combat",
+      "combat"
+     ],
+     "spawnPointRoles": [
+      {
+       "index": 0,
+       "side": "left"
+      },
+      {
+       "index": 1,
+       "side": "right"
+      }
+     ],
+     "screenLimit": 10,
+     "baseline": {
+      "primaryWave": 7,
+      "optionalSupport": 0,
+      "enemyAuthoritySha256": "859e07b2816f8a1a82ffe6c27ec1519f40671e595e677af1c0ad77317ecc29b8"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -835,6 +1309,126 @@
     },
     "Wave": {
      "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种466",
+          "Level": 41,
+          "Quantity": 6,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 41,
+          "Quantity": 6,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 41,
+          "Quantity": 2,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 41,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 40,
+          "Quantity": 1,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 40,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种466",
+          "Level": 41,
+          "Quantity": 6,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 41,
+          "Quantity": 6,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 41,
+          "Quantity": 2,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 41,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 40,
+          "Quantity": 1,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 40,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
       {
        "WaveInformation": {
         "Duration": 0,
@@ -864,6 +1458,20 @@
     },
     "Pickups": {
      "Pickup": []
+    },
+    "SpawnPoint": {
+     "Point": [
+      {
+       "x": -50,
+       "y": 207.6,
+       "QuantityMax": 4
+      },
+      {
+       "x": 5000,
+       "y": 207.6,
+       "QuantityMax": 4
+      }
+     ]
     }
    },
    "bossEncounter": {
@@ -947,114 +1555,6 @@
         }
        }
       ]
-     },
-     {
-      "hpRatio": 0.8,
-      "enemies": [
-       {
-        "Type": "兵种466",
-        "Level": 41,
-        "Quantity": 4,
-        "ranged": true,
-        "SpawnIndex": "left",
-        "Parameters": {
-         "长枪": "G36",
-         "特种兵初始阶段": 2
-        }
-       },
-       {
-        "Type": "兵种466",
-        "Level": 41,
-        "Quantity": 4,
-        "ranged": true,
-        "SpawnIndex": "right",
-        "Parameters": {
-         "长枪": "G36",
-         "特种兵初始阶段": 2
-        }
-       }
-      ]
-     },
-     {
-      "hpRatio": 0.6,
-      "enemies": [
-       {
-        "Type": "兵种466",
-        "Level": 41,
-        "Quantity": 4,
-        "ranged": true,
-        "SpawnIndex": "left",
-        "Parameters": {
-         "长枪": "G36",
-         "特种兵初始阶段": 2
-        }
-       },
-       {
-        "Type": "兵种466",
-        "Level": 41,
-        "Quantity": 4,
-        "ranged": true,
-        "SpawnIndex": "right",
-        "Parameters": {
-         "长枪": "G36",
-         "特种兵初始阶段": 2
-        }
-       }
-      ]
-     },
-     {
-      "hpRatio": 0.4,
-      "enemies": [
-       {
-        "Type": "兵种466",
-        "Level": 41,
-        "Quantity": 3,
-        "ranged": true,
-        "SpawnIndex": "left",
-        "Parameters": {
-         "长枪": "G36",
-         "特种兵初始阶段": 2
-        }
-       },
-       {
-        "Type": "兵种466",
-        "Level": 41,
-        "Quantity": 3,
-        "ranged": true,
-        "SpawnIndex": "right",
-        "Parameters": {
-         "长枪": "G36",
-         "特种兵初始阶段": 2
-        }
-       }
-      ]
-     },
-     {
-      "hpRatio": 0.2,
-      "enemies": [
-       {
-        "Type": "兵种466",
-        "Level": 41,
-        "Quantity": 3,
-        "ranged": true,
-        "SpawnIndex": "left",
-        "Parameters": {
-         "长枪": "G36",
-         "特种兵初始阶段": 2
-        }
-       },
-       {
-        "Type": "兵种466",
-        "Level": 41,
-        "Quantity": 3,
-        "ranged": true,
-        "SpawnIndex": "right",
-        "Parameters": {
-         "长枪": "G36",
-         "特种兵初始阶段": 2
-        }
-       }
-      ]
      }
     ]
    },
@@ -1079,8 +1579,36 @@
     "notes": [
      "Boss死亡即取消未发与现存增援,取消不产奖励(控制器语义);原自由生成器死亡预算仅作有限上限",
      "prototypeDerived:特种兵上限30=原两路死亡预算各15(出兵不减预算,实发量unknown);初始2+增援28。摆放5杂兵按原坐标。",
-     "停止态模板2个无激活证据,不投送(unknown)"
-    ]
+     "停止态模板2个无激活证据,不投送(unknown)",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "combat",
+      "combat",
+      "boss"
+     ],
+     "spawnPointRoles": [
+      {
+       "index": 0,
+       "side": "left"
+      },
+      {
+       "index": 1,
+       "side": "right"
+      }
+     ],
+     "screenLimit": 8,
+     "baseline": {
+      "primaryWave": 1,
+      "optionalSupport": 35,
+      "enemyAuthoritySha256": "dfb5b97975a9843d4ae9b7bf9299f21de87f0d736f860f20281467ac23a1c990"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -1185,9 +1713,6 @@
           "Type": "兵种466",
           "Level": 45,
           "Quantity": 1,
-          "x": 384.5,
-          "y": 282.7,
-          "InstanceName": "elite_e1",
           "Parameters": {
            "称号": "E1精英",
            "cf6EliteQuota": "E1",
@@ -1211,28 +1736,79 @@
             }
            ],
            "特种兵初始阶段": 2
-          }
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 45,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 45,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 45,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 45,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
          },
          {
           "Type": "兵种468",
           "Level": 44,
-          "Quantity": 1,
-          "x": 326.1,
-          "y": 363.2
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 44,
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
          },
          {
           "Type": "兵种461",
           "Level": 44,
-          "Quantity": 1,
-          "x": 1022.4,
-          "y": 322.5
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
          },
          {
           "Type": "兵种461",
           "Level": 44,
-          "Quantity": 1,
-          "x": 1024.3,
-          "y": 411.5
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
          }
         ]
        }
@@ -1256,6 +1832,64 @@
          }
         ]
        }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种467",
+          "Level": 45,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 45,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 44,
+          "Quantity": 7,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 44,
+          "Quantity": 7,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 44,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 44,
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
+         }
+        ]
+       }
       }
      ]
     },
@@ -1271,6 +1905,16 @@
        "x": 696.5,
        "y": 260.3,
        "QuantityMax": 2
+      },
+      {
+       "x": -50,
+       "y": 342.85,
+       "QuantityMax": 5
+      },
+      {
+       "x": 5000,
+       "y": 342.85,
+       "QuantityMax": 5
       }
      ]
     }
@@ -1296,8 +1940,36 @@
     "notes": [
      "E1: 既有静态带盾特种兵×1转为无盾入口466,占原467名额,图敌人总数不变(设计配额适配;r5核对A09总数9)",
      "生成器敌人生成器1原由触发区(1868)玩家踩区激活,本片段改为顺序第二波次(适配)",
-     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);原版是否可激活=unknown"
-    ]
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);原版是否可激活=unknown",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "combat",
+      "transport",
+      "combat"
+     ],
+     "spawnPointRoles": [
+      {
+       "index": 1,
+       "side": "left"
+      },
+      {
+       "index": 2,
+       "side": "right"
+      }
+     ],
+     "screenLimit": 10,
+     "baseline": {
+      "primaryWave": 9,
+      "optionalSupport": 0,
+      "enemyAuthoritySha256": "0a14f9ceb57e26966338f6ccff219353bb0ff7ffcee513d05cff4c57f230ddd6"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -1320,18 +1992,88 @@
        "EnemyGroup": {
         "Enemy": [
          {
-          "Type": "兵种469",
+          "Type": "兵种461",
           "Level": 45,
           "Quantity": 1,
-          "x": 418.0,
-          "y": 284.7
+          "x": 280,
+          "y": 280
          },
          {
           "Type": "兵种461",
           "Level": 45,
           "Quantity": 1,
-          "x": 331.1,
-          "y": 293.2
+          "x": 320,
+          "y": 280
+         },
+         {
+          "Type": "兵种461",
+          "Level": 45,
+          "Quantity": 1,
+          "x": 360,
+          "y": 280
+         },
+         {
+          "Type": "兵种461",
+          "Level": 45,
+          "Quantity": 1,
+          "x": 400,
+          "y": 280
+         },
+         {
+          "Type": "兵种461",
+          "Level": 45,
+          "Quantity": 1,
+          "x": 440,
+          "y": 280
+         },
+         {
+          "Type": "兵种461",
+          "Level": 45,
+          "Quantity": 1,
+          "x": 480,
+          "y": 280
+         },
+         {
+          "Type": "兵种461",
+          "Level": 45,
+          "Quantity": 1,
+          "x": 280,
+          "y": 298
+         },
+         {
+          "Type": "兵种461",
+          "Level": 45,
+          "Quantity": 1,
+          "x": 320,
+          "y": 298
+         },
+         {
+          "Type": "兵种461",
+          "Level": 45,
+          "Quantity": 1,
+          "x": 360,
+          "y": 298
+         },
+         {
+          "Type": "兵种469",
+          "Level": 45,
+          "Quantity": 1,
+          "x": 400,
+          "y": 298
+         },
+         {
+          "Type": "兵种469",
+          "Level": 45,
+          "Quantity": 1,
+          "x": 440,
+          "y": 298
+         },
+         {
+          "Type": "兵种468",
+          "Level": 45,
+          "Quantity": 1,
+          "x": 480,
+          "y": 298
          }
         ]
        }
@@ -1344,18 +2086,21 @@
     "Pickups": {
      "Pickup": [
       {
-       "Name": "CAR冲锋枪",
+       "Name": "SPAS12",
        "Value": 1,
        "x": 232.5,
        "y": 278.6
       },
       {
-       "Name": "冲锋枪达姆弹弹药",
+       "Name": "00号鹿弹",
        "Value": 3,
        "x": 272.5,
        "y": 278.6
       }
      ]
+    },
+    "SpawnPoint": {
+     "Point": []
     }
    },
    "sourceNote": {
@@ -1378,8 +2123,25 @@
     ],
     "notes": [
      "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown",
-     "补给 CAR冲锋枪:到站达45级后提供"
-    ]
+     "补给 SPAS12:到站达45级后提供",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "elevator"
+     ],
+     "spawnPointRoles": [],
+     "screenLimit": 12,
+     "baseline": {
+      "primaryWave": 2,
+      "optionalSupport": 0,
+      "enemyAuthoritySha256": "26d0c35c53f7feb7fb272ccb44c15e6327dd16316a042f023c6b37aec7e0b426"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -1415,11 +2177,180 @@
        "EnemyGroup": {
         "Enemy": [
          {
-          "Type": "兵种462",
+          "Type": "兵种469",
           "Level": 46,
           "Quantity": 1,
-          "x": 931.1,
-          "y": 371.1
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 46,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 47,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 47,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 46,
+          "Quantity": 3,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 46,
+          "Quantity": 3,
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种466",
+          "Level": 47,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 47,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 47,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 46,
+          "Quantity": 3,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 46,
+          "Quantity": 4,
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种469",
+          "Level": 46,
+          "Quantity": 3,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 46,
+          "Quantity": 3,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 47,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 47,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 47,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 46,
+          "Quantity": 2,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 46,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
          }
         ]
        }
@@ -1431,6 +2362,20 @@
     },
     "Pickups": {
      "Pickup": []
+    },
+    "SpawnPoint": {
+     "Point": [
+      {
+       "x": -50,
+       "y": 371.1,
+       "QuantityMax": 5
+      },
+      {
+       "x": 5000,
+       "y": 371.1,
+       "QuantityMax": 5
+      }
+     ]
     }
    },
    "sourceNote": {
@@ -1452,8 +2397,36 @@
      47
     ],
     "notes": [
-     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown"
-    ]
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "combat",
+      "combat",
+      "combat"
+     ],
+     "spawnPointRoles": [
+      {
+       "index": 0,
+       "side": "left"
+      },
+      {
+       "index": 1,
+       "side": "right"
+      }
+     ],
+     "screenLimit": 10,
+     "baseline": {
+      "primaryWave": 1,
+      "optionalSupport": 0,
+      "enemyAuthoritySha256": "407d39c81bd525bd2382e28e353284afac6a945f3d1acc7bf57965bd0b80d706"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -1479,51 +2452,255 @@
           "Type": "兵种469",
           "Level": 47,
           "Quantity": 1,
-          "x": 345.1,
-          "y": 336.4
-         },
-         {
-          "Type": "兵种466",
-          "Level": 48,
-          "Quantity": 1,
-          "x": 380.2,
-          "y": 428.6,
-          "Parameters": {
-           "长枪": "G36",
-           "特种兵初始阶段": 2
-          }
+          "SpawnIndex": 1,
+          "Interval": 100
          },
          {
           "Type": "兵种469",
           "Level": 47,
           "Quantity": 1,
-          "x": 240.1,
-          "y": 333.4
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 48,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 48,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 47,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 47,
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种467",
+          "Level": 48,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 48,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
          },
          {
           "Type": "兵种468",
           "Level": 47,
           "Quantity": 1,
-          "x": 191.1,
-          "y": 431.4
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种468",
+          "Level": 47,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 47,
+          "Quantity": 3,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 47,
+          "Quantity": 3,
+          "SpawnIndex": 2,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种469",
+          "Level": 47,
+          "Quantity": 3,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 47,
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 48,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 48,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 48,
+          "Quantity": 4,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 48,
+          "Quantity": 4,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种469",
+          "Level": 47,
+          "Quantity": 3,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 47,
+          "Quantity": 3,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 48,
+          "Quantity": 3,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 48,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
          },
          {
           "Type": "兵种466",
           "Level": 48,
           "Quantity": 1,
-          "x": 428.2,
-          "y": 325.3,
           "Parameters": {
-           "长枪": "AK47",
+           "长枪": "G36",
            "特种兵初始阶段": 2
-          }
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 48,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
          },
          {
           "Type": "兵种461",
           "Level": 47,
-          "Quantity": 10,
-          "Interval": 100,
-          "SpawnIndex": 0
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 47,
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
          }
         ]
        }
@@ -1555,6 +2732,16 @@
        "x": 617.5,
        "y": 215.7,
        "QuantityMax": 3
+      },
+      {
+       "x": -50,
+       "y": 336.4,
+       "QuantityMax": 6
+      },
+      {
+       "x": 5000,
+       "y": 336.4,
+       "QuantityMax": 6
       }
      ]
     }
@@ -1579,8 +2766,37 @@
     ],
     "notes": [
      "生成器原挂door2门演出;机关线未接,首版直接生成",
-     "停止态生成器无脚本触发源(全SWF已穷举),不投送:未命名(敌人-光头男 预算5/并发2);未命名(aw-异形 预算5/并发2);未命名(敌人-光头男 预算5/并发2);原版是否可激活=unknown"
-    ]
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:未命名(敌人-光头男 预算5/并发2);未命名(aw-异形 预算5/并发2);未命名(敌人-光头男 预算5/并发2);原版是否可激活=unknown",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "combat",
+      "combat",
+      "combat",
+      "combat"
+     ],
+     "spawnPointRoles": [
+      {
+       "index": 1,
+       "side": "left"
+      },
+      {
+       "index": 2,
+       "side": "right"
+      }
+     ],
+     "screenLimit": 12,
+     "baseline": {
+      "primaryWave": 15,
+      "optionalSupport": 0,
+      "enemyAuthoritySha256": "76400b2788dc78ef8b42e560605628c650ba6d126896ce7447f1f7797cef0ddc"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -1606,9 +2822,6 @@
           "Type": "兵种467",
           "Level": 49,
           "Quantity": 1,
-          "x": 413.8,
-          "y": 278.5,
-          "InstanceName": "elite_e2",
           "Parameters": {
            "称号": "E2精英",
            "cf6EliteQuota": "E2",
@@ -1631,7 +2844,111 @@
              "总数": 3
             }
            ]
-          }
+          },
+          "x": 280,
+          "y": 280
+         },
+         {
+          "Type": "兵种467",
+          "Level": 49,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "x": 320,
+          "y": 280
+         },
+         {
+          "Type": "兵种467",
+          "Level": 49,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "x": 360,
+          "y": 280
+         },
+         {
+          "Type": "兵种467",
+          "Level": 49,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "x": 400,
+          "y": 280
+         },
+         {
+          "Type": "兵种466",
+          "Level": 49,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "x": 440,
+          "y": 280
+         },
+         {
+          "Type": "兵种466",
+          "Level": 49,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "x": 480,
+          "y": 280
+         },
+         {
+          "Type": "兵种466",
+          "Level": 49,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "x": 280,
+          "y": 298
+         },
+         {
+          "Type": "兵种466",
+          "Level": 49,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "x": 320,
+          "y": 298
+         },
+         {
+          "Type": "兵种461",
+          "Level": 48,
+          "Quantity": 1,
+          "x": 360,
+          "y": 298
+         },
+         {
+          "Type": "兵种461",
+          "Level": 48,
+          "Quantity": 1,
+          "x": 400,
+          "y": 298
+         },
+         {
+          "Type": "兵种461",
+          "Level": 48,
+          "Quantity": 1,
+          "x": 440,
+          "y": 298
+         },
+         {
+          "Type": "兵种461",
+          "Level": 48,
+          "Quantity": 1,
+          "x": 480,
+          "y": 298
          }
         ]
        }
@@ -1643,6 +2960,9 @@
     },
     "Pickups": {
      "Pickup": []
+    },
+    "SpawnPoint": {
+     "Point": []
     }
    },
    "sourceNote": {
@@ -1665,8 +2985,25 @@
     ],
     "notes": [
      "E2: 持盾队长、小Boss;两阶段最终死亡后掉落,不在破盾时发",
-     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown"
-    ]
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "elevator"
+     ],
+     "spawnPointRoles": [],
+     "screenLimit": 12,
+     "baseline": {
+      "primaryWave": 1,
+      "optionalSupport": 0,
+      "enemyAuthoritySha256": "b5619866b690524da6139afb8de09767047f19a2b9e6686edcdf46cee62d4dda"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -1701,9 +3038,6 @@
           "Type": "兵种466",
           "Level": 51,
           "Quantity": 1,
-          "x": 1307.5,
-          "y": 295.1,
-          "InstanceName": "elite_e3",
           "Parameters": {
            "称号": "E3精英",
            "cf6EliteQuota": "E3",
@@ -1727,17 +3061,65 @@
             }
            ],
            "特种兵初始阶段": 2
-          }
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 51,
+          "Quantity": 3,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 51,
+          "Quantity": 4,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
          },
          {
           "Type": "兵种467",
           "Level": 51,
           "Quantity": 1,
-          "x": 1305.5,
-          "y": 442.1,
           "Parameters": {
-           "长枪": "AK47"
-          }
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 51,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 50,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 50,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
          }
         ]
        }
@@ -1758,6 +3140,166 @@
          }
         ]
        }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种469",
+          "Level": 50,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 50,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 51,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 51,
+          "Quantity": 3,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 51,
+          "Quantity": 3,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 51,
+          "Quantity": 3,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 50,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 50,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种469",
+          "Level": 50,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 50,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 51,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 51,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 51,
+          "Quantity": 3,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 51,
+          "Quantity": 3,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 50,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 50,
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
+         }
+        ]
+       }
       }
      ]
     },
@@ -1773,6 +3315,16 @@
        "x": 1108.4,
        "y": 285.1,
        "QuantityMax": 2
+      },
+      {
+       "x": -50,
+       "y": 368.6,
+       "QuantityMax": 6
+      },
+      {
+       "x": 5000,
+       "y": 368.6,
+       "QuantityMax": 6
       }
      ]
     }
@@ -1798,8 +3350,37 @@
     "notes": [
      "E3: 既有静态带盾特种兵×2中指定1名转无盾入口466,占原467名额,图敌人总数不变(r5核对A14总数9)",
      "生成器敌人生成器x原由触发区(1868)玩家踩区激活,本片段改为顺序第二波次(适配)",
-     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown"
-    ]
+     "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器1(aw-异形 预算5/并发2);原版是否可激活=unknown",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "combat",
+      "transport",
+      "combat",
+      "combat"
+     ],
+     "spawnPointRoles": [
+      {
+       "index": 1,
+       "side": "left"
+      },
+      {
+       "index": 2,
+       "side": "right"
+      }
+     ],
+     "screenLimit": 12,
+     "baseline": {
+      "primaryWave": 9,
+      "optionalSupport": 0,
+      "enemyAuthoritySha256": "c94b227ecaa09cd11174f173f7f0cd7cac9beee4e8058f236cd13ca770eeb05c"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -1829,6 +3410,122 @@
          }
         ]
        }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种469",
+          "Level": 52,
+          "Quantity": 3,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 52,
+          "Quantity": 3,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 53,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 53,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 51,
+          "Quantity": 3,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 51,
+          "Quantity": 3,
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种469",
+          "Level": 52,
+          "Quantity": 4,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 52,
+          "Quantity": 3,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 53,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 53,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 51,
+          "Quantity": 3,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 51,
+          "Quantity": 3,
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
       }
      ]
     },
@@ -1838,16 +3535,36 @@
     "Pickups": {
      "Pickup": [
       {
-       "Name": "战术-QBZ-192",
+       "Name": "MP7极品战术版",
        "Value": 1,
        "x": 245.9,
        "y": 398.8
       },
       {
-       "Name": "突击步枪通用弹药",
-       "Value": 3,
+       "Name": "MP7极品战术版",
+       "Value": 1,
+       "x": 245.9,
+       "y": 398.8
+      },
+      {
+       "Name": "冲锋枪钢芯穿甲弹",
+       "Value": 6,
        "x": 285.9,
        "y": 398.8
+      }
+     ]
+    },
+    "SpawnPoint": {
+     "Point": [
+      {
+       "x": -50,
+       "y": 398.8,
+       "QuantityMax": 5
+      },
+      {
+       "x": 5000,
+       "y": 398.8,
+       "QuantityMax": 5
       }
      ]
     }
@@ -1873,8 +3590,36 @@
     "notes": [
      "异形卵×5:原版走近孵化各1只hp200异形;本片段按只数直接投送(460主控试作采纳prototype-reuse,真实消费者待验)",
      "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器1(aw-异形 预算5/并发2);敌人生成器x(敌人-光头男 预算5/并发2);原版是否可激活=unknown",
-     "补给 战术-QBZ-192:图末达52级后提供,手枪位"
-    ]
+     "补给 MP7极品战术版:图末达52级后提供,手枪位",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "pods",
+      "combat",
+      "combat"
+     ],
+     "spawnPointRoles": [
+      {
+       "index": 0,
+       "side": "left"
+      },
+      {
+       "index": 1,
+       "side": "right"
+      }
+     ],
+     "screenLimit": 10,
+     "baseline": {
+      "primaryWave": 5,
+      "optionalSupport": 0,
+      "enemyAuthoritySha256": "b949080b3ab1c7d73b620d2fa4c7548bd22be36cd3f7294a11107a3e16e94f88"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -1976,6 +3721,260 @@
        "EnemyGroup": {
         "Enemy": [
          {
+          "Type": "兵种469",
+          "Level": 56,
+          "Quantity": 3,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 56,
+          "Quantity": 3,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 56,
+          "Quantity": 1,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 56,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 56,
+          "Quantity": 1,
+          "Parameters": {
+           "称号": "E4精英",
+           "cf6EliteQuota": "E4",
+           "长枪": "MG42战术版",
+           "不掉装备": true,
+           "保留屏外尸体": true,
+           "掉落物": [
+            {
+             "名字": "MG42战术版",
+             "概率": 100,
+             "最小数量": 1,
+             "最大数量": 1,
+             "总数": 1
+            },
+            {
+             "名字": "机枪贫铀穿甲弹",
+             "概率": 100,
+             "最小数量": 3,
+             "最大数量": 3,
+             "总数": 3
+            }
+           ]
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 56,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 56,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 56,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 55,
+          "Quantity": 2,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 55,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种469",
+          "Level": 56,
+          "Quantity": 4,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 56,
+          "Quantity": 3,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 56,
+          "Quantity": 1,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 56,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 56,
+          "Quantity": 5,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 56,
+          "Quantity": 5,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种469",
+          "Level": 56,
+          "Quantity": 6,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 56,
+          "Quantity": 5,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 56,
+          "Quantity": 1,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 56,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 56,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 56,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 56,
+          "Quantity": 4,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 56,
+          "Quantity": 4,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
           "Type": "兵种472",
           "Level": 57,
           "Quantity": 1,
@@ -1998,6 +3997,20 @@
     },
     "Pickups": {
      "Pickup": []
+    },
+    "SpawnPoint": {
+     "Point": [
+      {
+       "x": -50,
+       "y": 226.7,
+       "QuantityMax": 5
+      },
+      {
+       "x": 5000,
+       "y": 226.7,
+       "QuantityMax": 5
+      }
+     ]
     }
    },
    "bossEncounter": {
@@ -2009,74 +4022,6 @@
      {
       "hpRatio": 1.0,
       "enemies": [
-       {
-        "Type": "兵种467",
-        "Level": 56,
-        "Quantity": 1,
-        "ranged": true,
-        "SpawnIndex": "left",
-        "x": 161.1,
-        "y": 372.6,
-        "Parameters": {
-         "称号": "E4精英",
-         "cf6EliteQuota": "E4",
-         "长枪": "战术-QBU-191",
-         "不掉装备": true,
-         "保留屏外尸体": true,
-         "掉落物": [
-          {
-           "名字": "战术-QBU-191",
-           "概率": 100,
-           "最小数量": 1,
-           "最大数量": 1,
-           "总数": 1
-          },
-          {
-           "名字": "突击步枪钨芯穿甲弹",
-           "概率": 100,
-           "最小数量": 3,
-           "最大数量": 3,
-           "总数": 3
-          }
-         ]
-        }
-       },
-       {
-        "Type": "兵种465",
-        "Level": 56,
-        "Quantity": 1,
-        "ranged": false,
-        "SpawnIndex": "left",
-        "x": 112.8,
-        "y": 428.5
-       },
-       {
-        "Type": "兵种465",
-        "Level": 56,
-        "Quantity": 1,
-        "ranged": false,
-        "SpawnIndex": "right",
-        "x": 1296.2,
-        "y": 448.4
-       },
-       {
-        "Type": "兵种469",
-        "Level": 56,
-        "Quantity": 1,
-        "ranged": false,
-        "SpawnIndex": "left",
-        "x": 247.7,
-        "y": 468.5
-       },
-       {
-        "Type": "兵种461",
-        "Level": 55,
-        "Quantity": 1,
-        "ranged": false,
-        "SpawnIndex": "right",
-        "x": 1365.4,
-        "y": 389.6
-       },
        {
         "Type": "兵种460",
         "Level": 55,
@@ -2090,93 +4035,26 @@
         "Quantity": 1,
         "ranged": false,
         "SpawnIndex": "left",
-        "x": 4.0,
-        "y": 369.9
+        "x": 247.7,
+        "y": 468.5
        },
        {
         "Type": "兵种469",
         "Level": 56,
         "Quantity": 1,
         "ranged": false,
+        "SpawnIndex": "left",
+        "x": 4.0,
+        "y": 369.9
+       },
+       {
+        "Type": "兵种461",
+        "Level": 55,
+        "Quantity": 1,
+        "ranged": false,
         "SpawnIndex": "right",
-        "x": 1546.9,
-        "y": 416.3
-       }
-      ]
-     },
-     {
-      "hpRatio": 0.8,
-      "enemies": [
-       {
-        "Type": "兵种469",
-        "Level": 56,
-        "Quantity": 4,
-        "ranged": false,
-        "SpawnIndex": "left"
-       },
-       {
-        "Type": "兵种469",
-        "Level": 56,
-        "Quantity": 4,
-        "ranged": false,
-        "SpawnIndex": "right"
-       }
-      ]
-     },
-     {
-      "hpRatio": 0.6,
-      "enemies": [
-       {
-        "Type": "兵种469",
-        "Level": 56,
-        "Quantity": 4,
-        "ranged": false,
-        "SpawnIndex": "left"
-       },
-       {
-        "Type": "兵种469",
-        "Level": 56,
-        "Quantity": 4,
-        "ranged": false,
-        "SpawnIndex": "right"
-       }
-      ]
-     },
-     {
-      "hpRatio": 0.4,
-      "enemies": [
-       {
-        "Type": "兵种469",
-        "Level": 56,
-        "Quantity": 3,
-        "ranged": false,
-        "SpawnIndex": "left"
-       },
-       {
-        "Type": "兵种469",
-        "Level": 56,
-        "Quantity": 3,
-        "ranged": false,
-        "SpawnIndex": "right"
-       }
-      ]
-     },
-     {
-      "hpRatio": 0.2,
-      "enemies": [
-       {
-        "Type": "兵种469",
-        "Level": 56,
-        "Quantity": 3,
-        "ranged": false,
-        "SpawnIndex": "left"
-       },
-       {
-        "Type": "兵种469",
-        "Level": 56,
-        "Quantity": 3,
-        "ranged": false,
-        "SpawnIndex": "right"
+        "x": 1365.4,
+        "y": 389.6
        }
       ]
      }
@@ -2205,8 +4083,37 @@
      "Boss死亡即取消未发与现存增援,取消不产奖励(控制器语义);原自由生成器死亡预算仅作有限上限",
      "持盾重装精英,既有静态带盾特种兵×1;在bossEncounter hpRatio=1组(禁InstanceName,以cf6EliteQuota标记)",
      "prototypeDerived:变身保安上限31=摆放1+原两路预算各15;异形5=卵数(460主控试作采纳prototype-reuse,外观/体型/行为与原作异形不同源,真实消费者待验);E4精英替代既有静态盾兵。",
-     "停止态模板2个无激活证据,不投送(unknown)"
-    ]
+     "停止态模板2个无激活证据,不投送(unknown)",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "combat",
+      "combat",
+      "combat",
+      "boss"
+     ],
+     "spawnPointRoles": [
+      {
+       "index": 0,
+       "side": "left"
+      },
+      {
+       "index": 1,
+       "side": "right"
+      }
+     ],
+     "screenLimit": 10,
+     "baseline": {
+      "primaryWave": 1,
+      "optionalSupport": 40,
+      "enemyAuthoritySha256": "f88f512a9b27925ba6068cd145011a673ce95b931d562f4747daa4e05c900e09"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -2229,56 +4136,60 @@
        "EnemyGroup": {
         "Enemy": [
          {
+          "Type": "兵种464",
+          "Level": 59,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种464",
+          "Level": 59,
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
           "Type": "兵种467",
           "Level": 59,
           "Quantity": 1,
-          "x": 903.1,
-          "y": 334.2,
           "Parameters": {
-           "长枪": "AK47"
-          }
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
          },
          {
-          "Type": "兵种464",
+          "Type": "兵种467",
           "Level": 59,
           "Quantity": 1,
-          "x": 994.4,
-          "y": 325.9
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
          },
          {
-          "Type": "兵种461",
-          "Level": 57,
-          "Quantity": 1,
-          "x": 436.4,
-          "y": 227.1
-         },
-         {
-          "Type": "兵种461",
-          "Level": 57,
-          "Quantity": 1,
-          "x": 459.4,
-          "y": 283.1
-         },
-         {
-          "Type": "兵种461",
-          "Level": 57,
-          "Quantity": 1,
-          "x": 467.4,
-          "y": 347.1
-         },
-         {
-          "Type": "兵种464",
+          "Type": "兵种466",
           "Level": 59,
-          "Quantity": 1,
-          "x": 1171.4,
-          "y": 249.8
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
          },
          {
-          "Type": "兵种464",
+          "Type": "兵种466",
           "Level": 59,
-          "Quantity": 1,
-          "x": 1274.4,
-          "y": 363.1
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
          }
         ]
        }
@@ -2299,6 +4210,186 @@
          }
         ]
        }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种465",
+          "Level": 59,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 59,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 58,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 58,
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 59,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 59,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 59,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 59,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 57,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 57,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种465",
+          "Level": 59,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 59,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种464",
+          "Level": 59,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种464",
+          "Level": 59,
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 59,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 59,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 58,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 58,
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 57,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 57,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         }
+        ]
+       }
       }
      ]
     },
@@ -2314,6 +4405,16 @@
        "x": 856.5,
        "y": 214.6,
        "QuantityMax": 2
+      },
+      {
+       "x": -50,
+       "y": 325.9,
+       "QuantityMax": 6
+      },
+      {
+       "x": 5000,
+       "y": 325.9,
+       "QuantityMax": 6
       }
      ]
     }
@@ -2342,8 +4443,37 @@
      "原版敌人-wings携带g36;该兵种无文档化长枪参数,仅记录不挂参",
      "生成器敌人生成器1原由触发区(1868)玩家踩区激活,本片段改为顺序第二波次(适配)",
      "停止态生成器无脚本触发源(全SWF已穷举),不投送:敌人生成器2(敌人-光头男 预算5/并发2);原版是否可激活=unknown",
-     "CF7适配[A18-spawnpoint-0]:r6 fail#3/#4:生成点落在墙带填充内,转换后为实体 Collision;引擎出生仅 +2y(WaveSpawner Offset)不足以脱出,引用它的 Wave[1][0](SpawnIndex=0)随本点一并修复;移至native(856.5,214.6)=世界(885.0,232.05),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移23.4px;事实表原坐标保留不改(placement-adaptation.v1.json)"
-    ]
+     "CF7适配[A18-spawnpoint-0]:r6 fail#3/#4:生成点落在墙带填充内,转换后为实体 Collision;引擎出生仅 +2y(WaveSpawner Offset)不足以脱出,引用它的 Wave[1][0](SpawnIndex=0)随本点一并修复;移至native(856.5,214.6)=世界(885.0,232.05),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移23.4px;事实表原坐标保留不改(placement-adaptation.v1.json)",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "combat",
+      "transport",
+      "combat",
+      "combat"
+     ],
+     "spawnPointRoles": [
+      {
+       "index": 1,
+       "side": "left"
+      },
+      {
+       "index": 2,
+       "side": "right"
+      }
+     ],
+     "screenLimit": 12,
+     "baseline": {
+      "primaryWave": 12,
+      "optionalSupport": 0,
+      "enemyAuthoritySha256": "d0937a2558bed99f39ffb6206fe895e5e66bbd93aa5d525badc2e2e05628f4f5"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -2369,70 +4499,391 @@
           "Type": "兵种467",
           "Level": 60,
           "Quantity": 1,
-          "x": 370.7,
-          "y": 243.2,
-          "InstanceName": "elite_e5",
           "Parameters": {
            "称号": "E5精英",
            "cf6EliteQuota": "E5",
-           "长枪": "远古诛神枪",
+           "长枪": "量子能量枪",
            "不掉装备": true,
            "保留屏外尸体": true,
            "掉落物": [
             {
-             "名字": "远古诛神枪",
+             "名字": "量子能量枪",
              "概率": 100,
              "最小数量": 1,
              "最大数量": 1,
              "总数": 1
             },
             {
-             "名字": "突击步枪钨芯穿甲弹",
+             "名字": "能量电池",
              "概率": 100,
              "最小数量": 3,
              "最大数量": 3,
              "总数": 3
             }
            ]
-          }
-         },
-         {
-          "Type": "兵种465",
-          "Level": 60,
-          "Quantity": 1,
-          "x": 1066.5,
-          "y": 344.7
-         },
-         {
-          "Type": "兵种463",
-          "Level": 60,
-          "Quantity": 1,
-          "x": 1084.2,
-          "y": 259.4
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
          },
          {
           "Type": "兵种467",
           "Level": 60,
           "Quantity": 1,
-          "x": 413.7,
-          "y": 315.0,
           "Parameters": {
-           "长枪": "AK47"
-          }
+           "长枪": "G36"
+          },
+          "SpawnIndex": 3,
+          "Interval": 100
          },
          {
-          "Type": "兵种469",
-          "Level": 59,
-          "Quantity": 5,
-          "Interval": 100,
-          "SpawnIndex": 0
+          "Type": "兵种466",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 3,
+          "Interval": 100
          },
          {
           "Type": "兵种464",
           "Level": 60,
-          "Quantity": 10,
-          "Interval": 100,
-          "SpawnIndex": 1
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种464",
+          "Level": 60,
+          "Quantity": 2,
+          "SpawnIndex": 3,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种467",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 59,
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 59,
+          "Quantity": 2,
+          "SpawnIndex": 3,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种463",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种463",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 59,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 59,
+          "Quantity": 1,
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种464",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种464",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 3,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种463",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种463",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 59,
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 59,
+          "Quantity": 2,
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种464",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种464",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 3,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种465",
+          "Level": 60,
+          "Quantity": 3,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 60,
+          "Quantity": 3,
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种464",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种464",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 60,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 60,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 3,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 59,
+          "Quantity": 2,
+          "SpawnIndex": 2,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种461",
+          "Level": 59,
+          "Quantity": 2,
+          "SpawnIndex": 3,
+          "Interval": 100
          }
         ]
        }
@@ -2456,6 +4907,16 @@
        "x": 544.6,
        "y": 172.2,
        "QuantityMax": 3
+      },
+      {
+       "x": -50,
+       "y": 287.2,
+       "QuantityMax": 7
+      },
+      {
+       "x": 5000,
+       "y": 287.2,
+       "QuantityMax": 7
       }
      ]
     }
@@ -2482,8 +4943,38 @@
      "E5: 终战前强精英,既有静态带盾特种兵×2中指定1名,保留原入口467",
      "原版敌人-大刀机器人携带g36;该兵种无文档化长枪参数,仅记录不挂参",
      "生成器原挂door2门演出;机关线未接,首版直接生成",
-     "生成器原挂door1门演出;机关线未接,首版直接生成"
-    ]
+     "生成器原挂door1门演出;机关线未接,首版直接生成",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "combat",
+      "combat",
+      "combat",
+      "combat",
+      "combat"
+     ],
+     "spawnPointRoles": [
+      {
+       "index": 2,
+       "side": "left"
+      },
+      {
+       "index": 3,
+       "side": "right"
+      }
+     ],
+     "screenLimit": 14,
+     "baseline": {
+      "primaryWave": 19,
+      "optionalSupport": 0,
+      "enemyAuthoritySha256": "1410b329795c6580fa19f495f46fa268f2389d2e0e069e75386e3f6fcfed8b66"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -2498,6 +4989,372 @@
     },
     "Wave": {
      "SubWave": [
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种467",
+          "Level": 60,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种466",
+          "Level": 60,
+          "Quantity": 2,
+          "Parameters": {
+           "长枪": "G36",
+           "特种兵初始阶段": 2
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 60,
+          "Quantity": 2,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 60,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种464",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种464",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种463",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种463",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种464",
+          "Level": 60,
+          "Quantity": 2,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种464",
+          "Level": 60,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种469",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种465",
+          "Level": 60,
+          "Quantity": 4,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 60,
+          "Quantity": 4,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种463",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种463",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种460",
+          "Level": 60,
+          "Quantity": 2,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种460",
+          "Level": 60,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种465",
+          "Level": 60,
+          "Quantity": 4,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 60,
+          "Quantity": 4,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种463",
+          "Level": 60,
+          "Quantity": 2,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种463",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种460",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种460",
+          "Level": 60,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种464",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种464",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
+      {
+       "WaveInformation": {
+        "Duration": 0,
+        "FinishRequirement": 0
+       },
+       "EnemyGroup": {
+        "Enemy": [
+         {
+          "Type": "兵种465",
+          "Level": 60,
+          "Quantity": 5,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种465",
+          "Level": 60,
+          "Quantity": 4,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种463",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种463",
+          "Level": 60,
+          "Quantity": 2,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种460",
+          "Level": 60,
+          "Quantity": 2,
+          "SpawnIndex": 0,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种460",
+          "Level": 60,
+          "Quantity": 1,
+          "SpawnIndex": 1,
+          "Interval": 100
+         },
+         {
+          "Type": "兵种467",
+          "Level": 60,
+          "Quantity": 1,
+          "Parameters": {
+           "长枪": "G36"
+          },
+          "SpawnIndex": 1,
+          "Interval": 100
+         }
+        ]
+       }
+      },
       {
        "WaveInformation": {
         "Duration": 0,
@@ -2540,6 +5397,20 @@
        "Value": 2,
        "x": 864.8,
        "y": 185.9
+      }
+     ]
+    },
+    "SpawnPoint": {
+     "Point": [
+      {
+       "x": -50,
+       "y": 201.7,
+       "QuantityMax": 6
+      },
+      {
+       "x": 5000,
+       "y": 201.7,
+       "QuantityMax": 6
       }
      ]
     }
@@ -2593,97 +5464,6 @@
         "y": 338.8
        }
       ]
-     },
-     {
-      "hpRatio": 0.75,
-      "enemies": [
-       {
-        "Type": "兵种461",
-        "Level": 60,
-        "Quantity": 4,
-        "ranged": false,
-        "SpawnIndex": "left"
-       },
-       {
-        "Type": "兵种469",
-        "Level": 60,
-        "Quantity": 4,
-        "ranged": false,
-        "SpawnIndex": "right"
-       },
-       {
-        "Type": "兵种467",
-        "Level": 60,
-        "Quantity": 2,
-        "ranged": true,
-        "SpawnIndex": "left",
-        "Parameters": {
-         "长枪": "AK47"
-        }
-       },
-       {
-        "Type": "兵种464",
-        "Level": 60,
-        "Quantity": 2,
-        "ranged": true,
-        "SpawnIndex": "right"
-       }
-      ]
-     },
-     {
-      "hpRatio": 0.5,
-      "enemies": [
-       {
-        "Type": "兵种461",
-        "Level": 60,
-        "Quantity": 5,
-        "ranged": false,
-        "SpawnIndex": "left"
-       },
-       {
-        "Type": "兵种469",
-        "Level": 60,
-        "Quantity": 5,
-        "ranged": false,
-        "SpawnIndex": "right"
-       },
-       {
-        "Type": "兵种467",
-        "Level": 60,
-        "Quantity": 1,
-        "ranged": true,
-        "SpawnIndex": "left",
-        "Parameters": {
-         "长枪": "AK47"
-        }
-       },
-       {
-        "Type": "兵种464",
-        "Level": 60,
-        "Quantity": 1,
-        "ranged": true,
-        "SpawnIndex": "right"
-       }
-      ]
-     },
-     {
-      "hpRatio": 0.25,
-      "enemies": [
-       {
-        "Type": "兵种461",
-        "Level": 60,
-        "Quantity": 5,
-        "ranged": false,
-        "SpawnIndex": "left"
-       },
-       {
-        "Type": "兵种469",
-        "Level": 60,
-        "Quantity": 5,
-        "ranged": false,
-        "SpawnIndex": "right"
-       }
-      ]
      }
     ]
    },
@@ -2711,8 +5491,39 @@
      "Boss死亡即取消未发与现存增援,取消不产奖励(控制器语义);原自由生成器死亡预算仅作有限上限",
      "prototypeDerived:四路上限=原各门死亡预算(盾5/Wings5/僵尸15/变身15);原门触发演出(door1/2/4)属机关线,首版按血量阈值发兵。",
      "停止态模板2个无激活证据,不投送(unknown)",
-     "CF7适配[A20-boss-0-0]:r6 fail#5:门刷点在墙内填充体,转换后落入实体 Collision,玩家不可达;移至native(184.5,177.6)=世界(263.0,201.05),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移15.6px;事实表原坐标保留不改(placement-adaptation.v1.json)"
-    ]
+     "CF7适配[A20-boss-0-0]:r6 fail#5:门刷点在墙内填充体,转换后落入实体 Collision,玩家不可达;移至native(184.5,177.6)=世界(263.0,201.05),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移15.6px;事实表原坐标保留不改(placement-adaptation.v1.json)",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "combat",
+      "combat",
+      "combat",
+      "combat",
+      "combat",
+      "boss"
+     ],
+     "spawnPointRoles": [
+      {
+       "index": 0,
+       "side": "left"
+      },
+      {
+       "index": 1,
+       "side": "right"
+      }
+     ],
+     "screenLimit": 12,
+     "baseline": {
+      "primaryWave": 1,
+      "optionalSupport": 40,
+      "enemyAuthoritySha256": "97f3f0e48d6c32ac5d6ed7226baf170016ce78d70d7d267100a6c5955bcdb8e2"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   },
   {
@@ -2764,6 +5575,9 @@
        "y": 402.4
       }
      ]
+    },
+    "SpawnPoint": {
+     "Point": []
     }
    },
    "bossEncounter": {
@@ -2812,105 +5626,6 @@
         "y": 177.6
        }
       ]
-     },
-     {
-      "hpRatio": 0.75,
-      "enemies": [
-       {
-        "Type": "兵种463",
-        "Level": 60,
-        "Quantity": 5,
-        "ranged": false,
-        "SpawnIndex": "left"
-       },
-       {
-        "Type": "兵种472",
-        "Level": 60,
-        "Quantity": 5,
-        "ranged": true,
-        "SpawnIndex": "right"
-       },
-       {
-        "Type": "兵种460",
-        "Level": 60,
-        "Quantity": 5,
-        "ranged": false,
-        "SpawnIndex": "left"
-       },
-       {
-        "Type": "兵种465",
-        "Level": 60,
-        "Quantity": 5,
-        "ranged": true,
-        "SpawnIndex": "right"
-       }
-      ]
-     },
-     {
-      "hpRatio": 0.5,
-      "enemies": [
-       {
-        "Type": "兵种463",
-        "Level": 60,
-        "Quantity": 5,
-        "ranged": false,
-        "SpawnIndex": "left"
-       },
-       {
-        "Type": "兵种472",
-        "Level": 60,
-        "Quantity": 5,
-        "ranged": true,
-        "SpawnIndex": "right"
-       },
-       {
-        "Type": "兵种460",
-        "Level": 60,
-        "Quantity": 5,
-        "ranged": false,
-        "SpawnIndex": "left"
-       },
-       {
-        "Type": "兵种465",
-        "Level": 60,
-        "Quantity": 5,
-        "ranged": true,
-        "SpawnIndex": "right"
-       }
-      ]
-     },
-     {
-      "hpRatio": 0.25,
-      "enemies": [
-       {
-        "Type": "兵种463",
-        "Level": 60,
-        "Quantity": 4,
-        "ranged": false,
-        "SpawnIndex": "left"
-       },
-       {
-        "Type": "兵种472",
-        "Level": 60,
-        "Quantity": 4,
-        "ranged": true,
-        "SpawnIndex": "right"
-       },
-       {
-        "Type": "兵种460",
-        "Level": 60,
-        "Quantity": 4,
-        "ranged": false,
-        "SpawnIndex": "left"
-       },
-       {
-        "Type": "兵种465",
-        "Level": 60,
-        "Quantity": 4,
-        "ranged": true,
-        "SpawnIndex": "right"
-       }
-      ]
      }
     ]
    },
@@ -2939,8 +5654,25 @@
      "474仅由主Wave生成,增援组不含474",
      "prototypeDerived:四路上限各15=原各门死亡预算;474不在增援组(Boss唯一,主Wave生成);异形为460主控试作采纳prototype-reuse(非原版异形等价,真实消费者待验)。",
      "停止态模板2个无激活证据,不投送(unknown)",
-     "CF7适配[A22-boss-0-3]:r6 fail#6:同 A20 boss[0][0] 的门内墙填充问题;移至native(184.5,177.6)=世界(263.0,201.05),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移15.6px;事实表原坐标保留不改(placement-adaptation.v1.json)"
-    ]
+     "CF7适配[A22-boss-0-3]:r6 fail#6:同 A20 boss[0][0] 的门内墙填充问题;移至native(184.5,177.6)=世界(263.0,201.05),36x18px脚底盒1px栅格全自由+严格walkBounds内+5px参考格可达,位移15.6px;事实表原坐标保留不改(placement-adaptation.v1.json)",
+     "2026-10-24章节难度适配：遵循原作首次登场，以已登场敌人数量承载难度；两段电梯为一波预置敌人，原生Boss转换与可选旁支取消保持。"
+    ],
+    "chapterDifficulty": {
+     "schema": "cf6-difficulty-source.v1",
+     "source": "tools/cf6-roguelike-content/difficulty.source.json",
+     "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+     "waveKinds": [
+      "boss"
+     ],
+     "spawnPointRoles": [],
+     "screenLimit": 5,
+     "baseline": {
+      "primaryWave": 1,
+      "optionalSupport": 60,
+      "enemyAuthoritySha256": "fb2e6a829434ce8f8736e00e89ed8e464f7d790a0e427395da44864222001cee"
+     },
+     "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
+    }
    }
   }
  ]

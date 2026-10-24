@@ -1,0 +1,7 @@
+onClipEvent(load){
+   var §\x01§ = 853;
+   var §\x0f§ = 1;
+   _parent._parent.gotoAndStop("走");
+   xx = random(_root.Xmax - _root.Xmin) + _root.Xmin;
+   yy = random(_root.Ymax - _root.Ymin) + _root.Ymin;
+}

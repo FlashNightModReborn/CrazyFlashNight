@@ -60,7 +60,12 @@ def migrate_pod_budget(stage, props):
         raise ValueError('clone pod migration requires five distinct original instances')
     if identity == 'A15':
         waves = stage['stage']['Wave']['SubWave']
-        if len(waves) != 1: raise ValueError('unexpected A15 wave structure')
+        import sys
+        sys.path.insert(0, str(ROOT / 'tools/cf6-roguelike-content'))
+        import difficulty_plan
+        difficulty = difficulty_plan.metadata(stage)
+        if len(waves) != (len(difficulty['waveKinds']) if difficulty else 1) or difficulty is not None and difficulty['waveKinds'][0] != 'pods':
+            raise ValueError('unexpected A15 wave structure')
         entries = waves[0]['EnemyGroup']['Enemy']
     elif identity == 'A17':
         plan = stage['bossEncounter']
@@ -149,8 +154,9 @@ def adapt(chapter, require_swfs=True):
         local = manifest['triggers'][str(sprite)]['localAabb']
         hit_scale = scale if kind == 'pod' else 1
         bounds = transformed_bounds(local, [v*hit_scale for v in linear])
-        # Keep the original registration/spawn point. Sorting uses the independent
-        # first-frame visual foot edge, so resizing cannot move world placement.
+        # Pods retain the original birth registration. Barrels retain their original
+        # world foot edge while local art stays unscaled: resizing around the centre
+        # registration would otherwise lift every barrel off its authored floor.
         visual_bounds = transformed_bounds(asset['frame1VisualBounds'], linear)
         if kind == 'barrel':
             # Original gun logic used the foot marker together with a separate
@@ -160,6 +166,8 @@ def adapt(chapter, require_swfs=True):
             bounds = [min(bounds[0],visual_bounds[0]),min(bounds[1]-gun_projection,visual_bounds[1]),
                       max(bounds[2],visual_bounds[2]),max(bounds[3],visual_bounds[3])]
         x,y = [round(v*scale,4) for v in matrix[4:]]
+        if kind == 'barrel':
+            y = round((matrix[5]+visual_bounds[3])*scale-visual_bounds[3],4)
         prop = {'id':f'{identity}-{kind}-{source["sourceDepth"]}', 'kind':kind,
                 'sourceSprite':sprite, 'url':expected_url, 'x':x, 'y':y,
                 'sortY':round(y+visual_bounds[3],4),
@@ -171,7 +179,7 @@ def adapt(chapter, require_swfs=True):
         audit.append({'id':prop['id'],'sourceSprite':sprite,'sourceDepth':source['sourceDepth'],
                       'registrationWorld':[x,y],'sortY':prop['sortY'],
                       'visualScale':1,'hitBounds':bounds,
-                      'basis':'world registration transformed once; art stays original size; depth follows first-frame visual lower bound',
+                      'basis':('original world footpoint retained; unscaled art registration derived from its resting floor edge' if kind=='barrel' else 'world birth registration transformed once; original clone handoff unchanged'),
                       'triggerSpace':'original map area scaled once' if kind == 'pod' else 'CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement'})
     for identity, props in groups.items():
         if len(props) != COUNTS[identity] or len({p['id'] for p in props}) != len(props):

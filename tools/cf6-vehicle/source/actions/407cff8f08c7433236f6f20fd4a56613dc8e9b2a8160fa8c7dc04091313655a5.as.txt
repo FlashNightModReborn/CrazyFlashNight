@@ -1,0 +1,119 @@
+onClipEvent(load){
+   function §\x04\x05§()
+   {
+      set("\x03",2908 % 511 * 5);
+      return eval("\x03");
+   }
+   var §\x01§ = -971 + "\x04\x05"();
+   while(true)
+   {
+      if(eval("\x01") == 794)
+      {
+         set("\x01",eval("\x01") + 73);
+         §§push(true);
+      }
+      else if(eval("\x01") == 414)
+      {
+         set("\x01",eval("\x01") - 169);
+         §§push("\x0f");
+      }
+      else if(eval("\x01") == 308)
+      {
+         set("\x01",eval("\x01") + 339);
+         if(function §\x04\x05§()
+         {
+            set("\x03",2908 % 511 * 5);
+            return eval("\x03");
+         })
+         {
+            set("\x01",eval("\x01") + 329);
+         }
+      }
+      else if(eval("\x01") == 867)
+      {
+         set("\x01",eval("\x01") - 858);
+         if(function §\x04\x05§()
+         {
+            set("\x03",2908 % 511 * 5);
+            return eval("\x03");
+         })
+         {
+            set("\x01",eval("\x01") + 721);
+         }
+      }
+      else
+      {
+         if(eval("\x01") == 9)
+         {
+            set("\x01",eval("\x01") + 721);
+            break;
+         }
+         if(eval("\x01") == 162)
+         {
+            set("\x01",eval("\x01") + 252);
+            var §§pop() = function §\x04\x05§()
+            {
+               set("\x03",2908 % 511 * 5);
+               return eval("\x03");
+            };
+         }
+         else if(eval("\x01") == 730)
+         {
+            set("\x01",eval("\x01") - 214);
+         }
+         else if(eval("\x01") == 346)
+         {
+            set("\x01",eval("\x01") + 170);
+         }
+         else if(eval("\x01") == 853)
+         {
+            set("\x01",eval("\x01") - 545);
+            §§push(!function §\x04\x05§()
+            {
+               set("\x03",2908 % 511 * 5);
+               return eval("\x03");
+            });
+         }
+         else if(eval("\x01") == 647)
+         {
+            set("\x01",eval("\x01") + 329);
+         }
+         else if(eval("\x01") == 245)
+         {
+            set("\x01",eval("\x01") + 608);
+            §§push(eval(function §\x04\x05§()
+            {
+               set("\x03",2908 % 511 * 5);
+               return eval("\x03");
+            }));
+         }
+         else
+         {
+            if(eval("\x01") != 516)
+            {
+               if(eval("\x01") == 976)
+               {
+                  set("\x01",eval("\x01") - 505);
+                  if(_root.gameworld.man1._x > _parent._parent._x)
+                  {
+                     _parent._parent._xscale = 100;
+                  }
+                  else
+                  {
+                     _parent._parent._xscale = -100;
+                  }
+                  break;
+               }
+               if(eval("\x01") == 471)
+               {
+                  set("\x01",eval("\x01") - 471);
+               }
+               break;
+            }
+            set("\x01",eval("\x01") - 354);
+            §§push("\x0f");
+            §§push(1);
+         }
+      }
+   }
+}

@@ -1,0 +1,29 @@
+var §\x01§ = 365;
+var §\x0f§ = 1;
+if(僵尸型敌人总个数 > 0)
+{
+   if(僵尸型敌人场上实际人数 < 僵尸型敌人上场个数)
+   {
+      if(僵尸型敌人场上实际人数 < 0)
+      {
+         僵尸型敌人场上实际人数 = 0;
+      }
+      aaa = 僵尸型敌人上场个数 - 僵尸型敌人场上实际人数;
+      door.play();
+      i = 0;
+      while(i < aaa)
+      {
+         敌人层级++;
+         僵尸型敌人场上实际人数++;
+         僵尸型敌人newname = this._name + 兵种 + 敌人层级;
+         y轴随机点 = random(_root.Ymax - _root.Ymin) + _root.Ymin;
+         _root.gameworld.attachMovie(兵种,僵尸型敌人newname,_parent.getNextHighestDepth(),{_x:this._x,_y:y轴随机点});
+         僵尸型敌人初始化(hp,击中效果,近身距离,近身率,击倒率,x速度,y速度,枪声音,霰弹值,子弹散射度,子弹种类,子弹威力,子弹速度,gunname);
+         i++;
+      }
+   }
+}
+if(僵尸型敌人总个数 <= 0)
+{
+   stop();
+}

@@ -27,6 +27,8 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
     private var nextName:Number;
     private var stopped:Boolean;
     private var bossMark:Object;
+    private var bossBirth:Object;
+    private var hudLease:Object;
     private var elderStarted:Boolean;
     private var elderWaiting:Boolean;
     private var elderPhase:Object;
@@ -92,10 +94,38 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
             && manager.isFinished !== true && manager.isFailed !== true && manager.isCleared !== true;
     }
     private static function finite(value):Boolean { return typeof value === "number" && !isNaN(value) && isFinite(value); }
+    /** UnitSpawn precedes the native initialization latch; capture identity without granting readiness. */
+    private function observeBossBirth(name:String):Void {
+        if(name!==plan.instanceName || bossMark!=null || elderStarted || !current()) return;
+        var boss:MovieClip=world[name];
+        if(typeof boss!="movieclip" || boss._parent!==world || boss._name!==name || !finite(boss.version)) return;
+        if(bossBirth==null) {
+            if(boss.__cf6BossBirthOwner!==undefined) return;
+            var mark:Object={};boss.__cf6BossBirthOwner=mark;
+            bossBirth={actor:boss,name:name,version:boss.version,mark:mark};
+        }
+        bindBoss();
+    }
+    private function forgetBossBirth():Void {
+        var birth:Object=bossBirth;
+        if(birth!=null && world.__stageReturnWorldIdentity===owner && birth.actor._parent===world
+                && world[birth.name]===birth.actor && birth.actor.__cf6BossBirthOwner===birth.mark)
+            delete birth.actor.__cf6BossBirthOwner;
+        bossBirth=null;
+    }
     private function bindBoss():Void {
         var boss:MovieClip=world[plan.instanceName];
-        if (bossMark == null && finite(boss.hp) && boss.hp > 0 && finite(boss.hp满血值) && boss.hp满血值 > 0) {
-            bossMark={}; boss.cf6BossIdentity=bossMark;
+        var health:Boolean=finite(boss.hp) && boss.hp>0;
+        if(bossBirth!=null) {
+            var birth:Object=bossBirth;
+            health=current() && boss===birth.actor && boss._parent===world && boss._name===birth.name
+                && boss.__cf6BossBirthOwner===birth.mark && boss.version===birth.version
+                && boss.__unitInitializedVersion!=null && boss.__unitInitializedVersion===birth.version && finite(boss.hp);
+        }
+        if (bossMark == null && health && finite(boss.hp满血值) && boss.hp满血值 > 0) {
+            bossMark={}; boss.cf6BossIdentity=bossMark;forgetBossBirth();
+            hudLease=org.flashNight.arki.hud.FocusTargetHudService.bind(
+                world,owner,boss,"cf6BossIdentity",bossMark,"boss","");
         }
     }
     private function bossDead():Boolean {
@@ -154,7 +184,9 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
     }
     private function beginElder():Void {
         if (elderStarted || !bossDead() || plan.nextPhase == null) return;
+        org.flashNight.arki.hud.FocusTargetHudService.clear(hudLease);hudLease=null;
         elderStarted=true;elderWaiting=true;elderParentMark=bossMark;
+        captureElderPhase();
         queue=[];waitFrames=0;
         // Each form owns its finite budget. Pending first-form deliveries remain tombstoned.
         for (var name:String in living) {
@@ -170,16 +202,20 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
         trace("[CF6_FINALE_PHASE_ERROR] "+reason);
         if (typeof _root.发布消息=="function") _root.发布消息("元老变形接续未完成，请保留现场并退出本次历险。");
     }
+    /** Capture the native parent's plain phase object while its exact identity is still live. */
+    private function captureElderPhase():Void {
+        if(!elderWaiting || elderPhase!=null || !current()) return;
+        var parent:MovieClip=world[plan.instanceName];
+        if(parent.cf6BossIdentity!==elderParentMark) return;
+        var observed:Object=parent.elderTransform;
+        if(observed!=null && parent.老头变身===true && observed.parentIdentity===parent.elderIdentity) elderPhase=observed;
+    }
     private function advanceElder():Void {
         if (!elderWaiting || elderError != undefined || !current()
                 || _root.暂停 === true || _root.场景转换中 === true) return;
         elderWaitFrames++;
-        var parent:MovieClip=world[plan.instanceName];
-        if (elderPhase == null && parent.cf6BossIdentity === elderParentMark) {
-            var observed:Object=parent.elderTransform;
-            if (observed != null && parent.老头变身 === true
-                    && observed.parentIdentity === parent.elderIdentity) elderPhase=observed;
-        }
+        captureElderPhase();
+
         var phase:Object=elderPhase;
         if (phase == null) {
             if (elderWaitFrames >= 600) failElder("native-transform-not-started");
@@ -206,6 +242,8 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
         }
         // Native unit code alone creates and counts the successor; this controller binds it.
         plan=plan.nextPhase;bossMark={};child.cf6BossIdentity=bossMark;child.publishStageEvent=true;
+        hudLease=org.flashNight.arki.hud.FocusTargetHudService.bind(
+            world,owner,child,"cf6BossIdentity",bossMark,"boss","");
         bindFinalDeath(child);
         groupIndex=0;waitFrames=0;elderWaiting=false;
         trace("[CF6_FINALE_PHASE] robot-ready; native successor="+child._name);
@@ -278,6 +316,7 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
     }
     private function onSpawn(name:String):Void {
         if (!worldOwned()) return;
+        observeBossBirth(name);
         var record:Object=issued[name];
         if (record == null) return;
         bind(record);
@@ -286,6 +325,7 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
     private function onDeath(name:String):Void {
         if (!current()) return;
         if (name === plan.instanceName) {
+            bindBoss();
             if (bossDead()) {
                 if (plan.nextPhase != null) beginElder();
                 else if(elderStarted) beginFinalDeath();
@@ -308,6 +348,7 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
     }
     private function onRemoved(name:String):Void {
         if (!current()) return;
+        if(elderWaiting && name===plan.instanceName) {captureElderPhase();return;}
         if(elderStarted && !elderWaiting && name===plan.instanceName) {
             if(elderError==undefined && finalDeathReady.mark===bossMark && finalDeathReady.owner===owner
                     && finalDeathReady.name===name) finalDeathRemoved=true;
@@ -320,7 +361,8 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
     private function finish(victory:Boolean):Void {
         if (stopped) return;
         var mayWin:Boolean=victory && current() && victoryReady();
-        stopped=true; queue=[];
+        stopped=true; queue=[];forgetBossBirth();
+        org.flashNight.arki.hud.FocusTargetHudService.clear(hudLease);hudLease=null;
         if (!worldOwned()) return;
         var boss:MovieClip=world[plan.instanceName];
         if(boss.cf6BossIdentity===bossMark && boss.死亡检测===finalDeathWrapper && finalDeathOriginal!=undefined)

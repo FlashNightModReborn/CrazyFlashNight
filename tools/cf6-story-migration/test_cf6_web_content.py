@@ -35,6 +35,19 @@ class Cf6WebContentTests(unittest.TestCase):
         self.assertTrue(self.pages["cf6-end"]["manual"])
         self.assertIsNone(self.pages["cf6-end"]["timeline"]["durationSec"])
 
+    def test_vehicle_story_boundaries_and_finale_source_runtime_are_separate(self):
+        self.assertEqual(self.fragment["routeMaps"],["TUTORIAL"]+[f"A{i:02d}" for i in range(1,21)])
+        self.assertEqual(self.fragment["routeExclusions"],[])
+        self.assertEqual(self.segments["cf6-s4"]["route"]["after"]["map"],"A07")
+        self.assertEqual(self.segments["cf6-s5"]["route"]["before"]["map"],"A07")
+        self.assertEqual(self.segments["cf6-s5"]["route"]["after"]["map"],"A08")
+        self.assertEqual(self.segments["cf6-s6"]["route"]["after"]["map"],"A18")
+        finale=self.segments["cf6-s7"]["route"]["before"]
+        self.assertEqual((finale["sourceMap"],finale["runtimeRoom"],finale["runtimePhase"]),("A22","A20","second-form"))
+        self.assertEqual(self.segments["cf6-s7"]["original"]["transition"]["targetLabel"],"end")
+        self.assertIn("only actual A07 vehicle-tail completion",self.content["vehicleAdaptation"])
+        self.assertNotIn("excluded",self.content["vehicleAdaptation"])
+
     def test_svg_text_viewports_and_references_match_sources(self):
         svg_ns = "{http://www.w3.org/2000/svg}"
         xlink = "{http://www.w3.org/1999/xlink}href"
@@ -175,7 +188,10 @@ class Cf6WebContentTests(unittest.TestCase):
         self.assertNotIn("_root.gameCommands", router)
         self.assertNotIn("book_comic_response", router)
         self.assertNotIn("PauseManager.lease", router)
-        self.assertIn('if (index == 7) return ["cf6-s4", "cf6-s5"]', router)
+        self.assertIn('if (index == 7) return ["cf6-s4"]', router)
+        self.assertIn('if (index == 8) return ["cf6-s5"]', router)
+        self.assertIn('if (index == 18) return ["cf6-s6"]', router)
+        self.assertNotIn('if (index == 17)', router)
         self.assertIn('return beginSequence(["cf6-s7", "cf6-end"], continuation, interruption)', router)
         self.assertIn("BookComicService.begin", router)
         self.assertIn('finishSequence(state, "open_failed", "sequence", true)', router)

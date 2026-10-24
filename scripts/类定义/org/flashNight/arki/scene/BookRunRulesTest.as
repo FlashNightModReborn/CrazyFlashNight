@@ -23,6 +23,8 @@ class org.flashNight.arki.scene.BookRunRulesTest {
             check(BookDefinition.valid(fixture),"CF6 authored single-room fixture accepts without campus economy");
             testCf6RuntimeGates(fixture);
             testCf6TransportGates(fixture);
+            testCf6BossPreludeGates(fixture);
+            testCf6TransportAdditionalWaves(fixture);
             var wrongBackground:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(fixture);
             wrongBackground.maps[0].background="cf6/../CF6_A01_BG.swf";
             check(!BookDefinition.valid(wrongBackground),"CF6 background rejects traversal under the isolated directory");
@@ -99,6 +101,139 @@ class org.flashNight.arki.scene.BookRunRulesTest {
             else if(key=="owner")delete m.mechanism.transport;
             check(!BookDefinition.valid(bad),"CF6 transport rejects "+key);
         }
+    }
+    /** Standard mandatory waves precede the controller's one exact final boss. */
+    private static function cf6PreludeFixture(base:Object,id:String,phased:Boolean):Object {
+        var fixture:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(base),map:Object=fixture.maps[0];
+        map.id=id;map.background="cf6/CF6_"+id+"_BG.swf";
+        if(id=="A20")map.mechanism.elderFinale=phased;
+        map.stage.SpawnPoint={Point:[{x:100,y:300,NoCount:false}]};
+        var boss:Object={Type:id=="A20"?"兵种473":"兵种463",Level:60,Quantity:1,InstanceName:"cf6Boss_"+id,Parameters:{}};
+        if(id=="A20")boss.Parameters.老头变身=phased;
+        map.stage.Wave.SubWave=[
+            {WaveInformation:{Duration:0,FinishRequirement:0,MapNoCount:false},EnemyGroup:{Enemy:[
+                {Type:"兵种461",Level:60,Quantity:2,SpawnIndex:0,Parameters:{掉落物:[]}}]}},
+            {WaveInformation:{Duration:0,FinishRequirement:0},EnemyGroup:{Enemy:[boss]}}];
+        map.bossEncounter={instanceName:"cf6Boss_"+id,maxAlive:2,maxRanged:0,intervalFrames:30,
+            groups:[{hpRatio:1,enemies:[{Type:"兵种461",Level:60,Quantity:1,ranged:false,SpawnIndex:"left",Parameters:{}}]}]};
+        if(phased) {
+            map.bossEncounter.nextPhase=org.flashNight.gesh.object.PersistedSnapshot.clone(map.bossEncounter);
+            map.bossEncounter.nextPhase.instanceName="cf6Boss_A20__elderbot";
+        }
+        return fixture;
+    }
+    private static function testCf6BossPreludeGates(base:Object):Void {
+        var maps:Array=["A06","A20","A20"],phases:Array=[false,false,true];
+        var primary:Object;
+        for(var i:Number=0;i<maps.length;i++) {
+            var fixture:Object=cf6PreludeFixture(base,maps[i],phases[i]);
+            check(BookDefinition.valid(fixture),"CF6 mandatory prelude accepts "+maps[i]+" phased="+phases[i]);
+            if(i==0)primary=fixture;
+        }
+        var single:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(primary);
+        single.maps[0].stage.Wave.SubWave.shift();
+        check(BookDefinition.valid(single),"CF6 one-wave boss remains valid without a prelude");
+        var six:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(primary);
+        var sixWaves:Array=six.maps[0].stage.Wave.SubWave;
+        while(sixWaves.length<6)sixWaves.unshift(org.flashNight.gesh.object.PersistedSnapshot.clone(sixWaves[0]));
+        check(BookDefinition.valid(six),"CF6 five mandatory preludes accept before the unique sixth-wave boss");
+        var flags:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(primary);
+        flags.maps[0].stage.SpawnPoint.Point[0].NoCount=0;
+        flags.maps[0].stage.Wave.SubWave[0].WaveInformation.MapNoCount=0;
+        check(BookDefinition.valid(flags),"CF6 counted prelude flags accept explicit numeric zero");
+        delete flags.maps[0].stage.SpawnPoint.Point[0].NoCount;
+        delete flags.maps[0].stage.Wave.SubWave[0].WaveInformation.MapNoCount;
+        check(BookDefinition.valid(flags),"CF6 omitted count flags retain mandatory standard counting");
+        var cases:Array=["zeroWaves","sevenWaves","emptyPrelude","largePrelude",
+            "durationMissing","durationPositive","durationBoolean","durationString",
+            "finishMissing","finishPositive","finishBoolean","finishString",
+            "mapUncounted","mapStringZero","mapNull","pointUncounted","pointStringZero","pointNull",
+            "pointsScalar","pointPrimitive","instanceName","instanceNull","primaryType","humanType","robotType",
+            "parametersNull","parametersArray","parametersString","bossNotLast","finalDuplicate","finalType","finalName","finalQuantity","latePreludeUncounted"];
+        for(i=0;i<cases.length;i++) {
+            var key:String=cases[i];
+            var bad:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(key=="sevenWaves" || key=="latePreludeUncounted"?six:primary);
+            var map:Object=bad.maps[0],waves:Array=map.stage.Wave.SubWave;
+            var wave:Object=waves[0],info:Object=wave.WaveInformation,enemy:Object=wave.EnemyGroup.Enemy[0];
+            var boss:Object=waves[waves.length-1].EnemyGroup.Enemy[0];
+            if(key=="zeroWaves")map.stage.Wave.SubWave=[];
+            else if(key=="sevenWaves")waves.unshift(org.flashNight.gesh.object.PersistedSnapshot.clone(wave));
+            else if(key=="emptyPrelude")wave.EnemyGroup.Enemy=[];
+            else if(key=="largePrelude")while(wave.EnemyGroup.Enemy.length<33)wave.EnemyGroup.Enemy.push(org.flashNight.gesh.object.PersistedSnapshot.clone(enemy));
+            else if(key=="durationMissing")delete info.Duration;
+            else if(key=="durationPositive")info.Duration=1;
+            else if(key=="durationBoolean")info.Duration=false;
+            else if(key=="durationString")info.Duration="0";
+            else if(key=="finishMissing")delete info.FinishRequirement;
+            else if(key=="finishPositive")info.FinishRequirement=1;
+            else if(key=="finishBoolean")info.FinishRequirement=false;
+            else if(key=="finishString")info.FinishRequirement="0";
+            else if(key=="mapUncounted")info.MapNoCount=true;
+            else if(key=="mapStringZero")info.MapNoCount="0";
+            else if(key=="mapNull")info.MapNoCount=null;
+            else if(key=="pointUncounted")map.stage.SpawnPoint.Point[0].NoCount=true;
+            else if(key=="pointStringZero")map.stage.SpawnPoint.Point[0].NoCount="0";
+            else if(key=="pointNull")map.stage.SpawnPoint.Point[0].NoCount=null;
+            else if(key=="pointsScalar")map.stage.SpawnPoint.Point={NoCount:false};
+            else if(key=="pointPrimitive")map.stage.SpawnPoint.Point=[1];
+            else if(key=="instanceName")enemy.InstanceName="prelude-owner";
+            else if(key=="instanceNull")enemy.InstanceName=null;
+            else if(key=="primaryType")enemy.Type="兵种463";
+            else if(key=="humanType")enemy.Type="兵种473";
+            else if(key=="robotType")enemy.Type="兵种474";
+            else if(key=="parametersNull")enemy.Parameters=null;
+            else if(key=="parametersArray")enemy.Parameters=[];
+            else if(key=="parametersString")enemy.Parameters="invalid";
+            else if(key=="bossNotLast")waves.push(org.flashNight.gesh.object.PersistedSnapshot.clone(wave));
+            else if(key=="finalDuplicate")waves[waves.length-1].EnemyGroup.Enemy.push(org.flashNight.gesh.object.PersistedSnapshot.clone(enemy));
+            else if(key=="finalType")boss.Type="兵种461";
+            else if(key=="finalName")boss.InstanceName="foreign-boss";
+            else if(key=="finalQuantity")boss.Quantity=2;
+            else if(key=="latePreludeUncounted")waves[4].WaveInformation.MapNoCount=true;
+            check(!BookDefinition.valid(bad),"CF6 mandatory prelude rejects "+key);
+        }
+        var reserved:Array=["cf6BossOwnerToken","cf6SupportIdentity","InstanceName","产生源","老头变身"];
+        for(i=0;i<reserved.length;i++) {
+            bad=org.flashNight.gesh.object.PersistedSnapshot.clone(primary);
+            bad.maps[0].stage.Wave.SubWave[0].EnemyGroup.Enemy[0].Parameters[reserved[i]]=null;
+            check(!BookDefinition.valid(bad),"CF6 mandatory prelude rejects reserved parameter presence "+reserved[i]);
+        }
+    }
+    private static function testCf6TransportAdditionalWaves(base:Object):Void {
+        var names:Array=["A09","A14","A18"],depths:Array=[112,505,147],types:Array=["兵种467","兵种469","兵种463"],levels:Array=[45,50,59],counts:Array=[5,7,5];
+        var complete:Object;
+        for(var i:Number=0;i<names.length;i++) {
+            var fixture:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(base),map:Object=fixture.maps[0];
+            map.id=names[i];map.background="cf6/CF6_"+map.id+"_BG.swf";
+            var token:String=map.id+"-transport-"+depths[i];
+            map.mechanism.transport={schema:"cf6-transport.v1",id:token,sourceSprite:1868,url:"flashswf/backgrounds/cf6/preparation/CF6_Transport1868.swf",
+                x:300,y:300,sortY:305.35,artMatrix:[1,0,0,1,0,0],hitBounds:[-295,-42,268,253],frames:29,dispatchFrame:29,subWaveIndex:1};
+            var waves:Array=map.stage.Wave.SubWave;
+            waves.push({EnemyGroup:{Enemy:[{Type:types[i],Level:levels[i],Quantity:counts[i],Interval:400,SpawnIndex:0,
+                TriggerEvent:{EventName:"Cf6TransportReady",Parameters:[token]}}]}});
+            var ordinary:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(waves[0]);
+            ordinary.WaveInformation={Duration:0,FinishRequirement:0};waves.push(ordinary);
+            check(BookDefinition.valid(fixture),"CF6 transport accepts a later ordinary wave "+names[i]);
+            while(waves.length<6)waves.push(org.flashNight.gesh.object.PersistedSnapshot.clone(ordinary));
+            check(BookDefinition.valid(fixture),"CF6 transport accepts six waves with unchanged second-wave budget "+names[i]);
+            var bad:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(fixture),bw:Array=bad.maps[0].stage.Wave.SubWave;
+            bw[5].EnemyGroup.Enemy[0].TriggerEvent=org.flashNight.gesh.object.PersistedSnapshot.clone(bw[1].EnemyGroup.Enemy[0].TriggerEvent);
+            check(!BookDefinition.valid(bad),"CF6 transport rejects a duplicate late transport event "+names[i]);
+            delete bw[1].EnemyGroup.Enemy[0].TriggerEvent;
+            check(!BookDefinition.valid(bad),"CF6 transport rejects even a unique event moved to a late wave "+names[i]);
+            if(i>0) {
+                bad=org.flashNight.gesh.object.PersistedSnapshot.clone(fixture);
+                bad.maps[0].stage.Wave.SubWave[1].EnemyGroup.Enemy[0].Quantity=counts[i]+1;
+                check(!BookDefinition.valid(bad),"CF6 extra waves cannot relax exact transport quantity "+names[i]);
+            }
+            if(i==0)complete=fixture;
+        }
+        var tooMany:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(complete);
+        tooMany.maps[0].stage.Wave.SubWave.push(org.flashNight.gesh.object.PersistedSnapshot.clone(tooMany.maps[0].stage.Wave.SubWave[2]));
+        check(!BookDefinition.valid(tooMany),"CF6 transport rejects seven waves");
+        var booleanSpawn:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(complete);
+        booleanSpawn.maps[0].stage.Wave.SubWave[1].EnemyGroup.Enemy[0].SpawnIndex=false;
+        check(!BookDefinition.valid(booleanSpawn),"CF6 transport cannot treat boolean false as numeric spawn index zero");
     }
     private static function findDrop(enemy:Object, name:String):Object {
         var rules:Array = enemy.Parameters.掉落物;

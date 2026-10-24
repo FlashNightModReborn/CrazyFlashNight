@@ -38,6 +38,31 @@ CS6 原生创建的 `CF6_A01_Turret/MobileSettings.xml` 可以为空，但仍按
 
 运输资产单独限定 `CF6_Transport1868`、29帧及第29帧派发，唯一纹理母版为 `CF6_TransportTextureSeed`，片段仅接受 `transport-art` 对应资源；原作SWF、输入、原生文档、纹理与缓存逐项绑定。它不扩大为A07驾驶资源。人体比例的七个原生站姿XML、比例政策及实际使用的Andy对白表情WebP同样进入来源闭包。
 
+场景 Wings 只有在章节实际引用 `preparation/CF6_ScenicWings.swf` 时才展开 `scenic-wings-manifest.json`。
+该清单必须匹配受治理原作 SWF 的摘要、1777源角色、15帧及唯一 XFL/SWF 地址；输入集合严格等于生成器、比例政策、
+A06/A08原几何、现役Wings单位根与发布入口，加站姿原生符号的有界递归依赖。输出SHA/bytes和DOM Include闭包共同核对，
+独立XFL目录不接受漏列或多余文件、跨preparation声明、新脚本/linkage/位图；仅在运行类中出现验证用URL字面量不算实际消费。
+因此未消费的Wings或旧vehicle准备包不会借这一规则扩张清单，原有门、交互物件、运输车等准入仍各自限定。
+
+A07 只由当前章节引用的三个精确URL触发车辆闭包：`flashswf/arts/new/CF6Vehicle.swf`、`CF6_A07_BG.swf` 与 `CF6_A07_sky.swf`。
+`cf6-vehicle-art.v1` 绑定原作显示节点与动作摘录、受治理R2/R5重绘、纹理清单、真实`texture-seed/texture-seed.xfl`及其DOM引用的每个LIBRARY/bin文件；
+纹理绝对路径只能对应本仓库中同名、按摘要命名的`source/textures`文件。提取器、转换器、字体、模板、章节生成器及六个固定运行类
+（Service/ActorAdapter/Combat/Timeline/Data/Rules）都入身份，不能依赖裸类名恰好被正则发现。
+横向滚屏 `HorizontalScroller.as` 与 Host `MapTaskCatalog.cs` 显式纳入来源身份。原作1805第2帧仅为ActionEnd(00)，其摘要为e3b0c442…b855的空反编译稿是唯一允许为空的车辆脚本；必须同时匹配该原路径，其他空脚本仍拒绝。
+`runtime-manifest.json` 另封闭绑定 prepare_runtime、原作节点、四个生产模板与 canonical Rules 模板，输出必须恰好为六个运行类且摘要、字节一致。
+三套原生XFL按实际消费选择，逐项核对输入/输出摘要、大小、Include与媒体闭包及精确文件集合，RSL公开符号集合与原生符号数另验。
+车辆表现根另精确包含原作 356 子弹、115 火花与391爆炸（public 名分别 CF6VehicleBullet/Spark/Explosion）。
+`audio-manifest.json` 绑定原作、音频提取器和既有资产目录，输出只允许6个 CF6Vehicle 文件，并精确绑定11个既有 CF6 音频；
+音效cue映射封闭，MP3摘要/长度和PCM的RIFF格式、实际样本数、样本摘要另验。原始PCM声明长度偏差按实际样本记录，不能补造静音或据此声称听感验收。
+旧错误位置 `flashswf/arts/CF6Vehicle.swf` 存在于磁盘不会自动入闭包，任何实际章节或导入引用该位置均拒绝；唯一车辆RSL位置为 `flashswf/arts/new/CF6Vehicle.swf`。
+这条准入不会接受任意preparation或旧vehicle准备包：旧包仅明确的bitmap1806/1808原输入经重绘清单接入，其余仍不展开。
+最终车资源清单尚未生成或实际SWF缺失时会拒绝；离线fixture通过不代替真实资源生成、CS6编译或驾驶验证。
+
+装备构建的 `CharacterBuildService`、目标HUD的 `FocusTargetHudService` / `PlayerHudService` 与直接Host目标条消费者
+明确列入生产源码身份；这是候选源/产物变更检测，不将源码领先状态当作现役DLL已经部署。
+
+章内难度配置 `difficulty.source.json` 与 `difficulty_plan.py` 同时进入章节装配输入和本闭包；物资候选源、实际章节、商店与奖励消费者共同绑定。刷怪配置变化会使旧旅程身份失效，静态预算不代替实际难度验收。
+
 闭包只证明本次输入身份和运行期间是否变化。源码准备、真实 CS6 编译、候选运行和完整玩法验收仍分别记录；离线夹具通过不能证明炮塔或漫画已在游戏中执行。
 
 只验证生产书架 opener、真实 WebView 和关闭路径：

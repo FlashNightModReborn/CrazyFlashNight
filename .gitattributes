@@ -14,6 +14,10 @@
 /flashswf/arts/new/Codex素材源稿/CF6教学炮塔/** -text whitespace=cr-at-eol
 /flashswf/arts/new/Codex素材源稿/CF6漫画过场/** -text whitespace=cr-at-eol
 /flashswf/backgrounds/cf6/** -text whitespace=cr-at-eol
+/flashswf/arts/new/CF6Vehicle/** -text whitespace=cr-at-eol
+/tools/cf6-vehicle/** -text whitespace=cr-at-eol
+# Preserve Adobe's fixed XMP packet padding in the original CS6 texture seed.
+/tools/cf6-vehicle/texture-seed/META-INF/metadata.xml -text whitespace=-blank-at-eol,cr-at-eol
 /tools/cf6-actor-template/** -text whitespace=cr-at-eol
 /tools/cf6-live-e2e/** -text whitespace=cr-at-eol
 /tools/cf6-prop-layout/** -text whitespace=cr-at-eol
@@ -48,6 +52,7 @@
 /scripts/类定义/org/flashNight/arki/scene/Cf6TraversalRules.as -text whitespace=cr-at-eol
 /scripts/类定义/org/flashNight/arki/scene/Cf6TraversalService.as -text whitespace=cr-at-eol
 /scripts/类定义/org/flashNight/arki/scene/Cf6VehicleRules.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/scene/Cf6Vehicle*.as -text whitespace=cr-at-eol
 /scripts/类定义/org/flashNight/arki/scene/Cf6MapMechanism.as -text whitespace=cr-at-eol
 /scripts/类定义/org/flashNight/arki/scene/Cf6MapMechanismTest.as -text whitespace=cr-at-eol
 /scripts/类定义/org/flashNight/arki/scene/Cf6FieldCombatData.as -text whitespace=cr-at-eol

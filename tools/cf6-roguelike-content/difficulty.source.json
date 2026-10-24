@@ -1,0 +1,1267 @@
+{
+  "schema": "cf6-difficulty-source.v1",
+  "decision": "original first appearance governs enemy availability; quantity carries chapter difficulty; elevators contain one preplaced encounter",
+  "referenceReport": {
+    "session": "a8b90093-d2bd-4c42-b1fa-fb6e16c80904",
+    "file": "cf6-difficulty-assessment.md",
+    "sha256": "7a13a7d4d90535df468d234ee6bb6d415ab2ed2d5b287705081863de72d052d0",
+    "status": "design input; piercing coefficient .25, kill times and experiential multipliers are unverified external model claims"
+  },
+  "preserveMaps": [
+    "TUTORIAL",
+    "A08",
+    "A16"
+  ],
+  "preserveVehicle": "A07 inserted unchanged by vehicle assembly",
+  "sourceCounts": {
+    "A01": [
+      20,
+      0
+    ],
+    "A02": [
+      9,
+      0
+    ],
+    "A03": [
+      10,
+      0
+    ],
+    "A04": [
+      24,
+      0
+    ],
+    "A05": [
+      7,
+      0
+    ],
+    "A06": [
+      1,
+      35
+    ],
+    "A09": [
+      9,
+      0
+    ],
+    "A10": [
+      2,
+      0
+    ],
+    "A11": [
+      1,
+      0
+    ],
+    "A12": [
+      15,
+      0
+    ],
+    "A13": [
+      1,
+      0
+    ],
+    "A14": [
+      9,
+      0
+    ],
+    "A15": [
+      5,
+      0
+    ],
+    "A17": [
+      1,
+      40
+    ],
+    "A18": [
+      12,
+      0
+    ],
+    "A19": [
+      19,
+      0
+    ],
+    "A20": [
+      1,
+      40
+    ],
+    "A22": [
+      1,
+      60
+    ]
+  },
+  "protectedBudgets": {
+    "turretEligibleA01": 20,
+    "pods": {
+      "A15": 5,
+      "A17": 5
+    },
+    "transport": {
+      "A09": 5,
+      "A14": 7,
+      "A18": 5
+    },
+    "elite": [
+      "E1",
+      "E2",
+      "E3",
+      "E4",
+      "E5"
+    ]
+  },
+  "maps": {
+    "A01": {
+      "screenLimit": 8,
+      "waves": [
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "zombie",
+              "count": 8,
+              "turretEligible": true,
+              "side": "right"
+            },
+            {
+              "unit": "zombie",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "zombie",
+              "count": 6,
+              "turretEligible": true,
+              "side": "right"
+            },
+            {
+              "unit": "zombie",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "zombie",
+              "count": 6,
+              "turretEligible": true,
+              "side": "right"
+            },
+            {
+              "unit": "zombie",
+              "count": 12
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "zombie",
+              "count": 18
+            }
+          ]
+        }
+      ]
+    },
+    "A02": {
+      "screenLimit": 10,
+      "waves": [
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "zombie",
+              "count": 10
+            },
+            {
+              "unit": "thug",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "zombie",
+              "count": 8
+            },
+            {
+              "unit": "thug",
+              "count": 6
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "zombie",
+              "count": 6
+            },
+            {
+              "unit": "thug",
+              "count": 10
+            }
+          ]
+        }
+      ]
+    },
+    "A03": {
+      "screenLimit": 10,
+      "waves": [
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "zombie",
+              "count": 12
+            },
+            {
+              "unit": "thug",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "zombie",
+              "count": 8
+            },
+            {
+              "unit": "thug",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "zombie",
+              "count": 4
+            },
+            {
+              "unit": "thug",
+              "count": 14
+            }
+          ]
+        }
+      ]
+    },
+    "A04": {
+      "screenLimit": 12,
+      "waves": [
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "zombie",
+              "count": 10
+            },
+            {
+              "unit": "thug",
+              "count": 3
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "zombie",
+              "count": 8
+            },
+            {
+              "unit": "thug",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "zombie",
+              "count": 8
+            },
+            {
+              "unit": "thug",
+              "count": 7
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "zombie",
+              "count": 6
+            },
+            {
+              "unit": "thug",
+              "count": 12
+            }
+          ]
+        }
+      ]
+    },
+    "A05": {
+      "screenLimit": 10,
+      "waves": [
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "thug",
+              "count": 8
+            },
+            {
+              "unit": "zombie",
+              "count": 6
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "thug",
+              "count": 12
+            },
+            {
+              "unit": "zombie",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "thug",
+              "count": 14
+            },
+            {
+              "unit": "zombie",
+              "count": 3
+            }
+          ]
+        }
+      ]
+    },
+    "A06": {
+      "screenLimit": 8,
+      "waves": [
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "specop",
+              "count": 12
+            },
+            {
+              "unit": "thug",
+              "count": 4
+            },
+            {
+              "unit": "zombie",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "specop",
+              "count": 12
+            },
+            {
+              "unit": "thug",
+              "count": 4
+            },
+            {
+              "unit": "zombie",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "kind": "boss"
+        }
+      ],
+      "supportPolicy": "retain-initial-group",
+      "optionalSupportBudget": 7
+    },
+    "A09": {
+      "screenLimit": 10,
+      "waves": [
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "elite",
+              "count": 1,
+              "quota": "E1"
+            },
+            {
+              "unit": "specop",
+              "count": 3
+            },
+            {
+              "unit": "specop_shield",
+              "count": 2
+            },
+            {
+              "unit": "thug",
+              "count": 4
+            },
+            {
+              "unit": "zombie",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "kind": "transport"
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "specop_shield",
+              "count": 4
+            },
+            {
+              "unit": "thug",
+              "count": 14
+            },
+            {
+              "unit": "zombie",
+              "count": 4
+            }
+          ]
+        }
+      ]
+    },
+    "A10": {
+      "screenLimit": 12,
+      "waves": [
+        {
+          "kind": "elevator",
+          "groups": [
+            {
+              "unit": "zombie",
+              "count": 9
+            },
+            {
+              "unit": "thug_tf",
+              "count": 2
+            },
+            {
+              "unit": "thug",
+              "count": 1
+            }
+          ],
+          "positions": [
+            [
+              280,
+              280
+            ],
+            [
+              320,
+              280
+            ],
+            [
+              360,
+              280
+            ],
+            [
+              400,
+              280
+            ],
+            [
+              440,
+              280
+            ],
+            [
+              480,
+              280
+            ],
+            [
+              280,
+              298
+            ],
+            [
+              320,
+              298
+            ],
+            [
+              360,
+              298
+            ],
+            [
+              400,
+              298
+            ],
+            [
+              440,
+              298
+            ],
+            [
+              480,
+              298
+            ]
+          ]
+        }
+      ]
+    },
+    "A11": {
+      "screenLimit": 10,
+      "waves": [
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "thug_tf",
+              "count": 2
+            },
+            {
+              "unit": "specop",
+              "count": 2
+            },
+            {
+              "unit": "zombie",
+              "count": 6
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "specop",
+              "count": 2
+            },
+            {
+              "unit": "specop_shield",
+              "count": 1
+            },
+            {
+              "unit": "zombie",
+              "count": 7
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "thug_tf",
+              "count": 6
+            },
+            {
+              "unit": "specop",
+              "count": 2
+            },
+            {
+              "unit": "specop_shield",
+              "count": 1
+            },
+            {
+              "unit": "zombie",
+              "count": 4
+            }
+          ]
+        }
+      ]
+    },
+    "A12": {
+      "screenLimit": 12,
+      "waves": [
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "thug_tf",
+              "count": 2
+            },
+            {
+              "unit": "specop",
+              "count": 4
+            },
+            {
+              "unit": "zombie",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "specop_shield",
+              "count": 2
+            },
+            {
+              "unit": "thug",
+              "count": 2
+            },
+            {
+              "unit": "zombie",
+              "count": 6
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "thug_tf",
+              "count": 5
+            },
+            {
+              "unit": "specop_shield",
+              "count": 3
+            },
+            {
+              "unit": "specop",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "thug_tf",
+              "count": 6
+            },
+            {
+              "unit": "specop_shield",
+              "count": 5
+            },
+            {
+              "unit": "specop",
+              "count": 2
+            },
+            {
+              "unit": "zombie",
+              "count": 4
+            }
+          ]
+        }
+      ]
+    },
+    "A13": {
+      "screenLimit": 12,
+      "waves": [
+        {
+          "kind": "elevator",
+          "groups": [
+            {
+              "unit": "elite",
+              "quota": "E2",
+              "count": 1
+            },
+            {
+              "unit": "specop_shield",
+              "count": 3
+            },
+            {
+              "unit": "specop",
+              "count": 4
+            },
+            {
+              "unit": "zombie",
+              "count": 4
+            }
+          ],
+          "positions": [
+            [
+              280,
+              280
+            ],
+            [
+              320,
+              280
+            ],
+            [
+              360,
+              280
+            ],
+            [
+              400,
+              280
+            ],
+            [
+              440,
+              280
+            ],
+            [
+              480,
+              280
+            ],
+            [
+              280,
+              298
+            ],
+            [
+              320,
+              298
+            ],
+            [
+              360,
+              298
+            ],
+            [
+              400,
+              298
+            ],
+            [
+              440,
+              298
+            ],
+            [
+              480,
+              298
+            ]
+          ]
+        }
+      ]
+    },
+    "A14": {
+      "screenLimit": 12,
+      "waves": [
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "elite",
+              "count": 1,
+              "quota": "E3"
+            },
+            {
+              "unit": "specop",
+              "count": 7
+            },
+            {
+              "unit": "specop_shield",
+              "count": 2
+            },
+            {
+              "unit": "zombie",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "kind": "transport"
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "thug_tf",
+              "count": 3
+            },
+            {
+              "unit": "specop_shield",
+              "count": 5
+            },
+            {
+              "unit": "specop",
+              "count": 6
+            },
+            {
+              "unit": "zombie",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "thug_tf",
+              "count": 3
+            },
+            {
+              "unit": "specop_shield",
+              "count": 4
+            },
+            {
+              "unit": "specop",
+              "count": 6
+            },
+            {
+              "unit": "zombie",
+              "count": 4
+            }
+          ]
+        }
+      ]
+    },
+    "A15": {
+      "screenLimit": 10,
+      "waves": [
+        {
+          "kind": "pods"
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "thug_tf",
+              "count": 6
+            },
+            {
+              "unit": "specop_shield",
+              "count": 4
+            },
+            {
+              "unit": "zombie",
+              "count": 6
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "thug_tf",
+              "count": 7
+            },
+            {
+              "unit": "specop_shield",
+              "count": 4
+            },
+            {
+              "unit": "zombie",
+              "count": 6
+            }
+          ]
+        }
+      ]
+    },
+    "A17": {
+      "screenLimit": 10,
+      "waves": [
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "thug_tf",
+              "count": 6
+            },
+            {
+              "unit": "robot_sword",
+              "count": 2
+            },
+            {
+              "unit": "elite",
+              "count": 1,
+              "quota": "E4"
+            },
+            {
+              "unit": "specop_shield",
+              "count": 1
+            },
+            {
+              "unit": "specop",
+              "count": 4
+            },
+            {
+              "unit": "zombie",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "thug_tf",
+              "count": 7
+            },
+            {
+              "unit": "robot_sword",
+              "count": 2
+            },
+            {
+              "unit": "specop",
+              "count": 10
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "thug_tf",
+              "count": 11
+            },
+            {
+              "unit": "robot_sword",
+              "count": 2
+            },
+            {
+              "unit": "specop_shield",
+              "count": 2
+            },
+            {
+              "unit": "specop",
+              "count": 8
+            }
+          ]
+        },
+        {
+          "kind": "boss"
+        }
+      ],
+      "supportPolicy": "pods-and-small-escort",
+      "optionalSupportBudget": 8
+    },
+    "A18": {
+      "screenLimit": 12,
+      "waves": [
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "wings",
+              "count": 4
+            },
+            {
+              "unit": "specop_shield",
+              "count": 2
+            },
+            {
+              "unit": "specop",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "kind": "transport"
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "robot_sword",
+              "count": 3
+            },
+            {
+              "unit": "thug_tf",
+              "count": 3
+            },
+            {
+              "unit": "specop_shield",
+              "count": 2
+            },
+            {
+              "unit": "specop",
+              "count": 2
+            },
+            {
+              "unit": "zombie",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "robot_sword",
+              "count": 3
+            },
+            {
+              "unit": "wings",
+              "count": 4
+            },
+            {
+              "unit": "specop_shield",
+              "count": 2
+            },
+            {
+              "unit": "thug_tf",
+              "count": 3
+            },
+            {
+              "unit": "zombie",
+              "count": 3
+            }
+          ]
+        }
+      ]
+    },
+    "A19": {
+      "screenLimit": 14,
+      "waves": [
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "elite",
+              "count": 1,
+              "quota": "E5"
+            },
+            {
+              "unit": "specop_shield",
+              "count": 1
+            },
+            {
+              "unit": "specop",
+              "count": 2
+            },
+            {
+              "unit": "wings",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "specop_shield",
+              "count": 2
+            },
+            {
+              "unit": "specop",
+              "count": 2
+            },
+            {
+              "unit": "zombie",
+              "count": 4
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "manman",
+              "count": 2
+            },
+            {
+              "unit": "robot_sword",
+              "count": 2
+            },
+            {
+              "unit": "thug_tf",
+              "count": 2
+            },
+            {
+              "unit": "wings",
+              "count": 2
+            },
+            {
+              "unit": "specop",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "manman",
+              "count": 2
+            },
+            {
+              "unit": "robot_sword",
+              "count": 2
+            },
+            {
+              "unit": "thug_tf",
+              "count": 4
+            },
+            {
+              "unit": "wings",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "robot_sword",
+              "count": 6
+            },
+            {
+              "unit": "specop_shield",
+              "count": 2
+            },
+            {
+              "unit": "wings",
+              "count": 2
+            },
+            {
+              "unit": "specop",
+              "count": 4
+            },
+            {
+              "unit": "zombie",
+              "count": 4
+            }
+          ]
+        }
+      ]
+    },
+    "A20": {
+      "screenLimit": 12,
+      "waves": [
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "specop_shield",
+              "count": 3
+            },
+            {
+              "unit": "specop",
+              "count": 3
+            },
+            {
+              "unit": "thug_tf",
+              "count": 4
+            },
+            {
+              "unit": "wings",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "manman",
+              "count": 2
+            },
+            {
+              "unit": "robot_sword",
+              "count": 2
+            },
+            {
+              "unit": "specop_shield",
+              "count": 2
+            },
+            {
+              "unit": "wings",
+              "count": 4
+            },
+            {
+              "unit": "thug_tf",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "robot_sword",
+              "count": 8
+            },
+            {
+              "unit": "manman",
+              "count": 2
+            },
+            {
+              "unit": "alien",
+              "count": 4
+            },
+            {
+              "unit": "specop_shield",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "robot_sword",
+              "count": 8
+            },
+            {
+              "unit": "manman",
+              "count": 3
+            },
+            {
+              "unit": "alien",
+              "count": 3
+            },
+            {
+              "unit": "wings",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "kind": "combat",
+          "groups": [
+            {
+              "unit": "robot_sword",
+              "count": 9
+            },
+            {
+              "unit": "manman",
+              "count": 3
+            },
+            {
+              "unit": "alien",
+              "count": 3
+            },
+            {
+              "unit": "specop_shield",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "kind": "boss"
+        }
+      ],
+      "supportPolicy": "retain-initial-group",
+      "optionalSupportBudget": 6
+    },
+    "A22": {
+      "screenLimit": 5,
+      "waves": [
+        {
+          "kind": "boss"
+        }
+      ],
+      "supportPolicy": "retain-initial-group",
+      "optionalSupportBudget": 4
+    }
+  },
+  "unitTypes": {
+    "zombie": "兵种461",
+    "zombie_turret": "兵种461",
+    "zombie_f": "兵种462",
+    "alien": "兵种460",
+    "manman": "兵种463",
+    "specop": "兵种466",
+    "specop_shield": "兵种467",
+    "thug": "兵种468",
+    "thug_tf": "兵种469",
+    "wings": "兵种464",
+    "robot_sword": "兵种465",
+    "robot_big": "兵种472",
+    "oldman_human": "兵种473",
+    "oldman_robot": "兵种474"
+  }
+}

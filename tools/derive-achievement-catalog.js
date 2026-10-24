@@ -30,6 +30,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { legacyAgentSourceMissing } = require('./lib/optional-agent-source.js');
 const { loadItemMeta, attachIcon } = require('./lib/item-icons.js');
 
 const projectRoot = path.resolve(__dirname, '..');
@@ -145,6 +146,7 @@ function loadTaskIndex() {
     const ids = {};
     const chainMaxSeq = {};
     for (let i = 0; i < files.length; i += 1) {
+        if (legacyAgentSourceMissing(taskDir, files[i], 'agent_tasks.json', fail)) continue;
         const data = readJson(path.join(taskDir, files[i]));
         if (!data || !Array.isArray(data.tasks)) fail(files[i] + ': missing top-level "tasks" array');
         for (let t = 0; t < data.tasks.length; t += 1) {

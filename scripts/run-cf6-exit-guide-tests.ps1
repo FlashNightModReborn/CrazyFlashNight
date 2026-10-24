@@ -7,6 +7,6 @@ $ErrorActionPreference='Stop'
     -SuiteRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6ExitGuideTest.as') `
     -SuiteFqns @('org.flashNight.arki.scene.Cf6ExitGuideTest') `
     -AdditionalAsRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6ExitGuideService.as') `
-    -ExpectedTracePatterns @('(?m)^Cf6ExitGuideTest Tests Passed: 15\r?$', '(?m)^Cf6ExitGuideTest Tests Failed: 0\r?$') `
-    -SuccessSummary '15 exit-guide geometry/visibility/identity assertions; no clear or navigation authority changes' `
+    -ExpectedTracePatterns @('(?m)^Cf6ExitGuideTest Tests Passed: 27\r?$', '(?m)^Cf6ExitGuideTest Tests Failed: 0\r?$') `
+    -SuccessSummary '27 exit-guide geometry/visibility/identity and single clear-cue assertions; no clear or navigation authority changes' `
     -TimeoutSeconds $TimeoutSeconds
