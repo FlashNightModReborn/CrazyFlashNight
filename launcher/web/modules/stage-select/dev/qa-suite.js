@@ -1344,7 +1344,7 @@ var StageSelectHarnessQA = (function() {
                     lockedNode.focus();
                     lockedNode.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
                     api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'locked inspector open');
-                    var closeEl = document.querySelector('.stage-focus-surface .stage-focus-action');
+                    var closeEl = document.querySelector('.stage-focus-surface .workbench-header-actions > button.stage-focus-action');
                     api.assert(document.activeElement === closeEl, 'focus on close button for locked');
                     ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].forEach(function(k) {
                         document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }));
@@ -1449,7 +1449,7 @@ var StageSelectHarnessQA = (function() {
                     api.assert(lockEl.textContent.indexOf('主线任务进度达到 75 解锁（当前 42）') >= 0, 'inspector shows snapshot-provided lockReason');
                     var difficulties = document.querySelectorAll('#stage-select-inspector-difficulties .stage-select-difficulty');
                     api.assertEqual(difficulties.length, 0, 'locked inspector renders no difficulty buttons');
-                    api.assert(document.activeElement === document.querySelector('.stage-focus-surface .stage-focus-action'), 'focus lands on inspector close for locked');
+                    api.assert(document.activeElement === document.querySelector('.stage-focus-surface .workbench-header-actions > button.stage-focus-action'), 'focus lands on inspector close for locked');
                     api.assertEqual(host.sentMessages.filter(function(msg) { return msg && msg.cmd === 'enter'; }).length, 0, 'no enter sent for locked');
                     document.activeElement.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
                     api.assert(!StageSelectPanel._debugGetState().inspectorOpen, 'Esc closes locked inspector');
@@ -1880,9 +1880,12 @@ var StageSelectHarnessQA = (function() {
                 return waitRuntime(api).then(function() {
                     var panel = document.querySelector('.stage-select-panel');
                     var modPod = document.querySelector('.stage-select-mod-pod');
+                    var modToggle = document.getElementById('stage-select-mod-toggle');
                     var unlockBtn = document.getElementById('stage-select-mod-unlock');
                     var testSpaceBtn = document.getElementById('stage-select-mod-test-space');
-                    api.assert(!!modPod && !modPod.hidden, 'modifier pod visible in normal mode');
+                    api.assert(!!modPod && modPod.hidden && !!modToggle && !modToggle.hidden, 'modifier pod is collapsed by default');
+                    modToggle.click();
+                    api.assert(!modPod.hidden && modToggle.getAttribute('aria-expanded') === 'true', 'modifier toggle expands the auxiliary pod');
                     api.assertEqual(panel.getAttribute('data-accent'), 'ash', '基地车库 (堕落城) uses ash tone');
                     var previewWrap = document.querySelector('.stage-select-preview-wrap');
                     api.assertEqual(previewWrap && previewWrap.getAttribute('data-preview-tier'), 'hd', 'accepted garage preview uses HD tier');
@@ -1900,6 +1903,8 @@ var StageSelectHarnessQA = (function() {
                     StageSelectPanel._debugSetFrame('基地房顶', 'qa-accent-warlord');
                     api.assertEqual(panel.getAttribute('data-accent'), 'sand', '基地房顶 (荒漠) uses sand tone');
                     StageSelectPanel._debugSetFrame('基地车库', 'qa-accent-back');
+                    api.assert(modPod.hidden, 'region navigation collapses the auxiliary pod');
+                    modToggle.click();
 
                     var lockedBefore = document.querySelectorAll('.stage-select-stage-button.is-locked').length;
                     api.assert(lockedBefore > 0, 'mixed fixture has locked stages before force unlock');
@@ -1911,6 +1916,12 @@ var StageSelectHarnessQA = (function() {
                 }).then(function() {
                     var forceNodes = document.querySelectorAll('.stage-select-stage-button.is-force-unlocked');
                     api.assert(forceNodes.length > 0, 'force-unlocked stages carry .is-force-unlocked');
+                    var panel = document.querySelector('.stage-select-panel');
+                    var modPod = document.querySelector('.stage-select-mod-pod');
+                    var modToggle = document.getElementById('stage-select-mod-toggle');
+                    panel.dispatchEvent(new KeyboardEvent('keydown', { key:'Escape', bubbles:true, cancelable:true }));
+                    api.assert(modPod.hidden && document.activeElement === modToggle, 'Escape collapses the pod and restores toggle focus');
+                    modToggle.click();
                     host.returnMessages.length = 0;
                     var testSpaceBtn = document.getElementById('stage-select-mod-test-space');
                     testSpaceBtn.click();
@@ -1924,7 +1935,8 @@ var StageSelectHarnessQA = (function() {
                     return waitRuntime(api);
                 }).then(function() {
                     var modPod = document.querySelector('.stage-select-mod-pod');
-                    api.assert(!!modPod && modPod.hidden, 'modifier pod auto-hidden in challenge mode');
+                    var modToggle = document.getElementById('stage-select-mod-toggle');
+                    api.assert(!!modPod && modPod.hidden && !!modToggle && modToggle.hidden, 'modifier pod and toggle auto-hide in challenge mode');
                     return 'modifier pod and tactical ux ok';
                 });
             }],

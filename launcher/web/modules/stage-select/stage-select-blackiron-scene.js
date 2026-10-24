@@ -5,7 +5,7 @@ import {EffectComposer} from '../../assets/stage-diorama/blackiron-hq/vendor/pos
 import {RenderPass} from '../../assets/stage-diorama/blackiron-hq/vendor/postprocessing/RenderPass.js';
 import {UnrealBloomPass} from '../../assets/stage-diorama/blackiron-hq/vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from '../../assets/stage-diorama/blackiron-hq/vendor/postprocessing/OutputPass.js';
-import {createCameraView} from './stage-select-diorama-camera.js';
+import {createCameraView,StageSelectPresentation} from './stage-select-diorama-camera.js';
 import {createBlackironEnvironment} from './stage-select-blackiron-environment.js';
 
 export async function createScene(config,onLost,onChange,onSelect,signal) {
@@ -64,8 +64,8 @@ export async function createScene(config,onLost,onChange,onSelect,signal) {
         }
         selection.traverse(o=>{
             if(!o.isMesh)return;const id=o.userData.entryId;if(!config.pins[id])throw Error('Unknown selection identity');
-            oldMaterials.add(o.material);o.material=new THREE.MeshBasicMaterial({color:'#f2bd67',transparent:true,opacity:.11,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
-            const line=new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry,32),new THREE.LineBasicMaterial({color:'#f3ce8f',transparent:true,opacity:.92,depthWrite:false}));
+            oldMaterials.add(o.material);o.material=new THREE.MeshBasicMaterial({color:StageSelectPresentation.selectionColor,transparent:true,opacity:.11,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1});
+            const line=new THREE.LineSegments(new THREE.EdgesGeometry(o.geometry,32),new THREE.LineBasicMaterial({color:StageSelectPresentation.selectionColor,transparent:true,opacity:.92,depthWrite:false}));
             line.renderOrder=9;o.renderOrder=8;o.add(line);o.visible=false;masks.set(id,o);
         });
         if(masks.size!==11)throw Error('Incomplete HQ selections');

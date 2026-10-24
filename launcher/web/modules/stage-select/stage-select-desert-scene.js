@@ -1,6 +1,6 @@
 import * as THREE from '../../assets/stage-diorama/base-gate/vendor/three.module.js';
 import { GLTFLoader } from '../../assets/stage-diorama/base-gate/vendor/GLTFLoader.js';
-import { createCameraView } from './stage-select-diorama-camera.js';
+import { createCameraView, StageSelectPresentation } from './stage-select-diorama-camera.js';
 import { usePortableIndices } from './stage-select-geometry-chunks.js';
 import { normalizeDesertConfig, validateEmbeddedGlb, layoutDesertPins, WORLD_STAGE_IDS } from './stage-select-desert-config.js';
 import { createDesertSurround } from './stage-select-desert-surround.js';
@@ -200,7 +200,7 @@ export async function createScene(shellConfig, onLost, onChange, onSelect, signa
         camera = new THREE.OrthographicCamera(-100, 100, 56.25, -56.25, 0.01, 5000);
         camera.position.fromArray(config.camera.gltfPosition); camera.lookAt(new THREE.Vector3(...config.camera.gltfTarget));
         const ring = new THREE.Mesh(new THREE.RingGeometry(0.97, 1, 48), new THREE.MeshBasicMaterial({
-            color: '#e1be72', transparent: true, opacity: 0.4, side: THREE.DoubleSide,
+            color: StageSelectPresentation.selectionColor, transparent: true, opacity: 0.4, side: THREE.DoubleSide,
             depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2
         }));
         ring.rotation.x = -Math.PI / 2; ring.visible = false; scene.add(ring);

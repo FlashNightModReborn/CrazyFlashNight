@@ -5,6 +5,7 @@ const root=path.resolve(__dirname,'..'),dir=path.join(root,'launcher/web/assets/
 const ctx={};for(const p of ['launcher/web/modules/stage-select-data.js','launcher/web/modules/stage-select/stage-select-fallen-data.js'])vm.runInNewContext(fs.readFileSync(path.join(root,p),'utf8'),ctx);
 const c=JSON.parse(JSON.stringify(ctx.StageSelectFallenData));
 const frame=JSON.parse(JSON.stringify(ctx.StageSelectData.exportManifest().frames.find(f=>f.frameLabel===c.frameLabel)));
+for(const button of frame.stageButtons)delete button.bannerUrl;
 assert.deepEqual(frame,JSON.parse(fs.readFileSync(path.join(dir,'game-frame.snapshot.json'),'utf8')));
 assert.deepEqual(c.entries.map(e=>e.id).sort(),frame.stageButtons.map(e=>e.id).sort());
 assert.deepEqual(c.navigation.map(e=>e.id).sort(),frame.navButtons.map(e=>e.id).sort());

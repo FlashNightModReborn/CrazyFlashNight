@@ -24,10 +24,12 @@ async function main(){
   }
   report.checks.push('AS01 event/residential partitions; campaign multi-area selection; deep-city and trial focus; one canvas');
   await page.getByRole('button',{name:'前往堕落城酒吧',exact:true}).hover();assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().cutaway),true);await page.mouse.move(1000,560);assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().cutaway),false);
-  await page.getByRole('button',{name:'前往堕落城酒吧',exact:true}).click();await page.waitForFunction(()=>Panels.getActive()===null);
+  await page.getByRole('button',{name:'前往堕落城酒吧',exact:true}).hover();
+  await page.locator('.stage-select-card-anchor.is-card-open .stage-select-map-action').waitFor({state:'visible'});
+  await page.locator('.stage-select-card-anchor.is-card-open .stage-select-map-action').click();await page.waitForFunction(()=>Panels.getActive()===null);
   const entry=await page.evaluate(()=>StageSelectHarnessHost.enterMessages.at(-1));assert.equal(entry.stageName,'外交-堕落城酒吧');assert.equal(entry.entryKind,'map');assert.ok(!entry.difficulty);report.checks.push('bar cutaway restores; diplomacy uses original entry command');
-  await open();await page.getByRole('button',{name:'进入黑铁会总部',exact:true}).click();await ready();assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().frameLabel),'黑铁会总部');
-  await open();await page.getByRole('button',{name:'进入试炼场深处',exact:true}).click();assert.equal(await page.locator('.stage-select-diorama-canvas').count(),0);report.checks.push('headquarters and 2D trial routing preserve actions and retire fallen canvas');
+  await open();await page.locator('[data-nav-id="nav_10_3"]').click();await ready();assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().frameLabel),'黑铁会总部');
+  await open();await page.locator('[data-nav-id="nav_10_4"]').click();assert.equal(await page.locator('.stage-select-diorama-canvas').count(),0);report.checks.push('headquarters and 2D trial routing preserve actions and retire fallen canvas');
   report.cycles=[];for(let i=0;i<5;i++){await open();const s=await page.evaluate(()=>StageSelectDiorama.stats());report.cycles.push({geometries:s.geometries,textures:s.textures,calls:s.calls});await page.evaluate(()=>StageSelectHarnessHost.close());assert.equal(await page.locator('.stage-select-diorama-canvas').count(),0);}assert.equal(new Set(report.cycles.map(s=>JSON.stringify(s))).size,1);
   await open();await page.evaluate(()=>document.querySelector('.stage-select-diorama-canvas').getContext('webgl2').getExtension('WEBGL_lose_context').loseContext());await page.waitForFunction(()=>StageSelectDiorama.stats().state==='fallback');assert.equal(await page.locator('.stage-select-diorama-canvas').count(),0);assert.equal(await page.locator('.stage-select-stage-button').count(),19);await page.getByRole('button',{name:'重试',exact:true}).click();await ready();
   report.checks.push('five close/open cycles have stable resource counts; actual context loss falls back and retry restores');assert.deepEqual(errors,[]);report.pass=true;

@@ -6,7 +6,7 @@ import {RenderPass} from '../../assets/stage-diorama/blackiron-hq/vendor/postpro
 import {UnrealBloomPass} from '../../assets/stage-diorama/blackiron-hq/vendor/postprocessing/UnrealBloomPass.js';
 import {OutputPass} from '../../assets/stage-diorama/blackiron-hq/vendor/postprocessing/OutputPass.js';
 import {usePortableIndices} from './stage-select-geometry-chunks.js';
-import {createCameraView} from './stage-select-diorama-camera.js';
+import {createCameraView,StageSelectPresentation} from './stage-select-diorama-camera.js';
 
 export async function createScene(config,onLost,onChange,onSelect,signal) {
     config=Object.assign({},config,{focusCameras:{}});
@@ -59,7 +59,7 @@ export async function createScene(config,onLost,onChange,onSelect,signal) {
         masks.forEach(list=>list.forEach(m=>{
             m.visible=selected.has(m)&&!(cutaway&&m.userData.cutaway==='bar');
             const entry=entries.get(id),role=Object.keys(entry?.relations||{}).find(role=>entry.relations[role].includes(m.userData.buildingId))||'main';
-            const styles={main:[0xf0c476,.23],transit:[0x83c7cf,.10],service:[0xa8bd85,.10],anchor:[0xd79bae,.13],adjacent:[0x9a9bb6,.04]},style=styles[role]||styles.main;
+            const styles={main:[StageSelectPresentation.selectionColor,.23],transit:[0x83c7cf,.10],service:[0xa8bd85,.10],anchor:[0xd79bae,.13],adjacent:[0x9a9bb6,.04]},style=styles[role]||styles.main;
             m.material.color.setHex(style[0]);m.material.opacity=style[1];
         }));
     }
@@ -69,7 +69,7 @@ export async function createScene(config,onLost,onChange,onSelect,signal) {
         base.traverse(o=>{if(!o.isMesh)return;if(o.userData.effect==='stageBeam'){o.renderOrder=2;[].concat(o.material).forEach(m=>{m.depthWrite=false;m.forceSinglePass=true;m.blending=THREE.AdditiveBlending;});}});
         selection.traverse(o=>{
             if(!o.isMesh)return;const id=o.userData.buildingId;if(!id)throw Error('Selection without unit');
-            [].concat(o.material).forEach(m=>materials.add(m));o.material=new THREE.MeshBasicMaterial({color:'#f0c476',transparent:true,opacity:.15,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2,side:THREE.DoubleSide});
+            [].concat(o.material).forEach(m=>materials.add(m));o.material=new THREE.MeshBasicMaterial({color:StageSelectPresentation.selectionColor,transparent:true,opacity:.15,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-2,polygonOffsetUnits:-2,side:THREE.DoubleSide});
             o.visible=false;o.renderOrder=5;if(!masks.has(id))masks.set(id,[]);masks.get(id).push(o);
         });
         if(masks.size!==70)throw Error('Incomplete fallen city units');scene.updateMatrixWorld(true);

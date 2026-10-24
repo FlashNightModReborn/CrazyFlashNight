@@ -29,7 +29,7 @@ async function main() {
     const messages = () => page.evaluate(() => [StageSelectHarnessHost.enterMessages.length, StageSelectHarnessHost.jumpMessages.length, StageSelectHarnessHost.returnMessages.length]);
     const pose = () => page.evaluate(() => StageSelectDiorama.snapshotCamera());
     const observation = () => page.evaluate(() => StageSelectDiorama.stats().subareaObservation);
-    const near = (a, b) => { for (const key of ['position', 'target']) a[key].forEach((n, i) => assert.ok(Math.abs(n - b[key][i]) < 1e-7)); assert.ok(Math.abs(a.span - b.span) < 1e-7); };
+    const near = (a, b) => { for (const key of ['position', 'target']) a[key].forEach((n, i) => assert.ok(Math.abs(n - b[key][i]) < 1e-7, JSON.stringify({ actual: a, expected: b }))); assert.ok(Math.abs(a.span - b.span) < 1e-7, JSON.stringify({ actual: a, expected: b })); };
     const unobscured = (frame, rectangles) => {
         assert.ok(frame.projectedPixels && frame.viewport);
         const sx = (rectangles.viewport.right - rectangles.viewport.x) / frame.viewport.width;
@@ -75,9 +75,10 @@ async function main() {
             assert.ok(rectangles.bar.x >= rectangles.viewport.x && rectangles.bar.right <= rectangles.viewport.right);
             assert.ok(rectangles.bar.y >= rectangles.viewport.y && rectangles.bar.bottom <= rectangles.viewport.bottom);
             const stageFrame = await page.evaluate(stageId => StageSelectDiorama.stats().focusFraming[stageId], id);
+            const wholeObservation = await page.evaluate(stageId => StageSelectDiorama.getTourCamera(stageId), id);
             await page.locator('#stage-select-inspector-difficulties [data-difficulty="冒险"]').click();
             await page.screenshot({ path: path.join(out, id + '-whole.png') });
-            const stage = { id, rectangles, whole, wholeSelfGeometryProjection: unobscured(stageFrame, rectangles), subareas: [] };
+            const stage = { id, rectangles, whole, wholeObservation, wholeSelfGeometryProjection: unobscured(stageFrame, rectangles), subareas: [] };
             for (let i = 0; i < count; i++) {
                 const area = config.pins[id].subareas[i], button = bar.locator('[data-subarea="' + area.id + '"]');
                 if (i === 1) { await button.focus(); await page.keyboard.press('Enter'); } else await button.click();
@@ -97,7 +98,11 @@ async function main() {
             assert.equal(new Set(stage.subareas.map(area => JSON.stringify([area.camera.target.map(n => Number(n.toFixed(6))), Number(area.camera.span.toFixed(6))]))).size, count, 'Each partition must have a distinct camera');
             const selected = await observation(), selectedCamera = await pose();
             const stageName = await page.locator('.stage-select-inspector-name').innerText();
-            await page.evaluate(name => StageSelectPanel._debugApplySnapshot({ stageDetails: { [name]: { task: true, highestDifficulty: '冒险' } } }), stageName);
+            await page.evaluate(name => {
+                const current = StageSelectCore.state._runtimeSnapshot || {};
+                const stageDetails = Object.assign({}, current.stageDetails, { [name]: { task: true, highestDifficulty: '冒险' } });
+                StageSelectPanel._debugApplySnapshot(Object.assign({}, current, { stageDetails }));
+            }, stageName);
             await ready(); assert.deepEqual(await observation(), selected); near(await pose(), selectedCamera);
             await page.getByRole('button', { name: '游览地点', exact: true }).click();
             await page.waitForFunction(() => StageSelectDiorama.stats().editing); assert.equal(await bar.isVisible(), false);
@@ -125,8 +130,12 @@ async function main() {
                 stage.resizes.push({ size, selfGeometryProjection: unobscured(adjustedFrame, adjustedRects) });
             }
             await page.locator('.stage-focus-viewport').evaluate(host => { host.style.removeProperty('width'); host.style.removeProperty('height'); });
+            await page.waitForFunction(size => {
+                const layout = StageSelectDiorama.stats().subareaObservation.layout;
+                return layout && layout.width === size.width && layout.height === size.height;
+            }, originalSize);
             await ready(); near(await pose(), selectedCamera); assert.deepEqual(await observation(), selected);
-            await bar.locator('[data-subarea="whole"]').click(); await ready(); near(await pose(), whole);
+            await bar.locator('[data-subarea="whole"]').click(); await ready(); near(await pose(), wholeObservation);
             assert.deepEqual(await messages(), before);
             await page.getByRole('button', { name: '返回总览', exact: true }).click(); await ready(); assert.equal(await bar.count(), 0);
             report.stages.push(stage);

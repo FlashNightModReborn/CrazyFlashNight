@@ -1,17 +1,37 @@
 import * as THREE from '../../assets/stage-diorama/base-gate/vendor/three.module.js';
 
-// 相机与高亮只在输入/过渡时出帧；总览、特写、开发取景共用同一个相机和 Canvas。
+export const StageSelectPresentation = Object.freeze({
+    selectionColor: 0xc8ff4c,
+    selectionMix: 0.28,
+    focusContextBlend: 0.5
+});
+
+// 相机与高亮只在输入/过渡时出帧；总览、上下文聚焦、主动近景与开发取景共用同一 Canvas。
 export function createCameraView(config, root, camera, renderer, render, onChange, hooks = {}) {
     const minSpan=Number.isFinite(config.camera.minSpan) && config.camera.minSpan>0 ? config.camera.minSpan : 5;
     let width=1024, height=576, span=config.camera.horizontalSpan;
     let target=new THREE.Vector3(...config.camera.gltfTarget), motion=0, controls=null, disposed=false;
-    let highlighted='', materials=[], focusId='', editGeneration=0, controlsPromise=null;
+    let highlighted='', materials=[], focusId='', editGeneration=0, controlsPromise=null, editWanted=false, moveGeneration=0;
     const heldKeys=new Set(), walkKeys={KeyW:[0,1],ArrowUp:[0,1],KeyS:[0,-1],ArrowDown:[0,-1],KeyA:[-1,0],ArrowLeft:[-1,0],KeyD:[1,0],ArrowRight:[1,0]};
     let walkFrame=0, walkTime=0, fastWalk=false;
     let home={position:config.camera.gltfPosition, target:config.camera.gltfTarget, span};
+    const selectionColor=new THREE.Color(StageSelectPresentation.selectionColor);
+    const selectionVector=`vec3(${selectionColor.r},${selectionColor.g},${selectionColor.b})`;
     function stopWalk() { heldKeys.clear(); fastWalk=false; if(walkFrame)cancelAnimationFrame(walkFrame);walkFrame=0; }
-    function stop() { if (motion) cancelAnimationFrame(motion); motion=0; stopWalk(); }
+    function stop() { moveGeneration++;if (motion) cancelAnimationFrame(motion); motion=0; stopWalk(); }
     function isTextInput(el) { return el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName)); }
+    function isTourControl(el) {
+        return el && el.closest && !!el.closest('.stage-camera-editor');
+    }
+    function constrainPan() {
+        if(!controls)return;
+        const maxRadius=(config.camera.maxSpan || 240)*1.15;
+        const dx=controls.target.x-home.target[0],dz=controls.target.z-home.target[2],length=Math.hypot(dx,dz);
+        if(length<=maxRadius)return;
+        const scale=maxRadius/length,x=home.target[0]+dx*scale,z=home.target[2]+dz*scale;
+        camera.position.x+=x-controls.target.x;camera.position.z+=z-controls.target.z;
+        controls.target.x=x;controls.target.z=z;
+    }
     function walk(now) {
         walkFrame=0;
         if(disposed || !controls || !controls.enabled || !heldKeys.size || document.hidden || renderer.getContext().isContextLost()) {stopWalk();return;}
@@ -22,24 +42,14 @@ export function createCameraView(config, root, camera, renderer, render, onChang
             const forward=controls.target.clone().sub(camera.position);forward.y=0;forward.normalize();
             const right=forward.clone().cross(new THREE.Vector3(0,1,0));
             const delta=right.multiplyScalar(x).addScaledVector(forward,y).normalize().multiplyScalar(span/camera.zoom*.4*dt*(fastWalk?2.5:1));
-            const maxRadius=(config.camera.maxSpan || 240)*1.15;
-            const homeTarget=new THREE.Vector3(...home.target);
-            const nextTarget=controls.target.clone().add(delta);
-            const offsetXZ=new THREE.Vector2(nextTarget.x-homeTarget.x,nextTarget.z-homeTarget.z);
-            if(offsetXZ.length()>maxRadius) {
-                offsetXZ.setLength(maxRadius);
-                const clampedDelta=new THREE.Vector3(homeTarget.x+offsetXZ.x,nextTarget.y,homeTarget.z+offsetXZ.y).sub(controls.target);
-                camera.position.add(clampedDelta);controls.target.add(clampedDelta);
-            } else {
-                // 同时平移相机和轨道中心，保留鼠标正在改变的观察方向。
-                camera.position.add(delta);controls.target.add(delta);
-            }
-            controls.update();
+            // 键盘和 OrbitControls 右键共用同一 XZ 边界，修正时保留观察偏移。
+            camera.position.add(delta);controls.target.add(delta);constrainPan();controls.update();
         }
         walkFrame=requestAnimationFrame(walk);
     }
     function keyDown(e) {
         if(!controls || !controls.enabled || e.ctrlKey || e.metaKey || e.altKey || isTextInput(e.target))return;
+        if(e.code.indexOf('Arrow')===0 && isTourControl(e.target))return;
         fastWalk=e.shiftKey;
         if(!walkKeys[e.code])return;
         e.preventDefault();e.stopPropagation();heldKeys.add(e.code);
@@ -51,7 +61,7 @@ export function createCameraView(config, root, camera, renderer, render, onChang
         e.preventDefault();e.stopPropagation();
         if(!heldKeys.size)stopWalk();
     }
-    function focusInput(e) { if(isTextInput(e.target))stopWalk(); }
+    function focusInput(e) { if(isTextInput(e.target)||isTourControl(e.target))stopWalk(); }
     document.addEventListener('keydown',keyDown,true);
     document.addEventListener('keyup',keyUp,true);
     document.addEventListener('focusin',focusInput);
@@ -74,19 +84,24 @@ export function createCameraView(config, root, camera, renderer, render, onChang
     }
     function move(value, animate) {
         if (!valid(value)) throw new Error('镜头预设无效');
-        stop();
+        stop();const token=moveGeneration;
         if (controls) controls.enabled=false;
         const start=snapshot(), started=performance.now(); camera.zoom=1;
         const duration=animate && !matchMedia('(prefers-reduced-motion: reduce)').matches ? 400 : 0;
         function tick(now) {
-            motion=0; if (disposed) return;
+            motion=0; if (disposed || token!==moveGeneration) return;
             const t=duration ? Math.min(1,(now-started)/duration) : 1, blend=t*t*(3-2*t);
             camera.position.fromArray(start.position).lerp(new THREE.Vector3(...value.position),blend);
             target.fromArray(start.target).lerp(new THREE.Vector3(...value.target),blend);
             span=start.span+(value.span-start.span)*blend;
             if (renderer.getContext().isContextLost()) return;
             draw();
+            if(disposed || token!==moveGeneration)return;
             if (t<1) motion=requestAnimationFrame(tick);
+            else if(controls){
+                controls.target.copy(target);controls.minZoom=span/(config.camera.maxSpan || 240);controls.maxZoom=span/minSpan;
+                controls.enabled=editWanted;if(editWanted)controls.update();
+            }
         }
         tick(started);
     }
@@ -105,7 +120,7 @@ export function createCameraView(config, root, camera, renderer, render, onChang
                 clone.onBeforeCompile=shader=>{
                     base.onBeforeCompile(shader);
                     shader.fragmentShader=shader.fragmentShader.replace('#include <dithering_fragment>',
-                        'gl_FragColor.rgb=mix(gl_FragColor.rgb,vec3(1.0,0.72,0.20),0.28);\n#include <dithering_fragment>');
+                        `gl_FragColor.rgb=mix(gl_FragColor.rgb,${selectionVector},${StageSelectPresentation.selectionMix});\n#include <dithering_fragment>`);
                 };
                 clone.customProgramCacheKey=()=>base.customProgramCacheKey()+'-selected';
                 return clone;
@@ -134,11 +149,20 @@ export function createCameraView(config, root, camera, renderer, render, onChang
         return {position:position.toArray(),target:aim.toArray(),
             span:Math.max(12,Math.min(120,Math.max(size.x,size.y*width/height)*1.16))};
     }
+    function focusContext(id, base, animate=true) {
+        focusId=id;highlight(id);
+        const origin=valid(base)?base:snapshot();
+        const destination=defaultFocus(id),blend=StageSelectPresentation.focusContextBlend;
+        const position=origin.position.map((value,index)=>value+(destination.position[index]-value)*blend);
+        const target=origin.target.map((value,index)=>value+(destination.target[index]-value)*blend);
+        const nextSpan=Math.max(minSpan,Math.min(config.camera.maxSpan||240,origin.span+(destination.span-origin.span)*blend));
+        move({position:position,target:target,span:nextSpan},animate);
+    }
     function focus(id,preset,animate=true) { focusId=id; highlight(id); move(preset || defaultFocus(id),animate); }
     function overview(preset,animate=true) { focusId=''; highlight(''); move(preset || home,animate); }
     async function edit(enabled) {
-        const token=++editGeneration;
-        if (!enabled) { stopWalk(); if (controls) controls.enabled=false; return; }
+        const token=++editGeneration;editWanted=!!enabled;
+        if (!enabled) { stop(); if (controls) controls.enabled=false; return; }
         stop();
         if (!controls) {
             if (!controlsPromise) controlsPromise=import('../../assets/stage-diorama/base-gate/vendor/OrbitControls.js');
@@ -147,11 +171,11 @@ export function createCameraView(config, root, camera, renderer, render, onChang
             controls=new OrbitControls(camera,renderer.domElement); controls.enableDamping=false;
             controls.minPolarAngle=.15; controls.maxPolarAngle=Math.PI/2-.08;
             controls.addEventListener('change',()=>{
-                target.copy(controls.target); camera.updateMatrixWorld(true); render(); if(onChange)onChange();
+                constrainPan();target.copy(controls.target); camera.updateMatrixWorld(true); render(); if(onChange)onChange();
             });
         }
         controls.minZoom=span/(config.camera.maxSpan || 240); controls.maxZoom=span/minSpan;
-        controls.target.copy(target); controls.enabled=true; controls.update();
+        controls.target.copy(target); controls.enabled=editWanted&&!motion; controls.update();
     }
     function pins() {
         const result={};
@@ -161,7 +185,7 @@ export function createCameraView(config, root, camera, renderer, render, onChang
         });
         return result;
     }
-    return {resize,focus,overview,edit,snapshot,valid,pins,stop,
+    return {resize,focus,focusContext,defaultFocus,overview,edit,snapshot,valid,pins,stop,
         setOverview(value) { if(!valid(value))throw new Error('镜头预设无效');home=value; },
         hover(id) { if (!focusId && !motion && !(controls && controls.enabled)) {highlight(id);draw();} },
         dispose() {
