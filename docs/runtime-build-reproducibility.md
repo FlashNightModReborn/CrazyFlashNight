@@ -1265,3 +1265,27 @@ Issue #152 已完成两轮正式推广。第二轮冻结源 `c1d9ab2576937aa2fa4
 [Runtime native audit 39917823701](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/39917823701) **success**，独立重放 `state=promoted / deploymentChanged=true`、双 signer / 双 faultDomain 和 43 文件闭包；生成路径回归通过。
 共享目录的 bundle、strict consensus 和安装入口自检通过。无候选参数的标准入口实际加载本批 Core 与 42 样式 catalog，真实 Flash 握手、前门可见和 Idle 普通关闭 exit 0；7 份玩家 JSON/SOL 摘要不变。
 此次 `businessJourneyExecuted=false`，完整正式战斗与可信退出专项仍未重跑，不能从启动 smoke 反向补签。
+
+<a id="cf6-field-feedback-release-20261024"></a>
+## 2026-10-24 毒刺章节现场修复与目标血条正式推广
+
+用户明确授权修复后提交推送，并要求配套C#二进制列车。冻结源 `86711391333254f654d6e3e833120a2f5fcc024b`、受控标签 `runtime-build-v2/20261024-cf6-hud-timeline-v4` 包含原作敌人出场顺序、两段电梯单波预置、粉色NPC Wings与左侧目标血条，并保留同期上游索取回复的持有提示；功能范围与分层验收归[章节施工记录](闪客快打6肉鸽-首版设计与施工拆分-2026-10-21.md#0-阶段交付与接续入口)。本批是2.718开发测试增量，不新增稳定整包。
+
+注册本机X509 `builder-local-c / physical-host-c` 与[GitHub独立构建40077621575](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40077621575)对同一43文件闭包达成共识；完整production policy **47/47**。唯一writer于 `2026-10-24T08:35:18.2672341Z` 原子推广，最终strict bundle、双signer/双faultDomain consensus与bootstrap `--verify-only` 均通过。以下是本次历史身份；现役机器值仍读manifest和consensus。
+
+| 绑定项 | 本次值 |
+| --- | --- |
+| request | `17BC631D1CA5ABC7F6274D3DADAA09EFAC3D6D2C9E4E6D4B90ACF5858A0BD2DE` |
+| release tree | `03b569047bc52ff64e225cfbfd49521f0a18e1db` |
+| build identity | `050CA16E56CE245DA4EE1E88FA81E0A4B0B13C624C4EAAC4DDEC95C47A0E3E90` |
+| payload closure | `7CC66F8EF1AEE4ECA38FCC6A261CB7D56048FEB4F93FCE76EBF3EE1CAF9ED049` |
+| Core DLL SHA-256 | `460E82361B5616A86053406E6922EA2999C1EFB931F2D95CB77AB3B229CD7592` |
+| production receipt SHA-256 | `2242976C404AB5549A50E27D3FA600F1373B520D8D1C6DC10EB61E9FDFC6D529` |
+
+无candidate selector的普通 `automation/start.ps1` 于 `08:38:16Z` 启动自有PID `31576`，实际路径为正式Core，identity/closure及Core SHA均匹配；前门导航成功，预热回到Idle，普通窗口关闭exit **0**，90份JSON/SOL及配置摘要不变。`formal-entry-result.json` SHA-256为 `F14012A9134B26FF1888A21AFD64B31C101D758E463F11E4BAF36F09DD732C7D`，原件在 `tmp/cf6-fieldfix5-20261024/`。此项只证明普通前门入口：`businessJourneyExecuted=false / trustedShutdownVerified=false / standardEntryBusinessVerified=false`，不代签整章、驾驶、物理输入、听感或完整HUD资格。
+
+失败原件保留：v1源码审计暴露长用户名默认缓存超过240 UTF-16预算，v2精简CI缺少新回归所需的开发入口；缩短缓存并补齐依赖后，实际15文件精简检出在PowerShell 5.1/7各45项通过。v3本机产物的policy为46/47，唯一缺口是商店头像来源摘要；39份旧JSON只做有原Git字节证明的LF规范化，5份CF6扩池配置由受限工具刷新出处，44个条目、38张图片及运行时manifest原字节不变。v1—v3请求均已被后继替代，未推广。
+
+云端首轮[40077434153](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40077434153)在取源码时收到GitHub空响应，尚未编译；新dispatch的40077621575完成独立构建和签名。本地查询期间的连接超时/EOF通过同一run的 `ResumeRunId` 续接，未重复触发该任务。所有后续证明与最终receipt绑定v4，未降低门槛或复用失败receipt。
+
+基础HUD B0-06仍未通过，旧Flash oracle缺失，Host全量仍有120项既有Windows证据根缺失及30项未执行；这些缺口与本次47项发布政策分别记录。完整章节、车辆手感和Boss/Buff/刘海同时显示的最终观感继续交给测试员反馈。

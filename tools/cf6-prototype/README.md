@@ -53,7 +53,7 @@ node tools/validate-npc-shops.js
 
 ## 当前施工与历史验证（2026-10-24）
 
-第五轮按原作首次登场限制兵种、两段电梯各一波12人预置战、粉色NPC Wings与目标血条避让已生成并通过功能专项，正式runtime列车已授权；基础HUD资源资格仍有未通过记录，详见下方设计基线当前状态。
+第五轮按原作首次登场限制兵种、两段电梯各一波12人预置战、粉色NPC Wings与目标血条避让已生成并通过功能专项，已随 `runtime-build-v2/20261024-cf6-hud-timeline-v4` 完成正式推广；普通入口已核对实际Core身份、正常关闭及90份存档和配置摘要不变。基础HUD资源资格仍有未通过记录，整章战斗与驾驶仍待测试员反馈，详见下方设计基线当前状态。
 
 第四轮已接入A07、场景Wings、焦点目标血条、统一出口提示和电梯站姿，并修复换回原枪的装备应用收口及同图死亡复活后的机关恢复；史实物资扩池和必清波次已生成。第四轮真实Flash组合1,364项、车辆99项与最终asLoader编译通过；开发候选已实际完成入书、装备卸下回装与应用保存、正常撤退和新进程读回，原测试角色资产及85个旁路存档文件未变。完整路线和驾驶观感仍需实玩。分组身份和具体边界统一见[设计基线当前状态](../../docs/闪客快打6肉鸽-首版设计与施工拆分-2026-10-21.md#0-阶段交付与接续入口)。
 
@@ -79,7 +79,7 @@ Compiler 0/0、retry 0；回执在 `tmp/cf6-roguelike-20261021/validation/field-
 合并后的 Host 全量结果为 7781 项：7630 通过、121 失败、30 跳过；其中商店覆盖缺口已定向修复，
 其余 120 项均停在既有 Windows 资格夹具的 evidence-root 前置条件。未伪造窗口/输入资格，也不把这组治理前置失败写成游戏业务失败或全量通过。
 漫画交接与检出字节规则收口后的隔离候选为 `tmp/runtime-candidates/v2/cf6-sting-20261022f`，精确身份见 `validation/candidate-build-r7/result.json`；
-本任务未执行 promotion。上游快进包含已跟踪的正式 Core、manifest 和 consensus 更新，与本任务构建独立候选分开记录于 `validation/upstream-merge-r1/formal-tracked-upstream-delta.json`。
+上述2026-10-22历史阶段未执行 promotion。上游快进包含已跟踪的正式 Core、manifest 和 consensus 更新，与当时本任务构建独立候选分开记录于 `validation/upstream-merge-r1/formal-tracked-upstream-delta.json`；2026-10-24第五轮的正式推广见本节当前状态。
 
 此前旧尺寸候选有真实撤退与新进程读回证明。新尺寸第三轮已真实进入并触发 S1/S2/S3、撤退返回零 SP，
 但真人关闭书架后 CDP 断开，使报告仍为 `failed_preserved`，没有重启读回证明；旧报告与原始存档证据未改。

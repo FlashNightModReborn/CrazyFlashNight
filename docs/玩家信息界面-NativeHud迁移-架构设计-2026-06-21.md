@@ -351,7 +351,7 @@ C#保持严格白名单、原子采用与主体/连接隔离；字段缺失显�
 
 完整 schema 的机器真源为[发送器](../scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as)与[接收器](../launcher/src/Guardian/Hud/PlayerInfo/PlayerHudState.cs)，[交互所有者](../launcher/src/Guardian/Hud/PlayerInfo/PlayerHudController.cs)持有 pending write。不要把历史 `pi_*` 字段草案误作当前 wire。
 
-### 4.4 关卡聚焦目标血条（2026-10-24 源码扩展）
+### 4.4 关卡聚焦目标血条（2026-10-24 正式推广）
 
 `FocusTargetHudService` 为关卡控制器提供单目标只读投影：`bind(world, worldIdentity, unit, identityKey, unitIdentity, role, label)` 返回普通对象 lease，`clear(lease)` 只撤销精确当前绑定。调用方先捕获世界和单位的普通对象身份；同名 MovieClip 重建、旧世界和迟到取消均不能继承或撤销新绑定。角色仅 `boss/protect`；保护目标必须是有真实 `hp/hp满血值` 的单位，演出剪辑不创建虚构生命权威。目标选取、战斗、变形接续、关卡推进和持久写仍由原控制器负责。
 
@@ -360,6 +360,8 @@ Host 通过现有 `playerHudSync` 的 `focusTarget:true` 显式索取可选分�
 `PlayerHudFocusTargetWidget` 挂在已有 Buff surface，逻辑框为 `x=6,h=30`，宽度由最大居中刘海与12px间隔推导为294px，顶部为 `max(1,ceil(buffCount/32))*32+4`；无 Buff 仍避开顶行工具栏，多行 Buff 动态下移；完整目标条固定在左侧列，避开刘海展开区及其波次/暂停提示，按现有 viewport/letterbox 缩放。Boss 用红条、真实保护单位用青条并显示角色与名称；无新窗口、后台线程、输入命中或动画时钟，沿用面板遮挡、暂停投影和共享合成层级。目标为空时无可见内容。
 
 验证入口为 `scripts/run-focus-target-hud-tests.ps1`（真实 AVM1 同路径实例重建/精确 lease/生命采样/协商）与 Host `FocusTargetHudTests`（原子协议、迟到/断连、四分辨率离屏绘制及透传）。源码与离屏测试不等于真实 Flash、候选游戏、人工视觉或正式 runtime；本扩展不自动授权 runtime 发布。PlayerInfo focused、B0-06 与既有 Host 全量门仍按 testing-details 对应合同执行。
+
+本轮另获明确发布授权，目标条已随[CF6现场修复列车](runtime-build-reproducibility.md#cf6-field-feedback-release-20261024)完成双构建推广与普通前门入口复验。目标条20项及PlayerInfo/面板伴随419项通过；合并同期上游后，对话与目标条105项再次通过。B0-06最终独立测量仍有USER句柄净增1、进程句柄净增2，未宣称资格通过；旧冻结Flash oracle缺失，C#/Web各自A/B一致不替代直接边比较。完整游戏中的Boss血条、Buff和刘海共存观感仍由测试员实玩确认。
 
 ## 5. 经修正的迁移路线（相对原9阶段计划的差异）
 
