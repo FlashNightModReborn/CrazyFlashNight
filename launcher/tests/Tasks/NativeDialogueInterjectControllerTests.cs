@@ -249,6 +249,10 @@ namespace CF7Launcher.Tests.Tasks
             internal readonly List<DialogueInterjectInputState> States = new List<DialogueInterjectInputState>();
             internal readonly List<string> Sent = new List<string>();
             internal readonly List<string> BoundPlayers = new List<string>();
+            /// <summary>插话 done.task_publish 推给 AS2 的原始包（含结尾 '\0'）。</summary>
+            internal readonly List<string> Pushed = new List<string>();
+            /// <summary>推送是否成功（模拟 socket 未连接/写入失败）。</summary>
+            internal bool PushSuccess = true;
             /// <summary>注入时钟：看门狗测试手动推进，不 sleep。</summary>
             internal DateTime Now = new DateTime(2026, 10, 18, 22, 30, 0);
             /// <summary>每次排定时器记录 delay（断言无事件/总时长上限的取小逻辑）。</summary>
@@ -292,7 +296,12 @@ namespace CF7Launcher.Tests.Tasks
                         return ensureBound != null ? ensureBound(name)
                             : System.Threading.Tasks.Task.CompletedTask;
                     },
-                    itemExchange: itemExchange);
+                    itemExchange: itemExchange,
+                    pushToClient: data =>
+                    {
+                        Pushed.Add(data);
+                        return PushSuccess;
+                    });
                 Controller.WatchdogScheduler = (delay, callback) =>
                 {
                     WatchdogDelays.Add(delay);
@@ -474,6 +483,26 @@ namespace CF7Launcher.Tests.Tasks
         private static string Done()
         {
             return "event: done\ndata: {\"dialogue_instance_id\":\"inst\",\"session_id\":\"s1\",\"usage\":{}}\n\n";
+        }
+
+        private static string DoneWithPublish(int taskId, string npc, string slot = "",
+            bool autoAccept = true)
+        {
+            var publish = new JObject
+            {
+                ["task_id"] = taskId,
+                ["npc"] = npc,
+                ["slot_key"] = string.IsNullOrEmpty(slot) ? JValue.CreateNull() : slot,
+                ["auto_accept"] = autoAccept
+            };
+            var data = new JObject
+            {
+                ["dialogue_instance_id"] = "inst",
+                ["session_id"] = "s1",
+                ["usage"] = new JObject(),
+                ["task_publish"] = publish
+            };
+            return "event: done\ndata: " + data.ToString(Newtonsoft.Json.Formatting.None) + "\n\n";
         }
 
         // ── 假事件（绕开流驱动，直接喂控制器；P3 的 status / 中途失败都用它）──────
@@ -2262,6 +2291,112 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void TaskAcceptPublishPushesHandoffPacket()
+        {
+            using var h = AcceptableTaskDialogue();
+            h.Transport.Script(DoneWithPublish(200345, "Andy Law"));
+            h.Controller.SubmitChoice(true);
+
+            Assert.True(h.Controller.HandoffForTest);
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
+            Assert.Single(h.Pushed);
+            JObject packet = JObject.Parse(h.Pushed[0].TrimEnd(' '));
+            Assert.Equal("agent_task_publish", packet.Value<string>("task"));
+            Assert.Equal(1, packet.Value<int>("version"));
+            Assert.Equal(200345, packet.Value<int>("taskId"));
+            Assert.Equal("Andy Law", packet.Value<string>("npc"));
+            Assert.Equal("", packet.Value<string>("slot"));
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            Assert.Equal(request["action"].Value<string>("action_id"),
+                packet.Value<string>("token"));
+            Assert.Equal(1, CountPcLines(h, "我接了"));
+            // 自动接取轮没有收尾台词；交接期间也不能凭空补一条
+            Assert.Equal(0, CountTextLines(h, "委托登记好了，你过来找我接一下。"));
+        }
+
+        [Fact]
+        public void TaskAcceptPublishHandoffEndsWhenSessionHidden()
+        {
+            using var h = AcceptableTaskDialogue();
+            h.Transport.Script(DoneWithPublish(200345, "Andy Law"));
+            h.Controller.SubmitChoice(true);
+            Assert.True(h.Controller.HandoffForTest);
+
+            h.Task.AdoptV2(new JObject
+            {
+                ["version"] = 2, ["op"] = "hide",
+                ["requestId"] = "nd:7", ["sceneId"] = "scene.1"
+            });
+
+            Assert.False(h.Controller.HandoffForTest);
+            Assert.Null(h.Controller.SessionForTest);
+        }
+
+        [Fact]
+        public void TaskAcceptPublishForOtherNpcFallsBackToStaticClosing()
+        {
+            using var h = AcceptableTaskDialogue();
+            h.Transport.Script(DoneWithPublish(200345, "药师"));
+            h.Controller.SubmitChoice(true);
+
+            Assert.False(h.Controller.HandoffForTest);
+            Assert.Empty(h.Pushed);
+            // 玩家仍停在「我接了」行：进到静态收尾行后才恢复输入
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("委托登记好了，你过来找我接一下。", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Equal(1, CountTextLines(h, "委托登记好了，你过来找我接一下。"));
+        }
+
+        [Fact]
+        public void TaskAcceptPublishPushFailureFallsBackToStaticClosing()
+        {
+            using var h = AcceptableTaskDialogue();
+            h.PushSuccess = false;
+            h.Transport.Script(DoneWithPublish(200345, "Andy Law"));
+            h.Controller.SubmitChoice(true);
+
+            Assert.False(h.Controller.HandoffForTest);
+            Assert.Single(h.Pushed);   // 尝试过推送，但 socket 未接收
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("委托登记好了，你过来找我接一下。", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Equal(1, CountTextLines(h, "委托登记好了，你过来找我接一下。"));
+        }
+
+        [Fact]
+        public void TaskAcceptPublishHandoffTimeoutFallsBackToStaticClosing()
+        {
+            using var h = AcceptableTaskDialogue();
+            h.Transport.Script(DoneWithPublish(200345, "Andy Law"));
+            h.Controller.SubmitChoice(true);
+            Assert.True(h.Controller.HandoffForTest);
+
+            h.FireWatchdog();   // 10 秒交接超时
+
+            Assert.False(h.Controller.HandoffForTest);
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("委托登记好了，你过来找我接一下。", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Equal(1, CountTextLines(h, "委托登记好了，你过来找我接一下。"));
+        }
+
+        [Fact]
+        public void OrdinaryActionDoneWithoutPublishKeepsOriginalClosingPath()
+        {
+            using var h = AcceptableTaskDialogue();
+            h.Transport.Script(AddLine("去办吧。", 0, "closing") + Done());
+            h.Controller.SubmitChoice(true);
+
+            Assert.False(h.Controller.HandoffForTest);
+            Assert.Empty(h.Pushed);
+            Assert.Equal(0, CountTextLines(h, "委托登记好了，你过来找我接一下。"));
+        }
+
+        [Fact]
         public void ItemClaimPendingShowsRealHoldingsAndShortage()
         {
             var bridge = new FakeItemBridge { Count = 2 };
@@ -2484,6 +2619,37 @@ namespace CF7Launcher.Tests.Tasks
             h.Advance();
             Assert.Equal("有事说事。", h.Widget.CurrentFrame.Text);
             Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+        }
+
+        /// <summary>推进到「我接了/我不接」选项出现的状态（与任务接受测试同一路径）。</summary>
+        private static Harness AcceptableTaskDialogue()
+        {
+            var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "先别急着答应。");
+            h.Transport.Script(
+                AddLine("接不接，你给个话。", 0)
+                + AddLine("不接就算了。", 1, "closing")
+                + "event: plan\ndata: {\"mute\":false}\n\n"
+                + Done());
+            Assert.True(h.Controller.Submit("你说。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.True(h.Controller.AskAccept);
+            return h;
+        }
+
+        private static int CountTextLines(Harness h, string text)
+        {
+            NativeDialogueBookSession session = h.Task.BookSessionForTest;
+            if (session == null) return 0;
+            int count = 0;
+            for (int i = 0; i < session.PlaybackCount; i++)
+            {
+                NativeDialogueBookSession.Line line = session.GetPlaybackLine(i);
+                if (line != null && string.Equals(line.Text, text, StringComparison.Ordinal)) count++;
+            }
+            return count;
         }
 
         private static int CountPcLines(Harness h, string text)

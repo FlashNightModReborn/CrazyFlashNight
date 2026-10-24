@@ -183,9 +183,11 @@ _root.agent.轮询同步状态 = function():Void {
 // 任务发布版本变化后的收敛流程。宿主是变更权威：由它重读任务目录、判定哪些源文件真的变了，
 // 游戏侧只按清单增量重载，最后原子提交宿主回传的新握手（内容摘要 + 会话令牌）。
 // finish 与 giveUp 合计恰好执行一次，绝不把桥留在提交窗口里；版本号只在真正收敛后推进。
-_root.agent.同步任务热更新 = function(fileVer:Number):Void {
+// onReloaded/onFailed 可选：插话自动接取据此在热更真正收敛后接管对话；轮询调用不传。
+_root.agent.同步任务热更新 = function(fileVer:Number, onReloaded:Function, onFailed:Function):Void {
     var r:Object = _root.agent;
     if (r.sync_apply_busy == true || _root._taskReloadBusy == true || r.slot_catalog_busy == true) {
+        if (onFailed != null) onFailed("busy");
         return;
     }
     r.sync_apply_busy = true;
@@ -201,6 +203,11 @@ _root.agent.同步任务热更新 = function(fileVer:Number):Void {
         org.flashNight.arki.map.MapDomainBridge.commitTaskSync();
         r.last_task_publish_version = fileVer;
         _root.最上层发布文字提示("已接收终端任务数据！");
+        if (onReloaded != null) {
+            try { onReloaded(); } catch (reloadCallbackError) {
+                trace("[agent] reload callback failed: " + reloadCallbackError);
+            }
+        }
     }
 
     // 宿主已换内容但游戏侧没跟上时，欠账标记让下一轮无条件重载到磁盘真值；
@@ -215,6 +222,11 @@ _root.agent.同步任务热更新 = function(fileVer:Number):Void {
         if (r.failed_publish_version != fileVer) {
             r.failed_publish_version = fileVer;
             _root.最上层发布文字提示("任务数据更新失败！");
+        }
+        if (onFailed != null) {
+            try { onFailed(String(reason)); } catch (reloadFailedCallbackError) {
+                trace("[agent] reload failed callback error: " + reloadFailedCallbackError);
+            }
         }
     }
 
@@ -255,6 +267,77 @@ _root.agent.同步任务热更新 = function(fileVer:Number):Void {
         r.task_reload_owed = true;
         reload((result.listChanged == true || !(result.changedFiles instanceof Array)) ? null : result.changedFiles);
     });
+};
+
+// 插话「我接了」发布成功后的 Host 推送（task=agent_task_publish）：
+// 校验 → 读 sync_state 版本 → 热更收敛 → 关闭旧对白 → GetTask 接管任务接取对话。
+// 只由 ServerManager 的新 task 分支进入；未装终端/普通对话不受影响。
+_root.agent.接收任务发布推送 = function(payload:Object):Void {
+    var r:Object = _root.agent;
+    var slotNow:String = (_root.savePath == undefined || _root.savePath == null)
+        ? "" : String(_root.savePath);
+    // 新发布的任务在热更落地前不在 TaskUtil.tasks；此时 taskAvailable 会读空定义。
+    var taskDataReady:Function = function(taskId:Number):Boolean {
+        var tasks:Object = org.flashNight.arki.task.TaskUtil.tasks;
+        if (tasks == undefined || tasks == null) return false;
+        var raw:Object = tasks[taskId];
+        return raw != undefined && raw != null;
+    };
+    var env:Object = {
+        currentSlot: slotNow,
+        inCombat: _root.当前为战斗地图 == true,
+        lastTaskPublishVersion: Number(r.last_task_publish_version),
+        isTaskActive: function(taskId:Number):Boolean {
+            var list = _root.tasks_to_do;
+            if (list == undefined || list == null) return false;
+            for (var key in list) {
+                var entry = list[key];
+                if (entry != null && Number(entry.id) == taskId) return true;
+            }
+            return false;
+        },
+        hasTaskData: taskDataReady,
+        isTaskAvailable: function(taskId:Number):Boolean {
+            if (!taskDataReady(taskId)) return false;
+            return typeof _root.taskAvailable == "function"
+                && _root.taskAvailable(taskId) === true;
+        },
+        loadVersion: function(onReady:Function):Void {
+            if (!PathManager.isEnvironmentValid()) {
+                onReady(0);
+                return;
+            }
+            var fullPath:String = PathManager.resolvePath(r.REL_SYNC_STATE);
+            if (fullPath == null) {
+                onReady(0);
+                return;
+            }
+            var lv:LoadVars = new LoadVars();
+            lv.onData = function(raw:String):Void {
+                onReady(r.读取任务发布版本号(raw));
+            };
+            lv.load(fullPath);
+        },
+        reload: function(fileVer:Number, onDone:Function, onFailed:Function):Void {
+            if (typeof r.同步任务热更新 != "function") {
+                onFailed("no_reloader");
+                return;
+            }
+            r.同步任务热更新(fileVer, onDone, onFailed);
+        },
+        closeSession: function():Void {
+            org.flashNight.arki.dialogue.NativeDialogueService.cancelActive("task_handoff");
+        },
+        openTask: function(taskId:Number):Void {
+            if (typeof _root.GetTask == "function") _root.GetTask(taskId);
+        },
+        showTip: function(text:String):Void {
+            if (typeof _root.最上层发布文字提示 == "function") {
+                _root.最上层发布文字提示(text);
+            }
+        }
+    };
+    org.flashNight.arki.task.AgentTaskPublishHandoff.handle(payload, env);
 };
 
 // G2-1 载荷投影：ragchat initData 与 rag_bind_refresh 共用的五键形状。

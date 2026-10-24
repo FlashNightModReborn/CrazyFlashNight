@@ -64,6 +64,10 @@ namespace CF7Launcher.Tasks
         /// 必须另设总上限兜住"有输出但永不结束"；按 120 秒子 Agent 再加检索/多段/重试的一倍余量取 300。
         /// </summary>
         private const int TurnTotalTimeoutSeconds = 300;
+        /// <summary>任务发布交接：推送后等 AS2 关闭当前对话的上限；超时按兜底话术收尾。</summary>
+        private const int HandoffTimeoutSeconds = 10;
+        /// <summary>交接失败/超时的静态兜底（不调模型），与终端方案一同口径。</summary>
+        private const string HandoffFallbackLine = "委托登记好了，你过来找我接一下。";
         private const string PcName = "$PC";
         private const string DefaultEmotion = "普通";
         private const string KindDaily = "daily";
@@ -143,6 +147,8 @@ namespace CF7Launcher.Tasks
         private bool _autoConfigSyncTried;
         private readonly Func<string> _newId;
         private readonly Func<DateTime> _clock;
+        /// <summary>Host→AS2 推送（含 '\0' 结尾）；未接线时任务发布交接按推送失败处理。</summary>
+        private readonly Func<string, bool> _pushToClient;
 
         // ── 组（一次对话组播放）──
         private NativeDialogueBookSession _session;
@@ -195,6 +201,15 @@ namespace CF7Launcher.Tasks
         /// <summary>正在后台补送的物品动作：同一 action_id 不并发重复发送。</summary>
         private string _headlessItemActionId;
         private const int HeadlessItemActionTimeoutSeconds = 60;
+
+        // ── 任务发布交接（done.task_publish）──
+        /// <summary>发布成功且已推给 AS2：等它关闭当前对话并接取；期间不接回原作、不判失败。</summary>
+        private bool _handoff;
+        /// <summary>交接超时兜底定时器；组结束/关闭/新组必须清掉。</summary>
+        private IDisposable _handoffWatchdog;
+        /// <summary>本轮动作类型与 action_id：交接只认 task_accept，token 用它的 action_id。</summary>
+        private string _turnActionKind;
+        private string _turnActionId;
 
         // ── 本轮 ──
         private string _turnId;
@@ -295,7 +310,8 @@ namespace CF7Launcher.Tasks
             Func<bool> terminalReady = null,
             Func<Task<bool>> llmConfigured = null,
             Func<string, Task> ensureBound = null,
-            NpcItemExchangeTask itemExchange = null)
+            NpcItemExchangeTask itemExchange = null,
+            Func<string, bool> pushToClient = null)
         {
             _task = task ?? throw new ArgumentNullException(nameof(task));
             _widget = widget ?? throw new ArgumentNullException(nameof(widget));
@@ -308,6 +324,7 @@ namespace CF7Launcher.Tasks
             _terminalReady = terminalReady;
             _llmConfigured = llmConfigured;
             _itemExchange = itemExchange;
+            _pushToClient = pushToClient;
         }
 
         internal DialogueInterjectInputState InputState { get { return _inputState; } }
@@ -318,6 +335,7 @@ namespace CF7Launcher.Tasks
         internal int PlayedCount { get { return _played.Count; } }
         internal NativeDialogueBookSession SessionForTest { get { return _session; } }
         internal bool ClosingForTest { get { return _closing; } }
+        internal bool HandoffForTest { get { return _handoff; } }
         internal JObject PendingItemClaimForTest { get { return _pendingItemClaim; } }
         internal DialogueInterjectItemClaimView ItemClaimViewForTest { get { return _itemClaimView; } }
         internal IList<string> PlayerItemNamesForTest
@@ -372,6 +390,9 @@ namespace CF7Launcher.Tasks
             _itemActionRetriedId = null;
             _headlessItemActionId = null;
             _executedGrants.Clear();
+            ClearHandoff();
+            _turnActionKind = null;
+            _turnActionId = null;
             if (_taskMode)
             {
                 // 任务组门控（协议 4.1）：provider 拿到 task_context 才开放，否则 fail-closed。
@@ -414,7 +435,9 @@ namespace CF7Launcher.Tasks
         private void OnSessionEnded(NativeDialogueBookSession session)
         {
             if (!ReferenceEquals(session, _session)) return;
-            CancelTurn("session_end");
+            bool handoff = _handoff;
+            ClearHandoff();
+            CancelTurn(handoff ? "handoff_done" : "session_end");
             session.LinePresented = null;
             session.Closing = null;
             session.EndHoldLineProvider = null;
@@ -446,6 +469,8 @@ namespace CF7Launcher.Tasks
             _unackedItemRequestJson = null;
             _itemActionRetriedId = null;
             _executedGrants.Clear();
+            _turnActionKind = null;
+            _turnActionId = null;
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
@@ -466,6 +491,9 @@ namespace CF7Launcher.Tasks
         {
             if (_session == null || _closing) return;
             _closing = true;
+            ClearHandoff();
+            _turnActionKind = null;
+            _turnActionId = null;
             StopStream();
             DisarmWatchdog();
             _turnActive = false;
@@ -668,6 +696,8 @@ namespace CF7Launcher.Tasks
             _turnActive = false;
             _finalizePending = false;
             _resumeAfterFailure = false;
+            _turnActionKind = null;
+            _turnActionId = null;
             // 已收未应用的 plan 不应用（意图已转参考）；本轮 plan 状态重新计数。
             _pendingPlan = null;
             _planApplied = false;
@@ -1026,9 +1056,9 @@ namespace CF7Launcher.Tasks
             if (_session == null || _closing) return null;
             // 物品已扣除但动作轮还没起来/没确认：先占住末行，等后端收下再收组。
             bool itemPending = _unackedItemAction != null;
-            if (!_turnActive && !_finalizePending && !_preparing && !itemPending) return null;
-            // 已有普通 AI 行可播时按原语义直接收组；只有过渡话之后才继续等最终确认。
-            if (!itemPending && _aiLineShown && !_lastAiLineInterim) return null;
+            if (!_turnActive && !_finalizePending && !_preparing && !itemPending && !_handoff) return null;
+            // 已有普通 AI 行可播时按原语义直接收组；只有过渡话/交接等待时才继续等最终确认。
+            if (!itemPending && !_handoff && _aiLineShown && !_lastAiLineInterim) return null;
             NativeDialogueBookSession.Line template = FindNpcTemplate();
             return new NativeDialogueBookSession.Line
             {
@@ -1200,7 +1230,7 @@ namespace CF7Launcher.Tasks
                     AcceptItemClaim(evt);
                     break;
                 case DialogueInterjectEventKind.Done:
-                    CompleteTurn();
+                    CompleteTurn(evt.Raw("task_publish") as JObject);
                     break;
                 case DialogueInterjectEventKind.Error:
                     FailTurn(evt.Text("code").Length > 0 ? evt.Text("code") : "error");
@@ -1822,7 +1852,7 @@ namespace CF7Launcher.Tasks
             };
         }
 
-        private void CompleteTurn()
+        private void CompleteTurn(JObject taskPublish = null)
         {
             if (!_turnActive) return;
             // done = 后端已处理本轮动作请求；不再需要“已扣未送达”的补送。
@@ -1830,6 +1860,15 @@ namespace CF7Launcher.Tasks
             _unackedItemRequestJson = null;
             // 本轮不会再有新台词：没有结束语时，靠这个信号判定“最后一条 add”。
             _turnLinesDone = true;
+            // 插话「我接了」发布成功：本轮没有收尾台词，推给 AS2 完成热更新与自动接取。
+            if (taskPublish != null)
+            {
+                if (TryStartHandoff(taskPublish)) return;
+                // 后端已按自动接取跳过收尾轮：这里必须补静态收尾，
+                // 绝不能落到 done_without_line 把原作剩余接回来（观感等于没发过委托）。
+                FinishWithStaticLine(HandoffFallbackLine, "handoff_unavailable");
+                return;
+            }
             // 任务模式：没有 add 但有完整 plan 也算成功（协议 4.5 / F-08）。
             if (_taskMode && !_aiLineShown && _queued.Count == 0)
             {
@@ -1880,6 +1919,144 @@ namespace CF7Launcher.Tasks
             if (_playerLinePlaying) return;
             _finalizePending = false;
             Finalize("turn_done");
+        }
+
+        // ════════════════ 任务发布交接（done.task_publish） ════════════════
+
+        /// <summary>
+        /// done.task_publish：核对「本轮动作是 task_accept + 同 NPC + 同槽位」后推
+        /// agent_task_publish 并进入交接态。返回 false 表示不接管本轮收尾。
+        /// </summary>
+        private bool TryStartHandoff(JObject publish)
+        {
+            if (!_turnActive || _closing || _session == null) return false;
+            if (!string.Equals(_turnActionKind, "task_accept", StringComparison.Ordinal)) return false;
+            if (publish.Value<bool?>("auto_accept") != true) return false;
+            int taskId = publish.Value<int?>("task_id") ?? 0;
+            string npc = (publish.Value<string>("npc") ?? "").Trim();
+            string slot = (publish.Value<string>("slot_key") ?? "").Trim();
+            string actionId = _turnActionId ?? "";
+            if (taskId <= 0 || npc.Length == 0 || actionId.Length == 0)
+            {
+                LogManager.Log("[DialogueInterject] handoff rejected: malformed task_publish");
+                return false;
+            }
+            if (!string.Equals(npc, (_npcName ?? "").Trim(), StringComparison.Ordinal))
+            {
+                LogManager.Log("[DialogueInterject] handoff rejected: npc mismatch publish="
+                    + npc + " current=" + (_npcName ?? ""));
+                return false;
+            }
+            string boundSlot = AgentSaveContext.CurrentSlotKey ?? "";
+            if (slot.Length > 0 && boundSlot.Length > 0
+                && !string.Equals(slot, boundSlot, StringComparison.Ordinal))
+            {
+                LogManager.Log("[DialogueInterject] handoff rejected: slot mismatch publish="
+                    + slot + " bound=" + boundSlot);
+                return false;
+            }
+            var packet = new JObject
+            {
+                ["task"] = "agent_task_publish",
+                ["version"] = 1,
+                ["taskId"] = taskId,
+                ["npc"] = npc,
+                ["slot"] = slot,
+                ["token"] = actionId
+            };
+            bool sent = false;
+            if (_pushToClient != null)
+            {
+                try { sent = _pushToClient(packet.ToString(Formatting.None) + "\0"); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[DialogueInterject] handoff push failed: " + ex.Message);
+                }
+            }
+            if (!sent)
+            {
+                LogManager.Log("[DialogueInterject] handoff push dropped (socket unavailable) task=" + taskId);
+                return false;
+            }
+
+            _handoff = true;
+            // 交接成功＝旧对白由 AS2 关闭，绝不把原作剩余接回（否则会顶掉任务接取对话）。
+            _abandonedOriginalTail = true;
+            _turnActive = false;
+            _preparing = false;
+            _turnStatusText = null;
+            DisarmWatchdog();
+            SetAskAccept(false);
+            SetInputState(DialogueInterjectInputState.Hidden);
+            ArmHandoffWatchdog();
+            LogManager.Log("[DialogueInterject] handoff start task=" + taskId
+                + " npc=" + npc + " token=" + actionId);
+            return true;
+        }
+
+        private void ArmHandoffWatchdog()
+        {
+            DisarmHandoffWatchdog();
+            _handoffWatchdog = WatchdogScheduler(TimeSpan.FromSeconds(HandoffTimeoutSeconds),
+                delegate { Post(OnHandoffTimeout); });
+        }
+
+        private void DisarmHandoffWatchdog()
+        {
+            IDisposable timer = _handoffWatchdog;
+            _handoffWatchdog = null;
+            if (timer == null) return;
+            try { timer.Dispose(); } catch { }
+        }
+
+        private void ClearHandoff()
+        {
+            _handoff = false;
+            DisarmHandoffWatchdog();
+        }
+
+        private void OnHandoffTimeout()
+        {
+            if (!_handoff || _closing || _session == null) return;
+            LogManager.Log("[DialogueInterject] handoff timeout token=" + (_turnActionId ?? ""));
+            EndHandoffWithFallbackLine("handoff_timeout");
+        }
+
+        /// <summary>交接没完成（推送失败/超时/AS2 拒绝）：补静态收尾，不接回原作剩余。</summary>
+        private void EndHandoffWithFallbackLine(string reason)
+        {
+            ClearHandoff();
+            if (_session == null || _closing) return;
+            FinishWithStaticLine(HandoffFallbackLine, reason);
+        }
+
+        /// <summary>没有模型收尾台词时的静态落地：插一条 closing 并正常收尾。</summary>
+        private void FinishWithStaticLine(string text, string reason)
+        {
+            _turnActive = false;
+            _preparing = false;
+            _turnStatusText = null;
+            _turnLinesDone = true;
+            DisarmWatchdog();
+            bool inserted = false;
+            if (!_aiLineShown && _turnTailIndex >= 0 && _session != null
+                && _session.State == NativeDialogueBookSession.HostState.Active)
+            {
+                var line = new DialogueInterjectLine
+                {
+                    Kind = "closing",
+                    Text = text,
+                    Emotion = DefaultEmotion,
+                    Speaker = _npcName ?? "",
+                    Seq = -1
+                };
+                inserted = PlayLine(line, false);
+            }
+            if (!inserted)
+                LogManager.Log("[DialogueInterject] static closing not inserted: " + reason);
+            RefreshAskAcceptCurrent();
+            SetInputState(ReadyOrMuted());
+            Finalize(reason);
         }
 
         // ════════════════ 选项直连与物品往来（P6） ════════════════
@@ -2087,6 +2264,8 @@ namespace CF7Launcher.Tasks
                 return false;
             }
             string playerInput = BuildActionPlayerInput(action, npc);
+            _turnActionKind = actionKind;
+            _turnActionId = actionId;
 
             if (showPlayerLine) _widget.CompleteCurrentLineTyping();
             List<PlayedRow> playedSnapshot;
@@ -2650,6 +2829,9 @@ namespace CF7Launcher.Tasks
         /// <summary>关闭/组结束/新一轮覆盖：真取消在途流（Dispose 流 + token），未到行不播。</summary>
         internal void CancelTurn(string reason)
         {
+            ClearHandoff();
+            _turnActionKind = null;
+            _turnActionId = null;
             bool wasActive = _turnActive || _finalizePending;
             FlushUnackedItemAction("cancel:" + reason);
             _unackedItemAction = null;
