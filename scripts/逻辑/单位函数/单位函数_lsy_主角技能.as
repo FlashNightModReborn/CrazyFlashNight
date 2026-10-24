@@ -1428,6 +1428,7 @@ _root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持�
 	// 根据来源ID生成buffId：不同来源可共存，同来源会替换
 	// 保守语义MULT_NEGATIVE会自动取所有减伤效果中的最小值（最强减伤）
 	var buffId:String = 来源ID ? ("霸体减伤_" + 来源ID) : "霸体减伤";
+	metaBuff.hudInfo = {name:"霸体减伤", description:"降低受到的伤害；同类减伤取最强效果。", polarity:"benefit", stacks:0};
 	target.buffManager.addBuff(metaBuff, buffId);
 
 };
@@ -1484,6 +1485,7 @@ _root.技能函数.兴奋剂释放 = function(target:Object, 技能等级:Number
 	var components:Array = [];
 
 	var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
+	metaBuff.hudInfo = {name:"兴奋剂", description:"提高空手攻击力和移动速度，在本场景内有效。", polarity:"benefit", stacks:0};
 	target.buffManager.addBuff(metaBuff, "兴奋剂");
 	if(target._name == _root.控制目标){
 		_root.发布消息("已注射兴奋剂，移动速度提升,一个场景内有效。");
@@ -1524,6 +1526,7 @@ _root.技能函数.铁布衫释放 = function(target:Object, 技能等级:Number
 	);
 
 	// 使用 addBuffImmediate 立即应用，以便后续播报正确的防御力值
+	metaBuff.hudInfo = {name:"铁布衫", description:"提高防御力；同类防御倍率取最强效果。", polarity:"benefit", stacks:0};
 	target.buffManager.addBuffImmediate(metaBuff, "铁布衫");
 
 	// 计算并显示加成比例

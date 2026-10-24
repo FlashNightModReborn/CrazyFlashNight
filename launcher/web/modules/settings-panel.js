@@ -666,6 +666,10 @@
         hgrid.appendChild(hostRange());
         host.appendChild(hgrid); _content.appendChild(host);
 
+        var hudMotion = section('战斗信息动效', '只调整界面反馈强度；生命、护盾、冷却和按键提示始终实时更新。');
+        hudMotion.appendChild(hostSelect('hudMotionMode', '动效强度',
+            [['full','完整'], ['reduced','精简'], ['static','静态反馈']]));
+        _content.appendChild(hudMotion);
         var hitNumber = section('打击伤害数字',
             '本机全局偏好；世界表达与精确对账分离，不占用任何战斗键。');
         var hitGrid = node('div', 'settings-grid two');

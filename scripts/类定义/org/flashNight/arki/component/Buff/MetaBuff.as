@@ -29,6 +29,11 @@ import org.flashNight.arki.component.Buff.*;
 import org.flashNight.arki.component.Buff.Component.*;
 
 class org.flashNight.arki.component.Buff.MetaBuff extends BaseBuff {
+    // Optional display-only metadata. Never participates in calculation, lifetime, or stacking.
+    public var hudInfo:Object;
+    // Explicit read-only sources for opt-in grouping, event activation and injected Pod display.
+    public var hudPresentation:Object;
+
     // 状态枚举
     private static var STATE_INACTIVE:Number = 0;
     private static var STATE_ACTIVE:Number = 1;

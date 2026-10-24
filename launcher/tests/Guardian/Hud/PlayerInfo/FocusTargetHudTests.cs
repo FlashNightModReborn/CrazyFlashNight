@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using CF7Launcher.Fonts;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud;
+using CF7Launcher.Guardian.Hud.Loot;
 using CF7Launcher.Guardian.Hud.PlayerInfo;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -102,17 +103,17 @@ public sealed class FocusTargetHudTests
     }
 
     [Theory]
-    [InlineData(0, 36)]
+    [InlineData(0, 4)]
     [InlineData(1, 36)]
     [InlineData(32, 36)]
     [InlineData(33, 68)]
     [InlineData(256, 260)]
-    public void FollowsBuffRowsAndStaysClearOfTopToolbarAndScreenEdges(int buffs, float top)
+    public void FollowsBuffRowsAndCompactsToTopWhenNoBuffsExist(int buffs, float top)
     {
         var bounds = PlayerHudFocusTargetWidget.BoundsForBuffCount(buffs);
         Assert.Equal(top, bounds.Top);
         Assert.True(bounds.Left >= 0 && bounds.Right <= 1024 && bounds.Bottom < 576);
-        Assert.True(bounds.Top >= Math.Max(32, Math.Ceiling(buffs / 32d) * 32) + 4);
+        Assert.Equal(Math.Ceiling(buffs / 32d) * 32 + 4, bounds.Top);
         var notchLeft = (1024 - RightHudLayout.PreferredNotchMaxWidthBase) / 2f;
         Assert.True(bounds.Right + RightHudLayout.NotchRightGapBase <= notchLeft);
     }
@@ -122,7 +123,7 @@ public sealed class FocusTargetHudTests
     [InlineData(1600, 900, 1, "boss")]
     [InlineData(1920, 1080, 33, "protect")]
     [InlineData(1024, 768, 256, "protect")]
-    public void ProductionWidgetRendersInsideViewportAndRemainsPassiveAcrossSuppression(int width, int height, int buffs, string role)
+    public void ProductionWidgetRendersInsideViewportAndSupportsReadOnlyHoverAcrossSuppression(int width, int height, int buffs, string role)
     {
         Sta(() =>
         {
@@ -134,21 +135,24 @@ public sealed class FocusTargetHudTests
             packet["groups"]["focusTarget"]["name"] = role == "boss" ? "蛮斧刽子手" : "需要护送的目标与很长的中文称号";
             packet["groups"]["buffs"] = new JArray(Enumerable.Range(0, buffs).Select(i => new JObject
                 { ["id"] = "b" + i, ["timed"] = false, ["total"] = 0, ["remaining"] = 0 }));
-            Assert.True(Receive(controller.State, packet));
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
+            Assert.NotNull(controller.State.Snapshot);
             using var widget = new PlayerHudFocusTargetWidget(anchor, controller);
             int paints = 0; widget.RepaintRequested += (_, _) => paints++;
             var changed = Target(); changed["hp"][0] = 75; changed["role"] = role;
             changed["name"] = packet["groups"]["focusTarget"]["name"].DeepClone();
-            Assert.True(Receive(controller.State, Delta(2, new JObject { ["focusTarget"] = changed })));
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Delta(2, new JObject { ["focusTarget"] = changed })));
             Assert.Equal(1, paints);
             var vitals = (JObject)packet["groups"]["vitals"].DeepClone(); vitals["hp"][0] = 555;
-            Assert.True(Receive(controller.State, Delta(3, new JObject { ["vitals"] = vitals })));
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Delta(3, new JObject { ["vitals"] = vitals })));
             Assert.Equal(1, paints); // unrelated player changes do not repaint the target strip
             var origin = anchor.PointToScreen(Point.Empty);
             var bounds = widget.ScreenBounds; bounds.Offset(-origin.X, -origin.Y);
             var viewport = RightHudLayout.ViewportFromPanelSize(width, height);
             Assert.True(viewport.Contains(bounds));
-            Assert.False(widget.TryHitTest(widget.ScreenBounds.Location)); Assert.False(widget.WantsAnimationTick);
+            Assert.True(widget.TryHitTest(new Point(widget.ScreenBounds.Left + 2, widget.ScreenBounds.Top + 2)));
+            Assert.False(widget.NeedsPointerClick);
+            Assert.False(widget.WantsAnimationTick);
             using var bitmap = new Bitmap(width, height, PixelFormat.Format32bppPArgb);
             using (var graphics = Graphics.FromImage(bitmap)) { graphics.Clear(Color.Transparent); widget.Paint(graphics, 1, origin); }
             float scale = viewport.Height / 576f;
@@ -159,7 +163,7 @@ public sealed class FocusTargetHudTests
             Assert.True(filled.A > 0 && empty.A > 0);
             Assert.True(role == "boss" ? filled.R > filled.G : filled.B > filled.R);
             Assert.True(empty.R < 60 && empty.G < 60 && empty.B < 60);
-            Assert.Equal(0, bitmap.GetPixel(viewport.Left + 10, viewport.Top + 5).A);
+            Assert.Equal(0, bitmap.GetPixel(viewport.Left + 10, viewport.Top + 2).A);
             // Exercise the actual widest notch and both persistent rows from the
             // reported paused Boss fight, not just the top toolbar rectangle.
             var fps = new FpsRingBuffer(600); fps.Push(30);
@@ -182,6 +186,212 @@ public sealed class FocusTargetHudTests
             widget.SetHostSuppressed(false); Assert.True(widget.Visible); Assert.False(widget.WantsAnimationTick);
             Assert.True(Receive(controller.State, Delta(4, new JObject { ["focusTarget"] = JValue.CreateNull() })));
             Assert.False(widget.Visible); Assert.Equal(Rectangle.Empty, widget.ScreenBounds);
+        });
+    }
+
+    [Fact]
+    public void FocusTargetSupportsDamageTrailCriticalHysteresisOverflowAndUnifiedTooltip()
+    {
+        Sta(() =>
+        {
+            RuntimeFontCatalog.Configure(Root());
+            PlayerHudMotionSettings.Configure("full");
+            using var form = new Form { ClientSize = new Size(1024, 576), AutoScaleMode = AutoScaleMode.None };
+            using var anchor = new Panel { Dock = DockStyle.Fill }; form.Controls.Add(anchor); form.CreateControl(); anchor.CreateControl();
+            using var controller = new PlayerHudController(_ => true, () => true, action => action());
+            using var tooltip = new PlayerHudResourceTooltip(anchor, controller, true);
+            using var widget = new PlayerHudFocusTargetWidget(anchor, controller);
+
+            var packet = Full();
+            packet["groups"]["focusTarget"]["role"] = "protect";
+            packet["groups"]["focusTarget"]["name"] = "需要护送的重要幸存者车队";
+            packet["groups"]["focusTarget"]["hp"] = new JArray(140, 100);
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
+            Assert.Equal(1.0, widget.TrailRatio, 3);
+            Assert.False(widget.IsCritical);
+
+            var hit = Target();
+            hit["role"] = "protect";
+            hit["name"] = "需要护送的重要幸存者车队";
+            hit["hp"] = new JArray(22, 100);
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Delta(2, new JObject { ["focusTarget"] = hit })));
+            Assert.Equal(1.0, widget.TrailRatio, 3);
+            Assert.True(widget.IsCritical);
+            Assert.True(widget.WantsAnimationTick);
+
+            // Advance clock: damage trail holds for 90ms then contracts smoothly over 230ms
+            widget.Tick(200);
+            Assert.True(widget.TrailRatio < 1.0 && widget.TrailRatio > 0.22);
+            widget.Tick(200);
+            Assert.Equal(0.22, widget.TrailRatio, 3);
+
+            var slightHeal = (JObject)hit.DeepClone();
+            slightHeal["hp"] = new JArray(28, 100);
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Delta(3, new JObject { ["focusTarget"] = slightHeal })));
+            Assert.True(widget.IsCritical); // 25% enter, >30% exit hysteresis
+            Assert.True(widget.GetHealAlpha(1) > 0f);
+
+            var hoverPt = new Point(widget.ScreenBounds.Left + 20, widget.ScreenBounds.Top + 10);
+            widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, hoverPt.X, hoverPt.Y, 0), MouseEventKind.Move);
+            Assert.True(tooltip.Widget.Visible);
+            var text = string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(s => s.Runs).Select(r => r.Text));
+            Assert.Contains("需要护送的重要幸存者车队", text);
+            Assert.Contains("保护目标（需存活）", text);
+            Assert.Contains("28 / 100（28%）", text);
+
+            var safeHeal = (JObject)hit.DeepClone();
+            safeHeal["hp"] = new JArray(35, 100);
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Delta(4, new JObject { ["focusTarget"] = safeHeal })));
+            Assert.False(widget.IsCritical);
+            Assert.True(widget.WantsAnimationTick);
+            widget.Tick(400);
+            Assert.Equal(0f, widget.GetHealAlpha(1), 3);
+            Assert.False(widget.WantsAnimationTick); // returns to idle once heal preview & critical state end
+
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Delta(5, new JObject { ["focusTarget"] = JValue.CreateNull() })));
+            Assert.False(tooltip.Widget.Visible);
+        });
+    }
+
+    private sealed class RecordingDollBakeSink : IDollBakeSink
+    {
+        internal readonly List<string> Keys = new();
+        public void EnsurePortrait(IReadOnlyDictionary<string, string> tuple, string key) => Keys.Add(key);
+    }
+
+    [Fact]
+    public void MultiTargetListPortraitsAndCombatRoleRenderAndHoverIndependently()
+    {
+        Sta(() =>
+        {
+            var root = Root();
+            RuntimeFontCatalog.Configure(root);
+            PlayerHudMotionSettings.Configure("full");
+            using var form = new Form { ClientSize = new Size(1024, 576), AutoScaleMode = AutoScaleMode.None };
+            using var anchor = new Panel { Dock = DockStyle.Fill }; form.Controls.Add(anchor); form.CreateControl(); anchor.CreateControl();
+            using var controller = new PlayerHudController(_ => true, () => true, action => action());
+            using var tooltip = new PlayerHudResourceTooltip(anchor, controller, true);
+            using var icons = new LootIconCatalog(
+                Path.Combine(root, "launcher", "web", "icons"),
+                Path.Combine(root, "launcher", "web", "assets", "enemy-portraits"));
+            var dollBake = new RecordingDollBakeSink();
+            using var widget = new PlayerHudFocusTargetWidget(anchor, controller, icons, dollBake);
+
+            var packet = PlayerHudStateTests.Full();
+            packet["groups"]["focusTarget"] = new JArray(
+                new JObject
+                {
+                    ["id"] = 10, ["role"] = "protect", ["name"] = "护送目标", ["hp"] = new JArray(280, 400),
+                    ["doll"] = new JObject { ["face"] = "男脸", ["hair"] = "短发", ["gender"] = "男" }
+                },
+                new JObject
+                {
+                    ["id"] = 20, ["role"] = "boss", ["name"] = "忍者BOSS", ["hp"] = new JArray(900, 1000),
+                    ["icon"] = "敌人-忍者BOSS"
+                },
+                new JObject
+                {
+                    ["id"] = 30, ["role"] = "combat", ["name"] = "重盾骑士", ["hp"] = new JArray(180, 1000),
+                    ["icon"] = "重盾骑士"
+                });
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
+            var list = controller.State.Snapshot!.TargetList;
+            Assert.Equal(3, list.Length);
+            Assert.Single(dollBake.Keys);
+            Assert.StartsWith("纸娃娃-", list[0].PortraitKey, StringComparison.Ordinal);
+            Assert.Equal(dollBake.Keys[0], list[0].PortraitKey);
+            Assert.True(widget.IsTargetCritical(30));
+            Assert.False(widget.IsTargetCritical(20));
+
+            using var bitmap = new Bitmap(1024, 576, PixelFormat.Format32bppPArgb);
+            var origin = anchor.PointToScreen(Point.Empty);
+            using (var g = Graphics.FromImage(bitmap)) { g.Clear(Color.Transparent); widget.Paint(g, 1, origin); }
+            // Row 1 (boss) portrait box at (6+3, 4+33+3, 22, 24) should contain non-transparent rasterized SVG portrait pixels
+            bool hasBossPortraitPixel = false;
+            for (int y = 42; y < 60 && !hasBossPortraitPixel; y++)
+                for (int x = 11; x < 26 && !hasBossPortraitPixel; x++)
+                    if (bitmap.GetPixel(x, y).A > 0) hasBossPortraitPixel = true;
+            Assert.True(hasBossPortraitPixel);
+
+            // Hover row 2 (combat target)
+            var combatRowPt = new Point(widget.ScreenBounds.Left + 40, widget.ScreenBounds.Top + (int)(2 * 33) + 12);
+            widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, combatRowPt.X, combatRowPt.Y, 0), MouseEventKind.Move);
+            Assert.True(tooltip.Widget.Visible);
+            var combatText = string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(s => s.Runs).Select(r => r.Text));
+            Assert.Contains("重盾骑士", combatText);
+            Assert.Contains("当前交战目标", combatText);
+            Assert.Contains("状态：目标生命危急", combatText);
+
+            // Duplicate IDs or >4 targets must be rejected fail-closed
+            var dupPacket = PlayerHudStateTests.Full(1, 2);
+            dupPacket["groups"]["focusTarget"] = new JArray(Target(1), Target(1));
+            Assert.False(Receive(controller.State, dupPacket));
+            var overCapPacket = PlayerHudStateTests.Full(1, 3);
+            overCapPacket["groups"]["focusTarget"] = new JArray(Target(1), Target(2), Target(3), Target(4), Target(5));
+            Assert.False(Receive(controller.State, overCapPacket));
+        });
+    }
+
+    [Fact]
+    public void SixDigitExactHpAndEmbeddedComboHitBadgeRenderAndPulseCleanly()
+    {
+        Sta(() =>
+        {
+            var root = Root();
+            RuntimeFontCatalog.Configure(root);
+            PlayerHudMotionSettings.Configure("full");
+
+            // 1. 6-digit Boss HP (< 1,000,000) stays exact integer; >= 1,000,000 compacts to 万
+            using var glyphs = new PlayerHudNumberGlyphs();
+            Func<string, float> measure = s => glyphs.Measure(PlayerInfoPathGlyphAtlas.Aero, s, 11.2f);
+            var sixDigitTarget = new PlayerHudFocusTarget(1, "boss", "机械巨龙", 158420, 200000);
+            var sixDigitLayout = PlayerHudNumberFormat.FormatText(
+                PlayerHudFocusTargetWidget.CompactHealthText(sixDigitTarget),
+                measure, PlayerHudFocusTargetWidget.HpReadoutMaxWidth, PlayerHudFocusTargetWidget.ExactHpCompactThreshold);
+            Assert.Equal("158420/200000", sixDigitLayout.Text);
+
+            var sevenDigitTarget = new PlayerHudFocusTarget(1, "boss", "终焉巨兽", 1250000, 2000000);
+            var sevenDigitLayout = PlayerHudNumberFormat.FormatText(
+                PlayerHudFocusTargetWidget.CompactHealthText(sevenDigitTarget),
+                measure, PlayerHudFocusTargetWidget.HpReadoutMaxWidth, PlayerHudFocusTargetWidget.ExactHpCompactThreshold);
+            Assert.Contains("万", sevenDigitLayout.Text);
+
+            // 2. Wire protocol accepts positive hits, rejects invalid hits, and triggers 150ms combo badge pulse
+            using var form = new Form { ClientSize = new Size(1024, 576), AutoScaleMode = AutoScaleMode.None };
+            using var anchor = new Panel { Dock = DockStyle.Fill }; form.Controls.Add(anchor); form.CreateControl(); anchor.CreateControl();
+            using var controller = new PlayerHudController(_ => true, () => true, action => action());
+            using var tooltip = new PlayerHudResourceTooltip(anchor, controller, true);
+            using var widget = new PlayerHudFocusTargetWidget(anchor, controller);
+
+            var packet = Full();
+            packet["groups"]["focusTarget"]["hp"] = new JArray(158420, 200000);
+            packet["groups"]["focusTarget"]["hits"] = 18;
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
+            Assert.Equal(18, controller.State.Snapshot!.FocusTarget!.Hits);
+            Assert.Equal(1f, widget.GetComboPulse(1), 3);
+            Assert.True(widget.WantsAnimationTick);
+
+            using var bitmap = new Bitmap(1024, 576, PixelFormat.Format32bppPArgb);
+            var origin = anchor.PointToScreen(Point.Empty);
+            using (var g = Graphics.FromImage(bitmap)) { g.Clear(Color.Transparent); widget.Paint(g, 1, origin); }
+
+            // Hover tooltip includes combo count and exact 6-digit HP
+            var hoverPt = new Point(widget.ScreenBounds.Left + 50, widget.ScreenBounds.Top + 10);
+            widget.OnMouseEvent(new MouseEventArgs(MouseButtons.None, 0, hoverPt.X, hoverPt.Y, 0), MouseEventKind.Move);
+            Assert.True(tooltip.Widget.Visible);
+            var text = string.Concat(tooltip.Widget.ActiveDocument!.Sections.SelectMany(s => s.Runs).Select(r => r.Text));
+            Assert.Contains("158420 / 200000（79%）", text);
+            Assert.Contains("当前连击：18 Hit", text);
+
+            // Tick 160ms: combo pulse finishes and widget returns to idle
+            widget.Tick(160);
+            Assert.Equal(0f, widget.GetComboPulse(1), 3);
+            Assert.False(widget.WantsAnimationTick);
+
+            // Invalid hits <= 0 is rejected fail-closed
+            var badHits = Full(1, 2);
+            badHits["groups"]["focusTarget"]["hits"] = 0;
+            Assert.False(Receive(controller.State, badHits));
         });
     }
 

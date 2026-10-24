@@ -5,8 +5,14 @@ namespace CF7Launcher.Guardian.Hud.PlayerInfo;
 
 internal static class PlayerHudMotionSettings
 {
-    internal static bool ReducedMotion { get; set; } =
-        Environment.GetEnvironmentVariable("CF7_HUD_REDUCED_MOTION") == "1";
+    internal static string Mode { get; private set; } = "full";
+    private static bool _reducedOverride = Environment.GetEnvironmentVariable("CF7_HUD_REDUCED_MOTION") == "1";
+    internal static bool ReducedMotion { get => _reducedOverride || Mode != "full"; set => _reducedOverride = value; }
+    internal static bool StaticFeedback => Mode == "static";
+    internal static float EventStrength => StaticFeedback ? 0f : ReducedMotion ? 0.45f : 1f;
+    internal static void Configure(string mode) => Mode = CF7Launcher.Config.UserPrefs.NormalizeHudMotionMode(mode);
+    internal static bool IsCritical(PlayerHudVitals v, bool previous) =>
+        v.Hp > 0 && v.HpMax > 0 && v.Hp / v.HpMax <= (previous ? 0.30 : 0.25);
 }
 
 /// <summary>Presentation-only shield afterimages and presence envelope. Current fill always comes from the latest AS2 snapshot.</summary>
@@ -16,7 +22,6 @@ internal sealed class PlayerHudResourceMotion
     internal const int GraceMilliseconds = 360;
     internal const int ReleaseMilliseconds = 480;
     internal const int AbsentTotalMilliseconds = GraceMilliseconds + ReleaseMilliseconds;
-    internal const int ReadoutThrottleMilliseconds = 100;
     internal const int ResistantTransitionMilliseconds = 180;
     internal const int EmptyTransitionMilliseconds = 220;
     internal const int CumulativeLossWindowMilliseconds = 260;
@@ -298,14 +303,6 @@ internal sealed class PlayerHudResourceMotion
         }
     }
 
-    private PlayerHudVitals? _lastPresentVitals;
-    private bool _readoutInitialized;
-    private double _displayShield;
-    private double _latestShield;
-    private double _readoutMax;
-    private double _layerHeldShield;
-    private double _layerHeldMax;
-    private int _readoutAge;
     private bool _resistantInitialized;
     private bool _targetResistant;
     private float _resistantMix;
@@ -314,183 +311,65 @@ internal sealed class PlayerHudResourceMotion
     private float _emptyMix;
 
     internal Channel Shield { get; } = new();
-    internal double DisplayShield => _displayShield;
     internal bool ResistantInitialized => _resistantInitialized;
     internal float ResistantMix => _resistantMix;
     internal bool EmptyInitialized => _emptyInitialized;
     internal float EmptyMix => _emptyMix;
-    internal bool ReadoutPending => _readoutInitialized && Math.Abs(_displayShield - _latestShield) > 0.001;
     internal bool ResistantTransitionActive => _resistantInitialized && Math.Abs(_resistantMix - (_targetResistant ? 1f : 0f)) > 0.001f;
     internal bool EmptyTransitionActive => _emptyInitialized && Math.Abs(_emptyMix - (_targetEmpty ? 1f : 0f)) > 0.001f;
-    internal bool Active => Shield.Active || ReadoutPending || ResistantTransitionActive || EmptyTransitionActive;
+    internal bool Active => Shield.Active || ResistantTransitionActive || EmptyTransitionActive;
 
     internal static float ShieldFraction(PlayerHudVitals v) => v.ShieldReady && v.ShieldPresent && v.ShieldMax > 0
         ? (float)Math.Clamp(v.Shield / v.ShieldMax, 0, 1) : 0;
     internal static float OverflowFraction(PlayerHudVitals v) => v.HpMax > 0
         ? (float)Math.Clamp((v.Hp - v.HpMax) / v.HpMax, 0, 1) : 0;
 
-    internal PlayerHudVitals ResolveShieldDisplay(PlayerHudVitals live)
-    {
-        if (!live.ShieldReady) return live;
-        if (live.ShieldPresent && live.ShieldMax > 0)
-        {
-            if (Shield.HoldingLayer && _layerHeldMax > 0)
-            {
-                var mix = Math.Clamp(Shield.DisplayFraction, 0f, 1f);
-                var currentFrac = ShieldFraction(live);
-                var startFrac = _layerHeldMax > 0 ? (float)Math.Clamp(_layerHeldShield / _layerHeldMax, 0, 1) : 1f;
-                var denom = Math.Abs(startFrac - currentFrac);
-                var u = denom > 0.001f ? Math.Clamp((startFrac - mix) / denom, 0f, 1f) : 1f;
-                var shieldVal = _layerHeldShield + (live.Shield - _layerHeldShield) * u;
-                var maxVal = _layerHeldMax + (live.ShieldMax - _layerHeldMax) * u;
-                return live with { Shield = shieldVal, ShieldMax = maxVal };
-            }
-            return _readoutInitialized ? live with { Shield = _displayShield } : live;
-        }
-        if (Shield.Presence > 0f && _lastPresentVitals is { } held)
-        {
-            var heldMax = _readoutInitialized && _readoutMax > 0 ? _readoutMax : held.ShieldMax;
-            return held with { Shield = 0, ShieldMax = heldMax, ShieldReady = true, ShieldPresent = true };
-        }
-        return live;
-    }
+    // Only ornaments may retain old resource values. Never throttle or interpolate the main readout.
+    internal PlayerHudVitals ResolveShieldDisplay(PlayerHudVitals live) => live;
+    internal bool CriticalHp { get; private set; }
 
     internal void Observe(PlayerHudVitals? value)
     {
         if (value is not { } v) { Reset(); return; }
+        CriticalHp = PlayerHudMotionSettings.IsCritical(v, CriticalHp);
         var available = v.ShieldReady && v.ShieldPresent && v.ShieldMax > 0;
-        var prevShield = _displayShield;
-        var prevMax = _readoutMax;
-        var wasInit = _readoutInitialized;
-        var wasInGraceOrRelease = Shield.InGraceOrRelease;
+        var wasAvailable = Shield.Presence > 0f && !Shield.InGraceOrRelease;
         Shield.Observe(ShieldFraction(v), v.ShieldMax, available, v.Shield, v.ShieldReady);
         if (!v.ShieldReady)
         {
-            _lastPresentVitals = null;
-            _readoutInitialized = false;
-            _resistantInitialized = false;
-            _emptyInitialized = false;
+            _resistantInitialized = _emptyInitialized = false;
             return;
         }
-        if (available)
-        {
-            if (wasInit && Shield.HoldingLayer && v.ShieldMax < prevMax && prevShield > v.Shield)
-            {
-                _layerHeldShield = prevShield;
-                _layerHeldMax = prevMax;
-            }
-            _lastPresentVitals = v;
-            _latestShield = v.Shield;
-            var discreteChange = !_readoutInitialized
-                || wasInGraceOrRelease
-                || v.Shield <= 0
-                || v.Shield >= v.ShieldMax
-                || v.ShieldMax != _readoutMax
-                || Math.Abs(v.Shield - _displayShield) >= v.ShieldMax * DiscreteLossThreshold
-                || _readoutAge >= ReadoutThrottleMilliseconds;
-            if (discreteChange)
-            {
-                _displayShield = v.Shield;
-                _readoutMax = v.ShieldMax;
-                _readoutAge = 0;
-                _readoutInitialized = true;
-            }
-            var resists = v.ShieldDetail?.ResistsBypass == true;
-            _targetResistant = resists;
-            if (!_resistantInitialized)
-            {
-                _resistantMix = resists ? 1f : 0f;
-                _resistantInitialized = true;
-            }
-            var resolved = ResolveShieldDisplay(v);
-            var isEmpty = resolved.Shield <= 0.001 && !Shield.HoldingLayer;
-            _targetEmpty = isEmpty;
-            if (!_emptyInitialized || wasInGraceOrRelease)
-            {
-                _emptyMix = isEmpty ? 1f : 0f;
-                _emptyInitialized = true;
-            }
-        }
-        else if (Shield.Presence > 0f)
-        {
-            _displayShield = 0;
-            _latestShield = 0;
-            _readoutAge = 0;
-            _targetEmpty = true;
-            _emptyMix = 1f;
-            _emptyInitialized = true;
-        }
-        else
-        {
-            _lastPresentVitals = null;
-            _readoutInitialized = false;
-            _resistantInitialized = false;
-            _emptyInitialized = false;
-        }
+        _targetResistant = available && v.ShieldDetail?.ResistsBypass == true;
+        _targetEmpty = !available || v.Shield <= 0.001;
+        if (!_resistantInitialized || PlayerHudMotionSettings.StaticFeedback)
+            _resistantMix = _targetResistant ? 1f : 0f;
+        if (!_emptyInitialized || wasAvailable != available || PlayerHudMotionSettings.StaticFeedback)
+            _emptyMix = _targetEmpty ? 1f : 0f;
+        _resistantInitialized = _emptyInitialized = true;
     }
 
     internal void Advance(int milliseconds)
     {
         if (milliseconds <= 0) return;
         Shield.Advance(milliseconds);
-        if (_readoutInitialized && Math.Abs(_displayShield - _latestShield) > 0.001)
-        {
-            _readoutAge += milliseconds;
-            if (_readoutAge >= ReadoutThrottleMilliseconds)
-            {
-                _displayShield = _latestShield;
-                _readoutAge = 0;
-            }
-        }
-        if (_resistantInitialized)
-        {
-            var target = _targetResistant ? 1f : 0f;
-            if (Math.Abs(_resistantMix - target) > 0.001f)
-            {
-                var step = milliseconds / (float)ResistantTransitionMilliseconds;
-                _resistantMix = _resistantMix < target
-                    ? Math.Min(target, _resistantMix + step)
-                    : Math.Max(target, _resistantMix - step);
-            }
-        }
-        if (_emptyInitialized)
-        {
-            if (_lastPresentVitals is { } live && live.ShieldPresent && !Shield.HoldingLayer && !Shield.InGraceOrRelease)
-            {
-                _targetEmpty = _displayShield <= 0.001;
-            }
-            var target = _targetEmpty ? 1f : 0f;
-            if (Math.Abs(_emptyMix - target) > 0.001f)
-            {
-                var step = milliseconds / (float)EmptyTransitionMilliseconds;
-                _emptyMix = _emptyMix < target
-                    ? Math.Min(target, _emptyMix + step)
-                    : Math.Max(target, _emptyMix - step);
-            }
-        }
-        if (!Shield.InGraceOrRelease && Shield.Presence <= 0f)
-        {
-            _lastPresentVitals = null;
-        }
+        _resistantMix = Approach(_resistantMix, _targetResistant, milliseconds, ResistantTransitionMilliseconds);
+        _emptyMix = Approach(_emptyMix, _targetEmpty, milliseconds, EmptyTransitionMilliseconds);
+    }
+
+    private static float Approach(float current, bool on, int elapsed, int duration)
+    {
+        var target = on ? 1f : 0f;
+        if (PlayerHudMotionSettings.StaticFeedback) return target;
+        var step = elapsed / (float)duration;
+        return current < target ? Math.Min(target, current + step) : Math.Max(target, current - step);
     }
 
     internal void Reset()
     {
-        Shield.Reset();
-        _lastPresentVitals = null;
-        _readoutInitialized = false;
-        _displayShield = 0;
-        _latestShield = 0;
-        _readoutMax = 0;
-        _layerHeldShield = 0;
-        _layerHeldMax = 0;
-        _readoutAge = 0;
-        _resistantInitialized = false;
-        _targetResistant = false;
-        _resistantMix = 0;
-        _emptyInitialized = false;
-        _targetEmpty = false;
-        _emptyMix = 0;
+        Shield.Reset(); CriticalHp = false;
+        _resistantInitialized = _targetResistant = _emptyInitialized = _targetEmpty = false;
+        _resistantMix = _emptyMix = 0;
     }
 }
 

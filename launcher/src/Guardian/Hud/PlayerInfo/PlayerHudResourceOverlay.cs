@@ -18,7 +18,7 @@ internal static class PlayerHudResourceOverlay
         var alphaByte = (byte)Math.Clamp(Math.Round(255 * alpha), 0, 255);
         var ghostAlphaByte = (byte)Math.Clamp(Math.Round(108 * alpha), 0, 255);
         var trackAlphaByte = (byte)Math.Clamp(Math.Round(255 * alpha * alpha), 0, 255);
-        var breakPulse = motion?.BreakPulse ?? 0f;
+        var breakPulse = (motion?.BreakPulse ?? 0f) * PlayerHudMotionSettings.EventStrength;
         var breakAlphaByte = (byte)Math.Clamp(Math.Round(175 * breakPulse * alpha), 0, 255);
         const float radius = 42.55f;
         var circle = new SKRect(-radius,-radius,radius,radius);
@@ -35,16 +35,19 @@ internal static class PlayerHudResourceOverlay
         using var breakPaint = new SKPaint {IsAntialias=true,Style=SKPaintStyle.Stroke,StrokeWidth=2.0f,
             Color=new SKColor(226,250,255,breakAlphaByte)};
         using var trail = new SKPaint {IsAntialias=true,Style=SKPaintStyle.Stroke,StrokeWidth=1.5f,
-            Color=new SKColor(151,194,211,(byte)(110*(motion?.Loss??0)*alpha))};
-        var fillFraction = motion != null && (!value.ShieldPresent || motion.HoldingLayer)
-            ? motion.DisplayFraction
-            : PlayerHudResourceMotion.ShieldFraction(value);
+            Color=new SKColor(151,194,211,(byte)(110*(motion?.Loss??0)*alpha*PlayerHudMotionSettings.EventStrength))};
+        // The cyan arc is always current. Natural expiry has a separate thin, muted ghost.
+        var fillFraction = PlayerHudResourceMotion.ShieldFraction(value);
+        var expiryFraction = motion is { HoldingLayer: true } or { InGraceOrRelease: true }
+            ? motion.DisplayFraction : 0f;
+        using var expiry = new SKPaint { IsAntialias=true, Style=SKPaintStyle.Stroke, StrokeWidth=1.1f,
+            Color=new SKColor(135,149,151, PlayerHudMotionSettings.StaticFeedback ? (byte)0 : (byte)(75*alpha)) };
         var remaining = fillFraction * 24;
         var oldRemaining = (motion?.Trail??0)*24;
         var effectiveFrame = PlayerHudMotionSettings.ReducedMotion ? 0 : frame;
         var phase = (effectiveFrame%120)/120f*24;
         var charging = value.ShieldDetail?.Recovery.State == "charging";
-        var sweepIntensity = charging || (motion?.Gain ?? 0) > 0f ? 105f : 48f;
+        var sweepIntensity = !PlayerHudMotionSettings.ReducedMotion && (charging || (motion?.Gain ?? 0) > 0f) ? 70f : 0f;
         for(var segment=0;segment<24;segment++)
         {
             // Follow the authored HP counterclockwise fill. Depletion and recovery keep the same origin.
@@ -53,12 +56,15 @@ internal static class PlayerHudResourceOverlay
             if(breakAlphaByte>0 && (segment%2==0 || oldRemaining>segment))
                 canvas.DrawArc(circle,start,-12,false,breakPaint);
             var fraction = Math.Clamp(remaining-segment,0,1);
+            var expired = Math.Clamp(expiryFraction*24-segment,0,1);
+            if (expired > fraction && expiry.Color.Alpha > 0)
+                canvas.DrawArc(circle,start-12*fraction,-12*(expired-fraction),false,expiry);
             var oldFraction = Math.Clamp(oldRemaining-segment,0,1);
             if(oldFraction>fraction && trail.Color.Alpha>0)
                 canvas.DrawArc(circle,start-12*fraction,-12*(oldFraction-fraction),false,trail);
             if(fraction<=0) continue;
             canvas.DrawArc(circle,start,-12*fraction,false,fill);
-            if(isExpiredGhost || (PlayerHudMotionSettings.ReducedMotion && !charging && (motion?.Gain ?? 0) <= 0f)) continue;
+            if(isExpiredGhost || sweepIntensity <= 0) continue;
             var distance = Math.Abs(segment+fraction/2-phase);
             distance = Math.Min(distance,24-distance);
             var light = Math.Clamp(1-distance/2.5f,0,1)*sweepIntensity;

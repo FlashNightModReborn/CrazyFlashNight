@@ -19,6 +19,8 @@ class org.flashNight.arki.hud.PlayerHudServiceTest {
         total = passed = 0;
         testVitalsAndWire();
         testBuffOwnership();
+        testBuffDetailsCapability();
+        testDrugTooltipProjection();
         testDrugUnequip();
         testRealMovieClipGeneration();
         testAmmoOwnershipAndEncoding();
@@ -31,6 +33,30 @@ class org.flashNight.arki.hud.PlayerHudServiceTest {
         testTypedAmmoProjection();
         ManualCooldownService.resetForTests();
         trace("--- PlayerHudServiceTest: " + passed + "/" + total + " passed, " + (total-passed) + " failed ---");
+    }
+    private static function testBuffDetailsCapability():Void {
+        var service:Object = org.flashNight.arki.hud.PlayerHudService;
+        var oldProjection:Object = service.buffProjection;
+        var oldEnabled:Boolean = service.buffDetailsEnabled;
+        var oldFull:Boolean = service.forceFull;
+        var calls:Array = [];
+        service.buffProjection = {setDetailsEnabled:function(value:Boolean):Void { calls.push(value); }};
+        PlayerHudService.testOnlyConfigure({buffDetails:true});
+        check(service.buffDetailsEnabled === true && calls.length == 1 && calls[0] === true,
+            "Host negotiation enables the optional Buff detail projection");
+        service.buffProjection = oldProjection;
+        service.buffDetailsEnabled = oldEnabled;
+        service.forceFull = oldFull;
+    }
+    private static function testDrugTooltipProjection():Void {
+        var oldData:Object = ItemUtil.itemDataDict;
+        ItemUtil.itemDataDict = {
+            普通hp药剂:{name:"普通hp药剂", displayname:"普通hp药剂", type:"消耗品", use:"药剂", price:300, icon:"普通hp药剂", data:{hp:180}}
+        };
+        var projection:Object = org.flashNight.arki.item.InventoryPanelService.buildTooltipProjection({name:"普通hp药剂", value:41006});
+        check(projection != null && projection.success === true && String(projection.introHTML).indexOf("41006") >= 0,
+            "stackable consumable tooltip includes its full quantity in the default item intro");
+        ItemUtil.itemDataDict = oldData;
     }
     private static function testTypedAmmoProjection():Void {
         var service:Object = org.flashNight.arki.hud.PlayerHudService;

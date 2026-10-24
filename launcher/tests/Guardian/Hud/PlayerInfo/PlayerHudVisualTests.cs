@@ -134,14 +134,6 @@ public sealed class PlayerHudVisualTests
     }
 
     [Fact]
-    public void ShortNameStaysStationaryWhileOverflowingNameScrolls()
-    {
-        Assert.Equal(3.7f, PlayerHudBottomWidget.NameOffset(6600, 80f));
-        Assert.Equal(3.7f, PlayerHudBottomWidget.NameOffset(6600, PlayerHudBottomWidget.NameVisibleWidth));
-        Assert.True(PlayerHudBottomWidget.NameOffset(6600, PlayerHudBottomWidget.NameVisibleWidth + 10f) < -120f);
-    }
-
-    [Fact]
     public void AmmoColorReflectsEmptyAndLowMagazineThresholdsWhilePreservingSpecialSources()
     {
         Assert.Equal(Color.FromArgb(204, 204, 204), PlayerHudBottomWidget.AmmoColor(null));
@@ -198,16 +190,6 @@ public sealed class PlayerHudVisualTests
     }
 
     [Fact]
-    public void AuthoredNameClockHoldsLeavesAndReenters()
-    {
-        Assert.Equal(3.7f, PlayerHudBottomWidget.NameOffset(0));
-        Assert.Equal(3.7f, PlayerHudBottomWidget.NameOffset(3200));
-        Assert.True(PlayerHudBottomWidget.NameOffset(6600) < -120);
-        Assert.True(PlayerHudBottomWidget.NameOffset(6700) > 130);
-        Assert.Equal(3.7f, PlayerHudBottomWidget.NameOffset(10000));
-    }
-
-    [Fact]
     public void OnlyTheAuthoredUnequipButtonWritesAndAChangedSlotCancelsTheGesture()
     {
         RunOnSta(() =>
@@ -240,7 +222,7 @@ public sealed class PlayerHudVisualTests
     }
 
     [Fact]
-    public void ReadyFlashFinishesDuringPauseAndStopsWhenNoIdleDecorationRemains()
+    public void PausedAndDeadSnapshotsDoNotReplayReadyFlashes()
     {
         RunOnSta(() =>
         {
@@ -255,7 +237,7 @@ public sealed class PlayerHudVisualTests
             data["groups"]["cooldowns"][17] = new JArray(0, 29, 30);
             controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(data)); Assert.False(bottom.WantsAnimationTick);
             data["seq"] = 2; data["groups"]["cooldowns"][17] = new JArray(1, 0, 30);
-            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(data)); Assert.True(bottom.WantsAnimationTick);
+            controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(data)); Assert.False(bottom.WantsAnimationTick);
             data["seq"] = 3; data["groups"]["vitals"]["paused"] = true;
             controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(data)); bottom.Tick(500); Assert.False(bottom.WantsAnimationTick);
             data["seq"] = 4; data["groups"]["vitals"]["paused"] = false;
@@ -268,7 +250,7 @@ public sealed class PlayerHudVisualTests
     }
 
     [Fact]
-    public void NameAnimationContinuesWhenGameplayIsPaused()
+    public void NameStaysStillAndDoesNotRequestIdleFrames()
     {
         RunOnSta(() =>
         {
@@ -280,13 +262,13 @@ public sealed class PlayerHudVisualTests
             using var bottom = new PlayerHudBottomWidget(anchor, controller, Path.Combine(root, "launcher", "web", "icons"));
             var packet = PlayerHudStateTests.Full(); packet["groups"]["vitals"]["paused"] = true;
             controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
-            Assert.True(bottom.WantsAnimationTick);
+            Assert.False(bottom.WantsAnimationTick);
             var repaints = 0; bottom.RepaintRequested += (_, _) => repaints++;
-            bottom.Tick(34); Assert.True(repaints > 0);
+            bottom.Tick(34); Assert.Equal(0,repaints);
             packet["seq"] = 2; packet["groups"]["vitals"]["decorations"] = false;
             controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
-            Assert.True(bottom.WantsAnimationTick);
-            repaints = 0; bottom.Tick(34); Assert.True(repaints > 0);
+            Assert.False(bottom.WantsAnimationTick);
+            repaints = 0; bottom.Tick(34); Assert.Equal(0,repaints);
         });
     }
 
@@ -325,24 +307,28 @@ public sealed class PlayerHudVisualTests
             runtime.Suspend();Assert.False(resources.Counters.Shown);
             runtime.Resume();PumpUntil(()=>resources.Counters.Shown);
             AssertAbove(main.Handle,resources.Handle);AssertAbove(resources.Handle,bottom.Handle);
+            var beforeResize=resources.Counters.CommitSuccessCount;
             owner.ClientSize=new Size(1280,720);
             Assert.True(resources.Counters.Shown);
-            PumpUntil(()=>resources.Size==resources.Counters.TightPhysicalBounds.Size);
+            // UpdateLayeredWindow owns physical bounds; WinForms can retain its old managed Size cache.
+            PumpUntil(()=>resources.Counters.CommitSuccessCount>beforeResize && PhysicalBounds(resources.Handle)==resources.Counters.TightPhysicalBounds,
+                ()=>$"resize: managed={resources.Size}, physical={PhysicalBounds(resources.Handle)}, expected={resources.Counters.TightPhysicalBounds}, commits={resources.Counters.CommitSuccessCount}");
             AssertAbove(main.Handle,resources.Handle);AssertAbove(resources.Handle,bottom.Handle);
             owner.WindowState=FormWindowState.Minimized;
             Application.DoEvents();Assert.False(resources.Counters.Shown);
             owner.WindowState=FormWindowState.Normal;owner.Activate();
-            PumpUntil(()=>resources.Counters.Shown && IsWindowVisible(main.Handle));
+            PumpUntil(()=>resources.Counters.Shown && IsWindowVisible(main.Handle), () =>
+                $"restore: owner={owner.WindowState}/{owner.Visible}, resource={resources.Counters}, main={IsWindowVisible(main.Handle)}, mainOwner={main.OwnerVisibleForTest}, bottomOwner={bottom.OwnerVisibleForTest}, dialogueSuppressed={dialogue.SuppressedForTest}");
             AssertAbove(main.Handle,resources.Handle);AssertAbove(resources.Handle,bottom.Handle);
 
             void ShowDialogue(string id)=>dialogue.ShowFrame(new NativeDialogueFrame {RequestId=id,SceneId="stack-scene",Revision=1,LineCount=1,Name="测试",Title="",Text="对话层级测试",PortraitKey="",Expression="",ImageAction="keep",ImagePath=""});
         });
     }
-    private static void PumpUntil(Func<bool> done)
+    private static void PumpUntil(Func<bool> done, Func<string> diagnostic = null)
     {
         var wait=Stopwatch.StartNew();
         while(!done() && wait.ElapsedMilliseconds<15000){Application.DoEvents();Thread.Sleep(10);}
-        Assert.True(done(),"native HUD presentation timed out");
+        Assert.True(done(),"native HUD presentation timed out " + diagnostic?.Invoke());
     }
     private static void AssertAbove(IntPtr higher,IntPtr lower)
     {
@@ -353,6 +339,13 @@ public sealed class PlayerHudVisualTests
     [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
     [DllImport("user32.dll")] private static extern bool IsWindowVisible(IntPtr hwnd);
     [DllImport("user32.dll")] private static extern bool SetWindowPos(IntPtr hwnd,IntPtr after,int x,int y,int w,int h,uint flags);
+    [StructLayout(LayoutKind.Sequential)] private struct WindowRect { public int Left,Top,Right,Bottom; }
+    [DllImport("user32.dll")] private static extern bool GetWindowRect(IntPtr hwnd,out WindowRect rect);
+    private static Rectangle PhysicalBounds(IntPtr hwnd)
+    {
+        Assert.True(GetWindowRect(hwnd,out var rect));
+        return Rectangle.FromLTRB(rect.Left,rect.Top,rect.Right,rect.Bottom);
+    }
 
     [Fact]
     public void HiddenBuffAndResourceWindowsNeverBecomeOrderingAnchors()
@@ -438,7 +431,7 @@ public sealed class PlayerHudVisualTests
     }
 
     [Fact]
-    public void NativeDecorationSurvivesFlashTierDropAndKeepsExistingPauseSemantics()
+    public void FullResourcesRemainQuietAcrossFlashTierDropAndPause()
     {
         RuntimeFontCatalog.Configure(FindRoot());
         var state = new PlayerHudState(); state.Receive(PlayerHudStateTests.Encode(PlayerHudStateTests.Full()), 1);
@@ -455,13 +448,13 @@ public sealed class PlayerHudVisualTests
         }
         using var before = Paint();
         Assert.False(model.WantsAnimationTick);
-        Assert.True(widget.AdvanceLiveDecoration(2100));
+        Assert.False(widget.AdvanceLiveDecoration(2100));
         using var animated = Paint();
-        Assert.True(DifferentPixels(before,animated,new Rectangle(0,0,before.Width,before.Height)) > 100);
+        Assert.True(DifferentPixels(before,animated,new Rectangle(0,0,before.Width,before.Height)) == 0);
         widget.LiveVitals = values with { Decorations = false };
-        Assert.True(widget.AdvanceLiveDecoration(10000));
+        Assert.False(widget.AdvanceLiveDecoration(10000));
         using var disabled = Paint();
-        Assert.True(DifferentPixels(animated,disabled,new Rectangle(0,0,before.Width,before.Height)) > 100);
+        Assert.True(DifferentPixels(animated,disabled,new Rectangle(0,0,before.Width,before.Height)) == 0);
         widget.LiveVitals = values with { Hp = 0 };
         Assert.False(widget.AdvanceLiveDecoration(1000));
         widget.LiveVitals = values; widget.ResetLiveClock();
@@ -811,11 +804,21 @@ public sealed class PlayerHudVisualTests
                 }
                 Assert.True(brightBefore > 1000, kind + " must have visible authored foreground");
                 Assert.True(brightAfter < brightBefore * 0.65, kind + " foreground hides the cooldown shade");
-                var strip=PlayerHudBottomWidget.CooldownTrackRect(rect);
-                Assert.False(strip.IntersectsWith(PlayerHudBottomWidget.HotkeyRect(rect)));
-                var elapsed = cooling.GetPixel((int)((strip.Left + 2) * scale), (int)((strip.Top + 1) * scale));
-                var remaining = cooling.GetPixel((int)((strip.Right - 2) * scale), (int)((strip.Top + 1) * scale));
-                Assert.True(elapsed.R + elapsed.G > remaining.R + remaining.G + 150, kind + " needs a readable progress strip");
+                if (kind == "switch")
+                {
+                    var strip=PlayerHudBottomWidget.CooldownTrackRect(rect);
+                    Assert.False(strip.IntersectsWith(PlayerHudBottomWidget.HotkeyRect(rect)));
+                    var elapsed = cooling.GetPixel((int)((strip.Left + 2) * scale), (int)((strip.Top + 1) * scale));
+                    var remaining = cooling.GetPixel((int)((strip.Right - 2) * scale), (int)((strip.Top + 1) * scale));
+                    Assert.True(elapsed.R + elapsed.G > remaining.R + remaining.G + 150, kind + " needs a readable progress strip");
+                }
+                else
+                {
+                    var horizonY = (int)Math.Round((rect.Top + 1 + (rect.Height - 2) * (1 - 10 / 30.0)) * scale);
+                    var horizon = cooling.GetPixel((int)((rect.Left + 4) * scale), horizonY);
+                    var readyPixel = ready.GetPixel((int)((rect.Left + 4) * scale), horizonY);
+                    Assert.True(horizon.R > readyPixel.R + 40 && horizon.G > readyPixel.G + 30, "weapon cooldown uses the unified amber horizon line");
+                }
             }
             catch (Exception ex) { failure = ex; }
         });
@@ -931,15 +934,23 @@ public sealed class PlayerHudVisualTests
         }
         var drugs = new[] { "普通hp药剂", "普通mp药剂", "普通hp药剂", "普通mp药剂" };
         for (var i = 0; i < 4; i++) { groups["loadout"]["drugs"][i]["name"] = drugs[i]; groups["loadout"]["drugs"][i]["icon"] = drugs[i]; }
+        if(longReadings)
+            for(var i=0;i<4;i++)groups["loadout"]["drugs"][i]["count"]=new[]{9999,41006,int.MaxValue,1}[i];
         groups["cooldowns"][0] = new JArray(0, 10, 30);
         groups["cooldowns"][17] = new JArray(0, 10, 30);
         groups["cooldowns"][1]=new JArray(0,60,360);
         groups["cooldowns"][13]=new JArray(0,0,240);
+        if(longReadings)
+            for(var i=13;i<17;i++)groups["cooldowns"][i]=new JArray(1,0,240);
         groups["buffs"]=new JArray(
             new JObject{["id"]="1:example-a",["timed"]=true,["total"]=300,["remaining"]=270},
             new JObject{["id"]="1:example-b",["timed"]=true,["total"]=300,["remaining"]=150},
             new JObject{["id"]="1:example-c",["timed"]=true,["total"]=300,["remaining"]=60},
             new JObject{["id"]="1:example-d",["timed"]=false,["total"]=0,["remaining"]=0});
+        var buffNames = new[] { "霸体减伤", "铁布衫", "蜘蛛网", "兴奋剂" };
+        var buffDescriptions = new[] { "降低受到的伤害；同类减伤取最强效果。", "提高防御力；同类防御倍率取最强效果。", "蛛网影响下的行动限制。", "提高空手攻击力和移动速度，在本场景内有效。" };
+        for (var i=0;i<4;i++) groups["buffs"][i]["info"]=new JObject {
+            ["name"]=buffNames[i], ["description"]=buffDescriptions[i], ["polarity"]=i==2?"harm":"benefit", ["stacks"]=0 };
         groups["vitals"]["shieldDetail"] = PlayerHudResourceFactsTests.Shield(depleted?"health":"waiting");
         groups["vitals"]["shieldDetail"]["strength"] = longReadings?99999999:8355;
         groups["vitals"]["poiseVisual"] = new JObject{["airborne"]=false,["rigid"]=false,["down"]=false};
@@ -1073,6 +1084,17 @@ public sealed class PlayerHudVisualTests
                 detailCrop.Save(Path.Combine(output,"hud-resource-details-"+width+".png"),ImageFormat.Png);
                 detailsPreview.Save(Path.Combine(output,"hud-with-details-"+width+".png"),ImageFormat.Png);
                 controller.HideTooltip();
+                using var buffTooltip=new PlayerHudResourceTooltip(anchor,controller,true);
+                var buff=controller.State.Snapshot.BuffCards[0];
+                controller.ShowTooltip(new PlayerHudTarget("buff",0,buff.Id,data["epoch"].Value<long>(),0,0,
+                    PlayerHudBuffWidget.SlotRect(0),controller.Generation));
+                using var buffDetails=(Bitmap)bright.Clone();
+                using(var g=Graphics.FromImage(buffDetails))buffTooltip.Widget.Paint(g,1,origin);
+                var buffTip=buffTooltip.Widget.ScreenBounds;buffTip.Offset(-origin.X,-origin.Y);
+                Assert.True(new Rectangle(0,0,width,height).Contains(buffTip));
+                using var buffDetailCrop=buffDetails.Clone(Rectangle.Union(buffCrop,buffTip),PixelFormat.Format32bppPArgb);
+                buffDetailCrop.Save(Path.Combine(output,"hud-buff-details-"+width+".png"),ImageFormat.Png);
+                controller.HideTooltip();
             }
             // Focused preview uses the same production composition at native output size.
             using var strip = new Bitmap(width, (int)Math.Ceiling(108 * scale), PixelFormat.Format32bppPArgb);
@@ -1091,5 +1113,51 @@ public sealed class PlayerHudVisualTests
                 skillStrip.Save(Path.Combine(output,"hud-skill-strip-"+width+".png"),ImageFormat.Png);
             }
         }
+    }
+
+    [Theory]
+    [InlineData(1024,576)]
+    [InlineData(1600,900)]
+    [InlineData(2560,1440)]
+    public void GroupedBuffRendersActivationAndActualCorrections(int width,int height)
+    {
+        RunOnSta(()=>
+        {
+            RuntimeFontCatalog.Configure(FindRoot());
+            using var owner=new Form {ClientSize=new Size(width,height)};
+            using var anchor=new Panel {Dock=DockStyle.Fill};owner.Controls.Add(anchor);owner.CreateControl();anchor.CreateControl();
+            using var controller=new PlayerHudController(_=>true,()=>true,action=>action());
+            var packet=PlayerHudStateTests.Full();
+            packet["groups"]["buffs"]=new JArray(PlayerHudStateTests.DetailedBuff("controller",primary:true,active:true),
+                PlayerHudStateTests.DetailedBuff("effect",active:true));
+            controller.TakeUiData("pi:"+PlayerHudStateTests.Encode(packet));
+            var card=Assert.Single(controller.State.Snapshot.BuffCards);
+            using var widget=new PlayerHudBuffWidget(anchor,controller);widget.Tick(400);
+            using var tooltip=new PlayerHudResourceTooltip(anchor,controller,true);
+            controller.ShowTooltip(new PlayerHudTarget("buff",0,card.Id,1,0,0,
+                PlayerHudBuffWidget.SlotRect(0),controller.Generation));
+            var origin=anchor.PointToScreen(Point.Empty);
+            using var canvas=new Bitmap(width,height,PixelFormat.Format32bppPArgb);
+            using(var graphics=Graphics.FromImage(canvas))
+            {
+                graphics.Clear(Color.Transparent);widget.Paint(graphics,1,origin);tooltip.Widget.Paint(graphics,1,origin);
+            }
+            Assert.Equal(0,canvas.GetPixel(width/2,height/2).A);
+            Assert.True(new Rectangle(origin,owner.ClientSize).Contains(tooltip.Widget.ScreenBounds));
+            Assert.False(tooltip.Widget.Scrollable);
+            var text=string.Concat(tooltip.Widget.ActiveDocument.Sections.Select(section=>section.PlainText));
+            Assert.Contains("爆发中",text);Assert.Contains("空手攻击力：+100",text);Assert.Contains("装备刀锋利度加成：-70",text);
+            var folder=Environment.GetEnvironmentVariable("CF7_PLAYER_HUD_CAPTURE_DIR");
+            if(!string.IsNullOrEmpty(folder))
+            {
+                Directory.CreateDirectory(folder);
+                using var preview=new Bitmap(width,height,PixelFormat.Format32bppPArgb);
+                using(var graphics=Graphics.FromImage(preview))
+                {
+                    graphics.Clear(Color.FromArgb(55,61,63));graphics.DrawImageUnscaled(canvas,0,0);
+                }
+                preview.Save(Path.Combine(folder,"hud-wristblade-"+width+".png"),ImageFormat.Png);
+            }
+        });
     }
 }

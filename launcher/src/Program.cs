@@ -1181,6 +1181,7 @@ class Program
         CF7Launcher.Config.UserPrefs userPrefs = workerPolicy == null
             ? new CF7Launcher.Config.UserPrefs(projectRoot)
             : new CF7Launcher.Config.UserPrefs(projectRoot, Path.Combine(workerPolicy.StateRoot, "preferences"));
+        CF7Launcher.Guardian.Hud.PlayerInfo.PlayerHudMotionSettings.Configure(userPrefs.HudMotionMode);
         if (workerPolicy != null)
         {
             userPrefs.Performance = workerPolicy.Performance;
@@ -1930,6 +1931,11 @@ class Program
                     if (form.InvokeRequired) form.BeginInvoke(callback); else callback();
                 });
             socketServer.OnClientDisconnected += playerHudController.Disconnected;
+            CF7Launcher.Guardian.Hud.Loot.LootIconCatalog lootIconCatalog =
+                new CF7Launcher.Guardian.Hud.Loot.LootIconCatalog(
+                    Path.Combine(projectRoot, "launcher", "web", "icons"),
+                    Path.Combine(projectRoot, "launcher", "web", "assets", "enemy-portraits"),
+                    dollPortraitsDir: Path.Combine(projectRoot, "launcher", "data", "doll-portraits"));
             if (workerPolicy == null)
             {
                 if (playerInfoSurface == null)
@@ -1937,7 +1943,7 @@ class Program
                         form, form.FlashHostPanel, playerHudController.State);
                 playerHudRuntime = new CF7Launcher.Guardian.Hud.PlayerInfo.PlayerHudRuntime(
                     form, form.FlashHostPanel, playerInfoSurface, playerHudController,
-                    Path.Combine(projectRoot, "launcher", "web", "icons"), nativeHud, shareMainHud: playerInfoFixtureCase==null);
+                    Path.Combine(projectRoot, "launcher", "web", "icons"), nativeHud, shareMainHud: playerInfoFixtureCase==null, portraitCatalog: lootIconCatalog);
             }
             IPanelHudCompanion panelHudCompanion = playerHudRuntime;
             panelHost = new PanelHostController(form, webOverlay, nativeHud, backdrop,
@@ -1993,11 +1999,6 @@ class Program
             // 第一次有界事实投影到达后，由 map_domain 更新同一 catalog；未就绪时不展示猜测地图。
             // 复用 NativeHud 的既有物品图标目录：RightContext 只借用复活币帧，
             // LootFeedWidget 保持目录唯一所有者并在 HUD teardown 时释放。
-            CF7Launcher.Guardian.Hud.Loot.LootIconCatalog lootIconCatalog =
-                new CF7Launcher.Guardian.Hud.Loot.LootIconCatalog(
-                    Path.Combine(projectRoot, "launcher", "web", "icons"),
-                    Path.Combine(projectRoot, "launcher", "web", "assets", "enemy-portraits"),
-                    dollPortraitsDir: Path.Combine(projectRoot, "launcher", "data", "doll-portraits"));
             rightContext = new CF7Launcher.Guardian.Hud.RightContextWidget(
                     form.FlashHostPanel,
                     commandRouter,
@@ -2321,7 +2322,8 @@ class Program
                 Path.Combine(projectRoot, "launcher", "data", "doll-portraits"),
                 webOverlay.TryPostToWeb);
         // 烘焙成功 → widget 负缓存失效 + 重绘：存活期内的占位卡片原地升级为胸像
-        dollBakeService.PortraitReady = lootFeedWidget.NotifyIconReady;
+        playerHudRuntime?.SetPortraitBakeSink(dollBakeService);
+        dollBakeService.PortraitReady = key => { lootFeedWidget?.NotifyIconReady(key); playerHudRuntime?.NotifyPortraitReady(key); };
         LootFeedTask lootFeedTask = new LootFeedTask(lootFeedWidget, dollBakeService);
         StageOutcomeTask stageOutcomeTask = new StageOutcomeTask(
             socketServer, rightContext);
@@ -2436,6 +2438,8 @@ class Program
                 nativeGuidanceTask.NotifyHelpAvailabilityChanged();
             if (key == "sfxEnabled" || key == "ambientEnabled")
                 webOverlay.PushAudioPrefs();
+            if (key == "hudMotionMode")
+                dispatchToUi(() => CF7Launcher.Guardian.Hud.PlayerInfo.PlayerHudMotionSettings.Configure(userPrefs.HudMotionMode));
             if (key == "reducedPresentation")
                 webOverlay.PushPresentationPrefs();
             if (key == "mapDisplayPreference" && rightContext != null

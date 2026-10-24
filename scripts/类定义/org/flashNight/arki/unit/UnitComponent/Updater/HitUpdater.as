@@ -5,6 +5,7 @@ import org.flashNight.arki.component.Collider.*;
 import org.flashNight.arki.component.Effect.*;
 import org.flashNight.arki.unit.UnitComponent.Status.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+import org.flashNight.arki.hud.FocusTargetHudService;
 
 class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
 
@@ -93,6 +94,7 @@ class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
 
         // ────────────── 血槽颜色与后续特效 ──────────────
         BloodBarEffectHandler.updateStatus(hitTarget);
+        FocusTargetHudService.recordPlayerHit(shooter, hitTarget, damageResult);
         EffectSystem.Effect(hitTarget.击中效果, ocx, ocy, sxc, undefined, true);
 
         // 判断是否需要生成子弹击中后的后续效果

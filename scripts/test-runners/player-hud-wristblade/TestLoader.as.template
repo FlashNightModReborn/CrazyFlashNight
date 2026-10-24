@@ -1,0 +1,13 @@
+﻿import org.flashNight.arki.component.Buff.*;
+import org.flashNight.arki.component.Buff.Component.*;
+import org.flashNight.arki.hud.*;
+import org.flashNight.arki.unit.*;
+import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.*;
+import org.flashNight.neur.Event.*;
+
+if (_root.装备生命周期函数 == undefined) _root.装备生命周期函数 = {};
+#include "逻辑/装备函数/剑圣手甲.as"
+
+trace("FocusedTestRunId player-hud-wristblade Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.hud.PlayerHudWristbladeTest.runAllTests();
+trace("FocusedTestRunId player-hud-wristblade Complete: __FOCUSED_RUN_ID__");

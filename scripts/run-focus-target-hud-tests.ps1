@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param([ValidateRange(1,3600)][int]$TimeoutSeconds=600,[switch]$SkipCompile)
 $ErrorActionPreference='Stop'
 $focusedRun=@{

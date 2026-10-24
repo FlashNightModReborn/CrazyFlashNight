@@ -63,6 +63,7 @@ class org.flashNight.arki.item.drug.effects.ToughnessBuffEffect implements IDrug
         if (duration > 0) components.push(new TimeLimitComponent(duration));
 
         var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
+        metaBuff.hudInfo = {name:ctx.itemName, description:"药剂效果，调整韧性系数；实际强度以角色属性为准。", polarity:"neutral", stacks:0};
         var registeredId:String = target.buffManager.addBuff(metaBuff, buffId);
         ctx.registerDomainBuffId(registeredId);
         target.buffManager.update(0);

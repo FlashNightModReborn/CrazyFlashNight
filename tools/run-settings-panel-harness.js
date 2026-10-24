@@ -75,6 +75,13 @@ test("snapshot adopts exact authority and leaves the retired performance field u
   assert.strictEqual(model.keys[12].keyCode, 54);
   assert.strictEqual(model.keyMigrationNotice, "");
   assert.strictEqual(model.hostPrefs.tutorialsAutoOpen, true);
+  assert.strictEqual(model.hostPrefs.hudMotionMode, 'full');
+  for (const mode of ['full', 'reduced', 'static']) {
+    response.hostPrefs.hudMotionMode = mode;
+    assert.strictEqual(runtime.normalizeSnapshot(response).hostPrefs.hudMotionMode, mode);
+  }
+  response.hostPrefs.hudMotionMode = 'invalid';
+  assert.strictEqual(runtime.normalizeSnapshot(response).hostPrefs.hudMotionMode, 'full');
   const draft = runtime.gameDraft(model);
   draft.settings.setGlobalVolume = 79;
   assert.strictEqual(runtime.hasGameChanges(model, draft), true);

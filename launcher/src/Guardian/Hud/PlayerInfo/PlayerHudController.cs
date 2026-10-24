@@ -99,7 +99,7 @@ internal sealed class PlayerHudController : IDisposable
                 _adoptedGeneration = packet.Generation;
         }
         if (CanInteract && _poiseRequestGeneration != Generation &&
-            Send(new JObject { ["action"] = "playerHudSync", ["poiseDetails"] = true, ["poiseVisuals"] = true, ["shieldDetails"] = true, ["resourceHints"] = true, ["weaponVisuals"] = true, ["ammoDetails"] = true, ["coldSkills"] = true, ["focusTarget"] = true }))
+            Send(new JObject { ["action"] = "playerHudSync", ["poiseDetails"] = true, ["poiseVisuals"] = true, ["shieldDetails"] = true, ["resourceHints"] = true, ["weaponVisuals"] = true, ["ammoDetails"] = true, ["coldSkills"] = true, ["focusTarget"] = true, ["focusTargets"] = true, ["buffDetails"] = true }))
             _poiseRequestGeneration = Generation;
         if (Profiler != null && CanInteract && _profileGeneration != Generation &&
             Send(new JObject { ["action"] = "playerHudProfile", ["enabled"] = true, ["profileId"] = Profiler.Id }))
@@ -170,15 +170,15 @@ internal sealed class PlayerHudController : IDisposable
     {
         HideTooltip();
         if (!_connected() || target.ConnectionGeneration != Generation || _adoptedGeneration != Generation || State.Snapshot?.Epoch != target.Epoch) return;
-        if(target.Kind is "resources" or "ammo")
+        if(target.Kind is "resources" or "ammo" or "buff" or "focusTarget")
         {
             _resourceHover=true;ResourceTooltipRequested?.Invoke(target);return;
         }
         _hoverId = "phh:" + _nonce + ":" + (++_hoverSequence);
-        var message = Identity(target, "playerHudTooltip");
+        var anchor = PlayerHudBottomWidget.TooltipAnchor(target); var message = Identity(target, "playerHudTooltip");
         message["op"] = "show"; message["hoverId"] = _hoverId;
-        message["anchor"] = new JObject { ["x"] = target.Anchor.X, ["y"] = target.Anchor.Y,
-            ["width"] = target.Anchor.Width, ["height"] = target.Anchor.Height };
+        message["anchor"] = new JObject { ["x"] = anchor.X, ["y"] = anchor.Y, ["width"] = anchor.Width, ["height"] = anchor.Height };
+
         Send(message);
     }
 

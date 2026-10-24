@@ -16,6 +16,17 @@ public sealed class PlayerHudResourceMotionTests
     }
 
     [Fact]
+    public void CriticalLifeUsesHysteresisAndResetsWithTheOwner()
+    {
+        var motion=new PlayerHudResourceMotion();var v=Vitals() with {HpMax=100,Hp=25};
+        motion.Observe(v);Assert.True(motion.CriticalHp);
+        motion.Observe(v with {Hp=29});Assert.True(motion.CriticalHp);
+        motion.Observe(v with {Hp=31});Assert.False(motion.CriticalHp);
+        motion.Observe(v with {Hp=26});Assert.False(motion.CriticalHp);
+        motion.Observe(v);motion.Reset();Assert.False(motion.CriticalHp);
+    }
+
+    [Fact]
     public void LossChangesAuthorityFillImmediatelyAndAfterimageExpiresDespiteRepeatedSnapshots()
     {
         var v=Vitals();var motion=new PlayerHudResourceMotion();motion.Observe(v);
@@ -124,7 +135,7 @@ public sealed class PlayerHudResourceMotionTests
     }
 
     [Fact]
-    public void TemporaryShieldLayerExpiringOverDepletedBaseShieldHoldsBeforeEasing()
+    public void TemporaryShieldExpiryOnlyHoldsAGhostAndReportsDepletedBaseImmediately()
     {
         var depletedBase = Vitals() with { ShieldPresent = true, Shield = 0, ShieldMax = 500 };
         var motion = new PlayerHudResourceMotion();
@@ -141,7 +152,8 @@ public sealed class PlayerHudResourceMotionTests
         motion.Observe(depletedBase);
         Assert.True(motion.Shield.HoldingLayer);
         Assert.Equal(0.375f, motion.Shield.DisplayFraction, 3);
-        Assert.Equal(300, motion.ResolveShieldDisplay(depletedBase).Shield, 1);
+        Assert.Equal(0, motion.ResolveShieldDisplay(depletedBase).Shield);
+        Assert.Equal(500,motion.ResolveShieldDisplay(depletedBase).ShieldMax);
         Assert.Equal(0f, motion.EmptyMix);
 
         motion.Advance(PlayerHudResourceMotion.GraceMilliseconds);
@@ -172,18 +184,18 @@ public sealed class PlayerHudResourceMotionTests
     }
 
     [Fact]
-    public void ShieldReadoutThrottlesContinuousDecayAndSnapsOnBoundariesOrDiscreteHits()
+    public void ShieldReadoutIsImmediateForContinuousDecayAndDiscreteHits()
     {
         var v = Vitals();
         var motion = new PlayerHudResourceMotion();
         motion.Observe(v);
         Assert.Equal(1000, motion.ResolveShieldDisplay(v).Shield);
 
-        // Small continuous decay is throttled for 100ms
+        // Even a small continuous decay is visible immediately.
         var decayed = v with { Shield = 988 };
         motion.Observe(decayed);
-        Assert.Equal(1000, motion.ResolveShieldDisplay(decayed).Shield);
-        motion.Advance(PlayerHudResourceMotion.ReadoutThrottleMilliseconds);
+        Assert.Equal(988, motion.ResolveShieldDisplay(decayed).Shield);
+        motion.Advance(100);
         Assert.Equal(988, motion.ResolveShieldDisplay(decayed).Shield);
 
         // Discrete hit snaps immediately without waiting for throttle
@@ -237,7 +249,7 @@ public sealed class PlayerHudResourceMotionTests
     }
 
     [Fact]
-    public void ShieldFlowChangesFilledPixelsWithoutMovingTheMeterGeometry()
+    public void FullShieldIsQuietWithoutMovingTheMeterGeometry()
     {
         var v=Vitals();using var a=Ring(v,0);using var b=Ring(v,45);
         var changed=0;
@@ -247,7 +259,7 @@ public sealed class PlayerHudResourceMotionTests
             Assert.Equal(p.Alpha>0,q.Alpha>0);
             if(p!=q)changed++;
         }
-        Assert.True(changed>20,"The stored amount must have visible bounded flow even after Flash drops its tier.");
+        Assert.Equal(0,changed);
     }
 
     [Fact]

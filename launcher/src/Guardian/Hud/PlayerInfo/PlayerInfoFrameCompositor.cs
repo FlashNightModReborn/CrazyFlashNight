@@ -409,14 +409,14 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             if (live != null && hpFrame < targetHpFrame)
             {
                 ValidateVirtualFrame(_hp, targetHpFrame);
-                DrawHpDamageTrail(canvas, plan, targetHpFrame, hpFrame);
+                if (!PlayerHudMotionSettings.StaticFeedback) DrawHpDamageTrail(canvas, plan, targetHpFrame, hpFrame);
                 DrawHpFill(canvas, plan, targetHpFrame);
             }
             else if (live != null && hpFrame > targetHpFrame)
             {
                 ValidateVirtualFrame(_hp, targetHpFrame);
-                DrawHpHealPreview(canvas, plan, targetHpFrame, hpFrame);
-                DrawHpFill(canvas, plan, hpFrame);
+                DrawHpFill(canvas, plan, targetHpFrame);
+                if (!PlayerHudMotionSettings.StaticFeedback) DrawHpHealPreview(canvas, plan, targetHpFrame, hpFrame);
             }
             else
             {
@@ -427,11 +427,13 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
             {
                 _liveMotion ??= new PlayerHudHpMotion();
                 var rimPlan = FindLayerPlan(plan, HpRim);
-                var motionFrame = PlayerHudMotionSettings.ReducedMotion ? 0 : liveFrame;
+                var critical = resourceMotion?.CriticalHp ?? PlayerHudMotionSettings.IsCritical(live,false);
+                var quiet = PlayerHudMotionSettings.ReducedMotion || critical || live.Hp >= live.HpMax;
+                var motionFrame = quiet ? 0 : liveFrame;
                 // Extra vitality supplies only the color behind the original moving cutouts.
                 DrawHpOverflow(canvas,plan,live);
-                DrawLowHpPulse(canvas, plan, live, motionFrame);
-                if (hpFrame != _hp.FrameMap.EmptyVirtualFrame)
+                DrawLowHpPulse(canvas, plan, live, liveFrame, critical);
+                if (!quiet && hpFrame != _hp.FrameMap.EmptyVirtualFrame)
                     DrawInGaugeCoordinates(canvas, plan, _hp, () => _liveMotion.DrawLight(canvas, motionFrame));
                 DrawBitmap(canvas, _liveMotion.Raster("hp-motion-base", plan, rimPlan), HpRim, plan);
                 DrawInGaugeCoordinates(canvas, plan, _hp, () => _liveMotion.DrawMotifs(canvas, motionFrame));
@@ -695,23 +697,19 @@ internal sealed class PlayerInfoFrameCompositor : IDisposable
         SKCanvas canvas,
         PlayerInfoRasterPlan plan,
         PlayerHudVitals value,
-        int liveFrame)
+        int liveFrame, bool critical)
     {
-        if (PlayerHudMotionSettings.ReducedMotion || value.Hp <= 0 || value.HpMax <= 0)
+        if (!critical || value.Hp <= 0 || value.HpMax <= 0)
         {
             return;
         }
         var ratio = value.Hp / value.HpMax;
-        if (ratio > 0.25d)
-        {
-            return;
-        }
 
         var hpPaint = _hpPaint ?? throw new ObjectDisposedException(nameof(PlayerInfoFrameCompositor));
         var layer = FindLayerPlan(plan, HpFill);
         var target = ToLocalRect(layer.PhysicalBounds, plan.TightPhysicalBounds);
         var transform = layer.SourceToBitmap;
-        var wave = 0.5f + 0.5f * MathF.Sin(liveFrame * 0.22f);
+        var wave = PlayerHudMotionSettings.ReducedMotion ? 0.4f : 0.5f + 0.5f * MathF.Sin(liveFrame * MathF.PI * 2 / 39f);
         var severity = Math.Clamp((float)((0.25d - ratio) / 0.25d), 0.2f, 1f);
         var alpha = (byte)Math.Clamp(Math.Round((18f + 46f * wave) * severity), 10d, 68d);
 

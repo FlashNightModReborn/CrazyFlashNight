@@ -17,18 +17,17 @@ internal sealed record PlayerHudResourceHints(PlayerHudResourceHint[] Skills, Pl
 internal sealed class PlayerHudDenialMotion
 {
     private long _epoch, _serial;
-    private int _elapsed = 650;
+    private int _elapsed = 360;
     private PlayerHudResourceNotice? _notice;
-    internal bool Active => _notice != null && _elapsed < 650;
+    internal bool Active => _notice != null && _elapsed < 360;
     internal float Alpha
     {
         get
         {
             if (!Active) return 0;
-            // Two soft pulses, an immediate leading edge, then a clean stop.
-            var phase = _elapsed / 325f;
-            return Math.Clamp((float)(0.35 + 0.65 * Math.Sin(Math.PI * (phase % 1))), 0, 1)
-                * Math.Min(1, (650 - _elapsed) / 90f);
+            // Static feedback remains legible; reduced feedback is a single short, soft edge.
+            if (PlayerHudMotionSettings.StaticFeedback) return 0.65f;
+            return (1f - _elapsed / 360f) * (PlayerHudMotionSettings.ReducedMotion ? 0.55f : 1f);
         }
     }
     internal float MpAlpha => _notice?.Reason == "mp" ? Alpha : 0;
@@ -55,10 +54,10 @@ internal sealed class PlayerHudDenialMotion
     internal bool Advance(int elapsedMs)
     {
         if (!Active || elapsedMs <= 0) return false;
-        _elapsed = (int)Math.Min(650L, _elapsed + (long)elapsedMs);
+        _elapsed = (int)Math.Min(360L, _elapsed + (long)elapsedMs);
         return true;
     }
-    internal void Clear() { _notice = null; _elapsed = 650; }
+    internal void Clear() { _notice = null; _elapsed = 360; }
 }
 
 internal static class PlayerHudResourceHintPainter
@@ -97,7 +96,7 @@ internal static class PlayerHudResourceHintPainter
             DrawSegments(g, r, PlayerHudSlotFeedbackGeometry.VisibleSeal, seal);
             DrawSegments(g, r, PlayerHudSlotFeedbackGeometry.VisibleSeal, upperEdge, 0.3f, -0.3f);
         }
-        if (hint.State == "last") PaintReserveCorners(g, r, PlayerHudSlotFeedbackGeometry.LightPhase(clockMs, ready));
+        if (hint.State == "last") PaintReserveCorners(g, r, 0.7f);
         // The existing whole-frame press-denial pulse remains separate from the slow corner lights.
         var alpha = denialAlpha * 245;
         if (alpha <= 0) return;
@@ -112,16 +111,9 @@ internal static class PlayerHudResourceHintPainter
 
     private static void PaintReserveCorners(Graphics g, RectangleF r, float phase)
     {
-        var strength = 0.3f + 0.7f * phase;
-        using var outer = new Pen(Color.FromArgb((int)(22 * strength), 255, 56, 33), 5);
-        using var middle = new Pen(Color.FromArgb((int)(55 * strength), 255, 52, 32), 3);
-        using var inner = new Pen(Color.FromArgb((int)(130 * strength), 255, 70, 41), 1.6f);
-        using var core = new Pen(Color.FromArgb((int)(255 * strength),
-            (int)(236 + 19 * phase), (int)(83 + 158 * phase), (int)(57 + 158 * phase)), PlayerHudSlotFeedbackGeometry.FrameLineWidth);
-        DrawSegments(g, r, PlayerHudSlotFeedbackGeometry.Corners, outer);
-        DrawSegments(g, r, PlayerHudSlotFeedbackGeometry.Corners, middle);
-        DrawSegments(g, r, PlayerHudSlotFeedbackGeometry.Corners, inner);
-        DrawSegments(g, r, PlayerHudSlotFeedbackGeometry.Corners, core);
+        // A usable final charge is amber and still. Red is reserved for danger or a real denial.
+        using var edge = new Pen(Color.FromArgb(220,222,167,78),1f);
+        DrawSegments(g,r,PlayerHudSlotFeedbackGeometry.Corners,edge);
     }
 
     private static void DrawSegments(Graphics g, RectangleF r, ReadOnlySpan<PlayerHudSlotFeedbackGeometry.Segment> segments, Pen pen,

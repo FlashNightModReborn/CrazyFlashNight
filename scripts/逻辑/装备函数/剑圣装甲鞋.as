@@ -154,6 +154,7 @@ _root.装备生命周期函数.剑圣装甲鞋应用Buff = function(ref:Object, 
     var metaBuff:MetaBuff = new MetaBuff(childBuffs, components, 0);
 
     // 使用固定ID添加buff，重复调用会替换而非叠加
+    metaBuff.hudInfo = {name:"剑圣疾行", description:"剑圣装甲鞋提供的移动速度增强。", polarity:"benefit", stacks:0};
     var buffId:String = target.buffManager.addBuff(metaBuff, "剑圣装甲鞋速度增强");
     return _root.装备生命周期函数.剑圣套装登记Buff(ref, target.buffManager, buffId);
 };

@@ -78,7 +78,7 @@ public sealed class PlayerHudPresentationTests
     [Theory]
     [InlineData(false,0,360,"12s")]
     [InlineData(false,60,360,"10s")]
-    [InlineData(false,0,126,"4.2s")]
+    [InlineData(false,0,126,"5s")]
     [InlineData(false,125,126,"0.1s")]
     [InlineData(false,126,126,"0.1s")]
     [InlineData(false,0,1800,"1:00")]
@@ -168,7 +168,7 @@ public sealed class PlayerHudPresentationTests
     }
 
     [Fact]
-    public void ColdSkillsRenderOnSecondRowAndDeduplicateEquippedQuickBarSkills()
+    public void ColdSkillsKeepTheirPositionsWhenAlsoEquippedOnTheQuickBar()
     {
         Sta(()=>
         {
@@ -188,9 +188,10 @@ public sealed class PlayerHudPresentationTests
                 new JObject{["name"]="瞬步斩",["icon"]="瞬步斩",["key"]="⇧↓→B",["level"]=2,["ready"]=true,["step"]=0,["total"]=450,["blocked"]=true});
             Assert.True(controller.State.Receive(PlayerHudStateTests.Encode(data),1));
             var visible=PlayerHudBottomWidget.VisibleColdSkills(controller.State.Snapshot);
-            Assert.Equal(2,visible.Length);
-            Assert.Equal("迅斩",visible[0].Name);
-            Assert.Equal("瞬步斩",visible[1].Name);
+            Assert.Equal(3,visible.Length);
+            Assert.Equal("拔刀术",visible[0].Name);
+            Assert.Equal("迅斩",visible[1].Name);
+            Assert.Equal("瞬步斩",visible[2].Name);
             Assert.Equal(474,bottom.ScreenBounds.Top-anchor.PointToScreen(Point.Empty).Y);
         });
     }

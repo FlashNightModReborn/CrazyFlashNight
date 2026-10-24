@@ -43,6 +43,7 @@ namespace CF7Launcher.Config
         public string SuppressedHighDpiWarningRaw { get; set; }
         public string MapDisplayPreference { get; set; }
         public string HitNumberMode { get; set; }
+        public string HudMotionMode { get; set; } = "full";
         public int HitNumberWorldRowLimit { get; set; }
         public bool ReducedPresentation { get; set; }
         public bool CasEnabled { get; set; } = true;
@@ -106,6 +107,9 @@ namespace CF7Launcher.Config
             return "auto";
         }
 
+        public static string NormalizeHudMotionMode(string value) =>
+            value == "reduced" || value == "static" ? value : "full";
+
         public static string NormalizeHitNumberMode(string value)
         {
             string normalized = (value ?? "").Trim().ToLowerInvariant();
@@ -148,6 +152,7 @@ namespace CF7Launcher.Config
                 SuppressedHighDpiWarningRaw = obj.Value<string>("suppressedHighDpiWarningRaw");
                 MapDisplayPreference = NormalizeMapDisplayPreference(obj.Value<string>("mapDisplayPreference"));
                 HitNumberMode = NormalizeHitNumberMode(obj.Value<string>("hitNumberMode"));
+                HudMotionMode = NormalizeHudMotionMode(obj.Value<string>("hudMotionMode"));
                 int? hitNumberLimit = obj.Value<int?>("hitNumberWorldRowLimit");
                 if (hitNumberLimit.HasValue)
                     HitNumberWorldRowLimit = NormalizeHitNumberWorldRowLimit(hitNumberLimit.Value);
@@ -177,6 +182,7 @@ namespace CF7Launcher.Config
                 SuppressedHighDpiWarningRaw = null;
                 MapDisplayPreference = "auto";
                 HitNumberMode = HitNumberModeDefault;
+                HudMotionMode = "full";
                 HitNumberWorldRowLimit = HitNumberWorldRowLimitDefault;
                 ReducedPresentation = false;
                 CasEnabled = true;
@@ -204,6 +210,7 @@ namespace CF7Launcher.Config
                 obj["uiFontScale"] = UiFontScale;
                 obj["mapDisplayPreference"] = NormalizeMapDisplayPreference(MapDisplayPreference);
                 obj["hitNumberMode"] = NormalizeHitNumberMode(HitNumberMode);
+                obj["hudMotionMode"] = NormalizeHudMotionMode(HudMotionMode);
                 obj["hitNumberWorldRowLimit"] =
                     NormalizeHitNumberWorldRowLimit(HitNumberWorldRowLimit);
                 obj["reducedPresentation"] = ReducedPresentation;

@@ -27,6 +27,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.AggroEve
         // 说明：用 String() 保守转换，避免出现 undefined/Number 的类型噪音
         var prevAggro:String = String(sender.攻击目标);
         var newAggro:String  = String(newTarget._name);
+        if (prevAggro !== newAggro) org.flashNight.arki.hud.FocusTargetHudService.recordPlayerAggro(sender, newTarget);
 
         // 若无变化则早退，避免无意义写入与广播
         if (prevAggro === newAggro) return;
@@ -54,6 +55,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.AggroEve
         // 计算新老值
         var prevAggro:String = String(sender.攻击目标);
         var newAggro:String  = "无";
+        if (prevAggro !== newAggro) org.flashNight.arki.hud.FocusTargetHudService.clearPlayerAggro(sender);
 
         // 若无变化则早退，避免无意义写入与广播
 

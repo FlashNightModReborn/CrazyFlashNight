@@ -77,7 +77,7 @@ public sealed class PlayerHudSlotFeedbackTests
     }
 
     [Fact]
-    public void CornerBreathIsVisibleOnARedIconWithoutCoveringItsCentre()
+    public void LastUseCornersStayAmberAndStillWithoutCoveringTheCentre()
     {
         using var low = Paint("last", "mp", true, 0);
         using var high = Paint("last", "mp", true, 750);
@@ -92,7 +92,8 @@ public sealed class PlayerHudSlotFeedbackTests
             Assert.True(bounds.Contains(x,y), $"Corner light leaked: {x},{y}");
             difference += Math.Abs(b.R-a.R)+Math.Abs(b.G-a.G)+Math.Abs(b.B-a.B);
         }
-        Assert.True(difference>5000, "Corner brightness must change against a red icon");
+        Assert.Equal(0,difference);
+        Assert.Equal(Pixels(low),Pixels(high));
         for(var y=18;y<28;y++) for(var x=18;x<28;x++) Assert.Equal(low.GetPixel(x,y),high.GetPixel(x,y));
         using var cooling0 = Paint("last", "mp", false, 0);
         using var cooling1 = Paint("last", "mp", false, 750);

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using CF7Launcher.Guardian.Hud.Loot;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -33,12 +34,25 @@ internal readonly record struct PlayerHudCooldown(bool Ready, double Step, doubl
 {
     internal double Fraction => Ready ? 1 : Total > 0 ? Math.Clamp(Step / Total, 0, 1) : 0;
 }
-internal sealed record PlayerHudBuff(string Id, bool Timed, double Total, double Remaining);
-internal sealed record PlayerHudFocusTarget(long Id, string Role, string Name, double Hp, double HpMax);
+internal sealed record PlayerHudBuffGroup(string Id, bool Primary);
+internal sealed record PlayerHudBuffActivation(bool Active, double Remaining, double Total,
+    string ActiveLabel = "", string InactiveLabel = "");
+internal sealed record PlayerHudBuffMod(string Property, string Calc, double Value);
+internal sealed record PlayerHudBuff(string Id, bool Timed, double Total, double Remaining,
+    string Name = "", string Description = "", string Polarity = "neutral", int Stacks = 0,
+    string Incarnation = "", PlayerHudBuffGroup? Group = null,
+    PlayerHudBuffActivation? Activation = null, PlayerHudBuffMod[]? Mods = null);
+internal sealed record PlayerHudFocusTarget(long Id, string Role, string Name, double Hp, double HpMax,
+    string Icon = "", IReadOnlyDictionary<string, string>? Doll = null, string PortraitKey = "", int Hits = 0);
 internal sealed record PlayerHudColdSkill(string Name, string Icon, string Key, int Level, PlayerHudCooldown Cooldown, bool Blocked);
 internal sealed record PlayerHudSnapshot(long Epoch, long Sequence, PlayerHudVitals Vitals,
     PlayerHudCombat Combat, PlayerHudLoadout Loadout, PlayerHudCooldown[] Cooldowns, PlayerHudBuff[] Buffs, PlayerHudResourceHints? Resources = null,
-    PlayerHudColdSkill[]? ColdSkills = null, PlayerHudFocusTarget? FocusTarget = null);
+    PlayerHudColdSkill[]? ColdSkills = null, PlayerHudFocusTarget? FocusTarget = null, PlayerHudFocusTarget[]? FocusTargets = null)
+{
+    internal PlayerHudBuffCard[] BuffCards { get; } = PlayerHudBuffCard.Project(Buffs);
+    internal PlayerHudFocusTarget[] TargetList { get; } = FocusTargets is { Length: > 0 } ? FocusTargets
+        : FocusTarget != null ? new[] { FocusTarget } : System.Array.Empty<PlayerHudFocusTarget>();
+}
 internal sealed record PlayerHudActionResult(string ActionId, bool Success, string Error, bool Changed);
 
 /// <summary>One atomic adoption point. Missing groups retain data only inside an established epoch.</summary>
@@ -110,6 +124,12 @@ internal sealed class PlayerHudState
             // Missing groups retain their already validated typed projection. Parse all
             // incoming groups before committing any field, including on a full packet.
             var previous = full ? null : Snapshot;
+            var focusTargets = previous != null && incoming["focusTarget"] == null
+                ? previous.FocusTargets
+                : candidate.TryGetValue("focusTarget", out var focusTarget) ? ReadFocusTargets(focusTarget) : null;
+            var primaryFocusTarget = previous != null && incoming["focusTarget"] == null
+                ? previous.FocusTarget
+                : focusTargets is { Length: > 0 } ? focusTargets[0] : null;
             var next = new PlayerHudSnapshot(epoch, sequence,
                 previous != null && incoming["vitals"] == null ? previous.Vitals : ReadVitals(candidate["vitals"]),
                 previous != null && incoming["combat"] == null ? previous.Combat : ReadCombat(candidate["combat"]),
@@ -120,8 +140,8 @@ internal sealed class PlayerHudState
                     : candidate.TryGetValue("resources", out var resources) ? ReadResources(resources) : null,
                 previous != null && incoming["coldSkills"] == null ? previous.ColdSkills
                     : candidate.TryGetValue("coldSkills", out var coldSkills) ? ReadColdSkills(coldSkills) : null,
-                previous != null && incoming["focusTarget"] == null ? previous.FocusTarget
-                    : candidate.TryGetValue("focusTarget", out var focusTarget) ? ReadFocusTarget(focusTarget) : null);
+                primaryFocusTarget,
+                focusTargets);
             var dirty = epoch != _epoch || Snapshot == null || candidate.Any(p => !_groups.TryGetValue(p.Key, out var old) || !JToken.DeepEquals(old, p.Value));
             _groups.Clear(); foreach (var pair in candidate) _groups.Add(pair.Key, pair.Value);
             Snapshot = next; _epoch = epoch; _sequence = sequence;
@@ -278,16 +298,44 @@ internal sealed class PlayerHudState
         return new PlayerHudCooldown(values[0] == 1, values[1], values[2]);
     }).ToArray();
 
-    private static PlayerHudFocusTarget? ReadFocusTarget(JToken token)
+    private static PlayerHudFocusTarget[]? ReadFocusTargets(JToken token)
     {
         if (token.Type == JTokenType.Null) return null;
-        var target = Object(token); Keys(target, "id", "role", "name", "hp");
+        if (token is JObject) return new[] { ReadFocusTargetItem(token) };
+        if (token is not JArray rows || rows.Count > 4) throw new FormatException("focus_target_count");
+        if (rows.Count == 0) return null;
+        var ids = new HashSet<long>();
+        return rows.Select(t =>
+        {
+            var item = ReadFocusTargetItem(t);
+            if (!ids.Add(item.Id)) throw new FormatException("focus_target_id");
+            return item;
+        }).ToArray();
+    }
+
+    private static PlayerHudFocusTarget ReadFocusTargetItem(JToken token)
+    {
+        var target = Object(token); Keys(target, "id", "role", "name", "hp", "icon", "doll", "hits");
         var id = Integer(target["id"], 1, 9007199254740991);
         var role = Text(target["role"], 16); var name = Text(target["name"], 192);
         var hp = Numbers(target["hp"], 2);
-        if (role is not ("boss" or "protect") || name.Length == 0 || hp[1] <= 0)
+        if (role is not ("boss" or "protect" or "combat") || name.Length == 0 || hp[1] <= 0)
             throw new FormatException("focus_target");
-        return new(id, role, name, hp[0], hp[1]);
+        var icon = OptionalText(target["icon"], 128);
+        var doll = target["doll"] == null || target["doll"]!.Type == JTokenType.Null ? null : ReadFocusDoll(target["doll"]!);
+        var portraitKey = doll != null ? DollPortraitKey.Compute(doll) : icon;
+        var hits = target["hits"] == null || target["hits"]!.Type == JTokenType.Null ? 0 : (int)Integer(target["hits"], 1, 999999);
+        return new(id, role, name, hp[0], hp[1], icon, doll, portraitKey, hits);
+    }
+
+    private static IReadOnlyDictionary<string, string> ReadFocusDoll(JToken token)
+    {
+        var obj = Object(token);
+        Keys(obj, DollPortraitKey.Fields);
+        var tuple = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var field in DollPortraitKey.Fields)
+            tuple[field] = OptionalText(obj[field], 64);
+        return tuple;
     }
 
     private static PlayerHudBuff[] ReadBuffs(JToken token)
@@ -296,11 +344,54 @@ internal sealed class PlayerHudState
         var ids = new HashSet<string>(StringComparer.Ordinal);
         return rows.Select(t =>
         {
-            var b = Object(t); Keys(b, "id", "timed", "total", "remaining");
+            var b = Object(t); Keys(b, "id", "timed", "total", "remaining", "info", "incarnation", "group", "activation", "mods");
             var id = Text(b["id"], 96); if (id.Length == 0 || !ids.Add(id)) throw new FormatException("buff_id");
             var total = Number(b["total"]); var remain = Number(b["remaining"]);
             if (total < 0 || remain < 0) throw new FormatException("buff_timer");
-            return new PlayerHudBuff(id, Boolean(b["timed"]), total, remain);
+            var name = ""; var description = ""; var polarity = "neutral"; var stacks = 0;
+            if (b["info"] != null)
+            {
+                var info = Object(b["info"]); Keys(info,"name","description","polarity","stacks");
+                name = Text(info["name"],32); description = Text(info["description"],128);
+                polarity = Text(info["polarity"],16); stacks = (int)Integer(info["stacks"],0,999);
+                if (name.Length == 0 || polarity is not ("neutral" or "benefit" or "harm")) throw new FormatException("buff_info");
+            }
+            return new PlayerHudBuff(id, Boolean(b["timed"]), total, remain, name, description, polarity, stacks,
+                OptionalText(b["incarnation"], 96), ReadBuffGroup(b["group"]), ReadBuffActivation(b["activation"]), ReadBuffMods(b["mods"]));
+        }).ToArray();
+    }
+
+    private static PlayerHudBuffGroup? ReadBuffGroup(JToken? token)
+    {
+        if (token == null) return null;
+        var group = Object(token); Keys(group, "id", "primary");
+        var id = Text(group["id"], 96);
+        if (id.Length == 0 || group["primary"] == null) throw new FormatException("buff_group");
+        return new PlayerHudBuffGroup(id, Boolean(group["primary"]));
+    }
+
+    private static PlayerHudBuffActivation? ReadBuffActivation(JToken? token)
+    {
+        if (token == null) return null;
+        var activation = Object(token); Keys(activation, "active", "remaining", "total", "activeLabel", "inactiveLabel");
+        if (activation["active"] == null) throw new FormatException("buff_activation");
+        var active = Boolean(activation["active"]); var remaining = Number(activation["remaining"]); var total = Number(activation["total"]);
+        if (remaining < 0 || total < 0 || !active && remaining != 0 || active && total == 0 && remaining != 0)
+            throw new FormatException("buff_activation");
+        return new PlayerHudBuffActivation(active, remaining, total,
+            OptionalText(activation["activeLabel"], 16), OptionalText(activation["inactiveLabel"], 16));
+    }
+
+    private static PlayerHudBuffMod[]? ReadBuffMods(JToken? token)
+    {
+        if (token == null) return null;
+        if (token is not JArray rows || rows.Count > 8) throw new FormatException("buff_mod_count");
+        return rows.Select(row =>
+        {
+            var mod = Object(row); Keys(mod, "property", "calc", "value");
+            var property = Text(mod["property"], 32); var calc = Text(mod["calc"], 24);
+            if (property.Length == 0 || calc.Length == 0) throw new FormatException("buff_mod");
+            return new PlayerHudBuffMod(property, calc, Number(mod["value"]));
         }).ToArray();
     }
 

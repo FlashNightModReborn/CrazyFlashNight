@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Windows.Forms;
+using CF7Launcher.Guardian.Hud.Loot;
 using CF7Launcher.Guardian.WorldCompositor;
 
 namespace CF7Launcher.Guardian.Hud.PlayerInfo;
@@ -14,10 +15,13 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
     private readonly Timer _queryTimer;
     private readonly PlayerHudController _controller;
     private readonly PlayerHudResourceTooltip _resourceTooltip;
+    private readonly PlayerHudResourceTooltip _buffTooltip;
+    private readonly IWorldHudInput _combinedInput;
     private bool _disposed;
     private bool _suspended, _restoringOrder;
     private readonly NativeHudOverlay _existingHud;
     private readonly PlayerHudBottomWidget _bottomWidget;
+    private readonly PlayerHudFocusTargetWidget _focusTargetWidget;
     private readonly PlayerHudPointerInput _sharedInput;
     private readonly IWorldHudInput? _mainInput;
     private readonly bool _shareMainHud;
@@ -28,7 +32,8 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
     private Action<double,double,int,int>? _mainTimingObserver;
 
     internal PlayerHudRuntime(Form owner, Control anchor, PlayerInfoSplitSurface resources,
-        PlayerHudController controller, string iconsRoot, NativeHudOverlay existingHud,bool shareMainHud=false)
+        PlayerHudController controller, string iconsRoot, NativeHudOverlay existingHud,bool shareMainHud=false,
+        LootIconCatalog? portraitCatalog=null)
     {
         _shareMainHud=shareMainHud;
         _resources = resources; _controller = controller; _existingHud = existingHud;
@@ -45,13 +50,17 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
         try
         {
             _resourceTooltip=new PlayerHudResourceTooltip(anchor,controller);
+            _buffTooltip=new PlayerHudResourceTooltip(anchor,controller,true);
             _bottomWidget=new PlayerHudBottomWidget(anchor, controller, iconsRoot);
             _sharedInput=new PlayerHudPointerInput(_bottomWidget,()=>_sharedActive && _bottom.SharedInputAvailable);
             _mainInput=shareMainHud?existingHud.CreateWorldInput(anchor):null;
             _bottom.AddWidget(_bottomWidget);
             _bottom.AddWidget(_resourceTooltip.Widget);
             _buffs.AddWidget(new PlayerHudBuffWidget(anchor, controller));
-            _buffs.AddWidget(new PlayerHudFocusTargetWidget(anchor, controller));
+            _focusTargetWidget = new PlayerHudFocusTargetWidget(anchor, controller, portraitCatalog);
+            _buffs.AddWidget(_focusTargetWidget);
+            _buffs.AddWidget(_buffTooltip.Widget);
+            _combinedInput=new WorldHudInputLayers(_sharedInput,_buffs.CreateWorldInput(anchor));
             _buffs.SetZOrderInsertAfter(existingHud.Handle);
             _resources.SetZOrderInsertAfter(existingHud.Handle);
             // The authored chassis extends behind the resource gauges.
@@ -69,10 +78,13 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
             _existingHud.PresentationChanged -= RestoreStack;
             _bottom.PresentationChanged -= RestoreStack; _buffs.PresentationChanged -= RestoreStack; _resources.PresentationChanged -= RestoreStack;
             if(_resourceTooltip!=null){_bottom.RemoveWidget(_resourceTooltip.Widget);_resourceTooltip.Dispose();}
+            if(_buffTooltip!=null){_buffs.RemoveWidget(_buffTooltip.Widget);_buffTooltip.Dispose();}
             _bottom.Dispose(); _buffs.Dispose(); throw;
         }
     }
     private void OnTick(object? sender, EventArgs args) => _controller.Tick(Environment.TickCount64);
+    internal void SetPortraitBakeSink(IDollBakeSink? dollBake) => _focusTargetWidget.SetPortraitBakeSink(dollBake);
+    internal void NotifyPortraitReady(string key) => _focusTargetWidget.NotifyPortraitReady(key);
     /// <summary>把插话输入浮窗的前台探针分发给本组三个 surface（主 HUD 由宿主单独接线）。</summary>
     internal void SetInterjectInputForegroundProbe(Func<bool> probe)
     {
@@ -119,9 +131,9 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
                 if(shared==_sharedActive)continue;
                 // Only a gesture actually owned by the legacy HUD transfers this
                 // release barrier. A held Flash gesture must retain its own release.
-                if(shared && (_bottom.HasLegacyPointerGesture || (_shareMainHud && _existingHud.HasLegacyPointerGesture)))_world!.RetireLegacyHudGesture();
+                if(shared && (_bottom.HasLegacyPointerGesture || _buffs.HasLegacyPointerGesture || (_shareMainHud && _existingHud.HasLegacyPointerGesture)))_world!.RetireLegacyHudGesture();
                 _sharedActive=shared;
-                _sharedInput.Cancel();
+                _combinedInput.Cancel();
                 _mainInput?.Cancel();
                 _world?.SetHudInput(null);
                 if(_shareMainHud)_world?.SetMainHudInput(null);
@@ -135,7 +147,7 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
                 if(_shareMainHud && !_existingHud.IsDisposed)_existingHud.SetSharedPresentation(shared?_world!.MainHudPresentation:null);
                 if(shared)
                 {
-                    _world!.SetHudInput(_sharedInput);
+                    _world!.SetHudInput(_combinedInput);
                     if(_shareMainHud)_world.SetMainHudInput(_mainInput);
                 }
                 else RestoreStack();
@@ -195,6 +207,7 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
         if(_mainTimingObserver!=null && ReferenceEquals(_existingHud.RenderTimingObserver,_mainTimingObserver))
             _existingHud.RenderTimingObserver=null;
         _mainTimingObserver=null;
+        _buffs.RemoveWidget(_buffTooltip.Widget);_buffTooltip.Dispose();
         _bottom.RemoveWidget(_resourceTooltip.Widget);_resourceTooltip.Dispose();_bottom.Dispose(); _buffs.Dispose(); _controller.Dispose();
         // Program owns and drains the resource raster pipeline through its existing shutdown path.
     }

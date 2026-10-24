@@ -369,6 +369,7 @@ namespace CF7Launcher.Tasks
             bool oldMotionFeedback = _userPrefs.MotionFeedbackEnabled;
             double oldScale = _userPrefs.UiFontScale;
             string oldMap = _userPrefs.MapDisplayPreference;
+            string oldHudMotionMode = _userPrefs.HudMotionMode;
             string oldHitNumberMode = _userPrefs.HitNumberMode;
             int oldHitNumberWorldRowLimit = _userPrefs.HitNumberWorldRowLimit;
             var oldPerformance = _userPrefs.Performance;
@@ -391,6 +392,7 @@ namespace CF7Launcher.Tasks
                 _userPrefs.MotionFeedbackEnabled = oldMotionFeedback;
                 _userPrefs.UiFontScale = oldScale;
                 _userPrefs.MapDisplayPreference = oldMap;
+                _userPrefs.HudMotionMode = oldHudMotionMode;
                 _userPrefs.HitNumberMode = oldHitNumberMode;
                 _userPrefs.HitNumberWorldRowLimit = oldHitNumberWorldRowLimit;
                 _userPrefs.Performance = oldPerformance;
@@ -551,6 +553,13 @@ namespace CF7Launcher.Tasks
                     _userPrefs.MapDisplayPreference = map;
                     normalized = new JValue(map);
                     return true;
+                case "hudMotionMode":
+                    if (value?.Type != JTokenType.String) return false;
+                    var hudMode = value.Value<string>();
+                    if (hudMode != UserPrefs.NormalizeHudMotionMode(hudMode)) return false;
+                    _userPrefs.HudMotionMode = hudMode;
+                    normalized = new JValue(hudMode);
+                    return true;
                 case "hitNumberMode":
                     if (value == null || value.Type != JTokenType.String) return false;
                     string rawMode = value.Value<string>();
@@ -595,6 +604,7 @@ namespace CF7Launcher.Tasks
                 ["uiFontScale"] = _userPrefs.UiFontScale,
                 ["mapDisplayPreference"] =
                     UserPrefs.NormalizeMapDisplayPreference(_userPrefs.MapDisplayPreference),
+                ["hudMotionMode"] = UserPrefs.NormalizeHudMotionMode(_userPrefs.HudMotionMode),
                 ["hitNumberMode"] =
                     UserPrefs.NormalizeHitNumberMode(_userPrefs.HitNumberMode),
                 ["hitNumberWorldRowLimit"] =

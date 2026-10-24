@@ -64,7 +64,7 @@ internal static class PlayerHudEquipmentOutline
         {
             var distance = (mask[i] ? inside[i] : outside[i]) / 3f - .5f;
             var edge = Math.Clamp(halfWidth + .5f - distance, 0f, 1f);
-            var alpha = (byte)Math.Round(Math.Max(Math.Max(edge * 238, details[i]), mask[i] ? 32 : 0));
+            var alpha = (byte)Math.Round(Math.Max(Math.Max(edge * 238, details[i]), mask[i] ? 96 : 0));
             // White, already premultiplied. A faint interior keeps slender parts readable.
             raw[i * 4] = raw[i * 4 + 1] = raw[i * 4 + 2] = raw[i * 4 + 3] = alpha;
         }

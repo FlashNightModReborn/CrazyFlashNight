@@ -19,7 +19,7 @@ internal static class PlayerHudCooldownText
             var total=(int)Math.Ceiling(tenths/10);
             return (total/60).ToString(CultureInfo.InvariantCulture)+":"+(total%60).ToString("00",CultureInfo.InvariantCulture);
         }
-        return tenths>=100 ? Math.Ceiling(tenths/10).ToString("0",CultureInfo.InvariantCulture)+"s"
+        return tenths>30 ? Math.Ceiling(tenths/10).ToString("0",CultureInfo.InvariantCulture)+"s"
             : (tenths/10).ToString("0.0",CultureInfo.InvariantCulture)+"s";
     }
 }

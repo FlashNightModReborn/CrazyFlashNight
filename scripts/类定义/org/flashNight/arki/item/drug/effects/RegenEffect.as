@@ -237,6 +237,7 @@ class org.flashNight.arki.item.drug.effects.RegenEffect implements IDrugEffect {
         var regenMeta:MetaBuff = new MetaBuff([], [tickComp], 0);
 
         // 添加到BuffManager
+        regenMeta.hudInfo = {name:drugContext.itemName, description:"按固定间隔恢复生命或魔力，受该药剂的恢复上限约束。", polarity:"benefit", stacks:0};
         var registeredId:String = buffManager.addBuff(regenMeta, buffId);
         drugContext.registerDomainBuffId(registeredId);
         buffManager.update(0); // 立即生效

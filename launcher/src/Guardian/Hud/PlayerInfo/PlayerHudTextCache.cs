@@ -11,12 +11,28 @@ internal sealed class PlayerHudTextCache : IDisposable
 {
     private readonly PlayerHudNumberGlyphs _glyphs = new();
     private readonly Dictionary<(string, string, float, float, int), Bitmap> _cache = new();
+
     internal void Draw(Graphics graphics, string value, float x, float baseline, float fontSize, float scale, float maxWidth,
-        Color? ink = null, string font = PlayerInfoPathGlyphAtlas.Aero)
+        Color? ink = null, string font = PlayerInfoPathGlyphAtlas.Aero, double compactThreshold = 10000)
+    {
+        var (bitmap, _, effectiveSize) = ResolveBitmap(value, fontSize, scale, maxWidth, ink, font, compactThreshold);
+        graphics.DrawImage(bitmap, x - 1, baseline - effectiveSize, bitmap.Width / scale, bitmap.Height / scale);
+    }
+
+    internal float DrawRight(Graphics graphics, string value, float rightX, float baseline, float fontSize, float scale, float maxWidth,
+        Color? ink = null, string font = PlayerInfoPathGlyphAtlas.Aero, double compactThreshold = 10000)
+    {
+        var (bitmap, width, effectiveSize) = ResolveBitmap(value, fontSize, scale, maxWidth, ink, font, compactThreshold);
+        graphics.DrawImage(bitmap, rightX - width - 1, baseline - effectiveSize, bitmap.Width / scale, bitmap.Height / scale);
+        return width;
+    }
+
+    private (Bitmap Bitmap, float Width, float EffectiveSize) ResolveBitmap(
+        string value, float fontSize, float scale, float maxWidth, Color? ink, string font, double compactThreshold)
     {
         var color = ink ?? Color.White;
         var requestedSize = fontSize;
-        var formatted = PlayerHudNumberFormat.FormatText(value, text => _glyphs.Measure(font, text, requestedSize), maxWidth);
+        var formatted = PlayerHudNumberFormat.FormatText(value, text => _glyphs.Measure(font, text, requestedSize), maxWidth, compactThreshold);
         value = formatted.Text;
         if (formatted.ReservedWidth > maxWidth) fontSize *= maxWidth / formatted.ReservedWidth;
         var width = _glyphs.Measure(font, value, fontSize);
@@ -24,7 +40,7 @@ internal sealed class PlayerHudTextCache : IDisposable
         var key = (value, font, fontSize, scale, color.ToArgb());
         if (!_cache.TryGetValue(key, out var bitmap))
         {
-            if (_cache.Count >= 48) { foreach (var image in _cache.Values) image.Dispose(); _cache.Clear(); }
+            if (_cache.Count >= 64) { foreach (var image in _cache.Values) image.Dispose(); _cache.Clear(); }
             using var pixels = new SKBitmap(new SKImageInfo(Math.Max(1, (int)Math.Ceiling((width + 2) * scale)),
                 Math.Max(1, (int)Math.Ceiling((fontSize + 4) * scale)), SKColorType.Bgra8888, SKAlphaType.Premul));
             using var canvas = new SKCanvas(pixels);
@@ -33,7 +49,8 @@ internal sealed class PlayerHudTextCache : IDisposable
                 PlayerInfoPathTextAlignment.Left, new SKColor(color.R, color.G, color.B, color.A));
             bitmap = PlayerInfoPArgbBridge.Copy(pixels); _cache.Add(key, bitmap);
         }
-        graphics.DrawImage(bitmap, x - 1, baseline - fontSize, bitmap.Width / scale, bitmap.Height / scale);
+        return (bitmap, width, fontSize);
     }
+
     public void Dispose() { foreach (var image in _cache.Values) image.Dispose(); _cache.Clear(); _glyphs.Dispose(); }
 }

@@ -187,6 +187,8 @@ powershell -File automation/dev.ps1
 
 也可运行根目录 `本地开发启动.cmd`。这些入口选择或生成隔离 candidate，不修改正式 `runtime/`。
 
+开发入口默认把固定 WebView2 缓存放到 `%LOCALAPPDATA%\CF7BuildCache\w2`，避免 Steam 等深层工程目录超过解压后的 240 UTF-16 路径预算。`automation/dev.ps1` 和 `launcher/build.ps1` 均可传 `-WebView2CacheDirectory <短本机目录>`，参数一路转交 canonical producer，原路径、reparse 与交叠检查仍生效。独立工作树需要完整游戏预览时，工程根目录须命名为 `resources`。
+
 直接调用兼容编排器：
 
 ```powershell
@@ -302,7 +304,10 @@ candidate 与正式入口旅程按 [#runtime](../agentsDoc/testing-guide.md#runt
 记录区分探针线程调度、UI 排队、鼠标钩子分发、本地回调与下游 hook 链、光标绘制及同步窗口调用，每个窗口最多 64 条尖刺，汇总保留省略数量与峰值。
 焦点录制还每秒采集一次原生呈现的最近 256 次提交摘要；主动静止/hold 不计入连续帧间隔，统计不触发 GPU 回读。不记录鼠标移动坐标，不注入输入；提交耗时不是显示器实际呈现延迟。细节见 [U12 记录](../docs/U12过场Web迁移与人力验收-2026-10-01.md)及[启动与呈现优化](../docs/startup-input-presentation-optimization.md)。
 <!-- launcher-user-prefs-registry:start -->
-当前字段为 `lastPlayedSlot`、`introEnabled`、`sfxEnabled`、`ambientEnabled`、`tutorialsAutoOpen`、`uiFontScale`、`suppressedHighDpiWarningRaw`、`mapDisplayPreference`、`hitNumberMode`、`hitNumberWorldRowLimit`、`reducedPresentation`、`casEnabled`、`motionFeedbackEnabled`、`ragTerminalAutoStart`、`performance` 和 `previousPerformance`。
+当前字段为 `lastPlayedSlot`、`introEnabled`、`sfxEnabled`、`ambientEnabled`、`tutorialsAutoOpen`、`uiFontScale`、`suppressedHighDpiWarningRaw`、`mapDisplayPreference`、
+`hudMotionMode`（`full/reduced/static`，仅控制玩家 HUD 表现）、`hitNumberMode`、`hitNumberWorldRowLimit`、`reducedPresentation`、`casEnabled`、`motionFeedbackEnabled`、`ragTerminalAutoStart`、`performance` 和 `previousPerformance`。
+
+玩家 HUD 的交互、动效与 Buff 显示合同见 [本轮优化说明](../docs/玩家HUD交互与动效优化-2026-10-23.md)。
 <!-- launcher-user-prefs-registry:end -->
 欢迎页的公开 Web 写入必须经过 `config_set` 白名单；游戏设置使用绑定实例的 `settings.host_set` 域白名单，Host-only 字段不得因前端同名而获得写权限。
 本机性能方案仅经绑定实例的 `settings.host_set` 写入：`performance={preset,mode,maxRenderHeight}`，预设为 `balanced/performance/quality`，模式为 `auto/fixed`；允许的高度集合以 `PerformancePolicy` 为准。

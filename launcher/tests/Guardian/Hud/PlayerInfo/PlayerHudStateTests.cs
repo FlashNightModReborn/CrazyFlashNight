@@ -47,6 +47,101 @@ public sealed class PlayerHudStateTests
         Assert.True(model.VisualState.HasRenderableState);
     }
 
+    internal static JObject DetailedBuff(string id, string group = "wrist", bool primary = false, bool active = false)
+    {
+        var row = new JObject
+        {
+            ["id"] = id, ["timed"] = false, ["total"] = 0, ["remaining"] = 0,
+            ["incarnation"] = id + ":v1",
+            ["info"] = new JObject { ["name"] = primary ? "腕刃强化" : "腕刃效果",
+                ["description"] = "施放「刀剑乱舞」触发爆发。", ["polarity"] = "benefit", ["stacks"] = 0 },
+            ["group"] = new JObject { ["id"] = "1:" + group, ["primary"] = primary }
+        };
+        if (primary) row["activation"] = new JObject { ["active"] = active, ["remaining"] = active ? 90 : 0,
+            ["total"] = 90, ["activeLabel"] = "爆发中", ["inactiveLabel"] = "常态生效" };
+        else row["mods"] = active
+            ? new JArray(new JObject { ["property"] = "空手攻击力", ["calc"] = "add", ["value"] = 100 },
+                new JObject { ["property"] = "装备刀锋利度加成", ["calc"] = "add", ["value"] = -70 })
+            : new JArray(new JObject { ["property"] = "空手攻击力", ["calc"] = "add", ["value"] = 30 });
+        return row;
+    }
+
+    [Fact]
+    public void BuffDetailsAndLegacyRowsAreAccepted()
+    {
+        var state = new PlayerHudState();
+        Assert.True(state.Receive(Encode(Full()), 1));
+        var legacy = state.Snapshot.Buffs[0];
+        Assert.Equal("", legacy.Incarnation); Assert.Null(legacy.Group); Assert.Null(legacy.Activation); Assert.Null(legacy.Mods);
+        Assert.Single(state.Snapshot.BuffCards);
+        var packet = Full(1, 2);
+        packet["groups"]["buffs"] = new JArray(DetailedBuff("controller", primary: true, active: true), DetailedBuff("effect", active: true));
+        Assert.True(state.Receive(Encode(packet), 2));
+        var row = state.Snapshot.Buffs[0];
+        Assert.Equal("controller:v1", row.Incarnation); Assert.True(row.Group.Primary); Assert.True(row.Activation.Active);
+        var card = Assert.Single(state.Snapshot.BuffCards);
+        Assert.Equal("controller", card.Id); Assert.Equal("爆发中", card.PhaseLabel);
+        Assert.Equal(90, card.DisplayRemaining); Assert.True(card.DisplayTimed);
+        Assert.Equal(100, card.Mods.Single(mod => mod.Property == "空手攻击力").Value);
+        Assert.Equal(-70, card.Mods.Single(mod => mod.Property == "装备刀锋利度加成").Value);
+    }
+
+    [Fact]
+    public void InvalidBuffGroupsFallBackToIndependentCards()
+    {
+        foreach (var rows in new[]
+        {
+            new JArray(DetailedBuff("a"), DetailedBuff("b")),
+            new JArray(DetailedBuff("a", primary: true), DetailedBuff("b", primary: true))
+        })
+        {
+            var state = new PlayerHudState(); var packet = Full(); packet["groups"]["buffs"] = rows;
+            Assert.True(state.Receive(Encode(packet), 1)); Assert.Equal(2, state.Snapshot.BuffCards.Length);
+        }
+        var duplicateActivation = Full();
+        duplicateActivation["groups"]["buffs"] = new JArray(DetailedBuff("a", primary: true), DetailedBuff("b"));
+        duplicateActivation["groups"]["buffs"][1]["activation"] = duplicateActivation["groups"]["buffs"][0]["activation"]!.DeepClone();
+        var fallback = new PlayerHudState();
+        Assert.True(fallback.Receive(Encode(duplicateActivation), 1)); Assert.Equal(2, fallback.Snapshot.BuffCards.Length);
+    }
+
+    [Fact]
+    public void MalformedBuffDetailsDoNotPartiallyAdopt()
+    {
+        var state = new PlayerHudState(); Assert.True(state.Receive(Encode(Full()), 1)); var accepted = state.Snapshot;
+        var invalid = new Action<JObject>[]
+        {
+            row => row["extra"] = true,
+            row => row["group"] = new JObject { ["id"] = "1:wrist" },
+            row => row["activation"] = new JObject { ["remaining"] = 0, ["total"] = 90 },
+            row => row["group"]["id"] = "",
+            row => row["activation"] = new JObject { ["active"] = false, ["remaining"] = 1, ["total"] = 90 },
+            row => row["mods"] = new JArray(Enumerable.Range(0, 9).Select(_ => row["mods"][0]!.DeepClone())),
+            row => row["mods"][0]["value"] = double.NaN,
+            row => row["mods"][0]["calc"] = ""
+        };
+        foreach (var change in invalid)
+        {
+            var packet = Full(1, 2);
+            var rows = new JArray(DetailedBuff("controller", primary: true), DetailedBuff("effect"));
+            packet["groups"]["buffs"] = rows; change((JObject)rows[1]);
+            Assert.False(state.Receive(Encode(packet), 2)); Assert.Same(accepted, state.Snapshot);
+        }
+    }
+
+    [Fact]
+    public void BuffModFormattingKeepsCalculationSemantics()
+    {
+        Assert.Equal("+30", PlayerHudBuffCard.DescribeMod(new("空手攻击力", "add", 30)));
+        Assert.Equal("-70", PlayerHudBuffCard.DescribeMod(new("装备刀锋利度加成", "add", -70)));
+        Assert.Equal("+30%", PlayerHudBuffCard.DescribeMod(new("移动速度", "percent", 0.3)));
+        Assert.Equal("×1.2", PlayerHudBuffCard.DescribeMod(new("攻击力", "multiply", 1.2)));
+        Assert.Equal("设为 8", PlayerHudBuffCard.DescribeMod(new("攻击力", "override", 8)));
+        Assert.Equal("不低于 3", PlayerHudBuffCard.DescribeMod(new("防御力", "max", 3)));
+        Assert.Equal("不高于 6", PlayerHudBuffCard.DescribeMod(new("防御力", "min", 6)));
+        Assert.Equal("按 custom 修正 2", PlayerHudBuffCard.DescribeMod(new("自定义", "custom", 2)));
+    }
+
     internal static JObject Full(long epoch = 1, long seq = 1) => new()
     {
         ["v"] = 1, ["epoch"] = epoch, ["seq"] = seq, ["full"] = true, ["visible"] = true,

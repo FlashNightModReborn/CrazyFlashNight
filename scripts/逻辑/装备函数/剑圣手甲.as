@@ -166,8 +166,13 @@ _root.装备生命周期函数.剑圣手甲初始化Buff系统 = function(ref:Ob
 
     // 控制器 MetaBuff（永久，无 PodBuff，仅挂载 EventListenerComponent）
     var controllerMeta:MetaBuff = new MetaBuff([], [eventComp], 0);
-    var controllerId:String = target.buffManager.addBuff(controllerMeta, "剑圣腕刃控制器");
+    controllerMeta.hudInfo = {name:"腕刃强化", description:"剑圣腕刃提供属性修正；施放「刀剑乱舞」触发爆发。", polarity:"benefit", stacks:0};
+    var groupId:String = "剑圣腕刃控制器";
+    controllerMeta.hudPresentation = {groupId:groupId, primary:true, activation:eventComp,
+        mods:false, activeLabel:"爆发中", inactiveLabel:"常态生效"};
+    var controllerId:String = target.buffManager.addBuff(controllerMeta, groupId);
     if (!controllerId || !_root.装备生命周期函数.剑圣套装登记Buff(ref, target.buffManager, controllerId)) return false;
+    ref.hudGroupId = controllerId;
 
     // ========== 2. 立即应用常驻态效果 ==========
     _root.装备生命周期函数.剑圣手甲切换到常驻态(ref);
@@ -194,6 +199,8 @@ _root.装备生命周期函数.剑圣手甲切换到常驻态 = function(ref:Obj
         var metaBuff:MetaBuff = new MetaBuff(childBuffs, [], 0);
 
         // 同 ID 替换
+        metaBuff.hudInfo = {name:"腕刃强化", description:"剑圣腕刃提供的属性增强。", polarity:"benefit", stacks:0};
+        metaBuff.hudPresentation = {groupId:ref.hudGroupId, primary:false, mods:true};
         target.buffManager.addBuff(metaBuff, "剑圣腕刃增强");
     }
 
@@ -225,6 +232,8 @@ _root.装备生命周期函数.剑圣手甲切换到爆发态 = function(ref:Obj
         var metaBuff:MetaBuff = new MetaBuff(childBuffs, [], 0);
 
         // 同 ID 替换
+        metaBuff.hudInfo = {name:"腕刃强化", description:"剑圣腕刃提供的属性增强。", polarity:"benefit", stacks:0};
+        metaBuff.hudPresentation = {groupId:ref.hudGroupId, primary:false, mods:true};
         target.buffManager.addBuff(metaBuff, "剑圣腕刃增强");
     }
 

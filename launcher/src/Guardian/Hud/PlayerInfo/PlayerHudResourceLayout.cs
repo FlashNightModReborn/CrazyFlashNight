@@ -60,16 +60,16 @@ internal sealed class PlayerHudShieldReadout : IDisposable
         var r=PlayerHudResourceLayout.ShieldCapacityPlaque;
         var emptyMix = !display.ShieldReady
             ? 1f
-            : motion is { EmptyInitialized: true } && (value.ShieldPresent || motion.Shield.Presence > 0f)
+            : !PlayerHudMotionSettings.StaticFeedback && motion is { EmptyInitialized: true } && (value.ShieldPresent || motion.Shield.Presence > 0f)
                 ? motion.EmptyMix
                 : (display.Shield <= 0 ? 1f : 0f);
         var baseColor = LerpColor(PlayerHudResourceStyle.Shield, PlayerHudResourceStyle.ShieldEmpty, emptyMix);
-        var breakPulse = motion?.Shield.BreakPulse ?? 0f;
+        var breakPulse = (motion?.Shield.BreakPulse ?? 0f) * PlayerHudMotionSettings.EventStrength;
         if (breakPulse > 0f)
         {
             baseColor = LerpColor(baseColor, Color.FromArgb(236, 252, 255), breakPulse * 0.75f);
         }
-        var resistantMix = motion is { ResistantInitialized: true } && value.ShieldReady && (value.ShieldPresent || motion.Shield.Presence > 0f)
+        var resistantMix = !PlayerHudMotionSettings.StaticFeedback && motion is { ResistantInitialized: true } && value.ShieldReady && (value.ShieldPresent || motion.Shield.Presence > 0f)
             ? motion.ResistantMix
             : (display.ShieldDetail?.ResistsBypass == true ? 1f : 0f);
         var resistantTarget = LerpColor(Color.FromArgb(224,207,255), Color.FromArgb(142,124,163), emptyMix);
@@ -108,13 +108,15 @@ internal sealed class PlayerHudShieldReadout : IDisposable
         }
         g.Restore(clipped);
         var strengthText=PlayerHudResourceStyle.ShieldStrengthReadout(detail);
-        _numbers.Draw(g,strengthText,strength.Left+4,strength.Bottom-2,11f,scale,40,strengthColor);
+        using (var strengthInk = new SolidBrush(strengthColor))
+            g.DrawString("强度",_label,strengthInk,strength.Left+1,strength.Top+1);
+        _numbers.Draw(g,strengthText,strength.Left+21,strength.Bottom-2,10f,scale,25,strengthColor);
         using var ink = new SolidBrush(color);
         if (!display.ShieldReady) {g.DrawString("护盾未就绪",_label,ink,r.Left+5,r.Top+1);return;}
-        _numbers.Draw(g,PlayerHudResourceStyle.Percent(display.Shield,display.ShieldMax),r.Left+4,r.Bottom-2,11.5f,scale,29,color);
+        g.DrawString("盾量",_label,ink,r.Left+3,r.Top+1);
         var capacity=Math.Floor(display.Shield).ToString("0",CultureInfo.InvariantCulture)+"/"+
             Math.Floor(display.ShieldMax).ToString("0",CultureInfo.InvariantCulture);
-        _numbers.Draw(g,capacity,r.Left+37,r.Bottom-2,11.5f,scale,91,color);
+        _numbers.Draw(g,capacity,r.Left+25,r.Bottom-2,11.5f,scale,103,color);
     }
 
     public void Dispose() { _numbers.Dispose();_label.Dispose(); }

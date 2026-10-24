@@ -762,10 +762,14 @@ Snapshot reuse also runs `scripts/run-player-hud-snapshot-tests.ps1` and
 getter order, forced full packets and prior DTO ownership observable. Buff
 scheduling has its own `run-buff-manager-tests.ps1` / `run-buff-hotpath-tests.ps1`
 pair, including existing lifecycle/path regressions and frequent mutation cost.
-See the [HUD/Buff validation](../../docs/AS2界面快照与Buff调度优化验证-2026-10-10.md) and the
+`run-player-hud-wristblade-tests.ps1` includes the production equipment source,
+subscribes before registration, and exercises the real manager/event dispatcher
+through normal, burst, refresh, expiry and retrigger. See the
+[HUD/Buff validation](../../docs/AS2界面快照与Buff调度优化验证-2026-10-10.md) and the
 [earlier hotspot validation](../../docs/AS2热点采样与判空优化验证-2026-10-10.md)
 for local timing and acceptance boundaries. The focused
-C# set is `PlayerHudStateTests`, `PlayerHudVisualTests`,
+C# set is `PlayerHudStateTests`, `PlayerHudUsabilityTests`,
+`PlayerHudPresentationTests`, `PlayerHudVisualTests`, `PlayerHudSharedInputTests`,
 `PlayerInfoAnimationModelTests` and `RuntimeFontCatalogTests`, using the exact
 SDK from `launcher/resolve-dotnet.ps1`. An actual AVM1-produced JSON fixture
 under `launcher/tests/Fixtures/PlayerHud/` is consumed by the production parser.
@@ -944,12 +948,41 @@ fit the existing caption region; locked zero progress remains at least0.1s.
 Weapon/switch progress strips sit above captions. Eighteen lane-owned glyph
 entries replace the shared string cache to bound countdown churn.
 
-Buffs retain their order,32-column wrapping and26-step timer ratio. Only the
-presentation changes to NativeHudTheme: top-aligned32-unit rows, dark plates,
-device-pixel frames, neutral placeholders and a small remaining-time bar.
-Empty lists hide their frame. Missing names/icons/sources/polarity/stacks and
-full Buff interaction remain deferred; untimed is not labeled permanent.
-No AS2, SWF, game rules or save data changes are required for this increment.
+Buffs retain their order,32-column wrapping and26-step timer ratio. The
+NativeHudTheme uses top-aligned32-unit rows, dark plates, device-pixel frames,
+neutral placeholders and a small remaining-time bar. Empty lists hide their
+frame. The original pi17 increment deferred full Buff interaction; current
+metadata and the local read-only hover supply names, descriptions, polarity,
+stacks and authoritative primary timers. Untimed is not labeled permanent.
+
+## Optional Buff detail projection
+
+`playerHudSync.buffDetails=true` negotiates the optional
+`incarnation/group/activation/mods` fields; an older Host keeps the exact old
+field set and disconnect retires the capability. `MetaBuff.hudPresentation`
+explicitly declares grouping, the event component and whether to read actual
+injected Pods. `incarnation` is a display revision only. Event activation is
+not Meta lifetime, and activation time remains separate from the primary
+lifetime timer. Mods preserve `property/calc/value`; the Host formats them
+without recomputing the final character property or advancing a second clock.
+
+Each group needs exactly one primary and at most one activation source;
+otherwise every member remains an independent card. A shared card projection
+owns layout, hit-testing and tooltip content, with the primary external ID as
+the stable card identity. Tooltip rebuilds compare phase, element-wise mods
+and displayed whole seconds rather than unrelated rows or every frame tick.
+Missing mods mean unavailable detail, while an empty array means confirmed
+no injected correction. Limits are eight mods per row and 64 per snapshot;
+exceeding them omits the optional list instead of presenting a partial list
+as complete. Base rows and primary timers survive metadata degradation.
+
+The wristblade is the only production content sample in this infrastructure
+increment. Its controller and normal/burst effects explicitly share a group;
+one card exposes normal/burst phase, the actual event countdown and injected
+unarmed/knife corrections. The sample does not change event filters, effect
+replacement, equipment values or teardown. A full icon and metadata catalog,
+automatic condition prose and other Buff-specific presentations are deferred
+to a separate content campaign.
 
 ## Live resource warnings
 

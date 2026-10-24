@@ -46,7 +46,8 @@ internal sealed class PlayerInfoWidget : IDisposable
     internal int LiveFrame => _liveMilliseconds * 3 / 100;
     // The legacy decorations flag describes Flash's tier, not the cost of this native surface.
     internal bool WantsLiveDecoration => LiveVitals is { Hp: > 0 } && VisualState.HasRenderableState
-        && (!PlayerHudMotionSettings.ReducedMotion || _resourceMotion.Active || Denial.Active);
+        && (_resourceMotion.Active || Denial.Active || !PlayerHudMotionSettings.ReducedMotion &&
+            (_resourceMotion.CriticalHp || LiveVitals.Hp < LiveVitals.HpMax || LiveVitals.Mp > LiveVitals.MpMax || LiveVitals.ShieldDetail?.Recovery.State == "charging"));
     internal void ResetLiveClock()
     {
         _liveMilliseconds = 0; _resourceMotion.Reset(); if (LiveVitals is { Hp: > 0 }) _resourceMotion.Observe(LiveVitals); Denial.Observe(null); DecorationBudget.Reset();

@@ -42,6 +42,8 @@ class org.flashNight.arki.hud.PlayerHudService {
     private static var ammoDetailsEnabled:Boolean = false;
     private static var coldSkillsEnabled:Boolean = false;
     private static var focusTargetEnabled:Boolean = false;
+    private static var focusTargetsEnabled:Boolean = false;
+    private static var buffDetailsEnabled:Boolean = false;
     private static var lastFull:Number = 0;
     private static var lastProjectionError:Number = -10000;
     private static var profileEnabled:Boolean = false;
@@ -182,12 +184,14 @@ class org.flashNight.arki.hud.PlayerHudService {
         // 避免旧解析器的白名单 Keys() 因未知组名整包拒收。
         if (p.coldSkills === true) coldSkillsEnabled = true;
         if (p.focusTarget === true) focusTargetEnabled = true;
+        if (p.focusTargets === true) focusTargetsEnabled = true;
+        if (p.buffDetails === true) { buffDetailsEnabled = true; buffProjection.setDetailsEnabled(true); }
         forceFull = true;
     }
     public static function tick():Void {
         if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("playerHud")) return;
         var online:Boolean = _root.server.isSocketConnected === true;
-        if (!online) { connected = false; weaponVisualsEnabled = false; ammoDetailsEnabled = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; coldSkillsEnabled = false; focusTargetEnabled = false; forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
+        if (!online) { connected = false; weaponVisualsEnabled = false; ammoDetailsEnabled = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; coldSkillsEnabled = false; focusTargetEnabled = false; focusTargetsEnabled = false; buffDetailsEnabled = false; buffProjection.setDetailsEnabled(false); forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
         if (!connected) { connected = true; forceFull = true; }
         var unit:Object = hero();
         // 热路径只观察外层屏障；重算仍由领域冷路及显式读取负责。
@@ -211,7 +215,7 @@ class org.flashNight.arki.hud.PlayerHudService {
         if (addGroup(groups, "cooldowns", readCooldowns(), full)) count++;
         if (addGroup(groups, "buffs", buffProjection.snapshot(), full)) count++;
         if (coldSkillsEnabled && addGroup(groups, "coldSkills", readColdSkills(unit), full)) count++;
-        if (focusTargetEnabled && addGroup(groups, "focusTarget", FocusTargetHudService.snapshot(), full)) count++;
+        if ((focusTargetsEnabled || focusTargetEnabled) && addGroup(groups, "focusTarget", focusTargetsEnabled ? FocusTargetHudService.snapshotList(unit) : FocusTargetHudService.snapshot(), full)) count++;
         if (resourceHintsEnabled && addGroup(groups, "resources", SkillResourceService.snapshot(unit, loadout, rawGroups.resources), full)) count++;
         compat._pendingHpDisplayRefresh = false;
         if (count == 0) return;
@@ -615,7 +619,24 @@ class org.flashNight.arki.hud.PlayerHudService {
             var item:Object = drugItems[slot];
             if (item != null) {
                 var projection:Object = org.flashNight.arki.item.InventoryPanelService.buildTooltipProjection(item);
-                if (projection.success) NativeTooltipBridge.show(projection.document, null, "top", anchor);
+                if (projection.success) {
+                    var drugIntro:String = text(projection.introHTML);
+                    var drugCount:Number = Math.floor(finiteValue(drugCounts[slot]));
+                    if (drugCount == 1 && drugIntro.indexOf("数量：") < 0) {
+                        drugIntro += "数量：1<BR>";
+                    }
+                    var lane:Number = slot % 4;
+                    var drugKey:String = text(current.drugs[lane].key);
+                    if (drugKey == "") drugKey = keyLabel(DrugInputService.getKeyName(lane));
+                    drugIntro += "快捷栏：" + (slot < 4 ? "A" : "B") + "组" + (lane + 1) + "号格";
+                    if (drugKey != "") drugIntro += "（快捷键：" + drugKey + "）";
+                    drugIntro += "<BR>";
+                    var drugDoc:Object = NativeTooltipDocument.buildItem(String(item.name),
+                        ItemUtil.getItemData(item.name),
+                        {displayname:projection.displayname, icon:projection.iconName},
+                        drugIntro, text(projection.descHTML));
+                    NativeTooltipBridge.show(drugDoc, null, "top", anchor);
+                }
             }
         } else if (p.kind == "weapon") {
             var unit:Object = hero();

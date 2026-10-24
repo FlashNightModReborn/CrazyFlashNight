@@ -338,6 +338,7 @@
         hostPrefs.casEnabled = typeof hostPrefs.casEnabled === 'boolean' ? hostPrefs.casEnabled : true;
         hostPrefs.motionFeedbackEnabled = hostPrefs.motionFeedbackEnabled === true;
         hostPrefs.performance = normalizePerformanceState(response.hostPrefs.performance);
+        hostPrefs.hudMotionMode = ['full','reduced','static'].indexOf(hostPrefs.hudMotionMode) >= 0 ? hostPrefs.hudMotionMode : 'full';
         return {revision:response.revision, settings:settings, keys:keys,
             defaultKeys:copy(response.defaultKeys), allowedKeyCodes:copy(response.allowedKeyCodes),
             hostPrefs:hostPrefs, challengeMode:response.challengeMode === true,

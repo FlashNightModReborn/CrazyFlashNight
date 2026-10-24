@@ -184,6 +184,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         /// <summary>测试/诊断用：当前排版计划（内部类型，经 InternalsVisibleTo 暴露给 Launcher.Tests）。</summary>
         internal NativeTooltipLayout.Plan ActivePlan { get { return _plan; } }
         internal Rectangle PlacedRect { get { return _placedRect; } }
+        // Local Player HUD inspection shares its chassis palette. Remote item tooltips
+        // keep the authored Flash theme and its existing parity contract.
+        internal bool UseHudChrome { get; set; }
 
         /// <summary>
         /// host 可传现役 owner 命中区（屏幕坐标，如 shop 槽位矩形）。
@@ -710,14 +713,22 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         }
 
         /// <summary>--tt-bg：灰族垂直渐变，无边框无阴影（Symbol 274 复刻默认主题）。</summary>
-        private static void DrawGradientPanel(Graphics g, Rectangle rect)
+        private void DrawGradientPanel(Graphics g, Rectangle rect)
         {
             if (rect.Width <= 0 || rect.Height <= 0) return;
             using (LinearGradientBrush b = new LinearGradientBrush(
-                rect, GradTop, GradBot, LinearGradientMode.Vertical))
+                rect, UseHudChrome ? Color.FromArgb(248,34,38,39) : GradTop,
+                UseHudChrome ? Color.FromArgb(248,14,17,18) : GradBot, LinearGradientMode.Vertical))
             {
                 b.WrapMode = WrapMode.Tile;
                 g.FillRectangle(b, rect);
+            }
+            if (UseHudChrome)
+            {
+                using var edge = new Pen(Color.FromArgb(158,166,167));
+                g.DrawRectangle(edge,rect.X,rect.Y,rect.Width-1,rect.Height-1);
+                using var inset = new Pen(Color.FromArgb(65,73,74));
+                g.DrawRectangle(inset,rect.X+2,rect.Y+2,rect.Width-5,rect.Height-5);
             }
         }
 

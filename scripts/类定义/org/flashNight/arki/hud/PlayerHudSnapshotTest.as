@@ -236,6 +236,112 @@ class org.flashNight.arki.hud.PlayerHudSnapshotTest {
         trace("[AS2_HOTPATH_BENCH] buffs12_change_every_"+period+"|iterations=160|baselineMs="+oldTimes.join(",")+"|candidateMs="+newTimes.join(","));
         projection.deinitialize();legacyProjection.deinitialize();manager.eventDispatcher.destroy();
     }
+    private static function testBuffMetadata():Void {
+        var buff:Object = timerBuff("named", 300, 90);
+        buff.hudInfo = {name:"测试增益", description:"真实来源说明", polarity:"benefit", stacks:2};
+        var owner:Object = makeManager([buff]);
+        var view:PlayerHudBuffProjection = new PlayerHudBuffProjection();
+        view.initialize(owner);
+        var before:Array = view.snapshot();
+        check(before[0].info.name == "测试增益", "buff source name");
+        check(before[0].info.polarity == "benefit" && before[0].info.stacks == 2, "explicit polarity and stack count");
+        buff.hudInfo.name = "changed later";
+        buff.timer.remaining = 80;
+        var after:Array = view.snapshot();
+        check(before[0].remaining == 90 && after[0].remaining == 80, "metadata keeps timer snapshots immutable");
+        check(after[0].info.name == "测试增益", "metadata captured at registration does not alias caller");
+        var unknown:Object = timerBuff("unknown", 1, 1);
+        unknown.hudInfo = {name:"中性状态", description:"", polarity:"guessed", stacks:-1};
+        owner.eventDispatcher.publish("add","unknown",unknown);
+        check(view.snapshot()[1].info.polarity == "neutral" && view.snapshot()[1].info.stacks == 0, "unknown semantics stay neutral");
+        view.deinitialize();
+        check(view.snapshot().length == 0, "metadata cleared with owner");
+        var crowded:Array = [];
+        for (var j:Number = 0; j < 80; j++) {
+            var rowBuff:Object = timerBuff("crowded" + j, 300, 150);
+            rowBuff.hudInfo = {name:"测试状态", description:"来源明确的说明。", polarity:"neutral", stacks:0};
+            crowded.push(rowBuff);
+        }
+        view.initialize(makeManager(crowded));
+        var crowdedRows:Array = view.snapshot();
+        var cost:Number = 0;
+        for (var k:Number = 0; k < crowdedRows.length; k++) {
+            if (crowdedRows[k].info != null) cost += crowdedRows[k].info.name.length + crowdedRows[k].info.description.length + 64;
+        }
+        check(crowdedRows.length == 80 && cost <= 4096, "metadata pressure preserves every timer and bounds optional text");
+        view.deinitialize();
+        view.initialize(makeManager([buff]));
+        check(view.snapshot()[0].info.name == "changed later", "metadata budget is reclaimed with owner");
+        view.deinitialize();
+    }
+    private static function testBuffDetails():Void {
+        var activation:Object = {active:false, remaining:0, total:90};
+        activation.isActive = function():Boolean { return this.active; };
+        activation.getRemaining = function():Number { return this.active ? this.remaining : 0; };
+        activation.getDuration = function():Number { return this.total; };
+        var pod:Object = {value:10};
+        pod.getTargetProperty = function():String { return "空手攻击力"; };
+        pod.getCalculationType = function():String { return "add"; };
+        pod.getValue = function():Number { return this.value; };
+        pod.isActive = function():Boolean { return true; };
+        var buff:Object = timerBuff("detail", 100, 70);
+        buff.serial = "100";
+        buff.getId = function():String { return this.serial; };
+        buff.hudInfo = {name:"旧说明", description:"", polarity:"benefit", stacks:0};
+        buff.hudPresentation = {groupId:"detail-group", primary:true, activation:activation, mods:true};
+        var manager:Object = makeManager([buff]);
+        manager.getInjectedPodIds = function(id:String):Array { return ["pod"]; };
+        manager.getBuffById = function(id:String):Object { return pod; };
+        var view:PlayerHudBuffProjection = new PlayerHudBuffProjection();
+        view.initialize(manager);
+        var legacy:Array = view.snapshot();
+        check(legacy[0].incarnation === undefined && legacy[0].group === undefined &&
+            legacy[0].activation === undefined && legacy[0].mods === undefined,
+            "details are absent without Host negotiation");
+        view.setDetailsEnabled(true);
+        var initial:Array = view.snapshot();
+        check(initial[0].incarnation == "100" && initial[0].group.id == "1:detail-group" &&
+            initial[0].activation.active === false && initial[0].mods[0].value == 10,
+            "opt-in projection exposes incarnation, group, activation and actual Pod data");
+        pod.value = 20; activation.active = true; activation.remaining = 80;
+        var changed:Array = view.snapshot();
+        check(changed !== initial && changed[0].activation.active === true &&
+            changed[0].activation.remaining == 80 && changed[0].mods[0].value == 20,
+            "live activation and Pod value changes publish new rows");
+        check(initial[0].activation.active === false && initial[0].mods[0].value == 10,
+            "dynamic detail rows remain immutable");
+        var replacement:Object = timerBuff("detail", 100, 70);
+        replacement.serial = "101";
+        replacement.getId = function():String { return this.serial; };
+        replacement.hudInfo = {name:"新说明", description:"", polarity:"benefit", stacks:0};
+        manager.eventDispatcher.publish("remove", "detail");
+        manager.eventDispatcher.publish("add", "detail", replacement);
+        var replaced:Array = view.snapshot();
+        check(replaced[0].incarnation == "101" && replaced[0].info.name == "新说明",
+            "same ID replacement refreshes info without an intermediate snapshot");
+        var crowded:Array = [];
+        for (var j:Number = 0; j < 9; j++) {
+            var item:Object = timerBuff("detail-bulk-" + j, 100, 70);
+            item.serial = "bulk-" + j;
+            item.getId = function():String { return this.serial; };
+            item.hudPresentation = {mods:true};
+            crowded.push(item);
+        }
+        var bulk:Object = makeManager(crowded);
+        bulk.getInjectedPodIds = function(id:String):Array { return [0,1,2,3,4,5,6,7]; };
+        bulk.getBuffById = function(id:String):Object { return pod; };
+        view.initialize(bulk);
+        var budget:Array = view.snapshot();
+        var detailed:Number = 0;
+        for (var k:Number = 0; k < budget.length; k++) if (budget[k].mods != null) detailed++;
+        check(budget.length == 9 && detailed == 8 && budget[8].mods === undefined,
+            "global modification budget degrades only optional detail");
+        check(budget[8].timed === true && budget[8].remaining == 70,
+            "budget degradation preserves the base Buff and primary timer");
+        view.deinitialize();
+        manager.eventDispatcher.destroy();
+        bulk.eventDispatcher.destroy();
+    }
     public static function runAllTests():Void {
         passed = failed = checksum = 0; codec = new LiteJSON(); previous = {}; api = org.flashNight.arki.hud.PlayerHudService; oldApi = org.flashNight.arki.hud.PlayerHudSnapshotLegacyFixture;
         var rootKeys:Array = ["经验值", "上次升级需要经验值", "升级需要经验值", "等级", "角色名", "技能点数", "暂停", "__nativeHudDecorations", "帧计时器", "武器技能键", "keyshow"];
@@ -253,7 +359,7 @@ class org.flashNight.arki.hud.PlayerHudSnapshotTest {
             actor = {hp:50, hp满血值:100, mp:70, mp满血值:100, nonlinearMappingResilience:0.9,
                 韧性上限:100, impactStaggerBoundary:25, remainingImpactForce:0, man:{}, 攻击模式:"空手", 主动战技:{}, 手枪:{}, 手枪2:{}, 长枪:{}};
             actor.主动战技.空手 = {名字:"重拳", 消耗mp:2, 冷却时间:500};
-            testReadOrder(); testVitals(); testCombat(); testBuffs(); benchBuffCadence(1); benchBuffCadence(4);
+            testReadOrder(); testVitals(); testCombat(); testBuffs(); testBuffMetadata(); testBuffDetails(); benchBuffCadence(1); benchBuffCadence(4);
         } finally {
             for (i = 0; i < rootKeys.length; i++) _root[rootKeys[i]] = savedRoot[rootKeys[i]];
             for (i = 0; i < fields.length; i++) api[fields[i]] = savedApi[fields[i]];

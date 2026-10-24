@@ -242,7 +242,8 @@ class org.flashNight.arki.item.InventoryPanelService {
 
         // TooltipComposer 的 baseItem 分支面向 value:Object 的装备实例；数值型 stack
         // 若也传 BaseItem，会把数量当装备 value 读取。stack 只需基础物品数据与默认等级。
-        var instanceValue:Object = typeof item.value == "object" ? item.value : {level: 1};
+        var stackCount:Number = typeof item.value == "number" && isFinite(item.value) ? Math.floor(Number(item.value)) : 0;
+        var instanceValue:Object = typeof item.value == "object" ? item.value : {level: 1, count: stackCount};
         var baseItem = typeof item.value == "object" && typeof item.getData == "function" ? item : null;
         var descHTML:String;
         var introHTML:String;
