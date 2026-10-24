@@ -147,6 +147,7 @@ try {
     $passed++; Write-Host '[PASS] default worker launch uses the checked arguments'
     $deepDevRoot = 'C:\' + ('r' * 89)
     $devTokens=$null; $devErrors=$null
+    Assert-Test (Test-Path -LiteralPath (Join-Path $repoRoot 'automation\dev.ps1') -PathType Leaf) 'Development entry missing from the test checkout'
     $devAst=[Management.Automation.Language.Parser]::ParseFile((Join-Path $repoRoot 'automation\dev.ps1'),[ref]$devTokens,[ref]$devErrors)
     Assert-Test ($devErrors.Count -eq 0) 'Development entry does not parse'
     $devCacheFunction=@($devAst.FindAll({param($node) $node -is [Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -ceq 'Resolve-Cf7DevWebViewCacheDirectory'},$true))

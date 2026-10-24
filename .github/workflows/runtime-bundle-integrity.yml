@@ -237,6 +237,7 @@ jobs:
             tools/runtime-webview-paths.ps1
             tools/test-runtime-webview-paths.ps1
             tools/invoke-runtime-build-worker.ps1
+            automation/dev.ps1
             launcher/build-runtime-candidate.ps1
             launcher/webview2-runtime.lock.json
       - name: Verify release-state audit boundaries with isolated Git fixtures
