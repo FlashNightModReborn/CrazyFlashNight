@@ -1291,3 +1291,21 @@ Issue #152 已完成两轮正式推广。第二轮冻结源 `c1d9ab2576937aa2fa4
 基础HUD B0-06仍未通过，旧Flash oracle缺失，Host全量仍有120项既有Windows证据根缺失及30项未执行；这些缺口与本次47项发布政策分别记录。完整章节、车辆手感和Boss/Buff/刘海同时显示的最终观感继续交给测试员反馈。
 
 部署提交 [`afed2f2cd657e642b6f0f99880bbe17d719554f5`](https://github.com/FlashNightModReborn/CrazyFlashNight/commit/afed2f2cd657e642b6f0f99880bbe17d719554f5) 已普通快进推送；[Runtime native audit 40079405600](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40079405600) **success**，远端独立重放 `state=promoted / deploymentChanged=true`、`mode=Index / signers=2 / faultDomains=2` 和同一43文件闭包。发布状态反例55项、生成路径45项及[Path budget 40079405613](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40079405613)均通过。
+
+<a id="focus-target-hud-combo-release-20261024"></a>
+## 2026-10-24 聚焦目标多目标血条、连击徽章与 HUD 体验优化正式推广
+
+维护者验收隔离候选后明确授权完整二进制部署列车。冻结源 `511db6eb3762dc4300d1d3e419cc7f63b3fb3ffa`（受控标签 `runtime-build-v2/20261024-focus-target-hud-combo-v1`）包含：Buff 栏保序紧缩重排、HUD 默认半透明灰阶注释统一、药品快捷键显示与战技底板/冷却统一，以及聚焦目标血条多目标（`protect > boss > combat` 最多 4 槽）、玩家交战自动追踪、`22×24` 机械切角头像框、玩家资源层 4 项视觉动效转译、6 位精确整数生命值预算（`<1,000,000` 不缩写）与内嵌 `[N HIT]` 连击徽章；完整设计与验证记录见[HUD 交互与动效优化记录](玩家HUD交互与动效优化-2026-10-23.md)。
+
+注册本机 X509 `builder-local-b / physical-host-b` 与 [GitHub OIDC 独立构建 40092972506](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40092972506) 对同一 43 文件闭包达成双 signer / 双 faultDomain 共识，production policy **47/47**。唯一 writer 于 `2026-10-24T12:52:40.0657074Z` 完成原子 promotion（上一版保留于 `tmp/runtime-promotions/20261024T125207593Z-bfec0f2291d04569afad34514cb575a0/previous`）。
+
+| 绑定项 | 本次值 |
+| --- | --- |
+| request | `97006FD23FCFCCA8FCE035781E1634EC55A8FBA11B4DEDB770F030F66B8A5DD2`（supersede `AB8DA65A12F71E7494ACC0D23DDB6A6470DC4387347CD05947DB3FBDA3AC8622`） |
+| release tree | `6df33640675c946f8924ef6663b514f40cbe7b82` |
+| build identity | `3C271DC63133972C04778A9852494A937D69F8A955840E77334833967F4A7165` |
+| payload closure | `7C828E61D96972799F6B82017363FABA850FC8730D937EE259011AEF890F8F63` |
+| Core DLL SHA-256 | `F1D75B75E58DD1C6675E78EE3C98D1A897066929A7979991F80BB3063BC8DA6B` |
+| production receipt SHA-256 | `4A05A59B31B1D789A2526099ECB2520756B1E54AD891A519A825B22BD3F226E6` |
+| manifest SHA-256 | `450F9ED1186538D248D66C035D074372E2C34683CA56042370B936261DD084B2` |
+
