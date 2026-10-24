@@ -1,0 +1,31 @@
+{
+  "schema": "cf7.session-portrait-authorization.v1",
+  "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+  "source": "Anti gravity preview session and explicit user migration request",
+  "previewSessionMessage": "u463 方案A，u466 方案B，否则小图基本上不可见，u467 方案A，u474 方案A。老头人形说实在的还得往左移动点，目前视觉重心基本上是靠左的",
+  "selectedOptions": {
+    "u463": "A",
+    "u466": "B",
+    "u467": "A",
+    "u474": "A"
+  },
+  "u473": {
+    "adjustment": "left",
+    "cropPixels": [
+      395,
+      0,
+      995,
+      600
+    ],
+    "basis": "session_final_crop_included_by_explicit_migration_request"
+  },
+  "migrationMessage": "可行，带 反重力 中 4f96187d-7088-4480-8b59-a92889fb7bcf 这个会话的头像施工内容，一并提交推送上去",
+  "commitPushAuthorized": true,
+  "formalRuntimeDeploymentAuthorized": false,
+  "reviewBoundary": "selected_options_and_explicit_session_integration_not_a_new_pixel_by_pixel_campaign",
+  "reviewReport": {
+    "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/review/portrait_preview_report.md",
+    "bytes": 3764,
+    "sha256": "48930CA5256BAAEDCAFD01A1627106B1DEC12030EA48B4D03A2F9132A44B8D74"
+  }
+}

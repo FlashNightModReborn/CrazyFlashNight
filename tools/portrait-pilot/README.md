@@ -417,3 +417,32 @@ node tools/portrait-pilot/test-dog-portraits-v1.js
 原包校验器及两份当时的 SWF 从可追溯 Git 历史冻结，仍由原校验器核验原清单、原生帧、像素与完整保持集；没有把后来增添犬体的库文件冒充旧源，也没有跳过旧来源校验。发布仍复用 subjects-first、manifest-last writer，旧 228 个身份内容不变。新增 3 个独立身份、6 个 SVG/PNG 文件；现有消费者图像测试为 Web 24/24、Native `LootIconCatalogPortraitTests` 11/11，原头像保持与损坏拒绝 5/5，原生 PNG/SVG 重导出 6/6 字节相同。
 
 **全量基线另记**：本次上游已经有 235 个消费身份，其中 219 ready、16 缺图（含两只新装配犬）。接入本批后为 236 个身份、222 ready、14 缺图；其余缺口属于两型克隆兽与 CF6 新单位，本批未代补，也未将全量缺图门改为通过。Arena 三视口各 35/36，均停在要求全目录零缺图的 `custom-match-p1`；Team 为 222/223、222/223、221/223，装备锁文案既有失败外，1920 另有 `team-m15` 未通过。它们与本批三个身份的显示门分别报告，失败记录保留，不用局部通过代签全量通过。Loot 真实素材浏览器夹具 147/147、lazy-cancel 6/6。
+
+## 2026-10-24：CF6 新单位与武装 JK 双发色增补
+
+本批来源为 Anti gravity 会话 `4f96187d-7088-4480-8b59-a92889fb7bcf`。新增 14 个独立身份，并修复既有 `敌人-武装JK` 的 `orange/white` 两个变体。用户在会话中选择 `u463=A`、`u466=B`、`u467=A`、`u474=A`，`u473` 使用会话最终 `[395,0,995,600]` 居中裁剪；迁移授权不虚构新的逐像素人审或正式 runtime 部署许可。
+
+- `evidence/cf6-portraits-20261024/` 冻结原始 SWF 的 Git blob、16 倍原生 PNG/SVG 帧压缩包、实际使用的两个 Java 导出器、当前基础 manifest/receipt、完整 subjects 文件名集合和授权记录。原始 SWF 只在内存中读取、剔除阴影和冻结发色，不写回。
+- `produce-cf6-portraits-v1.py verify-native` 从 Git blob 重放原生导出；`render` 从冻结帧重建透明 512 PNG 与同坐标原生矢量；`promote` 只增量接入；`check` 复核来源、图像、精确文件集合、旧包保持集和 manifest-last receipt。
+- 橙发保留既有正确 PNG（SHA 前缀 `0E94E923…`），替换错误 SVG；白发替换 PNG 与 SVG。两个变体的 Web 首选均为 PNG，Native 使用验证过的原生矢量。退役 2 个错误 SVG 与 1 个错误白发 PNG，新增 31 个文件；旧头像及其余历史兼容文件保持完整。
+- 当前接受变体计数为 241，唯一引用文件 480，绑定 482。接受变体唯一文件数不等于目录总文件数，历史兼容表示仍须保留。
+- `test-cf6-portrait-preservation-v1.py` 覆盖真实包、旧身份篡改、JK 首选格式、损坏/缺失新资源拒绝和原生矢量无位图。Native `LootIconCatalogPortraitTests` 另覆盖 14 个新身份与 JK 默认变体的实际解码、彩色像素和透明背景。
+
+旧包重建环境固定 Pillow 12.1.0。当前 Python 版本不一致时，可使用本机 Python 3.13 和缓存 wheel 在仓库内离线隔离，不修改全局 Python：
+
+```powershell
+uv pip install --offline --target tmp/cf6-portrait-pillow-12.1 --python "$(uv python find 3.13)" 'pillow==12.1.0'
+$env:PYTHONPATH = "$PWD/tmp/cf6-portrait-pillow-12.1"
+& "$(uv python find 3.13)" tools/portrait-pilot/produce-cf6-portraits-v1.py verify-native
+& "$(uv python find 3.13)" tools/portrait-pilot/produce-cf6-portraits-v1.py render
+& "$(uv python find 3.13)" tools/portrait-pilot/produce-cf6-portraits-v1.py promote
+& "$(uv python find 3.13)" tools/portrait-pilot/produce-cf6-portraits-v1.py check
+& "$(uv python find 3.13)" tools/portrait-pilot/test-cf6-portrait-preservation-v1.py
+python tools/portrait-pilot/test-svg-runtime-safety.py
+node tools/test-portrait-resolver-runtime.js
+node tools/test-arena-portrait-coverage.js
+node tools/audit-arena-portrait-coverage.js --check
+dotnet test launcher/tests/Launcher.Tests.csproj -c Release --filter "FullyQualifiedName~LootIconCatalogPortraitTests"
+```
+
+已有正确版本的隔离环境可跳过首行安装；离线缓存缺失时不得把下载或版本篡改伪装成通过。原生重放、真实解码与 mock/浏览器证据不代签正式 WebView2→Flash、故事关视觉或 runtime 部署。
