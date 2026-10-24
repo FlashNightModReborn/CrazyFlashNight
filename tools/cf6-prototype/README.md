@@ -6,15 +6,17 @@
 
 - `tools/cf6-actor-template/actor.fragment.json`：固定 60 级 Andy 初装与技能。
 - `data/stages/books/cf6-sting-source/`：原坐标遭遇、六个随机枪节点、五个精英配额、五个自选池及技能候选。
+- `tools/cf6-roguelike-content/difficulty.source.json` / `difficulty_plan.py`：章内必清波次、混编与有限同屏数量；原作事实校验后再适配，生成审计保存在源片段目录。两项输入纳入章节与实际消费源码闭包。
 - `tools/cf6-map-runtime/generated/`：20张主地图已转为游戏世界坐标的出生点、机关层、碰撞与环境。
-- `tools/cf6-tutorial/`：教学室的独立地图和环境片段；不混用旧练习场输入。终局合并后运行路线为教学加19个主房间，原20张背景源仍保留。
+- `tools/cf6-tutorial/`：教学室的独立地图和环境片段；不混用旧练习场输入。
+- `tools/cf6-vehicle/chapter_fragment.py`：A07专用车辆段、透明世界背景与固定天空。其资源经严格验证后插入A06与A08之间；终局仍合并在A20，当前源码路线为教学加20个主房间，原A22源保留。
 - `tools/cf6-map-runtime/sky-parallax.fragment.json`：A02/A06 根舞台（root-stage）天空与城市视差层声明（schema `cf6-sky-parallax-fragment.v1`），是这些层字段的唯一真源。装配按 `replaceLayerIds` 移除同 id 旧机制层后按声明顺序追加，拒绝重复 id/角色、未知地图、非 root-stage 坐标、非正尺寸与越界路径；层坐标不做地图原点或世界缩放转换。其 canonical 天空 SWF（`CF6_A02_sky.swf`、`CF6_A06_sky.swf`）已真实 CS6 编译（回执 `tmp/cf6-roguelike-20261021/validation/sky-canonical-r1/`，Compiler 0/0），strict 装配不再因天空资源缺失失败。
 - [balance-input.json](balance-input.json)：本轮金币与累计商店选定输入；预算说明由 [economy-budget.py](economy-budget.py) 生成到 [README-budget.md](README-budget.md)。
 - [scene-assembly.py](scene-assembly.py) 绑定门轨迹、出生木门、摄像头、电梯补演出和可前后穿行的摆件；
   [interactive-assembly.py](interactive-assembly.py) 绑定14个原作可爆桶与10个活体培养皿，并迁移原有10只克隆兽的触发入口。
   [transport-assembly.py](transport-assembly.py) 将A09/A14/A18的原5/7/5个第二波敌人绑定到1868运输车开门事件。
   三者在世界坐标换算后执行；局部画稿比例与原注册点、排序脚点分开，原经济和总敌人配额不增加。
-- [spawn-assembly.py](spawn-assembly.py) 在终局合并后核对普通增援的可见入口。原预置敌人和十个培养皿条目保持；门口、运输车及A01原边缘出生点保留原并发上限。普通多只队列采用400ms参数、同波队列错相200ms；现役时间轮实际首发约400ms、后续约500ms。A06/A17普通支援移到环境声明且足部包络不碰撞的左右边缘，A20后续支援沿四个原木门出现；人数、等级与掉落不变。
+- [spawn-assembly.py](spawn-assembly.py) 在终局合并后核对普通增援的可见入口。运输车与十个培养皿保留专属预算；新难度编成优先绑定可见门，否则使用显式左右出生线，并核对24×12脚底包围盒与碰撞。普通多只队列采用400ms参数、同波队列错相200ms；现役时间轮实际首发约400ms、后续约500ms。同一出生点共享容量，不按敌人entry重复计算同屏上限；人数与混编以难度源为准，精英武器与奖励配额保持。
 - [dialogue-portraits.json](dialogue-portraits.json) 为Andy台词指定现役 `Andy Law#表情`，装配核对表情目录与实际WebP身份。
 
 `merge_elder_finale` 按同房间两阶段合同，将原A22护卫预算和补给并入A20的 `bossEncounter.nextPhase`，运行路线不再追加A22。原始遭遇片段保持归档事实。人形单位自身的原生变形链是唯一机器人生成者；控制器只接管同世界、同出生身份、已初始化的后继。最终机器人完成111帧死亡与碎片落定并实际移除后才允许清场，不以hp归零或死亡事件提前结算。A21独立字幕卡仅保留旧非合并配置兼容，现役终局不播放该卡。
@@ -47,9 +49,13 @@ node tools/validate-npc-shops.js
 
 每次装配把输入摘要、商人落点、金币计划及尚未接入的表现项写入 `generated/assembly.json`。真实 AS2 回归使用 `scripts/run-cf6-prototype-tests.ps1`；真实进书、消费、通关或失败返回沿[隔离候选工具](../cf6-live-e2e/README.md)。所有专项与整章证据分别记录，失败原件保留；2026-10-22 已获阶段提交推送授权，正式 runtime 发布仍另行授权。
 
-## 当前证据与现场修复（2026-10-24）
+## 当前施工与历史验证（2026-10-24）
 
-第三轮现场修复已编入主目录asLoader：在前两轮基础上修正教学海报/灭火器、增援入口与错峰、电梯入场显隐和朝向、A11出口、SAI兼容持枪与图标、培养皿实际出生交接及运输车留场。真实Flash专项1,401项及上游资源继承/角色属性回归1,288项通过，本轮教学背景与asLoader均有新鲜Compiler 0/0；分组身份、失败保留与验证限制统一见[设计基线当前状态](../../docs/闪客快打6肉鸽-首版设计与施工拆分-2026-10-21.md#0-阶段交付与接续入口)。整章战斗与观感仍待实玩；SAI专属美术和A07完整车战尚未完成。
+第五轮按原作首次登场限制兵种、两段电梯各一波12人预置战、粉色NPC Wings与目标血条避让已生成并通过功能专项，正式runtime列车已授权；基础HUD资源资格仍有未通过记录，详见下方设计基线当前状态。
+
+第四轮已接入A07、场景Wings、焦点目标血条、统一出口提示和电梯站姿，并修复换回原枪的装备应用收口及同图死亡复活后的机关恢复；史实物资扩池和必清波次已生成。第四轮真实Flash组合1,364项、车辆99项与最终asLoader编译通过；开发候选已实际完成入书、装备卸下回装与应用保存、正常撤退和新进程读回，原测试角色资产及85个旁路存档文件未变。完整路线和驾驶观感仍需实玩。分组身份和具体边界统一见[设计基线当前状态](../../docs/闪客快打6肉鸽-首版设计与施工拆分-2026-10-21.md#0-阶段交付与接续入口)。
+
+第三轮历史回执：教学海报/灭火器、增援入口与错峰、电梯入场显隐和朝向、A11出口、SAI兼容持枪与图标、培养皿实际出生交接及运输车留场曾编入主目录asLoader；真实Flash专项1,401项及上游资源继承/角色属性回归1,288项通过，当轮教学背景与asLoader均有新鲜Compiler 0/0。该版本尚未接入A07，不作为第四轮二进制或完整路线证明。SAI专属美术与整章观感仍待补齐或实玩。
 
 以下记录保留前一阶段问题的来源及验收边界。
 

@@ -351,6 +351,16 @@ C#保持严格白名单、原子采用与主体/连接隔离；字段缺失显�
 
 完整 schema 的机器真源为[发送器](../scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as)与[接收器](../launcher/src/Guardian/Hud/PlayerInfo/PlayerHudState.cs)，[交互所有者](../launcher/src/Guardian/Hud/PlayerInfo/PlayerHudController.cs)持有 pending write。不要把历史 `pi_*` 字段草案误作当前 wire。
 
+### 4.4 关卡聚焦目标血条（2026-10-24 源码扩展）
+
+`FocusTargetHudService` 为关卡控制器提供单目标只读投影：`bind(world, worldIdentity, unit, identityKey, unitIdentity, role, label)` 返回普通对象 lease，`clear(lease)` 只撤销精确当前绑定。调用方先捕获世界和单位的普通对象身份；同名 MovieClip 重建、旧世界和迟到取消均不能继承或撤销新绑定。角色仅 `boss/protect`；保护目标必须是有真实 `hp/hp满血值` 的单位，演出剪辑不创建虚构生命权威。目标选取、战斗、变形接续、关卡推进和持久写仍由原控制器负责。
+
+Host 通过现有 `playerHudSync` 的 `focusTarget:true` 显式索取可选分组，旧 Host 不接收新字段。`pi:` 的 `focusTarget` 为 `{id,role,name,hp:[current,maximum]}` 或显式 `null`；沿用 epoch/seq、连接 generation、原子分组替换和帧末合批。只发送有限原值，非正上限/暂不可读生命隐藏投影，不改单位 HP；负值和溢出原样保留，只有画条比例钳制。SceneChanged 撤销绑定；玩家 HUD 暂不可用时随整组隐藏，不把玩家重建误当成 Boss 身份消失。
+
+`PlayerHudFocusTargetWidget` 挂在已有 Buff surface，逻辑框为 `x=6,h=30`，宽度由最大居中刘海与12px间隔推导为294px，顶部为 `max(1,ceil(buffCount/32))*32+4`；无 Buff 仍避开顶行工具栏，多行 Buff 动态下移；完整目标条固定在左侧列，避开刘海展开区及其波次/暂停提示，按现有 viewport/letterbox 缩放。Boss 用红条、真实保护单位用青条并显示角色与名称；无新窗口、后台线程、输入命中或动画时钟，沿用面板遮挡、暂停投影和共享合成层级。目标为空时无可见内容。
+
+验证入口为 `scripts/run-focus-target-hud-tests.ps1`（真实 AVM1 同路径实例重建/精确 lease/生命采样/协商）与 Host `FocusTargetHudTests`（原子协议、迟到/断连、四分辨率离屏绘制及透传）。源码与离屏测试不等于真实 Flash、候选游戏、人工视觉或正式 runtime；本扩展不自动授权 runtime 发布。PlayerInfo focused、B0-06 与既有 Host 全量门仍按 testing-details 对应合同执行。
+
 ## 5. 经修正的迁移路线（相对原9阶段计划的差异）
 
 以下保留阶段编号供旧文引用；实际复工按[完整迁移施工路线 §6](玩家信息界面完整迁移-复工调研与施工路线-2026-09-12.md#6-施工顺序与具体首步)成组推进，尽早出现覆盖全部区域的真实状态候选。单块仪表完成不是完整项目的退出条件。

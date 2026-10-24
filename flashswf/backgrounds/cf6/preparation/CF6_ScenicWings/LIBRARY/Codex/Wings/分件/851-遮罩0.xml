@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Wings/分件/851-遮罩0" itemID="6aa00000-b87a64ad" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="851-遮罩0">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF" />
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!650 44|628 -136[559 -187 508 -262[466 -324 408 -376[214 -462 -72 -456[-208 -432 -314 -380|-332 -376[-352 -356 -375 -341[-412 -316 -452 -296[-466 -241 -492 -203[-536 -140 -592 -96[-578 -32 -585 -8[-612 84 -612 184[-670 206 -649 303[-624 420 -672 444|-667 483[-662 504 -647 519|-612 544[-548 1000 -439 1406[-412 1504 -392 1604|-449 1613|-454 1615[-485 1622 -472 1664[-378 1879 -307 2109|-252 2304[-295 2476 -239 2640[-211 2722 -152 2784[-125 2808 -75 2819[-52 2824 -32 2844[202 2858 348 2784[444 2690 454 2504[461 2371 428 2284[492 2028 585 1803[630 1696 628 1644[570 1264 616 803[628 684 628 564|643 559|651 545|663 503|668 464[635 411 651 321[669 223 628 164[657 123 650 44" fillStyle0="1" />
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/851-遮罩1" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -66,8 +66,13 @@ node tools/cf6-story-migration/test_cf6_web_browser.js
 Host `BookComicTask.cs` Pages 白名单 + Web 独立懒加载 `book-comic-cf6-content.js` +
 AS2 章节边界调 `Cf6StoryService.beginChapter`，胜利后经 `beginFinal` 串联 s7 与 credits。
 
-Host 的漫画串联必须等待前驱 exact close 实际成功及原暂停释放：仅已确认 continue/skip 的
-S4→S5、S7→片尾可保留一个同 slot/scene 后继，并绑定前驱实例；失败、断连、过期或其他面板抢入不放行。
+现役地图路线为 TUTORIAL→A01…A20，原 A21 演出与 A22 第二形合并在 A20；S7 的原作来源仍为 A22。
+章节7只播放 S4 后进入 A07，章节8只在真实 A07 尾段完成后的标准转场中播放 S5 并进入 A08；
+章节18播放 S6 后进入 A18。剧情层不发车辆完成事件，不提前开放 A08，也不借 continue/skip 跳过驾驶。
+
+Host 的连续漫画必须等待前驱 exact close 实际成功及原暂停释放：现役 S7→片尾保留一个同 slot/scene 后继，
+并绑定前驱实例；失败、断连、过期或其他面板抢入不放行。旧 S4→S5 串联仍作为通用协议 fixture 覆盖，
+不能把它当作当前章节路线。
 2026-10-22 现场出现过“前驱开始关闭后，后继立即到达被拒绝，AS2 从前驱重试”的循环；
 修复的真实生产接线测试位于 `BookComicCloseTests`，连同 `BookComicTaskTests` 定向 58/58 通过。
 这不是固定一帧延迟，也没有放宽普通漫画打开条件；仍需最新隔离候选的实际串联复验。
@@ -83,18 +88,22 @@ MP3 不补静音、不转码；重复提取遇到相同字节不重写原始素�
 原作音乐播放器会循环曲目。CF6 各段及手动 credits 的面板自有音乐保持循环，
 s7 不再在 music03 首轮结束后缺失后续音乐；旁白不循环。Web 使用连续循环，
 没有模拟原作至多约 29 帧的轮询重启间隙，也没有复制原作跨关卡继续播放的全局所有权。
-关板后仍释放现役 BGM lease。末页保留旁白尾部、s4/s5 串联、credits 手动继续和
-Web 时钟仍是现有适配；MP3 `latencySeek` 的细微播放器差异与实际听感尚待实机核对。
+关板后仍释放现役 BGM lease。S4 与 S5 分属两次章节进入，各自闭合音频 lease；
+末页保留旁白尾部、S7/end 串联、credits 手动继续和 Web 时钟仍是现有适配；MP3 `latencySeek` 的细微播放器差异与实际听感尚待实机核对。
 
 ## 剧情服务测试与当前状态
 
 r16 修复了连续段落复用 prepared 队列的源码缺陷，并准备独立 focused TestLoader 入口。
-r17 增加 `Cf6BookRunStoryTest`，经真实 `BookRunService` watcher、`Cf6StoryService` 与
-`BookComicService` 覆盖 s4/s5 prepared+finish 后的 A08 续行，以及 victory → s7 → credits →
+r17 增加 `Cf6BookRunStoryTest`，当时经真实 `BookRunService` watcher、`Cf6StoryService` 与
+`BookComicService` 覆盖旧 s4/s5 串联后的 A08 续行，以及 victory → s7 → credits →
 现有 outcome/markDirty 屏障；另覆盖 pending reward、closed/failed 重试、旧 world/slot/run 拒绝和
 campus/Lee 非 CF6 路径。credits 后的 CF6 `persistOutcome` 现在先复核原 world/run/slot，再等待
 既有 reward commit pending；不会清除未知写锁或重放奖励。所有 SaveManager、markDirty、transport、
 音频与房间边界均为内存夹具并恢复，不装载地图资源或物理存档。
+A07 接回后，该测试改为独立的 7→S4→A07、8→S5→A08、18→S6→A18 prepared/finish 交接，
+并保留迟到 world/slot/run 拒绝与片尾结算屏障。通用两页 prepared/BGM 恢复用例显式调用 beginSequence，
+不再借 beginChapter(7) 暗含跳过车战；新的预期数量以 runner 为准，必须取得新鲜 AVM1 回执。
+
 2026-10-22 已取得真实 CS6/AVM1 回执：`story-avm1-r3` 为171/171，`audio-avm1-r3` 为212/212，
 均为 fresh Compiler 0/0、唯一闭合 runId、32K retry 0，目录位于本轮 `tmp/cf6-roguelike-20261021/validation/`。
 这些是逻辑夹具证据；主逻辑包仍须按当前源码重新编译，真实游戏、漫画听感与标准入口验收分别记录。
@@ -111,7 +120,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-audio-v2-tests.p
 回归由第二条独立入口覆盖。两条 runner 都复用统一编译 mutex、scratch 持久备份/inflight marker、
 fresh evidence 与字节恢复合同。
 
-这两轮实际 trace 分别确认如下结果；以后源码变化须取得新回执：
+2026-10-24接回A07后的组合回归已实际通过BookComic45、Cf6Story108、Cf6BookRunStory51，包含独立S4→A07与S5→A08交接；完整组合及当前asLoader身份见[设计基线](../../docs/闪客快打6肉鸽-首版设计与施工拆分-2026-10-21.md#0-阶段交付与接续入口)。
+
+以下两轮历史trace保留当时结果；不作为接回A07后的源码证明：
 
 ```text
 BookComicServiceTest Tests Passed: 45

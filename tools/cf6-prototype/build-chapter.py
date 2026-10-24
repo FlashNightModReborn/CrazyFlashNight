@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[2]
 TOOLS = ROOT / "tools"
 HERE = Path(__file__).resolve().parent
 ROUTE = [f"A{i:02}" for i in range(1, 23) if i not in (7, 21)]
+CHAPTER_ROUTE = [f"A{i:02}" for i in range(1, 23) if i != 21]
 SOURCE = ROOT / "data/stages/books/cf6-sting-source"
 OUTPUT = ROOT / "data/stages/books/cf6-sting.json"
 ENVIRONMENT = ROOT / "data/environment/stage_environment.xml"
@@ -312,7 +313,7 @@ def merge_elder_finale(chapter, environments):
             != [ET.tostring(c) for c in right.findall('Collision')]
             or human['presentation'] != robot['presentation']):
         raise ValueError('elder phases no longer share the same room geometry')
-    boss = human['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0]
+    boss = human['stage']['Wave']['SubWave'][-1]['EnemyGroup']['Enemy'][0]
     next_boss = robot['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0]
     if (boss['Type'] != '兵种473' or next_boss['Type'] != '兵种474'
             or boss['Level'] != next_boss['Level'] or boss['Quantity'] != 1 or next_boss['Quantity'] != 1):
@@ -344,6 +345,9 @@ def apply_exit_guides(chapter, environments):
     for node in chapter['maps']:
         mechanism = node['mechanism']
         if mechanism.get('elderFinale') is True:
+            continue
+        if node['id']=='A07' and mechanism.get('vehicle') is not None:
+            audit.append({'mapId':'A07', 'basis':'original vehicle tail collision; no walking exit guide'})
             continue
         if mechanism.get('traversal',{}).get('depart') is not None:
             audit.append({'mapId':node['id'], 'basis':'authored traversal acquisition gate'})
@@ -439,7 +443,7 @@ def install_economy(chapter, economy, budget, shop_source, items, skills, enviro
     chapter['economy'] = copy.deepcopy(economy['chapterEconomy'])
     maps = {m['id']: m for m in chapter['maps']}
     gold = budget['goldPlans'][budget['goldPlanForAssembly']]
-    if [row['mapId'] for row in gold] != ROUTE:
+    if [row['mapId'] for row in gold] != CHAPTER_ROUTE:
         raise ValueError('gold plan must match the complete route')
     if any(type(row['value']) is not int or not 0 <= row['value'] <= 180050 for row in gold):
         raise ValueError('gold pickup exceeds the reviewed native count range')
@@ -556,7 +560,7 @@ def environment_bytes(existing, fragment):
     newline = '\r\n' if '\r\n' in text else '\n'
     generated = ET.fromstring(fragment)
     names = [node.findtext('BackgroundURL') for node in generated.findall('Environment')]
-    if names != ['CF6_Tutorial_BG.swf'] + ['CF6_' + name + '_BG.swf' for name in ROUTE]:
+    if names != ['CF6_Tutorial_BG.swf'] + ['CF6_' + name + '_BG.swf' for name in CHAPTER_ROUTE]:
         raise ValueError('environment fragment must contain the exact complete route')
     if text.count(BEGIN) != text.count(END) or text.count(BEGIN) > 1:
         raise ValueError('ambiguous generated environment block')
@@ -589,10 +593,30 @@ def assemble_scenes(chapter, environment_fragment, require_swfs=True):
     scene = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(scene)
     environment_fragment, audit = scene.adapt(chapter, environment_fragment, require_swfs)
-    inputs = [HERE / 'scene-assembly.py', scene.PLAN, scene.ART, scene.DEPTH_PROPS, scene.AUX,
+    inputs = [HERE / 'scene-assembly.py', scene.PLAN, scene.ART, scene.DEPTH_PROPS, scene.AUX, scene.SCENIC_WINGS,
+              TOOLS / 'cf6-scene-completion/build_scenic_wings.py',
               scene.ELEVATOR_EXIT_SOURCE,
               TOOLS / 'cf6-prop-layout/recipe.json', TOOLS / 'cf6-prop-layout/calibrate.py']
     return environment_fragment, audit, inputs
+
+
+def assemble_vehicle(chapter, environment_fragment, require_swfs=True):
+    """A07 has its own original vehicle coordinate system, already converted once."""
+    path = TOOLS / 'cf6-vehicle/chapter_fragment.py'
+    spec = importlib.util.spec_from_file_location('cf6_vehicle_chapter', path)
+    vehicle = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(vehicle)
+    node, environment, audit = vehicle.build(require_swfs)
+    names = [row['id'] for row in chapter['maps']]
+    if names != ['TUTORIAL'] + ROUTE or node['id'] != 'A07':
+        raise ValueError('vehicle insertion requires the exact original walking route')
+    chapter['maps'].insert(names.index('A08'), node)
+    environments = ET.fromstring(environment_fragment)
+    environment_names = [row.findtext('BackgroundURL') for row in environments]
+    if environment_names.count('CF6_A08_BG.swf') != 1 or 'CF6_A07_BG.swf' in environment_names:
+        raise ValueError('vehicle environment insertion is ambiguous')
+    environments.insert(environment_names.index('CF6_A08_BG.swf'), environment)
+    return ET.tostring(environments, encoding='utf-8', xml_declaration=True), audit, list(vehicle.INPUTS)
 
 
 def build(require_swfs=True):
@@ -606,7 +630,9 @@ def build(require_swfs=True):
               SKY_PARALLAX, TOOLS / 'cf6-tutorial/environment.fragment.xml',
               TOOLS / 'cf6-tutorial/provenance.json', TOOLS / 'cf6-tutorial/layout.json',
               TOOLS / 'cf6-tutorial/assemble.py', HERE / 'viewport-policy.json',
-              HERE / 'viewport-assembly.py', HERE / 'generated/original-camera-layout.json']
+              HERE / 'viewport-assembly.py', HERE / 'generated/original-camera-layout.json',
+              TOOLS / 'cf6-roguelike-content/difficulty.source.json',
+              TOOLS / 'cf6-roguelike-content/difficulty_plan.py', SOURCE / 'encounter-facts.v1.json']
     authored, economy, actor, tutorial, runtime, native = map(read, inputs[:6])
     by_id = {m['id']: m for m in authored['maps']}
     ready = {m['id']: m for m in runtime['maps']}
@@ -646,6 +672,8 @@ def build(require_swfs=True):
     transport_spec.loader.exec_module(transport)
     transport_audit = transport.adapt(chapter, require_swfs)
     inputs.extend([HERE / 'transport-assembly.py', transport.MANIFEST])
+    environment_fragment, vehicle_audit, vehicle_inputs = assemble_vehicle(chapter, environment_fragment, require_swfs)
+    inputs.extend(vehicle_inputs)
     turret_audit = apply_turrets(chapter, read(TURRET_FRAGMENT), require_swfs, environment_fragment)
     inputs.extend(viewport.geometry_path(map_id) for map_id in ['TUTORIAL'] + ROUTE)
     inputs.append(viewport.REFERENCES)
@@ -671,13 +699,14 @@ def build(require_swfs=True):
     inputs.extend(ROOT / 'data/items' / node.text for node in ET.parse(ROOT / 'data/items/list.xml').findall('items'))
     manifest = {'schema': 'cf6-chapter-assembly.v1', 'bookId': chapter['id'],
                 'routeId': chapter['routeId'], 'maps': [m['id'] for m in chapter['maps']],
-                'sourceMaps':['TUTORIAL'] + ROUTE,
+                'sourceMaps':['TUTORIAL'] + CHAPTER_ROUTE,
                 'inputs': [{'path': str(p.relative_to(ROOT)).replace('\\', '/'),
                             'sha256': hashlib.sha256(p.read_bytes()).hexdigest()} for p in inputs],
                 'scope': 'authored playable prototype; no full-route gameplay acceptance',
                 'economyAssembly': economy_audit,
                 'dialoguePortraits': dialogue_audit,
                 'elderFinale': finale_audit,
+                'vehicleAssembly': vehicle_audit,
                 'spawnAssembly': spawn_audit,
                 'exitGuidance': guide_audit,
                 'skyParallaxLayers': sky_audit,

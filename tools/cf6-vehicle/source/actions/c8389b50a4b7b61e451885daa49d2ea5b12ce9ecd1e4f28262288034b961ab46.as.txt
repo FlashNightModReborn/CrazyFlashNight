@@ -1,0 +1,187 @@
+onClipEvent(enterFrame){
+   function §\x04\x05§()
+   {
+      set("\x03",1430 % 511 * 5);
+      return eval("\x03");
+   }
+   var §\x01§ = -1667 + "\x04\x05"();
+   while(true)
+   {
+      if(eval("\x01") == 373)
+      {
+         set("\x01",eval("\x01") + 62);
+         §§push(true);
+      }
+      else
+      {
+         if(eval("\x01") == 95)
+         {
+            set("\x01",eval("\x01") + 741);
+            §§push(mblength(function §\x04\x05§()
+            {
+               set("\x03",1430 % 511 * 5);
+               return eval("\x03");
+            }));
+            break;
+         }
+         if(eval("\x01") == 87)
+         {
+            set("\x01",eval("\x01") + 882);
+         }
+         else
+         {
+            if(eval("\x01") == 423)
+            {
+               set("\x01",eval("\x01") + 543);
+               break;
+            }
+            if(eval("\x01") == 426)
+            {
+               set("\x01",eval("\x01") + 84);
+            }
+            else if(eval("\x01") == 969)
+            {
+               set("\x01",eval("\x01") - 4);
+               §§push(true);
+            }
+            else if(eval("\x01") == 803)
+            {
+               set("\x01",eval("\x01") - 43);
+               var §§pop() = function §\x04\x05§()
+               {
+                  set("\x03",1430 % 511 * 5);
+                  return eval("\x03");
+               };
+            }
+            else if(eval("\x01") == 192)
+            {
+               set("\x01",eval("\x01") + 611);
+               §§push("\x0f");
+               §§push(1);
+            }
+            else if(eval("\x01") == 553)
+            {
+               set("\x01",eval("\x01") - 361);
+            }
+            else if(eval("\x01") == 510)
+            {
+               set("\x01",eval("\x01") - 211);
+               §§push(true);
+            }
+            else if(eval("\x01") == 435)
+            {
+               set("\x01",eval("\x01") - 340);
+               if(function §\x04\x05§()
+               {
+                  set("\x03",1430 % 511 * 5);
+                  return eval("\x03");
+               })
+               {
+                  set("\x01",eval("\x01") + 741);
+               }
+            }
+            else if(eval("\x01") == 836)
+            {
+               set("\x01",eval("\x01") - 326);
+            }
+            else if(eval("\x01") == 902)
+            {
+               set("\x01",eval("\x01") - 350);
+               §§push(!function §\x04\x05§()
+               {
+                  set("\x03",1430 % 511 * 5);
+                  return eval("\x03");
+               });
+            }
+            else if(eval("\x01") == 966)
+            {
+               set("\x01",eval("\x01") - 774);
+            }
+            else if(eval("\x01") == 965)
+            {
+               set("\x01",eval("\x01") - 542);
+               if(function §\x04\x05§()
+               {
+                  set("\x03",1430 % 511 * 5);
+                  return eval("\x03");
+               })
+               {
+                  set("\x01",eval("\x01") + 543);
+               }
+            }
+            else if(eval("\x01") == 760)
+            {
+               set("\x01",eval("\x01") - 417);
+               §§push("\x0f");
+            }
+            else if(eval("\x01") == 299)
+            {
+               set("\x01",eval("\x01") + 632);
+               if(function §\x04\x05§()
+               {
+                  set("\x03",1430 % 511 * 5);
+                  return eval("\x03");
+               })
+               {
+                  set("\x01",eval("\x01") + 42);
+               }
+            }
+            else if(eval("\x01") == 552)
+            {
+               set("\x01",eval("\x01") - 191);
+               if(function §\x04\x05§()
+               {
+                  set("\x03",1430 % 511 * 5);
+                  return eval("\x03");
+               })
+               {
+                  set("\x01",eval("\x01") + 606);
+               }
+            }
+            else if(eval("\x01") == 973)
+            {
+               set("\x01",eval("\x01") - 4);
+            }
+            else if(eval("\x01") == 361)
+            {
+               set("\x01",eval("\x01") + 606);
+            }
+            else
+            {
+               if(eval("\x01") == 931)
+               {
+                  set("\x01",eval("\x01") + 42);
+                  toggleHighQuality();
+                  break;
+               }
+               if(eval("\x01") != 343)
+               {
+                  if(eval("\x01") == 967)
+                  {
+                     set("\x01",eval("\x01") - 92);
+                     _parent._x -= 20;
+                     if(this.hitTest(_parent._parent.消失块))
+                     {
+                        _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
+                        _parent.removeMovieClip();
+                        _parent.gotoAndStop("消失");
+                     }
+                     break;
+                  }
+                  if(eval("\x01") == 875)
+                  {
+                     set("\x01",eval("\x01") - 875);
+                  }
+                  break;
+               }
+               set("\x01",eval("\x01") + 559);
+               §§push(eval(function §\x04\x05§()
+               {
+                  set("\x03",1430 % 511 * 5);
+                  return eval("\x03");
+               }));
+            }
+         }
+      }
+   }
+}

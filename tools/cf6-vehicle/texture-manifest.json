@@ -1,0 +1,612 @@
+{
+  "schema": "cf6-vehicle-texture.v1",
+  "inputs": {
+    "tools/cf6-vehicle/source/original-nodes.json": "2ec3c11095326219f42695737cbe4e08c2ed2e4308650ff04be797a82ca2d463",
+    "tools/cf6-vehicle/source/ffdec/95.svg": "f0d932528e0fb985ab7f400c318fbb8aa2baf41b58b78e3bc41b6df5f6da0eaf",
+    "tools/cf6-vehicle/source/ffdec/96.svg": "6a15f183145728f227ebd8c797f99ea4eeff493630f7ea5b8b9d68bb91c23a86",
+    "tools/cf6-vehicle/source/ffdec/97.svg": "d2354cd5cad557b111427cce1a4e2ce6574c91d08cde6e68c43bf5ea560cba8a",
+    "tools/cf6-vehicle/source/ffdec/98.svg": "678ee472b17288a1d687c187621863d6a46001bac378847d71727a097499525b",
+    "tools/cf6-vehicle/source/ffdec/99.svg": "a1d7339416201220a398a0c66b44762de3bb6679c28ac4e0dba9e5355a55d153",
+    "tools/cf6-vehicle/source/ffdec/100.svg": "caff6f755b57f232f2e200cb9d502bccfa2052d2fc104b85c9e88315e6d67f38",
+    "tools/cf6-vehicle/source/ffdec/101.svg": "004a3378e5aa4be3dfd49e36275d6ba3cb60418ca23207e8ff5dee00fc8a2e18",
+    "tools/cf6-vehicle/source/ffdec/102.svg": "571b1c93c4f4a78efa1cf5f2bbd06c8f8391a8de450ff413988ef952fbf38100",
+    "tools/cf6-vehicle/source/ffdec/103.svg": "5a2cdb3f6e7d4888bba01461798253a7b7f4257824ba1bdeab1e6c4afc18a0bc",
+    "tools/cf6-vehicle/source/ffdec/104.svg": "ec04705e9619050fd88d7b296172bb224cdd593810cf2f4e753c4da5ca70c766",
+    "tools/cf6-vehicle/source/ffdec/105.svg": "4dc1ff270e43f0e7b3375a7bc7b3ed686652c1daabceb8681652bbcbf2de4f53",
+    "tools/cf6-vehicle/source/ffdec/106.svg": "514aac9c6f0fcc47ce9c7eaff80efb68927dabd676a355f29405c0d201e13072",
+    "tools/cf6-vehicle/source/ffdec/107.svg": "60dfc9f6fed90a6cf8996132d390c850eb4cfc2e4acccabfe7c64faa3a23d937",
+    "tools/cf6-vehicle/source/ffdec/108.svg": "648195924c9aaf2d1441f264f2fa1dd958f8826b03c8b74dfeb283560edbf2ab",
+    "tools/cf6-vehicle/source/ffdec/109.svg": "e80cf44ed8b860a661da14a7026ec211595acb4dbbe455dcccb1b7343a166568",
+    "tools/cf6-vehicle/source/ffdec/110.svg": "0d56278c6ff0b411b9de15b0f80e346b52e6912bb9d57fd05f98b549c4b99245",
+    "tools/cf6-vehicle/source/ffdec/111.svg": "af0ca6f95db4366f77e464102ff8c72d39f6d9710933de0cee245ad86d65e034",
+    "tools/cf6-vehicle/source/ffdec/112.svg": "d9d8b1d2baf9a414d28be711046645f404aef21d71b28a1de1301cc23ce730a7",
+    "tools/cf6-vehicle/source/ffdec/113.svg": "e134e334d096ff3129d4ce6593d42fc25ad3fbc8715218b639fc56e66a8f0cbc",
+    "tools/cf6-vehicle/source/ffdec/114.svg": "b8faba5e5e83ed9977389813bda6469582f0fdd45fc787209b423f5603caef8e",
+    "tools/cf6-vehicle/source/ffdec/116.svg": "891d2e9762d54f8b72d80aa2310581165b94ef248842cdc0af2b71b54e7a319d",
+    "tools/cf6-vehicle/source/ffdec/123.svg": "daf7acc49ba427eb17bf36e05ac47b6bfeb76ceee4949113cfa107f9a52394db",
+    "tools/cf6-vehicle/source/ffdec/125.svg": "071658eaafe508ffab35fa5f5091543888fd419beae9174211caa0311376f60b",
+    "tools/cf6-vehicle/source/ffdec/127.svg": "70767896230b086ff232cd4f3386d14767e68dc490709401e349e90ad5ee8784",
+    "tools/cf6-vehicle/source/ffdec/129.svg": "b273d271c98db121d47a25ed159a015d244d444b4bf3a54f22c1439494ed6480",
+    "tools/cf6-vehicle/source/ffdec/131.svg": "bc1068f5827253ed1ada58347af41b260c46a0ca8274ca8b19b4083564c0a69d",
+    "tools/cf6-vehicle/source/ffdec/133.svg": "6607fdd29ac5383e1f308b19c3bf5dcc9a986d4ad40d827012a7e45b81e6aadb",
+    "tools/cf6-vehicle/source/ffdec/135.svg": "ec80cd28bf23570c0357441854bbc6156d624e6314e2762153356b6741dca9a5",
+    "tools/cf6-vehicle/source/ffdec/137.svg": "864c2489c433fb3faca62044989fb382c650859137fb8caf0197b76ebd626225",
+    "tools/cf6-vehicle/source/ffdec/139.svg": "30bf8675575d69bbd57728f96aa2a321eea166348ef4bc65554ea55750351f37",
+    "tools/cf6-vehicle/source/ffdec/141.svg": "b95b06b887d9c77f0c2fb05cc32860626a7aa61e76187e2007fd4891b52bccd0",
+    "tools/cf6-vehicle/source/ffdec/143.svg": "b1ee2fd5c558ed1fed49608e2cfb9decd917ce5282d86b4320b694013aa79330",
+    "tools/cf6-vehicle/source/ffdec/145.svg": "abacd91ca5c92d26b06eda3f1936930664ab1a21376cd6a0915fbda6d80e82fa",
+    "tools/cf6-vehicle/source/ffdec/147.svg": "e3ddfb3bacb4669a4c1db84f90dfca2e047e10bc75d13ad04938544752187ba1",
+    "tools/cf6-vehicle/source/ffdec/149.svg": "a472c096317e34699a1563a0e5e5e0025c7ba24edf23ab0f0f00d99eb1a74618",
+    "tools/cf6-vehicle/source/ffdec/151.svg": "9609a6840693d93b7bf735618f1ce94dc384da08a60748a93dfd02bf3c7eb195",
+    "tools/cf6-vehicle/source/ffdec/152.svg": "c2f4afbb8d194bc0f4e4fd9637418bc84f2666241212d764886c3b8cdbeb7aff",
+    "tools/cf6-vehicle/source/ffdec/153.svg": "033f1b566e71e6b5052d9845559673914f7342d4ed6d940f4766a6ce52b22f25",
+    "tools/cf6-vehicle/source/ffdec/154.svg": "3bb357436d5f65d7adf385639e374e2fd185aca487f5d801c2cc07f98a0b4a12",
+    "tools/cf6-vehicle/source/ffdec/155.svg": "b5cc0c31a8ee52bb4ab713677bff9fa47ca7aab14fe0d57c8b2ad9d344d3f641",
+    "tools/cf6-vehicle/source/ffdec/156.svg": "7423018b12c90713c1550f81488f70aa51d621d42492617de62f9ba546743b06",
+    "tools/cf6-vehicle/source/ffdec/157.svg": "0050ab3b7a4a548ee97443e1a7724bc1c3daa6d6e4c6fa22be41b8304c816882",
+    "tools/cf6-vehicle/source/ffdec/158.svg": "0e51ef3b797409cbfe3b66b07ae88333f9c61cbfadc414e5e6aeff82853e5188",
+    "tools/cf6-vehicle/source/ffdec/159.svg": "630f0e3ddacf1f9107428a1b3ecc0dae6e11af59a8b3dd8a80f243f397983e32",
+    "tools/cf6-vehicle/source/ffdec/160.svg": "600695856f5001fffb0e484474e638bb0edb187aa1a1bf519d65d0b82a22df7f",
+    "tools/cf6-vehicle/source/ffdec/161.svg": "47f3ee68566333f8aa3d40981bd9c453c60d4a2ddd95eff76e54fa32d044242e",
+    "tools/cf6-vehicle/source/ffdec/162.svg": "a85aa55ac51ea414d3297c1157581a5df0e68443444092bf77d42a6bbbd3aba9",
+    "tools/cf6-vehicle/source/ffdec/163.svg": "723b2ef6533445783c25dd48f8f2e55a4a1c88041b7c163debe7d966b705a713",
+    "tools/cf6-vehicle/source/ffdec/164.svg": "67afe19ff6b22873dbdc9b3e1b63570dc094871a1bb4c14b9bce36c65ff82aa7",
+    "tools/cf6-vehicle/source/ffdec/165.svg": "e314ed2506bc6df9aacecb16bf42e6342cb3c0e3b08337252192b67d9ffc86d5",
+    "tools/cf6-vehicle/source/ffdec/166.svg": "6bac7bf1c09ddbb674a72a21b22d8039ff802df86b0f0caf90df96931249cdc3",
+    "tools/cf6-vehicle/source/ffdec/167.svg": "907bf18993af0f333bd5b97b41ffbd717f60ba6d66a0ad3a9d75d42a8e542d3f",
+    "tools/cf6-vehicle/source/ffdec/168.svg": "a14ac3f52920bf4ccb8a824a9257ecdd78eebf48f3d154f14a7554c7a6f6ad16",
+    "tools/cf6-vehicle/source/ffdec/169.svg": "ee52ffea61cb8e21a234a6c378e0de7edd7c683ae9ab18dd828fa84e6460b2cc",
+    "tools/cf6-vehicle/source/ffdec/170.svg": "49183ef2acb72ec8fc7bcd7b10958ef55f38749a17936be6ae7446ec36af2ce7",
+    "tools/cf6-vehicle/source/ffdec/171.svg": "22daff63947b392d4490fed5121de14b23f744f78b7fd25825b20256e4d80241",
+    "tools/cf6-vehicle/source/ffdec/172.svg": "2cc2431da5c8605ff7b62a82bf9bb8b43306c2c828fa4081724221a098754742",
+    "tools/cf6-vehicle/source/ffdec/173.svg": "eb6a2bf04d7c6805ff330fb1108b495e6c46989277c054f29a2679647d7a6a3e",
+    "tools/cf6-vehicle/source/ffdec/174.svg": "20531fd78d55a3d993069e57c3aa02bb4fcd73c68f79cf1787b805814d84d68e",
+    "tools/cf6-vehicle/source/ffdec/175.svg": "4fcde3ad188802ef599379cc7c0c9050bef1658d9b65d46767bd97535ee36157",
+    "tools/cf6-vehicle/source/ffdec/176.svg": "9da81250c1ca1d755b5f48c02e1ac4718bd46ad9e862aec0f7a8305ea6d4a8c0",
+    "tools/cf6-vehicle/source/ffdec/177.svg": "a6f8df03a9ca9a24c0f92934883a5129cde3cab23c187ba58786d8012e412fc9",
+    "tools/cf6-vehicle/source/ffdec/178.svg": "869266dd22a013161679628638addcca462fcf90ced22dd437c0f42f4a07e3b1",
+    "tools/cf6-vehicle/source/ffdec/238.svg": "daaa126f7924a7049517fda3877492b142c3ac5c6253a20827ec0af5369ed93c",
+    "tools/cf6-vehicle/source/ffdec/240.svg": "ea5f6c560490c80035158624c6f5689aa82cbdaddbfcfe19b3e1744f797f273d",
+    "tools/cf6-vehicle/source/ffdec/241.svg": "fa1d4b2a8dfa4dc79387a0f38054fd162b24bf1e00414bc7ebecc43c6d80af53",
+    "tools/cf6-vehicle/source/ffdec/242.svg": "6a0eef6723457e6013297f135dc9426464b20009df1ebeee261e08a394a92bcf",
+    "tools/cf6-vehicle/source/ffdec/243.svg": "eacd879ab69b321950407356c777a93bbeb40148fb988f0730e1da48c54f0092",
+    "tools/cf6-vehicle/source/ffdec/244.svg": "3e286f1008bf0135bb1e89cc782c73ccf0a1c24119d0d03fb74330d8ef081cbb",
+    "tools/cf6-vehicle/source/ffdec/245.svg": "4a1ff64181215b97c709f1ed06c36e13db01f277030438dbd2fa04402a1f26e9",
+    "tools/cf6-vehicle/source/ffdec/246.svg": "82fa5711a9896bf24fe2f0ff793da4d15010f11f94f9b687a27ec7584eaac14e",
+    "tools/cf6-vehicle/source/ffdec/247.svg": "6c38ffd86f87a556e229df782dc31188bb2d50adc76ddd9f933156aef3207465",
+    "tools/cf6-vehicle/source/ffdec/248.svg": "db88b97aac0f4b0729195d80e0b24136d0eb783a7650f76a6b9ad0398143ee9a",
+    "tools/cf6-vehicle/source/ffdec/249.svg": "6747d1c5e93041fac431cb6da8ab1a82919a7600f082240c6a13cf26442ea598",
+    "tools/cf6-vehicle/source/ffdec/250.svg": "8e72ade1d31fcf1ee041d5d2a07efcfd26ada2428f8d976782b49cd7d3c4f9fd",
+    "tools/cf6-vehicle/source/ffdec/251.svg": "000232fc18388eefa7dec4752464435d0df8521ab46252a6a5f14dce714a9cb2",
+    "tools/cf6-vehicle/source/ffdec/253.svg": "fdcd00c8887f03d5612c023637e16de47447d659c061be8b3b26fc17702458ad",
+    "tools/cf6-vehicle/source/ffdec/258.svg": "7b3a77379e9df39bbec814cc0c757776ea86bd8c0e81126d7e3a2fd4a47283d3",
+    "tools/cf6-vehicle/source/ffdec/279.svg": "3b612f479be47c46f38e2ee77b5cf356317ee651a1462ca52faa69dd52a2d99c",
+    "tools/cf6-vehicle/source/ffdec/280.svg": "6f5656ca5752f62460ec6117ad764ee4f29414728906ab0cd9a8e141ff5aee8a",
+    "tools/cf6-vehicle/source/ffdec/285.svg": "e45a1e22700f081aaf24bce5cd75461b75f65a10afcb8650e051fddb2daa84bf",
+    "tools/cf6-vehicle/source/ffdec/310.svg": "4fa49dda18958113fb5b74a4e4f39206cd45f137c1b6035e7d3b20bf3dc79481",
+    "tools/cf6-vehicle/source/ffdec/358.svg": "0d75e7f820cf87b6fc296b636643b6dde611eaebbb200f1182332a866af44cb7",
+    "tools/cf6-vehicle/source/ffdec/364.svg": "c5995f22ab1dd2a58ea5d19bd3394e0fa5f24b05360ad62b3c6f3027777f1504",
+    "tools/cf6-vehicle/source/ffdec/366.svg": "810635e5b0a42277ef644a28d77ecee5f9e092ad06072cd54e4e5c02f169a307",
+    "tools/cf6-vehicle/source/ffdec/368.svg": "aaacbf5488ea891031a161efac0a4c3a00bdaf8eea01b9b398b43dcd9a1785bb",
+    "tools/cf6-vehicle/source/ffdec/370.svg": "af00745a0678aa73a884ea92a409bd3d9e8d65706be9d55de33973e1d57c1d76",
+    "tools/cf6-vehicle/source/ffdec/372.svg": "bbfb254e2e60812929063bc3db9d810b76de73492402ca701aa42796e02959d7",
+    "tools/cf6-vehicle/source/ffdec/374.svg": "83999620cefc3e3b9b8c7cd0b5ca8bc6306aaadd2706d303b8f04fecdae2e04e",
+    "tools/cf6-vehicle/source/ffdec/376.svg": "0e72ac005174d435080413b70004617d08af9cc5df0e933c380e5cfae9cfd222",
+    "tools/cf6-vehicle/source/ffdec/378.svg": "8b85eaef97f4db2fbced5a63bde1c7b218217dfadcd71c690e13efffa614485e",
+    "tools/cf6-vehicle/source/ffdec/380.svg": "98d15da0b745a7f06deb915ccf921f9fc45db9d92cc1ca3ea36b99b4c07fe5ad",
+    "tools/cf6-vehicle/source/ffdec/382.svg": "33ec5c8bd3a1c959c4557b3f17aa3796838ea239cb51792d49aa181cbf482165",
+    "tools/cf6-vehicle/source/ffdec/384.svg": "60c1303cda5f2a648858ee2272c0554f184f0505efbd12947df54b9592aa7a3c",
+    "tools/cf6-vehicle/source/ffdec/386.svg": "7003b1fbd864d12d73c74c2bb6da18158c986492b30f9efd6ba429698098cf4d",
+    "tools/cf6-vehicle/source/ffdec/388.svg": "8cbbf76e4acf647a2eff852e19fc08a0908516cb47b70535c3d59b86c921c8ef",
+    "tools/cf6-vehicle/source/ffdec/390.svg": "1c57b3cafe2f32416b92df880527724782c675cea8a4e18cd43f6512a0f041e2",
+    "tools/cf6-vehicle/source/ffdec/484.svg": "99470cf17790cc28d354f3d275bd9a35b37e677c3dfac92a03711b4a0995a9ad",
+    "tools/cf6-vehicle/source/ffdec/485.svg": "904e5bfeb6590fc80bed7283fa395a054327ac902b2048d974dce75b0fe4eeb2",
+    "tools/cf6-vehicle/source/ffdec/486.svg": "a682bdcaea502b7f532b152d9d5fb5678462f9887a7bb04a54c4f3ead243d1e9",
+    "tools/cf6-vehicle/source/ffdec/487.svg": "4e2fef3f4ab71287280acaf089e4adb49b1cc617891ed6e7235ce3797b2a883b",
+    "tools/cf6-vehicle/source/ffdec/488.svg": "8a8ec429a2cf60e928b4f04acfe8972f0f97c325aabcc4612bbe4af4af0a7036",
+    "tools/cf6-vehicle/source/ffdec/489.svg": "0de972524378ebef4e4748036b1f625c6527c64451983427c8ef8b21c6466c14",
+    "tools/cf6-vehicle/source/ffdec/490.svg": "f61bee3d312c7dad55724cbc4dbca2519ece67c73ca28c32cac5bf270e45f126",
+    "tools/cf6-vehicle/source/ffdec/491.svg": "50e3f4a7560b7787120c3e56aece178c651809400b92cd43d5d81d9e7495a86d",
+    "tools/cf6-vehicle/source/ffdec/493.svg": "9409f92fbbcd1506c46100944744118ecf273a15b4b046fa3dc6e8d4cf029531",
+    "tools/cf6-vehicle/source/ffdec/494.svg": "2f8184a00fac424b69efe17502867f77445d0f2fce0bc116538953259e72f8ff",
+    "tools/cf6-vehicle/source/ffdec/495.svg": "080471507eb8dbf4f1f1233118ec928e60634e5bad6e83f008e1c62bffe52d2c",
+    "tools/cf6-vehicle/source/ffdec/496.svg": "70af9ae4b3941ed19134509ed2f036cb4a4f19dbe09bf960cd6dddbf759aa8a3",
+    "tools/cf6-vehicle/source/ffdec/497.svg": "a5e3c26c8328d65d7b4382459289bf27db09b112e99576d9b1329b5e8f2e0592",
+    "tools/cf6-vehicle/source/ffdec/503.svg": "3641842aefa378a97bbdd83bbcbf8dabc07680ceddc8a8450fe98e149c8bdfb8",
+    "tools/cf6-vehicle/source/ffdec/504.svg": "41df1e950c1d4884dffccebcc5636a8638a6e17583c3dc47d2b845563a0c0ae8",
+    "tools/cf6-vehicle/source/ffdec/505.svg": "bb07abc9eb145b3c2661adeba052208780501dd63bee3e5a6b31ee917214328b",
+    "tools/cf6-vehicle/source/ffdec/561.svg": "6807d234719620642ef1d57c5ee66bc5d173eb288031cd225fa94d3a4ba8162f",
+    "tools/cf6-vehicle/source/ffdec/565.svg": "9fa76dbaca84036d5fc62a70857356e3bde82c55fcd1d994b33250a8b0232a14",
+    "tools/cf6-vehicle/source/ffdec/566.svg": "071648bfad5650b90a2ccd8964257dd0eec0025fe2b9b5c6ccfb11d27ebaa7e3",
+    "tools/cf6-vehicle/source/ffdec/567.svg": "0e3ee1f1b5f156f7a3fab9aed82018e91b203071b4c8e22531c8e0d26ee0167e",
+    "tools/cf6-vehicle/source/ffdec/568.svg": "4acb7d300cf22ed07bcac1e59bb859f2db95f3fa02d1711a6bb5af51adc13dd2",
+    "tools/cf6-vehicle/source/ffdec/569.svg": "e0792ff1b8097248dd1961869c7f107008287a638bf17874b9b64b36320e38ad",
+    "tools/cf6-vehicle/source/ffdec/570.svg": "a5e9fbdf5275042ddf9b8bae376549b884348500f3d387c11c0ca07fc645a059",
+    "tools/cf6-vehicle/source/ffdec/571.svg": "119928fe7696c1d9b29a7913e0bb1a826b93dff849ceee7eefd5d806e869e2c4",
+    "tools/cf6-vehicle/source/ffdec/572.svg": "15f5a96123f2abf1cada781fb0ba011e76aeb5cfd92aa5c659fbc5c257a67370",
+    "tools/cf6-vehicle/source/ffdec/575.svg": "451b812709a37e44f98c63df92ac899edc60d807fcff6385d5d4af478ee6ad27",
+    "tools/cf6-vehicle/source/ffdec/577.svg": "59794fb97614e3174b173dbe4f62d5106e4e6d215a7df9bf701b961cf4fbd519",
+    "tools/cf6-vehicle/source/ffdec/578.svg": "502c24606749d4b082d272bbae37232a0866d0f4aa9cc3792e6dc0040e7622dd",
+    "tools/cf6-vehicle/source/ffdec/582.svg": "721a7fed5ed3dbef633a03c8dcedbb26e31cf8bc74bc2933df89b95cc7350fec",
+    "tools/cf6-vehicle/source/ffdec/583.svg": "e823890234570cd6c8a2c5fc0afe5b4cf3a9f79191bbb1ea29245bca90ef1e7f",
+    "tools/cf6-vehicle/source/ffdec/584.svg": "21974f1b36c5991d7d84fa1efd16c7a33fb854cc9449417c4e8f120cb3ad05e0",
+    "tools/cf6-vehicle/source/ffdec/585.svg": "922a987a354af2a225fcf72719e3ee4553b6d887a8e2dea3b2f6baa8e89201ef",
+    "tools/cf6-vehicle/source/ffdec/586.svg": "51fdf6ebe01f96f40caa4bd7a61a3205fb3d551a22f3d05baf26cca2a50284e9",
+    "tools/cf6-vehicle/source/ffdec/587.svg": "6a4e7df3eacc4b4d3cba60877c4b521a8ca3e50934e4690bbb0c1930af022c62",
+    "tools/cf6-vehicle/source/ffdec/588.svg": "1c18626f1cf14cce42acd8d30ddd4d8116094cb6e2c0b4dbdbd18846a7542c62",
+    "tools/cf6-vehicle/source/ffdec/589.svg": "ff59adb8cf82f08be09f37162f9d479d73ab6363c17094ae5745c08e220153a1",
+    "tools/cf6-vehicle/source/ffdec/590.svg": "ba92b3944fc3710bfab238af23d8f6f86e63d232ba792f2b991032d906e1c498",
+    "tools/cf6-vehicle/source/ffdec/592.svg": "a98fee2078ee548ee3f27bf8c522dfb2be549d8b0bd9f905e72ed0492fdfd0f3",
+    "tools/cf6-vehicle/source/ffdec/594.svg": "9d242e856653b50621ddb4743f4e5fd4936bcd77d144435dd8c1389822e897d8",
+    "tools/cf6-vehicle/source/ffdec/600.svg": "3fd12b8c53d2628b09edbc623cb7bf9a5014694380c284e4f0cd2cc3686e3805",
+    "tools/cf6-vehicle/source/ffdec/601.svg": "7c0791d6ce805429b11481bbb00ce3c4e11edf331ac8c3b904997a8db5a9447f",
+    "tools/cf6-vehicle/source/ffdec/602.svg": "4b7d18cf1f0afcdc6f48ff6d2a61f8dfeead0ed2734da02011a3076d057dbf98",
+    "tools/cf6-vehicle/source/ffdec/603.svg": "45cc9ef2e955f0ab4025d7e4c1ab86b781e6a05a9ec7286ee525bd85ac90d0de",
+    "tools/cf6-vehicle/source/ffdec/604.svg": "f405f9edb06fc680ffbab98e88a0a1c7f8be7dc63f4732f809bfcdd09ea20d69",
+    "tools/cf6-vehicle/source/ffdec/605.svg": "d716a8264005e5e677df340667d5954274b13ca6f31515b65312dd0577081b67",
+    "tools/cf6-vehicle/source/ffdec/606.svg": "357028375fe10177e4543be153c6ce82b6d49f82592cfd001af1e1a027056f30",
+    "tools/cf6-vehicle/source/ffdec/607.svg": "065fb28a34dca1233cf854af0551e7a6b23e88cfb55fc7523b5945469b7a789f",
+    "tools/cf6-vehicle/source/ffdec/608.svg": "0815cd4cedfeb15e2b63b24ebb3dfb9be9c83f3d06ee15e93a7d69f042f5ccc1",
+    "tools/cf6-vehicle/source/ffdec/609.svg": "f3bd9efe5c24523036da745dec92a11c26903bec405746a606ba8b79244a75fe",
+    "tools/cf6-vehicle/source/ffdec/610.svg": "5126e574cab38e6b06dc64823c81c0f48b072de65584300a49cbf15af7ae9bbf",
+    "tools/cf6-vehicle/source/ffdec/614.svg": "5fe4d6c1e5cae8d9f3890c80581e3e120e8cc3018e11a417765a3e998e788173",
+    "tools/cf6-vehicle/source/ffdec/615.svg": "fd65cf58a33dca188260164ecbdffa1eb5aaf314e123192bba31c86706e64e75",
+    "tools/cf6-vehicle/source/ffdec/616.svg": "53b1365cf689cd6e7e7b583d74d5e96a8b9bf4f8f4f886663abe1e875b980c40",
+    "tools/cf6-vehicle/source/ffdec/617.svg": "071f13954835b9ad58eed18eb5116beecabf42bc6b694596ed4e5f00fef0dcae",
+    "tools/cf6-vehicle/source/ffdec/618.svg": "50d4ce168f9235b4c0ab885675f43943ee09b8fd4a08295ac1a9b6d22fe3d4b7",
+    "tools/cf6-vehicle/source/ffdec/619.svg": "46bad8fc7048309d92e0046c4718d7cf59e99b8f2fce5d6a67e0f227d285c14a",
+    "tools/cf6-vehicle/source/ffdec/620.svg": "664d61b782a36c28f55df8e1f0b597dc4e12f322171699ac7acdaab316cd227a",
+    "tools/cf6-vehicle/source/ffdec/621.svg": "c7696769aa6bd7e48a392963d1418102ca48385bbc7d3013bc712fda43d4f4cb",
+    "tools/cf6-vehicle/source/ffdec/622.svg": "e90624fbc8dfb17e6b21aca57925370fcb87365065ab8355e59d20e87b1b0eaf",
+    "tools/cf6-vehicle/source/ffdec/623.svg": "b6eb6e71ce87c5e70c960906804e93adfea9bbe5d09fba997632e17ca1047573",
+    "tools/cf6-vehicle/source/ffdec/624.svg": "502c8e6702878a9d1e2601085ccf336c1a86965dd6fc2cf679d88bdbb5f5b7af",
+    "tools/cf6-vehicle/source/ffdec/1754.svg": "76a95f0062dfd23fa4268e06c789dcffcc22478667c019dda3364842113becfe",
+    "tools/cf6-vehicle/source/redraw/sky.svg": "fae948fb43d05e88f0b6b4cb035b476c73ba0b20b1a54377ba82546ffd9fd8f5",
+    "tools/cf6-vehicle/source/ffdec/1785.svg": "da89bfddb4fa7af7f940573e190b9b7c7fe45eaa865705160d83898cdf952700",
+    "tools/cf6-vehicle/source/redraw/parts/bitmap-1784.svg": "cf91c2f142ae026d6f76e48d0e4734288374b358808e7218cf02d744f1ad27f1",
+    "tools/cf6-vehicle/source/ffdec/1787.svg": "1e79693b4da0adf4adec1cd4cbf807149b7e77945bbcbf15fa65d582c6162a91",
+    "tools/cf6-vehicle/source/redraw/asphalt.svg": "f41d26e12783dfd6929d089b362aee7bbf5fbbc88e2c2361bcf5cbe46c3bf076",
+    "tools/cf6-vehicle/source/ffdec/1788.svg": "3bf828ff2030b7042a8fd6aff96633e90711678698bac5fba46ee028e7ce5e75",
+    "tools/cf6-vehicle/source/ffdec/1790.svg": "bb15e2eb0ea33ff2b234e896460b05b1f12f09e5c10a9ac82ff8c68e862e2ef0",
+    "tools/cf6-vehicle/source/redraw/parts/bitmap-1789.svg": "b582e2b240e3e5e6f6473680c586e951066355bb65be8acbb223d013a438b63c",
+    "tools/cf6-vehicle/source/ffdec/1792.svg": "067cef08c72efaed1356221756482bfbb93edff2e271d889e5dd97eb0e5766de",
+    "tools/cf6-vehicle/source/ffdec/1794.svg": "2473af92440b40b857710c8a083dc3e4e476fa9cbe82f2321c3e2286519be717",
+    "tools/cf6-vehicle/source/ffdec/1797.svg": "320e696f1e79e3d16b256fc9bba001db316593e4df5885fff2a40ed113e5109c",
+    "tools/cf6-vehicle/source/redraw/player-body.svg": "7ae465ab5e1b263196e08cdf1ded6613793aeea11d29591596e0276ed1c46b04",
+    "tools/cf6-vehicle/source/ffdec/1799.svg": "5af4ba05dcb7625bb27cc122009fda6f46485c863b671f295524b2fc1e107b2d",
+    "tools/cf6-vehicle/source/redraw/player-wheel-0.svg": "a256dc71f14324bdbc38529f9e4a285e50176def2aadd69460c421af3c8b1e27",
+    "tools/cf6-vehicle/source/ffdec/1807.svg": "e121c47e66962bb62f4ba0f2efcf9da2348ea61cfd131797c431a303a900e71e",
+    "tools/cf6-vehicle/source/redraw/armored-body.svg": "febe8c042edc287b893398c032222b891701f898f7e21acbe4e40f4f39bba8ac",
+    "tools/cf6-vehicle/source/ffdec/1809.svg": "1a4e0685a5c30bd2a52cee5dd3e2e6a356fdfb560f3663e398ef9bc3df5f1937",
+    "tools/cf6-vehicle/source/redraw/armored-wheel.svg": "d1b37724e367b29e725a6ecb24fcbefc337913686645eef859333d246f615edf",
+    "tools/cf6-vehicle/source/ffdec/1811.svg": "901687d31af67823e4590e24c779b2f848648acd58cf8fe6b003375aff540a2d",
+    "tools/cf6-vehicle/source/ffdec/1812.svg": "30a9a9d0807165acf66f1cb76e74b5ca2497bdcc21135707d5342c44f2c8d423",
+    "tools/cf6-vehicle/source/redraw/player-wheel-1.svg": "bf87680c1ba17deeea0ac7d9ebfc7af112e6c3599bd9e00da5ea11ed845428c6",
+    "tools/cf6-vehicle/source/redraw/sky-extension.svg": "53508c7c93003cd139b703e58fe449eaf530203f9158973cbadf9a3e225e41c3"
+  },
+  "textures": {
+    "a427ad472a9a14de0145b2cb3d1879e391cf9237a3c6d8e25c9e0c70863165a3": {
+      "name": "CF6VehicleTexture_a427ad472a9a14de0145.png",
+      "pixels": [
+        240,
+        150
+      ],
+      "sha256": "a427ad472a9a14de0145b2cb3d1879e391cf9237a3c6d8e25c9e0c70863165a3",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_a427ad472a9a14de0145.png"
+    },
+    "8827c16890585f5df8c687161f2d68f4dd6c45b5e2c492a4749c8dbc6fd8bf4d": {
+      "name": "CF6VehicleTexture_8827c16890585f5df8c6.png",
+      "pixels": [
+        240,
+        150
+      ],
+      "sha256": "8827c16890585f5df8c687161f2d68f4dd6c45b5e2c492a4749c8dbc6fd8bf4d",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_8827c16890585f5df8c6.png"
+    },
+    "951aabc952f536c4ed71ca92b5a79bbca31268efaacf567cebe5e7ea9771f23b": {
+      "name": "CF6VehicleTexture_951aabc952f536c4ed71.png",
+      "pixels": [
+        240,
+        150
+      ],
+      "sha256": "951aabc952f536c4ed71ca92b5a79bbca31268efaacf567cebe5e7ea9771f23b",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_951aabc952f536c4ed71.png"
+    },
+    "9768a3f5b9cf19b92130a6f10005a8da0350b1f7d9144cfeab37c50634a5988c": {
+      "name": "CF6VehicleTexture_9768a3f5b9cf19b92130.png",
+      "pixels": [
+        240,
+        150
+      ],
+      "sha256": "9768a3f5b9cf19b92130a6f10005a8da0350b1f7d9144cfeab37c50634a5988c",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_9768a3f5b9cf19b92130.png"
+    },
+    "e8ef28551bbf94952c0ceba4ac4d0a4f57646fe7bb480d8896763cb77f25a5e1": {
+      "name": "CF6VehicleTexture_e8ef28551bbf94952c0c.png",
+      "pixels": [
+        240,
+        150
+      ],
+      "sha256": "e8ef28551bbf94952c0ceba4ac4d0a4f57646fe7bb480d8896763cb77f25a5e1",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_e8ef28551bbf94952c0c.png"
+    },
+    "aebd93ce571343940bdcf740a4349a305695f6f4976cd6016ddcbcf385d16a61": {
+      "name": "CF6VehicleTexture_aebd93ce571343940bdc.png",
+      "pixels": [
+        240,
+        150
+      ],
+      "sha256": "aebd93ce571343940bdcf740a4349a305695f6f4976cd6016ddcbcf385d16a61",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_aebd93ce571343940bdc.png"
+    },
+    "b011210bdea3822c90fc6d3f9838b1dc7248134b8fbdb19be616b79c1b59745f": {
+      "name": "CF6VehicleTexture_b011210bdea3822c90fc.png",
+      "pixels": [
+        69,
+        44
+      ],
+      "sha256": "b011210bdea3822c90fc6d3f9838b1dc7248134b8fbdb19be616b79c1b59745f",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_b011210bdea3822c90fc.png"
+    },
+    "75a55a27b3f96ab95d2ba7bdb60016486494cf8831a16cc13e6de9a16096f0c0": {
+      "name": "CF6VehicleTexture_75a55a27b3f96ab95d2b.png",
+      "pixels": [
+        103,
+        74
+      ],
+      "sha256": "75a55a27b3f96ab95d2ba7bdb60016486494cf8831a16cc13e6de9a16096f0c0",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_75a55a27b3f96ab95d2b.png"
+    },
+    "857db489ac6b8c37586008468b9fdd235f8924ebb905d510aac70bf303fc67a5": {
+      "name": "CF6VehicleTexture_857db489ac6b8c375860.png",
+      "pixels": [
+        140,
+        93
+      ],
+      "sha256": "857db489ac6b8c37586008468b9fdd235f8924ebb905d510aac70bf303fc67a5",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_857db489ac6b8c375860.png"
+    },
+    "6dd9e377b93020fdcd24b68a56cacbd698baec3574ad7631320ba358f5562c3f": {
+      "name": "CF6VehicleTexture_6dd9e377b93020fdcd24.png",
+      "pixels": [
+        181,
+        88
+      ],
+      "sha256": "6dd9e377b93020fdcd24b68a56cacbd698baec3574ad7631320ba358f5562c3f",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_6dd9e377b93020fdcd24.png"
+    },
+    "f7d974724099865188d6531d9403e21b63144a6e0166cc05465b08184732a86f": {
+      "name": "CF6VehicleTexture_f7d974724099865188d6.png",
+      "pixels": [
+        119,
+        98
+      ],
+      "sha256": "f7d974724099865188d6531d9403e21b63144a6e0166cc05465b08184732a86f",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_f7d974724099865188d6.png"
+    },
+    "457f5e0a895d34d9add63653386c27aac3217449ef4b7a15beacb935b06172a4": {
+      "name": "CF6VehicleTexture_457f5e0a895d34d9add6.png",
+      "pixels": [
+        88,
+        56
+      ],
+      "sha256": "457f5e0a895d34d9add63653386c27aac3217449ef4b7a15beacb935b06172a4",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_457f5e0a895d34d9add6.png"
+    },
+    "b6f66f9f4859b74d11907e4aeaf88351c9960e99166f133fbf073cc3cf0ba6cc": {
+      "name": "CF6VehicleTexture_b6f66f9f4859b74d1190.png",
+      "pixels": [
+        106,
+        132
+      ],
+      "sha256": "b6f66f9f4859b74d11907e4aeaf88351c9960e99166f133fbf073cc3cf0ba6cc",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_b6f66f9f4859b74d1190.png"
+    },
+    "209961080f810d01974a0fc6180fdbd149504872bd21a87ea631888c7153041d": {
+      "name": "CF6VehicleTexture_209961080f810d01974a.png",
+      "pixels": [
+        266,
+        205
+      ],
+      "sha256": "209961080f810d01974a0fc6180fdbd149504872bd21a87ea631888c7153041d",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_209961080f810d01974a.png"
+    },
+    "8c298d2bdfa2116928b75a192d6184a30d7cd0fef3ce1ffcfb95a691537ac2db": {
+      "name": "CF6VehicleTexture_8c298d2bdfa2116928b7.png",
+      "pixels": [
+        170,
+        163
+      ],
+      "sha256": "8c298d2bdfa2116928b75a192d6184a30d7cd0fef3ce1ffcfb95a691537ac2db",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_8c298d2bdfa2116928b7.png"
+    },
+    "be0ebb522e4c369f68ded2fedca31260585bea4e5debf95d861a9caefd5152ec": {
+      "name": "CF6VehicleTexture_be0ebb522e4c369f68de.png",
+      "pixels": [
+        297,
+        262
+      ],
+      "sha256": "be0ebb522e4c369f68ded2fedca31260585bea4e5debf95d861a9caefd5152ec",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_be0ebb522e4c369f68de.png"
+    },
+    "57e17e871fc43555864b8f0fa018a1dab616bce52c08eb84ea65105314e722af": {
+      "name": "CF6VehicleTexture_57e17e871fc43555864b.png",
+      "pixels": [
+        100,
+        31
+      ],
+      "sha256": "57e17e871fc43555864b8f0fa018a1dab616bce52c08eb84ea65105314e722af",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_57e17e871fc43555864b.png"
+    },
+    "a9cb92e6fcfd4fb8ba45cc2eaffd3852f222d708094005462939016d08cfbc49": {
+      "name": "CF6VehicleTexture_a9cb92e6fcfd4fb8ba45.png",
+      "pixels": [
+        71,
+        100
+      ],
+      "sha256": "a9cb92e6fcfd4fb8ba45cc2eaffd3852f222d708094005462939016d08cfbc49",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_a9cb92e6fcfd4fb8ba45.png"
+    },
+    "a0682b94f0b825eecfb6dc5d2042f616ffa308e489873c9772d0839d18022e83": {
+      "name": "CF6VehicleTexture_a0682b94f0b825eecfb6.png",
+      "pixels": [
+        71,
+        100
+      ],
+      "sha256": "a0682b94f0b825eecfb6dc5d2042f616ffa308e489873c9772d0839d18022e83",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_a0682b94f0b825eecfb6.png"
+    },
+    "22908501f66454dbc2b58fd263cc091246076c5afe93f4dd0afb44f659034601": {
+      "name": "CF6VehicleTexture_22908501f66454dbc2b5.png",
+      "pixels": [
+        71,
+        100
+      ],
+      "sha256": "22908501f66454dbc2b58fd263cc091246076c5afe93f4dd0afb44f659034601",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_22908501f66454dbc2b5.png"
+    },
+    "93ba5ce76a09ac6f433c547765e7a8ddf67dbe65cf4af73ba5a1305e790092de": {
+      "name": "CF6VehicleTexture_93ba5ce76a09ac6f433c.png",
+      "pixels": [
+        71,
+        100
+      ],
+      "sha256": "93ba5ce76a09ac6f433c547765e7a8ddf67dbe65cf4af73ba5a1305e790092de",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_93ba5ce76a09ac6f433c.png"
+    },
+    "347dc849528657796201ba5d897848d5cb524f8ece107123cc8848fd9b98c449": {
+      "name": "CF6VehicleTexture_347dc849528657796201.png",
+      "pixels": [
+        71,
+        100
+      ],
+      "sha256": "347dc849528657796201ba5d897848d5cb524f8ece107123cc8848fd9b98c449",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_347dc849528657796201.png"
+    },
+    "c6168ea2edb2528be6d74c459c4958ad46bcf9319a1bd3613b68bfe142eb2f45": {
+      "name": "CF6VehicleTexture_c6168ea2edb2528be6d7.png",
+      "pixels": [
+        71,
+        100
+      ],
+      "sha256": "c6168ea2edb2528be6d74c459c4958ad46bcf9319a1bd3613b68bfe142eb2f45",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_c6168ea2edb2528be6d7.png"
+    },
+    "3f7d33701e4904b675ab52797b62a8bce4260dc7e3ad3ce2a031587f1d744409": {
+      "name": "CF6VehicleTexture_3f7d33701e4904b675ab.png",
+      "pixels": [
+        71,
+        100
+      ],
+      "sha256": "3f7d33701e4904b675ab52797b62a8bce4260dc7e3ad3ce2a031587f1d744409",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_3f7d33701e4904b675ab.png"
+    },
+    "19088f821e4141ca0686a0f71bad29b175196ef13681dd46a95e6243e6c3e4d0": {
+      "name": "CF6VehicleTexture_19088f821e4141ca0686.png",
+      "pixels": [
+        71,
+        100
+      ],
+      "sha256": "19088f821e4141ca0686a0f71bad29b175196ef13681dd46a95e6243e6c3e4d0",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_19088f821e4141ca0686.png"
+    },
+    "81b4512b504c8fb875fd950124bd9375391e810c4999b10460c0600a1b6bc863": {
+      "name": "CF6VehicleTexture_81b4512b504c8fb875fd.png",
+      "pixels": [
+        71,
+        100
+      ],
+      "sha256": "81b4512b504c8fb875fd950124bd9375391e810c4999b10460c0600a1b6bc863",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_81b4512b504c8fb875fd.png"
+    },
+    "24874aa7fd07d4bf3f535416d9071a0445f23301311a3d9b88c9c6ccc122355c": {
+      "name": "CF6VehicleTexture_24874aa7fd07d4bf3f53.png",
+      "pixels": [
+        71,
+        100
+      ],
+      "sha256": "24874aa7fd07d4bf3f535416d9071a0445f23301311a3d9b88c9c6ccc122355c",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_24874aa7fd07d4bf3f53.png"
+    },
+    "e47213356d6657c43f0755727f2c62a16618143084ceb8c4f7324654413a8e6e": {
+      "name": "CF6VehicleTexture_e47213356d6657c43f07.png",
+      "pixels": [
+        71,
+        100
+      ],
+      "sha256": "e47213356d6657c43f0755727f2c62a16618143084ceb8c4f7324654413a8e6e",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_e47213356d6657c43f07.png"
+    },
+    "046b606fd0d07fdfdc8d1ac554ffcce6cd919082809735d35d7bc7ab49e9bcf3": {
+      "name": "CF6VehicleTexture_046b606fd0d07fdfdc8d.png",
+      "pixels": [
+        71,
+        100
+      ],
+      "sha256": "046b606fd0d07fdfdc8d1ac554ffcce6cd919082809735d35d7bc7ab49e9bcf3",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_046b606fd0d07fdfdc8d.png"
+    },
+    "13d27c9c9ffb9fd4ef45a6074ebe6f969922093a0e1b5f71654f6ecb6e87611f": {
+      "name": "CF6VehicleTexture_13d27c9c9ffb9fd4ef45.png",
+      "pixels": [
+        71,
+        100
+      ],
+      "sha256": "13d27c9c9ffb9fd4ef45a6074ebe6f969922093a0e1b5f71654f6ecb6e87611f",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_13d27c9c9ffb9fd4ef45.png"
+    },
+    "74be435edc798507745a6b17f7a2627180260bf2dc29ac12403c08c8009435be": {
+      "name": "CF6VehicleTexture_74be435edc798507745a.png",
+      "pixels": [
+        71,
+        100
+      ],
+      "sha256": "74be435edc798507745a6b17f7a2627180260bf2dc29ac12403c08c8009435be",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_74be435edc798507745a.png"
+    },
+    "82486e46efb0c494a08fbbaa2a827743a7fbb969d8192614cb327a28be08848d": {
+      "name": "CF6VehicleTexture_82486e46efb0c494a08f.png",
+      "pixels": [
+        480,
+        317
+      ],
+      "sha256": "82486e46efb0c494a08fbbaa2a827743a7fbb969d8192614cb327a28be08848d",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_82486e46efb0c494a08f.png"
+    },
+    "1fcd22b427d975c2e768ae09449e920863f8ebfbe55908d778c414200c15b3b6": {
+      "name": "CF6VehicleTexture_1fcd22b427d975c2e768.png",
+      "pixels": [
+        43,
+        30
+      ],
+      "sha256": "1fcd22b427d975c2e768ae09449e920863f8ebfbe55908d778c414200c15b3b6",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_1fcd22b427d975c2e768.png"
+    },
+    "840cacfca280bc3892dd85a3f7143516c50005406f6d17e84fbb65722024e454": {
+      "name": "CF6VehicleTexture_840cacfca280bc3892dd.png",
+      "pixels": [
+        73,
+        113
+      ],
+      "sha256": "840cacfca280bc3892dd85a3f7143516c50005406f6d17e84fbb65722024e454",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_840cacfca280bc3892dd.png"
+    },
+    "cccf5450b2c1f941fd880d10577be60acd6edafa34b01788e79173b7d299e29a": {
+      "name": "CF6VehicleTexture_cccf5450b2c1f941fd88.png",
+      "pixels": [
+        385,
+        321
+      ],
+      "sha256": "cccf5450b2c1f941fd880d10577be60acd6edafa34b01788e79173b7d299e29a",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_cccf5450b2c1f941fd88.png"
+    },
+    "58b6a54bbba738fb33f52b8dab6a56967623c641550e749b0b8ac968dc690d87": {
+      "name": "CF6VehicleTexture_58b6a54bbba738fb33f5.png",
+      "pixels": [
+        201,
+        67
+      ],
+      "sha256": "58b6a54bbba738fb33f52b8dab6a56967623c641550e749b0b8ac968dc690d87",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_58b6a54bbba738fb33f5.png"
+    },
+    "50ab0a079da25b0db82db13d1f0e1318e258a47062c8cacf3b61a5727035e6c5": {
+      "name": "CF6VehicleTexture_50ab0a079da25b0db82d.png",
+      "pixels": [
+        87,
+        114
+      ],
+      "sha256": "50ab0a079da25b0db82db13d1f0e1318e258a47062c8cacf3b61a5727035e6c5",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_50ab0a079da25b0db82d.png"
+    },
+    "e450b02cede956a1aae6efd008b46791ab50297111b1cd84e83a68db28583d31": {
+      "name": "CF6VehicleTexture_e450b02cede956a1aae6.png",
+      "pixels": [
+        2400,
+        561
+      ],
+      "sha256": "e450b02cede956a1aae6efd008b46791ab50297111b1cd84e83a68db28583d31",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_e450b02cede956a1aae6.png"
+    },
+    "ae6f784412e9523a5d9297f04f52d3e0102d12d3cf89be88c94e65d2920936b5": {
+      "name": "CF6VehicleTexture_ae6f784412e9523a5d92.png",
+      "pixels": [
+        1035,
+        360
+      ],
+      "sha256": "ae6f784412e9523a5d9297f04f52d3e0102d12d3cf89be88c94e65d2920936b5",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_ae6f784412e9523a5d92.png"
+    },
+    "0ac604185d85b5193776f64f040b5f6205159912990524ee71475d3657b4bca2": {
+      "name": "CF6VehicleTexture_0ac604185d85b5193776.png",
+      "pixels": [
+        1035,
+        561
+      ],
+      "sha256": "0ac604185d85b5193776f64f040b5f6205159912990524ee71475d3657b4bca2",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_0ac604185d85b5193776.png"
+    },
+    "f2f8bdf6577ab0fc9084d759a12330e538aa246b0deb51c8f4a2691a67ae15cc": {
+      "name": "CF6VehicleTexture_f2f8bdf6577ab0fc9084.png",
+      "pixels": [
+        1035,
+        561
+      ],
+      "sha256": "f2f8bdf6577ab0fc9084d759a12330e538aa246b0deb51c8f4a2691a67ae15cc",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_f2f8bdf6577ab0fc9084.png"
+    },
+    "c0892587671d493a889bfd754548da6a723cbb6f8c8148930c4d71a893dee1a6": {
+      "name": "CF6VehicleTexture_c0892587671d493a889b.png",
+      "pixels": [
+        1035,
+        561
+      ],
+      "sha256": "c0892587671d493a889bfd754548da6a723cbb6f8c8148930c4d71a893dee1a6",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_c0892587671d493a889b.png"
+    },
+    "09a14a376c144c6e9e6e8f4c292d62e5a09335244129c39f033fc3bb4a85ae56": {
+      "name": "CF6VehicleTexture_09a14a376c144c6e9e6e.png",
+      "pixels": [
+        652,
+        432
+      ],
+      "sha256": "09a14a376c144c6e9e6e8f4c292d62e5a09335244129c39f033fc3bb4a85ae56",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_09a14a376c144c6e9e6e.png"
+    },
+    "e02b53cbe0a27530b35df6e50398c42bbfbb2ed0764050d54f5e3d686caf9c66": {
+      "name": "CF6VehicleTexture_e02b53cbe0a27530b35d.png",
+      "pixels": [
+        714,
+        657
+      ],
+      "sha256": "e02b53cbe0a27530b35df6e50398c42bbfbb2ed0764050d54f5e3d686caf9c66",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_e02b53cbe0a27530b35d.png"
+    },
+    "9cf4e84606dcc6c67aba2cb148141f699a40f87e667db0d35eedad2703e19668": {
+      "name": "CF6VehicleTexture_9cf4e84606dcc6c67aba.png",
+      "pixels": [
+        1233,
+        432
+      ],
+      "sha256": "9cf4e84606dcc6c67aba2cb148141f699a40f87e667db0d35eedad2703e19668",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_9cf4e84606dcc6c67aba.png"
+    },
+    "97dd9d26764bd021496b86cec49f88c7e397411920d09d99ce16f9a2dd7a2b05": {
+      "name": "CF6VehicleTexture_97dd9d26764bd021496b.png",
+      "pixels": [
+        1113,
+        708
+      ],
+      "sha256": "97dd9d26764bd021496b86cec49f88c7e397411920d09d99ce16f9a2dd7a2b05",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_97dd9d26764bd021496b.png"
+    },
+    "ec3287abf8b6e1674df07f48d5c5e07d3068ee5851ae549cc360311ddb6b6fac": {
+      "name": "CF6VehicleTexture_ec3287abf8b6e1674df0.png",
+      "pixels": [
+        2400,
+        200
+      ],
+      "sha256": "ec3287abf8b6e1674df07f48d5c5e07d3068ee5851ae549cc360311ddb6b6fac",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-vehicle\\source\\textures\\CF6VehicleTexture_ec3287abf8b6e1674df0.png"
+    }
+  }
+}

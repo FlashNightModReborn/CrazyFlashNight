@@ -1,0 +1,1653 @@
+{
+ "schema": "cf6-difficulty-audit.v1",
+ "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+ "originalProgression": {
+  "zombie": {
+   "ordinary": {
+    "mapId": "A01",
+    "evidence": "statics/0"
+   }
+  },
+  "zombie_turret": {
+   "ordinary": {
+    "mapId": "A01",
+    "evidence": "statics/1"
+   }
+  },
+  "thug": {
+   "ordinary": {
+    "mapId": "A02",
+    "evidence": "statics/0"
+   }
+  },
+  "zombie_f": {
+   "ordinary": {
+    "mapId": "A02",
+    "evidence": "statics/7"
+   }
+  },
+  "manman": {
+   "boss": {
+    "mapId": "A06",
+    "evidence": "statics/0"
+   },
+   "ordinary": {
+    "mapId": "A18",
+    "evidence": "generators/1"
+   }
+  },
+  "specop": {
+   "ordinary": {
+    "mapId": "A06",
+    "evidence": "generators/0"
+   }
+  },
+  "specop_shield": {
+   "ordinary": {
+    "mapId": "A09",
+    "evidence": "statics/0"
+   }
+  },
+  "thug_tf": {
+   "ordinary": {
+    "mapId": "A10",
+    "evidence": "statics/0"
+   }
+  },
+  "alien": {
+   "ordinary": {
+    "mapId": "A15",
+    "evidence": "alienEggs"
+   }
+  },
+  "robot_big": {
+   "boss": {
+    "mapId": "A17",
+    "evidence": "statics/0"
+   },
+   "ordinary": {
+    "mapId": "A22",
+    "evidence": "generators/3"
+   }
+  },
+  "robot_sword": {
+   "ordinary": {
+    "mapId": "A17",
+    "evidence": "statics/2"
+   }
+  },
+  "wings": {
+   "ordinary": {
+    "mapId": "A18",
+    "evidence": "statics/1"
+   }
+  },
+  "oldman_human": {
+   "boss": {
+    "mapId": "A20",
+    "evidence": "statics/0"
+   }
+  },
+  "oldman_robot": {
+   "boss": {
+    "mapId": "A22",
+    "evidence": "statics/0"
+   }
+  }
+ },
+ "maps": [
+  {
+   "mapId": "A01",
+   "waveCounts": [
+    16,
+    14,
+    18,
+    18
+   ],
+   "waveKinds": [
+    "combat",
+    "combat",
+    "combat",
+    "combat"
+   ],
+   "mandatoryPrimary": 66,
+   "optionalSupport": 0,
+   "totalPrimary": 66,
+   "peakAliveUpperBound": 8,
+   "configuredRoomLimit": 8,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [
+      {
+       "index": 4,
+       "quantity": 4,
+       "capacity": 4,
+       "possibleAlive": 4
+      },
+      {
+       "index": 5,
+       "quantity": 12,
+       "capacity": 4,
+       "possibleAlive": 4
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 8
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 4,
+       "quantity": 4,
+       "capacity": 4,
+       "possibleAlive": 4
+      },
+      {
+       "index": 5,
+       "quantity": 10,
+       "capacity": 4,
+       "possibleAlive": 4
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 8
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 4,
+       "quantity": 6,
+       "capacity": 4,
+       "possibleAlive": 4
+      },
+      {
+       "index": 5,
+       "quantity": 12,
+       "capacity": 4,
+       "possibleAlive": 4
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 8
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 4,
+       "quantity": 9,
+       "capacity": 4,
+       "possibleAlive": 4
+      },
+      {
+       "index": 5,
+       "quantity": 9,
+       "capacity": 4,
+       "possibleAlive": 4
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 8
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种461": 66
+   },
+   "possible469Successors": 0
+  },
+  {
+   "mapId": "A02",
+   "waveCounts": [
+    12,
+    14,
+    16
+   ],
+   "waveKinds": [
+    "combat",
+    "combat",
+    "combat"
+   ],
+   "mandatoryPrimary": 42,
+   "optionalSupport": 0,
+   "totalPrimary": 42,
+   "peakAliveUpperBound": 10,
+   "configuredRoomLimit": 10,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 6,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 1,
+       "quantity": 6,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 7,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 1,
+       "quantity": 7,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 8,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 1,
+       "quantity": 8,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种461": 24,
+    "兵种468": 18
+   },
+   "possible469Successors": 0
+  },
+  {
+   "mapId": "A03",
+   "waveCounts": [
+    14,
+    16,
+    18
+   ],
+   "waveKinds": [
+    "combat",
+    "combat",
+    "combat"
+   ],
+   "mandatoryPrimary": 48,
+   "optionalSupport": 0,
+   "totalPrimary": 48,
+   "peakAliveUpperBound": 10,
+   "configuredRoomLimit": 10,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [
+      {
+       "index": 1,
+       "quantity": 7,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 2,
+       "quantity": 7,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 1,
+       "quantity": 8,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 2,
+       "quantity": 8,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 1,
+       "quantity": 9,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 2,
+       "quantity": 9,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种461": 24,
+    "兵种468": 24
+   },
+   "possible469Successors": 0
+  },
+  {
+   "mapId": "A04",
+   "waveCounts": [
+    13,
+    16,
+    15,
+    18
+   ],
+   "waveKinds": [
+    "combat",
+    "combat",
+    "combat",
+    "combat"
+   ],
+   "mandatoryPrimary": 62,
+   "optionalSupport": 0,
+   "totalPrimary": 62,
+   "peakAliveUpperBound": 12,
+   "configuredRoomLimit": 12,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [
+      {
+       "index": 2,
+       "quantity": 7,
+       "capacity": 6,
+       "possibleAlive": 6
+      },
+      {
+       "index": 3,
+       "quantity": 6,
+       "capacity": 6,
+       "possibleAlive": 6
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 12
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 2,
+       "quantity": 8,
+       "capacity": 6,
+       "possibleAlive": 6
+      },
+      {
+       "index": 3,
+       "quantity": 8,
+       "capacity": 6,
+       "possibleAlive": 6
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 12
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 2,
+       "quantity": 8,
+       "capacity": 6,
+       "possibleAlive": 6
+      },
+      {
+       "index": 3,
+       "quantity": 7,
+       "capacity": 6,
+       "possibleAlive": 6
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 12
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 2,
+       "quantity": 9,
+       "capacity": 6,
+       "possibleAlive": 6
+      },
+      {
+       "index": 3,
+       "quantity": 9,
+       "capacity": 6,
+       "possibleAlive": 6
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 12
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种461": 32,
+    "兵种468": 30
+   },
+   "possible469Successors": 0
+  },
+  {
+   "mapId": "A05",
+   "waveCounts": [
+    14,
+    16,
+    17
+   ],
+   "waveKinds": [
+    "combat",
+    "combat",
+    "combat"
+   ],
+   "mandatoryPrimary": 47,
+   "optionalSupport": 0,
+   "totalPrimary": 47,
+   "peakAliveUpperBound": 10,
+   "configuredRoomLimit": 10,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 7,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 1,
+       "quantity": 7,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 8,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 1,
+       "quantity": 8,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 9,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 1,
+       "quantity": 8,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种468": 34,
+    "兵种461": 13
+   },
+   "possible469Successors": 0
+  },
+  {
+   "mapId": "A06",
+   "waveCounts": [
+    18,
+    18,
+    1
+   ],
+   "waveKinds": [
+    "combat",
+    "combat",
+    "boss"
+   ],
+   "mandatoryPrimary": 37,
+   "optionalSupport": 7,
+   "totalPrimary": 44,
+   "peakAliveUpperBound": 8,
+   "configuredRoomLimit": 8,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 9,
+       "capacity": 4,
+       "possibleAlive": 4
+      },
+      {
+       "index": 1,
+       "quantity": 9,
+       "capacity": 4,
+       "possibleAlive": 4
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 8
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 9,
+       "capacity": 4,
+       "possibleAlive": 4
+      },
+      {
+       "index": 1,
+       "quantity": 9,
+       "capacity": 4,
+       "possibleAlive": 4
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 8
+    },
+    {
+     "indexedPoints": [],
+     "mapBucketOrStatic": 1,
+     "upperBound": 1
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种466": 24,
+    "兵种468": 8,
+    "兵种461": 4,
+    "兵种463": 1
+   },
+   "possible469Successors": 0
+  },
+  {
+   "mapId": "A09",
+   "waveCounts": [
+    14,
+    5,
+    22
+   ],
+   "waveKinds": [
+    "combat",
+    "transport",
+    "combat"
+   ],
+   "mandatoryPrimary": 41,
+   "optionalSupport": 0,
+   "totalPrimary": 41,
+   "peakAliveUpperBound": 10,
+   "configuredRoomLimit": 10,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [
+      {
+       "index": 1,
+       "quantity": 7,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 2,
+       "quantity": 7,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 5,
+       "capacity": 2,
+       "possibleAlive": 2
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 2
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 1,
+       "quantity": 11,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 2,
+       "quantity": 11,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种466": 4,
+    "兵种467": 11,
+    "兵种468": 18,
+    "兵种461": 8
+   },
+   "possible469Successors": 0
+  },
+  {
+   "mapId": "A10",
+   "waveCounts": [
+    12
+   ],
+   "waveKinds": [
+    "elevator"
+   ],
+   "mandatoryPrimary": 12,
+   "optionalSupport": 0,
+   "totalPrimary": 12,
+   "peakAliveUpperBound": 12,
+   "configuredRoomLimit": 12,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [],
+     "mapBucketOrStatic": 12,
+     "upperBound": 12
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种461": 9,
+    "兵种469": 2,
+    "兵种468": 1
+   },
+   "possible469Successors": 2
+  },
+  {
+   "mapId": "A11",
+   "waveCounts": [
+    10,
+    10,
+    13
+   ],
+   "waveKinds": [
+    "combat",
+    "combat",
+    "combat"
+   ],
+   "mandatoryPrimary": 33,
+   "optionalSupport": 0,
+   "totalPrimary": 33,
+   "peakAliveUpperBound": 10,
+   "configuredRoomLimit": 10,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 5,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 1,
+       "quantity": 5,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 5,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 1,
+       "quantity": 5,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 7,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 1,
+       "quantity": 6,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种469": 8,
+    "兵种466": 6,
+    "兵种461": 17,
+    "兵种467": 2
+   },
+   "possible469Successors": 8
+  },
+  {
+   "mapId": "A12",
+   "waveCounts": [
+    10,
+    10,
+    16,
+    17
+   ],
+   "waveKinds": [
+    "combat",
+    "combat",
+    "combat",
+    "combat"
+   ],
+   "mandatoryPrimary": 53,
+   "optionalSupport": 0,
+   "totalPrimary": 53,
+   "peakAliveUpperBound": 12,
+   "configuredRoomLimit": 12,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [
+      {
+       "index": 1,
+       "quantity": 5,
+       "capacity": 6,
+       "possibleAlive": 5
+      },
+      {
+       "index": 2,
+       "quantity": 5,
+       "capacity": 6,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 1,
+       "quantity": 5,
+       "capacity": 6,
+       "possibleAlive": 5
+      },
+      {
+       "index": 2,
+       "quantity": 5,
+       "capacity": 6,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 1,
+       "quantity": 8,
+       "capacity": 6,
+       "possibleAlive": 6
+      },
+      {
+       "index": 2,
+       "quantity": 8,
+       "capacity": 6,
+       "possibleAlive": 6
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 12
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 1,
+       "quantity": 9,
+       "capacity": 6,
+       "possibleAlive": 6
+      },
+      {
+       "index": 2,
+       "quantity": 8,
+       "capacity": 6,
+       "possibleAlive": 6
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 12
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种469": 13,
+    "兵种466": 14,
+    "兵种461": 14,
+    "兵种467": 10,
+    "兵种468": 2
+   },
+   "possible469Successors": 13
+  },
+  {
+   "mapId": "A13",
+   "waveCounts": [
+    12
+   ],
+   "waveKinds": [
+    "elevator"
+   ],
+   "mandatoryPrimary": 12,
+   "optionalSupport": 0,
+   "totalPrimary": 12,
+   "peakAliveUpperBound": 12,
+   "configuredRoomLimit": 12,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [],
+     "mapBucketOrStatic": 12,
+     "upperBound": 12
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种467": 4,
+    "兵种466": 4,
+    "兵种461": 4
+   },
+   "possible469Successors": 0
+  },
+  {
+   "mapId": "A14",
+   "waveCounts": [
+    12,
+    7,
+    16,
+    17
+   ],
+   "waveKinds": [
+    "combat",
+    "transport",
+    "combat",
+    "combat"
+   ],
+   "mandatoryPrimary": 52,
+   "optionalSupport": 0,
+   "totalPrimary": 52,
+   "peakAliveUpperBound": 12,
+   "configuredRoomLimit": 12,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [
+      {
+       "index": 1,
+       "quantity": 6,
+       "capacity": 6,
+       "possibleAlive": 6
+      },
+      {
+       "index": 2,
+       "quantity": 6,
+       "capacity": 6,
+       "possibleAlive": 6
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 12
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 7,
+       "capacity": 2,
+       "possibleAlive": 2
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 2
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 1,
+       "quantity": 8,
+       "capacity": 6,
+       "possibleAlive": 6
+      },
+      {
+       "index": 2,
+       "quantity": 8,
+       "capacity": 6,
+       "possibleAlive": 6
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 12
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 1,
+       "quantity": 9,
+       "capacity": 6,
+       "possibleAlive": 6
+      },
+      {
+       "index": 2,
+       "quantity": 8,
+       "capacity": 6,
+       "possibleAlive": 6
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 12
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种466": 20,
+    "兵种467": 11,
+    "兵种461": 8,
+    "兵种469": 13
+   },
+   "possible469Successors": 13
+  },
+  {
+   "mapId": "A15",
+   "waveCounts": [
+    5,
+    16,
+    17
+   ],
+   "waveKinds": [
+    "pods",
+    "combat",
+    "combat"
+   ],
+   "mandatoryPrimary": 38,
+   "optionalSupport": 0,
+   "totalPrimary": 38,
+   "peakAliveUpperBound": 10,
+   "configuredRoomLimit": 10,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [],
+     "mapBucketOrStatic": 5,
+     "upperBound": 5
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 8,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 1,
+       "quantity": 8,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 9,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 1,
+       "quantity": 8,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种460": 5,
+    "兵种469": 13,
+    "兵种467": 8,
+    "兵种461": 12
+   },
+   "possible469Successors": 13
+  },
+  {
+   "mapId": "A17",
+   "waveCounts": [
+    18,
+    19,
+    23,
+    1
+   ],
+   "waveKinds": [
+    "combat",
+    "combat",
+    "combat",
+    "boss"
+   ],
+   "mandatoryPrimary": 61,
+   "optionalSupport": 8,
+   "totalPrimary": 69,
+   "peakAliveUpperBound": 10,
+   "configuredRoomLimit": 10,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 9,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 1,
+       "quantity": 9,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 10,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 1,
+       "quantity": 9,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 12,
+       "capacity": 5,
+       "possibleAlive": 5
+      },
+      {
+       "index": 1,
+       "quantity": 11,
+       "capacity": 5,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [],
+     "mapBucketOrStatic": 1,
+     "upperBound": 1
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种469": 24,
+    "兵种465": 6,
+    "兵种467": 4,
+    "兵种466": 22,
+    "兵种461": 4,
+    "兵种472": 1
+   },
+   "possible469Successors": 26
+  },
+  {
+   "mapId": "A18",
+   "waveCounts": [
+    10,
+    5,
+    12,
+    15
+   ],
+   "waveKinds": [
+    "combat",
+    "transport",
+    "combat",
+    "combat"
+   ],
+   "mandatoryPrimary": 42,
+   "optionalSupport": 0,
+   "totalPrimary": 42,
+   "peakAliveUpperBound": 12,
+   "configuredRoomLimit": 12,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [
+      {
+       "index": 1,
+       "quantity": 5,
+       "capacity": 6,
+       "possibleAlive": 5
+      },
+      {
+       "index": 2,
+       "quantity": 5,
+       "capacity": 6,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 5,
+       "capacity": 2,
+       "possibleAlive": 2
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 2
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 1,
+       "quantity": 6,
+       "capacity": 6,
+       "possibleAlive": 6
+      },
+      {
+       "index": 2,
+       "quantity": 6,
+       "capacity": 6,
+       "possibleAlive": 6
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 12
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 1,
+       "quantity": 8,
+       "capacity": 6,
+       "possibleAlive": 6
+      },
+      {
+       "index": 2,
+       "quantity": 7,
+       "capacity": 6,
+       "possibleAlive": 6
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 12
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种464": 8,
+    "兵种467": 6,
+    "兵种466": 6,
+    "兵种463": 5,
+    "兵种465": 6,
+    "兵种469": 6,
+    "兵种461": 5
+   },
+   "possible469Successors": 6
+  },
+  {
+   "mapId": "A19",
+   "waveCounts": [
+    8,
+    8,
+    10,
+    10,
+    18
+   ],
+   "waveKinds": [
+    "combat",
+    "combat",
+    "combat",
+    "combat",
+    "combat"
+   ],
+   "mandatoryPrimary": 54,
+   "optionalSupport": 0,
+   "totalPrimary": 54,
+   "peakAliveUpperBound": 14,
+   "configuredRoomLimit": 14,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [
+      {
+       "index": 2,
+       "quantity": 4,
+       "capacity": 7,
+       "possibleAlive": 4
+      },
+      {
+       "index": 3,
+       "quantity": 4,
+       "capacity": 7,
+       "possibleAlive": 4
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 8
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 2,
+       "quantity": 4,
+       "capacity": 7,
+       "possibleAlive": 4
+      },
+      {
+       "index": 3,
+       "quantity": 4,
+       "capacity": 7,
+       "possibleAlive": 4
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 8
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 2,
+       "quantity": 5,
+       "capacity": 7,
+       "possibleAlive": 5
+      },
+      {
+       "index": 3,
+       "quantity": 5,
+       "capacity": 7,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 2,
+       "quantity": 5,
+       "capacity": 7,
+       "possibleAlive": 5
+      },
+      {
+       "index": 3,
+       "quantity": 5,
+       "capacity": 7,
+       "possibleAlive": 5
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 10
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 2,
+       "quantity": 9,
+       "capacity": 7,
+       "possibleAlive": 7
+      },
+      {
+       "index": 3,
+       "quantity": 9,
+       "capacity": 7,
+       "possibleAlive": 7
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 14
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种467": 6,
+    "兵种466": 10,
+    "兵种464": 10,
+    "兵种461": 8,
+    "兵种463": 4,
+    "兵种465": 10,
+    "兵种469": 6
+   },
+   "possible469Successors": 6
+  },
+  {
+   "mapId": "A20",
+   "waveCounts": [
+    12,
+    12,
+    16,
+    16,
+    16,
+    1
+   ],
+   "waveKinds": [
+    "combat",
+    "combat",
+    "combat",
+    "combat",
+    "combat",
+    "boss"
+   ],
+   "mandatoryPrimary": 73,
+   "optionalSupport": 6,
+   "totalPrimary": 79,
+   "peakAliveUpperBound": 12,
+   "configuredRoomLimit": 12,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 6,
+       "capacity": 6,
+       "possibleAlive": 6
+      },
+      {
+       "index": 1,
+       "quantity": 6,
+       "capacity": 6,
+       "possibleAlive": 6
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 12
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 6,
+       "capacity": 6,
+       "possibleAlive": 6
+      },
+      {
+       "index": 1,
+       "quantity": 6,
+       "capacity": 6,
+       "possibleAlive": 6
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 12
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 8,
+       "capacity": 6,
+       "possibleAlive": 6
+      },
+      {
+       "index": 1,
+       "quantity": 8,
+       "capacity": 6,
+       "possibleAlive": 6
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 12
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 8,
+       "capacity": 6,
+       "possibleAlive": 6
+      },
+      {
+       "index": 1,
+       "quantity": 8,
+       "capacity": 6,
+       "possibleAlive": 6
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 12
+    },
+    {
+     "indexedPoints": [
+      {
+       "index": 0,
+       "quantity": 8,
+       "capacity": 6,
+       "possibleAlive": 6
+      },
+      {
+       "index": 1,
+       "quantity": 8,
+       "capacity": 6,
+       "possibleAlive": 6
+      }
+     ],
+     "mapBucketOrStatic": 0,
+     "upperBound": 12
+    },
+    {
+     "indexedPoints": [],
+     "mapBucketOrStatic": 1,
+     "upperBound": 1
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种467": 8,
+    "兵种466": 3,
+    "兵种469": 6,
+    "兵种464": 8,
+    "兵种463": 10,
+    "兵种465": 27,
+    "兵种460": 10,
+    "兵种473": 1
+   },
+   "possible469Successors": 7
+  },
+  {
+   "mapId": "A22",
+   "waveCounts": [
+    1
+   ],
+   "waveKinds": [
+    "boss"
+   ],
+   "mandatoryPrimary": 1,
+   "optionalSupport": 4,
+   "totalPrimary": 5,
+   "peakAliveUpperBound": 5,
+   "configuredRoomLimit": 5,
+   "perWaveConcurrency": [
+    {
+     "indexedPoints": [],
+     "mapBucketOrStatic": 1,
+     "upperBound": 1
+    }
+   ],
+   "mandatoryTypes": {
+    "兵种474": 1
+   },
+   "possible469Successors": 0
+  }
+ ],
+ "mergedFinale": {
+  "mapId": "A20",
+  "mandatoryPrimary": 74,
+  "optionalSupport": 10,
+  "totalPrimary": 84,
+  "peakAliveUpperBound": 12
+ },
+ "boundary": "Deterministic authored quantities and structural upper bounds, not measured difficulty, timing, EHP or gameplay acceptance.",
+ "baseline": {
+  "A01": {
+   "primaryWave": 20,
+   "optionalSupport": 0,
+   "enemyAuthoritySha256": "84d85b26c44120c446859759a24d9f2e9da8fef4c87d492399a3a433258ce28b"
+  },
+  "A02": {
+   "primaryWave": 9,
+   "optionalSupport": 0,
+   "enemyAuthoritySha256": "f8a711379f46245ac51a6b8ae5566c2fc43bcabf29399ac7acb5a95fcf15b408"
+  },
+  "A03": {
+   "primaryWave": 10,
+   "optionalSupport": 0,
+   "enemyAuthoritySha256": "18f40e558c6d5850ca0608277e2846d7e76d317b9cbed1001f03e5e41a5ab2b6"
+  },
+  "A04": {
+   "primaryWave": 24,
+   "optionalSupport": 0,
+   "enemyAuthoritySha256": "5718a91cbb73d8666bdaa6c1d0727631528ca8fe00f179b331204663a6ba191a"
+  },
+  "A05": {
+   "primaryWave": 7,
+   "optionalSupport": 0,
+   "enemyAuthoritySha256": "859e07b2816f8a1a82ffe6c27ec1519f40671e595e677af1c0ad77317ecc29b8"
+  },
+  "A06": {
+   "primaryWave": 1,
+   "optionalSupport": 35,
+   "enemyAuthoritySha256": "dfb5b97975a9843d4ae9b7bf9299f21de87f0d736f860f20281467ac23a1c990"
+  },
+  "A09": {
+   "primaryWave": 9,
+   "optionalSupport": 0,
+   "enemyAuthoritySha256": "0a14f9ceb57e26966338f6ccff219353bb0ff7ffcee513d05cff4c57f230ddd6"
+  },
+  "A10": {
+   "primaryWave": 2,
+   "optionalSupport": 0,
+   "enemyAuthoritySha256": "26d0c35c53f7feb7fb272ccb44c15e6327dd16316a042f023c6b37aec7e0b426"
+  },
+  "A11": {
+   "primaryWave": 1,
+   "optionalSupport": 0,
+   "enemyAuthoritySha256": "407d39c81bd525bd2382e28e353284afac6a945f3d1acc7bf57965bd0b80d706"
+  },
+  "A12": {
+   "primaryWave": 15,
+   "optionalSupport": 0,
+   "enemyAuthoritySha256": "76400b2788dc78ef8b42e560605628c650ba6d126896ce7447f1f7797cef0ddc"
+  },
+  "A13": {
+   "primaryWave": 1,
+   "optionalSupport": 0,
+   "enemyAuthoritySha256": "b5619866b690524da6139afb8de09767047f19a2b9e6686edcdf46cee62d4dda"
+  },
+  "A14": {
+   "primaryWave": 9,
+   "optionalSupport": 0,
+   "enemyAuthoritySha256": "c94b227ecaa09cd11174f173f7f0cd7cac9beee4e8058f236cd13ca770eeb05c"
+  },
+  "A15": {
+   "primaryWave": 5,
+   "optionalSupport": 0,
+   "enemyAuthoritySha256": "b949080b3ab1c7d73b620d2fa4c7548bd22be36cd3f7294a11107a3e16e94f88"
+  },
+  "A17": {
+   "primaryWave": 1,
+   "optionalSupport": 40,
+   "enemyAuthoritySha256": "f88f512a9b27925ba6068cd145011a673ce95b931d562f4747daa4e05c900e09"
+  },
+  "A18": {
+   "primaryWave": 12,
+   "optionalSupport": 0,
+   "enemyAuthoritySha256": "d0937a2558bed99f39ffb6206fe895e5e66bbd93aa5d525badc2e2e05628f4f5"
+  },
+  "A19": {
+   "primaryWave": 19,
+   "optionalSupport": 0,
+   "enemyAuthoritySha256": "1410b329795c6580fa19f495f46fa268f2389d2e0e069e75386e3f6fcfed8b66"
+  },
+  "A20": {
+   "primaryWave": 1,
+   "optionalSupport": 40,
+   "enemyAuthoritySha256": "97f3f0e48d6c32ac5d6ed7226baf170016ce78d70d7d267100a6c5955bcdb8e2"
+  },
+  "A22": {
+   "primaryWave": 1,
+   "optionalSupport": 60,
+   "enemyAuthoritySha256": "fb2e6a829434ce8f8736e00e89ed8e464f7d790a0e427395da44864222001cee"
+  }
+ },
+ "preservedMaps": {
+  "TUTORIAL": "08aa8988c361fc3bdd1d78bd79c66f1f51bdd3efd473407e76b8941b042a3b22",
+  "A08": "8f5da897175df4e9037c6ad86b690a10abcc7afe14cc04a017edfbfded8d093e",
+  "A16": "32dea2ca6b27f0393ba729e000cf467177b921637fb523110545d1f0b5fa737f"
+ },
+ "originalDocumentSha256": "368a51d3aba5c9ba633f4fef440d5049c36e3decd9314399668195d09dfb10c3",
+ "adaptedDocumentSha256": "70475d18fd5b058eeac00a9f77f08cae92b0193e5fbc1d46eb5c5f6156af4796"
+}

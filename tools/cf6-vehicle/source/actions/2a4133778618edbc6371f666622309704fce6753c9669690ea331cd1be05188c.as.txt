@@ -1,0 +1,9 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 944;
+   var §\x0f§ = 1;
+   if(_root.电梯死亡敌人计数 >= _parent.需要杀死数)
+   {
+      _root.gameworld.man1.gotoAndStop("等待");
+      _parent.play();
+   }
+}

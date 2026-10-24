@@ -21,7 +21,7 @@ function Resolve-Cf7DevWebViewCacheDirectory {
         throw 'LOCALAPPDATA is unavailable; specify -WebView2CacheDirectory with a short local Windows path.'
     }
     # Resolve only when building. Producer preflight still validates every cache path.
-    return Join-Path $env:LOCALAPPDATA 'CF7BuildCache\w2'
+    return Join-Path $env:LOCALAPPDATA 'CF7\w2'
 }
 
 if ($Status -and ($ForceBuild -or $BuildOnly -or $ReuseOnly -or $candidateLeafSpecified)) {

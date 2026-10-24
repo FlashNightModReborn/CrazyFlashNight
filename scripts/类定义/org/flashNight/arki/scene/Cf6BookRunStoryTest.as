@@ -26,7 +26,8 @@ class org.flashNight.arki.scene.Cf6BookRunStoryTest {
         if (value) passed++; else { failed++; trace("[FAIL] Cf6BookRunStory: " + message); }
     }
     private static function definition():Object {
-        var ids:Array = ["TUTORIAL", "A01", "A02", "A03", "A04", "A05", "A06", "A08"];
+        var ids:Array = ["TUTORIAL"];
+        for(var mapNumber:Number=1;mapNumber<=20;mapNumber++) ids.push("A"+(mapNumber<10?"0":"")+mapNumber);
         var maps:Array = [];
         for (var i:Number = 0; i < ids.length; i++) {
             maps.push({id:ids[i], dialogue:[], mechanism:{assetScale:1, layers:[], fixtureId:ids[i]}});
@@ -124,76 +125,48 @@ class org.flashNight.arki.scene.Cf6BookRunStoryTest {
         BookComicService.handle("finish", credits);
     }
     private static function testChapterPreparedHandoff():Void {
-        setup("cf6-sting");
-        var api:Object = BookRunService;
-        BookRunService.playChapter(7);
-        var chapter:Object = api._chapter;
-        var watch:Function = api._chapterWatch.onEnterFrame;
-        check(requests.length == 1 && requests[0].pageId == "cf6-s4"
-                && chapter.storyActive === true && roomCalls.length == 0,
-            "chapter watcher opens s4 without entering A08");
-        watch();
-        check(requests.length == 1 && roomCalls.length == 0,
-            "the real chapter watch cannot reopen an active story");
-        var first:Object = latestPacket();
-        BookComicService.handle("prepared", first);
-        BookComicService.handle("finish", first);
-        check(requests.length == 2 && requests[1].pageId == "cf6-s5"
-                && roomCalls.length == 0 && dialogueCalls.length == 0,
-            "prepared s4 advances only to s5");
-        BookComicService.handle("finish", first);
-        watch();
-        check(requests.length == 2 && roomCalls.length == 0,
-            "old s4 and repeated scene release cannot skip s5");
-        var second:Object = latestPacket();
-        BookComicService.handle("prepared", second);
-        check(roomCalls.length == 0 && dirty == 0,
-            "s5 preparation alone is not room continuation or settlement");
-        BookComicService.handle("finish", second);
-        check(roomCalls.length == 1 && roomCalls[0].mapId == "A08"
-                && roomCalls[0].owner === StageReturnFlow.worldIdentity(_root.gameworld)
-                && roomCalls[0].config.fixtureId == "A08"
-                && bossCalls.length == 1 && dialogueCalls.length == 1,
-            "only prepared and finished s4/s5 enter the real A08 continuation once");
-        check(chapter.started === true && chapter.storyActive === false
-                && api._chapterWatch.onEnterFrame === undefined
-                && _root._saveExt.bookRun.outcome == "active" && dirty == 0,
-            "room handoff retires its watch without settling the run");
-        BookComicService.handle("finish", first);
-        BookComicService.handle("finish", second);
-        watch(); BookRunService.presentChapter();
-        EventBus.getInstance().publish("SceneTransitionReleased", _root.gameworld, "",
-            StageReturnFlow.worldIdentity(_root.gameworld));
-        check(roomCalls.length == 1 && bossCalls.length == 1 && dialogueCalls.length == 1
-                && requests.length == 2,
-            "duplicate presentations and scene releases cannot restart the completed room");
+        var chapters:Array=[7,8,18],pages:Array=["cf6-s4","cf6-s5","cf6-s6"],maps:Array=["A07","A08","A18"];
+        for(var i:Number=0;i<chapters.length;i++) {
+            setup("cf6-sting");
+            var api:Object=BookRunService;
+            BookRunService.playChapter(chapters[i]);
+            var chapter:Object=api._chapter,watch:Function=api._chapterWatch.onEnterFrame;
+            check(requests.length==1 && requests[0].pageId==pages[i] && chapter.storyActive===true && roomCalls.length==0,
+                "real chapter watcher opens only "+pages[i]+" before "+maps[i]);
+            watch();
+            check(requests.length==1 && roomCalls.length==0,"active chapter watch cannot reopen story "+chapters[i]);
+            var page:Object=latestPacket();BookComicService.handle("prepared",page);
+            check(roomCalls.length==0 && dirty==0,"prepared alone cannot enter "+maps[i]+" or settle the run");
+            BookComicService.handle("finish",page);
+            check(roomCalls.length==1 && roomCalls[0].mapId==maps[i]
+                && roomCalls[0].owner===StageReturnFlow.worldIdentity(_root.gameworld)
+                && roomCalls[0].config.fixtureId==maps[i] && bossCalls.length==1 && dialogueCalls.length==1,
+                "prepared and finished page enters its exact real room continuation "+maps[i]);
+            check(requests.length==1 && requests[0].pageId==pages[i],"page completion cannot silently open another chapter's story "+chapters[i]);
+            check(chapter.started===true && chapter.storyActive===false && api._chapterWatch.onEnterFrame===undefined
+                && _root._saveExt.bookRun.outcome=="active" && dirty==0,"room handoff retires watch without settlement "+maps[i]);
+            BookComicService.handle("finish",page);watch();BookRunService.presentChapter();
+            EventBus.getInstance().publish("SceneTransitionReleased",_root.gameworld,"",StageReturnFlow.worldIdentity(_root.gameworld));
+            check(roomCalls.length==1 && bossCalls.length==1 && dialogueCalls.length==1 && requests.length==1,
+                "duplicate finish and scene release cannot restart or skip "+maps[i]);
+        }
     }
     private static function testChapterRejectsStaleContinuation():Void {
-        var modes:Array = ["world", "slot", "run"];
-        for (var i:Number = 0; i < modes.length; i++) {
-            setup("cf6-sting");
-            var api:Object = BookRunService;
-            BookRunService.playChapter(7);
-            var first:Object = latestPacket();
-            BookComicService.handle("prepared", first);
-            BookComicService.handle("finish", first);
-            var second:Object = latestPacket();
-            BookComicService.handle("prepared", second);
-            var watch:Function = api._chapterWatch.onEnterFrame;
-            if (modes[i] == "world") replaceWorld();
-            else if (modes[i] == "slot") _root.savePath = "bookrun_cf6bookrun_other";
+        var chapters:Array=[7,8],pages:Array=["cf6-s4","cf6-s5"],modes:Array=["world","slot","run"];
+        for(var c:Number=0;c<chapters.length;c++) for(var i:Number=0;i<modes.length;i++) {
+            setup("cf6-sting");var api:Object=BookRunService;
+            BookRunService.playChapter(chapters[c]);var page:Object=latestPacket();
+            BookComicService.handle("prepared",page);var watch:Function=api._chapterWatch.onEnterFrame;
+            if(modes[i]=="world") replaceWorld();
+            else if(modes[i]=="slot") _root.savePath="bookrun_cf6bookrun_other";
             else {
-                var replacement:Object = org.flashNight.gesh.object.PersistedSnapshot.clone(_root._saveExt.bookRun);
-                replacement.startedAt++;
-                _root._saveExt.bookRun = replacement;
+                var replacement:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(_root._saveExt.bookRun);
+                replacement.startedAt++;_root._saveExt.bookRun=replacement;
             }
-            BookComicService.handle("finish", second);
-            watch(); BookRunService.presentChapter();
-            check(roomCalls.length == 0 && bossCalls.length == 0 && dialogueCalls.length == 0
-                    && api._chapter == null && requests.length == 2,
-                "stale s5 cannot enter a room after " + modes[i] + " replacement");
-            check(dirty == 0 && _root._saveExt.bookRun.outcome == "active",
-                "stale chapter " + modes[i] + " callback has no settlement side effect");
+            BookComicService.handle("finish",page);watch();BookRunService.presentChapter();
+            check(roomCalls.length==0 && bossCalls.length==0 && dialogueCalls.length==0 && api._chapter==null && requests.length==1,
+                "stale "+pages[c]+" cannot enter its room after "+modes[i]+" replacement");
+            check(dirty==0 && _root._saveExt.bookRun.outcome=="active","stale chapter callback has no settlement side effect "+chapters[c]+"/"+modes[i]);
         }
     }
     private static function testFinalPendingBarrier():Void {

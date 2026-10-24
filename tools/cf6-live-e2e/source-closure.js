@@ -1,17 +1,34 @@
 'use strict';
-const fs = require('fs'), path = require('path');
+const fs = require('fs'), path = require('path'), crypto = require('crypto');
 const E = require('../workbench-live-e2e/lib/evidence-artifact');
 const Swf = require('../swf-metadata');
 const {parseStrictJson}=require('../cf7-agent/lib/strict-json');
+const VEHICLE_ASSETS=Object.freeze([
+    {swf:'flashswf/arts/new/CF6Vehicle.swf',xfl:'flashswf/arts/new/CF6Vehicle/CF6Vehicle.xfl'},
+    {swf:'flashswf/backgrounds/cf6/CF6_A07_BG.swf',xfl:'flashswf/backgrounds/cf6/CF6_A07_BG/CF6_A07_BG.xfl'},
+    {swf:'flashswf/backgrounds/cf6/CF6_A07_sky.swf',xfl:'flashswf/backgrounds/cf6/CF6_A07_sky/CF6_A07_sky.xfl'}
+]);
+const VEHICLE_CONSUMERS=Object.freeze(['Service','ActorAdapter','Combat','Timeline','Data','Rules']
+    .map(name=>'scripts/类定义/org/flashNight/arki/scene/Cf6Vehicle'+name+'.as'));
+const SCENIC_WINGS_SWF='flashswf/backgrounds/cf6/preparation/CF6_ScenicWings.swf';
 const ORIGINAL_SWF='flashswf/arts/new/Codex素材源稿/CF6地图/原作参考/crazyflasher6-cn.swf';
 const FILES = [
     'scripts/逻辑/关卡系统/关卡系统_lsy_场景转换.as',
     'scripts/类定义/org/flashNight/arki/scene/StageReturnFlow.as',
+    'scripts/类定义/org/flashNight/arki/camera/HorizontalScroller.as',
+    'launcher/src/Data/MapTaskCatalog.cs',
     'scripts/类定义/org/flashNight/arki/scene/StageRunSession.as',
     'scripts/类定义/org/flashNight/arki/scene/SceneTransitionGuard.as',
     'scripts/类定义/org/flashNight/arki/scene/PlayerResourceTransfer.as',
     'scripts/类定义/org/flashNight/arki/scene/PlayerResourceTransferBridge.as',
     'scripts/类定义/org/flashNight/arki/unit/PlayerStatRefreshCoordinator.as',
+    'scripts/类定义/org/flashNight/arki/item/CharacterBuildService.as',
+    'scripts/类定义/org/flashNight/arki/hud/FocusTargetHudService.as',
+    'scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as',
+    'launcher/src/Guardian/Hud/PlayerInfo/PlayerHudController.cs',
+    'launcher/src/Guardian/Hud/PlayerInfo/PlayerHudRuntime.cs',
+    'launcher/src/Guardian/Hud/PlayerInfo/PlayerHudState.cs',
+    'launcher/src/Guardian/Hud/PlayerInfo/PlayerHudFocusTargetWidget.cs',
     'scripts/类定义/org/flashNight/arki/unit/Action/Regeneration/LevelUpRecovery.as',
     'scripts/类定义/org/flashNight/arki/unit/Action/Regeneration/ResourceNumber.as',
     'scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/DressupInitializer.as',
@@ -141,6 +158,9 @@ const FILES = [
     'tools/cf6-prototype/viewport-policy.json','tools/cf6-prototype/viewport-assembly.py',
     'tools/cf6-prototype/generated/original-camera-layout.json',
     'tools/cf6-prototype/generated/assembly.json','tools/cf6-roguelike-content/build-sting-fragments.py',
+    'tools/cf6-roguelike-content/weapon_pools.py','tools/cf6-roguelike-content/weapon-pools.source.json',
+    'tools/cf6-roguelike-content/difficulty.source.json','tools/cf6-roguelike-content/difficulty_plan.py',
+    'data/stages/books/cf6-sting-source/encounter-facts.v1.json',
     'tools/cf6-map-runtime/build-tutorial.py','tools/cf6-tutorial/assemble.py',
     'tools/cf6-tutorial/layout.json','tools/cf6-tutorial/original-tutorial-geometry.json',
     'tools/cf6-tutorial/environment.fragment.xml','tools/cf6-tutorial/tutorial-map.fragment.json',
@@ -259,8 +279,10 @@ function capture(root) {
     }
     function read(ref){
         // CS6 creates this optional sidecar as an empty regular file for desktop XFLs.
-        // Keep its exact bytes/hash in the closure; required source and asset files stay nonempty.
-        const allowEmpty=ref==='flashswf/backgrounds/cf6/CF6_A01_Turret/MobileSettings.xml';
+        // The one hash-named original 1805/frame2 ActionEnd export is also genuinely empty.
+        // Keep exact bytes/hash; other required source and asset files stay nonempty.
+        const allowEmpty=ref==='flashswf/backgrounds/cf6/CF6_A01_Turret/MobileSettings.xml'
+            ||ref==='tools/cf6-vehicle/source/actions/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.as.txt';
         const file=E.readExactRegularFile(inside(root,ref),{phase:'cf6_closure',maximumBytes:128*1024*1024,allowEmpty});
         const row={relativePath:ref,bytes:file.length,sha256:file.sha256};
         if(rows.has(ref)&&rows.get(ref).sha256!==row.sha256)throw Error('closure resource changed during discovery');
@@ -377,9 +399,9 @@ function capture(root) {
             }return out;
         });
     }
-    function nativeClosure(xfl,declared,owner){
-        const base=path.posix.dirname(relative(xfl));
-        const need=ref=>{ref=relative(ref);if(!declared.has(ref))throw Error('omitted native source dependency: '+ref);return read(ref).toString('utf8');};
+    function nativeClosure(xfl,declared,owner,options={}){
+        const base=path.posix.dirname(relative(xfl)),required=new Set();
+        const need=ref=>{ref=relative(ref);required.add(ref);if(!declared.has(ref))throw Error('omitted native source dependency: '+ref);return read(ref).toString('utf8');};
         need(xfl);need(base+'/PublishSettings.xml');const doc=need(base+'/DOMDocument.xml');
         const includes=new Set(),media=new Set();
         for(const item of attributes(doc,'Include')){
@@ -391,12 +413,30 @@ function capture(root) {
         }
         for(const ref of [base+'/DOMDocument.xml',...includes]){
             const xml=need(ref);
+            if(options.visualOnly&&(/<(?:[A-Za-z_][\w.-]*:)?Actionscript\b/i.test(xml)
+                    ||attributes(xml,'DOMSymbolItem').some(item=>Object.keys(item).some(key=>key.startsWith('linkage')))
+                    ||attributes(xml,'DOMBitmapItem').length))throw Error('scenic actor gained executable, linked or bitmap content');
             for(const instance of attributes(xml,'DOMSymbolInstance')){
                 const target=relative(base+'/LIBRARY/'+relative(instance.libraryItemName)+'.xml');
                 if(!includes.has(target))throw Error('native symbol reference missing Include: '+target);
             }
             for(const instance of attributes(xml,'DOMBitmapInstance'))if(!media.has(instance.libraryItemName))throw Error('native bitmap reference missing media');
             for(const fill of attributes(xml,'BitmapFill'))if(!media.has(fill.bitmapPath))throw Error('native fill reference missing media');
+        }
+        if(options.exact){
+            if(required.size!==declared.size||[...declared].some(ref=>!required.has(ref)))throw Error('extra native source declaration: '+owner);
+            let count=0;
+            function exactTree(folder,depth){
+                if(depth>16)throw Error('native source tree depth exceeded');
+                E.assertExactDirectory(inside(root,folder),'cf6_native_exact_closure');
+                for(const item of fs.readdirSync(inside(root,folder),{withFileTypes:true})){
+                    const ref=relative(folder+'/'+item.name);
+                    if(item.isSymbolicLink())throw Error('linked native source entry');
+                    if(item.isDirectory())exactTree(ref,depth+1);
+                    else if(!item.isFile()||++count>4096||!required.has(ref))throw Error('extra or non-regular native source file: '+ref);
+                }
+            }
+            exactTree(base,0);
         }
     }
     function tableEntries(table,owner,maximum=4096){
@@ -467,6 +507,229 @@ function capture(root) {
         for(const asset of selected)nativeClosure(asset.xfl,admitted,ref);
         return selected.length;
     }
+    function scenicWings(used){
+        for(const url of used)if(url.toLowerCase().startsWith('flashswf/backgrounds/cf6/preparation/cf6_scenic')&&url!==SCENIC_WINGS_SWF)
+            throw Error('unreviewed scenic actor runtime resource');
+        if(!used.has(SCENIC_WINGS_SWF))return;
+        const ref='tools/cf6-scene-completion/scenic-wings-manifest.json',base=SCENIC_WINGS_SWF.slice(0,-4);
+        add(ref,SCENIC_WINGS_SWF,'scenic_manifest');const manifest=json(ref);
+        if(manifest.schema!=='cf6-scenic-wings.v1'||manifest.originalSha256!==rows.get(ORIGINAL_SWF).sha256
+                ||manifest.sourceSprite!==1777||manifest.frames!==15||manifest.swf!==SCENIC_WINGS_SWF
+                ||manifest.xfl!==base+'/CF6_ScenicWings.xfl'||!Number.isFinite(manifest.bodyScale)
+                ||manifest.bodyScale<=0||manifest.bodyScale>=4||manifest.palette!=='scenic-wings-palette.json'
+                ||!Number.isSafeInteger(manifest.bodyColorsReplaced)||manifest.bodyColorsReplaced<1)throw Error('invalid scenic Wings source binding');
+        const source='flashswf/arts/new/CodexWings素材/',stand='Codex/Wings/动作/站立';
+        const palettePath='tools/cf6-scene-completion/scenic-wings-palette.json';
+        const expected=new Set(['tools/cf6-scene-completion/build_scenic_wings.py',palettePath,'tools/cf6-prop-layout/scale-policy.json',
+            'tools/cf6-map-runtime/generated/A06-original-geometry.json','tools/cf6-map-runtime/generated/A08-original-geometry.json',
+            source+'LIBRARY/Codex/Wings/敌人-CF6Wings.xml',source+'PublishSettings.xml',source+'CodexWings素材.xfl']);
+        const inputs=tableEntries(manifest.inputs,ref,128),inputPaths=new Set(inputs.map(row=>row.path));
+        const visited=new Set();
+        function visit(name){
+            name=relative(name);if(!name.startsWith('Codex/Wings/'))throw Error('unreviewed scenic source symbol');
+            if(visited.has(name))return;if(visited.size>=128)throw Error('scenic source symbol bound exceeded');visited.add(name);
+            const target=source+'LIBRARY/'+name+'.xml';expected.add(target);
+            if(!inputPaths.has(target))throw Error('omitted scenic source input: '+target);
+            const xml=read(target).toString('utf8');
+            for(const item of attributes(xml,'DOMSymbolInstance'))visit(item.libraryItemName);
+        }
+        visit(stand);
+        if(expected.size!==inputPaths.size||[...inputPaths].some(target=>!expected.has(target)))throw Error('extra scenic source input');
+        for(const target of expected)if(!inputPaths.has(target))throw Error('omitted scenic source input: '+target);
+        for(const row of inputs)bound(row,'',ref,'scenic_source');
+        const palette=json(palettePath);
+        if(palette.schema!=='cf6-scenic-wings-palette.v1'||palette.originalSwfSha256!==manifest.originalSha256
+                ||palette.originalSprite!==1777||!palette.colors||Object.keys(palette.colors).length!==manifest.bodyColorsReplaced)
+            throw Error('invalid scenic Wings palette');
+        for(const [oldColor,newColor] of Object.entries(palette.colors))
+            if(!/^#[0-9A-F]{6}$/.test(oldColor)||!/^#[0-9A-F]{6}$/.test(newColor)||oldColor===newColor)throw Error('invalid scenic Wings palette color');
+        for(const row of tableEntries(palette.sources,palettePath,128)){
+            if(!row.path.startsWith(source+'LIBRARY/Codex/Wings/分件/')||!inputPaths.has(row.path))throw Error('unreviewed scenic palette source');
+            bound(row,'',palettePath,'scenic_palette_source');
+        }
+        const outputs=tableEntries(manifest.outputs,ref,512),declared=new Set();
+        for(const row of outputs){
+            if(!row.path.startsWith(base+'/')||/\.swf$/i.test(row.path)||!Number.isSafeInteger(row.bytes)||row.bytes<1)
+                throw Error('unreviewed scenic native output');
+            bound(row,'',ref,'scenic_native_output');declared.add(row.path);
+        }
+        nativeClosure(manifest.xfl,declared,ref,{exact:true,visualOnly:true});
+    }
+    function vehicleAssets(used){
+        for(const url of used)if(url.toLowerCase()==='flashswf/arts/cf6vehicle.swf')throw Error('obsolete wrong-location vehicle runtime resource');
+        for(const url of used)if((url.toLowerCase().startsWith('flashswf/arts/new/cf6vehicle')
+                ||url.toLowerCase().startsWith('flashswf/backgrounds/cf6/cf6_a07'))&&!VEHICLE_ASSETS.some(asset=>asset.swf===url))
+            throw Error('unreviewed vehicle runtime resource');
+        const selected=VEHICLE_ASSETS.filter(asset=>used.has(asset.swf));if(!selected.length)return;
+        const base='tools/cf6-vehicle/',ref=base+'art-manifest.json',texturePath=base+'texture-manifest.json';
+        const originalPath=base+'source/original-nodes.json',actionsPath=base+'source/actions.json',redrawPath=base+'redraw-manifest.json',seed=base+'texture-seed/';
+        const archive='flashswf/arts/new/Codex素材源稿/CF6地图/',r2=archive+'A07-R2/cf6-stage7-redraw-r2/',r5=archive+'A08-R5/';
+        const fixed=[base+'prepare_art.py',base+'extract_source.py',base+'prepare_redraw.py',redrawPath,ORIGINAL_SWF,originalPath,actionsPath,
+            ...['build-a01.py','build-a08.py','build-layer.py','procedural_filter.py'].map(name=>'tools/cf6-map-runtime/native-vector/'+name),
+            'tools/cf6-map-runtime/build.py','tools/cf6-map-runtime/extract-geometry.py','tools/swf-audit/swfscan.py',
+            'tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py',r5+'reference/vehicles-props-DejaVuSans-Bold.ttf',
+            ...['DOMDocument.xml','PublishSettings.xml','CF6_A01_BG.xfl'].map(name=>'flashswf/backgrounds/cf6/CF6_A01_BG/'+name),
+            seed+'DOMDocument.xml',seed+'texture-seed.xfl'];
+        const requiredExports={'361':'CF6VehicleGrenade','612':'CF6VehicleRaider','627':'CF6VehicleRoadblock','629':'CF6VehicleShield',
+            '1791':'CF6VehicleRoad','1803':'CF6VehiclePlayer','1813':'CF6VehicleArmoredBoss',
+            '356':'CF6VehicleBullet','115':'CF6VehicleSpark','391':'CF6VehicleExplosion'};
+        add(ref,selected[0].swf,'vehicle_manifest');const manifest=json(ref);
+        if(manifest.schema!=='cf6-vehicle-art.v1'||E.canonicalJson(manifest.exports)!==E.canonicalJson(requiredExports)
+                ||![manifest.nativeSymbols,manifest.sourceNodes,manifest.textures].every(v=>Number.isSafeInteger(v)&&v>0&&v<=4096))
+            throw Error('invalid vehicle art manifest');
+        const inputRows=tableEntries(manifest.inputs,ref),inputs=new Map(inputRows.map(row=>[row.path,row]));
+        for(const target of fixed)if(!inputs.has(target))throw Error('omitted vehicle fixed input: '+target);
+        if(inputs.get(ORIGINAL_SWF).sha256!==rows.get(ORIGINAL_SWF).sha256)throw Error('vehicle original source digest mismatch');
+        const original=json(originalPath),roots={world:1816,sky:1754,road:1791,player:1803,boss:1813,grenade:361,raider:612,obstacle:627,shield:629,bullet:356,spark:115,explosion:391};
+        if(original.schema!=='cf6-vehicle-source.v1'||original.originalSha256!==rows.get(ORIGINAL_SWF).sha256
+                ||E.canonicalJson(original.roots)!==E.canonicalJson(roots)||!original.nodes||Array.isArray(original.nodes)
+                ||Object.keys(original.nodes).length>4096||Object.values(roots).some(id=>!Object.hasOwn(original.nodes,String(id))))
+            throw Error('invalid vehicle original display closure');
+        const actions=json(actionsPath),actionPaths=new Set();
+        if(!Array.isArray(actions)||!actions.length||actions.length>4096)throw Error('invalid vehicle action source list');
+        for(const action of actions){
+            if(!action||!digest(action.sha256)||action.capture!=='source/actions/'+action.sha256+'.as.txt'
+                    ||typeof action.originalPath!=='string')throw Error('invalid vehicle action source binding');
+            if(action.sha256==='e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'&&action.originalPath!=='scripts/DefineSprite_1805/frame_2/DoAction.as')
+                throw Error('unreviewed empty vehicle action');
+            if(!action.originalPath.endsWith('/DoAction.as'))continue;
+            const match=/^(?:scripts\/)?DefineSprite_([0-9]+)(?:_[^/]+)?\/frame_([0-9]+)\/DoAction\.as$/.exec(action.originalPath);
+            if(!match||!Object.hasOwn(original.nodes,match[1]))throw Error('vehicle action is outside original display closure');
+            const target=base+action.capture;
+            if(!inputs.has(target)||inputs.get(target).sha256!==action.sha256)throw Error('omitted vehicle action source');
+            actionPaths.add(target);
+        }
+        if(!actionPaths.size)throw Error('missing vehicle timeline action inputs');
+        const redraw=json(redrawPath);
+        if(redraw.schema!=='cf6-vehicle-redraw.v1')throw Error('invalid vehicle redraw manifest');
+        const redrawInputPaths=new Set([base+'prepare_redraw.py',r2+'source/sky_material.py',r2+'source/river_arcade.py',r2+'source/svg_native.py',
+            r2+'reference/environment-original-nodes.json',r2+'reference/environment-shape-details.json',r5+'parts/bitmap-1823.svg',r5+'parts/bitmap-1786.svg',
+            'tools/cf6-scene-completion/vehicle-art/bitmap-1806.svg','tools/cf6-scene-completion/vehicle-art/bitmap-1808.svg']);
+        const redrawNames=['player-body.svg','player-wheel-0.svg','player-wheel-1.svg','armored-body.svg','armored-wheel.svg','asphalt.svg',
+            'reference/1784.png','reference/1789.png','parts/bitmap-1784.svg','parts/bitmap-1789.svg','sky.svg','sky-extension.svg'];
+        const redrawOutputPaths=new Set(redrawNames.map(name=>base+'source/redraw/'+name));
+        const redrawInputs=tableEntries(redraw.inputs,redrawPath),redrawOutputs=tableEntries(redraw.outputs,redrawPath);
+        if(redrawInputs.length!==redrawInputPaths.size||redrawInputs.some(row=>!redrawInputPaths.has(row.path))
+                ||redrawOutputs.length!==redrawOutputPaths.size||redrawOutputs.some(row=>!redrawOutputPaths.has(row.path)))
+            throw Error('unreviewed vehicle redraw inventory');
+        for(const row of [...redrawInputs,...redrawOutputs])bound(row,'',redrawPath,'vehicle_redraw');
+        const outputs=tableEntries(manifest.outputs,ref),outputMap=new Map(outputs.map(row=>[row.path,row]));
+        for(const target of [texturePath,base+'import-textures.jsfl',base+'source/art-timelines.json'])
+            if(!outputMap.has(target))throw Error('omitted vehicle shared output: '+target);
+        const texture=json(texturePath);
+        if(texture.schema!=='cf6-vehicle-texture.v1'||!texture.textures||Array.isArray(texture.textures))throw Error('invalid vehicle texture manifest');
+        const textureInputs=tableEntries(texture.inputs,texturePath);
+        const shapeInputs=new Set([originalPath,...redrawNames.filter(name=>!name.startsWith('reference/')).map(name=>base+'source/redraw/'+name)]);
+        const excluded=new Set([277,281,359,360,501,1433,1434,1497,1498,1585,1793,1795,1804,1805,1816]);
+        for(const [id,node] of Object.entries(original.nodes)){
+            if(!/^[1-9][0-9]*$/.test(id))throw Error('invalid vehicle source node id');
+            if([2,22,32,83].includes(node.code)&&!excluded.has(Number(id)))shapeInputs.add(base+'source/ffdec/'+id+'.svg');
+        }
+        if(textureInputs.length!==shapeInputs.size||textureInputs.some(row=>!shapeInputs.has(row.path)))throw Error('vehicle texture source inventory mismatch');
+        for(const row of textureInputs){
+            if(!inputs.has(row.path)||inputs.get(row.path).sha256!==row.sha256)throw Error('omitted or conflicting vehicle texture input');
+            bound(row,'',texturePath,'vehicle_texture_source');
+        }
+        const textures=Object.entries(texture.textures),textureNames=new Set(),textureFiles=new Set();
+        if(textures.length!==manifest.textures||!textures.length||textures.length>256)throw Error('vehicle texture count mismatch');
+        for(const [identity,item] of textures){
+            if(!digest(identity)||item.sha256!==identity||typeof item.name!=='string'
+                    ||!new RegExp('^CF6VehicleTexture_'+identity.slice(0,20)+'\\.(?:png|jpg)$').test(item.name)
+                    ||textureNames.has(item.name)||!Array.isArray(item.pixels)||item.pixels.length!==2
+                    ||!item.pixels.every(v=>Number.isSafeInteger(v)&&v>0&&v<=8192))throw Error('invalid vehicle texture record');
+            const target=base+'source/textures/'+item.name,absolute=inside(root,target);
+            if(typeof item.path!=='string'||!path.isAbsolute(item.path)||path.resolve(item.path)!==absolute)
+                throw Error('vehicle texture absolute path is outside exact repository binding');
+            if(!outputMap.has(target)||outputMap.get(target).sha256!==identity)throw Error('omitted vehicle texture output');
+            textureNames.add(item.name);textureFiles.add(target);
+        }
+        const seedPaths=new Set([seed+'DOMDocument.xml',seed+'texture-seed.xfl']),seedNames=new Set();
+        for(const item of attributes(read(seed+'DOMDocument.xml').toString('utf8'),'DOMBitmapItem')){
+            if(!textureNames.has(item.name)||seedNames.has(item.name))throw Error('vehicle seed texture inventory mismatch');seedNames.add(item.name);
+            seedPaths.add(seed+'LIBRARY/'+relative(item.href));seedPaths.add(seed+'bin/'+relative(item.bitmapDataHRef));
+        }
+        if(seedNames.size!==textureNames.size)throw Error('vehicle seed texture inventory mismatch');
+        for(const target of seedPaths)if(!inputs.has(target))throw Error('omitted vehicle seed input: '+target);
+        const allowedInputs=new Set([...fixed,...shapeInputs,...seedPaths,...redrawInputPaths,...actionPaths,seed+'bin/SymDepend.cache']);
+        for(const row of inputRows){
+            if(!allowedInputs.has(row.path))throw Error('unreviewed vehicle input: '+row.path);
+            bound(row,'',ref,'vehicle_source');
+        }
+        const nativeSources=new Map(selected.map(asset=>[asset.xfl,new Set()]));
+        for(const row of outputs){
+            const asset=VEHICLE_ASSETS.find(a=>row.path.startsWith(path.posix.dirname(a.xfl)+'/'));
+            const shared=[texturePath,base+'import-textures.jsfl',base+'source/art-timelines.json'].includes(row.path)||textureFiles.has(row.path);
+            if((!asset&&!shared)||/\.swf$/i.test(row.path)||!Number.isSafeInteger(row.bytes)||row.bytes<1)throw Error('unreviewed vehicle output: '+row.path);
+            if(shared||nativeSources.has(asset.xfl)){
+                bound(row,'',ref,'vehicle_native_output');if(asset)nativeSources.get(asset.xfl).add(row.path);
+            }
+        }
+        for(const asset of selected)nativeClosure(asset.xfl,nativeSources.get(asset.xfl),ref,{exact:true});
+        if(used.has(VEHICLE_ASSETS[0].swf)){
+            const dir=path.posix.dirname(VEHICLE_ASSETS[0].xfl),includes=attributes(read(dir+'/DOMDocument.xml').toString('utf8'),'Include');
+            const exports=[];
+            for(const item of includes)for(const symbol of attributes(read(dir+'/LIBRARY/'+relative(item.href)).toString('utf8'),'DOMSymbolItem'))
+                if(symbol.linkageExportForAS==='true')exports.push(symbol.linkageIdentifier);
+            if(includes.length!==manifest.nativeSymbols||E.canonicalJson(exports.sort())!==E.canonicalJson(['CF6Vehicle',...Object.values(requiredExports)].sort()))
+                throw Error('vehicle native export or symbol inventory mismatch');
+        }
+        add(base+'chapter_fragment.py',ref,'vehicle_chapter_producer');
+        const runtimePath=base+'runtime-manifest.json';add(runtimePath,ref,'vehicle_runtime_manifest');
+        const runtime=json(runtimePath),runtimeInputs=tableEntries(runtime.inputs,runtimePath),runtimeOutputs=tableEntries(runtime.outputs,runtimePath);
+        const expectedInputs=[base+'prepare_runtime.py',originalPath,base+'audio-manifest.json','tools/cf6-scene-completion/Cf6VehicleRules.as.txt',
+            ...['ActorAdapter','Combat','Service','Timeline'].map(name=>base+'Cf6Vehicle'+name+'.as.txt')];
+        if(runtime.schema!=='cf6-vehicle-runtime.v1'
+                ||E.canonicalJson(runtimeInputs.map(r=>r.path).sort())!==E.canonicalJson(expectedInputs.sort())
+                ||E.canonicalJson(runtimeOutputs.map(r=>r.path).sort())!==E.canonicalJson([...VEHICLE_CONSUMERS].sort()))
+            throw Error('invalid vehicle runtime input/output inventory');
+        for(const row of runtimeInputs)bound(row,'',runtimePath,'vehicle_runtime_input');
+        for(const row of runtimeOutputs){if(!Number.isSafeInteger(row.bytes)||row.bytes<1)throw Error('invalid vehicle runtime output size');bound(row,'',runtimePath,'vehicle_runtime_output');}
+        vehicleAudio(base+'audio-manifest.json');
+        for(const target of VEHICLE_CONSUMERS)add(target,ref,'vehicle_consumer');
+        sceneConsumers(VEHICLE_CONSUMERS);
+    }
+    function vehicleAudio(ref){
+        const manifest=json(ref),base='tools/cf6-vehicle/';
+        const expectedInputs=[base+'prepare_audio.py','tools/cf6-audio/source.py','tools/swf-audit/swfscan.py',ORIGINAL_SWF,'tools/cf6-audio/assets.json'];
+        const inputs=tableEntries(manifest.inputs,ref),outputs=tableEntries(manifest.outputs,ref);
+        const added=[626,1160,1161,1162,1163,1169],reused=[915,1009,1121,1135,1144,1123,1137,1146,1151,1154,1157];
+        const filename=(id,fresh)=> (fresh?'CF6Vehicle_':'CF6_')+String(id).padStart(4,'0')+(fresh&&id>=1160&&id<=1163?'.wav':'.mp3');
+        const outputPath=(id,fresh)=>'sounds/export/人物/'+filename(id,fresh);
+        if(manifest.schema!=='cf6-vehicle-audio.v1'||manifest.sourceSha256!==rows.get(ORIGINAL_SWF).sha256
+                ||E.canonicalJson(inputs.map(r=>r.path).sort())!==E.canonicalJson(expectedInputs.sort())
+                ||E.canonicalJson(outputs.map(r=>r.path).sort())!==E.canonicalJson(added.map(id=>outputPath(id,true)).sort()))
+            throw Error('invalid vehicle audio input/output inventory');
+        for(const row of inputs)bound(row,'',ref,'vehicle_audio_input');
+        for(const row of outputs)bound(row,'',ref,'vehicle_audio_output');
+        for(const [key,ids,fresh] of [['new',added,true],['reused',reused,false]]){
+            if(!Array.isArray(manifest[key])||manifest[key].length!==ids.length)throw Error('invalid vehicle audio source inventory');
+            const seen=new Set();
+            for(const row of manifest[key]){
+                if(!Number.isSafeInteger(row.bytes)||row.bytes<1||!ids.includes(row.soundId)||seen.has(row.soundId)||row.path!==outputPath(row.soundId,fresh)
+                        ||row.name!==filename(row.soundId,fresh))throw Error('invalid vehicle audio identity');
+                seen.add(row.soundId);bound(row,'',ref,fresh?'vehicle_new_sound':'vehicle_reused_sound');
+                if(!fresh)continue;
+                const source=row.source,bytes=read(row.path),pcm=row.path.endsWith('.wav');
+                if(!source||source.soundId!==row.soundId||!digest(source.bodySha256)||source.codec!==(pcm?3:2)
+                        ||!Number.isSafeInteger(source.sampleCount)||source.sampleCount<1)throw Error('invalid vehicle sound source record');
+                if(!pcm){if(source.mp3Sha256!==row.sha256||source.mp3Bytes!==bytes.length)throw Error('vehicle MP3 source payload mismatch');continue;}
+                if(bytes.length<44||bytes.toString('ascii',0,4)!=='RIFF'||bytes.toString('ascii',8,12)!=='WAVE'
+                        ||bytes.readUInt32LE(4)!==bytes.length-8||bytes.toString('ascii',12,16)!=='fmt '||bytes.readUInt32LE(16)!==16
+                        ||bytes.readUInt16LE(20)!==1||bytes.readUInt16LE(22)!==source.channels||bytes.readUInt32LE(24)!==source.rate
+                        ||bytes.readUInt16LE(34)!==source.bits||bytes.toString('ascii',36,40)!=='data'||bytes.readUInt32LE(40)!==bytes.length-44
+                        ||!digest(source.pcmSha256)||crypto.createHash('sha256').update(bytes.subarray(44)).digest('hex')!==source.pcmSha256
+                        ||(bytes.length-44)!==source.actualPcmFrames*source.channels*source.bits/8
+                        ||source.declaredMinusActualFrames!==source.sampleCount-source.actualPcmFrames)
+                    throw Error('vehicle PCM wrapper or source payload mismatch');
+            }
+        }
+        const cueIds={gun:[1169],metal:[1160,1161,1162,1163],raiderDown:[1121,1135,1144],
+            raiderDeath:[1123,1137,1146,1151,1154,1157],obstacle:[626],vehicleDeath:[915],explosion:[1009]};
+        const cues=Object.fromEntries(Object.entries(cueIds).map(([key,ids])=>[key,ids.map(id=>filename(id,added.includes(id)))]));
+        if(E.canonicalJson(manifest.cues)!==E.canonicalJson(cues)||!Array.isArray(manifest.events)||!manifest.events.length||manifest.events.length>32
+                ||manifest.events.some(event=>!event||!Object.hasOwn(cues,event.cue)||typeof event.source!=='string'||!event.source
+                    ||typeof event.delivery!=='string'||!event.delivery))throw Error('invalid vehicle audio consumer cues');
+    }
     function propSources(used){
         const base='tools/cf6-prop-layout/',recipePath=base+'recipe.json',depthPath=base+'depth-recipe.json';
         const recipe=json(recipePath),depth=json(depthPath);
@@ -529,8 +792,8 @@ function capture(root) {
         }
 
     }
-    function sceneConsumers(){
-        const base='scripts/类定义/org/flashNight/arki/scene/',queue=FILES.filter(p=>p.startsWith(base)&&/\/Cf6[^/]+\.as$/.test(p)),seen=new Set();
+    function sceneConsumers(extra=[]){
+        const base='scripts/类定义/org/flashNight/arki/scene/',queue=[...FILES.filter(p=>p.startsWith(base)&&/\/Cf6[^/]+\.as$/.test(p)),...extra],seen=new Set();
         while(queue.length){const ref=queue.shift();if(seen.has(ref))continue;seen.add(ref);if(seen.size>64)throw Error('CF6 consumer dependency bound exceeded');
             const source=read(ref).toString('utf8').replace(/\/\*[\s\S]*?\*\/|\/\/[^\r\n]*/g,'');
             for(const match of source.matchAll(/\borg\.flashNight\.arki\.scene\.(Cf6[A-Za-z0-9_]+)\b/g)){
@@ -578,6 +841,8 @@ function capture(root) {
     sceneManifest('tools/cf6-scene-completion/auxiliary-art-manifest.json','cf6-auxiliary-native-source.v1',used,true);
     sceneManifest('tools/cf6-scene-completion/interactive-art-manifest.json','cf6-interactive-native-source.v1',used,'interactive');
     sceneManifest('tools/cf6-scene-completion/transport-art-manifest.json','cf6-transport-native-source.v1',used,'transport');
+    scenicWings(used);
+    vehicleAssets(used);
     propSources(used);
     const cameraPath='tools/cf6-prototype/generated/original-camera-layout.json';
     const camera=JSON.parse(read(cameraPath).toString('utf8').replace(/^\uFEFF/,''));
@@ -593,7 +858,7 @@ function capture(root) {
     const literalUrls=[...read(mechanism).toString('utf8').matchAll(/["'](flashswf[\\/][^"'\r\n]+\.swf)["']/g)].map(m=>relative(m[1]));
     if(chapter.maps.some(m=>m.id==='A20')&&!literalUrls.some(p=>/CF6_A21_Transform\.swf$/.test(p)))
         throw Error('A20 cinematic resource no longer has its explicit closed source binding');
-    literalUrls.forEach(ref=>add(ref,mechanism,'runtime_literal'));
+    literalUrls.filter(ref=>ref!==SCENIC_WINGS_SWF&&!VEHICLE_ASSETS.some(asset=>asset.swf===ref)||used.has(ref)).forEach(ref=>add(ref,mechanism,'runtime_literal'));
     for(const [list,base,tags] of LISTS){
         add(list);for(const child of listReferences(read(list).toString('utf8'),tags))add(base+'/'+child,list,'list_reference');
     }
@@ -626,4 +891,4 @@ function assertUnchanged(before,after) {
         throw Error('CF6 sources or runtime resources changed during the journey');
     return true;
 }
-module.exports={capture,assertUnchanged,verify,FILES,LISTS,relative,listReferences,chapterResources,resolveImport,ORIGINAL_SWF};
+module.exports={capture,assertUnchanged,verify,FILES,LISTS,relative,listReferences,chapterResources,resolveImport,ORIGINAL_SWF,SCENIC_WINGS_SWF,VEHICLE_ASSETS,VEHICLE_CONSUMERS};

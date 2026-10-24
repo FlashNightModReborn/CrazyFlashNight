@@ -1,0 +1,16 @@
+var §\x01§ = 953;
+var §\x0f§ = 1;
+if(_parent._parent.击中效果 == "飙血")
+{
+   firesound = new Sound();
+   firesound.attachSound("blood" + random(6));
+   firesound.start(o,1);
+   gotoAndPlay("a" + random(6));
+}
+else if(_parent._parent.击中效果 == "火花")
+{
+   firesound = new Sound();
+   firesound.attachSound("Metal Hits" + random(4));
+   firesound.start(o,1);
+   gotoAndPlay("b" + random(4));
+}

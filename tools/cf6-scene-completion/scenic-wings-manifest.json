@@ -1,0 +1,260 @@
+{
+  "schema": "cf6-scenic-wings.v1",
+  "originalSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "sourceSprite": 1777,
+  "frames": 15,
+  "xfl": "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/CF6_ScenicWings.xfl",
+  "swf": "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings.swf",
+  "bodyScale": 1.2091236618871992,
+  "role": "visual-only scene actor; no enemy, hp, hit area, reward or AI",
+  "palette": "scenic-wings-palette.json",
+  "bodyColorsReplaced": 290,
+  "placements": [
+    {
+      "mapId": "A06",
+      "worldSprite": 1778,
+      "sourceDepth": 186,
+      "nativeMatrix": [
+        -1,
+        0,
+        0,
+        1,
+        1035.7,
+        210
+      ],
+      "speech": "Andy！救我！"
+    },
+    {
+      "mapId": "A08",
+      "worldSprite": 1841,
+      "sourceDepth": 158,
+      "nativeMatrix": [
+        1,
+        0,
+        0,
+        1,
+        401.9,
+        260.1
+      ]
+    }
+  ],
+  "inputs": {
+    "tools/cf6-scene-completion/build_scenic_wings.py": "02b0e2d5b48ebfc05a8e46d7f685d1182d6e2d271ecb41cd3d9c4b2f91124329",
+    "tools/cf6-scene-completion/scenic-wings-palette.json": "d667109118daf8c6c1f3dfab230c375555d9bfecd0789a25f9b15197d2c3f294",
+    "tools/cf6-prop-layout/scale-policy.json": "66c5787baea7d9fc7dc6c844c2678199f0cdda18c6bb7ec4d55026277d6687e8",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/847-遮罩0.xml": "cfc68ddc84a0aae2748bbbbcbc0732c565d689a13bf99c5970cc6eb70b489c99",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/847-遮罩1.xml": "0635b203295ea17832ad2de74238f8637bd2411f5e3347efbea7791367bce1a1",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/847.xml": "eb331690668ceab73155c0f28a9c2a903392b9ce55d4ef2b31ff21243286be2d",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/848-遮罩0.xml": "607866b08c364ccfc867aaa27f04248efb8e9a3661d08bd7a239ddcb053a8fa2",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/848-遮罩1.xml": "e14fd57b6f707fb7d67833c4423f67edf5ab3e17419705867d6705370cab7eb4",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/848.xml": "42232fdb56ee9bc78d869c9c029dd404d6615a563394f4d18fed8e779b4463af",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/849-遮罩0.xml": "7569eac85c12ee881feead3c4d5bfa38fa7d117878ffebb406be59e4f2794a8e",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/849-遮罩1.xml": "8b409b257de84798a1b062df1a87cc64999a2c19e0dba429d7afef4d1c076f41",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/849.xml": "2e4b7ede7707f21885b06c64fa473bd967f0656ae79d94c7868f66976afd2c3c",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/850-遮罩0.xml": "df85c4ccd52bbb0de541d7f06cb20754fd8eda7aa72f54e77d9556b4d99c8fde",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/850-遮罩1.xml": "05f97cdc1d160d2f298bc07cbc25fc3b9b08e1f85f957ac5ba3dd88d5e80c147",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/850.xml": "a7a396da9a28586c197b5eb81a0f919117932a2be5c17b04f9e9be374c36d8a0",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/851-遮罩0.xml": "7d0572e7cf2270c5aade0d74302317baeff01f919a7712d762bb2d1cb6d7bf6b",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/851-遮罩1.xml": "34be8a942cf13874de1892bdf9ec7a4317a40cae2e6add587e73d8f6fa633a71",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/851.xml": "09d3919136fa88629b8872ba911b3f5e6da361ec57171a2cacb96fee73679116",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/852-遮罩0.xml": "fd327b7b68b7c109fc687d3f389896a9db46bfdb5fff5397ee4f99ffbc412f96",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/852-遮罩1.xml": "00ac4b2a52e4533be919416503d9d8d1d79acd01b6d04d8a67ce7cea704c5822",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/852.xml": "c1296117732450b8746060a5255ec6e4eee57b5e2a7720bdc738098a21e792cd",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/854-遮罩0.xml": "34fc969cd89976f6ea7fc56862bd6f90e084b35394a74364c5c77c1a363f0670",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/854-遮罩1.xml": "abb87ad6c84703734426f5d332e774a1ca0190a356c954811e79b7bae375dd75",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/854.xml": "15222717a8e4f1502a5d5367b183dc912b586e0605468e4a8280d9038119b2ce",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/857-遮罩0.xml": "abd543ada8e6ee2c55603f6ca57e6015556b6b60328657466c954394607a439d",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/857-遮罩1.xml": "c7e0e0433239b16ddcdd6353d1a058d8c717844f37cbb1691abb15c13941d652",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/857.xml": "3d4b6f0a0d4ab38fed8d3813ad4edbe677f8e5f6891f0c67a90f983a05540485",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/858-遮罩0.xml": "df9ef5f35844fe6498a2fc71443f0b92f6d0f3f7b25f3d59a871e7469024c904",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/858-遮罩1.xml": "015c9e14a5259267ce968672dfb24ee59dfa2a6736393da2f55dd18a1a9abe2d",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/858.xml": "5790937debd72caf874ba155ac8ce5a9aa21115b4d2360dfa5724b77ee5ce9ce",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/859-遮罩0.xml": "4e1c8ce6ce90cd29324c3a414999e84e7154c00fed2f8896f89b09be90d6aee5",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/859-遮罩1.xml": "6757333df7539960c5937a65a0a73f79b219758bcbf21871f193c69f70e82ba7",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/859.xml": "10179730f307d8fec6062bdcf3a545d03bae1ea4d6b4295aa9cfc5b670f60235",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/860-遮罩0.xml": "cd2836c70518cc291e02c2a0d84f0dac926830f5c3427866bed2b94a6d832889",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/860-遮罩1.xml": "c4e26a6df298d75674f57966d0e5b23c9f4061d69b7cfd23020d4e29019746e7",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/860.xml": "bd82c18aa5c8697617d55f1de3d0cf43078cb365de1e774fc1043b0d802d52d0",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/动作/站立.xml": "b26f85e9203a07461a3ca217da185713fd66522f5ee19d0ae70d7a110b905c1f",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/敌人-CF6Wings.xml": "6136b25f0af3ad018e9ab14dfa785065732ba5e689b65edbc5c9d5deae0b164b",
+    "tools/cf6-map-runtime/generated/A06-original-geometry.json": "a55a1d925579d95ca5d1d093aa81d84dd44cae4332e6cf7997b630137c1481b8",
+    "tools/cf6-map-runtime/generated/A08-original-geometry.json": "4d7719897720dffd7ca63864d8c956d692f0d9ae2d39ca534e001912d46ec0a6",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/武器/双枪刃.xml": "8542edf577b89ea1d08cc6e571dc8012ae40eef066f082fb35c9b144e6e47e9e",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/武器/枪口定位.xml": "a84884ac0752547974564e3f084d749b6ac5db2b509048d635146f5c716b6107",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/855.xml": "99dacd9d96c81c79c1b25c7f4dd22d8d0781d294d53f9e5b602568aa329f68c4",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/855-遮罩0.xml": "bdeef7c2705f097745b9f8d923de2fed751206bc795ec1fd9ca28113a282243a",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/分件/855-遮罩1.xml": "a06805c9e0873a770dd2ec9e9a01564a1ec455917804adc084afa62a838dd54d",
+    "flashswf/arts/new/CodexWings素材/PublishSettings.xml": "5572cda2d9e70f71fc025da043688e43877320a27137bb993beb01aa2c903f19",
+    "flashswf/arts/new/CodexWings素材/CodexWings素材.xfl": "1b60d9e4b9422b2ecbbd23e9eeb20b66ed6cefbe8646cf45e03d0c6a1a1c580c"
+  },
+  "outputs": {
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/CF6_ScenicWings.xfl": {
+      "sha256": "1b60d9e4b9422b2ecbbd23e9eeb20b66ed6cefbe8646cf45e03d0c6a1a1c580c",
+      "bytes": 10
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/DOMDocument.xml": {
+      "sha256": "bfce1c78598974a0f0e0a043a9b6c9f1671b8df65b48ef8b1822b6829ec9c176",
+      "bytes": 10759
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/847-遮罩0.xml": {
+      "sha256": "5eeb617ac09b5836cbfa598ca9ada7139ff2293c794e3b9b446d3480e6441bf1",
+      "bytes": 1895
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/847-遮罩1.xml": {
+      "sha256": "f7df0b6ef1b651ee62373a6a68b493cdeaed82400ed7ecfd091062940f3d6156",
+      "bytes": 28271
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/847.xml": {
+      "sha256": "9d8af929c1eda97275dc6f7ae4e400b42c537a59d2da3a71ee1eff646682107e",
+      "bytes": 958
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/848-遮罩0.xml": {
+      "sha256": "6ebb3da6d34f5b340ffa9b4331481ded06b5beba284e8221cc9315b44f1a1385",
+      "bytes": 3477
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/848-遮罩1.xml": {
+      "sha256": "1813b8ec326178fc83dc73d57a98ce2b4cf4c74a74025a852b261583b84348d0",
+      "bytes": 112927
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/848.xml": {
+      "sha256": "750b5cda618f01e35d39eab0f89ee903821a8985f968b447fb845d7ad16f34dc",
+      "bytes": 958
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/849-遮罩0.xml": {
+      "sha256": "b3d3a47a7f8c0e595fe4e1584d4f0491692d8dac789710170f5ce1579c73aca7",
+      "bytes": 2051
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/849-遮罩1.xml": {
+      "sha256": "5c10df59ac3595f069b1d77b45d81eb0806a6d32819282477a79d2092524a419",
+      "bytes": 19255
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/849.xml": {
+      "sha256": "07b89cc2c66cfdea501e1d4de9f2a6c44280760ab80910930fd8a90fa67a4ba0",
+      "bytes": 958
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/850-遮罩0.xml": {
+      "sha256": "0b4b7782ab420132c6a9a9dd3d24aeb67736e3a2585f0c2c31bdc9e633e6b1aa",
+      "bytes": 1832
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/850-遮罩1.xml": {
+      "sha256": "ae274661584c775156af60e2d6589eee868f5abc75889855316b6cabcdf19c41",
+      "bytes": 17374
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/850.xml": {
+      "sha256": "f8600c0c0c4ab6838ba159ed6a4af6b1b7b0eaa6a1c42254f5c9c50123ab1350",
+      "bytes": 958
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/851-遮罩0.xml": {
+      "sha256": "0e0dbd088dddb7ceacdca5ab8257f233e122f202f6cc23aaddec1b6ace3b3cad",
+      "bytes": 2336
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/851-遮罩1.xml": {
+      "sha256": "db5f129f10f9d8f9c211434437c4e8a0817afe3722f0ad56b4388861cf381b77",
+      "bytes": 35249
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/851.xml": {
+      "sha256": "2b75f2ac9c5449fc02639788e975eb950844955ec5f10e50fb93ada6207994de",
+      "bytes": 958
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/852-遮罩0.xml": {
+      "sha256": "5e0fc921d4b5a4e8bc392b297807325045f6ab1549b29dac8ca22aa7363079c1",
+      "bytes": 2141
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/852-遮罩1.xml": {
+      "sha256": "84a6d42e732f2bfb99d1cb7f48e1d2ab121be2d05745258bb8fd817d950df411",
+      "bytes": 29400
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/852.xml": {
+      "sha256": "d881723e6fa94e5892d7372e0da85c213d1423e10f0a73f195c18a2bb9cab981",
+      "bytes": 958
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/854-遮罩0.xml": {
+      "sha256": "8b8ffe971feabddef4f6a05962de645033145810132ca2638ae4af9c20aacce4",
+      "bytes": 1713
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/854-遮罩1.xml": {
+      "sha256": "8497dfc28612da6f4e849e76cedbae4fe68a88d76e1a17e482b2f3126dabe857",
+      "bytes": 72803
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/854.xml": {
+      "sha256": "019cc1cf6012ca03bd474502ab85216bf4ec5d88646511878fd4129a948824b5",
+      "bytes": 958
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/855-遮罩0.xml": {
+      "sha256": "db6442d776fbe073de76dda5daa7bef281212d5597cd73b94b469b3c09b0b58c",
+      "bytes": 5108
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/855-遮罩1.xml": {
+      "sha256": "7e6c3a58184c296ecbf13a001b249e7e8027883c3d7e4076201a75ccfa6d3432",
+      "bytes": 93888
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/855.xml": {
+      "sha256": "510037c8a35c39b289a50b698060b8eda4a0010e50862a3b524761e280606fe9",
+      "bytes": 958
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/857-遮罩0.xml": {
+      "sha256": "f94a796035ab68a96081b616ef4e7b96a18b13d93da896906e479d4857f9527c",
+      "bytes": 1899
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/857-遮罩1.xml": {
+      "sha256": "63f53fda0b7a2f7cdca773ca11c2b597c7e56aff3c80c5e9fe649f6f6a5e7c94",
+      "bytes": 17699
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/857.xml": {
+      "sha256": "05b9b09e849a5733de0a96e7951a962797b915133da695c56efb187b2cd23fcf",
+      "bytes": 958
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/858-遮罩0.xml": {
+      "sha256": "7fab81fa4536d3b0ed672bbe268f28916714a836f359056e9d5d4db4f4968601",
+      "bytes": 2375
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/858-遮罩1.xml": {
+      "sha256": "ecda0b184647ddd9dc5532b273d8830c35f031387324f99690a1270505c5e804",
+      "bytes": 38887
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/858.xml": {
+      "sha256": "74c0ed45e0273b74ba652126dfaf29f0515739c09d7dbb5d6cc2a1c0ce7ca55b",
+      "bytes": 958
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/859-遮罩0.xml": {
+      "sha256": "f0e483729a8eaaa21bd74cc40d88cef103fefe42dc77dd76b73299f6412549ff",
+      "bytes": 1975
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/859-遮罩1.xml": {
+      "sha256": "dd558641a29b4c2b58b578165bba55dc09bee26e605ae4ca9ac8c836f73b89f0",
+      "bytes": 17101
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/859.xml": {
+      "sha256": "8886b2e829f6fc50b196eb63a2fd1aef58a79c69e31814d2de847b6c7738a384",
+      "bytes": 958
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/860-遮罩0.xml": {
+      "sha256": "74fb7aa2cd1cee8220649fbb9479eab311b55af4fc1a504120d308e59ce3ef51",
+      "bytes": 2248
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/860-遮罩1.xml": {
+      "sha256": "a2703bae5498ad71aa5c84bed3ad8eb5e1a2e5c78a5654a48b5d4848a263ae09",
+      "bytes": 39279
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/分件/860.xml": {
+      "sha256": "922fe7308ae469f2c3d28028de98059506ace258bfaed6979103015136bad905",
+      "bytes": 958
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/动作/站立.xml": {
+      "sha256": "d06ae2747fb9cae7f1165d75e9e9d792591897b040bf1383f7ebd44d5b68070d",
+      "bytes": 33959
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/武器/双枪刃.xml": {
+      "sha256": "5e63062f962c8f7eba989b2dbfdd4dfdb81b4e3966fc4036043e6cb9bb4a56d4",
+      "bytes": 1511
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/LIBRARY/Codex/Wings/武器/枪口定位.xml": {
+      "sha256": "73dfd8377468831e747432be5f8d1d7ab9044d7750f490e6e54e9e870adf8483",
+      "bytes": 500
+    },
+    "flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/PublishSettings.xml": {
+      "sha256": "923b75d8a6902f0e5629b0c741cb8bca73b830bad7cfb39240a4bffb3d98135e",
+      "bytes": 7954
+    }
+  }
+}

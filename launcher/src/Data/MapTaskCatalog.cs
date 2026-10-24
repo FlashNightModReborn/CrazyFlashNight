@@ -32,6 +32,7 @@ namespace CF7Launcher.Data
                 catalog.Infrastructure[name] = new JObject { ["label"] = name, ["maximumLevel"] = maximum };
             }
             MapRuleEvaluator.Need(catalog.Infrastructure.Count is > 0 and <= 128, "基建事实目录为空或过大。");
+            var listedSources = new HashSet<string>(StringComparer.Ordinal);
             foreach (bool text in new[] { false, true })
             {
                 string folder = text ? "data/task/text/" : "data/task/", tag = text ? "text" : "task";
@@ -43,8 +44,13 @@ namespace CF7Launcher.Data
                     string name = entry.Value.Trim();
                     MapRuleEvaluator.Need(Regex.IsMatch(name, @"\A[\p{L}\p{N}_. -]+\.json\z") && !name.Contains(".."), "任务目录包含非法文件名。");
                     string file = folder + name;
-                    MapRuleEvaluator.Need(!catalog.SourceBytes.ContainsKey(file), "任务目录重复引用源文件。");
-                    byte[] bytes = overrides != null && overrides.TryGetValue(file, out byte[] replacement) ? replacement : MapProjectFiles.Read(root, file); catalog.SourceBytes[file] = bytes;
+                    MapRuleEvaluator.Need(listedSources.Add(file), "任务目录重复引用源文件。");
+                    byte[] replacement = null;
+                    bool hasOverride = overrides != null && overrides.TryGetValue(file, out replacement);
+                    // Legacy Agent entries remain registered but are not shipped with every checkout.
+                    // Only a definite missing file is optional; parsing, access and path-safety failures stay strict.
+                    if (!hasOverride && LegacyAgentSourceMissing(root, file)) continue;
+                    byte[] bytes = hasOverride ? replacement : MapProjectFiles.Read(root, file); catalog.SourceBytes[file] = bytes;
                     var document = MapProjectFiles.Json(bytes);
                     if (text)
                     {
@@ -89,6 +95,20 @@ namespace CF7Launcher.Data
             foreach (string file in extraTaskSources ?? (IReadOnlyList<string>)Array.Empty<string>()) ReadExtra(file, false);
             foreach (string file in extraTextSources ?? (IReadOnlyList<string>)Array.Empty<string>()) ReadExtra(file, true);
             return catalog;
+        }
+        private static bool LegacyAgentSourceMissing(string root, string file)
+        {
+            if (file != "data/task/agent_tasks.json" && file != "data/task/text/agent_text.json") return false;
+            string full = MapProjectFiles.Resolve(root, file);
+            try
+            {
+                // File.Exists also returns false for access errors. Do not turn those into absent content.
+                // Check the leaf explicitly so a dangling link cannot bypass the ordinary path contract.
+                if ((File.GetAttributes(full) & FileAttributes.ReparsePoint) != 0)
+                    throw new IOException("地图内容路径不能经过链接或重解析目录。");
+                return false;
+            }
+            catch (FileNotFoundException) { return true; }
         }
         /// <summary>按存档任务覆盖层落点（data/rag/agent_saves/&lt;slotKey&gt;/）的两个源文件相对路径，与后端写盘同名。</summary>
         public static string AgentSaveTaskSource(string slotKey) => "data/rag/agent_saves/" + slotKey + "/agent_tasks.json";

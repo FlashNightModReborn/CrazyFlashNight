@@ -35,6 +35,11 @@ class org.flashNight.arki.scene.Cf6DoorAdvanceTest {
             if(_root.__cf6AdvanceMode=="record-replaces") {
                 var api:Object=org.flashNight.arki.scene.StageManager;api.instance={};
             }
+            if(_root.__cf6AdvanceMode=="record-opens-pause")
+                _root.__cf6AdvancePeer=org.flashNight.arki.pause.PauseManager.lease(true,"dialogue");
+            if(_root.__cf6AdvanceMode=="record-fails-stage") {
+                var managerApi:Object=org.flashNight.arki.scene.StageManager;managerApi.instance.isFailed=true;
+            }
         };
         _root.淡出动画={__transitionProjectionIdentity:{},__returnFadeActive:mode=="busy-fade",跳转中标签:mode=="busy-tag"};
         _root.淡出动画.淡出跳转帧=function(frame:String) {
@@ -76,7 +81,7 @@ class org.flashNight.arki.scene.Cf6DoorAdvanceTest {
         check(f.hero._visible && f.hero._x==80 && f.world.允许通行===false && !_root.暂停,"failed presentation returns only owned display/control and keeps navigation locked");
     }
     private static function testResults():Void {
-        var modes:Array=["false","undefined","true-no-new","throw","query-bad","record-replaces","true-wrong-target","true-wrong-token","true-array","true-replaces"];
+        var modes:Array=["false","undefined","true-no-new","throw","query-bad","record-replaces","true-wrong-target","true-wrong-token","true-array","true-replaces","record-opens-pause","record-fails-stage"];
         for(var i:Number=0;i<modes.length;i++) {
             var f:Object=fixture(modes[i],false);complete(f);
             var status:String=modes[i]=="false" ? "rejected" : "unknown";

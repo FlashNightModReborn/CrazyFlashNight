@@ -129,12 +129,33 @@ class org.flashNight.arki.scene.Cf6StoryServiceTest {
             && Cf6StoryService.pagesBeforeChapter(2).join(",") == "cf6-s2"
             && Cf6StoryService.pagesBeforeChapter(3).join(",") == "cf6-s3",
             "s1-s3 precede A01-A03");
-        check(Cf6StoryService.pagesBeforeChapter(7).join(",") == "cf6-s4,cf6-s5"
-            && Cf6StoryService.pagesBeforeChapter(17).join(",") == "cf6-s6",
-            "vehicle-skipping adaptation keeps s4/s5 order and s6 precedes A18");
+        check(Cf6StoryService.pagesBeforeChapter(7).join(",") == "cf6-s4",
+            "A06 departure presents only s4 before actual A07 gameplay");
+        check(Cf6StoryService.pagesBeforeChapter(8).join(",") == "cf6-s5",
+            "A08 chapter owns a separate s5 presentation after vehicle completion");
+        check(Cf6StoryService.pagesBeforeChapter(18).join(",") == "cf6-s6"
+            && !Cf6StoryService.hasChapterStory(17),"s6 precedes A18 after A07 restores the original map index");
         check(!Cf6StoryService.hasChapterStory(0) && !Cf6StoryService.hasChapterStory(20),
-            "tutorial and A22 have no duplicate in-room comic");
+            "tutorial and combined A20 finale have no duplicate in-room comic");
     }
+    private static function testSeparatedChapterStories():Void {
+        var chapters:Array=[7,8,18],pages:Array=["cf6-s4","cf6-s5","cf6-s6"];
+        for(var i:Number=0;i<chapters.length;i++) {
+            setup();Cf6StoryService.beginChapter(chapters[i],follow,interrupted);
+            var p:Object=packet();
+            check(p.pageId==pages[i] && _root.__cf6Requests.length==1,"chapter opens only its assigned page "+chapters[i]);
+            BookComicService.handle("prepared",p);
+            check(_root.__cf6Continues==0 && audioCount(".release")==0,"preparation alone cannot start its room "+chapters[i]);
+            BookComicService.handle("finish",p);
+            check(_root.__cf6Continues==1 && _root.__cf6Requests.length==1 && audioCount(".acquire")==1
+                && audioCount(".release")==1 && _root.暂停===false,"single chapter closes its own page and BGM lease "+chapters[i]);
+            BookComicService.handle("finish",p);
+            check(_root.__cf6Continues==1 && _root.__cf6Requests.length==1 && _root.__cf6Interrupted==0,
+                "late page finish cannot open the next chapter or skip vehicle gameplay "+chapters[i]);
+        }
+    }
+    // Explicit two-page beginSequence fixtures below preserve prepared/BGM regression coverage.
+    // They do not describe the current A06 -> A07 -> A08 chapter route.
     private static function testCloneAndLifecycle():Void {
         setup(); var p:Object = open("cf6-s1");
         check(_root.__cf6Request.presentationId.indexOf("bookcomic:") == 0 && _root.暂停 === true,
@@ -192,9 +213,9 @@ class org.flashNight.arki.scene.Cf6StoryServiceTest {
             "disconnect resolves only its own pause and never completes the story");
     }
     private static function testSequences():Void {
-        setup(); Cf6StoryService.beginChapter(7, follow);
+        setup(); Cf6StoryService.beginSequence(["cf6-s4", "cf6-s5"], follow);
         var first:Object = packet();
-        check(first.pageId == "cf6-s4", "A06 completion opens s4 before A08");
+        check(first.pageId == "cf6-s4", "explicit two-page protocol fixture starts with s4");
         BookComicService.handle("finish", first);
         var second:Object = packet();
         check(second.pageId == "cf6-s5" && second.presentationId != first.presentationId
@@ -202,7 +223,7 @@ class org.flashNight.arki.scene.Cf6StoryServiceTest {
             "s4 continues to s5 through the same service without starting A08");
         second.reason = "skip"; BookComicService.handle("finish", second);
         check(_root.__cf6Continues == 1 && _root.暂停 === false,
-            "skipping s5 completes the two-page route exactly once");
+            "skipping s5 completes the explicit protocol fixture exactly once");
         BookComicService.handle("finish", first); BookComicService.handle("finish", second);
         check(_root.__cf6Continues == 1, "late sequence packets cannot repeat room continuation");
 
@@ -231,7 +252,7 @@ class org.flashNight.arki.scene.Cf6StoryServiceTest {
             && _root.__cf6Continues == 0 && _root.__cf6Request.pageId == "cf6-s7",
             "cancel reports one interruption without opening credits or completing victory");
 
-        setup(); Cf6StoryService.beginChapter(7, follow, interrupted);
+        setup(); Cf6StoryService.beginSequence(["cf6-s4", "cf6-s5"], follow, interrupted);
         p = packet(); _root.server.isSocketConnected = false;
         BookComicService.handle("finish", p);
         check(_root.__cf6Interrupted == 1 && _root.__cf6InterruptionReason == "open_failed"
@@ -342,7 +363,7 @@ class org.flashNight.arki.scene.Cf6StoryServiceTest {
         check(audioCount(".release") == 1 && _root.__cf6InterruptionReason == "open_failed",
             "open_failed and its late packet release only once");
 
-        setup(); Cf6StoryService.beginChapter(7, follow, interrupted);
+        setup(); Cf6StoryService.beginSequence(["cf6-s4", "cf6-s5"], follow, interrupted);
         var first:Object = packet();
         BookComicService.handle("finish", first);
         var second:Object = packet();
@@ -375,7 +396,7 @@ class org.flashNight.arki.scene.Cf6StoryServiceTest {
             "replacement owner releases only its own lease");
     }
     private static function testPreparedSequences():Void {
-        setup(); Cf6StoryService.beginChapter(7, follow, interrupted);
+        setup(); Cf6StoryService.beginSequence(["cf6-s4", "cf6-s5"], follow, interrupted);
         var service:Object = BookComicService;
         var first:Object = packet();
         var firstSession:Object = service._active;
@@ -428,7 +449,7 @@ class org.flashNight.arki.scene.Cf6StoryServiceTest {
     }
     private static function testPreparedSequenceDegradation():Void {
         setup(); _root.__cf6AudioMode = "failed";
-        Cf6StoryService.beginChapter(7, follow, interrupted);
+        Cf6StoryService.beginSequence(["cf6-s4", "cf6-s5"], follow, interrupted);
         var service:Object = BookComicService;
         var first:Object = packet();
         BookComicService.handle("prepared", first);
@@ -448,7 +469,7 @@ class org.flashNight.arki.scene.Cf6StoryServiceTest {
             "two degraded segments still finish once with bounded lease cleanup");
 
         setup(); _root.__cf6AudioMode = "manual";
-        Cf6StoryService.beginChapter(7, follow, interrupted);
+        Cf6StoryService.beginSequence(["cf6-s4", "cf6-s5"], follow, interrupted);
         first = packet();
         BookComicService.handle("prepared", first);
         service._active.began = getTimer() - 2001;
@@ -476,7 +497,7 @@ class org.flashNight.arki.scene.Cf6StoryServiceTest {
     }
     private static function testPreparedLateBoundaries():Void {
         setup(); _root.__cf6AudioMode = "manual";
-        Cf6StoryService.beginChapter(7, follow, interrupted);
+        Cf6StoryService.beginSequence(["cf6-s4", "cf6-s5"], follow, interrupted);
         var service:Object = BookComicService;
         var oldPacket:Object = packet();
         BookComicService.handle("prepared", oldPacket);
@@ -514,7 +535,7 @@ class org.flashNight.arki.scene.Cf6StoryServiceTest {
             "old and replacement owners each release once without a late duplicate");
     }
     private static function testPreparedSynchronousReentrancy():Void {
-        setup(); Cf6StoryService.beginChapter(7, follow, interrupted);
+        setup(); Cf6StoryService.beginSequence(["cf6-s4", "cf6-s5"], follow, interrupted);
         var service:Object = BookComicService;
         var first:Object = packet();
         _root.server.sendTaskToNode = function(task:String, payload:Object):Boolean {
@@ -640,7 +661,7 @@ class org.flashNight.arki.scene.Cf6StoryServiceTest {
         saveManager.hasRewardCommitPending = function():Boolean {return false;};
         _root.gameworld = undefined;
         BookComicService.install(); BookRunService.install();
-        try { testRoutes(); testCloneAndLifecycle(); testSequences(); testInterruption(); testBgmLeaseLifecycle();
+        try { testRoutes(); testSeparatedChapterStories(); testCloneAndLifecycle(); testSequences(); testInterruption(); testBgmLeaseLifecycle();
             testPreparedSequences(); testPreparedSequenceDegradation(); testPreparedLateBoundaries();
             testPreparedSynchronousReentrancy(); testBookRunHandoff(); }
         finally {

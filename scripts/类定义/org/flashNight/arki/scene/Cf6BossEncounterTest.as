@@ -36,13 +36,13 @@ class org.flashNight.arki.scene.Cf6BossEncounterTest {
             {hpRatio:1,enemies:[{Type:"兵种461",Level:60,Quantity:3,ranged:false,SpawnIndex:"left",Parameters:{掉落物:[{名字:"药",概率:100}]}}]},
             {hpRatio:0.5,enemies:[{Type:"兵种466",Level:60,Quantity:2,ranged:true,SpawnIndex:"right",Parameters:{}}]}]};
     }
-    private static function setup(p:Object):Void {
+    private static function setup(p:Object,withoutBoss:Boolean):Void {
         Cf6BossEncounter.cancel(); _root.gameworld.removeMovieClip();
         _root.gameworld=_root.createEmptyMovieClip("cf6BossFixture",9286);
         _root.gameworld.dispatcher=new LifecycleEventDispatcher(_root.gameworld);
         _root.savePath="bookrun.fixture"; _root.当前关卡名="书中历险-毒刺行动";
         _root._saveExt={bookRun:{bookId:"cf6-sting",routeId:"historical",slot:_root.savePath,seed:17,startedAt:100,outcome:"active"}};
-        _root.暂停=false; _root.场景转换中=false; actor("hero",100); actor(p.instanceName,100);
+        _root.暂停=false; _root.场景转换中=false; actor("hero",100); if(withoutBoss!==true)actor(p.instanceName,100);
         spawned=[]; delayed=false; closes=0; clears=0;
         var manager:Object=StageManager, wheel:Object=WaveSpawner;
         manager.instance={currentStage:6,isActive:true,isFinished:false,isFailed:false,isCleared:false,
@@ -53,6 +53,8 @@ class org.flashNight.arki.scene.Cf6BossEncounterTest {
     }
     private static function lifecycle():Void {
         var p:Object=plan(); setup(p); frames(1);
+        var focus:Object=org.flashNight.arki.hud.FocusTargetHudService.snapshot();
+        check(focus.role=="boss" && focus.hp[0]===100 && focus.hp[1]===100,"encounter binds actual boss life to shared focus HUD");
         check(spawned.length==1,"initial finite queue emits one actor");
         check(spawned[0].p.产生源=="无" && spawned[0].p.publishStageEvent===true,"support excluded from native wave count with events enabled");
         check(typeof spawned[0].p.cf6BossOwnerToken=="string","ownership token survives StageEvent cloning");
@@ -64,6 +66,7 @@ class org.flashNight.arki.scene.Cf6BossEncounterTest {
         check(_root.gameworld[first].掉落物.length==1 && _root.gameworld[first].已加经验值!==true,"normal dead actor keeps normal loot and XP");
         check(spawned[0].name!=spawned[1].name && spawned[1].name!=spawned[2].name,"expanded quantities use unique names");
         _root.gameworld[p.instanceName].hp=40; death(spawned[1].name); frames(3);
+        check(org.flashNight.arki.hud.FocusTargetHudService.snapshot().hp[0]===40,"focus HUD follows actual boss damage without a second life value");
         check(spawned.length==4,"second HP group releases a ranged actor");
         death(spawned[2].name); frames(20);
         check(spawned.length==4,"ranged cap blocks second ranged even with free slot");
@@ -73,6 +76,7 @@ class org.flashNight.arki.scene.Cf6BossEncounterTest {
         check(spawned.length==5,"queue never refills after full exhaustion");
         death(p.instanceName); frames(10);
         check(clears==1 && closes==1,"boss clear and spawner close happen once");
+        check(org.flashNight.arki.hud.FocusTargetHudService.snapshot()==null,"victory clears only encounter focus lease");
         check(_root.gameworld[first].掉落物.length==1,"victory preserves prior normal deaths and drops");
     }
     private static function boundaries():Void {
@@ -128,6 +132,7 @@ class org.flashNight.arki.scene.Cf6BossEncounterTest {
         replacementClock.onEnterFrame=function():Void {};
         oldClock(); check(unit._name==old && unit.掉落物.length==1 && clears==0,"same-path world replacement is protected by ordinary identity");
         check(typeof replacementClock.onEnterFrame=="function","old cleanup cannot delete replacement world's frame handler");
+        check(org.flashNight.arki.hud.FocusTargetHudService.snapshot()==null,"world retirement clears focus even before old world cleanup can run");
     }
     private static function guardSetup():Object {
         var p:Object=plan(); p.maxAlive=1; p.groups=[{hpRatio:1,enemies:[{Type:"兵种469",Level:60,Quantity:2,ranged:false,SpawnIndex:"left",Parameters:{光头保安变身:true}}]}];
@@ -228,6 +233,7 @@ class org.flashNight.arki.scene.Cf6BossEncounterTest {
         check(Cf6MapMechanism.interceptClear(StageManager.instance,_root.gameworld),"actual map clear interceptor consumes the active finale gate");
         death(p.instanceName);frames(1);
         check(clears==0 && closes==0,"human death never clears room or closes main spawner");
+        check(org.flashNight.arki.hud.FocusTargetHudService.snapshot()==null,"transform gap clears first form focus instead of showing stale HP");
         check(_root.gameworld[first.name]==undefined,"human supports retire before transformation without a second budget");
         arrive(late);check(_root.gameworld[late.name]==undefined,"late first-form support remains tombstoned through phase transition");
         var child:MovieClip=elderChild(phase);frames(5);
@@ -237,6 +243,7 @@ class org.flashNight.arki.scene.Cf6BossEncounterTest {
         check(child.cf6BossIdentity==undefined,"paused successor handoff waits without replay");
         _root.暂停=false;frames(2);
         check(child.cf6BossIdentity!=undefined && spawned.length==3,"native initialized visible successor binds and releases phase-two budget once");
+        check(org.flashNight.arki.hud.FocusTargetHudService.snapshot().hp[0]===child.hp,"ready successor owns the second form focus binding");
         check(spawned[2].p.cf6BossOwnerToken==first.p.cf6BossOwnerToken && child.产生源=="fixture-main-wave",
             "support ownership stays local while native successor retains its counted source");
         _root.gameworld.dispatcher.publish("UnitDeath",p.instanceName);frames(4);
@@ -271,6 +278,90 @@ class org.flashNight.arki.scene.Cf6BossEncounterTest {
         check(!Cf6BossEncounter.blocksClear(_root.gameworld,StageManager.instance) && closes==0,
             "leaving the owning stage cancels the phase without closing another spawner");
     }
+    /** UnitSpawn is a real one-argument world event; its production initialization latch is still null at publication. */
+    private static function latePrimary(p:Object):MovieClip {
+        var unit:MovieClip=actor(p.instanceName,100);
+        unit.version=201;unit.__unitInitializedVersion=null;unit.publishStageEvent=true;
+        unit.dispatcher=new LifecycleEventDispatcher(unit);
+        _root.gameworld.dispatcher.publish("UnitSpawn",unit._name);
+        return unit;
+    }
+    private static function finishPrimaryInitialization(unit:MovieClip):Void {
+        // Mirror the exact ordering of StaticInitializer: local event first, completion latch second.
+        // Actor/resource initialization itself is a fixture port, not a native-art acceptance claim.
+        unit.dispatcher.publish("UnitInitialized",unit);unit.__unitInitializedVersion=unit.version;
+    }
+    private static function removePrimary(unit:MovieClip):Void {
+        _root.gameworld.dispatcher.publish("UnitRemoved",unit._name);unit.removeMovieClip();
+    }
+    private static function latePrimaryBirth():Void {
+        var p:Object=plan();setup(p,true);frames(700);
+        check(clears==0 && closes==0 && spawned.length==0,"boss-less mandatory preludes have no boss-bind timeout or premature clear");
+        var unit:MovieClip=latePrimary(p);
+        check(unit.cf6BossIdentity==undefined && clears==0,"UnitSpawn before completed initialization cannot activate primary boss authority");
+        finishPrimaryInitialization(unit);death(p.instanceName);
+        check(clears==1 && closes==1 && spawned.length==0,"observed initialized primary dying before first controller tick clears once without support replay");
+        removePrimary(unit);frames(5);
+        check(clears==1 && closes==1,"same-stack primary death then removal cannot lose or duplicate confirmed victory");
+
+        setup(p,true);unit=actor(p.instanceName,0);unit.version=201;unit.__unitInitializedVersion=201;
+        death(p.instanceName);frames(5);
+        check(clears==0 && unit.cf6BossIdentity==undefined,"unobserved old corpse cannot acquire primary boss identity");
+
+        setup(p,true);unit=latePrimary(p);death(p.instanceName);frames(5);
+        check(clears==0 && unit.cf6BossIdentity==undefined,"observed but unfinished primary cannot certify death");
+        finishPrimaryInitialization(unit);frames(1);
+        check(clears==1 && closes==1,"completed same birth can reconcile an earlier death without replaying UnitSpawn");
+
+        setup(p,true);unit=latePrimary(p);unit.version=202;finishPrimaryInitialization(unit);death(p.instanceName);frames(5);
+        check(clears==0 && unit.cf6BossIdentity==undefined,"changed initialization version cannot borrow a captured birth");
+
+        setup(p,true);unit=latePrimary(p);unit.removeMovieClip();unit=actor(p.instanceName,0);
+        unit.version=201;unit.__unitInitializedVersion=201;death(p.instanceName);frames(5);
+        check(clears==0 && unit.cf6BossIdentity==undefined,"same-path replacement with copied version lacks the original plain birth token");
+
+        setup(p,true);unit=latePrimary(p);unit.__cf6BossBirthOwner={};finishPrimaryInitialization(unit);death(p.instanceName);frames(5);
+        check(clears==0 && unit.cf6BossIdentity==undefined,"foreign birth token cannot authorize the original pending candidate");
+    }
+    private static function lateElderBirth():Void {
+        var p:Object=elderPlan();setup(p,true);frames(700);
+        check(clears==0 && closes==0 && Cf6BossEncounter.blocksClear(_root.gameworld,StageManager.instance),
+            "two-form boss-less preludes wait without consuming the native transform timeout");
+        var parent:MovieClip=latePrimary(p);
+        check(parent.cf6BossIdentity==undefined && clears==0,"late elder UnitSpawn remains initialization-pending");
+        finishPrimaryInitialization(parent);var phase:Object=elderMetadata(p);death(p.instanceName);
+        var api:Object=Cf6BossEncounter,c:Object=api.active;
+        check(c.elderStarted && c.elderWaiting && clears==0 && closes==0,
+            "same-stack late human death enters native successor wait without clearing the room");
+        var child:MovieClip=elderChild(phase);child.__unitInitializedVersion=child.version;child._visible=true;phase.retired=true;
+        removePrimary(parent);frames(2);
+        check(child.cf6BossIdentity!=undefined && clears==0 && closes==0,
+            "exact native phase captured before first controller tick survives parent removal");
+        death(phase.name);frames(3);
+        check(clears==0 && Cf6BossEncounter.blocksClear(_root.gameworld,StageManager.instance),
+            "late-born robot HP death still waits for native final animation and removal");
+        child.man={_currentframe:111,_totalframes:111,elderMode:"death",cf6CorpseFinished:true,尸体碎片:{cf6Settled:true}};
+        child.死亡检测();frames(5);
+        check(clears==1 && closes==1 && !Cf6BossEncounter.blocksClear(_root.gameworld,StageManager.instance),
+            "late-born two-form encounter clears once only after the original native terminal receipt");
+
+        setup(p,true);parent=latePrimary(p);finishPrimaryInitialization(parent);phase=elderMetadata(p);phase.parentIdentity={};death(p.instanceName);
+        child=elderChild(phase);child.__unitInitializedVersion=child.version;child._visible=true;phase.retired=true;removePrimary(parent);frames(3);
+        check(clears==0 && child.cf6BossIdentity==undefined && Cf6BossEncounter.blocksClear(_root.gameworld,StageManager.instance),
+            "foreign native parent identity cannot be rescued by a late birth receipt");
+
+        setup(p,true);parent=actor(p.instanceName,0);parent.version=201;parent.__unitInitializedVersion=201;
+        phase=elderMetadata(p);death(p.instanceName);child=elderChild(phase);child.__unitInitializedVersion=child.version;child._visible=true;phase.retired=true;
+        removePrimary(parent);frames(3);
+        check(clears==0 && child.cf6BossIdentity==undefined && Cf6BossEncounter.blocksClear(_root.gameworld,StageManager.instance),
+            "unobserved dead elder and successor metadata cannot manufacture a valid first form");
+
+        setup(p,true);parent=latePrimary(p);finishPrimaryInitialization(parent);phase=elderMetadata(p);death(p.instanceName);
+        child=elderChild(phase);child.elderSpawnIdentity={};child.__unitInitializedVersion=child.version;child._visible=true;phase.retired=true;
+        removePrimary(parent);frames(3);
+        check(clears==0 && child.cf6BossIdentity==undefined && Cf6BossEncounter.blocksClear(_root.gameworld,StageManager.instance),
+            "late primary observation does not relax the successor spawn-token contract");
+    }
     public static function runAllTests():Void {
         passed=0; failed=0;
         var keys:Array=["gameworld","savePath","当前关卡名","_saveExt","暂停","场景转换中","兵种库"];
@@ -280,7 +371,7 @@ class org.flashNight.arki.scene.Cf6BossEncounterTest {
         var target:Object=org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
         var beforeFind:Function=target.findHero; target.findHero=function():MovieClip { return _root.gameworld.hero; };
         _root.gameworld=undefined;
-        try { lifecycle(); boundaries(); scopes(); guards(); pods(); elders(); }
+        try { lifecycle(); boundaries(); scopes(); guards(); pods(); elders(); latePrimaryBirth(); lateElderBirth(); }
         finally {
             Cf6BossEncounter.cancel(); _root.gameworld.removeMovieClip();
             manager.instance=beforeManager; wheel.instance=beforeWheel; target.findHero=beforeFind;

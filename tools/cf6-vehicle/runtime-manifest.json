@@ -1,0 +1,39 @@
+{
+  "schema": "cf6-vehicle-runtime.v1",
+  "inputs": {
+    "tools/cf6-vehicle/prepare_runtime.py": "919c4b5fd18d0995d2405e4bbe73b2e35092fd2b22ac888515c9a3b800d1af25",
+    "tools/cf6-vehicle/source/original-nodes.json": "2ec3c11095326219f42695737cbe4e08c2ed2e4308650ff04be797a82ca2d463",
+    "tools/cf6-vehicle/audio-manifest.json": "5082dcd55385f3793d295aa58cfa969999535847169992421ea82d1e84b22da5",
+    "tools/cf6-scene-completion/Cf6VehicleRules.as.txt": "88241686dfa8d825a4e85a39f88750d53503d0c57b623a7fba6c7eb858f20085",
+    "tools/cf6-vehicle/Cf6VehicleActorAdapter.as.txt": "a339eb0fdb1aad7d5fab7487209ffb7cfe265537e15aa4b62983a6f5fe9ea0a9",
+    "tools/cf6-vehicle/Cf6VehicleCombat.as.txt": "5a7edfc203dcb03ba4d1386030950cb4582db249ad90f57f5898c1fdfb724b82",
+    "tools/cf6-vehicle/Cf6VehicleService.as.txt": "2dee22a34266778703a09c45075c1d40e1020b528fe32ec5bb7c44429ec5afea",
+    "tools/cf6-vehicle/Cf6VehicleTimeline.as.txt": "2395203a079d23d73f8eaa3000d155ff115ec9714d13f6168c53855ffbcc90f1"
+  },
+  "outputs": {
+    "scripts/类定义/org/flashNight/arki/scene/Cf6VehicleActorAdapter.as": {
+      "sha256": "2415b76e3f10c91415fefd92a5fdfbe86cabba4fc20787be5b4955868f31da60",
+      "bytes": 6490
+    },
+    "scripts/类定义/org/flashNight/arki/scene/Cf6VehicleCombat.as": {
+      "sha256": "b584f26b98b48dd72d39a34a835a8b21c6e377daf9c6de73b23bbc03dac6e757",
+      "bytes": 11248
+    },
+    "scripts/类定义/org/flashNight/arki/scene/Cf6VehicleService.as": {
+      "sha256": "66861e4bbb576e1bfd792ed5e21ec643d61dc277eabbca2dc859081a66623d47",
+      "bytes": 19049
+    },
+    "scripts/类定义/org/flashNight/arki/scene/Cf6VehicleTimeline.as": {
+      "sha256": "01db625cd8f7873cbe34670ac6a243fca3d4f673d6ee79ada17df958e2fd6a7f",
+      "bytes": 1240
+    },
+    "scripts/类定义/org/flashNight/arki/scene/Cf6VehicleRules.as": {
+      "sha256": "688df22187a4d74657f68aeb8a129346541dc30c2bf93553fc312065a5832011",
+      "bytes": 10248
+    },
+    "scripts/类定义/org/flashNight/arki/scene/Cf6VehicleData.as": {
+      "sha256": "20c5a3b3490c782a6998884840dbe4f1c6c3c6a7b897301d03f4d24dbb5d596a",
+      "bytes": 2804
+    }
+  }
+}

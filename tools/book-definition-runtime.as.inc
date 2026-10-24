@@ -101,7 +101,7 @@
                     || seen["skill."+skill.name] === true) return false;
             seen["skill."+skill.name]=true;
         }
-        var mapOrder:String="|TUTORIAL|A01|A02|A03|A04|A05|A06|A08|A09|A10|A11|A12|A13|A14|A15|A16|A17|A18|A19|A20|A22|";
+        var mapOrder:String="|TUTORIAL|A01|A02|A03|A04|A05|A06|A07|A08|A09|A10|A11|A12|A13|A14|A15|A16|A17|A18|A19|A20|A22|";
         var previousPosition:Number=-1;
         var mergedFinale:Boolean=false;
         for (var i:Number=0;i<data.maps.length;i++) {
@@ -131,6 +131,7 @@
             if (map.stage.BasicInformation.BookBoss != null) return false;
             if (!validCf6Turrets(map)) return false;
             if (!validCf6Transport(map)) return false;
+            if (!validCf6Vehicle(map)) return false;
             if (!validCf6Boss(map)) return false;
             for (var l:Number=0;l<map.dialogue.length;l++) {
                 var line:Object=map.dialogue[l];
@@ -151,6 +152,24 @@
         for(var field:String in value) if(allowed[field]!==true) return false;
         return true;
     }
+    private static function validCf6Vehicle(map:Object):Boolean {
+        var spec:Object=map.mechanism.vehicle;
+        if(map.id!=="A07") return spec===undefined;
+        var waves:Array=map.stage.Wave.SubWave;
+        return org.flashNight.arki.scene.Cf6VehicleRules.validSpec(spec)
+            && map.mechanism.kind==="plain" && map.mechanism.layers instanceof Array
+            && map.mechanism.layers.length===1 && map.presentation.scale===spec.scale
+            && map.presentation.backgroundX===0 && map.presentation.backgroundY===0
+            && map.mechanism.layers[0].id==="sky" && map.mechanism.layers[0].role==="screen-fixed"
+            && map.mechanism.layers[0].coordinateSpace==="root-stage"
+            && map.mechanism.layers[0].url==="flashswf/backgrounds/cf6/CF6_A07_sky.swf"
+            && map.mechanism.layers[0].x===0 && map.mechanism.layers[0].y===-110
+            && map.mechanism.layers[0].width===800 && map.mechanism.layers[0].height===253
+            && map.mechanism.layers[0].depth===0
+            && waves.length===1 && waves[0].EnemyGroup.Enemy.length===0
+            && waves[0].WaveInformation.Duration===0 && waves[0].WaveInformation.FinishRequirement===0
+            && map.bossEncounter==null;
+    }
     private static function validCf6Transport(map:Object):Boolean {
         var spec:Object=map.mechanism.transport;
         var waves:Array=map.stage.Wave.SubWave;
@@ -165,7 +184,7 @@
         if(spec==null) return found===0;
         if(!cf6Fields(spec,{schema:true,id:true,sourceSprite:true,url:true,x:true,y:true,sortY:true,artMatrix:true,hitBounds:true,frames:true,dispatchFrame:true,subWaveIndex:true})
                 || !org.flashNight.arki.scene.Cf6TransportService.validSpec(map.id,spec)
-                || found!==1 || waves.length!==2 || waves[1].EnemyGroup.Enemy.length!==1) return false;
+                || found!==1 || waves.length<2 || waves.length>6 || waves[1].EnemyGroup.Enemy.length!==1) return false;
         var expected:Object=map.id==="A09"?{kind:"兵种467",level:45,count:5}
             :map.id==="A14"?{kind:"兵种469",level:50,count:7}:{kind:"兵种463",level:59,count:5};
         var enemy:Object=waves[1].EnemyGroup.Enemy[0],event:Object=enemy.TriggerEvent;
@@ -208,11 +227,36 @@
         var types:Object={A06:"兵种463",A17:"兵种472",A20:"兵种473",A22:"兵种474"};
         if(types[map.id]==undefined || !validCf6SupportPlan(plan,map,"cf6Boss_"+map.id,phased)) return false;
         var waves:Array=map.stage.Wave.SubWave;
-        if (waves.length != 1 || waves[0].EnemyGroup.Enemy.length != 1) return false;
-        var boss:Object=waves[0].EnemyGroup.Enemy[0];
+        if (!validCf6BossPrelude(map,waves,types[map.id]) || waves[waves.length-1].EnemyGroup.Enemy.length != 1) return false;
+        var boss:Object=waves[waves.length-1].EnemyGroup.Enemy[0];
         if (boss.Type !== types[map.id] || boss.Quantity !== 1 || boss.InstanceName !== plan.instanceName
                 || (map.id === "A20" && boss.Parameters.老头变身 !== phased)) return false;
         return !phased || validCf6SupportPlan(plan.nextPhase,map,"cf6Boss_A20__elderbot",false);
+    }
+    private static function validCf6BossPrelude(map:Object,waves:Array,primaryType:String):Boolean {
+        if(!(waves instanceof Array) || waves.length<1 || waves.length>6) return false;
+        var points:Array=map.stage.SpawnPoint.Point;
+        if(points!==undefined && !(points instanceof Array)) return false;
+        if(waves.length>1) for(var pi:Number=0;pi<points.length;pi++) {
+            if(points[pi]==null || typeof points[pi]!="object" || points[pi] instanceof Array) return false;
+            var noCount=points[pi].NoCount;
+            if(noCount!==undefined && noCount!==false && noCount!==0) return false;
+        }
+        var reserved:Object={cf6BossOwnerToken:true,cf6SupportIdentity:true,InstanceName:true,产生源:true,老头变身:true};
+        for(var wi:Number=0;wi<waves.length-1;wi++) {
+            var info:Object=waves[wi].WaveInformation,entries:Array=waves[wi].EnemyGroup.Enemy;
+            if(info.Duration!==0 || info.FinishRequirement!==0
+                    || (info.MapNoCount!==undefined && info.MapNoCount!==false && info.MapNoCount!==0)
+                    || !(entries instanceof Array) || entries.length<1 || entries.length>32) return false;
+            for(var ei:Number=0;ei<entries.length;ei++) {
+                var enemy:Object=entries[ei];
+                if(enemy.InstanceName!==undefined || enemy.Type===primaryType || enemy.Type==="兵种473" || enemy.Type==="兵种474") return false;
+                var parameters:Object=enemy.Parameters;
+                if(parameters!==undefined && (parameters==null || typeof parameters!="object" || parameters instanceof Array)) return false;
+                for(var key:String in parameters) if(reserved[key]===true) return false;
+            }
+        }
+        return true;
     }
     private static function validCf6SupportPlan(plan:Object,map:Object,name:String,allowNext:Boolean):Boolean {
         var fields:Object={instanceName:true,maxAlive:true,maxRanged:true,intervalFrames:true,groups:true};

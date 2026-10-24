@@ -3,8 +3,47 @@ class org.flashNight.arki.scene.Cf6VehicleRules {
     private static function finite(value):Boolean {
         return typeof value == "number" && !isNaN(value) && isFinite(value) && Math.abs(value) < 1000000;
     }
+    private static function healthNumber(value):Boolean {
+        return typeof value=="number" && !isNaN(value) && isFinite(value) && Math.abs(value)<=1000000000000000;
+    }
     private static function whole(value, maximum:Number):Boolean {
         return finite(value) && value > 0 && !(value > maximum) && Math.floor(value) == value;
+    }
+    private static function numbers(value,expected:Array):Boolean {
+        if(!(value instanceof Array) || value.length!==expected.length) return false;
+        for(var i:Number=0;i<expected.length;i++) if(!finite(value[i]) || Math.abs(value[i]-expected[i])>0.000001) return false;
+        return true;
+    }
+    /** Pure chapter admission. No display creation, root mutation, loading or reward work. */
+    public static function validSpec(spec:Object):Boolean {
+        if(spec==null || typeof spec!="object" || spec instanceof Array) return false;
+        var fields:Object={schema:true,mapId:true,assetUrl:true,assetAnchor:true,scale:true,rules:true,
+            sourcePlayerHealth:true,speedX:true,speedZ:true,projectilePower:true,projectileSpeed:true,hazardSpeed:true,
+            sourcePlayerSpawn:true,sourceRoadOrigin:true,sourceWorldBounds:true,sourceCameraCanvas:true,
+            sourceStageCanvas:true,sourceCameraRange:true,sourceBudget:true,sourceConcurrency:true,tailCounts:true,symbols:true};
+        for(var key:String in spec) if(fields[key]!==true) return false;
+        if(spec.schema!=="cf6-vehicle.v1" || spec.mapId!=="A07" || spec.assetUrl!=="flashswf/arts/new/CF6Vehicle.swf"
+            || spec.assetAnchor!=="CF6Vehicle" || !finite(spec.scale) || Math.abs(spec.scale-1024/600)>0.000001
+            || spec.sourcePlayerHealth!==200 || spec.speedX!==8 || spec.speedZ!==4
+            || spec.projectilePower!==20 || spec.projectileSpeed!==20 || spec.hazardSpeed!==20) return false;
+        if(!numbers(spec.sourcePlayerSpawn,[265.45,352.15]) || !numbers(spec.sourceRoadOrigin,[632.35,250.75])
+            || !numbers(spec.sourceWorldBounds,[50,280,1800,500]) || !numbers(spec.sourceCameraCanvas,[1150,450])
+            || !numbers(spec.sourceStageCanvas,[600,350]) || !numbers(spec.sourceCameraRange,[-550,-100,0,0])
+            || !numbers(spec.sourceBudget,[200,15,200]) || !numbers(spec.sourceConcurrency,[1,1,1])) return false;
+        var tail:Object=spec.tailCounts;
+        if(tail.raider!==2 || tail.shield!==5 || tail.obstacle!==2) return false;
+        for(key in tail) if(key!="raider" && key!="shield" && key!="obstacle") return false;
+        var symbols:Object={player:"CF6VehiclePlayer",boss:"CF6VehicleArmoredBoss",road:"CF6VehicleRoad",
+            raider:"CF6VehicleRaider",shield:"CF6VehicleShield",obstacle:"CF6VehicleRoadblock",grenade:"CF6VehicleGrenade",
+            bullet:"CF6VehicleBullet",spark:"CF6VehicleSpark",explosion:"CF6VehicleExplosion"};
+        for(key in spec.symbols) if(symbols[key]===undefined) return false;
+        for(key in symbols) if(spec.symbols[key]!==symbols[key]) return false;
+        var rule:Object=spec.rules,known:Object={fps:true,roadKillThreshold:true,roadToBossFrames:true,fireIntervalMs:true,
+            barrels:true,bossLoopFrames:true,bossThrowFrame:true,bossDeathFirstFrame:true,bossExitFrame:true,originalBossHp:true};
+        for(key in rule) if(known[key]!==true) return false;
+        return rule.fps===30 && rule.roadKillThreshold===30 && rule.roadToBossFrames===59 && rule.fireIntervalMs===150
+            && rule.barrels===2 && rule.bossLoopFrames===120 && rule.bossThrowFrame===19
+            && rule.bossDeathFirstFrame===121 && rule.bossExitFrame===208 && rule.originalBossHp===5000;
     }
     public static function create(spec:Object, owner:Object, health:Number, speedX:Number, speedZ:Number):Object {
         if (spec == null || owner == null || typeof owner != "object" || spec.fps !== 30
@@ -15,7 +54,7 @@ class org.flashNight.arki.scene.Cf6VehicleRules {
                 || spec.bossDeathFirstFrame !== spec.bossLoopFrames+1
                 || !(spec.bossExitFrame > spec.bossDeathFirstFrame)
                 || !finite(spec.originalBossHp) || !(spec.originalBossHp > 0)
-                || !finite(health) || !(health > 0)
+                || !healthNumber(health) || !(health > 0)
                 || !finite(speedX) || !(speedX > 0) || speedX > 100
                 || !finite(speedZ) || !(speedZ > 0) || speedZ > 100) return null;
         return {owner:owner,phase:"road",frame:0,roadKills:0,killTarget:spec.roadKillThreshold,
@@ -32,7 +71,7 @@ class org.flashNight.arki.scene.Cf6VehicleRules {
         if (typeof id != "string" || id.length == 0 || id.length > 120) return "";
         return "event."+id;
     }
-    /** Feed only a verified final death of this room's road actor; escaping is not a kill. */
+    /** Feed an original terminal road event (raider knockdown or shot death); never escape. */
     public static function roadDeath(s:Object, owner:Object, actorId:String):Boolean {
         if (!current(s,owner) || s.phase != "road") return false;
         var key:String=eventKey(actorId);
@@ -55,6 +94,17 @@ class org.flashNight.arki.scene.Cf6VehicleRules {
         if (key == "" || s.playerHits[key] === true) return false;
         s.playerHits[key]=true;s.health=Math.max(0,s.health-power);
         if (!(s.health > 0)) s.phase="defeat";
+        return true;
+    }
+    /** Production observes authoritative MovieClip HP; it never debits a second HP store. */
+    public static function observeHealth(s:Object,owner:Object,heroHp:Number,bossHp):Boolean {
+        if(!current(s,owner) || !healthNumber(heroHp)) return false;
+        s.health=heroHp;
+        if(!(heroHp>0)) {s.phase="defeat";return true;}
+        if(s.phase=="boss" && finite(bossHp)) {
+            s.bossHp=bossHp;
+            if(!(bossHp>0)) {s.phase="boss-death";s.bossFrame=s.deathFirst-1;s.frame=0;}
+        }
         return true;
     }
     public static function reachTail(s:Object, owner:Object, triggerReached:Boolean):Boolean {

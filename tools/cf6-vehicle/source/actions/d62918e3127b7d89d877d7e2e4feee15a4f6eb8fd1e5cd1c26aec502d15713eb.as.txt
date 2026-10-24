@@ -1,0 +1,3 @@
+onClipEvent(enterFrame){
+   子弹区域击中检测(this,"飙血");
+}

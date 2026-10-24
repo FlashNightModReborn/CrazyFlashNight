@@ -1,0 +1,14 @@
+onClipEvent(load){
+   function 射击1()
+   {
+      _root.子弹区域2shoot(_parent._parent.枪声音,_parent._parent.霰弹值,_parent._parent.子弹散射度,"无",_parent._parent.子弹种类,_parent._parent.子弹威力,_parent._parent.子弹速度,"无声火花",_parent._parent._name,myPoint.x,myPoint.y);
+   }
+   var §\x01§ = 39;
+   var §\x0f§ = 1;
+   var myPoint = {x:0,y:0};
+   this.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y;
+   射击1();
+}

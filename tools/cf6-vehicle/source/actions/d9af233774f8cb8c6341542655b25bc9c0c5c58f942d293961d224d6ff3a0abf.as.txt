@@ -1,0 +1,5 @@
+var §\x01§ = 61;
+var §\x0f§ = 1;
+firesound = new Sound();
+firesound.attachSound("爆炸1");
+firesound.start(o,1);

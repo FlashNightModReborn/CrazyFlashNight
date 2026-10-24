@@ -118,33 +118,22 @@ ELITES = {
             "candidates": ["SAI GRY 幽灵"],
             "note": "既有静态带盾特种兵×1转为无盾入口466,占原467名额,图敌人总数不变(设计配额适配;r5核对A09总数9)"},
     "A13": {"quota": "E2", "weapon": "TTI Gen 12", "entry": 467,
-            "candidates": ["TTI Gen 12", "T181C"],
+            "candidates": ["TTI Gen 12", "AA12丧尸"],
             "note": "持盾队长、小Boss;两阶段最终死亡后掉落,不在破盾时发"},
     "A14": {"quota": "E3", "weapon": "HK416战术版", "entry": 466,
             "candidates": ["HK416战术版", "PKM战术版"],
             "note": "既有静态带盾特种兵×2中指定1名转无盾入口466,占原467名额,图敌人总数不变(r5核对A14总数9)"},
-    "A17": {"quota": "E4", "weapon": "战术-QBU-191", "entry": 467,
-            "candidates": ["战术-QBU-191", "钛合金QJZ171"],
+    "A17": {"quota": "E4", "weapon": "MG42战术版", "entry": 467,
+            "candidates": ["MG42战术版", "M134暴力版"],
             "note": "持盾重装精英,既有静态带盾特种兵×1;在bossEncounter hpRatio=1组(禁InstanceName,以cf6EliteQuota标记)"},
-    "A19": {"quota": "E5", "weapon": "远古诛神枪", "entry": 467,
-            "candidates": ["远古诛神枪", "量子能量枪"],
+    "A19": {"quota": "E5", "weapon": "量子能量枪", "entry": 467,
+            "candidates": ["量子能量枪", "战术版喷火器"],
             "note": "终战前强精英,既有静态带盾特种兵×2中指定1名,保留原入口467"},
 }
 ELITE_QUOTA_MAPS = {ELITES[m]["quota"]: m for m in ELITES}
 
-# 普通随机池节点(设计文档§5/§6;每节点≥2真实长枪候选,候选全局互不重复,
-# 且与精英E1-E5候选/自选配给枪/固定补给枪零交集;购买渠道独立,设计明示同型号可
-# 同时进采购与随机池:DD MK18战术版/M60E3/AA12丧尸/高斯枪/RShG4)。
-# 偏差:§5点名的钛合金P90(A11)与KRISS印花集(A18)现役use=手枪,不满足消费合同
-# randomWeapons长枪约束,不进随机池(钛合金P90留商店二档采购);以同级真实长枪补足。
-RANDOM_POOLS = {
-    "A04": ["DD MK18战术版", "诺亚方舟护士狙击步枪"],
-    "A08": ["M60E3", "追月连弩", "NA45"],
-    "A11": ["OPDW17EXL", "XM25"],
-    "A12": ["AA12丧尸", "非规格步枪"],
-    "A17": ["高斯枪", "FSC7"],
-    "A18": ["RShG4", "G1111"],
-}
+# 普通随机池由现役XML白名单生成；与配给共享，单池去重，精英/固定配额仍独占。
+RANDOM_POOLS = {}
 
 # 固定补给(设计文档§5补给职责+§6规则)。位置取原版弃枪/补给箱坐标(native-original)。
 # 教学无免费枪:演员模板已装备M4A1战术版+镜之虎彻(主控批准教学版本)。
@@ -155,13 +144,19 @@ FIXED_SUPPLIES = {
     "A05": [{"name": "强化石", "kind": "item", "n": 2}, {"name": "普通hp药剂", "kind": "item", "n": 2}],
     "A04": [{"name": "突击步枪通用弹药", "kind": "item", "n": 3, "note": "固定弹药"}],
     "A08": [{"name": "普通hp药剂", "kind": "item", "n": 2}, {"name": "突击步枪通用弹药", "kind": "item", "n": 2}],
-    "A10": [{"name": "CAR冲锋枪", "kind": "gun", "n": 1, "note": "到站达45级后提供"}],
+    "A10": [{"name": "SPAS12", "kind": "gun", "n": 1, "note": "到站达45级后提供"}],
     "A12": [{"name": "普通hp药剂", "kind": "item", "n": 1}, {"name": "突击步枪钨芯穿甲弹", "kind": "item", "n": 2}],
-    "A15": [{"name": "战术-QBZ-192", "kind": "gun", "n": 1, "note": "图末达52级后提供,手枪位"}],
+    "A15": [{"name": "MP7极品战术版", "kind": "gun", "n": 1, "note": "图末达52级后提供,手枪位"}],
     "A20": [{"name": "普通hp药剂", "kind": "item", "n": 2}, {"name": "突击步枪钨芯穿甲弹", "kind": "item", "n": 2}],
     "A22": [{"name": "普通hp药剂", "kind": "item", "n": 2, "note": "原版A22救护包×2同位置"}],
 }
 AMMO_TRIAL_CLIPS = 3
+sys.path.insert(0, os.path.dirname(__file__))
+import weapon_pools
+EXCLUSIVE_GUNS = {w for e in ELITES.values() for w in e['candidates']} | {
+    s['name'] for rows in FIXED_SUPPLIES.values() for s in rows if s['kind'] == 'gun'}
+RANDOM_POOLS = weapon_pools.random_pools(EXCLUSIVE_GUNS)
+
 
 # ---------------------------------------------------------------------------
 # Boss 增援计划(Astra控制器确定接口)。有限上限=原自由生成器死亡预算之和,
@@ -283,23 +278,23 @@ ECONOMY = {
 # 4档商店(npc-shop.v2,独立shopId,主控合入data/shops/npcs/+list.xml)。
 # 价格沿data/items真实price;基础货每档相同,枪/弹按档。档位等级区间用于--check。
 # level=主控裁定投放等级(累计投放 35@A01/40@A08/45@A11/55@A16/60@A19),
-# 避免旧方案A11提前投放50-55档;商品池本轮不变,仅补真实level元数据。
+# 避免旧方案A11提前投放50-55档;商品池按2026-10-24年代裁定收敛,保留真实level元数据。
 SHOP_TIERS = [
     {"shopId": "书中-CF6毒刺-一档", "title": "迷之盔甲君 · 毒刺一档(35-40)",
      "band": [35, 40], "level": 35, "guns": ["M60E3", "DD MK18战术版"],
      "ammo": ["机枪贫铀穿甲弹", "突击步枪钨芯穿甲弹"],
      "skills": ["寸拳", "旋风腿", "龟派气功", "口才"]},
     {"shopId": "书中-CF6毒刺-二档", "title": "迷之盔甲君 · 毒刺二档(45)",
-     "band": [45, 45], "level": 45, "guns": ["钛合金P90", "AA12丧尸"],
-     "ammo": ["冲锋枪钢芯穿甲弹", "00号鹿弹"],
+     "band": [45, 45], "level": 45, "guns": ["TTI Gen 12", "AA12丧尸"],
+     "ammo": ["00号鹿弹"],
      "skills": ["气动波", "裂地拳", "拳脚空中连招", "铁匠"]},
     {"shopId": "书中-CF6毒刺-三档", "title": "迷之盔甲君 · 毒刺三档(50-55)",
-     "band": [50, 55], "level": 55, "guns": ["高斯枪", "钛合金QJZ171"],
+     "band": [50, 55], "level": 55, "guns": ["高斯枪", "MG42战术版"],
      "ammo": ["能量电池", "机枪贫铀穿甲弹"],
      "skills": ["兽王崩拳", "径庭拳/黑闪", "内力爆发"]},
     {"shopId": "书中-CF6毒刺-四档", "title": "迷之盔甲君 · 毒刺四档(60)",
-     "band": [56, 60], "level": 60, "guns": ["RShG4", "M134暴力版的PIG版"],
-     "ammo": ["复合火箭弹弹药", "机枪贫铀穿甲弹"],
+     "band": [56, 60], "level": 60, "guns": ["量子能量枪", "战术版喷火器"],
+     "ammo": ["能量电池", "火焰喷射器燃料罐"],
      "skills": ["一瞬千击", "觉醒震地", "扭转乾坤"]},
 ]
 SHOP_BASE_GOODS = ["技能点", "K点", "强化石", "普通hp药剂", "突击步枪通用弹药"]
@@ -327,29 +322,29 @@ CHOICE_CHECKPOINTS = [
     {"afterMap": "A16", "poolId": "cf6.sting.t4", "levelCeiling": 55, "choiceItem": "书中CF6毒刺自选配给包·四"},
     {"afterMap": "A19", "poolId": "cf6.sting.t5", "levelCeiling": 60, "choiceItem": "书中CF6毒刺自选配给包·五"},
 ]
-# 每池3候选:1枪械装载+1补给捆+1技能捆。枪避开精英E1-E5/固定补给/商店同型。
+# 每池从广泛枪械装载与补给/技能候选中无放回抽3；精英E1-E5和固定补给保持独占。
 CHOICE_TIERS = [
-    {"tier": "t1", "grade": "low", "gun": "巴雷特",
+    {"tier": "t1", "grade": "low",
      "supplies": [{"itemName": "突击步枪通用弹药", "quantity": 6},
                   {"itemName": "普通hp药剂", "quantity": 3},
                   {"itemName": "强化石", "quantity": 2}],
      "skill": "小跳"},
-    {"tier": "t2", "grade": "medium", "gun": "G111",
+    {"tier": "t2", "grade": "medium",
      "supplies": [{"itemName": "00号鹿弹", "quantity": 4},
                   {"itemName": "大HP药剂", "quantity": 1},
                   {"itemName": "强化石", "quantity": 2}],
      "skill": "拳脚攻击"},
-    {"tier": "t3", "grade": "medium", "gun": "M134暴力版",
+    {"tier": "t3", "grade": "medium",
      "supplies": [{"itemName": "机枪贫铀穿甲弹", "quantity": 3},
                   {"itemName": "大HP药剂", "quantity": 2},
                   {"itemName": "强化石", "quantity": 3}],
      "skill": "升龙拳"},
-    {"tier": "t4", "grade": "medium", "gun": "战术-QBZ-191",
+    {"tier": "t4", "grade": "medium",
      "supplies": [{"itemName": "能量电池", "quantity": 3},
                   {"itemName": "大HP药剂", "quantity": 2},
                   {"itemName": "强化石", "quantity": 3}],
      "skill": "聚气"},
-    {"tier": "t5", "grade": "high", "gun": "紫色幻想",
+    {"tier": "t5", "grade": "high",
      "supplies": [{"itemName": "突击步枪钨芯穿甲弹", "quantity": 6},
                   {"itemName": "大HP药剂", "quantity": 2},
                   {"itemName": "强化石", "quantity": 4}],
@@ -547,11 +542,13 @@ def build_pickups(fact, mid, item_index, notes):
     spots = [p["xy"] for p in fact["pickups"] if p.get("xy")] or [[fact["spawn"][0] + 60, fact["spawn"][1]]]
     for i, s in enumerate(supply):
         xy = spots[min(i, len(spots) - 1)]
-        pickups.append({"Name": s["name"], "Value": s["n"], "x": round(xy[0], 1), "y": round(xy[1], 1)})
+        copies = 2 if s['kind'] == 'gun' and item_index[s['name']]['use'] == '手枪' else 1
+        for _ in range(copies):
+            pickups.append({"Name": s["name"], "Value": s["n"], "x": round(xy[0], 1), "y": round(xy[1], 1)})
         if s["kind"] == "gun":
             clip = ammo_of(s["name"], item_index)
             if clip:
-                pickups.append({"Name": clip, "Value": AMMO_TRIAL_CLIPS,
+                pickups.append({"Name": clip, "Value": AMMO_TRIAL_CLIPS * copies,
                                 "x": round(xy[0] + 40, 1), "y": round(xy[1], 1)})
         if s.get("note"):
             notes.append("补给 %s:%s" % (s["name"], s["note"]))
@@ -823,58 +820,31 @@ def build_shops(item_index, skill_catalog):
 
 
 def build_choice_fragment(item_index, skill_catalog, actor_skill_names):
-    bundles = []
+    bundles, levels = weapon_pools.gun_bundles(EXCLUSIVE_GUNS)
+    guns = list(bundles)
     pools = []
     tier_no = {"t1": "一", "t2": "二", "t3": "三", "t4": "四", "t5": "五"}
     for t in CHOICE_TIERS:
         cp = next(c for c in CHOICE_CHECKPOINTS if c["poolId"] == "cf6.sting." + t["tier"])
-        gun = t["gun"]
-        clip = ammo_of(gun, item_index)
-        gun_bundle = {
-            "id": "cf6.sting.%s.gun" % t["tier"],
-            "name": "毒刺%s枪械捆" % tier_no[t["tier"]],
-            "title": "%s 装载" % gun,
-            "description": "%s一把,附配套弹药与急救。史实候选,未实测平衡。" % gun,
-            "grade": t["grade"],
-            "weapon": gun, "mods": [],
-            "consumables": [{"name": clip, "count": 6}, {"name": "普通hp药剂", "count": 2}],
-        }
-        supply_bundle = {
-            "id": "cf6.sting.%s.supply" % t["tier"],
-            "name": "毒刺%s补给捆" % tier_no[t["tier"]],
-            "title": "阶段补给 · %s" % tier_no[t["tier"]],
-            "description": "弹药/治疗/强化石组合,按阶段梯度。",
-            "grade": t["grade"],
-            "items": t["supplies"],
-        }
-        skill_bundle = {
-            "id": "cf6.sting.%s.skill" % t["tier"],
-            "name": "毒刺%s技能捆" % tier_no[t["tier"]],
-            "title": "技能传授 · %s" % t["skill"],
-            "description": "直接传授1级%s(史实Andy未满技能)。" % t["skill"],
-            "grade": t["grade"],
-            "items": [],
-            "skills": [{"skillKey": t["skill"], "level": 1}],
-        }
-        bundles += [gun_bundle, supply_bundle, skill_bundle]
-        pools.append({
-            "id": cp["poolId"], "version": 1,
-            "title": "毒刺行动 · 阶段配给%s" % tier_no[t["tier"]],
-            "itemName": cp["choiceItem"],
-            "scope": {"kind": "book", "bookId": "cf6-sting"},
-            "maxItemLevel": cp["levelCeiling"],
-            "chooseCount": 1, "rerolls": 0,
-            "groups": [{"id": "main", "draw": 3, "entries": [
-                {"bundleId": gun_bundle["id"], "weight": 1},
-                {"bundleId": supply_bundle["id"], "weight": 1},
-                {"bundleId": skill_bundle["id"], "weight": 1}]}],
-        })
-    return {"schema": "choice-rewards.v1", "bundles": bundles, "pools": pools}
+        supply = dict(id=cp['poolId']+'.supply', name='毒刺'+tier_no[t['tier']]+'补给捆',
+                      title='阶段补给 · '+tier_no[t['tier']], description='弹药、治疗与强化石组合。',
+                      grade=t['grade'], items=t['supplies'])
+        skill = dict(id=cp['poolId']+'.skill', name='毒刺'+tier_no[t['tier']]+'技能捆',
+                     title='技能传授 · '+t['skill'], description='直接传授1级'+t['skill']+'。',
+                     grade=t['grade'], items=[], skills=[dict(skillKey=t['skill'],level=1)])
+        bundles += [supply, skill]
+        candidates = [b for b in guns if levels[b['id']] <= cp['levelCeiling']] + [supply,skill]
+        pools.append(dict(id=cp['poolId'], version=2, title='毒刺行动 · 阶段配给'+tier_no[t['tier']],
+                          itemName=cp['choiceItem'], scope=dict(kind='book',bookId='cf6-sting'),
+                          maxItemLevel=cp['levelCeiling'], chooseCount=1, rerolls=0,
+                          groups=[dict(id='main',draw=3,entries=[dict(bundleId=b['id'],weight=1) for b in candidates])]))
+    return dict(schema='choice-rewards.v1',bundles=bundles,pools=pools)
 
 
 def _weapon_choices(weapons, item_index):
     """消费合同候选行:ammo=现役data/clipname,ammoCount=包装少量试用(3弹匣)。"""
-    return [{"weapon": w, "ammo": ammo_of(w, item_index), "ammoCount": AMMO_TRIAL_CLIPS}
+    return [{"weapon": w, "ammo": ammo_of(w, item_index), "ammoCount": AMMO_TRIAL_CLIPS * (2 if item_index[w]["use"] == "手枪" else 1),
+             "weaponCount": 2 if item_index[w]["use"] == "手枪" else 1}
             for w in weapons]
 
 
@@ -1014,18 +984,20 @@ def check(maps_doc, econ, shops_doc, choice_frag, item_index, units, actor, skil
             return names
         lo, hi = LEVEL_RANGE.get(mid, (1, 60))
         for opt in options:
-            if set(opt) != {"weapon", "ammo", "ammoCount"}:
+            if set(opt) != {"weapon", "ammo", "ammoCount", "weaponCount"}:
                 errors.append("%s %s候选字段集不符" % (mid, where))
                 continue
             w = opt["weapon"]
             e = item_index.get(w)
-            if e is None or e["type"] != "武器" or e["use"] != "长枪":
+            if e is None or e["type"] != "武器" or e["use"] not in (("长枪", "手枪") if where == "randomWeapons" else ("长枪",)):
                 errors.append("%s %s非现役长枪: %s" % (mid, where, w))
                 continue
             if not (1 <= e["level"] <= 60):
                 errors.append("%s %s武器等级越界: %s(%d)" % (mid, where, w, e["level"]))
-            if where == "randomWeapons" and not (lo - 5 <= e["level"] <= hi):
+            if where == "randomWeapons" and not (max(35, hi - 15) <= e["level"] <= hi):
                 errors.append("%s %s候选%s等级%d偏离关卡梯度%s" % (mid, where, w, e["level"], (lo, hi)))
+            if opt["weaponCount"] != (2 if e["use"] == "手枪" else 1):
+                errors.append("%s %s武器实例数错误" % (mid, where))
             if opt["ammo"] != e["clipname"]:
                 errors.append("%s %s弹药与clipname不符: %s" % (mid, where, w))
             am = item_index.get(opt["ammo"])
@@ -1052,10 +1024,10 @@ def check(maps_doc, econ, shops_doc, choice_frag, item_index, units, actor, skil
             errors.append("randomWeapons %s与RANDOM_POOLS真源不符" % mid)
         names = check_weapon_options(mid, row["choices"], 2, "randomWeapons")
         for w in names:
-            if w in elite_weapons or w in random_names:
-                errors.append("randomWeapons %s与精英/他图随机候选重复: %s" % (mid, w))
-            if w in supply_guns or w in choice_guns:
-                errors.append("randomWeapons %s与固定补给/配给枪重复: %s" % (mid, w))
+            if w in elite_weapons:
+                errors.append("randomWeapons %s与精英候选重复: %s" % (mid, w))
+            if w in supply_guns:
+                errors.append("randomWeapons %s与固定补给枪重复: %s" % (mid, w))
         random_names |= names
 
     seen_quotas = set()
@@ -1322,10 +1294,6 @@ def check(maps_doc, econ, shops_doc, choice_frag, item_index, units, actor, skil
             errors.append("配给枪与精英配额重复: %s" % g)
         if g in supply_guns:
             errors.append("配给枪与固定补给重复: %s" % g)
-        if g in random_names:
-            errors.append("配给枪与随机池重复: %s" % g)
-        if any(g in t["guns"] for t in SHOP_TIERS):
-            errors.append("配给枪与商店同型: %s" % g)
     for b in choice_frag["bundles"]:
         for sk in b.get("skills", []):
             if sk["skillKey"] in excluded:
@@ -1336,6 +1304,16 @@ def check(maps_doc, econ, shops_doc, choice_frag, item_index, units, actor, skil
 def main():
     facts = load_json(os.path.join(SRC, "encounter-facts.v1.json"))
     item_index = load_item_index()
+    from cf6_economy import check_historical_names, validate_historical_budget
+    from choice_reward_catalog import item_catalog
+    current_items = item_catalog()
+    historical_guns = [w for row in ELITES.values() for w in row['candidates']]
+    historical_guns += [r['name'] for rows in FIXED_SUPPLIES.values() for r in rows if r['kind']=='gun']
+    historical_guns += [w for tier in SHOP_TIERS for w in tier['guns']]
+    historical_guns += [w for rows in RANDOM_POOLS.values() for w in rows]
+    check_historical_names(historical_guns,current_items,'source fragments')
+    validate_historical_budget(load_json(os.path.join(ROOT,'tools/cf6-prototype/balance-input.json')),current_items)
+
     units = load_json(UNITS)
     actor = load_json(ACTOR)
     skill_catalog = {s.findtext("Name") for s in ET.parse(SKILLS_XML).findall("Skill")
@@ -1354,6 +1332,8 @@ def main():
         for e in errors:
             print("ERROR:", e)
         sys.exit(1)
+    import difficulty_plan
+    maps_doc, difficulty_audit = difficulty_plan.adapt(maps_doc, globals())
     if "--check" in sys.argv:
         ce = econ["chapterEconomy"]
         print("check OK: maps=%d, bosses=%d, shops=%d, choicePools=%d, "
@@ -1364,7 +1344,8 @@ def main():
         return
     for name, doc in (("maps.fragment.json", maps_doc), ("economy.fragment.json", econ),
                       ("shops.fragment.json", shops_doc),
-                      ("choice-rewards.fragment.json", choice_frag)):
+                      ("choice-rewards.fragment.json", choice_frag),
+                      ("difficulty.audit.json", difficulty_audit)):
         with open(os.path.join(SRC, name), "w", encoding="utf-8") as f:
             json.dump(doc, f, ensure_ascii=False, indent=1)
     ce = econ["chapterEconomy"]

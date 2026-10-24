@@ -1,0 +1,762 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Wings/动作/站立" itemID="6af00000-18cc577e">
+  <timeline>
+    <DOMTimeline name="站立">
+      <layers>
+        <DOMLayer name="躲闪结束" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements />
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements />
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728" duration="10">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_19" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/860" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.10112" b="-0.211533" c="0.211533" d="-0.10112" tx="-29.95" ty="-15.95" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/860" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.10112" b="-0.211533" c="0.211533" d="-0.10112" tx="-29.95" ty="-16.45" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/860" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.10112" b="-0.211533" c="0.211533" d="-0.10112" tx="-29.95" ty="-16.95" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/860" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.10112" b="-0.211533" c="0.211533" d="-0.10112" tx="-29.95" ty="-16.45" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_18" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/859" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.170746" b="-0.204285" c="0.204285" d="0.170746" tx="-13.05" ty="-23.75" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/859" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.170746" b="-0.204285" c="0.204285" d="0.170746" tx="-13.05" ty="-24.25" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/859" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.170746" b="-0.204285" c="0.204285" d="0.170746" tx="-13.05" ty="-24.75" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/859" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.170746" b="-0.204285" c="0.204285" d="0.170746" tx="-13.05" ty="-24.25" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_16" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/武器/双枪刃" symbolType="graphic" name="wingsGun3_0" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.116425" b="0.119614" c="0.119614" d="0.116425" tx="3.55" ty="-42.65" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/武器/双枪刃" symbolType="graphic" name="wingsGun3_0" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.116425" b="0.119614" c="0.119614" d="0.116425" tx="3.55" ty="-43.15" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/武器/双枪刃" symbolType="graphic" name="wingsGun3_0" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.116425" b="0.119614" c="0.119614" d="0.116425" tx="3.55" ty="-43.65" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/武器/双枪刃" symbolType="graphic" name="wingsGun3_0" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.116425" b="0.119614" c="0.119614" d="0.116425" tx="3.55" ty="-43.15" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_15" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/847" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.224899" b="-0.065842" c="0.065842" d="0.224899" tx="-36.65" ty="-33.75" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/847" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.224899" b="-0.065842" c="0.065842" d="0.224899" tx="-36.65" ty="-34.5" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/847" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.224899" b="-0.065842" c="0.065842" d="0.224899" tx="-36.65" ty="-35.25" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/847" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.224899" b="-0.065842" c="0.065842" d="0.224899" tx="-36.65" ty="-34.5" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_14" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/858" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.10611" b="-0.210266" c="0.210266" d="-0.10611" tx="-13.35" ty="-11.65" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/858" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.10611" b="-0.210266" c="0.210266" d="-0.10611" tx="-13.35" ty="-12.15" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/858" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.10611" b="-0.210266" c="0.210266" d="-0.10611" tx="-13.35" ty="-12.65" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/858" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.10611" b="-0.210266" c="0.210266" d="-0.10611" tx="-13.35" ty="-12.15" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_13" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/857" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.21756" b="-0.154556" c="0.154556" d="0.21756" tx="4.65" ty="-21.2" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/857" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.21756" b="-0.154556" c="0.154556" d="0.21756" tx="4.65" ty="-21.7" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/857" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.21756" b="-0.154556" c="0.154556" d="0.21756" tx="4.65" ty="-22.2" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/857" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.21756" b="-0.154556" c="0.154556" d="0.21756" tx="4.65" ty="-21.7" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_11" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/武器/双枪刃" symbolType="graphic" name="wingsGun7_0" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.138824" b="0.094101" c="0.094101" d="0.138824" tx="24.75" ty="-35.1" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/武器/双枪刃" symbolType="graphic" name="wingsGun7_0" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.138824" b="0.094101" c="0.094101" d="0.138824" tx="24.75" ty="-35.6" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/武器/双枪刃" symbolType="graphic" name="wingsGun7_0" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.138824" b="0.094101" c="0.094101" d="0.138824" tx="24.75" ty="-36.1" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/武器/双枪刃" symbolType="graphic" name="wingsGun7_0" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.138824" b="0.094101" c="0.094101" d="0.138824" tx="24.75" ty="-35.6" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_10" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.20433" b="-0.047165" c="0.047165" d="0.20433" tx="-36.6" ty="10.4" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.20433" b="-0.047165" c="0.047165" d="0.20433" tx="-36.6" ty="10.15" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.20433" b="-0.047165" c="0.047165" d="0.20433" tx="-36.6" ty="9.9" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.20433" b="-0.047165" c="0.047165" d="0.20433" tx="-36.6" ty="10.15" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_9" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="15">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/850" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.138397" b="0.157227" c="-0.157227" d="0.138397" tx="-29.8" ty="37.35" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_8" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="15">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/849" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.207138" b="0.033844" c="-0.033844" d="0.207138" tx="-50.25" ty="55.95" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_7" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/854" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229507" b="0.041702" c="-0.041702" d="0.229507" tx="-25.05" ty="-40.75" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/854" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229507" b="0.041702" c="-0.041702" d="0.229507" tx="-25.05" ty="-41" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/854" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229507" b="0.041702" c="-0.041702" d="0.229507" tx="-25.05" ty="-41.25" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/854" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229507" b="0.041702" c="-0.041702" d="0.229507" tx="-25.05" ty="-41" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_6" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/852" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.209991" d="0.209991" tx="-32.8" ty="7.2" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/852" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.209991" d="0.209991" tx="-32.8" ty="6.7" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/852" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.209991" d="0.209991" tx="-32.8" ty="6.2" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/852" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.209991" d="0.209991" tx="-32.8" ty="6.7" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_5" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.149658" b="-0.14624" c="0.14624" d="0.149658" tx="-27.3" ty="6.3" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.149658" b="-0.14624" c="0.14624" d="0.149658" tx="-27.3" ty="6.05" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.149658" b="-0.14624" c="0.14624" d="0.149658" tx="-27.3" ty="5.8" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/851" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.149658" b="-0.14624" c="0.14624" d="0.149658" tx="-27.3" ty="6.05" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_4" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="15">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/850" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.197052" b="0.071915" c="-0.071915" d="0.197052" tx="-7.8" ty="25.8" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_3" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="15">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/849" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.20697" b="0.034851" c="-0.034851" d="0.20697" tx="-16.25" ty="51.6" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_2" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/848" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.206482" b="0.037521" c="-0.037521" d="0.206482" tx="-33.65" ty="-6.55" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/848" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.206482" b="0.037521" c="-0.037521" d="0.206482" tx="-33.65" ty="-7.3" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/848" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.206482" b="0.037521" c="-0.037521" d="0.206482" tx="-33.65" ty="-8.05" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/848" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.206482" b="0.037521" c="-0.037521" d="0.206482" tx="-33.65" ty="-7.3" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/847" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222076" b="-0.079529" c="0.079529" d="0.222076" tx="-20.45" ty="-30.4" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/847" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222076" b="-0.079529" c="0.079529" d="0.222076" tx="-20.45" ty="-31.15" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/847" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222076" b="-0.079529" c="0.079529" d="0.222076" tx="-20.45" ty="-31.9" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/847" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222076" b="-0.079529" c="0.079529" d="0.222076" tx="-20.45" ty="-31.15" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

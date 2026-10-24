@@ -27,7 +27,7 @@
 | bundle 可选效果 | `skills:[{skillKey,level}]` 最多两项，名称和等级需在真实技能目录内；含技能时 `items` 可为空。`kCost` 为 0–1200 整数，缺省 0；二者仅允许 book scope |
 | pool | `id`、正整数 `version`、`title`、唯一 `itemName`、`scope`、`maxItemLevel`、`chooseCount`、`rerolls`、`groups` |
 | scope | 普通角色用 `{kind:"character"}`；书中局次用 `{kind:"book",bookId:"repair-campus"}`，要求对应局次仍 active |
-| group | `id`、`draw`、`entries:[{bundleId,weight}]`；权重为 1–10000 的整数，抽取量不能超过组内数量，各组不可重复引用同一 bundle |
+| group | `id`、`draw`、`entries:[{bundleId,weight}]`；组内最多32项，权重为 1–10000 的整数，抽取量不能超过组内数量，各组不可重复引用同一 bundle |
 
 不支持金币、SP、经验的伪物品直写；这类效果继续走现有成长/消耗品系统。候选产出中的礼包不会递归打开。
 
@@ -35,7 +35,7 @@
 
 ## 存储与领取
 
-CF6 使用独立书籍 scope 和 `chapter.economy.choices` 投放身份；接口见[经济输入合同](../../tools/cf6-prototype/economy-input-contract.json)。史实已满技能不得进入候选，首版卡片免费，且每次开包至少保留两个不受装备持有状态影响的补给候选；技能候选失效后可按现役规则从三张缩为两张。E1—E5 精英和随机武器池的来源不得在自选礼包重复投放。编辑源先生成自选目录和道具，再装配章节，最后运行书籍生成器；新增的静态门为 `python tools/test-cf6-economy.py`，真实 AVM1 计划验证为 `scripts/run-cf6-economy-tests.ps1`，其通过不替代真实开包、购物或完整路线体验。
+CF6 使用独立书籍 scope 和 `chapter.economy.choices` 投放身份；接口见[经济输入合同](../../tools/cf6-prototype/economy-input-contract.json)。史实已满技能不得进入候选，首版卡片免费，且每次开包至少保留两个不受装备持有状态影响的补给候选；技能候选失效后可按现役规则从三张缩为两张。E1—E5 精英仍独占；普通随机与自选礼包允许共享候选，每个池内去重。CF6 每池从当前等级可用武器形态与补给/技能候选中抽三项，版本2；继续使用原目录容量且不增加每轮展示数。编辑源先生成自选目录和道具，再装配章节，最后运行书籍生成器；新增的静态门为 `python tools/test-cf6-economy.py`，真实 AVM1 计划验证为 `scripts/run-cf6-economy-tests.ps1`，其通过不替代真实开包、购物或完整路线体验。
 
 1. 第一次打开：AS2 检查来源槽、租约、存档和局次，扣一个包并生成完整候选，在同一次 full save 保存 `_saveExt.rewardInbox.choiceOffers`。保存成功后才展示候选。配置中的权重、内容、种子或数量不接受 Web 提交。
 2. 选择：Web 只提交 `storeId/expectedRevision/operationId/offerId/optionId`。AS2 校验冻结候选属于当前存档/局次，先校验冻结价格、K余额和技能可提升性，再将选中物资按现役接收规则优先放入背包或材料栏，装不下的条目加入暂存、授予指定技能、扣除K点并删除整个 offer；全部在同一次 full save 完成。技能领域保存前像，明确失败时与物品、K点一起回退；结果未知时普通技能改动也被锁定。
@@ -48,6 +48,8 @@ Web 的“更新领取状态”只重读候选、K点余额及领取资格，不
 候选使用独立单调 offer ID，保存冻结的完整物品实例、技能等级和K点价格；后续配置调整不改已经抽出的候选。书中绑定临时槽、书籍 ID、seed 与 startedAt；换普通存档或开启另一局不可领取。此持久性保护不代表肉鸽支持中途续玩。
 
 `RewardStashService` 建候选和明确失败恢复时会复制 `_saveExt`，包括 `bookRun`。CF6 的 Boss、机关、章节演出与待结算归属因此使用独立捕获的标量身份，经 `BookRunRules.sameCf6Run` 核对 `slot/bookId/routeId/seed/startedAt/planSeed` 和当前 active 状态；开始时间必须在真实赋值之后捕获。世界 identity、关卡索引与当前槽位的既有检查仍保留，不能只凭 `bookRun` 对象引用变化取消同局流程，也不能只凭同槽放行另一局。此身份检查不改变奖励写锁或 exact operation 查询。
+
+CF6史实目录按明确年代白名单筛选地面、精英、配给和商店；统合后期与年代不明的进阶形态仅保留来源资料，当前不扩展配给tier持久交付协议。每轮仍抽三选一，原目录容量足够容纳本轮史实候选。
 
 `grade` 已全链接线（2026-10-08 CS6 批次）：choice-rewards.json 显式声明 → `ChoiceRewardDefinition.as` 派生目录 → `ChoiceRewardService.open` 冻结进候选（目录非法值按 `invalid_reward_pack` 失败关闭）→ `snapshot` 投影（旧冻结候选无该键时读边省略）→ `ItemUseTask.RewardChoice.cs` 白名单（可选封闭枚举）→ Web 卡片/揭晓层按 `option.grade` 着色。`ChoiceRewardStore.normalize` 拒收非法冻结 grade（`invalid_choice_store`）。编辑源改动后跑 `build-choice-rewards.py`（及书籍生成器，若凭证选项受影响），AS2 源改动须走 CS6 `-Target publish` 并复核 `.as` BOM。
 

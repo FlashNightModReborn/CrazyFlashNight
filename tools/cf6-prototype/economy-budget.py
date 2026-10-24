@@ -14,14 +14,17 @@ SOURCE = HERE / 'balance-input.json'
 README = HERE / 'README-budget.md'
 sys.path.insert(0, str(ROOT / 'tools'))
 from choice_reward_catalog import item_catalog, load as choices_catalog
+from cf6_economy import validate_historical_budget
 
-ROUTE = [f'A{i:02d}' for i in range(1, 23) if i not in (7, 21)]
+ROUTE = [f'A{i:02d}' for i in range(1, 23) if i != 21]
 RULE_FILES = {
     'enhancement': 'scripts/类定义/org/flashNight/arki/item/EquipmentTuningService.as',
     'ammo': 'scripts/类定义/org/flashNight/arki/unit/Action/Shoot/WeaponAmmoRuntime.as',
     'shop': 'scripts/逻辑系统分区/商店系统_兼容.as',
     'pickup': 'scripts/类定义/org/flashNight/arki/unit/Action/PickUp/PickUpManager.as',
     'actor': 'tools/cf6-actor-template/actor.fragment.json',
+    'historicalEligibility': 'tools/cf6-roguelike-content/weapon-pools.source.json',
+    'historicalRules': 'tools/cf6_economy.py',
 }
 
 
@@ -67,8 +70,9 @@ def build_report(data=None):
     require(data['goldPickupContract']['externalReward']==0 and data['shopRules']['externalSPGoldK']==0
             and data['shopRules']['guaranteedSaleIncome']==0 and not data['shopRules']['freeSourcesCountedAsCash'], 'external or double-counted income')
     require(data['goldPickupContract']['exactCurrencyOverride'] is False, 'no exact-currency override in selected proposal')
-    require(data['goldPickupContract']['a07TransitionOwner'].startswith('A08 only'), 'A07 relocation owner changed')
+    require(data['goldPickupContract']['a07TransitionOwner'].startswith('A07 only'), 'A07 allowance owner changed')
     items = item_catalog(); prices={}
+    validate_historical_budget(data, items)
     def item(name):
         require(name in items, 'unknown budget item '+str(name)); return items[name]
     def price(name, count=1):
@@ -88,7 +92,7 @@ def build_report(data=None):
     plans={}
     correction_cap=50+60*3000
     for key, rows in data['goldPlans'].items():
-        require([r['mapId'] for r in rows]==ROUTE,'gold plan must contain the exact 20-map route')
+        require([r['mapId'] for r in rows]==ROUTE,'gold plan must contain the exact 21-source-map route')
         running=starting; ledger=[]
         for row in rows:
             integer(row['value']); running+=row['value']
@@ -101,7 +105,7 @@ def build_report(data=None):
     selected_values={r['mapId']:r['rawPickup'] for r in selected['ledger']}
     require(selected_values['A18']==90000 and selected_values['A19']==180000 and selected_values['A20']==0,
             'selected late merchant timing differs from agreed proposal')
-    require(selected_values['A08']==40000,'A07 relocated allowance must remain only at A08')
+    require(selected_values['A07']==40000 and selected_values['A08']==0,'A07 allowance must be issued once without an A08 duplicate')
     nodes=data['merchantNodes']; require([n['mapId'] for n in nodes]==['A01','A08','A11','A16','A19'],'merchant timing mismatch')
     require([n['maxItemLevel'] for n in nodes]==[35,40,45,55,60],'merchant item ceiling mismatch')
     stock=[]; stock_by_map={}; shops=[]; weapon_rows={}; shop_ids=set()
@@ -187,7 +191,7 @@ def markdown(report):
            '编辑源为 [balance-input.json](balance-input.json)，运行 `python tools/cf6-prototype/economy-budget.py --write-readme` 更新本文，`--check` 校验输入、现役价格和正文；`--json` 输出供装配读取的纯数据。工具只读物品与源码，不修改价格、AS2、源片段或存档。','',
            '## 选定投放与消费者','',
            '起始 30,000，加 910,000 原始金币 Pickup，总名义预算 **940,000**。A18=90,000、A19=180,000、A20=0；把原 A20 的 110,000 分别前移 20,000/90,000，在最后商人之前取得。原提案保留在 `goldPlans.requested`，装配选 `beforeFinalMerchant`。','',
-           '每个非零节点仅一堆 `Name=金币` 原生 Pickup，落于已验证 PlayerX/PlayerY；零值不生成（创建器会把非正数量改为 1）。不把钱放到精英掉落中，也不引入精确货币参数特例。A08 的 40,000 是唯一 A07 过渡配给，A07 无关卡、无第二份迁移钱。','',
+           '每个非零节点仅一堆 `Name=金币` 原生 Pickup，落于已验证 PlayerX/PlayerY；零值不生成（创建器会把非正数量改为 1）。不把钱放到精英掉落中，也不引入精确货币参数特例。A07 车战恢复后，原移到 A08 的 40,000 回到 A07，A08 配给归零；车辆服务不直接发钱，总预算不变。','',
            '现役金钱在非 Easy 下的单堆修正阈值是 `50 + 等级×3000`，60级为 **180,050**；初装设置 difficultyMode=0，不能把关卡难度文案“简单”当成 Easy 模式。曾考虑 A19 单堆 200,000，但它会进入 `180050 + random((200000-180050)/5)`，所以未选用。选定各堆未越阈值，仍不把 Value 或本表当作实际入账回执。','',
            '| 图 | 原始金币 | 累计名义现金（未扣消费） |','| --- | ---: | ---: |']
     for row in report['plans'][report['selectedGoldPlan']]['ledger']:
@@ -195,7 +199,7 @@ def markdown(report):
     lines += ['', '## 商人时机与目录', '',
               '采用 A01（35）、A08（40）、A11（45）、A16（55）、A19（60）。A01 能用本图 15,000 后再购物；若把首商人前移到教学，则只有初始 30,000，必须重新核首购。后档保留前档商品，每把枪都带其真实 clipname 弹药，不提前在 A11 上架50—55级枪。技能学习目录仍由章节内容装配，本文件只给商品目录。','',
               '下表是预算输入派生的基础目录；章节装配器还会为已经投放的免费枪补齐真实弹药，最终商品项数以生成的NPC目录为准，不把基础目录的计数当成装配完成计数。','',
-              '增加 M4A1科技白、CAR冲锋枪、PKM战术版作为现价下的低成本选择，不修改共享价格。昂贵枪仍可作为储蓄/卖装/口才路线，不能声称每阶段都买得起。钛合金P90是**手枪**，一把100,000，双持两把200,000；不算作一把阶段长枪。','',
+              '史实目录仅纳入年代白名单；M4A1科技白、SPAS12、PKM战术版及量子能量枪提供现价下的路线选择，不修改共享价格。昂贵枪仍可作为储蓄/卖装/口才路线，不能声称每阶段都买得起。统合后期、钛合金61配套和年代不明的特殊型号保留为未来资料，本轮不进入史实商店。','',
               '| 商人图 | 装备等级上限 | 累计商品数 |','| --- | ---: | ---: |']
     for node in report['shops']: lines.append(f"| {node['mapId']} | {node['maxItemLevel']} | {len(node['shop']['catalog'])} |")
     lines += ['', '## 可购买路线（不计任何出售或免费配给折现）','',
@@ -235,7 +239,7 @@ def markdown(report):
 
 def self_test():
     base=json.loads(SOURCE.read_text('utf-8')); report=build_report(base); checks=0
-    require(report['totalShoppingCost']==714800 and report['finalNominalBalance']==225200,'current shopping arithmetic changed'); checks+=1
+    require(report['totalShoppingCost']==608800 and report['finalNominalBalance']==331200,'current shopping arithmetic changed'); checks+=1
     require(stone_cost(1,5)==40 and stone_cost(1,7)==231 and stone_cost(1,11)==2035,'enhancement arithmetic failed');checks+=1
     mutations=[lambda d:d['goldPlans']['beforeFinalMerchant'].pop(),
                lambda d:d['goldPlans']['beforeFinalMerchant'][0].update(mapId='A07'),

@@ -16,7 +16,7 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
         return cue;
     }
     private static function testPhases():Void {
-        check(!Cf6MapMechanism.knownMap("A07") && !Cf6MapMechanism.knownMap("A21"),"vehicle and cutscene cannot bind as maps");
+        check(Cf6MapMechanism.knownMap("A07") && !Cf6MapMechanism.knownMap("A21"),"authored vehicle room binds while cutscene stays outside the route");
         check(Cf6MapMechanism.knownMap("tutorial") && Cf6MapMechanism.knownMap("A22"),"tutorial and final map remain supported");
         var ordinary:Object=Cf6MapMechanism.createState("A01",{});
         check(steps(ordinary,1)=="start" && ordinary.phase=="combat","ordinary room begins combat");
@@ -44,9 +44,12 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
             check(steps(lift,24)=="complete",ids[e]+" arrival delegates standard clear");
         }
         var transfer:Object=Cf6MapMechanism.createState("A06",{});
-        steps(transfer,1);transfer.clearRequested=true;steps(transfer,1);
-        steps(transfer,89);check(transfer.phase=="transfer","A06 transition waits full duration");
-        check(steps(transfer,1)=="complete","A06 transition ends without reward authority");
+        steps(transfer,1);transfer.clearRequested=true;
+        check(steps(transfer,1)=="complete" && transfer.phase=="ready","A06 clears without the obsolete driving text substitute");
+        check(steps(transfer,90)=="","A06 does not repeat clear while the real A07 waits on its own route");
+        var vehicle:Object=Cf6MapMechanism.createState("A07",{});vehicle.clearRequested=true;
+        check(vehicle.kind=="vehicle" && steps(vehicle,1000)=="","empty wave and elapsed time cannot finish A07");
+        check(vehicle.phase=="loading" && !vehicle.delivered,"only the live vehicle service can deliver its tail collision");
         var transform:Object=Cf6MapMechanism.createState("A20",{});
         steps(transform,1);transform.clearRequested=true;steps(transform,1);
         steps(transform,179);check(transform.phase=="transform","A21 keeps A20 gate closed");
@@ -72,6 +75,43 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
         _root._saveExt={bookRun:{bookId:"cf6-sting",routeId:"historical",outcome:"active",
             slot:String(_root.savePath),seed:123,startedAt:1792550000000}};
         return w;
+    }
+    private static function testElevatorPoseOwnership():Void {
+        var w:MovieClip=fixture(),s:Object={world:w,owner:StageReturnFlow.worldIdentity(w),kind:"elevator"};
+        w.__cf6Mechanism=s;var hero:MovieClip=w.hero;
+        hero.攻击模式="空手";hero.状态="空手行走";hero.transitions=0;
+        hero.行走=function():Void {};hero.按键控制攻击模式=function():Void {};hero.按键检测=function():Boolean {return true;};
+        hero.状态改变=function(value:String):Void {
+            this.状态=value;this.transitions++;
+            var block:MovieClip=this.createEmptyMovieClip("控制块",2);block.onEnterFrame=function():Void {};
+        };
+        var walk:Function=hero.行走,key:Function=hero.按键检测;
+        check(Cf6MapMechanism.holdElevatorActor(s,hero) && hero.状态=="空手站立","elevator pause selects genuine standing state");
+        var callback:Function=s.standingActor.callback;
+        check(Cf6MapMechanism.holdElevatorActor(s,hero) && hero.transitions==1,"held pose is not reentered every frame");
+        check(hero.控制块.onEnterFrame!==callback && hero.按键检测()===false,"held actor control is owned without stale walking input");
+        Cf6MapMechanism.releaseElevatorActor(s);
+        check(hero.行走===walk && hero.按键检测===key && hero.控制块.onEnterFrame===callback,"normal release restores exact input callbacks");
+        check(hero.状态=="空手站立" && hero.__cf6ElevatorPoseOwner===undefined,"release does not restore stale walking pose");
+        Cf6MapMechanism.holdElevatorActor(s,hero);
+        var foreign:Function=function():Void {};hero.控制块.onEnterFrame=foreign;
+        check(!Cf6MapMechanism.holdElevatorActor(s,hero) && hero.控制块.onEnterFrame===foreign,"foreign control callback cancels hold without overwrite");
+        check(!Cf6MapMechanism.holdElevatorActor(s,hero),"abandoned ownership cannot reacquire within same hold");
+        Cf6MapMechanism.releaseElevatorActor(s);hero.状态="空手行走";
+        Cf6MapMechanism.holdElevatorActor(s,hero);hero.hp=0;hero.状态="血腥死";Cf6MapMechanism.releaseElevatorActor(s);
+        check(hero.状态=="血腥死","release cannot replace a real death pose");
+        hero.hp=100;hero.状态="空手行走";Cf6MapMechanism.holdElevatorActor(s,hero);
+        hero.removeMovieClip();hero=w.createEmptyMovieClip("hero",10);hero.状态="foreign";hero.行走=foreign;
+        Cf6MapMechanism.releaseElevatorActor(s);
+        check(hero.状态=="foreign" && hero.行走===foreign && hero.__cf6ElevatorPoseOwner===undefined,"same-path replacement actor remains untouched");
+        hero.hp=100;hero.状态改变=function(value:String):Void {this.状态=value;};
+        s.arrival={rules:{phase:"playing"}};
+        check(!Cf6MapMechanism.holdElevatorActor(s,hero),"boarding animation keeps its own walking presentation");
+        s.arrival=null;s.kind="door";
+        check(!Cf6MapMechanism.holdElevatorActor(s,hero),"non-elevator holds do not borrow standing adapter");
+        s.kind="elevator";s.owner={};
+        check(!Cf6MapMechanism.holdElevatorActor(s,hero),"stale room identity cannot acquire actor");
+        w.removeMovieClip();
     }
     private static function testLifecycle():Void {
         var w:MovieClip=fixture();var identity:Object=StageReturnFlow.worldIdentity(w);
@@ -361,13 +401,13 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
             var point:Object=rootPoint(s.layers[0].holder.art,0,0);
             check(near(point.x,0) && near(point.y,-20),"A06 uses original 1753 sky at root 0,-20");
             Cf6MapMechanism.interceptClear(manager,w);_root.暂停=true;Cf6MapMechanism.tick();
-            check(s.phase=="combat" && manager.calls==0,"external pause does not start A06 transfer");
+            check(s.phase=="combat" && manager.calls==0,"external pause still holds A06 clear");
             _root.暂停=false;Cf6MapMechanism.tick();
-            check(s.phase=="transfer" && s.card._visible===true && s.backdropRoot._visible===true,"transition card overlays the still-owned rear sky");
-            var before:Number=s.frame;Cf6MapMechanism.tick();
-            check(s.frame==before+1 && _root.暂停===true,"owned transition hold does not deadlock presentation timing");
+            check(s.phase=="ready" && s.card===undefined && s.backdropRoot._visible===true,"A06 keeps the rear sky without a substitute driving card");
+            Cf6MapMechanism.tick();
+            check(manager.calls==1 && _root.暂停!==true,"A06 delegates clear once and leaves standard story navigation available");
             var parentName:String=s.backdropName;Cf6MapMechanism.teardown();
-            check(sky[parentName]==undefined && _root.暂停!==true,"aborted A06 transfer removes sky and releases its hold");
+            check(sky[parentName]==undefined && _root.暂停!==true,"A06 teardown removes only its sky and releases its hold");
         } finally {proto.loadClip=original;Cf6MapMechanism.teardown();w.removeMovieClip();sky.removeMovieClip();_root.暂停=false;}
     }
     /** Real production WaveSpawner/StageInfo/StageManager; only display/event sinks are fixtures. */
@@ -762,7 +802,7 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
         var oldFind:Function=targetClass.findHero;
         targetClass.findHero=function():MovieClip {return _root.gameworld.hero;};
         _root.暂停=false;_root.发布消息=function(message:String):Void {trace(message);};
-        try {testPhases();testLifecycle();testLogicalRunIdentity();testElevatorBake();testBakeReceipts();testDoorSequences();testBackdropLoading();testBackdropFailuresAndIdentity();testBackdropTransfer();testEarlyEmptyWave();testTurretWiring();testTraversalWiring();testTraversalAssetClosure();testImmediateOwnershipAndArt();testEarlyBirthWindow();testLateSceneReadyArrival();testLoadedElevatorMask();}
+        try {testPhases();testElevatorPoseOwnership();testLifecycle();testLogicalRunIdentity();testElevatorBake();testBakeReceipts();testDoorSequences();testBackdropLoading();testBackdropFailuresAndIdentity();testBackdropTransfer();testEarlyEmptyWave();testTurretWiring();testTraversalWiring();testTraversalAssetClosure();testImmediateOwnershipAndArt();testEarlyBirthWindow();testLateSceneReadyArrival();testLoadedElevatorMask();}
         catch(error) {check(false,"synchronous suite exception: "+error);}
         finally {
             Cf6MapMechanism.teardown();Cf6TutorialTurretService.teardown();targetClass.findHero=oldFind;savedManagerClass.instance=savedManager;

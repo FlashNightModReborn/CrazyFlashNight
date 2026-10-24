@@ -335,6 +335,53 @@ class BookDefinitionTests(unittest.TestCase):
     def test_cf6_boss_finite_support_contract(self):
         self.validate_cf6(self.cf6_boss_fixture())
 
+    def cf6_boss_prelude_fixture(self):
+        data=self.cf6_boss_fixture()
+        waves=data['maps'][0]['stage']['Wave']['SubWave']
+        prelude={'WaveInformation':{'Duration':0,'FinishRequirement':0},
+                 'EnemyGroup':{'Enemy':[{'Type':'兵种461','Level':40,'Quantity':4,
+                                         'SpawnIndex':'left','Parameters':{}}]}}
+        waves[0:0]=[copy.deepcopy(prelude),copy.deepcopy(prelude)]
+        return data
+
+    def test_cf6_boss_accepts_required_preludes_before_unique_boss(self):
+        data=self.cf6_boss_prelude_fixture()
+        self.validate_cf6(data)
+        self.assertEqual('cf6Boss_A06',data['maps'][0]['stage']['Wave']['SubWave'][-1]['EnemyGroup']['Enemy'][0]['InstanceName'])
+
+    def test_cf6_boss_preludes_reject_skip_and_ownership_drift(self):
+        for case in ('timed','remaining','uncountedMap','uncountedPoint','malformedPoint','empty','tooMany',
+                     'earlyBoss','earlyRobot','name','owner','source','transform','bossNotLast'):
+            data=self.cf6_boss_prelude_fixture();stage=data['maps'][0]
+            waves=stage['stage']['Wave']['SubWave'];wave=waves[0];enemy=wave['EnemyGroup']['Enemy'][0]
+            if case=='timed':wave['WaveInformation']['Duration']=1
+            elif case=='remaining':wave['WaveInformation']['FinishRequirement']=1
+            elif case=='uncountedMap':wave['WaveInformation']['MapNoCount']=True
+            elif case=='uncountedPoint':stage['stage']['SpawnPoint']={'Point':[{'x':100,'y':300,'NoCount':True}]}
+            elif case=='malformedPoint':stage['stage']['SpawnPoint']={'Point':[1]}
+            elif case=='empty':wave['EnemyGroup']['Enemy']=[]
+            elif case=='tooMany':waves[0:0]=[copy.deepcopy(wave) for _ in range(4)]
+            elif case=='earlyBoss':enemy['Type']='兵种463'
+            elif case=='earlyRobot':enemy['Type']='兵种474'
+            elif case=='name':enemy['InstanceName']='cf6Boss_A06'
+            elif case=='owner':enemy['Parameters']['cf6BossOwnerToken']='foreign'
+            elif case=='source':enemy['Parameters']['产生源']='无'
+            elif case=='transform':enemy['Parameters']['老头变身']=True
+            else:waves.reverse()
+            with self.subTest(case=case),self.assertRaises(ValueError):self.validate_cf6(data)
+
+    def test_cf6_elder_preludes_are_not_copied_into_native_successor(self):
+        data=self.cf6_boss_prelude_fixture();stage=data['maps'][0]
+        stage.update(id='A20',background='cf6/CF6_A20_BG.swf')
+        stage['mechanism']['elderFinale']=True
+        plan=stage['bossEncounter'];plan['instanceName']='cf6Boss_A20'
+        successor=copy.deepcopy(plan);successor['instanceName']='cf6Boss_A20__elderbot';plan['nextPhase']=successor
+        boss=stage['stage']['Wave']['SubWave'][-1]['EnemyGroup']['Enemy'][0]
+        boss.update(Type='兵种473',InstanceName='cf6Boss_A20',Parameters={'老头变身':True})
+        original=copy.deepcopy(data)
+        self.validate_cf6(data)
+        self.assertEqual(original,data)
+
     def test_cf6_boss_rejects_mandatory_adds_in_main_wave(self):
         data=self.cf6_boss_fixture();data['maps'][0]['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'].append({'Type':'兵种461','Level':60,'Quantity':1})
         with self.assertRaises(ValueError):self.validate_cf6(data)
@@ -392,6 +439,20 @@ class BookDefinitionTests(unittest.TestCase):
         data=self.cf6_fixture();data['maps']*=2
         with self.assertRaises(ValueError): self.validate_cf6(data)
 
+    def test_cf6_vehicle_requires_authored_rules_and_its_own_map(self):
+        spec=importlib.util.spec_from_file_location('vehicle_fixture',ROOT/'tools/cf6-vehicle/chapter_fragment.py')
+        vehicle=importlib.util.module_from_spec(spec);spec.loader.exec_module(vehicle)
+        node,_,_=vehicle.build(False)
+        data=self.cf6_fixture();data['maps']=[node]
+        self.validate_cf6(data)
+        for mutate in [lambda m:m['mechanism'].pop('vehicle'),
+                       lambda m:m['mechanism']['vehicle'].update(projectilePower=999),
+                       lambda m:m['mechanism']['vehicle'].update(assetUrl='flashswf/arts/new/foreign.swf'),
+                       lambda m:m.update(id='A08',background='cf6/CF6_A08_BG.swf'),
+                       lambda m:m['stage']['Wave']['SubWave'].append(copy.deepcopy(m['stage']['Wave']['SubWave'][0]))]:
+            invalid=copy.deepcopy(data);mutate(invalid['maps'][0])
+            with self.assertRaises(ValueError): self.validate_cf6(invalid)
+
     def test_cf6_invalid_background_enemy_and_nonfinite_mechanism_rejected(self):
         for mutate in [lambda m:m.update(background='../wrong.swf'),lambda m:m.update(mechanism={'duration':float('nan')}),
                        lambda m:m['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0].update(Type='兵种999999'),
@@ -440,6 +501,25 @@ class Cf6TransportContractTests(unittest.TestCase):
         for identity in ('A09','A14','A18'):
             builder.validate_cf6_transport(self.maps[identity])
 
+    def test_transport_preserves_its_wave_among_more_required_waves(self):
+        stage=copy.deepcopy(self.maps['A09'])
+        stage['stage']['Wave']['SubWave'].append({'WaveInformation':{'Duration':0,'FinishRequirement':0},
+            'EnemyGroup':{'Enemy':[{'Type':'兵种461','Level':45,'Quantity':2,'SpawnIndex':'left'}]}})
+        builder.validate_cf6_transport(stage)
+        stage['stage']['Wave']['SubWave'][-1]['EnemyGroup']['Enemy'][0]['TriggerEvent']=copy.deepcopy(
+            stage['stage']['Wave']['SubWave'][1]['EnemyGroup']['Enemy'][0]['TriggerEvent'])
+        with self.assertRaises(ValueError):builder.validate_cf6_transport(stage)
+
+    def test_pods_stay_unique_when_a15_has_later_waves(self):
+        chapter={'maps':copy.deepcopy(list(self.maps.values()))}
+        stage=next(m for m in chapter['maps'] if m['id']=='A15')
+        stage['stage']['Wave']['SubWave'].append({'WaveInformation':{'Duration':0,'FinishRequirement':0},
+            'EnemyGroup':{'Enemy':[{'Type':'兵种461','Level':51,'Quantity':3,'SpawnIndex':'left'}]}})
+        builder.validate_cf6_interactive_props(chapter)
+        stage['stage']['Wave']['SubWave'][-1]['EnemyGroup']['Enemy'][0]=copy.deepcopy(
+            stage['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0])
+        with self.assertRaises(ValueError):builder.validate_cf6_interactive_props(chapter)
+
     def test_transport_geometry_and_native_identity_rejected(self):
         mutations=[lambda s:s.update(id='foreign'),lambda s:s.update(sourceSprite=1869),
             lambda s:s.update(frames=28),lambda s:s.update(dispatchFrame=28),
@@ -451,13 +531,14 @@ class Cf6TransportContractTests(unittest.TestCase):
             with self.assertRaises(ValueError):builder.validate_cf6_transport(stage)
 
     def test_transport_event_owner_and_conserved_quantity_rejected(self):
-        for kind in ('missingOwner','missingEvent','foreignToken','quantity','duplicateEvent','interval','unreviewedMap'):
+        for kind in ('missingOwner','missingEvent','foreignToken','quantity','duplicateEvent','interval','booleanSpawn','unreviewedMap'):
             stage=copy.deepcopy(self.maps['A09']);enemy=stage['stage']['Wave']['SubWave'][1]['EnemyGroup']['Enemy'][0]
             if kind=='missingOwner':del stage['mechanism']['transport']
             elif kind=='missingEvent':del enemy['TriggerEvent']
             elif kind=='foreignToken':enemy['TriggerEvent']['Parameters']=['foreign']
             elif kind=='quantity':enemy['Quantity']+=1
             elif kind=='interval':enemy['Interval']=100
+            elif kind=='booleanSpawn':enemy['SpawnIndex']=False
             elif kind=='duplicateEvent':stage['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0]['TriggerEvent']=copy.deepcopy(enemy['TriggerEvent'])
             else:stage['id']='A08'
             with self.subTest(kind=kind),self.assertRaises(ValueError):builder.validate_cf6_transport(stage)

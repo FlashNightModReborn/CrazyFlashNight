@@ -10,6 +10,7 @@
     "A04",
     "A05",
     "A06",
+    "A07",
     "A08",
     "A09",
     "A10",
@@ -32,6 +33,7 @@
     "A04",
     "A05",
     "A06",
+    "A07",
     "A08",
     "A09",
     "A10",
@@ -50,11 +52,11 @@
   "inputs": [
     {
       "path": "data/stages/books/cf6-sting-source/maps.fragment.json",
-      "sha256": "bda62ba12929bcc0004038624527b40dc093d52111a992934a15de1b9bc58ec1"
+      "sha256": "3baddf2aeffd731c6138082151a73ff8a0557ce71397788e3ddc612485e1c92c"
     },
     {
       "path": "data/stages/books/cf6-sting-source/economy.fragment.json",
-      "sha256": "37fd61c4060b727a99bb373d175193a02bc80a82ff52fc7a1211eca024b3086e"
+      "sha256": "24e85695d56a4422e34b2de019887eef7a10e2ecae6f7934974ddbfa0d447752"
     },
     {
       "path": "tools/cf6-actor-template/actor.fragment.json",
@@ -78,11 +80,11 @@
     },
     {
       "path": "tools/cf6-prototype/balance-input.json",
-      "sha256": "cf6b3a63b84a143af2a4b6762cf1787343cb69125c13717bc606c3fc6dae11a8"
+      "sha256": "352a21549fc04779aaaa73539ea33a53e4ba3d6817c19ce7de4762c88a5086a5"
     },
     {
       "path": "data/stages/books/cf6-sting-source/shops.fragment.json",
-      "sha256": "52d8d395ee8454f0c024b500742a95bdf1e32c89c49eaf92cda27dcd9a8071bb"
+      "sha256": "8966e06932bdae6d40969bc07252b1c03cae1b0dfd005a333fed4fe3ae5a1041"
     },
     {
       "path": "tools/cf6-map-runtime/sky-parallax.fragment.json",
@@ -117,12 +119,24 @@
       "sha256": "97a3f44ed25d91acc82d4bf5003a98b5787f1f7502ad25eb9a6f5cbaa6e3fd1c"
     },
     {
+      "path": "tools/cf6-roguelike-content/difficulty.source.json",
+      "sha256": "a3989c3c4be841e76d573b847c69a0ee489922f96835a564dc93ea6323d3f26a"
+    },
+    {
+      "path": "tools/cf6-roguelike-content/difficulty_plan.py",
+      "sha256": "ae2718351b5afe014a40b5617e117204296019589233ebb4d474171d714d6b51"
+    },
+    {
+      "path": "data/stages/books/cf6-sting-source/encounter-facts.v1.json",
+      "sha256": "b1c39aa89a5b6c0d35eb3b984830ed50af0f0e43e276b8abe0f7c2513429bdb9"
+    },
+    {
       "path": "tools/cf6-prototype/scene-assembly.py",
-      "sha256": "7759afb706057c7b3eab39492f0e778f1a29bcf92c9de41edda576eb0edbbbe3"
+      "sha256": "dc4b7f9c50d51b950bc9ed5b8c245ebf454cf7a9258a36f8c634fa8c3b6b7543"
     },
     {
       "path": "tools/cf6-scene-completion/completion-plan.json",
-      "sha256": "5c4553e7dbbedca9a43c9afa00505bf98f36f55f85da715d9bde18bbe2dff7db"
+      "sha256": "b6da4fa0b0ee1db59ddfbab4d707c80647761894f93ba1d54ebfcf541d30d78e"
     },
     {
       "path": "tools/cf6-scene-completion/traversal-art-manifest.json",
@@ -135,6 +149,14 @@
     {
       "path": "tools/cf6-scene-completion/auxiliary-art-manifest.json",
       "sha256": "54b0b02da896406beda2dad5ee68a93f1c9969a66b3392ad544676b19e14ff6c"
+    },
+    {
+      "path": "tools/cf6-scene-completion/scenic-wings-manifest.json",
+      "sha256": "a60e978138615eaa89325ad2e63052d3a5d8b77161b4adb6af571adca01744b1"
+    },
+    {
+      "path": "tools/cf6-scene-completion/build_scenic_wings.py",
+      "sha256": "02b0e2d5b48ebfc05a8e46d7f685d1182d6e2d271ecb41cd3d9c4b2f91124329"
     },
     {
       "path": "flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/reference/environment-original-nodes.json",
@@ -150,7 +172,7 @@
     },
     {
       "path": "tools/cf6-prototype/interactive-assembly.py",
-      "sha256": "fd7d73fc8b09ed9a7d48c046d61b4c615d68e30bee41c76d77e8d20bc91c53de"
+      "sha256": "059e01338d7cd2e9096691cf94b47abd09cbf0406978ec67e0362c6e78fd554e"
     },
     {
       "path": "tools/cf6-scene-completion/interactive-art-manifest.json",
@@ -166,11 +188,27 @@
     },
     {
       "path": "tools/cf6-prototype/transport-assembly.py",
-      "sha256": "1800c4007c10a9b22f4fb59ccbcd258a8cd8e3dabb5aaee40a9b163c27d86da3"
+      "sha256": "b248214631d83f48ef3fef260fd5d7bde028697c03884ac1f680471da3fde74a"
     },
     {
       "path": "tools/cf6-scene-completion/transport-art-manifest.json",
       "sha256": "0a9b1ee0adf74544df9e9c02350b216c4087d0daa1dd71451dbb7d14a7e9e321"
+    },
+    {
+      "path": "tools/cf6-vehicle/chapter_fragment.py",
+      "sha256": "af633fe0d92cb510dd4318ee4075c172752da7ff7e75b411a0e6e418a744702f"
+    },
+    {
+      "path": "tools/cf6-vehicle/source/original-nodes.json",
+      "sha256": "2ec3c11095326219f42695737cbe4e08c2ed2e4308650ff04be797a82ca2d463"
+    },
+    {
+      "path": "tools/cf6-scene-completion/source-evidence/original.json",
+      "sha256": "14d0209481025b6ce2b792819c59de61ea5490cde99f069c163e8a31ca4dc194"
+    },
+    {
+      "path": "tools/cf6-scene-completion/completion-plan.json",
+      "sha256": "b6da4fa0b0ee1db59ddfbab4d707c80647761894f93ba1d54ebfcf541d30d78e"
     },
     {
       "path": "tools/cf6-tutorial/original-tutorial-geometry.json",
@@ -346,7 +384,7 @@
     },
     {
       "path": "tools/cf6-prototype/spawn-assembly.py",
-      "sha256": "a7f367392205a5d0799187a7043c0f9c346fe9f92b8e4b5f291a793f4d33102c"
+      "sha256": "9dea1d751fbd4d8ba08d34763f729e85bcb9b85c6b49f6d2422d08ca8ac233d4"
     },
     {
       "path": "data/skills/skills.xml",
@@ -362,7 +400,7 @@
     },
     {
       "path": "data/stages/books/cf6-sting-source/choice-rewards.fragment.json",
-      "sha256": "6fada31c60cc1716885792a5774514464565ac95b50f5ba082a93e7a30635228"
+      "sha256": "0c0a631e3e560c0c36503afc9fbed402911e927c834cc566eb889f34a21e9014"
     },
     {
       "path": "tools/cf6-tutorial-turrets/tutorial-turrets.fragment.json",
@@ -623,7 +661,7 @@
           481.024
         ],
         "maxItemLevel": 35,
-        "goods": 13,
+        "goods": 15,
         "skills": [
           "寸拳",
           "旋风腿",
@@ -648,7 +686,7 @@
           457.8987
         ],
         "maxItemLevel": 40,
-        "goods": 21,
+        "goods": 23,
         "skills": [
           "寸拳",
           "旋风腿",
@@ -698,7 +736,7 @@
           645.376
         ],
         "maxItemLevel": 55,
-        "goods": 32,
+        "goods": 36,
         "skills": [
           "寸拳",
           "旋风腿",
@@ -724,7 +762,7 @@
           477.8667
         ],
         "maxItemLevel": 60,
-        "goods": 36,
+        "goods": 41,
         "skills": [
           "寸拳",
           "旋风腿",
@@ -743,7 +781,35 @@
         ]
       }
     ],
-    "fixedPickupsReplacedBySeededSources": []
+    "fixedPickupsReplacedBySeededSources": [
+      {
+        "mapId": "A04",
+        "pickup": {
+          "Name": "突击步枪通用弹药",
+          "Value": 3,
+          "x": 1285.9733,
+          "y": 610.304
+        }
+      },
+      {
+        "mapId": "A08",
+        "pickup": {
+          "Name": "突击步枪通用弹药",
+          "Value": 2,
+          "x": 1738.24,
+          "y": 384.3413
+        }
+      },
+      {
+        "mapId": "A12",
+        "pickup": {
+          "Name": "突击步枪钨芯穿甲弹",
+          "Value": 2,
+          "x": 687.616,
+          "y": 386.2187
+        }
+      }
+    ]
   },
   "dialoguePortraits": [
     {
@@ -810,9 +876,114 @@
     ],
     "successor": "cf6Boss_A20__elderbot",
     "transitionFrames": 93,
-    "humanSupportBudget": 40,
-    "robotSupportBudget": 60,
-    "playableRooms": 20
+    "humanSupportBudget": 6,
+    "robotSupportBudget": 4,
+    "playableRooms": 21
+  },
+  "vehicleAssembly": {
+    "schema": "cf6-vehicle-chapter.v1",
+    "mapId": "A07",
+    "scale": 1.7066666666666668,
+    "requiredAssets": [
+      "flashswf/arts/new/CF6Vehicle.swf",
+      "flashswf/backgrounds/cf6/CF6_A07_BG.swf",
+      "flashswf/backgrounds/cf6/CF6_A07_sky.swf"
+    ],
+    "originalSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "borders": [
+      {
+        "sourceDepth": 30,
+        "points": [
+          [
+            -18.689,
+            184.1492
+          ],
+          [
+            2204.8652,
+            184.1492
+          ],
+          [
+            2204.8652,
+            344.5761
+          ],
+          [
+            -18.689,
+            344.5761
+          ]
+        ]
+      },
+      {
+        "sourceDepth": 32,
+        "points": [
+          [
+            -18.689,
+            834.3039
+          ],
+          [
+            2204.8652,
+            834.3039
+          ],
+          [
+            2204.8652,
+            994.7308
+          ],
+          [
+            -18.689,
+            994.7308
+          ]
+        ]
+      },
+      {
+        "sourceDepth": 34,
+        "points": [
+          [
+            -358.5708,
+            235.0076
+          ],
+          [
+            -9.7093,
+            235.0076
+          ],
+          [
+            -9.7093,
+            924.7677
+          ],
+          [
+            -358.5708,
+            924.7677
+          ]
+        ]
+      },
+      {
+        "sourceDepth": 36,
+        "points": [
+          [
+            2170.1118,
+            243.8822
+          ],
+          [
+            2518.9734,
+            243.8822
+          ],
+          [
+            2518.9734,
+            933.6424
+          ],
+          [
+            2170.1118,
+            933.6424
+          ]
+        ]
+      }
+    ],
+    "emptyWavePolicy": "vehicle owner must block clear until actual tail collision",
+    "allowanceOwner": "root existing standard Pickup at initial player position; service never credits money",
+    "inputs": {
+      "tools/cf6-vehicle/chapter_fragment.py": "af633fe0d92cb510dd4318ee4075c172752da7ff7e75b411a0e6e418a744702f",
+      "tools/cf6-vehicle/source/original-nodes.json": "2ec3c11095326219f42695737cbe4e08c2ed2e4308650ff04be797a82ca2d463",
+      "tools/cf6-scene-completion/source-evidence/original.json": "14d0209481025b6ce2b792819c59de61ea5490cde99f069c163e8a31ca4dc194",
+      "tools/cf6-scene-completion/completion-plan.json": "b6da4fa0b0ee1db59ddfbab4d707c80647761894f93ba1d54ebfcf541d30d78e"
+    }
   },
   "spawnAssembly": {
     "schema": "cf6-spawn-assembly.v1",
@@ -823,7 +994,128 @@
     "waveQueues": [
       {
         "mapId": "A01",
+        "waveIndex": 0,
+        "entryIndex": 0,
+        "spawnIndex": 5,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 8,
+        "event": null
+      },
+      {
+        "mapId": "A01",
+        "waveIndex": 0,
+        "entryIndex": 1,
+        "spawnIndex": 4,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A01",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 5,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A01",
         "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 5,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 6,
+        "event": null
+      },
+      {
+        "mapId": "A01",
+        "waveIndex": 1,
+        "entryIndex": 1,
+        "spawnIndex": 4,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A01",
+        "waveIndex": 1,
+        "entryIndex": 2,
+        "spawnIndex": 5,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A01",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 5,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 6,
+        "event": null
+      },
+      {
+        "mapId": "A01",
+        "waveIndex": 2,
+        "entryIndex": 1,
+        "spawnIndex": 4,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 6,
+        "event": null
+      },
+      {
+        "mapId": "A01",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 5,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 6,
+        "event": null
+      },
+      {
+        "mapId": "A01",
+        "waveIndex": 3,
+        "entryIndex": 0,
+        "spawnIndex": 4,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 9,
+        "event": null
+      },
+      {
+        "mapId": "A01",
+        "waveIndex": 3,
+        "entryIndex": 1,
+        "spawnIndex": 5,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 9,
+        "event": null
+      },
+      {
+        "mapId": "A02",
+        "waveIndex": 0,
         "entryIndex": 0,
         "spawnIndex": 0,
         "oldIntervalMs": 100,
@@ -833,19 +1125,261 @@
         "event": null
       },
       {
-        "mapId": "A01",
+        "mapId": "A02",
+        "waveIndex": 0,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 5,
+        "event": null
+      },
+      {
+        "mapId": "A02",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A02",
+        "waveIndex": 0,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A02",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A02",
+        "waveIndex": 1,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A02",
+        "waveIndex": 1,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A02",
+        "waveIndex": 1,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A02",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A02",
+        "waveIndex": 2,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A02",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 5,
+        "event": null
+      },
+      {
+        "mapId": "A02",
+        "waveIndex": 2,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 5,
+        "event": null
+      },
+      {
+        "mapId": "A03",
+        "waveIndex": 0,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 6,
+        "event": null
+      },
+      {
+        "mapId": "A03",
+        "waveIndex": 0,
+        "entryIndex": 1,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 6,
+        "event": null
+      },
+      {
+        "mapId": "A03",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A03",
+        "waveIndex": 0,
+        "entryIndex": 3,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A03",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A03",
+        "waveIndex": 1,
+        "entryIndex": 1,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A03",
+        "waveIndex": 1,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A03",
+        "waveIndex": 1,
+        "entryIndex": 3,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A03",
         "waveIndex": 2,
         "entryIndex": 0,
         "spawnIndex": 1,
         "oldIntervalMs": 100,
         "intervalMs": 400,
         "delayMs": 0,
-        "quantity": 5,
+        "quantity": 2,
         "event": null
       },
       {
-        "mapId": "A01",
-        "waveIndex": 3,
+        "mapId": "A03",
+        "waveIndex": 2,
+        "entryIndex": 1,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A03",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 7,
+        "event": null
+      },
+      {
+        "mapId": "A03",
+        "waveIndex": 2,
+        "entryIndex": 3,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 7,
+        "event": null
+      },
+      {
+        "mapId": "A04",
+        "waveIndex": 0,
         "entryIndex": 0,
         "spawnIndex": 2,
         "oldIntervalMs": 100,
@@ -855,10 +1389,131 @@
         "event": null
       },
       {
-        "mapId": "A01",
-        "waveIndex": 4,
-        "entryIndex": 0,
+        "mapId": "A04",
+        "waveIndex": 0,
+        "entryIndex": 1,
         "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 5,
+        "event": null
+      },
+      {
+        "mapId": "A04",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A04",
+        "waveIndex": 0,
+        "entryIndex": 3,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A04",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A04",
+        "waveIndex": 1,
+        "entryIndex": 1,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A04",
+        "waveIndex": 1,
+        "entryIndex": 2,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A04",
+        "waveIndex": 1,
+        "entryIndex": 3,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A04",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A04",
+        "waveIndex": 2,
+        "entryIndex": 1,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A04",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A04",
+        "waveIndex": 2,
+        "entryIndex": 3,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A04",
+        "waveIndex": 3,
+        "entryIndex": 0,
+        "spawnIndex": 2,
         "oldIntervalMs": 100,
         "intervalMs": 400,
         "delayMs": 0,
@@ -866,36 +1521,399 @@
         "event": null
       },
       {
-        "mapId": "A03",
-        "waveIndex": 0,
-        "entryIndex": 5,
-        "spawnIndex": 0,
+        "mapId": "A04",
+        "waveIndex": 3,
+        "entryIndex": 1,
+        "spawnIndex": 3,
         "oldIntervalMs": 100,
         "intervalMs": 400,
-        "delayMs": 0,
-        "quantity": 5,
+        "delayMs": 200,
+        "quantity": 3,
         "event": null
       },
       {
         "mapId": "A04",
+        "waveIndex": 3,
+        "entryIndex": 2,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 6,
+        "event": null
+      },
+      {
+        "mapId": "A04",
+        "waveIndex": 3,
+        "entryIndex": 3,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 6,
+        "event": null
+      },
+      {
+        "mapId": "A05",
+        "waveIndex": 0,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A05",
+        "waveIndex": 0,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A05",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A05",
+        "waveIndex": 0,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A05",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 6,
+        "event": null
+      },
+      {
+        "mapId": "A05",
+        "waveIndex": 1,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 6,
+        "event": null
+      },
+      {
+        "mapId": "A05",
+        "waveIndex": 1,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A05",
+        "waveIndex": 1,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A05",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 7,
+        "event": null
+      },
+      {
+        "mapId": "A05",
+        "waveIndex": 2,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 7,
+        "event": null
+      },
+      {
+        "mapId": "A05",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A05",
+        "waveIndex": 2,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A06",
+        "waveIndex": 0,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 6,
+        "event": null
+      },
+      {
+        "mapId": "A06",
+        "waveIndex": 0,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 6,
+        "event": null
+      },
+      {
+        "mapId": "A06",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A06",
+        "waveIndex": 0,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A06",
         "waveIndex": 0,
         "entryIndex": 4,
         "spawnIndex": 0,
         "oldIntervalMs": 100,
         "intervalMs": 400,
-        "delayMs": 0,
-        "quantity": 5,
+        "delayMs": 800,
+        "quantity": 1,
         "event": null
       },
       {
-        "mapId": "A04",
+        "mapId": "A06",
         "waveIndex": 0,
         "entryIndex": 5,
         "spawnIndex": 1,
         "oldIntervalMs": 100,
         "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A06",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 6,
+        "event": null
+      },
+      {
+        "mapId": "A06",
+        "waveIndex": 1,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
         "delayMs": 200,
-        "quantity": 15,
+        "quantity": 6,
+        "event": null
+      },
+      {
+        "mapId": "A06",
+        "waveIndex": 1,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A06",
+        "waveIndex": 1,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A06",
+        "waveIndex": 1,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A06",
+        "waveIndex": 1,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A09",
+        "waveIndex": 0,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A09",
+        "waveIndex": 0,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A09",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A09",
+        "waveIndex": 0,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A09",
+        "waveIndex": 0,
+        "entryIndex": 4,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A09",
+        "waveIndex": 0,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A09",
+        "waveIndex": 0,
+        "entryIndex": 6,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A09",
+        "waveIndex": 0,
+        "entryIndex": 7,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A09",
+        "waveIndex": 0,
+        "entryIndex": 8,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1600,
+        "quantity": 2,
         "event": null
       },
       {
@@ -915,14 +1933,630 @@
         }
       },
       {
-        "mapId": "A12",
-        "waveIndex": 0,
+        "mapId": "A09",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A09",
+        "waveIndex": 2,
+        "entryIndex": 1,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A09",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 7,
+        "event": null
+      },
+      {
+        "mapId": "A09",
+        "waveIndex": 2,
+        "entryIndex": 3,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 7,
+        "event": null
+      },
+      {
+        "mapId": "A09",
+        "waveIndex": 2,
+        "entryIndex": 4,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A09",
+        "waveIndex": 2,
         "entryIndex": 5,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 0,
+        "entryIndex": 0,
         "spawnIndex": 0,
         "oldIntervalMs": 100,
         "intervalMs": 400,
         "delayMs": 0,
-        "quantity": 10,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 0,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 0,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 0,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 0,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 1,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 1,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 1,
+        "entryIndex": 3,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 1,
+        "entryIndex": 4,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 2,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 2,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 2,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 2,
+        "entryIndex": 5,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A11",
+        "waveIndex": 2,
+        "entryIndex": 6,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 0,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 0,
+        "entryIndex": 1,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 0,
+        "entryIndex": 3,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 0,
+        "entryIndex": 4,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 0,
+        "entryIndex": 5,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 1,
+        "entryIndex": 1,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 1,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 1,
+        "entryIndex": 3,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 1,
+        "entryIndex": 4,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 1,
+        "entryIndex": 5,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 2,
+        "entryIndex": 1,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 2,
+        "entryIndex": 3,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 2,
+        "entryIndex": 4,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 2,
+        "entryIndex": 5,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 3,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 3,
+        "entryIndex": 1,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 3,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 3,
+        "entryIndex": 3,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 3,
+        "entryIndex": 4,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 3,
+        "entryIndex": 5,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 3,
+        "entryIndex": 6,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 3,
+        "entryIndex": 7,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 0,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 0,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 0,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 0,
+        "entryIndex": 4,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 0,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 0,
+        "entryIndex": 6,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 1,
         "event": null
       },
       {
@@ -942,6 +2576,644 @@
         }
       },
       {
+        "mapId": "A14",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 2,
+        "entryIndex": 1,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 2,
+        "entryIndex": 3,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 2,
+        "entryIndex": 4,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 2,
+        "entryIndex": 5,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 2,
+        "entryIndex": 6,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 2,
+        "entryIndex": 7,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 3,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 3,
+        "entryIndex": 1,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 3,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 3,
+        "entryIndex": 3,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 3,
+        "entryIndex": 4,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 3,
+        "entryIndex": 5,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 3,
+        "entryIndex": 6,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A14",
+        "waveIndex": 3,
+        "entryIndex": 7,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A15",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A15",
+        "waveIndex": 1,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A15",
+        "waveIndex": 1,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A15",
+        "waveIndex": 1,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A15",
+        "waveIndex": 1,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A15",
+        "waveIndex": 1,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A15",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A15",
+        "waveIndex": 2,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A15",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A15",
+        "waveIndex": 2,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A15",
+        "waveIndex": 2,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A15",
+        "waveIndex": 2,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 0,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 0,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 0,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 0,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 0,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 0,
+        "entryIndex": 6,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 0,
+        "entryIndex": 7,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 0,
+        "entryIndex": 8,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1600,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 0,
+        "entryIndex": 9,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1800,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 1,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 1,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 1,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 1,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 5,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 1,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 5,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 6,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 2,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 5,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 2,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 2,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 2,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 2,
+        "entryIndex": 6,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A17",
+        "waveIndex": 2,
+        "entryIndex": 7,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1400,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 0,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 0,
+        "entryIndex": 1,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 0,
+        "entryIndex": 3,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 0,
+        "entryIndex": 4,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 0,
+        "entryIndex": 5,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 2,
+        "event": null
+      },
+      {
         "mapId": "A18",
         "waveIndex": 1,
         "entryIndex": 0,
@@ -958,9 +3230,1043 @@
         }
       },
       {
+        "mapId": "A18",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 2,
+        "entryIndex": 1,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 2,
+        "entryIndex": 3,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 2,
+        "entryIndex": 4,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 2,
+        "entryIndex": 5,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 2,
+        "entryIndex": 6,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 2,
+        "entryIndex": 7,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 2,
+        "entryIndex": 8,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 2,
+        "entryIndex": 9,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 3,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 3,
+        "entryIndex": 1,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 3,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 3,
+        "entryIndex": 3,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 3,
+        "entryIndex": 4,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 3,
+        "entryIndex": 5,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 3,
+        "entryIndex": 6,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 3,
+        "entryIndex": 7,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 3,
+        "entryIndex": 8,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1600,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A18",
+        "waveIndex": 3,
+        "entryIndex": 9,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 0,
+        "entryIndex": 0,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 0,
+        "entryIndex": 1,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 0,
+        "entryIndex": 3,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
         "mapId": "A19",
         "waveIndex": 0,
         "entryIndex": 4,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 0,
+        "entryIndex": 5,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 1,
+        "entryIndex": 1,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 1,
+        "entryIndex": 2,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 1,
+        "entryIndex": 3,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 1,
+        "entryIndex": 4,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 1,
+        "entryIndex": 5,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 1,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 3,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 4,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 5,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 6,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 7,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 8,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 9,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 3,
+        "entryIndex": 0,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 3,
+        "entryIndex": 1,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 3,
+        "entryIndex": 2,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 3,
+        "entryIndex": 3,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 3,
+        "entryIndex": 4,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 3,
+        "entryIndex": 5,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 3,
+        "entryIndex": 6,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 3,
+        "entryIndex": 7,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 0,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 1,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 3,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 2,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 3,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 4,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 5,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 6,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 7,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 8,
+        "spawnIndex": 2,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1600,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 9,
+        "spawnIndex": 3,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1800,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 0,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 0,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 0,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 0,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 0,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 0,
+        "entryIndex": 6,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 0,
+        "entryIndex": 7,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 6,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 7,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 8,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 9,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 2,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 2,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 2,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 2,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 2,
+        "entryIndex": 6,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 2,
+        "entryIndex": 7,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 3,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 0,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 3,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 200,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 3,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 3,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 3,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 3,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 3,
+        "entryIndex": 6,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 3,
+        "entryIndex": 7,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 0,
         "spawnIndex": 0,
         "oldIntervalMs": 100,
         "intervalMs": 400,
@@ -969,141 +4275,215 @@
         "event": null
       },
       {
-        "mapId": "A19",
-        "waveIndex": 0,
-        "entryIndex": 5,
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 1,
         "spawnIndex": 1,
         "oldIntervalMs": 100,
         "intervalMs": 400,
         "delayMs": 200,
-        "quantity": 10,
+        "quantity": 4,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 400,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 600,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 800,
+        "quantity": 2,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1000,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 6,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1200,
+        "quantity": 1,
         "event": null
       }
     ],
     "spawnPoints": [
       {
         "mapId": "A01",
+        "index": 4,
+        "entrance": "difficulty-left-validated-edge",
+        "position": [
+          102.4,
+          536.9173
+        ],
+        "quantityMax": 4,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A01",
+        "index": 5,
+        "entrance": "difficulty-right-validated-edge",
+        "position": [
+          1331.2,
+          536.9173
+        ],
+        "quantityMax": 4,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A02",
         "index": 0,
-        "entrance": "existing-right-edge-with-original-cap",
+        "entrance": "difficulty-left-validated-edge",
         "position": [
-          1337.9413,
-          551.424
+          102.4,
+          598.016
         ],
         "quantityMax": 5,
         "bias": [
-          0,
-          0
+          4,
+          2
         ],
         "footEnvelope": [
           12,
           6
         ],
-        "reason": "cadence only; jitter envelope not proven safe"
+        "reason": "collision-safe jitter"
       },
       {
-        "mapId": "A01",
+        "mapId": "A02",
         "index": 1,
-        "entrance": "existing-right-edge-with-original-cap",
+        "entrance": "difficulty-right-validated-edge",
         "position": [
-          1337.9413,
-          551.424
+          2116.2667,
+          598.016
         ],
         "quantityMax": 5,
         "bias": [
-          0,
-          0
+          4,
+          2
         ],
         "footEnvelope": [
           12,
           6
         ],
-        "reason": "cadence only; jitter envelope not proven safe"
-      },
-      {
-        "mapId": "A01",
-        "index": 2,
-        "entrance": "existing-right-edge-with-original-cap",
-        "position": [
-          1337.9413,
-          551.424
-        ],
-        "quantityMax": 5,
-        "bias": [
-          0,
-          0
-        ],
-        "footEnvelope": [
-          12,
-          6
-        ],
-        "reason": "cadence only; jitter envelope not proven safe"
-      },
-      {
-        "mapId": "A01",
-        "index": 3,
-        "entrance": "existing-right-edge-with-original-cap",
-        "position": [
-          1337.9413,
-          551.424
-        ],
-        "quantityMax": 5,
-        "bias": [
-          0,
-          0
-        ],
-        "footEnvelope": [
-          12,
-          6
-        ],
-        "reason": "cadence only; jitter envelope not proven safe"
+        "reason": "collision-safe jitter"
       },
       {
         "mapId": "A03",
-        "index": 0,
-        "entrance": "wood1714-21",
-        "position": [
-          895.1467,
-          359.936
-        ],
-        "quantityMax": 2,
-        "bias": [
-          8,
-          4
-        ],
-        "footEnvelope": [
-          12,
-          6
-        ],
-        "reason": "collision-safe jitter"
-      },
-      {
-        "mapId": "A04",
-        "index": 0,
-        "entrance": "wood1714-21",
-        "position": [
-          895.1467,
-          359.936
-        ],
-        "quantityMax": 2,
-        "bias": [
-          8,
-          4
-        ],
-        "footEnvelope": [
-          12,
-          6
-        ],
-        "reason": "collision-safe jitter"
-      },
-      {
-        "mapId": "A04",
         "index": 1,
+        "entrance": "wood1714-21",
+        "position": [
+          895.1467,
+          359.936
+        ],
+        "quantityMax": 5,
+        "bias": [
+          8,
+          4
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A03",
+        "index": 2,
+        "entrance": "difficulty-right-validated-edge",
+        "position": [
+          2116.2667,
+          572.7573
+        ],
+        "quantityMax": 5,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A04",
+        "index": 2,
+        "entrance": "wood1714-21",
+        "position": [
+          895.1467,
+          359.936
+        ],
+        "quantityMax": 6,
+        "bias": [
+          8,
+          4
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A04",
+        "index": 3,
         "entrance": "wood1714-89",
         "position": [
           1586.3467,
           359.936
         ],
-        "quantityMax": 5,
+        "quantityMax": 6,
         "bias": [
           8,
           4
@@ -1113,6 +4493,82 @@
           6
         ],
         "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A05",
+        "index": 0,
+        "entrance": "difficulty-left-validated-edge",
+        "position": [
+          102.4,
+          604.3307
+        ],
+        "quantityMax": 5,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A05",
+        "index": 1,
+        "entrance": "difficulty-right-validated-edge",
+        "position": [
+          2116.2667,
+          604.3307
+        ],
+        "quantityMax": 5,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A06",
+        "index": 0,
+        "entrance": "difficulty-left-validated-edge",
+        "position": [
+          102.4,
+          358.4
+        ],
+        "quantityMax": 4,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A06",
+        "index": 1,
+        "entrance": "difficulty-right-validated-edge",
+        "position": [
+          2542.9334,
+          358.4
+        ],
+        "quantityMax": 4,
+        "bias": [
+          0,
+          0
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "cadence only; jitter envelope not proven safe"
       },
       {
         "mapId": "A09",
@@ -1134,14 +4590,90 @@
         "reason": "collision-safe jitter"
       },
       {
-        "mapId": "A12",
+        "mapId": "A09",
+        "index": 1,
+        "entrance": "difficulty-left-validated-edge",
+        "position": [
+          102.4,
+          585.1307
+        ],
+        "quantityMax": 5,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A09",
+        "index": 2,
+        "entrance": "difficulty-right-validated-edge",
+        "position": [
+          1945.6,
+          585.1307
+        ],
+        "quantityMax": 5,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A11",
         "index": 0,
+        "entrance": "difficulty-left-validated-edge",
+        "position": [
+          102.4,
+          633.344
+        ],
+        "quantityMax": 5,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A11",
+        "index": 1,
+        "entrance": "difficulty-right-validated-edge",
+        "position": [
+          1672.5334,
+          633.344
+        ],
+        "quantityMax": 5,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A12",
+        "index": 1,
         "entrance": "A12-aux-1862-167",
         "position": [
           1053.8667,
           368.128
         ],
-        "quantityMax": 3,
+        "quantityMax": 6,
         "bias": [
           0,
           0
@@ -1151,6 +4683,25 @@
           6
         ],
         "reason": "cadence only; jitter envelope not proven safe"
+      },
+      {
+        "mapId": "A12",
+        "index": 2,
+        "entrance": "difficulty-right-validated-edge",
+        "position": [
+          2269.8666,
+          574.1227
+        ],
+        "quantityMax": 6,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
       },
       {
         "mapId": "A14",
@@ -1172,6 +4723,120 @@
         "reason": "cadence only; jitter envelope not proven safe"
       },
       {
+        "mapId": "A14",
+        "index": 1,
+        "entrance": "difficulty-left-validated-edge",
+        "position": [
+          102.4,
+          629.0773
+        ],
+        "quantityMax": 6,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A14",
+        "index": 2,
+        "entrance": "difficulty-right-validated-edge",
+        "position": [
+          2542.9334,
+          629.0773
+        ],
+        "quantityMax": 6,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A15",
+        "index": 0,
+        "entrance": "difficulty-left-validated-edge",
+        "position": [
+          102.4,
+          680.6187
+        ],
+        "quantityMax": 5,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A15",
+        "index": 1,
+        "entrance": "difficulty-right-validated-edge",
+        "position": [
+          2542.9334,
+          680.6187
+        ],
+        "quantityMax": 5,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A17",
+        "index": 0,
+        "entrance": "difficulty-left-validated-edge",
+        "position": [
+          102.4,
+          452.2667
+        ],
+        "quantityMax": 5,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A17",
+        "index": 1,
+        "entrance": "difficulty-right-validated-edge",
+        "position": [
+          2542.9334,
+          452.2667
+        ],
+        "quantityMax": 5,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
         "mapId": "A18",
         "index": 0,
         "entrance": "A18-transport-147",
@@ -1191,14 +4856,71 @@
         "reason": "collision-safe jitter"
       },
       {
+        "mapId": "A18",
+        "index": 1,
+        "entrance": "difficulty-left-validated-edge",
+        "position": [
+          102.4,
+          556.2027
+        ],
+        "quantityMax": 6,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A18",
+        "index": 2,
+        "entrance": "difficulty-right-validated-edge",
+        "position": [
+          2628.2667,
+          556.2027
+        ],
+        "quantityMax": 6,
+        "bias": [
+          4,
+          2
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
         "mapId": "A19",
-        "index": 0,
+        "index": 2,
+        "entrance": "A19-aux-1862-54",
+        "position": [
+          929.4507,
+          293.888
+        ],
+        "quantityMax": 7,
+        "bias": [
+          0,
+          0
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "cadence only; jitter envelope not proven safe"
+      },
+      {
+        "mapId": "A19",
+        "index": 3,
         "entrance": "A19-aux-1862-62",
         "position": [
           2212.6933,
           410.624
         ],
-        "quantityMax": 2,
+        "quantityMax": 7,
         "bias": [
           12,
           6
@@ -1210,14 +4932,33 @@
         "reason": "collision-safe jitter"
       },
       {
-        "mapId": "A19",
-        "index": 1,
-        "entrance": "A19-aux-1862-54",
+        "mapId": "A20",
+        "index": 0,
+        "entrance": "A20-aux-1862-51",
         "position": [
-          929.4507,
-          293.888
+          314.88,
+          303.104
         ],
-        "quantityMax": 3,
+        "quantityMax": 6,
+        "bias": [
+          12,
+          6
+        ],
+        "footEnvelope": [
+          12,
+          6
+        ],
+        "reason": "collision-safe jitter"
+      },
+      {
+        "mapId": "A20",
+        "index": 1,
+        "entrance": "A20-aux-1862-67",
+        "position": [
+          2135.04,
+          578.2187
+        ],
+        "quantityMax": 6,
         "bias": [
           0,
           0
@@ -1434,329 +5175,10 @@
         "entrance": "right-validated-edge"
       },
       {
-        "mapId": "A06",
-        "phase": 0,
-        "group": 1,
-        "entry": 0,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          102.4,
-          554.6667
-        ],
-        "quantity": 4,
-        "line": [
-          100.6933,
-          358.4,
-          104.1067,
-          750.9333
-        ],
-        "footEnvelope": [
-          90.4,
-          548.6667,
-          114.4,
-          560.6667
-        ],
-        "entrance": "left-validated-edge"
-      },
-      {
-        "mapId": "A06",
-        "phase": 0,
-        "group": 1,
-        "entry": 1,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          2542.9334,
-          554.6667
-        ],
-        "quantity": 4,
-        "line": [
-          2541.2267,
-          358.4,
-          2544.64,
-          750.9333
-        ],
-        "footEnvelope": [
-          2530.9334,
-          548.6667,
-          2554.9334,
-          560.6667
-        ],
-        "entrance": "right-validated-edge"
-      },
-      {
-        "mapId": "A06",
-        "phase": 0,
-        "group": 2,
-        "entry": 0,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          102.4,
-          554.6667
-        ],
-        "quantity": 4,
-        "line": [
-          100.6933,
-          358.4,
-          104.1067,
-          750.9333
-        ],
-        "footEnvelope": [
-          90.4,
-          548.6667,
-          114.4,
-          560.6667
-        ],
-        "entrance": "left-validated-edge"
-      },
-      {
-        "mapId": "A06",
-        "phase": 0,
-        "group": 2,
-        "entry": 1,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          2542.9334,
-          554.6667
-        ],
-        "quantity": 4,
-        "line": [
-          2541.2267,
-          358.4,
-          2544.64,
-          750.9333
-        ],
-        "footEnvelope": [
-          2530.9334,
-          548.6667,
-          2554.9334,
-          560.6667
-        ],
-        "entrance": "right-validated-edge"
-      },
-      {
-        "mapId": "A06",
-        "phase": 0,
-        "group": 3,
-        "entry": 0,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          102.4,
-          554.6667
-        ],
-        "quantity": 3,
-        "line": [
-          100.6933,
-          358.4,
-          104.1067,
-          750.9333
-        ],
-        "footEnvelope": [
-          90.4,
-          548.6667,
-          114.4,
-          560.6667
-        ],
-        "entrance": "left-validated-edge"
-      },
-      {
-        "mapId": "A06",
-        "phase": 0,
-        "group": 3,
-        "entry": 1,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          2542.9334,
-          554.6667
-        ],
-        "quantity": 3,
-        "line": [
-          2541.2267,
-          358.4,
-          2544.64,
-          750.9333
-        ],
-        "footEnvelope": [
-          2530.9334,
-          548.6667,
-          2554.9334,
-          560.6667
-        ],
-        "entrance": "right-validated-edge"
-      },
-      {
-        "mapId": "A06",
-        "phase": 0,
-        "group": 4,
-        "entry": 0,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          102.4,
-          554.6667
-        ],
-        "quantity": 3,
-        "line": [
-          100.6933,
-          358.4,
-          104.1067,
-          750.9333
-        ],
-        "footEnvelope": [
-          90.4,
-          548.6667,
-          114.4,
-          560.6667
-        ],
-        "entrance": "left-validated-edge"
-      },
-      {
-        "mapId": "A06",
-        "phase": 0,
-        "group": 4,
-        "entry": 1,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          2542.9334,
-          554.6667
-        ],
-        "quantity": 3,
-        "line": [
-          2541.2267,
-          358.4,
-          2544.64,
-          750.9333
-        ],
-        "footEnvelope": [
-          2530.9334,
-          548.6667,
-          2554.9334,
-          560.6667
-        ],
-        "entrance": "right-validated-edge"
-      },
-      {
         "mapId": "A17",
         "phase": 0,
         "group": 0,
-        "entry": 0,
-        "side": "left",
-        "before": [
-          274.944,
-          635.904
-        ],
-        "after": [
-          102.4,
-          635.904
-        ],
-        "quantity": 1,
-        "line": [
-          100.6933,
-          452.2667,
-          104.1067,
-          861.8667
-        ],
-        "footEnvelope": [
-          90.4,
-          629.904,
-          114.4,
-          641.904
-        ],
-        "entrance": "left-validated-edge"
-      },
-      {
-        "mapId": "A17",
-        "phase": 0,
-        "group": 0,
-        "entry": 1,
-        "side": "left",
-        "before": [
-          192.512,
-          731.3067
-        ],
-        "after": [
-          102.4,
-          731.3067
-        ],
-        "quantity": 1,
-        "line": [
-          100.6933,
-          452.2667,
-          104.1067,
-          861.8667
-        ],
-        "footEnvelope": [
-          90.4,
-          725.3067,
-          114.4,
-          737.3067
-        ],
-        "entrance": "left-validated-edge"
-      },
-      {
-        "mapId": "A17",
-        "phase": 0,
-        "group": 0,
-        "entry": 2,
-        "side": "right",
-        "before": [
-          2212.1813,
-          765.2693
-        ],
-        "after": [
-          2542.9334,
-          765.2693
-        ],
-        "quantity": 1,
-        "line": [
-          2541.2267,
-          452.2667,
-          2544.64,
-          861.8667
-        ],
-        "footEnvelope": [
-          2530.9334,
-          759.2693,
-          2554.9334,
-          771.2693
-        ],
-        "entrance": "right-validated-edge"
-      },
-      {
-        "mapId": "A17",
-        "phase": 0,
-        "group": 0,
-        "entry": 3,
+        "entry": 5,
         "side": "left",
         "before": [
           422.7413,
@@ -1785,36 +5207,7 @@
         "mapId": "A17",
         "phase": 0,
         "group": 0,
-        "entry": 4,
-        "side": "right",
-        "before": [
-          2330.2827,
-          664.9173
-        ],
-        "after": [
-          2542.9334,
-          664.9173
-        ],
-        "quantity": 1,
-        "line": [
-          2541.2267,
-          452.2667,
-          2544.64,
-          861.8667
-        ],
-        "footEnvelope": [
-          2530.9334,
-          658.9173,
-          2554.9334,
-          670.9173
-        ],
-        "entrance": "right-validated-edge"
-      },
-      {
-        "mapId": "A17",
-        "phase": 0,
-        "group": 0,
-        "entry": 10,
+        "entry": 6,
         "side": "left",
         "before": [
           6.8267,
@@ -1843,15 +5236,15 @@
         "mapId": "A17",
         "phase": 0,
         "group": 0,
-        "entry": 11,
+        "entry": 7,
         "side": "right",
         "before": [
-          2640.0427,
-          710.4853
+          2330.2827,
+          664.9173
         ],
         "after": [
           2542.9334,
-          710.4853
+          664.9173
         ],
         "quantity": 1,
         "line": [
@@ -1862,241 +5255,9 @@
         ],
         "footEnvelope": [
           2530.9334,
-          704.4853,
+          658.9173,
           2554.9334,
-          716.4853
-        ],
-        "entrance": "right-validated-edge"
-      },
-      {
-        "mapId": "A17",
-        "phase": 0,
-        "group": 1,
-        "entry": 0,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          102.4,
-          657.0667
-        ],
-        "quantity": 4,
-        "line": [
-          100.6933,
-          452.2667,
-          104.1067,
-          861.8667
-        ],
-        "footEnvelope": [
-          90.4,
-          651.0667,
-          114.4,
-          663.0667
-        ],
-        "entrance": "left-validated-edge"
-      },
-      {
-        "mapId": "A17",
-        "phase": 0,
-        "group": 1,
-        "entry": 1,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          2542.9334,
-          657.0667
-        ],
-        "quantity": 4,
-        "line": [
-          2541.2267,
-          452.2667,
-          2544.64,
-          861.8667
-        ],
-        "footEnvelope": [
-          2530.9334,
-          651.0667,
-          2554.9334,
-          663.0667
-        ],
-        "entrance": "right-validated-edge"
-      },
-      {
-        "mapId": "A17",
-        "phase": 0,
-        "group": 2,
-        "entry": 0,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          102.4,
-          657.0667
-        ],
-        "quantity": 4,
-        "line": [
-          100.6933,
-          452.2667,
-          104.1067,
-          861.8667
-        ],
-        "footEnvelope": [
-          90.4,
-          651.0667,
-          114.4,
-          663.0667
-        ],
-        "entrance": "left-validated-edge"
-      },
-      {
-        "mapId": "A17",
-        "phase": 0,
-        "group": 2,
-        "entry": 1,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          2542.9334,
-          657.0667
-        ],
-        "quantity": 4,
-        "line": [
-          2541.2267,
-          452.2667,
-          2544.64,
-          861.8667
-        ],
-        "footEnvelope": [
-          2530.9334,
-          651.0667,
-          2554.9334,
-          663.0667
-        ],
-        "entrance": "right-validated-edge"
-      },
-      {
-        "mapId": "A17",
-        "phase": 0,
-        "group": 3,
-        "entry": 0,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          102.4,
-          657.0667
-        ],
-        "quantity": 3,
-        "line": [
-          100.6933,
-          452.2667,
-          104.1067,
-          861.8667
-        ],
-        "footEnvelope": [
-          90.4,
-          651.0667,
-          114.4,
-          663.0667
-        ],
-        "entrance": "left-validated-edge"
-      },
-      {
-        "mapId": "A17",
-        "phase": 0,
-        "group": 3,
-        "entry": 1,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          2542.9334,
-          657.0667
-        ],
-        "quantity": 3,
-        "line": [
-          2541.2267,
-          452.2667,
-          2544.64,
-          861.8667
-        ],
-        "footEnvelope": [
-          2530.9334,
-          651.0667,
-          2554.9334,
-          663.0667
-        ],
-        "entrance": "right-validated-edge"
-      },
-      {
-        "mapId": "A17",
-        "phase": 0,
-        "group": 4,
-        "entry": 0,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          102.4,
-          657.0667
-        ],
-        "quantity": 3,
-        "line": [
-          100.6933,
-          452.2667,
-          104.1067,
-          861.8667
-        ],
-        "footEnvelope": [
-          90.4,
-          651.0667,
-          114.4,
-          663.0667
-        ],
-        "entrance": "left-validated-edge"
-      },
-      {
-        "mapId": "A17",
-        "phase": 0,
-        "group": 4,
-        "entry": 1,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          2542.9334,
-          657.0667
-        ],
-        "quantity": 3,
-        "line": [
-          2541.2267,
-          452.2667,
-          2544.64,
-          861.8667
-        ],
-        "footEnvelope": [
-          2530.9334,
-          651.0667,
-          2554.9334,
-          663.0667
+          670.9173
         ],
         "entrance": "right-validated-edge"
       },
@@ -2186,216 +5347,6 @@
       },
       {
         "mapId": "A20",
-        "phase": 0,
-        "group": 1,
-        "entry": 0,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          314.88,
-          303.104
-        ],
-        "quantity": 4,
-        "entrance": "A20-aux-1862-51",
-        "sourceDoorPosition": [
-          314.88,
-          303.104
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 0,
-        "group": 1,
-        "entry": 1,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          2135.04,
-          578.2187
-        ],
-        "quantity": 4,
-        "entrance": "A20-aux-1862-67",
-        "sourceDoorPosition": [
-          2135.04,
-          578.2187
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 0,
-        "group": 1,
-        "entry": 2,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          314.88,
-          303.104
-        ],
-        "quantity": 2,
-        "entrance": "A20-aux-1862-51",
-        "sourceDoorPosition": [
-          314.88,
-          303.104
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 0,
-        "group": 1,
-        "entry": 3,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          2414.7627,
-          777.728
-        ],
-        "quantity": 2,
-        "entrance": "A20-aux-1862-75",
-        "sourceDoorPosition": [
-          2414.7627,
-          777.728
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 0,
-        "group": 2,
-        "entry": 0,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          314.88,
-          303.104
-        ],
-        "quantity": 5,
-        "entrance": "A20-aux-1862-51",
-        "sourceDoorPosition": [
-          314.88,
-          303.104
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 0,
-        "group": 2,
-        "entry": 1,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          2135.04,
-          578.2187
-        ],
-        "quantity": 5,
-        "entrance": "A20-aux-1862-67",
-        "sourceDoorPosition": [
-          2135.04,
-          578.2187
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 0,
-        "group": 2,
-        "entry": 2,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          314.88,
-          303.104
-        ],
-        "quantity": 1,
-        "entrance": "A20-aux-1862-51",
-        "sourceDoorPosition": [
-          314.88,
-          303.104
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 0,
-        "group": 2,
-        "entry": 3,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          2414.7627,
-          777.728
-        ],
-        "quantity": 1,
-        "entrance": "A20-aux-1862-75",
-        "sourceDoorPosition": [
-          2414.7627,
-          777.728
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 0,
-        "group": 3,
-        "entry": 0,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          314.88,
-          303.104
-        ],
-        "quantity": 5,
-        "entrance": "A20-aux-1862-51",
-        "sourceDoorPosition": [
-          314.88,
-          303.104
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 0,
-        "group": 3,
-        "entry": 1,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          2135.04,
-          578.2187
-        ],
-        "quantity": 5,
-        "entrance": "A20-aux-1862-67",
-        "sourceDoorPosition": [
-          2135.04,
-          578.2187
-        ]
-      },
-      {
-        "mapId": "A20",
         "phase": 1,
         "group": 0,
         "entry": 0,
@@ -2476,267 +5427,769 @@
         "sourceDoorPosition": [
           314.88,
           303.104
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 1,
-        "group": 1,
-        "entry": 0,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          314.88,
-          303.104
-        ],
-        "quantity": 5,
-        "entrance": "A20-aux-1862-51",
-        "sourceDoorPosition": [
-          314.88,
-          303.104
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 1,
-        "group": 1,
-        "entry": 1,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          1884.16,
-          385.3653
-        ],
-        "quantity": 5,
-        "entrance": "A20-aux-1862-59",
-        "sourceDoorPosition": [
-          1884.16,
-          385.3653
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 1,
-        "group": 1,
-        "entry": 2,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          314.88,
-          303.104
-        ],
-        "quantity": 5,
-        "entrance": "A20-aux-1862-51",
-        "sourceDoorPosition": [
-          314.88,
-          303.104
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 1,
-        "group": 1,
-        "entry": 3,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          1884.16,
-          385.3653
-        ],
-        "quantity": 5,
-        "entrance": "A20-aux-1862-59",
-        "sourceDoorPosition": [
-          1884.16,
-          385.3653
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 1,
-        "group": 2,
-        "entry": 0,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          314.88,
-          303.104
-        ],
-        "quantity": 5,
-        "entrance": "A20-aux-1862-51",
-        "sourceDoorPosition": [
-          314.88,
-          303.104
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 1,
-        "group": 2,
-        "entry": 1,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          1884.16,
-          385.3653
-        ],
-        "quantity": 5,
-        "entrance": "A20-aux-1862-59",
-        "sourceDoorPosition": [
-          1884.16,
-          385.3653
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 1,
-        "group": 2,
-        "entry": 2,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          314.88,
-          303.104
-        ],
-        "quantity": 5,
-        "entrance": "A20-aux-1862-51",
-        "sourceDoorPosition": [
-          314.88,
-          303.104
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 1,
-        "group": 2,
-        "entry": 3,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          1884.16,
-          385.3653
-        ],
-        "quantity": 5,
-        "entrance": "A20-aux-1862-59",
-        "sourceDoorPosition": [
-          1884.16,
-          385.3653
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 1,
-        "group": 3,
-        "entry": 0,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          314.88,
-          303.104
-        ],
-        "quantity": 4,
-        "entrance": "A20-aux-1862-51",
-        "sourceDoorPosition": [
-          314.88,
-          303.104
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 1,
-        "group": 3,
-        "entry": 1,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          1884.16,
-          385.3653
-        ],
-        "quantity": 4,
-        "entrance": "A20-aux-1862-59",
-        "sourceDoorPosition": [
-          1884.16,
-          385.3653
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 1,
-        "group": 3,
-        "entry": 2,
-        "side": "left",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          314.88,
-          303.104
-        ],
-        "quantity": 4,
-        "entrance": "A20-aux-1862-51",
-        "sourceDoorPosition": [
-          314.88,
-          303.104
-        ]
-      },
-      {
-        "mapId": "A20",
-        "phase": 1,
-        "group": 3,
-        "entry": 3,
-        "side": "right",
-        "before": [
-          null,
-          null
-        ],
-        "after": [
-          1884.16,
-          385.3653
-        ],
-        "quantity": 4,
-        "entrance": "A20-aux-1862-59",
-        "sourceDoorPosition": [
-          1884.16,
-          385.3653
         ]
       }
     ],
-    "authorityBeforeSha256": "914ddc4e8701b788492a7d26fe801b17c4e7b4852617b8ee7aaec13958cf4feb",
-    "authorityAfterSha256": "914ddc4e8701b788492a7d26fe801b17c4e7b4852617b8ee7aaec13958cf4feb",
-    "preservedInitialEntries": 56,
-    "preservedInitialSha256": "7a8852093cc95b26d0fe131e26c7daa46c227f25acac24909dca89f57d6b2904",
+    "observationFlags": [
+      {
+        "mapId": "A12",
+        "waveIndex": 0,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 0,
+        "entryIndex": 4,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 1,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 1,
+        "entryIndex": 4,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 2,
+        "entryIndex": 4,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 3,
+        "entryIndex": 0,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 3,
+        "entryIndex": 2,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 3,
+        "entryIndex": 4,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A12",
+        "waveIndex": 3,
+        "entryIndex": 6,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 0,
+        "entryIndex": 0,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 0,
+        "entryIndex": 1,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 0,
+        "entryIndex": 3,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 0,
+        "entryIndex": 4,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 0,
+        "entryIndex": 5,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 1,
+        "entryIndex": 1,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 1,
+        "entryIndex": 2,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 1,
+        "entryIndex": 3,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 1,
+        "entryIndex": 4,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 1,
+        "entryIndex": 5,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 1,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 3,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 4,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 5,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 6,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 7,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 8,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 2,
+        "entryIndex": 9,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 3,
+        "entryIndex": 0,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 3,
+        "entryIndex": 1,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 3,
+        "entryIndex": 2,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 3,
+        "entryIndex": 3,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 3,
+        "entryIndex": 4,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 3,
+        "entryIndex": 5,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 3,
+        "entryIndex": 6,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 3,
+        "entryIndex": 7,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 0,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 1,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 2,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 3,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 4,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 5,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 6,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 7,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 8,
+        "spawnIndex": 2,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A19",
+        "waveIndex": 4,
+        "entryIndex": 9,
+        "spawnIndex": 3,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 0,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 0,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 0,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 0,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 0,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 0,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 0,
+        "entryIndex": 6,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 0,
+        "entryIndex": 7,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 6,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 7,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 8,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 1,
+        "entryIndex": 9,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 2,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 2,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 2,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 2,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 2,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 2,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 2,
+        "entryIndex": 6,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 2,
+        "entryIndex": 7,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 3,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 3,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 3,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 3,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 3,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 3,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 3,
+        "entryIndex": 6,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 3,
+        "entryIndex": 7,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 0,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 1,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 2,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 3,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 4,
+        "spawnIndex": 0,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 5,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 6,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      }
+    ],
+    "authorityBeforeSha256": "0396ebb1d00ed41d04ea80c04289b7693eff020ce48b253767d379e22ce0498b",
+    "authorityAfterSha256": "0396ebb1d00ed41d04ea80c04289b7693eff020ce48b253767d379e22ce0498b",
+    "preservedInitialEntries": 27,
+    "preservedInitialSha256": "2406672438ad97906100f50f6ed9e101a0ddbfd317315f7b8e4de1e58ad09d6a",
     "preservedPodEntries": 10,
-    "preservedPodSha256": "475ffdf5835f69cb2be2170976bfe477afbf5ddf1315a43fecad2a9cf8897097"
+    "preservedPodSha256": "fd27d578336cdb0b21b0f482f621c60f7c19735ac25819613362933ee195a4b0"
   },
   "exitGuidance": [
     {
@@ -2786,6 +6239,10 @@
         "z": 558.9334,
         "direction": "右"
       }
+    },
+    {
+      "mapId": "A07",
+      "basis": "original vehicle tail collision; no walking exit guide"
     },
     {
       "mapId": "A08",
@@ -4195,6 +7652,28 @@
       "basis": "complete source timeline and native shear retained; source area gate separate from visual floor pivot"
     },
     {
+      "id": "A06-scenic-wings",
+      "sourceSprite": 1777,
+      "sourceDepth": 186,
+      "worldFootpoint": [
+        1767.5947,
+        358.4
+      ],
+      "bodyScale": 1.2091236618871992,
+      "basis": "original visual-only actor; current native 190cm standing art; no combat or protection authority"
+    },
+    {
+      "id": "A08-scenic-wings",
+      "sourceSprite": 1777,
+      "sourceDepth": 158,
+      "worldFootpoint": [
+        685.9093,
+        443.904
+      ],
+      "bodyScale": 1.2091236618871992,
+      "basis": "original visual-only actor; current native 190cm standing art; no combat or protection authority"
+    },
+    {
       "id": "CF6_Prop_A06_StatueLeft",
       "mapId": "A06",
       "sortY": 394.15466666666674,
@@ -4214,9 +7693,9 @@
       "sourceDepth": 336,
       "registrationWorld": [
         1393.8347,
-        349.7813
+        381.228
       ],
-      "sortY": 394.2813,
+      "sortY": 425.728,
       "visualScale": 1,
       "hitBounds": [
         -29.9416,
@@ -4224,7 +7703,7 @@
         28.0416,
         45.5
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "original world footpoint retained; unscaled art registration derived from its resting floor edge",
       "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
     },
     {
@@ -4233,9 +7712,9 @@
       "sourceDepth": 343,
       "registrationWorld": [
         1827.328,
-        349.7813
+        381.228
       ],
-      "sortY": 394.2813,
+      "sortY": 425.728,
       "visualScale": 1,
       "hitBounds": [
         -29.9416,
@@ -4243,7 +7722,7 @@
         28.0416,
         45.5
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "original world footpoint retained; unscaled art registration derived from its resting floor edge",
       "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
     },
     {
@@ -4252,9 +7731,9 @@
       "sourceDepth": 350,
       "registrationWorld": [
         689.0667,
-        356.608
+        388.0547
       ],
-      "sortY": 401.108,
+      "sortY": 432.5547,
       "visualScale": 1,
       "hitBounds": [
         -29.9416,
@@ -4262,7 +7741,7 @@
         28.0416,
         45.5
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "original world footpoint retained; unscaled art registration derived from its resting floor edge",
       "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
     },
     {
@@ -4271,9 +7750,9 @@
       "sourceDepth": 137,
       "registrationWorld": [
         1871.1893,
-        310.9547
+        342.4013
       ],
-      "sortY": 355.4547,
+      "sortY": 386.9013,
       "visualScale": 1,
       "hitBounds": [
         -29.9416,
@@ -4281,7 +7760,7 @@
         28.0416,
         45.5
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "original world footpoint retained; unscaled art registration derived from its resting floor edge",
       "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
     },
     {
@@ -4290,9 +7769,9 @@
       "sourceDepth": 144,
       "registrationWorld": [
         1956.5227,
-        314.368
+        345.8147
       ],
-      "sortY": 358.868,
+      "sortY": 390.3147,
       "visualScale": 1,
       "hitBounds": [
         -29.9416,
@@ -4300,7 +7779,7 @@
         28.0416,
         45.5
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "original world footpoint retained; unscaled art registration derived from its resting floor edge",
       "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
     },
     {
@@ -4309,9 +7788,9 @@
       "sourceDepth": 151,
       "registrationWorld": [
         768.6827,
-        295.5093
+        326.956
       ],
-      "sortY": 340.0093,
+      "sortY": 371.456,
       "visualScale": 1,
       "hitBounds": [
         -29.9416,
@@ -4319,7 +7798,7 @@
         28.0416,
         45.5
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "original world footpoint retained; unscaled art registration derived from its resting floor edge",
       "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
     },
     {
@@ -4328,9 +7807,9 @@
       "sourceDepth": 262,
       "registrationWorld": [
         771.6693,
-        365.056
+        396.5027
       ],
-      "sortY": 409.556,
+      "sortY": 441.0027,
       "visualScale": 1,
       "hitBounds": [
         -29.9416,
@@ -4338,7 +7817,7 @@
         28.0416,
         45.5
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "original world footpoint retained; unscaled art registration derived from its resting floor edge",
       "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
     },
     {
@@ -4347,9 +7826,9 @@
       "sourceDepth": 200,
       "registrationWorld": [
         1417.216,
-        324.608
+        356.0547
       ],
-      "sortY": 369.108,
+      "sortY": 400.5547,
       "visualScale": 1,
       "hitBounds": [
         -29.9416,
@@ -4357,7 +7836,7 @@
         28.0416,
         45.5
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "original world footpoint retained; unscaled art registration derived from its resting floor edge",
       "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
     },
     {
@@ -4366,9 +7845,9 @@
       "sourceDepth": 207,
       "registrationWorld": [
         1234.6027,
-        682.9227
+        714.3693
       ],
-      "sortY": 727.4227,
+      "sortY": 758.8693,
       "visualScale": 1,
       "hitBounds": [
         -29.9416,
@@ -4376,7 +7855,7 @@
         28.0416,
         45.5
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "original world footpoint retained; unscaled art registration derived from its resting floor edge",
       "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
     },
     {
@@ -4385,9 +7864,9 @@
       "sourceDepth": 214,
       "registrationWorld": [
         964.9493,
-        324.5227
+        355.9693
       ],
-      "sortY": 369.0227,
+      "sortY": 400.4693,
       "visualScale": 1,
       "hitBounds": [
         -29.9416,
@@ -4395,7 +7874,7 @@
         28.0416,
         45.5
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "original world footpoint retained; unscaled art registration derived from its resting floor edge",
       "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
     },
     {
@@ -4414,7 +7893,7 @@
         212.7896,
         212.6563
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "world birth registration transformed once; original clone handoff unchanged",
       "triggerSpace": "original map area scaled once"
     },
     {
@@ -4433,7 +7912,7 @@
         212.7896,
         212.6563
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "world birth registration transformed once; original clone handoff unchanged",
       "triggerSpace": "original map area scaled once"
     },
     {
@@ -4452,7 +7931,7 @@
         212.7896,
         212.6563
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "world birth registration transformed once; original clone handoff unchanged",
       "triggerSpace": "original map area scaled once"
     },
     {
@@ -4471,7 +7950,7 @@
         212.7896,
         212.6563
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "world birth registration transformed once; original clone handoff unchanged",
       "triggerSpace": "original map area scaled once"
     },
     {
@@ -4490,7 +7969,7 @@
         212.7896,
         212.6563
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "world birth registration transformed once; original clone handoff unchanged",
       "triggerSpace": "original map area scaled once"
     },
     {
@@ -4509,7 +7988,7 @@
         212.7896,
         212.6563
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "world birth registration transformed once; original clone handoff unchanged",
       "triggerSpace": "original map area scaled once"
     },
     {
@@ -4528,7 +8007,7 @@
         212.7896,
         212.6563
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "world birth registration transformed once; original clone handoff unchanged",
       "triggerSpace": "original map area scaled once"
     },
     {
@@ -4547,7 +8026,7 @@
         212.7896,
         212.6563
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "world birth registration transformed once; original clone handoff unchanged",
       "triggerSpace": "original map area scaled once"
     },
     {
@@ -4566,7 +8045,7 @@
         212.7896,
         212.6563
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "world birth registration transformed once; original clone handoff unchanged",
       "triggerSpace": "original map area scaled once"
     },
     {
@@ -4585,7 +8064,7 @@
         212.7896,
         212.6563
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "world birth registration transformed once; original clone handoff unchanged",
       "triggerSpace": "original map area scaled once"
     },
     {
@@ -4594,9 +8073,9 @@
       "sourceDepth": 617,
       "registrationWorld": [
         1688.832,
-        310.9547
+        342.4013
       ],
-      "sortY": 355.4547,
+      "sortY": 386.9013,
       "visualScale": 1,
       "hitBounds": [
         -29.9416,
@@ -4604,7 +8083,7 @@
         28.0416,
         45.5
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "original world footpoint retained; unscaled art registration derived from its resting floor edge",
       "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
     },
     {
@@ -4613,9 +8092,9 @@
       "sourceDepth": 239,
       "registrationWorld": [
         1564.8427,
-        324.2667
+        355.7133
       ],
-      "sortY": 368.7667,
+      "sortY": 400.2133,
       "visualScale": 1,
       "hitBounds": [
         -29.9416,
@@ -4623,7 +8102,7 @@
         28.0416,
         45.5
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "original world footpoint retained; unscaled art registration derived from its resting floor edge",
       "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
     },
     {
@@ -4632,9 +8111,9 @@
       "sourceDepth": 246,
       "registrationWorld": [
         491.6907,
-        314.0267
+        345.4733
       ],
-      "sortY": 358.5267,
+      "sortY": 389.9733,
       "visualScale": 1,
       "hitBounds": [
         -29.9416,
@@ -4642,7 +8121,7 @@
         28.0416,
         45.5
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "original world footpoint retained; unscaled art registration derived from its resting floor edge",
       "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
     },
     {
@@ -4651,9 +8130,9 @@
       "sourceDepth": 253,
       "registrationWorld": [
         1684.5653,
-        238.9333
+        270.38
       ],
-      "sortY": 283.4333,
+      "sortY": 314.88,
       "visualScale": 1,
       "hitBounds": [
         -29.9416,
@@ -4661,7 +8140,7 @@
         28.0416,
         45.5
       ],
-      "basis": "world registration transformed once; art stays original size; depth follows first-frame visual lower bound",
+      "basis": "original world footpoint retained; unscaled art registration derived from its resting floor edge",
       "triggerSpace": "CF7 resting body plus original foot/90px-projected gun band; no art or debris enlargement"
     }
   ],

@@ -1,0 +1,1157 @@
+{
+  "schema": "cf6-weapon-pools.v1",
+  "report": {
+    "fileName": "cf6_roguelike_equipment_evaluation.md",
+    "sha256": "79f9052fb21367528f8695cacf41999a0170444f6ffaa483bd2a26e716b36a76",
+    "sections": [
+      "2.1",
+      "3.1",
+      "3.2",
+      "3.3"
+    ],
+    "role": "candidate reference; live item XML and explicit name resolution remain authoritative"
+  },
+  "baseLevelMinimum": 35,
+  "maxLevel": 60,
+  "tierNames": [
+    "墨冰",
+    "狱火",
+    "重锤"
+  ],
+  "weapons": [
+    "53式步骑枪",
+    "M4A1",
+    "M4A1改",
+    "AUG",
+    "AK74",
+    "m14",
+    "战术版AK200",
+    "QBZ95",
+    "HK416",
+    "XM8",
+    "穿刺QBZ95",
+    "QBZ-191",
+    "QBZ-192",
+    "M4A1战术版",
+    "AK74战术版",
+    "无枪托ZUX197",
+    "ZUX197",
+    "T181",
+    "T181C",
+    "非规格步枪",
+    "黄金QBZ",
+    "HK416战术版",
+    "Sniper",
+    "中国88式狙击步枪",
+    "SVD",
+    "QBU-191",
+    "HKSL8EX",
+    "HKSL8GOLD",
+    "AWP",
+    "WA2000",
+    "wa90变形款",
+    "巴雷特",
+    "061ABSR",
+    "T181S",
+    "M82A1加强版",
+    "战术巴雷特",
+    "P90",
+    "P90战术版",
+    "XM1014",
+    "白火铳",
+    "SPAS12",
+    "XM1014战术版",
+    "毒蛛",
+    "P90印花集",
+    "龙炎",
+    "AA12",
+    "战术版莫斯伯格590",
+    "钛合金P90",
+    "双管白火铳",
+    "KRISS印花集",
+    "PKM机枪",
+    "MG42",
+    "NEGEV",
+    "M134",
+    "QJZ171",
+    "PKM战术版",
+    "MG42战术版",
+    "M134暴力版",
+    "钛合金QJZ171",
+    "Milkor MGL榴弹发射器",
+    "Fire Gun",
+    "火药燃气液压打桩机",
+    "RShG4",
+    "高斯枪",
+    "能量狙击枪",
+    "战术版MGL",
+    "诛神枪",
+    "量子能量枪",
+    "轻量化量子能量枪",
+    "紫色幻想",
+    "远古诛神枪",
+    "战术版喷火器",
+    "MK23手枪",
+    "Glock 18",
+    "韦森686",
+    "Beretta90TWO",
+    "MP40",
+    "TTI 2011 Combat Master",
+    "Desert Eagle",
+    "UZI战术版",
+    "加强版mp7",
+    "AKS74U",
+    "Colt Anaconda",
+    "S&W M500",
+    "极品UZI战术版",
+    "ASSKICKER",
+    "Desert Eagle改装版",
+    "MMP80",
+    "MP7极品战术版",
+    "诛神短枪",
+    "dominator",
+    "远古诛神短枪",
+    "普通手雷",
+    "M24手榴弹",
+    "地瓜手雷",
+    "燃烧弹",
+    "高爆手雷",
+    "导弹信标",
+    "量子爆弹信标",
+    "战术核弹手雷"
+  ],
+  "aliases": {
+    "QBZ-191自动步枪": "QBZ-191",
+    "QBZ-192短自动步枪": "QBZ-192",
+    "QBU-191精准射手步枪": "QBU-191",
+    "M500": "S&W M500"
+  },
+  "unresolvedReportNames": [
+    "Famas F1",
+    "SIG552",
+    "SCAR H",
+    "TAR21",
+    "G36C",
+    "OICW",
+    "ACR",
+    "PP19",
+    "Striker",
+    "USAS12",
+    "RPK",
+    "M60E4",
+    "MG36",
+    "LSAT",
+    "铁血肩炮改",
+    "连发火箭筒",
+    "十字弩",
+    "黄金沙鹰",
+    "RPG7",
+    "M29霰弹枪",
+    "单手巴雷特"
+  ],
+  "excluded": {
+    "诺亚方舟护士狙击步枪": "现役描述明确末日后改造",
+    "AR57": "现役描述明确铁枪会改造",
+    "G111": "现役描述仍铁枪会来源；原报告射击机制引文已过时",
+    "NA45": "现役描述为末日前未完成，后拆引导改装；原报告液态炸药引文已过时",
+    "XM25": "现役描述占位用待平衡",
+    "G1111": "现役战斗步枪.xml占位用待平衡，报告文件归属错误"
+  },
+  "randomMapLevels": {
+    "A04": 39,
+    "A08": 43,
+    "A11": 47,
+    "A12": 48,
+    "A17": 56,
+    "A18": 59
+  },
+  "choiceLevels": [
+    40,
+    45,
+    50,
+    55,
+    60
+  ],
+  "historicalPolicy": {
+    "selection": "strict-historical",
+    "candidateBuildOnly": false,
+    "userDecision": "史实线保持年代限制，后期装备留给61线",
+    "acceptedWeaponNames": [
+      "M4A1战术版",
+      "AK74战术版",
+      "黄金QBZ",
+      "HK416战术版",
+      "HKSL8EX",
+      "HKSL8GOLD",
+      "AWP",
+      "WA2000",
+      "巴雷特",
+      "M82A1加强版",
+      "战术巴雷特",
+      "SPAS12",
+      "龙炎",
+      "战术版莫斯伯格590",
+      "PKM战术版",
+      "MG42战术版",
+      "M134暴力版",
+      "高斯枪",
+      "能量狙击枪",
+      "量子能量枪",
+      "轻量化量子能量枪",
+      "紫色幻想",
+      "战术版喷火器",
+      "极品UZI战术版",
+      "Desert Eagle改装版",
+      "MP7极品战术版",
+      "SAI GRY 幽灵",
+      "TTI Gen 12",
+      "DD MK18战术版",
+      "M60E3",
+      "AA12战术版",
+      "AA12丧尸",
+      "M4A1科技白",
+      "G36",
+      "AK47"
+    ],
+    "allowedTierNames": [],
+    "scope": "All actual random, choice, elite, fixed and shop sources; original ordinary G36/AK47 remain allowed below trial floor.",
+    "chronologySources": [
+      "docs/闪客快打6肉鸽-首版设计与施工拆分-2026-10-21.md:55",
+      "docs/worldbuilding/19-统合起源：从联合国到合体霸权.md:157",
+      "docs/worldbuilding/21-统合时期的超级材料学.md:129"
+    ],
+    "deferredTierForms": "All 35 direct tier forms retained as technical candidates only. No 61 route implementation or delivery.",
+    "reportTierBDefinitionLine": 26,
+    "uncertainAdmissibility": [
+      "战术版MGL",
+      "CAR冲锋枪",
+      "FSC7",
+      "追月连弩",
+      "M134暴力版的PIG版"
+    ],
+    "note": "Whitelist admits conventional/special-forces adaptations and established CF6-era advanced weapon types; it is not proof that the original game dropped each model. Unclear and later forms are not admitted by level or by a generic pre-doomsday label."
+  },
+  "historyEvidence": {
+    "53式步骑枪": {
+      "reportLine": 142,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_狙击步枪.xml",
+      "xmlName": "53式步骑枪"
+    },
+    "M4A1": {
+      "reportLine": 143,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "M4A1"
+    },
+    "M4A1改": {
+      "reportLine": 143,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "M4A1改"
+    },
+    "AUG": {
+      "reportLine": 144,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "AUG"
+    },
+    "AK74": {
+      "reportLine": 145,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "AK74"
+    },
+    "m14": {
+      "reportLine": 146,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_战斗步枪.xml",
+      "xmlName": "m14"
+    },
+    "战术版AK200": {
+      "reportLine": 150,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "战术版AK200"
+    },
+    "QBZ95": {
+      "reportLine": 152,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "QBZ95"
+    },
+    "HK416": {
+      "reportLine": 153,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "HK416"
+    },
+    "XM8": {
+      "reportLine": 155,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "XM8"
+    },
+    "穿刺QBZ95": {
+      "reportLine": 156,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "穿刺QBZ95"
+    },
+    "QBZ-191": {
+      "reportLine": 157,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "QBZ-191"
+    },
+    "QBZ-192": {
+      "reportLine": 158,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_突击步枪.xml",
+      "xmlName": "QBZ-192"
+    },
+    "M4A1战术版": {
+      "reportLine": 160,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "M4A1战术版"
+    },
+    "AK74战术版": {
+      "reportLine": 161,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "AK74战术版"
+    },
+    "无枪托ZUX197": {
+      "reportLine": 163,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_霰弹枪.xml",
+      "xmlName": "无枪托ZUX197"
+    },
+    "ZUX197": {
+      "reportLine": 164,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_霰弹枪.xml",
+      "xmlName": "ZUX197"
+    },
+    "T181": {
+      "reportLine": 165,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_反器材武器.xml",
+      "xmlName": "T181"
+    },
+    "T181C": {
+      "reportLine": 166,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_反器材武器.xml",
+      "xmlName": "T181C"
+    },
+    "非规格步枪": {
+      "reportLine": 167,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "非规格步枪"
+    },
+    "黄金QBZ": {
+      "reportLine": 168,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_霰弹枪.xml",
+      "xmlName": "黄金QBZ"
+    },
+    "HK416战术版": {
+      "reportLine": 169,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "HK416战术版"
+    },
+    "Sniper": {
+      "reportLine": 175,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_狙击步枪.xml",
+      "xmlName": "Sniper"
+    },
+    "中国88式狙击步枪": {
+      "reportLine": 176,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_战斗步枪.xml",
+      "xmlName": "中国88式狙击步枪"
+    },
+    "SVD": {
+      "reportLine": 177,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_战斗步枪.xml",
+      "xmlName": "SVD"
+    },
+    "QBU-191": {
+      "reportLine": 178,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_战斗步枪.xml",
+      "xmlName": "QBU-191"
+    },
+    "HKSL8EX": {
+      "reportLine": 179,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_战斗步枪.xml",
+      "xmlName": "HKSL8EX"
+    },
+    "HKSL8GOLD": {
+      "reportLine": 179,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_战斗步枪.xml",
+      "xmlName": "HKSL8GOLD"
+    },
+    "AWP": {
+      "reportLine": 180,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_狙击步枪.xml",
+      "xmlName": "AWP"
+    },
+    "WA2000": {
+      "reportLine": 181,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_狙击步枪.xml",
+      "xmlName": "WA2000"
+    },
+    "wa90变形款": {
+      "reportLine": 182,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_特殊.xml",
+      "xmlName": "wa90变形款"
+    },
+    "巴雷特": {
+      "reportLine": 183,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_反器材武器.xml",
+      "xmlName": "巴雷特"
+    },
+    "061ABSR": {
+      "reportLine": 184,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_反器材武器.xml",
+      "xmlName": "061ABSR"
+    },
+    "T181S": {
+      "reportLine": 185,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_反器材武器.xml",
+      "xmlName": "T181S"
+    },
+    "M82A1加强版": {
+      "reportLine": 186,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_反器材武器.xml",
+      "xmlName": "M82A1加强版"
+    },
+    "战术巴雷特": {
+      "reportLine": 187,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_反器材武器.xml",
+      "xmlName": "战术巴雷特"
+    },
+    "P90": {
+      "reportLine": 193,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_冲锋枪.xml",
+      "xmlName": "P90"
+    },
+    "P90战术版": {
+      "reportLine": 193,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_冲锋枪.xml",
+      "xmlName": "P90战术版"
+    },
+    "XM1014": {
+      "reportLine": 194,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_霰弹枪.xml",
+      "xmlName": "XM1014"
+    },
+    "白火铳": {
+      "reportLine": 195,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_霰弹枪.xml",
+      "xmlName": "白火铳"
+    },
+    "SPAS12": {
+      "reportLine": 196,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_霰弹枪.xml",
+      "xmlName": "SPAS12"
+    },
+    "XM1014战术版": {
+      "reportLine": 198,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_霰弹枪.xml",
+      "xmlName": "XM1014战术版"
+    },
+    "毒蛛": {
+      "reportLine": 200,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_特殊.xml",
+      "xmlName": "毒蛛"
+    },
+    "P90印花集": {
+      "reportLine": 201,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_冲锋枪.xml",
+      "xmlName": "P90印花集"
+    },
+    "龙炎": {
+      "reportLine": 203,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_特殊.xml",
+      "xmlName": "龙炎"
+    },
+    "AA12": {
+      "reportLine": 204,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_霰弹枪.xml",
+      "xmlName": "AA12"
+    },
+    "战术版莫斯伯格590": {
+      "reportLine": 205,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_手枪_霰弹枪.xml",
+      "xmlName": "战术版莫斯伯格590"
+    },
+    "钛合金P90": {
+      "reportLine": 206,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_冲锋枪.xml",
+      "xmlName": "钛合金P90"
+    },
+    "双管白火铳": {
+      "reportLine": 207,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_霰弹枪.xml",
+      "xmlName": "双管白火铳"
+    },
+    "KRISS印花集": {
+      "reportLine": 208,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_冲锋枪.xml",
+      "xmlName": "KRISS印花集"
+    },
+    "PKM机枪": {
+      "reportLine": 214,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_机枪.xml",
+      "xmlName": "PKM机枪"
+    },
+    "MG42": {
+      "reportLine": 214,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_压制机枪.xml",
+      "xmlName": "MG42"
+    },
+    "NEGEV": {
+      "reportLine": 216,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_机枪.xml",
+      "xmlName": "NEGEV"
+    },
+    "M134": {
+      "reportLine": 217,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_压制机枪.xml",
+      "xmlName": "M134"
+    },
+    "QJZ171": {
+      "reportLine": 221,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_机枪.xml",
+      "xmlName": "QJZ171"
+    },
+    "PKM战术版": {
+      "reportLine": 222,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_机枪.xml",
+      "xmlName": "PKM战术版"
+    },
+    "MG42战术版": {
+      "reportLine": 223,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_压制机枪.xml",
+      "xmlName": "MG42战术版"
+    },
+    "M134暴力版": {
+      "reportLine": 224,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_压制机枪.xml",
+      "xmlName": "M134暴力版"
+    },
+    "钛合金QJZ171": {
+      "reportLine": 225,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_机枪.xml",
+      "xmlName": "钛合金QJZ171"
+    },
+    "Milkor MGL榴弹发射器": {
+      "reportLine": 231,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_发射器.xml",
+      "xmlName": "Milkor MGL榴弹发射器"
+    },
+    "Fire Gun": {
+      "reportLine": 232,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_特殊.xml",
+      "xmlName": "Fire Gun"
+    },
+    "火药燃气液压打桩机": {
+      "reportLine": 233,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_近战.xml",
+      "xmlName": "火药燃气液压打桩机"
+    },
+    "RShG4": {
+      "reportLine": 235,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_发射器.xml",
+      "xmlName": "RShG4"
+    },
+    "高斯枪": {
+      "reportLine": 238,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_反器材武器.xml",
+      "xmlName": "高斯枪"
+    },
+    "能量狙击枪": {
+      "reportLine": 239,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_狙击步枪.xml",
+      "xmlName": "能量狙击枪"
+    },
+    "战术版MGL": {
+      "reportLine": 240,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_发射器.xml",
+      "xmlName": "战术版MGL"
+    },
+    "诛神枪": {
+      "reportLine": 241,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_特殊.xml",
+      "xmlName": "诛神枪"
+    },
+    "量子能量枪": {
+      "reportLine": 242,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "量子能量枪"
+    },
+    "轻量化量子能量枪": {
+      "reportLine": 243,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_手枪_冲锋枪.xml",
+      "xmlName": "轻量化量子能量枪"
+    },
+    "紫色幻想": {
+      "reportLine": 244,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_特殊.xml",
+      "xmlName": "紫色幻想"
+    },
+    "远古诛神枪": {
+      "reportLine": 245,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_特殊.xml",
+      "xmlName": "远古诛神枪"
+    },
+    "战术版喷火器": {
+      "reportLine": 246,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_特殊.xml",
+      "xmlName": "战术版喷火器"
+    },
+    "MK23手枪": {
+      "reportLine": 256,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_手枪.xml",
+      "xmlName": "MK23手枪"
+    },
+    "Glock 18": {
+      "reportLine": 256,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_冲锋枪.xml",
+      "xmlName": "Glock 18"
+    },
+    "韦森686": {
+      "reportLine": 257,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_大威力手枪.xml",
+      "xmlName": "韦森686"
+    },
+    "Beretta90TWO": {
+      "reportLine": 258,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_手枪.xml",
+      "xmlName": "Beretta90TWO"
+    },
+    "MP40": {
+      "reportLine": 258,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_冲锋枪.xml",
+      "xmlName": "MP40"
+    },
+    "TTI 2011 Combat Master": {
+      "reportLine": 259,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_手枪.xml",
+      "xmlName": "TTI 2011 Combat Master"
+    },
+    "Desert Eagle": {
+      "reportLine": 260,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_大威力手枪.xml",
+      "xmlName": "Desert Eagle"
+    },
+    "UZI战术版": {
+      "reportLine": 261,
+      "reportClass": "tier-or-crafting-base",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_冲锋枪.xml",
+      "xmlName": "UZI战术版"
+    },
+    "加强版mp7": {
+      "reportLine": 262,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_冲锋枪.xml",
+      "xmlName": "加强版mp7"
+    },
+    "AKS74U": {
+      "reportLine": 263,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "AKS74U"
+    },
+    "Colt Anaconda": {
+      "reportLine": 266,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_大威力手枪.xml",
+      "xmlName": "Colt Anaconda"
+    },
+    "S&W M500": {
+      "reportLine": 267,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_大威力手枪.xml",
+      "xmlName": "S&W M500"
+    },
+    "极品UZI战术版": {
+      "reportLine": 268,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_手枪_冲锋枪.xml",
+      "xmlName": "极品UZI战术版"
+    },
+    "ASSKICKER": {
+      "reportLine": 269,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_霰弹枪.xml",
+      "xmlName": "ASSKICKER"
+    },
+    "Desert Eagle改装版": {
+      "reportLine": 270,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_手枪_大威力手枪.xml",
+      "xmlName": "Desert Eagle改装版"
+    },
+    "MMP80": {
+      "reportLine": 271,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_长枪_冲锋枪.xml",
+      "xmlName": "MMP80"
+    },
+    "MP7极品战术版": {
+      "reportLine": 272,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_手枪_冲锋枪.xml",
+      "xmlName": "MP7极品战术版"
+    },
+    "诛神短枪": {
+      "reportLine": 273,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_特殊.xml",
+      "xmlName": "诛神短枪"
+    },
+    "dominator": {
+      "reportLine": 276,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_特殊.xml",
+      "xmlName": "dominator"
+    },
+    "远古诛神短枪": {
+      "reportLine": 277,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/武器_手枪_特殊.xml",
+      "xmlName": "远古诛神短枪"
+    },
+    "普通手雷": {
+      "reportLine": 287,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/消耗品_手雷.xml",
+      "xmlName": "普通手雷"
+    },
+    "M24手榴弹": {
+      "reportLine": 288,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/消耗品_手雷.xml",
+      "xmlName": "M24手榴弹"
+    },
+    "地瓜手雷": {
+      "reportLine": 289,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/消耗品_手雷.xml",
+      "xmlName": "地瓜手雷"
+    },
+    "燃烧弹": {
+      "reportLine": 290,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/消耗品_手雷.xml",
+      "xmlName": "燃烧弹"
+    },
+    "高爆手雷": {
+      "reportLine": 291,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/消耗品_手雷.xml",
+      "xmlName": "高爆手雷"
+    },
+    "导弹信标": {
+      "reportLine": 292,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/消耗品_手雷.xml",
+      "xmlName": "导弹信标"
+    },
+    "量子爆弹信标": {
+      "reportLine": 293,
+      "reportClass": "Tier B",
+      "reportScope": "61-simulation-or-special-approval",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "xmlSource": "data/items/消耗品_手雷.xml",
+      "xmlName": "量子爆弹信标"
+    },
+    "战术核弹手雷": {
+      "reportLine": 294,
+      "reportClass": "Tier A",
+      "reportScope": "reference-only-not-historical-proof",
+      "historicalDecision": "deferred-or-below-trial-level",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/消耗品_手雷.xml",
+      "xmlName": "战术核弹手雷"
+    },
+    "SAI GRY 幽灵": {
+      "reportClass": "current-source-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "SAI GRY 幽灵"
+    },
+    "TTI Gen 12": {
+      "reportClass": "current-source-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_霰弹枪.xml",
+      "xmlName": "TTI Gen 12"
+    },
+    "DD MK18战术版": {
+      "reportClass": "current-source-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "DD MK18战术版"
+    },
+    "M60E3": {
+      "reportClass": "current-source-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_机枪.xml",
+      "xmlName": "M60E3"
+    },
+    "AA12战术版": {
+      "reportClass": "current-source-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_霰弹枪.xml",
+      "xmlName": "AA12战术版"
+    },
+    "AA12丧尸": {
+      "reportClass": "current-source-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_霰弹枪.xml",
+      "xmlName": "AA12丧尸"
+    },
+    "M4A1科技白": {
+      "reportClass": "current-source-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "M4A1科技白"
+    },
+    "G36": {
+      "reportClass": "current-source-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "G36"
+    },
+    "AK47": {
+      "reportClass": "current-source-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "AK47"
+    }
+  },
+  "historicalReplacements": {
+    "elite": {
+      "E1": [
+        "SAI GRY 幽灵"
+      ],
+      "E2": [
+        "TTI Gen 12",
+        "AA12丧尸"
+      ],
+      "E3": [
+        "HK416战术版",
+        "PKM战术版"
+      ],
+      "E4": [
+        "MG42战术版",
+        "M134暴力版"
+      ],
+      "E5": [
+        "量子能量枪",
+        "战术版喷火器"
+      ]
+    },
+    "fixed": {
+      "A10": [
+        "SPAS12"
+      ],
+      "A15": [
+        "MP7极品战术版"
+      ]
+    }
+  }
+}

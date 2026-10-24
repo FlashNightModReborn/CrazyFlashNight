@@ -143,6 +143,26 @@ class org.flashNight.arki.scene.Cf6EconomyRulesTest {
         var supportPlan:Array=Cf6EconomyRules.maps(support,1729);
         check(supportPlan[1].bossEncounter.groups[0].enemies[0].Parameters.长枪=="SAI GRY 幽灵#1","reinforcement plan receives same-model equipment and drop");
         check(support.maps[1].bossEncounter.groups[0].enemies[0].Parameters.长枪=="OLD#11","support source remains immutable");
+        var shared:Object=fixture();
+        shared.economy.randomWeapons.push({mapId:"A13",choices:org.flashNight.gesh.object.PersistedSnapshot.clone(shared.economy.randomWeapons[0].choices)});
+        check(Cf6EconomyRules.valid(shared),"ordinary random maps may share candidates while keeping each pool unique");
+        var dual:Object=fixture();
+        dual.economy.randomWeapons[0].choices=[{weapon:"极品UZI战术版",ammo:"冲锋枪通用弹药",ammoCount:6,weaponCount:2},
+            {weapon:"MMP80",ammo:"冲锋枪通用弹药",ammoCount:6,weaponCount:2}];
+        check(Cf6EconomyRules.valid(dual),"finite dual short-gun candidates are admitted");
+        var dualBefore:String=codec.stringifySafe(dual),dualPlan:Array=Cf6EconomyRules.maps(dual,1729);
+        var dualPicks:Array=dualPlan[0].stage.Pickups.Pickup;
+        check(dualPicks.length==3&&dualPicks[0].Name==dualPicks[1].Name&&dualPicks[0].Value===1&&dualPicks[1].Value===1
+            &&dualPicks[0]!==dualPicks[1],"dual short guns become two independent enhancement-one pickups");
+        check(dualPicks[2].Name=="冲锋枪通用弹药"&&dualPicks[2].Value===6,"dual pickups retain their total matching ammunition");
+        check(codec.stringifySafe(Cf6EconomyRules.maps(dual,1729))==codec.stringifySafe(dualPlan)
+            &&codec.stringifySafe(dual)==dualBefore,"dual selection stays seeded and leaves source unchanged");
+        dual.economy.randomWeapons[0].choices[0].weaponCount=true;
+        check(!Cf6EconomyRules.valid(dual),"boolean weapon count is not a second equipment instance");
+        dual.economy.randomWeapons[0].choices[0].weaponCount=3;
+        check(!Cf6EconomyRules.valid(dual),"weapon instance count stays bounded to two");
+        dual=fixture();dual.economy.eliteWeapons[0].choices[0].weaponCount=2;
+        check(!Cf6EconomyRules.valid(dual),"elite long-gun carrier cannot deliver dual short-gun count");
         var legacy:Object=fixture();delete legacy.economy;
         var legacyCopy:Array=Cf6EconomyRules.maps(legacy,1);
         check(Cf6EconomyRules.valid(legacy) && sameData(legacyCopy,legacy.maps,0),"no economy preserves every authored key, type, array index and value");

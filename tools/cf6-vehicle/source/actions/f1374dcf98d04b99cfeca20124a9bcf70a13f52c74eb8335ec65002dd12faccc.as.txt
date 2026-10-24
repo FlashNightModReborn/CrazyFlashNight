@@ -1,0 +1,12 @@
+onClipEvent(load){
+   var §\x01§ = 801;
+   var §\x0f§ = 1;
+   var myPoint = {x:0,y:0};
+   this.localToGlobal(myPoint);
+   _root.gameworld.globalToLocal(myPoint);
+   shootX = myPoint.x;
+   shootY = myPoint.y + random(50) - 25;
+   子弹碎片2depth = random(50);
+   子弹碎片2b_name = "弹壳" + 子弹碎片2depth;
+   _root.gameworld.效果.attachMovie("弹壳碎片",子弹碎片2b_name,_root.gameworld.效果.getNextHighestDepth(),{_x:shootX,_y:shootY});
+}

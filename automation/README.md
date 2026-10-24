@@ -88,7 +88,7 @@ cd "<项目根目录>"
 
 `-Status` 只读报告当前身份、精确匹配和同身份闭包分叉；`-ReuseOnly` 禁止缓存未命中时构建；`-ForceBuild` 强制新建 candidate，但新旧同身份闭包不一致仍 fail-closed；`-BuildOnly` 只选择/构建并验证 candidate，不启动进程。`-CandidateLeaf` 只允许与 exact `-ForceBuild -BuildOnly` 组合使用，值必须是 1–32 个小写 ASCII 字母、数字或连字符组成的单一路径段；入口在 `tmp/runtime-candidates/v2` 下构造 direct child、复用既有 canonical/reparse 护栏并预检 bootstrap `<260` 路径预算，再把绝对 `CandidateRoot` 交给 producer。已存在的叶节点一律按 immutable candidate 拒绝，绝不启用 `ForceReplace`。该参数用于长路径隔离 Worktree，不改变 build identity、payload closure 或正式发布协议。忽略路径 `tmp/runtime-dev/active.v1.json` 只是便于精确复用的索引，每次执行前都会重算 Worktree 身份并重验 candidate，不是信任或部署证据。
 
-开发入口构建时默认将固定 WebView2 缓存放在当前用户的 `%LOCALAPPDATA%\CF7BuildCache\w2`，避免深项目根把 CAB 解压后的文件路径推过既有 240 UTF-16 预算。可用 `-WebView2CacheDirectory C:\w23` 指定另一短本机路径；显式空值拒绝，路径合法性、重解析点、锁定 CAB 摘要和缓存内容仍由既有底层预检验证。`-Status`、`-ReuseOnly` 不解析或创建该构建缓存。`launcher/build.ps1` 仅在提供非空参数时向 producer 透传；直接正式 producer 的默认值与发布策略不变。
+开发入口构建时默认将固定 WebView2 缓存放在当前用户的 `%LOCALAPPDATA%\CF7\w2`，避免深项目根把 CAB 解压后的文件路径推过既有 240 UTF-16 预算；真实 lock 回归包含 `runneradmin` 用户目录。用户目录更长时仍会按原预算拒绝，可用 `-WebView2CacheDirectory C:\w23` 指定另一短本机路径。旧缓存保留，不自动搬迁或清理。显式空值拒绝，路径合法性、重解析点、锁定 CAB 摘要和缓存内容仍由既有底层预检验证。`-Status`、`-ReuseOnly` 不解析或创建该构建缓存。`launcher/build.ps1` 仅在提供非空参数时向 producer 透传；直接正式 producer 的默认值与发布策略不变。
 
 完整游戏 E2E 还受 Flash 既有资源定位约束：当前项目根的 canonical 路径必须保留 `...\resources` 这一层级语义。现有 main 仓库已满足该条件，可直接从根 `本地开发启动.cmd` 测试；开发隔离由 candidate 提供，不要求额外 Worktree 或 Steam 所有权验证。仅在确需独立源码/存档环境时，才把额外 Worktree 建成 `<隔离目录>\resources` 并从该根运行 `automation/dev.ps1`；不要把普通目录副本当成 Git 开发仓库，也不要覆盖其他施工物料。仅构建、静态门和 Host/Web 单测不需要这一完整游戏路径形态。
 

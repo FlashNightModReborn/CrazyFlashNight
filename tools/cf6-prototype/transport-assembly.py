@@ -2,6 +2,9 @@
 from pathlib import Path
 import json
 import math
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "cf6-roguelike-content"))
+import difficulty_plan
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / 'tools/cf6-scene-completion/transport-art-manifest.json'
@@ -39,7 +42,10 @@ def adapt(chapter, require_swfs=True):
             raise ValueError('transport placement transform changed')
         if 'transport' in stage['mechanism']: raise ValueError('transport already assembled')
         waves = stage['stage']['Wave']['SubWave']
-        if len(waves) != 2 or len(waves[1]['EnemyGroup']['Enemy']) != 1:
+        difficulty = difficulty_plan.metadata(stage)
+        if (len(waves) != (len(difficulty['waveKinds']) if difficulty else 2)
+                or difficulty is not None and difficulty['waveKinds'][1] != 'transport'
+                or len(waves[1]['EnemyGroup']['Enemy']) != 1):
             raise ValueError('transport budget wave changed')
         enemy = waves[1]['EnemyGroup']['Enemy'][0]
         if ((enemy['Type'],enemy['Level'],enemy['Quantity'],enemy['Interval'],enemy['SpawnIndex'])

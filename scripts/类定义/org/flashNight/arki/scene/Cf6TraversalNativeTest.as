@@ -198,7 +198,34 @@ class org.flashNight.arki.scene.Cf6TraversalNativeTest {
             check(hero.man._currentframe==2 && sideEffects==0 && hero.man.__cf6TraversalAnimationOwner==undefined,"release cannot autoplay upper-body combat actions "+index);
             check(row.kind!="elevator" || hero.状态==row.mode+"站立","normal arrival restores standard standing pose "+index);
             trace("Cf6TraversalNative Case: mode="+row.mode+" kind="+row.kind+" frames="+t.rules.frame+" upperEscapes="+row.upperEscapes+" sideEffects="+sideEffects+" walkingTurns="+row.walkSamples);
+            if(row.kind=="elevator") {
+                hero.状态改变(row.mode+"行走");room.kind="elevator";
+                stage="hold-warm";age=0;return;
+            }
             nextCase();
+        }
+        if(stage=="hold-warm" && age==3) {
+            check(hero.状态==row.mode+"行走","native positive walking pose before elevator hold "+index);
+            check(Cf6MapMechanism.holdElevatorActor(room,hero) && hero.状态==row.mode+"站立","elevator hold selects real standing root pose "+index);
+            row.holdEscapes=0;row.holdFrames={};stage="hold-observe";age=0;return;
+        }
+        if(stage=="hold-observe") {
+            if(hero.状态!=row.mode+"站立" || hero.man._currentframe!=2) row.holdEscapes++;
+            for(var legKey:String in hero) {
+                var leg:MovieClip=hero[legKey];
+                if(typeof leg!="movieclip" || leg._parent!==hero || leg===hero.man || leg._totalframes!==22) continue;
+                if(row.holdFrames[legKey]!==undefined && row.holdFrames[legKey]!==leg._currentframe) row.holdEscapes++;
+                row.holdFrames[legKey]=leg._currentframe;
+            }
+            if(age==12) {
+                check(row.holdEscapes==0 && sideEffects==0,"twelve real enterFrame turns cannot restart walking legs or gun actions "+index);
+                Cf6MapMechanism.releaseElevatorActor(room);
+                check(hero.行走===row.walk && hero.按键控制攻击模式===row.switchMode && hero.按键检测===row.keyCheck
+                    && hero.__cf6ElevatorPoseOwner===undefined,"native elevator input CAS restored "+index);
+                hero.状态改变(row.mode+"行走");
+                check(hero.状态==row.mode+"行走","native disembark may walk after hold released "+index);
+                nextCase();
+            }
         }
     }
     private static function finish():Void {

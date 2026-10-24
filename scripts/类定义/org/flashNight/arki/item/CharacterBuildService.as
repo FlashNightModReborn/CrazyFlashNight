@@ -290,6 +290,12 @@ class org.flashNight.arki.item.CharacterBuildService {
         var liveChanged:Boolean = _liveSignature != scan.liveSignature
             || refsChanged;
         var drugChanged:Boolean = currentDrugRevision != _drugRawRevision;
+        // A -> B -> A can match the actor's old canonical refs while our committed
+        // equipment invalidation is still pending. Only a settled coordinator may
+        // use the aligned shortcut; pending work must keep its ticketed full path.
+        var projectionCoordinator:Object = statCoordinator();
+        var equipmentProjectionPending:Boolean = projectionCoordinator != null
+            && (projectionCoordinator.diagnostics().dirtyMask & 4) != 0;
         if (loadoutChanged) {
             _loadoutRevision++;
             _signature = scan.signature;
@@ -300,12 +306,12 @@ class org.flashNight.arki.item.CharacterBuildService {
                 return poison("live_unavailable");
             }
             if (liveStatus == RuntimeEquipmentProjection.STATUS_ALIGNED
-                    && !_liveRefreshRetryRequired) {
+                    && !_liveRefreshRetryRequired && !equipmentProjectionPending) {
                 // 允许其他已授权写路径先完成一次 Dressup；manager 的 applied stamp
                 // 是比会话内旧签名更可靠的当前事实，避免随后重复刷新并清 Buff。
                 _liveRefreshDirty = false;
                 _liveRevision = _loadoutRevision;
-            } else if (liveChanged || _liveRefreshRetryRequired) {
+            } else if (liveChanged || _liveRefreshRetryRequired || equipmentProjectionPending) {
                 _liveRefreshDirty = true;
             } else if (!_liveRefreshDirty) {
                 _liveRevision = _loadoutRevision;
@@ -316,7 +322,7 @@ class org.flashNight.arki.item.CharacterBuildService {
             if (currentLiveStatus == RuntimeEquipmentProjection.STATUS_INVALID) {
                 return poison("live_unavailable");
             }
-            if (currentLiveStatus == RuntimeEquipmentProjection.STATUS_ALIGNED) {
+            if (currentLiveStatus == RuntimeEquipmentProjection.STATUS_ALIGNED && !equipmentProjectionPending) {
                 _liveRefreshDirty = false;
                 _liveRevision = _loadoutRevision;
             }

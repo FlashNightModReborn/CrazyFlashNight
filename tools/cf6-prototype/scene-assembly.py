@@ -19,6 +19,7 @@ PLAN = PREP / 'completion-plan.json'
 ART = PREP / 'traversal-art-manifest.json'
 DEPTH_PROPS = ROOT / 'tools/cf6-prop-layout/generated/depth-props.fragment.json'
 AUX = PREP / 'auxiliary-art-manifest.json'
+SCENIC_WINGS = PREP / 'scenic-wings-manifest.json'
 NATIVE_MAPS = ROOT / 'tools/cf6-map-source/generated/map-input.json'
 ELEVATOR_EXIT_SOURCE = ROOT / 'flashswf/arts/new/Codex素材源稿/CF6地图/A11-R2/cf6-stage11-redraw-r2/reference/environment-original-nodes.json'
 ELEVATOR_EXIT_GEOMETRY = ROOT / 'tools/cf6-map-runtime/generated/A11-original-geometry.json'
@@ -199,6 +200,26 @@ def auxiliary_layers(maps, envs, audit, require_swfs):
                       'basis':'complete source timeline and native shear retained; source area gate separate from visual floor pivot'})
 
 
+def scenic_wings(maps, audit, require_swfs):
+    source=read(SCENIC_WINGS)
+    if source['schema']!='cf6-scenic-wings.v1' or source['frames']!=15 or source['sourceSprite']!=1777:
+        raise ValueError('unreviewed scenic actor source')
+    asset=ROOT/source['xfl'];runtime=ROOT/source['swf']
+    if not asset.is_file() or require_swfs and not runtime.is_file():
+        raise ValueError('fresh CS6 scenic Wings resource required')
+    for place in source['placements']:
+        node=maps[place['mapId']];scale=node['presentation']['scale'];matrix=place['nativeMatrix']
+        body=source['bodyScale'];x,y=[rounded(v*scale) for v in matrix[4:]]
+        layer={'id':place['mapId']+'-scenic-wings','role':'scenic-actor','url':source['swf'],
+               'x':x,'y':y,'sortY':y,'width':1,'height':1,'depth':place['sourceDepth'],'frames':15,
+               'visualScale':1,'artMatrix':[round(v*body,9) for v in matrix[:4]]+[0,0]}
+        if place.get('speech'):layer['speech']=place['speech']
+        node['mechanism']['layers'].append(layer)
+        audit.append({'id':layer['id'],'sourceSprite':1777,'sourceDepth':place['sourceDepth'],
+                      'worldFootpoint':[x,y],'bodyScale':body,
+                      'basis':'original visual-only actor; current native 190cm standing art; no combat or protection authority'})
+
+
 def adapt(chapter, environment_bytes, require_swfs=True):
     plan, art = read(PLAN), read(ART)
     if plan['schema'] != 'cf6-scene-completion-plan.v1' or art['schema'] != 'cf6-traversal-native-source.v1':
@@ -294,6 +315,7 @@ def adapt(chapter, environment_bytes, require_swfs=True):
                       'platformAlighting': [approach, exit_point],
                       'basis': 'CF7 continuous staging; existing shaft/foreground retained; no fabricated gate leaf'})
     auxiliary_layers(maps, envs, audit, require_swfs)
+    scenic_wings(maps, audit, require_swfs)
     props = read(DEPTH_PROPS)
     if props['schema'] != 'cf6-depth-props-fragment.v1' or set(props['maps']) != {'A06'}:
         raise ValueError('unreviewed depth-prop route')

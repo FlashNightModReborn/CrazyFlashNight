@@ -1,4 +1,4 @@
-# CF6 场景机关、人物通行与 A07 前置施工
+# CF6 场景机关、人物通行与车辆规则
 
 本目录承接[章节设计基线](../../docs/闪客快打6肉鸽-首版设计与施工拆分-2026-10-21.md)的机关演出与车战后续。
 2026-10-23 已接收额外门、电梯和车辆源资产，并按追加授权修复摆件比例、前后层与原作机关触发。
@@ -7,7 +7,7 @@
 
 施工基线 `cc5cd91d5ae96fac4532401188dc077151d8de7d`。生产接线由
 [`scene-assembly.py`](../cf6-prototype/scene-assembly.py) 与 `Cf6MapMechanism` / `Cf6TraversalService` 持有。
-现役终局按[章节装配](../cf6-prototype/README.md)合并为A20同房间两阶段；原遭遇与经济配额不增加。A07 的完整玩法仍是后续施工。
+现役终局按[章节装配](../cf6-prototype/README.md)合并为A20同房间两阶段。2026-10-24的章内难度源已重排普通必清波次，培养皿、运输车及精英奖励仍各守原配额。A07完整车战已接入本轮源码，原生资源和服务的唯一入口为[车辆工具链](../cf6-vehicle/README.md)；本目录继续拥有`Cf6VehicleRules`编辑源。
 
 ## 生产接线与恢复边界
 
@@ -18,9 +18,9 @@
 与淡出权威自动离场。成功保留最终门内姿态直到被遮罩覆盖的原场景拆除，不回填门前闪现。
 明确拒绝才归还标准手动出口；未知结果不重放，不清既有持久化锁。1729 第 122 帧归还人物，门继续至174。
 
-人物输入用独立暂停 claim，控制块回调用普通对象 token 与函数 CAS 管理；外部暂停、真实死亡、
-人物/World/StageManager 替换与迟到 tick 均有取消路径。`PauseManager.isPausedExcept` 只豁免确切存活
-claim，其他同名 owner、手动暂停和奖励持久写 pending 仍冻结演出。未改存档、奖励或 A07 路线。
+人物输入用独立暂停 claim，控制块回调用普通对象 token 与函数 CAS 管理。普通死亡暂停本房间机关并归还人物控制，保留已有波次和资源；仅同世界、同人物出生身份的实际复活能恢复。未完成的登离场从既有冻结轨迹重新开始，已完成轨迹不重播；真正换人、换世界、关卡失败或返回才清理。`PauseManager.isPausedExcept`只豁免确切存活claim，其他同名owner、手动暂停和奖励持久写pending仍冻结演出，不借复活解除持久写锁。
+
+电梯准备、移动结束及开门等待期间接管人物站姿，登离梯路径才显示行走；正常战斗阶段的移动能力保持。真实清场提示先锁存，等待人物可见且入场完成后只显示一次统一的“OK LET'S GO”，与最后的标准`clearStage`提示去重。
 
 现役`SceneReady`资源就绪屏障同步准备入场显隐与方向token，覆盖`beginRoom`在其之前或之后的顺序。资源加载等待期间不露出默认出生点，首个有效轨迹样本就位后才恢复原可见性；原本隐藏、外部mask及被替换owner不强行显露。朝向按冻结轨迹的主运动轴确定，竖向轨迹保持接管时方向，不再逐帧把鞋锚摆动当转身。离场明确受理后另登记现役`PlayerResourceTransferBridge`意图，登记失败保留未知状态，不重放淡出。
 
@@ -56,6 +56,35 @@ A17仍由原有限Boss支援控制器持有预占、并发上限和取消，只�
 同一事件只尝试一次，实际出生及完整初始化后才结束；未知结果不重放。普通清场后桶仍可活动，培养皿不再请求出生。
 
 A17等待支援名额时保持完整舱内画面，控制器领取名额后才显示短交接姿态；真实单位完整初始化后结束。Boss死亡取消已启动的舱体画稿，未触发的舱体保留；晚到加载或出生回调不能重新激活取消项。运输车在本房间清场后保持最后开门画面，真实离场、失败或世界身份更替才卸载。
+
+## 清场提示、乘梯站姿与场景 Wings
+
+清场提示由 `Cf6ExitGuideService.showClearCue` 在真实清场请求锁存、入场完成且人物已可见后调用现役“小过关提示动画”；
+其普通对象回执绑定 World owner、StageManager 和 stage，最终 `clearStage` 只跳过同一回执的重复投射。
+提示不提前发布 Clear、不开放出口；投射异常也不按帧盲重放。待战箭头与真实门口接管规则保持不变。
+
+电梯关闭和清场后的减速／停稳阶段由 `holdElevatorActor` 切换人物真实 `攻击模式+站立` 根姿态，
+并以独立 token 与回调 CAS 暂时接管输入。它不在旧行走腿帧上调用 `stop()`；原生腿的 enterFrame 因而不能重新播放旧走路姿态。
+正常释放只归还仍属本服务的输入槽，不回填旧行走或死亡姿态；登梯、离梯仍由原通行轨迹走路，移动战斗阶段保留自由输入。
+同路径重建、外国回调替换、死亡与登梯归属分别由 mechanism focused 覆盖；真实长枪／手枪／双枪腿部停步另由 traversal-native runner 验证。
+
+`build_scenic_wings.py` 从现役 Wings R3 的 15 帧站姿导出独立纯矢量源，递归移除脚本、声音与 linkage，
+保留当前 190cm 身体标定。第五轮核对原作1777的粉发/粉衣后，独立 `scenic-wings-palette.json` 对33份身体分件作显式色表适配；皮肤、武器、渐变透明度、动作和注册点保持，蓝色敌方Wings源不改。色表、原作身份和全部分件共同进入manifest及实际消费者闭包，真实AVM1两侧像素验证粉色主体。A06/A08 的位置和朝向来自冻结原 SWF 的 world1778/depth186 与 world1841/depth158；
+原 sprite1777 及依赖 sprite1772 均无帧或子实例脚本，外层实例只排序，不能据此新增可受伤目标、AI、血量或保护任务。
+A06 头顶保留原触发器1455的“Andy！救我！”直到真实清场请求；A08只补赛车旁人物，不扩写对话。
+
+```powershell
+python -X utf8 -B tools/cf6-scene-completion/build_scenic_wings.py
+python -X utf8 -B tools/cf6-scene-completion/build_scenic_wings.py --check
+python scripts/tools/xfl/audit.py flashswf/backgrounds/cf6/preparation/CF6_ScenicWings
+# 由已获授权的根编译队列串行执行：
+powershell -File scripts/compile_test.ps1 -Target flashswf/backgrounds/cf6/preparation/CF6_ScenicWings/CF6_ScenicWings.xfl -PublishOnly -VerifySwf flashswf/backgrounds/cf6/preparation/CF6_ScenicWings.swf
+```
+
+14个可爆桶均以原作世界脚点保持落地；本体原生尺寸不变，只反算注册点：
+`displayY=(nativeY+localFloorY)*mapScale-localFloorY`。当前三个桶型的局部底边为44.5，
+因此相对旧中心缩放放置下移31.4467世界像素。`groundY/sortY`使用修正后的真实脚点，原相对命中包络及十个培养皿出生点保持不变。
+源码、装配检查、CS6编译、原生行为与实际游戏视觉分别留证，不能互相代签。
 
 ## 已准备的可消费内容
 
@@ -136,8 +165,7 @@ python -X utf8 -B tools/cf6-scene-completion/build_transport_art.py --assemble -
 文件名、库内部名、Include及实例引用由同一生成名称驱动；旧长名只在原manifest所有权和字节校验成立时精确退出。
 `build_traversal_art.py --check` 同时拒绝旧命名空间残留，安全回归见 `test_traversal_art.py`。
 路径验收同时使用仓库现有[路径预算门](../path-budget/README.md)的CI根模型和实际检出根；不增加例外或放宽政策。
-九份门 XFL 已是源工程；四类车辆资源目前是原生 XML 片段，须先由 CS6 导入纹理建立真实缓存，
-再装配文档、时间轴与原始角色/车轮/枪口动画。禁止伪造 `bin` 缓存或手写 SWF 绕过这一步。
+九份门XFL已是源工程；本目录旧四类车辆XML片段保留为来源材料，完整A07已在车辆工具链中完成真实CS6纹理导入、工程装配与资源发布。禁止伪造`bin`缓存或手写SWF，旧片段不作为另一个运行编辑源。
 
 ## 真实验证与后续施工
 
@@ -148,10 +176,9 @@ python -X utf8 -B tools/cf6-scene-completion/build_transport_art.py --assemble -
    核对实际路径、identity 与 closure。隔离工作树产物不能覆盖已验收效果/音频的 asLoader。
 4. A10/A13 补平台/门锚点与登离梯路径，保持真实击杀清关。完成 A09→A10→A11、A12→A13→A14
    两条正常链和中断链；规则 suite 不能代签这些实际场景。
-5. A07 装配滚动层、玩家车轮/双枪/死亡、装甲车 209 帧及专用碰撞敌人，接入既有子弹/音频/伤害权威。
+5. A07现役装配含滚动层、玩家车轮/双枪/死亡、装甲车209帧及专用碰撞敌人，接入既有音频/伤害权威；车辆工具链负责真实资源及行为验证。
    `Cf6VehicleRules` 的 hit/death/trigger 接口只接受实际消费者确认的事件；它不应被 UI 任意调用。
-6. 最后才改章节校验、故事映射和经济源：S4→A07→S5→A08；把 A08 的 40,000 唯一配额迁回，
-   同步后续地图索引并对已存在局次做明确兼容。保持普通 20 图路线及原存档保护合同。
+6. 章节已接为S4→A07→S5→A08，40,000唯一配额移回A07、A08不再重复；后续故事索引随之更新。旧局次兼容和实际入账仍按生产合同及对应专项验收，不从源码配额推断存档已写入。
 7. 独立 CS6 编译与行为、隔离候选全流程、视觉/驾驶手感各自留证。当前未获提交、推送或正式 runtime 发布授权。
 
 独立源编译、规则行为、真实外观、候选场景与完整游玩是分别成立的结论。

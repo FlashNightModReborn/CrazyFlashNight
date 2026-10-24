@@ -1,0 +1,9 @@
+if(random(_parent.近身率) == 0)
+{
+   gotoAndStop("近身");
+   play();
+}
+else
+{
+   gotoAndPlay(random(300) + 1);
+}

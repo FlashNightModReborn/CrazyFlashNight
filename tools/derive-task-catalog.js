@@ -23,6 +23,7 @@ const fs = require('fs');
 const path = require('path');
 const { validateCondition, parseEconomyWhitelist } = require('./lib/objective-types.js');
 const { loadItemMeta, attachIcon } = require('./lib/item-icons.js');
+const { legacyAgentSourceMissing } = require('./lib/optional-agent-source.js');
 
 const projectRoot = path.resolve(__dirname, '..');
 const metricsFile = path.join(projectRoot, 'scripts', '类定义', 'org', 'flashNight', 'arki', 'achievement', 'AchievementMetrics.as');
@@ -89,6 +90,7 @@ function readManifest(listFile, tagName) {
     const out = [];
     let m;
     while ((m = re.exec(raw)) !== null) {
+        if (out.includes(m[1])) fail('duplicate manifest source: ' + m[1]);
         out.push(m[1]);
     }
     if (out.length === 0) fail('manifest ' + listFile + ' has no <' + tagName + '> entries');
@@ -100,6 +102,7 @@ function loadTasks() {
     const files = readManifest(path.join(taskDir, 'list.xml'), 'task');
     let merged = [];
     for (let i = 0; i < files.length; i += 1) {
+        if (legacyAgentSourceMissing(taskDir, files[i], 'agent_tasks.json', fail)) continue;
         const data = readJson(path.join(taskDir, files[i]));
         if (!data || !Array.isArray(data.tasks)) fail(files[i] + ': missing top-level "tasks" array');
         merged = merged.concat(data.tasks);
@@ -112,6 +115,7 @@ function loadTexts() {
     const files = readManifest(path.join(textDir, 'list.xml'), 'text');
     const dict = {};
     for (let i = 0; i < files.length; i += 1) {
+        if (legacyAgentSourceMissing(textDir, files[i], 'agent_text.json', fail)) continue;
         const data = readJson(path.join(textDir, files[i]));
         if (!data || typeof data !== 'object') fail(files[i] + ': not a text dict');
         const keys = Object.keys(data);

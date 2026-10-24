@@ -91,6 +91,22 @@ class ChoiceCatalogTests(unittest.TestCase):
             self.reject(lambda d: d['bundles'][0].update(weaponCount=count))
         self.reject(lambda d: d['bundles'][1].update(weaponCount=2))
 
+    def test_cf6_historical_pools_keep_wide_sampling_without_later_forms(self):
+        import importlib.util
+        path=ROOT/'tools/cf6-roguelike-content/build-sting-fragments.py'
+        spec=importlib.util.spec_from_file_location('cf6_fragments',path)
+        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        fragment=module.build_choice_fragment(module.load_item_index(),set(),[])
+        merged=merge_catalogs(self.catalog,[('cf6-sting',fragment)])
+        self.assertLessEqual(len(merged['bundles']),128)
+        self.assertTrue(all(p['groups'][0]['draw']==3 and 3<len(p['groups'][0]['entries'])<=32 for p in fragment['pools']))
+        allowed=set(module.weapon_pools.source()['historicalPolicy']['acceptedWeaponNames'])
+        self.assertTrue(all(b['weapon'] in allowed and 'weaponTier' not in b for b in fragment['bundles'] if 'weapon' in b))
+        technical=module.weapon_pools.instances()
+        self.assertEqual(sum('weaponTier' in row for row in technical),35)
+        self.assertTrue(any(row['weapon']=='钛合金QJZ171' for row in technical))
+        self.assertFalse(any(b.get('weapon') in {'钛合金QJZ171','远古诛神枪','T181C','RShG4','战术版MGL'} for b in fragment['bundles']))
+
     def test_no_rerolls_or_multiple_selections(self):
         for key, value in [('rerolls',1), ('chooseCount',2), ('chooseCount',True)]:
             self.reject(lambda d: d['pools'][0].update({key:value}))

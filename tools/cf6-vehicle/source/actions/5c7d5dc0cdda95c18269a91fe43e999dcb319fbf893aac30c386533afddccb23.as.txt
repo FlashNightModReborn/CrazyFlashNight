@@ -1,0 +1,20 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 857;
+   var §\x0f§ = 1;
+   _parent.swapDepths(_parent._y * 100);
+   var myPoint = {x:0,y:0};
+   _parent._parent.localToGlobal(myPoint);
+   xx = myPoint.x;
+   yy = myPoint.y;
+   if(_parent._parent._xscale > 0)
+   {
+      if(!_root.gameworld.地图.hitTest(xx,yy - _parent._parent.y速度,true))
+      {
+         _parent._parent._x -= 撞飞速度;
+      }
+   }
+   else if(!_root.gameworld.地图.hitTest(xx,yy + _parent._parent.y速度,true))
+   {
+      _parent._parent._x += 撞飞速度;
+   }
+}

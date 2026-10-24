@@ -1,0 +1,148 @@
+onClipEvent(enterFrame){
+   function §\x04\x05§()
+   {
+      set("\x03",2869 % 511 * 5);
+      return eval("\x03");
+   }
+   var §\x01§ = -938 + "\x04\x05"();
+   while(true)
+   {
+      if(eval("\x01") == 632)
+      {
+         set("\x01",eval("\x01") - 588);
+         §§push(true);
+      }
+      else if(eval("\x01") == 610)
+      {
+         set("\x01",eval("\x01") - 200);
+         var §§pop() = function §\x04\x05§()
+         {
+            set("\x03",2869 % 511 * 5);
+            return eval("\x03");
+         };
+      }
+      else
+      {
+         if(eval("\x01") == 448)
+         {
+            set("\x01",eval("\x01") + 455);
+            break;
+         }
+         if(eval("\x01") == 903)
+         {
+            set("\x01",eval("\x01") - 133);
+         }
+         else if(eval("\x01") == 583)
+         {
+            set("\x01",eval("\x01") + 187);
+         }
+         else if(eval("\x01") == 675)
+         {
+            set("\x01",eval("\x01") - 257);
+            §§push(true);
+         }
+         else if(eval("\x01") == 410)
+         {
+            set("\x01",eval("\x01") - 315);
+            §§push("\x0f");
+         }
+         else if(eval("\x01") == 418)
+         {
+            set("\x01",eval("\x01") + 30);
+            if(function §\x04\x05§()
+            {
+               set("\x03",2869 % 511 * 5);
+               return eval("\x03");
+            })
+            {
+               set("\x01",eval("\x01") + 455);
+            }
+         }
+         else if(eval("\x01") == 95)
+         {
+            set("\x01",eval("\x01") + 481);
+            §§push(eval(function §\x04\x05§()
+            {
+               set("\x03",2869 % 511 * 5);
+               return eval("\x03");
+            }));
+         }
+         else if(eval("\x01") == 44)
+         {
+            set("\x01",eval("\x01") + 305);
+            if(function §\x04\x05§()
+            {
+               set("\x03",2869 % 511 * 5);
+               return eval("\x03");
+            })
+            {
+               set("\x01",eval("\x01") + 561);
+            }
+         }
+         else if(eval("\x01") == 55)
+         {
+            set("\x01",eval("\x01") + 620);
+         }
+         else if(eval("\x01") == 770)
+         {
+            set("\x01",eval("\x01") - 160);
+            §§push("\x0f");
+            §§push(1);
+         }
+         else if(eval("\x01") == 910)
+         {
+            set("\x01",eval("\x01") - 235);
+         }
+         else
+         {
+            if(eval("\x01") == 349)
+            {
+               set("\x01",eval("\x01") + 561);
+               break;
+            }
+            if(eval("\x01") == 576)
+            {
+               set("\x01",eval("\x01") + 70);
+               §§push(!function §\x04\x05§()
+               {
+                  set("\x03",2869 % 511 * 5);
+                  return eval("\x03");
+               });
+            }
+            else if(eval("\x01") == 646)
+            {
+               set("\x01",eval("\x01") - 59);
+               if(function §\x04\x05§()
+               {
+                  set("\x03",2869 % 511 * 5);
+                  return eval("\x03");
+               })
+               {
+                  set("\x01",eval("\x01") + 184);
+               }
+            }
+            else
+            {
+               if(eval("\x01") != 587)
+               {
+                  if(eval("\x01") == 771)
+                  {
+                     set("\x01",eval("\x01") + 126);
+                     if(this.hitTest(_root.gameworld.man1.area))
+                     {
+                        _root.gameworld.man1._y -= 5;
+                     }
+                     break;
+                  }
+                  if(eval("\x01") == 897)
+                  {
+                     set("\x01",eval("\x01") - 897);
+                  }
+                  break;
+               }
+               set("\x01",eval("\x01") + 184);
+            }
+         }
+      }
+   }
+}

@@ -1,0 +1,25 @@
+function 僵尸型敌人初始化(hp, 击中效果, 近身距离, 近身率, 击倒率, x速度, y速度, 枪声音, 霰弹值, 子弹散射度, 子弹种类, 子弹威力, 子弹速度, 是否变身, AI, gunname)
+{
+   _root.gameworld[僵尸型敌人newname].产生源 = this._name;
+   _root.gameworld[僵尸型敌人newname].hp = hp;
+   _root.gameworld[僵尸型敌人newname].击中效果 = 击中效果;
+   _root.gameworld[僵尸型敌人newname].近身距离 = 近身距离;
+   _root.gameworld[僵尸型敌人newname].近身率 = 近身率;
+   _root.gameworld[僵尸型敌人newname].击倒率 = 击倒率;
+   _root.gameworld[僵尸型敌人newname].x速度 = x速度;
+   _root.gameworld[僵尸型敌人newname].y速度 = y速度;
+   _root.gameworld[僵尸型敌人newname].枪声音 = 枪声音;
+   _root.gameworld[僵尸型敌人newname].霰弹值 = 霰弹值;
+   _root.gameworld[僵尸型敌人newname].子弹散射度 = 子弹散射度;
+   _root.gameworld[僵尸型敌人newname].子弹种类 = 子弹种类;
+   _root.gameworld[僵尸型敌人newname].子弹威力 = 子弹威力;
+   _root.gameworld[僵尸型敌人newname].子弹速度 = 子弹速度;
+   _root.gameworld[僵尸型敌人newname].攻击力 = 攻击力;
+   _root.gameworld[僵尸型敌人newname].是否变身 = 是否变身;
+   _root.gameworld[僵尸型敌人newname].AI = AI;
+   _root.gameworld[僵尸型敌人newname].gunname = gunname;
+}
+var §\x01§ = 146;
+var §\x0f§ = 1;
+敌人层级 = 0;
+僵尸型敌人场上实际人数 = 0;

@@ -134,7 +134,7 @@ try {
     $projectRoot = $ProjectRoot
     $WebView2CacheDirectory = $null
     . $cacheArgumentCode
-    Assert-Cf7DevEntry ($buildArguments.WebView2CacheDirectory -ceq (Join-Path $cacheProbe 'CF7BuildCache\w2')) 'dev default must resolve current-user short cache'
+    Assert-Cf7DevEntry ($buildArguments.WebView2CacheDirectory -ceq (Join-Path $cacheProbe 'CF7\w2')) 'dev default must resolve current-user short cache'
     $WebView2CacheDirectory = Join-Path $cacheProbe 'explicit'
     . $cacheArgumentCode
     Assert-Cf7DevEntry ($buildArguments.WebView2CacheDirectory -ceq $WebView2CacheDirectory) 'explicit dev cache must reach build arguments unchanged'

@@ -418,7 +418,7 @@ def build():
     binding_id = sha(json.dumps(binding, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8"))
     content = {
         "schema": "cf6-book-comic-web-content.v1", "sourceBindingSha256": binding_id,
-        "vehicleAdaptation": "s4/s5 are chained between A06 and A08 because A07 vehicle gameplay is excluded in this migration",
+        "vehicleAdaptation": "s4 precedes A07; only actual A07 vehicle-tail completion reaches s5 before A08; story routing grants no vehicle completion",
         "pages": pages,
     }
     manifest = {

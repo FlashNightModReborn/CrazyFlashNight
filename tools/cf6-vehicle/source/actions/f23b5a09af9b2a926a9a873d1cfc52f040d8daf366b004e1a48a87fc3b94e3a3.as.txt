@@ -1,0 +1,28 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 25;
+   var §\x0f§ = 1;
+   if(xx > _parent._parent._x)
+   {
+      _parent._parent._xscale = 100;
+   }
+   else
+   {
+      _parent._parent._xscale = -100;
+   }
+   if(xx <= _parent._parent._x)
+   {
+      _parent._parent._x -= _parent._parent.x速度;
+   }
+   if(xx >= _parent._parent._x)
+   {
+      _parent._parent._x += _parent._parent.x速度;
+   }
+   if(yy >= _parent._parent._y)
+   {
+      _parent._parent._y += _parent._parent.y速度;
+   }
+   if(yy <= _parent._parent._y)
+   {
+      _parent._parent._y -= _parent._parent.y速度;
+   }
+}

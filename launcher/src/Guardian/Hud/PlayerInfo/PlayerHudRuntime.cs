@@ -51,6 +51,7 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
             _bottom.AddWidget(_bottomWidget);
             _bottom.AddWidget(_resourceTooltip.Widget);
             _buffs.AddWidget(new PlayerHudBuffWidget(anchor, controller));
+            _buffs.AddWidget(new PlayerHudFocusTargetWidget(anchor, controller));
             _buffs.SetZOrderInsertAfter(existingHud.Handle);
             _resources.SetZOrderInsertAfter(existingHud.Handle);
             // The authored chassis extends behind the resource gauges.

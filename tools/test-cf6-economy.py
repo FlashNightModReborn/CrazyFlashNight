@@ -2,7 +2,7 @@
 import copy
 import unittest
 from choice_reward_catalog import item_catalog
-from cf6_economy import validate_economy
+from cf6_economy import validate_economy, validate_historical_budget
 
 
 class Cf6EconomyTests(unittest.TestCase):
@@ -66,6 +66,21 @@ class Cf6EconomyTests(unittest.TestCase):
         self.reject(lambda b:b['maps'][0]['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'].append(
             dict(Type='兵种461',Quantity=1,Parameters={'掉落物':[{'名字':'SAI GRY 幽灵'}]})))
 
+    def test_random_pools_may_share_candidates_with_each_other_and_choice(self):
+        book=self.fixture()
+        book['economy']['randomWeapons'].append(dict(mapId='A13',choices=copy.deepcopy(book['economy']['randomWeapons'][0]['choices'])))
+        catalog=self.catalog();catalog['bundles'][0]['items'].append(dict(itemName='M60E3',quantity=1))
+        self.check(book,catalog)
+
+    def test_short_random_requires_two_weapons_but_elite_requires_long_slot(self):
+        book=self.fixture();short=self.weapon('极品UZI战术版');short['weaponCount']=2
+        book['economy']['randomWeapons'][0]['choices'].append(short);self.check(book)
+        for count in [0,1,3,True]:
+            short['weaponCount']=count
+            with self.assertRaises(ValueError):self.check(book)
+        short['weaponCount']=2;book['economy']['eliteWeapons'][1]['choices'].append(short)
+        with self.assertRaises(ValueError):self.check(book)
+
     def test_elite_carrier_is_unique_single_and_exact_map(self):
         self.reject(lambda b:b['maps'][1]['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0].update(Quantity=2))
         self.reject(lambda b:b['maps'][1]['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0].update(Type='兵种461'))
@@ -107,5 +122,46 @@ class Cf6EconomyTests(unittest.TestCase):
         self.reject(lambda b:b['maps'][0]['stage']['Pickups']['Pickup'].append(dict(Name='CF6 TEST',Value=1)))
         self.reject(lambda b:b['maps'][1]['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0]['Parameters'].update(
             {'掉落物':[{'名字':'CF6 TEST'}]}))
+
+    def historical_fixture(self):
+        book=self.fixture();book.update(id='cf6-sting',routeId='historical')
+        book['economy']['eliteWeapons'][1]['choices'][1]=self.weapon('AA12丧尸')
+        return book
+
+    def test_historical_actual_sources_reject_later_and_unresolved_guns(self):
+        self.check(self.historical_fixture())
+        for mutate in [
+            lambda b:b['economy']['randomWeapons'][0]['choices'].append(dict(self.weapon('钛合金P90'),weaponCount=2)),
+            lambda b:b['economy']['eliteWeapons'][1]['choices'].__setitem__(1,self.weapon('T181C')),
+            lambda b:b['maps'][0]['stage']['Pickups']['Pickup'].append(dict(Name='M134暴力版的PIG版',Value=1)),
+            lambda b:b['maps'][0]['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'].append(dict(Type='兵种466',Quantity=1,Parameters={'长枪':'T181#1'}))]:
+            book=self.historical_fixture();mutate(book)
+            with self.assertRaisesRegex(ValueError,'historical'):self.check(book)
+        catalog=self.catalog();catalog['bundles'][0]['items'].append(dict(itemName='T181C',quantity=1))
+        with self.assertRaisesRegex(ValueError,'historical'):self.check(self.historical_fixture(),catalog)
+
+    def test_historical_budget_guards_actual_goods_and_purchase_examples(self):
+        import json
+        from pathlib import Path
+        budget=json.loads((Path(__file__).parent/'cf6-prototype/balance-input.json').read_text('utf-8'))
+        validate_historical_budget(budget,self.items)
+        for mutate in [lambda b:b['merchantNodes'][0]['addWeapons'].append('AR57'),
+                       lambda b:b['shoppingRoute'][0].update(ammoWeapon='钛合金QJZ171'),
+                       lambda b:b['stressPurchases'][0].update(weapon='RShG4')]:
+            broken=copy.deepcopy(budget);mutate(broken)
+            with self.assertRaisesRegex(ValueError,'historical'):validate_historical_budget(broken,self.items)
+
+    def test_fixed_short_guns_also_create_two_enhancement_one_pickups(self):
+        import importlib.util
+        from pathlib import Path
+        path=Path(__file__).parent/'cf6-roguelike-content/build-sting-fragments.py'
+        spec=importlib.util.spec_from_file_location('cf6_fragments_for_economy',path)
+        module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+        index=module.load_item_index()
+        for map_id,name in [('A01','极品UZI战术版'),('A15','MP7极品战术版')]:
+            pickups=module.build_pickups(dict(pickups=[dict(xy=[20,30])],spawn=[20,30]),map_id,index,[])
+            guns=[p for p in pickups if p['Name']==name]
+            self.assertEqual([p['Value'] for p in guns],[1,1]);self.assertIsNot(guns[0],guns[1])
+            self.assertEqual(next(p['Value'] for p in pickups if p['Name']==index[name]['clipname']),6)
 
 if __name__ == '__main__': unittest.main(verbosity=2)

@@ -1,0 +1,121 @@
+onClipEvent(enterFrame){
+   function §\x04\x05§()
+   {
+      set("\x03",1744 % 511 * 5);
+      return eval("\x03");
+   }
+   var §\x01§ = -285 + "\x04\x05"();
+   while(true)
+   {
+      if(eval("\x01") == 770)
+      {
+         set("\x01",eval("\x01") - 178);
+         §§push(true);
+      }
+      else if(eval("\x01") == 523)
+      {
+         set("\x01",eval("\x01") + 139);
+      }
+      else if(eval("\x01") == 592)
+      {
+         set("\x01",eval("\x01") + 163);
+         if(function §\x04\x05§()
+         {
+            set("\x03",1744 % 511 * 5);
+            return eval("\x03");
+         })
+         {
+            set("\x01",eval("\x01") - 188);
+         }
+      }
+      else if(eval("\x01") == 968)
+      {
+         set("\x01",eval("\x01") - 333);
+      }
+      else if(eval("\x01") == 788)
+      {
+         set("\x01",eval("\x01") + 158);
+         §§push(eval(function §\x04\x05§()
+         {
+            set("\x03",1744 % 511 * 5);
+            return eval("\x03");
+         }));
+      }
+      else if(eval("\x01") == 84)
+      {
+         set("\x01",eval("\x01") + 704);
+         §§push("\x0f");
+      }
+      else if(eval("\x01") == 567)
+      {
+         set("\x01",eval("\x01") + 95);
+      }
+      else if(eval("\x01") == 732)
+      {
+         set("\x01",eval("\x01") - 648);
+         var §§pop() = function §\x04\x05§()
+         {
+            set("\x03",1744 % 511 * 5);
+            return eval("\x03");
+         };
+      }
+      else if(eval("\x01") == 946)
+      {
+         set("\x01",eval("\x01") - 148);
+         §§push(!function §\x04\x05§()
+         {
+            set("\x03",1744 % 511 * 5);
+            return eval("\x03");
+         });
+      }
+      else
+      {
+         if(eval("\x01") == 755)
+         {
+            set("\x01",eval("\x01") - 188);
+            getUrl("{invalid_utf8=255}", "\njI\x14{invalid_utf8=234}{invalid_utf8=227}{invalid_utf8=101}{invalid_utf8=207}\\F£ؾ{invalid_utf8=175}{invalid_utf8=255}");
+            §§push(§§pop()[function §\x04\x05§()
+            {
+               set("\x03",1744 % 511 * 5);
+               return eval("\x03");
+            }]());
+            break;
+         }
+         if(eval("\x01") == 798)
+         {
+            set("\x01",eval("\x01") + 170);
+            if(function §\x04\x05§()
+            {
+               set("\x03",1744 % 511 * 5);
+               return eval("\x03");
+            })
+            {
+               set("\x01",eval("\x01") - 333);
+            }
+         }
+         else
+         {
+            if(eval("\x01") != 662)
+            {
+               if(eval("\x01") == 635)
+               {
+                  set("\x01",eval("\x01") - 33);
+                  if(this.hitTest(_root.gameworld.man1.area))
+                  {
+                     _root.gameworld.man1._x += 5;
+                  }
+                  break;
+               }
+               if(eval("\x01") == 602)
+               {
+                  set("\x01",eval("\x01") - 602);
+               }
+               break;
+            }
+            set("\x01",eval("\x01") + 70);
+            §§push("\x0f");
+            §§push(1);
+         }
+      }
+   }
+}
