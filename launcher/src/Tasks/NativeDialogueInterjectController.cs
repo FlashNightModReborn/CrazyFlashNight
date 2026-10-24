@@ -2574,13 +2574,15 @@ namespace CF7Launcher.Tasks
             if (retry != null)
             {
                 string retryId = retry.Value<string>("action_id") ?? "";
-                if (retryId.Length > 0 && retryId != _itemActionRetriedId
-                    && SubmitAction(retry, false))
+                if (retryId.Length > 0 && retryId != _itemActionRetriedId)
                 {
                     _itemActionRetriedId = retryId;
-                    LogManager.Log("[DialogueInterject] item accept retried after stream failure: "
-                        + retryId);
-                    return;
+                    if (SubmitAction(retry, false))
+                    {
+                        LogManager.Log("[DialogueInterject] item accept retried after stream failure: "
+                            + retryId);
+                        return;
+                    }
                 }
                 string fallback = !string.IsNullOrEmpty(retryJson)
                     ? retryJson : BuildFallbackActionRequest(retry);

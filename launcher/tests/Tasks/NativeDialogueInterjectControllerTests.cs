@@ -2207,7 +2207,7 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void TaskChoiceSendsActionWithoutPlayerInput()
+        public void TaskAcceptShowsPcLineAndSendsItAsPlayerInput()
         {
             using var h = new Harness();
             EnableTaskContext(h);
@@ -2223,14 +2223,42 @@ namespace CF7Launcher.Tests.Tasks
             h.Advance();
             Assert.True(h.Controller.AskAccept);
 
+            h.Transport.Script(AddLine("好，那就开工。", 0) + Done());
             h.Controller.SubmitChoice(true);
 
             JObject request = JObject.Parse(h.Transport.LastRequest);
-            Assert.Equal("", request.Value<string>("player_input"));
+            Assert.Equal("我接了", request.Value<string>("player_input"));
             Assert.Equal("task_accept", request["action"].Value<string>("kind"));
             Assert.False(string.IsNullOrEmpty(request["action"].Value<string>("action_id")));
             Assert.False(h.Controller.AskAccept);
             Assert.Null(request["player_item_names"]);
+            Assert.Equal(1, CountPcLines(h, "我接了"));
+        }
+
+        [Fact]
+        public void TaskDeclineShowsPcLineAndSendsItAsPlayerInput()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "先别急着答应。");
+            h.Transport.Script(
+                AddLine("接不接，你给个话。", 0)
+                + AddLine("不接就算了。", 1, "closing")
+                + "event: plan\ndata: {\"mute\":false}\n\n"
+                + Done());
+
+            Assert.True(h.Controller.Submit("你说。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.True(h.Controller.AskAccept);
+
+            h.Transport.Script(AddLine("行，那我自己找别人。", 0) + Done());
+            h.Controller.SubmitChoice(false);
+
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            Assert.Equal("我不接", request.Value<string>("player_input"));
+            Assert.Equal("task_decline", request["action"].Value<string>("kind"));
+            Assert.Equal(1, CountPcLines(h, "我不接"));
         }
 
         [Fact]
@@ -2286,15 +2314,18 @@ namespace CF7Launcher.Tests.Tasks
                 "{\"state\":\"pending\",\"claim_id\":\"c1\",\"npc\":\"Andy Law\","
                 + "\"item_name\":\"苹果\",\"quantity\":3}"));
 
+            h.Transport.Script(AddLine("那下次再说。", 0) + Done());
             h.Controller.SubmitChoice(false);
 
             Assert.Equal(0, bridge.RequestCount("npcItemTake"));
             JObject request = JObject.Parse(h.Transport.LastRequest);
+            Assert.Equal("【没有赠送物品】", request.Value<string>("player_input"));
             Assert.Equal("item_take_decline", request["action"].Value<string>("kind"));
             Assert.Equal("c1", request["action"].Value<string>("claim_id"));
             Assert.Equal("苹果", request["action"].Value<string>("item_name"));
             Assert.Equal(3, request["action"].Value<int>("quantity"));
             Assert.Null(h.Controller.PendingItemClaimForTest);
+            Assert.Equal(1, CountPcLines(h, "【没有赠送物品】"));
         }
 
         [Fact]
@@ -2311,6 +2342,7 @@ namespace CF7Launcher.Tests.Tasks
                 "{\"state\":\"pending\",\"claim_id\":\"c1\",\"npc\":\"Andy Law\","
                 + "\"item_name\":\"铁剑\",\"quantity\":1}"));
 
+            h.Transport.Script(AddLine("成，收下。", 0) + Done());
             h.Controller.SubmitChoice(true);
 
             JObject take = bridge.Last("npcItemTake");
@@ -2321,10 +2353,31 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Null(h.Controller.PendingItemClaimForTest);
 
             JObject request = JObject.Parse(h.Transport.LastRequest);
+            Assert.Equal("【赠送了1个铁剑给Andy Law】", request.Value<string>("player_input"));
             Assert.Equal("item_take_accept", request["action"].Value<string>("kind"));
             Assert.Equal("c1", request["action"].Value<string>("claim_id"));
             Assert.Equal(1, request["action"].Value<int>("quantity"));
             Assert.Equal(6, request["action"].Value<int>("item_level"));
+            Assert.Equal(1, CountPcLines(h, "【赠送了1个铁剑给Andy Law】"));
+        }
+
+        [Fact]
+        public void ItemClaimAcceptUsesActuallyDeductedCountInPcLine()
+        {
+            var bridge = new FakeItemBridge { Count = 5, TakeActual = 2 };
+            using var h = new Harness(itemExchange: bridge.Task);
+            h.AdoptBook("又是你。");
+            h.Controller.OnEvent(Evt(DialogueInterjectEventKind.ItemClaim,
+                "{\"state\":\"pending\",\"claim_id\":\"c1\",\"npc\":\"Andy Law\","
+                + "\"item_name\":\"苹果\",\"quantity\":3}"));
+
+            h.Transport.Script(AddLine("够了，谢。", 0) + Done());
+            h.Controller.SubmitChoice(true);
+
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            Assert.Equal(2, request["action"].Value<int>("quantity"));
+            Assert.Equal("【赠送了2个苹果给Andy Law】", request.Value<string>("player_input"));
+            Assert.Equal(1, CountPcLines(h, "【赠送了2个苹果给Andy Law】"));
         }
 
         [Fact]
@@ -2347,6 +2400,9 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("item_take_accept", request["action"].Value<string>("kind"));
             Assert.Equal("c1", request["action"].Value<string>("claim_id"));
             Assert.Equal("苹果", request["action"].Value<string>("item_name"));
+            // 后台补送同样是插话请求：player_input 为空会被后端 422 拒掉，账就记不上。
+            Assert.Equal("【赠送了1个苹果给Andy Law】", request.Value<string>("player_input"));
+            Assert.Equal(1, h.Transport.OpenCount);   // done 已确认，不再重试
             Assert.Null(h.Controller.PendingItemClaimForTest);
         }
 
@@ -2382,6 +2438,65 @@ namespace CF7Launcher.Tests.Tasks
             Assert.NotNull(h.Controller.PendingItemClaimForTest);
             Assert.True(h.Transport.LastRequest == null
                 || h.Transport.LastRequest.IndexOf("item_take_accept", StringComparison.Ordinal) < 0);
+        }
+
+        [Fact]
+        public void ItemActionStreamBreaksRetriesSameActionOnceWithoutSecondPcLine()
+        {
+            var bridge = new FakeItemBridge { Count = 1 };
+            using var h = new Harness(itemExchange: bridge.Task);
+            h.AdoptBook("又是你。");
+            h.Controller.OnEvent(Evt(DialogueInterjectEventKind.ItemClaim,
+                "{\"state\":\"pending\",\"claim_id\":\"c1\",\"npc\":\"Andy Law\","
+                + "\"item_name\":\"苹果\",\"quantity\":1}"));
+            // 动作轮第一次断流（没有 done/error），失败处理只按同一 action_id 重试一次。
+            h.Transport.Script("");
+            h.Transport.Script(AddLine("收到了。", 0) + Done());
+
+            h.Controller.SubmitChoice(true);
+
+            Assert.Equal(1, bridge.RequestCount("npcItemTake"));   // 绝不重复扣除
+            Assert.Equal(2, h.Transport.OpenCount);
+            JObject first = JObject.Parse(h.Transport.Requests[0]);
+            JObject second = JObject.Parse(h.Transport.Requests[1]);
+            Assert.Equal(first["action"].Value<string>("action_id"),
+                second["action"].Value<string>("action_id"));
+            Assert.Equal(first.Value<string>("player_input"), second.Value<string>("player_input"));
+            Assert.Equal("【赠送了1个苹果给Andy Law】", second.Value<string>("player_input"));
+            Assert.Equal(1, CountPcLines(h, "【赠送了1个苹果给Andy Law】"));
+        }
+
+        [Fact]
+        public void TransportExceptionEndsTurnAsErrorNotSilentSuccess()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。", "有事说事。");
+            h.Transport.OpenAsyncOverride = _ => Task.FromException<Stream>(
+                new System.Net.Http.HttpRequestException("dialogue-interject http 422"));
+
+            Assert.True(h.Controller.Submit("最近怎么样？"));
+            // 非 2xx 必须由流侧折算成 error 终态并走失败轮；旧行为是静默"走完"，界面卡在思索中
+            Assert.True(SpinWait.SpinUntil(
+                () => string.Equals("stream_failed", h.Controller.LastFailure,
+                    StringComparison.Ordinal), 5000));
+
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("有事说事。", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+        }
+
+        private static int CountPcLines(Harness h, string text)
+        {
+            NativeDialogueBookSession session = h.Task.BookSessionForTest;
+            int count = 0;
+            for (int i = 0; i < session.PlaybackCount; i++)
+            {
+                NativeDialogueBookSession.Line line = session.GetPlaybackLine(i);
+                if (line != null && line.IsPlayer
+                    && string.Equals(line.Text, text, StringComparison.Ordinal)) count++;
+            }
+            return count;
         }
 
         [Fact]

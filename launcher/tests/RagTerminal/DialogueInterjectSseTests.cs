@@ -292,6 +292,44 @@ namespace CF7Launcher.Tests.RagTerminal
             Assert.Equal(DialogueInterjectEventKind.Error, seen[seen.Count - 1].Kind);
         }
 
+        // ── 传输失败：必须折算成终态 error，不能静默当成走完 ─────────────────
+
+        [Fact]
+        public async Task TransportExceptionDeliversTerminalError()
+        {
+            var seen = new List<DialogueInterjectEvent>();
+            var stream = Build(new ThrowingTransport(), seen);
+
+            await stream.RunAsync("{}", CancellationToken.None);
+
+            Assert.True(stream.SawTerminal, "非 2xx/连接异常必须是终态");
+            DialogueInterjectEvent last = seen[seen.Count - 1];
+            Assert.Equal(DialogueInterjectEventKind.Error, last.Kind);
+            Assert.Equal("stream_failed", last.Text("code"));
+            Assert.Contains("422", last.Text("message"));
+        }
+
+        private sealed class ThrowingTransport : IDialogueInterjectTransport
+        {
+            public Task<Stream> OpenAsync(string requestJson, CancellationToken cancellationToken)
+            {
+                return Task.FromException<Stream>(
+                    new System.Net.Http.HttpRequestException("dialogue-interject http 422"));
+            }
+
+            public Task<Newtonsoft.Json.Linq.JObject> PostFinalizeAsync(
+                string requestJson, CancellationToken cancellationToken)
+            {
+                return Task.FromResult(new Newtonsoft.Json.Linq.JObject { ["ok"] = true });
+            }
+
+            public Task<Newtonsoft.Json.Linq.JObject> PostActionResultAsync(
+                string requestJson, CancellationToken cancellationToken)
+            {
+                return Task.FromResult(new Newtonsoft.Json.Linq.JObject { ["ok"] = true });
+            }
+        }
+
         // ── F-12 取消：真断流，未到行不播 ───────────────────────────────────
 
         [Fact]
