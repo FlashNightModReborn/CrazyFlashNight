@@ -146,12 +146,31 @@ try {
         $workerText.Contains('-Arguments $producerArguments -WorkingDirectory $checkout')) 'Default worker bypasses path preflight or validated producer arguments'
     $passed++; Write-Host '[PASS] default worker launch uses the checked arguments'
     $deepDevRoot = 'C:\' + ('r' * 89)
-    $devCache = Join-Path $env:LOCALAPPDATA 'CF7BuildCache\w2'
-    $before = Get-Snapshot
-    $devLayout = Get-Cf7WebViewLayout -ProjectRoot $deepDevRoot -Spec $actual -CacheDirectory $devCache
-    Assert-Test ($devLayout.cache -ceq $devCache) 'Explicit current-user dev cache was not preserved'
-    Assert-Test ((Get-Snapshot) -ceq $before) 'Actual-lock dev preflight wrote filesystem state'
-    $passed++; Write-Host '[PASS] 92-unit development root with user-local cache (no extraction)'
+    $devTokens=$null; $devErrors=$null
+    $devAst=[Management.Automation.Language.Parser]::ParseFile((Join-Path $repoRoot 'automation\dev.ps1'),[ref]$devTokens,[ref]$devErrors)
+    Assert-Test ($devErrors.Count -eq 0) 'Development entry does not parse'
+    $devCacheFunction=@($devAst.FindAll({param($node) $node -is [Management.Automation.Language.FunctionDefinitionAst] -and $node.Name -ceq 'Resolve-Cf7DevWebViewCacheDirectory'},$true))
+    Assert-Test ($devCacheFunction.Count -eq 1) 'Missing unique development cache resolver'
+    . ([scriptblock]::Create($devCacheFunction[0].Extent.Text))
+    $devLocalAppDataBefore=$env:LOCALAPPDATA
+    try {
+        $env:LOCALAPPDATA='C:\Users\runneradmin\AppData\Local'
+        $devCache=Resolve-Cf7DevWebViewCacheDirectory
+        $before=Get-Snapshot
+        $devLayout=Get-Cf7WebViewLayout -ProjectRoot $deepDevRoot -Spec $actual -CacheDirectory $devCache
+        Assert-Test ($devLayout.cache -ceq $devCache) 'Resolved user-local dev cache was not preserved'
+        Assert-Test ((Get-Snapshot) -ceq $before) 'Actual-lock dev preflight wrote filesystem state'
+        $passed++; Write-Host '[PASS] 92-unit development root and runneradmin profile with actual dev resolver (no extraction)'
+        $env:LOCALAPPDATA='C:\Users\' + ('u' * 32) + '\AppData\Local'
+        $longDevCache=Resolve-Cf7DevWebViewCacheDirectory
+        Reject-WithoutWrites 'long development profile retains the 240-unit guard' {
+            Get-Cf7WebViewLayout -ProjectRoot $deepDevRoot -Spec $actual -CacheDirectory $longDevCache
+        } '240 UTF-16'
+        $explicitDevCache=Resolve-Cf7DevWebViewCacheDirectory -ExplicitDirectory $shortCache
+        [void](Get-Cf7WebViewLayout -ProjectRoot $deepDevRoot -Spec $actual -CacheDirectory $explicitDevCache)
+        Assert-Test ($explicitDevCache -ceq $shortCache -and -not (Test-Path -LiteralPath $shortCache)) 'Explicit short dev cache changed or was created'
+        $passed++; Write-Host '[PASS] long development profile accepts explicit short cache (zero writes)'
+    } finally { $env:LOCALAPPDATA=$devLocalAppDataBefore }
     Reject-WithoutWrites 'non-Windows cache remains rejected by lower preflight' { Get-Cf7WebViewLayout -ProjectRoot $repoRoot -Spec $actual -CacheDirectory '/not-a-windows-cache' }
 
     $inputs=Get-Content -LiteralPath (Join-Path $repoRoot 'config\build\runtime-inputs.v2.json') -Raw -Encoding UTF8|ConvertFrom-Json
