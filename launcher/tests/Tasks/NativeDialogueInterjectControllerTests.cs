@@ -132,6 +132,9 @@ namespace CF7Launcher.Tests.Tasks
             internal string GrantError = "inventory_full";
             internal bool SummarySuccess = true;
             internal readonly List<string> ItemNames = new List<string> { "苹果", "铁剑" };
+            internal readonly Dictionary<string, int> ItemCounts =
+                new Dictionary<string, int>(StringComparer.Ordinal);
+            internal readonly List<string> EquipmentNames = new List<string>();
             /// <summary>扣物响应回包前触发（模拟扣除成功后、动作发出前对话已关闭）。</summary>
             internal Action<JObject> BeforeTakeResponse;
 
@@ -186,11 +189,18 @@ namespace CF7Launcher.Tests.Tasks
                         return new JObject { ["op"] = "summary", ["success"] = false };
                     var items = new JArray();
                     for (int i = 0; i < ItemNames.Count; i++)
-                        items.Add(new JObject { ["name"] = ItemNames[i], ["count"] = 1 });
+                    {
+                        int count;
+                        if (!ItemCounts.TryGetValue(ItemNames[i], out count)) count = 1;
+                        items.Add(new JObject { ["name"] = ItemNames[i], ["count"] = count });
+                    }
+                    var equipment = new JArray();
+                    for (int i = 0; i < EquipmentNames.Count; i++)
+                        equipment.Add(new JObject { ["name"] = EquipmentNames[i], ["count"] = 1 });
                     return new JObject
                     {
                         ["op"] = "summary", ["success"] = true, ["items"] = items,
-                        ["equipment"] = new JArray(), ["gold"] = 100
+                        ["equipment"] = equipment, ["money"] = 100
                     };
                 }
                 if (action == "npcItemCount")
@@ -2149,21 +2159,31 @@ namespace CF7Launcher.Tests.Tasks
         // ── P6：物品赠送/索取与选项直连 ───────────────────────────────────
 
         [Fact]
-        public void DailyRequestCarriesPlayerItemNamesFromBridgeSnapshot()
+        public void DailyRequestCarriesPlayerItemNamesAndCountsFromBridgeSnapshot()
         {
             var bridge = new FakeItemBridge();
+            bridge.ItemCounts["苹果"] = 3;
+            bridge.EquipmentNames.Add("M4A1");
             using var h = new Harness(itemExchange: bridge.Task);
             h.AdoptBook("又是你。");
 
             Assert.Equal(1, bridge.RequestCount("npcItemSummary"));
-            Assert.Equal(new[] { "苹果", "铁剑" }, h.Controller.PlayerItemNamesForTest);
+            Assert.Equal(new[] { "苹果", "铁剑", "M4A1" }, h.Controller.PlayerItemNamesForTest);
+            IDictionary<string, int> counts = h.Controller.PlayerItemCountsForTest;
+            Assert.Equal(3, counts["苹果"]);
+            Assert.Equal(1, counts["铁剑"]);
+            Assert.Equal(1, counts["M4A1"]);
+            Assert.Equal(100, counts["金币"]);
 
             h.Transport.Script(AddLine("嗯。", 0) + Done());
             Assert.True(h.Controller.Submit("你好"));
             JObject request = JObject.Parse(h.Transport.LastRequest);
             Assert.Equal("daily", request.Value<string>("mode"));
-            Assert.Equal(new[] { "苹果", "铁剑" },
+            Assert.Equal(new[] { "苹果", "铁剑", "M4A1" },
                 request["player_item_names"].Values<string>());
+            Assert.Equal(3, request["player_item_counts"].Value<int>("苹果"));
+            Assert.Equal(1, request["player_item_counts"].Value<int>("M4A1"));
+            Assert.Equal(100, request["player_item_counts"].Value<int>("金币"));
         }
 
         [Fact]
@@ -2176,12 +2196,14 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.Equal(0, bridge.RequestCount("npcItemSummary"));
             Assert.Empty(h.Controller.PlayerItemNamesForTest);
+            Assert.Empty(h.Controller.PlayerItemCountsForTest);
 
             h.Transport.Script(AddLine("嗯。", 0) + Done());
             Assert.True(h.Controller.Submit("你好"));
             JObject request = JObject.Parse(h.Transport.LastRequest);
             Assert.Equal("task", request.Value<string>("mode"));
             Assert.Null(request["player_item_names"]);
+            Assert.Null(request["player_item_counts"]);
         }
 
         [Fact]

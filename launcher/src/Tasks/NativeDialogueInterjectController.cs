@@ -182,6 +182,8 @@ namespace CF7Launcher.Tasks
         private readonly HashSet<string> _executedGrants = new HashSet<string>(StringComparer.Ordinal);
         /// <summary>本组玩家可索取物品名快照（只用于后端索取池）。</summary>
         private List<string> _playerItemNames;
+        /// <summary>本组玩家持有数量快照（含金币），只用于索取回复轮的持有提示。</summary>
+        private Dictionary<string, int> _playerItemCounts;
         private int _playerNamesGeneration;
         /// <summary>本轮已点过任务选项：不再重复弹「我接了/我不接」。</summary>
         private bool _taskActionSent;
@@ -322,6 +324,15 @@ namespace CF7Launcher.Tasks
         {
             get { return _playerItemNames != null ? (IList<string>)_playerItemNames : new string[0]; }
         }
+        internal IDictionary<string, int> PlayerItemCountsForTest
+        {
+            get
+            {
+                return _playerItemCounts != null
+                    ? (IDictionary<string, int>)_playerItemCounts
+                    : new Dictionary<string, int>();
+            }
+        }
 
         /// <summary>挂接 task/widget 钩子；只允许一次。</summary>
         internal void Attach()
@@ -353,6 +364,7 @@ namespace CF7Launcher.Tasks
             ClearItemClaim();
             _itemDecisionBusy = false;
             _playerItemNames = null;
+            _playerItemCounts = null;
             _playerNamesGeneration++;
             _taskActionSent = false;
             _unackedItemAction = null;
@@ -427,6 +439,7 @@ namespace CF7Launcher.Tasks
             SetAskAccept(false);
             ClearItemClaim();
             _playerItemNames = null;
+            _playerItemCounts = null;
             _playerNamesGeneration++;
             _taskActionSent = false;
             _unackedItemAction = null;
@@ -889,6 +902,12 @@ namespace CF7Launcher.Tasks
                 var names = new JArray();
                 for (int i = 0; i < _playerItemNames.Count; i++) names.Add(_playerItemNames[i]);
                 request["player_item_names"] = names;
+            }
+            if (!_taskMode && _playerItemCounts != null)
+            {
+                var counts = new JObject();
+                foreach (var pair in _playerItemCounts) counts[pair.Key] = pair.Value;
+                request["player_item_counts"] = counts;
             }
             return request.ToString(Formatting.None);
         }
@@ -2454,14 +2473,17 @@ namespace CF7Launcher.Tasks
             TaskRunner(async () =>
             {
                 var names = new List<string>();
+                var counts = new Dictionary<string, int>(StringComparer.Ordinal);
                 try
                 {
                     JObject result = await _itemExchange.RequestAsync("npcItemSummary",
                         new JObject(), CancellationToken.None).ConfigureAwait(false);
                     if (result != null && result.Value<bool?>("success") == true)
                     {
-                        CollectItemNames(result["items"] as JArray, names);
-                        CollectItemNames(result["equipment"] as JArray, names);
+                        CollectItemSnapshot(result["items"] as JArray, names, counts);
+                        CollectItemSnapshot(result["equipment"] as JArray, names, counts);
+                        int money = result.Value<int?>("money") ?? 0;
+                        if (money > 0) counts["金币"] = money;
                     }
                 }
                 catch (Exception ex)
@@ -2472,11 +2494,13 @@ namespace CF7Launcher.Tasks
                 {
                     if (generation != _playerNamesGeneration) return;
                     _playerItemNames = names;
+                    _playerItemCounts = counts;
                 });
             });
         }
 
-        private static void CollectItemNames(JArray rows, List<string> names)
+        private static void CollectItemSnapshot(JArray rows, List<string> names,
+            Dictionary<string, int> counts)
         {
             if (rows == null) return;
             for (int i = 0; i < rows.Count; i++)
@@ -2484,8 +2508,11 @@ namespace CF7Launcher.Tasks
                 var row = rows[i] as JObject;
                 if (row == null) continue;
                 string name = (row.Value<string>("name") ?? "").Trim();
-                if (name.Length == 0 || names.Contains(name)) continue;
-                names.Add(name);
+                if (name.Length == 0) continue;
+                int count = Math.Max(0, row.Value<int?>("count") ?? 0);
+                if (!names.Contains(name)) names.Add(name);
+                int existing;
+                counts[name] = counts.TryGetValue(name, out existing) ? existing + count : count;
             }
         }
 
