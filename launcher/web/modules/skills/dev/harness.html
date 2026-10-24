@@ -61,6 +61,13 @@ function authoritativeSnapshot(view,revision){
   var result={success:true,v:1,revision:revision==null?__host.revision:revision,view:view,
     player:{level:35,skillPoints:__host.skillPoints,easyMode:false},learned:copy(learnedRows),loadout:copy(loadout),trainer:null,
     diagnostics:[{code:'duplicate_skill_rows',skillKey:'重复技',rowCount:2}]};
+  if(Array.isArray(__host.featureDefinitions))result.features=__host.featureDefinitions.map(function(d){
+    var parent=learnedRows.find(function(row){return row.skillKey===d.skillKey});if(!parent)return null;
+    var unlocked=parent.stateHealth==='ok'&&!parent.writeBlocked&&parent.level>=d.minLevel;
+    var enabled=!(__host.featureDisabled||{})[d.id];
+    return{id:d.id,skillKey:d.skillKey,label:d.label,description:d.description,minLevel:d.minLevel,
+      unlocked:unlocked,enabled:enabled,effectiveEnabled:unlocked&&parent.enabled&&enabled,writeBlocked:!unlocked}
+  }).filter(Boolean);
   if(view==='trainer')result.trainer={session:__host.trainerSession,entries:__host.invalidTrainer?['闪现']:trainerEntries()};
   return result
 }
@@ -79,6 +86,9 @@ function applyWrite(message){var p=message.payload;
     var fields=['skillKey','level','iconKey','stateHealth','writeBlocked'];
     fields.forEach(function(field){var value=sourceSlot[field];sourceSlot[field]=targetSlot[field];targetSlot[field]=value});
     learnedRows.forEach(function(row){row.equippedSlots=loadout.filter(function(x){return x.skillKey===row.skillKey}).map(function(x){return x.slot})})
+  }else if(message.cmd==='setFeature'){
+    if(!__host.featureDisabled)__host.featureDisabled={};
+    if(p.enabled)delete __host.featureDisabled[p.featureId];else __host.featureDisabled[p.featureId]=true;
   }else if(message.cmd==='setPassive'){
     var passive=learnedRows.find(function(x){return x.skillKey===p.skillKey});if(passive)passive.enabled=!!p.enabled
   }else if(message.cmd==='reorder'){
@@ -111,7 +121,7 @@ function respond(message,ctx){var base=responseBase(message,ctx),p=message.paylo
   applyWrite(message);base.writeEpoch=__host.writeEpoch;base.revision=__host.revision;
   if(__host.malformedNextWrite){__host.malformedNextWrite=false;Object.assign(base,{success:false,error:'malformed_response',requiresReconcile:true});emit(base);return}
   var success=Object.assign(base,{success:true,v:1,changed:true,snapshot:authoritativeSnapshot(ctx.view)});
-  if(__host.unknownNextWrite){__host.unknownNextWrite=false;__host.pendingWriteUntil=Date.now()+175;setTimeout(function(){__host.pendingWriteUntil=0;emit(success)},175);return}
+  if(__host.unknownNextWrite){__host.unknownNextWrite=false;var unknownDelay=__host.unknownDelayMs||175;__host.pendingWriteUntil=Date.now()+unknownDelay;setTimeout(function(){__host.pendingWriteUntil=0;emit(success)},unknownDelay);return}
   setTimeout(function(){emit(success)},__host.writeDelay)
 }
 window.Bridge={
@@ -193,6 +203,14 @@ window.Icons={
       trainerSession:__host.view==='trainer'?__host.trainerSession:undefined,
       canReturnTrainer:__host.view==='manage'&&__host.canReturnTrainer===true,
       canReturnCharacterBuild:__host.view==='manage'&&__host.canReturnCharacterBuild===true})}
+  window.__openFeatureFixture=function(definitions){
+    __host.featureDefinitions=copy(definitions);__host.featureDisabled={};
+    learnedRows=learnedRows.filter(function(row){return row.skillKey!=='冲击连携'&&row.skillKey!=='剑气释放'});
+    learnedRows.push(learned('冲击连携',20,{level:10,type:'被动',passive:true,equippable:false}));
+    learnedRows.push(learned('剑气释放',21,{level:1,type:'被动',passive:true,equippable:false}));
+    setHost({instance:'inst-features',view:'manage',snapshotDelay:0,writeDelay:40,pendingWriteUntil:0,
+      unknownNextWrite:false,malformedNextWrite:false,canReturnTrainer:false,canReturnCharacterBuild:false});
+  };
   try{
     Panels.init();setHost({instance:'inst-manage',view:'manage',snapshotDelay:0,invalidTrainer:false,canReturnTrainer:false,returnSession:null});
     await until(function(){return document.querySelectorAll('.skills-slot').length===12});
@@ -659,6 +677,7 @@ window.Icons={
     await until(function(){return SkillsPanel.debugState().coordinator.state==='idle'&&sent('learnPreview').length>previewBeforeCommit
       &&!SkillsPanel.debugState().previewLoading},400);await wait(30);responseObserver.disconnect();
     var responseCommit=sent('learnCommit').slice(-1)[0];
+    await until(function(){return __skillDiagnostics.some(function(item){return item.callId===responseCommit.callId&&item.stage==='frame_callback'})},1000);
     ok('successful learn rebuilds the library once and automatically obtains the next preview',fullRefreshes===1
       &&sent('learnPreview').length===previewBeforeCommit+1&&!document.querySelector('.skills-trainer-commit').disabled,
       JSON.stringify({fullRefreshes:fullRefreshes,previewDelta:sent('learnPreview').length-previewBeforeCommit}));

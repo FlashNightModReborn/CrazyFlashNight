@@ -5,6 +5,7 @@ import org.flashNight.arki.skill.SkillPanelServiceTest;
 class org.flashNight.arki.skill.SkillMigrationTestSuite {
     public static function runAllTests():Void {
         trace("=== SkillMigrationTestSuite START ===");
+        org.flashNight.arki.skill.SkillFeaturePolicyTest.runAllTests();
         SkillLoadoutServiceTest.runAllTests();
         SkillPanelServiceTest.runAllTests();
         trace("=== SkillMigrationTestSuite END ===");

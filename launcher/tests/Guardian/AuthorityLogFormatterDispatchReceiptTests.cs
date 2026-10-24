@@ -47,6 +47,7 @@ namespace CF7Launcher.Tests.Guardian
         [InlineData("SkillTask", "skills", "skills", "unequip", "skillUnequip", null)]
         [InlineData("SkillTask", "skills", "skills", "moveSlot", "skillMoveSlot", null)]
         [InlineData("SkillTask", "skills", "skills", "setPassive", "skillSetPassive", null)]
+        [InlineData("SkillTask", "skills", "skills", "setFeature", "skillSetFeature", null)]
         [InlineData("SkillTask", "skills", "skills", "reorder", "skillReorder", null)]
         public void CanonicalDispatchMappings_FormatExactBindingReceipt(
             string component,

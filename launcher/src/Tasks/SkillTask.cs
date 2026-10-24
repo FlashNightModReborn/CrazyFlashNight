@@ -1407,6 +1407,7 @@ namespace CF7Launcher.Tasks
                 case "unequip": action = "skillUnequip"; isWrite = true; return true;
                 case "moveSlot": action = "skillMoveSlot"; isWrite = true; return true;
                 case "setPassive": action = "skillSetPassive"; isWrite = true; return true;
+                case "setFeature": action = "skillSetFeature"; isWrite = true; return true;
                 case "reorder": action = "skillReorder"; isWrite = true; return true;
                 default: action = null; return false;
             }
@@ -1496,6 +1497,14 @@ namespace CF7Launcher.Tasks
                     || !CopyInteger(payload, result, "sourceSlot", 1, 12)
                     || !CopyInteger(payload, result, "targetSlot", 1, 12)
                     || !CopyInteger(payload, result, "expectedRevision", 0, int.MaxValue)) return false;
+            }
+            else if (cmd == "setFeature")
+            {
+                if (!IsExactObject(payload, Set("v", "featureId", "enabled", "expectedRevision"))) return false;
+                string featureId = ReadString(payload["featureId"]);
+                if (!IsFeatureId(featureId) || !IsBoolean(payload["enabled"])) return false;
+                result["featureId"] = featureId; result["enabled"] = payload.Value<bool>("enabled");
+                if (!CopyInteger(payload, result, "expectedRevision", 0, int.MaxValue)) return false;
             }
             else if (cmd == "setPassive")
             {
@@ -1606,6 +1615,14 @@ namespace CF7Launcher.Tasks
                 JObject row = loadout.OfType<JObject>().FirstOrDefault(x => x.Value<int>("slot") == slot);
                 return row != null && row["skillKey"].Type == JTokenType.Null;
             }
+            if (entry.WebCmd == "setFeature")
+            {
+                JArray features = snapshot["features"] as JArray;
+                JObject feature = features == null ? null : features.OfType<JObject>().FirstOrDefault(
+                    x => x.Value<string>("id") == entry.NormalizedPayload.Value<string>("featureId"));
+                return feature != null && feature.Value<bool>("unlocked") && !feature.Value<bool>("writeBlocked")
+                    && feature.Value<bool>("enabled") == entry.NormalizedPayload.Value<bool>("enabled");
+            }
             JObject learnedRow = learned.OfType<JObject>().FirstOrDefault(x => x.Value<string>("skillKey") == key);
             if (entry.WebCmd == "setPassive")
                 return learnedRow != null && learnedRow.Value<bool>("enabled") == entry.NormalizedPayload.Value<bool>("enabled");
@@ -1620,6 +1637,7 @@ namespace CF7Launcher.Tasks
             HashSet<string> keys = routed
                 ? Set("task", "callId", "success", "v", "revision", "view", "player", "learned", "loadout", "trainer", "diagnostics")
                 : Set("success", "v", "revision", "view", "player", "learned", "loadout", "trainer", "diagnostics");
+            if (value.Property("features") != null) keys.Add("features");
             if (!IsExactObject(value, keys) || value.Value<bool?>("success") != true || !HasVersion(value)
                 || !IsInteger(value["revision"], 0, int.MaxValue)) return false;
             string view = ReadString(value["view"]);
@@ -1641,11 +1659,48 @@ namespace CF7Launcher.Tasks
             foreach (JObject row in loadout) if (!slots.Add(row.Value<int>("slot"))) return false;
             if (slots.Count != 12 || slots.Min() != 1 || slots.Max() != 12) return false;
             if (diagnostics.Any(x => !IsDiagnostic(x as JObject))) return false;
+            if (value.Property("features") != null && !IsFeatureList(value["features"], learned)) return false;
             if (view == "manage") return value["trainer"].Type == JTokenType.Null;
             JObject trainer = value["trainer"] as JObject;
             return IsTrainer(trainer)
                 && (string.IsNullOrEmpty(expectedTrainerSession)
                     || trainer.Value<string>("session") == expectedTrainerSession);
+        }
+
+        private static bool IsFeatureId(string value)
+        {
+            return value != null && value.Length <= 64 && System.Text.RegularExpressions.Regex.IsMatch(
+                value, @"\A[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+\z",
+                System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+        }
+
+        private static bool IsFeatureList(JToken value, JArray learned)
+        {
+            JArray rows = value as JArray;
+            if (rows == null || rows.Count > 128) return false;
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            foreach (JToken token in rows)
+            {
+                JObject row = token as JObject;
+                if (!IsExactObject(row, Set("id", "skillKey", "label", "description", "minLevel", "unlocked",
+                    "enabled", "effectiveEnabled", "writeBlocked"))) return false;
+                string id = ReadString(row["id"]);
+                if (!IsFeatureId(id) || !seen.Add(id) || !IsSkillKey(ReadString(row["skillKey"]))
+                    || !IsSafeText(ReadString(row["label"]), 1, 64, false)
+                    || !IsSafeText(ReadString(row["description"]), 0, 512, true)
+                    || !IsInteger(row["minLevel"], 1, 100) || !IsBoolean(row["unlocked"])
+                    || !IsBoolean(row["enabled"]) || !IsBoolean(row["effectiveEnabled"])
+                    || !IsBoolean(row["writeBlocked"])) return false;
+                JObject parent = learned.OfType<JObject>().FirstOrDefault(x =>
+                    x.Value<string>("skillKey") == row.Value<string>("skillKey"));
+                if (parent == null) return false;
+                bool unlocked = parent.Value<string>("stateHealth") == "ok" && !parent.Value<bool>("writeBlocked")
+                    && parent.Value<int>("level") >= row.Value<int>("minLevel");
+                if (row.Value<bool>("unlocked") != unlocked || (!unlocked && !row.Value<bool>("writeBlocked"))
+                    || row.Value<bool>("effectiveEnabled") != (unlocked && parent.Value<bool>("enabled") && row.Value<bool>("enabled")))
+                    return false;
+            }
+            return true;
         }
 
         private static bool IsLearnedEntry(JObject row)

@@ -1,3 +1,13 @@
 ﻿trace("FocusedTestRunId skill-migration Start: __FOCUSED_RUN_ID__");
+var swordSavedFunctions:Object=_root.技能函数;
+_root.技能函数={};
+var swordActor:MovieClip=_root.createEmptyMovieClip("__swordFeatureActor",_root.getNextHighestDepth());
+_root.__swordFeatureContext=swordActor.createEmptyMovieClip("context",1);
+with (_root.__swordFeatureContext) {
+#include "逻辑/单位函数/单位函数_雾人_兵器搓招指令.as"
+}
+org.flashNight.arki.skill.SwordFeatureTest.runAllTests();
+_root.技能函数=swordSavedFunctions;
+delete _root.__swordFeatureContext;
 org.flashNight.arki.skill.SkillMigrationTestSuite.runAllTests();
 trace("FocusedTestRunId skill-migration Complete: __FOCUSED_RUN_ID__");

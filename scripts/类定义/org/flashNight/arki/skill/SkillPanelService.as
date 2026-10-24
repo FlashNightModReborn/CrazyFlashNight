@@ -29,6 +29,7 @@ class org.flashNight.arki.skill.SkillPanelService {
         _root.gameCommands["skillEquip"] = function(params:Object):Void { SkillPanelService.handle("equip", params); };
         _root.gameCommands["skillUnequip"] = function(params:Object):Void { SkillPanelService.handle("unequip", params); };
         _root.gameCommands["skillMoveSlot"] = function(params:Object):Void { SkillPanelService.handle("moveSlot", params); };
+        _root.gameCommands["skillSetFeature"] = function(params:Object):Void { SkillPanelService.handle("setFeature", params); };
         _root.gameCommands["skillSetPassive"] = function(params:Object):Void { SkillPanelService.handle("setPassive", params); };
         _root.gameCommands["skillReorder"] = function(params:Object):Void { SkillPanelService.handle("reorder", params); };
         _root.gameCommands["skillPanelClose"] = function(params:Object):Void { SkillPanelService.handle("close", params); };
@@ -59,6 +60,7 @@ class org.flashNight.arki.skill.SkillPanelService {
         if (commandName == "unequip") return executeWrite("unequip", params);
         if (commandName == "moveSlot") return executeWrite("moveSlot", params);
         if (commandName == "setPassive") return executeWrite("setPassive", params);
+        if (commandName == "setFeature") return executeWrite("setFeature", params);
         if (commandName == "reorder") return executeWrite("reorder", params);
         if (commandName == "close") {
             if (params.trainerSession != undefined && !safeOpaque(params.trainerSession, 160)) return fail("invalid_payload");
@@ -170,6 +172,7 @@ class org.flashNight.arki.skill.SkillPanelService {
         if (kind == "equip") result = SkillLoadoutService.equip(String(params.skillKey), Number(params.slot), Number(params.expectedRevision));
         else if (kind == "unequip") result = SkillLoadoutService.unequip(Number(params.slot), Number(params.expectedRevision));
         else if (kind == "moveSlot") result = SkillLoadoutService.moveSlot(Number(params.sourceSlot), Number(params.targetSlot), Number(params.expectedRevision));
+        else if (kind == "setFeature") result = SkillLoadoutService.setFeature(String(params.featureId), params.enabled, Number(params.expectedRevision));
         else if (kind == "setPassive") result = SkillLoadoutService.setPassive(String(params.skillKey), params.enabled, Number(params.expectedRevision));
         else result = SkillLoadoutService.reorder(String(params.skillKey), Number(params.targetIndex), Number(params.expectedRevision));
         _busy = false;

@@ -19,9 +19,16 @@ $focusedRun = @{
     AdditionalAsRelativePaths = @(
         'scripts\类定义\org\flashNight\arki\skill\SkillLoadoutServiceTest.as'
         'scripts\类定义\org\flashNight\arki\skill\SkillPanelServiceTest.as'
+        'scripts\类定义\org\flashNight\arki\skill\SkillFeaturePolicyTest.as'
+        'scripts\类定义\org\flashNight\arki\skill\SwordFeatureTest.as'
+        'scripts\逻辑\单位函数\单位函数_雾人_兵器搓招指令.as'
     )
     ExpectedTracePatterns = @(
+        '(?m)^SwordFeatureTest Tests Passed: [1-9][0-9]*\r?$'
+        '(?m)^SwordFeatureTest Tests Failed: 0\r?$'
         '(?m)^=== SkillMigrationTestSuite START ===\r?$'
+        '(?m)^SkillFeaturePolicyTest Tests Passed: [1-9][0-9]*\r?$'
+        '(?m)^SkillFeaturePolicyTest Tests Failed: 0\r?$'
         '(?m)^SkillLoadoutServiceTest Tests Passed: [1-9][0-9]*\r?$'
         '(?m)^SkillLoadoutServiceTest Tests Failed: 0\r?$'
         '(?m)^SkillPanelServiceTest Tests Passed: [1-9][0-9]*\r?$'

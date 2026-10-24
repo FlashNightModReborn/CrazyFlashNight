@@ -393,7 +393,7 @@ candidate、facet 与 mutation 三处共用实例有效事实，禁止基础 cat
 
 必跑：
 
-- `powershell -ExecutionPolicy Bypass -File scripts/run-skill-migration-tests.ps1 -TimeoutSeconds 240`（精确计数以 runner 为准，当前 `SkillLoadoutServiceTest 58/58`、`SkillPanelServiceTest 48/48`、Compiler Errors `0/0`；该入口不再包含 LongGun / ManualCooldown / DrugInput，三者改由玩家手动输入 runner 独立守门；Loadout 覆盖旧 HUD 图标壳重建、快捷槽空目标移动/占用目标交换/no-op/坏源拒绝；
+- `powershell -ExecutionPolicy Bypass -File scripts/run-skill-migration-tests.ps1 -TimeoutSeconds 240`（精确计数以 runner 的新鲜 trace 为准；含 `SwordFeatureTest`、`SkillFeaturePolicyTest`、`SkillLoadoutServiceTest`、`SkillPanelServiceTest`，要求 Compiler `0/0`；该入口不再包含 LongGun / ManualCooldown / DrugInput，三者改由玩家手动输入 runner 独立守门；Loadout 覆盖旧 HUD 图标壳重建、快捷槽空目标移动/占用目标交换/no-op/坏源拒绝；
   Panel 另覆盖 `skillPanelOpen` exact `openRequestId` 回显、缺失或畸形 `openRequestId` 均零发送；新 Host 缺 nonce 拒绝、`moveSlot` 路由、成功教师读续租与连续 120 秒空闲过期）。
 - `node tools/test-skills-ui-modules.js`（文本现役 `65/65`，待核：阈值来源为历史文本，未找到当前机器真源）。
 - `node tools/run-skills-harness.js`（文本现役 3 视口 `150/150`，待核）。
@@ -405,6 +405,8 @@ candidate、facet 与 mutation 三处共用实例有效事实，禁止基础 cat
 - `npm --prefix tools/cf7-save-repair test` 与 `npm --prefix tools/cf7-save-repair run typecheck`。
 
 发布 `asLoader.swf`；实际触及 main / 物品技能 UI / 玩家信息 UI / things 时逐目标 `-PublishOnly -VerifySwf`，三件套 + linkage scanner，dirty XFL 不得强制丢弃内存改动。
+
+子能力增量还覆盖目录唯一 ID、旧档默认开启、稀疏 opt-out、父级/等级门、NPC 隔离、未知版本拒写、SP 不变、no-op/陈旧 revision/回滚、真实 SaveManager codec、幽灵弹退款幂等；剑气 suite 通过 MovieClip 的 `with` 词法作用域实际 include 生产帧脚本，验证 DFA/帧兜底/兵器重映射与关闭后普通攻击回退。Web 真实输入覆盖次页开关、键盘、父开关、帮助、未知写锁和显式对账；规则归[技能子能力合同](../docs/skill-subfeatures.md)。Host 全量需资源资格时使用 `tools/run-focus-sol-recheck.ps1 -Phase integration -Canonical`，无资格环境的失败原件保留，不改测试绕过。
 
 skills harness 固定覆盖：`min(MaxLevel,currentLevel+floor(skillPoints/UpgradeSP))` 可负担上限、零费升级保留元数据上限、SP 不足一级时明确阻塞且零无效 preview、切换到不可升级技能会取消上一技能 debounce 并隔离迟到回包、AS2 HTML 白名单注释、无常驻详情栏、固定居中 `12×64px` Hotbar、`48px` 快捷槽图标与 `3px` 间距、技能库完整/紧凑不改变 Hotbar、正常等级与悬停/聚焦卸载动作避让、管理顶栏常显且独立分组的「快捷栏｜安全/快速」、切换零业务流量、帮助只说明规则且学习确认不可绕过、
 完整卡与物品 owned grid 共节奏的 `48px`/`40px` 紧凑瓦片、trainer→manage→trainer exact rebind、形态/配置或学习/流派三组首击筛选、manage 两行紧凑承载、跨组组合/一键清除、武术/科技/超能力流派可见、默认收起搜索与 `/`/Esc、manage/trainer 指标分层、玩家文案、异常诊断复制且不泄漏 trainer session、L/R marker 视觉隐藏但 ARIA 保留、manage/trainer 情境帮助、模态最小画布边界与焦点恢复、技能→快捷槽装备拖拽、快捷槽→快捷槽单写移动/交换与 `Alt+←/→` 连续调整、

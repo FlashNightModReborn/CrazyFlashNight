@@ -22,6 +22,7 @@
         unequip: true,
         moveSlot: true,
         setPassive: true,
+        setFeature: true,
         reorder: true
     };
 
@@ -416,7 +417,33 @@
         };
     };
 
+    function validFeatures(snapshot) {
+        if (!Object.prototype.hasOwnProperty.call(snapshot,'features')) return true;
+        var rows = snapshot.features, seen = Object.create(null);
+        if (!Array.isArray(rows) || rows.length > 128) return false;
+        var keys = ['id','skillKey','label','description','minLevel','unlocked','enabled','effectiveEnabled','writeBlocked'].sort().join(',');
+        return rows.every(function(row) {
+            if (!row || typeof row !== 'object' || Array.isArray(row) || Object.keys(row).sort().join(',') !== keys
+                    || typeof row.id !== 'string' || row.id.length > 64 || /[^a-z0-9_.]/.test(row.id)
+                    || !/^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$/.test(row.id) || seen[row.id]
+                    || typeof row.skillKey !== 'string' || typeof row.label !== 'string' || !row.label.length || row.label.length > 64
+                    || typeof row.description !== 'string' || row.description.length > 512
+                    || /[\u0000-\u001f\u007f]/.test(row.label)
+                    || /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(row.description)
+                    || !isFinite(row.minLevel) || Math.floor(row.minLevel) !== row.minLevel || row.minLevel < 1 || row.minLevel > 100
+                    || ['unlocked','enabled','effectiveEnabled','writeBlocked'].some(function(k) { return typeof row[k] !== 'boolean'; })) return false;
+            seen[row.id] = true;
+            var parent = snapshot.learned.filter(function(entry) { return entry.skillKey === row.skillKey; })[0];
+            if (!parent) return false;
+            var unlocked = parent.stateHealth === 'ok' && !parent.writeBlocked && parent.level >= row.minLevel;
+            return row.unlocked === unlocked && (unlocked || row.writeBlocked)
+                && row.effectiveEnabled === (unlocked && parent.enabled && row.enabled);
+        });
+    }
+
+
     return {
+        validateFeatures:validFeatures,
         RequestMux: RequestMux,
         SkillCoordinator: SkillCoordinator,
         WRITE_COMMANDS: WRITE_COMMANDS
