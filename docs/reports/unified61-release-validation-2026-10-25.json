@@ -87,5 +87,31 @@
     "realPlayerSavesUsed": false,
     "oldFailedEvidenceRetained": true,
     "existingCatalogAndOracleDriftSeparate": true
+  },
+  "npcDialogueRepair": {
+    "sourceBeforeRepair": "af5482c289c3327579126127b1ac60d7e47bcfde",
+    "path": "data/dialogues/npc_dialogue_成员.xml",
+    "originalParseFailure": "Opening and ending tag mismatch: Dialogues line 742 and Dialogue, line 850, column 20 (<string>, line 850)",
+    "beforeSha256": "bc76a771242b036ee5f8cb3c3e20f5610c1385ecd7505bc1ca0ba8165e296d73",
+    "afterSha256": "249e08c550cec53cd4902ecd30180c32b5388492395eab57191b0122100ad228",
+    "onlyDuplicateClosingLineRemoved": true,
+    "syntaxVerifiedFiles": 13,
+    "consumerResultPath": "tmp/unified61-release-20261025/npc-consumer-smoke/result.json",
+    "consumerResultSha256": "a1889ce52ae3e5a8eab2eff4e9f65c4c405f75e3de61793297d2eab4e1b20ee9",
+    "consumerPassed": true,
+    "consumerCoreSha256": "6F569DF0441CDCD097D0870C19D2D4FF643EA98F19716492099094DFDE7105DF",
+    "npcCount": 91,
+    "dialogueGroupCount": 371,
+    "subDialogueCount": 700,
+    "akaGroupIds": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "newGroupLineCount": 4,
+    "gameJourneyExecuted": false,
+    "playerSaveAccessed": false
   }
 }
