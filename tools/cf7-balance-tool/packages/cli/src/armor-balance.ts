@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { XMLParser } from "fast-xml-parser";
+import { armorAcquisitionFile, armorItemScope, readArmorKPointPrices } from "./armor-acquisition.js";
 import {
   ARMOR_BALANCE_FORMULA_FAMILY,
   ARMOR_BALANCE_FORMULA_VERSION,
@@ -74,9 +75,11 @@ function main(): void {
   const plan = readPlan();
   verifyWorkbookSnapshot(plan);
   const records = buildAuditRecords(plan);
-  verifyCoverage(plan, records);
+  const scope = armorItemScope(process.argv.slice(3), records.map((record) => record.itemName));
+  verifyCoverage(plan, records, scope);
+  if (scope) console.log(`SCOPED: ${scope.size} items; global catalog coverage is not certified`);
   const auditXml = buildAuditXml(plan, records);
-  const syncedFiles = buildSyncedItemFiles(records);
+  const syncedFiles = buildSyncedItemFiles(scope ? records.filter((record) => scope.has(record.itemName)) : records);
 
   if (command === "sync") {
     atomicWriteTextFile(AUDIT_PATH, auditXml);
@@ -273,11 +276,11 @@ function verifyKPointPrice(
 ): void {
   // 没有 K 点获取的金币/合成方案不伪造 K 店证据。解析器保证两字段成对及 K 层必填。
   if (record.kpointEvidenceRef === undefined) return;
-  const evidencePath = path.join(REPO_ROOT, record.kpointEvidenceRef);
-  let prices = kshopCache.get(evidencePath);
+  const evidencePath = path.join(REPO_ROOT, armorAcquisitionFile(record.kpointEvidenceRef));
+  let prices = kshopCache.get(record.kpointEvidenceRef);
   if (!prices) {
     prices = readKshopPrices(evidencePath, record.kpointEvidenceRef);
-    kshopCache.set(evidencePath, prices);
+    kshopCache.set(record.kpointEvidenceRef, prices);
   }
   const actual = prices.get(record.itemName);
   if (actual === undefined) {
@@ -297,25 +300,16 @@ function verifyKPointPrice(
 }
 
 function readKshopPrices(absolutePath: string, evidenceRef: string): Map<string, number> {
-  const parsed = JSON.parse(fs.readFileSync(absolutePath, "utf8")) as unknown;
-  if (!Array.isArray(parsed)) throw new Error(`${evidenceRef}: 需要条目数组`);
-  const result = new Map<string, number>();
-  for (const [index, raw] of parsed.entries()) {
-    const entry = requireObject(raw, `${evidenceRef}[${index}]`);
-    const itemName = readText(entry.item, `${evidenceRef}[${index}].item`);
-    const price = readNumber(entry.price, `${evidenceRef}[${index}].price`);
-    if (result.has(itemName)) throw new Error(`${evidenceRef}: 重复条目 ${itemName}`);
-    result.set(itemName, price);
-  }
-  return result;
+  return readArmorKPointPrices(JSON.parse(fs.readFileSync(absolutePath, "utf8")) as unknown, evidenceRef);
 }
 
-function verifyCoverage(plan: ArmorBalancePlan, records: AuditRecord[]): void {
+function verifyCoverage(plan: ArmorBalancePlan, records: AuditRecord[], scope?: Set<string>): void {
   const planned = new Set(records.map((record) => `${record.sourceFile} ${record.itemName}`));
   for (const sourceFile of plan.coverageFiles) {
     const absolutePath = path.join(REPO_ROOT, sourceFile);
     const blocks = indexItemBlocks(fs.readFileSync(absolutePath, "utf8"), sourceFile);
     for (const itemName of blocks.keys()) {
+      if (scope && !scope.has(itemName)) continue;
       if (!planned.has(`${sourceFile} ${itemName}`)) {
         throw new Error(`${sourceFile}: ${itemName} 未进入防具审计计划`);
       }

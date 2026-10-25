@@ -1,0 +1,489 @@
+{
+  "schema": "cfn-issue-repair-evidence.v1",
+  "head": "6ff73d63c89086824018a04f8e9e0ef9506a2272",
+  "frozenUtc": "2026-10-25T03:31:22.7950891Z",
+  "scope": "historical local repair evidence; not full game acceptance or formal promotion",
+  "productionSwfs": {
+    "scripts/asLoader.swf": {
+      "bytes": 6690895,
+      "sha256": "D635A701F0EA3B5D39C53E095304FC79904042439E23624E9F6992D83B7B1282"
+    },
+    "flashswf/arts/things0.swf": {
+      "bytes": 5392762,
+      "sha256": "50974EAE242AB514B95F957F6FE11EFF293F152286BFA81D9ED00A7C1784F7DE"
+    }
+  },
+  "ownership": {
+    "errors": [],
+    "files": 787,
+    "parsed": 0,
+    "cacheHits": 787,
+    "loaderClasses": 770,
+    "closureChecked": true,
+    "policy": "production",
+    "milliseconds": 10255.6152
+  },
+  "runs": [
+    {
+      "name": "equipment-tuning",
+      "exitCode": 0,
+      "runId": null,
+      "swfs": [
+        {
+          "path": "scripts/TestLoader.swf",
+          "sha256": "D7CD62EA864F0215E08CC717C793F16848BFE11ADAAC7A4F1F39643FDC8DD18B",
+          "bytes": 1170606
+        }
+      ]
+    },
+    {
+      "name": "cf6-map-mechanism",
+      "exitCode": 0,
+      "runId": "a6c770a50a0b455fb428161d937eaaff",
+      "swfs": [
+        {
+          "bytes": 1130806,
+          "path": "scripts/TestLoader.swf",
+          "sha256": "F6EEDA12E9B160C0B429ED11BE2A828D3B1E93174EDB3C158F56AC715CAB585E"
+        }
+      ]
+    },
+    {
+      "name": "cf6-native-surface",
+      "exitCode": 0,
+      "runId": null,
+      "swfs": [
+        {
+          "path": "scripts/TestLoader.swf",
+          "sha256": "213A89C2CAE39531BA57F3B4F9AA3CA293DC3226B1406C05C23C0B9F526CE1EF",
+          "bytes": 6280
+        }
+      ]
+    },
+    {
+      "name": "publish-things0",
+      "exitCode": 0,
+      "runId": null,
+      "swfs": [
+        {
+          "path": "flashswf/arts/things0.swf",
+          "sha256": "50974EAE242AB514B95F957F6FE11EFF293F152286BFA81D9ED00A7C1784F7DE",
+          "bytes": 5392762
+        }
+      ]
+    },
+    {
+      "name": "publish-asloader",
+      "exitCode": 1,
+      "runId": null,
+      "swfs": []
+    },
+    {
+      "name": "publish-asloader-retry",
+      "exitCode": 0,
+      "runId": null,
+      "swfs": [
+        {
+          "path": "scripts/asLoader.swf",
+          "sha256": "D635A701F0EA3B5D39C53E095304FC79904042439E23624E9F6992D83B7B1282",
+          "bytes": 6690895
+        }
+      ]
+    },
+    {
+      "name": "skill-container-transition",
+      "exitCode": 1,
+      "runId": null,
+      "swfs": [
+        {
+          "path": "SkillContainerTransitionNativeHost.swf",
+          "sha256": "35B2A049012542CE3A6CE0A6AB43AFD2056BCDCD341E68B733A396F06214D37E",
+          "bytes": 1161502
+        }
+      ]
+    },
+    {
+      "name": "skill-container-transition-final",
+      "exitCode": 1,
+      "runId": "39a2f982d5424c5399502efddc2b91ec",
+      "swfs": [
+        {
+          "sha256": "325D1C02D390596A7EFFD1D1C97FC87BD35B85FB3E7201F6320325D7D57902D0",
+          "path": "SkillContainerTransitionNativeHost.swf",
+          "bytes": 1162980
+        }
+      ]
+    }
+  ],
+  "failedDiagnostic": {
+    "runId": "39a2f982d5424c5399502efddc2b91ec",
+    "capturedUtc": "2026-10-25T03:31:22.7950891Z",
+    "failed": 1,
+    "knownPositiveCases": [
+      "six strike paths emit 2x15",
+      "weapon-default-step emitted9 with vamp20 and element冲",
+      "ichimonji maxX450 <=wall450 <=map500"
+    ],
+    "name": "skill-container-transition-final",
+    "exitCode": 1,
+    "files": [
+      {
+        "sha256": "325D1C02D390596A7EFFD1D1C97FC87BD35B85FB3E7201F6320325D7D57902D0",
+        "path": "SkillContainerTransitionNativeHost.swf",
+        "bytes": 1162980
+      },
+      {
+        "sha256": "4C9B02062BF73E5FD4F634DF3A95AFA5F3DD158F8D45B96D6056911F9B505DFE",
+        "path": "scripts/flashlog.txt",
+        "bytes": 7920
+      },
+      {
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "path": "scripts/compiler_errors.txt",
+        "bytes": 27
+      },
+      {
+        "sha256": "35955F6452E552067BBCD2B93FD9A449FC5D9B2E566A2D5C6BC09B22A54E3728",
+        "path": "scripts/compile_output.txt",
+        "bytes": 19
+      },
+      {
+        "sha256": "3662FE8B99E1529D6A4D2D43A67B6DBEA86538CFBEFCB0046D5DADA90CFD50F3",
+        "path": "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Routing/SkillContainerTransitionTest.as",
+        "bytes": 9176
+      },
+      {
+        "sha256": "121B98A567DCD852E606A6D0CBEEB7A66D955C7B22281A44CA30C36363EAE051",
+        "path": "scripts/run-skill-container-transition-tests.ps1",
+        "bytes": 4759
+      },
+      {
+        "sha256": "B1E6C8EC9E77FC28EB63C951BCCAC93A6BF53109F0E5EAEFBEED517D4D4205B6",
+        "path": "scripts/test-runners/skill-container-transition/TestLoader.as.template",
+        "bytes": 861
+      }
+    ],
+    "passed": 26,
+    "failure": "learned-step emits no damage; disposable-unit baseline remains unqualified"
+  },
+  "failedDiagnosticRawTrace": "FocusedTestRunId skill-container-transition Start: 39a2f982d5424c5399502efddc2b91ec\nSkillContainerTransition Root: / unit=/__skillTransitionWorld/probeHero\nSkillContainerTransition Attach: case=idle-to-strike frames=16 frame=1 target=/__skillTransitionWorld/probeHero/man\nSkillContainerTransition Frame: case=idle-to-strike age=0 frame=2 state=技能\nSkillContainerTransition Frame: case=idle-to-strike age=1 frame=3 state=技能\nSkillContainerTransition Frame: case=idle-to-strike age=2 frame=4 state=技能\nSkillContainerTransition Case: idle-to-strike groups=2 count=30\nSkillContainerTransition Shot: case=idle-to-strike age=0 count=15 vamp=NaN element=undefined modeVamp=0 modeElement=null power=1110\nSkillContainerTransition Shot: case=idle-to-strike age=0 count=15 vamp=NaN element=undefined modeVamp=0 modeElement=null power=1110\nSkillContainerTransition Attach: case=spin-to-strike frames=22 frame=1 target=/__skillTransitionWorld/probeHero/man\nSkillContainerTransition Attach: case=spin-to-strike frames=22 frame=3 target=/__skillTransitionWorld/probeHero/man\nSkillContainerTransition Frame: case=spin-to-strike age=0 frame=2 state=技能\nSkillContainerTransition Frame: case=spin-to-strike age=1 frame=3 state=技能\nSkillContainerTransition Frame: case=spin-to-strike age=2 frame=4 state=技能\nSkillContainerTransition Case: spin-to-strike groups=2 count=30\nSkillContainerTransition Shot: case=spin-to-strike age=0 count=15 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=1110\nSkillContainerTransition Shot: case=spin-to-strike age=0 count=15 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=1110\nSkillContainerTransition Attach: case=slash-to-strike frames=44 frame=1 target=/__skillTransitionWorld/probeHero/man\nSkillContainerTransition Attach: case=slash-to-strike frames=44 frame=3 target=/__skillTransitionWorld/probeHero/man\nSkillContainerTransition Frame: case=slash-to-strike age=0 frame=2 state=技能\nSkillContainerTransition Frame: case=slash-to-strike age=1 frame=3 state=技能\nSkillContainerTransition Frame: case=slash-to-strike age=2 frame=4 state=技能\nSkillContainerTransition Case: slash-to-strike groups=2 count=30\nSkillContainerTransition Shot: case=slash-to-strike age=0 count=15 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=1110\nSkillContainerTransition Shot: case=slash-to-strike age=0 count=15 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=1110\nSkillContainerTransition Attach: case=step-to-strike frames=44 frame=1 target=/__skillTransitionWorld/probeHero/man\nSkillContainerTransition Attach: case=step-to-strike frames=44 frame=3 target=/__skillTransitionWorld/probeHero/man\nSkillContainerTransition Frame: case=step-to-strike age=0 frame=2 state=技能\nSkillContainerTransition Frame: case=step-to-strike age=1 frame=3 state=技能\nSkillContainerTransition Frame: case=step-to-strike age=2 frame=4 state=技能\nSkillContainerTransition Case: step-to-strike groups=2 count=30\nSkillContainerTransition Shot: case=step-to-strike age=0 count=15 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=1110\nSkillContainerTransition Shot: case=step-to-strike age=0 count=15 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=1110\nSkillContainerTransition Attach: case=flash-to-strike frames=46 frame=1 target=/__skillTransitionWorld/probeHero/man\nSkillContainerTransition Attach: case=flash-to-strike frames=46 frame=3 target=/__skillTransitionWorld/probeHero/man\nSkillContainerTransition Frame: case=flash-to-strike age=0 frame=2 state=技能\nSkillContainerTransition Frame: case=flash-to-strike age=1 frame=3 state=技能\nSkillContainerTransition Frame: case=flash-to-strike age=2 frame=4 state=技能\nSkillContainerTransition Case: flash-to-strike groups=2 count=30\nSkillContainerTransition Shot: case=flash-to-strike age=0 count=15 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=1110\nSkillContainerTransition Shot: case=flash-to-strike age=0 count=15 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=1110\nSkillContainerTransition Attach: case=beam-to-strike frames=87 frame=1 target=/__skillTransitionWorld/probeHero/man\nSkillContainerTransition Attach: case=beam-to-strike frames=87 frame=3 target=/__skillTransitionWorld/probeHero/man\nSkillContainerTransition Frame: case=beam-to-strike age=0 frame=2 state=技能\nSkillContainerTransition Frame: case=beam-to-strike age=1 frame=3 state=技能\nSkillContainerTransition Frame: case=beam-to-strike age=2 frame=4 state=技能\nSkillContainerTransition Case: beam-to-strike groups=2 count=30\nSkillContainerTransition Shot: case=beam-to-strike age=0 count=15 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=1110\nSkillContainerTransition Shot: case=beam-to-strike age=0 count=15 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=1110\nSkillContainerTransition Attach: case=weapon-default-step frames=44 frame=1 target=/__skillTransitionWorld/probeHero/man\nSkillContainerTransition Frame: case=weapon-default-step age=0 frame=2 state=战技\nSkillContainerTransition Frame: case=weapon-default-step age=1 frame=3 state=战技\nSkillContainerTransition Frame: case=weapon-default-step age=2 frame=4 state=战技\nSkillContainerTransition Case: weapon-default-step groups=9 count=9\nSkillContainerTransition Shot: case=weapon-default-step age=5 count=1 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=760\nSkillContainerTransition Shot: case=weapon-default-step age=8 count=1 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=760\nSkillContainerTransition Shot: case=weapon-default-step age=12 count=1 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=760\nSkillContainerTransition Shot: case=weapon-default-step age=15 count=1 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=760\nSkillContainerTransition Shot: case=weapon-default-step age=18 count=1 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=760\nSkillContainerTransition Shot: case=weapon-default-step age=21 count=1 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=760\nSkillContainerTransition Shot: case=weapon-default-step age=27 count=1 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=760\nSkillContainerTransition Shot: case=weapon-default-step age=30 count=1 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=760\nSkillContainerTransition Shot: case=weapon-default-step age=33 count=1 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=760\nSkillContainerTransition Attach: case=learned-step frames=44 frame=1 target=/__skillTransitionWorld/probeHero/man\nSkillContainerTransition Frame: case=learned-step age=0 frame=2 state=技能\nSkillContainerTransition Frame: case=learned-step age=1 frame=3 state=技能\nSkillContainerTransition Frame: case=learned-step age=2 frame=4 state=技能\nSkillContainerTransition Case: learned-step groups=0 count=0\n[FAIL] SkillContainerTransition: actual default skill emits damage learned-step\nSkillContainerTransition Attach: case=ichimonji-no-target-right frames=43 frame=1 target=/__skillTransitionWorld/probeHero/man\nSkillContainerTransition Frame: case=ichimonji-no-target-right age=0 frame=2 state=战技\nSkillContainerTransition Frame: case=ichimonji-no-target-right age=1 frame=3 state=战技\nSkillContainerTransition Frame: case=ichimonji-no-target-right age=2 frame=4 state=战技\nSkillContainerTransition Case: ichimonji-no-target-right groups=2 count=6\nSkillContainerTransition Shot: case=ichimonji-no-target-right age=7 count=2 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=NaN\nSkillContainerTransition Shot: case=ichimonji-no-target-right age=32 count=4 vamp=20 element=冲 modeVamp=20 modeElement=冲 power=NaN\nSkillContainerTransition Ichimonji: maxX=450 finalX=450 mapXmax=500\nSkillContainerTransitionTest Tests Passed: 26\nSkillContainerTransitionTest Tests Failed: 1\nFocusedTestRunId skill-container-transition Complete: 39a2f982d5424c5399502efddc2b91ec\n",
+  "floorRawTrace": "FocusedTestRunId cf6-native-surface Start: a5b0c6e5d1ba4bd5915389acc1202288\nCf6NativeSurface Pixels: map=A18 version=old upperOpaque=0/8 lowerOpaque=8/8 upper=0,0,0,0,0,0,0,0 lower=-7435649,-7304062,-7304062,-7172476,-7172477,-7829638,-7829638,-13947866\nCf6NativeSurface Pixels: map=A18 version=new upperOpaque=8/8 lowerOpaque=8/8 upper=-7435648,-7238269,-7238269,-7172476,-7171707,-12303043,-12303043,-13882329 lower=-7435649,-7304062,-7304062,-7172476,-7172477,-7829638,-7829638,-13947866\nCf6NativeSurface Pixels: map=A19 version=old upperOpaque=1/7 lowerOpaque=8/8 upper=0,0,0,0,0,0,-12633033 lower=-7435649,-7304062,-7304062,-7172476,-14145755,-7172477,-7829638,-7829638\nCf6NativeSurface Pixels: map=A19 version=new upperOpaque=7/7 lowerOpaque=8/8 upper=-7435648,-7238269,-7172476,-7172476,-7171707,-12303043,-12633033 lower=-7435649,-7304062,-7304062,-7172476,-14145755,-7172477,-7829638,-7829638\nCf6NativeSurface Pixels: map=A20 version=old upperOpaque=5/6 lowerOpaque=8/8 upper=-7435648,-7238269,-7238269,-7172476,-7303550,109051903 lower=-7698821,-7501442,-7501442,-7369856,-14079963,-7304063,-7106684,-7106684\nCf6NativeSurface Pixels: map=A20 version=new upperOpaque=6/6 lowerOpaque=8/8 upper=-7435648,-7238269,-7238269,-7172476,-7303550,-12236479 lower=-7698821,-7501442,-7501442,-7369856,-14079963,-7304063,-7106684,-7106684\nCf6NativeSurface Pixels: map=A22 version=old upperOpaque=5/6 lowerOpaque=8/8 upper=-7435648,-7238269,-7238269,-7172476,-7303550,109051903 lower=-7698821,-7501442,-7501442,-7369856,-14079963,-7304063,-7106684,-7106684\nCf6NativeSurface Pixels: map=A22 version=new upperOpaque=6/6 lowerOpaque=8/8 upper=-7435648,-7238269,-7238269,-7172476,-7303550,-12236479 lower=-7698821,-7501442,-7501442,-7369856,-14079963,-7304063,-7106684,-7106684\nCf6NativeSurface Pixels: map=A10 version=current upperOpaque=3/3 lowerOpaque=0/0 upper=-14802139,-15328483,-14867932 lower=\nCf6NativeSurface ShaftMask: map=A10 inside=3 outside=0\nCf6NativeSurface Pixels: map=A13 version=current upperOpaque=3/3 lowerOpaque=0/0 upper=-14802139,-15328483,-14867932 lower=\nCf6NativeSurface ShaftMask: map=A13 inside=3 outside=0\nCf6NativeSurfaceTest Tests Passed: 40\nCf6NativeSurfaceTest Tests Failed: 0\nFocusedTestRunId cf6-native-surface Complete: a5b0c6e5d1ba4bd5915389acc1202288\n",
+  "assetJobs": [
+    {
+      "item": "Origin12",
+      "jobId": "3f4c4d9132144c56830792feefa4e31c",
+      "state": "applied",
+      "changedFiles": [
+        "launcher/web/icons/e06c3374_1.webp",
+        "launcher/web/icons/e06c3374_2.webp",
+        "launcher/web/assets/dressup/skins/b75cb378_1.png",
+        "launcher/web/icons/manifest.json",
+        "launcher/web/assets/dressup/manifest.json",
+        "launcher/web/assets/dressup/report.json",
+        "data/items/asset_source_map.xml"
+      ]
+    },
+    {
+      "item": "Origin12战术版",
+      "jobId": "9a04c00e28fe4e3495f4a0920b3392d5",
+      "state": "applied",
+      "changedFiles": [
+        "launcher/web/icons/6bef6447_1.webp",
+        "launcher/web/icons/6bef6447_2.webp",
+        "launcher/web/assets/dressup/skins/67088f94_1.png",
+        "launcher/web/icons/manifest.json",
+        "launcher/web/assets/dressup/manifest.json",
+        "launcher/web/assets/dressup/report.json"
+      ]
+    },
+    {
+      "item": "AA12",
+      "jobId": "8889bbfba77b42b3a7cc24ead1261f5b",
+      "state": "applied",
+      "changedFiles": [
+        "launcher/web/icons/7d3e5181_2.webp",
+        "launcher/web/icons/7d3e5181_1.webp",
+        "launcher/web/assets/dressup/skins/b3dc9175_1.png",
+        "launcher/web/icons/manifest.json",
+        "launcher/web/assets/dressup/manifest.json",
+        "launcher/web/assets/dressup/report.json"
+      ]
+    },
+    {
+      "item": "AA12战术版",
+      "jobId": "adf52b2ce4474ee8908a02088356bc1d",
+      "state": "applied",
+      "changedFiles": [
+        "launcher/web/icons/30f2b857_2.webp",
+        "launcher/web/icons/30f2b857_1.webp",
+        "launcher/web/assets/dressup/skins/3e93a50c_1.png",
+        "launcher/web/icons/manifest.json",
+        "launcher/web/assets/dressup/manifest.json",
+        "launcher/web/assets/dressup/report.json"
+      ]
+    },
+    {
+      "item": "Vepr12",
+      "jobId": "9dc658c5475942b38d6e7bca203bbb1c",
+      "state": "applied",
+      "changedFiles": [
+        "launcher/web/icons/0807f8e4_1.webp",
+        "launcher/web/icons/0807f8e4_2.webp",
+        "launcher/web/assets/dressup/skins/e3b3d00f_1.png",
+        "launcher/web/icons/manifest.json",
+        "launcher/web/assets/dressup/manifest.json",
+        "launcher/web/assets/dressup/report.json"
+      ]
+    },
+    {
+      "item": "Vepr12紧凑改装型",
+      "jobId": "1dd095d0610c47ce87a5a7d849beca68",
+      "state": "applied",
+      "changedFiles": [
+        "launcher/web/icons/62e23da3_1.webp",
+        "launcher/web/icons/62e23da3_2.webp",
+        "launcher/web/assets/dressup/skins/eb3d3d95_1.png",
+        "launcher/web/icons/manifest.json",
+        "launcher/web/assets/dressup/manifest.json",
+        "launcher/web/assets/dressup/report.json"
+      ]
+    },
+    {
+      "item": "Vepr12战术版",
+      "jobId": "08ba01f7851c40d3962ac79adf214a80",
+      "state": "applied",
+      "changedFiles": [
+        "launcher/web/icons/f510fce8_1.webp",
+        "launcher/web/icons/f510fce8_2.webp",
+        "launcher/web/assets/dressup/skins/cf591acf_1.png",
+        "launcher/web/icons/manifest.json",
+        "launcher/web/assets/dressup/manifest.json",
+        "launcher/web/assets/dressup/report.json"
+      ]
+    },
+    {
+      "item": "3XF特勤头盔",
+      "jobId": "4190d21cc8884022acdfdee2349e3b36",
+      "state": "applied",
+      "changedFiles": [
+        "launcher/web/icons/1421104a_1.webp",
+        "launcher/web/icons/1421104a_2.webp",
+        "launcher/web/assets/dressup/skins/f815db49_1.png",
+        "launcher/web/icons/manifest.json",
+        "launcher/web/assets/dressup/manifest.json",
+        "launcher/web/assets/dressup/report.json"
+      ]
+    },
+    {
+      "item": "3XF特勤上装",
+      "jobId": "f94b4f08ed9441d8a9b39b3a58e4e7f4",
+      "state": "applied",
+      "changedFiles": [
+        "launcher/web/icons/1ceaedca_2.webp",
+        "launcher/web/icons/1ceaedca_1.webp",
+        "launcher/web/assets/dressup/skins/0ff03162_1.png",
+        "launcher/web/assets/dressup/skins/93445065_1.png",
+        "launcher/web/assets/dressup/skins/f08aabc4_1.png",
+        "launcher/web/assets/dressup/skins/5c7f6dcd_1.png",
+        "launcher/web/assets/dressup/skins/9f5252cc_1.png",
+        "launcher/web/assets/dressup/skins/36aada3f_1.png",
+        "launcher/web/assets/dressup/skins/5564219e_1.png",
+        "launcher/web/assets/dressup/skins/ccdd0e63_1.png",
+        "launcher/web/icons/manifest.json",
+        "launcher/web/assets/dressup/manifest.json",
+        "launcher/web/assets/dressup/report.json"
+      ]
+    },
+    {
+      "item": "3XF特勤下装",
+      "jobId": "4b0c67ccb84a4112a0529beb13997320",
+      "state": "applied",
+      "changedFiles": [
+        "launcher/web/icons/a4568aaf_2.webp",
+        "launcher/web/icons/a4568aaf_1.webp",
+        "launcher/web/assets/dressup/skins/7db2c756_1.png",
+        "launcher/web/assets/dressup/skins/a95c77a7_1.png",
+        "launcher/web/assets/dressup/skins/c1ad8280_1.png",
+        "launcher/web/assets/dressup/skins/1e7c3cf7_1.png",
+        "launcher/web/assets/dressup/skins/d85c4d0c_1.png",
+        "launcher/web/assets/dressup/skins/39fe1409_1.png",
+        "launcher/web/assets/dressup/skins/510fe12e_1.png",
+        "launcher/web/assets/dressup/skins/bb92b6ad_1.png",
+        "launcher/web/icons/manifest.json",
+        "launcher/web/assets/dressup/manifest.json",
+        "launcher/web/assets/dressup/report.json"
+      ]
+    },
+    {
+      "item": "3XF特勤手套",
+      "jobId": "d138ae06d25e43abb235167f195f42e5",
+      "state": "applied",
+      "changedFiles": [
+        "launcher/web/icons/d8e4ff0f_1.webp",
+        "launcher/web/icons/d8e4ff0f_2.webp",
+        "launcher/web/assets/dressup/skins/27edeaf4_1.png",
+        "launcher/web/assets/dressup/skins/d17bbe1e_1.png",
+        "launcher/web/icons/manifest.json",
+        "launcher/web/assets/dressup/manifest.json",
+        "launcher/web/assets/dressup/report.json"
+      ]
+    },
+    {
+      "item": "3XF特勤军靴",
+      "jobId": "b12c6eac4f3143efb83d7ff34b619051",
+      "state": "applied",
+      "changedFiles": [
+        "launcher/web/icons/30db7902_1.webp",
+        "launcher/web/icons/30db7902_2.webp",
+        "launcher/web/assets/dressup/skins/0ae37c61_1.png",
+        "launcher/web/icons/manifest.json",
+        "launcher/web/assets/dressup/manifest.json",
+        "launcher/web/assets/dressup/report.json"
+      ]
+    }
+  ],
+  "assetScan": {
+    "required": [
+      "图标-3XF特勤上装",
+      "图标-3XF特勤下装",
+      "图标-3XF特勤军靴",
+      "图标-3XF特勤头盔",
+      "图标-3XF特勤手套",
+      "图标-AA12",
+      "图标-AA12战术版",
+      "图标-Origin12",
+      "图标-Origin12战术版",
+      "图标-Vepr12",
+      "图标-Vepr12战术版",
+      "图标-Vepr12紧凑改装型",
+      "女变装-3XF特勤上臂",
+      "女变装-3XF特勤右下臂",
+      "女变装-3XF特勤右大腿",
+      "女变装-3XF特勤小腿",
+      "女变装-3XF特勤屁股",
+      "女变装-3XF特勤左下臂",
+      "女变装-3XF特勤左大腿",
+      "女变装-3XF特勤身体",
+      "枪-手枪-Origin12",
+      "枪-手枪-Origin12战术版",
+      "枪-手枪-Vepr12紧凑改装型",
+      "枪-长枪-AA12",
+      "枪-长枪-AA12战术版",
+      "枪-长枪-Vepr12",
+      "枪-长枪-Vepr12战术版",
+      "男变装-3XF特勤上臂",
+      "男变装-3XF特勤右下臂",
+      "男变装-3XF特勤右大腿",
+      "男变装-3XF特勤右手",
+      "男变装-3XF特勤头盔",
+      "男变装-3XF特勤小腿",
+      "男变装-3XF特勤屁股",
+      "男变装-3XF特勤左下臂",
+      "男变装-3XF特勤左大腿",
+      "男变装-3XF特勤左手",
+      "男变装-3XF特勤脚",
+      "男变装-3XF特勤身体"
+    ],
+    "added": [
+      "图标-3XF特勤上装",
+      "图标-3XF特勤下装",
+      "图标-3XF特勤军靴",
+      "图标-3XF特勤头盔",
+      "图标-3XF特勤手套",
+      "图标-Vepr12",
+      "图标-Vepr12战术版",
+      "图标-Vepr12紧凑改装型",
+      "女变装-3XF特勤上臂",
+      "女变装-3XF特勤右下臂",
+      "女变装-3XF特勤右大腿",
+      "女变装-3XF特勤小腿",
+      "女变装-3XF特勤屁股",
+      "女变装-3XF特勤左下臂",
+      "女变装-3XF特勤左大腿",
+      "女变装-3XF特勤身体",
+      "枪-手枪-Vepr12紧凑改装型",
+      "枪-长枪-Vepr12",
+      "枪-长枪-Vepr12战术版",
+      "男变装-3XF特勤上臂",
+      "男变装-3XF特勤右下臂",
+      "男变装-3XF特勤右大腿",
+      "男变装-3XF特勤右手",
+      "男变装-3XF特勤头盔",
+      "男变装-3XF特勤小腿",
+      "男变装-3XF特勤屁股",
+      "男变装-3XF特勤左下臂",
+      "男变装-3XF特勤左大腿",
+      "男变装-3XF特勤左手",
+      "男变装-3XF特勤脚",
+      "男变装-3XF特勤身体"
+    ],
+    "sources": {
+      "flashswf/arts/new/3XD的素材.swf": "83e05d76dde3d1490a50b9c85f21250e574cc10815593f12c2e1a818301d821a",
+      "flashswf/arts/new/天网大家庭.swf": "c898faad43a6b775ede3219424ef95eb3c0519e63e84bfb85aa741693ccb9942"
+    }
+  },
+  "assetScope": {
+    "baseline": "6ff73d63c89086824018a04f8e9e0ef9506a2272",
+    "iconItems": [
+      "Origin12",
+      "Origin12战术版",
+      "AA12",
+      "AA12战术版",
+      "Vepr12",
+      "Vepr12紧凑改装型",
+      "Vepr12战术版",
+      "3XF特勤头盔",
+      "3XF特勤上装",
+      "3XF特勤下装",
+      "3XF特勤手套",
+      "3XF特勤军靴"
+    ],
+    "dressupItems": [],
+    "skinKeys": [
+      "女变装-3XF特勤上臂",
+      "女变装-3XF特勤右下臂",
+      "女变装-3XF特勤右大腿",
+      "女变装-3XF特勤小腿",
+      "女变装-3XF特勤屁股",
+      "女变装-3XF特勤左下臂",
+      "女变装-3XF特勤左大腿",
+      "女变装-3XF特勤身体",
+      "枪-手枪-Origin12",
+      "枪-手枪-Origin12战术版",
+      "枪-手枪-Vepr12紧凑改装型",
+      "枪-长枪-AA12",
+      "枪-长枪-AA12战术版",
+      "枪-长枪-Vepr12",
+      "枪-长枪-Vepr12战术版",
+      "男变装-3XF特勤上臂",
+      "男变装-3XF特勤右下臂",
+      "男变装-3XF特勤右大腿",
+      "男变装-3XF特勤右手",
+      "男变装-3XF特勤头盔",
+      "男变装-3XF特勤小腿",
+      "男变装-3XF特勤屁股",
+      "男变装-3XF特勤左下臂",
+      "男变装-3XF特勤左大腿",
+      "男变装-3XF特勤左手",
+      "男变装-3XF特勤脚",
+      "男变装-3XF特勤身体"
+    ],
+    "topLevel": []
+  },
+  "browser": {
+    "checks": 78,
+    "passed": 78
+  },
+  "candidate": {
+    "lifecycleState": "candidate_built",
+    "candidateAction": "built",
+    "candidateCoreSha256": "D697C900A45DC15AA645260141C418FCCD1C6FE765015EB51AEC301EFB15A2A7",
+    "buildIdentityHash": "723D3E6F01E022DBE2EF819FB7311E1CEC56942DF3E41794D8DF25BEFBEB989D",
+    "payloadClosureHash": "0C2C53D9D7C32E750BD85D70056DC265AB9D46A33F537FA2352DCC3C4CA36574",
+    "deploymentStatus": "NOT_DEPLOYED"
+  },
+  "candidateRelativeRoot": "tmp/runtime-candidates/v2/c-723d3e6f01e0-08846e81b3-20261025t032444827z-31fe1399",
+  "selectionState": "ready",
+  "pointerState": "ready",
+  "diagnosticLimits": "Disposable unit and fixed blade points; learned-step baseline still zero, 26/27 fails. Positive shot/position assertions do not establish enemy hit or healing."
+}

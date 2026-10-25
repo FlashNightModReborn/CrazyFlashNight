@@ -897,13 +897,15 @@
     </balance>
   </item>
   <item weapontype="特殊">
+    <allowedModTags>等级校正</allowedModTags>
     <name>战术版喷火器</name>
     <displayname>战术版喷火器</displayname>
     <icon>战术版喷火器</icon>
     <type>武器</type>
     <use>长枪</use>
     <price>380000</price>
-    <description>火焰穿透，群杀利器。</description>
+    <description>火焰穿透，群杀利器。
+内置电力结构，改装仅支持降低使用等级需求的电脑芯片或成长的勋章。</description>
     <inherentTags>电力,NOAH</inherentTags>
     <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <data>

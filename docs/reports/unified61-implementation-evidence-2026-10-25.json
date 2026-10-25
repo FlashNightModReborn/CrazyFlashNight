@@ -1,0 +1,862 @@
+{
+  "schema": "unified61-implementation-evidence-v1",
+  "recordedAtUtc": "2026-10-25T06:22:36.569201+00:00",
+  "gitHeadAtVerification": "6ff73d63c89086824018a04f8e9e0ef9506a2272",
+  "workingTree": "uncommitted, includes preserved concurrent work",
+  "authorization": {
+    "implementation": true,
+    "flashValidation": true,
+    "commit": false,
+    "push": false,
+    "formalRuntimePromotion": false
+  },
+  "evidenceBoundary": {
+    "asLoader": "compiled",
+    "nativeAssetSwf": "compiled and loaded by focused Flash suite",
+    "fullGameAcceptance": "pending",
+    "standardEntryVerified": false,
+    "promoted": false
+  },
+  "realFlashSuite": {
+    "runId": "fd4d22a8bd0540d9b8b4097efbe0f6bb",
+    "domain": "unified61-final",
+    "runtimePassed": 78,
+    "assetsAndProductionModeEntryPassed": 107,
+    "failed": 0,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "compile32KRetries": 0,
+    "testLoader": {
+      "path": "tmp/unified61-assets/evidence/final-fd4d22a8/TestLoader.swf",
+      "bytes": 1134187,
+      "sha256": "578843e1ee79c915201c956aa223f98558a1bf86472c71e3e48c994cbafd2f47"
+    },
+    "trace": {
+      "path": "tmp/unified61-assets/evidence/final-fd4d22a8/flashlog-raw.txt",
+      "bytes": 676,
+      "sha256": "6b4ca4c09cd81a756d47ce46a03ffb0ab450cc052955cdd64e9c52c7a683abe5"
+    },
+    "sourceEquivalence": [
+      {
+        "path": "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/UnifiedType61Runtime.as",
+        "testedSha256": "f0254423681b5716ffaba554d5f59d672b9c9896a6a693b42f39b0371fdd3adb",
+        "currentSha256": "f0254423681b5716ffaba554d5f59d672b9c9896a6a693b42f39b0371fdd3adb",
+        "byteIdentical": true,
+        "xmlContentEquivalent": null
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/test/UnifiedType61RuntimeTest.as",
+        "testedSha256": "448fae70f7ad5717271f7830ecf0c2f0c4e481ae7ecfc42fb827c54d5e7ef892",
+        "currentSha256": "448fae70f7ad5717271f7830ecf0c2f0c4e481ae7ecfc42fb827c54d5e7ef892",
+        "byteIdentical": true,
+        "xmlContentEquivalent": null
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/test/UnifiedType61AssetTest.as",
+        "testedSha256": "6a0d75e772f4c7086acbb02d2e23b0b37a3f91291b9dae05d7a79ded111e2b0e",
+        "currentSha256": "6a0d75e772f4c7086acbb02d2e23b0b37a3f91291b9dae05d7a79ded111e2b0e",
+        "byteIdentical": true,
+        "xmlContentEquivalent": null
+      },
+      {
+        "path": "scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as",
+        "testedSha256": "7821129acdc40d2c1136c9451e0f84792b0e7271a16302ce8f5787d29df7c438",
+        "currentSha256": "7821129acdc40d2c1136c9451e0f84792b0e7271a16302ce8f5787d29df7c438",
+        "byteIdentical": true,
+        "xmlContentEquivalent": null
+      },
+      {
+        "path": "data/items/防具_40+级.xml",
+        "testedSha256": "7684164c51d87c433e028ad02b7aa7f512e963adeb457a96236a84c2eecdfbfd",
+        "currentSha256": "25b82048f7a9601d0c043bef8aa3842f686002d693c107b609e9ea18adf6ea0b",
+        "byteIdentical": false,
+        "xmlContentEquivalent": true
+      },
+      {
+        "path": "data/items/item_sets.xml",
+        "testedSha256": "e47a80b27bedce7f0bfd9238ad87b12bdd9d62684ecf9fdfb36a95003e5b6ec0",
+        "currentSha256": "e47a80b27bedce7f0bfd9238ad87b12bdd9d62684ecf9fdfb36a95003e5b6ec0",
+        "byteIdentical": true,
+        "xmlContentEquivalent": null
+      },
+      {
+        "path": "data/crafting/进阶防具.json",
+        "testedSha256": "be901e81db70eae74689ce1e145ada029ae04d670acbae878e77c348480740c9",
+        "currentSha256": "be901e81db70eae74689ce1e145ada029ae04d670acbae878e77c348480740c9",
+        "byteIdentical": true,
+        "xmlContentEquivalent": null
+      }
+    ],
+    "productionFunctionProjection": {
+      "templates": 2,
+      "byteEquivalentAfterNewlineNormalization": true,
+      "sha256": "b2ea5ad2677714fb9417d702b67e922a2dc8005afddfec5ba94fcc6e421a490e"
+    }
+  },
+  "finalAsLoaderPublish": {
+    "target": "publish",
+    "elapsedSeconds": 445,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "swf": {
+      "path": "scripts/asLoader.swf",
+      "bytes": 6713521,
+      "sha256": "ad7978df3ce96a32b35b5d86a80a5ef6e013db172d504e9a49c00f7cdae819ef"
+    },
+    "snapshot": "tmp/unified61-assets/evidence/asloader-final/asLoader.swf",
+    "functionSizes": {
+      "total": 14059,
+      "max": 60000,
+      "over": [],
+      "top": [
+        {
+          "owner": "DoAction[sprite=1 frame=0]",
+          "type": "DefineFunction2",
+          "name": "(anon)",
+          "codeSize": 53098
+        },
+        {
+          "owner": "DoAction[sprite=1 frame=0]",
+          "type": "DefineFunction2",
+          "name": "(anon)",
+          "codeSize": 48258
+        },
+        {
+          "owner": "DoAction[sprite=1 frame=0]",
+          "type": "DefineFunction2",
+          "name": "(anon)",
+          "codeSize": 45961
+        },
+        {
+          "owner": "DoAction[sprite=1 frame=0]",
+          "type": "DefineFunction2",
+          "name": "(anon)",
+          "codeSize": 45882
+        },
+        {
+          "owner": "DoAction[sprite=1 frame=0]",
+          "type": "DefineFunction2",
+          "name": "(anon)",
+          "codeSize": 40354
+        }
+      ]
+    },
+    "classOwnership": {
+      "errors": [],
+      "files": 787,
+      "parsed": 0,
+      "cacheHits": 787,
+      "loaderClasses": 771,
+      "closureChecked": true,
+      "policy": "production",
+      "milliseconds": 6943.5491
+    }
+  },
+  "assets": {
+    "validation": {
+      "items": [
+        {
+          "name": "统合61式头部装甲",
+          "currentScore": 1800.0,
+          "weightedScore": 1796.875
+        },
+        {
+          "name": "统合61式胸甲",
+          "currentScore": 2110.0,
+          "weightedScore": 2109.375
+        },
+        {
+          "name": "统合61式腿甲",
+          "currentScore": 2110.0,
+          "weightedScore": 2109.375
+        },
+        {
+          "name": "统合61式装甲鞋",
+          "currentScore": 1800.0,
+          "weightedScore": 1796.875
+        },
+        {
+          "name": "统合61式手甲",
+          "currentScore": 1760.0,
+          "weightedScore": 1757.8125
+        }
+      ],
+      "nativeSymbols": 66,
+      "exportsVerifiedInSwf": 25,
+      "consumer": "things-new -> Codex专用素材",
+      "swfSha256": "4bc7d942d8ef47cd6ff3b85e14056b6108dd80ab2e9135463751a8c1a55d8c0d",
+      "recipesValidated": 5,
+      "archiveFilesVerified": 24,
+      "blockedModTagsVerified": [
+        "内力槽",
+        "内衬层",
+        "外覆加固",
+        "外覆基层",
+        "电子模块",
+        "粘结层",
+        "缓冲层",
+        "肩挂系统",
+        "表面涂层"
+      ],
+      "sourceMapEntriesVerified": 25,
+      "gameplayAcceptance": "pending"
+    },
+    "swf": {
+      "path": "flashswf/arts/new/Codex专用素材.swf",
+      "bytes": 6196865,
+      "sha256": "4bc7d942d8ef47cd6ff3b85e14056b6108dd80ab2e9135463751a8c1a55d8c0d"
+    },
+    "consumer": {
+      "path": "flashswf/arts/things-new.swf",
+      "bytes": 114123,
+      "sha256": "5bfa4c216a6c03511e8f122a5035661174ed0cb3bf78d77c748307e8b46ac4cd"
+    },
+    "sourceArchive": "2ffbf58a06f3b7718863b9d32a261d01ba5183ba1fea7f385dafa556a220a2c0",
+    "nativeSources": [
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲上臂-closed-裁切-8.xml",
+        "bytes": 6315,
+        "sha256": "3869bae8a2cb789b470b403baa3d8885e70cd00a3c5c9318af0ed4235654e14e"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲上臂-closed.xml",
+        "bytes": 100355,
+        "sha256": "6d8c6f802df8c0b927179cdf07e7db11c39fa737d45b398f25489f7bafab724a"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲右下臂-closed.xml",
+        "bytes": 37246,
+        "sha256": "75d32502646cb4ee937f8d9501a4aec1c2cfa7c6b064f8e81ca054ed64634ebb"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲左下臂-closed.xml",
+        "bytes": 38390,
+        "sha256": "a20e7b260d32c8bc4d4be34a098ba604464ae98a2e82d2cc04ce4657323c2c5f"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲身体-closed-裁切-1.xml",
+        "bytes": 6422,
+        "sha256": "a850928f17966b6bb413f3d88c8137e4d8ea495275539bd8a465525daedc20d0"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲身体-closed.xml",
+        "bytes": 247167,
+        "sha256": "4452dffd97389812a2b2e324c6dccc2e428b2d28d65f8a8ad1347f8972e93d58"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲身体-fire-裁切-1.xml",
+        "bytes": 6418,
+        "sha256": "9448a18a5af4186a7e2dec419e09cacd0dd1a8e87a088355f1add01ee7fb2bb9"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲身体-fire.xml",
+        "bytes": 249254,
+        "sha256": "fb08dbb2108ab1e0a0a5128b0066589d3f4b782009984388560d67bb3234dd8e"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲身体-open-裁切-1.xml",
+        "bytes": 6418,
+        "sha256": "f84ea374679a7d83c0294d9b5950272c128897009dd67624cfead34c59ee5eaa"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲身体-open.xml",
+        "bytes": 247110,
+        "sha256": "e602ad4bdf396014a51713b765ac388d2e9ebf20f9a15333636f4c8e5492d553"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式腿甲右大腿-closed.xml",
+        "bytes": 30880,
+        "sha256": "6392a7a8258f97707be09a785043ac7982ffa5dd9ce86ade1c99da03863e8969"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式腿甲小腿-closed.xml",
+        "bytes": 43389,
+        "sha256": "512a232724e73ad19085c072e46e096ed146540b4a8be29de7a7141fdac0e982"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式腿甲屁股-closed.xml",
+        "bytes": 67799,
+        "sha256": "68b5e3a82a2eac085370fe6b3605d3191bb7d94576d49703acf083b77dcb9352"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式腿甲左大腿-closed.xml",
+        "bytes": 47272,
+        "sha256": "35f1174957376d4c89ba820c332377ade8fb7385240f1f23ab53eb64e13c720d"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式头部装甲-closed.xml",
+        "bytes": 65351,
+        "sha256": "2a955e5c3915894f6973f98cf9fc97b84cc7e440e46c570671b013d3ec550044"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式手甲右手-closed.xml",
+        "bytes": 56433,
+        "sha256": "8ff0db141fd1a4c56dbe93a09faad97d826ea954a9fa6c98322b102bd86416ef"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式手甲左手-closed.xml",
+        "bytes": 16710,
+        "sha256": "ee5b1164b76b225504155cc70ec7de04c2deb99e2323e8fae949b7d60d54ba16"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲上臂-closed-裁切-8.xml",
+        "bytes": 6296,
+        "sha256": "55ab4080e5133acf565a3d736a776474bbe242bcb996ec98aec6293ae060fadd"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲上臂-closed.xml",
+        "bytes": 99551,
+        "sha256": "23596fc7fca6a06cb975277ce2487835a41d72d6a9f7ea6a545b198f50e6cd2b"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲右下臂-closed.xml",
+        "bytes": 37241,
+        "sha256": "2aebc9e03880004f2317257ff6ccbbb74e2e0da8d63bdf99a14ef0bd3bbd095f"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲左下臂-closed.xml",
+        "bytes": 38366,
+        "sha256": "163cea135e19ed3cbc92d53db3b1c85d4c3f7ef6526f1d24cfe24d2373657a92"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲身体-closed-裁切-1.xml",
+        "bytes": 6422,
+        "sha256": "96133537aa33dc0d6d412f725e0b78f5ccd21ebd7ed3957de4e5a492a435c6ae"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲身体-closed.xml",
+        "bytes": 241919,
+        "sha256": "e21a1849e393a22e33864d8c9a4785f7d8390ae89879e42dae715741a4a8216c"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲身体-fire-裁切-1.xml",
+        "bytes": 6418,
+        "sha256": "71942b0aa89a80abbfe8ae28fb093e3996b596afad37ed88eec5d7f89660fb30"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲身体-fire.xml",
+        "bytes": 243999,
+        "sha256": "326fa6c1373aee7f5e8005580b502df889529a5b75e98b8f7cc1926c2917af91"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲身体-open-裁切-1.xml",
+        "bytes": 6418,
+        "sha256": "a1d784c195f989d4b83031f03d0fbb42e21ec10e8bc987a966b2b5b00c2d0b9b"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲身体-open.xml",
+        "bytes": 241855,
+        "sha256": "779b7b8d8272f6bc0caa50ebd2065973e9dc9434e57fd9be301769d85dbf4884"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式腿甲右大腿-closed.xml",
+        "bytes": 30890,
+        "sha256": "b105a2499d28ef8a323101d6e2d8a763e534eea1eba08ac4b6207814788028b8"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式腿甲小腿-closed.xml",
+        "bytes": 43102,
+        "sha256": "da9925b840dad1f5f5a813eeb10435182034bb3241477c86e4fb8e5431ee0a79"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式腿甲屁股-closed.xml",
+        "bytes": 67774,
+        "sha256": "7db6c8af82eff8849e0ca57722d4aeecd55aa8aa29f942d21995d5c641e0a0b3"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式腿甲左大腿-closed.xml",
+        "bytes": 47259,
+        "sha256": "feaafc9151d65d60150bbd08723f9b1ccaed4de73ccafe9c8e4ca5e3a2708f99"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed-裁切-5.xml",
+        "bytes": 3603,
+        "sha256": "2a678b108ce5ba63130da3c320554cd4604db2a981b661f2b6749395b6c1ed47"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed-裁切-6.xml",
+        "bytes": 2181,
+        "sha256": "8ded65b9d0f315d2a032e5cc12b3da487454c98367452b4b854c345056d0e2aa"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed-裁切-7.xml",
+        "bytes": 2203,
+        "sha256": "2961a195192f45269f48c4edd23953cdfab16ac26d7c8ad80668a458f5ad4f2b"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed.xml",
+        "bytes": 32745,
+        "sha256": "e8b635821ccc7663f5ac80223589d56649bbec52031172726ecd4f084388f2d5"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/图标-Codex-统合61式头部装甲.xml",
+        "bytes": 1973,
+        "sha256": "17214cf30c063c99cdd92f5d36306576e1ceda5a9c8f80afcdaff8fd6a4e54c8"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/图标-Codex-统合61式手甲.xml",
+        "bytes": 1942,
+        "sha256": "8138283bd4bf2e20e123912671490305fb98c92c67dcf658d22908630ad71944"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/图标-Codex-统合61式胸甲.xml",
+        "bytes": 1941,
+        "sha256": "75aaf7408c53c539fa4936321ed5781c0edda06310c5426d49145f3031bb0dd4"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/图标-Codex-统合61式腿甲.xml",
+        "bytes": 1941,
+        "sha256": "fded1132030d42fd965b5d157bddaa62382742900cb16f4d323fd9dabda5e20d"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/图标-Codex-统合61式装甲鞋.xml",
+        "bytes": 1954,
+        "sha256": "c1d114514b9768eb681bb456d4dbafacd8dd0dff7577144bb23e8e720011cef6"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/女变装-Codex-统合61式胸甲上臂.xml",
+        "bytes": 1295,
+        "sha256": "f89aaea1447bb0707389f462f5e846caed452e214444f67097411166d706490d"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/女变装-Codex-统合61式胸甲右下臂.xml",
+        "bytes": 1307,
+        "sha256": "8b2d199ec100e99c7c0de77ed953778f8716d6042e7c9f53a041b9cf2f6ca9e3"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/女变装-Codex-统合61式胸甲左下臂.xml",
+        "bytes": 1307,
+        "sha256": "de000de71cb0a570f1c6822a0dc1b90d37ef8d4fdb775eb940bc894cccace5ea"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/女变装-Codex-统合61式胸甲身体.xml",
+        "bytes": 4179,
+        "sha256": "fdc27826c3a52ef8f9ed1452bc0a82bbd40b72a89c453d2b00dc62469c8b3549"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/女变装-Codex-统合61式腿甲右大腿.xml",
+        "bytes": 1307,
+        "sha256": "cda1b43636e366b7998629c15adb79417126f84b46ee177044a27c3227d8b238"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/女变装-Codex-统合61式腿甲小腿.xml",
+        "bytes": 1295,
+        "sha256": "92a80010f3fc9db7aa2ec261e033a5cca78501ee7fa8deaa15252b810a803059"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/女变装-Codex-统合61式腿甲屁股.xml",
+        "bytes": 1295,
+        "sha256": "025fd8e461ef0fef74b3fe62b10b970ab756ebce3a0e1ee0764c19864b7d24a1"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/女变装-Codex-统合61式腿甲左大腿.xml",
+        "bytes": 1307,
+        "sha256": "f66a2d3975cccdd869f55ff12b5051c1521f031589aad9a101db138c7562ff0c"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/总装/61式头部装甲.xml",
+        "bytes": 965,
+        "sha256": "df7efbf469c22bcbdea5b2d61cc74b8629245a9fe1700cd821ee9b2fd9a40abc"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/总装/61式手甲.xml",
+        "bytes": 1400,
+        "sha256": "de71fbd0a01c6239e886afd61f3cf34a6e9b5a6d2b30cf399bc79a1a6d8fb394"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/总装/61式胸甲.xml",
+        "bytes": 2744,
+        "sha256": "395673cfe388ad69161248822803e9d41d26da80ca8fe541bd3347d5433b7720"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/总装/61式腿甲.xml",
+        "bytes": 2742,
+        "sha256": "83ef4c2962d421024970a0c0c809a41323c2229981593cbc5b01cfdfcb9cae01"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/总装/61式装甲鞋.xml",
+        "bytes": 1396,
+        "sha256": "0ac16461254214eed22b6f2339377d81c4aadba3218b19f14f2b1c6e40c11fea"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/接口/炮口.xml",
+        "bytes": 438,
+        "sha256": "9cd8623eb1b6ed987b5aa4b96264fd49182aaa1e6142ee1a886e40bd5c1a9881"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式头部装甲.xml",
+        "bytes": 1295,
+        "sha256": "d59bda857c64e42123153b01ac95208de76dc2b9fc1ac3efb32cc0476bfc68b2"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式手甲右手.xml",
+        "bytes": 1295,
+        "sha256": "f361ed63f46ba626d6968c17d1cc394c79b121d6142f426f53229866f673918c"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式手甲左手.xml",
+        "bytes": 1295,
+        "sha256": "916a8ac1d9de4e5860e67ba8b72bd185d5a48967639732b7e582b1606a7b37e9"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式胸甲上臂.xml",
+        "bytes": 1295,
+        "sha256": "cd33bea205418ae2809bfdda8f36826f6012cf0bc9f9bd0bea91fb0238841a62"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式胸甲右下臂.xml",
+        "bytes": 1307,
+        "sha256": "bfa9a60a5aad027a90a9d59afae08a773d795cf970779a75498cffd389cd5c3c"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式胸甲左下臂.xml",
+        "bytes": 1307,
+        "sha256": "ea52c1efb6239ec5618da8b508021065d0dc5755d53c7bd0a0d0a3a90f177127"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式胸甲身体.xml",
+        "bytes": 4179,
+        "sha256": "22eaaddc3201b8212aec845958e70a7963d6dc10c606fbedd8b004be9c34cfa7"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式腿甲右大腿.xml",
+        "bytes": 1307,
+        "sha256": "87e18395f943de5f5eb1d4d6e164ea56ba5d5b9f42991192592b7ba1588d97b5"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式腿甲小腿.xml",
+        "bytes": 1295,
+        "sha256": "afd355007f9de8cb25393fd342ee751bcbbe80fd7e9c1fa8be36da44820a3259"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式腿甲屁股.xml",
+        "bytes": 1295,
+        "sha256": "dd77858e42e679e75c3231fea479b1e6b489999fb7caf99b601b8ac76e38df8e"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式腿甲左大腿.xml",
+        "bytes": 1307,
+        "sha256": "1a7eb0f669e52a82b766d6b002be8cb84751d9bcb7c3121b75342986ff171b34"
+      },
+      {
+        "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式装甲鞋.xml",
+        "bytes": 1283,
+        "sha256": "54557eaa01c1f66bd04151378e518f372eeec7437fd5062871ef003cfce2bc47"
+      }
+    ],
+    "webProjection": {
+      "items": 5,
+      "skins": 20,
+      "iconFrames": 10,
+      "writtenFiles": 33,
+      "allAppliedHashesMatch": true,
+      "transaction": {
+        "path": "tmp/unified61-assets/web-application/transaction.json",
+        "bytes": 7029,
+        "sha256": "e03ce7aeeb45390d48edfe806ea0e6acaa222177becafdc2e18f557177a8c404"
+      }
+    },
+    "offlinePreview": {
+      "path": "tmp/unified61-assets/preview.png",
+      "bytes": 167312,
+      "sha256": "a30d05dd905ca7c46f04bfb68e3c5d025cb9725246299a58a92f96dc1fcaf5b7"
+    }
+  },
+  "dataVerification": {
+    "scope": [
+      "统合61式头部装甲",
+      "统合61式胸甲",
+      "统合61式腿甲",
+      "统合61式装甲鞋",
+      "统合61式手甲"
+    ],
+    "planRowsVerified": 661,
+    "fullCatalogCoverageCertified": false,
+    "recipeRowsVerified": 5,
+    "itemXmlRoundtripFilesPassed": 107,
+    "balanceToolTypecheck": "passed",
+    "balanceToolTestsPassed": 884
+  },
+  "baselineDifferences": [
+    "Full armor catalog coverage still lacks five existing 3XF special-service records in the balance plan.",
+    "General XFL audit reports two existing former-sheriff bitmap references; the owner DOMDocument contains their bitmap entries. The 66 new symbols close independently.",
+    "Audit regeneration refreshes four existing source digests (three score changes) for 真猫妖背心, 真猫妖短裤, 真猫妖皮鞋, 九命猫妖项链; their runtime data was not edited.",
+    "Documentation governance passes with 282 historical nonblocking link defects in 35 files."
+  ],
+  "preservedConcurrentOutputs": {
+    "things0": {
+      "path": "flashswf/arts/things0.swf",
+      "bytes": 5392950,
+      "sha256": "09fdb368bf96b759619827743136cb2ba43a1fec6425e0e34651e69006bfe016"
+    },
+    "restoredTestLoaderScratch": {
+      "path": "scripts/TestLoader.as",
+      "bytes": 89,
+      "sha256": "e38e2151bf619814a0ea65bf2b19d11d8f78a7704787c47c046666acee2f090b"
+    },
+    "flashProcessExited": true,
+    "scheduledTasks": "CompileTriggerTask=Ready; FlashCS6Task=Ready",
+    "compileMarkerAndConfigResidue": false
+  },
+  "sourceIdentities": [
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/UnifiedType61Runtime.as",
+      "bytes": 26366,
+      "sha256": "f0254423681b5716ffaba554d5f59d672b9c9896a6a693b42f39b0371fdd3adb"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/test/UnifiedType61RuntimeTest.as",
+      "bytes": 20736,
+      "sha256": "448fae70f7ad5717271f7830ecf0c2f0c4e481ae7ecfc42fb827c54d5e7ef892"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/test/UnifiedType61AssetTest.as",
+      "bytes": 8707,
+      "sha256": "6a0d75e772f4c7086acbb02d2e23b0b37a3f91291b9dae05d7a79ded111e2b0e"
+    },
+    {
+      "path": "scripts/逻辑/装备函数/统合61套装.as",
+      "bytes": 639,
+      "sha256": "50888f3e7627d7b4dbc42945c63f8c498de18f97376f3a3d1cd72263eff6fb20"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as",
+      "bytes": 135912,
+      "sha256": "7821129acdc40d2c1136c9451e0f84792b0e7271a16302ce8f5787d29df7c438"
+    },
+    {
+      "path": "scripts/asLoaderManifest/frame37.as",
+      "bytes": 5953,
+      "sha256": "f4d8d914eb1aba18d415186373b7c4b7a2083cd4fb5db2ecb158c3aad2848c3a"
+    },
+    {
+      "path": "scripts/asLoaderManifest/_collapsed_frame.as",
+      "bytes": 32383,
+      "sha256": "dca77dd6b21eb6e88830b70ea2946c5ff796286aa41e144e63a31a9b80cb6bf0"
+    },
+    {
+      "path": "data/items/防具_40+级.xml",
+      "bytes": 220280,
+      "sha256": "25b82048f7a9601d0c043bef8aa3842f686002d693c107b609e9ea18adf6ea0b"
+    },
+    {
+      "path": "data/items/item_sets.xml",
+      "bytes": 13606,
+      "sha256": "e47a80b27bedce7f0bfd9238ad87b12bdd9d62684ecf9fdfb36a95003e5b6ec0"
+    },
+    {
+      "path": "data/crafting/进阶防具.json",
+      "bytes": 28408,
+      "sha256": "be901e81db70eae74689ce1e145ada029ae04d670acbae878e77c348480740c9"
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "bytes": 873414,
+      "sha256": "b4989f49c62e742aa5938f2242100bce5ff4f82b5ddaa29a4e699ffb55cff7e1"
+    },
+    {
+      "path": "tools/cf7-balance-tool/records/armor-balance-plan.xml",
+      "bytes": 167593,
+      "sha256": "1b2a0f272bc680123e6b3275b6c001474b54cdb828a176eeb4aa592a31f89e3c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/DOMDocument.xml",
+      "bytes": 144674,
+      "sha256": "5badf9124896b476c1f726ac69ed1b4af579b04c42cd9a8f36726d445de27659"
+    },
+    {
+      "path": "scripts/test-runners/unified61-final/TestLoader.as.template",
+      "bytes": 3221,
+      "sha256": "68fb937cff33a5970d5aaffdc02a557d129203a267b3e5545ece410bf1ed3300"
+    },
+    {
+      "path": "scripts/test-runners/unified61-assets/TestLoader.as.template",
+      "bytes": 2952,
+      "sha256": "1ec94274addd775b1939d8f5d8b91214fefca8c5766d77aa16c862f685b697fb"
+    }
+  ],
+  "retainedEarlierAttemptEvidence": [
+    "tmp/unified61-assets/evidence/publish-fatal-7d5cf546",
+    "tmp/unified61-assets/evidence/assets-81d7de5b-failed"
+  ],
+  "remainingHumanAcceptance": [
+    "CF6 encounter balance targets at ordinary level 45 and constellation level 50",
+    "Loaded movement, continuous joints and chest-cannon presentation in the full game"
+  ],
+  "reviewScope": {
+    "files": [
+      "agentsDoc/game-design.md",
+      "data/crafting/进阶防具.json",
+      "data/items/asset_source_map.xml",
+      "data/items/item_sets.xml",
+      "data/items/防具_40+级.xml",
+      "docs/reports/unified61-implementation-evidence-2026-10-25.json",
+      "docs/统合61式装甲套装-设计与实现-2026-10-25.md",
+      "flashswf/arts/new/Codex专用素材.swf",
+      "flashswf/arts/new/Codex专用素材/DOMDocument.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲上臂-closed-裁切-8.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲上臂-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲右下臂-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲左下臂-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲身体-closed-裁切-1.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲身体-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲身体-fire-裁切-1.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲身体-fire.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲身体-open-裁切-1.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式胸甲身体-open.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式腿甲右大腿-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式腿甲小腿-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式腿甲屁股-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/女变装-Codex-统合61式腿甲左大腿-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式头部装甲-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式手甲右手-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式手甲左手-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲上臂-closed-裁切-8.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲上臂-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲右下臂-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲左下臂-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲身体-closed-裁切-1.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲身体-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲身体-fire-裁切-1.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲身体-fire.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲身体-open-裁切-1.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式胸甲身体-open.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式腿甲右大腿-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式腿甲小腿-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式腿甲屁股-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式腿甲左大腿-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed-裁切-5.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed-裁切-6.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed-裁切-7.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/图标-Codex-统合61式头部装甲.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/图标-Codex-统合61式手甲.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/图标-Codex-统合61式胸甲.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/图标-Codex-统合61式腿甲.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/图标-Codex-统合61式装甲鞋.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/女变装-Codex-统合61式胸甲上臂.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/女变装-Codex-统合61式胸甲右下臂.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/女变装-Codex-统合61式胸甲左下臂.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/女变装-Codex-统合61式胸甲身体.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/女变装-Codex-统合61式腿甲右大腿.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/女变装-Codex-统合61式腿甲小腿.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/女变装-Codex-统合61式腿甲屁股.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/女变装-Codex-统合61式腿甲左大腿.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/总装/61式头部装甲.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/总装/61式手甲.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/总装/61式胸甲.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/总装/61式腿甲.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/总装/61式装甲鞋.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/接口/炮口.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式头部装甲.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式手甲右手.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式手甲左手.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式胸甲上臂.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式胸甲右下臂.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式胸甲左下臂.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式胸甲身体.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式腿甲右大腿.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式腿甲小腿.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式腿甲屁股.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式腿甲左大腿.xml",
+      "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/男变装-Codex-统合61式装甲鞋.xml",
+      "launcher/web/assets/dressup/manifest.json",
+      "launcher/web/assets/dressup/report.json",
+      "launcher/web/assets/dressup/skins/02526e4a_1.png",
+      "launcher/web/assets/dressup/skins/0a245066_1.png",
+      "launcher/web/assets/dressup/skins/0adb4f36_1.png",
+      "launcher/web/assets/dressup/skins/22c4a330_1.png",
+      "launcher/web/assets/dressup/skins/2792205c_1.png",
+      "launcher/web/assets/dressup/skins/2f1b0120_1.png",
+      "launcher/web/assets/dressup/skins/41aef506_1.png",
+      "launcher/web/assets/dressup/skins/445cdbfd_1.png",
+      "launcher/web/assets/dressup/skins/4cd5fa81_1.png",
+      "launcher/web/assets/dressup/skins/5396e436_1.png",
+      "launcher/web/assets/dressup/skins/59ab0cc9_1.png",
+      "launcher/web/assets/dressup/skins/619c95eb_1.png",
+      "launcher/web/assets/dressup/skins/6915b497_1.png",
+      "launcher/web/assets/dressup/skins/714bff9f_1.png",
+      "launcher/web/assets/dressup/skins/91145a71_1.png",
+      "launcher/web/assets/dressup/skins/a6e1c799_1.png",
+      "launcher/web/assets/dressup/skins/b57f9d47_1.png",
+      "launcher/web/assets/dressup/skins/b738a1ec_1.png",
+      "launcher/web/assets/dressup/skins/ce1032be_1.png",
+      "launcher/web/assets/dressup/skins/dd8e6860_1.png",
+      "launcher/web/icons/0c2beaa3_1.webp",
+      "launcher/web/icons/0c2beaa3_2.webp",
+      "launcher/web/icons/1ebc27ba_1.webp",
+      "launcher/web/icons/1ebc27ba_2.webp",
+      "launcher/web/icons/2f0b68d6_1.webp",
+      "launcher/web/icons/2f0b68d6_2.webp",
+      "launcher/web/icons/9e0fc43d_1.webp",
+      "launcher/web/icons/9e0fc43d_2.webp",
+      "launcher/web/icons/efd9f6e9_1.webp",
+      "launcher/web/icons/efd9f6e9_2.webp",
+      "launcher/web/icons/manifest.json",
+      "scripts/asLoader.swf",
+      "scripts/asLoaderManifest/_collapsed_frame.as",
+      "scripts/asLoaderManifest/frame37.as",
+      "scripts/run-unified61-asset-tests.ps1",
+      "scripts/run-unified61-set-tests.ps1",
+      "scripts/run-unified61-tests.ps1",
+      "scripts/test-runners/unified61-assets/TestLoader.as.template",
+      "scripts/test-runners/unified61-final/TestLoader.as.template",
+      "scripts/test-runners/unified61-set/TestLoader.as.template",
+      "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/UnifiedType61Runtime.as",
+      "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/test/UnifiedType61AssetTest.as",
+      "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/test/UnifiedType61RuntimeTest.as",
+      "scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as",
+      "scripts/逻辑/装备函数/README.md",
+      "scripts/逻辑/装备函数/统合61套装.as",
+      "tools/cf7-balance-tool/docs/armor-balance-rulebook.md",
+      "tools/cf7-balance-tool/packages/cli/src/armor-acquisition.ts",
+      "tools/cf7-balance-tool/packages/cli/src/armor-balance.ts",
+      "tools/cf7-balance-tool/packages/cli/tests/armor-acquisition.test.ts",
+      "tools/cf7-balance-tool/packages/core/src/armor-balance/record.ts",
+      "tools/cf7-balance-tool/packages/core/tests/armor-balance/record.test.ts",
+      "tools/cf7-balance-tool/records/armor-balance-audit.xml",
+      "tools/cf7-balance-tool/records/armor-balance-plan.xml",
+      "tools/unified61-assets/README.md",
+      "tools/unified61-assets/apply_web_batch.py",
+      "tools/unified61-assets/build.py",
+      "tools/unified61-assets/design.json",
+      "tools/unified61-assets/install_data.py",
+      "tools/unified61-assets/native-manifest.json",
+      "tools/unified61-assets/prepare_data.py",
+      "tools/unified61-assets/preview.py",
+      "tools/unified61-assets/register_assets.py",
+      "tools/unified61-assets/source/assembly.json",
+      "tools/unified61-assets/source/refined/parts/女变装-61式胸甲上臂.svg",
+      "tools/unified61-assets/source/refined/parts/女变装-61式胸甲右下臂.svg",
+      "tools/unified61-assets/source/refined/parts/女变装-61式胸甲左下臂.svg",
+      "tools/unified61-assets/source/refined/parts/女变装-61式胸甲身体.svg",
+      "tools/unified61-assets/source/refined/parts/女变装-61式腿甲右大腿.svg",
+      "tools/unified61-assets/source/refined/parts/女变装-61式腿甲小腿.svg",
+      "tools/unified61-assets/source/refined/parts/女变装-61式腿甲屁股.svg",
+      "tools/unified61-assets/source/refined/parts/女变装-61式腿甲左大腿.svg",
+      "tools/unified61-assets/source/refined/parts/男变装-61式头部装甲.svg",
+      "tools/unified61-assets/source/refined/parts/男变装-61式手甲右手.svg",
+      "tools/unified61-assets/source/refined/parts/男变装-61式手甲左手.svg",
+      "tools/unified61-assets/source/refined/parts/男变装-61式胸甲上臂.svg",
+      "tools/unified61-assets/source/refined/parts/男变装-61式胸甲右下臂.svg",
+      "tools/unified61-assets/source/refined/parts/男变装-61式胸甲左下臂.svg",
+      "tools/unified61-assets/source/refined/parts/男变装-61式胸甲身体.svg",
+      "tools/unified61-assets/source/refined/parts/男变装-61式腿甲右大腿.svg",
+      "tools/unified61-assets/source/refined/parts/男变装-61式腿甲小腿.svg",
+      "tools/unified61-assets/source/refined/parts/男变装-61式腿甲屁股.svg",
+      "tools/unified61-assets/source/refined/parts/男变装-61式腿甲左大腿.svg",
+      "tools/unified61-assets/source/refined/parts/男变装-61式装甲鞋.svg",
+      "tools/unified61-assets/source/source-manifest.json",
+      "tools/unified61-assets/source/states/fire/parts/女变装-61式胸甲身体.svg",
+      "tools/unified61-assets/source/states/fire/parts/男变装-61式胸甲身体.svg",
+      "tools/unified61-assets/source/states/open/parts/女变装-61式胸甲身体.svg",
+      "tools/unified61-assets/source/states/open/parts/男变装-61式胸甲身体.svg",
+      "tools/unified61-assets/sync_probe.py",
+      "tools/unified61-assets/validate.py"
+    ],
+    "notACommitAuthorization": true,
+    "note": "Review targets for this task. Shared manifests and the compiled loader also preserve preexisting/concurrent work; this list is not wholesale staging authorization.",
+    "unrelatedRepairSourceFilesListed": false,
+    "buildCachesListed": false
+  }
+}

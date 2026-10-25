@@ -1,0 +1,56 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/统合61式/总装/61式胸甲" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="61式胸甲">
+      <layers>
+        <DOMLayer name="原生站姿分件" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/统合61式/原生/男变装-Codex-统合61式胸甲上臂-closed" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.195611000" b="-0.128974000" c="0.129059000" d="0.195482000" tx="23.492187000" ty="-91.760965000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/统合61式/原生/男变装-Codex-统合61式胸甲左下臂-closed" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.213644000" b="-0.092346000" c="0.104482506" d="-0.241403017" tx="33.710596459" ty="-90.167038575"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/统合61式/原生/男变装-Codex-统合61式胸甲身体-closed" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.232335000" b="0.042049000" c="-0.042077000" d="0.232182000" tx="6.176235000" ty="-92.784827000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/统合61式/原生/男变装-Codex-统合61式胸甲上臂-closed" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.215288000" b="-0.092633000" c="0.092694000" d="0.215146000" tx="-0.052773000" ty="-92.823939000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/统合61式/原生/男变装-Codex-统合61式胸甲右下臂-closed" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.220662000" b="-0.079366000" c="0.087911322" d="-0.244098983" tx="7.755219474" ty="-90.270236925"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

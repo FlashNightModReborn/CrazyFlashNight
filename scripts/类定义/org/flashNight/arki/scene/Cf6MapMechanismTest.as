@@ -61,8 +61,9 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
         failedState.failed=true;failedState.clearRequested=true;
         check(steps(failedState,1000)=="" && failedState.phase=="loading","failure never degrades to completion");
     }
-    private static function fixture():MovieClip {
-        var w:MovieClip=_root.createEmptyMovieClip("__cf6FixtureWorld",9289);
+    private static function fixture(name:String):MovieClip {
+        if(name==undefined) name="__cf6FixtureWorld";
+        var w:MovieClip=_root.createEmptyMovieClip(name,9289);
         _root.gameworld=w;
         w.createEmptyMovieClip("hero",10);w.hero.hp=100;
         w.createEmptyMovieClip("deadbody",1);w.createEmptyMovieClip("效果",20);
@@ -581,7 +582,9 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
         } finally {proto.loadClip=original;Cf6TutorialTurretService.teardown();Cf6MapMechanism.teardown();w.removeMovieClip();}
     }
     private static function testTraversalWiring():Void {
-        var w:MovieClip=fixture(),identity:Object=StageReturnFlow.worldIdentity(w);
+        // The other synchronous tests repeatedly replace one path before AVM1 unload flush.
+        // This geometry test needs its own world path, as real rooms get after frame teardown.
+        var w:MovieClip=fixture("__cf6TraversalFixtureWorld"),identity:Object=StageReturnFlow.worldIdentity(w);
         _root.控制目标="hero";w.hero._x=100;w.hero._y=w.hero.Z轴坐标=20;
         // The wiring fixture needs a real upper-body MC for semantic idle ownership.
         // Native label/frame behavior is covered by Cf6TraversalNativeTest.
@@ -618,6 +621,33 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
         check(!s.arrival.acquired && !_root.暂停 && s.arrival.rules.frame==2,"arrival releases before remaining door frames");
         w.hero._x=77;Cf6MapMechanism.tick();Cf6MapMechanism.tick();
         check(w.hero._x==77 && s.phase=="combat","remaining arrival door frames never reclaim actor");
+        Cf6MapMechanism.teardown();
+        // A04's exit-kind room combines arrival and departure; the previous tests exercised them separately.
+        var departure:Object={mode:"depart",fps:30,durationFrames:4,gate:{x:10,z:20,radius:12},exit:{x:60,z:30},samples:[
+            {frame:1,x:10,z:20,visible:true,action:"walk"},{frame:2,x:10,z:15,visible:true,action:"walk"},
+            {frame:3,x:10,z:10,visible:true,action:"walk"},{frame:4,x:10,z:5,visible:false,action:"stand"}]};
+        manager.calls=0;w.hero._x=100;w.hero._y=w.hero.Z轴坐标=20;
+        Cf6MapMechanism.beginRoom(w,identity,"A04",{kind:"exit",layers:[],traversal:{arrive:path,depart:departure}});
+        var guide:Object=w.__cf6Mechanism.exitGuide;
+        trace("Audit A04 begin: guide="+guide+" clip="+guide.clip+" closed="+guide.closed+" phase="+w.__cf6Mechanism.phase+" world="+w+" nextDepth="+w.getNextHighestDepth());
+        check(guide!=null && guide.clip._parent===w,"A04 combined fixture has a live guide at entry");
+        Cf6MapMechanism.tick();Cf6MapMechanism.interceptClear(manager,w);Cf6MapMechanism.tick();s=w.__cf6Mechanism;
+        check(s.clearRequested && s.arrival.rules.actorReleased && s.departure.rules.phase=="waiting" && manager.calls==0,
+            "A04 early clear cannot bypass unfinished arrival or release the exit");
+        Cf6MapMechanism.tick();Cf6MapMechanism.tick();Cf6MapMechanism.tick();
+        check(s.phase=="traversal-depart" && s.departure.rules.phase=="waiting" && !_root.暂停,
+            "A04 arrival completion arms departure without trapping input");
+        var bounds:Object=guide.clip.getBounds(w);
+        trace("Audit A04 gate: guide="+guide+" clip="+guide.clip+" closed="+guide.closed+" bounds="+bounds.xMin+","+bounds.xMax+","+bounds.yMin+","+bounds.yMax+" phase="+s.phase+" arrival="+s.arrival.rules.phase+" departure="+s.departure.rules.phase+" heroDepth="+w.hero.getDepth());
+        check(bounds.xMin==bounds.xMin && bounds.yMin==bounds.yMin && bounds.xMin!=undefined,"A04 combined fixture retains finite guide geometry");
+        // Geometry is covered by Cf6ExitGuideTest; this fixture targets the combined service lifecycle.
+        w.hero._x=departure.gate.x;w.hero._y=w.hero.Z轴坐标=departure.gate.z+8;
+        Cf6MapMechanism.tick();
+        check(s.departure.acquired && s.departure.rules.phase=="playing",
+            "A04 entering the acquisition gate starts the real departure service");
+        for(var frame:Number=0;frame<8;frame++) Cf6MapMechanism.tick();
+        check(s.phase=="ready" && manager.calls==1 && !_root.暂停 && w.hero._visible,
+            "A04 arrival-clear-arrow-departure chain delegates clear exactly once");
         Cf6MapMechanism.teardown();w.removeMovieClip();
     }
     private static function testTraversalAssetClosure():Void {

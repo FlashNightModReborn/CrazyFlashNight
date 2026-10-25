@@ -222,7 +222,7 @@ _root.战技路由.动画完毕(this,_parent);
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (!_parent.是否追踪)
 	{
-		_parent.攻击时按键四向移动(25,750);
+		_root.技能函数.一文字落雷自由移动(_parent._parent);
 	}
 	else
 	{

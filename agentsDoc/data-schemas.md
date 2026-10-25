@@ -397,6 +397,10 @@ XMLParser.parseXMLNode() 解析 → { items: ["消耗品_货币.xml", "武器_�
 
 ### 装备插件格展示词典
 
+装备根层可用 `<allowedModTags>` 声明允许的插件挂点类别（逗号分隔）。缺省沿原规则；显式空值、畸形值、未列出的类别和无 `tag` 插件均拒绝，`blockedTags` 仍可进一步拒绝。目录筛选与安装提交共同使用 `TagManager` 的这条规则，不靠展示文案或列举当前黑名单推断“封闭改装”。`inherentTags` 只提供结构前置，不授予额外安装权限。
+
+统合61五件和已有封闭改装规则的21件战术版武器仅允许 `等级校正`，并内置 `电力`；现役对应电脑芯片（等级需求−3）和成长的勋章（−10），同类别与单槽规则保持。Origin12、AA12、Vepr12战术版及零槽KING专用品保持原规则。`scripts/run-closed-mod-policy-tests.ps1` 从当前XML生成隔离夹具，核对完整插件目录、菜单/安装一致性和真实等级计算，不写真实存档或自动剥离历史配件。
+
 `data/items/equipment_mods/*.xml` 的插件定义是档级、用途与定位的业务元数据单源。每个 `list.xml/<items>` 子文件根层必须显式声明 `<modGrade>low|medium|high|special</modGrade>` 与 `<catalogScope>armor|firearm|blade|fist|universal|underbarrel</catalogScope>`；文件名前缀只服务人类导航，运行时禁止据此推断。`catalogScope` 只用于 Web 目录分组，精确安装权限仍由每个 `<mod>` 的 `use/weapontype/excludeWeapontype` 与 `EquipmentUtil` 决定。
 
 `data/items/equipment_mods/ui_presentation.xml` 是上述 ID 的受控标签/色号词典，以及插件格角色→符号、`tag`→默认角色的展示词典；它不得重新分配单个插件的档级或目录用途。`EquipModListLoader` 并行加载词典与子文件，向 `EquipmentUtil.modDict` 投影 `modGrade/catalogScope/uiGradeLabel/uiGradeColor/uiScopeLabel/uiRole/uiRoleLabel/uiSymbol`。角色符号采用 `形状-solid|outline` 受控 token；单个插件仅在 `tag` 默认角色不准确时声明 `<uiRole>` 覆盖，禁止填写任意 Unicode/HTML 符号。`EquipmentTuningService.modCandidates[]` 暴露档级/用途/定位/受控符号供候选树和紧凑瓦片展示，未知符号由 Web 白名单回退；`InventoryPanelService` 对松散插件材料附加 `modMeta`，但 `availabilityCode` 仍是安装可用性的唯一权威。

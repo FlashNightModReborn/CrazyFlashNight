@@ -974,27 +974,35 @@ internal sealed class PlayerHudBuffWidget : PlayerHudWidgetBase, INativeHudPoint
     private long _epoch;
     private string? _hoverId;
     private int _hoverSlot = -1;
+    private int _page, _lastSlotCount = -1;
+    private PlayerHudTarget? _pageDown;
+    private bool _pageUpMatches;
     private readonly Font _label=NativeHudFonts.CreateRoleFont("native.player-info.body",10,FontStyle.Bold,GraphicsUnit.Pixel);
     private readonly Font _small=NativeHudFonts.CreateRoleFont("native.player-info.body",8,FontStyle.Regular,GraphicsUnit.Pixel);
     protected override bool HasContent => Snapshot?.BuffCards.Length>0;
     private int SlotCount => Snapshot?.BuffCards.Length ?? 0;
-    internal static RectangleF SlotRect(int index) => new(9+(index%32)*28,3+(index/32)*NativeHudTheme.TopBarHeightBase,26,26);
-    protected override RectangleF LogicalBounds => new(6,0,6+Math.Min(32,SlotCount)*28,
-        Math.Max(1,(float)Math.Ceiling(SlotCount/32d))*NativeHudTheme.TopBarHeightBase);
+    internal static RectangleF SlotRect(int index) => PlayerHudBuffLayout.SlotRect(index);
+    protected override RectangleF LogicalBounds => PlayerHudBuffLayout.Bounds(SlotCount);
+    internal int CurrentPage => _page;
     internal PlayerHudBuffWidget(Control anchor, PlayerHudController controller) : base(anchor, controller) { OnStateChanged(); }
     protected override void OnStateChanged()
     {
         var s=Snapshot;
-        if(s?.Epoch!=_epoch) { _epoch=s?.Epoch??0;CancelHover(); }
+        if(s?.Epoch!=_epoch) { _epoch=s?.Epoch??0;_page=0;CancelPagePress();CancelHover(); }
+        if (_lastSlotCount != SlotCount) { _lastSlotCount = SlotCount; CancelPagePress(); }
+        int page = Math.Clamp(_page, 0, PlayerHudBuffLayout.PageCount(SlotCount) - 1);
+        if (page != _page) { _page = page; CancelHover(); }
         if(_hoverId!=null&&(s==null || _hoverSlot<0 || _hoverSlot>=s.BuffCards.Length || s.BuffCards[_hoverSlot].Id!=_hoverId))CancelHover();
         base.OnStateChanged();
     }
     protected override void PaintLogical(Graphics g)
     {
-        for(var index=0;index<Snapshot!.BuffCards.Length;index++)
+        int first = _page * PlayerHudBuffLayout.PageSize;
+        int end = Math.Min(first + PlayerHudBuffLayout.PageSize, Snapshot!.BuffCards.Length);
+        for(var index=first;index<end;index++)
         {
             var b=Snapshot.BuffCards[index];
-            var r=SlotRect(index);
+            var r=SlotRect(index-first);
             using var bg=new LinearGradientBrush(r,Color.FromArgb(247,38,40,40),Color.FromArgb(247,17,19,19),LinearGradientMode.Vertical);
             g.FillRectangle(bg,r);
             var color=b.Polarity switch { "benefit"=>Color.FromArgb(139,169,151),"harm"=>Color.FromArgb(213,139,112),_=>Color.FromArgb(161,168,168) };
@@ -1024,29 +1032,71 @@ internal sealed class PlayerHudBuffWidget : PlayerHudWidgetBase, INativeHudPoint
                 g.FillRectangle(accent,r.X+8,r.Bottom-2.5f,10,0.8f);
             }
         }
+        if (PlayerHudBuffLayout.PageCount(SlotCount) > 1)
+        {
+            var previous = PlayerHudBuffLayout.PreviousPageRect(SlotCount);
+            var next = PlayerHudBuffLayout.NextPageRect(SlotCount);
+            using var edge = new Pen(Color.FromArgb(103, 110, 110), .6f);
+            using var ink = new SolidBrush(Color.FromArgb(218, 222, 218));
+            using var muted = new SolidBrush(Color.FromArgb(103, 110, 110));
+            using var format = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+            g.DrawRectangle(edge, previous.X, previous.Y, previous.Width, previous.Height);
+            g.DrawRectangle(edge, next.X, next.Y, next.Width, next.Height);
+            g.DrawString("<", _label, _page > 0 ? ink : muted, previous, format);
+            g.DrawString(">", _label, _page + 1 < PlayerHudBuffLayout.PageCount(SlotCount) ? ink : muted, next, format);
+            g.DrawString($"{_page + 1}/{PlayerHudBuffLayout.PageCount(SlotCount)} · {SlotCount}项状态", _small, ink,
+                RectangleF.FromLTRB(previous.Right, previous.Top, next.Left, previous.Bottom), format);
+        }
     }
     private PlayerHudTarget? Hit(Point screen)
     {
         if(!Visible || !Controller.CanInteract || Snapshot is not {} s || Scale<=0)return null;
         var point=Logical(screen);
-        for(var slot=0;slot<s.BuffCards.Length;slot++)
-            if(SlotRect(slot).Contains(point))
-                return new("buff",slot,s.BuffCards[slot].Id,s.Epoch,0,s.Loadout.Bank,SlotRect(slot),Controller.Generation,s.Vitals.Paused);
+        int first = _page * PlayerHudBuffLayout.PageSize;
+        int end = Math.Min(first + PlayerHudBuffLayout.PageSize, s.BuffCards.Length);
+        for(var slot=first;slot<end;slot++)
+            if(SlotRect(slot-first).Contains(point))
+                return new("buff",slot,s.BuffCards[slot].Id,s.Epoch,0,s.Loadout.Bank,SlotRect(slot-first),Controller.Generation,s.Vitals.Paused);
+        if (PlayerHudBuffLayout.PageCount(SlotCount) > 1)
+        {
+            var previous = PlayerHudBuffLayout.PreviousPageRect(SlotCount);
+            var next = PlayerHudBuffLayout.NextPageRect(SlotCount);
+            if (previous.Contains(point)) return PageTarget(Math.Max(0, _page - 1), previous, s);
+            if (next.Contains(point)) return PageTarget(Math.Min(PlayerHudBuffLayout.PageCount(SlotCount) - 1, _page + 1), next, s);
+        }
         return null;
     }
+    private PlayerHudTarget PageTarget(int page, RectangleF bounds, PlayerHudSnapshot snapshot) =>
+        new("buffPage", page, $"{_page}:{SlotCount}:{page}", snapshot.Epoch, 0, snapshot.Loadout.Bank,
+            bounds, Controller.Generation, snapshot.Vitals.Paused);
     public override bool TryHitTest(Point screenPt) => Hit(screenPt)!=null;
     // Shared-world routing validates this snapshot before delivering hover, just as it does for clicks.
     public object? CapturePointerTarget(Point screen) => Hit(screen);
-    public bool NeedsPointerClick => false;
+    public bool NeedsPointerClick => PlayerHudBuffLayout.PageCount(SlotCount) > 1;
     public override void OnMouseEvent(MouseEventArgs e, MouseEventKind kind)
     {
-        if(kind is MouseEventKind.Cancel or MouseEventKind.Leave) { CancelHover();return; }
-        if(kind is not (MouseEventKind.Move or MouseEventKind.Enter))return;
+        if(kind is MouseEventKind.Cancel or MouseEventKind.Leave) { CancelPagePress();CancelHover();return; }
         var target=Hit(new Point(e.X,e.Y));
-        if(target?.Key==_hoverId && target?.Slot==_hoverSlot)return;
-        CancelHover();_hoverId=target?.Key;_hoverSlot=target?.Slot??-1;if(target!=null)Controller.ShowTooltip(target);Repaint();
+        if (kind is MouseEventKind.Move or MouseEventKind.Enter)
+        {
+            if (target?.Kind != "buff") { CancelHover(); return; }
+            if(target.Key==_hoverId && target.Slot==_hoverSlot)return;
+            CancelHover();_hoverId=target.Key;_hoverSlot=target.Slot;Controller.ShowTooltip(target);Repaint();return;
+        }
+        if (e.Button != MouseButtons.Left) return;
+        if (kind == MouseEventKind.Down) { _pageDown = target?.Kind == "buffPage" ? target : null; _pageUpMatches = false; }
+        if (kind == MouseEventKind.Up) _pageUpMatches = _pageDown != null && _pageDown == target;
+        if (kind == MouseEventKind.Click)
+        {
+            if (_pageUpMatches && _pageDown != null && _pageDown == target)
+            {
+                CancelHover(); _page = _pageDown.Slot; Repaint();
+            }
+            CancelPagePress();
+        }
     }
+    private void CancelPagePress() { _pageDown = null; _pageUpMatches = false; }
     private void CancelHover() { if(_hoverId==null)return;_hoverId=null;_hoverSlot=-1;Controller.HideTooltip();Repaint(); }
-    public override void SetHostSuppressed(bool suppressed) { if(suppressed)CancelHover();base.SetHostSuppressed(suppressed); }
+    public override void SetHostSuppressed(bool suppressed) { if(suppressed) { CancelPagePress();CancelHover(); } base.SetHostSuppressed(suppressed); }
     public override void Dispose() { CancelHover();_label.Dispose();_small.Dispose();base.Dispose(); }
 }

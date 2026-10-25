@@ -40,6 +40,9 @@ class org.flashNight.arki.hud.PlayerHudBuffProjection {
     }
     public function update():Void { }
     public function addIcon(id:String, buff:Object):Void {
+        // Cold binding enumerates MetaBuffs only. Apply the same rule to live
+        // add events so internal numeric Pods cannot appear as anonymous cards.
+        if (typeof buff.isPod == "function" && buff.isPod()) return;
         for (var i:Number = 0; i < entries.length; i++) if (entries[i].id == id) return;
         var info:Object = readInfo(buff);
         var presentation:Object = readPresentation(buff);

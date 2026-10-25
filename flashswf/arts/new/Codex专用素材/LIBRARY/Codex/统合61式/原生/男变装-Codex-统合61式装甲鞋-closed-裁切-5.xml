@@ -1,0 +1,88 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/统合61式/原生/男变装-Codex-统合61式装甲鞋-closed-裁切-5" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="男变装-Codex-统合61式装甲鞋-closed-裁切-5">
+      <layers>
+        <DOMLayer name="原稿孔口遮罩" color="#4FFF4F" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!360 360|560 480|180 480|560 580|700 540|640 460|360 360" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="孔内原生矢量" color="#4FFF4F" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#625E54"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!696 535|676 518|658 522|608 507|596 513|650 533|660 546|694 549|696 535" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#343C40"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!692 538|670 525|650 528|612 516|654 536|662 541|688 545|692 538" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="0.2" scaleMode="normal" caps="none" joints="miter">
+                        <fill>
+                          <SolidColor color="#899395"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!692 538|678 534" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#625E54"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!665 496|652 486|600 466|590 470|645 494|662 501|665 496" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#343C40"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!659 496|642 487|602 471|646 493|662 499|659 496" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

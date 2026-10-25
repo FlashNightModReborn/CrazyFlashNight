@@ -1,0 +1,38 @@
+{
+  "setId": "unified_type_61_armor",
+  "setName": "统合61号工程·全装型",
+  "level": 40,
+  "weightLayers": 3,
+  "priceLayers": 1,
+  "marketPrice": 170000,
+  "craftGold": 60000,
+  "craftKpoints": 5400,
+  "authorizedWeapons": ["光剑天秤", "光斧金牛", "光刀狮子", "光刃摩羯"],
+  "blockedTags": "外覆基层,外覆加固,表面涂层,内衬层,粘结层,缓冲层,肩挂系统,电子模块,内力槽,强化辅材",
+  "allowedModTags": "等级校正",
+  "inherentTags": "电力",
+  "config": {
+    "shieldHpRatio": 0.05,
+    "rechargeDelaySeconds": 1,
+    "rechargeSeconds": 1,
+    "normalRebuildSeconds": 5,
+    "authorizedRebuildSeconds": 3,
+    "ammoSeconds": 12,
+    "weightKg": 12,
+    "toughness": 250,
+    "dodgeNormal": 35,
+    "dodgeAuthorized": 175,
+    "resistNormal": 25,
+    "resistAuthorized": 45,
+    "damageTaken": 0.88,
+    "cannonOpenFrames": 3,
+    "cannonDurationFrames": 12
+  },
+  "items": [
+    {"source": "61式头部装甲", "name": "统合61式头部装甲", "slot": "头部装备", "component": "helmet_sensor", "weight": 12, "hp": 430, "mp": 150, "damage": 80, "defence": 490},
+    {"source": "61式胸甲", "name": "统合61式胸甲", "slot": "上装装备", "component": "chest_buffer", "weight": 28, "hp": 550, "mp": 180, "damage": 110, "defence": 525},
+    {"source": "61式腿甲", "name": "统合61式腿甲", "slot": "下装装备", "component": "leg_loader", "weight": 28, "hp": 550, "mp": 180, "damage": 100, "defence": 540},
+    {"source": "61式装甲鞋", "name": "统合61式装甲鞋", "slot": "脚部装备", "component": "boot_servo", "weight": 12, "hp": 430, "mp": 150, "damage": 80, "defence": 490},
+    {"source": "61式手甲", "name": "统合61式手甲", "slot": "手部装备", "component": "glove_control", "weight": 10, "hp": 400, "mp": 140, "damage": 80, "defence": 490}
+  ]
+}

@@ -46,22 +46,29 @@ class org.flashNight.arki.scene.Cf6ExitGuideService {
         var point:Object=room.departure.spec.gate;
         if(point==undefined) point=guidePoint;
         if(point==undefined || !finite(point.x) || !finite(point.z)) return null;
-        var direction:String=point.direction==undefined ? "上" : point.direction;
+        var direction:String=point.direction;
+        if(direction==undefined) {
+            var heading:String=room.departure.rules.heading;
+            direction=heading=="左" || heading=="右" ? heading : "上";
+        }
+        // 三段箭头连同线宽都留在自动接管圈内；普通手动出口保持原尺寸。
+        var drawScale:Number=finite(point.radius) && point.radius>0 && point.radius<300
+            ? Math.min(1,point.radius/50) : 1;
         if(direction!="上" && direction!="下" && direction!="左" && direction!="右") return null;
         var token:Object={},name:String="__cf6ExitGuide"+(++serial);
         var clip:MovieClip=room.world.createEmptyMovieClip(name,room.world.getNextHighestDepth());
         clip.__cf6ExitGuideOwner=token;clip._x=point.x;clip._y=point.z;
         clip._rotation=direction=="右"?90:direction=="下"?180:direction=="左"?270:0;
-        var h:Object={room:room,world:room.world,owner:room.owner,clip:clip,token:token,closed:false,ready:undefined};
+        var h:Object={room:room,world:room.world,owner:room.owner,clip:clip,token:token,closed:false,ready:undefined,drawScale:drawScale};
         tick(h);return h.closed?null:h;
     }
-    private static function draw(clip:MovieClip,ready:Boolean):Void {
-        clip.clear();clip.lineStyle(1,0x26320D,100);
+    private static function draw(clip:MovieClip,ready:Boolean,scale:Number):Void {
+        clip.clear();clip.lineStyle(scale,0x26320D,100);
         clip.beginFill(ready?0xC6F600:0x88917B,100);
         // The tip is the actual world gate; three arrows lead toward it from walkable foreground.
         for(var i:Number=0;i<3;i++) {
-            var y:Number=i*17;
-            clip.moveTo(0,y);clip.lineTo(-7,y+12);clip.lineTo(7,y+12);clip.lineTo(0,y);
+            var y:Number=i*17*scale;
+            clip.moveTo(0,y);clip.lineTo(-7*scale,y+12*scale);clip.lineTo(7*scale,y+12*scale);clip.lineTo(0,y);
         }
         clip.endFill();
     }
@@ -69,7 +76,7 @@ class org.flashNight.arki.scene.Cf6ExitGuideService {
         if(h==null || h.closed) return;
         if(!current(h) || h.room.failed===true) {end(h);return;}
         var ready:Boolean=h.room.clearRequested===true;
-        if(h.ready!==ready) {draw(h.clip,ready);h.ready=ready;}
+        if(h.ready!==ready) {draw(h.clip,ready,h.drawScale);h.ready=ready;}
         h.clip._alpha=ready?100:45;
         var departure:Object=h.room.departure;
         h.clip._visible=departure==null || departure.rules.phase=="waiting";

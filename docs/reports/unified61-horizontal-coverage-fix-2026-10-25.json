@@ -1,0 +1,656 @@
+{
+  "schema": "cf7.vertical-pierce-horizontal-coverage-fix.v1",
+  "status": "implemented_compiled_not_deployed",
+  "recordedAtUtc": "2026-10-25T13:02:08.885198+00:00",
+  "gitHead": "6ff73d63c89086824018a04f8e9e0ef9506a2272",
+  "authorization": {
+    "horizontalConsistencyFix": true,
+    "chestDiffusion": 5,
+    "hardCapAt24": false,
+    "commit": false,
+    "push": false,
+    "formalRuntimePromotion": false
+  },
+  "scope": {
+    "changedRouting": "CHAIN+VERTICAL+PIERCE uses the existing polygon coverage path at all angles. Other chain types retain their previous rotation gate.",
+    "compatibilityBaseline": "Existing non-horizontal geometry and 7/18 policy are deliberately preserved; intrinsic 25x25 semantics are outside this repair.",
+    "chestData": "diffusion 0 -> 5; split=12, power=G/12 and fill timing unchanged",
+    "balanceExpectation": "approximately two segments per pellet on representative targets; target geometry may legitimately produce fewer or more than 24 total"
+  },
+  "regression": {
+    "before": {
+      "runId": "6da14a3928114631aa3885f095b1ca24",
+      "passed": 151,
+      "failed": 11,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "retry32k": 0,
+      "sameRegressionSourceSha256": "c39e3b66b087b9caafc080e1061d4b696f2afaec6e78bf0ee0c2d973cc824c46"
+    },
+    "after": {
+      "retry32k": 0,
+      "compilerWarnings": 0,
+      "passed": 162,
+      "compilerErrors": 0,
+      "newHardCap": false,
+      "cases": 17,
+      "runId": "602de9bfa39b46edbf3f4e87008e92be",
+      "failed": 0,
+      "compileSeconds": 140,
+      "nonHorizontalBaselinePreserved": true
+    },
+    "sameTestSourceSha256": "c39e3b66b087b9caafc080e1061d4b696f2afaec6e78bf0ee0c2d973cc824c46",
+    "casesBefore": [
+      {
+        "case": "flat-far",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 11,
+        "totalSegments": 77,
+        "totalDamage": 100100,
+        "hpLoss": 100100,
+        "maxUnits": 12
+      },
+      {
+        "case": "flat-near",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 11,
+        "totalSegments": 77,
+        "totalDamage": 100100,
+        "hpLoss": 100100,
+        "maxUnits": 12
+      },
+      {
+        "case": "tilt1-far",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 13,
+        "totalDamage": 16900,
+        "hpLoss": 16900,
+        "maxUnits": 12
+      },
+      {
+        "case": "tilt1-near",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 6,
+        "totalSegments": 27,
+        "totalDamage": 35100,
+        "hpLoss": 35100,
+        "maxUnits": 12
+      },
+      {
+        "case": "epsilon-plus",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 14,
+        "totalDamage": 18200,
+        "hpLoss": 18200,
+        "maxUnits": 12
+      },
+      {
+        "case": "epsilon-minus",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 14,
+        "totalDamage": 18200,
+        "hpLoss": 18200,
+        "maxUnits": 12
+      },
+      {
+        "case": "left-flat",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 11,
+        "totalSegments": 77,
+        "totalDamage": 100100,
+        "hpLoss": 100100,
+        "maxUnits": 12
+      },
+      {
+        "case": "left-epsilon-minus",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 14,
+        "totalDamage": 18200,
+        "hpLoss": 18200,
+        "maxUnits": 12
+      },
+      {
+        "case": "left-epsilon-plus",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 14,
+        "totalDamage": 18200,
+        "hpLoss": 18200,
+        "maxUnits": 12
+      },
+      {
+        "case": "flat-mc",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 11,
+        "totalSegments": 77,
+        "totalDamage": 100100,
+        "hpLoss": 100100,
+        "maxUnits": 12
+      },
+      {
+        "case": "left-mc",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 11,
+        "totalSegments": 77,
+        "totalDamage": 100100,
+        "hpLoss": 100100,
+        "maxUnits": 12
+      },
+      {
+        "case": "spread5-far",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 11,
+        "totalSegments": 77,
+        "totalDamage": 100100,
+        "hpLoss": 100100,
+        "maxUnits": 12
+      },
+      {
+        "case": "spread5-near",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 11,
+        "totalSegments": 77,
+        "totalDamage": 100100,
+        "hpLoss": 100100,
+        "maxUnits": 12
+      },
+      {
+        "case": "spread5-left",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 11,
+        "totalSegments": 77,
+        "totalDamage": 100100,
+        "hpLoss": 100100,
+        "maxUnits": 12
+      },
+      {
+        "case": "wide-target",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 15,
+        "totalSegments": 105,
+        "totalDamage": 136500,
+        "hpLoss": 136500,
+        "maxUnits": 12
+      },
+      {
+        "case": "normal-chain-control",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 1,
+        "totalSegments": 12,
+        "totalDamage": 15600,
+        "hpLoss": 15600,
+        "maxUnits": 12
+      },
+      {
+        "case": "single-pierce-control",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 3,
+        "totalDamage": 3900,
+        "hpLoss": 3900,
+        "maxUnits": 0
+      }
+    ],
+    "casesAfter": [
+      {
+        "case": "flat-far",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 14,
+        "totalDamage": 18200,
+        "hpLoss": 18200,
+        "maxUnits": 12
+      },
+      {
+        "case": "flat-near",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 6,
+        "totalSegments": 27,
+        "totalDamage": 35100,
+        "hpLoss": 35100,
+        "maxUnits": 12
+      },
+      {
+        "case": "tilt1-far",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 13,
+        "totalDamage": 16900,
+        "hpLoss": 16900,
+        "maxUnits": 12
+      },
+      {
+        "case": "tilt1-near",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 6,
+        "totalSegments": 27,
+        "totalDamage": 35100,
+        "hpLoss": 35100,
+        "maxUnits": 12
+      },
+      {
+        "case": "epsilon-plus",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 14,
+        "totalDamage": 18200,
+        "hpLoss": 18200,
+        "maxUnits": 12
+      },
+      {
+        "case": "epsilon-minus",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 14,
+        "totalDamage": 18200,
+        "hpLoss": 18200,
+        "maxUnits": 12
+      },
+      {
+        "case": "left-flat",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 14,
+        "totalDamage": 18200,
+        "hpLoss": 18200,
+        "maxUnits": 12
+      },
+      {
+        "case": "left-epsilon-minus",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 14,
+        "totalDamage": 18200,
+        "hpLoss": 18200,
+        "maxUnits": 12
+      },
+      {
+        "case": "left-epsilon-plus",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 14,
+        "totalDamage": 18200,
+        "hpLoss": 18200,
+        "maxUnits": 12
+      },
+      {
+        "case": "flat-mc",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 14,
+        "totalDamage": 18200,
+        "hpLoss": 18200,
+        "maxUnits": 12
+      },
+      {
+        "case": "left-mc",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 14,
+        "totalDamage": 18200,
+        "hpLoss": 18200,
+        "maxUnits": 12
+      },
+      {
+        "case": "spread5-far",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 13,
+        "totalDamage": 16900,
+        "hpLoss": 16900,
+        "maxUnits": 12
+      },
+      {
+        "case": "spread5-near",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 6,
+        "totalSegments": 27,
+        "totalDamage": 35100,
+        "hpLoss": 35100,
+        "maxUnits": 12
+      },
+      {
+        "case": "spread5-left",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 13,
+        "totalDamage": 16900,
+        "hpLoss": 16900,
+        "maxUnits": 12
+      },
+      {
+        "case": "wide-target",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 7,
+        "totalSegments": 41,
+        "totalDamage": 53300,
+        "hpLoss": 53300,
+        "maxUnits": 12
+      },
+      {
+        "case": "normal-chain-control",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 1,
+        "totalSegments": 12,
+        "totalDamage": 15600,
+        "hpLoss": 15600,
+        "maxUnits": 12
+      },
+      {
+        "case": "single-pierce-control",
+        "emissions": 1,
+        "cannonCount": 1,
+        "settlements": 3,
+        "totalSegments": 3,
+        "totalDamage": 3900,
+        "hpLoss": 3900,
+        "maxUnits": 0
+      }
+    ],
+    "beforeTrace": {
+      "path": "tmp/unified61-horizontal-fix/evidence/before-6da14a39/flashlog-raw.txt",
+      "bytes": 26443,
+      "sha256": "02d428bd100c64d43b46ea4db845c7e300c622f77c993abef4868f26716d2c8c"
+    },
+    "afterTrace": {
+      "path": "tmp/unified61-horizontal-fix/evidence/after-602de9bf/flashlog-raw.txt",
+      "bytes": 19291,
+      "sha256": "25ef3e52d0ba5267e2b0c7f6c65f72c9f9eb0c5cf25f179f71f019a13393fbf3"
+    },
+    "afterTestSwf": {
+      "path": "tmp/unified61-horizontal-fix/evidence/after-602de9bf/TestLoader.swf",
+      "bytes": 1152606,
+      "sha256": "7fbed226538712be5a88d400a2e10f028b2394acc43ab8b023a2af8035601dc4"
+    },
+    "fixtureBoundary": "Real set lifecycle, factory, projectile assets, queue and full damage pipeline. G=1200 and external noise=1; cache, no-shield absorption and presentation are isolated. Explicit labeled factory-angle cases cover epsilon boundaries."
+  },
+  "adjacentValidation": {
+    "hpImpact": {
+      "compilerErrors": 0,
+      "retry32k": 0,
+      "runId": "42755ed5f12b4086b3b72ca45841741b",
+      "compileSeconds": 200,
+      "passed": 159,
+      "compilerWarnings": 0,
+      "failed": 0
+    },
+    "chainLifecycle": {
+      "runId": "36e792ea9ceb4f759da473f2992fe858",
+      "cases": 30,
+      "failed": 0,
+      "weapons": 5,
+      "modes": 3,
+      "compilerErrors": 0,
+      "passed": 26557,
+      "scenarios": 6,
+      "compilerWarnings": 0,
+      "compileSeconds": 187,
+      "retry32k": 0
+    },
+    "shotgunRegression": {
+      "status": "blocked_before_compile",
+      "entry": "scripts/run-shotgun-pattern-tests.ps1 -Regression",
+      "firstError": "Calibration fixture stale: [\"Vepr12\",5,10,40]",
+      "currentProfiles": 33,
+      "missingProfiles": [
+        [
+          "Vepr12",
+          5,
+          10,
+          40
+        ],
+        [
+          "Vepr12战术版",
+          5,
+          10,
+          40
+        ],
+        [
+          "Vepr12紧凑改装型",
+          5,
+          10,
+          40
+        ]
+      ],
+      "inputFiles": [
+        {
+          "path": "data/items/武器_长枪_霰弹枪.xml",
+          "sha256": "e68ba53aa8e0a71e34d747782a6942d5260546ace079dcabd8a94c4fbceebde4"
+        },
+        {
+          "path": "data/items/武器_手枪_霰弹枪.xml",
+          "sha256": "2941d6dd2781c3565353ed52fd7a70a844b05bbbffcb688c9cc7a49faea35369"
+        }
+      ],
+      "fixtureSha256": "8ce1aa3cc16c0afaaa65bc25c9eb95c49d815a503e0b6371b0fa2c67f44fe0d8",
+      "gameDataChangedForThisGate": false
+    },
+    "boundary": "The two independent existing suites are not a replacement claim for the blocked complete shotgun calibration."
+  },
+  "dataValidation": {
+    "scopedArmorItems": 5,
+    "planRecordsVerified": 661,
+    "modifiedItemCount": 1,
+    "otherItemSubtreesPreserved": 116,
+    "onlySemanticItemChange": "chest diffusion 0 -> 5; remaining difference is regenerated balance metadata",
+    "nativeAssetValidatorPassed": true,
+    "fullCatalogCoverageCertified": false
+  },
+  "compiledAsLoader": {
+    "sha256": "41250A2E137B5C6951FFF424356B10E8EBD92C32CC7D4DCC0EEB5D6CDE841375",
+    "scratchSha256": "E38E2151BF619814A0EA65BF2B19D11D8F78A7704787C47C046666ACEE2F090B",
+    "processExited": true,
+    "tasks": "Ready",
+    "bytes": 6715692,
+    "compilerErrors": 0,
+    "status": "compiled",
+    "compileResidue": false,
+    "compilerWarnings": 0,
+    "elapsedSeconds": 343
+  },
+  "classOwnership": {
+    "errors": [],
+    "files": 787,
+    "parsed": 0,
+    "cacheHits": 787,
+    "loaderClasses": 771,
+    "closureChecked": true,
+    "policy": "production",
+    "milliseconds": 7149.796
+  },
+  "functionSizes": {
+    "total": 14065,
+    "max": 60000,
+    "over": [],
+    "top": [
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 53098
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 48258
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 45961
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 45882
+      },
+      {
+        "owner": "DoAction[sprite=1 frame=0]",
+        "type": "DefineFunction2",
+        "name": "(anon)",
+        "codeSize": 40354
+      }
+    ]
+  },
+  "hostCandidate": {
+    "schema": "cf7-local-dev-runtime-status.v1",
+    "selectionState": "ready",
+    "pointerState": "ready",
+    "pointerReason": "",
+    "pointerPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-dev\\active.v1.json",
+    "currentBuildIdentityHash": "99C8D9910033A4FFC3D8803C48283782AEC3BC67AA6129A4F7BD4742DD370016",
+    "matchingCandidateCount": 1,
+    "matchingPayloadClosureCount": 1,
+    "matchingPayloadClosureHashes": [
+      "737DBC7B3F9448C6A3A9262859FA2601D326D94C8F211260D5BC31F5C9EF978C"
+    ],
+    "candidateRoot": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\u61-review",
+    "candidateCorePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\u61-review\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.dll",
+    "candidateCoreSha256": "5C5D5228CE856B1F9B521D4B38E2239E301BD3592D8330F3B941CC939FDC4523",
+    "payloadClosureHash": "737DBC7B3F9448C6A3A9262859FA2601D326D94C8F211260D5BC31F5C9EF978C",
+    "deploymentStatus": "NOT_DEPLOYED",
+    "reused": true,
+    "newHostSourceChanges": false,
+    "combinedNewContentRun": false
+  },
+  "sourceIdentities": [
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as",
+      "bytes": 213586,
+      "sha256": "94b4b48bde1d9bd95e9e55884987c2aee47979ddc7f7a4cb457e92f5034216c7"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/VerticalPierceCoverageTest.as",
+      "bytes": 23116,
+      "sha256": "c39e3b66b087b9caafc080e1061d4b696f2afaec6e78bf0ee0c2d973cc824c46"
+    },
+    {
+      "path": "scripts/test-runners/vertical-pierce-coverage/TestLoader.as.template",
+      "bytes": 763,
+      "sha256": "5d4b9149f569726a918c93ff9ae5cc58044abec3cd1d658d8ca7466aaa43cf16"
+    },
+    {
+      "path": "scripts/run-vertical-pierce-coverage-tests.ps1",
+      "bytes": 1368,
+      "sha256": "07ff28955fa51b2f048726cab30f29365fa63e4a5bc91dc950270ec8e30c00dc"
+    },
+    {
+      "path": "data/items/防具_40+级.xml",
+      "bytes": 221050,
+      "sha256": "f184cb68d8d3fceaabd95a85364f3816c389c2f38d7015f0739b8690d457862e"
+    },
+    {
+      "path": "tools/unified61-assets/prepare_data.py",
+      "bytes": 8221,
+      "sha256": "d99a7bd4ea4af37e5ad6327a6d2b5d897f542969115438cc3a3146b87b0ae0f3"
+    },
+    {
+      "path": "tools/unified61-assets/validate.py",
+      "bytes": 9540,
+      "sha256": "ca03e67a07b120cdb30212a0d3ddef288edbec24d500568d598a4189edebbae1"
+    },
+    {
+      "path": "tools/cf7-balance-tool/records/armor-balance-audit.xml",
+      "bytes": 855658,
+      "sha256": "8e7c5856e80ec7cf1698384ef529bf761b852fed7c950a92229415bf233ed2e2"
+    }
+  ],
+  "preservedProductionSourcesAndAssets": [
+    {
+      "path": "flashswf/arts/new/Codex专用素材.swf",
+      "sha256": "2b08170ad54e9486dea4cbb15ff7ac724cc33b2e5c691bd2709b19e0fb0e78b8"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹.swf",
+      "sha256": "d03534c889a743d1becf97f1b31db39ac6e97d9d86c513f17ac4c74ab9776f2e"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/UnifiedType61Runtime.as",
+      "sha256": "85f82abbab6c94616331d2a6ecafd1dac95fbb43770113ddea0e5a4787405b58"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Damage/MultiShotDamageHandle.as",
+      "sha256": "49d84f6bb4e74dc74f58e7c463971e481764cd11bdf79242f1c9db81a6b65051"
+    },
+    {
+      "path": "scripts/逻辑/战斗系统/战斗系统_fs_联弹管理.as",
+      "sha256": "878ae9dd086c698a64e09124de11f2de611e7282850ea86b3131441ce8c0ef7e"
+    },
+    {
+      "path": "data/items/bullets_cases.xml",
+      "sha256": "7dc8eac04ea30d1862acf8d6b32fb7ca011d9aab9c730974d3d9e8ea3aabcab3"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Collider/AABBCollider.as",
+      "bytes": 19047,
+      "sha256": "a7527d209b8169e2599425cd33a58a6f2efd28f6d62799c61db85825e98a2de6"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Collider/PolygonCollider.as",
+      "bytes": 40323,
+      "sha256": "cf13f8d04c264f8029ff1ce6a1927d60b3a0a7058f5c377db533bf9e843cd172"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Damage/DamageCalculator.as",
+      "bytes": 16871,
+      "sha256": "a6fb66e552aafa2425a238b4ea7143962279cc05cd19bab2a63fffd3f1557b45"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/Factory/BulletFactory.as",
+      "bytes": 21353,
+      "sha256": "d4a763ee6f13889c47eba17933806cb92bbbe5c2f788a0e7515b8a27e3a21ec2"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Utils/ShootingAngleCalculator.as",
+      "bytes": 3457,
+      "sha256": "b1b2fcd792905bd42a91b1730f51c412658f956b3e30254caf20f49d2929c837"
+    }
+  ],
+  "historicalInvestigation": "docs/reports/unified61-cannon-chain-investigation-2026-10-25.json",
+  "remainingAcceptance": [
+    "Actual chest spread and combat feel",
+    "Broad weapon balance across enemy collision-box sizes",
+    "Blocked existing Vepr12 shotgun calibration fixture drift"
+  ],
+  "deployment": "No commit, push, formal runtime promotion or real-player save write."
+}

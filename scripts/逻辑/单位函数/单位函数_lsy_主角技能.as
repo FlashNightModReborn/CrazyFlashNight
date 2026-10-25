@@ -1,6 +1,9 @@
 ﻿
 _root.技能函数 = new Object();
 
+// Resource timelines call this bridge; the implementation remains owned by asLoader.
+_root.技能函数.传递兵器战技属性 = SkillAttributeCore.transferWeaponAttributes;
+
 //释放条件函数
 _root.技能函数.释放条件 = new Object();
 
@@ -763,27 +766,29 @@ _root.技能函数.凶斩攻击 = function(不硬直)
 
 _root.技能函数.瞬步斩攻击 = function()
 {
+	// Bind to the executing action, not the installation timeline.
+	var unit:MovieClip = this._parent;
 	var 子弹参数 = new Object();
 	// 从XML配置读取技能乘数（使用工具函数）
-	var temp = SkillDamageCore.getSkillMultiplier(_parent, "瞬步斩");
+	var temp = SkillDamageCore.getSkillMultiplier(unit, "瞬步斩");
 
-	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + 0.5 * _parent.内力 * (5 + _parent.技能等级) + _parent.刀属性.power * temp * 0.1 * (10 + _parent.技能等级);
+	子弹参数.子弹威力 = unit.空手攻击力 * 0.1 + 0.5 * unit.内力 * (5 + unit.技能等级) + unit.刀属性.power * temp * 0.1 * (10 + unit.技能等级);
 	// 添加速度转伤害加成
-	if (_parent.行走X速度) {
-		子弹参数.子弹威力 += SkillDamageCore.speedToDamage(_parent.行走X速度);
+	if (unit.行走X速度) {
+		子弹参数.子弹威力 += SkillDamageCore.speedToDamage(unit.行走X速度);
 	}
-	if (_parent.mp攻击加成)
+	if (unit.mp攻击加成)
 	{
-		子弹参数.子弹威力 += _parent.mp攻击加成;
+		子弹参数.子弹威力 += unit.mp攻击加成;
 	}
 	子弹参数.Z轴攻击范围 = 30;
 	子弹参数.击倒率 = 10;
 	子弹参数.不硬直 = true;
 
 	// 传递兵器特殊属性到子弹
-	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹参数);
+	SkillAttributeCore.transferWeaponAttributes(unit, 子弹参数);
 
-	_parent.刀口位置生成子弹(_parent, 子弹参数);
+	unit.刀口位置生成子弹(unit, 子弹参数);
 }
 
 _root.技能函数.刀剑乱舞判定 = function()
@@ -831,6 +836,10 @@ _root.技能函数.刀剑乱舞判定 = function()
 	消弹属性.区域定位area = this.攻击点;
 	_root.消除子弹(消弹属性);
 }
+
+_root.技能函数.一文字落雷自由移动 = function(自机:MovieClip):Void {
+	org.flashNight.arki.unit.Action.Skill.IchimonjiMovement.moveFree(自机);
+};
 
 _root.技能函数.一文字落雷居合 = function()
 {

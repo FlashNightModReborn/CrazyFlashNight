@@ -1,0 +1,583 @@
+{
+  "schema": "cf7.vertical-chain-damage-investigation.v1",
+  "recordedAtUtc": "2026-10-25T12:05:58.002662+00:00",
+  "gitHead": "6ff73d63c89086824018a04f8e9e0ef9506a2272",
+  "status": "defect_reproduced_production_unchanged",
+  "userExpectation": {
+    "pellets": 12,
+    "expectedSegmentsPerPellet": 2,
+    "expectedTotalSegments": 24,
+    "meaning": "approximately; not a newly implemented hard cap"
+  },
+  "fieldEvidence": {
+    "image": {
+      "path": "tmp/unified61-cannon-investigation/evidence/reported-138621-84hit.png",
+      "bytes": 903551,
+      "sha256": "14625079abbec5b5b27f12f8de383de0d88adc19c7672e54ebc9bab6551cc5f4"
+    },
+    "visibleDamage": 138621,
+    "visibleHitCount": 84,
+    "exactFieldDamageReproduced": false,
+    "note": "The controlled fixture uses G=1200 and frozen external noise; it does not reconstruct the player save or exact screenshot firing phase."
+  },
+  "run": {
+    "id": "a278898f2ba447b58e183e9e8732dbaf",
+    "checksPassed": 49,
+    "checksFailed": 0,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32k": 0,
+    "compileSeconds": 147,
+    "rawTrace": {
+      "path": "tmp/unified61-cannon-investigation/evidence/probe-a278898f/flashlog-raw.txt",
+      "bytes": 13247,
+      "sha256": "859cabd3c56f5b4867f716e49ba82f7efbf0d398c50e917b9366ef8a2381b255"
+    },
+    "testSwf": {
+      "path": "tmp/unified61-cannon-investigation/evidence/probe-a278898f/TestLoader.swf",
+      "bytes": 1151409,
+      "sha256": "4abd2efb5af30cdb79be8f75b1ba6143232020acb983e9e989b671aacc66cc66"
+    },
+    "compiler": {
+      "path": "tmp/unified61-cannon-investigation/evidence/probe-a278898f/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    "outputPanelIsBehaviorTrace": false
+  },
+  "fixture": {
+    "realProductionStages": [
+      "five-item XML and set XML",
+      "equipment lifecycle and UnifiedType61Runtime",
+      "one WeaponSkill event",
+      "BulletFactory and published bullet library",
+      "ChainUnitManager",
+      "BulletQueueProcessor",
+      "DamageCalculator and real damage handlers"
+    ],
+    "externalDamageNoise": 1,
+    "actorDamageBonus": 1200,
+    "rawChestPower": 100,
+    "baselineDamagePerSegment": 1300,
+    "targetHp": 10000000,
+    "targetWidth": 55.93986512,
+    "targetHeight": 159.81407166,
+    "targetGeometryReference": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/ShotgunCalibrationTest.as",
+    "isolatedBoundaries": [
+      "target cache fixture",
+      "no-shield absorption shim",
+      "sound and damage-number presentation",
+      "common bullet-field initialization shim",
+      "actual body skin absent: runtime fallback muzzle (+14,-56)",
+      "diagnostic angle/fill/suffix overrides on explicitly labeled cases"
+    ],
+    "realPlayerSaveOpened": false,
+    "inventoryWrites": false,
+    "productionCodeChanged": false
+  },
+  "cases": [
+    {
+      "case": "chest-12-flat-far",
+      "emissions": 1,
+      "cannonCount": 1,
+      "settlements": 11,
+      "totalSegments": 77,
+      "totalDamage": 100100,
+      "hpLoss": 100100,
+      "maxUnits": 12,
+      "birth": {
+        "case": "chest-12-flat-far",
+        "flags": 134,
+        "rotation": 0,
+        "object": true,
+        "minScatter": 1,
+        "fill": "1/1"
+      },
+      "firstHit": {
+        "case": "chest-12-flat-far",
+        "frame": 18,
+        "segments": 7,
+        "ratio": 1,
+        "cumulative": 7,
+        "damage": 9100,
+        "chainCount": 12,
+        "width": 319,
+        "rotation": 0
+      },
+      "lastHit": {
+        "case": "chest-12-flat-far",
+        "frame": 28,
+        "segments": 7,
+        "ratio": 1,
+        "cumulative": 77,
+        "damage": 9100,
+        "chainCount": 12,
+        "width": 319,
+        "rotation": 0
+      },
+      "segmentsPerSettlement": [
+        7
+      ],
+      "overlapRatioMin": 1,
+      "overlapRatioMax": 1,
+      "maxUnitsMeasurement": "observed via bullet.chainGroup"
+    },
+    {
+      "case": "chest-12-tilt-far",
+      "emissions": 1,
+      "cannonCount": 1,
+      "settlements": 3,
+      "totalSegments": 13,
+      "totalDamage": 16900,
+      "hpLoss": 16900,
+      "maxUnits": 12,
+      "birth": {
+        "case": "chest-12-tilt-far",
+        "flags": 134,
+        "rotation": 1,
+        "object": true,
+        "minScatter": 1,
+        "fill": "1/1"
+      },
+      "firstHit": {
+        "case": "chest-12-tilt-far",
+        "frame": 22,
+        "segments": 3,
+        "ratio": 0.350682365225416,
+        "cumulative": 3,
+        "damage": 3900,
+        "chainCount": 12,
+        "width": 319.072335679573,
+        "rotation": 1
+      },
+      "lastHit": {
+        "case": "chest-12-tilt-far",
+        "frame": 24,
+        "segments": 3,
+        "ratio": 0.325658240280762,
+        "cumulative": 13,
+        "damage": 3900,
+        "chainCount": 12,
+        "width": 319.072335679573,
+        "rotation": 1
+      },
+      "segmentsPerSettlement": [
+        3,
+        7
+      ],
+      "overlapRatioMin": 0.325658240280762,
+      "overlapRatioMax": 1,
+      "maxUnitsMeasurement": "observed via bullet.chainGroup"
+    },
+    {
+      "case": "chest-12-flat-near",
+      "emissions": 1,
+      "cannonCount": 1,
+      "settlements": 11,
+      "totalSegments": 77,
+      "totalDamage": 100100,
+      "hpLoss": 100100,
+      "maxUnits": 12,
+      "birth": {
+        "case": "chest-12-flat-near",
+        "flags": 134,
+        "rotation": 0,
+        "object": true,
+        "minScatter": 1,
+        "fill": "1/1"
+      },
+      "firstHit": {
+        "case": "chest-12-flat-near",
+        "frame": 6,
+        "segments": 7,
+        "ratio": 1,
+        "cumulative": 7,
+        "damage": 9100,
+        "chainCount": 4,
+        "width": 49,
+        "rotation": 0
+      },
+      "lastHit": {
+        "case": "chest-12-flat-near",
+        "frame": 16,
+        "segments": 7,
+        "ratio": 1,
+        "cumulative": 77,
+        "damage": 9100,
+        "chainCount": 12,
+        "width": 298,
+        "rotation": 0
+      },
+      "segmentsPerSettlement": [
+        7
+      ],
+      "overlapRatioMin": 1,
+      "overlapRatioMax": 1,
+      "maxUnitsMeasurement": "observed via bullet.chainGroup"
+    },
+    {
+      "case": "chest-12-tilt-near",
+      "emissions": 1,
+      "cannonCount": 1,
+      "settlements": 6,
+      "totalSegments": 27,
+      "totalDamage": 35100,
+      "hpLoss": 35100,
+      "maxUnits": 12,
+      "birth": {
+        "case": "chest-12-tilt-near",
+        "flags": 134,
+        "rotation": 1,
+        "object": true,
+        "minScatter": 1,
+        "fill": "1/1"
+      },
+      "firstHit": {
+        "case": "chest-12-tilt-near",
+        "frame": 7,
+        "segments": 3,
+        "ratio": 0.273558214757051,
+        "cumulative": 3,
+        "damage": 3900,
+        "chainCount": 5,
+        "width": 83.1423907115574,
+        "rotation": 1
+      },
+      "lastHit": {
+        "case": "chest-12-tilt-near",
+        "frame": 12,
+        "segments": 2,
+        "ratio": 0.123269766248677,
+        "cumulative": 27,
+        "damage": 2600,
+        "chainCount": 10,
+        "width": 261.0909153859,
+        "rotation": 1
+      },
+      "segmentsPerSettlement": [
+        2,
+        3,
+        4,
+        7
+      ],
+      "overlapRatioMin": 0.123269766248677,
+      "overlapRatioMax": 1,
+      "maxUnitsMeasurement": "observed via bullet.chainGroup"
+    },
+    {
+      "case": "chest-12-flat-fastfill",
+      "emissions": 1,
+      "cannonCount": 1,
+      "settlements": 3,
+      "totalSegments": 21,
+      "totalDamage": 27300,
+      "hpLoss": 27300,
+      "maxUnits": 12,
+      "birth": {
+        "case": "chest-12-flat-fastfill",
+        "flags": 134,
+        "rotation": 0,
+        "object": true,
+        "minScatter": 1,
+        "fill": "45056/4096"
+      },
+      "firstHit": {
+        "case": "chest-12-flat-fastfill",
+        "frame": 18,
+        "segments": 7,
+        "ratio": 1,
+        "cumulative": 7,
+        "damage": 9100,
+        "chainCount": 12,
+        "width": 49,
+        "rotation": 0
+      },
+      "lastHit": {
+        "case": "chest-12-flat-fastfill",
+        "frame": 20,
+        "segments": 7,
+        "ratio": 1,
+        "cumulative": 21,
+        "damage": 9100,
+        "chainCount": 12,
+        "width": 49,
+        "rotation": 0
+      },
+      "segmentsPerSettlement": [
+        7
+      ],
+      "overlapRatioMin": 1,
+      "overlapRatioMax": 1,
+      "maxUnitsMeasurement": "observed via bullet.chainGroup"
+    },
+    {
+      "case": "chest-12-flat-mc",
+      "emissions": 1,
+      "cannonCount": 1,
+      "settlements": 11,
+      "totalSegments": 77,
+      "totalDamage": 100100,
+      "hpLoss": 100100,
+      "maxUnits": 0,
+      "birth": {
+        "case": "chest-12-flat-mc",
+        "flags": 134,
+        "rotation": 0,
+        "object": false,
+        "minScatter": 1,
+        "fill": "undefined/undefined"
+      },
+      "firstHit": {
+        "case": "chest-12-flat-mc",
+        "frame": 18,
+        "segments": 7,
+        "ratio": 1,
+        "cumulative": 7,
+        "damage": 9100,
+        "chainCount": "undefined",
+        "width": 319,
+        "rotation": 0
+      },
+      "lastHit": {
+        "case": "chest-12-flat-mc",
+        "frame": 28,
+        "segments": 7,
+        "ratio": 1,
+        "cumulative": 77,
+        "damage": 9100,
+        "chainCount": "undefined",
+        "width": 319,
+        "rotation": 0
+      },
+      "segmentsPerSettlement": [
+        7
+      ],
+      "overlapRatioMin": 1,
+      "overlapRatioMax": 1,
+      "maxUnitsMeasurement": "unavailable via bullet.chainGroup; zero is not an observed unit count"
+    },
+    {
+      "case": "chest-12-flat-level1",
+      "emissions": 1,
+      "cannonCount": 1,
+      "settlements": 11,
+      "totalSegments": 77,
+      "totalDamage": 100100,
+      "hpLoss": 100100,
+      "maxUnits": 12,
+      "birth": {
+        "case": "chest-12-flat-level1",
+        "flags": 134,
+        "rotation": 0,
+        "object": true,
+        "minScatter": 1,
+        "fill": "1/1"
+      },
+      "firstHit": {
+        "case": "chest-12-flat-level1",
+        "frame": 18,
+        "segments": 7,
+        "ratio": 1,
+        "cumulative": 7,
+        "damage": 9100,
+        "chainCount": 12,
+        "width": 319,
+        "rotation": 0
+      },
+      "lastHit": {
+        "case": "chest-12-flat-level1",
+        "frame": 28,
+        "segments": 7,
+        "ratio": 1,
+        "cumulative": 77,
+        "damage": 9100,
+        "chainCount": 12,
+        "width": 319,
+        "rotation": 0
+      },
+      "segmentsPerSettlement": [
+        7
+      ],
+      "overlapRatioMin": 1,
+      "overlapRatioMax": 1,
+      "maxUnitsMeasurement": "observed via bullet.chainGroup"
+    },
+    {
+      "case": "single-pierce-control",
+      "emissions": 1,
+      "cannonCount": 1,
+      "settlements": 3,
+      "totalSegments": 3,
+      "totalDamage": 3900,
+      "hpLoss": 3900,
+      "maxUnits": 0,
+      "birth": {
+        "case": "single-pierce-control",
+        "flags": 4,
+        "rotation": 0,
+        "object": false,
+        "minScatter": 1,
+        "fill": "undefined/undefined"
+      },
+      "firstHit": {
+        "case": "single-pierce-control",
+        "frame": 18,
+        "segments": 1,
+        "ratio": 1,
+        "cumulative": 1,
+        "damage": 1300,
+        "chainCount": "undefined",
+        "width": 30,
+        "rotation": 0
+      },
+      "lastHit": {
+        "case": "single-pierce-control",
+        "frame": 20,
+        "segments": 1,
+        "ratio": 1,
+        "cumulative": 3,
+        "damage": 1300,
+        "chainCount": "undefined",
+        "width": 30,
+        "rotation": 0
+      },
+      "segmentsPerSettlement": [
+        1
+      ],
+      "overlapRatioMin": 1,
+      "overlapRatioMax": 1,
+      "maxUnitsMeasurement": "unavailable via bullet.chainGroup; zero is not an observed unit count"
+    }
+  ],
+  "findings": {
+    "emission": "All eight cases emitted exactly one group and reported cannonCount=1.",
+    "flatPath": "The 0/180-degree path uses the long AABB but provides overlapRatio=1. With split=12, minScatter=1 and the existing 7/18 penalty, ceil(1+(7/18)*12*1.2)=7 segments per settlement.",
+    "repeatContact": "Piercing chains retain their scatter budget; 11 consecutive contacts produce 77 segments in the controlled horizontal cases.",
+    "rotatedGeometry": "The polygon path uses a fixed 25x25 intrinsic rectangle around the moving group center instead of the actual long/scaled group extent. At 1 degree it produced 13 far and 27 near segments; it is not a validated repair reference.",
+    "fillRate": "No fire-interval stamp selects one new pellet per frame. Filling all remaining pellets in one frame shortened this sample to 21 segments, but does not establish a general budget fix.",
+    "legacyParity": "The forced MovieClip path also produced 77 segments; the observed issue is not exclusive to object simulation. This is not native visual-host acceptance.",
+    "strength": "At the same fixed G, item level 1 and 13 produced identical split, single emission and 77 segments; this does not compare real character stats between reinforcement levels.",
+    "damageBudget": "The chest supplies G/12 and the generic calculator adds G. At 24 effective segments, the baseline is about 26G before variance, not the historical 13G estimate based on twelve effective segments."
+  },
+  "history": [
+    {
+      "commit": "c6b6fe15f4",
+      "date": "2025-08-05",
+      "fact": "The existing vertical-piercing coefficient changed from 5/9 to 7/18."
+    },
+    {
+      "commit": "d674253b25",
+      "date": "2025-09-11",
+      "fact": "The 0/180-degree polygon bypass is already present in this revision; this is not claimed to be its first introduction."
+    },
+    {
+      "commit": "4bad7d6c7d7",
+      "date": "2026-02-11",
+      "fact": "The AABB check was inlined; the previous AABBCollider already returned ratio=1."
+    }
+  ],
+  "historicalAttributionBoundary": "Current inconsistency is reproduced; the precise first introducing change has not been established. An early conversational inference that the bypass predated 7/18 was corrected after inspecting earlier source.",
+  "suggestedRepairBoundary": [
+    "Use the same transformed effective chain geometry for horizontal and rotated paths, including both MovieClip and object paths.",
+    "Preserve the 7/18 policy while separating coverage from the total scatter budget; calibrate cumulative single-target segments for distance, target width, speed, fill rate and direction.",
+    "Do not treat increasing fill rate or reducing chest power as proof that the underlying shared collision budget is repaired.",
+    "Recheck the chest damage coefficient against the confirmed approximately 24-segment expectation after segment semantics are corrected."
+  ],
+  "earlierAttempt": {
+    "directory": "tmp/unified61-cannon-investigation/evidence/probe-c7697472",
+    "checksPassed": 41,
+    "limitation": "0.001-degree offsets were integer-truncated to zero by the real angle calculator, so those two cases did not test the polygon path. The final run asserts actual angles."
+  },
+  "unchangedProductionInputs": [
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "a4d735641c6e607b2bd7c667aabef068981acfd8d68d8a99a08bb93016f69df2"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材.swf",
+      "sha256": "2b08170ad54e9486dea4cbb15ff7ac724cc33b2e5c691bd2709b19e0fb0e78b8"
+    },
+    {
+      "path": "flashswf/arts/原版素材库-子弹.swf",
+      "sha256": "d03534c889a743d1becf97f1b31db39ac6e97d9d86c513f17ac4c74ab9776f2e"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/UnifiedType61Runtime.as",
+      "sha256": "85f82abbab6c94616331d2a6ecafd1dac95fbb43770113ddea0e5a4787405b58"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as",
+      "sha256": "785723ae801e4cc67dfa72476460934a32aceb47caedf85b8d7ea2fa6e281e50"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Damage/MultiShotDamageHandle.as",
+      "sha256": "49d84f6bb4e74dc74f58e7c463971e481764cd11bdf79242f1c9db81a6b65051"
+    },
+    {
+      "path": "scripts/逻辑/战斗系统/战斗系统_fs_联弹管理.as",
+      "sha256": "878ae9dd086c698a64e09124de11f2de611e7282850ea86b3131441ce8c0ef7e"
+    },
+    {
+      "path": "data/items/防具_40+级.xml",
+      "sha256": "4d82bae8bbf77c29da4c5b3091000079640a76387a583fa59d9aa81b407b5007"
+    },
+    {
+      "path": "data/items/bullets_cases.xml",
+      "sha256": "7dc8eac04ea30d1862acf8d6b32fb7ca011d9aab9c730974d3d9e8ea3aabcab3"
+    }
+  ],
+  "additionalSourceIdentities": [
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Collider/AABBCollider.as",
+      "bytes": 19047,
+      "sha256": "a7527d209b8169e2599425cd33a58a6f2efd28f6d62799c61db85825e98a2de6"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Collider/PolygonCollider.as",
+      "bytes": 40323,
+      "sha256": "cf13f8d04c264f8029ff1ce6a1927d60b3a0a7058f5c377db533bf9e843cd172"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Damage/DamageCalculator.as",
+      "bytes": 16871,
+      "sha256": "a6fb66e552aafa2425a238b4ea7143962279cc05cd19bab2a63fffd3f1557b45"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/Factory/BulletFactory.as",
+      "bytes": 21353,
+      "sha256": "d4a763ee6f13889c47eba17933806cb92bbbe5c2f788a0e7515b8a27e3a21ec2"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Utils/ShootingAngleCalculator.as",
+      "bytes": 3457,
+      "sha256": "b1b2fcd792905bd42a91b1730f51c412658f956b3e30254caf20f49d2929c837"
+    }
+  ],
+  "probeSources": [
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/VerticalChainDamageProbe.as",
+      "bytes": 19805,
+      "sha256": "9416c1e30e364a4b385badb8a9b016b5ad4efeda8871fa01495e1e34b6afd281"
+    },
+    {
+      "path": "scripts/test-runners/vertical-chain-damage-probe/TestLoader.as.template",
+      "bytes": 769,
+      "sha256": "b81a3ab396ba88b451449576626404a575736f56677edbe20b7192fe3fcd3025"
+    },
+    {
+      "path": "scripts/run-vertical-chain-damage-probe.ps1",
+      "bytes": 1365,
+      "sha256": "eb4a0b40429fbc3a1ebe5d49d1445c1ce147df703fbd04fa887922666993b06e"
+    }
+  ],
+  "closure": {
+    "scratchSha256": "e38e2151bf619814a0ea65bf2b19d11d8f78a7704787c47c046666acee2f090b",
+    "flashProcessExited": true,
+    "compileTasks": "Ready",
+    "productionAsLoaderUnchanged": true,
+    "productionFixImplemented": false,
+    "commit": false,
+    "push": false,
+    "deployment": false
+  }
+}

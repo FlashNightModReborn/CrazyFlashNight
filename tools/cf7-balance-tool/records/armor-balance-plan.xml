@@ -727,5 +727,45 @@
     <record itemName="余烬-“廉价筹码”" sourceFile="data/items/防具_颈部装备.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="余烬队徽" sourceFile="data/items/防具_颈部装备.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="九命猫妖项链" sourceFile="data/items/防具_颈部装备.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
-  </records>
+  <record itemName="统合61式头部装甲" sourceFile="data/items/防具_40+级.xml" weightLayers="3" priceLayers="1" category="1" damageTypeFactor="1" adoptedGoldPrice="170000" expectedKPointPrice="5400" kpointEvidenceRef="data/crafting/进阶防具.json#craft.unified61.helmet" status="confirmed" note="40级三加权候选：合成1+配方K点成本1+高价1；90kg整套，限制插件，不额外计40级浮动或减益层。公式通过不代表实战定档。">
+    <budgetBreakdown>
+      <entry code="acquisition.crafting" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.helmet"/>
+      <entry code="acquisition.kpoint-cost" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.helmet"/>
+      <entry code="acquisition.high-price" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.helmet"/>
+    </budgetBreakdown>
+  </record>
+
+<record itemName="统合61式胸甲" sourceFile="data/items/防具_40+级.xml" weightLayers="3" priceLayers="1" category="1" damageTypeFactor="1" adoptedGoldPrice="170000" expectedKPointPrice="5400" kpointEvidenceRef="data/crafting/进阶防具.json#craft.unified61.chest" status="confirmed" note="40级三加权候选：合成1+配方K点成本1+高价1；90kg整套，限制插件，不额外计40级浮动或减益层。公式通过不代表实战定档。">
+    <budgetBreakdown>
+      <entry code="acquisition.crafting" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.chest"/>
+      <entry code="acquisition.kpoint-cost" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.chest"/>
+      <entry code="acquisition.high-price" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.chest"/>
+    </budgetBreakdown>
+  </record>
+
+<record itemName="统合61式腿甲" sourceFile="data/items/防具_40+级.xml" weightLayers="3" priceLayers="1" category="1" damageTypeFactor="1" adoptedGoldPrice="170000" expectedKPointPrice="5400" kpointEvidenceRef="data/crafting/进阶防具.json#craft.unified61.leg" status="confirmed" note="40级三加权候选：合成1+配方K点成本1+高价1；90kg整套，限制插件，不额外计40级浮动或减益层。公式通过不代表实战定档。">
+    <budgetBreakdown>
+      <entry code="acquisition.crafting" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.leg"/>
+      <entry code="acquisition.kpoint-cost" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.leg"/>
+      <entry code="acquisition.high-price" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.leg"/>
+    </budgetBreakdown>
+  </record>
+
+<record itemName="统合61式装甲鞋" sourceFile="data/items/防具_40+级.xml" weightLayers="3" priceLayers="1" category="1" damageTypeFactor="1" adoptedGoldPrice="170000" expectedKPointPrice="5400" kpointEvidenceRef="data/crafting/进阶防具.json#craft.unified61.boot" status="confirmed" note="40级三加权候选：合成1+配方K点成本1+高价1；90kg整套，限制插件，不额外计40级浮动或减益层。公式通过不代表实战定档。">
+    <budgetBreakdown>
+      <entry code="acquisition.crafting" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.boot"/>
+      <entry code="acquisition.kpoint-cost" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.boot"/>
+      <entry code="acquisition.high-price" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.boot"/>
+    </budgetBreakdown>
+  </record>
+
+<record itemName="统合61式手甲" sourceFile="data/items/防具_40+级.xml" weightLayers="3" priceLayers="1" category="1" damageTypeFactor="1" adoptedGoldPrice="170000" expectedKPointPrice="5400" kpointEvidenceRef="data/crafting/进阶防具.json#craft.unified61.glove" status="confirmed" note="40级三加权候选：合成1+配方K点成本1+高价1；90kg整套，限制插件，不额外计40级浮动或减益层。公式通过不代表实战定档。">
+    <budgetBreakdown>
+      <entry code="acquisition.crafting" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.glove"/>
+      <entry code="acquisition.kpoint-cost" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.glove"/>
+      <entry code="acquisition.high-price" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.glove"/>
+    </budgetBreakdown>
+  </record>
+
+</records>
 </armorBalancePlan>
