@@ -1,6 +1,6 @@
 # 技能子能力合同
 
-代码基线：`4d7034f106dda10f336f6fe21d90280307f98e62` 加 2026-10-25 未提交施工差异。父技能继续拥有学习、等级、SP、旧技能行和总开关；子能力不占新增技能槽，不独立收费或升级。目录的唯一真源是 [SkillFeatureRegistry.as](../scripts/类定义/org/flashNight/arki/skill/SkillFeatureRegistry.as)。本轮接入冲击连携和剑气释放，目录声明各自沿用的父技能等级前置。
+代码基线：commit `1db99aa48853c95f3151ef9f41061f7ff3842ec1`。父技能继续拥有学习、等级、SP、旧技能行和总开关；子能力不占新增技能槽，不独立收费或升级。目录的唯一真源是 [SkillFeatureRegistry.as](../scripts/类定义/org/flashNight/arki/skill/SkillFeatureRegistry.as)。本轮接入冲击连携和剑气释放，目录声明各自沿用的父技能等级前置。
 
 ## 默认与存档
 

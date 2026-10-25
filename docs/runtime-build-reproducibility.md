@@ -1309,3 +1309,12 @@ Issue #152 已完成两轮正式推广。第二轮冻结源 `c1d9ab2576937aa2fa4
 | production receipt SHA-256 | `4A05A59B31B1D789A2526099ECB2520756B1E54AD891A519A825B22BD3F226E6` |
 | manifest SHA-256 | `450F9ED1186538D248D66C035D074372E2C34683CA56042370B936261DD084B2` |
 
+<a id="dual-reload-subskills-release-20261025"></a>
+## 2026-10-25 双枪副手装填与子能力设置正式推广
+
+用户授权合并上游、提交推送并完成正式发布列车。冻结源 `1db99aa48853c95f3151ef9f41061f7ff3842ec1`、受控标签 `runtime-build-v2/20261025-dual-reload-subskills-v1` 修复持续同按双枪开火键时副手无法装填，接入冲击连携八项和剑气释放四项独立开关，并包含同期上游任务发布接取衔接。真实 CS6 合并后回归、逻辑 SWF 及父级成长/存档边界见[本次正式发布记录](reports/Issue165与子能力-正式发布-2026-10-25.md)。
+
+注册本机 X509 与 [GitHub 独立构建 40146111266](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40146111266) 达成同一 43 文件闭包的双 signer / 双 faultDomain 共识，完整 production policy **47/47**；唯一 writer 于 `2026-10-25T00:29:12.7357009Z` 原子推广，最终 bundle、strict consensus 与安装入口 `--verify-only` 均通过。精确 request、identity、closure、回执和部署审计归本次记录，现役身份继续读取 manifest/consensus。
+
+正式 SDK 无候选参数的隔离槽入口、帮助面板和受控退出 **5/5**，三个真实玩家槽的六份 JSON/SOL 摘要不变；原始脚本导出失败与精确恢复记录保留。`businessJourneyExecuted=false / physicalInputAttestation=false`，测试员原枪械、完整战斗和上游可选终端的真人四轮仍各自验收。本批为 2.718 DEV / UNSTABLE 开发增量，不新增稳定整包。
+
