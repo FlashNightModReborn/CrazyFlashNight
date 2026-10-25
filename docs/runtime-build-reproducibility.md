@@ -1320,3 +1320,12 @@ Issue #152 已完成两轮正式推广。第二轮冻结源 `c1d9ab2576937aa2fa4
 
 部署提交 [`d9697f5a4575b60e542c51595da676ccd1e21be6`](https://github.com/FlashNightModReborn/CrazyFlashNight/commit/d9697f5a4575b60e542c51595da676ccd1e21be6) 已普通快进推送；[Runtime native audit 40147646698](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40147646698) **success**，远端独立重放 `state=promoted / deploymentChanged=true`、双 signer / 双 faultDomain 和同一 43 文件闭包。生成路径与发布状态回归、[Path budget 40147646739](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40147646739) 均通过。
 
+
+<a id="unified61-fieldfix-release-20261026"></a>
+## 2026-10-26 统合61与现场修复正式推广
+
+2026-10-25 获授权的统合61五件套、文案与插件限制、Buff 布局、胸炮水平判定及 Issue 166–171 两轮修复，已由冻结源码 `51bac507e1c5395e16660f6697e3b168e5975b72`、受控标签 `runtime-build-v2/20261025-unified61-fieldfix-v3` 完成正式推广。发布前另修正成员对话重复闭合标签，真实 Core 加载器成功读入 91 个 NPC、371 组、700 条台词；没有改写真实玩家槽位。
+
+完整 production policy **47/47**，注册本地 X509 与 [GitHub 独立构建 40208914744](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40208914744) 达成同一 43 文件闭包的双 signer、双 faultDomain 共识；唯一 writer 原子推广，部署提交 `6f412c008b9d76a255a39fedea935b7238d8e14c` 已快进推送并同步主目录。主目录 bundle、strict consensus 与 bootstrap `--verify-only` 通过，正式 SDK 入口／帮助面板／受控退出及修复 XML 绑定共 **6/6**，三个真实玩家槽的六份 JSON/SOL 摘要不变。
+
+远端 [部署 Audit 40209956441](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40209956441) **success**，独立重放 `state=promoted / deploymentChanged=true`、双 signer／双 faultDomain 和同一 payload closure。精确 request、identity、closure、回滚包、负向历史与最终审计归[本批正式发布记录](reports/统合61与现场修复-正式发布-2026-10-25.md)。`businessJourneyExecuted=false / physicalInputAttestation=false`；完整战斗、玩家原现场路径、强化转换组合和物理操作手感继续按各自证据验收。本批仍为 2.718 DEV / UNSTABLE 开发增量，不新增稳定整包。
