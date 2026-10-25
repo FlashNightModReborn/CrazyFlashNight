@@ -54,7 +54,7 @@ def main():
     source_manifest = json.loads((HERE / 'source/source-manifest.json').read_text('utf-8'))
     for entry in source_manifest['files']:
         raw = (HERE / 'source' / entry['path']).read_bytes()
-        assert len(raw) == entry['bytes']
+        assert len(raw) == entry['bytes'], entry['path']
         assert hashlib.sha256(raw).hexdigest() == entry['sha256'], entry['path']
     item_names = set()
     mod_tags = set()
@@ -106,6 +106,8 @@ def main():
     catalog = E.parse(str(ROOT / 'data/items/item_sets.xml')).getroot()
     sets = [s for s in catalog.findall('set') if s.findtext('id') == design['setId']]
     assert len(sets) == 1
+    assert sets[0].findtext('name') == design['setName']
+    assert design['setName'].endswith('套装')
     names = sets[0].findall('effects/effect_0/authorizedWeapons/weapon')
     assert [n.text for n in names] == design['authorizedWeapons']
     assert '血色光剑天秤' not in [n.text for n in names]

@@ -6,6 +6,8 @@
 
 `source/` 是交接稿归档，包含20个闭合分件、男女躯干的开门/开火稿、作者姿态矩阵与输入哈希。`design.json` 保留本轮初值。首次导入之后直接维护现役XFL、物品XML和plan；不要用导入器覆盖后续原生编辑。
 
+归档路径由 `.gitattributes` 禁用文本换行转换，跨 checkout 仍须逐字匹配 `source-manifest.json`；不得重算清单来接受 Git 改写的原稿。套装显示名遵循公共元数据合同，以“套装”结尾，`validate.py` 同时核对 design 与现役套装表。
+
 唯一素材编辑源为 `flashswf/arts/new/Codex专用素材/LIBRARY/Codex/统合61式/`。新增资源使用独立 `Codex-统合61式` 链接，沿已有 Codex 素材库锚点加载，不改普通61或钛合金61原件。
 
 `build.py` 保留SVG局部注册点，把弧线转为原生曲线，把对象包围盒渐变归一到用户坐标，并为孔口裁切创建原生mask层。5个图标均有物品栏与地面掉落两帧。胸炮模型三态由共享运行态按身体就位事件驱动，炮口位于作者舱门局部坐标。已有原生源时 `--install` 会拒绝覆盖。`native-manifest.json` 是首次66符号导入的历史记录，其 `compiled:false` 只描述导入器未调用编译器；当前符号数与编译身份由 `validate.py` 及本轮证据报告读取。
