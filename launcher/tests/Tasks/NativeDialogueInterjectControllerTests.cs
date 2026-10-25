@@ -472,12 +472,14 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         private static string AddLine(string text, int seq, string kind = "add",
-            string emotion = "普通")
+            string emotion = "普通", bool interim = false)
         {
             string emotionField = string.IsNullOrEmpty(emotion)
                 ? "" : ",\"emotion\":\"" + emotion + "\"";
+            string interimField = interim ? ",\"interim\":true" : "";
             return "event: line\ndata: {\"kind\":\"" + kind + "\",\"text\":\"" + text
-                + "\"" + emotionField + ",\"speaker\":\"Andy Law\",\"seq\":" + seq + "}\n\n";
+                + "\"" + emotionField + ",\"speaker\":\"Andy Law\",\"seq\":" + seq
+                + interimField + "}\n\n";
         }
 
         private static string Done()
@@ -981,11 +983,13 @@ namespace CF7Launcher.Tests.Tasks
             // 过渡话先到：原位替换等待占位。
             h.Controller.OnEvent(LineEvent("我这儿正盘算着件事。", 0, interim: true));
             Assert.Equal("我这儿正盘算着件事。", h.Widget.CurrentFrame.Text);
-            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
+            Assert.False(h.Controller.Submit("草案没好，不能插话"));
 
             // 玩家越过过渡话、最终确认对话还没到：继续显示 ui_hint 占位。
             h.Advance();
             Assert.Equal("拟定委托中", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Preparing, h.Controller.InputState);
             Assert.False(h.Controller.ClosingForTest);
 
             // 最终确认对话到达：原位替换占位，不追加到占位之后。
@@ -2312,6 +2316,22 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(1, CountPcLines(h, "我接了"));
             // 自动接取轮没有收尾台词；交接期间也不能凭空补一条
             Assert.Equal(0, CountTextLines(h, "委托登记好了，你过来找我接一下。"));
+        }
+
+        [Fact]
+        public void TaskAcceptRetryTransitionDoesNotReopenOptionsOrBlockHandoff()
+        {
+            using var h = AcceptableTaskDialogue();
+            h.Transport.Script(
+                AddLine("……稍等，我再核对一下。", 0, interim: true)
+                + DoneWithPublish(200345, "Andy Law"));
+
+            h.Controller.SubmitChoice(true);
+
+            Assert.True(h.Controller.HandoffForTest);
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
+            Assert.False(h.Controller.AskAccept);
+            Assert.Single(h.Pushed);
         }
 
         [Fact]

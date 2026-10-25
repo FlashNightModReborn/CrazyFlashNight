@@ -16,7 +16,7 @@ namespace CF7Launcher.Tasks
     {
         /// <summary>没有可输入的时点：$PC 播放中 / 无对话会话 / 本组未开始 / closing。</summary>
         Hidden = 0,
-        /// <summary>输入显示但禁用：等待首句“……”、拆分前置段“（暂时不适合插话）”。</summary>
+        /// <summary>输入显示但禁用：等待首句、拆分前置段与过渡行“（当前似乎不适合插话）”。</summary>
         Locked = 1,
         /// <summary>可输入（每句开始显示即可用，D-10）。</summary>
         Ready = 2,
@@ -620,7 +620,7 @@ namespace CF7Launcher.Tasks
             }
             if (isGenerated)
             {
-                // 拆分前置段：输入暂锁；末段/自然单条：开始显示即可输入（§3.3）。
+                // 拆分前置段/过渡行：输入暂锁；末段/自然单条：开始显示即可输入（§3.3）。
                 SetInputState(line.SplitIntermediate
                     ? DialogueInterjectInputState.Locked
                     : ReadyOrMuted());
@@ -1715,7 +1715,7 @@ namespace CF7Launcher.Tasks
                 ImageAction = origin.ImageAction,
                 ImagePath = origin.ImagePath,
                 WireIndex = wire,
-                SplitIntermediate = source.IsSplitHead,
+                SplitIntermediate = source.IsSplitHead || source.Interim,
                 IsPlayer = origin.IsPlayer
             };
         }
@@ -1723,7 +1723,7 @@ namespace CF7Launcher.Tasks
         private void AcceptLine(DialogueInterjectLine line)
         {
             if (!_turnActive || _closing || line == null || string.IsNullOrEmpty(line.Text)) return;
-            _preparing = false;             // 已经出词：草案/检索阶段结束
+            if (!line.Interim) _preparing = false;  // 最终台词出词才结束草案/检索准备态
             if (_planApplied)
             {
                 // plan 是任务模式的最后一块；之后还来 line 属协议违例，忽略不排队。
@@ -1790,7 +1790,7 @@ namespace CF7Launcher.Tasks
                 _pcRevision = -1;
                 // closing 迟到但玩家正停在最后一条 add：补判选项态。
                 RefreshAskAcceptCurrent();
-                SetInputState(line.IsSplitHead
+                SetInputState(line.IsSplitHead || line.Interim
                     ? DialogueInterjectInputState.Locked
                     : ReadyOrMuted());
                 return true;
@@ -1813,7 +1813,7 @@ namespace CF7Launcher.Tasks
             if (advance) _pcRevision = -1;  // 后续打字完成不再当 $PC
             // closing 迟到但玩家正停在最后一条 add：补判选项态。
             RefreshAskAcceptCurrent();
-            SetInputState(line.IsSplitHead
+            SetInputState(line.IsSplitHead || line.Interim
                 ? DialogueInterjectInputState.Locked
                 : ReadyOrMuted());
             return true;
@@ -1848,7 +1848,7 @@ namespace CF7Launcher.Tasks
                 AppearanceIdentity = useTemplate ? template.AppearanceIdentity : null,
                 ImageAction = "keep",
                 ImagePath = "",
-                SplitIntermediate = line.IsSplitHead
+                SplitIntermediate = line.IsSplitHead || line.Interim
             };
         }
 

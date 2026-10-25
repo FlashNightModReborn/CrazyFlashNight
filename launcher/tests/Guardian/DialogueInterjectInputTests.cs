@@ -181,6 +181,20 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void LockedInputUsesSplitAndTransitionPlaceholder()
+        {
+            using var owner = new Form();
+            using var widget = new NativeDialogueWidget(owner);
+            using var overlay = new DialogueInterjectInputOverlay();
+            using var binder = new DialogueInterjectInputBinder(owner, widget, overlay);
+
+            binder.Apply(DialogueInterjectInputState.Locked);
+
+            Assert.Equal("（当前似乎不适合插话）", overlay.PlaceholderForTest);
+            Assert.False(overlay.IsInputEnabled);
+        }
+
+        [Fact]
         public void ExpandedChoiceSurvivesDisableHideAndDismiss()
         {
             using var overlay = new DialogueInterjectInputOverlay();

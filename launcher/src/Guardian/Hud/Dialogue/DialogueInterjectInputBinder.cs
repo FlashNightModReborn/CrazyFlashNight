@@ -73,7 +73,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                     _overlay.SetStartRequired(false);
                     _overlay.SetConfigRequired(false);
                     _overlay.SetInputEnabled(false);
-                    _overlay.SetPlaceholder("……");
+                    _overlay.SetPlaceholder("（当前似乎不适合插话）");
                     ShowPassive();
                     break;
                 case DialogueInterjectInputState.Preparing:
