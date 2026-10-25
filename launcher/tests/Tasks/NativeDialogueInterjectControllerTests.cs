@@ -740,6 +740,8 @@ namespace CF7Launcher.Tests.Tasks
             h.Advance();                                               // 推进到等待占位（非玩家行）
             Assert.Equal("思索中……", h.Widget.CurrentFrame.Text);
             Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
+            // 等待首句/hint 期间不给文案 → binder 回落到原来的省略号禁言提示。
+            Assert.Null(h.Controller.PlaceholderFor(h.Controller.InputState));
         }
 
         [Fact]
@@ -984,6 +986,9 @@ namespace CF7Launcher.Tests.Tasks
             h.Controller.OnEvent(LineEvent("我这儿正盘算着件事。", 0, interim: true));
             Assert.Equal("我这儿正盘算着件事。", h.Widget.CurrentFrame.Text);
             Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
+            // NPC 正说到过渡语：禁言提示换成「不适合插话」，不再是省略号。
+            Assert.Equal("（当前似乎不适合插话）",
+                h.Controller.PlaceholderFor(h.Controller.InputState));
             Assert.False(h.Controller.Submit("草案没好，不能插话"));
 
             // 玩家越过过渡话、最终确认对话还没到：继续显示 ui_hint 占位。
@@ -1000,6 +1005,31 @@ namespace CF7Launcher.Tests.Tasks
             h.Controller.OnEvent(DoneEvent());
             h.Advance();
             Assert.True(h.Controller.ClosingForTest);
+        }
+
+        [Fact]
+        public void LockReasonChangeRefiresInputStateEventForNewPlaceholder()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("帮我找个活。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("思索中……", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
+            Assert.Null(h.Controller.PlaceholderFor(h.Controller.InputState));
+            int before = h.States.Count;
+
+            // 状态仍是 Locked，但锁因从「等待首句」换成「NPC 正说到过渡语」：
+            // 必须重发事件，宿主才会把省略号换成「不适合插话」。
+            h.Controller.OnEvent(LineEvent("我这儿正盘算着件事。", 0, interim: true));
+            Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
+            Assert.Equal("（当前似乎不适合插话）",
+                h.Controller.PlaceholderFor(h.Controller.InputState));
+            Assert.Equal(before + 1, h.States.Count);
         }
 
         [Fact]
@@ -1898,10 +1928,14 @@ namespace CF7Launcher.Tests.Tasks
             h.Advance();
             Assert.Equal("段0", h.Widget.CurrentFrame.Text);
             Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
+            // 拆句前置段上屏＝NPC 正在说话，禁言提示换成「不适合插话」。
+            Assert.Equal("（当前似乎不适合插话）",
+                h.Controller.PlaceholderFor(h.Controller.InputState));
             Assert.False(h.Controller.Submit("插不了"));
             h.Advance();
             Assert.Equal("段1", h.Widget.CurrentFrame.Text);
             Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Null(h.Controller.PlaceholderFor(h.Controller.InputState));
         }
 
         [Fact]

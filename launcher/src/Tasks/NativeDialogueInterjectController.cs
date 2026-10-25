@@ -16,7 +16,8 @@ namespace CF7Launcher.Tasks
     {
         /// <summary>没有可输入的时点：$PC 播放中 / 无对话会话 / 本组未开始 / closing。</summary>
         Hidden = 0,
-        /// <summary>输入显示但禁用：等待首句、拆分前置段与过渡行“（当前似乎不适合插话）”。</summary>
+        /// <summary>输入显示但禁用：等待首句/hint 期间用省略号“……”，NPC 正说到过渡语或拆分前置段时
+        /// 用“（当前似乎不适合插话）”。</summary>
         Locked = 1,
         /// <summary>可输入（每句开始显示即可用，D-10）。</summary>
         Ready = 2,
@@ -274,6 +275,10 @@ namespace CF7Launcher.Tasks
         }
 
         private DialogueInterjectInputState _inputState = DialogueInterjectInputState.Hidden;
+        // Locked 的理由：true=NPC 正说到过渡语/拆分前置段，false=等待首句或 hint 期间的空档。
+        private bool _lockedBySpokenLine;
+        // 上次已发出的收起条文案：状态相同但文案换了（等待锁→说话锁）也要重发事件。
+        private string _inputPlaceholderShown;
 
         /// <summary>输入可用状态变化（订阅方据此显示/隐藏/禁用输入框）。</summary>
         internal event Action<DialogueInterjectInputState> InputStateChanged;
@@ -621,9 +626,10 @@ namespace CF7Launcher.Tasks
             if (isGenerated)
             {
                 // 拆分前置段/过渡行：输入暂锁；末段/自然单条：开始显示即可输入（§3.3）。
-                SetInputState(line.SplitIntermediate
-                    ? DialogueInterjectInputState.Locked
-                    : ReadyOrMuted());
+                if (line.SplitIntermediate)
+                    SetInputState(DialogueInterjectInputState.Locked, true);
+                else
+                    SetInputState(ReadyOrMuted());
                 return;
             }
             // 原作台词：可输入（stage / 任务组已在 IsGroupAllowsInterject 拦掉）
@@ -1328,13 +1334,16 @@ namespace CF7Launcher.Tasks
                 : DialogueInterjectInputState.Locked;
         }
 
-        /// <summary>收起条文案：禁言/终端未启动/模型未配置由这里给出。</summary>
+        /// <summary>收起条文案：禁言/终端未启动/模型未配置由这里给出；等待型 Locked 返回 null，
+        /// 由 binder 回落到原来的省略号提示。</summary>
         internal string PlaceholderFor(DialogueInterjectInputState state)
         {
             if (state == DialogueInterjectInputState.Offline)
                 return _terminalStartFailed
                     ? "聊天终端启动失败，点击重试" : "请先启动聊天终端";
             if (state == DialogueInterjectInputState.NeedsConfig) return "请配置模型API";
+            if (state == DialogueInterjectInputState.Locked)
+                return _lockedBySpokenLine ? "（当前似乎不适合插话）" : null;
             if (state != DialogueInterjectInputState.Muted) return null;
             string npc = string.IsNullOrEmpty(_npcName) ? "" : _npcName;
             return "（" + npc + "）暂时不打算让你插话";
@@ -1790,9 +1799,10 @@ namespace CF7Launcher.Tasks
                 _pcRevision = -1;
                 // closing 迟到但玩家正停在最后一条 add：补判选项态。
                 RefreshAskAcceptCurrent();
-                SetInputState(line.IsSplitHead || line.Interim
-                    ? DialogueInterjectInputState.Locked
-                    : ReadyOrMuted());
+                if (line.IsSplitHead || line.Interim)
+                    SetInputState(DialogueInterjectInputState.Locked, true);
+                else
+                    SetInputState(ReadyOrMuted());
                 return true;
             }
             if (!advance && _session.Index >= _turnTailIndex) return false;
@@ -1813,9 +1823,10 @@ namespace CF7Launcher.Tasks
             if (advance) _pcRevision = -1;  // 后续打字完成不再当 $PC
             // closing 迟到但玩家正停在最后一条 add：补判选项态。
             RefreshAskAcceptCurrent();
-            SetInputState(line.IsSplitHead || line.Interim
-                ? DialogueInterjectInputState.Locked
-                : ReadyOrMuted());
+            if (line.IsSplitHead || line.Interim)
+                SetInputState(DialogueInterjectInputState.Locked, true);
+            else
+                SetInputState(ReadyOrMuted());
             return true;
         }
 
@@ -2955,14 +2966,19 @@ namespace CF7Launcher.Tasks
             });
         }
 
-        private void SetInputState(DialogueInterjectInputState state)
+        /// <param name="spokenLock">仅 Locked 有意义：true=NPC 正说到过渡语/拆分前置段，
+        /// false=等待首句或 hint 期间的空档（两者禁用一样，提示文案不同）。</param>
+        private void SetInputState(DialogueInterjectInputState state, bool spokenLock = false)
         {
             // 玩家台词上屏期间（含打字完成、仍停在玩家行等“下一条”）整条输入框隐藏，
             // 不论展开与否；只有下一句非玩家台词上屏后才恢复。
             if (_playerLineOnScreen && state != DialogueInterjectInputState.Hidden)
                 state = DialogueInterjectInputState.Hidden;
-            if (_inputState == state) return;
+            _lockedBySpokenLine = state == DialogueInterjectInputState.Locked && spokenLock;
+            string placeholder = PlaceholderFor(state);
+            if (_inputState == state && _inputPlaceholderShown == placeholder) return;
             _inputState = state;
+            _inputPlaceholderShown = placeholder;
             Action<DialogueInterjectInputState> handler = InputStateChanged;
             if (handler == null) return;
             try { handler(state); }

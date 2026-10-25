@@ -181,14 +181,30 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void LockedInputUsesSplitAndTransitionPlaceholder()
+        public void WaitingLockedInputKeepsEllipsisPlaceholder()
         {
             using var owner = new Form();
             using var widget = new NativeDialogueWidget(owner);
             using var overlay = new DialogueInterjectInputOverlay();
             using var binder = new DialogueInterjectInputBinder(owner, widget, overlay);
 
+            // 控制器不给文案＝等待首句/hint 期间的空档，沿用原来的省略号禁言提示。
             binder.Apply(DialogueInterjectInputState.Locked);
+
+            Assert.Equal("……", overlay.PlaceholderForTest);
+            Assert.False(overlay.IsInputEnabled);
+        }
+
+        [Fact]
+        public void SpokenLockedInputUsesSplitAndTransitionPlaceholder()
+        {
+            using var owner = new Form();
+            using var widget = new NativeDialogueWidget(owner);
+            using var overlay = new DialogueInterjectInputOverlay();
+            using var binder = new DialogueInterjectInputBinder(owner, widget, overlay);
+
+            // NPC 正说到过渡语/拆分前置段：控制器下发这句话，binder 原样显示。
+            binder.Apply(DialogueInterjectInputState.Locked, "（当前似乎不适合插话）");
 
             Assert.Equal("（当前似乎不适合插话）", overlay.PlaceholderForTest);
             Assert.False(overlay.IsInputEnabled);
