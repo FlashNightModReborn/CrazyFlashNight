@@ -1318,3 +1318,5 @@ Issue #152 已完成两轮正式推广。第二轮冻结源 `c1d9ab2576937aa2fa4
 
 正式 SDK 无候选参数的隔离槽入口、帮助面板和受控退出 **5/5**，三个真实玩家槽的六份 JSON/SOL 摘要不变；原始脚本导出失败与精确恢复记录保留。`businessJourneyExecuted=false / physicalInputAttestation=false`，测试员原枪械、完整战斗和上游可选终端的真人四轮仍各自验收。本批为 2.718 DEV / UNSTABLE 开发增量，不新增稳定整包。
 
+部署提交 [`d9697f5a4575b60e542c51595da676ccd1e21be6`](https://github.com/FlashNightModReborn/CrazyFlashNight/commit/d9697f5a4575b60e542c51595da676ccd1e21be6) 已普通快进推送；[Runtime native audit 40147646698](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40147646698) **success**，远端独立重放 `state=promoted / deploymentChanged=true`、双 signer / 双 faultDomain 和同一 43 文件闭包。生成路径与发布状态回归、[Path budget 40147646739](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40147646739) 均通过。
+
