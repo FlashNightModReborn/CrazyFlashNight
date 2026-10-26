@@ -588,7 +588,7 @@
     }
 
     function bm11_autoOrientationAndAnchor(Core, catalog, Surface) {
-        if (!Surface || Surface.VERSION !== "object-sdf-nanobot-sludge.v2") return fail("surface module missing");
+        if (!Surface || Surface.VERSION !== Core.ALGORITHM_VERSION) return fail("surface module missing or algorithm version drift");
         var plan = Surface.planOrientation(syntheticRifle(false), 180, 340, { seed: "qa-rifle" });
         if (Math.abs(plan.degrees) !== 90) return fail("horizontal rifle was not rotated into portrait well");
         if (plan.anchor.normalizedX >= 0.45) return fail("broad stock was not selected as automatic breakpoint");
@@ -613,7 +613,7 @@
         if (!(sdf[objectIndex] > 0 && sdf[backgroundIndex] < 0)) return fail("SDF sign convention drift");
         var unresolvedCrop = makeSynthetic(48, 48, function() { return true; }, true);
         var cropExtraction = Surface.extractObjectMask(unresolvedCrop);
-        if (cropExtraction.source !== "opaque-alpha-fallback" || cropExtraction.bounds.count !== 48 * 48
+        if (cropExtraction.source !== "ambiguous-opaque" || cropExtraction.bounds.count !== 48 * 48
                 || cropExtraction.confidence >= 0.2) {
             return fail("unsegmentable close-up did not fail visible with low-confidence evidence");
         }
@@ -628,8 +628,17 @@
             var dy = y - 32;
             return dx * dx / 420 + dy * dy / 260 <= 1 || (x > 45 && x < 59 && y > 26 && y < 38);
         }, false);
-        var left = Surface.renderSurfaceImageData(rifle, { seed: "coverage-left", coverage: 0.84 });
-        var right = Surface.renderSurfaceImageData(compact, { seed: "coverage-right", coverage: 0.84 });
+        var left = Surface.renderSurfaceImageData(rifle, { seed: "coverage-left", coverage: 0.84, diagnostics: true });
+        var right = Surface.renderSurfaceImageData(compact, { seed: "coverage-right", coverage: 0.84, diagnostics: true });
+        for (var r = 0; r < 2; r += 1) {
+            var result = r ? right : left;
+            var finalCovered = 0;
+            for (var p = 0; p < result.diagnostics.objectMask.length; p += 1) {
+                if (result.diagnostics.objectMask[p] && result.diagnostics.mudMask[p]) finalCovered += 1;
+            }
+            if (finalCovered !== Math.round(result.metrics.objectPixels * 0.84)
+                    || finalCovered !== result.metrics.coveredObjectPixels) return fail("final mud mask changed coverage budget");
+        }
         var leftTolerance = 1 / left.metrics.objectPixels + 1e-6;
         var rightTolerance = 1 / right.metrics.objectPixels + 1e-6;
         if (Math.abs(left.metrics.coverageDelta) > leftTolerance

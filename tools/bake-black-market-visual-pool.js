@@ -9,7 +9,7 @@
  * 避免派生副本随平衡性调整漂移。
  *
  * 产物 visual-pool-manifest.js 每条字段（刻意短键，紧凑）：
- *   u=图标路径  h=hiddenColorMode  g=同组配对分组键（subclass 粗分类）
+ *   u=图标路径  f=同物品备用帧（可空） fm=备用帧Alpha策略 h=hiddenColorMode g=同组配对分组键
  *   n=名称  t=类型  sc=小类  p=目录价  s=回售价  at=actionType  e=释放资格（默认放行；"banned" 扣下）
  *   k=内部名（AS2 Web物品注释HTML 的查询键，与 displayName 同源同身份级）
  * 像素与名称/目录价可见；购买前快照仍零身份字段（bm22/bm-ui2/bm24 锁死）。
@@ -26,6 +26,29 @@ const path = require("path");
 const ROOT = path.join(__dirname, "..");
 const CATALOG = path.join(ROOT, "tools", "fixtures", "blackmarket", "black-market-shadow-catalog.v1.json");
 const OUT = path.join(ROOT, "launcher", "web", "modules", "minigames", "blackmarket", "visual", "visual-pool-manifest.js");
+const ICONS = JSON.parse(fs.readFileSync(path.join(ROOT, "launcher", "web", "icons", "manifest.json"), "utf8"));
+
+function fallbackFrame(entry) {
+    // Same identity only. Alpha in a WebP header does not guarantee visible pixels.
+    const icon = ICONS[entry.iconKey];
+    const uri = icon && (entry.iconFrame === "f2" ? icon.f1 : entry.iconFrame === "f1" ? icon.f2 : null);
+    return typeof uri === "string" && /^[0-9a-f]+_\d+\.(webp|png)$/.test(uri)
+        && fs.existsSync(path.join(ROOT, "launcher", "web", "icons", uri)) ? "icons/" + uri : null;
+}
+
+function resolveExistingFrame(entry) {
+    if (!entry || typeof entry !== "object") return entry;
+    if (entry.iconUri && fs.existsSync(path.join(ROOT, "launcher", "web", entry.iconUri))) return entry;
+    // Keep the frozen pool's identity/economy; repair only a missing image URI
+    // from the same icon key and frame (some existing exports are PNG).
+    const icon = ICONS[entry.iconKey];
+    const uri = icon && icon[entry.iconFrame];
+    if (typeof uri === "string" && /^[0-9a-f]+_\d+\.(webp|png)$/.test(uri)
+            && fs.existsSync(path.join(ROOT, "launcher", "web", "icons", uri))) {
+        return Object.assign({}, entry, { iconUri: "icons/" + uri });
+    }
+    return entry;
+}
 
 const HEADER = `/*
  * GENERATED FILE — 由 tools/bake-black-market-visual-pool.js 生成，禁止手改。
@@ -37,12 +60,15 @@ const HEADER = `/*
 
 function deriveEntries(catalog) {
     return catalog.entries
+        .map(resolveExistingFrame)
         .filter((e) => e && e.mechanicallyRenderable === true && typeof e.iconUri === "string"
-            && /^icons\/[0-9a-f]+_\d+\.webp$/.test(e.iconUri)
+            && /^icons\/[0-9a-f]+_\d+\.(webp|png)$/.test(e.iconUri)
             && fs.existsSync(path.join(ROOT, "launcher", "web", e.iconUri)))
         .sort((a, b) => (a.iconUri < b.iconUri ? -1 : 1))
         .map((e) => ({
             u: e.iconUri,
+            f: fallbackFrame(e),
+            fm: e.iconFrame === "f2" ? "monochrome" : "source",
             h: typeof e.hiddenColorMode === "string" ? e.hiddenColorMode : "proxy",
             g: String(e.subclass || e.use || e.type || "?"),
             n: String(e.displayName || e.name || ""),
@@ -58,13 +84,13 @@ function deriveEntries(catalog) {
 
 function renderModule(entries) {
     for (const [i, entry] of entries.entries()) {
-        for (const key of ["u", "h", "g", "n", "t", "sc", "p", "s", "at", "e", "k"]) {
+        for (const key of ["u", "f", "fm", "h", "g", "n", "t", "sc", "p", "s", "at", "e", "k"]) {
             if (!(key in entry)) throw new Error(`entry ${i} missing key ${key}`);
         }
         if (!entry.n) throw new Error(`entry ${i} (${entry.u}) has empty display name`);
     }
     const body = JSON.stringify({
-        schemaVersion: "black-market-visual-pool.v4",
+        schemaVersion: "black-market-visual-pool.v5",
         identityBoundary: "anonymous-synthetic-no-catalog.v2",
         note: "购买前快照零身份字段；揭晓/hover 释放是 2026-08-26 确认的测试版产品决策；注释全文走运行时 AS2 权威通道",
         entries,
