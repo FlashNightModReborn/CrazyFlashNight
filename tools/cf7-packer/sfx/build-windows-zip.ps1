@@ -73,21 +73,38 @@ if ($RagExe) {
     Write-Host "  已加入终端程序: $($rag.Name)"
 }
 
+# cmd.exe 解析 .bat 的硬要求：无 BOM、CRLF 行尾；内容保持纯 ASCII，
+# 中文交给 install.ps1（UTF-8 BOM）输出，避免代码页与多字节把行拆坏。
 $bat = @'
 @echo off
-chcp 65001 >nul 2>&1
-title 闪客快打7 每日包安装
+title CF7 Daily Update Installer
 setlocal
-where powershell.exe >nul 2>&1
-if errorlevel 1 (
-    echo [X] 未检测到 PowerShell，无法继续。
+cd /d "%~dp0."
+
+if not exist "%~dp0install.ps1" (
+    echo [X] install.ps1 not found next to this file.
+    echo     Extract the whole zip again, keep the folder layout.
+    echo.
     pause
     exit /b 1
 )
-powershell.exe -ExecutionPolicy Bypass -File "%~dp0install.ps1"
-if errorlevel 1 pause
+
+where powershell.exe >nul 2>&1
+if errorlevel 1 (
+    echo [X] PowerShell not found. Windows 10/11 should include it.
+    echo.
+    pause
+    exit /b 1
+)
+
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0install.ps1"
+
+echo.
+pause
 '@
-Set-Content -Path (Join-Path $staging "安装更新.bat") -Value $bat -Encoding UTF8
+$batPath = Join-Path $staging "安装更新.bat"
+$batText = ($bat -replace "`r?`n", "`r`n").TrimStart("`r", "`n")
+[System.IO.File]::WriteAllText($batPath, $batText, [System.Text.Encoding]::ASCII)
 
 $readme = @"
 闪客快打7重置计划 每日包（$Version）
@@ -97,7 +114,7 @@ $readme = @"
 2. 把本压缩包解压到任意位置（不要直接解压进 resources 里）。
 3. 双击「安装更新.bat」，程序会自动找到 Steam 里的游戏目录，确认后开始覆盖更新。
    找不到时按提示手动选择 CRAZYFLASHER7StandAloneStarter 文件夹。
-4. 装完从 Steam 启动游戏。
+4. 装完从 Steam 启动游戏。如果窗口一闪就关，说明压缩包里的文件没解压完整。
 
 安装做了什么
 - 把 resources\ 里的新版本文件覆盖到游戏目录的 resources\ 下，不删除里面原有的其它文件。
