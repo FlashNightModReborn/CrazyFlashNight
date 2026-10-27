@@ -11,7 +11,7 @@ class org.flashNight.arki.scene.PlayerResourceTransferTest {
     private static function context():Object {return {context:{},run:{},world:{},actor:{},slot:"fixture",name:"hero",kind:"player",stage:0};}
     private static function next(i:Object):Object {return {context:i.context,run:i.run,world:{},actor:{},slot:i.slot,name:i.name,kind:i.kind,stage:i.stage+1};}
     private static function actor(i:Object,hp:Number,mp:Number,hmax:Number,mmax:Number):Object {
-        return {_name:"hero",hp:hp,mp:mp,hp满血值:hmax,mp满血值:mmax,__resourceActorIdentity:i.actor};
+        return {_name:"hero",hp:hp,mp:mp,hp满血值:hmax,mp满血值:mmax,__playerSceneActorIdentity:i.actor};
     }
     private static function roundtrip(hp:Number,mp:Number,oldHp:Number,oldMp:Number,newHp:Number,newMp:Number,
             expectedHp:Number,expectedMp:Number,caps:Object,label:String):Void {
@@ -76,11 +76,11 @@ class org.flashNight.arki.scene.PlayerResourceTransferTest {
         check(!ResourceNumber.payMp(healed,66) && healed.mp===65,"insufficient_no_write");
         // 真 MovieClip 同路径替换：旧 MC 引用可重指，独立 actor token 不会复用。
         var parent:MovieClip=_root.createEmptyMovieClip("resourceIdentityFixture",_root.getNextHighestDepth());
-        var old:MovieClip=parent.createEmptyMovieClip("hero",1);old.__resourceActorIdentity={};
-        var oldId:Object=old.__resourceActorIdentity;old.removeMovieClip();
-        var fresh:MovieClip=parent.createEmptyMovieClip("hero",1);fresh.__resourceActorIdentity={};
+        var old:MovieClip=parent.createEmptyMovieClip("hero",1);old.__playerSceneActorIdentity={};
+        var oldId:Object=old.__playerSceneActorIdentity;old.removeMovieClip();
+        var fresh:MovieClip=parent.createEmptyMovieClip("hero",1);fresh.__playerSceneActorIdentity={};
         trace("ResourceTransfer NativeRetarget: "+(old===fresh));
-        check(oldId!==fresh.__resourceActorIdentity,"native_actor_identity_distinct");parent.removeMovieClip();
+        check(oldId!==fresh.__playerSceneActorIdentity,"native_actor_identity_distinct");parent.removeMovieClip();
         trace("PlayerResourceTransferTest Tests Passed: "+passed);
         trace("PlayerResourceTransferTest Tests Failed: "+failed);
     }

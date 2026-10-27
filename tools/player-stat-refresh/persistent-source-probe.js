@@ -44,5 +44,23 @@ module.exports = function run(source,report) {
     t.__persistentEquipmentInputV1.slots.头部装备.data.hp=Infinity;
     let rejected=false;try { f.api.buildPersistentSnapshot(t); } catch(error) { rejected=/stat_input_invalid/.test(error.message); }
     report('persistent-invalid-zero-write',[rejected,t.hp满血值],[true,hp]);
+
+    // A legitimate flat punch penalty (e.g. 指骨撑架) must not poison the
+    // mercenary-only square-root weight or reject the player's entire build.
+    const penalty = persistentFixture(source), p = penalty.target;
+    p.被动技能 = {独行者:{等级:0,启用:false}};
+    p.__persistentEquipmentInputV1.slots.手部装备.data.punch = -5;
+    penalty.api.applyPersistentSnapshot(p,penalty.api.buildPersistentSnapshot(p));
+    report('persistent-negative-punch',[p.空手攻击力,p.佣兵技能概率抑制基数,p.hp,p.mp],[95,0,600,200]);
+    p.__persistentEquipmentInputV1.slots.头部装备.data.punch = 16;
+    for (let i=0;i<3;i++) penalty.api.applyPersistentSnapshot(p,penalty.api.buildPersistentSnapshot(p));
+    report('persistent-mixed-punch-repeat',[p.空手攻击力,p.佣兵技能概率抑制基数],[111,4]);
+    p.__persistentEquipmentInputV1.slots.手部装备.data.punch = 0;
+    penalty.api.applyPersistentSnapshot(p,penalty.api.buildPersistentSnapshot(p));
+    report('persistent-zero-punch',[p.空手攻击力,p.佣兵技能概率抑制基数],[116,4]);
+    p.__persistentEquipmentInputV1.slots.手部装备.data.punch = NaN;
+    let invalidPunch=false;
+    try { penalty.api.buildPersistentSnapshot(p); } catch(error) { invalidPunch=/stat_input_invalid:punch/.test(error.message); }
+    report('persistent-invalid-punch-still-rejected',[invalidPunch,p.空手攻击力,p.佣兵技能概率抑制基数],[true,116,4]);
 };
 module.exports.fixture = persistentFixture;

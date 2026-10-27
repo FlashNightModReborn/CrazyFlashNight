@@ -20,7 +20,7 @@ const FILES = [
     'scripts/类定义/org/flashNight/arki/scene/StageRunSession.as',
     'scripts/类定义/org/flashNight/arki/scene/SceneTransitionGuard.as',
     'scripts/类定义/org/flashNight/arki/scene/PlayerResourceTransfer.as',
-    'scripts/类定义/org/flashNight/arki/scene/PlayerResourceTransferBridge.as',
+    'scripts/类定义/org/flashNight/arki/scene/PlayerSceneLifecycle.as',
     'scripts/类定义/org/flashNight/arki/unit/PlayerStatRefreshCoordinator.as',
     'scripts/类定义/org/flashNight/arki/item/CharacterBuildService.as',
     'scripts/类定义/org/flashNight/arki/hud/FocusTargetHudService.as',

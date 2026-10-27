@@ -304,13 +304,17 @@ layers:
       - "temporary/**"
 
   - name: launcher-data
-    description: "Launcher 运行时数据（存档修复字典、存档 schema；地图由同一 C# 定义投影）"
+    description: "Launcher 运行时数据（存档、引导、教程旅程与场景转场目录）"
     source: "launcher/data/"
     include:
       # SaveAutoRepairService 启动期加载，缺失 → 自动修复降级到只读模式
       - "save_repair_dict.json"
       # 存档编辑器 diff 视图基线，缺失 → "已修改" tab 退化为 schema 默认值
       - "save_schema.json"
+      # NativeGuidanceWidget 启动时直接读取；漏包会在读档之前终止 Core。
+      - "guidance-catalog.json"
+      - "tutorial-journeys.json"
+      - "scene-transition/catalog.manifest.json"
     exclude: []
 
   - name: launcher-agent-assets

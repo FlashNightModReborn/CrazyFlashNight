@@ -17,7 +17,7 @@ class org.flashNight.arki.unit.PlayerStatProductionAdapterTest {
             _root.主角被动技能={};
             for(i=8;i<13;i++) _root[rootKeys[i]]=0;
             _root.敌人函数={魔法伤害种类:["基础","电","热","冷","波","蚀","毒","冲","人类"]};
-            testPartialRecovery();testValidationAndContract();testSamePathIdentity();testResetBeforeLeaseRelease();
+            testPartialRecovery();testValidationAndContract();testSamePathIdentity();testResetBeforeLeaseRelease();testCleanAuthorityRecovery();
         } catch(error) {check(false,"unexpected: "+error);}
         finally {
             var api:Object=org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;api._setProjectionFaultForTests(undefined);
@@ -130,5 +130,62 @@ class org.flashNight.arki.unit.PlayerStatProductionAdapterTest {
                     && f.fields==fields && f.hpData.writes==writes && f.actor.hp==900,
                 "synchronous pause-release subscriber sees new detached context and writes no old actor fields or HP");
         } finally {org.flashNight.arki.pause.PauseManager.unsubscribe(subscription);}
+    }
+    private static function authorityFixture():Object {
+        var f:Object=fixture(600);
+        check(f.c.flush("initial_clean_setup").status=="applied","clean recovery begins with committed production projection");
+        f.visibility={open:false};
+        var visibility:Object=f.visibility;
+        var adapter:Object=PlayerStatRefreshCoordinator._productionAdapterForTests(f.c);
+        adapter.canConsume=function():Boolean {return visibility.open;};
+        f.c.setAdapter(adapter);
+        return f;
+    }
+    private static function testCleanAuthorityRecovery():Void {
+        var pauseApi:Object=org.flashNight.arki.pause.PauseManager;
+        var f:Object=authorityFixture();
+        var other:String=pauseApi.lease(true,"other_panel_test");
+        try {
+            check(f.c.flush("snapshot_during_save_pending").status=="pending" && f.actor.enableShoot===false,
+                "authority waiting acquires real projection pause and shooting block without dirty");
+            var before:Number=f.fields;var hp:Number=f.actor.hp;
+            f.visibility.open=true;
+            var result:Object=f.c.flush("skill_points_save_confirmed");
+            check(result.status=="unchanged" && f.actor.__playerStatProjectionBlocked===false && f.actor.enableShoot===true,
+                "clean authority success restores shooting and releases its projection block");
+            check(f.fields==before && f.actor.hp===hp && result.dirtyMask==0,
+                "clean authority recovery does not invent dirty or replay numeric writes");
+            check(pauseApi._claims[other]!=undefined && pauseApi.isPaused(),"another panel pause claim survives clean recovery");
+        } finally {pauseApi.releaseLease(other);}
+
+        f=authorityFixture();f.c.flush("wait_before_reentry");f.visibility.open=true;
+        var once:Object={pending:true};
+        var sub:String=pauseApi.subscribe(function(value,previous,tag):Void {
+            if(tag!="player_stat_projection:release" || !once.pending) return;
+            once.pending=false;
+            check(f.c.flush("release_reentry").reason=="reentrant","real pause release callback cannot recursively refresh");
+            f.visibility.open=false;
+        },null);
+        try {
+            check(f.c.flush("save_confirmed_then_reclosed").status=="pending" && f.actor.__playerStatProjectionBlocked===true,
+                "authority closed in real release callback is checked again and reblocked");
+        } finally {pauseApi.unsubscribe(sub);}
+        f.visibility.open=true;
+        check(f.c.flush("final_authority_confirmation").status=="unchanged" && f.actor.enableShoot===true,
+            "second confirmation releases reacquired claim without numeric replay");
+
+        f=authorityFixture();f.c.flush("wait_before_context_swap");f.visibility.open=true;
+        once={pending:true};
+        sub=pauseApi.subscribe(function(value,previous,tag):Void {
+            if(tag!="player_stat_projection:release" || !once.pending) return;
+            once.pending=false;f.c.resetContext(_root.存档系统,"replacement_during_release",{});
+            PlayerStatRefreshCoordinator._productionAdapterForTests(f.c).blockIdentityFault();
+        },null);
+        try {
+            result=f.c.flush("old_confirmation");
+            var c:Object=f.c;
+            check(result.reason=="stale_context" && c.failureLease!=undefined && pauseApi._claims[c.failureLease]!=undefined,
+                "old release cannot erase a replacement context's newly acquired lease");
+        } finally {pauseApi.unsubscribe(sub);f.c._releaseProjectionLeaseForTests();}
     }
 }

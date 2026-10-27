@@ -29,9 +29,10 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
     private static var spawnResourceHook:Function;
     private static var spawnReadyHook:Function;
     private static var spawnRetireHook:Function;
+    private static var spawnFailedHook:Function;
     /** 完整模板唯一尾部的窄接口；不改变换装/成长资源结算。 */
-    public static function setSpawnResourceHooks(seed:Function,settle:Function,readyHook:Function,retireHook:Function):Void {
-        spawnSeedHook=seed;spawnResourceHook=settle;spawnReadyHook=readyHook;spawnRetireHook=retireHook;
+    public static function setSpawnLifecycleHooks(seed:Function,settle:Function,readyHook:Function,retireHook:Function,failedHook:Function):Void {
+        spawnSeedHook=seed;spawnResourceHook=settle;spawnReadyHook=readyHook;spawnRetireHook=retireHook;spawnFailedHook=failedHook;
     }
     private static var gymGrowthReadGate:Function;
     private static var skillRewardReadGate:Function;
@@ -148,8 +149,9 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
                     delete s.actor.__playerStatShootBeforeFault;
                 }
                 s.actor.__playerStatProjectionBlocked=false;
-                if(c.failureLease!=undefined) org.flashNight.arki.pause.PauseManager.releaseLease(c.failureLease);
-                c.failureLease=undefined;
+                // release 可同步重入并创建新 context/lease；先交出旧令牌，不能擦掉后来取得的责任。
+                var releasedLease=c.failureLease;c.failureLease=undefined;
+                if(releasedLease!=undefined) org.flashNight.arki.pause.PauseManager.releaseLease(releasedLease);
             },
             verifyEquipmentInput:function(ticket:Object):Boolean {
                 return ticket.proof!=null && typeof ticket.owner.verifyInput=="function" && ticket.owner.verifyInput(ticket.proof)===true;
@@ -351,8 +353,13 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
     private static function stateCompletion(scope:Object):Function {
         return function(target:Object):Void {
             if(!PlayerStatRefreshCoordinator.planCurrent(scope.plan)) return;
-            if(typeof _root.装备引用配置.刷新所有装扮=="function") _root.装备引用配置.刷新所有装扮(target);
-            PlayerStatRefreshCoordinator.endOuterInitialization(scope);
+            try {
+                if(typeof _root.装备引用配置.刷新所有装扮=="function") _root.装备引用配置.刷新所有装扮(target);
+                PlayerStatRefreshCoordinator.endOuterInitialization(scope);
+            } catch(error) {
+                PlayerStatRefreshCoordinator.failOuterInitialization(scope,error);
+                throw error;
+            }
         };
     }
     public static function endOuterInitialization(scope:Object):Object {
@@ -362,8 +369,8 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
         return finishFullPlan(plan);
     }
     public static function failOuterInitialization(scope:Object,error:Object):Void {
-        if(scope==null || scope.plan.context!==production().context
-                || scope.plan.world!==org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld)) return;
+        if(scope==null || scope.plan==null || !planCurrent(scope.plan)
+                || scope.plan.actor.__playerStatInitPlan!==scope.plan) return;
         var plan:Object=scope.plan;plan.failed=true;
         if(scope.open===true) {scope.open=false;plan.open--;}
         var c:PlayerStatRefreshCoordinator=plan.coordinator;
@@ -371,7 +378,7 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
             c.revokeReady(plan.actor,plan.actor.__playerStatBody);
             if(plan.actor.__playerStatBody===plan.body) plan.actor.__playerStatFullReady=null;
             c.fail(c.capture(),"lifecycle:"+plan.stage,error);
-        }
+        } else if(spawnFailedHook!=undefined) spawnFailedHook(plan.actor,plan.body,error);
     }
     public static function notifyModeComponentReady(target:Object,capturedBody:Object):Void {
         if(capturedBody==null || target.__playerStatBody!==capturedBody || target.变形手枪.属性投影身体!==capturedBody) return;
@@ -451,9 +458,8 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
                     if(!planCurrent(plan) || !canonicalCurrent(target) || c.adapter.verify(cp.snapshot,cp.record)!==true) throw new Error("full_stat_postcondition_failed");
                     c.accept(cp.snapshot);
                 } finally {c.flushing=wasFlushing;}
-                plan.complete=true;plan.stage="completed";
+                plan.complete=true;plan.stage="completed";plan.initialReadyPending=true;
                 var initialReady:Object=c.flush("initial_ready");
-                if((initialReady.status=="applied" || initialReady.status=="unchanged") && spawnReadyHook!=undefined) spawnReadyHook(target);
                 return initialReady;
             }
             plan.complete=true;plan.stage="completed";
@@ -573,10 +579,22 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
     }
     private function fail(s:Object,stage:String,error:Object):Object {
         if(s.context!==context) return result("failed","stale_context");
-        lastFailure={stage:stage,reason:String(error.message==undefined ? error : error.message)};
+        var failureReason:String=String(error.message==undefined ? error : error.message);
+        var changed:Boolean=lastFailure==null || lastFailure.stage!==stage || lastFailure.reason!==failureReason;
+        lastFailure={stage:stage,reason:failureReason};
+        if(changed && typeof _root.服务器.发布服务器消息=="function") {
+            try {_root.服务器.发布服务器消息("[PlayerStatProjection] failed stage="+stage+" reason="+failureReason
+                +" hp="+s.actor.hp+" hpMax="+s.actor.hp满血值+" mp="+s.actor.mp+" mpMax="+s.actor.mp满血值);}
+            catch(diagnosticError) {}
+        }
         if(current(s,false) && typeof adapter.block=="function") adapter.block(s,stage,lastFailure.reason);
         else if(s.actor===actor && s.world===world && s.body===body && typeof adapter.blockIdentityFault=="function") adapter.blockIdentityFault();
-        return result("failed",lastFailure.reason);
+        // 仅出生场景接管失败；已进入游戏后的换装/成长仍由原事务恢复。
+        var failedPlan:Object=s.actor.__playerStatInitPlan;
+        if(spawnFailedHook!=undefined && failedPlan!=undefined && failedPlan.ticket==null
+                && (failedPlan.complete!==true || failedPlan.initialReadyPending===true) && current(s,false))
+            spawnFailedHook(s.actor,s.body,failureReason);
+        return result("failed",failureReason);
     }
     public function prepareEquipmentTransition(proof:Object,owner:Object):Object {
         if(actor==null || body==null || world==null || owner==null || transition!=null) return null;
@@ -634,7 +652,25 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
     public function equipmentTransition():Object { return transition; }
     public function diagnostics():Object { return result(lastFailure==null ? "pending" : "failed",lastFailure==null ? "" : lastFailure.reason); }
 
+    /** 初生尾部完成后，合批/权威等待可由原 owner 稍后收口；不重做初始化或资源写入。 */
+    private static function publishInitialReady(target:Object):Void {
+        var plan:Object=target.__playerStatInitPlan;
+        if(plan.initialReadyPending!==true || plan.complete!==true || plan.failed===true
+                || !planCurrent(plan) || target.__playerStatFullReady!==plan.body
+                || target.__playerStatInitializing===true) return;
+        plan.initialReadyPending=false;
+        if(spawnReadyHook!=undefined) spawnReadyHook(target);
+    }
     public function flush(barrier:String):Object {
+        var flushed:Object=flushProjection(barrier);
+        if(flushed.status=="applied" || flushed.status=="unchanged") {
+            var readySnapshot:Object=capture();
+            try {PlayerStatRefreshCoordinator.publishInitialReady(actor);}
+            catch(error) {return fail(readySnapshot,"initial_ready",error);}
+        }
+        return flushed;
+    }
+    private function flushProjection(barrier:String):Object {
         if(batchDepth>0) return result("pending","batch_open");
         if(flushing) return result("pending","reentrant");
         if(actor==null || body==null || world==null) return result("pending","pending_actor");
@@ -656,9 +692,28 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
                     && pendingPlan.open==0 && pendingPlan.finalScope!=null) return PlayerStatRefreshCoordinator.resumeOuterInitialization(pendingPlan.finalScope);
         }
         if((dirtyMask() & 4)==0 && !ready) return result("pending","pending_ready");
-        if(dirtyMask()==0 && checkpoint==null && appliedBody===body && lastFailure==null) return result("unchanged","");
         flushing=true;
         try {
+            if(dirtyMask()==0 && checkpoint==null && appliedBody===body && lastFailure==null) {
+                var cleanSnapshot:Object=capture();
+                try {
+                    // 权威等待可能仅持有暂停而没有属性 dirty；成功的 clean 返回也须归还本模块责任。
+                    if(typeof adapter.unblock=="function") adapter.unblock(cleanSnapshot);
+                    if(!current(cleanSnapshot,true)) throw new Error("identity_changed");
+                    canConsume=typeof adapter.canConsume!="function" || adapter.canConsume()===true;
+                    if(!current(cleanSnapshot,true)) throw new Error("identity_changed");
+                    if(!canConsume) {
+                        readReason=growthReadReason();if(readReason=="") readReason="authority_pending";
+                        if(typeof adapter.block=="function") adapter.block(cleanSnapshot,"visibility",readReason);
+                        return result("pending",readReason);
+                    }
+                    if(batchDepth>0) return result("pending","batch_open");
+                    if(typeof adapter.canProject=="function" && adapter.canProject(cleanSnapshot)!==true) return result("pending","pending_actor_shape");
+                    if(!current(cleanSnapshot,true)) throw new Error("identity_changed");
+                    if(dirtyMask()==0 && checkpoint==null && appliedBody===body && lastFailure==null) return result("unchanged","");
+                    // 释放回调新增的 dirty 在当前受保护刷新中继续收敛，不伪造一次 clean 回执。
+                } catch(cleanError) {return fail(cleanSnapshot,"clean_unblock",cleanError);}
+            }
             for(var pass:Number=0;pass<4;pass++) {
                 var s:Object=checkpoint==null ? capture() : checkpoint.snapshot;
                 var stage:String="identity";

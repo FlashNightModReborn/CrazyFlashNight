@@ -306,6 +306,17 @@ class org.flashNight.neur.Server.CharacterCreationService {
         _root.gotoAndStop("读盘");
     }
 
+    /** 初次进场失败显式交给 Host；只报告当前 attempt/slot，不重试写档。 */
+    public static function onSceneInitializationFailed(reason:String):Boolean {
+        if(_phase!="transitioning" || _sceneNotified || _attemptId==""
+                || _attemptId!==String(_root._bootstrapAttemptId) || _slotKey==""
+                || _slotKey!==String(_root.savePath)) return false;
+        var delivered:Boolean=sendResponse({task:"scene_initialization_failed",v:1,
+            attemptId:_attemptId,slotKey:_slotKey,reason:reason});
+        if(delivered) _phase="scene_failed";
+        return delivered;
+    }
+
     /** 只接受当前 attempt 的真实 actor-ready SceneReady。 */
     public static function onSceneReady():Void {
         if (_phase != "transitioning" || _sceneNotified) return;
@@ -683,7 +694,7 @@ class org.flashNight.neur.Server.CharacterCreationService {
 
     private static function isDurablePhase():Boolean {
         return _phase == "durable" || _phase == "transitioning"
-            || (_phase == "scene_ready" && _kind == "create");
+            || ((_phase == "scene_ready" || _phase == "scene_failed") && _kind == "create");
     }
 
     private static function resetIfRootAttemptChanged():Void {

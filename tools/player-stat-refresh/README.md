@@ -7,6 +7,9 @@
 ```powershell
 node tools/player-stat-refresh/run-source-probes.js --source . --mode baseline
 node tools/player-stat-refresh/run-source-probes.js --source . --mode fixed
+node tools/player-stat-refresh/test-initial-ready.js
+node tools/player-stat-refresh/test-clean-unblock.js
+node tools/player-stat-refresh/test-ai-auxiliary.js
 powershell -File scripts/run-player-stat-refresh-tests.ps1 -TimeoutSeconds 600
 node tools/player-stat-refresh/test-check-writes.js
 node tools/player-stat-refresh/check-writes.js --output <审读JSON路径>
@@ -17,6 +20,18 @@ node tools/player-stat-refresh/check-writes.js --baseline --output <分类基线
 `fixed` 要求目标语义成立，不能以缺陷仍可复现为通过依据。实际 AS2 focused suite
 单独通过真实 CS6 runner 执行；Node 不是 AVM1，不证明 MovieClip 引用、加载时序、
 事件、动画任务或真实保存。
+
+`test-initial-ready.js` 提取首次初始化和刷新尾部，覆盖合批/权威等待后补发进场通知、
+通知仅一次、过期 actor 不发通知及回调异常不误用新 context。真实 Flash 用
+`scripts/run-resource-transfer-tests.ps1` 验证同一条合批尾部通知链。
+
+`test-clean-unblock.js` 覆盖无 dirty 的权威等待解除：clean 返回归还自身阻断，保留其他暂停，
+并复核释放回调中的重入、重新关闭读取门、新 dirty 与 context 替换。真实 Flash 的
+`PlayerStatProductionAdapterTest` 使用真实数值 adapter 与 PauseManager；保存结果只由内存读取门模拟，
+不把它称为健身与技能面板实际 GUI 交错验收。
+
+`persistent` 探针与真实 `PlayerStatProjectionTest` 同时覆盖合法负 `punch`（指骨撑架）、
+零值和混合正负加成：保留攻击力惩罚、AI 抑制权重有限、重复刷新不累加、NaN 输入仍拒绝。
 
 加 `--output <路径>` 可保存完整报告而只在终端打印摘要。当前 fixed 探针提取并执行新 API，旧基线分支保留给对应旧代码树。
 探针只擦除函数签名和变量声明中的 AS2 类型，保留三元表达式、字符串和注释。

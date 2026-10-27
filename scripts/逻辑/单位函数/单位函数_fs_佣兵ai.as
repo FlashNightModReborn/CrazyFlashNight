@@ -185,7 +185,7 @@ _root.主角模板ai函数.攻击 = function(x轴攻击范围, y轴攻击范围,
 		}
 
         if(_parent.攻击模式 === "空手") {
-            技能使用概率 = Math.min(技能使用概率, 100 - (Math.sqrt(_parent.佣兵技能概率抑制基数) + 5) * 2)
+            技能使用概率 = org.flashNight.arki.unit.UnitAI.behavior.LegacyUnarmedSkillChance.limit(技能使用概率, _parent.佣兵技能概率抑制基数);
         }
 
 		if (_root.成功率(技能使用概率))

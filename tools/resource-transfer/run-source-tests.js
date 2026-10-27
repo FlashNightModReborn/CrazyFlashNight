@@ -19,7 +19,7 @@ const factory=vm.runInNewContext('(function(){var '+fields.join(',')+';'+
 function check(name,fn){fn();results.push({name,status:'passed'});}
 function identity(stage=0){return {context:{},run:{},world:{},actor:{},slot:'fixture',name:'hero',kind:'player',stage};}
 function next(i){return {...i,world:{},actor:{},stage:i.stage+1};}
-function actor(i,hp=1000,mp=500,hpMax=1000,mpMax=500){return {_name:'hero',hp,mp,hp满血值:hpMax,mp满血值:mpMax,__resourceActorIdentity:i.actor};}
+function actor(i,hp=1000,mp=500,hpMax=1000,mpMax=500){return {_name:'hero',hp,mp,hp满血值:hpMax,mp满血值:mpMax,__playerSceneActorIdentity:i.actor};}
 function ready(value={hp:900,mp:0,hpMax:1000,mpMax:500},src=identity()){
     const t=factory(),ticket={frame:'wuxianguotu_1'};assert.equal(t.capture(ticket,src,value,src.stage+1),true);assert.equal(t.commit(ticket),true);
     const dest=next(src),token=t.bind(dest);assert(token);return {t,ticket,src,dest,token};

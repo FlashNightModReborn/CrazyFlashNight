@@ -209,6 +209,7 @@ namespace CF7Launcher.Diagnostic
                 case "handshake_timeout": return "CF7-LAUNCH-HANDSHAKE-TIMEOUT";
                 case "embed_timeout": return "CF7-LAUNCH-EMBED-TIMEOUT";
                 case "game_ready_timeout": return "CF7-LAUNCH-GAME-READY-TIMEOUT";
+                case "scene_initialization_failed": return "CF7-LAUNCH-SCENE-INIT";
                 case "flash_exited_pre_reveal": return "CF7-LAUNCH-FLASH-EXITED-PRE-REVEAL";
                 case "flash_exited": return "CF7-LAUNCH-FLASH-EXITED";
                 case "reset_socket_force_close_failed": return "CF7-LAUNCH-RESET-FAILED";
@@ -228,6 +229,8 @@ namespace CF7Launcher.Diagnostic
                     return "Flash 已启动但未完成启动握手。请重试一次；如果持续发生，请验证游戏文件完整性。";
                 case "embed_timeout":
                     return "Flash 窗口未能嵌入启动器。请重试一次；如果持续发生，请检查是否启用了特殊兼容性/窗口管理工具。";
+                case "scene_initialization_failed":
+                    return "人物或场景初始化失败。请重试；如果仍失败，请保留当前存档并把诊断包发给开发组。";
                 case "game_ready_timeout":
                     return "Flash 已嵌入但游戏未回报就绪。请重试一次；如果持续发生，请验证 SWF 与数据文件完整性。";
                 case "flash_exited_pre_reveal":

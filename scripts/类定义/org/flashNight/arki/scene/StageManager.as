@@ -468,7 +468,7 @@ class org.flashNight.arki.scene.StageManager {
 
         if (!isWarlordAction && isCalibrationHostStage()) {
             gameworld.__resourceTransferBypass="calibration";
-            org.flashNight.arki.scene.PlayerResourceTransferBridge.retire("calibration_host");
+            org.flashNight.arki.scene.PlayerSceneLifecycle.retire("calibration_host");
             initCalibrationHostStage(basicInfo, initStageToken);
             return;
         }
@@ -516,7 +516,7 @@ class org.flashNight.arki.scene.StageManager {
 
         // 完整属性与资源均就绪后才允许 SceneReady/Start/波次启动。
         var resourceGate:Object;
-        if(!isWarlordAction) resourceGate=org.flashNight.arki.scene.PlayerResourceTransferBridge.beginStage(gameworld,currentStage,this);
+        if(!isWarlordAction) resourceGate=org.flashNight.arki.scene.PlayerSceneLifecycle.beginStage(gameworld,currentStage,this);
         // 加载玩家
         if (!isWarlordAction) {
             gameworld.出生地.是否从门加载角色();
@@ -537,17 +537,25 @@ class org.flashNight.arki.scene.StageManager {
         if (!isWarlordAction) spawner.prepareScene(currentStageInfo);
 
         if(isWarlordAction) gameworld.dispatcher.publish("Start");
-        else org.flashNight.arki.scene.PlayerResourceTransferBridge.finishStageSetup(resourceGate);
+        else org.flashNight.arki.scene.PlayerSceneLifecycle.finishStageSetup(resourceGate);
     }
 
     /** 只接受本次世界/关卡的完成闩锁；事件重入后再次检查身份。 */
-    public function onResourcesReady(gate:Object):Void {
-        var bridge:Object=org.flashNight.arki.scene.PlayerResourceTransferBridge;
+    public function onPlayerReady(gate:Object):Void {
+        var bridge:Object=org.flashNight.arki.scene.PlayerSceneLifecycle;
         if(gate.manager!==this || !bridge.isReady(gate) || gate.published!==true || gate.started===true) return;
         gate.started=true;
         gameworld.dispatcher.publish("Start");
         if(!bridge.isReady(gate)) return;
         if(currentStageInfo.waveInfo!=null) spawner.init(currentStageInfo);
+    }
+
+    /** 出生同步/延迟尾部统一复用 initStage 的失败返回权威。 */
+    public function onPlayerInitializationFailed(gate:Object,error:Object):Void {
+        if(gate.manager!==this || gameworld!==_root.gameworld || gameworld.__playerSceneGate!==gate
+                || gate.world!==org.flashNight.arki.scene.StageReturnFlow.worldIdentity(gameworld)
+                || currentStage!==gate.stage || !isActive || isFinished || isFailed) return;
+        handleInitStageFailure(false,stageStartToken,error);
     }
 
     /** Warlord runner 的业务终态；Slice 1 只有一个 SubStage。 */
@@ -1201,7 +1209,7 @@ class org.flashNight.arki.scene.StageManager {
                     && fade.__transitionProjectionIdentity!==previousProjection) {
                 // The accepted choreography also owns the upstream HP/MP transfer intent.
                 // A post-acceptance refusal is unknown: the fade has already been issued.
-                if(!org.flashNight.arki.scene.PlayerResourceTransferBridge.recordAdmittedDoor("wuxianguotu_1")) {
+                if(!org.flashNight.arki.scene.PlayerSceneLifecycle.recordAdmittedDoor("wuxianguotu_1")) {
                     receipt.manualAllowed=false;receipt.status="unknown";return "unknown";
                 }
                 receipt.projection=fade.__transitionProjectionIdentity;
@@ -1223,7 +1231,7 @@ class org.flashNight.arki.scene.StageManager {
         if(currentStage < stageInfoList.length - 1){
             _root.场景进入位置名 = "出生地";
             _root.转场景记录数据();
-            return org.flashNight.arki.scene.PlayerResourceTransferBridge.requestFade("wuxianguotu_1");
+            return org.flashNight.arki.scene.PlayerSceneLifecycle.requestFade("wuxianguotu_1");
         }else{
             _root.返回基地();
             return true;

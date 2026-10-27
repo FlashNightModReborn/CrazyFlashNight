@@ -127,7 +127,7 @@ class org.flashNight.arki.scene.Cf6DoorAdvanceTest {
         var lootClass:Object=org.flashNight.arki.item.LootContainerService,oldLoot=lootClass.hasStageSettlementPending;
         var returnClass:Object=org.flashNight.arki.scene.StageReturnFlow,oldCan=returnClass.canBeginSceneLoad;
         var targets:Object=org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager,oldHero=targets.findHero;
-        var bridge:Object=PlayerResourceTransferBridge;var oldRecord:Function=bridge.recordAdmittedDoor;
+        var bridge:Object=PlayerSceneLifecycle;var oldRecord:Function=bridge.recordAdmittedDoor;
         bridge.recordAdmittedDoor=function(frame:String):Boolean {
             _root.__cf6AdvanceBridgeRecords++;
             if(_root.__cf6AdvanceMode=="bridge-refuse") return false;

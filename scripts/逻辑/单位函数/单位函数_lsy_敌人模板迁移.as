@@ -559,7 +559,7 @@ _root.敌人函数.配置音效 = function(类型:String, target:MovieClip) {
 
 
 _root.初始化敌人模板 = function() {
-    org.flashNight.arki.scene.PlayerResourceTransferBridge.checkSeed(this);
+    org.flashNight.arki.scene.PlayerSceneLifecycle.checkSeed(this);
     //以下14个是原版敌人的必要函数
     this.根据等级初始数值 = this.根据等级初始数值 ? this.根据等级初始数值 : _root.敌人函数.根据等级初始数值;
     this.行走 = this.行走 ? this.行走 : _root.敌人函数.行走;
@@ -757,8 +757,8 @@ _root.初始化敌人模板 = function() {
     // 必须在离开初始化帧前接入：玩家与AI Lee使用同一动作入口。
     if (this.兵种 == "敌人-李小龙") _root.敌人动作.installLee(this);
     this.方向改变(this.方向);
-    if(this.__enemyActionPlayer===true && this.__resourceSpawn!=undefined)
-        org.flashNight.arki.scene.PlayerResourceTransferBridge.finishEnemyState(this,this.状态);
+    if(this.__enemyActionPlayer===true && this.__playerSceneSpawn!=undefined)
+        org.flashNight.arki.scene.PlayerSceneLifecycle.finishEnemyState(this,this.状态);
     else this.gotoAndStop(this.状态);
 }
 

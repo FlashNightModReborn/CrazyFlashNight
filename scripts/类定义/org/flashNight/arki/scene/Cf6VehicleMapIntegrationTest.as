@@ -172,7 +172,7 @@ class org.flashNight.arki.scene.Cf6VehicleMapIntegrationTest {
         port(runApi,"hasPersistedSettlementPending",function():Boolean {return false;});
         var lootApi:Object=org.flashNight.arki.item.LootContainerService;port(lootApi,"hasStageSettlementPending",function():Boolean {return false;});
         var returnApi:Object=StageReturnFlow;port(returnApi,"canBeginSceneLoad",function():Boolean {return true;});
-        var bridgeApi:Object=PlayerResourceTransferBridge;port(bridgeApi,"recordAdmittedDoor",function():Boolean {_root.__cf6MapBridgeCount++;return _root.__cf6MapMode!="bridge-refuse";});
+        var bridgeApi:Object=PlayerSceneLifecycle;port(bridgeApi,"recordAdmittedDoor",function():Boolean {_root.__cf6MapBridgeCount++;return _root.__cf6MapMode!="bridge-refuse";});
         _root.发布消息=noop;_root.存档系统={};_root.场景转换中=false;_root.server={isSocketConnected:false};
         trace("CF6VehicleMapEvidence: actual MapMechanism/StageManager/WaveSpawner; mocked vehicle/loader/camera/persistence-query/fade ports; no live game claim");
         try {emptyWave();singleTail();lifeCase(false);lifeCase(true);foreignPause("pause-before-tail");foreignPause("pause-on-clear");unknownAndReplacement();}

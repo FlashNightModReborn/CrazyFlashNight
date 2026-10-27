@@ -229,12 +229,12 @@ class org.flashNight.arki.scene.SceneManager {
             return false;
         }
         // Loot 与 placement 预检通过后，第一项不可逆 teardown 之前读取最终 HP/MP。
-        var resourceTicket:Object=org.flashNight.arki.scene.PlayerResourceTransferBridge.captureCleanup(
+        var resourceTicket:Object=org.flashNight.arki.scene.PlayerSceneLifecycle.captureCleanup(
             cleanupTicket,gameworld,org.flashNight.arki.scene.StageManager.instance.currentStage);
         if(resourceTicket===false) {
-            cleanupBlockedReason=org.flashNight.arki.scene.PlayerResourceTransferBridge.cleanupFailureReason();
+            cleanupBlockedReason=org.flashNight.arki.scene.PlayerSceneLifecycle.cleanupFailureReason();
             publishSceneLifecycleDiagnostic(cleanupBlockedReason,
-                org.flashNight.arki.scene.PlayerResourceTransferBridge.cleanupFailureDetail());
+                org.flashNight.arki.scene.PlayerSceneLifecycle.cleanupFailureDetail());
             return false;
         }
         try {
@@ -243,7 +243,7 @@ class org.flashNight.arki.scene.SceneManager {
         if (gameworld != null && (!SharedScenePlacement.returnSlot(gameworld,releasedIdentity)
                 || !org.flashNight.arki.camera.HorizontalScroller.releaseScene(gameworld,releasedIdentity,scope))) {
             cleanupBlockedReason = "placement_invariant";
-            org.flashNight.arki.scene.PlayerResourceTransferBridge.abortCleanup(resourceTicket);
+            org.flashNight.arki.scene.PlayerSceneLifecycle.abortCleanup(resourceTicket);
             return false;
         }
 
@@ -308,10 +308,10 @@ class org.flashNight.arki.scene.SceneManager {
         DepthManager.instance = null;
         gameworld = null;
         cleanupWorldIdentity = undefined;
-        org.flashNight.arki.scene.PlayerResourceTransferBridge.commitCleanup(resourceTicket);
+        org.flashNight.arki.scene.PlayerSceneLifecycle.commitCleanup(resourceTicket);
         return true;
         } catch(resourceTeardownError) {
-            org.flashNight.arki.scene.PlayerResourceTransferBridge.abortCleanup(resourceTicket);
+            org.flashNight.arki.scene.PlayerSceneLifecycle.abortCleanup(resourceTicket);
             throw resourceTeardownError;
         }
     }

@@ -73,7 +73,7 @@ class org.flashNight.arki.scene.PlayerResourceTransfer {
     }
     public function consume(token:Object,target:Object,i:Object,caps:Object):Boolean {
         if(state!="bound" || token!==handle) {reason="consume_token_mismatch";return false;}
-        if(!matches(i) || target.__resourceActorIdentity!==destination.actor) return fail("consume_identity_invalid");
+        if(!matches(i) || target.__playerSceneActorIdentity!==destination.actor) return fail("consume_identity_invalid");
         var actual:Object={hp:target.hp,mp:target.mp,hpMax:target.hp满血值,mpMax:target.mp满血值};
         if(!pair(sample,source.kind) || !pair(actual,source.kind)) return fail("consume_resources_invalid");
         var hp:Number=project(sample.hp,sample.hpMax,actual.hpMax,caps.hp);

@@ -29,6 +29,10 @@ Gym 在准备入口及创建候选之前登记专用的只读消费门，协调�
 
 11 槽的未受修改数据由实际装载时冻结。引用及 level/tier/mods 等语义改变会使来源过期。普通投影不调用 getData、不从 live final 反推 base。DressupInitializer.buildPersistentSnapshot 在隔离对象上算完并校验必要数值，再由 applyPersistentSnapshot 通过现有 BuffManager base API 提交。旧 Buff 保留自身倍率、加算、定时记录；套装静态贡献按已提交记录重放，不重复安装 lifecycle。
 
+合法装备负加成不是无效输入。`punch` 的正负值均参与空手攻击力；佣兵 AI 的非负抑制权重仅累计正加成的平方根，不能对负加成开平方并把生成的 NaN 传播成整个人物初始化失败。非有限输入仍在提交 live 前拒绝，回归需覆盖负值、零值、混合正负与重复刷新。
+
+`佣兵技能概率抑制基数` 是 AI 辅助输出，不属于玩家必需属性、Buff 基底或属性后验。它仍随成功投影更新，不能因移出校验而保留上一次装备的值。旧帧 AI 通过 `LegacyUnarmedSkillChance` 消费：合法权重保持原概率公式，无效权重只拒绝本次可选技能抽取并沿原分支执行普通攻击。手动操控及已由 unitAI 接管的路径保留原入口判断。装备 `punch`、HP/MP 与其他必需输入的非法值仍由原数值边界拒绝；不补满资源，不放宽身份，不用辅助字段失败解除保存等待。
+
 兼容名 DressupInitializer.updateProperties 现在走普通冷投影。完整装扮的数值和弹药建基是 initialize 的私有子阶段。新业务不能复制该子阶段，也不能调用 StaticInitializer、Buff reset 或 BuffManager.update(0) 来充当普通刷新。
 
 普通 STATS 保持原 manager、dispatcher、body、Buff 剩余时长、当前护盾容量、射击/装填/动作任务和已发生的损伤。击溃扣掉的实际最终上限点数有独立运行来源；黑犀转换用一对通用 ADD，只有真实转换命令安装/移除。已定位的武器模式只投影数值及其缓存，弹药换算仍由真实模式命令执行一次。M7 只修改自己持有的 alias，通用刷新不覆盖 XM214 的旋转/间隔状态。
@@ -42,6 +46,12 @@ context/body 是不可复用的普通 Object；world 复用 StageReturnFlow.worl
 首次出生、模板、Static、模式组件、状态跳转和转场资源共同拥有外层初始化范围。开始即撤销 ready；UnitInitialized 和 SceneReady 保持原阶段含义。只有外层、转场资源及必要模式组件完成、数值/派生后验成立，才设置最终 ready。Dominator 的独立 SWF 用捕获的 body 通知模式组件就绪，不能以延迟若干帧代替。
 
 每个 bit 记录 requested/completed 水位。flush 只接纳所捕获的工作；同 bit 的再失效仍留下工作。同步最多四轮，重入只返回 pending，不递归或每帧轮询。读取没有变化时为 unchanged，零投影写。
+
+领域读取门恢复后，即使没有 dirty，成功返回 unchanged 也归还协调器自己因等待取得的暂停与禁射；不能越过权威检查提前宣告成功，也不为纯技能点保存伪造属性 dirty。释放在 flush 重入保护内执行，先交出旧 lease，再允许同步回调；随后重验身份、读取门和新增工作。其他 owner 的暂停继续保留，旧 context 的释放不能擦掉新 context 取得的 lease。
+
+首次完整初始化和首次进场通知分别完成：若尾部 `initial_ready` 因合批或领域权威返回 pending，原 owner 后续 flush 达到 applied/unchanged 时补发一次出生就绪通知，不重放属性初始化或资源恢复。通知在 flush 的重入保护释放后执行；同一身体后续读取不重复发布。投影失败的 stage/reason 首次出现或改变时写入现有服务器日志，避免只留下 Host 的进场超时。
+
+首次初始化明确失败时，通过窄失败 hook 通知场景 owner；同步 scene scope 的返回值同样必须消费。场景 owner 延后至下一帧接管失败，属性协调器不负责跳帧、重读档或发放资源。旧 scope 的失败不得撤销新身体。后续换装/成长仍按原 owner 的 checkpoint 恢复；出生失败不会靠发布部分成功的 SceneReady/Start 来解锁。
 
 合法 EQUIPMENT 的领域 owner 先冻结原装备 proof 并预分配一次性 ticket 的目标 body。Static 开始时激活一次，最终必须恰为该目标及原 context/world/actor/proof。完整重建已覆盖的 STATS/SKILLS 合批吸收。任意另一个 body 仍失败；不能为了装备通过而放宽原 manager/dispatcher 替换后置条件。
 

@@ -194,7 +194,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
     private static var persistentNumberKeys:Array = ["hp满血值","mp满血值","hp满血值装备加层","mp满血值装备加层",
         "装备防御力","懒闪避","伤害加成","空手攻击力","内力","装备刀锋利度加成","装备枪械威力加成",
-        "毒","吸血","击溃","基础毒","基础吸血","基础击溃","基础斩杀","基础命中加成","佣兵技能概率抑制基数",
+        "毒","吸血","击溃","基础毒","基础吸血","基础击溃","基础斩杀","基础命中加成",
         "命中加成","韧性加成","闪避加成","防御力","命中率","韧性系数","躲闪率"];
     private static var persistentValueKeys:Array = ["伤害类型","魔法伤害属性","基础伤害类型","基础魔法伤害属性"];
     private static var persistentInputKeys:Array = ["_name","等级","hp基本满血值","mp基本满血值","基本空手攻击力",
@@ -553,6 +553,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
                 if(fields.capacity!=undefined) target[slot+"弹匣容量"]=fields.capacity;
             }
             if (record.legacy != null) target.buff.acceptPersistentRebase(record.legacy);
+            // AI 辅助量不参与玩家必需属性的校验、Buff 基底与后验。
+            // 仍随每次成功投影更新；坏值由实际 AI 消费端拒绝，不保留旧装备的权重。
+            target.佣兵技能概率抑制基数 = Number(c.佣兵技能概率抑制基数);
             target.__persistentStatBase = c;
             target.__lonerContribution = record.loner;
         } finally { target.__statProjectionCommit = false; }
@@ -1023,7 +1026,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         if (data.punch) {
             var 空手加成 = data.punch;
             target.空手攻击力 += 空手加成;
-            target.佣兵技能概率抑制基数 += Math.sqrt(空手加成);
+            // 指骨撑架等合法负加成仍扣攻击力；AI 抑制权重只累计正向拳力。
+            if (空手加成 > 0) target.佣兵技能概率抑制基数 += Math.sqrt(空手加成);
         }
         if (data.toughness) target.韧性加成 += data.toughness;
         if (data.evasion) target.闪避加成 += data.evasion;
