@@ -315,6 +315,9 @@ layers:
       - "guidance-catalog.json"
       - "tutorial-journeys.json"
       - "scene-transition/catalog.manifest.json"
+      # WorldCompositor 启动即加载 preset.json（内部再引 lutset 与 render-schedule）；
+      # 漏包会抛 DirectoryNotFoundException 终止 Core（CF7-LAUNCH-CORE-UNHANDLED）。
+      - "world-lighting/**"
     exclude: []
 
   - name: launcher-agent-assets
