@@ -69,6 +69,30 @@ npm run ensure:runtime
 npm run list-tags
 ```
 
+### 生成可直接安装到 Steam resources 的 zip（Windows，不需要 7-Zip）
+
+```powershell
+cd tools/cf7-packer
+powershell -ExecutionPolicy Bypass -File sfx/build-windows-zip.ps1 `
+  -Version 2026-10-26 `
+  -RagExe "E:\program\cfn-rag-backend\CFN-RAG-v3.0.0.exe"   # 可选：AI 终端程序
+```
+
+产物 `output/CF7-每日包-<版本>.zip`，解压后顶层是：
+
+```text
+resources/                              打包产物运行树（覆盖进 Steam 的 resources）
+CrazyFlasher7StandAloneStarter_Data/    Unity 外壳补丁（Assembly-CSharp.dll）
+install.ps1                             安装脚本
+安装更新.bat                             玩家双击的入口
+使用说明.txt
+CFN-RAG-v*.exe                          可选，终端程序
+```
+
+玩家解压到任意位置后双击 `安装更新.bat`：脚本按 AppID `2402310` 定位 Steam 库并覆盖复制 `resources/`、`_Data/`，不删除原版底座里的其它文件，存档不受影响；包内带终端程序时放到游戏根目录（`resources` 的上一级），供 `fscommand/launch_rag.bat` 通配拉起。
+
+注意两点：这份 zip 的顶层是 `resources/` 而不是打包输出目录本身，玩家不能把日期文件夹直接塞进 `resources`；zip 由 .NET 写入并带 UTF-8 文件名标志，不要改用系统自带压缩或 `tar` 重打（中文名会乱码，游戏读不到中文名数据文件）。`build-sfx.sh` 那条 `.7z` 安装器路线仍需要构建机安装 7-Zip。
+
 ### 输出目录模板
 
 `output.dir` 和 GUI 里的输出路径输入框支持以下占位符：
