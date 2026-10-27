@@ -2,17 +2,17 @@
 <!--
     空手搓招配置
     招式列表：
-    - 波动拳: ↓↘ + A (下前A)，要求内力爆发 Lv2
-    - 诛杀步: Shift + → (Shift + 前)，要求拳脚攻击 Lv1
-    - 后撤步: Shift + ← (Shift + 后)，要求拳脚攻击 Lv1
-    - 燃烧指节: → + ↑ + J (前上J)，要求升龙拳 Lv1
-    - 能量喷泉: Shift + ↓ + J (Shift下J)，要求裂地拳 Lv1 + 10% MP
-    - 连环踢： ↑ + A （上A），要求拳脚攻击 LV2
-    - 回旋踢： ↓ + A （下A），要求裂地拳 LV1
+    - 波动拳: ↓↘ + A (下前A)，要求被动技能「波动拳」
+    - 诛杀步: Shift + → (Shift + 前)，要求被动技能「诛杀步」
+    - 后撤步: Shift + ← (Shift + 后)，要求被动技能「后撤步」
+    - 燃烧指节: → + ↑ + J (前上J)，要求被动技能「燃烧指节」
+    - 能量喷泉: Shift + ↓ + J (Shift下J)，要求被动技能「能量喷泉」+ 10% MP
+    - 连环踢： ↑ + A （上A），要求被动技能「连环踢」
+    - 回旋踢： ↓ + A （下A），要求被动技能「回旋踢」
 -->
 <CommandSet id="barehand" label="空手">
     <Commands>
-        <!-- 波动拳: 下前 + A，要求内力爆发 Lv2 -->
+        <!-- 波动拳: 下前 + A，要求被动技能「波动拳」 -->
         <Command name="波动拳" action="波动拳" priority="10">
             <Sequence>
                 <Event>DOWN_FORWARD</Event>
@@ -24,11 +24,11 @@
                 <Tag>必杀</Tag>
             </Tags>
             <Requirements>
-                <Skill name="内力爆发" minLevel="2"/>
+                <Skill name="波动拳" minLevel="1"/>
             </Requirements>
         </Command>
 
-        <!-- 诛杀步: Shift + 前，要求拳脚攻击 Lv1 -->
+        <!-- 诛杀步: Shift + 前，要求被动技能「诛杀步」 -->
         <Command name="诛杀步" action="诛杀步" priority="5">
             <Sequence>
             <Event>SHIFT_FORWARD</Event>
@@ -39,11 +39,11 @@
                 <Tag>基础</Tag>
             </Tags>
             <Requirements>
-                <Skill name="拳脚攻击" minLevel="1"/>
+                <Skill name="诛杀步" minLevel="1"/>
             </Requirements>
         </Command>
 
-        <!-- 后撤步: Shift + 后，要求拳脚攻击 Lv1 -->
+        <!-- 后撤步: Shift + 后，要求被动技能「后撤步」 -->
         <Command name="后撤步" action="后撤步" priority="5">
             <Sequence>
                 <Event>SHIFT_BACK</Event>
@@ -54,11 +54,11 @@
                 <Tag>防御</Tag>
             </Tags>
             <Requirements>
-                <Skill name="拳脚攻击" minLevel="1"/>
+                <Skill name="后撤步" minLevel="1"/>
             </Requirements>
         </Command>
 
-        <!-- 燃烧指节: 前 + 上 + J，要求升龙拳 Lv1 -->
+        <!-- 燃烧指节: 前 + 上 + J，要求被动技能「燃烧指节」 -->
         <Command name="燃烧指节" action="燃烧指节" priority="8">
             <Sequence>
                 <Event>UP_FORWARD</Event>
@@ -70,11 +70,11 @@
                 <Tag>连招</Tag>
             </Tags>
             <Requirements>
-                <Skill name="升龙拳" minLevel="1"/>
+                <Skill name="燃烧指节" minLevel="1"/>
             </Requirements>
         </Command>
 
-        <!-- 能量喷泉: Shift + 下 + J，要求裂地拳 Lv1 + 10% MP -->
+        <!-- 能量喷泉: Shift + 下 + J，要求被动技能「能量喷泉」+ 10% MP -->
         <Command name="能量喷泉" action="能量喷泉1段" priority="7">
             <Sequence>
                 <Event>SHIFT_DOWN</Event>
@@ -86,12 +86,12 @@
                 <Tag>消耗</Tag>
             </Tags>
             <Requirements>
-                <Skill name="裂地拳" minLevel="1"/>
+                <Skill name="能量喷泉" minLevel="1"/>
                 <MP ratio="0.1"/>
             </Requirements>
         </Command>
 
-        <!-- 连环踢: 上 + A，要求拳脚攻击 Lv2 -->
+        <!-- 连环踢: 上 + A，要求被动技能「连环踢」 -->
          <Command name="连环踢" action="连环踢" priority="8">
             <Sequence>
                 <Event>UP</Event>
@@ -102,11 +102,11 @@
                 <Tag>近战</Tag>
             </Tags>
             <Requirements>
-                <Skill name="拳脚攻击" minLevel="2"/>
+                <Skill name="连环踢" minLevel="1"/>
             </Requirements>
         </Command>
 
-        <!-- 回旋踢: 下 + A，要求裂地拳 Lv1 -->
+        <!-- 回旋踢: 下 + A，要求被动技能「回旋踢」 -->
         <Command name="回旋踢" action="回旋踢" priority="8">
             <Sequence>
                 <Event>DOWN</Event>
@@ -117,7 +117,7 @@
                 <Tag>近战</Tag>
             </Tags>
             <Requirements>
-                <Skill name="裂地拳" minLevel="1"/>
+                <Skill name="回旋踢" minLevel="1"/>
             </Requirements>
         </Command>
 
