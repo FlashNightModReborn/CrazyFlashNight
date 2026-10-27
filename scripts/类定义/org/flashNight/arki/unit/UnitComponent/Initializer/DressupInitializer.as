@@ -563,6 +563,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
     /** 只刷新现有射击对象的派生字段，保留对象、任务和装填/弹药权威。 */
     public static function refreshPersistentWeaponCaches(target:Object,record:Object):Void {
+        if(record.passiveInput!=undefined)
+            org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime.reconcileSkillFeatures(target);
         var mode:String=String(target.攻击模式);
         var slots:Array=mode=="双枪" ? ["手枪","手枪2"] : [mode];
         var init:Object=org.flashNight.arki.unit.Action.Shoot.ShootInitCore;

@@ -356,3 +356,6 @@ launcher/app.manifest text eol=lf
 /launcher/web/assets/enemy-portraits/subjects/1756298a09df3292ba643cd9.svg text eol=lf
 /launcher/web/assets/enemy-portraits/subjects/bf5728a660deee3971669d49.svg text eol=lf
 /launcher/web/assets/enemy-portraits/subjects/c00ec75c0a818028d353a3d5.svg text eol=lf
+
+# Unified Type61 author inputs retain the exact archived bytes bound by source-manifest.json.
+/tools/unified61-assets/source/** -text whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab,cr-at-eol

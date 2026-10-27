@@ -46,8 +46,18 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime {
 
     public static function ghostLimit(unit:Object, slot:String):Number {
         var config:Object = unit[slot + "属性"].overload;
-        if (!(count(config.ghost) > 0) || !unit.被动技能.冲击连携.启用) return 0;
+        if (!(count(config.ghost) > 0) || !org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(unit,"impact_chain.ghost_loading")) return 0;
         return Math.min(2, Math.max(count(config.ghost), count(config.ghostLimit)));
+    }
+
+    /** 已提交技能投影的窄结算：只退回新资格之外的付费幽灵弹，不重做装填或库存扣费。 */
+    public static function reconcileSkillFeatures(unit:Object):Void {
+        if(unit.被动技能.冲击连携.__featurePrefs["impact_chain.ghost_loading"]==undefined)return;
+        var slots:Array=["长枪","手枪","手枪2"];
+        for(var i:Number=0;i<slots.length;i++) {
+            var slot:String=slots[i];var state:Object=unit[slot].value.ammoState;
+            if(count(state.ghost)>ghostLimit(unit,slot)&&capacity(unit,slot)>0)ensure(unit,slot);
+        }
     }
 
     public static function rewardLimit(unit:Object, slot:String):Number {

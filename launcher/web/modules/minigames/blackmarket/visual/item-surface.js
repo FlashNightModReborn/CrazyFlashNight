@@ -7,11 +7,15 @@
 })(typeof globalThis !== "undefined" ? globalThis : this, function() {
     "use strict";
 
-    var VERSION = "object-sdf-nanobot-sludge.v2";
+    var VERSION = "object-sdf-nanobot-sludge.v3";
     var MATERIAL_PROFILE = "dormant-military-nanobots.v1";
     var NANO_CELL_SCALE = 0.068;
     var DEFAULT_ALPHA_THRESHOLD = 12;
     var INF = 1e15;
+    // Six visible offers plus a small amount of navigation overlap. Entries verify the
+    // complete mask after hashing; a hash collision must never reuse another shape.
+    var revealFieldCache = [];
+    var REVEAL_FIELD_CACHE_LIMIT = 8;
 
     function clamp(value, low, high) {
         return value < low ? low : value > high ? high : value;
@@ -291,88 +295,6 @@
         return out;
     }
 
-    function retainComponents(mask, width, height) {
-        var labels = new Int32Array(mask.length);
-        var queue = new Int32Array(mask.length);
-        var components = [];
-        var label = 0;
-        var index;
-        for (index = 0; index < mask.length; index += 1) {
-            if (!mask[index] || labels[index]) continue;
-            label += 1;
-            var head = 0;
-            var tail = 0;
-            var minX = width;
-            var minY = height;
-            var maxX = 0;
-            var maxY = 0;
-            var sumX = 0;
-            var sumY = 0;
-            queue[tail++] = index;
-            labels[index] = label;
-            while (head < tail) {
-                var current = queue[head++];
-                var x = current % width;
-                var y = Math.floor(current / width);
-                if (x < minX) minX = x;
-                if (x > maxX) maxX = x;
-                if (y < minY) minY = y;
-                if (y > maxY) maxY = y;
-                sumX += x;
-                sumY += y;
-                var next;
-                if (x > 0) {
-                    next = current - 1;
-                    if (mask[next] && !labels[next]) { labels[next] = label; queue[tail++] = next; }
-                }
-                if (x + 1 < width) {
-                    next = current + 1;
-                    if (mask[next] && !labels[next]) { labels[next] = label; queue[tail++] = next; }
-                }
-                if (y > 0) {
-                    next = current - width;
-                    if (mask[next] && !labels[next]) { labels[next] = label; queue[tail++] = next; }
-                }
-                if (y + 1 < height) {
-                    next = current + width;
-                    if (mask[next] && !labels[next]) { labels[next] = label; queue[tail++] = next; }
-                }
-            }
-            components.push({
-                label: label,
-                area: tail,
-                minX: minX,
-                minY: minY,
-                maxX: maxX,
-                maxY: maxY,
-                cx: sumX / tail,
-                cy: sumY / tail
-            });
-        }
-        if (!components.length) return new Uint8Array(mask.length);
-        components.sort(function(a, b) {
-            var ac = 1 - Math.min(1, Math.hypot(a.cx - width * 0.5, a.cy - height * 0.5) / Math.max(width, height));
-            var bc = 1 - Math.min(1, Math.hypot(b.cx - width * 0.5, b.cy - height * 0.5) / Math.max(width, height));
-            return b.area * (0.72 + bc * 0.28) - a.area * (0.72 + ac * 0.28);
-        });
-        var main = components[0];
-        var keep = {};
-        keep[main.label] = true;
-        var maxGap = Math.max(width, height) * 0.12;
-        for (var c = 1; c < components.length; c += 1) {
-            var part = components[c];
-            var gapX = Math.max(0, main.minX - part.maxX, part.minX - main.maxX);
-            var gapY = Math.max(0, main.minY - part.maxY, part.minY - main.maxY);
-            var gap = Math.hypot(gapX, gapY);
-            if (part.area >= Math.max(3, main.area * 0.006) && gap <= maxGap) keep[part.label] = true;
-        }
-        var out = new Uint8Array(mask.length);
-        for (index = 0; index < labels.length; index += 1) {
-            if (keep[labels[index]]) out[index] = 1;
-        }
-        return out;
-    }
-
     function sampleEdgeColor(imageData) {
         var width = imageData.width;
         var height = imageData.height;
@@ -426,89 +348,32 @@
     function segmentOpaqueBackground(imageData, alpha) {
         var width = imageData.width;
         var height = imageData.height;
-        var data = imageData.data;
         var sample = sampleEdgeColor(imageData);
+        var threshold = 18;
         var background = new Uint8Array(alpha.mask.length);
         var queue = new Int32Array(alpha.mask.length);
         var head = 0;
         var tail = 0;
-        var x;
-        var y;
-
-        function seed(index) {
-            if (!background[index]) {
-                background[index] = 1;
-                queue[tail++] = index;
-            }
+        function visit(index) {
+            if (background[index] || (alpha.mask[index]
+                    && colorDistance(imageData.data, index * 4, sample.color) > threshold)) return;
+            background[index] = 1;
+            queue[tail++] = index;
         }
-
-        for (x = 0; x < width; x += 1) {
-            seed(x);
-            seed((height - 1) * width + x);
-        }
-        for (y = 1; y + 1 < height; y += 1) {
-            seed(y * width);
-            seed(y * width + width - 1);
-        }
-
+        for (var x = 0; x < width; x += 1) { visit(x); visit((height - 1) * width + x); }
+        for (var y = 1; y + 1 < height; y += 1) { visit(y * width); visit(y * width + width - 1); }
         while (head < tail) {
             var current = queue[head++];
-            var cx = current % width;
-            var cy = Math.floor(current / width);
-            var currentOffset = current * 4;
-
-            function visit(next) {
-                if (background[next]) return;
-                var offset = next * 4;
-                var globalDistance = colorDistance(data, offset, sample.color);
-                var localDistance = localColorDistance(data, offset, currentOffset);
-                if (!alpha.mask[next] || globalDistance <= sample.threshold
-                        || (globalDistance <= sample.threshold * 1.55 && localDistance <= 18 + sample.spread)) {
-                    background[next] = 1;
-                    queue[tail++] = next;
-                }
-            }
-
-            if (cx > 0) visit(current - 1);
-            if (cx + 1 < width) visit(current + 1);
-            if (cy > 0) visit(current - width);
-            if (cy + 1 < height) visit(current + width);
+            x = current % width;
+            y = Math.floor(current / width);
+            if (x) visit(current - 1);
+            if (x + 1 < width) visit(current + 1);
+            if (y) visit(current - width);
+            if (y + 1 < height) visit(current + width);
         }
-
         var candidate = new Uint8Array(alpha.mask.length);
-        var margin = Math.max(1, Math.floor(Math.min(width, height) * 0.012));
-        var count = 0;
-        for (y = margin; y < height - margin; y += 1) {
-            for (x = margin; x < width - margin; x += 1) {
-                var index = y * width + x;
-                if (alpha.mask[index] && !background[index]) {
-                    candidate[index] = 1;
-                    count += 1;
-                }
-            }
-        }
-        candidate = closeMask(candidate, width, height, 1);
-        candidate = fillSmallHoles(candidate, width, height, Math.max(24, Math.round(count * 0.12)));
-        candidate = retainComponents(candidate, width, height);
-        var bounds = maskBounds(candidate, width, height);
-
-        if (bounds.count < width * height * 0.006 || bounds.count > width * height * 0.72) {
-            candidate.fill(0);
-            for (y = margin; y < height - margin; y += 1) {
-                for (x = margin; x < width - margin; x += 1) {
-                    var fallbackIndex = y * width + x;
-                    if (alpha.mask[fallbackIndex]
-                            && colorDistance(data, fallbackIndex * 4, sample.color) > sample.threshold * 0.72) {
-                        candidate[fallbackIndex] = 1;
-                    }
-                }
-            }
-            candidate = fillSmallHoles(closeMask(candidate, width, height, 1), width, height,
-                Math.max(24, Math.round(width * height * 0.05)));
-            candidate = retainComponents(candidate, width, height);
-            bounds = maskBounds(candidate, width, height);
-        }
-        return { mask: candidate, bounds: bounds, edgeColor: sample.color, threshold: sample.threshold };
+        for (var i = 0; i < candidate.length; i += 1) candidate[i] = alpha.mask[i] && !background[i] ? 1 : 0;
+        return { mask: candidate, bounds: maskBounds(candidate, width, height), edgeColor: sample.color, threshold: threshold };
     }
 
     function extractObjectMask(imageData, options) {
@@ -516,32 +381,81 @@
         var threshold = options.alphaThreshold === undefined ? DEFAULT_ALPHA_THRESHOLD : options.alphaThreshold;
         var alpha = alphaMask(imageData, threshold);
         var total = imageData.width * imageData.height;
+        var width = imageData.width;
+        var height = imageData.height;
+        var data = imageData.data;
         if (!alpha.count) {
             return {
                 mask: alpha.mask,
-                bounds: maskBounds(alpha.mask, imageData.width, imageData.height),
+                bounds: maskBounds(alpha.mask, width, height),
                 source: "empty-alpha",
-                confidence: 0
+                confidence: 0,
+                quality: { status: "empty", warnings: ["empty-source"] }
             };
         }
-        var alphaCoverage = alpha.count / total;
-        if (alphaCoverage < 0.86) {
-            var direct = retainComponents(alpha.mask, imageData.width, imageData.height);
+        var transparent = 0;
+        var core = new Uint8Array(total);
+        var coreCount = 0;
+        for (var index = 0; index < total; index += 1) {
+            if (data[index * 4 + 3] < threshold) transparent += 1;
+            if (data[index * 4 + 3] >= 240) { core[index] = 1; coreCount += 1; }
+        }
+        // Occupied area is not evidence of an opaque background. Inventory
+        // shadows can cover almost the whole tile while its body has valid alpha.
+        if (transparent > 0 || options.preparedAlpha === true) {
+            var direct = alpha.mask;
+            var shadowRemoved = 0;
+            var maskMode = options.sourceMaskMode || options.hiddenColorMode;
+            var proxy = maskMode === "proxy" || maskMode === "monochrome";
+            if (proxy && !options.preparedAlpha && coreCount >= Math.max(4, alpha.count * 0.08)
+                    && alpha.count - coreCount > total * 0.015) {
+                var coreDistance = distanceToFeature(core, width, height);
+                direct = new Uint8Array(total);
+                for (index = 0; index < total; index += 1) {
+                    // Keep the opaque body and its local antialiasing fringe;
+                    // never join, fill or discard disconnected real parts.
+                    direct[index] = core[index] || (data[index * 4 + 3] >= 96 && coreDistance[index] <= 2.25) ? 1 : 0;
+                    if (alpha.mask[index] && !direct[index]) shadowRemoved += 1;
+                }
+            }
+            var bounds = maskBounds(direct, width, height);
+            var cropped = maskMode === "proxy" || bounds.x <= 1 || bounds.y <= 1
+                || bounds.x + bounds.width >= width - 1 || bounds.y + bounds.height >= height - 1;
             return {
                 mask: direct,
-                bounds: maskBounds(direct, imageData.width, imageData.height),
-                source: "alpha",
-                confidence: round(clamp(1 - alphaCoverage * 0.25, 0.72, 0.99))
+                bounds: bounds,
+                source: shadowRemoved ? "alpha-core-with-fringe" : "alpha",
+                confidence: cropped ? 0.72 : 0.98,
+                quality: { status: cropped ? "usable-crop" : "usable-alpha", cropped: cropped,
+                    shadowPixelsRemoved: shadowRemoved, warnings: cropped ? ["source-touches-frame"] : [] }
             };
         }
+        // Color segmentation is reserved for genuinely opaque, uniform borders.
+        // An uncertain crop is retained as a crop; it is never scored as a good
+        // silhouette merely because a few contrasting internal pixels survived.
+        var edge = sampleEdgeColor(imageData);
+        var agrees = 0;
+        var samples = 0;
+        for (index = 0; index < total; index += 1) {
+            var x = index % width;
+            var y = Math.floor(index / width);
+            if (x && y && x !== width - 1 && y !== height - 1) continue;
+            samples += 1;
+            if (colorDistance(data, index * 4, edge.color) <= 18) agrees += 1;
+        }
+        if (agrees / samples < 0.85 || edge.spread > 8) {
+            return { mask: alpha.mask, bounds: maskBounds(alpha.mask, width, height),
+                source: "ambiguous-opaque", confidence: 0.12,
+                quality: { status: "ambiguous", cropped: true, warnings: ["nonuniform-opaque-border"] } };
+        }
         var segmented = segmentOpaqueBackground(imageData, alpha);
-        var segmentedCoverage = segmented.bounds.count / total;
         if (segmented.bounds.count < Math.max(12, Math.round(total * 0.006))) {
             return {
                 mask: alpha.mask,
-                bounds: maskBounds(alpha.mask, imageData.width, imageData.height),
-                source: "opaque-alpha-fallback",
+                bounds: maskBounds(alpha.mask, width, height),
+                source: "ambiguous-opaque",
                 confidence: 0.12,
+                quality: { status: "ambiguous", cropped: true, warnings: ["foreground-not-separable"] },
                 backgroundColor: segmented.edgeColor,
                 backgroundThreshold: round(segmented.threshold, 2)
             };
@@ -550,7 +464,8 @@
             mask: segmented.mask,
             bounds: segmented.bounds,
             source: "edge-segmented-alpha",
-            confidence: round(clamp(1 - Math.abs(segmentedCoverage - 0.28), 0.38, 0.9)),
+            confidence: 0.68,
+            quality: { status: "estimated-opaque", warnings: ["color-segmentation-estimate"] },
             backgroundColor: segmented.edgeColor,
             backgroundThreshold: round(segmented.threshold, 2)
         };
@@ -1050,67 +965,120 @@
         return { node: node, value: value };
     };
 
-    function nearestGridCell(grid, sourceX, sourceY) {
-        var guessX = Math.floor((sourceX - grid.bounds.x) * grid.width / Math.max(1, grid.bounds.width));
-        var guessY = Math.floor((sourceY - grid.bounds.y) * grid.height / Math.max(1, grid.bounds.height));
-        guessX = clamp(guessX, 0, grid.width - 1);
-        guessY = clamp(guessY, 0, grid.height - 1);
-        var guessed = guessY * grid.width + guessX;
-        if (grid.mask[guessed]) return guessed;
-        var best = -1;
-        var bestDistance = INF;
-        for (var index = 0; index < grid.mask.length; index += 1) {
-            if (!grid.mask[index]) continue;
-            var x = index % grid.width;
-            var y = Math.floor(index / grid.width);
-            var distance = (x - guessX) * (x - guessX) + (y - guessY) * (y - guessY);
-            if (distance < bestDistance) { bestDistance = distance; best = index; }
-        }
-        return best;
-    }
-
-    function geodesicArrival(grid, anchor, seed) {
-        var arrival = new Float64Array(grid.mask.length);
+    function geodesicArrival(mask, width, height, bounds, anchor, seed) {
+        // Work on the actual foreground graph. A coarse occupancy grid loses thin
+        // connections and leaves source pixels pointing into background cells.
+        var arrival = new Float64Array(mask.length);
         arrival.fill(INF);
-        var start = nearestGridCell(grid, anchor.x, anchor.y);
-        if (start < 0) return arrival;
-        var background = new Uint8Array(grid.mask.length);
-        for (var i = 0; i < background.length; i += 1) background[i] = grid.mask[i] ? 0 : 1;
-        var widthSquared = distanceToFeature(background, grid.width, grid.height);
-        var maxWidth = 1;
-        for (i = 0; i < widthSquared.length; i += 1) {
-            if (grid.mask[i] && widthSquared[i] > maxWidth) maxWidth = widthSquared[i];
-        }
-        maxWidth = Math.sqrt(maxWidth);
-        var heap = new MinHeap(Math.max(16, Math.floor(grid.mask.length * 0.4)));
-        arrival[start] = 0;
-        heap.push(start, 0);
+        var labels = new Int32Array(mask.length);
+        var queue = new Int32Array(bounds.count);
+        var components = [];
         var directions = [
             [-1, 0, 1], [1, 0, 1], [0, -1, 1], [0, 1, 1],
             [-1, -1, Math.SQRT2], [1, -1, Math.SQRT2], [-1, 1, Math.SQRT2], [1, 1, Math.SQRT2]
         ];
-        while (heap.length) {
-            var current = heap.pop();
-            if (current.value !== arrival[current.node]) continue;
-            var cx = current.node % grid.width;
-            var cy = Math.floor(current.node / grid.width);
-            for (var d = 0; d < directions.length; d += 1) {
-                var nx = cx + directions[d][0];
-                var ny = cy + directions[d][1];
-                if (nx < 0 || nx >= grid.width || ny < 0 || ny >= grid.height) continue;
-                var next = ny * grid.width + nx;
-                if (!grid.mask[next]) continue;
-                var widthBias = 1 - clamp(Math.sqrt(widthSquared[next]) / maxWidth, 0, 1);
-                var texture = valueNoise(nx * 0.19, ny * 0.19, seed ^ 0x6d2b79f5);
-                var step = directions[d][2] * (0.76 + widthBias * 0.18 + texture * 0.34);
-                var nextValue = current.value + step;
-                if (nextValue < arrival[next]) {
-                    arrival[next] = nextValue;
-                    heap.push(next, nextValue);
+        var i;
+        for (i = 0; i < mask.length; i += 1) {
+            if (!mask[i] || labels[i]) continue;
+            var label = components.length + 1;
+            var head = 0;
+            var tail = 1;
+            var nearest = i;
+            var nearestDistance = INF;
+            queue[0] = i;
+            labels[i] = label;
+            while (head < tail) {
+                var node = queue[head++];
+                var x = node % width;
+                var y = Math.floor(node / width);
+                var dx = x + 0.5 - anchor.x;
+                var dy = y + 0.5 - anchor.y;
+                var distance = dx * dx + dy * dy;
+                if (distance < nearestDistance || (distance === nearestDistance && node < nearest)) {
+                    nearest = node;
+                    nearestDistance = distance;
+                }
+                for (var d = 0; d < directions.length; d += 1) {
+                    var nx = x + directions[d][0];
+                    var ny = y + directions[d][1];
+                    if (nx < 0 || nx >= width || ny < 0 || ny >= height) continue;
+                    var next = ny * width + nx;
+                    if (!mask[next] || labels[next]) continue;
+                    labels[next] = label;
+                    queue[tail++] = next;
+                }
+            }
+            components.push({ root: nearest, distance: nearestDistance, area: tail });
+        }
+        components.sort(function(a, b) { return a.distance - b.distance || a.root - b.root; });
+        var background = new Uint8Array(mask.length);
+        for (i = 0; i < background.length; i += 1) background[i] = mask[i] ? 0 : 1;
+        var widthSquared = distanceToFeature(background, width, height);
+        var maxWidth = 1;
+        for (i = 0; i < widthSquared.length; i += 1) {
+            if (mask[i] && widthSquared[i] > maxWidth) maxWidth = widthSquared[i];
+        }
+        maxWidth = Math.sqrt(maxWidth);
+        var cost = new Float32Array(mask.length);
+        var textureScale = 128 / Math.max(1, bounds.width, bounds.height) * 0.19;
+        for (i = 0; i < mask.length; i += 1) {
+            if (!mask[i]) continue;
+            var widthBias = 1 - clamp(Math.sqrt(widthSquared[i]) / maxWidth, 0, 1);
+            var texture = valueNoise((i % width) * textureScale, Math.floor(i / width) * textureScale, seed ^ 0x6d2b79f5);
+            cost[i] = 0.76 + widthBias * 0.18 + texture * 0.34;
+        }
+        var heap = new MinHeap(Math.max(16, Math.floor(Math.sqrt(bounds.count) * 4)));
+        var maximum = -1;
+        var visited = 0;
+        for (var c = 0; c < components.length; c += 1) {
+            // A disconnected real part gets a new continuous front only after the
+            // previous part is complete. No INF values or random reveal speckles.
+            var start = components[c].root;
+            arrival[start] = maximum + 1;
+            heap.push(start, arrival[start]);
+            while (heap.length) {
+                var current = heap.pop();
+                if (current.value !== arrival[current.node]) continue;
+                visited += 1;
+                maximum = Math.max(maximum, current.value);
+                var cx = current.node % width;
+                var cy = Math.floor(current.node / width);
+                for (d = 0; d < directions.length; d += 1) {
+                    nx = cx + directions[d][0];
+                    ny = cy + directions[d][1];
+                    if (nx < 0 || nx >= width || ny < 0 || ny >= height) continue;
+                    next = ny * width + nx;
+                    if (!mask[next]) continue;
+                    var nextValue = current.value + directions[d][2] * cost[next];
+                    if (nextValue < arrival[next]) {
+                        arrival[next] = nextValue;
+                        heap.push(next, nextValue);
+                    }
                 }
             }
         }
-        return arrival;
+        if (visited !== bounds.count) throw new Error("surface reveal graph is incomplete");
+        return { arrival: arrival, componentCount: components.length, reachablePixels: visited };
+    }
+
+    function revealFieldFor(mask, width, height, bounds, anchor, seedText) {
+        var hash = 2166136261 >>> 0;
+        var i;
+        for (i = 0; i < mask.length; i += 1) hash = Math.imul(hash ^ mask[i], 16777619) >>> 0;
+        var key = [width, height, hash, anchor.x, anchor.y, seedText].join("|");
+        for (var c = 0; c < revealFieldCache.length; c += 1) {
+            var entry = revealFieldCache[c];
+            if (entry.key !== key || entry.mask.length !== mask.length) continue;
+            for (i = 0; i < mask.length && entry.mask[i] === mask[i]; i += 1) { /* exact identity */ }
+            if (i !== mask.length) continue;
+            revealFieldCache.splice(c, 1);
+            revealFieldCache.push(entry);
+            return entry.field;
+        }
+        var field = geodesicArrival(mask, width, height, bounds, anchor, hash32(seedText));
+        revealFieldCache.push({ key: key, mask: new Uint8Array(mask), field: field });
+        if (revealFieldCache.length > REVEAL_FIELD_CACHE_LIMIT) revealFieldCache.shift();
+        return field;
     }
 
     function nthValue(values, target) {
@@ -1140,9 +1108,9 @@
 
     function buildCoverageMasks(objectMask, width, height, anchor, targetCoverage, seedText) {
         var bounds = maskBounds(objectMask, width, height);
-        var grid = downsampleMask(objectMask, width, height, bounds, 128);
-        var seed = hash32(seedText || "blackmarket-surface");
-        var arrival = geodesicArrival(grid, anchor, seed);
+        if (!Number.isFinite(targetCoverage)) throw new Error("surface coverage must be finite");
+        seedText = seedText || "blackmarket-surface";
+        var seed = hash32(seedText);
         var objectPixels = bounds.count;
         var targetCovered = clamp(Math.round(objectPixels * targetCoverage), 0, objectPixels);
         var revealCount = objectPixels - targetCovered;
@@ -1150,19 +1118,21 @@
         var mudInside = new Uint8Array(objectMask.length);
         if (!objectPixels) {
             return { reveal: reveal, mudInside: mudInside, objectPixels: 0, coveredPixels: 0,
-                actualCoverage: 0, targetCoverage: targetCoverage, grid: grid };
+                actualCoverage: 0, targetCoverage: targetCoverage, componentCount: 0, reachablePixels: 0 };
         }
         if (revealCount <= 0) {
             mudInside.set(objectMask);
             return { reveal: reveal, mudInside: mudInside, objectPixels: objectPixels, coveredPixels: objectPixels,
-                actualCoverage: 1, targetCoverage: targetCoverage, grid: grid };
+                actualCoverage: 1, targetCoverage: targetCoverage, reachablePixels: objectPixels };
         }
         if (revealCount >= objectPixels) {
             reveal.set(objectMask);
             return { reveal: reveal, mudInside: mudInside, objectPixels: objectPixels, coveredPixels: 0,
-                actualCoverage: 0, targetCoverage: targetCoverage, grid: grid };
+                actualCoverage: 0, targetCoverage: targetCoverage, reachablePixels: objectPixels };
         }
 
+        var field = revealFieldFor(objectMask, width, height, bounds, anchor, seedText);
+        var arrival = field.arrival;
         var scores = new Float64Array(objectPixels);
         var scoreByPixel = new Float64Array(objectMask.length);
         scoreByPixel.fill(INF);
@@ -1171,9 +1141,7 @@
             for (var x = 0; x < width; x += 1) {
                 var index = y * width + x;
                 if (!objectMask[index]) continue;
-                var gx = clamp(Math.floor((x - bounds.x) * grid.width / Math.max(1, bounds.width)), 0, grid.width - 1);
-                var gy = clamp(Math.floor((y - bounds.y) * grid.height / Math.max(1, bounds.height)), 0, grid.height - 1);
-                var base = arrival[gy * grid.width + gx];
+                var base = arrival[index];
                 var micro = hashCoord(x, y, seed ^ 0xa5a5a5a5) * 0.21;
                 var score = base + micro;
                 scoreByPixel[index] = score;
@@ -1213,19 +1181,26 @@
             actualCoverage: covered / objectPixels,
             targetCoverage: targetCoverage,
             threshold: threshold,
-            grid: grid
+            componentCount: field.componentCount,
+            reachablePixels: field.reachablePixels,
+            revealMethod: "full-resolution-component-geodesic"
         };
     }
 
     function addAttachedEnvelope(coverage, objectMask, width, height, seedText) {
         var radius = clamp(Math.round(Math.min(width, height) * (0.008 + coverage.targetCoverage * 0.008)), 2, 7);
-        var expandedMud = dilate(coverage.mudInside, width, height, radius);
-        var expandedObject = dilate(objectMask, width, height, radius + 1);
-        var protectedReveal = dilate(coverage.reveal, width, height, Math.max(1, radius - 1));
-        var finalMud = new Uint8Array(objectMask.length);
+        // Interior coverage is authoritative. Material skirts can only add pixels
+        // outside the object, never erase budgeted mud or cover a revealed pixel.
+        var finalMud = new Uint8Array(coverage.mudInside);
+        if (!coverage.coveredPixels) return { mask: finalMud, radius: radius };
+        var toMud = distanceToFeature(coverage.mudInside, width, height);
+        var toReveal = distanceToFeature(coverage.reveal, width, height);
+        var protectionSquared = Math.pow(Math.max(1, radius - 1), 2);
+        var protectedReveal = new Uint8Array(objectMask.length);
         var i;
         for (i = 0; i < finalMud.length; i += 1) {
-            if (expandedMud[i] && expandedObject[i] && !protectedReveal[i]) finalMud[i] = 1;
+            protectedReveal[i] = toReveal[i] <= protectionSquared ? 1 : 0;
+            if (!objectMask[i] && toMud[i] <= radius * radius && !protectedReveal[i]) finalMud[i] = 1;
         }
 
         var seed = hash32(seedText || "blackmarket-surface");
@@ -1243,17 +1218,41 @@
                 for (var dy = 1; dy <= length; dy += 1) {
                     var yy = bottom + dy;
                     if (yy >= height) break;
+                    var center = yy * width + x;
+                    if (protectedReveal[center] || (objectMask[center] && !coverage.mudInside[center])) break;
                     var taper = Math.max(0, Math.round(dripWidth * (1 - dy / (length + 2))));
                     for (var dx = -taper; dx <= taper; dx += 1) {
                         var xx = x + dx;
                         if (xx < 0 || xx >= width) continue;
                         var index = yy * width + xx;
-                        if (!protectedReveal[index]) finalMud[index] = 1;
+                        if (!objectMask[index] && !protectedReveal[index]) finalMud[index] = 1;
                     }
                 }
             }
         }
-        return { mask: finalMud, radius: radius };
+        // Remove exterior fragments disconnected by the protected reveal margin.
+        var attached = new Uint8Array(finalMud.length);
+        var queue = new Int32Array(finalMud.length);
+        var head = 0;
+        var tail = 0;
+        for (i = 0; i < finalMud.length; i += 1) {
+            if (coverage.mudInside[i]) { attached[i] = 1; queue[tail++] = i; }
+        }
+        while (head < tail) {
+            var current = queue[head++];
+            var cx = current % width;
+            var cy = Math.floor(current / width);
+            for (var oy = -1; oy <= 1; oy += 1) {
+                for (var ox = -1; ox <= 1; ox += 1) {
+                    var nx = cx + ox;
+                    var ny = cy + oy;
+                    if ((!ox && !oy) || nx < 0 || nx >= width || ny < 0 || ny >= height) continue;
+                    var next = ny * width + nx;
+                    if (finalMud[next] && !attached[next]) { attached[next] = 1; queue[tail++] = next; }
+                }
+            }
+        }
+        return { mask: attached, radius: radius };
     }
 
     function copyImageDataLike(imageData) {
@@ -1294,8 +1293,11 @@
         if (mode === "source") return;
         var data = output.data;
         for (var i = 0; i < objectMask.length; i += 1) {
-            if (!objectMask[i]) continue;
             var offset = i * 4;
+            // Alpha fringes and translucent glow may lie outside the coverage
+            // mask. They remain visible and must obey the same hidden color
+            // policy; recoloring them must not change the geometric budget.
+            if (!data[offset + 3]) continue;
             var luminance = data[offset] * 0.2126 + data[offset + 1] * 0.7152 + data[offset + 2] * 0.0722;
             var value = clamp(48 + luminance * 0.48, 32, 154);
             data[offset] = value * 0.82;
@@ -1385,8 +1387,13 @@
                 actualCoverage: 0,
                 targetCoverage: targetCoverage
             };
-        var envelope = mudEnabled ? addAttachedEnvelope(coverage, structural, width, height, options.seed || "surface")
+        var envelope = mudEnabled ? addAttachedEnvelope(coverage, objectMask, width, height, options.seed || "surface")
             : { mask: new Uint8Array(objectMask.length), radius: 0 };
+        var finalCoveredPixels = 0;
+        for (var coveredIndex = 0; coveredIndex < objectMask.length; coveredIndex += 1) {
+            if (objectMask[coveredIndex] && envelope.mask[coveredIndex]) finalCoveredPixels += 1;
+        }
+        var finalCoverage = coverage.objectPixels ? finalCoveredPixels / coverage.objectPixels : 0;
         var output = copyImageDataLike(imageData);
         applyHiddenColorMode(output, objectMask, options.hiddenColorMode || "source");
         var seed = hash32(options.seed || "surface");
@@ -1475,6 +1482,12 @@
         var ended = typeof performance !== "undefined" && performance.now ? performance.now() : Date.now();
         return {
             imageData: output,
+            diagnostics: options.diagnostics === true ? {
+                objectMask: objectMask,
+                revealMask: coverage.reveal,
+                mudMask: envelope.mask,
+                budgetMask: coverage.mudInside
+            } : undefined,
             metrics: {
                 version: VERSION,
                 maskSource: extraction.source,
@@ -1482,10 +1495,16 @@
                 objectPixels: extraction.bounds.count,
                 objectBounds: extraction.bounds,
                 targetCoverage: round(targetCoverage),
-                actualCoverage: round(coverage.actualCoverage),
-                coverageDelta: round(coverage.actualCoverage - targetCoverage),
-                coveredObjectPixels: coverage.coveredPixels,
-                revealedObjectPixels: Math.max(0, coverage.objectPixels - coverage.coveredPixels),
+                actualCoverage: round(finalCoverage, 7),
+                coverageDelta: round(finalCoverage - targetCoverage, 7),
+                budgetCoverage: round(coverage.actualCoverage, 7),
+                coveredObjectPixels: finalCoveredPixels,
+                revealedObjectPixels: Math.max(0, coverage.objectPixels - finalCoveredPixels),
+                coverageMetric: "final-mud-object-intersection",
+                coverageInvariant: finalCoveredPixels === coverage.coveredPixels,
+                revealMethod: coverage.revealMethod || "all-or-none",
+                componentCount: coverage.componentCount || 0,
+                unreachableObjectPixels: mudEnabled ? coverage.objectPixels - coverage.reachablePixels : 0,
                 envelopeRadiusPx: envelope.radius,
                 materialProfile: MATERIAL_PROFILE,
                 materialMotion: "static-dormant",
@@ -1539,6 +1558,11 @@
         sourceContext.drawImage(bitmap, 0, 0, sourceWidth, sourceHeight);
         var sourceData = sourceContext.getImageData(0, 0, sourceWidth, sourceHeight);
         var plan = planOrientation(sourceData, targetWidth, targetHeight, options);
+        if (!plan.sourceAnalysis.bounds.count) {
+            var emptyError = new Error("surface source contains no visible pixels");
+            emptyError.code = "empty-source";
+            throw emptyError;
+        }
         // preserveSourceAlpha（揭晓后的干净展示）跳过遮罩量化：遮罩仍驱动几何（bounds/anchor/
         // SDF/污泥），但绘图层保留原始半透边缘，不再二值化出锯齿
         var preserveAlpha = options.preserveSourceAlpha === true;
@@ -1573,6 +1597,7 @@
         var renderOptions = {};
         var key;
         for (key in options) renderOptions[key] = options[key];
+        renderOptions.preparedAlpha = true;
         renderOptions.anchor = {
             x: plan.outputAnchor.x,
             y: plan.outputAnchor.y,
@@ -1591,6 +1616,7 @@
         rendered.metrics.orientationFitGain = plan.fitGain;
         rendered.metrics.sourceMask = plan.sourceAnalysis.source;
         rendered.metrics.sourceSegmentationConfidence = plan.sourceAnalysis.confidence;
+        rendered.metrics.sourceQuality = plan.sourceAnalysis.quality;
         rendered.metrics.sourceAnchor = {
             normalizedX: plan.anchor.normalizedX,
             normalizedY: plan.anchor.normalizedY,
@@ -1602,7 +1628,7 @@
         rendered.metrics.sourceAlpha = preserveAlpha ? "preserved" : "segmented";
         rendered.metrics.sourceSharpening = sharpeningStrength > 0 ? "alpha-safe-unsharp" : "none";
         rendered.metrics.sourceSharpeningStrength = round(sharpeningStrength, 2);
-        return { canvas: targetCanvas, metrics: rendered.metrics };
+        return { canvas: targetCanvas, metrics: rendered.metrics, diagnostics: rendered.diagnostics };
     }
 
     function createRenderer(options) {
@@ -1610,6 +1636,10 @@
         var worker = null;
         var workerFailed = false;
         var pending = {};
+        var inFlight = {};
+        var canvasRequests = new WeakMap();
+        var mainQueue = [];
+        var mainTimer = null;
         var sequence = 0;
         var blobPromises = {};
         var surfaceCache = {};
@@ -1617,23 +1647,57 @@
         var metricsByKey = {};
         var destroyed = false;
         var cacheLimit = clamp(Number(options.cacheLimit) || 36, 6, 96);
+        var timeoutMs = clamp(Number(options.timeoutMs) || 30000, 25, 60000);
+
+        function abortError(message) {
+            var error = new Error(message);
+            error.name = "AbortError";
+            return error;
+        }
+
+        function retire(request) {
+            request.settled = true;
+            if (request.timer) clearTimeout(request.timer);
+            if (request.bitmap && request.bitmap.close) request.bitmap.close();
+            request.bitmap = null;
+            if (request.originalResult && request.originalResult.bitmap.close) request.originalResult.bitmap.close();
+            request.originalResult = null;
+            delete pending[request.id];
+            if (inFlight[request.cacheKey] === request) delete inFlight[request.cacheKey];
+        }
+
+        function armTimeout(request) {
+            if (request.timer) clearTimeout(request.timer);
+            request.timer = setTimeout(function() {
+                if (request.settled) return;
+                if (request.state === "worker" && !workerFailed) workerFailure();
+                else fail(request, new Error("surface render timed out"));
+            }, timeoutMs);
+        }
+
+        function workerFailure() {
+            if (destroyed) return;
+            workerFailed = true;
+            if (worker) worker.terminate();
+            worker = null;
+            Object.keys(pending).forEach(function(id) {
+                var request = pending[id];
+                // Decode jobs are already registered. They choose the *current*
+                // backend when decode completes, never a captured dead Worker.
+                if (request && !request.settled && request.state === "worker") {
+                    armTimeout(request);
+                    runMainThread(request);
+                }
+            });
+        }
 
         function safeWorker() {
             if (worker || workerFailed || destroyed || typeof Worker === "undefined" || !options.workerUrl) return worker;
             try {
                 worker = new Worker(options.workerUrl);
                 worker.onmessage = handleWorkerMessage;
-                worker.onerror = function() {
-                    workerFailed = true;
-                    if (worker) worker.terminate();
-                    worker = null;
-                    var ids = Object.keys(pending);
-                    ids.forEach(function(id) {
-                        var request = pending[id];
-                        delete pending[id];
-                        runMainThread(request);
-                    });
-                };
+                worker.onerror = workerFailure;
+                worker.onmessageerror = workerFailure;
             } catch (error) {
                 workerFailed = true;
                 worker = null;
@@ -1643,9 +1707,21 @@
 
         function loadBlob(url) {
             if (!blobPromises[url]) {
-                blobPromises[url] = fetch(url, { cache: "force-cache" }).then(function(response) {
-                    if (!response.ok) throw new Error("surface asset HTTP " + response.status);
-                    return response.blob();
+                blobPromises[url] = new Promise(function(resolve, reject) {
+                    var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+                    var timer = setTimeout(function() {
+                        if (controller) controller.abort();
+                        reject(new Error("surface asset timed out"));
+                    }, timeoutMs);
+                    var init = { cache: "force-cache" };
+                    if (controller) init.signal = controller.signal;
+                    Promise.resolve().then(function() { return fetch(url, init); }).then(function(response) {
+                        if (!response.ok) throw new Error("surface asset HTTP " + response.status);
+                        return response.blob();
+                    }).then(function(blob) { clearTimeout(timer); resolve(blob); }, function(error) {
+                        clearTimeout(timer);
+                        reject(error);
+                    });
                 }).catch(function(error) {
                     delete blobPromises[url];
                     throw error;
@@ -1717,7 +1793,9 @@
                 spec.autoRotate === false ? 0 : 1, round(spec.paddingRatio === undefined ? 0.075 : spec.paddingRatio),
                 spec.sharpenSource === true ? 1 : 0,
                 round(spec.sharpenStrength === undefined ? 0.18 : spec.sharpenStrength),
-                spec.preserveSourceAlpha === true ? 1 : 0].join("|");
+                spec.preserveSourceAlpha === true ? 1 : 0, spec.assetUrl,
+                spec.fallbackAssetUrl || "", spec.fallbackHiddenColorMode || "monochrome", spec.sourceMaskMode || "",
+                spec.fallbackSourceMaskMode || "monochrome"].join("|");
         }
 
         function drawBitmap(canvas, bitmap) {
@@ -1742,70 +1820,199 @@
             }
         }
 
+        function deliver(waiter, bitmap, sourceMetrics, cacheKey) {
+            if (waiter.settled) return;
+            if (destroyed || canvasRequests.get(waiter.canvas) !== waiter) {
+                rejectWaiter(waiter, abortError("surface render superseded"));
+                return;
+            }
+            var metrics = JSON.parse(JSON.stringify(sourceMetrics));
+            metrics.offerId = waiter.spec.offerId || null;
+            metrics.sourceKind = waiter.spec.sourceKind || "icon";
+            metrics.sourceComposition = waiter.spec.sourceComposition || null;
+            metrics.focusFitFieldCount = Number(waiter.spec.focusFitFieldCount || 0);
+            metrics.focusDrawFieldCount = Number(waiter.spec.focusDrawFieldCount || 0);
+            metrics.previewGender = waiter.spec.previewGender || null;
+            try {
+                drawBitmap(waiter.canvas, bitmap);
+                waiter.canvas.setAttribute("data-surface-state", "ready");
+                metricsByKey[waiter.spec.offerId || cacheKey] = JSON.parse(JSON.stringify(metrics));
+                waiter.settled = true;
+                canvasRequests.delete(waiter.canvas);
+                waiter.resolve(metrics);
+                if (typeof waiter.spec.onComplete === "function") {
+                    try { waiter.spec.onComplete(metrics, waiter.canvas); } catch (ignored) { /* result is already delivered */ }
+                }
+            } catch (error) {
+                rejectWaiter(waiter, error);
+            }
+        }
+
+        function rejectWaiter(waiter, error) {
+            if (waiter.settled) return;
+            waiter.settled = true;
+            if (canvasRequests.get(waiter.canvas) === waiter) {
+                canvasRequests.delete(waiter.canvas);
+                if (error.name !== "AbortError") {
+                    waiter.canvas.setAttribute("data-surface-state", "error");
+                    if (typeof waiter.spec.onError === "function") {
+                        try { waiter.spec.onError(error, waiter.canvas); } catch (ignored) { /* settle original error */ }
+                    }
+                }
+            }
+            waiter.reject(error);
+        }
+
         function finish(request, bitmap, metrics, backend) {
-            if (destroyed) {
+            if (request.settled || destroyed) {
                 if (bitmap && bitmap.close) bitmap.close();
                 return;
             }
+            if (!bitmap || !bitmap.width || !bitmap.height || !metrics) {
+                if (bitmap && bitmap.close) bitmap.close();
+                fail(request, new Error("surface worker returned an invalid result"));
+                return;
+            }
+            if (!request.sourceFallback && request.spec.fallbackAssetUrl && metrics.sourceQuality
+                    && metrics.sourceQuality.status === "ambiguous") {
+                // Keep the already rendered original until its same-item
+                // alternative proves usable. No guess can erase the last image.
+                request.originalResult = { bitmap: bitmap, metrics: metrics, backend: backend };
+                useFallback(request, "ambiguous-primary-to-same-item-transparent-frame");
+                return;
+            }
+            if (request.originalResult && metrics.sourceMask !== "alpha" && metrics.sourceMask !== "alpha-core-with-fringe") {
+                if (bitmap.close) bitmap.close();
+                restoreOriginal(request);
+                return;
+            }
+            retire(request);
             metrics.backend = backend;
-            metrics.offerId = request.spec.offerId || null;
-            metrics.sourceKind = request.spec.sourceKind || "icon";
-            metrics.sourceComposition = request.spec.sourceComposition || null;
-            metrics.focusFitFieldCount = Number(request.spec.focusFitFieldCount || 0);
-            metrics.focusDrawFieldCount = Number(request.spec.focusDrawFieldCount || 0);
-            metrics.previewGender = request.spec.previewGender || null;
+            metrics.sourceFallback = request.sourceFallback || null;
             rememberSurface(request.cacheKey, bitmap, metrics);
-            metricsByKey[request.spec.offerId || request.cacheKey] = JSON.parse(JSON.stringify(metrics));
-            drawBitmap(request.canvas, bitmap);
-            request.canvas.setAttribute("data-surface-state", "ready");
-            if (typeof request.spec.onComplete === "function") request.spec.onComplete(metrics, request.canvas);
-            request.resolve(metrics);
+            request.waiters.forEach(function(waiter) { deliver(waiter, bitmap, metrics, request.cacheKey); });
         }
 
         function fail(request, error) {
-            request.canvas.setAttribute("data-surface-state", "error");
-            if (typeof request.spec.onError === "function") request.spec.onError(error, request.canvas);
-            request.reject(error);
+            if (!request || request.settled) return;
+            if (!destroyed && error.name !== "AbortError" && request.originalResult) {
+                restoreOriginal(request);
+                return;
+            }
+            retire(request);
+            request.waiters.forEach(function(waiter) { rejectWaiter(waiter, error); });
+        }
+
+        function pumpMainQueue() {
+            mainTimer = null;
+            if (destroyed) return;
+            var request;
+            while (mainQueue.length) {
+                request = mainQueue.shift();
+                if (!request.settled) break;
+                request = null;
+            }
+            if (!request) return;
+            var bitmap = request.bitmap;
+            request.bitmap = null;
+            request.state = "main-running";
+            try {
+                var result = processBitmap(bitmap, request.size.width, request.size.height, request.spec);
+                var output = result.canvas.transferToImageBitmap ? result.canvas.transferToImageBitmap() : result.canvas;
+                finish(request, output, result.metrics, "main-thread-fallback");
+            } catch (error) {
+                if (!recoverEmptySource(request, error.code)) fail(request, error);
+            } finally {
+                if (bitmap && bitmap.close) bitmap.close();
+                // A macrotask boundary between items lets input and paint run.
+                if (mainQueue.length && !destroyed) mainTimer = setTimeout(pumpMainQueue, 0);
+            }
+        }
+
+        function queueMain(request, bitmap) {
+            if (destroyed || request.settled) { if (bitmap.close) bitmap.close(); return; }
+            request.bitmap = bitmap;
+            request.state = "main-queued";
+            mainQueue.push(request);
+            if (mainTimer === null) mainTimer = setTimeout(pumpMainQueue, 0);
         }
 
         function runMainThread(request) {
-            loadBlob(request.spec.assetUrl).then(function(blob) {
-                return blobToDrawable(blob);
-            }).then(function(bitmap) {
-                var result = processBitmap(bitmap, request.size.width, request.size.height, request.spec);
-                if (bitmap.close) bitmap.close();
-                var outputBitmap = result.canvas.transferToImageBitmap
-                    ? result.canvas.transferToImageBitmap() : null;
-                if (outputBitmap) {
-                    finish(request, outputBitmap, result.metrics, "main-thread-fallback");
-                    return;
+            if (request.settled || destroyed) return;
+            request.state = "decoding-main";
+            loadBlob(request.spec.assetUrl).then(blobToDrawable).then(function(bitmap) {
+                queueMain(request, bitmap);
+            }).catch(function(error) { fail(request, error); });
+        }
+
+        function recoverEmptySource(request, code) {
+            return code === "empty-source" && useFallback(request, "empty-primary-to-same-item-inventory-frame");
+        }
+
+        function restoreOriginal(request) {
+            var original = request.originalResult;
+            request.originalResult = null;
+            request.sourceFallback = "ambiguous-alternate-unusable-primary-retained";
+            finish(request, original.bitmap, original.metrics, original.backend);
+        }
+
+        function useFallback(request, reason) {
+            if (request.sourceFallback || !request.spec.fallbackAssetUrl) return false;
+            request.sourceFallback = reason;
+            request.spec = Object.assign({}, request.spec, {
+                assetUrl: request.spec.fallbackAssetUrl,
+                // An uncoated withdrawn/sealed offer is still hidden. Restore source color
+                // only when the caller explicitly requests a clean source view.
+                hiddenColorMode: request.spec.mud === false && (request.spec.hiddenColorMode || "source") === "source"
+                    ? "source" : (request.spec.fallbackHiddenColorMode || "monochrome"),
+                sourceMaskMode: request.spec.fallbackSourceMaskMode || "monochrome"
+            });
+            armTimeout(request);
+            start(request);
+            return true;
+        }
+
+        function workerOptions(spec) {
+            return {
+                seed: spec.seed, coverage: spec.coverage, mud: spec.mud,
+                hiddenColorMode: spec.hiddenColorMode, debug: spec.debug,
+                sourceMaskMode: spec.sourceMaskMode,
+                autoRotate: spec.autoRotate, paddingRatio: spec.paddingRatio,
+                sharpenSource: spec.sharpenSource, sharpenStrength: spec.sharpenStrength,
+                preserveSourceAlpha: spec.preserveSourceAlpha
+            };
+        }
+
+        function start(request) {
+            request.state = "decoding";
+            safeWorker();
+            loadBlob(request.spec.assetUrl).then(blobToDrawable).then(function(bitmap) {
+                if (destroyed || request.settled) { if (bitmap.close) bitmap.close(); return; }
+                var activeWorker = safeWorker();
+                if (!activeWorker || typeof createImageBitmap === "undefined") { queueMain(request, bitmap); return; }
+                request.state = "worker";
+                try {
+                    activeWorker.postMessage({ id: request.id, bitmap: bitmap,
+                        width: request.size.width, height: request.size.height,
+                        options: workerOptions(request.spec) }, [bitmap]);
+                } catch (error) {
+                    if (bitmap.close) bitmap.close();
+                    workerFailure();
                 }
-                request.canvas.width = result.canvas.width;
-                request.canvas.height = result.canvas.height;
-                request.canvas.getContext("2d").drawImage(result.canvas, 0, 0);
-                result.metrics.backend = "main-thread-fallback";
-                result.metrics.offerId = request.spec.offerId || null;
-                result.metrics.sourceKind = request.spec.sourceKind || "icon";
-                result.metrics.sourceComposition = request.spec.sourceComposition || null;
-                result.metrics.focusFitFieldCount = Number(request.spec.focusFitFieldCount || 0);
-                result.metrics.focusDrawFieldCount = Number(request.spec.focusDrawFieldCount || 0);
-                result.metrics.previewGender = request.spec.previewGender || null;
-                metricsByKey[request.spec.offerId || request.cacheKey] = JSON.parse(JSON.stringify(result.metrics));
-                request.canvas.setAttribute("data-surface-state", "ready");
-                if (typeof request.spec.onComplete === "function") request.spec.onComplete(result.metrics, request.canvas);
-                request.resolve(result.metrics);
             }).catch(function(error) { fail(request, error); });
         }
 
         function handleWorkerMessage(event) {
             var message = event.data || {};
             var request = pending[message.id];
-            if (!request) {
+            if (!request || request.settled || request.state !== "worker") {
                 if (message.bitmap && message.bitmap.close) message.bitmap.close();
                 return;
             }
-            delete pending[message.id];
             if (message.error) {
+                if (message.bitmap && message.bitmap.close) message.bitmap.close();
+                if (recoverEmptySource(request, message.code)) return;
+                armTimeout(request);
                 runMainThread(request);
                 return;
             }
@@ -1818,67 +2025,56 @@
             if (!canvas || !spec.assetUrl) return Promise.reject(new Error("surface canvas/asset missing"));
             var size = canvasSize(canvas, spec);
             var cacheKey = makeCacheKey(spec, size);
-            canvas.setAttribute("data-surface-state", "loading");
-            if (surfaceCache[cacheKey]) {
-                drawBitmap(canvas, surfaceCache[cacheKey].bitmap);
-                canvas.setAttribute("data-surface-state", "ready");
-                var cachedMetrics = JSON.parse(JSON.stringify(surfaceCache[cacheKey].metrics));
-                metricsByKey[spec.offerId || cacheKey] = cachedMetrics;
-                if (typeof spec.onComplete === "function") {
-                    Promise.resolve().then(function() { spec.onComplete(cachedMetrics, canvas); });
-                }
-                return Promise.resolve(cachedMetrics);
+            var previous = canvasRequests.get(canvas);
+            if (previous && !previous.settled) {
+                rejectWaiter(previous, abortError("surface render superseded"));
+                var priorJob = previous.request;
+                if (priorJob && !priorJob.settled && !priorJob.waiters.some(function(w) { return !w.settled; })) retire(priorJob);
             }
+            canvas.setAttribute("data-surface-state", "loading");
             return new Promise(function(resolve, reject) {
-                var request = {
-                    id: ++sequence,
-                    canvas: canvas,
-                    spec: spec,
-                    size: size,
-                    cacheKey: cacheKey,
-                    resolve: resolve,
-                    reject: reject
-                };
-                var activeWorker = safeWorker();
-                if (!activeWorker || typeof createImageBitmap === "undefined") {
-                    runMainThread(request);
+                var waiter = { canvas: canvas, spec: spec, resolve: resolve, reject: reject, settled: false };
+                canvasRequests.set(canvas, waiter);
+                if (surfaceCache[cacheKey]) {
+                    var cached = surfaceCache[cacheKey];
+                    deliver(waiter, cached.bitmap, cached.metrics, cacheKey);
                     return;
                 }
-                loadBlob(spec.assetUrl).then(function(blob) { return blobToDrawable(blob); }).then(function(bitmap) {
-                    if (destroyed) { if (bitmap.close) bitmap.close(); return; }
-                    pending[request.id] = request;
-                    activeWorker.postMessage({
-                        id: request.id,
-                        bitmap: bitmap,
-                        width: size.width,
-                        height: size.height,
-                        options: {
-                            seed: spec.seed,
-                            coverage: spec.coverage,
-                            mud: spec.mud,
-                            hiddenColorMode: spec.hiddenColorMode,
-                            debug: spec.debug,
-                            autoRotate: spec.autoRotate,
-                            paddingRatio: spec.paddingRatio,
-                            sharpenSource: spec.sharpenSource,
-                            sharpenStrength: spec.sharpenStrength
-                        }
-                    }, [bitmap]);
-                }).catch(function(error) { fail(request, error); });
+                var request = inFlight[cacheKey];
+                if (request) {
+                    request.waiters.push(waiter);
+                    waiter.request = request;
+                    return;
+                }
+                request = { id: ++sequence, spec: spec, size: size, cacheKey: cacheKey,
+                    waiters: [waiter], state: "created", settled: false, timer: null, bitmap: null };
+                waiter.request = request;
+                // Registration precedes both Worker startup and asynchronous decode.
+                inFlight[cacheKey] = request;
+                pending[request.id] = request;
+                armTimeout(request);
+                start(request);
             });
         }
 
         function destroy() {
+            if (destroyed) return;
             destroyed = true;
             if (worker) worker.terminate();
             worker = null;
+            if (mainTimer !== null) clearTimeout(mainTimer);
+            mainTimer = null;
+            Object.keys(pending).forEach(function(id) { fail(pending[id], abortError("surface renderer destroyed")); });
             Object.keys(surfaceCache).forEach(function(key) {
                 var bitmap = surfaceCache[key].bitmap;
                 if (bitmap && bitmap.close) bitmap.close();
             });
+            mainQueue = [];
+            inFlight = {};
             surfaceCache = {};
             cacheOrder = [];
             pending = {};
+            blobPromises = {};
             metricsByKey = {};
         }
 

@@ -296,7 +296,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
                 var isHeroControlled:Boolean = (_root.控制目标 == parentRef._name);
                 var passiveSkills:Object = parentRef.被动技能;
-                var hasImpactChain:Boolean = Boolean(passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用);
+                var hasImpactChain:Boolean = org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(parentRef, "impact_chain.half_reload");
                 var rMP:Number = Math.max(that[remainingMagProp], WeaponAmmoRuntime.reserve(parentRef, weaponType) > 0 ? 1 : 0);
 
                 // 使用状态管理器的决策 API 判断是否应该换弹
@@ -497,7 +497,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         }
 
         // 冲击连携被动技能的手枪火力加成：10%→20% 线性插值
-        if (passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用) {
+        if (org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(parentRef, "impact_chain.pistol_power")) {
             if (isPistol && weaponType == "手枪") {
                 var impactLv:Number = passiveSkills.冲击连携.等级 || 1;
                 // 1级10%, 10级20%
@@ -546,12 +546,13 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
 
             // 基础冲击加成：20%→50% 线性插值
             // 适用范围：手枪2 + 霰弹长枪（补弱定位，避免长枪整体数值膨胀）
-            if (weaponType == "手枪2" || (weaponType == "长枪" && isShotgun)) {
+            if ((weaponType == "手枪2" || (weaponType == "长枪" && isShotgun))
+                    && org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(parentRef, "impact_chain.offhand_impact")) {
                 totalImpactBonus += 0.20 + (lv - 1) * (0.50 - 0.20) / 9;
             }
 
             // 霰弹枪额外冲击加成：固定50%（手枪/手枪2/长枪 霰弹枪可触发）
-            if (isShotgun) {
+            if (isShotgun && org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(parentRef, "impact_chain.shotgun_impact")) {
                 totalImpactBonus += 0.50;
             }
 

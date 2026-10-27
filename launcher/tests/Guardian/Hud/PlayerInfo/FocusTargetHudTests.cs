@@ -105,15 +105,18 @@ public sealed class FocusTargetHudTests
     [Theory]
     [InlineData(0, 4)]
     [InlineData(1, 36)]
-    [InlineData(32, 36)]
-    [InlineData(33, 68)]
-    [InlineData(256, 260)]
+    [InlineData(10, 36)]
+    [InlineData(11, 68)]
+    [InlineData(32, 132)]
+    [InlineData(33, 132)]
+    [InlineData(80, 260)]
+    [InlineData(81, 280)]
+    [InlineData(256, 280)]
     public void FollowsBuffRowsAndCompactsToTopWhenNoBuffsExist(int buffs, float top)
     {
         var bounds = PlayerHudFocusTargetWidget.BoundsForBuffCount(buffs);
         Assert.Equal(top, bounds.Top);
         Assert.True(bounds.Left >= 0 && bounds.Right <= 1024 && bounds.Bottom < 576);
-        Assert.Equal(Math.Ceiling(buffs / 32d) * 32 + 4, bounds.Top);
         var notchLeft = (1024 - RightHudLayout.PreferredNotchMaxWidthBase) / 2f;
         Assert.True(bounds.Right + RightHudLayout.NotchRightGapBase <= notchLeft);
     }

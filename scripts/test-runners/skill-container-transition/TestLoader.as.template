@@ -1,0 +1,19 @@
+﻿__PRODUCTION_IMPORTS__
+_root.主角函数={};
+__PRODUCTION_BONUS__
+__PRODUCTION_BULLET_INIT__
+// Match the production f36_7 boot installation envelope.
+_root.__auditInstallSkills=function():Void {
+#include "逻辑/单位函数/单位函数_lsy_主角技能.as"
+};
+_root.__auditInstallSkills();
+#include "引擎/引擎_fs_技能路由.as"
+#include "引擎/引擎_fs_战技路由.as"
+_root.获得父节点=function(mc:MovieClip,n:Number):MovieClip {for(var i:Number=0;i<n;i++)mc=mc._parent;return mc;};
+_root.子弹区域shoot传递=function(props:Object):Void {org.flashNight.arki.unit.UnitComponent.Routing.SkillContainerTransitionTest.capture(props);};
+__PRODUCTION_LEGACY_SHOOT__
+_root.__auditStepOriginal=_root.技能函数.瞬步斩攻击;
+_root.技能函数.瞬步斩攻击=function():Void {trace("Audit Step: this="+this+" parent="+this._parent+" bareParent="+_parent+" original="+typeof _root.__auditStepOriginal);_root.__auditStepOriginal.apply(this);};
+trace("FocusedTestRunId skill-container-transition Start: __FOCUSED_RUN_ID__");
+_root.skillContainerTransitionComplete=function():Void {trace("FocusedTestRunId skill-container-transition Complete: __FOCUSED_RUN_ID__");};
+org.flashNight.arki.unit.UnitComponent.Routing.SkillContainerTransitionTest.runAllTests();

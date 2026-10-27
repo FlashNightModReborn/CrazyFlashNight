@@ -1,10 +1,16 @@
-/* 共享双栏关卡详情：同一情报/操作，左侧按地图采用二维定位或三维特写。 */
+/* 共享双栏关卡详情：同一情报/操作，左侧按地图采用二维定位或三维战区上下文。 */
 var StageSelectFocus = (function() {
     'use strict';
-    var S = StageSelectCore.state, shell, surface, viewport, content, footer, tabs, history;
+    var S = StageSelectCore.state, shell, surface, viewport, content, footer, tabs, history, pager, pagerCount;
     var selected = '', mode = '简单', tab = 'brief', current = null;
-    var tooltipScope=null, contentGeneration=0;
+    var tooltipScope=null, contentGeneration=0, viewMemo={};
     var escape = StageSelectCore.escapeHtml;
+    function memoKey(id) { return S._catalogId + '/' + S._currentFrameLabel + '/' + id; }
+    function remember() {
+        if (!selected || !current || !content) return;
+        viewMemo[memoKey(selected)] = { mode: mode, tab: tab, scrollTop: content.scrollTop };
+    }
+    function reset() { viewMemo = {}; }
     function button(text, action, className) {
         var el = document.createElement('button');
         el.type = 'button'; el.textContent = text; el.className = className || 'stage-focus-action';
@@ -29,6 +35,14 @@ var StageSelectFocus = (function() {
             if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
             else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
         });
+        pager = document.createElement('div'); pager.className = 'stage-focus-pager';
+        pager.setAttribute('role', 'group'); pager.setAttribute('aria-label', '切换地点');
+        var previous = button('上一处'); previous.dataset.focusPager = 'prev';
+        var next = button('下一处'); next.dataset.focusPager = 'next';
+        previous.addEventListener('click', function() { stepFocusStage(-1); });
+        next.addEventListener('click', function() { stepFocusStage(1); });
+        pagerCount = document.createElement('span'); pagerCount.setAttribute('aria-live', 'polite');
+        pager.append(previous, pagerCount, next); shell.addHeaderAction(pager);
         var back = button('返回总览', 'back');
         back.addEventListener('click', function() { StageSelectInspector.clearSelection({restoreFocus:true}); });
         shell.addHeaderAction(back);
@@ -48,7 +62,7 @@ var StageSelectFocus = (function() {
         [['brief','简报'],['intel','情报']].forEach(function(pair) {
             var item = button(pair[1]); item.dataset.focusTab = pair[0]; item.setAttribute('role','tab');
             item.id = 'stage-focus-tab-'+pair[0]; item.setAttribute('aria-controls','stage-focus-content');
-            item.addEventListener('click', function() { tab = pair[0]; renderContent(); });
+            item.addEventListener('click', function() { tab = pair[0]; renderContent(); remember(); });
             item.addEventListener('keydown', function(e) {
                 if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
                 e.preventDefault(); e.stopPropagation();
@@ -59,6 +73,7 @@ var StageSelectFocus = (function() {
         });
         content = document.createElement('div'); content.className = 'stage-focus-content';
         content.id = 'stage-focus-content'; content.tabIndex = 0; content.setAttribute('role','tabpanel');
+        content.addEventListener('scroll', remember, { passive:true });
         var topbar=document.createElement('div');topbar.className='stage-focus-topbar';
         topbar.append(heading,history,tabs);
         footer = document.createElement('div'); footer.className = 'stage-focus-footer';
@@ -71,6 +86,24 @@ var StageSelectFocus = (function() {
         S._inspectorDiffEl.setAttribute('aria-label','出战难度');
         panel.replaceChildren(topbar, S._inspectorTaskEl, S._inspectorLockEl, content, footer);
         shell.mountInitial(view('stage-focus-scene',viewport), view('stage-focus-information',panel));
+    }
+    function focusTourIds() {
+        return window.StageSelectDiorama && StageSelectDiorama.getTourStageIds ? StageSelectDiorama.getTourStageIds() : [];
+    }
+    function refreshTourPager() {
+        if (!pager) return;
+        var ids = focusTourIds(), index = ids.indexOf(selected);
+        pager.hidden = !selected || ids.length < 2;
+        if (!pager.hidden) pagerCount.textContent = (index >= 0 ? index + 1 : 1) + ' / ' + ids.length;
+    }
+    function stepFocusStage(delta) {
+        var ids = focusTourIds();
+        if (ids.length < 2) return;
+        var index = ids.indexOf(selected);
+        if (index < 0) index = delta > 0 ? -1 : 0;
+        var target = ids[(index + delta + ids.length) % ids.length];
+        if (window.StageSelectCameraEditor && StageSelectCameraEditor.isOpen()) StageSelectCameraEditor.hide();
+        StageSelectInspector.selectStage(target, { preserveFocus: pager.contains(document.activeElement) });
     }
     function historyFor(state) {
         var value = state.clearHistory;
@@ -171,13 +204,19 @@ var StageSelectFocus = (function() {
         if (sectionTitle) sectionTitle.textContent = isMap ? '地点行动' : '出战难度';
         var enter=footer.querySelector('.stage-focus-enter'); enter.textContent=isMap ? '前往地点' : ('以'+mode+'难度出发');
         enter.disabled=!current.state.unlocked || !!S._busyStageName;
+        remember();
     }
     function render(buttonData, state) {
         ensure();
+        remember();
         var changed=selected !== buttonData.id;
         var isMap=buttonData.entryKind === 'map';
+        var memo=changed ? viewMemo[memoKey(buttonData.id)] : null;
         selected=buttonData.id; current={button:buttonData,state:state};
-        if (changed) { tab='brief'; mode=isMap ? '' : (state.task ? state.highestDifficulty : '简单'); }
+        if (changed) {
+            tab=memo && memo.tab ? memo.tab : 'brief';
+            mode=isMap ? '' : (memo && memo.mode ? memo.mode : (state.task ? state.highestDifficulty : '简单'));
+        }
         if (!isMap && StageSelectViewModel.isChallengeMode()) mode='地狱';
         S._el.classList.add('is-stage-focused'); surface.hidden=false;
         if (!state.unlocked) {
@@ -192,8 +231,8 @@ var StageSelectFocus = (function() {
         }
         S._inspectorDiffEl.querySelectorAll('button').forEach(function(el) { el.dataset.focusDifficulty='true'; });
         footer.hidden=!state.unlocked;
-        var scroll=changed ? 0 : content.scrollTop;
-        pickDifficulty(mode); renderContent(); content.scrollTop=scroll;
+        var scroll=changed ? (memo ? memo.scrollTop : 0) : content.scrollTop;
+        pickDifficulty(mode); renderContent(); content.scrollTop=scroll; remember();
         S._buttonLayerEl.inert=true; S._cardLayerEl.inert=true; S._navLayerEl.inert=true;
         if (S._el.classList.contains('is-diorama') && StageSelectDiorama.canFocus(buttonData.id)) {
             viewport.querySelector('.stage-focus-location').hidden=true;
@@ -211,19 +250,22 @@ var StageSelectFocus = (function() {
             var reticlePath='M '+(point.x-36)+' '+point.y+' L '+(point.x-12)+' '+point.y+' M '+(point.x+12)+' '+point.y+' L '+(point.x+36)+' '+point.y+' M '+point.x+' '+(point.y-36)+' L '+point.x+' '+(point.y-12)+' M '+point.x+' '+(point.y+12)+' L '+point.x+' '+(point.y+36);
             map.innerHTML='<svg viewBox="'+vx+' '+vy+' '+zoomW+' '+zoomH+'" role="img" aria-label="当前地点位置"><image href="'+escape(src)+'" x="'+rect.x+'" y="'+rect.y+'" width="'+rect.w+'" height="'+rect.h+'" preserveAspectRatio="none" opacity=".78"/><path d="'+reticlePath+'" class="stage-focus-map-reticle"/><circle cx="'+point.x+'" cy="'+point.y+'" r="22" class="stage-focus-map-ring"/><circle cx="'+point.x+'" cy="'+point.y+'" r="5" class="stage-focus-map-dot"/></svg><div class="stage-focus-map-caption">'+escape(state.unlocked ? buttonData.stageName : StageSelectViewModel.getStageDisplayName(buttonData))+'</div>';
         }
+        refreshTourPager();
         if(window.StageSelectCameraEditor)StageSelectCameraEditor.refreshButtons();
     }
     function hide() {
+        remember();
         releaseContent();if(content)content.replaceChildren();
         if (window.StageSelectCameraEditor && (selected || !S._el.classList.contains('is-diorama'))) StageSelectCameraEditor.hide();
         if (surface) surface.hidden=true;
         if (S._el) S._el.classList.remove('is-stage-focused');
         selected=''; current=null;
+        if (pager) pager.hidden = true;
         var touring=window.StageSelectCameraEditor && StageSelectCameraEditor.isOpen();
         if (S._navLayerEl) S._navLayerEl.inert=!!touring;
         if (S._buttonLayerEl) S._buttonLayerEl.inert=!!touring;
         if (S._cardLayerEl) S._cardLayerEl.inert=!!touring;
         StageSelectDiorama.overview();
     }
-    return {render:render,hide:hide,pickDifficulty:pickDifficulty};
+    return {render:render,hide:hide,pickDifficulty:pickDifficulty,reset:reset,refreshTourPager:refreshTourPager};
 })();

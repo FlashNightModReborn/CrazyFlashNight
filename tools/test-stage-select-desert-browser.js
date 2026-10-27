@@ -86,9 +86,11 @@ async function main() {
             await canvasFits(id);
             await boundaryCovered(id);
             if (index === 0) {
-                const pose = await page.evaluate(() => StageSelectDiorama.snapshotCamera());
-                assert.ok(pose.span >= 1.5 && pose.span < 5, 'Small desert landmarks must use the closer focus range: ' + JSON.stringify(pose));
-                (report.smallLandmarkFocus ||= []).push({ id, ...pose });
+                const contextPose = await page.evaluate(() => StageSelectDiorama.snapshotCamera());
+                const tourPose = await page.evaluate(stageId => StageSelectDiorama.getTourCamera(stageId), id);
+                assert.ok(contextPose.span >= 1.5 && tourPose.span >= 1.5 && tourPose.span < 5 && tourPose.span < contextPose.span,
+                    'Normal focus keeps context while the active tour retains the close range: ' + JSON.stringify({ contextPose, tourPose }));
+                (report.smallLandmarkFocus ||= []).push({ id, context: contextPose, tour: tourPose });
             }
             if ([0, 1, 3, 4, 5, 7].includes(index)) await page.screenshot({ path: path.join(out, id + '-focus.png') });
             if (index === 0) {
@@ -142,6 +144,7 @@ async function main() {
         assert.equal((await page.evaluate(() => StageSelectPanel._debugGetState())).frameLabel, '基地房顶');
         report.checks.push('Wormhole navigation and return retain existing local-frame protocol');
         await page.locator('[data-stage-id="stage_34_10"].stage-select-stage-button').click();
+        await page.locator('#stage-focus-enter').click();
         await page.waitForFunction(() => Panels.getActive() === null);
         report.diplomacy = await page.evaluate(() => StageSelectHarnessHost.enterMessages.at(-1));
         assert.equal(report.diplomacy.stageName, '外交-军阀');

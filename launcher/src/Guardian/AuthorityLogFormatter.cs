@@ -82,7 +82,7 @@ namespace CF7Launcher.Guardian
                 "discard", "move", "merge", "swap", "autoTransfer", "autoTransferBatch",
                 "sortAndMerge",
                 "learnPreview", "learnCommit", "equip", "unequip", "moveSlot",
-                "setPassive", "reorder",
+                "setPassive", "setFeature", "reorder",
                 "equipmentTuningSnapshot", "equipmentTuningPreview",
                 "equipmentTuningCommit", "equipmentTuningTooltip",
                 "equipmentTuningDetach",
@@ -100,7 +100,7 @@ namespace CF7Launcher.Guardian
                 "inventoryAutoTransfer", "inventoryAutoTransferBatch",
                 "inventorySortAndMerge",
                 "skillSnapshot", "skillLearnPreview", "skillLearnCommit",
-                "skillEquip", "skillUnequip", "skillMoveSlot", "skillSetPassive",
+                "skillEquip", "skillUnequip", "skillMoveSlot", "skillSetPassive", "skillSetFeature",
                 "skillReorder",
                 "itemUseOpen", "itemUseOpenMany", "itemUseConsume", "itemUseQuery",
                 "itemUseInboxSnapshot", "itemUseStashPage", "itemUseStashTooltip", "itemUseStashTake",
@@ -569,6 +569,7 @@ namespace CF7Launcher.Guardian
                         case "unequip": return "skillUnequip";
                         case "moveSlot": return "skillMoveSlot";
                         case "setPassive": return "skillSetPassive";
+                        case "setFeature": return "skillSetFeature";
                         case "reorder": return "skillReorder";
                         default: return null;
                     }

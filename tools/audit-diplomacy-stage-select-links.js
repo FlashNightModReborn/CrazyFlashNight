@@ -274,8 +274,8 @@ function audit() {
         && serviceText.indexOf('if (!skipTransition)') >= 0;
     const hasDirectDestinationDrivenStageReturn =
         sceneText.indexOf('_root.淡出动画.淡出跳转帧(_root.关卡地图帧值);') >= 0;
-    // 返回基地硬化允许先同步快照 destination，再在死亡/缺失主角时唯一覆写为医务室。
-    // 探针同时接受旧直传形态与这一受限快照形态，但拒绝在淡出前对快照做任意二次改写。
+    // 接受旧直传、受限快照，以及当前 StageReturnFlow.destination → 医务室兜底 →
+    // BookRunService.returnFrame → prepare/accept token 链；其他任意目的地改写仍拒绝。
     const destinationSnapshot = /var\s+([^\s=;]+)\s*=\s*_root\.关卡地图帧值\s*;([\s\S]*?)_root\.淡出动画\.淡出跳转帧\(\1\)\s*;/u.exec(sceneText);
     let hasGuardedDestinationSnapshot = false;
     if (destinationSnapshot) {
@@ -285,8 +285,26 @@ function audit() {
         const hasMedicalFallback = new RegExp('(?:^|[;\\r\\n])\\s*' + snapshotName + '\\s*=\\s*"医务室"\\s*;', 'u').test(beforeFade);
         hasGuardedDestinationSnapshot = assignments.length === 1 && hasMedicalFallback;
     }
+    const stagedDestination = /var\s+([^\s=;:]+)\s*(?::[^=;]+)?=\s*org\.flashNight\.arki\.scene\.StageReturnFlow\.destination\(_root\.关卡地图帧值\)\s*;/u.exec(sceneText);
+    let hasGuardedStageReturnFlow = false;
+    if (stagedDestination) {
+        const destinationName = escapeRegExp(stagedDestination[1]);
+        const afterDestination = sceneText.slice(stagedDestination.index + stagedDestination[0].length);
+        const transitionToken = new RegExp('var\\s+([^\\s=;:]+)\\s*(?::[^=;]+)?=\\s*org\\.flashNight\\.arki\\.scene\\.StageReturnFlow\\.prepareTransition\\(' + destinationName + '\\)\\s*;', 'u').exec(afterDestination);
+        if (transitionToken) {
+            const tokenName = escapeRegExp(transitionToken[1]);
+            const beforePrepare = afterDestination.slice(0, transitionToken.index);
+            const assignments = beforePrepare.match(new RegExp('(?:^|[;\\r\\n])\\s*' + destinationName + '\\s*=', 'gu')) || [];
+            const medicalFallback = new RegExp('(?:^|[;\\r\\n])\\s*' + destinationName + '\\s*=\\s*"医务室"\\s*;', 'u').exec(beforePrepare);
+            const bookRunReturn = new RegExp('(?:^|[;\\r\\n])\\s*' + destinationName + '\\s*=\\s*org\\.flashNight\\.arki\\.scene\\.BookRunService\\.returnFrame\\(' + destinationName + '\\)\\s*;', 'u').exec(beforePrepare);
+            const hasTokenFade = new RegExp('_root\\.淡出动画\\.淡出跳转帧\\(' + destinationName + '\\s*,\\s*' + tokenName + '\\)', 'u').test(afterDestination);
+            const hasAcceptedToken = new RegExp('org\\.flashNight\\.arki\\.scene\\.StageReturnFlow\\.acceptTransition\\(' + tokenName + '\\)', 'u').test(afterDestination);
+            hasGuardedStageReturnFlow = assignments.length === 2 && !!medicalFallback && !!bookRunReturn
+                && medicalFallback.index < bookRunReturn.index && hasTokenFade && hasAcceptedToken;
+        }
+    }
     const hasDestinationDrivenStageReturn =
-        hasDirectDestinationDrivenStageReturn || hasGuardedDestinationSnapshot;
+        hasDirectDestinationDrivenStageReturn || hasGuardedDestinationSnapshot || hasGuardedStageReturnFlow;
     const completedStageAutoReturnMarkers = [
         '_root.Web选关战斗回流',
         'Web选关回流待打开',

@@ -1,12 +1,12 @@
 # 玩家持久属性投影合同
 
-本文件是持久属性更新的唯一接口合同。代码核对基线为 `4cacdc76c1c21e953344d3bb515ebad19fa0656e` 上的玩家属性施工差异；候选编译、实际旅程和正式部署分别验收，本文件不授予发布权限。领域原有资产、保存、未知结果合同继续生效。
+本文件是持久属性更新的唯一接口合同。代码核对基线为 commit `1db99aa48853c95f3151ef9f41061f7ff3842ec1`；候选编译、实际旅程和正式部署分别验收，本文件不授予发布权限。领域原有资产、保存、未知结果合同继续生效。
 
 ## 权威与成功屏障
 
 | 输入 | 唯一规则/提交 owner | 投影时点 |
 |---|---|---|
-| 技能学习、等级、被动启用 | SkillLoadoutService | 事实提交后；奖励 prepare 不发布，resolve(committed) 才发布 |
+| 技能学习、等级、被动启用、子能力偏好 | SkillLoadoutService | 事实提交后；奖励 prepare 不发布，resolve(committed) 才发布 |
 | 装备与在身调制 | CharacterBuildService / EquipmentTuningService | 真实容器提交后；原 generation/loadoutRevision/proof 与最终属性屏障同时满足 |
 | 快捷拾取、legacy 装备移动 | PickUpManager / ItemUtil | 真实容器成功后；失败投影不能返回为“物品未取得” |
 | 健身 | GymTrainingPanelService | 精确 session 的 durable 确认后；save_pending 候选不可供属性、装备或转场消费 |
@@ -25,7 +25,7 @@ Gym 在准备入口及创建候选之前登记专用的只读消费门，协调�
 
 ## 三种工作与稳定来源
 
-`STATS=1` 用于持久数值、经脉和条件被动；`SKILLS=2` 用于实际技能事实变化；`EQUIPMENT=4` 用于计划内完整装备生命周期。纯槽位重排不重建属性。派生缓存、资源结算和 UI 是同一尾部，无额外 bit。
+`STATS=1` 用于持久数值、经脉和条件被动；`SKILLS=2` 用于实际技能事实变化（含子能力偏好）；`EQUIPMENT=4` 用于计划内完整装备生命周期。纯槽位重排不重建属性。派生缓存、资源结算和 UI 是同一尾部，无额外 bit。
 
 11 槽的未受修改数据由实际装载时冻结。引用及 level/tier/mods 等语义改变会使来源过期。普通投影不调用 getData、不从 live final 反推 base。DressupInitializer.buildPersistentSnapshot 在隔离对象上算完并校验必要数值，再由 applyPersistentSnapshot 通过现有 BuffManager base API 提交。旧 Buff 保留自身倍率、加算、定时记录；套装静态贡献按已提交记录重放，不重复安装 lifecycle。
 
@@ -102,3 +102,5 @@ tools/player-stat-refresh/check-writes.js 默认检查 HEAD 到当前树新增/�
 专项命令与恢复前置见 [验证正文](../agentsDoc/testing-details.md#suite-player-stat-refresh)；探针来源与替身见 [工具说明](../tools/player-stat-refresh/README.md)。原审计 ZIP 未提供，重建探针必须标当前来源。源码、Node、真实 CS6 编译、原生 focused suite、实际游戏/Host 旅程分别记证，不能互相代签。
 
 回滚按领域 adapter、完整身份/ready 接缝、数值来源和单域跨层协议分别整组处理。已提交的资产、已点亮的经脉、耐久训练和已消费的升级恢复不反向重放。生成器输出与所属 SWF 同批核对；候选不自动推广到正式 runtime。
+
+子能力的偏好在领域提交后进入 SKILLS 投影，具体存档和消费者合同见[技能子能力](skill-subfeatures.md)。`refreshPersistentWeaponCaches` 仅在携带已提交 `passiveInput` 时检查已装备枪械的幽灵弹上限，沿用既有规范化将超限付费幽灵弹退回拆包余额；普通 STATS 刷新不拥有弹药写权限。

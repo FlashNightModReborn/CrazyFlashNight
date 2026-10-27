@@ -10,12 +10,17 @@ async function main(){
     const report={scope:'Real local item icons/enemy portraits/shared tooltip in Edge; clear history is mock Host data.',checks:[]};
     page.on('pageerror',e=>errors.push(e.message));
     await page.route('https://cfn-fonts.local/**',r=>r.fulfill({status:204,body:''}));
-    const details=data=>page.evaluate(value=>StageSelectPanel._debugApplySnapshot({stageDetails:{'地铁站':value}}),data);
+    const details=data=>page.evaluate(value=>{
+        const current=StageSelectCore.state._runtimeSnapshot||{};
+        const stageDetails=Object.assign({},current.stageDetails,{'地铁站':value});
+        StageSelectPanel._debugApplySnapshot(Object.assign({},current,{stageDetails}));
+    },data);
     try{
         await page.goto(origin+'/modules/stage-select/dev/harness.html?viewport=1024x576&fixture=allUnlocked');
         await page.evaluate(()=>{document.body.classList.add('stage-select-qa');document.querySelector('#debug-log')?.remove();document.querySelector('#qa-panel')?.remove();StageSelectHarnessHost.open({mode:'runtime',frameLabel:'基地门口'});});
         await page.waitForFunction(()=>StageSelectDiorama.stats().state==='ready');
         await details({stageType:'无限过图',detail:'僵尸喜爱黑暗的环境，于是地铁站成为了整个废城最为凶险的地区。'.repeat(18),clearHistory:{cleared:true,difficulties:['地狱']}});
+        await page.waitForFunction(()=>StageSelectCore.state._runtimeSnapshot&&StageSelectViewModel.getStageState('地铁站').unlocked);
         await page.locator('.stage-select-stage-button[data-stage-id="stage_0_9"] > .stage-select-stage-name').click();
         await page.waitForFunction(()=>!StageSelectDiorama.stats().moving);
         const layout=await page.evaluate(()=>{

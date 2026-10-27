@@ -955,6 +955,7 @@
     </data_fire>
   </item>
   <item weapontype="突击步枪">
+    <allowedModTags>等级校正</allowedModTags>
     <name>M4A1改</name>
     <displayname>M16战术版</displayname>
     <icon>M4A1改</icon>
@@ -965,7 +966,8 @@
     M·斯通纳于1964年研发，由柯尔特制造公司所生产。
     作为1967年以来A国陆军使用的步兵轻兵器主力，亦被至少15个北约国家所采用，更是同口径枪械中产量最多的一个型号。
     便是如今的21世纪，也仍能在战争中见到它的身影；
-    虽然加装了瞄准镜与下挂式榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。</description>
+    虽然加装了瞄准镜与下挂式榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。
+内置电力结构，改装仅支持降低使用等级需求的电脑芯片或成长的勋章。</description>
     <inherentTags>电力,NOAH</inherentTags>
     <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <subweapon>
@@ -1089,13 +1091,15 @@
     </balance>
   </item>
   <item weapontype="突击步枪">
+    <allowedModTags>等级校正</allowedModTags>
     <name>战术版AK200</name>
     <displayname>战术版AK200</displayname>
     <icon>战术版AK200</icon>
     <type>武器</type>
     <use>长枪</use>
     <price>250000</price>
-    <description>AK家族新宠，酷并恐怖着。</description>
+    <description>AK家族新宠，酷并恐怖着。
+内置电力结构，改装仅支持降低使用等级需求的电脑芯片或成长的勋章。</description>
     <inherentTags>电力,NOAH</inherentTags>
     <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <data>
@@ -2198,6 +2202,7 @@
     </balance>
   </item>
   <item weapontype="突击步枪">
+    <allowedModTags>等级校正</allowedModTags>
     <name>AK74战术版</name>
     <displayname>AK74战术版</displayname>
     <icon>AK74战术版</icon>
@@ -2206,7 +2211,8 @@
     <price>60000</price>
     <description>AK74突击步枪战术版根据AK74改装获得，加装了瞄准镜，激光指示器与下挂式榴弹发射器。
     便是如今的21世纪，也仍能在战争中见到它的身影；
-    虽然加装了榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。</description>
+    虽然加装了榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。
+内置电力结构，改装仅支持降低使用等级需求的电脑芯片或成长的勋章。</description>
     <inherentTags>电力,NOAH</inherentTags>
     <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <subweapon>
@@ -2278,6 +2284,7 @@
     </balance>
   </item>
   <item weapontype="突击步枪">
+    <allowedModTags>等级校正</allowedModTags>
     <name>M4A1战术版</name>
     <displayname>M4A1战术版</displayname>
     <icon>M4A1战术版</icon>
@@ -2286,7 +2293,8 @@
     <price>62000</price>
     <description>M4A1突击步枪战术版根据M4A1改装获得，加装了瞄准镜和侧导轨，激光指示器与下挂式榴弹发射器。
     便是如今的21世纪，也仍能在战争中见到它的身影；
-    虽然早就加装了榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。</description>
+    虽然早就加装了榴弹发射器，但不知为何，这管榴弹发射器的内部在此前一直都是空的。
+内置电力结构，改装仅支持降低使用等级需求的电脑芯片或成长的勋章。</description>
     <!-- 装备固有结构标签：参与 provideTags / requireTags 判定 -->
     <inherentTags>电力,NOAH</inherentTags>
     <!-- 装备禁止挂载的插件挂点标签：与 mod.tagValue 同一域 -->
@@ -2517,13 +2525,15 @@
     </balance>
   </item>
   <item weapontype="突击步枪">
+    <allowedModTags>等级校正</allowedModTags>
     <name>DD MK18战术版</name>
     <displayname>DD MK18战术版</displayname>
     <icon>DD MK18战术版</icon>
     <type>武器</type>
     <use>长枪</use>
     <price>70000</price>
-    <description>知名武器制造商Daniel Defense基于MK18平台为特种作战深度定制的战术利器,挂载多种战术配件并配备重型榴弹发射器，性能凶悍！</description>
+    <description>知名武器制造商Daniel Defense基于MK18平台为特种作战深度定制的战术利器,挂载多种战术配件并配备重型榴弹发射器，性能凶悍！
+内置电力结构，改装仅支持降低使用等级需求的电脑芯片或成长的勋章。</description>
     <!-- 装备固有结构标签：参与 provideTags / requireTags 判定 -->
     <inherentTags>电力,NOAH</inherentTags>
     <!-- 装备禁止挂载的插件挂点标签：与 mod.tagValue 同一域 -->
@@ -3075,6 +3085,7 @@
     </balance>
   </item>
   <item weapontype="突击步枪">
+    <allowedModTags>等级校正</allowedModTags>
     <name>HK416战术版</name>
     <displayname>HK416战术版</displayname>
     <icon>HK416战术版</icon>
@@ -3084,7 +3095,8 @@
     <description>HK416自动步枪是以G36突击步枪的气动系统在M4卡宾枪的设计上重新改造而成。
     该枪在恶劣条件下的可靠性、全枪的使用寿命以及安全性都有所提高。
     该枪是两部分组成的聚合材料前托，采用浮动式枪管。
-    装备可折叠的机械瞄具，可配置使用光学和夜视瞄准设备。</description>
+    装备可折叠的机械瞄具，可配置使用光学和夜视瞄准设备。
+内置电力结构，改装仅支持降低使用等级需求的电脑芯片或成长的勋章。</description>
     <inherentTags>电力,NOAH</inherentTags>
     <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <subweapon>

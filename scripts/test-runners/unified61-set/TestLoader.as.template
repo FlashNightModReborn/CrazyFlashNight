@@ -1,0 +1,7 @@
+﻿import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.*;
+if (!_root.主角函数) _root.主角函数 = {};
+#include "逻辑/单位函数/单位函数_fs_装备生命周期配置.as"
+#include "逻辑/装备函数/统合61套装.as"
+_root.unifiedSetFocusedComplete = function():Void {trace("FocusedTestRunId unified61-set Complete: __FOCUSED_RUN_ID__");};
+trace("FocusedTestRunId unified61-set Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.UnitComponent.Initializer.test.UnifiedType61RuntimeTest.runAllTests();

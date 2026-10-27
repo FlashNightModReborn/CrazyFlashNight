@@ -41,8 +41,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         internal DialogueInterjectInputOverlay Overlay { get { return _overlay; } }
 
         /// <summary>输入状态变化：Hidden=收起并还焦点；Offline=终端未启动（禁言样式+启动）；
-        /// NeedsConfig=终端就绪但缺模型配置（禁言样式+配置）；Locked/Preparing/Muted=收起条禁用提示；
-        /// Ready=收起条可用，点击展开输入。</summary>
+        /// NeedsConfig=终端就绪但缺模型配置（禁言样式+配置）；Locked=禁用，文案由控制器按锁因给出
+        /// （NPC 正说到过渡语/拆分前置段＝「不适合插话」，等待首句或 hint 期间＝空串→这里回落「……」）；
+        /// Preparing/Muted=收起条禁用提示；Ready=收起条可用，点击展开输入。</summary>
         internal void Apply(DialogueInterjectInputState state, string placeholder = null)
         {
             if (_disposed) return;
@@ -73,7 +74,10 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                     _overlay.SetStartRequired(false);
                     _overlay.SetConfigRequired(false);
                     _overlay.SetInputEnabled(false);
-                    _overlay.SetPlaceholder("……");
+                    // 控制器按锁因下发文案：NPC 正说到过渡语/拆分前置段才给「不适合插话」，
+                    // 等待首句或 hint 期间留空串，这里回落到原来的省略号禁言提示。
+                    _overlay.SetPlaceholder(string.IsNullOrEmpty(placeholder)
+                        ? "……" : placeholder);
                     ShowPassive();
                     break;
                 case DialogueInterjectInputState.Preparing:

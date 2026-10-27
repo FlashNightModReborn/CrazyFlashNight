@@ -14970,18 +14970,18 @@
       <balanceMode>exception</balanceMode>
       <exceptionCode>legacy-off-formula</exceptionCode>
       <marketPrice>850000</marketPrice>
-      <currentScore>2410</currentScore>
+      <currentScore>2400</currentScore>
       <balanceScore>1010</balanceScore>
       <weightedScore>1010</weightedScore>
       <magicDefAvgCap>20</magicDefAvgCap>
       <magicDefMaxCap>35</magicDefMaxCap>
       <recommendedGoldPrice>130000</recommendedGoldPrice>
       <recommendedKPointPrice>4500</recommendedKPointPrice>
-      <inputs level="50" defence="500" hp="300" mp="300" damage="0" weaponBonus="0" weight="1" punch="150" magicDefence="20" />
+      <inputs level="50" defence="500" hp="300" mp="300" damage="0" weaponBonus="0" weight="1" punch="150" magicDefence="10" />
       <budgetBreakdown>
       </budgetBreakdown>
-      <inputDigest>fnv1a32:d97f95ae</inputDigest>
-      <sourceDigest>sha256:4479a5545f0443578795dc430726d23d1450387218d86e8e71436bb81622c783</sourceDigest>
+      <inputDigest>fnv1a32:483dfadb</inputDigest>
+      <sourceDigest>sha256:2c91c98c26dfabe682aba6db43c40999480821698a921052adbea6bf74fa10d4</sourceDigest>
       <note>存量数值低于公式基线，待裁定改值或改层数口径</note>
     </record>
     <record>
@@ -15024,18 +15024,18 @@
       <balanceMode>exception</balanceMode>
       <exceptionCode>legacy-off-formula</exceptionCode>
       <marketPrice>850000</marketPrice>
-      <currentScore>2710</currentScore>
+      <currentScore>2700</currentScore>
       <balanceScore>1010</balanceScore>
       <weightedScore>1010</weightedScore>
       <magicDefAvgCap>20</magicDefAvgCap>
       <magicDefMaxCap>35</magicDefMaxCap>
       <recommendedGoldPrice>130000</recommendedGoldPrice>
       <recommendedKPointPrice>4500</recommendedKPointPrice>
-      <inputs level="50" defence="550" hp="500" mp="300" damage="0" weaponBonus="0" weight="1" punch="150" magicDefence="20" />
+      <inputs level="50" defence="550" hp="500" mp="300" damage="0" weaponBonus="0" weight="1" punch="150" magicDefence="10" />
       <budgetBreakdown>
       </budgetBreakdown>
-      <inputDigest>fnv1a32:e0318297</inputDigest>
-      <sourceDigest>sha256:97e8780f417899b90a235ac7dd48848a3782fa96d453f71a11181231cdde2126</sourceDigest>
+      <inputDigest>fnv1a32:bed4e77a</inputDigest>
+      <sourceDigest>sha256:88da4c37ac55a4533f25732171dac02d6bd9648fde4b3674bb0b70470b86ad31</sourceDigest>
       <note>存量数值低于公式基线，待裁定改值或改层数口径</note>
     </record>
     <record>
@@ -15062,7 +15062,7 @@
       <budgetBreakdown>
       </budgetBreakdown>
       <inputDigest>fnv1a32:50990810</inputDigest>
-      <sourceDigest>sha256:0ad080eb29a4097df2de3c7685408a7a5c9e7fe23301dc22d7013af7da8e05a6</sourceDigest>
+      <sourceDigest>sha256:40b47749d8d8306e0f3a48e66fb016c5275781ec44c7e1d676a8790bb2175f9f</sourceDigest>
       <note>存量数值低于公式基线，待裁定改值或改层数口径</note>
     </record>
     <record>
@@ -17724,19 +17724,174 @@
       <balanceMode>exception</balanceMode>
       <exceptionCode>legacy-off-formula</exceptionCode>
       <marketPrice>100000</marketPrice>
-      <currentScore>6460</currentScore>
+      <currentScore>6470</currentScore>
       <balanceScore>1400</balanceScore>
       <weightedScore>1400</weightedScore>
       <magicDefAvgCap>24</magicDefAvgCap>
       <magicDefMaxCap>39</magicDefMaxCap>
       <recommendedGoldPrice>182000</recommendedGoldPrice>
       <recommendedKPointPrice>6300</recommendedKPointPrice>
-      <inputs level="70" defence="500" hp="1200" mp="1200" damage="150" weaponBonus="0" weight="0" punch="150" magicDefence="10" />
+      <inputs level="70" defence="500" hp="1200" mp="1200" damage="150" weaponBonus="0" weight="0" punch="150" magicDefence="20" />
       <budgetBreakdown>
       </budgetBreakdown>
-      <inputDigest>fnv1a32:1c947fb1</inputDigest>
-      <sourceDigest>sha256:efcc05aa68d97bc481c12cf8966fc95feac8ab567f47e048e0c55fd1c94e9151</sourceDigest>
+      <inputDigest>fnv1a32:99295fa8</inputDigest>
+      <sourceDigest>sha256:ebd874f17a67554e9b9eb03d6a7f22937080f984d12e7478d522f27cc892214a</sourceDigest>
       <note>存量数值低于公式基线，待裁定改值或改层数口径</note>
+    </record>
+    <record>
+      <auditRef>armor:统合61式头部装甲</auditRef>
+      <itemName>统合61式头部装甲</itemName>
+      <sourceFile>data/items/防具_40+级.xml</sourceFile>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>170000</adoptedGoldPrice>
+      <expectedKPointPrice>5400</expectedKPointPrice>
+      <kpointEvidenceRef>data/crafting/进阶防具.json#craft.unified61.helmet</kpointEvidenceRef>
+      <status>confirmed</status>
+      <balanceMode>formula</balanceMode>
+      <marketPrice>170000</marketPrice>
+      <currentScore>1800</currentScore>
+      <balanceScore>920</balanceScore>
+      <weightedScore>1796.875</weightedScore>
+      <magicDefAvgCap>18</magicDefAvgCap>
+      <magicDefMaxCap>33</magicDefMaxCap>
+      <recommendedGoldPrice>166400</recommendedGoldPrice>
+      <recommendedKPointPrice>5400</recommendedKPointPrice>
+      <inputs level="40" defence="490" hp="430" mp="150" damage="80" weaponBonus="0" weight="12" punch="0" magicDefence="0" />
+      <budgetBreakdown>
+        <entry code="acquisition.crafting" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.helmet" />
+        <entry code="acquisition.kpoint-cost" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.helmet" />
+        <entry code="acquisition.high-price" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.helmet" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:7b67b31d</inputDigest>
+      <sourceDigest>sha256:6edc4691b2a0e258915f83c5d9bdab33050ffa259073aaa623b923f44de125c3</sourceDigest>
+      <note>40级三加权候选：合成1+配方K点成本1+高价1；90kg整套，限制插件，不额外计40级浮动或减益层。公式通过不代表实战定档。</note>
+    </record>
+    <record>
+      <auditRef>armor:统合61式胸甲</auditRef>
+      <itemName>统合61式胸甲</itemName>
+      <sourceFile>data/items/防具_40+级.xml</sourceFile>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>170000</adoptedGoldPrice>
+      <expectedKPointPrice>5400</expectedKPointPrice>
+      <kpointEvidenceRef>data/crafting/进阶防具.json#craft.unified61.chest</kpointEvidenceRef>
+      <status>confirmed</status>
+      <balanceMode>formula</balanceMode>
+      <marketPrice>170000</marketPrice>
+      <currentScore>2110</currentScore>
+      <balanceScore>1080</balanceScore>
+      <weightedScore>2109.375</weightedScore>
+      <magicDefAvgCap>18</magicDefAvgCap>
+      <magicDefMaxCap>33</magicDefMaxCap>
+      <recommendedGoldPrice>166400</recommendedGoldPrice>
+      <recommendedKPointPrice>5400</recommendedKPointPrice>
+      <inputs level="40" defence="525" hp="550" mp="180" damage="110" weaponBonus="0" weight="28" punch="0" magicDefence="0" />
+      <budgetBreakdown>
+        <entry code="acquisition.crafting" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.chest" />
+        <entry code="acquisition.kpoint-cost" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.chest" />
+        <entry code="acquisition.high-price" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.chest" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:4d8648a8</inputDigest>
+      <sourceDigest>sha256:0e0ffbe315eba5ecdd3fc32da08a84806deb9f1f82714f04e542b54e862e74f6</sourceDigest>
+      <note>40级三加权候选：合成1+配方K点成本1+高价1；90kg整套，限制插件，不额外计40级浮动或减益层。公式通过不代表实战定档。</note>
+    </record>
+    <record>
+      <auditRef>armor:统合61式腿甲</auditRef>
+      <itemName>统合61式腿甲</itemName>
+      <sourceFile>data/items/防具_40+级.xml</sourceFile>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>170000</adoptedGoldPrice>
+      <expectedKPointPrice>5400</expectedKPointPrice>
+      <kpointEvidenceRef>data/crafting/进阶防具.json#craft.unified61.leg</kpointEvidenceRef>
+      <status>confirmed</status>
+      <balanceMode>formula</balanceMode>
+      <marketPrice>170000</marketPrice>
+      <currentScore>2110</currentScore>
+      <balanceScore>1080</balanceScore>
+      <weightedScore>2109.375</weightedScore>
+      <magicDefAvgCap>18</magicDefAvgCap>
+      <magicDefMaxCap>33</magicDefMaxCap>
+      <recommendedGoldPrice>166400</recommendedGoldPrice>
+      <recommendedKPointPrice>5400</recommendedKPointPrice>
+      <inputs level="40" defence="540" hp="550" mp="180" damage="100" weaponBonus="0" weight="28" punch="0" magicDefence="0" />
+      <budgetBreakdown>
+        <entry code="acquisition.crafting" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.leg" />
+        <entry code="acquisition.kpoint-cost" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.leg" />
+        <entry code="acquisition.high-price" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.leg" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:9fa98a9d</inputDigest>
+      <sourceDigest>sha256:7bd5ed61df573c8408ce7c9695853da1ebbaeaca29a5a4a90df9da0e75ec206d</sourceDigest>
+      <note>40级三加权候选：合成1+配方K点成本1+高价1；90kg整套，限制插件，不额外计40级浮动或减益层。公式通过不代表实战定档。</note>
+    </record>
+    <record>
+      <auditRef>armor:统合61式装甲鞋</auditRef>
+      <itemName>统合61式装甲鞋</itemName>
+      <sourceFile>data/items/防具_40+级.xml</sourceFile>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>170000</adoptedGoldPrice>
+      <expectedKPointPrice>5400</expectedKPointPrice>
+      <kpointEvidenceRef>data/crafting/进阶防具.json#craft.unified61.boot</kpointEvidenceRef>
+      <status>confirmed</status>
+      <balanceMode>formula</balanceMode>
+      <marketPrice>170000</marketPrice>
+      <currentScore>1800</currentScore>
+      <balanceScore>920</balanceScore>
+      <weightedScore>1796.875</weightedScore>
+      <magicDefAvgCap>18</magicDefAvgCap>
+      <magicDefMaxCap>33</magicDefMaxCap>
+      <recommendedGoldPrice>166400</recommendedGoldPrice>
+      <recommendedKPointPrice>5400</recommendedKPointPrice>
+      <inputs level="40" defence="490" hp="430" mp="150" damage="80" weaponBonus="0" weight="12" punch="0" magicDefence="0" />
+      <budgetBreakdown>
+        <entry code="acquisition.crafting" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.boot" />
+        <entry code="acquisition.kpoint-cost" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.boot" />
+        <entry code="acquisition.high-price" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.boot" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:18a03e2a</inputDigest>
+      <sourceDigest>sha256:4bb252ef1d299a97fe845361184caac8d78d0576e6f77f21f8782c058d6ac490</sourceDigest>
+      <note>40级三加权候选：合成1+配方K点成本1+高价1；90kg整套，限制插件，不额外计40级浮动或减益层。公式通过不代表实战定档。</note>
+    </record>
+    <record>
+      <auditRef>armor:统合61式手甲</auditRef>
+      <itemName>统合61式手甲</itemName>
+      <sourceFile>data/items/防具_40+级.xml</sourceFile>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>170000</adoptedGoldPrice>
+      <expectedKPointPrice>5400</expectedKPointPrice>
+      <kpointEvidenceRef>data/crafting/进阶防具.json#craft.unified61.glove</kpointEvidenceRef>
+      <status>confirmed</status>
+      <balanceMode>formula</balanceMode>
+      <marketPrice>170000</marketPrice>
+      <currentScore>1760</currentScore>
+      <balanceScore>900</balanceScore>
+      <weightedScore>1757.8125</weightedScore>
+      <magicDefAvgCap>18</magicDefAvgCap>
+      <magicDefMaxCap>33</magicDefMaxCap>
+      <recommendedGoldPrice>166400</recommendedGoldPrice>
+      <recommendedKPointPrice>5400</recommendedKPointPrice>
+      <inputs level="40" defence="490" hp="400" mp="140" damage="80" weaponBonus="0" weight="10" punch="0" magicDefence="0" />
+      <budgetBreakdown>
+        <entry code="acquisition.crafting" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.glove" />
+        <entry code="acquisition.kpoint-cost" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.glove" />
+        <entry code="acquisition.high-price" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.glove" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:30632e71</inputDigest>
+      <sourceDigest>sha256:c06a4208a4a18a27591a7e685ead964056e80280f1509de934ccb54b3bd0c8a3</sourceDigest>
+      <note>40级三加权候选：合成1+配方K点成本1+高价1；90kg整套，限制插件，不额外计40级浮动或减益层。公式通过不代表实战定档。</note>
     </record>
   </records>
 </armorBalanceAudit>

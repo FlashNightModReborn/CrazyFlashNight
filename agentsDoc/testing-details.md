@@ -248,21 +248,23 @@ C# 定向 `NativeInteraction` / `Tooltip` 系列（含 `TooltipInspectionFeedbac
 外交地图绿色直达/委托任务直达入口 `entryKind` 且无二次难度按钮、外交地图入口（golden `mapStageButtonInstances`）的 `shape/外交地图点` 与文字内部矩阵运行时坐标、魔神法阵底图装饰层、challenge 只发地狱、背景矩阵、普通难度按钮锚点与 1024×576 / 1366×768 / 1920×1080 视口。
 会话守卫覆盖：请求携带 `panelInstanceId`/`sessionGeneration`/`catalogVersion` 信封、异实例回包拒绝且合法重试仍可自愈、stateRevision 非单调快照不得覆盖更新状态、关闭重开后旧会话迟到回包丢弃、Host 同名 reopen 走 `onRebind` 换绑不重建 DOM、arena 重定向 closePanel:false 保持面板开启 + returnTo 重开会话轮换 + 链前回包丢弃。
 C# 侧对应 `launcher/tests/Tasks/StageSelectTaskTests.cs`（exact instance 绑定/异实例与缺失拒绝/守卫键不进 Flash/回包代封回显与 revision 单调/换绑失效/精确关闭幂等/断线解绑）与 `launcher/tests/Guardian/StageSelectPanelChainTests.cs`（map→stage-select→arena returnTo 栈重开新实例与 initData 还原、栈不跨独立面板泄漏、关闭观察器清在途请求）。
-控制器按四层拆分：`stage-select-panel.js` 为薄 facade（Panels.register + `_debug*`），实现位于 `launcher/web/modules/stage-select/`（core → view-model（纯数据层，无 DOM/document/window，P5 三维 renderer 插座）→ renderer → inspector → bridge 五模块，lazy 闭包同序）。
+控制器按四层拆分：`stage-select-panel.js` 为薄 facade（Panels.register + `_debug*`），实现位于 `launcher/web/modules/stage-select/`（core → card-layout（纯几何）→ view-model（纯数据层，无 DOM/document/window，P5 三维 renderer 插座）→ renderer → inspector → bridge，lazy 闭包同序）。
 检查器行为：节点焦点环由自有键盘模态类 `.is-kb-focus` 驱动（WebView2 宿主嵌入焦点链会让鼠标点击命中 `:focus-visible`），选中/卡开节点不画蓝环，检查器内控件焦点环不变；当前双栏的 Enter/Space 在难度键上只选择，出战由独立按钮明确提交（取代历史 pinned 检查器直接提交语义）。
 
-**锁定原因合同**：AS2 `StageSelectPanelService.buildLockReason` 生成 `stageDetails[].lockReason`（恒在、仅锁定时非空），C# 回包整体透传零改动；harness 断言 snapshot 下发的具体 `lockReason` 文案，旧快照缺 `lockReason` 字段时回退通用文案。检查器内 ←/→ 在同排难度按钮间循环移焦、焦点即选中高亮、↑/↓ 无操作、检查器开态下节点方向键截停并回引检查器、悬停他节点 hover 卡不受影响、Esc 归还焦点、Enter 提交当前焦点难度 payload 不变；挑战模式单键循环原地且 Enter 提交地狱；
+**锁定原因合同**：AS2 `StageSelectPanelService.buildLockReason` 生成 `stageDetails[].lockReason`（恒在、仅锁定时非空），C# 回包整体透传零改动；harness 断言 snapshot 下发的具体 `lockReason` 文案，旧快照缺 `lockReason` 字段时回退通用文案。检查器内 ←/→ 在同排难度按钮间循环移焦、焦点即选中高亮、↑/↓ 无操作、检查器开态下节点方向键截停并回引检查器、悬停他节点 hover 卡不受影响、Esc 归还焦点、Enter/Space 只选择当前难度、独立出战按钮提交 payload 不变；挑战模式单键循环原地且 Enter/Space 选择地狱；
 锁定检查器无难度按钮、方向键不抢关闭钮焦点。合成鼠标全路径选中后无蓝环无残留卡、`.is-selected` 镜像卡锚点且乱序残留 `is-card-open` 也被 CSS 硬隐藏、回悬选中节点不再开卡；Esc 取消选中回基线、hover 卡恢复打开、键盘模态环让位给开卡。
 
 **测试员反馈合同（2026-08-24 起现役）**：Stage Select browser QA 必须证明任务节点 hover 后红点/黄圈仍可见、局部卡片难度按钮一步可点且不强开 pinned inspector；AS2 静态审计必须证明仅 Web 来源且真实通关时，经来源场景 `SceneReady` 重开 Web，死亡/失败/撤退清来源但不重开，发送失败保留旧 Flash fallback。自动门为 Edge harness + layout/diplomacy audits + Flash smoke；
 真实「进新手练习场→通关→fresh Web snapshot」仍需游戏内人工验收，browser/static/compile 不代签。
 
+**快捷卡当前几何与效率合同**：二维与三维共用 `stage-select-card-layout.js` 的四方向布局；方向只负责避让，四方向共用同一卡片尺寸与「标题 / 预览 / 简介 / 横向动作行」结构，难度固定为简单→冒险→修罗→地狱，左右侧卡按锚点距上下沿的远近选择动作端（正中保留下沿）且连接区与该行同端，推荐难度只标记不重排。侧向不再使用纵向难度轨；装饰角标隐藏，外交「前往地点」保持单行且不出卡边界。开卡只用 120ms 透明度淡入，reduced-motion 无动画。节点到卡片的几何连接区不得拦截节点命中，真实鼠标沿该路径移动不得误关卡；hover 不运镜，快捷难度不等待动画并直接发送既有 enter。纯几何门为 `node tools/test-stage-select-card-layout.js`；真实轨迹、实际侧向卡、外交文字边界和 normal/reduced 计算样式由 `node tools/test-stage-select-diorama.js` 覆盖。整页审阅使用 `node tools/capture-stage-select-experience.js`，输出只作 mock Host 画面证据。
+
 **废城固定镜头（三维试点）**：`python tools/import-stage-select-diorama.py --check` 核对资产闭包；`node tools/run-stage-select-harness.js --browser edge` 保留既有行为回归，运行入口改为仅监听 loopback 的临时同源 HTTP 服务以支持 ESM/GLB；`node tools/test-stage-select-diorama.js` 验证真实模型、固定画布、16 入口/名称命中、普通与外交 mouse→mock Host、锁定/投影键盘、静止出帧、30 次开关缓存、迟到加载与失败/上下文丢失重试。
-截图和报告位于 `tmp/stage-select-diorama/`，不作为真实 WebView2/AS2 进关证据。聚焦双栏追加验证：`node tools/test-stage-select-focus.js` + `node tools/test-stage-select-navigation.js` + `node tools/test-stage-select-intel.js` 验证真实 GLB 建筑特写/高亮、取景预设、二维详情等价、未记录情报隐藏和难度选择零写；`python tools/derive-stage-select-intel.py --check` 检查静态情报派生。
+截图和报告位于 `tmp/stage-select-diorama/`，不作为真实 WebView2/AS2 进关证据。聚焦双栏追加验证：`node tools/test-stage-select-focus.js` + `node tools/test-stage-select-navigation.js` + `node tools/test-stage-select-intel.js` 验证普通选中的战区上下文与高亮、进入前相机和近景观察点的 50% 中间构图、详情顶栏上下地点切换不覆盖场景、键盘焦点不跳走且零 enter、进入前相机和逐地点难度/页签/滚动恢复、主动游览近景预设、二维详情等价、未记录情报隐藏和难度选择零写；`python tools/derive-stage-select-intel.py --check` 检查静态情报派生。导览门覆盖右键与 WASD 同边界、当前地标安全投影、导览到详情零 enter、opener/inert 恢复、可取消过渡与 reduced-motion；荒漠整关/分段观察使用配置观察点，不与普通上下文强制同机位，见 `test-stage-select-desert-subareas-browser.js`。
 当前施工范围见 [选关界面-webview迁移路线图](../docs/选关界面-webview迁移路线图.md#2026-09-09-废城固定镜头首版当前发布范围)。
 
 **Stage Select 通关返回纠偏门（取代 2026-08-24 自动回流合同）**：`.is-task` 节点 hover/focus 时 marker 与 task-pulse 必须持续显示，hover 卡直接暴露难度按钮且不打开 pinned inspector；普通关卡成功结算必须按 `_root.关卡地图帧值` 返回并停留在 Flash，奖励有无都不得因本场由 Web 发起而自动重开 panel，玩家下一次显式进入选关时才读取 fresh snapshot。死亡、失败、撤退保持既有返回语义。
-`audit-diplomacy-stage-select-links.js` 固定证明目的地驱动返回存在，并拦截 `_root.Web选关战斗回流`、`Web选关回流待打开`、`as2_stage_complete_return` 任一生产残留。自动门为 Edge harness + layout/diplomacy audits + Launcher tests + Flash publish smoke；真实「有奖励/无奖励通关后停留 Flash、再次显式进门才开 Web」仍需游戏内人工验收，browser/static/compile 不代签。
+`audit-diplomacy-stage-select-links.js` 固定证明目的地驱动返回存在，接受旧直传、受限快照以及当前 `StageReturnFlow.destination → 医务室兜底 → BookRunService.returnFrame → prepare/accept token` 完整链，拒绝其他任意目的地改写，并拦截 `_root.Web选关战斗回流`、`Web选关回流待打开`、`as2_stage_complete_return` 任一生产残留。自动门为 Edge harness + layout/diplomacy audits + Launcher tests + Flash publish smoke；真实「有奖励/无奖励通关后停留 Flash、再次显式进门才开 Web」仍需游戏内人工验收，browser/static/compile 不代签。
 
 **Stage Select 进入/关闭传输合同**：进入回包须跨淡出保持 exact `callId`，关闭须先同步投递再销毁，transport false/throw 时保留面板、busy/pending 与重试权。
 
@@ -391,7 +393,7 @@ candidate、facet 与 mutation 三处共用实例有效事实，禁止基础 cat
 
 必跑：
 
-- `powershell -ExecutionPolicy Bypass -File scripts/run-skill-migration-tests.ps1 -TimeoutSeconds 240`（精确计数以 runner 为准，当前 `SkillLoadoutServiceTest 58/58`、`SkillPanelServiceTest 48/48`、Compiler Errors `0/0`；该入口不再包含 LongGun / ManualCooldown / DrugInput，三者改由玩家手动输入 runner 独立守门；Loadout 覆盖旧 HUD 图标壳重建、快捷槽空目标移动/占用目标交换/no-op/坏源拒绝；
+- `powershell -ExecutionPolicy Bypass -File scripts/run-skill-migration-tests.ps1 -TimeoutSeconds 240`（精确计数以 runner 的新鲜 trace 为准；含 `SwordFeatureTest`、`SkillFeaturePolicyTest`、`SkillLoadoutServiceTest`、`SkillPanelServiceTest`，要求 Compiler `0/0`；该入口不再包含 LongGun / ManualCooldown / DrugInput，三者改由玩家手动输入 runner 独立守门；Loadout 覆盖旧 HUD 图标壳重建、快捷槽空目标移动/占用目标交换/no-op/坏源拒绝；
   Panel 另覆盖 `skillPanelOpen` exact `openRequestId` 回显、缺失或畸形 `openRequestId` 均零发送；新 Host 缺 nonce 拒绝、`moveSlot` 路由、成功教师读续租与连续 120 秒空闲过期）。
 - `node tools/test-skills-ui-modules.js`（文本现役 `65/65`，待核：阈值来源为历史文本，未找到当前机器真源）。
 - `node tools/run-skills-harness.js`（文本现役 3 视口 `150/150`，待核）。
@@ -403,6 +405,8 @@ candidate、facet 与 mutation 三处共用实例有效事实，禁止基础 cat
 - `npm --prefix tools/cf7-save-repair test` 与 `npm --prefix tools/cf7-save-repair run typecheck`。
 
 发布 `asLoader.swf`；实际触及 main / 物品技能 UI / 玩家信息 UI / things 时逐目标 `-PublishOnly -VerifySwf`，三件套 + linkage scanner，dirty XFL 不得强制丢弃内存改动。
+
+子能力增量还覆盖目录唯一 ID、旧档默认开启、稀疏 opt-out、父级/等级门、NPC 隔离、未知版本拒写、SP 不变、no-op/陈旧 revision/回滚、真实 SaveManager codec、幽灵弹退款幂等；剑气 suite 通过 MovieClip 的 `with` 词法作用域实际 include 生产帧脚本，验证 DFA/帧兜底/兵器重映射与关闭后普通攻击回退。Web 真实输入覆盖次页开关、键盘、父开关、帮助、未知写锁和显式对账；规则归[技能子能力合同](../docs/skill-subfeatures.md)。Host 全量需资源资格时使用 `tools/run-focus-sol-recheck.ps1 -Phase integration -Canonical`，无资格环境的失败原件保留，不改测试绕过。
 
 skills harness 固定覆盖：`min(MaxLevel,currentLevel+floor(skillPoints/UpgradeSP))` 可负担上限、零费升级保留元数据上限、SP 不足一级时明确阻塞且零无效 preview、切换到不可升级技能会取消上一技能 debounce 并隔离迟到回包、AS2 HTML 白名单注释、无常驻详情栏、固定居中 `12×64px` Hotbar、`48px` 快捷槽图标与 `3px` 间距、技能库完整/紧凑不改变 Hotbar、正常等级与悬停/聚焦卸载动作避让、管理顶栏常显且独立分组的「快捷栏｜安全/快速」、切换零业务流量、帮助只说明规则且学习确认不可绕过、
 完整卡与物品 owned grid 共节奏的 `48px`/`40px` 紧凑瓦片、trainer→manage→trainer exact rebind、形态/配置或学习/流派三组首击筛选、manage 两行紧凑承载、跨组组合/一键清除、武术/科技/超能力流派可见、默认收起搜索与 `/`/Esc、manage/trainer 指标分层、玩家文案、异常诊断复制且不泄漏 trainer session、L/R marker 视觉隐藏但 ARIA 保留、manage/trainer 情境帮助、模态最小画布边界与焦点恢复、技能→快捷槽装备拖拽、快捷槽→快捷槽单写移动/交换与 `Alt+←/→` 连续调整、
@@ -1216,8 +1220,10 @@ u235 的远古诛神头/胸/腿/鞋由 4 个 unit-scoped virtual item 精确绑�
 **Arena 全模式头像与密度门**：触及 `EnemyPortraits`、`MercPortraits`、challenge browser、佣兵/主角只读外观投影或卡片密度时，固定运行相关 `node --check`、lazy closure、merc appearance fallback、`node tools/test-portrait-resolver-runtime.js`（10 例：manifest 拉取失败冷却重试 / alias 与 variant 优先级 / legacy 2MiB・8x 边界 / locked sealed 不递归）、
 `node tools/test-merc-portrait-renderer-runtime.js`（8 例：并发槽异常恢复 / 共享 renderer / 末订阅者取消 / 同 turn 重挂载 / 别名归一缓存 / LRU 与字节预算 / 过期 token / 与 tools/lib/arena-portrait-routing.js 的发型别名表跨 runtime 逐键相等）、`test-arena-portrait-coverage.js`、`test-arena-meta-portraits.js`、`audit-arena-portrait-coverage.js --check`、
 `test-dressup-manifest-integrity.py` 以及 Arena/Team 三视口 harness。
-Arena 每档须通过当前 `qa-suite.js` 派生的全部案例，完整 2 列、紧凑 3 列且保留人数/等级/经济；2026-10-13 前治安官/黑仔新增后，当前机器覆盖为 219/219 ready、0 fallback、224 个 accepted enemy variant、448 个绑定、446 个唯一运行文件，数量以 `audit-arena-portrait-coverage.js --check` 当前输出为准。标准 mixed 的公开 merc actor 必须与同 mercId 的生成 tuple 等值；
+Arena 每档须通过当前 `qa-suite.js` 派生的全部案例，完整 2 列、紧凑 3 列且保留人数/等级/经济；2026-10-24 CF6 增补后，当前机器覆盖为 233/233 ready、0 fallback、241 个 accepted enemy variant、482 个绑定、480 个唯一运行文件，数量以 `audit-arena-portrait-coverage.js --check` 当前输出为准。标准 mixed 的公开 merc actor 必须与同 mercId 的生成 tuple 等值；
 无佣兵 meta-team/synthetic 主角模板必须按 `ArenaUnitCatalog.portrait.actor` 显式走 `portraitKind=dressup`，缺 gender 对齐 AS2 legacy 规则归女；隐藏卡不得挂载/预取头像或在 DOM 泄露身份。有限新增还需 `promote-direct-portraits-v1.py check`、`test-direct-portrait-preservation-v1.py`、真实素材 Loot 结算夹具及 `LootIconCatalogPortraitTests`，旧 campaign 来源门不得由新增 checker 代签。三犬增补另跑 `promote-dog-portraits-v1.py verify-native/check` 与 `node tools/portrait-pilot/test-dog-portraits-v1.js`，生产环境、授权含义、当前全量缺图和失败基线见 [三犬记录](../tools/portrait-pilot/README.md#2026-10-21三犬原生头像)。该门不代签真实 WebView2→Flash、游戏内视觉或部署。
+
+**CF6 增补与武装 JK 双发色修复**：在 Pillow 12.1 隔离环境（环境准备见 [CF6 生产说明](../tools/portrait-pilot/README.md#2026-10-24cf6-新单位与武装-jk-双发色增补)）执行 `python tools/portrait-pilot/produce-cf6-portraits-v1.py verify-native`、`render`、`check` 和 `python tools/portrait-pilot/test-cf6-portrait-preservation-v1.py`；`promote` 只在重放与保持集检查通过后执行。覆盖 14 个新身份与 JK `orange/white` 修复、31 个新文件、2 个错误 SVG 与 1 个错误白发 PNG 退役；橙发保留既有正确 PNG，两个变体的 Web 首选均为 PNG。追加 `python tools/portrait-pilot/test-svg-runtime-safety.py`、`node tools/test-arena-portrait-coverage.js` 和真实 Native `LootIconCatalogPortraitTests`，不以旧回执、预览图或目录文件数代替本轮验证。
 
 **材料档案来源头像门**：触及材料 enemy/shop 头像、`ShopPortraits`、Crafting lazy closure 或 shop portrait manifest 时，固定运行 `node tools/test-portrait-resolver-runtime.js`（10/10）、`node tools/test-shop-portrait-resolver-runtime.js`（12/12：exact schema/Identity(80)、无 trim/case/alias、退避上限、固定 no-alt 占位、解码失败、
 request-token/disconnected stale fence）、`node tools/test-inventory-workbench-lazy-closure.js`（文本 25/25，待核）、`python tools/test-material-enemy-portrait-coverage.py` 与 `python tools/test-shop-portrait-assets.py`。

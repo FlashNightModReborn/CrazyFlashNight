@@ -1,9 +1,9 @@
 /**
  * stage-select-panel.js — 选关面板 P4-a 工程拆分 · 薄 facade。
  *
- * 职责只剩：Panels.register('stage-select') 入口（装配五模块的实现函数）+ QA 调试接口
+ * 职责只剩：Panels.register('stage-select') 入口（装配实现模块）+ QA 调试接口
  * （StageSelectPanel._debug*，签名与原单文件一致）。实现已按四层职责拆入
- * modules/stage-select/：core（共享状态容器 + 跨模块工具）→ view-model（纯数据层：
+ * modules/stage-select/：core（共享状态容器 + 跨模块工具）→ card-layout（纯几何）→ view-model（纯数据层：
  * frame 路由 / fixture+snapshot 状态合并 / 选中态 / 挑战模式 / 任务统计 / 导航打分，
  * 无 DOM、无 document/window，P5 三维 renderer 插座）→ renderer（空间 DOM 舞台 /
  * 帧菜单 / 缩放 / 生命周期编排）→ inspector（pinned 决策检查器 + 难度提交 intent）→

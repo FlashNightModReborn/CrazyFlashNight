@@ -58,6 +58,7 @@ if (_parent.等级 < 20)
 子弹参数.Z轴攻击范围 = 50;
 子弹参数.击倒率 = 10;
 
+_root.技能函数.传递兵器战技属性(_parent, 子弹参数);
 _parent.刀口位置生成子弹(_parent, 子弹参数);]]></script>
               </Actionscript>
               <elements/>
@@ -106,6 +107,7 @@ _parent.刀口位置生成子弹(_parent, 子弹参数);]]></script>
 	子弹属性.击倒率 = 10;
 
 	子弹属性.区域定位area = this.area;
+	_root.技能函数.传递兵器战技属性(自机, 子弹属性);
 	_root.子弹区域shoot传递(子弹属性);
 }]]></script>
                   </Actionscript>
@@ -145,6 +147,7 @@ _parent.刀口位置生成子弹(_parent, 子弹参数);]]></script>
 	子弹属性.击倒率 = 10;
 
 	子弹属性.区域定位area = this.area;
+	_root.技能函数.传递兵器战技属性(自机, 子弹属性);
 	_root.子弹区域shoot传递(子弹属性);
 }]]></script>
                   </Actionscript>
@@ -184,6 +187,7 @@ _parent.刀口位置生成子弹(_parent, 子弹参数);]]></script>
 	子弹属性.击倒率 = 10;
 
 	子弹属性.区域定位area = this.area;
+	_root.技能函数.传递兵器战技属性(自机, 子弹属性);
 	_root.子弹区域shoot传递(子弹属性);
 }]]></script>
                   </Actionscript>
@@ -223,6 +227,7 @@ _parent.刀口位置生成子弹(_parent, 子弹参数);]]></script>
 	子弹属性.击倒率 = 1;
 
 	子弹属性.区域定位area = this.area;
+	_root.技能函数.传递兵器战技属性(自机, 子弹属性);
 	_root.子弹区域shoot传递(子弹属性);
 }]]></script>
                   </Actionscript>

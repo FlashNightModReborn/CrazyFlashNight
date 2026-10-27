@@ -178,8 +178,8 @@
 }
 
 .stage-focus-topbar {
-    min-height: 32px;
-    padding-bottom: 8px;
+    min-height: 28px;
+    padding-bottom: 4px;
     border-bottom: 1px solid rgba(var(--ss-accent-rgb), 0.24);
 }
 
@@ -428,4 +428,137 @@
     border-color: rgb(var(--ss-selected-rgb));
     color: rgb(var(--ss-selected-rgb));
     background: rgba(var(--ss-mod-amber-bg-rgb), 0.65);
+}
+
+.stage-focus-surface > .workbench-header {
+    background:
+        linear-gradient(90deg, rgba(var(--ss-accent-rgb), 0.07) 0%, rgba(var(--ss-accent-rgb), 0) 68%),
+        rgb(var(--ss-header-rgb));
+    box-shadow: 0 3px 10px rgba(var(--ss-black-rgb), 0.36);
+}
+
+.stage-focus-viewport {
+    border: 0;
+    box-shadow:
+        inset 0 0 0 1px rgba(var(--ss-accent-rgb), 0.22),
+        inset 0 0 22px rgba(var(--ss-black-rgb), 0.48);
+}
+
+.stage-focus-viewport::after {
+    opacity: 0.38;
+}
+
+.stage-focus-panel.stage-select-inspector {
+    background:
+        radial-gradient(130% 65% at 100% 0%, rgba(var(--ss-accent-rgb), 0.07) 0%, transparent 62%),
+        linear-gradient(180deg, rgba(var(--ss-card-grad-top-rgb), 0.97) 0%, rgba(var(--ss-card-grad-bottom-rgb), 0.99) 100%);
+    border-color: rgba(var(--ss-accent-rgb), 0.24);
+    box-shadow: -8px 0 20px rgba(var(--ss-black-rgb), 0.42);
+}
+
+.stage-focus-content .stage-select-inspector-detail {
+    background:
+        linear-gradient(90deg, rgba(var(--ss-accent-rgb), 0.58) 0 2px, transparent 2px),
+        rgba(var(--ss-header-rgb), 0.42);
+    border-color: rgba(var(--ss-accent-rgb), 0.16);
+}
+
+.stage-focus-preview {
+    border-color: rgba(var(--ss-accent-rgb), 0.28);
+    box-shadow: 0 4px 12px rgba(var(--ss-black-rgb), 0.38);
+}
+
+.stage-focus-preview[data-preview-tier="hd"] img {
+    max-height: 184px;
+}
+
+.stage-select-panel.is-camera-editing .stage-camera-editor {
+    gap: 6px;
+    background: rgba(var(--ss-header-rgb), 0.94);
+    border-color: rgba(var(--ss-accent-rgb), 0.36);
+    box-shadow: 0 8px 20px rgba(var(--ss-black-rgb), 0.52);
+}
+
+.stage-camera-poi {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 4px 10px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(var(--ss-accent-rgb), 0.24);
+}
+
+.stage-camera-poi[hidden],
+.stage-camera-editor.is-collapsed .stage-camera-poi {
+    display: none;
+}
+
+.stage-camera-poi-compass {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    color: rgb(var(--ss-primary-rgb));
+    border: 1px solid rgba(var(--ss-primary-rgb), 0.36);
+    border-radius: 50%;
+    font-family: Consolas, monospace;
+}
+
+.stage-camera-poi-title {
+    min-width: 0;
+    color: rgb(var(--ss-region-text-rgb));
+    font-size: var(--ss-font-md);
+    font-weight: 700;
+}
+
+.stage-camera-poi-detail {
+    min-width: 0;
+    color: rgba(var(--ss-text-rgb), 0.72);
+    font-size: var(--ss-font-sm);
+    line-height: 1.5;
+}
+
+.stage-camera-poi-select {
+    color: rgb(var(--ss-primary-hi-rgb));
+    border-color: rgba(var(--ss-primary-rgb), 0.52);
+    white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .stage-camera-poi,
+    .stage-camera-poi-compass,
+    .stage-camera-poi-select {
+        animation: none;
+        transition: none;
+    }
+}
+
+.stage-focus-pager {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 4px;
+    padding-right: 8px;
+    border-right: 1px solid rgba(var(--ss-accent-rgb), 0.28);
+}
+
+.stage-focus-pager[hidden] {
+    display: none;
+}
+
+.stage-focus-surface .workbench-header-actions .stage-focus-pager button {
+    min-width: 48px;
+    min-height: 28px;
+    height: 28px;
+    padding: 0 7px;
+    white-space: nowrap;
+}
+
+.stage-focus-pager span {
+    min-width: 42px;
+    color: rgba(var(--ss-text-rgb), 0.68);
+    font-family: Consolas, "Microsoft YaHei", monospace;
+    font-size: var(--ss-font-xs);
+    text-align: center;
 }

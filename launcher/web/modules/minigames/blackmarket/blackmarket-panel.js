@@ -381,6 +381,10 @@ var BlackMarketPanel = (function() {
                     return renderer.render(canvas, {
                         offerId: offer.offerId,
                         assetUrl: resolveAssetUrl(visual.assetUrl),
+                        fallbackAssetUrl: visual.fallbackAssetUrl ? resolveAssetUrl(visual.fallbackAssetUrl) : null,
+                        fallbackHiddenColorMode: visual.fallbackHiddenColorMode,
+                        fallbackSourceMaskMode: visual.fallbackSourceMaskMode,
+                        sourceMaskMode: visual.sourceMaskMode || visual.hiddenColorMode,
                         sourceKey: visual.sourceKey,
                         sourceKind: visual.sourceKind,
                         sourceComposition: visual.sourceComposition || null,
@@ -390,8 +394,8 @@ var BlackMarketPanel = (function() {
                         seed: surfaceSeed,
                         coverage: Number(surface.targetCoverage === undefined ? _snapshot.mudCoverage : surface.targetCoverage),
                         mud: offer.visualState === "available",
-                        hiddenColorMode: offer.visualState === "available"
-                            ? (visual.hiddenColorMode || "source") : "source",
+                        hiddenColorMode: offer.visualState === "revealed"
+                            ? "source" : BlackMarketCore.HIDDEN_COLOR_MODE,
                         autoRotate: visual.autoRotate,
                         paddingRatio: 0.065,
                         renderWidth: SURFACE_MASTER_WIDTH,
@@ -422,6 +426,7 @@ var BlackMarketPanel = (function() {
     }
 
     function failSurfaceClosed(canvas, error, generation) {
+        if (error && error.name === "AbortError") return;
         if (!_panelOpen || generation !== _surfaceGeneration || !_root || !_root.contains(canvas)) return;
         var asset = canvas.closest(".blackmarket-asset");
         if (asset) asset.classList.add("is-surface-fallback");

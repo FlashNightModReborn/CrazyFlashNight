@@ -17,8 +17,7 @@ _root.技能函数.后摇可跳跃 = function():Boolean {
 
 _root.技能函数.使用剑气释放 = function():Number {
 	var 自机 = _parent;
-	var 技能 = 自机.被动技能["剑气释放"];
-	if(!技能 || !技能.启用 ) return 0;
+	if(!org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(自机,"sword.wave")) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "剑气释放") {
@@ -39,8 +38,7 @@ _root.技能函数.使用剑气释放 = function():Number {
 
 _root.技能函数.使用双剑气 = function():Number {
 	var 自机 = _parent;
-	var 技能 = 自机.被动技能["剑气释放"];
-	if(!技能 || !技能.启用 ) return 0;
+	if(!org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(自机,"sword.double_wave")) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "双剑气") {
@@ -61,8 +59,7 @@ _root.技能函数.使用双剑气 = function():Number {
 
 _root.技能函数.使用飞沙走石 = function():Number {
 	var 自机 = _parent;
-	var 技能 = 自机.被动技能["剑气释放"];
-	if(!技能 || !技能.启用 ) return 0;
+	if(!org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(自机,"sword.sand")) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "飞沙走石") {
@@ -83,8 +80,7 @@ _root.技能函数.使用飞沙走石 = function():Number {
 
 _root.技能函数.使用疾影剑气 = function():Number {
 	var 自机 = _parent;
-	var 技能 = 自机.被动技能["剑气释放"];
-	if(!技能 || !技能.启用 ) return 0;
+	if(!org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(自机,"sword.shadow")) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "疾影剑气") {

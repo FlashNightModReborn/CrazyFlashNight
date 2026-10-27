@@ -2948,7 +2948,8 @@ class Program
                     return config == null || config.Configured;
                 },
                 ensureBound: playerName => ragTerminalService.EnsureInterjectBindingAsync(playerName),
-                itemExchange: npcItemExchangeTask);
+                itemExchange: npcItemExchangeTask,
+                pushToClient: data => socketServer.IsClientReady && socketServer.TrySend(data));
             var interjectController = dialogueInterject;
             // 终端就绪态变化（含自动拉起后的后台补探）：把停在“请先启动聊天终端”的输入条即时重算。
             ragTerminalService.ReadyChanged += delegate

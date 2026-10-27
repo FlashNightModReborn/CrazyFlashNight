@@ -48,7 +48,7 @@
         StageSelectRenderer.applyRovingTabIndex();
         renderInspector();
         StageSelectRenderer.updateCardVisibility(); // 选中节点的 hover 卡让位给检查器
-        focusInspectorPrimary();
+        if (!opts.preserveFocus) focusInspectorPrimary();
     }
 
     function toggleStageSelection(stageId) {
@@ -145,7 +145,7 @@
         StageSelectFocus.render(button, state);
     }
 
-    // 键盘打开检查器后的落点：任务推荐难度 > 首个难度 > 外交据点出发按钮 > （锁定时）关闭钮。
+    // 键盘打开检查器后的落点：任务推荐难度 > 首个难度 > 外交据点出发按钮 > （锁定时）返回总览。
     function focusInspectorPrimary() {
         if (!isInspectorOpen()) return;
         var target = S._inspectorDiffEl.querySelector('.stage-select-difficulty.is-recommended')
@@ -156,7 +156,7 @@
                 target = enterBtn;
             }
         }
-        if (!target) target = document.querySelector('.stage-focus-surface .stage-focus-action');
+        if (!target) target = document.querySelector('.stage-focus-surface .workbench-header-actions > button.stage-focus-action');
         if (target) target.focus();
     }
 
@@ -165,9 +165,8 @@
     //   同排 2~4 键短列表，循环比端点钳制少按键且全面板习语一致）；焦点即选中高亮
     //   （各按钮自身色系的亮度+发光，样式见 stage-select.css 检查器难度 :focus 段）。
     //   焦点不在难度按钮上（如落在关闭钮）时 → 进首键、← 进末键，方向键始终有明确去向。
-    // - Enter/Space 提交当前难度：preventDefault 拦掉原生 button 激活，统一改走 .click()
-    //   （真实键盘与 qa 合成事件同一路径），最终仍由面板根 handleDifficultyClick 委派，
-    //   payload 与鼠标点击完全一致。
+    // - Enter/Space 只选择当前难度：preventDefault 拦掉原生 button 激活，统一改走 .click()
+    //   （真实键盘与 qa 合成事件同一路径），聚焦 CTA 才发送与鼠标一致的 enter payload。
     // - ↑/↓ 定义为无操作（仅 preventDefault 防页面滚动）：难度行是单排横向组，无垂直
     //   目标；不绑定「焦点回节点」，避免与 Esc 取消语义重叠，保持 Esc 单一出口。
     // - 检查器打开期间地图节点的方向键导航由 renderer 侧守卫截停并回引焦点到本行

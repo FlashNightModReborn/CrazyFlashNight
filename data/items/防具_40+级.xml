@@ -5439,4 +5439,315 @@
       <auditRef>armor:真猫妖皮鞋</auditRef>
     </balance>
   </item>
+<item>
+    <allowedModTags>等级校正</allowedModTags>
+    <inherentTags>电力</inherentTags>
+    <name>统合61式头部装甲</name>
+    <displayname>统合61式头部装甲</displayname>
+    <icon>Codex-统合61式头部装甲</icon>
+    <type>防具</type>
+    <use>头部装备</use>
+    <setId>unified_type_61_armor</setId>
+    <price>170000</price>
+    <blockedTags>外覆基层,外覆加固,表面涂层,内衬层,粘结层,缓冲层,肩挂系统,电子模块,内力槽,强化辅材</blockedTags>
+    <description>&lt;font color="#66ccff"&gt;【五件套组件：浅绿夜视】五件齐备启用夜视，轻盾破碎后仍然有效。&lt;/font&gt;
+
+恢复完整供能与整机连接的61式地面型头部装甲。通用传感器和便于检修的接口都沿用了原定方案，操作步骤也尽可能贴近普通士兵已经熟悉的装备。工程人员曾打算让训练、维护和替换部件随着整支部队一同铺开，最终只有少量样机留下。如今，面罩内的浅绿色视野重新亮起，照见的是当年训练手册里没有画过的道路。</description>
+    <helmet>true</helmet>
+    <data>
+      <modslot>1</modslot>
+      <level>40</level>
+      <weight>12</weight>
+      <dressup>男变装-Codex-统合61式头部装甲</dressup>
+      <hp>430</hp>
+      <mp>150</mp>
+      <damage>80</damage>
+      <defence>490</defence>
+    </data>
+    <lifecycle>
+      <attr_统合61>
+        <skillInteraction>independent</skillInteraction>
+        <setGate>
+          <effectId>integrated_system</effectId>
+          <componentId>helmet_sensor</componentId>
+        </setGate>
+        <init>
+          <initRoutines>统合61组件初始化</initRoutines>
+          <initParam/>
+        </init>
+      </attr_统合61>
+    </lifecycle>
+    <balance>
+      <formulaFamily>armor</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <balanceMode>formula</balanceMode>
+      <currentScore>1800</currentScore>
+      <balanceScore>920</balanceScore>
+      <weightedScore>1796.875</weightedScore>
+      <recommendedGoldPrice>166400</recommendedGoldPrice>
+      <recommendedKPointPrice>5400</recommendedKPointPrice>
+      <marketPrice>170000</marketPrice>
+      <status>confirmed</status>
+      <inputDigest>fnv1a32:7b67b31d</inputDigest>
+      <sourceDigest>sha256:6edc4691b2a0e258915f83c5d9bdab33050ffa259073aaa623b923f44de125c3</sourceDigest>
+      <auditRef>armor:统合61式头部装甲</auditRef>
+    </balance>
+  </item>
+
+<item>
+    <allowedModTags>等级校正</allowedModTags>
+    <inherentTags>电力</inherentTags>
+    <name>统合61式胸甲</name>
+    <displayname>统合61式胸甲</displayname>
+    <icon>Codex-统合61式胸甲</icon>
+    <type>防具</type>
+    <use>上装装备</use>
+    <setId>unified_type_61_armor</setId>
+    <price>170000</price>
+    <blockedTags>外覆基层,外覆加固,表面涂层,内衬层,粘结层,缓冲层,肩挂系统,电子模块,内力槽,强化辅材</blockedTags>
+    <description>&lt;font color="#66ccff"&gt;【五件套组件：缓冲与泄放】轻盾容量为正常最大HP的5%，盾强取不含临时增益的防御力；无伤1秒后以每秒100%容量回充，破盾5秒重建。护盾在线时，固有基础及热、冷、电、波、蚀、毒抗性补足至25。成功发动战技立即补满轻盾并释放电热胸炮。与常规星座武器联动时，抗性补足至45，重建缩短为3秒，轻盾可抗真伤，胸炮转为真实伤害。&lt;/font&gt;
+
+恢复完整供能与调度的61式地面型动力核心。稀缺材料集中在微型聚变堆与少数关键部件，外围系统则通过更复杂的结构与协作，承担高强度战斗带来的负荷。
+
+剧烈机动、防护受击与武器输出交替发生时，护盾系统的缓冲单元负责平抑供能波动，胸前电热炮则为峰值工况下的富余能量提供定向泄放通路。护盾承接波动，炮组及时“泄洪”，两者共同维持动力系统的稳定，也将需要卸除的能量送向敌人。
+
+如今，缓冲层、炮组与供能回路重新接通。这副厚重装甲终于能够在连续交火中承担原定的负荷，让穿戴者有余力完成下一次动作。</description>
+    <skill>【喷气背包】保留原装升空机构，停止喷气时自动充气，按飞行键使用。</skill>
+    <data>
+      <modslot>1</modslot>
+      <level>40</level>
+      <weight>28</weight>
+      <dressup>变装-Codex-统合61式胸甲</dressup>
+      <hp>550</hp>
+      <mp>180</mp>
+      <damage>110</damage>
+      <defence>525</defence>
+    </data>
+    <lifecycle><attr_统合61><skillInteraction>independent</skillInteraction><setGate><effectId>integrated_system</effectId><componentId>chest_buffer</componentId></setGate><init><initRoutines>统合61组件初始化</initRoutines><initParam><shieldHpRatio>0.05</shieldHpRatio><rechargeDelaySeconds>1</rechargeDelaySeconds><rechargeSeconds>1</rechargeSeconds><normalRebuildSeconds>5</normalRebuildSeconds><authorizedRebuildSeconds>3</authorizedRebuildSeconds><ammoSeconds>12</ammoSeconds><weightKg>12</weightKg><toughness>250</toughness><dodgeNormal>35</dodgeNormal><dodgeAuthorized>175</dodgeAuthorized><resistNormal>25</resistNormal><resistAuthorized>45</resistAuthorized><damageTaken>0.88</damageTaken><cannonOpenFrames>3</cannonOpenFrames><cannonDurationFrames>12</cannonDurationFrames></initParam></init><cycle><cycleRoutines>统合61组件周期</cycleRoutines></cycle><bullet><bullet_0><power>0</power><bullet>纵向联弹-穿刺子弹</bullet><split>12</split><diffusion>5</diffusion><velocity>32</velocity><sound>ak47.wav</sound><muzzle>冲锋枪枪火</muzzle><bullethit>火花</bullethit><range>30</range><impact>10</impact><knockback>0</knockback><damagetype>魔法</damagetype><magictype>热</magictype><bulletsize>100</bulletsize></bullet_0></bullet></attr_统合61><attr_防具技能>
+        <skillInteraction>independent</skillInteraction>
+        <init>
+          <initRoutines>喷气背包初始化</initRoutines>
+          <initParam>
+            <x>-20</x>
+            <y>-80</y>
+          </initParam>
+        </init>
+        <cycle>
+          <cycleRoutines>喷气背包周期</cycleRoutines>
+          <cycleParam>
+            <x>-20</x>
+            <y>-80</y>
+          </cycleParam>
+        </cycle>
+      </attr_防具技能>
+    </lifecycle>
+    <balance>
+      <formulaFamily>armor</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <balanceMode>formula</balanceMode>
+      <currentScore>2110</currentScore>
+      <balanceScore>1080</balanceScore>
+      <weightedScore>2109.375</weightedScore>
+      <recommendedGoldPrice>166400</recommendedGoldPrice>
+      <recommendedKPointPrice>5400</recommendedKPointPrice>
+      <marketPrice>170000</marketPrice>
+      <status>confirmed</status>
+      <inputDigest>fnv1a32:4d8648a8</inputDigest>
+      <sourceDigest>sha256:0e0ffbe315eba5ecdd3fc32da08a84806deb9f1f82714f04e542b54e862e74f6</sourceDigest>
+      <auditRef>armor:统合61式胸甲</auditRef>
+    </balance>
+  </item>
+
+<item>
+    <allowedModTags>等级校正</allowedModTags>
+    <inherentTags>电力</inherentTags>
+    <name>统合61式腿甲</name>
+    <displayname>统合61式腿甲</displayname>
+    <icon>Codex-统合61式腿甲</icon>
+    <type>防具</type>
+    <use>下装装备</use>
+    <setId>unified_type_61_armor</setId>
+    <price>170000</price>
+    <blockedTags>外覆基层,外覆加固,表面涂层,内衬层,粘结层,缓冲层,肩挂系统,电子模块,内力槽,强化辅材</blockedTags>
+    <description>&lt;font color="#66ccff"&gt;【五件套组件：枪械整备】各枪独立整备12秒；就绪后切入对应枪组，消耗储备弹药补足弹匣，并沿枪械师规则回收余弹。&lt;/font&gt;
+
+完整供能下的61式地面型腿甲，仍保留着粗壮的轮廓和分量十足的普通合金构件。节省下来的贵重材料曾经变成重量，再由动力系统承担；恢复工作的执行机构，终于接回了原本属于自己的那部分负担。它的设计目标包括负重行军、反复起立，以及让接受过常规训练的人顺利完成这些动作。原定部队没有等到它，废土上的使用者仍然需要走很长的路。</description>
+    <data>
+      <modslot>1</modslot>
+      <level>40</level>
+      <weight>28</weight>
+      <dressup>变装-Codex-统合61式腿甲</dressup>
+      <hp>550</hp>
+      <mp>180</mp>
+      <damage>100</damage>
+      <defence>540</defence>
+    </data>
+    <lifecycle>
+      <attr_统合61>
+        <skillInteraction>independent</skillInteraction>
+        <setGate>
+          <effectId>integrated_system</effectId>
+          <componentId>leg_loader</componentId>
+        </setGate>
+        <init>
+          <initRoutines>统合61组件初始化</initRoutines>
+          <initParam/>
+        </init>
+      </attr_统合61>
+    </lifecycle>
+    <balance>
+      <formulaFamily>armor</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <balanceMode>formula</balanceMode>
+      <currentScore>2110</currentScore>
+      <balanceScore>1080</balanceScore>
+      <weightedScore>2109.375</weightedScore>
+      <recommendedGoldPrice>166400</recommendedGoldPrice>
+      <recommendedKPointPrice>5400</recommendedKPointPrice>
+      <marketPrice>170000</marketPrice>
+      <status>confirmed</status>
+      <inputDigest>fnv1a32:9fa98a9d</inputDigest>
+      <sourceDigest>sha256:7bd5ed61df573c8408ce7c9695853da1ebbaeaca29a5a4a90df9da0e75ec206d</sourceDigest>
+      <auditRef>armor:统合61式腿甲</auditRef>
+    </balance>
+  </item>
+
+<item>
+    <allowedModTags>等级校正</allowedModTags>
+    <inherentTags>电力</inherentTags>
+    <name>统合61式装甲鞋</name>
+    <displayname>统合61式装甲鞋</displayname>
+    <icon>Codex-统合61式装甲鞋</icon>
+    <type>防具</type>
+    <use>脚部装备</use>
+    <setId>unified_type_61_armor</setId>
+    <price>170000</price>
+    <blockedTags>外覆基层,外覆加固,表面涂层,内衬层,粘结层,缓冲层,肩挂系统,电子模块,内力槽,强化辅材</blockedTags>
+    <description>&lt;font color="#66ccff"&gt;【五件套组件：行军支撑】整机协同抵消12kg负重，轻盾破碎后仍然有效。&lt;/font&gt;
+
+恢复动力联动的61式地面型装甲鞋。接地层保留了可拆换结构，最先磨损的部分能够单独修理，维护人员不必为一次损坏拆掉整套精密机构。当年的设计账目里，材料、寿命和维修工时都要乘上整支部队的人数。那笔采购最终没有发生，留下的结构却很适合今天：找到合适的零件，换掉磨坏的鞋底，就还能继续赶路。</description>
+    <data>
+      <modslot>1</modslot>
+      <level>40</level>
+      <weight>12</weight>
+      <dressup>男变装-Codex-统合61式装甲鞋</dressup>
+      <hp>430</hp>
+      <mp>150</mp>
+      <damage>80</damage>
+      <defence>490</defence>
+    </data>
+    <lifecycle>
+      <attr_统合61>
+        <skillInteraction>independent</skillInteraction>
+        <setGate>
+          <effectId>integrated_system</effectId>
+          <componentId>boot_servo</componentId>
+        </setGate>
+        <init>
+          <initRoutines>统合61组件初始化</initRoutines>
+          <initParam/>
+        </init>
+      </attr_统合61>
+    </lifecycle>
+    <balance>
+      <formulaFamily>armor</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <balanceMode>formula</balanceMode>
+      <currentScore>1800</currentScore>
+      <balanceScore>920</balanceScore>
+      <weightedScore>1796.875</weightedScore>
+      <recommendedGoldPrice>166400</recommendedGoldPrice>
+      <recommendedKPointPrice>5400</recommendedKPointPrice>
+      <marketPrice>170000</marketPrice>
+      <status>confirmed</status>
+      <inputDigest>fnv1a32:18a03e2a</inputDigest>
+      <sourceDigest>sha256:4bb252ef1d299a97fe845361184caac8d78d0576e6f77f21f8782c058d6ac490</sourceDigest>
+      <auditRef>armor:统合61式装甲鞋</auditRef>
+    </balance>
+  </item>
+
+<item>
+    <allowedModTags>等级校正</allowedModTags>
+    <inherentTags>电力</inherentTags>
+    <name>统合61式手甲</name>
+    <displayname>统合61式手甲</displayname>
+    <icon>Codex-统合61式手甲</icon>
+    <type>防具</type>
+    <use>手部装备</use>
+    <setId>unified_type_61_armor</setId>
+    <price>170000</price>
+    <blockedTags>外覆基层,外覆加固,表面涂层,内衬层,粘结层,缓冲层,肩挂系统,电子模块,内力槽,强化辅材</blockedTags>
+    <description>&lt;font color="#66ccff"&gt;【五件套组件：整机协同】五件齐备时韧性+250、挡拆+35、承伤降低12%（同类取强）；装备光剑天秤、光斧金牛、光刀狮子或光刃摩羯时，挡拆提高到175，血色光剑天秤不在此列。五件均内置电力结构，只允许等级校正插件，可使用电脑芯片或成长的勋章。&lt;/font&gt;
+
+61式地面型的完整操纵与防护组件。封闭传动机构重新获得动力后，手指的动作能够与整副装甲配合，不必再由穿戴者独自克服失去助力的关节阻力。操纵位置和握持方式沿用了既有训练习惯，容易损耗的连接件也尽量采用通用规格。地面工程组曾为大量普通士兵考虑过这些细节；如今，扣紧手甲的人仍能从一次顺畅的握持中受益。</description>
+    <data>
+      <modslot>1</modslot>
+      <level>40</level>
+      <weight>10</weight>
+      <dressup>男变装-Codex-统合61式手甲</dressup>
+      <hp>400</hp>
+      <mp>140</mp>
+      <damage>80</damage>
+      <defence>490</defence>
+    </data>
+    <lifecycle>
+      <attr_统合61>
+        <skillInteraction>independent</skillInteraction>
+        <setGate>
+          <effectId>integrated_system</effectId>
+          <componentId>glove_control</componentId>
+        </setGate>
+        <init>
+          <initRoutines>统合61组件初始化</initRoutines>
+          <initParam/>
+        </init>
+      </attr_统合61>
+    </lifecycle>
+    <balance>
+      <formulaFamily>armor</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>3</weightLayers>
+      <priceLayers>1</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <balanceMode>formula</balanceMode>
+      <currentScore>1760</currentScore>
+      <balanceScore>900</balanceScore>
+      <weightedScore>1757.8125</weightedScore>
+      <recommendedGoldPrice>166400</recommendedGoldPrice>
+      <recommendedKPointPrice>5400</recommendedKPointPrice>
+      <marketPrice>170000</marketPrice>
+      <status>confirmed</status>
+      <inputDigest>fnv1a32:30632e71</inputDigest>
+      <sourceDigest>sha256:c06a4208a4a18a27591a7e685ead964056e80280f1509de934ccb54b3bd0c8a3</sourceDigest>
+      <auditRef>armor:统合61式手甲</auditRef>
+    </balance>
+  </item>
+
 </root>

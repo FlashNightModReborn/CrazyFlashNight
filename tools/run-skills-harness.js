@@ -343,6 +343,105 @@ async function probeSemanticRejectMotion(page) {
     };
 }
 
+async function probeSkillFeatures(page, viewport) {
+    // Consume the production AS2 catalog, rather than maintaining a second feature list in the fixture.
+    const registry = read('scripts/类定义/org/flashNight/arki/skill/SkillFeatureRegistry.as');
+    const match = /definitions\s*=\s*(\[[\s\S]*?\]);/.exec(registry);
+    if (!match) throw new Error('AS2 feature catalog literal is unavailable');
+    const definitions = JSON.parse(JSON.stringify(vm.runInNewContext(match[1], {}, {timeout:1000})));
+    const checks = [];
+    const check = (name, ok, detail) => { checks.push({name, ok:!!ok, detail:detail || ''}); if (!ok) throw new Error(name + ': ' + JSON.stringify(detail)); };
+    await page.evaluate(defs => window.__openFeatureFixture(defs), definitions);
+    await page.evaluate(() => { document.getElementById('qa-output').style.display = 'none'; });
+    await page.waitForFunction(() => SkillsPanel.debugState().coordinator.state === 'idle');
+    const reset = page.locator('.skills-filter-reset');
+    if (await reset.count() && await reset.isVisible()) await reset.click();
+    await page.locator('.skills-library-row[data-skill-key="冲击连携"]').click();
+    await page.locator('[data-focus-key="action:features"]').click();
+    const featurePage = page.locator('.skills-feature-page');
+    await featurePage.waitFor({state:'visible'});
+    const half = () => page.locator('[data-feature-id="impact_chain.half_reload"]');
+    check('production catalog is rendered as independent switches', await featurePage.locator('[role="switch"]').count() === definitions.filter(d => d.skillKey === '冲击连携').length);
+    check('underlay is inert while the feature editor owns focus', await page.evaluate(() => document.querySelector('.workbench-body').inert && document.querySelector('.workbench-header').inert));
+    const helpWrites = await page.evaluate(() => __sent.filter(x => x.cmd === 'setFeature').length);
+    await featurePage.getByRole('button', {name:'子能力设置帮助',exact:true}).click();
+    await page.getByRole('button', {name:'知道了',exact:true}).click();
+    check('shared help returns to the editor without a business write', await featurePage.isVisible() && await page.evaluate(() => __sent.filter(x => x.cmd === 'setFeature').length) === helpWrites);
+    await half().click();
+    await page.waitForFunction(() => SkillsPanel.debugState().coordinator.state === 'idle' && document.querySelector('[data-feature-id="impact_chain.half_reload"]').getAttribute('aria-checked') === 'false');
+    check('half reload toggle keeps main-hand firepower opted in', await page.locator('[data-feature-id="impact_chain.pistol_power"]').getAttribute('aria-checked') === 'true');
+    await page.keyboard.press('Tab');
+    check('keyboard focus follows the restored switch after a write', await page.evaluate(() => document.activeElement.getAttribute('data-feature-id')) === 'impact_chain.pistol_power');
+    await page.keyboard.press('Space');
+    await page.waitForFunction(() => SkillsPanel.debugState().coordinator.state === 'idle' && document.querySelector('[data-feature-id="impact_chain.pistol_power"]').getAttribute('aria-checked') === 'false');
+    await page.keyboard.press('Space');
+    await page.waitForFunction(() => SkillsPanel.debugState().coordinator.state === 'idle' && document.querySelector('[data-feature-id="impact_chain.pistol_power"]').getAttribute('aria-checked') === 'true');
+    check('Space toggles the focused child independently', await half().getAttribute('aria-checked') === 'false');
+    const writesBefore = await page.evaluate(() => __sent.filter(x => x.cmd === 'setFeature').length);
+    await page.evaluate(() => { __host.unknownNextWrite = true; __host.unknownDelayMs = 4000; });
+    await page.locator('[data-feature-id="impact_chain.offhand_impact"]').click();
+    await page.waitForFunction(() => SkillsPanel.debugState().coordinator.state === 'needs_reconcile');
+    check('unknown child write freezes every child control', await featurePage.locator('[role="switch"]:not([disabled])').count() === 0);
+    await page.waitForFunction(() => SkillsPanel.debugState().coordinator.state === 'needs_reconcile' && SkillsPanel.debugState().coordinator.mux.pendingCount === 0);
+    await page.evaluate(() => { __host.pendingWriteUntil = 0; });
+    await featurePage.locator('.skills-feature-footer button').click();
+    await page.waitForFunction(() => SkillsPanel.debugState().coordinator.state === 'idle');
+    check('reconciliation adopts a fresh result without replaying the child write', await page.evaluate(() => __sent.filter(x => x.cmd === 'setFeature').length) === writesBefore + 1);
+    await page.locator('[data-feature-id="impact_chain.offhand_impact"]').click();
+    await page.waitForFunction(() => SkillsPanel.debugState().coordinator.state === 'idle');
+    await featurePage.getByRole('button', {name:'← 返回技能',exact:true}).click();
+    check('back restores the current opener after its DOM was refreshed', await page.evaluate(() => document.activeElement.getAttribute('data-focus-key') === 'action:features'));
+    await page.getByRole('button', {name:'停用被动',exact:true}).click();
+    await page.waitForFunction(() => SkillsPanel.debugState().coordinator.state === 'idle');
+    await page.locator('[data-focus-key="action:features"]').click();
+    check('parent-off preserves the child choice while suspending its siblings', await half().getAttribute('aria-checked') === 'false' && (await featurePage.innerText()).includes('随父技能停用'));
+    await page.keyboard.press('Escape');
+    await featurePage.waitFor({state:'hidden'});
+    check('Escape closes only the top feature page', !(await featurePage.isVisible()) && await page.locator('.skills-panel').isVisible());
+    await page.getByRole('button', {name:'启用被动',exact:true}).click();
+    await page.waitForFunction(() => SkillsPanel.debugState().coordinator.state === 'idle');
+    await page.locator('[data-focus-key="action:features"]').click();
+    const rejected = await page.evaluate(() => {
+        const faults = [s => s.features.push(copy(s.features[0])), s => {s.features[0].extra = true;},
+            s => {s.features[0].skillKey = '不存在的父技能';}, s => {s.features[0].effectiveEnabled = !s.features[0].effectiveEnabled;},
+            s => {s.features[0].minLevel = '1';}, s => {s.features[0].id += '\n';}, s => {s.features = {};}];
+        return faults.every(fault => {const s = authoritativeSnapshot('manage');fault(s);return SkillsPanel.validateSnapshot(s).ok === false;});
+    });
+    check('duplicate, foreign, malformed and inconsistent feature projections are rejected', rejected);
+    await featurePage.locator('.skills-feature-list').hover(); await page.mouse.wheel(0,3000);
+    await page.waitForFunction(() => {const list = document.querySelector('.skills-feature-list'); return list.scrollHeight <= list.clientHeight + 1 || list.scrollTop > 0;});
+    const geometry = await page.evaluate(() => {
+        const page = document.querySelector('.skills-feature-page'), list = page.querySelector('.skills-feature-list');
+        const r = page.getBoundingClientRect();
+        return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:innerWidth,height:innerHeight,
+            horizontal:list.scrollWidth > list.clientWidth + 1,
+            scrollable:list.scrollHeight > list.clientHeight + 1,scrolled:list.scrollTop > 0,
+            minimumControl:getComputedStyle(page.querySelector('[role="switch"]')).minHeight};
+    });
+    check('editor fits the viewport with bounded vertical scroll and full-size controls', geometry.left >= -1 && geometry.top >= -1 && geometry.right <= geometry.width+1 && geometry.bottom <= geometry.height+1 && !geometry.horizontal && (!geometry.scrollable || geometry.scrolled) && geometry.minimumControl === '40px', geometry);
+    await page.mouse.wheel(0,-3000);
+    await page.waitForFunction(() => document.querySelector('.skills-feature-list').scrollTop === 0 && Number(getComputedStyle(document.querySelector('.skills-feature-page')).opacity) > 0.99);
+    const output = path.join(ROOT,'tmp','skills-harness');fs.mkdirSync(output,{recursive:true});
+    const screenshot = path.join(output,'features-' + viewport.label + '.png');
+    await page.screenshot({path:screenshot});
+    await featurePage.getByRole('button', {name:'← 返回技能',exact:true}).click();
+    await page.locator('.skills-library-row[data-skill-key="剑气释放"]').click();
+    await page.locator('[data-focus-key="action:features"]').click();
+    check('sword group renders its own four production abilities', await featurePage.locator('[role="switch"]').count() === 4);
+    await page.locator('[data-feature-id="sword.double_wave"]').click();
+    await page.waitForFunction(() => SkillsPanel.debugState().coordinator.state === 'idle' && document.querySelector('[data-feature-id="sword.double_wave"]').getAttribute('aria-checked') === 'false');
+    check('one sword variant can be disabled while the other variants remain enabled', await page.locator('[data-feature-id="sword.wave"]').getAttribute('aria-checked') === 'true' && await page.locator('[data-feature-id="sword.sand"]').getAttribute('aria-checked') === 'true' && await page.locator('[data-feature-id="sword.shadow"]').getAttribute('aria-checked') === 'true');
+    await page.screenshot({path:path.join(output,'sword-features-' + viewport.label + '.png')});
+    await featurePage.getByRole('button', {name:'← 返回技能',exact:true}).click();
+    await page.locator('.skills-library-row[data-skill-key="冲击连携"]').click();
+    await page.locator('[data-focus-key="action:features"]').click();
+    check('switching parent groups preserves the impact-chain choice', await half().getAttribute('aria-checked') === 'false');
+    await featurePage.locator('.skills-feature-header .workbench-close-btn').click();
+    await page.waitForFunction(() => SkillsPanel.debugState().coordinator.state === 'closed');
+    check('panel close destroys the child view and releases pending work', await page.locator('.skills-feature-page').count() === 0 && await page.evaluate(() => SkillsPanel.debugState().coordinator.mux.pendingCount) === 0);
+    return {passed:checks.length,total:checks.length,checks,geometry,screenshot};
+}
+
 async function runViewport(browser, server, viewport) {
     const page = await browser.newPage({viewport});
     const pageErrors = [], failedRequests = [];
@@ -354,7 +453,12 @@ async function runViewport(browser, server, viewport) {
     await page.goto(`http://127.0.0.1:${server.address().port}/modules/skills/dev/harness.html`, {waitUntil:'load'});
     await page.waitForFunction(() => window.__qaDone === true, null, {timeout:20000});
     const state = await page.evaluate(() => ({result:window.__qaResult,error:window.__qaError}));
+    const featureChecks = state.error ? null : await probeSkillFeatures(page, viewport).catch(async error => {
+        const detail = await page.evaluate(() => ({state:SkillsPanel.debugState(),sent:__sent.slice(-8),text:document.body.innerText.slice(-3000)}));
+        throw new Error(error.message + '\nFeature state: ' + JSON.stringify(detail));
+    });
     const semanticRejectMotion = state.error ? null : await probeSemanticRejectMotion(page);
+    await page.waitForLoadState('networkidle');
     await page.close();
     if (state.error) throw new Error(viewport.label + ': ' + state.error);
     if (pageErrors.length) throw new Error(viewport.label + ' page errors: ' + pageErrors.join(' | '));
@@ -365,6 +469,8 @@ async function runViewport(browser, server, viewport) {
         throw new Error(viewport.label + ' semantic reject motion failed: ' + JSON.stringify(semanticRejectMotion));
     }
     state.result.semanticRejectMotion = semanticRejectMotion;
+    state.result.featureChecks = featureChecks;
+    state.result.passed += featureChecks.passed; state.result.total += featureChecks.total;
     return state.result;
 }
 

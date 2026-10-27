@@ -1094,12 +1094,16 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         };
         affinity.nextDepletedSequence = 8;
         _root._saveExt = {
-            modA:{enabled:true}, customData:42, drugLoadout:affinity
+            modA:{enabled:true}, customData:42, drugLoadout:affinity,
+            skillFeatures:{v:1,disabledIds:{}}
         };
 
+        _root._saveExt.skillFeatures.disabledIds["impact_chain.half_reload"]=true;
         var mydata:Object = sm.packGameState();
         assert(mydata.ext != undefined, "ext_roundtrip: ext exists in packed data");
         assert(mydata.ext.customData == 42, "ext_roundtrip: ext.customData preserved");
+        assert(mydata.ext.skillFeatures.v==1 && mydata.ext.skillFeatures.disabledIds["impact_chain.half_reload"]===true,
+            "ext_roundtrip: child preference is preserved by production packGameState");
         assert(mydata.ext.drugLoadout.version == 3
                 && mydata.ext.drugLoadout.slots[4].itemKey == "普通hp药剂"
                 && mydata.ext.drugLoadout.slots[4].lastDepletedSequence == 7
@@ -1112,6 +1116,8 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         sm.unpackGameState(mydata);
         assert(_root._saveExt != undefined, "ext_roundtrip: _saveExt restored after unpack");
         assert(_root._saveExt.customData == 42, "ext_roundtrip: _saveExt.customData restored");
+        assert(_root._saveExt.skillFeatures.v==1 && _root._saveExt.skillFeatures.disabledIds["impact_chain.half_reload"]===true,
+            "ext_roundtrip: child preference survives production unpack after extension restore");
         assert(_root._saveExt.drugLoadout.version == 3
                 && _root._saveExt.drugLoadout.slots[4].itemKey == "普通hp药剂"
                 && _root._saveExt.drugLoadout.slots[4].lastDepletedSequence == 7,

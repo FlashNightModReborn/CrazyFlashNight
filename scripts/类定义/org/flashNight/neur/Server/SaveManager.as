@@ -2325,6 +2325,7 @@ class org.flashNight.neur.Server.SaveManager {
                 _root.物品栏.装备栏=new EquipmentInventory(cf6Loadout.equipment);
                 _root.主角技能表=cf6Loadout.skills;
                 _root.主角被动技能=cf6Loadout.passives;
+                org.flashNight.arki.skill.SkillLoadoutService.refreshFeaturePreferences();
             } else {
                 _root.角色名 = "Andy Law"; _root.性别 = "男"; _root.身高 = 175;
                 _root.脸型 = "男变装-基本脸型"; _root.发型 = "发型-男式-Andy发型";
@@ -3027,6 +3028,7 @@ class org.flashNight.neur.Server.SaveManager {
 
         // 预留命名空间恢复
         _root._saveExt = (mydata.ext != undefined) ? mydata.ext : {};
+        org.flashNight.arki.skill.SkillLoadoutService.refreshFeaturePreferences();
         org.flashNight.arki.ui.MeridianPanelService.resetContext();
         RewardInboxService.resetSession();
 

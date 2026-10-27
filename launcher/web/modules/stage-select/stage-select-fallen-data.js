@@ -214,22 +214,22 @@ var StageSelectFallenData = {
       ]
     },
     "stage_10_12": {
-      "x": 635.234075611,
-      "y": 298.995097549,
+      "x": 599.234075611,
+      "y": 292.995097549,
       "labelAnchor": "ANCHOR_stage_10_12",
       "building": "FOCUS_stage_10_12",
       "shortLabel": "酒吧·外交",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": -16.0,
-      "labelY": 156.0,
+      "labelX": 0.0,
+      "labelY": 162.0,
       "screenOffset": [
         16,
         18
       ],
       "leaderBend": [
-        10,
-        78
+        26,
+        81
       ]
     },
     "stage_10_13": {
@@ -255,8 +255,8 @@ var StageSelectFallenData = {
       "shortLabel": "大学城周边",
       "labelWidth": 90,
       "labelHeight": 32,
-      "labelX": 71.0,
-      "labelY": 0.0,
+      "labelX": 72.0,
+      "labelY": -132.0,
       "screenOffset": [
         0,
         24

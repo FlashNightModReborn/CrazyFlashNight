@@ -554,6 +554,9 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
             config.impact,
             chainEnabled,
             chainLevel,
+            org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(unit,"impact_chain.shotgun_subweapon_power"),
+            org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(unit,"impact_chain.subweapon_power"),
+            org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(unit,"impact_chain.subweapon_impact"),
             gunpower
         ].join("|");
     }
@@ -562,14 +565,14 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         if (config.hitBehavior.type == "titaniumFireControl") return 100;
         var power:Number = config.basePower * config.powerMultiplier * config.hostPowerMultiplier;
         var passiveSkills:Object = unit.被动技能;
-        if (passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用 && config.hostWeaponType == "霰弹枪") {
+        if (org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(unit,"impact_chain.shotgun_subweapon_power") && config.hostWeaponType == "霰弹枪") {
             var lv:Number = passiveSkills.冲击连携.等级 || 1;
             if (lv < 1) lv = 1;
             if (lv > 10) lv = 10;
             var damageMultiplier:Number = 1.5 + (lv - 1) * (2.0 - 1.5) / 9;
             power *= damageMultiplier;
         }
-        if (passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用) {
+        if (org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(unit,"impact_chain.subweapon_power")) {
             var impactLv:Number = passiveSkills.冲击连携.等级 || 1;
             if (impactLv < 1) impactLv = 1;
             if (impactLv > 10) impactLv = 10;
@@ -588,7 +591,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore {
         if (baseImpact < 0) baseImpact = 0.01;
 
         var passiveSkills:Object = unit.被动技能;
-        if (passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用) {
+        if (org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(unit,"impact_chain.subweapon_impact")) {
             var lv:Number = passiveSkills.冲击连携.等级 || 1;
             if (lv < 1) lv = 1;
             if (lv > 10) lv = 10;
