@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/特种兵/精英/武器/当前换弹手枪" itemID="6af00000-4fad8453">
+  <timeline>
+    <DOMTimeline name="当前换弹手枪">
+      <layers>
+        <DOMLayer name="当前事务的手枪" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/武器/长枪挂点" name="枪">
+                  <matrix>
+                    <Matrix a="0.2" d="0.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){var unit:MovieClip=_parent._parent._parent;var slot:String=unit.soldierAttackOwner.reloadPair?"手枪":unit.soldierAttackOwner.reloadSlot;_root.装备引用配置.配置装扮(this,unit[slot+"_装扮"],"装扮",slot+"_引用");}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

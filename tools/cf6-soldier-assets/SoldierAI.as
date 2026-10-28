@@ -98,7 +98,10 @@ soldierCancelAttack=function():Void {
     if(this.状态==next)return;
     this.soldierCancelAttack();
     this.状态=next;
-    this.gotoAndStop(this.soldierPhase==1?this.soldierShieldStates[next]:next);
+    var pose:String=this.soldierPhase==1?this.soldierShieldStates[next]:next;
+    if(next=="长枪攻击" && this.soldierIsInstructor===true && this.eliteNextAction=="line")
+        pose=this.soldierPhase==1?"教官持盾阵地攻击":"教官阵地攻击";
+    this.gotoAndStop(pose);
 };
 
 soldierSetHP=function(value:Number):Void {
@@ -224,12 +227,13 @@ soldierMuzzle=function(body:MovieClip):Object {
 // ShootCore chooses cadence and WeaponFireCore commits ammunition and bullet properties.
 长枪射击=function(marker:MovieClip,props:Object):Boolean {
     var body:MovieClip=this.man,owner:Object=this.soldierAttackOwner;
+    var limit:Number=owner.charge?owner.shotLimit:this.soldierTuning.burstShots;
     if(!this.soldierCanAct(body) || owner.action!="shoot" || owner.reload
-        || owner.shots>=this.soldierTuning.burstShots
+        || owner.shots>=limit
         || !(this.soldierClock<owner.fireDeadline))return false;
     if(marker!==this.soldierMuzzleMarker(body) || marker==null){this.soldierInvalidMuzzleCount++;return false;}
     var fired:Boolean=_root.主角函数.长枪射击.call(this,marker,props);
-    if(fired){owner.shots++;this.soldierShotCount++;if(owner.shots>=this.soldierTuning.burstShots)this.动作A=false;}
+    if(fired){owner.shots++;this.soldierShotCount++;if(owner.shots>=limit)this.动作A=false;}
     return fired;
 };
 
@@ -303,19 +307,20 @@ soldierTick=function():Void {
     }
     if(_root.暂停)return;
     this.soldierClock++;
+    if(this.soldierTacticalConfig!=null)this.soldierTacticalObserve();
     if(!isNaN(this.hp) && this.hp<=0){
-        this.soldierCancelAttack();
+        this.soldierSlidePermit=null;this.soldierCancelAttack();
         if(this.状态!="血腥死" && this.状态!="消失")this.状态改变("血腥死");
         return;
     }
     var owner:Object=this.soldierAttackOwner;
     if(owner!=null && !this.soldierCanAct(this.man)){
         this.soldierCancelAttack();
-        if(this.状态=="长枪攻击" || this.状态=="近战")this.动画完毕();
+        if(this.状态=="长枪攻击" || this.状态=="近战" || this.状态=="投掷手雷")this.动画完毕();
         return;
     }
     if(!(this.hp>0) || this.倒地 || this.浮空 || this.硬直中)return;
-    if(owner!=null){if(owner.action=="shoot")this.soldierDriveShooting(this.man);return;}
+    if(owner!=null){if(owner.action=="shoot")this.soldierDriveShooting(this.man);else if(owner.action=="grenade")this.soldierDriveGrenade(this.man);return;}
     if(_root.控制目标==this._name && _root.控制目标全自动==false)return;
     if(this.状态!="长枪站立" && this.状态!="长枪行走" && this.状态!="长枪跑")return;
     if((this.soldierClock&3)!=0)return;
@@ -342,5 +347,5 @@ soldierTick=function():Void {
     }
     this.soldierClearMovement();
     if(dx<0)this.方向改变("左");else if(dx>0)this.方向改变("右");
-    this.状态改变(action=="knife"?"近战":"长枪攻击");
+    this.状态改变(action=="knife"?"近战":action=="grenade"?"投掷手雷":"长枪攻击");
 };

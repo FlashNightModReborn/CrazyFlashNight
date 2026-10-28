@@ -1,0 +1,294 @@
+{
+  "schema": "cf6-tactical-profiles.v1",
+  "overridePrefix": "特种兵战术_",
+  "roles": {
+    "ordinary": {
+      "rifleShots": 6,
+      "rifleFireFrames": 36,
+      "rifleRestFrames": 18,
+      "eliteRestFrames": 30,
+      "eliteStandShots": 4,
+      "retreatTrigger": 300,
+      "retreatDistance": 380,
+      "smokeRestFrames": 90,
+      "smokeMoveFrames": 24,
+      "smokeMoveSpeed": 0.55,
+      "smokeMoveX": 64,
+      "smokeMoveZ": 42,
+      "slidePermitFrames": 40,
+      "slideTrackFrames": 12,
+      "slideZSpeed": 0.6,
+      "slideZBudget": 60,
+      "slideStopRange": 95,
+      "chargeMinRange": 0,
+      "chargeRange": 560,
+      "chargeStopRange": 28,
+      "chargeMaxDistance": 300,
+      "chargeSpeed": 1.25,
+      "chargeContactReach": 70,
+      "chargePower": 1.25,
+      "chargePush": 10,
+      "chargeRestFrames": 72,
+      "chargeWindupFrames": 10,
+      "chargeActiveFrames": 24,
+      "chargeRecoveryFrames": 12,
+      "strategyHoldFrames": 36,
+      "chargeShots": 8,
+      "chargeMaxTurns": 0,
+      "chargeTurnDistance": 75,
+      "chargeZBudget": 48,
+      "chargeZSpeed": 0.65,
+      "evasionETA": 12,
+      "evasionRestFrames": 90,
+      "retreatZBudget": 56,
+      "retreatZSpeed": 0.8,
+      "evasionRetreatX": 64
+    },
+    "elite": {
+      "rifleShots": 3,
+      "rifleFireFrames": 24,
+      "rifleRestFrames": 30,
+      "eliteRestFrames": 30,
+      "eliteStandShots": 4,
+      "retreatTrigger": 300,
+      "retreatDistance": 380,
+      "smokeRestFrames": 90,
+      "smokeMoveFrames": 24,
+      "smokeMoveSpeed": 0.55,
+      "smokeMoveX": 64,
+      "smokeMoveZ": 42,
+      "slidePermitFrames": 40,
+      "slideTrackFrames": 12,
+      "slideZSpeed": 0.6,
+      "slideZBudget": 60,
+      "slideStopRange": 95,
+      "chargeMinRange": 0,
+      "chargeRange": 560,
+      "chargeStopRange": 28,
+      "chargeMaxDistance": 300,
+      "chargeSpeed": 1.25,
+      "chargeContactReach": 70,
+      "chargePower": 1.25,
+      "chargePush": 10,
+      "chargeRestFrames": 72,
+      "chargeWindupFrames": 10,
+      "chargeActiveFrames": 24,
+      "chargeRecoveryFrames": 12,
+      "strategyHoldFrames": 36,
+      "chargeShots": 8,
+      "chargeMaxTurns": 0,
+      "chargeTurnDistance": 75,
+      "chargeZBudget": 48,
+      "chargeZSpeed": 0.65,
+      "evasionETA": 12,
+      "evasionRestFrames": 90,
+      "retreatZBudget": 56,
+      "retreatZSpeed": 0.8,
+      "evasionRetreatX": 64
+    },
+    "instructor": {
+      "rifleShots": 6,
+      "rifleFireFrames": 36,
+      "rifleRestFrames": 18,
+      "eliteRestFrames": 30,
+      "eliteStandShots": 5,
+      "retreatTrigger": 300,
+      "retreatDistance": 380,
+      "smokeRestFrames": 90,
+      "smokeMoveFrames": 24,
+      "smokeMoveSpeed": 0.55,
+      "smokeMoveX": 64,
+      "smokeMoveZ": 42,
+      "slidePermitFrames": 40,
+      "slideTrackFrames": 12,
+      "slideZSpeed": 0.6,
+      "slideZBudget": 60,
+      "slideStopRange": 95,
+      "chargeMinRange": 0,
+      "chargeRange": 560,
+      "chargeStopRange": 28,
+      "chargeMaxDistance": 300,
+      "chargeSpeed": 1.25,
+      "chargeContactReach": 70,
+      "chargePower": 1.25,
+      "chargePush": 10,
+      "chargeRestFrames": 72,
+      "chargeWindupFrames": 10,
+      "chargeActiveFrames": 24,
+      "chargeRecoveryFrames": 12,
+      "strategyHoldFrames": 36,
+      "chargeShots": 8,
+      "chargeMaxTurns": 0,
+      "chargeTurnDistance": 75,
+      "chargeZBudget": 48,
+      "chargeZSpeed": 0.65,
+      "evasionETA": 12,
+      "evasionRestFrames": 90,
+      "retreatZBudget": 56,
+      "retreatZSpeed": 0.8,
+      "evasionRetreatX": 64
+    }
+  },
+  "bounds": {
+    "rifleShots": [
+      1,
+      12
+    ],
+    "rifleFireFrames": [
+      1,
+      300
+    ],
+    "rifleRestFrames": [
+      1,
+      300
+    ],
+    "eliteRestFrames": [
+      1,
+      300
+    ],
+    "eliteStandShots": [
+      1,
+      5
+    ],
+    "retreatTrigger": [
+      0,
+      1000
+    ],
+    "retreatDistance": [
+      0,
+      1000
+    ],
+    "smokeRestFrames": [
+      1,
+      300
+    ],
+    "smokeMoveFrames": [
+      1,
+      300
+    ],
+    "smokeMoveSpeed": [
+      0.05,
+      3
+    ],
+    "smokeMoveX": [
+      0,
+      1000
+    ],
+    "smokeMoveZ": [
+      0,
+      1000
+    ],
+    "slidePermitFrames": [
+      1,
+      300
+    ],
+    "slideTrackFrames": [
+      1,
+      300
+    ],
+    "slideZSpeed": [
+      0.05,
+      3
+    ],
+    "slideZBudget": [
+      0,
+      120
+    ],
+    "slideStopRange": [
+      0,
+      1000
+    ],
+    "chargeMinRange": [
+      0,
+      1000
+    ],
+    "chargeRange": [
+      0,
+      1000
+    ],
+    "chargeStopRange": [
+      0,
+      1000
+    ],
+    "chargeMaxDistance": [
+      0,
+      1000
+    ],
+    "chargeSpeed": [
+      0.05,
+      3
+    ],
+    "chargeContactReach": [
+      20,
+      100
+    ],
+    "chargePower": [
+      0.05,
+      3
+    ],
+    "chargePush": [
+      0,
+      20
+    ],
+    "chargeRestFrames": [
+      1,
+      300
+    ],
+    "chargeWindupFrames": [
+      1,
+      300
+    ],
+    "chargeActiveFrames": [
+      1,
+      300
+    ],
+    "chargeRecoveryFrames": [
+      1,
+      300
+    ],
+    "strategyHoldFrames": [
+      1,
+      300
+    ],
+    "chargeShots": [
+      1,
+      16
+    ],
+    "chargeMaxTurns": [
+      0,
+      2
+    ],
+    "chargeTurnDistance": [
+      40,
+      160
+    ],
+    "chargeZBudget": [
+      0,
+      120
+    ],
+    "chargeZSpeed": [
+      0.05,
+      2
+    ],
+    "evasionETA": [
+      1,
+      30
+    ],
+    "evasionRestFrames": [
+      30,
+      300
+    ],
+    "retreatZBudget": [
+      0,
+      120
+    ],
+    "retreatZSpeed": [
+      0.05,
+      2
+    ],
+    "evasionRetreatX": [
+      0,
+      160
+    ]
+  }
+}

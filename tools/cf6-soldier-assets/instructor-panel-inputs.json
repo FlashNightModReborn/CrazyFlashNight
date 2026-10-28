@@ -1,0 +1,28 @@
+{
+  "schema": "cf6-instructor.panel-baseline.v1",
+  "attributeBoost": false,
+  "pairs": [
+    {
+      "ordinary": 466,
+      "instructor": 480,
+      "panelEqualExceptDisplayName": true,
+      "sidearms": [
+        "FR506",
+        "FR506"
+      ],
+      "strategyParameter": "特种兵策略",
+      "defaultStrategy": "adaptive"
+    },
+    {
+      "ordinary": 467,
+      "instructor": 481,
+      "panelEqualExceptDisplayName": true,
+      "sidearms": [
+        "FR506",
+        "FR506"
+      ],
+      "strategyParameter": "特种兵策略",
+      "defaultStrategy": "adaptive"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/教官/分件/教官_497-遮罩0" itemID="6af10000-f3590737" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="教官_497-遮罩0">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-133 -756[-295 -598 -369 -341|-393 -256|-393 -236|-397 -224[-433 -206 -473 -196[-483 -176 -485 -155[-493 -86 -493 -16|-478 -11|-470 3|-453 44[-453 1024 -308 1946[-293 2044 -293 2144[-303 2164 -319 2175[-356 2201 -373 2244|-366 2302[-352 2353 -353 2424|-284 2496[-251 2532 -193 2544[6 2646 227 2564[247 2544 269 2527|327 2484[366 1403 458 383|467 184[497 144 507 100[523 29 567 4[553 -60 563 -85|607 -196[540 -459 415 -661[387 -706 367 -756[202 -801 -13 -796[-73 -786 -130 -767|-133 -756" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_497-遮罩1" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

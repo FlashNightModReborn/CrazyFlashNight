@@ -46,14 +46,14 @@ class NativePart(wings.NativePart):
             raise ValueError('Expected one non-recursive vector-atlas group')
         source.attrib.pop('id', None)
         digest = hashlib.sha256(SE.tostring(source)).hexdigest()
-        name = 'Codex/特种兵/共用矢量图集/' + digest[:16]
-        if digest not in self.shared_references:
+        name = self.name.split('/分件/')[0] + '/共用矢量图集/' + digest[:16]
+        if name not in self.shared_references:
             child = copy.copy(self)
             child.name, child.symbols, child.serial, child.masks = name, {}, 0, 0
             drawing = child.contents(source)
             child.symbols[name] = gamma.symbol(name, [gamma.layer('冻结身体材质', [gamma.frame(elements=drawing)])])
-            self.shared_references[digest] = child.symbols
-        self.symbols.update(self.shared_references[digest])
+            self.shared_references[name] = child.symbols
+        self.symbols.update(self.shared_references[name])
         transform = base.mul(matrix, base.transform(element.get('transform')))
         transform = base.mul(transform, (1, 0, 0, 1, float(element.get('x', '0')), float(element.get('y', '0'))))
         return [gamma.instance(name, matrix=transform)]

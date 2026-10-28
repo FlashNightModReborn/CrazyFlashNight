@@ -1,0 +1,26 @@
+{
+  "schema": "cf6-soldier.elite-tuning.v1",
+  "toughnessCoefficient": 50,
+  "basis": "User-authorized starting toughness 50; other inherited panel values remain unchanged. Fresh combat qualification required for this revision.",
+  "inheritedPanelExcept": [
+    "韧性系数"
+  ],
+  "baseEquipmentExceptSidearm": true,
+  "sidearmModule": {
+    "item": "FR506",
+    "secondItem": "FR506",
+    "slots": [
+      "手枪",
+      "手枪2"
+    ],
+    "actions": [
+      "retreat"
+    ],
+    "ablation": "noSidearm",
+    "externalParameters": [
+      "手枪",
+      "手枪2"
+    ],
+    "passiveEffects": "Both standard equipment slots contribute their real weight and cross-slot projections. noSidearm disables only the second pistol behavior."
+  }
+}

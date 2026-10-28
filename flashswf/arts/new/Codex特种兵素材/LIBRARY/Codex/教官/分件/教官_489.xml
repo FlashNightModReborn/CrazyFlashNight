@@ -1,0 +1,164 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/教官/分件/教官_489" itemID="6af10000-ccd21bc0">
+  <timeline>
+    <DOMTimeline name="教官_489">
+      <layers>
+        <DOMLayer name="装备显隐" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+syncHolster=function(holder:MovieClip,slot:String,drawn:Boolean):Void {
+    var unit:MovieClip=this._parent._parent;
+    var skin:String=unit.soldierIsElite===true?unit[slot+"_装扮"]:"";
+    if(typeof skin!="string")skin="";
+    if(holder.holsteredSkin!==skin){
+        holder._visible=false;
+        holder.holsteredSkin=skin;
+        // Separate reference; refreshAll still resolves the real slot skin key.
+        _root.装备引用配置.配置装扮(holder,skin,"装扮",slot+"_装扮_引用");
+    }
+    holder._visible=skin!="" && holder.装扮!=null && !drawn;
+};
+syncHolsters=function():Void {
+    var body:MovieClip=this._parent,unit:MovieClip=body._parent;
+    var owner:Object=unit.soldierAttackOwner;
+    this.投掷物._visible=unit.soldierIsElite===true?unit.特种兵烟雾弹!==false:unit.特种兵投掷物!==false && unit.特种兵投掷物!=="";
+    var active:Boolean=owner.elite===true && owner.active===true && body===unit.man
+        && unit.状态=="长枪攻击";
+    var primary:Boolean=false,secondary:Boolean=false;
+    if(active){
+        if(owner.reload){primary=!owner.smokePrepared && (owner.reloadPair===true || owner.reloadSlot=="手枪");secondary=!owner.smokePrepared && (owner.reloadPair===true || owner.reloadSlot=="手枪2");}
+        else if(owner.kind=="retreat"){
+            primary=true;secondary=unit.eliteSidearmAllowed===true;
+        }
+    }
+    this.syncHolster(this.主手,"手枪",primary);
+    this.syncHolster(this.副手,"手枪2",secondary);
+};
+onEnterFrame=syncHolsters;syncHolsters();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="按兵种携带投掷物" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_489-腰部投掷物" name="投掷物">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="保留空枪套与腰带" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_489-空枪套前景" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="近侧枪套范围" color="#4FFF4F" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-2400 -2200|-2400 40|-400 40|-400 -2200|-2400 -2200" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="主手腰挂" color="#4FFF4F" parentLayerIndex="3" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/武器/教官_长枪挂点" name="主手">
+                  <matrix>
+                    <Matrix a="-0.142" b="0.807" c="-0.807" d="-0.142" tx="-55" ty="-42"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="腰部衣料" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/分件/教官_489-腰部衣料" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="远侧枪套范围" color="#4FFF4F" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-100 -2100|-100 -500|2100 -500|2100 -2100|-100 -2100" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="副手腰挂" color="#4FFF4F" parentLayerIndex="6" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/教官/武器/教官_长枪挂点" name="副手">
+                  <matrix>
+                    <Matrix a="0.212" b="0.792" c="-0.792" d="0.212" tx="45" ty="-42"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

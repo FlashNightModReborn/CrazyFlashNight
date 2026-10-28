@@ -1,0 +1,11 @@
+﻿import org.flashNight.arki.unit.Action.Melee.*;
+_root.soldierCapture = false;
+_root.soldierMotionCapture = true;
+_root.cf6CaptureEndpoint = "http://127.0.0.1:8773/report";
+_root.cf6CaptureRun = "__FOCUSED_RUN_ID__";
+_root.cf6CapturePending = 0;_root.cf6CaptureErrors = 0;_root.cf6CaptureWait = 0;
+_root.cf6SoldierAssetComplete = function():Void {
+    trace("FocusedTestRunId cf6-soldier Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId cf6-soldier Start: "+_root.cf6CaptureRun);
+org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest.runAllTests();

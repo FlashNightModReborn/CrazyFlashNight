@@ -1,0 +1,52 @@
+{
+  "status": "late-native-result-reconciled",
+  "initialRunnerExit": 1,
+  "initialFailure": "600 second compile wait timeout; CS6 completed later without retry",
+  "runId": "56eff06a649e438aa560dd15e1811c00",
+  "compilerErrors": 0,
+  "compilerWarnings": 0,
+  "passed": 7848,
+  "failed": 0,
+  "actualTimelineCases": 200,
+  "hostSha256": "a6b5d4d02767e962dbb2788029c700c523f455defd9c3e029984d1a50b4275c7",
+  "traceSha256": "c88d6e0b938c42cae25638780e95947a36b984c56605a8053c10e47d5d099a3c",
+  "assetSha256": "0b5605b42d8d154068234d7b0f854b24d01893e784f5a496ea869be6a8d13f4f",
+  "suiteSha256": "a8af5cc64e85018aaf2130627a02397a0d8ecd94094be16e576374bf168b6e6c",
+  "upstream": "c76738be5b7538349eec6064a7fdda761b65d79e",
+  "evidenceBoundary": "controlled native execution; final projectile payload intercepted; no new arena or formal runtime deployment",
+  "acceptedVisualAsset": "R13 accepted by user before this source integration; asset remains byte identical",
+  "staticChecks": [
+    "build.py --check: 542 symbols / 295 masks",
+    "verify.py: six role bodies and yellow-black versus instructor-black material",
+    "test_elite.py: 10 passed",
+    "test_vector.py: affine / mask / reference assertions passed",
+    "test-elite-arena.js --check: static fixtures only, no combat executed",
+    "derive-arena-unit-catalog.js --check: up to date",
+    "validate-doc-governance.js: passed with existing unrelated link debt",
+    "swf-function-sizes.js: largest function 19072 bytes below 60000"
+  ],
+  "toolchainNote": "Existing machine CS6 drive-separator URI adapter used temporarily for isolated compilation; not included in this feature change.",
+  "postTestUpstream": {
+    "from": "c76738be5b7538349eec6064a7fdda761b65d79e",
+    "to": "6d22a104364d226da81af382b45d0fa0ab40e66d",
+    "upstreamChangedPaths": [
+      "agentsDoc/game-design.md",
+      "docs/下水道探索报告-肉鸽方向性初稿-2026-10-09.md",
+      "docs/残垣断壁追逐战-关卡与剧情设计-2026-10-28.md",
+      "docs/残垣断壁追逐战-摩托车与运兵车美术规格-2026-10-28.md"
+    ],
+    "runtimeSourceUnchanged": true,
+    "docsMergedCleanly": true
+  },
+  "asLoader": {
+    "sha256": "18180c9f84a8558a4cfe816a167f8e154cbc61f579215ecb07a2e1850ddeb906",
+    "bytes": 6726169,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "compileSeconds": 375,
+    "freshCs6AfterFatalException": true,
+    "classOwnershipErrors": 0,
+    "loaderClasses": 772,
+    "editorExitedGracefully": true
+  }
+}

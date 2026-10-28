@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/教官/武器/教官_可配置投掷物" itemID="6af10000-8aa30e65">
+  <timeline>
+    <DOMTimeline name="教官_可配置投掷物">
+      <layers>
+        <DOMLayer name="当前投掷物" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+var unit:MovieClip=_parent._parent;
+var data:Object=_root.getItemData(unit.特种兵投掷物).data;
+if(typeof data.dressup=="string")attachMovie(data.dressup,"装扮",1);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

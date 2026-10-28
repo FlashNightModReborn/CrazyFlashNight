@@ -328,7 +328,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         if (core[actionFlagName]) {
             dispatcher.publish(attackMode + "射击");
             // _root.发布消息(attackMode + "射击");
-            man.gotoAndPlay(jumpFrameName);
+            if (typeof man.prepareStandardShotPose == "function") man.prepareStandardShotPose(jumpFrameName);
+            else man.gotoAndPlay(jumpFrameName);
 
             // 利用缓存的 gunPathArray 快速获取枪口位置引用
             var gunRef:Object = man;
@@ -436,7 +437,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
             if (context.preFireEventName != null) {
                 dispatcher.publish(context.preFireEventName, core, weaponType, context);
             }
-            man.gotoAndPlay(jumpFrameName);
+            if (typeof man.prepareStandardShotPose == "function") man.prepareStandardShotPose(jumpFrameName);
+            else man.gotoAndPlay(jumpFrameName);
 
             var gunRef:Object = man;
             var gunPath:Array = config.gunPathArray;

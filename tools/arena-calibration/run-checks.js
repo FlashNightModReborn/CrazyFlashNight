@@ -34,6 +34,7 @@ const scripts = [
   "test-worker-experiment.js",
   "test-worker-endpoint-windows.js",
   "test-worker-isolation-probe.js",
+  "../cf6-soldier-assets/elite-arena-summary.js",
   "run-shadow-models.js",
   "run-blind-review.js",
   "run-exception-review.js",

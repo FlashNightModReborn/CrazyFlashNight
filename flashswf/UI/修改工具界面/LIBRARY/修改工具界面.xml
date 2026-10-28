@@ -203,7 +203,25 @@ _root.全部翻译(this);
             </DOMFrame>
             <DOMFrame index="30" duration="10" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[function 排列兵种图标(页){
+                <script><![CDATA[function 计算兵种最大页数():Number {
+	var 最大兵种id:Number = -1;
+	for (var 索引:Number = 0; 索引 < _root.units.length; 索引++)
+	{
+		var 候选id:Number = Number(_root.units[索引].id);
+		if (候选id > 最大兵种id && isFinite(候选id) && 候选id == Math.floor(候选id)
+			&& _root.兵种库["兵种" + 候选id].兵种名 != null)
+		{
+			最大兵种id = 候选id;
+		}
+	}
+	return Math.max(1, Math.floor(最大兵种id / 8) + 1);
+}
+
+function 排列兵种图标(页){
+	页 = Math.floor(Number(页));
+	if (isNaN(页)) 页 = 1;
+	页 = Math.max(1, Math.min(最大兵种页数, 页));
+	当前兵种页数 = 页;
 	var 每页数量 = 8;
 	for (var i = 0; i < 8; i++)
 	{
@@ -264,7 +282,7 @@ _root.全部翻译(this);
 
 _root.全部翻译(this);
 当前兵种页数 = 1;
-最大兵种页数 = 60;
+最大兵种页数 = 计算兵种最大页数();
 兵种变量名 = "";
 兵种名称 = "";
 出兵等级 = 1;

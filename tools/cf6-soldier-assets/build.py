@@ -10,6 +10,11 @@ from lxml import etree as E
 
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+import elite
+import holster
+import art_revision
+import tactics
 ARCHIVE = ROOT / 'flashswf/arts/new/Codex素材源稿/CF6特种兵-R3'
 SHIELD_ARCHIVE = ROOT / 'flashswf/arts/new/Codex素材源稿/CF6特种兵-持盾-R4'
 OWNER = ROOT / 'flashswf/arts/new/Codex特种兵素材'
@@ -60,7 +65,7 @@ def sha(path):
 
 
 def build_inputs():
-    paths = [HERE/'build.py', HERE/'vector.py', HERE/'SoldierAI.as',
+    paths = [HERE/'build.py', HERE/'vector.py', HERE/'holster.py', HERE/'SoldierAI.as',
         ROOT/'tools/cf6-wings-assets/vector.py', ROOT/'tools/cf6-manman-assets/build.py',
         ROOT/'tools/cf6-zombie-assets/build.py', ROOT/'tools/gamma-echo-assets/build.py',
         ROOT/'tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py',
@@ -73,6 +78,9 @@ def build_inputs():
         ROOT/'scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as',
         ROOT/'scripts/逻辑/单位函数/单位函数_lsy_主角技能.as',
         SHIELD_ARCHIVE/'archive-origin.json']
+    paths += elite.input_paths() + art_revision.input_paths() + tactics.input_paths()
+    paths += [ROOT/'scripts/类定义/org/flashNight/arki/unit/Action/Shoot/ShootCore.as',
+        ROOT/'scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/EventComponent/FireEventComponent.as']
     rows = []
     for p in paths:
         data = p.read_bytes()
@@ -102,7 +110,15 @@ def depth_layers(timeline, parts):
             if row is not None:
                 gun = row['id'] == 492
                 inst = native.instance(parts[row['id']], matrix=row['matrix'],
-                    **({'symbol_type':'movie clip', 'name':'枪'} if gun else {}))
+                    **({'symbol_type':'movie clip', 'name':'枪'} if gun else
+                       {'symbol_type':'movie clip', 'name':'腰挂'} if row['id'] == 489 else {}))
+                if inst.get('symbolType')=='graphic':
+                    inst.set('loop','single frame');inst.set('firstFrame','0')
+                if row['id'] == 484:
+                    inst.set('symbolType','movie clip')
+                    inst.set('name','腿挂匕首')
+                    script=E.SubElement(E.SubElement(inst,N+'Actionscript'),N+'script')
+                    script.text=E.CDATA('onClipEvent(load){_visible=_parent._parent.soldierIsElite!==true || _parent._parent.soldierIsInstructor===true;}')
                 mult, add = row.get('colorMult', [256]*4), row.get('colorAdd', [0]*4)
                 if mult != [256]*4 or add != [0]*4:
                     color = E.SubElement(E.SubElement(inst, N+'color'), N+'Color')
@@ -142,13 +158,22 @@ def build_symbols():
     for cid in sorted(required | shield_required):
         name = PREFIX+'分件/'+str(cid)
         source = SHIELD_ARCHIVE/shield_assets[cid]['file'] if cid in shield_required else ARCHIVE/assets[cid]['file']
-        converted, report = vector.NativePart(source,name,(0,0)).build()
+        converted, report = (holster.build(source,name,native,vector) if cid == 489
+            else vector.NativePart(source,name,(0,0)).build())
         for key, item in converted.items():
             if key in result and native.xml_bytes(result[key]) != native.xml_bytes(item):
                 raise ValueError('Conflicting shared atlas: '+key)
         result.update(converted)
         parts[cid] = name
         stats.append({'id':cid, **report})
+
+    # A graphic instance can be flattened together with neighbouring artwork by
+    # CS6. Its clip event must not hide that merged body drawing. Give the knife
+    # a real MovieClip boundary before attaching the role visibility event.
+    knife_wrapper=PREFIX+'装备/腿挂匕首'
+    result[knife_wrapper]=native.symbol(knife_wrapper,[native.layer('独立腿挂',[
+        native.frame(script='stop();',elements=[native.instance(parts[484])])])],symbol_type='movie clip')
+    parts[484]=knife_wrapper
 
     # Match the standard man.枪.枪.装扮 path and register only the weapon skin.
     # CF6 body parts stay native; weapon art remains owned by its existing RSL.
@@ -256,7 +281,7 @@ onEnterFrame=updateSoldierShadow;updateSoldierShadow();stop();''')]))
 x轴攻击范围=0;y轴攻击范围=24;x轴保持距离=190;攻击欲望=3;命中率=20;
 if(!长枪){var pool:Array=_root.敌人函数.大学军校学员随机兵器表;长枪=pool[random(pool.length)];}
 根据模式重新读取武器加成=_root.主角函数.根据模式重新读取武器加成;
-'''+(HERE/'SoldierAI.as').read_text(encoding='utf-8-sig')+'''
+'''+(HERE/'SoldierAI.as').read_text(encoding='utf-8-sig')+'\n'+(HERE/'SoldierRoles.as').read_text(encoding='utf-8-sig')+'''
 _root.敌人函数.配置音效("人类",this);
 初始化敌人模板=_root.初始化敌人模板;初始化敌人模板();
 soldierInitializePhase();
@@ -276,7 +301,7 @@ soldierInitializePhase();
         native.make_sparse_layer('状态标签',225,{i:{'name':s,'label_type':'name'} for i,s in states.items()}),
         native.make_sparse_layer('初始化与消失',225,{0:{'script':'soldierDefaultPhase=2;\n'+init},1:{'script':'this.swapDepths(this._y);'},220:{'script':'hp=0;soldierCancelAttack();'}}),
         native.make_sparse_layer('私有行为',225,{0:{'duration':220,'elements':[
-            native.instance(driver,symbol_type='movie clip',name='soldierDriver',script='onClipEvent(enterFrame){_parent.soldierTick();}')]}}),
+            native.instance(driver,symbol_type='movie clip',name='soldierDriver',script='onClipEvent(enterFrame){_parent.soldierTick();}onClipEvent(unload){_parent.soldierReleaseTactics();}')]}}),
         native.make_sparse_layer('文字信息',225,{0:{'duration':220,'elements':[
             native.instance(H['Symbol 32'],matrix=(1,0,0,1,0,-150),symbol_type='movie clip',name='人物文字信息')]}}),
         native.make_sparse_layer('受击包围盒',225,{0:{'duration':79,'elements':[
@@ -298,6 +323,10 @@ soldierInitializePhase();
     script.text = E.CDATA(script.text.replace('soldierDefaultPhase=2;','soldierDefaultPhase=1;',1))
     result[shield_root] = native.symbol(shield_root,shield_layers,symbol_type='movie clip',
         linkage=SHIELD_LINKAGE,export_first_frame=True)
+    art_revision.install(sys.modules[__name__],result,parts,timeline)
+    elite.install(result,native,PREFIX,LINKAGE,SHIELD_LINKAGE)
+    art_revision.install_elite(sys.modules[__name__],result)
+    tactics.install(sys.modules[__name__],result,parts)
     return result,root_name,stats
 
 
@@ -337,6 +366,29 @@ def import_assets():
             target.write_bytes(source.read_bytes())
     audio_receipt=audio.apply(symbols,OWNER,native.make_sparse_layer)
     outputs = common.write_workspace(symbols,root_name)
+    # List children before their users and keep each Include identity equal to
+    # the referenced symbol. Preserve lazy loading to bound CS6 memory use.
+    document_path = OWNER/'DOMDocument.xml'
+    document = E.parse(str(document_path),PARSER).getroot()
+    includes=document.find('x:symbols',NS)
+    entries={i.get('href')[:-4]:i for i in includes}
+    ordered=[];visiting=set();visited=set()
+    def visit(name):
+        if name in visiting:raise ValueError('Cyclic native symbol '+name)
+        if name in visited:return
+        visiting.add(name)
+        root=symbols.get(name)
+        if root is not None:
+            for ref in sorted({i.get('libraryItemName') for i in root.findall('.//x:DOMSymbolInstance',NS)}):
+                visit(ref)
+        visiting.remove(name);visited.add(name)
+        include=entries[name]
+        include.set('loadImmediate','false')
+        if root is not None and root.get('itemID'):include.set('itemID',root.get('itemID'))
+        ordered.append(include)
+    for name in sorted(entries):visit(name)
+    includes[:]=ordered
+    document_path.write_bytes(native.xml_bytes(document))
     # CS6 lazily resolves off-stage export dependencies. An exported root absent
     # from the stage closure compiled its child movies as one-frame placeholders.
     # A stopped, unreachable second anchor frame forces that closure to load,
@@ -345,6 +397,14 @@ def import_assets():
     anchor = E.parse(str(anchor_path),PARSER).getroot()
     anchor.find('x:timeline/x:DOMTimeline/x:layers/x:DOMLayer/x:frames',NS).append(
         native.frame(1,elements=[native.instance(PREFIX+SHIELD_LINKAGE,symbol_type='movie clip')]))
+    for index,link in enumerate(elite.LINKAGES,2):
+        anchor.find('x:timeline/x:DOMTimeline/x:layers/x:DOMLayer/x:frames',NS).append(
+            native.frame(index,elements=[native.instance(PREFIX+link,symbol_type='movie clip')]))
+    for index,link in enumerate(tactics.LINKAGES,4):
+        anchor.find('x:timeline/x:DOMTimeline/x:layers/x:DOMLayer/x:frames',NS).append(
+            native.frame(index,elements=[native.instance(tactics.PREFIX+link,symbol_type='movie clip')]))
+    anchor.find('x:timeline/x:DOMTimeline/x:layers/x:DOMLayer/x:frames',NS).append(
+        native.frame(6,elements=[native.instance(PREFIX+'烟雾/烟雾',symbol_type='movie clip')]))
     anchor_path.write_bytes(native.xml_bytes(anchor))
     for row in outputs:
         if row['path']=='LIBRARY/'+ANCHOR+'.xml':
@@ -357,13 +417,22 @@ def import_assets():
     manifest = {'schema':native.MANIFEST_SCHEMA,'owner':OWNER.relative_to(ROOT).as_posix(),
         'approvedInput':ARCHIVE.relative_to(ROOT).as_posix(),'nativeSymbolCount':len(outputs),
         'shieldInput':SHIELD_ARCHIVE.relative_to(ROOT).as_posix(),'shieldRoot':580,
-        'phaseLinkages':{LINKAGE:2,SHIELD_LINKAGE:1},'phaseParameter':'特种兵初始阶段',
+        'phaseLinkages':{LINKAGE:2,SHIELD_LINKAGE:1,elite.LINKAGES[0]:2,elite.LINKAGES[1]:1,tactics.LINKAGES[0]:2,tactics.LINKAGES[1]:1},'phaseParameter':'特种兵初始阶段',
         'shieldBreakFrames':11,'secondLifeRatio':0.35,
         'buildInputs':build_inputs(),'parts':stats,'groundShift':GROUND_SHIFT,
         'sourceOffsets':{str(k):v for k,v in OFFSETS.items()},'ordinaryRoot':559,
-        'sourceBodyFrames':378,'shootingAuthority':'ShootInitCore / ShootCore / WeaponFireCore',
-        'shootingPoseFrame':3,'burstShots':3,'reloadFrames':[15,49],'knifeHitFrame':14,
-        'deathBranches':[[1,58],[59,104],[105,139]],'airborneSourceFrames':[1,40],'landedSourceFrames':[41,116],
+        'legacySourceBodyFrames':378,'motionInput':art_revision.SOURCE.relative_to(ROOT).as_posix(),
+        'motionEvaluation':'Animate 24 native keyframes with parenting matrices',
+        'shootingAuthority':'ShootInitCore / ShootCore / WeaponFireCore',
+        'shootingPoseFrame':3,'burstShots':tactics.load_profiles()['roles']['ordinary']['rifleShots'],'reloadFrames':[15,49],'knifeHitFrame':14,
+        'deathBranches':[[1,58],[59,104],[105,139]],'airborneFrames':29,'landedFrames':78,
+        'deathThirdBranch':'New fall frames 1-14 followed by 21 settled hold frames',
+        'ordinaryRole':{'shieldActions':['standShoot','stab','bash'],'grenadeDefault':'高爆手雷',
+            'grenadeActionFrames':36,'grenadeReleaseFrame':25,'legKnife':True,'waistGrenades':True},
+        'eliteRole':{'shieldActions':['chargeShoot'],'chargeFrames':[10,24,12],
+            'pairReloadFrames':[331,365],'pairReloadCommit':363,'legKnife':False,'waistGrenades':True,'reloadVisual':'smoke and authored run','slideEntry':'successful smoke reload only'},
+        'instructorRole':{'artSource':tactics.SOURCE.relative_to(ROOT).as_posix(),'strategy':'adaptive','sharedActions':True},
+        'tacticalProfiles':tactics.load_profiles(),
         'weaponSource':'Existing long-gun equipment and shared cadet pool; external primary wins',
         'weaponHolderPath':'man.枪.枪.装扮','outputs':outputs,
         'projectFiles':[{'path':p,'sha256':sha(OWNER/p),'bytes':(OWNER/p).stat().st_size} for p in native.PROJECT_FILES]}
@@ -383,14 +452,23 @@ def check():
         errors.append('Generator inputs changed; guarded regeneration required')
     includes = {i.get('href') for i in E.parse(str(OWNER/'DOMDocument.xml')).findall('x:symbols/x:Include',NS)}
     masks_checked = 0
+    item_ids = {}
     for row in manifest['outputs']:
         tree = E.parse(str(OWNER/row['path']),PARSER)
+        item_id=tree.getroot().get('itemID')
+        if item_id:
+            if item_id in item_ids:errors.append('Duplicate library itemID '+item_id+': '+item_ids[item_id]+' / '+row['path'])
+            item_ids[item_id]=row['path']
         if row['path'][8:] not in includes:
             errors.append('Missing Include: '+row['path'])
         for element in tree.iter():
             ref = element.get('libraryItemName')
             if ref and not (OWNER/'LIBRARY'/(ref+'.xml')).is_file():
                 errors.append('Unresolved '+ref)
+            if ref and element.find('x:Actionscript',NS) is not None:
+                linked=E.parse(str(OWNER/'LIBRARY'/(ref+'.xml')),PARSER).getroot()
+                if linked.get('symbolType')=='graphic':
+                    errors.append('Clip event requires a real MovieClip library symbol: '+ref)
         if tree.findall('.//x:BitmapFill',NS) or tree.findall('.//x:DOMBitmapInstance',NS):
             errors.append('Unexpected bitmap '+row['path'])
         layers = tree.findall('.//x:DOMLayer',NS)
@@ -400,7 +478,7 @@ def check():
             if not mask or not paint or min(mask[1],paint[1])<=max(mask[0],paint[0]) or min(mask[3],paint[3])<=max(mask[2],paint[2]):
                 errors.append('Empty or disjoint native mask '+row['path'])
     if errors:
-        raise ValueError('\n'.join(errors))
+        raise ValueError('\n'.join(sorted(set(errors))))
     print(json.dumps({'ok':True,'symbols':len(manifest['outputs']),'projectFiles':len(manifest['projectFiles']),'masksChecked':masks_checked}))
 
 
