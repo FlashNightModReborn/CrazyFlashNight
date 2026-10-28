@@ -126,15 +126,28 @@ output:
     exclude:
       - "runtime/**"
       - "config/build/runtime-release-consensus.json"
+      - "fonts/**"
 ```
 
-`runtime/**` 由 runtime manifest 按大小和 SHA-256 校验，正式部署共识也属于发布原始记录，因此必须保持 promotion 落盘时的字节。新增同类完整性或签名产物时，应先把稳定的路径范围加入该列表；不得通过改写 manifest 或共识哈希来迁就打包期致密化。
+`runtime/**` 由 runtime manifest 按大小和 SHA-256 校验，正式部署共识也属于发布原始记录，因此必须保持 promotion 落盘时的字节。`fonts/fonts.xml` 的字节被 `RuntimeFontCatalog`（`projection.sourceSha256`）与 `FontPackTask`（manifest 的 `sourceSha256`）直接校验，压缩后两处都会失配、字体目录与字体包一起降级，因此整个 `fonts/**` 保持原始字节。新增同类完整性或签名产物时，应先把稳定的路径范围加入该列表；不得通过改写 manifest 或共识哈希来迁就打包期致密化。
+
+### 出包前闭包审计
+
+`scripts/audit-runtime-closure.mjs` 在出包前核对运行时闭包，`sfx/build-windows-zip.ps1` 已把它设为前置门禁，审计失败会直接停止出 zip：
+
+```bash
+npm run audit:closure -- --payload ./output/2026-10-28
+```
+
+审计覆盖：关键运行时文件与 runtime manifest；`runtime/**`、`launcher/web/**`、`launcher/data/**`、`launcher/agent-assets/**`、`fonts/**`、`flashswf`、`sounds` 与仓库的差异；运行时状态不得进包（Agent 任务/文本、`data/rag/**`）；`list.xml` 注册项、`bgm_list.xml` 曲目与关卡 `<Path>` 引用；页面 / CSS / JS 引用；字体哈希链与转场图片清单。判定规则固定为：**仓库里存在、包里没有 = 缺口（失败）；数据里引用了仓库也不存在的旧路径 = 告警（不阻塞）**。
+
+新增运行时目录或文件类型时，优先把整个运行时目录纳入 `include: [ "**/*" ]` 再用 `exclude` 收窄，而不是逐个列文件名——历史上逐文件白名单漏过 `world-lighting/`、`scene-transition.html` 等合成表面页面和两个 about 文档。确属开发产物的路径要写进审计的允许缺失列表，并注明为什么运行时不需要。
 
 ### 层级概览
 
 | 层级 | 规则 |
 |------|------|
-| data | XML / JSON 配置 + 情报文本；排除 RAG 草稿、intelligenceMD 设计稿、unused/、`task/*_old.json` 孤立备份、levelEditor/、`**/*.md`、`**/*.xlsx`、`**/*.py`、`**/test_loader.as`、`**/*.lnk` |
+| data | XML / JSON 配置 + 情报文本；排除 RAG 草稿、intelligenceMD 设计稿、unused/、`task/*_old.json` 孤立备份、levelEditor/、`**/*.md`、`**/*.xlsx`、`**/*.py`、`**/test_loader.as`、`**/*.lnk`；**排除 Agent 运行时状态 `task/agent_tasks.json` 与 `task/text/agent_text.json`**（后端按玩家写入，打进包会覆盖玩家数据；list.xml 支持缺失不阻塞） |
 | scripts | 仅 `asLoader.swf`（运行时加载器，源码不打包） |
 | flashswf | 编译后 .swf + 运行时资源（白名单 `**/*.{swf,png,flv,html}` + `portraits/**/*.xml` + `_ruffle/**` Ruffle 运行时；显式排除 XFL 工程附属 `**/{LIBRARY,META-INF,bin}/**` + `**/*.xfl` + `DOMDocument.xml` / `MobileSettings.xml` / `PublishSettings.xml`，以及 `.fla`、`.xlsx`、`*-备份.swf`、Ruffle 自带文档 `_ruffle/README.md` / `_ruffle/LICENSE_*` / `_ruffle/package.json`、`**/AI草稿/**` 设计稿、`arts/things*` 源目录、`unused/`、`miniGames/`、`ComicTool/`） |
 | sounds | `export/` SFX + `bgm_list.xml` + 各专辑 BGM 音频（`**/*.{mp3,wav,ogg,flac,m4a,mp4,aac,adts,opus}`，含玩家自定义，由 MusicCatalog 运行时扫描）；`export/` 下文件名即运行时 SFX id，legacy `.waz` 只要仍被 `data/items/*.xml` 引用就必须保留；XFL 残余 exclude 为防御性 |
@@ -143,9 +156,9 @@ output:
 | root-files | 根目录运行时文件：native bootstrap `CRAZYFLASHER7MercenaryEmpire.exe`、`hotkey_guard.exe`、Flash Player、SWF、`crossdomain.xml`、`config.xml` / `config.toml` |
 | launcher-runtime | FDD Core 运行时：Core apphost / metadata、`cf7-runtime-manifest.tsv`、`THIRD-PARTY-NOTICES.txt`，以及 ClearScript、WebView2、Vortice 和 NativeHud SVG（ExCSS / SkiaSharp / HarfBuzzSharp / Svg.Skia）managed/native 闭包；DLL 均使用逐文件白名单 |
 | runtime-installer | 缺运行时时由 bootstrap 拉起的 Windows Desktop Runtime installer：`tools/dotnet-runtime/windowsdesktop-runtime-10.0.8-win-x64.exe` |
-| launcher-web | WebView2 overlay 前端：bootstrap/overlay/config/css/assets/data/lib/modules/help + `icons/**`（WebP 化后整目录收，含 .webp）；含 XML 生成的字体投影，排除 `dev/`、`mockups/`、`modules/**/dev/`、`modules/**/reference/`、各 minigame & cursor & fonts 的 README、`assets/**/_copy_bg.py` 开发脚本、`assets/**/report.json` 烘焙审计报告 |
-| runtime-fonts | 根 `fonts/` 的 XML/XSD、许可证、README 与 `permanent/runtime/` 常驻字体；严格排除 `temporary/**` |
-| launcher-data | Launcher 运行时数据：存档修复字典、存档 schema、`guidance-catalog.json`、`tutorial-journeys.json` 与 `scene-transition/catalog.manifest.json`；地图从 v2 定义经 C# 内存投影，不再打包 HUD sidecar |
+| launcher-web | WebView2 overlay 前端整目录收（页面、`modules/`、`assets/`、`content/`、`generated/`、`icons/` 等全部运行时闭包）；新增页面 / 正文 / 子目录不再需要改白名单。仅排除 `dev/`、`mockups/`、`modules/**/dev/`、`modules/**/reference/`、各 minigame & cursor & fonts 的 README、`assets/**/_copy_bg.py` 开发脚本、`assets/**/report.json` 烘焙审计报告 |
+| runtime-fonts | 根 `fonts/` 整目录收（XML/XSD、许可证、README 与 `permanent/runtime/` 常驻字体）；仅排除 `temporary/**` 临时覆盖与缓存 |
+| launcher-data | Launcher 运行时数据整目录收（存档修复字典、存档 schema、`guidance-catalog.json`、`tutorial-journeys.json`、`scene-transition/`、`world-lighting/` 等）；仅排除运行时生成的 `dialogue-portraits/**`、`doll-portraits/**` 立绘缓存。新增启动期数据子目录无需改配置 |
 | launcher-agent-assets | 精确收编 Wings 运行时直接读取的 `launcher/agent-assets/lore/public-companion.v1.json`；schema 与 fixtures 仍留在开发/测试链 |
 | launcher-scripts | V8 运行时 bundle（历史兼容名 `launcher/scripts/dist/hit-number-bundle.js`；现役仅含搓招 `GameInput` DFA） |
 | rapfi | 五子棋引擎与权重文件：5 个 Windows CPU 变体 + `*.bin` / `*.bin.lz4` 权重 + `config.toml` + `AUTHORS`（`tools/rapfi/`） |

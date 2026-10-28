@@ -41,6 +41,18 @@ Write-Host "=== 构建 Steam 可安装每日包 ===" -ForegroundColor Cyan
 Write-Host "  打包产物: $source"
 Write-Host "  版本标记: $Version"
 
+# 出 zip 前先跑运行时闭包审计：关键文件、manifest、页面/脚本引用、字体哈希链。
+# 历史上白名单漏过 world-lighting 与三个合成表面页面，导致装机后启动崩/转场卡死。
+$audit = Join-Path $ToolRoot "scripts\audit-runtime-closure.mjs"
+if (Test-Path $audit) {
+    if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
+        throw "未找到 node，无法执行运行时闭包审计；请先安装 Node.js"
+    }
+    Write-Host "  运行时闭包审计 ..."
+    & node $audit --payload $source
+    if ($LASTEXITCODE -ne 0) { throw "运行时闭包审计未通过，已停止出包" }
+}
+
 $staging = Join-Path $ToolRoot "sfx-staging-zip"
 if (Test-Path $staging) { Remove-Item $staging -Recurse -Force }
 $resStage = Join-Path $staging "resources"

@@ -17,6 +17,7 @@
     "ensure:runtime": "node scripts/ensure-runtime.mjs",
     "pack:dry-run": "npm run prebuild:core && tsx packages/cli/src/index.ts pack --dry-run",
     "pack": "npm run prebuild:core && tsx packages/cli/src/index.ts pack",
+    "audit:closure": "node scripts/audit-runtime-closure.mjs",
     "validate-config": "npm run prebuild:core && tsx packages/cli/src/index.ts validate-config",
     "list-tags": "npm run prebuild:core && tsx packages/cli/src/index.ts list-tags",
     "diff": "npm run prebuild:core && tsx packages/cli/src/index.ts diff",

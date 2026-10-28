@@ -49,6 +49,11 @@ layers:
       #   task/*_old.json 同性质孤立备份，如 mercenary_tasks_old.json，不在 list.xml 引用链）
       - "unused/**"
       - "task/*_old.json"
+      # Agent 运行时状态（.gitignore 忽略）：由后端/游戏按玩家写入，不是发行基线。
+      # 打进每日包会把作者本机的全局任务/文本状态覆盖给玩家；list.xml 已支持
+      # agent 文件缺失不阻塞启动，新玩家由后端 backup_resources 生成。
+      - "task/agent_tasks.json"
+      - "task/text/agent_text.json"
       # 关卡编辑器（独立 HTML/JS 应用，由 .lnk 启动，不属于运行时数据）
       - "levelEditor/**"
       - "**/*.lnk"
@@ -253,32 +258,10 @@ layers:
   - name: launcher-web
     description: "WebView2 overlay 前端资源（HTML/CSS/JS/icons/Markdown 帮助/面板系统）"
     source: "launcher/web/"
-    include:
-      - "bootstrap.html"
-      - "bootstrap-main.js"
-      - "overlay.html"
-      # 三个 WebView2 合成表面页面：转场 / 帮助 / 情报。
-      # 漏包时页面 404，Host 永远收不到 scene_transition_ready（转场卡死，
-      # 新建角色进不了场，启动以 CF7-LAUNCH-FLOW-ERROR/frontdoor_scene_timeout 失败）。
-      - "scene-transition.html"
-      - "composition-help.html"
-      - "composition-intelligence.html"
-      - "config/**"
-      - "css/**"
-      # fonts.xml 的三项 Web runtime 投影位于 launcher/web/generated/；
-      # panels.css 会直接 import 其中的 CSS，Host 也会读取 JSON，不能只依赖仓库中存在。
-      - "generated/**"
-      # 运行时资产：字体 / 地图头像 / stage-select 预览 / dialogue & dressup 产物 / dungeon posters
-      # 审计报告和开发脚本在 exclude 中剔除，避免 assets/** 把烘焙中间产物带进每日包。
-      - "assets/**"
-      - "data/**"
-      - "lib/**"
-      # 面板运行时代码与生成 catalog：arena custom match/PvE、tasks/achievements、team/merc/map 等
-      - "modules/**"
-      - "help/**"
-      # 图标已 WebP 化（2026-06 图标管线 WebP 化）：icons/ 是扁平目录，全部为运行时资产
-      # （2397 webp + 17 遗留 png + manifest.json，无 dev 垃圾），整目录收，避免再被单一扩展名漏掉
-      - "icons/**"
+    # 整目录收：页面、模块、生成物、内容正文都是运行时闭包的一部分。
+    # 新增 HTML / content 正文 / 新子目录不再需要改白名单（历史上逐个列文件
+    # 已漏过 scene-transition.html 等三个合成表面页面）。开发产物一律走 exclude。
+    include: [ "**/*" ]
     exclude:
       # 已被 help-panel.js 替代，不再被 overlay.html 引用
       - "modules/help.js"
@@ -301,34 +284,20 @@ layers:
   - name: runtime-fonts
     description: "C#/Web 字体真源、许可证与常驻运行时字体（临时覆盖/缓存整体排除）"
     source: "fonts/"
-    include:
-      - "README.md"
-      - "fonts.xml"
-      - "fonts.xsd"
-      - "licenses/*.txt"
-      - "permanent/runtime/*.otf"
-      - "permanent/runtime/*.ttf"
-      - "permanent/runtime/*.woff"
-      - "permanent/runtime/*.woff2"
+    # 整目录收：新增永久字体子目录/许可证不再需要改配置；temporary 是装机后的运行期缓存。
+    include: [ "**/*" ]
     exclude:
       - "temporary/**"
 
   - name: launcher-data
     description: "Launcher 运行时数据（存档、引导、教程旅程与场景转场目录）"
     source: "launcher/data/"
-    include:
-      # SaveAutoRepairService 启动期加载，缺失 → 自动修复降级到只读模式
-      - "save_repair_dict.json"
-      # 存档编辑器 diff 视图基线，缺失 → "已修改" tab 退化为 schema 默认值
-      - "save_schema.json"
-      # NativeGuidanceWidget 启动时直接读取；漏包会在读档之前终止 Core。
-      - "guidance-catalog.json"
-      - "tutorial-journeys.json"
-      - "scene-transition/catalog.manifest.json"
-      # WorldCompositor 启动即加载 preset.json（内部再引 lutset 与 render-schedule）；
-      # 漏包会抛 DirectoryNotFoundException 终止 Core（CF7-LAUNCH-CORE-UNHANDLED）。
-      - "world-lighting/**"
-    exclude: []
+    # 整目录收：Host 启动期直接读这些文件，历史上逐个列文件已漏过 world-lighting 目录。
+    include: [ "**/*" ]
+    exclude:
+      # 运行期由对话/换装管线生成的画像缓存，不进分发包
+      - "dialogue-portraits/**"
+      - "doll-portraits/**"
 
   - name: launcher-agent-assets
     description: "CF7 Agent Runtime / Wings 运行时只读 lore catalog"
