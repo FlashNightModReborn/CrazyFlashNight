@@ -1552,57 +1552,60 @@ namespace CF7Launcher.Tests.Tasks
 
         // ── 选项态（草案确认轮的最后一条 add）──────────────────────────────
 
-        [Fact]
-        public void AskAcceptTurnsOnAtLastAddBeforeClosing()
+        [Theory]
+        [InlineData("task_pre")]
+        [InlineData("task_post")]
+        public void AskAcceptStaysOffInTaskModeEvenAtLastAddBeforeClosing(string kind)
         {
             using var h = new Harness();
             EnableTaskContext(h);
-            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "先别急着答应。");
-            // 草案已拟好：最终确认对话两条 add + 结束语；plan 无 end → 放弃原始剩余。
+            h.AdoptTaskBook(7, kind, "200124", "你来了。", "先别急着答应。");
+            // 任务组每轮都会推 plan（改写剩余台词），但它不代表任务草案：
+            // task_pre 是接取后的说明对话，task_post 是完成后的收尾，都不能再弹接取选项。
             h.Transport.Script(
-                AddLine("委托是去北边仓库找回清单上的货。", 0)
-                + AddLine("接不接，你给个话。", 1)
-                + AddLine("不接就算了，这活先搁着。", 2, "closing")
+                AddLine("练练场那边怎么样了？去试炼过了吗？", 0)
+                + AddLine("没去的话就先去试试。", 1)
+                + AddLine("行，那先这样。", 2, "closing")
                 + "event: plan\ndata: {\"mute\":false}\n\n"
                 + Done());
 
             Assert.True(h.Controller.Submit("你说。"));
             h.Widget.CompleteCurrentLineTyping();          // $PC 打完
             h.Advance();                                    // → 首句 add 上屏
-            Assert.Equal("委托是去北边仓库找回清单上的货。", h.Widget.CurrentFrame.Text);
-            Assert.False(h.Controller.AskAccept);          // 后面还有 add，不是最后一条
+            Assert.Equal("练练场那边怎么样了？去试炼过了吗？", h.Widget.CurrentFrame.Text);
+            Assert.False(h.Controller.AskAccept);
 
             h.Advance();                                    // → 第二条 add
-            Assert.Equal("接不接，你给个话。", h.Widget.CurrentFrame.Text);
-            Assert.True(h.Controller.AskAccept);           // 下一条是结束语 → 弹选项
+            Assert.Equal("没去的话就先去试试。", h.Widget.CurrentFrame.Text);
+            Assert.False(h.Controller.AskAccept);          // 紧邻结束语也不弹
 
             h.Advance();                                    // → 结束语
-            Assert.Equal("不接就算了，这活先搁着。", h.Widget.CurrentFrame.Text);
-            Assert.False(h.Controller.AskAccept);          // 进结束语即恢复普通输入条
+            Assert.Equal("行，那先这样。", h.Widget.CurrentFrame.Text);
+            Assert.False(h.Controller.AskAccept);
         }
 
         [Fact]
-        public void AskAcceptTurnsOnAtLastAddWhenClosingMissing()
+        public void AskAcceptStaysOffInTaskModeWhenClosingMissing()
         {
             using var h = new Harness();
             EnableTaskContext(h);
             h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "先别急着答应。");
-            // 后端没写结束语：靠 done 收流信号认出最后一条 add。
+            // 后端没写结束语：done 到齐也不得把任务组认成草案确认轮。
             h.Transport.Script(
-                AddLine("委托是去北边仓库找回清单上的货。", 0)
-                + AddLine("接不接，你给个话。", 1)
+                AddLine("练练场那边怎么样了？去试炼过了吗？", 0)
+                + AddLine("没去的话就先去试试。", 1)
                 + "event: plan\ndata: {\"mute\":false}\n\n"
                 + Done());
 
             Assert.True(h.Controller.Submit("你说。"));
             h.Widget.CompleteCurrentLineTyping();          // $PC 打完
             h.Advance();                                    // → 首句 add 上屏
-            Assert.Equal("委托是去北边仓库找回清单上的货。", h.Widget.CurrentFrame.Text);
+            Assert.Equal("练练场那边怎么样了？去试炼过了吗？", h.Widget.CurrentFrame.Text);
             Assert.False(h.Controller.AskAccept);
 
             h.Advance();
-            Assert.Equal("接不接，你给个话。", h.Widget.CurrentFrame.Text);
-            Assert.True(h.Controller.AskAccept);           // done 已到且后面没有行
+            Assert.Equal("没去的话就先去试试。", h.Widget.CurrentFrame.Text);
+            Assert.False(h.Controller.AskAccept);          // done 已到且后面没有行也不弹
         }
 
         [Fact]
@@ -1648,17 +1651,41 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void AskAcceptStaysOffOnPublishingRetryInterim()
+        {
+            using var h = new Harness();
+            h.AdoptBook("又是你。", "有事说事。");
+            // 玩家用文字确认委托时，确认工具的重试过渡话也带 interim=true；
+            // 它属于 publishing 轮，不是又拟了一版草案，不能弹接取选项。
+            h.Transport.Script(
+                "event: status\ndata: {\"stage\":\"publishing\",\"ui_hint\":\"办理委托中\"}\n\n"
+                + AddLine("……稍等，我再核对一下。", 0, interim: true)
+                + AddLine("办妥了，去吧。", 1)
+                + AddLine("那就这样。", 2, "closing")
+                + Done());
+
+            Assert.True(h.Controller.Submit("接下这个委托。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("……稍等，我再核对一下。", h.Widget.CurrentFrame.Text);
+            Assert.False(h.Controller.AskAccept);
+
+            h.Advance();
+            Assert.Equal("办妥了，去吧。", h.Widget.CurrentFrame.Text);
+            Assert.False(h.Controller.AskAccept);
+        }
+
+        [Fact]
         public void AskAcceptTurnsOffWhenNewTurnStarts()
         {
             using var h = new Harness();
-            EnableTaskContext(h);
-            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "先别急着答应。");
+            h.AdoptBook("又是你。", "有事说事。");
             h.Transport.Script(
-                AddLine("接不接，你给个话。", 0)
+                "event: status\ndata: {\"stage\":\"drafting\",\"ui_hint\":\"拟定委托中\"}\n\n"
+                + AddLine("接不接，你给个话。", 0)
                 + AddLine("不接就算了。", 1, "closing")
-                + "event: plan\ndata: {\"mute\":false}\n\n"
                 + Done());
-            Assert.True(h.Controller.Submit("你说。"));
+            Assert.True(h.Controller.Submit("有什么活吗？"));
             h.Widget.CompleteCurrentLineTyping();          // $PC 打完
             h.Advance();                                    // → 唯一一条 add 上屏
             Assert.True(h.Controller.AskAccept);
@@ -2276,16 +2303,16 @@ namespace CF7Launcher.Tests.Tasks
         [Fact]
         public void TaskAcceptShowsPcLineAndSendsItAsPlayerInput()
         {
+            // 接取选项只属于日常组的派活轮；任务组（task_pre/task_post）不再提供。
             using var h = new Harness();
-            EnableTaskContext(h);
-            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "先别急着答应。");
+            h.AdoptBook("又是你。", "有事说事。");
             h.Transport.Script(
-                AddLine("接不接，你给个话。", 0)
+                "event: status\ndata: {\"stage\":\"drafting\",\"ui_hint\":\"拟定委托中\"}\n\n"
+                + AddLine("接不接，你给个话。", 0)
                 + AddLine("不接就算了。", 1, "closing")
-                + "event: plan\ndata: {\"mute\":false}\n\n"
                 + Done());
 
-            Assert.True(h.Controller.Submit("你说。"));
+            Assert.True(h.Controller.Submit("有什么活吗？"));
             h.Widget.CompleteCurrentLineTyping();
             h.Advance();
             Assert.True(h.Controller.AskAccept);
@@ -2298,7 +2325,6 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("task_accept", request["action"].Value<string>("kind"));
             Assert.False(string.IsNullOrEmpty(request["action"].Value<string>("action_id")));
             Assert.False(h.Controller.AskAccept);
-            Assert.Null(request["player_item_names"]);
             Assert.Equal(1, CountPcLines(h, "我接了"));
         }
 
@@ -2306,15 +2332,14 @@ namespace CF7Launcher.Tests.Tasks
         public void TaskDeclineShowsPcLineAndSendsItAsPlayerInput()
         {
             using var h = new Harness();
-            EnableTaskContext(h);
-            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "先别急着答应。");
+            h.AdoptBook("又是你。", "有事说事。");
             h.Transport.Script(
-                AddLine("接不接，你给个话。", 0)
+                "event: status\ndata: {\"stage\":\"drafting\",\"ui_hint\":\"拟定委托中\"}\n\n"
+                + AddLine("接不接，你给个话。", 0)
                 + AddLine("不接就算了。", 1, "closing")
-                + "event: plan\ndata: {\"mute\":false}\n\n"
                 + Done());
 
-            Assert.True(h.Controller.Submit("你说。"));
+            Assert.True(h.Controller.Submit("有什么活吗？"));
             h.Widget.CompleteCurrentLineTyping();
             h.Advance();
             Assert.True(h.Controller.AskAccept);
@@ -2331,7 +2356,7 @@ namespace CF7Launcher.Tests.Tasks
         [Fact]
         public void TaskAcceptPublishPushesHandoffPacket()
         {
-            using var h = AcceptableTaskDialogue();
+            using var h = AcceptableDraftDialogue();
             h.Transport.Script(DoneWithPublish(200345, "Andy Law"));
             h.Controller.SubmitChoice(true);
 
@@ -2355,7 +2380,7 @@ namespace CF7Launcher.Tests.Tasks
         [Fact]
         public void TaskAcceptRetryTransitionDoesNotReopenOptionsOrBlockHandoff()
         {
-            using var h = AcceptableTaskDialogue();
+            using var h = AcceptableDraftDialogue();
             h.Transport.Script(
                 AddLine("……稍等，我再核对一下。", 0, interim: true)
                 + DoneWithPublish(200345, "Andy Law"));
@@ -2371,7 +2396,7 @@ namespace CF7Launcher.Tests.Tasks
         [Fact]
         public void TaskAcceptPublishHandoffEndsWhenSessionHidden()
         {
-            using var h = AcceptableTaskDialogue();
+            using var h = AcceptableDraftDialogue();
             h.Transport.Script(DoneWithPublish(200345, "Andy Law"));
             h.Controller.SubmitChoice(true);
             Assert.True(h.Controller.HandoffForTest);
@@ -2389,7 +2414,7 @@ namespace CF7Launcher.Tests.Tasks
         [Fact]
         public void TaskAcceptPublishForOtherNpcFallsBackToStaticClosing()
         {
-            using var h = AcceptableTaskDialogue();
+            using var h = AcceptableDraftDialogue();
             h.Transport.Script(DoneWithPublish(200345, "药师"));
             h.Controller.SubmitChoice(true);
 
@@ -2406,7 +2431,7 @@ namespace CF7Launcher.Tests.Tasks
         [Fact]
         public void TaskAcceptPublishPushFailureFallsBackToStaticClosing()
         {
-            using var h = AcceptableTaskDialogue();
+            using var h = AcceptableDraftDialogue();
             h.PushSuccess = false;
             h.Transport.Script(DoneWithPublish(200345, "Andy Law"));
             h.Controller.SubmitChoice(true);
@@ -2423,7 +2448,7 @@ namespace CF7Launcher.Tests.Tasks
         [Fact]
         public void TaskAcceptPublishHandoffTimeoutFallsBackToStaticClosing()
         {
-            using var h = AcceptableTaskDialogue();
+            using var h = AcceptableDraftDialogue();
             h.Transport.Script(DoneWithPublish(200345, "Andy Law"));
             h.Controller.SubmitChoice(true);
             Assert.True(h.Controller.HandoffForTest);
@@ -2441,7 +2466,7 @@ namespace CF7Launcher.Tests.Tasks
         [Fact]
         public void OrdinaryActionDoneWithoutPublishKeepsOriginalClosingPath()
         {
-            using var h = AcceptableTaskDialogue();
+            using var h = AcceptableDraftDialogue();
             h.Transport.Script(AddLine("去办吧。", 0, "closing") + Done());
             h.Controller.SubmitChoice(true);
 
@@ -2675,18 +2700,17 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
         }
 
-        /// <summary>推进到「我接了/我不接」选项出现的状态（与任务接受测试同一路径）。</summary>
-        private static Harness AcceptableTaskDialogue()
+        /// <summary>推进到日常组派活轮的「我接了/我不接」选项出现。</summary>
+        private static Harness AcceptableDraftDialogue()
         {
             var h = new Harness();
-            EnableTaskContext(h);
-            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "先别急着答应。");
+            h.AdoptBook("又是你。", "有事说事。");
             h.Transport.Script(
-                AddLine("接不接，你给个话。", 0)
+                "event: status\ndata: {\"stage\":\"drafting\",\"ui_hint\":\"拟定委托中\"}\n\n"
+                + AddLine("接不接，你给个话。", 0)
                 + AddLine("不接就算了。", 1, "closing")
-                + "event: plan\ndata: {\"mute\":false}\n\n"
                 + Done());
-            Assert.True(h.Controller.Submit("你说。"));
+            Assert.True(h.Controller.Submit("有什么活吗？"));
             h.Widget.CompleteCurrentLineTyping();
             h.Advance();
             Assert.True(h.Controller.AskAccept);

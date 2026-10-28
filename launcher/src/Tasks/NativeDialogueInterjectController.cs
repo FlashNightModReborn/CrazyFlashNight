@@ -231,9 +231,6 @@ namespace CF7Launcher.Tasks
         /// <summary>当前上屏行的 SSE kind（add/closing，原作/占位为 null）。
         /// 必须在 _insertedLines 摘除当前行前记下，否则补判时查不到。</summary>
         private string _presentedLineKind;
-        /// <summary>本轮收到过过渡话（line.interim=true）。daily 组派活时后端不推 plan
-        /// （orchestrator 只在 mode=="task" 推），过渡话是日常组唯一的草案信号。</summary>
-        private bool _sawInterim;
         /// <summary>本轮收到过 status(stage=drafting)：任务草案工具轮的唯一阶段，
         /// daily 组派活时最早、最可靠的信号。</summary>
         private bool _sawDrafting;
@@ -415,7 +412,6 @@ namespace CF7Launcher.Tasks
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
-            _sawInterim = false;
             _sawDrafting = false;
             _turnActive = false;
             _turnTailIndex = -1;
@@ -479,7 +475,6 @@ namespace CF7Launcher.Tasks
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
-            _sawInterim = false;
             _sawDrafting = false;
             DisarmWatchdog();
             _queued.Clear();
@@ -525,7 +520,6 @@ namespace CF7Launcher.Tasks
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
-            _sawInterim = false;
             _sawDrafting = false;
             SetInputState(DialogueInterjectInputState.Hidden);
             // 关闭/组末这一次是权威收尾（transcript 全量前缀，幂等）。
@@ -717,7 +711,6 @@ namespace CF7Launcher.Tasks
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
-            _sawInterim = false;
             _sawDrafting = false;
             _appliedRemoves.RemoveAll(wire => wire < wireResume);
 
@@ -745,7 +738,6 @@ namespace CF7Launcher.Tasks
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
-            _sawInterim = false;
             _sawDrafting = false;
             _preparing = false;
             _turnStatusText = null;
@@ -1256,8 +1248,8 @@ namespace CF7Launcher.Tasks
             if (!_turnActive || _closing) return;
             string stage = evt.Text("stage");
             string hint = (evt.Text("ui_hint") ?? "").Trim();
-            // drafting 只在任务草案工具轮发（route_task_draft/update/confirm/cancel），
-            // 是 daily 组「刚派过活」的确定信号——比过渡话更早，且不受其生成超时影响。
+            // drafting 只在任务草案工具轮发（route_task_draft/update；confirm/cancel 发 publishing），
+            // 是 daily 组「刚派过活」的确定信号，不受过渡话生成超时影响。
             if (string.Equals(stage, "drafting", StringComparison.Ordinal)) _sawDrafting = true;
             string label = hint.Length > 0 ? hint : StatusLabel(stage);
             if (label.Length > 0)
@@ -1486,7 +1478,8 @@ namespace CF7Launcher.Tasks
         private void AcceptPlan(DialogueInterjectEvent evt)
         {
             // 不再按组类型拦 plan：日常对话里也能派活（route_task_draft 在日常工具表里），
-            // 草案那一轮可能仍是 daily 组。plan 只在草案期间由后端主动推送，收到即应用。
+            // 草案那一轮可能仍是 daily 组。任务模式每轮都会推 plan（改写剩余台词），
+            // 收到即应用；plan 本身不是草案信号，选项态另看 status(drafting)。
             if (!_turnActive || _closing || _session == null) return;
             if (_planApplied) return;
             TaskPlan plan = ParsePlan(evt);
@@ -1794,7 +1787,6 @@ namespace CF7Launcher.Tasks
                 }
                 _turnTailIndex = index + 1;
                 _aiLineShown = true;
-                if (line.Interim) _sawInterim = true;
                 _lastAiLineInterim = line.Interim;
                 _pcRevision = -1;
                 // closing 迟到但玩家正停在最后一条 add：补判选项态。
@@ -1818,7 +1810,6 @@ namespace CF7Launcher.Tasks
             }
             _turnTailIndex++;
             _aiLineShown = true;            // 已插入（未必已上屏）：本轮已有可播内容
-            if (line.Interim) _sawInterim = true;   // 本轮派过活：过渡话是 daily 组唯一的草案信号
             _lastAiLineInterim = line.Interim;
             if (advance) _pcRevision = -1;  // 后续打字完成不再当 $PC
             // closing 迟到但玩家正停在最后一条 add：补判选项态。
@@ -2294,7 +2285,6 @@ namespace CF7Launcher.Tasks
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
-            _sawInterim = false;
             _sawDrafting = false;
             _appliedRemoves.RemoveAll(wire => wire < wireResume);
 
@@ -2986,7 +2976,7 @@ namespace CF7Launcher.Tasks
         }
 
         /// <summary>
-        /// 选项态判定（每个上屏/插入/收流时机重算）：只在任务草案确认轮的最后一条 add 上成立。
+        /// 选项态判定（每个上屏/插入/收流时机重算）：只在日常组派活的最后一条 add 上成立。
         /// 结束语先行可判（下一条是 closing）；结束语为空时靠 done 已到 + 后面没有行。
         /// currentKind 由调用方给出——已上屏的行会被摘出 _insertedLines，不能再查字典。
         /// </summary>
@@ -2995,8 +2985,10 @@ namespace CF7Launcher.Tasks
         {
             bool want = false;
             string nextKind = null;
-            // 派活轮判定三选一：task 组有 plan；daily 组看 status(drafting) 或过渡话。
-            bool draftTurn = _planApplied || _sawDrafting || _sawInterim;
+            // 只认日常组的 status(drafting)：它只在 route_task_draft/update 工具轮发出。
+            // task_pre/task_post 发生在任务已接取/已完成之后，plan 只用于改写剩余台词；
+            // 确认/撤销轮的“重试过渡话”也不是新草案。三者都不能当成「刚拟了草案」。
+            bool draftTurn = !_taskMode && _sawDrafting;
             bool eligible = draftTurn && !_closing && !_playerLineOnScreen
                 && _pendingItemClaim == null && !_taskActionSent
                 && _session != null
@@ -3014,7 +3006,7 @@ namespace CF7Launcher.Tasks
                 LogManager.Log("[DialogueInterject] askAccept-probe want=" + want
                     + " next=" + (nextKind ?? (next == null ? "none" : "original"))
                     + " done=" + _turnLinesDone + " plan=" + _planApplied
-                    + " drafting=" + _sawDrafting + " interim=" + _sawInterim);
+                    + " drafting=" + _sawDrafting);
             }
             SetAskAccept(want);
         }
