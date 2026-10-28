@@ -27,6 +27,10 @@ output:
     exclude:
       - "runtime/**"
       - "config/build/runtime-release-consensus.json"
+      # fonts.xml 的字节被 RuntimeFontCatalog（projection.sourceSha256）与
+      # FontPackTask（manifest.sourceSha256）直接校验；压缩后会失配，
+      # 字体目录与字体包双双降级。保留仓库原始字节。
+      - "fonts/**"
 
 layers:
   - name: data
@@ -253,6 +257,12 @@ layers:
       - "bootstrap.html"
       - "bootstrap-main.js"
       - "overlay.html"
+      # 三个 WebView2 合成表面页面：转场 / 帮助 / 情报。
+      # 漏包时页面 404，Host 永远收不到 scene_transition_ready（转场卡死，
+      # 新建角色进不了场，启动以 CF7-LAUNCH-FLOW-ERROR/frontdoor_scene_timeout 失败）。
+      - "scene-transition.html"
+      - "composition-help.html"
+      - "composition-intelligence.html"
       - "config/**"
       - "css/**"
       # fonts.xml 的三项 Web runtime 投影位于 launcher/web/generated/；
