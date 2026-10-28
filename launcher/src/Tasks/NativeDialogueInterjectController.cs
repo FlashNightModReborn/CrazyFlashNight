@@ -1124,12 +1124,30 @@ namespace CF7Launcher.Tasks
                     }
                     await stream.RunAsync(requestJson, CancellationToken.None).ConfigureAwait(false);
                     LogManager.Log("[DialogueInterject] stream end terminal=" + stream.SawTerminal
-                        + " cancelled=" + stream.Cancelled);
+                        + " cancelled=" + stream.Cancelled
+                        + " events=" + stream.EventCount
+                        + " malformed=" + stream.MalformedLines);
                     Post(() =>
                     {
                         if (!ReferenceEquals(_stream, stream)) return;
-                        // 流结束但没收到 done/error（断流）：按部分有效处理。
-                        if (!stream.SawTerminal) FailTurn("stream_closed");
+                        if (stream.SawTerminal) return;
+                        // 任务轮收到完整 plan 时，plan 就是本轮 AI 的全部产出（协议 F-08）；
+                        // done 只承担收尾与自动接取交接。没有待交接动作时按成功收尾，不因断流丢掉 plan。
+                        if (_turnActive && _taskMode && _turnActionKind == null
+                            && (_planApplied || _pendingPlan != null))
+                        {
+                            LogManager.Log("[DialogueInterject] stream closed after plan; accept turn"
+                                + " planApplied=" + _planApplied);
+                            CompleteTurn();
+                            return;
+                        }
+                        // 流结束但没收到 done/error（断流）：日常轮、无 plan、或动作轮仍按失败回退。
+                        LogManager.Log("[DialogueInterject] stream closed without terminal state"
+                            + " taskMode=" + _taskMode
+                            + " action=" + (_turnActionKind ?? "-")
+                            + " planApplied=" + _planApplied
+                            + " planPending=" + (_pendingPlan != null));
+                        FailTurn("stream_closed");
                     });
                 }
                 catch (Exception ex)
@@ -1673,13 +1691,21 @@ namespace CF7Launcher.Tasks
             }
 
             // 玩家已经点在占位条上：plan 的首行直接原位替换上屏；还停在 $PC 则不换当前显示。
-            bool atTail = _session.Index >= _turnTailIndex;
-            if (!_session.ReplaceFrom(_turnTailIndex, replacement.ToArray(), resumeWire,
+            int tailIndex = _turnTailIndex;
+            int playIndex = _session.Index;
+            bool atTail = playIndex >= tailIndex;
+            if (!_session.ReplaceFrom(tailIndex, replacement.ToArray(), resumeWire,
                 present: atTail))
             {
                 LogManager.Log("[DialogueInterject] plan apply failed (splice rejected)");
                 return;
             }
+            LogManager.Log("[DialogueInterject] plan applied end="
+                + (plan.HasEnd ? plan.End.ToString() : "-")
+                + " edits=" + plan.Edits.Count
+                + " replaced=" + replacement.Count
+                + " tailIndex=" + tailIndex
+                + " playIndex=" + playIndex);
             for (int i = 0; i < refs.Count; i++)
             {
                 if (refs[i] == null) continue;      // 原文行：没有参考续写映射
@@ -2748,6 +2774,15 @@ namespace CF7Launcher.Tasks
 
         private void FailTurnCore(string code)
         {
+            int played;
+            lock (_playedGate) played = _played.Count;
+            LogManager.Log("[DialogueInterject] turn fail code=" + code
+                + " taskMode=" + _taskMode
+                + " action=" + (_turnActionKind ?? "-")
+                + " planApplied=" + _planApplied
+                + " planPending=" + (_pendingPlan != null)
+                + " queued=" + _queued.Count
+                + " played=" + played);
             // 已真实扣除、但本轮可能没送达后端：同 action_id 重试一次，绝不重复扣除。
             JObject retry = _unackedItemAction;
             string retryJson = _unackedItemRequestJson;
