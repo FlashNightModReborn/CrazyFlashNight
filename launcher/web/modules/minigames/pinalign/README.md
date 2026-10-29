@@ -19,12 +19,13 @@ MVP boundaries:
 
 - Pure deterministic core in `core/index.js`
 - Browser panel shell in `pinalign-panel.js`
+- 3D Safe V2 Dual-Route runtime in `safe-v2/` (`puzzles.mjs`, `mechanisms.mjs`, `scene.mjs`, `gestures.mjs`, `manual-data.mjs`, `runtime.mjs`):
+  - **1-Step Visual Reasoning (`puzzles.mjs`)**: Raven 2×2 matrix (`matrix`), Bongard 6-tile odd-one-out (`odd`), and Cardano rotating grille (`grille`), each yielding a 3-digit code (`100–999`) with inline SVG and red-pencil deduction overlay (`solvedSvg`).
+  - **T1 + T2 Bipolar Mechanical Cutaway (`mechanisms.mjs`, `scene.mjs`, `gestures.mjs`)**: 3×3×2×2 (`36` combinations) across `A0–A2` × `B0–B2` with reversible polarity (`aDir`, `bDir`), brass stopper pins, jammed micro-travel (`~12%` when pulling `B` before `A` releases), and two-stage detent snap.
 - DOM-only adapter in `adapter/dom-adapter.js`
 - Simulation and replay tools in `dev/`
 - Browser harness and QA chrome are built on `../shared/dev/`
 - Host session reporting goes through `../shared/host-bridge.js`
-- No score win condition
-- No gameplay `Math.random()`
-- No direct special activation
-- No special combo
-- No kiln / flow / seal
+- Unit & QA verification:
+  - `node --test launcher/web/modules/minigames/pinalign/safe-v2/core.test.mjs`
+  - `node launcher/tools/run-minigame-qa.js --game pinalign`

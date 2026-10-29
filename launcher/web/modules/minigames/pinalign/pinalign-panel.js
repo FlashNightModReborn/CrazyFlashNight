@@ -22,6 +22,11 @@ var PinAlignPanel = (function() {
     var _sessionSequence = 0;
     var _sessionId = null;
     var _sessionRequested = null;
+    var _safeRuntime = null;
+    var _safeMountPromise = null;
+    var _scriptUrl = (typeof document !== "undefined" && document.currentScript && document.currentScript.src)
+        ? document.currentScript.src
+        : (typeof location !== "undefined" ? location.href : "");
 
     var DEFAULT_STAGE_NOTE = "先选一格，再点相邻格交换。主列 +2 分，邻列 +1 分，累计 ≥ 4 才抬针。";
 
@@ -90,85 +95,102 @@ var PinAlignPanel = (function() {
         _el.innerHTML = [
             '<div class="minigame-header">',
                 '<div>',
-                    '<div class="minigame-kicker">// LOCK CORE CALIBRATION //</div>',
-                    '<div class="minigame-title">锁芯矩阵校准</div>',
+                    '<div class="minigame-kicker">// CRAZY FLASH NIGHT · LOCK CORE & SAFE V2 //</div>',
+                    '<div class="minigame-title">锁芯校准 · 双路线保险柜 (图推密码 + 双极性机构)</div>',
                 "</div>",
                 '<div class="minigame-header-right">',
-                    '<div class="pinalign-header-controls" role="group" aria-label="控制台">',
-                        '<button class="minigame-chrome-btn pinalign-header-btn" type="button" data-action="hint" title="提示 (H)">提示</button>',
-                        '<button class="minigame-chrome-btn pinalign-header-btn" type="button" data-action="clamp" title="夹具 (C)">夹具</button>',
-                        '<button class="minigame-chrome-btn pinalign-header-btn" type="button" data-action="reset" title="重开">重开</button>',
-                        '<button class="minigame-chrome-btn pinalign-header-btn" type="button" data-action="reroll" title="换种">换种</button>',
-                        '<button class="minigame-chrome-btn pinalign-header-btn" type="button" data-action="export" title="导出回放">导出</button>',
-                    "</div>",
-                    '<div class="minigame-phase-badge" data-pa-phase>观察中</div>',
+                    '<span class="safe-v2-pill" id="polarity-label">Ⅰ:A0(+) · Ⅱ:B0(+)</span>',
+                    '<button id="next-safe" class="minigame-chrome-btn next-safe" type="button">下一只箱</button>',
+                    '<button id="reset" class="minigame-chrome-btn quiet" type="button">重试本箱</button>',
+                    '<button id="toggle-debug" class="minigame-chrome-btn" type="button">检查台</button>',
+                    '<div class="minigame-phase-badge" id="phase-badge">LOCKED</div>',
                     '<button class="minigame-chrome-btn" type="button" data-action="mute">静音</button>',
-                    '<button class="minigame-close-btn" type="button" data-action="close">×</button>',
+                    '<button id="close-panel" class="minigame-close-btn" type="button" data-action="close">×</button>',
                 "</div>",
             "</div>",
-            '<div class="minigame-main">',
-                '<div class="minigame-grid-pane lockbox-grid-pane">',
-                    '<div class="lockbox-quickbar pinalign-toolbar-readout">',
-                        '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">种子</span><span data-pa-seed>dev-default</span></span>',
-                        '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">警报</span><span data-pa-alert>16</span></span>',
-                        '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">夹具</span><span data-pa-clamp>44%</span></span>',
-                        '<span class="pinalign-toolbar-chip"><span class="pinalign-toolbar-label">手数</span><span data-pa-moves>0</span></span>',
-                    "</div>",
-                    '<div class="pinalign-stage-note" data-pa-stage-note>' + DEFAULT_STAGE_NOTE + "</div>",
-                    '<div class="lockbox-grid-shell pinalign-grid-shell" data-pa-board-shell>',
-                        '<div class="lockbox-trace-frame"></div>',
-                        '<div class="pinalign-board-area">',
-                            '<div class="pinalign-bezel" aria-hidden="true">',
-                                '<div class="pinalign-bezel-face"></div>',
-                                '<div class="pinalign-bezel-bevel"></div>',
-                                '<div class="pinalign-bezel-rivet rivet-tl"></div>',
-                                '<div class="pinalign-bezel-rivet rivet-tr"></div>',
-                                '<div class="pinalign-bezel-rivet rivet-bl"></div>',
-                                '<div class="pinalign-bezel-rivet rivet-br"></div>',
-                                '<div class="pinalign-bezel-seam"></div>',
-                            "</div>",
-                            '<div class="pinalign-instrument-strip" data-pa-instrument-strip role="group" aria-label="锁针仪表"></div>',
-                            '<div class="pinalign-board-stage">',
-                                '<div class="pinalign-board" data-pa-board></div>',
-                                '<div class="pinalign-lane-layer" data-pa-lane-layer aria-hidden="true"></div>',
-                                '<div class="pinalign-flight-layer" data-pa-flight-layer aria-hidden="true"></div>',
-                                '<div class="pinalign-preview-layer" data-pa-preview-layer aria-hidden="true"></div>',
-                            "</div>",
-                        "</div>",
-                    "</div>",
-                "</div>",
-                '<div class="minigame-side-pane">',
-                    '<div class="pa-visually-hidden" data-pa-pins-aria aria-live="polite"></div>',
-                    '<section class="minigame-side-section pinalign-rules-section">',
-                        '<div class="minigame-side-title">规则速览</div>',
-                        '<div class="pinalign-side-copy">',
-                            '<div class="pinalign-step"><b>1.</b> 探针下色带=归属图。主列每块 <b>+2</b>，邻列 <b>+1</b>，其他不算。</div>',
-                            '<div class="pinalign-step"><b>2.</b> 本手直接三消格子 = Signal，累加 <b>≥ 4</b> 才抬针 1 格。</div>',
-                            '<div class="pinalign-step"><b>3.</b> 特殊块/连带清除 = Effect，只清盘，不计分。</div>',
-                            '<div class="pinalign-step"><b>4.</b> 抬到目标先变“待锁定”，本手末才正式锁定；同手再吃信号会过调卡死。</div>',
-                        "</div>",
-                    "</section>",
-                    '<section class="minigame-side-section pinalign-codex-section">',
-                        '<div class="minigame-side-title">图鉴</div>',
-                        buildCodexHtml(),
-                    "</section>",
-                    '<section class="minigame-side-section pinalign-events-section">',
-                        '<button class="minigame-side-title minigame-side-title-toggle" type="button" data-action="toggle-events" data-pa-events-toggle>最近结算 ▸</button>',
-                        '<div class="pinalign-collapsible" data-pa-events-body hidden>',
-                            '<div data-pa-events></div>',
-                        "</div>",
-                    "</section>",
-                    '<section class="minigame-side-section pinalign-export-section">',
-                        '<button class="minigame-side-title minigame-side-title-toggle" type="button" data-action="toggle-export" data-pa-export-toggle>回放导出 ▸</button>',
-                        '<div class="pinalign-collapsible" data-pa-export-body hidden>',
-                            '<pre data-pa-export></pre>',
-                        "</div>",
-                    "</section>",
-                    '<section class="minigame-side-section pinalign-debug-section" data-pa-debug-wrap>',
-                        '<div class="minigame-side-title">调试</div>',
-                        '<div class="pinalign-debug-copy" data-pa-debug></div>',
-                    "</section>",
-                "</div>",
+            '<div class="minigame-main workbench">',
+                '<aside class="left-rail">',
+                    '<div class="rail-caption"><span>01 / 柜主图推备忘</span><span class="thin-rule"></span></div>',
+                    '<section class="note-card" aria-labelledby="memo-title">',
+                        '<div class="paper-clip" aria-hidden="true"></div>',
+                        '<div class="paper-topline">值班员自用 · 图推暗语记录</div>',
+                        '<h2 id="memo-title">交接备忘</h2>',
+                        '<div id="memo-diagram" class="memo-diagram" aria-label="图推密码印记"></div>',
+                        '<p id="memo" class="memo">正在准备备忘…</p>',
+                        '<button id="puzzle-help" class="paper-link" type="button">查看这类备忘的规则 ↗</button>',
+                        '<div class="paper-divider"></div>',
+                        '<form id="code-form" novalidate>',
+                            '<label for="code">抄下三位密码</label>',
+                            '<div class="code-line"><input id="code" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="— — —" aria-describedby="code-hint feedback"><span class="pencil" aria-hidden="true">✎</span></div>',
+                            '<p id="code-hint">一步看图直出三位整数 (100–999) · 写完后确认</p>',
+                            '<button id="unlock" class="confirm" type="submit">开锁 <span>↵</span></button>',
+                        '</form>',
+                    '</section>',
+                    '<section class="skill-card"><div><span class="small-label">解密技能模拟</span><label class="toggle"><input id="skill" type="checkbox"><span></span><b id="skill-label">未达标</b></label></div><button id="identify" type="button" disabled>红笔解析并填入纸条</button><p>在图纸上标红推导路径并填入三位密码；确认仍在纸条上。</p></section>',
+                    '<div class="route-hint"><span class="small-label">两条路线随时可用</span><p>可一步读图破译三位密码，也可取工具看黄铜止挡销破拆。查册、切换都保留已完成操作。</p></div>',
+                    '<details class="session-details"><summary>本次测量与复现</summary><div class="measure-row"><span>基础种子</span><code id="seed-label"></code></div><div class="measure-row"><span>序列 / 重试</span><code id="safe-index"></code></div><div class="measure-row"><span>首次可操作</span><code id="load-time">—</code></div><div class="measure-row"><span>本箱总时长</span><code id="total-time">待开箱</code></div><button id="export-log" type="button">导出操作日志 JSON</button></details>',
+                '</aside>',
+                '<section class="minigame-grid-pane scene-column" aria-label="三维保险柜与工具台">',
+                    '<div class="scene-toolbar"><div class="segmented"><button id="normal-view" class="active" type="button">外观</button><button id="cutaway-view" type="button">局部剖视</button></div><div class="scene-tools"><button id="home-view" type="button" title="查看保险柜全貌；取工具立即回到机构">看全貌</button><button id="demo" type="button">慢速演示</button></div></div>',
+                    '<div id="viewport" class="viewport">',
+                        '<div class="viewport-label"><span>工业保管柜 / CF7</span><small id="view-description">正常外观 · 右键拖动环绕 / 滚轮缩放</small></div>',
+                        '<div id="loading" class="loading">正在组装本地模型…</div>',
+                        '<div id="target-a" class="target-label" aria-hidden="true"><span>Ⅰ</span><em>卸荷机构</em></div>',
+                        '<div id="target-b" class="target-label" aria-hidden="true"><span>Ⅱ</span><em>释放机构</em></div>',
+                        '<svg id="gesture-guide" aria-hidden="true" hidden></svg>',
+                        '<div id="open-label" class="open-label" hidden><div class="open-check">✓</div><div><b>门闩已收回</b><span>本箱已开启</span></div></div>',
+                        '<div id="demo-caption" class="demo-caption" hidden></div>',
+                        '<button id="stop-demo" type="button" hidden>结束演示，返回本箱</button>',
+                        '<div class="scene-bottom"><span id="mechanical-status">小锁舌保持 · 门闩伸出</span><span>双极性止挡销 · 二段卡点机构</span></div>',
+                    '</div>',
+                    '<div class="tool-tray">',
+                        '<div class="tray-title"><span class="small-label">02 / 工具路线 (T1+T2)</span><b>认准黄铜止挡销，向敞口方向短拖至二段卡点</b></div>',
+                        '<button id="tool-wedge" class="tool" type="button" data-tool="wedge"><svg viewBox="0 0 90 38" aria-hidden="true"><path d="M7 15h43l30-6 4 8-31 7H7Z"/><path d="M12 15v9m7-9v9m7-9v9m7-9v9"/></svg><span>卸载键 <kbd>1</kbd></span></button>',
+                        '<button id="tool-hook" class="tool" type="button" data-tool="hook"><svg viewBox="0 0 90 38" aria-hidden="true"><path d="M7 16h42l21-1q13-1 13 9q-1 10-12 9l-5-6 6-2q5 0 4-3H49v3H7Z"/><path d="M13 16v9m7-9v9m7-9v9m7-9v9"/></svg><span>牵引钩 <kbd>2</kbd></span></button>',
+                        '<div class="stage-progress"><span id="stage-a"><i>Ⅰ</i> 卸荷</span><div></div><span id="stage-b"><i>Ⅱ</i> 释放</span></div>',
+                    '</div>',
+                    '<div id="feedback" class="feedback" role="status" aria-live="polite">任选一路开始。看图直出三位密码，或对照黄铜止挡销方向操作工具。</div>',
+                '</section>',
+                '<aside id="manual" class="minigame-side-pane manual">',
+                    '<div class="manual-heading"><div><span class="eyebrow">FIELD SERVICE / 发行 07</span><h2>随箱操作手册</h2></div><button id="toggle-help" type="button" aria-expanded="true">收起</button></div>',
+                    '<div id="manual-body"><div class="manual-tabs"><button id="tab-mechanism" class="active" type="button">工具结构</button><button id="tab-puzzles" type="button">图推规则</button></div><div id="manual-content"></div><nav class="manual-nav" aria-label="手册翻页"><button id="previous-page" type="button" aria-label="上一页">←</button><span id="page-number">01 / 09</span><button id="next-page" type="button" aria-label="下一页">→</button></nav><div id="manual-index" class="manual-index"></div></div>',
+                    '<div class="manual-footer">3种一步图推 · 6种结构 × 正反双极性 = 36种机械变体</div>',
+                '</aside>',
+            "</div>",
+            '<section id="debug-panel" class="debug-panel" hidden>',
+                '<div class="debug-title"><b>复现与检查 (V2)</b><button id="hide-debug" type="button">关闭</button></div>',
+                '<label>种子 <input id="seed-input" value="CF7-20261029"></label>',
+                '<label>图推题型 <select id="puzzle-type"><option value="matrix">瑞文2×2查章</option><option value="odd">邦加德六印排异</option><option value="grille">卡尔达诺转格掩模</option></select></label>',
+                '<label>结构Ⅰ <select id="variant-a"><option value="0">横楔座 (A0)</option><option value="1">竖楔座 (A1)</option><option value="2">偏心卸荷座 (A2)</option></select></label>',
+                '<label>结构Ⅰ极性 <select id="polarity-a"><option value="1">+ 正向 (默认止挡)</option><option value="-1">- 反向 (对侧止挡)</option></select></label>',
+                '<label>结构Ⅱ <select id="variant-b"><option value="0">直拉滑闩 (B0)</option><option value="1">折臂杠杆 (B1)</option><option value="2">旋转闩 (B2)</option></select></label>',
+                '<label>结构Ⅱ极性 <select id="polarity-b"><option value="1">+ 正向 (默认止挡)</option><option value="-1">- 反向 (对侧止挡)</option></select></label>',
+                '<button id="apply-config" type="button">生成指定本箱</button>',
+                '<button id="random-config" type="button">按种子抽取结构与备忘</button>',
+                '<div class="debug-camera"><button type="button" data-camera="front">正面</button><button type="button" data-camera="left">左前</button><button type="button" data-camera="right">右前</button><button type="button" data-camera="rear">背面</button><button type="button" data-camera="mechanism">机构近景</button></div>',
+                '<button id="export-glb" type="button">导出当前 GLB</button>',
+                '<button id="destroy-instance" type="button">卸载实例（验证）</button>',
+                '<small>检查操作也写入日志；不接真实物品、掉落与存档。</small>',
+            '</section>',
+            '<div id="closed-overlay" class="closed-overlay" hidden><div><span class="eyebrow">CF7 / INSTANCE PAUSED</span><h2>保险柜面板已关闭</h2><p>本箱进度保留。重新打开后继续当前操作。</p><button id="reopen" type="button">重新打开</button></div></div>',
+            '<div class="pinalign-legacy-dom" hidden>',
+                '<div data-pa-phase>观察中</div>',
+                '<span data-pa-seed>dev-default</span>',
+                '<span data-pa-alert>16</span>',
+                '<span data-pa-clamp>44%</span>',
+                '<span data-pa-moves>0</span>',
+                '<div data-pa-stage-note>' + DEFAULT_STAGE_NOTE + "</div>",
+                '<div data-pa-board-shell><div data-pa-instrument-strip></div><div data-pa-board></div><div data-pa-lane-layer></div><div data-pa-flight-layer></div><div data-pa-preview-layer></div></div>',
+                '<div data-pa-pins-aria></div>',
+                buildCodexHtml(),
+                '<button type="button" data-action="toggle-events" data-pa-events-toggle></button><div data-pa-events-body hidden><div data-pa-events></div></div>',
+                '<button type="button" data-action="toggle-export" data-pa-export-toggle></button><div data-pa-export-body hidden><pre data-pa-export></pre></div>',
+                '<div data-pa-debug-wrap><div data-pa-debug></div></div>',
+                '<button type="button" data-action="hint"></button>',
+                '<button type="button" data-action="clamp"></button>',
+                '<button type="button" data-action="reset"></button>',
+                '<button type="button" data-action="reroll"></button>',
+                '<button type="button" data-action="export"></button>',
             "</div>"
         ].join("");
         _refs = PinAlignDomAdapter.indexRefs(_el);
@@ -204,6 +226,80 @@ var PinAlignPanel = (function() {
         }
     }
 
+    function onSafeUnlockComplete(snapshot, timing) {
+        if (!_state) return;
+        var route = snapshot && snapshot.unlock && snapshot.unlock.route ? snapshot.unlock.route : "password";
+        _state.status = "win";
+        if (_state.pins) {
+            for (var i = 0; i < _state.pins.length; i += 1) {
+                _state.pins[i].state = "locked";
+            }
+        }
+        if (_audio && _audio.win) _audio.win();
+        notifyHost("result", buildResultPayload(), {
+            safeV2Route: route,
+            elapsedMs: timing && timing.elapsedMs ? timing.elapsedMs : 0
+        });
+    }
+
+    function onSafeSound(name) {
+        if (!_audio) return;
+        if (name === "finishPerfect" && _audio.win) _audio.win();
+        else if ((name === "mainSolved" || name === "finisherArm" || name === "seqMatch") && _audio.settle) _audio.settle();
+        else if ((name === "illegalPulse" || name === "illegalGrace") && _audio.jam) _audio.jam();
+        else if (_audio.tick) _audio.tick();
+    }
+
+    function ensureSafeRuntime(initData) {
+        var seedStr = String((initData && initData.masterSeed) || _seed || "CF7-20261029");
+        if (_safeRuntime && !_safeRuntime.stats().destroyed) {
+            try {
+                if (!_safeRuntime.session.state.panelOpen) _safeRuntime.session.reopen();
+                _safeRuntime.reset(seedStr, {});
+            } catch (e) {}
+            return Promise.resolve(_safeRuntime);
+        }
+        if (_safeMountPromise) {
+            return _safeMountPromise.then(function(rt) {
+                if (rt && !rt.stats().destroyed) {
+                    try {
+                        if (!rt.session.state.panelOpen) rt.session.reopen();
+                        rt.reset(seedStr, {});
+                    } catch (e) {}
+                }
+                return rt;
+            });
+        }
+        var runtimeUrl = new URL("./safe-v2/runtime.mjs", _scriptUrl).href;
+        _safeMountPromise = import(runtimeUrl).then(function(mod) {
+            return mod.mountSafeRuntime(_el, {
+                seed: seedStr,
+                safeIndex: 0,
+                devMode: true,
+                onRequestClose: function() { closePanel(); },
+                onSound: onSafeSound,
+                onUnlockComplete: function(snapshot, timing) {
+                    onSafeUnlockComplete(snapshot, timing);
+                },
+                onExport: function(data) {
+                    notifyHost("export", buildResultPayload(), {
+                        replay: _lastReplay,
+                        safeV2Export: data
+                    });
+                }
+            });
+        }).then(function(rt) {
+            _safeRuntime = rt;
+            _safeMountPromise = null;
+            return rt;
+        }).catch(function(err) {
+            _safeMountPromise = null;
+            console.warn("[PinAlignPanel] Safe V2 mount error:", err);
+            return null;
+        });
+        return _safeMountPromise;
+    }
+
     function bootSession(initData) {
         if (_sessionId) {
             notifyHost("close", buildResultPayload(), {
@@ -212,9 +308,14 @@ var PinAlignPanel = (function() {
             });
         }
         beginSessionRequest(initData);
+        var currentSessionId = _sessionId;
         notifyHost("open", null, { phase: "INIT" });
         boot(initData);
-        notifyHost("ready", null);
+        ensureSafeRuntime(initData).then(function() {
+            if (_sessionId === currentSessionId) {
+                notifyHost("ready", null);
+            }
+        });
     }
 
     function boot(initData) {
@@ -245,6 +346,9 @@ var PinAlignPanel = (function() {
         _audio = null;
         _sessionId = null;
         _sessionRequested = null;
+        if (_safeRuntime && _safeRuntime.session && !_safeRuntime.stats().destroyed) {
+            try { _safeRuntime.session.close(); } catch (e) {}
+        }
     }
 
     function closePanel() {
@@ -609,6 +713,8 @@ var PinAlignPanel = (function() {
 
     function beginSessionRequest(initData) {
         var data = initData || {};
+        _state = null;
+        _spec = null;
         _sessionId = nextSessionId();
         _sessionRequested = {
             mode: data.mode || "dev",
@@ -714,6 +820,31 @@ var PinAlignPanel = (function() {
         _debugExportReplay: function() {
             exportReplay();
             return _lastReplay;
+        },
+        _debugGetSafeRuntime: function() {
+            return _safeRuntime;
+        },
+        _debugGetSafeSnapshot: function() {
+            return _safeRuntime && _safeRuntime.session ? _safeRuntime.session.snapshot() : null;
+        },
+        _debugSolveSafePassword: function() {
+            if (!_safeRuntime || !_safeRuntime.session) return null;
+            var s = _safeRuntime.session;
+            s.setSkill(true);
+            s.identifyPassword();
+            var sub = s.submitPassword();
+            if (sub && sub.token) s.finishUnlock(sub.token);
+            return s.snapshot();
+        },
+        _debugSolveSafeMechanics: function() {
+            if (!_safeRuntime || !_safeRuntime.session) return null;
+            var s = _safeRuntime.session;
+            s.selectTool("wedge");
+            s.operate("a", { direction: s.stageDirection("a"), progress: 1, commit: true });
+            s.selectTool("hook");
+            var openRes = s.operate("b", { direction: s.stageDirection("b"), progress: 1, commit: true });
+            if (openRes && openRes.token) s.finishUnlock(openRes.token);
+            return s.snapshot();
         }
     };
 })();

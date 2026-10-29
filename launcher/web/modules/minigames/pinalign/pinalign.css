@@ -1462,3 +1462,945 @@
 .pinalign-panel.is-stacked .pinalign-console-grid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
 }
+
+.pinalign-panel .minigame-main.workbench,
+.pinalign-panel.is-stacked .minigame-main.workbench {
+    display: grid;
+    grid-template-columns: minmax(224px, 248px) minmax(0, 1fr) 296px;
+    gap: 10px;
+    padding: 8px 12px 8px;
+    align-items: stretch;
+    overflow: hidden;
+    position: relative;
+    flex: 1;
+    min-height: 0;
+}
+
+.pinalign-panel .minigame-side-pane.manual,
+.pinalign-panel.is-stacked .minigame-side-pane.manual {
+    gap: 0;
+    overflow: auto;
+    overflow-y: auto;
+    padding-right: 0;
+    width: 296px;
+    min-width: 280px;
+    max-width: 306px;
+    background: #e1ded2;
+    color: #353d3e;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    min-height: 0;
+    position: relative;
+    z-index: 2;
+}
+
+.pinalign-panel [hidden] {
+    display: none !important;
+}
+
+.pinalign-panel .safe-v2-pill {
+    font-size: 11px;
+    color: #d8c89e;
+    background: rgba(39, 52, 62, 0.85);
+    border: 1px solid rgba(191, 152, 102, 0.45);
+    padding: 4px 9px;
+    border-radius: 3px;
+    font-family: ui-monospace, "Consolas", monospace;
+}
+
+.pinalign-panel .left-rail {
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #425560 transparent;
+    padding: 0 3px 3px;
+    position: relative;
+    z-index: 2;
+}
+
+.pinalign-panel .rail-caption {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: #93a7b5;
+    margin: 0 0 10px;
+}
+
+.pinalign-panel .thin-rule {
+    height: 1px;
+    background: #40505a;
+    flex: 1;
+}
+
+.pinalign-panel .note-card {
+    background: linear-gradient(110deg, #ded2b9, #eee2c9 72%, #ddd0b2);
+    padding: 16px 14px 14px;
+    color: #353b3a;
+    box-shadow: 1px 4px 16px rgba(0,0,0,0.35);
+    position: relative;
+    border-radius: 2px;
+    transform: rotate(-0.25deg);
+}
+
+.pinalign-panel .paper-clip {
+    position: absolute;
+    width: 46px;
+    height: 10px;
+    background: linear-gradient(#50616b, #7e8f94, #42535a);
+    top: -5px;
+    left: calc(50% - 23px);
+    box-shadow: 0 2px 2px rgba(0,0,0,0.3);
+    border-radius: 3px;
+}
+
+.pinalign-panel .paper-topline {
+    font-size: 9px;
+    letter-spacing: 0.6px;
+    color: #7c7665;
+}
+
+.pinalign-panel .note-card h2 {
+    font-size: 18px;
+    letter-spacing: 1px;
+    margin: 8px 0;
+    font-family: "KaiTi", "STKaiti", "Microsoft YaHei", serif;
+    font-weight: 600;
+    color: #2c3534;
+}
+
+.pinalign-panel .memo-diagram {
+    margin: 6px 0 8px;
+    border: 1px solid rgba(112, 98, 72, 0.35);
+    background: #efe6d2;
+    border-radius: 3px;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.pinalign-panel .memo-diagram svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.pinalign-panel .memo {
+    line-height: 1.55;
+    white-space: pre-line;
+    font-size: 12px;
+    margin: 0 0 6px;
+    color: #38403e;
+}
+
+.pinalign-panel .paper-link {
+    border: 0;
+    border-bottom: 1px solid rgba(113, 103, 73, 0.45);
+    background: none;
+    color: #64583f;
+    padding: 3px 0;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.pinalign-panel .paper-divider {
+    height: 1px;
+    background: rgba(149, 132, 105, 0.4);
+    margin: 10px 0;
+}
+
+.pinalign-panel .note-card label {
+    font-size: 11px;
+    color: #6b6049;
+}
+
+.pinalign-panel .code-line {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #9c8a69;
+    height: 44px;
+    margin-top: 2px;
+}
+
+.pinalign-panel .code-line input {
+    font-family: ui-monospace, "Consolas", monospace;
+    font-weight: 700;
+    background: transparent;
+    border: 0;
+    color: #213748;
+    font-size: 30px;
+    letter-spacing: 7px;
+    padding: 2px 0 0;
+    width: calc(100% - 22px);
+    height: 42px;
+}
+
+.pinalign-panel .code-line input:focus {
+    outline: 0;
+}
+
+.pinalign-panel .pencil {
+    color: #7c786a;
+    font-size: 20px;
+}
+
+.pinalign-panel #code-hint {
+    font-size: 10px;
+    color: #7d7156;
+    margin: 5px 0 8px;
+}
+
+.pinalign-panel .confirm {
+    background: #344c58;
+    color: #f0e5d0;
+    border: 1px solid #293e47;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.pinalign-panel .confirm:hover:not(:disabled) {
+    background: #456371;
+}
+
+.pinalign-panel .skill-card {
+    border: 1px solid #34424b;
+    margin-top: 10px;
+    padding: 10px;
+    background: rgba(25, 36, 45, 0.92);
+    border-radius: 3px;
+}
+
+.pinalign-panel .skill-card > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.pinalign-panel .small-label {
+    font-size: 10px;
+    letter-spacing: 0.6px;
+    color: #97a7b3;
+}
+
+.pinalign-panel .skill-card button {
+    width: 100%;
+    margin-top: 8px;
+    background: #283640;
+    color: #d7dfe3;
+    border: 1px solid #455864;
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.pinalign-panel .skill-card button:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.pinalign-panel .skill-card p,
+.pinalign-panel .route-hint p {
+    font-size: 11px;
+    color: #83949f;
+    line-height: 1.55;
+    margin: 6px 0 0;
+}
+
+.pinalign-panel .toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.pinalign-panel .toggle input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+}
+
+.pinalign-panel .toggle > span {
+    position: relative;
+    width: 26px;
+    height: 14px;
+    border-radius: 10px;
+    background: #354650;
+    border: 1px solid #62717a;
+}
+
+.pinalign-panel .toggle > span::after {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #94a4ae;
+}
+
+.pinalign-panel .toggle input:checked + span {
+    background: #c09e6a;
+}
+
+.pinalign-panel .toggle input:checked + span::after {
+    left: 14px;
+    background: #f3e2bf;
+}
+
+.pinalign-panel .toggle b {
+    font-size: 10px;
+    font-weight: 400;
+    color: #c8d4dc;
+}
+
+.pinalign-panel .route-hint {
+    padding: 8px 3px 2px;
+}
+
+.pinalign-panel .session-details {
+    margin-top: 8px;
+    border-top: 1px solid #2e3d48;
+    padding: 8px 3px;
+    color: #8295a2;
+    font-size: 11px;
+}
+
+.pinalign-panel .session-details summary {
+    cursor: pointer;
+    margin-bottom: 6px;
+}
+
+.pinalign-panel .session-details button {
+    width: 100%;
+    font-size: 11px;
+    margin-top: 6px;
+    background: #24333d;
+    color: #d0dde5;
+    border: 1px solid #405462;
+    padding: 5px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.pinalign-panel .measure-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    line-height: 1.75;
+}
+
+.pinalign-panel .scene-column {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    position: relative;
+    z-index: 2;
+}
+
+.pinalign-panel .scene-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    height: 30px;
+    margin: 0 0 6px;
+    gap: 6px;
+}
+
+.pinalign-panel .segmented {
+    display: flex;
+}
+
+.pinalign-panel .segmented button,
+.pinalign-panel .scene-tools button {
+    border: 1px solid #40505a;
+    background: #27343e;
+    color: #d7dfe3;
+    font-size: 11px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.pinalign-panel .segmented button.active {
+    background: #b78d59;
+    color: #171d23;
+    border-color: #dab782;
+}
+
+.pinalign-panel .scene-tools {
+    display: flex;
+    gap: 5px;
+}
+
+.pinalign-panel .viewport {
+    position: relative;
+    flex: 1;
+    min-height: 280px;
+    overflow: hidden;
+    border: 1px solid #31414b;
+    background: radial-gradient(ellipse at 50% 42%, #30404a, #1c2832 70%);
+}
+
+.pinalign-panel .viewport canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: absolute;
+    inset: 0;
+    touch-action: none;
+}
+
+.pinalign-panel .viewport-label {
+    position: absolute;
+    top: 10px;
+    left: 12px;
+    right: 12px;
+    z-index: 2;
+    pointer-events: none;
+    font-size: 10px;
+    letter-spacing: 0.7px;
+    color: #aec0c9;
+}
+
+.pinalign-panel .viewport-label small {
+    display: block;
+    font-size: 10px;
+    line-height: 1.5;
+    color: #a4b6be;
+    margin-top: 3px;
+}
+
+.pinalign-panel .loading {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    z-index: 5;
+    color: #ccb284;
+    background: #1b2833;
+}
+
+.pinalign-panel .target-label {
+    position: absolute;
+    z-index: 3;
+    pointer-events: none;
+    display: block;
+    width: 0;
+    height: 0;
+    opacity: 0;
+}
+
+.pinalign-panel .target-label > span {
+    position: absolute;
+    right: 28px;
+    top: -12px;
+    border: 1px solid #b9a27c;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    background: rgba(25, 38, 48, 0.85);
+    font-size: 10px;
+    color: #ecd8b7;
+}
+
+.pinalign-panel .target-label em {
+    position: absolute;
+    right: 57px;
+    top: -9px;
+    white-space: nowrap;
+    font-size: 10px;
+    color: #ded8c3;
+    font-style: normal;
+    background: rgba(23, 35, 43, 0.8);
+    padding: 3px;
+}
+
+.pinalign-panel .target-label.ready {
+    opacity: 1;
+}
+
+.pinalign-panel .target-label.completed > span {
+    background: #436655;
+    border-color: #8dbda0;
+    color: #e0efdf;
+}
+
+.pinalign-panel .target-label.selected > span {
+    border-color: #edc189;
+    background: #705c42;
+}
+
+.pinalign-panel #gesture-guide {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.pinalign-panel .scene-bottom {
+    position: absolute;
+    bottom: 10px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 10px;
+    color: #a2b6c3;
+    pointer-events: none;
+}
+
+.pinalign-panel .tool-tray {
+    flex-shrink: 0;
+    margin-top: 7px;
+    background: #1a2731;
+    border: 1px solid #374955;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+}
+
+.pinalign-panel .tray-title {
+    flex: 1;
+    min-width: 60px;
+}
+
+.pinalign-panel .tray-title b {
+    display: block;
+    font-weight: 400;
+    font-size: 11px;
+    color: #a8b7c1;
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+.pinalign-panel .tool {
+    width: 98px;
+    height: 58px;
+    padding: 3px 6px 5px;
+    position: relative;
+    background: #22333e;
+    border: 1px solid #405462;
+    color: #d7dfe3;
+    flex-shrink: 0;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.pinalign-panel .tool svg {
+    width: 70px;
+    height: 28px;
+    fill: #8b9599;
+    stroke: #343f43;
+    stroke-width: 2;
+}
+
+.pinalign-panel .tool span {
+    display: block;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.pinalign-panel .tool.active {
+    background: #554835;
+    border-color: #c4a16b;
+    color: #efdcba;
+}
+
+.pinalign-panel .stage-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 3px;
+    font-size: 10px;
+    color: #718591;
+    gap: 4px;
+}
+
+.pinalign-panel .stage-progress i {
+    font-style: normal;
+    display: inline-grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #53666f;
+    border-radius: 50%;
+    margin-right: 3px;
+    font-size: 9px;
+}
+
+.pinalign-panel .stage-progress .done {
+    color: #a9cbbb;
+}
+
+.pinalign-panel .stage-progress .done i {
+    background: #456453;
+    border-color: #8ab899;
+}
+
+.pinalign-panel .feedback {
+    font-size: 12px;
+    padding: 6px 3px 2px;
+    height: 36px;
+    flex-shrink: 0;
+    line-height: 1.5;
+    color: #a9bac5;
+    overflow: auto;
+}
+
+.pinalign-panel .feedback.error {
+    color: #e5b295;
+}
+
+.pinalign-panel .feedback.success {
+    color: #a9cdb4;
+}
+
+.pinalign-panel .open-label {
+    position: absolute;
+    z-index: 5;
+    right: 14px;
+    bottom: 34px;
+    border: 1px solid #688e78;
+    background: rgba(30, 52, 45, 0.92);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #c9e7d3;
+    font-size: 13px;
+}
+
+.pinalign-panel .open-check {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #83ac93;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+}
+
+.pinalign-panel .manual-heading {
+    height: 52px;
+    flex-shrink: 0;
+    padding: 8px 14px;
+    border-bottom: 1px solid #aaa898;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.pinalign-panel .manual-heading .eyebrow {
+    font-size: 8px;
+    letter-spacing: 1px;
+    color: #7b857e;
+}
+
+.pinalign-panel .manual h2 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 2px 0 0;
+    color: #2c3e35;
+}
+
+.pinalign-panel .manual-heading button {
+    padding: 4px 7px;
+    background: transparent;
+    border: 1px solid #aaa99a;
+    color: #626d67;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.pinalign-panel .manual #manual-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 32px minmax(0, 1fr) 36px 34px;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.pinalign-panel .manual-tabs {
+    display: flex;
+    border-bottom: 1px solid #bebfae;
+    margin: 0 12px;
+}
+
+.pinalign-panel .manual-tabs button {
+    font-size: 12px;
+    flex: 1;
+    border: 0;
+    background: transparent;
+    color: #697566;
+    padding: 5px 3px;
+    cursor: pointer;
+}
+
+.pinalign-panel .manual-tabs button.active {
+    border-bottom: 2px solid #62766b;
+    color: #2b4638;
+    font-weight: 600;
+}
+
+.pinalign-panel #manual-content {
+    min-height: 0;
+    min-width: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #95a18c #d6d9ca;
+}
+
+.pinalign-panel .manual-page {
+    padding: 10px 13px 8px;
+}
+
+.pinalign-panel .manual-page .page-kicker {
+    font-size: 10px;
+    color: #7b877e;
+}
+
+.pinalign-panel .manual-page h3 {
+    font-size: 18px;
+    line-height: 1.3;
+    margin: 4px 0 8px;
+    color: #32473d;
+}
+
+.pinalign-panel .manual-diagram {
+    background: #d4d6c7;
+    border: 1px solid #b7beae;
+    margin: 0 0 8px;
+    position: relative;
+}
+
+.pinalign-panel .manual-photo {
+    position: relative;
+    line-height: 0;
+    background: #24333c;
+}
+
+.pinalign-panel .manual-photo img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.pinalign-panel .manual-photo > svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.pinalign-panel .manual-diagram .diagram-caption {
+    font-size: 10px;
+    padding: 4px 7px;
+    background: #c8cebc;
+    color: #4f6354;
+    line-height: 1.4;
+}
+
+.pinalign-panel .manual-step {
+    display: grid;
+    grid-template-columns: 16px minmax(0, 1fr);
+    gap: 6px;
+    margin: 7px 0;
+}
+
+.pinalign-panel .manual-step > span {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #778876;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-size: 9px;
+    color: #6b7a67;
+    margin-top: 2px;
+}
+
+.pinalign-panel .manual-step > div {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 5px;
+}
+
+.pinalign-panel .manual-step b {
+    font-weight: 600;
+    font-size: 12px;
+    color: #3d5145;
+    line-height: 1.55;
+}
+
+.pinalign-panel .manual-step p {
+    font-size: 12px;
+    line-height: 1.55;
+    color: #54614f;
+    margin: 0;
+}
+
+.pinalign-panel .manual-warning {
+    font-size: 11px;
+    line-height: 1.6;
+    color: #7c725f;
+    border-left: 2px solid #ab9c7d;
+    padding-left: 8px;
+    margin: 10px 0 0;
+}
+
+.pinalign-panel .manual-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 13px;
+    border-top: 1px solid #b1b5a4;
+}
+
+.pinalign-panel .manual-nav button {
+    background: transparent;
+    color: #536452;
+    border: 1px solid #b0b5a2;
+    padding: 2px 10px;
+    cursor: pointer;
+}
+
+.pinalign-panel .manual-nav span {
+    font-size: 10px;
+    letter-spacing: 1.2px;
+    color: #687960;
+}
+
+.pinalign-panel .manual-index {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 4px;
+    padding: 0 13px 5px;
+}
+
+.pinalign-panel .manual-index button {
+    background: #d6d9ca;
+    color: #53634e;
+    border: 1px solid #b7bfaa;
+    padding: 3px 5px;
+    font-size: 10px;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+    cursor: pointer;
+}
+
+.pinalign-panel .manual-index button.active {
+    background: #6c7e69;
+    color: #f1efd9;
+    border-color: #6c7e69;
+}
+
+.pinalign-panel .manual-footer {
+    font-size: 10px;
+    line-height: 1.4;
+    color: #89917c;
+    padding: 7px 14px;
+    border-top: 1px solid #b6bca8;
+    flex-shrink: 0;
+}
+
+.pinalign-panel .manual-rule {
+    background: #d2d7c7;
+    padding: 10px 8px;
+    font-size: 14px;
+    letter-spacing: 1px;
+    text-align: center;
+    color: #445b43;
+    margin-bottom: 10px;
+    line-height: 1.5;
+    white-space: pre-line;
+}
+
+.pinalign-panel .debug-panel {
+    position: absolute;
+    z-index: 25;
+    right: 22px;
+    bottom: 26px;
+    width: 340px;
+    max-height: 78vh;
+    overflow: auto;
+    padding: 14px;
+    background: #192731;
+    border: 1px solid #647785;
+    box-shadow: 0 12px 45px rgba(0,0,0,0.65);
+    border-radius: 5px;
+    color: #d6dde1;
+}
+
+.pinalign-panel .debug-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.pinalign-panel .debug-panel label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    margin: 8px 0;
+    gap: 8px;
+}
+
+.pinalign-panel .debug-panel input,
+.pinalign-panel .debug-panel select {
+    padding: 5px;
+    background: #253843;
+    color: #d0dde5;
+    border: 1px solid #49616e;
+    width: 196px;
+}
+
+.pinalign-panel .debug-panel > button {
+    width: 100%;
+    margin: 4px 0;
+    font-size: 11px;
+    padding: 6px;
+    background: #27343e;
+    color: #d7dfe3;
+    border: 1px solid #40505a;
+    cursor: pointer;
+}
+
+.pinalign-panel .debug-camera {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 10px 0;
+}
+
+.pinalign-panel .debug-camera button {
+    font-size: 10px;
+    padding: 5px 7px;
+    background: #22313b;
+    color: #c8d6df;
+    border: 1px solid #40525e;
+    cursor: pointer;
+}

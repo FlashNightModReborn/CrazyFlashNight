@@ -128,6 +128,40 @@ window.__minigameOverlayRoot = "../../../../";
                 run: function() {
                     return exportReplay(api);
                 }
+            },
+            {
+                id: "pa-safe-v2-puzzle",
+                title: "3D Safe V2 visual puzzle route solves 3-digit code and opens door",
+                run: function() {
+                    return bootSession(api, { masterSeed: "CF7-SAFE-PUZZLE-QA" }).then(function() {
+                        var snap0 = PinAlignPanel._debugGetSafeSnapshot();
+                        api.assert(!!snap0 && !!snap0.puzzle, "safe snapshot missing");
+                        api.assert(typeof snap0.puzzle.svg === "string" && snap0.puzzle.svg.indexOf("<svg") !== -1, "puzzle SVG missing");
+                        api.assert(["matrix", "odd", "grille"].indexOf(snap0.puzzle.type) !== -1, "unexpected puzzle type: " + snap0.puzzle.type);
+                        var snap1 = PinAlignPanel._debugSolveSafePassword();
+                        api.assert(!!snap1 && snap1.door === "open" && snap1.unlock && snap1.unlock.route === "password", "password route did not complete");
+                        return "type=" + snap0.puzzle.type + ", answer=" + snap0.puzzle.answer + ", door=" + snap1.door;
+                    });
+                }
+            },
+            {
+                id: "pa-safe-v2-mech",
+                title: "3D Safe V2 T1+T2 bipolar mechanism route solves A then B",
+                run: function() {
+                    return bootSession(api, { masterSeed: "CF7-SAFE-MECH-QA" }).then(function() {
+                        var rt = PinAlignPanel._debugGetSafeRuntime();
+                        api.assert(!!rt && !!rt.session, "safe runtime missing");
+                        var snap0 = PinAlignPanel._debugGetSafeSnapshot();
+                        api.assert(snap0.variants.aDir === 1 || snap0.variants.aDir === -1, "aDir polarity missing");
+                        api.assert(snap0.variants.bDir === 1 || snap0.variants.bDir === -1, "bDir polarity missing");
+                        rt.session.selectTool("hook");
+                        var jammed = rt.session.operate("b", { direction: rt.session.stageDirection("b"), progress: 1, commit: true });
+                        api.assert(!jammed.ok && jammed.code === "prerequisite", "stage B should jam before A is released");
+                        var snap1 = PinAlignPanel._debugSolveSafeMechanics();
+                        api.assert(!!snap1 && snap1.door === "open" && snap1.unlock && snap1.unlock.route === "tools", "mechanics route did not complete");
+                        return "A" + snap0.variants.a + "(" + snap0.variants.aDir + ")+B" + snap0.variants.b + "(" + snap0.variants.bDir + ")";
+                    });
+                }
             }
         ];
     }
