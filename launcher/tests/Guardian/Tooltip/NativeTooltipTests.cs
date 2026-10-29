@@ -467,6 +467,31 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         }
 
         [Fact]
+        public void Widget_FadeOutEndsSessionButKeepsDrawing()
+        {
+            using (Control a = Anchor())
+            using (var w = new NativeTooltipWidget(a))
+            {
+                w.Show(ComplexPayload());
+                w.Tick(2000);
+
+                Assert.True(w.Hide("tt-1"));
+                // 淡出窗口里只剩视觉残影：会话身份必须当场失效。否则 HUD 资源注释状态机、
+                // 取消探针与 pinned 关闭的"本地同步终结"会在整个淡出窗口把已关的框当作还在。
+                Assert.Null(w.ActiveDocument);
+                Assert.Null(w.CurrentRequestId);
+                Assert.Null(w.CurrentSceneId);
+                Assert.Equal(0L, w.CurrentRevision);
+                Assert.True(w.Visible, "仍在淡出，这一帧还得继续画");
+                Assert.True(w.WantsAnimationTick);
+
+                w.Tick(600);
+                Assert.False(w.Visible);
+                Assert.False(w.WantsAnimationTick);
+            }
+        }
+
+        [Fact]
         public void Widget_HitTest_OnlyPinned_InsideBounds()
         {
             using (Control a = Anchor())

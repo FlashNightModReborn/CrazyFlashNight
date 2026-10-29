@@ -204,11 +204,19 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
         #region 公开状态（host / 测试检查点）
 
-        public string CurrentRequestId { get { return _doc != null ? _doc.RequestId : null; } }
-        public string CurrentSceneId { get { return _doc != null ? _doc.SceneId : null; } }
-        public string CurrentOwner { get { return _doc != null ? _doc.Owner : null; } }
-        public long CurrentRevision { get { return _doc != null ? _doc.Revision : 0; } }
-        public NativeTooltipDocument ActiveDocument { get { return _doc; } }
+        /// <summary>
+        /// 淡出中（_fadePhase==2）的框只是视觉残影，逻辑会话在发起 hide/cancel 那一刻
+        /// 就算结束 —— 与下面 OwnerScreenBounds 用的是同一条约定。少了它，HUD 资源注释
+        /// 状态机、取消探针与 pinned 关闭的"本地同步终结"会在整个淡出窗口里把已关闭的
+        /// 会话当成还在。绘制路径直接读 _doc 字段，不受这里影响。
+        /// </summary>
+        private bool SessionLive { get { return _doc != null && _fadePhase != 2; } }
+
+        public string CurrentRequestId { get { return SessionLive ? _doc.RequestId : null; } }
+        public string CurrentSceneId { get { return SessionLive ? _doc.SceneId : null; } }
+        public string CurrentOwner { get { return SessionLive ? _doc.Owner : null; } }
+        public long CurrentRevision { get { return SessionLive ? _doc.Revision : 0; } }
+        public NativeTooltipDocument ActiveDocument { get { return SessionLive ? _doc : null; } }
         public bool Scrollable { get { return _plan != null && _plan.DescScrollable; } }
         public int ScrollLineOffset { get { return _scrollLine; } }
         public int MaxScrollLine { get { return _plan != null ? _plan.MaxScrollLine : 0; } }
