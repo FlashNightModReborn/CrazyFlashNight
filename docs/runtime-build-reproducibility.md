@@ -1337,3 +1337,14 @@ Issue #152 已完成两轮正式推广。第二轮冻结源 `c1d9ab2576937aa2fa4
 部署提交`353b6397754da6512c203113a56dc56a8d2b15b8`已快进推送；[部署Audit40821521992](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40821521992)独立重放`state=promoted / deploymentChanged=true / mode=Index`和双故障域共识。无参数正式入口启动/说明页/退出通过；显式诊断通道下，独立档Dominator首次关闭保存、一次开箱及新进程读回通过，121份非目标存档文件不变。A05完整转图、整章流程与物理手感仍待实机验收。
 
 精确身份、首轮肖像来源失败与同像素修复、网络恢复、回滚目录及独立工作区改动保护见[本批发布记录](reports/61计划与止血-正式发布-2026-10-29.md)。现役值继续读取manifest/consensus；本批仍为2.718 DEV / UNSTABLE，不新增稳定整包。
+
+<a id="bullet-frame-sync-release-20261029"></a>
+## 2026-10-29 子弹源帧同步与新角色黑屏修复正式推广
+
+维护者确认修复有效后授权合并上游、提交推送与完整发布列车。冻结源 `7ab4cde41ad7750c4ece1800a32dccd24f563fca`、受控标签 `runtime-build-v2/20261029-bullet-frame-sync-v2` 修复子弹候选与源画面错帧，以及源标记染色导致GPU收不到magic的新角色黑屏。合并后的asLoader由真实CS6重新发布，直接RGB填色，源码冲突没有任选一个二进制覆盖。
+
+注册本机X509 `builder-local-b / physical-host-b` 与 [GitHub独立构建40862118783](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40862118783) 对同一43文件闭包达成双signer / 双faultDomain共识，production policy **47/47**。唯一writer于 `2026-10-29T11:15:15.5231348Z` 原子推广，request `67957BB42C4AB59DB2867F8D1D492DD15A05BD910DE53CDC5B7C811BC22FCE81`，build identity `FA4455896F0819F427CC35E4C942B314A30FEAACD55437957C6C2E2F38791A43`，payload closure `9205FF6152330D4BDD147C47D697843EE53DA4148D4423B0D9CFF2C3BBEBC28A`，manifest `EDDAF0D5D9E8EE09C236281A9362795C46F79CE1AE7B5B172C04A635A8326A61`，上一版回滚包保留。
+
+部署提交 `689a656d902e3244c5fb5fc278a131f8de4b4d95` 已快进推送；[部署Audit 40864358114](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40864358114) 独立重放 `state=promoted / deploymentChanged=true` 和双故障域共识。无参数正式入口的克隆基地画面正常，连续源帧的magic、epoch、补色和校验均通过，专用来源槽及原玩家槽未试写。`businessJourneyExecuted=false / physicalInputAttestation=false / combatVerified=false`，实际键鼠、穿刺、打桩与完整战斗仍待验收。
+
+v1政策失败、材料与workbench修正、GPU元数据补齐、CS6与GPU实测、正式入口及存档保护归[本批发布记录](reports/子弹源帧同步-正式发布-2026-10-29.md)。现役身份继续读取manifest/consensus；本批仍为2.718 DEV / UNSTABLE，不新增稳定整包。
