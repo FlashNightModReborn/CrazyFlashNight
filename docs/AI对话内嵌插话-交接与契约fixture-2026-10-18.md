@@ -21,7 +21,7 @@
 - 请求中 `remaining[].index` 与 `reference_continuation[].index` 固定为 **1..N**，与模型 `n` 同口径；Host 负责与原始绝对行号互转。
 - `dialogue.kind ∈ {daily, task_pre, task_post}`，且与 `mode` 匹配。
 - `reference_continuation[].kind ∈ {add, closing, edit, remove}`；日常未播的结束语用 `closing`。
-- 任务 `end` 是原始剩余编号 1..N；缺省＝不接回原文，本轮新增＋改写构成剩余整组。
+- 任务 `end` 是原始剩余编号 1..N+1；N+1 表示原剩余全部按本轮结果构成、不再接回（改完末条直接收组）；缺省＝不接回原文，本轮新增＋改写构成剩余整组。
 - 请求 `played` 只含本轮玩家发送之前已播出的行；本轮 `$PC` 由 `player_input` 表示，由 finalize 按实际播放写入，不得在 `played` 与 `player_input` 中重复。
 - session 只记录真正播放过的行；拆分产生的多段按播放顺序各记一条 assistant，不合并。
 - `finalize.transcript` 是该 session 截至当时的全部已播行（含历轮），行结构与请求 `played` 相同；未出现在其中的未播内容不落库。
@@ -59,7 +59,7 @@
 | F-02 | 日常拆分 | 165 拆分、`split` 标记、前置段暂锁/末段恢复 |
 | F-03 | 日常任务草案 | 抑制过渡语、草案后最终对话＋结束语、草案保留 |
 | F-04 | 日常中途插入 | 播放中发送、补全当前句、取消在途、参考续写、同 session |
-| F-05 | 任务 `end` 接回 | 原编号 1..N、edit、`end`、组末原 finalIndex |
+| F-05 | 任务 `end` 接回 | 原编号 1..N+1、edit、`end`、组末原 finalIndex |
 | F-05b | 任务改写拆分 | plan 内 `lines[].split`、任务输入暂锁例外 |
 | F-06 | 任务 `remove` | 删除未播仍留剩余、越过才消失 |
 | F-07 | 任务 `nochange` 缺失 | `end` 前未提及＝nochange（宽容） |

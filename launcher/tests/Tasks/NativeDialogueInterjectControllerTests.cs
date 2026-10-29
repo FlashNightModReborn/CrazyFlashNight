@@ -846,7 +846,7 @@ namespace CF7Launcher.Tests.Tasks
         // ── 等待占位「思索中……」 ─────────────────────────────────────────
 
         [Fact]
-        public void AdvancePastPcWithActiveTurnShowsThinkingPlaceholderThenAutoReplaces()
+        public void AdvancePastPcWithActiveTurnShowsThinkingPlaceholderAndWaitsForDone()
         {
             using var h = new Harness(inline: false);
             h.AdoptBook("又是你。");
@@ -871,6 +871,12 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("来了。", h.Widget.CurrentFrame.Text);
             Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
 
+            h.Advance();                                   // 流仍在途：继续占位等后续
+            Assert.Equal("思索中……", h.Widget.CurrentFrame.Text);
+            Assert.False(h.Controller.ClosingForTest);
+            Assert.Equal(0, h.Transport.Finalizes.Count);
+
+            h.Controller.OnEvent(DoneEvent());             // 收流完成
             h.Advance();                                   // 末行后 → 正常收尾
             Assert.True(h.Controller.ClosingForTest);
             Assert.True(SpinWait.SpinUntil(() => h.Transport.LastFinalize != null, 5000));
@@ -966,6 +972,34 @@ namespace CF7Launcher.Tests.Tasks
             h.Controller.OnEvent(StatusEvent("drafting", "校验修正中"));
             Assert.Equal("校验修正中", h.Widget.CurrentFrame.Text);
             Assert.Equal(DialogueInterjectInputState.Preparing, h.Controller.InputState);
+        }
+
+        [Fact]
+        public void StaleUiHintIsNotReusedAfterNormalAiLine()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("你好"));
+            h.Controller.OnEvent(StatusEvent("drafting", "拟定委托中"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("拟定委托中", h.Widget.CurrentFrame.Text);
+
+            h.Controller.OnEvent(LineEvent("来了。", 0));
+            Assert.Equal("来了。", h.Widget.CurrentFrame.Text);
+
+            h.Advance();                                  // 旧 hint 已被普通台词作废
+            Assert.Equal("思索中……", h.Widget.CurrentFrame.Text);
+
+            h.Controller.OnEvent(StatusEvent("searching", "查资料中"));
+            Assert.Equal("查资料中", h.Widget.CurrentFrame.Text);
+
+            h.Controller.OnEvent(DoneEvent());
+            h.Advance();
+            Assert.True(h.Controller.ClosingForTest);
         }
 
         [Fact]
@@ -1906,6 +1940,86 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("C", h.Widget.CurrentFrame.Text);       // B 被跳过
             h.Advance();
             Assert.Equal("D", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
+        public void PlanEndAtCountPlusOnePlaysEditedLastLineThenEnds()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
+            h.Transport.Script(
+                AddLine("好。", 0)
+                + "event: plan\ndata: {\"end\":5,\"edits\":[{\"n\":4,\"kind\":\"edit\","
+                + "\"lines\":[{\"text\":\"改写的 D\",\"emotion\":\"普通\"}]}]}\n\n"
+                + Done());
+
+            Assert.True(h.Controller.Submit("嗯。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("好。", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("A", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("B", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("C", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("改写的 D", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.True(h.Controller.ClosingForTest);
+            JObject finish = h.LastFinish();
+            Assert.Equal(4, finish.Value<int>("finalIndex"));
+        }
+
+        [Fact]
+        public void PlanEndAtCountPlusOneWithoutEditsKeepsAllOriginals()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
+            h.Transport.Script(
+                AddLine("好。", 0) + "event: plan\ndata: {\"end\":5}\n\n" + Done());
+
+            Assert.True(h.Controller.Submit("嗯。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("好。", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("A", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("B", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("C", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("D", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.True(h.Controller.ClosingForTest);
+        }
+
+        [Fact]
+        public void PlanEndAtCountPlusOneRemoveLastSkipsItAndEnds()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
+            h.Transport.Script(
+                AddLine("好。", 0)
+                + "event: plan\ndata: {\"end\":5,\"edits\":[{\"n\":4,\"kind\":\"remove\"}]}\n\n"
+                + Done());
+
+            Assert.True(h.Controller.Submit("嗯。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("好。", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("A", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("B", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("C", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.True(h.Controller.ClosingForTest);
         }
 
         [Fact]

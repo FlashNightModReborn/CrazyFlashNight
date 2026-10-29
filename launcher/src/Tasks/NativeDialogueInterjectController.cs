@@ -1055,8 +1055,9 @@ namespace CF7Launcher.Tasks
             // 物品已扣除但动作轮还没起来/没确认：先占住末行，等后端收下再收组。
             bool itemPending = _unackedItemAction != null;
             if (!_turnActive && !_finalizePending && !_preparing && !itemPending && !_handoff) return null;
-            // 已有普通 AI 行可播时按原语义直接收组；只有过渡话/交接等待时才继续等最终确认。
-            if (!itemPending && !_handoff && _aiLineShown && !_lastAiLineInterim) return null;
+            // 流仍在途时，越过末条普通 AI 行也继续占位等后续台词/plan；
+            // 收流完成后（_turnActive=false）不再占位，正常收组。
+            if (!itemPending && !_handoff && !_turnActive && _aiLineShown && !_lastAiLineInterim) return null;
             NativeDialogueBookSession.Line template = FindNpcTemplate();
             return new NativeDialogueBookSession.Line
             {
@@ -1609,7 +1610,8 @@ namespace CF7Launcher.Tasks
         /// <summary>
         /// 按 end/edits 构建后续（协议 4.5）：
         /// - end 存在：1..end-1 有 edit 用 edit、remove 跳过、其余原文；从 end 起接回原文；
-        ///   end 指向被 remove 的条目时跳到下一条未移除原文；end 之后的编辑/移除忽略。
+        ///   end 指向被移除条目时跳到下一条未移除原文；end=N+1 表示 1..N 全部按计划构成、
+        ///   不再接回原文（用于改完末条直接收组）。
         /// - end 缺省：只用本轮 edit 构成剩余，不接回原文（原始剩余视为已放弃）。
         /// </summary>
         private void ApplyPlan(TaskPlan plan)
@@ -1626,7 +1628,7 @@ namespace CF7Launcher.Tasks
             int count = Math.Max(0, _session.RowCount - wireStart);
             int editLimit = count;
             int resumeN = 0;                        // 1-based；0 = 不接回原文
-            bool hasEnd = plan.HasEnd && plan.End >= 1 && plan.End <= count;
+            bool hasEnd = plan.HasEnd && plan.End >= 1 && plan.End <= count + 1;
             if (hasEnd)
             {
                 editLimit = plan.End - 1;
@@ -1814,6 +1816,7 @@ namespace CF7Launcher.Tasks
                 _turnTailIndex = index + 1;
                 _aiLineShown = true;
                 _lastAiLineInterim = line.Interim;
+                if (!line.Interim) _turnStatusText = null;   // 旧 hint 不跨过普通台词复用
                 _pcRevision = -1;
                 // closing 迟到但玩家正停在最后一条 add：补判选项态。
                 RefreshAskAcceptCurrent();
@@ -1837,6 +1840,7 @@ namespace CF7Launcher.Tasks
             _turnTailIndex++;
             _aiLineShown = true;            // 已插入（未必已上屏）：本轮已有可播内容
             _lastAiLineInterim = line.Interim;
+            if (!line.Interim) _turnStatusText = null;   // 旧 hint 不跨过普通台词复用
             if (advance) _pcRevision = -1;  // 后续打字完成不再当 $PC
             // closing 迟到但玩家正停在最后一条 add：补判选项态。
             RefreshAskAcceptCurrent();
