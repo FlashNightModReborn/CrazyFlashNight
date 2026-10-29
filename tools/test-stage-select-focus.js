@@ -14,7 +14,7 @@ async function main() {
     const idle=()=>page.waitForFunction(()=>StageSelectDiorama.stats().state==='ready'&&!StageSelectDiorama.stats().moving);
     const pose=()=>page.evaluate(()=>StageSelectDiorama.snapshotCamera());
     const near=(a,b)=>{for(const key of ['position','target'])a[key].forEach((n,i)=>assert.ok(Math.abs(n-b[key][i])<1e-7));assert.ok(Math.abs(a.span-b.span)<1e-7);};
-    const select=async(id)=>{ await page.locator('.stage-select-stage-button[data-stage-id="'+id+'"] > .stage-select-stage-name').click(); await idle(); };
+    const select=async(id)=>{ await page.locator('.stage-select-stage-button[data-stage-id="'+id+'"] > .stage-select-stage-name').dblclick(); await idle(); };
     const back=async()=>{await page.getByRole('button',{name:'返回总览',exact:true}).click();await idle();};
     try {
         await page.goto(origin+'/modules/stage-select/dev/harness.html?viewport=1024x576&fixture=allUnlocked');
@@ -114,7 +114,7 @@ async function main() {
         report.checks.push('overview camera keeps marker projection aligned; graphics loss during focus exits to retry and recovers');
         await page.evaluate(()=>{StageSelectRenderer.setFrame('地下2层','qa');});
         const id=await page.locator('.stage-select-stage-button:not(.is-direct-entry)').first().getAttribute('data-stage-id');
-        await page.locator('.stage-select-stage-button[data-stage-id="'+id+'"]').click();
+        await page.locator('.stage-select-stage-button[data-stage-id="'+id+'"]').dblclick();
         assert.equal(await page.locator('.stage-focus-location').isVisible(),true);
         assert.equal(await page.locator('.stage-focus-location svg circle').count(),2);
         assert.equal(await page.locator('.stage-focus-panel').isVisible(),true);
@@ -125,10 +125,11 @@ async function main() {
         await page.waitForFunction(()=>StageSelectCore.state._currentFrameLabel==='黑铁会总部'&&StageSelectDiorama.stats().state==='ready'&&!StageSelectDiorama.stats().moving);
         await page.locator('.stage-select-stage-button[data-stage-id="stage_18_6"] > .stage-select-stage-name').hover();
         report.naturalSide=await page.locator('.stage-select-card-anchor[data-stage-id="stage_18_6"]').getAttribute('data-placement');
-        assert.ok(['above','below','left','right'].includes(report.naturalSide));
-        // 侧向 fixture 只验证动作端与连接区，不钉死首访的实际避让方向。
+        // 2026-10-29 Flash 手感合同：快捷卡只停上/下方，难度行朝向节点（上方卡在底边、下方卡在顶边）。
+        assert.ok(['above','below'].includes(report.naturalSide));
         await page.evaluate(()=>{
             const button=StageSelectViewModel.findStageButtonById('stage_18_6'),state=StageSelectCore.state;
+            // 旧版会回灌的方向记忆不得再影响停靠。
             state._cardPlacementById[state._catalogId+'/'+state._currentFrameLabel+'/'+button.id]='right';
             StageSelectRenderer.placeCardAnchor(button,StageSelectRenderer.findNodeById(button.id),
                 document.querySelector('.stage-select-card-anchor[data-stage-id="'+button.id+'"]'),true);
@@ -141,13 +142,13 @@ async function main() {
                 connectionY:anchor._cardConnection.y2-parseFloat(anchor.style.top),rowTop:row.offsetTop,
                 rowBottom:row.offsetTop+row.offsetHeight,actionDirection:getComputedStyle(row).flexDirection};
         });
-        assert.ok(report.sideAction.side==='left'||report.sideAction.side==='right');
-        assert.equal(report.sideAction.actionPosition,'bottom');
+        assert.equal(report.sideAction.side,report.naturalSide,'remembered side no longer overrides geometry');
+        assert.equal(report.sideAction.actionPosition,report.sideAction.side==='above'?'bottom':'top');
         assert.equal(report.sideAction.actionDirection,'row');
         assert.ok(report.sideAction.connectionY>=report.sideAction.rowTop-8&&report.sideAction.connectionY<=report.sideAction.rowBottom+8);
         await sideCard.evaluate(el=>Promise.all(el.getAnimations().map(animation=>animation.finished.catch(()=>{}))));
         await page.screenshot({path:path.join(out,'black-dragon-side-actions.png')});
-        report.checks.push('black-dragon side card puts the difficulty and connector on the same near edge');
+        report.checks.push('black-dragon quick card stays vertical, ignores remembered side, and puts difficulty and connector on the node-facing edge');
         assert.deepEqual(errors,[]);report.pass=true;
     } catch(error) {report.pass=false;report.error=error.stack;report.pageErrors=errors;await page.screenshot({path:path.join(out,'failure.png')});process.exitCode=1;}
     finally {await browser.close();server.close();fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));}

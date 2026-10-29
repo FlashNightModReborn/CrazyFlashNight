@@ -44,6 +44,8 @@
     function selectStage(stageId, opts) {
         opts = opts || {};
         if (!VM.applySelection(stageId)) return;
+        // 深度详情接管：即时解除指针锁定与支点推近，聚焦相机从未推近的总览取景记录返回点。
+        if (window.StageSelectQuick) StageSelectQuick.unpin({ instant: true, silent: true });
         StageSelectRenderer.applySelectionClasses();
         StageSelectRenderer.applyRovingTabIndex();
         renderInspector();

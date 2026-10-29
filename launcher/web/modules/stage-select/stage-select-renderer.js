@@ -82,6 +82,8 @@
                 '<div class="stage-select-stage-shell" id="stage-select-stage-shell">' +
                     '<div class="stage-select-stage" id="stage-select-stage">' +
                         '<img class="stage-select-bg" id="stage-select-bg" alt="选关背景">' +
+                        // 二维战术底板（网格 + 暗角）：只在 runtime 二维区域显示，不接收指针。
+                        '<div class="stage-select-board-fx" aria-hidden="true"></div>' +
                         '<div class="stage-select-nav-layer" id="stage-select-nav-layer"></div>' +
                         '<div class="stage-select-button-layer" id="stage-select-button-layer"></div>' +
                         // P2：hover 卡整体迁出 role=button 节点，消除嵌套 button 语义；
@@ -143,6 +145,8 @@
         S._modToggleEl = S._el.querySelector('#stage-select-mod-toggle');
         S._modUnlockBtnEl = S._el.querySelector('#stage-select-mod-unlock');
         S._modTestSpaceBtnEl = S._el.querySelector('#stage-select-mod-test-space');
+        // 快捷路径情报侧栏挂在舞台设计坐标系内（随 PanelScale 等比缩放），位于卡片层之上。
+        StageSelectQuick.createDOM(S._stageEl);
 
         if (S._modToggleEl) {
             S._modToggleEl.addEventListener('click', function(e) {
@@ -207,7 +211,9 @@
             if (StageSelectInspector.isInspectorOpen()) {
                 e.preventDefault();
                 StageSelectInspector.clearSelection({ restoreFocus: true });
+                return;
             }
+            if (StageSelectQuick.pinnedId()) { e.preventDefault(); StageSelectQuick.unpin(); }
         });
         S._fixtureSelectEl.addEventListener('change', function() {
             applyFixture(S._fixtureSelectEl.value);
@@ -217,6 +223,7 @@
         S._el.addEventListener('click', StageSelectInspector.handleDifficultyClick);
         // P2：点舞台空白取消选中（节点 / 导航 / hover 卡 / 检查器内部点击除外）。
         S._shellEl.addEventListener('click', StageSelectInspector.handleStageBlankClick);
+        S._shellEl.addEventListener('click', StageSelectQuick.handleBlankClick);
         S._stageEl.addEventListener('pointermove', handleCardPointerMove);
         S._stageEl.addEventListener('pointerleave', handleCardPointerLeave);
         S._inspectorCloseEl.addEventListener('click', function(e) {
@@ -289,6 +296,7 @@
         S._cardPlacementById = {};
         S._cardBridge = null;
         S._focusStageId = '';
+        StageSelectQuick.reset();
         S._forceUnlock = false;
         S._tourPinsVisible = false;
         if (S._el) S._el.classList.remove('is-tour-pins-visible');
@@ -355,6 +363,7 @@
                 StageSelectInspector.clearSelection({ restoreFocus: true });
                 return;
             }
+            if (StageSelectQuick.unpin()) return;
         }
         // Web 主动关闭以 Host transport 的同步接收结果为提交点。false/throw 时不能先卸载
         // 当前 owner/DOM，也不能消费在途请求或 busy；保留原状态供用户直接重试。
@@ -381,6 +390,7 @@
         // P2：检查器销毁幂等——清选中态并隐藏，元素保留待下次 open 复用
         StageSelectInspector.clearSelection();
         StageSelectFocus.reset();
+        StageSelectQuick.reset();
         S._hoverStageId = '';
         S._cardHoverStageId = '';
         S._cardPlacementById = {};
@@ -510,6 +520,7 @@
     // frame 路由编排：ViewModel.tryRouteFrame 纯状态迁移成功后才重渲染。
     function setFrame(label, source) {
         if (!VM.tryRouteFrame(label)) return;
+        StageSelectQuick.reset();
         StageSelectCameraEditor.hide();
         setModMenuOpen(false);
         StageSelectCore.logDev((source || 'route') + ': ' + label);
@@ -767,6 +778,8 @@
             '<span class="stage-select-stage-name">' + renderStageNameHtml(displayName, isMapEntry) + '</span>' +
             renderStageLockSvg() +
             '<span class="stage-select-task-pulse"></span>' +
+            // 靶标括号：悬停/锁定时吸附到信标（地图同款四角框），纯装饰不接收指针。
+            '<span class="stage-select-reticle" aria-hidden="true"></span>' +
             // 打磨批：选中光环独立元素（task-pulse 同族柔和外发光），替代旧 hit-zone 硬 box-shadow 圆环
             '<span class="stage-select-selected-ring" aria-hidden="true"></span>';
         node.addEventListener('click', function(e) {
@@ -775,9 +788,18 @@
                 StageSelectInspector.requestStageActivation(button, '', null);
                 return;
             }
-            // 普通关卡与外交据点：点击 = 选中并 pin 检查器；再点同节点取消选中。
+            // 指针单击（detail≥1）已解锁节点 = 锁定快捷卡（卡片常驻、三维支点推近），不打开深度详情；
+            // 双击的第二击（detail≥2）留给 dblclick。键盘 / 辅助技术 / 程序化激活（detail=0）
+            // 与锁定节点保持原语义：选中并打开深度详情（检查器）；再点同节点取消选中。
+            if (e.detail >= 2) return;
+            if (e.detail === 1 && StageSelectQuick.pointerActivate(button.id)) return;
             StageSelectInspector.toggleStageSelection(button.id);
             StageSelectCore.logDev('select stage: ' + button.stageName + (state.unlocked ? '' : ' (locked fixture)'));
+        });
+        node.addEventListener('dblclick', function() {
+            // 双击 = 深度详情（鼠标直达既有双栏聚焦）；第一击已锁定，openDetail 先即时解除锁定与推近。
+            if (direct || !state.unlocked) return;
+            StageSelectQuick.openDetail(button.id);
         });
         node.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -936,21 +958,68 @@
         return sizes;
     }
 
+    // 二维：Flash 原版卡恒在上方（地名在信标下）。三维：地名牌是主要瞄准目标且可能经引线远离信标，
+    // 卡片先贴地名所在一侧（地名在信标上方 → 上方），避免把卡放到信标另一侧、让地名到难度行行程翻倍。
+    function preferredCardSide(button) {
+        var projected = S._visualStagePoints && S._visualStagePoints[button.id];
+        if (!projected) return 'above';
+        return StageSelectCore.finiteNumber(projected.labelY, -1) > 0 ? 'below' : 'above';
+    }
+
     function placeCardAnchor(button, node, anchor, forceMeasure) {
         if (!anchor) return;
         var point = VM.getStageNavPoint(button, computeDirectSizing);
         var obstacles = [{ x: point.x - 22, y: point.y - 22, width: 44, height: 44 }, cardLabelRect(button, node, point)];
+        // 水平中心对齐地名：二维地名本就居中于信标；三维地名牌是主要瞄准目标，可能经引线远离信标。
+        var labelCenterX = obstacles[1].x + obstacles[1].width / 2;
         var key = cardPlacementKey(button);
-        var placed = StageSelectCardLayout.place({
-            point: point,
-            obstacles: obstacles,
-            sizes: measureCardSizes(anchor, !!forceMeasure),
-            preferredSide: S._cardPlacementById[key] || 'above',
-            bounds: { width: S.DESIGN_W, height: S.DESIGN_H, top: 54, inset: 8 },
-            nodeRadius: 22,
-            bridgeWidth: 28
-        });
-        S._cardPlacementById[key] = placed.side;
+        var sizes = measureCardSizes(anchor, !!forceMeasure);
+        var layoutWith = function(list, cx) {
+            return StageSelectCardLayout.place({
+                point: point,
+                centerX: typeof cx === 'number' ? cx : labelCenterX,
+                obstacles: list,
+                sizes: sizes,
+                preferredSide: preferredCardSide(button), // 由几何决定、不随历史漂移（见 card-layout 停靠合同）
+                bounds: { width: S.DESIGN_W, height: S.DESIGN_H, top: 54, inset: 8 },
+                nodeRadius: 22,
+                bridgeWidth: 28
+            });
+        };
+        var placed = layoutWith(obstacles);
+        // 三维地名经长引线远离信标且贴近舞台边缘时，「避让信标 + 地名」只能把卡放到信标另一侧，
+        // 地名到难度行的行程翻倍。此时改为只避让地名：卡片贴地名停靠（允许压住本节点信标——
+        // 光标在地名牌上，信标不是瞄准目标），保持 Flash 级短行程。
+        if (S._visualStagePoints && S._visualStagePoints[button.id]) {
+            var lab = obstacles[1];
+            var gapToLabel = placed.top >= lab.y + lab.height ? placed.top - (lab.y + lab.height) : lab.y - (placed.top + placed.height);
+            // 阈值取两倍常规地名-信标间距（约 45px）：只处理「卡片落在长引线另一端」的情形，
+            // 普通三维节点卡片落在信标下方时与地名相隔约 50–60px，保持常规停靠。
+            if (gapToLabel > 96) {
+                var labelOnly = layoutWith([lab]);
+                if (labelOnly.valid) {
+                    // 贴地名停靠若压住本节点信标，优先水平让开信标（仍贴地名），让开后仍能悬停/点中信标；
+                    // 两侧都放不下时才接受压住信标。
+                    var mk = obstacles[0];
+                    var covers = function(p) {
+                        return StageSelectCardLayout.intersects({ x: p.left, y: p.top, width: p.width, height: p.height }, mk);
+                    };
+                    if (covers(labelOnly)) {
+                        var w = labelOnly.width;
+                        [mk.x - 8 - w / 2, mk.x + mk.width + 8 + w / 2]
+                            .sort(function(a, b) { return Math.abs(a - labelCenterX) - Math.abs(b - labelCenterX); })
+                            .some(function(cx) {
+                                var shifted = layoutWith([lab], cx);
+                                if (!shifted.valid || covers(shifted)) return false;
+                                labelOnly = shifted;
+                                return true;
+                            });
+                    }
+                    placed = labelOnly;
+                }
+            }
+        }
+        S._cardPlacementById[key] = placed.side; // 仅诊断回读，不再回灌 preferredSide
         anchor.setAttribute('data-placement', placed.side);
         anchor.setAttribute('data-action-position', placed.connection.actionPosition);
         anchor.classList.toggle('is-tight-layout', !placed.valid);
@@ -1245,10 +1314,13 @@
         var innerWidth = width - 17;
         // Line height matches CSS rules (runtime detail = 19px; non-runtime = 20px)
         var lineHeight = 19;
-        var baseline = (nameLines === 2) ? 167 : 124;
-        var minH = (nameLines === 2) ? 240 : 232;
-        // Generous cap: ~17 lines of 19px detail in 220-wide card.
-        var maxH = 480;
+        // 快捷卡高度封顶（2026-10-29 Flash 手感回归）：卡内简介最多 2 行（双行标题时 1 行），
+        // 完整简介移交情报侧栏。卡片足够矮，任意节点都能在上方或下方放下，不再需要侧向停靠。
+        // baseline = 内边距 12 + 标题 18/36 + 预览 73 + 简介外距 4 + 难度行 34。
+        var detailCap = (nameLines === 2 ? 1 : 2) * lineHeight;
+        var baseline = (nameLines === 2) ? 159 : 141;
+        var minH = baseline + lineHeight;
+        var maxH = baseline + detailCap;
 
         var detailH = measureDetailHeight(detail.html, innerWidth, lineHeight);
         var cardHeight;
@@ -1355,6 +1427,7 @@
         S._cardBridge = openAnchor && openAnchor._cardConnection
             ? Object.assign({ stageId: openId }, openAnchor._cardConnection)
             : null;
+        StageSelectQuick.onCardChange(openId, openAnchor);
     }
 
     // leave 事件的延迟合并入口：等同一指针移动的 leave/enter 边界事件序列全部落地后再裁决。

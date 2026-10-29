@@ -1,7 +1,11 @@
 var StageSelectCardLayout = (function() {
     'use strict';
 
-    var SIDES = ['above', 'below', 'right', 'left'];
+    // 快捷卡停靠合同（2026-10-29 Flash 手感回归）：默认只在节点上方，放不下才翻到下方；
+    // 不做左右停靠、不记忆上次方向——难度行相对节点的方向与偏移必须可盲点（老玩家肌肉记忆），
+    // 侧向停靠会把最远难度键拉到 200px 以外。左右分支仅在调用方显式传 options.sides 时启用。
+    var SIDES = ['above', 'below'];
+    var ALL_SIDES = ['above', 'below', 'right', 'left'];
 
     function clamp(value, min, max) {
         return Math.max(min, Math.min(max, value));
@@ -106,16 +110,23 @@ var StageSelectCardLayout = (function() {
             bottom: number(bounds.height, 576) - number(bounds.inset, 8)
         };
         var gap = number(options.gap, 8);
-        var order = SIDES.slice();
-        if (SIDES.indexOf(options.preferredSide) >= 0) {
-            order = [options.preferredSide].concat(SIDES.filter(function(side) { return side !== options.preferredSide; }));
+        // 上/下停靠的水平中心：默认信标；三维地名常偏离信标，调用方可传信标+地名的并集中心，
+        // 让悬停在信标或地名上的光标到难度行都保持短行程。连接桥仍从信标出发。
+        var centerX = number(options.centerX, point.x);
+        var sides = Array.isArray(options.sides) && options.sides.length
+            ? options.sides.filter(function(side) { return ALL_SIDES.indexOf(side) >= 0; })
+            : SIDES;
+        if (!sides.length) sides = SIDES;
+        var order = sides.slice();
+        if (sides.indexOf(options.preferredSide) >= 0) {
+            order = [options.preferredSide].concat(sides.filter(function(side) { return side !== options.preferredSide; }));
         }
         var candidates = order.map(function(side, index) {
             var size = options.sizes && (options.sizes[side] || options.sizes.above) || { width: 220, height: 240 };
             var width = Math.max(1, number(size.width, 220)), height = Math.max(1, number(size.height, 240));
             var value;
-            if (side === 'above') value = { x: point.x - width / 2, y: node.y - gap - height, width: width, height: height };
-            else if (side === 'below') value = { x: point.x - width / 2, y: bottom(node) + gap, width: width, height: height };
+            if (side === 'above') value = { x: centerX - width / 2, y: node.y - gap - height, width: width, height: height };
+            else if (side === 'below') value = { x: centerX - width / 2, y: bottom(node) + gap, width: width, height: height };
             else if (side === 'left') value = { x: node.x - gap - width, y: point.y - height / 2, width: width, height: height };
             else value = { x: right(node) + gap, y: point.y - height / 2, width: width, height: height };
             value.x = clamp(value.x, frame.left, Math.max(frame.left, frame.right - width));

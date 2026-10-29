@@ -328,6 +328,7 @@
          'modules/stage-select/stage-select-view-model.js',
          'modules/stage-select/stage-select-renderer.js',
          'modules/stage-select/stage-select-inspector.js',
+         'modules/stage-select/stage-select-quick.js',
          'modules/stage-select/stage-select-intel-data.js',
          'modules/stage-select/stage-select-focus.js',
          'modules/stage-select/stage-select-camera-editor.js',

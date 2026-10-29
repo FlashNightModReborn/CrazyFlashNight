@@ -338,7 +338,8 @@ var StageSelectViewModel = (function() {
     function computeOpenCardId() {
         // Mouse return restores the roving focus target, not a persistent card over nearby 3D labels.
         var focusCard = !S._visualStagePoints || S._lastInputKeyboard ? S._focusStageId : '';
-        var id = S._cardHoverStageId || S._hoverStageId || focusCard || '';
+        // 指针锁定（StageSelectQuick）是最低优先级兜底：悬停其它节点时临时显示其卡，离开后回到锁定卡。
+        var id = S._cardHoverStageId || S._hoverStageId || focusCard || S._pinnedStageId || '';
         if (!id || id === S._selectedStageId) return '';
         var button = findStageButtonById(id);
         if (!button || isDirectEntry(button)) return '';

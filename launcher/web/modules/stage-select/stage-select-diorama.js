@@ -4,6 +4,7 @@ var StageSelectDiorama = (function() {
     var baseUrl=new URL('./',document.currentScript.src),S=StageSelectCore.state;
     var config=null,cache=null,pending=null,mount=null,active=false,failed=false,generation=0,loadAbort=null;
     var focused='',focusHost=null,focusReturnCamera=null,presets={},fallbackImage=null,presentationId='',environmentEnabled=true,comparison=null;
+    var PIN_ZOOM=1.3; // 锁定推近倍率：看清建筑而不丢失周边地标
     function forFrame(frame){
         if(StageSelectData.getManifest().testOnly)return null;
         if(frame.frameLabel===StageSelectDioramaData.frameLabel)return StageSelectDioramaData;
@@ -73,7 +74,8 @@ var StageSelectDiorama = (function() {
             if(token!==generation)return null;
             return module.createScene(wanted,function(){if(token===generation)contextLost();},function(){if(token===generation)changed();},function(id){
                 if(!active||token!==generation||focused)return;
-                var node=StageSelectRenderer.findNodeById(id);if(node)node.click();
+                // 三维拾取等同指针单击：已解锁节点锁定快捷卡，其余保持原「选中→详情」语义。
+                var node=StageSelectRenderer.findNodeById(id);if(node&&!(window.StageSelectQuick&&StageSelectQuick.pointerActivate(id)))node.click();
             },controller.signal);
         }).then(function(scene){
             if(token!==generation){if(scene)scene.dispose();return null;}
@@ -261,6 +263,20 @@ var StageSelectDiorama = (function() {
         snapshotCamera:function(){return cache?cache.view.snapshot():null;},
         restoreCamera:function(value){if(!active||!cache||failed||!cache.view.valid(value))return;if(focused)cache.view.focus(focused,value,false);else cache.view.overview(value,false);},
         hover:function(id){if(active&&cache&&!failed)cache.view.hover(id);},
+        // 指针锁定的支点推近：以节点锚点投影为支点缩放正交镜头，节点与快捷卡留在光标下。
+        // 荒漠总览的标签按屏幕布局排布（非逐帧投影），推近会让其余标签脱离建筑，故不推近。
+        pinZoom:function(id){
+            if(!active||!cache||failed||focused||!cache.view.zoomAt||(config&&config.scene==='desert'))return null;
+            if(window.StageSelectCameraEditor&&StageSelectCameraEditor.isOpen())return null;
+            var pin=S._visualStagePoints&&S._visualStagePoints[id];if(!pin||pin.visible===false)return null;
+            var offset=pin.screenOffset||[0,0],before=cache.view.snapshot();
+            return cache.view.zoomAt(pin.x-(offset[0]||0),pin.y-(offset[1]||0),PIN_ZOOM,true)?before:null;
+        },
+        restorePinCamera:function(value,animate){
+            if(!active||!cache||failed||focused||!cache.view.valid(value))return;
+            if(window.StageSelectCameraEditor&&StageSelectCameraEditor.isOpen())return;
+            cache.view.overview(value,animate!==false);
+        },
         resetCamera:function(){if(cache){if(focused)cache.view.focus(focused,null,false);else cache.view.overview(null,false);if(cache.focusControls)cache.focusControls.reset();}},
         stats:function(){return Object.assign({active:active,pending:!!pending,failed:failed,frameLabel:config&&config.frameLabel||'',state:mount&&mount.dataset.state||'empty'},cache?cache.stats():{});}
     };

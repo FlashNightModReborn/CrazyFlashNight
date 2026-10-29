@@ -483,16 +483,15 @@ var StageSelectHarnessQA = (function() {
                     });
                 });
             }],
-            ['runtime-card-height-measured', 'runtime card height comes from real DOM measurement, fits all text', function() {
+            ['runtime-card-height-measured', 'runtime quick card stays capped (detail clamped) while the dossier carries the full text', function() {
                 host.open({ mode: 'runtime', debug: false });
                 return waitRuntime(api).then(function() {
                     var manifest = StageSelectData.getManifest();
                     var label = manifest.frameOrder[0];
                     StageSelectPanel._debugSetFrame(label, 'qa-height');
-                    var btns = document.querySelectorAll('.stage-select-stage-button');
+                    var btns = document.querySelectorAll('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry)');
                     api.assert(btns.length > 0, 'stage buttons rendered');
-                    var sample = btns[0];
-                    var stageName = sample.getAttribute('data-stage-name');
+                    var stageName = btns[0].getAttribute('data-stage-name');
                     StageSelectPanel._debugApplySnapshot({
                         unlockedStages: (function() { var u = {}; u[stageName] = true; return u; })(),
                         stageDetails: (function() {
@@ -513,17 +512,151 @@ var StageSelectHarnessQA = (function() {
                         currentFrameLabel: label
                     });
                     var btn = document.querySelector('.stage-select-stage-button[data-stage-name="' + stageName + '"]');
+                    var id = btn.getAttribute('data-stage-id');
                     var declaredHeight = parseFloat(btn.style.getPropertyValue('--stage-card-height')) || 0;
-                    api.assert(declaredHeight > 232, 'long text raised height past min (got ' + declaredHeight + ')');
+                    // 2026-10-29 Flash 手感回归：卡片高度封顶，任意节点都能停在上/下方（不再侧向停靠）。
+                    api.assert(declaredHeight > 0 && declaredHeight <= 200, 'declared quick-card height capped (got ' + declaredHeight + ')');
+                    btn.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }));
                     btn.focus();
-                    // P2：卡片在锚点层，按 stage id 反查
-                    var anchor = findCardAnchor(btn.getAttribute('data-stage-id'));
+                    var anchor = findCardAnchor(id);
+                    api.assert(!!anchor && anchor.classList.contains('is-card-open'), 'keyboard focus opens quick card');
+                    var cardHeight = anchor.querySelector('.stage-select-card').getBoundingClientRect().height / getStageScale();
+                    api.assert(cardHeight <= 205, 'rendered quick card height capped (got ' + Math.round(cardHeight) + ')');
                     var detail = anchor.querySelector('.stage-select-card-detail');
-                    var detailScroll = detail.scrollHeight;
-                    var detailCssHeight = parseFloat(getComputedStyle(detail).height) || (detail.getBoundingClientRect().height / getStageScale());
-                    // declared height = baseline + measured detail. detail rendered height should fit inside card box.
-                    api.assert(detailScroll <= detailCssHeight + 4, 'rendered detail fits inside box (scroll=' + detailScroll + ', box=' + Math.round(detailCssHeight) + ')');
-                    return 'measured height fits text';
+                    api.assert(detail.textContent.indexOf('装备碎片') >= 0, 'full detail stays in DOM for accessibility');
+                    api.assert(detail.scrollHeight > detail.clientHeight + 2, 'long card detail is visually clamped');
+                    return api.waitFor(function() {
+                        var quick = StageSelectPanel._debugGetState().quick;
+                        return quick && quick.dossierVisible && quick.dossierStageId === id ? quick : null;
+                    }, 2000, 'dossier after dwell').then(function(quick) {
+                        var dossier = document.getElementById('stage-select-dossier');
+                        api.assert(dossier.querySelector('.stage-select-dossier-detail').textContent.indexOf('装备碎片') >= 0, 'dossier shows full detail text');
+                        api.assertEqual(getComputedStyle(dossier).pointerEvents, 'none', 'unpinned dossier never takes the pointer');
+                        api.assert(dossier.querySelector('.stage-select-dossier-expand').hidden, 'expand action only appears once pinned');
+                        return 'capped card + dossier (' + quick.dossierSide + ')';
+                    });
+                });
+            }],
+            ['quick-pin-dossier', 'pointer click pins the quick card without detail or enter; dblclick opens detail; Esc and blank click unpin', function() {
+                document.getElementById('stage-fixture-select').value = 'allUnlocked';
+                document.getElementById('stage-frame-select').value = '地下2层';
+                host.open({ mode: 'runtime', debug: false });
+                var sleep = function(ms) { return new Promise(function(resolve) { setTimeout(resolve, ms); }); };
+                var pointerClick = function(el, detail) {
+                    el.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, detail: detail }));
+                };
+                return waitRuntime(api).then(function() {
+                    StageSelectPanel._debugSetFrame('地下2层', 'qa-quick-pin');
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
+                    api.assert(!!node, 'pinnable node exists');
+                    var id = node.getAttribute('data-stage-id');
+                    host.enterMessages.length = 0;
+                    node.dispatchEvent(new PointerEvent('pointerenter', { bubbles: true }));
+                    pointerClick(node, 1);
+                    var state = StageSelectPanel._debugGetState();
+                    api.assertEqual(state.quick.pinnedStageId, id, 'pointer click pins');
+                    api.assert(!state.inspectorOpen, 'pin does not open the detail view');
+                    node.dispatchEvent(new PointerEvent('pointerleave', { bubbles: true }));
+                    return sleep(350).then(function() {
+                        var anchor = findCardAnchor(id);
+                        api.assert(anchor.classList.contains('is-card-open') && anchor.classList.contains('is-pinned'), 'pinned card survives pointer leave');
+                        api.assert(node.classList.contains('is-pinned'), 'node mirrors pinned state');
+                        var quick = StageSelectPanel._debugGetState().quick;
+                        api.assert(quick.dossierVisible && quick.dossierStageId === id, 'pinned dossier visible without dwell');
+                        var dossier = document.getElementById('stage-select-dossier');
+                        api.assertEqual(getComputedStyle(dossier).pointerEvents, 'auto', 'pinned dossier becomes interactive');
+                        // 可交互侧栏不得压住本节点的地名/信标，否则会吞掉再次单击与双击。
+                        var dr = dossier.getBoundingClientRect();
+                        [].forEach.call(node.querySelectorAll('.stage-select-stage-name, .stage-select-marker'), function(part) {
+                            var pr = part.getBoundingClientRect();
+                            api.assert(!(pr.left < dr.right && pr.right > dr.left && pr.top < dr.bottom && pr.bottom > dr.top), 'pinned dossier keeps its own node uncovered');
+                        });
+                        api.assert(!dossier.querySelector('.stage-select-dossier-expand').hidden, 'expand action visible when pinned');
+                        api.assertEqual(host.enterMessages.length, 0, 'pinning never sends enter');
+                        document.querySelector('.stage-select-panel').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
+                        api.assertEqual(StageSelectPanel._debugGetState().quick.pinnedStageId, '', 'Esc unpins');
+                        pointerClick(node, 1);
+                        api.assertEqual(StageSelectPanel._debugGetState().quick.pinnedStageId, id, 're-pin');
+                        pointerClick(document.getElementById('stage-select-stage-shell'), 1);
+                        api.assertEqual(StageSelectPanel._debugGetState().quick.pinnedStageId, '', 'blank click unpins');
+                        pointerClick(node, 1);
+                        pointerClick(node, 1);
+                        api.assertEqual(StageSelectPanel._debugGetState().quick.pinnedStageId, '', 'second click on pinned node unpins');
+                        pointerClick(node, 1);
+                        pointerClick(node, 2);
+                        node.dispatchEvent(new MouseEvent('dblclick', { bubbles: true, cancelable: true, detail: 2 }));
+                        state = StageSelectPanel._debugGetState();
+                        api.assert(state.inspectorOpen && state.selectedStageId === id, 'dblclick opens the detail view');
+                        api.assertEqual(state.quick.pinnedStageId, '', 'detail view releases the pin');
+                        api.assert(!state.quick.dossierVisible, 'dossier yields to detail view');
+                        StageSelectInspector.clearSelection();
+                        api.assertEqual(host.enterMessages.length, 0, 'no enter across the whole pin flow');
+                        return 'pin / unpin / detail ok';
+                    });
+                });
+            }],
+            ['quick-card-travel-budget', 'every unlocked quick card docks above/below with its action row inside the Flash travel budget', function() {
+                document.getElementById('stage-fixture-select').value = 'allUnlocked';
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    var manifest = StageSelectData.getManifest();
+                    var stage = document.getElementById('stage-select-stage');
+                    var failures = [];
+                    var count = 0;
+                    var maxSeen = 0;
+                    var perCard = [];
+                    var worst = [];
+                    // 设计坐标 px。Flash 原卡约 80–100：p95 ≤120；单卡硬上限 200（三维个别地名经长引线贴顶边时的上界）。
+                    var P95_BUDGET = 120;
+                    var HARD_CAP = 200;
+                    manifest.frameOrder.forEach(function(label) {
+                        StageSelectPanel._debugSetFrame(label, 'qa-travel');
+                        var sr = stage.getBoundingClientRect();
+                        var k = 1024 / sr.width;
+                        var center = function(el) {
+                            var r = el.getBoundingClientRect();
+                            return { x: (r.left + r.width / 2 - sr.left) * k, y: (r.top + r.height / 2 - sr.top) * k, r: r };
+                        };
+                        document.querySelectorAll('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)').forEach(function(node) {
+                            var name = node.getAttribute('data-stage-name');
+                            node.dispatchEvent(new PointerEvent('pointerenter', { bubbles: true }));
+                            var anchor = findCardAnchor(node.getAttribute('data-stage-id'));
+                            var buttons = anchor ? anchor.querySelectorAll('.stage-select-difficulty, .stage-select-map-action') : [];
+                            if (!anchor || !anchor.classList.contains('is-card-open') || !buttons.length) {
+                                failures.push(label + '/' + name + ': no card');
+                            } else {
+                                count += 1;
+                                var side = anchor.getAttribute('data-placement');
+                                if (side !== 'above' && side !== 'below') failures.push(label + '/' + name + ': side ' + side);
+                                // 起点 = 主要瞄准目标：三维为地名牌（可经引线远离信标），二维为信标（地名居中其下）。
+                                var diorama = document.querySelector('.stage-select-panel').classList.contains('is-diorama');
+                                var aim = diorama ? node.querySelector('.stage-select-stage-name') : node.querySelector('.stage-select-marker');
+                                if (!aim || !aim.getClientRects().length) aim = node.querySelector('.stage-select-hit-zone') || node;
+                                var origin = center(aim);
+                                var cardMax = 0;
+                                [].forEach.call(buttons, function(btn) {
+                                    var c = center(btn);
+                                    var d = Math.hypot(c.x - origin.x, c.y - origin.y);
+                                    cardMax = Math.max(cardMax, d);
+                                    maxSeen = Math.max(maxSeen, d);
+                                    if (d > HARD_CAP) failures.push(label + '/' + name + ': travel ' + Math.round(d));
+                                    if (c.r.top < sr.top - 0.5 || c.r.bottom > sr.bottom + 0.5 || c.r.left < sr.left - 0.5 || c.r.right > sr.right + 0.5) {
+                                        failures.push(label + '/' + name + ': action outside stage');
+                                    }
+                                });
+                                perCard.push(cardMax);
+                                worst.push({ where: label + '/' + name + '/' + side + (diorama ? '/3d' : '/2d'), d: Math.round(cardMax) });
+                            }
+                            node.dispatchEvent(new PointerEvent('pointerleave', { bubbles: true }));
+                        });
+                    });
+                    api.assert(count > 50, 'audited enough quick cards (' + count + ')');
+                    perCard.sort(function(x, y) { return x - y; });
+                    var p95 = perCard[Math.min(perCard.length - 1, Math.floor(perCard.length * 0.95))] || 0;
+                    worst.sort(function(x, y) { return y.d - x.d; });
+                    api.assert(p95 <= P95_BUDGET, 'p95 travel ' + Math.round(p95) + ' <= ' + P95_BUDGET + ' worst: ' + worst.slice(0, 5).map(function(w) { return w.where + '=' + w.d; }).join(', '));
+                    api.assert(failures.length === 0, failures.length + ' violations: ' + failures.slice(0, 6).join('; '));
+                    return count + ' cards, p95 ' + Math.round(p95) + ', max travel ' + Math.round(maxSeen);
                 });
             }],
             ['runtime-card-adaptive-width', 'runtime card stays 167 for short, 195 for medium, 220 for long names', function() {
@@ -1005,6 +1138,20 @@ var StageSelectHarnessQA = (function() {
                     api.assert(!!mapAnchor && mapAnchor.classList.contains('is-card-open'), 'map entry opens hover card');
                     var mapAction = mapAnchor.querySelector('.stage-select-map-action');
                     api.assert(!!mapAction, 'map hover card renders one-click action button');
+                    // 2026-10-29 回归：外交卡曾被遗留 CSS 上抬出舞台（顶边据点「前往地点」不可点）。
+                    // 合成 click 不经命中测试，必须另验按钮完整落在舞台内且是该点的最上层元素。
+                    var stageRect = document.getElementById('stage-select-stage').getBoundingClientRect();
+                    var actionRect = mapAction.getBoundingClientRect();
+                    api.assert(actionRect.top >= stageRect.top && actionRect.bottom <= stageRect.bottom
+                        && actionRect.left >= stageRect.left && actionRect.right <= stageRect.right,
+                        'map hover action stays inside stage: ' + JSON.stringify([actionRect.left, actionRect.top, actionRect.width, actionRect.height].map(Math.round)));
+                    var actionHit = document.elementFromPoint(actionRect.left + actionRect.width / 2, actionRect.top + actionRect.height / 2);
+                    api.assert(actionHit === mapAction, 'map hover action is hit-testable (not covered/clipped)');
+                    var mapMarkerRect = mapMarker.getBoundingClientRect();
+                    var mapCardRect = mapAnchor.querySelector('.stage-select-card').getBoundingClientRect();
+                    api.assert(mapCardRect.bottom <= mapMarkerRect.top || mapCardRect.top >= mapMarkerRect.bottom
+                        || mapCardRect.right <= mapMarkerRect.left || mapCardRect.left >= mapMarkerRect.right,
+                        'map hover card does not cover its own marker');
                     mapAction.click();
                     return api.waitFor(function() {
                         return host.enterMessages.length ? host.enterMessages[0] : null;
@@ -2057,7 +2204,9 @@ var StageSelectHarnessQA = (function() {
         ];
 
         if (onlyCase) {
-            cases = cases.filter(function(item) { return item[0] === onlyCase; });
+            // 支持逗号分隔的有序子集（用于复现跨用例的状态泄漏），单个 id 行为不变。
+            var wanted = String(onlyCase).split(',');
+            cases = cases.filter(function(item) { return wanted.indexOf(item[0]) >= 0; });
         }
         var chain = Promise.resolve([]);
         cases.forEach(function(item) {

@@ -67,7 +67,8 @@ var StageSelectPanel = (function() {
             lastDifficultyClick: S._lastDifficultyClick,
             selectedStageId: S._selectedStageId,
             inspectorOpen: StageSelectInspector.isInspectorOpen(),
-            openCardStageId: StageSelectViewModel.computeOpenCardId()
+            openCardStageId: StageSelectViewModel.computeOpenCardId(),
+            quick: window.StageSelectQuick ? StageSelectQuick.stats() : null
         };
     }
 

@@ -44,7 +44,7 @@ async function main() {
         return { ...bounds, bottomClearance: rectangles.bar.y - bounds.bottom, source: frame.source };
     };
     const bar = page.locator('.stage-desert-area-controls');
-    const openStage = async id => { await page.locator('[data-stage-id="' + id + '"].stage-select-stage-button > .stage-select-stage-name').click(); await ready(); };
+    const openStage = async id => { await page.locator('[data-stage-id="' + id + '"].stage-select-stage-button > .stage-select-stage-name').dblclick(); await ready(); };
     try {
         await page.goto(origin + '/modules/stage-select/dev/harness.html?viewport=1024x576&frame=' + encodeURIComponent('基地房顶') + '&fixture=allUnlocked&player=1&review=subareas');
         await ready();

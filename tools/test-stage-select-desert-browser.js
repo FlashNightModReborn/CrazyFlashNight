@@ -78,7 +78,7 @@ async function main() {
         report.checks.push('Presentation surround covers all overview corners at 1024x576, 1366x768 and 1920x1080 without changing the camera or geographic anchors');
         for (const index of [0, 1, 2, 3, 4, 5, 6, 7]) {
             const id = 'stage_34_' + index;
-            await page.locator('[data-stage-id="' + id + '"].stage-select-stage-button > .stage-select-stage-name').click();
+            await page.locator('[data-stage-id="' + id + '"].stage-select-stage-button > .stage-select-stage-name').dblclick();
             await ready();
             const state = await page.evaluate(() => StageSelectDiorama.stats());
             assert.equal(state.focusId, id);
@@ -119,7 +119,7 @@ async function main() {
             assert.equal((await page.evaluate(() => StageSelectDiorama.stats())).focusId, '');
         }
         report.checks.push('All eight 3D combat entries focus and return using the same canvas, whose visible bounds match each viewport');
-        await page.locator('[data-stage-id="stage_34_3"].stage-select-stage-button > .stage-select-stage-name').click();
+        await page.locator('[data-stage-id="stage_34_3"].stage-select-stage-button > .stage-select-stage-name').dblclick();
         await ready();
         const beforeDifficulty = await page.evaluate(() => StageSelectHarnessHost.enterMessages.length);
         await page.locator('#stage-select-inspector-difficulties [data-difficulty="冒险"]').click();
@@ -128,7 +128,7 @@ async function main() {
         await ready();
         report.checks.push('Changing difficulty in a 3D focus view sends no entry request');
         for (const index of [8, 9]) {
-            await page.locator('[data-stage-id="stage_34_' + index + '"].stage-select-stage-button > .stage-select-stage-name').click();
+            await page.locator('[data-stage-id="stage_34_' + index + '"].stage-select-stage-button > .stage-select-stage-name').dblclick();
             await page.waitForFunction(() => document.querySelector('.stage-focus-surface'));
             assert.equal((await page.evaluate(() => StageSelectDiorama.stats())).focusId, '');
             await page.screenshot({ path: path.join(out, 'wormhole-' + index + '.png') });
@@ -143,7 +143,7 @@ async function main() {
         await ready();
         assert.equal((await page.evaluate(() => StageSelectPanel._debugGetState())).frameLabel, '基地房顶');
         report.checks.push('Wormhole navigation and return retain existing local-frame protocol');
-        await page.locator('[data-stage-id="stage_34_10"].stage-select-stage-button').click();
+        await page.locator('[data-stage-id="stage_34_10"].stage-select-stage-button').dblclick();
         await page.locator('#stage-focus-enter').click();
         await page.waitForFunction(() => Panels.getActive() === null);
         report.diplomacy = await page.evaluate(() => StageSelectHarnessHost.enterMessages.at(-1));

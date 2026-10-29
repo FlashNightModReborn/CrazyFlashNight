@@ -119,7 +119,22 @@ async function main() {
         await ready();
         await page.mouse.move(1000, 560);
         await page.waitForTimeout(180);
-        await page.locator('[data-stage-id="stage_0_0"] > .stage-select-stage-name').click();
+        // 单击 = 锁定快捷卡：不进详情、不发 enter，三维以地名为支点推近，地名留在光标下。
+        const pinLabel = page.locator('[data-stage-id="stage_0_0"] > .stage-select-stage-name');
+        const pinBefore = await pinLabel.boundingBox();
+        await pinLabel.click();
+        await page.waitForFunction(() => !StageSelectDiorama.stats().moving);
+        const pinState = await page.evaluate(() => StageSelectPanel._debugGetState());
+        assert.equal(pinState.quick.pinnedStageId, 'stage_0_0');
+        assert.equal(pinState.inspectorOpen, false);
+        assert.equal(pinState.quick.pinZoomed, true, 'first pin dollies the overview camera toward the node');
+        const pinAfter = await pinLabel.boundingBox();
+        assert.ok(Math.abs(pinAfter.x - pinBefore.x) <= 8 && Math.abs(pinAfter.y - pinBefore.y) <= 8, 'pivot zoom keeps the pinned label under the cursor');
+        await page.screenshot({ path: path.join(out, 'base-gate-pinned.png') });
+        await page.keyboard.press('Escape');
+        await page.waitForFunction(() => !StageSelectDiorama.stats().moving && !StageSelectPanel._debugGetState().quick.pinnedStageId);
+        report.checks.push('real mouse single click pins the quick card with pivot zoom and Escape restores the overview');
+        await page.locator('[data-stage-id="stage_0_0"] > .stage-select-stage-name').dblclick();
         await page.waitForFunction(() => StageSelectPanel._debugGetState().selectedStageId === 'stage_0_0');
         await page.screenshot({ path: path.join(out, 'base-gate-inspector.png') });
         await page.locator('#stage-select-inspector-difficulties [data-difficulty="简单"]').click();
@@ -138,7 +153,7 @@ async function main() {
         assert.ok(!msg.difficulty);
         await page.evaluate(() => StageSelectHarnessHost.open({ mode: 'runtime', frameLabel: '基地门口' }));
         await ready();
-        await page.locator('[data-stage-id="stage_0_15"] > .stage-select-stage-name').click();
+        await page.locator('[data-stage-id="stage_0_15"] > .stage-select-stage-name').dblclick();
         await page.waitForFunction(() => StageSelectPanel._debugGetState().selectedStageId === 'stage_0_15');
         await page.locator('#stage-focus-enter').click();
         await page.waitForFunction(() => Panels.getActive() === null);
@@ -152,7 +167,8 @@ async function main() {
         for (const id of ['stage_10_2', 'stage_10_12']) {
             await page.mouse.move(1000, 560);
             await page.waitForTimeout(180);
-            await page.locator('.stage-select-stage-button[data-stage-id="'+id+'"] > .stage-select-hit-zone').hover();
+            // 三维以地名牌为主要瞄准目标：地名经长引线贴近舞台边缘时，快捷卡贴地名停靠并允许压住本节点信标。
+            await page.locator('.stage-select-stage-button[data-stage-id="'+id+'"] > .stage-select-stage-name').hover();
             const card = page.locator('.stage-select-card-anchor[data-stage-id="'+id+'"] > .stage-select-card');
             await card.waitFor({ state: 'visible' });
             const contract = await card.evaluate(el => {
@@ -194,7 +210,8 @@ async function main() {
             await card.evaluate(el => Promise.all(el.getAnimations().map(animation => animation.finished.catch(() => {}))));
             await page.screenshot({ path: path.join(out, id + '-hover.png') });
         }
-        assert.ok(report.reportedCards.some(card => card.side === 'left' || card.side === 'right'), 'exercise the actual side-facing diplomacy card');
+        // 2026-10-29 Flash 手感合同：快捷卡只停上/下方（难度行方向可盲点），三维战区同样不得侧向停靠。
+        assert.ok(report.reportedCards.every(card => card.side === 'above' || card.side === 'below'), 'quick cards never dock sideways');
         await page.emulateMedia({ reducedMotion: 'reduce' });
         assert.equal(await page.locator('.stage-select-card-anchor.is-card-open > .stage-select-card').evaluate(el => getComputedStyle(el).animationName), 'none');
         await page.emulateMedia({ reducedMotion: 'no-preference' });

@@ -21,7 +21,7 @@ async function main(){
         await page.waitForFunction(()=>StageSelectDiorama.stats().state==='ready');
         await details({stageType:'无限过图',detail:'僵尸喜爱黑暗的环境，于是地铁站成为了整个废城最为凶险的地区。'.repeat(18),clearHistory:{cleared:true,difficulties:['地狱']}});
         await page.waitForFunction(()=>StageSelectCore.state._runtimeSnapshot&&StageSelectViewModel.getStageState('地铁站').unlocked);
-        await page.locator('.stage-select-stage-button[data-stage-id="stage_0_9"] > .stage-select-stage-name').click();
+        await page.locator('.stage-select-stage-button[data-stage-id="stage_0_9"] > .stage-select-stage-name').dblclick();
         await page.waitForFunction(()=>!StageSelectDiorama.stats().moving);
         const layout=await page.evaluate(()=>{
             const q=s=>document.querySelector(s).getBoundingClientRect(),top=q('.stage-focus-topbar'),art=q('.stage-focus-preview'),brief=q('.stage-select-inspector-detail'),name=q('.stage-select-inspector-name'),history=q('.stage-focus-history'),tabs=q('.stage-focus-tabs'),scroll=document.querySelector('.stage-focus-content');

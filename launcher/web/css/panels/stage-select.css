@@ -2580,7 +2580,11 @@
     background: rgba(var(--ss-adventure-grad-bottom-rgb), 0.92);
 }
 
-/* 二维地图外交据点：选中金环对位 marker 中心，悬停卡外置停靠不遮挡绿色菱形图标与地名 */
+/* 二维地图外交据点：选中金环对位 marker 中心。
+   悬停卡停靠位置唯一由 StageSelectCardLayout.place（renderer.placeCardAnchor）裁决：
+   marker 与地名已作为避让障碍，且卡片夹紧在舞台安全区内；此处不得再用 CSS 改写卡片 top/left。
+   2026-10-29 回归修复：10-15 遗留的外交卡专用 top 覆盖特异性高于 10-25 的 JS 停靠基线，
+   把卡片整体上抬「34px + 卡高」，幸存者营地等顶边据点的「前往地点」被推出舞台。 */
 .stage-select-panel:not(.is-diorama) .stage-select-stage-button.is-map-entry .stage-select-selected-ring {
     left: calc(var(--stage-map-marker-x, 0px) - 24px);
     top: calc(var(--stage-map-marker-y, 120px) - 24px);
@@ -2588,14 +2592,6 @@
 
 .stage-select-panel:not(.is-diorama) .stage-select-card-anchor.is-map-entry.is-card-open {
     z-index: 25;
-}
-
-.stage-select-panel:not(.is-diorama) .stage-select-card-anchor.is-map-entry:not(.is-edge-top) .stage-select-card {
-    top: calc(-34px - var(--stage-card-height, 232px));
-}
-
-.stage-select-panel:not(.is-diorama) .stage-select-card-anchor.is-map-entry.is-edge-top .stage-select-card {
-    top: 38px;
 }
 
 @layer workbench.states {
@@ -3573,5 +3569,312 @@ html.perf-low-effects .stage-select-panel.is-diorama .stage-select-stage-button.
 @media (prefers-reduced-motion: reduce) {
     .stage-select-panel .stage-select-card-anchor[data-stage-id].is-card-open > .stage-select-card {
         animation: none;
+    }
+}
+
+/* ══ 快捷路径（2026-10-29「近端执行、远端情报」：兼顾 Flash 老玩家手感与操作速度）══════════
+   ① 快捷卡封顶：卡内简介最多 2 行（双行标题时 1 行），完整简介由情报侧栏承载——卡片足够矮，
+      任意节点都能停在上方或下方（停靠合同见 stage-select-card-layout.js），难度行方向/偏移可盲点；
+   ② runtime 二维：快捷卡已由 JS 避让节点，悬停不再隐藏信标与地名（旧 Flash 卡盖住节点才需要隐藏），
+      改由靶标括号吸附信标表达「锁定目标」；三维沿用既有地名四角靶标；
+   ③ 指针锁定（.is-pinned）：卡片描边转主色，靶标转选中色；
+   ④ 被快捷卡压住的邻居降亮而不是被盖死；
+   ⑤ 情报侧栏：对侧屏幕边缘被动显示，未锁定不接收指针、不进 Tab 序；
+   ⑥ 二维战术底板：底图之上叠地图同款网格（暗角/噪点沿用既有 stage::after 氛围层）。 */
+.stage-select-panel .stage-select-card-anchor[data-stage-id] > .stage-select-card .stage-select-card-detail {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    max-height: 38px;
+}
+
+.stage-select-panel .stage-select-card-anchor[data-stage-id][data-card-name-lines="2"] > .stage-select-card .stage-select-card-detail {
+    -webkit-line-clamp: 1;
+    max-height: 19px;
+}
+
+.stage-select-panel .stage-select-card-anchor[data-stage-id] > .stage-select-card {
+    border-top: 1px solid rgba(var(--ss-accent-rgb), 0.42);
+}
+
+.stage-select-panel .stage-select-card-anchor[data-stage-id].is-pinned > .stage-select-card {
+    border-top-color: rgb(var(--ss-selected-rgb));
+    box-shadow:
+        0 0 0 1px rgba(var(--ss-selected-rgb), 0.55),
+        3px 3px 10px rgba(var(--ss-black-rgb), 0.7);
+}
+
+.stage-select-panel.is-runtime:not(.is-diorama) .stage-select-stage-button:not(.is-locked):hover > .stage-select-marker,
+.stage-select-panel.is-runtime:not(.is-diorama) .stage-select-stage-button:not(.is-locked):focus > .stage-select-marker {
+    display: block;
+}
+
+.stage-select-panel.is-runtime:not(.is-diorama) .stage-select-stage-button:not(.is-locked):hover .stage-select-stage-name,
+.stage-select-panel.is-runtime:not(.is-diorama) .stage-select-stage-button:not(.is-locked):focus .stage-select-stage-name {
+    visibility: visible;
+}
+
+.stage-select-reticle {
+    display: none;
+    position: absolute;
+    left: 44.5px;
+    top: -39.7px;
+    width: 52px;
+    height: 52px;
+    z-index: 3;
+    pointer-events: none;
+    --ss-quick-reticle-rgb: var(--ss-reticle-rgb);
+    background:
+        linear-gradient(rgb(var(--ss-quick-reticle-rgb)), rgb(var(--ss-quick-reticle-rgb))) left top / 12px 2px no-repeat,
+        linear-gradient(rgb(var(--ss-quick-reticle-rgb)), rgb(var(--ss-quick-reticle-rgb))) left top / 2px 12px no-repeat,
+        linear-gradient(rgb(var(--ss-quick-reticle-rgb)), rgb(var(--ss-quick-reticle-rgb))) right top / 12px 2px no-repeat,
+        linear-gradient(rgb(var(--ss-quick-reticle-rgb)), rgb(var(--ss-quick-reticle-rgb))) right top / 2px 12px no-repeat,
+        linear-gradient(rgb(var(--ss-quick-reticle-rgb)), rgb(var(--ss-quick-reticle-rgb))) left bottom / 12px 2px no-repeat,
+        linear-gradient(rgb(var(--ss-quick-reticle-rgb)), rgb(var(--ss-quick-reticle-rgb))) left bottom / 2px 12px no-repeat,
+        linear-gradient(rgb(var(--ss-quick-reticle-rgb)), rgb(var(--ss-quick-reticle-rgb))) right bottom / 12px 2px no-repeat,
+        linear-gradient(rgb(var(--ss-quick-reticle-rgb)), rgb(var(--ss-quick-reticle-rgb))) right bottom / 2px 12px no-repeat;
+    filter: drop-shadow(0 0 4px rgba(var(--ss-quick-reticle-rgb), 0.55));
+}
+
+.stage-select-panel:not(.is-diorama) .stage-select-stage-button.is-map-entry > .stage-select-reticle {
+    left: calc(var(--stage-map-marker-x, 0px) - 26px);
+    top: calc(var(--stage-map-marker-y, 120px) - 26px);
+}
+
+.stage-select-panel.is-runtime:not(.is-diorama) .stage-select-stage-button.has-open-card:not(.is-locked):not(.is-selected) > .stage-select-reticle,
+.stage-select-panel.is-runtime:not(.is-diorama) .stage-select-stage-button.is-pinned > .stage-select-reticle {
+    display: block;
+    animation: stageSelectReticleSnap var(--ss-motion-icon) var(--ss-ease-out);
+}
+
+.stage-select-stage-button.is-pinned > .stage-select-reticle {
+    --ss-quick-reticle-rgb: var(--ss-selected-rgb);
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-pinned {
+    --ss-reticle-rgb: var(--ss-selected-rgb);
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-pinned > .stage-select-stage-name::after {
+    opacity: 0.92;
+}
+
+.stage-select-stage-button.is-under-card > .stage-select-stage-name,
+.stage-select-stage-button.is-under-card > .stage-select-marker,
+.stage-select-stage-button.is-under-card > .stage-select-location-leader {
+    opacity: 0.32;
+    transition: opacity var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+.stage-select-dossier {
+    position: absolute;
+    top: 62px;
+    z-index: 28;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 248px;
+    max-height: 500px;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    overflow: hidden;
+    color: rgb(var(--ss-text-rgb));
+    font-family: "Microsoft YaHei", "Microsoft JhengHei", Arial, sans-serif;
+    background: linear-gradient(180deg, rgba(var(--ss-card-grad-top-rgb), 0.95) 0%, rgba(var(--ss-card-grad-bottom-rgb), 0.95) 100%);
+    border: 1px solid rgba(var(--ss-accent-rgb), 0.3);
+    border-left: 2px solid rgba(var(--ss-accent-rgb), 0.72);
+    box-shadow: 0 8px 22px rgba(var(--ss-black-rgb), 0.55);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity var(--ss-motion-fast) var(--ss-ease-out), transform var(--ss-motion-fast) var(--ss-ease-out);
+}
+
+.stage-select-dossier[hidden] {
+    display: none;
+}
+
+.stage-select-dossier[data-side="left"] {
+    left: 12px;
+}
+
+.stage-select-dossier[data-side="right"] {
+    right: 12px;
+}
+
+.stage-select-dossier.is-visible {
+    opacity: 1;
+    transform: none;
+}
+
+.stage-select-dossier.is-pinned {
+    pointer-events: auto;
+    overflow-y: auto;
+    border-left-color: rgb(var(--ss-selected-rgb));
+}
+
+.stage-select-dossier-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    min-width: 0;
+}
+
+.stage-select-dossier-name {
+    min-width: 0;
+    color: rgb(var(--ss-card-name-text-rgb));
+    font-size: var(--ss-font-md);
+    font-weight: 700;
+    line-height: 20px;
+}
+
+.stage-select-dossier-type {
+    flex: none;
+    padding: 0 5px;
+    color: rgb(var(--ss-region-text-rgb));
+    font-size: var(--ss-font-xs);
+    line-height: 16px;
+    border: 1px solid rgba(var(--ss-accent-rgb), 0.4);
+}
+
+.stage-select-dossier-type[hidden] {
+    display: none;
+}
+
+.stage-select-dossier-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.stage-select-dossier-meta:empty {
+    display: none;
+}
+
+.stage-select-dossier-chip {
+    padding: 0 6px;
+    color: rgb(var(--ss-counter-text-rgb));
+    font-size: var(--ss-font-xs);
+    line-height: 18px;
+    background: rgba(var(--ss-accent-rgb), 0.1);
+    border-left: 2px solid rgba(var(--ss-accent-rgb), 0.5);
+}
+
+.stage-select-dossier-chip.is-cleared {
+    color: rgb(var(--ss-selected-rgb));
+    border-left-color: rgb(var(--ss-selected-rgb));
+}
+
+.stage-select-dossier-chip.is-task {
+    color: rgb(var(--ss-task-hot-rgb));
+    border-left-color: rgb(var(--ss-gold-rgb));
+}
+
+.stage-select-dossier-chip.is-map {
+    color: rgb(var(--ss-pin-map-text-rgb));
+    border-left-color: rgb(var(--ss-pin-map-rgb));
+}
+
+.stage-select-dossier-chip.is-force {
+    color: rgb(var(--ss-mod-amber-rgb));
+    border-left-color: rgb(var(--ss-mod-amber-rgb));
+}
+
+.stage-select-dossier-detail {
+    font-size: var(--ss-font-sm);
+    line-height: 19px;
+    word-break: break-all;
+    overflow-wrap: anywhere;
+}
+
+.stage-select-dossier-intel {
+    color: rgba(var(--ss-text-rgb), 0.7);
+    font-size: var(--ss-font-xs);
+    line-height: 17px;
+}
+
+.stage-select-dossier-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(var(--ss-accent-rgb), 0.18);
+}
+
+.stage-select-dossier-hint {
+    color: rgba(var(--ss-text-rgb), 0.6);
+    font-size: var(--ss-font-xs);
+    line-height: 16px;
+}
+
+.stage-select-dossier-expand {
+    flex: none;
+    height: 28px;
+    padding: 0 10px;
+    color: rgb(var(--ss-selected-rgb));
+    font-family: inherit;
+    font-size: var(--ss-font-sm);
+    font-weight: 700;
+    background: rgba(var(--ss-selected-rgb), 0.12);
+    border: 1px solid rgba(var(--ss-selected-rgb), 0.6);
+    cursor: pointer;
+}
+
+.stage-select-dossier-expand[hidden] {
+    display: none;
+}
+
+.stage-select-dossier-expand:hover {
+    background: rgba(var(--ss-selected-rgb), 0.22);
+}
+
+@layer workbench.states {
+    .stage-select-dossier-expand:focus-visible {
+        outline: 2px solid rgb(var(--ss-focus-rgb));
+        outline-offset: 1px;
+    }
+}
+
+.stage-select-board-fx {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.stage-select-panel.is-runtime:not(.is-diorama) .stage-select-board-fx {
+    display: block;
+    background:
+        repeating-linear-gradient(0deg, rgba(var(--ss-accent-rgb), 0.08) 0 1px, transparent 1px 64px),
+        repeating-linear-gradient(90deg, rgba(var(--ss-accent-rgb), 0.08) 0 1px, transparent 1px 64px);
+}
+
+.stage-select-panel.is-runtime:not(.is-diorama) {
+    --ss-scene-saturate: 0.7;
+}
+
+html.perf-low-effects .stage-select-panel.is-runtime:not(.is-diorama) .stage-select-board-fx {
+    display: none;
+}
+
+@keyframes stageSelectReticleSnap {
+    from { opacity: 0; transform: scale(1.4); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .stage-select-panel.is-runtime:not(.is-diorama) .stage-select-stage-button.has-open-card:not(.is-locked):not(.is-selected) > .stage-select-reticle,
+    .stage-select-panel.is-runtime:not(.is-diorama) .stage-select-stage-button.is-pinned > .stage-select-reticle {
+        animation: none;
+    }
+
+    .stage-select-dossier,
+    .stage-select-stage-button.is-under-card > .stage-select-stage-name,
+    .stage-select-stage-button.is-under-card > .stage-select-marker,
+    .stage-select-stage-button.is-under-card > .stage-select-location-leader {
+        transition: none;
+        transform: none;
     }
 }

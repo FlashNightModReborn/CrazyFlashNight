@@ -11,7 +11,7 @@ async function main(){
  const url=origin+'/modules/stage-select/dev/harness.html?viewport=1024x576&fixture=allUnlocked&player=1&frame='+encodeURIComponent('黑铁会总部');
  const ready=()=>page.waitForFunction(()=>StageSelectDiorama.stats().state==='ready'&&!StageSelectDiorama.stats().pending&&!StageSelectDiorama.stats().moving);
  const open=async(frame='黑铁会总部')=>{await page.evaluate(frame=>StageSelectHarnessHost.open({mode:'runtime',frameLabel:frame}),frame);await ready();};
- const select=async id=>{await page.locator('.stage-select-stage-button[data-stage-id="'+id+'"] > .stage-select-stage-name').click();await ready();};
+ const select=async id=>{await page.locator('.stage-select-stage-button[data-stage-id="'+id+'"] > .stage-select-stage-name').dblclick();await ready();};
  const associations=()=>page.evaluate(()=>{
   const nodes=[...document.querySelectorAll('.stage-select-stage-button')],labels=nodes.map(n=>({id:n.dataset.stageId,r:n.querySelector('.stage-select-stage-name').getBoundingClientRect()})),paths=[],failures=[];
   for(const node of nodes){
@@ -69,7 +69,7 @@ async function main(){
     await page.getByRole('button',{name:'正面俯视',exact:true}).click();await ready();
     assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().presentation),'front');
     report.frontAssociations=await associations();assert.deepEqual(report.frontAssociations.failures,[]);
-    await page.locator('[data-stage-id="stage_18_8"] > .stage-select-stage-name').click();await ready();
+    await page.locator('[data-stage-id="stage_18_8"] > .stage-select-stage-name').dblclick();await ready();
     assert.equal(await page.locator('.stage-select-diorama-comparison').isVisible(),false);
     await page.getByRole('button',{name:'返回总览',exact:true}).click();await ready();
     assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().presentation),'front');

@@ -15,7 +15,7 @@ async function main(){
   report.initial=await page.evaluate(()=>StageSelectDiorama.stats());assert.equal(report.initial.calls,55);assert.equal(report.initial.indexCompatibility[0].outputChunks,5);assert.equal(report.initial.indexCompatibility[0].inputTriangles,report.initial.indexCompatibility[0].outputTriangles);assert.equal(Object.keys(report.initial.loadedHashes).length,2);assert.equal(await page.locator('.stage-select-stage-button').count(),19);
   await page.screenshot({path:path.join(out,'overview.png')});
   for(const index of [9,5,17,7,8]){
-   const id='stage_10_'+index;await page.locator('[data-stage-id="'+id+'"].stage-select-stage-button > .stage-select-stage-name').click();await ready();
+   const id='stage_10_'+index;await page.locator('[data-stage-id="'+id+'"].stage-select-stage-button > .stage-select-stage-name').dblclick();await ready();
    const s=await page.evaluate(()=>StageSelectDiorama.stats());assert.equal(s.focusId,id);assert.equal(await page.locator('.stage-select-diorama-canvas').count(),1);
    if(index===9){assert.ok(s.selectedParts.some(p=>p.unit==='AS01'&&p.part==='assembly'));assert.ok(!s.selectedParts.some(p=>p.unit==='AS01'&&p.part==='residential'));await page.screenshot({path:path.join(out,'suppression-focus.png')});}
    if(index===5){assert.ok(s.selectedParts.some(p=>p.unit==='AS01'&&p.part==='residential'));assert.ok(!s.selectedParts.some(p=>p.unit==='AS01'&&p.part==='assembly'));}

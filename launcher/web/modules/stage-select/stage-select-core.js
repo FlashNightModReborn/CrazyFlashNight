@@ -76,6 +76,7 @@
     state._cardPlacementById = {};
     state._cardBridge = null;
     state._focusStageId = '';      // 焦点所在的关卡节点
+    state._pinnedStageId = '';     // 指针锁定的快捷卡节点（StageSelectQuick；不等于深度详情选中）
     state._tabbableStageId = '';   // roving tabindex：节点簇中唯一 tabIndex=0 的节点
     // 打磨批二轮：自有键盘模态位（what-input 式 sticky 标记）——节点焦点环不再信 :focus-visible
     // 启发式（WebView2 宿主的 MoveFocus(Programmatic)/嵌入焦点链会让鼠标点击也命中 :focus-visible），

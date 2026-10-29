@@ -160,6 +160,19 @@ export function createCameraView(config, root, camera, renderer, render, onChang
     }
     function focus(id,preset,animate=true) { focusId=id; highlight(id); move(preset || defaultFocus(id),animate); }
     function overview(preset,animate=true) { focusId=''; highlight(''); move(preset || home,animate); }
+    // 以屏幕点 (px,py) 为支点缩放正交镜头：支点下的世界点在缩放前后保持同一屏幕位置。
+    // 不改 focusId / 高亮，悬停高亮与三维拾取照常工作；返回 false 表示已到最小视野无需推近。
+    function zoomAt(px, py, factor, animate=true) {
+        const base=snapshot(), nextSpan=Math.max(minSpan, base.span/Math.max(1, factor)), k=base.span/nextSpan;
+        if(!(k>1.001))return false;
+        camera.updateMatrixWorld(true);
+        const right=new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,0).normalize();
+        const up=new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,1).normalize();
+        const dx=(px/width-.5)*base.span, dy=(.5-py/height)*base.span*height/width, keep=1-1/k;
+        const shift=right.multiplyScalar(dx*keep).addScaledVector(up,dy*keep);
+        move({position:new THREE.Vector3(...base.position).add(shift).toArray(),target:new THREE.Vector3(...base.target).add(shift).toArray(),span:nextSpan},animate);
+        return true;
+    }
     async function edit(enabled) {
         const token=++editGeneration;editWanted=!!enabled;
         if (!enabled) { stop(); if (controls) controls.enabled=false; return; }
@@ -185,7 +198,7 @@ export function createCameraView(config, root, camera, renderer, render, onChang
         });
         return result;
     }
-    return {resize,focus,focusContext,defaultFocus,overview,edit,snapshot,valid,pins,stop,
+    return {resize,focus,focusContext,defaultFocus,overview,zoomAt,edit,snapshot,valid,pins,stop,
         setOverview(value) { if(!valid(value))throw new Error('镜头预设无效');home=value; },
         hover(id) { if (!focusId && !motion && !(controls && controls.enabled)) {highlight(id);draw();} },
         dispose() {

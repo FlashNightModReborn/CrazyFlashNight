@@ -191,7 +191,7 @@ async function main(){
         await page.evaluate(()=>{document.querySelector('[data-camera="next-poi"]').click();StageSelectHarnessHost.close();StageSelectHarnessHost.open({mode:'runtime',frameLabel:'基地门口'});});await page.keyboard.up('ArrowDown');await idle();
         await page.waitForTimeout(450);assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().editing||StageSelectDiorama.stats().moving),false);
         assert.equal(await page.locator('.stage-camera-editor').isVisible(),false);
-        await page.locator('.stage-select-stage-button[data-stage-id="stage_0_9"] > .stage-select-stage-name').click();await idle();
+        await page.locator('.stage-select-stage-button[data-stage-id="stage_0_9"] > .stage-select-stage-name').dblclick();await idle();
         await page.getByRole('button',{name:'游览地点',exact:true}).focus();
         await page.evaluate(()=>{window.__focusedTourOpener=document.activeElement;});
         await page.getByRole('button',{name:'游览地点',exact:true}).click();await movingMode();
