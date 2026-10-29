@@ -821,5 +821,31 @@
                 <Text>这些对话内容应该能帮你更好上手游戏，降低过关难度。</Text>
             </SubDialogue>
         </Dialogue>
+        <Dialogue id="4">
+            <SubDialogue id="0">
+                <Name>阿卡</Name>
+                <Title>代码/策划/数值平衡</Title>
+                <Char>阿卡</Char>
+                <Text>ai聊天终端是由我开发的功能，不过属于独立项目，需要独立安装，和重置版安装包分离。</Text>
+            </SubDialogue>
+            <SubDialogue id="1">
+                <Name>阿卡</Name>
+                <Title>代码/策划/数值平衡</Title>
+                <Char>阿卡</Char>
+                <Text>一开始的版本只是读取重置版的文件来进行AI聊天的浏览器页面，在聊天中可通过修改数据文件的方式来添加游戏可用的任务。</Text>
+            </SubDialogue>
+            <SubDialogue id="2">
+                <Name>阿卡</Name>
+                <Title>代码/策划/数值平衡</Title>
+                <Char>阿卡</Char>
+                <Text>当然现在已经和重置版有很深的结合了，可以在游戏内直接使用各种ai功能，比如在对话框里直接聊天和即时接取的任务。</Text>
+            </SubDialogue>
+            <SubDialogue id="3">
+                <Name>阿卡</Name>
+                <Title>代码/策划/数值平衡</Title>
+                <Char>阿卡</Char>
+                <Text>从游戏内使用ai终端功能时，长期影响基本都是都是绑定存档的，无论是发布的任务还是NPC的长期记忆或被修改的对话文本，都是该存档内生效，不会影响到其他存档。</Text>
+            </SubDialogue>
+        </Dialogue>
     </Dialogues>
 </root>

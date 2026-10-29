@@ -295,9 +295,10 @@ var IntelligenceHarnessQA = (function() {
                         api.assert(!!tt.querySelector('span[style]'), 'AS2 font color converted');
                         item.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
                         api.assert(tt.style.display === 'block', 'tooltip keeps a short bridge for entering the scroll surface');
+                        // 140ms 过桥 + 500ms 淡出（tooltip.js FADE_OUT_MS）后才 display:none
                         return api.waitFor(function() {
                             return tt.style.display === 'none' ? true : null;
-                        }, 500, 'tooltip delayed hide').then(function() {
+                        }, 1200, 'tooltip delayed hide').then(function() {
                             var missing = findCatalogButton('缺图记录');
                             missing.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true, clientX: 300, clientY: 260 }));
                             return api.waitFor(function() {

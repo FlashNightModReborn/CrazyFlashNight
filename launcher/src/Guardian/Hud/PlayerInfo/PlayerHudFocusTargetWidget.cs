@@ -102,8 +102,8 @@ internal sealed class PlayerHudFocusTargetWidget : PlayerHudWidgetBase, INativeH
     internal static RectangleF BoundsForBuffCount(int count, int targetCount = 1)
     {
         int rows = Math.Clamp(targetCount, 1, 4);
-        float top = (int)Math.Ceiling(Math.Clamp(count, 0, 256) / 32d) * NativeHudTheme.TopBarHeightBase + 4;
-        float width = (1024 - RightHudLayout.PreferredNotchMaxWidthBase) / 2f - RightHudLayout.NotchRightGapBase - 6;
+        float top = PlayerHudBuffLayout.ContentHeight(count) + 4;
+        float width = PlayerHudBuffLayout.ColumnWidth;
         float height = rows * RowHeight + (rows - 1) * RowGap;
         return new(6, top, width, height);
     }

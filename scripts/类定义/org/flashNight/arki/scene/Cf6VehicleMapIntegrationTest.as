@@ -20,6 +20,7 @@ class org.flashNight.arki.scene.Cf6VehicleMapIntegrationTest {
     }
     private static function waveEvent():Void {_root.__cf6MapWaveCount++;}
     private static function vehicleBegin(room:Object,spec:Object):Object {
+        _root.__cf6MapBeginCount++;
         var token:Object={};var actor:MovieClip=room.world.hero;
         var s:Object={room:room,world:room.world,owner:room.owner,actor:actor,token:token,status:"playing",closed:false,
             rules:{phase:"road",roadKills:11,budget:17},resumeStatus:"playing"};
@@ -51,14 +52,15 @@ class org.flashNight.arki.scene.Cf6VehicleMapIntegrationTest {
         if(_root.gameworld._name=="__cf6VehicleMapFixture")_root.gameworld.removeMovieClip();
         currentFixture=null;
     }
-    private static function fixture(mode:String,waveBeforeBind:Boolean):Object {
+    private static function fixture(mode:String,waveBeforeBind:Boolean,routeId:String):Object {
         cleanup();_root.暂停=false;_root.__cf6MapMode=mode;
         _root.__cf6MapClearCount=0;_root.__cf6MapWaveCount=0;_root.__cf6MapTypedCount=0;
-        _root.__cf6MapFadeCount=0;_root.__cf6MapRecordCount=0;_root.__cf6MapBridgeCount=0;_root.__cf6MapDisposeCount=0;
+        _root.__cf6MapBeginCount=0;_root.__cf6MapFadeCount=0;_root.__cf6MapRecordCount=0;_root.__cf6MapBridgeCount=0;_root.__cf6MapDisposeCount=0;
         _root.savePath="cf6.vehicle.map.memory";_root.当前关卡名="书中历险-毒刺行动";_root.控制目标="hero";_root.当前为战斗地图=true;
-        _root._saveExt={bookRun:{bookId:"cf6-sting",routeId:"historical",outcome:"active",slot:String(_root.savePath),seed:23,startedAt:1792550000000}};
+        _root._saveExt={bookRun:{bookId:"cf6-sting",routeId:routeId==undefined ? "historical" : routeId,outcome:"active",slot:String(_root.savePath),seed:23,startedAt:1792550000000}};
         var w:MovieClip=_root.createEmptyMovieClip("__cf6VehicleMapFixture",_root.getNextHighestDepth());_root.gameworld=w;w.__stageReturnWorldIdentity={};
         w.createEmptyMovieClip("地图",1);w.地图.僵尸型敌人总个数=0;
+        w.createEmptyMovieClip("背景",3);
         w.createEmptyMovieClip("效果",2);w.dispatcher=new EventDispatcher();
         w.dispatcher.subscribe("Clear",clearEvent,null);w.dispatcher.subscribe("WaveFinished",waveEvent,null);
         var h:MovieClip=w.createEmptyMovieClip("hero",w.getNextHighestDepth());h.hp=h.hp满血值=100;h.mp=h.mp满血值=40;h._x=10;h._y=h.Z轴坐标=20;
@@ -105,6 +107,18 @@ class org.flashNight.arki.scene.Cf6VehicleMapIntegrationTest {
         f=fixture("accepted",true);ticks(5);
         check(!f.manager.isCleared && !f.room.delivered,"latched early clear is not vehicle completion");tail(f);
         check(_root.__cf6MapClearCount==1 && f.room.advanceReceipt.status=="accepted","only actual vehicle port tail releases early wave clear");
+    }
+    private static function transparentVehicleRoutes():Void {
+        var routes:Array=["historical","type61"];
+        for(var i:Number=0;i<routes.length;i++) {
+            var f:Object=fixture("accepted",false,routes[i]);
+            check(f.world.背景._width==0 && f.world.背景._height==0,"A07 "+routes[i]+" has the production transparent background contract");
+            check(!f.room.failed && f.room.initializationStarted===true && f.room.vehicle.world===f.world,"A07 "+routes[i]+" transfers empty background ownership to the vehicle service");
+            ticks(5);
+            check(_root.__cf6MapBeginCount==1 && !f.room.backgroundPending && !f.room.failed,"A07 "+routes[i]+" starts vehicle once without waiting for a static bake");
+            f.spawner.clockTick();tail(f);ticks(5);
+            check(_root.__cf6MapClearCount==1 && _root.__cf6MapTypedCount==1 && _root.__cf6MapFadeCount==1,"A07 "+routes[i]+" reaches the ordinary completion seam after the vehicle tail");
+        }
     }
     private static function singleTail():Void {
         var f:Object=fixture("accepted",false);f.spawner.clockTick();tail(f);ticks(20);
@@ -155,7 +169,7 @@ class org.flashNight.arki.scene.Cf6VehicleMapIntegrationTest {
     public static function runAllTests():Void {
         passed=failed=0;ports=[];PauseManager.install();
         var keys:Array=["gameworld","控制目标","存档系统","savePath","_saveExt","当前关卡名","当前为战斗地图","暂停","场景转换中","server","淡出动画","转场景记录数据","场景进入位置名","发布消息",
-            "__cf6MapMode","__cf6MapPeer","__cf6MapClearCount","__cf6MapWaveCount","__cf6MapTypedCount","__cf6MapFadeCount","__cf6MapRecordCount","__cf6MapBridgeCount","__cf6MapDisposeCount","__cf6MapCameraOwner"];
+            "__cf6MapMode","__cf6MapPeer","__cf6MapBeginCount","__cf6MapClearCount","__cf6MapWaveCount","__cf6MapTypedCount","__cf6MapFadeCount","__cf6MapRecordCount","__cf6MapBridgeCount","__cf6MapDisposeCount","__cf6MapCameraOwner"];
         var saved:Object={};for(var i:Number=0;i<keys.length;i++)saved[keys[i]]=_root[keys[i]];
         var managerApi:Object=StageManager;port(managerApi,"instance",null);
         var sceneApi:Object=SceneManager;port(sceneApi,"instance",null);
@@ -172,10 +186,10 @@ class org.flashNight.arki.scene.Cf6VehicleMapIntegrationTest {
         port(runApi,"hasPersistedSettlementPending",function():Boolean {return false;});
         var lootApi:Object=org.flashNight.arki.item.LootContainerService;port(lootApi,"hasStageSettlementPending",function():Boolean {return false;});
         var returnApi:Object=StageReturnFlow;port(returnApi,"canBeginSceneLoad",function():Boolean {return true;});
-        var bridgeApi:Object=PlayerResourceTransferBridge;port(bridgeApi,"recordAdmittedDoor",function():Boolean {_root.__cf6MapBridgeCount++;return _root.__cf6MapMode!="bridge-refuse";});
+        var bridgeApi:Object=PlayerSceneLifecycle;port(bridgeApi,"recordAdmittedDoor",function():Boolean {_root.__cf6MapBridgeCount++;return _root.__cf6MapMode!="bridge-refuse";});
         _root.发布消息=noop;_root.存档系统={};_root.场景转换中=false;_root.server={isSocketConnected:false};
         trace("CF6VehicleMapEvidence: actual MapMechanism/StageManager/WaveSpawner; mocked vehicle/loader/camera/persistence-query/fade ports; no live game claim");
-        try {emptyWave();singleTail();lifeCase(false);lifeCase(true);foreignPause("pause-before-tail");foreignPause("pause-on-clear");unknownAndReplacement();}
+        try {transparentVehicleRoutes();emptyWave();singleTail();lifeCase(false);lifeCase(true);foreignPause("pause-before-tail");foreignPause("pause-on-clear");unknownAndReplacement();}
         catch(error){check(false,"exception "+error);}
         finally {
             cleanup();

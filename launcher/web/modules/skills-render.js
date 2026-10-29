@@ -218,6 +218,15 @@
                     : '可拖到其他技能格交换顺序；该技能不可装备到快捷栏。';
                 actions.appendChild(actionHint);
             }
+            if (ports.featuresFor(entry.skillKey).length) {
+                var features = ports.button('子能力设置', 'skills-action-btn', function() {
+                    ports.openFeatures(entry.skillKey);
+                });
+                features.disabled = ports.writesDisabled(entry);
+                features.setAttribute('data-focus-key', 'action:features');
+                features.setAttribute('aria-label', '调整' + entry.skillKey + '的子能力');
+                actions.appendChild(features);
+            }
             return actions;
         }
 
@@ -507,5 +516,112 @@
         };
     }
 
-    return {create:create};
+    /** Contextual feature view. Domain state and mutation remain explicit intent ports. */
+    function createFeatureEditor(ports) {
+        var _featurePage = null, _featureKey = '', _featureList = null, _featureStatus = null,
+            _featureRetry = null, _featureFocusId = '';
+        function featureHelpSpec() {
+            return {kind:'skills-features-help', title:'子能力设置', ariaLabel:'子能力设置帮助',
+                message:'子能力随父技能等级解锁，首次解锁默认开启。你可以分别关闭不需要的效果。',
+                detail:'父技能停用时，其子能力一起暂停；重新启用和升级不会重置你的选择。\n设置随角色存档保存。幽灵装填关闭后，剩余付费幽灵弹退回对应弹药余额，重新开启不会凭空补弹。',
+                actions:[{id:'close',label:'知道了',primary:true,audioCue:'back'}]};
+        }
+        function openFeaturePage(skillKey) {
+            var current = ports.getState(), _shell = current.shell,
+                _view = current.view, _helpAction = current.helpAction, _rightRoot = current.rightRoot;
+            if (!_shell || _view !== 'manage' || !ports.featuresFor(skillKey).length) return;
+            _featureKey = skillKey; _featureFocusId = '';
+            var root = _shell.getRoot();
+            if (!_featurePage) {
+                _featurePage = new WorkbenchComponents.SecondaryPage({document:document, role:'dialog',
+                    ariaLabel:'子能力设置', className:'skills-feature-page',
+                    onClose:function(reason) {
+                        _featureFocusId = '';
+                        if (_helpAction) _helpAction.update(ports.helpSpec());
+                        if (reason !== 'destroy' && _rightRoot) {
+                            var opener = _rightRoot.querySelector('[data-focus-key="action:features"]');
+                            if (opener && !opener.disabled) opener.focus({preventScroll:true});
+                        }
+                    }});
+                _featurePage.mount(root);
+                var header = document.createElement('header'); header.className = 'skills-feature-header';
+                var back = ports.button('← 返回技能', 'skills-action-btn', function() {});
+                _featurePage.bindBack(back); header.appendChild(back);
+                var title = document.createElement('h2'); title.className = 'skills-feature-title'; title.id = 'skills-feature-title'; header.appendChild(title);
+                _featurePage.root.setAttribute('aria-labelledby',title.id);
+                var help = ports.button('?', 'workbench-mode-btn workbench-help-btn', function(event) { _helpAction.open(event.currentTarget); });
+                help.setAttribute('aria-label', '子能力设置帮助'); header.appendChild(help);
+                var close = ports.button('×', 'workbench-close-btn', function() { ports.requestClose('header'); });
+                close.setAttribute('aria-label', '关闭技能面板'); header.appendChild(close);
+                _featurePage.root.appendChild(header);
+                _featureList = document.createElement('div'); _featureList.className = 'skills-feature-list';
+                _featureList.setAttribute('data-scroll-region',''); _featureList.setAttribute('tabindex','0');
+                _featureList.setAttribute('aria-label','子能力列表'); _featurePage.root.appendChild(_featureList);
+                var footer = document.createElement('footer'); footer.className = 'skills-feature-footer';
+                _featureStatus = document.createElement('p'); _featureStatus.setAttribute('role','status'); footer.appendChild(_featureStatus);
+                _featureRetry = ports.button('确认结果', 'skills-action-btn', function() {
+                    if (ports.getCoordinatorState() === 'needs_reconcile') ports.retryReconcile(); else ports.requestSnapshot();
+                });
+                footer.appendChild(_featureRetry); _featurePage.root.appendChild(footer);
+            }
+            _featurePage.root.querySelector('h2').textContent = skillKey + ' · 子能力';
+            _helpAction.update(featureHelpSpec());
+            _featureList.scrollTop = 0;
+            _featurePage.open({opener:root.querySelector('[data-focus-key="action:features"]'),
+                initialFocus:_featurePage.root.querySelector('button'),
+                underlay:[root.querySelector('.workbench-body'),root.querySelector('.workbench-header')].filter(Boolean)});
+            renderFeaturePage();
+        }
+        function renderFeaturePage() {
+            var current = ports.getState(), _snapshot = current.snapshot, _schemaError = current.schemaError;
+            if (!_featurePage || !_featurePage.isActive()) return;
+            var scroll = _featureList.scrollTop;
+            var focusId = document.activeElement && document.activeElement.getAttribute('data-feature-id') || _featureFocusId;
+            Workbench.clearElement(_featureList);
+            var intro = document.createElement('p'); intro.className = 'skills-feature-intro';
+            intro.textContent = '随父技能等级解锁，可分别开启或关闭；升级保留你的选择。'; _featureList.appendChild(intro);
+            var rows = ports.featuresFor(_featureKey);
+            rows.forEach(function(row) {
+                var section = document.createElement('section'); section.className = 'skills-feature-row';
+                var copy = document.createElement('div'); var title = document.createElement('h3'); title.textContent = row.label;
+                var description = document.createElement('p'); description.textContent = row.description;
+                var state = document.createElement('small'); state.className = 'skills-feature-state';
+                state.textContent = !row.unlocked ? '父技能 Lv.' + row.minLevel + ' 解锁'
+                    : row.writeBlocked ? '配置异常，暂时无法修改' : !row.enabled ? '已关闭'
+                    : row.effectiveEnabled ? '已开启' : '随父技能停用';
+                copy.appendChild(title);copy.appendChild(description);copy.appendChild(state);section.appendChild(copy);
+                var toggle = ports.button(row.enabled ? '开启' : '关闭', 'skills-action-btn skills-feature-toggle', function() {
+                    _featureFocusId = row.id;
+                    ports.writeCommand('setFeature', {featureId:row.id,enabled:!row.enabled,expectedRevision:Number(_snapshot.revision)});
+                });
+                toggle.setAttribute('role','switch');toggle.setAttribute('aria-checked',String(row.enabled));
+                toggle.setAttribute('aria-label','切换' + row.label);toggle.setAttribute('data-feature-id',row.id);
+                toggle.setAttribute('data-audio-cue','toggle');
+                toggle.disabled = !row.unlocked || row.writeBlocked || ports.isWriteBlocked();
+                section.appendChild(toggle);_featureList.appendChild(section);
+            });
+            if (!rows.length) _featureList.appendChild(ports.empty('当前没有可配置的子能力。'));
+            var state = ports.getCoordinatorState();
+            _featureStatus.textContent = state === 'write_pending' ? '正在更新子能力…'
+                : state === 'needs_reconcile' ? '修改结果待确认，请先核对。' : '设置随角色存档保存；父技能总开关继续有效。';
+            _featureRetry.hidden = state !== 'needs_reconcile' && !_schemaError;
+            _featureRetry.disabled = state === 'write_pending' || state === 'closed';
+            _featureList.scrollTop = scroll;
+            if (focusId) {
+                var focused = _featureList.querySelector('[data-feature-id="' + focusId + '"]');
+                if (focused && !focused.disabled) { focused.focus({preventScroll:true}); _featureFocusId = ''; }
+            }
+        }
+
+        return {open:openFeaturePage, render:renderFeaturePage,
+            isActive:function() { return !!(_featurePage && _featurePage.isActive()); },
+            close:function(reason) { if (_featurePage) _featurePage.close(reason); },
+            destroy:function() {
+                if (_featurePage) _featurePage.destroy();
+                _featurePage = _featureList = _featureStatus = _featureRetry = null;
+                _featureKey = _featureFocusId = '';
+            }};
+    }
+
+    return {create:create, createFeatureEditor:createFeatureEditor};
 });

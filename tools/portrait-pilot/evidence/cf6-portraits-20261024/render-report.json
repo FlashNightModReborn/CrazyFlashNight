@@ -1,0 +1,1531 @@
+{
+  "schema": "cf7.cf6-portrait-render.v1",
+  "pillowVersion": "12.1.0",
+  "inputs": {
+    "source": {
+      "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+      "bytes": 47994,
+      "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+    },
+    "authorization": {
+      "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+      "bytes": 1243,
+      "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+    },
+    "controller": {
+      "path": "tools/portrait-pilot/produce-cf6-portraits-v1.py",
+      "bytes": 21713,
+      "sha256": "BA3C24238B4938936654D61C2EEEE69750CCEFD48254A4ED389C2C6920A32829"
+    },
+    "previousVerifier": {
+      "path": "tools/portrait-pilot/promote-dog-portraits-v1.py",
+      "bytes": 18235,
+      "sha256": "87137B21A500A2E2AE734B39A75390E13A69AECC7300D68764A1AA0939F5B754"
+    },
+    "sharedPublisher": {
+      "path": "tools/portrait-pilot/promote-enemy-portraits-v1.py",
+      "bytes": 74916,
+      "sha256": "C891988D4DD53476D7C9859BE171A6487F5CD490288E66FF560C24A8E18EE967"
+    }
+  },
+  "entries": {
+    "敌人-延寿克隆兽": {
+      "portraitRef": "敌人-延寿克隆兽",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-延寿克隆兽"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/1d7983ae87b9a570e0c1aae3.svg",
+              "bytes": 227203,
+              "sha256": "1D7983AE87B9A570E0C1AAE313E74958A45C0DCA0957248643DCE1B490541DE1",
+              "viewBox": [
+                500,
+                80,
+                1000,
+                1000
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/c50eb1d1c7813f5d20f675c2.png",
+              "bytes": 174565,
+              "sha256": "C50EB1D1C7813F5D20F675C2F85ADE67E65F793CA37600949AC4FD314A00FF7F",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                21,
+                512,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-延寿克隆兽::default",
+            "resolution": "user_authorized_session_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_source_orientation_reviewed_in_session",
+            "rasterOrientationTransform": "none",
+            "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+              "bytes": 1243,
+              "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+              "bytes": 47994,
+              "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+            },
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Codex专用素材.swf",
+              "bytes": 6044541,
+              "sha256": "B50A502ED55B0360DC74BFEBECC23112914626714792A6C37B1A13D3AEDFD851",
+              "gitBlob": "29964cd5ad6891aa95305051a0cc92eab348925d"
+            },
+            "spriteId": 366,
+            "frame": 1,
+            "zoom": 16,
+            "cropPixels": [
+              500,
+              80,
+              1500,
+              1080
+            ],
+            "formalRuntimeDeploymentAuthorized": false
+          }
+        }
+      }
+    },
+    "敌人-完全体克隆兽": {
+      "portraitRef": "敌人-完全体克隆兽",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-完全体克隆兽"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/1a91b0796e5ea8e5b11f40d8.svg",
+              "bytes": 227203,
+              "sha256": "1A91B0796E5EA8E5B11F40D81F9B18BCC324C90F978AD10F2DC1F010A83741C8",
+              "viewBox": [
+                500,
+                80,
+                1000,
+                1000
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/5edf594edb5c7c2549fa6e73.png",
+              "bytes": 197074,
+              "sha256": "5EDF594EDB5C7C2549FA6E73A44A30D99FB5067F9579E5304FE019DDD5F36845",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                21,
+                512,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-完全体克隆兽::default",
+            "resolution": "user_authorized_session_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_source_orientation_reviewed_in_session",
+            "rasterOrientationTransform": "none",
+            "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+              "bytes": 1243,
+              "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+              "bytes": 47994,
+              "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+            },
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Codex专用素材.swf",
+              "bytes": 6044541,
+              "sha256": "B50A502ED55B0360DC74BFEBECC23112914626714792A6C37B1A13D3AEDFD851",
+              "gitBlob": "29964cd5ad6891aa95305051a0cc92eab348925d"
+            },
+            "spriteId": 484,
+            "frame": 1,
+            "zoom": 16,
+            "cropPixels": [
+              500,
+              80,
+              1500,
+              1080
+            ],
+            "formalRuntimeDeploymentAuthorized": false
+          }
+        }
+      }
+    },
+    "敌人-CF6普通男僵尸": {
+      "portraitRef": "敌人-CF6普通男僵尸",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-CF6普通男僵尸"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/f7e36aca776d666b93b22e6d.svg",
+              "bytes": 77327,
+              "sha256": "F7E36ACA776D666B93B22E6D76D734FC30E4F0EC0303CFE580FAC4B447C3A7C0",
+              "viewBox": [
+                470,
+                30,
+                460,
+                460
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/755f2b5e89ccc88535aaa3aa.png",
+              "bytes": 132540,
+              "sha256": "755F2B5E89CCC88535AAA3AA165753D1CF1D7507F29E60CA631474BF82660891",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                24,
+                357,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-CF6普通男僵尸::default",
+            "resolution": "user_authorized_session_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_source_orientation_reviewed_in_session",
+            "rasterOrientationTransform": "none",
+            "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+              "bytes": 1243,
+              "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+              "bytes": 47994,
+              "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+            },
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Antigravity专用素材.swf",
+              "bytes": 113124,
+              "sha256": "8166BC4A17E541876BD76092BCD4A5FD4E603A8BCA8A8376589540861BCB98DA",
+              "gitBlob": "96ebb9cf8658321352314516529efc18927ce79c"
+            },
+            "spriteId": 167,
+            "frame": 1,
+            "zoom": 16,
+            "cropPixels": [
+              470,
+              30,
+              930,
+              490
+            ],
+            "formalRuntimeDeploymentAuthorized": false
+          }
+        }
+      }
+    },
+    "敌人-CF6女僵尸": {
+      "portraitRef": "敌人-CF6女僵尸",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-CF6女僵尸"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/d516d8c67240857491163179.svg",
+              "bytes": 118877,
+              "sha256": "D516D8C672408574911631792262DF4ED56F23B6C5ABDB467C4183F7132142AB",
+              "viewBox": [
+                270,
+                40,
+                480,
+                480
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/fd3abc11c26977329157f2ea.png",
+              "bytes": 141968,
+              "sha256": "FD3ABC11C26977329157F2EA8251A1D089EEC8DFA40A156962CA12AF84CE729E",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                21,
+                444,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-CF6女僵尸::default",
+            "resolution": "user_authorized_session_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_source_orientation_reviewed_in_session",
+            "rasterOrientationTransform": "none",
+            "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+              "bytes": 1243,
+              "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+              "bytes": 47994,
+              "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+            },
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Antigravity专用素材.swf",
+              "bytes": 113124,
+              "sha256": "8166BC4A17E541876BD76092BCD4A5FD4E603A8BCA8A8376589540861BCB98DA",
+              "gitBlob": "96ebb9cf8658321352314516529efc18927ce79c"
+            },
+            "spriteId": 32,
+            "frame": 1,
+            "zoom": 16,
+            "cropPixels": [
+              270,
+              40,
+              750,
+              520
+            ],
+            "formalRuntimeDeploymentAuthorized": false
+          }
+        }
+      }
+    },
+    "敌人-CF6蛮蛮": {
+      "portraitRef": "敌人-CF6蛮蛮",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-CF6蛮蛮"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/18f2462ddf27e7f5be034fbd.svg",
+              "bytes": 473542,
+              "sha256": "18F2462DDF27E7F5BE034FBD3C2480C30DECBC222B9DF9EF577F73C13C2765C2",
+              "viewBox": [
+                950,
+                470,
+                840,
+                840
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/c2b654db76e7fa7c050d7e79.png",
+              "bytes": 127590,
+              "sha256": "C2B654DB76E7FA7C050D7E79A5A024078DEB74B282544889CE867EFBDB40F8B7",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                21,
+                403,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-CF6蛮蛮::default",
+            "resolution": "user_authorized_session_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_source_orientation_reviewed_in_session",
+            "rasterOrientationTransform": "none",
+            "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+              "bytes": 1243,
+              "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+              "bytes": 47994,
+              "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+            },
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Codex蛮蛮素材.swf",
+              "bytes": 106747,
+              "sha256": "D0F7886B471C4BF0ABDA0BB90428D855AD5D301EDEF8FAE451D29E24AD6C8F58",
+              "gitBlob": "898ee9d03c85c46651eb24145d16b5f2cff7adcf"
+            },
+            "spriteId": 52,
+            "frame": 1,
+            "zoom": 16,
+            "cropPixels": [
+              950,
+              470,
+              1790,
+              1310
+            ],
+            "formalRuntimeDeploymentAuthorized": false
+          }
+        }
+      }
+    },
+    "敌人-CF6Wings": {
+      "portraitRef": "敌人-CF6Wings",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-CF6Wings"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/4ee1a39560dc79d68e8265c1.svg",
+              "bytes": 323810,
+              "sha256": "4EE1A39560DC79D68E8265C1C5ACDCCC119E55ACE6B0B0A9E30A386DB45891CD",
+              "viewBox": [
+                270,
+                160,
+                880,
+                880
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/ecfbba2475b85f6996e0df48.png",
+              "bytes": 277337,
+              "sha256": "ECFBBA2475B85F6996E0DF483D272BDF1B9027CE3FF5B6F0F59CB14231B7859C",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                52,
+                512,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-CF6Wings::default",
+            "resolution": "user_authorized_session_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_source_orientation_reviewed_in_session",
+            "rasterOrientationTransform": "none",
+            "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+              "bytes": 1243,
+              "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+              "bytes": 47994,
+              "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+            },
+            "sourceSwf": {
+              "path": "flashswf/arts/new/CodexWings素材.swf",
+              "bytes": 97610,
+              "sha256": "1491F87589F98302A4DD12B15717DB79C6F32190FAB73811B5EC8CAD4E6C6D34",
+              "gitBlob": "d521d168b0f8fdfd87641086412df039735ce23a"
+            },
+            "spriteId": 41,
+            "frame": 1,
+            "zoom": 16,
+            "cropPixels": [
+              270,
+              160,
+              1150,
+              1040
+            ],
+            "formalRuntimeDeploymentAuthorized": false
+          }
+        }
+      }
+    },
+    "敌人-CF6大刀机器人": {
+      "portraitRef": "敌人-CF6大刀机器人",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-CF6大刀机器人"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/cea26a9224a51db6638d237d.svg",
+              "bytes": 156945,
+              "sha256": "CEA26A9224A51DB6638D237D81B6F94A61971669D6A75E3ACC8E380E4B478672",
+              "viewBox": [
+                1050,
+                780,
+                1800,
+                1800
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/ab4e54b56b0eed81b8ee749d.png",
+              "bytes": 163874,
+              "sha256": "AB4E54B56B0EED81B8EE749D92126AC3CF478ACF3E6F7E404BA9FC9F536C6F9C",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                115,
+                512,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-CF6大刀机器人::default",
+            "resolution": "user_authorized_session_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_source_orientation_reviewed_in_session",
+            "rasterOrientationTransform": "none",
+            "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+              "bytes": 1243,
+              "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+              "bytes": 47994,
+              "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+            },
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Codex大刀机器人素材.swf",
+              "bytes": 86270,
+              "sha256": "38689A02FBCEBDCB8AE8902535BBA9841795732EFAC5E2DA61DC5CF57F7E50E0",
+              "gitBlob": "082e59dfd26c7e6734e87af6ec540fae5f2215b3"
+            },
+            "spriteId": 26,
+            "frame": 1,
+            "zoom": 16,
+            "cropPixels": [
+              1050,
+              780,
+              2850,
+              2580
+            ],
+            "formalRuntimeDeploymentAuthorized": false
+          }
+        }
+      }
+    },
+    "敌人-CF6特种兵": {
+      "portraitRef": "敌人-CF6特种兵",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-CF6特种兵"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/4ba565120b4ceeef302de06b.svg",
+              "bytes": 209084,
+              "sha256": "4BA565120B4CEEEF302DE06B125E36B2C6BA8EA000705D91CBFCC1257B4CE216",
+              "viewBox": [
+                380,
+                20,
+                580,
+                580
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/5c9464441e5f0a7c9a305c2b.png",
+              "bytes": 192901,
+              "sha256": "5C9464441E5F0A7C9A305C2B3AAB4AE3CCC3316BE1C195251C53493D5E718656",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                11,
+                512,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-CF6特种兵::default",
+            "resolution": "user_authorized_session_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_source_orientation_reviewed_in_session",
+            "rasterOrientationTransform": "none",
+            "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+              "bytes": 1243,
+              "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+              "bytes": 47994,
+              "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+            },
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Codex特种兵素材.swf",
+              "bytes": 100202,
+              "sha256": "B800DA9EF9B37D63DE82B4DAE3E4BDA8B40771951E425093C97B103BE7A4A088",
+              "gitBlob": "1bfdbaf159f29fc141891622bd2cc007fdf3e531"
+            },
+            "spriteId": 44,
+            "frame": 1,
+            "zoom": 16,
+            "cropPixels": [
+              380,
+              20,
+              960,
+              600
+            ],
+            "formalRuntimeDeploymentAuthorized": false
+          }
+        }
+      }
+    },
+    "敌人-CF6持盾特种兵": {
+      "portraitRef": "敌人-CF6持盾特种兵",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-CF6持盾特种兵"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/0d8b2c9a333de2dda99ad271.svg",
+              "bytes": 219429,
+              "sha256": "0D8B2C9A333DE2DDA99AD2714293137004927A3F97BAAAA69D9F1E7F760FEC99",
+              "viewBox": [
+                420,
+                15,
+                680,
+                680
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/ec7d8b73153a359e92e32755.png",
+              "bytes": 106298,
+              "sha256": "EC7D8B73153A359E92E32755DC519DEBEA56F0BF5313AB5A17B6399704D125C6",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                13,
+                512,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-CF6持盾特种兵::default",
+            "resolution": "user_authorized_session_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_source_orientation_reviewed_in_session",
+            "rasterOrientationTransform": "none",
+            "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+              "bytes": 1243,
+              "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+              "bytes": 47994,
+              "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+            },
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Codex特种兵素材.swf",
+              "bytes": 100202,
+              "sha256": "B800DA9EF9B37D63DE82B4DAE3E4BDA8B40771951E425093C97B103BE7A4A088",
+              "gitBlob": "1bfdbaf159f29fc141891622bd2cc007fdf3e531"
+            },
+            "spriteId": 141,
+            "frame": 1,
+            "zoom": 16,
+            "cropPixels": [
+              420,
+              15,
+              1100,
+              695
+            ],
+            "formalRuntimeDeploymentAuthorized": false
+          }
+        }
+      }
+    },
+    "敌人-CF6光头保安": {
+      "portraitRef": "敌人-CF6光头保安",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-CF6光头保安"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/b1673c9f3744643a38282a6d.svg",
+              "bytes": 200718,
+              "sha256": "B1673C9F3744643A38282A6D09A9350CD0E6BE9EAAB12695F49C45B0C57DDA83",
+              "viewBox": [
+                160,
+                380,
+                680,
+                680
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/68da5e4737b86c021d438a3d.png",
+              "bytes": 163923,
+              "sha256": "68DA5E4737B86C021D438A3D54D46F6FF0656BB5529C73C1A63E8D14965E8B1A",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                0,
+                512,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-CF6光头保安::default",
+            "resolution": "user_authorized_session_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_source_orientation_reviewed_in_session",
+            "rasterOrientationTransform": "none",
+            "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+              "bytes": 1243,
+              "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+              "bytes": 47994,
+              "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+            },
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Codex光头保安素材.swf",
+              "bytes": 189659,
+              "sha256": "7F074AFF6C2FE44DD206CF6AF788363AB6BD1BA598D0DC97F9A4D95C5BF65621",
+              "gitBlob": "7971874d7d0baba1def4dfda23cd2523e70195dd"
+            },
+            "spriteId": 37,
+            "frame": 1,
+            "zoom": 16,
+            "cropPixels": [
+              160,
+              380,
+              840,
+              1060
+            ],
+            "formalRuntimeDeploymentAuthorized": false
+          }
+        }
+      }
+    },
+    "敌人-CF6变身光头保安": {
+      "portraitRef": "敌人-CF6变身光头保安",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-CF6变身光头保安"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/b4bd13e3d74c4414e8766b1c.svg",
+              "bytes": 261888,
+              "sha256": "B4BD13E3D74C4414E8766B1C3AA5F6A244B847949350621276C47DC111EDDD80",
+              "viewBox": [
+                1100,
+                660,
+                1020,
+                1020
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/324ec36d4d79aca48b06378b.png",
+              "bytes": 143573,
+              "sha256": "324EC36D4D79ACA48B06378B56DB6A96708F944E2B924EF6D09415BF31D7B6BF",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                11,
+                503,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-CF6变身光头保安::default",
+            "resolution": "user_authorized_session_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_source_orientation_reviewed_in_session",
+            "rasterOrientationTransform": "none",
+            "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+              "bytes": 1243,
+              "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+              "bytes": 47994,
+              "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+            },
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Codex光头保安素材.swf",
+              "bytes": 189659,
+              "sha256": "7F074AFF6C2FE44DD206CF6AF788363AB6BD1BA598D0DC97F9A4D95C5BF65621",
+              "gitBlob": "7971874d7d0baba1def4dfda23cd2523e70195dd"
+            },
+            "spriteId": 157,
+            "frame": 45,
+            "zoom": 16,
+            "cropPixels": [
+              1100,
+              660,
+              2120,
+              1680
+            ],
+            "formalRuntimeDeploymentAuthorized": false
+          }
+        }
+      }
+    },
+    "敌人-CF6大头机器人": {
+      "portraitRef": "敌人-CF6大头机器人",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-CF6大头机器人"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/3f0500d86274071b57aa6acb.svg",
+              "bytes": 767489,
+              "sha256": "3F0500D86274071B57AA6ACB63AE24A1B273832C69398FEDFCB21241A1FDDAB7",
+              "viewBox": [
+                0,
+                40,
+                2420,
+                2420
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/0a81ee8d2e2b8413cdd0ad5b.png",
+              "bytes": 242977,
+              "sha256": "0A81EE8D2E2B8413CDD0AD5BC4BAA2469DD6944D67B3DFCCC14F05910C13B154",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                2,
+                512,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-CF6大头机器人::default",
+            "resolution": "user_authorized_session_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_source_orientation_reviewed_in_session",
+            "rasterOrientationTransform": "none",
+            "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+              "bytes": 1243,
+              "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+              "bytes": 47994,
+              "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+            },
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+              "bytes": 235870,
+              "sha256": "4008C8785676464F8BC66659D07888CAE1749376D4DD7F2BEB286E9C51A1DAAA",
+              "gitBlob": "f5bb61febff261e1ecc24cb8271aa2acfc4e053a"
+            },
+            "spriteId": 9,
+            "frame": 1,
+            "zoom": 16,
+            "cropPixels": [
+              0,
+              40,
+              2420,
+              2460
+            ],
+            "formalRuntimeDeploymentAuthorized": false
+          }
+        }
+      }
+    },
+    "敌人-CF6老头人形": {
+      "portraitRef": "敌人-CF6老头人形",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-CF6老头人形"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/5fda50c7662fcca4868204ae.svg",
+              "bytes": 923103,
+              "sha256": "5FDA50C7662FCCA4868204AE978AA10D885A2226CB5ACBDA20246D4102D7B28B",
+              "viewBox": [
+                395,
+                0,
+                600,
+                600
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/a5ccdce97b1d7552512ddac1.png",
+              "bytes": 160612,
+              "sha256": "A5CCDCE97B1D7552512DDAC19CE707377A2E3E0BEB986A67576C5C52C91BF7FC",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                14,
+                512,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-CF6老头人形::default",
+            "resolution": "user_authorized_session_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_source_orientation_reviewed_in_session",
+            "rasterOrientationTransform": "none",
+            "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+              "bytes": 1243,
+              "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+              "bytes": 47994,
+              "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+            },
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Codex老头素材.swf",
+              "bytes": 406329,
+              "sha256": "06C53247479DCF0ABB424FDFBDF98F7A1CE2CA42B333B0B54FDBD8A0AD36A9D5",
+              "gitBlob": "2670e0b61bf707ab3eef3c1fb5ae63fb70abf6bd"
+            },
+            "spriteId": 89,
+            "frame": 1,
+            "zoom": 16,
+            "cropPixels": [
+              395,
+              0,
+              995,
+              600
+            ],
+            "formalRuntimeDeploymentAuthorized": false
+          }
+        }
+      }
+    },
+    "敌人-CF6老头机器人": {
+      "portraitRef": "敌人-CF6老头机器人",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-CF6老头机器人"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/f6d7a51bde065a2d0c32c739.svg",
+              "bytes": 1478689,
+              "sha256": "F6D7A51BDE065A2D0C32C739C4243F8BE2B692195BBDC0EA0E0DD27AABF8B5ED",
+              "viewBox": [
+                560,
+                110,
+                820,
+                820
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/a96d1f855013384ebd71fc95.png",
+              "bytes": 255712,
+              "sha256": "A96D1F855013384EBD71FC957EECDB2018A14BE24F1CC25CDF3E84CCA20562F7",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                7,
+                512,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-CF6老头机器人::default",
+            "resolution": "user_authorized_session_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_source_orientation_reviewed_in_session",
+            "rasterOrientationTransform": "none",
+            "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+              "bytes": 1243,
+              "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+              "bytes": 47994,
+              "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+            },
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Codex老头素材.swf",
+              "bytes": 406329,
+              "sha256": "06C53247479DCF0ABB424FDFBDF98F7A1CE2CA42B333B0B54FDBD8A0AD36A9D5",
+              "gitBlob": "2670e0b61bf707ab3eef3c1fb5ae63fb70abf6bd"
+            },
+            "spriteId": 17,
+            "frame": 1,
+            "zoom": 16,
+            "cropPixels": [
+              560,
+              110,
+              1380,
+              930
+            ],
+            "formalRuntimeDeploymentAuthorized": false
+          }
+        }
+      }
+    }
+  },
+  "jkVariants": {
+    "orange": {
+      "status": "human_accepted",
+      "subject": {
+        "preferredFormat": "png",
+        "svg": {
+          "url": "assets/enemy-portraits/subjects/fa9f27a382b41a33a7c53cc2.svg",
+          "bytes": 321192,
+          "sha256": "FA9F27A382B41A33A7C53CC276996246D2E547A1D932CAD1274EFFE3BF93D091",
+          "viewBox": [
+            940,
+            0,
+            720,
+            720
+          ],
+          "flipX": false,
+          "embeddedRasterCount": 0,
+          "isRasterHeavy": false,
+          "runtimeAllowed": true,
+          "convolutionFilterCount": 0
+        },
+        "pngFallback": {
+          "url": "assets/enemy-portraits/subjects/0e94e923f14edde37ff18099.png",
+          "bytes": 146864,
+          "sha256": "0E94E923F14EDDE37FF180999C605924C0808E9DD20E74069FA7CFAFC084CAFF",
+          "size": [
+            512,
+            512
+          ],
+          "alphaExtrema": [
+            0,
+            255
+          ],
+          "visibleBounds": [
+            0,
+            0,
+            500,
+            512
+          ]
+        }
+      },
+      "provenance": {
+        "reviewKey": "敌人-武装JK::orange",
+        "resolution": "user_authorized_session_variant_repair",
+        "decisionStatus": "explicit_user_authorized_integration",
+        "orientationAction": "keep",
+        "orientationSource": "native_source_orientation_reviewed_in_session",
+        "rasterOrientationTransform": "none",
+        "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+        "authorization": {
+          "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+          "bytes": 1243,
+          "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+        },
+        "sourceEvidence": {
+          "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+          "bytes": 47994,
+          "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+        },
+        "sourceSwf": {
+          "path": "flashswf/arts/new/武装JK.swf",
+          "bytes": 372544,
+          "sha256": "DDBC94D39538493B76E9AD588E76F64C6894E8BC91F7725763E71DBDBC6B8627",
+          "gitBlob": "f0a7d32ecd634fbcd3ab02c3529064246a5606a2"
+        },
+        "spriteId": 142,
+        "frame": 10,
+        "zoom": 16,
+        "cropPixels": [
+          940,
+          0,
+          1660,
+          720
+        ],
+        "formalRuntimeDeploymentAuthorized": false,
+        "repairNote": "嵌套 SVG 发色回退：保留已验证橙发 PNG，Native 使用内存冻结第2帧的矢量。",
+        "previousProvenance": {
+          "reviewKey": "敌人-武装JK::orange",
+          "resolution": "human_passed_luna_a_proposal",
+          "decisionStatus": "pass",
+          "decisionNotes": "representative closure",
+          "orientationAction": "keep",
+          "orientationSource": "production_visual_audit_model_verified_keep",
+          "rasterOrientationTransform": "none",
+          "humanReceipt": {
+            "path": "tmp/portrait-pilot/p3-feature-hires-r7-20260806T090000Z/human-review-receipt.json",
+            "bytes": 4392,
+            "sha256": "A00593E37EB3301604924BC7831081EBD4C12BF40E071DBDF9F0F7D969CEF8E5"
+          },
+          "acceptedRenderReport": {
+            "path": "tmp/portrait-pilot/p3-feature-hires-r7-20260806T090000Z/render-report-v2.json",
+            "bytes": 163094,
+            "sha256": "72C4E0DA7E67C4685128360C7B137E5564591A0DC211CD30DDF4011CCD742F82"
+          },
+          "acceptedRenderDigest": "73D6225393BE9722F143C3F7D6752658296337C58472E6B7BFB2E4CAD9B1D3BB",
+          "vectorGeometryReport": {
+            "path": "tmp/portrait-pilot/p3-feature-hires-r7-20260806T090000Z/render-report-v2.json",
+            "bytes": 163094,
+            "sha256": "72C4E0DA7E67C4685128360C7B137E5564591A0DC211CD30DDF4011CCD742F82"
+          },
+          "sourceVectorFrame": {
+            "path": "tmp/portrait-pilot/p3-feature-hires-r7-20260806T090000Z/ffdec-svg/source-003/DefineSprite_142/10.svg",
+            "bytes": 364349,
+            "sha256": "D314F913635AAA521828A76E363DD511B2EA550D13F81FBBB48344CE03D69D52"
+          },
+          "orientationAudit": {
+            "schema": "cf7.portrait-orientation-production-lineage.v1",
+            "disposition": "model_verified_keep",
+            "decision": "model_verified_keep",
+            "sourceProductionAction": "keep",
+            "sourceOrientationSource": "legacy_orientation_unassessed",
+            "sourceRasterOrientationTransform": "none",
+            "relativeMirrorApplied": false,
+            "finalAction": "keep",
+            "finalRasterOrientationTransform": "none",
+            "modelReportDigest": "CB6EF3AEAAE222C3F7DD24E765C089EC31D6BABB964BFAC9C096CE83D2BF68F4",
+            "reviewDigest": "D4555C9153A84AEF5CFD79FCE0A29E6D94E7F0BCE4F457A726D1B9BB31671FA0",
+            "humanReceiptDigest": "15828B45BC3C84D574BEDB778264F1DDFA925D381B194FC098703DD947D30243"
+          }
+        }
+      },
+      "legacyUrl": "assets/pets/pet_78_1.png"
+    },
+    "white": {
+      "status": "human_accepted",
+      "subject": {
+        "preferredFormat": "png",
+        "svg": {
+          "url": "assets/enemy-portraits/subjects/b74b4cd66192a41695b9d665.svg",
+          "bytes": 364145,
+          "sha256": "B74B4CD66192A41695B9D6650174CC1491D6E690858E481BEC422325AA98F0D0",
+          "viewBox": [
+            940,
+            0,
+            720,
+            720
+          ],
+          "flipX": false,
+          "embeddedRasterCount": 0,
+          "isRasterHeavy": false,
+          "runtimeAllowed": true,
+          "convolutionFilterCount": 0
+        },
+        "pngFallback": {
+          "url": "assets/enemy-portraits/subjects/42cee96bc06fca735ac898ec.png",
+          "bytes": 207572,
+          "sha256": "42CEE96BC06FCA735AC898EC59602C54892D9FF874DBF3838054B487CB90A653",
+          "size": [
+            512,
+            512
+          ],
+          "alphaExtrema": [
+            0,
+            255
+          ],
+          "visibleBounds": [
+            0,
+            0,
+            497,
+            512
+          ]
+        }
+      },
+      "provenance": {
+        "reviewKey": "敌人-武装JK::white",
+        "resolution": "user_authorized_session_variant_repair",
+        "decisionStatus": "explicit_user_authorized_integration",
+        "orientationAction": "keep",
+        "orientationSource": "native_source_orientation_reviewed_in_session",
+        "rasterOrientationTransform": "none",
+        "sessionId": "4f96187d-7088-4480-8b59-a92889fb7bcf",
+        "authorization": {
+          "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/authorization.json",
+          "bytes": 1243,
+          "sha256": "E2A4FC348CA0211B19C039E3AE7CB9EA4DECFB6778FB207CBBA6ADEAA95E9AE4"
+        },
+        "sourceEvidence": {
+          "path": "tools/portrait-pilot/evidence/cf6-portraits-20261024/source.json",
+          "bytes": 47994,
+          "sha256": "3E809E79240BDADEA9A9EC0F615D75778262879C918C2062C53BDE1F22CE1E87"
+        },
+        "sourceSwf": {
+          "path": "flashswf/arts/new/武装JK.swf",
+          "bytes": 372544,
+          "sha256": "DDBC94D39538493B76E9AD588E76F64C6894E8BC91F7725763E71DBDBC6B8627",
+          "gitBlob": "f0a7d32ecd634fbcd3ab02c3529064246a5606a2"
+        },
+        "spriteId": 142,
+        "frame": 19,
+        "zoom": 16,
+        "cropPixels": [
+          940,
+          0,
+          1660,
+          720
+        ],
+        "formalRuntimeDeploymentAuthorized": false,
+        "repairNote": "第19帧武器拉偏取景：头部居中重裁 [940,0,1660,720]，并修正原生矢量。",
+        "previousProvenance": {
+          "reviewKey": "敌人-武装JK::white",
+          "resolution": "human_passed_luna_a_proposal",
+          "decisionStatus": "pass",
+          "decisionNotes": "representative closure",
+          "orientationAction": "keep",
+          "orientationSource": "production_visual_audit_model_verified_keep",
+          "rasterOrientationTransform": "none",
+          "humanReceipt": {
+            "path": "tmp/portrait-pilot/p3-feature-hires-r7-20260806T090000Z/human-review-receipt.json",
+            "bytes": 4392,
+            "sha256": "A00593E37EB3301604924BC7831081EBD4C12BF40E071DBDF9F0F7D969CEF8E5"
+          },
+          "acceptedRenderReport": {
+            "path": "tmp/portrait-pilot/p3-feature-hires-r7-20260806T090000Z/render-report-v2.json",
+            "bytes": 163094,
+            "sha256": "72C4E0DA7E67C4685128360C7B137E5564591A0DC211CD30DDF4011CCD742F82"
+          },
+          "acceptedRenderDigest": "73D6225393BE9722F143C3F7D6752658296337C58472E6B7BFB2E4CAD9B1D3BB",
+          "vectorGeometryReport": {
+            "path": "tmp/portrait-pilot/p3-feature-hires-r7-20260806T090000Z/render-report-v2.json",
+            "bytes": 163094,
+            "sha256": "72C4E0DA7E67C4685128360C7B137E5564591A0DC211CD30DDF4011CCD742F82"
+          },
+          "sourceVectorFrame": {
+            "path": "tmp/portrait-pilot/p3-feature-hires-r7-20260806T090000Z/ffdec-svg/source-003/DefineSprite_142/19.svg",
+            "bytes": 364349,
+            "sha256": "D314F913635AAA521828A76E363DD511B2EA550D13F81FBBB48344CE03D69D52"
+          },
+          "orientationAudit": {
+            "schema": "cf7.portrait-orientation-production-lineage.v1",
+            "disposition": "model_verified_keep",
+            "decision": "model_verified_keep",
+            "sourceProductionAction": "keep",
+            "sourceOrientationSource": "legacy_orientation_unassessed",
+            "sourceRasterOrientationTransform": "none",
+            "relativeMirrorApplied": false,
+            "finalAction": "keep",
+            "finalRasterOrientationTransform": "none",
+            "modelReportDigest": "CB6EF3AEAAE222C3F7DD24E765C089EC31D6BABB964BFAC9C096CE83D2BF68F4",
+            "reviewDigest": "D4555C9153A84AEF5CFD79FCE0A29E6D94E7F0BCE4F457A726D1B9BB31671FA0",
+            "humanReceiptDigest": "15828B45BC3C84D574BEDB778264F1DDFA925D381B194FC098703DD947D30243"
+          }
+        }
+      },
+      "legacyUrl": "assets/pets/pet_78.png"
+    }
+  },
+  "newSubjectNames": [
+    "0a81ee8d2e2b8413cdd0ad5b.png",
+    "0d8b2c9a333de2dda99ad271.svg",
+    "18f2462ddf27e7f5be034fbd.svg",
+    "1a91b0796e5ea8e5b11f40d8.svg",
+    "1d7983ae87b9a570e0c1aae3.svg",
+    "324ec36d4d79aca48b06378b.png",
+    "3f0500d86274071b57aa6acb.svg",
+    "42cee96bc06fca735ac898ec.png",
+    "4ba565120b4ceeef302de06b.svg",
+    "4ee1a39560dc79d68e8265c1.svg",
+    "5c9464441e5f0a7c9a305c2b.png",
+    "5edf594edb5c7c2549fa6e73.png",
+    "5fda50c7662fcca4868204ae.svg",
+    "68da5e4737b86c021d438a3d.png",
+    "755f2b5e89ccc88535aaa3aa.png",
+    "a5ccdce97b1d7552512ddac1.png",
+    "a96d1f855013384ebd71fc95.png",
+    "ab4e54b56b0eed81b8ee749d.png",
+    "b1673c9f3744643a38282a6d.svg",
+    "b4bd13e3d74c4414e8766b1c.svg",
+    "b74b4cd66192a41695b9d665.svg",
+    "c2b654db76e7fa7c050d7e79.png",
+    "c50eb1d1c7813f5d20f675c2.png",
+    "cea26a9224a51db6638d237d.svg",
+    "d516d8c67240857491163179.svg",
+    "ec7d8b73153a359e92e32755.png",
+    "ecfbba2475b85f6996e0df48.png",
+    "f6d7a51bde065a2d0c32c739.svg",
+    "f7e36aca776d666b93b22e6d.svg",
+    "fa9f27a382b41a33a7c53cc2.svg",
+    "fd3abc11c26977329157f2ea.png"
+  ],
+  "renderDigest": "74A1C79FB7667B50080D18833F294CC769E4205C4EE1A571CEE4CC4B7DEA3AC2"
+}

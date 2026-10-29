@@ -51,6 +51,17 @@ function plan() {
 }
 
 describe("strict armor balance plan parsing", () => {
+  it("requires actual K-point evidence for a paid crafting layer", () => {
+    const paidCraft = { ...record(), kpointEvidenceRef: "data/crafting/进阶防具.json#craft.unified61.chest",
+      budgetBreakdown: { entry: [
+        { code: "acquisition.crafting", delta: 1, ruleRef: "ABR-LAYER-001" },
+        { code: "acquisition.kpoint-cost", delta: 1, ruleRef: "ABR-LAYER-001" },
+        { code: "acquisition.high-price", delta: 1, ruleRef: "ABR-LAYER-001" }
+      ] } };
+    expect(parseArmorBalancePlanRecord(paidCraft).weightLayers).toBe(3);
+    const { expectedKPointPrice, kpointEvidenceRef, ...missingEvidence } = paidCraft;
+    expect(() => parseArmorBalancePlanRecord(missingEvidence)).toThrow(/K 点/);
+  });
   it("permits gold/crafting without K shop but rejects incomplete or missing K evidence", () => {
     const { expectedKPointPrice, kpointEvidenceRef, ...base } = record();
     const goldCraft = { ...base, weightLayers: 2, budgetBreakdown: { entry: [

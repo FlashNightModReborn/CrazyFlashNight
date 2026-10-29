@@ -5,7 +5,10 @@
  * 产出、C# CF7Launcher.Guardian.Hud.Tooltip.NativeTooltipDocument 解析逐项对齐）：
  *
  *   payload  = {version:1, requestId, sceneId, x, y, owner?, revision?, document:{...}}
- *   document = {version:1, title?, icon:{kind?,name}, profile?, layoutType?, sections:[{role,runs:[{text,color?,bold?,italic?,underline?,fontSize?,fontFace?}]}]}
+ *   document = {version:1, title?, icon:{kind?,name}, profile?, layoutType?, sections:[{role,runs:[{text,color?,bold?,italic?,underline?,fontSize?,fontFace?}]}],
+ *               rail?:[String], magazine?:{name,icon?}}
+ *   rail（≤2 段武器类别名）渲染在图标左侧的"插条"竖排区；magazine 渲染为 intro 面板
+ *   底部白线隔开的弹夹行（图标+弹夹名）。二者都是可选结构部件，缺失即不占位。
  *   run 扩展样式（document v1 可选字段，缺省即无样式）：italic/underline 布尔、
  *   fontSize 1..96 整数、fontFace 受限字体名（渲染期经 CF7FontCatalog.legacyFamily
  *   映射，未命中不输出）——与 legacy convertAS2Html 的 <I>/<U>/<FONT SIZE/FACE>
@@ -53,6 +56,25 @@
     var MAX_TOTAL_CHARS = 131072;
     var MAX_TITLE = 512;
 
+    // 结构部件上限（对齐 C# TooltipDocumentSanitizer.MaxRailTexts 等同名常量）。
+    // 语义差异是故意的：正文超长截断，结构部件超长/非纯文本【整项丢弃】——
+    // 半截武器类别名比没有更难读。
+    var MAX_RAIL_TEXTS = 2;
+    var MAX_RAIL_TEXT_CHARS = 24;
+    var MAX_MAGAZINE_NAME_CHARS = 64;
+    var MAX_ICON_NAME_CHARS = 256;
+
+    // 淡入时长算法（与 C# NativeTooltipWidget 同源）：主组 FADE_MAIN_MS 先到位，
+    // 第 i 个子注释框 = FADE_MAIN_MS × (1.35 + 0.15×(i−1)) 依次更慢；淡出由容器
+    // 统一乘算到 0，所以各层仍在同一刻消失（tooltip.js hide() 负责那一段）。
+    var FADE_MAIN_MS = 500;
+    var FADE_SUB_LEAD = 1.35;
+    var FADE_SUB_STEP = 0.15;
+
+    function fadeMsForSub(index) {   // index 从 1 开始
+        return Math.round(FADE_MAIN_MS * (FADE_SUB_LEAD + FADE_SUB_STEP * (index - 1)));
+    }
+
     // ── 容错 JSON 读取（对齐 C# ReadString/ReadBool/ReadLong/ReadDouble）──
 
     function readString(node, name) {
@@ -85,6 +107,27 @@
         if (v == null) return fallback;
         var n = (typeof v === 'number') ? v : parseFloat(v);
         return isFinite(n) ? n : fallback;
+    }
+
+    /**
+     * 结构部件用的纯文本白名单（对齐 C# ReadPlainText + IsPlainText）：
+     * 必须是 string、不超 maxChars、无控制字符（\t\r\n 允许）。
+     * 与 readString 的区别：不 coercion 数字/布尔、不截断 —— 插条/弹夹名缺省优于半截。
+     */
+    function readPlainTextStrict(value, maxChars) {
+        if (typeof value !== 'string') return null;
+        if (value.length > maxChars) return null;
+        for (var i = 0; i < value.length; i++) {
+            var c = value.charCodeAt(i);
+            if (c < 32 && c !== 9 && c !== 10 && c !== 13) return null;
+            if (c === 127) return null;
+        }
+        return value;
+    }
+
+    /** C# string.IsNullOrWhiteSpace 同义判定。 */
+    function isBlankText(value) {
+        return value == null || /^\s*$/.test(value);
     }
 
     // '#RRGGBB' / 'RRGGBB' / '0xRRGGBB' → '#RRGGBB'（大写归一）；失败返回 null。
@@ -364,6 +407,7 @@
         var r = role == null ? '' : String(role).toLowerCase();
         if (r === 'intro') return 'intro';
         if (r === 'description') return 'description';
+        if (r === 'sub') return 'sub';   // 子注释框段：主面板下方堆叠独立框
         return 'body';   // 未知 role 归入 body，不丢内容
     }
 
@@ -426,6 +470,8 @@
             revision: readLong(payload, 'revision', 0),
             anchorX: 0, anchorY: 0, hasAnchor: false,
             layoutType: null,
+            rail: [],
+            magazine: null,
             truncated: false
         };
         var ax = readDouble(payload, 'x', NaN);
@@ -514,8 +560,34 @@
             if (sections.length > MAX_SECTIONS) doc.truncated = true;
         }
 
+        // 结构部件不参与 hasContent：只有插条/弹夹而没有正文的文档不成立。
+        parseStructuralParts(docNode, doc);
+
         if (!hasContent(doc)) return null;
         return doc;
+    }
+
+    /** rail / magazine（2026-10 二轮结构合同，逐项对齐 C# sanitizer）。 */
+    function parseStructuralParts(docNode, doc) {
+        // 左侧插条文本：≤2 段、逐段纯文本、Ordinal 去重（C# 用 StringComparison.Ordinal）。
+        var railNode = docNode.rail;
+        if (Array.isArray(railNode)) {
+            for (var i = 0; i < railNode.length && doc.rail.length < MAX_RAIL_TEXTS; i++) {
+                var text = readPlainTextStrict(railNode[i], MAX_RAIL_TEXT_CHARS);
+                if (isBlankText(text)) continue;
+                if (doc.rail.indexOf(text) !== -1) continue;
+                doc.rail.push(text);
+            }
+        }
+        // 弹夹行：name 必填才成立，icon 可选。
+        var magNode = docNode.magazine;
+        if (magNode && typeof magNode === 'object') {
+            var name = readPlainTextStrict(magNode.name, MAX_MAGAZINE_NAME_CHARS);
+            if (!isBlankText(name)) {
+                var icon = readPlainTextStrict(magNode.icon, MAX_ICON_NAME_CHARS);
+                doc.magazine = { name: name, icon: isBlankText(icon) ? null : icon };
+            }
+        }
     }
 
     function hasContent(doc) {
@@ -538,6 +610,8 @@
             + ' title=' + (doc.title || '-')
             + ' icon=' + (doc.icon ? doc.icon.kind + ':' + doc.icon.name : '-')
             + ' sections=' + doc.sections.length
+            + (doc.rail.length ? ' rail=' + doc.rail.length : '')
+            + (doc.magazine ? ' mag=' + doc.magazine.name : '')
             + (doc.layoutType ? ' lt=' + doc.layoutType : '')
             + (doc.truncated ? ' [truncated]' : '');
     }
@@ -680,6 +754,69 @@
         try { return Icons.resolveStatic(doc.icon.name); } catch (e) { return null; }
     }
 
+    /** 按名字取图标标记（manifest 未命中回落 <img src>，再未命中返回 ''）。 */
+    function iconMarkupByName(name, className) {
+        if (!name) return '';
+        if (typeof Icons === 'undefined' || !Icons) return '';
+        try {
+            var html = Icons.html ? Icons.html(name, className,
+                ' onerror="this.style.display=\'none\'"') : '';
+            if (html) return html;
+            if (Icons.resolveStatic) {
+                var url = Icons.resolveStatic(name);
+                if (url) {
+                    return '<img class="' + escapeAttr(className) + '" src="' + escapeAttr(url)
+                        + '" onerror="this.style.display=\'none\'" alt="">';
+                }
+            }
+        } catch (e) { return ''; }
+        return '';
+    }
+
+    /**
+     * 左侧插条（document.rail）：贴在图标左侧外沿的白色"内存条"竖条 —— 两端宽块写
+     * 竖排文字、中间窄腰连接，整条高 = 图标高（几何权威在 CSS 的 --tt-rail-* token，
+     * 对齐 C# NativeTooltipLayout.ApplyRail）。只有一段文本时另一端补空帽保持轮廓。
+     *
+     * 字号收缩走 CSS：这里只把 C# 算法需要的两个计数（总字数、块数）以无单位
+     * custom property 交出去，CSS 用同一条式子算出实际字号
+     * （min(上限, (轨高 − 2×内边距×块数)/总字数)，下限 --tt-rail-font-min），
+     * 缩到下限仍放不下就裁切 —— 与 C# 端"缩到 RailFontMinBase 后交由绘制裁切"一致。
+     * CJK 字宽恒等于 1em，所以按字数估高只会偏高，不会裁掉本该显示的字。
+     */
+    function railHtml(doc) {
+        if (!doc.rail.length) return '';
+        var texts = doc.rail.length === 1 ? [doc.rail[0], ''] : doc.rail;
+        var totalChars = 0;
+        for (var t = 0; t < texts.length; t++) totalChars += texts[t].length;
+        if (!totalChars) return '';
+        var out = '<div class="flash-tt-rail ntt-rail"'
+            + ' style="--tt-rail-chars:' + totalChars + ';--tt-rail-blocks:' + texts.length + '">';
+        for (var i = 0; i < texts.length; i++) {
+            if (i === 1) out += '<div class="flash-tt-rail-waist ntt-rail-waist"></div>';
+            out += '<div class="flash-tt-rail-block ntt-rail-block'
+                + (texts[i] ? '' : ' flash-tt-rail-block--cap') + '">'
+                + escapeHtml(texts[i]) + '</div>';
+        }
+        return out + '</div>';
+    }
+
+    /**
+     * 弹夹行（document.magazine）：intro 面板底部白线隔开的独立一行 —— 最左弹夹图标
+     * （正方形，边长 = 行高）后接弹夹名；"使用弹夹"这类标签字符由数据侧不再下发。
+     * 整行 pointer-events:none 且不是任何 tooltip 的 owner：弹夹图标不会再套出一层
+     * 注释框（用户硬要求，避免嵌套）。
+     */
+    function magazineHtml(doc) {
+        var mag = doc.magazine;
+        if (!mag || !mag.name) return '';
+        var icon = mag.icon ? iconMarkupByName(mag.icon, 'flash-tt-mag-icon-image ntt-mag-icon-image') : '';
+        return '<div class="flash-tt-mag ntt-mag">'
+            + '<span class="flash-tt-mag-icon ntt-mag-icon">' + icon + '</span>'
+            + '<span class="flash-tt-mag-name ntt-mag-name">' + escapeHtml(mag.name) + '</span>'
+            + '</div>';
+    }
+
     /**
      * document → 可进 innerHTML 的 HTML；input 非法/无内容 → ''。
      * opts（与 buildItemRichHtml 同一 chrome 合同，全部可选）：
@@ -741,20 +878,38 @@
 
         var introInner = introContent
             ? '<div class="flash-tt-intro kshop-tt-intro ntt-intro">' + introContent + '</div>' : '';
+        // 弹夹行始终落在 intro 面板内（图标+正文那一栏），与 C# 端一致。
+        introInner += magazineHtml(doc);
         var introPanel = (iconBlock || introInner)
             ? '<div class="flash-tt-intro-panel kshop-tt-intro-panel ntt-intro-panel">' + iconBlock + introInner + '</div>' : '';
 
+        var railBlock = railHtml(doc);
         var rootClass = opts.rootClass ? ' ' + opts.rootClass : '';
         var mergeClass = doSplit ? '' : ' flash-tt-rich--merge';
+        var railClass = railBlock ? ' flash-tt-rich--rail' : '';
         var layoutType = (opts.layoutType === 'narrow' || opts.layoutType === 'wide')
             ? opts.layoutType : doc.layoutType;
         var layoutAttr = (layoutType === 'narrow') ? ' data-layout="narrow"' : '';
-        var html = '<div class="flash-tt-rich kshop-tt-rich ntt-doc' + mergeClass + rootClass + '"'
+        var html = '<div class="flash-tt-rich kshop-tt-rich ntt-doc' + mergeClass + railClass + rootClass + '"'
             + ' data-doc-profile="' + doc.profile + '"' + layoutAttr + '>'
+            + railBlock
             + introPanel
             + (doSplit && descColumn
                 ? '<div class="flash-tt-desc kshop-tt-desc ntt-desc">' + descColumn + '</div>' : '')
             + '</div>';
+        // 子注释框（role:"sub"，2026-10 新合同）：主面板 div 之后按文档序竖排堆叠，
+        // 黑底白边同款 token（.flash-tt-sub-panel），空段渲染一个占位空行。
+        // 淡入比主组慢（inline --tt-fade-ms 携带 fadeMsForSub 的算法结果），淡出由
+        // tooltip.js 给容器统一乘算到 0 —— 慢淡入的子框仍与主框同刻消失。
+        var subIndex = 0;
+        for (var si = 0; si < doc.sections.length; si++) {
+            var subSec = doc.sections[si];
+            if (subSec.role !== 'sub') continue;
+            subIndex++;
+            var subInner = runsHtml(subSec.runs) || '<br>';
+            html += '<div class="flash-tt-sub-panel ntt-sub-panel"'
+                + ' style="--tt-fade-ms:' + fadeMsForSub(subIndex) + '">' + subInner + '</div>';
+        }
         if (opts.suffix) html += '<div class="flash-tt-suffix kshop-tt-suffix ntt-suffix">' + opts.suffix + '</div>';
         return html;
     }
@@ -769,6 +924,10 @@
         textScore: textScore,
         textScores: textScores,
         shouldSplit: shouldSplit,
+        // 淡入时长算法出口：主组用 FADE_MAIN_MS，第 i 个子框用 fadeMsForSub(i)。
+        // 淡出合同在 tooltip.js（容器统一乘算到 0），两侧共用这两个常量语义。
+        FADE_MAIN_MS: FADE_MAIN_MS,
+        fadeMsForSub: fadeMsForSub,
         escapeHtml: escapeHtml,
         plainTextOf: plainTextOf,
         buildHtml: buildHtml,

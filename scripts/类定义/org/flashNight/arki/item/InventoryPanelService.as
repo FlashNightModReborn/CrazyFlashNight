@@ -163,6 +163,11 @@ class org.flashNight.arki.item.InventoryPanelService {
             if (!safeOpenRequestId(params.openRequestId)) return false;
             openRequestId = String(params.openRequestId);
         }
+        if ((view == "build" || view == "tuning")
+                && org.flashNight.arki.scene.Cf6ActorRefreshPolicy.blocks(_root)) {
+            _root.发布消息("角色正在通过机关，请等演出结束后再整备。");
+            return false;
+        }
         if (view == "build") {
             if (profile != "battlebox"
                     || (source != "agent_control"

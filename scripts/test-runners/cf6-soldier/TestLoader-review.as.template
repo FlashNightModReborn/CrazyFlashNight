@@ -1,0 +1,8 @@
+﻿import org.flashNight.arki.unit.Action.Melee.*;
+_root.soldierCapture = false;
+_root.soldierReviewCapture=true;
+_root.cf6SoldierAssetComplete = function():Void {
+    trace("FocusedTestRunId cf6-soldier Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId cf6-soldier Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.Cf6SoldierAssetTest.runAllTests();

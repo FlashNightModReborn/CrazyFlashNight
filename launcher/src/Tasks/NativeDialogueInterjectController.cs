@@ -16,7 +16,8 @@ namespace CF7Launcher.Tasks
     {
         /// <summary>没有可输入的时点：$PC 播放中 / 无对话会话 / 本组未开始 / closing。</summary>
         Hidden = 0,
-        /// <summary>输入显示但禁用：等待首句“……”、拆分前置段“（暂时不适合插话）”。</summary>
+        /// <summary>输入显示但禁用：等待首句/hint 期间用省略号“……”，NPC 正说到过渡语或拆分前置段时
+        /// 用“（当前似乎不适合插话）”。</summary>
         Locked = 1,
         /// <summary>可输入（每句开始显示即可用，D-10）。</summary>
         Ready = 2,
@@ -64,6 +65,10 @@ namespace CF7Launcher.Tasks
         /// 必须另设总上限兜住"有输出但永不结束"；按 120 秒子 Agent 再加检索/多段/重试的一倍余量取 300。
         /// </summary>
         private const int TurnTotalTimeoutSeconds = 300;
+        /// <summary>任务发布交接：推送后等 AS2 关闭当前对话的上限；超时按兜底话术收尾。</summary>
+        private const int HandoffTimeoutSeconds = 10;
+        /// <summary>交接失败/超时的静态兜底（不调模型），与终端方案一同口径。</summary>
+        private const string HandoffFallbackLine = "委托登记好了，你过来找我接一下。";
         private const string PcName = "$PC";
         private const string DefaultEmotion = "普通";
         private const string KindDaily = "daily";
@@ -143,6 +148,8 @@ namespace CF7Launcher.Tasks
         private bool _autoConfigSyncTried;
         private readonly Func<string> _newId;
         private readonly Func<DateTime> _clock;
+        /// <summary>Host→AS2 推送（含 '\0' 结尾）；未接线时任务发布交接按推送失败处理。</summary>
+        private readonly Func<string, bool> _pushToClient;
 
         // ── 组（一次对话组播放）──
         private NativeDialogueBookSession _session;
@@ -196,6 +203,15 @@ namespace CF7Launcher.Tasks
         private string _headlessItemActionId;
         private const int HeadlessItemActionTimeoutSeconds = 60;
 
+        // ── 任务发布交接（done.task_publish）──
+        /// <summary>发布成功且已推给 AS2：等它关闭当前对话并接取；期间不接回原作、不判失败。</summary>
+        private bool _handoff;
+        /// <summary>交接超时兜底定时器；组结束/关闭/新组必须清掉。</summary>
+        private IDisposable _handoffWatchdog;
+        /// <summary>本轮动作类型与 action_id：交接只认 task_accept，token 用它的 action_id。</summary>
+        private string _turnActionKind;
+        private string _turnActionId;
+
         // ── 本轮 ──
         private string _turnId;
         private DialogueInterjectStream _stream;
@@ -215,9 +231,6 @@ namespace CF7Launcher.Tasks
         /// <summary>当前上屏行的 SSE kind（add/closing，原作/占位为 null）。
         /// 必须在 _insertedLines 摘除当前行前记下，否则补判时查不到。</summary>
         private string _presentedLineKind;
-        /// <summary>本轮收到过过渡话（line.interim=true）。daily 组派活时后端不推 plan
-        /// （orchestrator 只在 mode=="task" 推），过渡话是日常组唯一的草案信号。</summary>
-        private bool _sawInterim;
         /// <summary>本轮收到过 status(stage=drafting)：任务草案工具轮的唯一阶段，
         /// daily 组派活时最早、最可靠的信号。</summary>
         private bool _sawDrafting;
@@ -259,6 +272,10 @@ namespace CF7Launcher.Tasks
         }
 
         private DialogueInterjectInputState _inputState = DialogueInterjectInputState.Hidden;
+        // Locked 的理由：true=NPC 正说到过渡语/拆分前置段，false=等待首句或 hint 期间的空档。
+        private bool _lockedBySpokenLine;
+        // 上次已发出的收起条文案：状态相同但文案换了（等待锁→说话锁）也要重发事件。
+        private string _inputPlaceholderShown;
 
         /// <summary>输入可用状态变化（订阅方据此显示/隐藏/禁用输入框）。</summary>
         internal event Action<DialogueInterjectInputState> InputStateChanged;
@@ -295,7 +312,8 @@ namespace CF7Launcher.Tasks
             Func<bool> terminalReady = null,
             Func<Task<bool>> llmConfigured = null,
             Func<string, Task> ensureBound = null,
-            NpcItemExchangeTask itemExchange = null)
+            NpcItemExchangeTask itemExchange = null,
+            Func<string, bool> pushToClient = null)
         {
             _task = task ?? throw new ArgumentNullException(nameof(task));
             _widget = widget ?? throw new ArgumentNullException(nameof(widget));
@@ -308,6 +326,7 @@ namespace CF7Launcher.Tasks
             _terminalReady = terminalReady;
             _llmConfigured = llmConfigured;
             _itemExchange = itemExchange;
+            _pushToClient = pushToClient;
         }
 
         internal DialogueInterjectInputState InputState { get { return _inputState; } }
@@ -318,6 +337,7 @@ namespace CF7Launcher.Tasks
         internal int PlayedCount { get { return _played.Count; } }
         internal NativeDialogueBookSession SessionForTest { get { return _session; } }
         internal bool ClosingForTest { get { return _closing; } }
+        internal bool HandoffForTest { get { return _handoff; } }
         internal JObject PendingItemClaimForTest { get { return _pendingItemClaim; } }
         internal DialogueInterjectItemClaimView ItemClaimViewForTest { get { return _itemClaimView; } }
         internal IList<string> PlayerItemNamesForTest
@@ -372,6 +392,9 @@ namespace CF7Launcher.Tasks
             _itemActionRetriedId = null;
             _headlessItemActionId = null;
             _executedGrants.Clear();
+            ClearHandoff();
+            _turnActionKind = null;
+            _turnActionId = null;
             if (_taskMode)
             {
                 // 任务组门控（协议 4.1）：provider 拿到 task_context 才开放，否则 fail-closed。
@@ -389,7 +412,6 @@ namespace CF7Launcher.Tasks
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
-            _sawInterim = false;
             _sawDrafting = false;
             _turnActive = false;
             _turnTailIndex = -1;
@@ -414,7 +436,9 @@ namespace CF7Launcher.Tasks
         private void OnSessionEnded(NativeDialogueBookSession session)
         {
             if (!ReferenceEquals(session, _session)) return;
-            CancelTurn("session_end");
+            bool handoff = _handoff;
+            ClearHandoff();
+            CancelTurn(handoff ? "handoff_done" : "session_end");
             session.LinePresented = null;
             session.Closing = null;
             session.EndHoldLineProvider = null;
@@ -446,10 +470,11 @@ namespace CF7Launcher.Tasks
             _unackedItemRequestJson = null;
             _itemActionRetriedId = null;
             _executedGrants.Clear();
+            _turnActionKind = null;
+            _turnActionId = null;
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
-            _sawInterim = false;
             _sawDrafting = false;
             DisarmWatchdog();
             _queued.Clear();
@@ -466,6 +491,9 @@ namespace CF7Launcher.Tasks
         {
             if (_session == null || _closing) return;
             _closing = true;
+            ClearHandoff();
+            _turnActionKind = null;
+            _turnActionId = null;
             StopStream();
             DisarmWatchdog();
             _turnActive = false;
@@ -492,7 +520,6 @@ namespace CF7Launcher.Tasks
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
-            _sawInterim = false;
             _sawDrafting = false;
             SetInputState(DialogueInterjectInputState.Hidden);
             // 关闭/组末这一次是权威收尾（transcript 全量前缀，幂等）。
@@ -592,10 +619,11 @@ namespace CF7Launcher.Tasks
             }
             if (isGenerated)
             {
-                // 拆分前置段：输入暂锁；末段/自然单条：开始显示即可输入（§3.3）。
-                SetInputState(line.SplitIntermediate
-                    ? DialogueInterjectInputState.Locked
-                    : ReadyOrMuted());
+                // 拆分前置段/过渡行：输入暂锁；末段/自然单条：开始显示即可输入（§3.3）。
+                if (line.SplitIntermediate)
+                    SetInputState(DialogueInterjectInputState.Locked, true);
+                else
+                    SetInputState(ReadyOrMuted());
                 return;
             }
             // 原作台词：可输入（stage / 任务组已在 IsGroupAllowsInterject 拦掉）
@@ -668,6 +696,8 @@ namespace CF7Launcher.Tasks
             _turnActive = false;
             _finalizePending = false;
             _resumeAfterFailure = false;
+            _turnActionKind = null;
+            _turnActionId = null;
             // 已收未应用的 plan 不应用（意图已转参考）；本轮 plan 状态重新计数。
             _pendingPlan = null;
             _planApplied = false;
@@ -681,7 +711,6 @@ namespace CF7Launcher.Tasks
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
-            _sawInterim = false;
             _sawDrafting = false;
             _appliedRemoves.RemoveAll(wire => wire < wireResume);
 
@@ -709,7 +738,6 @@ namespace CF7Launcher.Tasks
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
-            _sawInterim = false;
             _sawDrafting = false;
             _preparing = false;
             _turnStatusText = null;
@@ -1026,9 +1054,9 @@ namespace CF7Launcher.Tasks
             if (_session == null || _closing) return null;
             // 物品已扣除但动作轮还没起来/没确认：先占住末行，等后端收下再收组。
             bool itemPending = _unackedItemAction != null;
-            if (!_turnActive && !_finalizePending && !_preparing && !itemPending) return null;
-            // 已有普通 AI 行可播时按原语义直接收组；只有过渡话之后才继续等最终确认。
-            if (!itemPending && _aiLineShown && !_lastAiLineInterim) return null;
+            if (!_turnActive && !_finalizePending && !_preparing && !itemPending && !_handoff) return null;
+            // 已有普通 AI 行可播时按原语义直接收组；只有过渡话/交接等待时才继续等最终确认。
+            if (!itemPending && !_handoff && _aiLineShown && !_lastAiLineInterim) return null;
             NativeDialogueBookSession.Line template = FindNpcTemplate();
             return new NativeDialogueBookSession.Line
             {
@@ -1096,12 +1124,30 @@ namespace CF7Launcher.Tasks
                     }
                     await stream.RunAsync(requestJson, CancellationToken.None).ConfigureAwait(false);
                     LogManager.Log("[DialogueInterject] stream end terminal=" + stream.SawTerminal
-                        + " cancelled=" + stream.Cancelled);
+                        + " cancelled=" + stream.Cancelled
+                        + " events=" + stream.EventCount
+                        + " malformed=" + stream.MalformedLines);
                     Post(() =>
                     {
                         if (!ReferenceEquals(_stream, stream)) return;
-                        // 流结束但没收到 done/error（断流）：按部分有效处理。
-                        if (!stream.SawTerminal) FailTurn("stream_closed");
+                        if (stream.SawTerminal) return;
+                        // 任务轮收到完整 plan 时，plan 就是本轮 AI 的全部产出（协议 F-08）；
+                        // done 只承担收尾与自动接取交接。没有待交接动作时按成功收尾，不因断流丢掉 plan。
+                        if (_turnActive && _taskMode && _turnActionKind == null
+                            && (_planApplied || _pendingPlan != null))
+                        {
+                            LogManager.Log("[DialogueInterject] stream closed after plan; accept turn"
+                                + " planApplied=" + _planApplied);
+                            CompleteTurn();
+                            return;
+                        }
+                        // 流结束但没收到 done/error（断流）：日常轮、无 plan、或动作轮仍按失败回退。
+                        LogManager.Log("[DialogueInterject] stream closed without terminal state"
+                            + " taskMode=" + _taskMode
+                            + " action=" + (_turnActionKind ?? "-")
+                            + " planApplied=" + _planApplied
+                            + " planPending=" + (_pendingPlan != null));
+                        FailTurn("stream_closed");
                     });
                 }
                 catch (Exception ex)
@@ -1200,7 +1246,7 @@ namespace CF7Launcher.Tasks
                     AcceptItemClaim(evt);
                     break;
                 case DialogueInterjectEventKind.Done:
-                    CompleteTurn();
+                    CompleteTurn(evt.Raw("task_publish") as JObject);
                     break;
                 case DialogueInterjectEventKind.Error:
                     FailTurn(evt.Text("code").Length > 0 ? evt.Text("code") : "error");
@@ -1220,8 +1266,8 @@ namespace CF7Launcher.Tasks
             if (!_turnActive || _closing) return;
             string stage = evt.Text("stage");
             string hint = (evt.Text("ui_hint") ?? "").Trim();
-            // drafting 只在任务草案工具轮发（route_task_draft/update/confirm/cancel），
-            // 是 daily 组「刚派过活」的确定信号——比过渡话更早，且不受其生成超时影响。
+            // drafting 只在任务草案工具轮发（route_task_draft/update；confirm/cancel 发 publishing），
+            // 是 daily 组「刚派过活」的确定信号，不受过渡话生成超时影响。
             if (string.Equals(stage, "drafting", StringComparison.Ordinal)) _sawDrafting = true;
             string label = hint.Length > 0 ? hint : StatusLabel(stage);
             if (label.Length > 0)
@@ -1298,13 +1344,16 @@ namespace CF7Launcher.Tasks
                 : DialogueInterjectInputState.Locked;
         }
 
-        /// <summary>收起条文案：禁言/终端未启动/模型未配置由这里给出。</summary>
+        /// <summary>收起条文案：禁言/终端未启动/模型未配置由这里给出；等待型 Locked 返回 null，
+        /// 由 binder 回落到原来的省略号提示。</summary>
         internal string PlaceholderFor(DialogueInterjectInputState state)
         {
             if (state == DialogueInterjectInputState.Offline)
                 return _terminalStartFailed
                     ? "聊天终端启动失败，点击重试" : "请先启动聊天终端";
             if (state == DialogueInterjectInputState.NeedsConfig) return "请配置模型API";
+            if (state == DialogueInterjectInputState.Locked)
+                return _lockedBySpokenLine ? "（当前似乎不适合插话）" : null;
             if (state != DialogueInterjectInputState.Muted) return null;
             string npc = string.IsNullOrEmpty(_npcName) ? "" : _npcName;
             return "（" + npc + "）暂时不打算让你插话";
@@ -1447,7 +1496,8 @@ namespace CF7Launcher.Tasks
         private void AcceptPlan(DialogueInterjectEvent evt)
         {
             // 不再按组类型拦 plan：日常对话里也能派活（route_task_draft 在日常工具表里），
-            // 草案那一轮可能仍是 daily 组。plan 只在草案期间由后端主动推送，收到即应用。
+            // 草案那一轮可能仍是 daily 组。任务模式每轮都会推 plan（改写剩余台词），
+            // 收到即应用；plan 本身不是草案信号，选项态另看 status(drafting)。
             if (!_turnActive || _closing || _session == null) return;
             if (_planApplied) return;
             TaskPlan plan = ParsePlan(evt);
@@ -1641,13 +1691,21 @@ namespace CF7Launcher.Tasks
             }
 
             // 玩家已经点在占位条上：plan 的首行直接原位替换上屏；还停在 $PC 则不换当前显示。
-            bool atTail = _session.Index >= _turnTailIndex;
-            if (!_session.ReplaceFrom(_turnTailIndex, replacement.ToArray(), resumeWire,
+            int tailIndex = _turnTailIndex;
+            int playIndex = _session.Index;
+            bool atTail = playIndex >= tailIndex;
+            if (!_session.ReplaceFrom(tailIndex, replacement.ToArray(), resumeWire,
                 present: atTail))
             {
                 LogManager.Log("[DialogueInterject] plan apply failed (splice rejected)");
                 return;
             }
+            LogManager.Log("[DialogueInterject] plan applied end="
+                + (plan.HasEnd ? plan.End.ToString() : "-")
+                + " edits=" + plan.Edits.Count
+                + " replaced=" + replacement.Count
+                + " tailIndex=" + tailIndex
+                + " playIndex=" + playIndex);
             for (int i = 0; i < refs.Count; i++)
             {
                 if (refs[i] == null) continue;      // 原文行：没有参考续写映射
@@ -1685,7 +1743,7 @@ namespace CF7Launcher.Tasks
                 ImageAction = origin.ImageAction,
                 ImagePath = origin.ImagePath,
                 WireIndex = wire,
-                SplitIntermediate = source.IsSplitHead,
+                SplitIntermediate = source.IsSplitHead || source.Interim,
                 IsPlayer = origin.IsPlayer
             };
         }
@@ -1693,7 +1751,7 @@ namespace CF7Launcher.Tasks
         private void AcceptLine(DialogueInterjectLine line)
         {
             if (!_turnActive || _closing || line == null || string.IsNullOrEmpty(line.Text)) return;
-            _preparing = false;             // 已经出词：草案/检索阶段结束
+            if (!line.Interim) _preparing = false;  // 最终台词出词才结束草案/检索准备态
             if (_planApplied)
             {
                 // plan 是任务模式的最后一块；之后还来 line 属协议违例，忽略不排队。
@@ -1755,14 +1813,14 @@ namespace CF7Launcher.Tasks
                 }
                 _turnTailIndex = index + 1;
                 _aiLineShown = true;
-                if (line.Interim) _sawInterim = true;
                 _lastAiLineInterim = line.Interim;
                 _pcRevision = -1;
                 // closing 迟到但玩家正停在最后一条 add：补判选项态。
                 RefreshAskAcceptCurrent();
-                SetInputState(line.IsSplitHead
-                    ? DialogueInterjectInputState.Locked
-                    : ReadyOrMuted());
+                if (line.IsSplitHead || line.Interim)
+                    SetInputState(DialogueInterjectInputState.Locked, true);
+                else
+                    SetInputState(ReadyOrMuted());
                 return true;
             }
             if (!advance && _session.Index >= _turnTailIndex) return false;
@@ -1778,14 +1836,14 @@ namespace CF7Launcher.Tasks
             }
             _turnTailIndex++;
             _aiLineShown = true;            // 已插入（未必已上屏）：本轮已有可播内容
-            if (line.Interim) _sawInterim = true;   // 本轮派过活：过渡话是 daily 组唯一的草案信号
             _lastAiLineInterim = line.Interim;
             if (advance) _pcRevision = -1;  // 后续打字完成不再当 $PC
             // closing 迟到但玩家正停在最后一条 add：补判选项态。
             RefreshAskAcceptCurrent();
-            SetInputState(line.IsSplitHead
-                ? DialogueInterjectInputState.Locked
-                : ReadyOrMuted());
+            if (line.IsSplitHead || line.Interim)
+                SetInputState(DialogueInterjectInputState.Locked, true);
+            else
+                SetInputState(ReadyOrMuted());
             return true;
         }
 
@@ -1818,11 +1876,11 @@ namespace CF7Launcher.Tasks
                 AppearanceIdentity = useTemplate ? template.AppearanceIdentity : null,
                 ImageAction = "keep",
                 ImagePath = "",
-                SplitIntermediate = line.IsSplitHead
+                SplitIntermediate = line.IsSplitHead || line.Interim
             };
         }
 
-        private void CompleteTurn()
+        private void CompleteTurn(JObject taskPublish = null)
         {
             if (!_turnActive) return;
             // done = 后端已处理本轮动作请求；不再需要“已扣未送达”的补送。
@@ -1830,6 +1888,15 @@ namespace CF7Launcher.Tasks
             _unackedItemRequestJson = null;
             // 本轮不会再有新台词：没有结束语时，靠这个信号判定“最后一条 add”。
             _turnLinesDone = true;
+            // 插话「我接了」发布成功：本轮没有收尾台词，推给 AS2 完成热更新与自动接取。
+            if (taskPublish != null)
+            {
+                if (TryStartHandoff(taskPublish)) return;
+                // 后端已按自动接取跳过收尾轮：这里必须补静态收尾，
+                // 绝不能落到 done_without_line 把原作剩余接回来（观感等于没发过委托）。
+                FinishWithStaticLine(HandoffFallbackLine, "handoff_unavailable");
+                return;
+            }
             // 任务模式：没有 add 但有完整 plan 也算成功（协议 4.5 / F-08）。
             if (_taskMode && !_aiLineShown && _queued.Count == 0)
             {
@@ -1880,6 +1947,144 @@ namespace CF7Launcher.Tasks
             if (_playerLinePlaying) return;
             _finalizePending = false;
             Finalize("turn_done");
+        }
+
+        // ════════════════ 任务发布交接（done.task_publish） ════════════════
+
+        /// <summary>
+        /// done.task_publish：核对「本轮动作是 task_accept + 同 NPC + 同槽位」后推
+        /// agent_task_publish 并进入交接态。返回 false 表示不接管本轮收尾。
+        /// </summary>
+        private bool TryStartHandoff(JObject publish)
+        {
+            if (!_turnActive || _closing || _session == null) return false;
+            if (!string.Equals(_turnActionKind, "task_accept", StringComparison.Ordinal)) return false;
+            if (publish.Value<bool?>("auto_accept") != true) return false;
+            int taskId = publish.Value<int?>("task_id") ?? 0;
+            string npc = (publish.Value<string>("npc") ?? "").Trim();
+            string slot = (publish.Value<string>("slot_key") ?? "").Trim();
+            string actionId = _turnActionId ?? "";
+            if (taskId <= 0 || npc.Length == 0 || actionId.Length == 0)
+            {
+                LogManager.Log("[DialogueInterject] handoff rejected: malformed task_publish");
+                return false;
+            }
+            if (!string.Equals(npc, (_npcName ?? "").Trim(), StringComparison.Ordinal))
+            {
+                LogManager.Log("[DialogueInterject] handoff rejected: npc mismatch publish="
+                    + npc + " current=" + (_npcName ?? ""));
+                return false;
+            }
+            string boundSlot = AgentSaveContext.CurrentSlotKey ?? "";
+            if (slot.Length > 0 && boundSlot.Length > 0
+                && !string.Equals(slot, boundSlot, StringComparison.Ordinal))
+            {
+                LogManager.Log("[DialogueInterject] handoff rejected: slot mismatch publish="
+                    + slot + " bound=" + boundSlot);
+                return false;
+            }
+            var packet = new JObject
+            {
+                ["task"] = "agent_task_publish",
+                ["version"] = 1,
+                ["taskId"] = taskId,
+                ["npc"] = npc,
+                ["slot"] = slot,
+                ["token"] = actionId
+            };
+            bool sent = false;
+            if (_pushToClient != null)
+            {
+                try { sent = _pushToClient(packet.ToString(Formatting.None) + "\0"); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[DialogueInterject] handoff push failed: " + ex.Message);
+                }
+            }
+            if (!sent)
+            {
+                LogManager.Log("[DialogueInterject] handoff push dropped (socket unavailable) task=" + taskId);
+                return false;
+            }
+
+            _handoff = true;
+            // 交接成功＝旧对白由 AS2 关闭，绝不把原作剩余接回（否则会顶掉任务接取对话）。
+            _abandonedOriginalTail = true;
+            _turnActive = false;
+            _preparing = false;
+            _turnStatusText = null;
+            DisarmWatchdog();
+            SetAskAccept(false);
+            SetInputState(DialogueInterjectInputState.Hidden);
+            ArmHandoffWatchdog();
+            LogManager.Log("[DialogueInterject] handoff start task=" + taskId
+                + " npc=" + npc + " token=" + actionId);
+            return true;
+        }
+
+        private void ArmHandoffWatchdog()
+        {
+            DisarmHandoffWatchdog();
+            _handoffWatchdog = WatchdogScheduler(TimeSpan.FromSeconds(HandoffTimeoutSeconds),
+                delegate { Post(OnHandoffTimeout); });
+        }
+
+        private void DisarmHandoffWatchdog()
+        {
+            IDisposable timer = _handoffWatchdog;
+            _handoffWatchdog = null;
+            if (timer == null) return;
+            try { timer.Dispose(); } catch { }
+        }
+
+        private void ClearHandoff()
+        {
+            _handoff = false;
+            DisarmHandoffWatchdog();
+        }
+
+        private void OnHandoffTimeout()
+        {
+            if (!_handoff || _closing || _session == null) return;
+            LogManager.Log("[DialogueInterject] handoff timeout token=" + (_turnActionId ?? ""));
+            EndHandoffWithFallbackLine("handoff_timeout");
+        }
+
+        /// <summary>交接没完成（推送失败/超时/AS2 拒绝）：补静态收尾，不接回原作剩余。</summary>
+        private void EndHandoffWithFallbackLine(string reason)
+        {
+            ClearHandoff();
+            if (_session == null || _closing) return;
+            FinishWithStaticLine(HandoffFallbackLine, reason);
+        }
+
+        /// <summary>没有模型收尾台词时的静态落地：插一条 closing 并正常收尾。</summary>
+        private void FinishWithStaticLine(string text, string reason)
+        {
+            _turnActive = false;
+            _preparing = false;
+            _turnStatusText = null;
+            _turnLinesDone = true;
+            DisarmWatchdog();
+            bool inserted = false;
+            if (!_aiLineShown && _turnTailIndex >= 0 && _session != null
+                && _session.State == NativeDialogueBookSession.HostState.Active)
+            {
+                var line = new DialogueInterjectLine
+                {
+                    Kind = "closing",
+                    Text = text,
+                    Emotion = DefaultEmotion,
+                    Speaker = _npcName ?? "",
+                    Seq = -1
+                };
+                inserted = PlayLine(line, false);
+            }
+            if (!inserted)
+                LogManager.Log("[DialogueInterject] static closing not inserted: " + reason);
+            RefreshAskAcceptCurrent();
+            SetInputState(ReadyOrMuted());
+            Finalize(reason);
         }
 
         // ════════════════ 选项直连与物品往来（P6） ════════════════
@@ -2087,6 +2292,8 @@ namespace CF7Launcher.Tasks
                 return false;
             }
             string playerInput = BuildActionPlayerInput(action, npc);
+            _turnActionKind = actionKind;
+            _turnActionId = actionId;
 
             if (showPlayerLine) _widget.CompleteCurrentLineTyping();
             List<PlayedRow> playedSnapshot;
@@ -2104,7 +2311,6 @@ namespace CF7Launcher.Tasks
             _turnLinesDone = false;
             _presentedLineKind = null;
             _presentedLineInterim = false;
-            _sawInterim = false;
             _sawDrafting = false;
             _appliedRemoves.RemoveAll(wire => wire < wireResume);
 
@@ -2568,6 +2774,15 @@ namespace CF7Launcher.Tasks
 
         private void FailTurnCore(string code)
         {
+            int played;
+            lock (_playedGate) played = _played.Count;
+            LogManager.Log("[DialogueInterject] turn fail code=" + code
+                + " taskMode=" + _taskMode
+                + " action=" + (_turnActionKind ?? "-")
+                + " planApplied=" + _planApplied
+                + " planPending=" + (_pendingPlan != null)
+                + " queued=" + _queued.Count
+                + " played=" + played);
             // 已真实扣除、但本轮可能没送达后端：同 action_id 重试一次，绝不重复扣除。
             JObject retry = _unackedItemAction;
             string retryJson = _unackedItemRequestJson;
@@ -2650,6 +2865,9 @@ namespace CF7Launcher.Tasks
         /// <summary>关闭/组结束/新一轮覆盖：真取消在途流（Dispose 流 + token），未到行不播。</summary>
         internal void CancelTurn(string reason)
         {
+            ClearHandoff();
+            _turnActionKind = null;
+            _turnActionId = null;
             bool wasActive = _turnActive || _finalizePending;
             FlushUnackedItemAction("cancel:" + reason);
             _unackedItemAction = null;
@@ -2773,14 +2991,19 @@ namespace CF7Launcher.Tasks
             });
         }
 
-        private void SetInputState(DialogueInterjectInputState state)
+        /// <param name="spokenLock">仅 Locked 有意义：true=NPC 正说到过渡语/拆分前置段，
+        /// false=等待首句或 hint 期间的空档（两者禁用一样，提示文案不同）。</param>
+        private void SetInputState(DialogueInterjectInputState state, bool spokenLock = false)
         {
             // 玩家台词上屏期间（含打字完成、仍停在玩家行等“下一条”）整条输入框隐藏，
             // 不论展开与否；只有下一句非玩家台词上屏后才恢复。
             if (_playerLineOnScreen && state != DialogueInterjectInputState.Hidden)
                 state = DialogueInterjectInputState.Hidden;
-            if (_inputState == state) return;
+            _lockedBySpokenLine = state == DialogueInterjectInputState.Locked && spokenLock;
+            string placeholder = PlaceholderFor(state);
+            if (_inputState == state && _inputPlaceholderShown == placeholder) return;
             _inputState = state;
+            _inputPlaceholderShown = placeholder;
             Action<DialogueInterjectInputState> handler = InputStateChanged;
             if (handler == null) return;
             try { handler(state); }
@@ -2788,7 +3011,7 @@ namespace CF7Launcher.Tasks
         }
 
         /// <summary>
-        /// 选项态判定（每个上屏/插入/收流时机重算）：只在任务草案确认轮的最后一条 add 上成立。
+        /// 选项态判定（每个上屏/插入/收流时机重算）：只在日常组派活的最后一条 add 上成立。
         /// 结束语先行可判（下一条是 closing）；结束语为空时靠 done 已到 + 后面没有行。
         /// currentKind 由调用方给出——已上屏的行会被摘出 _insertedLines，不能再查字典。
         /// </summary>
@@ -2797,8 +3020,10 @@ namespace CF7Launcher.Tasks
         {
             bool want = false;
             string nextKind = null;
-            // 派活轮判定三选一：task 组有 plan；daily 组看 status(drafting) 或过渡话。
-            bool draftTurn = _planApplied || _sawDrafting || _sawInterim;
+            // 只认日常组的 status(drafting)：它只在 route_task_draft/update 工具轮发出。
+            // task_pre/task_post 发生在任务已接取/已完成之后，plan 只用于改写剩余台词；
+            // 确认/撤销轮的“重试过渡话”也不是新草案。三者都不能当成「刚拟了草案」。
+            bool draftTurn = !_taskMode && _sawDrafting;
             bool eligible = draftTurn && !_closing && !_playerLineOnScreen
                 && _pendingItemClaim == null && !_taskActionSent
                 && _session != null
@@ -2816,7 +3041,7 @@ namespace CF7Launcher.Tasks
                 LogManager.Log("[DialogueInterject] askAccept-probe want=" + want
                     + " next=" + (nextKind ?? (next == null ? "none" : "original"))
                     + " done=" + _turnLinesDone + " plan=" + _planApplied
-                    + " drafting=" + _sawDrafting + " interim=" + _sawInterim);
+                    + " drafting=" + _sawDrafting);
             }
             SetAskAccept(want);
         }

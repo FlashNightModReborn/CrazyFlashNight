@@ -262,6 +262,8 @@ function main() {
 		// boundary so failure diagnosis never depends on the live Output panel.
 		try { fl.outputPanel.save(outputLog); } catch (preOpenOutputError) {}
 		doc = fl.openDocument(targetOpenURI);
+		fl.trace("[compile] opened target result: " + (doc ? doc.pathURI : "null"));
+		try { fl.outputPanel.save(outputLog); } catch (openedOutputError) {}
 	} else {
 		doc = fl.getDocumentDOM();
 		fl.trace("[compile] active doc: " + (doc ? doc.name : "null"));
@@ -295,6 +297,7 @@ function main() {
 	if (compileMode == "publish") {
 		compileRuntimeState.phase = "publish_document";
 		fl.trace("[compile] publish (no testMovie): " + doc.name);
+		try { fl.outputPanel.save(outputLog); } catch (prePublishOutputError) {}
 		doc.publish();
 	} else {
 		// 旧测试播放器可能继续写 trace；新测试前只关闭播放器，保留编辑文档。
@@ -302,6 +305,7 @@ function main() {
 		fl.closeAllPlayerDocuments();
 		compileRuntimeState.phase = "test_movie";
 		fl.trace("[compile] testMovie: " + doc.name);
+		try { fl.outputPanel.save(outputLog); } catch (preTestOutputError) {}
 		doc.testMovie();
 	}
 	// 靠近 AS2 单分支 32K 上限的旧大类在部分 ASO 状态下首轮可能失败，

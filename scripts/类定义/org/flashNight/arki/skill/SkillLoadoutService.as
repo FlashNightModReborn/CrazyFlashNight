@@ -104,6 +104,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
             view:view == "trainer" ? "trainer" : "manage",
             player:{level:clampWhole(r.等级, 0, 9999), skillPoints:clampWhole(r.技能点数, 0, 2147483647), easyMode:isEasyMode()},
             learned:learned,
+            features:projectFeatures(scan),
             loadout:loadout,
             trainer:trainerWire,
             diagnostics:diagnostics
@@ -320,6 +321,48 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         return finishMutation([sourceKey, targetKey], before);
     }
 
+    /** 子能力写入沿用技能 revision、领域回滚和已提交投影屏障。 */
+    public static function setFeature(featureId:String, enabled:Boolean, expectedRevision:Number):Object {
+        var gate:Object=writeGate(expectedRevision);
+        if(!gate.success)return gate;
+        var definition:Object=org.flashNight.arki.skill.SkillFeatureRegistry.get(featureId);
+        if(definition==undefined||typeof enabled!="boolean")return fail("invalid_payload");
+        if(gate.scan.tailData)return fail("corrupt_skill_state");
+        var parent:Object=inspectFromScan(gate.scan,definition.skillKey);
+        if(!parent.learned)return fail("not_learned");
+        if(parent.stateHealth!="ok")return fail("corrupt_skill_state");
+        if(!org.flashNight.arki.skill.SkillFeaturePolicy.meetsLevel(parent.level,definition.minLevel))return fail("level_locked");
+        var prefs:Object=org.flashNight.arki.skill.SkillFeaturePolicy.readState(root());
+        if(!prefs.valid)return fail("corrupt_skill_state");
+        if((prefs.disabled[featureId]!==true)==enabled)return writeNoop("manage",null);
+        var next:Object=org.flashNight.arki.skill.SkillFeaturePolicy.withChoice(root(),featureId,enabled);
+        if(typeof next=="undefined")return fail("invalid_payload");
+        var before:Object=captureTransactionState();
+        if(root()._saveExt==undefined)root()._saveExt={};
+        if(next==null)delete root()._saveExt.skillFeatures;else root()._saveExt.skillFeatures=next;
+        return finishMutation([definition.skillKey],before,false);
+    }
+
+    public static function refreshFeaturePreferences():Void {
+        org.flashNight.arki.skill.SkillFeaturePolicy.project(root());
+    }
+
+    private static function projectFeatures(scan:Object):Array {
+        var list:Array=org.flashNight.arki.skill.SkillFeatureRegistry.all();var result:Array=[];
+        var prefs:Object=org.flashNight.arki.skill.SkillFeaturePolicy.readState(root());
+        for(var i:Number=0;i<list.length;i++) {
+            var d:Object=list[i];var parent:Object=inspectFromScan(scan,d.skillKey);
+            if(!parent.learned)continue;
+            var unlocked:Boolean=parent.stateHealth=="ok"&&!parent.writeBlocked
+                &&org.flashNight.arki.skill.SkillFeaturePolicy.meetsLevel(parent.level,d.minLevel);
+            var enabled:Boolean=!prefs.valid||prefs.disabled[d.id]!==true;
+            result.push({id:d.id,skillKey:d.skillKey,label:d.label,description:d.description,minLevel:d.minLevel,
+                unlocked:unlocked,enabled:enabled,effectiveEnabled:unlocked&&parent.enabled&&enabled,
+                writeBlocked:!unlocked||!prefs.valid});
+        }
+        return result;
+    }
+
     public static function setPassive(skillKey:String, enabled:Boolean, expectedRevision:Number):Object {
         var gate:Object = writeGate(expectedRevision);
         if (!gate.success) return gate;
@@ -364,6 +407,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
     }
 
     public static function commitLearn(skillKey:String, desiredLevel:Number, cost:Number, expectedRevision:Number):Object {
+        if (!org.flashNight.arki.scene.Cf6Type61Service.skillAllowed(skillKey)) return fail("trainer_skill_forbidden");
         var gate:Object = writeGate(expectedRevision);
         if (!gate.success) return gate;
         if (!safeSkillKey(skillKey) || !wholeInRange(desiredLevel, 1, 100) || !wholeInRange(cost, 0, 2147483647)) return fail("invalid_payload");
@@ -406,6 +450,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
 
     /** Only the durable reward domain calls this; ordinary trainer costs and level gates remain unchanged. */
     public static function rewardSkillStatus(skillKey:String, level:Number):Object {
+        if (!org.flashNight.arki.scene.Cf6Type61Service.skillAllowed(skillKey)) return {success:false,error:"trainer_skill_forbidden"};
         var sync:Object = synchronize();
         if (!sync.success || sync.scan.tailData) return {success:false,error:"corrupt_skill_state"};
         var state:Object = inspectFromScan(sync.scan,skillKey);
@@ -457,7 +502,9 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         if (_rewardState == null) return true;
         var before:Object = _rewardState;
         _rewardState = null;
-        if (!committed) restoreTransactionState(before);
+        // RewardStashService has already restored the authoritative whole ext.
+        // Only restore this skill domain; its captured candidate ext was mutated by selection.
+        if (!committed) restoreTransactionState(before, true);
         else {projectCommittedSkills(skillProjectionMask(before));runOptionalRenderers();}
         return true;
     }
@@ -488,6 +535,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
 
     /** 按技能身份比较等级/启用事实；行重排和普通快捷槽移动不失效人物数值。 */
     private static function skillProjectionMask(before:Object):Number {
+        if(before.featureSignature!=org.flashNight.arki.skill.SkillFeaturePolicy.signature(root()))return 2;
         var old:Object={};var table:Array=root().主角技能表;var i:Number;
         for(i=0;i<before.rows.length;i++) {
             var row:Object=before.rows[i].values;
@@ -540,7 +588,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         var firstIndex:Object = {};
         var duplicateKeys:Object = {};
         var diagnostics:Array = [];
-        var parts:Array = ["len", table.length];
+        var parts:Array = ["len", table.length, "features", org.flashNight.arki.skill.SkillFeaturePolicy.signature(r)];
         var i:Number;
         for (i = 0; i < SKILL_ROW_COUNT; i++) {
             if (i >= table.length || !table.hasOwnProperty(String(i))) {
@@ -758,6 +806,9 @@ class org.flashNight.arki.skill.SkillLoadoutService {
             passiveSnapshot:copyPassiveCache(r.主角被动技能),
             dirtyExists:dirtyExists, dirty:r.存档系统 == null ? undefined : r.存档系统.dirtyMark,
             originalValues:originalValues, dynamicMetadata:dynamicMetadata,
+            featureExtExists:r.hasOwnProperty("_saveExt"),featureExt:r._saveExt,
+            featureExists:r._saveExt!=undefined&&r._saveExt.hasOwnProperty("skillFeatures"),featureValue:r._saveExt.skillFeatures,
+            featureSignature:org.flashNight.arki.skill.SkillFeaturePolicy.signature(r),
             signature:_signature, lastScan:_lastScan, revision:_revision};
     }
 
@@ -777,7 +828,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         for (k in snapshot) target[k] = snapshot[k];
     }
 
-    private static function restoreTransactionState(before:Object):Void {
+    private static function restoreTransactionState(before:Object, preserveRestoredSaveExt:Boolean):Void {
         var r:Object = root();
         var table:Array = before.table;
         for (var i:Number = 0; i < SKILL_ROW_COUNT; i++) delete table[i];
@@ -811,6 +862,12 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         }
         restoreOriginalValues(r, before.originalValues);
         restoreDynamicMetadata(before.dynamicMetadata);
+        if (preserveRestoredSaveExt !== true) {
+            if(before.featureExtExists) {
+                r._saveExt=before.featureExt;
+                if(before.featureExists)r._saveExt.skillFeatures=before.featureValue;else delete r._saveExt.skillFeatures;
+            } else delete r._saveExt;
+        }
         _signature = before.signature;
         _lastScan = before.lastScan;
         _revision = before.revision;
@@ -914,6 +971,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         for (k in live) if (computed[k] == undefined) staleKeys.push(k);
         for (i = 0; i < staleKeys.length; i++) delete live[staleKeys[i]];
         for (k in computed) live[k] = computed[k];
+        org.flashNight.arki.skill.SkillFeaturePolicy.project(r);
         return recalculateDynamicCooldownDomain();
     }
 

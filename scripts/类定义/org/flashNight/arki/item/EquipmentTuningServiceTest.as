@@ -58,6 +58,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         testWornRollbackAndUnknownReconcile();
         testPreviewStatRows();
         testQuantityContractAndQuarantineDiagnostics();
+        testReportedMissionArmorConversion();
         trace("EquipmentTuningServiceTest Tests Passed: " + _passed);
         trace("EquipmentTuningServiceTest Tests Failed: " + _failed);
         trace("=== EquipmentTuningServiceTest end ===");
@@ -591,6 +592,25 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
                     && _root.物品栏.背包.getMutationRevision() == bagRevision
                     && _root.收集品栏.材料.getMutationRevision() == materialRevision,
                 "不足报价不签发提交能力且零写 " + owned);
+        }
+    }
+
+    private static function testReportedMissionArmorConversion():Void {
+        var pairs:Array=[["装甲头盔","3XF特勤头盔"],["军阀重装兵衣服","3XF特勤上装"],["军阀装甲裤","3XF特勤下装"]];
+        for(var i:Number=0;i<pairs.length;i++) {
+            resetFixture();
+            ItemUtil.loadItemData(org.flashNight.arki.item.ReportedArmorConversionData.rows());
+            var first:BaseItem=equipment(pairs[i][0],5,[]),second:BaseItem=equipment(pairs[i][1],1,[]);
+            _root.物品栏.背包.add(0,first);_root.物品栏.背包.add(1,second);
+            var inventory:Object=inventorySnapshot();
+            assertTrue(inventory.slots[0].item.itemKind=="equipment" && inventory.slots[1].item.itemKind=="equipment"
+                && inventory.slots[0].item.use==inventory.slots[1].item.use
+                && inventory.slots[0].item.enhancementLevel==5 && inventory.slots[1].item.enhancementLevel==1,
+                "任务奖励+5与3XF+1进入相同装备槽投影 "+pairs[i][0]);
+            var result:Object=webCommit("reported-mission-armor-"+i,"convert",0,1,"",undefined);
+            assertTrue(result.preview.success && result.commit.success && first.value.level==1 && second.value.level==5,
+                "实际任务奖励和3XF装备可通过完整preview/commit交换强化度 "+pairs[i][0]);
+            trace("ReportedArmorConversion Pair: source="+pairs[i][0]+" target="+pairs[i][1]+" success="+result.commit.success+" sourceLevel="+first.value.level+" targetLevel="+second.value.level);
         }
     }
 

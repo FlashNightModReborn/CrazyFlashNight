@@ -45,6 +45,7 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
         testCommitIsAtomicAndReplaySafe();
         testManageWriteIgnoresResidualTrainerSession();
         testMoveSlotDispatchesPhysicalAtomicWrite();
+        testFeatureCommandWire();
         testTrainerWriteContextIsRejected();
         testExplicitRendererFailureDoesNotRollbackOrStickBusy();
         testMissingRenderersSkipWithoutRollback();
@@ -507,6 +508,20 @@ class org.flashNight.arki.skill.SkillPanelServiceTest {
         var f:Object = fixture(); var opened:Object = SkillPanelService.openTrainer(f.npc, "world_skill_trainer");
         return SkillPanelService.execute("learnPreview", {v:1, skillKey:skillKey, desiredLevel:desiredLevel,
             trainerSession:opened.trainerSession, expectedRevision:SkillLoadoutService.getRevision()});
+    }
+
+    private static function testFeatureCommandWire():Void {
+        var f:Object=fixture();f.root.技能表对象.冲击连携=meta("冲击连携","被动",true,false,1);
+        learn(f.root,2,"冲击连携",10);
+        _root.gameCommands.skillSetFeature({v:1,callId:1001,view:"manage",featureId:"impact_chain.half_reload",
+            enabled:false,expectedRevision:SkillLoadoutService.getRevision()});
+        var result:Object=(new JSON(false)).parse(f.root.server.sent[f.root.server.sent.length-1]);
+        check(result.task=="skill_response"&&result.callId==1001&&result.success&&result.snapshot.features.length==8
+            &&result.snapshot.features[0].enabled===false,"registered child command returns the exact typed feature snapshot through JSON wire");
+        var before:Object=f.root._saveExt.skillFeatures;
+        result=SkillPanelService.execute("setFeature",{v:1,view:"manage",trainerSession:"foreign",featureId:"impact_chain.pistol_power",
+            enabled:false,expectedRevision:SkillLoadoutService.getRevision()});
+        check(!result.success&&result.error=="invalid_payload"&&f.root._saveExt.skillFeatures===before,"teacher capability cannot be smuggled into a child preference write");
     }
 
     private static function fixture():Object {

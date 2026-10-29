@@ -1,0 +1,74 @@
+{
+  "schema": "cf6-soldier.elite-panel-inheritance.v3",
+  "pairs": [
+    {
+      "baseUnit": 466,
+      "eliteUnit": 478,
+      "baseLinkage": "敌人-CF6特种兵",
+      "eliteLinkage": "敌人-CF6特种精英",
+      "panelEqualExcludingDisplayNameAndToughness": true,
+      "equipmentDifferences": {
+        "secondary": {
+          "ordinary": null,
+          "elite": "FR506"
+        },
+        "secondary2": {
+          "ordinary": null,
+          "elite": "FR506"
+        }
+      },
+      "panelDifferences": {
+        "韧性系数": {
+          "ordinary": 5.0,
+          "elite": 50
+        }
+      },
+      "sourcePanelSha256": "cd38c2b07a56ed5d05db5f52edd423529c406967149d7ba527d6a10c686b9968"
+    },
+    {
+      "baseUnit": 467,
+      "eliteUnit": 479,
+      "baseLinkage": "敌人-CF6持盾特种兵",
+      "eliteLinkage": "敌人-CF6持盾特种精英",
+      "panelEqualExcludingDisplayNameAndToughness": true,
+      "equipmentDifferences": {
+        "secondary": {
+          "ordinary": null,
+          "elite": "FR506"
+        },
+        "secondary2": {
+          "ordinary": null,
+          "elite": "FR506"
+        }
+      },
+      "panelDifferences": {
+        "韧性系数": {
+          "ordinary": 5.0,
+          "elite": 50
+        }
+      },
+      "sourcePanelSha256": "2eef9cbe6e97c2e49eefb0646daf5644ea6df881046e7bd32bb434b879d21418"
+    }
+  ],
+  "basis": "Ordinary panel and primary equipment; authorized toughness and explicit retreat FR506 module.",
+  "tuningSha256": "e9d2fab2d80633ee6ce595f59013fac1a3e701b818419d87216916515690e177",
+  "sidearmModule": {
+    "item": "FR506",
+    "secondItem": "FR506",
+    "slots": [
+      "手枪",
+      "手枪2"
+    ],
+    "actions": [
+      "retreat"
+    ],
+    "ablation": "noSidearm",
+    "externalParameters": [
+      "手枪",
+      "手枪2"
+    ],
+    "passiveEffects": "Both standard equipment slots contribute their real weight and cross-slot projections. noSidearm disables only the second pistol behavior."
+  },
+  "extraDamageMultiplier": false,
+  "extraArmor": false
+}

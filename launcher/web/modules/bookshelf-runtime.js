@@ -33,6 +33,11 @@
     function chapterNumberForBook(bookId) {
         return bookId === 'repair-campus' ? 1 : bookId === 'cf6-sting' ? 6 : 0;
     }
+    function playTarget(bookId, routeId) {
+        if (bookId === 'repair-campus') return bookId;
+        if (bookId !== 'cf6-sting') return null;
+        return routeId === 'type61' ? 'cf6-sting.type61' : routeId === 'historical' ? bookId : null;
+    }
     function adoptCatalog(data) {
         if (!data || data.schema !== 'bookshelf-catalog.v1' || !Array.isArray(data.books)
                 || !data.books.length || data.books.length > 32) throw new Error('invalid_catalog');
@@ -106,5 +111,5 @@
     };
     RequestMux.prototype.destroy = function() { this.mux.destroy(); };
     return {books:books, pageUrl:pageUrl, safeAsset:safeAsset, adoptCatalog:adoptCatalog, validateIndex:validateIndex,
-        chapterNumberForBook:chapterNumberForBook, RequestMux:RequestMux};
+        chapterNumberForBook:chapterNumberForBook, playTarget:playTarget, RequestMux:RequestMux};
 });

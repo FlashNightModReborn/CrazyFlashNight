@@ -12,10 +12,11 @@ def convert(directory, content):
     path = directory/'fixture.svg'
     path.write_text(content,encoding='utf8')
     vector.NativePart.shared_references = {}
-    return vector.NativePart(path,'test/soldier',(0,0)).build()
+    return vector.NativePart(path,'Codex/特种兵/分件/test',(0,0)).build()
 
 
 def main():
+    (ROOT/'tmp').mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='cf6-soldier-vector-',dir=ROOT/'tmp') as name:
         directory = Path(name).resolve()
         assert directory.is_relative_to((ROOT/'tmp').resolve())

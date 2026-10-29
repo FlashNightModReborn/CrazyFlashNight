@@ -112,6 +112,7 @@ class org.flashNight.arki.scene.BookRunService {
             chapter.started = true; chapter.storyActive = false; delete _chapterWatch.onEnterFrame;
             org.flashNight.arki.scene.Cf6MapMechanism.beginRoom(_root.gameworld, chapter.owner,
                 config.maps[chapter.index].id, config.maps[chapter.index].mechanism);
+            org.flashNight.arki.scene.Cf6Type61Service.beginRoom(_root.gameworld, chapter.owner, config.maps[chapter.index].id);
             org.flashNight.arki.scene.Cf6BossEncounter.start(_root.gameworld, chapter.owner,
                 org.flashNight.arki.scene.BookRunService.cf6BossPlan(run, chapter.index));
             org.flashNight.arki.scene.BookRunService.showChapterDialogue(chapter.index, chapter.owner, chapter.slot);
@@ -181,12 +182,12 @@ class org.flashNight.arki.scene.BookRunService {
         _startError = trial ? "挑战关卡未能准备，请返回原角色。" : "书中关卡未能准备，请返回书架。";
         if (run == null || run.outcome != "active" || run.slot !== String(_root.savePath)
                 || (!trial && (!BookDefinition.supports(run.bookId) || !BookDefinition.ready(run.bookId)))
-                || (run.bookId === "cf6-sting" && run.routeId !== "historical")) return "";
+                || (run.bookId === "cf6-sting" && !BookDefinition.isCf6Route(run.routeId))) return "";
         var startMap:Number = 0;
         var planSeed:Number = run.seed;
         if (_debug != null) { planSeed = _debug.seed; run.planSeed = planSeed; startMap = _debug.startMap; run.debug = true; _debug = null; }
         // 原档的进入凭据中的 seed 保持不变；调试随机种子单独存放。
-        var stages:Array = trial ? org.flashNight.arki.scene.LeeTrialDefinition.stages() : BookRunRules.stages(planSeed, startMap, run.bookId);
+        var stages:Array = trial ? org.flashNight.arki.scene.LeeTrialDefinition.stages() : BookRunRules.stages(planSeed, startMap, run.bookId,run.routeId);
         if (stages.length == 0) return "";
         _bossPlan = stages[stages.length - 1].BasicInformation.BookBoss;
         for (var i:Number = 0; i < stages.length; i++) {
@@ -377,7 +378,7 @@ class org.flashNight.arki.scene.BookRunService {
         var run:Object = _root._saveExt.bookRun;
         return run != null && run.slot === String(_root.savePath)
             && (BookDefinition.supports(run.bookId) || run.bookId === "lee-trial")
-            && (run.bookId !== "cf6-sting" || run.routeId === "historical")
+            && (run.bookId !== "cf6-sting" || BookDefinition.isCf6Route(run.routeId))
             && _root.当前关卡名 === stageName(run);
     }
     private static function stageName(run:Object):String {
@@ -386,7 +387,7 @@ class org.flashNight.arki.scene.BookRunService {
     }
     public static function playerLevelCapReached():Boolean {
         var run:Object=_root._saveExt.bookRun;
-        return run.bookId === "cf6-sting" && run.routeId === "historical"
+        return run.bookId === "cf6-sting" && BookDefinition.isCf6Route(run.routeId)
             && run.slot === String(_root.savePath) && !isNaN(Number(_root.等级)) && Number(_root.等级) >= 60;
     }
     public static function returnFrame(fallback) {

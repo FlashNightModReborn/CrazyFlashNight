@@ -21,28 +21,48 @@ IMPORTS = {
     'Codex特种兵素材': 'flashswf/arts/new/Codex特种兵素材.swf',
     '敌人-CF6特种兵': 'flashswf/arts/new/Codex特种兵素材.swf',
     '敌人-CF6持盾特种兵': 'flashswf/arts/new/Codex特种兵素材.swf',
+    '敌人-CF6特种精英': 'flashswf/arts/new/Codex特种兵素材.swf',
+    '敌人-CF6持盾特种精英': 'flashswf/arts/new/Codex特种兵素材.swf',
+    '敌人-CF6特种教官': 'flashswf/arts/new/Codex特种兵素材.swf',
+    '敌人-CF6持盾特种教官': 'flashswf/arts/new/Codex特种兵素材.swf',
+    'CF6战术烟雾': 'flashswf/arts/new/Codex特种兵素材.swf',
     '枪-长枪-M4A1改': 'flashswf/arts/things.swf',
     '枪-长枪-AK74战术版': 'flashswf/arts/things.swf',
     '枪-长枪-M4A1战术版': 'flashswf/arts/things.swf',
     '枪-长枪-DD MK18战术版': 'flashswf/arts/new/Au的素材.swf',
     '枪-长枪-AK47': 'flashswf/arts/things.swf',
+    '枪-手枪-FR506': 'flashswf/arts/new/偷吃屑鱼坟头贡品.swf',
+    '枪-手枪-短HK53': 'flashswf/arts/new/偷吃屑鱼坟头贡品.swf',
+    '偷吃屑鱼坟头贡品': 'flashswf/arts/new/偷吃屑鱼坟头贡品.swf',
+    '手雷-高爆手雷': 'flashswf/arts/原版素材库-子弹.swf',
+    '手雷-普通手雷': 'flashswf/arts/原版素材库-子弹.swf',
+    '高爆手雷': 'flashswf/arts/原版素材库-子弹.swf',
+    '普通手雷': 'flashswf/arts/原版素材库-子弹.swf',
+    '普通爆炸': 'flashswf/arts/原版素材库-子弹.swf',
+    '原版素材库-子弹': 'flashswf/arts/原版素材库-子弹.swf',
 }
 
 
 def canonical_fixture_facades():
     skill_path=ROOT/'scripts/逻辑/单位函数/单位函数_lsy_主角技能.as'
     enemy_path=ROOT/'scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as'
+    player_path=ROOT/'scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as'
     scripts=[]
-    for path,names in ((skill_path,('霸体减伤','移除霸体减伤')),(enemy_path,('行走',))):
+    for path,names in ((skill_path,('霸体减伤','移除霸体减伤')),(enemy_path,('行走',)),(player_path,('初始化掉落物',))):
         text=path.read_text(encoding='utf-8-sig')
         for name in names:
-            owner='敌人函数' if name=='行走' else '技能函数'
+            owner='敌人函数' if name=='行走' else '主角函数' if name=='初始化掉落物' else '技能函数'
             pattern=r'(?m)^_root\.'+owner+r'\.'+name+r' = function\([^\n]*\)[^\n]*\{[\s\S]*?^\};'
             matches=re.findall(pattern,text)
             if len(matches)!=1:raise ValueError('Canonical fixture facade changed: '+name)
             source=matches[0]
             if name=='行走':source=source.replace('_root.敌人函数.行走 =','_root.士兵测试标准行走 =',1)
+            if name=='初始化掉落物':source=source.replace('_root.主角函数.初始化掉落物 =','_root.士兵测试初始化掉落物 =',1)
             scripts.append(source)
+    bullet_source=(ROOT/'scripts/逻辑/战斗系统/战斗系统_fs_lsy_aka_重写子弹生成逻辑.as').read_text(encoding='utf-8-sig')
+    matches=re.findall(r'(?m)^_root\.子弹属性初始化 = function\([^\n]*\)[^\n]*\{[\s\S]*?^\};?',bullet_source)
+    if len(matches)!=1:raise ValueError('Canonical grenade payload initializer changed')
+    scripts.append(matches[0])
     return ('import org.flashNight.arki.component.Buff.*;\n'
         'import org.flashNight.arki.component.Buff.Component.*;\n_root.技能函数={};\n'+'\n'.join(scripts))
 
@@ -63,7 +83,7 @@ def main():
         item.set('linkageExportInFirstFrame','true')
         generated['LIBRARY/'+name+'.xml'] = native.xml_bytes(item)
         E.SubElement(includes,N+'Include',href=name+'.xml',itemID=native.item_id(name),loadImmediate='false')
-        (anchors if index<3 else instances).append(native.instance(name,symbol_type='movie clip',name='source'+str(index),alpha_mult=0,
+        (anchors if index<3 or relative=='flashswf/arts/new/偷吃屑鱼坟头贡品.swf' or linkage=='原版素材库-子弹' else instances).append(native.instance(name,symbol_type='movie clip',name='source'+str(index),alpha_mult=0,
             matrix=(1,0,0,1,-5000,-5000)))
     timeline = E.SubElement(E.SubElement(doc,N+'timelines'),N+'DOMTimeline',name='场景 1')
     E.SubElement(timeline,N+'layers').append(native.layer('真实 RSL 消费者',[

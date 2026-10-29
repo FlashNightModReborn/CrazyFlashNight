@@ -20,6 +20,9 @@ $focusedRun=@{
         '(?m)^CharacterBuildProductionLifecycleTest Tests Passed: [1-9][0-9]*\r?$'
         '(?m)^CharacterBuildProductionLifecycleTest Tests Failed: 0\r?$'
         '(?m)^CHARACTER_PRODUCTION_LIFECYCLE .*"label":"finalize"'
+        '(?m)^CHARACTER_PRODUCTION_LIFECYCLE .*"label":"mode_wait_ready"'
+        '(?m)^CHARACTER_PRODUCTION_LIFECYCLE .*"label":"mode_wait_timeout"'
+        '(?m)^CHARACTER_PRODUCTION_LIFECYCLE .*"label":"mode_wait_stale"'
     )
     SuccessSummary='Real CharacterBuild owner and full player-template lifecycle with in-memory domain ports'
     TimeoutSeconds=$TimeoutSeconds

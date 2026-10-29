@@ -21,6 +21,8 @@ class org.flashNight.arki.unit.PlayerStatProjectionTest {
             testResources();
             testStableEquipmentInput();
             testPersistentProjection();
+            testNegativePunch();
+            testAiAuxiliaryIsolation();
             testRuntimeSources();
             testWeaponModes();
         } catch (error) {
@@ -72,6 +74,52 @@ class org.flashNight.arki.unit.PlayerStatProjectionTest {
             api.applyPersistentSnapshot(t,api.buildPersistentSnapshot(t));
             check(t.魔法抗性.原体==85,"committed static set source survives projection");
         } finally {items.itemSetConfigDict=oldSets;}
+    }
+
+    private static function testNegativePunch():Void {
+        var api:Object=org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;
+        var t:Object=persistentFixture();
+        t.__persistentEquipmentInputV1.slots.手部装备.data.punch=-5;
+        api.applyPersistentSnapshot(t,api.buildPersistentSnapshot(t));
+        check(t.空手攻击力==95 && t.佣兵技能概率抑制基数==0,
+            "legitimate negative punch keeps penalty without invalid AI weight");
+        check(t.hp==600 && t.mp==200,"negative punch projection does not replay resources");
+        t.__persistentEquipmentInputV1.slots.头部装备.data.punch=16;
+        for(var i:Number=0;i<3;i++) api.applyPersistentSnapshot(t,api.buildPersistentSnapshot(t));
+        check(t.空手攻击力==111 && t.佣兵技能概率抑制基数==4,
+            "mixed punch bonuses retain positive weight without accumulating on refresh");
+        t.__persistentEquipmentInputV1.slots.手部装备.data.punch=0;
+        api.applyPersistentSnapshot(t,api.buildPersistentSnapshot(t));
+        check(t.空手攻击力==116 && t.佣兵技能概率抑制基数==4,"zero punch leaves positive weight unchanged");
+        t.__persistentEquipmentInputV1.slots.手部装备.data.punch=NaN;
+        var rejected:Boolean=false;
+        try {api.buildPersistentSnapshot(t);} catch(error) {rejected=String(error).indexOf("stat_input_invalid:punch")>=0;}
+        check(rejected && t.空手攻击力==116 && t.佣兵技能概率抑制基数==4,
+            "nonfinite punch input remains rejected before any live write");
+    }
+
+    private static function testAiAuxiliaryIsolation():Void {
+        var api:Object=org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer;
+        var policy:Object=org.flashNight.arki.unit.UnitAI.behavior.LegacyUnarmedSkillChance;
+        var t:Object=persistentFixture();
+        var bad:Array=[NaN,undefined,Number.POSITIVE_INFINITY,-1];
+        for(var i:Number=0;i<bad.length;i++) {
+            var record:Object=api.buildPersistentSnapshot(t);
+            record.unbuffed.佣兵技能概率抑制基数=bad[i];
+            api.applyPersistentSnapshot(t,record);
+            check(api.verifyPersistentSnapshot(t,record) && t.hp==600 && t.mp==200 && t.空手攻击力==100,
+                "AI auxiliary fault does not reject required stats or write resources case="+i);
+            check(policy.limit(100,t.佣兵技能概率抑制基数)==0,
+                "invalid AI weight declines optional skill roll case="+i);
+        }
+        t.__persistentEquipmentInputV1.slots.手部装备.data.punch=16;
+        api.applyPersistentSnapshot(t,api.buildPersistentSnapshot(t));
+        check(t.佣兵技能概率抑制基数==4 && t.空手攻击力==116 && policy.limit(100,t.佣兵技能概率抑制基数)==86,
+            "valid equipment refresh restores current AI weight and original chance");
+        check(policy.limit(20,4)==20 && policy.limit(100,0)==90 && policy.limit(100,81)==72,
+            "valid legacy AI probability formula remains exact");
+        check(policy.limit(100,null)==0 && policy.limit(100,"4")==0,
+            "malformed auxiliary values do not enter the square root");
     }
 
     private static function testStableEquipmentInput():Void {

@@ -705,6 +705,14 @@ class org.flashNight.neur.Server.ServerManager {
             org.flashNight.arki.dialogue.NativeDialogueService.applyCaps(response.modes);
             return;
         }
+        // 插话「我接了」发布成功后的 Host 推送：{task:"agent_task_publish", taskId, npc, slot, token}。
+        // 校验 → 版本读取 → 热更收敛 → 关旧对白 → GetTask 接管在 通信_aka_Agent联动.as。
+        if (response.task == "agent_task_publish") {
+            if (_root.agent != undefined && typeof _root.agent.接收任务发布推送 == "function") {
+                _root.agent.接收任务发布推送(response);
+            }
+            return;
+        }
         // 每连接代由配套 Host 确认原生天气绘制；未确认时仅保留天气选择状态。
         if (response.task == "weather_caps") {
             org.flashNight.arki.render.WeatherParticleRenderer.setNativeEnabled(response.native === true);

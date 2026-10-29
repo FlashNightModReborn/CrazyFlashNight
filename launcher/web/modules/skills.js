@@ -12,7 +12,6 @@ var SkillsPanel = (function() {
         throw new Error('SkillsPanel load order: item-filter.js, skills-library.js, skills-trainer.js, skills-loadout.js, skills-interactions.js, skills-render.js, skills-diagnostics.js, then skills.js.');
     }
 
-
     var _scaleEl = null, _scaleHandle = null, _shell = null, _tooltipScope = null, _helpAction = null;
     var _leftRoot = null, _rightRoot = null, _list = null, _search = null;
     var _searchToggle = null, _searchControls = null, _searchClose = null, _searchExpanded = false;
@@ -67,6 +66,7 @@ var SkillsPanel = (function() {
         selectSkill:selectSkill, reorderTo:reorderTo, adjacentVisibleEntry:adjacentVisibleEntry,
         focusSibling:focusSibling, bindSkillTooltip:bindSkillTooltip, selectedEntry:selectedEntry,
         copyDiagnostic:copyDiagnostic, requestClose:requestClose, writesDisabled:writesDisabled,
+        featuresFor:featuresFor, openFeatures:openFeaturePage,
         writeCommand:writeCommand, stageDesiredLevel:stageDesiredLevel, setDesiredLevel:setDesiredLevel,
         setDesiredLevelState:function(level) { _desiredLevel = Number(level); },
         targetMaxLevel:targetMaxLevel,
@@ -76,6 +76,15 @@ var SkillsPanel = (function() {
         entryByKey:entryByKey
     });
 
+    var _featureEditor = Presenter.createFeatureEditor({
+        getState:function() { return {shell:_shell, rightRoot:_rightRoot, helpAction:_helpAction,
+            view:_view, snapshot:_snapshot, schemaError:_schemaError}; },
+        featuresFor:featuresFor, button:button, empty:empty, helpSpec:skillHelpSpec,
+        getCoordinatorState:function() { return _coordinator.getState(); },
+        isWriteBlocked:function() { return _coordinator.isWriteBlocked(); },
+        retryReconcile:function() { _coordinator.retryReconcile(); },
+        requestSnapshot:requestSnapshot, requestClose:requestClose, writeCommand:writeCommand
+    });
     Panels.register('skills', {
         create: createDOM,
         onOpen: onOpen,
@@ -444,7 +453,12 @@ var SkillsPanel = (function() {
     }
 
     function selectedEntry() { return Library.entryByKey(_snapshot, _view, _selectedKey); }
-    function renderDetail() { _renderer.renderDetail(_rightRoot); }
+    function renderDetail() { _renderer.renderDetail(_rightRoot); _featureEditor.render(); }
+    function featuresFor(skillKey) {
+        return _snapshot && Array.isArray(_snapshot.features)
+            ? _snapshot.features.filter(function(row) { return row.skillKey === skillKey; }) : [];
+    }
+    function openFeaturePage(skillKey) { _featureEditor.open(skillKey); }
     function adjacentVisibleEntry(entry, delta) {
         return Library.adjacent(visibleEntries(), entry, delta);
     }
@@ -792,6 +806,7 @@ var SkillsPanel = (function() {
             for (var j = 0; j < snapshot.trainer.entries.length; j++) if (!validEntry(snapshot.trainer.entries[j], true))
                 return {ok:false,error:'教师目录拒绝纯 skillKey 或缺字段条目。'};
         } else if (snapshot.trainer !== null) return {ok:false,error:'管理快照不得携带教师 capability。'};
+        if (!SkillRuntime.validateFeatures(snapshot)) return {ok:false,error:'子能力快照结构或前置状态无效。'};
         return {ok:true};
     }
 
@@ -1040,6 +1055,7 @@ var SkillsPanel = (function() {
         return isFinite(value) && value >= 50 ? value : 3000; }
     function requestClose(reason) {
         reason = typeof reason === 'string' ? reason : 'close';
+        if (reason === 'escape' && _featureEditor.isActive() && !(_shell && _shell.hasModal())) { _featureEditor.close('escape'); return true; }
         if (Interactions.consumeClose({
                 reason:reason,
                 shell:_shell,
@@ -1079,6 +1095,7 @@ var SkillsPanel = (function() {
             if (_filterNavigators[definition.id]) _filterNavigators[definition.id].destroy();
         });
         _filterNavigators = {}; _filterBoard = null; _filterResetButton = null;
+        _featureEditor.destroy();
         if (_density) { _density.destroy(); _density = null; }
         _densityToggle = null; _confirmationToggle = null;
         if (_tooltipScope) { _tooltipScope.dispose(); _tooltipScope = null; }
@@ -1183,7 +1200,7 @@ var SkillsPanel = (function() {
     }
     function successMessage(cmd) {
         return {learnCommit:'技能研习完成。',equip:'快捷栏已更新。',unequip:'技能已卸载。',
-            moveSlot:'快捷槽顺序已更新。',setPassive:'被动状态已更新。',reorder:'技能顺序已更新。'}[cmd] || '技能状态已更新。';
+            moveSlot:'快捷槽顺序已更新。',setPassive:'被动状态已更新。',setFeature:'子能力状态已更新。',reorder:'技能顺序已更新。'}[cmd] || '技能状态已更新。';
     }
     function errorMessage(error) {
         var messages = {invalid_payload:'无法完成技能操作，请重试。',unsupported_cmd:'暂不支持该操作。',

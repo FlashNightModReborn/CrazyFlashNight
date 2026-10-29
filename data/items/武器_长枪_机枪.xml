@@ -743,6 +743,7 @@
     </balance>
   </item>
   <item weapontype="机枪">
+    <allowedModTags>等级校正</allowedModTags>
     <name>PKM战术版</name>
     <displayname>PKP机枪</displayname>
     <icon>PKP</icon>
@@ -751,7 +752,8 @@
     <price>60000</price>
     <description>PKP佩切涅格机枪（Pecheneg）是由TsNIITochMash在1999年开发的通用机枪，为传奇机枪PKM的现代化升级版本。
     PKP采用了更先进的固定式冷却枪管设计，使其能够长时间稳定持续射击，而无需更换枪管。
-    凭借出色的可靠性、精度和持续火力，PKP在21世纪的诸多战场上发挥着重要作用。</description>
+    凭借出色的可靠性、精度和持续火力，PKP在21世纪的诸多战场上发挥着重要作用。
+内置电力结构，改装仅支持降低使用等级需求的电脑芯片或成长的勋章。</description>
     <inherentTags>电力,NOAH</inherentTags>
     <blockedTags>导轨基座,枪口,弹匣,下导轨,瞄具,枪机,外部紧固,表面涂层,弹药,机匣内构,核心模块,枪管</blockedTags>
     <data>

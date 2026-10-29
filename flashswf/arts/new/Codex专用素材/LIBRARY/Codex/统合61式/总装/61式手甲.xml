@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/统合61式/总装/61式手甲" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="61式手甲">
+      <layers>
+        <DOMLayer name="原生站姿分件" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/统合61式/原生/男变装-Codex-统合61式手甲左手-closed" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.047345000" b="-0.228058000" c="0.228209000" d="0.047314000" tx="39.592026000" ty="-104.888170000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/统合61式/原生/男变装-Codex-统合61式手甲右手-closed" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.027989000" b="-0.233361000" c="0.233515000" d="0.027971000" tx="12.876148000" ty="-105.826184000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

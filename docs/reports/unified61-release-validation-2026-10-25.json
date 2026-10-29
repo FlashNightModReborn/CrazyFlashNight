@@ -1,0 +1,117 @@
+{
+  "schema": "cf7-unified61-release-validation.v1",
+  "sourceBase": "c11881e44516c9afa8832f8dc8e25dcd334255d0",
+  "host": {
+    "total": 8079,
+    "initialPassed": 7929,
+    "initialInputQualificationCancelled": 120,
+    "exactRetryPassed": 120,
+    "passedCaseExecutions": 8049,
+    "conditionalSkipped": 30,
+    "unresolvedFailures": 0,
+    "singleAllGreenRun": false,
+    "retryMatchedExactlyFailedTestIds": 120,
+    "originalTheoryExecutionsPreserved": true,
+    "sameLoadedCoreAndTests": true,
+    "coreSha256": "E374BDF43AFF93ED5ADE07734D7DD96A9A519A56F3EA87EE0C9B0C7392BBFF6E",
+    "testsSha256": "24BCA9A0DBCBBE41C950C46E0BA5EF556FEA62B0D7B0D01C414F3548FD916CB8",
+    "sourceInputsSha256": "50769f7335178e1ce2bec95a9a21b42be6743d5327b7fcbaf369467e5448caa1",
+    "unchangedSourceFilesVerified": 3240,
+    "runs": [
+      {
+        "path": "tmp/focus-sol-20261013/integration-20261025T135000679Z",
+        "trxSha256": "d9102a8172f4c093c5e35e07f61a77f2b0622dcc92fc749666727ba04199e260"
+      },
+      {
+        "path": "tmp/focus-sol-20261013/integration-20261025T135530312Z",
+        "trxSha256": "3207fd7796abb4dfe0ef44b22d344169088cf3e44b297b9c8fc3a43f9506431d"
+      }
+    ]
+  },
+  "data": {
+    "copySyncCheck": true,
+    "scopedArmorRecordsVerified": 661,
+    "selectedArmorItems": 5,
+    "balanceTestsPassed": 884,
+    "balanceTypecheck": true,
+    "roundtripFilesPassed": 107,
+    "gameplayDataUnchangedByCopy": true
+  },
+  "sourceAndBinaryInheritance": {
+    "sourceBytesInherited": {
+      "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Routing/StateTransition.as": "6eb99d292a0b0c9a99aa8f09dc53dc77a820ced5d87e97414ad12d5a0b15cef9",
+      "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as": "c4b91be9636abec1a910e523dfd253261872bc5461fea772203395d60a7b2486",
+      "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Routing/SkillContainerTransitionTest.as": "52ab73932aa07b97e29c4673fc13697f830362ebce1aed765939a219ab3ec251",
+      "scripts/run-skill-container-transition-tests.ps1": "5a7b483cceed95976fbc3580c420d625bb3db94cef9ffb38f0a4dc9e73deb9d5",
+      "scripts/test-runners/skill-container-transition/TestLoader.as.template": "34e73f25c72996db403470dc4e916c8df312e4d54b7119803b855792689e6ae0",
+      "scripts/类定义/org/flashNight/arki/scene/Cf6MapMechanismTest.as": "22af304ee026744bc442554edfc85da433c3adfe31b73f3268bf0d0790dd88ae",
+      "scripts/run-cf6-map-mechanism-tests.ps1": "04924868e99d28585c0a3a0926f733073a3ff3d3a37225bec5a98e3a96f9ccc9",
+      "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-追踪五连.xml": "18d34b9da66874b25856db848e6bab6bbaaf341631ecc885481f44e26c9f4aff",
+      "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-狼跳.xml": "852c30e2c6fcdf64f62b1a72cd4ac2d5bf2b42e7404e9f08c9844e4c5cdfd8d8",
+      "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-回旋裂地.xml": "49c5bf51ecd30047b3324a3d0e0c1820bbc7d460bc337d2585248e3b62a31103",
+      "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-破坏殆尽.xml": "48c4a7f8b4112f88b0bd8a61433c4d35a39dd8e8be1200ecded216f3f5db1b00",
+      "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as": "94b4b48bde1d9bd95e9e55884987c2aee47979ddc7f7a4cb457e92f5034216c7",
+      "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/VerticalPierceCoverageTest.as": "c39e3b66b087b9caafc080e1061d4b696f2afaec6e78bf0ee0c2d973cc824c46",
+      "scripts/test-runners/vertical-pierce-coverage/TestLoader.as.template": "5d4b9149f569726a918c93ff9ae5cc58044abec3cd1d658d8ca7466aaa43cf16",
+      "scripts/run-vertical-pierce-coverage-tests.ps1": "07ff28955fa51b2f048726cab30f29365fa63e4a5bc91dc950270ec8e30c00dc",
+      "flashswf/arts/new/Codex专用素材.swf": "2b08170ad54e9486dea4cbb15ff7ac724cc33b2e5c691bd2709b19e0fb0e78b8",
+      "flashswf/arts/原版素材库-子弹.swf": "d03534c889a743d1becf97f1b31db39ac6e97d9d86c513f17ac4c74ab9776f2e",
+      "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/UnifiedType61Runtime.as": "85f82abbab6c94616331d2a6ecafd1dac95fbb43770113ddea0e5a4787405b58",
+      "scripts/类定义/org/flashNight/arki/component/Damage/MultiShotDamageHandle.as": "49d84f6bb4e74dc74f58e7c463971e481764cd11bdf79242f1c9db81a6b65051",
+      "scripts/逻辑/战斗系统/战斗系统_fs_联弹管理.as": "878ae9dd086c698a64e09124de11f2de611e7282850ea86b3131441ce8c0ef7e",
+      "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Collider/AABBCollider.as": "a7527d209b8169e2599425cd33a58a6f2efd28f6d62799c61db85825e98a2de6",
+      "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Collider/PolygonCollider.as": "cf13f8d04c264f8029ff1ce6a1927d60b3a0a7058f5c377db533bf9e843cd172",
+      "scripts/类定义/org/flashNight/arki/component/Damage/DamageCalculator.as": "a6fb66e552aafa2425a238b4ea7143962279cc05cd19bab2a63fffd3f1557b45",
+      "scripts/类定义/org/flashNight/arki/bullet/Factory/BulletFactory.as": "d4a763ee6f13889c47eba17933806cb92bbbe5c2f788a0e7515b8a27e3a21ec2",
+      "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Utils/ShootingAngleCalculator.as": "b1b2fcd792905bd42a91b1730f51c412658f956b3e30254caf20f49d2929c837"
+    },
+    "asLoader": {
+      "sha256": "41250A2E137B5C6951FFF424356B10E8EBD92C32CC7D4DCC0EEB5D6CDE841375",
+      "scratchSha256": "E38E2151BF619814A0EA65BF2B19D11D8F78A7704787C47C046666ACEE2F090B",
+      "processExited": true,
+      "tasks": "Ready",
+      "bytes": 6715692,
+      "compilerErrors": 0,
+      "status": "compiled",
+      "compileResidue": false,
+      "compilerWarnings": 0,
+      "elapsedSeconds": 343
+    },
+    "copyChangesOnlyDescriptionsAndDerivedBalanceMetadata": true,
+    "oldEvidencePreserved": true,
+    "newGameplayClaimsFromCopy": false
+  },
+  "scopeBoundaries": {
+    "nativePromotion": false,
+    "fullGameplayAcceptance": false,
+    "realPlayerSavesUsed": false,
+    "oldFailedEvidenceRetained": true,
+    "existingCatalogAndOracleDriftSeparate": true
+  },
+  "npcDialogueRepair": {
+    "sourceBeforeRepair": "af5482c289c3327579126127b1ac60d7e47bcfde",
+    "path": "data/dialogues/npc_dialogue_成员.xml",
+    "originalParseFailure": "Opening and ending tag mismatch: Dialogues line 742 and Dialogue, line 850, column 20 (<string>, line 850)",
+    "beforeSha256": "bc76a771242b036ee5f8cb3c3e20f5610c1385ecd7505bc1ca0ba8165e296d73",
+    "afterSha256": "249e08c550cec53cd4902ecd30180c32b5388492395eab57191b0122100ad228",
+    "onlyDuplicateClosingLineRemoved": true,
+    "syntaxVerifiedFiles": 13,
+    "consumerResultPath": "tmp/unified61-release-20261025/npc-consumer-smoke/result.json",
+    "consumerResultSha256": "a1889ce52ae3e5a8eab2eff4e9f65c4c405f75e3de61793297d2eab4e1b20ee9",
+    "consumerPassed": true,
+    "consumerCoreSha256": "6F569DF0441CDCD097D0870C19D2D4FF643EA98F19716492099094DFDE7105DF",
+    "npcCount": 91,
+    "dialogueGroupCount": 371,
+    "subDialogueCount": 700,
+    "akaGroupIds": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "newGroupLineCount": 4,
+    "gameJourneyExecuted": false,
+    "playerSaveAccessed": false
+  }
+}

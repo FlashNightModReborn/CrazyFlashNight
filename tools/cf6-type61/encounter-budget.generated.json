@@ -1,0 +1,639 @@
+{
+  "schema": "cf6-type61-encounter-budget.v1",
+  "scope": "Static authored enemies and terminal procurement scenarios; no survival or timing guarantee.",
+  "assumptions": [
+    "All authored waves and finite boss support groups cleared and all modeled money picked up; weather multiplier 1, ordinary mode, default 1/6 money chance.",
+    "Native transformations, incidental equipment drops, random plugin savings, throwable resale and rare blood sword are excluded.",
+    "Finite-sale scenario liquidates one earned result per existing random/elite weapon quota at base price / 4; keeps starter, ordinary constellation, armor and purchased graduation equipment.",
+    "A04 replacement and duplicate avoidance cannot reduce the original result sale value. 5000 independent Python RNG scenarios are a statistical reference, not AVM1 behavioral proof.",
+    "Balances include ten pieces at +11 and the existing 150000 reserve; positive end balance does not prove earlier purchases are affordable."
+  ],
+  "sourceHashes": {
+    "tools/cf6-type61/encounter-budget.py": "fc75a9c26823e8cfb4870316c9867d3c9adefde9e8c58f831136a35f3b47369a",
+    "tools/cf6-type61/encounters.py": "32165f3733dd1f2587145caf5092dc16faec5d4ef0d7dcec641fa344b1469182",
+    "tools/cf6-type61/encounters.source.json": "dec959b401cd83103955089d5c2e2caf5e23899686133aab7f489700e179cb35",
+    "tools/cf6-type61/route.source.json": "b0d200eaad731f53d4e829ab8e6b67732b3b3ba91d291706a26a2960335c16ae",
+    "tools/cf6-type61/acquisition-budget.py": "3109f66815cfe84f790a5dbccfde57563e6661ff927a2b944cc7363dc78dc7fb",
+    "data/stages/books/cf6-type61.json": "a4db0ab28e2fa704240e06e45270fd35b2ee5a72d4efe607ac3e3f0b9fb1bce7",
+    "data/units/units.json": "eec9ed2d77accb255d35e6e44ca7a8b7fe4fcd326074e7ae0c5caeded002dc2d",
+    "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as": "cb48c9531f9fe0a538c16508c6c3020f127ec7c341222fbb53c8a4e0683cd811",
+    "scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as": "7821129acdc40d2c1136c9451e0f84792b0e7271a16302ce8f5787d29df7c438",
+    "scripts/类定义/org/flashNight/arki/unit/Action/PickUp/PickUpManager.as": "5bde8c1be3aa484fe36ddf868f1c24fabc77983f46281e93dcc17f4af1e2340b",
+    "data/enemy_properties/boss重做.xml": "33dc2f30d55a465acbd6d31d4760cca33402767f196d744939afe56a1222a45b",
+    "data/enemy_properties/CF6重制敌人.xml": "beb65602109cf95f0b76312342a320c46ec2148122cea4eb19b7297c27bac979",
+    "data/enemy_properties/list.xml": "145d364977a7f641608360c897109becdd15aa534e064529be6796019301a1da",
+    "data/enemy_properties/γ-ECHO克隆兽.xml": "667b89db99944fb12cbb716195cc5ea924dcd006b508bcf832f7051dc6ba2314",
+    "data/enemy_properties/下水道.xml": "be8bc425a04e1cdfce5545bf7ca58200015cb5241fbf86ddf05760cd533c69ce",
+    "data/enemy_properties/两犬.xml": "20b2d09819bca7ce5b75a79c1d6a24ce4f2659f1f93565d3aa568947cb409d66",
+    "data/enemy_properties/僵尸新敌人.xml": "7032ad52548a84e01e48e97594e6fa905e5105d3c60f8d32145d0c5c84117379",
+    "data/enemy_properties/军阀新人物.xml": "50f40722c690600d1af263b1066a376d8e86d87f5d7a09ea2f1349c3df22c762",
+    "data/enemy_properties/前治安官.xml": "444aaf73996a894387970abadd975ea6dc4b32e3f94811ad837899eef6bc922a",
+    "data/enemy_properties/原版敌人 2011-2012.xml": "ec933375eb8d461751500c4dbf957524e028942be726f178ff6c6f897f0818df",
+    "data/enemy_properties/原版敌人 2013-2016.xml": "7142b6d13fa357758f6c527b10f4314fee90e5d7e37e620be4cde45652dc6ece",
+    "data/enemy_properties/堕落城新人物.xml": "4d9c4cc0d94c89692b0c3c16c9a0d7e4fc2502d3cc9c9ef9d0593244db2a163b",
+    "data/enemy_properties/大学.xml": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+    "data/enemy_properties/天网.xml": "37639ad43a8a1ed968b633181132e87bb98e66d6565131a00188c4ff9cfa7ccb",
+    "data/enemy_properties/彩蛋支线.xml": "d8e27a59898040b407b9b210795a8d748166cc000896266b65b3532cc539655c",
+    "data/enemy_properties/换皮敌人与战宠.xml": "cc159a28f8f9434448144f65817bc72b8a11557a60d6379aed1aab7292bcfe93",
+    "data/enemy_properties/盗贼新单位.xml": "d4dfea24e5d379b932002603b9c3c7c64933c39b20d5da578bfc66583ee26db5",
+    "data/enemy_properties/诺亚新敌人.xml": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+    "data/enemy_properties/魔神.xml": "87729ed8035861435a33df0f2f43d91ea4984e68381e92e6d2faff5274e680cb"
+  },
+  "defenseMilestones": [
+    {
+      "fundedBy": "A10",
+      "purchaseAt": "A11",
+      "beforeEncounter": "A13",
+      "requiresClearingFundingMap": true,
+      "shoppingBeforeClearingPurchaseMap": true,
+      "build": "Five titanium61 armor pieces, M134, two titanium P90s, ordinary constellation, starting necklace and budgeted plugins",
+      "budget": {
+        "primary": "M134",
+        "baseProcurement": {
+          "gold": 1190000,
+          "K": 80400
+        },
+        "steps": [
+          {
+            "item": "统合61式头部装甲",
+            "via": "craft",
+            "recipeId": "craft.unified61.helmet",
+            "gold": 57000,
+            "K": 5130
+          },
+          {
+            "item": "钛合金61式头部装甲",
+            "via": "craft",
+            "recipeId": "craft.cf6-type61.titanium.0",
+            "gold": 95000,
+            "K": 8550
+          },
+          {
+            "item": "统合61式胸甲",
+            "via": "craft",
+            "recipeId": "craft.unified61.chest",
+            "gold": 57000,
+            "K": 5130
+          },
+          {
+            "item": "钛合金61式胸甲",
+            "via": "craft",
+            "recipeId": "craft.cf6-type61.titanium.1",
+            "gold": 95000,
+            "K": 8550
+          },
+          {
+            "item": "统合61式腿甲",
+            "via": "craft",
+            "recipeId": "craft.unified61.leg",
+            "gold": 57000,
+            "K": 5130
+          },
+          {
+            "item": "钛合金61式腿甲",
+            "via": "craft",
+            "recipeId": "craft.cf6-type61.titanium.2",
+            "gold": 95000,
+            "K": 8550
+          },
+          {
+            "item": "统合61式手甲",
+            "via": "craft",
+            "recipeId": "craft.unified61.glove",
+            "gold": 57000,
+            "K": 5130
+          },
+          {
+            "item": "钛合金61式手甲",
+            "via": "craft",
+            "recipeId": "craft.cf6-type61.titanium.3",
+            "gold": 95000,
+            "K": 8550
+          },
+          {
+            "item": "统合61式装甲鞋",
+            "via": "craft",
+            "recipeId": "craft.unified61.boot",
+            "gold": 57000,
+            "K": 5130
+          },
+          {
+            "item": "钛合金61式装甲鞋",
+            "via": "craft",
+            "recipeId": "craft.cf6-type61.titanium.4",
+            "gold": 95000,
+            "K": 8550
+          },
+          {
+            "item": "M134",
+            "via": "gold",
+            "gold": 230000
+          },
+          {
+            "item": "钛合金P90",
+            "via": "K",
+            "K": 6000
+          },
+          {
+            "item": "钛合金P90",
+            "via": "K",
+            "K": 6000
+          },
+          {
+            "item": "水冷机构",
+            "via": "gold",
+            "gold": 50000
+          },
+          {
+            "item": "纳米执行单元",
+            "via": "gold",
+            "gold": 50000
+          },
+          {
+            "item": "黑爪扩张弹",
+            "via": "gold",
+            "gold": 50000
+          },
+          {
+            "item": "黑爪扩张弹",
+            "via": "gold",
+            "gold": 50000
+          }
+        ],
+        "primaryMods": [
+          "战术鱼骨零件",
+          "水冷机构",
+          "纳米执行单元"
+        ],
+        "piecesAt11": 0,
+        "enhancementPlan": [
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "requiredStones": 2160,
+        "stonesPerPiece": 1928,
+        "missingStones": 0,
+        "kForMissingCurrency": 2400,
+        "goldForMissingK": 120000,
+        "goldForStones": 0,
+        "reserve": 150000,
+        "totalGoldAfterFixedK": 1460000,
+        "fixedGold": 1500000,
+        "fixedK": 78000,
+        "balanceBeforeDropsAndSales": 40000
+      }
+    },
+    {
+      "fundedBy": "A16",
+      "purchaseAt": "A16",
+      "beforeEncounter": "A17",
+      "requiresClearingFundingMap": true,
+      "shoppingBeforeClearingPurchaseMap": false,
+      "build": "Five titanium61 armor pieces, M134, two titanium P90s, ordinary constellation, starting necklace and budgeted plugins",
+      "budget": {
+        "primary": "M134",
+        "baseProcurement": {
+          "gold": 1190000,
+          "K": 80400
+        },
+        "steps": [
+          {
+            "item": "统合61式头部装甲",
+            "via": "craft",
+            "recipeId": "craft.unified61.helmet",
+            "gold": 57000,
+            "K": 5130
+          },
+          {
+            "item": "钛合金61式头部装甲",
+            "via": "craft",
+            "recipeId": "craft.cf6-type61.titanium.0",
+            "gold": 95000,
+            "K": 8550
+          },
+          {
+            "item": "统合61式胸甲",
+            "via": "craft",
+            "recipeId": "craft.unified61.chest",
+            "gold": 57000,
+            "K": 5130
+          },
+          {
+            "item": "钛合金61式胸甲",
+            "via": "craft",
+            "recipeId": "craft.cf6-type61.titanium.1",
+            "gold": 95000,
+            "K": 8550
+          },
+          {
+            "item": "统合61式腿甲",
+            "via": "craft",
+            "recipeId": "craft.unified61.leg",
+            "gold": 57000,
+            "K": 5130
+          },
+          {
+            "item": "钛合金61式腿甲",
+            "via": "craft",
+            "recipeId": "craft.cf6-type61.titanium.2",
+            "gold": 95000,
+            "K": 8550
+          },
+          {
+            "item": "统合61式手甲",
+            "via": "craft",
+            "recipeId": "craft.unified61.glove",
+            "gold": 57000,
+            "K": 5130
+          },
+          {
+            "item": "钛合金61式手甲",
+            "via": "craft",
+            "recipeId": "craft.cf6-type61.titanium.3",
+            "gold": 95000,
+            "K": 8550
+          },
+          {
+            "item": "统合61式装甲鞋",
+            "via": "craft",
+            "recipeId": "craft.unified61.boot",
+            "gold": 57000,
+            "K": 5130
+          },
+          {
+            "item": "钛合金61式装甲鞋",
+            "via": "craft",
+            "recipeId": "craft.cf6-type61.titanium.4",
+            "gold": 95000,
+            "K": 8550
+          },
+          {
+            "item": "M134",
+            "via": "gold",
+            "gold": 230000
+          },
+          {
+            "item": "钛合金P90",
+            "via": "K",
+            "K": 6000
+          },
+          {
+            "item": "钛合金P90",
+            "via": "K",
+            "K": 6000
+          },
+          {
+            "item": "水冷机构",
+            "via": "gold",
+            "gold": 50000
+          },
+          {
+            "item": "纳米执行单元",
+            "via": "gold",
+            "gold": 50000
+          },
+          {
+            "item": "黑爪扩张弹",
+            "via": "gold",
+            "gold": 50000
+          },
+          {
+            "item": "黑爪扩张弹",
+            "via": "gold",
+            "gold": 50000
+          }
+        ],
+        "primaryMods": [
+          "战术鱼骨零件",
+          "水冷机构",
+          "纳米执行单元"
+        ],
+        "piecesAt11": 5,
+        "enhancementPlan": [
+          11,
+          11,
+          11,
+          11,
+          11,
+          9,
+          9,
+          9,
+          9,
+          9
+        ],
+        "requiredStones": 13380,
+        "stonesPerPiece": 1928,
+        "missingStones": 5878,
+        "kForMissingCurrency": 0,
+        "goldForMissingK": 0,
+        "goldForStones": 1645800,
+        "reserve": 150000,
+        "totalGoldAfterFixedK": 2985800,
+        "fixedGold": 3550000,
+        "fixedK": 100000,
+        "balanceBeforeDropsAndSales": 564200
+      }
+    }
+  ],
+  "maps": [
+    {
+      "map": "TUTORIAL",
+      "authoredEnemies": 0,
+      "hp": 0,
+      "soldiers": {}
+    },
+    {
+      "map": "A01",
+      "authoredEnemies": 66,
+      "hp": 258522,
+      "soldiers": {}
+    },
+    {
+      "map": "A02",
+      "authoredEnemies": 42,
+      "hp": 317418,
+      "soldiers": {}
+    },
+    {
+      "map": "A03",
+      "authoredEnemies": 48,
+      "hp": 397488,
+      "soldiers": {}
+    },
+    {
+      "map": "A04",
+      "authoredEnemies": 62,
+      "hp": 512906,
+      "soldiers": {}
+    },
+    {
+      "map": "A05",
+      "authoredEnemies": 47,
+      "hp": 492221,
+      "soldiers": {}
+    },
+    {
+      "map": "A06",
+      "authoredEnemies": 26,
+      "hp": 483018.5,
+      "soldiers": {
+        "ordinary": 8
+      }
+    },
+    {
+      "map": "A07",
+      "authoredEnemies": 0,
+      "hp": 0,
+      "soldiers": {}
+    },
+    {
+      "map": "A08",
+      "authoredEnemies": 0,
+      "hp": 0,
+      "soldiers": {}
+    },
+    {
+      "map": "A09",
+      "authoredEnemies": 41,
+      "hp": 541257,
+      "soldiers": {
+        "ordinary": 15
+      }
+    },
+    {
+      "map": "A10",
+      "authoredEnemies": 4,
+      "hp": 176565.0,
+      "soldiers": {
+        "elite": 4
+      }
+    },
+    {
+      "map": "A11",
+      "authoredEnemies": 41,
+      "hp": 488126,
+      "soldiers": {
+        "ordinary": 14,
+        "elite": 2
+      }
+    },
+    {
+      "map": "A12",
+      "authoredEnemies": 52,
+      "hp": 705531,
+      "soldiers": {
+        "ordinary": 20,
+        "elite": 3
+      }
+    },
+    {
+      "map": "A13",
+      "authoredEnemies": 1,
+      "hp": 99942.5,
+      "soldiers": {
+        "instructor": 1
+      }
+    },
+    {
+      "map": "A14",
+      "authoredEnemies": 50,
+      "hp": 834879,
+      "soldiers": {
+        "instructor": 2,
+        "ordinary": 20,
+        "elite": 7
+      }
+    },
+    {
+      "map": "A15",
+      "authoredEnemies": 36,
+      "hp": 461704,
+      "soldiers": {
+        "ordinary": 4,
+        "elite": 1,
+        "instructor": 1
+      }
+    },
+    {
+      "map": "A16",
+      "authoredEnemies": 0,
+      "hp": 0,
+      "soldiers": {}
+    },
+    {
+      "map": "A17",
+      "authoredEnemies": 65,
+      "hp": 1644877.0,
+      "soldiers": {
+        "instructor": 2,
+        "ordinary": 13,
+        "elite": 7
+      }
+    },
+    {
+      "map": "A18",
+      "authoredEnemies": 40,
+      "hp": 979190,
+      "soldiers": {
+        "instructor": 10
+      }
+    },
+    {
+      "map": "A19",
+      "authoredEnemies": 52,
+      "hp": 1279022,
+      "soldiers": {
+        "instructor": 14
+      }
+    },
+    {
+      "map": "A20",
+      "authoredEnemies": 80,
+      "hp": 2586523.0,
+      "soldiers": {
+        "instructor": 10
+      }
+    }
+  ],
+  "totalAuthoredEnemies": 753,
+  "totalAuthoredHp": 12259190.0,
+  "finiteWeaponSales": {
+    "minimum": 324900,
+    "maximum": 1263480,
+    "rows": [
+      {
+        "map": "A04",
+        "source": "random",
+        "minimum": 8250,
+        "maximum": 90000
+      },
+      {
+        "map": "A08",
+        "source": "random",
+        "minimum": 8250,
+        "maximum": 125000
+      },
+      {
+        "map": "A11",
+        "source": "random",
+        "minimum": 8250,
+        "maximum": 125000
+      },
+      {
+        "map": "A12",
+        "source": "random",
+        "minimum": 8250,
+        "maximum": 125000
+      },
+      {
+        "map": "A17",
+        "source": "random",
+        "minimum": 25000,
+        "maximum": 200000
+      },
+      {
+        "map": "A18",
+        "source": "random",
+        "minimum": 25000,
+        "maximum": 200000
+      },
+      {
+        "map": "A09",
+        "source": "E1",
+        "minimum": 65000,
+        "maximum": 65000
+      },
+      {
+        "map": "A13",
+        "source": "E2",
+        "minimum": 114400,
+        "maximum": 168480
+      },
+      {
+        "map": "A14",
+        "source": "E3",
+        "minimum": 15000,
+        "maximum": 25000
+      },
+      {
+        "map": "A17",
+        "source": "E4",
+        "minimum": 45000,
+        "maximum": 45000
+      },
+      {
+        "map": "A19",
+        "source": "E5",
+        "minimum": 2500,
+        "maximum": 95000
+      }
+    ]
+  },
+  "deathIncome": {
+    "gold": {
+      "p10": 137075,
+      "median": 166541,
+      "p90": 207154
+    },
+    "kpoints": {
+      "p10": 20154,
+      "median": 32234,
+      "p90": 49520
+    }
+  },
+  "routes": [
+    {
+      "primary": "M134",
+      "fixedOnly": 744200,
+      "afterMinimumFiniteSales": 1069100,
+      "deathScenarioWithMinimumFiniteSales": {
+        "p10": 1351199,
+        "median": 1433245,
+        "p90": 1543699
+      },
+      "deathScenarioWithoutSales": {
+        "p10": 1026299,
+        "median": 1108345,
+        "p90": 1218799
+      }
+    },
+    {
+      "primary": "M134暴力版",
+      "fixedOnly": -613400,
+      "afterMinimumFiniteSales": -288500,
+      "deathScenarioWithMinimumFiniteSales": {
+        "p10": 881636,
+        "median": 1404829,
+        "p90": 1523699
+      },
+      "deathScenarioWithoutSales": {
+        "p10": 556736,
+        "median": 1079929,
+        "p90": 1198799
+      }
+    },
+    {
+      "primary": "钛合金QJZ171",
+      "fixedOnly": -1309600,
+      "afterMinimumFiniteSales": -984700,
+      "deathScenarioWithMinimumFiniteSales": {
+        "p10": 177884,
+        "median": 281184,
+        "p90": 391649
+      },
+      "deathScenarioWithoutSales": {
+        "p10": -147016,
+        "median": -43716,
+        "p90": 66749
+      }
+    }
+  ]
+}

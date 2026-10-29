@@ -27,6 +27,7 @@
 - 成功判据（两条同时成立）：① `scripts/compiler_errors.txt` 属本轮且严格 0 错 0 警 ② 目标 SWF 已刷新。`publish_done.marker` 单独出现不算；publish-only 不产 trace，`flashlog.txt` 不刷新正常
 - 被 `#include` 的 `.as` 丢 BOM → CS6 静默跳过（报 0/0、marker 正常但帧脚本 0 字节）；新增/重建必须保 BOM
 - `[TIMEOUT]` 留 `compile_state_uncertain.marker` 卡后续编译；确认 Flash/任务静止后再删
+- **Flash 实例内存膨胀 = publish 崩溃的真凶**（2026-10-27 mdmp 实证）：32 位 LAA 进程私有提交到 ~3.4GB 后，Adobe 在序列化写 SWF 时用 NULL 当 `this`（`Flash.exe+0x10630E9`，`mov [ecx+0x1C],eax`，ECX=0，写 0x1C）直接 AV 崩掉，产物停在 1209B（头部长=0、只写到 `<rdf:RDF>`）。**特征：publish 从 ~4 分钟拖到 15+ 分钟**。处置：确认无 Flash 残留 → 删 uncertain marker → 干净实例重跑（实测 261s / 6.7MB / 0 错 0 警）；连续 publish 建议 `-QuitFlashAfterPublish`。别把它误判成 AS 编译错（`compiler_errors.txt` 不会生成）
 - **Flash 进程杀不掉 = 权限差**：`CompileTriggerTask` 是 `RunLevel=Highest`，拉起的 Flash 以高权限运行；非管理员 shell 下 `Stop-Process`/`taskkill /F /T` 全报「拒绝访问」。遇到「Flash 一直开着 + 编译超时」，先看 `IsInRole(Administrator)`，没有权限就别反复重试，改走「不依赖 Flash 的验证路径」（XFL audit + 已发布 SWF 反编译核对）
 - **独立 XFL 发布（已验证可行，175s/things0）**：`-Target "flashswf\arts\<name>\<name>.xfl" -PublishOnly -VerifySwf "flashswf\arts\<name>.swf" -TimeoutSeconds 420`。发布后**必须用 `tools/ffdec/ffdec-cli.exe -export script <tmpdir> <swf>` 反编译核对实际字节码**，别只看 XML 改对就以为生效（导出目录 `scripts/DefineSprite_*_<容器名>/`）
 

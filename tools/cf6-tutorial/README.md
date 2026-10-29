@@ -1,5 +1,17 @@
 # tools/cf6-tutorial — CF6 教学关（K3 maps）装配线
 
+## 当前入口：R7 较重边线（2026-10-27）
+
+用户已选择 R7 较重边线。`layout.json` 的 `artRevision=r7-bold` 让同一 `assemble.py` 入口转交 `r7.py`；下文 R10/R12 内容是此前的装配历史。当前可编辑画稿与原始交付 ZIP 保存在 `flashswf/arts/new/Codex素材源稿/CF6地图/教程-R7/`。ZIP 为不可改写的来源快照，所选完整 SVG 是本轮画面输入。
+
+R7 保留矢量形状、渐变、组与遮罩。原稿三处 image 去重为两张原始纹理；墙面和地板图像大于各自重复单元，因此用原生图像实例、每格遮罩及整面遮罩复现裁切，不能改成拉伸贴图或整景截图。根视口显式裁到 1000×450；128/75 的游戏倍率仍只由 `Cf6MapPresentation` 施加一次。
+
+`r7/native-media/` 是真实 CS6 导入后冻结的纹理字节与原生缓存闭包。常规生成只消费该闭包，不需要再次导入；改变纹理时须通过受控 CS6 导入取得新缓存，不能自行制造 `.dat`。`r7/conversion.json` 和 `provenance.json` 绑定输入、输出、体积及原生源，`assemble.py --check` 验证确定性、媒体引用和出生到门前的通路。旧 R12 库符号保留在工程中但不再被 DOMDocument Include 引用，不进入当前 SWF。
+
+`layout.json/r7Geometry` 按新画稿声明墙面、家具脚底与门前触发区；章节生成器再统一换算背景、碰撞、出口和引导点。更新顺序为 `assemble.py` → `cf6-prototype/build-chapter.py` → `cf6-type61/build-route.py` → `build-book-definition.py`，各工具随后执行 `--check`。真正发布目标仍是 `CF6_Tutorial_BG/CF6_Tutorial_BG.xfl` 和旁边的 `CF6_Tutorial_BG.swf`。
+
+本次问题、实机范围和失败原件见[教程修复与 R7 接入记录](../../docs/闪客快打6肉鸽-61路线教程修复与R7地图接入-2026-10-27.md)。
+
 r10 起接管原 `tools/cf6-map-runtime/build-tutorial.py` 的职责：用**现役矢量素材**（宿舍房间壳、高架床、基地工作台、门灯、门）近似重组闪 6 教学关环境，装配出独立背景 XFL 源 `flashswf/backgrounds/cf6/CF6_Tutorial_BG/`，并产出环境/地图片段与溯源清单，供主控审查后集成与 CS6 编译。
 
 r9 的占位方案（借 `gk1_1_BG.swf` + 两只 2 级僵尸）已废止，旧生成器与产物原样归档在 `archive/r9-placeholder/`（含 `hashes.json` 校验值），仅作历史证据，不再参与构建。

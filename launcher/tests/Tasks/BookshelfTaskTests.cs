@@ -172,7 +172,7 @@ namespace Launcher.Tests.Tasks
             Assert.True(sent[0].Value<bool>("missingRun")); Assert.Null(sent[0]["snapshot"]);
         }
         [Theory]
-        [InlineData("repair-campus")][InlineData("lee-trial")][InlineData("cf6-sting")]
+        [InlineData("repair-campus")][InlineData("lee-trial")][InlineData("cf6-sting")][InlineData("cf6-sting.type61")]
         public void PlayUsesHostGeneratedRunSlotAndDeduplicates(string bookId)
         {
             var sent = new List<JObject>(); var posted = new List<JObject>();
@@ -191,6 +191,40 @@ namespace Launcher.Tests.Tasks
             using var task = Create(sent, posted);
             task.HandleWebRequest("commit", Request("commit", kind:"play", target:bookId));
             Assert.Empty(sent); Assert.Equal("invalid_payload", posted[0].Value<string>("error"));
+        }
+        [Theory]
+        [InlineData("type61",true)]
+        [InlineData("historical",false)]
+        [InlineData("plan61",false)]
+        [InlineData(null,false)]
+        public void Type61PlayReceiptMustMatchTheRequestedRoute(string route, bool valid)
+        {
+            var sent=new List<JObject>();var posted=new List<JObject>();
+            using var task=Create(sent,posted);
+            task.HandleWebRequest("commit",Request("commit",kind:"play",target:"cf6-sting.type61"));
+            var receipt=Response(sent[0],"switching",sent[0].Value<string>("runSlot"),"play","cf6-sting.type61");
+            receipt["bookId"]="cf6-sting";
+            if(route!=null)receipt["routeId"]=route;
+            task.HandleFlashResponse(receipt,_=>{});
+            Assert.Equal(valid,posted[0].Value<string>("error")!="malformed_response");
+            Assert.True(posted[0].Value<bool>("requiresReconcile"));
+        }
+        [Theory]
+        [InlineData("cf6-sting",0,true)]
+        [InlineData("repair-campus",0,false)]
+        [InlineData("cf6-sting",45,false)]
+        public void Type61HistoryKeepsTheSameClosedZeroRewardContract(string bookId,int sp,bool valid)
+        {
+            var sent=new List<JObject>();var posted=new List<JObject>();
+            using var task=Create(sent,posted);
+            task.HandleWebRequest("commit",Request("commit",kind:"return"));
+            var receipt=Response(sent[0],"switching",active:"bookrun_fixture",kind:"return");
+            receipt["cf6Type61Records"]=new JObject { ["bestMs"]=7000,["clears"]=1,["history"]=new JArray(
+                new JObject { ["runId"]="bookrun_type61",["bookId"]=bookId,["outcome"]="victory",
+                    ["elapsedMs"]=7000,["completedAt"]=10,["sp"]=sp,["reason"]="clear",["debug"]=false }) };
+            task.HandleFlashResponse(receipt,_=>{});
+            Assert.Equal(valid,posted[0].Value<string>("error")!="malformed_response");
+            Assert.True(posted[0].Value<bool>("requiresReconcile"));
         }
         [Theory]
         [InlineData(0, "debug", true, true)]

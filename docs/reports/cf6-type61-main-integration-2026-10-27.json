@@ -1,0 +1,146 @@
+{
+  "schema": "cf6-type61-main-integration.v1",
+  "date": "2026-10-27",
+  "collectedAtUtc": "2026-10-27T09:39:38.296885+00:00",
+  "status": "local_main_candidate_ready_for_user_test",
+  "mainRoot": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight",
+  "upstreamCommit": "c5b3bf1522fbb061266239ac3099b4c943db37a7",
+  "upstreamCommits": 4,
+  "sourceCommit": "10bca2ae449ec5aaa79498326df8914d38f18ada",
+  "overlap": [],
+  "entry": "本地开发启动.cmd",
+  "routeSelection": "书架 → 闪客快打系列 → 第六章 → 61计划 · 35级成长",
+  "candidateMetadata": {
+    "schema": "cf7-runtime-candidate-metadata.v2",
+    "builderLabel": "local-dev",
+    "artifactSourceHash": "5A13002CA4672EF2CCE485C980F4491D2BFD1E50BAF3BD075CC7DE91B3EF263C",
+    "producerRecipeHash": "C28B6304FB33C06A27E58F2C91D3CC451D387C8CBC82E84255F5CC5805003963",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "policyHash": "72AA3B0A631AEA741EFD1E570C170462D1532B76E2026BCE49E4FC51CE93178D",
+    "buildIdentityHash": "7C11FF2AC708320F860B289F20F3096E1835725BD6794E37110ACE2F070DE55B",
+    "payloadClosureHash": "369A139FAE8CF6328A0009CA39961821B209308C1A13EC8DD48E4D1FE7C14D28",
+    "stageSeconds": {
+      "environmentGate": 3.138,
+      "identityBefore": 2.99,
+      "miniaudio": 51.348,
+      "solParser": 25.396,
+      "bootstrap": 4.78,
+      "worldCompositor": 45.437,
+      "dotnetPublish": 31.079,
+      "assemble": 23.93,
+      "identityAfter": 3.959,
+      "bootstrapVerify": 1.048
+    },
+    "totalSeconds": 193.118,
+    "createdAtUtc": "2026-10-27T09:33:01.9438977Z"
+  },
+  "candidateMetadataArtifact": {
+    "path": "tmp/runtime-candidates/v2/type61-1027/runtime-build-metadata.v2.json",
+    "bytes": 1293,
+    "sha256": "d9816c842c2e702cef73456a013ec8f5e6237863fc5c9a5421159144ea3b7d05"
+  },
+  "core": {
+    "path": "tmp/runtime-candidates/v2/type61-1027/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+    "bytes": 6692864,
+    "sha256": "dae4ac66c223a4c99a94c20171d5f9db3416dfeeddf61ffcdf1ee3696a1606bc"
+  },
+  "asloader": {
+    "path": "scripts/asLoader.swf",
+    "bytes": 6754752,
+    "sha256": "01e71313c4d89ef31980e4525b573437adf6ba300f0e8b42452eba61c97710bb"
+  },
+  "selectionStatus": {
+    "path": "tmp/cf6-type61-integration-20261027/main-dev-status.log",
+    "bytes": 1835,
+    "sha256": "1527957c450de94cc88438a1d97bd32231b778413bad90943ccfda0c602d27f5"
+  },
+  "selectionState": "ready",
+  "buildLog": {
+    "path": "tmp/cf6-type61-integration-20261027/main-candidate-build.log",
+    "bytes": 5800,
+    "sha256": "b07be33bd015108cd3ff15f202ad05ce354e59b3fcbd2e290848fba324a817e1"
+  },
+  "currentMainEvidenceState": "candidate_built",
+  "currentMainGameplayExecuted": false,
+  "priorIsolatedJourneys": 2,
+  "payloadBytesMatchPreviouslyExecutedCandidate": true,
+  "formalRuntimeFilesUnchanged": 45,
+  "originalCacheFilesUnchanged": 4,
+  "planningOriginalsPreserved": true,
+  "upstreamReadback": {
+    "path": "tmp/cf6-type61-integration-20261027/remote-main-readback.txt",
+    "bytes": 57,
+    "sha256": "d39a6b9589bc1ddeac16bddc1999c2295a7afc3c4fb5684aa7e729c3321a553d"
+  },
+  "postCheckoutChecks": [
+    {
+      "path": "tmp/cf6-type61-integration-20261027/main-route-check.log",
+      "bytes": 603,
+      "sha256": "29bc74417a433300d332ff545fb17e8ec7829bd06506646b6dd1f56fcc690f10"
+    },
+    {
+      "path": "tmp/cf6-type61-integration-20261027/main-book-check-r2.log",
+      "bytes": 65,
+      "sha256": "46b89d58c5b0dddfa0246a91917ac6fe53a04beb1f048f108a1c94745c86e1c5"
+    },
+    {
+      "path": "tmp/cf6-type61-preserved-20261027/tmp/cf6-type61-integration-20261027/bookshelf.log",
+      "bytes": 507,
+      "sha256": "b8008157ec32c51e77d3e6bb5df54cf2cfe5e8652c1bea34d1b1293cb24b9ed1"
+    },
+    {
+      "path": "tmp/cf6-type61-preserved-20261027/tmp/cf6-type61-integration-20261027/blackmarket.log",
+      "bytes": 1793,
+      "sha256": "00b0d2b46ca54a2f3d1cf7e9d2aae1c3de55d6dda62f36bf16d24dc810bce09a"
+    }
+  ],
+  "transfer": {
+    "sourceFiles": 112,
+    "textLineEndingDifferencesOnly": [
+      "data/rewards/README.md",
+      "docs/AS2-UI迁移剩余清单与难度评估-2026-09-12.md",
+      "scripts/run-battle-supply-tests.ps1",
+      "scripts/run-bookshelf-tests.ps1",
+      "scripts/run-choice-rewards-tests.ps1",
+      "scripts/展现/UI交互/UI交互_lsy_物品栏UI.as",
+      "scripts/类定义/org/flashNight/arki/item/ChoiceRewardServiceTest.as",
+      "scripts/类定义/org/flashNight/arki/scene/BookRunRulesTest.as",
+      "scripts/类定义/org/flashNight/arki/unit/Action/Shoot/AmmoSupplyServiceTest.as",
+      "scripts/类定义/org/flashNight/neur/Server/SaveManager.as",
+      "tools/run-bookshelf-flow-harness.js"
+    ],
+    "explicitIntegrationEdits": [
+      ".gitattributes",
+      "docs/闪客快打6肉鸽-61路线施工与验证-2026-10-26.md",
+      "docs/闪客快打6肉鸽-首版设计与施工拆分-2026-10-21.md"
+    ],
+    "manifestFilesChecked": 50,
+    "manifestFilesMatch": true
+  },
+  "evidencePreservation": {
+    "root": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-type61-preserved-20261027",
+    "fileCount": 638,
+    "bytes": 533141822,
+    "manifest": {
+      "path": "tmp/cf6-type61-preserved-20261027/preservation-manifest.json",
+      "bytes": 126790,
+      "sha256": "4cb83c2009d896b6b4bc184d20ee873670abef5d18f75d41f71a780ce3e122c9"
+    }
+  },
+  "worktree": {
+    "root": "C:\\Users\\fs\\.codex\\worktrees\\cf6-type61\\CrazyFlashNight",
+    "status": "retained_primary_checkout_protection",
+    "archiveToolError": "The task's primary checkout cannot be removed."
+  },
+  "actions": {
+    "localCommit": true,
+    "localMainFastForward": true,
+    "pushed": false,
+    "formalRuntimePromoted": false
+  },
+  "remainingAcceptance": [
+    "Full A01-A20 combat and balance playthrough, including weak-drop choices and A19 purchases.",
+    "Continuous M4 main/sub reload, QJZ171 battery consumption, live high-pressure supply pickup/refusal, both elevators and native transformation behavior.",
+    "Human visual/input feel acceptance; formal runtime promotion and standard-entry business verification were not authorized or performed."
+  ]
+}

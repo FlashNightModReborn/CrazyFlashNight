@@ -3,7 +3,8 @@ class org.flashNight.arki.scene.BookRunRules {
     /** RewardStash may clone bookRun during commit/rollback; compare a detached identity, not object references. */
     public static function sameCf6Run(identity:Object, current:Object):Boolean {
         if (identity == null || current == null || identity.bookId !== "cf6-sting" || current.bookId !== "cf6-sting"
-                || identity.routeId !== "historical" || current.routeId !== "historical" || current.outcome !== "active"
+                || !org.flashNight.arki.scene.BookDefinition.isCf6Route(identity.routeId)
+                || identity.routeId !== current.routeId || current.outcome !== "active"
                 || typeof identity.slot != "string" || identity.slot == "" || identity.slot !== current.slot
                 || typeof identity.seed != "number" || !isFinite(identity.seed) || isNaN(identity.seed)
                 || !(identity.seed > 0) || !(identity.seed < 2147483647) || Math.floor(identity.seed) != identity.seed
@@ -22,8 +23,8 @@ class org.flashNight.arki.scene.BookRunRules {
     private static function integer(state:Object, lo:Number, hi:Number):Number {
         return lo + Math.floor(next(state) * (hi - lo + 1));
     }
-    public static function stages(seed:Number, startAt:Number, bookId:String):Array {
-        var config:Object = org.flashNight.arki.scene.BookDefinition.get(bookId);
+    public static function stages(seed:Number, startAt:Number, bookId:String, routeId:String):Array {
+        var config:Object = org.flashNight.arki.scene.BookDefinition.get(bookId,routeId);
         if (config == null) return [];
         if (config.id === "cf6-sting") return authoredStages(config, seed, startAt);
         var state:Object = {value:seed};
@@ -127,6 +128,7 @@ class org.flashNight.arki.scene.BookRunRules {
             stage.BasicInformation.Background="flashswf/backgrounds/"+map.background;
             stage.BasicInformation.EndFrame="房间";
             stage.BasicInformation.Cf6Boss=map.bossEncounter;
+            stage.BasicInformation.Cf6MapId=map.id;
             if (!(stage.Event instanceof Array)) stage.Event=[];
             stage.Event.unshift({EventName:"Start",Callback:{Name:"书中章节",Parameter:[i]},Message:config.title+" · "+map.title});
             if (stage.Instances == null) stage.Instances={Instance:[]};
@@ -159,7 +161,7 @@ class org.flashNight.arki.scene.BookRunRules {
     }
     public static function reward(run:Object, previous:Object):Object {
         if (run.bookId === "cf6-sting") {
-            var cleared:Boolean=run.routeId === "historical" && run.outcome === "victory" && run.debug !== true;
+            var cleared:Boolean=org.flashNight.arki.scene.BookDefinition.isCf6Route(run.routeId) && run.outcome === "victory" && run.debug !== true;
             var historicalTime:Number=Number(run.elapsedMs);
             cleared=cleared && !isNaN(historicalTime) && isFinite(historicalTime) && historicalTime > 0 && historicalTime < 86400000;
             var oldBest:Number=Number(previous.bestMs || 0);

@@ -36,7 +36,8 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         EventBus.getInstance().subscribe("SceneReady", onSceneReady, null);
         org.flashNight.arki.scene.BookRunService.install();
         org.flashNight.arki.scene.BookDefinition.load();
-        org.flashNight.arki.scene.BookDefinition.load("cf6-sting");
+        org.flashNight.arki.scene.BookDefinition.load("cf6-sting","historical");
+        org.flashNight.arki.scene.BookDefinition.load("cf6-sting","type61");
         org.flashNight.arki.scene.LeeTrialDefinition.load();
     }
     public static function openForAgent():Boolean {
@@ -46,7 +47,8 @@ class org.flashNight.arki.ui.BookshelfPanelService {
     }
     public static function openPanel():Boolean {
         org.flashNight.arki.scene.BookDefinition.load();
-        org.flashNight.arki.scene.BookDefinition.load("cf6-sting");
+        org.flashNight.arki.scene.BookDefinition.load("cf6-sting","historical");
+        org.flashNight.arki.scene.BookDefinition.load("cf6-sting","type61");
         org.flashNight.arki.scene.LeeTrialDefinition.load();
         if (org.flashNight.arki.ui.SceneTransitionService.isPresentationPending()) return false;
         if (_root.gameworld == undefined || typeof _root.server.sendSocketMessage != "function") return false;
@@ -131,19 +133,21 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         var run:Object = _root._saveExt.bookRun;
         var feature:Object = _root._saveExt.bookshelf;
         if (kind == "play") {
-            if ((!org.flashNight.arki.scene.BookDefinition.supports(p.target) && p.target !== "lee-trial")
+            if ((!org.flashNight.arki.scene.BookDefinition.supportsTarget(p.target) && p.target !== "lee-trial")
                     || typeof p.runSlot != "string" || p.runSlot.indexOf("bookrun_") != 0) return fail(cmd, token, "invalid_target");
             var trial:Boolean = p.target === "lee-trial";
-            if (trial ? !org.flashNight.arki.scene.LeeTrialDefinition.ready() : !org.flashNight.arki.scene.BookDefinition.ready(p.target)) {
+            var bookId:String=org.flashNight.arki.scene.BookDefinition.bookForTarget(p.target);
+            var routeId:String=org.flashNight.arki.scene.BookDefinition.routeForTarget(p.target);
+            if (trial ? !org.flashNight.arki.scene.LeeTrialDefinition.ready() : !org.flashNight.arki.scene.BookDefinition.ready(bookId,routeId)) {
                 if (trial) org.flashNight.arki.scene.LeeTrialDefinition.load();
-                else org.flashNight.arki.scene.BookDefinition.load(p.target);
+                else org.flashNight.arki.scene.BookDefinition.load(bookId,routeId);
                 return fail(cmd, token, "config_unavailable");
             }
             if ((trial ? r.leeEntry !== true || !leeStoryUnlocked(_root) : !unlocked())
                     || run != null || feature.active != null) return fail(cmd, token, "locked");
-            r.run = {v:1, bookId:p.target, slot:p.runSlot, originSlot:r.slot,
+            r.run = {v:1, bookId:bookId, slot:p.runSlot, originSlot:r.slot,
                 seed:1 + Math.floor(Math.random() * 2147483645), startedAt:new Date().getTime(), outcome:"active"};
-            if (p.target === "cf6-sting") r.run.routeId = "historical";
+            if (bookId === "cf6-sting") r.run.routeId = routeId;
             if (trial) {
                 r.run.debug = true;
                 r.run.leeLoadout = org.flashNight.arki.skill.LeeSkillLoadout.copySlots(feature.leeLoadout);
@@ -157,7 +161,7 @@ class org.flashNight.arki.ui.BookshelfPanelService {
             if (run == null || run.originSlot !== p.target || p.snapshot.ext.bookshelf.active.slot !== run.slot
                 || p.snapshot.ext.bookshelf.active.originSlot !== p.target
                 || p.snapshot.ext.bookshelf.active.bookId !== run.bookId
-                || (run.bookId === "cf6-sting" && (run.routeId !== "historical" || p.snapshot.ext.bookshelf.active.routeId !== run.routeId))) return fail(cmd, token, "invalid_target");
+                || (run.bookId === "cf6-sting" && (!org.flashNight.arki.scene.BookDefinition.isCf6Route(run.routeId) || p.snapshot.ext.bookshelf.active.routeId !== run.routeId))) return fail(cmd, token, "invalid_target");
             org.flashNight.arki.scene.BookRunService.abandonIfActive();
             r.fromStage = StageRunSession.canReturnBookContext();
             r.result = PersistedSnapshot.clone(_root._saveExt.bookRun);
@@ -172,7 +176,7 @@ class org.flashNight.arki.ui.BookshelfPanelService {
                 || recovered.bookId !== feature.active.bookId
                 || (r.leeEntry === true && recovered.bookId !== "lee-trial")
                 || (!org.flashNight.arki.scene.BookDefinition.supports(recovered.bookId) && recovered.bookId !== "lee-trial")
-                || (recovered.bookId === "cf6-sting" && (recovered.routeId !== "historical" || recovered.routeId !== feature.active.routeId))) return fail(cmd, token, "invalid_target");
+                || (recovered.bookId === "cf6-sting" && (!org.flashNight.arki.scene.BookDefinition.isCf6Route(recovered.routeId) || recovered.routeId !== feature.active.routeId))) return fail(cmd, token, "invalid_target");
             r.result = PersistedSnapshot.clone(recovered);
         } else return fail(cmd, token, "invalid_payload");
         if (kind != "settle" && SaveManager.getInstance().settingsProtocolV2()) {
@@ -298,14 +302,15 @@ class org.flashNight.arki.ui.BookshelfPanelService {
             && r.preparingEntry === true && r.entryPrepared !== true && r.arrived !== true
             && slot === String(_root.savePath) && slot === r.destination && run.slot === slot
             && run.originSlot === r.slot && run.seed === r.run.seed && run.outcome == "active"
-            && run.bookId === r.run.bookId && _root.gameworld._parent == undefined;
+            && run.bookId === r.run.bookId && (run.bookId !== "cf6-sting" || run.routeId === r.run.routeId)
+            && _root.gameworld._parent == undefined;
     }
     private static function settle(r:Object):Void {
         var result:Object = r.result;
         var state:Object = _root._saveExt.bookshelf;
         if (state.active.slot !== result.slot || result.originSlot !== String(_root.savePath)
             || state.active.seed !== result.seed || state.active.bookId !== result.bookId
-            || (result.bookId === "cf6-sting" && (result.routeId !== "historical" || state.active.routeId !== result.routeId))) { r.phase = "expired"; r.error = "context_changed"; _job = null; return; }
+            || (result.bookId === "cf6-sting" && (!org.flashNight.arki.scene.BookDefinition.isCf6Route(result.routeId) || state.active.routeId !== result.routeId))) { r.phase = "expired"; r.error = "context_changed"; _job = null; return; }
         r.waitFor = "reward"; r.phase = "save_pending";
         r.previousFeature = PersistedSnapshot.clone(state);
         if (!RewardStashService.begin(r.token + ".reward", {source:"level_reward", reason:"book_reward",
@@ -315,8 +320,9 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         var recordState:Object=state;
         if (result.bookId === "cf6-sting") {
             if (state.routes == null) state.routes={};
-            if (state.routes["cf6-sting.historical"] == null) state.routes["cf6-sting.historical"]={};
-            recordState=state.routes["cf6-sting.historical"];
+            var recordKey:String="cf6-sting."+result.routeId;
+            if (state.routes[recordKey] == null) state.routes[recordKey]={};
+            recordState=state.routes[recordKey];
         }
         var quote:Object = trial ? {sp:0, reason:"debug"} : org.flashNight.arki.scene.BookRunRules.reward(result, recordState);
         var record:Object = org.flashNight.arki.scene.BookRunRules.resultRecord(result, quote, new Date().getTime());
@@ -402,9 +408,10 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         for (var i:Number=0;i<value.length;i++) if (allowed.indexOf(value.charAt(i)) < 0) return false;
         return true;
     }
-    /** Optional CF6 projection; never borrows campus records or exposes private route metadata. */
-    private static function cf6RecordProjection(feature:Object):Object {
-        var source:Object=feature.routes["cf6-sting.historical"];
+    /** Separate summaries keep the two CF6 routes and campus records independent. */
+    private static function cf6RecordProjection(feature:Object,routeId:String):Object {
+        if (!org.flashNight.arki.scene.BookDefinition.isCf6Route(routeId)) return null;
+        var source:Object=feature.routes["cf6-sting."+routeId];
         if (source == null || typeof source != "object") return null;
         var best:Number=source.bestMs == undefined ? 0 : source.bestMs;
         var clears:Number=source.clears == undefined ? 0 : source.clears;
@@ -413,7 +420,7 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         var history:Array=[],seen:Object={};
         if (source.history instanceof Array) for (var i:Number=0;i<source.history.length && history.length<20;i++) {
             var row:Object=source.history[i];
-            if (row.bookId !== "cf6-sting" || row.routeId !== "historical" || row.sp !== 0
+            if (row.bookId !== "cf6-sting" || row.routeId !== routeId || row.sp !== 0
                     || !validCf6RecordRunId(row.runId) || seen["$"+row.runId] === true
                     || typeof row.debug != "boolean" || typeof row.reason != "string"
                     || (row.reason != "clear" && row.reason != "incomplete")
@@ -449,6 +456,9 @@ class org.flashNight.arki.ui.BookshelfPanelService {
             outcomePending:org.flashNight.arki.scene.BookRunService.hasUnsettledOutcome(),
             unlocked:unlocked(), leeEntry:r.leeEntry === true && leeStoryUnlocked(_root), inRun:run != null, originSlot:run == null ? "" : String(run.originSlot),
             bookId:run == null ? "" : String(run.bookId), pendingBookId:feature.active == null ? "" : String(feature.active.bookId),
+            routeId:run.bookId === "cf6-sting" ? String(run.routeId) : "",
+            pendingRouteId:feature.active.bookId === "cf6-sting" ? String(feature.active.routeId) : "",
+            returningRouteId:r.kind === "return" && r.result.bookId === "cf6-sting" ? String(r.result.routeId) : "",
             lastTrialRecord:feature.lastTrialRecord == null ? null : PersistedSnapshot.clone(feature.lastTrialRecord),
             runOutcome:run == null ? "" : String(run.outcome), pendingRun:feature.active == null ? "" : String(feature.active.slot),
             reward:r.rewardSaved === true ? Number(r.reward || 0) : 0, lastReward:Number(feature.lastReward || 0),
@@ -457,8 +467,10 @@ class org.flashNight.arki.ui.BookshelfPanelService {
             returningResult:r.kind == "return" && r.result != null
                 ? org.flashNight.arki.scene.BookRunRules.resultRecord(r.result, {sp:0,reason:"pending"}, 0) : null,
             error:String(r.error || ""), slots:r.slots};
-        var cf6:Object=cf6RecordProjection(feature);
+        var cf6:Object=cf6RecordProjection(feature,"historical");
         if (cf6 != null) projection.cf6Records=cf6;
+        var type61:Object=cf6RecordProjection(feature,"type61");
+        if (type61 != null) projection.cf6Type61Records=type61;
         return projection;
     }
     private static function validPayload(cmd:String, p:Object):Boolean {

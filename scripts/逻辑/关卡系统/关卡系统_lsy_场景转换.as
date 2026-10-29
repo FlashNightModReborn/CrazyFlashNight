@@ -47,7 +47,7 @@ _root.转场景数据传递 = function(){
 	// 重置场景切换冷却计数，防止加载期间持续按键导致的穿墙问题
 	_root.场景转换函数.上次切换帧数 = _root.帧计时器.当前帧数;
     } catch(属性场景错误) {属性场景协调器.failSceneInitialization(属性场景范围,属性场景错误);throw 属性场景错误;}
-    finally {属性场景协调器.endSceneInitialization(属性场景范围);}
+    finally {org.flashNight.arki.scene.PlayerSceneLifecycle.acceptSceneResult(属性场景范围,属性场景协调器.endSceneInitialization(属性场景范围));}
 }
 
 _root.转场景数据 = [0, 0, "空手"];
@@ -62,7 +62,7 @@ _root.转场景记录数据第一次记录 = false;
 // }
 
 _root.加载我方人物 = function(地点X, 地点Y){
-    org.flashNight.arki.scene.PlayerResourceTransferBridge.prepareScene(_root.gameworld,true);
+    org.flashNight.arki.scene.PlayerSceneLifecycle.prepareScene(_root.gameworld,true);
     var 属性加载协调器:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator;
     var 属性加载范围:Object=属性加载协调器.beginSceneInitialization(_root.gameworld);
     try {
@@ -82,13 +82,13 @@ _root.加载我方人物 = function(地点X, 地点Y){
 
     } catch(属性加载错误) {属性加载协调器.failSceneInitialization(属性加载范围,属性加载错误);throw 属性加载错误;}
     finally {
-        属性加载协调器.endSceneInitialization(属性加载范围);
-        org.flashNight.arki.scene.PlayerResourceTransferBridge.finishSceneSetup(就绪世界);
+        org.flashNight.arki.scene.PlayerSceneLifecycle.acceptSceneResult(属性加载范围,属性加载协调器.endSceneInitialization(属性加载范围));
+        org.flashNight.arki.scene.PlayerSceneLifecycle.finishSceneSetup(就绪世界);
     }
 }
 
 _root.加载主角和战宠 = function(地点X, 地点Y){
-    org.flashNight.arki.scene.PlayerResourceTransferBridge.prepareScene(_root.gameworld,false);
+    org.flashNight.arki.scene.PlayerSceneLifecycle.prepareScene(_root.gameworld,false);
     var 属性特例协调器:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator;
     var 属性特例范围:Object=属性特例协调器.beginSceneInitialization(_root.gameworld);
     try {
@@ -104,8 +104,8 @@ _root.加载主角和战宠 = function(地点X, 地点Y){
 
     } catch(属性特例错误) {属性特例协调器.failSceneInitialization(属性特例范围,属性特例错误);throw 属性特例错误;}
     finally {
-        属性特例协调器.endSceneInitialization(属性特例范围);
-        org.flashNight.arki.scene.PlayerResourceTransferBridge.finishSceneSetup(玩家世界);
+        org.flashNight.arki.scene.PlayerSceneLifecycle.acceptSceneResult(属性特例范围,属性特例协调器.endSceneInitialization(属性特例范围));
+        org.flashNight.arki.scene.PlayerSceneLifecycle.finishSceneSetup(玩家世界);
     }
 }
 
@@ -151,7 +151,7 @@ _root.加载佣兵 = function(地点X, 地点Y){
 	if((!_root.限制系统.limitLevel || _root.难度等级 >= _root.限制系统.limitLevel) && _root.限制系统.DisableCompanion) return;
 	// 标记本场景托管佣兵（issue #7 bug4：handleDeploy 即时上/撤人据此判定）
 	_root.gameworld.佣兵已进场 = true;
-    org.flashNight.arki.scene.PlayerResourceTransferBridge.scheduleMercs(地点X,地点Y);
+    org.flashNight.arki.scene.PlayerSceneLifecycle.scheduleMercs(地点X,地点Y);
 }
 
 _root.删除场景上佣兵 = function(){
@@ -407,13 +407,13 @@ _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, 
 	}else{
 		initObject.兵种 = id;
 	}
-    org.flashNight.arki.scene.PlayerResourceTransferBridge.prepareSpawn(id,name,initObject);
+    org.flashNight.arki.scene.PlayerSceneLifecycle.prepareSpawn(id,name,initObject);
 	// Only a newly born, currently controlled historical-CF6 hero gets mask history.
 	// Existing actors and other routes are never retroactively declared mask-free.
 	var maskRun:Object = _root._saveExt.bookRun;
 	if (id === "主角-男" && name === _root.控制目标
 		&& _root.当前关卡名 === "书中历险-毒刺行动"
-		&& maskRun.bookId === "cf6-sting" && maskRun.routeId === "historical"
+		&& maskRun.bookId === "cf6-sting" && org.flashNight.arki.scene.BookDefinition.isCf6Route(maskRun.routeId)
 		&& maskRun.outcome === "active" && maskRun.slot === String(_root.savePath)) {
 		var maskInit:Object = org.flashNight.arki.scene.Cf6ActorMaskState.prepare(
 			_root.gameworld, _root.gameworld.__stageReturnWorldIdentity, name, initObject);
@@ -633,11 +633,11 @@ _root.场景转换函数.切换场景 = function(对应门名, 目标场景帧, 
 				return;
 			}
 			if (开门效果 == null || 开门效果 == ""){
-				if (!org.flashNight.arki.scene.PlayerResourceTransferBridge.requestFade(目标场景帧)) return;
+				if (!org.flashNight.arki.scene.PlayerSceneLifecycle.requestFade(目标场景帧)) return;
 				this.gotoAndStop(3);
 			}else{
 				if (!org.flashNight.arki.scene.SceneTransitionGuard.prepareDoor(目标场景帧)) return;
-                if (!org.flashNight.arki.scene.PlayerResourceTransferBridge.recordAdmittedDoor(目标场景帧)) return;
+                if (!org.flashNight.arki.scene.PlayerSceneLifecycle.recordAdmittedDoor(目标场景帧)) return;
 				游戏世界[开门效果].play();
 				this.gotoAndStop(3);
 			}
@@ -681,11 +681,11 @@ _root.场景转换函数.打开Web选关 = function(对应门名, 目标场景�
 			}
 
 			if (开门效果 == null || 开门效果 == ""){
-				if (!org.flashNight.arki.scene.PlayerResourceTransferBridge.requestFade(目标场景帧)) return;
+				if (!org.flashNight.arki.scene.PlayerSceneLifecycle.requestFade(目标场景帧)) return;
 				this.gotoAndStop(3);
 			}else{
 				if (!org.flashNight.arki.scene.SceneTransitionGuard.prepareDoor(目标场景帧)) return;
-                if (!org.flashNight.arki.scene.PlayerResourceTransferBridge.recordAdmittedDoor(目标场景帧)) return;
+                if (!org.flashNight.arki.scene.PlayerSceneLifecycle.recordAdmittedDoor(目标场景帧)) return;
 				游戏世界[开门效果].play();
 				this.gotoAndStop(3);
 			}

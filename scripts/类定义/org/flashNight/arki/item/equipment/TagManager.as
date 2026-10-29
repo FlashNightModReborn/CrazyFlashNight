@@ -13,6 +13,7 @@ import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
  * - requireTags / useSwitch.requireTags: 全局或按装备类型生效的安装前置要求
  * - provideTags: 提供的结构标签
  * - blockedTags: 装备禁止的标签
+ * - allowedModTags: 可选的挂点白名单；未标注时沿用原规则，标注后未列出/无tag均拒绝
  * - tag互斥: 同tag配件不能共存
  *
  * @author 重构自 EquipmentUtil
@@ -21,6 +22,17 @@ class org.flashNight.arki.item.equipment.TagManager {
 
     // 调试模式
     private static var _debugMode:Boolean = false;
+
+    /** null 表示未限制；空白/畸形显式白名单产生空集合，不能退回开放安装。 */
+    private static function allowedModTagDict(itemData:Object):Object {
+        if (itemData.allowedModTags === undefined) return null;
+        if (typeof itemData.allowedModTags != "string") return {};
+        return buildTagDict(itemData.allowedModTags);
+    }
+
+    private static function matchesAllowedModTags(modData:Object, allowed:Object):Boolean {
+        return allowed == null || (typeof modData.tagValue == "string" && allowed[modData.tagValue] === true);
+    }
 
     /**
      * 构建标签上下文
@@ -162,6 +174,9 @@ class org.flashNight.arki.item.equipment.TagManager {
                 return -2; // 已装备同名配件
             }
         }
+
+        // 显式封闭改装只接受已列出的挂点；新增tag和无tag插件不能绕过有限黑名单。
+        if (!matchesAllowedModTags(modData, allowedModTagDict(itemData))) return -64;
 
         // 构建当前装备类型；同时用于条件性结构依赖与特殊槽判定。
         var itemUseLookup:Object = buildUseLookupForMods(mods, itemData, ModRegistry.getModDict());
@@ -405,6 +420,7 @@ class org.flashNight.arki.item.equipment.TagManager {
 
         // 处理blockedTags
         var blockedTagDict:Object = null;
+        var allowedTagDict:Object = allowedModTagDict(itemData);
         if (itemData.blockedTags) {
             blockedTagDict = buildTagDict(itemData.blockedTags);
         }
@@ -413,6 +429,7 @@ class org.flashNight.arki.item.equipment.TagManager {
             var modName:String = availableMods[i];
             var modData:Object = ModRegistry.getModData(modName);
             if (!modData) continue;
+            if (!matchesAllowedModTags(modData, allowedTagDict)) continue;
 
             var canUse:Boolean = true;
 

@@ -1170,48 +1170,56 @@ _root.主角函数.执行切手技 = function(定位器:MovieClip, 形态:String
 
 //切换武器
 _root.主角函数.攻击模式切换 = function(模式) {
+    var previousAttackMode:String = this.攻击模式;
+    var previousSwitchSerial:Number = this.__attackModeSwitchSerial | 0;
     if (this.飞行浮空 && this._name === _root.控制目标) {
-        存储当前飞行状态("切换武器");
+        this.存储当前飞行状态("切换武器");
     }
     if (模式 != "手枪") {
         this.根据模式重新读取武器加成(模式);
     }
     if (模式 === "空手") {
-        攻击模式 = 模式;
-        状态改变("攻击模式切换");
+        this.攻击模式 = 模式;
+        this.状态改变("攻击模式切换");
     }
-    if (模式 === "手雷" && 手雷) {
-        if (是否允许发送联机数据 != true) {
-            攻击模式 = 模式;
-            状态改变("攻击模式切换");
+    if (模式 === "手雷" && this.手雷) {
+        if (this.是否允许发送联机数据 != true) {
+            this.攻击模式 = 模式;
+            this.状态改变("攻击模式切换");
         }
     }
-    if (模式 === "长枪" && 长枪) {
-        攻击模式 = 模式;
-        状态改变("攻击模式切换");
+    if (模式 === "长枪" && this.长枪) {
+        this.攻击模式 = 模式;
+        this.状态改变("攻击模式切换");
     }
-    if (模式 === "兵器" && 刀) {
-        攻击模式 = 模式;
-        状态改变("攻击模式切换");
+    if (模式 === "兵器" && this.刀) {
+        this.攻击模式 = 模式;
+        this.状态改变("攻击模式切换");
     }
     if (模式 === "手枪") {
-        if (手枪2 && 手枪) {
-            攻击模式 = "双枪";
+        if (this.手枪2 && this.手枪) {
+            this.攻击模式 = "双枪";
             this.根据模式重新读取武器加成("手枪2");
             this.根据模式重新读取武器加成("手枪");
-            状态改变("攻击模式切换");
-        } else if (手枪) {
-            攻击模式 = "手枪";
+            this.状态改变("攻击模式切换");
+        } else if (this.手枪) {
+            this.攻击模式 = "手枪";
             this.根据模式重新读取武器加成("手枪");
-            状态改变("攻击模式切换");
-        } else if (手枪2) {
-            攻击模式 = "手枪2";
+            this.状态改变("攻击模式切换");
+        } else if (this.手枪2) {
+            this.攻击模式 = "手枪2";
             this.根据模式重新读取武器加成("手枪2");
-            状态改变("攻击模式切换");
+            this.状态改变("攻击模式切换");
         }
     }
     // AI DPS 缓存失效：攻击模式切换 → 跨模式毒合成 / 伤害类型等都变
     org.flashNight.arki.unit.PlayerInfoProvider.invalidateDpsCache(this);
+    // 成功切换后发布一次；整备消费者只在事件上提交弹药，不轮询或借用换弹计时。
+    if (this.攻击模式 !== previousAttackMode && this.dispatcher
+            && (this.__attackModeSwitchSerial | 0) == previousSwitchSerial) {
+        this.__attackModeSwitchSerial = (previousSwitchSerial + 1) | 0;
+        this.dispatcher.publish("attackModeChanged", this, previousAttackMode, this.攻击模式);
+    }
 
     if (_root.控制目标 === this._name) {
         _root.玩家信息界面.刷新攻击模式(this.攻击模式);

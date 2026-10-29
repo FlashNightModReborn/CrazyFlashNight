@@ -29,6 +29,7 @@ class org.flashNight.arki.interaction.NativeMenuBridgeTest {
     public static var tipInstalled:Number = 0;
     public static var calls:Object = null;         // 路由调用记录
     public static var shopOpenResult:Boolean = true;
+    public static var craftCategory:String = "";
 
     private static var _saved:Object = null;
     private static var _savedCtx = undefined;
@@ -298,6 +299,7 @@ class org.flashNight.arki.interaction.NativeMenuBridgeTest {
         test_availabilityChange_rejects();
         test_visibleFalse_hides();
         test_routes_verbatim();
+        test_cf6Crafting();
         test_sendFailure_fallback();
         test_detach_hides();
         test_lateUnload_keepsNewCompat();
@@ -525,6 +527,39 @@ class org.flashNight.arki.interaction.NativeMenuBridgeTest {
         assertEq(_npcA, calls.skillNpc, "train: npc passed through");
     }
 
+    private static function test_cf6Crafting():Void {
+        var runtime:Object=_global;
+        if(runtime.org.flashNight.arki.scene==undefined)runtime.org.flashNight.arki.scene={};
+        var originalService:Object=runtime.org.flashNight.arki.scene.Cf6Type61Service;
+        if(originalService==undefined)runtime.org.flashNight.arki.scene.Cf6Type61Service={};
+        var service:Object=runtime.org.flashNight.arki.scene.Cf6Type61Service;
+        var original:Function=service.craftingCategory,originalOpen:Function=_root.gameCommands.openCraftingWorkbench;
+        try {
+            resetCalls();calls.craft=[];craftCategory="进阶防具";
+            service.craftingCategory=function(npc:Object):String {return org.flashNight.arki.interaction.NativeMenuBridgeTest.craftCategory;};
+            _root.gameCommands.openCraftingWorkbench=function(params:Object):Boolean {
+                org.flashNight.arki.interaction.NativeMenuBridgeTest.calls.craft.push(params);return true;
+            };
+            fiveWrite("NPC功能菜单","npcA");
+            assertEq(6,lastPayload().actions.length,"CF6 merchant adds a sixth crafting action");
+            assertEq("装备合成",lastPayload().actions[2].label,"CF6 workbench has a visible player-facing label");
+            var rid:String=curRid();fireAction(rid,ctxScene,"craft");fireAction(rid,ctxScene,"craft");
+            assertEq(1,calls.craft.length,"craft action consumes its exact menu request once");
+            assertEq("进阶防具",calls.craft[0].category,"craft opens the authority-selected category");
+            assertEq("world_npc",calls.craft[0].source,"craft reuses the existing world NPC opener contract");
+            fiveWrite("NPC功能菜单","npcA");rid=curRid();craftCategory="";fireAction(rid,ctxScene,"craft");
+            assertEq(1,calls.craft.length,"lost route or merchant access rejects a previously visible craft action");
+            fiveWrite("NPC功能菜单","npcA");
+            assertEq(5,lastPayload().actions.length,"ordinary NPCs retain their original five actions");
+            service.craftingCategory=function(npc:Object,id:String):String {return id=="craft"?"进阶防具":id=="craft_plugins"?"插件合成":"";};
+            calls.craft=[];fiveWrite("NPC功能菜单","npcA");
+            assertEq(7,lastPayload().actions.length,"distinct unlocked recipe categories each have a visible menu entry");
+            assertEq("插件合成",lastPayload().actions[3].label,"plugin recipes no longer depend on an absent category switcher");
+            rid=curRid();fireAction(rid,ctxScene,"craft_plugins");fireAction(rid,ctxScene,"craft_plugins");
+            assertEq(1,calls.craft.length,"category-specific action also consumes the menu once");
+            assertEq("插件合成",calls.craft[0].category,"plugin action opens its exact original category");
+        } finally {fireTeardown();service.craftingCategory=original;runtime.org.flashNight.arki.scene.Cf6Type61Service=originalService;_root.gameCommands.openCraftingWorkbench=originalOpen;craftCategory="";}
+    }
     private static function test_sendFailure_fallback():Void {
         resetCalls();
         sendResult = false;

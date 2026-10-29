@@ -74,7 +74,7 @@ def historical_instances(excluded=()):
         raise ValueError('CF6 historical delivery requires its explicit period whitelist')
     result = []
     for name in policy['acceptedWeaponNames']:
-        if name in excluded: continue
+        if name in excluded or name in policy.get('kOnlyWeaponNames',[]): continue
         weapon, data = weapon_data({'weapon':name}, items)
         if weapon.findtext('use') not in ('长枪','手枪'): raise ValueError('historical gun whitelist contains another slot')
         level = int(data.findtext('level','999'))

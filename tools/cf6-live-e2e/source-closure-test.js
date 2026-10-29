@@ -107,6 +107,7 @@ function restoreAssets(){
 }
 try{
     C.FILES.forEach(ref=>write(ref,/\.swf$/i.test(ref)?swf():Buffer.from('fixture openBookshelfForAgent')));
+    for(const name of ['route-config.js','preflight.js','affiliated-slot.js','run-candidate.js','cdp-input-channel.js','passive-observer.js','source-closure.js','verified-return-observation.js'])write('tools/cf6-live-e2e/'+name,'fixture driver');
     restoreAssets();
     write(chapterPath,JSON.stringify(chapter));write(mechanism,'var cutscene="flashswf/backgrounds/cf6/CF6_A21_Transform.swf";');
     const cameraSource='tools/cf6-map-runtime/generated/fixture-camera.as';
@@ -126,6 +127,28 @@ try{
         assert(baseline.dependencies.some(x=>x.owner==='flashswf/nested/child.swf'&&x.target==='flashswf/leaf.swf'));
     });
     test('unchanged captures have deterministic digest',()=>assert(C.assertUnchanged(baseline,C.capture(root))));
+    test('Type61 closure binds route source, shop policies and its own runtime',()=>{
+        const prior=new Map(C.TYPE61_FILES.map(ref=>[ref,fs.existsSync(path.join(root,ref))?fs.readFileSync(path.join(root,ref)):null]));
+        try {
+        C.TYPE61_FILES.forEach(ref=>write(ref,'fixture type61 source'));
+        const type61=JSON.parse(JSON.stringify(chapter));type61.routeId='type61';
+        write('data/stages/books/cf6-type61.runtime.json',JSON.stringify(type61));
+        const result=C.capture(root,'type61');C.verify(result);assert.equal(result.routeId,'type61');
+        const names=new Set(result.files.map(row=>row.relativePath));
+        for(const ref of C.TYPE61_FILES)assert(names.has(ref),ref);
+        for(const ref of ['tools/cf6-type61/encounters.source.json','tools/cf6-soldier-assets/instructor-tuning.json']) {
+            const original=fs.readFileSync(path.join(root,ref));
+            write(ref,Buffer.concat([original,Buffer.from('\nauthoring change')]));
+            assert.throws(()=>C.assertUnchanged(result,C.capture(root,'type61')));
+            write(ref,original);
+        }
+        assert.throws(()=>C.assertUnchanged(baseline,result));
+        type61.routeId='historical';write('data/stages/books/cf6-type61.runtime.json',JSON.stringify(type61));
+        assert.throws(()=>C.capture(root,'type61'));
+        type61.routeId='type61';write('data/stages/books/cf6-type61.runtime.json',JSON.stringify(type61));
+        } finally {for(const [ref,bytes] of prior){if(bytes===null)fs.unlinkSync(path.join(root,ref));else write(ref,bytes);}}
+        assert(C.assertUnchanged(baseline,C.capture(root)));
+    });
     test('new consumers, turret assetUrl and actual XFL input tree are bound',()=>{
         const names=new Set(baseline.files.map(row=>row.relativePath));
         for(const ref of ['scripts/类定义/org/flashNight/arki/scene/Cf6TutorialTurretService.as',
@@ -734,6 +757,51 @@ try{
     test('vehicle consumer source changes invalidate the closed journey identity',()=>{
         for(const ref of C.VEHICLE_CONSUMERS){write(ref,'changed vehicle consumer');assert.throws(()=>C.assertUnchanged(vehicleBaseline,C.capture(root)));restoreVehicle();}
         put(chapterPath,chapter);
+    });
+    const r7Base='tools/cf6-tutorial/',r7Work=r7Base+'r7/',r7Target='flashswf/backgrounds/cf6/CF6_Tutorial_BG/';
+    const r7Art='flashswf/arts/new/Codex素材源稿/CF6地图/教程-R7/';
+    const r7Source=r7Art+'教程房-R7-bold-全图.svg',r7Archive=r7Art+'CF6-教程摆件-R7-Flash边线对照与源包.zip';
+    const r7Ref=r7Base+'provenance.json',r7Conversion=r7Work+'conversion.json',r7Cache=r7Work+'native-media/';
+    put(r7Base+'layout.json',{artRevision:'r7-bold'});write(r7Source,'editable R7 source');write(r7Archive,'immutable original archive');
+    const r7Image='intrinsic-'+('1'.repeat(24))+'.png';
+    write(r7Cache+'DOMDocument.xml','<DOMDocument/>');write(r7Cache+'LIBRARY/'+r7Image,'original embedded pixels');write(r7Cache+'bin/M 1 123.dat','native cache');
+    put(r7Cache+'closure.json',{schema:'cf6-tutorial-r7-native-media.v1',files:['DOMDocument.xml','LIBRARY/'+r7Image,'bin/M 1 123.dat'].map(p=>declared(r7Cache+p,p))});
+    const r7Producers=[r7Base+'r7.py','tools/cf6-map-runtime/native-vector/build-a01.py','tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py','tools/cf6-map-runtime/build.py'];
+    for(const ref of r7Producers)if(!fs.existsSync(path.join(root,ref)))write(ref,'bounded R7 producer');
+    put(r7Conversion,{schema:'cf6-tutorial-r7-native.v1',source:r7Source,sourceSha256:declared(r7Source).sha256,selectedOutline:'bold',generatorInputs:r7Producers.map(ref=>declared(ref))});
+    write(r7Target+'CF6_Tutorial_BG.xfl','PROXY-CS5');write(r7Target+'PublishSettings.xml','<settings/>');
+    write(r7Target+'DOMDocument.xml','<DOMDocument><symbols><Include href="one.xml"/></symbols><timelines><DOMSymbolInstance libraryItemName="one"/></timelines></DOMDocument>');
+    write(r7Target+'LIBRARY/one.xml','<DOMSymbolItem name="one"/>');write('flashswf/backgrounds/cf6/CF6_Tutorial_BG.swf',swf());
+    const r7Outputs=[r7Conversion,...['CF6_Tutorial_BG.xfl','PublishSettings.xml','DOMDocument.xml','LIBRARY/one.xml'].map(p=>r7Target+p)];
+    const r7Manifest={schema:'cf6-tutorial-assembly.v3',artRevision:'r7-bold',mapId:'TUTORIAL',selectedSource:r7Source,conversion:r7Conversion,
+        sourceArchiveSha256:declared(r7Archive).sha256,sourceInputs:[r7Source,r7Archive,r7Base+'layout.json',r7Base+'assemble.py',r7Cache+'closure.json'].map(ref=>declared(ref)),outputs:r7Outputs.map(ref=>declared(ref))};
+    put(r7Ref,r7Manifest);
+    put(chapterPath,{...chapter,maps:[...chapter.maps,{id:'TUTORIAL',background:'cf6/CF6_Tutorial_BG.swf',mechanism:{layers:[]}}]});
+    test('R7 source, original archive, converter, native caches and active XFL all enter the journey closure',()=>{
+        const value=C.capture(root);
+        for(const ref of [r7Source,r7Archive,r7Producers[0],r7Cache+'bin/M 1 123.dat',r7Target+'LIBRARY/one.xml'])assert(value.files.some(row=>row.relativePath===ref));
+    });
+    test('R7 rejects changed source or native cache bytes',()=>{
+        for(const ref of [r7Source,r7Cache+'bin/M 1 123.dat']){
+            const old=fs.readFileSync(path.join(root,ref));write(ref,'drifted');assert.throws(()=>C.capture(root),/digest mismatch/);write(ref,old);
+        }
+    });
+    test('R7 rejects omission of a consumed native symbol',()=>{
+        put(r7Ref,{...r7Manifest,outputs:r7Manifest.outputs.filter(row=>row.path!==r7Target+'LIBRARY/one.xml')});
+        assert.throws(()=>C.capture(root),/omitted native/);put(r7Ref,r7Manifest);
+    });
+    test('R7 manifests cannot widen admission into unrelated source trees',()=>{
+        write('tmp/unreviewed-r7.txt','foreign');put(r7Ref,{...r7Manifest,outputs:[...r7Manifest.outputs,declared('tmp/unreviewed-r7.txt')]});
+        assert.throws(()=>C.capture(root),/unexpected or duplicate R7 output/);put(r7Ref,r7Manifest);
+    });
+    test('R7 requires the exact selected source and every converter input',()=>{
+        const original=parse(r7Conversion);
+        for(const mutate of [m=>m.selectedOutline='moderate',m=>m.generatorInputs.pop()]){
+            const value=structuredClone(original);mutate(value);put(r7Conversion,value);
+            put(r7Ref,{...r7Manifest,outputs:r7Outputs.map(ref=>declared(ref))});
+            assert.throws(()=>C.capture(root),/R7 conversion source mismatch|R7 producer inventory invalid/);
+        }
+        put(r7Conversion,original);put(r7Ref,r7Manifest);
     });
     console.log('CF6 source closure offline cases: '+passed+'/'+passed);
 }finally{

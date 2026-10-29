@@ -528,6 +528,7 @@ namespace CF7Launcher.Guardian
             // Phase 2b-ext: Flash 帧 81 "封面" 发来的 reveal 信号, 清 _revealWaitingFlash
             _router.RegisterSync("bootstrap_reveal_ready", HandleBootstrapRevealReady);
             _router.RegisterSync("character_create_response", HandleCharacterCreateResponse);
+            _router.RegisterSync("scene_initialization_failed", HandleSceneInitializationFailed);
             LogManager.Log("[LaunchFlow] bootstrap_handshake registered (async)");
             LogManager.Log("[LaunchFlow] bootstrap_ready registered");
             LogManager.Log("[LaunchFlow] bootstrap_reveal_ready registered");
@@ -2998,6 +2999,32 @@ namespace CF7Launcher.Guardian
                     "launch.frontdoor_scene_timeout",
                     "attemptId=" + attemptIdSnap);
                 TransitionToError("frontdoor_scene_timeout");
+            }
+        }
+
+        private string HandleSceneInitializationFailed(JObject message)
+        {
+            // This is a terminal receipt for the exact pending entry, never a ready signal.
+            if (message["v"]?.Type != JTokenType.Integer || message.Value<int>("v") != 1
+                || message["attemptId"]?.Type != JTokenType.String
+                || message["slotKey"]?.Type != JTokenType.String)
+                return null;
+            lock (_stateLock)
+            {
+                bool entryStarted = _frontdoorMode == "load"
+                    ? _frontdoorEntryDispatched
+                    : _frontdoorMode == "create" && _characterCreateDurable;
+                if (_state != State.Ready || !_revealWaitingScene || !entryStarted
+                    || string.IsNullOrEmpty(_currentAttemptId) || string.IsNullOrEmpty(_pendingSlot)
+                    || !string.Equals(_currentAttemptId, message.Value<string>("attemptId"), StringComparison.Ordinal)
+                    || !string.Equals(_pendingSlot, message.Value<string>("slotKey"), StringComparison.Ordinal))
+                    return null;
+                string detail = message["reason"]?.Type == JTokenType.String
+                    ? message.Value<string>("reason") : "unspecified";
+                if (detail.Length > 200) detail = detail.Substring(0, 200);
+                LogManager.Log("[LaunchFlow] scene initialization failed: " + detail);
+                TransitionToError("scene_initialization_failed");
+                return null;
             }
         }
 

@@ -34,9 +34,17 @@ class org.flashNight.gesh.tooltip.builder.CommonStatsBuilder {
      * @param item:Object 物品数据
      * @param data:Object 合并后的装备数据
      * @param equipData:Object 强化/配件数据（可选）
+     * @param nativeOpt:Object 原生注释可选开关（nativeOpt.omitCritSlay 为 true 时
+     *   斩杀行写入 nativeOpt.critSlay 缓冲区）
      * @return Void（直接修改 result）
      */
-    public static function build(result:Array, baseItem:BaseItem, item:Object, data:Object, equipData:Object):Void {
+    public static function build(result:Array, baseItem:BaseItem, item:Object, data:Object, equipData:Object, nativeOpt:Object):Void {
+        // 斩杀行可与暴击行一起移入子注释框（原生路径），默认仍留在通用属性块
+        var slayTarget:Array = result;
+        if (nativeOpt != null && nativeOpt.omitCritSlay === true && nativeOpt.critSlay != null) {
+            slayTarget = nativeOpt.critSlay;
+        }
+
         // 力量/伤害相关
         TooltipFormatter.upgradeLine(result, data, equipData, "force", null, null);
         TooltipFormatter.upgradeLine(result, data, equipData, "damage", null, null);
@@ -54,7 +62,7 @@ class org.flashNight.gesh.tooltip.builder.CommonStatsBuilder {
         TooltipFormatter.upgradeLine(result, data, equipData, "poison", null, null);
         TooltipFormatter.upgradeLine(result, data, equipData, "vampirism", null, TooltipConstants.SUF_PERCENT);
         TooltipFormatter.upgradeLine(result, data, equipData, "rout", null, TooltipConstants.SUF_PERCENT);
-        TooltipFormatter.upgradeLine(result, data, equipData, "slay", null, TooltipConstants.SUF_BLOOD);
+        TooltipFormatter.upgradeLine(slayTarget, data, equipData, "slay", null, TooltipConstants.SUF_BLOOD);
 
         // 防御/HP/MP
         TooltipFormatter.upgradeLine(result, data, equipData, "defence", null, null);

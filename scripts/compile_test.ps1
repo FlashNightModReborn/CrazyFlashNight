@@ -688,6 +688,20 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
         exit 1
     }
 
+    if (-not (Get-Process -Name Flash -ErrorAction SilentlyContinue)) {
+        $idleNativeTasks = @((Get-ScheduledTask -TaskName 'FlashCS6Task'),(Get-ScheduledTask -TaskName 'CompileTriggerTask'))
+        if (@($idleNativeTasks | Where-Object { $_.State -ne 'Ready' }).Count -eq 0) {
+            Start-Sleep -Milliseconds 250
+            if (-not (Get-Process -Name Flash -ErrorAction SilentlyContinue) -and
+                -not (Test-Path -LiteralPath $Marker) -and -not (Test-Path -LiteralPath $ErrorMarker)) {
+                [void](Write-CompileUncertain ('native host exited before terminal evidence; target={0}' -f $Target))
+                $nonTerminalUncertainWritten = $true
+                Write-Host '[ERROR] CS6 已退出且没有终态编译证据；保留本轮未知状态，不继续空等。'
+                exit 1
+            }
+        }
+    }
+
     if (Test-Path -LiteralPath $ReopenMarker) {
         $reopenBody = [System.IO.File]::ReadAllText(
             $ReopenMarker, [System.Text.Encoding]::UTF8)

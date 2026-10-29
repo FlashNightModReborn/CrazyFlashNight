@@ -9,8 +9,9 @@ org.flashNight.arki.unit.Action.Input.EnemyActionRuntime.installRootBridge(_root
 _root.敌人函数.根据等级初始数值 = function(等级值) {
     //_root.服务器.发布服务器消息("unit: " + this._name + " at level: " + 等级值)
 
-    this.hp满血值 = _root.根据等级计算值(this.hp_min, this.hp_max, 等级值) * _root.难度等级;
-    this.空手攻击力 = _root.根据等级计算值(this.空手攻击力_min, this.空手攻击力_max, 等级值) * _root.难度等级;
+    var 出生难度:Number=org.flashNight.arki.scene.Cf6Type61Service.enemyScale(this);
+    this.hp满血值 = _root.根据等级计算值(this.hp_min, this.hp_max, 等级值) * 出生难度;
+    this.空手攻击力 = _root.根据等级计算值(this.空手攻击力_min, this.空手攻击力_max, 等级值) * 出生难度;
     this.基本空手攻击力 = this.空手攻击力; // 记录基础攻击力用于增益上限计算
 
     // 仅设置行走X速度，其他速度通过getter自动派生
@@ -261,6 +262,7 @@ _root.敌人函数.移动钝感硬直 = _root.主角函数.移动钝感硬直;
 
 
 _root.敌人函数.随机掉钱 = function() {
+    org.flashNight.arki.scene.Cf6Type61Service.enemyFieldReward(this);
     // Lee 攻入篇整场无掉落，包含黑龙换形态后未继承波次参数的单位。
     if (org.flashNight.arki.scene.LeeAssaultService.suppressesEnemyDrops()) return;
     // 使用 LinearCongruentialEngine 的 randomCheck 方法进行概率检查
@@ -275,7 +277,8 @@ _root.敌人函数.随机掉钱 = function() {
         var 金币数量 = LinearCongruentialEngine.instance.random(昼夜爆金币) + 1;
 
         // _root.发布消息(金币时间倍率, 昼夜爆金币, 金币数量);
-        _root.pickupItemManager.createCollectible("金钱", 金币数量, this._x, this._y, true);
+        _root.pickupItemManager.createCollectible("金钱", 金币数量, this._x, this._y, true,
+            {敌人死亡货币:true});
     }
 };
 
@@ -518,7 +521,7 @@ _root.敌人函数.提升属性抗性  = function(最小值) {
     // 遍历每个魔法伤害种类（只处理属性抗性）
     for (var i = 0; i < _root.敌人函数.魔法伤害种类.length; i++) {
         var type = _root.敌人函数.魔法伤害种类[i];
-        
+
         // 如果当前抗性值小于最小值，则提升到最小值
         if (this.魔法抗性[type] && this.魔法抗性[type] < 最小值) {
             this.魔法抗性[type] = 最小值;
@@ -559,7 +562,7 @@ _root.敌人函数.配置音效 = function(类型:String, target:MovieClip) {
 
 
 _root.初始化敌人模板 = function() {
-    org.flashNight.arki.scene.PlayerResourceTransferBridge.checkSeed(this);
+    org.flashNight.arki.scene.PlayerSceneLifecycle.checkSeed(this);
     //以下14个是原版敌人的必要函数
     this.根据等级初始数值 = this.根据等级初始数值 ? this.根据等级初始数值 : _root.敌人函数.根据等级初始数值;
     this.行走 = this.行走 ? this.行走 : _root.敌人函数.行走;
@@ -597,7 +600,7 @@ _root.初始化敌人模板 = function() {
         敌人属性 = _root.敌人属性表["默认"];
         // _root.发布消息(this.兵种, "警告：敌人未加载兵种信息，使用默认属性。");
     }
-        
+
     //13项基础数值
     if (敌人属性.线性插值经验值.length > 1) {
         _root.敌人函数.获取线性插值经验值(this, 敌人属性.线性插值经验值);
@@ -690,7 +693,7 @@ _root.初始化敌人模板 = function() {
     this.击中效果 = this.击中效果 ? this.击中效果 : "飙血";
     this.刚体 = this.刚体 ? true : false;
     this.无敌 = this.无敌 === true ? true : false;
-    
+
     //以下是可自定义的原版ai相关参数，在ai改革后可能被废弃
     this.x轴攻击范围 = this.x轴攻击范围 ? this.x轴攻击范围 : 100;
     this.y轴攻击范围 = this.y轴攻击范围 ? this.y轴攻击范围 : 10;
@@ -757,8 +760,8 @@ _root.初始化敌人模板 = function() {
     // 必须在离开初始化帧前接入：玩家与AI Lee使用同一动作入口。
     if (this.兵种 == "敌人-李小龙") _root.敌人动作.installLee(this);
     this.方向改变(this.方向);
-    if(this.__enemyActionPlayer===true && this.__resourceSpawn!=undefined)
-        org.flashNight.arki.scene.PlayerResourceTransferBridge.finishEnemyState(this,this.状态);
+    if(this.__enemyActionPlayer===true && this.__playerSceneSpawn!=undefined)
+        org.flashNight.arki.scene.PlayerSceneLifecycle.finishEnemyState(this,this.状态);
     else this.gotoAndStop(this.状态);
 }
 

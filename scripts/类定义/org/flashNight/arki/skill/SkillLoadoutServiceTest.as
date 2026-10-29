@@ -57,6 +57,7 @@ class org.flashNight.arki.skill.SkillLoadoutServiceTest {
         testQuickHudRendererRebuildsReplaceAndClear();
         testAllOptionalRenderersMissing();
         testProjectionSuccessBoundary();
+        testFeatureTransactions();
         testCooldownProjectionKeepsRunningTimer();
         SkillLoadoutService.testOnlyReset();
         trace("SkillLoadoutServiceTest Tests Passed: " + passed);
@@ -525,6 +526,61 @@ class org.flashNight.arki.skill.SkillLoadoutServiceTest {
         var result:Object = SkillLoadoutService.equip("闪现", 10, SkillLoadoutService.getRevision());
         check(result.success && r.快捷技能栏10 == "闪现",
             "all optional renderers may be absent on a successful domain write");
+    }
+
+    private static function testFeatureTransactions():Void {
+        var r:Object=fixture(80);r._saveExt={unrelated:{keep:true}};
+        r.技能表对象.冲击连携=meta("冲击连携","被动",true,false);learn(r,1,"冲击连携",1);
+        var row:Array=r.主角技能表[1];var ext:Object=r._saveExt;var other:Object=ext.unrelated;
+        var before:Number=SkillLoadoutService.getRevision();
+        var snap:Object=SkillLoadoutService.buildSnapshot("manage",null);
+        check(snap.features.length==8&&ext.skillFeatures==undefined,"feature snapshot is read-only and defaults enabled");
+        var state:Object={calls:0,status:"applied"};SkillLoadoutService.testOnlySetProjection(projectionPort(state));
+        var result:Object=SkillLoadoutService.setFeature("impact_chain.half_reload",false,before);
+        check(result.success&&result.changed&&result.revision==before+1&&r.技能点数==100&&row===r.主角技能表[1]
+            &&r._saveExt===ext&&ext.unrelated===other,"feature change preserves SP, physical skill row and unrelated extension identity");
+        check(ext.skillFeatures.disabledIds["impact_chain.half_reload"]===true&&state.mask==2&&state.calls==1,
+            "feature facts trigger the existing skills projection exactly once");
+        var actor:Object={被动技能:r.主角被动技能};
+        check(!org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(actor,"impact_chain.half_reload")
+            &&org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(actor,"impact_chain.pistol_power"),"only selected runtime feature is disabled");
+        var pref:Object=ext.skillFeatures;var rev:Number=result.revision;
+        result=SkillLoadoutService.setFeature("impact_chain.half_reload",false,rev);
+        check(result.success&&!result.changed&&result.revision==rev&&ext.skillFeatures===pref&&state.calls==1,"feature no-op performs no write or projection");
+        result=SkillLoadoutService.setFeature("impact_chain.half_reload",true,rev-1);
+        check(!result.success&&result.error=="stale_state"&&ext.skillFeatures===pref,"stale feature request is zero-write");
+        result=SkillLoadoutService.setFeature("unknown.feature",false,rev);
+        check(!result.success&&result.error=="invalid_payload"&&ext.skillFeatures===pref,"unknown feature is not registered by a request");
+        result=SkillLoadoutService.commitLearn("冲击连携",2,5,SkillLoadoutService.getRevision());
+        check(result.success&&row[1]==2&&!org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(actor,"impact_chain.half_reload"),"level-up retains explicit child opt-out");
+        SkillLoadoutService.setPassive("冲击连携",false,SkillLoadoutService.getRevision());
+        check(!org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(actor,"impact_chain.pistol_power"),"parent disable still gates all children");
+        SkillLoadoutService.setPassive("冲击连携",true,SkillLoadoutService.getRevision());
+        check(!org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(actor,"impact_chain.half_reload")
+            &&org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(actor,"impact_chain.pistol_power"),"parent reenable restores only opted-in children");
+        pref=ext.skillFeatures;rev=SkillLoadoutService.getRevision();SkillLoadoutService.testOnlyRejectNextCommit();
+        result=SkillLoadoutService.setFeature("impact_chain.pistol_power",false,rev);
+        check(!result.success&&result.error=="commit_failed"&&SkillLoadoutService.getRevision()==rev&&ext.skillFeatures===pref
+            &&org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(actor,"impact_chain.pistol_power"),"failed domain rebuild rolls back namespace and runtime cache");
+        ext.skillFeatures={v:2,disabledIds:{}};pref=ext.skillFeatures;
+        result=SkillLoadoutService.setFeature("impact_chain.pistol_power",false,SkillLoadoutService.getRevision());
+        check(!result.success&&result.error=="corrupt_skill_state"&&ext.skillFeatures===pref,"future feature namespace cannot be overwritten");
+        ext.skillFeatures={v:1,disabledIds:{}};
+        for(var n:Number=0;n<128;n++)ext.skillFeatures.disabledIds["future.f"+n]=true;
+        pref=ext.skillFeatures;rev=SkillLoadoutService.getRevision();r.存档系统.dirtyMark=false;state.calls=0;
+        result=SkillLoadoutService.setFeature("impact_chain.half_reload",false,rev);
+        check(!result.success&&result.error=="invalid_payload"&&ext.skillFeatures===pref
+            &&SkillLoadoutService.getRevision()==rev&&!r.存档系统.dirtyMark&&state.calls==0,"full namespace rejects a new opt-out with zero domain or persistence writes");
+        delete pref.disabledIds["future.f0"];pref.disabledIds["impact_chain.half_reload"]=true;
+        result=SkillLoadoutService.setFeature("impact_chain.half_reload",true,SkillLoadoutService.getRevision());
+        check(result.success&&ext.skillFeatures.disabledIds["impact_chain.half_reload"]==undefined
+            &&org.flashNight.arki.skill.SkillFeaturePolicy.readState(r).valid,"full namespace can reenable a known feature while retaining unknown IDs");
+        delete ext.skillFeatures;SkillLoadoutService.refreshFeaturePreferences();
+        check(org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(actor,"impact_chain.half_reload"),"post-load preference refresh clears the previous character opt-out");
+        result=SkillLoadoutService.setFeature("impact_chain.half_reload",false,SkillLoadoutService.getRevision());
+        result=SkillLoadoutService.setFeature("impact_chain.half_reload",true,result.revision);
+        check(result.success&&!ext.hasOwnProperty("skillFeatures")&&ext.unrelated===other
+            &&org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(actor,"impact_chain.half_reload"),"reenabling the last opt-out removes the namespace and restores default runtime eligibility");
     }
 
     private static function fixture(length:Number):Object {

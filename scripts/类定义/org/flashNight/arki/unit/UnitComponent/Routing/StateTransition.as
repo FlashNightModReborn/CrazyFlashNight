@@ -16,6 +16,7 @@ import org.flashNight.arki.unit.UnitComponent.Routing.*;
  * 保持原行为不变，由 StateTransitionTest 覆盖。
  */
 class org.flashNight.arki.unit.UnitComponent.Routing.StateTransition {
+    private static var retiredManSerial:Number = 0;
 
     public static function apply(self:MovieClip, newStateName:String):Void {
         // 1. 一次性 snapshot
@@ -38,7 +39,18 @@ class org.flashNight.arki.unit.UnitComponent.Routing.StateTransition {
         self.旧状态   = plan.oldState;
 
         if (plan.removeDynamicMan) {
-            self.man.removeMovieClip();
+            var retiring = self.man;
+            // AVM1 keeps a removed clip alive until its unload phase. Reusing its
+            // path immediately can resolve the new first-frame area through the
+            // old man (Issue 167: emitted 15, undefined bounds, queue rejected).
+            // Retire the native path before removal; the next action still uses man.
+            if (typeof retiring == "movieclip" && retiring._parent === self) {
+                var retiredName:String;
+                do { retiredName = "__retiredMan" + (++retiredManSerial); }
+                while (self[retiredName] != undefined);
+                retiring._name = retiredName;
+            }
+            retiring.removeMovieClip();
         }
 
         self.__stateGotoLabel = plan.gotoLabel;

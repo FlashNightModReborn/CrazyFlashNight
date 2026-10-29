@@ -395,4 +395,50 @@
         <name>3XF特勤套装</name>
         <order>680</order>
     </set>
+<set>
+    <id>unified_type_61_armor</id>
+    <name>统合61号工程·全装型套装</name>
+    <order>365</order>
+    <description>地面61号工程恢复完整系统后的装甲。护盾承担缓冲，胸炮定向泄放富余能量，让厚重的地面方案能够在极端工况下持续战斗。</description>
+    <effects>
+      <effect_0>
+        <id>integrated_system</id>
+        <threshold>5</threshold>
+        <activationGroup>unified_type_61_full_set</activationGroup>
+        <kind>routine</kind>
+        <mode>member_components</mode>
+        <prepareRoutine>统合61套装准备</prepareRoutine>
+        <components>
+          <component_0>
+            <id>helmet_sensor</id>
+            <slot>头部装备</slot>
+          </component_0>
+          <component_1>
+            <id>chest_buffer</id>
+            <slot>上装装备</slot>
+          </component_1>
+          <component_2>
+            <id>leg_loader</id>
+            <slot>下装装备</slot>
+          </component_2>
+          <component_3>
+            <id>boot_servo</id>
+            <slot>脚部装备</slot>
+          </component_3>
+          <component_4>
+            <id>glove_control</id>
+            <slot>手部装备</slot>
+          </component_4>
+        </components>
+        <authorizedWeapons>
+          <weapon>光剑天秤</weapon>
+          <weapon>光斧金牛</weapon>
+          <weapon>光刀狮子</weapon>
+          <weapon>光刃摩羯</weapon>
+        </authorizedWeapons>
+        <description>五件齐备：韧性+250、挡拆+35、承伤降低12%（同类取强）、抵消12kg负重，启用浅绿夜视。轻盾容量为正常最大HP的5%，盾强取不含临时增益的防御力；无伤1秒后以每秒100%容量回充，破盾5秒重建。护盾在线时，将固有基础及热、冷、电、波、蚀、毒抗性补足至25。各枪独立整备12秒，就绪后切入该枪组，消耗储备弹药补足弹匣，并沿枪械师规则回收余弹。成功施放战技立即补满轻盾并释放电热胸炮。装备光剑天秤、光斧金牛、光刀狮子或光刃摩羯时，挡拆提高到175，抗性补足至45，破盾重建缩短为3秒，轻盾可抗真伤，胸炮改为真伤；血色光剑天秤不在此列。五件均内置电力结构，只允许等级校正插件，可使用电脑芯片或成长的勋章。</description>
+      </effect_0>
+    </effects>
+  </set>
+
 </itemSets>

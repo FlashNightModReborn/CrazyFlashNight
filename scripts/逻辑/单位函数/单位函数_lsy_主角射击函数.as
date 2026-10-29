@@ -17,8 +17,8 @@ _root.主角函数.手枪2射击 = WeaponFireCore.PISTOL2_SHOOT;
 
 
 // 独立固定骨架的武器适配入口；只清理该单位的标准射击调度，不操作库存。
-_root.主角函数.清理射击任务 = function(target:MovieClip):Void {
-    ShootCore.cleanup(target);
+_root.主角函数.清理射击任务 = function(target:MovieClip, preserveCooldown:Boolean):Void {
+    ShootCore.cleanup(target, preserveCooldown);
 };
 
 // 初始化长枪射击函数
@@ -86,7 +86,44 @@ _root.主角函数.初始化双枪射击函数 = function():Void {
     ShootInitCore.initDualGun(this, _parent);
 };
 
+// 固定骨架的混合武器入口：只初始化标准手枪，不改变单位的长枪攻击模式。
+_root.主角函数.初始化混合手枪 = function():Void {
+    var unit:MovieClip = _parent;
+    WeaponAmmoRuntime.ensure(unit, "手枪");
+    this.子弹属性2 = ShootInitCore.generateBulletProps(unit, "手枪", unit.手枪属性, {});
+    this.副手射击速度 = unit.手枪属性.interval;
+    this.副手使用弹匣名称 = unit.手枪属性.clipname;
+    this.副手是否单发 = unit.手枪属性.singleshoot;
+    this.副手剩余弹匣数 = ShootInitCore.resolveMagazineStock(unit, this.副手使用弹匣名称);
+};
 
+
+// 精英反身动作保留长枪状态，只投影真实的两个手枪槽。
+_root.主角函数.初始化混合双枪 = function():Void {
+    var unit:MovieClip = _parent;
+    WeaponAmmoRuntime.ensure(unit, "手枪");
+    WeaponAmmoRuntime.ensure(unit, "手枪2");
+    this.子弹属性 = ShootInitCore.generateBulletProps(unit, "手枪", unit.手枪属性, {});
+    this.主手射击速度 = unit.手枪属性.interval;
+    this.主手使用弹匣名称 = unit.手枪属性.clipname;
+    this.主手是否单发 = unit.手枪属性.singleshoot;
+    this.主手剩余弹匣数 = ShootInitCore.resolveMagazineStock(unit, this.主手使用弹匣名称);
+    if (unit.eliteSidearmEnabled()) {
+        this.子弹属性2 = ShootInitCore.generateBulletProps(unit, "手枪2", unit.手枪2属性, {});
+        this.副手射击速度 = unit.手枪2属性.interval;
+        this.副手使用弹匣名称 = unit.手枪2属性.clipname;
+        this.副手是否单发 = unit.手枪2属性.singleshoot;
+        this.副手剩余弹匣数 = ShootInitCore.resolveMagazineStock(unit, this.副手使用弹匣名称);
+    }
+    this.主手换弹匣 = ReloadManager.createHandReloadFunction(this, unit, _root,
+        {handPrefix:"主手", weaponType:"手枪"}, null);
+    this.副手换弹匣 = ReloadManager.createHandReloadFunction(this, unit, _root,
+        {handPrefix:"副手", weaponType:"手枪2"}, null);
+};
+
+_root.主角函数.取消混合换弹 = function():Void {
+    ReloadManager.cancelReload(this, false);
+};
 
 // ============================================================
 // 换弹负担系统 (Reload Burden System)
@@ -177,6 +214,23 @@ _root.主角函数.双枪换弹帧率控制 = function(target:MovieClip):Void {
     ReloadManager.controlReloadFrameRate(target);
 };
 
+_root.主角函数.混合手枪换弹匣 = function():Void {
+    var slot:String = _parent.soldierAttackOwner.reloadSlot;
+    if (slot == "手枪2") this.副手换弹匣();
+    else if (slot == "手枪") this.主手换弹匣();
+};
+
+_root.主角函数.开始混合手枪换弹 = function(slot:String):Void {
+    var unit:MovieClip = _parent;
+    if (slot == undefined) slot = "手枪";
+    if ((slot != "手枪" && slot != "手枪2") || !WeaponAmmoRuntime.canReload(unit, slot, false)) return;
+    ShootCore.stopForReload(unit);
+    ReloadManager.bumpReloadGeneration(this);
+    this.dualReloadStartHand = slot == "手枪2" ? "副手" : "主手";
+    delete this._dualReloadFirstInitStartFrame;
+    this.换弹标签 = true;
+    this.gotoAndPlay(unit.soldierAttackOwner.reloadPair===true?"双枪同步换弹匣":"双枪换弹匣");
+};
 
 
 // 临时放置的初始化敌人射击函数

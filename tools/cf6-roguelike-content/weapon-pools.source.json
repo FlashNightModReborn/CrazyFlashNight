@@ -229,7 +229,26 @@
       "追月连弩",
       "M134暴力版的PIG版"
     ],
-    "note": "Whitelist admits conventional/special-forces adaptations and established CF6-era advanced weapon types; it is not proof that the original game dropped each model. Unclear and later forms are not admitted by level or by a generic pre-doomsday label."
+    "note": "Whitelist admits conventional/special-forces adaptations and established CF6-era advanced weapon types; it is not proof that the original game dropped each model. Unclear and later forms are not admitted by level or by a generic pre-doomsday label.",
+    "acceptedShopWeaponNames": [
+      "M134",
+      "M4A1",
+      "M4A1改",
+      "AK74",
+      "AKS74U",
+      "M249",
+      "MG42",
+      "RPG",
+      "M79式榴弹发射器",
+      "Desert Eagle",
+      "Glock 18",
+      "MP5战术版",
+      "中国88式狙击步枪改造版",
+      "AK74M"
+    ],
+    "kOnlyWeaponNames": [
+      "M134暴力版"
+    ]
   },
   "historyEvidence": {
     "53式步骑枪": {
@@ -241,18 +260,16 @@
       "xmlName": "53式步骑枪"
     },
     "M4A1": {
-      "reportLine": 143,
-      "reportClass": "tier-or-crafting-base",
-      "reportScope": "reference-only-not-historical-proof",
-      "historicalDecision": "deferred-or-below-trial-level",
+      "reportClass": "current-source-classic-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
       "xmlSource": "data/items/武器_长枪_突击步枪.xml",
       "xmlName": "M4A1"
     },
     "M4A1改": {
-      "reportLine": 143,
-      "reportClass": "tier-or-crafting-base",
-      "reportScope": "reference-only-not-historical-proof",
-      "historicalDecision": "deferred-or-below-trial-level",
+      "reportClass": "current-source-classic-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
       "xmlSource": "data/items/武器_长枪_突击步枪.xml",
       "xmlName": "M4A1改"
     },
@@ -265,10 +282,9 @@
       "xmlName": "AUG"
     },
     "AK74": {
-      "reportLine": 145,
-      "reportClass": "tier-or-crafting-base",
-      "reportScope": "reference-only-not-historical-proof",
-      "historicalDecision": "deferred-or-below-trial-level",
+      "reportClass": "current-source-classic-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
       "xmlSource": "data/items/武器_长枪_突击步枪.xml",
       "xmlName": "AK74"
     },
@@ -463,20 +479,16 @@
       "xmlName": "HKSL8GOLD"
     },
     "AWP": {
-      "reportLine": 180,
-      "reportClass": "Tier A",
-      "reportScope": "reference-only-not-historical-proof",
+      "reportClass": "current-source-classic-supplement",
       "historicalDecision": "accepted-base-only",
-      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
       "xmlSource": "data/items/武器_长枪_狙击步枪.xml",
       "xmlName": "AWP"
     },
     "WA2000": {
-      "reportLine": 181,
-      "reportClass": "Tier A",
-      "reportScope": "reference-only-not-historical-proof",
+      "reportClass": "current-source-classic-supplement",
       "historicalDecision": "accepted-base-only",
-      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
       "xmlSource": "data/items/武器_长枪_狙击步枪.xml",
       "xmlName": "WA2000"
     },
@@ -597,11 +609,9 @@
       "xmlName": "P90印花集"
     },
     "龙炎": {
-      "reportLine": 203,
-      "reportClass": "Tier A",
-      "reportScope": "reference-only-not-historical-proof",
+      "reportClass": "current-source-classic-supplement",
       "historicalDecision": "accepted-base-only",
-      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
       "xmlSource": "data/items/武器_长枪_特殊.xml",
       "xmlName": "龙炎"
     },
@@ -655,10 +665,9 @@
       "xmlName": "PKM机枪"
     },
     "MG42": {
-      "reportLine": 214,
-      "reportClass": "tier-or-crafting-base",
-      "reportScope": "reference-only-not-historical-proof",
-      "historicalDecision": "deferred-or-below-trial-level",
+      "reportClass": "current-source-classic-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
       "xmlSource": "data/items/武器_长枪_压制机枪.xml",
       "xmlName": "MG42"
     },
@@ -671,10 +680,9 @@
       "xmlName": "NEGEV"
     },
     "M134": {
-      "reportLine": 217,
-      "reportClass": "Tier A",
-      "reportScope": "reference-only-not-historical-proof",
-      "historicalDecision": "deferred-or-below-trial-level",
+      "reportClass": "current-source-classic-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
       "xmlSource": "data/items/武器_长枪_压制机枪.xml",
       "xmlName": "M134"
     },
@@ -763,11 +771,9 @@
       "xmlName": "高斯枪"
     },
     "能量狙击枪": {
-      "reportLine": 239,
-      "reportClass": "Tier A",
-      "reportScope": "reference-only-not-historical-proof",
+      "reportClass": "current-source-classic-supplement",
       "historicalDecision": "accepted-base-only",
-      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
       "xmlSource": "data/items/武器_长枪_狙击步枪.xml",
       "xmlName": "能量狙击枪"
     },
@@ -840,10 +846,9 @@
       "xmlName": "MK23手枪"
     },
     "Glock 18": {
-      "reportLine": 256,
-      "reportClass": "tier-or-crafting-base",
-      "reportScope": "reference-only-not-historical-proof",
-      "historicalDecision": "deferred-or-below-trial-level",
+      "reportClass": "current-source-classic-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
       "xmlSource": "data/items/武器_手枪_冲锋枪.xml",
       "xmlName": "Glock 18"
     },
@@ -880,10 +885,9 @@
       "xmlName": "TTI 2011 Combat Master"
     },
     "Desert Eagle": {
-      "reportLine": 260,
-      "reportClass": "tier-or-crafting-base",
-      "reportScope": "reference-only-not-historical-proof",
-      "historicalDecision": "deferred-or-below-trial-level",
+      "reportClass": "current-source-classic-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
       "xmlSource": "data/items/武器_手枪_大威力手枪.xml",
       "xmlName": "Desert Eagle"
     },
@@ -904,10 +908,9 @@
       "xmlName": "加强版mp7"
     },
     "AKS74U": {
-      "reportLine": 263,
-      "reportClass": "Tier A",
-      "reportScope": "reference-only-not-historical-proof",
-      "historicalDecision": "deferred-or-below-trial-level",
+      "reportClass": "current-source-classic-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
       "xmlSource": "data/items/武器_长枪_突击步枪.xml",
       "xmlName": "AKS74U"
     },
@@ -1067,9 +1070,9 @@
       "xmlName": "SAI GRY 幽灵"
     },
     "TTI Gen 12": {
-      "reportClass": "current-source-supplement",
+      "reportClass": "current-source-classic-supplement",
       "historicalDecision": "accepted-base-only",
-      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
       "xmlSource": "data/items/武器_长枪_霰弹枪.xml",
       "xmlName": "TTI Gen 12"
     },
@@ -1109,18 +1112,60 @@
       "xmlName": "M4A1科技白"
     },
     "G36": {
-      "reportClass": "current-source-supplement",
+      "reportClass": "current-source-classic-supplement",
       "historicalDecision": "accepted-base-only",
-      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
       "xmlSource": "data/items/武器_长枪_突击步枪.xml",
       "xmlName": "G36"
     },
     "AK47": {
-      "reportClass": "current-source-supplement",
+      "reportClass": "current-source-classic-supplement",
       "historicalDecision": "accepted-base-only",
-      "basis": "现役XML为传统制式/特种改装或既定高能武器类型，无统合后期/废土归属；本路线适配准入，不声称原版逐型号掉落",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
       "xmlSource": "data/items/武器_长枪_突击步枪.xml",
       "xmlName": "AK47"
+    },
+    "M249": {
+      "reportClass": "current-source-classic-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
+      "xmlSource": "data/items/武器_长枪_机枪.xml",
+      "xmlName": "M249"
+    },
+    "RPG": {
+      "reportClass": "current-source-classic-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
+      "xmlSource": "data/items/武器_长枪_发射器.xml",
+      "xmlName": "RPG"
+    },
+    "M79式榴弹发射器": {
+      "reportClass": "current-source-classic-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
+      "xmlSource": "data/items/武器_手枪_发射器.xml",
+      "xmlName": "M79式榴弹发射器"
+    },
+    "MP5战术版": {
+      "reportClass": "current-source-classic-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
+      "xmlSource": "data/items/武器_手枪_冲锋枪.xml",
+      "xmlName": "MP5战术版"
+    },
+    "中国88式狙击步枪改造版": {
+      "reportClass": "current-source-classic-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
+      "xmlSource": "data/items/武器_长枪_战斗步枪.xml",
+      "xmlName": "中国88式狙击步枪改造版"
+    },
+    "AK74M": {
+      "reportClass": "current-source-classic-supplement",
+      "historicalDecision": "accepted-base-only",
+      "basis": "现役XML中的常规枪械，补齐CF6整备玩法；低于开局等级不构成排除依据，不声称原版逐型号掉落。",
+      "xmlSource": "data/items/武器_长枪_突击步枪.xml",
+      "xmlName": "AK74M"
     }
   },
   "historicalReplacements": {
@@ -1137,8 +1182,7 @@
         "PKM战术版"
       ],
       "E4": [
-        "MG42战术版",
-        "M134暴力版"
+        "MG42战术版"
       ],
       "E5": [
         "量子能量枪",

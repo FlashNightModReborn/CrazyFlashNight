@@ -1,0 +1,285 @@
+{
+  "schema": "cf6-tutorial-r7-native.v1",
+  "source": "flashswf/arts/new/Codex素材源稿/CF6地图/教程-R7/教程房-R7-bold-全图.svg",
+  "sourceSha256": "2c17b26da5fbc5ae81218a4fe21891604ccc254830cea790958ecc134d0825c1",
+  "sourceBytes": 2288385,
+  "selectedOutline": "bold",
+  "inputs": [
+    {
+      "path": "tools/cf6-tutorial/r7/textures/intrinsic-4494fbd953150f7230ff5193.png",
+      "sha256": "4494fbd953150f7230ff51939273153e7f0fd746b5ba5a143ebc3dac1e08533b",
+      "bytes": 5948,
+      "pixels": [
+        132,
+        135
+      ]
+    },
+    {
+      "path": "tools/cf6-tutorial/r7/textures/intrinsic-39fa105e4ca7f9590a3e3e3e.png",
+      "sha256": "39fa105e4ca7f9590a3e3e3ec2c4811f1daac54311cdc2d2cd2790e46e8690d7",
+      "bytes": 87790,
+      "pixels": [
+        258,
+        250
+      ]
+    }
+  ],
+  "textures": {
+    "4494fbd953150f7230ff51939273153e7f0fd746b5ba5a143ebc3dac1e08533b": {
+      "name": "intrinsic-4494fbd953150f7230ff5193.png",
+      "pixels": [
+        132,
+        135
+      ]
+    },
+    "39fa105e4ca7f9590a3e3e3ec2c4811f1daac54311cdc2d2cd2790e46e8690d7": {
+      "name": "intrinsic-39fa105e4ca7f9590a3e3e3e.png",
+      "pixels": [
+        258,
+        250
+      ]
+    }
+  },
+  "symbols": [
+    "CF6Vector/00001-clip-path-content",
+    "CF6Vector/00002-r4-original-wall-native-tile-clip",
+    "CF6Vector/00003-clip-path-shape",
+    "CF6Vector/00004-clip-path-r4-original-wall-native-t",
+    "CF6Vector/00005-r4-original-wall-native-tile",
+    "CF6Vector/00006-use",
+    "CF6Vector/00007-g",
+    "CF6Vector/00008-clip-path-content",
+    "CF6Vector/00009-r4-original-wall-native-shape",
+    "CF6Vector/00010-clip-path-shape",
+    "CF6Vector/00011-clip-path-r4-original-wall-native-s",
+    "CF6Vector/00012-g",
+    "CF6Vector/00013-path",
+    "CF6Vector/00014-fixed-rear-wall",
+    "CF6Vector/00015-clip-path-content",
+    "CF6Vector/00016-r4-original-floor-native-tile-clip",
+    "CF6Vector/00017-clip-path-shape",
+    "CF6Vector/00018-clip-path-r4-original-floor-native-",
+    "CF6Vector/00019-r4-original-floor-native-tile",
+    "CF6Vector/00020-use",
+    "CF6Vector/00021-g",
+    "CF6Vector/00022-clip-path-content",
+    "CF6Vector/00023-r4-original-floor-native-shape",
+    "CF6Vector/00024-clip-path-shape",
+    "CF6Vector/00025-clip-path-r4-original-floor-native-",
+    "CF6Vector/00026-g",
+    "CF6Vector/00027-fixed-steel-floor",
+    "CF6Vector/00028-r4-original-sidewall-native-tile-cl",
+    "CF6Vector/00029-clip-path-shape",
+    "CF6Vector/00030-clip-path-r4-original-sidewall-nati",
+    "CF6Vector/00031-r4-original-sidewall-native-tile",
+    "CF6Vector/00032-use",
+    "CF6Vector/00033-g",
+    "CF6Vector/00034-clip-path-content",
+    "CF6Vector/00035-r4-original-sidewall-native-shape",
+    "CF6Vector/00036-clip-path-shape",
+    "CF6Vector/00037-clip-path-r4-original-sidewall-nati",
+    "CF6Vector/00038-g",
+    "CF6Vector/00039-fixed-right-wall",
+    "CF6Vector/00040-g",
+    "CF6Vector/00041-r4-vent-source-art",
+    "CF6Vector/00042-g",
+    "CF6Vector/00043-rear-wall-vent",
+    "CF6Vector/00044-g",
+    "CF6Vector/00045-raised-cyan-lightbox",
+    "CF6Vector/00046-right-raised-cyan-lightbox",
+    "CF6Vector/00047-r6-ground-contacts",
+    "CF6Vector/00048-g",
+    "CF6Vector/00049-g",
+    "CF6Vector/00050-g",
+    "CF6Vector/00051-g",
+    "CF6Vector/00052-g",
+    "CF6Vector/00053-g",
+    "CF6Vector/00054-g",
+    "CF6Vector/00055-g",
+    "CF6Vector/00056-g",
+    "CF6Vector/00057-g",
+    "CF6Vector/00058-g",
+    "CF6Vector/00059-r6-r6gun-repository-m134-frame0",
+    "CF6Vector/00060-r6-repository-M134",
+    "CF6Vector/00061-r6-geometry-derived-furniture-r6",
+    "CF6Vector/00062-door-native-bitmap1420-coordinate-r",
+    "CF6Vector/00063-g",
+    "CF6Vector/00064-original-position-door-redraw",
+    "CF6Vector/00065-clip-path-content",
+    "CF6Vector/00066-r7-root-viewport",
+    "CF6Vector/00067-clip-path-shape",
+    "CF6Vector/00068-clip-path-r7-root-viewport",
+    "CF6Vector/00069-g",
+    "CF6Vector/00070-svg",
+    "CF6Vector/00071-tutorial-r7-native"
+  ],
+  "nativeShapes": 6680,
+  "nativeSymbols": 71,
+  "gradientUses": 9170,
+  "masks": [
+    {
+      "id": "r4-original-wall-native-tile-clip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "r4-original-wall-native-shape",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "r4-original-floor-native-tile-clip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "r4-original-floor-native-shape",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "r4-original-sidewall-native-tile-clip",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "r4-original-sidewall-native-shape",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    },
+    {
+      "id": "r7-root-viewport",
+      "kind": "clip-path",
+      "policy": "native vector setMask"
+    }
+  ],
+  "patterns": [],
+  "croppedPatternTiles": [
+    {
+      "id": "r4-original-wall",
+      "sourceTile": [
+        130.0,
+        135.0
+      ],
+      "imageExtent": [
+        132.0,
+        135.0
+      ],
+      "nativeTiles": 60,
+      "policy": "native image instances with original per-tile and shape masks; embedded bytes unchanged"
+    },
+    {
+      "id": "r4-original-floor",
+      "sourceTile": [
+        252.95,
+        250.0
+      ],
+      "imageExtent": [
+        258.0,
+        250.0
+      ],
+      "nativeTiles": 32,
+      "policy": "native image instances with original per-tile and shape masks; embedded bytes unchanged"
+    },
+    {
+      "id": "r4-original-sidewall",
+      "sourceTile": [
+        130.0,
+        135.0
+      ],
+      "imageExtent": [
+        132.0,
+        135.0
+      ],
+      "nativeTiles": 204,
+      "policy": "native image instances with original per-tile and shape masks; embedded bytes unchanged"
+    }
+  ],
+  "filters": [],
+  "gradientFallbacks": [],
+  "imagePlacements": [
+    {
+      "texture": "intrinsic-4494fbd953150f7230ff5193.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        132.0,
+        135.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        1.0,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-39fa105e4ca7f9590a3e3e3e.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        258.0,
+        250.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        1.0,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "texture": "intrinsic-4494fbd953150f7230ff5193.png",
+      "sourceRect": [
+        0.0,
+        0.0,
+        132.0,
+        135.0
+      ],
+      "preserveAspectRatio": "xMidYMid meet",
+      "nativeMatrix": [
+        1.0,
+        0,
+        0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "sourceViewport": [
+    0,
+    0,
+    1000,
+    450
+  ],
+  "runtimeScaleOwner": "Cf6MapPresentation; no extra source scale",
+  "sourceLimitations": [
+    "Original package includes three bitmap textures; map and furniture geometry remain editable vectors.",
+    "Native rendering requires actual CS6 and game verification."
+  ],
+  "generatorInputs": [
+    {
+      "path": "tools/cf6-tutorial/r7.py",
+      "sha256": "3ce2896e32d2812c31acc8ad7f1d0a605375aae7f8bf118a82408791746b4011"
+    },
+    {
+      "path": "tools/cf6-map-runtime/native-vector/build-a01.py",
+      "sha256": "ad1cde5d1e97ac23aabdb12d5dafb8ee30974c6c8c92c51b92a5d581824533f6"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "sha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655"
+    },
+    {
+      "path": "tools/cf6-map-runtime/build.py",
+      "sha256": "5738a4c2e8f1719c637217182831a0b14029dda262e07f29ac55073738f1c01d"
+    }
+  ]
+}

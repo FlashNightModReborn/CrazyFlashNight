@@ -3,7 +3,7 @@ var StageSelectDiorama = (function() {
     'use strict';
     var baseUrl=new URL('./',document.currentScript.src),S=StageSelectCore.state;
     var config=null,cache=null,pending=null,mount=null,active=false,failed=false,generation=0,loadAbort=null;
-    var focused='',focusHost=null,presets={},fallbackImage=null,presentationId='',environmentEnabled=true,comparison=null;
+    var focused='',focusHost=null,focusReturnCamera=null,presets={},fallbackImage=null,presentationId='',environmentEnabled=true,comparison=null;
     function forFrame(frame){
         if(StageSelectData.getManifest().testOnly)return null;
         if(frame.frameLabel===StageSelectDioramaData.frameLabel)return StageSelectDioramaData;
@@ -20,11 +20,13 @@ var StageSelectDiorama = (function() {
     function discard(){
         generation++;if(loadAbort)loadAbort.abort();loadAbort=null;pending=null;
         if(cache&&cache.focusControls)cache.focusControls.unmount();
-        if(cache)cache.dispose();cache=null;focused='';focusHost=null;
+        if(cache)cache.dispose();cache=null;focused='';focusHost=null;focusReturnCamera=null;
         if(fallbackImage)fallbackImage.remove();fallbackImage=null;
     }
     function changed(){
-        if(!active||!cache||focused)return;
+        if(!active||!cache)return;
+        if(window.StageSelectCameraEditor)StageSelectCameraEditor.sync();
+        if(focused)return;
         S._visualStagePoints=cache.view.pins();
         S._buttonLayerEl.querySelectorAll('.stage-select-stage-button').forEach(function(node){
             var anchor=S._cardLayerEl.querySelector('[data-stage-id="'+node.dataset.stageId+'"]');
@@ -33,6 +35,7 @@ var StageSelectDiorama = (function() {
         if(S._navLayerEl)S._navLayerEl.querySelectorAll('[data-nav-id]').forEach(function(node){placeNav({id:node.dataset.navId},node);});
     }
     function preset(key){return cache&&cache.view.valid(presets[key])?presets[key]:null;}
+    function tourCamera(id){return cache&&(preset(id)||cache.view.defaultFocus(id));}
     function status(message,retry,fallback){
         if(!mount)return;
         var el=mount.querySelector('.stage-select-diorama-status');el.hidden=!message;
@@ -45,7 +48,7 @@ var StageSelectDiorama = (function() {
         updateComparison();
     }
     function useFallback(message){
-        if(cache)cache.dispose();cache=null;focused='';focusHost=null;failed=true;
+        if(cache)cache.dispose();cache=null;focused='';focusHost=null;focusReturnCamera=null;failed=true;
         if(config.fallback){
             if(!fallbackImage){fallbackImage=document.createElement('img');fallbackImage.className='stage-select-diorama-fallback';fallbackImage.alt=config.frameLabel+'二维总览';fallbackImage.src=StageSelectCore.resolveAssetUrl(config.fallback);mount.prepend(fallbackImage);}
             S._visualStagePoints=config.fallbackPins||config.pins;status(message+' 已切换二维，可继续选关。',true,true);
@@ -133,7 +136,7 @@ var StageSelectDiorama = (function() {
         comparison.querySelectorAll('button,input').forEach(function(el){el.disabled=!cache||failed;});
     }
     function hide(){
-        active=false;focused='';focusHost=null;
+        active=false;focused='';focusHost=null;focusReturnCamera=null;
         if(cache&&cache.focusControls)cache.focusControls.unmount();
         if(cache){cache.view.stop();cache.view.edit(false);}
         if(window.StageSelectCameraEditor)StageSelectCameraEditor.hide();
@@ -145,16 +148,21 @@ var StageSelectDiorama = (function() {
         return !!(active&&cache&&!failed&&(!id||!config.worldStageIds||config.worldStageIds.indexOf(id)>=0));
     }
     function focus(id,host){
-        if(!canFocus(id))return;var changedFocus=focused!==id;focused=id;focusHost=host;
+        if(!canFocus(id))return;
+        var changedFocus=focused!==id;
+        if(changedFocus&&!focused)focusReturnCamera=cache.view.snapshot();
+        focused=id;focusHost=host;
         host.appendChild(cache.canvas);cache.view.resize(host.clientWidth,host.clientHeight);
         if(cache.focusControls)cache.focusControls.mount(host,id);
-        if(changedFocus)cache.view.focus(id,preset(id),!S._el.classList.contains('is-camera-editing'));else cache.render();
+        if(changedFocus)cache.view.focusContext(id,focusReturnCamera,!S._el.classList.contains('is-camera-editing'));else cache.render();
     }
     function overview(){
-        if(!focused)return;focused='';focusHost=null;if(!cache)return;
+        if(!focused){focusReturnCamera=null;return;}
+        var restore=focusReturnCamera;
+        focused='';focusHost=null;focusReturnCamera=null;if(!cache)return;
         if(cache.focusControls)cache.focusControls.unmount();
         mount.prepend(cache.canvas);cache.view.resize(1024,576);
-        if(active&&!failed)cache.view.overview(preset('overview'));else cache.view.stop();
+        if(active&&!failed)cache.view.overview(restore&&cache.view.valid(restore)?restore:preset('overview'));else cache.view.stop();
     }
     function edit(enabled){
         if(!cache)return Promise.resolve();
@@ -177,7 +185,10 @@ var StageSelectDiorama = (function() {
     }
     function place(button, node, anchor, cardHeight) {
         var pin = S._visualStagePoints && S._visualStagePoints[button.id];
-        if (!pin) return;
+        if (!pin) {
+            if (anchor && window.StageSelectRenderer) StageSelectRenderer.placeCardAnchor(button, node, anchor, false);
+            return;
+        }
         node.style.left = pin.x + 'px';
         node.style.top = pin.y + 'px';
         node.style.width = '40px';
@@ -210,23 +221,7 @@ var StageSelectDiorama = (function() {
             if(offsetLength>15)pathData='M '+(-sx)+' '+(-sy)+' L '+(-sx*15/offsetLength)+' '+(-sy*15/offsetLength)+' '+pathData;
         }
         leader.querySelectorAll('path').forEach(function(path){path.setAttribute('d',pathData);});
-        if (anchor) {
-            // 独立卡片在固定舞台内钳制，不沿用旧 Flash 元件的 133.7px 偏移。
-            var width = parseFloat(anchor.style.getPropertyValue('--stage-card-width')) || 167;
-            var left = pin.x-width/2;
-            var top = Math.min(pin.y-20, pin.y+pin.labelY-16)-cardHeight-6;
-            if (top < 54) {
-                top = Math.max(pin.y+20, pin.y+pin.labelY+16)+6;
-                if (top+cardHeight > 568) {
-                    // 上下空间不足时放在侧面，避免卡片升层后遮住自己的点击入口。
-                    left = pin.x+Math.max(20, pin.labelX+70)+6;
-                    if (left+width > 1016) left = pin.x+Math.min(-20, pin.labelX-70)-width-6;
-                    top = pin.y-cardHeight/2;
-                }
-            }
-            anchor.style.left = Math.max(8, Math.min(1024-width-8, left)) + 'px';
-            anchor.style.top = Math.max(54, Math.min(576-cardHeight-8, top)) + 'px';
-        }
+        if (anchor && window.StageSelectRenderer) StageSelectRenderer.placeCardAnchor(button, node, anchor, false);
     }
     function placeNav(nav,node){
         if(active&&config.scene==='desert'){
@@ -244,13 +239,15 @@ var StageSelectDiorama = (function() {
         canFocus:canFocus,
         getTourStageIds:function(){
             var frame=StageSelectData.getFrame(S._currentFrameLabel);
-            var buttons=frame&&frame.stageButtons||[];
+            var buttons=frame?StageSelectDiorama.orderButtons(frame):[];
             return buttons.filter(function(b){return !StageSelectViewModel.isDirectEntry(b)&&canFocus(b.id);}).map(function(b){return b.id;});
         },
-        peekStage:function(id){
+        getTourCamera:tourCamera,
+        peekStage:function(id,animate){
             if(!active||!cache||failed||!canFocus(id))return false;
-            cache.view.focus(id,preset(id),false);
+            var destination=tourCamera(id);if(!destination)return false;
             cache.view.edit(true);
+            cache.view.focus(id,destination,animate===true);
             changed();
             return true;
         },

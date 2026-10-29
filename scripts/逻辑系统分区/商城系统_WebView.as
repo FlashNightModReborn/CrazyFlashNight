@@ -49,6 +49,7 @@ _root.UI系统.商城WebView.buildCatalog = function():Array {
     var procurementIndex:Object = org.flashNight.arki.item.ProcurementPlanService.buildDemandIndex();
     for (var i:Number = 0; i < _root.kshop_list.length; i++) {
         var entry:Object = _root.kshop_list[i];
+        if (!org.flashNight.arki.scene.Cf6Type61Service.kShopAllowed(String(entry.item))) continue;
         var itemData:Object = org.flashNight.arki.item.ItemUtil.getItemData(entry.item);
         var rawItemData:Object = org.flashNight.arki.item.ItemUtil.getRawItemData(entry.item);
         var attrs:Object = _root.根据物品名查找全部属性(entry.item);
@@ -299,6 +300,7 @@ _root.UI系统.商城WebView.resolveCheckoutLine = function(request:Object):Obje
     var entry:Object = _root.kshop_list[idx];
     if (String(entry.type) == "非卖品") return {success:false, error:"not_for_sale"};
     var itemName:String = String(entry.item);
+    if (!org.flashNight.arki.scene.Cf6Type61Service.kShopAllowed(itemName)) return {success:false,error:"not_for_sale"};
     var itemData:Object = org.flashNight.arki.item.ItemUtil.getRawItemData(itemName);
     var attrs:Object = _root.根据物品名查找全部属性(itemName);
     if (itemData == undefined || attrs == undefined) return {success:false, error:"item_not_found"};

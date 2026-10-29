@@ -12,6 +12,8 @@ async function main() {
     page.on('pageerror',e=>errors.push(e.message));
     await page.route('https://cfn-fonts.local/**',route=>route.fulfill({status:204,body:''}));
     const idle=()=>page.waitForFunction(()=>StageSelectDiorama.stats().state==='ready'&&!StageSelectDiorama.stats().moving);
+    const pose=()=>page.evaluate(()=>StageSelectDiorama.snapshotCamera());
+    const near=(a,b)=>{for(const key of ['position','target'])a[key].forEach((n,i)=>assert.ok(Math.abs(n-b[key][i])<1e-7));assert.ok(Math.abs(a.span-b.span)<1e-7);};
     const select=async(id)=>{ await page.locator('.stage-select-stage-button[data-stage-id="'+id+'"] > .stage-select-stage-name').click(); await idle(); };
     const back=async()=>{await page.getByRole('button',{name:'返回总览',exact:true}).click();await idle();};
     try {
@@ -19,7 +21,11 @@ async function main() {
         await page.evaluate(()=>{document.body.classList.add('stage-select-qa');document.querySelector('#debug-log')?.remove();document.querySelector('#qa-panel')?.remove();StageSelectHarnessHost.open({mode:'runtime',frameLabel:'基地门口'});});
         await idle();
         await page.evaluate(()=>StageSelectPanel._debugApplySnapshot({unlockedStages:StageSelectCore.state._runtimeSnapshot.unlockedStages,stageDetails:{'地铁站':{detail:'僵尸喜爱黑暗的环境，于是地铁站成为了整个废城最为凶险的地区。',task:true,highestDifficulty:'修罗'}}}));
+        const overviewBeforeFocus=await pose();
         await select('stage_0_9');
+        const focusedPose=await pose();
+        const tourPose=await page.evaluate(id=>StageSelectDiorama.getTourCamera(id),'stage_0_9');
+        assert.ok(Math.abs(focusedPose.span-(overviewBeforeFocus.span+(tourPose.span-overviewBeforeFocus.span)*.5))<1e-7);
         const stats=await page.evaluate(()=>StageSelectDiorama.stats());
         assert.equal(stats.focusId,'stage_0_9'); assert.equal(stats.highlighted,'stage_0_9');
         assert.ok(stats.width<650 && stats.height>400); assert.equal(stats.editing,false);
@@ -27,7 +33,27 @@ async function main() {
         await page.screenshot({path:path.join(out,'3d-brief.png')});
         const bounds=await page.locator('.stage-focus-panel').evaluate(el=>{const r=el.getBoundingClientRect(), b=el.querySelector('.stage-focus-enter').getBoundingClientRect();return {right:r.right,bottom:r.bottom,enterHeight:b.height,enterBottom:b.bottom,overflow:el.scrollHeight>el.clientHeight+1};});
         assert.ok(bounds.right<=1024&&bounds.bottom<=576&&bounds.enterBottom<=576&&bounds.enterHeight>=40&&!bounds.overflow,JSON.stringify(bounds));
-        report.checks.push('3D building highlight/closeup shares one canvas; fixed 60:40 detail and visible action at 1024x576');
+        report.checks.push('3D context focus keeps theater geometry and highlight on one canvas; fixed 60:40 detail and visible action at 1024x576');
+        assert.equal(await page.locator('.stage-focus-pager').isVisible(),true);
+        assert.match(await page.locator('.stage-focus-pager span').innerText(),/10 \/ 16/);
+        const pagerGeometry=await page.locator('.stage-focus-surface > .workbench-header').evaluate(header=>{
+            const pager=header.querySelector('.stage-focus-pager'), r=pager.getBoundingClientRect(), h=header.getBoundingClientRect();
+            const scene=document.querySelector('.stage-focus-viewport').getBoundingClientRect();
+            return {inActions:pager.parentElement.classList.contains('workbench-header-actions'),
+                outsideScene:r.bottom<=scene.top+1, fitsHeader:r.left>=h.left&&r.right<=h.right&&r.top>=h.top&&r.bottom<=h.bottom,
+                overflow:header.scrollWidth>header.clientWidth+1};
+        });
+        assert.deepEqual(pagerGeometry,{inActions:true,outsideScene:true,fitsHeader:true,overflow:false});
+        await page.locator('[data-focus-pager="next"]').focus(); await page.keyboard.press('Enter'); await idle();
+        assert.equal(await page.evaluate(()=>StageSelectCore.state._selectedStageId),'stage_0_10');
+        assert.equal(await page.evaluate(()=>document.activeElement.dataset.focusPager),'next');
+        const expectedName=await page.evaluate(()=>StageSelectDiorama.orderButtons(StageSelectData.getFrame('基地门口'))[10].stageName);
+        assert.ok((await page.locator('.stage-select-inspector-name').innerText()).includes(expectedName.replace(/^外交-/,'')));
+        await page.locator('[data-focus-pager="prev"]').focus(); await page.keyboard.press('Enter'); await idle();
+        assert.equal(await page.evaluate(()=>StageSelectCore.state._selectedStageId),'stage_0_9');
+        assert.equal(await page.evaluate(()=>document.activeElement.dataset.focusPager),'prev');
+        assert.equal(await page.evaluate(()=>StageSelectHarnessHost.enterMessages.length),0);
+        report.checks.push('header pager stays outside the scene and fits 1024px; Enter preserves pager focus, context and selection without sending enter');
         await page.getByRole('tab',{name:'情报',exact:true}).click();
         assert.match(await page.locator('.stage-focus-content').innerText(),/通关后解锁/);
         assert.equal(await page.locator('.stage-focus-reward').count(),0);
@@ -44,6 +70,12 @@ async function main() {
         assert.equal(await page.locator('.stage-focus-reward').count(),0);
         assert.match(await page.locator('#stage-focus-enter').innerText(),/冒险/);
         report.checks.push('unrecorded/task recommendation never reveals intel; true clear reveals; history removal clears DOM; selected mode survives refresh');
+        await back();
+        near(await pose(),overviewBeforeFocus);
+        await select('stage_0_9');
+        assert.equal(await page.getByRole('tab',{name:'情报',exact:true}).getAttribute('aria-selected'),'true');
+        assert.match(await page.locator('#stage-focus-enter').innerText(),/冒险/);
+        report.checks.push('return restores the exact pre-focus camera and per-stage tab/difficulty view state');
         await page.keyboard.press('Control+Shift+C');
         await page.waitForFunction(()=>StageSelectDiorama.stats().editing);
         const before=await page.evaluate(()=>StageSelectDiorama.savePreset()['stage_0_9']);
@@ -62,13 +94,15 @@ async function main() {
         assert.equal(await page.locator('.stage-focus-surface').isVisible(),true);
         assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().editing),false);
         await back(); await select('stage_0_9');
+        await page.getByRole('button',{name:'游览地点',exact:true}).click();
+        await page.evaluate(()=>StageSelectDiorama.peekStage('stage_0_9'));
         const reopened=await page.evaluate(()=>StageSelectDiorama.savePreset()['stage_0_9']);
         for (const key of ['position','target']) reopened[key].forEach((n,i)=>assert.ok(Math.abs(n-after[key][i])<1e-8));
         assert.ok(Math.abs(reopened.span-after.span)<1e-8);
         await page.evaluate(()=>{StageSelectHarnessHost.close();StageSelectHarnessHost.open({mode:'runtime',frameLabel:'基地门口'});});await idle();
         assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().focusId),'');
         assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().width),1024);
-        report.checks.push('real orbit gesture changes camera; per-stage save/export/import validates; return/reopen restores overview size and target');
+        report.checks.push('real orbit gesture changes camera; per-stage save/export/import validates; active tour retains custom closeups and reopen restores overview');
         await page.keyboard.press('Control+Shift+C');await page.waitForFunction(()=>StageSelectDiorama.stats().editing);
         await page.mouse.move(700,250);await page.mouse.wheel(0,-70);await page.locator('[data-camera="save"]').click();await page.locator('[data-camera="close"]').click();
         const projection=await page.evaluate(()=>{const p=StageSelectCore.state._visualStagePoints.stage_0_9,n=StageSelectRenderer.findNodeById('stage_0_9');return {x:p.x,left:parseFloat(n.style.left),y:p.y,top:parseFloat(n.style.top)};});
@@ -87,6 +121,33 @@ async function main() {
         await page.screenshot({path:path.join(out,'2d-brief.png')});
         await page.keyboard.press('Escape');assert.equal(await page.locator('.stage-focus-surface').isVisible(),false);
         report.checks.push('2D map offers same brief/intel/actions with highlighted location and Escape return');
+        await page.evaluate(()=>StageSelectRenderer.setFrame('黑铁会总部','qa'));
+        await page.waitForFunction(()=>StageSelectCore.state._currentFrameLabel==='黑铁会总部'&&StageSelectDiorama.stats().state==='ready'&&!StageSelectDiorama.stats().moving);
+        await page.locator('.stage-select-stage-button[data-stage-id="stage_18_6"] > .stage-select-stage-name').hover();
+        report.naturalSide=await page.locator('.stage-select-card-anchor[data-stage-id="stage_18_6"]').getAttribute('data-placement');
+        assert.ok(['above','below','left','right'].includes(report.naturalSide));
+        // 侧向 fixture 只验证动作端与连接区，不钉死首访的实际避让方向。
+        await page.evaluate(()=>{
+            const button=StageSelectViewModel.findStageButtonById('stage_18_6'),state=StageSelectCore.state;
+            state._cardPlacementById[state._catalogId+'/'+state._currentFrameLabel+'/'+button.id]='right';
+            StageSelectRenderer.placeCardAnchor(button,StageSelectRenderer.findNodeById(button.id),
+                document.querySelector('.stage-select-card-anchor[data-stage-id="'+button.id+'"]'),true);
+        });
+        const sideCard=page.locator('.stage-select-card-anchor[data-stage-id="stage_18_6"] > .stage-select-card');
+        await sideCard.waitFor({state:'visible'});
+        report.sideAction=await sideCard.evaluate(el=>{
+            const anchor=el.parentElement,row=el.querySelector(':scope > .stage-select-difficulties');
+            return {side:anchor.dataset.placement,actionPosition:anchor.dataset.actionPosition,
+                connectionY:anchor._cardConnection.y2-parseFloat(anchor.style.top),rowTop:row.offsetTop,
+                rowBottom:row.offsetTop+row.offsetHeight,actionDirection:getComputedStyle(row).flexDirection};
+        });
+        assert.ok(report.sideAction.side==='left'||report.sideAction.side==='right');
+        assert.equal(report.sideAction.actionPosition,'bottom');
+        assert.equal(report.sideAction.actionDirection,'row');
+        assert.ok(report.sideAction.connectionY>=report.sideAction.rowTop-8&&report.sideAction.connectionY<=report.sideAction.rowBottom+8);
+        await sideCard.evaluate(el=>Promise.all(el.getAnimations().map(animation=>animation.finished.catch(()=>{}))));
+        await page.screenshot({path:path.join(out,'black-dragon-side-actions.png')});
+        report.checks.push('black-dragon side card puts the difficulty and connector on the same near edge');
         assert.deepEqual(errors,[]);report.pass=true;
     } catch(error) {report.pass=false;report.error=error.stack;report.pageErrors=errors;await page.screenshot({path:path.join(out,'failure.png')});process.exitCode=1;}
     finally {await browser.close();server.close();fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));}

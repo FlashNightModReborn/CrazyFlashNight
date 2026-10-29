@@ -67,11 +67,14 @@
     // false/throw 时保持当前 owner/DOM/pending/busy 可重试，并暴露明确诊断。
     state._lastCloseSendError = '';
     state._frameMenuOpen = false;
+    state._modMenuOpen = false;
     // P2：持久选中态（pinned 决策检查器触发器）+ hover 卡/焦点/roving tabindex 跟踪。
     // 选中键 = stageButton.id（全局唯一，audit 强制），跨 snapshot/busy/error 全量重建按 id 恢复。
     state._selectedStageId = '';
     state._hoverStageId = '';      // 指针悬停的关卡节点
-    state._cardHoverStageId = '';  // 指针悬停的 hover 卡本体（卡已迁至独立卡片层）
+    state._cardHoverStageId = '';  // 指针悬停的 hover 卡或其节点连接区
+    state._cardPlacementById = {};
+    state._cardBridge = null;
     state._focusStageId = '';      // 焦点所在的关卡节点
     state._tabbableStageId = '';   // roving tabindex：节点簇中唯一 tabIndex=0 的节点
     // 打磨批二轮：自有键盘模态位（what-input 式 sticky 标记）——节点焦点环不再信 :focus-visible
@@ -82,6 +85,7 @@
     state._timers = [];          // 统一登记的 setTimeout，onClose 全清（幂等销毁）
     state._forceUnlock = false;  // 选关修改器小模块：非挑战模式下临时全关卡解锁
     state._modToolbarEl = undefined;
+    state._modToggleEl = undefined;
     state._modUnlockBtnEl = undefined;
     state._modTestSpaceBtnEl = undefined;
     state._tourPinsVisible = false; // 游览模式地标标签开关

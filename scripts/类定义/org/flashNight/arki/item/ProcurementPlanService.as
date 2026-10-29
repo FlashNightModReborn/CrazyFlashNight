@@ -231,6 +231,8 @@ class org.flashNight.arki.item.ProcurementPlanService {
         shopIds.sort();
         for (var shopIndex:Number = 0; shopIndex < shopIds.length; shopIndex++) {
             var currentShopId:String = String(shopIds[shopIndex]);
+            if (!org.flashNight.arki.scene.Cf6Type61Service.shopAllowed(currentShopId)) continue;
+            if (org.flashNight.arki.scene.Cf6Type61Service.isActive() && !org.flashNight.arki.item.NpcShopAccessService.canAccess(currentShopId)) continue;
             var shop:Object = _root.shops[currentShopId];
             if (shop == null || typeof shop != "object") continue;
             var indexes:Array = [];
@@ -252,6 +254,7 @@ class org.flashNight.arki.item.ProcurementPlanService {
         for (var k:Number = 0; k < kshop.length; k++) {
             var kEntry:Object = kshop[k];
             if (kEntry == null) continue;
+            if (!org.flashNight.arki.scene.Cf6Type61Service.kShopAllowed(String(kEntry.item))) continue;
             appendPurchaseSource(byItem, String(kEntry.item || ""), {kind:"kshop",
                 catalogIndex:k, entryId:String(kEntry.id || ""),
                 category:String(kEntry.type || ""),
@@ -760,6 +763,7 @@ class org.flashNight.arki.item.ProcurementPlanService {
     }
 
     private static function hasDirectShopNavigation():Boolean {
+        if (org.flashNight.arki.scene.Cf6Type61Service.nodeReached("A01")) return true;
         var infra:Object = _root.基建系统 == undefined
             ? null : _root.基建系统.infrastructure;
         return unlocked(infra, "摩托车") || unlocked(infra, "越野车");

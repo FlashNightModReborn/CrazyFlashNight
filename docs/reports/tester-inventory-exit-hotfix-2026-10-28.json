@@ -1,0 +1,485 @@
+{
+  "schema": "cf7-tester-inventory-exit-hotfix.v1",
+  "recordedUtc": "2026-10-28T08:07:03.541380+00:00",
+  "status": "development_validation_complete_with_field_limits",
+  "baselineCommit": "6d22a104364d226da81af382b45d0fa0ab40e66d",
+  "branch": "codex/tester-build-exit-hotfix",
+  "authorization": {
+    "isolatedDevelopmentAndValidation": true,
+    "commit": false,
+    "push": false,
+    "formalPromotion": false
+  },
+  "findings": {
+    "icons": "Tablet and asset-workbench lazy closures re-executed the already loaded Icons module and invalidated its manifest while Panels kept its ready state.",
+    "exit": "Eight acknowledged mutations were followed by 40 failed finalize calls; failed host recovery reached fatal_blocked and blocked all subsequent closes.",
+    "firstFinalizeFailureRootCause": "unproven: field payload was redacted and flush_failed combines live projection and durable-save failure",
+    "orphanProcesses": "Video at 31 seconds shows host termination; Flash Player and embedded RAG remain at 34 seconds.",
+    "diagnosticSetting": "Tracked config.toml defaults diagFocusTrace to false; the supplied logs do not prove the updater overwrite path. No diagnostic configuration policy was changed in this patch."
+  },
+  "changes": [
+    "Reuse boot Icons in both lazy closures.",
+    "Retry only acknowledged flush_failed on explicit close and retained exact authority/ready transport; keep unknown locks and automatic retire budget.",
+    "Bind newly spawned Flash and embedded RAG processes to private Host Job lifetime.",
+    "Record validated scalar failure phase without inventory contents or recovery capabilities."
+  ],
+  "candidate": {
+    "state": "candidate_executed",
+    "deployment": "NOT_DEPLOYED",
+    "path": "tmp/runtime-candidates/v2/c-d577073147fc-08846e81b3-20261028t055738841z-ab0f3802",
+    "buildIdentityHash": "D577073147FC7ED2BA2607036D2709E79618877F6724F6DE3E1F2473627406DF",
+    "payloadClosureHash": "FEFE7BBAACDA1191E9BB5A893694F0485568409BBC1900BA80BBB0F4D219BDF7",
+    "core": {
+      "path": "tmp/runtime-candidates/v2/c-d577073147fc-08846e81b3-20261028t055738841z-ab0f3802/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "bytes": 6695936,
+      "sha256": "c0bb3f6bba9403c9c6ccbc06f0abeb03a070a2d301dfc06069197a5dfd39f326"
+    },
+    "metadata": {
+      "path": "tmp/runtime-candidates/v2/c-d577073147fc-08846e81b3-20261028t055738841z-ab0f3802/runtime-build-metadata.v2.json",
+      "bytes": 1022,
+      "sha256": "b8849cdfac57439943c62705bab80e9a8cc53f61b8a4dad201e2a7ff1510e756"
+    },
+    "executionScope": "Isolated cloned agent test slot: actual character workbench opener and authority snapshot; pending-read close blocked; explicit close after settlement obtained exact recovery proof; Flash exit 0 and no Core process. No equipment mutation in live gameplay."
+  },
+  "validation": {
+    "hostFocused": {
+      "counts": {
+        "total": "332",
+        "executed": "332",
+        "passed": "332",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "evidence": {
+        "path": "tmp/tester-hotfix/focused-final/hotfix-focused.trx",
+        "bytes": 501153,
+        "sha256": "6c7c00f81ab6466804b1469a11c96515688eb5c41e168e37760afbf4aeeb8a01"
+      }
+    },
+    "hostCanonicalFirstAttempt": {
+      "counts": {
+        "total": "8091",
+        "executed": "8061",
+        "passed": "7941",
+        "failed": "120",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "failureReason": "All 120 failures are FixtureResourceGuard Missing evidence root; preserved, not counted as passes.",
+      "evidence": {
+        "path": "tmp/tester-hotfix/full-host/recheck.trx",
+        "bytes": 12273214,
+        "sha256": "4846eca2467fd0fc52a74cd1b8b7b9b02e233a0ab2d61e0e3f2653c1af8d71c5"
+      }
+    },
+    "hostCanonicalQualified": {
+      "state": "passed",
+      "counts": {
+        "total": "8091",
+        "executed": "8061",
+        "passed": "8061",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "evidence": {
+        "path": "tmp/focus-sol-20261013/integration-20261028T070720623Z/recheck.trx",
+        "bytes": 12031248,
+        "sha256": "124f0d27fa281ee3e1d6b578fdbc0b993106b45252f642523381cc687dc5b281"
+      },
+      "qualification": {
+        "path": "tmp/focus-sol-20261013/integration-20261028T070720623Z/command.json",
+        "bytes": 622,
+        "sha256": "ec0f0bdae43ab5c94638d3ef07f55f7c789da07de52dc9072c15ba548ce3a6df"
+      },
+      "loadedBinaries": {
+        "path": "tmp/focus-sol-20261013/integration-20261028T070720623Z/loaded-binaries.json",
+        "bytes": 737,
+        "sha256": "5c4a9d675a95e2a736deb583efbcf76f3e57bf4c41a4ddd16418c8f3d7b264a0"
+      },
+      "scope": "Production-path fixtures, owned HWND synthetic input, real unchanged input tick and bounded resource window; no player saves."
+    },
+    "browserIcons": {
+      "passed": 25,
+      "failed": 0,
+      "originalRegressionFailed": true,
+      "evidence": {
+        "path": "tmp/tester-hotfix/icons-final.log",
+        "bytes": 69,
+        "sha256": "41d5ca7c7d22dd17de980b7f2284b7b1b0429c89a64f7f000dc7956c84ef01d9"
+      }
+    },
+    "browserCharacterWorkbench": {
+      "controllerChecks": 1149,
+      "hiddenBodyChecks": 12,
+      "preparationMenuChecks": 18,
+      "authority": "fake Host bridge; production Web controller",
+      "evidence": {
+        "path": "tmp/tester-hotfix/character-workbench-browser.log",
+        "bytes": 1337,
+        "sha256": "8f955fc39ca55cc2e3b618abfee7c4455a41451037608c20078da1013776cb48"
+      }
+    },
+    "as2ProductionLifecycle": {
+      "passed": 20,
+      "failed": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "retry32K": 0,
+      "source": "real CharacterBuild owner, stat adapter and player-template refresh; blank MovieClip; in-memory catalog/save callbacks",
+      "fieldShapedSequence": "head removal then upper/lower/hands/feet/longgun/knife/pistol, eight revisions, exact finalize and HP/MP preservation",
+      "trace": {
+        "path": "tmp/tester-hotfix/as2-production-multislot/flashlog.txt",
+        "bytes": 7493,
+        "sha256": "f18443b1fd3181a61c38ecae5f5a9118f31afac524bec4b404c27d388bb0d81f"
+      },
+      "compiler": {
+        "path": "tmp/tester-hotfix/as2-production-multislot/compiler_errors.txt",
+        "bytes": 27,
+        "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+      },
+      "swf": {
+        "path": "tmp/tester-hotfix/as2-production-multislot/TestLoader.swf",
+        "bytes": 1221612,
+        "sha256": "ddda2e21bbbfbde8099c262291a05b86b18c5c6f46fc9926c9f9da1d4d75e1da"
+      }
+    },
+    "candidateProcessLifetime": {
+      "verifiedUtc": "2026-10-28T06:23:48.0808078Z",
+      "scope": "candidate_dll_component",
+      "passed": true,
+      "hostPid": 42672,
+      "hostExitCode": -1,
+      "childPid": 10164,
+      "candidateCoreSha256": "C0BB3F6BBA9403C9C6CCBC06F0ABEB03A070A2D301DFC06069197A5DFD39F326",
+      "scenario": "forced_host_death",
+      "candidateCorePath": "C:\\Users\\fs\\.codex\\worktrees\\tester-build-exit-hotfix\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\c-d577073147fc-08846e81b3-20261028t055738841z-ab0f3802\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.dll"
+    },
+    "candidateLiveOpener": {
+      "state": "passed_with_bounded_scope",
+      "evidence": {
+        "path": "tmp/tester-hotfix/character-live-verified.json",
+        "bytes": 3239,
+        "sha256": "96e1f80588ac0754d2948ef57a84ae6f9e331b624d3b5cab2de891a479392712"
+      },
+      "launcherLog": {
+        "path": "tmp/tester-hotfix/character-live-launcher.log",
+        "bytes": 301452,
+        "sha256": "7462288fe12cafeee05401c4297c492bdc06c6ba732943916afc12611facdafa"
+      },
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Users\\fs\\.codex\\worktrees\\tester-build-exit-hotfix\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\c-d577073147fc-08846e81b3-20261028t055738841z-ab0f3802\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "C0BB3F6BBA9403C9C6CCBC06F0ABEB03A070A2D301DFC06069197A5DFD39F326",
+        "buildIdentity": "D577073147FC7ED2BA2607036D2709E79618877F6724F6DE3E1F2473627406DF",
+        "payloadClosure": "FEFE7BBAACDA1191E9BB5A893694F0485568409BBC1900BA80BBB0F4D219BDF7",
+        "pid": 9576,
+        "httpPort": 1192,
+        "verified": true,
+        "expected": {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\tester-build-exit-hotfix\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\c-d577073147fc-08846e81b3-20261028t055738841z-ab0f3802\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "C0BB3F6BBA9403C9C6CCBC06F0ABEB03A070A2D301DFC06069197A5DFD39F326",
+          "buildIdentity": "D577073147FC7ED2BA2607036D2709E79618877F6724F6DE3E1F2473627406DF",
+          "payloadClosure": "FEFE7BBAACDA1191E9BB5A893694F0485568409BBC1900BA80BBB0F4D219BDF7",
+          "pid": null,
+          "httpPort": null
+        },
+        "statusEndpointIdentityAvailable": false,
+        "identitySource": "launcher_ports.pid + Get-Process.Path + Core DLL SHA-256 + runtime manifest"
+      },
+      "slot": "cf7_agent_hotfix_build_20261028",
+      "attemptId": "bfb77d87104b4c52935f254b8376a11f",
+      "scope": "actual production opener/snapshot, known pending-read close refusal, explicit close after read settled, exact recovery proof, normal Flash exit; no equipment mutations",
+      "equipmentMutationAcceptance": "not_run_in_live_game",
+      "initialClose": "known pending_calls refusal preserved",
+      "normalExit": true,
+      "coreProcessesRemaining": 0
+    },
+    "documentation": {
+      "state": "passed",
+      "evidence": {
+        "path": "tmp/tester-hotfix/docs-final.log",
+        "bytes": 3603,
+        "sha256": "fe02c3e57f3b2908457b184993a5ce70a3b6304c175dec07a555cfd9c75f4f71"
+      },
+      "historicalLinkDebtWarnings": true,
+      "diffWhitespaceCheck": "passed"
+    },
+    "candidateLiveEarlierAttempt": {
+      "state": "failed_original_preserved",
+      "evidence": {
+        "path": "tmp/tester-hotfix/candidate-live-opener.log",
+        "bytes": 1888,
+        "sha256": "eac26d679b49bb62ffccb8eb2267fb5fb18faeedd670f85304d49752bad07d0d"
+      },
+      "reason": "Legacy equipment-tuning gate awaited a selection-dependent snapshot; this isolated seed had an empty backpack. Candidate launched and later exited normally, but this gate did not pass."
+    },
+    "as2CompileEarlierAttempts": [
+      {
+        "state": "failed_original_preserved",
+        "evidence": {
+          "path": "tmp/tester-hotfix/character-production-before-utf8.log",
+          "bytes": 1749,
+          "sha256": "8305f151c71e5120d64063dde711af48a307279782aa516d514d0c8ef726b68f"
+        },
+        "recovery": {
+          "path": "tmp/tester-hotfix/flash-20261028-052804-945/recovery.json",
+          "bytes": 344,
+          "sha256": "580681f59bbe5ae3674d58b9d86a1389dc5539458cd256ef98e69eb2ef39fc3b"
+        }
+      },
+      {
+        "state": "failed_original_preserved",
+        "evidence": {
+          "path": "tmp/tester-hotfix/character-production-upstream.log",
+          "bytes": 1622,
+          "sha256": "2beab24cebda06facf62f19c0f4f55fffa597fbbe92ee68d21eef4fa207e09fb"
+        },
+        "recovery": {
+          "path": "tmp/tester-hotfix/flash-20261028-055305-613/recovery.json",
+          "bytes": 430,
+          "sha256": "ce866c3f01f29e57771567f685d734bc55bd4ad5e9f14870f4295b952f4e99aa"
+        }
+      }
+    ],
+    "as2CharacterBuildFull": {
+      "state": "passed",
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "runId": "c98ddf296d444f4e99f01070ae68410b",
+      "completeBlocks": 1,
+      "retry32K": 0,
+      "suitePassedCounts": {
+        "EquipmentInventoryTest": 28,
+        "InventoryPanelServiceTest": 194,
+        "CharacterBuildTransactionSpikeTest": 19,
+        "RuntimeEquipmentProjectionTest": 27,
+        "CharacterBuildServiceTest": 224,
+        "PlayerInfoProviderTest": 29,
+        "PlayerStatLifecycleTest": 54,
+        "SaveManagerTest": 396
+      },
+      "failed": 0,
+      "note": "SaveManagerQuickItem4Tests 13/13 is a subgroup; counts are retained per suite rather than combined. TestLoader uses isolated fixtures, not a real player slot.",
+      "trace": {
+        "path": "tmp/tester-hotfix/as2-character-full/flashlog.txt",
+        "bytes": 83306,
+        "sha256": "91184d773bef4a99ab7d1b895c6004011673b272d6562d8153be6121c42350ef"
+      },
+      "compiler": {
+        "path": "tmp/tester-hotfix/as2-character-full/compiler_errors.txt",
+        "bytes": 27,
+        "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+      },
+      "swf": {
+        "path": "tmp/tester-hotfix/as2-character-full/TestLoader.swf",
+        "bytes": 1262850,
+        "sha256": "ad13a6e18a8f817cc89374e82769be88ad0cc2024691e70119482cf4c91dd95e"
+      },
+      "runner": {
+        "path": "tmp/tester-hotfix/character-build-full.log",
+        "bytes": 85564,
+        "sha256": "130e9e0d77cbb2e2bcc44f8bc424f765781d1cf74c845ac4989a145df181a375"
+      }
+    }
+  },
+  "saveProtection": {
+    "localSeedSha256": "BC1AA3CA400199DECC2225431AE18E2CD4E0ACB045BBF20D2CF865306AA6EFD1",
+    "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\saves\\cf7_agent_equipment_tuning.json",
+    "localSeed": "C:\\Users\\fs\\.codex\\worktrees\\tester-build-exit-hotfix\\CrazyFlashNight\\saves\\cf7_agent_hotfix_seed_20261028.json",
+    "targetSlot": "cf7_agent_hotfix_20261028_1412",
+    "sourceSha256": "BC1AA3CA400199DECC2225431AE18E2CD4E0ACB045BBF20D2CF865306AA6EFD1",
+    "characterBuildLive": {
+      "seed": {
+        "path": "C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/saves/cf7_agent_combat_live_1013.json",
+        "sha256": "2f17f37ebd9a17c821994fc3a01c8a0e33f0b74e9642b10bf884072ef8f4c1bd"
+      },
+      "targetSlot": "cf7_agent_hotfix_build_20261028",
+      "seedUnchanged": true,
+      "clonedAgentTestSlotOnly": true
+    }
+  },
+  "upstreamOverlapReview": {
+    "baseline": "6d22a104364d226da81af382b45d0fa0ab40e66d",
+    "observedUpstream": "56086994221ebb613be561955ef20b10f9fa04a6",
+    "upstreamChangedPaths": 545,
+    "ownPatchOverlapsUpstream": []
+  },
+  "limits": [
+    "No original tester save or exact deployed SWF identity was supplied.",
+    "The eight-operation AS2 fixture does not prove the authored player timeline or real disk persistence.",
+    "No formal runtime deployment or standard-entry acceptance is claimed.",
+    "The forced-host-death test exercised the exact candidate DLL process-lifetime component; no live gameplay session was force-killed."
+  ],
+  "sourceSnapshot": {
+    "baseline": "6d22a104364d226da81af382b45d0fa0ab40e66d",
+    "candidateRoot": "C:\\Users\\fs\\.codex\\worktrees\\tester-build-exit-hotfix\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\c-d577073147fc-08846e81b3-20261028t055738841z-ab0f3802",
+    "files": [
+      {
+        "path": "agentsDoc/as2-web-panel-migration.md",
+        "bytes": 240637,
+        "sha256": "3b9cbea9d3edb5dd1fa1a38a99da9c966f38ba309b7a9b7c34c26efc1eb8026d"
+      },
+      {
+        "path": "launcher/README.md",
+        "bytes": 68634,
+        "sha256": "3be8d88cb316b79a84fdb28dc2855c62217f13748fa5f40fcda587dab7bfbcf9"
+      },
+      {
+        "path": "launcher/src/Guardian/CharacterBuildTask.DetachRecovery.cs",
+        "bytes": 45682,
+        "sha256": "546090c99c9b222c9f3a41160dff2944ef1f75c38654cbde2eb9f24bfbe76960"
+      },
+      {
+        "path": "launcher/src/Guardian/CharacterBuildTask.cs",
+        "bytes": 137801,
+        "sha256": "a3fb725c630d7bc868c715cf577876451b534ffd58411311cd46cb57f531a010"
+      },
+      {
+        "path": "launcher/src/Guardian/ProcessManager.cs",
+        "bytes": 6768,
+        "sha256": "2a0d1c79439a45aceec002f04d2b16142a9d377e03dcb347ec2784ec157e04d7"
+      },
+      {
+        "path": "launcher/src/Guardian/WebOverlayForm.cs",
+        "bytes": 480464,
+        "sha256": "35d9c0ba11fab2a4f1d4039962014f6d6caa48087a146488d06cd8474d717db6"
+      },
+      {
+        "path": "launcher/src/RagTerminal/RagTerminalService.cs",
+        "bytes": 33234,
+        "sha256": "2b697b3fa4244a49f6396efcb5aab17f56df270223410a64279ac027118664a0"
+      },
+      {
+        "path": "launcher/tests/Guardian/CharacterBuildTaskTests.cs",
+        "bytes": 263631,
+        "sha256": "08dd16da140255794da5f6a4e81970bc8af6ec7a20394194d282d7a9031b261a"
+      },
+      {
+        "path": "launcher/web/modules/panels-lazy-registry.js",
+        "bytes": 25070,
+        "sha256": "56f04023ecaf6860c4b5c0db589f1e2266c29b6a5cfdb0276bf2ad12d22dd5c1"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/item/CharacterBuildProductionLifecycleTest.as",
+        "bytes": 15289,
+        "sha256": "82c2c0efbe39fa7152d9b2b55512dd68e2f31f5a679228dd2e3e87c40e12fae6"
+      },
+      {
+        "path": "tools/test-panel-lazy-loader-browser.js",
+        "bytes": 11893,
+        "sha256": "f8a4cc349089dac7b6255ddd9990c9c43e065d95bf0548120d805d8f7e2555b7"
+      },
+      {
+        "path": "launcher/src/Guardian/OwnedChildProcessJob.cs",
+        "bytes": 5308,
+        "sha256": "fa340e43e50729ce4e0ac0d504d83d95b58477c6a05ee046d9a80008a86d7e44"
+      },
+      {
+        "path": "launcher/tests/Guardian/OwnedChildProcessJobTests.cs",
+        "bytes": 2514,
+        "sha256": "22e21e330e3afa74eff62e3f921f1ca0ff2aa41615502de59913579cf444ece8"
+      }
+    ],
+    "recordedUtc": "2026-10-28T06:20:57.377277+00:00"
+  },
+  "resourcesObservedAfterLiveRun": [
+    {
+      "path": "scripts/asLoader.swf",
+      "bytes": 6722325,
+      "sha256": "91b43091fe7a2bd1fd30799f077206fd786abfc5b2e08120f38c76a5ae1b5fc7"
+    },
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "bytes": 207353,
+      "sha256": "5de9a940200caf8f50992b1e919cbdbf666d8bc1ae11d1982d1cb52657ad29d0"
+    },
+    {
+      "path": "launcher/web/modules/panels-lazy-registry.js",
+      "bytes": 25070,
+      "sha256": "56f04023ecaf6860c4b5c0db589f1e2266c29b6a5cfdb0276bf2ad12d22dd5c1"
+    }
+  ],
+  "resourceIdentityLimit": "Resource hashes were recorded after the live run; native runtime identity was verified before the run. These hashes alone do not prove source-to-SWF freshness or tester deployment equivalence.",
+  "sourceMaterials": [
+    {
+      "path": "C:\\Users\\fs\\Downloads\\bootstrap (7).log",
+      "bytes": 3768021,
+      "sha256": "fd5dad3327e72fd24e825223db1d76676e82db4cf38a488c615a6d2794accedc",
+      "originalPreserved": true
+    },
+    {
+      "path": "C:\\Users\\fs\\Downloads\\launcher (16).log",
+      "bytes": 4658243,
+      "sha256": "7f2d19ce021306a0c1f61d3f8e0e7e88ec8b8eb2fbb2c03cf596d2e6aabb1295",
+      "originalPreserved": true
+    },
+    {
+      "path": "C:\\Users\\fs\\Downloads\\强制关.mp4",
+      "bytes": 6843232,
+      "sha256": "37c920ca05ae7b725671d7da137745e382240841ca90c2e1fbca841c7580952b",
+      "originalPreserved": true
+    },
+    {
+      "path": "C:\\Users\\fs\\Downloads\\无法退出.mp4",
+      "bytes": 2033149,
+      "sha256": "d500d10716ae790dea534acaee1c6dd0ec610b0edf465d68ad4391b761ac1842",
+      "originalPreserved": true
+    }
+  ],
+  "cleanup": {
+    "state": "verified",
+    "evidence": {
+      "path": "tmp/tester-hotfix/cleanup-verified.json",
+      "bytes": 823,
+      "sha256": "20be78e4ddaff277b480215a178560d9ab766b80cce3969863c523629b63d656"
+    },
+    "flashProcesses": 0,
+    "hostProcesses": 0,
+    "compilerBindingRestoredByteForByte": true,
+    "primaryAndWorktreeMarkersClear": true
+  },
+  "summaryZh": {
+    "结论": "独立工作树内完成三项止血修复与自动验证；候选已实际运行，未提交、推送或正式部署。",
+    "修复": [
+      "移除平板和素材工作台对已启动图标模块的重复加载。",
+      "已确认的收尾失败允许再次明确关闭重试；未知写仍阻塞，旧回包不能放行。",
+      "新建 Flash 与内嵌通讯终端绑定宿主生命周期，宿主异常结束后回收。"
+    ],
+    "补充诊断": "记录已验证的收尾失败阶段与版本标量，区分属性应用和持久化；不记录库存正文或恢复令牌。",
+    "验证": "Host 全套8061通过、0失败、30条件跳过；真实浏览器图标25通过；真实CS6完整构筑专项与20条多槽生产生命周期断言通过；同一候选在克隆测试槽完成读取和正常退出。",
+    "边界": "测试员首次收尾失败的精确首因尚未复现；实际游戏验收仅覆盖读取/关闭，连续换装由真实Flash的隔离生产生命周期夹具验证。"
+  }
+}

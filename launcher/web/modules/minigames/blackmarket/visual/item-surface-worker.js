@@ -19,6 +19,7 @@ self.onmessage = function(event) {
         if (bitmap && bitmap.close) bitmap.close();
         self.postMessage({
             id: message.id,
+            code: error && error.code || null,
             error: error && error.stack ? error.stack : String(error)
         });
     }

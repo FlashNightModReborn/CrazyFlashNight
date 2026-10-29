@@ -32,11 +32,13 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
      * @param item:Object 物品数据
      * @param data:Object 合并后的装备数据
      * @param equipData:Object 强化/配件数据（可选）
+     * @param nativeOpt:Object 原生注释可选开关（nativeOpt.omitClipName 为 true 时
+     *   「使用弹夹」行移交独立弹夹框输出，本方法跳过）
      * @return Void（直接修改 result）
      */
-    public static function build(result:Array, baseItem:BaseItem, item:Object, data:Object, equipData:Object):Void {
-        // 1. 弹夹名称显示
-        if (data.clipname) {
+    public static function build(result:Array, baseItem:BaseItem, item:Object, data:Object, equipData:Object, nativeOpt:Object):Void {
+        // 1. 弹夹名称显示（原生路径可移交独立弹夹框）
+        if (data.clipname && !(nativeOpt != null && nativeOpt.omitClipName === true)) {
             result.push(TooltipConstants.LBL_CLIP_NAME, "：", ItemUtil.getItemData(data.clipname).displayname, "<BR>");
         }
 

@@ -19,6 +19,7 @@ namespace Launcher.Tests.Tasks
         [InlineData("unequip", "skillUnequip")]
         [InlineData("moveSlot", "skillMoveSlot")]
         [InlineData("setPassive", "skillSetPassive")]
+        [InlineData("setFeature", "skillSetFeature")]
         [InlineData("reorder", "skillReorder")]
         public void StrictEnvelope_MapsOnlyNormalizedPayload(string cmd, string expectedAction)
         {
@@ -1369,6 +1370,79 @@ namespace Launcher.Tests.Tasks
             task.BindPanelInstance("skills.instance.trainer");
         }
 
+        [Fact]
+        public void FeatureWrite_ConfirmsExactRequestedEffectAndKeepsSnapshotDetached()
+        {
+            var sent = new List<JObject>(); var web = new List<JObject>();
+            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
+            {
+                task.HandleWebRequest("setFeature", Request("setFeature", "feature.write"));
+                Assert.Equal("skillSetFeature", (string)sent[0]["action"]);
+                var snapshot = FeatureSnapshot(13, false);
+                task.HandleFlashResponse(WriteSuccess((int)sent[0]["callId"], true, 13, snapshot), null);
+                Assert.Equal("idle", task.WriteState); Assert.True((bool)Assert.Single(web)["success"]);
+                snapshot["features"][0]["enabled"] = true;
+                Assert.False((bool)web[0]["snapshot"]["features"][0]["enabled"]);
+            }
+        }
+
+        [Theory]
+        [InlineData("effect")]
+        [InlineData("duplicate")]
+        [InlineData("parent")]
+        [InlineData("effective")]
+        [InlineData("missing")]
+        [InlineData("blocked")]
+        public void FeatureWrite_MalformedOrUnprovenSuccessRequiresReconciliation(string fault)
+        {
+            var sent = new List<JObject>(); var web = new List<JObject>();
+            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
+            {
+                task.HandleWebRequest("setFeature", Request("setFeature", "feature.bad." + fault));
+                var snapshot = FeatureSnapshot(13, false); var feature = (JObject)snapshot["features"][0];
+                if (fault == "effect") { feature["enabled"] = true; feature["effectiveEnabled"] = true; }
+                if (fault == "duplicate") ((JArray)snapshot["features"]).Add(feature.DeepClone());
+                if (fault == "parent") feature["skillKey"] = "不存在的父技能";
+                if (fault == "effective") feature["effectiveEnabled"] = true;
+                if (fault == "missing") snapshot.Remove("features");
+                if (fault == "blocked") feature["writeBlocked"] = true;
+                task.HandleFlashResponse(WriteSuccess((int)sent[0]["callId"], true, 13, snapshot), null);
+                Assert.Equal("needs_reconcile", task.WriteState);
+                Assert.Equal("malformed_response", (string)Assert.Single(web)["error"]);
+                task.HandleWebRequest("setFeature", Request("setFeature", "feature.retry." + fault));
+                Assert.Single(sent); Assert.Equal("reconcile_required", (string)web[1]["error"]);
+            }
+        }
+
+        [Fact]
+        public void FeatureWrite_RejectsControlCharactersAndExtraFieldsBeforeDispatch()
+        {
+            var sent = new List<JObject>(); var web = new List<JObject>();
+            using (var task = NewTask(value => { sent.Add(ParseWire(value)); return true; }, web))
+            {
+                var request = Request("setFeature", "feature.invalid.id"); request["payload"]["featureId"] = "a.b\n";
+                task.HandleWebRequest("setFeature", request);
+                request = Request("setFeature", "feature.invalid.extra"); request["payload"]["unlocked"] = true;
+                task.HandleWebRequest("setFeature", request);
+                Assert.Empty(sent); Assert.Equal(2, web.Count);
+                Assert.All(web, response => Assert.Equal("invalid_payload", (string)response["error"]));
+            }
+        }
+
+        private static JObject FeatureSnapshot(int revision, bool enabled)
+        {
+            JObject snapshot = Snapshot(revision, null, null);
+            JObject parent = (JObject)snapshot["learned"][0].DeepClone();
+            parent["skillKey"] = "冲击连携"; parent["orderIndex"] = 1; parent["level"] = 10;
+            parent["type"] = "被动"; parent["passive"] = true; parent["equippable"] = false;
+            ((JArray)snapshot["learned"]).Add(parent);
+            snapshot["features"] = new JArray(new JObject {
+                ["id"] = "impact_chain.half_reload", ["skillKey"] = "冲击连携", ["label"] = "半换弹",
+                ["description"] = "独立装填策略", ["minLevel"] = 1, ["unlocked"] = true,
+                ["enabled"] = enabled, ["effectiveEnabled"] = enabled, ["writeBlocked"] = false });
+            return snapshot;
+        }
+
         private static JObject Request(string cmd, string callId)
         {
             JObject payload = new JObject { ["v"] = 1 };
@@ -1384,6 +1458,8 @@ namespace Launcher.Tests.Tasks
                 case "unequip": payload["slot"] = 4; payload["expectedRevision"] = 12; break;
                 case "moveSlot":
                     payload["sourceSlot"] = 4; payload["targetSlot"] = 9; payload["expectedRevision"] = 12; break;
+                case "setFeature":
+                    payload["featureId"] = "impact_chain.half_reload"; payload["enabled"] = false; payload["expectedRevision"] = 12; break;
                 case "setPassive":
                     payload["skillKey"] = "坚韧"; payload["enabled"] = true; payload["expectedRevision"] = 12; break;
                 case "reorder":

@@ -53,6 +53,11 @@ class org.flashNight.gesh.tooltip.test.NativeTooltipDocumentTest {
         test_orphanLt_literal();
         test_crlf_normalized();
         test_buildItem_shape();
+        test_buildItem_subSections();
+        test_buildItem_extrasRail();
+        test_buildItem_extrasMagazine();
+        test_buildItem_extrasNotContent();
+        test_composer_exNullSubBlocks_matchesLegacy();
         test_layoutType();
         test_buildItem_realInstance();
         test_buildSkill_shape();
@@ -334,6 +339,129 @@ class org.flashNight.gesh.tooltip.test.NativeTooltipDocumentTest {
         assert(all.length > 0, "realItem: runs carry generated content");
         assert(all.indexOf("100") >= 0 || all.indexOf("威力") >= 0,
             "realItem: real stats text present in runs");
+    }
+
+    private static function test_buildItem_subSections():Void {
+        // role:"sub" 子注释框段：每项一块，按文档序排在 description 之后；
+        // 缺省/空数组与旧 5 参调用完全一致（旧消费端不受影响）。
+        var itemData:Object = {name:"n", displayname:"显示名", icon:"ico_n"};
+        var doc:Object = NativeTooltipDocument.buildItem("n", itemData, null,
+            "简介", "描述", ["已安装插件：扩容弹匣", "夜视<BR>战技"]);
+        assertEq(4, doc.sections.length, "sub: two sub sections appended");
+        assertEq("sub", doc.sections[2].role, "sub: section2 role");
+        assertEq("已安装插件：扩容弹匣", doc.sections[2].runs[0].text, "sub: first block text");
+        assertEq("sub", doc.sections[3].role, "sub: section3 role");
+        assertEq("\n", doc.sections[3].runs[1].text, "sub: BR becomes newline run");
+        assertEq("description", doc.sections[1].role, "sub: description stays second");
+
+        var legacy:Object = NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述");
+        assertEq(2, legacy.sections.length, "sub: omitted arg keeps legacy shape");
+        var empty:Array = [];
+        assertEq(2, NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述", empty)
+            .sections.length, "sub: empty array adds nothing");
+        assertEq(2, NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述", [""])
+            .sections.length, "sub: blank block is dropped like other empty sections");
+    }
+
+    /** rail 数组的安全读取：缺键时返回空数组，避免断言失败升级为运行期异常。 */
+    private static function railOf(doc:Object):Array {
+        return (doc.rail instanceof Array) ? doc.rail : [];
+    }
+
+    private static function runsTextOf(doc:Object):String {
+        var all:String = "";
+        for (var s:Number = 0; s < doc.sections.length; s++) {
+            var secRuns:Array = doc.sections[s].runs;
+            for (var r:Number = 0; r < secRuns.length; r++) all += secRuns[r].text;
+        }
+        return all;
+    }
+
+    private static function test_buildItem_extrasRail():Void {
+        // rail 是结构部件：纯文本数组原样交给消费端绘制左侧竖排插条，最多 2 块。
+        var itemData:Object = {name:"n", displayname:"显示名", icon:"ico_n", type:"武器"};
+        var doc:Object = NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述",
+            null, {rail:["长枪", "突击步枪"]});
+        var rail:Array = railOf(doc);
+        assertEq(2, rail.length, "rail: 两块文本");
+        assertEq("长枪", rail[0], "rail: 首项为上块");
+        assertEq("突击步枪", rail[1], "rail: 次项为下块");
+
+        assertEq(2, railOf(NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述",
+            null, {rail:["长枪", "突击步枪", "多余项"]})).length, "rail: 超出 2 项截断");
+        assertEq(1, railOf(NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述",
+            null, {rail:["长枪", "长枪"]})).length, "rail: 相邻重复去重");
+        assertEq("突击步枪", railOf(NativeTooltipDocument.buildItem("n", itemData, null,
+            "简介", "描述", null, {rail:["   ", "突击步枪"]}))[0],
+            "rail: 空白项跳过，后续项前移");
+        assertEq(1, railOf(NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述",
+            null, {rail:[12345]})).length, "rail: 非字符串按纯文本收编");
+
+        var emptyDoc:Object = NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述",
+            null, {rail:[]});
+        assert(emptyDoc.rail == undefined, "rail: 空数组不写键（旧消费端零感知）");
+        var notArrayDoc:Object = NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述",
+            null, {rail:"长枪"});
+        assert(notArrayDoc.rail == undefined, "rail: 非数组忽略");
+        var legacyDoc:Object = NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述");
+        assert(legacyDoc.rail == undefined && legacyDoc.magazine == undefined,
+            "rail: 缺省 extras 时文档形状与旧版一致");
+    }
+
+    private static function test_buildItem_extrasMagazine():Void {
+        var itemData:Object = {name:"n", displayname:"显示名", icon:"ico_n", type:"武器"};
+        var doc:Object = NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述",
+            null, {magazine:{name:"11 号 4.7mm 无壳弹弹夹", icon:"突击步枪通用弹药"}});
+        assert(doc.magazine != null, "mag: 弹夹信息写入文档");
+        assertEq("11 号 4.7mm 无壳弹弹夹", doc.magazine.name, "mag: 名称透传");
+        assertEq("突击步枪通用弹药", doc.magazine.icon, "mag: 图标资产键透传");
+
+        var noIconDoc:Object = NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述",
+            null, {magazine:{name:"弹夹"}});
+        assertEq("弹夹", noIconDoc.magazine.name, "mag: 无图标仍有名称");
+        assert(noIconDoc.magazine.icon == undefined, "mag: 缺图标时不写 icon 键");
+
+        assert(NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述",
+            null, {magazine:{name:"  "}}).magazine == undefined, "mag: 空白名称整块丢弃");
+        assert(NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述",
+            null, {magazine:{icon:"只有图标"}}).magazine == undefined, "mag: 无名称不产弹夹框");
+        assert(NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述",
+            null, {magazine:null}).magazine == undefined, "mag: null 不产弹夹框");
+    }
+
+    private static function test_buildItem_extrasNotContent():Void {
+        // 结构部件不参与正文：rail/magazine 文本不得混进 sections，
+        // 否则同一信息会在主框体里重复出现一次。
+        var itemData:Object = {name:"n", displayname:"显示名", icon:"ico_n", type:"武器"};
+        var doc:Object = NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述",
+            ["已安装插件：扩容弹匣"],
+            {rail:["长枪", "突击步枪"], magazine:{name:"11 号弹夹", icon:"突击步枪通用弹药"}});
+        assertEq(3, doc.sections.length, "extras: 段数只由正文决定");
+        var all:String = runsTextOf(doc);
+        assert(all.indexOf("长枪") < 0, "extras: rail 上块文本不进正文");
+        assert(all.indexOf("突击步枪") < 0, "extras: rail 下块文本不进正文");
+        assert(all.indexOf("11 号弹夹") < 0, "extras: 弹夹名不进正文");
+        assert(all.indexOf("扩容弹匣") >= 0, "extras: 子框正文照常保留");
+    }
+
+    private static function test_composer_exNullSubBlocks_matchesLegacy():Void {
+        // generateItemDescriptionTextEx 的 subBlocks=null 分支必须与旧入口逐字节同文；
+        // 传数组时拆出的块与主文本合起来仍是旧全文（内容不丢，只有段落归属移动）。
+        var itemData:Object = ItemUtil.getItemData("测试军刀");
+        assert(itemData != null, "composerEx: fixture loaded");
+        var legacy:String = TooltipComposer.generateItemDescriptionText(itemData, null);
+        assertEq(legacy, TooltipComposer.generateItemDescriptionTextEx(itemData, null, null),
+            "composerEx: null subBlocks equals legacy output");
+
+        var subs:Array = [];
+        var main:String = TooltipComposer.generateItemDescriptionTextEx(itemData, null, subs);
+        var subText:String = "";
+        for (var i:Number = 0; i < subs.length; i++) {
+            assert(String(subs[i]).length > 0, "composerEx: sub block #" + i + " not blank");
+            subText += subs[i];
+        }
+        assertEq(legacy.length, main.length + subText.length,
+            "composerEx: main + sub blocks keep the whole legacy text");
     }
 
     private static function test_buildSkill_shape():Void {

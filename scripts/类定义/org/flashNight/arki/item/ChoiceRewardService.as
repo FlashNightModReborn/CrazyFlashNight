@@ -28,11 +28,13 @@ class org.flashNight.arki.item.ChoiceRewardService {
                 || run.bookId !== pool.scope.bookId || run.outcome !== "active"
                 || !RewardStashStore.whole(run.seed) || run.seed < 1
                 || !RewardStashStore.whole(run.startedAt) || run.startedAt < 1) return null;
+        if (run.bookId === "cf6-sting" && run.routeId !== (pool.scope.routeId === undefined ? "historical" : pool.scope.routeId)) return null;
         return {ownerSlot:slot, scopeKind:"book", bookId:run.bookId,
+            routeId:run.bookId === "cf6-sting" ? run.routeId : undefined,
             runIdentity:String(run.seed) + "." + String(run.startedAt)};
     }
     private static function owns(offer:Object):Boolean {
-        var current:Object = scope({scope:{kind:offer.scopeKind, bookId:offer.bookId}});
+        var current:Object = scope({scope:{kind:offer.scopeKind, bookId:offer.bookId, routeId:offer.routeId}});
         return current != null && current.ownerSlot === offer.ownerSlot && current.runIdentity === offer.runIdentity;
     }
     private static function randomInt(bound:Number):Number {
@@ -53,11 +55,77 @@ class org.flashNight.arki.item.ChoiceRewardService {
         }
         return RewardStashStore.ownedQuantity(RewardStashService.peek(),name) > 0;
     }
-    private static function useful(entry:Object):Boolean {
+    private static function type61MainPool(definition:Object):Boolean {
+        return definition.scope.kind === "book" && definition.scope.bookId === "cf6-sting"
+            && definition.scope.routeId === "type61" && String(definition.id).indexOf("cf6.type61.a04.") === 0;
+    }
+    /** Only free, standalone main guns may be exchanged; dual guns, mods and mixed bundles keep their meaning. */
+    private static function mainWeapon(entry:Object):Object {
+        if (entry.entries.length !== 1 || entry.entries[0].quantity !== 1
+                || entry.skills.length > 0 || entry.kCost !== undefined && entry.kCost !== 0) return null;
+        var name:String=entry.entries[0].itemName;
+        var meta:Object=ItemUtil.getRawItemData(name);
+        var price:Number=Number(meta.price), level:Number=Number(meta.data.level);
+        if (!ItemUtil.isEquipment(name) || meta.type !== "武器" || meta.use !== "长枪"
+                || !isFinite(price) || !(price > 0) || !isFinite(level) || level < 0) return null;
+        // The Type61 equipment sale facade uses the unenhanced catalog price at 25%.
+        return {name:name,sale:Math.floor(price*0.25),level:level};
+    }
+    private static function ownedMainWeapon(name:String):Boolean {
+        if (ownedEquipment(name)) return true;
+        var containers:Array=[_root.物品栏.仓库,_root.物品栏.战备箱];
+        for (var c:Number=0;c<containers.length;c++) {
+            if (typeof containers[c].toObject != "function") continue;
+            var items:Object=containers[c].toObject();
+            for (var key:String in items) if (items[key].name === name) return true;
+        }
+        return false;
+    }
+    /** Resolve before the existing full-save freeze. Snapshot, query and choose never resolve again. */
+    private static function novelMainGroups(groups:Array):Array {
+        var resolved:Array=PersistedSnapshot.cloneArrayData(groups), reserved:Object={}, catalog:Array=[];
+        var pools:Array=_pools == null ? ChoiceRewardDefinition.get() : _pools;
+        var seen:Object={};
+        for (var p:Number=0;p<pools.length;p++) {
+            if (!type61MainPool(pools[p])) continue;
+            for (var g:Number=0;g<pools[p].groups.length;g++) {
+                var entries:Array=pools[p].groups[g].entries;
+                for (var e:Number=0;e<entries.length;e++) {
+                    var gun:Object=mainWeapon(entries[e]);
+                    if (gun == null || seen["$"+gun.name]) continue;
+                    seen["$"+gun.name]=true;catalog.push({entry:entries[e],gun:gun});
+                }
+            }
+        }
+        // Preserve every already-novel option before resolving earlier duplicate slots.
+        for (g=0;g<resolved.length;g++) for (e=0;e<resolved[g].entries.length;e++) {
+            gun=mainWeapon(resolved[g].entries[e]);
+            if (gun != null && !ownedMainWeapon(gun.name)) reserved["$"+gun.name]=true;
+        }
+        for (g=0;g<resolved.length;g++) for (e=0;e<resolved[g].entries.length;e++) {
+            var original:Object=resolved[g].entries[e];gun=mainWeapon(original);
+            if (gun == null || !ownedMainWeapon(gun.name)) continue;
+            var nearest:Number=Number.POSITIVE_INFINITY, candidates:Array=[];
+            for (var c:Number=0;c<catalog.length;c++) {
+                var row:Object=catalog[c], candidate:Object=row.gun;
+                if (reserved["$"+candidate.name] || ownedMainWeapon(candidate.name)
+                        || candidate.sale < gun.sale || !isFinite(Number(_root.等级)) || candidate.level > Number(_root.等级)) continue;
+                if (candidate.sale < nearest) {nearest=candidate.sale;candidates=[];}
+                if (candidate.sale === nearest) candidates.push(row);
+            }
+            if (candidates.length == 0) continue; // Keep the original allowance if the eligible pool is exhausted.
+            var selected:Object=candidates.length == 1 ? candidates[0] : candidates[randomInt(candidates.length)];
+            var replacement:Object=PersistedSnapshot.clone(selected.entry);
+            replacement.id=original.id;replacement.weight=original.weight;
+            resolved[g].entries[e]=replacement;reserved["$"+selected.gun.name]=true;
+        }
+        return resolved;
+    }
+    private static function useful(entry:Object, allowOwned:Boolean):Boolean {
         if (!skillEligible(entry.skills == null ? [] : entry.skills)) return false;
         if (entry.skills.length > 0) return true;
         for (var i:Number = 0; i < entry.entries.length; i++)
-            if (!ItemUtil.isEquipment(entry.entries[i].itemName) || !ownedEquipment(entry.entries[i].itemName)) return true;
+            if (allowOwned || !ItemUtil.isEquipment(entry.entries[i].itemName) || !ownedEquipment(entry.entries[i].itemName)) return true;
         return false;
     }
     private static function selectionResolved(committed:Boolean):Boolean {
@@ -128,10 +196,14 @@ class org.flashNight.arki.item.ChoiceRewardService {
                 poolId:definition.id, poolVersion:definition.version, title:definition.title,
                 ownerSlot:binding.ownerSlot, scopeKind:binding.scopeKind, bookId:binding.bookId,
                 runIdentity:binding.runIdentity, options:[]};
-            for (var g:Number = 0; g < definition.groups.length; g++) {
-                var group:Object = definition.groups[g];
+            if (binding.routeId !== undefined) offer.routeId=binding.routeId;
+            var allowOwned:Boolean=type61MainPool(definition);
+            var groups:Array=allowOwned ? novelMainGroups(definition.groups) : definition.groups;
+            for (var g:Number = 0; g < groups.length; g++) {
+                var group:Object = groups[g];
                 var available:Array = [];
-                for (var a:Number = 0; a < group.entries.length; a++) if (useful(group.entries[a])) available.push(group.entries[a]);
+                for (var a:Number = 0; a < group.entries.length; a++)
+                    if (useful(group.entries[a],allowOwned)) available.push(group.entries[a]);
                 for (var d:Number = 0; d < group.draw && available.length > 0; d++) {
                     var total:Number = 0;
                     for (var w:Number = 0; w < available.length; w++) total += available[w].weight;
@@ -152,6 +224,9 @@ class org.flashNight.arki.item.ChoiceRewardService {
                     offer.options.push(pushedOption);
                 }
             }
+            if (String(definition.id).indexOf("cf6.type61.mods.") === 0
+                    && !org.flashNight.arki.scene.Cf6Type61Service.modOfferUsable(offer.options,definition.id === "cf6.type61.mods.medium"))
+                return RewardStashService.cancel("no_eligible_choices");
             saved.offers.push(offer);
             if (!ChoiceRewardStore.normalize(saved, String(store.storeId))) return RewardStashService.cancel("invalid_choice_store");
             var remaining:Number = Number(source.item.value) - 1;
@@ -188,6 +263,12 @@ class org.flashNight.arki.item.ChoiceRewardService {
             if (cost > 0) PlayerAssetTransaction.recordCurrencyDeltas(0, -cost, context);
             var selectedItems:Array = option.items;
             if (!RewardStashService.admit(selectedItems, true, true, context)) return RewardStashService.cancel("invalid_reward_pack");
+            if (offer.routeId === "type61" && offer.poolId === "cf6.type61.starter") {
+                var mainData:Object=ItemUtil.getRawItemData(String(selectedItems[0].name));
+                if (!org.flashNight.arki.scene.Cf6Type61Service.isActive() || mainData.use !== "长枪"
+                        || !ItemUtil.isItem(String(mainData.data.clipname))) return RewardStashService.cancel("invalid_reward_pack");
+                _root._saveExt.bookRun.type61MainAmmo=String(mainData.data.clipname);
+            }
             var saved:Object = RewardStashService.peek().choiceOffers;
             for (var i:Number = 0; i < saved.offers.length; i++) if (saved.offers[i].offerId === params.offerId) { saved.offers.splice(i, 1); break; }
             return RewardStashService.end(fingerprint, {success:true,kind:"choiceSelect",offerId:params.offerId,

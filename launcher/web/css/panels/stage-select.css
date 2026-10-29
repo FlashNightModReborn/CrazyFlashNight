@@ -185,14 +185,14 @@
    外交青绿 --ss-pin-map-rgb / 锁定灰 --ss-marker-locked-rgb）跨区域 100% 恒定；
    区域副色（--ss-accent-*）仅作用于环境氛围层、四角框标、顶栏横染与闲置卡片框体点缀。
    由 qa-suite 的 tactical-language-floors 用例以计算值守门。 */
-/* signal：基地门口，沿用地图面板标志性毒绿（基地页同色，进出地图主色不跳变） */
+/* signal：基地门口采用低饱和灰绿环境色；毒绿只承担焦点、选中与确认。 */
 .stage-select-panel[data-workbench-skin="stage-select"][data-accent="signal"] {
-    --ss-accent-rgb: 200,255,76;
-    --ss-accent-hi-rgb: 220,255,128;
-    --ss-accent-lo-rgb: 162,230,56;
-    --ss-accent-ink-rgb: 16,21,5;
-    --ss-active-rgb: 46,62,20;
-    --ss-region-text-rgb: 228,246,200;
+    --ss-accent-rgb: 166,188,172;
+    --ss-accent-hi-rgb: 208,224,208;
+    --ss-accent-lo-rgb: 126,150,136;
+    --ss-accent-ink-rgb: 16,21,18;
+    --ss-active-rgb: 38,48,42;
+    --ss-region-text-rgb: 222,234,220;
     --ss-badge-rgb: 200,255,76;
     --ss-header-rgb: 8,11,7;
     --ss-card-grad-top-rgb: 15,19,12;
@@ -953,7 +953,7 @@
 }
 
 .stage-select-panel.is-runtime .stage-select-stage-name {
-    background: radial-gradient(ellipse 60% 78% at 50% 55%, rgba(var(--ss-name-scrim-rgb),0.78) 0%, rgba(var(--ss-name-scrim-rgb),0.45) 55%, rgba(var(--ss-name-scrim-rgb),0) 92%);
+    background: radial-gradient(ellipse 60% 78% at 50% 55%, rgba(var(--ss-name-scrim-rgb),0.64) 0%, rgba(var(--ss-name-scrim-rgb),0.34) 55%, rgba(var(--ss-name-scrim-rgb),0) 92%);
 }
 
 /* P2：选中节点与外交据点名称不随 hover/focus 隐藏（检查器或外置悬浮卡承接信息展示，原地保留可辨识名称）。 */
@@ -1517,8 +1517,7 @@
     gap: 8px;
 }
 
-/* 打磨批：红色切角装饰，对位 hover 卡 .stage-select-card-corner（同尺寸/同剪裁/同投影）；
-   在标题行内作 flex 项居中，名字右侧让位由 gap 承担。 */
+/* 详情标题标记使用独立结构；快捷卡操作区不共用这块装饰。 */
 .stage-select-inspector-corner {
     flex: 0 0 auto;
     width: 8px;
@@ -2625,10 +2624,10 @@
    - 可聚焦元素自身不加 clip-path（会裁掉焦点环与命中角），切角只画在 pointer-events:none 的伪元素上；
    - html.perf-low-effects 下氛围层与画布滤镜整体关闭。 */
 .stage-select-panel[data-workbench-skin="stage-select"] {
-    --ss-atmo-opacity: 1;
-    --ss-scene-saturate: 0.84;
-    --ss-scene-brightness: 0.9;
-    --ss-scene-contrast: 1.05;
+    --ss-atmo-opacity: 0.72;
+    --ss-scene-saturate: 0.88;
+    --ss-scene-brightness: 0.94;
+    --ss-scene-contrast: 1.03;
     --ss-chamfer: 5px;
     --ss-reticle-rgb: var(--ss-primary-hi-rgb);
     --ss-easy-rgb: 92,176,206;
@@ -2651,13 +2650,15 @@
     opacity: var(--ss-atmo-opacity);
     background:
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='128' height='128' filter='url(%23n)'/%3E%3C/svg%3E"),
-        repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(var(--ss-accent-rgb), 0.028) 3px, rgba(var(--ss-accent-rgb), 0.028) 4px),
-        linear-gradient(180deg, rgba(var(--ss-accent-rgb), 0.07) 0%, rgba(var(--ss-accent-rgb), 0.02) 42%, rgba(var(--ss-accent-rgb), 0) 72%),
-        radial-gradient(ellipse at 50% 46%, rgba(var(--ss-black-rgb), 0) 54%, rgba(var(--ss-black-rgb), 0.44) 100%);
+        repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(var(--ss-accent-rgb), 0.014) 3px, rgba(var(--ss-accent-rgb), 0.014) 4px),
+        linear-gradient(180deg, rgba(var(--ss-accent-rgb), 0.04) 0%, rgba(var(--ss-accent-rgb), 0.012) 42%, rgba(var(--ss-accent-rgb), 0) 72%),
+        radial-gradient(ellipse at 50% 46%, rgba(var(--ss-black-rgb), 0) 54%, rgba(var(--ss-black-rgb), 0.34) 100%);
     background-size: 128px 128px, auto, auto, auto;
 }
 
-.stage-select-panel.is-diorama .stage-select-diorama-canvas {
+.stage-select-panel.is-diorama .stage-select-diorama-canvas,
+.stage-select-panel.is-diorama .stage-select-diorama-fallback,
+.stage-select-panel.is-runtime .stage-select-bg {
     filter: saturate(var(--ss-scene-saturate)) brightness(var(--ss-scene-brightness)) contrast(var(--ss-scene-contrast));
 }
 
@@ -2665,15 +2666,21 @@ html.perf-low-effects .stage-select-panel.is-runtime .stage-select-stage::after 
     display: none;
 }
 
-html.perf-low-effects .stage-select-panel.is-diorama .stage-select-diorama-canvas {
+html.perf-low-effects .stage-select-panel.is-diorama .stage-select-diorama-canvas,
+html.perf-low-effects .stage-select-panel.is-diorama .stage-select-diorama-fallback,
+html.perf-low-effects .stage-select-panel.is-runtime .stage-select-bg {
     filter: none;
+}
+
+.stage-select-panel.is-runtime .stage-select-stage-shell::after {
+    opacity: 0.34;
 }
 
 /* 2. 舞台角标与顶栏 180px 发光下划线由 tactical-map-shared.css 统一持有；
       本处仅保留顶栏的横向氛围染色（副色） */
 .stage-select-panel.is-runtime .stage-select-header {
     background:
-        linear-gradient(90deg, rgba(var(--ss-accent-rgb), 0.12) 0%, rgba(var(--ss-accent-rgb), 0.04) 38%, rgba(var(--ss-accent-rgb), 0) 64%),
+        linear-gradient(90deg, rgba(var(--ss-accent-rgb), 0.06) 0%, rgba(var(--ss-accent-rgb), 0.02) 38%, rgba(var(--ss-accent-rgb), 0) 64%),
         linear-gradient(180deg, rgba(var(--ss-header-rgb), 0.86) 0%, rgba(var(--ss-header-rgb), 0.4) 66%, transparent 100%);
 }
 
@@ -2920,12 +2927,10 @@ html.perf-low-effects .stage-select-panel.is-diorama .stage-select-diorama-canva
 /* 6. 三维地点：跨区域恒定节点语义（战斗=红 / 任务=金 / 外交=青绿 / 锁定=灰），悬停与选中统一为主色毒绿 */
 .stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-stage-name {
     color: rgb(var(--ss-region-text-rgb));
-    background: rgba(var(--ss-header-rgb), 0.88);
-    border-color: rgba(var(--ss-pin-frame-rgb), 0.28);
+    background: rgba(var(--ss-header-rgb), 0.78);
+    border-color: rgba(var(--ss-pin-frame-rgb), 0.22);
     border-left-color: rgb(var(--ss-pin-combat-rgb));
-    box-shadow:
-        0 0 0 1px rgba(var(--ss-black-rgb), 0.6),
-        0 6px 16px rgba(var(--ss-black-rgb), 0.32);
+    box-shadow: 0 3px 10px rgba(var(--ss-black-rgb), 0.28);
     transition:
         color var(--ss-motion-fast) var(--ss-ease-default),
         border-color var(--ss-motion-fast) var(--ss-ease-default),
@@ -2935,8 +2940,8 @@ html.perf-low-effects .stage-select-panel.is-diorama .stage-select-diorama-canva
 
 .stage-select-panel.is-diorama .stage-select-stage-button.is-map-entry > .stage-select-stage-name {
     color: rgb(var(--ss-pin-map-text-rgb));
-    background: rgba(var(--ss-header-rgb), 0.88);
-    border-color: rgba(var(--ss-pin-map-rgb), 0.34);
+    background: rgba(var(--ss-header-rgb), 0.8);
+    border-color: rgba(var(--ss-pin-map-rgb), 0.3);
     border-left-color: rgb(var(--ss-pin-map-rgb));
 }
 
@@ -3390,5 +3395,183 @@ html.perf-low-effects .stage-select-panel.is-diorama .stage-select-stage-button.
     .stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-stage-name::after,
     .stage-select-panel.is-diorama .stage-select-stage-button::before {
         transition: none;
+    }
+}
+
+.stage-select-panel .stage-select-card-anchor[data-stage-id] {
+    width: 0;
+    min-height: 0;
+    transform: none;
+}
+
+.stage-select-panel .stage-select-card-anchor[data-stage-id] > .stage-select-card {
+    left: 0;
+    top: 0;
+    display: none;
+    flex-direction: column;
+    width: var(--stage-card-content-width, 167px);
+    height: auto;
+    max-height: 480px;
+    min-height: 0;
+    padding: 6px;
+    box-sizing: border-box;
+}
+
+.stage-select-panel .stage-select-card-anchor[data-stage-id].is-card-open > .stage-select-card {
+    display: flex;
+    visibility: visible;
+    pointer-events: auto;
+    animation: stageSelectCardFade var(--ss-motion-fast) var(--ss-ease-out);
+}
+
+.stage-select-panel .stage-select-card-anchor[data-stage-id].is-measuring > .stage-select-card {
+    display: flex;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.stage-select-panel .stage-select-card-anchor[data-stage-id].is-selected > .stage-select-card,
+.stage-select-panel .stage-select-card-anchor[data-stage-id].is-locked > .stage-select-card {
+    display: none;
+}
+
+.stage-select-card-content {
+    position: relative;
+    display: flex;
+    flex: 0 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+}
+
+.stage-select-panel .stage-select-card-anchor[data-stage-id] > .stage-select-card .stage-select-card-name {
+    position: static;
+    display: -webkit-box;
+    flex: none;
+    width: auto;
+    height: auto;
+    min-height: 18px;
+    max-height: 36px;
+    margin: 0;
+    padding: 0 0 0 13px;
+    line-height: 18px;
+    white-space: normal;
+}
+
+.stage-select-panel .stage-select-card-anchor[data-stage-id][data-card-name-lines="1"] > .stage-select-card .stage-select-card-name {
+    display: -webkit-box;
+    height: auto;
+    max-height: 36px;
+    white-space: normal;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.stage-select-panel .stage-select-card-anchor[data-stage-id] > .stage-select-card .stage-select-preview-wrap {
+    position: static;
+    display: block;
+    flex: none;
+    width: 100%;
+    height: 69px;
+    min-height: 69px;
+    margin: 4px 0 0;
+}
+
+.stage-select-panel .stage-select-card-anchor[data-stage-id] > .stage-select-card .stage-select-card-detail {
+    position: static;
+    display: block;
+    flex: 0 1 auto;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    margin: 4px 0 0;
+    padding: 0 2px;
+    overflow: hidden;
+    line-height: 19px;
+}
+
+.stage-select-panel .stage-select-card-anchor[data-stage-id] > .stage-select-card .stage-select-difficulties {
+    position: static;
+    display: flex;
+    flex: none;
+    width: 100%;
+    height: auto;
+    min-height: 28px;
+    margin: 6px 0 0;
+    gap: 3px;
+}
+
+.stage-select-panel .stage-select-card .stage-select-difficulty,
+.stage-select-panel .stage-select-card .stage-select-map-action {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    height: 28px;
+    min-height: 28px;
+}
+
+.stage-select-panel .stage-select-card-anchor[data-action-position="top"] > .stage-select-card > .stage-select-difficulties {
+    order: -1;
+    margin: 0 0 6px;
+}
+
+.stage-select-panel .stage-select-card .stage-select-card-corner {
+    display: none;
+}
+
+.stage-select-panel .stage-select-card .stage-select-map-action {
+    white-space: nowrap;
+}
+
+.stage-select-tools {
+    position: relative;
+}
+
+.stage-select-panel .stage-select-mod-toggle[hidden] {
+    display: none;
+}
+
+.stage-select-panel .stage-select-mod-toggle.has-mod-active {
+    color: rgb(var(--ss-gold-rgb));
+}
+
+.stage-select-panel.is-mod-menu-open .stage-select-mod-toggle {
+    color: rgb(var(--ss-primary-hi-rgb));
+}
+
+.stage-select-panel .stage-select-mod-pod {
+    position: absolute;
+    top: 34px;
+    right: 38px;
+    z-index: 70;
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 154px;
+    padding: 6px;
+    background: rgba(var(--ss-header-rgb), 0.98);
+    border: 1px solid rgba(var(--ss-accent-rgb), 0.36);
+    box-shadow: 0 10px 24px rgba(var(--ss-black-rgb), 0.58);
+    backdrop-filter: none;
+}
+
+.stage-select-panel .stage-select-mod-pod[hidden] {
+    display: none;
+}
+
+.stage-select-panel .stage-select-mod-pod .stage-select-mod-btn {
+    justify-content: flex-start;
+    min-height: 32px;
+    height: 32px;
+}
+
+@keyframes stageSelectCardFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .stage-select-panel .stage-select-card-anchor[data-stage-id].is-card-open > .stage-select-card {
+        animation: none;
     }
 }

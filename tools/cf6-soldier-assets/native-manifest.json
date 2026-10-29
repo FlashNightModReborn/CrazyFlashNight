@@ -2,12 +2,16 @@
   "schema": "cf6-soldier.native-import.v1",
   "owner": "flashswf/arts/new/Codex特种兵素材",
   "approvedInput": "flashswf/arts/new/Codex素材源稿/CF6特种兵-R3",
-  "nativeSymbolCount": 239,
+  "nativeSymbolCount": 542,
   "shieldInput": "flashswf/arts/new/Codex素材源稿/CF6特种兵-持盾-R4",
   "shieldRoot": 580,
   "phaseLinkages": {
     "敌人-CF6特种兵": 2,
-    "敌人-CF6持盾特种兵": 1
+    "敌人-CF6持盾特种兵": 1,
+    "敌人-CF6特种精英": 2,
+    "敌人-CF6持盾特种精英": 1,
+    "敌人-CF6特种教官": 2,
+    "敌人-CF6持盾特种教官": 1
   },
   "phaseParameter": "特种兵初始阶段",
   "shieldBreakFrames": 11,
@@ -15,15 +19,19 @@
   "buildInputs": [
     {
       "path": "tools/cf6-soldier-assets/build.py",
-      "sha256": "b49aa11ded92adf8e49e027d7bcbc2bf5293e14e8f7b5a84b5ba0f14d451cc10"
+      "sha256": "bd133b192c4f1abd2d4cf5daad1f3cfae49569e4a0cd760107d4ed2d05cca378"
     },
     {
       "path": "tools/cf6-soldier-assets/vector.py",
-      "sha256": "355d4e94c78c4cd955742d5a8a8f2c4bf25ab40a370d7bf377c6b118881cda1a"
+      "sha256": "92252f287f380cccf10a9464765899e4f62e0c2eedd582e2966154b2c29814c4"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/holster.py",
+      "sha256": "9f7dd3e2114b5488de82cff2451c2b2306a51b2f81bbc6a469f7154778528a21"
     },
     {
       "path": "tools/cf6-soldier-assets/SoldierAI.as",
-      "sha256": "46b02ef4eb607fe882ae2424b9dd07b29d4c5e5b703664049ef9ca4a4845c4f1"
+      "sha256": "3036e43e714890f85131e67bddfe334ded171773634a294210eb157020237bd0"
     },
     {
       "path": "tools/cf6-wings-assets/vector.py",
@@ -31,7 +39,7 @@
     },
     {
       "path": "tools/cf6-manman-assets/build.py",
-      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+      "sha256": "868001fe8a0b67b0c642455e51c0e5c19ff90df2b811904b028c22b9c90f2c68"
     },
     {
       "path": "tools/cf6-zombie-assets/build.py",
@@ -112,7 +120,7 @@
     {
       "path": "scripts/逻辑/单位函数/单位函数_lsy_主角射击函数.as",
       "lineEndingNormalization": "lf",
-      "sha256": "25eea4eab8ddd532fe6dd5c99ae92b6e4b340caea94e70a0b8a4abe6b876c685"
+      "sha256": "b27fd797020a60fd9982cf086e6d18497919ab2c75b52ce98f00acfbeb23fb54"
     },
     {
       "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人特殊函数.as",
@@ -127,16 +135,674 @@
     {
       "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
       "lineEndingNormalization": "lf",
-      "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+      "sha256": "105b16ed054cca9b81840d6f598ce908ee3d376f568a982b8407af7d1b61e9cc"
     },
     {
       "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
       "lineEndingNormalization": "lf",
-      "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+      "sha256": "c4b91be9636abec1a910e523dfd253261872bc5461fea772203395d60a7b2486"
     },
     {
       "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-持盾-R4/archive-origin.json",
       "sha256": "cce7f100810401dc4b166bcffed736a1d07df61c9b6dc00d22808145afa88b47"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/elite.py",
+      "sha256": "dc38bffb7730e02ac24946bff05b62e65471f25923a6eaf2f3e7cbd5b4d9c8f6"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/EliteAI.as",
+      "sha256": "69664b35bd201520171a58a44ddb61dcca628f12cb5e93e9cada100f604094fe"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/elite_anatomy.py",
+      "sha256": "1a3d9026850b18c87cf853d71066ea260670e05d9135a241e46fe07ba2b25864"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/elite-motion-profile.json",
+      "sha256": "f2f905faad70880805983f3f33f0999877db6cad9922153b3cba27a00c955cf0"
+    },
+    {
+      "path": "flashswf/arts/new/原体融合生物/LIBRARY/不明士兵/不明士兵动画/攻击动作.xml",
+      "sha256": "f415824bd266e386dd2b0e13d46ce102038475f39f4baa8001868acf34db1d20"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-R3/reference/timelines.json",
+      "sha256": "739d410f16db31343c94fe953ee7a7f4838ac5591855e641f7be754fd5a4b5e0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-R3/asset-manifest.json",
+      "sha256": "12e2d3be5692910b33771a6127d25d6793042a40f39248a78d5cc5ce1d033250"
+    },
+    {
+      "path": "data/items/武器_手枪_大威力手枪.xml",
+      "sha256": "9fc68c4193af3809819e4a6ede3e357e9d1785a825218d3ab5ec3c9a3f277510"
+    },
+    {
+      "path": "flashswf/arts/new/偷吃屑鱼坟头贡品/LIBRARY/枪-手枪-FR506.xml",
+      "sha256": "ffd70e86e45d2b52210127521ce91679ff3da7b35b6a19b226fac78bd2c3cf8f"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/art_revision.py",
+      "sha256": "7a2c32517faf68baf242d494055c80cd4b3ad9752ce88bf5fe004fa664b02af1"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierRoles.as",
+      "sha256": "4cdc5a1b2eb9b4deb48252e89108f1091572fd62a07e0cc7002bbbed152f51e9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/倒地恢复.xml",
+      "sha256": "6753785c2853e518dd0dbb38a86753110fe90739ab6085699462ab2610aace3d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/击飞.xml",
+      "sha256": "961135b66a4f479fd322675ff05a9e5058df939f8d70cb9f4b2532307a259993"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/匕首刺击.xml",
+      "sha256": "4d00cdfd63dec5ec1a3c10e0b3773543edab74e45f4d094389f6b9fecd5131f1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/持盾匕首刺击.xml",
+      "sha256": "5db812c94d59b5043a87edfc91bf9c6b06e138a8bde74a60638abae6b1e78078"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/持盾点射与装填.xml",
+      "sha256": "7c83c452cb3d4b55c404e3c96d2d35d1e37d08d1eb23ce86475b1241e496b8bc"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/持盾站立.xml",
+      "sha256": "f1bd1c8669d0656f68cf3650242fbc001693bb14a4bfa24cf2af32ff9e91b239"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/持盾行走.xml",
+      "sha256": "3f8f3c1ecbaaae7c897344e2a94562a1c2b0c7a529cb5af70a5bba01f21d7185"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/持盾被击.xml",
+      "sha256": "9c591dac6f12081686476151041e10dd01819d5e44e6981ba9ead639485a2c9d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/死亡.xml",
+      "sha256": "8740b29eb00d23c36daa91749a096305bb1843f9d17ea0acb9da48a80c4ce927"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/破盾.xml",
+      "sha256": "b6c983e1433580ff5c298f3b91cffc49a21a5b6df307c1de9f7ad7ab7453caa5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/站立.xml",
+      "sha256": "278d789f34caa26e743d85ee947fd57a8d864a853b3e988a16675265d7afa6fe"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/行走.xml",
+      "sha256": "5770e06a36e386ba6806dba9af9bb8b666494eaf842986c469c5dcd48ccaa102"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/被击.xml",
+      "sha256": "36c49317a87d41787d05e3f7f0e16bb1ded0784cc1dd35a29625dd616bf9d6d9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/被投.xml",
+      "sha256": "22fd5e0ec3c1f6fd5b00728b7f69942b2cd7c476aad037b824c0186783f9f65b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/跑步.xml",
+      "sha256": "076da4273327e82ca034756b667cff5c092baf106443320319e8f64d44d7777c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/长枪点射与装填.xml",
+      "sha256": "12a9338e296eb643dbb269614708a722ccaafbcd2fe1a983f0a60c31d3cb3378"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/archive-origin.json",
+      "sha256": "f57880e3df632a89123b29ddff2e8380b66dba6e12a887bdb8f7938ac9c19f22"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/bake-motion.jsfl",
+      "sha256": "ed9e26bb2a7e85fa14289f85b8ad955d4d2ea4e99c54dd8a5a01e451df92665b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/native-motion-samples.json",
+      "sha256": "1fd612bea92ee5096e9b8cd5d19f4550fafe470e5f2e782c2f78dd9a965dc093"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/tactics.py",
+      "sha256": "bdd477fa097878811fc47cc482de9656adeadbdcf3d8137901a2be60095ffa98"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/TacticalAI.as",
+      "sha256": "abb32bac0a75a732b49cda18a0e7272736a790774c168a360e02817a14be995c"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/tactical-profiles.json",
+      "sha256": "2c2de540d75c7855c27ce598c19f7f3a53ca14279b44dc53bd6caa674f53007e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/archive-origin.json",
+      "sha256": "b0940c11bcef31bac003519c89e1db51be576b1dbd360635ad6a3b6df085929a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/art/instructor-shielded.png",
+      "sha256": "b85702c36aff2b70305ff74710adb704b394d4d4c6f66285b3bdb7ba76a969ef"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/art/instructor-shielded.svg",
+      "sha256": "fccd88dec5c07a841142d51bfa3c0fa99c5b94d496be006c2f259ee509df02d1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/art/instructor-unshielded.png",
+      "sha256": "31e16e703ede3e5f2c43f8bb72afb02c8084a1882e81dacc4433e949462fab4b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/art/instructor-unshielded.svg",
+      "sha256": "56a67c6e8c2706496c12a99bc3132902123fad12b5a417f4e444450d2d769263"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/art/教官R9-100pct双背景.png",
+      "sha256": "1b425c6912c25eb8624eda1310823a585da79066f73df10990a997ef4a80c2cb"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/art/教官R9-100pct双背景.svg",
+      "sha256": "6f0740d1de0836df1c43a331be4fccd17301973ce6368fa9829ad8bd80e62e55"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/art/教官R9-R8同姿四格对照.png",
+      "sha256": "f61b6cfbcab578ecce1221521b41176f9b8be24afba45a59a6a03af0c40604d9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/art/教官R9-R8同姿四格对照.svg",
+      "sha256": "32d5ee344b9bad6f1166847c93dae7d861f24e1332d927c11eb181cb1e25d905"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/art/教官R9-R8领胸近景.png",
+      "sha256": "48f372d6fd8af55cdf888ebb54575985956f720067b426493f4003ef37361688"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/art/教官R9-R8领胸近景.svg",
+      "sha256": "0d7d881312c045f144c23e2b481d5401296a64bc216fb4fdcd44d540023b5b82"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/MANIFEST.json",
+      "sha256": "2b8538f29c3e5ca1567e6ab4ad309e3c4dc884ad4de524532a5a4dee622ae374"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/parts/484.svg",
+      "sha256": "0930dcf1770804c3244ab7c17aed870f73e0ac15f2f2ad28253d31b6ca9593a1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/parts/485.svg",
+      "sha256": "70bd5932f75578cab49bcc94d64a8f400a2ef79db9576627d1e9b68f12c494b4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/parts/486.svg",
+      "sha256": "14a6b93f7fa4b439b314e90f02bf6784fd24efb309fbe70ca9fd36dc5402b4f5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/parts/487.svg",
+      "sha256": "361ce49a452f995a04ef26b91e10cba787e4645da02dc93afecfcae5a0e16ee5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/parts/488.svg",
+      "sha256": "fa41575d7d75d1ab922aed19b800b41bb6afe8c8dcc0c3d461287007fd4d7a55"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/parts/489.svg",
+      "sha256": "059008727c495e95db6c02beaa441a65fb1f7c88789a02cc61af58daae61d14d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/parts/490.svg",
+      "sha256": "acc92a1a084cdc32cb7899581d3532f5b17be8c7b1614186af22b7bd0dabaf25"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/parts/491.svg",
+      "sha256": "3101aa4bd4e17eea51aa5d40212d37d1acaf82b1d8832bdc64e4c177ec0ab195"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/parts/493.svg",
+      "sha256": "eaf5e839a7af44380df24ae26158c27d91f062757aee63ee45dd454e98a327d3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/parts/494.svg",
+      "sha256": "0f0344c1e05e37ec018bb6479ce405c333127b065a21c17bd676444c018bd670"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/parts/495.svg",
+      "sha256": "fd43e72c0318ced86737b44c994829081d95117fb1d9b7ba596e9f0000bfa527"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/parts/496.svg",
+      "sha256": "5d748da4ae7413aede0f4515d6d17163ac4f3c4775177ff5438619514904ac28"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/parts/497.svg",
+      "sha256": "0d3b56305b9ea73a2d1e3dca8c08b3cd9f79450bf0d95f34c9bf38974b3edd53"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/parts/561.svg",
+      "sha256": "399c7dc642ee90f2b7a1f89fdeb934a807e3ac514fa042b9eae475f33d041345"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/qa/cold-rebuild-r9.json",
+      "sha256": "9f0a273f6dcfa47c816b537cad3f5414d9ff57000868000a6b8523843545faae"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/qa/r9-change-scope.json",
+      "sha256": "71f1c91905a90b92b5017bea6add817ca27d345ba89a922dfa2d6e424f79d25c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/qa/validation-r9.json",
+      "sha256": "67b9a7e1d720fad509384146c0ec2d4d5351e880eb1d168317821612648f3429"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/README.md",
+      "sha256": "334d3d99dab866efd29ef09b7ba5bd1a1fd3ecef4dba160c3f0ca98d7f20f35c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/238.svg",
+      "sha256": "daaa126f7924a7049517fda3877492b142c3ac5c6253a20827ec0af5369ed93c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/baseline/CF6特种兵-R3/parts/487.svg",
+      "sha256": "82d9558c2e5df44e58fece416fbcb87203994a509fc3f98216ca327f8a9e0077"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/parts/484.svg",
+      "sha256": "0930dcf1770804c3244ab7c17aed870f73e0ac15f2f2ad28253d31b6ca9593a1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/parts/485.svg",
+      "sha256": "70bd5932f75578cab49bcc94d64a8f400a2ef79db9576627d1e9b68f12c494b4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/parts/486.svg",
+      "sha256": "14a6b93f7fa4b439b314e90f02bf6784fd24efb309fbe70ca9fd36dc5402b4f5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/parts/487.svg",
+      "sha256": "34faa685a573c768678e3885ff179364ca1345c68b0e38098042ddc88cd4c497"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/parts/488.svg",
+      "sha256": "fa41575d7d75d1ab922aed19b800b41bb6afe8c8dcc0c3d461287007fd4d7a55"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/parts/489.svg",
+      "sha256": "059008727c495e95db6c02beaa441a65fb1f7c88789a02cc61af58daae61d14d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/parts/490.svg",
+      "sha256": "acc92a1a084cdc32cb7899581d3532f5b17be8c7b1614186af22b7bd0dabaf25"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/parts/491.svg",
+      "sha256": "3101aa4bd4e17eea51aa5d40212d37d1acaf82b1d8832bdc64e4c177ec0ab195"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/parts/493.svg",
+      "sha256": "eaf5e839a7af44380df24ae26158c27d91f062757aee63ee45dd454e98a327d3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/parts/494.svg",
+      "sha256": "0f0344c1e05e37ec018bb6479ce405c333127b065a21c17bd676444c018bd670"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/parts/495.svg",
+      "sha256": "fd43e72c0318ced86737b44c994829081d95117fb1d9b7ba596e9f0000bfa527"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/parts/496.svg",
+      "sha256": "5d748da4ae7413aede0f4515d6d17163ac4f3c4775177ff5438619514904ac28"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/parts/497.svg",
+      "sha256": "0d3b56305b9ea73a2d1e3dca8c08b3cd9f79450bf0d95f34c9bf38974b3edd53"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/parts/561.svg",
+      "sha256": "399c7dc642ee90f2b7a1f89fdeb934a807e3ac514fa042b9eae475f33d041345"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/508.svg",
+      "sha256": "b6d6ea0adda0cfd9daa22841312ab8639eff3610ef5069bc44b7eb232dc9af43"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/509.svg",
+      "sha256": "e33f33895afc6c6fedcb72af0cb94742ff5e9630617c86d06ca8fad8d1eb264a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/510.svg",
+      "sha256": "08b806c846895d4c6e4c6acb7181093249cb70a4d082b6cb9cd031019312fa1a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/511.svg",
+      "sha256": "1adc8db98bc39cd33184fc873f52c8f2fa54b46a8a66a5ca6f019c650b3ab705"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/512.svg",
+      "sha256": "a40ce3d22ffa11ff1869b1e12f96123cb2b2e329ce9aa4fe208c8d60f7a75eed"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/514.svg",
+      "sha256": "4b076c283ae9940e81e92984145cf8be72bafed590d444ce119261942509726c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/515.svg",
+      "sha256": "a9521062b9af22d8d09103bdb462a3f58a28e78421238e79cdf403c96677904c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/516.svg",
+      "sha256": "a625f7a862f1cded28957f6b51ad422a9842c4e9b33554d1ee50484a93539eab"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/522.svg",
+      "sha256": "a8b832173b8d8356d30acc61c0484549f7813b4b6727f97a20cc50f258033a2b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/524.svg",
+      "sha256": "c8d16d0aeabcaa4fe0d2d369f20d147dc6d3458ef2a07e0cea5377f739e44156"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/526.svg",
+      "sha256": "419516ef4f8eb8f51b0c4fad65e1311408641f4dac2585db2b736ec77de87594"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/528.svg",
+      "sha256": "437b03e1f50450997891178314e24ace45957461fcb23c737abdc45d7dc023f4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/530.svg",
+      "sha256": "09d765929b58076e94904ca8f31a1f2a77dab5bb432a6b960bb44c56d4d2d831"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/532.svg",
+      "sha256": "6f9e3a3b58a645c2671ddf4904b5559d2297cf9504c39c2dabfe7efb8d40f4ab"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/534.svg",
+      "sha256": "cfef43ffc4ac1dc12484f89ac01aae703e3138c2a759527c1b4d050beb2a16f7"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/536.svg",
+      "sha256": "d0d0814d7b092d2d907b1335c9c866de0b25ac3a414c29abf02f3aeacf916837"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/542.svg",
+      "sha256": "db5e4216afaef06b95f26d24b4d688d669c58a8db4805ee7d37f1d03dc4a6d24"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/544.svg",
+      "sha256": "b5faeda4674495d1bb07d4568381eff041921ddee4bb28867d590647a721cf17"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/565.svg",
+      "sha256": "918f6f6bfabc8d88723f43a609bb6d2c3474fbf09567c94c3660a234ab69d688"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/566.svg",
+      "sha256": "a2b09df2fb2eee9116953aa2cf1feda21057e13b17a395ac3cdac6ab38d12759"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/567.svg",
+      "sha256": "dd6d72c48eeea81bb1e8e5bec8db697a6ffe6354c47a4a3f3c08cf0ceba7f0f2"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/568.svg",
+      "sha256": "59b58309f6fee9874f325095893e7ec2f63c5b7f6ddaadc58c6e7cb17280646a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/569.svg",
+      "sha256": "6652d24b4516f5fc5ddadb66905823032736584488c66afca4d054d0cc40c965"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/570.svg",
+      "sha256": "03c5456dd387e1fdd55f57b3891c007e98dbb4e867650c46c2423f061aaf5c54"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/571.svg",
+      "sha256": "1fb5df2e8d73f56e928ef5aabc587a10bac9a315173e9db9ab087caf1bbbcf2f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/572.svg",
+      "sha256": "d0adaec166c9b2eb583259ed635f081f68248d06232505ec5d88e81183c05de1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/575.svg",
+      "sha256": "b1ad2e14f0c8e3b6ce6aaf219b154bbc0aa02a9ec729f66f314b3e5a0210930e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/577.svg",
+      "sha256": "461c0349772a887c4601f8f5e8507d7c7ac9df8f5d3025dc5c90bfc5c570c21f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/r8/variants/578.svg",
+      "sha256": "62fb5e4864b63a6ff924f6823bbd5e24e880de1b9904a51d03119025dbfdbc62"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/R8_PROVENANCE.md",
+      "sha256": "14a2212c7bafd7447e5248dedbb5700cdc5bbb00a81db5f839336d383ccc2d94"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/reference/timelines.json",
+      "sha256": "739d410f16db31343c94fe953ee7a7f4838ac5591855e641f7be754fd5a4b5e0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/source/assemble.py",
+      "sha256": "796a0cae9c06a490f517283d97f85d950531a3380ab0b3035399410d939eff4c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/source/build_r9.py",
+      "sha256": "1df7a0a852d1d13fc02c1c2571a09acf58713830eaed36ff813abe728e5d085e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/source/compose_r9_review.py",
+      "sha256": "1589ad57bfb86a58efa0aff8416df99ce1521176e63f5de8d28694b6849530ba"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/source/package_r9.py",
+      "sha256": "01d32e59a054ddf5853397e9f32a513c91fa5c018acb64055f912dbe05079cc3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/source/validate_r9.py",
+      "sha256": "f54f68c00990aff8a14b86ff9c6f679923cdeeb3e24dc04ab92306cdd0863624"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/508.svg",
+      "sha256": "65b8167610fd3783a0ebc4f969a1376060914db7684c2021f7cc87fdf972145e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/509.svg",
+      "sha256": "84573ece8b3b864df71393b6c4e6e68d1006c60ba1c2109c67ec0db9957106d6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/510.svg",
+      "sha256": "d26c63bfab4651f30e8600cdb65088fe8f4bd949d970db675fd3c19ebb173897"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/511.svg",
+      "sha256": "1c98a8f557ca52ad816b89319e55c6fda9035cba2ac95933926a7c026329b95f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/512.svg",
+      "sha256": "40ff49fb1dd22a3721cc96f0e7e0c9331f11c5999b9a995f445e3ca9a73a1177"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/514.svg",
+      "sha256": "a226d6c4489c085ed4b4a183f8c6b3be930bd413e61f963e180b8402bf9b2456"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/515.svg",
+      "sha256": "b54d40db0a5218f676c1e367b3ca2a767b59ed5fc71337a2d58698bb002e21ee"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/516.svg",
+      "sha256": "81141dc504a7e11c0459e962e2d935eeef7c09d6860891bd05326de4d06e6955"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/522.svg",
+      "sha256": "48b0b6b28f28df6e312490ce8cdebba0380483205cd13c34b9af1761de4cd3bc"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/524.svg",
+      "sha256": "c9cee2fb3c52938e401dd76cb989565ffb725a29e9958bba747e366bed8b542a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/526.svg",
+      "sha256": "ed24889ec69c4d75f476285f016317256d1fe61edaef9873da5450d23c1cc979"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/528.svg",
+      "sha256": "807fef5a802d810a4af7ca65a98a5f90130c7fdb45b407dd46f40845f2755248"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/530.svg",
+      "sha256": "c1b2b1940e2c130557a7bb2d2b1c5b93a0bd7b5c3e2f21f313ceb8e5116ff6a0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/532.svg",
+      "sha256": "65cd4f494546e682f16483e912e32f9b9d49c1675c1721a192efb498be6d2c6c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/534.svg",
+      "sha256": "5c897a87d17fb12ee63f234835bc257124bf5eb73ebe9812a51236610880be9c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/536.svg",
+      "sha256": "156bf29c27b6bc7cd2f89b43b6cc48c32c2e439edf4d7c4475d44f044a4b496d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/542.svg",
+      "sha256": "4e0d21e5781b079322caa2ba751648c1bf3c8e152cdba69f973f84afb216ed0b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/544.svg",
+      "sha256": "b946f94f1abae72864eae205bfacc614253ca5dac9ee9e834563ff60b159dd31"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/565.svg",
+      "sha256": "9c2c23243cda7e2366124a1a5ee8e5ad65978611ba8aeda6be430cbff8a8bbdb"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/566.svg",
+      "sha256": "b83ca5332b022fb17a21c7475a4d7700c3f57d1228dfdeb84c87c622211f6802"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/567.svg",
+      "sha256": "7b72e7571ff9715d4901845398be384b88dd438f9c6991db97a36df2254c3edc"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/568.svg",
+      "sha256": "cd1e5dd9943fa907d45a1fabf0f0041ca6f449d198726b4c175c17e42252042d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/569.svg",
+      "sha256": "37d898620f508963e88464ccb54da05c06caa960ade6fdef9bbf412ed94e63e1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/570.svg",
+      "sha256": "b8f4c94ae06a122607093bdd947b9af34cb7e6554cd1d63e6237ee2e4cc0a12b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/571.svg",
+      "sha256": "cc03cd6ca68c7507932c9dee904135097026be4a729f3fc313a19e3da0ff5e9c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/572.svg",
+      "sha256": "6de37bba9a65ae2f53ef9000b8e0945c0df54feda666d9220778c52642899f49"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/575.svg",
+      "sha256": "b1ad2e14f0c8e3b6ce6aaf219b154bbc0aa02a9ec729f66f314b3e5a0210930e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/577.svg",
+      "sha256": "461c0349772a887c4601f8f5e8507d7c7ac9df8f5d3025dc5c90bfc5c570c21f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/variants/578.svg",
+      "sha256": "62fb5e4864b63a6ff924f6823bbd5e24e880de1b9904a51d03119025dbfdbc62"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾.xml",
+      "sha256": "bbfc24f726bd035774d72c2a721f45ff3ce7f38e7970b6727fd6cc9a3801df7b"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-30.xml",
+      "sha256": "3aa73889fe48bc75ac167c58618010ff7f52785a00a15db3f6edf5d3dbb18998"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-31.xml",
+      "sha256": "3ff05070835cc15bb793586bd0e72f1035715f692fb2ab73d0af7bfd0fbb4bfe"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-33.xml",
+      "sha256": "726aaba907b5fb37de8db6c9dacde2a6b1585d460bd43f60f62276767ba0a40a"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-34.xml",
+      "sha256": "45d13f4ed84bd355ea2f470cd6316f03d5553e839c9e7b09033b371bc4bb0b53"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-36.xml",
+      "sha256": "a62fd1857ecb43272e73d29b6339d0e9d5e830fb2d4fb1148a9c345fe462f701"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-37.xml",
+      "sha256": "6bc4eb6b73a24c6a973bb674380b6a61398ce30e8758bcb7a756358fff0c8b22"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-39.xml",
+      "sha256": "c91bb9ed73813d3a2715e87c0106f72b71b5cfa2eed4081e19ec3127f261f56c"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-40.xml",
+      "sha256": "0329221d6319f6a1c5fe4cccf8ec252598b073e7ce36a522beb5f5e686f6959a"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-42.xml",
+      "sha256": "d560b1b95ed9a8994f6d91f928122b6afc6c498c59e1fe830c99cec163cbeddc"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-43.xml",
+      "sha256": "8d335a2fde3199e9d2f423afb21f2ef815ed58be6f92a4d95c3647c1c12db36e"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-45.xml",
+      "sha256": "45e6191b5f40cce5780d2f88ef09810e845d3ed420a923a77b71be7006104795"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-46.xml",
+      "sha256": "292e871e81e14e6a0e18eb8180d28fdde2655e5c8232836708e281d684642049"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-47.xml",
+      "sha256": "a4b725fff6ee1d09c432b5d35ad083307344db37ff3f03cb02befef16d3cf9b4"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-48.xml",
+      "sha256": "73887dcf7bf12502a311a19e707a1b0b96480e3a84b2f3df9ec0f39580d1e639"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-49.xml",
+      "sha256": "638b056ab7556fdddfdca0f9946499be8ae0055e1301916c52b5e30dd007c039"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-50.xml",
+      "sha256": "1fe59f895ae92cbde9befff07644b91e1f47139d9dfb3ad88a416f2fd182c259"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/翅虎/烟雾素材/原烟雾-51.xml",
+      "sha256": "484a8eee92405f2be7e94ef237ba0ea9244352348c01a381ceb05014fa271cea"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Shoot/ShootCore.as",
+      "lineEndingNormalization": "lf",
+      "sha256": "e340a82b58e87de169c5091586dfe8dfb507204da0054fc1f8a5d1e1018b2798"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Initializer/EventComponent/FireEventComponent.as",
+      "lineEndingNormalization": "lf",
+      "sha256": "fbe92775dd08d73ca56e711666895773d2da5b84d14c4e077ff102d9296ba63f"
     }
   ],
   "parts": [
@@ -172,9 +838,9 @@
     },
     {
       "id": 489,
-      "shapes": 55,
-      "segments": 605,
-      "masks": 2
+      "shapes": 46,
+      "segments": 849,
+      "masks": 8
     },
     {
       "id": 490,
@@ -621,10 +1287,12 @@
     ]
   },
   "ordinaryRoot": 559,
-  "sourceBodyFrames": 378,
+  "legacySourceBodyFrames": 378,
+  "motionInput": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8",
+  "motionEvaluation": "Animate 24 native keyframes with parenting matrices",
   "shootingAuthority": "ShootInitCore / ShootCore / WeaponFireCore",
   "shootingPoseFrame": 3,
-  "burstShots": 3,
+  "burstShots": 6,
   "reloadFrames": [
     15,
     49
@@ -644,17 +1312,1672 @@
       139
     ]
   ],
-  "airborneSourceFrames": [
-    1,
-    40
-  ],
-  "landedSourceFrames": [
-    41,
-    116
-  ],
+  "airborneFrames": 29,
+  "landedFrames": 78,
+  "deathThirdBranch": "New fall frames 1-14 followed by 21 settled hold frames",
+  "ordinaryRole": {
+    "shieldActions": [
+      "standShoot",
+      "stab",
+      "bash"
+    ],
+    "grenadeDefault": "高爆手雷",
+    "grenadeActionFrames": 36,
+    "grenadeReleaseFrame": 25,
+    "legKnife": true,
+    "waistGrenades": true
+  },
+  "eliteRole": {
+    "shieldActions": [
+      "chargeShoot"
+    ],
+    "chargeFrames": [
+      10,
+      24,
+      12
+    ],
+    "pairReloadFrames": [
+      331,
+      365
+    ],
+    "pairReloadCommit": 363,
+    "legKnife": false,
+    "waistGrenades": true,
+    "reloadVisual": "smoke and authored run",
+    "slideEntry": "successful smoke reload only"
+  },
+  "instructorRole": {
+    "artSource": "flashswf/arts/new/Codex素材源稿/CF6教官-R9",
+    "strategy": "adaptive",
+    "sharedActions": true
+  },
+  "tacticalProfiles": {
+    "schema": "cf6-tactical-profiles.v1",
+    "overridePrefix": "特种兵战术_",
+    "roles": {
+      "ordinary": {
+        "rifleShots": 6,
+        "rifleFireFrames": 36,
+        "rifleRestFrames": 18,
+        "eliteRestFrames": 30,
+        "eliteStandShots": 4,
+        "retreatTrigger": 300,
+        "retreatDistance": 380,
+        "smokeRestFrames": 90,
+        "smokeMoveFrames": 24,
+        "smokeMoveSpeed": 0.55,
+        "smokeMoveX": 64,
+        "smokeMoveZ": 42,
+        "slidePermitFrames": 40,
+        "slideTrackFrames": 12,
+        "slideZSpeed": 0.6,
+        "slideZBudget": 60,
+        "slideStopRange": 95,
+        "chargeMinRange": 0,
+        "chargeRange": 560,
+        "chargeStopRange": 28,
+        "chargeMaxDistance": 300,
+        "chargeSpeed": 1.25,
+        "chargeContactReach": 70,
+        "chargePower": 1.25,
+        "chargePush": 10,
+        "chargeRestFrames": 72,
+        "chargeWindupFrames": 10,
+        "chargeActiveFrames": 24,
+        "chargeRecoveryFrames": 12,
+        "strategyHoldFrames": 36,
+        "chargeShots": 8,
+        "chargeMaxTurns": 0,
+        "chargeTurnDistance": 75,
+        "chargeZBudget": 48,
+        "chargeZSpeed": 0.65,
+        "evasionETA": 12,
+        "evasionRestFrames": 90,
+        "retreatZBudget": 56,
+        "retreatZSpeed": 0.8,
+        "evasionRetreatX": 64
+      },
+      "elite": {
+        "rifleShots": 3,
+        "rifleFireFrames": 24,
+        "rifleRestFrames": 30,
+        "eliteRestFrames": 30,
+        "eliteStandShots": 4,
+        "retreatTrigger": 300,
+        "retreatDistance": 380,
+        "smokeRestFrames": 90,
+        "smokeMoveFrames": 24,
+        "smokeMoveSpeed": 0.55,
+        "smokeMoveX": 64,
+        "smokeMoveZ": 42,
+        "slidePermitFrames": 40,
+        "slideTrackFrames": 12,
+        "slideZSpeed": 0.6,
+        "slideZBudget": 60,
+        "slideStopRange": 95,
+        "chargeMinRange": 0,
+        "chargeRange": 560,
+        "chargeStopRange": 28,
+        "chargeMaxDistance": 300,
+        "chargeSpeed": 1.25,
+        "chargeContactReach": 70,
+        "chargePower": 1.25,
+        "chargePush": 10,
+        "chargeRestFrames": 72,
+        "chargeWindupFrames": 10,
+        "chargeActiveFrames": 24,
+        "chargeRecoveryFrames": 12,
+        "strategyHoldFrames": 36,
+        "chargeShots": 8,
+        "chargeMaxTurns": 0,
+        "chargeTurnDistance": 75,
+        "chargeZBudget": 48,
+        "chargeZSpeed": 0.65,
+        "evasionETA": 12,
+        "evasionRestFrames": 90,
+        "retreatZBudget": 56,
+        "retreatZSpeed": 0.8,
+        "evasionRetreatX": 64
+      },
+      "instructor": {
+        "rifleShots": 6,
+        "rifleFireFrames": 36,
+        "rifleRestFrames": 18,
+        "eliteRestFrames": 30,
+        "eliteStandShots": 5,
+        "retreatTrigger": 300,
+        "retreatDistance": 380,
+        "smokeRestFrames": 90,
+        "smokeMoveFrames": 24,
+        "smokeMoveSpeed": 0.55,
+        "smokeMoveX": 64,
+        "smokeMoveZ": 42,
+        "slidePermitFrames": 40,
+        "slideTrackFrames": 12,
+        "slideZSpeed": 0.6,
+        "slideZBudget": 60,
+        "slideStopRange": 95,
+        "chargeMinRange": 0,
+        "chargeRange": 560,
+        "chargeStopRange": 28,
+        "chargeMaxDistance": 300,
+        "chargeSpeed": 1.25,
+        "chargeContactReach": 70,
+        "chargePower": 1.25,
+        "chargePush": 10,
+        "chargeRestFrames": 72,
+        "chargeWindupFrames": 10,
+        "chargeActiveFrames": 24,
+        "chargeRecoveryFrames": 12,
+        "strategyHoldFrames": 36,
+        "chargeShots": 8,
+        "chargeMaxTurns": 0,
+        "chargeTurnDistance": 75,
+        "chargeZBudget": 48,
+        "chargeZSpeed": 0.65,
+        "evasionETA": 12,
+        "evasionRestFrames": 90,
+        "retreatZBudget": 56,
+        "retreatZSpeed": 0.8,
+        "evasionRetreatX": 64
+      }
+    },
+    "bounds": {
+      "rifleShots": [
+        1,
+        12
+      ],
+      "rifleFireFrames": [
+        1,
+        300
+      ],
+      "rifleRestFrames": [
+        1,
+        300
+      ],
+      "eliteRestFrames": [
+        1,
+        300
+      ],
+      "eliteStandShots": [
+        1,
+        5
+      ],
+      "retreatTrigger": [
+        0,
+        1000
+      ],
+      "retreatDistance": [
+        0,
+        1000
+      ],
+      "smokeRestFrames": [
+        1,
+        300
+      ],
+      "smokeMoveFrames": [
+        1,
+        300
+      ],
+      "smokeMoveSpeed": [
+        0.05,
+        3
+      ],
+      "smokeMoveX": [
+        0,
+        1000
+      ],
+      "smokeMoveZ": [
+        0,
+        1000
+      ],
+      "slidePermitFrames": [
+        1,
+        300
+      ],
+      "slideTrackFrames": [
+        1,
+        300
+      ],
+      "slideZSpeed": [
+        0.05,
+        3
+      ],
+      "slideZBudget": [
+        0,
+        120
+      ],
+      "slideStopRange": [
+        0,
+        1000
+      ],
+      "chargeMinRange": [
+        0,
+        1000
+      ],
+      "chargeRange": [
+        0,
+        1000
+      ],
+      "chargeStopRange": [
+        0,
+        1000
+      ],
+      "chargeMaxDistance": [
+        0,
+        1000
+      ],
+      "chargeSpeed": [
+        0.05,
+        3
+      ],
+      "chargeContactReach": [
+        20,
+        100
+      ],
+      "chargePower": [
+        0.05,
+        3
+      ],
+      "chargePush": [
+        0,
+        20
+      ],
+      "chargeRestFrames": [
+        1,
+        300
+      ],
+      "chargeWindupFrames": [
+        1,
+        300
+      ],
+      "chargeActiveFrames": [
+        1,
+        300
+      ],
+      "chargeRecoveryFrames": [
+        1,
+        300
+      ],
+      "strategyHoldFrames": [
+        1,
+        300
+      ],
+      "chargeShots": [
+        1,
+        16
+      ],
+      "chargeMaxTurns": [
+        0,
+        2
+      ],
+      "chargeTurnDistance": [
+        40,
+        160
+      ],
+      "chargeZBudget": [
+        0,
+        120
+      ],
+      "chargeZSpeed": [
+        0.05,
+        2
+      ],
+      "evasionETA": [
+        1,
+        30
+      ],
+      "evasionRestFrames": [
+        30,
+        300
+      ],
+      "retreatZBudget": [
+        0,
+        120
+      ],
+      "retreatZSpeed": [
+        0.05,
+        2
+      ],
+      "evasionRetreatX": [
+        0,
+        160
+      ]
+    }
+  },
   "weaponSource": "Existing long-gun equipment and shared cadet pool; external primary wins",
   "weaponHolderPath": "man.枪.枪.装扮",
   "outputs": [
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c.xml",
+      "sha256": "34098158b10834425336d8f624bc456418af2293b0d94cb6ed96cac244bc8bd1",
+      "bytes": 6381
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩0.xml",
+      "sha256": "fbb34eaf97a295fc671c303b6b94da3642777a7108be838df00943d92868a7fa",
+      "bytes": 18014
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩1.xml",
+      "sha256": "fda33c623090813c03e9bd4dab488aa281826d78c8d97aac1266509a867fb543",
+      "bytes": 2133
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩10.xml",
+      "sha256": "03633efe6a5a766db80aa2faeaa49c1b93d3f54731a4f044bf12455266ae93c8",
+      "bytes": 2208
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩11.xml",
+      "sha256": "813166f235b5e01f05033d7c472f7e5557200e0817e67ae3976d68c13360774c",
+      "bytes": 19208
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩12.xml",
+      "sha256": "e2ef73847d9cc88650c3080e1c3204eca8930efd37e15109a94eefa1a47d85b6",
+      "bytes": 2385
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩13.xml",
+      "sha256": "db3abf124df6ecb2b193fa593f873fc6113ddc35ce5f9c1ddf9417d744c503f5",
+      "bytes": 14673
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩14.xml",
+      "sha256": "86e4448651400a929f455418a3d0bffdbdb896e595349ab81aa8c7eae6e38d7d",
+      "bytes": 2256
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩15.xml",
+      "sha256": "cc4187da1d5ea08c8f33e7bf364cedc53ea247f0f4c01a20c9082cf8cccd936a",
+      "bytes": 26251
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩16.xml",
+      "sha256": "4a3ec5348d816ebc3ae1e530cdc137da0e435f5faa0b8ec2cf2640235232c6a1",
+      "bytes": 2198
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩17.xml",
+      "sha256": "9a3ebed7429f1cd9c81090c0d5c6197d75df25646dccb4c843bbfeb44a61b1a9",
+      "bytes": 18014
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩18.xml",
+      "sha256": "a9cea6d157bd835e0b59775b4350e2650783f6be1f746a294f3f88697419ed7a",
+      "bytes": 2188
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩19.xml",
+      "sha256": "71fb99f79057d9d616639de6dd7dd53da128bb0661f8303f1027d3b0a85c04bc",
+      "bytes": 13136
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩2.xml",
+      "sha256": "2cd06203903febf5b6700083f493cb06fcb1043005e545166aa8e195117e7721",
+      "bytes": 26747
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩20.xml",
+      "sha256": "25738c50409aa7ef4673e460cfdd53770d89708af7dcfcbe2a92209c2cd9c71c",
+      "bytes": 2262
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩21.xml",
+      "sha256": "61c8a2da824f840740adadb90b7742d104c34d4ee2d65a5f07becfdb9ec93c1b",
+      "bytes": 20540
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩3.xml",
+      "sha256": "db6a8adcb4546cfae8475952c039941a751b388b454f276d1659f06f89870e25",
+      "bytes": 2277
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩4.xml",
+      "sha256": "98cf191d0ee367ddc154e38de6f4b79f9454ad908d5cdb5ccce958e093e1fe6e",
+      "bytes": 17580
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩5.xml",
+      "sha256": "161f8d70dfbfcc299af5dbea57285d8803e1a64c08de427b3fd08009976781ac",
+      "bytes": 62522
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩6.xml",
+      "sha256": "d3dee449bc5ce2d14e386644fff1c18ae8f73e9937938ad75aff07e3005b117b",
+      "bytes": 53966
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩7.xml",
+      "sha256": "b3b86cbd8881d8650e4e2abb65fb87b069d2b5d657a45e18750db807d9c48b48",
+      "bytes": 43215
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩8.xml",
+      "sha256": "ee73a5d8f04ef09d3cae04e5f3ec564353f67c145a858a870b73f372dee470c4",
+      "bytes": 2225
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_814d5bf409cd792c-遮罩9.xml",
+      "sha256": "bb538c29ef56a62c11831d92635e6ff2ceed16313fbf87e2edcf7393fcb7054b",
+      "bytes": 21971
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6.xml",
+      "sha256": "5e1a5fb9a96f9981abc3d89561df5075520f1caacb9bcb7cd51cb248592e1d3f",
+      "bytes": 6381
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩0.xml",
+      "sha256": "152dc15f8ab601e7d96d3146a3c06cb9798363b00a9c0b596d4dec505d35ea7a",
+      "bytes": 18014
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩1.xml",
+      "sha256": "6b6e7a7d5c884e79a568457434d9e3678a04bf20a2cc7d9a10534521c9ce1124",
+      "bytes": 2133
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩10.xml",
+      "sha256": "4ec12d3868d608a16cbbc2658e26850dcf1a54aeadae26d55b91cdb72d6e3a1a",
+      "bytes": 2208
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩11.xml",
+      "sha256": "5f9973794f2fd329ded1c4aa9e9814d10b69576626579719bca1f2be618c5549",
+      "bytes": 27317
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩12.xml",
+      "sha256": "ca82bd76229114aa28d86fa8bffe4a21d7d9c123692b33aa4b40046d9091b2ee",
+      "bytes": 2385
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩13.xml",
+      "sha256": "26d2f8c23c9b1dfc5400f99d3776e87105162717235c59632f5910a5c69e65f9",
+      "bytes": 14673
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩14.xml",
+      "sha256": "c006edd5415946237199762f3a796e759492b460a64b6d17c5d4fcfd1578954c",
+      "bytes": 2256
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩15.xml",
+      "sha256": "9edb53b7b98d5fbe4d970dde6107c2e1decd197ba6366a0d447740d218466833",
+      "bytes": 26251
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩16.xml",
+      "sha256": "271ecc03ebdd25632bb2d8c5a96bd21c99e2f9068341c171725620c63c24f7d2",
+      "bytes": 2198
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩17.xml",
+      "sha256": "3b8cef6592f8669509474858ea053a63f52ec222440ae8537ef96158d467a411",
+      "bytes": 22606
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩18.xml",
+      "sha256": "7ee00769ff41031437077b156d32d6d3085079696c044cd46ec4ac38b33a1c49",
+      "bytes": 2188
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩19.xml",
+      "sha256": "d34e57fb63aec4dfaa6effd968a61eaa2541dd2e5361b91a540fc85c0eb2ff2c",
+      "bytes": 13136
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩2.xml",
+      "sha256": "e262ee59b57a7287d10159fc2ddae23e0e092627664c0f18073cfa6ac0643619",
+      "bytes": 30339
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩20.xml",
+      "sha256": "549de449f5acf7e7bbb6242dc00c5814694c964c1ef7fa78f3e0697b25681d19",
+      "bytes": 2262
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩21.xml",
+      "sha256": "a303889cf087848764e46a36591adbd8e5147b0371eb80f122e04edba4a84b0e",
+      "bytes": 21586
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩3.xml",
+      "sha256": "d351b6f49e32783288ff8542ebfafbe6f0701da9fd296d3f288145a89c9876e9",
+      "bytes": 2277
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩4.xml",
+      "sha256": "0e31e09f16f230dc59dc2c09421df199a07dc684655a913b9e21786a6f894ee5",
+      "bytes": 20390
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩5.xml",
+      "sha256": "6bbef9658e005869fe40326355f9a1a4647c7e4908e3e5dfd0e6359750171e4f",
+      "bytes": 75033
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩6.xml",
+      "sha256": "2ad804643c7ab1ee9d48164991415dedfb35cde6ab8b256184dd19c5d8f40c62",
+      "bytes": 65928
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩7.xml",
+      "sha256": "693059d8dc84cdae7edffab7bed41ecc79c91eb10fd3d0e48ac94c5365b99f65",
+      "bytes": 43215
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩8.xml",
+      "sha256": "e83776a140f15617bc13679eec8da9d1240fa8005c05795768f2786b1ebd16d2",
+      "bytes": 2225
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_bbd0b1d76245cca6-遮罩9.xml",
+      "sha256": "f75d51c5b0de7c4127b171ca11c63c528bdb416c85682c43337bc5a6f51e1e27",
+      "bytes": 21971
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_c2e4d69ab74c4121.xml",
+      "sha256": "ff9bdeb2290105700cfdeb27d0e726f46d6803591f25f4e87a0588c27b2181c9",
+      "bytes": 1047
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_c2e4d69ab74c4121-遮罩0.xml",
+      "sha256": "b8955096907d4e23984848a9feec39957d74ea60bbf5f3466b41cdab73f36e20",
+      "bytes": 23592
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_f1436835be501f4e.xml",
+      "sha256": "0807f838bbe8895623ea662e1160a5a01336423ff178f0dc6a8a57ac4d602532",
+      "bytes": 1047
+    },
+    {
+      "path": "LIBRARY/Codex/教官/共用矢量图集/教官_f1436835be501f4e-遮罩0.xml",
+      "sha256": "b08bd165a0b0e378a99c9ab2dececedceef91dac595748271f6d6bbe5942732a",
+      "bytes": 28031
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_484.xml",
+      "sha256": "f0947c429f3a8e174c4eea63827af6eb96aec2ff65c72830040bf4fc37f30833",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_484-遮罩0.xml",
+      "sha256": "75618e6678f037a10398fcefba39a33deb1b002f21e5091dd087eadef92d1478",
+      "bytes": 1998
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_484-遮罩1.xml",
+      "sha256": "5932d6959fc51412e75dc82c560a171a8908da0324315a87a13dd56ee71f076e",
+      "bytes": 17631
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_485.xml",
+      "sha256": "20c5853739fe71d6990c2f9bfd6c16180df471aee93282d7b1be4a0807bc8bd4",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_485-遮罩0.xml",
+      "sha256": "e10227f01c7d68389d284285794347b39c9cfd732952d728d94f5dd8bef3e31b",
+      "bytes": 2046
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_485-遮罩1.xml",
+      "sha256": "42df4f14d5061ae5bd45ed8e5891ad31e17ccfed88a86a9e855299ba6a9005ff",
+      "bytes": 29986
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_486.xml",
+      "sha256": "80c6022cc3c962eefbdf6baea671adf513f257ab18259fd285dcf39e7b5bbfd8",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_486-遮罩0.xml",
+      "sha256": "59716291e48bd8ae4df0c5a6d2171baffa238a3ddba70882d8cdfaeb2704e533",
+      "bytes": 2202
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_486-遮罩1.xml",
+      "sha256": "ef43986e8a7776cc33cd6c907f5afd8ce9be18d29d2ca115f79881ec794bb47a",
+      "bytes": 20026
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_487.xml",
+      "sha256": "855d5de1c8b198258a18943a2ece5a8799df2c08e6c840de806b39161bbe68bd",
+      "bytes": 12213
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_487-遮罩0.xml",
+      "sha256": "866a4b86e880317da6566a82d0b6d22cc6dfbcdfa8545310b3c406da16e00cf8",
+      "bytes": 1775
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_487-遮罩1.xml",
+      "sha256": "57a03816c391826f48cb23a54470aa1553160e544720f34edf0a74514e9dfdfb",
+      "bytes": 64261
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_488.xml",
+      "sha256": "2b5f6e08a52d6d7c7fa1d3678582d097a67cc5c98a3687a256cfdc78fd44a937",
+      "bytes": 19937
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_488-遮罩0.xml",
+      "sha256": "6b8717cfe6ebad8a2d8e32d2c01dd3b7bbbe369e8bfe48fe9107df2518cfc1a8",
+      "bytes": 2170
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_488-遮罩1.xml",
+      "sha256": "658d8c726cbc11901539d0f0fe949fcf4eca360c304c9eafdde52f153b33af3d",
+      "bytes": 47017
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_489.xml",
+      "sha256": "d480b0ed971cf162847df6a4f2a4eb0da2c7dd272d0c58929506383752c670cc",
+      "bytes": 6747
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_489-空枪套前景.xml",
+      "sha256": "e554c43cf930184001e2b69206cce05d0d0f9d9449c3a24f0899277feaad8d8d",
+      "bytes": 1028
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_489-空枪套前景-遮罩0.xml",
+      "sha256": "9b62b9eed9be435deb3bed733a4d8a3ba5064032b807de19793fb669f46df2c2",
+      "bytes": 3116
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_489-空枪套前景-遮罩1.xml",
+      "sha256": "3cf98d09e9a3a8aaea564425f147d30c127c3cb63082c4e8532daedeadfcd6de",
+      "bytes": 17948
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_489-腰部投掷物.xml",
+      "sha256": "9422a4cb5f10a3970ed3e376c738db2cfb387dd9f78bfdce7b7cc0532856b249",
+      "bytes": 1028
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_489-腰部投掷物-遮罩0.xml",
+      "sha256": "0777ca1119ac5c7c7747ccc462ee5cdba6945a3790f853b5d41700652e7485c1",
+      "bytes": 3116
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_489-腰部投掷物-遮罩1.xml",
+      "sha256": "8f122fd7f3174edb818e8cdc286daf21afce4dcc6abf97410bf287fa718aaedd",
+      "bytes": 13813
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_489-腰部衣料.xml",
+      "sha256": "c20d906c9cde9fe3cc28b6513fb95863e3ed56a3069e0d5e24fc66dae0d4056a",
+      "bytes": 1019
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_489-腰部衣料-遮罩0.xml",
+      "sha256": "2f0db6dcbc92c980ae8c2d11b7075127d7321a7b5eb12ab55cc33fee0be32928",
+      "bytes": 3107
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_489-腰部衣料-遮罩1.xml",
+      "sha256": "4a5a327f61ece7bb9a2cff9bce56c74d36b112ae2801cf4a0c31359f44e47ceb",
+      "bytes": 6325
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_490.xml",
+      "sha256": "3e7e1e8384b3af5dbb6ed60879e48e9326622d398ae200757f0fa6386a69122b",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_490-遮罩0.xml",
+      "sha256": "213c87034e5589aff128f2c26d64f2c9cdf8bf2a425df0c8f9d8f68ee9bf2fb4",
+      "bytes": 2088
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_490-遮罩1.xml",
+      "sha256": "83d88a8dded7d6967ede45bebac4f012e6de68713f747b470f25e9efe06e5dd4",
+      "bytes": 20789
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_491.xml",
+      "sha256": "e58743096b7c261f6e9df0d80c101bcabe3bfbf9c027da48b96c9aad3f0b0a43",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_491-遮罩0.xml",
+      "sha256": "787cc5fffe0a5c84a3bc5dcab29a3aeee338bd1022e050c04f9958e242bf45d5",
+      "bytes": 2095
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_491-遮罩1.xml",
+      "sha256": "c9c30955c702c94fcd9bf140ba28d0a7388ce86a7c40c4581ed79617523a81ca",
+      "bytes": 26658
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_493.xml",
+      "sha256": "4afb4c138d862142f61c7d6c7f0f17253d455172bb5842c6d714c6087380dfe1",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_493-遮罩0.xml",
+      "sha256": "3730f02dbccfa8aa88bed9fe868bbeae160f23ca9c2636d65ed1e0ede7d0e3b3",
+      "bytes": 2265
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_493-遮罩1.xml",
+      "sha256": "94416fc1911191d376041141bc08934f63dbd81cd93f301aed87ff640967a85a",
+      "bytes": 14068
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_494.xml",
+      "sha256": "c23c15fde8148be7c285348e6d322b16d89110004a42f7fadcc0b97037b59cc4",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_494-遮罩0.xml",
+      "sha256": "8e0b9c57399852fe8ce5822f5a80c3a69e5ae6fe21261c5f5658fd1114c593a0",
+      "bytes": 2165
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_494-遮罩1.xml",
+      "sha256": "7a0c0c31b4a7a987af35e74e3ce7bde5259717052aa0eaa161357e360dd93628",
+      "bytes": 25693
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_495.xml",
+      "sha256": "37c3bdac70c44b76cee24fa5002ca0f2055d96321f7b36886e9b0122fa2968ea",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_495-遮罩0.xml",
+      "sha256": "74b7b263d592f0735a15f31a55f83eaff4ed4f555aefbed336847ee59a3b695a",
+      "bytes": 2098
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_495-遮罩1.xml",
+      "sha256": "ce0a44e3408223768fa4f1f4c19fc72256fa3506d906d09eda1d20d525052a39",
+      "bytes": 21967
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_496.xml",
+      "sha256": "b51c706da6bb42a660a51d985eab0855d4811e432b18025cd98a3762d624e349",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_496-遮罩0.xml",
+      "sha256": "d34662357f0cd8f0fbf8fac38ac2dd9a2d9b4a7f5cac7005eb3265bd303d5204",
+      "bytes": 2060
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_496-遮罩1.xml",
+      "sha256": "746ca62d6d05fe14121aafd325534bcf4a63be42664d6529a129738117968738",
+      "bytes": 12516
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_497.xml",
+      "sha256": "016f9d1e3700f5b0383e098eee78bc914c392b9bbd2da0eb0fe7baeba11306b2",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_497-遮罩0.xml",
+      "sha256": "aa5c9ea28dc28766ddfb41e93965144682c594bd4ebb7fea6c2c9db67f50aa9a",
+      "bytes": 2169
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_497-遮罩1.xml",
+      "sha256": "b6ffc79e8ad5eedd7719297394599e98ba6eac2e46ea6aa4d473d4e21bc251d5",
+      "bytes": 21189
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_508.xml",
+      "sha256": "39d719fde964dcd02a4591b7a1e86fabd7b61873fcde7b87865c49637afbacc3",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_508-遮罩0.xml",
+      "sha256": "955d8bb91008639d8430cb9437e1f565567b2722a401bebf183ab6dfd391b6f3",
+      "bytes": 2030
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_509.xml",
+      "sha256": "85d38899b194674bcc79502842ff709eaf0e0817baf61e23d081a04ff2d6510c",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_509-遮罩0.xml",
+      "sha256": "bce94e9dfc206b3570f24ee9424c6de91e3c68650d82cf0d6ce885d827b612d2",
+      "bytes": 2030
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_510.xml",
+      "sha256": "bfcf2418448101e61d35ff437fcd20de2726c6bc6dafe290b46d60c79f794f1f",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_510-遮罩0.xml",
+      "sha256": "b75345190f864772d1952ef6766e5cbbd07682f79a86e003d6e994afd4bcfca3",
+      "bytes": 2048
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_511.xml",
+      "sha256": "a280f6488948079ad0011ff85ead3271c47e42de77eba4fa1e965a36e7d5c021",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_511-遮罩0.xml",
+      "sha256": "af4ad5c0ae8bde48c1e45e635a74520953f50cac10163e8f62039cf8bcfb25e9",
+      "bytes": 2010
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_512.xml",
+      "sha256": "bdff5cfd66cb8a2e21b8263fa31a3aa73d9468f13dc68498030e057ee93a1460",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_512-遮罩0.xml",
+      "sha256": "99bf6ae1f78cda7c2c1a5579197809cbefbbba30fd5958c4e4f924152653965d",
+      "bytes": 2010
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_514.xml",
+      "sha256": "d9acf3b06e545604a69293996ee3ffc1a643a29f5a5ff873406c3dca435157f8",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_514-遮罩0.xml",
+      "sha256": "baf2df10678828fe112058c913b5afdb2aaaa6e269aaf1bf91fb43eb8b943faf",
+      "bytes": 2010
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_515.xml",
+      "sha256": "c5696ca72cfa9821b8e93213e5c61eef2a0ac479b1bbc42547e5587eda45333d",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_515-遮罩0.xml",
+      "sha256": "6f736d0cfe665b2be11606d44dbcbe54a68cfed2c63c4e2ce4770ab7613f8e99",
+      "bytes": 2030
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_516.xml",
+      "sha256": "b6a39a8a32090833d7ddb8d674a8e0ce75edcdd177242e218eea70ccdb85b067",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_516-遮罩0.xml",
+      "sha256": "5b24c1e0436e00b32dcd410c89611986e2a73288c03b828a53009542e6d2f1da",
+      "bytes": 2030
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_521.xml",
+      "sha256": "96bcd46cac1e6f20eba787cdcc0b990bf2e15ace465f7f5da289098837da72de",
+      "bytes": 1935
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_522.xml",
+      "sha256": "f8f04b9c1e286fd2237f510c8950f21b5bc73a4f45e1867e88f1d61047d3308d",
+      "bytes": 3274
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_522-遮罩0.xml",
+      "sha256": "92f426d1419d2d2ca1a3481be6af6158fa700dbb4b4cc5483ce0d5115b841618",
+      "bytes": 1860
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_522-遮罩1.xml",
+      "sha256": "e9c892ea1a374e0b70704a9a0a6dde14b2c68baaadd1134466e72089eb231b58",
+      "bytes": 2040
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_522-遮罩2.xml",
+      "sha256": "23f13f765b3dad60026c8a10aecfd094a534c2e68c108fe9830cca13ca8d9f53",
+      "bytes": 2032
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_522-遮罩3.xml",
+      "sha256": "fb162725be24bf403e9b8040e5f385a281132e3607ef120beebbaaf2b6e63417",
+      "bytes": 1982
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_522-遮罩4.xml",
+      "sha256": "72159b123907b9f352a702d7d7568168af026659169deb4a192e0ef98f2ceebe",
+      "bytes": 2113
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_523.xml",
+      "sha256": "410dcccdaef9c6328dd92419d019087227c94972e67fac7fa2a269130b55eaf3",
+      "bytes": 4099
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_524.xml",
+      "sha256": "2a19b4656680bc31ff3b4c74d972565a7d082cc592d206e1e4adebd30237769f",
+      "bytes": 5591
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_524-遮罩0.xml",
+      "sha256": "9db47e4f831d6d0bffb4d237aa97053ca541b9c14370c9bbc3fc032aa81e2ef2",
+      "bytes": 2176
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_524-遮罩1.xml",
+      "sha256": "0faec859801fa82253a69d0fad780584c56e36a4b44649d1249f4539b05f8ddd",
+      "bytes": 1812
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_524-遮罩10.xml",
+      "sha256": "2dfd699a32b22e35090e0b5ff26006e8d46ef5cfd2ca0516837f3d783cbf3d78",
+      "bytes": 1790
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_524-遮罩11.xml",
+      "sha256": "cbaacdc54115fd3f9d88b1669329026e7b968a068d8d80a67cebb49d379232f9",
+      "bytes": 2021
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_524-遮罩2.xml",
+      "sha256": "bd0e06180253613752c05524cb0852332c040856a3f8962927e7334a66679c6a",
+      "bytes": 1812
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_524-遮罩3.xml",
+      "sha256": "310c8120eaaeb25a3a78da3f8328aeb1fa4d10288c02e73bff65ad2c6792d9bf",
+      "bytes": 1947
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_524-遮罩4.xml",
+      "sha256": "c3399e07882943e9961acdf94db68da6d522a72fbd983f01c44196e524060636",
+      "bytes": 1921
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_524-遮罩5.xml",
+      "sha256": "f0c7234a5ff64585370169c64fc35f7deccf9406ccf8a8bd988d79be564065f4",
+      "bytes": 2033
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_524-遮罩6.xml",
+      "sha256": "f9e38979579f38a4e94c02a05d2ffbd72afabc20bc5706d7645762d03034f9a8",
+      "bytes": 2186
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_524-遮罩7.xml",
+      "sha256": "95da17b1fa3c37124b56e072b58c48b9f7b47512df0733b5ef96830879085fd3",
+      "bytes": 1895
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_524-遮罩8.xml",
+      "sha256": "7c656f955a9b7204ae92a758937748654c2a928d1719adab56c7e1d898f71ba0",
+      "bytes": 1901
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_524-遮罩9.xml",
+      "sha256": "1f1b620e405d5300dc09d4ede2c49816805891312d7c3f900353dcba448cff45",
+      "bytes": 1828
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_525.xml",
+      "sha256": "b45c092bf5e0ae58ce1b76b17eaf0ca4d31141bc52407c795a2a778f6967434d",
+      "bytes": 5584
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_526.xml",
+      "sha256": "c1acd8236ffe77d4fb0e16ea3a2081359c5d22d7f901806261eed4989f602988",
+      "bytes": 3075
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_526-遮罩0.xml",
+      "sha256": "bac94ac0446a803d03338dc9d96701f275a81f98879431aa287041f268c45d30",
+      "bytes": 1801
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_526-遮罩1.xml",
+      "sha256": "0194c61f487fff69480f0ab18cc992d43a9b267ba76f1a5dfb383b621d82e3d0",
+      "bytes": 1813
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_526-遮罩2.xml",
+      "sha256": "c4eeefb5967145fd9e5fd4075a0d8efd6fde4b5355d297868458f500c8e8445b",
+      "bytes": 1829
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_526-遮罩3.xml",
+      "sha256": "8d9b97667ab33d2f891edb92380d5fea6b7ae8af71955597e3a059c4b2a3ac7d",
+      "bytes": 1901
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_526-遮罩4.xml",
+      "sha256": "862fbf291a7aeb28eb709ad4cfd77cc0ad092f2325ea2e589d93fc88845ad78a",
+      "bytes": 2212
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_526-遮罩5.xml",
+      "sha256": "b23fab0f1738ddd097409eaba73f68ab781f19fafe6277de0e3720eba61b6eba",
+      "bytes": 1995
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_527.xml",
+      "sha256": "3a27b3bf9d3d46d49768b4f7d3a98edea4c6d0d42cbda09364d1b1002e0e7c33",
+      "bytes": 5937
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_528.xml",
+      "sha256": "cc84337c0329a776b2cddd0d81e36986a57637bf431324dcbc13c26b1e2705a7",
+      "bytes": 2237
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_528-遮罩0.xml",
+      "sha256": "99de929adb7af60f1605254da684f96424512cc02ca5f67fa333cd14f4595b3c",
+      "bytes": 1801
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_528-遮罩1.xml",
+      "sha256": "3fe72d2e2dd8bae3000ce01b444706fafa8b509c1c2e5cd510da8fc798c52883",
+      "bytes": 1978
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_528-遮罩2.xml",
+      "sha256": "00dd44946c87caad6426426cfa674016a6ae3e7ac7b5407c0266bebf2f84a52e",
+      "bytes": 1884
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_528-遮罩3.xml",
+      "sha256": "6ecaab30fd07401c5821a56805c5bd825d8eb310cb017969ea2b5a8e1d371224",
+      "bytes": 2174
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_529.xml",
+      "sha256": "0557071ccae27ccf4e781fce28af6f2bf0ef64509bb73fa4b9230a43b7747ff6",
+      "bytes": 5336
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_530.xml",
+      "sha256": "7527bee9e99029cd5aac69b3ffe51e9b0343ee163e889cc265e97d259db57977",
+      "bytes": 2237
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_530-遮罩0.xml",
+      "sha256": "947d18711f6268ff661225db1835deb4a351db0ad53ad8d600c25566a99c9d24",
+      "bytes": 1801
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_530-遮罩1.xml",
+      "sha256": "e26a0d584b2de38be3cab9fddf513ad97ee1b971219542c5409a127d4ebe37ed",
+      "bytes": 2124
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_530-遮罩2.xml",
+      "sha256": "79e2cc1a490bab86e5010bad4e971351fd9e6fb62e0144afb95a9217f24f67b2",
+      "bytes": 2036
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_530-遮罩3.xml",
+      "sha256": "0ea5adc47551d7a0c476ce6f280443ee0026ba46a7a40a8a5ef5240c2db5fba5",
+      "bytes": 1876
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_531.xml",
+      "sha256": "a3f3c78a495a4d5a72bf4f7ea8926602af026caf8783445dc88f8a9fd119441b",
+      "bytes": 3784
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_532.xml",
+      "sha256": "a6c689ee01f7fbc9b749d433046ee89e956c631db76a31e38b54d8102fd67a2e",
+      "bytes": 2237
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_532-遮罩0.xml",
+      "sha256": "e2dca0dc8ffbfed75697f175a7cfdf200d2555e2d13858296a004b9befa21188",
+      "bytes": 1801
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_532-遮罩1.xml",
+      "sha256": "442d8aa5577ebad266cc0cb674e72ab5ce83c901172bd72c1a227c7ffeca8c44",
+      "bytes": 2053
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_532-遮罩2.xml",
+      "sha256": "013de7342dda828e711e7ce9b62074bfcfc739d85d5b0eaba535f23b5a20b17c",
+      "bytes": 2145
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_532-遮罩3.xml",
+      "sha256": "506e7cad59dd4680174d1ddb089abff6ad11b5cad52418d42983ca1ff8f05f7e",
+      "bytes": 1886
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_533.xml",
+      "sha256": "1931af3bb542ac82b55c2af72354e383e6cbcfc4ba76d9cac752472f50cc0e28",
+      "bytes": 4483
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_534.xml",
+      "sha256": "8a9883a02d758826811b220796ea24b08d49f4c6e04e10e5c7c57d29e3b651f9",
+      "bytes": 1818
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_534-遮罩0.xml",
+      "sha256": "dc63ff3594b9ce9742e1e7b88abea69d4107ee761683a639e3657e236403bfa5",
+      "bytes": 2053
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_534-遮罩1.xml",
+      "sha256": "be76684e7646b0f58b8f698355a19ca35fe24b05225666727a92738c671685e7",
+      "bytes": 2168
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_534-遮罩2.xml",
+      "sha256": "d9fb17cfa6b761a0f7aa480592753abb27f370ef61765fbb8cace3d87411b69c",
+      "bytes": 1886
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_535.xml",
+      "sha256": "d15eee84cb25d1137247f0134fd6348f45a622f78fbf92defde88633696ec2c8",
+      "bytes": 4197
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_536.xml",
+      "sha256": "44230a83af74954609d12f53199895eabf1272b0942ddc13cb3cf10b2a0ffc8a",
+      "bytes": 5708
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_536-遮罩0.xml",
+      "sha256": "7bc7f61c762bbb8cf1f63314075c2b047348c662d5d2379b8e82af63c3408ca9",
+      "bytes": 2053
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_536-遮罩1.xml",
+      "sha256": "8c318f836de43b722c4ee8faa674e9b9a8bcf3f7a3ede62327ebf6a672851e5e",
+      "bytes": 2168
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_536-遮罩2.xml",
+      "sha256": "5497412ae5bd2e0b9eb5c4b426281c0c94d132e4b28e96cc6680146e222cb625",
+      "bytes": 1886
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_537.xml",
+      "sha256": "db19f07402f2a4662880b5053e5f040e46f6d0466c7cd1819fcf6bc5f90f679e",
+      "bytes": 4311
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_538.xml",
+      "sha256": "e40edc10c1787546c19baa88c570015791903ab2558c50c519189f0fdcd4bcbf",
+      "bytes": 3524
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_539.xml",
+      "sha256": "e423b38046ff72c9f0cbec69e535452d7375757680f67e32c314b9b6eac37102",
+      "bytes": 3512
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_540.xml",
+      "sha256": "47b8254e60955c8f7d202d93b07acd0c24a390a6d19ad8e00d0526a32a71fa01",
+      "bytes": 3429
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_541.xml",
+      "sha256": "b464e27a0ec082b0cda223fe905ef086c787a0bff24b85d5b41492837df4a2cc",
+      "bytes": 3594
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_542.xml",
+      "sha256": "4cd8dd71d92ba489b0a8ca18b5af7f8256bb58402c700b1f4364f5eed1b4f310",
+      "bytes": 4722
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_542-遮罩0.xml",
+      "sha256": "2823714ca83db30464b93b97c6c77dc04a615443fd5eedf335837fa4396d4367",
+      "bytes": 2053
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_542-遮罩1.xml",
+      "sha256": "c2b5ea5c0a4371347e49def24cff667fc6f69081116764700ad2c06c30842be0",
+      "bytes": 2168
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_542-遮罩2.xml",
+      "sha256": "e48a93cbb57e6b158234845f94f925f2a654060261e6c0cc21d0c89685d78cd5",
+      "bytes": 1886
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_543.xml",
+      "sha256": "16427ff44c78415bcdde439e90494098d6b09c9d0f6721ae583d1b7f6d271a88",
+      "bytes": 2161
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_544.xml",
+      "sha256": "a606563e021106d1d88b55f0d59e60c0e3a1de9073e42a5b72b7daa322aee018",
+      "bytes": 3556
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_544-遮罩0.xml",
+      "sha256": "63a440e724464fff8f8651a6e2c944bfbdad9fd83aaeec3c48547564066575ed",
+      "bytes": 2053
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_544-遮罩1.xml",
+      "sha256": "86c193da628d3a98f341bc72abed902a7040132cc05bda35ee1c336d3c7c6338",
+      "bytes": 2168
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_544-遮罩2.xml",
+      "sha256": "b857a9a70912a999263a7e24ed333f1e364e06b5241f8b9bd4ebd6d19ca094cf",
+      "bytes": 1886
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_545.xml",
+      "sha256": "cd55380050eeae844ed0e4d8da146455fbb27ffe0d65a90950428858ab7b1a1b",
+      "bytes": 2117
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_546.xml",
+      "sha256": "9c957aac9f38ed255b2f7a0b3434886d0148b667b809fa9a11460458c58f7624",
+      "bytes": 2311
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_547.xml",
+      "sha256": "0dde738a7327fb08b55eabf2aeb52c7ecba9f8e04094dd2d55d1fc9b18ec7d08",
+      "bytes": 3041
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_548.xml",
+      "sha256": "697ed46af728797ef96886c9f0ad3a85d39f3841e7c87aba34ef163b492d7cde",
+      "bytes": 4607
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_549.xml",
+      "sha256": "004b132988939c54aeed3dcd2dcf159dc4f838144b76ab41ea5d8613ad0a9f19",
+      "bytes": 5521
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_550.xml",
+      "sha256": "1428542fe360c63c7b887975cc80255df3f2300f96b6e4f2c9f43c9f643cdb28",
+      "bytes": 5622
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_551.xml",
+      "sha256": "90efa2459d6dfaaa3468be2ec7375641ebe13adf4b8a14a95bad162db10de57d",
+      "bytes": 4229
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_552.xml",
+      "sha256": "6d99546b027557ec311ff8b110c72bcf7e3248741e00b16bfc9e4eb1c3522939",
+      "bytes": 4022
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_553.xml",
+      "sha256": "cf1869b4e7194ff5fefc596c73d1702154e4490340accf7c004a49cd9c46ae68",
+      "bytes": 3747
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_554.xml",
+      "sha256": "a61db28516d338cb7aa52d2922810d3939f709ac795fd0e03404a848d4c923ce",
+      "bytes": 3780
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_555.xml",
+      "sha256": "d7ab46a62eac2e0745b41a4aa68a407c16f0293836835c3e196d0ffa9a37ab8d",
+      "bytes": 3773
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_556.xml",
+      "sha256": "ef9b605044be5386a66fd3bc0e8c021458e609d66475741577507a9f7c28acd0",
+      "bytes": 3397
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_557.xml",
+      "sha256": "82e5744650c092735f15ce788b683eb12be60fd8381646d4b6ca0a63d183e4db",
+      "bytes": 2827
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_561.xml",
+      "sha256": "baeb4ee13dcc938ad54b679f1e36bbf9b9a9f33c90216a265075e573c88a9d53",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_561-遮罩0.xml",
+      "sha256": "cc49e7114f7a258f08cd87194fac110b5a8460d4215a19b71ab006a6eb1d04a1",
+      "bytes": 1726
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_561-遮罩1.xml",
+      "sha256": "2c2c4635e801b1c8086d0978aa91cd1b6c29b83f8e0b1211708d955ffda76151",
+      "bytes": 27892
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_565.xml",
+      "sha256": "8e07c63a87eba8f5a40026df51497436a43ef395551e659dfb7df63314e3815d",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_565-遮罩0.xml",
+      "sha256": "d4cb03fa1099e40f52d53f33d19cb5ad8f367a0a95d72973b78adc9dd44f7955",
+      "bytes": 2030
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_566.xml",
+      "sha256": "ef4bd29328c36199823873a9778bba835ae831f0ef78f0519ffe5976fa58519b",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_566-遮罩0.xml",
+      "sha256": "dd69443a5cf70c17a52f2c5978bc9c1eadcd8d817fd15c841a968294553828fc",
+      "bytes": 2030
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_567.xml",
+      "sha256": "1bbf7220c99c8a061cbb8300ad791d8a2d31d710f193d7d3029282dd68d22dbe",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_567-遮罩0.xml",
+      "sha256": "8953c0837545164ab2bb82345fbaa51d704bc5c939e5a70e0df49a66966705d3",
+      "bytes": 2048
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_568.xml",
+      "sha256": "505177c697c8d586aa8632fdeb642e31202782a3fc61fa27225f5f51316ed630",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_568-遮罩0.xml",
+      "sha256": "60449ac7194600cc92bcead149b9040f0f4aa523be4ae0dfd0a2f62851729c6c",
+      "bytes": 2010
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_569.xml",
+      "sha256": "ac6563a8b45554b44dcc4784807c3be6decbac04ce1ea35ef9ad6d649656cb25",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_569-遮罩0.xml",
+      "sha256": "f3b09c8ef6ba85d8483a04004914b5515536cedf2e89f19944681d0c704758f7",
+      "bytes": 2010
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_570.xml",
+      "sha256": "d376669d12f0a4a48a643af017013f25d53ed6cf075af76ee8aa9e4e0cdc8929",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_570-遮罩0.xml",
+      "sha256": "675af2952abb41bf2ac2b65c824c5999391de501e423acb2e33325a192d5fee7",
+      "bytes": 2010
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_571.xml",
+      "sha256": "2636c7f9532be726d22bcf605e527d071121521e67636151d34e6d154d06f62e",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_571-遮罩0.xml",
+      "sha256": "99027da68753e1cb1d7cbb636b5e6161004c334a7cfb5e79df356732fe420fdf",
+      "bytes": 2030
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_572.xml",
+      "sha256": "47c645da2efbb2d8f0a8ffa421e81d62f135c1e0379480fe1b89d3b92e33832a",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_572-遮罩0.xml",
+      "sha256": "4a8031f2811545789d6e8e33585a4f5ed0b4d460cf867792789563eb4b6373a5",
+      "bytes": 2030
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_575.xml",
+      "sha256": "41fcbf4200843ffc94fc75cb290e2596f4de2c4b52923532394182b915b045d0",
+      "bytes": 3075
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_575-遮罩0.xml",
+      "sha256": "abe826abd261bc87b09f3d6d18aac671c2ef6acfb2f724faeeb6f76b514b1f30",
+      "bytes": 1786
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_575-遮罩1.xml",
+      "sha256": "0e08ed9abda2082d773dc9c432cc16dd745050d407ced8375e522bd82b1772fb",
+      "bytes": 1803
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_575-遮罩2.xml",
+      "sha256": "1077e9e8d4e13b921b5bfd89c1b48647f2ef8423535453925aee866501edb294",
+      "bytes": 1841
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_575-遮罩3.xml",
+      "sha256": "3864724f902d1510c5ca2f26b78d4505a171ddf565e741104a2249345096ad3e",
+      "bytes": 1807
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_575-遮罩4.xml",
+      "sha256": "c76cb7bd2b25f8b8c71e2df4a47d7b6a02382c189d775af5d96314008a25963c",
+      "bytes": 1785
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_575-遮罩5.xml",
+      "sha256": "49e7182e8fd906890e758eb9dc489cb06fd7b65cf2160a2d8bf99214a579fdf1",
+      "bytes": 1811
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_577.xml",
+      "sha256": "ab2f14bbcc608dfd60111a372b379430e9c8ec4e549ec1d136d2efc408bb3f3d",
+      "bytes": 3075
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_577-遮罩0.xml",
+      "sha256": "e0d3f12cab320fd0ec88d25c2e8f6a6d36861234b7d0a4f9033331958d41d958",
+      "bytes": 1791
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_577-遮罩1.xml",
+      "sha256": "a66bd36c7860facbea26be9e62e14ac3911ad34a25c2b8bc24a0ff2742294924",
+      "bytes": 1807
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_577-遮罩2.xml",
+      "sha256": "32865304065d6956ea789c37de1987762f02ff6a8f9fb98458dc66638ef3887d",
+      "bytes": 1840
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_577-遮罩3.xml",
+      "sha256": "82a796390b6d2a602b33f2a4a52e4f8375b11ead0ea3a188a54ccd0d81bf8f59",
+      "bytes": 1804
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_577-遮罩4.xml",
+      "sha256": "74b6d5015b687ed8e61ecbbd35eb7cfec4b5721ca70938bb40b20a132cb25c0b",
+      "bytes": 1783
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_577-遮罩5.xml",
+      "sha256": "c3d5dc15a28ed456f33d23cf7065bfdd475071d1fac8084faa56db9b973cc010",
+      "bytes": 1812
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_578.xml",
+      "sha256": "7912e9d3c9162fc629fde2777321a5eb19b71389fb458adb669fe8ba7d8079b6",
+      "bytes": 3075
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_578-遮罩0.xml",
+      "sha256": "f6d9cd9a23519bc2e6a8bd2fe3c3f88644519dd09349f99808fec356f8f80406",
+      "bytes": 1792
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_578-遮罩1.xml",
+      "sha256": "4776004c952a92310991db676e9f5fc245d113c087e0db4145d9f237b625da41",
+      "bytes": 1801
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_578-遮罩2.xml",
+      "sha256": "47209be9312003a1aeab7a63065fabde2d353e5dc21df4a1e32a2167748b46c7",
+      "bytes": 1829
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_578-遮罩3.xml",
+      "sha256": "bd97dfa94e26cb4520f5035b9c7231dd06bc15d051d954d69c84febc57637ed0",
+      "bytes": 1819
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_578-遮罩4.xml",
+      "sha256": "2d89bae436ed2d13480d7205e5bd8e42f291fc7ff748a55e35bda3395a926ce6",
+      "bytes": 1789
+    },
+    {
+      "path": "LIBRARY/Codex/教官/分件/教官_578-遮罩5.xml",
+      "sha256": "54efe8b938839c6588cc93fd286fc716467aa24990803e588fbbb6c9e4500e18",
+      "bytes": 1815
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_倒地恢复.xml",
+      "sha256": "c669d51ca7be275b5d1337f84623b15e26e5445f0ce48a6da3169a785e61a04b",
+      "bytes": 419905
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_击飞.xml",
+      "sha256": "b064a9d45d34d059a0d572ef6f77f5c1121536ab07db1545093ea8d39243cb87",
+      "bytes": 13029
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_匕首刺击.xml",
+      "sha256": "cc810b6105d6cf2982a589a981623312234b74706ae99cd3474299baae9e3683",
+      "bytes": 179619
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_投掷手雷.xml",
+      "sha256": "997e99333ab9357093b9923174f344653525695692c652a56e895fc4a864fa00",
+      "bytes": 129267
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_持盾匕首刺击.xml",
+      "sha256": "32e3cc36b6e9c5651712eeb8679f3d627b1e108fda1c3d27a48bd3f6df81e671",
+      "bytes": 419597
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_持盾点射与装填.xml",
+      "sha256": "2ee40c6664248869911a8ddd15ad8d361b7c22be4862807327b473c6428bb188",
+      "bytes": 77691
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_持盾站立.xml",
+      "sha256": "3d39e9044d2c52d8598dcabc3b1715c6f05fd96f2fe118a814030aff8c92f93d",
+      "bytes": 135499
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_持盾行走.xml",
+      "sha256": "f4f8aa1365a5cb72946866160311297990722071010246d0c5112360c4c71c0e",
+      "bytes": 203184
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_持盾被击.xml",
+      "sha256": "3e5baf9b77e1a3ff925175981c34d60dd841245e07d4b4309c2d9b60a705563d",
+      "bytes": 184832
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_死亡.xml",
+      "sha256": "3597f8f6ae164a98151c7efe998fb71f0a9905f69e906424e1141e6b92f433dd",
+      "bytes": 352751
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_盾冲射击.xml",
+      "sha256": "d42726e5842d2644e8651ae23b76d7aae551f600e6bc4147e469ae6ce680bef4",
+      "bytes": 494288
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_破盾.xml",
+      "sha256": "36c0a95d19223ac79dae106dd396a46efbb396e647694635a28ac205485da962",
+      "bytes": 69800
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_破盾碎片.xml",
+      "sha256": "513b1bd970ac5e5c37607694dc2348244ae2560a8446bc2b1f0a58b8b851e51b",
+      "bytes": 1300
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_站立.xml",
+      "sha256": "535f7eff08d9fbffec7ab44495e3ca4e4af54e5759445eded65af007b16661d7",
+      "bytes": 127068
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_行走.xml",
+      "sha256": "a976ba8bcb4ee5533276b1288e42ba9919b4b41b80970900bb333fcec0966185",
+      "bytes": 193695
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_被击.xml",
+      "sha256": "b442d58e9fc2bb0202ddbefb9f81e62df460f5ebe1055ece7d040c820dddbf72",
+      "bytes": 137459
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_被投.xml",
+      "sha256": "f8cd324ff42c689d30d8308f3060846d6a660956d63f1b9cc10da727c1b65356",
+      "bytes": 101999
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_跑步.xml",
+      "sha256": "9caa922194bec862661eb3ad5a33e257e6d4701e729ddbb1b6ef7cef3ac9a9fe",
+      "bytes": 243485
+    },
+    {
+      "path": "LIBRARY/Codex/教官/动作/教官_长枪点射与装填.xml",
+      "sha256": "a664afc241e83932830fe496da2394977144c9dba5a74f2cc03830c7dee28d6c",
+      "bytes": 77043
+    },
+    {
+      "path": "LIBRARY/Codex/教官/敌人-CF6持盾特种教官.xml",
+      "sha256": "46e98eb9b6aa70bd76d4fc93032aa81f810e45521006011e170bd0da28ed5cca",
+      "bytes": 111035
+    },
+    {
+      "path": "LIBRARY/Codex/教官/敌人-CF6特种教官.xml",
+      "sha256": "3abca016b72b537afabdcfa0f2dc2f4b5ac36d301b8773ad27dae6048407bb39",
+      "bytes": 111017
+    },
+    {
+      "path": "LIBRARY/Codex/教官/教官_行为驱动.xml",
+      "sha256": "eed2d6f133cac2d69b22596a5c83b4520db7fddecad170067ae26055ab5b9a39",
+      "bytes": 671
+    },
+    {
+      "path": "LIBRARY/Codex/教官/武器/教官_可配置投掷物.xml",
+      "sha256": "794cbdef5906b67489a16c2a365be7b451d677db67d0f8dcec30ca1ccf3a9abb",
+      "bytes": 871
+    },
+    {
+      "path": "LIBRARY/Codex/教官/武器/教官_可配置长枪.xml",
+      "sha256": "7e274b4e2871ae135ba46e03de5501c7f692fc2ef1f4305a5a429ba877b8a9fc",
+      "bytes": 1341
+    },
+    {
+      "path": "LIBRARY/Codex/教官/武器/教官_长枪挂点.xml",
+      "sha256": "b03750292ee71ba0a4462939c261cd1e44d7b45b8af47bdb89e41a4ed38370ec",
+      "bytes": 678
+    },
+    {
+      "path": "LIBRARY/Codex/教官/精英/动作/教官_CF6战术长枪.xml",
+      "sha256": "6d8bc3a30af0cc952ca76e2079f3ebede594dd2636519edec5279fdf36370b4f",
+      "bytes": 1780164
+    },
+    {
+      "path": "LIBRARY/Codex/教官/精英/武器/教官_可配置主手枪.xml",
+      "sha256": "4822187abc6043bfb23bb40738cd8bb586defec00e2b5ba01a36aaf2d9a03c18",
+      "bytes": 1354
+    },
+    {
+      "path": "LIBRARY/Codex/教官/精英/武器/教官_可配置副手枪.xml",
+      "sha256": "59bb851279453ba5ebb942cfdf7531e66ea062202a392429136412a72fb48857",
+      "bytes": 1356
+    },
+    {
+      "path": "LIBRARY/Codex/教官/精英/武器/教官_当前换弹手枪.xml",
+      "sha256": "6c6efb44198eae13d1e785b352d56205a7a7edc6ff143c0aeaf7d0bdbcfc2052",
+      "bytes": 1453
+    },
+    {
+      "path": "LIBRARY/Codex/教官/装备/教官_腿挂匕首.xml",
+      "sha256": "5920bca9249c5b60340d2c68638e19bbb465dbf7450c47fc249a6873b7f8e00b",
+      "bytes": 1059
+    },
     {
       "path": "LIBRARY/Codex/特种兵/CF7/Symbol 113.xml",
       "sha256": "2bdd94db93e36e9adeb1af0bb6028a6d056ce956658f2ee2603f1526ffa0563c",
@@ -927,18 +3250,53 @@
     },
     {
       "path": "LIBRARY/Codex/特种兵/分件/489.xml",
-      "sha256": "71c7311c0f7905f17210083ac45522768e2132eee6bacf74236cc715e18fd03f",
-      "bytes": 965
+      "sha256": "5e00fa4fb2b95ff21ee5f468974118a32ab4cc66c239fff7ff39a612a4eacd31",
+      "bytes": 6716
     },
     {
-      "path": "LIBRARY/Codex/特种兵/分件/489-遮罩0.xml",
-      "sha256": "5354b603df078cd64ff562e9d6f1c5c1c105d8f710d889560d27995b59324414",
-      "bytes": 3053
+      "path": "LIBRARY/Codex/特种兵/分件/489-空枪套前景.xml",
+      "sha256": "51a82435f8e085bf8eacf8a389955630279525b99f18ff0335c99f7e227bdab8",
+      "bytes": 1013
     },
     {
-      "path": "LIBRARY/Codex/特种兵/分件/489-遮罩1.xml",
-      "sha256": "426cc859305037095a015716fb34fc1ae2300fdfd8782dc048b3a47711e3f0ee",
-      "bytes": 43199
+      "path": "LIBRARY/Codex/特种兵/分件/489-空枪套前景-遮罩0.xml",
+      "sha256": "d6e90dfddfeefd937ecd1f713af633ae897ce9bd0b9a7ace3b2764e29d1c0291",
+      "bytes": 3101
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/489-空枪套前景-遮罩1.xml",
+      "sha256": "aba66816372a33ed29298c6ebaddcb1419f44924a5b09ebbde5579da7181906e",
+      "bytes": 17937
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/489-腰部投掷物.xml",
+      "sha256": "59dd22588d954fc6387a525677777b052d827fa4932bb06fd5610b74e9da8252",
+      "bytes": 1013
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/489-腰部投掷物-遮罩0.xml",
+      "sha256": "f51a4bfd70abea25d689b41e8262ed38711fa8bd218072820c343dc107f8a44f",
+      "bytes": 3101
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/489-腰部投掷物-遮罩1.xml",
+      "sha256": "f01bc834bb7eb5a64250cb37a3ff197b4cc0cc9230d88f52355bb9a1b8578704",
+      "bytes": 13802
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/489-腰部衣料.xml",
+      "sha256": "fb64ec9ef95b10252add1b3b8e40e9e189e546fcbbdcd5b01823501e2e972060",
+      "bytes": 1004
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/489-腰部衣料-遮罩0.xml",
+      "sha256": "22cf31d75e8f3bf6c9a737d94a1f6decae784ebaa21a78322c2e0739c751035b",
+      "bytes": 3092
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/489-腰部衣料-遮罩1.xml",
+      "sha256": "a8daa7b9e026b0d1b221407453cb059046bf39e2279e99e5d7d0b8d2d3daf6f0",
+      "bytes": 6314
     },
     {
       "path": "LIBRARY/Codex/特种兵/分件/490.xml",
@@ -1747,88 +4105,123 @@
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/倒地恢复.xml",
-      "sha256": "c0bf305ccec556e3c61769766f51ba5c006b8d60e555a49b35e90ce8f698d393",
-      "bytes": 55082
+      "sha256": "a2ecae41a7eae82c7798d05720d94861627c314af145eae207dc2d96cf0a1db4",
+      "bytes": 417542
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/击飞.xml",
-      "sha256": "a0603757cb32751d4a6614c82b434ed2c52c83222a35e1f7e754fdfacd61e597",
-      "bytes": 69460
+      "sha256": "e08d2a4506d6310f91cd33688305b47248e2755ccd48d67c73be467ead63ea8c",
+      "bytes": 13503
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/匕首刺击.xml",
-      "sha256": "2bc2ae7aeadfa00a7129e4e5cb073d1e34d8d42b3d1a1946855d2e077e1e2fd6",
-      "bytes": 78767
+      "sha256": "d5488efe09c80ceedaed8b39ed81c2ce38670e86a35e4449a828c01ffc9434c4",
+      "bytes": 179042
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/动作/投掷手雷.xml",
+      "sha256": "81c26d6ac7a2cf8d9e034f4e27007488eb6b25a499b3f944ae6fb300141f9a6d",
+      "bytes": 128392
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/持盾匕首刺击.xml",
-      "sha256": "ecfa70d7fde3873165702f03d1c655ad505fd21f418a919c80ab99f3cd6fcd36",
-      "bytes": 82940
+      "sha256": "5e8f90403507ca4a36e60d950ff27d1ee7c8ae90ccc9c0f50a5cc3674a909768",
+      "bytes": 417444
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/持盾点射与装填.xml",
-      "sha256": "2bca188ebfef0521f51eaddd87f7ec38b83317a45d9476c300c57eb48be982cb",
-      "bytes": 45740
+      "sha256": "64657c4a44fc89bb05cd1f9f8e3b97784c2241e0090ded74e900b40c4ed5a446",
+      "bytes": 77172
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/持盾站立.xml",
-      "sha256": "0da5f19a8991df4526525a04d5d97158b0280c29375cbfe5e080bc8c20cfe6e9",
-      "bytes": 36250
+      "sha256": "40ccbe9a2b8f98ce1a383c48708dcce3b7053f6efcea9b7d7cd2bec8b4520863",
+      "bytes": 134576
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/持盾行走.xml",
-      "sha256": "d5d8efda61feab579166aa0738b970657fdd1a0c0a33c2baddc4e2dfc618aa71",
-      "bytes": 67108
+      "sha256": "cb352e0bc365a293613169b1a9c035302acfe864cf071c9138ea33778f52975e",
+      "bytes": 201793
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/持盾被击.xml",
-      "sha256": "52004407f2a4dfe090c878b47722c988a5a7f7300250b267d73f88352165a039",
-      "bytes": 55911
+      "sha256": "4729d0aca26824ba9b6f683c6793a6dafb46b2e1f2e3f4425f5616661e53665e",
+      "bytes": 183597
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/死亡.xml",
-      "sha256": "d5787f31c800827356b2439447f34fb6b13e57ed7f57aeb4d827a0a5234247a8",
-      "bytes": 280569
+      "sha256": "38e854ca09c58a304531b535c443af79da13b173d49b2a2be40507407e321d3c",
+      "bytes": 352216
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/动作/盾冲射击.xml",
+      "sha256": "a6a769799cca6699c09f3be71a7a1d616e6fa0c857c636dc6f79b96f02e6f620",
+      "bytes": 490961
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/破盾.xml",
-      "sha256": "0c7319af1a2682444b7434e164dad071638652aaa9c2461acddf5e805a4f3550",
-      "bytes": 35377
+      "sha256": "be63d97df1a34d2d939e7d3fe1800d108fe030f2b5791efe93fbd83a57efb11e",
+      "bytes": 69938
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/动作/破盾碎片.xml",
+      "sha256": "7a3f6be035d35f479c3b2c29574c7434fa30cc312dd0bda58d5166cde25e6527",
+      "bytes": 1285
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/站立.xml",
-      "sha256": "669a2a4694c4d058f330d3ef822db54ee1cacc9c08576c2a9d7f651dbe22470c",
-      "bytes": 34099
+      "sha256": "71cf69a10cd39c3d2a6413e52913702a0eaa95a08a2821a570203623991de0ef",
+      "bytes": 126209
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/行走.xml",
-      "sha256": "8b8664f607acd2002228fb3356ec287cbacf1a2bfe3127d758cc09b0afb94ee9",
-      "bytes": 63945
+      "sha256": "51b87f3e4579bb7642924aab89337eb66252ea7ba4e998cce3875ce20ba4862d",
+      "bytes": 192376
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/被击.xml",
-      "sha256": "cb0a980210f4254fed4afc5b95b93928fb7c6fae0afc7b489a5868f201d23ea5",
-      "bytes": 52562
+      "sha256": "282196b806905bd8756ff272c2d98f8d3998c1254d8512b2d39b36d2aa0a207c",
+      "bytes": 136528
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/被投.xml",
-      "sha256": "1e467a761ae3c10b70ded249269a2df275c9c0591964c54d734638017a88b183",
-      "bytes": 46545
+      "sha256": "b856140def73786eff512afc376a636ef2e3a70b8e3b34399b889d4b799fd857",
+      "bytes": 101959
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/动作/跑步.xml",
+      "sha256": "c9f6b2301c2ad2372a9cdf94acba53718c8432f64565ed5aa6fc66f38756da9e",
+      "bytes": 241842
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/长枪点射与装填.xml",
-      "sha256": "a0a1bf95e1c712007304349a933274ef10df59b1d0233dd4d7d23943df9b0d90",
-      "bytes": 45119
+      "sha256": "397ff27695d36c26bdbe412d015578dddcae2d541a4879d06a6de205989baf38",
+      "bytes": 76528
     },
     {
       "path": "LIBRARY/Codex/特种兵/敌人-CF6持盾特种兵.xml",
-      "sha256": "6071b673ad8bc73dff4c0955a570cfcef9efc2f843f37be04db4da71624ac81d",
-      "bytes": 44634
+      "sha256": "9bb7f3a19e2a615cbb5b431fd3f0be94e00b48e5856788fd24c4ccaa6441e1f8",
+      "bytes": 80094
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/敌人-CF6持盾特种精英.xml",
+      "sha256": "6735614b2a208b740fdaa66f98ad19139bc8ef47e2d60ba5de5b576df65c5423",
+      "bytes": 109580
     },
     {
       "path": "LIBRARY/Codex/特种兵/敌人-CF6特种兵.xml",
-      "sha256": "41d9f56956c3fcf19a2c9a5c0d4c951dfb13fba1227977047804ce276a710480",
-      "bytes": 44616
+      "sha256": "7dc787dbd17716e348a46ffc78afbf912934fc659d94da4da2bb75e344548da4",
+      "bytes": 80076
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/敌人-CF6特种精英.xml",
+      "sha256": "acfeab9a222c26e4e2cbc426ba27bc2c4e597bdbb0081e8e638488a76974cec8",
+      "bytes": 109562
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/武器/可配置投掷物.xml",
+      "sha256": "478505b1849b6e7310485f8efbc25f228f3e20823febaaea594af0640a5ba9b6",
+      "bytes": 860
     },
     {
       "path": "LIBRARY/Codex/特种兵/武器/可配置长枪.xml",
@@ -1841,21 +4234,136 @@
       "bytes": 667
     },
     {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-30.xml",
+      "sha256": "f65a782a3d67c84bc776bdda7a14f1cc7931b33d99e1180366667213e227da2c",
+      "bytes": 3295
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-31.xml",
+      "sha256": "2edf0c28b2414e9f52ef3c54ad5cae968fd32c3ab734ee61caa3ac519f53c416",
+      "bytes": 11053
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-33.xml",
+      "sha256": "5505b58eebdb37f1240bc17326a85fe1f4e87c0956970e422d8469bdd9af69fc",
+      "bytes": 5685
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-34.xml",
+      "sha256": "a509285c44a74d0fc49bcbce16559285028eb922b3c2c544bb06be95e46682d2",
+      "bytes": 12893
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-36.xml",
+      "sha256": "087ed7936926b6533190cfa9308ad966dad10aeaecd2220d7537faf055cdae73",
+      "bytes": 7568
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-37.xml",
+      "sha256": "46987ffa318f54ce6ec59a8d4633debf34671aa8b5963cdb680f454ccdf39069",
+      "bytes": 12606
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-39.xml",
+      "sha256": "70f72fff13406ea0cd6c2f2f91e360d27020773f1d14a3990dc0a16cfa386ca1",
+      "bytes": 8645
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-40.xml",
+      "sha256": "5a8ad059983ad3666ecd0e11258207ce2e84e16c01f88dc1e3e3bd597d9b45ae",
+      "bytes": 13543
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-42.xml",
+      "sha256": "c1247cf78fbb13551a435dc43f0a0b825ea031481117da427eb1fae50a8009aa",
+      "bytes": 10134
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-43.xml",
+      "sha256": "2491faa68e882b474f363299c581faf92ae78fe0cbf07d5010b0e9ca8854a943",
+      "bytes": 16042
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-45.xml",
+      "sha256": "573e5ce279c83833911f6bef80b0055f80074dcf766dcf903ad51c424c39747d",
+      "bytes": 9075
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-46.xml",
+      "sha256": "bc09031e96940cde787cf6c29ec2decaf337566c977542dd3fadc93307ff0d19",
+      "bytes": 8668
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-47.xml",
+      "sha256": "e12077bd3a560ae0cd9ed8381cb16da441af5f0b2b99d1e1e99fed8a90658088",
+      "bytes": 11576
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-48.xml",
+      "sha256": "1be6c0beb6fec035113620471dc28b0c01b5149c6d7a897c5951ef931704c43a",
+      "bytes": 8895
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-49.xml",
+      "sha256": "d4f5f572a1c76649357add036de8dd36cea152a451e45ef2e44589fc520ec7c1",
+      "bytes": 9317
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-50.xml",
+      "sha256": "32ecab04ce941ea17aa1f75e55ce1d20e2e2385a554af20bb7219a7f83feabae",
+      "bytes": 6223
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/原烟雾-51.xml",
+      "sha256": "4bd6f4a30a54bc9d1a0b96d29ed4b6f7d42f0d2b899cd69d41b04817ef29805f",
+      "bytes": 3825
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/烟雾/烟雾.xml",
+      "sha256": "e84d8a0c9f2935a9d93b4ca253737dc818f78053f7734edf29cc17690fbce3f3",
+      "bytes": 12904
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/精英/动作/CF6战术长枪.xml",
+      "sha256": "5e8f9c0e8ee8cf2580deeb51f8b4508377ba4f5609006a050ec91c90a7cdce4b",
+      "bytes": 1768105
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/精英/武器/可配置主手枪.xml",
+      "sha256": "c78e46344f13b6e47aa782653eae34241c426a04876ee4a23d15107ad6d2538d",
+      "bytes": 1339
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/精英/武器/可配置副手枪.xml",
+      "sha256": "b2c04b1726f05114c968d6c08a14813c25834b5dfe9c22757709b00ac7cf0818",
+      "bytes": 1341
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/精英/武器/当前换弹手枪.xml",
+      "sha256": "f82b6a07f14212cd4ede0c982f544d629fd4e4a7a0c96c318eb8fe80b018f01a",
+      "bytes": 1438
+    },
+    {
       "path": "LIBRARY/Codex/特种兵/行为驱动.xml",
       "sha256": "009b9a1a7d0c1a48a3d540af6ed0efc9dc41a3b152ecf5a8578b7ff92422bb6b",
       "bytes": 660
     },
     {
+      "path": "LIBRARY/Codex/特种兵/装备/腿挂匕首.xml",
+      "sha256": "fd2a13d834f27e820712369eb34979137391df0fa1e119625e7066ddeb85fc7d",
+      "bytes": 1044
+    },
+    {
       "path": "LIBRARY/Codex特种兵素材.xml",
-      "sha256": "474c3443efbc87f32e57542bff4b92bf8a74349b9676b942b3a61eda866f214b",
-      "bytes": 1607
+      "sha256": "19a10837f7c3d6d58cb598986f7fd86e4cab18e33da527beead7a5937fe181a6",
+      "bytes": 3844
     }
   ],
   "projectFiles": [
     {
       "path": "DOMDocument.xml",
-      "sha256": "9ff3362a4f6452ada70bd41716bb74345de33fc4b04902d203a55c8219018e93",
-      "bytes": 27983
+      "sha256": "852e06beadb4245a379666c0188e8fffd606115aeb9621358e8f22c08d64fac3",
+      "bytes": 64521
     },
     {
       "path": "Codex特种兵素材.xfl",

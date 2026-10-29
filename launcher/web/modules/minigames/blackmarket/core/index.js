@@ -27,7 +27,9 @@
     "use strict";
 
     var SNAPSHOT_SCHEMA = "black-market-anonymous-shadow.v2";
-    var ALGORITHM_VERSION = "object-sdf-nanobot-sludge.v2";
+    var ALGORITHM_VERSION = "object-sdf-nanobot-sludge.v3";
+    // 购买前统一去色；素材来源只决定轮廓提取，成交揭晓才恢复原色。
+    var HIDDEN_COLOR_MODE = "monochrome";
     var IDENTITY_BOUNDARY = "anonymous-synthetic-no-catalog.v2";
     var FIXTURE_DIGEST = "anonymous-shadow-fixture-v2";
     var LEVELS = [0, 3, 5, 10];
@@ -651,13 +653,17 @@
                         seed: offer.surfaceSeed,
                         autoRotate: false,
                         sharpenSource: false,
-                        hiddenColorMode: "source"
+                        sourceMaskMode: "source",
+                        hiddenColorMode: HIDDEN_COLOR_MODE
                     };
                 }
                 var poolEntry = poolEntries[offer.visualPool % poolEntries.length];
                 return {
                     kind: "sealed-abstract",
                     assetUrl: poolEntry.u,
+                    fallbackAssetUrl: poolEntry.f || null,
+                    fallbackHiddenColorMode: "monochrome",
+                    fallbackSourceMaskMode: poolEntry.fm || "monochrome",
                     sourceKey: "anonymous-visual-pool.v2#" + (offer.visualPool % poolEntries.length),
                     sourceKind: "icon",
                     sourceComposition: "anonymous-visual-pool",
@@ -665,7 +671,8 @@
                     seed: offer.surfaceSeed,
                     autoRotate: true,
                     sharpenSource: true,
-                    hiddenColorMode: poolEntry.h || "proxy"
+                    sourceMaskMode: poolEntry.h || "proxy",
+                    hiddenColorMode: HIDDEN_COLOR_MODE
                 };
             }
         };
@@ -700,6 +707,7 @@
     var exports = {
         SNAPSHOT_SCHEMA: SNAPSHOT_SCHEMA,
         ALGORITHM_VERSION: ALGORITHM_VERSION,
+        HIDDEN_COLOR_MODE: HIDDEN_COLOR_MODE,
         IDENTITY_BOUNDARY: IDENTITY_BOUNDARY,
         LEVELS: LEVELS.slice(),
         COVERAGE_BY_LEVEL: clone(COVERAGE_BY_LEVEL),

@@ -12,7 +12,7 @@ Checks (read-only, exits 0 if clean, 1 if any issue found):
   4. <Include href=...> in DOMDocument.xml pointing at missing files.
   5. <Include href=...> whose itemID resolves to a *different* file
      (DOMDocument out of sync — fix with fix_includes.py).
-  6. libraryItemName="..." references that don't resolve to any symbol.
+  6. libraryItemName="..." references that don't resolve to a symbol or declared media item.
   7. LIBRARY/*.xml files NOT included in DOMDocument.xml (orphans —
      not packed into the SWF; informational, not a failure).
   8. A same-named sibling FLA beside the XFL source (source ownership
@@ -22,6 +22,7 @@ Designed for agent use: positional arg, deterministic stdout, exit code
 reflects "issues found".
 """
 import os, sys
+import xml.etree.ElementTree as ET
 from html import unescape
 
 # allow `python scripts/tools/xfl/audit.py ...` from project root
@@ -107,7 +108,12 @@ def main(argv):
         for m in LIB_REF_RE.finditer(read_text(f)):
             libref_count += 1
             unique_libref.add(unescape(m.group(1)))
-    libref_miss = [r for r in unique_libref if r not in name_to_file]
+    # DOMBitmapInstance uses the media name, not a LIBRARY/*.xml symbol.
+    # Keep undeclared media references failing just like missing symbols.
+    namespace = {'x': 'http://ns.adobe.com/xfl/2008/'}
+    media_names = {node.get('name') for node in ET.fromstring(dom).findall('./x:media/*', namespace)
+                   if node.tag.rsplit('}', 1)[-1] in ('DOMBitmapItem', 'DOMSoundItem') and node.get('name')}
+    libref_miss = [r for r in unique_libref if r not in name_to_file and r not in media_names]
 
     print(f'\n[6] libraryItemName references: {libref_count} occurrences, '
           f'{len(unique_libref)} unique, broken={len(libref_miss)}')

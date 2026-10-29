@@ -6,14 +6,28 @@
     "Codex特种兵素材": "flashswf/arts/new/Codex特种兵素材.swf",
     "敌人-CF6特种兵": "flashswf/arts/new/Codex特种兵素材.swf",
     "敌人-CF6持盾特种兵": "flashswf/arts/new/Codex特种兵素材.swf",
+    "敌人-CF6特种精英": "flashswf/arts/new/Codex特种兵素材.swf",
+    "敌人-CF6持盾特种精英": "flashswf/arts/new/Codex特种兵素材.swf",
+    "敌人-CF6特种教官": "flashswf/arts/new/Codex特种兵素材.swf",
+    "敌人-CF6持盾特种教官": "flashswf/arts/new/Codex特种兵素材.swf",
+    "CF6战术烟雾": "flashswf/arts/new/Codex特种兵素材.swf",
     "枪-长枪-M4A1改": "flashswf/arts/things.swf",
     "枪-长枪-AK74战术版": "flashswf/arts/things.swf",
     "枪-长枪-M4A1战术版": "flashswf/arts/things.swf",
     "枪-长枪-DD MK18战术版": "flashswf/arts/new/Au的素材.swf",
-    "枪-长枪-AK47": "flashswf/arts/things.swf"
+    "枪-长枪-AK47": "flashswf/arts/things.swf",
+    "枪-手枪-FR506": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+    "枪-手枪-短HK53": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+    "偷吃屑鱼坟头贡品": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+    "手雷-高爆手雷": "flashswf/arts/原版素材库-子弹.swf",
+    "手雷-普通手雷": "flashswf/arts/原版素材库-子弹.swf",
+    "高爆手雷": "flashswf/arts/原版素材库-子弹.swf",
+    "普通手雷": "flashswf/arts/原版素材库-子弹.swf",
+    "普通爆炸": "flashswf/arts/原版素材库-子弹.swf",
+    "原版素材库-子弹": "flashswf/arts/原版素材库-子弹.swf"
   },
-  "canonicalFixtureFacadesSha256": "eade864d0a0f2cd803b0de562f74f831242646e28b685bf1e8845eb6c7653f78",
-  "generatorSha256": "3816661ce102685f62f116bcf6a83f5014667eed54e6223df24a847e4f5ba617",
+  "canonicalFixtureFacadesSha256": "80a9e7da9a53e7f201f95f6a6df06e48cd7801526a3e307863b72e81d084ab38",
+  "generatorSha256": "d808795f32f9fef6bac5c04f6d5c5c72e3cb12328122951638ba791111a6e7b5",
   "referencePublishSettingsSha256": "04b547559cbe2b497fd8cecf81c4163c8f25d8e7d574fc959d7a1dcc845aabc5",
   "files": [
     {
@@ -38,27 +52,83 @@
     },
     {
       "path": "LIBRARY/Import5.xml",
-      "sha256": "5d45a87ac15343f51bc0010a10d50ae9b56bee9e8c91325b28a0d3a076f1d714"
+      "sha256": "3de2b50c37858cbc229c37a93abc2b45e828837c06e2b641ef80053d17eebaab"
     },
     {
       "path": "LIBRARY/Import6.xml",
-      "sha256": "d8853698243dd49db1955d362ecb719e1c9d3ccaae7d3287c734768b18f5e122"
+      "sha256": "fe25aadb46d4c50be9a4c6b58592968cc6b6ced3fab5addc553299adef5e0dd3"
     },
     {
       "path": "LIBRARY/Import7.xml",
-      "sha256": "db7b7188fed6527998070884773a57233b7b964118f4f8024840b5ed4209580a"
+      "sha256": "f2da056e6a04c77e6eb856f14e8770bc8917c33258f5bb74e9a033435033cb1d"
     },
     {
       "path": "LIBRARY/Import8.xml",
-      "sha256": "c775229bb11adf61188f536cabc428387f396821c4c106257675033b606de09a"
+      "sha256": "d840c3d0c9537c3302952385d30f257be0be31445eeba592b14d61be26cbe92b"
     },
     {
       "path": "LIBRARY/Import9.xml",
-      "sha256": "77802e9fe88625479956bfd8e38b703122b9871ee47344d8c3643939e9eac40d"
+      "sha256": "c2236c08fd778838a8d79270390a82231b1043f891a0135a0be26b8fd6319fee"
+    },
+    {
+      "path": "LIBRARY/Import10.xml",
+      "sha256": "77508ca84800967ac599d79bc93849a3419ec015fea4a96e86e7b9568f74b777"
+    },
+    {
+      "path": "LIBRARY/Import11.xml",
+      "sha256": "1f3e870f5d8fb0d7e5c50fd12d928e711b68f581e54cc4503f5c03383760f15e"
+    },
+    {
+      "path": "LIBRARY/Import12.xml",
+      "sha256": "468dda5876302f7844b21aa3b35e3d5420752d9e446a26c9ef5e772698a20473"
+    },
+    {
+      "path": "LIBRARY/Import13.xml",
+      "sha256": "fbea1a2e64ffa33af5454f4591a5ac076f148c08798594b6035737f084dd7717"
+    },
+    {
+      "path": "LIBRARY/Import14.xml",
+      "sha256": "5e12bea83bea16bf12585f53fae1b7661c72d10c30da26f52a5e91509b1653ce"
+    },
+    {
+      "path": "LIBRARY/Import15.xml",
+      "sha256": "822edcc0734af38baf7b396d4ef8970df7d1d8adde77d14556ededa6918018fa"
+    },
+    {
+      "path": "LIBRARY/Import16.xml",
+      "sha256": "6904c7b23e648c1fcf7c234c9acf46254bcdf1ed58c20f67c759479106062c5d"
+    },
+    {
+      "path": "LIBRARY/Import17.xml",
+      "sha256": "8539221b9f266f4de2226748d4acbac524ca6a7dcd37d5d5349b546433e34ef9"
+    },
+    {
+      "path": "LIBRARY/Import18.xml",
+      "sha256": "500ac8a442f825fccb5d5ea773223d3a0d5ff508b6ec4678040c1e590316a784"
+    },
+    {
+      "path": "LIBRARY/Import19.xml",
+      "sha256": "a8c6b104795b7c076323512529408e5576abba42a0ce3fdf612e4a4a3ce237ca"
+    },
+    {
+      "path": "LIBRARY/Import20.xml",
+      "sha256": "132b85ed13ae82a94a13000951fc753ebdde7b4c9df853647581f51ae883b777"
+    },
+    {
+      "path": "LIBRARY/Import21.xml",
+      "sha256": "47b49aac78a8a6bad135b31a64ccff1be71728b9c8dd42f7eb7c93827db5f3ae"
+    },
+    {
+      "path": "LIBRARY/Import22.xml",
+      "sha256": "bfb43043b5b05ab1a73e5bb4f7708dffdec292b712134568088fbca53daa4bcc"
+    },
+    {
+      "path": "LIBRARY/Import23.xml",
+      "sha256": "75775b44d8cf5be30f3756dbccb279c4a7e2c5b1916587e6ebe782f6bc59555f"
     },
     {
       "path": "DOMDocument.xml",
-      "sha256": "f01d065e6bbf91b9c085ce34ff7f434f9c6273513d203eb0393aadcd8174cc7f"
+      "sha256": "03a9495c22a4c4548b8fd1386f97bfa786b4510b4e4b2bcd8b05ae323ac5a686"
     },
     {
       "path": "Cf6SoldierNativeHost.xfl",

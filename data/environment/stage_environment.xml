@@ -3810,86 +3810,74 @@
     <Door>
       <Index>1</Index>
       <Direction>右</Direction>
-      <x0>1604.2667</x0>
-      <y0>725.3333</y0>
-      <x1>1689.6</x1>
-      <y1>759.4667</y1>
+      <x0>1331.2</x0>
+      <y0>566.6133</y0>
+      <x1>1527.4667</x1>
+      <y1>677.5467</y1>
     </Door>
     <Collision>
       <Point>85.3333,256.0</Point>
       <Point>1706.6667,256.0</Point>
-      <Point>1706.6667,348.16</Point>
-      <Point>85.3333,348.16</Point>
+      <Point>1706.6667,333.9947</Point>
+      <Point>85.3333,333.9947</Point>
     </Collision>
     <Collision>
-      <Point>310.528,348.16</Point>
-      <Point>865.1947,348.16</Point>
-      <Point>865.1947,351.5733</Point>
-      <Point>311.5691,351.5733</Point>
+      <Point>278.1867,333.9947</Point>
+      <Point>899.4133,333.9947</Point>
+      <Point>899.4133,384.0</Point>
+      <Point>278.1867,384.0</Point>
     </Collision>
     <Collision>
-      <Point>1222.8267,348.16</Point>
-      <Point>1706.6667,348.16</Point>
-      <Point>1706.6667,351.5733</Point>
-      <Point>1227.0592,351.5733</Point>
+      <Point>1216.0,333.9947</Point>
+      <Point>1706.6667,333.9947</Point>
+      <Point>1706.6667,384.0</Point>
+      <Point>1276.1771,384.0</Point>
     </Collision>
     <Collision>
-      <Point>311.5691,351.5733</Point>
-      <Point>819.1147,351.5733</Point>
-      <Point>812.7829,373.76</Point>
-      <Point>318.2933,373.76</Point>
+      <Point>278.1867,384.0</Point>
+      <Point>440.32,384.0</Point>
+      <Point>440.32,401.0667</Point>
+      <Point>278.1867,401.0667</Point>
     </Collision>
     <Collision>
-      <Point>1227.0592,351.5733</Point>
-      <Point>1706.6667,351.5733</Point>
-      <Point>1706.6667,373.76</Point>
-      <Point>1254.6219,373.76</Point>
+      <Point>682.6667,384.0</Point>
+      <Point>899.4133,384.0</Point>
+      <Point>899.4133,390.8267</Point>
+      <Point>682.6667,390.8267</Point>
     </Collision>
     <Collision>
-      <Point>318.2933,373.76</Point>
-      <Point>517.0347,373.76</Point>
-      <Point>496.2304,399.36</Point>
-      <Point>326.0416,399.36</Point>
+      <Point>1276.1771,384.0</Point>
+      <Point>1706.6667,384.0</Point>
+      <Point>1706.6667,390.8267</Point>
+      <Point>1284.3861,390.8267</Point>
     </Collision>
     <Collision>
-      <Point>738.9013,373.76</Point>
-      <Point>812.7829,373.76</Point>
-      <Point>805.4613,399.36</Point>
-      <Point>752.5547,399.36</Point>
+      <Point>756.0533,390.8267</Point>
+      <Point>899.4133,390.8267</Point>
+      <Point>899.4133,395.9467</Point>
+      <Point>771.4133,395.9467</Point>
     </Collision>
     <Collision>
-      <Point>1254.6219,373.76</Point>
-      <Point>1706.6667,373.76</Point>
-      <Point>1706.6667,399.36</Point>
-      <Point>1286.4341,399.36</Point>
+      <Point>1284.3861,390.8267</Point>
+      <Point>1706.6667,390.8267</Point>
+      <Point>1706.6667,406.1867</Point>
+      <Point>1302.8864,406.1867</Point>
     </Collision>
     <Collision>
-      <Point>326.0416,399.36</Point>
-      <Point>496.2304,399.36</Point>
-      <Point>494.848,401.0667</Point>
-      <Point>326.5536,401.0667</Point>
+      <Point>771.4133,395.9467</Point>
+      <Point>899.4133,395.9467</Point>
+      <Point>850.7733,401.0667</Point>
+      <Point>786.7733,401.0667</Point>
     </Collision>
     <Collision>
-      <Point>1286.4341,399.36</Point>
-      <Point>1706.6667,399.36</Point>
-      <Point>1706.6667,401.0667</Point>
-      <Point>1288.5504,401.0667</Point>
+      <Point>786.7733,401.0667</Point>
+      <Point>850.7733,401.0667</Point>
+      <Point>802.1333,406.1867</Point>
     </Collision>
     <Collision>
-      <Point>326.5536,401.0667</Point>
-      <Point>494.848,401.0667</Point>
-      <Point>327.5947,404.48</Point>
-    </Collision>
-    <Collision>
-      <Point>1288.5504,401.0667</Point>
-      <Point>1706.6667,401.0667</Point>
-      <Point>1706.6667,404.48</Point>
-      <Point>1292.8,404.48</Point>
-    </Collision>
-    <Collision>
-      <Point>1292.8,404.48</Point>
-      <Point>1706.6667,404.48</Point>
-      <Point>1706.6667,737.6384</Point>
+      <Point>1302.8864,406.1867</Point>
+      <Point>1706.6667,406.1867</Point>
+      <Point>1706.6667,741.7173</Point>
     </Collision>
     <Collision>
       <Point>85.3333,767.9147</Point>
@@ -3899,15 +3887,15 @@
     </Collision>
     <LeftSpawnLine>
       <x0>100.6933</x0>
-      <y0>358.4</y0>
+      <y0>435.2</y0>
       <x1>104.1067</x1>
       <y1>750.9333</y1>
     </LeftSpawnLine>
     <RightSpawnLine>
       <x0>1670.8267</x0>
-      <y0>733.8667</y0>
+      <y0>750.9333</y0>
       <x1>1674.24</x1>
-      <y1>750.9333</y1>
+      <y1>757.76</y1>
     </RightSpawnLine>
   </Environment>
     <Environment>

@@ -341,6 +341,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         internal Rectangle FieldBoundsForTest { get { return _fieldRect; } }
         internal Rectangle AcceptBoundsForTest { get { return _acceptRect; } }
         internal Rectangle RejectBoundsForTest { get { return _rejectRect; } }
+        internal string PlaceholderForTest { get { return _placeholder; } }
 
         /// <summary>几何单测用：不依赖窗口可见/激活，直接进入展开布局。</summary>
         internal void ExpandForTest()

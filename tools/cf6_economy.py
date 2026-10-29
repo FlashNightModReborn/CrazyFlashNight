@@ -3,6 +3,7 @@ import math
 import json
 from pathlib import Path
 from choice_reward_catalog import exact, integer, load, validate
+from cf6_acquisition import channels
 
 QUOTA_MAPS = {'E1': 'A09', 'E2': 'A13', 'E3': 'A14', 'E4': 'A17', 'E5': 'A19'}
 
@@ -16,16 +17,16 @@ def enemies(stage):
         yield from group['enemies']
 
 
-def historical_allowlist():
+def historical_allowlist(shop=False):
     source = json.loads((Path(__file__).parent / 'cf6-roguelike-content/weapon-pools.source.json').read_text('utf-8'))
     policy = source['historicalPolicy']
     if policy['selection'] != 'strict-historical' or policy['allowedTierNames']:
         raise ValueError('historical weapon eligibility is not frozen')
-    return set(policy['acceptedWeaponNames'])
+    return set(policy['acceptedWeaponNames']) | (set(policy.get('acceptedShopWeaponNames',[])) if shop else set())
 
 
 def check_historical_names(names, items, where):
-    allowed = historical_allowlist()
+    allowed = historical_allowlist(where == 'shop/budget')
     for name in names:
         meta = items.get(name)
         if meta is None: raise ValueError('unknown item in historical ' + where + ': ' + str(name))
@@ -40,6 +41,10 @@ def validate_historical_budget(budget, items):
         names.extend(name for name in [row.get('purchaseWeapon'),row.get('ammoWeapon')] if name)
     names.extend(row['weapon'] for row in budget['stressPurchases'])
     check_historical_names(names, items, 'shop/budget')
+    gold,_,_=channels()
+    for node in budget['merchantNodes']:
+        for name in node['addWeapons']:
+            if name not in gold:raise ValueError('CF6 cash shop bypasses original acquisition channel: '+name)
 
 
 def validate_economy(book, items, catalog=None):
@@ -49,6 +54,9 @@ def validate_economy(book, items, catalog=None):
     exact(economy, 'randomWeapons eliteWeapons choices', 'CF6 economy')
     maps = {m['id']: m for m in book['maps']}
     historical = book.get('id') == 'cf6-sting' and book.get('routeId') == 'historical'
+    route_scope = {'kind':'book', 'bookId':'cf6-sting'}
+    if book.get('routeId') == 'type61':
+        route_scope['routeId'] = 'type61'
     if historical:
         names = [e['name'] for e in book.get('actor',{}).get('equipment',[])]
         for section in ('randomWeapons','eliteWeapons'):
@@ -61,6 +69,15 @@ def validate_economy(book, items, catalog=None):
                 names.extend(params[key].split('#')[0] for key in ('长枪','手枪','手枪2') if type(params.get(key)) is str)
         check_historical_names(names,items,'actor/fixed/random/elite/enemy')
 
+    if book.get('id') == 'cf6-sting':
+        policy=json.loads((Path(__file__).parent/'cf6-roguelike-content/weapon-pools.source.json').read_text('utf-8'))['historicalPolicy']
+        restricted=set(policy.get('kOnlyWeaponNames',[]))
+        free=[x['weapon'] for key in ('randomWeapons','eliteWeapons') for row in economy[key] for x in row['choices']]
+        for stage in maps.values():
+            free.extend(p['Name'] for p in stage['stage'].get('Pickups',{}).get('Pickup',[]))
+            for enemy in enemies(stage):free.extend(x['名字'] for x in enemy.get('Parameters',{}).get('掉落物',[]))
+        if restricted.intersection(free):raise ValueError('K-only CF6 weapon appears in free delivery')
+
     for key in economy:
         if type(economy[key]) is not list or len(economy[key]) > 20:
             raise ValueError('invalid CF6 economy rows')
@@ -71,7 +88,8 @@ def validate_economy(book, items, catalog=None):
             if quota is not None:
                 if quota not in QUOTA_MAPS or quota in marked or QUOTA_MAPS[quota] != stage['id']:
                     raise ValueError('unknown/duplicate/misplaced CF6 elite marker')
-                if enemy['Type'] not in ('兵种466', '兵种467') or enemy['Quantity'] != 1:
+                carriers = ('兵种466','兵种467','兵种478','兵种479','兵种480','兵种481') if book.get('routeId')=='type61' else ('兵种466','兵种467')
+                if enemy['Type'] not in carriers or enemy['Quantity'] != 1:
                     raise ValueError('CF6 elite must be one existing soldier')
                 marked[quota] = enemy
 
@@ -113,7 +131,7 @@ def validate_economy(book, items, catalog=None):
         if quota not in QUOTA_MAPS or quota in quotas or row['mapId'] != QUOTA_MAPS[quota] or quota not in marked:
             raise ValueError('CF6 elite quota has no exact carrier')
         quotas.add(quota)
-        names = row_choices(row, 1 if quota == 'E1' else 2)
+        names = row_choices(row, 1 if quota in ('E1','E4') else 2)
         if names & reserved: raise ValueError('weapon repeats across CF6 elite sources')
         reserved |= names
         allowed_drops = names | {option['ammo'] for option in row['choices']}
@@ -146,7 +164,7 @@ def validate_economy(book, items, catalog=None):
         exact(row, 'mapId poolId itemName', 'CF6 choice delivery')
         pool = pools.get(row['poolId'])
         if (row['mapId'] not in maps or row['mapId'] in seen_maps or row['poolId'] in seen_pools
-                or pool is None or pool['scope'] != {'kind':'book', 'bookId':'cf6-sting'}
+                or pool is None or pool['scope'] != route_scope
                 or pool['itemName'] != row['itemName']):
             raise ValueError('CF6 choice delivery identity/scope mismatch')
         seen_maps.add(row['mapId']); seen_pools.add(row['poolId']); choice_items.add(row['itemName'])
@@ -169,7 +187,9 @@ def validate_economy(book, items, catalog=None):
             guaranteed_total += min(group['draw'], guaranteed)
         if guaranteed_total < 2:
             raise ValueError('CF6 pool cannot guarantee two eligible choices')
-    authored_pools = {p['id'] for p in catalog['pools'] if p['scope'] == {'kind':'book','bookId':'cf6-sting'}}
+    authored_pools = {p['id'] for p in catalog['pools'] if p['scope'] == route_scope}
+    if book.get('routeId') == 'type61':
+        seen_pools.update(book.get('type61', {}).get('choicePoolIds', []))
     if seen_pools != authored_pools: raise ValueError('CF6 choice pool missing its unique delivery')
     for stage in maps.values():
         if any(p['Name'] in choice_items for p in stage['stage'].get('Pickups', {}).get('Pickup', [])):

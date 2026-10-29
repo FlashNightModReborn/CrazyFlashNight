@@ -1,0 +1,594 @@
+{
+  "schema": "choice-rewards.v1",
+  "bundles": [
+    {
+      "id": "cf6.type61.starter.0",
+      "name": "M4A1战术版",
+      "title": "M4A1战术版",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "medium",
+      "items": [
+        {
+          "itemName": "M4A1战术版",
+          "quantity": 1
+        },
+        {
+          "itemName": "突击步枪通用弹药",
+          "quantity": 8
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.starter.1",
+      "name": "AK74M",
+      "title": "AK74M",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "medium",
+      "items": [
+        {
+          "itemName": "AK74M",
+          "quantity": 1
+        },
+        {
+          "itemName": "突击步枪通用弹药",
+          "quantity": 8
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.starter.2",
+      "name": "HKSL8EX",
+      "title": "HKSL8EX",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "medium",
+      "items": [
+        {
+          "itemName": "HKSL8EX",
+          "quantity": 1
+        },
+        {
+          "itemName": "狙击步枪通用弹药",
+          "quantity": 8
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.mid.0",
+      "name": "高强度合金",
+      "title": "高强度合金",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "medium",
+      "items": [
+        {
+          "itemName": "高强度合金",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.mid.1",
+      "name": "枪械内构强化套件",
+      "title": "枪械内构强化套件",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "medium",
+      "items": [
+        {
+          "itemName": "枪械内构强化套件",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.mid.2",
+      "name": "战术背带",
+      "title": "战术背带",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "medium",
+      "items": [
+        {
+          "itemName": "战术背带",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.high.0",
+      "name": "纳米执行单元",
+      "title": "纳米执行单元",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "high",
+      "items": [
+        {
+          "itemName": "纳米执行单元",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.high.1",
+      "name": "水冷机构",
+      "title": "水冷机构",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "high",
+      "items": [
+        {
+          "itemName": "水冷机构",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.high.2",
+      "name": "黑爪扩张弹",
+      "title": "黑爪扩张弹",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "high",
+      "items": [
+        {
+          "itemName": "黑爪扩张弹",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.a04.open",
+      "name": "HKSL8EX",
+      "title": "HKSL8EX",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "medium",
+      "items": [
+        {
+          "itemName": "HKSL8EX",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.a04.original.0",
+      "name": "M4A1战术版",
+      "title": "M4A1战术版",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "medium",
+      "items": [
+        {
+          "itemName": "M4A1战术版",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.a04.original.1",
+      "name": "AK74战术版",
+      "title": "AK74战术版",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "medium",
+      "items": [
+        {
+          "itemName": "AK74战术版",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.a04.original.3",
+      "name": "HKSL8GOLD",
+      "title": "HKSL8GOLD",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "medium",
+      "items": [
+        {
+          "itemName": "HKSL8GOLD",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.a04.original.4",
+      "name": "WA2000",
+      "title": "WA2000",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "medium",
+      "items": [
+        {
+          "itemName": "WA2000",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.a04.original.5",
+      "name": "龙炎",
+      "title": "龙炎",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "medium",
+      "items": [
+        {
+          "itemName": "龙炎",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.a04.original.6",
+      "name": "Desert Eagle改装版双持",
+      "title": "Desert Eagle改装版双持",
+      "description": "本配额提供两把独立短枪，弹药从定向补给与商店取得。",
+      "grade": "medium",
+      "weapon": "Desert Eagle改装版",
+      "weaponCount": 2,
+      "mods": [],
+      "consumables": [],
+      "checkpointAmmo": true
+    },
+    {
+      "id": "cf6.type61.a04.original.7",
+      "name": "DD MK18战术版",
+      "title": "DD MK18战术版",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "medium",
+      "items": [
+        {
+          "itemName": "DD MK18战术版",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.a04.original.8",
+      "name": "M4A1科技白",
+      "title": "M4A1科技白",
+      "description": "本局使用；弹药与必要药品另行配给。插件可从材料界面安装，副武器弹种可在整备商店补购。",
+      "grade": "medium",
+      "items": [
+        {
+          "itemName": "M4A1科技白",
+          "quantity": 1
+        }
+      ]
+    }
+  ],
+  "pools": [
+    {
+      "id": "cf6.type61.starter",
+      "version": 1,
+      "title": "61计划初始主枪自选箱",
+      "itemName": "61计划初始主枪自选箱",
+      "scope": {
+        "kind": "book",
+        "bookId": "cf6-sting",
+        "routeId": "type61"
+      },
+      "maxItemLevel": 60,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "options",
+          "draw": 3,
+          "entries": [
+            {
+              "bundleId": "cf6.type61.starter.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "cf6.type61.starter.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "cf6.type61.starter.2",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.mods.medium",
+      "version": 1,
+      "title": "61计划中级插件自选箱",
+      "itemName": "61计划中级插件自选箱",
+      "scope": {
+        "kind": "book",
+        "bookId": "cf6-sting",
+        "routeId": "type61"
+      },
+      "maxItemLevel": 60,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "options",
+          "draw": 3,
+          "entries": [
+            {
+              "bundleId": "cf6.type61.mid.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "cf6.type61.mid.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "cf6.type61.mid.2",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.mods.high",
+      "version": 1,
+      "title": "61计划高级插件自选箱",
+      "itemName": "61计划高级插件自选箱",
+      "scope": {
+        "kind": "book",
+        "bookId": "cf6-sting",
+        "routeId": "type61"
+      },
+      "maxItemLevel": 60,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "options",
+          "draw": 3,
+          "entries": [
+            {
+              "bundleId": "cf6.type61.high.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "cf6.type61.high.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "cf6.type61.high.2",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.a04.0",
+      "version": 1,
+      "title": "61计划改装主枪箱1",
+      "itemName": "61计划改装主枪箱1",
+      "scope": {
+        "kind": "book",
+        "bookId": "cf6-sting",
+        "routeId": "type61"
+      },
+      "maxItemLevel": 60,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "options",
+          "draw": 2,
+          "entries": [
+            {
+              "bundleId": "cf6.type61.a04.original.0",
+              "weight": 1
+            },
+            {
+              "bundleId": "cf6.type61.a04.open",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.a04.1",
+      "version": 1,
+      "title": "61计划改装主枪箱2",
+      "itemName": "61计划改装主枪箱2",
+      "scope": {
+        "kind": "book",
+        "bookId": "cf6-sting",
+        "routeId": "type61"
+      },
+      "maxItemLevel": 60,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "options",
+          "draw": 2,
+          "entries": [
+            {
+              "bundleId": "cf6.type61.a04.original.1",
+              "weight": 1
+            },
+            {
+              "bundleId": "cf6.type61.a04.open",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.a04.3",
+      "version": 1,
+      "title": "61计划改装主枪箱4",
+      "itemName": "61计划改装主枪箱4",
+      "scope": {
+        "kind": "book",
+        "bookId": "cf6-sting",
+        "routeId": "type61"
+      },
+      "maxItemLevel": 60,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "options",
+          "draw": 2,
+          "entries": [
+            {
+              "bundleId": "cf6.type61.a04.original.3",
+              "weight": 1
+            },
+            {
+              "bundleId": "cf6.type61.a04.open",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.a04.4",
+      "version": 1,
+      "title": "61计划改装主枪箱5",
+      "itemName": "61计划改装主枪箱5",
+      "scope": {
+        "kind": "book",
+        "bookId": "cf6-sting",
+        "routeId": "type61"
+      },
+      "maxItemLevel": 60,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "options",
+          "draw": 2,
+          "entries": [
+            {
+              "bundleId": "cf6.type61.a04.original.4",
+              "weight": 1
+            },
+            {
+              "bundleId": "cf6.type61.a04.open",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.a04.5",
+      "version": 1,
+      "title": "61计划改装主枪箱6",
+      "itemName": "61计划改装主枪箱6",
+      "scope": {
+        "kind": "book",
+        "bookId": "cf6-sting",
+        "routeId": "type61"
+      },
+      "maxItemLevel": 60,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "options",
+          "draw": 2,
+          "entries": [
+            {
+              "bundleId": "cf6.type61.a04.original.5",
+              "weight": 1
+            },
+            {
+              "bundleId": "cf6.type61.a04.open",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.a04.6",
+      "version": 1,
+      "title": "61计划改装主枪箱7",
+      "itemName": "61计划改装主枪箱7",
+      "scope": {
+        "kind": "book",
+        "bookId": "cf6-sting",
+        "routeId": "type61"
+      },
+      "maxItemLevel": 60,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "options",
+          "draw": 2,
+          "entries": [
+            {
+              "bundleId": "cf6.type61.a04.original.6",
+              "weight": 1
+            },
+            {
+              "bundleId": "cf6.type61.a04.open",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.a04.7",
+      "version": 1,
+      "title": "61计划改装主枪箱8",
+      "itemName": "61计划改装主枪箱8",
+      "scope": {
+        "kind": "book",
+        "bookId": "cf6-sting",
+        "routeId": "type61"
+      },
+      "maxItemLevel": 60,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "options",
+          "draw": 2,
+          "entries": [
+            {
+              "bundleId": "cf6.type61.a04.original.7",
+              "weight": 1
+            },
+            {
+              "bundleId": "cf6.type61.a04.open",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cf6.type61.a04.8",
+      "version": 1,
+      "title": "61计划改装主枪箱9",
+      "itemName": "61计划改装主枪箱9",
+      "scope": {
+        "kind": "book",
+        "bookId": "cf6-sting",
+        "routeId": "type61"
+      },
+      "maxItemLevel": 60,
+      "chooseCount": 1,
+      "rerolls": 0,
+      "groups": [
+        {
+          "id": "options",
+          "draw": 2,
+          "entries": [
+            {
+              "bundleId": "cf6.type61.a04.original.8",
+              "weight": 1
+            },
+            {
+              "bundleId": "cf6.type61.a04.open",
+              "weight": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

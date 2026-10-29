@@ -281,7 +281,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
         if (!bindingValid()) { structuralFailure("binding_changed"); return; }
         if (effect.group.status != "committed") return;
         if(target.__playerStatInitializing===true
-                || (target.__resourceSpawn!=undefined && target.__resourceSpawn.resourcesReady!==true)) return;
+                || (target.__playerSceneSpawn!=undefined && target.__playerSceneSpawn.resourcesReady!==true)) return;
         if (!(target.hp > 0)) { suspendForDeath(); return; }
         if (deathSuspended) return;
         var frame:Number = Number(_root.帧计时器.当前帧数);

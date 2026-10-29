@@ -1,0 +1,525 @@
+{
+  "schema": "cf7-cf6-type61-fieldfix.v1",
+  "recordedAt": "2026-10-27T23:59:43.514909+00:00",
+  "baseCommit": "a970666dcd16c04cc29dfbd61906b13e9472ebfc",
+  "status": "tutorial_a01_a02_human_passed_a07_and_a04_novelty_compiled_turret_field_cause_open",
+  "authorization": {
+    "commit": false,
+    "push": false,
+    "formalRuntimePromotion": false
+  },
+  "changes": {
+    "tutorialArt": "R7 bold native vectors and exact original bitmap bytes",
+    "tutorialExitNativeBefore": [
+      815,
+      328,
+      865,
+      352
+    ],
+    "tutorialExitNativeAfter": [
+      780,
+      332,
+      895,
+      397
+    ],
+    "background": "one production bake followed by bounded native unload observation and exact-once room initialization",
+    "unloadWaitFrameLimit": 60,
+    "startingConstellation": "one seeded ordinary constellation weapon in the existing TUTORIAL delivery claim; removed A01 duplicate delivery",
+    "a07": "Transparent vehicle placeholder bypasses static-background bake; vehicle service retains road and sky ownership."
+  },
+  "rootCauseEvidence": {
+    "a01ImmediateAfterUnload": {
+      "width": 1439.65,
+      "height": 886.5,
+      "drawCompleted": true,
+      "matrixMatches": true
+    },
+    "laterFrame": {
+      "width": 0,
+      "height": 0
+    },
+    "negativeProbe": {
+      "path": "tmp/cf6-type61-fieldfix-20261027/native-background-before-r5/flashlog.txt",
+      "bytes": 6256,
+      "sha256": "fca6dc3f4a15667d47927677e20346b726a2d4c300a5db531a59a724d986ff3f"
+    }
+  },
+  "artifacts": {
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "bytes": 6759209,
+      "sha256": "d79323f99bfab65ae97f718091a0b3373d2d239b4ab0fa71fab85ef370b5cc97"
+    },
+    "tutorialSwf": {
+      "path": "flashswf/backgrounds/cf6/CF6_Tutorial_BG.swf",
+      "bytes": 224734,
+      "sha256": "80de0f8ed45a6b2c7d83bca716e491106e7ca022d4b5cbfe285b72d8bb819268"
+    },
+    "r7SourceEquivalence": {
+      "path": "tmp/cf6-type61-fieldfix-20261027/r7-exit-source-equivalence.json",
+      "bytes": 254,
+      "sha256": "eed6c6c6f654ce859d24442b53f2de8bf31366bd5be750161af2ec5c34c074a1"
+    },
+    "asLoaderBeforeA07": {
+      "path": "scripts/asLoader.swf",
+      "bytes": 6756165,
+      "sha256": "1e624fcaf3476d53d445e0b1a1896e7b8048be37c1056e7c6929a4d3fabd335d"
+    },
+    "asLoaderBeforeNovelMain": {
+      "path": "scripts/asLoader.swf",
+      "bytes": 6756188,
+      "sha256": "648e4f6cde8345ed8b81f540e81ebf80a47efa68bb72f36549bd2f6a0b15b8a7"
+    }
+  },
+  "nativeCandidate": {
+    "runtimeMode": "isolated_candidate",
+    "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\type61-1027\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreSha256": "DAE4AC66C223A4C99A94C20171D5F9DB3416DFEEDDF61FFCDF1EE3696A1606BC",
+    "buildIdentity": "7C11FF2AC708320F860B289F20F3096E1835725BD6794E37110ACE2F070DE55B",
+    "payloadClosure": "369A139FAE8CF6328A0009CA39961821B209308C1A13EC8DD48E4D1FE7C14D28",
+    "installRoot": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\type61-1027"
+  },
+  "validation": {
+    "nativeAndMechanism": {
+      "actualA01Assertions": 6,
+      "mechanismAssertions": 238,
+      "failures": 0,
+      "runId": "12d6355d2d0c4b47a8a429690ec451d9",
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "trace": {
+        "path": "tmp/cf6-type61-fieldfix-20261027/native-background-after-r5/player-flashlog.txt",
+        "bytes": 6422,
+        "sha256": "801e36eb047096ad6a5f45ec7d1d4ef92b571712294c08e1f6b4ce12e1c0781a"
+      },
+      "swf": {
+        "path": "tmp/cf6-type61-fieldfix-20261027/native-background-after-r5/TestLoader.swf",
+        "bytes": 1151352,
+        "sha256": "2633fe322168ca4b2b9d2994333fc6b82d55691bf7b1bf54355c66f3a6f1794a"
+      },
+      "lineEndingEquivalence": {
+        "path": "tmp/cf6-type61-fieldfix-20261027/native-background-after-r5/line-ending-equivalence.json",
+        "bytes": 441,
+        "sha256": "ed5c032bbc11c6f42058f4b5d7675b3f04d31b1c5c66f89a8572a1cbfc416d1f"
+      },
+      "scope": "actual A01 background draw/unload plus state/lifecycle tests; turret asset and full A02 scene are outside this fixture"
+    },
+    "type61": {
+      "assertions": 91,
+      "failures": 0,
+      "runId": "7fb75df4b8ca40299724cd771a8c1d9d",
+      "serviceUnchangedSinceVerifiedFirstLiveClosure": true,
+      "trace": {
+        "path": "tmp/cf6-type61-fieldfix-20261027/type61-regression-final/flashlog.txt",
+        "bytes": 2231,
+        "sha256": "406934dc0d7a4668060e9e19ad0b24c577c708b54c6a28c54707095c6947b988"
+      }
+    },
+    "data": {
+      "type61": 15,
+      "books": 61,
+      "type61Log": {
+        "path": "tmp/cf6-type61-fieldfix-20261027/type61-data-after-a01.log",
+        "bytes": 2215,
+        "sha256": "f21d8f2cd0b36c207aee92988f5d18c6a27294ab80a2fbc536b8c1be61ac7268"
+      },
+      "bookLog": {
+        "path": "tmp/cf6-type61-fieldfix-20261027/book-data-after-a01.log",
+        "bytes": 166,
+        "sha256": "a20f8464221d43b33ead39f67eca5dafc2076c6873e4e7b37cd17d6b25a961fc"
+      }
+    },
+    "sourceClosureCases": {
+      "passed": 99,
+      "log": {
+        "path": "tmp/cf6-type61-fieldfix-20261027/source-closure-cases-after-a01.log",
+        "bytes": 7438,
+        "sha256": "584ccf645cf8812da29406db698812554035a289ad5b64586c5ec3085b01f438"
+      }
+    },
+    "liveSafetyCases": {
+      "passed": 32,
+      "log": {
+        "path": "tmp/cf6-type61-fieldfix-20261027/source-closure-after-a01.log",
+        "bytes": 1566,
+        "sha256": "85901961dd367a51aecb35a5134e921316fc1bffc32455fef5bbc5f288c32f9b"
+      }
+    },
+    "productionOwnership": {
+      "errors": [],
+      "files": 787,
+      "parsed": 0,
+      "cacheHits": 787,
+      "loaderClasses": 773,
+      "closureChecked": true,
+      "policy": "production",
+      "milliseconds": 6809.1263
+    },
+    "templateCheck": {
+      "path": "tmp/cf6-type61-fieldfix-20261027/map-template-check-final.log",
+      "bytes": 132,
+      "sha256": "ffb198e5ac4077cbc9b04c7db427f0aec79133367eaef9cb1c07fbaa490fbd8e"
+    },
+    "functionSizeGate": {
+      "path": "tmp/cf6-type61-fieldfix-20261027/asloader-a01-function-sizes.log",
+      "bytes": 503,
+      "sha256": "e54b105a021248d8a74801e6d22d06027e2c22dc7e6f271b98a31b1b90404e5e"
+    },
+    "generators": "tutorial, historical chapter, Type61 route, book definition: generated and --check passed; R7 art source unchanged by exit expansion",
+    "documentation": {
+      "path": "tmp/cf6-type61-fieldfix-20261027/docs-final.log",
+      "sha256": "c21f15a50eb440929860ef264fadd73efdff0153bc1232c66d6f133763a32e0a",
+      "exitCode": 0
+    },
+    "diffWhitespace": {
+      "path": "tmp/cf6-type61-fieldfix-20261027/diff-final.log",
+      "sha256": "ec95e7ac13a4ddd557cd1eff690e70c8e0cf28c8af4421af3bd790f287d66571",
+      "exitCode": 0
+    },
+    "a07": {
+      "before": {
+        "passed": 58,
+        "failed": 3,
+        "runId": "fa49bbdf86a5439da95042c25fd002a7",
+        "evidence": {
+          "path": "tmp/cf6-type61-fieldfix-20261027/a07-before/flashlog.txt",
+          "bytes": 1125,
+          "sha256": "dcd101400c6deeb0b2da85062fb7e68a54957e5e031717e7af932fc93708c5c8"
+        }
+      },
+      "after": {
+        "passed": 61,
+        "failed": 0,
+        "runId": "bc3c928f639d4152b6f2474c4eb528f5",
+        "evidence": {
+          "path": "tmp/cf6-type61-fieldfix-20261027/a07-after/flashlog.txt",
+          "bytes": 816,
+          "sha256": "711c1be49beafc9041837cd343b54db784a764bf6d1ff54a2ba6d34af3d41e00"
+        }
+      },
+      "boundary": "Real MapMechanism/StageManager/WaveSpawner; vehicle, asset loader, camera, persistence query and fade ports mocked. Both routes covered; no live A07 gameplay claim.",
+      "lineEndingEquivalence": {
+        "path": "tmp/cf6-type61-fieldfix-20261027/a07-after/line-ending-equivalence.json",
+        "bytes": 304,
+        "sha256": "b746bbe72d90ed9983115b34c04b9da3a0ce8133ec3d0ff26fa80f9e99159389"
+      }
+    },
+    "a07Publish": {
+      "log": {
+        "path": "tmp/cf6-type61-fieldfix-20261027/asloader-a07-publish-r1.log",
+        "bytes": 1357,
+        "sha256": "6326698dd3220ac897a66fcd7ae994ec67a7ae913635762ba9eabfde221fcf32"
+      },
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "compilerObservation": "Read fresh shared compiler_errors.txt before next probe; console/tool output observed, raw file was removed by the next canonical compile before archive.",
+      "rawCompilerFileArchived": false,
+      "functionSizeGate": {
+        "path": "tmp/cf6-type61-fieldfix-20261027/asloader-a07-size.log",
+        "bytes": 429,
+        "sha256": "ff184b1330f2f8352ce646113b0ee3e88e6e0194b6509e9f3fe4b98333a82a48"
+      },
+      "productionOwnership": {
+        "path": "tmp/cf6-type61-fieldfix-20261027/asloader-a07-production-ownership.json",
+        "bytes": 185,
+        "sha256": "12135dbcddff8d9db32e81de2429ef09bb66065456d2e1272a172deafc061aa1"
+      }
+    },
+    "turretNativeTargets": {
+      "passed": 47,
+      "failed": 0,
+      "runId": "9af48017ab0344819102b40013ef762c",
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "evidence": {
+        "path": "tmp/cf6-type61-fieldfix-20261027/turret-native-probe/r2/flashlog.txt",
+        "bytes": 8592,
+        "sha256": "42fb9037bb45b476a62b0e44d1c0c24a7697b12d9e7681c093aa917de8f934a6"
+      },
+      "manifest": {
+        "path": "tmp/cf6-type61-fieldfix-20261027/turret-native-probe/r2/manifest.json",
+        "bytes": 1030,
+        "sha256": "907ff41f0c56856b8348fa5fd9b95f64b132f990d418a2001d2f2beee0b5b42a"
+      },
+      "boundary": "Actual Antigravity native zombie resource, WaveSpawner parameters and initializer, ordinary projectile factory and natural onEnterFrame callbacks; both routes and both turrets. Collision rectangles from A01, stationary units and explicit isolated ports. Not the full game room or native compositor.",
+      "firstProbe": "r1 retained: 45 passed, 2 failed wall-observation assertions due observation/HP capture timing; four marked target hits were present. r2 fixes only probe observation, production turret untouched."
+    }
+  },
+  "failedJourneyRecovery": {
+    "originalRun": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\workbench-live-e2e\\cf6\\20261027T112536139Z-cf6",
+    "sameRunSettlementReport": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\workbench-live-e2e\\cf6\\20261027132911137-recover-origin\\report.json",
+    "readback": {
+      "path": "tmp/workbench-live-e2e/cf6/20261027133640238-recovered-readback/report.json",
+      "bytes": 662551,
+      "sha256": "82b29486038efc92607bbb7f39a3efdde0bd93c75a946b49926aff97b784fa77"
+    },
+    "result": {
+      "runId": "bookrun_977eda0af8f0ed49d64d0edd",
+      "outcome": "retreat",
+      "sp": 0,
+      "originAssetsUnchanged": true,
+      "routeId": "type61"
+    },
+    "businessMutationReplays": 0,
+    "baselineCorrection": "The pre-play snapshot lacked two ammoState fields already present in the durable origin-entry snapshot. Exact origin-entry comparison passes all protected character fields.",
+    "preservedArtifacts": {
+      "path": "tmp/cf6-type61-fieldfix-20261027/recovered-artifacts/manifest.json",
+      "bytes": 1565,
+      "sha256": "a55861f69c88397a3217bb93575fb19cf36fe0b3e0bdf5a6a5e6538c5615e849"
+    },
+    "offlineRecovery": {
+      "path": "tmp/cf6-type61-fieldfix-20261027/recovered-artifacts/offline-recovery.json",
+      "bytes": 2186,
+      "sha256": "a311a58e5db38c08272e96224e71741572d564e34b4a71b575adf7b18d96c96d"
+    }
+  },
+  "currentLive": {
+    "runDir": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\workbench-live-e2e\\cf6\\20261027T134129662Z-cf6",
+    "runtimePid": 34464,
+    "routeId": "type61",
+    "affiliatedSlot": "bookrun_247c9bd4d1c14dd45f817b61",
+    "initialActor": {
+      "routeId": "type61",
+      "name": "61式试验员",
+      "level": 35,
+      "experience": 17372868,
+      "equipmentCount": 5,
+      "fixedSkillCount": 17,
+      "allInitialEnhancements": 1,
+      "spendableSp": 1050,
+      "slot": "bookrun_247c9bd4d1c14dd45f817b61",
+      "runStarted": true
+    },
+    "sourceClosureSha256": "aeb50e7223eb2bedb89b8d1a56ea023874eb45524d777e7e8d1bf643ed60e4cb",
+    "sourceClosureFiles": 8104,
+    "inventoryProof": {
+      "path": "tmp/workbench-live-e2e/cf6/20261027T134129662Z-cf6/tutorial-equipped-proof.json",
+      "bytes": 1327,
+      "sha256": "a0dc37cc31960069267e24f5c522e7ed062f0b6040351b99fb97c61f794ac2c9"
+    },
+    "nativeView": {
+      "path": "tmp/workbench-live-e2e/cf6/20261027T134129662Z-cf6/tutorial-ready-native.json",
+      "bytes": 743,
+      "sha256": "0722700400177ca8e936cc7dcc47132530bed8a3d93ad80fa538f6021a4186d0"
+    },
+    "status": "canonical_driver_timed_out_without_terminal_preserved; owned_pid_34464_closed",
+    "inputBoundary": "Visible production menu actions succeeded. Available complete key taps did not move the Flash actor; no synthetic game-state or combat injection was used.",
+    "cleanup": "Second test clone and recovery guard retained. Later user game may have continued it; do not overwrite or clean until exact current ownership and outcome are resolved."
+  },
+  "protection": {
+    "formalRuntimeFilesUnchanged": {
+      "count": 45,
+      "unchanged": true,
+      "drift": []
+    },
+    "preexistingCachesUnchanged": {
+      "count": 4,
+      "unchanged": true,
+      "drift": []
+    }
+  },
+  "limitations": [
+    "No full chapter playthrough",
+    "No standard-entry revalidation",
+    "No formal runtime promotion",
+    "Original failed receipts remain failed and are linked to separate recovery evidence"
+  ],
+  "humanFieldObservation": {
+    "time": "2026-10-27T22:23:32+08:00",
+    "result": "User confirmed tutorial to A01 to A02 passage; reported all turret projectiles appeared to hit ground.",
+    "observedProcessId": 42508,
+    "processCreatedAt": "2026-10-27T22:16:03+08:00",
+    "binding": "Different process from canonical driver PID 34464. Current save slot not authenticated; do not attach the observation to the earlier automated book run.",
+    "a07Screenshot": {
+      "path": "tmp/cf6-type61-fieldfix-20261027/a07-user-field/reported-a07.png",
+      "bytes": 551148,
+      "sha256": "b50d4b69ce39d00af53768cf527d2e7ed7de4e96caf4f2e22e58a7af96dee67a"
+    }
+  },
+  "openFindings": {
+    "turrets": "47/47 isolated native target/frame assertions pass on both routes, including four marked target hits and foreign-wall blocking. No confirmed cause for the user field report. No eligible marked target retains default scatter, a source-level lead only; whole-room and compositor behavior remain unverified.",
+    "a07Live": "Updated SWF compiled and checked; actual restart and A07 progress not yet verified.",
+    "mainWeaponNoveltyLive": "New first-open A04 policy compiled and covered by 108/108 AVM1; no new complete live A04 journey. Existing frozen offers remain unchanged."
+  },
+  "testHostCleanup": {
+    "editorAndPlayersClosedAfterFreshPublication": true,
+    "freshHostPid": 27760,
+    "compileUncertainMarkerPresent": false,
+    "scratchMarkerPresent": false
+  },
+  "mainWeaponNovelty": {
+    "schema": "cf7-cf6-type61-main-weapon-novelty.v1",
+    "recordedAt": "2026-10-27T23:59:43.514909+00:00",
+    "status": "compiled_local_logic_updated_real_avm1_passed",
+    "scope": "Type61 A04 first-open main weapon options only",
+    "authorization": {
+      "userChoice": "主枪优先不重复（推荐）",
+      "commit": false,
+      "push": false,
+      "formalRuntimePromotion": false
+    },
+    "policy": {
+      "ownership": [
+        "背包",
+        "装备栏",
+        "仓库",
+        "战备箱",
+        "奖励暂存"
+      ],
+      "source": "existing cf6.type61.a04.* catalog only",
+      "replacement": "unowned, current level can equip, sale value at least original, nearest eligible sale value, uniform among distinct same-value names",
+      "saleBasis": "floor(raw equipment price * 0.25), matching the Type61 sale facade",
+      "sameOffer": "reserve all existing novel options first; never duplicate another resolved option",
+      "exhaustion": "keep original reward",
+      "dualPistolsModsMixedBundles": "unchanged",
+      "frozenOffers": "no new resolution during snapshot, exact query, reload or choose"
+    },
+    "regression": {
+      "passed": 108,
+      "failed": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "runId": "dc083b3234a84162a5fc5fe70d6e9a7b",
+      "evidence": {
+        "path": "tmp/cf6-type61-novel-main-20261028/choice-tests-r3/flashlog.txt",
+        "bytes": 8404,
+        "sha256": "88cfdbba611e8fb9dc0566c4b4c037d4040075c90f991b0bf374ff8ab9e54470"
+      },
+      "manifest": {
+        "path": "tmp/cf6-type61-novel-main-20261028/choice-tests-r3/manifest.json",
+        "bytes": 1181,
+        "sha256": "525e6e74e9826c5c40855945fb97aa1e7ec0a24b235406d72c624221ab5e12ac"
+      },
+      "boundary": "Real AVM1 focused suite with its declared isolated SOL, controlled flush results and same-process committed-payload reload. Not a fresh-process or live game A04 journey."
+    },
+    "static": {
+      "catalogTests": 27,
+      "catalogLog": {
+        "path": "tmp/cf6-type61-novel-main-20261028/choice-catalog-tests.log",
+        "bytes": 3805,
+        "sha256": "b25e4cb69f40b8057a46e7582d8da78084333215f6a481c9fac510511f09e0f0"
+      },
+      "definitionCheck": {
+        "path": "tmp/cf6-type61-novel-main-20261028/choice-definition-check.log",
+        "bytes": 54,
+        "sha256": "df504f5ba0d347b823b1dd1d21447e19861f4ff841cc9fca1ba5aedc8be0b55c"
+      },
+      "rewardPacks": {
+        "path": "tmp/cf6-type61-novel-main-20261028/reward-packs-check.log",
+        "bytes": 149,
+        "sha256": "a67c5e05ed6ea35dfccd21b075a32b88aedb63e3a33289a62720b6b631b1f524"
+      }
+    },
+    "preservedFailures": [
+      {
+        "run": "choice-tests-r1",
+        "result": "Compiler 1/0; Object-to-Array typing rejected before suite behavior; replaced with existing typed cloneArrayData API."
+      },
+      {
+        "run": "choice-tests-r2",
+        "result": "101 passed, 6 failed; stash fixture lacked mandatory v1 compatibility data and serialized clone comparison incorrectly depended on object enumeration order. Corrected fixture and used structural comparison of detached full values; retained failure artifacts."
+      },
+      {
+        "run": "asloader-publish-r1",
+        "result": "CS6 exited before terminal evidence; output absent, observer timed out. No successful binary claimed. Original failure, exact token, two quiet snapshots and guarded manual recovery retained; rebuilt in fresh host. Exit cause not established.",
+        "recovery": {
+          "path": "tmp/cf6-type61-novel-main-20261028/publish-r1-recovery-preflight/recovery.json",
+          "bytes": 380,
+          "sha256": "6b1f0f3d31d17cfd99c77dd969fa6621299863a356a3822894aeabc76fee3cdd"
+        }
+      }
+    ],
+    "sources": [
+      {
+        "path": "scripts/类定义/org/flashNight/arki/item/ChoiceRewardService.as",
+        "bytes": 20833,
+        "sha256": "80a9a9e756789093d47406e41e98e9f65b78d45ed8b96a1617eb53ff4d1b6a31"
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/item/ChoiceRewardServiceTest.as",
+        "bytes": 43051,
+        "sha256": "6421f60ff1cfd3b67d4a7f06b3b5c22a8935d71ab355380f006133b25649c629"
+      },
+      {
+        "path": "scripts/run-choice-rewards-tests.ps1",
+        "bytes": 1029,
+        "sha256": "d61b7e03ef7d4f932003bc4dfbf5f6c6c6883a317b505d7e9ab3023b31957774"
+      }
+    ],
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "bytes": 6759209,
+      "sha256": "d79323f99bfab65ae97f718091a0b3373d2d239b4ab0fa71fab85ef370b5cc97"
+    },
+    "publish": {
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "freshHostPid": 27760,
+      "freshHostCreatedAt": "2026-10-28T07:52:15.682442+08:00",
+      "log": {
+        "path": "tmp/cf6-type61-novel-main-20261028/asloader-publish-r2.log",
+        "bytes": 1362,
+        "sha256": "fa753aee6f3fc178cddac5f417a6acf36cf68f328ca119b045baba97c8c94fd2"
+      },
+      "manifest": {
+        "path": "tmp/cf6-type61-novel-main-20261028/asloader-publish-r2/manifest.json",
+        "bytes": 662,
+        "sha256": "f6e4d02eae052742b1c31d5a3eeb231cbe23678d293e14769665f356299795ee"
+      },
+      "state": "compiled",
+      "actualA04GameplayVerified": false
+    },
+    "productionOwnership": {
+      "errors": [],
+      "files": 787,
+      "parsed": 0,
+      "cacheHits": 787,
+      "loaderClasses": 773,
+      "closureChecked": true,
+      "policy": "production",
+      "milliseconds": 6809.1263
+    },
+    "functionSizeGate": {
+      "path": "tmp/cf6-type61-novel-main-20261028/asloader-function-size.log",
+      "bytes": 429,
+      "sha256": "93661a50c422c94ecb703132e519deab3a1b868c614d2336ee86325713a2cffe"
+    },
+    "protection": {
+      "formalRuntimeFilesUnchanged": {
+        "count": 45,
+        "unchanged": true,
+        "drift": []
+      },
+      "preexistingCachesUnchanged": {
+        "count": 4,
+        "unchanged": true,
+        "drift": []
+      }
+    },
+    "documentation": {
+      "status": "passed",
+      "log": {
+        "path": "tmp/cf6-type61-novel-main-20261028/documentation-check.log",
+        "bytes": 3614,
+        "sha256": "c21f15a50eb440929860ef264fadd73efdff0153bc1232c66d6f133763a32e0a"
+      }
+    },
+    "diffWhitespace": {
+      "status": "passed",
+      "log": {
+        "path": "tmp/cf6-type61-novel-main-20261028/diff-check.log",
+        "bytes": 253,
+        "sha256": "ec95e7ac13a4ddd557cd1eff690e70c8e0cf28c8af4421af3bd790f287d66571"
+      }
+    },
+    "devSelection": {
+      "state": "ready",
+      "deploymentStatus": "NOT_DEPLOYED",
+      "log": {
+        "path": "tmp/cf6-type61-novel-main-20261028/dev-status.log",
+        "bytes": 1835,
+        "sha256": "1527957c450de94cc88438a1d97bd32231b778413bad90943ccfda0c602d27f5"
+      }
+    }
+  }
+}

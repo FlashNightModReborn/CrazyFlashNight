@@ -91,6 +91,25 @@ async function main() {
             if (id === 'stage_0_4') await page.screenshot({ path: path.join(out, 'base-gate-hover-layering.png') });
         }
         assert.ok(coveredLocations > 0, 'exercise actual overlapping city labels');
+        const trail = await page.evaluate(() => {
+            const anchor = document.querySelector('.stage-select-card-anchor.is-card-open');
+            const id = anchor.dataset.stageId;
+            const stage = document.querySelector('#stage-select-stage').getBoundingClientRect();
+            const client = (x, y) => ({ x: stage.left + x * stage.width / 1024, y: stage.top + y * stage.height / 576 });
+            const hit = document.querySelector('.stage-select-stage-button[data-stage-id="' + id + '"] > .stage-select-hit-zone').getBoundingClientRect();
+            const connection = anchor._cardConnection;
+            return { id, points: [
+                { x: hit.left + hit.width / 2, y: hit.top + hit.height / 2 },
+                client(connection.x1, connection.y1),
+                client(connection.x2, connection.y2)
+            ] };
+        });
+        for (const point of trail.points) {
+            await page.mouse.move(point.x, point.y, { steps: 8 });
+            await page.waitForTimeout(20);
+            assert.equal(await page.evaluate(() => StageSelectPanel._debugGetState().openCardStageId), trail.id, 'hover must survive the real node-to-card route');
+        }
+        report.checks.push('real pointer route keeps the compact card open through the geometric connection');
         const hoverDifficulty = page.locator('.stage-select-card-anchor.is-card-open [data-difficulty="简单"]');
         await hoverDifficulty.click();
         await page.waitForFunction(() => Panels.getActive() === null);
@@ -127,6 +146,59 @@ async function main() {
         assert.equal(msg.entryKind, 'map');
         assert.ok(!msg.difficulty);
         report.checks.push('both diplomacy entries support hover card action and focus view entry');
+        await page.evaluate(() => StageSelectHarnessHost.open({ mode: 'runtime', frameLabel: '基地车库' }));
+        await ready();
+        report.reportedCards = [];
+        for (const id of ['stage_10_2', 'stage_10_12']) {
+            await page.mouse.move(1000, 560);
+            await page.waitForTimeout(180);
+            await page.locator('.stage-select-stage-button[data-stage-id="'+id+'"] > .stage-select-hit-zone').hover();
+            const card = page.locator('.stage-select-card-anchor[data-stage-id="'+id+'"] > .stage-select-card');
+            await card.waitFor({ state: 'visible' });
+            const contract = await card.evaluate(el => {
+                const actions = el.querySelector(':scope > .stage-select-difficulties');
+                const content = el.querySelector(':scope > .stage-select-card-content');
+                const cardRect = el.getBoundingClientRect();
+                const buttons = [...actions.querySelectorAll('button')].map(button => {
+                    const r = button.getBoundingClientRect(), style = getComputedStyle(button);
+                    return { text: button.textContent, left: r.left, top: r.top, right: r.right, bottom: r.bottom,
+                        whiteSpace: style.whiteSpace, singleLine: !button.classList.contains('stage-select-map-action') || style.whiteSpace === 'nowrap',
+                        clipped: button.scrollWidth > button.clientWidth + 1 };
+                });
+                const sizes = el.parentElement._cardLayoutSizes;
+                return { id: el.parentElement.dataset.stageId, side: el.parentElement.dataset.placement,
+                    cardDirection: getComputedStyle(el).flexDirection, contentDirection: getComputedStyle(content).flexDirection,
+                    actionDirection: getComputedStyle(actions).flexDirection, actionWidth: actions.clientWidth,
+                    cornerDisplay: getComputedStyle(el.querySelector('.stage-select-card-corner')).display,
+                    animationName: getComputedStyle(el).animationName,
+                    sameSizeForEverySide: ['above', 'below', 'left', 'right'].every(side =>
+                        sizes[side].width === sizes.above.width && sizes[side].height === sizes.above.height),
+                    cardBounds: { left: cardRect.left, top: cardRect.top, right: cardRect.right, bottom: cardRect.bottom }, buttons };
+            });
+            report.reportedCards.push(contract);
+            assert.equal(contract.cardDirection, 'column');
+            assert.equal(contract.contentDirection, 'column');
+            assert.equal(contract.actionDirection, 'row');
+            assert.ok(contract.actionWidth > 100, 'side card retains the full-width horizontal action row');
+            assert.equal(contract.cornerDisplay, 'none');
+            assert.equal(contract.sameSizeForEverySide, true);
+            assert.equal(contract.animationName, 'stageSelectCardFade');
+            assert.ok(contract.buttons.length > 0);
+            for (const button of contract.buttons) {
+                assert.equal(button.clipped, false, button.text + ' must not be clipped');
+                assert.equal(button.singleLine, true, 'diplomacy action must stay on one line');
+                assert.ok(button.left >= contract.cardBounds.left - 1 && button.right <= contract.cardBounds.right + 1
+                    && button.top >= contract.cardBounds.top - 1 && button.bottom <= contract.cardBounds.bottom + 1,
+                    button.text + ' must fit within the card');
+            }
+            await card.evaluate(el => Promise.all(el.getAnimations().map(animation => animation.finished.catch(() => {}))));
+            await page.screenshot({ path: path.join(out, id + '-hover.png') });
+        }
+        assert.ok(report.reportedCards.some(card => card.side === 'left' || card.side === 'right'), 'exercise the actual side-facing diplomacy card');
+        await page.emulateMedia({ reducedMotion: 'reduce' });
+        assert.equal(await page.locator('.stage-select-card-anchor.is-card-open > .stage-select-card').evaluate(el => getComputedStyle(el).animationName), 'none');
+        await page.emulateMedia({ reducedMotion: 'no-preference' });
+        report.checks.push('reported combat/diplomacy cards share one horizontal-action structure; all side sizes match, text fits, corner is absent and opacity fade honors reduced motion');
         await page.evaluate(() => StageSelectHarnessHost.open({ mode: 'runtime', frameLabel: '基地门口' }));
         await ready();
         const beforeIdle = await page.evaluate(() => StageSelectDiorama.stats());

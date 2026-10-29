@@ -1,6 +1,9 @@
 ﻿_root.主角函数={};
 trace("FocusedTestRunId shoot-reload-timeline Start: __FOCUSED_RUN_ID__");
 _root.shootReloadTimelineComplete=function():Void {
+org.flashNight.arki.unit.Action.Shoot.DualGunReloadTimelineTest.runAllTests();
+};
+_root.dualGunReloadTimelineComplete=function():Void {
 org.flashNight.arki.unit.Action.Shoot.ShootReloadCadenceTest.runAllTests();
 org.flashNight.arki.unit.Action.Shoot.GunslingerDualCadenceTest.runAllTests();
 org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntimeTest.runAllTests();

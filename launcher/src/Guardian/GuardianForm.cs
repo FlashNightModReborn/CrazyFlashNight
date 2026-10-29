@@ -396,6 +396,7 @@ namespace CF7Launcher.Guardian
             _flashPanel.BackColor = Color.Black;
             _flashPanel.Visible = (bootstrapWebDir == null);  // bus-only: 直接可见
             this.Controls.Add(_flashPanel);
+            SyncRuntimeHostBounds(this, _flashPanel, _logVisible ? _logBar.Height : 0);
 
             // Phase A: BootstrapPanel（仅正常模式；后加 = 更高 z-order 显示在 Flash 之上）
             if (bootstrapWebDir != null)
@@ -1050,6 +1051,9 @@ namespace CF7Launcher.Guardian
         private void RefreshRuntimeViewport(string reason)
         {
             if(IsDisposed || Disposing) return;
+            // WinForms skips Dock layout for an invisible control during bootstrap.
+            // Keep the native anchor current even before Flash becomes visible.
+            SyncRuntimeHostBounds(this, _flashPanel, _logVisible ? _logBar.Height : 0);
             if (_windowManager != null)
                 _windowManager.ResizeFlashToPanel();
             if (_webOverlay != null)
@@ -1059,6 +1063,18 @@ namespace CF7Launcher.Guardian
             // WebOverlay; no focus or visibility is granted by this operation.
             int refreshed=SyncNativeOwnedSurfaces(this);
             if(FocusTrace.Enabled) LogManager.Log("event=native_viewport_sync reason="+reason+" client="+ClientRectangle+" anchor="+_flashPanel.RectangleToScreen(_flashPanel.ClientRectangle)+" surfaces="+refreshed);
+        }
+        internal static bool SyncRuntimeHostBounds(Form owner, Control panel, int bottomReserved)
+        {
+            if (owner == null || panel == null || owner.IsDisposed || owner.Disposing
+                || panel.IsDisposed || panel.Disposing || owner.WindowState == FormWindowState.Minimized)
+                return false;
+            Rectangle bounds = owner.ClientRectangle;
+            bounds.Height -= Math.Min(bounds.Height, Math.Max(0, bottomReserved));
+            if (bounds.Width <= 0 || bounds.Height <= 0 || panel.Bounds == bounds)
+                return false;
+            panel.Bounds = bounds;
+            return true;
         }
         internal static int SyncNativeOwnedSurfaces(Form owner)
         {

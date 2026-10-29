@@ -1,0 +1,230 @@
+{
+  "schema": "cf6-soldier.elite-motion.v1",
+  "frameRate": 30,
+  "sourceBindFrame": 53,
+  "sidearmBindFrame": 22,
+  "targetStandBind": {
+    "sequence": "507",
+    "frame": 1
+  },
+  "actions": {
+    "retreat": {
+      "first": 2,
+      "last": 44,
+      "weaponMode": "dual",
+      "phases": [
+        {
+          "name": "close",
+          "first": 2,
+          "last": 20
+        },
+        {
+          "name": "withdraw",
+          "first": 21,
+          "last": 44
+        }
+      ],
+      "fireEvents": [
+        {
+          "frame": 21,
+          "weapon": "primary"
+        },
+        {
+          "frame": 22,
+          "weapon": "secondary"
+        },
+        {
+          "frame": 27,
+          "weapon": "primary"
+        },
+        {
+          "frame": 28,
+          "weapon": "secondary"
+        },
+        {
+          "frame": 33,
+          "weapon": "primary"
+        },
+        {
+          "frame": 34,
+          "weapon": "secondary"
+        },
+        {
+          "frame": 39,
+          "weapon": "primary"
+        },
+        {
+          "frame": 40,
+          "weapon": "secondary"
+        }
+      ]
+    },
+    "stand": {
+      "first": 46,
+      "last": 77,
+      "weaponMode": "primary",
+      "phases": [
+        {
+          "name": "engage",
+          "first": 46,
+          "last": 77
+        }
+      ],
+      "fireEvents": [
+        {
+          "frame": 54,
+          "weapon": "primary"
+        },
+        {
+          "frame": 58,
+          "weapon": "primary"
+        },
+        {
+          "frame": 62,
+          "weapon": "primary"
+        },
+        {
+          "frame": 66,
+          "weapon": "primary"
+        },
+        {
+          "frame": 70,
+          "weapon": "primary"
+        }
+      ]
+    },
+    "slide": {
+      "first": 206,
+      "last": 248,
+      "weaponMode": "primary",
+      "phases": [
+        {
+          "name": "smokeWindup",
+          "first": 206,
+          "last": 211
+        },
+        {
+          "name": "low",
+          "first": 212,
+          "last": 228
+        },
+        {
+          "name": "recover",
+          "first": 229,
+          "last": 248
+        }
+      ],
+      "fireEvents": [
+        {
+          "frame": 212,
+          "weapon": "primary"
+        },
+        {
+          "frame": 216,
+          "weapon": "primary"
+        },
+        {
+          "frame": 220,
+          "weapon": "primary"
+        },
+        {
+          "frame": 224,
+          "weapon": "primary"
+        },
+        {
+          "frame": 228,
+          "weapon": "primary"
+        }
+      ],
+      "entryFrame": 212
+    },
+    "reload": {
+      "first": 78,
+      "last": 121,
+      "weaponMode": "primary",
+      "phases": [
+        {
+          "name": "reload",
+          "first": 78,
+          "last": 121
+        }
+      ],
+      "fireEvents": []
+    },
+    "run": {
+      "first": 166,
+      "last": 205,
+      "weaponMode": "primary",
+      "phases": [
+        {
+          "name": "run",
+          "first": 166,
+          "last": 205
+        }
+      ],
+      "fireEvents": [
+        {
+          "frame": 174,
+          "weapon": "primary"
+        },
+        {
+          "frame": 178,
+          "weapon": "primary"
+        },
+        {
+          "frame": 182,
+          "weapon": "primary"
+        },
+        {
+          "frame": 186,
+          "weapon": "primary"
+        },
+        {
+          "frame": 190,
+          "weapon": "primary"
+        },
+        {
+          "frame": 194,
+          "weapon": "primary"
+        },
+        {
+          "frame": 198,
+          "weapon": "primary"
+        },
+        {
+          "frame": 202,
+          "weapon": "primary"
+        }
+      ]
+    }
+  },
+  "fireGraceFrames": 2,
+  "shootRestFrames": 30,
+  "movement": {
+    "retreat": {
+      "speedMultiplier": 1.0,
+      "laneStrafe": false,
+      "keepDistance": 430,
+      "firstMovingFrame": 8,
+      "lastMovingFrame": 44
+    },
+    "slide": {
+      "direction": "forward-locked-at-entry",
+      "stopRangeAuthority": "soldierTuning.knifeRange",
+      "runSpeedMultiplier": 1.0,
+      "lowSpeedMultiplier": 1.0,
+      "laneStrafe": true,
+      "firstMovingFrame": 212,
+      "lastMovingFrame": 228
+    },
+    "run": {
+      "direction": "forward-locked-at-entry",
+      "stopRangeAuthority": "soldierTuning.knifeRange",
+      "runSpeedMultiplier": 1.0,
+      "lowSpeedMultiplier": 1.0,
+      "laneStrafe": true,
+      "firstMovingFrame": 166,
+      "lastMovingFrame": 205
+    }
+  }
+}

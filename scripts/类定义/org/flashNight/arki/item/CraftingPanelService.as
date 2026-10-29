@@ -606,6 +606,7 @@ class org.flashNight.arki.item.CraftingPanelService {
     private static function buildPlan(category:String, recipeIndex:Number, recipe:Object,
             craftCount:Number, calculateMaximum:Boolean,
             procurementSources:Object, ownedIndex:Object, technique:Object):Object {
+        if (!org.flashNight.arki.scene.Cf6Type61Service.recipeAllowed(String(recipe.recipeId))) return fail("recipe_not_found");
         var baseRequirements:Array = ItemUtil.getRequirementFromTask(recipe.materials || []);
         // 卡莫特林可选的配方在选择加入时按份数追加一份材料需求；
         // 未声明调制方式的配方 technique 为 null，需求保持不变。
@@ -1019,6 +1020,7 @@ class org.flashNight.arki.item.CraftingPanelService {
     private static function projectRecipe(category:String, recipe:Object, recipeIndex:Number,
             procurementSources:Object, ownedIndex:Object):Object {
         if (recipe == null || !ItemUtil.isItem(String(recipe.name))) return null;
+        if (!org.flashNight.arki.scene.Cf6Type61Service.recipeAllowed(String(recipe.recipeId))) return null;
         _availabilityPlanCount++;
         var availabilityPlan:Object = buildPlan(
             category, recipeIndex, recipe, 1, false, procurementSources, ownedIndex);
@@ -1198,6 +1200,7 @@ class org.flashNight.arki.item.CraftingPanelService {
         if (recipes == null) return fail("category_not_found");
         if (isNaN(recipeIndex) || Math.floor(recipeIndex) != recipeIndex
                 || recipeIndex < 0 || recipeIndex >= recipes.length) return fail("recipe_not_found");
+        if (!org.flashNight.arki.scene.Cf6Type61Service.recipeAllowed(String(recipes[recipeIndex].recipeId))) return fail("recipe_not_found");
         return {success:true, recipe:recipes[recipeIndex]};
     }
 

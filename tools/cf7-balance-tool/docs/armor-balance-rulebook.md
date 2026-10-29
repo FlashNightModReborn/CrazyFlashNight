@@ -30,6 +30,10 @@
 
 armor 家族按文件名分治，只允许登记 `data/items/防具_*.xml`，不触碰 weapon/potion 家族的任何文件。
 
+付费合成可用 `acquisition.kpoint-cost` 记录独立K点门槛；`kpointEvidenceRef` 必须指向 `data/crafting/<文件>.json#<recipeId>`，读取精确配方的 `kprice`。K店沿用 `acquisition.kshop`，两条路径均要求真实成本证据，不能把金币价格或其他配方当作K点成本。
+
+`armor-balance-sync/check --items 名称1,名称2` 支持明确的物品范围：计划内分数、价格、工作簿和派生一致性门不变，覆盖完整性只检查所列物品；同步只写所列物品的内联摘要，审计账本仍反映全部已登记记录。输出明确标记SCOPED，不能代签全目录覆盖；无参数继续使用全量门。
+
 ## 3. 数值模型（M 层）
 
 | 条款 ID | 判据 | 来源 |

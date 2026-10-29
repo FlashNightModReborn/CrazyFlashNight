@@ -233,6 +233,12 @@ powershell -ExecutionPolicy Bypass -File scripts/capture_screenshot.ps1
 
   修复后用 IDE 的"另存为 UTF-8 with BOM"重写一次，或用 `printf '\xef\xbb\xbf'` 前置后再编译
 
+### 重启后仍停在导出 SWF，或完整类编译发生原生异常
+
+先保留本轮输入、Output、Compiler、未完成SWF及未知marker，区分仍在消耗CPU的编译与长期无进展的导出。检查本机 `%LOCALAPPDATA%\Adobe\Flash CS6\<语言>\Configuration\Classes\aso` 是否存在与故障时间对应的0字节类缓存；重启不会重建这些磁盘缓存。空缓存是排查线索，不能仅凭它认定故障原因。
+
+确认本轮独占测试宿主已退出、计划任务空闲、scratch原件按SHA-256恢复且迟到产物稳定后，按既有未知状态恢复规则收束失败；再记录空缓存的完整路径、时间、大小与摘要，将该文件移入本轮证据目录保全。只隔离已核对的异常缓存，不清空全局缓存或修改源码绕过。重新运行同一源输入，要求缓存重新生成、新鲜Compiler `0/0`和完整suite行为；失败原件继续保留。仅有导出进度变化不能称验证通过。
+
 ### 仍然弹 UAC
 
 - **`CompileTriggerTask` / `FlashCS6Task` 必须 `RunLevel=Highest`**（`setup_compile_env.ps1::Register-CompileTask` 的默认值），并且编译任务直接执行已配置的 `Flash.exe`，参数为带引号的 CF7 Loader 绝对路径。旧版 `cmd /c start` 仍会经过 `.jsfl` 文件关联；与 Animate 共存时可能弹出打开方式选择器，并在选择程序后再次请求 UAC，不能仅凭 Highest 判定整条链路免弹窗。

@@ -31,11 +31,11 @@ from PIL import Image, __version__ as PILLOW_VERSION
 SCHEMA = "cf7-shop-portraits-v1"
 PROVENANCE_SCHEMA = "cf7-shop-portrait-provenance-v1"
 RECEIPT_SCHEMA = "cf7-shop-portrait-promotion-receipt-v1"
-GENERATOR_VERSION = "1.1.1"
+GENERATOR_VERSION = "1.1.2"
 GEOMETRY = {"width": 256, "height": 256}
 PADDING = 16
-EXPECTED_LIST_COUNT = 45
-EXPECTED_ACTIVE_COUNT = 44
+EXPECTED_LIST_COUNT = 51
+EXPECTED_ACTIVE_COUNT = 50
 EXCLUDED_SHOPS = {"幸存老兵-暂时停用"}
 # Same character, separate inventory authority. Keep both exact runtime shopIds;
 # only these declared identities may share the existing portrait pixels.
@@ -46,6 +46,12 @@ SHARED_SHOP_PORTRAITS = {
     "书中-CF6毒刺-45级": "迷之盔甲君",
     "书中-CF6毒刺-55级": "迷之盔甲君",
     "书中-CF6毒刺-60级": "迷之盔甲君",
+    "书中-CF6六一-A01": "迷之盔甲君",
+    "书中-CF6六一-A05": "迷之盔甲君",
+    "书中-CF6六一-A08": "迷之盔甲君",
+    "书中-CF6六一-A11": "迷之盔甲君",
+    "书中-CF6六一-A16": "迷之盔甲君",
+    "书中-CF6六一-A19": "迷之盔甲君",
 }
 DEFAULT_EXPRESSION = "普通"
 DIALOGUE_LINKAGE = "对话框肖像"

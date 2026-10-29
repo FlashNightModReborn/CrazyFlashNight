@@ -1232,6 +1232,56 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Empty(harness.LastPlayed);
         }
 
+        [Theory]
+        [InlineData("current", "slot_failure", true)]
+        [InlineData("stale", "slot_failure", false)]
+        [InlineData("current", "foreign_slot", false)]
+        public void SceneFailureReceipt_RequiresExactPendingEntry(string receivedAttempt, string receivedSlot, bool accepted)
+        {
+            using var harness = new Harness();
+            const string attempt = "current";
+            const string slot = "slot_failure";
+            harness.SeedShadow(slot, "场景失败", 12);
+            harness.PreparePrewarmAttempt(attempt);
+            harness.Flow.StartGameFromBootstrap(slot, false, true);
+            harness.SetState(GameLaunchFlow.State.WaitingGameReady);
+            harness.SendBootstrap("bootstrap_ready", attempt);
+            harness.SendBootstrap("bootstrap_reveal_ready", attempt);
+            var message = new JObject { ["task"]="scene_initialization_failed", ["v"]=1,
+                ["attemptId"]=receivedAttempt, ["slotKey"]=receivedSlot, ["reason"]="fixture_numeric_failure" };
+            harness.Send(message);
+            Assert.Equal(accepted ? GameLaunchFlow.State.Error.ToString() : GameLaunchFlow.State.Ready.ToString(), harness.Flow.CurrentState);
+            Assert.False(harness.Flow.RevealPerformed);
+            Assert.Empty(harness.LastPlayed);
+            if (accepted)
+            {
+                Assert.Null(GetPrivateField<Timer>(harness.Flow, "_frontdoorSceneWatchdog"));
+                harness.Send(message);
+                harness.Flow.ObserveUiData(new UiDataPacket("s:1|ga:" + attempt));
+                Assert.Equal(GameLaunchFlow.State.Error.ToString(), harness.Flow.CurrentState);
+                Assert.False(harness.Flow.RevealPerformed);
+            }
+        }
+
+        [Fact]
+        public void SceneFailureReceipt_AfterCompletedEntryCannotKillGameplay()
+        {
+            using var harness = new Harness();
+            const string attempt = "completed";
+            const string slot = "slot_completed";
+            harness.SeedShadow(slot, "已进入", 12);
+            harness.PreparePrewarmAttempt(attempt);
+            harness.Flow.StartGameFromBootstrap(slot, false, true);
+            harness.SetState(GameLaunchFlow.State.WaitingGameReady);
+            harness.SendBootstrap("bootstrap_ready", attempt);
+            harness.SendBootstrap("bootstrap_reveal_ready", attempt);
+            harness.Flow.ObserveUiData(new UiDataPacket("s:1|ga:" + attempt));
+            harness.Send(new JObject { ["task"]="scene_initialization_failed", ["v"]=1,
+                ["attemptId"]=attempt, ["slotKey"]=slot, ["reason"]="late" });
+            Assert.Equal(GameLaunchFlow.State.Ready.ToString(), harness.Flow.CurrentState);
+            Assert.True(harness.Flow.RevealPerformed);
+        }
+
         [Fact]
         public void ResetInvalidatesQueuedSceneWatchdogCallback()
         {

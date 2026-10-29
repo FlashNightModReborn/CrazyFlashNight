@@ -54,6 +54,20 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
         [InlineData("敌人-制式军警犬")]
         [InlineData("敌人-盗贼撕咬犬")]
         [InlineData("敌人-军阀铁卫犬")]
+        [InlineData("敌人-武装JK")]
+        [InlineData("敌人-延寿克隆兽")]
+        [InlineData("敌人-完全体克隆兽")]
+        [InlineData("敌人-CF6普通男僵尸")]
+        [InlineData("敌人-CF6女僵尸")]
+        [InlineData("敌人-CF6蛮蛮")]
+        [InlineData("敌人-CF6Wings")]
+        [InlineData("敌人-CF6大刀机器人")]
+        [InlineData("敌人-CF6特种兵")]
+        [InlineData("敌人-CF6光头保安")]
+        [InlineData("敌人-CF6变身光头保安")]
+        [InlineData("敌人-CF6大头机器人")]
+        [InlineData("敌人-CF6老头人形")]
+        [InlineData("敌人-CF6老头机器人")]
         public void TryGet_DirectPortrait_RendersVisibleImageWithTransparency(string portraitRef)
         {
             using (LootIconCatalog catalog = NewCatalog())
@@ -78,8 +92,6 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
                         if (pixel.A >= 192 && brightest - darkest > 30) coloredPixels++;
                     }
                 }
-                Assert.True(coloredPixels > 64, "Portrait image was not decoded.");
-                Assert.True(transparentPixels > 128, "Portrait transparency was lost.");
                 string outputDir = Environment.GetEnvironmentVariable("CF7_TEST_PORTRAIT_OUTPUT");
                 if (!string.IsNullOrEmpty(outputDir))
                 {
@@ -87,6 +99,44 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
                     frames.First.Save(Path.Combine(outputDir, portraitRef + ".png"),
                         System.Drawing.Imaging.ImageFormat.Png);
                 }
+                Assert.True(coloredPixels > 64, "Portrait image was not decoded.");
+                Assert.True(transparentPixels > 128, "Portrait transparency was lost.");
+            }
+        }
+
+        [Fact]
+        public void TryGet_ShieldCommando_NeutralArmorRendersVisibleDetail()
+        {
+            using (LootIconCatalog catalog = NewCatalog())
+            {
+                LootIconCatalog.LootIconFrames frames;
+                Assert.True(catalog.TryGet("敌人-CF6持盾特种兵", out frames));
+                Assert.False(frames.Animated);
+                Assert.Equal(LootIconCatalog.ThumbSize, frames.First.Width);
+                Assert.Equal(LootIconCatalog.ThumbSize, frames.First.Height);
+
+                int opaquePixels = 0, transparentPixels = 0, contrastingPixels = 0;
+                double darkestLuma = 255, brightestLuma = 0;
+                for (int y = 0; y < frames.First.Height; y++)
+                {
+                    for (int x = 0; x < frames.First.Width; x++)
+                    {
+                        Color pixel = frames.First.GetPixel(x, y);
+                        if (pixel.A == 0) transparentPixels++;
+                        if (pixel.A < 192) continue;
+                        opaquePixels++;
+                        double luma = (pixel.R + pixel.G + pixel.B) / 3.0;
+                        darkestLuma = Math.Min(darkestLuma, luma);
+                        brightestLuma = Math.Max(brightestLuma, luma);
+                        int brightest = Math.Max(pixel.R, Math.Max(pixel.G, pixel.B));
+                        int darkest = Math.Min(pixel.R, Math.Min(pixel.G, pixel.B));
+                        if (brightest - darkest > 30) contrastingPixels++;
+                    }
+                }
+                Assert.True(opaquePixels > 1024, "Native vector is blank or missing armor geometry.");
+                Assert.True(transparentPixels > 128, "Portrait transparency was lost.");
+                Assert.True(brightestLuma - darkestLuma > 96, "Neutral armor detail was not decoded.");
+                Assert.True(contrastingPixels > 16, "The observation port lost its small contrasting detail.");
             }
         }
 

@@ -2885,6 +2885,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         #include "../macros/FLAG_CHAIN.as"
         #include "../macros/FLAG_MELEE.as"
         #include "../macros/FLAG_PIERCE.as"
+        #include "../macros/FLAG_VERTICAL.as"
         #include "../macros/FLAG_EXPLOSIVE.as"
         #include "../macros/FLAG_UNIT_BULLET.as"
 
@@ -2896,6 +2897,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var gameWorld:MovieClip = _root.gameworld;
         var debugMode:Boolean = _root.调试模式;
         var MELEE_EXPLOSIVE_MASK:Number = FLAG_MELEE | FLAG_EXPLOSIVE;
+        var VERTICAL_PIERCE_MASK:Number = FLAG_VERTICAL | FLAG_PIERCE;
         var PIERCE_LIMIT_REMOVE:Number = KF_PIERCE_LIMIT_REMOVE;
         var MODE_VANISH:Number = KF_MODE_VANISH;
         var MODE_REMOVE:Number = KF_MODE_REMOVE;
@@ -2995,7 +2997,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var filterMarker:String;            // 逐弹目标过滤标记（仅命中目标标记；undefined=不过滤）
         var filterArmed:Boolean;            // 过滤开关逐弹缓存（targetFilterEnabled===true）
         var areaAABB:AABBCollider;          // 子弹的AABB碰撞检测器
-        var isPointSet:Boolean;             // 是否需要精确多边形碰撞检测（旋转联弹）
+        var isPointSet:Boolean;             // 纵向穿刺全角度使用覆盖率；其他联弹保留旋转门控
         var rot:Number;                     // 子弹旋转角度（仅联弹需要）
         var bulletZOffset:Number;           // 子弹Z轴坐标
         var bulletZRange:Number;            // 子弹Z轴攻击范围
@@ -3228,8 +3230,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                 wantDestroy = false;
                 isPointSet = (flags & FLAG_CHAIN) != 0;
                 if (isPointSet) {
-                    rot = bullet._rotation;
-                    isPointSet = rot != 0 && rot != 180;
+                    // 纵向穿刺沿用既有非水平几何和7/18惩罚；水平也必须取得同一覆盖率，
+                    // 不能以长AABB的布尔命中和恒定ratio=1反复结算整组预算。
+                    if ((flags & VERTICAL_PIERCE_MASK) != VERTICAL_PIERCE_MASK) {
+                        rot = bullet._rotation;
+                        isPointSet = rot != 0 && rot != 180;
+                    }
                 }
                 shotgunGroup = bullet.chainGroup;
                 isShotgunPattern = shotgunGroup.shotgun != null;

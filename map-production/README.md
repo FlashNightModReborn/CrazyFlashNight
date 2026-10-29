@@ -1,10 +1,10 @@
 # 地图生产任务台
 
-这是本批次地图生产的唯一任务入口。任务定义在 `tasks.json`，人类可读关卡清单在 `stage-inventory.md`，制作规范在 `map-standard.md`。
+这是本批次地图生产的唯一任务入口。任务定义在 `tasks.json`，人类可读关卡清单在 `stage-inventory.md`，制作规范在 `map-standard.md`，绘制流程与守则在 `map-drawing-sop.md`。
 
 > 本流程暂不写入 `AGENTS.md`，不做全局自动注入。等流程跑通后，由用户明确指示其他 Qoder 阅读本文件；在此之前不要把本文件加进 `AGENTS.md` 路由。
 
-**当前进度**：任务台、规范、校验和矢量转换工具已建立；第一轮矢量样张只用于验证流程，产物在 `tmp/map-production-draft/ML-NOAH-005/`（已忽略，不入库）。流程确认后再按领取协议正式建包。
+**当前进度**：任务台、规范、SOP、校验和矢量转换工具已建立；第一轮样张已按 SOP 重绘，改用现有地图的复用元件替换简笔装饰，产物仍在 `tmp/map-production-draft/ML-NOAH-005/`（已忽略，不入库），等待人工复核。流程确认后再按领取协议正式建包。
 
 **当前范围**：只做没有任务、且没有重置过的战斗关卡地图。已有任务、已重置关卡、所有二层、地下2层、异界战场、坠毁战舰、亡灵沙漠、沙漠虫洞、旧副本、外交据点、地铁站深处全部不做。
 
@@ -14,6 +14,7 @@
 map-production/
   README.md                  # 本文件：任务台与领取协议
   map-standard.md            # 地图资产、环境片段、审阅和安装契约
+  map-drawing-sop.md         # 取证、复用、新绘细度、图层与验收流程
   stage-inventory.md         # 人类可读的关卡清单与优先级
   tasks.json                 # 静态任务定义，只由维护者更新
   claims/<task-id>.json      # 当前领取，一个任务一个文件

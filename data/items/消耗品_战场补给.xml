@@ -5,9 +5,8 @@
        由 PickupEffectService 在拾取瞬间现场结算药效词条并消耗实体。
      - 数值为易核对的测试档，非平衡终值；图标为占位，复用现有物品 icon，
        正式图标后续按资产规范装配。
-     - supplyAmmo 词条属下一片施工范围，本片尚未注册到 DrugEffectRegistry，
-       配置含该词条的补给在领取时按"配置不支持"前置拒绝（实体保留），
-       属于预期行为。
+     - supplyAmmo 已由 AmmoSupplyService 支持；满弹、换弹在途或配置不支持时保留实体。
+       61路线独立终值定义在消耗品_CF6六一配给.xml，本文件仍保留通用测试配方。
      效果词条格式与药效系统完全一致，详见: 消耗品_药剂.md -->
 <root>
   <!-- ========== 战场即时补给品（测试配方） ========== -->
@@ -47,7 +46,7 @@
     <type>消耗品</type>
     <use>战场补给</use>
     <price>0</price>
-    <description>即时补给测试品：补满已装备长枪的弹药（补弹词条本片尚未开放，领取会被前置拒绝）。</description>
+    <description>即时补给测试品：补满已装备长枪的弹药；满弹或正在装填时保留实体。</description>
     <data>
       <effects>
         <effect type="supplyAmmo" scope="longgun" />
@@ -61,7 +60,7 @@
     <type>消耗品</type>
     <use>战场补给</use>
     <price>0</price>
-    <description>即时补给测试品：补满双枪槽位的弹药（补弹词条本片尚未开放，领取会被前置拒绝）。</description>
+    <description>即时补给测试品：补满双枪槽位的弹药；满弹或正在装填时保留实体。</description>
     <data>
       <effects>
         <effect type="supplyAmmo" scope="pistols" />
@@ -75,7 +74,7 @@
     <type>消耗品</type>
     <use>战场补给</use>
     <price>0</price>
-    <description>即时补给测试品：补满全部持枪与随身背包枪械的弹药（补弹词条本片尚未开放，领取会被前置拒绝）。</description>
+    <description>即时补给测试品：补满全部持枪与随身背包枪械的弹药；满弹或正在装填时保留实体。</description>
     <data>
       <effects>
         <effect type="supplyAmmo" scope="all" />
@@ -118,7 +117,7 @@
     <type>消耗品</type>
     <use>战场补给</use>
     <price>0</price>
-    <description>即时补给测试品：恢复少量生命、强化伤害并补充三槽弹药（补弹词条本片尚未开放，领取会被前置拒绝）。</description>
+    <description>即时补给测试品：恢复少量生命、强化伤害并补充三槽弹药；满弹或正在装填时保留实体。</description>
     <data>
       <effects>
         <effect type="supplyAmmo" scope="equipped" />

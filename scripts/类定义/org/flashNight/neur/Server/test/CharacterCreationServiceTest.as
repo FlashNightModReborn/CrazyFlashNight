@@ -36,6 +36,7 @@ class org.flashNight.neur.Server.test.CharacterCreationServiceTest {
             test_durable_retry_idempotence_and_stage_only_retry();
             test_create_scene_ready_requires_exact_live_actor();
             test_resolved_save_waits_for_real_scene_ready();
+            test_scene_initialization_failure();
         } finally {
             endAppearanceItemCatalogFixture(itemCatalogReceipt);
             CharacterCreationService._resetForTests();
@@ -558,6 +559,28 @@ class org.flashNight.neur.Server.test.CharacterCreationServiceTest {
         CharacterCreationService.onSceneReady();
         assert(notifyCalls == 1 && sent.length == sentBefore,
             "duplicate SceneReady is one-shot");
+    }
+
+    private static function test_scene_initialization_failure():Void {
+        setUp();
+        CharacterCreationService.handle("resolved_save",resolvedRequest(71));
+        _root.savePath="other-slot";
+        assert(!CharacterCreationService.onSceneInitializationFailed("stale") && sent.length==0,"scene failure rejects stale slot");
+        _root.savePath="slot-A";_root._bootstrapAttemptId="other-attempt";
+        assert(!CharacterCreationService.onSceneInitializationFailed("stale") && sent.length==0,"scene failure rejects stale attempt");
+        _root._bootstrapAttemptId="attempt-A";
+        assert(CharacterCreationService.onSceneInitializationFailed("fixture_numeric"),"scene failure reaches real serializer/socket port");
+        var response:Object=lastResponse();
+        assert(response.task=="scene_initialization_failed" && response.v==1 && response.attemptId=="attempt-A"
+            && response.slotKey=="slot-A" && response.reason=="fixture_numeric","failure receipt carries exact entry identity");
+        assert(!CharacterCreationService.onSceneInitializationFailed("duplicate") && sent.length==1,"failure receipt is one-shot");
+        _root.gameworld.主角={是否为敌人:false};CharacterCreationService.onSceneReady();
+        assert(notifyCalls==0 && prepareCalls==0 && flushCalls==0,"failed entry emits no ready and retries no save");
+        setUp();flushResults=[true];
+        CharacterCreationService.handle("create",createRequest(72,maleDraft("失败后保留存档")));
+        assert(CharacterCreationService.onSceneInitializationFailed("fixture_scene"),"durable create reports scene failure");
+        var api:Object=org.flashNight.neur.Server.CharacterCreationService;
+        assert(api.isDurablePhase() && prepareCalls==1 && flushCalls==1,"scene failure does not downgrade an already durable character");
     }
 
     private static function test_resolved_save_waits_for_real_scene_ready():Void {

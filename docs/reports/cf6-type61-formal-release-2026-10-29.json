@@ -1,0 +1,452 @@
+{
+  "schema": "cf6-type61-formal-release.v1",
+  "recordedUtc": "2026-10-29T05:26:55.114862+00:00",
+  "authorization": "先提交推送，跑完整的发布列车，这样把止血部分顺带解决了，后面再继续调整流程的问题",
+  "state": "promoted",
+  "versionBoundary": "2.718 DEV / UNSTABLE; no new stable package",
+  "source": {
+    "implementationCommit": "b1e61dffd0ac5732512f6d86ddbdb6cd9bd82eeb",
+    "frozenCommit": "f031163e5c5fdcdd8910691d1e9167a47d573232",
+    "sourceTag": "runtime-build-v2/20261029-cf6-type61-hotfix-v2",
+    "releaseTreeOid": "ac3091cff62bf10c67561b86f778ceab00449f45"
+  },
+  "deployment": {
+    "commit": "353b6397754da6512c203113a56dc56a8d2b15b8",
+    "requestId": "653FF2F73A1B69383C70BD40D9E9BA480BC9ABB1C8C603AB92083C175CFBC13E",
+    "buildIdentityHash": "1305EF35FEE21EEA3BBDD5490C4B7DB0298E849A1C4D463FA93372200C4125D5",
+    "payloadClosureHash": "809DD979DD57BC97CAEDB2334A8991E46899EFFF6092E33F8F9D7D910033E32F",
+    "policyHash": "146B9C1F8CCE61320FEE84712F3043001D76A47E1DFD73C50957F129F2D3CB94",
+    "policyReceiptSha256": "7765E1EB0DDB482043723DBDD9CCF565CC907D8B052294B4CACBE6EF4BDFBDB4",
+    "files": 43,
+    "signers": 2,
+    "faultDomains": 2,
+    "promotedAtUtc": "2026-10-29T05:04:38.1997823Z",
+    "promotionExitCode": 0,
+    "bootstrapFullInstallVerifyPassedByCanonicalPromotion": true,
+    "previousBundle": "tmp/runtime-promotions/20261029T050358359Z-2df0de2327c24747be67e96d3467274f/previous"
+  },
+  "independentBuild": {
+    "runId": 40819794375,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40819794375",
+    "conclusion": "success",
+    "localSignedPayloadReusedFromRequest": "4C32B95AB1BA891819CB096FC3199A72F27338276F29C6461374A2DF0065A7F2",
+    "reuseReason": "Only policy inputs changed; artifactSourceHash, producerRecipeHash, toolchainLockHash and buildIdentityHash are equal. New request and full production policy receipt were generated."
+  },
+  "remoteDeploymentAudit": {
+    "runId": 40821521992,
+    "jobId": 123274845383,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40821521992",
+    "headCommit": "353b6397754da6512c203113a56dc56a8d2b15b8",
+    "conclusion": "success",
+    "state": "promoted",
+    "deploymentChanged": true,
+    "forcedDeploymentVerification": false,
+    "consensusMode": "Index",
+    "signers": 2,
+    "faultDomains": 2,
+    "generatedPathRegressions": "success",
+    "pathBudgetRunId": 40821521988,
+    "pathBudget": "success"
+  },
+  "validation": {
+    "host": {
+      "fullSuite": "tmp/cf6-release-20261029/host-tests/recheck.trx",
+      "firstPassed": 7956,
+      "firstResourcePrerequisiteFailures": 123,
+      "qualifiedSameBinaryRetry": "tmp/focus-sol-20261013/integration-20261029T032452096Z",
+      "retryPassed": 123,
+      "combinedPassed": 8079,
+      "skipped": 30,
+      "coreSha256": "063901D836B5700A68C7C6B49A43337E81E573BB3768A746BE61C75339E24CDD",
+      "testsSha256": "716A9428AFA1A2AFD265EC0EF910A7826ADEB96B06D61DE677B71F2701B279BF",
+      "meaning": "Two complementary runs with the same binaries; initial failures were all missing fixture resource evidence root before assertions."
+    },
+    "as2": {
+      "sourceReceipt": "docs/reports/cf6-a05-door-and-save-recheck-2026-10-29.json",
+      "actorAdmissionPassed": 18,
+      "characterBuildAndStatsPassed": 580,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "upstreamMergeChangedAs2OrSwf": false,
+      "validatedAsLoaderSha256": "b0b553dad9ed6af9c5119e652a0e5a3dc5fa0d429cb109dc7166931ffbbedebb"
+    },
+    "productionPolicy": {
+      "passed": 47,
+      "failed": 0,
+      "profile": "production"
+    },
+    "plainStandardEntry": {
+      "entry": "automation/start.ps1",
+      "arguments": [],
+      "runtimeIdentity": {
+        "runtimeMode": "formal_runtime",
+        "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "0999673D5B5625599EE00486615970E026D78741296A70D058FC9566EF40111F",
+        "buildIdentity": "1305EF35FEE21EEA3BBDD5490C4B7DB0298E849A1C4D463FA93372200C4125D5",
+        "payloadClosure": "809DD979DD57BC97CAEDB2334A8991E46899EFFF6092E33F8F9D7D910033E32F",
+        "pid": 23416,
+        "httpPort": 1192
+      },
+      "visualStates": [
+        "Initial formal launcher / development version 2.718",
+        "About and project information dialog"
+      ],
+      "exitCode": 0,
+      "saveArtifactCountUnchanged": 121,
+      "gameWorldEntered": false,
+      "asLoaderSha256": "b0b553dad9ed6af9c5119e652a0e5a3dc5fa0d429cb109dc7166931ffbbedebb",
+      "testedBeforePostReleaseUpstreamSync": true
+    },
+    "targetedFormalRuntime": {
+      "runDirectory": "tmp/workbench-live-e2e/cf6/20261029050959819-dominator-box",
+      "slot": "cf7_agent_cf6_formal_1029",
+      "status": "targeted_fixture_verified",
+      "legacyHttpAutomation": true,
+      "cdpObservation": true,
+      "processes": [
+        {
+          "identity": {
+            "runtimeMode": "formal_runtime",
+            "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+            "coreSha256": "0999673D5B5625599EE00486615970E026D78741296A70D058FC9566EF40111F",
+            "buildIdentity": "1305EF35FEE21EEA3BBDD5490C4B7DB0298E849A1C4D463FA93372200C4125D5",
+            "payloadClosure": "809DD979DD57BC97CAEDB2334A8991E46899EFFF6092E33F8F9D7D910033E32F",
+            "pid": 11860,
+            "httpPort": 1192
+          },
+          "expectedAttemptId": "f0a9d5b1682c4c4bad24cb4bd6a9ae1a",
+          "shutdown": {
+            "result": {
+              "success": true,
+              "ok": true,
+              "task": "agent_control",
+              "note": "shutdown_requested",
+              "launchState": "Ready",
+              "revealPerformed": true,
+              "socketConnected": true,
+              "gameEnteredObserved": true,
+              "gameEnteredAttemptId": "f0a9d5b1682c4c4bad24cb4bd6a9ae1a",
+              "readyForRuntimeAutomation": true,
+              "runtimeReadyBlockedBy": [],
+              "readyForArenaCalibration": true,
+              "readyBlockedBy": [],
+              "save": {
+                "attemptId": "f0a9d5b1682c4c4bad24cb4bd6a9ae1a",
+                "slot": "cf7_agent_cf6_formal_1029",
+                "decision": "snapshot",
+                "kind": "Snapshot",
+                "source": "json_shadow",
+                "corruptDetail": null
+              },
+              "saveRuntime": {
+                "loaded": true,
+                "savePath": "cf7_agent_cf6_formal_1029",
+                "attemptId": "f0a9d5b1682c4c4bad24cb4bd6a9ae1a",
+                "source": "launcher_snapshot:json_shadow",
+                "role": "fs",
+                "level": 99
+              },
+              "arenaCalibration": {
+                "success": true,
+                "ok": true,
+                "task": "arena_calibration",
+                "workerId": "guardian",
+                "sessionEpoch": "4dfeddfd6d254f6885095966e6769a0c",
+                "assignmentId": null,
+                "attemptId": null,
+                "transportPoisoned": false,
+                "state": "idle",
+                "note": null,
+                "batchId": null,
+                "manifestHash": null,
+                "manifestPath": null,
+                "frozenManifestPath": null,
+                "resultPath": null,
+                "totalRuns": 0,
+                "completedRuns": 0,
+                "currentCaseId": null,
+                "currentRunId": null,
+                "lastError": null,
+                "lastResult": null
+              },
+              "activePanel": {
+                "name": null,
+                "instanceId": null
+              }
+            },
+            "processFamilyExited": true,
+            "at": "2026-10-29T05:17:13.139Z"
+          }
+        },
+        {
+          "identity": {
+            "runtimeMode": "formal_runtime",
+            "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+            "coreSha256": "0999673D5B5625599EE00486615970E026D78741296A70D058FC9566EF40111F",
+            "buildIdentity": "1305EF35FEE21EEA3BBDD5490C4B7DB0298E849A1C4D463FA93372200C4125D5",
+            "payloadClosure": "809DD979DD57BC97CAEDB2334A8991E46899EFFF6092E33F8F9D7D910033E32F",
+            "pid": 17844,
+            "httpPort": 1192
+          },
+          "expectedAttemptId": "ba4ffbeb4e8a42049ad3c315af28f131",
+          "shutdown": {
+            "result": {
+              "success": true,
+              "ok": true,
+              "task": "agent_control",
+              "note": "shutdown_requested",
+              "launchState": "Ready",
+              "revealPerformed": true,
+              "socketConnected": true,
+              "gameEnteredObserved": true,
+              "gameEnteredAttemptId": "ba4ffbeb4e8a42049ad3c315af28f131",
+              "readyForRuntimeAutomation": true,
+              "runtimeReadyBlockedBy": [],
+              "readyForArenaCalibration": true,
+              "readyBlockedBy": [],
+              "save": {
+                "attemptId": "ba4ffbeb4e8a42049ad3c315af28f131",
+                "slot": "cf7_agent_cf6_formal_1029",
+                "decision": "snapshot",
+                "kind": "Snapshot",
+                "source": "sol",
+                "corruptDetail": null
+              },
+              "saveRuntime": {
+                "loaded": true,
+                "savePath": "cf7_agent_cf6_formal_1029",
+                "attemptId": "ba4ffbeb4e8a42049ad3c315af28f131",
+                "source": "launcher_snapshot:sol",
+                "role": "fs",
+                "level": 99
+              },
+              "arenaCalibration": {
+                "success": true,
+                "ok": true,
+                "task": "arena_calibration",
+                "workerId": "guardian",
+                "sessionEpoch": "d75d2d3603f24d538ae51cc1d47a190d",
+                "assignmentId": null,
+                "attemptId": null,
+                "transportPoisoned": false,
+                "state": "idle",
+                "note": null,
+                "batchId": null,
+                "manifestHash": null,
+                "manifestPath": null,
+                "frozenManifestPath": null,
+                "resultPath": null,
+                "totalRuns": 0,
+                "completedRuns": 0,
+                "currentCaseId": null,
+                "currentRunId": null,
+                "lastError": null,
+                "lastResult": null
+              },
+              "activePanel": {
+                "name": null,
+                "instanceId": null
+              }
+            },
+            "processFamilyExited": true,
+            "at": "2026-10-29T05:20:02.764Z"
+          }
+        }
+      ],
+      "firstDominatorClosePersistenceSuccess": true,
+      "equipmentMutationCount": 1,
+      "boxOpenMutationCount": 1,
+      "boxConsumed": 1,
+      "boxRemaining": 1,
+      "newReward": "光斧金牛",
+      "newRewardCount": 1,
+      "coldReadSummary": {
+        "handgun": "dominator",
+        "boxCount": 1,
+        "dominatorCount": 1,
+        "constellations": {
+          "光剑天秤": 1,
+          "光斧金牛": 1,
+          "光刀狮子": 0,
+          "光刃摩羯": 0,
+          "血色光剑天秤": 1
+        }
+      },
+      "saveArtifactCountUnchanged": 121,
+      "saveSetSha256": "4192fc8235f530767ae48518ef1abb0f9f47dcceb7f9729550d2c6a88b0d2d0a",
+      "eventChainVerified": true,
+      "events": 142,
+      "chainHead": "f8d1337989f95aacb180765988fabdf3fc579b5b6118884ba6a57cbb43635391",
+      "cloneLockReleased": true,
+      "recoveryRecordReleased": true,
+      "asLoaderSha256": "b0b553dad9ed6af9c5119e652a0e5a3dc5fa0d429cb109dc7166931ffbbedebb",
+      "testedBeforePostReleaseUpstreamSync": true
+    }
+  },
+  "boundaries": {
+    "fullCf6A05TraversalExecuted": false,
+    "fullChapterExecuted": false,
+    "originalTesterSaveReplayed": false,
+    "physicalInputAttestation": false,
+    "earlierFullRouteFixtureGate": "Legacy special-soldier proportion qualification mismatch, retained from the earlier report; not changed or treated as passed by this release."
+  },
+  "negativeEvidence": [
+    {
+      "kind": "policy_v1_failure",
+      "detail": "46/47; stale portrait provenance after eleven shop catalog changes. Canonical rebake preserved all 38 PNGs and runtime manifest byte-for-byte; new v2 tag/request/receipt passed."
+    },
+    {
+      "kind": "host_test_prerequisites",
+      "detail": "123 initial test failures were resource qualification prerequisites before business assertions. The same binary passed all 123 under the canonical qualified fixture runner; 30 specialized skips remain."
+    },
+    {
+      "kind": "release_host_mismatch",
+      "detail": "An early request attempt used the wrong PowerShell host; preserved and restarted under Windows PowerShell 5.1 with isolated module environment."
+    },
+    {
+      "kind": "cloud_status_transport",
+      "detail": "GitHub API EOF after dispatch. Both cloud jobs succeeded; resumed the same run 40819794375 without redispatch."
+    },
+    {
+      "kind": "test_shortcut_refused_before_dispatch",
+      "detail": "The shared test session does not expose openCharacterBuild. The refused request is retained; all three equipment-panel opens used the observed in-game Equipment button."
+    },
+    {
+      "kind": "initial_occluded_capture",
+      "detail": "The first plain-entry capture did not match the target window. Excluded from visual evidence; explicit foreground recapture succeeded."
+    }
+  ],
+  "preservedWork": {
+    "filesRestored": 33,
+    "allOriginalRawHashesMatched": true,
+    "stashRetained": "28f5a145931e26a960c2f48d14b693dc7d7ec37c",
+    "committedWithRelease": false,
+    "runtimeAndLoaderHashesUnchanged": true,
+    "verificationOrder": "Formal runtime and UI checks ran before restoration of the unrelated stage-select working changes.",
+    "secondRestorationAfterUpstreamSync": true,
+    "secondStashRetained": "3c7c880a1b6b543368d256fd16806ba4f4432e2b"
+  },
+  "artifacts": [
+    {
+      "path": "tmp/cf6-release-20261029/host-qualification.json",
+      "bytes": 617,
+      "sha256": "2ce4a0a76921c5898eefc5105abbe567fb03f09741e7cdc86cd7f5807c5f069d"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/policy-v1.json",
+      "bytes": 26342,
+      "sha256": "ebf4edd8ff03a46f2aa32e9116ebe8a553244817486db78c016aa5792f387bf5"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/policy-v2.json",
+      "bytes": 26318,
+      "sha256": "7765e1eb0ddb482043723dbdd9ccf565cc907d8b052294b4cacbe6ef4bdfbdb4"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/request-result.json",
+      "bytes": 1122,
+      "sha256": "23883c483f0a76c6bd07fb3a904687bde4f67e7cbed1cb0b05bb938c0f0b4f25"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/request-result-v1.json",
+      "bytes": 1122,
+      "sha256": "a921a4b15e9f79b16e95ff23c7f4c14f921717b906c8bf49abf9b0fb7e0dd7f3"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/shop-portrait-reconciliation.json",
+      "bytes": 1251,
+      "sha256": "6c87aed76d6f952850c5011e76ecce2addd0c7415862a0539724937f25dc65af"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/request-host-mismatch.json",
+      "bytes": 401,
+      "sha256": "117dbb961e953f37c2fb2602518dcc9ebab55fd0b26dbb832f9ab0dd2dbc88b8"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/cloud-v2-exit.json",
+      "bytes": 95,
+      "sha256": "70dd11f20bcc1c3c8afb1bfbbff9fca1bc26e70b934309e8d098d96083d94654"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/cloud-v2-resume1-exit.json",
+      "bytes": 126,
+      "sha256": "c7653c428902fa0e836383099ec1a2730dadf9f0505f6b9502a0065347d6c697"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/promote-v2-exit.json",
+      "bytes": 97,
+      "sha256": "b7e30485cf2f08e8199e18426f6cfea35be1b6a39c01bd6575bbfb0b90d89b31"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/promote-v2.stdout.log",
+      "bytes": 1312,
+      "sha256": "5459468106a035c1a21b3925a6287adae5f599c5c3ec3299b802b99b8ecedc59"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/deployment-audit-job.log",
+      "bytes": 56774,
+      "sha256": "6b078b32dd7c5c4d7aec7f26292d8972e99b95147bdc75d7d073d2b1316eb125"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/formal-entry-smoke.json",
+      "bytes": 49120,
+      "sha256": "3e914004d76ee0ca97163c2c5a64fa52a664781f63cf26c844b5c928397733ea"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/formal-entry-exit.json",
+      "bytes": 124,
+      "sha256": "f709abf4d475b703b419364d34235f6dc2c50de28b3203536bf07f2ab4f7fa4c"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/restoration-result.json",
+      "bytes": 1291,
+      "sha256": "834119d047b06488a22433992ff897d2654010471dba17c34114ff413d4fc103"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/cf6/20261029050959819-dominator-box/report.json",
+      "bytes": 885815,
+      "sha256": "66c235be9e57fd5faa60c39fb1842f685dfb9ef556cb20982ae3657f7b9e21fb"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/cf6/20261029050959819-dominator-box/events.jsonl",
+      "bytes": 489713,
+      "sha256": "760220b3387dcfed3c5ece129b55f85d7e94aa9f0023cd62d60cee2953f81dff"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/cf6/20261029050959819-dominator-box/constellation-opened.png",
+      "bytes": 876909,
+      "sha256": "b08b982a51a4db1d7d9e4c63d12d6d6d73d1d65d8a2e227480d4633168a886b8"
+    },
+    {
+      "path": "tmp/workbench-live-e2e/cf6/20261029050959819-dominator-box/cold-read.png",
+      "bytes": 884185,
+      "sha256": "8f662116f82595e2614d4d49c3e91085b83395dd5b2df572ab0264d3cba12482"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/published-asLoader.swf",
+      "bytes": 6786668,
+      "sha256": "b0b553dad9ed6af9c5119e652a0e5a3dc5fa0d429cb109dc7166931ffbbedebb"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/closeout-upstream-reconcile.json",
+      "bytes": 3193,
+      "sha256": "41c58e37a216b2e20180c506f5c67895323988ebec0aa7b1e1d21a6ee144f695"
+    },
+    {
+      "path": "tmp/cf6-release-20261029/restoration-after-rebase.json",
+      "bytes": 1306,
+      "sha256": "a1b94fb0c7431d57b8b5ea75e0f8ca754de3bd14734858caf5e3854a53f64495"
+    }
+  ],
+  "postReleaseUpstreamSync": {
+    "remoteCommit": "35aa60505128df5c5ef627357a7cc2f385dd74a4",
+    "scope": "Concurrent tooltip layout and fade-out changes arrived while the documentation push was in progress. Rebased only the unpublished closeout commit; no overlapping documentation or preserved-work paths.",
+    "nativeSourceAheadOfThisRelease": true,
+    "includedInThisFrozenRelease": false,
+    "validatedByThisRelease": false,
+    "runtimeCoreManifestConsensusUnchanged": true,
+    "asLoaderSha256ValidatedInThisRelease": "b0b553dad9ed6af9c5119e652a0e5a3dc5fa0d429cb109dc7166931ffbbedebb",
+    "asLoaderSha256FromLaterUpstream": "04b2566d3601d2a31c1805eb4bc330d9a1a8bb0f69386028ef7f542c8fd52d72",
+    "publishedLoaderPreserved": "tmp/cf6-release-20261029/published-asLoader.swf"
+  }
+}

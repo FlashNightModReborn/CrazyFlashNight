@@ -185,6 +185,9 @@ class org.flashNight.arki.scene.Cf6TraversalService {
         t.directionLock=p==null?hero.锁定方向:p.directionLock;
         t.maskBirth=org.flashNight.arki.scene.Cf6ActorMaskState.identity(hero);
         t.lastVisible=hero._visible;t.lastDirection=hero.方向;
+        // A revived actor starts a new presentation lease. Sample its current pose;
+        // the former lease's walking pose/depth owner cannot validate this new token.
+        t.lastAction=hero.状态;t.depthManager=undefined;t.lastDepth=undefined;
         hero.锁定方向=true;
         if(p!=null) {
             delete hero.__cf6ArrivalPreparationOwner;
@@ -351,5 +354,18 @@ class org.flashNight.arki.scene.Cf6TraversalService {
         releasePreparation(t.preparation,true);t.preparation=null;
         releaseActor(t,true);
         Cf6TraversalRules.cancel(t.rules,t.room.owner);t.closed=true;
+    }
+    /** Death ends only the owned actor pose. The same room can resume after a real revival. */
+    public static function suspendForDeath(t:Object):Void {
+        if(t==null || t.closed) return;
+        releasePreparation(t.preparation,true);t.preparation=null;
+        releaseActor(t,true);
+        if(t.rules.phase=="complete") {
+            if(t.advanceStatus=="accepted") t.advanceStatus="presentation-ended";
+            return;
+        }
+        // Re-arm only local choreography; enemy waves, clear and navigation receipts stay on the room.
+        t.rules.phase="waiting";t.rules.frame=0;t.rules.actorReleased=false;t.rules.delivered=false;
+        t.waitFrames=0;t.awaitingAdvance=false;
     }
 }

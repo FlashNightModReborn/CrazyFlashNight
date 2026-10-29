@@ -61,8 +61,9 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
         failedState.failed=true;failedState.clearRequested=true;
         check(steps(failedState,1000)=="" && failedState.phase=="loading","failure never degrades to completion");
     }
-    private static function fixture():MovieClip {
-        var w:MovieClip=_root.createEmptyMovieClip("__cf6FixtureWorld",9289);
+    private static function fixture(name:String):MovieClip {
+        if(name==undefined) name="__cf6FixtureWorld";
+        var w:MovieClip=_root.createEmptyMovieClip(name,9289);
         _root.gameworld=w;
         w.createEmptyMovieClip("hero",10);w.hero.hp=100;
         w.createEmptyMovieClip("deadbody",1);w.createEmptyMovieClip("效果",20);
@@ -206,6 +207,51 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
         check(_root.__cf6TestBakeCalls==3 && w.背景._width==0,"A13 uses the same bounded force-bake path");
         Cf6MapMechanism.teardown();w.removeMovieClip();
     }
+    private static function bakeType61(force:Boolean):Void {
+        if(force===true) _root.__cf6TestBakeCalls++;
+        var w:MovieClip=_root.gameworld;
+        var owner:Object=StageReturnFlow.worldIdentity(w);
+        var bg:MovieClip=w.背景;
+        if(!Cf6MapPresentation.applyBackground(w,owner,bg)) return;
+        _root.__cf6TestBakeWidth=bg._width;
+        _root.__cf6TestBakeHeight=bg._height;
+        w.__cf6BackgroundBake={drawCompleted:true,worldIdentity:owner,
+            sourceUrl:w.场景背景url,background:bg,
+            assetMatrix:{x:bg._x,y:bg._y,scaleX:bg._xscale,scaleY:bg._yscale}};
+        bg.clear();
+    }
+    private static function testType61StaticBackgrounds():Void {
+        var definition:Object=org.flashNight.arki.scene.BookDefinition;
+        var before:Object=definition._type61;
+        try {
+            var ids:Array=["TUTORIAL","A01"];
+            for(var i:Number=0;i<ids.length;i++) {
+                var w:MovieClip=fixture();
+                var owner:Object=StageReturnFlow.worldIdentity(w);
+                _root._saveExt.bookRun.routeId="type61";
+                var background:String=ids[i]=="TUTORIAL" ? "cf6/CF6_Tutorial_BG.swf" : "cf6/CF6_A01_BG.swf";
+                w.场景背景url="flashswf/backgrounds/"+background;
+                definition._type61={maps:[{id:ids[i],background:background,
+                    presentation:{scale:2,backgroundX:0,backgroundY:0}}]};
+                var managerClass:Object=org.flashNight.arki.scene.StageManager;
+                managerClass.instance={currentStage:0,gameworld:w};
+                _root.__cf6TestBakeCalls=0;
+                _root.__cf6TestBakeWidth=_root.__cf6TestBakeHeight=0;
+                _root.贴背景图=bakeType61;
+                Cf6MapMechanism.beginRoom(w,owner,ids[i],{layers:[],assetScale:2});
+                check(w.__cf6Mechanism.backgroundPrepared===true && _root.__cf6TestBakeCalls==1,
+                    ids[i]+" Type61 prepares the actual static background before controls");
+                check(_root.__cf6TestBakeWidth==200 && _root.__cf6TestBakeHeight==200,
+                    ids[i]+" Type61 applies the real MovieClip presentation matrix before baking");
+                check(w._xscale==100 && w.hero._xscale==100,
+                    ids[i]+" background preparation keeps actor and world scale unchanged");
+                Cf6MapMechanism.beginRoom(w,owner,ids[i],{layers:[],assetScale:2});
+                check(_root.__cf6TestBakeCalls==1,
+                    ids[i]+" repeated room continuation cannot draw the same background twice");
+                Cf6MapMechanism.teardown();w.removeMovieClip();
+            }
+        } finally {definition._type61=before;_root.贴背景图=bake;}
+    }
     private static function testBakeReceipts():Void {
         var w:MovieClip=fixture();var identity:Object=StageReturnFlow.worldIdentity(w);
         _root.__cf6TestBakeCalls=0;_root.贴背景图=bake;bake(false);
@@ -227,12 +273,79 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
         w=fixture();identity=StageReturnFlow.worldIdentity(w);
         w.__cf6BackgroundBake={drawCompleted:true,worldIdentity:identity,sourceUrl:w.场景背景url,background:w.背景};
         Cf6MapMechanism.beginRoom(w,identity,"A10",{layers:[]});
-        check(w.__cf6Mechanism.failed===true && _root.__cf6TestBakeCalls==0,"draw receipt with nonempty source waits for recovery without replay");
+        check(w.__cf6Mechanism.failed!==true && w.__cf6Mechanism.backgroundPending===true && _root.__cf6TestBakeCalls==0,"valid draw receipt with nonempty source waits for native unload without replay");
+        w.背景.clear();Cf6MapMechanism.tick();
+        check(w.__cf6Mechanism.backgroundPrepared===true && _root.__cf6TestBakeCalls==0,"preexisting exact receipt resumes after the source actually empties");
         Cf6MapMechanism.teardown();w.removeMovieClip();w=fixture();identity=StageReturnFlow.worldIdentity(w);
         _root.贴背景图=function(force:Boolean):Void {_root.__cf6TestBakeCalls++;_root.gameworld.背景.clear();};
         Cf6MapMechanism.beginRoom(w,identity,"A13",{layers:[]});
         check(w.__cf6Mechanism.failed===true && _root.__cf6TestBakeCalls==1,"empty clip without successful draw receipt is not completion evidence");
         Cf6MapMechanism.teardown();w.removeMovieClip();_root.贴背景图=bake;
+    }
+    private static function deferredBake(force:Boolean):Void {
+        if(force===true) _root.__cf6TestBakeCalls++;
+        var w:MovieClip=_root.gameworld;
+        w.__cf6BackgroundBake={drawCompleted:true,worldIdentity:StageReturnFlow.worldIdentity(w),
+            sourceUrl:w.场景背景url,background:w.背景};
+    }
+    private static function testDeferredBackground():Void {
+        var turretClass:Object=org.flashNight.arki.scene.Cf6TutorialTurretService;
+        var previousBegin:Function=turretClass.beginRoom;
+        var managerClass:Object=org.flashNight.arki.scene.StageManager;
+        var w:MovieClip;
+        try {
+            turretClass.beginRoom=function():Boolean {_root.__cf6DeferredTurrets++;return true;};
+            _root.贴背景图=deferredBake;
+            w=fixture();_root._saveExt.bookRun.routeId="type61";
+            var owner:Object=StageReturnFlow.worldIdentity(w);
+            var manager:Object={currentStage:0,gameworld:w,isActive:true,calls:0};managerClass.instance=manager;
+            manager.clearStage=function():Void {
+                if(!org.flashNight.arki.scene.Cf6MapMechanism.interceptClear(this,_root.gameworld)) this.calls++;
+            };
+            _root.__cf6DeferredTurrets=0;_root.__cf6TestBakeCalls=0;
+            Cf6MapMechanism.beginRoom(w,owner,"A01",{layers:[],turrets:{}});
+            var state:Object=w.__cf6Mechanism;
+            check(state.backgroundPending===true && !state.failed && state.initializationStarted!==true
+                && _root.暂停===true && _root.__cf6DeferredTurrets==0,"deferred unload keeps room paused and turrets unbound");
+            Cf6MapMechanism.beginRoom(w,owner,"A01",{layers:[],turrets:{}});
+            Cf6MapMechanism.tick();Cf6MapMechanism.tick();
+            check(_root.__cf6TestBakeCalls==1 && state.initializationStarted!==true,"pending room reentry and ticks never replay draw or initialize early");
+            check(Cf6MapMechanism.interceptClear(manager,w) && manager.calls==0,"early clear remains deferred until actual background unload");
+            w.背景.clear();Cf6MapMechanism.tick();
+            check(state.backgroundPrepared===true && state.backgroundPending===false && state.turretBound===true
+                && _root.__cf6DeferredTurrets==1,"empty source continues A01 initialization and turret binding once");
+            Cf6MapMechanism.tick();Cf6MapMechanism.tick();
+            check(manager.calls==1 && state.phase=="ready" && _root.__cf6TestBakeCalls==1
+                && _root.__cf6DeferredTurrets==1,"deferred background preserves the real clear and never duplicates continuations");
+            Cf6MapMechanism.teardown();w.removeMovieClip();
+            var modes:Array=["timeout","identity","receipt","teardown"];
+            for(var i:Number=0;i<modes.length;i++) {
+                w=fixture();_root._saveExt.bookRun.routeId="type61";owner=StageReturnFlow.worldIdentity(w);
+                managerClass.instance={currentStage:0,gameworld:w,isActive:true};
+                _root.__cf6DeferredTurrets=0;_root.__cf6TestBakeCalls=0;
+                Cf6MapMechanism.beginRoom(w,owner,"A01",{layers:[],turrets:{}});state=w.__cf6Mechanism;
+                if(modes[i]=="timeout") {
+                    for(var frame:Number=0;frame<61;frame++) Cf6MapMechanism.tick();
+                    check(state.failed===true && state.initializationStarted!==true && _root.__cf6TestBakeCalls==1
+                        && _root.__cf6DeferredTurrets==0,"native unload timeout rejects the room without redrawing or mounting turrets");
+                    check(_root.暂停!==true,"background timeout releases only the room pause");
+                } else if(modes[i]=="identity") {
+                    _root._saveExt.bookRun.seed++;w.背景.clear();Cf6MapMechanism.tick();
+                    check(state.phase=="cancelled" && _root.__cf6DeferredTurrets==0,"a new run cannot resume the old pending background");
+                } else if(modes[i]=="receipt") {
+                    w.__cf6BackgroundBake.sourceUrl="flashswf/backgrounds/cf6/stale.swf";
+                    w.背景.clear();Cf6MapMechanism.tick();
+                    check(state.failed===true && _root.__cf6DeferredTurrets==0 && _root.__cf6TestBakeCalls==1,"receipt drift while waiting fails without replay");
+                } else {
+                    Cf6MapMechanism.teardown();w.背景.clear();Cf6MapMechanism.tick();
+                    check(state.initializationStarted!==true && _root.__cf6DeferredTurrets==0 && _root.暂停!==true,"teardown retires pending initialization before late unload");
+                }
+                Cf6MapMechanism.teardown();w.removeMovieClip();
+            }
+        } finally {
+            Cf6MapMechanism.teardown();if(w!=undefined) w.removeMovieClip();
+            turretClass.beginRoom=previousBegin;_root.贴背景图=bake;
+        }
     }
     private static function testDoorSequences():Void {
         var exitSpec:Object={role:"door-exit-sequence",frames:50};
@@ -581,7 +694,9 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
         } finally {proto.loadClip=original;Cf6TutorialTurretService.teardown();Cf6MapMechanism.teardown();w.removeMovieClip();}
     }
     private static function testTraversalWiring():Void {
-        var w:MovieClip=fixture(),identity:Object=StageReturnFlow.worldIdentity(w);
+        // The other synchronous tests repeatedly replace one path before AVM1 unload flush.
+        // This geometry test needs its own world path, as real rooms get after frame teardown.
+        var w:MovieClip=fixture("__cf6TraversalFixtureWorld"),identity:Object=StageReturnFlow.worldIdentity(w);
         _root.控制目标="hero";w.hero._x=100;w.hero._y=w.hero.Z轴坐标=20;
         // The wiring fixture needs a real upper-body MC for semantic idle ownership.
         // Native label/frame behavior is covered by Cf6TraversalNativeTest.
@@ -618,6 +733,33 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
         check(!s.arrival.acquired && !_root.暂停 && s.arrival.rules.frame==2,"arrival releases before remaining door frames");
         w.hero._x=77;Cf6MapMechanism.tick();Cf6MapMechanism.tick();
         check(w.hero._x==77 && s.phase=="combat","remaining arrival door frames never reclaim actor");
+        Cf6MapMechanism.teardown();
+        // A04's exit-kind room combines arrival and departure; the previous tests exercised them separately.
+        var departure:Object={mode:"depart",fps:30,durationFrames:4,gate:{x:10,z:20,radius:12},exit:{x:60,z:30},samples:[
+            {frame:1,x:10,z:20,visible:true,action:"walk"},{frame:2,x:10,z:15,visible:true,action:"walk"},
+            {frame:3,x:10,z:10,visible:true,action:"walk"},{frame:4,x:10,z:5,visible:false,action:"stand"}]};
+        manager.calls=0;w.hero._x=100;w.hero._y=w.hero.Z轴坐标=20;
+        Cf6MapMechanism.beginRoom(w,identity,"A04",{kind:"exit",layers:[],traversal:{arrive:path,depart:departure}});
+        var guide:Object=w.__cf6Mechanism.exitGuide;
+        trace("Audit A04 begin: guide="+guide+" clip="+guide.clip+" closed="+guide.closed+" phase="+w.__cf6Mechanism.phase+" world="+w+" nextDepth="+w.getNextHighestDepth());
+        check(guide!=null && guide.clip._parent===w,"A04 combined fixture has a live guide at entry");
+        Cf6MapMechanism.tick();Cf6MapMechanism.interceptClear(manager,w);Cf6MapMechanism.tick();s=w.__cf6Mechanism;
+        check(s.clearRequested && s.arrival.rules.actorReleased && s.departure.rules.phase=="waiting" && manager.calls==0,
+            "A04 early clear cannot bypass unfinished arrival or release the exit");
+        Cf6MapMechanism.tick();Cf6MapMechanism.tick();Cf6MapMechanism.tick();
+        check(s.phase=="traversal-depart" && s.departure.rules.phase=="waiting" && !_root.暂停,
+            "A04 arrival completion arms departure without trapping input");
+        var bounds:Object=guide.clip.getBounds(w);
+        trace("Audit A04 gate: guide="+guide+" clip="+guide.clip+" closed="+guide.closed+" bounds="+bounds.xMin+","+bounds.xMax+","+bounds.yMin+","+bounds.yMax+" phase="+s.phase+" arrival="+s.arrival.rules.phase+" departure="+s.departure.rules.phase+" heroDepth="+w.hero.getDepth());
+        check(bounds.xMin==bounds.xMin && bounds.yMin==bounds.yMin && bounds.xMin!=undefined,"A04 combined fixture retains finite guide geometry");
+        // Geometry is covered by Cf6ExitGuideTest; this fixture targets the combined service lifecycle.
+        w.hero._x=departure.gate.x;w.hero._y=w.hero.Z轴坐标=departure.gate.z+8;
+        Cf6MapMechanism.tick();
+        check(s.departure.acquired && s.departure.rules.phase=="playing",
+            "A04 entering the acquisition gate starts the real departure service");
+        for(var frame:Number=0;frame<8;frame++) Cf6MapMechanism.tick();
+        check(s.phase=="ready" && manager.calls==1 && !_root.暂停 && w.hero._visible,
+            "A04 arrival-clear-arrow-departure chain delegates clear exactly once");
         Cf6MapMechanism.teardown();w.removeMovieClip();
     }
     private static function testTraversalAssetClosure():Void {
@@ -791,18 +933,46 @@ class org.flashNight.arki.scene.Cf6MapMechanismTest {
         trace("Cf6MapMechanismTest Tests Failed: "+failed);
         if(typeof _root.cf6MapMechanismTestsComplete=="function") _root.cf6MapMechanismTestsComplete();
     }
+    private static function testLoadingCover():Void {
+        var oldFade:Object=_root.淡出动画;
+        var w:MovieClip=fixture(),owner:Object=StageReturnFlow.worldIdentity(w);
+        try {
+            _root.淡出动画={__returnFadeActive:false};
+            check(!Cf6MapPresentation.beginLoadingCover(w,owner),"uncovered ordinary play does not create a new curtain");
+            _root.淡出动画.__returnFadeActive=true;
+            check(Cf6MapPresentation.beginLoadingCover(w,owner),"CF6 prepares its loading cover before the standard curtain retires");
+            var clip:MovieClip=_root.__cf6LoadingCover,token:Object=clip.__cf6LoadingCoverOwner;
+            var pixels:BitmapData=new BitmapData(1,1,true,0);pixels.draw(clip);
+            trace("[CF6_LOADING_COVER_PIXEL] rgb="+pixels.getPixel(0,0)+" alpha="+(pixels.getPixel32(0,0)>>>24));
+            check(pixels.getPixel(0,0)==0x081018 && (pixels.getPixel32(0,0)>>>24)==255,"loading cover is actually opaque at the viewport corner");pixels.dispose();
+            check(clip._width>=Stage.width && clip._height>=Stage.height,"loading cover spans the stage viewport");
+            check(Cf6MapPresentation.beginLoadingCover(w,owner) && clip.__cf6LoadingCoverOwner===token,"duplicate ready event keeps the same cover owner");
+            check(!Cf6MapPresentation.loadingCoverReady(w,owner) && Cf6MapPresentation.hasLoadingCover(w,owner),"first ready tick keeps incomplete frame hidden");
+            check(Cf6MapPresentation.loadingCoverReady(w,owner) && !Cf6MapPresentation.hasLoadingCover(w,owner),"second ready tick retires only the completed room cover");
+            check(Cf6MapPresentation.loadingCoverReady(w,owner),"finished presentation never reopens its cover");
+            Cf6MapPresentation.beginLoadingCover(w,owner);
+            w.removeMovieClip();w=fixture();var replacement:Object=StageReturnFlow.worldIdentity(w);
+            check(Cf6MapPresentation.beginLoadingCover(w,replacement),"same-path replacement gets a fresh plain owner");
+            Cf6MapPresentation.clearLoadingCover(w,owner);
+            check(Cf6MapPresentation.hasLoadingCover(w,replacement),"late old-room cleanup cannot remove the new-room cover");
+            Cf6MapPresentation.clearLoadingCover(w,replacement);
+            check(!Cf6MapPresentation.hasLoadingCover(w,replacement),"explicit failure or teardown releases its exact cover");
+            _root._saveExt.bookRun.bookId="repair-campus";
+            check(!Cf6MapPresentation.beginLoadingCover(w,replacement),"other books never acquire the CF6 visual curtain");
+        } finally {Cf6MapPresentation.clearLoadingCover(w,StageReturnFlow.worldIdentity(w));w.removeMovieClip();_root.淡出动画=oldFade;}
+    }
     public static function runAllTests():Void {
         passed=0;failed=0;finished=false;pixelProbe=null;
         var savedManagerClass:Object=org.flashNight.arki.scene.StageManager;
         var savedManager:Object=savedManagerClass.instance;
-        var keys:Array=["gameworld","_saveExt","savePath","当前关卡名","暂停","发布消息","贴背景图","__cf6TestBakeCalls","天空盒","控制目标"];
+        var keys:Array=["gameworld","_saveExt","savePath","当前关卡名","暂停","发布消息","贴背景图","__cf6TestBakeCalls","__cf6TestBakeWidth","__cf6TestBakeHeight","__cf6DeferredTurrets","天空盒","控制目标"];
         var saved:Object={};
         for(var i:Number=0;i<keys.length;i++) saved[keys[i]]=_root[keys[i]];
         var targetClass:Object=org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
         var oldFind:Function=targetClass.findHero;
         targetClass.findHero=function():MovieClip {return _root.gameworld.hero;};
         _root.暂停=false;_root.发布消息=function(message:String):Void {trace(message);};
-        try {testPhases();testElevatorPoseOwnership();testLifecycle();testLogicalRunIdentity();testElevatorBake();testBakeReceipts();testDoorSequences();testBackdropLoading();testBackdropFailuresAndIdentity();testBackdropTransfer();testEarlyEmptyWave();testTurretWiring();testTraversalWiring();testTraversalAssetClosure();testImmediateOwnershipAndArt();testEarlyBirthWindow();testLateSceneReadyArrival();testLoadedElevatorMask();}
+        try {testLoadingCover();testPhases();testElevatorPoseOwnership();testLifecycle();testLogicalRunIdentity();testElevatorBake();testType61StaticBackgrounds();testBakeReceipts();testDeferredBackground();testDoorSequences();testBackdropLoading();testBackdropFailuresAndIdentity();testBackdropTransfer();testEarlyEmptyWave();testTurretWiring();testTraversalWiring();testTraversalAssetClosure();testImmediateOwnershipAndArt();testEarlyBirthWindow();testLateSceneReadyArrival();testLoadedElevatorMask();}
         catch(error) {check(false,"synchronous suite exception: "+error);}
         finally {
             Cf6MapMechanism.teardown();Cf6TutorialTurretService.teardown();targetClass.findHero=oldFind;savedManagerClass.instance=savedManager;

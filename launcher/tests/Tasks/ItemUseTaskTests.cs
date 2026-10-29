@@ -636,6 +636,22 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void StashOpen_NoCompatibleType61ModHostIsDefinitiveAndDoesNotReplay()
+        {
+            using var h = new Harness();
+            var request = StashRequest("stashOpen");
+            request["payload"]["source"] = Request("open", "fixture")["payload"]["source"].DeepClone();
+            h.Task.HandleWebRequest("stashOpen", request);
+            var sent = Assert.Single(h.Flash);
+            var response = FailureResponse(sent.Value<int>("callId"), "stashOpen", "stash.test.1", "no_eligible_choices");
+            response["v"] = 2;
+            h.Task.HandleFlashResponse(response, null);
+            Assert.Equal("idle", h.Task.WriteState);
+            Assert.Equal("no_eligible_choices", Assert.Single(h.Web).Value<string>("error"));
+            Assert.Single(h.Flash);
+        }
+
+        [Fact]
         public void StashTake_RejectsDuplicateAndOversizeSelectionsBeforeSend()
         {
             using var h = new Harness();

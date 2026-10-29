@@ -1,0 +1,1408 @@
+{
+  "schema": "cf6-type61-encounters.v1",
+  "basis": "2026-10-28 authorized progression; original map coordinates, stage event hooks, boss groups and finite loot quotas retained.",
+  "maps": {
+    "A06": [
+      {
+        "wave": 1,
+        "enemy": 0,
+        "expectedType": "兵种466",
+        "expectedQuantity": 6,
+        "unit": 466,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 1,
+        "expectedType": "兵种466",
+        "expectedQuantity": 6,
+        "unit": 466,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 0,
+        "expectedType": "兵种466",
+        "expectedQuantity": 6,
+        "unit": 466,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 1,
+        "expectedType": "兵种466",
+        "expectedQuantity": 6,
+        "unit": 466,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "phase": "boss",
+        "group": 0,
+        "enemy": 5,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 466,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "phase": "boss",
+        "group": 0,
+        "enemy": 6,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 466,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      }
+    ],
+    "A09": [
+      {
+        "wave": 1,
+        "enemy": 0,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 466,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 1,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 466,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 2,
+        "expectedType": "兵种466",
+        "expectedQuantity": 2,
+        "unit": 466,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 3,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 467,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 4,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 467,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 0,
+        "expectedType": "兵种467",
+        "expectedQuantity": 5,
+        "unit": 467,
+        "quantity": 5,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 0,
+        "expectedType": "兵种467",
+        "expectedQuantity": 2,
+        "unit": 467,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 1,
+        "expectedType": "兵种467",
+        "expectedQuantity": 2,
+        "unit": 467,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      }
+    ],
+    "A10": [
+      {
+        "wave": 1,
+        "enemy": 0,
+        "expectedType": "兵种461",
+        "expectedQuantity": 1,
+        "unit": 478,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock40",
+          "手枪2": "Glock40",
+          "特种兵烟雾弹": true,
+          "长枪": "G36"
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 1,
+        "expectedType": "兵种461",
+        "expectedQuantity": 1,
+        "unit": 479,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock40",
+          "手枪2": "Glock40",
+          "特种兵烟雾弹": true,
+          "长枪": "G36"
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 2,
+        "expectedType": "兵种469",
+        "expectedQuantity": 1,
+        "unit": 478,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock40",
+          "手枪2": "Glock40",
+          "特种兵烟雾弹": true,
+          "长枪": "G36"
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 3,
+        "expectedType": "兵种468",
+        "expectedQuantity": 1,
+        "unit": 479,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock40",
+          "手枪2": "Glock40",
+          "特种兵烟雾弹": true,
+          "长枪": "G36"
+        }
+      }
+    ],
+    "A11": [
+      {
+        "wave": 1,
+        "enemy": 2,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 466,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 3,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 466,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 0,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 466,
+        "quantity": 3,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 1,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 478,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock40",
+          "手枪2": "Glock40",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 2,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 467,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 2,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 466,
+        "quantity": 3,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 3,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 478,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock40",
+          "手枪2": "Glock40",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 4,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 467,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      }
+    ],
+    "A12": [
+      {
+        "wave": 1,
+        "enemy": 2,
+        "expectedType": "兵种466",
+        "expectedQuantity": 2,
+        "unit": 466,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 3,
+        "expectedType": "兵种466",
+        "expectedQuantity": 2,
+        "unit": 466,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 0,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 467,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 1,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 479,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock40",
+          "手枪2": "Glock40",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 2,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 467,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 3,
+        "expectedType": "兵种467",
+        "expectedQuantity": 2,
+        "unit": 479,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock40",
+          "手枪2": "Glock40",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 4,
+        "expectedType": "兵种466",
+        "expectedQuantity": 4,
+        "unit": 466,
+        "quantity": 4,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 5,
+        "expectedType": "兵种466",
+        "expectedQuantity": 4,
+        "unit": 466,
+        "quantity": 4,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 4,
+        "enemy": 2,
+        "expectedType": "兵种467",
+        "expectedQuantity": 3,
+        "unit": 467,
+        "quantity": 3,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 4,
+        "enemy": 3,
+        "expectedType": "兵种467",
+        "expectedQuantity": 2,
+        "unit": 467,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 4,
+        "enemy": 4,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 466,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 4,
+        "enemy": 5,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 478,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock40",
+          "手枪2": "Glock40",
+          "特种兵烟雾弹": true
+        }
+      }
+    ],
+    "A13": [
+      {
+        "wave": 1,
+        "enemy": 0,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "高爆手雷",
+          "手枪": "Glock40",
+          "手枪2": "Glock40",
+          "特种兵烟雾弹": true
+        }
+      }
+    ],
+    "A14": [
+      {
+        "wave": 1,
+        "enemy": 0,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 480,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "高爆手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 1,
+        "expectedType": "兵种466",
+        "expectedQuantity": 3,
+        "unit": 466,
+        "quantity": 3,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 2,
+        "expectedType": "兵种466",
+        "expectedQuantity": 4,
+        "unit": 466,
+        "quantity": 4,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 3,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 479,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 4,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 467,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 2,
+        "expectedType": "兵种467",
+        "expectedQuantity": 2,
+        "unit": 479,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 3,
+        "expectedType": "兵种467",
+        "expectedQuantity": 3,
+        "unit": 467,
+        "quantity": 3,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 4,
+        "expectedType": "兵种466",
+        "expectedQuantity": 3,
+        "unit": 466,
+        "quantity": 3,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 5,
+        "expectedType": "兵种466",
+        "expectedQuantity": 3,
+        "unit": 478,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 4,
+        "enemy": 2,
+        "expectedType": "兵种467",
+        "expectedQuantity": 2,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "高爆手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 4,
+        "enemy": 3,
+        "expectedType": "兵种467",
+        "expectedQuantity": 2,
+        "unit": 479,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 4,
+        "enemy": 4,
+        "expectedType": "兵种466",
+        "expectedQuantity": 3,
+        "unit": 466,
+        "quantity": 3,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 4,
+        "enemy": 5,
+        "expectedType": "兵种466",
+        "expectedQuantity": 3,
+        "unit": 466,
+        "quantity": 3,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      }
+    ],
+    "A15": [
+      {
+        "wave": 2,
+        "enemy": 2,
+        "expectedType": "兵种467",
+        "expectedQuantity": 2,
+        "unit": 467,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 3,
+        "expectedType": "兵种467",
+        "expectedQuantity": 2,
+        "unit": 479,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 2,
+        "expectedType": "兵种467",
+        "expectedQuantity": 2,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "高爆手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 3,
+        "expectedType": "兵种467",
+        "expectedQuantity": 2,
+        "unit": 467,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      }
+    ],
+    "A17": [
+      {
+        "wave": 1,
+        "enemy": 4,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 5,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 467,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 6,
+        "expectedType": "兵种466",
+        "expectedQuantity": 2,
+        "unit": 478,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 7,
+        "expectedType": "兵种466",
+        "expectedQuantity": 2,
+        "unit": 466,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 4,
+        "expectedType": "兵种466",
+        "expectedQuantity": 5,
+        "unit": 466,
+        "quantity": 5,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 5,
+        "expectedType": "兵种466",
+        "expectedQuantity": 5,
+        "unit": 478,
+        "quantity": 3,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 4,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 467,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 5,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 6,
+        "expectedType": "兵种466",
+        "expectedQuantity": 4,
+        "unit": 466,
+        "quantity": 4,
+        "parameters": {
+          "特种兵策略": "line",
+          "特种兵投掷物": "高爆手雷"
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 7,
+        "expectedType": "兵种466",
+        "expectedQuantity": 4,
+        "unit": 478,
+        "quantity": 2,
+        "parameters": {
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      }
+    ],
+    "A18": [
+      {
+        "wave": 1,
+        "enemy": 2,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 3,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 4,
+        "expectedType": "兵种466",
+        "expectedQuantity": 2,
+        "unit": 480,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 5,
+        "expectedType": "兵种466",
+        "expectedQuantity": 2,
+        "unit": 480,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 4,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 5,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 6,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 480,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 7,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 480,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 4,
+        "enemy": 4,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 4,
+        "enemy": 5,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      }
+    ],
+    "A19": [
+      {
+        "wave": 1,
+        "enemy": 0,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 1,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 2,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 480,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 3,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 480,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 0,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 1,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 2,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 480,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 3,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 480,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 8,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 480,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 9,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 480,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 5,
+        "enemy": 2,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 5,
+        "enemy": 3,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 5,
+        "enemy": 6,
+        "expectedType": "兵种466",
+        "expectedQuantity": 2,
+        "unit": 480,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 5,
+        "enemy": 7,
+        "expectedType": "兵种466",
+        "expectedQuantity": 2,
+        "unit": 480,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      }
+    ],
+    "A20": [
+      {
+        "wave": 1,
+        "enemy": 0,
+        "expectedType": "兵种467",
+        "expectedQuantity": 2,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 1,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 2,
+        "expectedType": "兵种466",
+        "expectedQuantity": 1,
+        "unit": 480,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 1,
+        "enemy": 3,
+        "expectedType": "兵种466",
+        "expectedQuantity": 2,
+        "unit": 480,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 4,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 2,
+        "enemy": 5,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 6,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 3,
+        "enemy": 7,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "wave": 5,
+        "enemy": 6,
+        "expectedType": "兵种467",
+        "expectedQuantity": 1,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      },
+      {
+        "phase": "boss",
+        "group": 0,
+        "enemy": 0,
+        "expectedType": "兵种467",
+        "expectedQuantity": 2,
+        "unit": 481,
+        "quantity": 1,
+        "parameters": {
+          "特种兵策略": "adaptive",
+          "特种兵投掷物": "BBPLAYER手雷",
+          "手枪": "Glock18战术版",
+          "手枪2": "Glock18战术版",
+          "特种兵烟雾弹": true
+        }
+      }
+    ]
+  }
+}

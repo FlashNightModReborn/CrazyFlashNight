@@ -96,6 +96,13 @@ class org.flashNight.arki.scene.Cf6EconomyRulesTest {
         var config:Object=fixture();
         var before:String=codec.stringifySafe(config);
         check(Cf6EconomyRules.valid(config),"finite authored economy validates");
+        var instructorConfig:Object=fixture();
+        instructorConfig.maps[2].stage.Wave.SubWave[0].EnemyGroup.Enemy[0].Type="兵种481";
+        check(!Cf6EconomyRules.valid(instructorConfig),"historical quota cannot silently switch soldier family");
+        instructorConfig.routeId="type61";
+        check(Cf6EconomyRules.valid(instructorConfig),"Type61 finite quota accepts a single instructor carrier");
+        instructorConfig.maps[2].stage.Wave.SubWave[0].EnemyGroup.Enemy[0].Quantity=2;
+        check(!Cf6EconomyRules.valid(instructorConfig),"instructor carrier cannot multiply the finite weapon quota");
         var first:Array=Cf6EconomyRules.maps(config,1729),same:Array=Cf6EconomyRules.maps(config,1729);
         check(codec.stringifySafe(first)==codec.stringifySafe(same),"seed reproduces complete route");
         check(codec.stringifySafe(config)==before,"selection never mutates cached config");

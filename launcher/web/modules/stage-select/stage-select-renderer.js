@@ -21,6 +21,9 @@
     if (typeof window === 'undefined' || !window.StageSelectViewModel) {
         throw new Error('stage-select/stage-select-renderer.js 需要先加载 stage-select/stage-select-view-model.js（纯数据层 ViewModel）');
     }
+    if (typeof window === 'undefined' || !window.StageSelectCardLayout) {
+        throw new Error('stage-select/stage-select-renderer.js 需要先加载 stage-select/stage-select-card-layout.js（快捷卡几何）');
+    }
 
     var S = StageSelectCore.state; // 共享状态（原顶层 var _x）
     var VM = StageSelectViewModel;
@@ -60,7 +63,8 @@
                         '<span class="stage-select-legend-item is-task"><span class="stage-select-legend-glyph" aria-hidden="true"></span>任务</span>' +
                         '<span class="stage-select-legend-item is-locked"><span class="stage-select-legend-glyph" aria-hidden="true"></span>未解锁</span>' +
                     '</div>' +
-                    '<div class="stage-select-mod-pod" id="stage-select-mod-pod" role="group" aria-label="选关修改器">' +
+                    '<button class="stage-select-mod-btn stage-select-mod-toggle" id="stage-select-mod-toggle" type="button" aria-expanded="false" aria-controls="stage-select-mod-pod" title="辅助功能与选关修改器" data-audio-cue="navigate">辅助 ▾</button>' +
+                    '<div class="stage-select-mod-pod" id="stage-select-mod-pod" role="group" aria-label="选关修改器" hidden>' +
                         '<button class="stage-select-mod-btn" id="stage-select-mod-unlock" type="button" aria-pressed="false" title="选关修改器：临时解锁全部关卡（挑战模式自动禁用）" data-audio-cue="navigate">⚡ 全关卡解锁</button>' +
                         '<button class="stage-select-mod-btn is-test-space" id="stage-select-mod-test-space" type="button" title="选关修改器：进入测试空间（挑战模式自动禁用）" data-audio-cue="activate">⌖ 测试空间</button>' +
                     '</div>' +
@@ -91,7 +95,7 @@
                         '</span>' +
                         '<div class="stage-select-inspector-main">' +
                             '<div class="stage-select-inspector-head">' +
-                                // 打磨批视觉同族化：红色切角装饰对齐 hover 卡 .stage-select-card-corner 语言
+                                // 详情标题保留独立窄幅标记，不与快捷卡操作区共用装饰。
                                 '<span class="stage-select-inspector-corner" aria-hidden="true"></span>' +
                                 '<span class="stage-select-inspector-name" id="stage-select-inspector-name"></span>' +
                                 '<span class="stage-select-inspector-type" id="stage-select-inspector-type"></span>' +
@@ -136,9 +140,17 @@
         S._frameToggleCounterEl = S._el.querySelector('#stage-select-frame-toggle-counter');
         S._frameToggleTaskBadgeEl = S._el.querySelector('#stage-select-frame-toggle-task-badge');
         S._modToolbarEl = S._el.querySelector('#stage-select-mod-pod');
+        S._modToggleEl = S._el.querySelector('#stage-select-mod-toggle');
         S._modUnlockBtnEl = S._el.querySelector('#stage-select-mod-unlock');
         S._modTestSpaceBtnEl = S._el.querySelector('#stage-select-mod-test-space');
 
+        if (S._modToggleEl) {
+            S._modToggleEl.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                setModMenuOpen(!S._modMenuOpen);
+            });
+        }
         if (S._modUnlockBtnEl) {
             S._modUnlockBtnEl.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -172,6 +184,9 @@
         });
         S._tabsEl.addEventListener('keydown', handleFrameMenuKey);
         S._el.addEventListener('click', function(e) {
+            if (S._modMenuOpen && !StageSelectCore.isWithin(e.target, S._modToolbarEl) && !StageSelectCore.isWithin(e.target, S._modToggleEl)) {
+                setModMenuOpen(false);
+            }
             if (!S._frameMenuOpen || !VM.isRuntimeMode()) return;
             if (StageSelectCore.isWithin(e.target, S._frameToggleEl) || StageSelectCore.isWithin(e.target, S._tabsEl)) return;
             setFrameMenuOpen(false);
@@ -182,6 +197,7 @@
             // defaultPrevented = 区域菜单 toggle/tabs 已消费本次 Esc，不再落穿到检查器层。
             if (e.key !== 'Escape' || e.defaultPrevented) return;
             if (StageSelectCameraEditor.isOpen()) { e.preventDefault(); StageSelectCameraEditor.hide(); return; }
+            if (S._modMenuOpen) { e.preventDefault(); setModMenuOpen(false, { restoreFocus:true }); return; }
             if (S._frameMenuOpen && VM.isRuntimeMode()) {
                 e.preventDefault();
                 setFrameMenuOpen(false);
@@ -201,11 +217,13 @@
         S._el.addEventListener('click', StageSelectInspector.handleDifficultyClick);
         // P2：点舞台空白取消选中（节点 / 导航 / hover 卡 / 检查器内部点击除外）。
         S._shellEl.addEventListener('click', StageSelectInspector.handleStageBlankClick);
+        S._stageEl.addEventListener('pointermove', handleCardPointerMove);
+        S._stageEl.addEventListener('pointerleave', handleCardPointerLeave);
         S._inspectorCloseEl.addEventListener('click', function(e) {
             e.stopPropagation();
             StageSelectInspector.clearSelection({ restoreFocus: true });
         });
-        // 打磨批：检查器内 ←/→ 难度导航 / Enter 提交 / ↑↓ 无操作，语义实现在 inspector.handleInspectorKey。
+        // 检查器内 ←/→ 移焦、Enter/Space 选择、↑↓ 无操作；独立出战按钮负责提交。
         S._inspectorEl.addEventListener('keydown', StageSelectInspector.handleInspectorKey);
         // 打磨批二轮：自有键盘模态跟踪（capture 阶段先于各节点/检查器 handler 落地）——
         // 任意 keydown 记键盘模态，任意 pointerdown 记指针模态并即刻剥掉所有节点的 .is-kb-focus
@@ -261,17 +279,21 @@
         if (S._fixtureSelectEl) S._fixtureSelectEl.value = S._fixtureName;
         if (S._el) S._el.classList.toggle('is-runtime', VM.isRuntimeMode());
         setFrameMenuOpen(false);
+        setModMenuOpen(false);
         S._lastDifficultyClick = null;
         // P2：每次打开重置选中态与卡片/焦点跟踪（create 只跑一次，元素跨 open 复用）
         S._selectedStageId = '';
         S._tabbableStageId = '';
         S._hoverStageId = '';
         S._cardHoverStageId = '';
+        S._cardPlacementById = {};
+        S._cardBridge = null;
         S._focusStageId = '';
         S._forceUnlock = false;
         S._tourPinsVisible = false;
         if (S._el) S._el.classList.remove('is-tour-pins-visible');
         S._lastInputKeyboard = false; // 打磨批二轮：键盘模态位随面板打开复位（默认指针模态）
+        StageSelectFocus.reset();
         renderTabs();
         attachScaleWatcher();
         renderCurrentFrame();
@@ -323,6 +345,7 @@
     function requestClose(reason) {
         if (reason === 'escape') {
             if (StageSelectCameraEditor.isOpen()) { StageSelectCameraEditor.hide(); return; }
+            if (S._modMenuOpen) { setModMenuOpen(false, { restoreFocus:true }); return; }
             if (S._frameMenuOpen) {
                 setFrameMenuOpen(false);
                 if (S._frameToggleEl) S._frameToggleEl.focus();
@@ -350,14 +373,18 @@
     function onClose() {
         StageSelectDiorama.hide();
         setFrameMenuOpen(false);
+        setModMenuOpen(false);
         // scoped 测试目录只在 stage-select 活跃期间生效。只有 Panels 已接受关闭并进入
         // onClose 后才恢复 production；transport false/throw 时 requestClose 会提前返回，
         // 因而不会让仍可见的测试页突然切换数据源。
         S._catalogId = StageSelectData.activateCatalog(StageSelectData.DEFAULT_CATALOG_ID);
         // P2：检查器销毁幂等——清选中态并隐藏，元素保留待下次 open 复用
         StageSelectInspector.clearSelection();
+        StageSelectFocus.reset();
         S._hoverStageId = '';
         S._cardHoverStageId = '';
+        S._cardPlacementById = {};
+        S._cardBridge = null;
         S._focusStageId = '';
         S._tabbableStageId = '';
         // P3：C# 侧发起/切面板导致的关闭也在这里清 pending（requestClose 只覆盖 web 主动路径），
@@ -484,11 +511,39 @@
     function setFrame(label, source) {
         if (!VM.tryRouteFrame(label)) return;
         StageSelectCameraEditor.hide();
+        setModMenuOpen(false);
         StageSelectCore.logDev((source || 'route') + ': ' + label);
         renderCurrentFrame();
     }
 
+    function modAvailable() {
+        return !VM.isChallengeMode() && !StageSelectData.getManifest().testOnly;
+    }
+
+    function syncModVisibility() {
+        var available = modAvailable();
+        if (!available) S._modMenuOpen = false;
+        if (S._modToggleEl) {
+            S._modToggleEl.hidden = !available;
+            S._modToggleEl.setAttribute('aria-expanded', S._modMenuOpen ? 'true' : 'false');
+            S._modToggleEl.classList.toggle('has-mod-active', VM.isForceUnlockActive());
+        }
+        if (S._modToolbarEl) S._modToolbarEl.hidden = !available || !S._modMenuOpen;
+        if (S._el) S._el.classList.toggle('is-mod-menu-open', available && S._modMenuOpen);
+    }
+
+    function setModMenuOpen(open, opts) {
+        opts = opts || {};
+        var next = !!open && modAvailable();
+        if (next && S._frameMenuOpen) setFrameMenuOpen(false);
+        S._modMenuOpen = next;
+        syncModVisibility();
+        if (next && S._modUnlockBtnEl) S._modUnlockBtnEl.focus({ preventScroll:true });
+        else if (!next && opts.restoreFocus && S._modToggleEl) S._modToggleEl.focus();
+    }
+
     function setFrameMenuOpen(open) {
+        if (open && S._modMenuOpen) setModMenuOpen(false);
         S._frameMenuOpen = !!open && VM.isRuntimeMode();
         if (S._el) S._el.classList.toggle('is-frame-menu-open', S._frameMenuOpen);
         if (S._frameToggleEl) S._frameToggleEl.setAttribute('aria-expanded', S._frameMenuOpen ? 'true' : 'false');
@@ -536,14 +591,12 @@
             S._el.setAttribute('data-test-catalog', manifest.testOnly ? 'true' : 'false');
             S._el.setAttribute('data-accent', VM.getFrameAccent(frame.frameLabel));
         }
-        if (S._modToolbarEl) {
-            S._modToolbarEl.hidden = VM.isChallengeMode() || !!manifest.testOnly;
-        }
         if (S._modUnlockBtnEl) {
             var forceActive = VM.isForceUnlockActive();
             S._modUnlockBtnEl.setAttribute('aria-pressed', forceActive ? 'true' : 'false');
             S._modUnlockBtnEl.classList.toggle('is-active', forceActive);
         }
+        syncModVisibility();
         var region = S._el.querySelector('#stage-select-region');
         if (region) region.textContent = frame.frameLabel;
         if (S._frameToggleLabelEl) S._frameToggleLabelEl.textContent = frame.frameLabel;
@@ -624,6 +677,7 @@
     }
 
     function renderStageButtons(frame) {
+        S._cardBridge = null;
         S._buttonLayerEl.innerHTML = '';
         if (S._cardLayerEl) S._cardLayerEl.innerHTML = '';
         (frame.decorations || []).forEach(function(item) {
@@ -785,33 +839,22 @@
         return { node: node, anchor: cardAnchor };
     }
 
-    // hover 卡锚点：与关卡节点同位同 transform 的非交互层，承接迁出的卡片（含原生难度 button），
-    // 消除「role=button 内嵌 button」的嵌套交互语义。节点上的状态类 / 卡片尺寸变量同步镜像到锚点，
-    // 让既有卡片 CSS（edge 吸附 / data-card-name-lines / 自适应宽高）无需改几何即可继续生效。
     function createCardAnchor(button, state, detail, sizing, displayName) {
         var previewAsset = VM.getPreviewAsset(button);
         var resolvedPreviewUrl = StageSelectCore.resolveAssetUrl(previewAsset.url || button.previewUrl);
         var anchor = document.createElement('div');
         anchor.className = 'stage-select-card-anchor';
-        if (button.entryKind === 'map') {
-            anchor.classList.add('is-map-entry');
-        }
+        if (button.entryKind === 'map') anchor.classList.add('is-map-entry');
         anchor.setAttribute('data-stage-name', button.stageName);
         anchor.setAttribute('data-stage-id', button.id);
         anchor.setAttribute('data-card-name-lines', String(sizing.nameLines));
-        var anchorX = button.x;
-        var anchorY = button.y;
-        if (button.entryKind === 'map' && button.directLayout && button.directLayout.marker) {
-            anchorX = button.x + StageSelectCore.finiteNumber(button.directLayout.marker.x, 0);
-            anchorY = button.y + StageSelectCore.finiteNumber(button.directLayout.marker.y, 120) - 120;
-        }
-        anchor.style.left = anchorX + 'px';
-        anchor.style.top = anchorY + 'px';
+        anchor.setAttribute('data-placement', 'above');
+        anchor._stageCardSizing = sizing;
+        anchor.style.left = button.x + 'px';
+        anchor.style.top = button.y + 'px';
+        anchor.style.setProperty('--stage-card-content-width', sizing.width + 'px');
         anchor.style.setProperty('--stage-card-width', sizing.width + 'px');
         anchor.style.setProperty('--stage-card-height', sizing.cardHeight + 'px');
-        if (anchorY < (button.entryKind === 'map' ? 155 : 60)) anchor.classList.add('is-edge-top');
-        if (anchorX < 40) anchor.classList.add('is-edge-left');
-        if (anchorX > 790) anchor.classList.add('is-edge-right');
         if (!state.unlocked) anchor.classList.add('is-locked');
         else if (state.forceUnlocked) anchor.classList.add('is-force-unlocked');
         if (state.task) anchor.classList.add('is-task');
@@ -819,14 +862,16 @@
         anchor.innerHTML =
             '<span class="stage-select-card">' +
                 '<span class="stage-select-card-corner" aria-hidden="true"></span>' +
-                '<span class="stage-select-card-name">' + StageSelectCore.escapeHtml(displayName) + '</span>' +
-                '<span class="stage-select-preview-wrap" data-preview-tier="' + StageSelectCore.escapeAttr(previewAsset.tier) + '">' +
-                    '<img class="stage-select-preview" src="' + StageSelectCore.escapeAttr(resolvedPreviewUrl) + '" alt="' + StageSelectCore.escapeAttr(displayName) + ' 预览" data-preview-source="' + StageSelectCore.escapeAttr(button.previewSource || '') + '">' +
+                '<span class="stage-select-card-content">' +
+                    '<span class="stage-select-card-name">' + StageSelectCore.escapeHtml(displayName) + '</span>' +
+                    '<span class="stage-select-preview-wrap" data-preview-tier="' + StageSelectCore.escapeAttr(previewAsset.tier) + '">' +
+                        '<img class="stage-select-preview" src="' + StageSelectCore.escapeAttr(resolvedPreviewUrl) + '" alt="' + StageSelectCore.escapeAttr(displayName) + ' 预览" data-preview-source="' + StageSelectCore.escapeAttr(button.previewSource || '') + '">' +
+                    '</span>' +
+                    '<span class="stage-select-card-detail">' + detail.html + '</span>' +
                 '</span>' +
-                '<span class="stage-select-card-detail">' + detail.html + '</span>' +
                 '<span class="stage-select-difficulties">' + renderDifficulties(button, state, false) + '</span>' +
             '</span>';
-        var cardEl = anchor.firstChild;
+        var cardEl = anchor.querySelector('.stage-select-card');
         cardEl.addEventListener('pointerenter', function() {
             S._cardHoverStageId = button.id;
             updateCardVisibility();
@@ -836,6 +881,119 @@
             scheduleCardVisibilityUpdate();
         });
         return anchor;
+    }
+
+    function cardPlacementKey(button) {
+        return S._catalogId + '/' + S._currentFrameLabel + '/' + button.id;
+    }
+
+    function cardLabelRect(button, node, point) {
+        var projected = S._visualStagePoints && S._visualStagePoints[button.id];
+        if (projected) {
+            var label = node.querySelector('.stage-select-stage-name');
+            var width = label && label.offsetWidth || projected.labelWidth || 140;
+            var height = label && label.offsetHeight || projected.labelHeight || 30;
+            return {
+                x: point.x + StageSelectCore.finiteNumber(projected.labelX, 0) - width / 2,
+                y: point.y + StageSelectCore.finiteNumber(projected.labelY, 0) - height / 2,
+                width: width,
+                height: height
+            };
+        }
+        if (button.entryKind === 'map') {
+            var text = button.directLayout && button.directLayout.text || {};
+            return {
+                x: button.x + StageSelectCore.finiteNumber(text.x, -68.5),
+                y: button.y + StageSelectCore.finiteNumber(text.y, 135.7),
+                width: StageSelectCore.finiteNumber(text.width, 137),
+                height: StageSelectCore.finiteNumber(text.height, 34.3)
+            };
+        }
+        return { x: button.x - 70.5, y: button.y + 133.7, width: 137, height: 34.3 };
+    }
+
+    function fallbackCardSizes(anchor) {
+        var sizing = anchor._stageCardSizing || { width: 167, cardHeight: 232 };
+        return {
+            above: { width: sizing.width, height: sizing.cardHeight },
+            below: { width: sizing.width, height: sizing.cardHeight },
+            left: { width: sizing.width, height: sizing.cardHeight },
+            right: { width: sizing.width, height: sizing.cardHeight }
+        };
+    }
+
+    function measureCardSizes(anchor, force) {
+        if (!force && anchor._cardLayoutSizes) return anchor._cardLayoutSizes;
+        var sizes = fallbackCardSizes(anchor), card = anchor.querySelector('.stage-select-card');
+        if (anchor.isConnected && card) {
+            anchor.classList.add('is-measuring');
+            if (card.offsetWidth > 0 && card.offsetHeight > 0) {
+                sizes.above = sizes.below = sizes.left = sizes.right = { width: card.offsetWidth, height: card.offsetHeight };
+            }
+            anchor.classList.remove('is-measuring');
+        }
+        anchor._cardLayoutSizes = sizes;
+        return sizes;
+    }
+
+    function placeCardAnchor(button, node, anchor, forceMeasure) {
+        if (!anchor) return;
+        var point = VM.getStageNavPoint(button, computeDirectSizing);
+        var obstacles = [{ x: point.x - 22, y: point.y - 22, width: 44, height: 44 }, cardLabelRect(button, node, point)];
+        var key = cardPlacementKey(button);
+        var placed = StageSelectCardLayout.place({
+            point: point,
+            obstacles: obstacles,
+            sizes: measureCardSizes(anchor, !!forceMeasure),
+            preferredSide: S._cardPlacementById[key] || 'above',
+            bounds: { width: S.DESIGN_W, height: S.DESIGN_H, top: 54, inset: 8 },
+            nodeRadius: 22,
+            bridgeWidth: 28
+        });
+        S._cardPlacementById[key] = placed.side;
+        anchor.setAttribute('data-placement', placed.side);
+        anchor.setAttribute('data-action-position', placed.connection.actionPosition);
+        anchor.classList.toggle('is-tight-layout', !placed.valid);
+        anchor.style.left = placed.left + 'px';
+        anchor.style.top = placed.top + 'px';
+        anchor.style.setProperty('--stage-card-width', placed.width + 'px');
+        anchor.style.setProperty('--stage-card-height', placed.height + 'px');
+        anchor._cardConnection = placed.connection;
+    }
+
+    function handleCardPointerMove(event) {
+        var bridge = S._cardBridge;
+        if (!bridge || !S._stageEl) return;
+        var rect = S._stageEl.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        var point = {
+            x: (event.clientX - rect.left) * S.DESIGN_W / rect.width,
+            y: (event.clientY - rect.top) * S.DESIGN_H / rect.height
+        };
+        var id = bridge.stageId;
+        var anchor = S._cardLayerEl.querySelector('.stage-select-card-anchor[data-stage-id="' + StageSelectCore.selectorQuote(id) + '"]');
+        var node = findNodeById(id);
+        var onCard = anchor && StageSelectCore.isWithin(event.target, anchor);
+        var onNode = node && StageSelectCore.isWithin(event.target, node);
+        var inside = StageSelectCardLayout.contains(bridge, point);
+        if (inside && (!S._hoverStageId || S._hoverStageId === id)) {
+            if (S._cardHoverStageId !== id) {
+                S._cardHoverStageId = id;
+                updateCardVisibility();
+            }
+            return;
+        }
+        if (!inside && !onCard && !onNode && S._cardHoverStageId === id) {
+            S._cardHoverStageId = '';
+            scheduleCardVisibilityUpdate();
+        }
+    }
+
+    function handleCardPointerLeave() {
+        S._hoverStageId = '';
+        S._cardHoverStageId = '';
+        StageSelectDiorama.hover('');
+        scheduleCardVisibilityUpdate();
     }
 
     function buildMapDirectLayout(layout) {
@@ -1056,10 +1214,8 @@
         return Math.max(minH, Math.min(maxH, baseline + estLines * lineHeight));
     }
 
-    // Adaptive card sizing: keep 167px (original look) when content fits;
-    // bump to 195 / 220 only when title or description would overflow.
-    // Card height comes from a real off-DOM render measurement so wrapping,
-    // CJK glyph metrics and word-break behavior are pixel-accurate.
+    // Adaptive width and fallback height estimation. The open card is measured again in
+    // placeCardAnchor for its actual vertical/side placement, so these values only seed first layout.
     function computeCardSizing(button, detail) {
         var nameWeight = StageSelectCore.weighChars(button.stageName || '');
         var textWeight = StageSelectCore.weighChars(StageSelectCore.cleanStageText(detail.rawText || '').replace(/\n/g, ' '));
@@ -1182,18 +1338,28 @@
     function updateCardVisibility() {
         if (!S._cardLayerEl) return;
         var openId = VM.computeOpenCardId();
+        var openAnchor = null;
         var anchors = S._cardLayerEl.querySelectorAll('.stage-select-card-anchor');
         for (var i = 0; i < anchors.length; i += 1) {
-            var open = anchors[i].getAttribute('data-stage-id') === openId;
+            var id = anchors[i].getAttribute('data-stage-id');
+            var open = id === openId;
+            var node = findNodeById(id);
+            if (open) {
+                var button = VM.findStageButtonById(id);
+                if (button && node) placeCardAnchor(button, node, anchors[i], true);
+                openAnchor = anchors[i];
+            }
             anchors[i].classList.toggle('is-card-open', open);
-            var node = findNodeById(anchors[i].getAttribute('data-stage-id'));
             if (node) node.classList.toggle('has-open-card', open);
         }
+        S._cardBridge = openAnchor && openAnchor._cardConnection
+            ? Object.assign({ stageId: openId }, openAnchor._cardConnection)
+            : null;
     }
 
     // leave 事件的延迟合并入口：等同一指针移动的 leave/enter 边界事件序列全部落地后再裁决。
     function scheduleCardVisibilityUpdate() {
-        // 三维卡片会避开地点入口，给指针跨过两者间的小间隙留出时间。
+        // 连接区承担连续悬停；短延时只兜底边界事件竞争，不再代替节点到卡片的路径。
         StageSelectCore.scheduleTimer(updateCardVisibility, S._visualStagePoints ? 150 : 0);
     }
 
@@ -1300,6 +1466,7 @@
         applyRovingTabIndex: applyRovingTabIndex,
         updateCardVisibility: updateCardVisibility,
         scheduleCardVisibilityUpdate: scheduleCardVisibilityUpdate,
+        placeCardAnchor: placeCardAnchor,
         syncStageLayout: syncStageLayout
     };
 })();

@@ -5317,6 +5317,93 @@ namespace CF7Launcher.Tests.Guardian
             }
         }
 
+        private static JObject BlockRecoveryAfterReconnect(RecoveryHarness harness, string error)
+        {
+            harness.OpenKnownSession();
+            Assert.True(harness.Task.BeginWebViewDetach(31));
+            JObject first = Assert.Single(harness.RecoveryFlash);
+            harness.Task.HandleFlashResponse(RecoveryResponse(first, "unsettled",
+                Generation, 3, 3, InitialDrugRevision, success: false, error: error), null);
+            harness.ReadyGeneration = 0;
+            harness.Task.HandleDisconnect(31);
+            harness.ReadyGeneration = 32;
+            Assert.True(harness.Task.OnSocketReconnected(32));
+            JObject second = harness.RecoveryFlash[1];
+            harness.Task.HandleFlashResponse(RecoveryResponse(second, "unsettled",
+                Generation, 3, 3, InitialDrugRevision, success: false, error: error), null);
+            Assert.Equal("fatal_blocked", harness.Task.DetachRecoveryStatus);
+            return second;
+        }
+
+        [Fact]
+        public async Task HostShutdownExplicitRetryAfterFlushFailureRequiresFreshExactProof()
+        {
+            using (var harness = new RecoveryHarness())
+            {
+                JObject old = BlockRecoveryAfterReconnect(harness, "flush_failed");
+                string outcome = null;
+                Task<bool> fence = System.Threading.Tasks.Task.Run(() =>
+                    harness.Task.TryCompleteHostShutdownPersistence(2000, out outcome));
+                Assert.True(SpinWait.SpinUntil(() => harness.RecoveryFlash.Count == 3 || fence.IsCompleted, 2000));
+                Assert.Equal(3, harness.RecoveryFlash.Count);
+                JObject retry = harness.RecoveryFlash[2];
+                Assert.Equal(old.Value<string>("panelInstanceId"), retry.Value<string>("panelInstanceId"));
+                Assert.Equal(Generation, retry.Value<long>("knownGeneration"));
+                Assert.NotEqual(old.Value<string>("requestCallId"), retry.Value<string>("requestCallId"));
+                Assert.Equal(new[] { 31, 32, 32 }, harness.RecoveryGenerations);
+                Assert.Equal(new[] { 31 }, harness.ForcedGenerations);
+                Assert.True(harness.Task.HasBoundPanel);
+
+                harness.Task.HandleFlashResponse(RecoveryResponse(old, "settled",
+                    Generation, 3, 3, InitialDrugRevision), null);
+                Assert.True(harness.Task.HasBoundPanel);
+                Assert.False(fence.IsCompleted);
+                Assert.False(harness.Task.TryCompleteHostShutdownPersistence(1, out string duplicateOutcome));
+                Assert.Equal("timeout", duplicateOutcome);
+                Assert.Equal(3, harness.RecoveryFlash.Count);
+
+                harness.Task.HandleFlashResponse(RecoveryResponse(retry, "settled",
+                    Generation, 3, 3, InitialDrugRevision), null);
+                Assert.True(await fence);
+                Assert.Equal("recovery_settled", outcome);
+                Assert.False(harness.Task.HasBoundPanel);
+                Assert.False(harness.Task.RequiresDetachRecovery);
+                Assert.Empty(harness.GenericFlash);
+            }
+        }
+
+        [Theory]
+        [InlineData("needs_reconcile")]
+        [InlineData("stale_pause_lease")]
+        [InlineData("invalid_payload")]
+        public void HostShutdownDoesNotRetryUnknownOrInvalidRecovery(string error)
+        {
+            using (var harness = new RecoveryHarness())
+            {
+                BlockRecoveryAfterReconnect(harness, error);
+                Assert.False(harness.Task.TryCompleteHostShutdownPersistence(1, out string outcome));
+                Assert.Equal("recovery_" + error, outcome);
+                Assert.Equal(2, harness.RecoveryFlash.Count);
+                Assert.True(harness.Task.HasBoundPanel);
+            }
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(33)]
+        public void HostShutdownRetryRequiresTheSameReadyTransport(int readyGeneration)
+        {
+            using (var harness = new RecoveryHarness())
+            {
+                BlockRecoveryAfterReconnect(harness, "flush_failed");
+                harness.ReadyGeneration = readyGeneration;
+                Assert.False(harness.Task.TryCompleteHostShutdownPersistence(1, out string outcome));
+                Assert.Equal("recovery_flush_failed", outcome);
+                Assert.Equal(2, harness.RecoveryFlash.Count);
+                Assert.True(harness.Task.HasBoundPanel);
+            }
+        }
+
         [Fact]
         public void ReconnectEpochIsolatesLateOldGenerationRecovery()
         {

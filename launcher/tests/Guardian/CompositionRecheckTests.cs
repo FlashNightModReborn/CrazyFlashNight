@@ -14,6 +14,28 @@ namespace CF7Launcher.Tests.Guardian {
   static void Call(object o,string method,params object[] args){try{o.GetType().GetMethod(method,BindingFlags.NonPublic|BindingFlags.Instance).Invoke(o,args);}catch(TargetInvocationException e){ExceptionDispatchInfo.Capture(e.InnerException).Throw();}}
   static JObject Close(string instance,string reason=null){var p=new JObject{["type"]="panel",["panel"]="intelligence",["cmd"]="close"};if(instance!=null)p["panelInstanceId"]=instance;if(reason!=null)p["reason"]=reason;return p;}
   static void Sta(Action a){Exception error=null;var t=new Thread(()=>{try{FixtureResourceGuard.Before("F02 owned STA");a();FixtureResourceGuard.Before("F02 STA terminal");}catch(Exception e){error=e;}}){IsBackground=true};t.SetApartmentState(ApartmentState.STA);t.Start();if(!t.Join(5000))throw new TimeoutException("Owned F02 thread timeout");if(error!=null)ExceptionDispatchInfo.Capture(error).Throw();}
+  [Theory][InlineData(0,1017)][InlineData(180,837)]
+  public void HiddenBootstrapAnchorTracksClientBeforeNativeResize(int logHeight,int expectedHeight)=>Sta(()=>{
+   using var owner=new Form {ClientSize=new System.Drawing.Size(1920,1017)};
+   using var panel=new Panel {Dock=DockStyle.Fill,Visible=false,Size=new System.Drawing.Size(200,100)};
+   owner.Controls.Add(panel);
+   Assert.True(GuardianForm.SyncRuntimeHostBounds(owner,panel,logHeight));
+   Assert.Equal(new System.Drawing.Rectangle(0,0,1920,expectedHeight),panel.Bounds);
+   Assert.False(panel.Visible);Assert.False(owner.Visible);
+   Assert.False(GuardianForm.SyncRuntimeHostBounds(owner,panel,logHeight));
+   owner.ClientSize=new System.Drawing.Size(960,540);
+   GuardianForm.SyncRuntimeHostBounds(owner,panel,logHeight);
+   Assert.Equal(new System.Drawing.Size(960,540-logHeight),panel.Size);
+  });
+  [Fact] public void InvalidOrRetiredViewportCannotCollapseAnchor()=>Sta(()=>{
+   using var owner=new Form {ClientSize=new System.Drawing.Size(800,450)};
+   using var panel=new Panel {Visible=false,Size=new System.Drawing.Size(800,450)};
+   Assert.False(GuardianForm.SyncRuntimeHostBounds(owner,panel,450));
+   Assert.Equal(new System.Drawing.Size(800,450),panel.Size);
+   owner.WindowState=FormWindowState.Minimized;
+   Assert.False(GuardianForm.SyncRuntimeHostBounds(owner,panel,0));
+   panel.Dispose();Assert.False(GuardianForm.SyncRuntimeHostBounds(owner,panel,0));
+  });
   [Theory][InlineData(null)][InlineData("old")][InlineData("wrong")]
   public void StaleCloseMustNotFallThroughGenericInbound(string instance)=>Sta(()=>{
    using var owner=new Form();using var s=new CompositionHelpSurface(owner,"owned","owned",CompositionPanelProfile.Intelligence);

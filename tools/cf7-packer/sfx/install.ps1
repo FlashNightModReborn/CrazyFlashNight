@@ -1,7 +1,9 @@
-# CF7 更新安装脚本
-# 由 7z SFX 自解压后自动执行
+﻿# CF7 更新安装脚本
+# 由 7z SFX 自解压后自动执行，或从 zip 包内的「安装更新.bat」直接调用
 param(
-    [switch]$DeleteSelf
+    [switch]$DeleteSelf,
+    [string]$GamePath = "",
+    [switch]$NoPause
 )
 
 $ErrorActionPreference = "Stop"
@@ -162,6 +164,16 @@ function Install-Update {
         Write-Host "  _Data/ 更新完成" -ForegroundColor Green
     }
 
+    # 游戏内终端程序放到游戏根（resources 的上一级），fscommand\launch_rag.bat 按 CFN-RAG-v*.exe 通配
+    $ragExes = @(Get-ChildItem -Path $scriptDir -Filter "CFN-RAG-v*.exe" -File -ErrorAction SilentlyContinue)
+    if ($ragExes.Count -gt 0) {
+        Write-Host "  正在放置终端程序 ..." -ForegroundColor Yellow
+        foreach ($rag in $ragExes) {
+            Copy-Item -LiteralPath $rag.FullName -Destination $GamePath -Force
+        }
+        Write-Host "  终端程序已放到游戏根目录" -ForegroundColor Green
+    }
+
     Write-Host ""
     Write-Host "  [OK] 安装完成！" -ForegroundColor Green
     Write-Host ""
@@ -171,8 +183,13 @@ function Install-Update {
 
 Write-Header
 
-# 1. 自动定位
-$gamePath = Find-GamePath
+# 1. 定位安装目标：显式指定优先，否则自动扫描 Steam 库
+if ($GamePath) {
+    $gamePath = (Resolve-Path $GamePath).Path
+    Write-Host "  使用指定游戏目录: $gamePath" -ForegroundColor Gray
+} else {
+    $gamePath = Find-GamePath
+}
 
 # 2. 找不到则手动选择
 if (-not $gamePath) {
@@ -182,7 +199,7 @@ if (-not $gamePath) {
     $gamePath = Select-FolderDialog
     if (-not $gamePath) {
         Write-Host "  [X] 已取消。" -ForegroundColor Red
-        Write-Host ""; Read-Host "  按 Enter 退出"
+        if (-not $NoPause) { Write-Host ""; Read-Host "  按 Enter 退出" }
         exit 1
     }
 }
@@ -192,6 +209,7 @@ $exePath = Join-Path $gamePath "CrazyFlasher7StandAloneStarter.exe"
 if (-not (Test-Path $exePath)) {
     Write-Host "  [!] 目录中未找到 CrazyFlasher7StandAloneStarter.exe" -ForegroundColor Yellow
     Write-Host "  选择的路径: $gamePath" -ForegroundColor Gray
+    if ($NoPause) { throw "目标目录不是 Steam 版游戏目录：$gamePath" }
     Write-Host ""
     $confirm = Read-Host "  仍然继续？(y/N)"
     if ($confirm -ne "y" -and $confirm -ne "Y") {
@@ -202,13 +220,15 @@ if (-not (Test-Path $exePath)) {
 }
 
 # 4. 确认安装
-Write-Host ""
-Write-Host "  即将更新: $gamePath" -ForegroundColor White
-$confirm = Read-Host "  确认开始？(Y/n)"
-if ($confirm -eq "n" -or $confirm -eq "N") {
-    Write-Host "  已取消。" -ForegroundColor Red
-    Write-Host ""; Read-Host "  按 Enter 退出"
-    exit 1
+if (-not $NoPause) {
+    Write-Host ""
+    Write-Host "  即将更新: $gamePath" -ForegroundColor White
+    $confirm = Read-Host "  确认开始？(Y/n)"
+    if ($confirm -eq "n" -or $confirm -eq "N") {
+        Write-Host "  已取消。" -ForegroundColor Red
+        Write-Host ""; Read-Host "  按 Enter 退出"
+        exit 1
+    }
 }
 
 # 5. 执行安装
@@ -224,4 +244,4 @@ if ($DeleteSelf -and $sfxExe -and (Test-Path $sfxExe)) {
 }
 
 Write-Host ""
-Read-Host "  按 Enter 退出"
+if (-not $NoPause) { Read-Host "  按 Enter 退出" }

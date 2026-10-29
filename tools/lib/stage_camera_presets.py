@@ -62,22 +62,35 @@ def check_preset(data_path, manifest, key):
 
 
 def refresh_preset(data_path, asset_dir, key):
-    """Reapply only camera inputs to a verified imported closure, without its art ZIP.
+    """Reapply camera inputs while preserving the imported closure and unrelated edits.
 
-    Full import calls the same apply_preset function. The imported identities,
-    materials, focus cameras, fallback image/coordinates and asset bytes stay intact.
+    Non-config assets must match the manifest exactly. The generated config may only
+    differ in fields owned by apply_preset, so stale manifests cannot hide other changes.
     """
     manifest_path = asset_dir / 'manifest.json'
     manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+    relative = data_path.relative_to(ROOT).as_posix()
     for row in manifest['files']:
+        if row['path'] == relative:
+            continue
         data = (ROOT / row['path']).read_bytes()
         if row['path'].endswith('/.gitattributes'):
             data = data.replace(b'\r\n', b'\n')
         assert len(data) == row['bytes'] and digest(data) == row['sha256'], row['path']
     prefix, config = read_config(data_path)
-    apply_preset(config, key)
-    data = (prefix + ' = ' + json.dumps(config, ensure_ascii=False, indent=2) + ';\n').encode('utf-8')
-    relative = data_path.relative_to(ROOT).as_posix()
+    updated = apply_preset(copy.deepcopy(config), key)
+    owned_top = {'camera', 'pins', 'presetKey', 'presentationViews', 'defaultPresentation'}
+    for name in set(config) | set(updated):
+        if name not in owned_top:
+            assert config.get(name) == updated.get(name), 'Unexpected generated config change: ' + name
+    owned_pin = {'x', 'y', 'labelX', 'labelY', 'leaderBend', 'screenOffset'}
+    for entry_id in set(config['pins']) | set(updated['pins']):
+        before = config['pins'].get(entry_id, {})
+        after = updated['pins'].get(entry_id, {})
+        for field in set(before) | set(after):
+            if field not in owned_pin:
+                assert before.get(field) == after.get(field), 'Unexpected pin change: ' + entry_id + '.' + field
+    data = (prefix + ' = ' + json.dumps(updated, ensure_ascii=False, indent=2) + ';\n').encode('utf-8')
     rows = [row for row in manifest['files'] if row['path'] == relative]
     assert len(rows) == 1, 'Expected exactly one generated config in the imported closure'
     rows[0].update(bytes=len(data), sha256=digest(data))

@@ -263,9 +263,11 @@ function diffCase(spec, result) {
         .forEach(function(k) {
             if (L[k] !== D[k]) fail('computed ' + k + ' 不一致 legacy=' + L[k] + ' doc=' + D[k]);
         });
-    /* Web 权威锚点：默认主题值（不是 NativeHud） */
-    if (D.iconImg && D.iconBlend !== 'overlay') {
-        fail('icon mix-blend-mode 应为 overlay，实际 ' + D.iconBlend);
+    /* Web 权威锚点：默认主题值（不是 NativeHud）。
+       2026-10 注释改版把背景改为半透明黑后，overlay 在黑底上恒得黑会吞掉图标，
+       --tt-icon-blend 与 C# DrawIcon 同步改为普通 alpha（normal）。 */
+    if (D.iconImg && D.iconBlend !== 'normal') {
+        fail('icon mix-blend-mode 应为 normal，实际 ' + D.iconBlend);
     }
     if (L.layout !== D.layout) fail('data-layout 不一致 legacy=' + L.layout + ' doc=' + D.layout);
     if (normText(L.text) !== normText(D.text)) {

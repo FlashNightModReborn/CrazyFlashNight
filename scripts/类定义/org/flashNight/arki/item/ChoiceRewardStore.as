@@ -30,6 +30,8 @@ class org.flashNight.arki.item.ChoiceRewardStore {
                     || !RewardStashStore.whole(o.poolVersion) || o.poolVersion < 1
                     || (o.scopeKind !== "character" && o.scopeKind !== "book")
                     || typeof o.bookId != "string" || typeof o.runIdentity != "string"
+                    || (o.routeId !== undefined && (o.scopeKind !== "book" || o.bookId !== "cf6-sting"
+                        || (o.routeId !== "historical" && o.routeId !== "type61")))
                     || (o.scopeKind == "book" && (!text(o.bookId, 64) || !text(o.runIdentity, 96)))
                     || (o.scopeKind == "character" && (o.bookId != "" || o.runIdentity != ""))
                     || !(o.options instanceof Array) || o.options.length < 2 || o.options.length > 4) return false;

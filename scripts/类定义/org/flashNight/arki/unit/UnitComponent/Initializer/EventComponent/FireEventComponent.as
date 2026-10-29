@@ -46,7 +46,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.FireEven
         WeaponFireCore.updateMuzzlePosition(target, muzzlePosition, bulletProps);
         
         // 设置子弹散射度
-        bulletProps.子弹散射度 = (target.状态.indexOf('行走') > -1) ? 
+        // Authored moving-fire actions can supply their actual movement state.
+        // Existing actors retain the state-name rule when no adapter is active.
+        var movingShot:Boolean = typeof target.standardShotMoving == "boolean"
+            ? target.standardShotMoving : target.状态.indexOf('行走') > -1;
+        bulletProps.子弹散射度 = movingShot ?
             bulletProps.移动子弹散射度 : 
             bulletProps.站立子弹散射度;
         

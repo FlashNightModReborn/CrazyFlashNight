@@ -3,6 +3,7 @@
 const fs=require('fs'),path=require('path');
 const Preflight=require('./preflight'),Closure=require('./source-closure'),Affiliated=require('./affiliated-slot');
 const {openInput}=require('./cdp-input-channel');
+const {resolveRoute}=require('./route-config');
 const {TranscriptWriter,attachPassiveObserver}=require('./passive-observer');
 const {observeVerifiedReturn}=require('./verified-return-observation');
 const Clone=require('../workbench-live-e2e/lib/clone-save-guard');
@@ -26,7 +27,7 @@ function parseArgs(argv) {
     const parsed=Preflight.parseArgs(args);
     if(!parsed.expectedBuildIdentity||!parsed.expectedPayloadClosure||!parsed.expectedAsloaderSha256)
         throw Error('pin candidate build, closure and compiled asLoader SHA-256');
-    return {...parsed,slot:Preflight.TARGET_SLOT,ownedBaseRelative:BASE,preserveSeedBytes:true,
+    return {...parsed,slot:resolveRoute(parsed.routeId).slot,ownedBaseRelative:BASE,preserveSeedBytes:true,
         readyTimeoutMs:180000,pollMs:200,cloneBaselineTimeoutMs:30000,cloneBaselineStableMs:2000,
         observeOnly:options['--observe-only'],awaitReturnMs:wait*1000};
 }
@@ -41,10 +42,10 @@ function readSave(slot) {
     const file=E.readExactRegularFile(path.join(ROOT,'saves',slot+'.json'),{phase:'cf6_ledger',maximumBytes:128*1024*1024});
     return {data:JSON.parse(file.bytes.toString('utf8')),sha256:file.sha256,bytes:file.bytes};
 }
-function preserveSaveSnapshot(runDir,label,slot,snapshot) {
+function preserveSaveSnapshot(runDir,label,slot,snapshot,routeId) {
     E.assertOwnedRunDirectory(ROOT,runDir,BASE,'cf6_save_snapshot');
     if(!['origin-before-play','origin-entry','book-entry','origin-returned','origin-readback'].includes(label)
-            ||!(slot===Preflight.TARGET_SLOT||Affiliated.SLOT.test(slot)))throw Error('unsafe save evidence identity');
+            ||!(slot===resolveRoute(routeId).slot||Affiliated.SLOT.test(slot)))throw Error('unsafe save evidence identity');
     const name=label+'.json',target=path.join(runDir,name);
     fs.writeFileSync(target,snapshot.bytes,{flag:'wx',mode:0o600});
     const saved=E.readExactRegularFile(target,{phase:'cf6_save_snapshot',maximumBytes:128*1024*1024});
@@ -58,9 +59,9 @@ async function shutdown(runtime) {
     });
     return {pid:runtime.identity.pid,normalShutdownRequested:true};
 }
-function release(runtime,admission) {
+function release(runtime,admission,routeId) {
     Generic.assertNoLauncherBeforeMutation();
-    const after=Generic.captureSaveUniverse(ROOT,runtime.appData,Preflight.TARGET_SLOT);
+    const after=Generic.captureSaveUniverse(ROOT,runtime.appData,resolveRoute(routeId).slot);
     const collateral=Affiliated.assertCollateral(runtime.collateralBefore,after,admission);
     const clone=Clone.releaseDedicatedClone({preparation:runtime.preparation,lock:runtime.lock,appData:runtime.appData});
     return {collateral,clone};
@@ -68,11 +69,12 @@ function release(runtime,admission) {
 async function main(argv) {
     const args=parseArgs(argv);
     if(args.help){console.log('See tools/cf6-live-e2e/README.md. Requires pinned candidate, seed and asLoader; observe-only or explicit clone book writes.');return;}
-    const preflight=Preflight.inspect(args),sourceClosure=Closure.capture(ROOT);
+    const route=resolveRoute(args.routeId);
+    const preflight=Preflight.inspect(args),sourceClosure=Closure.capture(ROOT,route.id);
     const runDir=path.join(ROOT,BASE,timestampId()+'-cf6');fs.mkdirSync(runDir,{recursive:true});
     E.assertOwnedRunDirectory(ROOT,runDir,BASE,'cf6_run');
     const writer=new TranscriptWriter(runDir,'cf6-'+timestampId());
-    const report={schema:'cf7-cf6-e2e.candidate-journey.v1',status:'running',preflight,sourceClosure,runDir,
+    const report={schema:'cf7-cf6-e2e.candidate-journey.v1',status:'running',routeId:route.id,preflight,sourceClosure,runDir,
         gameplayDriver:'external production input; this runner does not drive combat or fake termination'};
     let runtime=null,input=null,observer=null,admission=null,entryRequest=null,originBefore=null,completed=false,released=false;
     const persist=()=>atomicWriteJson(path.join(runDir,'report.json'),report);
@@ -116,34 +118,35 @@ async function main(argv) {
         report.open=opened;report.loadedWeb=await observer.assertLoadedCf6Scripts();
         report.openScreenshot=await input.screenshot('bookshelf-open.png');persist();
         originBefore=readSave(args.slot);
-        report.saveSnapshots={beforePlay:preserveSaveSnapshot(runDir,'origin-before-play',args.slot,originBefore)};persist();
+        report.saveSnapshots={beforePlay:preserveSaveSnapshot(runDir,'origin-before-play',args.slot,originBefore,route.id)};persist();
         if(args.observeOnly){
             await input.click('close');
             await until('bookshelf close',10000,async()=> (await runtime.session.agentControl('status')).activePanel?.name!=='bookshelf');
         } else {
             await input.click('series');await input.click('chapter6');
+            await input.selectRoute(route.id);
             report.selectionScreenshot=await input.screenshot('cf6-selected.png');
             const clicked=await input.click('play');
             entryRequest=await until('production CF6 play request',10000,()=>writer.events.map(e=>({e,m:message(e)})).find(({e,m})=>
                 e.sequence>clicked.afterSequence&&m?.type==='panel'&&m.panel==='bookshelf'&&m.cmd==='commit'
-                &&m.panelInstanceId===opened.instance&&m.payload?.kind==='play'&&m.payload?.target==='cf6-sting')?.m);
+                &&m.panelInstanceId===opened.instance&&m.payload?.kind==='play'&&m.payload?.target===route.playTarget)?.m);
             report.entryRequest={callId:entryRequest.callId,instance:entryRequest.panelInstanceId,tokenRef:entryRequest.payload.token};persist();
             admission=await until('durable CF6 entry and exact affiliated slot',120000,()=>{
                 const originFile=readSave(args.slot),origin=originFile.data,active=origin.ext?.bookshelf?.active;
                 if(!active||!Affiliated.SLOT.test(active.slot))return null;
                 const receipt=writer.events.map(message).find(m=>m?.type==='panel_resp'&&m.token===entryRequest.payload.token
-                    &&m.panelInstanceId===opened.instance&&m.kind==='play'&&m.target==='cf6-sting'&&m.success===true
+                    &&m.panelInstanceId===opened.instance&&m.kind==='play'&&m.target===route.playTarget&&m.success===true
                     &&['switching','applied'].includes(m.phase)&&(m.pendingRun===active.slot||m.activeSlot===active.slot));
                 if(!receipt||!fs.existsSync(path.join(ROOT,'saves',active.slot+'.json')))return null;
                 const runFile=readSave(active.slot),run=runFile.data;
                 const receiptRequest=writer.events.map(message).find(m=>m?.type==='panel'&&m.callId===receipt.callId
                     &&m.panelInstanceId===opened.instance&&m.cmd===receipt.cmd);
                 const accepted=Affiliated.admit({before:runtime.collateralBefore,request:entryRequest,receipt,receiptRequest,
-                    originSave:origin,runSave:run,originSlot:args.slot,instance:opened.instance});
+                    originSave:origin,runSave:run,originSlot:args.slot,instance:opened.instance,routeId:route.id});
                 if(run.ext.bookRun.started!==true)return null;
-                report.saveSnapshots.originEntry=preserveSaveSnapshot(runDir,'origin-entry',args.slot,originFile);
-                report.saveSnapshots.bookEntry=preserveSaveSnapshot(runDir,'book-entry',active.slot,runFile);persist();
-                const chapter=JSON.parse(E.readExactRegularFile(path.join(ROOT,'data/stages/books/cf6-sting.runtime.json'),
+                report.saveSnapshots.originEntry=preserveSaveSnapshot(runDir,'origin-entry',args.slot,originFile,route.id);
+                report.saveSnapshots.bookEntry=preserveSaveSnapshot(runDir,'book-entry',active.slot,runFile,route.id);persist();
+                const chapter=JSON.parse(E.readExactRegularFile(path.join(ROOT,route.chapterPath),
                     {phase:'cf6_actor',maximumBytes:32*1024*1024}).bytes.toString('utf8'));
                 report.initialActor=Affiliated.assertActor(run,chapter);
                 report.initialActor.slot=active.slot;report.initialActor.runStarted=true;
@@ -154,7 +157,7 @@ async function main(argv) {
             report.affiliated=admission;persist();console.log('CF6 entry verified. Awaiting genuine death, retreat or victory; drive combat through normal game input.');
             const terminal=await until('production terminal bookshelf',args.awaitReturnMs,()=>writer.events.map(message).find(m=>
                 m?.type==='panel_resp'&&m.panel==='bookshelf'&&m.success===true&&m.inRun===true
-                &&m.activeSlot===admission.slot&&m.originSlot===args.slot&&m.bookId==='cf6-sting'
+                &&m.activeSlot===admission.slot&&m.originSlot===args.slot&&m.bookId==='cf6-sting'&&m.routeId===route.id
                 &&['failure','defeat','retreat','victory','abandoned'].includes(m.runOutcome)));
             // The production panel automatically returns an exitRequired run after its fresh snapshot.
             // Observe that same request; clicking a second return could duplicate an unknown write.
@@ -164,15 +167,15 @@ async function main(argv) {
             const returned=await until('production return applied',120000,()=>writer.events.map(message).find(m=>
                 m?.type==='panel_resp'&&m.panel==='bookshelf'&&m.success===true&&m.panelInstanceId===returnRequest.panelInstanceId
                 &&m.token===returnRequest.payload.token&&m.kind==='return'&&m.phase==='applied'&&m.activeSlot===args.slot&&m.inRun===false
-                &&m.returningResult?.runId===admission.slot&&m.returningResult.bookId==='cf6-sting'&&m.returningResult.sp===0));
+                &&m.returningRouteId===route.id&&m.returningResult?.runId===admission.slot&&m.returningResult.bookId==='cf6-sting'&&m.returningResult.sp===0));
             report.returnReceipt={phase:returned.phase,activeSlot:returned.activeSlot,result:returned.returningResult};
             await Clone.captureStableSlotArtifactSet({root:ROOT,appData:runtime.appData,slot:args.slot,requireJson:true,
                 timeoutMs:30000,stableMs:2000,pollMs:200});
             const returnedSave=readSave(args.slot);
-            report.saveSnapshots.returned=preserveSaveSnapshot(runDir,'origin-returned',args.slot,returnedSave);persist();
-            report.result=Affiliated.assertReturned(originBefore.data,returnedSave.data,admission.slot);persist();
+            report.saveSnapshots.returned=preserveSaveSnapshot(runDir,'origin-returned',args.slot,returnedSave,route.id);persist();
+            report.result=Affiliated.assertReturned(originBefore.data,returnedSave.data,admission.slot,route.id);persist();
             const presentation=await observeVerifiedReturn({before:originBefore.data,after:returnedSave.data,
-                slot:admission.slot,originSlot:args.slot,receipt:report.returnReceipt,input,detach});
+                slot:admission.slot,originSlot:args.slot,receipt:report.returnReceipt,input,detach,routeId:route.id});
             report.returnScreenshot=presentation.screenshot;
             report.postReturnObservationWarnings=presentation.warnings;persist();
         }
@@ -184,13 +187,13 @@ async function main(argv) {
             catch(error) { report.partialRestartShutdown=await Generic.cleanupAuthenticatedPartialStart(ROOT,first.expectedIdentity);throw error; }
             report.restart={pid:runtime.identity.pid,firstPid:first.identity.pid,attempt:runtime.ready.expectedAttemptId};
             const readbackSave=readSave(args.slot);
-            report.saveSnapshots.readback=preserveSaveSnapshot(runDir,'origin-readback',args.slot,readbackSave);persist();
-            report.readback=Affiliated.assertReturned(originBefore.data,readbackSave.data,admission.slot);
+            report.saveSnapshots.readback=preserveSaveSnapshot(runDir,'origin-readback',args.slot,readbackSave,route.id);persist();
+            report.readback=Affiliated.assertReturned(originBefore.data,readbackSave.data,admission.slot,route.id);
             report.restartShutdown=await shutdown(runtime);runtime=first;
         }
-        Closure.assertUnchanged(sourceClosure,Closure.capture(ROOT));
+        Closure.assertUnchanged(sourceClosure,Closure.capture(ROOT,route.id));
         report.transcript=writer.flush({journeyComplete:true,observeOnly:args.observeOnly});
-        report.release=release(runtime,admission);released=true;
+        report.release=release(runtime,admission,route.id);released=true;
         report.status=args.observeOnly?'passed_observe_only':'passed_entry_terminal_return_readback';completed=true;
         report.completedAt=new Date().toISOString();report.sha256=sha256Text(canonicalJson(report));persist();
         console.log(JSON.stringify({status:report.status,runDir,sha256:report.sha256,result:report.result||null},null,2));

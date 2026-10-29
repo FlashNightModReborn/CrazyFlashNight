@@ -11,6 +11,20 @@
     <Include href="Import7.xml" itemID="6af00000-5c27a4e5" loadImmediate="false"/>
     <Include href="Import8.xml" itemID="6af00000-40c284cb" loadImmediate="false"/>
     <Include href="Import9.xml" itemID="6af00000-530deb74" loadImmediate="false"/>
+    <Include href="Import10.xml" itemID="6af00000-955992a7" loadImmediate="false"/>
+    <Include href="Import11.xml" itemID="6af00000-5705d9ef" loadImmediate="false"/>
+    <Include href="Import12.xml" itemID="6af00000-0ecb4dcd" loadImmediate="false"/>
+    <Include href="Import13.xml" itemID="6af00000-d9d4f6bf" loadImmediate="false"/>
+    <Include href="Import14.xml" itemID="6af00000-033dd6c5" loadImmediate="false"/>
+    <Include href="Import15.xml" itemID="6af00000-e1ea55d4" loadImmediate="false"/>
+    <Include href="Import16.xml" itemID="6af00000-6781f7fd" loadImmediate="false"/>
+    <Include href="Import17.xml" itemID="6af00000-61650bae" loadImmediate="false"/>
+    <Include href="Import18.xml" itemID="6af00000-5bd3757a" loadImmediate="false"/>
+    <Include href="Import19.xml" itemID="6af00000-04b6b5bb" loadImmediate="false"/>
+    <Include href="Import20.xml" itemID="6af00000-9afac1ff" loadImmediate="false"/>
+    <Include href="Import21.xml" itemID="6af00000-8d0efc0c" loadImmediate="false"/>
+    <Include href="Import22.xml" itemID="6af00000-b85ee035" loadImmediate="false"/>
+    <Include href="Import23.xml" itemID="6af00000-08d547b5" loadImmediate="false"/>
   </symbols>
   <timelines>
     <DOMTimeline name="场景 1">
@@ -60,6 +74,7 @@ _root.技能函数.霸体减伤 = function(target:Object, 减伤率:Number, 持�
     // 根据来源ID生成buffId：不同来源可共存，同来源会替换
     // 保守语义MULT_NEGATIVE会自动取所有减伤效果中的最小值（最强减伤）
     var buffId:String = 来源ID ? ("霸体减伤_" + 来源ID) : "霸体减伤";
+    metaBuff.hudInfo = {name:"霸体减伤", description:"降低受到的伤害；同类减伤取最强效果。", polarity:"benefit", stacks:0};
     target.buffManager.addBuff(metaBuff, buffId);
 
 };
@@ -115,6 +130,84 @@ _root.士兵测试标准行走 = function() {
         self.状态改变(self.攻击模式 + "站立");
     }
 };
+_root.士兵测试初始化掉落物 = function() {
+    // _root.发布消息("初始化掉落物:" + this._name, ObjectUtil.stringify(this.长枪), ObjectUtil.stringify(this.手枪), ObjectUtil.stringify(this.手枪2), ObjectUtil.stringify(this.刀));
+
+    if (this.掉落物 != null || this.不掉装备) {
+        // _root.发布消息(ObjectUtil.stringify(this.掉落物));
+        return;
+    }
+    if (this.是否为敌人 == false) {
+        this.掉落物 = null;
+        // _root.发布消息("非敌人不掉落物品:" + this._name,this.是否为敌人);
+        return;
+    }
+    this.掉落物 = [];
+
+    if (this.长枪) {
+        this.掉落物.push({名字: this.长枪, 概率: 100});
+    }
+    if (this.手枪) {
+        this.掉落物.push({名字: this.手枪, 概率: 100});
+    }
+    if (this.手枪2) {
+        this.掉落物.push({名字: this.手枪2, 概率: 100});
+    }
+    if (this.刀) {
+        this.掉落物.push({名字: this.刀, 概率: 100});
+    }
+};
+_root.子弹属性初始化 = function(子弹元件:MovieClip,子弹种类:String,发射者:MovieClip){
+    var myPoint = {x:子弹元件._x,y:子弹元件._y};
+    子弹元件._parent.localToGlobal(myPoint);
+    var 转换中间y = myPoint.y;
+    _root.gameworld.globalToLocal(myPoint);
+    shootX = myPoint.x;
+    shootY = myPoint.y;
+    if(!发射者){
+        发射者 = 子弹元件._parent._parent;
+    }
+    var 子弹属性 = {
+        声音:"",
+        霰弹值:1,
+        子弹散射度:1,
+        发射效果:"",
+        子弹种类:子弹种类 == undefined ? "普通子弹" : 子弹种类,
+        子弹威力:10,
+        子弹速度:10,
+        Z轴攻击范围:10,
+        击中地图效果:"火花",
+        发射者:发射者._name,
+        shootX:shootX,
+        shootY:shootY,
+        转换中间y:转换中间y,
+        shootZ:发射者.Z轴坐标,
+        击倒率:10,
+        击中后子弹的效果:"",
+        水平击退速度:NaN,
+        垂直击退速度:NaN,
+        命中率:NaN,
+        固伤:NaN,
+        百分比伤害:NaN,
+        血量上限击溃:NaN,
+        防御粉碎:NaN,
+        吸血:NaN,
+        毒:NaN,
+        最小霰弹值:1,
+        不硬直:false,
+        区域定位area:undefined,
+        伤害类型:undefined,
+        魔法伤害属性:undefined,
+        速度X:undefined,
+        速度Y:undefined,
+        ZY比例:undefined,
+        斩杀:undefined,
+        暴击:undefined,
+        水平击退反向:false,
+        角度偏移:0
+    }
+    return 子弹属性;
+}
 #include "../TestLoader.as"]]></script>
               </Actionscript>
               <elements>
@@ -141,6 +234,50 @@ _root.士兵测试标准行走 = function() {
                   </color>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="Import2" name="source2">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import15" name="source15">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import16" name="source16">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import17" name="source17">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import23" name="source23">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>
@@ -222,6 +359,116 @@ _root.士兵测试标准行走 = function() {
                   </color>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="Import9" name="source9">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import10" name="source10">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import11" name="source11">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import12" name="source12">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import13" name="source13">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import14" name="source14">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import18" name="source18">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import19" name="source19">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import20" name="source20">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import21" name="source21">
+                  <matrix>
+                    <Matrix tx="-5000" ty="-5000"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import22" name="source22">
                   <matrix>
                     <Matrix tx="-5000" ty="-5000"/>
                   </matrix>

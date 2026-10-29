@@ -34,7 +34,7 @@
          'modules/workbench-focus.js', 'modules/workbench-primitives.js',
          'modules/workbench-profile.js', 'modules/workbench.js',
            'modules/workbench-components.js', 'modules/asset-workbench-help.js',
-           'modules/asset-timeline.js', 'modules/icons.js', 'modules/dressup-doll-renderer.js',
+           'modules/asset-timeline.js', 'modules/dressup-doll-renderer.js',
          'modules/asset-workbench.js'], noop);
 
     Panels.registerLazy('book-comic', ['modules/book-comic-content.js', 'modules/book-comic-panel.js'], noop);
@@ -44,9 +44,9 @@
 
     // ── tablet（平板电脑：基建/联络/图鉴 Hub；素材由 tools/bake-tablet-assets.js 烘焙）──
     // panel-runtime 供 domain 信封 mux；shop-portrait-resolver 供联络视图解析 NPC 头像；
-    // icons 供材料大全条目图标。
+    // 图标复用 overlay boot 的 Icons；重复执行 icons.js 会清空已加载的 manifest。
     Panels.registerLazy('tablet',
-        ['modules/panel-runtime.js', 'modules/icons.js',
+        ['modules/panel-runtime.js',
          'modules/shop-portrait-resolver.js', 'modules/tablet.js'], noop);
 
     Panels.registerLazy('bookshelf', ['modules/panel-runtime.js', 'modules/bookshelf-runtime.js', 'modules/bookshelf-media.js', 'modules/bookshelf-reader.js', 'modules/bookshelf-original.js', 'modules/bookshelf-panel.js'], noop);
@@ -304,11 +304,9 @@
     // （panel 之前），防 boot 顺序变化时生产冷打开缺依赖；重复加载为幂等 IIFE 重赋值。
     // stage-select-fixtures.js（P1-B 自 data 拆出）紧随 data：非纯 dev，runtime bridge 失败时
     // 面板 snapshot 合并兜底走 StageSelectData.getFixture → StageSelectFixtures，必须在 panel 之前。
-    // P4-a 工程拆分：原 stage-select-panel.js 单文件 IIFE 拆为 modules/stage-select/ 五模块
-    // （纯移动）——core（状态容器+跨模块工具，首载）→ view-model（纯数据层，无 DOM，
-    // P5 三维 renderer 插座）→ renderer（空间 DOM 舞台+生命周期编排）→ inspector
-    // （pinned 决策检查器+难度提交 intent）→ bridge（请求信封+回包守卫）→
-    // stage-select-panel.js 薄 facade（Panels.register 装配 + _debug* QA 接口，守五模块全集）。
+    // P4-a 工程拆分：core（状态容器+跨模块工具，首载）→ card-layout（纯几何）→
+    // view-model（纯数据层）→ renderer（空间 DOM 舞台+生命周期编排）→ inspector
+    // （选中与难度提交 intent）→ bridge（请求信封+回包守卫）→ stage-select-panel.js 薄 facade。
     // 中间模块只守 core（+vm/renderer），跨模块调用解析于调用时（arena P4 同款纪律）。
     Panels.registerLazy('stage-select',
         ['modules/portrait-resolver.js',
@@ -321,6 +319,7 @@
          'modules/stage-select-fixtures.js',
          'modules/panel-scale.js',
           'modules/stage-select/stage-select-core.js',
+          'modules/stage-select/stage-select-card-layout.js',
           'modules/stage-select/stage-select-diorama-data.js',
           'modules/stage-select/stage-select-blackiron-data.js',
           'modules/stage-select/stage-select-fallen-data.js',

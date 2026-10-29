@@ -286,6 +286,7 @@ namespace CF7Launcher.RagTerminal
         private bool _terminal;
         private bool _cancelled;
         private int _malformed;
+        private int _events;
 
         internal DialogueInterjectStream(IDialogueInterjectTransport transport,
             Action<DialogueInterjectEvent> sink, Action<Action> dispatch)
@@ -298,6 +299,7 @@ namespace CF7Launcher.RagTerminal
         internal bool SawTerminal { get { lock (_gate) { return _terminal; } } }
         internal bool Cancelled { get { lock (_gate) { return _cancelled; } } }
         internal int MalformedLines { get { lock (_gate) { return _malformed; } } }
+        internal int EventCount { get { lock (_gate) { return _events; } } }
 
         /// <summary>外部取消（关闭对话/新发送/组结束）。可重复调用。
         /// 除取消 token 外会 Dispose 在途响应流——只取消读取而不关流，后端仍视为活连接，
@@ -362,7 +364,11 @@ namespace CF7Launcher.RagTerminal
                     }
                     if (!cts.IsCancellationRequested && !IsTerminal()) parser.Flush();
                 }
-                lock (_gate) { _malformed = parser.MalformedLines; }
+                lock (_gate)
+                {
+                    _malformed = parser.MalformedLines;
+                    _events = parser.EventCount;
+                }
             }
             catch (OperationCanceledException)
             {

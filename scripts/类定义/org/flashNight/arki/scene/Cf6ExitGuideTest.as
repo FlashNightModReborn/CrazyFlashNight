@@ -39,6 +39,26 @@ class org.flashNight.arki.scene.Cf6ExitGuideTest {
         check(!Cf6ExitGuideService.hasClearCue(s.stageManager,s.world),"world identity replacement invalidates cue receipt");
         s.world.removeMovieClip();effectClass.Effect=previousEffect;_root.__cf6CueCalls=previousCalls;
     }
+    private static function testAcquisitionGeometry():Void {
+        for(var i:Number=0;i<2;i++) {
+            var s:Object=fixture(),radius:Number=i==0 ? 42 : 35;
+            s.departure.spec.gate.radius=radius;
+            s.departure.rules.heading=i==0 ? null : "右";
+            var h:Object=Cf6ExitGuideService.begin(s,null);
+            var bounds:Object=h.clip.getBounds(h.clip);
+            var x:Number=Math.max(Math.abs(bounds.xMin),Math.abs(bounds.xMax));
+            var z:Number=Math.max(Math.abs(bounds.yMin),Math.abs(bounds.yMax));
+            check(Math.sqrt(x*x+z*z)<radius,"complete rendered guide fits acquisition circle radius="+radius);
+            var point:Object={hp:100,_x:120+x,Z轴坐标:230+z};
+            check(Cf6TraversalService.atGate(s.departure.spec,point),"outer guide bounds enter actual atGate radius="+radius);
+            check(h.clip._rotation==(i==0 ? 0 : 90),"door/up and elevator/right follow trajectory heading");
+            Cf6ExitGuideService.end(h);s.world.removeMovieClip();
+        }
+        var s:Object=fixture();s.departure.rules.heading="右";s.departure.spec.gate.direction="左";
+        var h:Object=Cf6ExitGuideService.begin(s,null);
+        check(h.clip._rotation==-90,"explicit authored gate direction wins over inferred heading");
+        Cf6ExitGuideService.end(h);s.world.removeMovieClip();
+    }
     public static function runAllTests():Void {
         passed=failed=0;var previousWorld=_root.gameworld,cls:Object=StageManager,previousManager=cls.instance;
         var s:Object=fixture(),h:Object=Cf6ExitGuideService.begin(s,{x:900,z:900,direction:"右"});
@@ -65,7 +85,7 @@ class org.flashNight.arki.scene.Cf6ExitGuideTest {
         _root.gameworld=replacement;replacement.__stageReturnWorldIdentity={};
         var sameName:MovieClip=replacement.createEmptyMovieClip(oldName,1);sameName.__cf6ExitGuideOwner={};
         Cf6ExitGuideService.tick(h);check(h.closed && sameName._parent===replacement,"same-path world replacement stays untouched");
-        replacement.removeMovieClip();testClearCue();_root.gameworld=previousWorld;cls.instance=previousManager;
+        replacement.removeMovieClip();testClearCue();testAcquisitionGeometry();_root.gameworld=previousWorld;cls.instance=previousManager;
         trace("Cf6ExitGuideTest Tests Passed: "+passed);trace("Cf6ExitGuideTest Tests Failed: "+failed);
     }
 }

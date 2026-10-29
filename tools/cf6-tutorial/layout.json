@@ -162,8 +162,118 @@
   },
   "waveNote": "空波次：教学房不安排敌人；正常机关空波次清关即开放出口（根代理已修复并真实通过空波次早清关竞争）",
   "layoutReview": {
-    "basis": "真实FP11首版：床上缘裁切、门过大、独立button2588实际是储物箱；首版截图和编译产物保留在validation/tutorial-canonical-r1",
-    "changes": "移除独立储物箱，保留房间壳自带桌面；床与灯具按角色标尺完整入画；门采用侧墙仿射摆放。原源未改。",
-    "status": "revision awaiting actual-player review"
+    "basis": "User supplied R7 bold SVG and explicit bold selection on 2026-10-27",
+    "changes": "Native vector R7 map; source tile cropping retained; generous 115x65 door approach keeps the visible doorway easy to reach. Actor and camera scale unchanged.",
+    "status": "source prepared; actual CS6 and game validation required"
+  },
+  "artRevision": "r7-bold",
+  "r7Geometry": {
+    "basis": "R7 source wall paths and furniture floor contacts; approach region aligned with original-position-door-redraw. All values precede the shared 128/75 viewport transform.",
+    "blockedPolygons": [
+      [
+        [
+          50,
+          150
+        ],
+        [
+          1000,
+          150
+        ],
+        [
+          1000,
+          195.7
+        ],
+        [
+          50,
+          195.7
+        ]
+      ],
+      [
+        [
+          712.5,
+          195.7
+        ],
+        [
+          1000,
+          195.7
+        ],
+        [
+          1000,
+          434.6
+        ]
+      ],
+      [
+        [
+          50,
+          449.95
+        ],
+        [
+          1000,
+          449.95
+        ],
+        [
+          1000,
+          500
+        ],
+        [
+          50,
+          500
+        ]
+      ],
+      [
+        [
+          163,
+          195.7
+        ],
+        [
+          527,
+          195.7
+        ],
+        [
+          527,
+          232
+        ],
+        [
+          470,
+          238
+        ],
+        [
+          443,
+          229
+        ],
+        [
+          400,
+          229
+        ],
+        [
+          400,
+          225
+        ],
+        [
+          258,
+          225
+        ],
+        [
+          258,
+          235
+        ],
+        [
+          163,
+          235
+        ]
+      ]
+    ],
+    "exitRect": [
+      780,
+      332,
+      895,
+      397
+    ],
+    "doorArtBounds": [
+      807,
+      101,
+      886,
+      339
+    ]
   }
 }

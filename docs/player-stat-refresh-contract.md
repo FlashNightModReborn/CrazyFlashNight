@@ -1,12 +1,12 @@
 # 玩家持久属性投影合同
 
-本文件是持久属性更新的唯一接口合同。代码核对基线为 `4cacdc76c1c21e953344d3bb515ebad19fa0656e` 上的玩家属性施工差异；候选编译、实际旅程和正式部署分别验收，本文件不授予发布权限。领域原有资产、保存、未知结果合同继续生效。
+本文件是持久属性更新的唯一接口合同。代码核对基线为 commit `1db99aa48853c95f3151ef9f41061f7ff3842ec1`；候选编译、实际旅程和正式部署分别验收，本文件不授予发布权限。领域原有资产、保存、未知结果合同继续生效。
 
 ## 权威与成功屏障
 
 | 输入 | 唯一规则/提交 owner | 投影时点 |
 |---|---|---|
-| 技能学习、等级、被动启用 | SkillLoadoutService | 事实提交后；奖励 prepare 不发布，resolve(committed) 才发布 |
+| 技能学习、等级、被动启用、子能力偏好 | SkillLoadoutService | 事实提交后；奖励 prepare 不发布，resolve(committed) 才发布 |
 | 装备与在身调制 | CharacterBuildService / EquipmentTuningService | 真实容器提交后；原 generation/loadoutRevision/proof 与最终属性屏障同时满足 |
 | 快捷拾取、legacy 装备移动 | PickUpManager / ItemUtil | 真实容器成功后；失败投影不能返回为“物品未取得” |
 | 健身 | GymTrainingPanelService | 精确 session 的 durable 确认后；save_pending 候选不可供属性、装备或转场消费 |
@@ -25,9 +25,13 @@ Gym 在准备入口及创建候选之前登记专用的只读消费门，协调�
 
 ## 三种工作与稳定来源
 
-`STATS=1` 用于持久数值、经脉和条件被动；`SKILLS=2` 用于实际技能事实变化；`EQUIPMENT=4` 用于计划内完整装备生命周期。纯槽位重排不重建属性。派生缓存、资源结算和 UI 是同一尾部，无额外 bit。
+`STATS=1` 用于持久数值、经脉和条件被动；`SKILLS=2` 用于实际技能事实变化（含子能力偏好）；`EQUIPMENT=4` 用于计划内完整装备生命周期。纯槽位重排不重建属性。派生缓存、资源结算和 UI 是同一尾部，无额外 bit。
 
 11 槽的未受修改数据由实际装载时冻结。引用及 level/tier/mods 等语义改变会使来源过期。普通投影不调用 getData、不从 live final 反推 base。DressupInitializer.buildPersistentSnapshot 在隔离对象上算完并校验必要数值，再由 applyPersistentSnapshot 通过现有 BuffManager base API 提交。旧 Buff 保留自身倍率、加算、定时记录；套装静态贡献按已提交记录重放，不重复安装 lifecycle。
+
+合法装备负加成不是无效输入。`punch` 的正负值均参与空手攻击力；佣兵 AI 的非负抑制权重仅累计正加成的平方根，不能对负加成开平方并把生成的 NaN 传播成整个人物初始化失败。非有限输入仍在提交 live 前拒绝，回归需覆盖负值、零值、混合正负与重复刷新。
+
+`佣兵技能概率抑制基数` 是 AI 辅助输出，不属于玩家必需属性、Buff 基底或属性后验。它仍随成功投影更新，不能因移出校验而保留上一次装备的值。旧帧 AI 通过 `LegacyUnarmedSkillChance` 消费：合法权重保持原概率公式，无效权重只拒绝本次可选技能抽取并沿原分支执行普通攻击。手动操控及已由 unitAI 接管的路径保留原入口判断。装备 `punch`、HP/MP 与其他必需输入的非法值仍由原数值边界拒绝；不补满资源，不放宽身份，不用辅助字段失败解除保存等待。
 
 兼容名 DressupInitializer.updateProperties 现在走普通冷投影。完整装扮的数值和弹药建基是 initialize 的私有子阶段。新业务不能复制该子阶段，也不能调用 StaticInitializer、Buff reset 或 BuffManager.update(0) 来充当普通刷新。
 
@@ -43,6 +47,12 @@ context/body 是不可复用的普通 Object；world 复用 StageReturnFlow.worl
 
 每个 bit 记录 requested/completed 水位。flush 只接纳所捕获的工作；同 bit 的再失效仍留下工作。同步最多四轮，重入只返回 pending，不递归或每帧轮询。读取没有变化时为 unchanged，零投影写。
 
+领域读取门恢复后，即使没有 dirty，成功返回 unchanged 也归还协调器自己因等待取得的暂停与禁射；不能越过权威检查提前宣告成功，也不为纯技能点保存伪造属性 dirty。释放在 flush 重入保护内执行，先交出旧 lease，再允许同步回调；随后重验身份、读取门和新增工作。其他 owner 的暂停继续保留，旧 context 的释放不能擦掉新 context 取得的 lease。
+
+首次完整初始化和首次进场通知分别完成：若尾部 `initial_ready` 因合批或领域权威返回 pending，原 owner 后续 flush 达到 applied/unchanged 时补发一次出生就绪通知，不重放属性初始化或资源恢复。通知在 flush 的重入保护释放后执行；同一身体后续读取不重复发布。投影失败的 stage/reason 首次出现或改变时写入现有服务器日志，避免只留下 Host 的进场超时。
+
+首次初始化明确失败时，通过窄失败 hook 通知场景 owner；同步 scene scope 的返回值同样必须消费。场景 owner 延后至下一帧接管失败，属性协调器不负责跳帧、重读档或发放资源。旧 scope 的失败不得撤销新身体。后续换装/成长仍按原 owner 的 checkpoint 恢复；出生失败不会靠发布部分成功的 SceneReady/Start 来解锁。
+
 合法 EQUIPMENT 的领域 owner 先冻结原装备 proof 并预分配一次性 ticket 的目标 body。Static 开始时激活一次，最终必须恰为该目标及原 context/world/actor/proof。完整重建已覆盖的 STATS/SKILLS 合批吸收。任意另一个 body 仍失败；不能为了装备通过而放宽原 manager/dispatcher 替换后置条件。
 
 ## 资源与分阶段恢复
@@ -56,6 +66,10 @@ context/body 是不可复用的普通 Object；world 复用 StageReturnFlow.worl
 ticket started 后普通 flush 禁止再安装完整 lifecycle。原 owner 的显式恢复先尝试已保存的纯最终尾部；较早失败才在原 proof、身体和有效完整资源窗口下显式中止并创建新受控 ticket。CharacterBuild 的既有 flushLive/finalize 以精确 Boolean recoverProjection 表示已知失败后的恢复；结果未知只走原 reconcile watermark，不能带此许可。Host-only orphan 恢复仍需原精确 authority/pause/保存证明。
 
 legacy 装备使用玩家属性投影.恢复遗留装备；它只重投影已提交的容器，不再拾取/移动物品。快捷拾取的原定攻击模式以 context/world/目标 body 回执保留，恢复完成后消费一次。成长使用玩家属性投影.恢复已提交成长，原成长 owner 保留早期 scope、分字段的一次性消费标志和最多一个更高等级意图；不再次执行经验、奖励或收费。缺 Hero 的成长意图不向后来新体追发治疗/特效。上述窄入口不提供 Web 任意 invalidate 权限。
+
+CF6 61路线的节点成长由 `Cf6Type61Service` 在同一 `RewardStashService` 候选内补经验差额、自然升级SP及额外SP，并保存该局节点领取标记。创建候选前捕获成长owner；耐久确认后才交给既有成长投影，未知结果保持暂停并查询原操作。失败回滚等级、经验、SP与资产；原角色和其他路线不受这份固定配额影响。初装由 `Cf6ActorLoadout` 构造脱离当前角色的校验结果，`SaveManager` 验证成功后才替换输入。
+
+自选奖励授技的已知失败由 `RewardStashService` 先恢复完整存档扩展，再调用技能域回滚。`SkillLoadoutService` 此时仅恢复技能行、快捷栏、被动缓存及动态技能数值，不得把已修改的候选扩展引用重新写回 `_saveExt`，否则会覆盖已恢复的候选卡和其他领域数据。普通技能事务仍按自身快照恢复；未知保存继续保留原奖励写锁。
 
 ItemUtil 在 legacy 容器移动前调用已安装的玩家属性投影.允许遗留装备变更 Boolean 端口。端口缺失或未就绪即明确拒绝，叶层不反向装载协调器及其装备依赖；实际成功后才声明装备工作，提示音异常不能把已成功的移动伪装成未执行。
 
@@ -92,3 +106,11 @@ tools/player-stat-refresh/check-writes.js 默认检查 HEAD 到当前树新增/�
 专项命令与恢复前置见 [验证正文](../agentsDoc/testing-details.md#suite-player-stat-refresh)；探针来源与替身见 [工具说明](../tools/player-stat-refresh/README.md)。原审计 ZIP 未提供，重建探针必须标当前来源。源码、Node、真实 CS6 编译、原生 focused suite、实际游戏/Host 旅程分别记证，不能互相代签。
 
 回滚按领域 adapter、完整身份/ready 接缝、数值来源和单域跨层协议分别整组处理。已提交的资产、已点亮的经脉、耐久训练和已消费的升级恢复不反向重放。生成器输出与所属 SWF 同批核对；候选不自动推广到正式 runtime。
+
+子能力的偏好在领域提交后进入 SKILLS 投影，具体存档和消费者合同见[技能子能力](skill-subfeatures.md)。`refreshPersistentWeaponCaches` 仅在携带已提交 `passiveInput` 时检查已装备枪械的幽灵弹上限，沿用既有规范化将超限付费幽灵弹退回拆包余额；普通 STATS 刷新不拥有弹药写权限。
+
+## 2026-10-28 模式组件等待修订
+
+源码对完整装备重建的 `waiting_mode_component` 保留原 ticket/body/world/context，要求 open=0、未失败且身份仍一致；协调器保持动作屏障并返回pending。角色构筑的 finalize/flushLive 线协议最多等待2秒的真实模式回执，期间拒绝新写和替换会话。只有原ticket完成且装备证明仍有效才继续一次收尾，首次调用尚未进入持久写。
+
+超时返回已知失败，不自动重建或保存；后续显式recoverProjection才允许原owner恢复重建。迟到旧组件不能完成新身体，跨会话回调拒绝，既有未知写锁保持原归属。真实CS6专项已覆盖这些边界；候选中的Dominator首次换装收尾和保存已通过，新进程也已加载该测试槽且磁盘装备保持一致。重启后的新鲜装备面板快照尚未取得。该候选随后遇到画面捕获超时，旧主程序与旧Flash产物对照同样失败，因此开箱和完整游戏旅程尚未完成验收；具体身份、原始失败和剩余范围见[本轮报告](reports/cf6-instructor-save-rebalance-2026-10-28.json)。没有据此认定测试员未提供的稳定故障档已被完整覆盖，也没有正式部署。

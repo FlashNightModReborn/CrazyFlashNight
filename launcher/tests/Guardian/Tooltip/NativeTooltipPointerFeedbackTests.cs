@@ -109,6 +109,9 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
             widget.QueuePointerMove(60, 50);
             widget.Hide("ni:2");
             widget.FlushPointerMove();
+            Assert.True(widget.Visible, "hide 只启动淡出，会话仍在");
+            Assert.Equal(next, widget.PlacedRect);
+            widget.Tick(2000);
             Assert.False(widget.Visible);
         }
 
