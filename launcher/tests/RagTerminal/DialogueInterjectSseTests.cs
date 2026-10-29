@@ -234,7 +234,7 @@ namespace CF7Launcher.Tests.RagTerminal
             string payload =
                 "event: mute\ndata: {\"mute\":true}\n\n"
                 + "event: line\ndata: {\"kind\":\"add\",\"text\":\"行了，这事不用你操心。\",\"emotion\":\"普通\",\"speaker\":\"Andy Law\",\"seq\":0}\n\n"
-                + "event: plan\ndata: {\"mute\":true,\"end\":1,\"edits\":[]}\n\n"
+                + "event: plan\ndata: {\"mute\":true,\"resume\":1,\"steps\":[]}\n\n"
                 + "event: done\ndata: {\"dialogue_instance_id\":\"22222222-2222-4222-8222-222222222222\",\"session_id\":\"s2\"}\n\n";
             var seen = new List<DialogueInterjectEvent>();
             var stream = Build(new MemorySseTransport(payload), seen);
@@ -248,7 +248,7 @@ namespace CF7Launcher.Tests.RagTerminal
             int plan = IndexOf(seen, "plan");
             Assert.True(plan > line);
             Assert.True(seen[plan].Data.Value<bool>("mute"));
-            Assert.Equal(1, seen[plan].Int("end", -1));
+            Assert.Equal(1, seen[plan].Int("resume", -1));
         }
 
         // ── F-10 零有效：只有 error，不产生任何台词 ──────────────────────────

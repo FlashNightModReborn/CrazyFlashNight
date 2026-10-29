@@ -106,20 +106,21 @@ namespace CF7Launcher.Tasks
             internal int TaskIndex;
         }
 
-        /// <summary>plan 里的一条改写意图（n 为当轮 remaining 的 1..N）。</summary>
-        private sealed class TaskEdit
+        /// <summary>plan 里的一个有序步骤：add（n=0）或 edit/keep/remove（n 为原剩余编号）。</summary>
+        private sealed class TaskStep
         {
-            internal string Kind;                      // nochange | edit | remove
+            internal int N;
+            internal string Kind;
             internal readonly List<DialogueInterjectLine> Lines = new List<DialogueInterjectLine>();
         }
 
-        /// <summary>SSE plan（协议 5.2）：end/mute/edits；非法部分宽容忽略。</summary>
+        /// <summary>SSE plan（协议 5.2）：resume/mute/steps；非法部分宽容忽略。</summary>
         private sealed class TaskPlan
         {
-            internal bool HasEnd;
-            internal int End;
+            internal bool HasResume;
+            internal int Resume;
             internal bool Mute;
-            internal readonly Dictionary<int, TaskEdit> Edits = new Dictionary<int, TaskEdit>();
+            internal readonly List<TaskStep> Steps = new List<TaskStep>();
         }
 
         /// <summary>参考续写条目：add/closing 带行；edit/remove 带下一轮 remaining 的 1..N 下标。</summary>
@@ -168,7 +169,7 @@ namespace CF7Launcher.Tasks
         private JObject _taskContext;
         /// <summary>mute 是任务模式唯一的整组锁；组结束/关闭后重置。</summary>
         private bool _muted;
-        /// <summary>本轮 plan 无 end：原始剩余已放弃，下一轮 remaining 为空、不再接回原文。</summary>
+        /// <summary>本轮 plan 不再接回原尾部：下一轮 remaining 为空。</summary>
         private bool _abandonedOriginalTail;
         /// <summary>已收到但还没应用（$PC 播放中 / add 还在排队）的 plan。</summary>
         private TaskPlan _pendingPlan;
@@ -760,7 +761,7 @@ namespace CF7Launcher.Tasks
         /// - 已插进播放序列但当前还没走到的 add（TaskIndex=0）或改写（TaskIndex=n）；
         /// - 已应用但播放进度还没越过的 remove；
         /// - 已收未应用的 plan 里的 edit/remove（按下一轮 remaining 的 1..N 折算）。
-        /// 无 end 的整组替换模式（_abandonedOriginalTail）下原编号已不存在：edit/remove 记录后丢弃。
+        /// 已放弃原尾部（_abandonedOriginalTail）时原编号已不存在：edit/remove 记录后丢弃。
         /// </summary>
         private List<ReferenceItem> CollectUnplayedTurnLines(int nextWireStart)
         {
@@ -810,23 +811,29 @@ namespace CF7Launcher.Tasks
             return unplayed;
         }
 
-        /// <summary>已收未应用的 plan：不应用，edit/remove 按下一轮 remaining 编号转参考。</summary>
+        /// <summary>已收未应用的 plan：不应用，add/edit/remove 按顺序转参考。</summary>
         private void AppendPendingPlanReferences(List<ReferenceItem> unplayed, int nextWireStart)
         {
-            foreach (KeyValuePair<int, TaskEdit> pair in _pendingPlan.Edits)
+            for (int i = 0; i < _pendingPlan.Steps.Count; i++)
             {
-                int wire = _wireResume + pair.Key - 1;
+                TaskStep step = _pendingPlan.Steps[i];
+                if (string.Equals(step.Kind, "add", StringComparison.Ordinal))
+                {
+                    for (int j = 0; j < step.Lines.Count; j++)
+                        unplayed.Add(new ReferenceItem { Kind = "add", Line = step.Lines[j] });
+                    continue;
+                }
+                int wire = _wireResume + step.N - 1;
                 int index = wire - nextWireStart + 1;
                 if (index < 1) continue;
-                TaskEdit edit = pair.Value;
-                if (string.Equals(edit.Kind, "remove", StringComparison.Ordinal))
+                if (string.Equals(step.Kind, "remove", StringComparison.Ordinal))
                 {
                     unplayed.Add(new ReferenceItem { Kind = "remove", Index = index });
                     continue;
                 }
-                if (!string.Equals(edit.Kind, "edit", StringComparison.Ordinal)) continue;
-                for (int i = 0; i < edit.Lines.Count; i++)
-                    unplayed.Add(new ReferenceItem { Kind = "edit", Index = index, Line = edit.Lines[i] });
+                if (!string.Equals(step.Kind, "edit", StringComparison.Ordinal)) continue;
+                for (int j = 0; j < step.Lines.Count; j++)
+                    unplayed.Add(new ReferenceItem { Kind = "edit", Index = index, Line = step.Lines[j] });
             }
         }
 
@@ -839,7 +846,7 @@ namespace CF7Launcher.Tasks
         private JArray BuildRemaining(int fromWire)
         {
             var remaining = new JArray();
-            // 无 end 的整组替换：原始剩余视为已放弃，下一轮 remaining 为空（协议 4.5）。
+            // 原尾部已放弃：下一轮 remaining 为空（协议 4.5）。
             if (_abandonedOriginalTail) return remaining;
             int index = 1;
             for (int wire = Math.Max(0, fromWire); wire < _session.RowCount; wire++)
@@ -1505,57 +1512,50 @@ namespace CF7Launcher.Tasks
             if (plan == null) return;
             LogManager.Log("[DialogueInterject] plan received taskMode=" + _taskMode
                 + " kind=" + (_session != null ? _session.DialogueKind : "-")
-                + " hasEnd=" + plan.HasEnd + " edits=" + plan.Edits.Count);
+                + " hasResume=" + plan.HasResume + " steps=" + plan.Steps.Count);
             if (plan.Mute) SetMuted();
             _pendingPlan = plan;
             TryApplyPendingPlan();
         }
 
         /// <summary>
-        /// plan 解析（宽容）：end 只认整数；edits[] 只认 n ≥ 1 的 nochange/edit/remove；
-        /// 同一 n 多条 edit 合并为一条拆成多条；非法条目忽略，不整段打回。
+        /// plan 解析（宽容）：resume 只认整数；steps[] 按原顺序接受 add/edit/keep/remove。
+        /// add 的 n=0，其余 n≥1；非法条目忽略，不整段打回。
         /// </summary>
         private static TaskPlan ParsePlan(DialogueInterjectEvent evt)
         {
             JObject data = evt.Data;
             if (data == null) return null;
             var plan = new TaskPlan();
-            JToken end = data["end"];
-            if (end != null && end.Type == JTokenType.Integer)
+            JToken resume = data["resume"];
+            if (resume != null && resume.Type == JTokenType.Integer)
             {
-                plan.HasEnd = true;
-                plan.End = end.Value<int>();
+                plan.HasResume = true;
+                plan.Resume = resume.Value<int>();
             }
             plan.Mute = data.Value<bool?>("mute").GetValueOrDefault(false);
 
-            var edits = data["edits"] as JArray;
-            if (edits == null) return plan;
-            for (int i = 0; i < edits.Count; i++)
+            var steps = data["steps"] as JArray;
+            if (steps == null) return plan;
+            for (int i = 0; i < steps.Count; i++)
             {
-                var entry = edits[i] as JObject;
+                var entry = steps[i] as JObject;
                 if (entry == null) continue;
                 JToken nToken = entry["n"];
                 if (nToken == null || nToken.Type != JTokenType.Integer) continue;
                 int n = nToken.Value<int>();
-                if (n < 1) continue;
                 string kind = (entry.Value<string>("kind") ?? "").Trim();
-                if (string.Equals(kind, "nochange", StringComparison.Ordinal))
+                bool isAdd = string.Equals(kind, "add", StringComparison.Ordinal);
+                bool isOriginal = string.Equals(kind, "edit", StringComparison.Ordinal)
+                    || string.Equals(kind, "keep", StringComparison.Ordinal)
+                    || string.Equals(kind, "remove", StringComparison.Ordinal);
+                if ((isAdd && n != 0) || (isOriginal && n < 1) || (!isAdd && !isOriginal)) continue;
+                var step = new TaskStep { N = n, Kind = kind };
+                if (string.Equals(kind, "keep", StringComparison.Ordinal)
+                    || string.Equals(kind, "remove", StringComparison.Ordinal))
                 {
-                    if (!plan.Edits.ContainsKey(n)) plan.Edits[n] = new TaskEdit { Kind = "nochange" };
+                    plan.Steps.Add(step);
                     continue;
-                }
-                if (string.Equals(kind, "remove", StringComparison.Ordinal))
-                {
-                    plan.Edits[n] = new TaskEdit { Kind = "remove" };
-                    continue;
-                }
-                if (!string.Equals(kind, "edit", StringComparison.Ordinal)) continue;
-                TaskEdit edit;
-                if (!plan.Edits.TryGetValue(n, out edit)
-                    || !string.Equals(edit.Kind, "edit", StringComparison.Ordinal))
-                {
-                    edit = new TaskEdit { Kind = "edit" };
-                    plan.Edits[n] = edit;
                 }
                 var lines = entry["lines"] as JArray;
                 if (lines == null) continue;
@@ -1567,7 +1567,7 @@ namespace CF7Launcher.Tasks
                     if (text.Length == 0) continue;
                     var line = new DialogueInterjectLine
                     {
-                        Kind = "edit",
+                        Kind = kind,
                         Text = text,
                         Emotion = lineObject.Value<string>("emotion") ?? "",
                         Speaker = lineObject.Value<string>("speaker") ?? ""
@@ -1583,8 +1583,9 @@ namespace CF7Launcher.Tasks
                             && count.Value<int>() > 0)
                             line.SplitCount = count.Value<int>();
                     }
-                    edit.Lines.Add(line);
+                    step.Lines.Add(line);
                 }
+                plan.Steps.Add(step);
             }
             return plan;
         }
@@ -1608,11 +1609,10 @@ namespace CF7Launcher.Tasks
         }
 
         /// <summary>
-        /// 按 end/edits 构建后续（协议 4.5）：
-        /// - end 存在：1..end-1 有 edit 用 edit、remove 跳过、其余原文；从 end 起接回原文；
-        ///   end 指向被移除条目时跳到下一条未移除原文；end=N+1 表示 1..N 全部按计划构成、
-        ///   不再接回原文（用于改完末条直接收组）。
-        /// - end 缺省：只用本轮 edit 构成剩余，不接回原文（原始剩余视为已放弃）。
+        /// 按 resume/steps 顺序构建后续：
+        /// - add 在当前位置插入；edit 替换原编号；keep 保留原编号；remove 跳过原编号。
+        /// - resume 之前的未提及编号按 remove 兜底；从 resume 起接回原文。
+        /// - resume=N+1 表示不再接回原文。resume 缺失/越界时保守地从 1 起保留原文。
         /// </summary>
         private void ApplyPlan(TaskPlan plan)
         {
@@ -1626,71 +1626,64 @@ namespace CF7Launcher.Tasks
             }
             int wireStart = _wireResume;
             int count = Math.Max(0, _session.RowCount - wireStart);
-            int editLimit = count;
-            int resumeN = 0;                        // 1-based；0 = 不接回原文
-            bool hasEnd = plan.HasEnd && plan.End >= 1 && plan.End <= count + 1;
-            if (hasEnd)
-            {
-                editLimit = plan.End - 1;
-                resumeN = plan.End;
-            }
+            bool validResume = plan.HasResume && plan.Resume >= 1 && plan.Resume <= count + 1;
+            int resumeN = validResume ? plan.Resume : 1;
 
             var replacement = new List<NativeDialogueBookSession.Line>();
-            var refs = new List<InsertedRef>();      // 与 replacement 一一对应；原文行 = null
-            for (int n = 1; n <= editLimit; n++)
+            var refs = new List<InsertedRef>();
+            var covered = new HashSet<int>();
+            for (int i = 0; i < plan.Steps.Count; i++)
             {
-                int wire = wireStart + n - 1;
-                TaskEdit edit;
-                if (plan.Edits.TryGetValue(n, out edit))
+                TaskStep step = plan.Steps[i];
+                if (string.Equals(step.Kind, "add", StringComparison.Ordinal))
                 {
-                    if (string.Equals(edit.Kind, "remove", StringComparison.Ordinal))
+                    for (int j = 0; j < step.Lines.Count; j++)
                     {
-                        AddAppliedRemove(wire);
-                        continue;
-                    }
-                    if (string.Equals(edit.Kind, "edit", StringComparison.Ordinal)
-                        && edit.Lines.Count > 0)
-                    {
-                        for (int i = 0; i < edit.Lines.Count; i++)
+                        NativeDialogueBookSession.Line local = BuildLocalLine(step.Lines[j]);
+                        if (local == null) continue;
+                        replacement.Add(local);
+                        refs.Add(new InsertedRef
                         {
-                            NativeDialogueBookSession.Line local = BuildEditedLine(edit.Lines[i], wire);
-                            if (local == null) continue;
-                            replacement.Add(local);
-                            refs.Add(new InsertedRef
-                            {
-                                Line = edit.Lines[i], WireIndex = wire, TaskIndex = n
-                            });
-                        }
-                        continue;
+                            Line = step.Lines[j], WireIndex = -1, TaskIndex = 0
+                        });
                     }
-                    // nochange / edit 空行：按原文处理
+                    continue;
                 }
-                if (resumeN == 0) continue;         // end 缺省：未改写的原文不再播放
+                int n = step.N;
+                if (n < 1 || n >= resumeN || covered.Contains(n)) continue;
+                covered.Add(n);
+                int wire = wireStart + n - 1;
+                if (string.Equals(step.Kind, "remove", StringComparison.Ordinal))
+                {
+                    AddAppliedRemove(wire);
+                    continue;
+                }
+                if (string.Equals(step.Kind, "edit", StringComparison.Ordinal))
+                {
+                    for (int j = 0; j < step.Lines.Count; j++)
+                    {
+                        NativeDialogueBookSession.Line local = BuildEditedLine(step.Lines[j], wire);
+                        if (local == null) continue;
+                        replacement.Add(local);
+                        refs.Add(new InsertedRef
+                        {
+                            Line = step.Lines[j], WireIndex = wire, TaskIndex = n
+                        });
+                    }
+                    continue;
+                }
                 NativeDialogueBookSession.Line origin = _session.GetWireRow(wire);
                 if (origin == null) continue;
                 replacement.Add(origin);
-                refs.Add(null);                     // 原文行不需要参考续写映射
+                refs.Add(null);
+            }
+            for (int n = 1; n < resumeN; n++)
+            {
+                if (!covered.Contains(n)) AddAppliedRemove(wireStart + n - 1);
             }
 
-            int resumeWire = _session.RowCount;
-            if (resumeN > 0)
-            {
-                // end 指向被 remove 的条目：跳到下一条未移除原文（协议 5.4）。
-                while (resumeN <= count)
-                {
-                    TaskEdit edit;
-                    if (plan.Edits.TryGetValue(resumeN, out edit)
-                        && string.Equals(edit.Kind, "remove", StringComparison.Ordinal))
-                    {
-                        AddAppliedRemove(wireStart + resumeN - 1);
-                        resumeN++;
-                        continue;
-                    }
-                    break;
-                }
-                resumeWire = resumeN > count
-                    ? _session.RowCount : wireStart + resumeN - 1;
-            }
+            int resumeWire = resumeN > count
+                ? _session.RowCount : wireStart + resumeN - 1;
 
             // 玩家已经点在占位条上：plan 的首行直接原位替换上屏；还停在 $PC 则不换当前显示。
             int tailIndex = _turnTailIndex;
@@ -1702,19 +1695,18 @@ namespace CF7Launcher.Tasks
                 LogManager.Log("[DialogueInterject] plan apply failed (splice rejected)");
                 return;
             }
-            LogManager.Log("[DialogueInterject] plan applied end="
-                + (plan.HasEnd ? plan.End.ToString() : "-")
-                + " edits=" + plan.Edits.Count
+            LogManager.Log("[DialogueInterject] plan applied resume=" + resumeN
+                + " steps=" + plan.Steps.Count
                 + " replaced=" + replacement.Count
                 + " tailIndex=" + tailIndex
                 + " playIndex=" + playIndex);
             for (int i = 0; i < refs.Count; i++)
             {
-                if (refs[i] == null) continue;      // 原文行：没有参考续写映射
+                if (refs[i] == null) continue;
                 _insertedLines[replacement[i]] = refs[i];
             }
             _turnTailIndex = -1;                    // plan 之后不再接受新增行插入
-            if (!hasEnd) _abandonedOriginalTail = true;
+            if (resumeN > count) _abandonedOriginalTail = true;
             // plan 应用后 _planApplied 才为真：当前已上屏的 add 可能正是“最后一条”。
             RefreshAskAcceptCurrent();
         }
@@ -2853,7 +2845,7 @@ namespace CF7Launcher.Tasks
 
         /// <summary>
         /// 失败回退（D-17 / §4.9）：有已播 AI 行 → 接在那些行之后；没有 → 回当前原文点。
-        /// 例外：已应用完整 plan（计划本身即后续）或无 end 的整组替换已放弃原文 → 不接回。
+        /// 例外：已应用完整 plan（计划本身即后续）或原尾部已放弃 → 不接回。
         /// </summary>
         private void RestoreOrResumeAfterFailure()
         {
@@ -2903,7 +2895,7 @@ namespace CF7Launcher.Tasks
         private void RestoreOriginalTail()
         {
             if (_session == null || _aiLineShown || _closing) return;
-            if (_abandonedOriginalTail) return;   // 无 end 的整组替换：原始剩余已放弃
+            if (_abandonedOriginalTail) return;   // 原尾部已放弃，不接回
             if (_session.State != NativeDialogueBookSession.HostState.Active) return;
             // 用当前已到达的原始行号 +1 接回：index 可能已经推进到原文里，不能用提交时的快照。
             // 玩家已点在「思索中……」占位上时，从占位行本身替换并重呈现，避免留下等待文案。
@@ -2929,7 +2921,7 @@ namespace CF7Launcher.Tasks
         private void ResumeAfterPlayedTurnLines()
         {
             if (_session == null || !_aiLineShown || _closing) return;
-            if (_abandonedOriginalTail) return;   // 无 end 的整组替换：原始剩余已放弃
+            if (_abandonedOriginalTail) return;   // 原尾部已放弃，不接回
             if (_session.State != NativeDialogueBookSession.HostState.Active) return;
             if (_turnTailIndex < 0) return;
             _session.ReplaceFrom(_turnTailIndex, new NativeDialogueBookSession.Line[0],

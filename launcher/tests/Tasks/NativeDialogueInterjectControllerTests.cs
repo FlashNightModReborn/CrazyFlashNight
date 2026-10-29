@@ -1581,7 +1581,8 @@ namespace CF7Launcher.Tests.Tasks
         // ══════════════════ P4：任务插话 ══════════════════
 
         private const string TaskPlanEdit =
-            "{\"mute\":false,\"end\":3,\"edits\":[{\"n\":2,\"kind\":\"edit\","
+            "{\"mute\":false,\"resume\":3,\"steps\":[{\"n\":1,\"kind\":\"keep\"},"
+            + "{\"n\":2,\"kind\":\"edit\","
             + "\"lines\":[{\"text\":\"北边仓库昨晚丢了一批货。\",\"emotion\":\"普通\"}]}]}";
 
         // ── 选项态（草案确认轮的最后一条 add）──────────────────────────────
@@ -1872,14 +1873,15 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void PlanEndPointingAtRemovedEntrySkipsForward()
+        public void PlanContinueSkipsRemovedLineAndKeepsTail()
         {
             using var h = new Harness();
             EnableTaskContext(h);
             h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
             h.Transport.Script(
                 AddLine("好。", 0)
-                + "event: plan\ndata: {\"end\":2,\"edits\":[{\"n\":2,\"kind\":\"remove\"}]}\n\n"
+                + "event: plan\ndata: {\"resume\":3,\"steps\":[{\"n\":1,\"kind\":\"keep\"},"
+                + "{\"n\":2,\"kind\":\"remove\"}]}\n\n"
                 + Done());
 
             Assert.True(h.Controller.Submit("嗯。"));
@@ -1889,22 +1891,23 @@ namespace CF7Launcher.Tests.Tasks
             h.Advance();
             Assert.Equal("A", h.Widget.CurrentFrame.Text);
             h.Advance();
-            Assert.Equal("C", h.Widget.CurrentFrame.Text);       // end=2 被 remove → 跳到 C
+            Assert.Equal("C", h.Widget.CurrentFrame.Text);       // B 被 remove，C/D 接回
             h.Advance();
             Assert.Equal("D", h.Widget.CurrentFrame.Text);
         }
 
         [Fact]
-        public void PlanWithoutEndReplacesWholeTail()
+        public void PlanEndReplacesWholeTail()
         {
             using var h = new Harness();
             EnableTaskContext(h);
             h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
             h.Transport.Script(
                 AddLine("这事我只跟你说一遍。", 0)
-                + "event: plan\ndata: {\"mute\":false,\"end\":null,\"edits\":["
+                + "event: plan\ndata: {\"mute\":false,\"resume\":5,\"steps\":["
                 + "{\"n\":1,\"kind\":\"edit\",\"lines\":[{\"text\":\"改写的 A\",\"emotion\":\"普通\"}]},"
-                + "{\"n\":2,\"kind\":\"remove\"}]}\n\n"
+                + "{\"n\":2,\"kind\":\"remove\"},{\"n\":3,\"kind\":\"remove\"},"
+                + "{\"n\":4,\"kind\":\"remove\"}]}\n\n"
                 + Done());
 
             Assert.True(h.Controller.Submit("听着。"));
@@ -1927,7 +1930,8 @@ namespace CF7Launcher.Tests.Tasks
             h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
             h.Transport.Script(
                 AddLine("这事不好办。", 0)
-                + "event: plan\ndata: {\"end\":3,\"edits\":[{\"n\":2,\"kind\":\"remove\"}]}\n\n"
+                + "event: plan\ndata: {\"resume\":3,\"steps\":[{\"n\":1,\"kind\":\"keep\"},"
+                + "{\"n\":2,\"kind\":\"remove\"}]}\n\n"
                 + Done());
 
             Assert.True(h.Controller.Submit("怎么说？"));
@@ -1943,14 +1947,16 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void PlanEndAtCountPlusOnePlaysEditedLastLineThenEnds()
+        public void PlanEndPlaysEditedLastLineThenEnds()
         {
             using var h = new Harness();
             EnableTaskContext(h);
             h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
             h.Transport.Script(
                 AddLine("好。", 0)
-                + "event: plan\ndata: {\"end\":5,\"edits\":[{\"n\":4,\"kind\":\"edit\","
+                + "event: plan\ndata: {\"resume\":5,\"steps\":[{\"n\":1,\"kind\":\"keep\"},"
+                + "{\"n\":2,\"kind\":\"keep\"},{\"n\":3,\"kind\":\"keep\"},"
+                + "{\"n\":4,\"kind\":\"edit\","
                 + "\"lines\":[{\"text\":\"改写的 D\",\"emotion\":\"普通\"}]}]}\n\n"
                 + Done());
 
@@ -1973,13 +1979,13 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void PlanEndAtCountPlusOneWithoutEditsKeepsAllOriginals()
+        public void PlanContinueOneKeepsAllOriginals()
         {
             using var h = new Harness();
             EnableTaskContext(h);
             h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
             h.Transport.Script(
-                AddLine("好。", 0) + "event: plan\ndata: {\"end\":5}\n\n" + Done());
+                AddLine("好。", 0) + "event: plan\ndata: {\"resume\":1,\"steps\":[]}\n\n" + Done());
 
             Assert.True(h.Controller.Submit("嗯。"));
             h.Widget.CompleteCurrentLineTyping();
@@ -1998,14 +2004,16 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void PlanEndAtCountPlusOneRemoveLastSkipsItAndEnds()
+        public void PlanEndRemoveLastSkipsItAndEnds()
         {
             using var h = new Harness();
             EnableTaskContext(h);
             h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
             h.Transport.Script(
                 AddLine("好。", 0)
-                + "event: plan\ndata: {\"end\":5,\"edits\":[{\"n\":4,\"kind\":\"remove\"}]}\n\n"
+                + "event: plan\ndata: {\"resume\":5,\"steps\":[{\"n\":1,\"kind\":\"keep\"},"
+                + "{\"n\":2,\"kind\":\"keep\"},{\"n\":3,\"kind\":\"keep\"},"
+                + "{\"n\":4,\"kind\":\"remove\"}]}\n\n"
                 + Done());
 
             Assert.True(h.Controller.Submit("嗯。"));
@@ -2023,14 +2031,14 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void PlanMissingNochangeKeepsOriginal()
+        public void PlanSkippedOriginalNumbersAreRemoved()
         {
             using var h = new Harness();
             EnableTaskContext(h);
             h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
             h.Transport.Script(
                 AddLine("……", 0)
-                + "event: plan\ndata: {\"end\":4,\"edits\":[{\"n\":3,\"kind\":\"edit\","
+                + "event: plan\ndata: {\"resume\":4,\"steps\":[{\"n\":3,\"kind\":\"edit\","
                 + "\"lines\":[{\"text\":\"改写的 C\",\"emotion\":\"普通\"}]}]}\n\n"
                 + Done());
 
@@ -2039,11 +2047,7 @@ namespace CF7Launcher.Tests.Tasks
             h.Advance();
             Assert.Equal("……", h.Widget.CurrentFrame.Text);
             h.Advance();
-            Assert.Equal("A", h.Widget.CurrentFrame.Text);
-            h.Advance();
-            Assert.Equal("B", h.Widget.CurrentFrame.Text);       // 未提及 = nochange
-            h.Advance();
-            Assert.Equal("改写的 C", h.Widget.CurrentFrame.Text);
+            Assert.Equal("改写的 C", h.Widget.CurrentFrame.Text);   // 未提及的 A/B 按 remove
             h.Advance();
             Assert.Equal("D", h.Widget.CurrentFrame.Text);
         }
@@ -2056,7 +2060,8 @@ namespace CF7Launcher.Tests.Tasks
             h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
             h.Transport.Script(
                 AddLine("……", 0)
-                + "event: plan\ndata: {\"end\":4,\"edits\":[{\"n\":3,\"kind\":\"edit\",\"lines\":["
+                + "event: plan\ndata: {\"resume\":4,\"steps\":[{\"n\":1,\"kind\":\"keep\"},"
+                + "{\"n\":2,\"kind\":\"keep\"},{\"n\":3,\"kind\":\"edit\",\"lines\":["
                 + "{\"text\":\"段0\",\"emotion\":\"普通\",\"split\":{\"index\":0,\"count\":2}},"
                 + "{\"text\":\"段1\",\"emotion\":\"普通\",\"split\":{\"index\":1,\"count\":2}}]}]}\n\n"
                 + Done());
@@ -2080,6 +2085,34 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void PlanAddInsertsAtDeclaredPosition()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C");
+            h.Transport.Script(
+                AddLine("前缀", 0)
+                + "event: plan\ndata: {\"resume\":3,\"steps\":["
+                + "{\"n\":1,\"kind\":\"edit\",\"lines\":[{\"text\":\"改写的 A\",\"emotion\":\"普通\"}]},"
+                + "{\"n\":0,\"kind\":\"add\",\"lines\":[{\"text\":\"插在 A 和 B 之间\",\"emotion\":\"普通\"}]},"
+                + "{\"n\":2,\"kind\":\"keep\"}]}\n\n"
+                + Done());
+
+            Assert.True(h.Controller.Submit("嗯。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("前缀", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("改写的 A", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("插在 A 和 B 之间", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("B", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("C", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
         public void PlanWaitsForAllAddsBeforeApplying()
         {
             using var h = new Harness();
@@ -2087,7 +2120,7 @@ namespace CF7Launcher.Tests.Tasks
             h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B");
             h.Transport.Script(
                 AddLine("第一句", 0) + AddLine("第二句", 1)
-                + "event: plan\ndata: {\"end\":1}\n\n" + Done());
+                + "event: plan\ndata: {\"resume\":1,\"steps\":[]}\n\n" + Done());
 
             Assert.True(h.Controller.Submit("你好"));
             h.Widget.CompleteCurrentLineTyping();
@@ -2109,7 +2142,7 @@ namespace CF7Launcher.Tests.Tasks
             h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
 
             Assert.True(h.Controller.Submit("嗯。"));
-            h.Controller.OnEvent(PlanEvent("{\"end\":2,\"edits\":[{\"n\":1,\"kind\":\"edit\","
+            h.Controller.OnEvent(PlanEvent("{\"resume\":2,\"steps\":[{\"n\":1,\"kind\":\"edit\","
                 + "\"lines\":[{\"text\":\"改写的 A\",\"emotion\":\"普通\"}]}]}"));
             h.Controller.OnEvent(DoneEvent());                   // 没有 add，只有 plan
             Assert.Null(h.Controller.LastFailure);
@@ -2132,7 +2165,7 @@ namespace CF7Launcher.Tests.Tasks
             h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B");
             // 任务轮已收到完整 plan；流在 plan 后自然关闭、没有 done，仍应按成功收尾。
             h.Transport.Script(
-                "event: plan\ndata: {\"end\":2,\"edits\":[{\"n\":1,\"kind\":\"edit\","
+                "event: plan\ndata: {\"resume\":2,\"steps\":[{\"n\":1,\"kind\":\"edit\","
                 + "\"lines\":[{\"text\":\"改写的 A\",\"emotion\":\"普通\"}]}]}\n\n");
 
             Assert.True(h.Controller.Submit("嗯。"));
@@ -2202,7 +2235,7 @@ namespace CF7Launcher.Tests.Tasks
             h.Transport.Script(
                 "event: mute\ndata: {\"mute\":true}\n\n"
                 + AddLine("行了，这事不用你操心。", 0)
-                + "event: plan\ndata: {\"mute\":true,\"end\":1}\n\n" + Done());
+                + "event: plan\ndata: {\"mute\":true,\"resume\":1,\"steps\":[]}\n\n" + Done());
 
             Assert.True(h.Controller.Submit("你到底说不说？"));
             Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
@@ -2257,13 +2290,14 @@ namespace CF7Launcher.Tests.Tasks
             h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B");
             h.Transport.Script(
                 AddLine("这事我只跟你说一遍。", 0)
-                + "event: plan\ndata: {\"end\":null,\"edits\":["
-                + "{\"n\":1,\"kind\":\"edit\",\"lines\":[{\"text\":\"改写的 A\",\"emotion\":\"普通\"}]}]}\n\n"
+                + "event: plan\ndata: {\"resume\":3,\"steps\":["
+                + "{\"n\":1,\"kind\":\"edit\",\"lines\":[{\"text\":\"改写的 A\",\"emotion\":\"普通\"}]},"
+                + "{\"n\":2,\"kind\":\"remove\"}]}\n\n"
                 + Done());
             h.Transport.Script(AddLine("新回答", 0) + Done());
 
             Assert.True(h.Controller.Submit("第一次"));
-            h.Widget.CompleteCurrentLineTyping();                 // add 就绪；plan 已应用（无 end）
+            h.Widget.CompleteCurrentLineTyping();                 // add 就绪；plan 已应用（不接回原尾部）
             h.Advance();                                          // add 上屏
             Assert.True(h.Controller.Submit("第二次"));
 
@@ -2282,7 +2316,8 @@ namespace CF7Launcher.Tests.Tasks
             h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C");
             h.Transport.Script(
                 AddLine("你倒是爽快。", 0)
-                + "event: plan\ndata: {\"end\":3}\n\n"
+                + "event: plan\ndata: {\"resume\":3,\"steps\":[{\"n\":1,\"kind\":\"keep\"},"
+                + "{\"n\":2,\"kind\":\"keep\"}]}\n\n"
                 + "event: error\ndata: {\"code\":\"stream_failed\",\"message\":\"断流\"}\n\n");
 
             Assert.True(h.Controller.Submit("嗯。"));
