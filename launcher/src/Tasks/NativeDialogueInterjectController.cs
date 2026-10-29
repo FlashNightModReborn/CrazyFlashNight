@@ -962,7 +962,7 @@ namespace CF7Launcher.Tasks
 
         /// <summary>$PC 行：优先复用本组原作的玩家行；没有时用 book 快照还原
         /// 玩家名/头衔/纸娃娃立绘。两者都缺才退回无立绘，绝不把 "$PC" 原样上屏。</summary>
-        private NativeDialogueBookSession.Line BuildPcLine(string text)
+        private NativeDialogueBookSession.Line BuildPcLine(string text, string emotion = null)
         {
             string playerName = _session.PlayerName ?? "";
             NativeDialogueBookSession.Line template = null;
@@ -985,7 +985,7 @@ namespace CF7Launcher.Tasks
                         ? (_session.HeroTitle ?? "") : template.Title,
                     Text = text,
                     PortraitKey = template.PortraitKey,
-                    Expression = template.Expression,
+                    Expression = !string.IsNullOrEmpty(emotion) ? emotion : template.Expression,
                     IsDoll = template.IsDoll,
                     Appearance = template.Appearance,
                     NormalizedAppearance = template.NormalizedAppearance,
@@ -1002,7 +1002,7 @@ namespace CF7Launcher.Tasks
                 Title = _session.HeroTitle ?? "",
                 Text = text,
                 PortraitKey = playerName,
-                Expression = DefaultEmotion,
+                Expression = !string.IsNullOrEmpty(emotion) ? emotion : DefaultEmotion,
                 ImageAction = "keep",
                 ImagePath = "",
                 IsPlayer = true
@@ -1012,7 +1012,8 @@ namespace CF7Launcher.Tasks
             {
                 string kind = hero.Value<string>("kind") ?? "";
                 string expression = hero.Value<string>("expression");
-                if (!string.IsNullOrEmpty(expression)) line.Expression = expression;
+                if (string.IsNullOrEmpty(emotion) && !string.IsNullOrEmpty(expression))
+                    line.Expression = expression;
                 string key = hero.Value<string>("key");
                 if (!string.IsNullOrEmpty(key)) line.PortraitKey = key;
                 if (string.Equals(kind, "doll", StringComparison.Ordinal))
@@ -1051,6 +1052,29 @@ namespace CF7Launcher.Tasks
                 if (row != null && !row.IsPlayer) return row;
             }
             return null;
+        }
+
+        /// <summary>按模型填的 name 找本组同说话人的模板行；找不到返回 null（只用名字，不套错立绘）。</summary>
+        private NativeDialogueBookSession.Line FindSpeakerTemplate(string speaker)
+        {
+            if (_session == null || string.IsNullOrEmpty(speaker)) return null;
+            if (string.Equals(speaker, _npcName, StringComparison.Ordinal))
+                return FindNpcTemplate();
+            NativeDialogueBookSession.Line found = null;
+            for (int wire = 0; wire < _session.RowCount; wire++)
+            {
+                NativeDialogueBookSession.Line row = _session.GetWireRow(wire);
+                if (row == null || row.IsPlayer) continue;
+                if (string.Equals(row.Name, speaker, StringComparison.Ordinal)) found = row;
+            }
+            return found;
+        }
+
+        /// <summary>模型用 $PC 表示玩家（兼容中文「玩家」）；其余名字一律按原样作为说话人。</summary>
+        private static bool IsPlayerSpeaker(string speaker)
+        {
+            return string.Equals(speaker, PcName, StringComparison.Ordinal)
+                || string.Equals(speaker, "玩家", StringComparison.Ordinal);
         }
 
         /// <summary>玩家在末行继续点“下一条”且本轮仍在等模型：返回「思索中……」占位。
@@ -1716,12 +1740,47 @@ namespace CF7Launcher.Tasks
             if (!_appliedRemoves.Contains(wire)) _appliedRemoves.Add(wire);
         }
 
-        /// <summary>改写行：保留原说话人/称谓/立绘/配图动作，只换正文与情绪（协议 5.5）。</summary>
+        /// <summary>改写行：name 为空时保留原说话人/称谓/立绘；name 明确时按模型填的说话人走
+        /// （$PC 走玩家行；其他 NPC 优先套本组同说话人模板，找不到只改名字、不套错立绘）。</summary>
         private NativeDialogueBookSession.Line BuildEditedLine(DialogueInterjectLine source, int wire)
         {
             if (_session == null) return null;
             NativeDialogueBookSession.Line origin = _session.GetWireRow(wire);
             if (origin == null) return null;
+            string speaker = string.IsNullOrEmpty(source.Speaker) ? origin.Name : source.Speaker;
+            bool split = source.IsSplitHead || source.Interim;
+            if (!string.Equals(speaker, origin.Name, StringComparison.Ordinal))
+            {
+                if (IsPlayerSpeaker(speaker))
+                {
+                    NativeDialogueBookSession.Line pc = BuildPcLine(source.Text, source.Emotion);
+                    if (pc == null) return null;
+                    pc.WireIndex = wire;
+                    pc.SplitIntermediate = split;
+                    return pc;
+                }
+                NativeDialogueBookSession.Line template = FindSpeakerTemplate(speaker);
+                return new NativeDialogueBookSession.Line
+                {
+                    Name = speaker,
+                    Title = template != null ? template.Title : "",
+                    Text = source.Text,
+                    PortraitKey = template != null ? template.PortraitKey : "",
+                    Expression = !string.IsNullOrEmpty(source.Emotion)
+                        ? source.Emotion
+                        : (template != null && !string.IsNullOrEmpty(template.Expression)
+                            ? template.Expression : DefaultEmotion),
+                    IsDoll = template != null && template.IsDoll,
+                    Appearance = template != null ? template.Appearance : null,
+                    NormalizedAppearance = template != null ? template.NormalizedAppearance : null,
+                    AppearanceIdentity = template != null ? template.AppearanceIdentity : null,
+                    ImageAction = template != null ? template.ImageAction : "keep",
+                    ImagePath = template != null ? template.ImagePath : "",
+                    WireIndex = wire,
+                    SplitIntermediate = split,
+                    IsPlayer = false
+                };
+            }
             return new NativeDialogueBookSession.Line
             {
                 Name = origin.Name,
@@ -1737,7 +1796,7 @@ namespace CF7Launcher.Tasks
                 ImageAction = origin.ImageAction,
                 ImagePath = origin.ImagePath,
                 WireIndex = wire,
-                SplitIntermediate = source.IsSplitHead || source.Interim,
+                SplitIntermediate = split,
                 IsPlayer = origin.IsPlayer
             };
         }
@@ -1852,6 +1911,7 @@ namespace CF7Launcher.Tasks
                 ? (!string.IsNullOrEmpty(_npcName) ? _npcName
                     : (template != null ? template.Name : ""))
                 : line.Speaker;
+            if (IsPlayerSpeaker(speaker)) return BuildPcLine(line.Text, line.Emotion);
             // AI 正文只属于当前 NPC；其他说话人不套主 NPC 的立绘。
             bool useTemplate = template != null
                 && (string.IsNullOrEmpty(line.Speaker)

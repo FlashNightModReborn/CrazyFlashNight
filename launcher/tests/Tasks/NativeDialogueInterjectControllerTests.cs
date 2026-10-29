@@ -2113,6 +2113,83 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void PlanAddUsesModelSpeakerWithoutNpcPortrait()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B");
+            h.Transport.Script(
+                AddLine("前缀", 0)
+                + "event: plan\ndata: {\"resume\":2,\"steps\":[{\"n\":1,\"kind\":\"keep\"},"
+                + "{\"n\":0,\"kind\":\"add\",\"lines\":[{\"text\":\"老赵插话\",\"emotion\":\"普通\","
+                + "\"speaker\":\"老赵\"}]}]}\n\n"
+                + Done());
+
+            Assert.True(h.Controller.Submit("嗯。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("前缀", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("A", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("老赵插话", h.Widget.CurrentFrame.Text);
+            Assert.Equal("老赵", h.Widget.CurrentFrame.Name);
+            Assert.True(string.IsNullOrEmpty(h.Widget.CurrentFrame.PortraitKey));
+            h.Advance();
+            Assert.Equal("B", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
+        public void PlanEditUsesPlayerSpeakerForPlayerName()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            JObject book = h.BuildBook(7, "ordinary", "task_pre", "200124", "你来了。", "A", "B");
+            book["snapshot"] = PlayerSnapshot("阿夜", "旅人", false);
+            h.Task.AdoptV2(book);
+            h.Transport.Script(
+                AddLine("好。", 0)
+                + "event: plan\ndata: {\"resume\":3,\"steps\":[{\"n\":1,\"kind\":\"edit\","
+                + "\"lines\":[{\"text\":\"玩家改口。\",\"emotion\":\"普通\",\"speaker\":\"$PC\"}]},"
+                + "{\"n\":2,\"kind\":\"keep\"}]}\n\n"
+                + Done());
+
+            Assert.True(h.Controller.Submit("嗯。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("好。", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("玩家改口。", h.Widget.CurrentFrame.Text);
+            Assert.Equal("阿夜", h.Widget.CurrentFrame.Name);
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("B", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
+        public void PlanAddUsesPlayerSpeakerForPlayerName()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            JObject book = h.BuildBook(7, "ordinary", "task_pre", "200124", "你来了。", "A");
+            book["snapshot"] = PlayerSnapshot("阿夜", "旅人", false);
+            h.Task.AdoptV2(book);
+            h.Transport.Script(
+                AddLine("前缀", 0)
+                + "event: plan\ndata: {\"resume\":1,\"steps\":[{\"n\":0,\"kind\":\"add\","
+                + "\"lines\":[{\"text\":\"玩家补一句。\",\"emotion\":\"普通\",\"speaker\":\"$PC\"}]}]}\n\n"
+                + Done());
+
+            Assert.True(h.Controller.Submit("嗯。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("前缀", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("玩家补一句。", h.Widget.CurrentFrame.Text);
+            Assert.Equal("阿夜", h.Widget.CurrentFrame.Name);
+        }
+
+        [Fact]
         public void PlanWaitsForAllAddsBeforeApplying()
         {
             using var h = new Harness();
