@@ -2,10 +2,11 @@
 
 **文档角色**：游戏侧与后端侧共用的冻结样例与期望结果表。协议真源＝《AI对话内嵌插话-需求与协议-2026-10-18.md》（下称《协议》）；本文只把协议落成可执行的请求、SSE、JSONL 与期望行为，不另立语义。
 **冻结基线**：游戏仓 `b3705d36fe`（P1 源码），后端仓 `9ccaac9`（B1 源码），2026-10-18；P0 文档基线为 `5b6dc7b8e0` / `8143b1d`，初始文档提交为 `83d55803ca` / `4f2248a`。
+**任务协议同步基线**：后端 `80c895f`、游戏仓 Host `c5f90a0779`（2026-10-29，任务 JSONL 统一 `type/no/text`，SSE plan 统一 `{mute,resume,steps}`）。任务段落以该代码为准；日常模式 `add`/`closing` 与 `line` 事件不变。
 **使用方式**：
 - 后端窗口：用假 LLM 按 §2 的 JSONL 原文回放，断言 §3 的 SSE 顺序与形状，再断言 §4 的 plan/session。
 - 游戏窗口：把 §3 的 SSE 序列注入 Host SSE 客户端，断言 §4 的播放序列、输入可用状态、finish/finalize。
-- 两侧都不得修改 fixture 来迁就实现；协议与 fixture 冲突时以《协议》为准，停下来报告，不单边改字段。
+- 两侧都不得修改 fixture 来迁就实现；任务段落的 JSONL/plan/Host 应用以文首“任务协议同步基线”的代码为准，其余契约冲突以《协议》为准，停下来报告，不单边改字段。
 - fixture 测试不调用真模型；真模型走查属于 P5，单独记录。
 
 ---
@@ -15,20 +16,28 @@
 - 时序：文中延迟只是示意；规范的是事件顺序与“首句/首段早于 done/plan”。
 - `status` 可选；测试不得依赖其数量或文案。若发送，`stage ∈ {connecting, thinking, searching, drafting, waiting}`；可选 `ui_hint` 为 ≤12 字进度提示，只影响等待占位，不写转录。
 - `line.interim` 可选；`true` 表示任务草案等待期的后端过渡话。它是正常 `add`（进已播/finalize），但 Host 越过它后仍以最新 `ui_hint` 占位等最终确认对话；缺省/false 为普通台词。
-- `line.seq`：每个 turn 从 0 开始单调递增；一个 turn 内不重复。`played[].seq`：同一 session 内不重复。
-- `split`：仅当一条模型正文被 165 硬上限拆成多段时出现；`index` 从 0 起，`count` 为总段数。自然多行不带。
+- `line.seq`：每个 turn 从 0 开始单调递增；一个 turn 内不重复。`played[].seq`：同一 session 内不重复。`plan.steps` 不占 `line.seq`，按数组顺序播放。
+- `split`：仅当一条模型正文被 165 硬上限拆成多段时出现；`index` 从 0 起，`count` 为总段数。自然多行不带；`line` 与 `plan.steps[].lines[]` 同构。
 - 情绪统一用“普通”，避免依赖具体 NPC 白名单；真模型走查再验证真实情绪。
-- 请求中 `remaining[].index` 与 `reference_continuation[].index` 固定为 **1..N**，与模型 `n` 同口径；Host 负责与原始绝对行号互转。
+- 请求中 `remaining[].index` 与 `reference_continuation[].index` 固定为 **1..N**，与模型 `no` 同口径；Host 负责与原始绝对行号互转；每轮从当前播放点之后连续重排 1..N。
 - `dialogue.kind ∈ {daily, task_pre, task_post}`，且与 `mode` 匹配。
 - `reference_continuation[].kind ∈ {add, closing, edit, remove}`；日常未播的结束语用 `closing`。
-- 任务 `end` 是原始剩余编号 1..N+1；N+1 表示原剩余全部按本轮结果构成、不再接回（改完末条直接收组）；缺省＝不接回原文，本轮新增＋改写构成剩余整组。
+- 任务 JSONL 统一 `type/no/text`：`{"type":"mute"}` / `{"type":"add","no":0,"text":"…","emo":"…"}` / `{"type":"edit","no":n,"text":"…","emo":"…"}` / `{"type":"keep","no":n}` / `{"type":"remove","no":n}` / `{"type":"continue","no":n}` / `{"type":"end"}`。`add`、`edit` 必须带 `text`+`emo`；其余操作不填 `text`/`emo`；`add` 的 `no` 固定 0，`end`/`mute` 不带 `no`。
+- `mute` 可选，缺省 false；需要时必须作为整个输出的第一行，只在玩家内容严重离谱、完全无法接话时使用。禁言时第一条 `add` 用“无视、打断或化解”回应，再按原编号继续。
+- `add` 可插在任意两个操作之间，不占原编号；首个原编号操作之前的 `add` 由后端即时推 `line`，其后出现的 `add` 必须进入 `plan.steps`，按位置播放。
+- `continue` 之前的原编号必须从 1 开始严格递增，不得跳号、倒序或重复；连续同 `no` 的 `edit` 是唯一拆条例外（合并为同一条改写）。
+- `continue(no)` 从原第 no 条保留到组末；`end` 不再保留任何未处理原文；两者必须且只能出现一个并位于最后。缺终止符或 `continue` 非法时，从最后处理的原编号之后保留原文；尚未处理任何原编号则保留全部。跳号编号由后端补成 `remove` 并记日志。
+- 任务 plan 统一为 `{"mute":false,"resume":3,"steps":[...]}`：`resume` 为 1..N+1，N+1 表示不接回原尾部；`steps` 有序，可为 `add`/`edit`/`keep`/`remove`，`add` 的 `n=0`，`lines[]` 为 `{text,emotion,split?}`；`keep`/`remove` 不带 `lines`。
+- Host 顺序应用 `steps`：`add` 原位插入、`edit` 替换原编号、`keep` 保留原文、`remove` 跳过；`resume` 之前未被 steps 覆盖的原编号按 `remove` 处理，从 `resume` 起接回原文。`resume` 缺失或越界（不在 1..N+1）按从 1 接回；`resume=N+1` 放弃原尾部，下一轮 `remaining` 为空。
+- 已收到但未应用的 plan 不应用，转 `reference_continuation`：`add`/`edit`/`remove` 按 steps 顺序携带，`keep` 不产生参考；未播出的 `edit`/`remove` 编号按下一轮 `remaining` 的 1..N 折算，已越过或原编号已不存在（原尾部已放弃）则丢弃。
+- 失败/部分断流不发 `plan`；`mute` 独立事件与 `plan.mute` 是同一禁言状态的双通道。
 - 请求 `played` 只含本轮玩家发送之前已播出的行；本轮 `$PC` 由 `player_input` 表示，由 finalize 按实际播放写入，不得在 `played` 与 `player_input` 中重复。
 - session 只记录真正播放过的行；拆分产生的多段按播放顺序各记一条 assistant，不合并。
 - `finalize.transcript` 是该 session 截至当时的全部已播行（含历轮），行结构与请求 `played` 相同；未出现在其中的未播内容不落库。
 - Host 对 mutation 的 ack 若带 `rowCount`，只能是 wire 行数；本地增强行数不得回传。
 - `close` 的 `finalIndex` 取当前播放点已到达的最大原始行号（增强行不推进），钳在 `[0, wireRowCount-1]`。
 - `finalize` 成功响应固定为 `{ok:true,dialogue_instance_id,session_id,appended,total}`；未知 session 且 transcript 为空时 `ok:false`、`session_id:""`。
-- `error.valid_lines` 按模型输出行计、拆分前（add/closing/任务 line），`mute` 不计。
+- `error.valid_lines` 按模型输出行计、拆分前；日常只计 `add`/`closing`，任务只计 `add`/`edit`；`mute`/`keep`/`remove`/`continue`/`end` 不计。
 - `reference_continuation` 的 edit/remove index 越界（不在当前 1..N）＝非法请求，后端 422。
 - 真取消＝Host 关闭 SSE 连接，不存在独立 cancel 端点；后端断开即取消 LLM/工具，Host 随后 finalize。
 - fixture 中固定假 UUID 仅用于断言；真实 Host 使用自己的 UUID。
@@ -59,12 +68,12 @@
 | F-02 | 日常拆分 | 165 拆分、`split` 标记、前置段暂锁/末段恢复 |
 | F-03 | 日常任务草案 | 抑制过渡语、草案后最终对话＋结束语、草案保留 |
 | F-04 | 日常中途插入 | 播放中发送、补全当前句、取消在途、参考续写、同 session |
-| F-05 | 任务 `end` 接回 | 原编号 1..N+1、edit、`end`、组末原 finalIndex |
+| F-05 | 任务 `continue` 接回 | 有序 `steps`、`keep`/`edit`、`continue` 接回、组末原 finalIndex |
 | F-05b | 任务改写拆分 | plan 内 `lines[].split`、任务输入暂锁例外 |
-| F-06 | 任务 `remove` | 删除未播仍留剩余、越过才消失 |
-| F-07 | 任务 `nochange` 缺失 | `end` 前未提及＝nochange（宽容） |
-| F-08 | 任务整组替换 | 无 `end`、原剩余不再播放 |
-| F-09 | 任务 `mute` | `mute` 事件、首句化解、本组后续禁言 |
+| F-06 | 任务 `remove` 与跳号 | 显式 `remove`、未提及编号补 `remove`、`continue` 接回 |
+| F-07 | 任务 `keep` 与缺终止符 | 显式 `keep`、缺 `continue`/`end` 时保留尾部 |
+| F-08 | 任务 `end` 整组收束 | `end` 不接回、未处理编号补 `remove`、下一轮 remaining 为空 |
+| F-09 | 任务 `mute` | `mute` 首行、`mute` 事件与 `plan.mute`、首句化解、本组后续禁言 |
 | F-10 | 零有效 | 修复重试一次、仍零→`error`、回原对话 |
 | F-11 | 部分有效后流断 | 已播保留、无 plan、回原对话当前点 |
 | F-12 | 关闭/取消 | 真取消、未播不落库、finalize 按已播收尾 |
@@ -318,7 +327,7 @@ Turn B 假 LLM：
 
 ---
 
-### F-05 任务 `end` 接回
+### F-05 任务 `continue` 接回（有序计划）
 
 **请求（关键字段）**
 
@@ -362,19 +371,24 @@ Turn B 假 LLM：
 **假 LLM 原文（JSONL）**
 
 ```jsonl
-{"add":"你倒是爽快。","emo":"普通"}
-{"n":2,"line":"北边仓库昨晚丢了一批货。","emo":"普通"}
-{"end":3}
+{"type":"add","no":0,"text":"你倒是爽快。","emo":"普通"}
+{"type":"keep","no":1}
+{"type":"edit","no":2,"text":"北边仓库昨晚丢了一批货。","emo":"普通"}
+{"type":"continue","no":3}
 ```
 
 **期望 SSE**
 
 ```text
+event: status
+data: {"stage":"thinking"}
+
 event: line
 data: {"kind":"add","text":"你倒是爽快。","emotion":"普通","speaker":"Andy Law","seq":0}
 
 event: plan
-data: {"mute":false,"end":3,"edits":[
+data: {"mute":false,"resume":3,"steps":[
+  {"n":1,"kind":"keep"},
   {"n":2,"kind":"edit","lines":[{"text":"北边仓库昨晚丢了一批货。","emotion":"普通"}]}
 ]}
 
@@ -385,34 +399,65 @@ data: {"dialogue_instance_id":"22222222-2222-4222-8222-222222222222","session_id
 **期望 Host 播放序列**
 
 1. `add`：“你倒是爽快。”
-2. 原剩余 1：原文“你先别急着答应。”
-3. 原剩余 2：改写“北边仓库昨晚丢了一批货。”
-4. 从 `end=3` 接回原剩余 3、4 原文。
+2. `steps[0]` `keep n=1`：原文“你先别急着答应。”
+3. `steps[1]` `edit n=2`：改写“北边仓库昨晚丢了一批货。”
+4. 从 `resume=3` 接回原第 3、4 条原文。
 5. 每句开始显示即可输入（禁言除外）；组末点击“下一条”关闭。
 6. 组末 finish 用 **AS2 原始最后一行的 finalIndex**，不是增强行数；AS2 `advance_past_end` 校验通过。
 
 **期望后端**
 
-- `end=3` 按相对编号映射；`n=1` 未提及且在 `end` 前 → nochange。
-- 计划完整才发 `plan`；`add` 可以先于 `plan` 推送。
+- 首个原编号操作之前的 `add no=0` 已即时推 `line`，不得重复出现在 `steps`；`keep 1`、`edit 2` 按输出顺序进入 `steps`。
+- `continue 3` 归一化为 `resume=3`，不产生 step；原第 3、4 条不再出现在 `steps`。
+- 整轮正常结束才发 `plan`；`line` 可以先于 `plan` 推送。
 - session：`$PC`=user；`add`=assistant；原剩余 1=assistant；改写 2=assistant（保留原说话人）；接回的 3、4 按实际播放追加。
+
+**边界：plan 已应用后中途插入**
+
+若玩家在原文 1 播放中插话（plan 已应用、改写 2 未播）：下一轮 `remaining` 从原文 2 起重排（原文 2→index 1、原文 3→2、原文 4→3）；`reference_continuation` 携带 `{"kind":"edit","index":1,"name":"Andy Law","text":"北边仓库昨晚丢了一批货。","emotion":"普通"}`。`keep` 不产生参考，`resume` 之后的原文 3、4 仍留在 `remaining`。
+
+**边界：原编号操作后的 add**
+
+首个原编号操作之后出现的 `add` 不进 `line`，必须按输出顺序进入 `steps`，由 Host 按位置插入：
+
+```jsonl
+{"type":"add","no":0,"text":"前缀即时回应。","emo":"普通"}
+{"type":"edit","no":1,"text":"改写 1。","emo":"普通"}
+{"type":"add","no":0,"text":"插在 1 和 2 之间。","emo":"普通"}
+{"type":"keep","no":2}
+{"type":"continue","no":3}
+```
+
+```json
+{"mute":false,"resume":3,"steps":[
+  {"n":1,"kind":"edit","lines":[{"text":"改写 1。","emotion":"普通"}]},
+  {"n":0,"kind":"add","lines":[{"text":"插在 1 和 2 之间。","emotion":"普通"}]},
+  {"n":2,"kind":"keep"}
+]}
+```
+
+SSE 顺序：`status` → `line`（“前缀即时回应。”）→ `plan` → `done`；`steps` 中不再出现该前缀 `add`。Host 播放：前缀 → 改写 1 → 插入 → 原文 2 → 原文 3、4。
 
 ---
 
 ### F-05b 任务改写拆分
 
-**假 LLM 原文**：在 F-05 基础上，把 `n:3` 的改写写成一条超过 165 的正文（`end=4`，被改写的条目必须在 `end` 之前）。
+**假 LLM 原文**：在 F-05 基础上，把 `no:3` 的改写写成一条超过 165 的正文，并用 `continue 4` 收尾（被改写的条目必须在 `continue` 之前）。
 
 ```jsonl
-{"add":"你倒是爽快。","emo":"普通"}
-{"n":3,"line":"<超过 165 的正文>","emo":"普通"}
-{"end":4}
+{"type":"add","no":0,"text":"你倒是爽快。","emo":"普通"}
+{"type":"keep","no":1}
+{"type":"keep","no":2}
+{"type":"edit","no":3,"text":"<超过 165 的正文>","emo":"普通"}
+{"type":"continue","no":4}
 ```
 
 **期望 plan 形状**
 
 ```json
-{"mute":false,"end":4,"edits":[
+{"mute":false,"resume":4,"steps":[
+  {"n":1,"kind":"keep"},
+  {"n":2,"kind":"keep"},
   {"n":3,"kind":"edit","lines":[
     {"text":"<段 0>","emotion":"普通","split":{"index":0,"count":2}},
     {"text":"<段 1>","emotion":"普通","split":{"index":1,"count":2}}
@@ -422,89 +467,154 @@ data: {"dialogue_instance_id":"22222222-2222-4222-8222-222222222222","session_id
 
 **期望 Host**
 
-- 播放 `n:3` 时，段 0 输入暂锁，段 1 开始显示即恢复；这是任务模式唯一的逐段暂锁。
+- 播放 `n:3` 时，段 0 输入暂锁，段 1 开始显示即恢复；任务 plan 内的 `add` 若同样被 165 拆分，也按段暂锁。
+- 播放序列：`add` → 原文 1（keep）→ 原文 2（keep）→ 改写 3 段 0/段 1（edit）→ 原文 4（resume=4）。
 - 段 0、段 1 各按一条播放行计入已播；原第 3 条不再出现在下一轮剩余列表。
-- 播完段 1 后从 `end=4` 接回原第 4 条；组末 finish 仍用原始 finalIndex。
+- 播完段 1 后从 `resume=4` 接回原第 4 条；组末 finish 仍用原始 finalIndex。
+- 模型也可把同一条拆成连续两条 `edit no=3`（每条都带 `text`+`emo`）；后端合并为同一 step 的多段 `lines`。若各段本身 ≤165，则不带 `split` 标记，Host 按自然多行逐段播放；连续 `edit` 之间插入 `add` 会打断合并，后续重复 `edit no=3` 按重复编号忽略并记日志。
 
 ---
 
-### F-06 任务 `remove`
+### F-06 任务 `remove` 与跳号
 
 **假 LLM 原文**
 
 ```jsonl
-{"add":"这事不好办。","emo":"普通"}
-{"n":2,"remove":true}
-{"end":3}
+{"type":"add","no":0,"text":"这事不好办。","emo":"普通"}
+{"type":"keep","no":1}
+{"type":"remove","no":2}
+{"type":"continue","no":3}
 ```
 
-**期望 plan**
+**期望 SSE（顺序）**
 
-```json
-{"mute":false,"end":3,"edits":[{"n":2,"kind":"remove"}]}
+```text
+event: status
+data: {"stage":"thinking"}
+
+event: line
+data: {"kind":"add","text":"这事不好办。","emotion":"普通","speaker":"Andy Law","seq":0}
+
+event: plan
+data: {"mute":false,"resume":3,"steps":[
+  {"n":1,"kind":"keep"},
+  {"n":2,"kind":"remove"}
+]}
+
+event: done
+data: {"dialogue_instance_id":"22222222-2222-4222-8222-222222222222","session_id":"<同上>","usage":{}}
 ```
 
 **期望**
 
-- 播放：`add` → 原剩余 1 原文 → 跳过原剩余 2 → 从 `end=3` 接回 3、4。
-- 若玩家在 `add` 播放中插话、`plan` 尚未应用：原剩余 2 仍在下一轮剩余列表；`remove` 意图只进参考续写。
-- 只有播放进度真正越过原剩余 2 后，它才从剩余列表消失。
+- 播放：`add` → 原文 1（keep）→ 跳过原文 2（remove）→ 从 `resume=3` 接回 3、4。
+- 若玩家在 `add` 播放中插话、`plan` 尚未应用：原剩余 2 仍在下一轮剩余列表；已收未应用的 plan 转参考续写，`keep` 不产生参考，`remove n=2` 折算为下一轮 `remaining` 的 `{"kind":"remove","index":2}`。
+- 只有播放进度真正越过原剩余 2 后，它才从剩余列表消失（已应用但未越过的 remove 继续作为参考）。
 - session 不记录被 remove 且未播放的原台词。
+
+**边界：跳过原编号**
+
+模型漏写编号时，后端补 `remove` 并记日志（`原编号未提及，按 remove 兜底`），不整段打回：
+
+```jsonl
+{"type":"keep","no":1}
+{"type":"edit","no":3,"text":"只改第 3 条","emo":"普通"}
+{"type":"continue","no":4}
+```
+
+```json
+{"mute":false,"resume":4,"steps":[
+  {"n":1,"kind":"keep"},
+  {"n":2,"kind":"remove"},
+  {"n":3,"kind":"edit","lines":[{"text":"只改第 3 条","emotion":"普通"}]}
+]}
+```
+
+Host 播放：原文 1 → 跳过原文 2 → 改写 3 → 原文 4；没有前缀 `add` 时事件只有 `status`/`plan`/`done`，仅凭完整 `plan` 也算成功轮。
 
 ---
 
-### F-07 任务 `nochange` 缺失
+### F-07 任务 `keep` 与缺终止符
 
 **假 LLM 原文**
 
 ```jsonl
-{"add":"……","emo":"普通"}
-{"n":3,"line":"清单就压在柜台底下。","emo":"普通"}
-{"end":4}
+{"type":"add","no":0,"text":"……","emo":"普通"}
+{"type":"keep","no":1}
+{"type":"keep","no":2}
+{"type":"edit","no":3,"text":"清单就压在柜台底下。","emo":"普通"}
+{"type":"continue","no":4}
 ```
 
 **期望 plan**
 
 ```json
-{"mute":false,"end":4,"edits":[
+{"mute":false,"resume":4,"steps":[
+  {"n":1,"kind":"keep"},
+  {"n":2,"kind":"keep"},
   {"n":3,"kind":"edit","lines":[{"text":"清单就压在柜台底下。","emotion":"普通"}]}
 ]}
 ```
 
 **期望**
 
-- `end` 之前未提及的 `n=1`、`n=2` 按 nochange 处理，不得当作 remove。
-- 播放：`add` → 原文 1、2 → 改写 3 → `end=4` 接回原文 4。
-- 后端只记录缺失项为隐含 nochange；不整段打回。
+- 原编号 1、2 用显式 `keep` 保留，按输出顺序进入 `steps`；不得再把未提及项当作“隐含保留”。
+- 播放：`add` → 原文 1（keep）→ 原文 2（keep）→ 改写 3（edit）→ 原文 4（resume=4）。
+
+**边界：缺终止符**
+
+没有 `continue`/`end` 时按兜底继续，不整段打回：
+
+```jsonl
+{"type":"keep","no":1}
+{"type":"edit","no":2,"text":"合法","emo":"普通"}
+```
+
+```json
+{"mute":false,"resume":3,"steps":[
+  {"n":1,"kind":"keep"},
+  {"n":2,"kind":"edit","lines":[{"text":"合法","emotion":"普通"}]}
+]}
+```
+
+- `resume=3`＝从最后处理的原编号之后保留原文；后端记 `fallback_continue` 与“缺少 continue/end”日志。
+- 若整轮只有前缀 `add`、没有处理任何原编号，则 `resume=1`、`steps=[]`，保留全部原文。
+- `continue` 编号非法（≤已处理编号或越界）同样按最后处理编号之后接回，并记录日志；不会因此吞掉后续原文。
 
 ---
 
-### F-08 任务整组替换（无 `end`）
+### F-08 任务 `end` 整组收束
 
 **假 LLM 原文**
 
 ```jsonl
-{"add":"……","emo":"普通"}
-{"n":1,"line":"这事我只跟你说一遍。","emo":"普通"}
-{"n":2,"remove":true}
+{"type":"add","no":0,"text":"……","emo":"普通"}
+{"type":"edit","no":1,"text":"这事我只跟你说一遍。","emo":"普通"}
+{"type":"remove","no":2}
+{"type":"remove","no":3}
+{"type":"remove","no":4}
+{"type":"end"}
 ```
 
 **期望 plan**
 
 ```json
-{"mute":false,"end":null,"edits":[
-  {"n":1,"kind":"edit","lines":[{"text":"这事我只跟你说一遍。","emotion":"普通"}]}
+{"mute":false,"resume":5,"steps":[
+  {"n":1,"kind":"edit","lines":[{"text":"这事我只跟你说一遍。","emotion":"普通"}]},
+  {"n":2,"kind":"remove"},
+  {"n":3,"kind":"remove"},
+  {"n":4,"kind":"remove"}
 ]}
 ```
 
-（`n=2 remove` 在 `end` 缺省的整组替换下没有可作用的对象，后端归一化时省略；Host 对带 remove 的旧形状也要兼容，播放结果相同。）
-
 **期望**
 
-- 播放：`add` → 改写 1；不播放原剩余 3、4，也不接回原文。
-- 组在增强序列播完后结束；finish 仍用 AS2 原始最后一行的 `finalIndex`。
-- session 只记录实际播放的 `add` 与改写 1；未播放的原文 3、4 不落库。
-- 下一轮剩余列表仍按原剩余中未越过的条目计算（若还有下一轮）。
+- 播放：`add` → 改写 1；不播放原剩余 2、3、4，也不接回原文。
+- `end` 不再保留未处理原文；模型漏写的原编号由后端补 `remove`（此例已显式写全）。
+- 组在 `steps` 播完后结束；finish 仍用 AS2 原始最后一行的 `finalIndex`。
+- `resume=5=N+1`：Host 放弃原尾部，下一轮 `remaining` 为空；未播原文 2、3、4 不再转参考续写。
+- 若 plan 已应用而玩家在 `add` 播放中插话：尚未播放的改写 1 也因原编号已不存在而丢弃（Host 记日志），下一轮 `reference_continuation` 为空。
+- session 只记录实际播放的 `add` 与改写 1；未播放的原文不落库。
 
 ---
 
@@ -513,14 +623,17 @@ data: {"dialogue_instance_id":"22222222-2222-4222-8222-222222222222","session_id
 **假 LLM 原文**
 
 ```jsonl
-{"mute":true}
-{"add":"行了，这事不用你操心。","emo":"普通"}
-{"end":1}
+{"type":"mute"}
+{"type":"add","no":0,"text":"行了，这事不用你操心。","emo":"普通"}
+{"type":"continue","no":1}
 ```
 
 **期望 SSE**
 
 ```text
+event: status
+data: {"stage":"thinking"}
+
 event: mute
 data: {"mute":true}
 
@@ -528,7 +641,7 @@ event: line
 data: {"kind":"add","text":"行了，这事不用你操心。","emotion":"普通","speaker":"Andy Law","seq":0}
 
 event: plan
-data: {"mute":true,"end":1,"edits":[]}
+data: {"mute":true,"resume":1,"steps":[]}
 
 event: done
 data: {"dialogue_instance_id":"22222222-2222-4222-8222-222222222222","session_id":"<同上>","usage":{}}
@@ -536,14 +649,15 @@ data: {"dialogue_instance_id":"22222222-2222-4222-8222-222222222222","session_id
 
 **期望 Host**
 
-- `mute` 事件先到；首句 `add` 用 NPC 口吻无视/化解玩家的话，然后从原剩余 1 接回。
+- `mute` 事件先到；首句 `add` 用 NPC 口吻无视、打断或化解玩家的话，然后从 `resume=1` 接回原剩余 1..4。
 - 本组后续输入禁用并显示“（NPC名）暂时不打算让你插话”；组结束/关闭后重置。
 - 禁言是任务模式唯一的整组锁；不影响任务状态机，不写持久数据。
 
 **期望后端**
 
-- `mute` 行最先解析并尽早推 `mute` 事件；`plan.mute=true`。
-- 不得因为禁言而丢弃 `add`/`end`。
+- `mute` 可选且缺省 false；契约要求它必须是整个输出的第一行，解析器遇到该行即推 `mute` 事件，`plan.mute=true`。
+- 不得因为禁言而丢弃 `add`/`continue`；`plan.steps=[]` 表示原剩余全部按 `resume=1` 保留。
+- 只有 `mute` 的控制行也属于有效输出（不触发 `no_valid_lines`）；`valid_lines` 不计 `mute`，此例 add 计 1。
 
 ---
 
@@ -561,6 +675,7 @@ data: {"dialogue_instance_id":"22222222-2222-4222-8222-222222222222","session_id
 - 带 JSON 特征但无法解析的坏行仍记录并跳过；零条有效时后端可做**一次**修复性重试（把原输出/错误位置给模型，要求只重发 JSONL）。
 - 重试仍零条有效：`error`，`code="no_valid_lines"`，`valid_lines=0`；不发 `line`/`plan`/`done`。
 - 注意：完全无 JSON 特征的裸台词自 2026-10-22 起按 `add` 兜底接收（情绪留空），不再属于零有效。
+- 任务模式只要解析出任意控制操作（如 `mute`/`keep`/`continue`/`end`），本轮就不是“零有效输出”，会正常发 `plan`；此时 `valid_lines` 可能为 0，但不触发 `no_valid_lines`。
 - Host：本次 `$PC` 已播并保留在 session；不播任何额外 NPC 台词；无视这次玩家说话，直接回原对话当前点继续（日常同样）。
 - 原对话已到末尾则正常结束。
 - 不得写入覆盖层；不得把修复重试的中间文本当台词。
@@ -577,9 +692,12 @@ data: {"dialogue_instance_id":"22222222-2222-4222-8222-222222222222","session_id
 
 随后连接中断/畸形事件。
 
-**期望 SSE**
+**期望 SSE（日常）**
 
 ```text
+event: status
+data: {"stage":"thinking"}
+
 event: line
 data: {"kind":"add","text":"你先听我说。","emotion":"普通","speaker":"Andy Law","seq":0}
 
@@ -590,14 +708,32 @@ data: {"code":"stream_failed","message":"…","valid_lines":1}
 **期望 Host**
 
 - 已收到的 `add` 照常播放；不得补写、不重试整段。
-- 任务模式：没有完整 `plan` 就不应用任何改写，播完已收 `add` 后回原对话当前点继续。
 - 日常：播完已收 `add` 后回原对话剩余部分继续。
+- 任务模式：没有完整 `plan` 就不应用任何改写，播完已收 `add` 后回原对话当前点继续。
 - session：已播 `add` 保留；未收到的内容不落库；`$PC` 已播保留。
 
 **期望后端**
 
 - 部分有效不推不完整 `plan`；已推 `line` 保留。
 - 客户端断开/流失败时取消 LLM/工具；不得在 `error` 后继续写 AI 消息。
+
+**任务模式变体：只收到改写后断流**
+
+```jsonl
+{"type":"edit","no":1,"text":"改写到一半","emo":"普通"}
+```
+
+```text
+event: status
+data: {"stage":"thinking"}
+
+event: error
+data: {"code":"stream_failed","message":"…","valid_lines":1}
+```
+
+- 任务 `edit` 不即时推 `line`，只计 `valid_lines`；没有完整 `plan`，Host 不应用该改写，也不补台词。
+- Host 停在本轮 `$PC`，失败收尾后回原对话当前点；原剩余 1..N 不变。
+- `mute`/`keep`/`remove`/`continue`/`end` 是控制操作，不计入 `valid_lines`。
 
 ---
 
@@ -837,8 +973,8 @@ tool_call: request_item_from_player({"name":"","quantity":1,"keyword":"治疗","
 **期望**
 
 - 后端在进入 LLM 前执行现有 `_run_confirm`；不注册 `route_task_confirm`，不产生路由轮。
-- 发布成功：结果块“这份委托已经正式派给玩家了”；最终 LLM 只输出确认台词＋结束语。
-- 发布失败：结果块说明失败；模型正常回应；Host 本轮不再重复弹“我接了/我不接”。
+- 发布成功：结果块“这份委托已经正式派给玩家了”；最终 LLM 只输出 `type=add` 的确认台词，并以 `end` 收束（`remaining` 为空，无原剩余可保留）。
+- 发布失败：结果块说明失败；模型正常回应（仍按任务 JSONL `type/no/text`）；Host 本轮不再重复弹“我接了/我不接”。
 - 只对插话输入条生效；终端手打“我接了”仍走原链路。
 
 ---
@@ -894,10 +1030,10 @@ data: {"state":"pending","claim_id":"<uuid>","npc":"Andy Law","item_name":"M4A1"
 | F-02 | 段 0 暂锁；段 1 开始显示恢复；`closing` 开始显示可用 |
 | F-03 | 草案生成中禁用“（正在准备…）”；最终 `add0` 开始显示恢复 |
 | F-04 | `add0` 开始显示可用；发送即补全并取消；Turn B 各句开始显示可用 |
-| F-05/F-06/F-07/F-08 | 任务每句（新增/改写/原文）开始显示即可用 |
+| F-05/F-06/F-07/F-08 | 任务每个 step（新增/改写/保留原文）开始显示即可用 |
 | F-05b | 改写段 0 暂锁；段 1 开始显示恢复 |
 | F-09 | 本组后续禁用并显示禁言提示 |
-| F-10/F-11 | 回原对话后随原对话解锁 |
+| F-10/F-11 | 回原对话后随原对话解锁；任务断流无 AI 行时直接回当前点 |
 | F-12 | 关闭后复位；再次打开为新会话 |
 
 ### 4.2 播放/计划
@@ -908,14 +1044,14 @@ data: {"state":"pending","claim_id":"<uuid>","npc":"Andy Law","item_name":"M4A1"
 | F-02 | 段0→段1→closing（拼接等于原文） |
 | F-03 | 草案完成后 add→add→closing，无过渡台词 |
 | F-04 | Turn A 只播 add0；Turn B 播 add→closing；add1/closing 不播 |
-| F-05 | add→原文1→改写2→原文3→原文4 |
-| F-05b | add→原文1→原文2→改写3段0→段1→原文4 |
-| F-06 | add→原文1→跳过2→原文3→原文4 |
-| F-07 | add→原文1→原文2→改写3→原文4 |
-| F-08 | add→改写1，结束（不播原文3/4） |
+| F-05 | add→原文1（keep）→改写2→原文3→原文4（resume=3） |
+| F-05b | add→原文1→原文2→改写3段0→段1→原文4（resume=4） |
+| F-06 | add→原文1→跳过2→原文3→原文4；跳号例：原文1→跳过2→改写3→原文4 |
+| F-07 | add→原文1→原文2→改写3→原文4；缺终止符例：原文1→改写2→原文3→原文4 |
+| F-08 | add→改写1，结束（显式 remove 2/3/4；resume=5，下一轮 remaining 空） |
 | F-09 | mute→add→原文1.. |
 | F-10 | 无 AI 行，回原对话 |
-| F-11 | add0→回原对话当前点 |
+| F-11 | add0→回原对话当前点；任务 edit 断流：无 AI 行→回当前点 |
 | F-12 | 关闭；未播不写 |
 
 ### 4.3 session/finalize
@@ -927,6 +1063,8 @@ data: {"state":"pending","claim_id":"<uuid>","npc":"Andy Law","item_name":"M4A1"
 | 其他 NPC 原作 | user，`【NPC名：台词】` |
 | 当前 NPC 原作/改写/AI | assistant |
 | 未播 add/closing/edit/remove | 不写 |
+| 已收未应用 plan | 转 `reference_continuation`：add/edit/remove 按 steps 顺序，keep 不产生；未播编号按下一轮 remaining 折算 |
+| `resume=N+1` | 放弃原尾部；下一轮 remaining 为空，未播 edit/remove 不再折算参考 |
 | 取消/关闭 | finalize 以已播 transcript 幂等收尾 |
 | 每轮结束 | 允许 best-effort finalize；transcript 为前缀，后端按 seq 幂等追加 |
 | 重复 finalize | 幂等，不重复追加 |
@@ -959,9 +1097,9 @@ data: {"state":"pending","claim_id":"<uuid>","npc":"Andy Law","item_name":"M4A1"
 ### 5.1 后端
 
 - 假 LLM：按 §3 原文逐行 yield；记录每行完成时间，断言首条有效 `line` 早于 `done`/`plan`。
-- 解析器：JSONL 围栏/非 JSON/括号剥离/165 拆分/`split`/情绪回落。
-- 计划：F-05/F-05b/F-06/F-07/F-08 的 plan 逐字段断言；`n`/`end` 越界宽容。
-- SSE：事件顺序、`seq`、`split`、`mute` 先于 `line`、`done`/`error`。
+- 解析器：JSONL 围栏/非 JSON/括号剥离/165 拆分/`split`/情绪回落；任务 `type/no/text`、`mute` 首行、`add no=0`、`edit`/`keep`/`remove`/`continue` 的 `no`、越界编号记录后跳过。
+- 计划：F-05/F-05b/F-06/F-07/F-08/F-09 的 `mute`/`resume`/`steps` 逐字段断言；跳号补 `remove`、缺终止符/非法 `continue` 兜底、`n`/`resume` 越界宽容、终止符后的内容忽略。
+- SSE：事件顺序、`seq`、`split`、`mute` 先于 `line`、`done`/`error`；失败/部分断流无 `plan`；`valid_lines` 只计 `add`/`edit`（日常 `add`/`closing`）。
 - session：F-01/F-04/F-12 的创建、复用、幂等 finalize、未播不写。
 - 以上全部离线；不调用真实模型、不写生产数据目录（用临时 data root）。
 
@@ -969,7 +1107,8 @@ data: {"state":"pending","claim_id":"<uuid>","npc":"Andy Law","item_name":"M4A1"
 
 - 假 SSE：按 §3 事件注入 Host SSE 客户端；断言播放顺序、输入可用/暂锁/禁言、取消、finish/finalize。
 - Native 会话：本地追加行不改 `WireRowCount`；组末 `finalIndex` 用 AS2 原始最后一行；提前关闭用 `close`。
-- 任务 plan：F-05/F-05b/F-06/F-07/F-08 的播放序列与“已越过”标记。
+- 任务 plan：F-05/F-05b/F-06/F-07/F-08 按 `steps` 顺序应用；`resume` 前未覆盖编号按 `remove`；`resume` 缺失/越界从 1 接回；`resume=N+1` 放弃尾部（下一轮 `remaining` 空）。
+- 参考续写：已收未应用 plan 转 `reference_continuation`（add/edit/remove 有序、keep 不产生、未播编号折算）；原尾部已放弃时丢弃 edit/remove。
 - 输入控件：先做 G0-1 spike；IME、Enter、焦点、点击不误触。
 - 以上不要求真模型；真机 IME 与视觉属于 P5/作者验收。
 
@@ -978,5 +1117,6 @@ data: {"state":"pending","claim_id":"<uuid>","npc":"Andy Law","item_name":"M4A1"
 ## 6. 变更控制
 
 - 本文与《协议》已冻结。任何字段/语义变更：先改《协议》与本文，再改两侧实现；不得只改一侧。
+- 任务协议 2026-10-29 的整批修订（后端 `80c895f` / Host `c5f90a0779`）已同步到本文；后续语义变更仍按上一句的顺序执行。
 - 发现 fixture 与协议冲突：停下来报告，不修改 fixture 迁就实现。
-- 新增 fixture 只能追加编号；不得改写既有编号的期望语义。
+- 新增 fixture 只能追加编号；既有编号的语义变更必须随协议修订整批同步本文与两侧断言，不得只改字段名或只改一侧。
