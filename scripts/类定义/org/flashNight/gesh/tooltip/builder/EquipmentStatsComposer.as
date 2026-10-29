@@ -35,9 +35,14 @@ class org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer {
      * @param item:Object 物品数据
      * @param data:Object 合并后的装备数据（来自 TooltipDataSelector）
      * @param equipData:Object 强化/配件数据（可选，upgradeLevel > 1 或有 mods 时提供）
+     * @param nativeOpt:Object 原生注释可选开关（可选；见下方字段说明）
+     *   - omitClipName:Boolean 枪械「使用弹夹」行移交独立弹夹框，简介面板不输出
+     *   - omitCritSlay:Boolean 暴击/斩杀行移入 nativeOpt.critSlay 缓冲区（子注释框）
+     *   - critSlay:Array 输出缓冲区（仅 omitCritSlay 为 true 时使用）
+     *   传 null/undefined 时与旧行为完全一致。
      * @return Array<String> 装备属性 HTML 片段数组
      */
-    public static function compose(baseItem:BaseItem, item:Object, data:Object, equipData:Object):Array {
+    public static function compose(baseItem:BaseItem, item:Object, data:Object, equipData:Object, nativeOpt:Object):Array {
         var result:Array = [];
         var value = baseItem.value ? baseItem.value : 1;
 
@@ -55,15 +60,15 @@ class org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer {
                 break;
             case ItemUseTypes.RIFLE:
             case ItemUseTypes.PISTOL:
-                GunStatsBuilder.build(result, baseItem, item, data, equipData);
+                GunStatsBuilder.build(result, baseItem, item, data, equipData, nativeOpt);
                 break;
         }
 
         // 3. 通用属性块（力量/伤害/精准/闪避/韧性/防御/HP/MP等）
-        CommonStatsBuilder.build(result, baseItem, item, data, equipData);
+        CommonStatsBuilder.build(result, baseItem, item, data, equipData, nativeOpt);
 
-        // 4. 暴击块
-        CriticalBlockBuilder.build(result, baseItem, item, data, equipData);
+        // 4. 暴击块（omitCritSlay 时输出到子框缓冲）
+        CriticalBlockBuilder.build(critSlayTarget(nativeOpt, result), baseItem, item, data, equipData);
 
         // 5. 伤害类型块
         DamageTypeBuilder.build(result, baseItem, item, data, equipData);
@@ -74,6 +79,14 @@ class org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer {
         // 注意：配件列表块已迁移至 TooltipComposer.generateItemDescriptionText（主框体）
         // 这样配件的长行可以在自适应宽度的主框体中显示，不再撑开固定宽度的简介面板
 
+        return result;
+    }
+
+    /** 暴击/斩杀缓冲选择：omitCritSlay 生效且缓冲可用时改写目标数组。 */
+    private static function critSlayTarget(nativeOpt:Object, result:Array):Array {
+        if (nativeOpt != null && nativeOpt.omitCritSlay === true && nativeOpt.critSlay != null) {
+            return nativeOpt.critSlay;
+        }
         return result;
     }
 }

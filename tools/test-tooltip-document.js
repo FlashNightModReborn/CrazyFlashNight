@@ -538,4 +538,155 @@ test('截断上限：超长 run.text 截断不抛', () => {
     assert.strictEqual(doc.truncated, true);
 });
 
+// ── 结构部件：左侧插条 rail ──
+
+test('normalize rail：最多 2 项、相邻去重、非纯文本丢弃', () => {
+    const doc = Doc.normalize({ version: 1, rail: ['长枪', '突击步枪'],
+        sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
+    assert.deepStrictEqual(doc.rail, ['长枪', '突击步枪']);
+
+    const capped = Doc.normalize({ version: 1, rail: ['a', 'b', 'c'],
+        sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
+    assert.deepStrictEqual(capped.rail, ['a', 'b'], '超出 2 项截断');
+
+    const dup = Doc.normalize({ version: 1, rail: ['长枪', '长枪'],
+        sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
+    assert.deepStrictEqual(dup.rail, ['长枪'], '相邻重复去重');
+
+    const dirty = Doc.normalize({ version: 1,
+        rail: ['', '  ', 42, { a: 1 }, 'x'.repeat(25), '正常'],
+        sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
+    assert.deepStrictEqual(dirty.rail, ['正常'],
+        '空白/数字/对象/超 24 字一律丢弃（只收非空字符串）');
+
+    const absent = Doc.normalize({ version: 1, sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
+    assert.deepStrictEqual(absent.rail, [], '缺省 rail 为空数组，旧 payload 形状不变');
+
+    const notArray = Doc.normalize({ version: 1, rail: '长枪',
+        sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
+    assert.deepStrictEqual(notArray.rail, [], '非数组 rail 忽略');
+});
+
+test('rail 不单独构成可渲染内容', () => {
+    assert.strictEqual(Doc.normalize({ version: 1, rail: ['长枪', '突击步枪'] }), null,
+        '只有 rail 无正文应整体拒绝');
+    assert.strictEqual(Doc.normalize({ version: 1, rail: ['长枪'], sections: [] }), null);
+});
+
+test('buildHtml rail：两端宽块 + 中间窄腰 + 收缩计数', () => {
+    const doc = Doc.normalize({ version: 1, rail: ['长枪', '突击步枪'],
+        sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
+    const html = Doc.buildHtml(doc);
+    assert(html.indexOf('flash-tt-rich--rail') >= 0, '有 rail 才挂修饰类（预留左移轨道）');
+    assert(html.indexOf('--tt-rail-chars:6;--tt-rail-blocks:2') >= 0,
+        '总字数 2+4=6、块数 2 交给 CSS 做字号收缩');
+    assert(html.indexOf('flash-tt-rail-waist') >= 0, '两块之间有窄腰');
+    assert(html.indexOf('>长枪<') >= 0 && html.indexOf('>突击步枪<') >= 0);
+    assert(!/flash-tt-rail-block--cap/.test(html), '两块都有文本时不补空帽');
+});
+
+test('buildHtml rail：单文本时另一端补空帽保持轮廓', () => {
+    const doc = Doc.normalize({ version: 1, rail: ['长枪'],
+        sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
+    const html = Doc.buildHtml(doc);
+    assert(html.indexOf('--tt-rail-chars:2;--tt-rail-blocks:2') >= 0,
+        '空帽计入块数但不计入字数');
+    assert(html.indexOf('flash-tt-rail-block--cap') >= 0, '缺文本的一端为空帽');
+});
+
+test('buildHtml 无 rail：不产轨道也不改修饰类', () => {
+    const html = Doc.buildHtml(FULL_DOC);
+    assert(!/flash-tt-rail/.test(html), '无 rail 不得出现轨道节点');
+    assert(html.indexOf('flash-tt-rich--rail') < 0, '无 rail 保持 legacy 盒模型');
+});
+
+test('buildHtml rail：文本按字面转义，不产生真实标签', () => {
+    const doc = Doc.normalize({ version: 1, rail: ['<zz onerror=a>'],
+        sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
+    const html = Doc.buildHtml(doc);
+    assert(html.indexOf('--tt-rail-chars:14') >= 0, '注入串应作为 rail 文本进入轨道');
+    assert(html.indexOf('<zz') < 0, 'rail 文本不得成为真实标签');
+    assert(html.indexOf('&lt;zz onerror=a&gt;') >= 0, '转义后按字面显示');
+});
+
+// ── 结构部件：弹夹独立行 ──
+
+test('normalize magazine：名称必需，图标可选', () => {
+    const full = Doc.normalize({ version: 1, magazine: { name: '11 号弹夹', icon: '突击步枪通用弹药' },
+        sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
+    assert.deepStrictEqual(full.magazine, { name: '11 号弹夹', icon: '突击步枪通用弹药' });
+
+    const nameOnly = Doc.normalize({ version: 1, magazine: { name: '弹夹' },
+        sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
+    assert.strictEqual(nameOnly.magazine.icon, null, '缺图标记为 null，行仍成立');
+
+    for (const bad of [null, undefined, {}, { name: '  ' }, { icon: '只有图标' }, { name: 42 }]) {
+        const d = Doc.normalize({ version: 1, magazine: bad,
+            sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
+        assert.strictEqual(d.magazine, null, '无效 magazine 归 null: ' + JSON.stringify(bad));
+    }
+    assert.strictEqual(Doc.normalize({ version: 1, magazine: { name: 'x'.repeat(65) },
+        sections: [{ role: 'intro', runs: [{ text: 'x' }] }] }).magazine, null,
+        '超 64 字弹夹名整块丢弃');
+});
+
+test('magazine 不单独构成可渲染内容', () => {
+    assert.strictEqual(Doc.normalize({ version: 1, magazine: { name: '弹夹' } }), null);
+});
+
+test('buildHtml magazine：白线行内只有图标位与名称，不含标签文字', () => {
+    const doc = Doc.normalize({ version: 1, magazine: { name: '11 号 4.7mm 无壳弹弹夹', icon: '弹药' },
+        sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
+    const html = Doc.buildHtml(doc);
+    assert(html.indexOf('flash-tt-mag ntt-mag') >= 0, '弹夹行挂在 intro 面板内');
+    assert(html.indexOf('flash-tt-mag-icon') >= 0 && html.indexOf('flash-tt-mag-name') >= 0);
+    assert(html.indexOf('11 号 4.7mm 无壳弹弹夹') >= 0, '名称紧跟图标之后');
+    assert(html.indexOf('使用弹夹') < 0, '标签字符由数据侧不再下发');
+    assert(html.indexOf('flash-tt-mag') < html.indexOf('11 号'), '图标位排在名称之前');
+});
+
+test('buildHtml 无 magazine：不产弹夹行', () => {
+    assert(Doc.buildHtml(FULL_DOC).indexOf('flash-tt-mag') < 0);
+});
+
+// ── 子注释框淡入算法 ──
+
+test('fadeMsForSub：子框严格慢于主组且逐层递增', () => {
+    assert.strictEqual(Doc.FADE_MAIN_MS, 500, '主组淡入 = 用户口径 0.5s');
+    const d1 = Doc.fadeMsForSub(1), d2 = Doc.fadeMsForSub(2), d3 = Doc.fadeMsForSub(3);
+    assert(d1 > Doc.FADE_MAIN_MS, '第一个子框也慢于主组');
+    assert(d1 < d2 && d2 < d3, '越靠下的子框越慢');
+    assert.strictEqual(d1, 675);
+    assert.strictEqual(d2, 750);
+    assert.strictEqual(d3, 825);
+});
+
+test('buildHtml：每个 role:"sub" 段独立成框并携带自己的淡入时长', () => {
+    const doc = Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: [{ text: 'x' }] },
+        { role: 'sub', runs: [{ text: '插件' }] },
+        { role: 'sub', runs: [{ text: '战技' }] },
+        { role: 'sub', runs: [{ text: '暴击斩杀' }] }
+    ] });
+    const html = Doc.buildHtml(doc);
+    const boxes = html.match(/flash-tt-sub-panel/g) || [];
+    assert.strictEqual(boxes.length, 3, '每个 sub 段一个独立子框');
+    assert(html.indexOf('--tt-fade-ms:675') >= 0, '第 1 框 675ms');
+    assert(html.indexOf('--tt-fade-ms:750') >= 0, '第 2 框 750ms');
+    assert(html.indexOf('--tt-fade-ms:825') >= 0, '第 3 框 825ms');
+    assert(html.indexOf('--tt-fade-ms:500') < 0, '主组时长走 CSS 默认 token，不逐层内联');
+    // 顺序：主框体在前，子框按文档序排在后面
+    assert(html.indexOf('flash-tt-sub-panel') > html.indexOf('flash-tt-intro-panel'),
+        '子框排在主框体之后');
+});
+
+test('describe：诊断串含 rail 与 magazine 身份', () => {
+    const doc = Doc.normalize({ version: 1, rail: ['长枪', '突击步枪'],
+        magazine: { name: '11 号弹夹' },
+        sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
+    const s = Doc.describe(doc);
+    assert(s.indexOf('rail=2') >= 0, 'rail 块数进诊断：' + s);
+    assert(s.indexOf('11 号弹夹') >= 0, '弹夹名进诊断：' + s);
+});
+
 console.log('\n' + passed + ' tests passed');

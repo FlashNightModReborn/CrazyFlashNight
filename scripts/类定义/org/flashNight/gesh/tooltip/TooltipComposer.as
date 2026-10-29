@@ -80,6 +80,19 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    * @return String 拼装后的 HTML 字符串
    */
   public static function generateItemDescriptionText(item:Object, baseItem:BaseItem):String {
+    return generateItemDescriptionTextEx(item, baseItem, null);
+  }
+
+  /**
+   * 与 generateItemDescriptionText 同源的单遍拼装，把「已安装插件」「战技/副武器」
+   * 「额外功能（生命周期如夜视/变形/喷气背包、灯光）」各自拆成独立子注释框块
+   * 按序写入 subBlocks（空内容不入框）。
+   * subBlocks 传 null 时行为与旧方法完全一致（全部内联进描述体）。
+   * 拆出后主描述体不再含这三块；回退旧 Flash 渲染请把 subBlocks 一并接回，
+   * 或改用 generateItemDescriptionText 全文，避免丢内容。
+   */
+  public static function generateItemDescriptionTextEx(item:Object, baseItem:BaseItem,
+      subBlocks:Array):String {
     var buffer:Array = [];
     var itemName = item.name;
 
@@ -96,6 +109,7 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       var skillToDisplay:Object = item.skill;
       var subweaponToDisplay:Object = item.subweapon;
       var lightingItem:Object = item;
+      var lightingMods:Array = null;
       if(baseItem && baseItem.getData != undefined) {
         var calculatedData:Object = baseItem.getData();
         if(calculatedData) lightingItem = calculatedData;
@@ -106,23 +120,25 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
           subweaponToDisplay = calculatedData.subweapon;
         }
       }
+      if(baseItem && baseItem.value) lightingMods = baseItem.value.mods;
 
-      if(subweaponToDisplay) {
-        append(buffer, TooltipTextBuilder.buildSubweaponInfo(subweaponToDisplay));
-      } else {
-        append(buffer, TooltipTextBuilder.buildSkillInfo(skillToDisplay));
-      }
+      // 战技/副武器：独立子框（旧路径内联）
+      pushSub(buffer, subBlocks, subweaponToDisplay
+        ? TooltipTextBuilder.buildSubweaponInfo(subweaponToDisplay)
+        : TooltipTextBuilder.buildSkillInfo(skillToDisplay));
 
-      // 配件列表放在主框体（描述区），而非简介面板：
-      // 主框体宽度自适应，可容纳长行；简介面板宽度有限（~200px），配件行在其中反复换行严重影响可读性。
+      // 已安装插件：独立子框
       if(baseItem) {
         var modsBuffer:Array = [];
         ModsBlockBuilder.build(modsBuffer, baseItem, item, baseItem.value);
-        append(buffer, modsBuffer);
+        pushSub(buffer, subBlocks, modsBuffer);
       }
 
-      append(buffer, TooltipTextBuilder.buildLifecycleInfo(item.lifecyle));
-      append(buffer, EquipmentLightingInfoBuilder.build(lightingItem,baseItem.value.mods,false));
+      // 额外功能（生命周期 + 灯光）：独立子框
+      var featBuffer:Array = [];
+      append(featBuffer, TooltipTextBuilder.buildLifecycleInfo(item.lifecyle));
+      append(featBuffer, EquipmentLightingInfoBuilder.build(lightingItem, lightingMods, false));
+      pushSub(buffer, subBlocks, featBuffer);
 
       // 升阶路线（装备专属，三段全空时不输出区块）
       append(buffer, TooltipTextBuilder.buildUpgradePath(item, baseItem));
@@ -132,6 +148,77 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
     append(buffer, TooltipTextBuilder.buildObtainMethods(itemName));
 
     return buffer.join("");
+  }
+
+  /**
+   * 子注释框块的分流：有 subBlocks 时成框（空块不入），否则内联进主描述体。
+   */
+  private static function pushSub(buffer:Array, subBlocks:Array, block:Array):Void {
+    if (block == null || block.length == 0) return;
+    if (subBlocks != null) {
+      subBlocks.push(block.join(""));
+      return;
+    }
+    append(buffer, block);
+  }
+
+  // ──────────────── 原生注释专属取数 ────────────────
+
+  /**
+   * 左侧插条（rail）文本：竖排的武器大类/子类，如 ["长枪","突击步枪"]。
+   *
+   * 仅武器产出（非武器返回 null，简介面板保留原类型行不丢信息）。
+   * 计算后数据（进阶/涂装覆盖）优先，缺省时回落 item 原始字段。
+   * 输出数组首项为插条上块、次项为下块；只有大类时长度为 1。
+   */
+  public static function getRailText(item:Object, baseItem:BaseItem):Array {
+    if (item == null || String(item.type) != "武器") return null;
+    var top = item.use;
+    var bottom = item.weapontype;
+    if (baseItem != null && baseItem.getData != undefined) {
+      var calc:Object = baseItem.getData();
+      if (calc != null) {
+        if (calc.use !== undefined && calc.use != "") top = calc.use;
+        if (calc.weapontype !== undefined && calc.weapontype != "") bottom = calc.weapontype;
+      }
+    }
+    var rail:Array = [];
+    if (top != null && top != "") rail.push(String(top));
+    if (bottom != null && bottom != "") {
+      var bottomText:String = String(bottom);
+      if (rail.length == 0 || rail[0] != bottomText) rail.push(bottomText);
+    }
+    return rail.length > 0 ? rail : null;
+  }
+
+  /**
+   * 枪械弹夹信息：{name:显示名, icon:图标资产键}，无弹夹/非枪械/数据缺失返回 null。
+   *
+   * clipname 取值链与 buildEquipmentStats 一致：基础合并数据优先，
+   * 强化或带插件时用计算后数据覆盖。图标键供消费端绘制，
+   * 该图标不再产生注释（避免弹夹框嵌套）。
+   */
+  public static function getMagazineInfo(baseItem:BaseItem, item:Object, externalValue:Object):Object {
+    if (item == null || !ItemUseTypes.isGun(item.use)) return null;
+    var value = baseItem && baseItem.value ? baseItem.value : (externalValue ? externalValue : 1);
+    var upgradeLevel = value.level ? value.level : 1;
+
+    var data:Object = TooltipDataSelector.getEquipmentData(item, value.tier);
+    if (data == null) return null;
+    var clipName = data.clipname;
+    if (baseItem != null && baseItem.getData != undefined && (upgradeLevel > 1 || value.mods)) {
+      var equipData:Object = baseItem.getData().data;
+      if (equipData != null && equipData.clipname !== undefined) clipName = equipData.clipname;
+    }
+    if (clipName == null || clipName == "") return null;
+
+    var clipData:Object = ItemUtil.getItemData(clipName);
+    if (clipData == null) return null;
+    var displayName = clipData.displayname;
+    if (displayName == undefined || displayName == "") displayName = clipName;
+    var out:Object = {name: String(displayName)};
+    if (clipData.icon != undefined && clipData.icon != "") out.icon = String(clipData.icon);
+    return out;
   }
 
   // ──────────────── 简介面板拼装 ────────────────
@@ -144,13 +231,15 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    * @param item:Object 物品数据对象
    * @param value:Object 数值对象（包含 tier、level 等）
    * @param upgradeLevel:Number 强化等级（默认从 value.level 获取，最小值 1）
+   * @param nativeOpt:Object 原生注释可选开关（rail 已承载类型行 / 弹夹独立框 /
+   *   暴击斩杀移入子框）；传 null 时与旧行为一致
    * @return String 拼装后的 HTML 字符串
    */
-  public static function generateIntroPanelContent(baseItem:BaseItem, item:Object, value:Object):String {
+  public static function generateIntroPanelContent(baseItem:BaseItem, item:Object, value:Object, nativeOpt:Object):String {
     var buffer:Array = [];
 
-    append(buffer, TooltipTextBuilder.buildIntroHeader(baseItem, item, value));
-    append(buffer, TooltipTextBuilder.buildStats(baseItem, item, value));
+    append(buffer, TooltipTextBuilder.buildIntroHeader(baseItem, item, value, nativeOpt));
+    append(buffer, TooltipTextBuilder.buildStats(baseItem, item, value, nativeOpt));
 
     // 如果是装备，显示固有标签和禁止标签信息
     if(item.type === "武器" || item.type === "防具"){

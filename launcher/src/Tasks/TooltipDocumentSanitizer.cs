@@ -47,6 +47,10 @@ namespace CF7Launcher.Tasks
         internal const int MaxIconNameChars = 256;
         internal const int MaxProfileChars = 16;
         internal const int MaxFontFaceChars = 64;
+        // 结构部件上界：插条最多 2 段竖排文本、弹夹名单行有界
+        internal const int MaxRailTexts = 2;
+        internal const int MaxRailTextChars = 24;
+        internal const int MaxMagazineNameChars = 64;
 
         /// <summary>
         /// 与 HasExactKeys 相同的严格白名单，但额外容忍至多一个 "document" 键
@@ -182,6 +186,46 @@ namespace CF7Launcher.Tasks
                 if (emittedSections.Count > 0) output["sections"] = emittedSections;
             }
 
+            // rail/magazine：可选结构部件白名单转发。二者都不参与 hasContent 判定
+            // （只有插条/弹夹而无正文的文档不成立）。
+            JArray railNode = node["rail"] as JArray;
+            if (railNode != null)
+            {
+                var cleanRail = new JArray();
+                foreach (JToken item in railNode)
+                {
+                    if (cleanRail.Count >= MaxRailTexts) break;
+                    string text = ReadPlainText(item, MaxRailTextChars);
+                    if (string.IsNullOrWhiteSpace(text)) continue;
+                    bool duplicate = false;
+                    foreach (JToken kept in cleanRail)
+                    {
+                        if (string.Equals((string)kept, text, StringComparison.Ordinal))
+                        {
+                            duplicate = true;
+                            break;
+                        }
+                    }
+                    if (duplicate) continue;
+                    cleanRail.Add(text);
+                }
+                if (cleanRail.Count > 0) output["rail"] = cleanRail;
+            }
+
+            JObject magazineNode = node["magazine"] as JObject;
+            if (magazineNode != null)
+            {
+                string magazineName = ReadPlainText(magazineNode["name"], MaxMagazineNameChars);
+                if (!string.IsNullOrWhiteSpace(magazineName))
+                {
+                    var cleanMagazine = new JObject { ["name"] = magazineName };
+                    string magazineIcon = ReadPlainText(magazineNode["icon"], MaxIconNameChars);
+                    if (!string.IsNullOrEmpty(magazineIcon))
+                        cleanMagazine["icon"] = magazineIcon;
+                    output["magazine"] = cleanMagazine;
+                }
+            }
+
             if (!hasContent) return false;
             sanitized = output;
             return true;
@@ -295,7 +339,7 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
-        /// <summary>未知/缺失 role 一律归入 "body"（不丢弃内容）；已知值归一化为小写。</summary>
+        /// <summary>已知 role 归一化为小写（intro/description/body/sub）；未知/缺失归入 "body"（不丢弃内容）。</summary>
         private static string NormalizeRole(JToken token)
         {
             if (token != null && token.Type == JTokenType.String)
@@ -305,6 +349,10 @@ namespace CF7Launcher.Tasks
                     return "intro";
                 if (string.Equals(role, "description", StringComparison.OrdinalIgnoreCase))
                     return "description";
+                // sub = 主面板下方独立子注释框；旧消费端（不认识该 role 的 Web）
+                // 由各自的 role switch 落回 body 内联，内容不丢。
+                if (string.Equals(role, "sub", StringComparison.OrdinalIgnoreCase))
+                    return "sub";
             }
             return "body";
         }

@@ -177,6 +177,7 @@ public sealed class PlayerHudUsabilityTests
             packet["groups"]["buffs"] = new JArray(packet["groups"]["buffs"][1], Buff("other"));
             controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(packet));
             Assert.Equal(2, controller.State.Snapshot.BuffCards.Length);
+            tooltip.Widget.Tick(2000); // 注释淡出窗口走完后才真正结束会话
             Assert.Null(tooltip.Widget.ActiveDocument); Assert.True(widget.TryHitTest(At(1)));
             Assert.Empty(sent);
         });

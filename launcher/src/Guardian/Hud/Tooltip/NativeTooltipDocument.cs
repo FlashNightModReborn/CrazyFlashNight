@@ -26,7 +26,10 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         /// <summary>描述段：分栏时的右栏正文；merge 时拼入 intro 末尾。</summary>
         Description,
         /// <summary>正文段：与 description 同栏追加，顺序保留。</summary>
-        Body
+        Body,
+        /// <summary>子注释框段：主面板下方独立堆叠小框（已安装插件/额外功能）；
+        /// 布局不支持时（plain/pinned）按 Body 内联，不丢内容。</summary>
+        Sub
     }
 
     /// <summary>
@@ -103,6 +106,25 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
     }
 
     /// <summary>
+    /// 左侧插条部件（document.rail）：武器大类/子类的竖排白底标签，贴在图标左侧外沿。
+    /// Texts 为已裁剪的纯文本（最多 2 项：首项上块、次项下块）。
+    /// </summary>
+    public sealed class NativeTooltipRail
+    {
+        public List<string> Texts = new List<string>();
+    }
+
+    /// <summary>
+    /// 弹夹部件（document.magazine）：从枪械「使用弹夹」行拆出的独立小框内容。
+    /// IconName 仅供绘制，消费端不得为其再生成注释（避免弹夹框嵌套）。
+    /// </summary>
+    public sealed class NativeTooltipMagazine
+    {
+        public string Name;
+        public string IconName;
+    }
+
+    /// <summary>
     /// COMMON 桥协议 v1 的 tooltip document（受限语义文档）。
     ///
     /// 线格式：
@@ -130,6 +152,10 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         public string LayoutType { get; private set; }
         public NativeTooltipIcon Icon { get; private set; }
         public List<NativeTooltipSection> Sections { get; private set; }
+        /// <summary>左侧竖排插条（大类/子类）。无 rail 键时为 null。</summary>
+        public NativeTooltipRail Rail { get; private set; }
+        /// <summary>弹夹独立框内容。无 magazine 键时为 null。</summary>
+        public NativeTooltipMagazine Magazine { get; private set; }
 
         // 桥身份（payload 层）
         public string RequestId { get; private set; }
@@ -325,6 +351,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     Icon = new NativeTooltipIcon { Kind = ReadString(iconNode, "kind") ?? "item", Name = name };
             }
 
+            ParseRail(node["rail"]);
+            ParseMagazine(node["magazine"]);
+
             Sections = new List<NativeTooltipSection>();
             JArray sections = node["sections"] as JArray;
             if (sections != null)
@@ -379,6 +408,57 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
             if (!HasContent) { error = "document has no renderable content"; return false; }
             return true;
+        }
+
+        /// <summary>
+        /// rail 键：字符串数组（也容忍单字符串）。只保留非空纯文本，最多 2 项、
+        /// 每项 24 字符；超限或类型异常一律丢弃该键（正文不受影响）。
+        /// </summary>
+        private void ParseRail(JToken railNode)
+        {
+            if (railNode == null || railNode.Type == JTokenType.Null) return;
+            List<string> texts = new List<string>();
+            if (railNode.Type == JTokenType.Array)
+            {
+                foreach (JToken t in railNode)
+                {
+                    if (texts.Count >= 2) break;
+                    AddRailText(texts, t);
+                }
+            }
+            else AddRailText(texts, railNode);
+            if (texts.Count > 0) Rail = new NativeTooltipRail { Texts = texts };
+        }
+
+        private static void AddRailText(List<string> texts, JToken token)
+        {
+            if (token == null || token.Type == JTokenType.Null) return;
+            if (token.Type != JTokenType.String) return;
+            string s = token.Value<string>();
+            if (s == null) return;
+            s = s.Trim();
+            if (s.Length == 0) return;
+            if (s.Length > 24) s = s.Substring(0, 24);
+            texts.Add(s);
+        }
+
+        /// <summary>magazine 键：{name, icon}；name 缺失即整键丢弃。</summary>
+        private void ParseMagazine(JToken magNode)
+        {
+            JObject obj = magNode as JObject;
+            if (obj == null) return;
+            string name = ReadString(obj, "name");
+            if (name == null) return;
+            name = name.Trim();
+            if (name.Length == 0) return;
+            if (name.Length > 64) name = name.Substring(0, 64);
+            string icon = ReadString(obj, "icon");
+            if (icon != null)
+            {
+                icon = icon.Trim();
+                if (icon.Length == 0 || icon.Length > 128) icon = null;
+            }
+            Magazine = new NativeTooltipMagazine { Name = name, IconName = icon };
         }
 
         // ── JSON 读取助手（容错，不抛） ──
@@ -556,6 +636,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         {
             if (string.Equals(role, "intro", StringComparison.OrdinalIgnoreCase)) return NativeTooltipSectionRole.Intro;
             if (string.Equals(role, "description", StringComparison.OrdinalIgnoreCase)) return NativeTooltipSectionRole.Description;
+            if (string.Equals(role, "sub", StringComparison.OrdinalIgnoreCase)) return NativeTooltipSectionRole.Sub;
             return NativeTooltipSectionRole.Body;
         }
     }

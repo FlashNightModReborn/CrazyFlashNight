@@ -19,12 +19,15 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
     ///   场景切换 / 断线 / panel suspend / task reset → Reset()。
     ///
     /// 视觉权威 = 迁移前 Web（launcher/web/modules/tooltip.js +
-    /// css/panels/foundation-*.css 的 .flash-tt-* / --tt-* token）：
-    /// 灰渐变面板 rgba(153,153,153,.8)→rgba(51,51,51,.8)、无边框无阴影、
-    /// icon overlay 混合、12px YaHei、行高 1.25、scale=clientH/864。
+    /// css/panels/foundation-*.css 的 .flash-tt-* / --tt-* token）；
+    /// 2026-10 改版（用户口径，对齐卡牌项目注释框）：面板底 = 半透明黑 80%
+    /// + 1px 白描边、icon 普通混合、role:"sub" 段渲染为主面板下方堆叠子框，
+    /// Web --tt-grad-top/--tt-grad-bot/--tt-border/--tt-icon-blend 同步。
+    /// 12px YaHei、行高 1.25、scale=clientH/864 不变。
     /// NPC 菜单等其他 HUD 不在本类范围，仍可用 NativeHud 风格。
     ///
-    /// 静止不逐帧：WantsAnimationTick 恒 false；鼠标移动合并为一次定位，位置未变不重绘。
+    /// 淡入淡出期间（0.5s）才索取 16ms tick，到位即停；其余时刻静止不逐帧：
+    /// 鼠标移动合并为一次定位，位置未变不重绘。
     /// 命中策略：pinned 在框内参与命中（× 关闭）；simple/dense 恒不命中。
     /// 滚轮：实现 INativeHudWheelConsumer——pinned 框内消费并滚动（未滚也消费，
     /// 防穿透到游戏缩放）；simple/dense 不消费（不阻断下层输入）。host 若需 dense
@@ -55,17 +58,34 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         private const float PinnedCloseFontBase = 16f;
 
         // ---- Web 视觉 token（--tt-*，迁移前基线值）----
-        private static readonly Color GradTop = Color.FromArgb(204, 153, 153, 153);  // rgba(153,153,153,.8)
-        private static readonly Color GradBot = Color.FromArgb(204, 51, 51, 51);     // rgba(51,51,51,.8)
+        // 2026-10 视觉合同改版（对齐卡牌项目注释框口径）：面板底 = 半透明黑 80%，
+        // 描边 = 1px 白；Web 端 --tt-grad-top/--tt-grad-bot/--tt-border 同步改。
+        private static readonly Color PanelBg = Color.FromArgb(204, 0, 0, 0);        // rgba(0,0,0,.8)
+        private static readonly Color PanelBorder = Color.FromArgb(255, 255, 255);   // #fff 1px
         private static readonly Color TextDefault = Color.White;                     // --tt-text
         private static readonly Color Divider = Color.FromArgb(51, 255, 255, 255);   // rgba(255,255,255,.20)
-        private static readonly Color ScrollTrack = Color.FromArgb(189, 11, 17, 21); // mix(#0b1115,74%,transparent)
-        private static readonly Color ScrollThumb = Color.FromArgb(226, 141, 141, 141);   // mix(#fff 44%,#333)
-        private static readonly Color ScrollThumbBorder = Color.FromArgb(212, 84, 84, 84);// mix(#fff 16%,#333)
+        // 2026-10 改版后 --tt-grad-* 落黑，滚动条皮肤/检视壳的混色基色随之重算
+        // （Web 端这些 token 直接引用 --tt-grad-bot，会自动变黑；此处展开同值）。
+        private static readonly Color ScrollTrack = Color.FromArgb(189, 0, 0, 0); // mix(黑,74%,transparent)
+        private static readonly Color ScrollThumb = Color.FromArgb(226, 112, 112, 112);   // mix(#fff 44%,黑)
+        private static readonly Color ScrollThumbBorder = Color.FromArgb(212, 41, 41, 41);// mix(#fff 16%,黑)
+
+        // 2026-10 二轮改版新增：
+        //   插条文字用 UI 现成的思源宋体（web.workbench.title 同源 face），
+        //   黑字 85% 不透明度；淡入淡出走 16ms 动画 tick（见 WantsAnimationTick）。
+        private const string RailFontRole = "web.workbench.title";
+        private static readonly Color RailFill = Color.FromArgb(255, 255, 255);   // 白色条体
+        private static readonly Color RailText = Color.FromArgb(217, 0, 0, 0);    // 黑字 85%
+
+        // ---- 淡入淡出（用户口径：整体 0.5s；子框淡入更慢，但必须与主框同时消失）----
+        private const int FadeInMs = 500;             // 主框（含插条/弹夹行）淡入
+        private const int FadeOutMs = 500;            // 统一淡出窗口
+        private const float SubRevealFactor = 1.35f;  // 首个子框淡入时长 = 主框 ×1.35
+        private const float SubRevealStep = 0.15f;    // 每多一个子框再慢 15%
 
         // pinned shell 视觉（color-mix 展开，底 #0b1115）
-        private static readonly Color ShellGradTop = Color.FromArgb(244, 42, 47, 50);  // mix(gradTop 22%,track)
-        private static readonly Color ShellGradBot = Color.FromArgb(235, 27, 31, 33);  // mix(gradBot 40%,track)
+        private static readonly Color ShellGradTop = Color.FromArgb(244, 9, 13, 16);   // mix(黑 22%,track)
+        private static readonly Color ShellGradBot = Color.FromArgb(235, 7, 10, 13);   // mix(黑 40%,track)
         private static readonly Color ShellBorder = Color.FromArgb(82, 255, 255, 255); // mix(text 32%)
         private static readonly Color ShellShadow = Color.FromArgb(122, 11, 17, 21);   // mix(track 48%)
         private static readonly Color HeaderBg = Color.FromArgb(97, 11, 17, 21);       // mix(track 38%)
@@ -76,10 +96,10 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         private static readonly Color CloseBg = Color.FromArgb(15, 255, 255, 255);     // mix(text 6%)
         private static readonly Color IconPlaceholderBg = Color.FromArgb(8, 255, 255, 255); // rgba(255,255,255,.03)
 
-        // dense 检视状态条（tokens.css --wb-semantic-*；--tt-status-bg #1b2328）
+        // dense 检视状态条（tokens.css --wb-semantic-*；--tt-status-bg 随 grad-bot 落黑）
         private static readonly Color InspPending = Color.FromArgb(255, 229, 166, 77); // #e5a64d warning
         private static readonly Color InspAccept = Color.FromArgb(255, 120, 188, 115); // #78bc73 success
-        private static readonly Color InspStatusBg = Color.FromArgb(255, 27, 35, 40);  // --tt-status-bg
+        private static readonly Color InspStatusBg = Color.FromArgb(255, 7, 10, 13);  // --tt-status-bg（黑底）
         private const int InspDelayMs = 1000;             // --wb-motion-busy = 默认检视停顿时长
 
         private readonly Control _anchor;
@@ -129,9 +149,20 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         private Bitmap _measureBmp;
         private Graphics _measureG;
 
-        // icon overlay 混合缓存：单条目 LRU（同 icon+同面板高 重复 paint 复用）
+        // icon 缩放缓存：单条目 LRU（同 icon+同尺寸 重复 paint 复用）
         private Bitmap _blendCache;
         private string _blendCacheKey;
+        // 弹夹小图标独立单条目缓存：与大图标共用一个槽会互相逐出（每帧两次重建）
+        private Bitmap _magCache;
+        private string _magCacheKey;
+
+        // ---- 淡入淡出状态机（0=静止/完全不透明，1=淡入，2=淡出）----
+        private int _fadePhase;
+        private int _fadeElapsedMs;
+        private int _fadeElements;
+        private float[] _fadeFrom;
+        /// <summary>当前绘制组的 alpha（0..1）；Paint 逐组设置，绘制原语按它缩放颜色。</summary>
+        private float _paintAlpha = 1f;
 
         internal event Action PointerMoved;
         public event EventHandler BoundsOrVisibilityChanged;
@@ -198,11 +229,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         {
             get
             {
+                // 淡出中的会话已经结束：不再向 controller 提供 owner 命中区，
+                // 否则滚轮会在看不见的框上继续被消费（host 仲裁据此判定）。
+                if (_fadePhase == 2) return null;
                 if (_ownerBounds.HasValue) return _ownerBounds;
                 // AS2 hover 会话由 requestId + hide 管理，旧入口未提供槽位矩形。
                 // 必须把同一客户区兜底暴露给 controller；只在 widget 的直接
                 // TryScrollAt 路径兜底会让真实 hook 仲裁永远因 null 拒绝滚轮。
-                if (_doc == null || _anchor.IsDisposed) return null;
+                if (_doc == null || _anchor.IsDisposed || _fadePhase == 2) return null;
                 if (_doc.AnchorRect.HasValue && !_placementAnchorRect.IsEmpty) return _placementAnchorRect;
                 Rectangle bounds = AnchorScreenClientRect();
                 return bounds.Width > 0 && bounds.Height > 0 ? bounds : (Rectangle?)null;
@@ -239,6 +273,10 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             _lockedSide = sameInstance ? _lockedSide : null;
 
             EnsureLayout(true);
+            // 新会话从 0 淡入；同实例刷新（revision/内容变化）不再重播动画，
+            // 若正在淡出则直接回到完全不透明，避免连续 hover 闪烁。
+            if (!sameInstance) BeginReveal();
+            else if (_fadePhase != 0) { _fadePhase = 0; _fadeFrom = null; RaiseAnimationState(); }
             FireBounds();
             FireRepaint();
             return true;
@@ -247,6 +285,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         /// <summary>物理鼠标观察入口：不消费输入；同一帧仅处理最新坐标。</summary>
         internal void QueuePointerMove(int screenX, int screenY)
         {
+            if (_fadePhase == 2) return;
             if (!Visible || _doc.Profile == NativeTooltipProfile.Pinned) return;
             _pendingPointer = new Point(screenX, screenY);
             _pendingPointerRequest = _doc.RequestId;
@@ -256,6 +295,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         internal void FlushPointerMove()
         {
             _pointerMoveTimer.Stop();
+            if (_fadePhase == 2) return;
             string request = _pendingPointerRequest;
             _pendingPointerRequest = null;
             if (!Visible || !string.Equals(request, _doc.RequestId, StringComparison.Ordinal)
@@ -286,12 +326,13 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             _pendingPointerRequest = null;
         }
 
-        /// <summary>仅清 requestId 精确匹配的当前实例；不匹配返回 false 不动显示。</summary>
+        /// <summary>仅清 requestId 精确匹配的当前实例；不匹配返回 false 不动显示。
+        /// 命中后不立即消失，而是进入共享淡出窗口（动画期间仍保持 Visible 供合成）。</summary>
         public bool Hide(string requestId)
         {
             if (_doc == null || requestId == null) return false;
             if (!string.Equals(_doc.RequestId, requestId, StringComparison.Ordinal)) return false;
-            Clear();
+            if (_fadePhase != 2) BeginFadeOut();
             return true;
         }
 
@@ -312,6 +353,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         /// </summary>
         public void SetInspectionState(string state, int remainingMs)
         {
+            if (_fadePhase == 2) return;   // 淡出中的框不再重排/重绘，尺寸动画中途改形会跳
             string s = state == NativeTooltipLayout.InspStatePending
                 || state == NativeTooltipLayout.InspStateInspect
                 || state == "scan" ? state : "idle";
@@ -343,7 +385,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         /// </summary>
         public bool TryScrollAt(Point screenPt, int wheelDelta)
         {
-            if (_doc == null || _plan == null) return false;
+            if (_doc == null || _plan == null || _fadePhase == 2) return false;
             if (_doc.Profile == NativeTooltipProfile.Pinned)
             {
                 if (!_placedRect.Contains(screenPt)) return false;
@@ -375,7 +417,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         /// </summary>
         public bool OnMouseWheel(Point screenPt, int wheelDelta)
         {
-            if (_doc == null || _plan == null) return false;
+            if (_doc == null || _plan == null || _fadePhase == 2) return false;
             if (_doc.Profile == NativeTooltipProfile.Pinned)
             {
                 if (!_placedRect.Contains(screenPt)) return false;
@@ -423,9 +465,24 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
         public bool Visible { get { return _doc != null && _plan != null; } }
 
-        public bool WantsAnimationTick { get { return false; } }
+        /// <summary>仅淡入/淡出期间索取 16ms tick，静止后立刻交还给 host 停表。</summary>
+        public bool WantsAnimationTick { get { return _fadePhase != 0; } }
 
-        public void Tick(int deltaMs) { }
+        public void Tick(int deltaMs)
+        {
+            if (_fadePhase == 0) return;
+            _fadeElapsedMs += deltaMs > 0 ? deltaMs : 0;
+            if (_fadePhase == 2)
+            {
+                if (_fadeElapsedMs >= FadeOutMs) Clear(); // 归零：真正清会话并停表
+                else FireRepaint();
+                return;
+            }
+            bool done = _fadeElapsedMs >= LastRevealMs();
+            if (done) { _fadePhase = 0; _fadeElapsedMs = 0; }
+            FireRepaint();
+            if (done) RaiseAnimationState();
+        }
 
         public void Paint(Graphics g, float dpr, Point hudOrigin)
         {
@@ -444,16 +501,20 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             {
                 g.TextRenderingHint = TextRenderingHint.AntiAliasGridFit;
                 g.SmoothingMode = SmoothingMode.None;
-
-                if (plan.Pinned) PaintPinned(g, plan, ox, oy, scale);
-                else PaintFloating(g, plan, ox, oy, scale);
+                // 主框组（intro/desc/icon/插条/弹夹行/检视条）共用元素 0 的透明度
+                _paintAlpha = AlphaFor(0);
+                if (_paintAlpha > 0f)
+                {
+                    if (plan.Pinned) PaintPinned(g, plan, ox, oy, scale);
+                    else PaintFloating(g, plan, ox, oy, scale);
+                }
             }
-            finally { g.Restore(state); }
+            finally { g.Restore(state); _paintAlpha = 1f; }
         }
 
         public bool TryHitTest(Point screenPt)
         {
-            if (!Visible) return false;
+            if (!Visible || _fadePhase == 2) return false;
             // 仅 pinned 参与命中；simple/dense 不吃任何鼠标（浮层不阻断游戏/面板输入）。
             if (_doc == null || _doc.Profile != NativeTooltipProfile.Pinned) return false;
             return _placedRect.Contains(screenPt);
@@ -468,7 +529,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
         public void OnMouseEvent(MouseEventArgs e, MouseEventKind kind)
         {
-            if (_doc == null || _plan == null || _doc.Profile != NativeTooltipProfile.Pinned) return;
+            if (_doc == null || _plan == null || _fadePhase == 2
+                || _doc.Profile != NativeTooltipProfile.Pinned) return;
             Point local = new Point(e.X - _placedRect.X, e.Y - _placedRect.Y);
             bool inClose = CloseHit(local);
             switch (kind)
@@ -514,8 +576,12 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 DrawGradientPanel(g, Offset(plan.DescPanel, ox, oy));
 
             if (!plan.IconRect.IsEmpty)
-                DrawIcon(g, Offset(plan.IconRect, ox, oy), plan.IconName,
-                    Offset(plan.IntroPanel, ox, oy));
+                DrawIcon(g, Offset(plan.IconRect, ox, oy), plan.IconName);
+
+            // 左侧插条（图标左外侧的白色"内存条"竖条，竖排大类/子类）
+            if (plan.RailBlocks.Count > 0) PaintRail(g, plan, ox, oy);
+            // 弹夹独立行（intro 面板内，白线分隔，小图标 + 名称）
+            if (!plan.MagazineRow.IsEmpty) PaintMagazine(g, plan, ox, oy);
 
             if (plan.Plain)
             {
@@ -554,6 +620,20 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     ox + plan.IntroContentLeftPx, oy + plan.IntroContentTopPx,
                     plan.LineHeightIntroPx, clip);
             }
+
+            // 子注释框：主面板下方堆叠的黑底白边独立框（超出的行裁掉，首版不滚动）。
+            // 每个子框是独立淡入元素（1..n），淡出时与主框同刻归零。
+            for (int i = 0; i < plan.Subs.Count; i++)
+            {
+                NativeTooltipLayout.Plan.SubBox sub = plan.Subs[i];
+                Rectangle sr = Offset(sub.Panel, ox, oy);
+                _paintAlpha = AlphaFor(i + 1);
+                if (_paintAlpha <= 0f) continue;
+                DrawGradientPanel(g, sr);
+                PaintLines(g, sub.Lines, 0, sub.Lines.Count,
+                    ox + sub.ContentLeftPx, oy + sub.ContentTopPx,
+                    plan.LineHeightPx, sr);
+            }
         }
 
         /// <summary>pinned 检视器：壳（渐变+1px 边+阴影）+ header + 滚动 body。</summary>
@@ -566,24 +646,24 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             // 阴影近似：Web box-shadow 0 10px 28px → 半透明偏移矩形（高斯模糊无对应物）
             int shOff = NativeTooltipLayout.Px(10, scale);
             int shBlur = NativeTooltipLayout.Px(14, scale);
-            using (SolidBrush sh = new SolidBrush(ShellShadow))
+            using (SolidBrush sh = new SolidBrush(Fade(ShellShadow)))
                 g.FillRectangle(sh, shell.X, shell.Y + shOff,
                     shell.Width + shBlur, shell.Height + shOff / 2);
 
             // 壳：灰族渐变（提高不透明度版）+ 1px 边框
             using (LinearGradientBrush bg = new LinearGradientBrush(
-                shell, ShellGradTop, ShellGradBot, LinearGradientMode.Vertical))
+                shell, Fade(ShellGradTop), Fade(ShellGradBot), LinearGradientMode.Vertical))
                 g.FillRectangle(bg, shell);
-            using (Pen p = new Pen(ShellBorder, Math.Max(1, border)))
+            using (Pen p = new Pen(Fade(ShellBorder), Math.Max(1, border)))
                 g.DrawRectangle(p, shell.X, shell.Y, shell.Width - 1, shell.Height - 1);
 
             // header
             if (!plan.HeaderRect.IsEmpty)
             {
                 Rectangle header = Offset(plan.HeaderRect, ox, oy);
-                using (SolidBrush b = new SolidBrush(HeaderBg))
+                using (SolidBrush b = new SolidBrush(Fade(HeaderBg)))
                     g.FillRectangle(b, header);
-                using (Pen sep = new Pen(HeaderSep, 1f))
+                using (Pen sep = new Pen(Fade(HeaderSep), 1f))
                     g.DrawLine(sep, header.Left, header.Bottom - 1,
                         header.Right, header.Bottom - 1);
 
@@ -599,9 +679,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 int pressDy = _closePressed ? 1 : 0;
                 Rectangle closeDraw = close;
                 closeDraw.Offset(0, pressDy);
-                using (SolidBrush cb = new SolidBrush(CloseBg))
+                using (SolidBrush cb = new SolidBrush(Fade(CloseBg)))
                     g.FillRectangle(cb, closeDraw);
-                using (Pen cp = new Pen(CloseBorder, 1f))
+                using (Pen cp = new Pen(Fade(CloseBorder), 1f))
                     g.DrawRectangle(cp, closeDraw.X, closeDraw.Y,
                         closeDraw.Width - 1, closeDraw.Height - 1);
                 using (StringFormat csf = new StringFormat(StringFormat.GenericTypographic)
@@ -610,7 +690,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     LineAlignment = StringAlignment.Center,
                     FormatFlags = StringFormatFlags.NoWrap
                 })
-                using (SolidBrush ct = new SolidBrush(TextDefault))
+                using (SolidBrush ct = new SolidBrush(Fade(TextDefault)))
                     g.DrawString("×", _fontClose, ct, closeDraw, csf);
 
                 // keycap "Esc"（close 左侧）
@@ -627,7 +707,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     close.X - gap - keyW,
                     header.Y + (header.Height - keyH) / 2,
                     keyW, keyH);
-                using (Pen kp = new Pen(KeycapBorder, 1f))
+                using (Pen kp = new Pen(Fade(KeycapBorder), 1f))
                     g.DrawRectangle(kp, keycap.X, keycap.Y, keycap.Width - 1, keycap.Height - 1);
                 using (StringFormat ksf = new StringFormat(StringFormat.GenericTypographic)
                 {
@@ -635,14 +715,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     LineAlignment = StringAlignment.Center,
                     FormatFlags = StringFormatFlags.NoWrap
                 })
-                using (SolidBrush kt = new SolidBrush(KeycapText))
+                using (SolidBrush kt = new SolidBrush(Fade(KeycapText)))
                     g.DrawString("Esc", _fontKeycap, kt, keycap, ksf);
 
                 // title（左对齐，省略截断）
                 Rectangle titleRect = new Rectangle(
                     header.X + padL, header.Y,
                     Math.Max(0, keycap.X - gap - header.X - padL), header.Height);
-                using (SolidBrush tb = new SolidBrush(TextDefault))
+                using (SolidBrush tb = new SolidBrush(Fade(TextDefault)))
                 using (StringFormat tsf = new StringFormat(StringFormat.GenericTypographic)
                 {
                     FormatFlags = StringFormatFlags.NoWrap,
@@ -673,7 +753,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     {
                         Rectangle iconRect = Offset(plan.PinnedIconRect,
                             intro.X, intro.Y);
-                        DrawIcon(g, iconRect, plan.IconName, intro);
+                        DrawIcon(g, iconRect, plan.IconName);
                     }
                     PaintLines(g, plan.IntroLines, 0, plan.IntroLines.Count,
                         intro.X + plan.PinnedTextX, intro.Y + plan.PinnedTextY,
@@ -712,24 +792,30 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             return (int)Math.Round(y);
         }
 
-        /// <summary>--tt-bg：灰族垂直渐变，无边框无阴影（Symbol 274 复刻默认主题）。</summary>
+        /// <summary>浮动/子注释框面板：黑底 80%（204,0,0,0）+ 1px 白描边（2026-10 改版）。
+        /// UseHudChrome（Local Player HUD 战利品）保留自己的深色 chrome，不吃新 token。</summary>
         private void DrawGradientPanel(Graphics g, Rectangle rect)
         {
             if (rect.Width <= 0 || rect.Height <= 0) return;
-            using (LinearGradientBrush b = new LinearGradientBrush(
-                rect, UseHudChrome ? Color.FromArgb(248,34,38,39) : GradTop,
-                UseHudChrome ? Color.FromArgb(248,14,17,18) : GradBot, LinearGradientMode.Vertical))
-            {
-                b.WrapMode = WrapMode.Tile;
-                g.FillRectangle(b, rect);
-            }
             if (UseHudChrome)
             {
-                using var edge = new Pen(Color.FromArgb(158,166,167));
-                g.DrawRectangle(edge,rect.X,rect.Y,rect.Width-1,rect.Height-1);
-                using var inset = new Pen(Color.FromArgb(65,73,74));
-                g.DrawRectangle(inset,rect.X+2,rect.Y+2,rect.Width-5,rect.Height-5);
+                using (LinearGradientBrush b = new LinearGradientBrush(
+                    rect, Fade(Color.FromArgb(248, 34, 38, 39)),
+                    Fade(Color.FromArgb(248, 14, 17, 18)), LinearGradientMode.Vertical))
+                {
+                    b.WrapMode = WrapMode.Tile;
+                    g.FillRectangle(b, rect);
+                }
+                using var edge = new Pen(Fade(Color.FromArgb(158, 166, 167)));
+                g.DrawRectangle(edge, rect.X, rect.Y, rect.Width - 1, rect.Height - 1);
+                using var inset = new Pen(Fade(Color.FromArgb(65, 73, 74)));
+                g.DrawRectangle(inset, rect.X + 2, rect.Y + 2, rect.Width - 5, rect.Height - 5);
+                return;
             }
+            using (SolidBrush b = new SolidBrush(Fade(PanelBg)))
+                g.FillRectangle(b, rect);
+            using (Pen p = new Pen(Fade(PanelBorder), 1f))
+                g.DrawRectangle(p, rect.X, rect.Y, rect.Width - 1, rect.Height - 1);
         }
 
         private void PaintLines(Graphics g, List<NativeTooltipLayout.VisualLine> lines,
@@ -758,8 +844,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                         {
                             NativeTooltipLayout.VisualLine.Slice slice = vl.Slices[s];
                             if (string.IsNullOrEmpty(slice.Text)) continue;
-                            Color color = slice.Color.HasValue ? slice.Color.Value : TextDefault;
-                            using (SolidBrush brush = new SolidBrush(color))
+                            Color color = slice.Color.HasValue
+                                ? slice.Color.Value : TextDefault;
+                            using (SolidBrush brush = new SolidBrush(Fade(color)))
                             {
                                 g.DrawString(slice.Text, FontFor(slice.FontOf()),
                                     brush, new PointF(cx, cy), _textFormat);
@@ -774,11 +861,17 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         }
 
         /// <summary>
-        /// 图标：Web mix-blend-mode:overlay 等价实现——先把 icon 缩放到目标框，
-        /// 再与面板渐变（icon 区域那段的底色）逐像素 overlay 合成。
-        /// overlay: 底色&lt;0.5 → 2*b*s；否则 1-2(1-b)(1-s)。源 alpha 作为混合权重。
+        /// 图标：普通 alpha 绘制（2026-10 改版：Web --tt-icon-blend 同步改
+        /// normal——黑底上 overlay 混合恒得黑，图标会没形）。
+        /// 单条目 LRU：同 icon+同尺寸重复 paint 复用缩放结果。
         /// </summary>
-        private void DrawIcon(Graphics g, Rectangle rect, string iconName, Rectangle panelRect)
+        private void DrawIcon(Graphics g, Rectangle rect, string iconName)
+        {
+            DrawIcon(g, rect, iconName, false);
+        }
+
+        /// <summary>smallSlot=true 走弹夹专用缓存槽，避免与主图标互相逐出。</summary>
+        private void DrawIcon(Graphics g, Rectangle rect, string iconName, bool smallSlot)
         {
             Bitmap frame = null;
             if (_icons != null && !string.IsNullOrEmpty(iconName))
@@ -791,9 +884,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             {
                 // manifest 未命中 / catalog 缺席 → .flash-tt-icon-placeholder：
                 // rgba(255,255,255,.03) 底 + 1px 虚线 divider 色框
-                using (SolidBrush b = new SolidBrush(IconPlaceholderBg))
+                using (SolidBrush b = new SolidBrush(Fade(IconPlaceholderBg)))
                     g.FillRectangle(b, rect);
-                using (Pen p = new Pen(Divider, 1f))
+                using (Pen p = new Pen(Fade(Divider), 1f))
                 {
                     p.DashStyle = DashStyle.Dash;
                     g.DrawRectangle(p, rect.X, rect.Y, rect.Width - 1, rect.Height - 1);
@@ -801,73 +894,41 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 return;
             }
 
-            // 合成键：icon 名 + 框尺寸 + 面板高（渐变相位依赖面板高度）
-            string key = iconName + "|" + rect.Width + "x" + rect.Height
-                + "|" + panelRect.Y + "-" + panelRect.Height;
-            Bitmap composed = _blendCache;
-            if (composed == null || _blendCacheKey != key
-                || composed.Width != rect.Width || composed.Height != rect.Height)
+            string key = iconName + "|" + rect.Width + "x" + rect.Height;
+            Bitmap scaled = smallSlot ? _magCache : _blendCache;
+            string cacheKey = smallSlot ? _magCacheKey : _blendCacheKey;
+            if (scaled == null || cacheKey != key
+                || scaled.Width != rect.Width || scaled.Height != rect.Height)
             {
-                if (_blendCache != null) _blendCache.Dispose();
-                _blendCache = composed = ComposeOverlay(frame, rect, panelRect);
-                _blendCacheKey = key;
-            }
-            g.DrawImageUnscaled(composed, rect.X, rect.Y);
-        }
-
-        /// <summary>生成 icon 与面板渐变的 overlay 合成位图（含 icon 自身 alpha）。</summary>
-        private static Bitmap ComposeOverlay(Bitmap frame, Rectangle rect, Rectangle panelRect)
-        {
-            int w = Math.Max(1, rect.Width), h = Math.Max(1, rect.Height);
-            Bitmap scaled = new Bitmap(w, h, PixelFormat.Format32bppArgb);
-            using (Graphics sg = Graphics.FromImage(scaled))
-            {
-                sg.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                sg.DrawImage(frame, 0, 0, w, h);
-            }
-            Bitmap output = new Bitmap(w, h, PixelFormat.Format32bppArgb);
-            BitmapData sd = scaled.LockBits(
-                new Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            BitmapData od = output.LockBits(
-                new Rectangle(0, 0, w, h), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-            try
-            {
-                int panelH = Math.Max(1, panelRect.Height);
-                byte[] src = new byte[sd.Stride * h];
-                byte[] dst = new byte[od.Stride * h];
-                System.Runtime.InteropServices.Marshal.Copy(sd.Scan0, src, 0, src.Length);
-                for (int y = 0; y < h; y++)
+                Bitmap old = smallSlot ? _magCache : _blendCache;
+                if (old != null) old.Dispose();
+                int w = Math.Max(1, rect.Width), h = Math.Max(1, rect.Height);
+                Bitmap output = new Bitmap(w, h, PixelFormat.Format32bppArgb);
+                using (Graphics sg = Graphics.FromImage(output))
                 {
-                    // 底色 = 面板渐变在本行的颜色（GDI 32bppArgb 为 B,G,R,A 序）
-                    float t = (rect.Y - panelRect.Y + y) / (float)panelH;
-                    if (t < 0) t = 0; if (t > 1) t = 1;
-                    int br = (int)(153 + (51 - 153) * t + 0.5f);
-                    for (int x = 0; x < w; x++)
-                    {
-                        int i = y * sd.Stride + x * 4;
-                        int sa = src[i + 3];
-                        for (int ch = 0; ch < 3; ch++)
-                        {
-                            int s = src[i + ch];
-                            // overlay(b,s)
-                            float ov = br < 128
-                                ? 2f * br * s / 255f
-                                : 255f - 2f * (255 - br) * (255 - s) / 255f;
-                            float outc = br + (ov - br) * (sa / 255f);
-                            dst[i + ch] = (byte)Math.Max(0, Math.Min(255, (int)(outc + 0.5f)));
-                        }
-                        dst[i + 3] = 255;
-                    }
+                    sg.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    sg.DrawImage(frame, 0, 0, w, h);
                 }
-                System.Runtime.InteropServices.Marshal.Copy(dst, 0, od.Scan0, dst.Length);
+                scaled = output;
+                if (smallSlot) { _magCache = output; _magCacheKey = key; }
+                else { _blendCache = output; _blendCacheKey = key; }
             }
-            finally
+            if (_paintAlpha >= 0.999f)
             {
-                scaled.UnlockBits(sd);
-                output.UnlockBits(od);
-                scaled.Dispose();
+                g.DrawImageUnscaled(scaled, rect.X, rect.Y);
+                return;
             }
-            return output;
+            // 淡入淡出期间用 ColorMatrix 缩 alpha（缓存的位图保持原样不重算）
+            float a = _paintAlpha <= 0f ? 0f : _paintAlpha;
+            using (ImageAttributes attr = new ImageAttributes())
+            {
+                ColorMatrix m = new ColorMatrix();
+                m.Matrix33 = a;
+                attr.SetColorMatrix(m, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                g.DrawImage(scaled,
+                    new Rectangle(rect.X, rect.Y, scaled.Width, scaled.Height),
+                    0, 0, scaled.Width, scaled.Height, GraphicsUnit.Pixel, attr);
+            }
         }
 
         /// <summary>
@@ -885,26 +946,26 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             bool pending = state == NativeTooltipLayout.InspStatePending;
             Color accent = pending ? InspPending : InspAccept;
 
-            Color c0 = MixOver(accent, InspStatusBg, pending ? 0.17 : 0.19);
+            Color c0 = Fade(MixOver(accent, InspStatusBg, pending ? 0.17 : 0.19));
             Color c1 = MixOver(accent, InspStatusBg, pending ? 0.04 : 0.05);
             using (LinearGradientBrush bg = new LinearGradientBrush(
                 strip, c0, Color.FromArgb(0, c1), LinearGradientMode.Horizontal))
             {
                 ColorBlend blend = new ColorBlend(3);
                 blend.Positions = new float[] { 0f, 0.72f, 1f };
-                blend.Colors = new Color[] { c0, c1, Color.FromArgb(0, c1) };
+                blend.Colors = new Color[] { c0, Fade(c1), Color.FromArgb(0, c1) };
                 bg.InterpolationColors = blend;
                 g.FillRectangle(bg, strip);
             }
             // 左边条：pending accent 82% / inspect accent 88%
             int border = NativeTooltipLayout.Px(NativeTooltipLayout.InspBorderLBase, scale);
-            using (SolidBrush eb = new SolidBrush(Color.FromArgb(
-                pending ? 209 : 225, accent)))
+            using (SolidBrush eb = new SolidBrush(Fade(Color.FromArgb(
+                pending ? 209 : 225, accent))))
                 g.FillRectangle(eb, strip.X, strip.Y, border, strip.Height);
             if (!pending) return;
 
             // 底边 1px text 14%
-            using (SolidBrush bb = new SolidBrush(Color.FromArgb(36, 255, 255, 255)))
+            using (SolidBrush bb = new SolidBrush(Fade(Color.FromArgb(36, 255, 255, 255))))
                 g.FillRectangle(bb, strip.X, strip.Bottom - 1, strip.Width, 1);
 
             int padX = NativeTooltipLayout.Px(NativeTooltipLayout.InspPadXBase, scale);
@@ -915,12 +976,12 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             // 圆点 6px accent 86%（CSS box-shadow 辉光无 GDI 对应物，略）
             int dot = NativeTooltipLayout.Px(NativeTooltipLayout.InspDotBase, scale);
             int dotX = strip.X + border + padX;
-            using (SolidBrush db = new SolidBrush(Color.FromArgb(219, InspPending)))
+            using (SolidBrush db = new SolidBrush(Fade(Color.FromArgb(219, InspPending))))
                 g.FillEllipse(db, dotX, strip.Y + (strip.Height - dot) / 2, dot, dot);
 
             // 文案 11px w600 白 88%（_fontHeaderTitle = 11px Bold）
             int labelX = dotX + dot + gap;
-            using (SolidBrush tb = new SolidBrush(Color.FromArgb(224, 255, 255, 255)))
+            using (SolidBrush tb = new SolidBrush(Fade(Color.FromArgb(224, 255, 255, 255))))
             using (StringFormat sf = new StringFormat(StringFormat.GenericTypographic)
             {
                 FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip,
@@ -980,7 +1041,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             if (maxScrollLine <= 0 || panelRect.Height < 8) return;
             int w = Math.Max(2, sbW);
             int trackX = panelRect.Right - w;
-            using (SolidBrush track = new SolidBrush(ScrollTrack))
+            using (SolidBrush track = new SolidBrush(Fade(ScrollTrack)))
                 g.FillRectangle(track, trackX, panelRect.Top, w, panelRect.Height);
             int thumbMin = NativeTooltipLayout.Px(
                 NativeTooltipLayout.ScrollThumbMinHBase, scale);
@@ -991,15 +1052,128 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             // 使用真实滚动上限，否则滚到底时滑块会画到面板外。
             int thumbY = panelRect.Top + (int)Math.Round(travel * (double)scrollLine
                 / maxScrollLine);
-            using (SolidBrush thumb = new SolidBrush(ScrollThumb))
+            using (SolidBrush thumb = new SolidBrush(Fade(ScrollThumb)))
                 g.FillRectangle(thumb, trackX, thumbY, w, thumbH);
-            using (Pen border = new Pen(ScrollThumbBorder, 1f))
+            using (Pen border = new Pen(Fade(ScrollThumbBorder), 1f))
                 g.DrawRectangle(border, trackX, thumbY, w - 1, thumbH - 1);
         }
 
         private static Rectangle Offset(Rectangle r, int dx, int dy)
         {
             return new Rectangle(r.X + dx, r.Y + dy, r.Width, r.Height);
+        }
+
+        /// <summary>
+        /// 左侧"内存条插条"：两端宽块 + 收窄腰部的白色竖条，块内文字逆时针转 90°
+        /// （自下向上读，字头朝左）；黑字 85% 不透明度，字体用 UI 现成的思源宋体。
+        /// 形状由布局层算好（RailBlocks/RailSpine），这里只做填充与旋转排版。
+        /// </summary>
+        private void PaintRail(Graphics g, NativeTooltipLayout.Plan plan,
+            int ox, int oy)
+        {
+            if (!plan.RailSpine.IsEmpty)
+            {
+                using (SolidBrush b = new SolidBrush(Fade(RailFill)))
+                    g.FillRectangle(b, Offset(plan.RailSpine, ox, oy));
+            }
+            foreach (NativeTooltipLayout.Plan.RailBlock block in plan.RailBlocks)
+            {
+                Rectangle r = Offset(block.Rect, ox, oy);
+                using (SolidBrush b = new SolidBrush(Fade(RailFill)))
+                    g.FillRectangle(b, r);
+                if (string.IsNullOrEmpty(block.Text)) continue;
+
+                Font font = CachedFont(RailFontRole, block.FontPx, FontStyle.Regular);
+                if (font == null) continue;
+                GraphicsState state = g.Save();
+                try
+                {
+                    // y 轴向下 → 负角才是视觉逆时针；文字沿本地 +x（屏幕向上）推进
+                    g.TranslateTransform(r.X + r.Width / 2f, r.Y + r.Height / 2f);
+                    g.RotateTransform(-90f);
+                    RectangleF box = new RectangleF(-r.Height / 2f, -r.Width / 2f,
+                        r.Height, r.Width);
+                    // 旋转后文字的横槽只有块宽（约 26px），GridFit 的 hinting 在此
+                    // 尺度会抖动字形，竖排统一走 AntiAlias。
+                    g.TextRenderingHint = TextRenderingHint.AntiAlias;
+                    using (SolidBrush tb = new SolidBrush(Fade(RailText)))
+                    using (StringFormat sf = new StringFormat(StringFormat.GenericTypographic)
+                    {
+                        Alignment = StringAlignment.Center,
+                        LineAlignment = StringAlignment.Center,
+                        FormatFlags = StringFormatFlags.NoWrap
+                    })
+                        g.DrawString(block.Text, font, tb, box, sf);
+                }
+                finally { g.Restore(state); }
+            }
+        }
+
+        /// <summary>
+        /// 弹夹独立行：白线把"使用弹夹"正文与弹夹行分隔，行首是该弹夹自己的图标
+        /// （正方形，边长 = 行高），其后接弹夹名。图标只是绘制，不注册命中区，
+        /// 因此不会再触发一层注释框（避免嵌套）。
+        /// </summary>
+        private void PaintMagazine(Graphics g, NativeTooltipLayout.Plan plan,
+            int ox, int oy)
+        {
+            Rectangle row = Offset(plan.MagazineRow, ox, oy);
+            if (row.Width <= 0 || row.Height <= 0) return;
+
+            if (plan.MagazineDividerY > 0 && !plan.IntroPanel.IsEmpty)
+            {
+                Rectangle panel = Offset(plan.IntroPanel, ox, oy);
+                int y = oy + plan.MagazineDividerY;
+                int pad = Math.Max(1, NativeTooltipLayout.Px(
+                    NativeTooltipLayout.PanelPadBase, CurrentScaleForLayout()));
+                using (Pen p = new Pen(Fade(PanelBorder), 1f))
+                    g.DrawLine(p, panel.X + pad, y, panel.Right - pad - 1, y);
+            }
+
+            if (!plan.MagazineIconRect.IsEmpty)
+                DrawIcon(g, Offset(plan.MagazineIconRect, ox, oy),
+                    plan.MagazineIconName, true);
+
+            if (string.IsNullOrEmpty(plan.MagazineName)) return;
+            Font font = CachedFont(TooltipFontRole, plan.MagazineFontPx, FontStyle.Regular);
+            if (font == null) return;
+            Rectangle text = new Rectangle(ox + plan.MagazineTextLeftPx, row.Y,
+                Math.Max(1, row.Right - ox - plan.MagazineTextLeftPx), row.Height);
+            using (SolidBrush b = new SolidBrush(Fade(TextDefault)))
+            using (StringFormat sf = new StringFormat(StringFormat.GenericTypographic)
+            {
+                FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip,
+                LineAlignment = StringAlignment.Center
+            })
+                g.DrawString(plan.MagazineName, font, b, text, sf);
+        }
+
+        /// <summary>行高/内边距等 CSS px token 落到物理 px 时用的缩放（与布局同源）。</summary>
+        private float CurrentScaleForLayout()
+        {
+            return _lastLayoutScale > 0f ? _lastLayoutScale : CurrentScale();
+        }
+
+        /// <summary>当前绘制组透明度落到颜色的 A 通道；静止态原样返回。</summary>
+        private Color Fade(Color color)
+        {
+            return ScaleAlpha(color, _paintAlpha);
+        }
+
+        /// <summary>role+物理 px+style 缓存字体（与 run 级样式字体共用 _styledFonts）。</summary>
+        private Font CachedFont(string role, float sizePx, FontStyle style)
+        {
+            if (sizePx <= 0f) return null;
+            string key = role + "|"
+                + ((int)Math.Round(sizePx)).ToString(
+                    System.Globalization.CultureInfo.InvariantCulture)
+                + "|" + (int)style;
+            Font font;
+            if (_styledFonts.TryGetValue(key, out font)) return font;
+            font = NativeHudFonts.CreateRoleFont(role, sizePx, style,
+                GraphicsUnit.Pixel);
+            _styledFonts[key] = font;
+            return font;
         }
 
         #endregion
@@ -1024,8 +1198,110 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             _ownerBounds = null;
             _inspectionState = "idle";
             _inspectionRemainingMs = 0;
+            _fadePhase = 0;
+            _fadeElapsedMs = 0;
+            _fadeElements = 0;
+            _fadeFrom = null;
+            _paintAlpha = 1f;
+            RaiseAnimationState();
             FireBounds();
             FireRepaint();
+        }
+
+        // ── 淡入淡出 ──
+        //
+        // 元素编号：0 = 主框（intro/desc/icon/插条/弹夹行同组），1..n = 各子注释框。
+        // 淡入：主框 FadeInMs；子框 i 慢一点 = FadeInMs×(SubRevealFactor + i×SubRevealStep)，
+        //       越靠下的框越晚到位。
+        // 淡出：进入时快照每个元素的当前透明度，共用同一个 FadeOutMs 窗口线性归零——
+        //       alpha_i(t) = from_i × (1 − t/FadeOutMs)。因为所有元素同刻开始、同跨度
+        //       线性衰减，无论被打断在淡入的哪一段，都必然与主框同时消失（用户硬要求）。
+
+        private void BeginReveal()
+        {
+            _fadeElements = _plan != null ? _plan.Subs.Count + 1 : 1;
+            _fadePhase = 1;
+            _fadeElapsedMs = 0;
+            _fadeFrom = null;
+            RaiseAnimationState();
+        }
+
+        private void BeginFadeOut()
+        {
+            CancelPointerMove();
+            // 会话已结束：检视投影态即刻归零（控制器不再拥有这个框），
+            // 已排好的状态条留在 plan 里随框一起淡出。
+            _inspectionState = "idle";
+            _inspectionRemainingMs = 0;
+            int n = Math.Max(1, _fadeElements);
+            float[] from = new float[n];
+            for (int i = 0; i < n; i++) from[i] = AlphaFor(i);
+            _fadeFrom = from;
+            _fadePhase = 2;
+            _fadeElapsedMs = 0;
+            RaiseAnimationState();
+            FireRepaint();
+        }
+
+        /// <summary>元素淡入总时长（物理 ms）。0=主框，1..n=子框。</summary>
+        private static int RevealMs(int element)
+        {
+            if (element <= 0) return FadeInMs;
+            return (int)Math.Round(FadeInMs
+                * (double)(SubRevealFactor + SubRevealStep * (element - 1)));
+        }
+
+        /// <summary>元素当前透明度（0..1）。静止态恒 1。</summary>
+        private float AlphaFor(int element)
+        {
+            if (_fadePhase == 0) return 1f;
+            if (_fadePhase == 2)
+            {
+                float from = 1f;
+                if (_fadeFrom != null && _fadeFrom.Length > 0)
+                    from = element < _fadeFrom.Length
+                        ? _fadeFrom[element]
+                        : _fadeFrom[_fadeFrom.Length - 1];
+                float k = 1f - (float)_fadeElapsedMs / FadeOutMs;
+                return k <= 0f ? 0f : from * k;
+            }
+            float a = (float)_fadeElapsedMs / RevealMs(element);
+            return a <= 0f ? 0f : (a >= 1f ? 1f : a);
+        }
+
+        /// <summary>重排后子框数可能变化：淡出快照同步补齐，越界索引沿用末个子框的
+        /// 当前透明度（不会让新出现的子框在淡出中途跳成不透明）。</summary>
+        private void SyncFadeElements()
+        {
+            int n = _plan != null ? _plan.Subs.Count + 1 : 1;
+            if (n == _fadeElements) return;
+            if (_fadePhase == 2 && _fadeFrom != null)
+            {
+                float[] next = new float[n];
+                for (int i = 0; i < n; i++) next[i] = AlphaFor(i);
+                _fadeFrom = next;
+            }
+            _fadeElements = n;
+        }
+
+        private int LastRevealMs()
+        {
+            return RevealMs(Math.Max(0, _fadeElements - 1));
+        }
+
+        private void RaiseAnimationState()
+        {
+            EventHandler handler = AnimationStateChanged;
+            if (handler != null) handler(this, EventArgs.Empty);
+        }
+
+        /// <summary>把 alpha 乘到颜色的 A 通道（0 时保留 0，绘制原语自行跳过）。</summary>
+        private static Color ScaleAlpha(Color color, float alpha)
+        {
+            if (alpha >= 0.999f) return color;
+            if (alpha <= 0f) return Color.FromArgb(0, color.R, color.G, color.B);
+            return Color.FromArgb(
+                (int)Math.Round(color.A * (double)alpha), color.R, color.G, color.B);
         }
 
         /// <summary>
@@ -1259,6 +1535,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     _doc, MeasureText, lineH, scale, vpWi, vpHi, _inspectionState, dpi);
                 if (_scrollLine > (_plan != null ? _plan.MaxScrollLine : 0))
                     _scrollLine = _plan != null ? _plan.MaxScrollLine : 0;
+                SyncFadeElements();
                 anchorChanged = true;
             }
             if (_plan == null) return;
@@ -1313,6 +1590,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             _pointerMoveTimer.Dispose();
             DisposeFonts();
             if (_blendCache != null) { _blendCache.Dispose(); _blendCache = null; }
+            if (_magCache != null) { _magCache.Dispose(); _magCache = null; }
             if (_measureG != null) { _measureG.Dispose(); _measureG = null; }
             if (_measureBmp != null) { _measureBmp.Dispose(); _measureBmp = null; }
             if (_textFormat != null) _textFormat.Dispose();

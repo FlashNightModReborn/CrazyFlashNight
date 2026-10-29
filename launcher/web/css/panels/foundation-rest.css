@@ -40,20 +40,30 @@
    introBg + mainBg 两个独立 MovieClip。 */
 #panel-tooltip   {
     /* === AS2 复刻主题 token（默认，源自 Symbol 274 XFL） === */
-    --tt-grad-top:   rgba(153, 153, 153, 0.8);   /* #999 + alphaMultiplier 0.8 */
-    --tt-grad-bot:   rgba(51, 51, 51, 0.8);      /* #333 + alphaMultiplier 0.8 */
+    /* 2026-10 视觉合同改版（用户口径，对齐卡牌项目注释框）：面板底 = 半透明黑 80%，
+       描边 = 1px 白；C# NativeTooltipWidget PanelBg/PanelBorder 同步。
+       原灰族 #999→#333 渐变（Symbol 274 基线）退役，下方依赖 grad 混色的
+       scroll/shell/status token 自动落黑底。 */
+    --tt-grad-top:   rgba(0, 0, 0, 0.8);         /* 黑 + alphaMultiplier 0.8 */
+    --tt-grad-bot:   rgba(0, 0, 0, 0.8);         /* 改版后上下同色 = 平底 */
     --tt-bg:         linear-gradient(to bottom, var(--tt-grad-top), var(--tt-grad-bot));
     --tt-status-bg:  var(--tt-grad-bot);
-    --tt-border:     0 solid transparent;        /* Symbol 274 无 strokes，整体不画 border */
+    --tt-border:     1px solid #ffffff;          /* 暂定全白描边（用户 2026-10 口径） */
     --tt-text:       #ffffff;                    /* DOMTextAttrs fillColor=#FFFFFF */
     --tt-shadow:     none;                       /* XFL 不画阴影 */
     --tt-divider:    rgba(255, 255, 255, 0.20);
+    /* 子注释框间距 + 淡入基准时长：定义在外层是因为子注释框是 .flash-tt-rich 的兄弟
+       （拿不到 rich 上的局部 token）；--tt-fade-ms 被子框的 inline style 逐层覆盖，
+       数值由 tooltip-document.js fadeMsForSub 给出。C# 侧同值：SubGapBase / FadeOutMs。 */
+    --tt-sub-gap:    6px;           /* NativeTooltipLayout.SubGapBase */
+    --tt-fade-ms:    500;           /* 主组淡入 = 淡出时长（用户口径 0.5s） */
     --tt-icon-glow-fx: none;
     --tt-strong:     #ffffff;                    /* AS2 端 <b> 不动色，跟正文同色加粗 */
     --tt-dim:        rgba(255, 255, 255, 0.60);
     --tt-price:      #fcee09;                    /* 高亮黄，跟 AS2 端 K商城金额视觉一致 */
     --tt-warn:       #ff8080;                    /* 锁定红，沿用 launcher 风格 */
-    --tt-icon-blend: overlay;                    /* 对齐 AS2 物品图标定位 blendMode="overlay" */
+    --tt-icon-blend: normal;                     /* 2026-10 改版：overlay 在黑底上恒得黑会吞图标，
+                                                    与 C# DrawIcon 同步改普通 alpha 绘制 */
     --tt-scroll-track: color-mix(in srgb,var(--tt-grad-bot) 74%,transparent);
     --tt-scroll-thumb: color-mix(in srgb,var(--tt-text) 44%,var(--tt-grad-bot));
     --tt-scroll-thumb-border: color-mix(in srgb,var(--tt-text) 16%,var(--tt-grad-bot));
@@ -425,10 +435,29 @@
        1.6 是阅读友好默认，但跟 AS2 端 ~28% 偏高；1.25 对齐 Flash 原生行距。 */
     --tt-intro-line-height: 1.25;
     --tt-desc-line-height: 1.25;
+    /* === 2026-10 二轮结构部件（左侧插条 rail / 弹夹行 magazine）===
+       几何逐项对齐 C# NativeTooltipLayout 同名常量（Px 基准 = scale 1）。
+       块高不在 CSS 里做算术：竖排文本撑开宽块，中段腰条 flex 吃掉剩余高度，
+       总高锁在图标高——与 C# "字数×字号+2×内边距、放不下缩字号后裁切"同形。 */
+    --tt-rail-w: 26px;              /* RailWideWBase：整条最大宽 = 宽块宽 */
+    --tt-rail-waist-w: 11px;        /* round(26 × RailWaistFrac 0.42)：腰部窄段 */
+    --tt-rail-font: 13px;           /* RailFontBase：竖排字号上限 */
+    --tt-rail-font-min: 9px;        /* RailFontMinBase：再挤也不缩到此值以下 */
+    --tt-rail-text-pad: 3px;        /* RailTextPadBase：文字距块端 */
+    --tt-rail-cap-min-h: 12px;      /* RailCapMinBase：单段文本时另一端空帽最小高 */
+    --tt-mag-font: 12px;            /* FontPxBase：弹夹名与行高基准 */
+    --tt-mag-pad: 2px;              /* MagRowPadBase：行内上下内边距 */
+    --tt-mag-gap: 4px;              /* MagDividerGapBase：白线上下留白 */
+    --tt-mag-icon-text-gap: 4px;    /* MagIconTextGapBase：图标与弹夹名间距 */
+    --tt-mag-row-h: calc(var(--tt-mag-font) + var(--tt-mag-pad) * 2);
     /* === Visual tokens（继承自 #panel-tooltip 主题层；arena-tt-rich / intel-tt-rich
        想做"本面板视觉变体"时只重写这两个，不要碰 layout 变量）=== */
     --tt-divider-color: var(--tt-divider, rgba(255, 255, 255, 0.20));
     --tt-icon-glow: var(--tt-icon-glow-fx, none);
+    /* 白线族：插条填充 + 弹夹行分隔线（用户 2026-10 口径：边框线条暂定都为白色）。
+       插条文字 = 黑 85%（C# RailTextAlpha=217 ≈ 0.85×255）。 */
+    --tt-rail-fill: #ffffff;
+    --tt-rail-text: rgba(0, 0, 0, 0.85);
 
     display: flex;
     gap: var(--tt-gap);
@@ -549,6 +578,113 @@
     line-height: var(--tt-intro-line-height);
 }
 
+/* ── 左侧插条（document.rail，2026-10 二轮）──
+   贴在图标左侧外延的白色"内存条"竖条：两端宽块写竖排文字，中间窄腰连接，整条高
+   = 图标高。容器为它预留 --tt-rail-w 前置空白（padding-left），插条绝对落在那段空白里
+   —— 等价于 C# 端 RailShift 并入 TipSize + ShiftPanelsRight 整体右移：tooltip 的测量
+   矩形始终覆盖插条，定位避让不会把它切出屏幕，也不会让它压住鼠标。 */
+.flash-tt-rich--rail {
+    position: relative;                 /* 只作插条的包含块，自身无偏移 */
+    padding-left: var(--tt-rail-w);
+}
+.flash-tt-rail,
+.ntt-rail {
+    position: absolute;
+    left: 0;
+    /* 与图标顶端齐平：intro panel 的 1px 描边 + 4px gutter */
+    top: calc(var(--tt-panel-pad) + 1px);
+    width: var(--tt-rail-w);
+    height: var(--tt-icon-size);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* 字号收缩（对齐 C# ApplyRail）：room = 轨高 − 2×内边距×块数，
+       13px 起，装不下就 room/总字数，最低 9px；再超出由宽块 overflow:hidden 裁切。
+       --tt-rail-chars / --tt-rail-blocks 由 tooltip-document.js 按文档计数写入。 */
+    --tt-rail-font-used: max(var(--tt-rail-font-min), min(var(--tt-rail-font),
+        (var(--tt-icon-size) - var(--tt-rail-text-pad) * 2 * var(--tt-rail-blocks, 2))
+        / var(--tt-rail-chars, 1)));
+    /* 纯绘制件：不接指针，杜绝二次 hover 绑定 */
+    pointer-events: none;
+}
+.flash-tt-rail-block,
+.flash-tt-rail-waist {
+    background: var(--tt-rail-fill);
+}
+.flash-tt-rail-block,
+.ntt-rail-block {
+    flex: 0 1 auto;                     /* 超长时收缩并被裁切（对齐 C# 字号下限后裁切） */
+    width: var(--tt-rail-w);
+    max-height: calc(100% - var(--tt-rail-waist-w));
+    padding: var(--tt-rail-text-pad) 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+    color: var(--tt-rail-text);
+    font-family: var(--cf7-font-web-workbench-title, serif);   /* 思源宋体（web.workbench.title） */
+    font-size: var(--tt-rail-font-used);
+    font-weight: 900;
+    line-height: 1;
+    /* 竖排 + 180° = 视觉逆时针 90°：字顶朝左、自下而上读，
+       对齐 C# NativeTooltipWidget 的 RotateTransform(-90)。 */
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+}
+.flash-tt-rail-block--cap {
+    min-height: max(var(--tt-rail-waist-w), var(--tt-rail-cap-min-h));
+}
+.flash-tt-rail-waist,
+.ntt-rail-waist {
+    flex: 1 1 0;
+    width: var(--tt-rail-waist-w);
+    min-height: 2px;
+}
+
+/* ── 弹夹行（document.magazine，2026-10 二轮）──
+   intro 面板底部：白线上下各留 --tt-mag-gap，行高 = 字号 + 2×--tt-mag-pad，
+   最左是弹夹图标（正方形，边长 = 行高），图标后紧接弹夹名。"使用弹夹"这类标签字符
+   不再由数据侧下发。整行 pointer-events:none 且不是任何 tooltip 的 owner ——
+   弹夹图标不会再套出一层注释框（用户硬要求：避免嵌套）。 */
+.flash-tt-mag,
+.ntt-mag {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: var(--tt-mag-icon-text-gap);
+    margin-top: var(--tt-mag-gap);
+    padding-top: var(--tt-mag-gap);
+    border-top: 1px solid var(--tt-rail-fill);
+    font-size: var(--tt-mag-font);
+    line-height: 1;
+    color: var(--tt-text);
+    pointer-events: none;
+}
+.flash-tt-mag-icon,
+.ntt-mag-icon {
+    flex: 0 0 var(--tt-mag-row-h);
+    width: var(--tt-mag-row-h);
+    height: var(--tt-mag-row-h);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.flash-tt-mag-icon > *,
+.ntt-mag-icon > * {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: var(--tt-icon-blend, normal);
+}
+.flash-tt-mag-name,
+.ntt-mag-name {
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /* Desc 右面板（对齐 AS2 mainBg 的视觉，不继承其可遮挡鼠标的舞台定位）。
    超长内容限制在视口内：dense 检视由原 owner 转发 wheel/PageUp/PageDown，浮层不命中；
    pinned 由固定检视器 body 独立滚动；simple 不承载必须滚完的正文。 */
@@ -570,6 +706,76 @@
     /* desc 内部目前没用 mix-blend-mode，但保留 isolation 让 future 子元素如有 blend 需求
        有独立合成空间。也跟 intro-panel 对称，避免哪天加 desc icon 时漏配置。 */
     isolation: isolate;
+}
+
+/* ── 子注释框（role:"sub"，2026-10 新合同）──
+   主面板 .flash-tt-rich 之后竖排堆叠的独立小框（已安装插件/额外功能/暴击斩杀等
+   本件装备确实有才写），与 intro/desc 同款 token：黑底 80% + 1px 白描边 + pad 4px。
+   框间间隙 --tt-sub-gap（C# NativeTooltipLayout.SubGapBase=6 同值）；
+   间隙只写在"与前一个框相邻"的位置，不给子框无条件加 margin，免得首框顶出父矩形。 */
+.flash-tt-sub-panel,
+.ntt-sub-panel {
+    line-height: var(--tt-desc-line-height);
+    background: var(--tt-bg);
+    border: var(--tt-border);
+    box-shadow: var(--tt-shadow);
+    padding: var(--tt-panel-pad);
+    box-sizing: border-box;
+    max-height: min(70vh, 520px);
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    isolation: isolate;
+}
+.flash-tt-sub-panel + .flash-tt-sub-panel,
+.ntt-sub-panel + .ntt-sub-panel {
+    margin-top: var(--tt-sub-gap);
+}
+.flash-tt-rich + .flash-tt-sub-panel,
+.flash-tt-desc + .flash-tt-sub-panel {
+    margin-top: var(--tt-sub-gap);
+}
+.flash-tt-sub-panel::-webkit-scrollbar,
+.ntt-sub-panel::-webkit-scrollbar {
+    width:6px;
+    height:6px;
+}
+.flash-tt-sub-panel::-webkit-scrollbar-track,
+.ntt-sub-panel::-webkit-scrollbar-track {
+    background:var(--tt-scroll-track);
+}
+.flash-tt-sub-panel::-webkit-scrollbar-thumb,
+.ntt-sub-panel::-webkit-scrollbar-thumb {
+    min-height:28px;
+    background:var(--tt-scroll-thumb);
+    border:1px solid var(--tt-scroll-thumb-border);
+    border-radius:1px;
+}
+
+/* ── 淡入淡出（2026-10 二轮，用户口径 0.5s）──
+   淡入分层：主组（.flash-tt-rich，含插条/弹夹行）先用 --tt-fade-ms(500) 到位，
+   子注释框按 tooltip-document.js fadeMsForSub(i)=500×(1.35+0.15×(i−1)) 依次更慢，
+   所以阅读视线先落到正文、再收到补充框。
+   淡出不分层：PanelTooltip.hide() 给外层 #panel-tooltip 容器整体乘算到 0 —— 子框
+   自己的淡入动画继续播放，但最终乘的是同一个容器 alpha，因此无论各层停在淡入的哪
+   一帧，都在同一刻归零（对齐 C# NativeTooltipWidget 的共享时钟 + alpha 快照合同）。
+   fill-mode 用 both：动画结束停在 opacity:1，与基础样式一致，不额外留合成层。 */
+@keyframes tt-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+.flash-tt-rich,
+.flash-tt-sub-panel,
+.ntt-sub-panel {
+    animation: tt-fade-in calc(var(--tt-fade-ms) * 1ms) ease-out both;
+}
+/* 减弱动效偏好：注释框直接出现，收起也不做半透明过渡（内联 transition 由 !important 撤销，
+   面板仍在同一时刻消失，只是不再渐变）。 */
+@media (prefers-reduced-motion: reduce) {
+    .flash-tt-rich,
+    .flash-tt-sub-panel,
+    .ntt-sub-panel { animation: none; }
+    #panel-tooltip { transition: none !important; }
 }
 
 /* WebView2 / Edge 保留原生 scrollTop、wheel 与键盘语义，只替换系统白色滚动条皮肤。

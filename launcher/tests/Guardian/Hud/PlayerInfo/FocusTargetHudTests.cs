@@ -252,6 +252,7 @@ public sealed class FocusTargetHudTests
             Assert.False(widget.WantsAnimationTick); // returns to idle once heal preview & critical state end
 
             controller.TakeUiData("pi:" + PlayerHudStateTests.Encode(Delta(5, new JObject { ["focusTarget"] = JValue.CreateNull() })));
+            tooltip.Widget.Tick(2000); // 淡出窗口走完，会话才结束
             Assert.False(tooltip.Widget.Visible);
         });
     }

@@ -589,5 +589,108 @@ namespace CF7Launcher.Tests.Tasks
             Assert.False(TooltipDocumentSanitizer
                 .HasExactKeysAllowingOptionalDocument(new JObject(), expected));
         }
+
+        // ════════════ 2026-10 二轮改版：sub 段 / 插条 / 弹夹行转发 ════════════
+
+        [Fact]
+        public void SubRole_IsPreservedAsStructuralSubBoxRole()
+        {
+            JObject doc = ValidDocument();
+            doc["sections"] = new JArray
+            {
+                new JObject { ["role"] = "intro",
+                    ["runs"] = new JArray { new JObject { ["text"] = "正文" } } },
+                new JObject { ["role"] = "SUB",
+                    ["runs"] = new JArray { new JObject { ["text"] = "已装插件：扩容弹匣" } } },
+                new JObject { ["role"] = "sub",
+                    ["runs"] = new JArray { new JObject { ["text"] = "夜视" } } }
+            };
+            JObject output;
+            Assert.True(TooltipDocumentSanitizer.TrySanitize(doc, out output));
+            // 归一化为小写并保留出现序（每个 sub 段 = 一个独立子注释框）
+            Assert.Equal("sub", (string)output["sections"][1]["role"]);
+            Assert.Equal("sub", (string)output["sections"][2]["role"]);
+        }
+
+        [Fact]
+        public void Rail_IsDedupedCappedAndWhitelisted()
+        {
+            JObject doc = ValidDocument();
+            doc["rail"] = new JArray
+            {
+                "长枪", "长枪",                        // 重复项丢弃
+                1234,                                 // 非字符串丢弃
+                new string('长', 25),                  // 超 24 字符：整项丢弃
+                "突击步枪", "第三项丢弃"
+            };
+            JObject output;
+            Assert.True(TooltipDocumentSanitizer.TrySanitize(doc, out output));
+            JArray rail = (JArray)output["rail"];
+            Assert.NotNull(rail);
+            Assert.Equal(2, rail.Count);
+            Assert.Equal("长枪", (string)rail[0]);
+            Assert.Equal("突击步枪", (string)rail[1]);
+        }
+
+        [Fact]
+        public void Rail_WithoutAnyUsableText_IsOmitted()
+        {
+            JObject doc = ValidDocument();
+            doc["rail"] = new JArray { "", "   ", 7 };
+            JObject output;
+            Assert.True(TooltipDocumentSanitizer.TrySanitize(doc, out output));
+            Assert.Null(output["rail"]);
+        }
+
+        [Fact]
+        public void Magazine_RequiresNameAndKeepsOptionalIcon()
+        {
+            JObject doc = ValidDocument();
+            doc["magazine"] = new JObject
+            {
+                ["name"] = "11 号 4.7mm 弹夹",
+                ["icon"] = "ammo_ghren_47"
+            };
+            JObject output;
+            Assert.True(TooltipDocumentSanitizer.TrySanitize(doc, out output));
+            Assert.Equal("11 号 4.7mm 弹夹", (string)output["magazine"]["name"]);
+            Assert.Equal("ammo_ghren_47", (string)output["magazine"]["icon"]);
+
+            JObject noIcon = ValidDocument();
+            noIcon["magazine"] = new JObject { ["name"] = "9mm 弹夹" };
+            Assert.True(TooltipDocumentSanitizer.TrySanitize(noIcon, out output));
+            Assert.Equal("9mm 弹夹", (string)output["magazine"]["name"]);
+            Assert.Null(output["magazine"]["icon"]);
+
+            // 无 name / 空白 name = 整键丢弃：弹夹名是这一行的存在条件
+            JObject nameless = ValidDocument();
+            nameless["magazine"] = new JObject { ["icon"] = "ammo_ghren_47" };
+            Assert.True(TooltipDocumentSanitizer.TrySanitize(nameless, out output));
+            Assert.Null(output["magazine"]);
+
+            JObject blank = ValidDocument();
+            blank["magazine"] = new JObject { ["name"] = "   ", ["icon"] = "a" };
+            Assert.True(TooltipDocumentSanitizer.TrySanitize(blank, out output));
+            Assert.Null(output["magazine"]);
+        }
+
+        [Fact]
+        public void RailAndMagazineAlone_AreNotRenderableContent()
+        {
+            // 只有插条与弹夹行、没有任何正文/标题的文档不成立（否则会画出空壳）
+            var doc = new JObject
+            {
+                ["version"] = 1,
+                ["sections"] = new JArray
+                {
+                    new JObject { ["role"] = "intro",
+                        ["runs"] = new JArray { new JObject { ["text"] = "" } } }
+                },
+                ["rail"] = new JArray { "长枪" },
+                ["magazine"] = new JObject { ["name"] = "11 号弹夹" }
+            };
+            JObject output;
+            Assert.False(TooltipDocumentSanitizer.TrySanitize(doc, out output));
+        }
     }
 }

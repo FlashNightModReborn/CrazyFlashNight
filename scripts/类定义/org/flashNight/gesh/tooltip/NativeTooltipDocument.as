@@ -18,7 +18,7 @@
  *   color 接受 #RGB 三位并展开为 #RRGGBB（与 Web/CSS 一致）。
  *
  * 典型用法：
- *   var doc = NativeTooltipDocument.buildItem(name, itemData, iconData, introHtml, descHtml);
+ *   var doc = NativeTooltipDocument.buildItem(name, itemData, iconData, introHtml, descHtml, subHtmls);
  *   if (NativeTooltipBridge.show(doc) == null) { // 回退旧 Flash 渲染 }
  */
 class org.flashNight.gesh.tooltip.NativeTooltipDocument {
@@ -27,6 +27,9 @@ class org.flashNight.gesh.tooltip.NativeTooltipDocument {
     public static var ROLE_INTRO:String = "intro";
     public static var ROLE_DESCRIPTION:String = "description";
     public static var ROLE_BODY:String = "body";
+    /** 子注释框段：每个 sub section 由消费端渲染为主面板下方独立堆叠框；
+     *  未知 role 的消费端（旧 C#/Web）按 body 内联到描述栏，内容不丢。 */
+    public static var ROLE_SUB:String = "sub";
 
     public static var PROFILE_SIMPLE:String = "simple";
     public static var PROFILE_DENSE:String = "dense";
@@ -37,9 +40,16 @@ class org.flashNight.gesh.tooltip.NativeTooltipDocument {
     /**
      * 物品注释文档。title 取 displayname（涂装实例经 iconData/getData 覆盖优先），
      * icon.name 为图标资产键（itemData.icon，与 Web Icons 目录键同源）。
+     * subHtmls 可选：每项 HTML 成为一个 role:"sub" 段（子注释框），
+     * 缺省/空数组时与旧调用完全一致。
+     * extras 可选：原生注释专属结构化部件
+     *   - extras.rail:Array     左侧竖排插条文本（首项上块、次项下块），
+     *                           最多取 2 项；旧消费端忽略该键不影响正文
+     *   - extras.magazine:Object {name,icon} 枪械弹夹独立框；icon 仅绘制，
+     *                           不再产生注释（避免弹夹框嵌套）
      */
     public static function buildItem(name:String, itemData:Object, iconData:Object,
-            introHtml:String, descHtml:String):Object {
+            introHtml:String, descHtml:String, subHtmls:Array, extras:Object):Object {
         var iconName:String = null;
         var title:String = null;
         if (iconData != null) {
@@ -59,6 +69,11 @@ class org.flashNight.gesh.tooltip.NativeTooltipDocument {
         var sections:Array = [];
         pushSection(sections, ROLE_INTRO, introHtml);
         pushSection(sections, ROLE_DESCRIPTION, descHtml);
+        if (subHtmls != null) {
+            for (var si:Number = 0; si < subHtmls.length; si++) {
+                pushSection(sections, ROLE_SUB, String(subHtmls[si]));
+            }
+        }
         title = dedupeTitleLine(title, sections);
         var icon:Object = (iconName != null) ? {kind:"item", name:iconName} : null;
         var doc:Object = buildSectioned(title, icon, sections, PROFILE_DENSE);
@@ -66,7 +81,45 @@ class org.flashNight.gesh.tooltip.NativeTooltipDocument {
         if (typeName == "消耗品" && itemData.use != undefined) typeName = String(itemData.use);
         // 与 Web inferLayoutType 同源分类，展示端不根据图标是否存在猜布局。
         doc.layoutType = (typeName == "武器" || typeName == "防具" || typeName == "技能" || typeName == "药剂") ? "wide" : "narrow";
+        attachExtras(doc, extras);
         return doc;
+    }
+
+    /**
+     * extras → document.rail / document.magazine（可选结构部件）。
+     * 只在有内容时写键，缺省文档形状与旧版完全一致；文本在此裁剪为纯字符串，
+     * 消费端（C#/Web）不再做二次解析。
+     */
+    private static function attachExtras(doc:Object, extras:Object):Void {
+        if (extras == null) return;
+        if (extras.rail instanceof Array) {
+            var rail:Array = [];
+            for (var i:Number = 0; i < extras.rail.length && i < 2; i++) {
+                var text:String = safeText(extras.rail[i]);
+                if (text == null) continue;
+                if (rail.length > 0 && rail[rail.length - 1] == text) continue;
+                rail.push(text);
+            }
+            if (rail.length > 0) doc.rail = rail;
+        }
+        var mag:Object = extras.magazine;
+        if (mag != null) {
+            var magName:String = safeText(mag.name);
+            if (magName != null) {
+                var magazine:Object = {name:magName};
+                var magIcon:String = safeText(mag.icon);
+                if (magIcon != null) magazine.icon = magIcon;
+                doc.magazine = magazine;
+            }
+        }
+    }
+
+    /** 可选文本字段 → 去首尾空白后的纯字符串；缺失/空白/字面量 null 一律返回 null。 */
+    private static function safeText(value:Object):String {
+        if (value == null || value == undefined) return null;
+        var s:String = trimBlank(String(value));
+        if (s.length == 0 || s == "null" || s == "undefined") return null;
+        return s;
     }
 
     /** 技能注释文档。icon.name = 技能名（对应旧 "图标-"+技能名 链接）。 */

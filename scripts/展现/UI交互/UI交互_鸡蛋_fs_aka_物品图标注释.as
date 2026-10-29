@@ -11,25 +11,49 @@ _root.物品图标注释 = function(name, value, baseItem, ownerClip) {
     var itemData:Object = ItemUtil.getItemData(name);
     if(typeof baseItem !== "object") baseItem = null;
 
-    // 1) 基础段描述（不含简介头与装备属性）
-    var 描述文本:String = TooltipComposer.generateItemDescriptionText(itemData, baseItem);
+    // 1) 基础段描述（不含简介头与装备属性）；subBlocks 拆出「战技/副武器」「已安装插件」
+    //    「额外功能」三块，各自成为一个 role:"sub" 子注释框；旧消费端按 body 内联不丢内容。
+    var subBlocks:Array = [];
+    var 描述文本:String = TooltipComposer.generateItemDescriptionTextEx(itemData, baseItem, subBlocks);
 
-    // 2) 简介面板文本（简介头 + 装备段）
-    var 简介文本:String = TooltipComposer.generateIntroPanelContent(baseItem, itemData, value);
+    // 2) 原生专属部件：左侧竖排插条（武器大类/子类）与枪械弹夹独立框
+    var 插条:Array = TooltipComposer.getRailText(itemData, baseItem);
+    var 弹夹:Object = TooltipComposer.getMagazineInfo(baseItem, itemData, value);
+
+    // 3) 简介面板文本。插条承载了类型行时才从面板省略该行（非武器保持原样不丢信息）；
+    //    弹夹行改由独立框显示；暴击/斩杀拆到第一个子框。
+    var 暴击斩杀:Array = [];
+    var 简介文本:String = TooltipComposer.generateIntroPanelContent(baseItem, itemData, value, {
+        omitTypeLines: 插条 != null,
+        omitClipName: 弹夹 != null,
+        omitCritSlay: true,
+        critSlay: 暴击斩杀
+    });
+    if (暴击斩杀.length > 0) subBlocks.unshift(暴击斩杀.join(""));
+
+    var extras:Object = null;
+    if (插条 != null || 弹夹 != null) {
+        extras = {};
+        if (插条 != null) extras.rail = 插条;
+        if (弹夹 != null) extras.magazine = 弹夹;
+    }
 
     // _root.服务器.发布服务器消息("描述文本:" + StringUtils.htmlToPlainTextFast(描述文本));
     // _root.服务器.发布服务器消息("简介文本:" + StringUtils.htmlToPlainTextFast(简介文本));
 
-    // 3) 获取用于图标显示的数据（如果 baseItem 存在且是装备物品，使用 getData() 以应用涂装覆盖）
+    // 4) 图标显示数据（装备实例走 getData() 以应用涂装覆盖）
     var iconData:Object = null;
     if(baseItem && baseItem.getData != undefined && ItemUtil.isEquipment(name)){
         iconData = baseItem.getData();
     }
 
-    // 4) 原生注释出口：document 经 native_interaction 下发；通道不可用时回退旧 Flash 渲染
-    var doc:Object = NativeTooltipDocument.buildItem(name, itemData, iconData, 简介文本, 描述文本);
+    // 5) 原生注释出口：document 经 native_interaction 下发；通道不可用时回退旧 Flash 渲染
+    var doc:Object = NativeTooltipDocument.buildItem(name, itemData, iconData, 简介文本, 描述文本, subBlocks, extras);
     if (NativeTooltipBridge.show(doc, ownerClip) == null) {
-        TooltipComposer.renderItemTooltipSmart(name, value, 描述文本, 简介文本, null, iconData);
+        // 回退路径无插条/弹夹框，简介需按旧版全文重建一次
+        var 回退简介:String = TooltipComposer.generateIntroPanelContent(baseItem, itemData, value, null);
+        var 回退全文:String = 描述文本 + subBlocks.join("");
+        TooltipComposer.renderItemTooltipSmart(name, value, 回退全文, 回退简介, null, iconData);
     }
 };
 
@@ -119,16 +143,42 @@ _root.Web物品注释HTML = function(name:String):Object {
 
     // value 对象：Web 入口当前没有强化等级 / 涂装上下文，统一以 level=1 走基础数据
     var value:Object = { level: 1 };
-    var descHTML:String = TooltipComposer.generateItemDescriptionText(itemData, null);
-    var introHTML:String = TooltipComposer.generateIntroPanelContent(null, itemData, value);
+    var subBlocks:Array = [];
+    var descBody:String = TooltipComposer.generateItemDescriptionTextEx(itemData, null, subBlocks);
+    var introHTML:String = TooltipComposer.generateIntroPanelContent(null, itemData, value, null);
+
+    // 装备才可能拆出插条/弹夹/暴击斩杀，此时为语义文档再走一次省略版简介；
+    // 非装备两次结果同文，直接复用避免重复构建。
+    var 插条:Array = TooltipComposer.getRailText(itemData, null);
+    var 弹夹:Object = TooltipComposer.getMagazineInfo(null, itemData, value);
+    var extras:Object = null;
+    var docIntro:String = introHTML;
+    if (ItemUtil.isEquipment(name)) {
+        var 暴击斩杀:Array = [];
+        docIntro = TooltipComposer.generateIntroPanelContent(null, itemData, value, {
+            omitTypeLines: 插条 != null,
+            omitClipName: 弹夹 != null,
+            omitCritSlay: true,
+            critSlay: 暴击斩杀
+        });
+        if (暴击斩杀.length > 0) subBlocks.unshift(暴击斩杀.join(""));
+        if (插条 != null || 弹夹 != null) {
+            extras = {};
+            if (插条 != null) extras.rail = 插条;
+            if (弹夹 != null) extras.magazine = 弹夹;
+        }
+    }
 
     return {
-        descHTML: descHTML,
+        // descHTML/introHTML 保持旧版全文（含子框内容与类型行）：
+        // 只读 HTML 的面板（锻造/战利品/角色构筑等）不认 document，省略即丢信息。
+        descHTML: descBody + subBlocks.join(""),
         introHTML: introHTML,
         displayname: String(itemData.displayname || name),
         itemData: itemData,
         // COMMON v1 语义文档（纯数据字段，消费方需先经白名单协调再接入 wire）
-        document: NativeTooltipDocument.buildItem(name, itemData, null, introHTML, descHTML)
+        // subBlocks → role:"sub" 子注释框段；extras → rail/magazine 结构部件
+        document: NativeTooltipDocument.buildItem(name, itemData, null, docIntro, descBody, subBlocks, extras)
     };
 };
 

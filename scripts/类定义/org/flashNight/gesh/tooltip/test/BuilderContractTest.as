@@ -1,8 +1,11 @@
 ﻿import org.flashNight.gesh.tooltip.test.TestDataBootstrap;
 import org.flashNight.gesh.tooltip.test.MockItemFactory;
 import org.flashNight.arki.item.EquipmentUtil;
+import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.gesh.tooltip.TooltipComposer;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
+import org.flashNight.gesh.tooltip.TooltipTextBuilder;
 import org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer;
 import org.flashNight.gesh.tooltip.builder.CommonStatsBuilder;
 import org.flashNight.gesh.tooltip.builder.GunStatsBuilder;
@@ -46,6 +49,27 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         else { testsFailed++; trace("[FAIL] " + msg + " '" + needle + "' was found but should not be"); }
     }
 
+    /** 逐项严格比较数组；用于 rail 文本这类顺序敏感的契约。 */
+    private static function assertArray(expected:Array, actual:Object, msg:String):Void {
+        testsRun++;
+        if (!(actual instanceof Array) || actual.length != expected.length) {
+            testsFailed++;
+            trace("[FAIL] " + msg + " expected length " + expected.length
+                + " actual=" + (actual instanceof Array ? actual.length : String(actual)));
+            return;
+        }
+        for (var i:Number = 0; i < expected.length; i++) {
+            if (expected[i] !== actual[i]) {
+                testsFailed++;
+                trace("[FAIL] " + msg + " index " + i + " expected=" + expected[i]
+                    + " actual=" + actual[i]);
+                return;
+            }
+        }
+        testsPassed++;
+        trace("[PASS] " + msg);
+    }
+
     public static function runAllTests():Void {
         testsRun = testsPassed = testsFailed = 0;
         trace("--- BuilderContractTest ---");
@@ -83,6 +107,14 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         test_ModStatBuilder_skillSwitch();
         test_ModsBlockBuilder_hitBehavior_useSwitch();
         test_ModsBlockBuilder_skillSwitch();
+
+        test_getRailText();
+        test_getMagazineInfo();
+        test_buildIntroHeader_omitTypeLines();
+        test_gunStats_omitClipName();
+        test_commonStats_omitCritSlay();
+        test_equipmentStatsComposer_omitCrit();
+        test_generateIntroPanelContent_nativeOpt();
 
         trace("--- BuilderContractTest: " + testsPassed + "/" + testsRun + " passed, " + testsFailed + " failed ---");
     }
@@ -541,6 +573,166 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
 
         assertContains(joined, "条件战技插件", "ModsBlockBuilder skillSwitch has mod name");
         assertContains(joined, "闪现", "ModsBlockBuilder skillSwitch has resolved skill");
+    }
+
+    // === 原生注释专属取数：左侧插条 rail ===
+
+    private static function test_getRailText():Void {
+        assertArray(["长枪", "突击步枪"],
+            TooltipComposer.getRailText({type: "武器", use: "长枪", weapontype: "突击步枪"}, null),
+            "rail: 大类+子类产出上下两块");
+        assertArray(["手枪"],
+            TooltipComposer.getRailText({type: "武器", use: "手枪"}, null),
+            "rail: 无子类时只出大类块");
+        assertArray(["手枪"],
+            TooltipComposer.getRailText({type: "武器", use: "手枪", weapontype: "手枪"}, null),
+            "rail: 大类与子类同名时去重为一块");
+        assert(TooltipComposer.getRailText({type: "防具", use: "防具", weapontype: "胸甲"}, null) == null,
+            "rail: 非武器不产插条（简介面板保留类型行）");
+        assert(TooltipComposer.getRailText(null, null) == null,
+            "rail: 空物品不产插条");
+
+        assertArray(["长枪", "精确射手步枪"],
+            TooltipComposer.getRailText({type: "武器", use: "手枪", weapontype: "突击步枪"},
+                calcBaseItem(1, {use: "长枪", weapontype: "精确射手步枪"})),
+            "rail: 计算后数据（进阶/涂装）覆盖原始字段");
+        assertArray(["手枪", "突击步枪"],
+            TooltipComposer.getRailText({type: "武器", use: "手枪", weapontype: "突击步枪"},
+                calcBaseItem(1, {})),
+            "rail: 计算数据缺字段时回落 item 原始字段");
+    }
+
+    /** 原生取数用的最小实例：getData() 返回指定计算结果。
+     *  不标注返回类型是刻意的 —— AS2 会把无类型函数结果按宽松类型接受，
+     *  直接把对象字面量写进 BaseItem 形参会报"类型不匹配"。 */
+    private static function calcBaseItem(level:Number, calc:Object) {
+        return {value: {level: level}, getData: function() { return calc; }};
+    }
+
+    // === 原生注释专属取数：弹夹独立框 ===
+
+    private static function test_getMagazineInfo():Void {
+        var gunItem:Object = ItemUtil.getItemData("测试手枪");
+        assert(gunItem != null, "mag: 手枪 fixture 可用");
+
+        var mag:Object = TooltipComposer.getMagazineInfo(
+            MockItemFactory.mockBaseItem(), gunItem, {level: 1});
+        assert(mag != null, "mag: 枪械产出弹夹信息");
+        assert(mag != null && mag.name == "手枪通用弹药",
+            "mag: name 取弹夹物品 displayname");
+        assert(mag != null && mag.icon == undefined,
+            "mag: 弹夹物品无 icon 字段时省略该键");
+
+        assert(TooltipComposer.getMagazineInfo(MockItemFactory.mockBaseItem(),
+            ItemUtil.getItemData("测试军刀"), {level: 1}) == null,
+            "mag: 非枪械不产弹夹框");
+        assert(TooltipComposer.getMagazineInfo(null,
+            {type: "武器", use: "手枪", data: {capacity: 12}}, {level: 1}) == null,
+            "mag: 无 clipname 不产弹夹框");
+        assert(TooltipComposer.getMagazineInfo(null,
+            {type: "武器", use: "手枪", data: {clipname: "完全不存在的弹夹"}}, {level: 1}) == null,
+            "mag: clipname 查不到物品时不产弹夹框");
+
+        var upgraded:Object = TooltipComposer.getMagazineInfo(
+            calcBaseItem(3, {data: {clipname: "手枪通用弹药"}}),
+            {type: "武器", use: "手枪", data: {capacity: 12}}, {level: 3});
+        assert(upgraded != null && upgraded.name == "手枪通用弹药",
+            "mag: 强化后以计算数据里的 clipname 为准");
+    }
+
+    // === nativeOpt 省略开关：正文只减不丢 ===
+
+    private static function test_buildIntroHeader_omitTypeLines():Void {
+        var item:Object = {displayname: "测试步枪", type: "武器", use: "长枪",
+                           weapontype: "突击步枪", price: 20000, data: {}};
+        var legacyJoined:String = TooltipTextBuilder
+            .buildIntroHeader(null, item, {level: 1}, null).join("");
+        assertContains(legacyJoined, "武器    长枪", "introHeader: 默认输出大类行");
+        assertContains(legacyJoined, TooltipConstants.LBL_WEAPON_TYPE, "introHeader: 默认输出子类行");
+
+        var nativeJoined:String = TooltipTextBuilder
+            .buildIntroHeader(null, item, {level: 1}, {omitTypeLines: true}).join("");
+        assertNotContains(nativeJoined, "武器    长枪", "introHeader: omitTypeLines 去掉大类行");
+        assertNotContains(nativeJoined, TooltipConstants.LBL_WEAPON_TYPE,
+            "introHeader: omitTypeLines 去掉子类行");
+        assertContains(nativeJoined, "测试步枪", "introHeader: 省略类型行不影响标题行");
+        assertContains(nativeJoined, "$20000", "introHeader: 省略类型行不影响价格行");
+    }
+
+    private static function test_gunStats_omitClipName():Void {
+        var f:Object = MockItemFactory.gun();
+        var bi = MockItemFactory.mockBaseItem();
+
+        var legacy:Array = [];
+        GunStatsBuilder.build(legacy, bi, f.item, f.data, null, null);
+        assertContains(legacy.join(""), TooltipConstants.LBL_CLIP_NAME,
+            "gunStats: 默认输出使用弹夹行");
+
+        var native:Array = [];
+        GunStatsBuilder.build(native, bi, f.item, f.data, null, {omitClipName: true});
+        var nativeJoined:String = native.join("");
+        assertNotContains(nativeJoined, TooltipConstants.LBL_CLIP_NAME,
+            "gunStats: omitClipName 把该行交给独立弹夹框");
+        // 「使用弹夹」行是 4 个片段；只允许这一行消失，其余属性片段不得连带丢失。
+        assert(native.length == legacy.length - 4,
+            "gunStats: 只删弹夹一行，其余片段数不变 (legacy=" + legacy.length
+            + " native=" + native.length + ")");
+    }
+
+    private static function test_commonStats_omitCritSlay():Void {
+        var f:Object = MockItemFactory.meleeWeapon();
+        f.data.slay = 8;
+        var bi = MockItemFactory.mockBaseItem();
+
+        var legacy:Array = [];
+        CommonStatsBuilder.build(legacy, bi, f.item, f.data, null, null);
+        assertContains(legacy.join(""), TooltipConstants.SUF_BLOOD,
+            "critSlay: 默认斩杀行留在属性块");
+
+        var buffer:Array = [];
+        var native:Array = [];
+        CommonStatsBuilder.build(native, bi, f.item, f.data, null,
+            {omitCritSlay: true, critSlay: buffer});
+        assertNotContains(native.join(""), TooltipConstants.SUF_BLOOD,
+            "critSlay: omitCritSlay 把斩杀行移出属性块");
+        assertContains(buffer.join(""), TooltipConstants.SUF_BLOOD,
+            "critSlay: 斩杀行写入子框缓冲区");
+        assertContains(native.join(""), TooltipConstants.PROPERTY_DICT["force"],
+            "critSlay: 其余通用属性保留");
+    }
+
+    private static function test_equipmentStatsComposer_omitCrit():Void {
+        var f:Object = MockItemFactory.weaponWithCrit();
+        var bi = MockItemFactory.mockBaseItem();
+
+        var legacy:Array = EquipmentStatsComposer.compose(bi, f.item, f.data, null, null);
+        assertContains(legacy.join(""), TooltipConstants.LBL_CRIT,
+            "critBlock: 默认暴击块在属性编排结果里");
+
+        var buffer:Array = [];
+        var native:Array = EquipmentStatsComposer.compose(bi, f.item, f.data, null,
+            {omitCritSlay: true, critSlay: buffer});
+        assertNotContains(native.join(""), TooltipConstants.LBL_CRIT,
+            "critBlock: omitCritSlay 把暴击块移出属性编排结果");
+        assertContains(buffer.join(""), TooltipConstants.LBL_CRIT,
+            "critBlock: 暴击块写入子框缓冲区");
+    }
+
+    private static function test_generateIntroPanelContent_nativeOpt():Void {
+        var gunItem:Object = ItemUtil.getItemData("测试手枪");
+        var bi = MockItemFactory.mockBaseItem();
+
+        var legacy:String = TooltipComposer.generateIntroPanelContent(bi, gunItem, {level: 1}, null);
+        assertContains(legacy, "武器    手枪", "introPanel: 默认含类型行");
+        assertContains(legacy, TooltipConstants.LBL_CLIP_NAME, "introPanel: 默认含使用弹夹行");
+
+        var native:String = TooltipComposer.generateIntroPanelContent(bi, gunItem, {level: 1}, {
+            omitTypeLines: true, omitClipName: true, omitCritSlay: true, critSlay: []
+        });
+        assertNotContains(native, "武器    手枪", "introPanel: 原生路径省略类型行（移交插条）");
+        assertNotContains(native, TooltipConstants.LBL_CLIP_NAME,
+            "introPanel: 原生路径省略弹夹行（移交独立框）");
+        assert(native.length > 0, "introPanel: 原生路径仍有属性正文");
     }
 
     private static function buildSkillSwitchFixture():Object {

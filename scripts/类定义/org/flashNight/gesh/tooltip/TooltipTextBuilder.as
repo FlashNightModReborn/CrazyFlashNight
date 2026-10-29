@@ -307,7 +307,8 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   }
 
   // === 生成简介标题头（1:1 复刻 _root.注释文本.生成简介标题头） ===
-  public static function buildIntroHeader(baseItem:BaseItem, item:Object, externalValue:Object):Array {
+  // nativeOpt.omitTypeLines：大类/子类两行移交左侧插条（rail）竖排显示，简介面板不再输出。
+  public static function buildIntroHeader(baseItem:BaseItem, item:Object, externalValue:Object, nativeOpt:Object):Array {
     var value = baseItem && baseItem.value ? baseItem.value : (externalValue ? externalValue : 1);
     var upgradeLevel = value.level ? value.level : 1;
 
@@ -322,10 +323,13 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
     var result = [];
     result.push("<B>", (value.tier ? ("[" + value.tier + "]") : ""), displayName, "</B><BR>");
-    result.push(item.type, "    ", item.use, "<BR>");
-    // 为手枪和长枪显示具体武器类型
-    if (ItemUseTypes.isGun(item.use) && item.data && item.weapontype) {
-      result.push(TooltipConstants.LBL_WEAPON_TYPE, "：", item.weapontype, "<BR>");
+    var omitTypeLines:Boolean = (nativeOpt != null && nativeOpt.omitTypeLines === true);
+    if (!omitTypeLines) {
+      result.push(item.type, "    ", item.use, "<BR>");
+      // 为手枪和长枪显示具体武器类型
+      if (ItemUseTypes.isGun(item.use) && item.data && item.weapontype) {
+        result.push(TooltipConstants.LBL_WEAPON_TYPE, "：", item.weapontype, "<BR>");
+      }
     }
     result.push("$", item.price, "<BR>");
     if (upgradeLevel > 1 && (item.type == ItemUseTypes.TYPE_WEAPON || item.type == ItemUseTypes.TYPE_ARMOR)) {
@@ -360,12 +364,12 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
 
 
 
-  public static function buildStats(baseItem:BaseItem, item:Object, externalValue:Object):Array {
+  public static function buildStats(baseItem:BaseItem, item:Object, externalValue:Object, nativeOpt:Object):Array {
     if(!item.data) return [];
     if (item.use === ItemUseTypes.POTION){
       return buildDrugStats(item);
     }else{
-      return buildEquipmentStats(baseItem, item, externalValue);
+      return buildEquipmentStats(baseItem, item, externalValue, nativeOpt);
     }
   }
 
@@ -375,7 +379,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   }
 
   // === 生成装备属性块（1:1 复刻 _root.注释文本.生成装备属性块） ===
-  public static function buildEquipmentStats(baseItem:BaseItem, item:Object, externalValue:Object):Array {
+  public static function buildEquipmentStats(baseItem:BaseItem, item:Object, externalValue:Object, nativeOpt:Object):Array {
     var value = baseItem && baseItem.value ? baseItem.value : (externalValue ? externalValue : 1);
     var upgradeLevel = value.level ? value.level : 1;
 
@@ -383,7 +387,7 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     var equipData = upgradeLevel > 1 || value.mods ? baseItem.getData().data : null;
 
     // 委托给新的编排器（保持完全相同的输出）
-    return EquipmentStatsComposer.compose(baseItem, item, data, equipData);
+    return EquipmentStatsComposer.compose(baseItem, item, data, equipData, nativeOpt);
   }
 
   // === 生成装备强化数据属性块 ===

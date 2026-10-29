@@ -16,6 +16,16 @@
  *   .ntt-icon-placeholder / .ntt-icon-image
  *                     图标占位/实图标记
  *
+ * 例外（document 独有的结构部件，legacy buildItemRichHtml 不产出，因此不在
+ * "与 legacy 零视觉差异"的比对范围内）：
+ *   .ntt-rail / .ntt-rail-block / .ntt-rail-waist
+ *                     document.rail 的左侧竖排插条（视觉权威在 foundation-rest.css）
+ *   .ntt-mag / .ntt-mag-icon / .ntt-mag-icon-image / .ntt-mag-name
+ *                     document.magazine 的弹夹行；整行不接指针，图标不再套注释框
+ *   .ntt-sub-panel    role:"sub" 的子注释框
+ * 这些类与 .flash-tt-* 同元素双类名书写（沿用上一轮 .flash-tt-sub-panel 与
+ * .ntt-sub-panel 的既有做法），视觉规则统一落在 foundation-rest.css。
+ *
  * data-doc-profile="simple|dense|pinned" 同样只是标注：交互 profile 由 tooltip.js
  * profileForDocument 映射到 data-tooltip-profile，样式仍走既有 profile 规则。
  */

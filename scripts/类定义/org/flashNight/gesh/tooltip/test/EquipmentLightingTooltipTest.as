@@ -86,6 +86,10 @@ class org.flashNight.gesh.tooltip.test.EquipmentLightingTooltipTest {
             check(html.indexOf("【照明效果】")>=0 && html.indexOf("闪避加成 +20")>=0,"equipment composer reads the merged lifecycle instead of the raw definition");
             var doc:Object=NativeTooltipDocument.buildItem(base.name,base,effective,"",html);
             check(flatten(doc).indexOf("近身补光")>=0 && flatten(doc).indexOf("+20")>=0,"shared native/Web document retains the generated lighting text");
+            var exSubs:Array=[];
+            var exMain:String=TooltipComposer.generateItemDescriptionTextEx(base,instance,exSubs);
+            check(exMain.indexOf("近身补光")==-1 && exSubs.join("").indexOf("近身补光")>=0,"installed lighting belongs to a sub annotation box, not the description body");
+            check(html.length==exMain.length+exSubs.join("").length,"sub box split keeps the whole composer text");
             instance.effective={name:base.name,type:base.type,use:base.use,data:{}};instance.value.mods=[];
             check(TooltipComposer.generateItemDescriptionText(base,instance).indexOf("【照明效果】")==-1,"removing a mod removes its annotation from the effective tooltip");
             base.lifecycle={attr_old:light("laser")};

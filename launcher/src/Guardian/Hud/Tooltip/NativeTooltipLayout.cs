@@ -105,6 +105,24 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         internal const float PlacementEps = 0.5f;         // PLACEMENT_EPS
         internal const int StackedMarginBase = 32;        // stacked: calc(100vw-32px)
 
+        // ---- 子注释框（新视觉合同：黑底 80% + 1px 白描边，主面板下方竖排）----
+        internal const int SubGapBase = 6;                // 框间间隙（CSS px）
+
+        // ---- 左侧插条（rail，document.rail）：白色工字形竖条，高=图标高，
+        //      两端宽块写竖排大类/子类，中段收窄成腰部 ----
+        internal const int RailWideWBase = 26;            // 宽块宽 = 整条最大宽（CSS px）
+        internal const float RailWaistFrac = 0.42f;       // 腰部宽 / 宽块宽
+        internal const int RailFontBase = 13;             // 竖排字号上限（CSS px）
+        internal const int RailFontMinBase = 9;           // 竖排字号下限（再挤也不缩到此值下）
+        internal const int RailTextPadBase = 3;           // 文字与块端内边距（CSS px）
+        internal const int RailCapMinBase = 12;           // 只有一段文字时另一端空帽的最小高
+        internal const int RailTextAlpha = 217;           // 插条文字不透明度（85%×255）
+
+        // ---- 弹夹独立行（document.magazine，intro 面板底部 + 白线分隔）----
+        internal const int MagDividerGapBase = 4;         // 上行文字/分隔线/行内容 的间距
+        internal const int MagRowPadBase = 2;             // 行内上下留白（行高=字高+2×此值）
+        internal const int MagIconTextGapBase = 4;        // 小图标与弹夹名间距
+
         // ---- 智能拆分（TooltipConstants.as / shouldSplitWeb 同值）----
         private const double SPLIT_THRESHOLD = 96.0;
         private const int SMART_TOTAL_MULT = 2;
@@ -808,6 +826,31 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             /// <summary>图标贴图框（tip 相对）。</summary>
             internal Rectangle IconRect;
 
+            /// <summary>左侧插条宽块（最多 2 个，tip 相对；文字逆时针 90°竖排）。
+            /// 空 = 无插条。</summary>
+            internal List<RailBlock> RailBlocks = new List<RailBlock>();
+            /// <summary>插条腰部（两端宽块之间的窄段）。</summary>
+            internal Rectangle RailSpine;
+            /// <summary>插条占位宽度：全部面板/图标/子框整体右移量（=宽块宽）。</summary>
+            internal int RailShift;
+
+            /// <summary>单个插条宽块（矩形 + 竖排文本 + 字号）。</summary>
+            internal sealed class RailBlock
+            {
+                internal Rectangle Rect;
+                internal string Text;
+                internal int FontPx;
+            }
+
+            /// <summary>弹夹独立行框（intro 面板底部；上方一条白线与正文分隔）。</summary>
+            internal Rectangle MagazineRow;
+            internal Rectangle MagazineIconRect;
+            internal int MagazineDividerY;
+            internal int MagazineTextLeftPx;
+            internal int MagazineFontPx;
+            internal string MagazineName;
+            internal string MagazineIconName;
+
             /// <summary>intro 面板内文本行（split 时仅 intro；merge 时含 desc 拼接）。</summary>
             internal List<VisualLine> IntroLines = new List<VisualLine>();
             /// <summary>desc 面板文本行（split）；pinned 时为 body 滚动单元整列。</summary>
@@ -818,6 +861,20 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             /// parity-compare 的 text.intro/text.desc 应读这两列而非视觉行。</summary>
             internal List<VisualLine> IntroLogicalLines = new List<VisualLine>();
             internal List<VisualLine> DescLogicalLines = new List<VisualLine>();
+
+            /// <summary>子注释框（role:"sub" 段，主面板下方竖排堆叠的独立框体，
+            /// 黑底 80% + 1px 白描边）。空 = 无子框。plain/pinned 路径恒空
+            /// （sub 段退化为 body 内联进描述栏）。</summary>
+            internal List<SubBox> Subs = new List<SubBox>();
+
+            /// <summary>单个子注释框（tip 相对坐标）。</summary>
+            internal sealed class SubBox
+            {
+                internal Rectangle Panel;
+                internal List<VisualLine> Lines = new List<VisualLine>();
+                internal int ContentLeftPx;
+                internal int ContentTopPx;
+            }
 
             /// <summary>intro 文本起点（tip 相对）。</summary>
             internal int IntroContentLeftPx;
@@ -932,13 +989,22 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             bool hasIcon = doc.Icon != null && !string.IsNullOrEmpty(doc.Icon.Name);
             List<NativeTooltipSection> introSecs = SectionsOf(doc, NativeTooltipSectionRole.Intro);
             List<NativeTooltipSection> descSecs = DescSections(doc);
+            List<NativeTooltipSection> subSecs = SectionsOf(doc, NativeTooltipSectionRole.Sub);
             bool hasIntro = doc.TitleRuns.Count > 0 || introSecs.Count > 0;
             bool hasDesc = descSecs.Count > 0;
 
             // ── plain 文本提示：无 icon 且 profile=simple → #panel-tooltip 原生样式
             //    （迁移前 Web 里 setText 短提示：灰渐变框 + pad 10/14 + maxw 480 + lh 1.5）
-            if (!hasIcon && !plan.Pinned
-                && doc.Profile == NativeTooltipProfile.Simple)
+            bool isPlain = !hasIcon && !plan.Pinned
+                && doc.Profile == NativeTooltipProfile.Simple;
+            // plain/pinned 不支持子框堆叠：sub 段按 body 同文档序内联进描述栏，不丢内容
+            // （rich float 路径保留 subSecs，装配完主面板后堆叠）
+            if ((isPlain || plan.Pinned) && subSecs.Count > 0)
+            {
+                descSecs.AddRange(subSecs);
+                subSecs.Clear();
+            }
+            if (isPlain)
             {
                 ComputePlain(doc, measure, scale, viewportWidthPx, viewportHeightPx,
                     dpiScale, plan, introSecs, descSecs);
@@ -1053,6 +1119,16 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 descPanelH = Math.Max(lhInt + pad * 2, Math.Min(contentH, maxH));
             }
 
+            // ── 弹夹独立行：接在 intro 正文底部，白线分隔，行高=小图标高 ──
+            if (introPanelExists)
+            {
+                int magExtra = ApplyMagazineRow(plan, doc, scale, pad, introTextX,
+                    introTextY, introTextW, SumHeight(introLines, lh));
+                if (magExtra > 0)
+                    introPanelH = Math.Max(introPanelH,
+                        introTextY + SumHeight(introLines, lh) + magExtra + pad);
+            }
+
             // ── 组装 ──
             plan.IntroLines = introLines;
             plan.IntroLogicalLines = MergeLogicalLines(introLines);
@@ -1121,10 +1197,171 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 }
             }
 
+            // ── 左侧插条：条宽并入 tip，面板/图标整体右移（须在子框堆叠之前）──
+            ApplyRail(plan, doc, scale);
+
+            // ── 子注释框：主面板下方按文档序堆叠（宽度=主 tip 宽）──
+            if (subSecs.Count > 0)
+                ComputeSubBoxes(plan, subSecs, measure, lh, scale, pad, vhCss);
+
             // ── dense 检视状态条（status 为 _el 首子节点，位于全部面板上方）──
             if (doc.Profile == NativeTooltipProfile.Dense)
                 ApplyInspectionStrip(plan, measure, scale, inspectionState);
             return plan;
+        }
+
+        /// <summary>
+        /// 子注释框堆叠：每 sub 段一个独立框，宽 = 主 tip 总宽，框间间隙
+        /// Px(SubGapBase)；高 = pad*2 + 内容高，上限沿用 desc max-height
+        /// min(70vh,520px)，超出的行绘制期裁掉（首版不滚动）。
+        /// TipSize 随之加高，SolvePlacement 的避让/夹取自动覆盖整个竖排组合。
+        /// </summary>
+        private static void ComputeSubBoxes(Plan plan,
+            List<NativeTooltipSection> subSecs,
+            Func<string, RunFont, int> measure, float lh, float scale,
+            int pad, float vhCss)
+        {
+            int gap = Px(SubGapBase, scale);
+            int maxH = Px(Math.Min(DescMaxHBase, vhCss * DescMaxHViewportFrac), scale);
+            // 有插条时子框与面板左缘对齐（插条只服务顶部图标，不向下延伸）
+            int x = plan.RailShift;
+            int w = Math.Max(Px(DescMinWBase, scale), plan.TipSize.Width - x);
+            // 主面板底缘与首框同样吃间隙（Web .flash-tt-rich + .flash-tt-sub-panel）
+            int y = plan.TipSize.Height + gap;
+            foreach (NativeTooltipSection sec in subSecs)
+            {
+                List<NativeTooltipRun> runs = BuildColumnRuns(
+                    new List<NativeTooltipSection> { sec });
+                List<VisualLine> lines = WrapRuns(runs,
+                    Math.Max(1, w - pad * 2), measure, lh);
+                if (lines.Count > MaxRenderedLines)
+                    lines = lines.GetRange(0, MaxRenderedLines);
+                int h = Math.Max(1, Math.Min(
+                    SumHeight(lines, lh) + pad * 2, maxH));
+                Plan.SubBox box = new Plan.SubBox();
+                box.Panel = new Rectangle(x, y, w, h);
+                box.Lines = lines;
+                box.ContentLeftPx = x + pad;
+                box.ContentTopPx = y + pad;
+                plan.Subs.Add(box);
+                y += h + gap;
+            }
+            plan.TipSize = new Size(x + w,
+                Math.Max(plan.TipSize.Height, y - gap));
+        }
+
+        /// <summary>
+        /// 弹夹独立行（document.magazine）：接在 intro 正文最后一行之下，
+        /// 上边缘一条白线与正文分隔；行高 = 字体高 + 上下留白，
+        /// 小图标正方形取行高（"图标大小对齐框的高度"），图标后接弹夹名。
+        /// 返回该行占用的附加高度（0 = 无弹夹部件）。
+        /// </summary>
+        private static int ApplyMagazineRow(Plan plan, NativeTooltipDocument doc,
+            float scale, int pad, int textLeft, int textTop, int textWidth, int textHeight)
+        {
+            NativeTooltipMagazine mag = doc.Magazine;
+            if (mag == null || string.IsNullOrEmpty(mag.Name)) return 0;
+
+            int fontPx = Px(FontPxBase, scale);
+            int rowH = fontPx + Px(MagRowPadBase, scale) * 2;
+            int gap = Px(MagDividerGapBase, scale);
+            int dividerY = textTop + textHeight + gap;
+            int rowTop = dividerY + gap;
+
+            plan.MagazineName = mag.Name;
+            plan.MagazineIconName = mag.IconName;
+            plan.MagazineFontPx = fontPx;
+            plan.MagazineDividerY = dividerY;
+            plan.MagazineRow = new Rectangle(textLeft, rowTop, textWidth, rowH);
+            plan.MagazineIconRect = new Rectangle(textLeft, rowTop, rowH, rowH);
+            plan.MagazineTextLeftPx = textLeft + rowH + Px(MagIconTextGapBase, scale);
+            return gap + gap + rowH;
+        }
+
+        /// <summary>
+        /// 左侧插条（document.rail）：贴在图标左侧外沿的白色工字形竖条。
+        ///
+        /// 高 = 图标框高（无图标时退化为 intro 面板内高），两端宽块写竖排文本，
+        /// 中段腰部收窄。块长 = 字数 × 字号 + 2×内边距（CJK 等宽，只可能高估不会裁字）；
+        /// 两块放不下时按比例缩字号，缩到下限仍超出则交由绘制裁切。
+        /// 只有一段文本时另一端补一个空帽，保持"两头宽"的轮廓。
+        /// 条宽并入 TipSize，其余面板整体右移 —— 定位/避让仍覆盖完整组合。
+        /// </summary>
+        private static void ApplyRail(Plan plan, NativeTooltipDocument doc, float scale)
+        {
+            if (doc.Rail == null || doc.Rail.Texts.Count == 0) return;
+            if (plan.IntroPanel.IsEmpty) return;
+
+            int wideW = Px(RailWideWBase, scale);
+            int waistW = Math.Max(2, (int)Math.Round(wideW * RailWaistFrac));
+            int textPad = Px(RailTextPadBase, scale);
+
+            int top, height;
+            if (!plan.IconRect.IsEmpty)
+            {
+                top = plan.IconRect.Y;
+                height = plan.IconRect.Height;
+            }
+            else
+            {
+                int pad = Px(PanelPadBase, scale);
+                top = plan.IntroPanel.Y + pad;
+                height = Math.Max(1, plan.IntroPanel.Height - pad * 2);
+            }
+
+            List<string> texts = new List<string>(doc.Rail.Texts);
+            if (texts.Count == 1) texts.Add("");
+
+            int totalChars = 0;
+            for (int i = 0; i < texts.Count; i++) totalChars += texts[i].Length;
+            if (totalChars == 0) return;
+
+            int fontPx = Px(RailFontBase, scale);
+            int room = height - textPad * 2 * texts.Count;
+            if (room <= 0 || totalChars * fontPx > room)
+            {
+                int shrunk = room > 0 ? room / totalChars : 0;
+                int minFont = Px(RailFontMinBase, scale);
+                fontPx = Math.Max(minFont, shrunk);
+            }
+
+            int firstLen = texts[0].Length * fontPx + textPad * 2;
+            int lastLen = texts[texts.Count - 1].Length == 0
+                ? Math.Max(waistW, Px(RailCapMinBase, scale))
+                : texts[texts.Count - 1].Length * fontPx + textPad * 2;
+
+            Plan.RailBlock first = new Plan.RailBlock();
+            first.Rect = new Rectangle(0, top, wideW, firstLen);
+            first.Text = texts[0];
+            first.FontPx = fontPx;
+            Plan.RailBlock last = new Plan.RailBlock();
+            last.Rect = new Rectangle(0, top + height - lastLen, wideW, lastLen);
+            last.Text = texts[texts.Count - 1];
+            last.FontPx = fontPx;
+            plan.RailBlocks.Add(first);
+            plan.RailBlocks.Add(last);
+            plan.RailSpine = new Rectangle((wideW - waistW) / 2, first.Rect.Bottom,
+                waistW, Math.Max(1, last.Rect.Top - first.Rect.Bottom));
+
+            plan.RailShift = wideW;
+            ShiftPanelsRight(plan, wideW);
+            plan.TipSize = new Size(plan.TipSize.Width + wideW, plan.TipSize.Height);
+        }
+
+        /// <summary>插条占位后整体右移：面板/图标/正文左缘/滚动视口/弹夹行同步，
+        /// 使子框与主面板左缘对齐、SolvePlacement 仍按含插条的总宽避让。</summary>
+        private static void ShiftPanelsRight(Plan plan, int dx)
+        {
+            if (dx == 0) return;
+            if (!plan.IntroPanel.IsEmpty) plan.IntroPanel.Offset(dx, 0);
+            if (!plan.DescPanel.IsEmpty) plan.DescPanel.Offset(dx, 0);
+            if (!plan.IconRect.IsEmpty) plan.IconRect.Offset(dx, 0);
+            if (!plan.ScrollViewportRect.IsEmpty) plan.ScrollViewportRect.Offset(dx, 0);
+            if (!plan.MagazineRow.IsEmpty) plan.MagazineRow.Offset(dx, 0);
+            if (!plan.MagazineIconRect.IsEmpty) plan.MagazineIconRect.Offset(dx, 0);
+            plan.MagazineTextLeftPx += dx;
+            plan.IntroContentLeftPx += dx;
+            plan.DescContentLeftPx += dx;
         }
 
         /// <summary>
@@ -1159,6 +1396,16 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             if (!plan.DescPanel.IsEmpty) plan.DescPanel.Offset(0, off);
             if (!plan.IconRect.IsEmpty) plan.IconRect.Offset(0, off);
             if (!plan.ScrollViewportRect.IsEmpty) plan.ScrollViewportRect.Offset(0, off);
+            foreach (Plan.SubBox sb in plan.Subs)
+            {
+                sb.Panel.Offset(0, off);
+                sb.ContentTopPx += off;
+            }
+            foreach (Plan.RailBlock rb in plan.RailBlocks) rb.Rect.Offset(0, off);
+            if (!plan.RailSpine.IsEmpty) plan.RailSpine.Offset(0, off);
+            if (!plan.MagazineRow.IsEmpty) plan.MagazineRow.Offset(0, off);
+            if (!plan.MagazineIconRect.IsEmpty) plan.MagazineIconRect.Offset(0, off);
+            if (plan.MagazineDividerY > 0) plan.MagazineDividerY += off;
             plan.IntroContentTopPx += off;
             plan.DescContentTopPx += off;
             plan.TipSize = new Size(Math.Max(plan.TipSize.Width, w),

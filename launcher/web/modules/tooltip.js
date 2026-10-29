@@ -52,6 +52,16 @@ var PanelTooltip = (function() {
     var _showGen = 0;
     // 显式追踪 80ms 兜底定时器，hide() 时主动清掉避免空转
     var _repositionTimer = null;
+    // ── 淡出（2026-10 二轮，用户口径 0.5s）──
+    //
+    // hide() 不再立刻 display:none：给外层容器整体做 opacity→0 的 500ms 过渡，
+    // 收尾定时器才真正隐藏。为什么淡出作用于容器而不是逐层：子注释框各自的淡入
+    // 动画仍在播放，容器 alpha 是唯一能把所有层乘算到同一个终点的因子 ——
+    // 于是"主框 500ms 先到位、子框更慢揭示"与"所有层同一刻消失"两条合同同时成立。
+    // 与 C# NativeTooltipWidget 的共享淡出时钟 + 每层 alpha 快照等价。
+    // ⚠️ 跨端常量：值同 tooltip-document.js FADE_MAIN_MS 与 C# FadeOutMs。
+    var FADE_OUT_MS = 500;
+    var _fadeTimer = null;
     // simple/pinned profile 可让 tooltip 自身参与交互。当前展示 owner 通过这一条全局
     // interaction bridge 接收 enter/leave；dense profile 的 handler 明确拒绝接管。
     var _interactionOwner = null;
@@ -536,6 +546,7 @@ var PanelTooltip = (function() {
         }
         resetPlacementState(opts.placement);
         replaceTooltipContent(html);
+        cancelFadeOut();
         _el.style.display = 'block';
         _el.setAttribute('aria-hidden', 'false');
         _visible = true;
@@ -915,6 +926,7 @@ var PanelTooltip = (function() {
         }
         resetPlacementState(opts.placement);
         replaceTooltipContent(html);
+        cancelFadeOut();
         _el.style.display = 'block';
         _el.setAttribute('aria-hidden', 'false');
         _visible = true;
@@ -1003,6 +1015,43 @@ var PanelTooltip = (function() {
         return true;
     }
 
+    /**
+     * 收起淡出：容器整体 opacity→0，FADE_OUT_MS 后才真正 display:none。
+     * 期间浮层不接指针（否则会挡住刚腾出的触发物），并把本次收尾挂在 _showGen 上：
+     * 淡出中重新 show 会让本定时器作废，内联样式由 show 路径的 cancelFadeOut 复位。
+     * wasVisible=false（本来就没在展示）走确定性硬隐藏，不起动画也不占定时器。
+     */
+    function startFadeOut(wasVisible) {
+        if (!_el) return;
+        if (!wasVisible || _el.style.display === 'none') {
+            if (_fadeTimer) { clearTimeout(_fadeTimer); _fadeTimer = null; }
+            _el.style.display = 'none';
+            _el.setAttribute('aria-hidden', 'true');
+            return;
+        }
+        _el.setAttribute('aria-hidden', 'true');   // 可访问性语义立刻结束，不等动画
+        _el.style.pointerEvents = 'none';
+        _el.style.transition = 'opacity ' + FADE_OUT_MS + 'ms linear';
+        void _el.offsetWidth;                      // 强制样式结算，transition 才对本帧生效
+        _el.style.opacity = '0';
+        var gen = _showGen;
+        if (_fadeTimer) clearTimeout(_fadeTimer);
+        _fadeTimer = setTimeout(function() {
+            _fadeTimer = null;
+            if (_showGen !== gen) return;          // 已有新会话：它自己负责显隐
+            _el.style.display = 'none';
+        }, FADE_OUT_MS + 20);
+    }
+
+    /** 展示路径复位淡出残留（transition/opacity/pointer-events 都交回 CSS）。 */
+    function cancelFadeOut() {
+        if (_fadeTimer) { clearTimeout(_fadeTimer); _fadeTimer = null; }
+        if (!_el) return;
+        _el.style.transition = '';
+        _el.style.opacity = '';
+        _el.style.pointerEvents = '';
+    }
+
     /** 隐藏 tooltip 并清理所有句柄 */
     function hide(owner) {
         if (owner != null && _owner !== owner) return false;
@@ -1010,6 +1059,7 @@ var PanelTooltip = (function() {
         // bindAsync 的两个输入 owner，避免 selection、drag 或 inspector 关闭后旧 owner
         // 被下一次 pointer leave 恢复。bindAsync 内部始终携带私有 owner token。
         if (owner == null) releaseAllAsyncOwners();
+        var wasVisible = _visible;
         cleanupHandlers();
         clearHoverHide();
         // display:none 时浏览器不保证再派发 mouseleave；显式归零避免下一次手工
@@ -1028,10 +1078,7 @@ var PanelTooltip = (function() {
             clearTimeout(_repositionTimer);
             _repositionTimer = null;
         }
-        if (_el) {
-            _el.style.display = 'none';
-            _el.setAttribute('aria-hidden', 'true');
-        }
+        startFadeOut(wasVisible);
         return true;
     }
 

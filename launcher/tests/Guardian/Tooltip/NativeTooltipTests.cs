@@ -19,7 +19,7 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
     ///    （"&lt;b&gt;literal&lt;/b&gt;" 已展开为字面量后不得二次解析）。
     /// 2. 旧 htmlText 仅在 FromLegacyHtmlDocument 旧入口展开（font color/b/br/p）。
     /// 3. Hide(requestId) 只清匹配实例；同 requestId 低 revision 迟到 show 拒绝。
-    /// 4. 静止不逐帧：WantsAnimationTick 恒 false。
+    /// 4. 静止不逐帧：只有淡入/淡出期间 WantsAnimationTick 为 true，动画走完立刻停表。
     /// </summary>
     public class NativeTooltipTests
     {
@@ -407,6 +407,10 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                 Assert.False(w.Hide("other-id")); // 不匹配：不动显示
                 Assert.True(w.Visible);
                 Assert.True(w.Hide("tt-1"));
+                // hide 只启动共享淡出窗口，会话要等动画走完才真正结束
+                Assert.True(w.Visible, "淡出期间仍需保持可见供合成");
+                Assert.True(w.WantsAnimationTick, "hide 应索取动画 tick");
+                w.Tick(600);
                 Assert.False(w.Visible);
             }
         }
@@ -442,13 +446,22 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         }
 
         [Fact]
-        public void Widget_NeverWantsAnimationTick()
+        public void Widget_WantsAnimationTickOnlyWhileFading()
         {
             using (Control a = Anchor())
             using (var w = new NativeTooltipWidget(a))
             {
                 Assert.False(w.WantsAnimationTick);
                 w.Show(ComplexPayload());
+                Assert.True(w.WantsAnimationTick, "淡入期间需要 16ms tick");
+                w.Tick(2000);                       // 走完全部元素的淡入
+                Assert.False(w.WantsAnimationTick, "到位后立刻停表，不空转");
+                Assert.True(w.Visible);
+
+                Assert.True(w.Hide("tt-1"));
+                Assert.True(w.WantsAnimationTick, "淡出同样索取 tick");
+                w.Tick(600);
+                Assert.False(w.Visible);
                 Assert.False(w.WantsAnimationTick);
             }
         }
@@ -755,14 +768,15 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         // ════════════ paint 真实像素 / icon 真实目录 ════════════
 
         [Fact]
-        public void Paint_Split_DescPanel_WebGradient_NoFrame()
+        public void Paint_Split_DescPanel_BlackFillWhiteBorder()
         {
-            // 权威 = 迁移前 Web：面板 = rgba(153,153,153,.8)→rgba(51,51,51,.8)
-            // 垂直渐变、无边框无阴影；不得出现 NativeHud 填充/亮框线。
+            // 权威 = 2026-10 改版 Web token：面板 = rgba(0,0,0,.8) 平底 + 1px 白描边。
+            // 旧灰族渐变（#999→#333）退役；NativeHud chrome 不在此路径。
             using (Control a = Anchor())
             using (var w = new NativeTooltipWidget(a))
             {
                 Assert.True(w.Show(LongDensePayload()));
+                w.Tick(2000);   // 淡入走完才有实心像素可采
                 var plan = w.ActivePlan;
                 Assert.True(plan.Split);
                 Assert.False(plan.DescPanel.IsEmpty);
@@ -775,37 +789,32 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                     w.Paint(g, 1.0f, Point.Empty);
                     Rectangle dp = new Rectangle(placed.X + plan.DescPanel.X,
                         placed.Y + plan.DescPanel.Y, plan.DescPanel.Width, plan.DescPanel.Height);
-                    // 顶区合成色 ≈ gradTop(204,153) over bg(24,26,28) ≈ (127,128,128)
-                    int etr = (204 * 153 + 51 * 24) / 255;
-                    int etg = (204 * 153 + 51 * 26) / 255;
-                    int etb = (204 * 153 + 51 * 28) / 255;
-                    // 底区合成色 ≈ gradBot(204,51) over bg ≈ (46,46,46)
-                    int ebr = (204 * 51 + 51 * 24) / 255;
-                    int ebg = (204 * 51 + 51 * 26) / 255;
-                    int ebb = (204 * 51 + 51 * 28) / 255;
-                    int topHit = 0, botHit = 0, total = 0;
-                    // 采样面板 1px 内缘（文本从 pad=3 起，不踩字形像素）
-                    int topBand = dp.Y + 1;
-                    int botBand = dp.Bottom - 2;
+                    // 黑底 80% over bg(24,26,28)：0*204/255 + 24*51/255 ≈ (5,6,6)
+                    int fr = (204 * 0 + 51 * 24 + 127) / 255;
+                    int fg = (204 * 0 + 51 * 26 + 127) / 255;
+                    int fb = (204 * 0 + 51 * 28 + 127) / 255;
+                    int borderHit = 0, fillHit = 0, bleedHit = 0, total = 0;
+                    // 描边画在面板 1px 边缘；内缘 2px 起是填充（文本 pad=3，不踩字形）
                     for (int x = dp.X + 8; x < dp.Right - 8; x += 7)
                     {
                         total++;
-                        Color pt = bmp.GetPixel(x, topBand);
-                        if (Math.Abs(pt.R - etr) <= 4 && Math.Abs(pt.G - etg) <= 4
-                            && Math.Abs(pt.B - etb) <= 4) topHit++;
-                        Color pb = bmp.GetPixel(x, botBand);
-                        if (Math.Abs(pb.R - ebr) <= 4 && Math.Abs(pb.G - ebg) <= 4
-                            && Math.Abs(pb.B - ebb) <= 4) botHit++;
+                        Color edge = bmp.GetPixel(x, dp.Y);
+                        if (edge.R >= 200 && edge.G >= 200 && edge.B >= 200) borderHit++;
+                        Color fill = bmp.GetPixel(x, dp.Y + 2);
+                        if (Math.Abs(fill.R - fr) <= 4 && Math.Abs(fill.G - fg) <= 4
+                            && Math.Abs(fill.B - fb) <= 4) fillHit++;
+                        // 描边不得有 2px 宽（Web border-box 也是 1px 线）
+                        Color second = bmp.GetPixel(x, dp.Y + 1);
+                        if (second.R >= 200 && second.G >= 200 && second.B >= 200) bleedHit++;
+                        Color bottom = bmp.GetPixel(x, dp.Bottom - 1);
+                        Assert.True(bottom.R >= 200 && bottom.G >= 200 && bottom.B >= 200,
+                            "desc 面板底边应为白描边，实际=" + bottom);
                     }
-                    Assert.True(topHit * 2 >= total,
-                        "desc 面板顶区应为 Web 灰渐变顶色，命中=" + topHit + "/" + total);
-                    Assert.True(botHit * 2 >= total,
-                        "desc 面板底区应为 Web 灰渐变底色，命中=" + botHit + "/" + total);
-                    // 顶边中点 = 渐变顶色而非亮框线（Web 无边框；旧实现亮框 R>90 差异显著
-                    // ——但渐变顶色本身≈127，须逐通道区分：亮框线是近纯白>200）
-                    Color edge = bmp.GetPixel(dp.X + dp.Width / 2, dp.Y);
-                    Assert.True(edge.R < 200 && edge.G < 200,
-                        "desc 面板顶边不得有 NativeHud 亮框线，实际=" + edge);
+                    Assert.True(borderHit * 2 >= total,
+                        "desc 面板顶边应为 1px 白描边，命中=" + borderHit + "/" + total);
+                    Assert.True(fillHit * 2 >= total,
+                        "desc 面板内缘应为半透明黑填充，命中=" + fillHit + "/" + total);
+                    Assert.Equal(0, bleedHit);
                 }
             }
         }
@@ -828,6 +837,380 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
             Assert.True(plan.TipSize.Width <= NativeTooltipLayout.Px(
                 NativeTooltipLayout.PlainMaxWBase, 1f));
             Assert.False(plan.IntroPanel.IsEmpty);
+        }
+
+        // ════════════ 子注释框（role:"sub"，2026-10 视觉合同改版）════════════
+
+        private static NativeTooltipDocument SubBoxDoc(string profile, bool hasIcon)
+        {
+            string icon = hasIcon ? @"'icon':{'kind':'item','name':'x'}," : "";
+            return NativeTooltipDocument.FromDocument(JObject.Parse(@"{
+                'version':1,'title':'夜视头盔'," + icon + @"'profile':'" + profile + @"',
+                'sections':[
+                    {'role':'intro','runs':[{'text':'照亮前方'}]},
+                    {'role':'description','runs':[{'text':'基础描述'}]},
+                    {'role':'sub','runs':[{'text':'已装插件：扩容弹匣'}]},
+                    {'role':'sub','runs':[{'text':'夜视\n战技'}]}]}"));
+        }
+
+        /// <summary>拼接一组行的全部文本。</summary>
+        private static string PlanText(List<NativeTooltipLayout.VisualLine> lines)
+        {
+            var sb = new System.Text.StringBuilder();
+            foreach (var l in lines) sb.Append(LineText(l));
+            return sb.ToString();
+        }
+
+        /// <summary>主 tip 全部可见文本（intro 列 + desc 列）。</summary>
+        private static string MainTipText(NativeTooltipLayout.Plan plan)
+        {
+            var sb = new System.Text.StringBuilder();
+            foreach (var l in plan.IntroLines) sb.Append(LineText(l));
+            foreach (var l in plan.DescLines) sb.Append(LineText(l));
+            return sb.ToString();
+        }
+
+        [Fact]
+        public void SubBoxes_StackBelowMainTip_AndGrowTipSizeForPlacement()
+        {
+            var plan = NativeTooltipLayout.ComputePlan(
+                SubBoxDoc("dense", true), FixedMeasure, 15, 1f, 1024, 576);
+            Assert.Equal(2, plan.Subs.Count);
+            int gap = NativeTooltipLayout.Px(NativeTooltipLayout.SubGapBase, 1f);
+            int mainBottom = Math.Max(plan.IntroPanel.Bottom, plan.DescPanel.Bottom);
+            // 主面板与首框、框与框之间都是同一个间隙（Web margin-top 同值）
+            Assert.Equal(mainBottom + gap, plan.Subs[0].Panel.Top);
+            Assert.Equal(plan.Subs[0].Panel.Bottom + gap, plan.Subs[1].Panel.Top);
+            // 框宽 = 主 tip 宽；整组高进 TipSize → SolvePlacement 的避让/夹取覆盖子框
+            Assert.Equal(plan.TipSize.Width, plan.Subs[0].Panel.Width);
+            Assert.Equal(plan.Subs[1].Panel.Bottom, plan.TipSize.Height);
+            Assert.True(plan.TipSize.Height > mainBottom);
+            // sub 内容只进子框，不再出现在主面板文本里
+            Assert.DoesNotContain("扩容弹匣", MainTipText(plan));
+            Assert.Contains("扩容弹匣", PlanText(plan.Subs[0].Lines));
+            Assert.Equal(2, plan.Subs[1].Lines.Count);
+            // 内容原点 = 框缘 + pad（与 Intro/Desc 面板同一 padding）
+            Assert.Equal(plan.Subs[0].Panel.Top + plan.Subs[0].ContentLeftPx,
+                plan.Subs[0].ContentTopPx);
+        }
+
+        [Fact]
+        public void SubBoxes_PlainAndPinnedDegradeToInline()
+        {
+            // plain（无 icon 的 simple）与 pinned 检视没有 desc 侧栏语义：
+            // sub 段按主面板内联处理，不产生独立框——与旧消费端遇未知 role 的降级同构。
+            var plain = NativeTooltipLayout.ComputePlan(
+                SubBoxDoc("simple", false), FixedMeasure, 15, 1f, 1024, 576);
+            Assert.True(plain.Plain);
+            Assert.Empty(plain.Subs);
+            Assert.Contains("扩容弹匣", MainTipText(plain));
+
+            var pinned = NativeTooltipLayout.ComputePlan(
+                SubBoxDoc("pinned", true), FixedMeasure, 15, 1f, 1024, 576);
+            Assert.True(pinned.Pinned);
+            Assert.Empty(pinned.Subs);
+            Assert.Contains("扩容弹匣", MainTipText(pinned));
+        }
+
+        // ════════════ 插条 / 弹夹行 / 淡入淡出（2026-10 二轮改版）════════════
+
+        /// <summary>枪械样本：图标 + 左侧插条两段 + 弹夹独立行 + 两个子注释框。</summary>
+        private static JObject GunPayload(string requestId = "tt-gun")
+        {
+            return JObject.Parse(@"{
+  'version':1,'kind':'tooltip','op':'show','requestId':'" + requestId + @"',
+  'sceneId':'scene-bag','owner':'bagSlot','revision':1,'x':640.5,'y':300.25,
+  'document':{'version':1,'title':'G11 突击步枪',
+    'icon':{'kind':'item','name':'weapon_g11'},
+    'profile':'dense','rail':['长枪','突击步枪'],
+    'magazine':{'name':'11 号 4.7mm 弹夹','icon':'ammo_ghren_47'},
+    'sections':[
+      {'role':'intro','runs':[{'text':'口径 4.7mm\n使用弹夹：11 号弹夹'}]},
+      {'role':'description','runs':[{'text':'无壳弹武器，弹道平直。'}]},
+      {'role':'sub','runs':[{'text':'暴击率 +12%\n斩杀：目标 10% 生命以下直接处决'}]},
+      {'role':'sub','runs':[{'text':'已装插件：扩容弹匣\n夜视\n战技：突进射击'}]}]}}");
+        }
+
+        [Fact]
+        public void RailAndMagazineKeys_ParsedWithBounds()
+        {
+            var doc = NativeTooltipDocument.FromPayload(GunPayload());
+            Assert.NotNull(doc);
+            Assert.NotNull(doc.Rail);
+            Assert.Equal("长枪|突击步枪", string.Join("|", doc.Rail.Texts));
+            Assert.NotNull(doc.Magazine);
+            Assert.Equal("11 号 4.7mm 弹夹", doc.Magazine.Name);
+            Assert.Equal("ammo_ghren_47", doc.Magazine.IconName);
+            int subs = 0;
+            foreach (var s in doc.Sections)
+                if (s.Role == NativeTooltipSectionRole.Sub) subs++;
+            Assert.Equal(2, subs);
+        }
+
+        [Fact]
+        public void RailAndMagazine_MalformedValuesDroppedWithoutHurtingBody()
+        {
+            var doc = NativeTooltipDocument.FromDocument(JObject.Parse(@"{
+                'version':1,'title':'x','profile':'dense',
+                'icon':{'name':'i'},
+                'rail':['',  '  ', '长枪', '突击步枪', '第三段丢弃'],
+                'magazine':{'icon':'no_name'},
+                'sections':[{'role':'intro','runs':[{'text':'正文'}]}]}"));
+            Assert.NotNull(doc);
+            // 空串/空白被跳过，最多 2 项，第三项丢弃
+            Assert.Equal("长枪|突击步枪", string.Join("|", doc.Rail.Texts));
+            // magazine 无 name = 整键丢弃（弹夹名是行的存在条件）
+            Assert.Null(doc.Magazine);
+            Assert.Equal("正文", doc.Sections[0].PlainText);
+        }
+
+        [Fact]
+        public void Rail_PeaksLeftOfIcon_ShiftsPanelsAndWidensTipSize()
+        {
+            var doc = NativeTooltipDocument.FromPayload(GunPayload());
+            var plan = NativeTooltipLayout.ComputePlan(
+                doc, FixedMeasure, 15, 1f, 1024, 576);
+
+            int wide = NativeTooltipLayout.Px(NativeTooltipLayout.RailWideWBase, 1f);
+            int waist = Math.Max(2, (int)Math.Round(
+                wide * NativeTooltipLayout.RailWaistFrac));
+            int pad = NativeTooltipLayout.Px(NativeTooltipLayout.RailTextPadBase, 1f);
+
+            Assert.Equal(2, plan.RailBlocks.Count);
+            var first = plan.RailBlocks[0];
+            var last = plan.RailBlocks[1];
+            Assert.Equal("长枪", first.Text);
+            Assert.Equal("突击步枪", last.Text);
+            // 条体贴着图标左侧外沿：x=0，宽 = 整条最大宽
+            Assert.Equal(0, first.Rect.X);
+            Assert.Equal(wide, first.Rect.Width);
+            Assert.Equal(wide, plan.RailShift);
+            // 高 = 图标框高，两端块按字数撑开（块长 = 字数×字号 + 2×内边距）
+            Assert.Equal(plan.IconRect.Y, first.Rect.Y);
+            Assert.Equal(plan.IconRect.Bottom, last.Rect.Bottom);
+            Assert.Equal(2 * first.FontPx + pad * 2, first.Rect.Height);
+            Assert.Equal(4 * last.FontPx + pad * 2, last.Rect.Height);
+            Assert.True(first.Rect.Bottom <= last.Rect.Top, "两端块不得重叠");
+            // 腰部：居中窄条，连接两端块
+            Assert.Equal((wide - waist) / 2, plan.RailSpine.X);
+            Assert.Equal(waist, plan.RailSpine.Width);
+            Assert.Equal(first.Rect.Bottom, plan.RailSpine.Y);
+            Assert.Equal(last.Rect.Top - first.Rect.Bottom, plan.RailSpine.Height);
+            // 面板整体右移，条宽并入 tip；子框仍与面板左缘对齐
+            Assert.Equal(wide, plan.IntroPanel.X);
+            Assert.True(plan.IconRect.X > plan.RailBlocks[0].Rect.Right,
+                "图标应在插条右侧");
+            Assert.Equal(wide + plan.Subs[0].Panel.Width, plan.TipSize.Width);
+            Assert.Equal(wide, plan.Subs[0].Panel.X);
+        }
+
+        [Fact]
+        public void Rail_SingleText_KeepsBothEndsWide()
+        {
+            JObject p = GunPayload();
+            p["document"]["rail"] = new JArray("长枪");
+            var plan = NativeTooltipLayout.ComputePlan(
+                NativeTooltipDocument.FromPayload(p), FixedMeasure, 15, 1f, 1024, 576);
+            Assert.Equal(2, plan.RailBlocks.Count);
+            Assert.Equal("长枪", plan.RailBlocks[0].Text);
+            Assert.Equal("", plan.RailBlocks[1].Text);   // 空帽，保持"两头宽"轮廓
+            Assert.True(plan.RailBlocks[1].Rect.Height > 0);
+        }
+
+        [Fact]
+        public void MagazineRow_WhiteDividerSquareIconThenName()
+        {
+            var doc = NativeTooltipDocument.FromPayload(GunPayload());
+            var withMag = NativeTooltipLayout.ComputePlan(
+                doc, FixedMeasure, 15, 1f, 1024, 576);
+
+            JObject noMagPayload = GunPayload();
+            noMagPayload["document"]["magazine"] = JValue.CreateNull();
+            var noMag = NativeTooltipLayout.ComputePlan(
+                NativeTooltipDocument.FromPayload(noMagPayload),
+                FixedMeasure, 15, 1f, 1024, 576);
+
+            Assert.True(withMag.MagazineRow.IsEmpty == false);
+            Assert.True(noMag.MagazineRow.IsEmpty, "无 magazine 键不占行");
+            // 行高由字体撑出，图标是边长 = 行高的正方形
+            int rowH = withMag.MagazineRow.Height;
+            Assert.Equal(rowH, withMag.MagazineIconRect.Height);
+            Assert.Equal(rowH, withMag.MagazineIconRect.Width);
+            Assert.Equal(withMag.MagazineRow.X, withMag.MagazineIconRect.X);
+            Assert.Equal(withMag.MagazineRow.Y, withMag.MagazineIconRect.Y);
+            int gap = NativeTooltipLayout.Px(NativeTooltipLayout.MagIconTextGapBase, 1f);
+            Assert.Equal(withMag.MagazineIconRect.Right + gap, withMag.MagazineTextLeftPx);
+            // 白线在正文与行之间
+            Assert.True(withMag.MagazineDividerY > 0);
+            Assert.True(withMag.MagazineDividerY < withMag.MagazineRow.Top);
+            // 整 tip 因此变高（同内容无行对照）
+            Assert.True(withMag.TipSize.Height > noMag.TipSize.Height);
+            Assert.True(withMag.IntroPanel.Height > noMag.IntroPanel.Height);
+            Assert.Equal("11 号 4.7mm 弹夹", withMag.MagazineName);
+            Assert.Equal("ammo_ghren_47", withMag.MagazineIconName);
+        }
+
+        [Fact]
+        public void Paint_RailAndMagazine_WhiteStripesDarkRotatedTextAndDivider()
+        {
+            using (Control a = Anchor())
+            using (var w = new NativeTooltipWidget(a))
+            {
+                Assert.True(w.Show(GunPayload()));
+                w.Tick(2000);   // 淡入走完，取实心像素
+                var plan = w.ActivePlan;
+                Rectangle placed = w.PlacedRect;
+                using (var bmp = new Bitmap(1024, 576))
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.Clear(Color.FromArgb(255, 24, 26, 28));
+                    w.Paint(g, 1.0f, Point.Empty);
+
+                    // 插条首块：白底 + 黑字（旋转 90°），两者都必须出现
+                    Rectangle block = RectIn(placed, plan.RailBlocks[0].Rect);
+                    int white = 0, dark = 0;
+                    for (int x = block.Left + 1; x < block.Right - 1; x++)
+                        for (int y = block.Top + 1; y < block.Bottom - 1; y++)
+                        {
+                            Color c = bmp.GetPixel(x, y);
+                            if (c.R >= 240 && c.G >= 240 && c.B >= 240) white++;
+                            else if (c.R <= 120 && c.G <= 120 && c.B <= 120) dark++;
+                        }
+                    Assert.True(white > 0, "插条块体应为白色");
+                    Assert.True(dark > 0, "插条块内应有黑字（85%）");
+
+                    // 腰部窄条同样白
+                    Rectangle spine = RectIn(placed, plan.RailSpine);
+                    Color mid = bmp.GetPixel(spine.X + spine.Width / 2,
+                        spine.Y + spine.Height / 2);
+                    Assert.True(mid.R >= 240 && mid.G >= 240 && mid.B >= 240,
+                        "腰部窄条应为白色，实际=" + mid);
+
+                    // 弹夹分隔线：整条白
+                    Rectangle panel = RectIn(placed, plan.IntroPanel);
+                    int lineWhite = 0, lineTotal = 0;
+                    int divY = placed.Y + plan.MagazineDividerY;
+                    for (int x = panel.Left + 6; x < panel.Right - 6; x += 3)
+                    {
+                        lineTotal++;
+                        Color c = bmp.GetPixel(x, divY);
+                        if (c.R >= 200 && c.G >= 200 && c.B >= 200) lineWhite++;
+                    }
+                    Assert.True(lineWhite * 2 >= lineTotal,
+                        "弹夹行应有白线分隔，命中=" + lineWhite + "/" + lineTotal);
+
+                    // 图标正方形区域内是图标（非面板纯底），名称文字为白
+                    Rectangle name = new Rectangle(
+                        placed.X + plan.MagazineTextLeftPx,
+                        placed.Y + plan.MagazineRow.Y,
+                        Math.Max(1, plan.MagazineRow.Right - plan.MagazineTextLeftPx),
+                        plan.MagazineRow.Height);
+                    Assert.True(BrightPixels(bmp, name) > 3, "弹夹名应被绘制");
+                }
+            }
+        }
+
+        [Fact]
+        public void Fade_MainReachesOpaqueFirst_AndEveryElementExitsTogether()
+        {
+            using (Control a = Anchor())
+            using (var w = new NativeTooltipWidget(a))
+            {
+                Assert.True(w.Show(GunPayload()));
+                var plan = w.ActivePlan;
+                Rectangle placed = w.PlacedRect;
+                Assert.True(plan.Subs.Count >= 2, "样本需至少两个子框");
+                Point mainEdge = new Point(placed.X + plan.IntroPanel.X + 12,
+                    placed.Y + plan.IntroPanel.Y);
+                Point subEdge = new Point(placed.X + plan.Subs[0].Panel.X + 12,
+                    placed.Y + plan.Subs[0].Panel.Y);
+
+                using (var bmp = new Bitmap(1024, 576))
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    Color Background = Color.FromArgb(255, 24, 26, 28);
+
+                    // t=600ms：主框（500ms）已实心，子框（675ms/750ms）仍半透明
+                    w.Tick(600);
+                    g.Clear(Background);
+                    w.Paint(g, 1.0f, Point.Empty);
+                    Color main = bmp.GetPixel(mainEdge.X, mainEdge.Y);
+                    Color sub = bmp.GetPixel(subEdge.X, subEdge.Y);
+                    Assert.True(main.R >= 250 && main.G >= 250 && main.B >= 250,
+                        "主框淡入应先到位，实际=" + main);
+                    Assert.True(sub.R < 250 && sub.R > 100,
+                        "子框此时应仍半透明，实际=" + sub);
+
+                    // 走完淡入：子框同样实心
+                    w.Tick(2000);
+                    g.Clear(Background);
+                    w.Paint(g, 1f, Point.Empty);
+                    Color subDone = bmp.GetPixel(subEdge.X, subEdge.Y);
+                    Assert.True(subDone.R >= 250, "淡入结束后子框应实心，实际=" + subDone);
+
+                    // 淡出：共用同一窗口线性归零 → 中途同时变暗，窗口结束同时消失
+                    Assert.True(w.Hide("tt-gun"));
+                    w.Tick(250);
+                    g.Clear(Background);
+                    w.Paint(g, 1f, Point.Empty);
+                    Color mainMid = bmp.GetPixel(mainEdge.X, mainEdge.Y);
+                    Color subMid = bmp.GetPixel(subEdge.X, subEdge.Y);
+                    Assert.True(mainMid.R < main.R && mainMid.R > 60,
+                        "淡出中途主框应半透明，实际=" + mainMid);
+                    Assert.True(subMid.R < subDone.R && subMid.R > 60,
+                        "淡出中途子框应半透明，实际=" + subMid);
+
+                    w.Tick(300);   // 累计 550ms > 500ms 窗口
+                    Assert.False(w.Visible);
+                    g.Clear(Background);
+                    w.Paint(g, 1f, Point.Empty);
+                    Assert.Equal(Background, bmp.GetPixel(mainEdge.X, mainEdge.Y));
+                    Assert.Equal(Background, bmp.GetPixel(subEdge.X, subEdge.Y));
+                }
+            }
+        }
+
+        [Fact]
+        public void FadeOutSession_IsInert()
+        {
+            using (Control a = Anchor())
+            using (var w = new NativeTooltipWidget(a))
+            {
+                Assert.True(w.Show(GunPayload()));
+                w.OwnerScreenBounds = new Rectangle(100, 100, 60, 40);
+                Assert.True(w.Hide("tt-gun"));
+
+                // 淡出中的框不再吃滚轮/命中，也不再向 controller 提供 owner 命中区
+                Assert.False(w.OnMouseWheel(new Point(120, 120), -120));
+                Assert.False(w.TryScrollAt(new Point(120, 120), -120));
+                Assert.False(w.OwnerScreenBounds.HasValue);
+                Rectangle b = w.ScreenBounds;
+                Assert.False(w.TryHitTest(new Point(b.X + b.Width / 2, b.Y + b.Height / 2)));
+                Assert.True(w.Visible, "淡出期间仍需保持可见供合成");
+
+                w.Tick(600);
+                Assert.False(w.Visible);
+                Assert.False(w.WantsAnimationTick, "淡出结束即停表");
+            }
+        }
+
+        /// <summary>tip 内矩形 → 画布像素矩形（Paint 用 placed - hudOrigin 平移）。</summary>
+        private static Rectangle RectIn(Rectangle placed, Rectangle tipRect)
+        {
+            return new Rectangle(placed.X + tipRect.X, placed.Y + tipRect.Y,
+                tipRect.Width, tipRect.Height);
+        }
+
+        private static int BrightPixels(Bitmap bmp, Rectangle r)
+        {
+            int n = 0;
+            for (int x = r.Left; x < r.Right; x++)
+                for (int y = r.Top; y < r.Bottom; y++)
+                {
+                    Color c = bmp.GetPixel(x, y);
+                    if (c.R >= 200 && c.G >= 200 && c.B >= 200) n++;
+                }
+            return n;
         }
 
         // ════════════ layoutType（root 契约：doc.LayoutType，不由 icon 推断）════════════
