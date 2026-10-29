@@ -31,6 +31,17 @@ public sealed class BulletVisualWireQ1Tests
         }
     }
 
+    [Fact]
+    public void CompositionPreservesQ1IdentityAlongsideIndependentChainIdentity()
+    {
+        Assert.True(BulletVisualWireQ1.TryParse("Q1|7|2|11|4|0|0|R", 8, out var ordinary));
+        var composed = BulletVisualFrame.ComposeOwned(ordinary, Array.Empty<BulletVisualInstance>(), 9, 4);
+        Assert.Equal(2, composed.Epoch); Assert.Equal(4, composed.Frame);
+        Assert.Equal(11, composed.SnapshotSequence); Assert.Equal(7, composed.OfferId);
+        Assert.Equal(9, composed.ChainEpoch); Assert.Equal(4, composed.ChainFrame);
+        Assert.True(composed.IsQ1);
+    }
+
     [Theory]
     [InlineData("Q1|1|1|1|0|0|0|R;")]
     [InlineData("Q1|1|1|1|0|1|0|R;0,1,2;")]

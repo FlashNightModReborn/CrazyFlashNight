@@ -93,6 +93,9 @@ class org.flashNight.arki.render.BulletVisualProbeTest {
         caps.mode = "native";
         BulletVisualProbe.configure(caps);
         check(wireEpoch() > secondEpoch, "presentation resume uses a newer epoch");
+        FrameBroadcaster.send();
+        check(!org.flashNight.arki.render.NativeFrameTag.stateForTests().visible,
+            "source tag stays hidden until F8 native presentation is paired");
         BulletVisualProbe.disconnect();
         holder.removeMovieClip();
 
@@ -105,6 +108,12 @@ class org.flashNight.arki.render.BulletVisualProbeTest {
             styles:[{gunChainUnitLinkage:"单元体-普通子弹"}],
             gunChainPrefixes:["纵向联弹"]
         });
+        BulletVisualProbe.configure(caps);
+        FrameBroadcaster.send();
+        var sourceTag:Object = org.flashNight.arki.render.NativeFrameTag.stateForTests();
+        check(sourceTag.visible && sourceTag.frame == 123
+            && sourceTag.epoch == BulletVisualProbe.nativeEpoch(),
+            "complete F5 and F8 pairing publishes the current source identity");
         var chainHost:Object = {_visible:true, _alpha:100, 子弹种类:"纵向联弹-普通子弹", 霰弹值:2};
         var chainGroup:ChainGroup = new ChainGroup(null, chainHost, null, null);
         chainGroup.isObject = true;
@@ -126,6 +135,8 @@ class org.flashNight.arki.render.BulletVisualProbeTest {
             && hugeGroup.nativeGroupOwned === true
             && _root.server.last === "Vchain|reserve_overflow",
             "reservation exhaustion stays native-owned and reports a fatal fault");
+        BulletVisualProbe.disconnect();
+        org.flashNight.arki.render.NativeFrameTag.reset();
         ChainVisualBridge.resetScene();
         ChainVisualBridge.disconnect();
         world.removeMovieClip();

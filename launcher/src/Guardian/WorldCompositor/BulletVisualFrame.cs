@@ -12,7 +12,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
     internal sealed class BulletVisualFrame
     {
         internal readonly int Epoch, Frame, NormalCount, ChainCount, Overflow;
-        internal readonly int SnapshotSequence, OfferId;
+        internal readonly int SnapshotSequence, OfferId, ChainEpoch, ChainFrame;
         internal readonly bool IsQ1;
         internal readonly bool NativeOwned;
         private BulletVisualInstance[] _instances;
@@ -48,36 +48,41 @@ namespace CF7Launcher.Guardian.WorldCompositor
         // reservation 15360 must fit the 16384 total native bullet budget.
         internal const int OrdinaryLimit = 1024, ChainLimit = 15360, TotalLimit = 16384;
         internal static BulletVisualFrame Compose(int epoch,int frame,BulletVisualInstance[] ordinary,
-            BulletVisualInstance[] chains) {
+            BulletVisualInstance[] chains,int chainEpoch=-1,int chainFrame=-1) {
             ordinary ??= Array.Empty<BulletVisualInstance>();
             chains ??= Array.Empty<BulletVisualInstance>();
             if(ordinary.Length+chains.Length>TotalLimit) throw new ArgumentOutOfRangeException(nameof(chains));
             var all=new BulletVisualInstance[ordinary.Length+chains.Length];
             Array.Copy(ordinary,all,ordinary.Length);Array.Copy(chains,0,all,ordinary.Length,chains.Length);
-            return new BulletVisualFrame(epoch,frame,ordinary.Length,chains.Length,0,true,all);
+            return new BulletVisualFrame(epoch,frame,ordinary.Length,chains.Length,0,true,all,
+                -1,0,false,chainEpoch,chainFrame);
         }
         // Only the dispatcher uses this path: both inputs are immutable packet-owned
         // snapshots. Public Compose still copies borrowed input arrays as before.
-        internal static BulletVisualFrame ComposeOwned(BulletVisualFrame ordinary, BulletVisualInstance[] chains)
+        internal static BulletVisualFrame ComposeOwned(BulletVisualFrame ordinary, BulletVisualInstance[] chains,
+            int chainEpoch,int chainFrame)
         {
             var items = ordinary.NativeOwned ? ordinary.Instances : Array.Empty<BulletVisualInstance>();
             if (items.Length + chains.Length > TotalLimit) throw new ArgumentOutOfRangeException(nameof(chains));
             return new BulletVisualFrame(ordinary.Epoch, ordinary.Frame, items, chains,
-                ordinary.SnapshotSequence, ordinary.OfferId, ordinary.IsQ1);
+                ordinary.SnapshotSequence, ordinary.OfferId, ordinary.IsQ1, chainEpoch, chainFrame);
         }
         private BulletVisualFrame(int epoch, int frame, BulletVisualInstance[] ordinary, BulletVisualInstance[] chains,
-            int sequence = -1, int offerId = 0, bool q1 = false)
+            int sequence = -1, int offerId = 0, bool q1 = false, int chainEpoch = -1, int chainFrame = -1)
         {
             Epoch = epoch; Frame = frame; NormalCount = ordinary.Length; ChainCount = chains.Length;
             Overflow = 0; NativeOwned = true; _ordinary = ordinary; _chains = chains;
             SnapshotSequence = sequence < 0 ? frame : sequence; OfferId = offerId; IsQ1 = q1;
+            ChainEpoch = chainEpoch; ChainFrame = chainFrame;
         }
         private BulletVisualFrame(int epoch, int frame, int normal, int chain, int overflow, bool nativeOwned,
-            BulletVisualInstance[] instances, int sequence = -1, int offerId = 0, bool q1 = false)
+            BulletVisualInstance[] instances, int sequence = -1, int offerId = 0, bool q1 = false,
+            int chainEpoch = -1, int chainFrame = -1)
         {
             Epoch = epoch; Frame = frame; NormalCount = normal; ChainCount = chain;
             Overflow = overflow; NativeOwned = nativeOwned; _instances = instances;
             SnapshotSequence = sequence < 0 ? frame : sequence; OfferId = offerId; IsQ1 = q1;
+            ChainEpoch = chainEpoch; ChainFrame = chainFrame;
         }
 
         internal static BulletVisualFrame CreateQ1(int offerId, int epoch, int sequence, int sourceFrame,

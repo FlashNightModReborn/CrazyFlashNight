@@ -32,6 +32,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private bool _needsResync;
         internal bool NeedsResync { get { lock (_sync) return _needsResync; } }
         internal int Epoch { get { lock (_sync) return _epoch; } }
+        internal int Tick { get { lock (_sync) return _tick; } }
 
         internal bool HasLiveGroups { get { lock (_sync) return _groups.Count != 0; } }
 

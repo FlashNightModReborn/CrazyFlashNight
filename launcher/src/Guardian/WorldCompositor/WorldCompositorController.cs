@@ -258,7 +258,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                             _lastBulletFrameLogTicks=now;
                             LogManager.Log("event=bullet_visual_native_frame epoch="+frame.Epoch
                                 +" frame="+frame.Frame+" normal="+frame.NormalCount
-                                +" chain="+frame.ChainCount+" overflow="+frame.Overflow);
+                                +" chain="+frame.ChainCount+" chainEpoch="+frame.ChainEpoch
+                                +" chainFrame="+frame.ChainFrame+" overflow="+frame.Overflow);
                         }
                     }
                 }
@@ -774,6 +775,30 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 if (NowMs()-_lastLogMs>1000) {
                     _lastLogMs=NowMs();
                     LogHudCosts(stats);
+                    var bulletSync=_native.ReadBulletSync();
+                    if(bulletSync.SubmittedVersion!=0) {
+                        double bulletAge=bulletSync.PresentedVersion==0 ? -1
+                            : bulletSync.PresentedQpcMs-bulletSync.PresentedSubmittedQpcMs;
+                        LogManager.Log("event=world_bullet_sync candidateOrdinary="+bulletSync.SubmittedOrdinaryEpoch+":"+bulletSync.SubmittedOrdinaryFrame
+                            +"->"+bulletSync.PresentedOrdinaryEpoch+":"+bulletSync.PresentedOrdinaryFrame
+                            +" candidateChain="+bulletSync.SubmittedChainEpoch+":"+bulletSync.SubmittedChainFrame
+                            +"->"+bulletSync.PresentedChainEpoch+":"+bulletSync.PresentedChainFrame
+                            +" candidateVersions="+bulletSync.SubmittedVersion+"->"+bulletSync.PresentedVersion
+                            +" coalesced="+bulletSync.CoalescedVersions+" ageMs="+bulletAge.ToString("F3",CultureInfo.InvariantCulture)
+                            +" captureQpcMs="+bulletSync.PresentedCaptureQpcMs.ToString("F3",CultureInfo.InvariantCulture)
+                            +" candidateFresh="+((bulletSync.PresentedFlags&1)!=0?1:0)
+                            +" candidateFrameIds=true sourceLogicalFrameInStats=false presentedSourceMatchKnown=false");
+                        if(CF7Launcher.Diagnostic.FocusTrace.Enabled)CF7Launcher.Diagnostic.FocusTrace.Record("world.bullet_sync",new {
+                            submittedOrdinaryEpoch=bulletSync.SubmittedOrdinaryEpoch,submittedOrdinaryFrame=bulletSync.SubmittedOrdinaryFrame,
+                            submittedChainEpoch=bulletSync.SubmittedChainEpoch,submittedChainFrame=bulletSync.SubmittedChainFrame,
+                            presentedOrdinaryEpoch=bulletSync.PresentedOrdinaryEpoch,presentedOrdinaryFrame=bulletSync.PresentedOrdinaryFrame,
+                            presentedChainEpoch=bulletSync.PresentedChainEpoch,presentedChainFrame=bulletSync.PresentedChainFrame,
+                            submittedVersion=bulletSync.SubmittedVersion,presentedVersion=bulletSync.PresentedVersion,
+                            coalescedVersions=bulletSync.CoalescedVersions,presentedCount=bulletSync.PresentedCount,
+                            presentedSnapshotAgeMs=bulletAge,captureQpcMs=bulletSync.PresentedCaptureQpcMs,
+                            candidateFresh=(bulletSync.PresentedFlags&1)!=0,candidateFrameIds=true,
+                            sourceLogicalFrameInStats=false,presentedSourceMatchKnown=false,physicalScanoutVerified=false });
+                    }
                     var timing=CF7Launcher.Diagnostic.FocusTrace.Enabled ? _native.ReadTiming() : null;
                     if(timing.HasValue) {
                         var sample=timing.Value;

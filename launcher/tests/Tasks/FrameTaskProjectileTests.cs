@@ -30,6 +30,25 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void ComposedSnapshotRetainsChainIdentityForMovementClearAndReset()
+        {
+            var p = new Probe(); p.Start();
+            var initial = p.Bullets();
+            Assert.Equal(8, initial.ChainEpoch); Assert.Equal(1, initial.ChainFrame);
+            p.Feed(Ray(2, tick: 2), Chain(2, Group(1), tick: 2));
+            var moved = p.Bullets();
+            Assert.Equal(8, moved.ChainEpoch); Assert.Equal(2, moved.ChainFrame);
+            p.Feed(null, Chain(3, Group(2), tick: 3));
+            p.Feed(null, Chain(4, "", tick: 4));
+            var cleared = p.Bullets();
+            Assert.Equal(0, cleared.ChainCount);
+            Assert.Equal(8, cleared.ChainEpoch); Assert.Equal(4, cleared.ChainFrame);
+            p.Task.ResetProjectileScene();
+            var reset = p.Bullets();
+            Assert.Equal(-1, reset.ChainEpoch); Assert.Equal(-1, reset.ChainFrame);
+        }
+
+        [Fact]
         public void VisualFrameCompletionRunsEvenWhenAnObserverFails()
         {
             var p = new Probe(); int began = 0, ended = 0;

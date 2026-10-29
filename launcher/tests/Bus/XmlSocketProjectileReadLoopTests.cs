@@ -20,8 +20,8 @@ namespace CF7Launcher.Tests.Bus
     // production FrameTask. No Flash process, compositor, or rendering stub is used.
     public sealed class XmlSocketProjectileReadLoopTests : IDisposable
     {
-        private sealed record BulletObservation(int Frame, int NormalCount, int ChainCount,
-            BulletVisualInstance[] Items, float X, float Y, float Scale);
+        private sealed record BulletObservation(int Epoch, int Frame, int NormalCount, int ChainCount,
+            int ChainEpoch, int ChainFrame, BulletVisualInstance[] Items, float X, float Y, float Scale);
         private sealed record RayObservation(int Count, float[] Data, float X, float Y, float Scale,
             WorldLightCandidate[] Lights);
         private static readonly Lazy<BulletVisualCatalog> Catalog = new(() => BulletVisualCatalog.Load(ProjectRoot()));
@@ -57,8 +57,8 @@ namespace CF7Launcher.Tests.Bus
                 _order.Enqueue("ray:" + frame.Count);
             };
             _frameTask.BulletVisualObserved = (frame, x, y, scale) => {
-                _bullets.Enqueue(new BulletObservation(frame.Frame, frame.NormalCount, frame.ChainCount,
-                    frame.Instances.ToArray(), x, y, scale));
+                _bullets.Enqueue(new BulletObservation(frame.Epoch, frame.Frame, frame.NormalCount, frame.ChainCount,
+                    frame.ChainEpoch, frame.ChainFrame, frame.Instances.ToArray(), x, y, scale));
                 _order.Enqueue("bullet:" + frame.Frame + ":" + frame.ChainCount);
                 _bulletReady.Release();
             };
@@ -155,6 +155,9 @@ namespace CF7Launcher.Tests.Bus
             await SendBatch("ordered", first, second, third, fourth);
             var pictures = _bullets.ToArray();
             Assert.Equal(new[] { 100, 101, 102, 103 }, pictures.Select(x => x.Frame));
+            Assert.Equal(new[] { 3, 3, 3, 3 }, pictures.Select(x => x.Epoch));
+            Assert.Equal(new[] { 8, 8, 8, 8 }, pictures.Select(x => x.ChainEpoch));
+            Assert.Equal(new[] { 100, 101, 102, 103 }, pictures.Select(x => x.ChainFrame));
             Assert.Equal(new[] { 1, 1, 1, 0 }, pictures.Select(x => x.ChainCount));
             Assert.Equal(102f, pictures[0].Items[1].X);
             Assert.Equal(110f, pictures[1].Items[1].X);
@@ -180,6 +183,7 @@ namespace CF7Launcher.Tests.Bus
             Assert.Equal(2, pictures.Length);
             Assert.Equal(110f, pictures[1].Items[1].X);
             Assert.Equal(225f, pictures[1].Items[1].Y);
+            Assert.Equal(8, pictures[1].ChainEpoch); Assert.Equal(102, pictures[1].ChainFrame);
             AssertNoRejections();
         }
 
@@ -195,6 +199,8 @@ namespace CF7Launcher.Tests.Bus
             await SendBatch("after-reset", "R", stale, fresh);
             var pictures = _bullets.ToArray();
             Assert.Equal(new[] { 100, 200 }, pictures.Select(x => x.Frame));
+            Assert.Equal(new[] { 3, 4 }, pictures.Select(x => x.Epoch));
+            Assert.Equal(9, pictures[1].ChainEpoch); Assert.Equal(200, pictures[1].ChainFrame);
             Assert.Equal(177f, pictures[1].Items[1].X);
             var rays = _rays.ToArray();
             Assert.Equal(2, rays.Length);
@@ -243,6 +249,8 @@ namespace CF7Launcher.Tests.Bus
             await SendBatch("after-chain-cap-cycle", oldEpoch, regrantBeforeF8, newEpoch);
             var pictures = _bullets.ToArray();
             Assert.Equal(new[] { 100, 102, 103 }, pictures.Select(x => x.Frame));
+            Assert.Equal(new[] { 8, -1, 9 }, pictures.Select(x => x.ChainEpoch));
+            Assert.Equal(new[] { 100, -1, 103 }, pictures.Select(x => x.ChainFrame));
             Assert.Equal(new[] { 1, 0, 1 }, pictures.Select(x => x.ChainCount));
             Assert.All(pictures, picture => Assert.Equal(1, picture.NormalCount));
             Assert.Equal(177f, pictures[2].Items[1].X);
@@ -285,6 +293,7 @@ namespace CF7Launcher.Tests.Bus
                 Assert.False(await _bulletReady.WaitAsync(TimeSpan.FromMilliseconds(250)),
                     "retired ReadLoop dispatched its blocked projectile frame");
                 Assert.Equal(new[] { 100, 1 }, _bullets.Select(x => x.Frame));
+                Assert.Equal(1, _bullets.Last().ChainEpoch); Assert.Equal(1, _bullets.Last().ChainFrame);
                 Assert.Equal(133f, _bullets.Last().Items[1].X);
                 Assert.Equal(300f, _rays.Last().Data[2]);
                 Assert.Equal(new[] { previousGeneration, nextGeneration }, _readyGenerations.ToArray());

@@ -5,17 +5,23 @@ chcp.com 65001 | Out-Null
 $run=@{
  DomainId='bullet-visual'
  TemplateRelativePath='scripts/test-runners/bullet-visual/TestLoader.as.template'
- SuiteRelativePaths=@('scripts/类定义/org/flashNight/arki/render/BulletVisualProbeTest.as')
- SuiteFqns=@('org.flashNight.arki.render.BulletVisualProbeTest')
+ SuiteRelativePaths=@(
+  'scripts/类定义/org/flashNight/arki/render/BulletVisualProbeTest.as',
+  'scripts/类定义/org/flashNight/arki/render/NativeFrameTagTest.as'
+ )
+ SuiteFqns=@('org.flashNight.arki.render.BulletVisualProbeTest','org.flashNight.arki.render.NativeFrameTagTest')
  AdditionalAsRelativePaths=@(
   'scripts/类定义/org/flashNight/arki/render/BulletVisualProbe.as',
+  'scripts/类定义/org/flashNight/arki/render/NativeFrameTag.as',
   'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/ChainUnitManager.as'
  )
  ExpectedTracePatterns=@(
-  '(?m)^BulletVisualProbeTest Tests Passed: 13\r?$',
-  '(?m)^BulletVisualProbeTest Tests Failed: 0\r?$'
+  '(?m)^BulletVisualProbeTest Tests Passed: 15\r?$',
+  '(?m)^BulletVisualProbeTest Tests Failed: 0\r?$',
+  '(?m)^NativeFrameTagTest Tests Passed: 12\r?$',
+  '(?m)^NativeFrameTagTest Tests Failed: 0\r?$'
  )
- SuccessSummary='Bullet native-only ownership, 1024/1025 capacity, fault reporting and epoch retirement 13/13'
+ SuccessSummary='Bullet ownership plus native source-frame tag matrix'
  TimeoutSeconds=$TimeoutSeconds
  SkipCompile=$SkipCompile
 }

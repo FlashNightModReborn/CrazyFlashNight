@@ -116,6 +116,7 @@ class org.flashNight.arki.render.FrameBroadcaster {
             _playerHudPayload = null;
             _bulletVisualPayload = null;
             _combatFxPayload = null;
+            org.flashNight.arki.render.NativeFrameTag.hide();
             return;
         }
 
@@ -127,6 +128,7 @@ class org.flashNight.arki.render.FrameBroadcaster {
             _playerHudPayload = null;
             _bulletVisualPayload = null;
             _combatFxPayload = null;
+            org.flashNight.arki.render.NativeFrameTag.hide();
             return;
         }
 
@@ -172,6 +174,9 @@ class org.flashNight.arki.render.FrameBroadcaster {
         if (sceneLightPayload != null) msg += "\x09" + sceneLightPayload;
         // SFX 优先发送：音效对延迟敏感，必须在 F 消息（含伤害 reducer/绘制）之前到达 C# 端。
         org.flashNight.arki.audio.AudioBridge.flush();
+        org.flashNight.arki.render.NativeFrameTag.update(_root,
+            chainPayload != null ? org.flashNight.arki.render.BulletVisualProbe.nativeEpoch() : -1,
+            Number(_root.帧计时器.当前帧数));
 
         sm.sendSocketMessage(msg);
 
@@ -272,5 +277,6 @@ class org.flashNight.arki.render.FrameBroadcaster {
         _cmdName = "";
         _comboHints = "";
         org.flashNight.arki.audio.AudioBridge.reset();
+        org.flashNight.arki.render.NativeFrameTag.reset();
     }
 }

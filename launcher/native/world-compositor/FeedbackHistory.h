@@ -25,13 +25,11 @@ public:
             width_=height_=0;stats.historyBytes=0;
         }
     }
-    void Apply(ID3D11Device* device,ID3D11DeviceContext* context,IDXGISwapChain1* swap,
+    void Apply(ID3D11Device* device,ID3D11DeviceContext* context,ID3D11Texture2D* back,
             ID3D11RenderTargetView* target,const D3D11_VIEWPORT& viewport,bool enabled,
             bool fresh,double sourceMs,double now,uint64_t epoch,ProbePostprocessStats& stats) {
         stats.feedbackEnabled=enabled?1u:0u;
         if(!enabled) {Reset(stats,true);return;}
-        winrt::com_ptr<ID3D11Texture2D> back;
-        winrt::check_hresult(swap->GetBuffer(0,__uuidof(ID3D11Texture2D),back.put_void()));
         D3D11_TEXTURE2D_DESC desc{};back->GetDesc(&desc);
         if(desc.Width!=width_ || desc.Height!=height_) {
             Reset(stats,true);width_=desc.Width;height_=desc.Height;
@@ -51,7 +49,7 @@ public:
         context->OMSetRenderTargets(0,nullptr,nullptr);
         if(!valid_) {
             if(fresh) {
-                context->CopyResource(pixels_[index_].get(),back.get());
+                context->CopyResource(pixels_[index_].get(),back);
                 valid_=true;sourceMs_=sourceMs;++stats.historyUpdates;
             }
             context->OMSetRenderTargets(1,&target,nullptr);
@@ -65,7 +63,7 @@ public:
             winrt::check_hresult(device->CreateBuffer(&cb,nullptr,mix_.put()));
         }
         int next=1-index_;
-        context->CopyResource(pixels_[next].get(),back.get());
+        context->CopyResource(pixels_[next].get(),back);
         double elapsed=std::max(0.,(fresh?sourceMs:now)-sourceMs_);
         // 18 ms half-life, capped at 35% historical contribution on a new frame.
         // Duplicate presentations only decay the last accepted history sample.
@@ -81,7 +79,7 @@ public:
         ID3D11ShaderResourceView* empty[]{nullptr,nullptr};context->PSSetShaderResources(0,2,empty);
         if(fresh) {
             context->OMSetRenderTargets(0,nullptr,nullptr);
-            context->CopyResource(pixels_[next].get(),back.get());
+            context->CopyResource(pixels_[next].get(),back);
             context->OMSetRenderTargets(1,&target,nullptr);
             index_=next;sourceMs_=sourceMs;++stats.historyUpdates;
         }

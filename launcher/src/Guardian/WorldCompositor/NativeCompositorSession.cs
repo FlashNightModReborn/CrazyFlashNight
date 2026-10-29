@@ -44,7 +44,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly WeatherStyleDelegate _weatherStyle;
         private readonly AtmosphereStyleDelegate _atmosphereStyle;
         private readonly BulletStylesDelegate _bulletStyles;
-        private readonly BulletFrameDelegate _bulletFrame;
+        private readonly BulletFrameV2Delegate _bulletFrame;
+        private readonly BulletSyncReadDelegate _bulletSyncRead;
         private readonly CombatFxAtlasDelegate _bulletAtlas;
         private readonly CombatFxReadyDelegate _bulletReady;
         private readonly BulletFrameDelegate _rayFrame;
@@ -87,7 +88,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _weatherStyle=Export<WeatherStyleDelegate>("ProbeSetWeatherStyle");
                 _atmosphereStyle=Export<AtmosphereStyleDelegate>("ProbeSetAtmosphereStyle");
                 _bulletStyles=Export<BulletStylesDelegate>("ProbeSetBulletStyles");
-                _bulletFrame=Export<BulletFrameDelegate>("ProbeSetBulletFrame");
+                _bulletFrame=Export<BulletFrameV2Delegate>("ProbeSetBulletFrameV2");
+                _bulletSyncRead=Export<BulletSyncReadDelegate>("ProbeGetBulletSyncStats");
                 _bulletAtlas=Export<CombatFxAtlasDelegate>("ProbeSetBulletAtlas");
                 _bulletReady=Export<CombatFxReadyDelegate>("ProbeBulletReady");
                 _rayFrame=Export<BulletFrameDelegate>("ProbeSetRayFrame");
@@ -337,7 +339,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
             try
             {
                 if(count>0) PackBulletFrame(frame,values);
-                if (_bulletFrame(_session, values, count, cameraX, cameraY, cameraScale) != 1)
+                if (_bulletFrame(_session, values, count, cameraX, cameraY, cameraScale,
+                    frame.Epoch,frame.Frame,frame.ChainEpoch,frame.ChainFrame) != 1)
                     throw new InvalidOperationException("Native bullet frame rejected");
             }
             finally { ArrayPool<float>.Shared.Return(values); }
@@ -358,8 +361,15 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         internal void ClearBulletFrame()
         {
-            if (_session != IntPtr.Zero && _bulletFrame(_session, Array.Empty<float>(), 0, 0, 0, 1) != 1)
+            if (_session != IntPtr.Zero && _bulletFrame(_session, Array.Empty<float>(), 0, 0, 0, 1,-1,-1,-1,-1) != 1)
                 throw new InvalidOperationException("Native bullet clear rejected");
+        }
+        internal BulletSyncStats ReadBulletSync()
+        {
+            var value=new BulletSyncStats {Size=(uint)Marshal.SizeOf<BulletSyncStats>()};
+            if(_session==IntPtr.Zero || _bulletSyncRead(_session,ref value)!=1)
+                throw new InvalidOperationException("Bullet sync stats unavailable");
+            return value;
         }
         internal void CombatFxAtlas(CombatFxCatalog catalog)
         {
@@ -427,6 +437,15 @@ namespace CF7Launcher.Guardian.WorldCompositor
             public ulong Compositions, LightDraws, LightCacheHits, FxUploads;
         }
         [StructLayout(LayoutKind.Sequential)]
+        internal struct BulletSyncStats
+        {
+            public uint Size, PresentedFlags;
+            public int SubmittedOrdinaryEpoch, SubmittedOrdinaryFrame, SubmittedChainEpoch, SubmittedChainFrame;
+            public int PresentedOrdinaryEpoch, PresentedOrdinaryFrame, PresentedChainEpoch, PresentedChainFrame;
+            public ulong SubmittedVersion, PresentedVersion, CoalescedVersions, PresentedCount;
+            public double SubmittedQpcMs, PresentedSubmittedQpcMs, PresentedCaptureQpcMs, PresentedQpcMs;
+        }
+        [StructLayout(LayoutKind.Sequential)]
         internal struct TimingStats
         {
             public uint Size, Count, IntervalCount, FreshCount;
@@ -482,6 +501,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int AtmosphereStyleDelegate(IntPtr handle,int family,[In] float[] parameters);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int BulletStylesDelegate(IntPtr handle,[In] float[] styles,int count);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int BulletFrameDelegate(IntPtr handle,[In] float[] items,int count,float cameraX,float cameraY,float cameraScale);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int BulletFrameV2Delegate(IntPtr handle,[In] float[] items,int count,float cameraX,float cameraY,float cameraScale,
+            int ordinaryEpoch,int ordinaryFrame,int chainEpoch,int chainFrame);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int BulletSyncReadDelegate(IntPtr handle,ref BulletSyncStats stats);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CombatFxAtlasDelegate(IntPtr handle,[In] byte[] pixels,int width,int height,int length);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CombatFxReadyDelegate(IntPtr handle);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CombatFxFrameDelegate(IntPtr handle,[In] float[] items,int count,int casings,

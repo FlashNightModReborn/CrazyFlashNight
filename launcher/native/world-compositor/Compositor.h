@@ -41,6 +41,17 @@ struct ProbeWorkStats {
     uint32_t size, reserved;
     uint64_t compositions, lightDraws, lightCacheHits, fxUploads;
 };
+// Bullet identity diagnostics: QPC timestamps share the capture clock, but do not
+// identify the source's AS2 logical frame. presentedFlags: bit0 fresh WGC frame,
+// bit1 nonempty bullet snapshot. Unknown/cleared identities are -1.
+struct ProbeBulletSyncStats {
+    uint32_t size, presentedFlags;
+    int32_t submittedOrdinaryEpoch, submittedOrdinaryFrame, submittedChainEpoch, submittedChainFrame;
+    int32_t presentedOrdinaryEpoch, presentedOrdinaryFrame, presentedChainEpoch, presentedChainFrame;
+    uint64_t submittedVersion, presentedVersion, coalescedVersions, presentedCount;
+    double submittedQpcMs, presentedSubmittedQpcMs, presentedCaptureQpcMs, presentedQpcMs;
+};
+static_assert(sizeof(ProbeBulletSyncStats)==104,"Bullet sync diagnostic layout");
 // postprocess-v1: additive extension; existing ABI 12 layouts stay intact.
 struct ProbePostprocessStats {
     uint32_t size,casEnabled,feedbackEnabled,historyValid;
@@ -156,6 +167,11 @@ __declspec(dllexport) int __cdecl ProbeSetRayFrame(void* handle,const float* ite
 // reserved 0. count<=16384; count 0 clears. GPU upload batches remain <=1024.
 // stage = camera + world*cameraScale. Ray frames use 32-float records, <=4096, batches <=256.
 __declspec(dllexport) int __cdecl ProbeSetBulletFrame(void* handle, const float* items, int count, float cameraX, float cameraY, float cameraScale);
+// Additive identity extension. The legacy setter remains available with unknown (-1)
+// identities; paired hosts use V2 and may query submitted vs actually presented snapshots.
+__declspec(dllexport) int __cdecl ProbeSetBulletFrameV2(void* handle, const float* items, int count, float cameraX, float cameraY, float cameraScale,
+    int ordinaryEpoch, int ordinaryFrame, int chainEpoch, int chainFrame);
+__declspec(dllexport) int __cdecl ProbeGetBulletSyncStats(void* handle, ProbeBulletSyncStats* stats);
 // Atlas upload is one-time per resource generation; ready confirms GPU creation.
 __declspec(dllexport) int __cdecl ProbeSetCombatFxAtlas(void* handle,const uint8_t* pixels,int width,int height,int length);
 __declspec(dllexport) int __cdecl ProbeCombatFxReady(void* handle);

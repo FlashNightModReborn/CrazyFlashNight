@@ -17,6 +17,11 @@ class org.flashNight.arki.render.BulletVisualProbe {
     private static var catalogDigest:String = "";
     public static function installedCatalogDigest():String { return enabled && nativeEnabled ? catalogDigest : ""; }
     public static function trackedCount():Number { return normalBullets.length; }
+    public static function nativeEpoch():Number {
+        if (!enabled || !nativeEnabled
+            || org.flashNight.arki.render.WorkerProjectionPolicy.isNone("ordinaryBullet")) return -1;
+        return sceneEpoch;
+    }
 
     public static function configure(caps:Object):Void {
         // 任何能力载荷变化都推进呈现 epoch；宿主侧按新 epoch 重同步。

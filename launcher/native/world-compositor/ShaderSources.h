@@ -85,6 +85,34 @@ float3 pointLit(float3 graded,float3 raw,float2 uv) {
     }
     return result;
 }
+struct FrameTag {
+    uint epoch;
+    uint frame;
+    bool valid;
+};
+float3 FrameTagCell(Texture2D source,float2 size,int index) {
+    int2 p=int2(floor((index*16+8)*size.x/1024.0),floor(568*size.y/576.0));
+    return source.Load(int3(clamp(p,int2(0,0),int2(size)-1),0)).rgb;
+}
+bool FrameTagChannel(float value,int expected) { return abs(round(value*255.0)-expected)<=1.0; }
+FrameTag ReadFrameTag(Texture2D source,float2 size) {
+    FrameTag tag=(FrameTag)0;
+    float3 magic=FrameTagCell(source,size,0), packed=FrameTagCell(source,size,1);
+    float3 epochCheck=FrameTagCell(source,size,2), complement=FrameTagCell(source,size,3);
+    uint f0=(uint)round(packed.r*255.0),f1=(uint)round(packed.g*255.0),f2=(uint)round(packed.b*255.0);
+    uint e0=(uint)round(epochCheck.r*255.0),e1=(uint)round(epochCheck.g*255.0),check=(uint)round(epochCheck.b*255.0);
+    tag.epoch=e0|(e1<<8);tag.frame=f0|(f1<<8)|(f2<<16);
+    tag.valid=FrameTagChannel(magic.r,0x13) && FrameTagChannel(magic.g,0x57) && FrameTagChannel(magic.b,0x9B)
+        && FrameTagChannel(complement.r,255-(int)f0) && FrameTagChannel(complement.g,255-(int)f1) && FrameTagChannel(complement.b,255-(int)f2)
+        && check==((f0+f1+f2+e0+e1+167u)%256u);
+    return tag;
+}
+bool FrameTagMatches(Texture2D source,float2 size,float4 identity) {
+    if(identity.x<0 || identity.y<0)return false;
+    FrameTag tag=ReadFrameTag(source,size);
+    return tag.valid && tag.epoch==((uint)identity.x&0xFFFFu) && tag.frame==((uint)identity.y&0xFFFFFFu)
+        && (identity.z<0 || identity.w==identity.y);
+}
 )hlsl";
 
 constexpr char PointLightShader[] = R"hlsl(
@@ -582,6 +610,8 @@ cbuffer BulletParams : register(b1) { float4 bB; float4 bC; };
 cbuffer BulletStyles : register(b2) { float4 bS[128]; };
 // 256 items x float4[2]: (style index,x,y,rotation deg), (scaleX %,scaleY %,alpha %,-)
 cbuffer BulletItems : register(b3) { float4 bI[2048]; };
+Texture2D sourceFrameForSync : register(t4);
+cbuffer BulletSync : register(b7) { float4 bIdentity; float4 bFrameSize; float4 bView; };
 struct BVertex {
     float4 pos : SV_POSITION;
     float2 local : TEXCOORD0;
@@ -602,6 +632,9 @@ BVertex BVS(uint id : SV_VertexID) {
     uint item = id / 6u;
     uint corner = id - item * 6u;
     if (item >= (uint)bB.w) { o.pos = float4(-2.0, -2.0, -2.0, 1.0); return o; }
+    if (bView.z>0.5 && !FrameTagMatches(sourceFrameForSync,bFrameSize.xy,bIdentity)) {
+        o.pos = float4(-2.0, -2.0, -2.0, 1.0); return o;
+    }
     float4 ia = bI[item * 2u];
     float4 ib = bI[item * 2u + 1u];
     uint si = (uint)(ia.x + 0.5);
@@ -674,6 +707,29 @@ float4 BPS(BVertex v) : SV_TARGET {
     float4 c = float4(color, 1.0);
     float3 graded = saturate(float3(dot(c, rowR), dot(c, rowG), dot(c, rowB)) + offset.rgb);
     return float4(pointLit(pow(abs(graded), 1.0 / max(offset.w, 1.0e-3)),color,pointUv(v.pos.xy)), opacity);
+}
+)hlsl";
+
+constexpr char FrameSyncShader[] = R"hlsl(
+Texture2D syncCandidate : register(t0);
+Texture2D syncHistory : register(t1);
+Texture2D syncSource : register(t2);
+SamplerState syncPoint : register(s0);
+cbuffer BulletSync : register(b7) { float4 bIdentity; float4 bFrameSize; float4 bView; };
+struct SyncVertex { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; };
+struct SyncOutput { float4 screen : SV_TARGET0; float4 history : SV_TARGET1; };
+SyncOutput SyncPS(SyncVertex v) {
+    bool match=FrameTagMatches(syncSource,bFrameSize.xy,bIdentity);
+    float4 candidate=syncCandidate.SampleLevel(syncPoint,v.uv,0);
+    float2 logical=(v.uv*bFrameSize.zw-bView.xy)/bFrameSize.zw*float2(1024.0,576.0);
+    if(logical.x<64.0 && logical.y>=560.0)
+        candidate=syncCandidate.SampleLevel(syncPoint,v.uv+float2(64.0/bFrameSize.z,0),0);
+    float4 previous=syncHistory.SampleLevel(syncPoint,v.uv,0);
+    SyncOutput o;
+    if(match) { o.screen=candidate;o.history=float4(candidate.rgb,1.0); }
+    else if(previous.a>0.5) { o.screen=previous;o.history=previous; }
+    else { o.screen=float4(0,0,0,1);o.history=float4(0,0,0,0); }
+    return o;
 }
 )hlsl";
 

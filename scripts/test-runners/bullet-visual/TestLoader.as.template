@@ -1,3 +1,4 @@
 ﻿trace("FocusedTestRunId bullet-visual Start: __FOCUSED_RUN_ID__");
 org.flashNight.arki.render.BulletVisualProbeTest.runAllTests();
+org.flashNight.arki.render.NativeFrameTagTest.runAllTests();
 trace("FocusedTestRunId bullet-visual Complete: __FOCUSED_RUN_ID__");

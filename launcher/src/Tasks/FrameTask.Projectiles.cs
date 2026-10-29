@@ -87,8 +87,8 @@ namespace CF7Launcher.Tasks
             }
         }
         // The shared bullet capability retires both F5 snapshot ownership and F8
-        // groups. Each AS2 capability configure advances their presentation epochs,
-        // so queued native-owned snapshots cannot redraw units already handed back.
+        // groups. F5 advances on each AS2 capability configure; F8 advances on
+        // resync/scene retirement. Queued snapshots cannot redraw retired units.
         internal void InvalidateChainVisuals()
         {
             lock(_projectileLock) {
@@ -172,7 +172,8 @@ namespace CF7Launcher.Tasks
         internal void DispatchProjectileBullets(BulletVisualFrame ordinary,HitNumberCamera camera)
         {
             lock(_projectileLock) {
-                var composed=_chainVisualItems.Length==0?ordinary:BulletVisualFrame.ComposeOwned(ordinary,_chainVisualItems);
+                var composed=BulletVisualFrame.ComposeOwned(ordinary,_chainVisualItems,
+                    _chainVisualEngine.Epoch,_chainVisualEngine.Tick);
                 BulletVisualObserved?.Invoke(composed,camera.OffsetX,camera.OffsetY,camera.Scale);
             }
         }

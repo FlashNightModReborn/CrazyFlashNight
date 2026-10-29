@@ -34,6 +34,20 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void TickTracksOnlyAcceptedPacketsAndResetReturnsUnknownIdentity()
+        {
+            var engine = new ChainVisualEngine();
+            engine.Consume(7, Packet(1, Group() + ";" + Birth, epoch: 8, tick: 100), 8);
+            Assert.Equal(8, engine.Epoch); Assert.Equal(100, engine.Tick);
+            engine.Consume(7, Packet(1, Group(1), epoch: 8, tick: 101), 8);
+            Assert.Equal(100, engine.Tick);
+            engine.Consume(7, Packet(2, "", epoch: 8, tick: 102), 8);
+            Assert.Equal(102, engine.Tick);
+            engine.Reset();
+            Assert.Equal(-1, engine.Epoch); Assert.Equal(-1, engine.Tick);
+        }
+
+        [Fact]
         public void SameGroupStepPausesUnitsAndVisibilityOnlySuppressesDrawing()
         {
             var engine = new ChainVisualEngine();
