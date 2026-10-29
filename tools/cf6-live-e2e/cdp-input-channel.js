@@ -1,5 +1,6 @@
 'use strict';
 const fs=require('fs'),path=require('path');
+const {resolveRoute}=require('./route-config');
 const {connectExactTarget,evaluateByValue}=require('../workbench-live-e2e/kshop/cdp-client');
 const {sha256Bytes,sleep}=require('../workbench-live-e2e/kshop/common');
 const TARGETS=Object.freeze({series:'[data-book="crazy-flasher"]',chapter6:'[data-chapter="6"]',
@@ -15,6 +16,7 @@ async function openInput({cdpBinding,runtimeIdentity,writer,runDir}) {
             return {url:String(location.href),panel:p?p.getAttribute('data-panel'):'',hidden:!p||p.hidden||p.style.display==='none',
             chapter6:!!selected&&selected.getAttribute('aria-pressed')==='true',
             action:a?{text:a.textContent.trim(),disabled:!!a.disabled}:null,
+            routeId:String((document.querySelector('select[data-action="route"]')||{}).value||''),
             status:String((document.getElementById('bookshelf-status')||{}).textContent||'')};})()`,'CF6 visible bookshelf');
     }
     async function click(name) {
@@ -44,12 +46,38 @@ async function openInput({cdpBinding,runtimeIdentity,writer,runDir}) {
             runtimePid:runtimeIdentity.pid,physicalInputAttestation:false});
         return {afterSequence:sequence,inputSequence:proof.sequence,name};
     }
+    async function selectRoute(routeId) {
+        const route=resolveRoute(routeId),state=await readState();
+        if(state.url!=='https://overlay.local/overlay.html'||state.panel!=='bookshelf'||state.hidden||!state.chapter6)
+            throw Error('route selection requires the visible sixth chapter');
+        if(state.routeId===route.id)return {routeId:route.id,changed:false};
+        const geometry=await evaluateByValue(client,`(function(){var e=document.querySelector('select[data-action="route"]');if(!e)return null;
+            var r=e.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,h=document.elementFromPoint(x,y),c=getComputedStyle(e);
+            return {x:x,y:y,enabled:!e.disabled,visible:r.width>0&&r.height>0&&c.display!=='none'&&c.visibility!=='hidden',
+                hit:!!h&&(h===e||e.contains(h)),options:Array.from(e.options).map(o=>o.value)};})()`,'CF6 route selection geometry');
+        if(!geometry?.enabled||!geometry.visible||!geometry.hit||JSON.stringify(geometry.options)!=='["historical","type61"]')
+            throw Error('route selector is not visibly actionable or its closed options changed');
+        const sequence=writer.events.length;
+        for(const type of ['mouseMoved','mousePressed','mouseReleased'])await client.call('Input.dispatchMouseEvent',{
+            type,x:geometry.x,y:geometry.y,button:type==='mouseMoved'?'none':'left',buttons:type==='mousePressed'?1:0,clickCount:1},10000);
+        for(const key of [route.id==='type61'?'End':'Home','Enter'])for(const type of ['keyDown','keyUp'])
+            await client.call('Input.dispatchKeyEvent',{type,key,code:key,windowsVirtualKeyCode:key==='End'?35:key==='Home'?36:13},10000);
+        await sleep(200);
+        const after=await readState();
+        const proof=writer.events.find(event=>event.sequence>sequence&&event.kind==='dom_input'&&event.eventType==='change'
+            &&event.isTrusted===true&&event.target?.action==='route'&&event.target.value===route.id
+            &&event.target.visible===true&&event.target.enabled===true&&event.target.hitTargetMatches===true);
+        if(after.routeId!==route.id||!proof)throw Error('trusted route selection did not reach the expected value');
+        writer.append({kind:'cf6_candidate_route_input',routeId:route.id,inputSequence:proof.sequence,
+            runtimePid:runtimeIdentity.pid,physicalInputAttestation:false});
+        return {routeId:route.id,changed:true,inputSequence:proof.sequence};
+    }
     async function screenshot(name) {
         if (!/^[a-z0-9-]+\.png$/.test(name)) throw Error('invalid screenshot name');
         const result=await client.call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false},15000);
         const bytes=Buffer.from(result.data,'base64'),file=path.join(runDir,name);
         fs.writeFileSync(file,bytes,{flag:'wx'});return {file,sha256:sha256Bytes(bytes),bytes:bytes.length};
     }
-    return {readState,click,screenshot,close:()=>client.close()};
+    return {readState,click,selectRoute,screenshot,close:()=>client.close()};
 }
 module.exports={openInput,TARGETS};

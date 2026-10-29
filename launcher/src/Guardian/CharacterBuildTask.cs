@@ -1459,6 +1459,8 @@ namespace CF7Launcher.Guardian
 
                 if (flushFailure)
                 {
+                    LogFlushFailure(entry.Command, entry.BackendCallId,
+                        loadoutRevision, liveRevision, liveRefreshDirty);
                     InvalidateFinalizeProofLocked();
                     ClearUnknownLocked();
                     _writeState = "flush_failed";
@@ -1609,6 +1611,27 @@ namespace CF7Launcher.Guardian
                 + " bindingEpoch="
                 + bindingEpoch.ToString(
                     CultureInfo.InvariantCulture));
+        }
+
+        private static void LogFlushFailure(string command, int backendCallId,
+            long? loadoutRevision, long? liveRevision, bool? liveRefreshDirty)
+        {
+            // Only validated scalar authority enters the field log; inventory contents,
+            // save paths and opaque recovery capabilities remain redacted.
+            bool hasLiveState = loadoutRevision.HasValue && liveRevision.HasValue
+                && liveRefreshDirty.HasValue;
+            string phase = !hasLiveState ? "unavailable"
+                : liveRefreshDirty.Value || liveRevision.Value != loadoutRevision.Value
+                    ? "live_projection" : "persistence";
+            LogManager.Log("event=character_build_flush_failed command=" + command
+                + " callId=" + backendCallId.ToString(CultureInfo.InvariantCulture)
+                + " phase=" + phase
+                + " loadoutRevision=" + (loadoutRevision.HasValue
+                    ? loadoutRevision.Value.ToString(CultureInfo.InvariantCulture) : "unknown")
+                + " liveRevision=" + (liveRevision.HasValue
+                    ? liveRevision.Value.ToString(CultureInfo.InvariantCulture) : "unknown")
+                + " liveRefreshDirty=" + (liveRefreshDirty.HasValue
+                    ? (liveRefreshDirty.Value ? "true" : "false") : "unknown"));
         }
 
         private static void LogSnapshotAccepted(

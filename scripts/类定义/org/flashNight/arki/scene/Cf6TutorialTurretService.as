@@ -124,7 +124,7 @@ class org.flashNight.arki.scene.Cf6TutorialTurretService {
     public static function beginRoom(world:MovieClip, identity:Object, mapId:String, spec:Object):Boolean {
         install();
         var run:Object = _root._saveExt.bookRun;
-        if (run.bookId != "cf6-sting" || run.routeId != "historical" || run.outcome != "active"
+        if (run.bookId != "cf6-sting" || !org.flashNight.arki.scene.BookDefinition.isCf6Route(run.routeId) || run.outcome != "active"
                 || _root.当前关卡名 !== "书中历险-毒刺行动" || run.slot !== String(_root.savePath)
                 || !BookRunRules.sameCf6Run(run, run)
                 || !knownMap(mapId)

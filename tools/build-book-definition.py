@@ -16,12 +16,13 @@ OUTPUT = ROOT / 'scripts/类定义/org/flashNight/arki/scene/BookDefinition.as'
 PACK_OUTPUT = ROOT / 'data/items/消耗品_书中配给.xml'
 RECIPE_OUTPUT = ROOT / 'data/crafting/书中配给.json'
 CF6_SOURCE = ROOT / 'data/stages/books/cf6-sting.json'
+TYPE61_SOURCE = ROOT / 'data/stages/books/cf6-type61.json'
 
 
 def validate_cf6(data, items, skills, units, require_backgrounds=True):
     """CF6 uses authored native stages; campus random loot and boss rules do not apply."""
-    if (data.get('schema'), data.get('id'), data.get('routeId'), data.get('stageName')) != (
-            'playable-book.v1', 'cf6-sting', 'historical', '书中历险-毒刺行动'):
+    if (data.get('schema'), data.get('id'), data.get('stageName')) != (
+            'playable-book.v1', 'cf6-sting', '书中历险-毒刺行动') or data.get('routeId') not in ('historical','type61'):
         raise ValueError('unsupported CF6 chapter/route identity')
     def tree(value, depth=0):
         if depth > 24: raise ValueError('CF6 data nesting exceeds limit')
@@ -41,8 +42,9 @@ def validate_cf6(data, items, skills, units, require_backgrounds=True):
     bounded_integer(data['startingMoney'], 0, 10000000, 'CF6 starting money')
     bounded_integer(data['startingSkillPoints'], 0, 10000, 'CF6 spendable SP')
     actor = data['actor']
-    if actor['level'] != 60 or actor['experience'] != 157526193 or actor['gender'] != '男':
-        raise ValueError('historical actor must start at level 60 with matching XP')
+    type61 = data['routeId'] == 'type61'
+    if actor['level'] != (35 if type61 else 60) or actor['experience'] != (17372868 if type61 else 157526193) or actor['gender'] != '男':
+        raise ValueError('CF6 actor level/XP does not match its route')
     bounded_integer(actor['height'],100,250,'actor height')
     if any(not isinstance(actor[k], str) or not actor[k] for k in ('name','face')) or not isinstance(actor['hair'],str): raise ValueError('invalid actor appearance')
     slots = {'头部装备','上装装备','下装装备','手部装备','脚部装备','颈部装备','刀','长枪','手枪','手枪2'}
@@ -54,9 +56,9 @@ def validate_cf6(data, items, skills, units, require_backgrounds=True):
         used.add(entry['slot'])
         item = items.get(entry['name'])
         expected_use = '手枪' if entry['slot'] == '手枪2' else entry['slot']
-        if item is None or item.findtext('use') != expected_use or entry['enhancement'] != 11:
+        if item is None or item.findtext('use') != expected_use or entry['enhancement'] != (1 if type61 else 11):
             raise ValueError('initial equipment identity/slot/enhancement mismatch')
-        if int(item.findtext('data/level','0')) > 60: raise ValueError('initial equipment level too high')
+        if int(item.findtext('data/level','0')) > actor['level']: raise ValueError('initial equipment level too high')
     skill_catalog = {s.findtext('Name'):s for s in skills}
     used = set()
     if not 1 <= len(actor['skills']) <= 80: raise ValueError('invalid fixed skill list')
@@ -64,11 +66,22 @@ def validate_cf6(data, items, skills, units, require_backgrounds=True):
         meta = skill_catalog.get(entry['name'])
         if set(entry) != {'name','level'} or meta is None or entry['name'] in used or not meta.findtext('Type'):
             raise ValueError('unknown/duplicate fixed skill')
-        if entry['name'] == '驾驶' or entry['level'] != int(meta.findtext('MaxLevel','0')):
+        bounded_integer(entry['level'],1,int(meta.findtext('MaxLevel','0')),'initial skill level')
+        if int(meta.findtext('UnlockLevel','0')) > actor['level']: raise ValueError('initial skill unlock level too high')
+        if entry['name'] == '驾驶' or not type61 and entry['level'] != int(meta.findtext('MaxLevel','0')):
             raise ValueError('historical fixed skills must be max level and exclude driving')
         used.add(entry['name'])
+    if type61:
+        levels = {s['name']:s['level'] for s in actor['skills']}
+        if data['startingMoney'] != 30000 or data['startingSkillPoints'] != 1050 or levels.get('铁匠') != 1 or '口才' in levels:
+            raise ValueError('Type61 initial money/SP/locked smith contract mismatch')
+        quick = actor.get('quickSkills')
+        if type(quick) is not list or len(quick) > 12 or len(set(quick)) != len(quick) or any(n not in levels or skill_catalog[n].findtext('Type') == '被动' for n in quick):
+            raise ValueError('invalid Type61 quick skills')
     maps = data['maps']
     if not isinstance(maps,list) or not 1 <= len(maps) <= 32: raise ValueError('invalid CF6 map count')
+    if type61 and [m.get('id') for m in maps] != ['TUTORIAL']+['A%02d'%n for n in range(1,21)]:
+        raise ValueError('Type61 requires its complete tutorial and twenty-map route')
     ids = set()
     map_order = ['TUTORIAL'] + ['A%02d'%n for n in range(1,23) if n != 21]
     previous_position = -1
@@ -434,7 +447,8 @@ def validate_cf6_boss(stage, units, items, successor=False):
 
 
 def generated_cf6(data):
-    return {ROOT/'data/stages/books/cf6-sting.runtime.json': (json.dumps(data,ensure_ascii=False,indent=2)+'\n').encode('utf-8')}
+    name = 'cf6-type61' if data['routeId'] == 'type61' else 'cf6-sting'
+    return {ROOT/('data/stages/books/'+name+'.runtime.json'): (json.dumps(data,ensure_ascii=False,indent=2)+'\n').encode('utf-8')}
 
 
 def load_mods():
@@ -522,6 +536,9 @@ def generated_deliveries(data):
                                 price=0, kprice=0, materials=[voucher + '#1']))
     pack(data['ammoBundle']['name'], '内含' + '、'.join(entry['name'] + '×' + str(entry['count']) for entry in data['ammoBundle']['contents']) + '。',
          [(entry['name'], entry['count']) for entry in data['ammoBundle']['contents']])
+    type61_recipes = ROOT / 'tools/cf6-type61/recipes.generated.json'
+    if type61_recipes.is_file():
+        recipes.extend(json.loads(type61_recipes.read_text('utf8')))
     ET.indent(root, space='    ')
     xml = b'<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(root, encoding='utf-8') + b'\n'
     return {PACK_OUTPUT: xml, RECIPE_OUTPUT: (json.dumps(recipes, ensure_ascii=False, indent=2) + '\n').encode('utf-8')}
@@ -741,6 +758,10 @@ def main():
         cf6 = json.loads(CF6_SOURCE.read_text(encoding='utf-8-sig'))
         validate_cf6(cf6, items, ET.parse(ROOT/'data/skills/skills.xml').findall('Skill'), units)
         outputs.update(generated_cf6(cf6))
+    if TYPE61_SOURCE.is_file():
+        type61 = json.loads(TYPE61_SOURCE.read_text(encoding='utf-8-sig'))
+        validate_cf6(type61, items, ET.parse(ROOT/'data/skills/skills.xml').findall('Skill'), units)
+        outputs.update(generated_cf6(type61))
     for path, content in outputs.items():
         if args.check:
             if not path.is_file() or path.read_bytes() != content:

@@ -643,6 +643,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
+    if json.loads(LAYOUT.read_text(encoding="utf-8")).get("artRevision") == "r7-bold":
+        r7_spec = importlib.util.spec_from_file_location("cf6_tutorial_r7", HERE / "r7.py")
+        r7 = importlib.util.module_from_spec(r7_spec)
+        r7_spec.loader.exec_module(r7)
+        r7.assemble(sys.modules[__name__], args.check)
+        return 0
     outputs, layout, geo, symbols, placements, refs, media_manifest = render_outputs()
     report = audit(layout, geo, symbols, placements, refs, media_manifest)
     if args.check:

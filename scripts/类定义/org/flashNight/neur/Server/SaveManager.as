@@ -272,7 +272,7 @@ class org.flashNight.neur.Server.SaveManager {
         "reward.quarantine", "reward.pending_persist",
         "asset_tx.commit",
         "item_use.open_commit", "item_use.choice_open", "item_use.choice_select",
-        "reward.stash_take", "reward.stash_migration", "reward.quest_finish", "reward.map_stash",
+        "reward.stash_take", "reward.stash_migration", "reward.quest_finish", "reward.map_stash", "reward.cf6_type61",
         "loot.claim_batch", "loot.standalone_claim", "loot.settlement_terminal",
         "stage.return_base", "bookshelf.switch", "bookshelf.reward",
         "scene.changed_safety_net",
@@ -2273,9 +2273,9 @@ class org.flashNight.neur.Server.SaveManager {
                 && !org.flashNight.arki.scene.LeeTrialDefinition.ready()) return false;
         var cf6Loadout:Object;
         if (run != null && run.bookId === "cf6-sting") {
-            if (run.routeId !== "historical" || slot.indexOf("bookrun_") != 0 || slot === run.originSlot
-                    || !org.flashNight.arki.scene.BookDefinition.ready("cf6-sting")) return false;
-            cf6Loadout = prepareCf6Loadout();
+            if (!org.flashNight.arki.scene.BookDefinition.isCf6Route(run.routeId) || slot.indexOf("bookrun_") != 0 || slot === run.originSlot
+                    || !org.flashNight.arki.scene.BookDefinition.ready("cf6-sting",run.routeId)) return false;
+            cf6Loadout = prepareCf6Loadout(run.routeId);
             if (cf6Loadout == null) return false;
         }
         if (run == null && !validateMydata(snapshot)) return false;
@@ -2317,16 +2317,17 @@ class org.flashNight.neur.Server.SaveManager {
                 _root.金钱 = 0; _root.虚拟币 = 0; _root.身价 = _root.基础身价值 * trialActor.level;
                 _root.difficultyMode = 0;
             } else if (run.bookId === "cf6-sting") {
-                var historical:Object=org.flashNight.arki.scene.BookDefinition.get("cf6-sting");
-                var actor:Object=historical.actor;
+                var chapter:Object=org.flashNight.arki.scene.BookDefinition.get("cf6-sting",run.routeId);
+                var actor:Object=chapter.actor;
                 _root.角色名=actor.name; _root.性别=actor.gender; _root.身高=actor.height;
                 _root.脸型=actor.face; _root.发型=actor.hair;
                 _root.等级=actor.level; _root.经验值=actor.experience;
-                _root.技能点数=historical.startingSkillPoints; _root.金钱=historical.startingMoney;
+                _root.技能点数=chapter.startingSkillPoints; _root.金钱=chapter.startingMoney;
                 _root.虚拟币=0; _root.身价=_root.基础身价值*actor.level; _root.difficultyMode=0;
                 _root.物品栏.装备栏=new EquipmentInventory(cf6Loadout.equipment);
                 _root.主角技能表=cf6Loadout.skills;
                 _root.主角被动技能=cf6Loadout.passives;
+                for (var quick:Number=1;quick<=12;quick++) _root["快捷技能栏"+quick]=quick<=cf6Loadout.quickSkills.length ? cf6Loadout.quickSkills[quick-1] : "";
                 org.flashNight.arki.skill.SkillLoadoutService.refreshFeaturePreferences();
             } else {
                 _root.角色名 = "Andy Law"; _root.性别 = "男"; _root.身高 = 175;
@@ -2353,32 +2354,9 @@ class org.flashNight.neur.Server.SaveManager {
         return true;
     }
 
-    /** Build and validate detached initial state before clearing the origin character. */
-    private function prepareCf6Loadout():Object {
-        var config:Object=org.flashNight.arki.scene.BookDefinition.get("cf6-sting");
-        if (!org.flashNight.arki.scene.BookDefinition.valid(config)) return null;
-        var equipment:Object={};
-        var allowed:Object={头部装备:true,上装装备:true,下装装备:true,手部装备:true,脚部装备:true,颈部装备:true,刀:true,长枪:true,手枪:true,手枪2:true};
-        for (var i:Number=0;i<config.actor.equipment.length;i++) {
-            var source:Object=config.actor.equipment[i];
-            if (allowed[source.slot] !== true) return null;
-            var item:BaseItem=BaseItem.create(source.name,source.enhancement);
-            var meta:Object=_root.getItemData(source.name);
-            if (item == null || item.value.level !== 11 || (meta.use !== source.slot && !(source.slot === "手枪2" && meta.use === "手枪"))) return null;
-            equipment[source.slot]=item;
-        }
-        var skills:Array=new Array(80), passives:Object={};
-        for (i=0;i<80;i++) skills[i]=["",0,false,"",true];
-        for (i=0;i<config.actor.skills.length;i++) {
-            var grant:Object=config.actor.skills[i];
-            var skill:Object=_root.技能表对象[grant.name];
-            if (skill == null || typeof skill.Type != "string" || Number(skill.MaxLevel) !== grant.level
-                    || grant.name === "驾驶" || typeof skill.Equippable != "boolean" || typeof skill.Passive != "boolean") return null;
-            var pure:Boolean=String(skill.Type) === "被动" || skill.Equippable === false;
-            skills[i]=[grant.name,grant.level,pure,skill.Type,pure];
-            if (skill.Passive === true) passives[grant.name]={技能名:grant.name,等级:grant.level,启用:pure};
-        }
-        return {equipment:equipment,skills:skills,passives:passives};
+    /** Validate detached state before clearing the origin; keep SaveManager below the CS6 class-branch limit. */
+    private function prepareCf6Loadout(routeId:String):Object {
+        return org.flashNight.arki.scene.Cf6ActorLoadout.prepare(routeId);
     }
 
     /**

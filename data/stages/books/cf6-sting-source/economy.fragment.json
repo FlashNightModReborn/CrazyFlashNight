@@ -422,12 +422,6 @@
       "ammo": "机枪贫铀穿甲弹",
       "ammoCount": 3,
       "weaponCount": 1
-     },
-     {
-      "weapon": "M134暴力版",
-      "ammo": "机枪贫铀穿甲弹",
-      "ammoCount": 3,
-      "weaponCount": 1
      }
     ]
    },
@@ -808,7 +802,7 @@
     "高斯枪",
     "能量狙击枪"
    ],
-   "elite": "E4:MG42战术版/M134暴力版",
+   "elite": "E4:MG42战术版",
    "shopTier": null,
    "shopLevel": null,
    "choiceNode": null
@@ -904,8 +898,7 @@
    "quota": "E4",
    "weapon": "MG42战术版",
    "candidates": [
-    "MG42战术版",
-    "M134暴力版"
+    "MG42战术版"
    ],
    "map": "A17",
    "rule": "先抽定再装备,最终击杀掉落所持同型号,替代该阶段免费长枪配额,不另放武器箱;载体Parameters.cf6EliteQuota=E4;消费端替换其武器/弹药掉落为抽定枪强化1+配套弹药,不混金币/其他奖励"

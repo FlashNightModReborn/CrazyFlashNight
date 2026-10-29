@@ -1,10 +1,12 @@
 'use strict';
 // Read-only attachment to the runner's already authenticated, exact runtime.
 // This module owns no input channel, lifecycle action, credentials, or polling loop.
-const Preflight=require('./preflight');
+const {resolveRoute}=require('./route-config');
 const Affiliated=require('./affiliated-slot');
 
-async function snapshot({runtime,admission=null}) {
+async function snapshot({runtime,admission=null,routeId}) {
+    const route=resolveRoute(routeId===undefined?admission?.routeId:routeId);
+    if(admission&&admission.routeId!==route.id)throw Error('manual observation route changed');
     if(!runtime?.session||typeof runtime.session.verifyRuntimeIdentity!=='function'
             ||typeof runtime.session.agentControl!=='function'||!runtime.expectedIdentity
             ||runtime.identity?.runtimeMode!=='candidate'||!Number.isInteger(runtime.identity.pid)
@@ -20,13 +22,13 @@ async function snapshot({runtime,admission=null}) {
     const status=await runtime.session.agentControl('status');
     const identity=verify();
     const attempt=runtime.ready.expectedAttemptId;
-    if(status?.success!==true||status.save?.slot!==Preflight.TARGET_SLOT||status.save?.attemptId!==attempt
+    if(status?.success!==true||status.save?.slot!==route.slot||status.save?.attemptId!==attempt
             ||status.saveRuntime?.attemptId!==attempt||status.gameEnteredAttemptId!==attempt)
         throw Error('manual observation launch slot or attempt changed');
     const slot=status.saveRuntime.savePath;
-    if(slot!==Preflight.TARGET_SLOT&&slot!==admission?.slot)throw Error('manual observation runtime slot is not admitted');
+    if(slot!==route.slot&&slot!==admission?.slot)throw Error('manual observation runtime slot is not admitted');
     return {schema:'cf7-cf6-e2e.manual-observation.v1',observedAt:new Date().toISOString(),identity,
-        originSlot:Preflight.TARGET_SLOT,observedRuntimeSlot:slot,attemptId:attempt,
+        routeId:route.id,originSlot:route.slot,observedRuntimeSlot:slot,attemptId:attempt,
         hostReportedRuntimeReady:status.readyForRuntimeAutomation===true,
         activePanel:typeof status.activePanel?.name==='string'?status.activePanel.name:null,
         gameplay:{foreground:'unknown',paused:'unknown',map:'unknown',health:'unknown',keysHeld:'unknown'},

@@ -53,7 +53,7 @@ namespace CF7Launcher.Guardian
 
                 lock (_lock)
                 {
-                    _flashProcess = Process.Start(psi);
+                    _flashProcess = OwnedChildProcessJob.Start(psi);
                     if (_flashProcess == null)
                         return false;
 

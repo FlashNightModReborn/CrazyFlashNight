@@ -9,7 +9,8 @@ const CloneSaveGuard = require(path.join(ROOT, 'tools', 'workbench-live-e2e', 'l
 const SharedEvidence = require(path.join(ROOT, 'tools', 'workbench-live-e2e', 'lib', 'evidence-artifact'));
 const GenericOpener = require(path.join(ROOT, 'tools', 'workbench-live-e2e', 'kshop', 'generic-opener'));
 
-const TARGET_SLOT = 'cf7_agent_cf6_sting_20261021';
+const {resolveRoute} = require('./route-config');
+const TARGET_SLOT = resolveRoute().slot;
 
 function usage(reason) {
     const error = new Error(reason);
@@ -19,27 +20,28 @@ function usage(reason) {
 
 function parseArgs(argv) {
     const args = { candidateRoot:null, seedSlot:null, expectedBuildIdentity:null,
-        expectedPayloadClosure:null, expectedAsloaderSha256:null, help:false };
+        expectedPayloadClosure:null, expectedAsloaderSha256:null, routeId:'historical', help:false };
     for (let index = 0; index < argv.length; index++) {
         const arg = argv[index];
         if (arg === '--help' || arg === '-h') args.help = true;
-        else if (arg === '--candidate-root' || arg === '--seed-slot'
+        else if (arg === '--candidate-root' || arg === '--seed-slot' || arg === '--route'
                 || arg === '--expected-build-identity' || arg === '--expected-payload-closure' || arg === '--expected-asloader-sha256') {
             const value = argv[++index];
             if (!value || value.startsWith('--')) usage(arg + ' requires a value');
-            const key = { '--candidate-root':'candidateRoot', '--seed-slot':'seedSlot',
+            const key = { '--candidate-root':'candidateRoot', '--seed-slot':'seedSlot', '--route':'routeId',
                 '--expected-build-identity':'expectedBuildIdentity',
                 '--expected-payload-closure':'expectedPayloadClosure', '--expected-asloader-sha256':'expectedAsloaderSha256' }[arg];
             args[key] = value;
         } else usage('unsupported argument: ' + arg);
     }
     if (args.help) return args;
+    const route=resolveRoute(args.routeId);
     if (!args.candidateRoot || !path.isAbsolute(args.candidateRoot)) {
         usage('--candidate-root must be one explicit absolute path');
     }
     if (!args.seedSlot || !/^cf7_agent_[A-Za-z0-9_-]+$/.test(args.seedSlot)
-            || args.seedSlot === TARGET_SLOT) {
-        usage('--seed-slot must be an exact source slot distinct from cf7_agent_cf6_sting_20261021');
+            || args.seedSlot === route.slot) {
+        usage('--seed-slot must be an exact source slot distinct from the selected route target');
     }
     for (const key of ['expectedBuildIdentity', 'expectedPayloadClosure', 'expectedAsloaderSha256']) {
         if (args[key] !== null && !/^[a-f0-9]{64}$/i.test(args[key])) {
@@ -51,6 +53,7 @@ function parseArgs(argv) {
 
 function inspect(args, options) {
     options = options || {};
+    const route=resolveRoute(args.routeId);
     const appDataValue = options.appData || process.env.APPDATA;
     if (!appDataValue || !path.isAbsolute(appDataValue)) {
         usage('an exact absolute APPDATA directory is required to account for owned SOL files');
@@ -76,11 +79,11 @@ function inspect(args, options) {
         root:repo, appData, slot:args.seedSlot, requireJson:true
     });
     const targetBefore = CloneSaveGuard.captureSlotArtifactSet({
-        root:repo, appData, slot:TARGET_SLOT, requireJson:false
+        root:repo, appData, slot:route.slot, requireJson:false
     });
-    const lock = CloneSaveGuard.inspectCloneLock({ root:repo, slot:TARGET_SLOT });
+    const lock = CloneSaveGuard.inspectCloneLock({ root:repo, slot:route.slot });
     if (lock.lockPresent || lock.recoveryPresent) {
-        usage('cf7_agent_cf6_sting_20261021 has a clone lock or recovery record; resolve it before a run');
+        usage(route.slot+' has a clone lock or recovery record; resolve it before a run');
     }
     const seedJson = path.join(repo, 'saves', args.seedSlot + '.json');
     const seedFile = SharedEvidence.readExactRegularFile(seedJson, {
@@ -96,13 +99,14 @@ function inspect(args, options) {
         phase:'cf6_preflight',maximumBytes:64*1024*1024});
     if (args.expectedAsloaderSha256 && asloader.sha256.toLowerCase() !== args.expectedAsloaderSha256.toLowerCase())
         usage('asLoader differs from the pinned compiled artifact');
-    const chapter = JSON.parse(SharedEvidence.readExactRegularFile(path.join(repo,'data','stages','books','cf6-sting.runtime.json'),{
+    const chapter = JSON.parse(SharedEvidence.readExactRegularFile(path.join(repo,route.chapterPath),{
         phase:'cf6_preflight',maximumBytes:32*1024*1024}).bytes.toString('utf8'));
-    if (chapter.id !== 'cf6-sting' || chapter.routeId !== 'historical') usage('historical runtime chapter is unavailable');
+    if (chapter.id !== 'cf6-sting' || chapter.routeId !== route.id) usage('selected runtime chapter is unavailable');
     return {
         schema:'cf7-cf6-live-e2e.preflight.v1',
         writePerformed:false,
-        targetSlot:TARGET_SLOT,
+        routeId:route.id,
+        targetSlot:route.slot,
         seedSlot:args.seedSlot,
         seedIsLive:false,
         seedArtifactSetSha256:seed.setSha256,
@@ -119,9 +123,9 @@ function help() {
     return [
         'CF6 isolated-candidate read-only preflight (does not launch or write saves).',
         'Usage: node tools/cf6-live-e2e/preflight.js --candidate-root <absolute candidate>',
-        '       --seed-slot <existing cf7_agent_* source slot>',
+        '       --seed-slot <existing cf7_agent_* source slot> [--route historical|type61]',
         '       [--expected-build-identity <SHA-256> --expected-payload-closure <SHA-256> --expected-asloader-sha256 <SHA-256>]',
-        'The runner target is fixed to cf7_agent_cf6_sting_20261021; this command performs no writes.'
+        'Each route has one fixed target slot; this command performs no writes.'
     ].join('\n');
 }
 

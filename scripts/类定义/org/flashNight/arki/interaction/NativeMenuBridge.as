@@ -271,9 +271,14 @@ class org.flashNight.arki.interaction.NativeMenuBridge {
     // ═══════════════════════════════════════════════════════════
     // 动作门控（Symbol 1770 刷新显示 原判定，按 NPC 现况重估）
     // ═══════════════════════════════════════════════════════════
+    private static function bookCraftingCategory(npc:Object,actionId:String):String {
+        var runtime:Object=_global,service:Object=runtime.org.flashNight.arki.scene.Cf6Type61Service;
+        return typeof service.craftingCategory == "function" ? service.craftingCategory(npc,actionId) : "";
+    }
     private static function actionAllowed(npc:Object, actionId:String):Boolean {
         if (actionId == "dialogue") return !!npc.默认对话;
         if (actionId == "shop") return !!npc.物品栏;
+        if (actionId.indexOf("craft") === 0) return bookCraftingCategory(npc,actionId) != "";
         if (actionId == "hire") return npc.佣兵数据 != null
             && (npc.受雇欲望 > _root.受雇欲望基准 - 1);
         if (actionId == "task") return !!npc.NPC任务_任务_关卡路径;
@@ -282,13 +287,23 @@ class org.flashNight.arki.interaction.NativeMenuBridge {
     }
 
     private static function buildActions(npc:Object):Array {
-        return [
+        var actions:Array = [
             {id:"dialogue", label:labelOf("对话"),     enabled:actionAllowed(npc, "dialogue")},
             {id:"shop",     label:labelOf("买卖物品"), enabled:actionAllowed(npc, "shop")},
             {id:"hire",     label:labelOf("雇佣"),     enabled:actionAllowed(npc, "hire")},
             {id:"task",     label:labelOf("获得任务"), enabled:actionAllowed(npc, "task")},
             {id:"train",    label:labelOf("学习技能"), enabled:actionAllowed(npc, "train")}
         ];
+        var entries:Array=[{id:"craft",label:"装备合成"},{id:"craft_weapons",label:"武器合成"},{id:"craft_plugins",label:"插件合成"},
+            {id:"craft_iron",label:"铁枪会合成"},{id:"craft_necklace",label:"项链合成"},{id:"craft_armor",label:"统合61修复"}];
+        var seen:Object={},insert:Number=2;
+        for(var i:Number=0;i<entries.length;i++) {
+            var category:String=bookCraftingCategory(npc,entries[i].id);
+            if(category!="" && seen[category]!==true) {
+                seen[category]=true;actions.splice(insert++,0,{id:entries[i].id,label:labelOf(entries[i].label),enabled:true});
+            }
+        }
+        return actions;
     }
 
     private static function labelOf(s:String):String {
@@ -296,9 +311,18 @@ class org.flashNight.arki.interaction.NativeMenuBridge {
     }
 
     // ═══════════════════════════════════════════════════════════
-    // 动作执行 — 逐字复用 Symbol 1770 五个按钮的原路由（bt2 拆 shop/hire）
+    // 动作执行 — 旧五项保留原路由；CF6分类动作复用现有合成工作台
     // ═══════════════════════════════════════════════════════════
     private static function runAction(npc:Object, targetName:String, actionId:String):Void {
+        if (actionId.indexOf("craft") === 0) {
+            var category:String = bookCraftingCategory(npc,actionId);
+            if (category == "") return;
+            if (typeof _root.gameCommands.openCraftingWorkbench != "function"
+                    || !_root.gameCommands.openCraftingWorkbench({category:category, source:"world_npc"})) {
+                _root.发布消息("合成工作台暂时不可用");
+            }
+            return;
+        }
         if (actionId == "dialogue") {
             if (npc.默认对话 != undefined) {
                 if (!npc.对话index || npc.对话index >= npc.默认对话.length) {

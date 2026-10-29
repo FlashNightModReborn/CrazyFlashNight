@@ -21,6 +21,9 @@ class org.flashNight.arki.scene.BookRunRulesTest {
             fixture.maps[0].mechanism={assetScale:1,layers:[]};
             definition._cf6=null;
             check(BookDefinition.valid(fixture),"CF6 authored single-room fixture accepts without campus economy");
+            var type61Start:Number=passed+failed;
+            testType61(fixture);
+            trace("BookRunRules Type61 assertions: "+(passed+failed-type61Start));
             testCf6RuntimeGates(fixture);
             testCf6TransportGates(fixture);
             testCf6BossPreludeGates(fixture);
@@ -67,6 +70,45 @@ class org.flashNight.arki.scene.BookRunRulesTest {
         } finally {
             definition._cf6=original;_root._saveExt=oldExt;_root.savePath=oldSlot;_root.等级=oldLevel;
         }
+    }
+    private static function testType61(base:Object):Void {
+        var definition:Object=org.flashNight.arki.scene.BookDefinition;
+        var previous:Object=definition._type61, oldExt:Object=_root._saveExt;
+        var oldSlot=_root.savePath,oldLevel=_root.等级;
+        var fixture:Object=org.flashNight.arki.scene.Cf6Type61Fixture.book();
+        fixture.routeId="type61";fixture.startingMoney=30000;fixture.startingSkillPoints=1050;
+        fixture.actor.level=35;fixture.actor.experience=17372868;fixture.actor.equipment[0].enhancement=1;
+        fixture.actor.skills=[{name:"铁匠",level:1},{name:"移动射击",level:10}];fixture.actor.quickSkills=["移动射击"];
+        try {
+            definition._type61=null;
+            check(BookDefinition.valid(fixture),"Type61 accepts its partial level35 actor");
+            check(!BookDefinition.acceptFor("cf6-sting",fixture,"historical"),"late Type61 response cannot populate historical cache");
+            check(BookDefinition.acceptFor("cf6-sting",fixture,"type61"),"Type61 loads into its own exact route cache");
+            check(BookDefinition.get("cf6-sting","type61")===fixture && BookDefinition.get("cf6-sting","historical")!==fixture,"route definitions remain independent");
+            fixture.startingSkillPoints=2560;
+            check(!BookDefinition.valid(fixture),"Type61 cannot receive preset cost again as free SP");fixture.startingSkillPoints=1050;
+            fixture.actor.skills[0].level=2;
+            check(!BookDefinition.valid(fixture),"Type61 smith is exactly one");fixture.actor.skills[0].level=1;
+            fixture.actor.quickSkills.push("移动射击");
+            check(!BookDefinition.valid(fixture),"Type61 quick slots cannot duplicate an equipped skill");fixture.actor.quickSkills.pop();
+            var identity:Object={bookId:"cf6-sting",routeId:"type61",slot:"bookrun_type61",seed:7,startedAt:100,outcome:"active"};
+            var copy:Object=org.flashNight.gesh.object.PersistedSnapshot.clone(identity);
+            check(BookRunRules.sameCf6Run(identity,copy),"Type61 same-run identity survives detached reward copies");
+            copy.routeId="historical";
+            check(!BookRunRules.sameCf6Run(identity,copy),"historical callbacks cannot consume Type61 ownership");
+            copy.routeId="plan61";
+            check(!BookRunRules.sameCf6Run(identity,copy),"unrecognized routes stay closed");
+            _root._saveExt={bookRun:identity};_root.savePath=identity.slot;
+            check(BookDefinition.get("cf6-sting")===fixture,"current Type61 runtime resolves its own definition");
+            check(!BookDefinition.ready("cf6-sting","unknown"),"invalid explicit route never falls back to historical");
+            identity.outcome="victory";identity.elapsedMs=9000;
+            var quote:Object=BookRunRules.reward(identity,{});
+            check(quote.sp===0 && quote.firstClear===true && quote.bestMs===9000,"Type61 records a clear without permanent SP");
+            _root.等级=55;var below:Boolean=!org.flashNight.arki.scene.BookRunService.playerLevelCapReached();_root.等级=60;
+            check(below && org.flashNight.arki.scene.BookRunService.playerLevelCapReached(),"Type61 grows until its real level60 cap");
+            check(BookDefinition.supportsTarget("cf6-sting.type61") && BookDefinition.bookForTarget("cf6-sting.type61")==="cf6-sting"
+                && BookDefinition.routeForTarget("cf6-sting.type61")==="type61" && !BookDefinition.supportsTarget("cf6-sting.plan61"),"play target resolves only the closed canonical book/route pair");
+        } finally { definition._type61=previous;_root._saveExt=oldExt;_root.savePath=oldSlot;_root.等级=oldLevel; }
     }
     private static function testCf6TransportGates(base:Object):Void {
         var names:Array=["A09","A14","A18"],depths:Array=[112,505,147],types:Array=["兵种467","兵种469","兵种463"],levels:Array=[45,50,59],counts:Array=[5,7,5];

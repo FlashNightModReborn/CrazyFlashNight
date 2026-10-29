@@ -56,7 +56,7 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
         if (w == undefined || w !== _root.gameworld || identity == null
                 || identity !== StageReturnFlow.worldIdentity(w) || p == null
                 || _root._saveExt.bookRun.bookId !== "cf6-sting"
-                || _root._saveExt.bookRun.routeId !== "historical"
+                || !org.flashNight.arki.scene.BookDefinition.isCf6Route(_root._saveExt.bookRun.routeId)
                 || _root._saveExt.bookRun.slot !== String(_root.savePath)
                 || _root._saveExt.bookRun.outcome !== "active"
                 || _root.当前关卡名 !== "书中历险-毒刺行动") return;
@@ -242,6 +242,7 @@ class org.flashNight.arki.scene.Cf6BossEncounter {
         }
         // Native unit code alone creates and counts the successor; this controller binds it.
         plan=plan.nextPhase;bossMark={};child.cf6BossIdentity=bossMark;child.publishStageEvent=true;
+        org.flashNight.arki.scene.Cf6Type61Service.queueField(world,6,"robot");
         hudLease=org.flashNight.arki.hud.FocusTargetHudService.bind(
             world,owner,child,"cf6BossIdentity",bossMark,"boss","");
         bindFinalDeath(child);

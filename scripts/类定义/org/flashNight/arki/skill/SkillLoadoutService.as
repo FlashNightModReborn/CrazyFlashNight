@@ -407,6 +407,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
     }
 
     public static function commitLearn(skillKey:String, desiredLevel:Number, cost:Number, expectedRevision:Number):Object {
+        if (!org.flashNight.arki.scene.Cf6Type61Service.skillAllowed(skillKey)) return fail("trainer_skill_forbidden");
         var gate:Object = writeGate(expectedRevision);
         if (!gate.success) return gate;
         if (!safeSkillKey(skillKey) || !wholeInRange(desiredLevel, 1, 100) || !wholeInRange(cost, 0, 2147483647)) return fail("invalid_payload");
@@ -449,6 +450,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
 
     /** Only the durable reward domain calls this; ordinary trainer costs and level gates remain unchanged. */
     public static function rewardSkillStatus(skillKey:String, level:Number):Object {
+        if (!org.flashNight.arki.scene.Cf6Type61Service.skillAllowed(skillKey)) return {success:false,error:"trainer_skill_forbidden"};
         var sync:Object = synchronize();
         if (!sync.success || sync.scan.tailData) return {success:false,error:"corrupt_skill_state"};
         var state:Object = inspectFromScan(sync.scan,skillKey);
@@ -500,7 +502,9 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         if (_rewardState == null) return true;
         var before:Object = _rewardState;
         _rewardState = null;
-        if (!committed) restoreTransactionState(before);
+        // RewardStashService has already restored the authoritative whole ext.
+        // Only restore this skill domain; its captured candidate ext was mutated by selection.
+        if (!committed) restoreTransactionState(before, true);
         else {projectCommittedSkills(skillProjectionMask(before));runOptionalRenderers();}
         return true;
     }
@@ -824,7 +828,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         for (k in snapshot) target[k] = snapshot[k];
     }
 
-    private static function restoreTransactionState(before:Object):Void {
+    private static function restoreTransactionState(before:Object, preserveRestoredSaveExt:Boolean):Void {
         var r:Object = root();
         var table:Array = before.table;
         for (var i:Number = 0; i < SKILL_ROW_COUNT; i++) delete table[i];
@@ -858,10 +862,12 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         }
         restoreOriginalValues(r, before.originalValues);
         restoreDynamicMetadata(before.dynamicMetadata);
-        if(before.featureExtExists) {
-            r._saveExt=before.featureExt;
-            if(before.featureExists)r._saveExt.skillFeatures=before.featureValue;else delete r._saveExt.skillFeatures;
-        } else delete r._saveExt;
+        if (preserveRestoredSaveExt !== true) {
+            if(before.featureExtExists) {
+                r._saveExt=before.featureExt;
+                if(before.featureExists)r._saveExt.skillFeatures=before.featureValue;else delete r._saveExt.skillFeatures;
+            } else delete r._saveExt;
+        }
         _signature = before.signature;
         _lastScan = before.lastScan;
         _revision = before.revision;

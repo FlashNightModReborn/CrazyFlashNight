@@ -1013,6 +1013,10 @@ class org.flashNight.arki.scene.StageManager {
         return isCleared === true;
     }
 
+    public function currentBookMapId():String {
+        return currentStageInfo == null ? "" : String(currentStageInfo.basicInfo.Cf6MapId);
+    }
+
     public function clearStage():Void{
         if(!isActive || isFinished || isFailed) return;
         if (org.flashNight.arki.scene.LeeAssaultService.interceptClear(this, gameworld)) return;

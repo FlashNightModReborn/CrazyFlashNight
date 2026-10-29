@@ -239,7 +239,7 @@ def markdown(report):
 
 def self_test():
     base=json.loads(SOURCE.read_text('utf-8')); report=build_report(base); checks=0
-    require(report['totalShoppingCost']==608800 and report['finalNominalBalance']==331200,'current shopping arithmetic changed'); checks+=1
+    require(report['totalShoppingCost']==848800 and report['finalNominalBalance']==91200,'current shopping arithmetic changed'); checks+=1
     require(stone_cost(1,5)==40 and stone_cost(1,7)==231 and stone_cost(1,11)==2035,'enhancement arithmetic failed');checks+=1
     mutations=[lambda d:d['goldPlans']['beforeFinalMerchant'].pop(),
                lambda d:d['goldPlans']['beforeFinalMerchant'][0].update(mapId='A07'),

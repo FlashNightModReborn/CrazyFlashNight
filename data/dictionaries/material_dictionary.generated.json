@@ -53,7 +53,7 @@
     },
     {
       "path": "data/items/list.xml",
-      "sha256": "310A0E6E4C83E3E0945A5BE136350145CC97390040470A42EB480182C1F07CAB"
+      "sha256": "258D229E6FC7C12ED28F5F40ECF4388F7F6A861E52F1D6DE5CE3ACCB35804A7A"
     },
     {
       "path": "data/items/消耗品_货币.xml",
@@ -77,7 +77,7 @@
     },
     {
       "path": "data/items/消耗品_战场补给.xml",
-      "sha256": "5ECAEB9F814E2E3E5FB9C534E58CBD74D01E20A0F22566F347D5B5F97467A005"
+      "sha256": "FCCC0E2EE5B2279F78FAC37C388F87C7409D237F30C436D1C67FF456812C918C"
     },
     {
       "path": "data/items/收集品_材料.xml",
@@ -285,7 +285,11 @@
     },
     {
       "path": "data/items/消耗品_自选配给.xml",
-      "sha256": "9BC1AB2F7D077E068C7C9CCDD698FA9A84E74A1EE5C691415D8F780D5C7CD488"
+      "sha256": "AA1BD185EF843FF15239A42F840BD1578AAD8263463C9418E3FF733FB10D038D"
+    },
+    {
+      "path": "data/items/消耗品_CF6六一配给.xml",
+      "sha256": "AC4EE0D4F379603E3916D5585EE31E80CAFB7B0726A59B0B54439C9A1A860A38"
     },
     {
       "path": "data/items/equipment_mods/list.xml",
@@ -325,7 +329,7 @@
     },
     {
       "path": "data/items/equipment_mods/中等材料_枪械专用.xml",
-      "sha256": "47ED98963A6F0BC59EC449B4ECF65A5234194DDD880E56161063C5B9BF2CF4B7"
+      "sha256": "779214D9EE420D8F255A42606F3E2A662E14C42497F931458298D8FFE00965AD"
     },
     {
       "path": "data/items/equipment_mods/中等材料_刀专用.xml",
@@ -389,7 +393,7 @@
     },
     {
       "path": "scripts/类定义/org/flashNight/arki/item/EquipmentTuningService.as",
-      "sha256": "CD3D5318A25AA23CCD56CB56CBA275514409B5C0DC46FBB08E39CEF81E9FE910"
+      "sha256": "262F131ABF0987C0D06EBC3879774DAFA0B419D431A46342436C2E374BCE323F"
     },
     {
       "path": "data/infrastructure/infrastructure.xml",
@@ -410,5 +414,5 @@
     "sha256": "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8"
   },
   "schema": "cf7.material-dictionary-generated.v2",
-  "sourceDigest": "34E051B99E9EC3BC28FC691AF85260C43912A6ED183F41505FB0ACCF4D1E6282"
+  "sourceDigest": "CD44AF5CED9A571363CD4C61000359A95865FF0D965D7BEE4E1AC56FBC3D7787"
 }

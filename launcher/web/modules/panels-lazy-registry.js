@@ -34,7 +34,7 @@
          'modules/workbench-focus.js', 'modules/workbench-primitives.js',
          'modules/workbench-profile.js', 'modules/workbench.js',
            'modules/workbench-components.js', 'modules/asset-workbench-help.js',
-           'modules/asset-timeline.js', 'modules/icons.js', 'modules/dressup-doll-renderer.js',
+           'modules/asset-timeline.js', 'modules/dressup-doll-renderer.js',
          'modules/asset-workbench.js'], noop);
 
     Panels.registerLazy('book-comic', ['modules/book-comic-content.js', 'modules/book-comic-panel.js'], noop);
@@ -44,9 +44,9 @@
 
     // ── tablet（平板电脑：基建/联络/图鉴 Hub；素材由 tools/bake-tablet-assets.js 烘焙）──
     // panel-runtime 供 domain 信封 mux；shop-portrait-resolver 供联络视图解析 NPC 头像；
-    // icons 供材料大全条目图标。
+    // 图标复用 overlay boot 的 Icons；重复执行 icons.js 会清空已加载的 manifest。
     Panels.registerLazy('tablet',
-        ['modules/panel-runtime.js', 'modules/icons.js',
+        ['modules/panel-runtime.js',
          'modules/shop-portrait-resolver.js', 'modules/tablet.js'], noop);
 
     Panels.registerLazy('bookshelf', ['modules/panel-runtime.js', 'modules/bookshelf-runtime.js', 'modules/bookshelf-media.js', 'modules/bookshelf-reader.js', 'modules/bookshelf-original.js', 'modules/bookshelf-panel.js'], noop);

@@ -37,6 +37,7 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
 
         testInstallAndWireIdentity();
         testReadinessProbeIsPure();
+        testCf6ActorRefreshAdmission();
         testSnapshotProjectionAndCooldown();
         testResolvedEquipmentAppearance();
         testLoadoutTooltipAuthority();
@@ -948,6 +949,43 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
         check(!CharacterBuildService.canOpenPanel()
                 && !CharacterBuildService.snapshot(0).success,
             "canOpenPanel 验证 live context，不以容器存在冒充可打开");
+    }
+
+    private static function testCf6ActorRefreshAdmission():Void {
+        var root:Object=fixtureRoot(2),managerClass:Object=org.flashNight.arki.scene.StageManager;
+        var previousManager=managerClass.instance;
+        var world:Object=root.gameworld;
+        // installLiveFixture already bound the coordinator to this world's identity.
+        var manager:Object={gameworld:world,currentStage:5,isActive:true,isFailed:false,isFinished:false};
+        managerClass.instance=manager;
+        root.savePath="cf6.character-build.fixture";root.当前关卡名="书中历险-毒刺行动";
+        var run:Object={bookId:"cf6-sting",routeId:"type61",slot:String(root.savePath),seed:7,startedAt:100,outcome:"active"};
+        if(root._saveExt==undefined)root._saveExt={};root._saveExt.bookRun=run;
+        var room:Object={world:world,owner:world.__stageReturnWorldIdentity,stageManager:manager,stageIndex:5,
+            slot:String(root.savePath),runIdentity:run,failed:false};world.__cf6Mechanism=room;
+        room.arrival={room:room,closed:false,rules:{owner:room.owner,phase:"playing",actorReleased:false}};
+        try {
+            CharacterBuildService.testOnlyUseRoot(root);
+            check(!CharacterBuildService.canOpenPanel() && !CharacterBuildService.snapshot(0).success,
+                "CF6入场接管期间只读准入拒绝整备，未铸造角色构筑会话");
+            var blocked:Object=CharacterBuildService.open();
+            check(!blocked.success && blocked.error=="live_unavailable" && root.refreshCalls==0,
+                "绕过opener的CF6整备open仍拒绝，零装备重建");
+            room.arrival.rules.actorReleased=true;
+            var ready:Boolean=CharacterBuildService.canOpenPanel(),opened:Object=CharacterBuildService.open();
+            check(ready && opened.success && opened.sessionGeneration==1,
+                "人物归还控制后正常整备，先前拒绝不消费session generation");
+            var unknownCallback:Object=callbacks(true,undefined);
+            CharacterBuildService.testOnlyUseCallbacks(unknownCallback);
+            var pending:Object=CharacterBuildService.finalize(opened.sessionGeneration,opened.loadoutRevision);
+            check(!pending.success && pending.error=="needs_reconcile" && pending.active && unknownCallback.state.saveCalls==1,
+                "CF6整备夹具取得一次持久化未知结果，不重发保存 error="+pending.error+" saveCalls="+unknownCallback.state.saveCalls);
+            room.arrival.rules.actorReleased=false;
+            var refused:Object=CharacterBuildService.open();
+            check(!refused.success && refused.active && refused.sessionGeneration==opened.sessionGeneration
+                    && unknownCallback.state.saveCalls==1,
+                "临时演出拒绝不能退休已有未知结果会话，也不能重放持久写 active="+refused.active+" saveCalls="+unknownCallback.state.saveCalls);
+        } finally {managerClass.instance=previousManager;}
     }
 
     private static function testInstallAndWireIdentity():Void {

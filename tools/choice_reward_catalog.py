@@ -7,7 +7,8 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'data/rewards/choice-rewards.json'
-BOOK_SOURCES = (('cf6-sting', ROOT / 'data/stages/books/cf6-sting-source/choice-rewards.fragment.json'),)
+BOOK_SOURCES = (('cf6-sting', ROOT / 'data/stages/books/cf6-sting-source/choice-rewards.fragment.json'),
+                ('cf6-sting.type61', ROOT / 'tools/cf6-type61/choice-rewards.fragment.json'))
 ID = re.compile(r'[a-z][a-z0-9.-]{0,63}\Z')
 
 
@@ -82,7 +83,10 @@ def validate_loadout(option, ceiling, items, mods):
             raise ValueError('invalid bundle consumable')
         integer(row['count'], 1, 30, 'supply quantity')
         supplied.add(row['name'])
-    if not ammo <= supplied: raise ValueError('bundle lacks weapon/underbarrel ammunition')
+    checkpoint_ammo = option.get('checkpointAmmo')
+    if checkpoint_ammo is not None and (checkpoint_ammo is not True or not option['id'].startswith('cf6.type61.') or option['consumables']):
+        raise ValueError('checkpoint ammunition is reserved for the Type61 fixed supply contract')
+    if not checkpoint_ammo and not ammo <= supplied: raise ValueError('bundle lacks weapon/underbarrel ammunition')
 
 
 def validate_items(bundle, ceiling, items):
@@ -104,13 +108,14 @@ def merge_catalogs(base, additions):
     result = copy.deepcopy(validate(base))
     for book_id, fragment in additions:
         validate(fragment)
-        prefix = 'cf6.' if book_id == 'cf6-sting' else book_id + '.'
+        prefix = 'cf6.type61.' if book_id == 'cf6-sting.type61' else 'cf6.' if book_id == 'cf6-sting' else book_id + '.'
+        scope = {'kind':'book','bookId':'cf6-sting','routeId':'type61'} if book_id == 'cf6-sting.type61' else {'kind':'book','bookId':book_id}
         for pool in fragment['pools']:
-            if pool['scope'] != {'kind': 'book', 'bookId': book_id} or not pool['id'].startswith(prefix):
+            if pool['scope'] != scope or not pool['id'].startswith(prefix):
                 raise ValueError('chapter choice pool scope/namespace mismatch')
         for bundle in fragment['bundles']:
             if not bundle['id'].startswith(prefix): raise ValueError('chapter bundle namespace mismatch')
-            if book_id == 'cf6-sting' and bundle.get('kCost', 0) != 0:
+            if book_id in ('cf6-sting','cf6-sting.type61') and bundle.get('kCost', 0) != 0:
                 raise ValueError('CF6 prototype choice cards must be free')
         result['bundles'].extend(copy.deepcopy(fragment['bundles']))
         result['pools'].extend(copy.deepcopy(fragment['pools']))
@@ -136,7 +141,7 @@ def validate(data):
     bundles, pool_ids, item_names, used = {}, set(), set(), set()
     for bundle in data['bundles']:
         keys = 'id name title description grade items' if 'items' in bundle else 'id name title description grade weapon mods consumables'
-        exact(bundle, keys + (' weaponCount' if 'weapon' in bundle and 'weaponCount' in bundle else '') + (' skills' if 'skills' in bundle else '') + (' kCost' if 'kCost' in bundle else ''), 'bundle')
+        exact(bundle, keys + (' weaponCount' if 'weapon' in bundle and 'weaponCount' in bundle else '') + (' checkpointAmmo' if 'weapon' in bundle and 'checkpointAmmo' in bundle else '') + (' skills' if 'skills' in bundle else '') + (' kCost' if 'kCost' in bundle else ''), 'bundle')
         if bundle['grade'] not in GRADES: raise ValueError('invalid bundle grade')
         integer(bundle.get('kCost', 0), 0, 1200, 'card K price')
         skills = bundle.get('skills', [])
@@ -171,8 +176,9 @@ def validate(data):
             raise ValueError('v1 supports one selection and no rerolls')
         scope = pool['scope']
         if type(scope) is not dict or scope.get('kind') not in ('character', 'book'): raise ValueError('invalid pool scope')
-        exact(scope, 'kind bookId' if scope['kind'] == 'book' else 'kind', 'scope')
+        exact(scope, ('kind bookId' + (' routeId' if 'routeId' in scope else '')) if scope['kind'] == 'book' else 'kind', 'scope')
         if scope['kind'] == 'book' and not ID.fullmatch(scope['bookId']): raise ValueError('invalid book scope')
+        if 'routeId' in scope and scope != {'kind':'book','bookId':'cf6-sting','routeId':'type61'}: raise ValueError('unknown route-scoped choice')
         if type(pool['groups']) is not list or not 1 <= len(pool['groups']) <= 4: raise ValueError('invalid groups')
         seen, group_ids, count = set(), set(), 0
         for group in pool['groups']:

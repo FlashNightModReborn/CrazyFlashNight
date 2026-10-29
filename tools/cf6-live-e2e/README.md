@@ -1,6 +1,8 @@
-# CF6 史实章节实机入口与隔离验收
+# CF6 两条路线的实机入口与隔离验收
 
-本工具固定目标槽为 `cf7_agent_cf6_sting_20261021`。默认建议来源为已存在的 `cf7_agent_scene_ready_1014`；只允许其他明确的 `cf7_agent_*` 来源，不接收真实玩家槽、任意目标槽或 fresh 初始化。来源 JSON 原始字节复制，来源 JSON 与对应 SOL 前后摘要必须一致。
+默认 `--route historical` 的目标槽固定为 `cf7_agent_cf6_sting_20261021`；`--route type61` 固定使用独立的 `cf7_agent_cf6_type61_20261026`。路线枚举及目标槽只读 [route-config.js](route-config.js)。默认建议来源为已存在的 `cf7_agent_scene_ready_1014`；只允许其他明确的 `cf7_agent_*` 来源，不接收真实玩家槽、任意目标槽或 fresh 初始化。来源 JSON 原始字节复制，来源 JSON 与对应 SOL 前后摘要必须一致。
+
+61路线在以下预检和运行命令中加 `--route type61`。工具通过真实 WebView 的路线下拉框及 CDP 鼠标/键盘事件选择61计划，要求可见命中与可信 `change` 事件，再核对虚拟游玩目标 `cf6-sting.type61`、原档凭据、书中档和返回战绩的同一路线。不会直接改 DOM 值或调用业务命令。选路身份进入资源闭包；61配置、生成器、配方及新增运行消费者同样绑定。
 
 Host `agent_control openBookshelf` 只接收 exact slot/attempt，通过固定 `openBookshelfForAgent` 到 AS2 生产 `BookshelfPanelService.openPanel()`。它不接收书号、token、存档正文或业务 commit。AS2 入口补丁保留于 `bookshelf-opener.as.patch`；本轮已应用，不能重复应用。改 AS2 后必须由主控真实编译，再钉住新的 asLoader 摘要。
 
@@ -46,7 +48,7 @@ A06/A08原几何、现役Wings单位根与发布入口，加站姿原生符号�
 
 A07 只由当前章节引用的三个精确URL触发车辆闭包：`flashswf/arts/new/CF6Vehicle.swf`、`CF6_A07_BG.swf` 与 `CF6_A07_sky.swf`。
 `cf6-vehicle-art.v1` 绑定原作显示节点与动作摘录、受治理R2/R5重绘、纹理清单、真实`texture-seed/texture-seed.xfl`及其DOM引用的每个LIBRARY/bin文件；
-纹理绝对路径只能对应本仓库中同名、按摘要命名的`source/textures`文件。提取器、转换器、字体、模板、章节生成器及六个固定运行类
+纹理绝对路径只接受当前仓库根，或由本工作树Git共同目录验证出的主检出根，且必须对应同名、按摘要命名的`source/textures`文件。后者仅解释原始制作路径；实际纹理始终从当前工作树读取并校验SHA/bytes，不读取清单指定的外部路径。这两个精确根随本轮闭包记录，其他目录仍拒绝。提取器、转换器、字体、模板、章节生成器及六个固定运行类
 （Service/ActorAdapter/Combat/Timeline/Data/Rules）都入身份，不能依赖裸类名恰好被正则发现。
 横向滚屏 `HorizontalScroller.as` 与 Host `MapTaskCatalog.cs` 显式纳入来源身份。原作1805第2帧仅为ActionEnd(00)，其摘要为e3b0c442…b855的空反编译稿是唯一允许为空的车辆脚本；必须同时匹配该原路径，其他空脚本仍拒绝。
 `runtime-manifest.json` 另封闭绑定 prepare_runtime、原作节点、四个生产模板与 canonical Rules 模板，输出必须恰好为六个运行类且摘要、字节一致。
@@ -62,6 +64,8 @@ A07 只由当前章节引用的三个精确URL触发车辆闭包：`flashswf/art
 明确列入生产源码身份；这是候选源/产物变更检测，不将源码领先状态当作现役DLL已经部署。
 
 章内难度配置 `difficulty.source.json` 与 `difficulty_plan.py` 同时进入章节装配输入和本闭包；物资候选源、实际章节、商店与奖励消费者共同绑定。刷怪配置变化会使旧旅程身份失效，静态预算不代替实际难度验收。
+
+教程启用 `r7-bold` 时，额外绑定所选 SVG、原始 ZIP、转换器、原生纹理缓存、生成清单与当前 XFL 的完整引用。路径仅允许教程自己的原稿、生成目录和精确纹理导入配方；遗漏实际 Include、修改源或缓存、改选边线及扩张到其他目录均拒绝。原生遮罩裁切与游戏倍率仍由实际消费者验证，清单不替代像素或通行证据。
 
 闭包只证明本次输入身份和运行期间是否变化。源码准备、真实 CS6 编译、候选运行和完整玩法验收仍分别记录；离线夹具通过不能证明炮塔或漫画已在游戏中执行。
 
@@ -115,7 +119,7 @@ writer.append({kind:'cf6_manual_observation', observation});
 
 这里的 `runtime` 和 `admission` 必须来自本轮 runner 已完成的候选启动与附属槽登记，不从旧报告拼装新权限。调用在现役认证会话上读取一次 `agent_control status`，前后核对候选身份、PID、端口、加载 attempt 与槽位；输出只保留有限状态。前台、暂停、地图、血量和持键状态均明确标记 `unknown`，必须由正常画面观察补充。该辅助模块未接入 runner 自动循环，使用它不产生战斗完成或物理输入证明。
 
-初始书中存档必须匹配配置的角色、等级、累计经验、初始金币／SP、逐槽 11 强化和固定技能清单。返回要求原克隆角色资产不变、精确局次零奖励、历史路线记录成立，并由新 PID 正常加载克隆槽读回。截图、哈希链观察记录和报告位于 `tmp/workbench-live-e2e/cf6/<run>/`。
+初始书中存档必须匹配所选路线的角色、等级、累计经验、初始金币／SP、装备强化和固定技能清单。史实仍为60级/+11；61为35级/+1，并逐一核对12个快捷技能槽。返回要求原克隆角色资产不变、精确局次零奖励、所选路线记录成立，并由新 PID 正常加载克隆槽读回。截图、哈希链观察记录和报告位于 `tmp/workbench-live-e2e/cf6/<run>/`。
 
 每轮将入书前、实际入书保存屏障、书中初始角色、返回和重启读回的测试槽 JSON 原字节分别保存，并在报告绑定文件名与 SHA；不会只保留入口摘要后丢失可复查正文。克隆准备、其他既有槽的摘要基线和失败后的摘要集合另存 `save-protection-*.json`。这些证据文件只记录测试现场，不写回存档、不触发业务重放，也不把失败改为通过。
 

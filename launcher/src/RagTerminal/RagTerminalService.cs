@@ -561,11 +561,13 @@ namespace CF7Launcher.RagTerminal
 
         private static void StartEmbeddedProcess(string exePath)
         {
-            Process process = Process.Start(new ProcessStartInfo
+            using Process process = OwnedChildProcessJob.Start(new ProcessStartInfo
             {
                 FileName = exePath,
                 Arguments = "--embedded",
                 UseShellExecute = false,
+                CreateNoWindow = true,
+                WindowStyle = ProcessWindowStyle.Hidden,
                 WorkingDirectory = Path.GetDirectoryName(exePath)
             });
             if (process == null) throw new InvalidOperationException("process_start_returned_null");

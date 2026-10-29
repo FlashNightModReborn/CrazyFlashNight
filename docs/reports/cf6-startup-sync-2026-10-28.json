@@ -1,0 +1,172 @@
+{
+  "schema": "cf7-cf6-startup-sync.v1",
+  "recordedAt": "2026-10-28T07:07:21.687499+00:00",
+  "scope": "Withdraw two unpublished main commits while retaining work, integrate upstream, rebuild local delivery and verify actual production frontdoor using a dedicated clone.",
+  "git": {
+    "originalHead": "a970666dcd16c04cc29dfbd61906b13e9472ebfc",
+    "originalUnpublished": [
+      "10bca2ae44",
+      "a970666dcd"
+    ],
+    "currentHead": "56086994221ebb613be561955ef20b10f9fa04a6",
+    "originMain": "56086994221ebb613be561955ef20b10f9fa04a6",
+    "newCommitsCreated": 0,
+    "pushPerformed": false,
+    "mergeCommitCreated": false,
+    "recoveryBranch": "codex/preserve-main-before-sync-20261028",
+    "preservation": {
+      "path": "tmp/cf6-startup-sync-20261028/preservation.json",
+      "bytes": 63173,
+      "sha256": "be36c67d8f26142afc6bb9b0278263f637a9fd38d302539705f050549fb3d9bf"
+    },
+    "firstSync": {
+      "path": "tmp/cf6-startup-sync-20261028/sync-result.json",
+      "bytes": 549,
+      "sha256": "f16c73d48e0a43c98c4e2b54b7178a9286b9cdbbd4b7d34ed154d316952f1e40"
+    },
+    "followupSync": {
+      "path": "tmp/cf6-startup-sync-20261028/sync-followup/result.json",
+      "bytes": 413,
+      "sha256": "2fdbb8cc5d4be3e7fd0d5e62e83e9910b8d881e2e9c3dfe6c8efd2795fd716f2"
+    }
+  },
+  "diagnostic": {
+    "original": {
+      "path": "logs/diagnostic-crazyflasher7_saves-20261028-132229.zip",
+      "bytes": 2193559,
+      "sha256": "13a6784cd00090e860fb41a236ce1114b4ab73f04f4cf55ac80f29df05bd76c9"
+    },
+    "error": "frontdoor_title_timeout",
+    "rootTitleCodePresent": {
+      "path": "tmp/cf6-startup-sync-20261028/root-swf-title-static.json",
+      "bytes": 949,
+      "sha256": "f95be60e101568b9e57b87511ec085841da700cd7ba6e28309b4c0e8dc2be039"
+    },
+    "observedFailures": [
+      {
+        "ready": "13:14:16.264",
+        "handoff": "13:14:46.545",
+        "timeout": "13:15:01.274"
+      },
+      {
+        "ready": "13:21:44.880",
+        "handoff": "13:22:21.575",
+        "timeout": "13:22:29.894"
+      }
+    ],
+    "assessment": "The failing attempts completed handshake and handoff but did not deliver a title receipt within 45000 ms. Slow initialization is evidenced; one unique original root cause is not proven. No watchdog or readiness gate was weakened."
+  },
+  "publication": {
+    "at": "2026-10-28T06:40:53.736154+00:00",
+    "sourceCount": 2300,
+    "sourceDrift": [],
+    "swf": {
+      "path": "scripts/asLoader.swf",
+      "bytes": 6779776,
+      "sha256": "7174c1cc6775393caa327633c2bec4fd1a68f89090df5672d411783788d093c3"
+    }
+  },
+  "compiler": {
+    "errors": 0,
+    "warnings": 0,
+    "log": {
+      "path": "tmp/cf6-startup-sync-20261028/asloader-publish.log",
+      "bytes": 1357,
+      "sha256": "63418c9e1cbaa96c49237a1fccc4c2a744f800ff333a9bda06c1229984fb921a"
+    },
+    "diagnostics": {
+      "path": "tmp/cf6-startup-sync-20261028/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    "sourceSnapshot": {
+      "path": "tmp/cf6-startup-sync-20261028/publish-inputs.json",
+      "bytes": 475922,
+      "sha256": "25e4ec76c91562cb9f59a02b4e3cd6ab0987000b46a4fcc0057600925378c82a"
+    }
+  },
+  "candidate": {
+    "path": "tmp/runtime-candidates/v2/type61-main1028",
+    "buildIdentity": "137CF8A20D8352789D998A11EDC5B44392CC7C4B5B02BDD163B86DBD1C3A49D1",
+    "payloadClosure": "C696CE195516C8E3D058D19831416D8132D322BBA892CCB48ED4E161C3FB8658",
+    "status": "candidate_executed",
+    "formalPromotionPerformed": false
+  },
+  "actualFrontdoor": {
+    "status": "passed_production_frontdoor",
+    "report": {
+      "path": "tmp/workbench-live-e2e/cf6/20261028065714674-frontdoor-startup/report.json",
+      "bytes": 722913,
+      "sha256": "c7e011b3fbe41454285cde4cfe8a529e5cf40023a3737c627c26af502ae36f37"
+    },
+    "slot": "cf7_agent_startup_sync_20261028",
+    "attempt": "cf94b87b3d664869a21b6b2e4b623c48",
+    "startGame": "15:02:10.730",
+    "handoff": "15:02:25.753",
+    "title": "15:02:31.835",
+    "readyObserved": "15:02:34.498",
+    "secondsClickToReady": 23.768,
+    "watchdogObserved": false,
+    "readinessSpoofed": false,
+    "fixedAgentEnterUsed": false,
+    "normalShutdown": true,
+    "protectedArtifacts": {
+      "setSha256": "d29dc21cd3da522c424d84cd13bf29dd805de2d3e76dffdc624abcff18b29504",
+      "artifactCount": 108
+    },
+    "preferencesByteIdentical": true,
+    "cloneLockPresent": false,
+    "cloneRecoveryPresent": false
+  },
+  "generated": {
+    "change": "Learnable roster refreshed for seven upstream passive skills; original fixed economy and all calculated procurement amounts unchanged.",
+    "routeCheck": "passed",
+    "booksCheck": "passed",
+    "budgetCheck": "passed",
+    "routeTests": 16
+  },
+  "validation": {
+    "sourceProbes": {
+      "playerStat": 28,
+      "resourceTransfer": 78,
+      "initialReady": 5,
+      "cleanUnblock": 6,
+      "aiAuxiliary": 8,
+      "sceneFailure": 14,
+      "sceneReady": 14,
+      "sourceClosureFixtures": 99,
+      "evidenceTier": "Node source extraction and offline fixtures; not AVM1 unit qualification"
+    },
+    "as2Ownership": {
+      "errors": [],
+      "files": 787,
+      "parsed": 2,
+      "cacheHits": 785,
+      "loaderClasses": 775,
+      "closureChecked": true,
+      "policy": "production",
+      "milliseconds": 8928.8346
+    },
+    "functionSizeGate": {
+      "path": "tmp/cf6-startup-sync-20261028/function-sizes.log",
+      "bytes": 456,
+      "sha256": "843365f46343f3bd7883114d09e7d5557b6801f601f881e78756b74f3e6fda21"
+    },
+    "documentation": "passed with pre-existing warnings",
+    "diffWhitespace": "passed"
+  },
+  "coordination": {
+    "cs6Released": true,
+    "gameProcessesRemaining": 0,
+    "cs6ProcessesRemaining": 0,
+    "tasks": "Ready",
+    "binding": "main root unchanged",
+    "unknownCompileGate": false,
+    "scratchGate": false
+  },
+  "limits": [
+    "One dedicated-clone production-frontdoor journey is verified; real player slots were not opened for testing.",
+    "Earlier CDP attachment and native operator-window timeouts happened before clicking start; their failed records are preserved and are not game failures.",
+    "Original startup slowdown is not uniquely attributed. No full CF6 playthrough, balance acceptance, formal promotion or formal standard-entry claim."
+  ]
+}

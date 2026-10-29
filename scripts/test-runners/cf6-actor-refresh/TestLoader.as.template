@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId cf6-actor-refresh Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.scene.Cf6ActorRefreshPolicyTest.runAllTests();
+trace("FocusedTestRunId cf6-actor-refresh Complete: __FOCUSED_RUN_ID__");

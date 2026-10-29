@@ -10,6 +10,9 @@ const root = path.resolve(__dirname, '..');
 let passed = 0;
 function check(value, message) { assert.ok(value, message); passed++; }
 async function main() {
+    check(R.playTarget('cf6-sting','historical') === 'cf6-sting', 'historical target stays compatible');
+    check(R.playTarget('cf6-sting','type61') === 'cf6-sting.type61', 'Type61 uses a distinct closed play target');
+    check(R.playTarget('cf6-sting','plan61') === null && R.playTarget('unknown','type61') === null, 'unknown routes do not produce a play intent');
     check(R.books.length === 3 && R.books.filter(b => b.pages === 15).length === 2, 'two preserved books and one playable book');
     check(R.books.every(b => b.format === 'playable' ? R.safeAsset(b.boxArt) : R.safeAsset(b.spine)), 'built-in books carry safe presentation assets');
     check(R.books[2].chapters.every(c => R.safeAsset(c.cover)), 'built-in chapters carry safe disc covers');

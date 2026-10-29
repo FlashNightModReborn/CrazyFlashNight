@@ -1,0 +1,1302 @@
+{
+  "schema": "cf6-instructor-save-rebalance.v1",
+  "recordedUtc": "2026-10-28T16:30:31.417427+00:00",
+  "status": "compiled_targeted_candidate_verified_full_route_acceptance_pending",
+  "mainRoot": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight",
+  "head": "56086994221ebb613be561955ef20b10f9fa04a6",
+  "authorization": {
+    "scope": "Integrate relevant uncommitted inventory/exit hotfix; investigate save, Dominator and viewport incidents; rebalance Type61 troops, instructor stats, equipment, throwables and funding before instructors.",
+    "commit": false,
+    "push": false,
+    "formalPromotion": false,
+    "rebootExecuted": true,
+    "rebootExecutedBy": "user"
+  },
+  "fieldFindings": [
+    {
+      "case": "tester Dominator",
+      "evidence": "Both supplied tester logs show PlayerStatProjection equipment_rebuild / equipment_final_barrier_missing before persistence; one later retry succeeds.",
+      "limit": "The exact stable-failure save was not supplied; a single universal cause is not established."
+    },
+    {
+      "case": "user constellation-box refusal",
+      "evidence": "Repeated clean-revision finalize failures; later host-only detach proof succeeded.",
+      "limit": "Exact first trigger remains unresolved; it is not proven to be the same Dominator path."
+    },
+    {
+      "case": "tiny viewport",
+      "evidence": "Client 1920x1017 while the hidden Flash anchor remained 200x100.",
+      "change": "Explicitly synchronize anchor bounds before native and Web layout consumers, reserving visible log-bar height."
+    }
+  ],
+  "changes": {
+    "hotfixIntegration": "tmp/cf6-encounter-economy-20261028/hotfix-integration/integration.json",
+    "dominatorDraft": "Implemented exact asynchronous component wait; real CS6 boundary suite and one actual candidate equip/finalize with durable save passed. Exact tester stable-failure save remains unavailable.",
+    "instructor": {
+      "stage": 8,
+      "tierFactor": 9,
+      "ordinaryAndEliteTargetCategory": "精英=15",
+      "instructorTargetCategory": "首领=20; no 精英 key",
+      "firstInstructorMap": "A13",
+      "firstInstructorCount": 1,
+      "titaniumRecipeUnlock": "A11",
+      "aiInput": "Maintainer reports existing same-panel arena dominance; this is treated as a boss design input, not a new arena result."
+    },
+    "fixedEconomy": {
+      "goldIncludingStart": 4750000,
+      "kpoints": 100000,
+      "newStones": 10000,
+      "fundingBeforeFirstInstructor": "A10 clear grants enough for buying at A11 immediately on entry, without A11/A12 future rewards."
+    },
+    "roster": [
+      {
+        "map": "TUTORIAL",
+        "authoredEnemies": 0,
+        "hp": 0,
+        "soldiers": {}
+      },
+      {
+        "map": "A01",
+        "authoredEnemies": 66,
+        "hp": 258522,
+        "soldiers": {}
+      },
+      {
+        "map": "A02",
+        "authoredEnemies": 42,
+        "hp": 317418,
+        "soldiers": {}
+      },
+      {
+        "map": "A03",
+        "authoredEnemies": 48,
+        "hp": 397488,
+        "soldiers": {}
+      },
+      {
+        "map": "A04",
+        "authoredEnemies": 62,
+        "hp": 512906,
+        "soldiers": {}
+      },
+      {
+        "map": "A05",
+        "authoredEnemies": 47,
+        "hp": 492221,
+        "soldiers": {}
+      },
+      {
+        "map": "A06",
+        "authoredEnemies": 26,
+        "hp": 483018.5,
+        "soldiers": {
+          "ordinary": 8
+        }
+      },
+      {
+        "map": "A07",
+        "authoredEnemies": 0,
+        "hp": 0,
+        "soldiers": {}
+      },
+      {
+        "map": "A08",
+        "authoredEnemies": 0,
+        "hp": 0,
+        "soldiers": {}
+      },
+      {
+        "map": "A09",
+        "authoredEnemies": 41,
+        "hp": 541257,
+        "soldiers": {
+          "ordinary": 15
+        }
+      },
+      {
+        "map": "A10",
+        "authoredEnemies": 4,
+        "hp": 176565.0,
+        "soldiers": {
+          "elite": 4
+        }
+      },
+      {
+        "map": "A11",
+        "authoredEnemies": 41,
+        "hp": 488126,
+        "soldiers": {
+          "ordinary": 14,
+          "elite": 2
+        }
+      },
+      {
+        "map": "A12",
+        "authoredEnemies": 52,
+        "hp": 705531,
+        "soldiers": {
+          "ordinary": 20,
+          "elite": 3
+        }
+      },
+      {
+        "map": "A13",
+        "authoredEnemies": 1,
+        "hp": 99942.5,
+        "soldiers": {
+          "instructor": 1
+        }
+      },
+      {
+        "map": "A14",
+        "authoredEnemies": 50,
+        "hp": 834879,
+        "soldiers": {
+          "instructor": 2,
+          "ordinary": 20,
+          "elite": 7
+        }
+      },
+      {
+        "map": "A15",
+        "authoredEnemies": 36,
+        "hp": 461704,
+        "soldiers": {
+          "ordinary": 4,
+          "elite": 1,
+          "instructor": 1
+        }
+      },
+      {
+        "map": "A16",
+        "authoredEnemies": 0,
+        "hp": 0,
+        "soldiers": {}
+      },
+      {
+        "map": "A17",
+        "authoredEnemies": 65,
+        "hp": 1644877.0,
+        "soldiers": {
+          "instructor": 2,
+          "ordinary": 13,
+          "elite": 7
+        }
+      },
+      {
+        "map": "A18",
+        "authoredEnemies": 40,
+        "hp": 979190,
+        "soldiers": {
+          "instructor": 10
+        }
+      },
+      {
+        "map": "A19",
+        "authoredEnemies": 52,
+        "hp": 1279022,
+        "soldiers": {
+          "instructor": 14
+        }
+      },
+      {
+        "map": "A20",
+        "authoredEnemies": 80,
+        "hp": 2586523.0,
+        "soldiers": {
+          "instructor": 10
+        }
+      }
+    ],
+    "defenseMilestones": [
+      {
+        "fundedBy": "A10",
+        "purchaseAt": "A11",
+        "beforeEncounter": "A13",
+        "requiresClearingFundingMap": true,
+        "shoppingBeforeClearingPurchaseMap": true,
+        "build": "Five titanium61 armor pieces, M134, two titanium P90s, ordinary constellation, starting necklace and budgeted plugins",
+        "budget": {
+          "primary": "M134",
+          "baseProcurement": {
+            "gold": 1190000,
+            "K": 80400
+          },
+          "steps": [
+            {
+              "item": "统合61式头部装甲",
+              "via": "craft",
+              "recipeId": "craft.unified61.helmet",
+              "gold": 57000,
+              "K": 5130
+            },
+            {
+              "item": "钛合金61式头部装甲",
+              "via": "craft",
+              "recipeId": "craft.cf6-type61.titanium.0",
+              "gold": 95000,
+              "K": 8550
+            },
+            {
+              "item": "统合61式胸甲",
+              "via": "craft",
+              "recipeId": "craft.unified61.chest",
+              "gold": 57000,
+              "K": 5130
+            },
+            {
+              "item": "钛合金61式胸甲",
+              "via": "craft",
+              "recipeId": "craft.cf6-type61.titanium.1",
+              "gold": 95000,
+              "K": 8550
+            },
+            {
+              "item": "统合61式腿甲",
+              "via": "craft",
+              "recipeId": "craft.unified61.leg",
+              "gold": 57000,
+              "K": 5130
+            },
+            {
+              "item": "钛合金61式腿甲",
+              "via": "craft",
+              "recipeId": "craft.cf6-type61.titanium.2",
+              "gold": 95000,
+              "K": 8550
+            },
+            {
+              "item": "统合61式手甲",
+              "via": "craft",
+              "recipeId": "craft.unified61.glove",
+              "gold": 57000,
+              "K": 5130
+            },
+            {
+              "item": "钛合金61式手甲",
+              "via": "craft",
+              "recipeId": "craft.cf6-type61.titanium.3",
+              "gold": 95000,
+              "K": 8550
+            },
+            {
+              "item": "统合61式装甲鞋",
+              "via": "craft",
+              "recipeId": "craft.unified61.boot",
+              "gold": 57000,
+              "K": 5130
+            },
+            {
+              "item": "钛合金61式装甲鞋",
+              "via": "craft",
+              "recipeId": "craft.cf6-type61.titanium.4",
+              "gold": 95000,
+              "K": 8550
+            },
+            {
+              "item": "M134",
+              "via": "gold",
+              "gold": 230000
+            },
+            {
+              "item": "钛合金P90",
+              "via": "K",
+              "K": 6000
+            },
+            {
+              "item": "钛合金P90",
+              "via": "K",
+              "K": 6000
+            },
+            {
+              "item": "水冷机构",
+              "via": "gold",
+              "gold": 50000
+            },
+            {
+              "item": "纳米执行单元",
+              "via": "gold",
+              "gold": 50000
+            },
+            {
+              "item": "黑爪扩张弹",
+              "via": "gold",
+              "gold": 50000
+            },
+            {
+              "item": "黑爪扩张弹",
+              "via": "gold",
+              "gold": 50000
+            }
+          ],
+          "primaryMods": [
+            "战术鱼骨零件",
+            "水冷机构",
+            "纳米执行单元"
+          ],
+          "piecesAt11": 0,
+          "enhancementPlan": [
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7
+          ],
+          "requiredStones": 2160,
+          "stonesPerPiece": 1928,
+          "missingStones": 0,
+          "kForMissingCurrency": 2400,
+          "goldForMissingK": 120000,
+          "goldForStones": 0,
+          "reserve": 150000,
+          "totalGoldAfterFixedK": 1460000,
+          "fixedGold": 1500000,
+          "fixedK": 78000,
+          "balanceBeforeDropsAndSales": 40000
+        }
+      },
+      {
+        "fundedBy": "A16",
+        "purchaseAt": "A16",
+        "beforeEncounter": "A17",
+        "requiresClearingFundingMap": true,
+        "shoppingBeforeClearingPurchaseMap": false,
+        "build": "Five titanium61 armor pieces, M134, two titanium P90s, ordinary constellation, starting necklace and budgeted plugins",
+        "budget": {
+          "primary": "M134",
+          "baseProcurement": {
+            "gold": 1190000,
+            "K": 80400
+          },
+          "steps": [
+            {
+              "item": "统合61式头部装甲",
+              "via": "craft",
+              "recipeId": "craft.unified61.helmet",
+              "gold": 57000,
+              "K": 5130
+            },
+            {
+              "item": "钛合金61式头部装甲",
+              "via": "craft",
+              "recipeId": "craft.cf6-type61.titanium.0",
+              "gold": 95000,
+              "K": 8550
+            },
+            {
+              "item": "统合61式胸甲",
+              "via": "craft",
+              "recipeId": "craft.unified61.chest",
+              "gold": 57000,
+              "K": 5130
+            },
+            {
+              "item": "钛合金61式胸甲",
+              "via": "craft",
+              "recipeId": "craft.cf6-type61.titanium.1",
+              "gold": 95000,
+              "K": 8550
+            },
+            {
+              "item": "统合61式腿甲",
+              "via": "craft",
+              "recipeId": "craft.unified61.leg",
+              "gold": 57000,
+              "K": 5130
+            },
+            {
+              "item": "钛合金61式腿甲",
+              "via": "craft",
+              "recipeId": "craft.cf6-type61.titanium.2",
+              "gold": 95000,
+              "K": 8550
+            },
+            {
+              "item": "统合61式手甲",
+              "via": "craft",
+              "recipeId": "craft.unified61.glove",
+              "gold": 57000,
+              "K": 5130
+            },
+            {
+              "item": "钛合金61式手甲",
+              "via": "craft",
+              "recipeId": "craft.cf6-type61.titanium.3",
+              "gold": 95000,
+              "K": 8550
+            },
+            {
+              "item": "统合61式装甲鞋",
+              "via": "craft",
+              "recipeId": "craft.unified61.boot",
+              "gold": 57000,
+              "K": 5130
+            },
+            {
+              "item": "钛合金61式装甲鞋",
+              "via": "craft",
+              "recipeId": "craft.cf6-type61.titanium.4",
+              "gold": 95000,
+              "K": 8550
+            },
+            {
+              "item": "M134",
+              "via": "gold",
+              "gold": 230000
+            },
+            {
+              "item": "钛合金P90",
+              "via": "K",
+              "K": 6000
+            },
+            {
+              "item": "钛合金P90",
+              "via": "K",
+              "K": 6000
+            },
+            {
+              "item": "水冷机构",
+              "via": "gold",
+              "gold": 50000
+            },
+            {
+              "item": "纳米执行单元",
+              "via": "gold",
+              "gold": 50000
+            },
+            {
+              "item": "黑爪扩张弹",
+              "via": "gold",
+              "gold": 50000
+            },
+            {
+              "item": "黑爪扩张弹",
+              "via": "gold",
+              "gold": 50000
+            }
+          ],
+          "primaryMods": [
+            "战术鱼骨零件",
+            "水冷机构",
+            "纳米执行单元"
+          ],
+          "piecesAt11": 5,
+          "enhancementPlan": [
+            11,
+            11,
+            11,
+            11,
+            11,
+            9,
+            9,
+            9,
+            9,
+            9
+          ],
+          "requiredStones": 13380,
+          "stonesPerPiece": 1928,
+          "missingStones": 5878,
+          "kForMissingCurrency": 0,
+          "goldForMissingK": 0,
+          "goldForStones": 1645800,
+          "reserve": 150000,
+          "totalGoldAfterFixedK": 2985800,
+          "fixedGold": 3550000,
+          "fixedK": 100000,
+          "balanceBeforeDropsAndSales": 564200
+        }
+      }
+    ],
+    "throwables": {
+      "TUTORIAL": [
+        {
+          "name": "高爆手雷",
+          "count": 6
+        },
+        {
+          "name": "燃烧弹",
+          "count": 4
+        }
+      ],
+      "A04": [
+        {
+          "name": "BBPLAYER手雷",
+          "count": 6
+        },
+        {
+          "name": "寒铁镖",
+          "count": 24
+        }
+      ],
+      "A08": [
+        {
+          "name": "BBPLAYER手雷",
+          "count": 8
+        },
+        {
+          "name": "翼炎钉针",
+          "count": 40
+        }
+      ],
+      "A12": [
+        {
+          "name": "BBPLAYER手雷",
+          "count": 8
+        },
+        {
+          "name": "导弹信标",
+          "count": 3
+        }
+      ],
+      "A16": [
+        {
+          "name": "战术核弹手雷",
+          "count": 2
+        },
+        {
+          "name": "BBPLAYER手雷",
+          "count": 8
+        }
+      ],
+      "A19": [
+        {
+          "name": "战术核弹手雷",
+          "count": 3
+        },
+        {
+          "name": "BBPLAYER手雷",
+          "count": 10
+        }
+      ]
+    },
+    "runtimeBudgetValidation": {
+      "checkpointGold": 4720000,
+      "startGold": 30000,
+      "kpoints": 100000,
+      "initialNativeRegression": "Caught retained old 3520000/65000 validator totals; fixed and reran current-source Type61 103/103."
+    }
+  },
+  "validation": {
+    "host": {
+      "firstRun": {
+        "passed": 8035,
+        "resourceQualificationCancelled": 38,
+        "skipped": 30,
+        "path": "tmp/focus-sol-20261013/integration-20261028T102715408Z/recheck.trx"
+      },
+      "sameBinaryQualifiedRetry": {
+        "passed": 38,
+        "failed": 0,
+        "path": "tmp/focus-sol-20261013/integration-20261028T104201352Z/recheck.trx"
+      },
+      "combinedPassed": 8073,
+      "coreSha256": "76C50BF54CEE5409F648B46D18B758E5B7269D59283F841CEAC154C5F032350C",
+      "testsSha256": "B0105B93C3824E86B8B4034FAD61ACA3FFFB42D474106DAEA8DA08AA25705145",
+      "meaning": "Two runs with identical loaded binaries; not a single clean full-suite run."
+    },
+    "browserIcons": {
+      "passed": 25,
+      "failed": 0,
+      "meaning": "Production lazy-loader browser fixture; no live gameplay claim."
+    },
+    "finalStaticChecks": [
+      {
+        "name": "route-generated",
+        "passed": true,
+        "log": {
+          "path": "tmp/cf6-encounter-economy-20261028/final-static/route-generated.log",
+          "bytes": 648,
+          "sha256": "530a52d5752fdadc4eaae29acc617d8ae2415ff50354564afb5c8d9649b2bdf3"
+        }
+      },
+      {
+        "name": "book-generated",
+        "passed": true,
+        "log": {
+          "path": "tmp/cf6-encounter-economy-20261028/final-static/book-generated.log",
+          "bytes": 65,
+          "sha256": "46b89d58c5b0dddfa0246a91917ac6fe53a04beb1f048f108a1c94745c86e1c5"
+        }
+      },
+      {
+        "name": "choices-generated",
+        "passed": true,
+        "log": {
+          "path": "tmp/cf6-encounter-economy-20261028/final-static/choices-generated.log",
+          "bytes": 54,
+          "sha256": "df504f5ba0d347b823b1dd1d21447e19861f4ff841cc9fca1ba5aedc8be0b55c"
+        }
+      },
+      {
+        "name": "acquisition-budget",
+        "passed": true,
+        "log": {
+          "path": "tmp/cf6-encounter-economy-20261028/final-static/acquisition-budget.log",
+          "bytes": 210,
+          "sha256": "3c360710679043847aef5db5d6720224222438cd5ebe570a425b2aae19c4e792"
+        }
+      },
+      {
+        "name": "encounter-budget",
+        "passed": true,
+        "log": {
+          "path": "tmp/cf6-encounter-economy-20261028/final-static/encounter-budget.log",
+          "bytes": 1392,
+          "sha256": "62fa25f9f388a2774e2da9a99abd3c7146bc0f1838c269b1de13f5223960d505"
+        }
+      },
+      {
+        "name": "route-tests",
+        "passed": true,
+        "log": {
+          "path": "tmp/cf6-encounter-economy-20261028/final-static/route-tests.log",
+          "bytes": 2793,
+          "sha256": "4006dcda6ffac2e7e08b364ffab80ab559f370c16bdd4e1d7f4d9872b07bfddd"
+        }
+      },
+      {
+        "name": "book-tests",
+        "passed": true,
+        "log": {
+          "path": "tmp/cf6-encounter-economy-20261028/final-static/book-tests.log",
+          "bytes": 165,
+          "sha256": "117574b182c7f01bbe9ca39120dc448d03821e0452dbe0cf28571365f8fac893"
+        }
+      },
+      {
+        "name": "economy-tests",
+        "passed": true,
+        "log": {
+          "path": "tmp/cf6-encounter-economy-20261028/final-static/economy-tests.log",
+          "bytes": 2903,
+          "sha256": "6ecff50f1e57ac3a877dce551661aabe31ab3222b4ffe767f5a8c7b3c8cf19c8"
+        }
+      },
+      {
+        "name": "source-closure-test.js",
+        "passed": true,
+        "log": {
+          "path": "tmp/cf6-encounter-economy-20261028/final-static-node/source-closure-test.js.log",
+          "bytes": 7438,
+          "sha256": "584ccf645cf8812da29406db698812554035a289ad5b64586c5ec3085b01f438"
+        }
+      },
+      {
+        "name": "test-flash-compile-jsfl.js",
+        "passed": true,
+        "log": {
+          "path": "tmp/cf6-encounter-economy-20261028/final-static-node/test-flash-compile-jsfl.js.log",
+          "bytes": 31,
+          "sha256": "3d84f0e0120001af250c8107eaac7af347689c4b68c4dd8ea427a41559dc40da"
+        }
+      },
+      {
+        "name": "check-writes.js",
+        "passed": true,
+        "log": {
+          "path": "tmp/cf6-encounter-economy-20261028/final-static-node/check-writes.js.log",
+          "bytes": 1006,
+          "sha256": "32305487cfea416a763ef5b6b3476fc0bbe9f38f4ec26495590f67b2c26b9371"
+        }
+      },
+      {
+        "name": "doc-after-cache-guidance",
+        "passed": true,
+        "log": {
+          "path": "tmp/cf6-encounter-economy-20261028/final-static-node/doc-after-cache-guidance.log",
+          "bytes": 3614,
+          "sha256": "1c6d297ae5c47f9604d9213a8f1837f0855baeecf876a999546717e0069eaa3a"
+        }
+      },
+      {
+        "name": "git diff --check after publisher exit",
+        "passed": true,
+        "log": {
+          "path": "tmp/cf6-encounter-economy-20261028/final-static/diff-check-after-publish.log",
+          "bytes": 877,
+          "sha256": "34b88ad8ed39afa4ccb348e20cb0b1500f95a48ce1da9f8ff3d3e6ce131f6468"
+        }
+      },
+      {
+        "name": "final documentation gate",
+        "passed": true,
+        "log": {
+          "path": "tmp/cf6-encounter-economy-20261028/final-static-node/doc-final.log",
+          "bytes": 3614,
+          "sha256": "1c6d297ae5c47f9604d9213a8f1837f0855baeecf876a999546717e0069eaa3a"
+        }
+      },
+      {
+        "name": "final whitespace gate",
+        "passed": true,
+        "log": {
+          "path": "tmp/cf6-encounter-economy-20261028/final-static/diff-final.log",
+          "bytes": 877,
+          "sha256": "34b88ad8ed39afa4ccb348e20cb0b1500f95a48ce1da9f8ff3d3e6ce131f6468"
+        }
+      }
+    ],
+    "as2": {
+      "state": "qualified_targeted_suites",
+      "runs": [
+        {
+          "runner": "character-production",
+          "suites": [
+            {
+              "suite": "CharacterBuildProductionLifecycleTest",
+              "passed": 47
+            }
+          ],
+          "compilerErrors": 0,
+          "compilerWarnings": 0,
+          "branch32KRetry": 0,
+          "runBlockCount": 1,
+          "log": {
+            "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T152043Z/character-production.log",
+            "bytes": 15466,
+            "sha256": "73e0b4d0cbac3bc388aa8c8d30b87d14364fda6524e783a33e15aae365965f48"
+          },
+          "trace": {
+            "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T152043Z/character-production/flashlog.txt",
+            "bytes": 13347,
+            "sha256": "2070ad0f625ec4b19e4c148b1a79f6cf2b99057069a640802288417e4ac6227b"
+          },
+          "swf": {
+            "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T152043Z/character-production/TestLoader.swf",
+            "bytes": 1237922,
+            "sha256": "7532eecc1157c1328a6fe93e5d9cee9714e77c9945f7d8bc61c2c62f31de62d8"
+          }
+        },
+        {
+          "runner": "character-build",
+          "suites": [
+            {
+              "suite": "EquipmentInventoryTest",
+              "passed": 28
+            },
+            {
+              "suite": "InventoryPanelServiceTest",
+              "passed": 194
+            },
+            {
+              "suite": "CharacterBuildTransactionSpikeTest",
+              "passed": 19
+            },
+            {
+              "suite": "RuntimeEquipmentProjectionTest",
+              "passed": 27
+            },
+            {
+              "suite": "CharacterBuildServiceTest",
+              "passed": 224
+            },
+            {
+              "suite": "PlayerInfoProviderTest",
+              "passed": 29
+            },
+            {
+              "suite": "PlayerStatLifecycleTest",
+              "passed": 54
+            }
+          ],
+          "compilerErrors": 0,
+          "compilerWarnings": 0,
+          "branch32KRetry": 0,
+          "runBlockCount": 1,
+          "log": {
+            "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T152043Z/character-build.log",
+            "bytes": 85799,
+            "sha256": "0e7a6215e1ae1961dfdb6594694674fb95b9df90e88a311205159a21b2c1a88f"
+          },
+          "trace": {
+            "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T152043Z/character-build/flashlog.txt",
+            "bytes": 83321,
+            "sha256": "e7b1d19cd4b830da5d3e2be9a84a975d9d0a2317d3cca149c58f6c4ed5b3be1f"
+          },
+          "swf": {
+            "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T152043Z/character-build/TestLoader.swf",
+            "bytes": 1277994,
+            "sha256": "ce1f9a4d474ed72e79e0b827678b928254a768a967a457c7d665850ebb3b7569"
+          }
+        },
+        {
+          "runner": "stat-refresh",
+          "suites": [
+            {
+              "suite": "MeridianGetterRegistrationTest",
+              "passed": 8
+            },
+            {
+              "suite": "EquipmentInventoryTest",
+              "passed": 28
+            },
+            {
+              "suite": "InventoryPanelServiceTest",
+              "passed": 194
+            },
+            {
+              "suite": "CharacterBuildTransactionSpikeTest",
+              "passed": 19
+            },
+            {
+              "suite": "RuntimeEquipmentProjectionTest",
+              "passed": 27
+            },
+            {
+              "suite": "CharacterBuildServiceTest",
+              "passed": 224
+            },
+            {
+              "suite": "PlayerInfoProviderTest",
+              "passed": 29
+            },
+            {
+              "suite": "PlayerStatProjectionTest",
+              "passed": 59
+            },
+            {
+              "suite": "MeridianPanelServiceTest",
+              "passed": 14
+            },
+            {
+              "suite": "PlayerStatRefreshCoordinatorTest",
+              "passed": 25
+            },
+            {
+              "suite": "PlayerStatProductionAdapterTest",
+              "passed": 25
+            },
+            {
+              "suite": "PlayerStatLifecycleTest",
+              "passed": 54
+            }
+          ],
+          "compilerErrors": 0,
+          "compilerWarnings": 0,
+          "branch32KRetry": 0,
+          "runBlockCount": 1,
+          "log": {
+            "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T152043Z/stat-refresh.log",
+            "bytes": 97327,
+            "sha256": "97bc1e4b988e9a6a46aaaf9b5aba19a3a016fd8e71b2aa24b75a195d012f48ef"
+          },
+          "trace": {
+            "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T152043Z/stat-refresh/flashlog.txt",
+            "bytes": 95236,
+            "sha256": "9eaa70bd8352a37b368aae06af90b45251017ff5d95e77dd4477a23b85ec88a7"
+          },
+          "swf": {
+            "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T152043Z/stat-refresh/TestLoader.swf",
+            "bytes": 1289771,
+            "sha256": "7da68b42ed4dc80cd03e5c3cf8c0d5c4d85cec8946523093ad42b79113655633"
+          }
+        },
+        {
+          "runner": "cf6-economy",
+          "suites": [
+            {
+              "suite": "Cf6EconomyRulesTest",
+              "passed": 56
+            }
+          ],
+          "compilerErrors": 0,
+          "compilerWarnings": 0,
+          "branch32KRetry": 0,
+          "runBlockCount": 1,
+          "log": {
+            "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T152043Z/cf6-economy.log",
+            "bytes": 2691,
+            "sha256": "49d9b68d0043319537aa6faf9d826abbc2918b465462e4dcce2d1b628919df83"
+          },
+          "trace": {
+            "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T152043Z/cf6-economy/flashlog.txt",
+            "bytes": 576,
+            "sha256": "68a3d81bfe04f2309ba3a30359cea8d67dcb66084ce888a73329c3cb2e0a8052"
+          },
+          "swf": {
+            "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T152043Z/cf6-economy/TestLoader.swf",
+            "bytes": 1144900,
+            "sha256": "7aa6ba2211960f187525e687f162aba12ef45b54c5f8fed773a0c2d152cb9c37"
+          }
+        },
+        {
+          "runner": "cf6-type61",
+          "suites": [
+            {
+              "suite": "Cf6Type61ServiceTest",
+              "passed": 103
+            }
+          ],
+          "compilerErrors": 0,
+          "compilerWarnings": 0,
+          "branch32KRetry": 0,
+          "runBlockCount": 1,
+          "log": {
+            "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T153448Z/cf6-type61.log",
+            "bytes": 3239,
+            "sha256": "2f1ca3e660c626a8750d2396e91bbba1d153fc05284b3fd572241d22eced972b"
+          },
+          "trace": {
+            "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T153448Z/cf6-type61/flashlog.txt",
+            "bytes": 1151,
+            "sha256": "0e1243f405ac4f05acf94ad48b271b5b8426b61695d8a4c212fed9e7ab15efb5"
+          },
+          "swf": {
+            "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T153448Z/cf6-type61/TestLoader.swf",
+            "bytes": 1260003,
+            "sha256": "baa907ed96592ce6bb2596720c1c8ac507db4445c83fe9e01e7168eccee8ddf0"
+          }
+        }
+      ],
+      "publication": {
+        "recordedUtc": "2026-10-28T15:43:49.501759+00:00",
+        "sourceManifest": "publish-inputs-final.json",
+        "sourceCount": 2300,
+        "sourceDrift": [],
+        "swf": {
+          "path": "scripts/asLoader.swf",
+          "bytes": 6783510,
+          "sha256": "9a407e783e579d088d2be373c563faa7dd33b92d24c34db343f818cfe7890110"
+        },
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "evidenceDirectory": "asloader-cold-publish",
+        "formalPromotion": false
+      },
+      "functionSizeGate": {
+        "path": "tmp/cf6-encounter-economy-20261028/asloader-functions.log",
+        "bytes": 492,
+        "sha256": "228d38ec3365ae1d4c035189b407efc788fc17a09c19677517fa6162a9b95ef6"
+      },
+      "preservedFailures": [
+        {
+          "case": "post reboot export stalled with unchanged input",
+          "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T150635Z",
+          "passInferred": false
+        },
+        {
+          "case": "cache repaired; persistence fixture incorrectly hard-coded clean",
+          "passed": 28,
+          "failed": 1,
+          "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T151332Z",
+          "passInferred": false
+        },
+        {
+          "case": "runtime validator still accepted the old budget",
+          "passed": 97,
+          "failed": 6,
+          "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T152043Z/cf6-type61",
+          "passInferred": false
+        },
+        {
+          "case": "warm editor could not create publication SWF; original SWF unchanged",
+          "path": "tmp/cf6-encounter-economy-20261028/after-reboot-20261028T153448Z/asloader-publish.log",
+          "passInferred": false
+        }
+      ]
+    },
+    "environment": {
+      "recordedUtc": "2026-10-28T14:46:10.0008088Z",
+      "lastBootUtc": "2026-10-18T23:47:24.5047200Z",
+      "uptimeDays": 9.62,
+      "totalPhysicalKiB": 33430772,
+      "freePhysicalKiB": 861820,
+      "totalVirtualKiB": 95478228,
+      "freeVirtualKiB": 475428,
+      "pagingFileKiB": 62047456,
+      "meaning": "Observed resource pressure; reboot comparison is still required to establish causality."
+    },
+    "compilerEnvironment": {
+      "afterReboot": {
+        "freeVirtualKiB": 27622920,
+        "lastBootUtc": "2026-10-28T15:00:56.5000000Z",
+        "freePhysicalKiB": 25078776
+      },
+      "cacheRepair": {
+        "bytes": 0,
+        "utc": "2026-10-28T15:13:22.9007375Z",
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+        "source": "C:\\Users\\fs\\AppData\\Local\\Adobe\\Flash CS6\\zh_CN\\Configuration\\Classes\\aso\\org\\flashNight\\naki\\Sort\\org.flashNight.naki.Sort.TimSort.aso",
+        "action": "quarantine only the observed zero-byte compiler cache",
+        "mtimeUtc": "2026-10-28T10:32:24.1720498Z",
+        "destination": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-encounter-economy-20261028\\post-reboot-stalled-export\\empty-TimSort.aso"
+      },
+      "meaning": "Same source progressed to fresh Compiler 0/0 and actual suites after isolating an observed zero-byte TimSort.aso. The original cache and failed export were retained. Warm-editor publication failed independently; a fresh editor published successfully."
+    },
+    "liveCandidate": {
+      "report": {
+        "path": "tmp/workbench-live-e2e/cf6/20261028154509457-dominator-box/report.json",
+        "bytes": 1022372,
+        "sha256": "05ec471c0bd361b5e4cb210d920264b5e9aefd9cb5c872484dba24c9d0291b71"
+      },
+      "qualified": {
+        "dominatorFirstFinalize": true,
+        "durableDiskEquipment": true,
+        "freshProcessLoadedSameSlot": true,
+        "freshProcessEquipmentPanelSnapshot": false,
+        "constellationBoxUse": false,
+        "normalAuthenticatedShutdown": true,
+        "startupMaximizeGeometry": {
+          "flashClient": [
+            1920,
+            991
+          ],
+          "presentation": [
+            1920,
+            991
+          ],
+          "fullJourneyPassed": false
+        }
+      },
+      "e2eVerified": false,
+      "renderComparisons": [
+        {
+          "case": "compare-prior-dominator",
+          "report": {
+            "path": "tmp/workbench-live-e2e/cf6/20261028160838147-compare-prior-dominator/report.json",
+            "bytes": 978361,
+            "sha256": "6a8cba52dc52048dd9781facb42a7a251598b99805eeade80bec0eaac82f3134"
+          },
+          "buildIdentity": "137CF8A20D8352789D998A11EDC5B44392CC7C4B5B02BDD163B86DBD1C3A49D1",
+          "asLoaderSha256": "9a407e783e579d088d2be373c563faa7dd33b92d24c34db343f818cfe7890110",
+          "receivedFreshFrame": false,
+          "failure": "00:09:48.859 event=world_compositor_failed reason=tick System.TimeoutException: 世界捕获没有恢复有效画面",
+          "cloneReleased": true
+        },
+        {
+          "case": "compare-current-p90",
+          "report": {
+            "path": "tmp/workbench-live-e2e/cf6/20261028161038171-compare-current-p90/report.json",
+            "bytes": 955162,
+            "sha256": "ea9529d029916296a3865af255ba166c541c72371132cf68d661f5a3e85e17ac"
+          },
+          "buildIdentity": "993DAED03674DFB7116A239AFD06676A6F66FF4F6841076B5410EDB9AEA8B1BF",
+          "asLoaderSha256": "9a407e783e579d088d2be373c563faa7dd33b92d24c34db343f818cfe7890110",
+          "receivedFreshFrame": false,
+          "failure": "00:11:46.779 event=world_compositor_failed reason=tick System.TimeoutException: 世界捕获没有恢复有效画面",
+          "cloneReleased": true
+        },
+        {
+          "case": "compare-prior-published",
+          "report": {
+            "path": "tmp/workbench-live-e2e/cf6/20261028161411118-compare-prior-published/report.json",
+            "bytes": 834651,
+            "sha256": "59881a50f5490d8f03c4979b5735f3c82e62d340e145e8d9e8aeac83542b98f6"
+          },
+          "buildIdentity": "137CF8A20D8352789D998A11EDC5B44392CC7C4B5B02BDD163B86DBD1C3A49D1",
+          "asLoaderSha256": "7174c1cc6775393caa327633c2bec4fd1a68f89090df5672d411783788d093c3",
+          "receivedFreshFrame": false,
+          "failure": "00:15:31.601 event=world_compositor_failed reason=tick System.TimeoutException: 世界捕获没有恢复有效画面",
+          "cloneReleased": true
+        }
+      ],
+      "osCaptureServiceAttempt": {
+        "before": {
+          "name": "CaptureService_811a9",
+          "status": "Stopped",
+          "startType": "Manual",
+          "recordedUtc": "2026-10-28T16:17:35.0833372Z"
+        },
+        "action": "Start existing per-user capture service; no startup-type or permission change",
+        "started": false,
+        "error": "Service 'CaptureService_811a9 (CaptureService_811a9)' cannot be started due to the following error: Cannot open 'CaptureService_811a9' service on computer '.'."
+      },
+      "interpretation": "Current and previous native candidates, with both current and previous verified asLoader artifacts and independent cloned saves, all reproduced WGC no-frame timeout in this desktop session. This narrows the blocker beyond the new patch; a driver/service/CUA root cause is not proven."
+    },
+    "governanceDrift": {
+      "saveCallsiteGatePassed": false,
+      "errors": [
+        "scripts/ 生产 canonical 存档系统.markDirty() 物理点：实际 10 != 期望 8（精确数量断言失败）",
+        "scripts/ 生产 flushDurableNow() 物理点：实际 14 != 期望 12（精确数量断言失败）",
+        "G1.flushDurableNow：scripts/类定义/org/flashNight/arki/ui/GaragePurchasePanelService.as:182 不含 _root.存档系统.flushDurableNow(\"ui.garage_purchase_paid\")（family=apiFlushDurableNow），实际内容: var saved:Boolean = false;",
+        "G1.markDirty：scripts/类定义/org/flashNight/arki/ui/GaragePurchasePanelService.as:162 不含 _root.存档系统.markDirty()（family=apiMarkDirty），实际内容: if (_root.金钱 < current.cost) return fail(\"insufficient_funds\");",
+        "A1：scripts/展现/UI交互/UI交互_lsy_UI管理.as:163 不含 _root.存档系统.flushBeforeTransition(\"safe_exit\")（family=apiFlushBeforeTransition），实际内容: _root.gameCommands[\"safeExit\"] = function() {",
+        "B1：scripts/通信/通信_fs_帧计时器.as:623 不含 SaveManager.getInstance().flushDurableNow(\"scene.changed_safety_net\")（family=apiFlushDurableNow），实际内容: _root.关卡结束界面._visible = false;",
+        "B2：scripts/类定义/org/flashNight/neur/Server/CharacterCreationService.as:715 不含 SaveManager.getInstance().flushBeforeTransition(\"character_creation.start_tutorial\")（family=apiFlushBeforeTransition），实际内容: _sceneNotified = false;",
+        "U4.flushDurableNow：scripts/类定义/org/flashNight/arki/ui/GymTrainingPanelService.as:235 不含 _root.存档系统.flushDurableNow(\"ui.gym_training_paid\")（family=apiFlushDurableNow），实际内容: level:Number(_root.等级), award:copyAward(award)",
+        "U4.markDirty：scripts/类定义/org/flashNight/arki/ui/GymTrainingPanelService.as:188 不含 _root.存档系统.markDirty()（family=apiMarkDirty），实际内容: if (balance < current.cost) {",
+        "scripts apiMarkDirty：扫描命中 scripts/类定义/org/flashNight/arki/scene/StageRunSession.as:2101 不在 manifest 中（新增调用点未登记）",
+        "scripts apiMarkDirty：扫描命中 scripts/类定义/org/flashNight/arki/skill/LeeSkillLoadout.as:114 不在 manifest 中（新增调用点未登记）",
+        "scripts apiMarkDirty：扫描命中 scripts/类定义/org/flashNight/arki/ui/GaragePurchasePanelService.as:163 不在 manifest 中（新增调用点未登记）",
+        "scripts apiMarkDirty：扫描命中 scripts/类定义/org/flashNight/arki/ui/GymTrainingPanelService.as:212 不在 manifest 中（新增调用点未登记）",
+        "scripts apiMarkDirty：扫描命中 scripts/逻辑/装备函数/烬灭裁决.as:104 不在 manifest 中（新增调用点未登记）",
+        "scripts apiMarkDirty：manifest 记录 scripts/类定义/org/flashNight/arki/scene/StageRunSession.as:2075 在源码中未命中（已删除或行号漂移）",
+        "scripts apiMarkDirty：manifest 记录 scripts/类定义/org/flashNight/arki/ui/GaragePurchasePanelService.as:162 在源码中未命中（已删除或行号漂移）",
+        "scripts apiMarkDirty：manifest 记录 scripts/类定义/org/flashNight/arki/ui/GymTrainingPanelService.as:188 在源码中未命中（已删除或行号漂移）",
+        "scripts apiFlushDurableNow：扫描命中 scripts/类定义/org/flashNight/arki/ui/GaragePurchasePanelService.as:183 不在 manifest 中（新增调用点未登记）",
+        "scripts apiFlushDurableNow：扫描命中 scripts/类定义/org/flashNight/arki/ui/GymTrainingPanelService.as:259 不在 manifest 中（新增调用点未登记）",
+        "scripts apiFlushDurableNow：扫描命中 scripts/类定义/org/flashNight/arki/ui/MeridianPanelService.as:499 不在 manifest 中（新增调用点未登记）",
+        "scripts apiFlushDurableNow：扫描命中 scripts/类定义/org/flashNight/arki/ui/MeridianPanelService.as:526 不在 manifest 中（新增调用点未登记）",
+        "scripts apiFlushDurableNow：扫描命中 scripts/通信/通信_fs_帧计时器.as:643 不在 manifest 中（新增调用点未登记）",
+        "scripts apiFlushDurableNow：manifest 记录 scripts/类定义/org/flashNight/arki/ui/GaragePurchasePanelService.as:182 在源码中未命中（已删除或行号漂移）",
+        "scripts apiFlushDurableNow：manifest 记录 scripts/通信/通信_fs_帧计时器.as:623 在源码中未命中（已删除或行号漂移）",
+        "scripts apiFlushDurableNow：manifest 记录 scripts/类定义/org/flashNight/arki/ui/GymTrainingPanelService.as:235 在源码中未命中（已删除或行号漂移）",
+        "scripts apiFlushBeforeTransition：扫描命中 scripts/展现/UI交互/UI交互_lsy_UI管理.as:169 不在 manifest 中（新增调用点未登记）",
+        "scripts apiFlushBeforeTransition：扫描命中 scripts/类定义/org/flashNight/neur/Server/CharacterCreationService.as:726 不在 manifest 中（新增调用点未登记）",
+        "scripts apiFlushBeforeTransition：manifest 记录 scripts/展现/UI交互/UI交互_lsy_UI管理.as:163 在源码中未命中（已删除或行号漂移）",
+        "scripts apiFlushBeforeTransition：manifest 记录 scripts/类定义/org/flashNight/neur/Server/CharacterCreationService.as:715 在源码中未命中（已删除或行号漂移）"
+      ],
+      "currentScopeA4B5LineNumbersReconciled": true,
+      "remainingScope": "Pre-existing count and location drift in Garage/Gym/Meridian/Lee/StageRunSession, old exit/creation/frame-timer locations and equipment script. Not classified as new gameplay failures and not waived.",
+      "raw": {
+        "path": "tmp/cf6-encounter-economy-20261028/final-static-node/callsites-after.json",
+        "bytes": 25345,
+        "sha256": "874e546444b3e8c2cfe22094c022b24db820682c31d749ec64844b887e2b8228"
+      }
+    }
+  },
+  "delivery": {
+    "mainAsLoader": {
+      "path": "scripts/asLoader.swf",
+      "bytes": 6783510,
+      "sha256": "9a407e783e579d088d2be373c563faa7dd33b92d24c34db343f818cfe7890110"
+    },
+    "mainAsLoaderMeaning": "Fresh real CS6 publication for current source; restored byte-for-byte after the historical comparison.",
+    "newCandidateBuilt": true,
+    "candidatePath": "tmp/runtime-candidates/v2/cf6-recheck1028",
+    "candidateIdentity": "993DAED03674DFB7116A239AFD06676A6F66FF4F6841076B5410EDB9AEA8B1BF",
+    "payloadClosure": "D8BA56D245FC7789027655B5110CD471D93508F92AB07800403EEB2A94A6A313",
+    "candidateExecutedForThisRevision": true,
+    "e2eVerified": false,
+    "promoted": false,
+    "standardEntryVerified": false,
+    "developmentEntry": "本地开发启动.cmd",
+    "statusLog": "tmp/cf6-encounter-economy-20261028/candidate-status-final.log"
+  },
+  "protection": {
+    "realPlayerSavesWritten": false,
+    "existingMainWorkPreserved": true,
+    "compilerBindingRestoredToMain": true,
+    "unknownCompileAttemptsArchived": true,
+    "mirrorDeliverableAllowed": false,
+    "allPreexistingNonTargetArtifactsUnchanged": true,
+    "protectedArtifactCount": 112,
+    "ownedProbeDataPreserved": true,
+    "ownedCloneRestoredWithCanonicalRecovery": true,
+    "oldCompiledControlRestoredToCurrent": true,
+    "noGameOrCompilerLeftRunning": true,
+    "windowsServiceConfigurationChanged": false
+  },
+  "next": {
+    "resumeState": "tmp/cf6-encounter-economy-20261028/resume-after-capture.json",
+    "steps": [
+      "Reconcile and requalify the pinned ordinary/shield soldier body-measurement sources against current native art, then rerun Type61 entry/return/readback. Current source-closure admission stops before runtime; do not only replace hashes to force passage.",
+      "Verify the repaired A05 entry-to-exit path in the normal game.",
+      "Keep unrelated save-callsite governance errors separate; no commit, push or formal runtime promotion is authorized."
+    ]
+  },
+  "changedSourceIdentities": [
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/CharacterBuildService.as",
+      "bytes": 161696,
+      "sha256": "65dd4b6190c97cf03435583eabac44bcc7de5915eb9ae62e117cd305eaec125d"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/PlayerStatRefreshCoordinator.as",
+      "bytes": 54040,
+      "sha256": "33a13a367447acf201a6f808ee4520c4d4e2b6eba22c7dfc57d7b2b5bae7b362"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/CharacterBuildProductionLifecycleTest.as",
+      "bytes": 21050,
+      "sha256": "04259c13cf3d8b5368e89c359a73db62196258fb5fd5f01805fd2fbd4341248e"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6EconomyRules.as",
+      "bytes": 11172,
+      "sha256": "18573e269dd2ecc262d8139dca5ba41bff12467fd6ca26386c768722fed5ad76"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6EconomyRulesTest.as",
+      "bytes": 16360,
+      "sha256": "e856fb8813ad40c3d72c2ff1f436352fb858eb0547b6f33eeeb60d89a6cc9c2e"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6Type61Service.as",
+      "bytes": 30090,
+      "sha256": "2df6aa2d7f4347305e287879dd369db1ef478350337b84b523960aefbd9070e5"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6Type61ServiceTest.as",
+      "bytes": 36495,
+      "sha256": "287b42124515a30b888814dca0a6086ee53b8b219fc6d14d2ec61a7cca9b3d7e"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6Type61Fixture.as",
+      "bytes": 321131,
+      "sha256": "ba892d903d5aad2ff34e2b27008de861de8f7814dec64e09819d15b71b2e6e90"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "bytes": 24134,
+      "sha256": "beb65602109cf95f0b76312342a320c46ec2148122cea4eb19b7297c27bac979"
+    },
+    {
+      "path": "data/stages/books/cf6-type61.runtime.json",
+      "bytes": 600109,
+      "sha256": "a4db0ab28e2fa704240e06e45270fd35b2ee5a72d4efe607ac3e3f0b9fb1bce7"
+    },
+    {
+      "path": "tools/cf6-type61/route.source.json",
+      "bytes": 23620,
+      "sha256": "b0d200eaad731f53d4e829ab8e6b67732b3b3ba91d291706a26a2960335c16ae"
+    },
+    {
+      "path": "tools/cf6-type61/encounters.source.json",
+      "bytes": 37336,
+      "sha256": "dec959b401cd83103955089d5c2e2caf5e23899686133aab7f489700e179cb35"
+    },
+    {
+      "path": "launcher/src/Guardian/GuardianForm.cs",
+      "bytes": 82179,
+      "sha256": "5bd3f4ba4c6b41d9d2523e4b2842a49fa2b0b51980df3dd6fbb0181e9f26b618"
+    },
+    {
+      "path": "launcher/src/Guardian/CharacterBuildTask.cs",
+      "bytes": 137801,
+      "sha256": "a3fb725c630d7bc868c715cf577876451b534ffd58411311cd46cb57f531a010"
+    },
+    {
+      "path": "launcher/src/Guardian/CharacterBuildTask.DetachRecovery.cs",
+      "bytes": 45682,
+      "sha256": "546090c99c9b222c9f3a41160dff2944ef1f75c38654cbde2eb9f24bfbe76960"
+    },
+    {
+      "path": "scripts/compile_test.ps1",
+      "bytes": 41399,
+      "sha256": "a8ce4d7fba381495baa385d162a0ec71c8a09ce4229ee47a3da56f62ba0ddcf1"
+    },
+    {
+      "path": "scripts/compile_action.jsfl",
+      "bytes": 17320,
+      "sha256": "7a66d6e975b13f239ae9d75b3fd5c31e7cb9668b3fd86aacb948514ea3bdb975"
+    }
+  ],
+  "staticEconomyReference": {
+    "path": "tools/cf6-type61/encounter-budget.generated.json",
+    "bytes": 17773,
+    "sha256": "7f020a95da7f56c1139af6d73cbcb889a2f265783cf9a11312e3e995165a0e16"
+  },
+  "followup20261029": {
+    "recordedUtc": "2026-10-29T01:58:45.094969+00:00",
+    "report": {
+      "path": "docs/reports/cf6-a05-door-and-save-recheck-2026-10-29.json",
+      "bytes": 19603,
+      "sha256": "a97d76a14dcc4960c757208374ea234dfbc479cc280cab043ae2a960cf31e421"
+    },
+    "captureBlockerCleared": true,
+    "isolatedDominatorBoxSaveRestartVerified": true,
+    "priorLiveEvidenceRetainedAsHistorical": true,
+    "currentAsLoader": {
+      "path": "scripts/asLoader.swf",
+      "bytes": 6786668,
+      "sha256": "b0b553dad9ed6af9c5119e652a0e5a3dc5fa0d429cb109dc7166931ffbbedebb"
+    },
+    "formalPromotion": false
+  }
+}

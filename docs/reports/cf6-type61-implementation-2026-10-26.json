@@ -1,0 +1,2070 @@
+{
+  "schema": "cf6-type61-implementation-evidence.v1",
+  "date": "2026-10-26",
+  "collectedAtUtc": "2026-10-25T23:46:53.075020+00:00",
+  "baseHead": "e959fb94cbb72d2e5c9a781c68b1f9b7eb4ba643",
+  "branch": "codex/cf6-type61",
+  "status": "implemented_and_isolated_journey_verified",
+  "actions": {
+    "committed": false,
+    "pushed": false,
+    "formalRuntimePromoted": false
+  },
+  "designBaseline": {
+    "path": "docs/reports/cf6-type61-budget-plan-2026-10-25.json",
+    "bytes": 232985,
+    "sha256": "c1f6fd7f150697ff417484a885d095d5b05f2cab75116d992c9b834003eee7f1"
+  },
+  "contentManifest": {
+    "path": "tools/cf6-type61/manifest.generated.json",
+    "bytes": 9023,
+    "sha256": "11fb6c868b422dc4f608eb4c1c3bd7d2de7e4c577375225e48fdf834a669f141"
+  },
+  "fixedBudget": {
+    "goldIncludingStart": 3550000,
+    "kpoints": 65000,
+    "additionalStones": 10000,
+    "nativeStones": 2,
+    "totalSkillPointBudgetIncludingPresets": 6000,
+    "medicineUnits": 119,
+    "m4GrenadeReserveUnits": 12,
+    "qjz171BatteryUnits": 6,
+    "revives": 4,
+    "highPressureSupplyPhases": 29
+  },
+  "host": {
+    "canonical": {
+      "runId": "35df2225-803f-48d3-b6a3-262ff1b42b98",
+      "counts": {
+        "total": 8088,
+        "executed": 8058,
+        "passed": 8058,
+        "failed": 0,
+        "skipped": 30
+      },
+      "resultOutcomes": {
+        "Passed": 8058,
+        "NotExecuted": 30
+      },
+      "rawCounters": {
+        "total": "8088",
+        "executed": "8058",
+        "passed": "8058",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "artifact": {
+        "path": "tmp/focus-sol-20261013/integration-20261025T233403950Z/recheck.trx",
+        "bytes": 11800202,
+        "sha256": "d9f7bec06ff2735f695cb960f378276967636d075a48afdb5505ab0d78e04822"
+      }
+    },
+    "command": {
+      "path": "tmp/focus-sol-20261013/integration-20261025T233403950Z/command.json",
+      "bytes": 622,
+      "sha256": "3e6011c4963ea0cc2bf03f223dbc7d1d5383cb08478b3aea2b0cc3389c42c221"
+    },
+    "sourceInputs": {
+      "path": "tmp/focus-sol-20261013/integration-20261025T233403950Z/source-inputs.json",
+      "bytes": 564521,
+      "sha256": "26b2f6b30fbd3e7df9dfe80aa3a949d01c4ec0d0274cb676f5d665600ddf5a9f"
+    },
+    "inputCount": 3244,
+    "changedInputsSinceRun": [],
+    "loadedBinaries": {
+      "utc": "2026-10-25T23:35:36.0378896+00:00",
+      "pid": 10840,
+      "processStartUtc": "2026-10-25T23:34:19.5669569Z",
+      "runtime": "10.0.8",
+      "corePath": "launcher/tests/bin/Release/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "coreSha256": "6AE98B6B0D73BAA7DBE02B73E6838245D9AC1B60DF7C9CA9DE739A6D1B6E3C02",
+      "coreMvid": "97800c01-afee-4b07-9eb4-dccb49999460",
+      "testsPath": "launcher/tests/bin/Release/Launcher.Tests.dll",
+      "testsSha256": "9061ED275C09ECF9A23CA7AA653E144EEDF5D91FB2B7BEE956B462479AE11620",
+      "testsMvid": "b913837d-621e-4ce3-8e2e-e0c3ea3107b8"
+    },
+    "loadedBinaryReceipt": {
+      "path": "tmp/focus-sol-20261013/integration-20261025T233403950Z/loaded-binaries.json",
+      "bytes": 709,
+      "sha256": "96d772641d8788178a6df0ce9de23d1ac131027e44782e93795b04a8aa7e9972"
+    },
+    "targeted": {
+      "runId": "5a9d6b14-b637-4b74-b894-ee8b861f37c0",
+      "counts": {
+        "total": 264,
+        "executed": 264,
+        "passed": 264,
+        "failed": 0,
+        "skipped": 0
+      },
+      "resultOutcomes": {
+        "Passed": 264
+      },
+      "rawCounters": {
+        "total": "264",
+        "executed": "264",
+        "passed": "264",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "artifact": {
+        "path": "tmp/cf6-type61/host-r4/type61-host-r4.trx",
+        "bytes": 380321,
+        "sha256": "0225a4b906323ffac21a6299d2899f4e5b0d9c10f4b8e441a8d41cb0b70d8730"
+      }
+    },
+    "firstUnqualifiedAttempt": {
+      "runId": "e7a27968-57f9-4fc1-93c4-f70f5635b85a",
+      "counts": {
+        "total": 8088,
+        "executed": 8058,
+        "passed": 7935,
+        "failed": 123,
+        "skipped": 30
+      },
+      "resultOutcomes": {
+        "Passed": 7935,
+        "NotExecuted": 30,
+        "Failed": 123
+      },
+      "rawCounters": {
+        "total": "8088",
+        "executed": "8058",
+        "passed": "7935",
+        "failed": "123",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "artifact": {
+        "path": "tmp/cf6-type61/host-full-r1/type61-host-full-r1.trx",
+        "bytes": 12008440,
+        "sha256": "991fd3c4283fb5b023a37f6806c9be77ad3a1e9ddadcba3f81766597932c0444"
+      }
+    },
+    "firstFailureClassification": {
+      "missingEvidenceRoot": 120,
+      "missingNodeExecutable": 3
+    },
+    "scope": "test seams and owned HWND fixtures; no gameplay or standard-entry claim"
+  },
+  "staticAndData": [
+    {
+      "command": "tools/cf6-type61/build-route.py --check",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/final-python-0.log",
+        "bytes": 603,
+        "sha256": "29bc74417a433300d332ff545fb17e8ec7829bd06506646b6dd1f56fcc690f10"
+      }
+    },
+    {
+      "command": "tools/build-choice-rewards.py --check",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/final-python-1.log",
+        "bytes": 54,
+        "sha256": "df504f5ba0d347b823b1dd1d21447e19861f4ff841cc9fca1ba5aedc8be0b55c"
+      }
+    },
+    {
+      "command": "tools/build-book-definition.py --check",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/final-python-2.log",
+        "bytes": 65,
+        "sha256": "46b89d58c5b0dddfa0246a91917ac6fe53a04beb1f048f108a1c94745c86e1c5"
+      }
+    },
+    {
+      "command": "tools/derive-material-catalog.py --check",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/final-python-3.log",
+        "bytes": 218,
+        "sha256": "de4b79c5690f5adb4e509b9a8f2d7e44f2fd2a6c60959d4f3f9a658b42d0e383"
+      }
+    },
+    {
+      "command": "tools/cf6-type61/test-route.py",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/final-python-4.log",
+        "bytes": 2214,
+        "sha256": "23f98a7c0841f52492cf8826f47070058f6c36fe20081bd02bf30b9625d8821e"
+      }
+    },
+    {
+      "command": "tools/test-book-definition.py",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/final-python-5.log",
+        "bytes": 165,
+        "sha256": "a142d4d9024731c6bcd228d0e84f70721f72d42e4042c6c51e31d6f155eac67d"
+      }
+    },
+    {
+      "command": "tools/test-cf6-economy.py",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/final-python-6.log",
+        "bytes": 2903,
+        "sha256": "f155b7e16a74a0f6a20dd67672dc76e9791289b7b14fd8dd8acd19d75f978a41"
+      }
+    },
+    {
+      "command": "tools/test-choice-rewards.py",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/final-python-7.log",
+        "bytes": 3805,
+        "sha256": "d963831e5bcc495cb5b94a8cab1ef1a0bdbb4b95617569c228ab1151f95f3036"
+      }
+    },
+    {
+      "command": "tools/test-bookshelf-runtime.js",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/final-node-0.log",
+        "bytes": 507,
+        "sha256": "aa30a908291cf69a41ad94040b6192e29722ed7fdce55ffc2c27ab1d79a65bd7"
+      }
+    },
+    {
+      "command": "tools/test-character-build-item-use.js",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/final-node-1.log",
+        "bytes": 2397,
+        "sha256": "2fa579d7603d76a8ea0e6885416c00d51ceee51a7b40ff60b4a00399ef2712dc"
+      }
+    },
+    {
+      "command": "tools/validate-reward-packs.js",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/final-node-2.log",
+        "bytes": 149,
+        "sha256": "a67c5e05ed6ea35dfccd21b075a32b88aedb63e3a33289a62720b6b631b1f524"
+      }
+    },
+    {
+      "command": "tools/audit-grade-colors.js",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/final-node-3.log",
+        "bytes": 181,
+        "sha256": "e724ce2af2fc46895884bb0c41fd27f839f42e587feee4dace153c57527a95cc"
+      }
+    },
+    {
+      "command": "tools/test-portrait-resolver-runtime.js",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/final-node-4.log",
+        "bytes": 36,
+        "sha256": "aff51a5e44c896f7a57d506a221b504e447fa1bb90aef74bfe226ebd8c7fee35"
+      }
+    },
+    {
+      "command": "tools/test-shop-portrait-resolver-runtime.js",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/final-node-5.log",
+        "bytes": 36,
+        "sha256": "15336f664645f47c4f6fefdd80fb126f03c228d6045a8452c90a7608ebbeb56d"
+      }
+    },
+    {
+      "command": "tools/test-inventory-workbench-lazy-closure.js",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/final-node-6.log",
+        "bytes": 89,
+        "sha256": "c71cd5d4cc6af247e5719ae071f8185914225f3146fb5ce31e2c75c7b1185d36"
+      }
+    }
+  ],
+  "browser": {
+    "cases": 48,
+    "viewports": [
+      [
+        640,
+        360
+      ],
+      [
+        1024,
+        576
+      ],
+      [
+        1600,
+        900
+      ]
+    ],
+    "result": {
+      "path": "tmp/cf6-type61/ui-r3/report.json",
+      "bytes": 4511,
+      "sha256": "3ddfae68ee10b67e0eafc9e08b7fd4d2b09196db6b9372fa3aef175f82153ac9"
+    },
+    "log": {
+      "path": "tmp/cf6-type61/ui-r3.log",
+      "bytes": 69,
+      "sha256": "f04ce4f80a0f551a86d7b4e9a58861efc3b746d68543f114e19289a85f565660"
+    },
+    "scope": "production page and production catalogue, simulated Host/AS2 responses",
+    "screenshots": [
+      {
+        "path": "tmp/cf6-type61/ui-r3/cf6-type61-entry-640x360.png",
+        "bytes": 47745,
+        "sha256": "9a32b893e785f46de3049415b946f985bef55d74aea939b9ac461fb8df6b832b"
+      },
+      {
+        "path": "tmp/cf6-type61/ui-r3/cf6-type61-entry-1600x900.png",
+        "bytes": 170978,
+        "sha256": "2d09081ae455e3494eace62cf5a77c73efbfc9b9f5f872003cdfc5caff6b2071"
+      },
+      {
+        "path": "tmp/cf6-type61/ui-r3/cf6-type61-return-640x360.png",
+        "bytes": 47634,
+        "sha256": "5c7ddc907fbff9e84ec46f8bbe8b5ce7827dbee23f024653df3aacc34b6240f0"
+      }
+    ]
+  },
+  "portraits": {
+    "aliasAudit": {
+      "oldEntriesUnchanged": 44,
+      "newAliases": [
+        "书中-CF6六一-A01",
+        "书中-CF6六一-A05",
+        "书中-CF6六一-A08",
+        "书中-CF6六一-A11",
+        "书中-CF6六一-A16",
+        "书中-CF6六一-A19"
+      ],
+      "subjectFilesByteIdentical": 38,
+      "mode": "existing portrait identity reuse only",
+      "manifestSha256": "f282b469eb14baf780ece497b74e114b42c029af407167bfbc0e334f763ef2ad"
+    },
+    "aliasAuditArtifact": {
+      "path": "tmp/cf6-type61/portraits-alias-audit.json",
+      "bytes": 410,
+      "sha256": "3a884a2ff809621a85ac6bcf3f2b9a4fdaf44c38cad6aa917ec256fef8ae9c0f"
+    },
+    "freshRebuildCheck": {
+      "path": "tmp/cf6-type61/portraits-check-r1.log",
+      "bytes": 5284,
+      "sha256": "b2618cee887979c54c55713a6868477d9aa056c2b11e61e639030d9792376e06"
+    },
+    "manifest": {
+      "path": "launcher/web/assets/shop-portraits/manifest.json",
+      "bytes": 17693,
+      "sha256": "f282b469eb14baf780ece497b74e114b42c029af407167bfbc0e334f763ef2ad"
+    },
+    "provenance": {
+      "path": "launcher/web/assets/shop-portraits/provenance.json",
+      "bytes": 50130,
+      "sha256": "d153ebd1c4d2e5bbd5416b5491c02231a007add8f51ad2f2f61b79e6e62a3aa0"
+    },
+    "receipt": {
+      "path": "launcher/web/assets/shop-portraits/promotion-receipt.json",
+      "bytes": 539,
+      "sha256": "511924a7fbc570bf808a021344dce4bfb7667de6660ac8ea81108ebd0b7d3021"
+    },
+    "extraChecks": [
+      {
+        "path": "tmp/cf6-type61/material-portrait-coverage.log",
+        "bytes": 113,
+        "sha256": "f0d5cadb9057872e1f7b839463d908efee5371a0925a03fff7367389b741bfbc"
+      },
+      {
+        "path": "tmp/cf6-type61/portrait-source-refresh.log",
+        "bytes": 1844,
+        "sha256": "bd5a03b9ca104c5b2f41bd5ad6c42e3efff6ab4e45e2b5e44186927344a4e16b"
+      }
+    ]
+  },
+  "flash": {
+    "compiled": true,
+    "candidateExecuted": true,
+    "e2eVerified": true,
+    "promoted": false,
+    "standardEntryVerified": false,
+    "e2eScope": "Actual selected-route entry, initial actor, genuine retreat, production return and new-process origin readback; not a full chapter clear or physical-input acceptance.",
+    "preparedNewAssertions": 89,
+    "executedNewAssertions": 89,
+    "newAssertionsPassed": 89,
+    "groupCount": 14,
+    "groups": [
+      {
+        "group": "flash-choice-r2",
+        "runId": "ddd35b8f2c754314a0d2393d595dbacb",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "suites": [
+          {
+            "suite": "ChoiceRewardServiceTest",
+            "passed": 83
+          }
+        ],
+        "extraSummaries": [],
+        "artifacts": [
+          {
+            "path": "tmp/cf6-type61/flash-choice-r2/flashlog.txt",
+            "bytes": 6413,
+            "sha256": "8b1c7f39f2bddf2b67b4b515ebbdd9265f2157c916459684b2cf75aacbb0305a"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-choice-r2/compile_output.txt",
+            "bytes": 6315,
+            "sha256": "cfa8e11cd06416c70acd280a4028cedbcdb0cfe8146aa3d46a52cfd4f1862a98"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-choice-r2/compiler_errors.txt",
+            "bytes": 27,
+            "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-choice-r2/TestLoader.swf",
+            "bytes": 1134700,
+            "sha256": "4a0689cc9b53ce9fc63badaf8618a165ddeb74dea74d8450fa805c39dddbd43e"
+          }
+        ]
+      },
+      {
+        "group": "flash-battle-r2",
+        "runId": "a6e108c40aaa4e3da7cc214e4db21977",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "suites": [
+          {
+            "suite": "PickupEffectServiceTest",
+            "passed": 59
+          },
+          {
+            "suite": "AmmoSupplyServiceTest",
+            "passed": 51
+          },
+          {
+            "suite": "DrugProhibitionTest",
+            "passed": 23
+          }
+        ],
+        "extraSummaries": [],
+        "artifacts": [
+          {
+            "path": "tmp/cf6-type61/flash-battle-r2/flashlog.txt",
+            "bytes": 1211,
+            "sha256": "cba2d9f21b179606c63e2df37c1d4d61b2c644216c728895d6274b2472c0dd46"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-battle-r2/compile_output.txt",
+            "bytes": 1230,
+            "sha256": "baa9493fe9569dc8614dbfeb97770e162ef9ac2a835f3e73aff1f3d0ccd2d17c"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-battle-r2/compiler_errors.txt",
+            "bytes": 27,
+            "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-battle-r2/TestLoader.swf",
+            "bytes": 1134913,
+            "sha256": "2203892c59d20c8530f748693f7c8b4d243b66c45d248564c0da324f4e8a54cf"
+          }
+        ]
+      },
+      {
+        "group": "flash-regressions-r3/cf6-economy",
+        "runId": "61484195e06340b0a891ba70b66b7c9a",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "suites": [
+          {
+            "suite": "Cf6EconomyRulesTest",
+            "passed": 53
+          }
+        ],
+        "extraSummaries": [],
+        "artifacts": [
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r3/cf6-economy/flashlog.txt",
+            "bytes": 576,
+            "sha256": "bc5f154527aaab1695fc5712f4f5767d5ac7b9bc51d920600e5c48de1eeac32f"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r3/cf6-economy/compile_output.txt",
+            "bytes": 595,
+            "sha256": "710de6bb9deab589147039349e4c53b0a55499ee0fa13763634f21ec502bce22"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r3/cf6-economy/compiler_errors.txt",
+            "bytes": 27,
+            "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r3/cf6-economy/TestLoader.swf",
+            "bytes": 1130813,
+            "sha256": "d6093bc7c8afe835d0cd3a29d0c1c4691c60f8dd8e71f4bd6d682e600d046b2e"
+          }
+        ]
+      },
+      {
+        "group": "flash-regressions-r3/reward-stash",
+        "runId": "7a11d41b83a043d7ac66f15e9853c22c",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "suites": [
+          {
+            "suite": "RewardStashServiceTest",
+            "passed": 120
+          }
+        ],
+        "extraSummaries": [],
+        "artifacts": [
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r3/reward-stash/flashlog.txt",
+            "bytes": 8300,
+            "sha256": "d7907fd6a64731365687641c9157907cb8307c52519c9a0b824f4d6780680212"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r3/reward-stash/compile_output.txt",
+            "bytes": 8202,
+            "sha256": "e112159f94949835f69c136333235b3e7a989853b127476566415ec389af723f"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r3/reward-stash/compiler_errors.txt",
+            "bytes": 27,
+            "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r3/reward-stash/TestLoader.swf",
+            "bytes": 1143163,
+            "sha256": "a3c0fd6201bc39d5e117d737c25f2c269cd744d51d6f07c7cb8e0e71dd9e4526"
+          }
+        ]
+      },
+      {
+        "group": "flash-regressions-r3/skill-migration",
+        "runId": "f171ec225c214adfa4080a8c119183ea",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "suites": [
+          {
+            "suite": "SwordFeatureTest",
+            "passed": 29
+          },
+          {
+            "suite": "SkillFeaturePolicyTest",
+            "passed": 35
+          },
+          {
+            "suite": "SkillLoadoutServiceTest",
+            "passed": 81
+          },
+          {
+            "suite": "SkillPanelServiceTest",
+            "passed": 50
+          }
+        ],
+        "extraSummaries": [],
+        "artifacts": [
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r3/skill-migration/flashlog.txt",
+            "bytes": 10666,
+            "sha256": "cec6f7b6dbcfcae61812cee30401bb967d817fa99b0d746b2eaec93b0edaeabc"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r3/skill-migration/compile_output.txt",
+            "bytes": 10685,
+            "sha256": "b195e41488baea5e7b25c0f9f63ad3960fcdc2db88a580fa4f17efc9e6c13682"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r3/skill-migration/compiler_errors.txt",
+            "bytes": 27,
+            "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r3/skill-migration/TestLoader.swf",
+            "bytes": 1159557,
+            "sha256": "d5452052e41380915cdcfc6e9ae7f2c8b8fee31bbaf4cfe31c32bad183b12010"
+          }
+        ]
+      },
+      {
+        "group": "flash-regressions-r3/equipment-tuning",
+        "runId": "564c08c9433c4909b5c094f6210d25db",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "suites": [
+          {
+            "suite": "EquipmentTuningServiceTest",
+            "passed": 123
+          },
+          {
+            "suite": "InventoryPanelServiceTest",
+            "passed": 194
+          }
+        ],
+        "extraSummaries": [],
+        "artifacts": [
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r3/equipment-tuning/flashlog.txt",
+            "bytes": 29505,
+            "sha256": "51fe04ead450e5b46c17cbfa893296e132aaf92e229a32e055fbd7dff1b26ad4"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r3/equipment-tuning/compile_output.txt",
+            "bytes": 29524,
+            "sha256": "4c6487facd221abb3a541d3ca01bd87cb00c62004ca596b6e3633a3e713ac691"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r3/equipment-tuning/compiler_errors.txt",
+            "bytes": 27,
+            "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r3/equipment-tuning/TestLoader.swf",
+            "bytes": 1184087,
+            "sha256": "f80f9ab7ade688ef2275b6121ef9f24a20b6476bc22057f6402b542d3de93427"
+          }
+        ]
+      },
+      {
+        "group": "flash-regressions-r4/character-build-cf6-loadout",
+        "runId": "a5e4ee2724d541b9b82b6c14cd08e606",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "suites": [
+          {
+            "suite": "CharacterBuildCf6LoadoutTest",
+            "passed": 81
+          }
+        ],
+        "extraSummaries": [],
+        "artifacts": [
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/character-build-cf6-loadout/flashlog.txt",
+            "bytes": 18866,
+            "sha256": "cf8c2be11c8c893fed52138fc54c3c74b3d0904890795219fd15fa4d7bb54b25"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/character-build-cf6-loadout/compile_output.txt",
+            "bytes": 463,
+            "sha256": "f4ff27fb4b043a2b6e6d702ed2ee6b666eb7013e8b37c5348093fb7995e1f14f"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/character-build-cf6-loadout/compiler_errors.txt",
+            "bytes": 27,
+            "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/character-build-cf6-loadout/TestLoader.swf",
+            "bytes": 1250089,
+            "sha256": "0c165f23e88c28922a6adc9e029d043b75a9bf4949fb3111ccc5053e3718bc78"
+          }
+        ]
+      },
+      {
+        "group": "flash-regressions-r4/character-build",
+        "runId": "da1b578444cf4c91820d5a58fe81b1fc",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "suites": [
+          {
+            "suite": "EquipmentInventoryTest",
+            "passed": 28
+          },
+          {
+            "suite": "InventoryPanelServiceTest",
+            "passed": 194
+          },
+          {
+            "suite": "CharacterBuildTransactionSpikeTest",
+            "passed": 19
+          },
+          {
+            "suite": "RuntimeEquipmentProjectionTest",
+            "passed": 27
+          },
+          {
+            "suite": "CharacterBuildServiceTest",
+            "passed": 224
+          },
+          {
+            "suite": "PlayerInfoProviderTest",
+            "passed": 29
+          },
+          {
+            "suite": "PlayerStatLifecycleTest",
+            "passed": 54
+          }
+        ],
+        "extraSummaries": [],
+        "artifacts": [
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/character-build/flashlog.txt",
+            "bytes": 83286,
+            "sha256": "d9d3870d3fa51ee085b79d9d526d04f448c3073cd5e4d654c7df082dddfb6afc"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/character-build/compile_output.txt",
+            "bytes": 83188,
+            "sha256": "f8595b61b503e8c1345e6cdf8c00c293ed93de12fe2002323d415b548b598abe"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/character-build/compiler_errors.txt",
+            "bytes": 27,
+            "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/character-build/TestLoader.swf",
+            "bytes": 1262987,
+            "sha256": "16e2ffc705f42dc2da8147dc3dc739e4ac76d40944763e5b926ed0a62d363c29"
+          }
+        ]
+      },
+      {
+        "group": "flash-regressions-r4/player-stat-refresh",
+        "runId": "90d177f591df46489700e89bba8bcf41",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "suites": [
+          {
+            "suite": "MeridianGetterRegistrationTest",
+            "passed": 8
+          },
+          {
+            "suite": "EquipmentInventoryTest",
+            "passed": 28
+          },
+          {
+            "suite": "InventoryPanelServiceTest",
+            "passed": 194
+          },
+          {
+            "suite": "CharacterBuildTransactionSpikeTest",
+            "passed": 19
+          },
+          {
+            "suite": "RuntimeEquipmentProjectionTest",
+            "passed": 27
+          },
+          {
+            "suite": "CharacterBuildServiceTest",
+            "passed": 224
+          },
+          {
+            "suite": "PlayerInfoProviderTest",
+            "passed": 29
+          },
+          {
+            "suite": "PlayerStatProjectionTest",
+            "passed": 43
+          },
+          {
+            "suite": "MeridianPanelServiceTest",
+            "passed": 14
+          },
+          {
+            "suite": "PlayerStatRefreshCoordinatorTest",
+            "passed": 25
+          },
+          {
+            "suite": "PlayerStatProductionAdapterTest",
+            "passed": 14
+          },
+          {
+            "suite": "PlayerStatLifecycleTest",
+            "passed": 54
+          }
+        ],
+        "extraSummaries": [
+          "===== HealApplier 汇总: run=45 pass=45 fail=0 ====="
+        ],
+        "artifacts": [
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/player-stat-refresh/flashlog.txt",
+            "bytes": 93065,
+            "sha256": "c7322b578458617bef9c7535890c0a6eab30b629eb397e76317e2686b083ee9f"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/player-stat-refresh/compile_output.txt",
+            "bytes": 92967,
+            "sha256": "df6d9462257c234a6f7196f497095024ff3d2051f73f5bf41077ebad7f7d3218"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/player-stat-refresh/compiler_errors.txt",
+            "bytes": 27,
+            "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/player-stat-refresh/TestLoader.swf",
+            "bytes": 1273908,
+            "sha256": "30c2de9b8127ffe9351183f44344fa50dbe0565dda9cd3add02136035bb06039"
+          }
+        ]
+      },
+      {
+        "group": "flash-regressions-r4/cf6-boss-encounter",
+        "runId": "b1915a3d59de4b5b93c827faba9df2db",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "suites": [
+          {
+            "suite": "Cf6BossEncounterTest",
+            "passed": 103
+          }
+        ],
+        "extraSummaries": [],
+        "artifacts": [
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/cf6-boss-encounter/flashlog.txt",
+            "bytes": 10231,
+            "sha256": "07783e1f614f339ca36c753a01b281b36a02224d609b1bbd4ebc1e144e65742b"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/cf6-boss-encounter/compile_output.txt",
+            "bytes": 10250,
+            "sha256": "d23f3b7bb48a6ca292eeef69925b2fcde4b7c4a86cf1a048790d6cd7e0e13719"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/cf6-boss-encounter/compiler_errors.txt",
+            "bytes": 27,
+            "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/cf6-boss-encounter/TestLoader.swf",
+            "bytes": 1135831,
+            "sha256": "add4cceeaebd594eee914790a46c3c5042a84a2b77e354cc20541148db23ed41"
+          }
+        ]
+      },
+      {
+        "group": "flash-regressions-r4/cf6-map-mechanism",
+        "runId": "e042a5c80bda4fae8524a43c8565c588",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "suites": [
+          {
+            "suite": "Cf6MapMechanismTest",
+            "passed": 219
+          }
+        ],
+        "extraSummaries": [],
+        "artifacts": [
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/cf6-map-mechanism/flashlog.txt",
+            "bytes": 3569,
+            "sha256": "836aaae999cb4b81bcd21610847a999b520343720b52147cdb3ecc3cd2c9a9cd"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/cf6-map-mechanism/compile_output.txt",
+            "bytes": 3363,
+            "sha256": "bb825e9ba49b56366f5a2e0d1b5de39991fd8a25801f6ec64c026dc9fce2ba5f"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/cf6-map-mechanism/compiler_errors.txt",
+            "bytes": 27,
+            "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/cf6-map-mechanism/TestLoader.swf",
+            "bytes": 1143992,
+            "sha256": "c7bd855644a6e48efa2cbb0467fec61467c242ad7d380b9d7833cf98feeb6697"
+          }
+        ]
+      },
+      {
+        "group": "flash-regressions-r4/cf6-level-cap",
+        "runId": "f17850cd389a44b6b254d7510c2bf6ef",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "suites": [
+          {
+            "suite": "Cf6LevelCapTest",
+            "passed": 52
+          }
+        ],
+        "extraSummaries": [],
+        "artifacts": [
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/cf6-level-cap/flashlog.txt",
+            "bytes": 572,
+            "sha256": "a0f441057ce8ace916fd4e3737dcf82588d7b4818a06286497f72e0785546984"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/cf6-level-cap/compile_output.txt",
+            "bytes": 591,
+            "sha256": "2e2254be7ad01782c69bffce0e6c2a7227c07f32f15d7cfeed2e23df6b28b8e8"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/cf6-level-cap/compiler_errors.txt",
+            "bytes": 27,
+            "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/cf6-level-cap/TestLoader.swf",
+            "bytes": 1132705,
+            "sha256": "eb3a61be991b701819453c03de5dc46cc63917af9cfdcefef17d48ed10a8806a"
+          }
+        ]
+      },
+      {
+        "group": "flash-type61-posttext",
+        "runId": "2235e381b036421785aa2db33e84c261",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "suites": [
+          {
+            "suite": "Cf6Type61ServiceTest",
+            "passed": 89
+          }
+        ],
+        "extraSummaries": [],
+        "artifacts": [
+          {
+            "path": "tmp/cf6-type61/flash-type61-posttext/flashlog.txt",
+            "bytes": 1113,
+            "sha256": "6c38789cd91c179a174583360890475443614b9fcc71d81f09fcd714965b90dc"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-type61-posttext/compile_output.txt",
+            "bytes": 1015,
+            "sha256": "4b82dbba1fd4d91e89f60bc8333a1f40dbeaaf55290deb96b9762606eceff8ce"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-type61-posttext/compiler_errors.txt",
+            "bytes": 27,
+            "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-type61-posttext/TestLoader.swf",
+            "bytes": 1241158,
+            "sha256": "0c6253088733e481e826d50445e981a166e752636d810f6a701dceb849a91475"
+          }
+        ]
+      },
+      {
+        "group": "flash-regressions-r4/bookshelf",
+        "runId": "cb006e098abf426dbdfc8d7ca234584f",
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "suites": [
+          {
+            "suite": "BookRunRulesTest",
+            "passed": 213
+          },
+          {
+            "suite": "BookshelfPanelServiceTest",
+            "passed": 128
+          },
+          {
+            "suite": "BookIterationTest",
+            "passed": 22
+          },
+          {
+            "suite": "BookComicServiceTest",
+            "passed": 45
+          }
+        ],
+        "extraSummaries": [],
+        "artifacts": [
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/bookshelf/flashlog.txt",
+            "bytes": 1647,
+            "sha256": "61ff4cd54f92f1b1ec883568d2a427515885b8c9c46b71f1f80d51be7139b6f9"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/bookshelf/compile_output.txt",
+            "bytes": 1666,
+            "sha256": "c86d82d46413ade70f44f48fdba64ea80291b95ccd824a2caab8eb0429f162d8"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/bookshelf/compiler_errors.txt",
+            "bytes": 27,
+            "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+          },
+          {
+            "path": "tmp/cf6-type61/flash-regressions-r4/bookshelf/TestLoader.swf",
+            "bytes": 1199825,
+            "sha256": "0bf030059062635808d61d9256937e7b8bea6cffd69bcea2c3dcf73722ae51b4"
+          }
+        ]
+      }
+    ],
+    "publish": {
+      "target": "publish",
+      "swf": {
+        "path": "scripts/asLoader.swf",
+        "bytes": 6754752,
+        "sha256": "01e71313c4d89ef31980e4525b573437adf6ba300f0e8b42452eba61c97710bb"
+      },
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "artifacts": [
+        {
+          "path": "tmp/cf6-type61/asloader-publish-r2/compile_output.txt",
+          "bytes": 63,
+          "sha256": "89abf2a02804799df25ceb3bf810f66094af348f73465277451e89e8c5b919b6"
+        },
+        {
+          "path": "tmp/cf6-type61/asloader-publish-r2/compiler_errors.txt",
+          "bytes": 27,
+          "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+        },
+        {
+          "path": "tmp/cf6-type61/asloader-publish-r2/asLoader.swf",
+          "bytes": 6754752,
+          "sha256": "01e71313c4d89ef31980e4525b573437adf6ba300f0e8b42452eba61c97710bb"
+        }
+      ],
+      "log": {
+        "path": "tmp/cf6-type61/asloader-publish-r2.log",
+        "bytes": 1300,
+        "sha256": "f5eb37547e35a87bfce0a7468c037647e29c297c53372858d6c70739ae19b316"
+      },
+      "functions": {
+        "path": "tmp/cf6-type61/asloader-functions-r2.json",
+        "bytes": 1358,
+        "sha256": "83b1ad9dfeeded2b4e4d5fa88e7536fe175282c9d7e23b4aaa3877e27db6d9e1"
+      },
+      "classDelta": {
+        "beforeSha256": "41250a2e137b5c6951fff424356b10e8ebd92c32cc7d4dcc0eeb5d6cde841375",
+        "afterSha256": "01e71313c4d89ef31980e4525b573437adf6ba300f0e8b42452eba61c97710bb",
+        "bytes": 6754752,
+        "classes": 773,
+        "added": [
+          "org.flashNight.arki.scene.Cf6Type61Service",
+          "org.flashNight.arki.scene.Cf6ActorLoadout"
+        ],
+        "removed": [],
+        "testFixtures": [],
+        "largestFunction": {
+          "owner": "DoAction[sprite=1 frame=0]",
+          "type": "DefineFunction2",
+          "name": "(anon)",
+          "codeSize": 53268
+        }
+      },
+      "classDeltaArtifact": {
+        "path": "tmp/cf6-type61/asloader-class-delta-r2.json",
+        "bytes": 512,
+        "sha256": "3af9714b8264e2d8b0ab2b3e01aae8e1b78d02249f218db9370682b45a945f4f"
+      },
+      "productionOwnership": {
+        "errors": [],
+        "files": 787,
+        "parsed": 778,
+        "cacheHits": 9,
+        "loaderClasses": 773,
+        "closureChecked": true,
+        "policy": "production",
+        "milliseconds": 12206.4826
+      },
+      "productionOwnershipArtifact": {
+        "path": "tmp/cf6-type61/asloader-production-ownership-r2.json",
+        "bytes": 176,
+        "sha256": "cac1bd7f1d69ec6ccc2901889770638954fc52cfef939670e6c3426ba0919199"
+      },
+      "postPublishAs2Changes": [
+        "scripts/类定义/org/flashNight/arki/scene/Cf6Type61Fixture.as"
+      ],
+      "postPublishChangeScope": "Only the generated test fixture changed with tutorial text. It is absent from production asLoader classes; production AS2 inputs remain unchanged."
+    },
+    "observation": {
+      "observedUtc": "2026-10-25T23:42:50.0175827Z",
+      "profileSha256": "f15c3b44b48333782543f489a597d2b2bc31222d77b212c23e8f3a3fc7e04265",
+      "beforeProfileSha256": "f15c3b44b48333782543f489a597d2b2bc31222d77b212c23e8f3a3fc7e04265",
+      "scratchMarkerPresent": false,
+      "uncertainMarkerPresent": false,
+      "tasks": [
+        {
+          "TaskName": "CompileTriggerTask",
+          "state": "Ready"
+        },
+        {
+          "TaskName": "FlashCS6Task",
+          "state": "Running"
+        }
+      ],
+      "testPlayerControl": "tmp/flash-testplayer-control/15636de2f95246bfac70109a9a203942",
+      "productionAsloaderSha256": "01e71313c4d89ef31980e4525b573437adf6ba300f0e8b42452eba61c97710bb"
+    },
+    "observationArtifact": {
+      "path": "tmp/cf6-type61/final-flash-observation-current.json",
+      "bytes": 670,
+      "sha256": "1b05ef8dc2b65ff958a643436737add3e3aedb2237c5b97a677d7ab3deea55ee"
+    }
+  },
+  "governance": {
+    "documentationPassed": true,
+    "documentationLog": {
+      "path": "tmp/cf6-type61/docs-final.log",
+      "bytes": 3603,
+      "sha256": "24291c90c186b5679c302708e3e515b94cc3327c17db89d647fe29b6c8e9ddc1"
+    },
+    "diffCheck": {
+      "path": "tmp/cf6-type61/diff-check-final.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "saveCallsiteGatePassed": false,
+    "saveCallsiteBaselineErrors": 45,
+    "saveCallsiteCurrentErrors": 29,
+    "newCallsiteErrorsComparedWithBaseline": [],
+    "saveCallsiteComparison": {
+      "path": "tmp/cf6-type61/save-callsites-comparison-final.json",
+      "bytes": 7196,
+      "sha256": "50b5806f8df841a4fe7c4c40d16e82c1a281dbbd83f7b32a3385b788717ca354"
+    },
+    "propertyWrites": {
+      "sourceFiles": 31,
+      "candidates": 1,
+      "knownForbidden": 0
+    },
+    "propertyWritesArtifact": {
+      "path": "tmp/cf6-type61/player-stat-writes-final.json",
+      "bytes": 6367,
+      "sha256": "f1a17794c1991c0b709de50f6ea133880d9be45f5758581e658bb1fb91e95bf4"
+    },
+    "scope": "Save-callsite failures are inherited count/coordinate governance drift. Touched-domain coordinates were repaired; remaining debt is not presented as a passing gate or a gameplay failure."
+  },
+  "retainedFailureArtifacts": [
+    {
+      "path": "tmp/cf6-type61/host-r3/type61-host-r3.trx",
+      "bytes": 382519,
+      "sha256": "c6f1d5793b9e34435442826f46d1be06404bd2d601ea7125e9d5c1ee1f17a7e1"
+    },
+    {
+      "path": "tmp/cf6-type61/static-runner-r1.log",
+      "bytes": 707,
+      "sha256": "76ee9a44ff729f7fe4b194e7cd330623297a4e2ce727d22ef70d518b1c946ca6"
+    },
+    {
+      "path": "tmp/cf6-type61/portraits-candidate.log",
+      "bytes": 1758,
+      "sha256": "aea721eadbf0fb3369c89f3382ec81be0a244b329fd809bb2ace2396e1f91931"
+    }
+  ],
+  "changedFiles": [
+    {
+      "path": "data/crafting/书中配给.json",
+      "bytes": 3089,
+      "sha256": "db352833082bda72faef19fc284d4a5eeb8c862d94226655b1d9f8053345af64"
+    },
+    {
+      "path": "data/dictionaries/material_dictionary.generated.json",
+      "bytes": 15496,
+      "sha256": "b1f1eb61630cf4360a03d6c6a03195348c7bcf284322d03f984649de35d7d00d"
+    },
+    {
+      "path": "data/items/list.xml",
+      "bytes": 2676,
+      "sha256": "258d229e6fc7c12ed28f5f40ecf4388f7f6a861e52f1d6de5ce3accb35804a7a"
+    },
+    {
+      "path": "data/items/消耗品_CF6六一配给.xml",
+      "bytes": 6343,
+      "sha256": "e26ba171c582ee7b0942f015cb7aeec424c98875e9854906607ff3caee2d381a"
+    },
+    {
+      "path": "data/items/消耗品_战场补给.xml",
+      "bytes": 5202,
+      "sha256": "fccc0e2ee5b2279f78fac37c388f87c7409d237f30c436d1c67ff456812c918c"
+    },
+    {
+      "path": "data/items/消耗品_自选配给.xml",
+      "bytes": 16686,
+      "sha256": "aa1bd185ef843ff15239a42f840bd1578aad8263463c9418e3ff733fb10d038d"
+    },
+    {
+      "path": "data/rewards/README.md",
+      "bytes": 12025,
+      "sha256": "ca34fd4d34601ac19f04697439f9cca15eecd495e0ae61391359aa3f6a3b6e30"
+    },
+    {
+      "path": "data/rewards/choice-rewards.generated.json",
+      "bytes": 83714,
+      "sha256": "0f9a4a8db0bbdd17f77533e53345dd40fa275fa6bec78266a1b6deb7f8bde3cf"
+    },
+    {
+      "path": "data/shops/list.xml",
+      "bytes": 2266,
+      "sha256": "66343c107900858bfe86ef96768194342845760e76ee9e7ca620a19d2b225540"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6六一-A01.json",
+      "bytes": 1390,
+      "sha256": "71721ca8e11080a7e4d6781fddbc785024d2419efc042b25f361239efe115c2d"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6六一-A05.json",
+      "bytes": 1390,
+      "sha256": "f2374f4eb1b3573c5c00d255d655294ab3a97be4964a2affd0b02073411cb880"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6六一-A08.json",
+      "bytes": 1512,
+      "sha256": "c6ab9e1869579aaac7fdeef0457891d3165326a9d29ba2e3ecd54981f7c2cbb8"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6六一-A11.json",
+      "bytes": 1933,
+      "sha256": "fe2b99f0e53f2e2711fb221f58605000b615530b22b3ace1b03f55a8e98b0ac7"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6六一-A16.json",
+      "bytes": 2121,
+      "sha256": "cec9a8625f547524ed671aa7745fac7a6a2c7b9498ce4f5414c6d4a1355d0c92"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6六一-A19.json",
+      "bytes": 2246,
+      "sha256": "c892917aacb21e489d101e865abe342b8e0b101cea576120b6c4a88c5b462fd3"
+    },
+    {
+      "path": "data/shops/remote-access.json",
+      "bytes": 3157,
+      "sha256": "7d333093321b786fce633b307219d9800fd65c62ae1d8a99ef31f9db66d671a3"
+    },
+    {
+      "path": "data/stages/books/cf6-type61.json",
+      "bytes": 572095,
+      "sha256": "cec41b1fcb8e52443080788a4ee9db389a853ff71df2a80429af88eebaefb9cf"
+    },
+    {
+      "path": "data/stages/books/cf6-type61.runtime.json",
+      "bytes": 572095,
+      "sha256": "cec41b1fcb8e52443080788a4ee9db389a853ff71df2a80429af88eebaefb9cf"
+    },
+    {
+      "path": "docs/AS2-UI迁移剩余清单与难度评估-2026-09-12.md",
+      "bytes": 50475,
+      "sha256": "51529f75618e63c0a8b244647c36a20baee575053b7a8e71af68bc6c20e96cae"
+    },
+    {
+      "path": "docs/bookshelf-player-context.md",
+      "bytes": 79177,
+      "sha256": "b5df97eb74a15a2e57e1153045fca75223b75baa401546cf7bee73192d9727fd"
+    },
+    {
+      "path": "docs/player-stat-refresh-contract.md",
+      "bytes": 14076,
+      "sha256": "514ae9aeb14a53a9fd8bf3cff4ae5fae786c5a1bcc8b6f394153e7806f50538d"
+    },
+    {
+      "path": "docs/reports/cf6-type61-budget-plan-2026-10-25.json",
+      "bytes": 232985,
+      "sha256": "c1f6fd7f150697ff417484a885d095d5b05f2cab75116d992c9b834003eee7f1"
+    },
+    {
+      "path": "docs/闪客快打6肉鸽-61路线完整施工方案-2026-10-25.md",
+      "bytes": 36302,
+      "sha256": "e349ef276064839e5cebc395533106a8497b9c732490cfab3448a5c639be6397"
+    },
+    {
+      "path": "docs/闪客快打6肉鸽-61路线施工与验证-2026-10-26.md",
+      "bytes": 8694,
+      "sha256": "699000f2262f213bf504ec04e1f7aef23967843b534f2088cb8a2f1b5c639d2a"
+    },
+    {
+      "path": "docs/闪客快打6肉鸽-首版设计与施工拆分-2026-10-21.md",
+      "bytes": 57982,
+      "sha256": "7fb311f5d8a04f5f0d3623cfae5378f7f5839447fc5d567585c61933e4564743"
+    },
+    {
+      "path": "launcher/src/Tasks/BookshelfTask.cs",
+      "bytes": 32140,
+      "sha256": "65ee354e818e1a2785e375c410d96b2b886dbd9112f35633925f5f33329a4df9"
+    },
+    {
+      "path": "launcher/src/Tasks/ItemUseTask.RewardStash.cs",
+      "bytes": 25198,
+      "sha256": "8dab759e76664e3a9c0f5b2e4abfee98869857276c8d2c8a87673db480aa43c5"
+    },
+    {
+      "path": "launcher/tests/Tasks/BookshelfTaskTests.cs",
+      "bytes": 31801,
+      "sha256": "2b40b615c781134db57120bf4cec486522d2bc29c2b72eb8063e327bb2fe1f77"
+    },
+    {
+      "path": "launcher/tests/Tasks/ItemUseTaskTests.cs",
+      "bytes": 43838,
+      "sha256": "259574d21896c079a5e2d3c64f5dcfc8908c6d904a159af43b9287a0659af318"
+    },
+    {
+      "path": "launcher/tests/Tasks/NpcShopAccessPolicyTests.cs",
+      "bytes": 9718,
+      "sha256": "f05901565c702c2f23fec0a944717eefc4c9a04a5b160182b43fe7c52646cbd0"
+    },
+    {
+      "path": "launcher/web/assets/shop-portraits/manifest.json",
+      "bytes": 17693,
+      "sha256": "f282b469eb14baf780ece497b74e114b42c029af407167bfbc0e334f763ef2ad"
+    },
+    {
+      "path": "launcher/web/assets/shop-portraits/promotion-receipt.json",
+      "bytes": 539,
+      "sha256": "511924a7fbc570bf808a021344dce4bfb7667de6660ac8ea81108ebd0b7d3021"
+    },
+    {
+      "path": "launcher/web/assets/shop-portraits/provenance.json",
+      "bytes": 50130,
+      "sha256": "d153ebd1c4d2e5bbd5416b5491c02231a007add8f51ad2f2f61b79e6e62a3aa0"
+    },
+    {
+      "path": "launcher/web/modules/bookshelf-panel.js",
+      "bytes": 46559,
+      "sha256": "166d5a8c3aecd951a0d03686bc912555d565e391b00c5c90bcbe7a24173260fb"
+    },
+    {
+      "path": "launcher/web/modules/bookshelf-runtime.js",
+      "bytes": 8086,
+      "sha256": "b60c7df1cb1075d1a975137ceb28341e58cb7661198240f950c07ab06701fe6d"
+    },
+    {
+      "path": "launcher/web/modules/character-build/character-build-item-use-channel.js",
+      "bytes": 15042,
+      "sha256": "430bc287e592b98f1e67ea9da23338a554cf3a1eab9ee16c2558a2d261746484"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "bytes": 6754752,
+      "sha256": "01e71313c4d89ef31980e4525b573437adf6ba300f0e8b42452eba61c97710bb"
+    },
+    {
+      "path": "scripts/run-battle-supply-tests.ps1",
+      "bytes": 1305,
+      "sha256": "c83a5ac9600d7c0fbdcce9402c2bcf5d93bb318c5dd152d660795702db213fbb"
+    },
+    {
+      "path": "scripts/run-bookshelf-tests.ps1",
+      "bytes": 1949,
+      "sha256": "801822de1ce24eea1235b1c2987d75408e7d3a41a6af12afde1f6fa17bbc774f"
+    },
+    {
+      "path": "scripts/run-cf6-type61-tests.ps1",
+      "bytes": 1473,
+      "sha256": "d3d6ad9f653a538ab6797b7f1bc11396c38262abc666708c7d7b73fd8ae3d697"
+    },
+    {
+      "path": "scripts/run-choice-rewards-tests.ps1",
+      "bytes": 1015,
+      "sha256": "6211e30f6cb02f6124c68a04664f6b492180e88135c9ae95d9c5a184d611ec62"
+    },
+    {
+      "path": "scripts/test-runners/cf6-type61/TestLoader.as.template",
+      "bytes": 4147,
+      "sha256": "394f569d348e8c345fc8f9b7e1473ba8908fcbbbf89901a2acd05aeb1c38e15a"
+    },
+    {
+      "path": "scripts/展现/UI交互/UI交互_lsy_物品栏UI.as",
+      "bytes": 11253,
+      "sha256": "bbd3d324b9fc1c727c22bc80fb9636e2937de5051457bd07cb581b84a494cb2c"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/ChoiceRewardDefinition.as",
+      "bytes": 162592,
+      "sha256": "d44364ed01b3071a6ce1dd9bee3853ffe760f14122fb4aabee565d155514b4dd"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/ChoiceRewardService.as",
+      "bytes": 16438,
+      "sha256": "d7941f636063ab7f24e7c2de88282ade69dcff3300e16817d13fed9c93bcbaf6"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/ChoiceRewardServiceTest.as",
+      "bytes": 31226,
+      "sha256": "0268de99a05f58d8a2e91596a078d5d33765945c83dab12ff22dc680f5ce3237"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/ChoiceRewardStore.as",
+      "bytes": 5968,
+      "sha256": "db162bddaf5e08fb180d8c91ddb298fb9e8f41de9102ecc65af6780adff3d5c6"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+      "bytes": 70898,
+      "sha256": "2760026c3a8dbe4bc3ef4958f9130b43a972b22afde8b1495505d9663d719ea2"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/EquipmentTuningService.as",
+      "bytes": 94447,
+      "sha256": "262f131abf0987c0d06ebc3879774dafa0b419d431a46342436c2e374bce323f"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/MaterialArchiveProjector.as",
+      "bytes": 95669,
+      "sha256": "d66940e6d7b9cb31ed43bd0a0f4b86f4ceeea23a35315ae4867032f4c5fb3ad1"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/NpcShopAccessService.as",
+      "bytes": 2144,
+      "sha256": "8526185519d391f8e58fb9936a2cf1dacbe7b1fd38e77c062029d173e87d5ac3"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/ProcurementPlanService.as",
+      "bytes": 42889,
+      "sha256": "c64e46e8b611cc1c9726ea13b16d02e8cce6fd64e7396f5b0c3c50b56cdab2fb"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/BookComicService.as",
+      "bytes": 12686,
+      "sha256": "6566285c6d375c3518328faa01e9e45e594ef40bed8fc46989b54f6d94de38c2"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/BookDefinition.as",
+      "bytes": 52816,
+      "sha256": "0ae39f514afcc831a39586045dd401bc1fbf0ce92b80e3ee40d1d2f3952a6ef7"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/BookRunRules.as",
+      "bytes": 15660,
+      "sha256": "7998b7f16a3ebb7860c160cc4a9d42dbbec90c9c36032e2f922680fbba4ca38e"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/BookRunRulesTest.as",
+      "bytes": 50856,
+      "sha256": "8eb503c8ea800d4648a2b6ab05745ddf4b5d92ac8870bf35dc46c0bd39987b93"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/BookRunService.as",
+      "bytes": 24956,
+      "sha256": "9bea70782c9f421f9b7252478a47ecb18e88faabded6c46409587e3a6f5eb939"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6ActorLoadout.as",
+      "bytes": 3207,
+      "sha256": "a19ea0dbb1671f6c9cc8a32ebaa6d94aa4232db5be501829c9635e92e6cb170f"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6BossEncounter.as",
+      "bytes": 21641,
+      "sha256": "b852f33ef4b0d7a8f1c2af000ace12620f2049b67f1e3c12d2d7441b7eeda598"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6EconomyRules.as",
+      "bytes": 10962,
+      "sha256": "41ca5084b242030e7e6e6c194faa0551ec45c2edd1316b5312336644fd5952ef"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6MapMechanism.as",
+      "bytes": 65771,
+      "sha256": "249b3a347f7e8cac7096effb436d615384e3cd68574596dc47e4174c2f8454b7"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6TutorialTurretService.as",
+      "bytes": 30132,
+      "sha256": "902304315332a164a0fc0258d0c8c9072217a7a3a151483fb8654a84f9b74dce"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6Type61Fixture.as",
+      "bytes": 302032,
+      "sha256": "416d4c4d0abc6b68ccf396ffeff72160689c24908c9937f85d3e72d17222c306"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6Type61Service.as",
+      "bytes": 26710,
+      "sha256": "d5f2121f0a4a3bc663204acb7b91b70bd4f07f44a2ca031fc65974fe6c545772"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6Type61ServiceTest.as",
+      "bytes": 32835,
+      "sha256": "0e09d78388598fbf0358f6546671d2ca8f47fc714f92a9b5da6239b0796fe852"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageManager.as",
+      "bytes": 90185,
+      "sha256": "83de7c78f3a873f102f3e10a2c7d1fd9eea4d31de695db9f2b4ffd043ea419a6"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/WaveSpawner.as",
+      "bytes": 17756,
+      "sha256": "c7664e09ed4efcd59396e7334081f960c93871f069730463104109b2f9147bd0"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as",
+      "bytes": 73625,
+      "sha256": "faadabb748a0daefaf659a3cb539d74f5ad4dea52268e5092cd755f073054a93"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/skill/SkillPanelService.as",
+      "bytes": 34639,
+      "sha256": "f369ffc51a57197776639741385ec27011572b740dd72f760b5cc521b1897427"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/ui/BookshelfPanelService.as",
+      "bytes": 34294,
+      "sha256": "de25fc80bad533f77460dc0eec2f1d438dec6529e66ef09227ce6a9776dab723"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/ui/BookshelfPanelServiceTest.as",
+      "bytes": 56353,
+      "sha256": "1b22ff4cdf5e46a23b0c3033be733ffd0434f6606f4813b34436c92a37639b00"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/PickUp/PickUpManager.as",
+      "bytes": 20416,
+      "sha256": "5bde8c1be3aa484fe36ddf868f1c24fabc77983f46281e93dcc17f4af1e2340b"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Shoot/AmmoSupplyServiceTest.as",
+      "bytes": 17647,
+      "sha256": "9fcdcdaca7d534ce7af77ee704fa44825043a19e82acd3d4276ddd5b08b200fa"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/neur/Server/SaveManager.as",
+      "bytes": 194069,
+      "sha256": "91e6bf3ebc3da70f9cd7fdbb2d0f5e1a5a42f5f002485ecde0f8d7cad87ccee7"
+    },
+    {
+      "path": "scripts/逻辑/关卡系统/关卡系统_lsy_add2map_加载背景.as",
+      "bytes": 12577,
+      "sha256": "d12c5e66416ea52f0556790cce5b1b18c0b4a512f77454d6b0985c9de1cee48f"
+    },
+    {
+      "path": "scripts/逻辑/关卡系统/关卡系统_lsy_场景转换.as",
+      "bytes": 39377,
+      "sha256": "55e05cb0058d32d6f7bde862a946389841bbc0831f9c4eaa657cc7f3fac8456c"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "bytes": 37608,
+      "sha256": "21902fafde392ea81f0bc99bb43b784335dc6508c1145e78ba3336b3d4ae2274"
+    },
+    {
+      "path": "scripts/逻辑系统分区/商城系统_WebView.as",
+      "bytes": 60418,
+      "sha256": "f00f880e5f0482b4a9b5be9d67aa1560b5c16b69446b3c49979918c22c349303"
+    },
+    {
+      "path": "tools/bake-shop-portraits.py",
+      "bytes": 37640,
+      "sha256": "6f80a3af8ac1ad1e136c3296a569d3ae4225c6fb9e43bad0442575944fe4f155"
+    },
+    {
+      "path": "tools/book-definition-runtime.as.inc",
+      "bytes": 26364,
+      "sha256": "8f656094c5af103b2d9d72f61bac44f922ee737e2b0dc08f91cd280056473fda"
+    },
+    {
+      "path": "tools/build-book-definition.py",
+      "bytes": 49664,
+      "sha256": "bdc36e9b0b25cd09fed43552c3d9bdfac79b79cfaa010b82aace86f527f6b744"
+    },
+    {
+      "path": "tools/cf6-live-e2e/README.md",
+      "bytes": 16688,
+      "sha256": "edb24b5470f9f753a4516fd45506f421f1b28263dbf9a81586b302e9953e7be3"
+    },
+    {
+      "path": "tools/cf6-live-e2e/affiliated-slot.js",
+      "bytes": 7509,
+      "sha256": "cdf5d0d3ce8b79893acda313f37d516f3460df21be2d5d434ac6e48b55302442"
+    },
+    {
+      "path": "tools/cf6-live-e2e/cdp-input-channel.js",
+      "bytes": 7154,
+      "sha256": "7117b8bd12e6aa585f532cbed1a402cb28c50299e1845537e648d3c50f93fb6e"
+    },
+    {
+      "path": "tools/cf6-live-e2e/manual-observation-test.js",
+      "bytes": 2733,
+      "sha256": "a3e56a7c583a9e654014a5006e19720a78a637c7112eddc7aa8558bac30de98e"
+    },
+    {
+      "path": "tools/cf6-live-e2e/manual-observation.js",
+      "bytes": 2494,
+      "sha256": "22edac18d0e5fbcd133c0b1bedcbc0c490fc37fca3c48c957ede56164eb55efa"
+    },
+    {
+      "path": "tools/cf6-live-e2e/passive-observer.js",
+      "bytes": 16468,
+      "sha256": "a617a60d7ed337e5133c98dc5f3e1bc546ad4cef8e388d3cd55bc8fa2b17e80d"
+    },
+    {
+      "path": "tools/cf6-live-e2e/preflight.js",
+      "bytes": 7443,
+      "sha256": "0e7441ccf410447c0a4ed2a67e6ba1e5f07cd7af886a2d7f97a7ce08919c62ca"
+    },
+    {
+      "path": "tools/cf6-live-e2e/route-config.js",
+      "bytes": 711,
+      "sha256": "e93ae11c95b80fff274240dbe119fe8d3fd24f7e22fe68d853439233e55bf13a"
+    },
+    {
+      "path": "tools/cf6-live-e2e/run-candidate.js",
+      "bytes": 18805,
+      "sha256": "a1697b0c81107dbc061df3322f6e22d862ed043d50eb565db236ed0b71418a4c"
+    },
+    {
+      "path": "tools/cf6-live-e2e/self-test.js",
+      "bytes": 12720,
+      "sha256": "8471db5dfd1bf5e1e94788f29af97c630c946af92352e95de96ae1a7b0cc1480"
+    },
+    {
+      "path": "tools/cf6-live-e2e/source-closure-test.js",
+      "bytes": 73882,
+      "sha256": "68c42e3876e905fe9fbbb92691937a598649d2e31532078e982d1f86225edb77"
+    },
+    {
+      "path": "tools/cf6-live-e2e/source-closure.js",
+      "bytes": 76043,
+      "sha256": "32206efa474040d6d1e74b378d494be0d7fd4e9c58bbfe03164489f6f05cf98e"
+    },
+    {
+      "path": "tools/cf6-live-e2e/verified-return-observation.js",
+      "bytes": 1417,
+      "sha256": "dde5a4b79a90776706a90184dd573e3fd4b78cd925d29c0e026810b8b77ead2f"
+    },
+    {
+      "path": "tools/cf6-type61/README.md",
+      "bytes": 6552,
+      "sha256": "edecca0b88518339c82e7b0ae84487dca4a38fdc52c40ea43257b218398d8863"
+    },
+    {
+      "path": "tools/cf6-type61/build-route.py",
+      "bytes": 26251,
+      "sha256": "3c3231668f1f7a1dab548d18c4afab92d936d59ffb9187d5d345b14cf8fb85e4"
+    },
+    {
+      "path": "tools/cf6-type61/choice-rewards.fragment.json",
+      "bytes": 15201,
+      "sha256": "064e5fe6f6f96aa4825279bc6996b2ddd11f1e51d07384869a8741299a5b4c0e"
+    },
+    {
+      "path": "tools/cf6-type61/manifest.generated.json",
+      "bytes": 9023,
+      "sha256": "11fb6c868b422dc4f608eb4c1c3bd7d2de7e4c577375225e48fdf834a669f141"
+    },
+    {
+      "path": "tools/cf6-type61/recipes.generated.json",
+      "bytes": 1225,
+      "sha256": "a5564665a449b2b9de69126ed4d519d46959d3be26a7ab8fe7abd8ad499932fd"
+    },
+    {
+      "path": "tools/cf6-type61/route.source.json",
+      "bytes": 18792,
+      "sha256": "9beeb8292d8484b27c8d3230d32dc81c1e1ce0a100e6989edb2083c2c753b5c7"
+    },
+    {
+      "path": "tools/cf6-type61/test-route.py",
+      "bytes": 12685,
+      "sha256": "9abe82bb4f34ce54e3ff7674aaad92bafd51f135644ea26e00eb40ae127981a4"
+    },
+    {
+      "path": "tools/cf6_economy.py",
+      "bytes": 10698,
+      "sha256": "c1cebc23927e79ec7afd12c7e4a6f08e49158c1c9c7df27e2b9c721bb40845d6"
+    },
+    {
+      "path": "tools/choice_reward_catalog.py",
+      "bytes": 15022,
+      "sha256": "a9d8c5405d7f174a53c46ec5894790b26887c5c12914d49829d6b5add5f0bb46"
+    },
+    {
+      "path": "tools/player-stat-refresh/write-owners.json",
+      "bytes": 3692,
+      "sha256": "782db0c87cca3c150163a485059205f1c160cc09ac873675ff6b0bf402bab168"
+    },
+    {
+      "path": "tools/run-bookshelf-flow-harness.js",
+      "bytes": 47805,
+      "sha256": "8e8131b06cb82d77f106f9976c9cae853e8019f6d3c946066c55028a9c5cfb0b"
+    },
+    {
+      "path": "tools/save-api-migration/callsites.v1.json",
+      "bytes": 60834,
+      "sha256": "50f7ccf6c783929b89566e823bc7c4849c173711b5c67dbb750f4d99cdfd19ac"
+    },
+    {
+      "path": "tools/test-book-definition.py",
+      "bytes": 37492,
+      "sha256": "2f20ee9abeb1111c870eaa67bb14e647ca958a3736940d51bc40ac74f942b1dd"
+    },
+    {
+      "path": "tools/test-bookshelf-runtime.js",
+      "bytes": 8782,
+      "sha256": "798afd0f711c9ea0f04a62106e754ab03e396300b6dce029e4a8011dc39e045e"
+    },
+    {
+      "path": "tools/test-character-build-item-use.js",
+      "bytes": 43281,
+      "sha256": "bf26256ef631fbfc5f22524c095f212ccdb0438c0dd80a9439366b5e4ded8ffa"
+    },
+    {
+      "path": "tools/test-shop-portrait-assets.py",
+      "bytes": 20616,
+      "sha256": "7b753c6656c178587539f6d46beca1cf8a8d03b9afbf5f224bfb4066cb14b019"
+    }
+  ],
+  "postTextDataChecks": [
+    {
+      "command": "tools/cf6-type61/build-route.py --check",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/posttext-data-0.log",
+        "bytes": 603,
+        "sha256": "29bc74417a433300d332ff545fb17e8ec7829bd06506646b6dd1f56fcc690f10"
+      }
+    },
+    {
+      "command": "tools/build-book-definition.py --check",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/posttext-data-1.log",
+        "bytes": 65,
+        "sha256": "46b89d58c5b0dddfa0246a91917ac6fe53a04beb1f048f108a1c94745c86e1c5"
+      }
+    },
+    {
+      "command": "tools/cf6-type61/test-route.py",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/posttext-data-2.log",
+        "bytes": 2214,
+        "sha256": "ae105cc853e68efacb82b7f2efcc4bfdc5ebd0e3513cc044fd6c795a5fcd4d55"
+      }
+    },
+    {
+      "command": "tools/test-book-definition.py",
+      "exit": 0,
+      "log": {
+        "path": "tmp/cf6-type61/posttext-data-3.log",
+        "bytes": 165,
+        "sha256": "021d4d851bd5b0ad58ff639aee049c30a2fef5bdfeb4ba7fe4c8b6bff7309fd0"
+      }
+    }
+  ],
+  "candidate": {
+    "metadata": {
+      "schema": "cf7-runtime-candidate-metadata.v2",
+      "builderLabel": "local-dev",
+      "artifactSourceHash": "5A13002CA4672EF2CCE485C980F4491D2BFD1E50BAF3BD075CC7DE91B3EF263C",
+      "producerRecipeHash": "780043032960249C0CB45A806626CA65CAD28890EE9E17868066C776B89F60F8",
+      "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+      "policyHash": "72AA3B0A631AEA741EFD1E570C170462D1532B76E2026BCE49E4FC51CE93178D",
+      "buildIdentityHash": "A174414880BFA31A340D80219BB142FA68E46D752F53A5F70401FFDB986CD4F6",
+      "payloadClosureHash": "369A139FAE8CF6328A0009CA39961821B209308C1A13EC8DD48E4D1FE7C14D28",
+      "stageSeconds": {
+        "environmentGate": 3.092,
+        "identityBefore": 2.742,
+        "miniaudio": 62.858,
+        "solParser": 27.118,
+        "bootstrap": 5.118,
+        "worldCompositor": 40.231,
+        "dotnetPublish": 22.76,
+        "assemble": 34.483,
+        "identityAfter": 2.657,
+        "bootstrapVerify": 1.216
+      },
+      "totalSeconds": 202.284,
+      "createdAtUtc": "2026-10-25T22:38:57.8609477Z"
+    },
+    "metadataArtifact": {
+      "path": "tmp/runtime-candidates/v2/type61-r1/runtime-build-metadata.v2.json",
+      "bytes": 1023,
+      "sha256": "3fd2bed813ad7e9b6f11a61deb1f19303ad384da2d32c9256670330e6b2e27cf"
+    },
+    "buildLog": {
+      "path": "tmp/cf6-type61/candidate-build-r1.log",
+      "bytes": 5323,
+      "sha256": "ab7ba649a635148140f6134ade5bfb571bc21212e0cde6501452c0d3681f1139"
+    },
+    "runtimeIdentity": {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\cf6-type61\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\type61-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "DAE4AC66C223A4C99A94C20171D5F9DB3416DFEEDDF61FFCDF1EE3696A1606BC",
+      "buildIdentity": "A174414880BFA31A340D80219BB142FA68E46D752F53A5F70401FFDB986CD4F6",
+      "payloadClosure": "369A139FAE8CF6328A0009CA39961821B209308C1A13EC8DD48E4D1FE7C14D28",
+      "pid": 35468,
+      "httpPort": 1192
+    },
+    "formalPromotion": false,
+    "qualification": "Local development candidate with integrity verification; no dual-builder production policy or promotion claim."
+  },
+  "liveJourneys": [
+    {
+      "status": "passed_entry_terminal_return_readback",
+      "completedAt": "2026-10-25T23:32:56.214Z",
+      "report": {
+        "path": "tmp/workbench-live-e2e/cf6/20261025T232206947Z-cf6/report.json",
+        "bytes": 4700448,
+        "sha256": "b6f1d48854327621e57aa855de533c6755ad47f526be79cf7d2f4c176ee9affd"
+      },
+      "sourceClosureSha256": "f7ba9e844cdd5c1cc23f252e0032ec47bd70d82b2d664457b5500069ef5ab90c",
+      "sourceFileCount": 7941,
+      "initialActor": {
+        "routeId": "type61",
+        "name": "61式试验员",
+        "level": 35,
+        "experience": 17372868,
+        "equipmentCount": 5,
+        "fixedSkillCount": 17,
+        "allInitialEnhancements": 1,
+        "spendableSp": 1050,
+        "slot": "bookrun_77dd363db3d2535abc80ffef",
+        "runStarted": true
+      },
+      "result": {
+        "runId": "bookrun_77dd363db3d2535abc80ffef",
+        "outcome": "retreat",
+        "sp": 0,
+        "originAssetsUnchanged": true,
+        "routeId": "type61"
+      },
+      "readback": {
+        "runId": "bookrun_77dd363db3d2535abc80ffef",
+        "outcome": "retreat",
+        "sp": 0,
+        "originAssetsUnchanged": true,
+        "routeId": "type61"
+      },
+      "restart": {
+        "pid": 28008,
+        "firstPid": 31976,
+        "attempt": "75801132bcdb40709a9017e4fae0045f"
+      },
+      "shutdown": {
+        "pid": 31976,
+        "normalShutdownRequested": true
+      },
+      "restartShutdown": {
+        "pid": 28008,
+        "normalShutdownRequested": true
+      },
+      "transcript": {
+        "path": "tmp/workbench-live-e2e/cf6/20261025T232206947Z-cf6/cf6-passive-transcript.jsonl",
+        "bytes": 504568,
+        "sha256": "668ad16da0c2a1fc1d7d66ae2f41b0312adfb3f4036270279a7ab5c4e10ae67c"
+      },
+      "snapshotFiles": [
+        {
+          "path": "tmp/workbench-live-e2e/cf6/20261025T232206947Z-cf6/origin-before-play.json",
+          "bytes": 77823,
+          "sha256": "0e7fd2211a68a98db110e4454012c20739370649566ac24eecc7f52ccf5ab0d5"
+        },
+        {
+          "path": "tmp/workbench-live-e2e/cf6/20261025T232206947Z-cf6/origin-entry.json",
+          "bytes": 78436,
+          "sha256": "34a4223a911466a7ed094adda1b2ecedd79708f58052de3dd16d6edc472fa89c"
+        },
+        {
+          "path": "tmp/workbench-live-e2e/cf6/20261025T232206947Z-cf6/book-entry.json",
+          "bytes": 5402,
+          "sha256": "7da780b03da64cbfc9ec776b558ed1e6ffa3700e9e464316b2a4c5e7252b90a8"
+        },
+        {
+          "path": "tmp/workbench-live-e2e/cf6/20261025T232206947Z-cf6/origin-returned.json",
+          "bytes": 78561,
+          "sha256": "c7749c4589b04703ed3b22bb6192c318f457894588eeb9f1003a69b9692c0de0"
+        },
+        {
+          "path": "tmp/workbench-live-e2e/cf6/20261025T232206947Z-cf6/origin-readback.json",
+          "bytes": 78561,
+          "sha256": "704b58fd4201b35ef1f4dce0e46b13a4d5e2f2c131ef4238829e862fb2df78a4"
+        }
+      ],
+      "postReturnObservationWarnings": [],
+      "protectedArtifacts": 1,
+      "affiliatedArtifactsRemaining": [],
+      "seedUnchanged": true,
+      "cloneLockReleased": true
+    },
+    {
+      "status": "passed_entry_terminal_return_readback",
+      "completedAt": "2026-10-25T23:45:53.177Z",
+      "report": {
+        "path": "tmp/workbench-live-e2e/cf6/20261025T233834883Z-cf6/report.json",
+        "bytes": 3987671,
+        "sha256": "f8bac0d0de5db2a5430d36dd5fc7b45d2c59d73ee761a69e571d25c1de09fe63"
+      },
+      "sourceClosureSha256": "0ba003d94c3f6407f83c40d64e065df0831fd2d90b76194be632447f7f71cf6f",
+      "sourceFileCount": 7941,
+      "initialActor": {
+        "routeId": "type61",
+        "name": "61式试验员",
+        "level": 35,
+        "experience": 17372868,
+        "equipmentCount": 5,
+        "fixedSkillCount": 17,
+        "allInitialEnhancements": 1,
+        "spendableSp": 1050,
+        "slot": "bookrun_636c79d83807940a4a208152",
+        "runStarted": true
+      },
+      "result": {
+        "runId": "bookrun_636c79d83807940a4a208152",
+        "outcome": "retreat",
+        "sp": 0,
+        "originAssetsUnchanged": true,
+        "routeId": "type61"
+      },
+      "readback": {
+        "runId": "bookrun_636c79d83807940a4a208152",
+        "outcome": "retreat",
+        "sp": 0,
+        "originAssetsUnchanged": true,
+        "routeId": "type61"
+      },
+      "restart": {
+        "pid": 33136,
+        "firstPid": 35468,
+        "attempt": "fced35eef8624b9795e2ffb470d1aa1c"
+      },
+      "shutdown": {
+        "pid": 35468,
+        "normalShutdownRequested": true
+      },
+      "restartShutdown": {
+        "pid": 33136,
+        "normalShutdownRequested": true
+      },
+      "transcript": {
+        "path": "tmp/workbench-live-e2e/cf6/20261025T233834883Z-cf6/cf6-passive-transcript.jsonl",
+        "bytes": 91367,
+        "sha256": "f55594a1b7c403df552575f0295f374f6506bc00bce1e19aa84b36a75b9b3650"
+      },
+      "snapshotFiles": [
+        {
+          "path": "tmp/workbench-live-e2e/cf6/20261025T233834883Z-cf6/origin-before-play.json",
+          "bytes": 77823,
+          "sha256": "1c3dc81a3de96d9ff83de5b48bc107bff0bd1953f05381b80f539756e1c0fb97"
+        },
+        {
+          "path": "tmp/workbench-live-e2e/cf6/20261025T233834883Z-cf6/origin-entry.json",
+          "bytes": 78436,
+          "sha256": "def7c2648f3f573f71c7f4cee1ef29a056dd50e763497800e14528f1ccc8df11"
+        },
+        {
+          "path": "tmp/workbench-live-e2e/cf6/20261025T233834883Z-cf6/book-entry.json",
+          "bytes": 5402,
+          "sha256": "d9faf7ea1874d537909fefbc1ee78efdcbe2506fbb6111031a060e6315231c50"
+        },
+        {
+          "path": "tmp/workbench-live-e2e/cf6/20261025T233834883Z-cf6/origin-returned.json",
+          "bytes": 78561,
+          "sha256": "497cb84ec1cd2fa9813ae6f663779ef5cb9ec6c6ca2abb6e1e9c6cf525a587fd"
+        },
+        {
+          "path": "tmp/workbench-live-e2e/cf6/20261025T233834883Z-cf6/origin-readback.json",
+          "bytes": 78561,
+          "sha256": "a5bae726abac34b973f907a6ed13cdb9befe4ec2fed6e20b8610ab870a73bb5e"
+        }
+      ],
+      "postReturnObservationWarnings": [],
+      "protectedArtifacts": 1,
+      "affiliatedArtifactsRemaining": [],
+      "seedUnchanged": true,
+      "cloneLockReleased": true
+    }
+  ],
+  "latestLiveSourceChangesSinceRun": [],
+  "manualProductionObservations": {
+    "firstJourney": "Normal Windows input and visible WebView CDP Input opened inventory, selected and claimed cf6.type61.starter.0, equipped M4A1战术版 and initiated map retreat. Production messages are in the passive transcript; this is not physical-input attestation.",
+    "tutorialCorrection": "Removed historical pre-equipped gun/blade and ground-pickup instructions from only the Type61 tutorial; the second journey uses the final generated content.",
+    "tutorialEvidence": {
+      "path": "tmp/workbench-live-e2e/cf6/20261025T233834883Z-cf6/manual-tutorial-final.json",
+      "bytes": 899,
+      "sha256": "fae0cebba40c12d2584800f9b2efbbd00d3efc855fca0d0fb2986663e0939f5f"
+    },
+    "tutorialScreenshot": {
+      "path": "tmp/workbench-live-e2e/cf6/20261025T233834883Z-cf6/manual-tutorial-final.jpg",
+      "bytes": 155054,
+      "sha256": "1cd7af5d71f745d3f0930220a44f752518ad4dccec46f45fe477fbc745f58c9b"
+    }
+  },
+  "retainedFailures": [
+    {
+      "scope": "Paid-skill reward rollback",
+      "cause": "SkillLoadoutService restored the candidate feature object after RewardStash had already restored the authoritative origin object; two regression assertions now verify retained choice and original extension.",
+      "artifacts": [
+        {
+          "path": "tmp/cf6-type61/flash-regressions-r1/choice-rewards/flashlog.txt",
+          "bytes": 6230,
+          "sha256": "be2bdaefda3944d065c17f74cf922ffcfd699b3fb5d1ad8f3404f812cdcc0925"
+        },
+        {
+          "path": "tmp/cf6-type61/flash-regressions-r1/choice-rewards/profile-recovery.json",
+          "bytes": 573,
+          "sha256": "cb8a5a55e6f0c70142782decd043257117312ca6a5577d1c1beea9461da5f84f"
+        }
+      ]
+    },
+    {
+      "scope": "GM6 negative-shot supply fixture",
+      "cause": "Old ordinary test weapon did not declare current reward overload eligibility or active combat; corrected fixture plus retained-reward assertion, no production ammo change.",
+      "artifact": {
+        "path": "tmp/cf6-type61/flash-regressions-r3/battle-supply/flashlog.txt",
+        "bytes": 1291,
+        "sha256": "5eece03264d8bf2b97ebf5079f4193f5c4bb9c75adb93246db059c8befe59a57"
+      }
+    },
+    {
+      "scope": "First asLoader publication",
+      "cause": "Flash exited without a fresh successful export; exact-token process/profile recovery was recorded, old binary preserved. Cause remains unknown. A clean CS6 instance subsequently published successfully.",
+      "artifact": {
+        "path": "tmp/cf6-type61/asloader-publish-r1/recovery.json",
+        "bytes": 494,
+        "sha256": "bde0076fc8f16110946456aab488b22f15e08b15c67e3903ec4698be780d4ad2"
+      }
+    },
+    {
+      "scope": "Initial validation attempts",
+      "artifacts": [
+        {
+          "path": "tmp/cf6-type61/host-r3/type61-host-r3.trx",
+          "bytes": 382519,
+          "sha256": "c6f1d5793b9e34435442826f46d1be06404bd2d601ea7125e9d5c1ee1f17a7e1"
+        },
+        {
+          "path": "tmp/cf6-type61/static-runner-r1.log",
+          "bytes": 707,
+          "sha256": "76ee9a44ff729f7fe4b194e7cd330623297a4e2ce727d22ef70d518b1c946ca6"
+        },
+        {
+          "path": "tmp/cf6-type61/portraits-candidate.log",
+          "bytes": 1758,
+          "sha256": "aea721eadbf0fb3369c89f3382ec81be0a244b329fd809bb2ace2396e1f91931"
+        }
+      ],
+      "note": "Original Host missing-resource/Node attempts and earlier static/portrait failures remain preserved in the pre-Flash report."
+    }
+  ],
+  "remainingAcceptance": [
+    "Full A01-A20 combat and balance playthrough, including weak-drop choices and A19 purchases.",
+    "Continuous M4 main/sub reload, QJZ171 battery consumption, live high-pressure supply pickup/refusal, both elevators and native transformation behavior.",
+    "Human visual/input feel acceptance; formal runtime promotion and standard-entry business verification were not authorized or performed."
+  ]
+}

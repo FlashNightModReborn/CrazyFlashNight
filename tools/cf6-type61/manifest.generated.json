@@ -1,0 +1,650 @@
+{
+  "schema": "cf6-type61-content.v1",
+  "scope": "Generated route content and test fixtures; no SWF compilation, execution or promotion claim.",
+  "inputs": [
+    {
+      "path": "data/crafting/list.xml",
+      "bytes": 430,
+      "sha256": "240543599a86e10909ea6c72d710fc3ea5d5026927004b42c485c0e6a8d28a68"
+    },
+    {
+      "path": "data/crafting/公社防具.json",
+      "bytes": 8049,
+      "sha256": "ebe6d4941729ad5cf560a0658816bf8cf1c1ca85426ab800273be039ddf130c0"
+    },
+    {
+      "path": "data/crafting/化学生产.json",
+      "bytes": 2189,
+      "sha256": "aaa663ba913c49bdd48d6f909a90c48a14eeb95959f0295545fd61525417c1ad"
+    },
+    {
+      "path": "data/crafting/基础防具.json",
+      "bytes": 8691,
+      "sha256": "899589af0702490edd672b7487a7a0f73ee0bf8630492bd247f87725b42cd3f6"
+    },
+    {
+      "path": "data/crafting/大学装备.json",
+      "bytes": 4781,
+      "sha256": "be7fbf4d374a4be452dc1e42436adcf3e36eaeb4d90579186983101372ba8318"
+    },
+    {
+      "path": "data/crafting/属性武器.json",
+      "bytes": 1616,
+      "sha256": "e0a51b6a29166d5a191cf80e614fb8b25b428767597d224dc36ad7279b550613"
+    },
+    {
+      "path": "data/crafting/插件合成.json",
+      "bytes": 3599,
+      "sha256": "fc442dccb3cb6982a71c0054c9b670bad32a4e592cd42adc71881057e63e599e"
+    },
+    {
+      "path": "data/crafting/武器合成.json",
+      "bytes": 16592,
+      "sha256": "fb09eab4dd0dd201fe1c961cade3f8f7967c0c9ba224a3feab30ae7cfc1a3962"
+    },
+    {
+      "path": "data/crafting/烹饪.json",
+      "bytes": 3589,
+      "sha256": "d0e22f5b873c6ef9a99271c5ee779ec6cb376bf7b619af0e4b2409c0e2683d44"
+    },
+    {
+      "path": "data/crafting/调酒.json",
+      "bytes": 12775,
+      "sha256": "9a22e2df9a6164bc14813903c1067a14c27a5006284ae4e10d2862b8c971b445"
+    },
+    {
+      "path": "data/crafting/进阶防具.json",
+      "bytes": 28408,
+      "sha256": "be901e81db70eae74689ce1e145ada029ae04d670acbae878e77c348480740c9"
+    },
+    {
+      "path": "data/crafting/铁枪会.json",
+      "bytes": 6588,
+      "sha256": "b0c8fc771655b673500d9a4446d1013b095e3c92c012cb38c47d6ada7f49d64d"
+    },
+    {
+      "path": "data/crafting/饰品合成.json",
+      "bytes": 4227,
+      "sha256": "b7efc50cdb6e762b2504a801068301d050c710469b3f70efc6717b15526acb07"
+    },
+    {
+      "path": "data/crafting/黑白契约.json",
+      "bytes": 3839,
+      "sha256": "49962fb8db0e6ec5cf8f1c7a476814a87b026c4ffd379b012546a4427e17b7c9"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "bytes": 24134,
+      "sha256": "beb65602109cf95f0b76312342a320c46ec2148122cea4eb19b7297c27bac979"
+    },
+    {
+      "path": "data/items/收集品_材料.xml",
+      "bytes": 27232,
+      "sha256": "14ff9160ec792bc4a36677397e1030f7b38c48ea1562d30e3780d6b6012aaa3b"
+    },
+    {
+      "path": "data/items/收集品_材料_插件.xml",
+      "bytes": 50383,
+      "sha256": "17c2a1b9f20ccfc52f9e0c381bbb7646f64d80803c99cd0e83e9d83fdd71b856"
+    },
+    {
+      "path": "data/items/武器_刀_狂野.xml",
+      "bytes": 32803,
+      "sha256": "e985751474193e2da9e0e52f0440775bdcf8af729f7eae6f3d746aaaed75d647"
+    },
+    {
+      "path": "data/items/武器_刀_直剑.xml",
+      "bytes": 67783,
+      "sha256": "d36da20c96e60a69550b9ae69eadb53b932d58a956fa107bdfcee7f28ec2d5ee"
+    },
+    {
+      "path": "data/items/武器_刀_短兵.xml",
+      "bytes": 46828,
+      "sha256": "d8b1e0d024c6b7429d5fe8c10ac6ba77b97f1813fb6a9ab1aacd323d63f302de"
+    },
+    {
+      "path": "data/items/武器_手枪_冲锋枪.xml",
+      "bytes": 83023,
+      "sha256": "fb15c6bf327525573200fa6d2f4c0b411d887397ab53294491b7f48ccc7bc19c"
+    },
+    {
+      "path": "data/items/武器_手枪_发射器.xml",
+      "bytes": 8975,
+      "sha256": "e4cfe058c064447f9fb6803a29f84069720fbebbb8c33a39bbf073612724a347"
+    },
+    {
+      "path": "data/items/武器_手枪_大威力手枪.xml",
+      "bytes": 55119,
+      "sha256": "9fc68c4193af3809819e4a6ede3e357e9d1785a825218d3ab5ec3c9a3f277510"
+    },
+    {
+      "path": "data/items/武器_手枪_霰弹枪.xml",
+      "bytes": 34091,
+      "sha256": "2941d6dd2781c3565353ed52fd7a70a844b05bbbffcb688c9cc7a49faea35369"
+    },
+    {
+      "path": "data/items/武器_长枪_压制机枪.xml",
+      "bytes": 20460,
+      "sha256": "66e018b9fb1ec2c8c0721261969bd11f6f1a29772ee29959b7e7e18938481897"
+    },
+    {
+      "path": "data/items/武器_长枪_反器材武器.xml",
+      "bytes": 24048,
+      "sha256": "fa126aea6522dc98c289837dcd10a3f5c7f6faa321aa7cea0017e6eb3d9e7e46"
+    },
+    {
+      "path": "data/items/武器_长枪_发射器.xml",
+      "bytes": 40211,
+      "sha256": "5a2f3d3ef6c41d31e358ca2f20acd839c2d827e0228f8b9fdd92c71e3aa632ed"
+    },
+    {
+      "path": "data/items/武器_长枪_战斗步枪.xml",
+      "bytes": 42510,
+      "sha256": "f49a2b70027d233ae75c95913ad0331e78b1e29fc046bb44492f5c7f5fbb60a4"
+    },
+    {
+      "path": "data/items/武器_长枪_机枪.xml",
+      "bytes": 30837,
+      "sha256": "290c1c4fcfd186adcdc097f3628fa5a5e187dda71c640401e8c303866499c89b"
+    },
+    {
+      "path": "data/items/武器_长枪_特殊.xml",
+      "bytes": 35182,
+      "sha256": "bfb3c6075caf3956b71222e21da40be3228583a478fed1b358e77a5017889d61"
+    },
+    {
+      "path": "data/items/武器_长枪_狙击步枪.xml",
+      "bytes": 31062,
+      "sha256": "0dcdf9aff5f8bbc4b7e7d57c169f61056f353bb34fc168aeeb41c4d55a1747b5"
+    },
+    {
+      "path": "data/items/武器_长枪_突击步枪.xml",
+      "bytes": 120375,
+      "sha256": "1f369fbbbf0ca227d478e6ba134e1f4e52803db2dfcd00e09aaff013a52323c4"
+    },
+    {
+      "path": "data/items/武器_长枪_霰弹枪.xml",
+      "bytes": 72989,
+      "sha256": "e68ba53aa8e0a71e34d747782a6942d5260546ace079dcabd8a94c4fbceebde4"
+    },
+    {
+      "path": "data/items/消耗品_弹夹.xml",
+      "bytes": 7279,
+      "sha256": "7afc054811da6395867f9322da65ebfa8150cd998a1e142f868d1ab3ea5cc7da"
+    },
+    {
+      "path": "data/items/消耗品_战场补给.xml",
+      "bytes": 5202,
+      "sha256": "fccc0e2ee5b2279f78fac37c388f87c7409d237f30c436d1c67ff456812c918c"
+    },
+    {
+      "path": "data/items/消耗品_手雷.xml",
+      "bytes": 71388,
+      "sha256": "192e8630d7673fc34f777bd9271828f08abf46cf539ca3715f176d83631f2e0f"
+    },
+    {
+      "path": "data/items/消耗品_药剂.xml",
+      "bytes": 40693,
+      "sha256": "dda70d541217333a7d499de92d7db1676bc7301065fe1514858d89e286e32207"
+    },
+    {
+      "path": "data/items/消耗品_药剂_九龙.xml",
+      "bytes": 33718,
+      "sha256": "a9b4a15ca280075e91c95f49fd6ac8ea40a54234d5aa0b43bfe6bb4095feaf90"
+    },
+    {
+      "path": "data/items/消耗品_货币.xml",
+      "bytes": 1006,
+      "sha256": "6c42ef823ffc2db4f2279303c0daf753cf309a05697007bf4fac147ac16148c5"
+    },
+    {
+      "path": "data/items/防具_0-19级.xml",
+      "bytes": 425620,
+      "sha256": "e181f1a94bf44b7f55f012fc2ef2679389701d48c608735cb6660dd0f9dfebc7"
+    },
+    {
+      "path": "data/items/防具_20-39级.xml",
+      "bytes": 363296,
+      "sha256": "6220201e0fd9969bfaf2421d796be33410c7d4a2a82460156988fe4370afa550"
+    },
+    {
+      "path": "data/items/防具_颈部装备.xml",
+      "bytes": 161721,
+      "sha256": "dc161502dae73074895651089b418c5c30cbf488562f1709ec34f92b3bf6f349"
+    },
+    {
+      "path": "data/kshop/A兵团官方周边直营店.json",
+      "bytes": 3228,
+      "sha256": "d8ef24d374f9bc9703ff91ab32384addc046dade70ae7ab345cc0889cc7acee3"
+    },
+    {
+      "path": "data/kshop/list.xml",
+      "bytes": 682,
+      "sha256": "5e15102ee56aab35bb06b9cd3e3eadc7ba79642063ba020fbe165dfab4aecc71"
+    },
+    {
+      "path": "data/kshop/【数据错误-未知来源军火】.json",
+      "bytes": 834,
+      "sha256": "4b0a2eb44691f986a6eba0cefe64ee60602fa8c415e015f4a4201816d2376e9d"
+    },
+    {
+      "path": "data/kshop/乱七八糟.json",
+      "bytes": 3113,
+      "sha256": "ae28a3fe0395506da7bae748792379465f55f268763df22c4b439df5337edbda"
+    },
+    {
+      "path": "data/kshop/堕落城浮世安保专卖店.json",
+      "bytes": 663,
+      "sha256": "f3bb7ee21020e16cb5e108aeaaa7077df72f6054133512a5b15663be10f66fa4"
+    },
+    {
+      "path": "data/kshop/天地玄黄慈悲万怀兵器库.json",
+      "bytes": 1046,
+      "sha256": "9c48bb69e53a1384e761f2eb1bd6251b60e1f693c86f146a6d9963d8106992d0"
+    },
+    {
+      "path": "data/kshop/情趣店.json",
+      "bytes": 664,
+      "sha256": "75fda78dd89f7a34c27ac7276707699706005dfa35ab676e6b695f408f5bf799"
+    },
+    {
+      "path": "data/kshop/末日COS☆PLAY.json",
+      "bytes": 4520,
+      "sha256": "bbbd8819fde8b30f3bd3185df9799dffbe68aa5f2c27ca837e765cf415e2d63b"
+    },
+    {
+      "path": "data/kshop/武术联盟.json",
+      "bytes": 684,
+      "sha256": "1baee39f2f906c1b1c8aaff6d6bf58f2f15e0ea60822d0ce2395737272307ffc"
+    },
+    {
+      "path": "data/kshop/统合尘都临时政府卫生部.json",
+      "bytes": 769,
+      "sha256": "9ec174c5928c73f1af7dbda2fe22c09b7433e9ea53e8fc2922073107cfa3912b"
+    },
+    {
+      "path": "data/kshop/联合大学D.L.S.研究中心.json",
+      "bytes": 2560,
+      "sha256": "b79fcd479a6f0fab63a1a6befbf65994bdc8c3747d0d67df964a2719ca7c2e8d"
+    },
+    {
+      "path": "data/kshop/联合大学校服批发.json",
+      "bytes": 2009,
+      "sha256": "9b9bf3a456fd7d644b05b37b8a728139788a95a65d9ce8a68e305693ad180dca"
+    },
+    {
+      "path": "data/kshop/莱昂利亚自由革命军军火出口.json",
+      "bytes": 6206,
+      "sha256": "d15f9ac63ee7c7e2a14cc158325932aae7124fc2fc0236e60a783042ea498269"
+    },
+    {
+      "path": "data/kshop/蓉都公社弹药加工厂.json",
+      "bytes": 2405,
+      "sha256": "a8f8d1bef46cad1cebf1df63240af3379e29824836ffab3d0b1b645edbed5040"
+    },
+    {
+      "path": "data/shops/list.xml",
+      "bytes": 2266,
+      "sha256": "66343c107900858bfe86ef96768194342845760e76ee9e7ca620a19d2b225540"
+    },
+    {
+      "path": "data/shops/npcs/Andy Law.json",
+      "bytes": 1993,
+      "sha256": "9a443407c3fe924d8229ae6cefdbe564fdc0c863c196c30da8659fe5c2bb9df8"
+    },
+    {
+      "path": "data/shops/npcs/Blue.json",
+      "bytes": 119,
+      "sha256": "9c02aece389cbc27e392463ea9b2594febf0aa786e8aad05a22c47fc36bf27f9"
+    },
+    {
+      "path": "data/shops/npcs/Boy.json",
+      "bytes": 1578,
+      "sha256": "fc5d9800d20a9e49df52da45f7cb2d32d98d3375a87d04aa2b3d1baa6ea5db46"
+    },
+    {
+      "path": "data/shops/npcs/general.json",
+      "bytes": 592,
+      "sha256": "ddcd4f9a325c4158704f9326d08d019e440afc842f527983f70ba1dfa2f7c1eb"
+    },
+    {
+      "path": "data/shops/npcs/Guitar.json",
+      "bytes": 225,
+      "sha256": "231d6c5bcd3c7fc0cb32c42186b426393ba8a1ca79b3caef524ab5e01ea611b1"
+    },
+    {
+      "path": "data/shops/npcs/heeho君.json",
+      "bytes": 1594,
+      "sha256": "cb580838c3342b71222c68741f1b4b0bea973b56f38e907695ff629657a6338a"
+    },
+    {
+      "path": "data/shops/npcs/Keyboard.json",
+      "bytes": 233,
+      "sha256": "9bd10f1a965a0ea7c448c7f8eaa7a2069a00384f046919f2b416ed619ed9f8a4"
+    },
+    {
+      "path": "data/shops/npcs/King.json",
+      "bytes": 1505,
+      "sha256": "bc8597cd5f0414e09dea402166fb02354ac1cf3c0cbc609d04d5d3079a7f33a6"
+    },
+    {
+      "path": "data/shops/npcs/Pig.json",
+      "bytes": 1085,
+      "sha256": "1f6517271a06c6842535f38257b8565d104f3df66bcc5fe3a902ca6a57d65b97"
+    },
+    {
+      "path": "data/shops/npcs/Shop Girl.json",
+      "bytes": 2031,
+      "sha256": "a36b9d4f8af6921b3c30ddfc269e20b296229a0dd1aee2a09bf24e169e0c18d2"
+    },
+    {
+      "path": "data/shops/npcs/Singer.json",
+      "bytes": 222,
+      "sha256": "92e65361a0b8e039023d923297be3c3f20c6d20ab05290a4391207882b5ef833"
+    },
+    {
+      "path": "data/shops/npcs/soldier.json",
+      "bytes": 1034,
+      "sha256": "f3e1034de9f036bd1961324f167bebc019ecb13641597f2ab0acfdbabcc5d078"
+    },
+    {
+      "path": "data/shops/npcs/The Girl.json",
+      "bytes": 1487,
+      "sha256": "0f7740893466ca372af13007b807e9a1088abefeebee15a2e01eed714db8d76d"
+    },
+    {
+      "path": "data/shops/npcs/Vanshuther.json",
+      "bytes": 847,
+      "sha256": "f37f4dd7ddd7edc5439f48fa2d0c85555894eeae082a54e83345a0320f6f4af8"
+    },
+    {
+      "path": "data/shops/npcs/丽丽丝.json",
+      "bytes": 262,
+      "sha256": "f2c8e52014d444cc83b6d1fd1886fea1c0e5eb146258450d41e7b678bfc86545"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6毒刺-35级.json",
+      "bytes": 926,
+      "sha256": "70983391e6daffa4a6680abbf482674d2dbe2f486928d04f25360f4246d3d74c"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6毒刺-40级.json",
+      "bytes": 1073,
+      "sha256": "f6741f05ef4907d311f9746a6041e7f78e52745c19905e87a514f8a283c6160a"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6毒刺-45级.json",
+      "bytes": 1100,
+      "sha256": "d0eec5076d2c7fae66d19f9a4f7492062fa63be13ea250646c24307549c8fba4"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6毒刺-55级.json",
+      "bytes": 1190,
+      "sha256": "e0e1f35d8796ee21b6d084665bdb5e11b721f8b833f2486991a826a0a924b0a8"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6毒刺-60级.json",
+      "bytes": 1228,
+      "sha256": "08345cfffee39756dc7d26d505f54ba9be7c6e3a17f5a9b634fcacb8c1eb978a"
+    },
+    {
+      "path": "data/shops/npcs/体育老师.json",
+      "bytes": 516,
+      "sha256": "e629230d5aa0c292132f1e0f9977aad478d803966bab4b282d537c45b384036f"
+    },
+    {
+      "path": "data/shops/npcs/冷兵器商人.json",
+      "bytes": 1464,
+      "sha256": "67ce7d7c0de91c24690ce9db2b287367101f017334dcbcc8435dd217fb0ba8e3"
+    },
+    {
+      "path": "data/shops/npcs/前治安官.json",
+      "bytes": 1363,
+      "sha256": "999b8b4fe2cd91fe67fcb5b773fca9b460b70c2dc15ca4ff5101cfe89f329be1"
+    },
+    {
+      "path": "data/shops/npcs/厨师.json",
+      "bytes": 1146,
+      "sha256": "1eaa1ae562bd07ae086c4f0ffa95516d14193eb7202298d486b4ce53a6497875"
+    },
+    {
+      "path": "data/shops/npcs/吸特乐.json",
+      "bytes": 252,
+      "sha256": "9b5381f6262e60c400757a1fac1663c51a76aabaf078477a5e4b83594f5731c9"
+    },
+    {
+      "path": "data/shops/npcs/学生妹.json",
+      "bytes": 695,
+      "sha256": "bda2f41d2d9159eba1e0118fa998c89446c82fb7638c698cf4971922a12e582c"
+    },
+    {
+      "path": "data/shops/npcs/宝石线人.json",
+      "bytes": 607,
+      "sha256": "c76a2d2db8170bdf6cc2d50eef38ed6e06c154c7a10190fc8f11846c04bf7c37"
+    },
+    {
+      "path": "data/shops/npcs/小F.json",
+      "bytes": 246,
+      "sha256": "bd7d8c304b50c432cace27ff03b0f1636af276e71602729852dfc83a23a30074"
+    },
+    {
+      "path": "data/shops/npcs/幸存老兵-暂时停用.json",
+      "bytes": 128,
+      "sha256": "029a76edae98390d312236fd9c5034e87d6720830e2d1a920ccf79c5afa9fc35"
+    },
+    {
+      "path": "data/shops/npcs/格格巫.json",
+      "bytes": 713,
+      "sha256": "ff4f18bf9a5c49c10f4ca7df65d289306b29b05f54b3a86391670eca3a0f6d74"
+    },
+    {
+      "path": "data/shops/npcs/武器大师.json",
+      "bytes": 123,
+      "sha256": "b7b7d6c37d5e87eac4934ead03b8ca38411ba2d5bf042ca120cce873f8b785f8"
+    },
+    {
+      "path": "data/shops/npcs/武器订购系统.json",
+      "bytes": 755,
+      "sha256": "1189b581f282ac7f0e0526c9f9f901eba8cce27cc5b2a4912fd10cbe28322982"
+    },
+    {
+      "path": "data/shops/npcs/爱国青年.json",
+      "bytes": 686,
+      "sha256": "6d314fc6948c0fd9f2f3178ebf967af7bdc188bb80a7043b1eed57f7a93c9fe0"
+    },
+    {
+      "path": "data/shops/npcs/翅虎.json",
+      "bytes": 198,
+      "sha256": "265fbeeeac0cea4232af1df1f03a8789965c38fb9969429294dbd44f37718df4"
+    },
+    {
+      "path": "data/shops/npcs/舞女.json",
+      "bytes": 413,
+      "sha256": "0813b693654cdb082c054edb2d1a26e2286cecd1d547a4eda08ad6e8e7499333"
+    },
+    {
+      "path": "data/shops/npcs/虎妙.json",
+      "bytes": 117,
+      "sha256": "ace7b04399243bddf66f73410912cc03cf3bf584fc82fb888cfc8f0c1eb67733"
+    },
+    {
+      "path": "data/shops/npcs/诺艾尔.json",
+      "bytes": 148,
+      "sha256": "d3b19aaeace28939a61a93b5eb2b6146d18bec3ddf722e25ab83a867913d61e3"
+    },
+    {
+      "path": "data/shops/npcs/调酒师.json",
+      "bytes": 232,
+      "sha256": "fc6598ecc988bfbde153dbd6f1663bb9eb42ec23e4a522cce5247db869f37624"
+    },
+    {
+      "path": "data/shops/npcs/迷之盔甲君.json",
+      "bytes": 1192,
+      "sha256": "f99ded50437dbc4b650f214933df000593faf4ba3eb47ba7fb33c353fe8816a4"
+    },
+    {
+      "path": "data/shops/npcs/酒保.json",
+      "bytes": 412,
+      "sha256": "feb35583adc13dfbfe70ad09c5fad5fa5a1b17c72064822ff2ee513ad3fa3018"
+    },
+    {
+      "path": "data/shops/npcs/阿卡.json",
+      "bytes": 111,
+      "sha256": "2c912a67792a998d3b048f8a2258046317aa035504acfd978dc65aaa6a364951"
+    },
+    {
+      "path": "data/shops/npcs/黑仔.json",
+      "bytes": 363,
+      "sha256": "44ed6b2efd775601c786b4d2d2495ff3fd5fa1aa2de0e86cbd144522ac3d032d"
+    },
+    {
+      "path": "data/shops/npcs/黑铁会外交部长.json",
+      "bytes": 486,
+      "sha256": "8d67a86e28271732833198c35c54c5bc1d86197cad3d9132a852cb798c938d8b"
+    },
+    {
+      "path": "data/shops/npcs/黑龙.json",
+      "bytes": 590,
+      "sha256": "0f3b65de56d0e5123b38d2b0305ad01d24c1ffa86060fce3f5565926a2c2366b"
+    },
+    {
+      "path": "data/skills/skills.xml",
+      "bytes": 55848,
+      "sha256": "f8f337ba96eb4296712ca03f0f1e68b687260439203335d4a8ee1de57ed877e7"
+    },
+    {
+      "path": "data/stages/books/cf6-sting.json",
+      "bytes": 526870,
+      "sha256": "cd3d077ffe758834403d56817d0a5d0f17a71fb8f1088e6e9422f468c871c430"
+    },
+    {
+      "path": "data/units/units.json",
+      "bytes": 157113,
+      "sha256": "eec9ed2d77accb255d35e6e44ca7a8b7fe4fcd326074e7ae0c5caeded002dc2d"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/instructor-tuning.json",
+      "bytes": 398,
+      "sha256": "0dbfdc89643a59b0b660b7d603e7de5bb74c802d69c1655b8d807b64e96d4e53"
+    },
+    {
+      "path": "tools/cf6-type61/build-route.py",
+      "bytes": 28694,
+      "sha256": "4f828e7e4965b3cc1d8ec6024d5db06c732addc9636c1b4acac8e33a4ebd294c"
+    },
+    {
+      "path": "tools/cf6-type61/encounters.py",
+      "bytes": 3761,
+      "sha256": "32165f3733dd1f2587145caf5092dc16faec5d4ef0d7dcec641fa344b1469182"
+    },
+    {
+      "path": "tools/cf6-type61/encounters.source.json",
+      "bytes": 37336,
+      "sha256": "dec959b401cd83103955089d5c2e2caf5e23899686133aab7f489700e179cb35"
+    },
+    {
+      "path": "tools/cf6-type61/route.source.json",
+      "bytes": 23620,
+      "sha256": "b0d200eaad731f53d4e829ab8e6b67732b3b3ba91d291706a26a2960335c16ae"
+    },
+    {
+      "path": "tools/cf6_acquisition.py",
+      "bytes": 3636,
+      "sha256": "cf19a21734f76b18fae5cc4be7631ec93b91123fe1e97e7b70a5bc209f4376fb"
+    },
+    {
+      "path": "tools/choice_reward_catalog.py",
+      "bytes": 15022,
+      "sha256": "a9d8c5405d7f174a53c46ec5894790b26887c5c12914d49829d6b5add5f0bb46"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "data/items/list.xml",
+      "bytes": 2676,
+      "sha256": "258d229e6fc7c12ed28f5f40ecf4388f7f6a861e52f1d6de5ce3accb35804a7a"
+    },
+    {
+      "path": "data/items/消耗品_CF6六一配给.xml",
+      "bytes": 6515,
+      "sha256": "ac4ee0d4f379603e3916d5585ee31e80cafb7b0726a59b0b54439c9a1a860a38"
+    },
+    {
+      "path": "data/shops/list.xml",
+      "bytes": 2266,
+      "sha256": "66343c107900858bfe86ef96768194342845760e76ee9e7ca620a19d2b225540"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6六一-A01.json",
+      "bytes": 2701,
+      "sha256": "c3b26bb20cd143cafcf2298ab4a98182efc540a6897a704e1d0665afaf6edbf6"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6六一-A05.json",
+      "bytes": 3402,
+      "sha256": "30726f8a2f229bd30342a2760f8247c47615e720b48e8fa38af5a931763b0f7d"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6六一-A08.json",
+      "bytes": 3492,
+      "sha256": "85a6131a2dff781b60defa2fe125d3b8febc440a276108aae1f4970e788fbcc3"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6六一-A11.json",
+      "bytes": 4125,
+      "sha256": "5440d11e2bb3d23a37ab76ad4964e8c2abffab3f868f7d9623f8b62870efe8a5"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6六一-A16.json",
+      "bytes": 4242,
+      "sha256": "a335c2d3c312683b45b946280bc6369140b83299c4b94af472528e48858aa93a"
+    },
+    {
+      "path": "data/shops/npcs/书中-CF6六一-A19.json",
+      "bytes": 4242,
+      "sha256": "8e1c29015bf4016e3e01e5f2c5b85c48a9e39062d0dfaa332a333bcd19b9ab94"
+    },
+    {
+      "path": "data/shops/remote-access.json",
+      "bytes": 3157,
+      "sha256": "7d333093321b786fce633b307219d9800fd65c62ae1d8a99ef31f9db66d671a3"
+    },
+    {
+      "path": "data/stages/books/cf6-type61.json",
+      "bytes": 600109,
+      "sha256": "a4db0ab28e2fa704240e06e45270fd35b2ee5a72d4efe607ac3e3f0b9fb1bce7"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6Type61Fixture.as",
+      "bytes": 321131,
+      "sha256": "ba892d903d5aad2ff34e2b27008de861de8f7814dec64e09819d15b71b2e6e90"
+    },
+    {
+      "path": "tools/cf6-type61/acquisition.generated.json",
+      "bytes": 5305,
+      "sha256": "e8155affca38f427071f04180099c4e53e6c9ec5a68c333e1e89f547735d0ee4"
+    },
+    {
+      "path": "tools/cf6-type61/choice-rewards.fragment.json",
+      "bytes": 15201,
+      "sha256": "064e5fe6f6f96aa4825279bc6996b2ddd11f1e51d07384869a8741299a5b4c0e"
+    },
+    {
+      "path": "tools/cf6-type61/recipes.generated.json",
+      "bytes": 1225,
+      "sha256": "a5564665a449b2b9de69126ed4d519d46959d3be26a7ab8fe7abd8ad499932fd"
+    }
+  ],
+  "generatedBytes": 979789,
+  "bytesIncludingRuntimeSidecar": 1579898,
+  "maxGeneratedBytes": 2000000,
+  "downstreamChecks": [
+    "tools/build-choice-rewards.py --check",
+    "tools/build-book-definition.py --check"
+  ],
+  "runtimeSidecar": {
+    "path": "data/stages/books/cf6-type61.runtime.json",
+    "bytes": 600109,
+    "sha256": "a4db0ab28e2fa704240e06e45270fd35b2ee5a72d4efe607ac3e3f0b9fb1bce7"
+  }
+}

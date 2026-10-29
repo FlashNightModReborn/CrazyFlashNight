@@ -55,6 +55,8 @@ function harnessHtml() {
   <script src="/modules/bridge.js"></script>
   <script src="/modules/panels.js"></script>
   <script src="/modules/lazy-loader.js"></script>
+  <script src="/modules/asset-timeline.js"></script>
+  <script src="/modules/icons.js"></script>
   <script>
     (function() {
       var originalRegisterLazy = Panels.registerLazy;
@@ -136,6 +138,44 @@ async function main() {
 
     try {
         await page.goto(`http://127.0.0.1:${server.address().port}${HARNESS_PATH}`, {waitUntil:'load'});
+        const iconsAfterTablet = await page.evaluate(async () => {
+            Panels.init();
+            await new Promise(resolve => Icons.load(resolve));
+            window.__bootIcons = Icons;
+            const initialUrl = Icons.resolve('G1111');
+            await LazyLoader.load(window.__lazyDefinitions.tablet.deps);
+            return {
+                initialUrl,
+                sameLoader:Icons === window.__bootIcons,
+                gateReady:Panels.requiredAssetsReady(),
+                firstSlotHtml:Icons.html('G1111', 'inventory-owned-icon')
+            };
+        });
+        assert(iconsAfterTablet.initialUrl, 'real boot manifest must contain the field-report weapon');
+        assert(iconsAfterTablet.gateReady, 'panel resource admission must already be ready');
+        assert(iconsAfterTablet.sameLoader, 'opening tablet must preserve the loaded boot icon service');
+        assert(iconsAfterTablet.firstSlotHtml.includes('<img'),
+            'the first equipment slot after tablet must render an image without a tooltip reload');
+
+        const iconsAfterAssetWorkbench = await page.evaluate(async () => {
+            await LazyLoader.load(window.__lazyDefinitions['asset-workbench'].deps);
+            const slot = document.createElement('div');
+            slot.innerHTML = Icons.html('G1111', 'inventory-owned-icon');
+            document.body.appendChild(slot);
+            const image = slot.querySelector('img');
+            if (image) await image.decode();
+            return {sameLoader:Icons === window.__bootIcons,
+                imageWidth:image ? image.naturalWidth : 0};
+        });
+        assert(iconsAfterAssetWorkbench.sameLoader,
+            'asset workbench must also preserve the loaded boot icon service');
+        assert(iconsAfterAssetWorkbench.imageWidth > 0,
+            'the first slot image must load its actual asset after both lazy panels');
+        assert.strictEqual(countRequests(ledger.requests, '/modules/icons.js'), 1,
+            'boot icon module must execute only once across lazy panel closures');
+        assert.strictEqual(countRequests(ledger.requests, '/icons/manifest.json'), 1,
+            'lazy panels must reuse the manifest already admitted by Panels');
+
         const captured = await page.evaluate(() => {
             const definition = window.__lazyDefinitions.arena;
             return definition ? definition.deps.slice() : null;
@@ -191,7 +231,7 @@ async function main() {
         assert(second.coreReady && second.facadeReady, 'retry must expose the complete Arena module closure');
         assert.deepStrictEqual(pageErrors, [], 'recovered chain must finish without page execution errors');
 
-        process.stdout.write('panel lazy loader browser recovery: 17/17 passed\n');
+        process.stdout.write('panel lazy loader browser icon stability and recovery: 25/25 passed\n');
     } finally {
         await browser.close();
         await new Promise(resolve => server.close(resolve));

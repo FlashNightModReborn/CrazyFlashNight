@@ -124,7 +124,7 @@ ELITES = {
             "candidates": ["HK416战术版", "PKM战术版"],
             "note": "既有静态带盾特种兵×2中指定1名转无盾入口466,占原467名额,图敌人总数不变(r5核对A14总数9)"},
     "A17": {"quota": "E4", "weapon": "MG42战术版", "entry": 467,
-            "candidates": ["MG42战术版", "M134暴力版"],
+            "candidates": ["MG42战术版"],
             "note": "持盾重装精英,既有静态带盾特种兵×1;在bossEncounter hpRatio=1组(禁InstanceName,以cf6EliteQuota标记)"},
     "A19": {"quota": "E5", "weapon": "量子能量枪", "entry": 467,
             "candidates": ["量子能量枪", "战术版喷火器"],
@@ -1043,7 +1043,7 @@ def check(maps_doc, econ, shops_doc, choice_frag, item_index, units, actor, skil
         expected = ELITES[row["mapId"]]["candidates"]
         if [o["weapon"] for o in row["choices"]] != expected:
             errors.append("eliteWeapons %s候选与ELITES真源(设计§7)不符" % q)
-        check_weapon_options(row["mapId"], row["choices"], 1 if q == "E1" else 2, "eliteWeapons")
+        check_weapon_options(row["mapId"], row["choices"], 1 if q in ("E1","E4") else 2, "eliteWeapons")
     if seen_quotas != set(ELITE_QUOTA_MAPS):
         errors.append("eliteWeapons缺配额行: %s" % (set(ELITE_QUOTA_MAPS) - seen_quotas))
 

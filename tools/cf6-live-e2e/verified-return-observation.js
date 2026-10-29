@@ -3,11 +3,11 @@ const Affiliated = require('./affiliated-slot');
 
 // This boundary is reached only after the production return receipt and the
 // stable returned save have been captured. It never retries a business action.
-async function observeVerifiedReturn({before, after, slot, originSlot, receipt, input, detach}) {
+async function observeVerifiedReturn({before, after, slot, originSlot, receipt, input, detach, routeId}) {
     if (receipt?.phase !== 'applied' || receipt.activeSlot !== originSlot
             || receipt.result?.runId !== slot || receipt.result.bookId !== 'cf6-sting'
             || receipt.result.sp !== 0) throw Error('exact applied return receipt is required before optional observation');
-    const result = Affiliated.assertReturned(before, after, slot);
+    const result = Affiliated.assertReturned(before, after, slot, routeId);
     const observation = {result, screenshot:null, warnings:[]};
     try { observation.screenshot = await input.screenshot('cf6-returned.png'); }
     catch (error) { observation.warnings.push({phase:'return_screenshot', message:String(error.message || error)}); }

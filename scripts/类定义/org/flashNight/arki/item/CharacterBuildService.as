@@ -58,6 +58,7 @@ class org.flashNight.arki.item.CharacterBuildService {
     // 一次刷新只要抛错或后验失败，就禁止仅凭 equipment stamp 自动采信其半完成结果。
     private static var _liveRefreshRetryRequired:Boolean = false;
     private static var _statTicket:Object;
+    private static var _modeFinalizeWait:Object;
     private static var _writeInProgress:Boolean = false;
     private static var _writeAuthorityTouched:Boolean = false;
     private static var _capturedPauseLease = undefined;
@@ -121,8 +122,53 @@ class org.flashNight.arki.item.CharacterBuildService {
 
     private static function handle(commandName:String, params:Object):Void {
         var response:Object = execute(commandName, params);
+        if((commandName=="finalize" || commandName=="flushLive") && response.error=="flush_failed"
+                && deferModeFinalization(commandName,params,response)) return;
         response.task = "loadout_response";
         sendResponse(response);
+    }
+
+    /** 只等原装备重建的真实模式组件；首次调用尚未进入持久化。 */
+    private static function deferModeFinalization(commandName:String,params:Object,response:Object):Boolean {
+        var c:Object=statCoordinator();
+        if(_modeFinalizeWait!=null || c==null || typeof c.awaitingEquipmentComponent!="function"
+                || !c.awaitingEquipmentComponent(_statTicket) || !_active || _stale) return false;
+        var captured:Object={};for(var key:String in params) captured[key]=params[key];
+        var wait:Object={commandName:commandName,params:captured,response:response,ticket:_statTicket,
+            generation:_sessionGeneration,revision:_loadoutRevision,panel:_panelInstanceId,
+            context:c.contextToken(),deadline:getTimer()+2000};
+        wait.clip=_root.createEmptyMovieClip("__characterBuildModeWait",_root.getNextHighestDepth());
+        if(wait.clip==undefined) return false;
+        _modeFinalizeWait=wait;
+        wait.clip.onEnterFrame=function():Void {CharacterBuildService.pollModeFinalization();};
+        return true;
+    }
+    private static function retireModeFinalization(wait:Object):Void {
+        if(_modeFinalizeWait!==wait) return;
+        _modeFinalizeWait=null;
+        if(wait.clip!=undefined) {wait.clip.onEnterFrame=null;wait.clip.removeMovieClip();}
+    }
+    private static function pollModeFinalization():Void {
+        var wait:Object=_modeFinalizeWait;if(wait==null) return;
+        var c:Object=statCoordinator();var ticket:Object=wait.ticket;
+        var exact:Boolean=_active && !_stale && _statTicket===ticket && c!=null
+            && c.contextToken()===wait.context && _sessionGeneration==wait.generation
+            && _loadoutRevision==wait.revision && _panelInstanceId===wait.panel
+            && equipmentProofCurrent(ticket.proof);
+        var pending:Boolean=exact && c.awaitingEquipmentComponent(ticket);
+        if(pending && getTimer()<wait.deadline) return;
+        // A known component timeout permits the owner's next explicit recovery.
+        // It does not itself retry a rebuild or enter persistence.
+        if(pending) ticket.modeWaitExpired=true;
+        retireModeFinalization(wait);
+        var response:Object=wait.response;
+        if(exact && ticket.status=="completed") {
+            // 原调用未做保存；此处只收束一次已完成的投影，不重放换装。
+            response=execute(wait.commandName,wait.params);
+        } else if(!exact) {
+            response.success=false;response.error="stale_session";
+        }
+        response.task="loadout_response";sendResponse(response);
     }
 
     /**
@@ -139,7 +185,9 @@ class org.flashNight.arki.item.CharacterBuildService {
      */
     public static function execute(commandName:String, params:Object):Object {
         var result:Object;
-        if (params == undefined || Number(params.v) != 1) {
+        if (_modeFinalizeWait != null) {
+            result = fail("write_busy");
+        } else if (params == undefined || Number(params.v) != 1) {
             result = fail("unsupported_version");
         } else if (commandName == "snapshot") {
             result = executeSnapshot(params);
@@ -176,6 +224,7 @@ class org.flashNight.arki.item.CharacterBuildService {
      * 不属于准入前置。不得在这里铸造 generation、建立 session 或捕获 authority。
      */
     public static function canOpenPanel():Boolean {
+        if (org.flashNight.arki.scene.Cf6ActorRefreshPolicy.blocks(root())) return false;
         var resolved:Object = resolveContainers();
         if (!resolved.success || readRevision(resolved.drugs) < 0) {
             return false;
@@ -201,7 +250,7 @@ class org.flashNight.arki.item.CharacterBuildService {
                                                   expectedGeneration:Number):Object {
         var identity:Object = panelGate(panelInstanceId);
         if (!identity.success) return identity;
-        if (_writeInProgress) return fail("service_not_ready");
+        if (_writeInProgress || _modeFinalizeWait!=null) return fail("service_not_ready");
         if (!_active || _stale) return fail("service_not_ready");
         if (isNaN(expectedGeneration)
                 || Math.floor(expectedGeneration) != expectedGeneration
@@ -215,6 +264,8 @@ class org.flashNight.arki.item.CharacterBuildService {
      * 建立新的观察基线。重复 open 必须铸造新 generation，旧命令立即失效。
      */
     public static function open():Object {
+        // A temporary presentation refusal cannot retire an existing recovery/session owner.
+        if (org.flashNight.arki.scene.Cf6ActorRefreshPolicy.blocks(root())) return fail("live_unavailable");
         var resolved:Object = resolveContainers();
         if (!resolved.success) return rejectOpen(resolved.error);
         var pauseLease = root()._webPanelPauseLease;
@@ -467,6 +518,9 @@ class org.flashNight.arki.item.CharacterBuildService {
                 declareEquipmentProjection();
             }
             var ticket:Object=_statTicket;
+            if(ticket.status=="started" && typeof c.awaitingEquipmentComponent=="function"
+                    && c.awaitingEquipmentComponent(ticket)
+                    && !(recover===true && ticket.modeWaitExpired===true)) return liveFailure();
             if(ticket.status=="started" || ticket.actor.__playerStatInitPlan.failed===true) {
                 if(recover!==true) return liveFailure();
                 if(ticket.actor.__playerStatInitPlan.tailCheckpoint!=undefined) {
@@ -3432,6 +3486,7 @@ class org.flashNight.arki.item.CharacterBuildService {
     }
 
     private static function clearSession():Void {
+        if(_modeFinalizeWait!=null) retireModeFinalization(_modeFinalizeWait);
         _statTicket=null;
         _appearanceProjectionEnabled = false;
         _sessionGeneration = 0;

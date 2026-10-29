@@ -1,4 +1,5 @@
-﻿import org.flashNight.arki.unit.Action.Shoot.AmmoSupplyService;
+﻿import org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime;
+import org.flashNight.arki.unit.Action.Shoot.AmmoSupplyService;
 import org.flashNight.arki.item.BaseItem;
 import org.flashNight.arki.item.ItemUtil;
 
@@ -229,11 +230,21 @@ class org.flashNight.arki.unit.Action.Shoot.AmmoSupplyServiceTest {
     private static function testNegativeShotSkipped():Void {
         resetState();
         var hero:Object = makeHero("刀");
-        var gm6:Object = equip(hero, "长枪", "测试长枪", -5, null);
-        var result:Object = AmmoSupplyService.supply(hero, "longgun");
-        assertEq(0, result.changed, "GM6 负 shot 不产生收益");
-        assertEq(-5, gm6.value.shot, "负 shot 原样保留");
-        check(_root.存档系统.dirtyMark == false, "零收益不落脏");
+        // Current GM6 eligibility comes from overload.reward and an active sortie, not a negative counter alone.
+        var gm6:Object = equip(hero, "长枪", "测试长枪", -5,
+            {bullet:"普通子弹",clipname:"测试弹匣",overload:{reward:true}});
+        var battlePresent:Boolean=_root.hasOwnProperty("当前为战斗地图"),oldBattle=_root.当前为战斗地图;
+        try {
+            _root.当前为战斗地图=true;
+            var result:Object = AmmoSupplyService.supply(hero, "longgun");
+            assertEq(0, result.changed, "GM6 负 shot 不产生收益");
+            assertEq(-5, gm6.value.shot, "负 shot 原样保留");
+            check(gm6.value.ammoState.reward==5 && WeaponAmmoRuntime.normal(gm6.value,30)==30,
+                "合法GM6超装保留30发普通弹与5发奖励弹");
+            check(_root.存档系统.dirtyMark == false, "零收益不落脏");
+        } finally {
+            if(battlePresent)_root.当前为战斗地图=oldBattle;else delete _root.当前为战斗地图;
+        }
     }
 
     private static function testFullGunZeroBenefit():Void {

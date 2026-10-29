@@ -169,6 +169,7 @@ class org.flashNight.arki.item.RewardStashServiceTest {
             testTaskTurnIn(sm);
             testLegacyK(sm, so);
             testPacks(sm);
+            testConstellations(sm);
         } finally {
             if (RewardStashService.pendingOperationId() != "") {
                 sm._configureSaveFlowForTest({flushResult:true}); RewardStashService.resume(RewardStashService.pendingOperationId());
@@ -180,6 +181,81 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         }
     }
 
+    private static function starRequest(op:String,count:Number):Object {
+        var snapshot:Object=InventoryPanelService.buildExternalSnapshot("背包",0,50),store:Object=RewardStashService.peek();
+        return {task:"cmd",action:"itemUseStashOpenMany",callId:1,v:2,panelInstanceId:"type61.star",sessionGeneration:1,
+            operationId:op,storeId:store.storeId,expectedRevision:store.commitRevision,count:count,
+            source:{physicalSlot:49,slotLease:String(snapshot.slots[49].slotLease),itemName:"61计划星座机缘箱",backpackVersion:Number(snapshot.containerVersion)}};
+    }
+    private static function starRecipe():Object {
+        var names:Array=["光剑天秤","光斧金牛","光刀狮子","光刃摩羯","血色光剑天秤"],entries:Array=[];
+        for(var i:Number=0;i<names.length;i++) entries.push({itemName:names[i],quantityMin:1,quantityMax:1,weight:i==4?4:9});
+        return {success:true,mode:"chooseOne",entries:entries,totalWeight:40,maxOccurrences:1};
+    }
+    private static function testConstellations(sm:SaveManager):Void {
+        var assets:Object=ItemUtil.capturePlayerAssetSnapshot(),ext:Object=PersistedSnapshot.clone(_root._saveExt);
+        _root._saveExt.bookRun={bookId:"cf6-sting",routeId:"type61",slot:String(_root.savePath),outcome:"active",seed:17,type61Claims:{TUTORIAL:true}};
+        var recipe:Object=starRecipe(),run:Object=_root._saveExt.bookRun,bag:Object=_root.物品栏.背包;
+        for(var sn:Number=0;sn<recipe.entries.length;sn++) {
+            var name:String=recipe.entries[sn].itemName;
+            ItemUtil.itemDataDict[name]={name:name,type:"武器",use:"刀",data:{level:1,weight:0}};ItemUtil.equipmentDict[name]=true;
+        }
+        ItemUtil.itemDataDict["61计划星座机缘箱"]={name:"61计划星座机缘箱",type:"消耗品",use:"礼包",data:{level:0,weight:0}};
+        var itemUseApi:Object=org.flashNight.arki.item.ItemUseService;var oldValidator:Function=itemUseApi._contextValidator;
+        try {
+            run.type61Constellations={光剑天秤:true};run.type61Claims.TUTORIAL=true;run.seed=17;
+            var filtered:Object=org.flashNight.arki.item.Cf6ConstellationPolicy.constellationRecipe("61计划星座机缘箱",recipe);
+            check(filtered.entries.length==4 && filtered.entries[0].itemName!="光剑天秤","saved tutorial grant excludes the starting constellation after it leaves inventory");
+            check(filtered.totalWeight==30 && filtered.entries[3].weight==3,"three remaining common weapons retain exactly ten percent rare weight");
+            var locations:Array=[_root.物品栏.背包,_root.物品栏.装备栏,_root.物品栏.仓库,_root.物品栏.战备箱];
+            for(var c:Number=0;c<locations.length;c++) {
+                locations[c].remove(48);locations[c].add(48,BaseItem.create("光斧金牛",1));
+                filtered=org.flashNight.arki.item.Cf6ConstellationPolicy.constellationRecipe("61计划星座机缘箱",recipe);
+                check(filtered.entries.length==3 && filtered.totalWeight==20,"held constellation excluded in container "+c);
+                locations[c].remove(48);
+            }
+            run.type61Constellations={光剑天秤:true,光斧金牛:true,光刀狮子:true};
+            filtered=org.flashNight.arki.item.Cf6ConstellationPolicy.constellationRecipe("61计划星座机缘箱",recipe);
+            check(filtered.entries.length==2 && filtered.entries[0].itemName=="光刃摩羯" && filtered.totalWeight==10 && filtered.entries[1].weight==1,"one missing common still leaves blood sword at ten percent");
+            run.type61Constellations.光刃摩羯=true;
+            filtered=org.flashNight.arki.item.Cf6ConstellationPolicy.constellationRecipe("61计划星座机缘箱",recipe);
+            check(filtered.entries.length==5 && filtered.totalWeight==40,"exhausted common set restores duplicates without forcing a rare sword");
+            run.type61Constellations.血色光剑天秤=true;
+            filtered=org.flashNight.arki.item.Cf6ConstellationPolicy.constellationRecipe("61计划星座机缘箱",recipe);
+            check(filtered.entries.length==4 && filtered.totalWeight==4,"owned blood sword is never awarded again");
+            run.routeId="historical";
+            check(org.flashNight.arki.item.Cf6ConstellationPolicy.constellationRecipe("61计划星座机缘箱",recipe)===recipe,"other routes retain the original pack recipe");run.routeId="type61";
+            check(org.flashNight.arki.item.Cf6ConstellationPolicy.constellationRecipe("其他礼包",recipe)===recipe,"unrelated packs retain their own randomness");
+            run.type61Constellations={光剑天秤:true};
+            ItemUtil.itemDataDict["血色光剑天秤"]={name:"血色光剑天秤",type:"武器",use:"刀",data:{level:35,weight:0}};ItemUtil.equipmentDict["血色光剑天秤"]=true;
+            ItemUtil.itemDataDict["61计划星座机缘箱"].data.rewardPack={mode:"chooseOne",entries:{entry:recipe.entries}};
+            bag.remove(49);bag.add(49,BaseItem.create("61计划星座机缘箱",4));InventoryPanelService.invalidateExternalSlot("背包",49);
+            ItemUseService.setContextValidator(function():Object {return {success:true};});ItemUseService.setRandomValuesForTests([0,0,0,0,0,0]);
+            var request:Object=starRequest("type61.star.pending",3);
+            sm._configureSaveFlowForTest({flushResult:"pending"});
+            var result:Object=ItemUseService.execute("stashOpenMany",request);
+            check(!result.success && result.error=="commit_pending" && bag.getItem(49).value==1,"three star boxes consume once in the same frozen save candidate");
+            var seen:Object=_root._saveExt.bookRun.type61Constellations;
+            check(seen.光剑天秤 && seen.光斧金牛 && seen.光刀狮子 && seen.光刃摩羯 && seen.血色光剑天秤!==true,"multi-open fills all three missing common weapons without duplicates");
+            var frozen:String=new LiteJSON().stringify(seen),packed:Number=sm._getSavePhysicalStatsForTest().packGameState;
+            ItemUseService.setRandomValuesForTests([39,0]);sm._configureSaveFlowForTest({flushResult:true});
+            check(RewardStashService.resume("type61.star.pending").success && new LiteJSON().stringify(_root._saveExt.bookRun.type61Constellations)==frozen && sm._getSavePhysicalStatsForTest().packGameState==packed,"pending confirmation saves original star ledger without reroll or repack");
+            check(ItemUseService.execute("stashOpenMany",request).success && bag.getItem(49).value==1,"same star operation replays only its durable receipt");
+            var so:SharedObject=SharedObject.getLocal(String(_root.savePath));
+            check(so.data.test.ext.bookRun.type61Constellations.光刃摩羯===true,"full-save image includes the constellation ledger");
+            bag.remove(49);bag.add(49,BaseItem.create("61计划星座机缘箱",2));InventoryPanelService.invalidateExternalSlot("背包",49);
+            _root._saveExt.bookRun.type61Constellations={};
+            var prior:Object=PersistedSnapshot.clone(_root._saveExt.bookRun);
+            ItemUseService.setOpenManyFaultForTests("receipt",0);ItemUseService.setRandomValuesForTests([0,0,0,0]);
+            result=ItemUseService.execute("stashOpenMany",starRequest("type61.star.rollback",2));
+            check(!result.success && bag.getItem(49).value==2 && ObjectUtil.deepEquals(_root._saveExt.bookRun,prior) && RewardStashService.pendingOperationId()=="","unexposed failure rolls back both boxes and the star history");
+        } finally {
+            ItemUseService.setOpenManyFaultForTests("",0);ItemUseService.setRandomValuesForTests(null);
+            if(RewardStashService.pendingOperationId()!="") {sm._configureSaveFlowForTest({flushResult:true});RewardStashService.resume(RewardStashService.pendingOperationId());}
+            sm._configureSaveFlowForTest({flushResult:true});ItemUseService.setContextValidator(oldValidator);
+            ItemUtil.restorePlayerAssetSnapshot(assets);_root._saveExt=ext;
+        }
+    }
     private static function testTaskTurnIn(sm:SaveManager):Void {
         var bag:Object = _root.物品栏.背包;
         for (var b:Number = 0; b < 50; b++) bag.add(b, BaseItem.create("暂存测试装备", 2));

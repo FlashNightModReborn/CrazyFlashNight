@@ -54,7 +54,7 @@ def expected(shield=False):
     resistance = entry.find('魔法抗性')
     for child in list(resistance):
         resistance.remove(child)
-    for key,value in {'人类':20,'装甲':15}.items():
+    for key,value in {'人类':20,'装甲':15,'精英':15}.items():
         E.SubElement(resistance,key).text = str(value)
     E.SubElement(entry,'battleRecordAppearance').text = 'fixed'
     for key,value in flags.items():

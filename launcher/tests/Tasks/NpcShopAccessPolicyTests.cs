@@ -136,7 +136,8 @@ namespace CF7Launcher.Tests.Tasks
                     return materials.Contains(name) || inputs.Contains(name);
                 })).Select(x => (string)x["shopId"]).ToHashSet(StringComparer.Ordinal);
             var policy = JObject.Parse(File.ReadAllText(Path.Combine(Root, NpcShopAccessPolicy.RelativePath)));
-            Assert.Equal(31, candidates.Count);
+            var type61Nodes = new[] { "A01", "A05", "A08", "A11", "A16", "A19" };
+            Assert.Equal(31 + type61Nodes.Length, candidates.Count);
             Assert.True(candidates.SetEquals(((JObject)policy["shops"]).Properties().Select(p => p.Name)));
             var loaded = NpcShopAccessPolicy.Load(Root, Definition());
             Assert.Contains(NpcShopAccessPolicy.RelativePath, loaded.SourceHashes.Keys);
@@ -144,6 +145,14 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Contains("launcher/web/assets/tablet/contacts.json", loaded.SourceHashes.Keys);
             foreach (int level in new[] { 35, 40, 45, 55, 60 })
                 Assert.Contains($"data/shops/npcs/书中-CF6毒刺-{level}级.json", loaded.SourceHashes.Keys);
+            var projection = loaded.Project(Definition(), new JObject());
+            foreach (string node in type61Nodes)
+            {
+                string shopId = "书中-CF6六一-" + node;
+                Assert.Equal("local", policy["shops"][shopId].Value<string>("mode"));
+                Assert.False(projection.Value<bool>(shopId));
+                Assert.Contains($"data/shops/npcs/{shopId}.json", loaded.SourceHashes.Keys);
+            }
         }
     }
 }
