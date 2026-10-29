@@ -44,11 +44,11 @@
        描边 = 1px 白；C# NativeTooltipWidget PanelBg/PanelBorder 同步。
        原灰族 #999→#333 渐变（Symbol 274 基线）退役，下方依赖 grad 混色的
        scroll/shell/status token 自动落黑底。 */
-    --tt-grad-top:   rgba(0, 0, 0, 0.8);         /* 黑 + alphaMultiplier 0.8 */
-    --tt-grad-bot:   rgba(0, 0, 0, 0.8);         /* 改版后上下同色 = 平底 */
+    --tt-grad-top:   var(--tt-grad-bot);         /* 上下同色 = 平底 */
+    --tt-grad-bot:   rgba(0, 0, 0, 0.8);         /* 黑 + alphaMultiplier 0.8 */
     --tt-bg:         linear-gradient(to bottom, var(--tt-grad-top), var(--tt-grad-bot));
     --tt-status-bg:  var(--tt-grad-bot);
-    --tt-border:     1px solid #ffffff;          /* 暂定全白描边（用户 2026-10 口径） */
+    --tt-border:     1px solid var(--tt-text);   /* 暂定全白描边（用户 2026-10 口径） */
     --tt-text:       #ffffff;                    /* DOMTextAttrs fillColor=#FFFFFF */
     --tt-shadow:     none;                       /* XFL 不画阴影 */
     --tt-divider:    rgba(255, 255, 255, 0.20);
@@ -56,7 +56,7 @@
        （拿不到 rich 上的局部 token）；--tt-fade-ms 被子框的 inline style 逐层覆盖，
        数值由 tooltip-document.js fadeMsForSub 给出。C# 侧同值：SubGapBase / FadeOutMs。 */
     --tt-sub-gap:    6px;           /* NativeTooltipLayout.SubGapBase */
-    --tt-fade-ms:    500;           /* 主组淡入 = 淡出时长（用户口径 0.5s） */
+    --tt-fade-ms:    500ms;         /* 主组淡入 = 淡出时长（用户口径 0.5s） */
     --tt-icon-glow-fx: none;
     --tt-strong:     #ffffff;                    /* AS2 端 <b> 不动色，跟正文同色加粗 */
     --tt-dim:        rgba(255, 255, 255, 0.60);
@@ -456,7 +456,7 @@
     --tt-icon-glow: var(--tt-icon-glow-fx, none);
     /* 白线族：插条填充 + 弹夹行分隔线（用户 2026-10 口径：边框线条暂定都为白色）。
        插条文字 = 黑 85%（C# RailTextAlpha=217 ≈ 0.85×255）。 */
-    --tt-rail-fill: #ffffff;
+    --tt-rail-fill: var(--tt-text);
     --tt-rail-text: rgba(0, 0, 0, 0.85);
 
     display: flex;
@@ -767,7 +767,7 @@
 .flash-tt-rich,
 .flash-tt-sub-panel,
 .ntt-sub-panel {
-    animation: tt-fade-in calc(var(--tt-fade-ms) * 1ms) ease-out both;
+    animation: tt-fade-in var(--tt-fade-ms) ease-out both;
 }
 /* 减弱动效偏好：注释框直接出现，收起也不做半透明过渡（内联 transition 由 !important 撤销，
    面板仍在同一时刻消失，只是不再渐变）。 */
@@ -2127,7 +2127,7 @@
     pointer-events:none;
     background:linear-gradient(180deg, transparent 0%, rgba(0,240,255,0.06) 50%, transparent 100%);
     height:18%; opacity:0.55; /* was: opacity:0.45; mix-blend-mode:screen — A档施工 2026-04-25 */
-    animation:lb-scan 12s linear infinite;
+    animation:lb-scan 12s var(--wb-ease-linear) infinite;
 }
 .lockbox-panel::after {
     content:"// HIGH-SEC CRACKER · V3.77 · CHIPPING //  // HIGH-SEC CRACKER · V3.77 · CHIPPING //  ";
@@ -2459,8 +2459,8 @@
     flex-shrink:0;
 }
 #lockbox-sequences.result-mode .lockbox-mini-token svg {
-    width:18px !important;
-    height:18px !important;
+    width:18px;
+    height:18px;
 }
 #lockbox-sequences.result-mode .lockbox-seq-row:hover .lockbox-seq-tokens { opacity:0.95; }
 

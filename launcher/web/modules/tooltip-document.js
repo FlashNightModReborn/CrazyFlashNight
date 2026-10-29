@@ -908,7 +908,7 @@
             subIndex++;
             var subInner = runsHtml(subSec.runs) || '<br>';
             html += '<div class="flash-tt-sub-panel ntt-sub-panel"'
-                + ' style="--tt-fade-ms:' + fadeMsForSub(subIndex) + '">' + subInner + '</div>';
+                + ' style="--tt-fade-ms:' + fadeMsForSub(subIndex) + 'ms">' + subInner + '</div>';
         }
         if (opts.suffix) html += '<div class="flash-tt-suffix kshop-tt-suffix ntt-suffix">' + opts.suffix + '</div>';
         return html;

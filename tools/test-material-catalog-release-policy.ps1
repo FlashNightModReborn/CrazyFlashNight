@@ -135,7 +135,7 @@ try {
     $passRun = Invoke-Cf7MaterialProducerCheck
     Assert-Cf7MaterialPolicy ($passRun.ExitCode -eq 0) `
         "current generated closure must pass; output=$($passRun.Output)"
-    Assert-Cf7MaterialPolicy ($passRun.Output -match '\[material-catalog\] check PASS materials=224 legacy=58') `
+    Assert-Cf7MaterialPolicy ($passRun.Output -match '\[material-catalog\] check PASS materials=234 legacy=58') `
         'passing check must report the current material/legacy closure'
     Assert-Cf7MaterialPolicy ((Get-FileHash -Algorithm SHA256 -LiteralPath $dictionaryPath).Hash -eq $dictionaryHashBefore) `
         'passing --check must not rewrite the legacy dictionary'

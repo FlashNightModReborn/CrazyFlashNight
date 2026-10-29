@@ -5,7 +5,7 @@
   "entries": [
     {
       "file": "launcher/web/css/panels/foundation-rest.css",
-      "ceiling": 2,
+      "ceiling": 1,
       "classification": "migration-debt",
       "reason": "Legacy panel foundation still overrides historical inline and unlayered declarations.",
       "exitCondition": "Remove after the affected panel foundations consume shared state selectors without priority overrides."
