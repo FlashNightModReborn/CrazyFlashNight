@@ -11,7 +11,7 @@ foreach($file in @($testPath,$templatePath)){if(!(Test-Path -LiteralPath (Join-P
  -TemplateRelativePath $templatePath -SuiteRelativePaths @($testPath) `
  -SuiteFqns @('org.flashNight.arki.scene.Cf6VehicleMapIntegrationTest') `
  -AdditionalAsRelativePaths @('scripts/类定义/org/flashNight/arki/scene/Cf6MapMechanism.as','scripts/类定义/org/flashNight/arki/scene/StageManager.as','scripts/类定义/org/flashNight/arki/scene/WaveSpawner.as','scripts/类定义/org/flashNight/arki/scene/WaveSpawnWheel.as','scripts/类定义/org/flashNight/arki/scene/Cf6VehicleTestData.as') `
- -ExpectedTracePatterns @('(?m)^Cf6VehicleMapIntegrationTest Tests Passed: 51\r?$','(?m)^Cf6VehicleMapIntegrationTest Tests Failed: 0\r?$','(?m)^CF6VehicleMapEvidence: actual MapMechanism/StageManager/WaveSpawner; mocked vehicle/loader/camera/persistence-query/fade ports; no live game claim\r?$') `
+ -ExpectedTracePatterns @('(?m)^Cf6VehicleMapIntegrationTest Tests Passed: 61\r?$','(?m)^Cf6VehicleMapIntegrationTest Tests Failed: 0\r?$','(?m)^CF6VehicleMapEvidence: actual MapMechanism/StageManager/WaveSpawner; mocked vehicle/loader/camera/persistence-query/fade ports; no live game claim\r?$') `
  -SuccessSummary 'Actual Map/Stage/Wave seam only; explicit memory ports; no vehicle simulation or full-game acceptance' `
  -TimeoutSeconds $TimeoutSeconds -SkipCompile:$SkipCompile
 exit $LASTEXITCODE

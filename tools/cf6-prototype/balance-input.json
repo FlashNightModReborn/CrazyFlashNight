@@ -7,28 +7,176 @@
   "goldPlanForAssembly": "beforeFinalMerchant",
   "goldPlans": {
     "requested": [
-      {"mapId":"A01","value":15000}, {"mapId":"A02","value":20000},
-      {"mapId":"A03","value":25000}, {"mapId":"A04","value":30000},
-      {"mapId":"A05","value":40000}, {"mapId":"A06","value":50000},
-      {"mapId":"A07","value":40000}, {"mapId":"A08","value":0}, {"mapId":"A09","value":45000},
-      {"mapId":"A10","value":45000}, {"mapId":"A11","value":0},
-      {"mapId":"A12","value":50000}, {"mapId":"A13","value":60000},
-      {"mapId":"A14","value":65000}, {"mapId":"A15","value":65000},
-      {"mapId":"A16","value":0}, {"mapId":"A17","value":90000},
-      {"mapId":"A18","value":70000}, {"mapId":"A19","value":90000},
-      {"mapId":"A20","value":110000}, {"mapId":"A22","value":0}
+      {
+        "mapId": "A01",
+        "value": 15000
+      },
+      {
+        "mapId": "A02",
+        "value": 20000
+      },
+      {
+        "mapId": "A03",
+        "value": 25000
+      },
+      {
+        "mapId": "A04",
+        "value": 30000
+      },
+      {
+        "mapId": "A05",
+        "value": 40000
+      },
+      {
+        "mapId": "A06",
+        "value": 50000
+      },
+      {
+        "mapId": "A07",
+        "value": 40000
+      },
+      {
+        "mapId": "A08",
+        "value": 0
+      },
+      {
+        "mapId": "A09",
+        "value": 45000
+      },
+      {
+        "mapId": "A10",
+        "value": 45000
+      },
+      {
+        "mapId": "A11",
+        "value": 0
+      },
+      {
+        "mapId": "A12",
+        "value": 50000
+      },
+      {
+        "mapId": "A13",
+        "value": 60000
+      },
+      {
+        "mapId": "A14",
+        "value": 65000
+      },
+      {
+        "mapId": "A15",
+        "value": 65000
+      },
+      {
+        "mapId": "A16",
+        "value": 0
+      },
+      {
+        "mapId": "A17",
+        "value": 90000
+      },
+      {
+        "mapId": "A18",
+        "value": 70000
+      },
+      {
+        "mapId": "A19",
+        "value": 90000
+      },
+      {
+        "mapId": "A20",
+        "value": 110000
+      },
+      {
+        "mapId": "A22",
+        "value": 0
+      }
     ],
     "beforeFinalMerchant": [
-      {"mapId":"A01","value":15000}, {"mapId":"A02","value":20000},
-      {"mapId":"A03","value":25000}, {"mapId":"A04","value":30000},
-      {"mapId":"A05","value":40000}, {"mapId":"A06","value":50000},
-      {"mapId":"A07","value":40000}, {"mapId":"A08","value":0}, {"mapId":"A09","value":45000},
-      {"mapId":"A10","value":45000}, {"mapId":"A11","value":0},
-      {"mapId":"A12","value":50000}, {"mapId":"A13","value":60000},
-      {"mapId":"A14","value":65000}, {"mapId":"A15","value":65000},
-      {"mapId":"A16","value":0}, {"mapId":"A17","value":90000},
-      {"mapId":"A18","value":90000}, {"mapId":"A19","value":180000},
-      {"mapId":"A20","value":0}, {"mapId":"A22","value":0}
+      {
+        "mapId": "A01",
+        "value": 15000
+      },
+      {
+        "mapId": "A02",
+        "value": 20000
+      },
+      {
+        "mapId": "A03",
+        "value": 25000
+      },
+      {
+        "mapId": "A04",
+        "value": 30000
+      },
+      {
+        "mapId": "A05",
+        "value": 40000
+      },
+      {
+        "mapId": "A06",
+        "value": 50000
+      },
+      {
+        "mapId": "A07",
+        "value": 40000
+      },
+      {
+        "mapId": "A08",
+        "value": 0
+      },
+      {
+        "mapId": "A09",
+        "value": 45000
+      },
+      {
+        "mapId": "A10",
+        "value": 45000
+      },
+      {
+        "mapId": "A11",
+        "value": 0
+      },
+      {
+        "mapId": "A12",
+        "value": 50000
+      },
+      {
+        "mapId": "A13",
+        "value": 60000
+      },
+      {
+        "mapId": "A14",
+        "value": 65000
+      },
+      {
+        "mapId": "A15",
+        "value": 65000
+      },
+      {
+        "mapId": "A16",
+        "value": 0
+      },
+      {
+        "mapId": "A17",
+        "value": 90000
+      },
+      {
+        "mapId": "A18",
+        "value": 90000
+      },
+      {
+        "mapId": "A19",
+        "value": 180000
+      },
+      {
+        "mapId": "A20",
+        "value": 0
+      },
+      {
+        "mapId": "A22",
+        "value": 0
+      }
     ]
   },
   "goldPickupContract": {
@@ -40,18 +188,76 @@
     "exactCurrencyOverride": false,
     "externalReward": 0
   },
-  "commonShopItems": ["技能点","K点","强化石","普通hp药剂","普通mp药剂","大HP药剂","大MP药剂"],
+  "commonShopItems": [
+    "技能点",
+    "K点",
+    "强化石",
+    "普通hp药剂",
+    "普通mp药剂",
+    "大HP药剂",
+    "大MP药剂"
+  ],
   "merchantNodes": [
-    {"mapId":"A01","shopId":"书中-CF6毒刺-35级","title":"毒刺整备 · 初战","maxItemLevel":35,
-     "addWeapons":["M4A1科技白","M4A1战术版","AK74战术版","HKSL8EX","HKSL8GOLD"]},
-    {"mapId":"A08","shopId":"书中-CF6毒刺-40级","title":"毒刺整备 · 补充火力","maxItemLevel":40,
-     "addWeapons":["DD MK18战术版","M60E3","Desert Eagle改装版","战术版莫斯伯格590"]},
-    {"mapId":"A11","shopId":"书中-CF6毒刺-45级","title":"毒刺整备 · 进入实验区","maxItemLevel":45,
-     "addWeapons":["TTI Gen 12","AA12丧尸","SPAS12"]},
-    {"mapId":"A16","shopId":"书中-CF6毒刺-55级","title":"毒刺整备 · 重装迎战","maxItemLevel":55,
-     "addWeapons":["PKM战术版","HK416战术版","高斯枪","MG42战术版","M134暴力版","能量狙击枪","战术巴雷特","M82A1加强版"]},
-    {"mapId":"A19","shopId":"书中-CF6毒刺-60级","title":"毒刺整备 · 最后补给","maxItemLevel":60,
-     "addWeapons":["量子能量枪","战术版喷火器","紫色幻想","轻量化量子能量枪"]}
+    {
+      "mapId": "A01",
+      "shopId": "书中-CF6毒刺-35级",
+      "title": "毒刺整备 · 初战",
+      "maxItemLevel": 35,
+      "addWeapons": [
+        "M134",
+        "AK47",
+        "G36",
+        "M4A1",
+        "M4A1改",
+        "AK74",
+        "AKS74U",
+        "M249",
+        "MG42",
+        "RPG",
+        "M79式榴弹发射器",
+        "Desert Eagle",
+        "Glock 18",
+        "MP5战术版",
+        "AWP",
+        "中国88式狙击步枪改造版",
+        "AK74M"
+      ]
+    },
+    {
+      "mapId": "A08",
+      "shopId": "书中-CF6毒刺-40级",
+      "title": "毒刺整备 · 补充火力",
+      "maxItemLevel": 40,
+      "addWeapons": [
+        "WA2000",
+        "龙炎"
+      ]
+    },
+    {
+      "mapId": "A11",
+      "shopId": "书中-CF6毒刺-45级",
+      "title": "毒刺整备 · 进入实验区",
+      "maxItemLevel": 45,
+      "addWeapons": [
+        "TTI Gen 12"
+      ]
+    },
+    {
+      "mapId": "A16",
+      "shopId": "书中-CF6毒刺-55级",
+      "title": "毒刺整备 · 重装迎战",
+      "maxItemLevel": 55,
+      "addWeapons": [
+        "能量狙击枪"
+      ]
+    },
+    {
+      "mapId": "A19",
+      "shopId": "书中-CF6毒刺-60级",
+      "title": "毒刺整备 · 最后补给",
+      "maxItemLevel": 60,
+      "addWeapons": []
+    }
   ],
   "shopRules": {
     "cumulativeCatalog": true,
@@ -63,21 +269,81 @@
     "freeSourcesCountedAsCash": false,
     "guaranteedSaleIncome": 0,
     "freeChoicePools": 5,
-    "externalSPGoldK": 0
+    "externalSPGoldK": 0,
+    "weaponAcquisition": "Only weapons with an existing unconditional non-book gold store; K-only, craft-only and drop-only weapons retain those channels."
   },
   "shoppingRoute": [
-    {"mapId":"A01","purchaseWeapon":null,"ammoWeapon":"M4A1战术版","ammoPacks":24,"largeHP":6,"largeMP":4,"secondaryEnhancementTarget":5},
-    {"mapId":"A08","purchaseWeapon":"DD MK18战术版","ammoWeapon":"DD MK18战术版","ammoPacks":24,"largeHP":6,"largeMP":4,"secondaryEnhancementTarget":5},
-    {"mapId":"A11","purchaseWeapon":"SPAS12","ammoWeapon":"SPAS12","ammoPacks":24,"largeHP":6,"largeMP":4,"secondaryEnhancementTarget":5},
-    {"mapId":"A16","purchaseWeapon":"PKM战术版","ammoWeapon":"PKM战术版","ammoPacks":12,"largeHP":8,"largeMP":4,"secondaryEnhancementTarget":5},
-    {"mapId":"A19","purchaseWeapon":"量子能量枪","ammoWeapon":"量子能量枪","ammoPacks":4,"largeHP":10,"largeMP":4,"secondaryEnhancementTarget":5}
+    {
+      "mapId": "A01",
+      "purchaseWeapon": null,
+      "ammoWeapon": "M4A1战术版",
+      "ammoPacks": 24,
+      "largeHP": 6,
+      "largeMP": 4,
+      "secondaryEnhancementTarget": 5
+    },
+    {
+      "mapId": "A08",
+      "purchaseWeapon": null,
+      "ammoWeapon": "M4A1战术版",
+      "ammoPacks": 24,
+      "largeHP": 6,
+      "largeMP": 4,
+      "secondaryEnhancementTarget": 5
+    },
+    {
+      "mapId": "A11",
+      "purchaseWeapon": null,
+      "ammoWeapon": "M4A1战术版",
+      "ammoPacks": 24,
+      "largeHP": 6,
+      "largeMP": 4,
+      "secondaryEnhancementTarget": 5
+    },
+    {
+      "mapId": "A16",
+      "purchaseWeapon": null,
+      "ammoWeapon": "M4A1战术版",
+      "ammoPacks": 12,
+      "largeHP": 8,
+      "largeMP": 4,
+      "secondaryEnhancementTarget": 5
+    },
+    {
+      "mapId": "A19",
+      "purchaseWeapon": "能量狙击枪",
+      "ammoWeapon": "能量狙击枪",
+      "ammoPacks": 4,
+      "largeHP": 10,
+      "largeMP": 4,
+      "secondaryEnhancementTarget": 5
+    }
   ],
   "stressPurchases": [
-    {"mapId":"A08","weapon":"M60E3","ammoPacks":12,"largeHP":6,"largeMP":4,"secondaryEnhancementTarget":5},
-    {"mapId":"A11","weapon":"AA12丧尸","ammoPacks":24,"largeHP":6,"largeMP":4,"secondaryEnhancementTarget":5},
-    {"mapId":"A16","weapon":"MG42战术版","ammoPacks":12,"largeHP":8,"largeMP":4,"secondaryEnhancementTarget":5},
-    {"mapId":"A16","weapon":"高斯枪","ammoPacks":6,"largeHP":8,"largeMP":4,"secondaryEnhancementTarget":5},
-    {"mapId":"A19","weapon":"战术版喷火器","ammoPacks":12,"largeHP":10,"largeMP":4,"secondaryEnhancementTarget":5}
+    {
+      "mapId": "A08",
+      "weapon": "龙炎",
+      "ammoPacks": 8,
+      "largeHP": 6,
+      "largeMP": 4,
+      "secondaryEnhancementTarget": 5
+    },
+    {
+      "mapId": "A11",
+      "weapon": "TTI Gen 12",
+      "ammoPacks": 8,
+      "largeHP": 6,
+      "largeMP": 4,
+      "secondaryEnhancementTarget": 5
+    },
+    {
+      "mapId": "A16",
+      "weapon": "能量狙击枪",
+      "ammoPacks": 8,
+      "largeHP": 6,
+      "largeMP": 4,
+      "secondaryEnhancementTarget": 5
+    }
   ],
   "modelBoundaries": [
     "This is a static nominal-cash affordability model, not survival or weapon balance acceptance.",

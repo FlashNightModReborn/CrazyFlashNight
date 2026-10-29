@@ -1,0 +1,1257 @@
+{
+  "schema": "cf6-type61-source.v1",
+  "title": "毒刺行动 · 61计划",
+  "actor": {
+    "name": "61式试验员",
+    "gender": "男",
+    "height": 185,
+    "face": "男变装-基本脸型",
+    "hair": "",
+    "level": 35,
+    "experience": 17372868,
+    "equipment": [
+      {
+        "slot": "头部装备",
+        "name": "61式头部装甲",
+        "enhancement": 1
+      },
+      {
+        "slot": "上装装备",
+        "name": "61式胸甲",
+        "enhancement": 1
+      },
+      {
+        "slot": "下装装备",
+        "name": "61式腿甲",
+        "enhancement": 1
+      },
+      {
+        "slot": "手部装备",
+        "name": "61式手甲",
+        "enhancement": 1
+      },
+      {
+        "slot": "脚部装备",
+        "name": "61式装甲鞋",
+        "enhancement": 1
+      },
+      {
+        "slot": "颈部装备",
+        "name": "战斗狂人军牌",
+        "enhancement": 1
+      }
+    ],
+    "skills": [
+      {
+        "name": "枪械攻击",
+        "level": 10
+      },
+      {
+        "name": "枪械师",
+        "level": 5
+      },
+      {
+        "name": "冲击连携",
+        "level": 3
+      },
+      {
+        "name": "移动射击",
+        "level": 10
+      },
+      {
+        "name": "翻滚换弹",
+        "level": 1
+      },
+      {
+        "name": "战术目镜",
+        "level": 1
+      },
+      {
+        "name": "追猎射击",
+        "level": 1
+      },
+      {
+        "name": "死亡绽放",
+        "level": 1
+      },
+      {
+        "name": "火力支援",
+        "level": 1
+      },
+      {
+        "name": "兴奋剂",
+        "level": 5
+      },
+      {
+        "name": "铁布衫",
+        "level": 5
+      },
+      {
+        "name": "独行者",
+        "level": 5
+      },
+      {
+        "name": "小跳",
+        "level": 1
+      },
+      {
+        "name": "闪现",
+        "level": 1
+      },
+      {
+        "name": "刀剑攻击",
+        "level": 1
+      },
+      {
+        "name": "剑气释放",
+        "level": 1
+      },
+      {
+        "name": "铁匠",
+        "level": 1
+      }
+    ],
+    "quickSkills": [
+      "移动射击",
+      "小跳",
+      "闪现",
+      "翻滚换弹",
+      "追猎射击",
+      "战术目镜",
+      "死亡绽放",
+      "火力支援",
+      "兴奋剂",
+      "铁布衫"
+    ]
+  },
+  "startingMoney": 30000,
+  "startingSkillPoints": 1050,
+  "starterMainChoices": [
+    "M4A1战术版",
+    "AK74M",
+    "HKSL8EX"
+  ],
+  "blockedSkills": [
+    "铁匠",
+    "口才",
+    "驾驶",
+    "烹饪",
+    "解密"
+  ],
+  "enhancementCaps": [
+    {
+      "mapId": "TUTORIAL",
+      "cap": 5
+    },
+    {
+      "mapId": "A08",
+      "cap": 7
+    },
+    {
+      "mapId": "A14",
+      "cap": 9
+    },
+    {
+      "mapId": "A16",
+      "cap": 11
+    }
+  ],
+  "checkpoints": [
+    {
+      "mapId": "A01",
+      "level": 36,
+      "money": 35000,
+      "kpoints": 0,
+      "stones": 18,
+      "skillPoints": 0
+    },
+    {
+      "mapId": "A02",
+      "level": 37,
+      "money": 50000,
+      "kpoints": 3000,
+      "stones": 62,
+      "skillPoints": 0
+    },
+    {
+      "mapId": "A03",
+      "level": 38,
+      "money": 65000,
+      "kpoints": 3000,
+      "stones": 100,
+      "skillPoints": 0
+    },
+    {
+      "mapId": "A04",
+      "level": 39,
+      "money": 80000,
+      "kpoints": 6000,
+      "stones": 170,
+      "skillPoints": 0
+    },
+    {
+      "mapId": "A05",
+      "level": 40,
+      "money": 90000,
+      "kpoints": 14000,
+      "stones": 200,
+      "skillPoints": 240
+    },
+    {
+      "mapId": "A06",
+      "level": 41,
+      "money": 120000,
+      "kpoints": 4000,
+      "stones": 350,
+      "skillPoints": 0
+    },
+    {
+      "mapId": "A07",
+      "level": 42,
+      "money": 100000,
+      "kpoints": 0,
+      "stones": 200,
+      "skillPoints": 0
+    },
+    {
+      "mapId": "A08",
+      "level": 43,
+      "money": 130000,
+      "kpoints": 7000,
+      "stones": 400,
+      "skillPoints": 320
+    },
+    {
+      "mapId": "A09",
+      "level": 44,
+      "money": 150000,
+      "kpoints": 7000,
+      "stones": 500,
+      "skillPoints": 0
+    },
+    {
+      "mapId": "A10",
+      "level": 45,
+      "money": 650000,
+      "kpoints": 34000,
+      "stones": 500,
+      "skillPoints": 0
+    },
+    {
+      "mapId": "A11",
+      "level": 46,
+      "money": 0,
+      "kpoints": 0,
+      "stones": 500,
+      "skillPoints": 320
+    },
+    {
+      "mapId": "A12",
+      "level": 48,
+      "money": 300000,
+      "kpoints": 0,
+      "stones": 800,
+      "skillPoints": 0
+    },
+    {
+      "mapId": "A13",
+      "level": 49,
+      "money": 350000,
+      "kpoints": 5000,
+      "stones": 700,
+      "skillPoints": 0
+    },
+    {
+      "mapId": "A14",
+      "level": 50,
+      "money": 350000,
+      "kpoints": 4000,
+      "stones": 700,
+      "skillPoints": 360
+    },
+    {
+      "mapId": "A15",
+      "level": 52,
+      "money": 400000,
+      "kpoints": 4000,
+      "stones": 800,
+      "skillPoints": 0
+    },
+    {
+      "mapId": "A16",
+      "level": 55,
+      "money": 650000,
+      "kpoints": 9000,
+      "stones": 1500,
+      "skillPoints": 400
+    },
+    {
+      "mapId": "A17",
+      "level": 56,
+      "money": 250000,
+      "kpoints": 0,
+      "stones": 500,
+      "skillPoints": 0
+    },
+    {
+      "mapId": "A18",
+      "level": 58,
+      "money": 450000,
+      "kpoints": 0,
+      "stones": 1000,
+      "skillPoints": 0
+    },
+    {
+      "mapId": "A19",
+      "level": 60,
+      "money": 500000,
+      "kpoints": 0,
+      "stones": 1000,
+      "skillPoints": 0
+    }
+  ],
+  "materialDeliveries": {
+    "A02": [
+      {
+        "name": "传感器",
+        "count": 4
+      },
+      {
+        "name": "高耐力橡胶",
+        "count": 4
+      }
+    ],
+    "A03": [
+      {
+        "name": "传感器",
+        "count": 3
+      },
+      {
+        "name": "高耐力橡胶",
+        "count": 3
+      }
+    ],
+    "A04": [
+      {
+        "name": "传感器",
+        "count": 3
+      },
+      {
+        "name": "高耐力橡胶",
+        "count": 3
+      },
+      {
+        "name": "红外夜视仪",
+        "count": 1
+      }
+    ]
+  },
+  "medicineDeliveries": {
+    "TUTORIAL": [
+      {
+        "name": "大HP药剂",
+        "count": 6
+      },
+      {
+        "name": "大MP药剂",
+        "count": 4
+      },
+      {
+        "name": "狻猊·一型",
+        "count": 2
+      },
+      {
+        "name": "囚牛·一型",
+        "count": 1
+      },
+      {
+        "name": "净化药剂",
+        "count": 1
+      },
+      {
+        "name": "狴犴·零型",
+        "count": 2
+      },
+      {
+        "name": "睚眦·一型",
+        "count": 1
+      },
+      {
+        "name": "螭吻·一型",
+        "count": 1
+      }
+    ],
+    "A04": [
+      {
+        "name": "大HP药剂",
+        "count": 4
+      },
+      {
+        "name": "大MP药剂",
+        "count": 3
+      },
+      {
+        "name": "狻猊·二型",
+        "count": 2
+      },
+      {
+        "name": "囚牛·二型",
+        "count": 1
+      },
+      {
+        "name": "净化药剂",
+        "count": 1
+      },
+      {
+        "name": "狴犴·零型",
+        "count": 2
+      },
+      {
+        "name": "睚眦·二型",
+        "count": 2
+      },
+      {
+        "name": "螭吻·二型",
+        "count": 2
+      }
+    ],
+    "A08": [
+      {
+        "name": "大HP药剂",
+        "count": 4
+      },
+      {
+        "name": "大MP药剂",
+        "count": 3
+      },
+      {
+        "name": "狻猊·二型",
+        "count": 2
+      },
+      {
+        "name": "囚牛·二型",
+        "count": 1
+      },
+      {
+        "name": "净化药剂",
+        "count": 1
+      },
+      {
+        "name": "狴犴·零型",
+        "count": 2
+      },
+      {
+        "name": "睚眦·二型",
+        "count": 2
+      },
+      {
+        "name": "螭吻·二型",
+        "count": 2
+      }
+    ],
+    "A12": [
+      {
+        "name": "大HP药剂",
+        "count": 4
+      },
+      {
+        "name": "大MP药剂",
+        "count": 3
+      },
+      {
+        "name": "狻猊·二型",
+        "count": 2
+      },
+      {
+        "name": "囚牛·二型",
+        "count": 1
+      },
+      {
+        "name": "净化药剂",
+        "count": 1
+      },
+      {
+        "name": "狴犴·零型",
+        "count": 2
+      },
+      {
+        "name": "睚眦·二型",
+        "count": 2
+      },
+      {
+        "name": "螭吻·二型",
+        "count": 2
+      }
+    ],
+    "A16": [
+      {
+        "name": "大HP药剂",
+        "count": 7
+      },
+      {
+        "name": "大MP药剂",
+        "count": 4
+      },
+      {
+        "name": "狻猊·二型",
+        "count": 3
+      },
+      {
+        "name": "囚牛·二型",
+        "count": 2
+      },
+      {
+        "name": "净化药剂",
+        "count": 2
+      },
+      {
+        "name": "狴犴·零型",
+        "count": 3
+      },
+      {
+        "name": "睚眦·二型",
+        "count": 2
+      },
+      {
+        "name": "螭吻·二型",
+        "count": 2
+      }
+    ],
+    "A19": [
+      {
+        "name": "大HP药剂",
+        "count": 7
+      },
+      {
+        "name": "大MP药剂",
+        "count": 4
+      },
+      {
+        "name": "狻猊·三型",
+        "count": 3
+      },
+      {
+        "name": "囚牛·三型",
+        "count": 2
+      },
+      {
+        "name": "净化药剂",
+        "count": 2
+      },
+      {
+        "name": "狴犴·零型",
+        "count": 3
+      },
+      {
+        "name": "睚眦·三型",
+        "count": 2
+      },
+      {
+        "name": "螭吻·三型",
+        "count": 2
+      }
+    ]
+  },
+  "ammoDeliveries": {
+    "TUTORIAL": [
+      {
+        "name": "突击步枪通用弹药",
+        "count": 8
+      },
+      {
+        "name": "冲锋枪达姆弹弹药",
+        "count": 4
+      },
+      {
+        "name": "榴弹弹药",
+        "count": 2
+      }
+    ],
+    "A04": [
+      {
+        "name": "突击步枪通用弹药",
+        "count": 8
+      },
+      {
+        "name": "冲锋枪达姆弹弹药",
+        "count": 4
+      },
+      {
+        "name": "榴弹弹药",
+        "count": 2
+      }
+    ],
+    "A08": [
+      {
+        "name": "突击步枪通用弹药",
+        "count": 8
+      },
+      {
+        "name": "冲锋枪达姆弹弹药",
+        "count": 4
+      },
+      {
+        "name": "榴弹弹药",
+        "count": 2
+      }
+    ],
+    "A11": [
+      {
+        "name": "冲锋枪钢芯穿甲弹",
+        "count": 12
+      }
+    ],
+    "A12": [
+      {
+        "name": "冲锋枪钢芯穿甲弹",
+        "count": 4
+      },
+      {
+        "name": "榴弹弹药",
+        "count": 2
+      }
+    ],
+    "A16": [
+      {
+        "name": "机枪贫铀穿甲弹",
+        "count": 4
+      },
+      {
+        "name": "冲锋枪钢芯穿甲弹",
+        "count": 4
+      },
+      {
+        "name": "能量电池",
+        "count": 3
+      },
+      {
+        "name": "榴弹弹药",
+        "count": 2
+      }
+    ],
+    "A19": [
+      {
+        "name": "机枪贫铀穿甲弹",
+        "count": 4
+      },
+      {
+        "name": "冲锋枪钢芯穿甲弹",
+        "count": 4
+      },
+      {
+        "name": "能量电池",
+        "count": 3
+      },
+      {
+        "name": "榴弹弹药",
+        "count": 2
+      }
+    ]
+  },
+  "ammoCatalog": [
+    "00号鹿弹",
+    "12号霰弹弹药",
+    "冲锋枪达姆弹弹药",
+    "冲锋枪通用弹药",
+    "冲锋枪钢芯穿甲弹",
+    "机枪贫铀穿甲弹",
+    "榴弹弹药",
+    "火焰喷射器燃料罐",
+    "狙击步枪通用弹药",
+    "突击步枪通用弹药",
+    "突击步枪钨芯穿甲弹",
+    "能量电池",
+    "马格南手枪弹药"
+  ],
+  "reviveNodes": [
+    "TUTORIAL",
+    "A08",
+    "A16",
+    "A19"
+  ],
+  "ordinaryConstellations": [
+    "光剑天秤",
+    "光斧金牛",
+    "光刀狮子",
+    "光刃摩羯"
+  ],
+  "bloodSwordNodes": [
+    "A04",
+    "A08",
+    "A12",
+    "A16"
+  ],
+  "bloodSwordChance": 10,
+  "titaniumUpgrade": {
+    "moneyPerPiece": 100000,
+    "kpointsPerPiece": 9000,
+    "unlockNode": "A11"
+  },
+  "fieldSupplies": [
+    {
+      "map": "A01",
+      "wave": 1,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A01",
+      "wave": 2,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A01",
+      "wave": 3,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A01",
+      "wave": 4,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A02",
+      "wave": 1,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A02",
+      "wave": 2,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A02",
+      "wave": 3,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A03",
+      "wave": 1,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A03",
+      "wave": 2,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A03",
+      "wave": 3,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A04",
+      "wave": 1,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A04",
+      "wave": 2,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A04",
+      "wave": 3,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A04",
+      "wave": 4,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A05",
+      "wave": 1,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A05",
+      "wave": 2,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A05",
+      "wave": 3,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A06",
+      "wave": 1,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A06",
+      "wave": 2,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A06",
+      "wave": 3,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A09",
+      "wave": 1,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A09",
+      "wave": 2,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A09",
+      "wave": 3,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A10",
+      "wave": 1,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A11",
+      "wave": 1,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A11",
+      "wave": 2,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A11",
+      "wave": 3,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A12",
+      "wave": 1,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A12",
+      "wave": 2,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A12",
+      "wave": 3,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A12",
+      "wave": 4,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A13",
+      "wave": 1,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A14",
+      "wave": 1,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A14",
+      "wave": 2,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A14",
+      "wave": 3,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A14",
+      "wave": 4,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A15",
+      "wave": 1,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A15",
+      "wave": 2,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A15",
+      "wave": 3,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A17",
+      "wave": 1,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A17",
+      "wave": 2,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A17",
+      "wave": 3,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A17",
+      "wave": 4,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A18",
+      "wave": 1,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A18",
+      "wave": 2,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A18",
+      "wave": 3,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A18",
+      "wave": 4,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A19",
+      "wave": 1,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A19",
+      "wave": 2,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A19",
+      "wave": 3,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A19",
+      "wave": 4,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A19",
+      "wave": 5,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A20",
+      "wave": 1,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A20",
+      "wave": 2,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A20",
+      "wave": 3,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A20",
+      "wave": 4,
+      "phase": "primary",
+      "high": false
+    },
+    {
+      "map": "A20",
+      "wave": 5,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A20",
+      "wave": 6,
+      "phase": "primary",
+      "high": true
+    },
+    {
+      "map": "A20",
+      "wave": 6,
+      "phase": "robot",
+      "high": true
+    }
+  ],
+  "elevatorKeep": {
+    "A10": [
+      0,
+      3,
+      9,
+      11
+    ],
+    "A13": [
+      0
+    ]
+  },
+  "acquisition": {
+    "weaponNodes": {
+      "M4A1科技白": "A01",
+      "M4A1战术版": "A01",
+      "AK74战术版": "A01",
+      "HKSL8EX": "A01",
+      "HKSL8GOLD": "A01",
+      "DD MK18战术版": "A08",
+      "M60E3": "A08",
+      "Desert Eagle改装版": "A08",
+      "战术版莫斯伯格590": "A08",
+      "AA12丧尸": "A11",
+      "SPAS12": "A11",
+      "PKM战术版": "A16",
+      "HK416战术版": "A16",
+      "高斯枪": "A16",
+      "MG42战术版": "A16",
+      "M134暴力版": "A16",
+      "战术巴雷特": "A11",
+      "M82A1加强版": "A16",
+      "量子能量枪": "A19",
+      "战术版喷火器": "A19",
+      "紫色幻想": "A19",
+      "轻量化量子能量枪": "A19",
+      "SVD": "A01",
+      "钛合金P90": "A11",
+      "QJZ171": "A08",
+      "中国88式狙击步枪改造版": "A01",
+      "M134": "A01"
+    },
+    "pluginNodes": {
+      "A01": [
+        "弹簧",
+        "螺丝套件",
+        "战术导轨",
+        "可充锂电池",
+        "复合式军用塑料",
+        "强化金属管",
+        "高耐力橡胶",
+        "烈性火药",
+        "高强度合金",
+        "枪械内构强化套件",
+        "战术背带",
+        "手柄皮",
+        "绳扣穿孔片",
+        "辅助握持板",
+        "指骨撑架",
+        "骨芯颅印",
+        "强化柄芯",
+        "M203榴弹发射器",
+        "下挂霰弹枪",
+        "下挂冲锋枪",
+        "下挂镇暴装置",
+        "增效剂",
+        "上色涂料",
+        "小型液晶屏",
+        "碳纤维布料",
+        "军用帆布",
+        "可塑式钢板"
+      ],
+      "A05": [
+        "战术鱼骨零件",
+        "手枪卡宾转换套件",
+        "下挂喷火器",
+        "下挂微型导弹发射器",
+        "下挂转轮霰弹枪",
+        "下挂金属风暴榴弹发射器",
+        "战术握把",
+        "加长弹匣",
+        "突击型光学瞄具",
+        "镭射瞄准具",
+        "KM型消声器",
+        "非栓式机构",
+        "水冷机构",
+        "传动装置",
+        "骨约晨星",
+        "燕归沉",
+        "环格护手",
+        "矩锁多点挂槽板",
+        "赤旌熔脊柄",
+        "震动吸收器",
+        "拳演破极环",
+        "腿演迅驰环",
+        "动力液压杆",
+        "黑爪扩张弹",
+        "磁稳贯穿弹",
+        "汲丝虹吸匣"
+      ],
+      "A11": [
+        "纳米执行单元",
+        "灰蛊蚀刻霰弹",
+        "灰蛊裂隙弹",
+        "绯红忆弦轮",
+        "电脑芯片",
+        "传感器",
+        "能量干扰盾",
+        "下挂铁血肩炮",
+        "磁暴射线弹",
+        "磁暴射线弹-强化",
+        "光棱射线弹",
+        "光棱射线弹-强化",
+        "辉光射线弹",
+        "辉光射线弹-强化",
+        "光谱射线弹",
+        "光谱射线弹-强化",
+        "谐振波射线弹",
+        "谐振波射线弹-强化",
+        "热能射线弹",
+        "热能射线弹-强化",
+        "涡旋射线弹",
+        "涡旋射线弹-强化",
+        "波能射线弹",
+        "波能射线弹-强化",
+        "等离子射线弹",
+        "等离子射线弹-强化"
+      ]
+    },
+    "necklaceNodes": {
+      "A01": [
+        "枪械大加成项链",
+        "冷兵器大加成项链",
+        "空手大加成项链"
+      ],
+      "A16": [
+        "永恒之光",
+        "闪客之光"
+      ]
+    }
+  },
+  "throwableDeliveries": {
+    "TUTORIAL": [
+      {
+        "name": "高爆手雷",
+        "count": 6
+      },
+      {
+        "name": "燃烧弹",
+        "count": 4
+      }
+    ],
+    "A04": [
+      {
+        "name": "BBPLAYER手雷",
+        "count": 6
+      },
+      {
+        "name": "寒铁镖",
+        "count": 24
+      }
+    ],
+    "A08": [
+      {
+        "name": "BBPLAYER手雷",
+        "count": 8
+      },
+      {
+        "name": "翼炎钉针",
+        "count": 40
+      }
+    ],
+    "A12": [
+      {
+        "name": "BBPLAYER手雷",
+        "count": 8
+      },
+      {
+        "name": "导弹信标",
+        "count": 3
+      }
+    ],
+    "A16": [
+      {
+        "name": "战术核弹手雷",
+        "count": 2
+      },
+      {
+        "name": "BBPLAYER手雷",
+        "count": 8
+      }
+    ],
+    "A19": [
+      {
+        "name": "战术核弹手雷",
+        "count": 3
+      },
+      {
+        "name": "BBPLAYER手雷",
+        "count": 10
+      }
+    ]
+  },
+  "throwableShopNodes": {
+    "高爆手雷": "A01",
+    "燃烧弹": "A01",
+    "BBPLAYER手雷": "A01",
+    "寒铁镖": "A01",
+    "翼炎钉针": "A05",
+    "导弹信标": "A08",
+    "战术核弹手雷": "A16"
+  }
+}

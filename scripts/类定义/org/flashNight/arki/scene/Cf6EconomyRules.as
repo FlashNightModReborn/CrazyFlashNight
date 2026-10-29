@@ -43,6 +43,7 @@ class org.flashNight.arki.scene.Cf6EconomyRules {
     }
     public static function valid(config:Object):Boolean {
         var economy:Object=config.economy;
+        var type61:Boolean=config.routeId === "type61";
         if (economy == null) return true;
         if (!list(economy.randomWeapons,20) || !list(economy.eliteWeapons,5) || !list(economy.choices,20)) return false;
         var quotaMaps:Object={E1:"A09",E2:"A13",E3:"A14",E4:"A17",E5:"A19"};
@@ -53,8 +54,10 @@ class org.flashNight.arki.scene.Cf6EconomyRules {
             for (var e:Number=0;e<enemies.length;e++) {
                 var enemy:Object=enemies[e], quota=enemy.Parameters.cf6EliteQuota;
                 if (quota == undefined) continue;
+                var soldier:Boolean=enemy.Type==="兵种466" || enemy.Type==="兵种467"
+                    || type61 && (enemy.Type==="兵种478" || enemy.Type==="兵种479" || enemy.Type==="兵种480" || enemy.Type==="兵种481");
                 if (quotaMaps[quota] !== map.id || markers[quota] != undefined
-                        || enemy.Quantity !== 1 || (enemy.Type !== "兵种466" && enemy.Type !== "兵种467")) return false;
+                        || enemy.Quantity !== 1 || !soldier) return false;
                 markers[quota]=enemy;
             }
         }
@@ -62,7 +65,7 @@ class org.flashNight.arki.scene.Cf6EconomyRules {
             var row:Object=economy.eliteWeapons[q];
             if (quotaMaps[row.quota] !== row.mapId || markers[row.quota] == undefined
                     || used[row.quota] === true || !anchor(maps["m."+row.mapId])
-                    || !names(row,row.quota === "E1" ? 1 : 2,reserved,true)) return false;
+                    || !names(row,(row.quota === "E1" || row.quota === "E4") ? 1 : 2,reserved,true)) return false;
             used[row.quota]=true;
         }
         for (var marker:String in markers) if (used[marker] !== true) return false;
@@ -128,6 +131,7 @@ class org.flashNight.arki.scene.Cf6EconomyRules {
             result.push(org.flashNight.gesh.object.PersistedSnapshot.clone(config.maps[copied]));
         if (config.economy == null) return result;
         var economy:Object=config.economy;
+        var type61:Boolean=config.routeId === "type61";
         var state:Object={value:whole(seed,1,2147483646) ? seed : 1};
         for (var m:Number=0;m<result.length;m++) {
             var map:Object=result[m], stage:Object=map.stage;
@@ -142,8 +146,10 @@ class org.flashNight.arki.scene.Cf6EconomyRules {
                 if (row.mapId !== map.id) continue;
                 var chosen:Object=select(state,row.choices);
                 var count:Number=chosen.weaponCount === undefined ? 1 : chosen.weaponCount;
-                for (var instance:Number=0;instance<count;instance++) pickups.push({Name:chosen.weapon,Value:1,x:x,y:y});
-                pickups.push({Name:chosen.ammo,Value:chosen.ammoCount,x:x,y:y});
+                var replacement=type61 && map.id === "A04" ? config.type61.a04ReplacementPacks[chosen.weapon] : undefined;
+                if (typeof replacement == "string" && replacement != "") pickups.push({Name:replacement,Value:1,x:x,y:y});
+                else for (var instance:Number=0;instance<count;instance++) pickups.push({Name:chosen.weapon,Value:1,x:x,y:y});
+                if (!type61) pickups.push({Name:chosen.ammo,Value:chosen.ammoCount,x:x,y:y});
             }
             for (var q:Number=0;q<economy.eliteWeapons.length;q++) {
                 row=economy.eliteWeapons[q];
@@ -155,12 +161,20 @@ class org.flashNight.arki.scene.Cf6EconomyRules {
                     if (enemy.Parameters.cf6EliteQuota !== row.quota) continue;
                     enemy.Parameters.长枪=chosen.weapon+"#1";
                     enemy.Parameters.不掉装备=true;
-                    enemy.Parameters.掉落物=[drop(chosen.weapon,1),drop(chosen.ammo,chosen.ammoCount)];
+                    enemy.Parameters.掉落物=[drop(chosen.weapon,1)];
+                    if (!type61) enemy.Parameters.掉落物.push(drop(chosen.ammo,chosen.ammoCount));
                 }
             }
             for (var c:Number=0;c<economy.choices.length;c++) {
                 row=economy.choices[c];
                 if (row.mapId === map.id) pickups.push({Name:row.itemName,Value:1,x:x,y:y});
+            }
+            if (type61) {
+                var carriers:Array=allEnemies(map);
+                for (var t:Number=0;t<carriers.length;t++) if (carriers[t].Parameters.cf6Type61MidMod === true) {
+                    if (!(carriers[t].Parameters.掉落物 instanceof Array)) carriers[t].Parameters.掉落物=[];
+                    carriers[t].Parameters.掉落物.push(drop(String(select(state,config.type61.midMods)),1));
+                }
             }
         }
         return result;

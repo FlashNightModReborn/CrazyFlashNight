@@ -117,14 +117,16 @@ function browserInjectionSource() {
         }
         function targetOf(event) {
             const target = event.target && event.target.closest
-                ? event.target.closest('button') : null;
+                ? event.target.closest('button,select[data-action="route"]') : null;
             if (!target) return null;
             const rect = target.getBoundingClientRect();
             const style = window.getComputedStyle(target);
-            const hit = document.elementFromPoint(event.clientX, event.clientY);
+            const px=Number.isFinite(event.clientX)?event.clientX:rect.left+rect.width/2;
+            const py=Number.isFinite(event.clientY)?event.clientY:rect.top+rect.height/2;
+            const hit = document.elementFromPoint(px, py);
             return { selector:target.className ? 'button.'
                 + String(target.className).trim().replace(/\s+/g, '.') : 'button',
-                className:String(target.className || ''),
+                className:String(target.className || ''),value:String(target.value || ''),action:String(target.getAttribute('data-action') || ''),
                 projectId:String(target.getAttribute('data-project-id') || ''),
                 text:String(target.textContent || '').trim().slice(0, 160),
                 visible:target.isConnected && rect.width > 0 && rect.height > 0
@@ -148,13 +150,19 @@ function browserInjectionSource() {
                 target:targetOf(event), panelState:panelState(),
                 pageTime:performance.now() });
         };
+        const changeHandler=function(event) {
+            if(event.target?.matches('select[data-action="route"]'))emit({kind:'dom_input',eventType:'change',isTrusted:event.isTrusted===true,
+                target:targetOf(event),panelState:panelState(),pageTime:performance.now()});
+        };
         bridge.send = bridgeWrapper;
         webview.addEventListener('message', webviewHandler);
         document.addEventListener('click', clickHandler, true);
+        document.addEventListener('change', changeHandler, true);
         window[options.markerName] = { uninstall:function() {
             if (bridge.send === bridgeWrapper) bridge.send = originalSend;
             webview.removeEventListener('message', webviewHandler);
             document.removeEventListener('click', clickHandler, true);
+            document.removeEventListener('change', changeHandler, true);
             delete window[options.markerName];
             return true;
         } };
@@ -175,7 +183,7 @@ async function attachPassiveObserver(options) {
             || binding.port > 65535) {
         throw new Error('cf6 observer requires exact candidate PID and transcript');
     }
-    SourceClosure.assertUnchanged(closure, SourceClosure.capture(ROOT));
+    SourceClosure.assertUnchanged(closure, SourceClosure.capture(ROOT,closure.routeId));
     const connected = await connectExactTarget(binding.port, OVERLAY_URL,
         options.timeoutMs || 30000, options.pollMs || 250);
     const client = connected.client;

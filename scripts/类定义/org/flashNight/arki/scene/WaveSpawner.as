@@ -239,6 +239,7 @@ class org.flashNight.arki.scene.WaveSpawner {
         }
 
         // 发布波次开始事件
+        org.flashNight.arki.scene.Cf6Type61Service.queueField(gameworld,currentWave+1,"primary");
         gameworld.dispatcher.publish("WaveStarted", currentWave);
     }
 
@@ -287,6 +288,7 @@ class org.flashNight.arki.scene.WaveSpawner {
     public function finishWave():Void{
         if(!isActive || isFinished) return;
         // 发布波次结束事件
+        org.flashNight.arki.scene.Cf6Type61Service.finishField(gameworld,currentWave+1);
         gameworld.dispatcher.publish("WaveFinished", currentWave);
         currentWave++;
         if (currentWave < totalWave){

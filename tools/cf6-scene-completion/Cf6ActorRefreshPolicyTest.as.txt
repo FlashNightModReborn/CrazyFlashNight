@@ -1,0 +1,113 @@
+import org.flashNight.arki.scene.*;
+import org.flashNight.arki.pause.PauseManager;
+import org.flashNight.gesh.depth.DepthManager;
+
+/** Disposable AVM1 actors; exercises the real depth operation used by equipment reinitialization. */
+class org.flashNight.arki.scene.Cf6ActorRefreshPolicyTest {
+    private static var passed:Number,failed:Number,serial:Number=0;
+    private static function check(ok:Boolean,label:String):Void {
+        if(ok)passed++;else{failed++;trace("[FAIL] Cf6ActorRefreshPolicy: "+label);}
+    }
+    private static function idle():Void {}
+    private static function fixture(mode:String):Object {
+        var world:MovieClip=_root.createEmptyMovieClip("__cf6RefreshPolicy"+(++serial),_root.getNextHighestDepth());
+        _root.gameworld=world;_root.控制目标="hero";world.__stageReturnWorldIdentity={};
+        world.__next=900100;world.getNextHighestDepth=function():Number{return ++this.__next;};
+        var hero:MovieClip=world.createEmptyMovieClip("hero",world.getNextHighestDepth());
+        hero.hp=100;hero._x=10;hero._y=hero.Z轴坐标=20;hero.方向="右";hero.攻击模式="长枪";
+        hero.状态="长枪站立";hero.行走=idle;hero.按键控制攻击模式=idle;hero.按键检测=idle;
+        hero.状态改变=function(value:String):Void{this.状态=value;};
+        hero.方向改变=function(value:String):Void{this.方向=value;};
+        hero.createEmptyMovieClip("man",1);hero.createEmptyMovieClip("控制块",2);hero.控制块.onEnterFrame=idle;
+        var init:Object=Cf6ActorMaskState.prepare(world,world.__stageReturnWorldIdentity,"hero",{});
+        for(var key:String in init)hero[key]=init[key];Cf6ActorMaskState.bind(hero,init);
+        DepthManager.instance=new DepthManager(world,0,870655,16);DepthManager.instance.calibrate(0,100);
+        var manager:Object={gameworld:world,currentStage:5,isActive:true,isFailed:false,isFinished:false};
+        var api:Object=StageManager;api.instance=manager;
+        _root.savePath="cf6.actor-refresh.fixture";_root.当前关卡名="书中历险-毒刺行动";
+        var run:Object={bookId:"cf6-sting",routeId:"type61",slot:String(_root.savePath),seed:7,startedAt:100,outcome:"active"};
+        _root._saveExt={bookRun:run};
+        var room:Object={world:world,owner:world.__stageReturnWorldIdentity,stageManager:manager,stageIndex:5,
+            slot:String(_root.savePath),runIdentity:run,kind:"door",failed:false};world.__cf6Mechanism=room;
+        var spec:Object={mode:mode,fps:30,durationFrames:4,actorReleaseFrame:mode=="arrive"?3:null,
+            actorSortY:70,gate:{x:10,z:20,radius:12},exit:{x:10,z:20},samples:[
+                {frame:1,x:10,z:20,visible:true,action:"stand"},{frame:2,x:10,z:20,visible:true,action:"stand"},
+                {frame:3,x:10,z:20,visible:true,action:"stand"},{frame:4,x:10,z:20,visible:true,action:"stand"}]};
+        var traversal:Object=Cf6TraversalService.create(room,spec);
+        if(mode=="arrive")room.arrival=traversal;else room.departure=traversal;
+        return {world:world,hero:hero,room:room,traversal:traversal,spec:spec};
+    }
+    private static function close(f:Object):Void {
+        Cf6TraversalService.cancelPreparedArrival(null,null);Cf6TraversalService.cancel(f.traversal);
+        DepthManager.instance.dispose();f.world.removeMovieClip();
+    }
+    private static function arrival():Void {
+        var f:Object=fixture("arrive"),t:Object=f.traversal;
+        check(Cf6ActorRefreshPolicy.blocks(_root) && !t.acquired,"asset-wait arrival refuses rebuild before actor acquisition");
+        Cf6TraversalService.tick(t,f.hero,false);
+        var depth:Number=f.hero.getDepth(),frame:Number=t.rules.frame,paused:Boolean=_root.暂停;
+        check(Cf6ActorRefreshPolicy.blocks(_root) && depth==f.hero.getDepth() && frame==t.rules.frame && paused===_root.暂停,
+            "admission query is pure while the actor owns a fixed door depth");
+        var panel:String=PauseManager.lease(true,"webpanel");
+        // Positive control reproduces StaticInitializer.initializeUnit's first depth write.
+        DepthManager.instance.updateDepth(f.hero,f.hero._y);PauseManager.releaseLease(panel);
+        check(f.hero.getDepth()!=depth && Cf6TraversalService.tick(t,f.hero,false)=="cancelled",
+            "unguarded equipment depth reseed reproduces same-actor traversal cancellation");
+        close(f);f=fixture("arrive");t=f.traversal;Cf6TraversalService.tick(t,f.hero,false);
+        var rebuilds:Number=0;panel=PauseManager.lease(true,"webpanel");
+        if(!Cf6ActorRefreshPolicy.blocks(_root)){rebuilds++;DepthManager.instance.updateDepth(f.hero,f.hero._y);}
+        Cf6TraversalService.tick(t,f.hero,false);
+        check(rebuilds==0 && t.rules.frame==1 && t.acquired,"refused admission performs no rebuild and keeps external pause");
+        PauseManager.releaseLease(panel);Cf6TraversalService.tick(t,f.hero,false);
+        check(Cf6ActorRefreshPolicy.blocks(_root) && t.acquired,"guard stays active through the last owned sample");
+        Cf6TraversalService.tick(t,f.hero,false);
+        check(!Cf6ActorRefreshPolicy.blocks(_root) && !t.acquired,"authored actor release immediately permits equipment during door tail");
+        if(!Cf6ActorRefreshPolicy.blocks(_root)){rebuilds++;DepthManager.instance.updateDepth(f.hero,f.hero._y);}
+        var result:String=Cf6TraversalService.tick(t,f.hero,false);
+        check(rebuilds==1 && result=="complete" && !_root.暂停,"post-release rebuild does not cancel arrival or retain a pause claim");
+        close(f);
+    }
+    private static function departure():Void {
+        var f:Object=fixture("depart"),t:Object=f.traversal;
+        check(!Cf6ActorRefreshPolicy.blocks(_root),"combat and waiting-at-exit permit equipment before departure starts");
+        Cf6TraversalService.tick(t,f.hero,true);
+        check(Cf6ActorRefreshPolicy.blocks(_root),"owned departure refuses an equipment rebuild");
+        for(var i:Number=0;i<3;i++)Cf6TraversalService.tick(t,f.hero,true);
+        check(Cf6ActorRefreshPolicy.blocks(_root) && t.awaitingAdvance,"completed departure retains guard until handoff resolves");
+        Cf6TraversalService.finishAdvance(t,"rejected",{status:"rejected",manualAllowed:true});
+        check(!Cf6ActorRefreshPolicy.blocks(_root),"known rejected handoff restores equipment admission");
+        close(f);
+    }
+    private static function preparationAndIdentity():Void {
+        var f:Object=fixture("arrive"),definition:Object=BookDefinition;
+        var maps:Array=[{},{},{},{},{},{id:"A05",mechanism:{traversal:{arrive:f.spec}}}];
+        definition._type61={maps:maps};
+        var prepared:Object=Cf6TraversalService.prepareArrival(f.world,f.room.owner,f.room.stageManager);
+        delete f.world.__cf6Mechanism;
+        check(prepared!=null && Cf6ActorRefreshPolicy.blocks(_root),"SceneReady preparation is guarded before beginRoom binds");
+        Cf6TraversalService.cancelPreparedArrival(null,null);
+        check(!Cf6ActorRefreshPolicy.blocks(_root),"released preparation cannot leave a phantom equipment lock");
+        f.world.__cf6Mechanism=f.room;f.room.arrival=null;
+        var token:Object={};f.room.standingActor={actor:f.hero,token:token};f.hero.__cf6ElevatorPoseOwner=token;
+        check(Cf6ActorRefreshPolicy.blocks(_root),"owned elevator standing pose also excludes equipment rebuild");
+        delete f.hero.__cf6ElevatorPoseOwner;
+        check(!Cf6ActorRefreshPolicy.blocks(_root),"released elevator actor is available for normal battle equipment");
+        f.room.arrival=f.traversal;f.room.failed=true;
+        check(!Cf6ActorRefreshPolicy.blocks(_root),"retired failed choreography does not create a new UI lock");
+        f.room.failed=false;f.world.__stageReturnWorldIdentity={};
+        check(!Cf6ActorRefreshPolicy.blocks(_root),"stale world identity cannot block another world");
+        f.world.__stageReturnWorldIdentity=f.room.owner;f.room.stageManager.currentStage++;
+        check(!Cf6ActorRefreshPolicy.blocks(_root),"retired stage cannot block another stage");
+        close(f);
+    }
+    public static function runAllTests():Void {
+        passed=failed=0;PauseManager.install();
+        var oldWorld=_root.gameworld,oldControl=_root.控制目标,oldExt=_root._saveExt,oldSlot=_root.savePath,oldStage=_root.当前关卡名;
+        var oldPause=_root.暂停,oldDepth=DepthManager.instance,api:Object=StageManager,oldManager=api.instance;
+        var definition:Object=BookDefinition,oldDefinition=definition._type61;
+        try{arrival();departure();preparationAndIdentity();}
+        finally{_root.gameworld=oldWorld;_root.控制目标=oldControl;_root._saveExt=oldExt;_root.savePath=oldSlot;
+            _root.当前关卡名=oldStage;_root.暂停=oldPause;DepthManager.instance=oldDepth;api.instance=oldManager;definition._type61=oldDefinition;}
+        trace("Cf6ActorRefreshPolicyTest Tests Passed: "+passed);trace("Cf6ActorRefreshPolicyTest Tests Failed: "+failed);
+    }
+}

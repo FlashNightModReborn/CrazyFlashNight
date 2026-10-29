@@ -28,5 +28,10 @@ function fixture(){
     ])await test(name+' rejected',async()=>{const f=fixture();mutate(f);await assert.rejects(()=>M.snapshot(f));});
     await test('PID change during status is rejected',async()=>{const f=fixture();let n=0;
         f.runtime.session.verifyRuntimeIdentity=()=>({...f.runtime.identity,pid:++n===1?7001:7002});await assert.rejects(()=>M.snapshot(f));});
+    await test('Type61 uses only its separate exact launch slot',async()=>{
+        const f=fixture();f.routeId='type61';f.status.save.slot=f.status.saveRuntime.savePath='cf7_agent_cf6_type61_20261026';
+        assert.equal((await M.snapshot(f)).routeId,'type61');
+        f.routeId='historical';await assert.rejects(()=>M.snapshot(f));
+    });
     console.log('CF6 manual observation offline cases: '+passed+'/'+passed);
 })().catch(error=>{console.error(error.stack||error);process.exitCode=1;});

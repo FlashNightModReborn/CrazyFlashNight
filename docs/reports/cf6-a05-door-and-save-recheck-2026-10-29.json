@@ -1,0 +1,468 @@
+{
+  "schema": "cf6-a05-equipment-admission.v1",
+  "recordedUtc": "2026-10-29T01:58:45.094969+00:00",
+  "sourceRoot": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight",
+  "head": "56086994221ebb613be561955ef20b10f9fa04a6",
+  "status": "compiled_targeted_candidate_verified_full_a05_field_pass_pending",
+  "authorization": {
+    "scope": "Investigate and repair the reported A05 blocked exit; resume prior isolated Dominator and constellation-box persistence verification.",
+    "twoCacheRecoveryExplicitlyApproved": true,
+    "commit": false,
+    "push": false,
+    "formalPromotion": false
+  },
+  "originals": [
+    {
+      "path": "tmp/cf6-boss-exit-20261029/launcher.original.log",
+      "bytes": 4452877,
+      "sha256": "8dd6e8d5307eef3069be22578ac612d973f731ee0cd7407d383eb6083f465841"
+    },
+    {
+      "path": "tmp/cf6-boss-exit-20261029/reported-boss-door.png",
+      "bytes": 1913538,
+      "sha256": "02d1567a69aba99ecedf92524a99f70c8caf547a400c130419de5f3987aa5177"
+    }
+  ],
+  "fieldTimeline": [
+    {
+      "timeLocal": "06:51:54.781",
+      "line": 12264,
+      "event": "A05 background loaded"
+    },
+    {
+      "timeLocal": "06:53:04.078",
+      "line": 13659,
+      "event": "Workbench close starts"
+    },
+    {
+      "timeLocal": "06:53:04.201",
+      "line": 13670,
+      "event": "Arrival actor/world cancellation closes the A05 exit"
+    },
+    {
+      "timeLocal": "06:53:58.731",
+      "line": 14155,
+      "event": "A05 checkpoint reward durably committed"
+    }
+  ],
+  "finding": {
+    "reproducedMechanism": "Equipment initialization reseeds actor depth while traversal owns a fixed depth. Resuming traversal then detects foreign ownership and cancels it. An actual AVM1 MovieClip/DepthManager positive control reproduces this path.",
+    "fieldAssessment": "This reproduced path agrees with the captured workbench-close and arrival-cancellation timeline. The original generic cancellation toast did not record its exact failed predicate.",
+    "airborneScreenshot": "The user confirmed that QQ capture keys triggered the Type61 jetpack only for the screenshot; normal testing was grounded."
+  },
+  "change": {
+    "policy": "Read-only admission blocks character-build and tuning while exact CF6 arrival preparation, unreleased arrival, acquired departure, or elevator pose owns the actor. Admission resumes on authored actor release.",
+    "owners": [
+      "InventoryPanelService production opener",
+      "CharacterBuildService.canOpenPanel",
+      "CharacterBuildService.open"
+    ],
+    "pendingPersistence": "Refusal returns the existing session state without retiring recovery authority, consuming generation, creating a pause claim, rebuilding equipment, or replaying persistence.",
+    "generatorReconciliation": "Previously stale traversal and door-advance templates were synchronized with existing authoritative runtime sources; earlier revival and transition handoff behavior is retained."
+  },
+  "validation": {
+    "actorPolicy": {
+      "runner": "cf6-actor-refresh",
+      "runId": "6251024ab9ad4c0ab0a34271fb194f56",
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "branch32KRetry": 0,
+      "suites": [
+        {
+          "suite": "Cf6ActorRefreshPolicyTest",
+          "passed": 18,
+          "failed": 0
+        }
+      ],
+      "log": {
+        "path": "tmp/cf6-boss-exit-20261029/actor-refresh-policy-final.log",
+        "bytes": 3361,
+        "sha256": "c3eb2800623c284e30318e4441c5e6d7fd18a504953ff4d5a9a2b55f17570b30"
+      },
+      "trace": {
+        "path": "tmp/cf6-boss-exit-20261029/policy-passed/flashlog.txt",
+        "bytes": 1252,
+        "sha256": "227d9e8bff1c160148b124782386b2c7328ab031178bb8f9494e7ca75a40da81"
+      },
+      "compiler": {
+        "path": "tmp/cf6-boss-exit-20261029/policy-passed/compiler_errors.txt",
+        "bytes": 27,
+        "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+      },
+      "swf": {
+        "path": "tmp/cf6-boss-exit-20261029/policy-passed/TestLoader.swf",
+        "bytes": 1146345,
+        "sha256": "985a66207cce9127d2408e6d2f4054829c04ce1eed75c2fb126b44166f4510e0"
+      }
+    },
+    "characterBuild": {
+      "runner": "character-build",
+      "runId": "936101f1b05948cea581fb241a45e155",
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "branch32KRetry": 0,
+      "suites": [
+        {
+          "suite": "EquipmentInventoryTest",
+          "passed": 28,
+          "failed": 0
+        },
+        {
+          "suite": "InventoryPanelServiceTest",
+          "passed": 194,
+          "failed": 0
+        },
+        {
+          "suite": "CharacterBuildTransactionSpikeTest",
+          "passed": 19,
+          "failed": 0
+        },
+        {
+          "suite": "RuntimeEquipmentProjectionTest",
+          "passed": 27,
+          "failed": 0
+        },
+        {
+          "suite": "CharacterBuildServiceTest",
+          "passed": 229,
+          "failed": 0
+        },
+        {
+          "suite": "PlayerInfoProviderTest",
+          "passed": 29,
+          "failed": 0
+        },
+        {
+          "suite": "PlayerStatLifecycleTest",
+          "passed": 54,
+          "failed": 0
+        }
+      ],
+      "log": {
+        "path": "tmp/cf6-boss-exit-20261029/character-build-final-fixed-fixture.log",
+        "bytes": 86259,
+        "sha256": "c2a2c64f9d54e7beb37a5099689cd85521a25b9700b73db8f9d9bab9382e3f6b"
+      },
+      "trace": {
+        "path": "tmp/cf6-boss-exit-20261029/character-build-final-passed/flashlog.txt",
+        "bytes": 83784,
+        "sha256": "7534db73c63d12defcdb823b7bfcdf83e05a0f8c559dab25aa2bcb4b0a426a90"
+      },
+      "compiler": {
+        "path": "tmp/cf6-boss-exit-20261029/character-build-final-passed/compiler_errors.txt",
+        "bytes": 27,
+        "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+      },
+      "swf": {
+        "path": "tmp/cf6-boss-exit-20261029/character-build-final-passed/TestLoader.swf",
+        "bytes": 1279757,
+        "sha256": "888b3edd525ee263d92f6f776cdcc94bd8656f7ae830d7b21a9bf8f81b599402"
+      }
+    },
+    "publication": {
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "swf": {
+        "path": "scripts/asLoader.swf",
+        "bytes": 6786668,
+        "sha256": "b0b553dad9ed6af9c5119e652a0e5a3dc5fa0d429cb109dc7166931ffbbedebb"
+      },
+      "log": {
+        "path": "tmp/cf6-boss-exit-20261029/asloader-final-publish.log",
+        "bytes": 1262,
+        "sha256": "136514f5ef770fca7826bb45d4d634b4f1576ff78859500588eb8822c7d7d350"
+      },
+      "compiler": {
+        "path": "tmp/cf6-boss-exit-20261029/final-publication/compiler_errors.txt",
+        "bytes": 27,
+        "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+      }
+    },
+    "isolatedPersistence": {
+      "report": {
+        "path": "tmp/workbench-live-e2e/cf6/20261029014442673-dominator-box/report.json",
+        "bytes": 1250371,
+        "sha256": "69446426dcf9774dd6bd6fde719ec264ec1a996a4139286aeabbf9db2a427d42"
+      },
+      "scope": "Dedicated clone; real authored Dominator resource, CharacterBuild close/item use, actual save and fresh-process readback. Main-scene fixture is not the exact tester save or CF6 in-book field reproduction.",
+      "asLoader": {
+        "sha256": "b0b553dad9ed6af9c5119e652a0e5a3dc5fa0d429cb109dc7166931ffbbedebb"
+      },
+      "expectedIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-recheck1028\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "42898D83A302F2B99C28D76B5C4444174C91A73FECF275484D0B1DD8D04DA49F",
+        "buildIdentity": "993DAED03674DFB7116A239AFD06676A6F66FF4F6841076B5410EDB9AEA8B1BF",
+        "payloadClosure": "D8BA56D245FC7789027655B5110CD471D93508F92AB07800403EEB2A94A6A313",
+        "installRoot": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-recheck1028"
+      },
+      "processes": [
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-recheck1028\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "42898D83A302F2B99C28D76B5C4444174C91A73FECF275484D0B1DD8D04DA49F",
+          "buildIdentity": "993DAED03674DFB7116A239AFD06676A6F66FF4F6841076B5410EDB9AEA8B1BF",
+          "payloadClosure": "D8BA56D245FC7789027655B5110CD471D93508F92AB07800403EEB2A94A6A313",
+          "pid": 15324,
+          "httpPort": 1192
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-recheck1028\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "42898D83A302F2B99C28D76B5C4444174C91A73FECF275484D0B1DD8D04DA49F",
+          "buildIdentity": "993DAED03674DFB7116A239AFD06676A6F66FF4F6841076B5410EDB9AEA8B1BF",
+          "payloadClosure": "D8BA56D245FC7789027655B5110CD471D93508F92AB07800403EEB2A94A6A313",
+          "pid": 2328,
+          "httpPort": 1192
+        }
+      ],
+      "checkpoints": [
+        {
+          "label": "prepared",
+          "file": "prepared-save.json",
+          "sha256": "351d59af82ac25ddeac77377bf67478b1362ff0599d6fcf5d6439390c1ac2396",
+          "bytes": 78006,
+          "summary": {
+            "handgun": "钛合金P90",
+            "boxCount": 2,
+            "dominatorCount": 1,
+            "constellations": {
+              "光剑天秤": 1,
+              "光斧金牛": 0,
+              "光刀狮子": 0,
+              "光刃摩羯": 0,
+              "血色光剑天秤": 1
+            }
+          },
+          "at": "2026-10-29T01:44:44.856Z"
+        },
+        {
+          "label": "after-box-before-close",
+          "file": "after-box-before-close-save.json",
+          "sha256": "4b112227642fdbe77a0f3f617e57312a69ecdf8f83ace7d6a94504dffa9ad1ab",
+          "bytes": 78732,
+          "summary": {
+            "handgun": "dominator",
+            "boxCount": 1,
+            "dominatorCount": 1,
+            "constellations": {
+              "光剑天秤": 1,
+              "光斧金牛": 0,
+              "光刀狮子": 0,
+              "光刃摩羯": 1,
+              "血色光剑天秤": 1
+            }
+          },
+          "at": "2026-10-29T01:50:36.694Z"
+        },
+        {
+          "label": "first-close-saved",
+          "file": "first-close-saved-save.json",
+          "sha256": "4b112227642fdbe77a0f3f617e57312a69ecdf8f83ace7d6a94504dffa9ad1ab",
+          "bytes": 78732,
+          "summary": {
+            "handgun": "dominator",
+            "boxCount": 1,
+            "dominatorCount": 1,
+            "constellations": {
+              "光剑天秤": 1,
+              "光斧金牛": 0,
+              "光刀狮子": 0,
+              "光刃摩羯": 1,
+              "血色光剑天秤": 1
+            }
+          },
+          "at": "2026-10-29T01:50:54.038Z"
+        },
+        {
+          "label": "first-process-exited",
+          "file": "first-process-exited-save.json",
+          "sha256": "4b112227642fdbe77a0f3f617e57312a69ecdf8f83ace7d6a94504dffa9ad1ab",
+          "bytes": 78732,
+          "summary": {
+            "handgun": "dominator",
+            "boxCount": 1,
+            "dominatorCount": 1,
+            "constellations": {
+              "光剑天秤": 1,
+              "光斧金牛": 0,
+              "光刀狮子": 0,
+              "光刃摩羯": 1,
+              "血色光剑天秤": 1
+            }
+          },
+          "at": "2026-10-29T01:51:13.269Z"
+        },
+        {
+          "label": "fresh-process-live",
+          "file": "fresh-process-live-save.json",
+          "sha256": "fe22ba1c5e85b2e0f3786502fbf0c285285f6edb8a78ceaa532178f20d182d9f",
+          "bytes": 78732,
+          "summary": {
+            "handgun": "dominator",
+            "boxCount": 1,
+            "dominatorCount": 1,
+            "constellations": {
+              "光剑天秤": 1,
+              "光斧金牛": 0,
+              "光刀狮子": 0,
+              "光刃摩羯": 1,
+              "血色光剑天秤": 1
+            }
+          },
+          "at": "2026-10-29T01:52:55.603Z"
+        },
+        {
+          "label": "fresh-process-exited",
+          "file": "fresh-process-exited-save.json",
+          "sha256": "fe22ba1c5e85b2e0f3786502fbf0c285285f6edb8a78ceaa532178f20d182d9f",
+          "bytes": 78732,
+          "summary": {
+            "handgun": "dominator",
+            "boxCount": 1,
+            "dominatorCount": 1,
+            "constellations": {
+              "光剑天秤": 1,
+              "光斧金牛": 0,
+              "光刀狮子": 0,
+              "光刃摩羯": 1,
+              "血色光剑天秤": 1
+            }
+          },
+          "at": "2026-10-29T01:53:11.432Z"
+        }
+      ],
+      "collateral": {
+        "setSha256": "08439acf13e129cfb31b7e7a582e0dd9b98a533d5125a52991b87df7f8541c5e",
+        "artifactCount": 117
+      },
+      "physicalInputAttestation": false,
+      "meaning": "Actual candidate equip Dominator, consume one constellation box, close/save, normal exit, and fresh-process inventory readback on a dedicated clone. No exact tester-save or full A05 combat claim."
+    },
+    "generatorCheck": {
+      "path": "tmp/cf6-boss-exit-20261029/final-generator-check.log",
+      "bytes": 764,
+      "sha256": "c757760ecc13d78b49bf55f743df1b7779d29072d49bfe0b02cfa0d7ce72bac6"
+    },
+    "documentationCheck": {
+      "path": "tmp/cf6-boss-exit-20261029/doc-governance-final.log",
+      "bytes": 3614,
+      "sha256": "0071875574b9519ac36544062038804825c8b9365b19c133b8155410515a83c6"
+    },
+    "type61EntryReturn": {
+      "status": "blocked_before_runtime",
+      "preflight": {
+        "path": "tmp/cf6-boss-exit-20261029/type61-final-preflight.log",
+        "bytes": 1321,
+        "sha256": "f37884f6f3cbba6e8334b7f4d4ac994f09cd75302dc804bac8fc8ea4c2485903"
+      },
+      "failure": {
+        "path": "tmp/cf6-boss-exit-20261029/type61-final-live.log",
+        "bytes": 1673,
+        "sha256": "f847d75f1e2cc1096058e56ae2c2fae946714978c9bb6a166a73ef77271fc02d"
+      },
+      "sourceDrift": {
+        "path": "tmp/cf6-boss-exit-20261029/type61-source-closure-blocker.json",
+        "bytes": 1823,
+        "sha256": "49bfb57f5ef08c64a65887ef5c812dcc9c00d84e66c3f770f8949b872ede0828"
+      },
+      "meaning": "Candidate/slot preflight passed. Source-closure capture refused obsolete soldier measurement inputs before creating a new clone or starting a game. Two missing old masks and five distinct changed XML sources need measurement qualification; this failure was not bypassed."
+    },
+    "priorTestCloneRecovery": {
+      "path": "tmp/cf6-boss-exit-20261029/old-type61-clone-preserved/offline-recovery.json",
+      "bytes": 1977,
+      "sha256": "16cd49070deb639ff4f9f99647fdb2200f96853d6ce4f9652a651b0e2a39534c"
+    }
+  },
+  "failedAttemptsPreserved": [
+    {
+      "path": "tmp/cf6-boss-exit-20261029/fatal-final-compile",
+      "meaning": "Native CS6 fatal exception; no assertion result."
+    },
+    {
+      "path": "tmp/cf6-boss-exit-20261029/authorized-recovery-20261029T011633Z",
+      "meaning": "Only the two explicitly authorized nonzero caches were preserved and quarantined after exact host/scratch/marker checks."
+    },
+    {
+      "path": "tmp/cf6-boss-exit-20261029/same-source-retry-two-test-failures",
+      "meaning": "Fresh compiler 0/0 with 227 passed and two new failed assertions. The new fixture replaced its coordinator-owned world identity and therefore never reached persistence; the fixture was corrected without changing production behavior."
+    },
+    {
+      "path": "tmp/cf6-boss-exit-20261029/native-diagnostic-unqualified",
+      "meaning": "Earlier resource fixture experiments are diagnostic only and are not counted as A05 or production evidence."
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/CharacterBuildService.as",
+      "bytes": 158447,
+      "sha256": "ddfc3698ff5235b25b41f6cd91195c1600d20d647407cb0c0b95b151078d2085"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/CharacterBuildServiceTest.as",
+      "bytes": 250111,
+      "sha256": "0c2c59d3000a4c85e86d284176040d2a5bd689f3bfaedf7295d7102d87dab93e"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/item/InventoryPanelService.as",
+      "bytes": 117927,
+      "sha256": "65e65df7fbf4354067abd32bec09a90f79af25c671802b418d5d13089098b7a2"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6ActorRefreshPolicy.as",
+      "bytes": 2725,
+      "sha256": "4957d071021d050563879ecb02df69367662b69540fe40e614ee70f1b30ddfb0"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6ActorRefreshPolicyTest.as",
+      "bytes": 8970,
+      "sha256": "ec94aefb48ea1c488ec3aa2533a5c000ee6e0463948a53386f8cf1be01105aff"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/Cf6TraversalService.as",
+      "bytes": 23744,
+      "sha256": "38a4fbe5d23e794904f63b909370f5e0f7b48413da9f272da8a4e08828268a53"
+    },
+    {
+      "path": "tools/cf6-scene-completion/Cf6ActorRefreshPolicy.as.txt",
+      "bytes": 2722,
+      "sha256": "e8fd2f522044d52cf0c9769178ab3fd0ef21e6422c308f3f038c31edc849ede3"
+    },
+    {
+      "path": "tools/cf6-scene-completion/Cf6ActorRefreshPolicyTest.as.txt",
+      "bytes": 8967,
+      "sha256": "b2b4b23bc9d6bea329ac24efda8f8a236d7a11dc06d573a5b6212a17f56ace85"
+    },
+    {
+      "path": "tools/cf6-scene-completion/Cf6TraversalService.as.txt",
+      "bytes": 23741,
+      "sha256": "270156657eea379da70b17c449dea76e6c4c60ebf78806ec82a144f29901713e"
+    },
+    {
+      "path": "tools/cf6-scene-completion/Cf6DoorAdvanceTest.as.txt",
+      "bytes": 12903,
+      "sha256": "7fe5dcb1a57bfc6442c6f5a8bc8c6277c21245b783cd7db43140c17c8915be31"
+    }
+  ],
+  "delivery": {
+    "developmentEntry": "本地开发启动.cmd",
+    "mainAsLoader": {
+      "path": "scripts/asLoader.swf",
+      "bytes": 6786668,
+      "sha256": "b0b553dad9ed6af9c5119e652a0e5a3dc5fa0d429cb109dc7166931ffbbedebb"
+    },
+    "candidateExecutedWithThisAsLoader": true,
+    "e2eVerified": false,
+    "promoted": false,
+    "standardEntryVerified": false
+  },
+  "remaining": [
+    "Full A05 arrival, equipment attempt, battle clear and A06 traversal in the normal game.",
+    "Complete Type61 balance/route and physical gameplay acceptance.",
+    "Exact tester stable-failure save is unavailable; isolated fixture does not prove every tester case."
+  ],
+  "unrelatedGovernanceDrift": {
+    "report": "docs/reports/cf6-instructor-save-rebalance-2026-10-28.json",
+    "meaning": "The earlier 29 save-callsite manifest errors remain separately recorded; this incident repair does not waive or reclassify them."
+  }
+}

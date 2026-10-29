@@ -59,7 +59,7 @@ _root.贴背景图 = function(force:Boolean){
 	var cf6BakeOwner:Object = null;
 	var cf6BakeSource:String = "";
 	if (_root._saveExt.bookRun.bookId === "cf6-sting"
-			&& _root._saveExt.bookRun.routeId === "historical"
+			&& org.flashNight.arki.scene.BookDefinition.isCf6Route(_root._saveExt.bookRun.routeId)
 			&& _root._saveExt.bookRun.outcome === "active"
 			&& _root._saveExt.bookRun.slot === String(_root.savePath)
 			&& _root.当前关卡名 === "书中历险-毒刺行动") {

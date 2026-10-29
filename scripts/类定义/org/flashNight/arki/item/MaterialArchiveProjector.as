@@ -223,6 +223,7 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
             return shopAccessFailure(callId, "stale", "source_not_current");
         }
         var catalog:Array = _root.kshop_list instanceof Array ? _root.kshop_list : null;
+        if (!org.flashNight.arki.scene.Cf6Type61Service.kShopAllowed(materialName)) return shopAccessFailure(callId,"deny","access_denied");
         var live:Object = catalog == null ? null : catalog[catalogIndex];
         if (live == null || String(live.item || "") != materialName
                 || String(live.id || "") != entryId
@@ -294,6 +295,7 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
     public static function authorizeRecipeKShopAccess(callId:Number,
             itemName:String, catalogIndex:Number, entryId:String,
             category:String):Object {
+        if (!org.flashNight.arki.scene.Cf6Type61Service.kShopAllowed(itemName)) return shopAccessFailure(callId,"deny","access_denied");
         if (!validIntegerRange(callId, 1, 2147483647)
                 || !validIdentity(itemName, 128)
                 || !validShopCatalogIndex(catalogIndex)
@@ -1441,7 +1443,7 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
         var bookCrafting:Boolean = bookRun != null && bookRun.outcome == "active"
             && org.flashNight.arki.scene.BookRunService.isBookStageContext();
         return {
-            shop:bicycle || motorcycle || offroad,
+            shop:bicycle || motorcycle || offroad || org.flashNight.arki.scene.Cf6Type61Service.nodeReached("A01"),
             crafting:motorcycle || offroad || bookCrafting
         };
     }

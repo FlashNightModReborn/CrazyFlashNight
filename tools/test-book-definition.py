@@ -185,6 +185,7 @@ class BookDefinitionTests(unittest.TestCase):
     def test_vouchers_are_finite_and_not_sold_or_recycled(self):
         generated = builder.generated_deliveries(self.data)
         recipes = json.loads(generated[builder.RECIPE_OUTPUT])
+        recipes = [r for r in recipes if r['recipeId'].startswith('craft.book-supply.')]
         generated_items = {i.findtext('name'): i for i in ET.fromstring(generated[builder.PACK_OUTPUT]).findall('item')}
         vouchers = {c['voucher'] for c in self.data['buildChoices']}
         self.assertEqual(8, len(recipes))
@@ -294,6 +295,31 @@ class BookDefinitionTests(unittest.TestCase):
     def validate_cf6(self, data):
         units={u['id'] for u in json.loads((ROOT/'data/units/units.json').read_text('utf-8-sig'))}
         builder.validate_cf6(data,self.items,self.skills,units,require_backgrounds=False)
+
+    def test_type61_partial_loadout_is_independent_of_historical_actor(self):
+        data=json.loads(builder.TYPE61_SOURCE.read_text('utf8'))
+        self.validate_cf6(data)
+        self.assertEqual((35,17372868,1050),(data['actor']['level'],data['actor']['experience'],data['startingSkillPoints']))
+        self.assertEqual(1,next(s['level'] for s in data['actor']['skills'] if s['name']=='铁匠'))
+        self.assertEqual({1},{e['enhancement'] for e in data['actor']['equipment']})
+        self.assertIn('移动射击',data['actor']['quickSkills'])
+        self.assertEqual('cf6-type61.runtime.json',next(iter(builder.generated_cf6(data))).name)
+        historical=json.loads(builder.CF6_SOURCE.read_text('utf8'))
+        self.validate_cf6(historical)
+        self.assertEqual(60,historical['actor']['level'])
+
+    def test_type61_rejects_duplicate_sp_smith_upgrades_and_foreign_loadouts(self):
+        original=json.loads(builder.TYPE61_SOURCE.read_text('utf8'))
+        mutations=[lambda d:d.update(startingSkillPoints=2560),
+                   lambda d:d['actor'].update(experience=0),
+                   lambda d:d['actor']['equipment'][0].update(enhancement=11),
+                   lambda d:next(s for s in d['actor']['skills'] if s['name']=='铁匠').update(level=2),
+                   lambda d:d['actor']['quickSkills'].append('移动射击'),
+                   lambda d:d['actor']['quickSkills'].append('铁匠'),
+                   lambda d:d.update(routeId='plan61')]
+        for mutate in mutations:
+            data=copy.deepcopy(original);mutate(data)
+            with self.assertRaises(ValueError):self.validate_cf6(data)
 
     def test_cf6_authored_twenty_maps_plus_TUTORIAL(self):
         data=self.cf6_fixture()

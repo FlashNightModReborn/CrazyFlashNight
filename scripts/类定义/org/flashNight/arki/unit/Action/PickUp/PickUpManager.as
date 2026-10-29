@@ -297,11 +297,13 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
             数量 = 1;
         }
 
-        // 书中 K 点由分图预算唯一提供；不再把金币随机改成另一份收入。
+        // 61计划只恢复带死亡来源标记的随机转换；固定货币仍保持精确数量。
         var bookCurrency:Boolean = org.flashNight.arki.scene.BookRunService.isBookStageContext();
+        var type61Death:Boolean = bookCurrency && parameterObject.敌人死亡货币 === true
+            && org.flashNight.arki.scene.Cf6Type61Service.isActive();
         var exactCurrency:Boolean = parameterObject.精确货币数量 === true || bookCurrency && 物品名 === "K点";
         if (物品名 === "金币") 物品名 = "金钱";
-        if (物品名 === "金钱" && !exactCurrency && !bookCurrency
+        if (物品名 === "金钱" && !exactCurrency && (!bookCurrency || type61Death)
                 && LinearCongruentialEngine.instance.randomCheck(_root.打怪掉钱机率)) {
             物品名 = "K点";
         }

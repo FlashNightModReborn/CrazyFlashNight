@@ -98,6 +98,40 @@ test('active runner and input contain no direct app business calls',()=>{
         for(const pattern of [/\bBridge\s*\.\s*send\s*\(/,/\bPanels\s*\.\s*open\s*\(/,/\b(?:button|element)\s*\.\s*click\s*\(/,/requestFixedAgentEnter\s*\(/])assert(!pattern.test(s),file);
     }
 });
+test('Type61 selects a separate fixed clone and virtual play target',()=>{
+    const args=Runner.parseArgs(pinned.concat('--route','type61','--execute-isolated-candidate','--allow-clone-book-writes'));
+    assert.equal(args.routeId,'type61');assert.equal(args.slot,'cf7_agent_cf6_type61_20261026');
+    assert.throws(()=>P.parseArgs(pinned.concat('--route','plan61')));
+});
+test('Type61 admission binds both request target and both route credentials',()=>{
+    const f=fixture();f.routeId='type61';f.originSlot='cf7_agent_cf6_type61_20261026';f.before.excludedTargetSlot=f.originSlot;
+    f.request.payload.target=f.receipt.target='cf6-sting.type61';
+    for(const c of [f.originSave.ext.bookshelf.active,f.runSave.ext.bookRun]){c.routeId='type61';c.originSlot=f.originSlot;}
+    assert.equal(A.admit(f).routeId,'type61');
+    for(const mutate of [g=>g.request.payload.target='cf6-sting',g=>g.receipt.target='cf6-sting',
+        g=>g.runSave.ext.bookRun.routeId='historical',g=>g.originSave.ext.bookshelf.active.routeId='historical']){
+        const g=clone(f);mutate(g);assert.throws(()=>A.admit(g));
+    }
+});
+test('Type61 actor proof checks 35, +1 and all twelve quick slots',()=>{
+    const f=actorFixture();f.chapter.routeId='type61';f.chapter.startingMoney=30000;f.chapter.startingSkillPoints=1050;
+    f.chapter.actor.quickSkills=['小跳'];f.chapter.actor.equipment[0].enhancement=1;
+    Object.assign(f.save['0'],{2:30000,3:35,4:17372868,6:1050});f.save.inventory.装备栏.刀.value.level=1;
+    f.save['1'].length=28;for(let i=0;i<12;i++)f.save['1'][16+i]=i===0?'小跳':'';
+    assert.equal(A.assertActor(f.save,f.chapter).allInitialEnhancements,1);
+    for(const mutate of [g=>g.save['0'][3]=60,g=>g.save['0'][6]=2560,
+        g=>g.save.inventory.装备栏.刀.value.level=11,g=>g.save['1'][16]='口才']){
+        const g=clone(f);mutate(g);assert.throws(()=>A.assertActor(g.save,g.chapter));
+    }
+});
+test('Type61 return proof refuses a historical record for the same run',()=>{
+    const before=actorFixture().save,after=clone(before);
+    after.ext={bookshelf:{lastRun:book,routes:{'cf6-sting.type61':{history:[{runId:book,bookId:'cf6-sting',routeId:'type61',sp:0,outcome:'retreat'}]}}}};
+    assert.equal(A.assertReturned(before,after,book,'type61').routeId,'type61');
+    assert.throws(()=>A.assertReturned(before,after,book,'historical'));
+    after.ext.bookshelf.routes['cf6-sting.type61'].history[0].routeId='historical';
+    assert.throws(()=>A.assertReturned(before,after,book,'type61'));
+});
 async function clientFixture(){
     const parent=fs.realpathSync.native(os.tmpdir()),tmp=fs.mkdtempSync(path.join(parent,'cf7-cf6-e2e-fixture-'));
     try{

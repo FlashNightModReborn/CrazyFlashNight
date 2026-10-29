@@ -3,28 +3,53 @@
     private static var _loaded:Boolean = false;
     private static var _cf6:Object;
     private static var _cf6Loading:Boolean = false;
+    private static var _type61:Object;
+    private static var _type61Loading:Boolean = false;
     private static function selected(id:String):String {
         if (id != undefined && id != "") return id;
         return _root._saveExt.bookRun.bookId === "cf6-sting" ? "cf6-sting" : "repair-campus";
     }
     public static function supports(id:String):Boolean { return id === "repair-campus" || id === "cf6-sting"; }
-    public static function get(id:String):Object {
+    public static function isCf6Route(route:String):Boolean { return route === "historical" || route === "type61"; }
+    public static function supportsTarget(target:String):Boolean { return supports(target) || target === "cf6-sting.type61"; }
+    public static function bookForTarget(target:String):String { return target === "cf6-sting.type61" ? "cf6-sting" : target; }
+    public static function routeForTarget(target:String):String { return target === "cf6-sting.type61" ? "type61" : target === "cf6-sting" ? "historical" : ""; }
+    private static function selectedRoute(route:String):String {
+        if (route !== undefined) return isCf6Route(route) ? route : "";
+        var run:Object=_root._saveExt.bookRun;
+        return run.bookId === "cf6-sting" ? (isCf6Route(run.routeId) ? String(run.routeId) : "") : "historical";
+    }
+    public static function get(id:String, route:String):Object {
         id = selected(id);
-        if (id === "cf6-sting") return _cf6;
+        if (id === "cf6-sting") {
+            route=selectedRoute(route);
+            return route === "type61" ? _type61 : route === "historical" ? _cf6 : null;
+        }
         if (id !== "repair-campus") return null;
         if (_data == null) _data = fallback();
         return _data;
     }
-    public static function ready(id:String):Boolean { return selected(id) === "cf6-sting" ? _cf6 != null : selected(id) === "repair-campus" && _loaded; }
-    public static function load(id:String):Void {
+    public static function ready(id:String, route:String):Boolean { return selected(id) === "cf6-sting" ? org.flashNight.arki.scene.BookDefinition.get(id,route) != null : selected(id) === "repair-campus" && _loaded; }
+    public static function load(id:String, route:String):Void {
         id = selected(id);
         if (id === "cf6-sting") {
+            route=selectedRoute(route);
+            if (route === "") return;
+            if (route === "type61") {
+                if (_type61Loading || _type61 != null) return;
+                _type61Loading=true;
+                var type61Loader:org.flashNight.gesh.json.LoadJson.BaseJSONLoader = new org.flashNight.gesh.json.LoadJson.BaseJSONLoader(
+                    "data/stages/books/cf6-type61.runtime.json", "LiteJSON");
+                type61Loader.load(function(data:Object):Void { org.flashNight.arki.scene.BookDefinition.acceptFor("cf6-sting",data,"type61"); },
+                    function(error:String):Void { org.flashNight.arki.scene.BookDefinition.loadFailedFor("cf6-sting","type61"); });
+                return;
+            }
             if (_cf6Loading || _cf6 != null) return;
             _cf6Loading = true;
             var cf6Loader:org.flashNight.gesh.json.LoadJson.BaseJSONLoader = new org.flashNight.gesh.json.LoadJson.BaseJSONLoader(
                 "data/stages/books/cf6-sting.runtime.json", "LiteJSON");
-            cf6Loader.load(function(data:Object):Void { org.flashNight.arki.scene.BookDefinition.acceptFor("cf6-sting", data); },
-                function(error:String):Void { org.flashNight.arki.scene.BookDefinition.loadFailedFor("cf6-sting"); });
+            cf6Loader.load(function(data:Object):Void { org.flashNight.arki.scene.BookDefinition.acceptFor("cf6-sting", data,"historical"); },
+                function(error:String):Void { org.flashNight.arki.scene.BookDefinition.loadFailedFor("cf6-sting","historical"); });
             return;
         }
         if (id !== "repair-campus") return;
@@ -39,15 +64,24 @@
         });
     }
     public static function loadFailed():Void { _loading = false; }
-    public static function loadFailedFor(id:String):Void { if (id === "cf6-sting") _cf6Loading = false; else if (id === "repair-campus") _loading = false; }
-    public static function acceptFor(id:String, data:Object):Boolean {
-        loadFailedFor(id);
+    public static function loadFailedFor(id:String, route:String):Void {
+        if (id === "cf6-sting") { if (route === "type61") _type61Loading=false; else if (route === undefined || route === "historical") _cf6Loading=false; }
+        else if (id === "repair-campus") _loading=false;
+    }
+    public static function acceptFor(id:String, data:Object, route:String):Boolean {
+        loadFailedFor(id,route);
         if (data.id !== id || !valid(data)) return false;
-        if (id === "cf6-sting") { if (_cf6 == null) _cf6 = data; return true; }
+        if (id === "cf6-sting") {
+            if (route === undefined) route="historical";
+            if (!isCf6Route(route) || data.routeId !== route) return false;
+            if (route === "type61") { if (_type61 == null) _type61=data; }
+            else if (_cf6 == null) _cf6=data;
+            return true;
+        }
         return accept(data);
     }
     public static function accept(data:Object):Boolean {
-        if (data.id === "cf6-sting") return acceptFor("cf6-sting", data);
+        if (data.id === "cf6-sting") return acceptFor("cf6-sting", data,data.routeId);
         _loading = false;
         if (!valid(data)) return false;
         _data = data; _loaded = true; return true;
@@ -78,12 +112,13 @@
             && Math.floor(value) == value && !(value < low) && !(value > high);
     }
     private static function validCf6(data:Object):Boolean {
-        if (!finiteTree(data,0) || data.schema !== "playable-book.v1" || data.routeId !== "historical"
+        if (!finiteTree(data,0) || data.schema !== "playable-book.v1" || !isCf6Route(data.routeId)
                 || data.stageName !== "书中历险-毒刺行动" || typeof data.title != "string"
                 || !whole(data.startingMoney,0,10000000) || !whole(data.startingSkillPoints,0,10000)
                 || !(data.maps instanceof Array) || data.maps.length < 1 || data.maps.length > 32) return false;
         var actor:Object = data.actor;
-        if (actor.level !== 60 || actor.experience !== 157526193 || typeof actor.name != "string"
+        var type61:Boolean=data.routeId === "type61";
+        if (actor.level !== (type61 ? 35 : 60) || actor.experience !== (type61 ? 17372868 : 157526193) || typeof actor.name != "string"
                 || actor.name == "" || actor.gender !== "男" || !whole(actor.height,100,250)
                 || typeof actor.face != "string" || typeof actor.hair != "string"
                 || !(actor.equipment instanceof Array) || actor.equipment.length < 1 || actor.equipment.length > 10
@@ -92,7 +127,7 @@
         for (var e:Number=0;e<actor.equipment.length;e++) {
             var equipment:Object=actor.equipment[e];
             if (typeof equipment.slot != "string" || typeof equipment.name != "string"
-                    || equipment.enhancement !== 11 || seen["slot."+equipment.slot] === true) return false;
+                    || equipment.enhancement !== (type61 ? 1 : 11) || seen["slot."+equipment.slot] === true) return false;
             seen["slot."+equipment.slot]=true;
         }
         for (var s:Number=0;s<actor.skills.length;s++) {
@@ -100,6 +135,23 @@
             if (typeof skill.name != "string" || skill.name == "" || !whole(skill.level,1,100)
                     || seen["skill."+skill.name] === true) return false;
             seen["skill."+skill.name]=true;
+        }
+        if (type61) {
+            if (!org.flashNight.arki.scene.Cf6Type61Service.validDefinition(data)) return false;
+            if (data.maps.length !== 21) return false;
+            for (var routeIndex:Number=0;routeIndex<21;routeIndex++) {
+                var expectedId:String=routeIndex == 0 ? "TUTORIAL" : "A"+(routeIndex<10 ? "0" : "")+String(routeIndex);
+                if (data.maps[routeIndex].id !== expectedId) return false;
+            }
+            if (data.startingMoney !== 30000 || data.startingSkillPoints !== 1050
+                    || !(actor.quickSkills instanceof Array) || actor.quickSkills.length > 12
+                    || seen["skill.铁匠"] !== true || seen["skill.口才"] === true || seen["skill.驾驶"] === true) return false;
+            for (s=0;s<actor.skills.length;s++) if (actor.skills[s].name === "铁匠" && actor.skills[s].level !== 1) return false;
+            for (s=0;s<actor.quickSkills.length;s++) {
+                var key:String=actor.quickSkills[s];
+                if (typeof key != "string" || seen["skill."+key] !== true || seen["quick."+key] === true) return false;
+                seen["quick."+key]=true;
+            }
         }
         var mapOrder:String="|TUTORIAL|A01|A02|A03|A04|A05|A06|A07|A08|A09|A10|A11|A12|A13|A14|A15|A16|A17|A18|A19|A20|A22|";
         var previousPosition:Number=-1;

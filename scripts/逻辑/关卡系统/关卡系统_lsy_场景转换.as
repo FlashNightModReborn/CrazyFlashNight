@@ -413,7 +413,7 @@ _root.加载游戏世界人物 = function(id:String, name:String, depth:Number, 
 	var maskRun:Object = _root._saveExt.bookRun;
 	if (id === "主角-男" && name === _root.控制目标
 		&& _root.当前关卡名 === "书中历险-毒刺行动"
-		&& maskRun.bookId === "cf6-sting" && maskRun.routeId === "historical"
+		&& maskRun.bookId === "cf6-sting" && org.flashNight.arki.scene.BookDefinition.isCf6Route(maskRun.routeId)
 		&& maskRun.outcome === "active" && maskRun.slot === String(_root.savePath)) {
 		var maskInit:Object = org.flashNight.arki.scene.Cf6ActorMaskState.prepare(
 			_root.gameworld, _root.gameworld.__stageReturnWorldIdentity, name, initObject);

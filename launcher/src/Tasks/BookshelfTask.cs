@@ -208,7 +208,7 @@ namespace CF7Launcher.Tasks
                             && (((kind == "switch" || kind == "return") && !_automationSlotAdmission(target))
                                 || (kind == "play" && !_automationSlotAdmission(_activeSlot))))
                         { RejectAndRemember(callId, cmd, instance, "automation_slot_denied"); return; }
-                        if (kind == "play" && IsPlayableBook(target))
+                        if (kind == "play" && IsPlayableTarget(target))
                             normalized["runSlot"] = "bookrun_" + Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(
                                 _runNamespace + ":" + Text(payload["token"])))).Substring(0, 24).ToLowerInvariant();
                         else if ((kind == "switch" && IsPermanentSlot(target))
@@ -306,11 +306,23 @@ namespace CF7Launcher.Tasks
                     state = message.Value<bool>("inRun") ? IsPlayableBook(Text(message["bookId"])) : Text(message["bookId"]) == "";
                 if (state && message["pendingBookId"] != null)
                     state = string.IsNullOrEmpty(Text(message["pendingRun"])) ? Text(message["pendingBookId"]) == "" : IsPlayableBook(Text(message["pendingBookId"]));
+                if (state && message["routeId"] != null)
+                    state = Text(message["bookId"]) == "cf6-sting" ? IsCf6Route(Text(message["routeId"])) : Text(message["routeId"]) == "";
+                if (state && message["pendingRouteId"] != null)
+                    state = Text(message["pendingBookId"]) == "cf6-sting" ? IsCf6Route(Text(message["pendingRouteId"])) : Text(message["pendingRouteId"]) == "";
+                if (state && message["returningRouteId"] != null)
+                    state = Text((message["returningResult"] as JObject)?["bookId"]) == "cf6-sting" ? IsCf6Route(Text(message["returningRouteId"])) : Text(message["returningRouteId"]) == "";
+                if (state && request.Kind == "play" && message.Value<bool>("inRun")
+                    && (request.Target == "cf6-sting.type61" || message["bookId"] != null))
+                    state = request.Target == "cf6-sting.type61"
+                        ? Text(message["bookId"]) == "cf6-sting" && Text(message["routeId"]) == "type61"
+                        : Text(message["bookId"]) == request.Target && (request.Target != "cf6-sting" || message["routeId"] == null || Text(message["routeId"]) == "historical");
                 if (state && message["lastTrialRecord"]?.Type != JTokenType.Null && message["lastTrialRecord"] != null)
                     state = message["lastTrialRecord"] is JObject trialRecord
                         && Text(trialRecord["bookId"]) == "lee-trial" && ValidResult(trialRecord, false);
                 if (state && message["records"] != null) state = ValidRecords(message["records"] as JObject);
                 if (state && message["cf6Records"] != null) state = ValidCf6Records(message["cf6Records"] as JObject);
+                if (state && message["cf6Type61Records"] != null) state = ValidCf6Records(message["cf6Type61Records"] as JObject);
                 if (state && message["returningResult"]?.Type != JTokenType.Null && message["returningResult"] != null)
                     state = ValidResult(message["returningResult"] as JObject, true);
                 if (state && phase == "switching" && request.Kind == "play" && _contextObservation == null)
@@ -384,6 +396,8 @@ namespace CF7Launcher.Tasks
             return null;
         }
         private static bool IsPlayableBook(string bookId) => bookId == "repair-campus" || bookId == "lee-trial" || bookId == "cf6-sting";
+        private static bool IsPlayableTarget(string target) => IsPlayableBook(target) || target == "cf6-sting.type61";
+        private static bool IsCf6Route(string route) => route == "historical" || route == "type61";
         private static bool BoundedInteger(JToken value, long maximum)
             => value?.Type == JTokenType.Integer && long.TryParse(value.ToString(), out long number) && number >= 0 && number <= maximum;
         private static bool ValidResult(JObject result, bool pending)

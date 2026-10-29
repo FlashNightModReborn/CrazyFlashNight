@@ -2011,6 +2011,75 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void TaskPlanWithoutDoneIsAcceptedAsSuccess()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B");
+            // 任务轮已收到完整 plan；流在 plan 后自然关闭、没有 done，仍应按成功收尾。
+            h.Transport.Script(
+                "event: plan\ndata: {\"end\":2,\"edits\":[{\"n\":1,\"kind\":\"edit\","
+                + "\"lines\":[{\"text\":\"改写的 A\",\"emotion\":\"普通\"}]}]}\n\n");
+
+            Assert.True(h.Controller.Submit("嗯。"));
+            Assert.Null(h.Controller.LastFailure);
+            Assert.False(h.Controller.IsTurnActive);
+
+            h.Widget.CompleteCurrentLineTyping();                // $PC 播完 → plan 应用
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState); // 玩家行仍在屏：隐藏
+            h.Advance();
+            Assert.Equal("改写的 A", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            h.Advance();
+            Assert.Equal("B", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
+        public void TaskStreamWithoutPlanOrDoneStillFails()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A");
+            h.Transport.Script("");
+
+            Assert.True(h.Controller.Submit("嗯。"));
+            Assert.Equal("stream_closed", h.Controller.LastFailure);
+            Assert.False(h.Controller.IsTurnActive);
+
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("A", h.Widget.CurrentFrame.Text);       // 回原对话
+        }
+
+        [Fact]
+        public void DailyStreamWithoutDoneStillFails()
+        {
+            using var h = new Harness();
+            h.AdoptBook("又是你。", "有事说事。");
+            h.Transport.Script(AddLine("先听我说。", 0));         // 没有 done
+
+            Assert.True(h.Controller.Submit("嗯。"));
+            Assert.Equal("stream_closed", h.Controller.LastFailure);
+
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("先听我说。", h.Widget.CurrentFrame.Text); // 已收台词照常播
+            h.Advance();
+            Assert.Equal("有事说事。", h.Widget.CurrentFrame.Text); // 之后接回原作
+        }
+
+        [Fact]
+        public void ActionTurnWithoutDoneStillFailsEvenWithPlan()
+        {
+            using var h = AcceptableDraftDialogue();
+            h.Transport.Script("event: plan\ndata: {\"mute\":false}\n\n");
+            h.Controller.SubmitChoice(true);                     // task_accept 动作轮
+
+            Assert.Equal("stream_closed", h.Controller.LastFailure);
+            Assert.False(h.Controller.HandoffForTest);
+        }
+
+        [Fact]
         public void MuteLocksGroupButKeepsPlayingAndResetsOnNewGroup()
         {
             using var h = new Harness();

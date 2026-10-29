@@ -1,21 +1,23 @@
 'use strict';
 // Pure checks. A book-run slot is admitted only by exact observed production identities.
 const {canonicalJson,sha256Text}=require('../workbench-live-e2e/kshop/common');
+const {resolveRoute}=require('./route-config');
 const SLOT=/^bookrun_[a-f0-9]{24}$/;
 function artifactSlot(entry) {
     const match=String(entry.locator||'').replace(/\\/g,'/').match(/\/([^/]+)\.(json|sol)$/i);
     return match ? match[1] : null;
 }
-function admit({before,request,receipt,receiptRequest,originSave,runSave,originSlot,instance}) {
+function admit({before,request,receipt,receiptRequest,originSave,runSave,originSlot,instance,routeId}) {
+    const route=resolveRoute(routeId);
     const active=originSave?.ext?.bookshelf?.active;
     const run=runSave?.ext?.bookRun;
     if (!request || request.type!=='panel' || request.panel!=='bookshelf' || request.domain!=='bookshelf'
             || request.cmd!=='commit' || request.panelInstanceId!==instance || !request.callId
-            || request.payload?.kind!=='play' || request.payload?.target!=='cf6-sting'
+            || request.payload?.kind!=='play' || request.payload?.target!==route.playTarget
             || !/^sha256:[a-f0-9]{64}$/.test(request.payload.token||'')) throw Error('missing exact observed production play request');
     if (!receipt || receipt.type!=='panel_resp' || receipt.panel!=='bookshelf' || receipt.domain!=='bookshelf'
             || receipt.panelInstanceId!==instance || receipt.token!==request.payload.token
-            || !['commit','query'].includes(receipt.cmd) || receipt.kind!=='play' || receipt.target!=='cf6-sting'
+            || !['commit','query'].includes(receipt.cmd) || receipt.kind!=='play' || receipt.target!==route.playTarget
             || receipt.success!==true || !['switching','applied'].includes(receipt.phase))
         throw Error('missing successful production entry receipt');
     const paired=receipt.cmd==='commit'?request:receiptRequest;
@@ -24,7 +26,7 @@ function admit({before,request,receipt,receiptRequest,originSave,runSave,originS
             ||paired.payload?.token!==request.payload.token)throw Error('entry receipt has no exact observed request');
     if (!active || !run || !SLOT.test(active.slot) || active.slot!==run.slot
             || active.bookId!=='cf6-sting' || run.bookId!=='cf6-sting'
-            || active.routeId!=='historical' || run.routeId!=='historical'
+            || active.routeId!==route.id || run.routeId!==route.id
             || active.originSlot!==originSlot || run.originSlot!==originSlot
             || active.seed!==run.seed || !Number.isInteger(run.seed) || run.seed<1
             || (receipt.pendingRun!==run.slot && receipt.activeSlot!==run.slot))
@@ -60,11 +62,12 @@ function assertCollateral(before,after,admission) {
     if (baseline.size) throw Error('preexisting save artifact disappeared');
     return {protectedArtifacts:a.length,affiliatedSlot:slot,affiliatedArtifacts:b.filter(entry=>artifactSlot(entry)===slot)};
 }
-function assertReturned(before,after,slot) {
-    const result=after?.ext?.bookshelf?.routes?.['cf6-sting.historical'];
+function assertReturned(before,after,slot,routeId) {
+    const route=resolveRoute(routeId);
+    const result=after?.ext?.bookshelf?.routes?.['cf6-sting.'+route.id];
     const record=result?.history?.find(entry=>entry.runId===slot);
     if (after?.ext?.bookRun || after?.ext?.bookshelf?.active || after?.ext?.bookshelf?.lastRun!==slot
-            || !record || record.bookId!=='cf6-sting' || record.routeId!=='historical' || record.sp!==0
+            || !record || record.bookId!=='cf6-sting' || record.routeId!==route.id || record.sp!==0
             || !['victory','failure','defeat','retreat','abandoned'].includes(record.outcome))
         throw Error('origin clone has no settled exact CF6 result');
     // Temporary build must never cross back into the origin clone's character assets.
@@ -74,22 +77,28 @@ function assertReturned(before,after,slot) {
     return {runId:slot,outcome:record.outcome,sp:record.sp,originAssetsUnchanged:true,routeId:record.routeId};
 }
 function assertActor(save,chapter) {
-    const actor=chapter.actor,core=save['0'],appearance=save['1'];
-    if(!core||core[0]!==actor.name||core[1]!==actor.gender||core[3]!==60||core[4]!==157526193
+    const route=resolveRoute(chapter.routeId),actor=chapter.actor,core=save['0'],appearance=save['1'];
+    if(!core||core[0]!==actor.name||core[1]!==actor.gender||core[3]!==route.level||core[4]!==route.experience
             ||core[5]!==actor.height||core[6]!==chapter.startingSkillPoints||core[2]!==chapter.startingMoney
             ||appearance?.[0]!==actor.face||appearance?.[1]!==actor.hair)
-        throw Error('historical initial actor or spendable resources differ from chapter');
+        throw Error('selected-route initial actor or spendable resources differ from chapter');
     const equipment=save.inventory?.装备栏;
-    if(!equipment)throw Error('historical equipment container absent');
+    if(!equipment)throw Error('selected-route equipment container absent');
     for(const entry of actor.equipment) {
-        if(equipment[entry.slot]?.name!==entry.name||equipment[entry.slot]?.value?.level!==11)
-            throw Error('historical initial equipment or enhancement mismatch: '+entry.slot);
+        if(equipment[entry.slot]?.name!==entry.name||equipment[entry.slot]?.value?.level!==route.enhancement)
+            throw Error('selected-route initial equipment or enhancement mismatch: '+entry.slot);
     }
     const learned=(save['5']||[]).filter(row=>Array.isArray(row)&&row[0]);
     if(learned.length!==actor.skills.length||new Set(learned.map(row=>row[0])).size!==learned.length
             ||actor.skills.some(skill=>!learned.some(row=>row[0]===skill.name&&row[1]===skill.level)))
-        throw Error('historical fixed initial skill list mismatch');
-    return {name:core[0],level:core[3],experience:core[4],equipmentCount:actor.equipment.length,
-        fixedSkillCount:learned.length,allInitialEnhancements:11,spendableSp:core[6]};
+        throw Error('selected-route fixed initial skill list mismatch');
+    if(route.id==='type61') {
+        const quick=actor.quickSkills||[];
+        if(!Array.isArray(save['1'])||save['1'].length<28
+                ||Array.from({length:12},(_,i)=>save['1'][16+i]).some((v,i)=>v!==(quick[i]||'')))
+            throw Error('Type61 initial quick skills differ from the chapter');
+    }
+    return {routeId:route.id,name:core[0],level:core[3],experience:core[4],equipmentCount:actor.equipment.length,
+        fixedSkillCount:learned.length,allInitialEnhancements:route.enhancement,spendableSp:core[6]};
 }
 module.exports={admit,assertCollateral,assertReturned,assertActor,artifactSlot,SLOT};

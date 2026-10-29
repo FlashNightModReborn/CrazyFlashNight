@@ -646,6 +646,26 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
             malformedCf6.bestMs=Number.NaN;
             result=BookshelfPanelService.execute("snapshot",{v:1,token:token});
             check(result.cf6Records==undefined,"damaged CF6 summary is omitted instead of sending NaN or campus fallback");
+            setup();token=open();
+            var type61Active:Object=PersistedSnapshot.clone(cf6Active);type61Active.routeId="type61";type61Active.slot="bookrun_type61_fixture";
+            _root._saveExt.bookshelf={active:type61Active,routes:{}};
+            _root._saveExt.bookshelf.routes["cf6-sting.historical"]=PersistedSnapshot.clone(cf6History);
+            var type61Result:Object=PersistedSnapshot.clone(type61Active);type61Result.outcome="victory";type61Result.elapsedMs=9000;
+            wrongRoute=PersistedSnapshot.clone(type61Result);wrongRoute.routeId="historical";
+            check(BookshelfPanelService.execute("commit",{v:1,token:token,kind:"settle",target:type61Active.slot,snapshot:{ext:{bookRun:wrongRoute}}}).error=="invalid_target",
+                "a recognized historical route still cannot settle a Type61 credential");
+            result=BookshelfPanelService.execute("commit",{v:1,token:token,kind:"settle",target:type61Active.slot,snapshot:{ext:{bookRun:type61Result}}});
+            check(result.phase=="save_pending" && result.cf6Type61Records==undefined && result.cf6Records.bestMs==15000,
+                "unknown Type61 settlement keeps its new record hidden and historical summary intact");
+            result=BookshelfPanelService.execute("query",{v:1,token:token});
+            check(result.phase=="applied" && result.cf6Type61Records.bestMs==9000 && result.cf6Records.bestMs==15000,
+                "confirmed Type61 and historical summaries are separate");
+            var type61History:Object=_root._saveExt.bookshelf.routes["cf6-sting.type61"];
+            check(type61History.history[0].routeId==="type61" && type61History.clears===1 && _root.技能点数===100,
+                "Type61 keeps durable route identity with no original-character SP gain");
+            BookshelfPanelService.execute("commit",{v:1,token:token,kind:"settle",target:type61Active.slot,snapshot:{ext:{bookRun:type61Result}}});
+            check(type61History.clears===1 && _root._saveExt.bookshelf.routes["cf6-sting.historical"].clears===1,
+                "duplicate Type61 settlement changes neither route record");
             testDirectStageReturn();
             testReturnUiWaitsForCurtain();
             testContextArrivalWaitsForCurtain();

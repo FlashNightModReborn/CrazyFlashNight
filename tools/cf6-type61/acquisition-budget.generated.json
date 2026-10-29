@@ -1,0 +1,629 @@
+{
+  "sourceHashes": {
+    "data/crafting/list.xml": "240543599a86e10909ea6c72d710fc3ea5d5026927004b42c485c0e6a8d28a68",
+    "data/crafting/公社防具.json": "ebe6d4941729ad5cf560a0658816bf8cf1c1ca85426ab800273be039ddf130c0",
+    "data/crafting/化学生产.json": "aaa663ba913c49bdd48d6f909a90c48a14eeb95959f0295545fd61525417c1ad",
+    "data/crafting/基础防具.json": "899589af0702490edd672b7487a7a0f73ee0bf8630492bd247f87725b42cd3f6",
+    "data/crafting/大学装备.json": "be7fbf4d374a4be452dc1e42436adcf3e36eaeb4d90579186983101372ba8318",
+    "data/crafting/属性武器.json": "e0a51b6a29166d5a191cf80e614fb8b25b428767597d224dc36ad7279b550613",
+    "data/crafting/插件合成.json": "fc442dccb3cb6982a71c0054c9b670bad32a4e592cd42adc71881057e63e599e",
+    "data/crafting/武器合成.json": "fb09eab4dd0dd201fe1c961cade3f8f7967c0c9ba224a3feab30ae7cfc1a3962",
+    "data/crafting/烹饪.json": "d0e22f5b873c6ef9a99271c5ee779ec6cb376bf7b619af0e4b2409c0e2683d44",
+    "data/crafting/调酒.json": "9a22e2df9a6164bc14813903c1067a14c27a5006284ae4e10d2862b8c971b445",
+    "data/crafting/进阶防具.json": "be901e81db70eae74689ce1e145ada029ae04d670acbae878e77c348480740c9",
+    "data/crafting/铁枪会.json": "b0c8fc771655b673500d9a4446d1013b095e3c92c012cb38c47d6ada7f49d64d",
+    "data/crafting/饰品合成.json": "b7efc50cdb6e762b2504a801068301d050c710469b3f70efc6717b15526acb07",
+    "data/crafting/黑白契约.json": "49962fb8db0e6ec5cf8f1c7a476814a87b026c4ffd379b012546a4427e17b7c9",
+    "data/items/收集品_情报.xml": "3c5d4cb260cc8a10fa66c8ab0ca5e8e48c1206adc921e5f0fc6ac42fafc63ef2",
+    "data/items/收集品_材料.xml": "14ff9160ec792bc4a36677397e1030f7b38c48ea1562d30e3780d6b6012aaa3b",
+    "data/items/收集品_材料_插件.xml": "17c2a1b9f20ccfc52f9e0c381bbb7646f64d80803c99cd0e83e9d83fdd71b856",
+    "data/items/武器_刀_刀剑.xml": "13cfe9b89ed46e267d15acc048738dc1ccbc2a97ae17fc4e4c475ab3636e9779",
+    "data/items/武器_刀_双刀.xml": "6d45577ec9f43776a8a04b70e9a77761d9d9307bac3b39e42a5b4eb13a826f85",
+    "data/items/武器_刀_棍棒.xml": "f6b8167729c85e143273d57848a65a8beb66bc7181fd997196966aaf7c648c56",
+    "data/items/武器_刀_狂野.xml": "e985751474193e2da9e0e52f0440775bdcf8af729f7eae6f3d746aaaed75d647",
+    "data/items/武器_刀_疾影.xml": "3efa9437fdd6d827f33f002143d489916fc3f6f2cc84c65ae4eab42a7b5552d7",
+    "data/items/武器_刀_直剑.xml": "d36da20c96e60a69550b9ae69eadb53b932d58a956fa107bdfcee7f28ec2d5ee",
+    "data/items/武器_刀_短兵.xml": "d8b1e0d024c6b7429d5fe8c10ac6ba77b97f1813fb6a9ab1aacd323d63f302de",
+    "data/items/武器_刀_短柄.xml": "2ad4be08e83f8941ce7c342c5251e7417cbe8a8b94c381b29486904ac702583b",
+    "data/items/武器_刀_迅捷.xml": "8411b1b9d499837bf96935681693635590154ea825c32f77b71b5baa5b6cff0b",
+    "data/items/武器_刀_重斩.xml": "412813a8361865e2839266ab89a2816664545c8e64a56c46250c32910379fd61",
+    "data/items/武器_刀_镰刀.xml": "55e253bd29ea888db5bff9093ac150b361f40dc06b0f28ee03864b33025c1d6c",
+    "data/items/武器_刀_长刀.xml": "a31d3d6bf8aa3bc90ff64a753b8945a0472bcfcd19f4f681710b27fb5a792c45",
+    "data/items/武器_刀_长枪.xml": "9cc07d71224c80a11dedf336885c46661cc56c2951cb4b769df9e42f5c70b378",
+    "data/items/武器_刀_长柄.xml": "63a4654f8f44f388579280ccc91758407c591bfee2594351f27e1d2b8931a312",
+    "data/items/武器_刀_长棍.xml": "de3abbf8890962ad4a8c605885b4e3476c6c5daeb9a73a4c93c09cd671a9cd54",
+    "data/items/武器_刀_默认.xml": "6a7827f9ab624151ff3f0603f57cd0dc1a3093a9906e5fb5f9e471bf28257cb6",
+    "data/items/武器_手枪_冲锋枪.xml": "fb15c6bf327525573200fa6d2f4c0b411d887397ab53294491b7f48ccc7bc19c",
+    "data/items/武器_手枪_压制冲锋枪.xml": "f1f95ce5ed2ce8b04c6e7461f74b4cd493c3207fa3ca5fe76fb8339923e1934e",
+    "data/items/武器_手枪_压制机枪.xml": "b0a9b29ad9ff628eb992591eeb1d2451296b832e31d7ad30bdbcfb3e0f07ca0f",
+    "data/items/武器_手枪_反器材武器.xml": "abda8608c4cce45e82119b7245c28a57bf048d03f5d09e781cfdc0c14f298c78",
+    "data/items/武器_手枪_发射器.xml": "e4cfe058c064447f9fb6803a29f84069720fbebbb8c33a39bbf073612724a347",
+    "data/items/武器_手枪_大威力手枪.xml": "9fc68c4193af3809819e4a6ede3e357e9d1785a825218d3ab5ec3c9a3f277510",
+    "data/items/武器_手枪_手枪.xml": "4dfd394c4dcacb39cc9993fa2718fae791efc3d3027d8915f98b2cc0d5dfaa47",
+    "data/items/武器_手枪_特殊.xml": "7e339dc595b8f7d49c2182ce98634f3015f1a19a23f9fefb63f34de6e90962c1",
+    "data/items/武器_手枪_突击步枪.xml": "cdd4f1ff66e29e32187fe6299fa10f366a4b3255f5625f9f5f7775ce07b0c512",
+    "data/items/武器_手枪_霰弹枪.xml": "2941d6dd2781c3565353ed52fd7a70a844b05bbbffcb688c9cc7a49faea35369",
+    "data/items/武器_长枪_冲锋枪.xml": "269681648a3e322d86962411d14690ed96030f497dbba45b0a2f2a408bbfe923",
+    "data/items/武器_长枪_压制机枪.xml": "66e018b9fb1ec2c8c0721261969bd11f6f1a29772ee29959b7e7e18938481897",
+    "data/items/武器_长枪_压制近战.xml": "619dbec449c9cf61edb6fbee6104ed45483c4d17d3ee71a32c7bc9cdce30e758",
+    "data/items/武器_长枪_反器材武器.xml": "fa126aea6522dc98c289837dcd10a3f5c7f6faa321aa7cea0017e6eb3d9e7e46",
+    "data/items/武器_长枪_发射器.xml": "5a2f3d3ef6c41d31e358ca2f20acd839c2d827e0228f8b9fdd92c71e3aa632ed",
+    "data/items/武器_长枪_弓弩.xml": "e95b89601ba0d635942de60a6a36fc1fa7ad0b044c9007d79b2dbd18cf83b719",
+    "data/items/武器_长枪_战斗步枪.xml": "f49a2b70027d233ae75c95913ad0331e78b1e29fc046bb44492f5c7f5fbb60a4",
+    "data/items/武器_长枪_机枪.xml": "290c1c4fcfd186adcdc097f3628fa5a5e187dda71c640401e8c303866499c89b",
+    "data/items/武器_长枪_特殊.xml": "bfb3c6075caf3956b71222e21da40be3228583a478fed1b358e77a5017889d61",
+    "data/items/武器_长枪_狙击步枪.xml": "0dcdf9aff5f8bbc4b7e7d57c169f61056f353bb34fc168aeeb41c4d55a1747b5",
+    "data/items/武器_长枪_突击步枪.xml": "1f369fbbbf0ca227d478e6ba134e1f4e52803db2dfcd00e09aaff013a52323c4",
+    "data/items/武器_长枪_近战.xml": "8d3d8a556cb6838740462d9a56dd326adb8251b5dd0c4221aa16b11643482ff9",
+    "data/items/武器_长枪_霰弹枪.xml": "e68ba53aa8e0a71e34d747782a6942d5260546ace079dcabd8a94c4fbceebde4",
+    "data/items/消耗品_CF6六一配给.xml": "ac4ee0d4f379603e3916d5585ee31e80cafb7b0726a59b0b54439c9a1a860a38",
+    "data/items/消耗品_书中配给.xml": "ed7681414d0fc9fb71d5f63b7001da2339f4b26aa8588585b98f3641e6a88b4a",
+    "data/items/消耗品_弹夹.xml": "7afc054811da6395867f9322da65ebfa8150cd998a1e142f868d1ab3ea5cc7da",
+    "data/items/消耗品_战场补给.xml": "fccc0e2ee5b2279f78fac37c388f87c7409d237f30c436d1c67ff456812c918c",
+    "data/items/消耗品_手雷.xml": "192e8630d7673fc34f777bd9271828f08abf46cf539ca3715f176d83631f2e0f",
+    "data/items/消耗品_材料_食材.xml": "fba0d92b29582f12e978ec3e83f0ce5821eea25fb7592ef964c124592573e80c",
+    "data/items/消耗品_礼包.xml": "30dac5d88ddfb40f95cd8cd928b21adb7c042d3d04b15e94619937452d34eb07",
+    "data/items/消耗品_自选配给.xml": "aa1bd185ef843ff15239a42f840bd1578aad8263463c9418e3ff733fb10d038d",
+    "data/items/消耗品_药剂.xml": "dda70d541217333a7d499de92d7db1676bc7301065fe1514858d89e286e32207",
+    "data/items/消耗品_药剂_九龙.xml": "a9b4a15ca280075e91c95f49fd6ac8ea40a54234d5aa0b43bfe6bb4095feaf90",
+    "data/items/消耗品_药剂_食品.xml": "431d31b569a911fd614ed7260e720bfd459fcdfe85f0811943654f857cb2db4f",
+    "data/items/消耗品_货币.xml": "6c42ef823ffc2db4f2279303c0daf753cf309a05697007bf4fac147ac16148c5",
+    "data/items/消耗品_酒水.xml": "210b0326a8d84ab47c5cdab3949c47a22e192d19724f3a01e9c2109dcd589795",
+    "data/items/防具_0-19级.xml": "e181f1a94bf44b7f55f012fc2ef2679389701d48c608735cb6660dd0f9dfebc7",
+    "data/items/防具_20-39级.xml": "6220201e0fd9969bfaf2421d796be33410c7d4a2a82460156988fe4370afa550",
+    "data/items/防具_40+级.xml": "aa495f77a7e12e6d7fc6f94d30668b62ccf967db05155153835131ecdb642b6d",
+    "data/items/防具_颈部装备.xml": "dc161502dae73074895651089b418c5c30cbf488562f1709ec34f92b3bf6f349",
+    "data/kshop/A兵团官方周边直营店.json": "d8ef24d374f9bc9703ff91ab32384addc046dade70ae7ab345cc0889cc7acee3",
+    "data/kshop/list.xml": "5e15102ee56aab35bb06b9cd3e3eadc7ba79642063ba020fbe165dfab4aecc71",
+    "data/kshop/【数据错误-未知来源军火】.json": "4b0a2eb44691f986a6eba0cefe64ee60602fa8c415e015f4a4201816d2376e9d",
+    "data/kshop/乱七八糟.json": "ae28a3fe0395506da7bae748792379465f55f268763df22c4b439df5337edbda",
+    "data/kshop/堕落城浮世安保专卖店.json": "f3bb7ee21020e16cb5e108aeaaa7077df72f6054133512a5b15663be10f66fa4",
+    "data/kshop/天地玄黄慈悲万怀兵器库.json": "9c48bb69e53a1384e761f2eb1bd6251b60e1f693c86f146a6d9963d8106992d0",
+    "data/kshop/情趣店.json": "75fda78dd89f7a34c27ac7276707699706005dfa35ab676e6b695f408f5bf799",
+    "data/kshop/末日COS☆PLAY.json": "bbbd8819fde8b30f3bd3185df9799dffbe68aa5f2c27ca837e765cf415e2d63b",
+    "data/kshop/武术联盟.json": "1baee39f2f906c1b1c8aaff6d6bf58f2f15e0ea60822d0ce2395737272307ffc",
+    "data/kshop/统合尘都临时政府卫生部.json": "9ec174c5928c73f1af7dbda2fe22c09b7433e9ea53e8fc2922073107cfa3912b",
+    "data/kshop/联合大学D.L.S.研究中心.json": "b79fcd479a6f0fab63a1a6befbf65994bdc8c3747d0d67df964a2719ca7c2e8d",
+    "data/kshop/联合大学校服批发.json": "9b9bf3a456fd7d644b05b37b8a728139788a95a65d9ce8a68e305693ad180dca",
+    "data/kshop/莱昂利亚自由革命军军火出口.json": "d15f9ac63ee7c7e2a14cc158325932aae7124fc2fc0236e60a783042ea498269",
+    "data/kshop/蓉都公社弹药加工厂.json": "a8f8d1bef46cad1cebf1df63240af3379e29824836ffab3d0b1b645edbed5040",
+    "data/shops/list.xml": "66343c107900858bfe86ef96768194342845760e76ee9e7ca620a19d2b225540",
+    "data/shops/npcs/Andy Law.json": "9a443407c3fe924d8229ae6cefdbe564fdc0c863c196c30da8659fe5c2bb9df8",
+    "data/shops/npcs/Blue.json": "9c02aece389cbc27e392463ea9b2594febf0aa786e8aad05a22c47fc36bf27f9",
+    "data/shops/npcs/Boy.json": "fc5d9800d20a9e49df52da45f7cb2d32d98d3375a87d04aa2b3d1baa6ea5db46",
+    "data/shops/npcs/general.json": "ddcd4f9a325c4158704f9326d08d019e440afc842f527983f70ba1dfa2f7c1eb",
+    "data/shops/npcs/Guitar.json": "231d6c5bcd3c7fc0cb32c42186b426393ba8a1ca79b3caef524ab5e01ea611b1",
+    "data/shops/npcs/heeho君.json": "cb580838c3342b71222c68741f1b4b0bea973b56f38e907695ff629657a6338a",
+    "data/shops/npcs/Keyboard.json": "9bd10f1a965a0ea7c448c7f8eaa7a2069a00384f046919f2b416ed619ed9f8a4",
+    "data/shops/npcs/King.json": "bc8597cd5f0414e09dea402166fb02354ac1cf3c0cbc609d04d5d3079a7f33a6",
+    "data/shops/npcs/Pig.json": "1f6517271a06c6842535f38257b8565d104f3df66bcc5fe3a902ca6a57d65b97",
+    "data/shops/npcs/Shop Girl.json": "a36b9d4f8af6921b3c30ddfc269e20b296229a0dd1aee2a09bf24e169e0c18d2",
+    "data/shops/npcs/Singer.json": "92e65361a0b8e039023d923297be3c3f20c6d20ab05290a4391207882b5ef833",
+    "data/shops/npcs/soldier.json": "f3e1034de9f036bd1961324f167bebc019ecb13641597f2ab0acfdbabcc5d078",
+    "data/shops/npcs/The Girl.json": "0f7740893466ca372af13007b807e9a1088abefeebee15a2e01eed714db8d76d",
+    "data/shops/npcs/Vanshuther.json": "f37f4dd7ddd7edc5439f48fa2d0c85555894eeae082a54e83345a0320f6f4af8",
+    "data/shops/npcs/丽丽丝.json": "f2c8e52014d444cc83b6d1fd1886fea1c0e5eb146258450d41e7b678bfc86545",
+    "data/shops/npcs/体育老师.json": "e629230d5aa0c292132f1e0f9977aad478d803966bab4b282d537c45b384036f",
+    "data/shops/npcs/冷兵器商人.json": "67ce7d7c0de91c24690ce9db2b287367101f017334dcbcc8435dd217fb0ba8e3",
+    "data/shops/npcs/前治安官.json": "999b8b4fe2cd91fe67fcb5b773fca9b460b70c2dc15ca4ff5101cfe89f329be1",
+    "data/shops/npcs/厨师.json": "1eaa1ae562bd07ae086c4f0ffa95516d14193eb7202298d486b4ce53a6497875",
+    "data/shops/npcs/吸特乐.json": "9b5381f6262e60c400757a1fac1663c51a76aabaf078477a5e4b83594f5731c9",
+    "data/shops/npcs/学生妹.json": "bda2f41d2d9159eba1e0118fa998c89446c82fb7638c698cf4971922a12e582c",
+    "data/shops/npcs/宝石线人.json": "c76a2d2db8170bdf6cc2d50eef38ed6e06c154c7a10190fc8f11846c04bf7c37",
+    "data/shops/npcs/小F.json": "bd7d8c304b50c432cace27ff03b0f1636af276e71602729852dfc83a23a30074",
+    "data/shops/npcs/幸存老兵-暂时停用.json": "029a76edae98390d312236fd9c5034e87d6720830e2d1a920ccf79c5afa9fc35",
+    "data/shops/npcs/格格巫.json": "ff4f18bf9a5c49c10f4ca7df65d289306b29b05f54b3a86391670eca3a0f6d74",
+    "data/shops/npcs/武器大师.json": "b7b7d6c37d5e87eac4934ead03b8ca38411ba2d5bf042ca120cce873f8b785f8",
+    "data/shops/npcs/武器订购系统.json": "1189b581f282ac7f0e0526c9f9f901eba8cce27cc5b2a4912fd10cbe28322982",
+    "data/shops/npcs/爱国青年.json": "6d314fc6948c0fd9f2f3178ebf967af7bdc188bb80a7043b1eed57f7a93c9fe0",
+    "data/shops/npcs/翅虎.json": "265fbeeeac0cea4232af1df1f03a8789965c38fb9969429294dbd44f37718df4",
+    "data/shops/npcs/舞女.json": "0813b693654cdb082c054edb2d1a26e2286cecd1d547a4eda08ad6e8e7499333",
+    "data/shops/npcs/虎妙.json": "ace7b04399243bddf66f73410912cc03cf3bf584fc82fb888cfc8f0c1eb67733",
+    "data/shops/npcs/诺艾尔.json": "d3b19aaeace28939a61a93b5eb2b6146d18bec3ddf722e25ab83a867913d61e3",
+    "data/shops/npcs/调酒师.json": "fc6598ecc988bfbde153dbd6f1663bb9eb42ec23e4a522cce5247db869f37624",
+    "data/shops/npcs/迷之盔甲君.json": "f99ded50437dbc4b650f214933df000593faf4ba3eb47ba7fb33c353fe8816a4",
+    "data/shops/npcs/酒保.json": "feb35583adc13dfbfe70ad09c5fad5fa5a1b17c72064822ff2ee513ad3fa3018",
+    "data/shops/npcs/阿卡.json": "2c912a67792a998d3b048f8a2258046317aa035504acfd978dc65aaa6a364951",
+    "data/shops/npcs/黑仔.json": "44ed6b2efd775601c786b4d2d2495ff3fd5fa1aa2de0e86cbd144522ac3d032d",
+    "data/shops/npcs/黑铁会外交部长.json": "8d67a86e28271732833198c35c54c5bc1d86197cad3d9132a852cb798c938d8b",
+    "data/shops/npcs/黑龙.json": "0f3b65de56d0e5123b38d2b0305ad01d24c1ffa86060fce3f5565926a2c2366b",
+    "data/stages/books/cf6-type61.json": "a4db0ab28e2fa704240e06e45270fd35b2ee5a72d4efe607ac3e3f0b9fb1bce7",
+    "tools/cf6-type61/acquisition-budget.py": "3109f66815cfe84f790a5dbccfde57563e6661ff927a2b944cc7363dc78dc7fb",
+    "tools/cf6-type61/recipes.generated.json": "a5564665a449b2b9de69126ed4d519d46959d3be26a7ab8fe7abd8ad499932fd",
+    "tools/cf6-type61/route.source.json": "b0d200eaad731f53d4e829ab8e6b67732b3b3ba91d291706a26a2960335c16ae",
+    "tools/cf6_acquisition.py": "cf19a21734f76b18fae5cc4be7631ec93b91123fe1e97e7b70a5bc209f4376fb"
+  },
+  "schema": "cf6-acquisition-budget.v1",
+  "throughNode": null,
+  "purchaseNode": null,
+  "scope": "Static fixed-allowance procurement bound for the explicit ten-slot enhancement plan, including necklace. No survival, full-run or blood-sword guarantee.",
+  "assumptions": [
+    "Original gold/K/crafting channels; smith1 remains enabled",
+    "No sales, death gold/K, random high-mod rewards or optional drop materials credited",
+    "One usable initial ordinary constellation is free; this model does not assume the rare blood sword",
+    "Current procurement list and per-item fees only; not a timing or damage simulation"
+  ],
+  "routes": [
+    {
+      "primary": "M134",
+      "baseProcurement": {
+        "gold": 1190000,
+        "K": 80400
+      },
+      "steps": [
+        {
+          "item": "统合61式头部装甲",
+          "via": "craft",
+          "recipeId": "craft.unified61.helmet",
+          "gold": 57000,
+          "K": 5130
+        },
+        {
+          "item": "钛合金61式头部装甲",
+          "via": "craft",
+          "recipeId": "craft.cf6-type61.titanium.0",
+          "gold": 95000,
+          "K": 8550
+        },
+        {
+          "item": "统合61式胸甲",
+          "via": "craft",
+          "recipeId": "craft.unified61.chest",
+          "gold": 57000,
+          "K": 5130
+        },
+        {
+          "item": "钛合金61式胸甲",
+          "via": "craft",
+          "recipeId": "craft.cf6-type61.titanium.1",
+          "gold": 95000,
+          "K": 8550
+        },
+        {
+          "item": "统合61式腿甲",
+          "via": "craft",
+          "recipeId": "craft.unified61.leg",
+          "gold": 57000,
+          "K": 5130
+        },
+        {
+          "item": "钛合金61式腿甲",
+          "via": "craft",
+          "recipeId": "craft.cf6-type61.titanium.2",
+          "gold": 95000,
+          "K": 8550
+        },
+        {
+          "item": "统合61式手甲",
+          "via": "craft",
+          "recipeId": "craft.unified61.glove",
+          "gold": 57000,
+          "K": 5130
+        },
+        {
+          "item": "钛合金61式手甲",
+          "via": "craft",
+          "recipeId": "craft.cf6-type61.titanium.3",
+          "gold": 95000,
+          "K": 8550
+        },
+        {
+          "item": "统合61式装甲鞋",
+          "via": "craft",
+          "recipeId": "craft.unified61.boot",
+          "gold": 57000,
+          "K": 5130
+        },
+        {
+          "item": "钛合金61式装甲鞋",
+          "via": "craft",
+          "recipeId": "craft.cf6-type61.titanium.4",
+          "gold": 95000,
+          "K": 8550
+        },
+        {
+          "item": "M134",
+          "via": "gold",
+          "gold": 230000
+        },
+        {
+          "item": "钛合金P90",
+          "via": "K",
+          "K": 6000
+        },
+        {
+          "item": "钛合金P90",
+          "via": "K",
+          "K": 6000
+        },
+        {
+          "item": "水冷机构",
+          "via": "gold",
+          "gold": 50000
+        },
+        {
+          "item": "纳米执行单元",
+          "via": "gold",
+          "gold": 50000
+        },
+        {
+          "item": "黑爪扩张弹",
+          "via": "gold",
+          "gold": 50000
+        },
+        {
+          "item": "黑爪扩张弹",
+          "via": "gold",
+          "gold": 50000
+        }
+      ],
+      "primaryMods": [
+        "战术鱼骨零件",
+        "水冷机构",
+        "纳米执行单元"
+      ],
+      "piecesAt11": 10,
+      "enhancementPlan": [
+        11,
+        11,
+        11,
+        11,
+        11,
+        11,
+        11,
+        11,
+        11,
+        11
+      ],
+      "requiredStones": 19280,
+      "stonesPerPiece": 1928,
+      "missingStones": 9278,
+      "kForMissingCurrency": 0,
+      "goldForMissingK": 0,
+      "goldForStones": 2665800,
+      "reserve": 150000,
+      "totalGoldAfterFixedK": 4005800,
+      "fixedGold": 4750000,
+      "fixedK": 100000,
+      "balanceBeforeDropsAndSales": 744200
+    },
+    {
+      "primary": "M134暴力版",
+      "baseProcurement": {
+        "gold": 910000,
+        "K": 130400
+      },
+      "steps": [
+        {
+          "item": "统合61式头部装甲",
+          "via": "craft",
+          "recipeId": "craft.unified61.helmet",
+          "gold": 57000,
+          "K": 5130
+        },
+        {
+          "item": "钛合金61式头部装甲",
+          "via": "craft",
+          "recipeId": "craft.cf6-type61.titanium.0",
+          "gold": 95000,
+          "K": 8550
+        },
+        {
+          "item": "统合61式胸甲",
+          "via": "craft",
+          "recipeId": "craft.unified61.chest",
+          "gold": 57000,
+          "K": 5130
+        },
+        {
+          "item": "钛合金61式胸甲",
+          "via": "craft",
+          "recipeId": "craft.cf6-type61.titanium.1",
+          "gold": 95000,
+          "K": 8550
+        },
+        {
+          "item": "统合61式腿甲",
+          "via": "craft",
+          "recipeId": "craft.unified61.leg",
+          "gold": 57000,
+          "K": 5130
+        },
+        {
+          "item": "钛合金61式腿甲",
+          "via": "craft",
+          "recipeId": "craft.cf6-type61.titanium.2",
+          "gold": 95000,
+          "K": 8550
+        },
+        {
+          "item": "统合61式手甲",
+          "via": "craft",
+          "recipeId": "craft.unified61.glove",
+          "gold": 57000,
+          "K": 5130
+        },
+        {
+          "item": "钛合金61式手甲",
+          "via": "craft",
+          "recipeId": "craft.cf6-type61.titanium.3",
+          "gold": 95000,
+          "K": 8550
+        },
+        {
+          "item": "统合61式装甲鞋",
+          "via": "craft",
+          "recipeId": "craft.unified61.boot",
+          "gold": 57000,
+          "K": 5130
+        },
+        {
+          "item": "钛合金61式装甲鞋",
+          "via": "craft",
+          "recipeId": "craft.cf6-type61.titanium.4",
+          "gold": 95000,
+          "K": 8550
+        },
+        {
+          "item": "M134暴力版",
+          "via": "K",
+          "K": 50000
+        },
+        {
+          "item": "钛合金P90",
+          "via": "K",
+          "K": 6000
+        },
+        {
+          "item": "钛合金P90",
+          "via": "K",
+          "K": 6000
+        },
+        {
+          "item": "水冷机构",
+          "via": "gold",
+          "gold": 50000
+        },
+        {
+          "item": "黑爪扩张弹",
+          "via": "gold",
+          "gold": 50000
+        },
+        {
+          "item": "黑爪扩张弹",
+          "via": "gold",
+          "gold": 50000
+        }
+      ],
+      "primaryMods": [
+        "水冷机构"
+      ],
+      "piecesAt11": 10,
+      "enhancementPlan": [
+        11,
+        11,
+        11,
+        11,
+        11,
+        11,
+        11,
+        11,
+        11,
+        11
+      ],
+      "requiredStones": 19280,
+      "stonesPerPiece": 1928,
+      "missingStones": 9278,
+      "kForMissingCurrency": 30400,
+      "goldForMissingK": 1520000,
+      "goldForStones": 2783400,
+      "reserve": 150000,
+      "totalGoldAfterFixedK": 5363400,
+      "fixedGold": 4750000,
+      "fixedK": 100000,
+      "balanceBeforeDropsAndSales": -613400
+    },
+    {
+      "primary": "钛合金QJZ171",
+      "baseProcurement": {
+        "gold": 2101450,
+        "K": 120495
+      },
+      "steps": [
+        {
+          "item": "统合61式头部装甲",
+          "via": "craft",
+          "recipeId": "craft.unified61.helmet",
+          "gold": 57000,
+          "K": 5130
+        },
+        {
+          "item": "钛合金61式头部装甲",
+          "via": "craft",
+          "recipeId": "craft.cf6-type61.titanium.0",
+          "gold": 95000,
+          "K": 8550
+        },
+        {
+          "item": "统合61式胸甲",
+          "via": "craft",
+          "recipeId": "craft.unified61.chest",
+          "gold": 57000,
+          "K": 5130
+        },
+        {
+          "item": "钛合金61式胸甲",
+          "via": "craft",
+          "recipeId": "craft.cf6-type61.titanium.1",
+          "gold": 95000,
+          "K": 8550
+        },
+        {
+          "item": "统合61式腿甲",
+          "via": "craft",
+          "recipeId": "craft.unified61.leg",
+          "gold": 57000,
+          "K": 5130
+        },
+        {
+          "item": "钛合金61式腿甲",
+          "via": "craft",
+          "recipeId": "craft.cf6-type61.titanium.2",
+          "gold": 95000,
+          "K": 8550
+        },
+        {
+          "item": "统合61式手甲",
+          "via": "craft",
+          "recipeId": "craft.unified61.glove",
+          "gold": 57000,
+          "K": 5130
+        },
+        {
+          "item": "钛合金61式手甲",
+          "via": "craft",
+          "recipeId": "craft.cf6-type61.titanium.3",
+          "gold": 95000,
+          "K": 8550
+        },
+        {
+          "item": "统合61式装甲鞋",
+          "via": "craft",
+          "recipeId": "craft.unified61.boot",
+          "gold": 57000,
+          "K": 5130
+        },
+        {
+          "item": "钛合金61式装甲鞋",
+          "via": "craft",
+          "recipeId": "craft.cf6-type61.titanium.4",
+          "gold": 95000,
+          "K": 8550
+        },
+        {
+          "item": "QJZ171",
+          "via": "gold",
+          "gold": 460000
+        },
+        {
+          "item": "SVD",
+          "via": "K",
+          "K": 5000
+        },
+        {
+          "item": "中国88式狙击步枪改造版",
+          "via": "gold",
+          "gold": 200000
+        },
+        {
+          "item": "突击型光学瞄具",
+          "via": "gold",
+          "gold": 50000
+        },
+        {
+          "item": "镭射瞄准具",
+          "via": "gold",
+          "gold": 50000
+        },
+        {
+          "item": "非栓式机构",
+          "via": "gold",
+          "gold": 50000
+        },
+        {
+          "item": "电脑芯片",
+          "via": "gold",
+          "gold": 50000
+        },
+        {
+          "item": "GM6_LYNX",
+          "via": "craft",
+          "recipeId": "craft.iron-spear.012",
+          "gold": 19000,
+          "K": 2850
+        },
+        {
+          "item": "战术巴雷特",
+          "via": "K",
+          "K": 16000
+        },
+        {
+          "item": "电脑芯片",
+          "via": "gold",
+          "gold": 50000
+        },
+        {
+          "item": "纳米执行单元",
+          "via": "gold",
+          "gold": 50000
+        },
+        {
+          "item": "钛合金QJZ171",
+          "via": "craft",
+          "recipeId": "craft.iron-spear.019",
+          "gold": 162450,
+          "K": 16245
+        },
+        {
+          "item": "钛合金P90",
+          "via": "K",
+          "K": 6000
+        },
+        {
+          "item": "钛合金P90",
+          "via": "K",
+          "K": 6000
+        },
+        {
+          "item": "水冷机构",
+          "via": "gold",
+          "gold": 50000
+        },
+        {
+          "item": "纳米执行单元",
+          "via": "gold",
+          "gold": 50000
+        },
+        {
+          "item": "黑爪扩张弹",
+          "via": "gold",
+          "gold": 50000
+        },
+        {
+          "item": "黑爪扩张弹",
+          "via": "gold",
+          "gold": 50000
+        }
+      ],
+      "primaryMods": [
+        "战术鱼骨零件",
+        "水冷机构",
+        "纳米执行单元"
+      ],
+      "piecesAt11": 10,
+      "enhancementPlan": [
+        11,
+        11,
+        11,
+        11,
+        11,
+        11,
+        11,
+        11,
+        11,
+        11
+      ],
+      "requiredStones": 19280,
+      "stonesPerPiece": 1928,
+      "missingStones": 9278,
+      "kForMissingCurrency": 20495,
+      "goldForMissingK": 1024750,
+      "goldForStones": 2783400,
+      "reserve": 150000,
+      "totalGoldAfterFixedK": 6059600,
+      "fixedGold": 4750000,
+      "fixedK": 100000,
+      "balanceBeforeDropsAndSales": -1309600
+    }
+  ]
+}

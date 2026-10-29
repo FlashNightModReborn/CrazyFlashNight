@@ -16,86 +16,74 @@
     <Door>
       <Index>1</Index>
       <Direction>右</Direction>
-      <x0>940</x0>
-      <y0>425</y0>
-      <x1>990</x1>
-      <y1>445</y1>
+      <x0>780</x0>
+      <y0>332</y0>
+      <x1>895</x1>
+      <y1>397</y1>
     </Door>
     <Collision>
       <Point>50,150</Point>
       <Point>1000,150</Point>
-      <Point>1000,204</Point>
-      <Point>50,204</Point>
+      <Point>1000,195.7</Point>
+      <Point>50,195.7</Point>
     </Collision>
     <Collision>
-      <Point>181.95,204</Point>
-      <Point>506.95,204</Point>
-      <Point>506.95,206</Point>
-      <Point>182.56,206</Point>
+      <Point>163,195.7</Point>
+      <Point>527,195.7</Point>
+      <Point>527,225</Point>
+      <Point>163,225</Point>
     </Collision>
     <Collision>
-      <Point>716.5,204</Point>
-      <Point>1000,204</Point>
-      <Point>1000,206</Point>
-      <Point>718.98,206</Point>
+      <Point>712.5,195.7</Point>
+      <Point>1000,195.7</Point>
+      <Point>1000,225</Point>
+      <Point>747.76,225</Point>
     </Collision>
     <Collision>
-      <Point>182.56,206</Point>
-      <Point>479.95,206</Point>
-      <Point>476.24,219</Point>
-      <Point>186.5,219</Point>
+      <Point>163,225</Point>
+      <Point>258,225</Point>
+      <Point>258,235</Point>
+      <Point>163,235</Point>
     </Collision>
     <Collision>
-      <Point>718.98,206</Point>
-      <Point>1000,206</Point>
-      <Point>1000,219</Point>
-      <Point>735.13,219</Point>
+      <Point>400,225</Point>
+      <Point>527,225</Point>
+      <Point>527,229</Point>
+      <Point>400,229</Point>
     </Collision>
     <Collision>
-      <Point>186.5,219</Point>
-      <Point>302.95,219</Point>
-      <Point>290.76,234</Point>
-      <Point>191.04,234</Point>
+      <Point>747.76,225</Point>
+      <Point>1000,225</Point>
+      <Point>1000,229</Point>
+      <Point>752.57,229</Point>
     </Collision>
     <Collision>
-      <Point>432.95,219</Point>
-      <Point>476.24,219</Point>
-      <Point>471.95,234</Point>
-      <Point>440.95,234</Point>
+      <Point>443,229</Point>
+      <Point>527,229</Point>
+      <Point>527,232</Point>
+      <Point>452,232</Point>
     </Collision>
     <Collision>
-      <Point>735.13,219</Point>
-      <Point>1000,219</Point>
-      <Point>1000,234</Point>
-      <Point>753.77,234</Point>
+      <Point>752.57,229</Point>
+      <Point>1000,229</Point>
+      <Point>1000,238</Point>
+      <Point>763.41,238</Point>
     </Collision>
     <Collision>
-      <Point>191.04,234</Point>
-      <Point>290.76,234</Point>
-      <Point>289.95,235</Point>
-      <Point>191.34,235</Point>
+      <Point>452,232</Point>
+      <Point>527,232</Point>
+      <Point>498.5,235</Point>
+      <Point>461,235</Point>
     </Collision>
     <Collision>
-      <Point>753.77,234</Point>
-      <Point>1000,234</Point>
-      <Point>1000,235</Point>
-      <Point>755.01,235</Point>
+      <Point>461,235</Point>
+      <Point>498.5,235</Point>
+      <Point>470,238</Point>
     </Collision>
     <Collision>
-      <Point>191.34,235</Point>
-      <Point>289.95,235</Point>
-      <Point>191.95,237</Point>
-    </Collision>
-    <Collision>
-      <Point>755.01,235</Point>
-      <Point>1000,235</Point>
-      <Point>1000,237</Point>
-      <Point>757.5,237</Point>
-    </Collision>
-    <Collision>
-      <Point>757.5,237</Point>
-      <Point>1000,237</Point>
-      <Point>1000,432.21</Point>
+      <Point>763.41,238</Point>
+      <Point>1000,238</Point>
+      <Point>1000,434.6</Point>
     </Collision>
     <Collision>
       <Point>50,449.95</Point>
@@ -105,15 +93,15 @@
     </Collision>
     <LeftSpawnLine>
       <x0>59</x0>
-      <y0>210</y0>
+      <y0>255</y0>
       <x1>61</x1>
       <y1>440</y1>
     </LeftSpawnLine>
     <RightSpawnLine>
       <x0>979</x0>
-      <y0>430</y0>
+      <y0>440</y0>
       <x1>981</x1>
-      <y1>440</y1>
+      <y1>444</y1>
     </RightSpawnLine>
   </Environment>
 </EnvironmentSettings>

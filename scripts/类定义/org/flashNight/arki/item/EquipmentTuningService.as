@@ -1688,6 +1688,8 @@ class org.flashNight.arki.item.EquipmentTuningService {
     }
 
     private static function getEnhancementCap():Number {
+        var bookCap:Number=org.flashNight.arki.scene.Cf6Type61Service.enhancementCap();
+        if (bookCap >= 0) return bookCap;
         var progress:Number = Number(_root.主线任务进度);
         if (isNaN(progress)) progress = 0;
         if (progress > 129) return 13;
@@ -1715,7 +1717,8 @@ class org.flashNight.arki.item.EquipmentTuningService {
         var enabled:Boolean = smith != null && smith.启用 == true;
         var level:Number = smith == null ? 0 : Number(smith.等级);
         if (isNaN(level)) level = 0;
-        return "progress=" + progress + "|smith=" + enabled + ":" + level;
+        return "progress=" + progress + "|smith=" + enabled + ":" + level
+            + "|cf6cap=" + org.flashNight.arki.scene.Cf6Type61Service.enhancementCap();
     }
 
     private static function addReturnedMaterials(deltas:Object, names:Array):Void {

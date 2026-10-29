@@ -5098,7 +5098,9 @@ namespace CF7Launcher.Guardian
                             "detach_recovery_blocked");
                 }
                 AddMessage(
-                    "角色构筑未能安全结束，游戏保持暂停；请重启当前游戏会话以避免覆盖存档。"
+                    (error == "flush_failed"
+                        ? "角色构筑尚未完成应用或保存，游戏保持暂停；请再次点击窗口关闭以重试。若仍失败，请先收集诊断日志。"
+                        : "角色构筑恢复结果尚未确认，游戏保持暂停；请先收集诊断日志并反馈。")
                     + "（" + error + "）");
             });
         }

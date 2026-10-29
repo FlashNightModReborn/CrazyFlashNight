@@ -1,6 +1,6 @@
 {
   "schema": "cf7-shop-portrait-provenance-v1",
-  "generatorVersion": "1.1.1",
+  "generatorVersion": "1.1.2",
   "geometry": {
     "width": 256,
     "height": 256,
@@ -11,15 +11,15 @@
   "toolchain": {
     "generator": {
       "path": "tools/bake-shop-portraits.py",
-      "sha256": "0272eac1b4306d7de249ba17dae028f187df0c6acabbe9359950fdb27f4cd0e1",
-      "bytes": 37358
+      "sha256": "6f80a3af8ac1ad1e136c3296a569d3ae4225c6fb9e43bad0442575944fe4f155",
+      "bytes": 37640
     },
     "dialogueBaker": {
       "path": "tools/bake-dialogue-portraits.py",
       "sha256": "78707ccce5e7a686fb4d22352874aeeca7cb33e30e2b50015c4bdd17f6f6fa6e",
       "bytes": 55096
     },
-    "python": "3.12.10",
+    "python": "3.12.14",
     "pillow": "12.2.0",
     "ffdecVersion": "21.1.1",
     "ffdecCli": {
@@ -41,11 +41,11 @@
   "activeShopSource": {
     "list": {
       "path": "data/shops/list.xml",
-      "sha256": "23dbde49cf37df71eb517e54d9e47ca91e93cb26c146b47ccd92380391688c0d",
-      "bytes": 1891
+      "sha256": "66343c107900858bfe86ef96768194342845760e76ee9e7ca620a19d2b225540",
+      "bytes": 2266
     },
-    "listedCount": 45,
-    "activeCount": 44,
+    "listedCount": 51,
+    "activeCount": 50,
     "excludedShopIds": [
       "幸存老兵-暂时停用"
     ],
@@ -274,6 +274,36 @@
         "path": "data/shops/npcs/书中-CF6毒刺-60级.json",
         "sha256": "9e0de70adf23180688909de171b1cc3525271c21a2453c02e1fcb681a961df42",
         "bytes": 1299
+      },
+      {
+        "path": "data/shops/npcs/书中-CF6六一-A01.json",
+        "sha256": "71721ca8e11080a7e4d6781fddbc785024d2419efc042b25f361239efe115c2d",
+        "bytes": 1390
+      },
+      {
+        "path": "data/shops/npcs/书中-CF6六一-A05.json",
+        "sha256": "f2374f4eb1b3573c5c00d255d655294ab3a97be4964a2affd0b02073411cb880",
+        "bytes": 1390
+      },
+      {
+        "path": "data/shops/npcs/书中-CF6六一-A08.json",
+        "sha256": "c6ab9e1869579aaac7fdeef0457891d3165326a9d29ba2e3ecd54981f7c2cbb8",
+        "bytes": 1512
+      },
+      {
+        "path": "data/shops/npcs/书中-CF6六一-A11.json",
+        "sha256": "fe2b99f0e53f2e2711fb221f58605000b615530b22b3ace1b03f55a8e98b0ac7",
+        "bytes": 1933
+      },
+      {
+        "path": "data/shops/npcs/书中-CF6六一-A16.json",
+        "sha256": "cec9a8625f547524ed671aa7745fac7a6a2c7b9498ce4f5414c6d4a1355d0c92",
+        "bytes": 2121
+      },
+      {
+        "path": "data/shops/npcs/书中-CF6六一-A19.json",
+        "sha256": "c892917aacb21e489d101e865abe342b8e0b101cea576120b6c4a88c5b462fd3",
+        "bytes": 2246
       }
     ]
   },
@@ -286,7 +316,7 @@
     "externalDialogue": 35,
     "internalDialogue": 2,
     "exactXflSwfPilot": 1,
-    "sharedShopPortrait": 6
+    "sharedShopPortrait": 12
   },
   "sources": {
     "Andy Law": {
@@ -1332,34 +1362,108 @@
         },
         "sha256": "243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf"
       }
+    },
+    "书中-CF6六一-A01": {
+      "kind": "shared-shop-portrait",
+      "sourceShopId": "迷之盔甲君",
+      "extractedPngSha256": "b1631c240888b05dccf30cf9b21daf64bce99f9a75beec05af49700e40d610dc",
+      "output": {
+        "uri": "subjects/243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 35,
+          "width": 224,
+          "height": 185
+        },
+        "sha256": "243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf"
+      }
+    },
+    "书中-CF6六一-A05": {
+      "kind": "shared-shop-portrait",
+      "sourceShopId": "迷之盔甲君",
+      "extractedPngSha256": "b1631c240888b05dccf30cf9b21daf64bce99f9a75beec05af49700e40d610dc",
+      "output": {
+        "uri": "subjects/243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 35,
+          "width": 224,
+          "height": 185
+        },
+        "sha256": "243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf"
+      }
+    },
+    "书中-CF6六一-A08": {
+      "kind": "shared-shop-portrait",
+      "sourceShopId": "迷之盔甲君",
+      "extractedPngSha256": "b1631c240888b05dccf30cf9b21daf64bce99f9a75beec05af49700e40d610dc",
+      "output": {
+        "uri": "subjects/243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 35,
+          "width": 224,
+          "height": 185
+        },
+        "sha256": "243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf"
+      }
+    },
+    "书中-CF6六一-A11": {
+      "kind": "shared-shop-portrait",
+      "sourceShopId": "迷之盔甲君",
+      "extractedPngSha256": "b1631c240888b05dccf30cf9b21daf64bce99f9a75beec05af49700e40d610dc",
+      "output": {
+        "uri": "subjects/243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 35,
+          "width": 224,
+          "height": 185
+        },
+        "sha256": "243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf"
+      }
+    },
+    "书中-CF6六一-A16": {
+      "kind": "shared-shop-portrait",
+      "sourceShopId": "迷之盔甲君",
+      "extractedPngSha256": "b1631c240888b05dccf30cf9b21daf64bce99f9a75beec05af49700e40d610dc",
+      "output": {
+        "uri": "subjects/243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 35,
+          "width": 224,
+          "height": 185
+        },
+        "sha256": "243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf"
+      }
+    },
+    "书中-CF6六一-A19": {
+      "kind": "shared-shop-portrait",
+      "sourceShopId": "迷之盔甲君",
+      "extractedPngSha256": "b1631c240888b05dccf30cf9b21daf64bce99f9a75beec05af49700e40d610dc",
+      "output": {
+        "uri": "subjects/243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf.png",
+        "width": 256,
+        "height": 256,
+        "bounds": {
+          "x": 16,
+          "y": 35,
+          "width": 224,
+          "height": 185
+        },
+        "sha256": "243f48ee6ea051d7cd442563ff446fba350fb3797285ee8f9a4b49ffd0d582cf"
+      }
     }
-  },
-  "dialogueMetadataRefresh": {
-    "mode": "unconsumed-dialogue-metadata-only",
-    "tool": {
-      "path": "tools/refresh-shop-portrait-sources.py",
-      "sha256": "9604d32c42147990b2720237bc9b3aaf261b2b4dd5fe8c51f9fdc4ea3367e949",
-      "bytes": 12118
-    },
-    "previousManifestSha256": "6bf3fd2bf145b2d949fbc01ce7030eef8203b259d4aa45f2f6eecfed9aeb9286",
-    "previousBakerSha256": "78707ccce5e7a686fb4d22352874aeeca7cb33e30e2b50015c4bdd17f6f6fa6e",
-    "currentBakerSha256": "78707ccce5e7a686fb4d22352874aeeca7cb33e30e2b50015c4bdd17f6f6fa6e",
-    "consumedModuleAstSha256": "77d45629e928b65d4f9b09419183c7e19d57ccead69e4baf29cb876207023086",
-    "unchangedShopDialogueHelpers": [
-      "export_external_frames",
-      "export_swf_xml",
-      "frame_ranges_from_dialogue_portrait",
-      "timeline_labels_from_swf_xml"
-    ],
-    "unchangedShopEntries": 44
-  },
-  "shopSourceRefresh": {
-    "mode": "shop-id-metadata-only",
-    "tool": {
-      "path": "tools/refresh-shop-portrait-sources.py",
-      "sha256": "9604d32c42147990b2720237bc9b3aaf261b2b4dd5fe8c51f9fdc4ea3367e949",
-      "bytes": 12118
-    },
-    "previousActiveSourceSha256": "1cdd7a8ffcbcc590aefab055e05185d70fa3c2ea6338a1de98686708e1734df9"
   }
 }

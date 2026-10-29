@@ -61,6 +61,8 @@ CRAZYFLASHER7MercenaryEmpire.exe        native bootstrap，用户唯一正式入
 
 Bootstrap 使用纯 Win32/CRT，在启动 Core 前验证正式 runtime manifest、必要文件和 .NET Desktop Runtime。它把绝对项目根以 `--project-root` 传给 Core，并把剩余参数继续转发。启动 Core 后保留 5 秒早退观察窗：Core 非零或未知退出时写启动失败摘要；Core 仍在运行时 bootstrap 才退出。长跑进程始终是 `runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe`。
 
+Core 创建的 Flash SA 与 `--embedded` 通讯终端通过 `OwnedChildProcessJob` 绑定宿主生命周期。正常关闭仍先完成原保存屏障和优雅清理；宿主被外部强制结束时，Windows 回收其私有 Job 中的子进程，避免只关窗口后留下后台游戏。已由用户独立启动的通讯终端不加入该 Job。绑定失败视为启动失败并清理本次创建的进程，不接管或按名称结束其他进程。Windows 的关闭句柄回收语义见 [Job Objects](https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects)。
+
 关键日志：
 
 | 路径 | 用途 |

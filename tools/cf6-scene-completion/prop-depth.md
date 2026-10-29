@@ -35,7 +35,7 @@
 现在由 [Cf6ActorMaskPresentation](../../scripts/类定义/org/flashNight/arki/scene/Cf6ActorMaskPresentation.as)
 在独立拥有的位图代理上使用门遮罩，原人物的 mask、父链、碰撞与身份不改。原人物隐藏与恢复继续归 TraversalService 的显示责任与比较后恢复逻辑。
 
-代理只接受 **born-known-none**：当前 `cf6-sting/historical`、active、同存档槽、当前受控的 `主角-男`，
+代理只接受 **born-known-none**：当前 `cf6-sting` 的 `historical/type61` 路线、active、同存档槽、当前受控的 `主角-男`，
 由统一单位加载函数在本次新 attach 的 initObject 中注入
 [Cf6ActorMaskState](../../scripts/类定义/org/flashNight/arki/scene/Cf6ActorMaskState.as) 的普通对象出生身份与实例级转发函数。
 其他演员、书籍和旧实例不补签“无 mask”，也不改 MovieClip.prototype。

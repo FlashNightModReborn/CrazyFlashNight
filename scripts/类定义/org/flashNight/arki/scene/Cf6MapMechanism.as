@@ -25,7 +25,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
     public static function beginRoom(world:MovieClip, identity:Object, mapId:String, config:Object):Boolean {
         install();
         var run:Object = _root._saveExt.bookRun;
-        if (run.bookId != "cf6-sting" || run.routeId != "historical" || run.outcome != "active"
+        if (run.bookId != "cf6-sting" || !org.flashNight.arki.scene.BookDefinition.isCf6Route(run.routeId) || run.outcome != "active"
                 || _root.当前关卡名 !== "书中历险-毒刺行动" || run.slot !== String(_root.savePath)
                 || !BookRunRules.sameCf6Run(run,run)
                 || !knownMap(mapId)
@@ -62,8 +62,21 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
                 || (s.assetScale-s.assetScale) != 0) {fail(s,"地图视觉倍率无效");return true;}
         if(mapId=="A07" && !org.flashNight.arki.scene.Cf6VehicleRules.validSpec(config.vehicle)
                 || mapId!="A07" && config.vehicle!==undefined) {fail(s,"赛车配置与房间不匹配");return true;}
-        if(s.kind=="elevator" && !prepareElevatorBackground(s)) return true;
+        // Older native backgrounds initiate their own bake only on the historical route.
+        // Type61 static rooms use the same draw contract before controls and overlays.
+        // A07 has a transparent placeholder; the vehicle service owns its road and sky.
+        // Native unloadMovie is completed after the current AVM1 frame. The watcher
+        // must already exist if an asset-initiated unload ends the current call stack.
         armWatch();
+        if(s.kind!="vehicle" && (s.kind=="elevator" || run.routeId=="type61") && !prepareStaticBackground(s)) return true;
+        initializeRoom(s);
+        return true;
+    }
+
+    private static function initializeRoom(s:Object):Void {
+        if(!current(s) || s.failed || s.initializationStarted===true) return;
+        s.initializationStarted=true;
+        var world:MovieClip=s.world,identity:Object=s.owner,config:Object=s.config,mapId:String=s.mapId;
         var layers:Array=[];
         for(var li:Number=0;li<config.layers.length;li++) layers.push(config.layers[li]);
         if(mapId=="A20" && config.elderFinale!==true) layers.push({id:"a21actor",role:"transformation",
@@ -71,33 +84,33 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
         loadLayers(s,layers);
         if(!s.failed && s.kind=="vehicle") {
             s.vehicle=org.flashNight.arki.scene.Cf6VehicleService.begin(s,config.vehicle);
-            if(s.vehicle==null) {fail(s,"赛车未能取得本房间控制权");return true;}
+            if(s.vehicle==null) {fail(s,"赛车未能取得本房间控制权");return;}
         }
         if(!s.failed && s.hasSpawnDoor) {
             s.dispatcher=world.dispatcher;
-            if(s.dispatcher==undefined) {fail(s,"木门缺少实际单位出生事件源");return true;}
+            if(s.dispatcher==undefined) {fail(s,"木门缺少实际单位出生事件源");return;}
             s.spawnListener=function(name:String):Void {org.flashNight.arki.scene.Cf6MapMechanism.unitSpawned(s,name);};
             s.dispatcher.subscribe("UnitSpawn",s.spawnListener,s);
         }
         transferBirths(s);
         if(!s.failed && config.interactiveProps!=undefined) {
             s.interactivePropsSession=org.flashNight.arki.scene.Cf6InteractivePropService.begin(s,config.interactiveProps);
-            if(s.interactivePropsSession==null) {fail(s,"交互物件配置或世界注册失败");return true;}
+            if(s.interactivePropsSession==null) {fail(s,"交互物件配置或世界注册失败");return;}
         }
         if(!s.failed && config.transport!=undefined) {
             s.transport=org.flashNight.arki.scene.Cf6TransportService.begin(s,config.transport);
-            if(s.transport==null) {fail(s,"运输车配置或世界注册失败");return true;}
+            if(s.transport==null) {fail(s,"运输车配置或世界注册失败");return;}
         }
         // A01 教学炮塔：随本房间 beginRoom 一同挂接（调用方保证漫画续接成功后才到这里），
         // 规格来自 mechanism.turrets（装配期已完成 native×128/75 世界坐标换算）。
         if(!s.failed && config.turrets!=undefined) {
-            if(mapId!="A01") {fail(s,"非A01地图携带炮塔配置");return true;}
+            if(mapId!="A01") {fail(s,"非A01地图携带炮塔配置");return;}
             if(!org.flashNight.arki.scene.Cf6TutorialTurretService.beginRoom(world,identity,mapId,config.turrets)) {
-                fail(s,"炮塔服务拒绝挂接");return true;
+                fail(s,"炮塔服务拒绝挂接");return;
             }
             s.turretBound=true;
         }
-        return true;
+        return;
     }
 
     private static function armWatch():Void {
@@ -127,6 +140,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
         // SceneReady follows the real resource initialization barrier. Hold only
         // the arriving actor's presentation before curtain release/story/layer IO.
         org.flashNight.arki.scene.Cf6TraversalService.prepareArrival(world,identity,manager);
+        org.flashNight.arki.scene.Cf6MapPresentation.beginLoadingCover(world,identity);
         pendingBirths=p;p.listener=birthListener(p);
         p.dispatcher.subscribe("UnitSpawn",p.listener,p);armWatch();return p;
     }
@@ -161,7 +175,10 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
                 if(unit.__cf6DoorBirthStamp===r.stamp) delete unit.__cf6DoorBirthStamp;
             }
         }
-        if(removeMarks) {p.records=[];p.seen={};}
+        if(removeMarks) {
+            if(p.coverTransferred!==true) org.flashNight.arki.scene.Cf6MapPresentation.clearLoadingCover(p.world,p.owner);
+            p.records=[];p.seen={};
+        }
     }
     private static function transferBirths(s:Object):Void {
         var p:Object=s.initialBirths;s.initialBirths=null;
@@ -173,32 +190,38 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
                     pulseSpawnAt(s,r.name,r.x,r.y);
             }
         }
+        var cover:Boolean=org.flashNight.arki.scene.Cf6MapPresentation.hasLoadingCover(s.world,s.owner);
+        if(cover) p.coverTransferred=true;
         disposeBirthWindow(p,true);
     }
-    private static function prepareElevatorBackground(s:Object):Boolean {
+    private static function prepareStaticBackground(s:Object):Boolean {
         if(!current(s)) return false;
         var background:MovieClip=s.world.背景;
-        if(s.world.__cf6BackgroundBake!=undefined) {
-            if(bakeMatches(s,background) && background._width===0 && background._height===0
-                    && s.world.deadbody.layers[0]!=undefined) {
-                s.backgroundPrepared=true;return true;
-            }
-            // A completed draw is not proof that unload finished. Never replay a
-            // partial/foreign draw into the bitmap, even when the clip is nonempty.
-            fail(s,"电梯背景绘制凭据不符或卸载尚未完成，停止重复烘焙");return false;
-        }
+        s.backgroundPending=true;s.backgroundFrames=0;
+        if(s.world.__cf6BackgroundBake!=undefined) return observeStaticBackground(s);
         if(background==undefined || !(background._width>0) || !(background._height>0)
                 || s.world.deadbody.layers[0]==undefined || typeof _root.贴背景图!="function") {
-            fail(s,"电梯静态背景尚未实际加载，不能准备升降层");return false;
+            fail(s,"地图静态背景尚未实际加载，不能接入房间机关");return false;
         }
-        // This exact live world has already passed the standard background-ready curtain.
-        // Reuse the production bake path even for an 800px background; old scenes never call force.
+        // Draw once. A successful draw receipt precedes the native unload; all later
+        // frames only observe that same receipt and never issue another draw.
         _root.贴背景图(true);
-        if(!bakeMatches(s,background) || background._width!==0 || background._height!==0) {
-            fail(s,"电梯静态背景烘焙未完成或缺少本房间凭据，停止升降层接入");return false;
+        return observeStaticBackground(s);
+    }
+
+    private static function observeStaticBackground(s:Object):Boolean {
+        if(!current(s)) return false;
+        var background:MovieClip=s.world.背景;
+        if(!bakeMatches(s,background) || s.world.deadbody.layers[0]==undefined) {
+            fail(s,"地图静态背景缺少本房间绘制凭据，停止房间机关接入");return false;
         }
-        s.backgroundPrepared=true;
-        return true;
+        if(background._width===0 && background._height===0) {
+            s.backgroundPending=false;s.backgroundPrepared=true;return true;
+        }
+        // FP/AVM1 can still expose the vector bounds immediately after unloadMovie.
+        // Keep this room's pause until an actual later frame observes the empty shell.
+        if(++s.backgroundFrames>60) fail(s,"地图背景卸载超时，停止房间机关接入");
+        return false;
     }
 
     private static function bakeMatches(s:Object,background:MovieClip):Boolean {
@@ -284,6 +307,9 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
             return true;
         }
         if(manager!==s.stageManager || manager.currentStage!==s.stageIndex) return true;
+        // Empty vehicle waves do not establish completion; the native tail must settle first.
+        if ((s.kind!="vehicle" || s.vehicle.status==="complete")
+                && org.flashNight.arki.scene.Cf6Type61Service.interceptClear(manager,world)) return true;
         if(s.lifeSuspension==null && s.phase=="ready" && (s.kind!="vehicle" || s.vehicle.status==="complete" && s.delivered===true)) return false;
         s.clearRequested=true; s.manager=manager;
         world.允许通行=false;
@@ -332,7 +358,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
             && manager.isFinished!==true && manager.isFailed!==true && manager.isCleared!==true
             && typeof stage=="number" && (stage-stage)==0 && stage>=0 && Math.floor(stage)==stage
             && _root.当前关卡名==="书中历险-毒刺行动"
-            && run.bookId==="cf6-sting" && run.routeId==="historical" && run.outcome==="active"
+            && run.bookId==="cf6-sting" && org.flashNight.arki.scene.BookDefinition.isCf6Route(run.routeId) && run.outcome==="active"
             && run.slot===String(_root.savePath) && BookRunRules.sameCf6Run(run,run);
     }
     private static function pendingMatches(p:Object,manager:Object,world:MovieClip):Boolean {
@@ -644,6 +670,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
     private static function fail(s:Object,message:String):Void {
         if(s.failed) return;
         s.failed=true;s.phase="failed";s.world.允许通行=false;
+        org.flashNight.arki.scene.Cf6MapPresentation.clearLoadingCover(s.world,s.owner);
         forgetDeath(s);
         org.flashNight.arki.scene.Cf6VehicleService.dispose(s.vehicle);
         org.flashNight.arki.camera.HorizontalScroller.releaseFocus(s.vehicleCamera);
@@ -734,6 +761,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
         s.lifeSuspension=null;
     }
     private static function suspendDeath(s:Object,hero:MovieClip):Void {
+        org.flashNight.arki.scene.Cf6MapPresentation.clearLoadingCover(s.world,s.owner);
         if(s.lifeSuspension!=null) return;
         if(hero.__cf6MechanismDeathOwner!==undefined) {fail(s,"死亡人物的房间归属已变化");return;}
         var token:Object={};hero.__cf6MechanismDeathOwner=token;
@@ -761,6 +789,8 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
     public static function tick():Void {
         org.flashNight.arki.scene.Cf6TraversalService.observePreparedArrival();
         var s:Object=active;
+        if(s!=null) org.flashNight.arki.scene.Cf6MapPresentation.refreshLoadingCover(s.world,s.owner);
+        else if(pendingBirths!=null) org.flashNight.arki.scene.Cf6MapPresentation.refreshLoadingCover(pendingBirths.world,pendingBirths.owner);
         if(s!=null) org.flashNight.arki.scene.Cf6ExitGuideService.tick(s.exitGuide);
         if(s==null) {
             if(pendingBirths!=null && birthWindowMatches(pendingBirths,org.flashNight.arki.scene.StageManager.instance,_root.gameworld)) return;
@@ -770,6 +800,11 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
         if(s.failed) return;
         if(s.earlyClear!=null && !pendingMatches(s.earlyClear,org.flashNight.arki.scene.StageManager.instance,s.world)) {
             fail(s,"提前清场的关卡身份已变化，取消旧请求");return;
+        }
+        if(s.backgroundPending===true) {
+            if(!observeStaticBackground(s)) return;
+            initializeRoom(s);
+            if(s.failed || !current(s)) return;
         }
         var hero:MovieClip=TargetCacheManager.findHero();
         if(s.kind=="vehicle") {tickVehicle(s,hero);return;}
@@ -799,6 +834,10 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
         if(s.pending>0) {
             if(++s.loadFrames>900) fail(s,"地图图层加载超时");
             return;
+        }
+        if(org.flashNight.arki.scene.Cf6MapPresentation.hasLoadingCover(s.world,s.owner)) {
+            render(s);
+            if(!org.flashNight.arki.scene.Cf6MapPresentation.loadingCoverReady(s.world,s.owner)) return;
         }
         var paused:Boolean=PauseManager.isPausedExcept(s.lease);
         if(!paused) s.animationFrame++;
@@ -850,6 +889,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
     }
     private static function tickVehicle(s:Object,hero:MovieClip):Void {
         if(hero!=undefined && !(hero.hp>0)) {
+            org.flashNight.arki.scene.Cf6MapPresentation.clearLoadingCover(s.world,s.owner);
             org.flashNight.arki.scene.Cf6VehicleService.tick(s.vehicle);
             if(!current(s)) {teardown();return;}
             s.world.允许通行=false;release(s);
@@ -873,9 +913,13 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
         var state:String=org.flashNight.arki.scene.Cf6VehicleService.tick(s.vehicle);
         if(!current(s)) {teardown();return;}
         if(state=="cancelled") {teardown();return;}
-        if(state=="dead" || hero!=undefined && !(hero.hp>0)) {s.world.允许通行=false;release(s);return;}
+        if(state=="dead" || hero!=undefined && !(hero.hp>0)) {org.flashNight.arki.scene.Cf6MapPresentation.clearLoadingCover(s.world,s.owner);s.world.允许通行=false;release(s);return;}
         if(state=="failed") {fail(s,"赛车已停止:"+s.vehicle.reason);return;}
         if(state!="loading" && state!="playing" && state!="complete") {fail(s,"赛车返回了无效状态");return;}
+        if(state!="loading" && org.flashNight.arki.scene.Cf6MapPresentation.hasLoadingCover(s.world,s.owner)) {
+            render(s);
+            if(!org.flashNight.arki.scene.Cf6MapPresentation.loadingCoverReady(s.world,s.owner)) return;
+        }
         if(!PauseManager.isPausedExcept(s.lease)) s.animationFrame++;
         render(s);
         if(s.failed || state!="complete") return;
@@ -992,6 +1036,7 @@ class org.flashNight.arki.scene.Cf6MapMechanism {
         org.flashNight.arki.scene.Cf6TutorialTurretService.teardown();
         var s:Object=active;active=null;
         if(s==null) {if(watch!=undefined) delete watch.onEnterFrame;return;}
+        org.flashNight.arki.scene.Cf6MapPresentation.clearLoadingCover(s.world,s.owner);
         forgetDeath(s);
         org.flashNight.arki.scene.Cf6VehicleService.dispose(s.vehicle);
         org.flashNight.arki.camera.HorizontalScroller.releaseFocus(s.vehicleCamera);

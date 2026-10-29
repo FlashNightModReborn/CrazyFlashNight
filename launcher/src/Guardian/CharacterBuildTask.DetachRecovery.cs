@@ -253,6 +253,7 @@ namespace CF7Launcher.Guardian
                 SafeReadyGeneration();
             bool continueExisting = false;
             bool installRecovery = false;
+            bool retryKnownFailure = false;
 
             lock (_bindingGate)
             {
@@ -285,14 +286,27 @@ namespace CF7Launcher.Guardian
                         if (_detachRecoveryStatus
                             == "fatal_blocked")
                         {
-                            return LogHostShutdownFence(
-                                false,
-                                "recovery_"
-                                    + (_detachRecoveryFailure
-                                        ?? "fatal"),
-                                out outcome);
+                            // An explicit close may retry an acknowledged projection/save
+                            // failure on the same live transport and retained authority. This
+                            // never replays a mutation, resets the automatic reconnect budget,
+                            // or treats an unknown/invalid result as an unsuccessful write.
+                            if (_detachRecoveryFailure != "flush_failed"
+                                || readyGeneration <= 0
+                                || readyGeneration != _detachRecoveryTransportGeneration
+                                || _detachRecoveryInFlight
+                                || _detachRecoveryAwaitingVisualRetire
+                                || _pendingCount != 0)
+                            {
+                                return LogHostShutdownFence(
+                                    false,
+                                    "recovery_" + (_detachRecoveryFailure ?? "fatal"),
+                                    out outcome);
+                            }
+                            _bindingChanging = true;
+                            installRecovery = true;
+                            retryKnownFailure = true;
                         }
-                        continueExisting = true;
+                        else continueExisting = true;
                     }
                     else
                     {
@@ -335,7 +349,7 @@ namespace CF7Launcher.Guardian
                     try
                     {
                         installed = RequireDetachRecovery(
-                            "host_shutdown",
+                            retryKnownFailure ? "host_shutdown_retry" : "host_shutdown",
                             0,
                             readyGeneration,
                             false);
@@ -725,6 +739,11 @@ namespace CF7Launcher.Guardian
                     }
                     else
                     {
+                        if (failureCode == "flush_failed")
+                            LogFlushFailure(DetachRecoveryCommand, entry.BackendCallId,
+                                message.Value<long>("loadoutRevision"),
+                                message.Value<long>("liveRevision"),
+                                message.Value<bool>("liveRefreshDirty"));
                         forceCapturedTransport =
                             TryReserveAutomaticDetachRecoveryRetireLocked();
                         _detachRecoveryStatus = forceCapturedTransport

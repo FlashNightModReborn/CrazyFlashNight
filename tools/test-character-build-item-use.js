@@ -884,5 +884,15 @@ check('inline result messages carry the granted content list', function() {
         '已领取「霸体入门」：霸体 · 2级。技能已直接授予，主动技能请在技能页装备。');
 });
 
+check('incompatible Type61 mod box reports preserved source without reloading or replaying', function() {
+    const toasts = [];
+    const controller = {_ports:{toast:message=>toasts.push(message)},
+        _session:{refreshSnapshot:()=>{throw new Error('unexpected refresh');}}};
+    ItemUseChannel.install(controller);
+    controller._itemUseSettled({success:false,error:'no_eligible_choices'},false,{command:'stashOpen'});
+    assert.strictEqual(toasts.length,1);
+    assert(toasts[0].includes('箱子尚未消耗'));
+});
+
 process.stdout.write(
     'Character Build item use: ' + passed + '/' + passed + ' passed\n');

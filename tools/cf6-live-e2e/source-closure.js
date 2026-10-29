@@ -1,5 +1,6 @@
 'use strict';
-const fs = require('fs'), path = require('path'), crypto = require('crypto');
+const {resolveRoute}=require('./route-config');
+const fs = require('fs'), path = require('path'), crypto = require('crypto'), cp = require('child_process');
 const E = require('../workbench-live-e2e/lib/evidence-artifact');
 const Swf = require('../swf-metadata');
 const {parseStrictJson}=require('../cf7-agent/lib/strict-json');
@@ -231,9 +232,73 @@ function listReferences(xml, tags) {
     if(!result.length)throw Error('empty closure resource list');
     return result;
 }
-function chapterResources(chapter) {
-    if(chapter?.id!=='cf6-sting'||chapter.routeId!=='historical'||!Array.isArray(chapter.maps)||!chapter.maps.length)
-        throw Error('closure requires the installed historical chapter');
+const TYPE61_FILES=Object.freeze([
+    "tools/cf6-type61/build-route.py",
+    "tools/cf6-type61/route.source.json",
+    "tools/cf6-type61/encounters.py",
+    "tools/cf6-type61/encounters.source.json",
+    "tools/cf6-soldier-assets/instructor-tuning.json",
+    "tools/cf6-soldier-assets/instructor-register.py",
+    "tools/cf6-soldier-assets/balance.py",
+    "tools/cf6-soldier-assets/elite-register.py",
+    "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
+    "tools/cf6-type61/choice-rewards.fragment.json",
+    "tools/cf6-type61/recipes.generated.json",
+    "tools/cf6-type61/manifest.generated.json",
+    "data/stages/books/cf6-type61.json",
+    "data/stages/books/cf6-type61.runtime.json",
+    "data/crafting/书中配给.json",
+    "data/crafting/进阶防具.json",
+    "data/crafting/铁枪会.json",
+    "scripts/类定义/org/flashNight/arki/scene/Cf6Type61Service.as",
+    "scripts/类定义/org/flashNight/arki/item/Cf6ConstellationPolicy.as",
+    "scripts/类定义/org/flashNight/arki/item/ItemUseService.as",
+    "scripts/类定义/org/flashNight/arki/interaction/NativeMenuBridge.as",
+    "tools/cf6_acquisition.py",
+    "tools/cf6-type61/acquisition.generated.json",
+    "data/crafting/list.xml",
+    "data/kshop/list.xml",
+    "data/crafting/属性武器.json",
+    "data/crafting/烹饪.json",
+    "data/crafting/化学生产.json",
+    "data/crafting/武器合成.json",
+    "data/crafting/饰品合成.json",
+    "data/crafting/基础防具.json",
+    "data/crafting/公社防具.json",
+    "data/crafting/黑白契约.json",
+    "data/crafting/插件合成.json",
+    "data/crafting/大学装备.json",
+    "data/crafting/调酒.json",
+    "data/kshop/乱七八糟.json",
+    "data/kshop/A兵团官方周边直营店.json",
+    "data/kshop/联合大学D.L.S.研究中心.json",
+    "data/kshop/联合大学校服批发.json",
+    "data/kshop/蓉都公社弹药加工厂.json",
+    "data/kshop/统合尘都临时政府卫生部.json",
+    "data/kshop/莱昂利亚自由革命军军火出口.json",
+    "data/kshop/【数据错误-未知来源军火】.json",
+    "data/kshop/天地玄黄慈悲万怀兵器库.json",
+    "data/kshop/末日COS☆PLAY.json",
+    "data/kshop/堕落城浮世安保专卖店.json",
+    "data/kshop/武术联盟.json",
+    "data/kshop/情趣店.json",
+    "scripts/类定义/org/flashNight/arki/scene/Cf6ActorLoadout.as",
+    "scripts/类定义/org/flashNight/arki/scene/StageManager.as",
+    "scripts/类定义/org/flashNight/arki/scene/WaveSpawner.as",
+    "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
+    "scripts/类定义/org/flashNight/arki/item/MaterialArchiveProjector.as",
+    "scripts/类定义/org/flashNight/arki/item/ProcurementPlanService.as",
+    "scripts/类定义/org/flashNight/arki/item/NpcShopAccessService.as",
+    "scripts/类定义/org/flashNight/arki/skill/SkillLoadoutService.as",
+    "scripts/类定义/org/flashNight/arki/skill/SkillPanelService.as",
+    "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+    "scripts/展现/UI交互/UI交互_lsy_物品栏UI.as",
+    "scripts/逻辑系统分区/商城系统_WebView.as"
+]);
+function chapterResources(chapter,routeId) {
+    const route=resolveRoute(routeId);
+    if(chapter?.id!=='cf6-sting'||chapter.routeId!==route.id||!Array.isArray(chapter.maps)||!chapter.maps.length)
+        throw Error('closure requires the selected installed chapter');
     const result=[];
     function walk(value,depth){
         if(depth>32)throw Error('chapter resource nesting exceeded');
@@ -266,8 +331,25 @@ function resolveImport(root,owner,raw) {
     if(candidates.length!==1)throw Error('missing or ambiguous SWF import from '+owner+': '+raw);
     return candidates[0];
 }
-function capture(root) {
+// Manifests retain authoring-machine provenance. A linked worktree may use the
+// same repository's primary checkout as that origin; texture bytes are always
+// read and hash-checked inside the selected current root, never at item.path.
+function textureOriginRoots(root) {
+    const roots=[path.resolve(root)];
+    try {
+        const git=(args)=>cp.execFileSync('git',['-C',root,...args],{encoding:'utf8',stdio:['ignore','pipe','pipe'],timeout:5000}).trim();
+        if(path.resolve(git(['rev-parse','--show-toplevel']))!==roots[0])return roots;
+        const common=E.assertExactDirectory(path.resolve(git(['rev-parse','--path-format=absolute','--git-common-dir'])),'cf6_texture_origin');
+        if(path.basename(common)!=='.git')return roots;
+        const primary=E.assertExactDirectory(path.dirname(common),'cf6_texture_origin');
+        if(primary!==roots[0])roots.push(primary);
+    }catch(_){/* Non-Git installed roots retain the original exact-local rule. */}
+    return roots;
+}
+function capture(root,routeId) {
+    const route=resolveRoute(routeId);
     root=E.assertExactDirectory(path.resolve(root),'cf6_closure');
+    const origins=textureOriginRoots(root);
     const pending=new Set(),folded=new Map(),rows=new Map(),edges=[];
     function add(ref,owner,kind){
         ref=relative(ref);inside(root,ref);
@@ -638,7 +720,8 @@ function capture(root) {
                     ||textureNames.has(item.name)||!Array.isArray(item.pixels)||item.pixels.length!==2
                     ||!item.pixels.every(v=>Number.isSafeInteger(v)&&v>0&&v<=8192))throw Error('invalid vehicle texture record');
             const target=base+'source/textures/'+item.name,absolute=inside(root,target);
-            if(typeof item.path!=='string'||!path.isAbsolute(item.path)||path.resolve(item.path)!==absolute)
+            if(typeof item.path!=='string'||!path.isAbsolute(item.path)
+                    ||!origins.some(origin=>path.resolve(item.path)===path.resolve(origin,target)))
                 throw Error('vehicle texture absolute path is outside exact repository binding');
             if(!outputMap.has(target)||outputMap.get(target).sha256!==identity)throw Error('omitted vehicle texture output');
             textureNames.add(item.name);textureFiles.add(target);
@@ -729,6 +812,50 @@ function capture(root) {
         if(E.canonicalJson(manifest.cues)!==E.canonicalJson(cues)||!Array.isArray(manifest.events)||!manifest.events.length||manifest.events.length>32
                 ||manifest.events.some(event=>!event||!Object.hasOwn(cues,event.cue)||typeof event.source!=='string'||!event.source
                     ||typeof event.delivery!=='string'||!event.delivery))throw Error('invalid vehicle audio consumer cues');
+    }
+    function tutorialR7(used){
+        if(!used.has('flashswf/backgrounds/cf6/CF6_Tutorial_BG.swf'))return;
+        const layout=json('tools/cf6-tutorial/layout.json');
+        if(layout.artRevision!=='r7-bold')return;
+        const base='tools/cf6-tutorial/',work=base+'r7/',target='flashswf/backgrounds/cf6/CF6_Tutorial_BG/';
+        const art='flashswf/arts/new/Codex素材源稿/CF6地图/教程-R7/';
+        const source=art+'教程房-R7-bold-全图.svg',archive=art+'CF6-教程摆件-R7-Flash边线对照与源包.zip';
+        const ref=base+'provenance.json',manifest=json(ref),conversionRef=work+'conversion.json';
+        const recipe='tools/cf6-map-runtime/native-vector/layers/CF6_A01_TutorialR7Textures01/import-textures.jsfl';
+        if(manifest.schema!=='cf6-tutorial-assembly.v3'||manifest.artRevision!=='r7-bold'||manifest.mapId!=='TUTORIAL'
+                ||manifest.selectedSource!==source||manifest.conversion!==conversionRef||!digest(manifest.sourceArchiveSha256))
+            throw Error('invalid R7 tutorial source identity');
+        const expected=new Set([source,archive,base+'layout.json',base+'assemble.py',work+'native-media/closure.json']);
+        if(!Array.isArray(manifest.sourceInputs)||manifest.sourceInputs.length!==expected.size)throw Error('invalid R7 tutorial source inventory');
+        for(const row of manifest.sourceInputs){if(!expected.delete(row.path))throw Error('unexpected R7 tutorial input');bound(row,'',ref,'tutorial_r7_source');}
+        if(rows.get(archive).sha256!==manifest.sourceArchiveSha256)throw Error('R7 original archive changed');
+        if(!Array.isArray(manifest.outputs)||!manifest.outputs.length||manifest.outputs.length>220)throw Error('invalid R7 output inventory');
+        const declared=new Set();let total=0;
+        for(const row of manifest.outputs){
+            const path=relative(row.path);
+            const allowed=path===recipe||[base+'environment.fragment.xml',base+'tutorial-map.fragment.json'].includes(path)
+                ||path.startsWith(work)&&/^(?:LIBRARY\/.+\.xml|textures\/intrinsic-[0-9a-f]{24}\.(?:png|jpg)|timeline\.xml|conversion\.json)$/.test(path.slice(work.length))
+                ||path.startsWith(target)&&/^(?:LIBRARY\/.+\.(?:xml|png|jpg)|bin\/M [0-9]+ [0-9]+\.dat|DOMDocument\.xml|PublishSettings\.xml|CF6_Tutorial_BG\.xfl)$/.test(path.slice(target.length));
+            if(!allowed||declared.has(path))throw Error('unexpected or duplicate R7 output');
+            bound(row,'',ref,'tutorial_r7_generated');declared.add(path);total+=row.bytes;
+        }
+        if(total>16*1024*1024||!declared.has(conversionRef))throw Error('R7 content size or conversion binding invalid');
+        const conversion=json(conversionRef);
+        if(conversion.schema!=='cf6-tutorial-r7-native.v1'||conversion.source!==source||conversion.selectedOutline!=='bold'
+                ||conversion.sourceSha256!==rows.get(source).sha256)throw Error('R7 conversion source mismatch');
+        const producers=new Set([base+'r7.py','tools/cf6-map-runtime/native-vector/build-a01.py',
+            'tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py','tools/cf6-map-runtime/build.py']);
+        if(!Array.isArray(conversion.generatorInputs)||conversion.generatorInputs.length!==producers.size)throw Error('R7 producer inventory invalid');
+        for(const row of conversion.generatorInputs){if(!producers.delete(row.path))throw Error('unexpected R7 producer');bound(row,'',conversionRef,'tutorial_r7_producer');}
+        const cacheRef=work+'native-media/closure.json',cache=json(cacheRef);
+        if(cache.schema!=='cf6-tutorial-r7-native-media.v1'||!Array.isArray(cache.files)||cache.files.length<3||cache.files.length>16)throw Error('R7 native cache inventory invalid');
+        const caches=new Set();
+        for(const row of cache.files){
+            if(typeof row.path!=='string'||!/^(?:DOMDocument\.xml|LIBRARY\/intrinsic-[0-9a-f]{24}\.(?:png|jpg)|bin\/M [0-9]+ [0-9]+\.dat)$/.test(row.path)||caches.has(row.path))throw Error('unexpected R7 native cache path');
+            caches.add(row.path);bound(row,work+'native-media/',cacheRef,'tutorial_r7_native_cache');
+        }
+        if(!caches.has('DOMDocument.xml'))throw Error('R7 native cache descriptor omitted');
+        nativeClosure(target+'CF6_Tutorial_BG.xfl',new Set([...declared].filter(path=>path.startsWith(target))),ref);
     }
     function propSources(used){
         const base='tools/cf6-prop-layout/',recipePath=base+'recipe.json',depthPath=base+'depth-recipe.json';
@@ -821,7 +948,7 @@ function capture(root) {
         const chars=new Set(chapter.maps.flatMap(m=>(m.dialogue||[]).map(line=>line.char).filter(Boolean)));
         if(!chars.size)return;
         const base='launcher/web/assets/dialogue-portraits/',ref=base+'manifest.json';
-        add(ref,'data/stages/books/cf6-sting.runtime.json','dialogue_catalog');const catalog=json(ref);
+        add(ref,route.chapterPath,'dialogue_catalog');const catalog=json(ref);
         for(const char of chars){
             if(typeof char!=='string'||!/^Andy Law#[^#]{1,12}$/.test(char))throw Error('unreviewed CF6 dialogue portrait');
             const expression=char.slice(9),asset=catalog.entries?.['Andy Law']?.expressions?.[expression];
@@ -830,12 +957,16 @@ function capture(root) {
         }
     }
     FILES.forEach(ref=>add(ref));
-    const chapterPath='data/stages/books/cf6-sting.runtime.json';
+    for(const name of ['route-config.js','preflight.js','affiliated-slot.js','run-candidate.js','cdp-input-channel.js','passive-observer.js','source-closure.js','verified-return-observation.js'])
+        add('tools/cf6-live-e2e/'+name);
+    if(route.id==='type61')TYPE61_FILES.forEach(ref=>add(ref));
+    const chapterPath=route.chapterPath;
     const chapter=JSON.parse(read(chapterPath).toString('utf8').replace(/^\uFEFF/,''));
-    chapterResources(chapter).forEach(ref=>add(ref,chapterPath,'chapter_resource'));
+    chapterResources(chapter,route.id).forEach(ref=>add(ref,chapterPath,'chapter_resource'));
     comicAssets();turretAssets();
     scaleSources();portraitSources(chapter);
-    const used=new Set(chapterResources(chapter));
+    const used=new Set(chapterResources(chapter,route.id));
+    tutorialR7(used);
     sceneConsumers();
     sceneManifest('tools/cf6-scene-completion/traversal-art-manifest.json','cf6-traversal-native-source.v1',used,false);
     sceneManifest('tools/cf6-scene-completion/auxiliary-art-manifest.json','cf6-auxiliary-native-source.v1',used,true);
@@ -874,13 +1005,14 @@ function capture(root) {
     const dependencies=[...new Map(edges.map(e=>[E.canonicalJson(e),e])).values()].sort((a,b)=>{
         const x=E.canonicalJson(a),y=E.canonicalJson(b);return x<y?-1:x>y?1:0;
     });
-    const value={schema:'cf7-cf6-e2e.source-closure.v2',files,dependencies};
+    const value={schema:'cf7-cf6-e2e.source-closure.v2',routeId:route.id,textureOriginRoots:origins,files,dependencies};
     value.closureSha256=E.sha256Text(E.canonicalJson(value));
     return value;
 }
 function verify(value){
     if(!value||value.schema!=='cf7-cf6-e2e.source-closure.v2'||!Array.isArray(value.files)||!value.files.length||!Array.isArray(value.dependencies))
         throw Error('invalid CF6 source closure');
+    resolveRoute(value.routeId);
     const {closureSha256,...body}=value;
     if(closureSha256!==E.sha256Text(E.canonicalJson(body)))throw Error('CF6 source closure digest mismatch');
     return value;
@@ -891,4 +1023,4 @@ function assertUnchanged(before,after) {
         throw Error('CF6 sources or runtime resources changed during the journey');
     return true;
 }
-module.exports={capture,assertUnchanged,verify,FILES,LISTS,relative,listReferences,chapterResources,resolveImport,ORIGINAL_SWF,SCENIC_WINGS_SWF,VEHICLE_ASSETS,VEHICLE_CONSUMERS};
+module.exports={TYPE61_FILES,capture,assertUnchanged,verify,FILES,LISTS,relative,listReferences,chapterResources,resolveImport,ORIGINAL_SWF,SCENIC_WINGS_SWF,VEHICLE_ASSETS,VEHICLE_CONSUMERS};

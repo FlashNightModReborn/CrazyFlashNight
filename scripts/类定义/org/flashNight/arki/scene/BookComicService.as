@@ -44,7 +44,7 @@ class org.flashNight.arki.scene.BookComicService {
         var cf6:Boolean = isCf6Page(pageId);
         if (_active != null || !knownPage(pageId)
                 || run == null || run.outcome != "active" || run.slot !== String(_root.savePath)
-                || (cf6 && (run.bookId !== "cf6-sting" || run.routeId !== "historical"))
+                || (cf6 && (run.bookId !== "cf6-sting" || !org.flashNight.arki.scene.BookDefinition.isCf6Route(run.routeId)))
                 || _root.gameworld == undefined || server.isSocketConnected !== true
                 || typeof server.sendTaskWithCallback != "function") return false;
         var s:Object = {v:1, presentationId:"bookcomic:" + (++_seq), slot:String(_root.savePath),

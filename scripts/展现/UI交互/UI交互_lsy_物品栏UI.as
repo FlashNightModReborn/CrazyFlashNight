@@ -28,6 +28,14 @@ _root.物品UI函数.计算售卖总价 = function(item, 数量) {
 	if (!item || !item.name) return result;
 	var itemData = ItemUtil.getRawItemData(item.name);
 	if (!itemData || !itemData.price) return result;
+	// 61计划的所有单卖/批售共用此报价，强化与档级材料不再产生循环套现收益。
+	if (org.flashNight.arki.scene.Cf6Type61Service.isActive()
+			&& (itemData.type == "武器" || itemData.type == "防具")) {
+		result.基础价格 = Math.floor(Number(itemData.price) * 数量 * 0.25);
+		result.总价 = result.基础价格;
+		result.原总价 = result.基础价格;
+		return result;
+	}
 
 	if (_root.主角被动技能.口才 && _root.主角被动技能.口才.启用) {
 		result.售卖倍率 += _root.主角被动技能.口才.等级 * 0.025;
@@ -131,7 +139,7 @@ _root.物品UI函数.初始化药剂栏图标 = function():Void {
 	var activeBank = DrugInputService.getActiveBank();
 	for (i = 0; i < 4; i++) {
 		var physicalSlot = DrugInputService.physicalSlotFor(activeBank, i);
-		快捷药剂界面.药剂图标列表[i].itemIcon =
+		快捷药剂界面.药剂图标列表[i]["itemIcon"] =
 			new DrugIcon(快捷药剂界面.药剂图标列表[i], _root.物品栏.药剂栏, physicalSlot, 进度条列表[i]);
 	}
 	DrugInputService.syncBankView(快捷药剂界面, _root.物品栏.药剂栏);
@@ -181,9 +189,9 @@ _root.物品UI函数.初始化情报信息界面 = function():Void {
 	当前情报物品图标._y = 105;
 	当前情报物品图标._xscale = 200;
 	当前情报物品图标._yscale = 200;
-	当前情报物品图标.itemIcon = new ItemIcon(当前情报物品图标, null, null);
-	当前情报物品图标.itemIcon.RollOver = null;
-	当前情报物品图标.itemIcon.RollOut = null;
+	当前情报物品图标["itemIcon"] = new ItemIcon(当前情报物品图标, null, null);
+	当前情报物品图标["itemIcon"].RollOver = null;
+	当前情报物品图标["itemIcon"].RollOut = null;
 	this.btn1._visible = false;
 	this.btn2._visible = false;
 	this.滑动按钮._visible = false;
@@ -204,7 +212,7 @@ _root.物品UI函数.初始化情报信息界面 = function():Void {
 _root.物品UI函数.显示情报信息 = function(name, value):Void {
 	this._visible = true;
 	var itemData = ItemUtil.getItemData(name);
-	this.当前情报物品图标.itemIcon.init(name, 1);
+	this.当前情报物品图标["itemIcon"].init(name, 1);
 	this.当前情报物品名称 = name;
 	this.情报信息表 = [];
 	this.EncryptReplace = _root.图鉴信息.情报信息[name].EncryptReplace;

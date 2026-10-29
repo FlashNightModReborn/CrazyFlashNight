@@ -188,6 +188,7 @@ class org.flashNight.arki.skill.SkillPanelService {
     }
 
     private static function calculatePreview(skillKey:String, desiredLevel:Number, trainerSession:String, expectedRevision:Number, issueToken:Boolean):Object {
+        if (!org.flashNight.arki.scene.Cf6Type61Service.skillAllowed(skillKey)) return fail("trainer_skill_forbidden");
         if (!safeSkillKey(skillKey) || !whole(desiredLevel, 1, 100) || !whole(expectedRevision, 0, 2147483647)) return fail("invalid_payload");
         var sessionCheck:Object = validateSession(trainerSession);
         if (!sessionCheck.success) return sessionCheck;

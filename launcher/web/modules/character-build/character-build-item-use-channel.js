@@ -197,6 +197,8 @@
                         ? '刚才的使用未执行，可重新点击。'
                         : response && response.error === 'invalid_source'
                             ? '物品来源已变化，请刷新后重试。'
+                            : response && response.error === 'no_eligible_choices'
+                                ? '请先保留一件可安装候选插件的装备，再开启这个箱子。箱子尚未消耗。'
                             : '物品使用失败，请重试。');
                 return;
             }

@@ -1,0 +1,283 @@
+{
+  "schema": "cf6-acquisition-repair.v1",
+  "recordedAt": "2026-10-28T05:09:27.740461+00:00",
+  "status": "compiled_local_logic_updated_focused_regressions_passed",
+  "sourceRoot": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight",
+  "compiled": true,
+  "liveCraftingJourneyVerified": false,
+  "liveTransitionVisualVerified": false,
+  "formalRuntimePromoted": false,
+  "commitOrPush": false,
+  "evidence": "tmp/cf6-acquisition-repair-20261028",
+  "decisions": {
+    "m134Violence": "K-only 50000 at A16, removed from future cash and free pools; existing frozen offers/items retained",
+    "constellations": "blood sword 10% until first acquisition; common set prioritized without replacement, then ordinary duplicates allowed",
+    "necklace": "new runs start with level35 battle-fanatic dogtag at enhancement1",
+    "craftingEntry": "local Type61 merchant direct category actions; closed action ids, exact menu/world recheck",
+    "loadingCover": "exact CF6 world owns an opaque root cover through asynchronous room asset initialization; two ready ticks then release, no navigation/write authority"
+  },
+  "validation": {
+    "host": {
+      "passed": 7938,
+      "failed": 120,
+      "skipped": 30,
+      "failureCause": "existing FixtureResourceGuard Missing evidence root; not presented as game failures",
+      "relevantPassed": {
+        "NativeInteractionTaskTests": 33,
+        "CraftingTaskTests": 60,
+        "ItemUseTaskTests": 35,
+        "CharacterBuildTaskTests": 273,
+        "LootTaskTests": 154
+      },
+      "log": {
+        "path": "tmp/cf6-acquisition-repair-20261028/host-tests.log",
+        "bytes": 1492669,
+        "sha256": "77fd2426c0451c54bbc98f0ddc1998940febdc867daf7a71f4685f1ba5e3f42d"
+      }
+    },
+    "browser": {
+      "characterWorkbench": 1149,
+      "storageSwitch": 12,
+      "preparationMatrix": 18,
+      "loot": 147,
+      "lootLazyCancel": 6,
+      "kind": "production scripts with mock authority, not a real game journey"
+    },
+    "static": {
+      "route": 16,
+      "economy": 19,
+      "choices": 27,
+      "rewardPacks": 50,
+      "npcShops": 51,
+      "materialCatalog": "checked",
+      "budgetSelfTest": 12,
+      "characterSession": 41,
+      "characterProjection": 12,
+      "itemUseWeb": 31,
+      "lootState": 104,
+      "sourceClosure": 99,
+      "bookDefinition": 61,
+      "generationChecks": [
+        "fragments",
+        "chapter",
+        "route",
+        "choices",
+        "book",
+        "materials",
+        "map",
+        "budget"
+      ]
+    },
+    "as2": {
+      "nativeMenu": {
+        "passed": 391,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "log": {
+          "path": "tmp/cf6-acquisition-repair-20261028/native-menu-r4.log",
+          "bytes": 18683,
+          "sha256": "2c00b143a7b8da3b1cddae246e4bbb69cf83a29cabafe77ba7daa6456b903ef3"
+        }
+      },
+      "rewardStash": {
+        "passed": 137,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "scope": "isolated SOL, same-process saved-image inspection; no restart proof",
+        "log": {
+          "path": "tmp/cf6-acquisition-repair-20261028/reward-stash-r2.log",
+          "bytes": 11427,
+          "sha256": "0b48832eaf9d0c8a854f05a4ca091f3788eedf925fcc13d3a83dfd98dc04dd98"
+        }
+      },
+      "type61": {
+        "passed": 101,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "log": {
+          "path": "tmp/cf6-acquisition-repair-20261028/type61-r5.log",
+          "bytes": 3240,
+          "sha256": "9c30eea004ce1ee86ab080b45e8dd818029bb8d5c7d4b052fdda8d012caafab1"
+        }
+      },
+      "mapMechanism": {
+        "passed": 250,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "scope": "actual AVM1 MovieClip identity and opacity pixels; not complete live map-transition acceptance",
+        "evidence": "tmp/cf6-acquisition-repair-20261028/map-mechanism-r2",
+        "opacityPixel": {
+          "rgb": 528408,
+          "alpha": 255
+        },
+        "log": {
+          "path": "tmp/cf6-acquisition-repair-20261028/map-mechanism-r2.log",
+          "sha256": "ff7cffa1860ade2a242df0e34d00dfbc061d91aed21445e6e7fa9df3728ef63b"
+        }
+      },
+      "totalPassed": 879
+    },
+    "documentation": {
+      "full": "failed on four links in concurrent documents outside this repair",
+      "unrelatedFiles": [
+        "docs/下水道探索报告-肉鸽方向性初稿-2026-10-09.md",
+        "docs/残垣断壁追逐战-关卡与剧情设计-2026-10-28.md"
+      ],
+      "log": {
+        "path": "tmp/cf6-acquisition-repair-20261028/docs-final.log",
+        "bytes": 4268,
+        "sha256": "4b6707883fba2382bd7f085b8c1e33d939af42cd201862d18a25dc4e4d9f990d"
+      },
+      "diffWhitespace": "passed",
+      "taskLinks": {
+        "files": [
+          "tools/cf6-type61/README.md",
+          "tools/cf6-map-runtime/README.md",
+          "tools/cf6-prototype/README-budget.md",
+          "tools/cf6-roguelike-content/README.md",
+          "docs/闪客快打6肉鸽-61路线完整施工方案-2026-10-25.md"
+        ],
+        "issues": []
+      }
+    }
+  },
+  "preservedAttempts": {
+    "timeouts": [
+      "type61-r1",
+      "type61-r2",
+      "type61-r3",
+      "native-menu-r1"
+    ],
+    "recovery": "exact owned lifecycle task, original scratch SHA and two quiet snapshots; original failures retained",
+    "laterObservation": "minimal compiler probe passed, larger suites completed with extended observer timeouts; no conclusive low-level cause assigned",
+    "fixtureFailures": [
+      "native-menu-r2: left an open mock menu before the next test",
+      "reward-stash-r1: attempted to add to occupied fixture slot",
+      "map-mechanism-r1: ARGB-literal comparison rejected; rerun asserts exact RGB channels and alpha separately, no production rendering change for this failure"
+    ]
+  },
+  "unrelatedProtection": {
+    "count": 12,
+    "changed": [],
+    "files": [
+      {
+        "path": "flashswf/backgrounds/cf6/CF6_Tutorial_BG.swf",
+        "bytes": 224734,
+        "sha256": "80de0f8ed45a6b2c7d83bca716e491106e7ca022d4b5cbfe285b72d8bb819268"
+      },
+      {
+        "path": "flashswf/backgrounds/cf6/CF6_Tutorial_BG/DOMDocument.xml",
+        "bytes": 7861,
+        "sha256": "8a00782dafbceb7c7a22b09b8b65204ede0b694476c49975888ea202f9ff42ea"
+      },
+      {
+        "path": "scripts/tools/xfl/audit.py",
+        "bytes": 6406,
+        "sha256": "ef2079bd55094c18d3e87d5f2f6a2ae3123bae435b211bae7f27521bb9f2879f"
+      },
+      {
+        "path": "tools/cf6-tutorial/README.md",
+        "bytes": 7021,
+        "sha256": "3009dd9bcb05b1c1e64f9eda94ffbbba1ff48d70af8eb98c38745f29bccc222b"
+      },
+      {
+        "path": "tools/cf6-tutorial/assemble.py",
+        "bytes": 38451,
+        "sha256": "bf2bf52967b7e1b24de0b67346051ff8957e9c4f7dcd7911e1d057483b9c07a1"
+      },
+      {
+        "path": "tools/cf6-tutorial/environment.fragment.xml",
+        "bytes": 2668,
+        "sha256": "c3f9ceafadc8d1cc359dbe8f8f301f15c7c974ba2730df6def4439aee70d5ecc"
+      },
+      {
+        "path": "tools/cf6-tutorial/layout.json",
+        "bytes": 7439,
+        "sha256": "acbbc89538e248275c85b7e8cee0a7ebb2b8623ed64a070fa5cc40904e01e57d"
+      },
+      {
+        "path": "tools/cf6-tutorial/provenance.json",
+        "bytes": 34347,
+        "sha256": "8745555240b1d7b55c610ddbb35e196074cbfd730691d2e0da51be45f22aa212"
+      },
+      {
+        "path": "tools/cf7-balance-tool/packages/cli/tsconfig.tsbuildinfo",
+        "bytes": 42611,
+        "sha256": "5f2cdba5ed2facf4dac9586901af003414be265f2bcda974d53438f9961ff551"
+      },
+      {
+        "path": "tools/cf7-balance-tool/packages/core/tsconfig.tsbuildinfo",
+        "bytes": 39274,
+        "sha256": "b5df4097c497c71a237ce8e059a3479e9af2bbc10e6aff2735281bc32094180d"
+      },
+      {
+        "path": "tools/cf7-balance-tool/packages/web/tsconfig.electron.tsbuildinfo",
+        "bytes": 31072,
+        "sha256": "5f8185c36b9784aed5735e4cbf371fe715f5f6fe221ddf430eb6d6f5cdd57332"
+      },
+      {
+        "path": "tools/cf7-balance-tool/packages/xml-io/tsconfig.tsbuildinfo",
+        "bytes": 40782,
+        "sha256": "f99bb4290e428f8e0967ce82a484412c0c4d86915ecd103c323e028b8d6c444c"
+      }
+    ]
+  },
+  "publication": {
+    "asLoader": {
+      "path": "scripts/asLoader.swf",
+      "bytes": 6769433,
+      "sha256": "ce22542c550f9024edcbe5e9dab58fc89861f37c7c92338b7d726e2d322e9bfd"
+    },
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "log": {
+      "path": "tmp/cf6-acquisition-repair-20261028/asloader-publish.log",
+      "bytes": 1356,
+      "sha256": "471e7076090853f21b16f06647573f5d0b829a890d72de198ef81447af35b41f"
+    },
+    "sourceManifest": {
+      "path": "tmp/cf6-acquisition-repair-20261028/publication-source.json",
+      "bytes": 475830,
+      "sha256": "83f8bfb2157ed20f8f719a97c989a4fded1c4c45c98cb7e7ed43c0ae83742c52"
+    },
+    "sourceArchive": {
+      "path": "tmp/cf6-acquisition-repair-20261028/publication-source.zip",
+      "bytes": 8227654,
+      "sha256": "b39d76af539ef016c21204702222ad26008701ded634aef9449323d21911956e"
+    },
+    "sourceAfter": {
+      "count": 2299,
+      "unchanged": true,
+      "drift": []
+    },
+    "as2Ownership": {
+      "errors": [],
+      "files": 787,
+      "parsed": 0,
+      "cacheHits": 787,
+      "loaderClasses": 774,
+      "closureChecked": true,
+      "policy": "production",
+      "milliseconds": 8367.2103
+    },
+    "functionSizeGate": {
+      "path": "tmp/cf6-acquisition-repair-20261028/asloader-function-size.log",
+      "bytes": 503,
+      "sha256": "26cdf6bc9b49b892673cf7cf1bcdf57dac87d64ee94af7c389f66480834ba081"
+    },
+    "ownedEditorExited": true,
+    "uncertainCompileGatePresent": false,
+    "scratchGatePresent": false
+  },
+  "budget": {
+    "path": "tools/cf6-type61/acquisition-budget.generated.json",
+    "bytes": 25691,
+    "sha256": "81fcb721458d42e43b19ef6d04a3c0064dfb26ae2fc3101935579f0252b29e92"
+  },
+  "limits": [
+    "No complete live CF6 crafting or transition journey is claimed.",
+    "Visual comfort, all maps, complete combat progression and ten-piece graduation remain unverified.",
+    "Reward save tests inspect controlled candidate/SharedObject images within the same Flash process; no new cold-read or physical durability qualification.",
+    "No commit, push, formal runtime promotion or player-slot mutation."
+  ]
+}

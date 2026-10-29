@@ -1,3 +1,4 @@
-﻿trace("FocusedTestRunId cf6-economy Start: __FOCUSED_RUN_ID__");
+﻿var cf6EconomySuiteLink:org.flashNight.arki.scene.Cf6EconomyRulesTest;
+trace("FocusedTestRunId cf6-economy Start: __FOCUSED_RUN_ID__");
 org.flashNight.arki.scene.Cf6EconomyRulesTest.runAllTests();
 trace("FocusedTestRunId cf6-economy Complete: __FOCUSED_RUN_ID__");

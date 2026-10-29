@@ -1,6 +1,7 @@
 ﻿/** 店级资格由导航和交易共同消费；来源索引及商品目录不自行授予访问权。 */
 class org.flashNight.arki.item.NpcShopAccessService {
     public static function canAccess(shopId:String):Boolean {
+        if (!org.flashNight.arki.scene.Cf6Type61Service.shopAllowed(shopId)) return false;
         if (shopId == "书中-迷之盔甲君") {
             var run:Object = _root._saveExt.bookRun;
             return run != null && run.bookId === "repair-campus" && run.outcome === "active"

@@ -260,7 +260,8 @@ class org.flashNight.arki.item.ItemUseService {
             if ((after == null ? 0 : Number(after.value)) != remaining) throw new Error("source_changed");
             PlayerAssetTransaction.recordItems("loss", [{name:params.source.itemName, value:count}], context);
             for (var p:Number = 0; p < count; p++) {
-                var rolled:Object = rollRecipe(recipe);
+                var effectiveRecipe:Object = org.flashNight.arki.item.Cf6ConstellationPolicy.constellationRecipe(String(source.item.name), recipe);
+                var rolled:Object = rollRecipe(effectiveRecipe);
                 if (!rolled.success) throw new Error("invalid_reward_pack");
                 var items:Array = [];
                 for (var e:Number = 0; e < rolled.entries.length; e++) {
@@ -271,6 +272,7 @@ class org.flashNight.arki.item.ItemUseService {
                 }
                 if (_testFaultCut == "append" && p == _testFaultOrdinal) throw new Error("injected_stash_append_fault");
                 if (!RewardStashService.admit(items, true, true, context)) throw new Error("invalid_reward_pack");
+                org.flashNight.arki.item.Cf6ConstellationPolicy.rememberConstellation(String(source.item.name), rolled.entries);
                 packages.push({ordinal:p, batchId:String(params.operationId) + ".p" + p, entryCount:items.length});
             }
             var result:Object = {success:true, kind:count == 1 ? "open" : "openMany",

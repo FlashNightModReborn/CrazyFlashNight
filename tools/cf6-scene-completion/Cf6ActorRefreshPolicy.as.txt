@@ -1,0 +1,38 @@
+import org.flashNight.arki.scene.BookRunRules;
+import org.flashNight.arki.scene.StageManager;
+
+/** Read-only admission: equipment rebuilds cannot replace a currently owned actor pose/depth. */
+class org.flashNight.arki.scene.Cf6ActorRefreshPolicy {
+    public static function blocks(root:Object):Boolean {
+        var run:Object=root._saveExt.bookRun;
+        if(!BookRunRules.sameCf6Run(run,run) || run.slot!==String(root.savePath)
+                || root.当前关卡名!=="书中历险-毒刺行动") return false;
+        var world:Object=root.gameworld,hero:Object=world[root.控制目标];
+        var owner:Object=world.__stageReturnWorldIdentity;
+        var manager:Object=StageManager.instance;
+        if(owner==null || hero==null || hero._parent!==world || manager.gameworld!==world
+                || manager.isActive!==true || manager.isFailed===true || manager.isFinished===true) return false;
+        var prepared:Object=world.__cf6ArrivalPreparation;
+        if(prepared!=null && prepared.closed===false && prepared.world===world && prepared.owner===owner
+                && prepared.manager===manager && prepared.stage===manager.currentStage
+                && prepared.actor===hero && prepared.controlName===root.控制目标
+                && prepared.token!=undefined && hero.__cf6ArrivalPreparationOwner===prepared.token
+                && prepared.slot===String(root.savePath) && BookRunRules.sameCf6Run(prepared.runIdentity,run)) return true;
+        var room:Object=world.__cf6Mechanism;
+        if(room==null || room.world!==world || room.owner!==owner || room.failed===true
+                || room.stageManager!==manager || room.stageIndex!==manager.currentStage
+                || room.slot!==String(root.savePath) || !BookRunRules.sameCf6Run(room.runIdentity,run)) return false;
+        if(blocksTraversal(room.arrival,room,true) || blocksTraversal(room.departure,room,false)) return true;
+        var standing:Object=room.standingActor;
+        return standing!=null && standing.abandoned!==true && standing.actor===hero
+            && standing.token!=undefined && hero.__cf6ElevatorPoseOwner===standing.token;
+    }
+    private static function blocksTraversal(traversal:Object,room:Object,arrival:Boolean):Boolean {
+        if(traversal==null || traversal.closed===true || traversal.room!==room
+                || traversal.rules.owner!==room.owner) return false;
+        if(arrival) return traversal.rules.actorReleased!==true
+            && (traversal.rules.phase=="waiting" || traversal.rules.phase=="playing");
+        return traversal.acquired===true && (traversal.rules.phase=="playing"
+            || traversal.awaitingAdvance===true || traversal.advanceStatus=="accepted");
+    }
+}

@@ -1,11 +1,59 @@
 {
-  "schema": "cf6-instructor.panel-baseline.v1",
-  "attributeBoost": false,
+  "schema": "cf6-instructor.panel-balance.v2",
+  "attributeBoost": true,
+  "formula": "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
+  "tuningSha256": "0dbfdc89643a59b0b660b7d603e7de5bb74c802d69c1655b8d807b64e96d4e53",
+  "tuning": {
+    "schema": "cf6-instructor.panel-tuning.v1",
+    "baseStage": 7,
+    "stage": 8,
+    "tierFactor": 9,
+    "classification": "mini_boss",
+    "bossResistance": 20,
+    "basis": "2026-10-28: instructor advances one stage above the stage-7 soldier baseline, uses tier coefficient 9, and is a boss target rather than an elite target. Other observed panel coefficients and authored behavior remain inherited."
+  },
   "pairs": [
     {
       "ordinary": 466,
       "instructor": 480,
-      "panelEqualExceptDisplayName": true,
+      "panelEqualExceptDisplayName": false,
+      "input": {
+        "stage": 8,
+        "speedFactor": 2.0,
+        "atkSpeedFactor": 4.0,
+        "atkMultiplier": 1.0,
+        "segmentFactor": 1.0,
+        "superArmorFactor": 2.0,
+        "tierFactor": 9,
+        "growthFactor": 1.0,
+        "highAtkFactor": 1.0,
+        "highDefFactor": 2.2
+      },
+      "flags": {
+        "阶段": 8,
+        "速度系数": 2.0,
+        "攻速系数": 4.0,
+        "攻击倍率": 1.0,
+        "段数系数": 1.0,
+        "霸体系数": 2.0,
+        "档次系数": 9,
+        "成长系数": 1.0,
+        "高攻低血防系数": 1.0,
+        "高防低血系数": 2.2
+      },
+      "integerPanel": {
+        "最小经验值": 1832,
+        "最大经验值": 10193,
+        "hp_min": 15623,
+        "hp_max": 44948,
+        "空手攻击力_min": 545,
+        "空手攻击力_max": 1462,
+        "基本防御力_min": 334,
+        "基本防御力_max": 786
+      },
+      "classification": "mini_boss",
+      "eliteDamageEligible": false,
+      "bossDamageEligible": true,
       "sidearms": [
         "FR506",
         "FR506"
@@ -16,7 +64,44 @@
     {
       "ordinary": 467,
       "instructor": 481,
-      "panelEqualExceptDisplayName": true,
+      "panelEqualExceptDisplayName": false,
+      "input": {
+        "stage": 8,
+        "speedFactor": 2.0,
+        "atkSpeedFactor": 4.0,
+        "atkMultiplier": 1.0,
+        "segmentFactor": 1.0,
+        "superArmorFactor": 4.0,
+        "tierFactor": 9,
+        "growthFactor": 1.0,
+        "highAtkFactor": 1.0,
+        "highDefFactor": 2.2
+      },
+      "flags": {
+        "阶段": 8,
+        "速度系数": 2.0,
+        "攻速系数": 4.0,
+        "攻击倍率": 1.0,
+        "段数系数": 1.0,
+        "霸体系数": 4.0,
+        "档次系数": 9,
+        "成长系数": 1.0,
+        "高攻低血防系数": 1.0,
+        "高防低血系数": 2.2
+      },
+      "integerPanel": {
+        "最小经验值": 1832,
+        "最大经验值": 10193,
+        "hp_min": 15623,
+        "hp_max": 44948,
+        "空手攻击力_min": 545,
+        "空手攻击力_max": 1462,
+        "基本防御力_min": 334,
+        "基本防御力_max": 786
+      },
+      "classification": "mini_boss",
+      "eliteDamageEligible": false,
+      "bossDamageEligible": true,
       "sidearms": [
         "FR506",
         "FR506"

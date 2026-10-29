@@ -604,6 +604,16 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
             owner:owner,status:"planned",stage:"planned"};
         transition=ticket; return ticket;
     }
+    /** 已受理装备重建的真实异步组件等待；不是失败，也不允许重新建身体。 */
+    public function awaitingEquipmentComponent(ticket:Object):Boolean {
+        if(ticket==null || ticket!==transition || ticket.status!="started" || ticket.context!==context
+                || ticket.actor!==actor || ticket.world!==world || ticket.targetBody!==body
+                || !current(capture(),false)) return false;
+        var plan:Object=actor.__playerStatInitPlan;
+        return plan!=undefined && plan.ticket===ticket && plan.actor===actor && plan.body===body
+            && plan.context===context && plan.world===world && plan.open==0 && plan.failed!==true
+            && plan.complete!==true && plan.stage=="waiting_mode_component";
+    }
     public function startEquipmentTransition(ticket:Object,value:Object):Object {
         if(ticket!==transition || ticket.context!==context || ticket.status!="planned"
                 || actor!==value || ticket.actor!==actor || ticket.world!==world
@@ -674,8 +684,13 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
         if(batchDepth>0) return result("pending","batch_open");
         if(flushing) return result("pending","reentrant");
         if(actor==null || body==null || world==null) return result("pending","pending_actor");
-        if((dirtyMask() & 4)!=0 && transition!=null && transition.status=="started")
+        if((dirtyMask() & 4)!=0 && transition!=null && transition.status=="started") {
+            if(awaitingEquipmentComponent(transition)) {
+                if(typeof adapter.block=="function") adapter.block(capture(),"visibility","mode_component");
+                return result("pending","mode_component");
+            }
             return fail(capture(),"equipment_owner_recovery",new Error("equipment_owner_recovery_required"));
+        }
         if(!current(capture(),false)) return fail(capture(),"identity",new Error("identity_changed"));
         var canConsume:Boolean=true;
         try {if(typeof adapter.canConsume=="function") canConsume=adapter.canConsume()===true;}
@@ -727,6 +742,10 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
                             stage="equipment_preflight";
                             if(typeof adapter.verifyEquipmentInput!="function" || adapter.verifyEquipmentInput(ticket)!==true) throw new Error("equipment_proof_rejected");
                             stage="equipment_rebuild"; adapter.rebuild(ticket);
+                        }
+                        if(awaitingEquipmentComponent(ticket)) {
+                            if(typeof adapter.block=="function") adapter.block(capture(),"visibility","mode_component");
+                            return result("pending","mode_component");
                         }
                         if(ticket!==transition || ticket.status!="completed" || ticket.context!==context
                                 || ticket.world!==world || ticket.actor!==actor || body!==ticket.targetBody
