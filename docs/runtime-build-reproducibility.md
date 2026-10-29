@@ -1329,3 +1329,11 @@ Issue #152 已完成两轮正式推广。第二轮冻结源 `c1d9ab2576937aa2fa4
 完整 production policy **47/47**，注册本地 X509 与 [GitHub 独立构建 40208914744](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40208914744) 达成同一 43 文件闭包的双 signer、双 faultDomain 共识；唯一 writer 原子推广，部署提交 `6f412c008b9d76a255a39fedea935b7238d8e14c` 已快进推送并同步主目录。主目录 bundle、strict consensus 与 bootstrap `--verify-only` 通过，正式 SDK 入口／帮助面板／受控退出及修复 XML 绑定共 **6/6**，三个真实玩家槽的六份 JSON/SOL 摘要不变。
 
 远端 [部署 Audit 40209956441](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40209956441) **success**，独立重放 `state=promoted / deploymentChanged=true`、双 signer／双 faultDomain 和同一 payload closure。精确 request、identity、closure、回滚包、负向历史与最终审计归[本批正式发布记录](reports/统合61与现场修复-正式发布-2026-10-25.md)。`businessJourneyExecuted=false / physicalInputAttestation=false`；完整战斗、玩家原现场路径、强化转换组合和物理操作手感继续按各自证据验收。本批仍为 2.718 DEV / UNSTABLE 开发增量，不新增稳定整包。
+
+## 2026-10-29 61计划与开箱保存止血正式推广
+
+维护者明确授权完整发布列车。冻结源`f031163e5c5fdcdd8910691d1e9167a47d573232`、受控标签`runtime-build-v2/20261029-cf6-type61-hotfix-v2`完成production policy **47/47**；注册本地X509与[GitHub独立构建40819794375](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40819794375)对同一43文件闭包达成双signer / 双faultDomain共识。唯一writer原子推广及完整安装自检通过，上一版回滚包保留。
+
+部署提交`353b6397754da6512c203113a56dc56a8d2b15b8`已快进推送；[部署Audit40821521992](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40821521992)独立重放`state=promoted / deploymentChanged=true / mode=Index`和双故障域共识。无参数正式入口启动/说明页/退出通过；显式诊断通道下，独立档Dominator首次关闭保存、一次开箱及新进程读回通过，121份非目标存档文件不变。A05完整转图、整章流程与物理手感仍待实机验收。
+
+精确身份、首轮肖像来源失败与同像素修复、网络恢复、回滚目录及独立工作区改动保护见[本批发布记录](reports/61计划与止血-正式发布-2026-10-29.md)。现役值继续读取manifest/consensus；本批仍为2.718 DEV / UNSTABLE，不新增稳定整包。
