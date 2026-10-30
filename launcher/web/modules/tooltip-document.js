@@ -777,8 +777,9 @@
     }
 
     function isALegionRun(run) {
-        return run && run.text && typeof run.color === 'string'
-            && run.color.toUpperCase() === '#FF0000';
+        if (!run || !run.text) return false;
+        if (typeof run.color === 'string' && run.color.toUpperCase() === '#FF0000') return true;
+        return /A兵团|Andy|安迪烙/i.test(run.text);
     }
 
     function aLegionMarkHtml() {
@@ -788,13 +789,34 @@
             + '</svg></span>';
     }
 
+    function isWarlordRun(run) {
+        return run && run.text && run.text.indexOf('军阀') >= 0;
+    }
+
+    function warlordMarkHtml() {
+        return '<span class="ntt-warlord-mark" aria-hidden="true">'
+            + '<svg viewBox="0 0 64 64" focusable="false">'
+            + '<circle cx="32" cy="32" r="30" fill="#000"/>'
+            + '<path d="M32 6a26 26 0 0 0 0 52Z" fill="#000"/>'
+            + '<path d="M32 6a26 26 0 0 1 0 52Z" fill="currentColor"/>'
+            + '<path d="M32 14a18 18 0 0 1 0 36Z" fill="#000"/>'
+            + '<path d="M32 22a10 10 0 0 0 0 20Z" fill="currentColor"/>'
+            + '<circle cx="32" cy="20" r="4" fill="#000"/>'
+            + '<circle cx="32" cy="44" r="4" fill="currentColor"/>'
+            + '</svg></span>';
+    }
+
     function runsHtml(runs) {
         var out = '';
         for (var i = 0; i < runs.length; i++) {
             var run = runs[i];
-            if (isALegionRun(run)) {
-                out += aLegionMarkHtml();
-                out += runHtml({ text: run.text, color: run.color, bold: run.bold,
+            var aLegion = isALegionRun(run);
+            var warlord = isWarlordRun(run);
+            if (aLegion) out += aLegionMarkHtml();
+            if (warlord) out += warlordMarkHtml();
+            if (warlord || aLegion) {
+                out += runHtml({ text: run.text,
+                    color: warlord ? '#FFFFE0' : '#FF0000', bold: run.bold,
                     italic: run.italic, underline: true,
                     fontSize: run.fontSize, fontFace: run.fontFace });
             } else {

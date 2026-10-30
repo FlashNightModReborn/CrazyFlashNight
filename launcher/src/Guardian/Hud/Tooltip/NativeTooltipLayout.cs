@@ -1375,6 +1375,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
             foreach (NativeTooltipSection sec in subSecs)
             {
+                if (sec.Kind == "acquisition")
+                    w = Math.Max(w, RequiredAcquisitionWidth(sec, pad, scale, measure));
                 Plan.SubBox box = sec.IsAttachments
                     ? BuildAttachmentsBox(sec, x, y, w, pad, scale, measure, lh, maxH)
                     : BuildTextSubBox(sec, x, y, w, pad, scale, measure, lh, maxH);
@@ -1384,6 +1386,28 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             plan.TipSize = new Size(
                 Math.Max(plan.TipSize.Width, x + w),
                 Math.Max(plan.TipSize.Height, y - gap));
+        }
+
+        private static int RequiredAcquisitionWidth(NativeTooltipSection sec,
+            int pad, float scale, Func<string, RunFont, int> measure)
+        {
+            int required = 0;
+            int iconPx = Px(AttachIconBase, scale);
+            int iconGap = Px(AttachIconGapBase, scale);
+            for (int i = 0; i < sec.Rows.Count; i++)
+            {
+                NativeTooltipAttachmentRow row = sec.Rows[i];
+                if (string.IsNullOrEmpty(row.Name)) continue;
+                int depth = row.Depth == 1 ? 1 : 0;
+                int rowIndent = depth == 0 ? 0 : Px(8, scale);
+                bool showIcon = depth == 1 || !string.IsNullOrEmpty(row.IconName);
+                int textW = measure(row.Name, new RunFont { Bold = true });
+                for (int r = 0; r < row.Runs.Count; r++)
+                    textW += measure(row.Runs[r].Text, new RunFont { Bold = false });
+                required = Math.Max(required, pad * 2 + rowIndent
+                    + (showIcon ? iconPx + iconGap : 0) + textW);
+            }
+            return required;
         }
 
         /// <summary>普通子注释框：整段 runs 折行，整框高度上限沿用 desc max-height。</summary>
@@ -1444,7 +1468,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 NativeTooltipAttachmentRow row = sec.Rows[i];
                 if (string.IsNullOrEmpty(row.Name)) continue;
                 int depth = row.Depth == 1 ? 1 : 0;
-                int rowIndent = depth == 0 ? 0 : Px(16, scale);
+                int rowIndent = depth == 0 ? 0 : Px(8, scale);
                 int effectIndent = Px(12, scale);
                 bool acquisition = sec.Kind == "acquisition";
                 bool showIconColumn = !acquisition || depth == 1 || !string.IsNullOrEmpty(row.IconName);
@@ -1454,7 +1478,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 List<NativeTooltipRun> nameRuns = new List<NativeTooltipRun>();
                 nameRuns.Add(new NativeTooltipRun(row.Name, null, true));
                 if (acquisition) nameRuns.AddRange(row.Runs);
-                List<VisualLine> nameLines = WrapRuns(nameRuns, nameTextW, measure, lh);
+                List<VisualLine> nameLines = WrapRuns(nameRuns,
+                    acquisition ? int.MaxValue / 4 : nameTextW, measure, lh);
                 if (nameLines.Count > MaxRenderedLines)
                     nameLines = nameLines.GetRange(0, MaxRenderedLines);
                 int nameH = SumHeight(nameLines, lh);

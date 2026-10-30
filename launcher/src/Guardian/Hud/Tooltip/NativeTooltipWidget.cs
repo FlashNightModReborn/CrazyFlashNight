@@ -925,17 +925,25 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                             NativeTooltipLayout.VisualLine.Slice slice = vl.Slices[s];
                             if (string.IsNullOrEmpty(slice.Text)) continue;
                             bool aLegion = IsALegionSlice(slice);
+                            bool warlord = IsWarlordSlice(slice);
+                            int markSize = Math.Max(1, (int)Math.Round(lh));
                             if (aLegion)
                             {
-                                int markSize = Math.Max(1, (int)Math.Round(lh));
                                 DrawIcon(g, new Rectangle((int)cx, (int)cy,
                                     markSize, markSize), null, false, true);
                                 cx += markSize + 2;
                             }
-                            Color color = slice.Color.HasValue
-                                ? slice.Color.Value : TextDefault;
+                            if (warlord)
+                            {
+                                DrawIcon(g, new Rectangle((int)cx, (int)cy,
+                                    markSize, markSize), null, false, false, true);
+                                cx += markSize + 2;
+                            }
+                            Color color = warlord ? Color.FromArgb(255, 255, 224)
+                                : aLegion ? Color.FromArgb(255, 0, 0)
+                                : slice.Color.HasValue ? slice.Color.Value : TextDefault;
                             NativeTooltipLayout.RunFont font = slice.FontOf();
-                            if (aLegion) font.Underline = true;
+                            if (aLegion || warlord) font.Underline = true;
                             using (SolidBrush brush = new SolidBrush(Fade(color)))
                             {
                                 g.DrawString(slice.Text, FontFor(font),
@@ -952,8 +960,17 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
         private static bool IsALegionSlice(NativeTooltipLayout.VisualLine.Slice slice)
         {
-            return slice.Color.HasValue && slice.Color.Value.R == 255
-                && slice.Color.Value.G == 0 && slice.Color.Value.B == 0;
+            if (slice.Color.HasValue && slice.Color.Value.R == 255
+                && slice.Color.Value.G == 0 && slice.Color.Value.B == 0) return true;
+            string text = slice.Text ?? "";
+            return text.IndexOf("A兵团", StringComparison.OrdinalIgnoreCase) >= 0
+                || text.IndexOf("Andy", StringComparison.OrdinalIgnoreCase) >= 0
+                || text.IndexOf("安迪烙", StringComparison.Ordinal) >= 0;
+        }
+
+        private static bool IsWarlordSlice(NativeTooltipLayout.VisualLine.Slice slice)
+        {
+            return (slice.Text ?? "").IndexOf("军阀", StringComparison.Ordinal) >= 0;
         }
 
         /// <summary>
@@ -962,13 +979,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         /// 缩放结果按 icon+尺寸 字典缓存（主/弹夹/插件图标同帧共存，不互相逐出）。
         /// </summary>
         private void DrawIcon(Graphics g, Rectangle rect, string iconName,
-            bool npcPortrait = false, bool aLegionMark = false)
+            bool npcPortrait = false, bool aLegionMark = false, bool warlordMark = false)
         {
             Bitmap frame = null;
-            if (_icons != null && (aLegionMark || !string.IsNullOrEmpty(iconName)))
+            if (_icons != null && (aLegionMark || warlordMark || !string.IsNullOrEmpty(iconName)))
             {
                 LootIconCatalog.LootIconFrames frames;
-                bool found = aLegionMark ? _icons.TryGetALegionMark(out frames)
+                bool found = warlordMark ? _icons.TryGetWarlordMark(out frames)
+                    : aLegionMark ? _icons.TryGetALegionMark(out frames)
                     : npcPortrait ? _icons.TryGetNpc(iconName, out frames)
                     : _icons.TryGet(iconName, out frames);
                 if (found && frames != null) frame = frames.First;
@@ -987,7 +1005,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 return;
             }
 
-            string key = (aLegionMark ? "a-legion:" : npcPortrait ? "npc:" : "item:") + iconName
+            string key = (warlordMark ? "warlord:" : aLegionMark ? "a-legion:"
+                : npcPortrait ? "npc:" : "item:") + iconName
                 + "|" + rect.Width + "x" + rect.Height;
             Bitmap scaled;
             if (!_iconScaled.TryGetValue(key, out scaled) || scaled == null)

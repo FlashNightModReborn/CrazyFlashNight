@@ -787,21 +787,40 @@ test('buildHtml acquisition：商店行用 cfn-assets 头像 URL，无图标行�
     assert(html.indexOf('回退文本') < 0, 'rows 成立时不再叠加 fallback runs');
 });
 
-test('buildHtml：#FF0000 文案前插入 A兵团徽标并加下划线', () => {
+test('buildHtml：A兵团相关文案前插入徽标并加下划线', () => {
     const doc = Doc.normalize({ version: 1, sections: [
         { role: 'intro', runs: [
             { text: '普通红字', color: '#B22222' },
             { text: 'A兵团士兵', color: '#ff0000' },
-            { text: 'AndyLaw', color: '#FF0000' }
+            { text: 'AndyLaw', color: '#FF0000' },
+            { text: 'Andy Law' },
+            { text: 'Andy套装' },
+            { text: '安迪烙' }
         ] }
     ] });
     const html = Doc.buildHtml(doc);
     const marks = html.match(/ntt-a-legion-mark/g) || [];
-    assert.strictEqual(marks.length, 2, '两个 #FF0000 片段各有一个徽标');
+    assert.strictEqual(marks.length, 5, '预设红字与明确 A兵团内容均有徽标');
     assert(html.indexOf('<u>A兵团士兵</u>') >= 0, 'A兵团红字带下划线');
     assert(html.indexOf('<u>AndyLaw</u>') >= 0, 'AndyLaw 红字带下划线');
+    assert(html.indexOf('<span style="color:#FF0000"><u>Andy Law</u></span>') >= 0,
+        '未着色 Andy Law 也带红色下划线');
+    assert(html.indexOf('<span style="color:#FF0000"><u>Andy套装</u></span>') >= 0,
+        '单独 Andy 也有徽标');
+    assert(html.indexOf('<span style="color:#FF0000"><u>安迪烙</u></span>') >= 0,
+        '安迪烙也有徽标');
     assert(html.indexOf('ntt-a-legion-mark') < html.indexOf('A兵团士兵'), '徽标在文字前');
     assert(html.indexOf('普通红字') < html.indexOf('ntt-a-legion-mark'), '其他红色系不插徽标');
+});
+
+test('buildHtml：军阀文案使用黑黄徽标与淡金色下划线', () => {
+    const doc = Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: [{ text: '军阀士兵', color: '#00FFFF' }] }
+    ] });
+    const html = Doc.buildHtml(doc);
+    assert(html.indexOf('ntt-warlord-mark') >= 0, '军阀内容带黑黄徽标');
+    assert(html.indexOf('<span style="color:#FFFFE0"><u>军阀士兵</u></span>') >= 0,
+        '军阀文字使用 #FFFFE0 下划线');
 });
 
 test('buildHtml：物品名使用独立居中大字号标题块', () => {

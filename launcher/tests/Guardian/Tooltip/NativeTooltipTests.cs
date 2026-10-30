@@ -1273,7 +1273,7 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
             Assert.Equal(1, doc.Sections[1].Rows[1].Depth);
             Assert.True(rows[0].IconRect.IsEmpty, "大类不占图标列");
             Assert.Equal(plan.Subs[0].ContentLeftPx, rows[0].TextLeftPx);
-            Assert.Equal(rows[0].TextLeftPx + 16, rows[1].IconRect.X);
+            Assert.Equal(rows[0].TextLeftPx + 8, rows[1].IconRect.X);
             Assert.True(rows[1].TextLeftPx > rows[1].IconRect.X);
             Assert.Equal("Andy Law ($100)", LineText(rows[1].Lines[0]));
             Assert.Empty(rows[1].EffectLines);
@@ -1297,9 +1297,9 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         }
 
         [Fact]
-        public void Paint_ALegionRedText_InsertsRedMarkAndUnderline()
+        public void Paint_FactionText_InsertsMarksAndUnderlines()
         {
-            JObject payload = GunPayload("tt-a-legion");
+            JObject payload = GunPayload("tt-factions");
             payload["document"]["rail"] = JValue.CreateNull();
             payload["document"]["magazine"] = JValue.CreateNull();
             payload["document"]["sections"] = new JArray
@@ -1309,7 +1309,9 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                     ["role"] = "intro",
                     ["runs"] = new JArray
                     {
-                        new JObject { ["text"] = "A兵团士兵", ["color"] = "#FF0000" }
+                        new JObject { ["text"] = "A兵团士兵\n", ["color"] = "#FF0000" },
+                        new JObject { ["text"] = "Andy套装与安迪烙\n" },
+                        new JObject { ["text"] = "军阀士兵", ["color"] = "#66CC66" }
                     }
                 }
             };
@@ -1324,27 +1326,47 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                 int lineH = plan.LineHeightIntroPx;
                 var mark = new Rectangle(placed.X + plan.IntroContentLeftPx,
                     placed.Y + plan.IntroContentTopPx, lineH, lineH);
+                var namedMark = new Rectangle(mark.X, mark.Y + lineH, lineH, lineH);
+                var warlordMark = new Rectangle(mark.X, mark.Y + lineH * 2, lineH, lineH);
                 using (var bmp = new Bitmap(1024, 576))
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
                     g.Clear(Color.FromArgb(255, 24, 26, 28));
                     w.Paint(g, 1f, Point.Empty);
-                    int markRed = 0, underlineRed = 0;
-                    for (int y = mark.Top; y < mark.Bottom; y++)
-                        for (int x = mark.Left; x < mark.Right; x++)
+                    int markRed = 0, namedMarkRed = 0, warlordGold = 0, warlordBlack = 0;
+                    for (int y = mark.Top; y < warlordMark.Bottom; y++)
+                        for (int x = mark.Left; x < warlordMark.Right; x++)
                         {
-                            Color c = bmp.GetPixel(x, y);
-                            if (c.R > 240 && c.G < 20 && c.B < 20) markRed++;
+                            Color pixel = bmp.GetPixel(x, y);
+                            if (mark.Contains(x, y) && pixel.R > 240 && pixel.G < 20 && pixel.B < 20)
+                                markRed++;
+                            if (namedMark.Contains(x, y) && pixel.R > 240
+                                && pixel.G < 20 && pixel.B < 20) namedMarkRed++;
+                            if (!warlordMark.Contains(x, y)) continue;
+                            if (pixel.R > 200 && pixel.G > 200 && pixel.B > 200) warlordGold++;
+                            if (pixel.R < 20 && pixel.G < 20 && pixel.B < 20) warlordBlack++;
                         }
                     var underline = new Rectangle(mark.Right + 2, mark.Bottom - 3, 96, 3);
-                    for (int y = underline.Top; y < underline.Bottom; y++)
-                        for (int x = underline.Left; x < underline.Right; x++)
+                    var namedUnderline = new Rectangle(namedMark.Right + 2, namedMark.Bottom - 3, 96, 3);
+                    var warlordUnderline = new Rectangle(warlordMark.Right + 2, warlordMark.Bottom - 3, 96, 3);
+                    int underlineRed = 0, namedUnderlineRed = 0, underlineGold = 0;
+                    for (int y = underline.Top; y < warlordUnderline.Bottom; y++)
+                        for (int x = underline.Left; x < warlordUnderline.Right; x++)
                         {
                             Color c = bmp.GetPixel(x, y);
-                            if (c.R > 240 && c.G < 20 && c.B < 20) underlineRed++;
+                            if (underline.Contains(x, y) && c.R > 240 && c.G < 20 && c.B < 20)
+                                underlineRed++;
+                            if (namedUnderline.Contains(x, y) && c.R > 240 && c.G < 20 && c.B < 20)
+                                namedUnderlineRed++;
+                            if (warlordUnderline.Contains(x, y) && c.R > 200 && c.G > 200 && c.B > 200)
+                                underlineGold++;
                         }
                     Assert.True(markRed > 0, "红字前应有红色 A兵团行高徽标");
-                    Assert.True(underlineRed > 0, "红字应带下划线");
+                    Assert.True(namedMarkRed > 0, "Andy 与安迪烙前也应有红色徽标");
+                    Assert.True(warlordGold > 0 && warlordBlack > 0, "军阀应有黑黄行高徽标");
+                    Assert.True(underlineRed > 0, "A兵团红字应带下划线");
+                    Assert.True(namedUnderlineRed > 0, "未着色 A兵团相关文字也应改为红色下划线");
+                    Assert.True(underlineGold > 0, "军阀文字应带淡黄色下划线");
                 }
             }
         }

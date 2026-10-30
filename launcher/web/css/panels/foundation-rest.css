@@ -805,11 +805,19 @@
 }
 .flash-tt-attach-row--child,
 .ntt-attach-row--child {
-    margin-left: 16px;
+    margin-left: 8px;
 }
 .flash-tt-attach-row--category > .flash-tt-attach-icon,
 .ntt-attach-row--category > .ntt-attach-icon {
     display: none;
+}
+.flash-tt-side:has(.flash-tt-sub-panel--acquisition),
+.ntt-side:has(.ntt-sub-panel--acquisition) {
+    min-width: max-content;
+}
+.flash-tt-sub-panel--acquisition .flash-tt-attach-name,
+.ntt-sub-panel--acquisition .ntt-attach-name {
+    white-space: nowrap;
 }
 .flash-tt-attach-row + .flash-tt-attach-row,
 .ntt-attach-row + .ntt-attach-row {
@@ -847,16 +855,19 @@
     margin-left: 12px;
 }
 
-/* 文案预设红字（#FF0000）的 A兵团行高徽标；只参与当前行内排版。 */
-.ntt-a-legion-mark {
+/* A兵团 / 军阀行高徽标：只参与当前行内排版。 */
+.ntt-a-legion-mark,
+.ntt-warlord-mark {
     display: inline-block;
     width: 1em;
     height: 1em;
     margin-right: 2px;
-    color: #FF0000;
     vertical-align: -0.125em;
 }
-.ntt-a-legion-mark > svg {
+.ntt-a-legion-mark { color: #FF0000; }
+.ntt-warlord-mark { color: #FFFFE0; }
+.ntt-a-legion-mark > svg,
+.ntt-warlord-mark > svg {
     display: block;
     width: 100%;
     height: 100%;

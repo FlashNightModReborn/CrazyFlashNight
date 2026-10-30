@@ -172,6 +172,40 @@ namespace CF7Launcher.Guardian.Hud.Loot
             }
         }
 
+        /// <summary>军阀黑黄行高徽标：使用重建 SVG，不与 A兵团或物品图标共用缓存键。</summary>
+        internal bool TryGetWarlordMark(out LootIconFrames frames)
+        {
+            frames = null;
+            lock (_gate)
+            {
+                const string cacheKey = "warlord:gold-black";
+                Bitmap thumb;
+                if (_frameCache.TryGet(cacheKey, out thumb))
+                {
+                    frames = new LootIconFrames { Frames = new Bitmap[] { thumb }, Fps = DefaultFps };
+                    return true;
+                }
+                string path = Path.GetFullPath(Path.Combine(
+                    _iconsDir, "..", "assets", "logos", "warlord-emblem.svg"));
+                if (!File.Exists(path)) return false;
+                try
+                {
+                    thumb = RenderSvg(path, ThumbSize);
+                }
+                catch
+                {
+                    return false;
+                }
+                if (!_frameCache.TryAdd(cacheKey, thumb))
+                {
+                    thumb.Dispose();
+                    return false;
+                }
+                frames = new LootIconFrames { Frames = new Bitmap[] { thumb }, Fps = DefaultFps };
+                return true;
+            }
+        }
+
         /// <summary>成功时 out 帧集（共享位图，调用方不得 Dispose）。任何失败返回 false。</summary>
         internal bool TryGet(string iconName, out LootIconFrames frames)
         {

@@ -235,6 +235,28 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
             }
         }
 
+        [Fact]
+        public void TryGetWarlordMark_RendersBlackAndGoldEmblem()
+        {
+            using (var catalog = new LootIconCatalog(FindIconsDir()))
+            {
+                LootIconCatalog.LootIconFrames frames;
+                Assert.True(catalog.TryGetWarlordMark(out frames));
+                Assert.NotNull(frames.First);
+                bool hasBlack = false, hasGold = false;
+                for (int y = 0; y < frames.First.Height; y++)
+                    for (int x = 0; x < frames.First.Width; x++)
+                    {
+                        Color pixel = frames.First.GetPixel(x, y);
+                        if (pixel.A < 200) continue;
+                        if (pixel.R < 20 && pixel.G < 20 && pixel.B < 20) hasBlack = true;
+                        if (pixel.R > 200 && pixel.G > 200 && pixel.B > 200) hasGold = true;
+                    }
+                Assert.True(hasBlack, "军阀徽标应有黑色结构");
+                Assert.True(hasGold, "军阀徽标应有淡黄色结构");
+            }
+        }
+
         private static byte[] PixelsOf(Bitmap bmp)
         {
             BitmapData data = bmp.LockBits(
