@@ -88,11 +88,12 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
         }
 
         // 2. 子弹类型显示（支持重命名，显示插件修改贡献）
+        //    原生路径 omitBulletType 时移交弹夹框第二行输出，本方法跳过
         var baseBullet:String = data.bulletrename ? data.bulletrename : data.bullet;
         var finalBullet:String = (equipData && equipData.bullet)
             ? (equipData.bulletrename ? equipData.bulletrename : equipData.bullet)
             : baseBullet;
-        if (finalBullet) {
+        if (finalBullet && !(nativeOpt != null && nativeOpt.omitBulletType === true)) {
             if (equipData && finalBullet != baseBullet) {
                 // 插件修改了子弹类型，使用箭头形式显示变化
                 result.push(TooltipConstants.LBL_BULLET_TYPE, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalBullet, "</FONT> (←", baseBullet, ")<BR>");

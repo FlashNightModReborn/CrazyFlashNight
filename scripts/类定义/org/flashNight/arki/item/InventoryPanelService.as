@@ -252,12 +252,47 @@ class org.flashNight.arki.item.InventoryPanelService {
         var baseItem = typeof item.value == "object" && typeof item.getData == "function" ? item : null;
         var descHTML:String;
         var introHTML:String;
+        var descBody:String;
+        var docIntro:String;
+        var docSubs:Array = [];
+        var rail:Array = null;
+        var magazine:Object = null;
         try {
+            // 旧 HTML 出口保持原样（战技/插件/额外功能内联在描述体里、简介含类型与弹夹行）：
+            // 不认 document 的只读消费端拿到的仍是全文。
             descHTML = TooltipComposer.generateItemDescriptionText(itemData, baseItem);
             introHTML = TooltipComposer.generateIntroPanelContent(baseItem, itemData, instanceValue);
+
+            // document 走与原生悬浮注释相同的拆分：战技/已安装插件/额外功能各成子框，
+            // 类型行交给插条、弹夹与子弹类型交给弹夹框，简介面板不再重复这些行。
+            var subBlocks:Array = [];
+            descBody = TooltipComposer.generateItemDescriptionTextEx(itemData, baseItem, subBlocks, docSubs);
+            rail = TooltipComposer.getRailText(itemData, baseItem);
+            magazine = TooltipComposer.getMagazineInfo(baseItem, itemData, instanceValue);
+            var critSlay:Array = [];
+            docIntro = TooltipComposer.generateIntroPanelContent(baseItem, itemData, instanceValue, {
+                omitTypeLines: rail != null,
+                omitActionType: rail != null,
+                omitClipName: magazine != null,
+                omitBulletType: magazine != null && magazine.ammo != null,
+                omitCritSlay: true,
+                critSlay: critSlay
+            });
+            if (critSlay.length > 0) {
+                var critSlayHTML:String = critSlay.join("");
+                subBlocks.unshift(critSlayHTML);
+                docSubs.unshift(critSlayHTML);
+            }
         } catch (error) {
             trace("[InventoryPanelService tooltip] compose failed: " + error);
             return fail("tooltip_failed");
+        }
+
+        var extras:Object = null;
+        if (rail != null || magazine != null) {
+            extras = {};
+            if (rail != null) extras.rail = rail;
+            if (magazine != null) extras.magazine = magazine;
         }
 
         var projection:Object = buildItemProjection(item);
@@ -275,12 +310,13 @@ class org.flashNight.arki.item.InventoryPanelService {
             // Web 端 convertAS2Html 的 DOMParser 两种引号风格都正确解析。
             descHTML: descHTML,
             introHTML: introHTML,
-            // COMMON v1 语义文档：与同次 intro/desc 同源构建；title/icon 与上方
-            // projection.displayName/icon 严格一致（装备实例经 getData() 涂装覆盖）。
+            // COMMON v1 语义文档：title/icon 与上方 projection.displayName/icon 严格一致
+            // （装备实例经 getData() 涂装覆盖）；描述体用拆分版、简介用省略版，
+            // 由 rail/magazine 结构部件与 role:"sub" 子框承载被省略的内容。
             // title 与 runs[].text 为已解析纯文本，Host/Web 不得二次 Flatten/解码。
             document: NativeTooltipDocument.buildItem(String(item.name), itemData,
                 {displayname: projection.displayName, icon: projection.icon},
-                introHTML, descHTML)
+                docIntro, descBody, docSubs, extras)
         };
     }
 

@@ -573,25 +573,27 @@ test('rail 不单独构成可渲染内容', () => {
     assert.strictEqual(Doc.normalize({ version: 1, rail: ['长枪'], sections: [] }), null);
 });
 
-test('buildHtml rail：两端宽块 + 中间窄腰 + 收缩计数', () => {
+test('buildHtml rail：书签块自上下排，横向文字无窄腰/空帽', () => {
     const doc = Doc.normalize({ version: 1, rail: ['长枪', '突击步枪'],
         sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
     const html = Doc.buildHtml(doc);
-    assert(html.indexOf('flash-tt-rich--rail') >= 0, '有 rail 才挂修饰类（预留左移轨道）');
-    assert(html.indexOf('--tt-rail-chars:6;--tt-rail-blocks:2') >= 0,
-        '总字数 2+4=6、块数 2 交给 CSS 做字号收缩');
-    assert(html.indexOf('flash-tt-rail-waist') >= 0, '两块之间有窄腰');
+    assert(html.indexOf('flash-tt-rich--rail') >= 0, '有 rail 才挂修饰类');
+    assert(html.indexOf('flash-tt-rail ntt-rail') >= 0, '书签容器');
+    const blocks = html.match(/flash-tt-rail-block/g) || [];
+    assert.strictEqual(blocks.length, 2, '两项 = 两个白色书签块');
     assert(html.indexOf('>长枪<') >= 0 && html.indexOf('>突击步枪<') >= 0);
-    assert(!/flash-tt-rail-block--cap/.test(html), '两块都有文本时不补空帽');
+    assert(html.indexOf('flash-tt-rail-waist') < 0, '书签式不再有窄腰');
+    assert(!/flash-tt-rail-block--cap/.test(html), '书签式不再补空帽');
+    assert(html.indexOf('--tt-rail-chars') < 0, '字号收缩计数已废弃');
 });
 
-test('buildHtml rail：单文本时另一端补空帽保持轮廓', () => {
+test('buildHtml rail：单文本只有一块书签', () => {
     const doc = Doc.normalize({ version: 1, rail: ['长枪'],
         sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
     const html = Doc.buildHtml(doc);
-    assert(html.indexOf('--tt-rail-chars:2;--tt-rail-blocks:2') >= 0,
-        '空帽计入块数但不计入字数');
-    assert(html.indexOf('flash-tt-rail-block--cap') >= 0, '缺文本的一端为空帽');
+    const blocks = html.match(/flash-tt-rail-block/g) || [];
+    assert.strictEqual(blocks.length, 1, '单段文本 = 单块');
+    assert(html.indexOf('flash-tt-rail-waist') < 0);
 });
 
 test('buildHtml 无 rail：不产轨道也不改修饰类', () => {
@@ -604,21 +606,23 @@ test('buildHtml rail：文本按字面转义，不产生真实标签', () => {
     const doc = Doc.normalize({ version: 1, rail: ['<zz onerror=a>'],
         sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
     const html = Doc.buildHtml(doc);
-    assert(html.indexOf('--tt-rail-chars:14') >= 0, '注入串应作为 rail 文本进入轨道');
     assert(html.indexOf('<zz') < 0, 'rail 文本不得成为真实标签');
     assert(html.indexOf('&lt;zz onerror=a&gt;') >= 0, '转义后按字面显示');
 });
 
-// ── 结构部件：弹夹独立行 ──
+// ── 结构部件：弹夹框（双行）──
 
-test('normalize magazine：名称必需，图标可选', () => {
-    const full = Doc.normalize({ version: 1, magazine: { name: '11 号弹夹', icon: '突击步枪通用弹药' },
+test('normalize magazine：名称必需，图标/子弹类型可选', () => {
+    const full = Doc.normalize({ version: 1, magazine: {
+        name: '11 号弹夹', icon: '突击步枪通用弹药', ammo: '4.7mm 无壳弹' },
         sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
-    assert.deepStrictEqual(full.magazine, { name: '11 号弹夹', icon: '突击步枪通用弹药' });
+    assert.deepStrictEqual(full.magazine, {
+        name: '11 号弹夹', icon: '突击步枪通用弹药', ammo: '4.7mm 无壳弹' });
 
     const nameOnly = Doc.normalize({ version: 1, magazine: { name: '弹夹' },
         sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
     assert.strictEqual(nameOnly.magazine.icon, null, '缺图标记为 null，行仍成立');
+    assert.strictEqual(nameOnly.magazine.ammo, null, '缺子弹类型标记为 null');
 
     for (const bad of [null, undefined, {}, { name: '  ' }, { icon: '只有图标' }, { name: 42 }]) {
         const d = Doc.normalize({ version: 1, magazine: bad,
@@ -634,19 +638,156 @@ test('magazine 不单独构成可渲染内容', () => {
     assert.strictEqual(Doc.normalize({ version: 1, magazine: { name: '弹夹' } }), null);
 });
 
-test('buildHtml magazine：白线行内只有图标位与名称，不含标签文字', () => {
-    const doc = Doc.normalize({ version: 1, magazine: { name: '11 号 4.7mm 无壳弹弹夹', icon: '弹药' },
+test('buildHtml magazine：第一行图标+名称，第二行子弹类型', () => {
+    const doc = Doc.normalize({ version: 1, magazine: {
+        name: '11 号 4.7mm 无壳弹弹夹', icon: '弹药', ammo: '4.7mm 无壳弹' },
         sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
     const html = Doc.buildHtml(doc);
-    assert(html.indexOf('flash-tt-mag ntt-mag') >= 0, '弹夹行挂在 intro 面板内');
+    assert(html.indexOf('flash-tt-mag ntt-mag') >= 0, '弹夹块挂在 intro 面板内');
+    assert(html.indexOf('flash-tt-mag-row') >= 0, '第一行容器');
     assert(html.indexOf('flash-tt-mag-icon') >= 0 && html.indexOf('flash-tt-mag-name') >= 0);
     assert(html.indexOf('11 号 4.7mm 无壳弹弹夹') >= 0, '名称紧跟图标之后');
-    assert(html.indexOf('使用弹夹') < 0, '标签字符由数据侧不再下发');
+    assert(html.indexOf('flash-tt-mag-ammo ntt-mag-ammo') >= 0, '第二行子弹类型');
     assert(html.indexOf('flash-tt-mag') < html.indexOf('11 号'), '图标位排在名称之前');
+    assert(html.indexOf('flash-tt-mag-row') < html.indexOf('flash-tt-mag-ammo'),
+        '子弹类型行在名称行之后');
+    assert(html.indexOf('使用弹夹') < 0, '标签字符由数据侧不再下发');
+});
+
+test('buildHtml magazine：无 ammo 时不产第二行', () => {
+    const doc = Doc.normalize({ version: 1, magazine: { name: '弹夹' },
+        sections: [{ role: 'intro', runs: [{ text: 'x' }] }] });
+    assert(Doc.buildHtml(doc).indexOf('flash-tt-mag-ammo') < 0);
 });
 
 test('buildHtml 无 magazine：不产弹夹行', () => {
     assert(Doc.buildHtml(FULL_DOC).indexOf('flash-tt-mag') < 0);
+});
+
+// ── attachments 子框（已安装插件）──
+
+test('normalize attachments：rows 有效才成立，无效回退保留 runs', () => {
+    const doc = Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: [{ text: 'x' }] },
+        { role: 'sub', kind: 'attachments', title: '已安装2个配件',
+            rows: [
+                { name: '扩容弹匣', icon: 'mod_expand',
+                    runs: [{ text: ' 弹夹容量 +5', color: '#FFFF00' }] },
+                { name: '   ' },
+                { icon: '只有图标' }
+            ],
+            runs: [{ text: '回退文本' }] }
+    ] });
+    const sec = doc.sections[1];
+    assert.strictEqual(sec.kind, 'attachments');
+    assert.strictEqual(sec.title, '已安装2个配件');
+    assert.strictEqual(sec.rows.length, 1, '空名/仅图标行丢弃');
+    assert.strictEqual(sec.rows[0].name, '扩容弹匣');
+    assert.strictEqual(sec.rows[0].icon, 'mod_expand');
+    assert.strictEqual(sec.rows[0].runs[0].color, '#FFFF00');
+
+    const fallback = Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: [{ text: 'x' }] },
+        { role: 'sub', kind: 'attachments', rows: [],
+            runs: [{ text: '回退文本' }] }
+    ] });
+    assert.strictEqual(fallback.sections[1].kind, undefined, '无有效行不带 kind');
+    assert.strictEqual(fallback.sections[1].rows, undefined);
+    assert.strictEqual(Doc.plainTextOf(fallback.sections[1].runs), '回退文本');
+
+    const wrongKind = Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: [{ text: 'x' }] },
+        { role: 'sub', kind: 'Attachments', rows: [{ name: 'a' }],
+            runs: [{ text: '回退文本' }] }
+    ] });
+    assert.strictEqual(wrongKind.sections[1].kind, undefined, 'kind 仅精确匹配小写');
+});
+
+test('buildHtml attachments：标题 + 逐行图标/名称/效果，runs 不叠加', () => {
+    const doc = Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: [{ text: 'x' }] },
+        { role: 'sub', kind: 'attachments', title: '已安装1个配件',
+            rows: [{ name: '扩容弹匣', icon: 'mod_expand',
+                runs: [{ text: ' 弹夹容量 +5', color: '#FFFF00' }] }],
+            runs: [{ text: '回退文本' }] }
+    ] });
+    const html = Doc.buildHtml(doc);
+    assert(html.indexOf('flash-tt-sub-panel--attachments') >= 0, 'attachments 标记类');
+    assert(html.indexOf('flash-tt-sub-title') >= 0 && html.indexOf('已安装1个配件') >= 0);
+    assert(html.indexOf('flash-tt-attach-row') >= 0 && html.indexOf('flash-tt-attach-icon') >= 0);
+    assert(html.indexOf('flash-tt-attach-name') >= 0
+        && html.indexOf('<b>扩容弹匣</b>') >= 0, '插件名独占名称行并加粗');
+    assert(html.indexOf('flash-tt-attach-effect') >= 0
+        && html.indexOf('弹夹容量 +5') >= 0, '具体影响进入附属效果行');
+    assert(html.indexOf('flash-tt-attach-name') < html.indexOf('flash-tt-attach-effect'),
+        '效果行位于配件名之后');
+    assert(html.indexOf('回退文本') < 0, 'rows 成立时不再叠加 fallback runs');
+});
+
+test('attachments rows 计入可渲染内容，但结构部件本身不成立', () => {
+    const rowsOnly = Doc.normalize({ version: 1, sections: [
+        { role: 'sub', kind: 'attachments', rows: [{ name: '扩容弹匣' }] }
+    ] });
+    assert(rowsOnly, '只有 attachments 行也算正文内容');
+    assert.strictEqual(Doc.normalize({ version: 1, sections: [
+        { role: 'sub', kind: 'attachments', rows: [{ name: '  ' }] }
+    ] }), null, '无有效行且无正文的文档不成立');
+});
+
+// ── acquisition 子框（获取方式）──
+
+test('normalize acquisition：kind 放行、商店行带头像键、空行回退', () => {
+    const doc = Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: [{ text: 'x' }] },
+        { role: 'sub', kind: 'acquisition', title: '获取方式',
+            rows: [
+                { name: '合成', runs: [{ text: '武器合成 ($10000)' }] },
+                { name: 'Shop Girl', icon: 'Shop Girl' },
+                { name: '   ' }
+            ],
+            runs: [{ text: '回退文本' }] }
+    ] });
+    const sec = doc.sections[1];
+    assert.strictEqual(sec.kind, 'acquisition');
+    assert.strictEqual(sec.title, '获取方式');
+    assert.strictEqual(sec.rows.length, 2, '空名行丢弃');
+    assert.strictEqual(sec.rows[1].icon, 'Shop Girl', '商店行 icon = NPC 头像键');
+
+    const fallback = Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: [{ text: 'x' }] },
+        { role: 'sub', kind: 'acquisition', rows: [],
+            runs: [{ text: '回退文本' }] }
+    ] });
+    assert.strictEqual(fallback.sections[1].kind, undefined, '无有效行不带 kind');
+    assert.strictEqual(Doc.plainTextOf(fallback.sections[1].runs), '回退文本');
+});
+
+test('buildHtml acquisition：商店行用 cfn-assets 头像 URL，无图标行留空占位', () => {
+    const doc = Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: [{ text: 'x' }] },
+        { role: 'sub', kind: 'acquisition', title: '获取方式',
+            rows: [
+                { name: 'NPC商店' },
+                { name: 'Shop Girl', icon: 'Shop Girl', depth: 1 }
+            ],
+            runs: [{ text: '回退文本' }] }
+    ] });
+    const html = Doc.buildHtml(doc);
+    assert(html.indexOf('flash-tt-sub-panel--acquisition') >= 0, 'acquisition 标记类');
+    assert(html.indexOf('获取方式') >= 0, '子框标题');
+    assert(html.indexOf('https://cfn-assets.local/portraits/icons/'
+        + encodeURIComponent('Shop Girl') + '.webp') >= 0, '商店行头像 URL');
+    assert(html.indexOf(encodeURIComponent('无头像')) >= 0, '头像加载失败有兜底');
+    assert(html.indexOf('<b>NPC商店</b>') >= 0, '类别标签为父级行');
+    assert(html.indexOf('flash-tt-attach-row--child') >= 0, 'NPC 行携带子级缩进类');
+    assert(html.indexOf('回退文本') < 0, 'rows 成立时不再叠加 fallback runs');
+});
+
+test('buildHtml：物品名使用独立居中大字号标题块', () => {
+    const html = Doc.buildHtml(FULL_DOC);
+    assert(html.indexOf('class="ntt-title"') >= 0, 'document.title 独立标题块');
+    assert(html.indexOf('class="ntt-title"')
+        < html.indexOf('class="ntt-sec ntt-sec--intro"'), '标题位于正文 section 之前');
 });
 
 // ── 子注释框淡入算法 ──
@@ -661,7 +802,7 @@ test('fadeMsForSub：子框严格慢于主组且逐层递增', () => {
     assert.strictEqual(d3, 825);
 });
 
-test('buildHtml：每个 role:"sub" 段独立成框并携带自己的淡入时长', () => {
+test('buildHtml：每个 role:"sub" 段独立成框、挂在侧栏并按序携带淡入时长', () => {
     const doc = Doc.normalize({ version: 1, sections: [
         { role: 'intro', runs: [{ text: 'x' }] },
         { role: 'sub', runs: [{ text: '插件' }] },
@@ -675,9 +816,31 @@ test('buildHtml：每个 role:"sub" 段独立成框并携带自己的淡入时�
     assert(html.indexOf('--tt-fade-ms:750') >= 0, '第 2 框 750ms');
     assert(html.indexOf('--tt-fade-ms:825') >= 0, '第 3 框 825ms');
     assert(html.indexOf('--tt-fade-ms:500') < 0, '主组时长走 CSS 默认 token，不逐层内联');
-    // 顺序：主框体在前，子框按文档序排在后面
-    assert(html.indexOf('flash-tt-sub-panel') > html.indexOf('flash-tt-intro-panel'),
-        '子框排在主框体之后');
+    // 主框体在前，侧栏（含全部子框）排在主框之后，子框不再堆在主框下方
+    const sideIdx = html.indexOf('flash-tt-side');
+    assert(sideIdx > html.indexOf('flash-tt-intro-panel'), '侧栏排在主框体之后');
+    assert(sideIdx < html.indexOf('flash-tt-sub-panel'), '子框都挂在侧栏内');
+});
+
+test('buildHtml：描述栏与子框同列，淡入按时序 675/750/825', () => {
+    const doc = Doc.normalize({ version: 1, title: 'x', sections: [
+        { role: 'intro', runs: [{ text: '属性行' }] },
+        { role: 'description', runs: [{ text: ('长说明。').repeat(60) }] },
+        { role: 'sub', runs: [{ text: '插件' }] },
+        { role: 'sub', runs: [{ text: '战技' }] }
+    ] });
+    const html = Doc.buildHtml(doc);
+    assert(html.indexOf('flash-tt-desc') >= 0, '长 desc 分栏');
+    const sideIdx = html.indexOf('flash-tt-side');
+    const descIdx = html.indexOf('flash-tt-desc');
+    const firstSub = html.indexOf('flash-tt-sub-panel');
+    assert(sideIdx >= 0 && sideIdx < descIdx, '描述栏在侧栏内');
+    assert(descIdx < firstSub, '子框接在描述栏之后，同一列');
+    const descTag = html.substring(descIdx, html.indexOf('>', descIdx));
+    assert(descTag.indexOf('--tt-fade-ms:675ms') >= 0, '描述栏占第 1 槽，675ms：' + descTag);
+    assert(html.indexOf('--tt-fade-ms:750') >= 0 && html.indexOf('--tt-fade-ms:825') >= 0,
+        '子框顺延 750/825');
+    assert(html.indexOf('--tt-fade-ms:500') < 0, '主组不内联时长，走 CSS 默认 token');
 });
 
 test('describe：诊断串含 rail 与 magazine 身份', () => {

@@ -34,8 +34,8 @@ class org.flashNight.gesh.tooltip.builder.CommonStatsBuilder {
      * @param item:Object 物品数据
      * @param data:Object 合并后的装备数据
      * @param equipData:Object 强化/配件数据（可选）
-     * @param nativeOpt:Object 原生注释可选开关（nativeOpt.omitCritSlay 为 true 时
-     *   斩杀行写入 nativeOpt.critSlay 缓冲区）
+     * @param nativeOpt:Object 原生注释可选开关（omitCritSlay 时斩杀行写入
+     *   nativeOpt.critSlay；omitActionType 时动作行交由 rail 书签显示）
      * @return Void（直接修改 result）
      */
     public static function build(result:Array, baseItem:BaseItem, item:Object, data:Object, equipData:Object, nativeOpt:Object):Void {
@@ -70,8 +70,9 @@ class org.flashNight.gesh.tooltip.builder.CommonStatsBuilder {
         TooltipFormatter.upgradeLine(result, data, equipData, "mp", null, null);
 
         // 动作类型（优先显示计算后的actiontype，支持插件覆盖）
-        // 仅对刀和手部装备显示动作类型
-        if (ACTION_TYPE_USES[item.use] === true) {
+        // 仅对刀和手部装备显示动作类型；原生路径已由 rail 书签承载时省略。
+        if (ACTION_TYPE_USES[item.use] === true
+                && (nativeOpt == null || nativeOpt.omitActionType !== true)) {
             var finalActionType:String = null;
             var originalActionType:String = item.actiontype;
 

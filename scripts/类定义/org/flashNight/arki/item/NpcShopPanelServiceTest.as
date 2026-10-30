@@ -470,7 +470,8 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
 
         var previousTooltip:Object = _root.Web物品注释HTML;
         _root.Web物品注释HTML = function(name:String):Object {
-            return {displayname:" Undefined ", descHTML:"desc", introHTML:"intro"};
+            return {displayname:" Undefined ", descHTML:"desc", introHTML:"intro",
+                document:{marker:"shop-document"}};
         };
         var tooltip:Object = service().execute("tooltip", {itemName:"强化石"});
         var tooltipWire:String = new LiteJSON().stringify(tooltip);
@@ -480,6 +481,7 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         var wrongTypeTooltip:Object = service().execute("tooltip", {itemName:"强化石"});
         check(tooltip.success && tooltip.itemName == "强化石"
             && tooltip.displayname == "强化石" && tooltip.iconName == undefined
+            && tooltip.document != undefined && tooltip.document.marker == "shop-document"
             && wrongTypeTooltip.displayname == "强化石"
             && tooltipWire.toLowerCase().indexOf("undefined") < 0,
             "NPC AS2 optional-icon tooltip replaces wrapped undefined and wrong-type display without inventing iconName");

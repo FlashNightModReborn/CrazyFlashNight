@@ -616,7 +616,8 @@ _root.UI系统.NPC商店WebView.executeTooltip = function(params:Object):Object 
         displayname:this.projectLegacyIdentityField(tt.displayname, itemName),
         // wire 由 sendResponse 的 stringifySafe 统一转义；保留原始 htmlText 双引号属性。
         descHTML:String(tt.descHTML || ""),
-        introHTML:String(tt.introHTML || "")
+        introHTML:String(tt.introHTML || ""),
+        document:tt.document
     };
 };
 

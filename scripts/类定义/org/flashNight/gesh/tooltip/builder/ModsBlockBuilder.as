@@ -24,7 +24,7 @@ import org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder;
 class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
 
     /**
-     * 构建配件列表块
+     * 构建配件列表块（旧 HTML 输出）
      *
      * 迁移自 TooltipTextBuilder.buildEquipmentStats Line 412-423
      *
@@ -35,18 +35,73 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
      * @return Void（直接修改 result）
      */
     public static function build(result:Array, baseItem:BaseItem, item:Object, value:Object):Void {
+        buildWithRows(result, baseItem, item, value);
+    }
+
+    /**
+     * 与 build 同源的一次收集：旧 HTML 写入 result，同时返回结构化描述
+     * {kind:"attachments", title, rows:[{name, effect}]}，供原生注释框把
+     * 「已安装插件」渲染为带图标的独立子框。rows[].effect 仍是受限 HTML
+     * 片段（颜色标记），由 NativeTooltipDocument 在文档边界展开为 runs。
+     *
+     * @return Object|null 无配件时返回 null（result 不变）
+     */
+    public static function buildWithRows(result:Array, baseItem:BaseItem, item:Object,
+            value:Object):Object {
+        var collected:Object = collect(baseItem, item, value);
+        if (collected == null) return null;
+
+        // 旧路径输出保持逐字节不变：标题行 + "  • 名称" + 数值效果 +
+        // （有数值效果时另起一行）覆写/条件效果。
+        result.push(collected.titleHtml);
+        var rows:Array = collected.rows;
+        var attachments:Array = [];
+        for (var i:Number = 0; i < rows.length; i++) {
+            var row:Object = rows[i];
+            result.push("  • ", row.name, row.tagHtml, row.percentageHtml, row.multiplierHtml);
+            if (row.overrideParts.length > 0) {
+                if (row.hasNumeric) result.push("<BR>    ");
+                result.push(row.overrideParts.join(""));
+            }
+            result.push("<BR>");
+
+            var effect:String = row.tagHtml + row.percentageHtml + row.multiplierHtml;
+            if (row.overrideParts.length > 0) {
+                effect += " " + row.overrideParts.join("");
+            }
+            var outRow:Object = {name:row.name, effect:effect};
+            if (row.icon != null) outRow.icon = row.icon;
+            attachments.push(outRow);
+        }
+
+        return {
+            kind: "attachments",
+            title: TooltipConstants.LBL_INSTALLED_MODS + rows.length
+                + TooltipConstants.LBL_MOD_COUNT_SUFFIX,
+            rows: attachments
+        };
+    }
+
+    /**
+     * 单遍收集：每个配件一行，效果字符串按旧输出顺序分片保存。
+     * 无配件时返回 null。
+     */
+    private static function collect(baseItem:BaseItem, item:Object, value:Object):Object {
         // 检查是否有配件
-        if (!value.mods || value.mods.length <= 0) {
-            return;
+        if (value == null || !value.mods || value.mods.length <= 0) {
+            return null;
         }
 
         // 标题行
-        result.push("<font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_INSTALLED_MODS, value.mods.length, TooltipConstants.LBL_MOD_COUNT_SUFFIX + "：</font><BR>");
+        var titleHtml:String = "<font color='" + TooltipConstants.COL_HL + "'>"
+            + TooltipConstants.LBL_INSTALLED_MODS + value.mods.length
+            + TooltipConstants.LBL_MOD_COUNT_SUFFIX + "：</font><BR>";
 
         // 预取原始子弹类型（未含配件效果），供 bulletSwitch 摘要使用
         var rawItemData:Object = baseItem ? ItemUtil.getItemData(baseItem.name) : null;
         var baseBulletType:String = (rawItemData && rawItemData.data && rawItemData.data.bullet) ? rawItemData.data.bullet : "";
         var itemUseLookup:Object = buildItemUseLookup(item, value);
+        var rows:Array = [];
 
         // 迭代配件列表
         for (var i:Number = 0; i < value.mods.length; i++) {
@@ -54,17 +109,26 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
             if (!modName) continue; // 跳过空配件名
 
             var modInfo:Object = EquipmentUtil.modDict[modName];
-
-            // 构建配件显示文本
-            result.push("  • ", modName);
+            var row:Object = {
+                name: modName,
+                icon: null,
+                tagHtml: "",
+                percentageHtml: "",
+                multiplierHtml: "",
+                overrideParts: [],
+                hasNumeric: false
+            };
+            // 子框行首图标：插件名与物品名 1:1，取物品数据的 icon 资产键。
+            var modItemData:Object = ItemUtil.getItemData(modName);
+            if (modItemData != null && modItemData.icon != undefined && modItemData.icon != "") {
+                row.icon = String(modItemData.icon);
+            }
 
             // 检查是否有 tagValue
             if (modInfo && modInfo.tagValue) {
-                result.push(" <font color='" + TooltipConstants.COL_INFO + "'>[", modInfo.tagValue, "]</font>");
+                row.tagHtml = " <font color='" + TooltipConstants.COL_INFO + "'>["
+                    + modInfo.tagValue + "]</font>";
             }
-
-            // 追踪是否有数值效果（用于决定覆写效果是否另起一行）
-            var hasNumericEffects:Boolean = false;
 
             // 显示配件提供的百分比增幅（汇总显示 - percentage用圆括号）
             if (modInfo && modInfo.stats && modInfo.stats.percentage) {
@@ -83,8 +147,9 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
 
                 // 如果有增幅，显示在配件名后（圆括号表示加法合并乘区）
                 if (enhancements.length > 0) {
-                    result.push(" <font color='" + TooltipConstants.COL_ENHANCE + "'>(", enhancements.join(", "), ")</font>");
-                    hasNumericEffects = true;
+                    row.percentageHtml = " <font color='" + TooltipConstants.COL_ENHANCE
+                        + "'>(" + enhancements.join(", ") + ")</font>";
+                    row.hasNumeric = true;
                 }
             }
 
@@ -114,8 +179,9 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
 
                 // 如果有增幅，显示在配件名后（花括号表示独立乘区）
                 if (multiplierEnhancements.length > 0) {
-                    result.push(" <font color='" + TooltipConstants.COL_MULTIPLIER + "'>{", multiplierEnhancements.join(", "), "}</font>");
-                    hasNumericEffects = true;
+                    row.multiplierHtml = " <font color='" + TooltipConstants.COL_MULTIPLIER
+                        + "'>{" + multiplierEnhancements.join(", ") + "}</font>";
+                    row.hasNumeric = true;
                 }
             }
 
@@ -300,15 +366,11 @@ class org.flashNight.gesh.tooltip.builder.ModsBlockBuilder {
                 overrideEffectParts.push(" <font color='" + TooltipConstants.COL_USE_SWITCH + "'>" + TooltipConstants.LBL_SUBWEAPON + subweaponName + "</font>");
             }
 
-            // 输出覆写/条件效果：有数值效果时另起一行（缩进4空格），无数值时接在同行末尾
-            if (overrideEffectParts.length > 0) {
-                if (hasNumericEffects) {
-                    result.push("<BR>    ");
-                }
-                result.push(overrideEffectParts.join(""));
-            }
-            result.push("<BR>");
+            row.overrideParts = overrideEffectParts;
+            rows.push(row);
         }
+
+        return {titleHtml:titleHtml, rows:rows};
     }
 
     private static function buildItemUseLookup(item:Object, value:Object):Object {

@@ -10,19 +10,26 @@
  *   .ntt-doc          根标记，挂在 .flash-tt-rich 上
  *   .ntt-intro-panel / .ntt-intro / .ntt-desc / .ntt-icon / .ntt-suffix
  *                     与 flash-tt-* 和 kshop-tt-* 同位
- *   .ntt-title        document.title 的标题行块（等价 legacy <b>标题</b><br> 首行）
+ *   .ntt-title        document.title 的标题行块（居中加大，视觉规则在
+ *                     foundation-rest.css，与 C# 的 16px 独立标题布局同源）
  *   .ntt-sec          每个 section 的块容器（等价 legacy 段间 <br> 行结构；
  *                     div 无默认 margin，不得加间距规则，否则偏离 legacy 排版）
  *   .ntt-icon-placeholder / .ntt-icon-image
  *                     图标占位/实图标记
  *
- * 例外（document 独有的结构部件，legacy buildItemRichHtml 不产出，因此不在
+ * 例外（document 标题及独有结构部件，legacy buildItemRichHtml 不产出，因此不在
  * "与 legacy 零视觉差异"的比对范围内）：
- *   .ntt-rail / .ntt-rail-block / .ntt-rail-waist
- *                     document.rail 的左侧竖排插条（视觉权威在 foundation-rest.css）
- *   .ntt-mag / .ntt-mag-icon / .ntt-mag-icon-image / .ntt-mag-name
- *                     document.magazine 的弹夹行；整行不接指针，图标不再套注释框
+ *   .ntt-rail / .ntt-rail-block
+ *                     document.rail 的书签式插条（白色块横排文字，视觉权威在
+ *                     foundation-rest.css；C# 对齐 NativeTooltipLayout.ApplyRail）
+ *   .ntt-mag / .ntt-mag-row / .ntt-mag-icon / .ntt-mag-icon-image /
+ *   .ntt-mag-name / .ntt-mag-ammo
+ *                     document.magazine 的弹夹框（第一行图标+名称，第二行子弹类型）；
+ *                     整块不接指针，图标不再套注释框
  *   .ntt-sub-panel    role:"sub" 的子注释框
+ *   .ntt-sub-title / .ntt-attach-row / .ntt-attach-icon / .ntt-attach-text
+ *                     role:"sub" + kind:"attachments" 的插件子框（标题 + 逐行图标）
+ *   .ntt-side         描述栏 + 子注释框组成的侧栏列（主框右侧，空间不足翻左）
  * 这些类与 .flash-tt-* 同元素双类名书写（沿用上一轮 .flash-tt-sub-panel 与
  * .ntt-sub-panel 的既有做法），视觉规则统一落在 foundation-rest.css。
  *

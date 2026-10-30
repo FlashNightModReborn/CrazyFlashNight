@@ -37,6 +37,7 @@ class org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer {
      * @param equipData:Object 强化/配件数据（可选，upgradeLevel > 1 或有 mods 时提供）
      * @param nativeOpt:Object 原生注释可选开关（可选；见下方字段说明）
      *   - omitClipName:Boolean 枪械「使用弹夹」行移交独立弹夹框，简介面板不输出
+     *   - omitBulletType:Boolean 枪械「子弹类型」行移交弹夹框第二行，简介面板不输出
      *   - omitCritSlay:Boolean 暴击/斩杀行移入 nativeOpt.critSlay 缓冲区（子注释框）
      *   - critSlay:Array 输出缓冲区（仅 omitCritSlay 为 true 时使用）
      *   传 null/undefined 时与旧行为完全一致。

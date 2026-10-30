@@ -40,7 +40,9 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   }
 
   // === 生成基础描述（1:1 复刻 _root.注释文本.生成基础描述） ===
-  public static function buildBasicDescription(item:Object, baseItem:BaseItem):Array {
+  // nightVisionBuffer 非 null 时把独立【夜视】行移入该缓冲区；传 null 保持旧全文。
+  public static function buildBasicDescription(item:Object, baseItem:BaseItem,
+      nightVisionBuffer:Array):Array {
     var result = [];
 
     // 获取最终的 description（考虑进阶可能修改描述）
@@ -53,9 +55,27 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     }
 
     if (description) {
-      result.push(TooltipFormatter.normalizeDescription(description), TooltipFormatter.br());
+      var normalized:String = TooltipFormatter.normalizeDescription(description);
+      if (nightVisionBuffer != null) {
+        normalized = extractNightVisionLines(normalized, nightVisionBuffer);
+      }
+      if (normalized) result.push(normalized, TooltipFormatter.br());
     }
     return result;
+  }
+
+  private static function extractNightVisionLines(normalized:String, output:Array):String {
+    var lines:Array = normalized.split("<BR>");
+    var mainLines:Array = [];
+    for (var i:Number = 0; i < lines.length; i++) {
+      var line:String = lines[i];
+      if (line.indexOf("【夜视】") >= 0) {
+        output.push(line, TooltipFormatter.br());
+      } else {
+        mainLines.push(line);
+      }
+    }
+    return mainLines.join("<BR>");
   }
 
   // === 生成剧情碎片提示（1:1 复刻 _root.注释文本.生成剧情碎片提示） ===

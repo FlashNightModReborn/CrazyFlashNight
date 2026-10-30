@@ -694,18 +694,34 @@ var PanelTooltip = (function() {
         return Math.max(TT_MIN_W, Math.min(sqrtW, TT_MAX_W));
     }
 
-    // 给 desc 写 inline width；非 split 模式 / 无 desc 时无操作
+    // 侧栏宽度：有描述栏时整列与描述栏同宽（子框 stretch 到同一宽度）；只有
+    // role:"sub" 子框时按内容估算一次，避免列宽缩成最长行或撑满整条 tooltip。
+    function applySideWidth(side) {
+        if (!side || side.querySelector('.flash-tt-desc')) return;
+        side.style.width = estimateMainWidth(htmlScoresBoth(side.innerHTML)) + 'px';
+    }
+
+    // 给 desc 写 inline width（侧栏整列同宽）；无 desc 时只给纯子框侧栏估宽。
     function applyDescWidth() {
         var rich = _el.querySelector('.flash-tt-rich');
-        if (!rich || rich.classList.contains('flash-tt-rich--merge')) return;
+        if (!rich) return;
         // pinned-inspector 的 desc 由 CSS 锁 width:100%（壳内整宽阅读面）；内容估算
         // 写出的 inline width 会打穿它，让右缘悬空并随物品逐个跳动。
         if (_profile === PROFILE_PINNED) return;
+        var side = rich.querySelector('.flash-tt-side');
+        // legacy buildItemRichHtml 的 desc 仍是 rich 的直系子元素（没有侧栏），
+        // 这里按 rich 全域找 desc，两条路径共用同一套宽度估算。
         var descPanel = rich.querySelector('.flash-tt-desc');
-        if (!descPanel) return;
+        if (!descPanel) {
+            applySideWidth(side);
+            return;
+        }
         var scores = htmlScoresBoth(descPanel.innerHTML);
         var w = estimateMainWidth(scores);
         descPanel.style.width = w + 'px';
+        // 侧栏宽度取 desc 的实际 border-box（含 min-width 下限与 max-width 夹紧），
+        // 避免列宽与描述栏差几个像素导致子框越界。
+        if (side) side.style.width = (descPanel.offsetWidth || w) + 'px';
     }
 
     /** hover 模式：跟随鼠标移动 */
@@ -872,6 +888,9 @@ var PanelTooltip = (function() {
         _el.style.left = x + 'px';
         _el.style.top = y + 'px';
         _el.setAttribute('data-placement', best.name);
+        // 整组落到触发点左侧（右侧放不下）时把主框翻到右缘、侧栏去左侧，主框始终
+        // 贴着触发物；尺寸不变，无需重新测量。
+        if (rich) rich.setAttribute('data-side', best.name === 'left' ? 'left' : 'right');
         var finalRect = rectAt(x, y, tw, th);
         _lastPlacement = {
             placement:best.name,

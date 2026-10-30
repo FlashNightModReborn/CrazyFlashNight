@@ -57,6 +57,7 @@ function q(sel) { return tt.querySelector(sel); }
 function measure() {
     var introPanel = q('.flash-tt-intro-panel');
     var intro = q('.flash-tt-intro');
+    var title = q('.ntt-title');
     var desc = q('.flash-tt-desc');
     var icon = q('.flash-tt-icon');
     var iconImg = q('.flash-tt-icon img');
@@ -69,6 +70,9 @@ function measure() {
         docProfile: root ? root.getAttribute('data-doc-profile') : null,
         introPanel: rectOf(introPanel),
         intro: rectOf(intro),
+        title: rectOf(title),
+        titleFontSize: cs(title, 'fontSize'),
+        titleTextAlign: cs(title, 'textAlign'),
         desc: rectOf(desc),
         hasDesc: !!desc,
         icon: rectOf(icon),

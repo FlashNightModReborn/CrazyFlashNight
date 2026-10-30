@@ -149,12 +149,12 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         private Bitmap _measureBmp;
         private Graphics _measureG;
 
-        // icon 缩放缓存：单条目 LRU（同 icon+同尺寸 重复 paint 复用）
-        private Bitmap _blendCache;
-        private string _blendCacheKey;
-        // 弹夹小图标独立单条目缓存：与大图标共用一个槽会互相逐出（每帧两次重建）
-        private Bitmap _magCache;
-        private string _magCacheKey;
+        // icon 缩放缓存：key=icon|WxH，字典 + 插入序，超过上限逐出最旧条目
+        // （主图标/弹夹图标/插件图标同帧并存，单槽会互相逐出→每帧重建）。
+        private readonly Dictionary<string, Bitmap> _iconScaled =
+            new Dictionary<string, Bitmap>(StringComparer.Ordinal);
+        private readonly List<string> _iconScaledOrder = new List<string>();
+        private const int IconScaledCap = 32;
 
         // ---- 淡入淡出状态机（0=静止/完全不透明，1=淡入，2=淡出）----
         private int _fadePhase;
@@ -579,17 +579,15 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             // intro 面板（plain 模式 = 单文本框；rich = icon+文字列）
             if (!plan.IntroPanel.IsEmpty)
                 DrawGradientPanel(g, Offset(plan.IntroPanel, ox, oy));
-            // split：desc 独立第二面板，同样画渐变（无边框无阴影）
-            if (plan.Split && !plan.DescPanel.IsEmpty)
-                DrawGradientPanel(g, Offset(plan.DescPanel, ox, oy));
 
             if (!plan.IconRect.IsEmpty)
                 DrawIcon(g, Offset(plan.IconRect, ox, oy), plan.IconName);
 
-            // 左侧插条（图标左外侧的白色"内存条"竖条，竖排大类/子类）
+            // 书签插条（默认在图标左侧，整组镜像后在右侧；块内文字朝图片一侧对齐）
             if (plan.RailBlocks.Count > 0) PaintRail(g, plan, ox, oy);
             // 弹夹独立行（intro 面板内，白线分隔，小图标 + 名称）
             if (!plan.MagazineRow.IsEmpty) PaintMagazine(g, plan, ox, oy);
+            PaintFloatingTitle(g, plan, ox, oy);
 
             if (plan.Plain)
             {
@@ -605,43 +603,117 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             {
                 // intro 面板：文字裁到面板内缘
                 Rectangle introClip = Offset(plan.IntroPanel, ox, oy);
-                PaintLines(g, plan.IntroLines, 0, plan.IntroLines.Count,
+                PaintLines(g, plan.IntroBodyLines, 0, plan.IntroBodyLines.Count,
                     ox + plan.IntroContentLeftPx, oy + plan.IntroContentTopPx,
                     plan.LineHeightIntroPx, introClip);
-
-                Rectangle descTextClip = Offset(plan.ScrollViewportRect, ox, oy);
-                // 行数不预截：clip 负责边界（末行可部分可见，同 web overflow）。
-                PaintLines(g, plan.DescLines, _scrollLine,
-                    plan.DescLines.Count - _scrollLine,
-                    ox + plan.DescContentLeftPx, oy + plan.DescContentTopPx,
-                    plan.LineHeightDescPx, descTextClip);
-                if (plan.DescScrollable)
-                    DrawScrollbar(g, Offset(plan.DescPanel, ox, oy),
-                        plan.DescTotalLines, plan.DescVisibleLines, _scrollLine, plan.MaxScrollLine, scale,
-                        NativeTooltipLayout.Px(NativeTooltipLayout.ScrollbarWBase, scale));
             }
             else
             {
                 // merge：intro 面板内文字（含拼入的 desc），Web 不滚动
                 Rectangle clip = Offset(plan.IntroPanel, ox, oy);
-                PaintLines(g, plan.IntroLines, 0, plan.IntroLines.Count,
+                PaintLines(g, plan.IntroBodyLines, 0, plan.IntroBodyLines.Count,
                     ox + plan.IntroContentLeftPx, oy + plan.IntroContentTopPx,
                     plan.LineHeightIntroPx, clip);
             }
 
-            // 子注释框：主面板下方堆叠的黑底白边独立框（超出的行裁掉，首版不滚动）。
-            // 每个子框是独立淡入元素（1..n），淡出时与主框同刻归零。
+            // 侧栏第 1 框 = 描述栏（Web .flash-tt-desc，675ms）：与主框同列、
+            // 独立淡入元素；框体渐变与正文同用这一层透明度。
+            if (plan.Split && !plan.DescPanel.IsEmpty)
+            {
+                _paintAlpha = AlphaFor(DescElement());
+                if (_paintAlpha > 0f)
+                {
+                    DrawGradientPanel(g, Offset(plan.DescPanel, ox, oy));
+                    Rectangle descTextClip = Offset(plan.ScrollViewportRect, ox, oy);
+                    // 行数不预截：clip 负责边界（末行可部分可见，同 web overflow）。
+                    PaintLines(g, plan.DescLines, _scrollLine,
+                        plan.DescLines.Count - _scrollLine,
+                        ox + plan.DescContentLeftPx, oy + plan.DescContentTopPx,
+                        plan.LineHeightDescPx, descTextClip);
+                    if (plan.DescScrollable)
+                        DrawScrollbar(g, Offset(plan.DescPanel, ox, oy),
+                            plan.DescTotalLines, plan.DescVisibleLines, _scrollLine,
+                            plan.MaxScrollLine, scale,
+                            NativeTooltipLayout.Px(
+                                NativeTooltipLayout.ScrollbarWBase, scale));
+                }
+            }
+
+            // 子注释框：侧栏内 desc 之下的独立小框（超出的行裁掉，首版不滚动）。
+            // 每个子框是独立淡入元素（2..n），淡出时与主框同刻归零。
             for (int i = 0; i < plan.Subs.Count; i++)
             {
                 NativeTooltipLayout.Plan.SubBox sub = plan.Subs[i];
                 Rectangle sr = Offset(sub.Panel, ox, oy);
-                _paintAlpha = AlphaFor(i + 1);
+                _paintAlpha = AlphaFor(SubElement(i));
                 if (_paintAlpha <= 0f) continue;
                 DrawGradientPanel(g, sr);
+                if (sub.Attachments)
+                {
+                    PaintSubAttachments(g, sub, sr, ox, oy, plan.LineHeightPx);
+                    continue;
+                }
                 PaintLines(g, sub.Lines, 0, sub.Lines.Count,
                     ox + sub.ContentLeftPx, oy + sub.ContentTopPx,
                     plan.LineHeightPx, sr);
             }
+        }
+
+        /// <summary>rich 主框标题：按每行实际宽度居中，保留 run 的 16px 字号与样式。</summary>
+        private void PaintFloatingTitle(Graphics g, NativeTooltipLayout.Plan plan,
+            int ox, int oy)
+        {
+            if (plan.IntroTitleLines.Count == 0 || plan.IntroPanel.IsEmpty) return;
+            Rectangle clip = Offset(plan.IntroPanel, ox, oy);
+            int pad = NativeTooltipLayout.Px(NativeTooltipLayout.PanelPadBase, plan.Scale);
+            int contentW = Math.Max(1, plan.IntroPanel.Width - pad * 2);
+            float cy = oy + plan.IntroTitleTopPx;
+            for (int i = 0; i < plan.IntroTitleLines.Count; i++)
+            {
+                NativeTooltipLayout.VisualLine line = plan.IntroTitleLines[i];
+                float lineWidth = 0f;
+                foreach (NativeTooltipLayout.VisualLine.Slice slice in line.Slices)
+                    lineWidth += slice.WidthF;
+                int lineW = (int)Math.Round(lineWidth);
+                int x = ox + plan.IntroPanel.X + pad + (contentW - lineW) / 2;
+                PaintLines(g, plan.IntroTitleLines, i, 1, x, (int)cy,
+                    plan.LineHeightIntroPx, clip);
+                cy += line.LineHeightF > 0 ? line.LineHeightF : line.LineHeightPx;
+            }
+        }
+
+        /// <summary>
+        /// attachments/acquisition 子框：标题 + 名称行 + 缩进附属效果行。
+        /// 全部绘制裁到框体内缘（超出 desc max-height 的部分不画）。
+        /// </summary>
+        private void PaintSubAttachments(Graphics g,
+            NativeTooltipLayout.Plan.SubBox sub, Rectangle panelRect,
+            int ox, int oy, int lineHeightPx)
+        {
+            GraphicsState state = g.Save();
+            try
+            {
+                Rectangle clip = panelRect;
+                clip.Inflate(-1, -1);
+                g.SetClip(clip, CombineMode.Intersect);
+                if (sub.TitleLines.Count > 0)
+                    PaintLines(g, sub.TitleLines, 0, sub.TitleLines.Count,
+                        ox + sub.ContentLeftPx, oy + sub.TitleTopPx,
+                        lineHeightPx, clip);
+                foreach (NativeTooltipLayout.Plan.SubRow row in sub.Rows)
+                {
+                    if (!row.IconRect.IsEmpty)
+                        DrawIcon(g, Offset(row.IconRect, ox, oy), row.IconName, row.IconIsNpc);
+                    PaintLines(g, row.Lines, 0, row.Lines.Count,
+                        ox + row.TextLeftPx, oy + row.TextTopPx,
+                        lineHeightPx, clip);
+                    if (row.EffectLines.Count > 0)
+                        PaintLines(g, row.EffectLines, 0, row.EffectLines.Count,
+                            ox + row.EffectLeftPx, oy + row.EffectTopPx,
+                            lineHeightPx, clip);
+                }
+            }
+            finally { g.Restore(state); }
         }
 
         /// <summary>pinned 检视器：壳（渐变+1px 边+阴影）+ header + 滚动 body。</summary>
@@ -871,22 +943,19 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         /// <summary>
         /// 图标：普通 alpha 绘制（2026-10 改版：Web --tt-icon-blend 同步改
         /// normal——黑底上 overlay 混合恒得黑，图标会没形）。
-        /// 单条目 LRU：同 icon+同尺寸重复 paint 复用缩放结果。
+        /// 缩放结果按 icon+尺寸 字典缓存（主/弹夹/插件图标同帧共存，不互相逐出）。
         /// </summary>
-        private void DrawIcon(Graphics g, Rectangle rect, string iconName)
-        {
-            DrawIcon(g, rect, iconName, false);
-        }
-
-        /// <summary>smallSlot=true 走弹夹专用缓存槽，避免与主图标互相逐出。</summary>
-        private void DrawIcon(Graphics g, Rectangle rect, string iconName, bool smallSlot)
+        private void DrawIcon(Graphics g, Rectangle rect, string iconName,
+            bool npcPortrait = false)
         {
             Bitmap frame = null;
             if (_icons != null && !string.IsNullOrEmpty(iconName))
             {
                 LootIconCatalog.LootIconFrames frames;
-                if (_icons.TryGet(iconName, out frames) && frames != null)
-                    frame = frames.First;
+                bool found = npcPortrait
+                    ? _icons.TryGetNpc(iconName, out frames)
+                    : _icons.TryGet(iconName, out frames);
+                if (found && frames != null) frame = frames.First;
             }
             if (frame == null)
             {
@@ -902,14 +971,11 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 return;
             }
 
-            string key = iconName + "|" + rect.Width + "x" + rect.Height;
-            Bitmap scaled = smallSlot ? _magCache : _blendCache;
-            string cacheKey = smallSlot ? _magCacheKey : _blendCacheKey;
-            if (scaled == null || cacheKey != key
-                || scaled.Width != rect.Width || scaled.Height != rect.Height)
+            string key = (npcPortrait ? "npc:" : "item:") + iconName
+                + "|" + rect.Width + "x" + rect.Height;
+            Bitmap scaled;
+            if (!_iconScaled.TryGetValue(key, out scaled) || scaled == null)
             {
-                Bitmap old = smallSlot ? _magCache : _blendCache;
-                if (old != null) old.Dispose();
                 int w = Math.Max(1, rect.Width), h = Math.Max(1, rect.Height);
                 Bitmap output = new Bitmap(w, h, PixelFormat.Format32bppArgb);
                 using (Graphics sg = Graphics.FromImage(output))
@@ -918,8 +984,19 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     sg.DrawImage(frame, 0, 0, w, h);
                 }
                 scaled = output;
-                if (smallSlot) { _magCache = output; _magCacheKey = key; }
-                else { _blendCache = output; _blendCacheKey = key; }
+                _iconScaled[key] = output;
+                _iconScaledOrder.Add(key);
+                if (_iconScaledOrder.Count > IconScaledCap)
+                {
+                    string oldest = _iconScaledOrder[0];
+                    _iconScaledOrder.RemoveAt(0);
+                    Bitmap victim;
+                    if (_iconScaled.TryGetValue(oldest, out victim))
+                    {
+                        _iconScaled.Remove(oldest);
+                        if (victim != null) victim.Dispose();
+                    }
+                }
             }
             if (_paintAlpha >= 0.999f)
             {
@@ -1072,18 +1149,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         }
 
         /// <summary>
-        /// 左侧"内存条插条"：两端宽块 + 收窄腰部的白色竖条，块内文字逆时针转 90°
-        /// （自下向上读，字头朝左）；黑字 85% 不透明度，字体用 UI 现成的思源宋体。
-        /// 形状由布局层算好（RailBlocks/RailSpine），这里只做填充与旋转排版。
+        /// 书签插条：白底块自上而下排开（stacked 时横排在面板上方），块宽随字数。
+        /// 块缘与块内文字都朝图片一侧对齐：图片左侧时靠右，镜像到图片右侧时靠左；
+        /// 朝图片的一侧留 PadX 内边距。黑字 85% 不透明度。形状与块宽由布局层按
+        /// 实际文字测量算好（RailBlocks），这里只做填充与排版。
         /// </summary>
         private void PaintRail(Graphics g, NativeTooltipLayout.Plan plan,
             int ox, int oy)
         {
-            if (!plan.RailSpine.IsEmpty)
-            {
-                using (SolidBrush b = new SolidBrush(Fade(RailFill)))
-                    g.FillRectangle(b, Offset(plan.RailSpine, ox, oy));
-            }
             foreach (NativeTooltipLayout.Plan.RailBlock block in plan.RailBlocks)
             {
                 Rectangle r = Offset(block.Rect, ox, oy);
@@ -1091,35 +1164,35 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     g.FillRectangle(b, r);
                 if (string.IsNullOrEmpty(block.Text)) continue;
 
-                Font font = CachedFont(RailFontRole, block.FontPx, FontStyle.Regular);
+                Font font = CachedFont(RailFontRole, block.FontPx, FontStyle.Bold);
                 if (font == null) continue;
+                // overflow:hidden 等价：块宽有上限，超长文字裁在块内而不是压到面板上
                 GraphicsState state = g.Save();
                 try
                 {
-                    // y 轴向下 → 负角才是视觉逆时针；文字沿本地 +x（屏幕向上）推进
-                    g.TranslateTransform(r.X + r.Width / 2f, r.Y + r.Height / 2f);
-                    g.RotateTransform(-90f);
-                    RectangleF box = new RectangleF(-r.Height / 2f, -r.Width / 2f,
-                        r.Height, r.Width);
-                    // 旋转后文字的横槽只有块宽（约 26px），GridFit 的 hinting 在此
-                    // 尺度会抖动字形，竖排统一走 AntiAlias。
-                    g.TextRenderingHint = TextRenderingHint.AntiAlias;
+                    Rectangle textClip = r;
+                    textClip.Inflate(-1, -1);
+                    g.SetClip(textClip, CombineMode.Intersect);
+                    Rectangle textRect = r;
+                    if (plan.Mirrored) textRect.X += block.PadX;
+                    textRect.Width = Math.Max(1, textRect.Width - block.PadX);
                     using (SolidBrush tb = new SolidBrush(Fade(RailText)))
                     using (StringFormat sf = new StringFormat(StringFormat.GenericTypographic)
                     {
-                        Alignment = StringAlignment.Center,
+                        Alignment = plan.Mirrored ? StringAlignment.Near : StringAlignment.Far,
                         LineAlignment = StringAlignment.Center,
-                        FormatFlags = StringFormatFlags.NoWrap
+                        FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip
                     })
-                        g.DrawString(block.Text, font, tb, box, sf);
+                        g.DrawString(block.Text, font, tb, textRect, sf);
                 }
                 finally { g.Restore(state); }
             }
         }
 
         /// <summary>
-        /// 弹夹独立行：白线把"使用弹夹"正文与弹夹行分隔，行首是该弹夹自己的图标
-        /// （正方形，边长 = 行高），其后接弹夹名。图标只是绘制，不注册命中区，
+        /// 弹夹独立行：白线把"使用弹夹"正文与弹夹框分隔。第一行 = 弹夹图标
+        /// （正方形，边长 MagIconBase，与弹夹名垂直居中）+ 弹夹名；
+        /// 第二行 = 子弹类型（与弹夹名同左缘）。图标只是绘制，不注册命中区，
         /// 因此不会再触发一层注释框（避免嵌套）。
         /// </summary>
         private void PaintMagazine(Graphics g, NativeTooltipLayout.Plan plan,
@@ -1140,20 +1213,37 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
             if (!plan.MagazineIconRect.IsEmpty)
                 DrawIcon(g, Offset(plan.MagazineIconRect, ox, oy),
-                    plan.MagazineIconName, true);
+                    plan.MagazineIconName);
 
-            if (string.IsNullOrEmpty(plan.MagazineName)) return;
             Font font = CachedFont(TooltipFontRole, plan.MagazineFontPx, FontStyle.Regular);
             if (font == null) return;
-            Rectangle text = new Rectangle(ox + plan.MagazineTextLeftPx, row.Y,
-                Math.Max(1, row.Right - ox - plan.MagazineTextLeftPx), row.Height);
-            using (SolidBrush b = new SolidBrush(Fade(TextDefault)))
+
+            if (!string.IsNullOrEmpty(plan.MagazineName) && plan.MagazineNameH > 0)
+                PaintSingleLine(g, plan.MagazineName, font, Fade(TextDefault),
+                    ox + plan.MagazineTextLeftPx, oy + plan.MagazineNameTopPx,
+                    Math.Max(1, ox + row.Right - (ox + plan.MagazineTextLeftPx)),
+                    plan.MagazineNameH);
+
+            if (!string.IsNullOrEmpty(plan.MagazineAmmo) && plan.MagazineAmmoH > 0)
+                PaintSingleLine(g, plan.MagazineAmmo, font,
+                    Fade(Color.FromArgb(204, 255, 255, 255)),
+                    ox + plan.MagazineTextLeftPx, oy + plan.MagazineAmmoTopPx,
+                    Math.Max(1, ox + row.Right - (ox + plan.MagazineTextLeftPx)),
+                    plan.MagazineAmmoH);
+        }
+
+        /// <summary>单行文本（垂直居中、不换行不裁剪），弹夹名/子弹类型共用。</summary>
+        private static void PaintSingleLine(Graphics g, string text, Font font,
+            Color color, int x, int y, int w, int h)
+        {
+            Rectangle box = new Rectangle(x, y, Math.Max(1, w), Math.Max(1, h));
+            using (SolidBrush b = new SolidBrush(color))
             using (StringFormat sf = new StringFormat(StringFormat.GenericTypographic)
             {
                 FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.NoClip,
                 LineAlignment = StringAlignment.Center
             })
-                g.DrawString(plan.MagazineName, font, b, text, sf);
+                g.DrawString(text, font, b, box, sf);
         }
 
         /// <summary>行高/内边距等 CSS px token 落到物理 px 时用的缩放（与布局同源）。</summary>
@@ -1218,16 +1308,38 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
         // ── 淡入淡出 ──
         //
-        // 元素编号：0 = 主框（intro/desc/icon/插条/弹夹行同组），1..n = 各子注释框。
-        // 淡入：主框 FadeInMs；子框 i 慢一点 = FadeInMs×(SubRevealFactor + i×SubRevealStep)，
+        // 元素编号（对齐 Web fadeMsForSub 的侧栏序）：
+        //   0     = 主框（intro 面板 / icon / 插条 / 弹夹行 / 检视条）
+        //   1     = 描述栏（split 时是侧栏第 1 框，675ms）
+        //   1..n  = 子注释框；有 desc 时整体顺延为 2..n+1（750/825…）
+        // 淡入：主框 FadeInMs；第 i 个侧栏框 = FadeInMs×(SubRevealFactor + i×SubRevealStep)，
         //       越靠下的框越晚到位。
         // 淡出：进入时快照每个元素的当前透明度，共用同一个 FadeOutMs 窗口线性归零——
         //       alpha_i(t) = from_i × (1 − t/FadeOutMs)。因为所有元素同刻开始、同跨度
         //       线性衰减，无论被打断在淡入的哪一段，都必然与主框同时消失（用户硬要求）。
 
+        /// <summary>描述栏的淡入元素号；无 split desc 时返回 0（与主框同组）。</summary>
+        private int DescElement()
+        {
+            return _plan != null && _plan.Split && !_plan.DescPanel.IsEmpty ? 1 : 0;
+        }
+
+        /// <summary>第 i 个子注释框的淡入元素号（有 desc 时 desc 占 1，子框从 2 起）。</summary>
+        private int SubElement(int index)
+        {
+            return DescElement() + 1 + index;
+        }
+
+        private int FadeElementCount()
+        {
+            if (_plan == null) return 1;
+            return 1 + (DescElement() > 0 ? 1 : 0)
+                + (_plan.Subs != null ? _plan.Subs.Count : 0);
+        }
+
         private void BeginReveal()
         {
-            _fadeElements = _plan != null ? _plan.Subs.Count + 1 : 1;
+            _fadeElements = FadeElementCount();
             _fadePhase = 1;
             _fadeElapsedMs = 0;
             _fadeFrom = null;
@@ -1281,7 +1393,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         /// 当前透明度（不会让新出现的子框在淡出中途跳成不透明）。</summary>
         private void SyncFadeElements()
         {
-            int n = _plan != null ? _plan.Subs.Count + 1 : 1;
+            int n = FadeElementCount();
             if (n == _fadeElements) return;
             if (_fadePhase == 2 && _fadeFrom != null)
             {
@@ -1579,6 +1691,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     _doc.Profile == NativeTooltipProfile.Pinned, out side);
                 _lockedSide = side;
                 _plan.Side = side;   // parity-compare 提案 C：side 只读公开
+                // 整组落到触发点左侧：主框换到右缘、侧栏（desc + sub）转到左侧，
+                // 与 Web rich[data-side="left"] 的 row-reverse 同构。stacked 竖排不翻转；
+                // pinned 有独立外壳几何。MirrorHorizontally 对自身取逆，可按 Side 幂等调用。
+                if (!_plan.Pinned)
+                {
+                    bool wantMirror = !_plan.Stacked && side == "left";
+                    if (wantMirror != _plan.Mirrored) _plan.MirrorHorizontally();
+                }
             }
         }
 
@@ -1597,8 +1717,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         {
             _pointerMoveTimer.Dispose();
             DisposeFonts();
-            if (_blendCache != null) { _blendCache.Dispose(); _blendCache = null; }
-            if (_magCache != null) { _magCache.Dispose(); _magCache = null; }
+            foreach (Bitmap b in _iconScaled.Values) if (b != null) b.Dispose();
+            _iconScaled.Clear();
+            _iconScaledOrder.Clear();
             if (_measureG != null) { _measureG.Dispose(); _measureG = null; }
             if (_measureBmp != null) { _measureBmp.Dispose(); _measureBmp = null; }
             if (_textFormat != null) _textFormat.Dispose();

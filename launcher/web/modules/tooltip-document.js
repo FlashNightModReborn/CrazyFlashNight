@@ -5,10 +5,13 @@
  * 产出、C# CF7Launcher.Guardian.Hud.Tooltip.NativeTooltipDocument 解析逐项对齐）：
  *
  *   payload  = {version:1, requestId, sceneId, x, y, owner?, revision?, document:{...}}
- *   document = {version:1, title?, icon:{kind?,name}, profile?, layoutType?, sections:[{role,runs:[{text,color?,bold?,italic?,underline?,fontSize?,fontFace?}]}],
- *               rail?:[String], magazine?:{name,icon?}}
- *   rail（≤2 段武器类别名）渲染在图标左侧的"插条"竖排区；magazine 渲染为 intro 面板
- *   底部白线隔开的弹夹行（图标+弹夹名）。二者都是可选结构部件，缺失即不占位。
+ *   document = {version:1, title?, icon:{kind?,name}, profile?, layoutType?, sections:[{role,runs:[{text,color?,bold?,italic?,underline?,fontSize?,fontFace?}],
+ *               kind?, title?, rows?:[{name, icon?, runs}]}],
+ *               rail?:[String], magazine?:{name,icon?,ammo?}}
+ *   sections[].kind=="attachments"（role:"sub"）：已安装插件子框，rows 优先于
+ *   runs（runs 是旧端回退，同源不叠加）；rail（≤2 个武器类别名）渲染为图标左侧
+ *   自上下排的白色书签块；magazine 渲染为 intro 面板底部白线隔开的弹夹框
+ *   （第一行图标+弹夹名，第二行子弹类型 ammo）。结构部件缺失即不占位。
  *   run 扩展样式（document v1 可选字段，缺省即无样式）：italic/underline 布尔、
  *   fontSize 1..96 整数、fontFace 受限字体名（渲染期经 CF7FontCatalog.legacyFamily
  *   映射，未命中不输出）——与 legacy convertAS2Html 的 <I>/<U>/<FONT SIZE/FACE>
@@ -62,16 +65,23 @@
     var MAX_RAIL_TEXTS = 2;
     var MAX_RAIL_TEXT_CHARS = 24;
     var MAX_MAGAZINE_NAME_CHARS = 64;
+    var MAX_MAGAZINE_AMMO_CHARS = 64;
     var MAX_ICON_NAME_CHARS = 256;
+    // 结构子框（role:"sub" + kind:"attachments"）：标题/逐行插件名与 run 上限。
+    var MAX_SECTION_TITLE_CHARS = 128;
+    var MAX_ATTACHMENT_ROWS = 16;
+    var MAX_ATTACHMENT_NAME_CHARS = 64;
+    var MAX_ATTACHMENT_RUNS = 32;
 
     // 淡入时长算法（与 C# NativeTooltipWidget 同源）：主组 FADE_MAIN_MS 先到位，
-    // 第 i 个子注释框 = FADE_MAIN_MS × (1.35 + 0.15×(i−1)) 依次更慢；淡出由容器
-    // 统一乘算到 0，所以各层仍在同一刻消失（tooltip.js hide() 负责那一段）。
+    // 侧栏第 i 个框（i=1 是描述栏，之后依次是 role:"sub" 子框）= FADE_MAIN_MS ×
+    // (1.35 + 0.15×(i−1)) 依次更慢；淡出由容器统一乘算到 0，所以各层仍在同一刻
+    // 消失（tooltip.js hide() 负责那一段）。
     var FADE_MAIN_MS = 500;
     var FADE_SUB_LEAD = 1.35;
     var FADE_SUB_STEP = 0.15;
 
-    function fadeMsForSub(index) {   // index 从 1 开始
+    function fadeMsForSub(index) {   // index 从 1 开始（侧栏序，1 = 描述栏或首个子框）
         return Math.round(FADE_MAIN_MS * (FADE_SUB_LEAD + FADE_SUB_STEP * (index - 1)));
     }
 
@@ -507,57 +517,105 @@
         }
 
         var totalChars = 0;
+
+        function parseRuns(runs, maxRuns) {
+            var out = [];
+            if (!Array.isArray(runs)) return out;
+            for (var ri = 0; ri < runs.length && ri < maxRuns; ri++) {
+                var runToken = runs[ri];
+                var text, color = null, bold = false,
+                    italic = false, underline = false,
+                    fontSize = null, fontFace = null;
+                if (runToken && typeof runToken === 'object') {
+                    text = readString(runToken, 'text');
+                    color = parseColor(runToken.color);
+                    bold = readBool(runToken, 'bold', false);
+                    italic = readBool(runToken, 'italic', false);
+                    underline = readBool(runToken, 'underline', false);
+                    fontSize = parseFontSize(runToken.fontSize);
+                    fontFace = sanitizeFontFace(runToken.fontFace);
+                } else if (typeof runToken === 'string') {
+                    text = runToken;
+                } else {
+                    continue;
+                }
+                if (text == null) continue;
+                if (text.length > MAX_RUN_TEXT) {
+                    text = text.substring(0, MAX_RUN_TEXT);
+                    doc.truncated = true;
+                }
+                if (totalChars + text.length > MAX_TOTAL_CHARS) {
+                    doc.truncated = true;
+                    break;
+                }
+                totalChars += text.length;
+                // text 逐字保留：'<b>'、'&amp;' 等按字面进入 run，
+                // 渲染期 escapeHtml 只负责安全转义一次。
+                var run = { text: text, color: color, bold: bold };
+                if (italic) run.italic = true;
+                if (underline) run.underline = true;
+                if (fontSize != null) run.fontSize = fontSize;
+                if (fontFace != null) run.fontFace = fontFace;
+                out.push(run);
+            }
+            if (runs.length > maxRuns) doc.truncated = true;
+            return out;
+        }
+
         var sections = docNode.sections;
         if (Array.isArray(sections)) {
             for (var si = 0; si < sections.length && si < MAX_SECTIONS; si++) {
                 var secNode = sections[si];
                 if (!secNode || typeof secNode !== 'object') continue;
                 var section = { role: parseRole(secNode.role), runs: [] };
-                var runs = secNode.runs;
-                if (Array.isArray(runs)) {
-                    for (var ri = 0; ri < runs.length && ri < MAX_RUNS_PER_SECTION; ri++) {
-                        var runToken = runs[ri];
-                        var text, color = null, bold = false,
-                            italic = false, underline = false,
-                            fontSize = null, fontFace = null;
-                        if (runToken && typeof runToken === 'object') {
-                            text = readString(runToken, 'text');
-                            color = parseColor(runToken.color);
-                            bold = readBool(runToken, 'bold', false);
-                            italic = readBool(runToken, 'italic', false);
-                            underline = readBool(runToken, 'underline', false);
-                            fontSize = parseFontSize(runToken.fontSize);
-                            fontFace = sanitizeFontFace(runToken.fontFace);
-                        } else if (typeof runToken === 'string') {
-                            text = runToken;
-                        } else {
-                            continue;
-                        }
-                        if (text == null) continue;
-                        if (text.length > MAX_RUN_TEXT) {
-                            text = text.substring(0, MAX_RUN_TEXT);
-                            doc.truncated = true;
-                        }
-                        if (totalChars + text.length > MAX_TOTAL_CHARS) {
-                            doc.truncated = true;
-                            break;
-                        }
-                        totalChars += text.length;
-                        // text 逐字保留：'<b>'、'&amp;' 等按字面进入 run，
-                        // 渲染期 escapeHtml 只负责安全转义一次。
-                        var run = { text: text, color: color, bold: bold };
-                        if (italic) run.italic = true;
-                        if (underline) run.underline = true;
-                        if (fontSize != null) run.fontSize = fontSize;
-                        if (fontFace != null) run.fontFace = fontFace;
-                        section.runs.push(run);
-                    }
-                    if (runs.length > MAX_RUNS_PER_SECTION) doc.truncated = true;
+                section.runs = parseRuns(secNode.runs, MAX_RUNS_PER_SECTION);
+                // attachments/acquisition 结构化子框：kind 精确匹配（Ordinal），
+                // rows 至少一条有效行才成立；不成立时保留 runs 回退（与 C# sanitizer 同构）。
+                var subKind = parseSubSectionKind(secNode);
+                var rows = subKind ? parseAttachmentRows(secNode) : null;
+                if (rows) {
+                    section.kind = subKind;
+                    var sectionTitle = readPlainTextStrict(
+                        secNode.title, MAX_SECTION_TITLE_CHARS);
+                    if (!isBlankText(sectionTitle)) section.title = sectionTitle;
+                    section.rows = rows;
                 }
                 // 空 run 段也保留：显式空段可占位（例如预留 meta 行）。
                 doc.sections.push(section);
             }
             if (sections.length > MAX_SECTIONS) doc.truncated = true;
+        }
+
+        // 结构化子框 kind 白名单（与 C# sanitizer Ordinal 匹配同构）。
+        function parseSubSectionKind(secNode) {
+            if (secNode.kind === 'attachments' || secNode.kind === 'acquisition') {
+                return secNode.kind;
+            }
+            return null;
+        }
+
+        function parseAttachmentRows(secNode) {
+            if (!parseSubSectionKind(secNode)) return null;
+            var rowsNode = secNode.rows;
+            if (!Array.isArray(rowsNode)) return null;
+            var out = [];
+            for (var ri = 0; ri < rowsNode.length; ri++) {
+                var rowNode = rowsNode[ri];
+                if (!rowNode || typeof rowNode !== 'object') continue;
+                var rowName = readPlainTextStrict(
+                    rowNode.name, MAX_ATTACHMENT_NAME_CHARS);
+                if (isBlankText(rowName)) continue;
+                var rowIcon = readPlainTextStrict(rowNode.icon, MAX_ICON_NAME_CHARS);
+                var cleanRow = {
+                    name: rowName,
+                    icon: isBlankText(rowIcon) ? null : rowIcon,
+                    runs: parseRuns(rowNode.runs, MAX_ATTACHMENT_RUNS)
+                };
+                if (Number(rowNode.depth) === 1) cleanRow.depth = 1;
+                out.push(cleanRow);
+                if (out.length >= MAX_ATTACHMENT_ROWS) break;
+            }
+            return out.length ? out : null;
         }
 
         // 结构部件不参与 hasContent：只有插条/弹夹而没有正文的文档不成立。
@@ -579,13 +637,18 @@
                 doc.rail.push(text);
             }
         }
-        // 弹夹行：name 必填才成立，icon 可选。
+        // 弹夹行：name 必填才成立，icon/ammo 可选（ammo = 子弹类型，第二行）。
         var magNode = docNode.magazine;
         if (magNode && typeof magNode === 'object') {
             var name = readPlainTextStrict(magNode.name, MAX_MAGAZINE_NAME_CHARS);
             if (!isBlankText(name)) {
                 var icon = readPlainTextStrict(magNode.icon, MAX_ICON_NAME_CHARS);
-                doc.magazine = { name: name, icon: isBlankText(icon) ? null : icon };
+                var ammo = readPlainTextStrict(magNode.ammo, MAX_MAGAZINE_AMMO_CHARS);
+                doc.magazine = {
+                    name: name,
+                    icon: isBlankText(icon) ? null : icon,
+                    ammo: isBlankText(ammo) ? null : ammo
+                };
             }
         }
     }
@@ -594,7 +657,13 @@
         if (doc.title) return true;
         if (doc.icon && doc.icon.name) return true;
         for (var i = 0; i < doc.sections.length; i++) {
-            if (plainTextOf(doc.sections[i].runs).length > 0) return true;
+            var sec = doc.sections[i];
+            if (plainTextOf(sec.runs).length > 0) return true;
+            if (sec.rows) {
+                for (var ri = 0; ri < sec.rows.length; ri++) {
+                    if (sec.rows[ri].name) return true;
+                }
+            }
         }
         return false;
     }
@@ -774,47 +843,95 @@
     }
 
     /**
-     * 左侧插条（document.rail）：贴在图标左侧外沿的白色"内存条"竖条 —— 两端宽块写
-     * 竖排文字、中间窄腰连接，整条高 = 图标高（几何权威在 CSS 的 --tt-rail-* token，
-     * 对齐 C# NativeTooltipLayout.ApplyRail）。只有一段文本时另一端补空帽保持轮廓。
-     *
-     * 字号收缩走 CSS：这里只把 C# 算法需要的两个计数（总字数、块数）以无单位
-     * custom property 交出去，CSS 用同一条式子算出实际字号
-     * （min(上限, (轨高 − 2×内边距×块数)/总字数)，下限 --tt-rail-font-min），
-     * 缩到下限仍放不下就裁切 —— 与 C# 端"缩到 RailFontMinBase 后交由绘制裁切"一致。
-     * CJK 字宽恒等于 1em，所以按字数估高只会偏高，不会裁掉本该显示的字。
+     * 左侧书签插条（document.rail）：图标左侧外沿自上而下排开的白色块，块内文字
+     * 横向左→右、加粗居中；块宽按文字自适应（上限 --tt-rail-max-w），块间
+     * --tt-rail-gap。并排时整列占位把面板整体右推（rich--rail 的 padding-left），
+     * stacked 降级时书签横排到面板上方（--tt-rail-stack）。
+     * 几何 token 与 C# NativeTooltipLayout.ApplyRail 同源。
      */
     function railHtml(doc) {
         if (!doc.rail.length) return '';
-        var texts = doc.rail.length === 1 ? [doc.rail[0], ''] : doc.rail;
-        var totalChars = 0;
-        for (var t = 0; t < texts.length; t++) totalChars += texts[t].length;
-        if (!totalChars) return '';
-        var out = '<div class="flash-tt-rail ntt-rail"'
-            + ' style="--tt-rail-chars:' + totalChars + ';--tt-rail-blocks:' + texts.length + '">';
-        for (var i = 0; i < texts.length; i++) {
-            if (i === 1) out += '<div class="flash-tt-rail-waist ntt-rail-waist"></div>';
-            out += '<div class="flash-tt-rail-block ntt-rail-block'
-                + (texts[i] ? '' : ' flash-tt-rail-block--cap') + '">'
-                + escapeHtml(texts[i]) + '</div>';
+        var out = '<div class="flash-tt-rail ntt-rail">';
+        for (var i = 0; i < doc.rail.length; i++) {
+            out += '<div class="flash-tt-rail-block ntt-rail-block">'
+                + escapeHtml(doc.rail[i]) + '</div>';
         }
         return out + '</div>';
     }
 
     /**
-     * 弹夹行（document.magazine）：intro 面板底部白线隔开的独立一行 —— 最左弹夹图标
-     * （正方形，边长 = 行高）后接弹夹名；"使用弹夹"这类标签字符由数据侧不再下发。
-     * 整行 pointer-events:none 且不是任何 tooltip 的 owner：弹夹图标不会再套出一层
-     * 注释框（用户硬要求，避免嵌套）。
+     * 弹夹框（document.magazine）：intro 面板底部白线隔开的独立块 ——
+     * 第一行 = 弹夹图标（正方形，边长 --tt-mag-icon-size，与弹夹名垂直居中）
+     * + 弹夹名；第二行 = 子弹类型（ammo，与弹夹名同左缘，可缺省）。
+     * "使用弹夹"这类标签字符由数据侧不再下发。整块 pointer-events:none 且不是
+     * 任何 tooltip 的 owner：弹夹图标不会再套出一层注释框（避免嵌套）。
      */
     function magazineHtml(doc) {
         var mag = doc.magazine;
         if (!mag || !mag.name) return '';
         var icon = mag.icon ? iconMarkupByName(mag.icon, 'flash-tt-mag-icon-image ntt-mag-icon-image') : '';
-        return '<div class="flash-tt-mag ntt-mag">'
+        var out = '<div class="flash-tt-mag ntt-mag">'
+            + '<div class="flash-tt-mag-row ntt-mag-row">'
             + '<span class="flash-tt-mag-icon ntt-mag-icon">' + icon + '</span>'
             + '<span class="flash-tt-mag-name ntt-mag-name">' + escapeHtml(mag.name) + '</span>'
             + '</div>';
+        if (mag.ammo) {
+            out += '<div class="flash-tt-mag-ammo ntt-mag-ammo">'
+                + escapeHtml(mag.ammo) + '</div>';
+        }
+        return out + '</div>';
+    }
+
+    /**
+     * NPC 头像小图标（acquisition 商店行）：源为 flashswf/portraits/profiles/*.png
+     * 的 64px 缩放产物 flashswf/portraits/icons/<NPC名>.webp，经 cfn-assets.local
+     * 映射加载（与 task-panel.js 头像 URL 同一通道）。加载失败退 无头像.webp，
+     * 再失败则隐藏自身（商店目录里的 书中-* 贩卖机没有头像档案）。
+     */
+    var PORTRAIT_ICON_BASE = 'https://cfn-assets.local/portraits/icons/';
+    function portraitIconHtml(name, className) {
+        if (!name) return '';
+        var src = PORTRAIT_ICON_BASE + encodeURIComponent(name) + '.webp';
+        var fallback = PORTRAIT_ICON_BASE + encodeURIComponent('无头像') + '.webp';
+        return '<img class="' + escapeAttr(className) + '" src="' + escapeAttr(src)
+            + '" onerror="if(!this.dataset.fb){this.dataset.fb=1;this.src=\''
+            + escapeAttr(fallback) + '\'}else{this.style.display=\'none\'}">';
+    }
+
+    /**
+     * attachments/acquisition 子框内容：名称独占一行，效果在下一行并继续缩进；
+     * depth=1 的来源条目再缩进一级，形成「类别 → 来源」「配件 → 具体影响」。
+     * attachments 行 icon 是物品图标键；acquisition 商店行 icon 是 NPC 头像键。
+     */
+    function attachmentsHtml(section) {
+        var out = '';
+        if (section.title) {
+            out += '<div class="flash-tt-sub-title ntt-sub-title">'
+                + escapeHtml(section.title) + '</div>';
+        }
+        var isAcquisition = section.kind === 'acquisition';
+        for (var i = 0; i < section.rows.length; i++) {
+            var row = section.rows[i];
+            var icon = '';
+            if (row.icon) {
+                icon = isAcquisition
+                    ? portraitIconHtml(row.icon, 'flash-tt-attach-icon-image ntt-attach-icon-image')
+                    : iconMarkupByName(row.icon, 'flash-tt-attach-icon-image ntt-attach-icon-image');
+            }
+            var rowClass = 'flash-tt-attach-row ntt-attach-row'
+                + (row.depth === 1 ? ' flash-tt-attach-row--child ntt-attach-row--child' : '');
+            out += '<div class="' + rowClass + '">'
+                + '<span class="flash-tt-attach-icon ntt-attach-icon">' + icon + '</span>'
+                + '<span class="flash-tt-attach-text ntt-attach-text">'
+                + '<span class="flash-tt-attach-name ntt-attach-name">'
+                + runsHtml([{ text: row.name, color: null, bold: true }]) + '</span>';
+            if (row.runs.length) {
+                out += '<span class="flash-tt-attach-effect ntt-attach-effect">'
+                    + runsHtml(row.runs) + '</span>';
+            }
+            out += '</span></div>';
+        }
+        return out;
     }
 
     /**
@@ -890,26 +1007,45 @@
         var layoutType = (opts.layoutType === 'narrow' || opts.layoutType === 'wide')
             ? opts.layoutType : doc.layoutType;
         var layoutAttr = (layoutType === 'narrow') ? ' data-layout="narrow"' : '';
+        // 侧栏（2026-10 三轮）：描述栏与 role:"sub" 子注释框统一进主框右侧的
+        // .flash-tt-side 一列 —— 子框不再堆在主框下方，而是与描述栏同宽、同间隙竖向
+        // 排列；空间不足时定位器把整组翻到触发点左侧（rich[data-side="left"]）。
+        // 淡入按时序分层：主组 --tt-fade-ms(500) → 第 1 框 675 → 第 2 框 750 …，
+        // 淡出仍由 tooltip.js 给容器统一乘算到 0，各层同刻消失。
+        var sideHtml = '';
+        var sideIndex = 0;
+        if (doSplit && descColumn) {
+            sideIndex++;
+            sideHtml += '<div class="flash-tt-desc kshop-tt-desc ntt-desc"'
+                + ' style="--tt-fade-ms:' + fadeMsForSub(sideIndex) + 'ms">'
+                + descColumn + '</div>';
+        }
+        for (var si = 0; si < doc.sections.length; si++) {
+            var subSec = doc.sections[si];
+            if (subSec.role !== 'sub') continue;
+            sideIndex++;
+            // 结构化段（attachments/acquisition）以 rows 渲染（runs 是旧端回退，
+            // 同源不叠加）；普通 sub 段仍走 runs。
+            var subInner = subSec.rows
+                ? attachmentsHtml(subSec)
+                : (runsHtml(subSec.runs) || '<br>');
+            var subClass = 'flash-tt-sub-panel ntt-sub-panel'
+                + (subSec.rows
+                    ? (subSec.kind === 'acquisition'
+                        ? ' flash-tt-sub-panel--acquisition ntt-sub-panel--acquisition'
+                        : ' flash-tt-sub-panel--attachments ntt-sub-panel--attachments')
+                    : '');
+            sideHtml += '<div class="' + subClass + '"'
+                + ' style="--tt-fade-ms:' + fadeMsForSub(sideIndex) + 'ms">' + subInner + '</div>';
+        }
+        var sideBlock = sideHtml
+            ? '<div class="flash-tt-side ntt-side">' + sideHtml + '</div>' : '';
         var html = '<div class="flash-tt-rich kshop-tt-rich ntt-doc' + mergeClass + railClass + rootClass + '"'
             + ' data-doc-profile="' + doc.profile + '"' + layoutAttr + '>'
             + railBlock
             + introPanel
-            + (doSplit && descColumn
-                ? '<div class="flash-tt-desc kshop-tt-desc ntt-desc">' + descColumn + '</div>' : '')
+            + sideBlock
             + '</div>';
-        // 子注释框（role:"sub"，2026-10 新合同）：主面板 div 之后按文档序竖排堆叠，
-        // 黑底白边同款 token（.flash-tt-sub-panel），空段渲染一个占位空行。
-        // 淡入比主组慢（inline --tt-fade-ms 携带 fadeMsForSub 的算法结果），淡出由
-        // tooltip.js 给容器统一乘算到 0 —— 慢淡入的子框仍与主框同刻消失。
-        var subIndex = 0;
-        for (var si = 0; si < doc.sections.length; si++) {
-            var subSec = doc.sections[si];
-            if (subSec.role !== 'sub') continue;
-            subIndex++;
-            var subInner = runsHtml(subSec.runs) || '<br>';
-            html += '<div class="flash-tt-sub-panel ntt-sub-panel"'
-                + ' style="--tt-fade-ms:' + fadeMsForSub(subIndex) + 'ms">' + subInner + '</div>';
-        }
         if (opts.suffix) html += '<div class="flash-tt-suffix kshop-tt-suffix ntt-suffix">' + opts.suffix + '</div>';
         return html;
     }

@@ -18,6 +18,7 @@ import org.flashNight.gesh.tooltip.builder.SlayEffectBuilder;
 import org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder;
 import org.flashNight.gesh.tooltip.builder.drug.DrugTooltipComposer;
 import org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder;
+import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import org.flashNight.gesh.tooltip.builder.ModStatBuilder;
 import org.flashNight.gesh.tooltip.builder.ModsBlockBuilder;
 
@@ -100,6 +101,7 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         test_SilenceEffectBuilder();
         test_DrugTooltipComposer_null();
         test_ObtainMethodsBuilder_no_index();
+        test_ObtainMethodsBuilder_rows();
         test_ModStatBuilder_unknown_item();
         test_ModStatBuilder_curve();
         test_ModStatBuilder_conditionalRequireTags();
@@ -414,6 +416,50 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         // 索引未构建时应返回空数组
         var result:Array = ObtainMethodsBuilder.build("不存在的物品");
         assert(result.length == 0, "ObtainMethodsBuilder no index: empty result");
+        // buildWithRows 同路径：null 且不动输出缓冲
+        var buf:Array = [];
+        var entry:Object = ObtainMethodsBuilder.buildWithRows(buf, "不存在的物品");
+        assert(entry == null && buf.length == 0,
+            "ObtainMethodsBuilder no index: buildWithRows null & 不动缓冲");
+    }
+
+    private static function test_ObtainMethodsBuilder_rows():Void {
+        // acquisition 结构化条目：商店来源逐 NPC 一行且 icon=NPC 头像键，
+        // 旧 HTML 输出与旧 build 同源保留。共享单例已被其他套件构建过时跳过正例，
+        // 避免 reset 破坏既有索引状态。
+        var index:ItemObtainIndex = ItemObtainIndex.getInstance();
+        if (index.isIndexBuilt()) {
+            assert(true, "ObtainMethodsBuilder rows: 索引已被其他套件构建，跳过正例");
+            return;
+        }
+        var shopA:Object = new Object();
+        shopA["0"] = "测试物品X";
+        var shopB:Object = new Object();
+        shopB["0"] = "测试物品X";
+        var shopFixture:Object = new Object();
+        shopFixture["测试商人甲"] = shopA;
+        shopFixture["测试商人乙"] = shopB;
+        index.buildIndex(null, shopFixture, null, null);
+        var html:Array = [];
+        var entry:Object = ObtainMethodsBuilder.buildWithRows(html, "测试物品X");
+        assert(entry != null && entry.kind == "acquisition",
+            "buildWithRows: kind=acquisition");
+        assert(entry != null && entry.title == "获取方式",
+            "buildWithRows: 子框标题去【】");
+        assert(entry != null && entry.rows.length == 3
+            && entry.rows[0].name == "NPC商店" && entry.rows[0].depth == undefined,
+            "buildWithRows: NPC商店类别独占父级行");
+        assert(entry != null && entry.rows[1].icon != undefined
+            && entry.rows[1].icon == entry.rows[1].name
+            && entry.rows[1].depth === 1 && entry.rows[2].depth === 1,
+            "buildWithRows: NPC 名称与头像逐行作为子级");
+        var joined:String = html.join("");
+        assert(joined.indexOf("【获取方式】") >= 0
+            && joined.indexOf("商店：") >= 0
+            && joined.indexOf("测试商人甲") >= 0
+            && joined.indexOf("测试商人乙") >= 0,
+            "buildWithRows: 旧 HTML 与旧输出同源保留");
+        index.reset(false);
     }
 
     private static function test_ModStatBuilder_unknown_item():Void {
@@ -600,6 +646,27 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
             TooltipComposer.getRailText({type: "武器", use: "手枪", weapontype: "突击步枪"},
                 calcBaseItem(1, {})),
             "rail: 计算数据缺字段时回落 item 原始字段");
+        assertArray(["刀", "斩击"],
+            TooltipComposer.getRailText({type: "武器", use: "刀", actiontype: "斩击"}, null),
+            "rail: 冷兵器动作模组写成书签");
+        assertArray(["手部装备", "默认"],
+            TooltipComposer.getRailText({type: "防具", use: "手部装备"}, null),
+            "rail: 手部装备缺省动作写成默认书签");
+        assertArray(["手部装备", "重拳"],
+            TooltipComposer.getRailText({type: "防具", use: "手部装备", actiontype: "默认"},
+                calcBaseItem(1, {actiontype: "重拳"})),
+            "rail: 计算后的动作覆盖进入书签");
+
+        var actionText:Array = [];
+        CommonStatsBuilder.build(actionText, null,
+            {use: "手部装备", actiontype: "重拳"}, {}, {}, null);
+        assertContains(actionText.join(""), TooltipConstants.LBL_ACTION,
+            "action: 旧属性区保留动作行");
+        actionText = [];
+        CommonStatsBuilder.build(actionText, null,
+            {use: "手部装备", actiontype: "重拳"}, {}, {}, {omitActionType: true});
+        assertNotContains(actionText.join(""), TooltipConstants.LBL_ACTION,
+            "action: rail 承载后属性区省略动作行");
     }
 
     /** 原生取数用的最小实例：getData() 返回指定计算结果。
@@ -622,6 +689,8 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
             "mag: name 取弹夹物品 displayname");
         assert(mag != null && mag.icon == undefined,
             "mag: 弹夹物品无 icon 字段时省略该键");
+        assert(mag != null && mag.ammo == "普通",
+            "mag: 子弹类型取 data.bullet，作弹夹框第二行");
 
         assert(TooltipComposer.getMagazineInfo(MockItemFactory.mockBaseItem(),
             ItemUtil.getItemData("测试军刀"), {level: 1}) == null,
@@ -635,9 +704,17 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
 
         var upgraded:Object = TooltipComposer.getMagazineInfo(
             calcBaseItem(3, {data: {clipname: "手枪通用弹药"}}),
-            {type: "武器", use: "手枪", data: {capacity: 12}}, {level: 3});
+            gunItem, {level: 3});
         assert(upgraded != null && upgraded.name == "手枪通用弹药",
             "mag: 强化后以计算数据里的 clipname 为准");
+        assert(upgraded != null && upgraded.ammo == "普通",
+            "mag: 计算数据缺 bullet 时回落到物品原字段");
+
+        var renamed:Object = TooltipComposer.getMagazineInfo(null,
+            {type: "武器", use: "手枪", data: {clipname: "手枪通用弹药",
+                bullet: "普通", bulletrename: "改装弹"}}, {level: 1});
+        assert(renamed != null && renamed.ammo == "改装弹",
+            "mag: bulletrename 优先于 bullet");
     }
 
     // === nativeOpt 省略开关：正文只减不丢 ===

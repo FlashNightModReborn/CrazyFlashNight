@@ -675,6 +675,184 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void Magazine_AmmoLineIsForwardedAndBounded()
+        {
+            JObject doc = ValidDocument();
+            doc["magazine"] = new JObject
+            {
+                ["name"] = "11 号 4.7mm 弹夹",
+                ["ammo"] = "4.7mm 穿甲弹"
+            };
+            JObject output;
+            Assert.True(TooltipDocumentSanitizer.TrySanitize(doc, out output));
+            Assert.Equal("4.7mm 穿甲弹", (string)output["magazine"]["ammo"]);
+
+            JObject capped = ValidDocument();
+            capped["magazine"] = new JObject
+            {
+                ["name"] = "弹夹",
+                ["ammo"] = new string('弹', TooltipDocumentSanitizer.MaxMagazineAmmoChars + 1)
+            };
+            Assert.True(TooltipDocumentSanitizer.TrySanitize(capped, out output));
+            Assert.Null(output["magazine"]["ammo"]);
+
+            JObject blank = ValidDocument();
+            blank["magazine"] = new JObject { ["name"] = "弹夹", ["ammo"] = "   " };
+            Assert.True(TooltipDocumentSanitizer.TrySanitize(blank, out output));
+            Assert.Null(output["magazine"]["ammo"]);
+        }
+
+        [Fact]
+        public void AttachmentsRows_AreWhitelistedRebuilt()
+        {
+            JObject doc = ValidDocument();
+            doc["sections"] = new JArray
+            {
+                new JObject
+                {
+                    ["role"] = "sub",
+                    ["kind"] = "attachments",
+                    ["title"] = "已安装2个配件",
+                    ["runs"] = new JArray { new JObject { ["text"] = "回退全文" } },
+                    ["rows"] = new JArray
+                    {
+                        new JObject
+                        {
+                            ["name"] = "扩容弹匣",
+                            ["icon"] = "mod_mag",
+                            ["runs"] = new JArray
+                            {
+                                new JObject { ["text"] = " (+30%)",
+                                    ["color"] = "#ff0" }
+                            },
+                            ["evil"] = "drop"
+                        },
+                        new JObject { ["name"] = "消音器" },   // 无图标/无效果行仍保留
+                        new JObject { ["name"] = "   " },      // 空白名整行丢弃
+                        "not-an-object"                        // 类型异常整行丢弃
+                    }
+                }
+            };
+            JObject output;
+            Assert.True(TooltipDocumentSanitizer.TrySanitize(doc, out output));
+            JObject section = (JObject)output["sections"][0];
+            Assert.Equal("sub", (string)section["role"]);
+            Assert.Equal("attachments", (string)section["kind"]);
+            Assert.Equal("已安装2个配件", (string)section["title"]);
+            // 回退 runs 仍保留，旧消费端不丢内容
+            Assert.Equal("回退全文", (string)section["runs"][0]["text"]);
+            JArray rows = (JArray)section["rows"];
+            Assert.Equal(2, rows.Count);
+            Assert.Equal("扩容弹匣", (string)rows[0]["name"]);
+            Assert.Equal("mod_mag", (string)rows[0]["icon"]);
+            Assert.Equal("#FFFF00", (string)rows[0]["runs"][0]["color"]);
+            Assert.Null(rows[0]["evil"]);
+            Assert.Equal("消音器", (string)rows[1]["name"]);
+            Assert.Null(rows[1]["icon"]);
+            Assert.Equal(0, ((JArray)rows[1]["runs"]).Count);
+        }
+
+        [Fact]
+        public void AcquisitionRows_AreWhitelistedRebuilt()
+        {
+            // 获取方式子框：kind 透传、商店行 NPC 头像键（icon）保留、
+            // 类别行内容 runs 保留；非法行与未列举键照 attachments 同一套规则。
+            JObject doc = ValidDocument();
+            doc["sections"] = new JArray
+            {
+                new JObject
+                {
+                    ["role"] = "sub",
+                    ["kind"] = "acquisition",
+                    ["title"] = "获取方式",
+                    ["runs"] = new JArray { new JObject { ["text"] = "回退全文" } },
+                    ["rows"] = new JArray
+                    {
+                        new JObject
+                        {
+                            ["name"] = "安迪",
+                            ["icon"] = "安迪",   // NPC 头像键：Web 端映射 portraits/icons/<NPC名>.webp
+                            ["depth"] = 1
+                        },
+                        new JObject
+                        {
+                            ["name"] = "合成",
+                            ["depth"] = 2,
+                            ["runs"] = new JArray
+                            {
+                                new JObject { ["text"] = "武器工坊 ($5000)",
+                                    ["color"] = "#0f0" }
+                            },
+                            ["evil"] = "drop"
+                        },
+                        new JObject { ["name"] = "   " }   // 空白名整行丢弃
+                    }
+                }
+            };
+            JObject output;
+            Assert.True(TooltipDocumentSanitizer.TrySanitize(doc, out output));
+            JObject section = (JObject)output["sections"][0];
+            Assert.Equal("sub", (string)section["role"]);
+            Assert.Equal("acquisition", (string)section["kind"]);
+            Assert.Equal("获取方式", (string)section["title"]);
+            Assert.Equal("回退全文", (string)section["runs"][0]["text"]);
+            JArray rows = (JArray)section["rows"];
+            Assert.Equal(2, rows.Count);
+            Assert.Equal("安迪", (string)rows[0]["name"]);
+            Assert.Equal("安迪", (string)rows[0]["icon"]);
+            Assert.Equal(1, (int)rows[0]["depth"]);
+            Assert.Equal("合成", (string)rows[1]["name"]);
+            Assert.Null(rows[1]["depth"]);
+            Assert.Equal("#00FF00", (string)rows[1]["runs"][0]["color"]);
+            Assert.Null(rows[1]["evil"]);
+        }
+
+        [Fact]
+        public void AttachmentsRows_AreCappedAndRequireValidRows()
+        {
+            var rows = new JArray();
+            for (int i = 0; i < TooltipDocumentSanitizer.MaxAttachmentRows + 3; i++)
+                rows.Add(new JObject { ["name"] = "插件" + i });
+
+            JObject doc = ValidDocument();
+            doc["sections"] = new JArray
+            {
+                new JObject
+                {
+                    ["role"] = "sub",
+                    ["kind"] = "attachments",
+                    ["rows"] = rows,
+                    ["runs"] = new JArray { new JObject { ["text"] = "回退" } }
+                }
+            };
+            JObject output;
+            Assert.True(TooltipDocumentSanitizer.TrySanitize(doc, out output));
+            JObject section = (JObject)output["sections"][0];
+            Assert.Equal(
+                TooltipDocumentSanitizer.MaxAttachmentRows,
+                ((JArray)section["rows"]).Count);
+
+            // 只有非法行 → 不写 kind/title/rows，退回普通 sub（runs 保留）
+            JObject invalid = ValidDocument();
+            invalid["sections"] = new JArray
+            {
+                new JObject
+                {
+                    ["role"] = "sub",
+                    ["kind"] = "attachments",
+                    ["title"] = "已安装",
+                    ["rows"] = new JArray { new JObject { ["icon"] = "x" } },
+                    ["runs"] = new JArray { new JObject { ["text"] = "回退" } }
+                }
+            };
+            Assert.True(TooltipDocumentSanitizer.TrySanitize(invalid, out output));
+            JObject plain = (JObject)output["sections"][0];
+            Assert.Null(plain["kind"]);
+            Assert.Null(plain["rows"]);
+            Assert.Equal("回退", (string)plain["runs"][0]["text"]);
+        }
+
+        [Fact]
         public void RailAndMagazineAlone_AreNotRenderableContent()
         {
             // 只有插条与弹夹行、没有任何正文/标题的文档不成立（否则会画出空壳）
