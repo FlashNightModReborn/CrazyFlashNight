@@ -1490,7 +1490,7 @@
     <price>457600</price>
     <description>全自动霰弹枪。</description>
     <data>
-      <level>30</level>
+      <level>28</level>
       <weight>4</weight>
       <dressup>枪-长枪-AA12</dressup>
       <capacity>8</capacity>
@@ -1506,7 +1506,7 @@
       <bullethit>火花</bullethit>
       <clipname>00号鹿弹</clipname>
       <bulletsize>25</bulletsize>
-      <power>350</power>
+      <power>300</power>
       <impact>12</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
@@ -1550,14 +1550,14 @@
       <diffusion>10</diffusion>
       <interval>150</interval>
       <velocity>40</velocity>
-      <bullet>横向联弹-加强普通子弹</bullet>
+      <bullet>横向联弹-次级穿刺子弹</bullet>
       <bulletrename>常规穿甲弹</bulletrename>
       <sound>aa12.wav</sound>
       <muzzle>霰弹枪枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>00号鹿弹</clipname>
       <bulletsize>25</bulletsize>
-      <power>350</power>
+      <power>360</power>
       <impact>12</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
@@ -1892,7 +1892,7 @@
     <price>457600</price>
     <description>Vepr-12 是基于 AK 平台衍生的半自动战斗霰弹枪，以RPK轻机枪的加强型机匣为基础打造，发射 12 号霰弹。采用直插式弹匣井（类似 AR 风格）而非 AK 的摆动式换弹，并标配空仓挂机功能，人机工效更优。</description>
     <data>
-      <level>30</level>
+      <level>23</level>
       <weight>4</weight>
       <dressup>枪-长枪-Vepr12</dressup>
       <capacity>8</capacity>
@@ -1902,13 +1902,13 @@
       <interval>150</interval>
       <velocity>40</velocity>
       <bullet>横向联弹-加强普通子弹</bullet>
-      <bulletrename>常规穿甲弹</bulletrename>
+     <bulletrename>加强普通子弹</bulletrename>
       <sound>Vepr12.wav</sound>
       <muzzle>霰弹枪枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>00号鹿弹</clipname>
       <bulletsize>25</bulletsize>
-      <power>350</power>
+      <power>360</power>
       <impact>12</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
@@ -1943,7 +1943,7 @@
     <price>457600</price>
     <description>Vepr-12 是基于 AK 平台衍生的半自动战斗霰弹枪，以RPK轻机枪的加强型机匣为基础打造，发射 12 号霰弹。采用直插式弹匣井（类似 AR 风格）而非 AK 的摆动式换弹，并标配空仓挂机功能，人机工效更优。</description>
     <data>
-      <level>30</level>
+      <level>45</level>
       <weight>4</weight>
       <dressup>枪-长枪-Vepr12战术版</dressup>
       <capacity>25</capacity>
@@ -1952,14 +1952,14 @@
       <diffusion>10</diffusion>
       <interval>150</interval>
       <velocity>40</velocity>
-      <bullet>横向联弹-加强普通子弹</bullet>
+      <bullet>横向联弹-次级穿刺子弹</bullet>
       <bulletrename>常规穿甲弹</bulletrename>
       <sound>Vepr12.wav</sound>
       <muzzle>霰弹枪枪火</muzzle>
       <bullethit>火花</bullethit>
       <clipname>00号鹿弹</clipname>
       <bulletsize>25</bulletsize>
-      <power>350</power>
+      <power>370</power>
       <impact>12</impact>
       <reloadPenalty>0</reloadPenalty>
     </data>
