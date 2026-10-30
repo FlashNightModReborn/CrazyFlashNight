@@ -1,6 +1,6 @@
 <DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#666666" currentTimeline="1" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" snapAlign="false" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" autoSaveHasPrompted="true">
      <folders>
-          <DOMFolderItem name="1主武器" itemID="6976ca22-00000cb7" isExpanded="true"/>
+          <DOMFolderItem name="1主武器" itemID="6976ca22-00000cb7"/>
           <DOMFolderItem name="1主武器/AA12普通" itemID="6ac866f8-0000072e"/>
           <DOMFolderItem name="1主武器/AA12普通/aa12素材" itemID="6ac8670d-00000756"/>
           <DOMFolderItem name="1主武器/AA12丧尸" itemID="6973017c-00000429"/>
@@ -109,12 +109,14 @@
           <DOMFolderItem name="1主武器/众神之力" itemID="69e74df6-000009a3"/>
           <DOMFolderItem name="1主武器/众神之力/众神之力素材" itemID="69e74d8b-000008f0"/>
           <DOMFolderItem name="2副武器" itemID="6976d736-00001fef" isExpanded="true"/>
+          <DOMFolderItem name="2副武器/khaos12g文件" itemID="6ae4019c-000000b4" isExpanded="true"/>
+          <DOMFolderItem name="2副武器/khaos12g文件/武器版本" itemID="6ae40351-00000123" isExpanded="true"/>
           <DOMFolderItem name="2副武器/Origin12" itemID="6ac866b3-0000024b"/>
           <DOMFolderItem name="2副武器/Origin12/origin12素材" itemID="6ac865bb-000001fa"/>
           <DOMFolderItem name="2副武器/Origin12战术版" itemID="6ac866a8-00000247"/>
           <DOMFolderItem name="2副武器/Origin12战术版/origin12素材" itemID="6ac86722-00000784"/>
           <DOMFolderItem name="2副武器/Origin12战术版/origin12素材/红外" itemID="6ac8661e-0000021c"/>
-          <DOMFolderItem name="2副武器/Vepr12紧凑改装型" itemID="6adaea59-0000011a" isExpanded="true"/>
+          <DOMFolderItem name="2副武器/Vepr12紧凑改装型" itemID="6adaea59-0000011a"/>
           <DOMFolderItem name="2副武器/沧蓝陨铁手炮" itemID="69e73845-00000426"/>
           <DOMFolderItem name="2副武器/沧蓝陨铁手炮/沧蓝陨铁手炮文件" itemID="69e7381b-00000417"/>
           <DOMFolderItem name="2副武器/大赦" itemID="6a9b8c1f-0000052d"/>
@@ -650,13 +652,24 @@
           <Include href="1主武器/众神之力/众神之力素材/小光效.xml" loadImmediate="false" itemID="69847dae-000002f2" lastModified="1770290606"/>
           <Include href="1主武器/众神之力/众神之力素材/众神之力本体.xml" itemIcon="1" loadImmediate="false" itemID="69846b08-0000039c" lastModified="1770285841"/>
           <Include href="1主武器/众神之力/众神之力素材/众神之力动画.xml" itemIcon="1" loadImmediate="false" itemID="69846afe-00000397" lastModified="1776766115"/>
+          <Include href="2副武器/khaos12g文件/khaos12g.xml" itemIcon="1" loadImmediate="false" itemID="6ae0b510-00000138" lastModified="1793327877"/>
+          <Include href="2副武器/khaos12g文件/khaos12g 战术.xml" itemIcon="1" loadImmediate="false" itemID="6ae402e0-000000ea" lastModified="1793328874"/>
+          <Include href="2副武器/khaos12g文件/Symbol 3721.xml" itemIcon="1" loadImmediate="false" itemID="6ae40389-00000667" lastModified="1793110472"/>
+          <Include href="2副武器/khaos12g文件/Symbol 3722.xml" loadImmediate="false" itemID="668e7c1e-00000f2c" lastModified="1720533000"/>
+          <Include href="2副武器/khaos12g文件/弹鼓.xml" itemIcon="1" loadImmediate="false" itemID="6ae40389-00000668" lastModified="1793110577"/>
+          <Include href="2副武器/khaos12g文件/武器版本/判定使用.xml" loadImmediate="false" itemID="6ae40389-00000666" lastModified="1793327737"/>
+          <Include href="2副武器/khaos12g文件/武器版本/枪-手枪-KHAOS 12.xml" itemID="6ae4020e-000000c2" lastModified="1793328846"/>
+          <Include href="2副武器/khaos12g文件/武器版本/枪-手枪-KHAOS 12战术版.xml" itemID="6ae40273-000000d2" lastModified="1793328025"/>
+          <Include href="2副武器/khaos12g文件/武器版本/图标-KHAOS 12.xml" itemID="6ae4025f-000000c5" lastModified="1793327844"/>
+          <Include href="2副武器/khaos12g文件/武器版本/图标-KHAOS 12战术版.xml" itemID="6ae402c6-000000e1" lastModified="1793328103"/>
+          <Include href="2副武器/khaos12g文件/武器版本/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="6ae40389-0000066a" lastModified="1793327738"/>
           <Include href="2副武器/Origin12/origin12素材/origin12.xml" itemIcon="1" loadImmediate="false" itemID="6ac76f52-000001b0" lastModified="1791517502"/>
           <Include href="2副武器/Origin12/origin12素材/弹夹.xml" itemIcon="1" loadImmediate="false" itemID="6ac76f0b-000001ac" lastModified="1791466567"/>
           <Include href="2副武器/Origin12/判定使用.xml" loadImmediate="false" itemID="6ac86718-00000772" lastModified="1791518530"/>
           <Include href="2副武器/Origin12/枪-手枪-Origin12.xml" itemID="6ac866b7-0000024e" lastModified="1791518393"/>
           <Include href="2副武器/Origin12/图标-Origin12.xml" itemID="6ac866b5-0000024d" lastModified="1791518396"/>
           <Include href="2副武器/Origin12/阴影所用.xml" itemIcon="1" loadImmediate="false" itemID="6ac86718-00000774" lastModified="1791518562"/>
-          <Include href="2副武器/Origin12战术版/origin12素材/origin12.xml" itemIcon="1" loadImmediate="false" itemID="6ac86722-00000789" lastModified="1792734146"/>
+          <Include href="2副武器/Origin12战术版/origin12素材/origin12.xml" itemIcon="1" loadImmediate="false" itemID="6ac86722-00000789" lastModified="1793328844"/>
           <Include href="2副武器/Origin12战术版/origin12素材/弹鼓.xml" itemIcon="1" loadImmediate="false" itemID="6ac76f05-000001a7" lastModified="1791466567"/>
           <Include href="2副武器/Origin12战术版/origin12素材/弹夹.xml" itemIcon="1" loadImmediate="false" itemID="6ac86722-0000078d" lastModified="1791466567"/>
           <Include href="2副武器/Origin12战术版/origin12素材/红外/Symbol 3721.xml" itemIcon="1" loadImmediate="false" itemID="668e7c1e-00000f2b" lastModified="1791466567"/>
@@ -1345,6 +1358,9 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="2092933" publishTime="1793328901"/>
+          <PublishItem publishSize="2092933" publishTime="1793328890"/>
+          <PublishItem publishSize="2091256" publishTime="1793328205"/>
           <PublishItem publishSize="2043614" publishTime="1792736451"/>
           <PublishItem publishSize="2043427" publishTime="1792736328"/>
           <PublishItem publishSize="2043493" publishTime="1792734915"/>
@@ -1362,8 +1378,5 @@
           <PublishItem publishSize="1893168" publishTime="1777869759"/>
           <PublishItem publishSize="1893186" publishTime="1777869358"/>
           <PublishItem publishSize="1886929" publishTime="1777252273"/>
-          <PublishItem publishSize="1887029" publishTime="1777252037"/>
-          <PublishItem publishSize="1886807" publishTime="1777251205"/>
-          <PublishItem publishSize="1886927" publishTime="1777218053"/>
      </publishHistory>
 </DOMDocument>

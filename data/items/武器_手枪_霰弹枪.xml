@@ -872,4 +872,106 @@
       </attr_equipmentLight>
     </lifecycle>
     </item>
+     <item weapontype="霰弹枪">
+      <name>KHAOS 12</name>
+      <displayname>KHAOS 12</displayname>
+      <icon>KHAOS 12</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>497000</price>
+      <description>霰弹枪</description>
+      <data>
+        <level>35</level>
+        <weight>5</weight>
+        <dressup>枪-手枪-KHAOS 12</dressup>
+        <capacity>10</capacity>
+      <overload><chamber>1</chamber><ghost>0</ghost></overload>
+        <split>5</split>
+        <diffusion>10</diffusion>
+        <interval>150</interval>
+        <velocity>40</velocity>
+        <bullet>横向联弹-加强普通子弹</bullet>
+        <bulletrename>加强普通子弹</bulletrename>
+        <sound>origin12.wav</sound>
+        <muzzle>霰弹枪枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>00号鹿弹</clipname>
+        <bulletsize>25</bulletsize>
+        <power>350</power>
+        <impact>12</impact>
+        <reloadPenalty>0</reloadPenalty>
+      </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>5</shotgun>
+            <magPrice>1000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:ced8885b</inputDigest>
+            <auditRef>weapon:Origin12:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
+    </item>
+     <item weapontype="霰弹枪">
+      <name>KHAOS 12战术版</name>
+      <displayname>KHAOS 12战术版</displayname>
+      <icon>KHAOS 12战术版</icon>
+      <type>武器</type>
+      <use>手枪</use>
+      <price>497000</price>
+      <description>霰弹枪</description>
+      <data>
+        <level>35</level>
+        <weight>5</weight>
+        <dressup>枪-手枪-KHAOS 12战术版</dressup>
+        <capacity>25</capacity>
+      <overload><chamber>1</chamber><ghost>0</ghost></overload>
+        <split>5</split>
+        <diffusion>10</diffusion>
+        <interval>150</interval>
+        <velocity>40</velocity>
+        <bullet>横向联弹-加强普通子弹</bullet>
+        <bulletrename>加强普通子弹</bulletrename>
+        <sound>origin12.wav</sound>
+        <muzzle>霰弹枪枪火</muzzle>
+        <bullethit>火花</bullethit>
+        <clipname>00号鹿弹</clipname>
+        <bulletsize>25</bulletsize>
+        <power>350</power>
+        <impact>12</impact>
+        <reloadPenalty>0</reloadPenalty>
+      </data>
+      <balance>
+        <formulaFamily>weapon</formulaFamily>
+        <schemaVersion>1</schemaVersion>
+        <workbookVersion>1</workbookVersion>
+        <profiles>
+          <data>
+            <dualWield>2</dualWield>
+            <pierce>1</pierce>
+            <damageType>1</damageType>
+            <shotgun>5</shotgun>
+            <magPrice>1000</magPrice>
+            <weightLayers>0</weightLayers>
+            <category>1</category>
+            <formula>1</formula>
+            <status>unresolved</status>
+            <displayEligible>false</displayEligible>
+            <inputDigest>fnv1a32:ced8885b</inputDigest>
+            <auditRef>weapon:Origin12:data</auditRef>
+          </data>
+        </profiles>
+      </balance>
+    </item>
 </root>

@@ -1,0 +1,40 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="2副武器/khaos12g文件/武器版本/枪-手枪-KHAOS 12战术版" itemID="6ae40273-000000d2" linkageExportForAS="true" linkageIdentifier="枪-手枪-KHAOS 12战术版" lastModified="1793328025">
+  <timeline>
+    <DOMTimeline name="枪-手枪-KHAOS 12战术版">
+      <layers>
+        <DOMLayer name="Layer 1" color="#33FFFF" outline="true" useOutlineView="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2副武器/khaos12g文件/武器版本/判定使用" name="枪口位置" centerPoint3DX="284.15" centerPoint3DY="-39.25">
+                  <matrix>
+                    <Matrix a="1.35134887695313" d="1.35134887695313" tx="271.65" ty="-51.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="2副武器/khaos12g文件/khaos12g 战术" selected="true" symbolType="graphic" centerPoint3DX="339.4" centerPoint3DY="-0.9" loop="loop">
+                  <matrix>
+                    <Matrix a="0.439682006835938" b="-0.014862060546875" c="0.014862060546875" d="0.439682006835938" tx="-22.3" ty="-79.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="50.1" y="156.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
