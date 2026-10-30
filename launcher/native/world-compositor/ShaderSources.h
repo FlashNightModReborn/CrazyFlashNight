@@ -123,17 +123,19 @@ bool FrameTagMatches(Texture2D source,float2 size,float4 identity) {
         && (identity.z<0 || identity.w==identity.y);
 }
 float2 CleanFrameTagUv(Texture2D source,float2 uv,float2 size) {
-    [branch] if(bView.w<0.5)return uv;
-    float4 rect=SourceContentRect(size);
-    float2 p=uv*size,tagSize=rect.zw*float2(64.0/1024.0,16.0/576.0);
-    float2 origin=rect.xy+float2(0,rect.w-tagSize.y);
-    // Include the one-source-pixel raster/filter fringe. Offset in source
-    // pixels past the entire tag, never a fixed number of output pixels.
-    // Keep decoder texture loads inside the small metadata rectangle. HLSL
-    // boolean expressions alone do not promise short-circuit evaluation.
-    [branch] if(any(p<origin-1.0) || any(p>=origin+tagSize+1.0))return uv;
-    [branch] if(ReadFrameTag(source,size).valid)uv.x+=(tagSize.x+2.0)/size.x;
-    return uv;
+    float2 result=uv;
+    [branch] if(bView.w>=0.5) {
+        float4 rect=SourceContentRect(size);
+        float2 p=uv*size,tagSize=rect.zw*float2(64.0/1024.0,16.0/576.0);
+        float2 origin=rect.xy+float2(0,rect.w-tagSize.y);
+        // Include the one-source-pixel raster/filter fringe. Keep decoder
+        // loads inside this rectangle; HLSL && alone is not short-circuit.
+        [branch] if(all(p>=origin-1.0) && all(p<origin+tagSize+1.0)) {
+            FrameTag tag=ReadFrameTag(source,size);
+            [branch] if(tag.valid)result=float2(uv.x+(tagSize.x+2.0)/size.x,uv.y);
+        }
+    }
+    return result;
 }
 )hlsl";
 
