@@ -1006,8 +1006,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                         int rowIconOff = row.IconRect.X - oldX;
                         int rowTextOff = row.TextLeftPx - oldX;
                         int rowEffectOff = row.EffectLeftPx - oldX;
-                        row.IconRect = new Rectangle(sb.Panel.X + rowIconOff, row.IconRect.Y,
-                            row.IconRect.Width, row.IconRect.Height);
+                        if (!row.IconRect.IsEmpty)
+                            row.IconRect = new Rectangle(sb.Panel.X + rowIconOff, row.IconRect.Y,
+                                row.IconRect.Width, row.IconRect.Height);
                         row.TextLeftPx = sb.Panel.X + rowTextOff;
                         row.EffectLeftPx = sb.Panel.X + rowEffectOff;
                     }
@@ -1445,10 +1446,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 int depth = row.Depth == 1 ? 1 : 0;
                 int rowIndent = depth == 0 ? 0 : Px(16, scale);
                 int effectIndent = Px(12, scale);
-                int nameTextW = Math.Max(1, contentW - iconPx - iconGap - rowIndent);
+                bool acquisition = sec.Kind == "acquisition";
+                bool showIconColumn = !acquisition || depth == 1 || !string.IsNullOrEmpty(row.IconName);
+                int nameTextW = Math.Max(1, contentW - rowIndent
+                    - (showIconColumn ? iconPx + iconGap : 0));
 
                 List<NativeTooltipRun> nameRuns = new List<NativeTooltipRun>();
                 nameRuns.Add(new NativeTooltipRun(row.Name, null, true));
+                if (acquisition) nameRuns.AddRange(row.Runs);
                 List<VisualLine> nameLines = WrapRuns(nameRuns, nameTextW, measure, lh);
                 if (nameLines.Count > MaxRenderedLines)
                     nameLines = nameLines.GetRange(0, MaxRenderedLines);
@@ -1456,7 +1461,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
                 List<VisualLine> effectLines = new List<VisualLine>();
                 int effectH = 0;
-                if (row.Runs.Count > 0)
+                if (!acquisition && row.Runs.Count > 0)
                 {
                     effectLines = WrapRuns(row.Runs,
                         Math.Max(1, nameTextW - effectIndent), measure, lh);
@@ -1469,10 +1474,12 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
                 Plan.SubRow subRow = new Plan.SubRow();
                 subRow.IconName = row.IconName;
-                subRow.IconIsNpc = sec.Kind == "acquisition" && !string.IsNullOrEmpty(row.IconName);
-                subRow.IconRect = new Rectangle(x + pad + rowIndent,
-                    cursor + (rowH - iconPx) / 2, iconPx, iconPx);
-                subRow.TextLeftPx = x + pad + rowIndent + iconPx + iconGap;
+                subRow.IconIsNpc = showIconColumn && acquisition && !string.IsNullOrEmpty(row.IconName);
+                if (showIconColumn)
+                    subRow.IconRect = new Rectangle(x + pad + rowIndent,
+                        cursor + (rowH - iconPx) / 2, iconPx, iconPx);
+                subRow.TextLeftPx = showIconColumn
+                    ? subRow.IconRect.Right + iconGap : x + pad + rowIndent;
                 subRow.TextTopPx = cursor + Math.Max(0, (rowH - textH) / 2);
                 subRow.Lines = nameLines;
                 subRow.EffectLines = effectLines;

@@ -28,7 +28,11 @@
  *                     整块不接指针，图标不再套注释框
  *   .ntt-sub-panel    role:"sub" 的子注释框
  *   .ntt-sub-title / .ntt-attach-row / .ntt-attach-icon / .ntt-attach-text
- *                     role:"sub" + kind:"attachments" 的插件子框（标题 + 逐行图标）
+ *                     配件/来源子框；配件效果另起缩进行，来源大类左对齐、
+ *                     depth=1 子项缩进且花费同行
+ *   .ntt-a-legion-mark
+ *                     文案预设 #FF0000 红字前的 A兵团行高徽标（与文字同色、
+ *                     红字加下划线；官方 a-legion-emblem.svg 同源）
  *   .ntt-side         描述栏 + 子注释框组成的侧栏列（主框右侧，空间不足翻左）
  * 这些类与 .flash-tt-* 同元素双类名书写（沿用上一轮 .flash-tt-sub-panel 与
  * .ntt-sub-panel 的既有做法），视觉规则统一落在 foundation-rest.css。

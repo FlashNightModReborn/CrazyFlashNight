@@ -776,9 +776,31 @@
         return inner;
     }
 
+    function isALegionRun(run) {
+        return run && run.text && typeof run.color === 'string'
+            && run.color.toUpperCase() === '#FF0000';
+    }
+
+    function aLegionMarkHtml() {
+        return '<span class="ntt-a-legion-mark" aria-hidden="true">'
+            + '<svg viewBox="63 -3 168 146" focusable="false">'
+            + '<path fill="currentColor" d="M227.75 140.05L65.95 139.70L134.25 23.10L177.95 98.45L157.95 98.45L134.90 55.95L96.60 123.95L218.75 124.25Z M147.85 0L148.00 0.10L215.30 118.20L108.45 117.30L117.85 101.75L188.30 102.40L138.40 16.10L147.80 0Z"/>'
+            + '</svg></span>';
+    }
+
     function runsHtml(runs) {
         var out = '';
-        for (var i = 0; i < runs.length; i++) out += runHtml(runs[i]);
+        for (var i = 0; i < runs.length; i++) {
+            var run = runs[i];
+            if (isALegionRun(run)) {
+                out += aLegionMarkHtml();
+                out += runHtml({ text: run.text, color: run.color, bold: run.bold,
+                    italic: run.italic, underline: true,
+                    fontSize: run.fontSize, fontFace: run.fontFace });
+            } else {
+                out += runHtml(run);
+            }
+        }
         return out;
     }
 
@@ -899,9 +921,7 @@
     }
 
     /**
-     * attachments/acquisition 子框内容：名称独占一行，效果在下一行并继续缩进；
-     * depth=1 的来源条目再缩进一级，形成「类别 → 来源」「配件 → 具体影响」。
-     * attachments 行 icon 是物品图标键；acquisition 商店行 icon 是 NPC 头像键。
+     * 配件效果独占附属行；来源大类与标题同左缘，depth=1 条目缩进且花费同行。
      */
     function attachmentsHtml(section) {
         var out = '';
@@ -919,13 +939,16 @@
                     : iconMarkupByName(row.icon, 'flash-tt-attach-icon-image ntt-attach-icon-image');
             }
             var rowClass = 'flash-tt-attach-row ntt-attach-row'
-                + (row.depth === 1 ? ' flash-tt-attach-row--child ntt-attach-row--child' : '');
+                + (row.depth === 1 ? ' flash-tt-attach-row--child ntt-attach-row--child'
+                    : (isAcquisition ? ' flash-tt-attach-row--category ntt-attach-row--category' : ''));
+            var nameRuns = [{ text: row.name, color: null, bold: true }];
+            if (isAcquisition) nameRuns = nameRuns.concat(row.runs);
             out += '<div class="' + rowClass + '">'
                 + '<span class="flash-tt-attach-icon ntt-attach-icon">' + icon + '</span>'
                 + '<span class="flash-tt-attach-text ntt-attach-text">'
                 + '<span class="flash-tt-attach-name ntt-attach-name">'
-                + runsHtml([{ text: row.name, color: null, bold: true }]) + '</span>';
-            if (row.runs.length) {
+                + runsHtml(nameRuns) + '</span>';
+            if (!isAcquisition && row.runs.length) {
                 out += '<span class="flash-tt-attach-effect ntt-attach-effect">'
                     + runsHtml(row.runs) + '</span>';
             }

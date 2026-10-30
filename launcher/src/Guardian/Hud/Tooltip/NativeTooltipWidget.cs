@@ -924,11 +924,21 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                         {
                             NativeTooltipLayout.VisualLine.Slice slice = vl.Slices[s];
                             if (string.IsNullOrEmpty(slice.Text)) continue;
+                            bool aLegion = IsALegionSlice(slice);
+                            if (aLegion)
+                            {
+                                int markSize = Math.Max(1, (int)Math.Round(lh));
+                                DrawIcon(g, new Rectangle((int)cx, (int)cy,
+                                    markSize, markSize), null, false, true);
+                                cx += markSize + 2;
+                            }
                             Color color = slice.Color.HasValue
                                 ? slice.Color.Value : TextDefault;
+                            NativeTooltipLayout.RunFont font = slice.FontOf();
+                            if (aLegion) font.Underline = true;
                             using (SolidBrush brush = new SolidBrush(Fade(color)))
                             {
-                                g.DrawString(slice.Text, FontFor(slice.FontOf()),
+                                g.DrawString(slice.Text, FontFor(font),
                                     brush, new PointF(cx, cy), _textFormat);
                             }
                             cx += slice.WidthF;
@@ -940,20 +950,26 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             finally { g.Restore(state); }
         }
 
+        private static bool IsALegionSlice(NativeTooltipLayout.VisualLine.Slice slice)
+        {
+            return slice.Color.HasValue && slice.Color.Value.R == 255
+                && slice.Color.Value.G == 0 && slice.Color.Value.B == 0;
+        }
+
         /// <summary>
         /// 图标：普通 alpha 绘制（2026-10 改版：Web --tt-icon-blend 同步改
         /// normal——黑底上 overlay 混合恒得黑，图标会没形）。
         /// 缩放结果按 icon+尺寸 字典缓存（主/弹夹/插件图标同帧共存，不互相逐出）。
         /// </summary>
         private void DrawIcon(Graphics g, Rectangle rect, string iconName,
-            bool npcPortrait = false)
+            bool npcPortrait = false, bool aLegionMark = false)
         {
             Bitmap frame = null;
-            if (_icons != null && !string.IsNullOrEmpty(iconName))
+            if (_icons != null && (aLegionMark || !string.IsNullOrEmpty(iconName)))
             {
                 LootIconCatalog.LootIconFrames frames;
-                bool found = npcPortrait
-                    ? _icons.TryGetNpc(iconName, out frames)
+                bool found = aLegionMark ? _icons.TryGetALegionMark(out frames)
+                    : npcPortrait ? _icons.TryGetNpc(iconName, out frames)
                     : _icons.TryGet(iconName, out frames);
                 if (found && frames != null) frame = frames.First;
             }
@@ -971,7 +987,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 return;
             }
 
-            string key = (npcPortrait ? "npc:" : "item:") + iconName
+            string key = (aLegionMark ? "a-legion:" : npcPortrait ? "npc:" : "item:") + iconName
                 + "|" + rect.Width + "x" + rect.Height;
             Bitmap scaled;
             if (!_iconScaled.TryGetValue(key, out scaled) || scaled == null)

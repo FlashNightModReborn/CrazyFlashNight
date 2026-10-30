@@ -1261,7 +1261,8 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                     {'role':'sub','kind':'acquisition','title':'获取方式',
                      'rows':[
                         {'name':'NPC商店'},
-                        {'name':'Andy Law','icon':'Andy Law','depth':1}]}]}"));
+                        {'name':'Andy Law','icon':'Andy Law','depth':1,
+                         'runs':[{'text':' ($100)'}]}]}]}"));
             var plan = NativeTooltipLayout.ComputePlan(
                 doc, FixedMeasure, 15, 1f, 1024, 576);
             Assert.Single(plan.Subs);
@@ -1270,8 +1271,12 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
             Assert.False(rows[0].IconIsNpc);
             Assert.True(rows[1].IconIsNpc);
             Assert.Equal(1, doc.Sections[1].Rows[1].Depth);
-            Assert.Equal(16, rows[1].IconRect.X - rows[0].IconRect.X);
-            Assert.Equal(16, rows[1].TextLeftPx - rows[0].TextLeftPx);
+            Assert.True(rows[0].IconRect.IsEmpty, "大类不占图标列");
+            Assert.Equal(plan.Subs[0].ContentLeftPx, rows[0].TextLeftPx);
+            Assert.Equal(rows[0].TextLeftPx + 16, rows[1].IconRect.X);
+            Assert.True(rows[1].TextLeftPx > rows[1].IconRect.X);
+            Assert.Equal("Andy Law ($100)", LineText(rows[1].Lines[0]));
+            Assert.Empty(rows[1].EffectLines);
         }
 
         [Fact]
@@ -1289,6 +1294,59 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
             Assert.True(plan.IntroTitleTopPx < plan.IntroContentTopPx);
             Assert.Equal(plan.IntroTitleLines.Count + plan.IntroBodyLines.Count,
                 plan.IntroLines.Count);
+        }
+
+        [Fact]
+        public void Paint_ALegionRedText_InsertsRedMarkAndUnderline()
+        {
+            JObject payload = GunPayload("tt-a-legion");
+            payload["document"]["rail"] = JValue.CreateNull();
+            payload["document"]["magazine"] = JValue.CreateNull();
+            payload["document"]["sections"] = new JArray
+            {
+                new JObject
+                {
+                    ["role"] = "intro",
+                    ["runs"] = new JArray
+                    {
+                        new JObject { ["text"] = "A兵团士兵", ["color"] = "#FF0000" }
+                    }
+                }
+            };
+            using (Control a = Anchor())
+            using (var catalog = new CF7Launcher.Guardian.Hud.Loot.LootIconCatalog(FindIconsDir()))
+            using (var w = new NativeTooltipWidget(a, catalog))
+            {
+                Assert.True(w.Show(payload));
+                w.Tick(2000);
+                var plan = w.ActivePlan;
+                Rectangle placed = w.PlacedRect;
+                int lineH = plan.LineHeightIntroPx;
+                var mark = new Rectangle(placed.X + plan.IntroContentLeftPx,
+                    placed.Y + plan.IntroContentTopPx, lineH, lineH);
+                using (var bmp = new Bitmap(1024, 576))
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.Clear(Color.FromArgb(255, 24, 26, 28));
+                    w.Paint(g, 1f, Point.Empty);
+                    int markRed = 0, underlineRed = 0;
+                    for (int y = mark.Top; y < mark.Bottom; y++)
+                        for (int x = mark.Left; x < mark.Right; x++)
+                        {
+                            Color c = bmp.GetPixel(x, y);
+                            if (c.R > 240 && c.G < 20 && c.B < 20) markRed++;
+                        }
+                    var underline = new Rectangle(mark.Right + 2, mark.Bottom - 3, 96, 3);
+                    for (int y = underline.Top; y < underline.Bottom; y++)
+                        for (int x = underline.Left; x < underline.Right; x++)
+                        {
+                            Color c = bmp.GetPixel(x, y);
+                            if (c.R > 240 && c.G < 20 && c.B < 20) underlineRed++;
+                        }
+                    Assert.True(markRed > 0, "红字前应有红色 A兵团行高徽标");
+                    Assert.True(underlineRed > 0, "红字应带下划线");
+                }
+            }
         }
 
         [Fact]
@@ -1444,6 +1502,18 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         {
             return new Rectangle(placed.X + tipRect.X, placed.Y + tipRect.Y,
                 tipRect.Width, tipRect.Height);
+        }
+
+        private static string FindIconsDir()
+        {
+            DirectoryInfo dir = new DirectoryInfo(AppContext.BaseDirectory);
+            while (dir != null)
+            {
+                string candidate = Path.Combine(dir.FullName, "launcher", "web", "icons");
+                if (File.Exists(Path.Combine(candidate, "manifest.json"))) return candidate;
+                dir = dir.Parent;
+            }
+            throw new DirectoryNotFoundException("launcher/web/icons not found");
         }
 
         private static int BrightPixels(Bitmap bmp, Rectangle r)

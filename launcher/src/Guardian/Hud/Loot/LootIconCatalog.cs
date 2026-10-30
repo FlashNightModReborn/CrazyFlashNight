@@ -138,6 +138,40 @@ namespace CF7Launcher.Guardian.Hud.Loot
             }
         }
 
+        /// <summary>A兵团红色行高徽标：复用官方 SVG，独立缓存，不影响物品图标命名空间。</summary>
+        internal bool TryGetALegionMark(out LootIconFrames frames)
+        {
+            frames = null;
+            lock (_gate)
+            {
+                const string cacheKey = "a-legion:red";
+                Bitmap thumb;
+                if (_frameCache.TryGet(cacheKey, out thumb))
+                {
+                    frames = new LootIconFrames { Frames = new Bitmap[] { thumb }, Fps = DefaultFps };
+                    return true;
+                }
+                string path = Path.GetFullPath(Path.Combine(
+                    _iconsDir, "..", "assets", "logos", "a-legion-emblem.svg"));
+                if (!File.Exists(path)) return false;
+                try
+                {
+                    thumb = RenderSvg(path, ThumbSize, "#FF0000");
+                }
+                catch
+                {
+                    return false;
+                }
+                if (!_frameCache.TryAdd(cacheKey, thumb))
+                {
+                    thumb.Dispose();
+                    return false;
+                }
+                frames = new LootIconFrames { Frames = new Bitmap[] { thumb }, Fps = DefaultFps };
+                return true;
+            }
+        }
+
         /// <summary>成功时 out 帧集（共享位图，调用方不得 Dispose）。任何失败返回 false。</summary>
         internal bool TryGet(string iconName, out LootIconFrames frames)
         {
@@ -573,7 +607,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
         /// picture 播放依赖 SKSvg 持有的解析期资源，**SKSvg 必须存活到 DrawPicture 完成**，
         /// 提前 Dispose 会以 native use-after-free 崩溃（"Fatal error"，托管不可捕获）。
         /// </summary>
-        private static Bitmap RenderSvg(string path, int size)
+        private static Bitmap RenderSvg(string path, int size, string fill = null)
         {
             SKSvg svg = new SKSvg();
             try
@@ -601,6 +635,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
                 // FFDec 头像 SVG 的 <filter>（Flash 发光/模糊/投影效果，160/221 头像使用）在部分
                 // 内容上会压垮光栅化——64px 播报图标不需要这些效果，解析前整体剥离
                 string svgText = StripSvgFilters(File.ReadAllText(path, Encoding.UTF8));
+                if (fill != null) svgText = svgText.Replace("fill=\"#000\"", "fill=\"" + fill + "\"");
                 SKPicture picture;
                 using (MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(svgText), writable: false))
                     picture = svg.Load(stream, parameters, new Uri("urn:cf7:loot:enemy-portrait"));

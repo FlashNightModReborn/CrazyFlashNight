@@ -215,6 +215,26 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
             }
         }
 
+        [Fact]
+        public void TryGetALegionMark_RendersRedEmblem()
+        {
+            using (var catalog = new LootIconCatalog(FindIconsDir()))
+            {
+                LootIconCatalog.LootIconFrames frames;
+                Assert.True(catalog.TryGetALegionMark(out frames));
+                Assert.NotNull(frames.First);
+                bool hasRedPixel = false;
+                for (int y = 0; y < frames.First.Height; y++)
+                    for (int x = 0; x < frames.First.Width; x++)
+                    {
+                        Color pixel = frames.First.GetPixel(x, y);
+                        if (pixel.A > 200 && pixel.R > 240 && pixel.G < 20 && pixel.B < 20)
+                            hasRedPixel = true;
+                    }
+                Assert.True(hasRedPixel, "A兵团徽标应为红色");
+            }
+        }
+
         private static byte[] PixelsOf(Bitmap bmp)
         {
             BitmapData data = bmp.LockBits(

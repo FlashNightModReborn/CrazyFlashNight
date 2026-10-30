@@ -768,7 +768,8 @@ test('buildHtml acquisition：商店行用 cfn-assets 头像 URL，无图标行�
         { role: 'sub', kind: 'acquisition', title: '获取方式',
             rows: [
                 { name: 'NPC商店' },
-                { name: 'Shop Girl', icon: 'Shop Girl', depth: 1 }
+                { name: 'Shop Girl', icon: 'Shop Girl', depth: 1,
+                    runs: [{ text: ' ($100)' }] }
             ],
             runs: [{ text: '回退文本' }] }
     ] });
@@ -780,7 +781,27 @@ test('buildHtml acquisition：商店行用 cfn-assets 头像 URL，无图标行�
     assert(html.indexOf(encodeURIComponent('无头像')) >= 0, '头像加载失败有兜底');
     assert(html.indexOf('<b>NPC商店</b>') >= 0, '类别标签为父级行');
     assert(html.indexOf('flash-tt-attach-row--child') >= 0, 'NPC 行携带子级缩进类');
+    assert(html.indexOf('flash-tt-attach-row--category') >= 0, '大类携带左对齐类');
+    assert(html.indexOf('($100)') >= 0, '花费保留在来源名称行');
+    assert(html.indexOf('ntt-attach-effect') < 0, '来源花费不另起效果行');
     assert(html.indexOf('回退文本') < 0, 'rows 成立时不再叠加 fallback runs');
+});
+
+test('buildHtml：#FF0000 文案前插入 A兵团徽标并加下划线', () => {
+    const doc = Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: [
+            { text: '普通红字', color: '#B22222' },
+            { text: 'A兵团士兵', color: '#ff0000' },
+            { text: 'AndyLaw', color: '#FF0000' }
+        ] }
+    ] });
+    const html = Doc.buildHtml(doc);
+    const marks = html.match(/ntt-a-legion-mark/g) || [];
+    assert.strictEqual(marks.length, 2, '两个 #FF0000 片段各有一个徽标');
+    assert(html.indexOf('<u>A兵团士兵</u>') >= 0, 'A兵团红字带下划线');
+    assert(html.indexOf('<u>AndyLaw</u>') >= 0, 'AndyLaw 红字带下划线');
+    assert(html.indexOf('ntt-a-legion-mark') < html.indexOf('A兵团士兵'), '徽标在文字前');
+    assert(html.indexOf('普通红字') < html.indexOf('ntt-a-legion-mark'), '其他红色系不插徽标');
 });
 
 test('buildHtml：物品名使用独立居中大字号标题块', () => {
