@@ -798,6 +798,23 @@ namespace CF7Launcher.Guardian.WorldCompositor
                             presentedSnapshotAgeMs=bulletAge,captureQpcMs=bulletSync.PresentedCaptureQpcMs,
                             candidateFresh=(bulletSync.PresentedFlags&1)!=0,candidateFrameIds=true,
                             sourceLogicalFrameInStats=false,presentedSourceMatchKnown=false,physicalScanoutVerified=false });
+                        var sourceTag=CF7Launcher.Diagnostic.FocusTrace.Enabled?_native.ReadBulletSource():null;
+                        if(sourceTag is {} tag) {
+                            string status=NativeCompositorSession.BulletSourceStatus(tag.Status);
+                            LogManager.Log("event=world_bullet_source status="+status+" sample="+tag.SampleNumber
+                                +" source="+tag.SourceEpoch+":"+tag.SourceFrame+" tagValid="+tag.TagValid
+                                +" history="+tag.HistoryCount+" matchedOrdinary="+tag.MatchedOrdinaryEpoch+":"+tag.MatchedOrdinaryFrame
+                                +" matchedChain="+tag.MatchedChainEpoch+":"+tag.MatchedChainFrame+" items="+tag.MatchedItems
+                                +" sourceSize="+tag.SourceWidth+"x"+tag.SourceHeight
+                                +" captureQpcMs="+tag.CaptureQpcMs.ToString("F3",CultureInfo.InvariantCulture)
+                                +" sampleQpcMs="+tag.SampleQpcMs.ToString("F3",CultureInfo.InvariantCulture)
+                                +" scope=sampled_gpu_tag_and_history physicalScanoutVerified=false");
+                            if(CF7Launcher.Diagnostic.FocusTrace.Enabled)CF7Launcher.Diagnostic.FocusTrace.Record("world.bullet_source",new {
+                                status,tag.SampleNumber,tag.SourceEpoch,tag.SourceFrame,tag.TagValid,tag.HistoryCount,
+                                tag.MatchedOrdinaryEpoch,tag.MatchedOrdinaryFrame,tag.MatchedChainEpoch,tag.MatchedChainFrame,
+                                tag.MatchedItems,tag.SourceWidth,tag.SourceHeight,tag.CaptureQpcMs,tag.SampleQpcMs,
+                                scope="sampled_gpu_tag_and_history",physicalScanoutVerified=false });
+                        }
                     }
                     var timing=CF7Launcher.Diagnostic.FocusTrace.Enabled ? _native.ReadTiming() : null;
                     if(timing.HasValue) {

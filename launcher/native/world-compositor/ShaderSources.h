@@ -4,6 +4,7 @@ constexpr char CasSourceShader[] = R"hlsl(
 Texture2D image : register(t0);
 cbuffer SourceCas : register(b0) { float2 sourceSize; float peak; float sourceReserved; };
 float3 SourceLoad(int2 p) {
+    p=int2(floor(CleanFrameTagUv(image,(float2(p)+0.5)/sourceSize,sourceSize)*sourceSize));
     float3 c=image.Load(int3(clamp(p,int2(0,0),int2(sourceSize)-1),0)).rgb;
     return c*c;
 }
@@ -62,9 +63,11 @@ cbuffer SceneLightParams : register(b6) {
 cbuffer PointLightParams : register(b4) {
     float4 pointView; float4 pointCamera; float4 pointControl; float4 pointPalette;
 };
+cbuffer FrameSync : register(b8) { float4 bIdentity; float4 bFrameSize; float4 bView; };
 float2 pointUv(float2 pixel) { return (pixel-pointView.xy)/pointView.zw; }
 float3 pointLit(float3 graded,float3 raw,float2 uv) {
     float3 result=graded;
+    if(any(uv<0.0) || any(uv>1.0))return result;
     [branch] if(pointControl.x>=0.5) {
         float4 field=float4(0,0,0,0);
         if(pointControl.z>=0.5) field=pointField.SampleLevel(pointSamplerLinear,uv,0);
@@ -90,8 +93,14 @@ struct FrameTag {
     uint frame;
     bool valid;
 };
+float4 SourceContentRect(float2 size) {
+    float scale=min(size.x/1024.0,size.y/576.0);
+    float2 content=float2(1024.0,576.0)*scale;
+    return float4((size-content)*0.5,content);
+}
 float3 FrameTagCell(Texture2D source,float2 size,int index) {
-    int2 p=int2(floor((index*16+8)*size.x/1024.0),floor(568*size.y/576.0));
+    float4 rect=SourceContentRect(size);
+    int2 p=int2(floor(rect.xy+float2(index*16+8,568)*rect.zw/float2(1024.0,576.0)));
     return source.Load(int3(clamp(p,int2(0,0),int2(size)-1),0)).rgb;
 }
 bool FrameTagChannel(float value,int expected) { return abs(round(value*255.0)-expected)<=1.0; }
@@ -112,6 +121,19 @@ bool FrameTagMatches(Texture2D source,float2 size,float4 identity) {
     FrameTag tag=ReadFrameTag(source,size);
     return tag.valid && tag.epoch==((uint)identity.x&0xFFFFu) && tag.frame==((uint)identity.y&0xFFFFFFu)
         && (identity.z<0 || identity.w==identity.y);
+}
+float2 CleanFrameTagUv(Texture2D source,float2 uv,float2 size) {
+    [branch] if(bView.w<0.5)return uv;
+    float4 rect=SourceContentRect(size);
+    float2 p=uv*size,tagSize=rect.zw*float2(64.0/1024.0,16.0/576.0);
+    float2 origin=rect.xy+float2(0,rect.w-tagSize.y);
+    // Include the one-source-pixel raster/filter fringe. Offset in source
+    // pixels past the entire tag, never a fixed number of output pixels.
+    // Keep decoder texture loads inside the small metadata rectangle. HLSL
+    // boolean expressions alone do not promise short-circuit evaluation.
+    [branch] if(any(p<origin-1.0) || any(p>=origin+tagSize+1.0))return uv;
+    [branch] if(ReadFrameTag(source,size).valid)uv.x+=(tagSize.x+2.0)/size.x;
+    return uv;
 }
 )hlsl";
 
@@ -245,6 +267,7 @@ struct Vertex { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; };
 // This is not AMD's fused upscaler; its fused-upscale ratio limit is not used.
 // Gamma-2 decode/encode is AMD's documented low-cost linear-light approximation.
 float3 CasLoad(float2 uv) {
+    uv=CleanFrameTagUv(image,uv,1.0/texel);
     float3 c=image.SampleLevel(pointSampler,uv,0).rgb;
     return c*c;
 }
@@ -267,13 +290,14 @@ Vertex VS(uint id : SV_VertexID) {
     return v;
 }
 float4 PS(Vertex v) : SV_TARGET {
-    float4 c = float4(image.Sample(pointSampler, v.uv).rgb, 1);
+    float2 sourceUv=CleanFrameTagUv(image,v.uv,1.0/texel);
+    float4 c = float4(image.Sample(pointSampler, sourceUv).rgb, 1);
     if (casEnabled > .5) c.rgb=CasSharpen(v.uv);
     else if (sharpness > 0) {
-        float3 n = image.Sample(pointSampler, v.uv - float2(0,texel.y)).rgb;
-        float3 s = image.Sample(pointSampler, v.uv + float2(0,texel.y)).rgb;
-        float3 e = image.Sample(pointSampler, v.uv + float2(texel.x,0)).rgb;
-        float3 w = image.Sample(pointSampler, v.uv - float2(texel.x,0)).rgb;
+        float3 n = image.Sample(pointSampler, CleanFrameTagUv(image,v.uv-float2(0,texel.y),1.0/texel)).rgb;
+        float3 s = image.Sample(pointSampler, CleanFrameTagUv(image,v.uv+float2(0,texel.y),1.0/texel)).rgb;
+        float3 e = image.Sample(pointSampler, CleanFrameTagUv(image,v.uv+float2(texel.x,0),1.0/texel)).rgb;
+        float3 w = image.Sample(pointSampler, CleanFrameTagUv(image,v.uv-float2(texel.x,0),1.0/texel)).rgb;
         float3 lo = min(c.rgb,min(min(n,s),min(e,w)));
         float3 hi = max(c.rgb,max(max(n,s),max(e,w)));
         // Bounded unsharp mask, not CAS: never extend beyond the local color range.
@@ -289,8 +313,8 @@ float4 PS(Vertex v) : SV_TARGET {
         scene = pow(graded, 1.0 / max(offset.w, 1.0e-3));
     }
     int look = (int)(aB.x + 0.5);
-    if (look == 0) return float4(pointLit(scene,c.rgb,v.uv), 1);
-    float2 uv = v.uv;
+    float2 uv = pointUv(v.pos.xy);
+    if (look == 0 || any(uv<0.0) || any(uv>1.0)) return float4(pointLit(scene,c.rgb,uv), 1);
     float2 world = (uv * float2(1024.0,576.0) - aD.xy) / max(aC.w,0.01);
     float edge = smoothstep(0.28,0.95,length((uv-0.5)*float2(1.65,1.0)));
     float t = aB.y;
@@ -346,7 +370,18 @@ float4 PS(Vertex v) : SV_TARGET {
         float authored=aB.w>0.5 ? lerp(aC.y,aC.z,0.5+0.5*sin(t*aC.x)) : amount;
         amount=min(0.5,authored*(aB.z>0.5 ? radial : 1.0));
     }
-    return float4(pointLit(saturate(lerp(scene,tint,saturate(amount))),c.rgb,v.uv),1);
+    return float4(pointLit(saturate(lerp(scene,tint,saturate(amount))),c.rgb,uv),1);
+}
+)hlsl";
+
+// Explicit low-frequency diagnostic. ReadFrameTag is the very same GPU decoder
+// used by projectile admission; only its 16-byte result crosses back to the CPU.
+constexpr char FrameTagDiagnosticShader[] = R"hlsl(
+Texture2D tagSource : register(t0);
+cbuffer TagSize : register(b0) { float2 tagSize; float2 tagReserved; };
+uint4 TagPS(float4 position : SV_POSITION) : SV_TARGET {
+    FrameTag tag=ReadFrameTag(tagSource,tagSize);
+    return uint4(tag.epoch,tag.frame,tag.valid?1u:0u,0u);
 }
 )hlsl";
 
@@ -611,7 +646,6 @@ cbuffer BulletStyles : register(b2) { float4 bS[128]; };
 // 256 items x float4[2]: (style index,x,y,rotation deg), (scaleX %,scaleY %,alpha %,-)
 cbuffer BulletItems : register(b3) { float4 bI[2048]; };
 Texture2D sourceFrameForSync : register(t4);
-cbuffer BulletSync : register(b7) { float4 bIdentity; float4 bFrameSize; float4 bView; };
 struct BVertex {
     float4 pos : SV_POSITION;
     float2 local : TEXCOORD0;
@@ -707,22 +741,6 @@ float4 BPS(BVertex v) : SV_TARGET {
     float4 c = float4(color, 1.0);
     float3 graded = saturate(float3(dot(c, rowR), dot(c, rowG), dot(c, rowB)) + offset.rgb);
     return float4(pointLit(pow(abs(graded), 1.0 / max(offset.w, 1.0e-3)),color,pointUv(v.pos.xy)), opacity);
-}
-)hlsl";
-
-constexpr char FrameSyncShader[] = R"hlsl(
-Texture2D syncCandidate : register(t0);
-SamplerState syncPoint : register(s0);
-cbuffer BulletSync : register(b7) { float4 bIdentity; float4 bFrameSize; float4 bView; };
-struct SyncVertex { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; };
-float4 SyncPS(SyncVertex v) : SV_TARGET {
-    float4 candidate=syncCandidate.SampleLevel(syncPoint,v.uv,0);
-    float2 logical=(v.uv*bFrameSize.zw-bView.xy)/bFrameSize.zw*float2(1024.0,576.0);
-    if(logical.x<64.0 && logical.y>=560.0)
-        candidate=syncCandidate.SampleLevel(syncPoint,v.uv+float2(64.0/bFrameSize.z,0),0);
-    // Projectile identity gates only projectile vertices. Socket/capture skew
-    // must never replay an old whole world (including its HUD) indefinitely.
-    return candidate;
 }
 )hlsl";
 
