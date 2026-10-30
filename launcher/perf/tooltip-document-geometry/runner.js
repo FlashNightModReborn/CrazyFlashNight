@@ -223,6 +223,13 @@ const SYNTH = [
 function num(v) { return v == null ? null : v; }
 function hdiff(a, b) { return (a == null || b == null) ? null : Math.abs(a.h - b.h); }
 function wdiff(a, b) { return (a == null || b == null) ? null : Math.abs(a.w - b.w); }
+function optionalExtraHDiff(legacy, current, extraH) {
+    var direct = hdiff(legacy, current);
+    var adjusted = hdiff(legacy, current == null ? null : { h: current.h - extraH });
+    if (direct == null) return adjusted;
+    if (adjusted == null) return direct;
+    return Math.min(direct, adjusted);
+}
 
 function normText(s) {
     return String(s == null ? '' : s)
@@ -242,8 +249,13 @@ function diffCase(spec, result) {
     if (L.introPanel && D.introPanel && L.introPanel.w !== D.introPanel.w) {
         fail('introPanel 宽不一致 legacy=' + L.introPanel.w + ' doc=' + D.introPanel.w);
     }
-    if (hdiff(L.intro, D.intro) != null && hdiff(L.intro, D.intro) > TOL_H) {
-        fail('intro 高超差 ' + L.intro.h + ' vs ' + D.intro.h);
+    var titleExtraH = D.title ? D.title.h * (1 - 12 / 16) : 0;
+    var introHeightDiff = optionalExtraHDiff(L.intro, D.intro, titleExtraH);
+    if (introHeightDiff != null && introHeightDiff > TOL_H) {
+        fail('intro 总高（含标题）超差 ' + L.intro.h + ' vs ' + D.intro.h);
+    }
+    if (D.title && (D.titleFontSize !== '16px' || D.titleTextAlign !== 'center')) {
+        fail('document 标题必须 16px 居中，实际 ' + D.titleFontSize + '/' + D.titleTextAlign);
     }
     if ((L.intro != null) !== (D.intro != null)) fail('intro 存在性不一致');
     if (L.desc && D.desc) {
@@ -276,8 +288,10 @@ function diffCase(spec, result) {
     }
 
     var maxAbs = 0;
-    [hdiff(L.intro, D.intro), hdiff(L.desc, D.desc), hdiff(L.introPanel, D.introPanel),
-     hdiff(L.root, D.root), wdiff(L.root, D.root), wdiff(L.desc, D.desc)]
+    [introHeightDiff, hdiff(L.desc, D.desc),
+     optionalExtraHDiff(L.introPanel, D.introPanel, titleExtraH),
+     optionalExtraHDiff(L.root, D.root, titleExtraH),
+     wdiff(L.root, D.root), wdiff(L.desc, D.desc)]
         .forEach(function(d) { if (d != null && d > maxAbs) maxAbs = d; });
 
     var splitWarn = null;

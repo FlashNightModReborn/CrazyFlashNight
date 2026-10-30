@@ -1935,7 +1935,8 @@ class Program
                 new CF7Launcher.Guardian.Hud.Loot.LootIconCatalog(
                     Path.Combine(projectRoot, "launcher", "web", "icons"),
                     Path.Combine(projectRoot, "launcher", "web", "assets", "enemy-portraits"),
-                    dollPortraitsDir: Path.Combine(projectRoot, "launcher", "data", "doll-portraits"));
+                    dollPortraitsDir: Path.Combine(projectRoot, "launcher", "data", "doll-portraits"),
+                    npcPortraitIconsDir: Path.Combine(projectRoot, "flashswf", "portraits", "icons"));
             if (workerPolicy == null)
             {
                 if (playerInfoSurface == null)

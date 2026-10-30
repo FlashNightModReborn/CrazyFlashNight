@@ -13,23 +13,31 @@ _root.物品图标注释 = function(name, value, baseItem, ownerClip) {
 
     // 1) 基础段描述（不含简介头与装备属性）；subBlocks 拆出「战技/副武器」「已安装插件」
     //    「额外功能」三块，各自成为一个 role:"sub" 子注释框；旧消费端按 body 内联不丢内容。
+    //    docSubs 与 subBlocks 一一对应：插件块带结构化 rows（含图标），其余为同文 HTML。
     var subBlocks:Array = [];
-    var 描述文本:String = TooltipComposer.generateItemDescriptionTextEx(itemData, baseItem, subBlocks);
+    var docSubs:Array = [];
+    var 描述文本:String = TooltipComposer.generateItemDescriptionTextEx(itemData, baseItem, subBlocks, docSubs);
 
-    // 2) 原生专属部件：左侧竖排插条（武器大类/子类）与枪械弹夹独立框
+    // 2) 原生专属部件：书签式插条（武器大类/子类）与枪械弹夹独立框（第二行为子弹类型）
     var 插条:Array = TooltipComposer.getRailText(itemData, baseItem);
     var 弹夹:Object = TooltipComposer.getMagazineInfo(baseItem, itemData, value);
 
     // 3) 简介面板文本。插条承载了类型行时才从面板省略该行（非武器保持原样不丢信息）；
-    //    弹夹行改由独立框显示；暴击/斩杀拆到第一个子框。
+    //    弹夹行/子弹类型行改由独立框显示；暴击/斩杀拆到第一个子框。
     var 暴击斩杀:Array = [];
     var 简介文本:String = TooltipComposer.generateIntroPanelContent(baseItem, itemData, value, {
         omitTypeLines: 插条 != null,
+        omitActionType: 插条 != null,
         omitClipName: 弹夹 != null,
+        omitBulletType: 弹夹 != null && 弹夹.ammo != null,
         omitCritSlay: true,
         critSlay: 暴击斩杀
     });
-    if (暴击斩杀.length > 0) subBlocks.unshift(暴击斩杀.join(""));
+    if (暴击斩杀.length > 0) {
+        var 暴击斩杀HTML:String = 暴击斩杀.join("");
+        subBlocks.unshift(暴击斩杀HTML);
+        docSubs.unshift(暴击斩杀HTML);
+    }
 
     var extras:Object = null;
     if (插条 != null || 弹夹 != null) {
@@ -48,7 +56,7 @@ _root.物品图标注释 = function(name, value, baseItem, ownerClip) {
     }
 
     // 5) 原生注释出口：document 经 native_interaction 下发；通道不可用时回退旧 Flash 渲染
-    var doc:Object = NativeTooltipDocument.buildItem(name, itemData, iconData, 简介文本, 描述文本, subBlocks, extras);
+    var doc:Object = NativeTooltipDocument.buildItem(name, itemData, iconData, 简介文本, 描述文本, docSubs, extras);
     if (NativeTooltipBridge.show(doc, ownerClip) == null) {
         // 回退路径无插条/弹夹框，简介需按旧版全文重建一次
         var 回退简介:String = TooltipComposer.generateIntroPanelContent(baseItem, itemData, value, null);
@@ -144,7 +152,8 @@ _root.Web物品注释HTML = function(name:String):Object {
     // value 对象：Web 入口当前没有强化等级 / 涂装上下文，统一以 level=1 走基础数据
     var value:Object = { level: 1 };
     var subBlocks:Array = [];
-    var descBody:String = TooltipComposer.generateItemDescriptionTextEx(itemData, null, subBlocks);
+    var docSubs:Array = [];
+    var descBody:String = TooltipComposer.generateItemDescriptionTextEx(itemData, null, subBlocks, docSubs);
     var introHTML:String = TooltipComposer.generateIntroPanelContent(null, itemData, value, null);
 
     // 装备才可能拆出插条/弹夹/暴击斩杀，此时为语义文档再走一次省略版简介；
@@ -157,11 +166,17 @@ _root.Web物品注释HTML = function(name:String):Object {
         var 暴击斩杀:Array = [];
         docIntro = TooltipComposer.generateIntroPanelContent(null, itemData, value, {
             omitTypeLines: 插条 != null,
+            omitActionType: 插条 != null,
             omitClipName: 弹夹 != null,
+            omitBulletType: 弹夹 != null && 弹夹.ammo != null,
             omitCritSlay: true,
             critSlay: 暴击斩杀
         });
-        if (暴击斩杀.length > 0) subBlocks.unshift(暴击斩杀.join(""));
+        if (暴击斩杀.length > 0) {
+            var 暴击斩杀HTML:String = 暴击斩杀.join("");
+            subBlocks.unshift(暴击斩杀HTML);
+            docSubs.unshift(暴击斩杀HTML);
+        }
         if (插条 != null || 弹夹 != null) {
             extras = {};
             if (插条 != null) extras.rail = 插条;
@@ -178,7 +193,7 @@ _root.Web物品注释HTML = function(name:String):Object {
         itemData: itemData,
         // COMMON v1 语义文档（纯数据字段，消费方需先经白名单协调再接入 wire）
         // subBlocks → role:"sub" 子注释框段；extras → rail/magazine 结构部件
-        document: NativeTooltipDocument.buildItem(name, itemData, null, docIntro, descBody, subBlocks, extras)
+        document: NativeTooltipDocument.buildItem(name, itemData, null, docIntro, descBody, docSubs, extras)
     };
 };
 

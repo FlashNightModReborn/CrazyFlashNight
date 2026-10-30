@@ -29,6 +29,7 @@ import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.gesh.tooltip.*;
 import org.flashNight.gesh.tooltip.builder.ModsBlockBuilder;
 import org.flashNight.gesh.tooltip.builder.EquipmentLightingInfoBuilder;
+import org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder;
 import org.flashNight.gesh.string.StringUtils;
 
 /**
@@ -85,18 +86,26 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
 
   /**
    * 与 generateItemDescriptionText 同源的单遍拼装，把「已安装插件」「战技/副武器」
-   * 「额外功能（生命周期如夜视/变形/喷气背包、灯光）」各自拆成独立子注释框块
+   * 「夜视」「额外功能（生命周期/灯光）」「获取方式」各自拆成独立子注释框块，
    * 按序写入 subBlocks（空内容不入框）。
    * subBlocks 传 null 时行为与旧方法完全一致（全部内联进描述体）。
-   * 拆出后主描述体不再含这三块；回退旧 Flash 渲染请把 subBlocks 一并接回，
+   * 拆出后主描述体不再含这些块；回退旧 Flash 渲染请把 subBlocks 一并接回，
    * 或改用 generateItemDescriptionText 全文，避免丢内容。
+   *
+   * docSubs 可选：与 subBlocks 一一对应的原生文档条目数组。普通子框写入
+   * 与 subBlocks 同文的 HTML 字符串；「已安装插件」写入结构化条目
+   * {kind:"attachments", title, rows:[{name, icon?, effect}]}，供原生注释
+   * 框在子框内为每个插件绘制图标；「获取方式」写入结构化条目
+   * {kind:"acquisition", title, rows:[{name, icon?, effect}]}（商店行逐 NPC，
+   * icon 为 NPC 头像键）。缺省时行为与旧调用完全一致。
    */
   public static function generateItemDescriptionTextEx(item:Object, baseItem:BaseItem,
-      subBlocks:Array):String {
+      subBlocks:Array, docSubs:Array):String {
     var buffer:Array = [];
     var itemName = item.name;
+    var nightVisionBuffer:Array = (subBlocks != null && ItemUtil.isEquipment(itemName)) ? [] : null;
 
-    append(buffer, TooltipTextBuilder.buildBasicDescription(item, baseItem));
+    append(buffer, TooltipTextBuilder.buildBasicDescription(item, baseItem, nightVisionBuffer));
     if(ItemUtil.isInformation(itemName)){
       append(buffer, TooltipTextBuilder.buildStoryTip(item));
       append(buffer, TooltipTextBuilder.buildSynthesisMaterials(item));
@@ -123,40 +132,52 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       if(baseItem && baseItem.value) lightingMods = baseItem.value.mods;
 
       // 战技/副武器：独立子框（旧路径内联）
-      pushSub(buffer, subBlocks, subweaponToDisplay
+      pushSub(buffer, subBlocks, docSubs, subweaponToDisplay
         ? TooltipTextBuilder.buildSubweaponInfo(subweaponToDisplay)
         : TooltipTextBuilder.buildSkillInfo(skillToDisplay));
 
-      // 已安装插件：独立子框
+      // 已安装插件：独立子框（docSubs 侧带每行插件图标）
       if(baseItem) {
         var modsBuffer:Array = [];
-        ModsBlockBuilder.build(modsBuffer, baseItem, item, baseItem.value);
-        pushSub(buffer, subBlocks, modsBuffer);
+        var modsEntry:Object = ModsBlockBuilder.buildWithRows(
+          modsBuffer, baseItem, item, baseItem.value);
+        pushSub(buffer, subBlocks, docSubs, modsBuffer, modsEntry);
       }
+
+      // 夜视从基础描述中提取，独立成框，不与生命周期/灯光混排
+      pushSub(buffer, subBlocks, docSubs, nightVisionBuffer);
 
       // 额外功能（生命周期 + 灯光）：独立子框
       var featBuffer:Array = [];
       append(featBuffer, TooltipTextBuilder.buildLifecycleInfo(item.lifecyle));
       append(featBuffer, EquipmentLightingInfoBuilder.build(lightingItem, lightingMods, false));
-      pushSub(buffer, subBlocks, featBuffer);
+      pushSub(buffer, subBlocks, docSubs, featBuffer);
 
       // 升阶路线（装备专属，三段全空时不输出区块）
       append(buffer, TooltipTextBuilder.buildUpgradePath(item, baseItem));
     }
 
-    // 获取方式信息（所有物品类型都显示，无来源时不显示区块）
-    append(buffer, TooltipTextBuilder.buildObtainMethods(itemName));
+    // 获取方式信息（所有物品类型都显示，无来源时不显示区块）：独立子框，
+    // docSubs 侧带结构化条目（商店行逐 NPC 带头像键）
+    var obtainBuffer:Array = [];
+    var obtainEntry:Object = ObtainMethodsBuilder.buildWithRows(obtainBuffer, itemName);
+    pushSub(buffer, subBlocks, docSubs, obtainBuffer, obtainEntry);
 
     return buffer.join("");
   }
 
   /**
    * 子注释框块的分流：有 subBlocks 时成框（空块不入），否则内联进主描述体。
+   * docSubs 非空时同步写入原生文档条目：docEntry 缺失写与 subBlocks 同文的
+   * HTML 字符串，存在则写结构化条目（已安装插件带 rows/图标）。
    */
-  private static function pushSub(buffer:Array, subBlocks:Array, block:Array):Void {
+  private static function pushSub(buffer:Array, subBlocks:Array, docSubs:Array,
+      block:Array, docEntry:Object):Void {
     if (block == null || block.length == 0) return;
+    var html:String = block.join("");
     if (subBlocks != null) {
-      subBlocks.push(block.join(""));
+      subBlocks.push(html);
+      if (docSubs != null) docSubs.push(docEntry != null ? docEntry : html);
       return;
     }
     append(buffer, block);
@@ -165,23 +186,28 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
   // ──────────────── 原生注释专属取数 ────────────────
 
   /**
-   * 左侧插条（rail）文本：竖排的武器大类/子类，如 ["长枪","突击步枪"]。
-   *
-   * 仅武器产出（非武器返回 null，简介面板保留原类型行不丢信息）。
-   * 计算后数据（进阶/涂装覆盖）优先，缺省时回落 item 原始字段。
-   * 输出数组首项为插条上块、次项为下块；只有大类时长度为 1。
+   * 插条（rail）文本：武器大类/子类；刀与手部装备的下块改为动作模组。
+   * 计算后数据（进阶/涂装/插件覆盖）优先，动作缺省显示“默认”。
+   * 输出数组首项为上方书签、次项为下方书签；无合适装备类型时返回 null。
    */
   public static function getRailText(item:Object, baseItem:BaseItem):Array {
-    if (item == null || String(item.type) != "武器") return null;
+    if (item == null) return null;
+    var actionEquipment:Boolean = (item.use == "刀" || item.use == "手部装备");
+    if (String(item.type) != "武器" && !actionEquipment) return null;
     var top = item.use;
-    var bottom = item.weapontype;
+    var bottom = actionEquipment ? item.actiontype : item.weapontype;
     if (baseItem != null && baseItem.getData != undefined) {
       var calc:Object = baseItem.getData();
       if (calc != null) {
         if (calc.use !== undefined && calc.use != "") top = calc.use;
-        if (calc.weapontype !== undefined && calc.weapontype != "") bottom = calc.weapontype;
+        if (actionEquipment && calc.actiontype !== undefined && calc.actiontype != "") {
+          bottom = calc.actiontype;
+        } else if (!actionEquipment && calc.weapontype !== undefined && calc.weapontype != "") {
+          bottom = calc.weapontype;
+        }
       }
     }
+    if (actionEquipment && (bottom == null || bottom == "")) bottom = "默认";
     var rail:Array = [];
     if (top != null && top != "") rail.push(String(top));
     if (bottom != null && bottom != "") {
@@ -192,11 +218,14 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
   }
 
   /**
-   * 枪械弹夹信息：{name:显示名, icon:图标资产键}，无弹夹/非枪械/数据缺失返回 null。
+   * 枪械弹夹信息：{name:显示名, icon:图标资产键, ammo?:子弹类型}，
+   * 无弹夹/非枪械/数据缺失返回 null。
    *
    * clipname 取值链与 buildEquipmentStats 一致：基础合并数据优先，
    * 强化或带插件时用计算后数据覆盖。图标键供消费端绘制，
    * 该图标不再产生注释（避免弹夹框嵌套）。
+   * ammo 与 GunStatsBuilder 的子弹类型同源（bulletrename 优先，强化/插件覆盖），
+   * 原生路径用它替代属性区的「子弹类型」行，写进弹夹框第二行。
    */
   public static function getMagazineInfo(baseItem:BaseItem, item:Object, externalValue:Object):Object {
     if (item == null || !ItemUseTypes.isGun(item.use)) return null;
@@ -218,6 +247,16 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
     if (displayName == undefined || displayName == "") displayName = clipName;
     var out:Object = {name: String(displayName)};
     if (clipData.icon != undefined && clipData.icon != "") out.icon = String(clipData.icon);
+
+    var baseBullet:String = data.bulletrename ? data.bulletrename : data.bullet;
+    var finalBullet:String = baseBullet;
+    if (baseItem != null && baseItem.getData != undefined && (upgradeLevel > 1 || value.mods)) {
+      var bulletData:Object = baseItem.getData().data;
+      if (bulletData != null && bulletData.bullet) {
+        finalBullet = bulletData.bulletrename ? bulletData.bulletrename : bulletData.bullet;
+      }
+    }
+    if (finalBullet != null && finalBullet != "") out.ammo = String(finalBullet);
     return out;
   }
 

@@ -54,10 +54,13 @@ class org.flashNight.gesh.tooltip.test.NativeTooltipDocumentTest {
         test_crlf_normalized();
         test_buildItem_shape();
         test_buildItem_subSections();
+        test_buildItem_subAttachments();
+        test_buildItem_subAcquisition();
         test_buildItem_extrasRail();
         test_buildItem_extrasMagazine();
         test_buildItem_extrasNotContent();
         test_composer_exNullSubBlocks_matchesLegacy();
+        test_composer_nightVisionSubBlock();
         test_layoutType();
         test_buildItem_realInstance();
         test_buildSkill_shape();
@@ -363,6 +366,79 @@ class org.flashNight.gesh.tooltip.test.NativeTooltipDocumentTest {
             .sections.length, "sub: blank block is dropped like other empty sections");
     }
 
+    private static function test_buildItem_subAttachments():Void {
+        // 结构化子框（docSubs 对象条目）：kind=="attachments" 走 rows 渲染
+        // （插件名 + 图标 + 效果 runs），并保留整框 fallback runs 供旧消费端内联。
+        var itemData:Object = {name:"n", displayname:"显示名", icon:"ico_n", type:"武器"};
+        var entry:Object = {
+            kind:"attachments",
+            title:"已安装2个配件",
+            rows:[
+                {name:"扩容弹匣", icon:"mod_expand",
+                 effect:"<font color='#FF0000'> 弹夹容量 +5</font>"},
+                {name:"夜视", effect:""},
+                {name:"   ", effect:"空名丢弃"}
+            ]
+        };
+        var doc:Object = NativeTooltipDocument.buildItem("n", itemData, null,
+            "简介", "描述", [entry]);
+        assertEq(3, doc.sections.length, "att: 结构化子框占一段");
+        var sec:Object = doc.sections[2];
+        assertEq("sub", sec.role, "att: role 仍为 sub");
+        assertEq("attachments", sec.kind, "att: kind 透传");
+        assertEq("已安装2个配件", sec.title, "att: 标题透传");
+        assertEq(2, sec.rows.length, "att: 空名行丢弃");
+        assertEq("扩容弹匣", sec.rows[0].name, "att: 行名");
+        assertEq("mod_expand", sec.rows[0].icon, "att: 行图标资产键");
+        assertEq("#FF0000", sec.rows[0].runs[0].color, "att: 效果 run 保留颜色");
+        assertEq(" 弹夹容量 +5", sec.rows[0].runs[0].text, "att: 效果 run 文本");
+        assert(sec.rows[1].icon == undefined, "att: 无图标行不写 icon 键");
+        // fallback runs：标题 + 每行 "  • 名称" + 效果，供旧端内联显示
+        var fallback:String = "";
+        for (var r:Number = 0; r < sec.runs.length; r++) fallback += sec.runs[r].text;
+        assert(fallback.indexOf("已安装2个配件") >= 0
+            && fallback.indexOf("  • 扩容弹匣") >= 0
+            && fallback.indexOf("弹夹容量 +5") >= 0,
+            "att: fallback runs 不丢内容");
+
+        var noRows:Object = NativeTooltipDocument.buildItem("n", itemData, null,
+            "简介", "描述", [{kind:"attachments", title:"空", rows:[]}]);
+        assertEq(2, noRows.sections.length, "att: 无有效行不产子框");
+
+        var legacyHtml:Object = NativeTooltipDocument.buildItem("n", itemData, null,
+            "简介", "描述", [{kind:"other", html:"旧子框"}]);
+        assertEq("sub", legacyHtml.sections[2].role, "att: 非 attachments 条目退回 HTML 子框");
+        assertEq("旧子框", legacyHtml.sections[2].runs[0].text, "att: 退回条目文本保留");
+    }
+
+    private static function test_buildItem_subAcquisition():Void {
+        // kind=="acquisition" 与 attachments 同构：rows 渲染（商店行 icon 为 NPC
+        // 头像键）+ 整框 fallback runs 供旧消费端内联。
+        var itemData:Object = {name:"n", displayname:"显示名", icon:"ico_n", type:"武器"};
+        var entry:Object = {
+            kind:"acquisition",
+            title:"获取方式",
+            rows:[
+                {name:"合成", effect:"武器合成 ($10000)"},
+                {name:"Shop Girl", icon:"Shop Girl", effect:""}
+            ]
+        };
+        var doc:Object = NativeTooltipDocument.buildItem("n", itemData, null,
+            "简介", "描述", [entry]);
+        assertEq(3, doc.sections.length, "acq: 结构化子框占一段");
+        var sec:Object = doc.sections[2];
+        assertEq("sub", sec.role, "acq: role 仍为 sub");
+        assertEq("acquisition", sec.kind, "acq: kind 透传");
+        assertEq("获取方式", sec.title, "acq: 标题透传");
+        assertEq(2, sec.rows.length, "acq: 行数");
+        assertEq("Shop Girl", sec.rows[1].icon, "acq: 商店行头像键");
+        var fallback:String = "";
+        for (var r:Number = 0; r < sec.runs.length; r++) fallback += sec.runs[r].text;
+        assert(fallback.indexOf("Shop Girl") >= 0
+            && fallback.indexOf("武器合成") >= 0,
+            "acq: fallback runs 不丢内容");
+    }
+
     /** rail 数组的安全读取：缺键时返回空数组，避免断言失败升级为运行期异常。 */
     private static function railOf(doc:Object):Array {
         return (doc.rail instanceof Array) ? doc.rail : [];
@@ -420,6 +496,14 @@ class org.flashNight.gesh.tooltip.test.NativeTooltipDocumentTest {
             null, {magazine:{name:"弹夹"}});
         assertEq("弹夹", noIconDoc.magazine.name, "mag: 无图标仍有名称");
         assert(noIconDoc.magazine.icon == undefined, "mag: 缺图标时不写 icon 键");
+        assert(noIconDoc.magazine.ammo == undefined, "mag: 缺子弹类型时不写 ammo 键");
+
+        var ammoDoc:Object = NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述",
+            null, {magazine:{name:"弹夹", ammo:"4.7mm 无壳弹"}});
+        assertEq("4.7mm 无壳弹", ammoDoc.magazine.ammo, "mag: 子弹类型透传（弹夹框第二行）");
+        assert(NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述",
+            null, {magazine:{name:"弹夹", ammo:"   "}}).magazine.ammo == undefined,
+            "mag: 空白子弹类型不写 ammo 键");
 
         assert(NativeTooltipDocument.buildItem("n", itemData, null, "简介", "描述",
             null, {magazine:{name:"  "}}).magazine == undefined, "mag: 空白名称整块丢弃");
@@ -462,6 +546,46 @@ class org.flashNight.gesh.tooltip.test.NativeTooltipDocumentTest {
         }
         assertEq(legacy.length, main.length + subText.length,
             "composerEx: main + sub blocks keep the whole legacy text");
+    }
+
+    private static function test_composer_nightVisionSubBlock():Void {
+        var name:String = "测试夜视仪";
+        ItemUtil.equipmentDict[name] = true;
+        var itemData:Object = {name:name, displayname:name, type:"防具", use:"头部装备",
+            price:1, description:"普通描述\n<font color='#66cc66'>【夜视】</font>夜视说明", data:{}};
+        var legacy:String = TooltipComposer.generateItemDescriptionText(itemData, null);
+        var subs:Array = [];
+        var docSubs:Array = [];
+        var main:String = TooltipComposer.generateItemDescriptionTextEx(itemData, null, subs, docSubs);
+
+        assert(legacy.indexOf("【夜视】") >= 0, "nightVision: legacy keeps inline text");
+        assert(main.indexOf("普通描述") >= 0, "nightVision: ordinary description stays in main");
+        assert(main.indexOf("【夜视】") < 0 && main.indexOf("夜视说明") < 0,
+            "nightVision: feature removed from main description");
+        assertEq(1, subs.length, "nightVision: one independent sub block");
+        assert(subs[0].indexOf("【夜视】") >= 0 && subs[0].indexOf("夜视说明") >= 0,
+            "nightVision: sub block keeps label and description");
+        assertEq(subs[0], docSubs[0], "nightVision: document sub mirrors HTML sub");
+        assertEq(legacy.length, main.length + subs.join("").length,
+            "nightVision: split does not lose text or separators");
+
+        var doc:Object = NativeTooltipDocument.buildItem(name, itemData, null, "简介", main, docSubs);
+        assertEq("description", doc.sections[1].role, "nightVision: main remains description role");
+        assertEq("sub", doc.sections[2].role, "nightVision: feature becomes sub role");
+        var all:String = "";
+        for (var s:Number = 0; s < doc.sections.length; s++) {
+            for (var r:Number = 0; r < doc.sections[s].runs.length; r++) {
+                all += doc.sections[s].runs[r].text;
+            }
+        }
+        assertEq(1, all.split("【夜视】").length - 1, "nightVision: document has no duplicate");
+        delete ItemUtil.equipmentDict[name];
+
+        var plain:Object = {name:"普通物品", type:"消耗品", use:"普通",
+            description:"普通说明\n【夜视】非装备文本"};
+        var plainMain:String = TooltipComposer.generateItemDescriptionTextEx(plain, null, []);
+        assert(plainMain.indexOf("【夜视】非装备文本") >= 0,
+            "nightVision: non-equipment description is never extracted away");
     }
 
     private static function test_buildSkill_shape():Void {

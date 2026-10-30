@@ -3,8 +3,13 @@
  *
  * 职责：
  * - 把 TooltipComposer / SkillTooltipComposer 产出的业务权威 HTML **一次性**解析为
- *   受限语义文档 document：{version, title?, icon?, sections:[{role,
- *   runs:[{text,color?,bold?,italic?,underline?,fontSize?,fontFace?}]}], profile, layoutType?}
+ *   受限语义文档 document：{version, title?, icon?, sections:[{role, kind?, title?,
+ *   rows?, runs:[{text,color?,bold?,italic?,underline?,fontSize?,fontFace?}]}],
+ *   profile, layoutType?, rail?, magazine?}
+ *   可选结构键：rail = 书签文本数组（≤2）；magazine = {name, icon?, ammo?}；
+ *   role:"sub" 段可带 kind:"attachments"/"acquisition" + title +
+ *   rows:[{name, icon?, runs}]，
+ *   同一段仍保留合成 runs 作为旧消费端的内联回退。
  * - document.title 与 sections[].runs[].text 均为**纯文本**：实体已解码、内联标记
  *   已展开为 run 级样式键。C#/Web 消费端不得对 title/run.text 再做标记展开
  *   或实体解码（二次解析会改变语义，例如 &lt;b&gt;x&lt;/b&gt; 应显示为字面
@@ -41,12 +46,15 @@ class org.flashNight.gesh.tooltip.NativeTooltipDocument {
      * 物品注释文档。title 取 displayname（涂装实例经 iconData/getData 覆盖优先），
      * icon.name 为图标资产键（itemData.icon，与 Web Icons 目录键同源）。
      * subHtmls 可选：每项 HTML 成为一个 role:"sub" 段（子注释框），
-     * 缺省/空数组时与旧调用完全一致。
+     * 或 {kind:"attachments", title, rows:[{name, icon?, effect}]} 结构化条目
+     * （「已安装插件」专用：消费端在子框内逐行绘制插件图标）。缺省/空数组时
+     * 与旧调用完全一致。
      * extras 可选：原生注释专属结构化部件
-     *   - extras.rail:Array     左侧竖排插条文本（首项上块、次项下块），
+     *   - extras.rail:Array     图标左侧书签文本（首项上方块、次项下方块），
      *                           最多取 2 项；旧消费端忽略该键不影响正文
-     *   - extras.magazine:Object {name,icon} 枪械弹夹独立框；icon 仅绘制，
-     *                           不再产生注释（避免弹夹框嵌套）
+     *   - extras.magazine:Object {name,icon,ammo?} 枪械弹夹独立框；icon 仅绘制，
+     *                           不再产生注释（避免弹夹框嵌套）；ammo 为子弹类型，
+     *                           写在框内第二行
      */
     public static function buildItem(name:String, itemData:Object, iconData:Object,
             introHtml:String, descHtml:String, subHtmls:Array, extras:Object):Object {
@@ -71,7 +79,12 @@ class org.flashNight.gesh.tooltip.NativeTooltipDocument {
         pushSection(sections, ROLE_DESCRIPTION, descHtml);
         if (subHtmls != null) {
             for (var si:Number = 0; si < subHtmls.length; si++) {
-                pushSection(sections, ROLE_SUB, String(subHtmls[si]));
+                var subEntry:Object = subHtmls[si];
+                if (typeof subEntry == "string") {
+                    pushSection(sections, ROLE_SUB, String(subEntry));
+                } else if (subEntry != null) {
+                    pushAttachments(sections, subEntry);
+                }
             }
         }
         title = dedupeTitleLine(title, sections);
@@ -109,9 +122,67 @@ class org.flashNight.gesh.tooltip.NativeTooltipDocument {
                 var magazine:Object = {name:magName};
                 var magIcon:String = safeText(mag.icon);
                 if (magIcon != null) magazine.icon = magIcon;
+                var magAmmo:String = safeText(mag.ammo);
+                if (magAmmo != null) magazine.ammo = magAmmo;
                 doc.magazine = magazine;
             }
         }
+    }
+
+    /**
+     * 结构化子框条目 → role:"sub" 段。
+     *
+     * kind=="attachments"/"acquisition"：{title, rows:[{name, icon?, effect}]}，
+     * effect 是受限 HTML 片段（颜色标记），在此展开为 runs；同时合成整框
+     * fallback runs（title + 每行 "  • 名称" + 效果），供不识别 rows 的旧
+     * 消费端内联显示，保证内容不丢。attachments 行的 icon 是物品图标键；
+     * acquisition 商店行的 icon 是 NPC 头像键。其他 kind 条目按键 "html"
+     * 取 HTML，退化为普通子框。
+     */
+    private static function pushAttachments(sections:Array, entry:Object):Void {
+        var kind:String = (entry != null && entry.kind != undefined) ? String(entry.kind) : null;
+        if (kind != "attachments" && kind != "acquisition") {
+            if (entry != null && entry.html != undefined) {
+                pushSection(sections, ROLE_SUB, String(entry.html));
+            }
+            return;
+        }
+
+        var title:String = safeText(entry.title);
+        var rows:Array = [];
+        var fallback:Array = [];
+        if (title != null) {
+            fallback.push({text:title + "：", bold:true});
+            fallback.push({text:"\n"});
+        }
+        var source:Array = (entry.rows instanceof Array) ? entry.rows : [];
+        for (var i:Number = 0; i < source.length; i++) {
+            var raw:Object = source[i];
+            if (raw == null) continue;
+            var rowName:String = safeText(raw.name);
+            if (rowName == null) continue;
+            // AS2 真值判断会把 0/"" 当假——effect 先归一为字符串再判空
+            var effectHtml:String = (raw.effect == undefined || raw.effect == null)
+                ? "" : String(raw.effect);
+            var row:Object = {name:rowName, runs:htmlToRuns(effectHtml)};
+            var rowIcon:String = safeText(raw.icon);
+            if (rowIcon != null) row.icon = rowIcon;
+            if (Number(raw.depth) === 1) row.depth = 1;
+            rows.push(row);
+
+            var fallbackPrefix:String = row.depth === 1 ? "    • "
+                : (kind == "attachments" ? "  • " : "");
+            fallback.push({text:fallbackPrefix + rowName});
+            var effectRuns:Array = row.runs;
+            for (var r:Number = 0; r < effectRuns.length; r++) fallback.push(effectRuns[r]);
+            fallback.push({text:"\n"});
+        }
+        if (rows.length == 0) return;
+
+        var section:Object = {role:ROLE_SUB, kind:kind, rows:rows};
+        if (title != null) section.title = title;
+        section.runs = fallback;
+        sections.push(section);
     }
 
     /** 可选文本字段 → 去首尾空白后的纯字符串；缺失/空白/字面量 null 一律返回 null。 */

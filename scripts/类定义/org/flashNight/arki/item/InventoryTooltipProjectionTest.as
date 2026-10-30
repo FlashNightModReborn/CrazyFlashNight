@@ -10,6 +10,9 @@ import org.flashNight.arki.item.EquipmentUtil;
  * - document.title / icon 与 projection.displayName / iconName 严格同源（getData 覆盖）；
  * - 简介首行标题去重只发生在 document 边界：introHTML 原字段不变，
  *   [tier] 前缀提升进 title，类型/价格/强化/词条行全保留；
+ * - document 走与原生悬浮注释相同的结构拆分：类型行移交 rail 书签、
+ *   弹夹名/子弹类型移交 magazine 框、配件移交 role:"sub"/kind:"attachments"
+ *   子框；旧 introHTML/descHTML 出口仍保留全文；
  * - stack 物品（无 getData 覆盖）也带一致 document。
  *
  * 运行入口：runAllTests()（由 test-runners/item-panels 或主控指定 runner 调用；
@@ -51,6 +54,16 @@ class org.flashNight.arki.item.InventoryTooltipProjectionTest {
         return null;
     }
 
+    /** 按 role+kind 找子框段（attachments 结构化子框专用）。 */
+    private static function subSectionByKind(doc:Object, kind:String):Object {
+        if (doc == null || doc.sections == null) return null;
+        for (var i:Number = 0; i < doc.sections.length; i++) {
+            var sec:Object = doc.sections[i];
+            if (sec.role == "sub" && sec.kind == kind) return sec;
+        }
+        return null;
+    }
+
     /** 所有 section 的 runs 拼成一个数组，便于全文档查找。 */
     private static function allRuns(doc:Object):Array {
         var out:Array = [];
@@ -66,8 +79,9 @@ class org.flashNight.arki.item.InventoryTooltipProjectionTest {
     /**
      * 装备实例：value.level=3、tier=二阶、mods=[插件A,插件B]，
      * getData() 覆盖 displayname/icon（涂装场景）。
-     * 断言 document 与回包 displayname/iconName 同源、强化与配件文本进入 runs、
-     * 标题去重后 intro 首 run 不再是名称、旧 introHTML 不变。
+     * 断言 document 与回包 displayname/iconName 同源、真实强化等级进入 runs、
+     * 类型行/弹夹/配件分别移交 rail/magazine/attachments 结构部件、
+     * 标题去重后 intro 首 run 不再是名称、旧 introHTML/descHTML 全文不变。
      */
     private static function testEquipmentInstanceDocument():Void {
         var name:String = "GateNI实例注释装备";
@@ -80,6 +94,7 @@ class org.flashNight.arki.item.InventoryTooltipProjectionTest {
         var previousMeta:Object = ItemUtil.itemDataDict[name];
         var previousModA:Object = ItemUtil.itemDataDict["插件A"];
         var previousModB:Object = ItemUtil.itemDataDict["插件B"];
+        var previousClip:Object = ItemUtil.itemDataDict["手枪通用弹药"];
         var previousBalance:Object = ItemUtil.balanceDataDict[name];
         var previousEquipFlag:Object = ItemUtil.equipmentDict[name];
         var previousModDict:Object = EquipmentUtil.modDict;
@@ -100,6 +115,11 @@ class org.flashNight.arki.item.InventoryTooltipProjectionTest {
         };
         ItemUtil.itemDataDict["插件B"] = {
             name:"插件B", displayname:"插件B展示名", type:"收集品", use:"装备插件", price:1
+        };
+        // 弹夹条目注入使 magazine 部件确定产出（显示名/图标走 clipData，与生产同源）。
+        ItemUtil.itemDataDict["手枪通用弹药"] = {
+            name:"手枪通用弹药", displayname:"GateNI通用手枪弹夹", icon:"GateNI弹夹图标",
+            type:"消耗品", use:"弹药", price:1
         };
         // value.mods 存的是模组条目 ID；ModsBlockBuilder 逐条推 "  • "+ID，
         // 展示用字段是 modDict[ID].tagValue / stats.percentage（不是 displayname）。
@@ -145,9 +165,19 @@ class org.flashNight.arki.item.InventoryTooltipProjectionTest {
         assertTrue(intro != null && intro.runs[0].text != null
             && String(intro.runs[0].text).indexOf("涂装名") < 0,
             "intro 首行名称已提升为 title，不再重复绘制");
-        assertTrue(findRunText(intro.runs, "武器") != null
-            && findRunText(intro.runs, "手枪") != null,
-            "intro 保留类型/用途行");
+        // ── 类型行移交 rail 书签（与原生悬浮注释同一拆分），简介不再重复
+        assertTrue(doc.rail != null && doc.rail.length == 1 && doc.rail[0] == "手枪",
+            "武器大类移交 rail 书签");
+        assertTrue(findRunText(intro.runs, "手枪") == null,
+            "intro 不再输出类型/用途行（移交 rail）");
+
+        // ── 弹夹名/子弹类型移交弹夹框（第二行），简介不再重复
+        assertTrue(doc.magazine != null && doc.magazine.name == "GateNI通用手枪弹夹"
+            && doc.magazine.icon == "GateNI弹夹图标" && doc.magazine.ammo == "普通子弹",
+            "弹夹框承载名称/图标与子弹类型第二行");
+        assertTrue(findRunText(intro.runs, "使用弹夹") == null
+            && findRunText(intro.runs, "子弹类型") == null,
+            "intro 不再输出弹夹/子弹类型行（移交弹夹框）");
 
         // ── 真实实例强化：level=3 的强化等级行进入 runs（不是 level1 冒充）
         assertTrue(findRunText(allRuns(doc), "强化等级") != null
@@ -163,15 +193,28 @@ class org.flashNight.arki.item.InventoryTooltipProjectionTest {
             && String(r.descHTML).indexOf("15%") >= 0,
             "descHTML 保留配件条目与 tagValue/增幅");
         var desc:Object = sectionByRole(doc, "description");
-        assertTrue(desc != null && findRunText(desc.runs, "插件A") != null
-            && findRunText(desc.runs, "插件B") != null
-            && findRunText(desc.runs, "瞄具") != null,
-            "document.description 段保留配件名与 tagValue runs");
+        assertTrue(desc == null || findRunText(desc.runs, "插件A") == null,
+            "description 段不再内联配件（移交 attachments 子框）");
+        var att:Object = subSectionByKind(doc, "attachments");
+        assertTrue(att != null && String(att.title).indexOf("已安装2个配件") >= 0,
+            "配件以 role:sub/kind:attachments 子框承载");
+        assertTrue(att != null && att.rows.length == 2
+            && String(att.rows[0].name) == "插件A" && String(att.rows[1].name) == "插件B",
+            "attachments rows 逐行对应配件");
+        assertTrue(att != null && findRunText(att.rows[0].runs, "瞄具") != null
+            && findRunText(att.rows[0].runs, "15%") != null,
+            "attachments 效果 runs 保留 tagValue/增幅");
+        assertTrue(att != null && findRunText(att.runs, "插件A") != null,
+            "attachments 保留整框 fallback runs 供旧消费端内联");
 
-        // ── 旧字段不变：introHTML 仍含完整标题行（去重只在 document 边界发生）
+        // ── 旧字段不变：introHTML 仍含完整标题/类型/弹夹行（省略只在 document 边界发生）
         assertTrue(String(r.introHTML).indexOf("GateNI涂装名") >= 0
             && String(r.introHTML).indexOf("二阶") >= 0,
             "旧 introHTML 字段保留原始标题行，未被 document 去重影响");
+        assertTrue(String(r.introHTML).indexOf("手枪") >= 0
+            && String(r.introHTML).indexOf("使用弹夹") >= 0
+            && String(r.introHTML).indexOf("子弹类型") >= 0,
+            "旧 introHTML 保留类型/弹夹/子弹类型行全文，省略只发生在 document");
 
         // ── 源对象未被修改
         assertTrue(equipment.value.level == 3 && equipment.value.tier == "二阶"
@@ -184,6 +227,8 @@ class org.flashNight.arki.item.InventoryTooltipProjectionTest {
         else ItemUtil.itemDataDict["插件A"] = previousModA;
         if (previousModB == undefined) delete ItemUtil.itemDataDict["插件B"];
         else ItemUtil.itemDataDict["插件B"] = previousModB;
+        if (previousClip == undefined) delete ItemUtil.itemDataDict["手枪通用弹药"];
+        else ItemUtil.itemDataDict["手枪通用弹药"] = previousClip;
         if (previousBalance == undefined) delete ItemUtil.balanceDataDict[name];
         else ItemUtil.balanceDataDict[name] = previousBalance;
         if (previousEquipFlag == undefined) delete ItemUtil.equipmentDict[name];

@@ -896,27 +896,112 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         }
 
         [Fact]
-        public void SubBoxes_StackBelowMainTip_AndGrowTipSizeForPlacement()
+        public void SubBoxes_SitInSideColumnBesideMainTip_AndGrowTipSizeForPlacement()
         {
             var plan = NativeTooltipLayout.ComputePlan(
                 SubBoxDoc("dense", true), FixedMeasure, 15, 1f, 1024, 576);
             Assert.Equal(2, plan.Subs.Count);
             int gap = NativeTooltipLayout.Px(NativeTooltipLayout.SubGapBase, 1f);
-            int mainBottom = Math.Max(plan.IntroPanel.Bottom, plan.DescPanel.Bottom);
-            // 主面板与首框、框与框之间都是同一个间隙（Web margin-top 同值）
-            Assert.Equal(mainBottom + gap, plan.Subs[0].Panel.Top);
+            // 该样本未过 split 阈值：没有独立 desc，子框自成侧栏，紧随主面板右缘、顶对齐
+            Assert.False(plan.Split);
+            Assert.Equal(plan.IntroPanel.Right, plan.Subs[0].Panel.X);
+            Assert.Equal(plan.IntroPanel.Right, plan.Subs[1].Panel.X);
+            // 侧栏列同宽（含 desc 最小宽下限）；框间同一间隙，不再向下堆在主面板之后
+            Assert.Equal(plan.Subs[0].Panel.Width, plan.Subs[1].Panel.Width);
+            Assert.True(plan.Subs[0].Panel.Width
+                >= NativeTooltipLayout.Px(NativeTooltipLayout.DescMinWBase, 1f));
+            Assert.Equal(0, plan.Subs[0].Panel.Top);
             Assert.Equal(plan.Subs[0].Panel.Bottom + gap, plan.Subs[1].Panel.Top);
-            // 框宽 = 主 tip 宽；整组高进 TipSize → SolvePlacement 的避让/夹取覆盖子框
-            Assert.Equal(plan.TipSize.Width, plan.Subs[0].Panel.Width);
-            Assert.Equal(plan.Subs[1].Panel.Bottom, plan.TipSize.Height);
-            Assert.True(plan.TipSize.Height > mainBottom);
+            // 整组宽/高进 TipSize → SolvePlacement 的避让/夹取覆盖侧栏
+            Assert.Equal(plan.Subs[0].Panel.Right, plan.TipSize.Width);
+            Assert.True(plan.TipSize.Height >= plan.Subs[1].Panel.Bottom);
+            Assert.True(plan.TipSize.Height >= plan.IntroPanel.Bottom);
             // sub 内容只进子框，不再出现在主面板文本里
             Assert.DoesNotContain("扩容弹匣", MainTipText(plan));
             Assert.Contains("扩容弹匣", PlanText(plan.Subs[0].Lines));
             Assert.Equal(2, plan.Subs[1].Lines.Count);
             // 内容原点 = 框缘 + pad（与 Intro/Desc 面板同一 padding）
-            Assert.Equal(plan.Subs[0].Panel.Top + plan.Subs[0].ContentLeftPx,
-                plan.Subs[0].ContentTopPx);
+            int pad = NativeTooltipLayout.Px(NativeTooltipLayout.PanelPadBase, 1f);
+            Assert.Equal(plan.Subs[0].Panel.X + pad, plan.Subs[0].ContentLeftPx);
+            Assert.Equal(plan.Subs[0].Panel.Y + pad, plan.Subs[0].ContentTopPx);
+        }
+
+        [Fact]
+        public void DescAndSubBoxes_ShareOneSideColumn_DescOnTop()
+        {
+            var doc = NativeTooltipDocument.FromDocument(JObject.Parse(@"{
+                'version':1,'title':'夜视头盔',
+                'icon':{'kind':'item','name':'x'},
+                'profile':'dense',
+                'sections':[
+                    {'role':'intro','runs':[{'text':'照亮前方'}]},
+                    {'role':'description','runs':[{'text':'" + new string('述', 260) + @"'}]},
+                    {'role':'sub','runs':[{'text':'已装插件：扩容弹匣'}]},
+                    {'role':'sub','runs':[{'text':'夜视\n战技'}]}]}"));
+            var plan = NativeTooltipLayout.ComputePlan(
+                doc, FixedMeasure, 15, 1f, 1024, 576);
+            int gap = NativeTooltipLayout.Px(NativeTooltipLayout.SubGapBase, 1f);
+            Assert.True(plan.Split, "长 desc 应分栏");
+            Assert.Equal(2, plan.Subs.Count);
+            // desc 是侧栏第 1 框：与主面板并排、子框同列接在其下、同宽
+            Assert.Equal(plan.IntroPanel.Right, plan.DescPanel.X);
+            Assert.Equal(plan.DescPanel.X, plan.Subs[0].Panel.X);
+            Assert.Equal(plan.DescPanel.Width, plan.Subs[0].Panel.Width);
+            Assert.Equal(plan.DescPanel.Width, plan.Subs[1].Panel.Width);
+            Assert.Equal(plan.DescPanel.Bottom + gap, plan.Subs[0].Panel.Top);
+            Assert.Equal(plan.Subs[0].Panel.Bottom + gap, plan.Subs[1].Panel.Top);
+            Assert.Equal(plan.DescPanel.Right, plan.TipSize.Width);
+            Assert.True(plan.TipSize.Height >= plan.Subs[1].Panel.Bottom);
+        }
+
+        [Fact]
+        public void MirrorHorizontally_SwapsIntroAndSideColumn_AndIsSelfInverse()
+        {
+            var doc = NativeTooltipDocument.FromDocument(JObject.Parse(@"{
+                'version':1,'title':'夜视头盔',
+                'icon':{'kind':'item','name':'x'},
+                'profile':'dense','rail':['长枪','突击步枪'],
+                'sections':[
+                    {'role':'intro','runs':[{'text':'照亮前方'}]},
+                    {'role':'description','runs':[{'text':'" + new string('述', 260) + @"'}]},
+                    {'role':'sub','runs':[{'text':'已装插件：扩容弹匣'}]}]}"));
+            var plan = NativeTooltipLayout.ComputePlan(
+                doc, FixedMeasure, 15, 1f, 1024, 576);
+            Assert.True(plan.Split);
+            Rectangle intro0 = plan.IntroPanel, desc0 = plan.DescPanel;
+            Rectangle icon0 = plan.IconRect, rail0 = plan.RailBlocks[0].Rect;
+            Rectangle sub0 = plan.Subs[0].Panel;
+            int introText0 = plan.IntroContentLeftPx, descText0 = plan.DescContentLeftPx;
+
+            plan.MirrorHorizontally();
+            int w = plan.TipSize.Width;
+            // 主框换到右缘、侧栏（desc + sub）落到左侧，插条去图片右外沿
+            Assert.Equal(w - intro0.Right, plan.IntroPanel.X);
+            Assert.True(plan.IntroPanel.X >= plan.DescPanel.Right);
+            Assert.Equal(w - rail0.Right, plan.RailBlocks[0].Rect.X);
+            Assert.Equal(w - sub0.Right, plan.Subs[0].Panel.X);
+            // 不同宽度的书签都改为左缘对齐，并以 1px 重叠贴合图片右缘
+            Assert.Equal(plan.RailBlocks[0].Rect.Left, plan.RailBlocks[1].Rect.Left);
+            foreach (NativeTooltipLayout.Plan.RailBlock block in plan.RailBlocks)
+                Assert.Equal(plan.IconRect.Right - 1, block.Rect.Left);
+            // 面板内文字/图标保持左对齐：相对面板左缘的偏移不变
+            Assert.Equal(introText0 - intro0.X,
+                plan.IntroContentLeftPx - plan.IntroPanel.X);
+            Assert.Equal(descText0 - desc0.X,
+                plan.DescContentLeftPx - plan.DescPanel.X);
+            Assert.Equal(icon0.X - intro0.X, plan.IconRect.X - plan.IntroPanel.X);
+            Assert.True(plan.Mirrored);
+
+            // 对自身取逆：再镜像一次完全还原（widget 可按 Side 幂等调用）
+            plan.MirrorHorizontally();
+            Assert.Equal(intro0, plan.IntroPanel);
+            Assert.Equal(desc0, plan.DescPanel);
+            Assert.Equal(icon0, plan.IconRect);
+            Assert.Equal(rail0, plan.RailBlocks[0].Rect);
+            Assert.Equal(sub0, plan.Subs[0].Panel);
+            Assert.Equal(introText0, plan.IntroContentLeftPx);
+            Assert.Equal(descText0, plan.DescContentLeftPx);
+            Assert.False(plan.Mirrored);
         }
 
         [Fact]
@@ -948,7 +1033,7 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
   'document':{'version':1,'title':'G11 突击步枪',
     'icon':{'kind':'item','name':'weapon_g11'},
     'profile':'dense','rail':['长枪','突击步枪'],
-    'magazine':{'name':'11 号 4.7mm 弹夹','icon':'ammo_ghren_47'},
+    'magazine':{'name':'11 号 4.7mm 弹夹','icon':'ammo_ghren_47','ammo':'4.7mm 无壳弹'},
     'sections':[
       {'role':'intro','runs':[{'text':'口径 4.7mm\n使用弹夹：11 号弹夹'}]},
       {'role':'description','runs':[{'text':'无壳弹武器，弹道平直。'}]},
@@ -990,60 +1075,61 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         }
 
         [Fact]
-        public void Rail_PeaksLeftOfIcon_ShiftsPanelsAndWidensTipSize()
+        public void Rail_BookmarksLeftOfIcon_ShiftsPanelsAndWidensTipSize()
         {
             var doc = NativeTooltipDocument.FromPayload(GunPayload());
             var plan = NativeTooltipLayout.ComputePlan(
                 doc, FixedMeasure, 15, 1f, 1024, 576);
 
-            int wide = NativeTooltipLayout.Px(NativeTooltipLayout.RailWideWBase, 1f);
-            int waist = Math.Max(2, (int)Math.Round(
-                wide * NativeTooltipLayout.RailWaistFrac));
-            int pad = NativeTooltipLayout.Px(NativeTooltipLayout.RailTextPadBase, 1f);
+            int blockH = NativeTooltipLayout.Px(
+                NativeTooltipLayout.RailBlockHBase, 1f);
+            int gap = NativeTooltipLayout.Px(
+                NativeTooltipLayout.RailBlockGapBase, 1f);
+            int padX = NativeTooltipLayout.Px(
+                NativeTooltipLayout.RailTextPadXBase, 1f);
+            int overlap = NativeTooltipLayout.Px(
+                NativeTooltipLayout.PanelPadBase, 1f)
+                + NativeTooltipLayout.Px(1, 1f);
 
             Assert.Equal(2, plan.RailBlocks.Count);
             var first = plan.RailBlocks[0];
             var last = plan.RailBlocks[1];
             Assert.Equal("长枪", first.Text);
             Assert.Equal("突击步枪", last.Text);
-            // 条体贴着图标左侧外沿：x=0，宽 = 整条最大宽
-            Assert.Equal(0, first.Rect.X);
-            Assert.Equal(wide, first.Rect.Width);
-            Assert.Equal(wide, plan.RailShift);
-            // 高 = 图标框高，两端块按字数撑开（块长 = 字数×字号 + 2×内边距）
+            // 最宽块贴 tip 左缘；较窄块右移，所有块右缘对齐
+            Assert.Equal(last.Rect.Width - first.Rect.Width, first.Rect.X);
+            Assert.Equal(0, last.Rect.X);
+            Assert.Equal(last.Rect.Right, first.Rect.Right);
+            Assert.Equal(24 + padX * 2, first.Rect.Width);       // 2 CJK × 12
+            Assert.Equal(48 + padX * 2, last.Rect.Width);       // 4 CJK × 12
+            // 块高固定，自上而下等距排列，起点与图标顶端齐平
+            Assert.Equal(blockH, first.Rect.Height);
+            Assert.Equal(blockH, last.Rect.Height);
             Assert.Equal(plan.IconRect.Y, first.Rect.Y);
-            Assert.Equal(plan.IconRect.Bottom, last.Rect.Bottom);
-            Assert.Equal(2 * first.FontPx + pad * 2, first.Rect.Height);
-            Assert.Equal(4 * last.FontPx + pad * 2, last.Rect.Height);
-            Assert.True(first.Rect.Bottom <= last.Rect.Top, "两端块不得重叠");
-            // 腰部：居中窄条，连接两端块
-            Assert.Equal((wide - waist) / 2, plan.RailSpine.X);
-            Assert.Equal(waist, plan.RailSpine.Width);
-            Assert.Equal(first.Rect.Bottom, plan.RailSpine.Y);
-            Assert.Equal(last.Rect.Top - first.Rect.Bottom, plan.RailSpine.Height);
-            // 面板整体右移，条宽并入 tip；子框仍与面板左缘对齐
-            Assert.Equal(wide, plan.IntroPanel.X);
-            Assert.True(plan.IconRect.X > plan.RailBlocks[0].Rect.Right,
-                "图标应在插条右侧");
-            Assert.Equal(wide + plan.Subs[0].Panel.Width, plan.TipSize.Width);
-            Assert.Equal(wide, plan.Subs[0].Panel.X);
+            Assert.Equal(first.Rect.Bottom + gap, last.Rect.Y);
+            // 列宽扣除与图标的重叠后并入 tip，书签右缘以 1px 重叠贴合图标左缘
+            Assert.Equal(last.Rect.Width - overlap, plan.RailShift);
+            Assert.Equal(plan.RailShift, plan.IntroPanel.X);
+            Assert.Equal(plan.IconRect.Left + 1, first.Rect.Right);
+            Assert.Equal(plan.IconRect.Left + 1, last.Rect.Right);
+            Assert.Equal(plan.IntroPanel.Right + plan.Subs[0].Panel.Width,
+                plan.TipSize.Width);
+            Assert.Equal(plan.IntroPanel.Right, plan.Subs[0].Panel.X);
         }
 
         [Fact]
-        public void Rail_SingleText_KeepsBothEndsWide()
+        public void Rail_SingleText_IsOneBookmark()
         {
             JObject p = GunPayload();
             p["document"]["rail"] = new JArray("长枪");
             var plan = NativeTooltipLayout.ComputePlan(
                 NativeTooltipDocument.FromPayload(p), FixedMeasure, 15, 1f, 1024, 576);
-            Assert.Equal(2, plan.RailBlocks.Count);
+            Assert.Single(plan.RailBlocks);
             Assert.Equal("长枪", plan.RailBlocks[0].Text);
-            Assert.Equal("", plan.RailBlocks[1].Text);   // 空帽，保持"两头宽"轮廓
-            Assert.True(plan.RailBlocks[1].Rect.Height > 0);
         }
 
         [Fact]
-        public void MagazineRow_WhiteDividerSquareIconThenName()
+        public void MagazineRow_WhiteDividerIconAndNameLine_ThenAmmoLine()
         {
             var doc = NativeTooltipDocument.FromPayload(GunPayload());
             var withMag = NativeTooltipLayout.ComputePlan(
@@ -1056,19 +1142,36 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                 FixedMeasure, 15, 1f, 1024, 576);
 
             Assert.True(withMag.MagazineRow.IsEmpty == false);
-            Assert.True(noMag.MagazineRow.IsEmpty, "无 magazine 键不占行");
-            // 行高由字体撑出，图标是边长 = 行高的正方形
-            int rowH = withMag.MagazineRow.Height;
-            Assert.Equal(rowH, withMag.MagazineIconRect.Height);
-            Assert.Equal(rowH, withMag.MagazineIconRect.Width);
+            Assert.True(noMag.MagazineRow.IsEmpty, "无 magazine 键不占位");
+            // 第一行高 = max(字号行高, 图标边长)，图标垂直居中
+            int iconPx = NativeTooltipLayout.Px(
+                NativeTooltipLayout.MagIconBase, 1f);
+            int fontLine = NativeTooltipLayout.Px(
+                NativeTooltipLayout.FontPxBase * 1.25f, 1f);
+            int lineGap = NativeTooltipLayout.Px(
+                NativeTooltipLayout.MagLineGapBase, 1f);
+            int nameLineH = Math.Max(fontLine, iconPx);
+            Assert.Equal(iconPx, withMag.MagazineIconRect.Width);
+            Assert.Equal(iconPx, withMag.MagazineIconRect.Height);
             Assert.Equal(withMag.MagazineRow.X, withMag.MagazineIconRect.X);
-            Assert.Equal(withMag.MagazineRow.Y, withMag.MagazineIconRect.Y);
-            int gap = NativeTooltipLayout.Px(NativeTooltipLayout.MagIconTextGapBase, 1f);
-            Assert.Equal(withMag.MagazineIconRect.Right + gap, withMag.MagazineTextLeftPx);
-            // 白线在正文与行之间
+            Assert.Equal(withMag.MagazineRow.Y + (nameLineH - iconPx) / 2,
+                withMag.MagazineIconRect.Y);
+            int gap = NativeTooltipLayout.Px(
+                NativeTooltipLayout.MagIconTextGapBase, 1f);
+            Assert.Equal(withMag.MagazineIconRect.Right + gap,
+                withMag.MagazineTextLeftPx);
+            Assert.Equal(withMag.MagazineRow.Y + (nameLineH - fontLine) / 2,
+                withMag.MagazineNameTopPx);
+            // 第二行 = 子弹类型，与弹夹名同左缘
+            Assert.Equal("4.7mm 无壳弹", withMag.MagazineAmmo);
+            Assert.Equal(withMag.MagazineNameTopPx + fontLine + lineGap,
+                withMag.MagazineAmmoTopPx);
+            Assert.Equal(nameLineH + lineGap + fontLine,
+                withMag.MagazineRow.Height);
+            // 白线在正文与弹夹框之间
             Assert.True(withMag.MagazineDividerY > 0);
             Assert.True(withMag.MagazineDividerY < withMag.MagazineRow.Top);
-            // 整 tip 因此变高（同内容无行对照）
+            // 整 tip 因此变高（同内容无弹夹框对照）
             Assert.True(withMag.TipSize.Height > noMag.TipSize.Height);
             Assert.True(withMag.IntroPanel.Height > noMag.IntroPanel.Height);
             Assert.Equal("11 号 4.7mm 弹夹", withMag.MagazineName);
@@ -1076,7 +1179,120 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         }
 
         [Fact]
-        public void Paint_RailAndMagazine_WhiteStripesDarkRotatedTextAndDivider()
+        public void AttachmentsSubBox_NameThenIndentedEffect_AndMirrorRestoresOffsets()
+        {
+            var doc = NativeTooltipDocument.FromDocument(JObject.Parse(@"{
+                'version':1,'title':'G11','icon':{'kind':'item','name':'x'},
+                'profile':'dense',
+                'sections':[
+                    {'role':'intro','runs':[{'text':'照亮前方'}]},
+                    {'role':'sub','kind':'attachments','title':'配件',
+                     'rows':[
+                        {'name':'夜视','icon':'mod_expand',
+                         'runs':[{'text':' +10%'}]},
+                        {'name':'扩容','runs':[{'text':' +5'}]}],
+                     'runs':[{'text':'回退文本'}]}]}"));
+            var plan = NativeTooltipLayout.ComputePlan(
+                doc, FixedMeasure, 15, 1f, 1024, 576);
+
+            Assert.Single(plan.Subs);
+            NativeTooltipLayout.Plan.SubBox box = plan.Subs[0];
+            Assert.True(box.Attachments);
+            Assert.Empty(box.Lines);
+            Assert.NotEmpty(box.TitleLines);
+            Assert.Equal(2, box.Rows.Count);
+
+            int pad = NativeTooltipLayout.Px(
+                NativeTooltipLayout.PanelPadBase, 1f);
+            int iconPx = NativeTooltipLayout.Px(
+                NativeTooltipLayout.AttachIconBase, 1f);
+            int iconGap = NativeTooltipLayout.Px(
+                NativeTooltipLayout.AttachIconGapBase, 1f);
+            int rowGap = NativeTooltipLayout.Px(
+                NativeTooltipLayout.AttachRowGapBase, 1f);
+            int titleGap = NativeTooltipLayout.Px(
+                NativeTooltipLayout.AttachTitleGapBase, 1f);
+            const int effectGap = 1;
+            const int rowTextH = 15 + effectGap + 15;
+
+            Assert.Equal(pad, box.ContentLeftPx - box.Panel.X);
+            Assert.Equal(box.Panel.Y + pad, box.ContentTopPx);
+            Assert.Equal(box.ContentTopPx, box.TitleTopPx);
+
+            var first = box.Rows[0];
+            var second = box.Rows[1];
+            Assert.Equal("mod_expand", first.IconName);
+            Assert.False(first.IconIsNpc);
+            Assert.Null(second.IconName);
+            Assert.Equal("夜视", LineText(first.Lines[0]));
+            Assert.Equal("+10%", LineText(first.EffectLines[0]));
+            Assert.Equal(first.TextLeftPx + 12, first.EffectLeftPx);
+            Assert.Equal(first.TextTopPx + 15 + effectGap, first.EffectTopPx);
+            Assert.Equal(box.Panel.X + pad, first.IconRect.X);
+            Assert.Equal(iconPx, first.IconRect.Width);
+            Assert.Equal(iconPx, first.IconRect.Height);
+            Assert.Equal(first.IconRect.Right + iconGap, first.TextLeftPx);
+            Assert.Equal(second.IconRect.Right + iconGap, second.TextLeftPx);
+            Assert.Equal(first.IconRect.X, second.IconRect.X);
+            Assert.Equal(first.TextTopPx + rowTextH + rowGap, second.TextTopPx);
+            Assert.True(first.TextTopPx >= box.TitleTopPx + titleGap);
+            Assert.Equal(second.TextTopPx + rowTextH + pad, box.Panel.Bottom);
+
+            Rectangle panel0 = box.Panel;
+            Rectangle icon0 = first.IconRect;
+            int textLeft0 = first.TextLeftPx;
+            int effectLeft0 = first.EffectLeftPx;
+            plan.MirrorHorizontally();
+            plan.MirrorHorizontally();
+            Assert.Equal(panel0, box.Panel);
+            Assert.Equal(icon0, first.IconRect);
+            Assert.Equal(textLeft0, first.TextLeftPx);
+            Assert.Equal(effectLeft0, first.EffectLeftPx);
+        }
+
+        [Fact]
+        public void AcquisitionSubBox_CategoryThenNpcChild_UsesDepthAndNpcIcon()
+        {
+            var doc = NativeTooltipDocument.FromDocument(JObject.Parse(@"{
+                'version':1,'title':'夜视仪','icon':{'kind':'item','name':'x'},
+                'profile':'dense',
+                'sections':[
+                    {'role':'intro','runs':[{'text':'照亮前方'}]},
+                    {'role':'sub','kind':'acquisition','title':'获取方式',
+                     'rows':[
+                        {'name':'NPC商店'},
+                        {'name':'Andy Law','icon':'Andy Law','depth':1}]}]}"));
+            var plan = NativeTooltipLayout.ComputePlan(
+                doc, FixedMeasure, 15, 1f, 1024, 576);
+            Assert.Single(plan.Subs);
+            var rows = plan.Subs[0].Rows;
+            Assert.Equal(2, rows.Count);
+            Assert.False(rows[0].IconIsNpc);
+            Assert.True(rows[1].IconIsNpc);
+            Assert.Equal(1, doc.Sections[1].Rows[1].Depth);
+            Assert.Equal(16, rows[1].IconRect.X - rows[0].IconRect.X);
+            Assert.Equal(16, rows[1].TextLeftPx - rows[0].TextLeftPx);
+        }
+
+        [Fact]
+        public void FloatingTitle_UsesSeparateLargerRunsBeforeBody()
+        {
+            var plan = NativeTooltipLayout.ComputePlan(
+                NativeTooltipDocument.FromPayload(GunPayload()),
+                FixedMeasure, 15, 1f, 1024, 576);
+            Assert.NotEmpty(plan.IntroTitleLines);
+            Assert.NotEmpty(plan.IntroBodyLines);
+            Assert.Equal(NativeTooltipLayout.FloatingTitleFontBase,
+                plan.IntroTitleLines[0].Slices[0].FontSize);
+            Assert.Equal("G11 突击步枪", LineText(plan.IntroTitleLines[0]));
+            Assert.DoesNotContain("G11 突击步枪", LineText(plan.IntroBodyLines[0]));
+            Assert.True(plan.IntroTitleTopPx < plan.IntroContentTopPx);
+            Assert.Equal(plan.IntroTitleLines.Count + plan.IntroBodyLines.Count,
+                plan.IntroLines.Count);
+        }
+
+        [Fact]
+        public void Paint_RailBookmarksAndMagazine_DarkTextOnWhiteAndDivider()
         {
             using (Control a = Anchor())
             using (var w = new NativeTooltipWidget(a))
@@ -1091,25 +1307,21 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                     g.Clear(Color.FromArgb(255, 24, 26, 28));
                     w.Paint(g, 1.0f, Point.Empty);
 
-                    // 插条首块：白底 + 黑字（旋转 90°），两者都必须出现
-                    Rectangle block = RectIn(placed, plan.RailBlocks[0].Rect);
-                    int white = 0, dark = 0;
-                    for (int x = block.Left + 1; x < block.Right - 1; x++)
-                        for (int y = block.Top + 1; y < block.Bottom - 1; y++)
-                        {
-                            Color c = bmp.GetPixel(x, y);
-                            if (c.R >= 240 && c.G >= 240 && c.B >= 240) white++;
-                            else if (c.R <= 120 && c.G <= 120 && c.B <= 120) dark++;
-                        }
-                    Assert.True(white > 0, "插条块体应为白色");
-                    Assert.True(dark > 0, "插条块内应有黑字（85%）");
-
-                    // 腰部窄条同样白
-                    Rectangle spine = RectIn(placed, plan.RailSpine);
-                    Color mid = bmp.GetPixel(spine.X + spine.Width / 2,
-                        spine.Y + spine.Height / 2);
-                    Assert.True(mid.R >= 240 && mid.G >= 240 && mid.B >= 240,
-                        "腰部窄条应为白色，实际=" + mid);
+                    // 每块书签：白底 + 黑字（横向），两者都必须出现
+                    foreach (NativeTooltipLayout.Plan.RailBlock railBlock in plan.RailBlocks)
+                    {
+                        Rectangle block = RectIn(placed, railBlock.Rect);
+                        int white = 0, dark = 0;
+                        for (int x = block.Left + 1; x < block.Right - 1; x++)
+                            for (int y = block.Top + 1; y < block.Bottom - 1; y++)
+                            {
+                                Color c = bmp.GetPixel(x, y);
+                                if (c.R >= 240 && c.G >= 240 && c.B >= 240) white++;
+                                else if (c.R <= 120 && c.G <= 120 && c.B <= 120) dark++;
+                            }
+                        Assert.True(white > 0, "书签块体应为白色");
+                        Assert.True(dark > 0, "书签块内应有黑字（85%）");
+                    }
 
                     // 弹夹分隔线：整条白
                     Rectangle panel = RectIn(placed, plan.IntroPanel);
@@ -1122,15 +1334,23 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                         if (c.R >= 200 && c.G >= 200 && c.B >= 200) lineWhite++;
                     }
                     Assert.True(lineWhite * 2 >= lineTotal,
-                        "弹夹行应有白线分隔，命中=" + lineWhite + "/" + lineTotal);
+                        "弹夹框应有白线分隔，命中=" + lineWhite + "/" + lineTotal);
 
-                    // 图标正方形区域内是图标（非面板纯底），名称文字为白
+                    // 弹夹名第一行 / 子弹类型第二行都应绘制出文字
                     Rectangle name = new Rectangle(
                         placed.X + plan.MagazineTextLeftPx,
-                        placed.Y + plan.MagazineRow.Y,
-                        Math.Max(1, plan.MagazineRow.Right - plan.MagazineTextLeftPx),
-                        plan.MagazineRow.Height);
+                        placed.Y + plan.MagazineNameTopPx,
+                        Math.Max(1, placed.X + plan.MagazineRow.Right
+                            - (placed.X + plan.MagazineTextLeftPx)),
+                        Math.Max(1, plan.MagazineNameH));
                     Assert.True(BrightPixels(bmp, name) > 3, "弹夹名应被绘制");
+                    Rectangle ammo = new Rectangle(
+                        placed.X + plan.MagazineTextLeftPx,
+                        placed.Y + plan.MagazineAmmoTopPx,
+                        Math.Max(1, placed.X + plan.MagazineRow.Right
+                            - (placed.X + plan.MagazineTextLeftPx)),
+                        Math.Max(1, plan.MagazineAmmoH));
+                    Assert.True(BrightPixels(bmp, ammo) > 3, "子弹类型应被绘制");
                 }
             }
         }

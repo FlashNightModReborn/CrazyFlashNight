@@ -72,11 +72,51 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         }
     }
 
+    /// <summary>结构子框行：图标资产键 + 名称 + 效果 run。[Name] 是独立字段，
+    /// 效果 run 不重复包含名称；Depth=1 表示类别/配件名下的子级条目。</summary>
+    public sealed class NativeTooltipAttachmentRow
+    {
+        public string Name;
+        public string IconName;
+        public int Depth;
+        public List<NativeTooltipRun> Runs = new List<NativeTooltipRun>();
+
+        public string PlainText
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+                if (Name != null) sb.Append(Name);
+                for (int i = 0; i < Runs.Count; i++)
+                    if (Runs[i].Text != null) sb.Append(Runs[i].Text);
+                return sb.ToString();
+            }
+        }
+    }
+
     /// <summary>tooltip document 段落。</summary>
     public sealed class NativeTooltipSection
     {
         public NativeTooltipSectionRole Role;
         public List<NativeTooltipRun> Runs = new List<NativeTooltipRun>();
+
+        /// <summary>结构子框类型："attachments" = 已安装插件；"acquisition" = 获取来源。</summary>
+        public string Kind;
+        /// <summary>结构子框标题（纯文本，如「已安装2个配件」）。</summary>
+        public string Title;
+        /// <summary>结构子框行（attachments/acquisition 共用）。</summary>
+        public List<NativeTooltipAttachmentRow> Rows =
+            new List<NativeTooltipAttachmentRow>();
+
+        public bool IsAttachments
+        {
+            get
+            {
+                return (string.Equals(Kind, "attachments", StringComparison.Ordinal)
+                    || string.Equals(Kind, "acquisition", StringComparison.Ordinal))
+                    && Rows.Count > 0;
+            }
+        }
 
         /// <summary>纯文本视图（诊断/评分用），run 间无分隔符。</summary>
         public string PlainText
@@ -87,6 +127,27 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < Runs.Count; i++)
                     if (Runs[i].Text != null) sb.Append(Runs[i].Text);
+                return sb.ToString();
+            }
+        }
+
+        /// <summary>实际渲染文本：attachments 段以 title/rows 为准（runs 只是旧端回退，
+        /// 二者同源，叠加会重复计宽/计行）。其余段 = PlainText。</summary>
+        public string DisplayText
+        {
+            get
+            {
+                if (!IsAttachments) return PlainText;
+                StringBuilder sb = new StringBuilder();
+                if (!string.IsNullOrEmpty(Title)) sb.Append(Title).Append('\n');
+                for (int i = 0; i < Rows.Count; i++)
+                {
+                    if (Rows[i].Name != null) sb.Append(Rows[i].Name);
+                    List<NativeTooltipRun> runs = Rows[i].Runs;
+                    for (int j = 0; j < runs.Count; j++)
+                        if (runs[j].Text != null) sb.Append(runs[j].Text);
+                    sb.Append('\n');
+                }
                 return sb.ToString();
             }
         }
@@ -106,8 +167,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
     }
 
     /// <summary>
-    /// 左侧插条部件（document.rail）：武器大类/子类的竖排白底标签，贴在图标左侧外沿。
-    /// Texts 为已裁剪的纯文本（最多 2 项：首项上块、次项下块）。
+    /// 插条部件（document.rail）：武器大类/子类的白底书签块，自上而下排在图标左侧。
+    /// Texts 为已裁剪的纯文本（最多 2 项：首项上方块、次项下方块）。
     /// </summary>
     public sealed class NativeTooltipRail
     {
@@ -116,12 +177,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
     /// <summary>
     /// 弹夹部件（document.magazine）：从枪械「使用弹夹」行拆出的独立小框内容。
+    /// Name = 弹夹名（第一行），Ammo = 子弹类型（第二行，可空）。
     /// IconName 仅供绘制，消费端不得为其再生成注释（避免弹夹框嵌套）。
     /// </summary>
     public sealed class NativeTooltipMagazine
     {
         public string Name;
         public string IconName;
+        public string Ammo;
     }
 
     /// <summary>
@@ -152,7 +215,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         public string LayoutType { get; private set; }
         public NativeTooltipIcon Icon { get; private set; }
         public List<NativeTooltipSection> Sections { get; private set; }
-        /// <summary>左侧竖排插条（大类/子类）。无 rail 键时为 null。</summary>
+        /// <summary>左侧书签插条（大类/子类，白底块自上而下）。无 rail 键时为 null。</summary>
         public NativeTooltipRail Rail { get; private set; }
         /// <summary>弹夹独立框内容。无 magazine 键时为 null。</summary>
         public NativeTooltipMagazine Magazine { get; private set; }
@@ -300,7 +363,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 if (!string.IsNullOrEmpty(Title)) return true;
                 if (Icon != null && !string.IsNullOrEmpty(Icon.Name)) return true;
                 for (int i = 0; i < Sections.Count; i++)
-                    if (Sections[i].PlainText.Length > 0) return true;
+                    if (Sections[i].DisplayText.Length > 0) return true;
                 return false;
             }
         }
@@ -364,50 +427,82 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     if (secNode == null) continue;
                     NativeTooltipSection section = new NativeTooltipSection();
                     section.Role = ParseRole(ReadString(secNode, "role"));
-
-                    JArray runs = secNode["runs"] as JArray;
-                    if (runs != null)
-                    {
-                        foreach (JToken runToken in runs)
-                        {
-                            JObject runNode = runToken as JObject;
-                            string text;
-                            Color? baseColor = null;
-                            bool baseBold = false;
-                            bool baseItalic = false;
-                            bool baseUnderline = false;
-                            int? baseFontSize = null;
-                            string baseFontFace = null;
-                            if (runNode != null)
-                            {
-                                text = ReadString(runNode, "text");
-                                baseColor = ParseColor(ReadString(runNode, "color"));
-                                baseBold = ReadBool(runNode, "bold", false);
-                                baseItalic = ReadBool(runNode, "italic", false);
-                                baseUnderline = ReadBool(runNode, "underline", false);
-                                baseFontSize = ParseFontSizeToken(runNode["fontSize"]);
-                                baseFontFace = NormalizeFontFace(ReadString(runNode, "fontFace"));
-                            }
-                            else if (runToken.Type == JTokenType.String)
-                            {
-                                text = runToken.Value<string>();
-                            }
-                            else continue;
-                            // 纯文本契约：text 逐字保留（'\n' 是显式硬换行，布局层切分）。
-                            // 不做任何内联标记展开 / 实体解码。
-                            if (text != null)
-                                section.Runs.Add(new NativeTooltipRun(
-                                    text, baseColor, baseBold, baseItalic,
-                                    baseUnderline, baseFontSize, baseFontFace));
-                        }
-                    }
+                    section.Kind = ReadString(secNode, "kind");
+                    section.Title = ReadString(secNode, "title");
+                    // runs：纯文本契约逐字保留（'\n' 是显式硬换行，布局层切分）。
+                    // 不做任何内联标记展开 / 实体解码。
+                    ParseRuns(secNode["runs"] as JArray, section.Runs);
                     // 空 run 段也保留：显式空段可占位（例如预留 meta 行）。
+                    if (string.Equals(section.Kind, "attachments", StringComparison.Ordinal)
+                        || string.Equals(section.Kind, "acquisition", StringComparison.Ordinal))
+                        ParseAttachmentRows(secNode["rows"] as JArray, section.Rows);
                     Sections.Add(section);
                 }
             }
 
             if (!HasContent) { error = "document has no renderable content"; return false; }
             return true;
+        }
+
+        /// <summary>
+        /// runs 数组 → NativeTooltipRun 列表（段与 attachments 行共用）。
+        /// run 可为对象或裸字符串；类型异常/缺 text 只跳过该 run。
+        /// </summary>
+        private static void ParseRuns(JArray runs, List<NativeTooltipRun> output)
+        {
+            if (runs == null) return;
+            foreach (JToken runToken in runs)
+            {
+                JObject runNode = runToken as JObject;
+                string text;
+                Color? baseColor = null;
+                bool baseBold = false;
+                bool baseItalic = false;
+                bool baseUnderline = false;
+                int? baseFontSize = null;
+                string baseFontFace = null;
+                if (runNode != null)
+                {
+                    text = ReadString(runNode, "text");
+                    baseColor = ParseColor(ReadString(runNode, "color"));
+                    baseBold = ReadBool(runNode, "bold", false);
+                    baseItalic = ReadBool(runNode, "italic", false);
+                    baseUnderline = ReadBool(runNode, "underline", false);
+                    baseFontSize = ParseFontSizeToken(runNode["fontSize"]);
+                    baseFontFace = NormalizeFontFace(ReadString(runNode, "fontFace"));
+                }
+                else if (runToken.Type == JTokenType.String)
+                {
+                    text = runToken.Value<string>();
+                }
+                else continue;
+                if (text != null)
+                    output.Add(new NativeTooltipRun(
+                        text, baseColor, baseBold, baseItalic,
+                        baseUnderline, baseFontSize, baseFontFace));
+            }
+        }
+
+        /// <summary>
+        /// attachments/acquisition 行：name 必填；icon/runs 可选；Depth=1 为子级条目。
+        /// </summary>
+        private static void ParseAttachmentRows(JArray rows,
+            List<NativeTooltipAttachmentRow> output)
+        {
+            if (rows == null) return;
+            foreach (JToken rowToken in rows)
+            {
+                JObject rowNode = rowToken as JObject;
+                if (rowNode == null) continue;
+                string name = ReadString(rowNode, "name");
+                if (string.IsNullOrWhiteSpace(name)) continue;
+                NativeTooltipAttachmentRow row = new NativeTooltipAttachmentRow();
+                row.Name = name.Trim();
+                row.IconName = ReadString(rowNode, "icon");
+                row.Depth = ReadInt(rowNode, "depth", 0) == 1 ? 1 : 0;
+                ParseRuns(rowNode["runs"] as JArray, row.Runs);
+                output.Add(row);
+            }
         }
 
         /// <summary>
@@ -458,7 +553,19 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 icon = icon.Trim();
                 if (icon.Length == 0 || icon.Length > 128) icon = null;
             }
-            Magazine = new NativeTooltipMagazine { Name = name, IconName = icon };
+            string ammo = ReadString(obj, "ammo");
+            if (ammo != null)
+            {
+                ammo = ammo.Trim();
+                if (ammo.Length == 0) ammo = null;
+                else if (ammo.Length > 64) ammo = ammo.Substring(0, 64);
+            }
+            Magazine = new NativeTooltipMagazine
+            {
+                Name = name,
+                IconName = icon,
+                Ammo = ammo
+            };
         }
 
         // ── JSON 读取助手（容错，不抛） ──

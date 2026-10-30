@@ -27,6 +27,10 @@ namespace CF7Launcher.Tasks
     ///     内容（title/icon/任一非空 section 文本全缺）。
     ///   - 结构规模上界：section/run/字符总量超限时截断或剔除超限元素，
     ///     输出永远满足下列常量上界。
+    ///   - 结构部件：rail（≤2 段书签文本）、magazine{name,icon,ammo}、
+    ///     role:"sub" 且 kind 为 "attachments"/"acquisition" 的
+    ///     title/rows[{name,icon,runs}]
+    ///     均走白名单重建；无有效行的结构化段退回普通 sub（runs 保留）。
     ///   - 纯文本契约：title 与 runs[].text 逐字透传，不做 HTML 解析、
     ///     不做实体解码、不做内联标记展开（AS2 聚合端已展开一次）。
     ///   - 输出为白名单重建：document 内任何未列举键（owner/revision/自定义
@@ -47,10 +51,16 @@ namespace CF7Launcher.Tasks
         internal const int MaxIconNameChars = 256;
         internal const int MaxProfileChars = 16;
         internal const int MaxFontFaceChars = 64;
-        // 结构部件上界：插条最多 2 段竖排文本、弹夹名单行有界
+        // 结构部件上界：插条最多 2 段书签文本、弹夹名/子弹类型单行有界
         internal const int MaxRailTexts = 2;
         internal const int MaxRailTextChars = 24;
         internal const int MaxMagazineNameChars = 64;
+        internal const int MaxMagazineAmmoChars = 64;
+        // role:"sub" 的结构化附件框（kind="attachments"）：标题 + 逐行插件名/图标/效果
+        internal const int MaxSectionTitleChars = 128;
+        internal const int MaxAttachmentRows = 16;
+        internal const int MaxAttachmentNameChars = 64;
+        internal const int MaxAttachmentRuns = 32;
 
         /// <summary>
         /// 与 HasExactKeys 相同的严格白名单，但额外容忍至多一个 "document" 键
@@ -181,6 +191,54 @@ namespace CF7Launcher.Tasks
                     }
                     // 空 run 段保留：显式空段可占位（与 NativeTooltipDocument 一致）。
                     cleanSection["runs"] = cleanRuns;
+
+                    // attachments/acquisition 结构化子框：逐行名称/图标/内容 run。
+                    // 任一字段非法只丢该字段；无有效行的段退回普通 sub（保留 runs）。
+                    string sectionKind =
+                        sectionNode["kind"]?.Type == JTokenType.String
+                            ? (string)sectionNode["kind"] : null;
+                    var cleanRows = new JArray();
+                    if (string.Equals(sectionKind, "attachments", StringComparison.Ordinal)
+                        || string.Equals(sectionKind, "acquisition", StringComparison.Ordinal))
+                    {
+                        JArray rows = sectionNode["rows"] as JArray;
+                        if (rows != null)
+                        {
+                            foreach (JToken rowToken in rows)
+                            {
+                                if (cleanRows.Count >= MaxAttachmentRows
+                                    || totalRuns >= MaxTotalRuns
+                                    || totalChars >= MaxTotalTextChars) break;
+                                JObject rowNode = rowToken as JObject;
+                                if (rowNode == null) continue;
+                                string rowName = ReadPlainText(
+                                    rowNode["name"], MaxAttachmentNameChars);
+                                if (string.IsNullOrWhiteSpace(rowName)) continue;
+                                var cleanRow = new JObject { ["name"] = rowName };
+                                string rowIcon = ReadPlainText(
+                                    rowNode["icon"], MaxIconNameChars);
+                                if (!string.IsNullOrEmpty(rowIcon))
+                                    cleanRow["icon"] = rowIcon;
+                                if (rowNode["depth"]?.Type == JTokenType.Integer
+                                    && rowNode.Value<int>("depth") == 1)
+                                    cleanRow["depth"] = 1;
+                                cleanRow["runs"] = SanitizeRowRuns(
+                                    rowNode["runs"], ref totalRuns, ref totalChars);
+                                cleanRows.Add(cleanRow);
+                                hasContent = true;
+                            }
+                        }
+                        if (cleanRows.Count > 0)
+                        {
+                            cleanSection["kind"] = sectionKind;
+                            string sectionTitle = ReadPlainText(
+                                sectionNode["title"], MaxSectionTitleChars);
+                            if (!string.IsNullOrWhiteSpace(sectionTitle))
+                                cleanSection["title"] = sectionTitle;
+                            cleanSection["rows"] = cleanRows;
+                        }
+                    }
+
                     emittedSections.Add(cleanSection);
                 }
                 if (emittedSections.Count > 0) output["sections"] = emittedSections;
@@ -222,6 +280,10 @@ namespace CF7Launcher.Tasks
                     string magazineIcon = ReadPlainText(magazineNode["icon"], MaxIconNameChars);
                     if (!string.IsNullOrEmpty(magazineIcon))
                         cleanMagazine["icon"] = magazineIcon;
+                    string magazineAmmo = ReadPlainText(
+                        magazineNode["ammo"], MaxMagazineAmmoChars);
+                    if (!string.IsNullOrWhiteSpace(magazineAmmo))
+                        cleanMagazine["ammo"] = magazineAmmo;
                     output["magazine"] = cleanMagazine;
                 }
             }
@@ -287,6 +349,31 @@ namespace CF7Launcher.Tasks
             string fontFace = NormalizeFontFace(fontFaceToken);
             if (fontFace != null) run["fontFace"] = fontFace;
             return run;
+        }
+
+        /// <summary>
+        /// attachments 行内 runs：与段 runs 同款净化，额外受 MaxAttachmentRuns 限制；
+        /// 计入全局 totalRuns/totalChars 预算（行内文本与 fallback runs 同源，重复计费可接受）。
+        /// </summary>
+        private static JArray SanitizeRowRuns(JToken token, ref int totalRuns, ref int totalChars)
+        {
+            var cleanRuns = new JArray();
+            JArray runs = token as JArray;
+            if (runs == null) return cleanRuns;
+            foreach (JToken runToken in runs)
+            {
+                if (cleanRuns.Count >= MaxAttachmentRuns
+                    || totalRuns >= MaxTotalRuns
+                    || totalChars >= MaxTotalTextChars) break;
+                JObject cleanRun = SanitizeRun(runToken);
+                if (cleanRun == null) continue;
+                string text = cleanRun.Value<string>("text");
+                if (totalChars + text.Length > MaxTotalTextChars) break;
+                cleanRuns.Add(cleanRun);
+                totalRuns++;
+                totalChars += text.Length;
+            }
+            return cleanRuns;
         }
 
         /// <summary>title/run.text/icon.name/kind 的纯文本上界校验：逐字保留，仅限长与非法控制字符。</summary>

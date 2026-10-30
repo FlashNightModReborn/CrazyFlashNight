@@ -186,6 +186,35 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
             Assert.Equal(0, LootFeedWidget.SelectFrameIndex(frames, 1500)); // (1500*2/1000)%3 = 0
         }
 
+        [Fact]
+        public void TryGetNpc_UsesDedicatedDirectoryAndRejectsTraversal()
+        {
+            string dir = Path.Combine(Path.GetTempPath(), "cf7-npc-icons-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(dir);
+            try
+            {
+                string path = Path.Combine(dir, "Boy.webp");
+                using (var bitmap = new Bitmap(2, 2))
+                {
+                    bitmap.SetPixel(0, 0, Color.White);
+                    bitmap.Save(path, ImageFormat.Png);
+                }
+                using (var catalog = new LootIconCatalog(FindIconsDir(), npcPortraitIconsDir: dir))
+                {
+                    LootIconCatalog.LootIconFrames frames;
+                    Assert.True(catalog.TryGetNpc("Boy", out frames));
+                    Assert.NotNull(frames.First);
+                    Assert.Equal(LootIconCatalog.ThumbSize, frames.First.Width);
+                    Assert.Equal(LootIconCatalog.ThumbSize, frames.First.Height);
+                    Assert.False(catalog.TryGetNpc("../Boy", out frames));
+                }
+            }
+            finally
+            {
+                if (Directory.Exists(dir)) Directory.Delete(dir, true);
+            }
+        }
+
         private static byte[] PixelsOf(Bitmap bmp)
         {
             BitmapData data = bmp.LockBits(

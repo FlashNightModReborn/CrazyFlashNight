@@ -65,6 +65,7 @@ namespace CF7Launcher.Guardian.Hud.Loot
         private readonly string _manifestPath;
         private readonly string _enemyPortraitsDir; // null = 头像库关闭
         private readonly string _dollPortraitsDir; // null = 运行时纸娃娃胸像库关闭
+        private readonly string _npcPortraitIconsDir; // null = NPC 商店头像关闭
         private readonly object _gate = new object();
         private readonly BitmapLruCache _frameCache; // key = uri 文件名（头像用 "portrait:<ref>"，纸娃娃用 "doll:<ref>"）
         private readonly HashSet<string> _missing = new HashSet<string>(StringComparer.Ordinal);
@@ -80,7 +81,8 @@ namespace CF7Launcher.Guardian.Hud.Loot
         private bool _portraitManifestLoaded;
 
         public LootIconCatalog(string iconsDir, string enemyPortraitsDir = null,
-            long maxCacheBytes = 24L * 1024 * 1024, string dollPortraitsDir = null)
+            long maxCacheBytes = 24L * 1024 * 1024, string dollPortraitsDir = null,
+            string npcPortraitIconsDir = null)
         {
             if (string.IsNullOrEmpty(iconsDir)) throw new ArgumentException("Icons dir is required.", nameof(iconsDir));
             if (maxCacheBytes < ThumbBytes)
@@ -90,7 +92,50 @@ namespace CF7Launcher.Guardian.Hud.Loot
             _manifestPath = Path.Combine(iconsDir, "manifest.json");
             _enemyPortraitsDir = string.IsNullOrEmpty(enemyPortraitsDir) ? null : enemyPortraitsDir;
             _dollPortraitsDir = string.IsNullOrEmpty(dollPortraitsDir) ? null : dollPortraitsDir;
+            _npcPortraitIconsDir = string.IsNullOrEmpty(npcPortraitIconsDir) ? null : npcPortraitIconsDir;
             _frameCache = new BitmapLruCache(maxCacheBytes, StringComparer.Ordinal);
+        }
+
+        /// <summary>NPC 商店头像：仅从独立 NPC 目录解析，不与物品图标命名空间混用。</summary>
+        internal bool TryGetNpc(string npcName, out LootIconFrames frames)
+        {
+            frames = null;
+            if (_npcPortraitIconsDir == null || string.IsNullOrEmpty(npcName)
+                || npcName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0) return false;
+            lock (_gate)
+            {
+                string cacheKey = "npc:" + npcName;
+                if (_missing.Contains(cacheKey)) return false;
+                Bitmap thumb;
+                if (_frameCache.TryGet(cacheKey, out thumb))
+                {
+                    frames = new LootIconFrames { Frames = new Bitmap[] { thumb }, Fps = DefaultFps };
+                    return true;
+                }
+                string path = Path.Combine(_npcPortraitIconsDir, npcName + ".webp");
+                if (!File.Exists(path))
+                {
+                    _missing.Add(cacheKey);
+                    return false;
+                }
+                try
+                {
+                    using (Bitmap full = MapHudImageDecoder.LoadBitmap(path))
+                        thumb = CreateThumb(full);
+                }
+                catch
+                {
+                    _missing.Add(cacheKey);
+                    return false;
+                }
+                if (!_frameCache.TryAdd(cacheKey, thumb))
+                {
+                    thumb.Dispose();
+                    return false;
+                }
+                frames = new LootIconFrames { Frames = new Bitmap[] { thumb }, Fps = DefaultFps };
+                return true;
+            }
         }
 
         /// <summary>成功时 out 帧集（共享位图，调用方不得 Dispose）。任何失败返回 false。</summary>
