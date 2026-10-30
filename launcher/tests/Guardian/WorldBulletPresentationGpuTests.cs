@@ -28,7 +28,7 @@ namespace CF7Launcher.Tests.Guardian
     public sealed class WorldBulletPresentationGpuTests
     {
         [SharedWorldGpuFact]
-        public void ControlledSkewRetainsWholeAlignedFrameUntilMatchingSnapshotArrives()
+        public void ControlledSkewKeepsWorldAdvancingAndProjectilesFrameAligned()
         {
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             string candidate = Path.GetFullPath(Environment.GetEnvironmentVariable("CF7_TEST_SHARED_WORLD_CANDIDATE"));
@@ -210,6 +210,8 @@ namespace CF7Launcher.Tests.Guardian
                         foreach (int delayFrames in new[] { 0, 1 })
                             for (int style = 0; style < 6; style++) await Dynamic(style, fps, delayFrames);
                     await Burst(2); await Burst(5);
+                    await WireAheadLiveness();
+                    await EmptySnapshotLiveness();
                     Require(rejects == 0, "no rejected F5/F8 packets");
                     Require(failures.IsEmpty, "all geometry and pixel assertions pass");
                     finalSync = session.ReadBulletSync();
@@ -247,11 +249,13 @@ namespace CF7Launcher.Tests.Guardian
                 string a = Save(before, s.Id + "-before");
                 double sourceChange = Now; source.Set(s, 4); GdiFlush();
                 await SourceWait(p => p.Scene == s.Epoch && p.Tick == 4 && p.Hit, "raw source reached tick 4");
-                var mismatch = await PixelWait(p => Aligned(p, s, 3) && !p.Hit, "source 4 arrived but output retains aligned 3");
+                var mismatch = await PixelWait(p => p.Scene==s.Epoch && p.Tick==4 && p.Hit && p.BulletTick<0,
+                    "source 4 advances while an unmatched projectile is suppressed");
                 var mismatchSync = await Sync(s, 3);
                 string b = Save(mismatch, s.Id + "-mismatch");
                 await Task.Delay(250);
-                var sustained = await PixelWait(p => Aligned(p, s, 3) && !p.Hit, "hold remains aligned");
+                var sustained = await PixelWait(p => p.Scene==s.Epoch && p.Tick==4 && p.Hit && p.BulletTick<0,
+                    "missing packet never rewinds or freezes the world");
                 string c = Save(sustained, s.Id + "-held");
                 Require(CountMagicPixels(sustained) == 0, "source tag is hidden in final output");
                 double released = Now; Send(s, 4);
@@ -271,8 +275,8 @@ namespace CF7Launcher.Tests.Guardian
                 Require(CountMagicPixels(clear) == 0, "source tag remains hidden after clear");
                 cases.Add(new CaseResult(s, "staged", true, new
                 {
-                    sourceChange, firstHeldMs = mismatch.Ms, lastHeldMs = sustained.Ms,
-                    observedHoldSpanMs = sustained.Ms - mismatch.Ms, released, recoveredMs = recovered.Ms,
+                    sourceChange, firstAdvancedMs = mismatch.Ms, lastAdvancedMs = sustained.Ms,
+                    observedSuppressionSpanMs = sustained.Ms - mismatch.Ms, released, recoveredMs = recovered.Ms,
                     releaseToRecoveryMs = recovered.Ms - released, captures = new[] { a, b, c, d, e },
                     clearPixels = CountBulletPixels(clear), reverseSkew = true,
                     mismatchSync, recoveredSync, aheadSync
@@ -324,7 +328,8 @@ namespace CF7Launcher.Tests.Guardian
                 double start = Now;
                 for (int tick = 4; tick <= 6; tick++) { source.Set(s, tick); GdiFlush(); await Task.Delay(tick == 6 ? 50 : 100); }
                 await SourceWait(p => p.Scene == s.Epoch && p.Tick == 6 && p.Hit, "raw source reached burst tick 6");
-                var mismatch = await PixelWait(p => Aligned(p, s, 3) && !p.Hit, "burst source is held at aligned 3");
+                var mismatch = await PixelWait(p => p.Scene==s.Epoch && p.Tick==6 && p.BulletTick<0,
+                    "burst advances world 6 without drawing packet 3");
                 var mismatchSync = await Sync(s, 3);
                 string image = Save(mismatch, s.Id + "-mismatch");
                 for (int tick = 4; tick <= 7; tick++) Send(s, tick);
@@ -334,10 +339,45 @@ namespace CF7Launcher.Tests.Guardian
                 Require(CountBulletPixels(done) == 0, "burst cleanup");
                 cases.Add(new CaseResult(s, "burst", true, new
                 {
-                    start, heldUntil = mismatch.Ms, worldTick = 6, bulletTick = 3, delta = 3,
+                    start, advancedAt = mismatch.Ms, worldTick = 6, pendingPacketTick = 3, delta = 3,
                     recoveredMs = done.Ms, consumedTicks = new[] { 4, 5, 6, 7 }, capture = image,
                     clearPixels = CountBulletPixels(done), mismatchSync, recoveredSync
                 }));
+            }
+
+            private async Task WireAheadLiveness()
+            {
+                var s=await Begin(0,"wire-ahead-liveness",30,-1);
+                var latencies=new List<double>();
+                for(int packet=1;packet<=7;packet++) {
+                    Send(s,packet);await Consumed(s,packet);
+                    double changed=Now;source.Set(s,packet-1);GdiFlush();
+                    var shown=await PixelWait(p=>Aligned(p,s,packet-1),"history matches source despite newer socket packet");
+                    latencies.Add(shown.Ms-changed);
+                    Require(shown.Ms-changed<500,"wire-ahead world advances within bounded observation window");
+                }
+                source.Set(s,7);GdiFlush();
+                await PixelWait(p=>Aligned(p,s,7),"wire-ahead final clear");
+                cases.Add(new CaseResult(s,"wire-ahead-liveness",true,new {latencies,observedFrames=7}));
+            }
+
+            private async Task EmptySnapshotLiveness()
+            {
+                var s=new Scenario(++epoch,0,false,"empty-snapshot-liveness",30,-1);
+                currentCase=s.Id;
+                var latencies=new List<double>();
+                for(int tick=0;tick<16;tick++) {
+                    var empty=BulletVisualFrame.Compose(s.Epoch,tick+1,Array.Empty<BulletVisualInstance>(),
+                        Array.Empty<BulletVisualInstance>(),IndependentChainEpoch(s),tick+1);
+                    native.BulletFrame(empty,0,0,1);
+                    double changed=Now;source.Set(s,tick);GdiFlush();
+                    var shown=await PixelWait(p=>p.Scene==s.Epoch && p.Tick==tick && p.BulletTick<0,
+                        "empty ahead packet cannot freeze world");
+                    latencies.Add(shown.Ms-changed);
+                    Require(shown.Ms-changed<500,"empty world advances within bounded observation window");
+                    Require(CountBulletPixels(shown)==0 && CountMagicPixels(shown)==0,"no stale projectile or exposed source tag");
+                }
+                cases.Add(new CaseResult(s,"empty-snapshot-liveness",true,new {latencies,observedFrames=16,bulletCount=0}));
             }
 
             private static int IndependentChainEpoch(Scenario scenario) => scenario.Epoch + 17;

@@ -71,6 +71,15 @@ struct BulletFrameState {
     float cameraX = 0, cameraY = 0, cameraScale = 1;
     float params[BulletItemCap*8]{};
 };
+// WGC and the socket are independent clocks. Keep bounded immutable packets so
+// a newer packet cannot evict the one belonging to the captured source frame.
+// Empty packets retain identity but allocate no item storage.
+struct BulletFrameSnapshot {
+    int ordinaryEpoch,ordinaryFrame,chainEpoch,chainFrame;
+    float cameraX,cameraY,cameraScale;
+    std::vector<float> items;
+};
+constexpr size_t BulletHistoryCap=8;
 constexpr int CombatFxCap=512;
 constexpr int PointLightCap=16;
 constexpr int SceneLightCap=128;
@@ -654,6 +663,21 @@ public:
             bulletFrame_.ordinaryEpoch=ordinaryEpoch;bulletFrame_.ordinaryFrame=ordinaryFrame;
             bulletFrame_.chainEpoch=chainEpoch;bulletFrame_.chainFrame=chainFrame;
             bulletFrame_.submittedQpcMs=submittedAt;bulletFrame_.version=++bulletSnapshotVersion_;
+            if(ordinaryEpoch<0 || chainEpoch<0) bulletHistory_.clear();
+            else {
+                if(!bulletHistory_.empty() && (bulletHistory_.back()->ordinaryEpoch!=ordinaryEpoch
+                    || bulletHistory_.back()->chainEpoch!=chainEpoch)) bulletHistory_.clear();
+                auto snapshot=std::make_shared<BulletFrameSnapshot>();
+                snapshot->ordinaryEpoch=ordinaryEpoch;snapshot->ordinaryFrame=ordinaryFrame;
+                snapshot->chainEpoch=chainEpoch;snapshot->chainFrame=chainFrame;
+                snapshot->cameraX=cameraX;snapshot->cameraY=cameraY;snapshot->cameraScale=cameraScale;
+                if(count>0)snapshot->items.assign(items,items+static_cast<size_t>(count)*8);
+                bulletHistory_.erase(std::remove_if(bulletHistory_.begin(),bulletHistory_.end(),[&](const auto& old) {
+                    return old->ordinaryFrame==ordinaryFrame && old->chainFrame==chainFrame;
+                }),bulletHistory_.end());
+                bulletHistory_.push_back(std::move(snapshot));
+                if(bulletHistory_.size()>BulletHistoryCap)bulletHistory_.erase(bulletHistory_.begin());
+            }
             bulletSyncStats_.submittedOrdinaryEpoch=ordinaryEpoch;bulletSyncStats_.submittedOrdinaryFrame=ordinaryFrame;
             bulletSyncStats_.submittedChainEpoch=chainEpoch;bulletSyncStats_.submittedChainFrame=chainFrame;
             bulletSyncStats_.submittedVersion=bulletSnapshotVersion_;bulletSyncStats_.submittedQpcMs=submittedAt;
@@ -992,6 +1016,7 @@ private:
         uint64_t appliedAtmosphere = 0;
         uint64_t appliedBullet = 0, appliedBulletSnapshot = 0;
         uint64_t appliedBulletAtlas=0;
+        std::vector<std::shared_ptr<const BulletFrameSnapshot>> bulletHistory;
         // The ~512KB frame snapshots would overflow the worker's 1MB default
         // stack together; heap-allocate once and keep the draw code unchanged.
         BulletStylesState bulletStyles;
@@ -1255,7 +1280,7 @@ private:
                         appliedBulletSnapshot=bulletFrame.version;
                     }
                     if(bulletFrame.count>0)std::memcpy(bulletFrame.params,bulletFrame_.params,static_cast<size_t>(bulletFrame.count)*32);
-                    appliedBullet=bulletVersion_; }
+                    bulletHistory=bulletHistory_;appliedBullet=bulletVersion_; }
                 if(fxVersion_!=appliedFx) {
                     if(fxFrame.count!=fxFrame_.count || (fxFrame_.count>0
                         && std::memcmp(fxFrame.params,fxFrame_.params,static_cast<size_t>(fxFrame_.count)*64)!=0))
@@ -1369,7 +1394,7 @@ private:
             auto resource=casSource.Apply(device.get(),context.get(),vs.get(),srv.get(),textureW,textureH,
                 postprocessWork.casEnabled && casStage==1 && imageScale>=1.5f,fresh,adjustedCas,casStageWork);
             if(sourceNeighborhood)casStageWork.appliedStage=2;
-            syncSurface.Resize(device.get(),context.get(),w,h);
+            syncSurface.Resize(device.get(),w,h);
             int syncIdentity[4]{bulletFrame.ordinaryEpoch,bulletFrame.ordinaryFrame,bulletFrame.chainEpoch,bulletFrame.chainFrame};
             bool syncActive=!proof && bulletFrame.ordinaryEpoch>=0 && bulletFrame.ordinaryFrame>=0
                 && bulletFrame.chainEpoch>=0 && bulletFrame.chainFrame>=0;
@@ -1378,7 +1403,7 @@ private:
             if(syncActive) {
                 target=syncSurface.CandidateTarget();composed.copy_from(syncSurface.CandidateTexture());
             } else {
-                syncSurface.Reset(device.get(),context.get());target=rtv.get();
+                target=rtv.get();
                 check_hresult(swap->GetBuffer(0,__uuidof(ID3D11Texture2D),composed.put_void()));
             }
             context->OMSetRenderTargets(1,&target,nullptr);
@@ -1478,9 +1503,11 @@ private:
             // Bullets stay above casings and below short muzzle flashes,
             // alpha blended over world+weather+atmosphere. The base grade
             // cbuffer and LUT resource stay bound for the bullet grade.
-            if (bulletFrame.count>0 && bulletStyles.count>0 && texture && !proof) {
-                float bp[8]{viewport.Width,viewport.Height,gradeLutActive?1.f:0.f,static_cast<float>(bulletFrame.count),
-                    bulletFrame.cameraX,bulletFrame.cameraY,bulletFrame.cameraScale,static_cast<float>(bulletStyles.count)};
+            auto drawBulletSnapshot=[&](const float* items,int itemCount,float cameraX,float cameraY,float cameraScale,const int* identity) {
+                if(itemCount==0 || bulletStyles.count==0 || !texture || proof)return;
+                syncSurface.UpdateParams(context.get(),identity,textureW,textureH,viewport,syncActive);
+                float bp[8]{viewport.Width,viewport.Height,gradeLutActive?1.f:0.f,static_cast<float>(itemCount),
+                    cameraX,cameraY,cameraScale,static_cast<float>(bulletStyles.count)};
                 context->UpdateSubresource(bulletStyleParams.get(),0,nullptr,bulletStyles.params,0,0);
                 context->VSSetShader(bulletVs.get(),nullptr,0); context->PSSetShader(bulletPs.get(),nullptr,0);
                 auto bulletBuffer=bulletParams.get();
@@ -1494,16 +1521,27 @@ private:
                 // The fixed cbuffer upload reads a full batch. The staging buffer is
                 // filled per batch and only the tail of a partial batch is zero padded.
                 float batch[BulletBatchCap*8];
-                for(int offset=0;offset<bulletFrame.count;offset+=BulletBatchCap) {
-                    int count=std::min(BulletBatchCap,bulletFrame.count-offset);bp[3]=static_cast<float>(count);
+                for(int offset=0;offset<itemCount;offset+=BulletBatchCap) {
+                    int count=std::min(BulletBatchCap,itemCount-offset);bp[3]=static_cast<float>(count);
                     context->UpdateSubresource(bulletParams.get(),0,nullptr,bp,0,0);
-                    std::memcpy(batch,bulletFrame.params+offset*8,static_cast<size_t>(count)*32);
+                    std::memcpy(batch,items+offset*8,static_cast<size_t>(count)*32);
                     if(count<BulletBatchCap)std::memset(batch+count*8,0,static_cast<size_t>(BulletBatchCap-count)*32);
                     context->UpdateSubresource(bulletItemParams.get(),0,nullptr,batch,0,0);
                     context->Draw(count*6,0);
                 }
                 context->OMSetBlendState(nullptr,nullptr,0xffffffff);
-            }
+            };
+            if(syncActive) {
+                // Each vertex shader rejects nonmatching source tags. At most one
+                // immutable identity is drawn; never substitute a future/old bullet.
+                for(const auto& snapshot:bulletHistory) {
+                    int identity[4]{snapshot->ordinaryEpoch,snapshot->ordinaryFrame,snapshot->chainEpoch,snapshot->chainFrame};
+                    drawBulletSnapshot(snapshot->items.data(),static_cast<int>(snapshot->items.size()/8),
+                        snapshot->cameraX,snapshot->cameraY,snapshot->cameraScale,identity);
+                }
+            } else drawBulletSnapshot(bulletFrame.params,bulletFrame.count,bulletFrame.cameraX,
+                bulletFrame.cameraY,bulletFrame.cameraScale,syncIdentity);
+            ID3D11ShaderResourceView* noSyncSource=nullptr;context->VSSetShaderResources(4,1,&noSyncSource);
             if(rayFrame.count>0 && texture && !proof) {
                 context->VSSetShader(rayVs.get(),nullptr,0);context->PSSetShader(rayPs.get(),nullptr,0);
                 auto rp=rayParams.get(),ri=rayItems.get();
@@ -1563,7 +1601,7 @@ private:
             if(measureHudGpu)hudCostSampler.Finish(context.get());
             {std::lock_guard guard(mutex_);hudStats_.visibleLayers=hudDraw.visibleLayers;
                 hudStats_.uploads+=hudDraw.uploads;hudStats_.uploadedBytes+=hudDraw.uploadedBytes;hudStats_.draws+=hudDraw.draws;}
-            if(syncActive)syncSurface.Final(context.get(),vs.get(),rtv.get(),srv.get(),syncIdentity,
+            if(syncActive)syncSurface.Final(context.get(),vs.get(),rtv.get(),syncIdentity,
                 textureW,textureH,viewport,w,h,sampler.get());
             double submit = QpcMs();
             if (proof) {
@@ -1819,6 +1857,7 @@ private:
     AtmosphereState atmosphere_{}; uint64_t atmosphereVersion_=0;
     WeatherStyleState weatherStyle_{}; AtmosphereStyleState atmosphereStyle_{};
     BulletStylesState bulletStyles_{}; BulletFrameState bulletFrame_{}; uint64_t bulletVersion_=0;
+    std::vector<std::shared_ptr<const BulletFrameSnapshot>> bulletHistory_;
     uint64_t bulletSnapshotVersion_=0;ProbeBulletSyncStats bulletSyncStats_{sizeof(ProbeBulletSyncStats)};
     std::shared_ptr<std::vector<uint8_t>> bulletAtlas_;int bulletAtlasW_=0,bulletAtlasH_=0;
     uint64_t bulletAtlasVersion_=0;std::atomic<uint64_t> bulletAtlasReady_{0};

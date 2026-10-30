@@ -712,24 +712,17 @@ float4 BPS(BVertex v) : SV_TARGET {
 
 constexpr char FrameSyncShader[] = R"hlsl(
 Texture2D syncCandidate : register(t0);
-Texture2D syncHistory : register(t1);
-Texture2D syncSource : register(t2);
 SamplerState syncPoint : register(s0);
 cbuffer BulletSync : register(b7) { float4 bIdentity; float4 bFrameSize; float4 bView; };
 struct SyncVertex { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; };
-struct SyncOutput { float4 screen : SV_TARGET0; float4 history : SV_TARGET1; };
-SyncOutput SyncPS(SyncVertex v) {
-    bool match=FrameTagMatches(syncSource,bFrameSize.xy,bIdentity);
+float4 SyncPS(SyncVertex v) : SV_TARGET {
     float4 candidate=syncCandidate.SampleLevel(syncPoint,v.uv,0);
     float2 logical=(v.uv*bFrameSize.zw-bView.xy)/bFrameSize.zw*float2(1024.0,576.0);
     if(logical.x<64.0 && logical.y>=560.0)
         candidate=syncCandidate.SampleLevel(syncPoint,v.uv+float2(64.0/bFrameSize.z,0),0);
-    float4 previous=syncHistory.SampleLevel(syncPoint,v.uv,0);
-    SyncOutput o;
-    if(match) { o.screen=candidate;o.history=float4(candidate.rgb,1.0); }
-    else if(previous.a>0.5) { o.screen=previous;o.history=previous; }
-    else { o.screen=float4(0,0,0,1);o.history=float4(0,0,0,0); }
-    return o;
+    // Projectile identity gates only projectile vertices. Socket/capture skew
+    // must never replay an old whole world (including its HUD) indefinitely.
+    return candidate;
 }
 )hlsl";
 

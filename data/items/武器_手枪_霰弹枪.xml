@@ -688,7 +688,7 @@
       <price>497000</price>
       <description>Origin-12以极快的射速和近距离压制力著称。凭借弹匣供弹带来的流畅续火能力，在室内或狭窄地形中能迅速倾泻火力，对近距离目标造成爆发性伤害。</description>
       <data>
-        <level>35</level>
+        <level>26</level>
         <weight>5</weight>
         <dressup>枪-手枪-Origin12</dressup>
         <capacity>8</capacity>
@@ -704,7 +704,7 @@
         <bullethit>火花</bullethit>
         <clipname>00号鹿弹</clipname>
         <bulletsize>25</bulletsize>
-        <power>350</power>
+        <power>300</power>
         <impact>12</impact>
         <reloadPenalty>0</reloadPenalty>
       </data>
@@ -739,7 +739,7 @@
       <price>497000</price>
       <description>Origin-12以极快的射速和近距离压制力著称。凭借弹匣供弹带来的流畅续火能力，在室内或狭窄地形中能迅速倾泻火力，对近距离目标造成爆发性伤害。</description>
       <data>
-        <level>35</level>
+        <level>45</level>
         <weight>5</weight>
         <dressup>枪-手枪-Origin12战术版</dressup>
         <capacity>30</capacity>
@@ -748,14 +748,14 @@
         <diffusion>10</diffusion>
         <interval>150</interval>
         <velocity>40</velocity>
-        <bullet>横向联弹-加强普通子弹</bullet>
-        <bulletrename>加强普通子弹</bulletrename>
+        <bullet>横向联弹-次级穿刺子弹</bullet>
+        <bulletrename>常规穿甲弹</bulletrename>
         <sound>origin12.wav</sound>
         <muzzle>霰弹枪枪火</muzzle>
         <bullethit>火花</bullethit>
         <clipname>00号鹿弹</clipname>
         <bulletsize>25</bulletsize>
-        <power>350</power>
+        <power>440</power>
         <impact>12</impact>
         <reloadPenalty>0</reloadPenalty>
       </data>
@@ -815,7 +815,7 @@
       <price>497000</price>
       <description>Vepr-12 是基于 AK 平台衍生的半自动战斗霰弹枪，以RPK轻机枪的加强型机匣为基础打造，发射 12 号霰弹。采用直插式弹匣井（类似 AR 风格）而非 AK 的摆动式换弹，并标配空仓挂机功能，人机工效更优。</description>
       <data>
-        <level>35</level>
+        <level>27</level>
         <weight>5</weight>
         <dressup>枪-手枪-Vepr12紧凑改装型</dressup>
         <capacity>12</capacity>
@@ -824,14 +824,14 @@
         <diffusion>10</diffusion>
         <interval>150</interval>
         <velocity>40</velocity>
-        <bullet>横向联弹-加强普通子弹</bullet>
-        <bulletrename>加强普通子弹</bulletrename>
+       <bullet>横向联弹-次级穿刺子弹</bullet>
+       <bulletrename>常规穿甲弹</bulletrename>
         <sound>Vepr12sd.wav</sound>
         <muzzle>霰弹枪枪火</muzzle>
         <bullethit>火花</bullethit>
         <clipname>00号鹿弹</clipname>
         <bulletsize>25</bulletsize>
-        <power>350</power>
+        <power>330</power>
         <impact>12</impact>
         <reloadPenalty>0</reloadPenalty>
       </data>
@@ -881,7 +881,7 @@
       <price>497000</price>
       <description>这把武器是对AK平台的霰弹枪化改造：在末日前它本质是绕开对短管霰弹枪的管制门槛改造的12号半自动枪械，而非为了追求短管霰弹枪的战术性能或人机工效而自然演化出的设计。但在末日社会里，可拆卸弹匣让它换弹远快于传统管式霰弹枪，在清理室内、车厢或狭窄废墟时极为灵活，且能直接塞入10发的弹匣甚至弹鼓，配合AK结构的耐脏可靠性，特别受那些需要在一瞬间泼洒火力压制尸群或敌人的老手偏爱。</description>
       <data>
-        <level>35</level>
+        <level>17</level>
         <weight>5</weight>
         <dressup>枪-手枪-KHAOS 12</dressup>
         <capacity>10</capacity>
@@ -932,23 +932,23 @@
       <price>497000</price>
       <description>这把武器是对AK平台的霰弹枪化改造：在末日前它本质是绕开对短管霰弹枪的管制门槛改造的12号半自动枪械，而非为了追求短管霰弹枪的战术性能或人机工效而自然演化出的设计。但在末日社会里，可拆卸弹匣让它换弹远快于传统管式霰弹枪，在清理室内、车厢或狭窄废墟时极为灵活，且能直接塞入10发的弹匣甚至弹鼓，配合AK结构的耐脏可靠性，特别受那些需要在一瞬间泼洒火力压制尸群或敌人的老手偏爱。</description>
       <data>
-        <level>35</level>
+        <level>33</level>
         <weight>5</weight>
         <dressup>枪-手枪-KHAOS 12战术版</dressup>
         <capacity>25</capacity>
       <overload><chamber>1</chamber><ghost>0</ghost></overload>
-        <split>5</split>
+        <split>1</split>
         <diffusion>10</diffusion>
         <interval>150</interval>
         <velocity>40</velocity>
-        <bullet>横向联弹-加强普通子弹</bullet>
-        <bulletrename>加强普通子弹</bulletrename>
+        <bullet>高爆子弹</bullet>
+        <bulletrename>常规穿甲弹</bulletrename>
         <sound>origin12.wav</sound>
         <muzzle>霰弹枪枪火</muzzle>
         <bullethit>火花</bullethit>
-        <clipname>00号鹿弹</clipname>
+        <clipname>内爆弹</clipname>
         <bulletsize>25</bulletsize>
-        <power>350</power>
+        <power>340</power>
         <impact>12</impact>
         <reloadPenalty>0</reloadPenalty>
       </data>

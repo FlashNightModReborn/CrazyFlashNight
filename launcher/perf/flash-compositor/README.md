@@ -107,7 +107,7 @@ Remove-Item Env:CF7_TEST_SHARED_WORLD_CANDIDATE
 
 `NativeFrameTag` 在 1024×576 根逻辑坐标的 `(0,560)`、`(16,560)`、`(32,560)`、`(48,560)` 绘制四个 16×16 色块。帧末各视觉 section 已生成后、F 包发送前，只有 ordinary 处于原生所有权且 `ChainVisualBridge.flush()` 实际生成 F8 时才发布标记；任一通道缺失、身份非法、断连或没有 gameworld 时隐藏，场景退休时释放自己的 MovieClip。四块依次编码 magic `0x13579B`、24 位逻辑帧小端 RGB、16 位 F5 epoch 与校验字节、帧字节补色；校验为五个 epoch/frame 字节之和再加 167。原生按捕获分辨率映射到色块中心并用 `Load` 解码，不增加逐帧 CPU 像素回读，最终输出用右侧图像遮盖逻辑标记区。
 
-GPU 同帧门要求 ordinary 与 chain 的 epoch/frame 均已知，并分别核对源标记中的 F5 epoch＋逻辑帧和 F8 的逻辑帧。F5 每次能力配置推进自己的 epoch，F8 只在重同步／场景退休时推进自己的 epoch；两套计数不能要求相等，F8 epoch 不写入源标记，只继续承担有序接收和旧包隔离。身份不匹配或标记无效时不拼接新候选，保留上一份完整已确认画面；尚无已确认历史时不输出该候选。历史 alpha 只表示是否存在可接受历史，不充当逻辑帧号。旧 ABI 和没有完整 F5／F8 身份的画廊仍走原路径，此时 AS2 不发布标记。该策略不改伤害结算、碰撞或受击时序。
+GPU 同帧门要求 ordinary 与 chain 的 epoch/frame 均已知，并分别核对源标记中的 F5 epoch＋逻辑帧和 F8 的逻辑帧。F5 每次能力配置推进自己的 epoch，F8 只在重同步／场景退休时推进自己的 epoch；两套计数不能要求相等，F8 epoch 不写入源标记，只继续承担有序接收和旧包隔离。原生保留最近 8 个不可变子弹快照，GPU 只绘制与捕获源标记精确匹配的那份；同身份更新替换旧快照，任一通道 epoch 变化或未知身份清空历史，空快照不分配子弹数组。身份不匹配、标记无效或对应快照已越过容量时，只抑制无法确认的子弹，世界与 HUD 始终呈现当前捕获画面。禁止把子弹对齐失败扩大为整帧历史回放或无限等待：该旧策略会在空子弹、持续一帧错位下冻结整个画面，同时 Flash FPS 和 Present 计数继续增长。旧 ABI 和没有完整 F5／F8 身份的画廊仍走原路径，此时 AS2 不发布标记。该策略不改伤害结算、碰撞或受击时序；极端缺包时允许短时缺失子弹视觉，不绘制身份错误的子弹，也不延迟整个世界。
 
 `ProbeSetBulletFrameV2` 在 ABI 12 的旧记录之外追加 ordinary／chain 各自的 epoch、frame；旧 `ProbeSetBulletFrame` 保留，未知身份使用 -1。新 Host 必须配套带 V2 与 `ProbeGetBulletSyncStats` 的 native，104 字节统计分别记录最近提交和最近一次成功 Present 实际采用的候选、版本合并次数，以及提交、捕获和呈现 QPC。`world_bullet_sync` 每秒最多记录一次，FocusTrace 对应 `world.bullet_sync`。`candidateOrdinary`、`candidateChain` 与 `candidateVersions` 都是候选统计，不是 GPU 最终历史选择的源帧号；`candidateFrameIds=true` 表示候选携带身份，`sourceLogicalFrameInStats=false` 与 `presentedSourceMatchKnown=false` 保留这一观测边界。QPC 相近不能代替源帧身份，也不能据此声称物理 scanout 已验证。
 
@@ -121,7 +121,7 @@ $env:CF7_TEST_SHARED_WORLD_CANDIDATE = Join-Path (Get-Location).Path 'tmp/runtim
 Remove-Item Env:CF7_TEST_SHARED_WORLD_CANDIDATE
 ```
 
-夹具经真实回环 Socket、生产 `FrameTask` 和候选 native 覆盖五种 F5 样式与一种 F8 穿刺联弹，F8 使用与 F5 不同的 epoch，注入正反向及积压时差，从最终合成回读同时核对画面游标、native 候选身份、出生／删除／清空和版本合并。测试 Host 与 candidate Core 分别记录路径和 SHA-256。标记由受控源窗口生成；这是受控机制证据，不是 AS2 标记光栅、碰撞、健身房现场、物理 scanout、性能基准或正式入口验收。AS2 另须取得对应 CS6 focused 与 publish 证据，真实游戏场景单独记录。
+夹具经真实回环 Socket、生产 `FrameTask` 和候选 native 覆盖五种 F5 样式与一种 F8 穿刺联弹，F8 使用与 F5 不同的 epoch，注入正反向及积压时差，从最终合成回读同时核对画面游标、native 候选身份、出生／删除／清空和版本合并；额外检查消息持续领先一帧时历史匹配仍逐帧前进，以及连续 16 个空子弹错帧样本都更新世界。源码帧先到时，断言当前世界推进且错误子弹不显示，不能再把整帧冻结当作通过。测试 Host 与 candidate Core 分别记录路径和 SHA-256。标记由受控源窗口生成；这是受控机制证据，不是 AS2 标记光栅、碰撞、健身房现场、物理 scanout、性能基准或正式入口验收。AS2 修改另须取得对应 CS6 focused 与 publish 证据，真实游戏场景单独记录。
 
 **Focused 入口：** `scripts/run-bullet-visual-tests.ps1`（当前 15/15 + 12/12）与 `scripts/run-visual-wire-q1-tests.ps1`（当前 16/16）。成功要求本轮 Compiler `0/0`、唯一闭合 suite 行为和 SWF 函数尺寸门，静态 `-SkipCompile` 不算编译或行为通过。
 
