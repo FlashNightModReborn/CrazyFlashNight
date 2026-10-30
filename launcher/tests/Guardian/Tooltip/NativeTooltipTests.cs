@@ -1164,7 +1164,8 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                 withMag.MagazineNameTopPx);
             // 第二行 = 子弹类型，与弹夹名同左缘
             Assert.Equal("4.7mm 无壳弹", withMag.MagazineAmmo);
-            Assert.Equal(withMag.MagazineNameTopPx + fontLine + lineGap,
+            // 第二行接在完整图标行之后，而非垂直居中的名称字盒之后。
+            Assert.Equal(withMag.MagazineRow.Top + nameLineH + lineGap,
                 withMag.MagazineAmmoTopPx);
             Assert.Equal(nameLineH + lineGap + fontLine,
                 withMag.MagazineRow.Height);
@@ -1350,7 +1351,28 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                         Math.Max(1, placed.X + plan.MagazineRow.Right
                             - (placed.X + plan.MagazineTextLeftPx)),
                         Math.Max(1, plan.MagazineAmmoH));
-                    Assert.True(BrightPixels(bmp, ammo) > 3, "子弹类型应被绘制");
+                    // 子弹类型沿用 Web 的 80% 白色；抗锯齿后的像素未必达到
+                    // 不透明白字的 200 阈值。保持相同布局，以仅去掉该文字的
+                    // 绘制结果作负对照，直接确认第二行存在可见字形。
+                    using (var withoutAmmo = new Bitmap(1024, 576))
+                    using (Graphics controlGraphics = Graphics.FromImage(withoutAmmo))
+                    {
+                        controlGraphics.Clear(Color.FromArgb(255, 24, 26, 28));
+                        string savedAmmo = plan.MagazineAmmo;
+                        try
+                        {
+                            plan.MagazineAmmo = null;
+                            w.Paint(controlGraphics, 1.0f, Point.Empty);
+                        }
+                        finally { plan.MagazineAmmo = savedAmmo; }
+                        int glyphPixels = 0;
+                        for (int x = ammo.Left; x < ammo.Right; x++)
+                            for (int y = ammo.Top; y < ammo.Bottom; y++)
+                                if (bmp.GetPixel(x, y).ToArgb()
+                                    != withoutAmmo.GetPixel(x, y).ToArgb()) glyphPixels++;
+                        Assert.True(glyphPixels > 3,
+                            "子弹类型应被绘制，与无文字对照的差异像素=" + glyphPixels);
+                    }
                 }
             }
         }
