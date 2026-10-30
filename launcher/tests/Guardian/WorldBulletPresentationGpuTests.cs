@@ -28,7 +28,7 @@ namespace CF7Launcher.Tests.Guardian
     public sealed class WorldBulletPresentationGpuTests
     {
         [SharedWorldGpuFact]
-        public void ControlledSkewRetainsWholeAlignedFrameUntilMatchingSnapshotArrives()
+        public void ControlledSkewKeepsWorldAdvancingAndProjectilesFrameAligned()
         {
             Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
             string candidate = Path.GetFullPath(Environment.GetEnvironmentVariable("CF7_TEST_SHARED_WORLD_CANDIDATE"));
