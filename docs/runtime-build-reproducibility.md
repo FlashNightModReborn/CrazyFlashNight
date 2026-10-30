@@ -1348,3 +1348,9 @@ Issue #152 已完成两轮正式推广。第二轮冻结源 `c1d9ab2576937aa2fa4
 部署提交 `689a656d902e3244c5fb5fc278a131f8de4b4d95` 已快进推送；[部署Audit 40864358114](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/40864358114) 独立重放 `state=promoted / deploymentChanged=true` 和双故障域共识。无参数正式入口的克隆基地画面正常，连续源帧的magic、epoch、补色和校验均通过，专用来源槽及原玩家槽未试写。`businessJourneyExecuted=false / physicalInputAttestation=false / combatVerified=false`，实际键鼠、穿刺、打桩与完整战斗仍待验收。
 
 v1政策失败、材料与workbench修正、GPU元数据补齐、CS6与GPU实测、正式入口及存档保护归[本批发布记录](reports/子弹源帧同步-正式发布-2026-10-29.md)。现役身份继续读取manifest/consensus；本批仍为2.718 DEV / UNSTABLE，不新增稳定整包。
+
+## 2026-10-30 整帧冻结止血正式推广
+
+冻结源 `4f08917aa7f585e29c2935d51e61024fe585d485`、标签 `runtime-build-v2/20261030-world-stutter-hotfix-v2` 将子弹同步限制在对应视觉层，保留有界快照匹配，取消错帧时冻结整个世界与 HUD 的路径。正式旧 DLL 的零子弹持续错一帧对照复现约 2.3 秒停帧；修复后的精确候选通过 46 组 GPU 对照。
+
+production policy **47/47**，注册本地 X509 与 [GitHub 独立构建 41031842989](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/41031842989) 达成同一 43 文件闭包的双签名、双故障域共识。唯一 writer 推广后，部署 `a3b879f5cc` 与合并上游的 `276d786fa6` 已推送 main、同步常用目录；strict consensus 和普通入口 `--verify-only` 通过。实际自动入场的标题回执超时仍保留为未通过，不宣称实战或物理手感验收。身份、旧包、完整验证与边界见[本批发布记录](reports/整帧冻结止血-正式发布-2026-10-30.md)。本批仍为 2.718 DEV / UNSTABLE。
