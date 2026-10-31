@@ -110,7 +110,7 @@
 - **仅当对象被当作内部字典/哈希表使用时，才断开原型链**（`obj.__proto__ = null`），否则 `for...in` 会遍历到原型属性，属性查找也会沿原型链上溯产生意外命中
 - **凡会泄露到模块边界的数据结果禁止默认断链**：包括 JSON 解析结果、配置对象、加载器返回值、跨模块传递对象；必须保持普通 `Object`，兼容 `:Object` 形参、`!= null`、`hasOwnProperty`、`constructor` 等工程约定
 - **需要 proto-null 字典时在消费端显式创建**，不要让解析器为所有对象统一断链；`LiteJSON.parse()` 返回普通对象
-- **`proto-null` 对象的 loose equality 会退化**：实测 `obj == null` 与 `obj == undefined` 都可能返回 `true`，但 `===` 仍正常，自有属性与 `for...in` 仍可用；详见 [AS2 中 proto-null 对象的相等性退化与工程边界](../scripts/优化随笔/AS2%20中%20proto-null%20对象的相等性退化与工程边界.md)
+- **`proto-null` 对象的 loose equality 会退化**：实测 `obj == null` 与 `obj == undefined` 都可能返回 `true`（包括 `MovieClip.getBounds()` 等原生 C++ 返回的无原型属性袋，`mc.getBounds(...) != null` 恒为 `false`），但 `===` 仍正常，自有属性（如 `b.xMax - b.xMin`）与 `for...in` 仍可用；详见 [AS2 中 proto-null 对象的相等性退化与工程边界](../scripts/优化随笔/AS2%20中%20proto-null%20对象的相等性退化与工程边界.md)
 - **`for...in` 遍历顺序是稳定的**（Ruffle 项目验证）：原型链属性优先 → 自身属性按 reverse insertion order → DisplayObject 子对象按 depth 降序。删除属性后顺序仍稳定
 
 ### 对象字面量与键名

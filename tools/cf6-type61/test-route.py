@@ -190,11 +190,12 @@ class Type61RouteTests(unittest.TestCase):
         self.assertEqual('E2',self.maps['A13']['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0]['Parameters']['cf6EliteQuota'])
 
     def test_soldier_progression_and_loot_carriers(self):
+        registry=builder.UnitRegistry.load(ROOT)
         counts={}
         for node,stage in self.maps.items():
             counter=collections.Counter()
             for enemy in builder.all_enemies(stage):
-                unit=enemy['Type'];p=enemy.get('Parameters',{})
+                unit=registry.resolve_type(enemy['Type']);p=enemy.get('Parameters',{})
                 role={'兵种466':'ordinary','兵种467':'ordinary','兵种478':'elite','兵种479':'elite','兵种480':'instructor','兵种481':'instructor'}.get(unit)
                 if role is None:continue
                 counter[role]+=enemy['Quantity']

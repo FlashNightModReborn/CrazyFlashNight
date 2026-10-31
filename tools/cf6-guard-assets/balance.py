@@ -54,6 +54,8 @@ def expected(transform=False):
     for k,formula in common.FIELDS.items():entry.find(k).text=str(math.floor(values[formula]+0.5))
     unit={'id':unit_id,'spritename':link,'level':30,'name':display_name,'is_hostile':True,'height':175,
         'data':{'primary':None,'secondary':None,'secondary2':None,'melee':None}}
+    unit=common.preserve_unit_key(unit,json.loads((ROOT/'data/units/units.json').read_text('utf-8-sig')),
+        new_key='cf6.光头保安.变身型' if transform else 'cf6.光头保安.普通型')
     receipt={'formula':'tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts',
         'schemaReference':SOURCE,'unitId':unit_id,'linkage':link,'defaultTransform':transform,'phaseParameter':'光头保安变身','requestedStage':6,'requestedTier':3,
         'fixedByUser':['阶段','档次系数'],'input':inputs,'flags':flags,

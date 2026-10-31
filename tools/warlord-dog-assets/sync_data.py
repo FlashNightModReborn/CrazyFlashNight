@@ -48,10 +48,12 @@ def main():
     units_path=ROOT/'data/units/units.json'
     text=units_path.read_text(encoding='utf-8-sig')
     units=json.loads(text)
-    record={'id':balance['unitId'],'spritename':KIND,'level':20,'name':'军阀铁卫犬',
+    record={'id':balance['unitId'],'key':'军阀.铁卫犬','spritename':KIND,'level':20,'name':'军阀铁卫犬',
             'is_hostile':True,'height':175,'data':{'primary':None,'secondary':None,'secondary2':None,'melee':None}}
     found=[u for u in units if u['id']==balance['unitId'] or u['spritename']==KIND]
     if found:
+        if 'key' not in found[0]:
+            del record['key']
         assert found==[record],found
     elif args.check:
         failures.append(str(units_path.relative_to(ROOT)))
@@ -63,7 +65,8 @@ def main():
     for name in ['军阀临时补给点','军阀据点','残垣断壁','基地','难民营地']:
         path=ROOT/'data/stages/基地房顶'/f'{name}.xml'
         text=path.read_text(encoding='utf-8-sig')
-        projected=text.replace('<Type>兵种13</Type>',f'<Type>兵种{balance["unitId"]}</Type>')
+        target_type='军阀.铁卫犬' if '<Type>军阀.铁卫犬</Type>' in text else f'兵种{balance["unitId"]}'
+        projected=text.replace('<Type>兵种13</Type>',f'<Type>{target_type}</Type>')
         if args.check:
             if projected!=text:failures.append(str(path.relative_to(ROOT)))
         elif projected!=text:path.write_text(projected,encoding='utf-8')
@@ -72,15 +75,15 @@ def main():
     text=path.read_text(encoding='utf-8-sig')
     marker='<SubStage id="1">';head,tail=text.split(marker,1)
     middle,ending=tail.split('</SubStage>',1)
-    if f'<Type>兵种{balance["unitId"]}</Type>' not in middle:
-        matches=list(re.finditer(r'<Enemy>\s*<Type>兵种56</Type>.*?</Enemy>',middle,re.S))
+    if f'<Type>兵种{balance["unitId"]}</Type>' not in middle and '<Type>军阀.铁卫犬</Type>' not in middle:
+        matches=list(re.finditer(r'<Enemy>\s*<Type>(?:兵种56|军阀\.突击兵)</Type>.*?</Enemy>',middle,re.S))
         assert len(matches)==3
         match=matches[-1]
-        dog=match.group().replace('<Type>兵种56</Type>',f'<Type>兵种{balance["unitId"]}</Type>')
+        dog=re.sub(r'<Type>(?:兵种56|军阀\.突击兵)</Type>',f'<Type>兵种{balance["unitId"]}</Type>',match.group(),count=1)
         dog=dog.replace('<IsHostile>null</IsHostile>',
             '<IsHostile>null</IsHostile>\n                        <x>1080</x>\n                        <y>396</y>')
         middle=middle[:match.start()]+dog+middle[match.end():]
-    matches=list(re.finditer(r'<Enemy>\s*<Type>兵种56</Type>.*?</Enemy>',middle,re.S))
+    matches=list(re.finditer(r'<Enemy>\s*<Type>(?:兵种56|军阀\.突击兵)</Type>.*?</Enemy>',middle,re.S))
     assert len(matches)==2
     for match,x in reversed(list(zip(matches,[990,900]))):
         soldier=match.group()

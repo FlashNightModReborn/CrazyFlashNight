@@ -126,68 +126,68 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种13</Type>
+                        <Type>僵尸.野狗</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>20</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种1</Type>
+                        <Type>僵尸.金发女</Type>
                         <Interval>500</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种2</Type>
+                        <Type>僵尸.眼镜男</Type>
                         <Interval>500</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种3</Type>
+                        <Type>僵尸.光头军人</Type>
                         <Interval>500</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种4</Type>
+                        <Type>僵尸.红衣金发女</Type>
                         <Interval>500</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="5">
-                        <Type>兵种5</Type>
+                        <Type>僵尸.胖子</Type>
                         <Interval>500</Interval>
                         <Quantity>5</Quantity>
                         <Level>20</Level>
                     </Enemy>
                     <Enemy id="6">
-                        <Type>兵种6</Type>
+                        <Type>僵尸.黄衣男</Type>
                         <Interval>500</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="7">
-                        <Type>兵种8</Type>
+                        <Type>僵尸.佝偻</Type>
                         <Interval>500</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="8">
-                        <Type>兵种400</Type>
+                        <Type>僵尸.防暴僵尸</Type>
                         <Interval>1000</Interval>
                         <Quantity>4</Quantity>
                         <Level>25</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="9">
-                        <Type>兵种401</Type>
+                        <Type>僵尸.特战僵尸</Type>
                         <Interval>1000</Interval>
                         <Quantity>4</Quantity>
                         <Level>25</Level>
@@ -202,21 +202,21 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种7</Type>
+                        <Type>僵尸.狂暴</Type>
                         <Interval>500</Interval>
                         <Quantity>5</Quantity>
                         <Level>22</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种13</Type>
+                        <Type>僵尸.野狗</Type>
                         <Interval>500</Interval>
                         <Quantity>5</Quantity>
                         <Level>22</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种39</Type>
+                        <Type>僵尸.狂躁</Type>
                         <Interval>1000</Interval>
                         <Quantity>10</Quantity>
                         <Level>22</Level>
@@ -224,7 +224,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种39</Type>
+                        <Type>僵尸.狂躁</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>25</Level>
@@ -232,7 +232,7 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种401</Type>
+                        <Type>僵尸.特战僵尸</Type>
                         <Interval>2000</Interval>
                         <Quantity>7</Quantity>
                         <Level>25</Level>
@@ -240,7 +240,7 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="5">
-                        <Type>兵种400</Type>
+                        <Type>僵尸.防暴僵尸</Type>
                         <Interval>2000</Interval>
                         <Quantity>7</Quantity>
                         <Level>25</Level>
@@ -256,7 +256,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种9</Type>
+                        <Type>僵尸.兽化.着衣</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>26</Level>
@@ -264,7 +264,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种10</Type>
+                        <Type>僵尸.兽化.赤膊</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>26</Level>
@@ -272,35 +272,35 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种7</Type>
+                        <Type>僵尸.狂暴</Type>
                         <Interval>500</Interval>
                         <Quantity>15</Quantity>
                         <Level>26</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种39</Type>
+                        <Type>僵尸.狂躁</Type>
                         <Interval>500</Interval>
                         <Quantity>15</Quantity>
                         <Level>26</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种400</Type>
+                        <Type>僵尸.防暴僵尸</Type>
                         <Interval>500</Interval>
                         <Quantity>5</Quantity>
                         <Level>30</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="5">
-                        <Type>兵种401</Type>
+                        <Type>僵尸.特战僵尸</Type>
                         <Interval>500</Interval>
                         <Quantity>5</Quantity>
                         <Level>30</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="6">
-                        <Type>兵种393</Type>
+                        <Type>下水道.瘦骨男尸</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>30</Level>
@@ -308,7 +308,7 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="7">
-                        <Type>兵种394</Type>
+                        <Type>下水道.血鼠</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>30</Level>
@@ -324,7 +324,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种9</Type>
+                        <Type>僵尸.兽化.着衣</Type>
                         <Interval>1000</Interval>
                         <Quantity>15</Quantity>
                         <Level>27</Level>
@@ -332,7 +332,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种10</Type>
+                        <Type>僵尸.兽化.赤膊</Type>
                         <Interval>1000</Interval>
                         <Quantity>15</Quantity>
                         <Level>27</Level>
@@ -340,7 +340,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种394</Type>
+                        <Type>下水道.血鼠</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>30</Level>
@@ -348,7 +348,7 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种394</Type>
+                        <Type>下水道.血鼠</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>30</Level>
@@ -363,7 +363,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>2000</Interval>
                         <Quantity>1</Quantity>
                         <Level>10</Level>
@@ -371,7 +371,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种9</Type>
+                        <Type>僵尸.兽化.着衣</Type>
                         <Interval>1000</Interval>
                         <Quantity>8</Quantity>
                         <Level>28</Level>
@@ -379,7 +379,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种10</Type>
+                        <Type>僵尸.兽化.赤膊</Type>
                         <Interval>1000</Interval>
                         <Quantity>8</Quantity>
                         <Level>28</Level>
@@ -387,7 +387,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>2000</Interval>
                         <Quantity>3</Quantity>
                         <Level>30</Level>
@@ -395,7 +395,7 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种9</Type>
+                        <Type>僵尸.兽化.着衣</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>30</Level>
@@ -403,7 +403,7 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="5">
-                        <Type>兵种10</Type>
+                        <Type>僵尸.兽化.赤膊</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>30</Level>
@@ -418,7 +418,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>2000</Interval>
                         <Quantity>2</Quantity>
                         <Level>12</Level>
@@ -426,7 +426,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="0">
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>12</Level>
@@ -434,14 +434,14 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种7</Type>
+                        <Type>僵尸.狂暴</Type>
                         <Interval>500</Interval>
                         <Quantity>12</Quantity>
                         <Level>29</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种39</Type>
+                        <Type>僵尸.狂躁</Type>
                         <Interval>1000</Interval>
                         <Quantity>12</Quantity>
                         <Level>29</Level>
@@ -449,7 +449,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>2000</Interval>
                         <Quantity>2</Quantity>
                         <Level>35</Level>
@@ -457,7 +457,7 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>35</Level>
@@ -465,7 +465,7 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种394</Type>
+                        <Type>下水道.血鼠</Type>
                         <Interval>1000</Interval>
                         <Quantity>10</Quantity>
                         <Level>35</Level>
@@ -480,7 +480,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -488,7 +488,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种42</Type>
+                        <Type>僵尸.硬化</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -503,7 +503,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>20</Level>
@@ -511,14 +511,14 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种10</Type>
+                        <Type>僵尸.兽化.赤膊</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种42</Type>
+                        <Type>僵尸.硬化</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>35</Level>
@@ -526,7 +526,7 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种393</Type>
+                        <Type>下水道.瘦骨男尸</Type>
                         <Interval>600</Interval>
                         <Quantity>3</Quantity>
                         <Level>40</Level>
@@ -534,7 +534,7 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种394</Type>
+                        <Type>下水道.血鼠</Type>
                         <Interval>600</Interval>
                         <Quantity>3</Quantity>
                         <Level>40</Level>
@@ -542,14 +542,14 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="5">
-                        <Type>兵种400</Type>
+                        <Type>僵尸.防暴僵尸</Type>
                         <Interval>600</Interval>
                         <Quantity>3</Quantity>
                         <Level>40</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="6">
-                        <Type>兵种401</Type>
+                        <Type>僵尸.特战僵尸</Type>
                         <Interval>600</Interval>
                         <Quantity>3</Quantity>
                         <Level>40</Level>
@@ -563,7 +563,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种9</Type>
+                        <Type>僵尸.兽化.着衣</Type>
                         <Interval>1000</Interval>
                         <Quantity>8</Quantity>
                         <Level>32</Level>
@@ -571,7 +571,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种10</Type>
+                        <Type>僵尸.兽化.赤膊</Type>
                         <Interval>1000</Interval>
                         <Quantity>8</Quantity>
                         <Level>32</Level>
@@ -579,7 +579,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>18</Level>
@@ -587,7 +587,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种13</Type>
+                        <Type>僵尸.野狗</Type>
                         <Interval>1000</Interval>
                         <Quantity>8</Quantity>
                         <Level>32</Level>
@@ -595,7 +595,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种42</Type>
+                        <Type>僵尸.硬化</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -603,7 +603,7 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种394</Type>
+                        <Type>下水道.血鼠</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>35</Level>
@@ -611,14 +611,14 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种403</Type>
+                        <Type>下水道.异变盗贼</Type>
                         <Interval>1200</Interval>
                         <Quantity>1</Quantity>
                         <Level>35</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种401</Type>
+                        <Type>僵尸.特战僵尸</Type>
                         <Interval>400</Interval>
                         <Quantity>3</Quantity>
                         <Level>35</Level>
@@ -632,7 +632,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -640,7 +640,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种9</Type>
+                        <Type>僵尸.兽化.着衣</Type>
                         <Interval>1000</Interval>
                         <Quantity>8</Quantity>
                         <Level>33</Level>
@@ -648,7 +648,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种10</Type>
+                        <Type>僵尸.兽化.赤膊</Type>
                         <Interval>1000</Interval>
                         <Quantity>8</Quantity>
                         <Level>33</Level>
@@ -656,14 +656,14 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种403</Type>
+                        <Type>下水道.异变盗贼</Type>
                         <Interval>500</Interval>
                         <Quantity>5</Quantity>
                         <Level>40</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种394</Type>
+                        <Type>下水道.血鼠</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>40</Level>
@@ -671,7 +671,7 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="5">
-                        <Type>兵种393</Type>
+                        <Type>下水道.瘦骨男尸</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>40</Level>
@@ -686,7 +686,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>5</Level>
@@ -694,7 +694,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种42</Type>
+                        <Type>僵尸.硬化</Type>
                         <Interval>1200</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
@@ -702,7 +702,7 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种393</Type>
+                        <Type>下水道.瘦骨男尸</Type>
                         <Interval>2000</Interval>
                         <Quantity>8</Quantity>
                         <Level>45</Level>
@@ -710,7 +710,7 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种403</Type>
+                        <Type>下水道.异变盗贼</Type>
                         <Interval>1200</Interval>
                         <Quantity>2</Quantity>
                         <Level>45</Level>
@@ -724,7 +724,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -732,7 +732,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种42</Type>
+                        <Type>僵尸.硬化</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>5</Level>
@@ -740,7 +740,7 @@
                         <DifficultyMax>冒险</DifficultyMax>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种42</Type>
+                        <Type>僵尸.硬化</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>50</Level>
@@ -748,7 +748,7 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种42</Type>
+                        <Type>僵尸.硬化</Type>
                         <Interval>6000</Interval>
                         <Quantity>1</Quantity>
                         <Level>50</Level>
@@ -756,21 +756,21 @@
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种403</Type>
+                        <Type>下水道.异变盗贼</Type>
                         <Interval>1200</Interval>
                         <Quantity>3</Quantity>
                         <Level>50</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种401</Type>
+                        <Type>僵尸.特战僵尸</Type>
                         <Interval>1200</Interval>
                         <Quantity>3</Quantity>
                         <Level>50</Level>
                         <DifficultyMin>修罗</DifficultyMin>
                     </Enemy>
                     <Enemy id="5">
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>50</Level>

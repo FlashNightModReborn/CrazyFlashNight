@@ -26,7 +26,7 @@ source_map=E.parse(str(b.ROOT/'data/items/asset_source_map.xml')).getroot()
 inherited=0;script_count=0;mouth_frames=0
 for variant in manifest['variants']:
     current=next(u for u in units if u['id']==variant['unitId'])
-    assert {k:v for k,v in current.items() if k not in ('id','spritename','name')}=={k:v for k,v in base.items() if k not in ('id','spritename','name')}
+    assert {k:v for k,v in current.items() if k not in ('id','key','spritename','name')}=={k:v for k,v in base.items() if k not in ('id','key','spritename','name')}
     assert props(newprops.find(variant['linkage']))==props(oldprops),'Dog stats differ'
     links=[row for row in source_map if row.get('id')==variant['linkage']]
     assert len(links)==1 and links[0].tag=='asset' and links[0].get('swf')=='flashswf/arts/new/Codex专用素材.swf'

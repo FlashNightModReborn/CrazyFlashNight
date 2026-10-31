@@ -52,7 +52,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种25</Type>
+                        <Type>终结者.标准型</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -60,7 +60,7 @@
                         <Parameters>长枪:AWP</Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种25</Type>
+                        <Type>终结者.标准型</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -68,14 +68,14 @@
                         <Parameters>长枪:M249</Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种3</Type>
+                        <Type>僵尸.光头军人</Type>
                         <Interval>2500</Interval>
                         <Quantity>3</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种9</Type>
+                        <Type>僵尸.兽化.着衣</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>30</Level>
@@ -113,14 +113,14 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种8</Type>
+                        <Type>僵尸.佝偻</Type>
                         <Interval>100</Interval>
                         <Quantity>3</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>front</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种25</Type>
+                        <Type>终结者.标准型</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>30</Level>
@@ -128,7 +128,7 @@
                         <Parameters>长枪:G36</Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种25</Type>
+                        <Type>终结者.标准型</Type>
                         <Interval>2000</Interval>
                         <Quantity>3</Quantity>
                         <Level>30</Level>
@@ -136,7 +136,7 @@
                         <Parameters>长枪:m14</Parameters>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种25</Type>
+                        <Type>终结者.标准型</Type>
                         <Interval>3000</Interval>
                         <Quantity>2</Quantity>
                         <Level>30</Level>
@@ -167,7 +167,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种349</Type>
+                        <Type>天网.92式人狼.MG42</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -176,7 +176,7 @@
                         <Parameters>方向:左,不掉装备:true</Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种25</Type>
+                        <Type>终结者.标准型</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -186,7 +186,7 @@
                         <Parameters>长枪:M4A1</Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种25</Type>
+                        <Type>终结者.标准型</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>30</Level>
@@ -208,7 +208,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种412</Type>
+                        <Type>天网.装甲恶灵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>

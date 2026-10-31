@@ -3,8 +3,8 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
-import re
 import xml.etree.ElementTree as ET
+from unit_registry import UnitRegistry
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / 'launcher/web/modules/stage-select/stage-select-intel-data.js'
@@ -16,7 +16,7 @@ def generate():
         raw = path.read_bytes()
         inputs[path.relative_to(ROOT).as_posix()] = hashlib.sha256(raw).hexdigest()
         return raw
-    units = {str(u['id']): u for u in json.loads(read(ROOT / 'data/units/units.json'))}
+    registry = UnitRegistry(json.loads(read(ROOT / 'data/units/units.json')))
     properties = {}
     enemy_root = ROOT / 'data/enemy_properties'
     for item in ET.fromstring(read(enemy_root / 'list.xml')).findall('items'):
@@ -42,9 +42,11 @@ def generate():
             enemies = {}
             # 只公开固定波次的敌对单位，不递归扫描剧情、事件或条件分支里的秘密出场。
             for enemy in tree.findall('./SubStage/Wave/SubWave/EnemyGroup/Enemy'):
-                key = enemy.findtext('Type') or ''
-                match = re.fullmatch(r'兵种(\d+)', key)
-                unit = units.get(match.group(1)) if match else None
+                type_node = enemy.find('Type')
+                # Conditional/dynamic identities remain undisclosed by this projection.
+                if type_node is None or len(type_node) or not (type_node.text or '').strip():
+                    continue
+                unit = registry.get(type_node.text, str(source.relative_to(ROOT)) + ': Enemy.Type')
                 if not unit or unit.get('is_hostile') is not True:
                     continue
                 # 自定义属性可能改变身份/阵营，不把模板名当作该实例的情报。

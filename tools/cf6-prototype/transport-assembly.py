@@ -5,10 +5,13 @@ import math
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "cf6-roguelike-content"))
 import difficulty_plan
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from unit_registry import UnitRegistry
+REGISTRY = UnitRegistry.load(Path(__file__).resolve().parents[2])
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST = ROOT / 'tools/cf6-scene-completion/transport-art-manifest.json'
-EXPECTED = {'A09':(112,'兵种467',45,5), 'A14':(505,'兵种469',50,7), 'A18':(147,'兵种463',59,5)}
+EXPECTED = {'A09':(112,'cf6.特种兵.持盾一阶段',45,5), 'A14':(505,'cf6.光头保安.变身型',50,7), 'A18':(147,'cf6.蛮斧刽子手',59,5)}
 
 def adapt(chapter, require_swfs=True):
     manifest = json.loads(MANIFEST.read_text(encoding='utf-8-sig'))
@@ -48,8 +51,8 @@ def adapt(chapter, require_swfs=True):
                 or len(waves[1]['EnemyGroup']['Enemy']) != 1):
             raise ValueError('transport budget wave changed')
         enemy = waves[1]['EnemyGroup']['Enemy'][0]
-        if ((enemy['Type'],enemy['Level'],enemy['Quantity'],enemy['Interval'],enemy['SpawnIndex'])
-                != (enemy_type,level,quantity,100,0) or 'TriggerEvent' in enemy):
+        if ((REGISTRY.resolve_id(enemy['Type']),enemy['Level'],enemy['Quantity'],enemy['Interval'],enemy['SpawnIndex'])
+                != (REGISTRY.resolve_id(enemy_type),level,quantity,100,0) or 'TriggerEvent' in enemy):
             raise ValueError('transport existing budget changed')
         token = f'{identity}-transport-{depth}'
         x,y = [round(v*scale,4) for v in matrix[4:]]

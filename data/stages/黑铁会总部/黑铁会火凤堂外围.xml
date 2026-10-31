@@ -38,14 +38,14 @@
                 <Title>战斗专家</Title>
                 <Char>主角模板</Char>
                 <Text>开打了，你怎么才来？</Text>
-                <Type>兵种241</Type>
+                <Type>A兵团.突击兵.梅利</Type>
             </Dialogue>
             <Dialogue id="1">
                 <Name>A兵团突击兵汉斯</Name>
                 <Title>战斗专家</Title>
                 <Char>主角模板</Char>
                 <Text>再来晚点儿，我们都要打完了！</Text>
-                <Type>兵种240</Type>
+                <Type>A兵团.突击兵.汉斯</Type>
             </Dialogue>
             <Dialogue id="2">
                 <Name>$PC</Name>
@@ -61,34 +61,34 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种240</Type>
+                        <Type>A兵团.突击兵.汉斯</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>33</Level>
                         <SpawnIndex>front</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种241</Type>
+                        <Type>A兵团.突击兵.梅利</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>33</Level>
                         <SpawnIndex>front</SpawnIndex>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种409</Type>
+                        <Type>黑铁会.黑铁枪兵</Type>
                         <Interval>500</Interval>
                         <Quantity>5</Quantity>
                         <Level>33</Level>
                         <Parameters>称号:散人</Parameters>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种64</Type>
+                        <Type>黑铁会.黑铁刺客</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>33</Level>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种65</Type>
+                        <Type>黑铁会.黑铁大叔</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>33</Level>
@@ -108,32 +108,32 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种64</Type>
+                        <Type>黑铁会.黑铁刺客</Type>
                         <Interval>500</Interval>
                         <Quantity>6</Quantity>
                         <Level>33</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种65</Type>
+                        <Type>黑铁会.黑铁大叔</Type>
                         <Interval>500</Interval>
                         <Quantity>6</Quantity>
                         <Level>33</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种409</Type>
+                        <Type>黑铁会.黑铁枪兵</Type>
                         <Interval>500</Interval>
                         <Quantity>8</Quantity>
                         <Level>33</Level>
                         <Parameters>称号:散人</Parameters>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种242</Type>
+                        <Type>A兵团.侦察兵.托斯卡</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>33</Level>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种243</Type>
+                        <Type>A兵团.侦察兵.马里奥</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>33</Level>
@@ -153,7 +153,7 @@
                 <Title>战斗狂人</Title>
                 <Char>主角模板</Char>
                 <Text>兄弟，我们拖着这些家伙，你尽管冲进去！</Text>
-                <Type>兵种244</Type>
+                <Type>A兵团.重装兵.拉德</Type>
             </Dialogue>
             <Dialogue id="1">
                 <Name>$PC</Name>
@@ -166,7 +166,7 @@
                 <Title>战斗狂人</Title>
                 <Char>主角模板</Char>
                 <Text>别废话了，快点儿行动！</Text>
-                <Type>兵种245</Type>
+                <Type>A兵团.重装兵.明王</Type>
             </Dialogue>
         </Event>
         <Wave>
@@ -176,34 +176,34 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种244</Type>
+                        <Type>A兵团.重装兵.拉德</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>33</Level>
                         <SpawnIndex>front</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种245</Type>
+                        <Type>A兵团.重装兵.明王</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>33</Level>
                         <SpawnIndex>front</SpawnIndex>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种64</Type>
+                        <Type>黑铁会.黑铁刺客</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>33</Level>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种270</Type>
+                        <Type>黑铁会.黑铁游侠</Type>
                         <Interval>500</Interval>
                         <Quantity>6</Quantity>
                         <Level>33</Level>
                         <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种409</Type>
+                        <Type>黑铁会.黑铁枪兵</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>33</Level>
@@ -224,7 +224,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种65</Type>
+                        <Type>黑铁会.黑铁大叔</Type>
                         <Interval>500</Interval>
                         <Quantity>9</Quantity>
                         <Level>33</Level>
@@ -244,26 +244,26 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种47</Type>
+                        <Type>黑铁会.黑铁死士</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>33</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种409</Type>
+                        <Type>黑铁会.黑铁枪兵</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>33</Level>
                         <Parameters>称号:散人</Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种65</Type>
+                        <Type>黑铁会.黑铁大叔</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>33</Level>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种270</Type>
+                        <Type>黑铁会.黑铁游侠</Type>
                         <Interval>1000</Interval>
                         <Quantity>7</Quantity>
                         <Level>33</Level>
@@ -278,7 +278,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种245</Type>
+                        <Type>A兵团.重装兵.明王</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>33</Level>

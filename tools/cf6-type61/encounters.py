@@ -2,8 +2,13 @@
 import copy
 import json
 from pathlib import Path
+import sys
 
 SOURCE = Path(__file__).with_name('encounters.source.json')
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT / 'tools') not in sys.path:
+    sys.path.insert(0, str(ROOT / 'tools'))
+from unit_registry import UnitRegistry
 ROLES = {466:'ordinary',467:'ordinary',478:'elite',479:'elite',480:'instructor',481:'instructor'}
 
 
@@ -17,6 +22,7 @@ def positions(stage):
 
 
 def apply(stage, items):
+    registry=UnitRegistry.load(ROOT)
     config=json.loads(SOURCE.read_text('utf-8'))
     if config['schema']!='cf6-type61-encounters.v1':
         raise ValueError('Unsupported encounter source')
@@ -28,12 +34,12 @@ def apply(stage, items):
         if key in seen:raise ValueError('Duplicate encounter replacement')
         seen.add(key)
         enemy=slots[key]
-        if (enemy['Type'],enemy['Quantity'])!=(row['expectedType'],row['expectedQuantity']):
+        if (registry.resolve_id(enemy['Type']),enemy['Quantity'])!=(registry.resolve_id(row['expectedType']),row['expectedQuantity']):
             raise ValueError('Authored encounter changed: '+stage['id']+' '+str(key))
         unit=row['unit'];quantity=row['quantity']
         if unit not in ROLES or type(quantity)!=int or not 1<=quantity<=6:
             raise ValueError('Invalid soldier replacement')
-        enemy['Type']='兵种'+str(unit);enemy['Quantity']=quantity
+        enemy['Type']=registry.get(unit).get('key') or ('兵种'+str(unit));enemy['Quantity']=quantity
         params=enemy.setdefault('Parameters',{})
         params.update(copy.deepcopy(row['parameters']))
         # A shielded/non-shielded linkage owns its corresponding starting phase.
@@ -58,5 +64,5 @@ def apply(stage, items):
             weapons=[r['名字'] for r in params.get('掉落物',[]) if r['名字'] in items and items[r['名字']].findtext('use')=='长枪']
             if not weapons or params.get('长枪')!=weapons[0]:
                 raise ValueError('Finite loot carrier must wield its reward weapon')
-    military=[key for key,e in positions(stage) if e['Type'] in {'兵种'+str(n) for n in ROLES}]
+    military=[key for key,e in positions(stage) if registry.resolve_id(e['Type']) in ROLES]
     if set(military)!=seen:raise ValueError('Unreviewed soldier position in '+stage['id'])

@@ -106,7 +106,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种54</Type>
+                        <Type>军阀.狙击兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>24</Level>
@@ -114,28 +114,28 @@
                         <y>611</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种54</Type>
+                        <Type>军阀.狙击兵</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>24</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种56</Type>
+                        <Type>军阀.突击兵</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>24</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种57</Type>
+                        <Type>军阀.弹药兵</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>24</Level>
                         <SpawnIndex>2</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种477</Type>
+                        <Type>军阀.铁卫犬</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>20</Level>
@@ -182,7 +182,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种54</Type>
+                        <Type>军阀.狙击兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>26</Level>
@@ -190,7 +190,7 @@
                         <y>427</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种56</Type>
+                        <Type>军阀.突击兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>26</Level>
@@ -198,14 +198,14 @@
                         <y>610</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种54</Type>
+                        <Type>军阀.狙击兵</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>26</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种56</Type>
+                        <Type>军阀.突击兵</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>26</Level>
@@ -215,14 +215,14 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种57</Type>
+                        <Type>军阀.弹药兵</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>26</Level>
                         <SpawnIndex>2</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种477</Type>
+                        <Type>军阀.铁卫犬</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>20</Level>
@@ -291,7 +291,7 @@
             <EventName>UnitDeath</EventName>
             <Parameter>键盘</Parameter>
             <Enemy>
-                <Type>兵种246</Type>
+                <Type>联合军.冷月.友军</Type>
                 <Quantity>1</Quantity>
                 <Level>50</Level>
                 <SpawnIndex>left</SpawnIndex>
@@ -316,7 +316,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种94</Type>
+                        <Type>摇滚公园.键盘.友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -334,7 +334,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种54</Type>
+                        <Type>军阀.狙击兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>26</Level>
@@ -342,7 +342,7 @@
                         <y>390</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种56</Type>
+                        <Type>军阀.突击兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>26</Level>
@@ -353,7 +353,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种57</Type>
+                        <Type>军阀.弹药兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>26</Level>
@@ -361,14 +361,14 @@
                         <y>536</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种54</Type>
+                        <Type>军阀.狙击兵</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>26</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种56</Type>
+                        <Type>军阀.突击兵</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>26</Level>
@@ -378,14 +378,14 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种57</Type>
+                        <Type>军阀.弹药兵</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>26</Level>
                         <SpawnIndex>2</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种477</Type>
+                        <Type>军阀.铁卫犬</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>20</Level>
@@ -453,7 +453,7 @@
             <EventName>UnitDeath</EventName>
             <Parameter>键盘</Parameter>
             <Enemy>
-                <Type>兵种246</Type>
+                <Type>联合军.冷月.友军</Type>
                 <Quantity>1</Quantity>
                 <Level>50</Level>
                 <SpawnIndex>left</SpawnIndex>
@@ -478,7 +478,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种94</Type>
+                        <Type>摇滚公园.键盘.友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -496,7 +496,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种57</Type>
+                        <Type>军阀.弹药兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>26</Level>
@@ -504,7 +504,7 @@
                         <y>445</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种54</Type>
+                        <Type>军阀.狙击兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>26</Level>
@@ -515,7 +515,7 @@
                         <DifficultyMax>修罗</DifficultyMax>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种267</Type>
+                        <Type>军阀.精英狙击兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>26</Level>
@@ -527,7 +527,7 @@
                         <DifficultyMin>地狱</DifficultyMin>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种54</Type>
+                        <Type>军阀.狙击兵</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>24</Level>
@@ -537,7 +537,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种56</Type>
+                        <Type>军阀.突击兵</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>24</Level>
@@ -547,14 +547,14 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种57</Type>
+                        <Type>军阀.弹药兵</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>24</Level>
                         <SpawnIndex>2</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种56</Type>
+                        <Type>军阀.突击兵</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>24</Level>
@@ -564,7 +564,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种477</Type>
+                        <Type>军阀.铁卫犬</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>20</Level>
@@ -611,7 +611,7 @@
             <EventName>UnitDeath</EventName>
             <Parameter>键盘</Parameter>
             <Enemy>
-                <Type>兵种246</Type>
+                <Type>联合军.冷月.友军</Type>
                 <Quantity>1</Quantity>
                 <Level>50</Level>
                 <SpawnIndex>left</SpawnIndex>
@@ -636,7 +636,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种94</Type>
+                        <Type>摇滚公园.键盘.友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -653,7 +653,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种54</Type>
+                        <Type>军阀.狙击兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>26</Level>
@@ -664,7 +664,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种56</Type>
+                        <Type>军阀.突击兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>26</Level>
@@ -676,7 +676,7 @@
                         <DifficultyMax>修罗</DifficultyMax>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种264</Type>
+                        <Type>军阀.精英突击兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>26</Level>
@@ -689,7 +689,7 @@
                         <DifficultyMin>地狱</DifficultyMin>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种54</Type>
+                        <Type>军阀.狙击兵</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>26</Level>
@@ -698,7 +698,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种56</Type>
+                        <Type>军阀.突击兵</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>26</Level>
@@ -707,7 +707,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种57</Type>
+                        <Type>军阀.弹药兵</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>26</Level>
@@ -716,7 +716,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种477</Type>
+                        <Type>军阀.铁卫犬</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>20</Level>

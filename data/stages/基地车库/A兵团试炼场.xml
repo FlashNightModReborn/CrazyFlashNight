@@ -101,28 +101,28 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种10</Type>
+                        <Type>僵尸.兽化.赤膊</Type>
                         <Interval>500</Interval>
                         <Quantity>9</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种7</Type>
+                        <Type>僵尸.狂暴</Type>
                         <Interval>500</Interval>
                         <Quantity>4</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种9</Type>
+                        <Type>僵尸.兽化.着衣</Type>
                         <Interval>500</Interval>
                         <Quantity>4</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>2</SpawnIndex>
                     </Enemy>                    
                     <Enemy>
-                        <Type>兵种44</Type>
+                        <Type>堕落城.左轮</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -131,7 +131,7 @@
                         <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种45</Type>
+                        <Type>堕落城.跳蚤</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -140,7 +140,7 @@
                         <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种48</Type>
+                        <Type>堕落城.铁拳</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -149,7 +149,7 @@
                         <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种49</Type>
+                        <Type>堕落城.杀手</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -165,7 +165,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种40</Type>
+                        <Type>堕落城.Lee</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -176,7 +176,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种366</Type>
+                        <Type>军阀.Gazer</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
@@ -203,7 +203,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -211,14 +211,14 @@
                         <y>580</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种46</Type>
+                        <Type>堕落城.战斗少女</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -227,7 +227,7 @@
                         <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种43</Type>
+                        <Type>堕落城.街舞少女</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -236,7 +236,7 @@
                         <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种353</Type>
+                        <Type>堕落城.掠夺少女</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -244,7 +244,7 @@
                         <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种260</Type>
+                        <Type>摇滚公园.精英战术少女</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -266,31 +266,31 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种28</Type>
+                        <Type>盗贼.男.雷明登870</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种29</Type>
+                        <Type>盗贼.男.疯狗刀</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种30</Type>
+                        <Type>盗贼.男.MP5PDW</Type>
                         <Interval>1500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种33</Type>
+                        <Type>盗贼.女.双持毛瑟</Type>
                         <Interval>2000</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种259</Type>
+                        <Type>摇滚公园.摇滚学姐</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -298,7 +298,7 @@
                         <y>600</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种260</Type>
+                        <Type>摇滚公园.精英战术少女</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -320,7 +320,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -329,7 +329,7 @@
                         <y>550</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种11</Type>
+                        <Type>僵尸.巨型</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -338,7 +338,7 @@
                         <y>600</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种44</Type>
+                        <Type>堕落城.左轮</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -346,7 +346,7 @@
                         <y>570</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种45</Type>
+                        <Type>堕落城.跳蚤</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -354,7 +354,7 @@
                         <y>520</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种46</Type>
+                        <Type>堕落城.战斗少女</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -362,19 +362,19 @@
                         <y>550</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种47</Type>
+                        <Type>黑铁会.黑铁死士</Type>
                         <Interval>1600</Interval>
                         <Quantity>8</Quantity>
                         <Level>20</Level>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种48</Type>
+                        <Type>堕落城.铁拳</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种49</Type>
+                        <Type>堕落城.杀手</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -394,7 +394,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种270</Type>
+                        <Type>黑铁会.黑铁游侠</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -412,7 +412,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种410</Type>
+                        <Type>黑铁会.黑铁弓手</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -424,7 +424,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种410</Type>
+                        <Type>黑铁会.黑铁弓手</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -436,7 +436,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种261</Type>
+                        <Type>黑铁会.黑铁武士</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -448,7 +448,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种47</Type>
+                        <Type>黑铁会.黑铁死士</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>20</Level>
@@ -456,7 +456,7 @@
                         <IsHostile>null</IsHostile>
                     </Enemy>                    
                     <Enemy id="5">
-                        <Type>兵种64</Type>
+                        <Type>黑铁会.黑铁刺客</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>20</Level>
@@ -464,7 +464,7 @@
                         <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy id="6">
-                        <Type>兵种64</Type>
+                        <Type>黑铁会.黑铁刺客</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>20</Level>
@@ -472,35 +472,35 @@
                         <IsHostile>null</IsHostile>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种54</Type>
+                        <Type>军阀.狙击兵</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种55</Type>
+                        <Type>军阀.重装兵</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种56</Type>
+                        <Type>军阀.突击兵</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种57</Type>
+                        <Type>军阀.弹药兵</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种265</Type>
+                        <Type>军阀.精英重装兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -509,7 +509,7 @@
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种266</Type>
+                        <Type>军阀.精英弹药兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -518,7 +518,7 @@
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种267</Type>
+                        <Type>军阀.精英狙击兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -584,7 +584,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种239</Type>
+                        <Type>军阀.牛仔.试炼友军</Type>
                         <Interval>5000</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
@@ -592,7 +592,7 @@
                         <y>580</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种59</Type>
+                        <Type>通缉犯.浮士德兄弟</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -645,7 +645,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种40</Type>
+                        <Type>堕落城.Lee</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>

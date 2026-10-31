@@ -60,25 +60,25 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种13</Type>
+                        <Type>僵尸.野狗</Type>
                         <Interval>200</Interval>
                         <Quantity>5</Quantity>
                         <Level>10</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种17</Type>
+                        <Type>异形.破胸虫</Type>
                         <Interval>200</Interval>
                         <Quantity>5</Quantity>
                         <Level>10</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种76</Type>
+                        <Type>诺亚.僵尸蛆</Type>
                         <Interval>200</Interval>
                         <Quantity>5</Quantity>
                         <Level>10</Level>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种77</Type>
+                        <Type>诺亚.基因虫</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>15</Level>
@@ -91,13 +91,13 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种12</Type>
+                        <Type>诺亚.神秘忍者</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>15</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种53</Type>
+                        <Type>军阀.将军</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>15</Level>
@@ -110,13 +110,13 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种58</Type>
+                        <Type>军阀.牛仔</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种60</Type>
+                        <Type>通缉犯.魔女</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -129,13 +129,13 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种57</Type>
+                        <Type>军阀.弹药兵</Type>
                         <Interval>500</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种269</Type>
+                        <Type>黑铁会.黑铁重锤</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>20</Level>
@@ -149,31 +149,31 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种300</Type>
+                        <Type>彩蛋.圣诞白忍.友军</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种50</Type>
+                        <Type>摇滚公园.吉他</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种51</Type>
+                        <Type>摇滚公园.键盘</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种52</Type>
+                        <Type>摇滚公园.主唱</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种59</Type>
+                        <Type>通缉犯.浮士德兄弟</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -186,25 +186,25 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种288</Type>
+                        <Type>女仆.医疗女仆白</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种283</Type>
+                        <Type>女仆.狙击女仆黑</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种284</Type>
+                        <Type>大学.Tomboy</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种285</Type>
+                        <Type>女仆.武装JK</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
@@ -217,20 +217,20 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种295</Type>
+                        <Type>彩蛋.文天.敌</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <Parameters>不掉装备:true</Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种271</Type>
+                        <Type>通缉犯.尾上世莉架</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种294</Type>
+                        <Type>彩蛋.诺艾尔</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -243,7 +243,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种296</Type>
+                        <Type>彩蛋.杰克霜精</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -253,21 +253,21 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种296</Type>
+                        <Type>彩蛋.杰克霜精</Type>
                         <Interval>800</Interval>
                         <Quantity>2</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种296</Type>
+                        <Type>彩蛋.杰克霜精</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>30</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种297</Type>
+                        <Type>彩蛋.邪恶霜精</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>

@@ -45,7 +45,12 @@ def validate(require_published=False):
     stage = E.parse(DEST).getroot()
     rooms = stage.findall("SubStage")
     require([int(r.get("id")) for r in rooms] == list(range(8)), "Eight sequential rooms required")
-    units = {str(u["id"]): u for u in json.loads((ROOT / "data/units/units.json").read_text(encoding="utf-8-sig"))}
+    raw_units = json.loads((ROOT / "data/units/units.json").read_text(encoding="utf-8-sig"))
+    units = {str(u["id"]): u for u in raw_units}
+    key_to_id = {u["key"]: str(u["id"]) for u in raw_units if u.get("key")}
+    def _uid(t):
+        t = (t or "").strip()
+        return t.removeprefix("兵种") if t.startswith("兵种") else key_to_id.get(t, t)
     # This side quest is available after main quest 13. Audit the actual sprite
     # identity, not its generic name: unit 9 uses the enhanced-beast art folder.
     early_zombies = {"1", "2", "3", "4", "5", "6", "8", "293"}
@@ -53,7 +58,7 @@ def validate(require_published=False):
     quests = {t["id"]: t for t in json.loads((ROOT / "data/task/iron_spear_tasks.json").read_text(encoding="utf-8"))["tasks"]}
     require(quests[70001]["get_requirements"] == [13] and quests[70002]["get_requirements"] == [70001], "Re-audit the zombie roster if the earliest main-story gate changes")
     first_defense = E.parse(ROOT / "data/stages/基地门口/第一防线.xml").getroot()
-    encountered = {r.findtext("Type", "").removeprefix("兵种") for r in first_defense.findall(".//Enemy")}
+    encountered = {_uid(r.findtext("Type", "")) for r in first_defense.findall(".//Enemy")}
     require(early_zombies <= encountered, "Early zombie roster no longer matches the completed first-defense stage")
     for room in rooms:
         rid = int(room.get("id"))
@@ -89,7 +94,7 @@ def validate(require_published=False):
             following = ev.findtext("FollowingEvent/EventName")
             require(not following or (bool(ev.findall("Dialogue")) and following in events), "Invalid dialogue continuation")
         for row in room.findall(".//Enemy"):
-            key = row.findtext("Type", "").removeprefix("兵种")
+            key = _uid(row.findtext("Type", ""))
             require(key in units, "Unknown enemy unit ID: " + key)
             require(key in early_zombies | raid_units, "Unit is outside the pre-14 zombie roster and authorized raid cast: " + key)
             require(rid == 7 or key in early_zombies, "Pre-raid waves must use already encountered zombies")
@@ -127,11 +132,11 @@ def validate(require_published=False):
     sheriff = rooms[7].find("Event[EventName='RescueReserveDeploy']/Enemy")
     for row in rooms[7].findall("Wave/SubWave/EnemyGroup/Enemy"):
         require(row.findtext("IsHostile") == "true", "Raid enemies must be explicitly hostile")
-        require(units[row.findtext("Type").removeprefix("兵种")]["spritename"] != "主角-男", "Use dedicated bandit sprites, not dressup humanoids")
-    require({"兵种44", "兵种45", "兵种48", "兵种49"}.issubset({e.findtext("Type") for e in rooms[7].findall(".//Enemy")}), "Dedicated male bandit mix is incomplete")
+        require(units[_uid(row.findtext("Type"))]["spritename"] != "主角-男", "Use dedicated bandit sprites, not dressup humanoids")
+    require({"44", "45", "48", "49"}.issubset({_uid(e.findtext("Type")) for e in rooms[7].findall(".//Enemy")}), "Dedicated male bandit mix is incomplete")
     require(rooms[2].findtext("Event[EventName='WaveFinished']/FollowingEvent/EventName") == "RescueClinicExplained", "Clinic operation requires dialogue guidance")
     require(rooms[3].findtext("Event[EventName='Start']/FollowingEvent/EventName") == "RescueJeepBriefed", "Investigation requires dialogue guidance")
-    require(sheriff.findtext("Type") == "兵种458" and sheriff.findtext("IsHostile") == "false", "Use existing independent sheriff boss as ally")
+    require(_uid(sheriff.findtext("Type")) == "458" and sheriff.findtext("IsHostile") == "false", "Use existing independent sheriff boss as ally")
     require(units["458"]["spritename"] == "敌人-前治安官", "Sheriff linkage drift")
     require(units["13"]["spritename"] == "敌人-僵尸1-狗", "Do not replace global dog while cloud art is pending")
     require(rooms[7].findtext("Wave/SubWave[@id='1']/WaveInformation/Duration") == "10", "Refit window drift")

@@ -59,6 +59,8 @@ def expected(form):
     for key,formula in common.FIELDS.items():entry.find(key).text=str(math.floor(values[formula]+0.5))
     unit={'id':config['id'],'spritename':link,'level':50,'name':config['name'],'is_hostile':True,'height':config['height'],
         'data':{'primary':None,'secondary':None,'secondary2':None,'melee':None}}
+    unit=common.preserve_unit_key(unit,json.loads((ROOT/'data/units/units.json').read_text('utf-8-sig')),
+        new_key='cf6.老头' if form=='human' else 'cf6.老头机器人')
     receipt={'formula':'tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts','form':form,
         'fixedByUser':['阶段','档次系数'],'input':inputs,'flags':flags,'actions':actions,'weightedTempo':weighted,
         'recoveryFrames':6,'attackTempoTailFactor':census['attackTempoTailFactor'],

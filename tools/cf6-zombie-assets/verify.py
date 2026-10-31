@@ -12,6 +12,8 @@ import xml.etree.ElementTree as E
 from build import workspace_identity_failures
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'tools'))
+from unit_registry import preserve_unit_key
 HERE = Path(__file__).resolve().parent
 NS = {'x': 'http://ns.adobe.com/xfl/2008/'}
 
@@ -77,6 +79,7 @@ def main():
         orig_unit = next(x for x in registrations if x['spritename'] == source_tag)
         expected = deepcopy(orig_unit)
         expected.update(id=unit_id, spritename=link, name=entry.find('displayname').text)
+        expected = preserve_unit_key(expected, registrations)
         assert expected == matches[0]
 
         asset = [e for e in source_map if e.get('id') == link]

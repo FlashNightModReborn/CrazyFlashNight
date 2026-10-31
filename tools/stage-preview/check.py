@@ -54,7 +54,9 @@ def check(directory):
     selected_regions={s["region"] for s in entries}
     buttons={s["id"]:s for f in registry["frames"] if f["frameLabel"] in selected_regions for s in f.get("stageButtons",[])}
     if set(ids)!=set(buttons):failures.append("Coverage differs from current UI registry in the seven target regions")
-    units={str(u["id"]):u for u in json.loads((ROOT/"data/units/units.json").read_text("utf-8"))}
+    unit_list=json.loads((ROOT/"data/units/units.json").read_text("utf-8-sig"))
+    units={str(u["id"]):u for u in unit_list}
+    units_by_key={u["key"]:u for u in unit_list if u.get("key")}
     xml_by_name=stage_sources()
     expected_files=set()
     for entry in entries:
@@ -92,6 +94,9 @@ def check(directory):
             for enemy in tree.findall(".//Enemy"):
                 type_node=enemy.find("Type")
                 for text in type_node.itertext() if type_node is not None else []:
+                    stripped=text.strip()
+                    if stripped in units_by_key:
+                        native_names.add(units_by_key[stripped].get("spritename",""))
                     for number in re.findall(r"兵种(\d+)",text):
                         if number in units:native_names.add(units[number].get("spritename",""))
                 if enemy.findtext("spritename"):native_names.add(enemy.findtext("spritename"))

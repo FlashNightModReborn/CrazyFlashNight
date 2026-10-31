@@ -81,6 +81,8 @@ def validate_economy(book, items, catalog=None):
     for key in economy:
         if type(economy[key]) is not list or len(economy[key]) > 20:
             raise ValueError('invalid CF6 economy rows')
+    from unit_registry import UnitRegistry
+    registry = UnitRegistry.load(Path(__file__).resolve().parents[1])
     reserved, quotas, marked = set(), set(), {}
     for stage in maps.values():
         for enemy in enemies(stage):
@@ -89,7 +91,7 @@ def validate_economy(book, items, catalog=None):
                 if quota not in QUOTA_MAPS or quota in marked or QUOTA_MAPS[quota] != stage['id']:
                     raise ValueError('unknown/duplicate/misplaced CF6 elite marker')
                 carriers = ('兵种466','兵种467','兵种478','兵种479','兵种480','兵种481') if book.get('routeId')=='type61' else ('兵种466','兵种467')
-                if enemy['Type'] not in carriers or enemy['Quantity'] != 1:
+                if registry.resolve_type(enemy['Type']) not in carriers or enemy['Quantity'] != 1:
                     raise ValueError('CF6 elite must be one existing soldier')
                 marked[quota] = enemy
 

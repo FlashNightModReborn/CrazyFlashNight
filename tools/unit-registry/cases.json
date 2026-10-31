@@ -1,0 +1,29 @@
+{
+  "units": [
+    {"id": 0, "key": "测试.零号", "name": "同名", "spritename": "敌人-共享素材"},
+    {"id": 1, "name": "同名", "spritename": "敌人-共享素材"},
+    {"id": 44, "key": "堕落城.左轮", "name": "左轮", "spritename": "敌人-盗贼枪手"},
+    {"id": 466, "key": "cf6.特种兵.二阶段", "name": "特种兵", "spritename": "敌人-CF6特种兵"},
+    {"id": 467, "key": "cf6.特种兵.持盾一阶段", "name": "特种兵", "spritename": "敌人-CF6持盾特种兵"}
+  ],
+  "references": [
+    {"input": "兵种0", "expected": "兵种0"},
+    {"input": "测试.零号", "expected": "兵种0"},
+    {"input": "兵种1", "expected": "兵种1"},
+    {"input": "堕落城.左轮", "expected": "兵种44"},
+    {"input": "cf6.特种兵.二阶段", "expected": "兵种466"},
+    {"input": "兵种467", "expected": "兵种467"},
+    {"input": "cf6.特种兵.持盾一阶段", "expected": "兵种467"}
+  ],
+  "rejectedReferences": [
+    "同名", "特种兵", "敌人-CF6特种兵", "cf6.不存在", "CF6.特种兵.二阶段",
+    "cf6.特种兵.二阶段 ", " 兵种466", "兵种0466", "兵种-1", "兵种466tail",
+    "兵种999999", "兵种2147483648", "", "__proto__", null, true, 466, {}, []
+  ],
+  "validKeys": ["cf6.Wings", "军阀.铁卫犬", "test-family.变体_1", "cf6.特种兵.二阶段", "测试.甲·乙"],
+  "invalidKeys": [
+    "兵种466", "特种兵", "1.单位", ".单位", "cf6..单位", "cf6.单位.",
+    "cf6.单位 名", "cf6.单位/名", "cf6.单位\\名", "cf6.单位\"名",
+    "cf6.__proto__", "constructor.单位", "cf6.prototype.单位", "cf6.😀", null, 42, ""
+  ]
+}

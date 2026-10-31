@@ -58,19 +58,19 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种8</Type>
+                        <Type>僵尸.佝偻</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>35</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种9</Type>
+                        <Type>僵尸.兽化.着衣</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>35</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种10</Type>
+                        <Type>僵尸.兽化.赤膊</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>35</Level>
@@ -106,14 +106,14 @@
                 <Title>战斗专家</Title>
                 <Char>主角模板</Char>
                 <Text>我们一起打他个伏击！</Text>
-                <Type>兵种280</Type>
+                <Type>A兵团.精英A.战术套</Type>
             </Dialogue>
             <Dialogue id="2">
                 <Name>A兵团精英B</Name>
                 <Title>战斗专家</Title>
                 <Char>主角模板</Char>
                 <Text>这里只是杂兵，解决掉之后尽快找到牛仔！</Text>
-                <Type>兵种281</Type>
+                <Type>A兵团.精英B.战术套</Type>
             </Dialogue>
         </Event>
         <Wave>
@@ -123,7 +123,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种42</Type>
+                        <Type>僵尸.硬化</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -137,40 +137,40 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种280</Type>
+                        <Type>A兵团.精英A.战术套</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种281</Type>
+                        <Type>A兵团.精英B.战术套</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种264</Type>
+                        <Type>军阀.精英突击兵</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>40</Level>
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种267</Type>
+                        <Type>军阀.精英狙击兵</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>40</Level>
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种265</Type>
+                        <Type>军阀.精英重装兵</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="5">
-                        <Type>兵种266</Type>
+                        <Type>军阀.精英弹药兵</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -220,14 +220,14 @@
                 <Title>战斗专家</Title>
                 <Char>主角模板</Char>
                 <Text>应该是我们感谢你，没有你在闹市区救我们，我们也没有今天。</Text>
-                <Type>兵种280</Type>
+                <Type>A兵团.精英A.战术套</Type>
             </Dialogue>
         <Dialogue id="2">
                 <Name>A兵团精英B</Name>
                 <Title>战斗专家</Title>
                 <Char>主角模板</Char>
                 <Text>敌人可能还有援兵，先走吧。</Text>
-                <Type>兵种281</Type>
+                <Type>A兵团.精英B.战术套</Type>
             </Dialogue>
         </Event>
         <Wave>
@@ -238,63 +238,63 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种280</Type>
+                        <Type>A兵团.精英A.战术套</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种281</Type>
+                        <Type>A兵团.精英B.战术套</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种242</Type>
+                        <Type>A兵团.侦察兵.托斯卡</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种58</Type>
+                        <Type>军阀.牛仔</Type>
                         <Interval>5000</Interval>
                         <Quantity>1</Quantity>
                         <Level>50</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种54</Type>
+                        <Type>军阀.狙击兵</Type>
                         <Interval>5000</Interval>
                         <Quantity>9</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="5">
-                        <Type>兵种56</Type>
+                        <Type>军阀.突击兵</Type>
                         <Interval>5000</Interval>
                         <Quantity>9</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="6">
-                        <Type>兵种55</Type>
+                        <Type>军阀.重装兵</Type>
                         <Interval>5000</Interval>
                         <Quantity>4</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="7">
-                        <Type>兵种57</Type>
+                        <Type>军阀.弹药兵</Type>
                         <Interval>5000</Interval>
                         <Quantity>4</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="8">
-                        <Type>兵种264</Type>
+                        <Type>军阀.精英突击兵</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>40</Level>
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="9">
-                        <Type>兵种267</Type>
+                        <Type>军阀.精英狙击兵</Type>
                         <Interval>500</Interval>
                         <Quantity>2</Quantity>
                         <Level>40</Level>
@@ -302,7 +302,7 @@
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="10">
-                        <Type>兵种265</Type>
+                        <Type>军阀.精英重装兵</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -310,7 +310,7 @@
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="11">
-                        <Type>兵种266</Type>
+                        <Type>军阀.精英弹药兵</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>

@@ -19,8 +19,8 @@
     },
     {
       "path": "data/crafting/基础防具.json",
-      "bytes": 8691,
-      "sha256": "899589af0702490edd672b7487a7a0f73ee0bf8630492bd247f87725b42cd3f6"
+      "bytes": 10198,
+      "sha256": "516eda598fce968b4cecb6755ae180370219d44729ede92c08c452c8ee7f1ccf"
     },
     {
       "path": "data/crafting/大学装备.json",
@@ -79,8 +79,8 @@
     },
     {
       "path": "data/items/收集品_材料.xml",
-      "bytes": 27232,
-      "sha256": "14ff9160ec792bc4a36677397e1030f7b38c48ea1562d30e3780d6b6012aaa3b"
+      "bytes": 27654,
+      "sha256": "c869f113c90719bb0e8fcd4cac223157bd4fd693af5c13517cbd09d1451df476"
     },
     {
       "path": "data/items/收集品_材料_插件.xml",
@@ -119,8 +119,8 @@
     },
     {
       "path": "data/items/武器_手枪_霰弹枪.xml",
-      "bytes": 34091,
-      "sha256": "2941d6dd2781c3565353ed52fd7a70a844b05bbbffcb688c9cc7a49faea35369"
+      "bytes": 39290,
+      "sha256": "256fa454f3b30ba464a88107f091f411a392d1eb3a71d41c83a32c6fa308d657"
     },
     {
       "path": "data/items/武器_长枪_压制机枪.xml",
@@ -164,8 +164,8 @@
     },
     {
       "path": "data/items/武器_长枪_霰弹枪.xml",
-      "bytes": 72989,
-      "sha256": "e68ba53aa8e0a71e34d747782a6942d5260546ace079dcabd8a94c4fbceebde4"
+      "bytes": 73477,
+      "sha256": "0bb7d5cf545af01d1fb8f5543b51be2fa341605631c64878af18df4ce29b71d3"
     },
     {
       "path": "data/items/消耗品_弹夹.xml",
@@ -204,8 +204,8 @@
     },
     {
       "path": "data/items/防具_20-39级.xml",
-      "bytes": 363296,
-      "sha256": "6220201e0fd9969bfaf2421d796be33410c7d4a2a82460156988fe4370afa550"
+      "bytes": 373462,
+      "sha256": "bfe9df016d3039ccbab6d87423212a86ec5a4b949db1da476a2b0bcc178ff903"
     },
     {
       "path": "data/items/防具_颈部装备.xml",
@@ -514,13 +514,13 @@
     },
     {
       "path": "data/stages/books/cf6-sting.json",
-      "bytes": 526870,
-      "sha256": "cd3d077ffe758834403d56817d0a5d0f17a71fb8f1088e6e9422f468c871c430"
+      "bytes": 531682,
+      "sha256": "6e1b17b45a9b0fa850318a7d79298a6ee10367d83002c916c90b2b45cf54765d"
     },
     {
       "path": "data/units/units.json",
-      "bytes": 157113,
-      "sha256": "eec9ed2d77accb255d35e6e44ca7a8b7fe4fcd326074e7ae0c5caeded002dc2d"
+      "bytes": 175146,
+      "sha256": "86213ab98744ac10b667e8fdbaf8b893b41fc535cc5715fbb449d834744a796b"
     },
     {
       "path": "tools/cf6-soldier-assets/instructor-tuning.json",
@@ -529,13 +529,13 @@
     },
     {
       "path": "tools/cf6-type61/build-route.py",
-      "bytes": 28694,
-      "sha256": "4f828e7e4965b3cc1d8ec6024d5db06c732addc9636c1b4acac8e33a4ebd294c"
+      "bytes": 28923,
+      "sha256": "3f2a04a18ec327fe66bfc754c58d071f2ed5d5bc2cc9ae859079084b44cbd8aa"
     },
     {
       "path": "tools/cf6-type61/encounters.py",
-      "bytes": 3761,
-      "sha256": "32165f3733dd1f2587145caf5092dc16faec5d4ef0d7dcec641fa344b1469182"
+      "bytes": 4046,
+      "sha256": "aa6e0a8acb4a35934f042f78a269e74e6124d609e0321dd66ce5bf8bde1a6208"
     },
     {
       "path": "tools/cf6-type61/encounters.source.json",
@@ -611,8 +611,8 @@
     },
     {
       "path": "data/stages/books/cf6-type61.json",
-      "bytes": 600109,
-      "sha256": "a4db0ab28e2fa704240e06e45270fd35b2ee5a72d4efe607ac3e3f0b9fb1bce7"
+      "bytes": 604850,
+      "sha256": "3fce218b7382f83321e5ae87704ffffe069843239b91e8bcd1831ec043336aa9"
     },
     {
       "path": "scripts/类定义/org/flashNight/arki/scene/Cf6Type61Fixture.as",
@@ -635,8 +635,8 @@
       "sha256": "a5564665a449b2b9de69126ed4d519d46959d3be26a7ab8fe7abd8ad499932fd"
     }
   ],
-  "generatedBytes": 979789,
-  "bytesIncludingRuntimeSidecar": 1579898,
+  "generatedBytes": 984530,
+  "bytesIncludingRuntimeSidecar": 1584639,
   "maxGeneratedBytes": 2000000,
   "downstreamChecks": [
     "tools/build-choice-rewards.py --check",

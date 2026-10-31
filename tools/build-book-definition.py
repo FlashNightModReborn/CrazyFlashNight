@@ -9,6 +9,7 @@ from pathlib import Path
 import shutil
 import xml.etree.ElementTree as ET
 from choice_reward_catalog import resolve_book_choices, validate_loadout, loadout_entries
+from unit_registry import UnitRegistry, normalize_book_units
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'data/stages/books/repair-campus.json'
@@ -703,7 +704,8 @@ def main():
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('--check', action='store_true')
     args = parser.parse_args()
-    data = resolve_book_choices(json.loads(SOURCE.read_text(encoding='utf-8')))
+    registry = UnitRegistry.load(ROOT)
+    data = normalize_book_units(resolve_book_choices(json.loads(SOURCE.read_text(encoding='utf-8'))), registry)
     if data['schema'] != 'playable-book.v1' or data['id'] != 'repair-campus':
         raise ValueError('unsupported book identity')
     if any(type(data[k]) is not int or not 0 <= data[k] <= 100 for k in ('regularSp', 'firstClearSp', 'recordSpPerTier')):
@@ -711,7 +713,7 @@ def main():
     if data['recordMinutes'] != sorted(set(data['recordMinutes']), reverse=True) or not all(type(v) is int and 1 <= v <= 60 for v in data['recordMinutes']):
         raise ValueError('record tiers must be finite descending minutes')
     validate_skills(data, ET.parse(ROOT / 'data/skills/skills.xml').findall('Skill'))
-    units = {u['id'] for u in json.loads((ROOT / 'data/units/units.json').read_text(encoding='utf-8-sig'))}
+    units = set(registry.by_id)
     items = {}
     for path in (ROOT / 'data/items').glob('*.xml'):
         if path == PACK_OUTPUT: continue
@@ -755,11 +757,11 @@ def main():
     content = b'\xef\xbb\xbf' + text.replace('\n', '\r\n').encode('utf-8')
     outputs[OUTPUT] = content
     if CF6_SOURCE.is_file():
-        cf6 = json.loads(CF6_SOURCE.read_text(encoding='utf-8-sig'))
+        cf6 = normalize_book_units(json.loads(CF6_SOURCE.read_text(encoding='utf-8-sig')), registry)
         validate_cf6(cf6, items, ET.parse(ROOT/'data/skills/skills.xml').findall('Skill'), units)
         outputs.update(generated_cf6(cf6))
     if TYPE61_SOURCE.is_file():
-        type61 = json.loads(TYPE61_SOURCE.read_text(encoding='utf-8-sig'))
+        type61 = normalize_book_units(json.loads(TYPE61_SOURCE.read_text(encoding='utf-8-sig')), registry)
         validate_cf6(type61, items, ET.parse(ROOT/'data/skills/skills.xml').findall('Skill'), units)
         outputs.update(generated_cf6(type61))
     for path, content in outputs.items():

@@ -5,20 +5,34 @@ import copy
 import hashlib
 import json
 import statistics
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from unit_registry import UnitRegistry
+REGISTRY = UnitRegistry.load(Path(__file__).resolve().parents[2])
 
 HERE = Path(__file__).resolve().parent
 SOURCE = HERE / 'difficulty.source.json'
 FACTS = HERE.parents[1] / 'data/stages/books/cf6-sting-source/encounter-facts.v1.json'
 SCHEMA = 'cf6-difficulty-source.v1'
 META = 'chapterDifficulty'
-TRANSPORT = {'A09': ('兵种467', 45, 5), 'A14': ('兵种469', 50, 7), 'A18': ('兵种463', 59, 5)}
+TRANSPORT = {'A09': ('cf6.特种兵.持盾一阶段', 45, 5), 'A14': ('cf6.光头保安.变身型', 50, 7), 'A18': ('cf6.蛮斧刽子手', 59, 5)}
 QUOTAS = {'E1':'A09','E2':'A13','E3':'A14','E4':'A17','E5':'A19'}
 PRIVATE = {'cf6BossOwnerToken','cf6SupportIdentity','cf6PodId','产生源','老头变身','MapNoCount','NoCount'}
 PLAN_IDS = {'A01','A02','A03','A04','A05','A06','A09','A10','A11','A12','A13','A14','A15','A17','A18','A19','A20','A22'}
 
 
+def _canonical(value):
+    if isinstance(value, dict):
+        return {k: _canonical(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_canonical(v) for v in value]
+    if isinstance(value, str) and value in REGISTRY.by_key:
+        return '兵种' + str(REGISTRY.by_key[value])
+    return value
+
+
 def digest(value):
-    return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True,
+    return hashlib.sha256(json.dumps(_canonical(value), ensure_ascii=False, sort_keys=True,
                                      separators=(',', ':')).encode('utf-8')).hexdigest()
 
 
@@ -139,9 +153,9 @@ def _support_policy(node, policy):
     elif policy == 'pods-and-small-escort':
         if node['id'] != 'A17' or old['maxAlive'] != 4 or old['intervalFrames'] != 45:
             raise ValueError('A17 original pod controller contract changed')
-        pods = [e for e in initial['enemies'] if e['Type'] == '兵种460']
-        guards = [e for e in initial['enemies'] if e['Type'] == '兵种469'][:2]
-        zombies = [e for e in initial['enemies'] if e['Type'] == '兵种461']
+        pods = [e for e in initial['enemies'] if REGISTRY.resolve_id(e['Type']) == 460]
+        guards = [e for e in initial['enemies'] if REGISTRY.resolve_id(e['Type']) == 469][:2]
+        zombies = [e for e in initial['enemies'] if REGISTRY.resolve_id(e['Type']) == 461]
         if len(pods) != 1 or pods[0]['Quantity'] != 5 or len(guards) != 2 or len(zombies) != 1:
             raise ValueError('A17 five original pods and three escorts changed')
         old['groups'] = [dict(hpRatio=1.0, enemies=pods + guards + zombies)]
@@ -153,7 +167,7 @@ def adapt(document, factory, config=None):
     if (config.get('schema') != SCHEMA or set(config['maps']) != PLAN_IDS or set(config['maps']) != set(config['sourceCounts'])
             or config['preserveMaps'] != ['TUTORIAL','A08','A16']):
         raise ValueError('invalid difficulty source inventory')
-    if config['unitTypes'] != {k:'兵种'+str(v['id']) for k,v in factory['UNIT_MAP'].items()}:
+    if {k:REGISTRY.resolve_id(v) for k,v in config['unitTypes'].items()} != {k:v['id'] for k,v in factory['UNIT_MAP'].items()}:
         raise ValueError('difficulty unit mapping diverges from existing source authority')
     original = copy.deepcopy(document)
     result = copy.deepcopy(document)
@@ -194,14 +208,14 @@ def adapt(document, factory, config=None):
                 if mid not in TRANSPORT or wi != 1 or len(old_waves)!=2:
                     raise ValueError('difficulty transport must retain its original second-wave ownership')
                 source = old_waves[1]['EnemyGroup']['Enemy']
-                if len(source)!=1 or tuple(source[0][key] for key in ('Type','Level','Quantity')) != TRANSPORT[mid]:
+                if len(source)!=1 or (REGISTRY.resolve_id(source[0]['Type']),source[0]['Level'],source[0]['Quantity']) != (REGISTRY.resolve_id(TRANSPORT[mid][0]),TRANSPORT[mid][1],TRANSPORT[mid][2]):
                     raise ValueError('difficulty transport budget changed')
                 new_waves.append(copy.deepcopy(old_waves[1]));continue
             if kind == 'pods':
                 if mid!='A15' or wi!=0 or len(old_waves)!=1:
                     raise ValueError('A15 original five-pod wave must remain first')
                 source=old_waves[0]['EnemyGroup']['Enemy']
-                if len(source)!=1 or (source[0]['Type'],source[0]['Level'],source[0]['Quantity'])!=('兵种460',50,5):
+                if len(source)!=1 or (REGISTRY.resolve_id(source[0]['Type']),source[0]['Level'],source[0]['Quantity'])!=(460,50,5):
                     raise ValueError('difficulty pod source changed')
                 new_waves.append(copy.deepcopy(old_waves[0]));continue
             if kind not in ('combat', 'elevator') or not 1 <= len(recipe.get('groups',[])) <= 8:
@@ -219,7 +233,7 @@ def adapt(document, factory, config=None):
                     if QUOTAS.get(quota)!=mid or quantity!=1: raise ValueError('difficulty quota moved to another room')
                     source=copy.deepcopy(before_quotas[quota])
                     for key in ('InstanceName','x','y','SpawnIndex','ranged','podId'): source.pop(key,None)
-                    require_original_unit('specop' if source['Type']=='兵种466' else 'specop_shield', mid, progression)
+                    require_original_unit('specop' if REGISTRY.resolve_id(source['Type'])==466 else 'specop_shield', mid, progression)
                 else:
                     if unit not in factory['UNIT_MAP']: raise ValueError('unknown difficulty unit')
                     require_original_unit(unit, mid, progression)
@@ -268,7 +282,7 @@ def adapt(document, factory, config=None):
 def validate(document,config=None):
     config=load() if config is None else config
     progression=original_progression()
-    unit_for_type={v:k for k,v in config['unitTypes'].items() if k!='zombie_turret'}
+    unit_for_type={REGISTRY.resolve_id(v):k for k,v in config['unitTypes'].items() if k!='zombie_turret'}
     rows=[]
     for node in document['maps']:
         mid=node['id']
@@ -287,7 +301,7 @@ def validate(document,config=None):
                 expected_types=collections.Counter()
                 for group in recipe['groups']:
                     if group['unit']=='elite':
-                        kind='兵种466' if group['quota'] in ('E1','E3') else '兵种467'
+                        kind=config['unitTypes']['specop' if group['quota'] in ('E1','E3') else 'specop_shield']
                     else: kind=config['unitTypes'][group['unit']]
                     expected_types[kind]+=group['count']
                 actual_types=collections.Counter()
@@ -296,7 +310,7 @@ def validate(document,config=None):
                 if recipe['kind']=='elevator' and [[e.get('x'),e.get('y')] for e in enemies] != recipe['positions']:
                     raise ValueError('elevator preplaced formation drift')
                 for enemy in enemies:
-                    require_original_unit(unit_for_type[enemy['Type']],mid,progression)
+                    require_original_unit(unit_for_type[REGISTRY.resolve_id(enemy['Type'])],mid,progression)
                     if 'InstanceName' in enemy or PRIVATE & set(enemy.get('Parameters',{})) or 'TriggerEvent' in enemy:
                         raise ValueError('ordinary mandatory wave acquired private identity or trigger')
                     if recipe['kind']=='elevator' and (len(waves(node))!=1 or enemy['Quantity']!=1
@@ -304,23 +318,23 @@ def validate(document,config=None):
                             or [enemy.get('x'),enemy.get('y')] not in recipe['positions']):
                         raise ValueError('elevator cannot add delayed or queued reinforcements')
             if recipe['kind']=='transport':
-                if wi!=1 or len(enemies)!=1 or tuple(enemies[0][k] for k in ('Type','Level','Quantity'))!=TRANSPORT[mid]:
+                if wi!=1 or len(enemies)!=1 or (REGISTRY.resolve_id(enemies[0]['Type']),enemies[0]['Level'],enemies[0]['Quantity'])!=(REGISTRY.resolve_id(TRANSPORT[mid][0]),TRANSPORT[mid][1],TRANSPORT[mid][2]):
                     raise ValueError('difficulty transport ledger drift')
             if recipe['kind']=='pods':
-                if mid!='A15' or wi!=0 or sum(e['Quantity'] for e in enemies)!=5 or any(e['Type']!='兵种460' or e['Level']!=50 for e in enemies):
+                if mid!='A15' or wi!=0 or sum(e['Quantity'] for e in enemies)!=5 or any(REGISTRY.resolve_id(e['Type'])!=460 or e['Level']!=50 for e in enemies):
                     raise ValueError('difficulty original A15 five-pod ledger drift')
             if recipe['kind']=='boss':
-                boss=node.get('bossEncounter');expected={'A06':'兵种463','A17':'兵种472','A20':'兵种473','A22':'兵种474'}
-                if wi!=len(waves(node))-1 or len(enemies)!=1 or enemies[0]['Quantity']!=1 or boss is None or enemies[0].get('InstanceName')!=boss['instanceName'] or enemies[0]['Type']!=expected[mid]:
+                boss=node.get('bossEncounter');expected={'A06':463,'A17':472,'A20':473,'A22':474}
+                if wi!=len(waves(node))-1 or len(enemies)!=1 or enemies[0]['Quantity']!=1 or boss is None or enemies[0].get('InstanceName')!=boss['instanceName'] or REGISTRY.resolve_id(enemies[0]['Type'])!=expected[mid]:
                     raise ValueError('difficulty terminal boss identity drift')
             bound=wave_bound(wave,points)
             if bound['upperBound']>spec['screenLimit']: raise ValueError('distinct spawn point capacities exceed room limit')
             counts.append(sum(e['Quantity'] for e in enemies));bounds.append(bound)
             for enemy in enemies:types[enemy['Type']]+=enemy['Quantity']
         optional=sum(e['Quantity'] for e in supports(node))
-        for enemy in supports(node): require_original_unit(unit_for_type[enemy['Type']],mid,progression)
+        for enemy in supports(node): require_original_unit(unit_for_type[REGISTRY.resolve_id(enemy['Type'])],mid,progression)
         if optional!=spec.get('optionalSupportBudget',0): raise ValueError('difficulty optional support ledger drift')
-        if mid=='A17' and (sum(e['Quantity'] for e in supports(node) if e['Type']=='兵种460')!=5 or any(e['Level']!=55 for e in supports(node) if e['Type']=='兵种460')):
+        if mid=='A17' and (sum(e['Quantity'] for e in supports(node) if REGISTRY.resolve_id(e['Type'])==460)!=5 or any(e['Level']!=55 for e in supports(node) if REGISTRY.resolve_id(e['Type'])==460)):
             raise ValueError('difficulty original A17 five-pod ledger drift')
         boss=node.get('bossEncounter')
         peak=max(row['upperBound'] for row in bounds)
@@ -329,7 +343,7 @@ def validate(document,config=None):
         rows.append(dict(mapId=mid,waveCounts=counts,waveKinds=meta['waveKinds'],mandatoryPrimary=sum(counts),
                          optionalSupport=optional,totalPrimary=sum(counts)+optional,peakAliveUpperBound=peak,
                          configuredRoomLimit=spec['screenLimit'],perWaveConcurrency=bounds,mandatoryTypes=dict(types),
-                         possible469Successors=sum(e['Quantity'] for e in wave_enemies(node)+supports(node) if e['Type']=='兵种469')))
+                         possible469Successors=sum(e['Quantity'] for e in wave_enemies(node)+supports(node) if REGISTRY.resolve_id(e['Type'])==469)))
     marked=sum(e['Quantity'] for n in document['maps'] for e in wave_enemies(n)
                if e.get('Parameters',{}).get('目标标记')=='cf6-a01-turret-zombie')
     if marked!=20: raise ValueError('A01 original turret-compatible twenty-unit budget changed')

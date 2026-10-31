@@ -9,6 +9,8 @@ import sys
 import xml.etree.ElementTree as E
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'tools'))
+from unit_registry import preserve_unit_key
 HERE = Path(__file__).resolve().parent
 LINK = '敌人-CF6蛮蛮'
 DISPLAY_NAME = '蛮斧刽子手'
@@ -42,6 +44,7 @@ def expected():
     units = json.loads((ROOT / 'data/units/units.json').read_text(encoding='utf-8-sig'))
     unit = copy.deepcopy(next(row for row in units if row['spritename'] == SOURCE))
     unit.update(id=UNIT_ID, spritename=LINK, name=DISPLAY_NAME)
+    unit = preserve_unit_key(unit, units, new_key='cf6.蛮斧刽子手')
     receipt = {'formula': 'tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts',
                'source': SOURCE, 'unitId': UNIT_ID, 'linkage': LINK, 'requestedStage': 7, 'requestedTier': 9,
                'input': inputs, 'integerPanel': {key: int(entry.find(key).text) for key in FIELDS},
@@ -55,6 +58,7 @@ def canonical(element):
 
 def update_registration_text(text, unit):
     """Replace only this unit, keeping unrelated registry formatting intact."""
+    unit = preserve_unit_key(unit, json.loads(text), new_key=unit.get('key'))
     decoder = json.JSONDecoder()
     pos = text.index('[') + 1
     encoded = '\n  '.join(json.dumps(unit, ensure_ascii=False, indent=2).splitlines())

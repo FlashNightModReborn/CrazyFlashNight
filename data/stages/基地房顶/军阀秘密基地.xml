@@ -50,7 +50,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种6</Type>
+                        <Type>僵尸.黄衣男</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>2</Level>
@@ -100,7 +100,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种264</Type>
+                        <Type>军阀.精英突击兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -109,7 +109,7 @@
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种264</Type>
+                        <Type>军阀.精英突击兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -118,7 +118,7 @@
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种267</Type>
+                        <Type>军阀.精英狙击兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -127,13 +127,13 @@
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种56</Type>
+                        <Type>军阀.突击兵</Type>
                         <Interval>2000</Interval>
                         <Quantity>2</Quantity>
                         <Level>35</Level>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种54</Type>
+                        <Type>军阀.狙击兵</Type>
                         <Interval>2000</Interval>
                         <Quantity>2</Quantity>
                         <Level>35</Level>
@@ -146,14 +146,14 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种55</Type>
+                        <Type>军阀.重装兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>35</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种37</Type>
+                        <Type>军阀.早期人形.兵头</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -190,19 +190,19 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种56</Type>
+                        <Type>军阀.突击兵</Type>
                         <Interval>500</Interval>
                         <Quantity>3</Quantity>
                         <Level>35</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种54</Type>
+                        <Type>军阀.狙击兵</Type>
                         <Interval>2000</Interval>
                         <Quantity>2</Quantity>
                         <Level>35</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种56</Type>
+                        <Type>军阀.突击兵</Type>
                         <Interval>3000</Interval>
                         <Quantity>3</Quantity>
                         <Level>35</Level>
@@ -224,7 +224,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种267</Type>
+                        <Type>军阀.精英狙击兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -233,7 +233,7 @@
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种264</Type>
+                        <Type>军阀.精英突击兵</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -242,7 +242,7 @@
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种265</Type>
+                        <Type>军阀.精英重装兵</Type>
                         <Interval>1500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -298,7 +298,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种58</Type>
+                        <Type>军阀.牛仔</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>25</Level>

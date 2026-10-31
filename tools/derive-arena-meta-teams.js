@@ -29,6 +29,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { UnitRegistry, extractDirectChildXml } = require('./lib/unit-registry');
 const {
     inspectMercDressupPortrait,
     normalizeLegacyGender
@@ -100,6 +101,7 @@ function factionFor(spritename) {
 
 // ── unit 注册表：兵种N → {id,name,spritename,level,is_hostile,data.gender} ──
 const units = JSON.parse(fs.readFileSync(UNITS_PATH, 'utf8'));
+const unitRegistry = new UnitRegistry(units);
 const byType = {};
 for (let i = 0; i < units.length; i++) byType['兵种' + units[i].id] = units[i];
 
@@ -240,26 +242,34 @@ function splitSubWaves(body) {
     if (out.length === 0) out.push({ id: '0', body: body });
     return out;
 }
-function extractEnemies(body) {
+function extractEnemies(body, context) {
     const re = /<Enemy\b[^>]*>([\s\S]*?)<\/Enemy>/g;
     const list = [];
     let m;
     while ((m = re.exec(body))) {
         const inner = m[1];
-        const typeRaw = tag1(inner, 'Type');
+        let typeRaw = extractDirectChildXml(inner, 'Type', context);
+        if (typeRaw === null) {
+            // Historical RandomType data projected its first numeric choice.
+            // Preserve that catalog behavior; do not reinterpret Parameters.Type.
+            const historical = extractDirectChildXml(inner, 'RandomType', context);
+            const first = historical ? tag1(historical, 'Type') : null;
+            if (first && /^兵种\d+$/.test(first.trim())) typeRaw = first;
+        }
         if (!typeRaw) continue;
-        // Type 可能是 <CaseSwitch> 随机型：抽出所有 Case 候选 兵种N
+        // Keep every authored branch in order; resolve identities without drawing RNG.
         let types;
         if (/<CaseSwitch/i.test(typeRaw)) {
             types = [];
-            const cre = /<Case\b[^>]*>\s*(兵种\d+)\s*<\/Case>/g;
+            const cre = /<Case\b[^>]*>([^<]*)<\/Case>/g;
             let cm;
-            while ((cm = cre.exec(typeRaw))) types.push(cm[1]);
+            while ((cm = cre.exec(typeRaw))) types.push(unitRegistry.resolveType(cm[1], context));
             if (types.length === 0) continue;
         } else {
             const t = typeRaw.trim();
-            if (!/^兵种\d+$/.test(t)) continue; // 非规范 Type（如纯 boss 标记）跳过
-            types = [t];
+            // Other dynamic XML forms retain their existing projection policy.
+            if (!t || t.indexOf('<') >= 0) continue;
+            types = [unitRegistry.resolveType(typeRaw, context)];
         }
         const lvl = Number(tag1(inner, 'Level'));
         const qty = Number(tag1(inner, 'Quantity'));
@@ -292,7 +302,7 @@ function sumCount(members) {
 
 // 从一个「组」(SubWave 或 SubStage) body 构建一支元战队（或 null）
 function buildTeam(rel, stageName, groupId, body) {
-    const enemies = extractEnemies(body);
+    const enemies = extractEnemies(body, rel + '#' + groupId);
     if (enemies.length === 0) return null;
 
     const merged = {}; // repType@level(#r) -> member

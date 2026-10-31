@@ -62,6 +62,86 @@ const CONFIG: MonsterCensusConfig = {
 };
 
 describe("monster stage index", () => {
+  it("语义引用与旧兵种引用给出相同的首次出场结果", () => {
+    const repo = writeFixtureRepo();
+    const before = buildStageIndex(repo, CONFIG);
+    const unitsPath = path.join(repo, "data/units/units.json");
+    const units = JSON.parse(fs.readFileSync(unitsPath, "utf8")) as Array<{ id: number; spritename: string; key?: string }>;
+    for (const unit of units) unit.key = "测试.单位" + unit.id;
+    write(repo, "data/units/units.json", JSON.stringify(units));
+    const stagePath = path.join(repo, "data/stages/基地门口/废城街头.xml");
+    fs.writeFileSync(stagePath, fs.readFileSync(stagePath, "utf8").replace(/兵种(\d+)/g, "测试.单位$1"));
+    const after = buildStageIndex(repo, CONFIG);
+    expect(after.spawnStagesBySprite).toEqual(before.spawnStagesBySprite);
+    expect(resolveFirstAppearance("敌人-主线怪", after)).toEqual(resolveFirstAppearance("敌人-主线怪", before));
+    expect(() => {
+      fs.writeFileSync(stagePath, fs.readFileSync(stagePath, "utf8").replace("测试.单位1", "测试.拼错"));
+      buildStageIndex(repo, CONFIG);
+    }).toThrow(/废城街头.*unknown unit reference/);
+  });
+
+  it("随机 Type 审计覆盖全部候选且不执行表达式", () => {
+    const repo = writeFixtureRepo();
+    const unitsPath = path.join(repo, "data/units/units.json");
+    const units = JSON.parse(fs.readFileSync(unitsPath, "utf8")) as Array<{ id: number; spritename: string; key?: string }>;
+    const unit = units.find(row => row.id === 2)!;
+    unit.key = "测试.支线怪";
+    write(repo, "data/units/units.json", JSON.stringify(units));
+    write(repo, "data/stages/基地门口/废城街头.xml", stageXml([1]).replace("兵种1",
+      '<CaseSwitch expression="must_not_evaluate"><Case>兵种1</Case><Case>测试.支线怪</Case></CaseSwitch>'));
+    const index = buildStageIndex(repo, CONFIG);
+    expect(index.spawnStagesBySprite.get("敌人-主线怪")).toContain("废城街头");
+    expect(index.spawnStagesBySprite.get("敌人-支线怪")).toContain("废城街头");
+  });
+
+  it("Event/Dialogue/Type 与 SubDialogue/Type 纳入索引，且首尾空白引用直接拒绝", () => {
+    const repo = writeFixtureRepo();
+    const unitsPath = path.join(repo, "data/units/units.json");
+    const units = JSON.parse(fs.readFileSync(unitsPath, "utf8")) as Array<{ id: number; spritename: string; key?: string }>;
+    for (const unit of units) unit.key = "测试.单位" + unit.id;
+    write(repo, "data/units/units.json", JSON.stringify(units));
+
+    write(
+      repo,
+      "data/stages/基地门口/废城街头.xml",
+      "<?xml version='1.0' encoding='UTF-8'?>\n<GameStage><SubStage id=\"0\">" +
+        "<Event><Dialogue id=\"0\"><Type>测试.单位1</Type></Dialogue></Event>" +
+        "<Wave><SubWave id=\"0\"><Dialogue><SubDialogue id=\"0\"><Type>测试.单位6</Type></SubDialogue></Dialogue></SubWave></Wave>" +
+        "</SubStage></GameStage>\n",
+    );
+    const index = buildStageIndex(repo, CONFIG);
+    expect(index.spawnStagesBySprite.get("敌人-主线怪")).toContain("废城街头");
+    expect(index.spawnStagesBySprite.get("敌人-下线怪")).toContain("废城街头");
+
+    // 重复 Dialogue/Type 遵循末项生效（与 StageInfo.parseEnemyAttribute 一致），且前置项仍须校验合法性
+    write(
+      repo,
+      "data/stages/基地门口/废城街头.xml",
+      "<?xml version='1.0' encoding='UTF-8'?>\n<GameStage><SubStage id=\"0\">" +
+        "<Event><Dialogue id=\"0\"><Type>测试.单位1</Type><Type>测试.单位6</Type></Dialogue></Event>" +
+        "</SubStage></GameStage>\n",
+    );
+    const overrideIndex = buildStageIndex(repo, CONFIG);
+    expect(overrideIndex.spawnStagesBySprite.get("敌人-主线怪")).toBeUndefined();
+    expect(overrideIndex.spawnStagesBySprite.get("敌人-下线怪")).toContain("废城街头");
+
+    expect(() => {
+      write(
+        repo,
+        "data/stages/基地门口/废城街头.xml",
+        "<?xml version='1.0' encoding='UTF-8'?>\n<GameStage><SubStage id=\"0\">" +
+          "<Event><Dialogue id=\"0\"><Type>测试.拼错</Type><Type>测试.单位6</Type></Dialogue></Event>" +
+          "</SubStage></GameStage>\n",
+      );
+      buildStageIndex(repo, CONFIG);
+    }).toThrow(/废城街头.*unknown unit reference/);
+
+    expect(() => {
+      write(repo, "data/stages/基地门口/废城街头.xml", stageXml([1]).replace("兵种1", " 测试.单位1 "));
+      buildStageIndex(repo, CONFIG);
+    }).toThrow(/废城街头.*unknown unit reference/);
+  });
+
   it("主线/支线/解锁三条路径各自给出阶段与依据", () => {
     const index = buildStageIndex(writeFixtureRepo(), CONFIG);
 

@@ -16,9 +16,11 @@ sys.path.insert(0,str(ROOT/'tools'))
 from cf6_economy import enemies
 from choice_reward_catalog import item_catalog
 from encounters import ROLES
+from unit_registry import UnitRegistry
 
 
 def report():
+    registry=UnitRegistry.load(ROOT)
     book_path=ROOT/'data/stages/books/cf6-type61.json'
     book=json.loads(book_path.read_text('utf-8'))
     units_path=ROOT/'data/units/units.json'
@@ -31,7 +33,7 @@ def report():
     for stage in book['maps']:
         role_counts=collections.Counter();count=0;hp_sum=0
         for enemy in enemies(stage):
-            unit=int(enemy['Type'].removeprefix('兵种'));p=enemy.get('Parameters',{})
+            unit=registry.resolve_id(enemy['Type']);p=enemy.get('Parameters',{})
             row=properties[units[unit]['spritename']]
             low=float(p.get('hp_min',row.findtext('hp_min')))
             high=float(p.get('hp_max',row.findtext('hp_max')))

@@ -69,7 +69,9 @@ def build(root=ROOT):
     units = json.loads((root / 'data/units/units.json').read_text(encoding='utf-8-sig'))
     ally = next(u for u in units if u['id'] == 257)
     assert ally['spritename'] == '敌人-李小龙' and ally['is_hostile'] is False
-    appearances = ET.parse(root / ALLY_STAGE).findall(".//Enemy[Type='兵种257']")
+    from unit_registry import UnitRegistry
+    registry = UnitRegistry(units)
+    appearances = [e for e in ET.parse(root / ALLY_STAGE).findall('.//Enemy') if e.findtext('Type') in ('兵种257', ally.get('key'))]
     levels = {int(e.findtext('Level')) for e in appearances}
     assert len(appearances) == 5 and levels == {35}, 'Review changed story-ally balance before regenerating this baseline'
     assert all(e.find('Parameters') is None for e in appearances), 'Review new ally overrides before regenerating'
@@ -89,6 +91,8 @@ def build(root=ROOT):
             enemies = []
             for source_enemy in source_wave.findall('EnemyGroup/Enemy'):
                 enemy = value(source_enemy)
+                if 'Type' in enemy:
+                    enemy['Type'] = registry.resolve_type(str(enemy['Type']))
                 params = enemy.get('Parameters', {})
                 # Match ObjectUtil.cloneParameters: original text key/value pairs
                 # are valid. Keep nested keys inert rather than promoting typos.

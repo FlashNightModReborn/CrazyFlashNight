@@ -91,7 +91,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种45</Type>
+                        <Type>堕落城.跳蚤</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -99,7 +99,7 @@
                         <y>580</y>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种49</Type>
+                        <Type>堕落城.杀手</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -107,7 +107,7 @@
                         <y>448</y>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种44</Type>
+                        <Type>堕落城.左轮</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -118,14 +118,14 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种45</Type>
+                        <Type>堕落城.跳蚤</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种48</Type>
+                        <Type>堕落城.铁拳</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>20</Level>
@@ -165,7 +165,7 @@
                 
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种49</Type>
+                        <Type>堕落城.杀手</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -173,7 +173,7 @@
                         <y>560</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种49</Type>
+                        <Type>堕落城.杀手</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
@@ -181,21 +181,21 @@
                         <y>457</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种48</Type>
+                        <Type>堕落城.铁拳</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种45</Type>
+                        <Type>堕落城.跳蚤</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种44</Type>
+                        <Type>堕落城.左轮</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <Level>20</Level>
@@ -205,7 +205,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种456</Type>
+                        <Type>盗贼.望风鸢</Type>
                         <Interval>1000</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
