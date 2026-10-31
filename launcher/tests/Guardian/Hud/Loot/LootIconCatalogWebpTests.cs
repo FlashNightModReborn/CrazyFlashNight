@@ -254,6 +254,9 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
                     }
                 Assert.True(hasBlack, "军阀徽标应有黑色结构");
                 Assert.True(hasGold, "军阀徽标应有淡黄色结构");
+                Color rim = frames.First.GetPixel(32, 2);
+                Assert.True(rim.R > 200 && rim.G > 200 && rim.B > 200,
+                    "外圈应使用淡黄色描边，避免黑底下消失");
             }
         }
 

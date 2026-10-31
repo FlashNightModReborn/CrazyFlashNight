@@ -1,4 +1,6 @@
 ﻿import org.flashNight.arki.item.synthesis.SynthesisIndex;
+import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.builder.UpgradePathBuilder;
 
@@ -34,6 +36,8 @@ class org.flashNight.gesh.tooltip.test.UpgradePathBuilderTest {
 
         test_allEmpty_returnsEmptyArray();
         test_fromOnly_rendersFromSection();
+        test_buildWithRows_iconsAndLegacy();
+        test_inventoryProjection_includesUpgradeIcons();
         test_toOnly_rendersToSection();
         test_to_truncation_above3();
         test_to_exactly3_noTruncation();
@@ -92,6 +96,66 @@ class org.flashNight.gesh.tooltip.test.UpgradePathBuilderTest {
         assert(html.indexOf(TooltipConstants.TIP_UPGRADE_TO) < 0,
                "fromOnly: no 可升 section");
         restoreSynthDict(saved);
+    }
+
+    private static function test_buildWithRows_iconsAndLegacy():Void {
+        var dict:Object = {
+            升阶配方A: {
+                name: "升阶产物A",
+                materials: ["测试材料Q##2", "测试材料R##3"]
+            }
+        };
+        var saved = installSynthDict(dict);
+        var item:Object = { name: "升阶产物A", synthesis: "升阶配方A" };
+        var legacy:String = UpgradePathBuilder.build(item, null).join("");
+        var entry:Object = UpgradePathBuilder.buildWithRows(item, null);
+        restoreSynthDict(saved);
+
+        assert(entry.kind == "upgrades" && entry.title == TooltipConstants.LBL_UPGRADE_PATH,
+            "upgradeRows: structured kind and title");
+        assert(entry.html == legacy, "upgradeRows: legacy HTML stays identical");
+        assert(entry.rows[0].name == TooltipConstants.TIP_UPGRADE_FROM
+            && entry.rows[0].depth === 0, "upgradeRows: source group is parent");
+        assert(entry.rows[0].effect.indexOf("#99CCFF") >= 0,
+            "upgradeRows: group color is preserved");
+        assert(entry.rows[1].icon == "测试材料Q" && entry.rows[1].depth === 1
+            && entry.rows[1].name.indexOf("x2") >= 0,
+            "upgradeRows: material icon and quantity are preserved");
+        assert(entry.rows[2].icon == "测试材料R" && entry.rows[2].depth === 1,
+            "upgradeRows: every material has its own icon");
+    }
+
+    private static function test_inventoryProjection_includesUpgradeIcons():Void {
+        var dict:Object = {
+            升阶产品: { name: "升阶产品", materials: ["测试升阶装备##1"] }
+        };
+        var saved = installSynthDict(dict);
+        var oldData:Object = ItemUtil.itemDataDict;
+        var oldEquipment:Object = ItemUtil.equipmentDict;
+        ItemUtil.itemDataDict = {
+            测试升阶装备:{name:"测试升阶装备", displayname:"测试升阶装备", type:"武器",
+                use:"刀", price:100, icon:"测试升阶装备", description:"普通描述", data:{}},
+            升阶产品:{name:"升阶产品", displayname:"升阶产品", type:"武器",
+                use:"刀", price:200, icon:"升阶产品", data:{}}
+        };
+        ItemUtil.equipmentDict = {测试升阶装备:true, 升阶产品:true};
+        var projection:Object = InventoryPanelService.buildTooltipProjection(
+            {name:"测试升阶装备", value:{level:1}});
+        restoreSynthDict(saved);
+        ItemUtil.itemDataDict = oldData;
+        ItemUtil.equipmentDict = oldEquipment;
+
+        assert(projection != null && projection.success === true,
+            "upgradeProjection: canonical inventory projection succeeds");
+        var sections:Array = projection.document.sections;
+        assert(sections[sections.length - 1].kind == "upgrades",
+            "upgradeProjection: actual inventory document includes upgrade structure");
+        assert(sections[sections.length - 1].rows[1].icon == "升阶产品",
+            "upgradeProjection: actual inventory document includes product icon");
+        assert(sections[sections.length - 1].rows[1].depth === 1,
+            "upgradeProjection: actual inventory document keeps child depth");
+        assert(projection.descHTML.indexOf(TooltipConstants.LBL_UPGRADE_PATH) >= 0,
+            "upgradeProjection: legacy HTML keeps original upgrade text");
     }
 
     private static function test_toOnly_rendersToSection():Void {

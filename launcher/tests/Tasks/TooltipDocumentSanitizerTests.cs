@@ -808,6 +808,78 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void ModInfoRows_AllowEffectOnlyChildrenAndKeepFallback()
+        {
+            JObject doc = ValidDocument();
+            doc["sections"] = new JArray
+            {
+                new JObject
+                {
+                    ["role"] = "sub",
+                    ["kind"] = "modinfo",
+                    ["title"] = "配件信息",
+                    ["runs"] = new JArray { new JObject { ["text"] = "回退全文" } },
+                    ["rows"] = new JArray
+                    {
+                        new JObject { ["name"] = "装配要求" },
+                        new JObject
+                        {
+                            ["depth"] = 1,
+                            ["runs"] = new JArray
+                            {
+                                new JObject { ["text"] = "插件位置：", ["color"] = "#0f0" },
+                                new JObject { ["text"] = "手环" }
+                            }
+                        },
+                        new JObject()
+                    }
+                }
+            };
+            JObject output;
+            Assert.True(TooltipDocumentSanitizer.TrySanitize(doc, out output));
+            JObject section = (JObject)output["sections"][0];
+            Assert.Equal("modinfo", (string)section["kind"]);
+            Assert.Equal("回退全文", (string)section["runs"][0]["text"]);
+            JArray rows = (JArray)section["rows"];
+            Assert.Equal(2, rows.Count);
+            Assert.Equal("装配要求", (string)rows[0]["name"]);
+            Assert.Equal("", (string)rows[1]["name"]);
+            Assert.Equal(1, (int)rows[1]["depth"]);
+            Assert.Equal(2, ((JArray)rows[1]["runs"]).Count);
+            Assert.Equal("#00FF00", (string)rows[1]["runs"][0]["color"]);
+        }
+
+        [Fact]
+        public void UpgradeRows_AreWhitelistedWithIconsAndDepth()
+        {
+            JObject doc = ValidDocument();
+            doc["sections"] = new JArray
+            {
+                new JObject
+                {
+                    ["role"] = "description", ["kind"] = "upgrades", ["title"] = "升阶路线",
+                    ["rows"] = new JArray
+                    {
+                        new JObject { ["name"] = "升自", ["runs"] = new JArray
+                            { new JObject { ["text"] = "升自", ["color"] = "#99CCFF" } } },
+                        new JObject { ["name"] = "G11", ["icon"] = "weapon_g11", ["depth"] = 1,
+                            ["runs"] = new JArray { new JObject { ["text"] = " x1" } } }
+                    }
+                }
+            };
+            JObject output;
+            Assert.True(TooltipDocumentSanitizer.TrySanitize(doc, out output));
+            JObject section = (JObject)output["sections"][0];
+            Assert.Equal("upgrades", (string)section["kind"]);
+            Assert.Equal("description", (string)section["role"]);
+            JArray rows = (JArray)section["rows"];
+            Assert.Equal(2, rows.Count);
+            Assert.Equal("weapon_g11", (string)rows[1]["icon"]);
+            Assert.Equal(1, (int)rows[1]["depth"]);
+            Assert.Equal("#99CCFF", (string)rows[0]["runs"][0]["color"]);
+        }
+
+        [Fact]
         public void AttachmentsRows_AreCappedAndRequireValidRows()
         {
             var rows = new JArray();

@@ -78,6 +78,75 @@ class org.flashNight.gesh.tooltip.builder.UpgradePathBuilder {
         return result;
     }
 
+    public static function buildWithRows(item:Object, baseItem:BaseItem):Object {
+        var html:String = build(item, baseItem).join("");
+        if (html.length == 0) return null;
+        var rows:Array = [];
+        var fromRecipe:Object = SynthesisIndex.getRecipe(item.synthesis);
+        if (fromRecipe != null && fromRecipe.materials != null) {
+            pushGroup(rows, TooltipConstants.TIP_UPGRADE_FROM, TooltipConstants.COL_CRAFT);
+            var requirements:Array = ItemUtil.getRequirementFromTask(fromRecipe.materials);
+            for (var i:Number = 0; i < requirements.length; i++) {
+                var req:Object = requirements[i];
+                if (!req || !req.name) continue;
+                var reqData:Object = ItemUtil.getItemData(req.name);
+                var reqName:String = (reqData && reqData.displayname) ? reqData.displayname : req.name;
+                if (req.isQuantity) reqName += " x" + req.value;
+                else if (ItemUtil.isEquipment(req.name)) reqName += " +" + req.value;
+                else reqName += "：" + req.value;
+                rows.push({name:reqName, icon:iconFor(req.name), depth:1});
+            }
+        }
+
+        var toProducts:Array = SynthesisIndex.getRecipesUsing(item.name);
+        if (toProducts && toProducts.length > 0) {
+            pushGroup(rows, TooltipConstants.TIP_UPGRADE_TO, TooltipConstants.COL_CRAFT);
+            var shown:Number = Math.min(toProducts.length, TooltipConstants.UPGRADE_MAX_TO_PRODUCTS);
+            for (var p:Number = 0; p < shown; p++) {
+                var prodName:String = toProducts[p];
+                var prodData:Object = ItemUtil.getItemData(prodName);
+                rows.push({name:(prodData && prodData.displayname) ? prodData.displayname : prodName,
+                    icon:iconFor(prodName), depth:1});
+            }
+            if (toProducts.length > shown) {
+                rows.push({name:"... " + TooltipConstants.TIP_ETC + "共 " + toProducts.length + " 项", depth:1});
+            }
+        }
+
+        var supportedTiers:Array = [];
+        var rawTierOpts:Array = TierSystem.getAllTierOptionsByName(item.name);
+        if (rawTierOpts) {
+            for (var t:Number = 0; t < rawTierOpts.length; t++) {
+                if (rawTierOpts[t].available) supportedTiers.push(rawTierOpts[t]);
+            }
+        }
+        if (supportedTiers.length > 0) {
+            pushGroup(rows, TooltipConstants.TIP_TIER_OPTIONS, TooltipConstants.COL_ENHANCE);
+            var currentTier:String = (baseItem && baseItem.value) ? baseItem.value.tier : null;
+            for (var j:Number = 0; j < supportedTiers.length; j++) {
+                var opt:Object = supportedTiers[j];
+                var row:Object = {name:opt.name, depth:1};
+                if (currentTier && opt.name === currentTier) row.name += TooltipConstants.TIP_TIER_CURRENT;
+                if (opt.material) {
+                    row.icon = iconFor(opt.material);
+                    row.effect = " " + TooltipFormatter.color("[" + opt.material + "]", TooltipConstants.COL_INFO);
+                }
+                rows.push(row);
+            }
+        }
+        return {kind:"upgrades", title:TooltipConstants.LBL_UPGRADE_PATH, rows:rows, html:html};
+    }
+
+    private static function pushGroup(rows:Array, name:String, color:String):Void {
+        rows.push({name:name, depth:0, effect:TooltipFormatter.color(name, color)});
+    }
+
+    private static function iconFor(name:String):String {
+        if (!name) return null;
+        var data:Object = ItemUtil.getItemData(name);
+        return (data && data.icon) ? String(data.icon) : name;
+    }
+
     /**
      * 渲染"升自"段：子弹列表风格，每个材料独占一行。
      * 复用 ItemUtil.getRequirementFromTask 的材料解析逻辑，

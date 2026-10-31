@@ -58,15 +58,14 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         private const float PinnedCloseFontBase = 16f;
 
         // ---- Web 视觉 token（--tt-*，迁移前基线值）----
-        // 2026-10 视觉合同改版（对齐卡牌项目注释框口径）：面板底 = 半透明黑 80%，
+        // 2026-10 视觉合同改版（对齐卡牌项目注释框口径）：面板底 = 深灰约 76%，
         // 描边 = 1px 白；Web 端 --tt-grad-top/--tt-grad-bot/--tt-border 同步改。
-        private static readonly Color PanelBg = Color.FromArgb(204, 0, 0, 0);        // rgba(0,0,0,.8)
+        private static readonly Color PanelBg = Color.FromArgb(194, 32, 32, 32);     // rgba(32,32,32,.76)
         private static readonly Color PanelBorder = Color.FromArgb(255, 255, 255);   // #fff 1px
         private static readonly Color TextDefault = Color.White;                     // --tt-text
         private static readonly Color Divider = Color.FromArgb(51, 255, 255, 255);   // rgba(255,255,255,.20)
-        // 2026-10 改版后 --tt-grad-* 落黑，滚动条皮肤/检视壳的混色基色随之重算
-        // （Web 端这些 token 直接引用 --tt-grad-bot，会自动变黑；此处展开同值）。
-        private static readonly Color ScrollTrack = Color.FromArgb(189, 0, 0, 0); // mix(黑,74%,transparent)
+        // 黑色 80% 底退役，滚动条皮肤/检视壳的混色基色同步改灰。
+        private static readonly Color ScrollTrack = Color.FromArgb(189, 32, 32, 32); // mix(深灰,74%,transparent)
         private static readonly Color ScrollThumb = Color.FromArgb(226, 112, 112, 112);   // mix(#fff 44%,黑)
         private static readonly Color ScrollThumbBorder = Color.FromArgb(212, 41, 41, 41);// mix(#fff 16%,黑)
 
@@ -919,7 +918,13 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                             : (vl.LineHeightPx > 0 ? vl.LineHeightPx : 1));
                     if (!vl.IsBlank)
                     {
-                        float cx = x;
+                        if (!vl.IconRect.IsEmpty)
+                        {
+                            Rectangle iconRect = vl.IconRect;
+                            iconRect.Y = (int)cy + (int)Math.Round((lh - iconRect.Height) / 2f);
+                            DrawIcon(g, iconRect, vl.IconName);
+                        }
+                        float cx = x + vl.TextOffsetPx;
                         for (int s = 0; s < vl.Slices.Count; s++)
                         {
                             NativeTooltipLayout.VisualLine.Slice slice = vl.Slices[s];
@@ -941,7 +946,16 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                             }
                             Color color = warlord ? Color.FromArgb(255, 255, 224)
                                 : aLegion ? Color.FromArgb(255, 0, 0)
+                                : IsZombieSlice(slice) ? TextDefault
                                 : slice.Color.HasValue ? slice.Color.Value : TextDefault;
+                            if (!aLegion && !warlord && slice.Color.HasValue
+                                && slice.Color.Value.R == 0 && slice.Color.Value.G == 0 && slice.Color.Value.B == 0)
+                            {
+                                using (SolidBrush backdrop = new SolidBrush(Fade(Color.White)))
+                                {
+                                    g.FillRectangle(backdrop, cx - 1, cy, slice.WidthF + 2, lh);
+                                }
+                            }
                             NativeTooltipLayout.RunFont font = slice.FontOf();
                             if (aLegion || warlord) font.Underline = true;
                             using (SolidBrush brush = new SolidBrush(Fade(color)))
@@ -958,19 +972,34 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             finally { g.Restore(state); }
         }
 
+        private static readonly System.Text.RegularExpressions.Regex ANamePattern =
+            new System.Text.RegularExpressions.Regex(
+                @"A兵团|Andy|安迪烙|格格巫|丽丽丝|小F|\b(?:Boy|King|Pig|Blue|The\s+Girl|Shop\s*Girl)\b",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase
+                | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+        private static readonly System.Text.RegularExpressions.Regex WarlordNamePattern =
+            new System.Text.RegularExpressions.Regex(
+                @"军阀|军队|将军|莱昂利亚|自由革命军|\b(?:General|Gazer)\b",
+                System.Text.RegularExpressions.RegexOptions.IgnoreCase
+                | System.Text.RegularExpressions.RegexOptions.CultureInvariant);
+
         private static bool IsALegionSlice(NativeTooltipLayout.VisualLine.Slice slice)
         {
             if (slice.Color.HasValue && slice.Color.Value.R == 255
                 && slice.Color.Value.G == 0 && slice.Color.Value.B == 0) return true;
-            string text = slice.Text ?? "";
-            return text.IndexOf("A兵团", StringComparison.OrdinalIgnoreCase) >= 0
-                || text.IndexOf("Andy", StringComparison.OrdinalIgnoreCase) >= 0
-                || text.IndexOf("安迪烙", StringComparison.Ordinal) >= 0;
+            return ANamePattern.IsMatch(slice.Text ?? "");
         }
 
         private static bool IsWarlordSlice(NativeTooltipLayout.VisualLine.Slice slice)
         {
-            return (slice.Text ?? "").IndexOf("军阀", StringComparison.Ordinal) >= 0;
+            return WarlordNamePattern.IsMatch(slice.Text ?? "");
+        }
+
+        private static bool IsZombieSlice(NativeTooltipLayout.VisualLine.Slice slice)
+        {
+            return slice.Color.HasValue && slice.Color.Value.R == 178
+                && slice.Color.Value.G == 34 && slice.Color.Value.B == 34
+                && (slice.Text ?? "").IndexOf("丧尸", StringComparison.Ordinal) >= 0;
         }
 
         /// <summary>

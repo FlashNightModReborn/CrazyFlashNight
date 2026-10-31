@@ -11,9 +11,9 @@ _root.物品图标注释 = function(name, value, baseItem, ownerClip) {
     var itemData:Object = ItemUtil.getItemData(name);
     if(typeof baseItem !== "object") baseItem = null;
 
-    // 1) 基础段描述（不含简介头与装备属性）；subBlocks 拆出「战技/副武器」「已安装插件」
-    //    「额外功能」三块，各自成为一个 role:"sub" 子注释框；旧消费端按 body 内联不丢内容。
-    //    docSubs 与 subBlocks 一一对应：插件块带结构化 rows（含图标），其余为同文 HTML。
+    // 1) 基础段描述（不含简介头与装备属性）；插件物品信息、战技、已安装插件与额外功能
+    //    分别拆成 role:"sub" 子注释框，药剂 Buff/缓释在简介阶段拆出；旧消费端保留全文。
+    //    docSubs 与 subBlocks 一一对应：modinfo 带层级行，已安装插件带图标行。
     var subBlocks:Array = [];
     var docSubs:Array = [];
     var 描述文本:String = TooltipComposer.generateItemDescriptionTextEx(itemData, baseItem, subBlocks, docSubs);
@@ -25,14 +25,22 @@ _root.物品图标注释 = function(name, value, baseItem, ownerClip) {
     // 3) 简介面板文本。插条承载了类型行时才从面板省略该行（非武器保持原样不丢信息）；
     //    弹夹行/子弹类型行改由独立框显示；暴击/斩杀拆到第一个子框。
     var 暴击斩杀:Array = [];
+    var 药剂Buff:Array = [];
     var 简介文本:String = TooltipComposer.generateIntroPanelContent(baseItem, itemData, value, {
         omitTypeLines: 插条 != null,
         omitActionType: 插条 != null,
         omitClipName: 弹夹 != null,
         omitBulletType: 弹夹 != null && 弹夹.ammo != null,
         omitCritSlay: true,
-        critSlay: 暴击斩杀
+        critSlay: 暴击斩杀,
+        omitBuff: true,
+        buff: 药剂Buff
     });
+    if (药剂Buff.length > 0) {
+        var 药剂BuffHTML:String = 药剂Buff.join("");
+        subBlocks.unshift(药剂BuffHTML);
+        docSubs.unshift(药剂BuffHTML);
+    }
     if (暴击斩杀.length > 0) {
         var 暴击斩杀HTML:String = 暴击斩杀.join("");
         subBlocks.unshift(暴击斩杀HTML);
@@ -40,10 +48,12 @@ _root.物品图标注释 = function(name, value, baseItem, ownerClip) {
     }
 
     var extras:Object = null;
-    if (插条 != null || 弹夹 != null) {
+    var 升阶信息:Object = TooltipComposer.getUpgradePathInfo(itemData, baseItem);
+    if (插条 != null || 弹夹 != null || 升阶信息 != null) {
         extras = {};
         if (插条 != null) extras.rail = 插条;
         if (弹夹 != null) extras.magazine = 弹夹;
+        if (升阶信息 != null) extras.upgrades = 升阶信息;
     }
 
     // _root.服务器.发布服务器消息("描述文本:" + StringUtils.htmlToPlainTextFast(描述文本));
@@ -156,8 +166,8 @@ _root.Web物品注释HTML = function(name:String):Object {
     var descBody:String = TooltipComposer.generateItemDescriptionTextEx(itemData, null, subBlocks, docSubs);
     var introHTML:String = TooltipComposer.generateIntroPanelContent(null, itemData, value, null);
 
-    // 装备才可能拆出插条/弹夹/暴击斩杀，此时为语义文档再走一次省略版简介；
-    // 非装备两次结果同文，直接复用避免重复构建。
+    // 装备为插条/弹夹/暴击斩杀重建省略版简介，药剂为独立 Buff 子框重建；
+    // 其余非装备两次结果同文，直接复用避免重复构建。
     var 插条:Array = TooltipComposer.getRailText(itemData, null);
     var 弹夹:Object = TooltipComposer.getMagazineInfo(null, itemData, value);
     var extras:Object = null;
@@ -177,10 +187,23 @@ _root.Web物品注释HTML = function(name:String):Object {
             subBlocks.unshift(暴击斩杀HTML);
             docSubs.unshift(暴击斩杀HTML);
         }
-        if (插条 != null || 弹夹 != null) {
+        var 升阶信息:Object = TooltipComposer.getUpgradePathInfo(itemData, null);
+        if (插条 != null || 弹夹 != null || 升阶信息 != null) {
             extras = {};
             if (插条 != null) extras.rail = 插条;
             if (弹夹 != null) extras.magazine = 弹夹;
+            if (升阶信息 != null) extras.upgrades = 升阶信息;
+        }
+    } else if (itemData.use === "药剂") {
+        var 药剂Buff:Array = [];
+        docIntro = TooltipComposer.generateIntroPanelContent(null, itemData, value, {
+            omitBuff: true,
+            buff: 药剂Buff
+        });
+        if (药剂Buff.length > 0) {
+            var 药剂BuffHTML:String = 药剂Buff.join("");
+            subBlocks.unshift(药剂BuffHTML);
+            docSubs.unshift(药剂BuffHTML);
         }
     }
 

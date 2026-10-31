@@ -2,6 +2,7 @@
 import org.flashNight.gesh.tooltip.TooltipComposer;
 import org.flashNight.gesh.tooltip.TooltipTextBuilder;
 import org.flashNight.arki.item.ItemUtil;
+import org.flashNight.arki.item.EquipmentUtil;
 
 /**
  * NativeTooltipDocumentTest - 共享语义文档构建器测试
@@ -58,9 +59,11 @@ class org.flashNight.gesh.tooltip.test.NativeTooltipDocumentTest {
         test_buildItem_subAcquisition();
         test_buildItem_extrasRail();
         test_buildItem_extrasMagazine();
+        test_buildItem_extrasUpgrades();
         test_buildItem_extrasNotContent();
         test_composer_exNullSubBlocks_matchesLegacy();
         test_composer_nightVisionSubBlock();
+        test_composer_modInfoSubBlock();
         test_layoutType();
         test_buildItem_realInstance();
         test_buildSkill_shape();
@@ -513,6 +516,26 @@ class org.flashNight.gesh.tooltip.test.NativeTooltipDocumentTest {
             null, {magazine:null}).magazine == undefined, "mag: null 不产弹夹框");
     }
 
+    private static function test_buildItem_extrasUpgrades():Void {
+        var itemData:Object = {name:"n", displayname:"显示名", icon:"ico_n", type:"武器"};
+        var upgrades:Object = {kind:"upgrades", title:"升阶路线", rows:[
+            {name:"升自", effect:"<font color='#99CCFF'>升自</font>", depth:0},
+            {name:"G11", icon:"weapon_g11", effect:" x1", depth:1}
+        ]};
+        var doc:Object = NativeTooltipDocument.buildItem("n", itemData, null, "简介",
+            "普通<BR><font color='#FFCC00'>【升阶路线】</font><BR>旧行", null,
+            {upgrades:upgrades});
+        assertEq(3, doc.sections.length, "upgrades: legacy block is replaced by one structured section");
+        assertEq("description", doc.sections[2].role, "upgrades: stay in description role");
+        assertEq("upgrades", doc.sections[2].kind, "upgrades: kind survives");
+        assert(doc.sections[1].runs[0].text.indexOf("升阶路线") < 0,
+            "upgrades: old HTML block does not duplicate");
+        assertEq("weapon_g11", doc.sections[2].rows[1].icon, "upgrades: item icon key survives");
+        assertEq(1, doc.sections[2].rows[1].depth, "upgrades: child depth survives");
+        assertEq("#99CCFF", doc.sections[2].rows[0].runs[0].color,
+            "upgrades: group color survives");
+    }
+
     private static function test_buildItem_extrasNotContent():Void {
         // 结构部件不参与正文：rail/magazine 文本不得混进 sections，
         // 否则同一信息会在主框体里重复出现一次。
@@ -586,6 +609,40 @@ class org.flashNight.gesh.tooltip.test.NativeTooltipDocumentTest {
         var plainMain:String = TooltipComposer.generateItemDescriptionTextEx(plain, null, []);
         assert(plainMain.indexOf("【夜视】非装备文本") >= 0,
             "nightVision: non-equipment description is never extracted away");
+    }
+
+    private static function test_composer_modInfoSubBlock():Void {
+        var name:String = "测试层级插件";
+        var oldDict:Object = EquipmentUtil.modDict;
+        var dict:Object = {};
+        dict[name] = {
+            name:name, use:"手部装备", tagValue:"手环",
+            stats:{override:{actiontype:"截拳"}}, description:"更改模组为截拳。"
+        };
+        EquipmentUtil.modDict = dict;
+        ItemUtil.materialDict[name] = true;
+        var itemData:Object = {name:name, displayname:name, type:"收集品", use:"材料",
+            price:1, description:"物品简介", data:{}};
+        var legacy:String = TooltipComposer.generateItemDescriptionText(itemData, null);
+        var subs:Array = [];
+        var docSubs:Array = [];
+        var main:String = TooltipComposer.generateItemDescriptionTextEx(itemData, null, subs, docSubs);
+
+        assert(main.indexOf("物品简介") >= 0 && main.indexOf("【配件信息】") < 0,
+            "modInfo: item intro stays while plugin information moves out");
+        assertEq(1, subs.length, "modInfo: one independent plugin sub block");
+        assertEq("modinfo", docSubs[0].kind, "modInfo: structured document entry");
+        assertEq(legacy, main + subs.join(""), "modInfo: legacy fallback loses no text");
+        var doc:Object = NativeTooltipDocument.buildItem(name, itemData, null, "简介", main, docSubs);
+        var section:Object = doc.sections[2];
+        assertEq("【配件信息】", section.title, "modInfo: child frame title");
+        assertEq("装配要求", section.rows[0].name, "modInfo: first parent group");
+        assertEq("", section.rows[1].name, "modInfo: effect-only child has no duplicate name");
+        assertEq(1, section.rows[1].depth, "modInfo: child depth survives document conversion");
+        assert(section.rows[1].runs[0].text.indexOf("适用装备类型：手部装备") >= 0,
+            "modInfo: full child line survives document conversion");
+        EquipmentUtil.modDict = oldDict;
+        delete ItemUtil.materialDict[name];
     }
 
     private static function test_buildSkill_shape():Void {

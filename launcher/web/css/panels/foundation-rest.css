@@ -40,12 +40,11 @@
    introBg + mainBg 两个独立 MovieClip。 */
 #panel-tooltip   {
     /* === AS2 复刻主题 token（默认，源自 Symbol 274 XFL） === */
-    /* 2026-10 视觉合同改版（用户口径，对齐卡牌项目注释框）：面板底 = 半透明黑 80%，
+    /* 2026-10 视觉合同改版（用户口径，对齐卡牌项目注释框）：面板底 = 深灰 76%，
        描边 = 1px 白；C# NativeTooltipWidget PanelBg/PanelBorder 同步。
-       原灰族 #999→#333 渐变（Symbol 274 基线）退役，下方依赖 grad 混色的
-       scroll/shell/status token 自动落黑底。 */
+       黑色 80% 底退役，下方依赖 grad 混色的 scroll/shell/status token 同步改灰。 */
     --tt-grad-top:   var(--tt-grad-bot);         /* 上下同色 = 平底 */
-    --tt-grad-bot:   rgba(0, 0, 0, 0.8);         /* 黑 + alphaMultiplier 0.8 */
+    --tt-grad-bot:   rgba(32, 32, 32, 0.76);     /* 深灰 + 不透明度约 76% */
     --tt-bg:         linear-gradient(to bottom, var(--tt-grad-top), var(--tt-grad-bot));
     --tt-status-bg:  var(--tt-grad-bot);
     --tt-border:     1px solid var(--tt-text);   /* 暂定全白描边（用户 2026-10 口径） */
@@ -90,6 +89,9 @@
     isolation: isolate;
 }
 #panel-tooltip b { color:var(--tt-strong); font-weight: bold; }
+#panel-tooltip span[style*="color:"] > b,
+#panel-tooltip span[style*="color:"] > u,
+#panel-tooltip span[style*="color:"] > b > u { color: inherit; }
 
 /* ── cyberpunk 主题（技术储备，不启用）──
    通过 <html data-tooltip-theme="cyberpunk"> 启用，恢复原 launcher 黑底 cyan 边斜切角风格。 */
@@ -790,8 +792,8 @@
     border-radius:1px;
 }
 
-/* ── attachments / acquisition 子框 ──
-   配件效果独占附属行；来源大类不占图标列并与标题同左缘，子类缩进且花费同行。 */
+/* ── attachments / acquisition / modinfo 子框 ──
+   配件效果独占附属行；来源与插件大类左对齐，子类缩进；来源名称与花费同行。 */
 .flash-tt-sub-title,
 .ntt-sub-title {
     font-weight: 700;
@@ -810,10 +812,6 @@
 .flash-tt-attach-row--category > .flash-tt-attach-icon,
 .ntt-attach-row--category > .ntt-attach-icon {
     display: none;
-}
-.flash-tt-side:has(.flash-tt-sub-panel--acquisition),
-.ntt-side:has(.ntt-sub-panel--acquisition) {
-    min-width: max-content;
 }
 .flash-tt-sub-panel--acquisition .flash-tt-attach-name,
 .ntt-sub-panel--acquisition .ntt-attach-name {
@@ -853,6 +851,16 @@
 .flash-tt-attach-effect,
 .ntt-attach-effect {
     margin-left: 12px;
+}
+.flash-tt-sub-panel--modinfo .flash-tt-attach-effect,
+.ntt-sub-panel--modinfo .ntt-attach-effect {
+    margin-left: 0;
+}
+.flash-tt-upgrades .flash-tt-attach-icon,
+.ntt-upgrades .ntt-attach-icon {
+    flex-basis: 22px;
+    width: 22px;
+    height: 22px;
 }
 
 /* A兵团 / 军阀行高徽标：只参与当前行内排版。 */

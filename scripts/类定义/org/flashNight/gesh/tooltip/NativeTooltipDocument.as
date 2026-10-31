@@ -7,8 +7,9 @@
  *   rows?, runs:[{text,color?,bold?,italic?,underline?,fontSize?,fontFace?}]}],
  *   profile, layoutType?, rail?, magazine?}
  *   可选结构键：rail = 书签文本数组（≤2）；magazine = {name, icon?, ammo?}；
- *   role:"sub" 段可带 kind:"attachments"/"acquisition" + title +
- *   rows:[{name, icon?, runs}]，
+ *   role:"sub" 段可带 kind:"attachments"/"acquisition"/"modinfo" + title +
+ *   rows:[{name, icon?, runs}]（modinfo 纯效果子行的 name 可为空）；
+ *   role:"description" 段可带 kind:"upgrades"，用 depth 和 icon 显示升阶路线，
  *   同一段仍保留合成 runs 作为旧消费端的内联回退。
  * - document.title 与 sections[].runs[].text 均为**纯文本**：实体已解码、内联标记
  *   已展开为 run 级样式键。C#/Web 消费端不得对 title/run.text 再做标记展开
@@ -26,6 +27,8 @@
  *   var doc = NativeTooltipDocument.buildItem(name, itemData, iconData, introHtml, descHtml, subHtmls);
  *   if (NativeTooltipBridge.show(doc) == null) { // 回退旧 Flash 渲染 }
  */
+import org.flashNight.gesh.tooltip.TooltipConstants;
+
 class org.flashNight.gesh.tooltip.NativeTooltipDocument {
 
     // ── 段角色 / profile 常量 ──
@@ -75,6 +78,13 @@ class org.flashNight.gesh.tooltip.NativeTooltipDocument {
         if (title == null) title = name;
 
         var sections:Array = [];
+        if (descHtml != null && extras != null && extras.upgrades != null) {
+            var upgradeStart:Number = descHtml.lastIndexOf(TooltipConstants.LBL_UPGRADE_PATH);
+            if (upgradeStart >= 0) {
+                var headerStart:Number = descHtml.lastIndexOf("<font", upgradeStart);
+                descHtml = descHtml.substring(0, headerStart >= 0 ? headerStart : upgradeStart);
+            }
+        }
         pushSection(sections, ROLE_INTRO, introHtml);
         pushSection(sections, ROLE_DESCRIPTION, descHtml);
         if (subHtmls != null) {
@@ -127,23 +137,28 @@ class org.flashNight.gesh.tooltip.NativeTooltipDocument {
                 doc.magazine = magazine;
             }
         }
+        if (extras.upgrades != null) {
+            pushAttachments(doc.sections, extras.upgrades, ROLE_DESCRIPTION);
+        }
     }
 
     /**
-     * 结构化子框条目 → role:"sub" 段。
+     * 结构化段条目 → role:"sub" 或 role:"description" 段。
      *
-     * kind=="attachments"/"acquisition"：{title, rows:[{name, icon?, effect}]}，
+     * kind=="attachments"/"acquisition"/"modinfo"/"upgrades"：{title, rows:[{name, icon?, effect}]}，
      * effect 是受限 HTML 片段（颜色标记），在此展开为 runs；同时合成整框
      * fallback runs（title + 每行 "  • 名称" + 效果），供不识别 rows 的旧
      * 消费端内联显示，保证内容不丢。attachments 行的 icon 是物品图标键；
-     * acquisition 商店行的 icon 是 NPC 头像键。其他 kind 条目按键 "html"
-     * 取 HTML，退化为普通子框。
+     * acquisition 商店行的 icon 是 NPC 头像键；modinfo 纯效果子行允许省略 name；
+     * upgrades 保留升阶分组、depth 与物品图标。其他 kind 条目按键 "html" 取 HTML，退化为普通段。
      */
-    private static function pushAttachments(sections:Array, entry:Object):Void {
+    private static function pushAttachments(sections:Array, entry:Object, targetRole:String):Void {
+        if (targetRole == null) targetRole = ROLE_SUB;
         var kind:String = (entry != null && entry.kind != undefined) ? String(entry.kind) : null;
-        if (kind != "attachments" && kind != "acquisition") {
+        if (kind != "attachments" && kind != "acquisition" && kind != "modinfo"
+            && kind != "upgrades") {
             if (entry != null && entry.html != undefined) {
-                pushSection(sections, ROLE_SUB, String(entry.html));
+                pushSection(sections, targetRole, String(entry.html));
             }
             return;
         }
@@ -160,11 +175,12 @@ class org.flashNight.gesh.tooltip.NativeTooltipDocument {
             var raw:Object = source[i];
             if (raw == null) continue;
             var rowName:String = safeText(raw.name);
-            if (rowName == null) continue;
+            if (rowName == null && kind != "modinfo") continue;
             // AS2 真值判断会把 0/"" 当假——effect 先归一为字符串再判空
             var effectHtml:String = (raw.effect == undefined || raw.effect == null)
                 ? "" : String(raw.effect);
-            var row:Object = {name:rowName, runs:htmlToRuns(effectHtml)};
+            var row:Object = {name:(rowName != null ? rowName : ""), runs:htmlToRuns(effectHtml)};
+            if (rowName == null && row.runs.length == 0) continue;
             var rowIcon:String = safeText(raw.icon);
             if (rowIcon != null) row.icon = rowIcon;
             if (Number(raw.depth) === 1) row.depth = 1;
@@ -172,14 +188,14 @@ class org.flashNight.gesh.tooltip.NativeTooltipDocument {
 
             var fallbackPrefix:String = row.depth === 1 ? "    • "
                 : (kind == "attachments" ? "  • " : "");
-            fallback.push({text:fallbackPrefix + rowName});
+            fallback.push({text:fallbackPrefix + (rowName != null ? rowName : "")});
             var effectRuns:Array = row.runs;
             for (var r:Number = 0; r < effectRuns.length; r++) fallback.push(effectRuns[r]);
             fallback.push({text:"\n"});
         }
         if (rows.length == 0) return;
 
-        var section:Object = {role:ROLE_SUB, kind:kind, rows:rows};
+        var section:Object = {role:targetRole, kind:kind, rows:rows};
         if (title != null) section.title = title;
         section.runs = fallback;
         sections.push(section);

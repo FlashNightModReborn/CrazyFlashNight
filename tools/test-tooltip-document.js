@@ -787,6 +787,84 @@ test('buildHtml acquisition：商店行用 cfn-assets 头像 URL，无图标行�
     assert(html.indexOf('回退文本') < 0, 'rows 成立时不再叠加 fallback runs');
 });
 
+test('modinfo：父类左对齐，无名称的效果行保留并按子级渲染', () => {
+    const doc = Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: [{ text: '物品简介' }] },
+        { role: 'sub', kind: 'modinfo', title: '配件信息', rows: [
+            { name: '装配要求', depth: 0 },
+            { depth: 1, runs: [{ text: '插件位置：', color: '#00FF00' }, { text: '手环' }] },
+            { name: '属性与效果' },
+            { depth: 1, runs: [{ text: '动作类型 → 截拳' }] },
+            { name: '   ' }
+        ], runs: [{ text: '回退文本' }] }
+    ] });
+    const sec = doc.sections[1];
+    assert.strictEqual(sec.kind, 'modinfo');
+    assert.strictEqual(sec.rows.length, 4, '无名称但有效果的子行保留，空行丢弃');
+    assert.strictEqual(sec.rows[1].name, '', '纯效果子行名称归一为空串');
+    assert.strictEqual(sec.rows[1].depth, 1);
+    const html = Doc.buildHtml(doc);
+    assert(html.indexOf('ntt-sub-panel--modinfo') >= 0, '插件信息使用独立子框类');
+    assert(html.indexOf('<b>装配要求</b>') >= 0, '装配要求是父级');
+    assert(html.indexOf('插件位置：') >= 0 && html.indexOf('手环') >= 0, '位置原文保留');
+    assert(html.indexOf('动作类型 → 截拳') >= 0, '数值原文保留');
+    assert(html.indexOf('ntt-attach-icon') < 0, '插件信息不占物品图标列');
+    assert(html.indexOf('回退文本') < 0, 'rows 与回退文本不重复');
+
+    const attachment = Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: [{ text: 'x' }] },
+        { role: 'sub', kind: 'attachments', rows: [{ runs: [{ text: '无名称' }] }] }
+    ] });
+    assert.strictEqual(attachment.sections[1].kind, undefined, '其他结构行仍要求名称');
+});
+
+test('upgrades：原描述区显示物品图标、父子标签与同行名称', () => {
+    const doc = Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: [{ text: '简介' }] },
+        { role: 'description', kind: 'upgrades', title: '升阶路线', rows: [
+            { name: '升自', runs: [{ text: '升自', color: '#99CCFF' }] },
+            { name: 'G11', icon: 'weapon_g11', depth: 1, runs: [{ text: ' x1' }] },
+            { name: '二阶', icon: 'tier2', depth: 1,
+                runs: [{ text: ' [组件]', color: '#FFCC00' }] }
+        ] }
+    ] });
+    assert.strictEqual(Doc.shouldSplit(doc), true, '升阶结构使用描述面板');
+    const previousIcons = global.Icons;
+    global.Icons = { html: (name, cls) => '<img data-icon="' + name + '" class="' + cls + '">' };
+    let html;
+    try { html = Doc.buildHtml(doc); } finally { global.Icons = previousIcons; }
+    assert(html.indexOf('ntt-upgrades') >= 0, '升阶路线保留在原描述区');
+    assert(html.indexOf('data-icon="weapon_g11"') >= 0, '装备图标键进入图标组件');
+    assert(html.indexOf('data-icon="tier2"') >= 0, 'Tier 组件图标键进入图标组件');
+    assert(html.indexOf('<span style="color:#99CCFF">升自</span>') >= 0, '父级标签保留颜色');
+    assert(html.indexOf('<b>G11</b>') >= 0 && html.indexOf(' x1') >= 0,
+        '装备名称和数量保持原文');
+    assert(html.indexOf('ntt-attach-effect') < 0, '组件名称与括号文本保持同行');
+});
+
+test('buildHtml：只有 #000000 黑色文字片段使用白底', () => {
+    const html = Doc.buildHtml(Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: [
+            { text: '黑字', color: '#000000' },
+            { text: '普通文字' },
+            { text: '红字', color: '#FF0000' }
+        ] }
+    ] }));
+    assert(html.indexOf('color:#000000;background-color:#fff') >= 0, '黑字片段使用白底');
+    assert.strictEqual((html.match(/background-color:#fff/g) || []).length, 1,
+        '其他片段不增加白底');
+});
+
+test('CSS：彩色粗体继承、统一侧栏估宽与深灰背景', () => {
+    const css = require('fs').readFileSync(
+        require('path').join(__dirname, '../launcher/web/css/panels/foundation-rest.css'), 'utf8');
+    assert(css.indexOf('#panel-tooltip span[style*="color:"] > b') >= 0,
+        '粗体继承外层阵营色，不再被主题亮色覆盖');
+    assert(css.indexOf('min-width: max-content') < 0, '侧栏不再被最长内容撑满');
+    assert(css.indexOf('.flash-tt-upgrades .flash-tt-attach-icon') >= 0, '升阶图标有独立尺寸');
+    assert(css.indexOf('rgba(32, 32, 32, 0.76)') >= 0, '主框和子框使用深灰半透明背景');
+});
+
 test('buildHtml：A兵团相关文案前插入徽标并加下划线', () => {
     const doc = Doc.normalize({ version: 1, sections: [
         { role: 'intro', runs: [
@@ -821,6 +899,37 @@ test('buildHtml：军阀文案使用黑黄徽标与淡金色下划线', () => {
     assert(html.indexOf('ntt-warlord-mark') >= 0, '军阀内容带黑黄徽标');
     assert(html.indexOf('<span style="color:#FFFFE0"><u>军阀士兵</u></span>') >= 0,
         '军阀文字使用 #FFFFE0 下划线');
+});
+
+test('阵营别名：来源 NPC 同步徽标颜色下划线，军阀外圈清晰，丧尸取消特殊色', () => {
+    const aliases = ['Andy Law', 'Boy', 'kInG', 'pIg', 'bLuE', 'The Girl',
+        'ShopGirl', 'Shop Girl', '格格巫', '丽丽丝', '小F'];
+    const warlords = ['军队', '将军', 'General', 'Gazer'];
+    const doc = Doc.normalize({ version: 1, sections: [
+        { role: 'intro', runs: warlords.map(text => ({ text }))
+            .concat([{ text: '丧尸', color: '#B22222' }]) },
+        { role: 'sub', kind: 'acquisition', title: '获取方式', rows: aliases.map(name => ({
+            name, depth: 1
+        })) }
+    ] });
+    const html = Doc.buildHtml(doc);
+    const aMarks = html.match(/ntt-a-legion-mark/g) || [];
+    const warlordMarks = html.match(/ntt-warlord-mark/g) || [];
+    assert.strictEqual(aMarks.length, aliases.length, '每个来源 NPC 都有 A兵团徽标');
+    assert.strictEqual(warlordMarks.length, warlords.length, '每个军阀别名都有军阀徽标');
+    for (const name of aliases) {
+        assert(html.indexOf('<span style="color:#FF0000"><b><u>' + name + '</u></b></span>') >= 0,
+            name + ' 来源行使用红色下划线');
+    }
+    for (const name of warlords) {
+        assert(html.indexOf('<span style="color:#FFFFE0"><u>' + name + '</u></span>') >= 0,
+            name + ' 使用淡金色下划线');
+    }
+    assert(html.indexOf('color:#B22222') < 0, '丧尸不再使用 #B22222 特殊色');
+    assert(html.indexOf('<circle cx="32" cy="32" r="30" fill="currentColor"/>') >= 0,
+        '外圈跟随军阀文字颜色');
+    assert(html.indexOf('<circle cx="32" cy="32" r="28" fill="#000"/>') >= 0,
+        '外圈内保留黑色底');
 });
 
 test('buildHtml：物品名使用独立居中大字号标题块', () => {

@@ -269,6 +269,7 @@ class org.flashNight.arki.item.InventoryPanelService {
             descBody = TooltipComposer.generateItemDescriptionTextEx(itemData, baseItem, subBlocks, docSubs);
             rail = TooltipComposer.getRailText(itemData, baseItem);
             magazine = TooltipComposer.getMagazineInfo(baseItem, itemData, instanceValue);
+            var upgrades:Object = TooltipComposer.getUpgradePathInfo(itemData, baseItem);
             var critSlay:Array = [];
             docIntro = TooltipComposer.generateIntroPanelContent(baseItem, itemData, instanceValue, {
                 omitTypeLines: rail != null,
@@ -289,10 +290,11 @@ class org.flashNight.arki.item.InventoryPanelService {
         }
 
         var extras:Object = null;
-        if (rail != null || magazine != null) {
+        if (rail != null || magazine != null || upgrades != null) {
             extras = {};
             if (rail != null) extras.rail = rail;
             if (magazine != null) extras.magazine = magazine;
+            if (upgrades != null) extras.upgrades = upgrades;
         }
 
         var projection:Object = buildItemProjection(item);
@@ -312,7 +314,7 @@ class org.flashNight.arki.item.InventoryPanelService {
             introHTML: introHTML,
             // COMMON v1 语义文档：title/icon 与上方 projection.displayName/icon 严格一致
             // （装备实例经 getData() 涂装覆盖）；描述体用拆分版、简介用省略版，
-            // 由 rail/magazine 结构部件与 role:"sub" 子框承载被省略的内容。
+            // 由 rail/magazine/upgrades 结构部件与 role:"sub" 子框承载被省略的内容。
             // title 与 runs[].text 为已解析纯文本，Host/Web 不得二次 Flatten/解码。
             document: NativeTooltipDocument.buildItem(String(item.name), itemData,
                 {displayname: projection.displayName, icon: projection.icon},

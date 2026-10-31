@@ -28,8 +28,10 @@
  *                     整块不接指针，图标不再套注释框
  *   .ntt-sub-panel    role:"sub" 的子注释框
  *   .ntt-sub-title / .ntt-attach-row / .ntt-attach-icon / .ntt-attach-text
- *                     配件/来源子框；配件效果另起缩进行，来源大类左对齐、
- *                     depth=1 子项缩进 8px，名称与花费强制同行，来源框按需扩宽
+ *                     配件/来源/插件信息子框；配件效果另起缩进行，来源与插件
+ *                     大类左对齐，depth=1 子项缩进 8px；来源名称与花费同行，
+ *                     侧栏按文本量统一估宽；modinfo 纯效果子行不占图标列
+ *   .ntt-upgrades     原描述区升阶路线：父级分组 + 22px 物品图标与名称
  *   .ntt-a-legion-mark / .ntt-warlord-mark
  *                     A兵团（预设红字或明确名称）与军阀文字前的行高徽标；
  *                     分别用红色与 #FFFFE0 下划线，不影响武器库等面板

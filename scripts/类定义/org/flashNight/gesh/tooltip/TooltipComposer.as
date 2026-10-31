@@ -85,8 +85,8 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
   }
 
   /**
-   * 与 generateItemDescriptionText 同源的单遍拼装，把「已安装插件」「战技/副武器」
-   * 「夜视」「额外功能（生命周期/灯光）」「获取方式」各自拆成独立子注释框块，
+   * 与 generateItemDescriptionText 同源的单遍拼装，把「已安装插件」「插件物品信息」
+   * 「战技/副武器」「夜视」「额外功能（生命周期/灯光）」「获取方式」各自拆成独立子注释框块，
    * 按序写入 subBlocks（空内容不入框）。
    * subBlocks 传 null 时行为与旧方法完全一致（全部内联进描述体）。
    * 拆出后主描述体不再含这些块；回退旧 Flash 渲染请把 subBlocks 一并接回，
@@ -97,7 +97,8 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
    * {kind:"attachments", title, rows:[{name, icon?, effect}]}，供原生注释
    * 框在子框内为每个插件绘制图标；「获取方式」写入结构化条目
    * {kind:"acquisition", title, rows:[{name, icon?, effect}]}（商店行逐 NPC，
-   * icon 为 NPC 头像键）。缺省时行为与旧调用完全一致。
+   * icon 为 NPC 头像键）；插件物品信息写入 kind:"modinfo"，父类为分组标题，
+   * depth:1 子行用 effect 保留完整 HTML。缺省时行为与旧调用完全一致。
    */
   public static function generateItemDescriptionTextEx(item:Object, baseItem:BaseItem,
       subBlocks:Array, docSubs:Array):String {
@@ -110,7 +111,8 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
       append(buffer, TooltipTextBuilder.buildStoryTip(item));
       append(buffer, TooltipTextBuilder.buildSynthesisMaterials(item));
     }else if(ItemUtil.isMaterial(itemName)){
-      append(buffer, TooltipTextBuilder.buildModStat(itemName));
+      var modEntry:Object = TooltipTextBuilder.buildModStatWithRows(itemName);
+      if (modEntry != null) pushSub(buffer, subBlocks, docSubs, [modEntry.html], modEntry);
     }else if(ItemUtil.isEquipment(itemName)){
       append(buffer, TooltipTextBuilder.buildBladeSkillMultipliers(item, baseItem));
 
@@ -184,6 +186,12 @@ class org.flashNight.gesh.tooltip.TooltipComposer {
   }
 
   // ──────────────── 原生注释专属取数 ────────────────
+
+  public static function getUpgradePathInfo(item:Object, baseItem:BaseItem):Object {
+    if (item == null || !ItemUtil.isEquipment(item.name)) return null;
+    return TooltipTextBuilder.buildUpgradePathWithRows(item, baseItem);
+  }
+
 
   /**
    * 插条（rail）文本：武器大类/子类；刀与手部装备的下块改为动作模组。

@@ -142,6 +142,10 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
     return UpgradePathBuilder.build(item, baseItem);
   }
 
+  public static function buildUpgradePathWithRows(item:Object, baseItem:BaseItem):Object {
+    return UpgradePathBuilder.buildWithRows(item, baseItem);
+  }
+
   // === 生成刀技乘数（重构后：从XML配置读取，显示插件影响） ===
   public static function buildBladeSkillMultipliers(item:Object, baseItem:BaseItem):Array {
     var result = [];
@@ -387,7 +391,8 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
   public static function buildStats(baseItem:BaseItem, item:Object, externalValue:Object, nativeOpt:Object):Array {
     if(!item.data) return [];
     if (item.use === ItemUseTypes.POTION){
-      return buildDrugStats(item);
+      return DrugTooltipComposer.compose(item,
+        (nativeOpt != null && nativeOpt.omitBuff === true) ? nativeOpt.buff : null);
     }else{
       return buildEquipmentStats(baseItem, item, externalValue, nativeOpt);
     }
@@ -474,6 +479,10 @@ class org.flashNight.gesh.tooltip.TooltipTextBuilder {
    */
   public static function buildModStat(itemName:String):Array {
     return ModStatBuilder.build(itemName);
+  }
+
+  public static function buildModStatWithRows(itemName:String):Object {
+    return ModStatBuilder.buildWithRows(itemName);
   }
 
   /**

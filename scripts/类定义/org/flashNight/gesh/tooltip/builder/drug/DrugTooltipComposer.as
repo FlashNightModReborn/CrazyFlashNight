@@ -21,9 +21,11 @@ class org.flashNight.gesh.tooltip.builder.drug.DrugTooltipComposer {
      * 构建药剂属性 Tooltip
      *
      * @param item Object 物品数据对象
+     * @param buffBuffer Array 可选；非 null 时把 Buff 与缓释移入该缓冲区，
+     *        返回值只保留其他词条，null 保持旧版完整属性区
      * @return Array HTML 文本片段数组
      */
-    public static function compose(item:Object):Array {
+    public static function compose(item:Object, buffBuffer:Array):Array {
         if (!item || !item.data) return [];
 
         // 归一化 effects（使用业务层的共享归一化器）
@@ -34,7 +36,22 @@ class org.flashNight.gesh.tooltip.builder.drug.DrugTooltipComposer {
             return [];
         }
 
-        // 使用 Registry 构建所有词条的 Tooltip
-        return DrugTooltipRegistry.buildAll(effects);
+        if (buffBuffer == null) return DrugTooltipRegistry.buildAll(effects);
+
+        var main:Array = [];
+        var buff:Array = [];
+        for (var i:Number = 0; i < effects.length; i++) {
+            var fragments:Array = DrugTooltipRegistry.buildOne(effects[i]);
+            if (fragments == null || fragments.length == 0) continue;
+            if (isBuffEffect(effects[i].type)) buff = buff.concat(fragments);
+            else main = main.concat(fragments);
+        }
+        for (var j:Number = 0; j < buff.length; j++) buffBuffer.push(buff[j]);
+        return main;
+    }
+
+    private static function isBuffEffect(type:String):Boolean {
+        return type == "buff" || type == "toughnessBuff"
+            || type == "resistanceBuff" || type == "regen";
     }
 }

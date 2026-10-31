@@ -100,9 +100,11 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         test_SlayEffectBuilder();
         test_SilenceEffectBuilder();
         test_DrugTooltipComposer_null();
+        test_DrugTooltipComposer_buffSplit();
         test_ObtainMethodsBuilder_no_index();
         test_ObtainMethodsBuilder_rows();
         test_ModStatBuilder_unknown_item();
+        test_ModStatBuilder_rows();
         test_ModStatBuilder_curve();
         test_ModStatBuilder_conditionalRequireTags();
         test_ModStatBuilder_hitBehavior_useSwitch();
@@ -410,6 +412,33 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         assert(r3.length == 0, "DrugComposer {data:{}} returns []");
     }
 
+    private static function test_DrugTooltipComposer_buffSplit():Void {
+        var item:Object = {use:"药剂", data:{effects:[
+            {type:"buff", property:"force", calc:"add", value:3, duration:300},
+            {type:"regen", hp:60, duration:300, interval:30, mode:"total"},
+            {type:"heal", hp:20}
+        ]}};
+        var legacy:String = DrugTooltipComposer.compose(item).join("");
+        var buff:Array = [];
+        var main:String = DrugTooltipComposer.compose(item, buff).join("");
+        var buffText:String = buff.join("");
+        assert(legacy.indexOf("Buff") >= 0 && legacy.indexOf("缓释") >= 0,
+            "DrugComposer: legacy keeps buff and regen inline");
+        assert(main.indexOf("Buff") < 0 && main.indexOf("缓释") < 0,
+            "DrugComposer: main omits moved buff and regen");
+        assert(buffText.indexOf("Buff") >= 0 && buffText.indexOf("缓释") >= 0,
+            "DrugComposer: buff and regen share one buffer");
+        assert(main.indexOf("20") >= 0, "DrugComposer: immediate heal remains in main");
+        assert(legacy.length == main.length + buffText.length,
+            "DrugComposer: split keeps every source fragment");
+
+        var statsBuff:Array = [];
+        var statsMain:String = TooltipTextBuilder.buildStats(null, item, null,
+            {omitBuff:true, buff:statsBuff}).join("");
+        assert(statsMain == main && statsBuff.join("") == buffText,
+            "DrugComposer: nativeOpt uses the same split without duplication");
+    }
+
     // === P3a: 提取后的独立 builder 契约测试 ===
 
     private static function test_ObtainMethodsBuilder_no_index():Void {
@@ -466,6 +495,39 @@ class org.flashNight.gesh.tooltip.test.BuilderContractTest {
         // 未知物品名应返回空数组
         var result:Array = ModStatBuilder.build("完全不存在的配件名");
         assert(result.length == 0, "ModStatBuilder unknown item: empty result");
+    }
+
+    private static function test_ModStatBuilder_rows():Void {
+        var oldDict:Object = EquipmentUtil.modDict;
+        var dict:Object = {};
+        dict["层级插件"] = {
+            name:"层级插件", use:"手部装备", tagValue:"手环",
+            stats:{override:{actiontype:"截拳"}}, description:"更改模组为截拳。"
+        };
+        EquipmentUtil.modDict = dict;
+        var legacy:String = ModStatBuilder.build("层级插件").join("");
+        var entry:Object = ModStatBuilder.buildWithRows("层级插件");
+        EquipmentUtil.modDict = oldDict;
+
+        assert(entry != null && entry.kind == "modinfo", "ModStatBuilder rows: structured kind");
+        assert(entry.html == legacy, "ModStatBuilder rows: legacy HTML stays identical");
+        assert(entry.rows[0].name == "装配要求" && entry.rows[0].depth === 0,
+            "ModStatBuilder rows: install group is a parent");
+        assert(entry.rows[1].depth === 1
+            && entry.rows[1].effect.indexOf("适用装备类型：手部装备") >= 0,
+            "ModStatBuilder rows: fragments rejoin into one child line");
+        assert(entry.rows[2].effect.indexOf("插件位置") >= 0
+            && entry.rows[2].effect.indexOf("手环") >= 0
+            && entry.rows[2].effect.indexOf("<font") >= 0,
+            "ModStatBuilder rows: slot text and color markup are preserved");
+        var parents:String = "";
+        for (var i:Number = 0; i < entry.rows.length; i++) {
+            if (entry.rows[i].depth === 0) parents += entry.rows[i].name + ";";
+        }
+        assert(parents == "装配要求;属性与效果;附加说明;",
+            "ModStatBuilder rows: existing sections become ordered parent groups");
+        assert(entry.rows[entry.rows.length - 1].effect == "更改模组为截拳。",
+            "ModStatBuilder rows: description is a child rather than item intro");
     }
 
     private static function test_ModStatBuilder_curve():Void {

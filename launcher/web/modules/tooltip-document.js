@@ -8,8 +8,10 @@
  *   document = {version:1, title?, icon:{kind?,name}, profile?, layoutType?, sections:[{role,runs:[{text,color?,bold?,italic?,underline?,fontSize?,fontFace?}],
  *               kind?, title?, rows?:[{name, icon?, runs}]}],
  *               rail?:[String], magazine?:{name,icon?,ammo?}}
- *   sections[].kind=="attachments"（role:"sub"）：已安装插件子框，rows 优先于
- *   runs（runs 是旧端回退，同源不叠加）；rail（≤2 个武器类别名）渲染为图标左侧
+ *   sections[].kind=="attachments"/"acquisition"/"modinfo"（role:"sub"）：
+ *   已安装配件/来源/插件物品信息子框，rows 优先于 runs（旧端回退，同源不叠加）；
+ *   kind=="upgrades"（role:"description"）：升阶分组与 22px 物品图标行；
+ *   modinfo 纯效果子行允许空 name；rail（≤2 个武器类别名）渲染为图标左侧
  *   自上下排的白色书签块；magazine 渲染为 intro 面板底部白线隔开的弹夹框
  *   （第一行图标+弹夹名，第二行子弹类型 ammo）。结构部件缺失即不占位。
  *   run 扩展样式（document v1 可选字段，缺省即无样式）：italic/underline 布尔、
@@ -569,7 +571,7 @@
                 if (!secNode || typeof secNode !== 'object') continue;
                 var section = { role: parseRole(secNode.role), runs: [] };
                 section.runs = parseRuns(secNode.runs, MAX_RUNS_PER_SECTION);
-                // attachments/acquisition 结构化子框：kind 精确匹配（Ordinal），
+                // attachments/acquisition/modinfo 结构化子框：kind 精确匹配（Ordinal），
                 // rows 至少一条有效行才成立；不成立时保留 runs 回退（与 C# sanitizer 同构）。
                 var subKind = parseSubSectionKind(secNode);
                 var rows = subKind ? parseAttachmentRows(secNode) : null;
@@ -588,32 +590,34 @@
 
         // 结构化子框 kind 白名单（与 C# sanitizer Ordinal 匹配同构）。
         function parseSubSectionKind(secNode) {
-            if (secNode.kind === 'attachments' || secNode.kind === 'acquisition') {
-                return secNode.kind;
-            }
+            if (secNode.kind === 'attachments' || secNode.kind === 'acquisition'
+                || secNode.kind === 'modinfo' || secNode.kind === 'upgrades') return secNode.kind;
             return null;
         }
 
         function parseAttachmentRows(secNode) {
-            if (!parseSubSectionKind(secNode)) return null;
+            var kind = parseSubSectionKind(secNode);
+            if (!kind) return null;
             var rowsNode = secNode.rows;
             if (!Array.isArray(rowsNode)) return null;
+            var maxRows = kind === 'modinfo' ? 64 : MAX_ATTACHMENT_ROWS;
             var out = [];
             for (var ri = 0; ri < rowsNode.length; ri++) {
                 var rowNode = rowsNode[ri];
                 if (!rowNode || typeof rowNode !== 'object') continue;
                 var rowName = readPlainTextStrict(
                     rowNode.name, MAX_ATTACHMENT_NAME_CHARS);
-                if (isBlankText(rowName)) continue;
+                var rowRuns = parseRuns(rowNode.runs, MAX_ATTACHMENT_RUNS);
+                if (isBlankText(rowName) && (kind !== 'modinfo' || rowRuns.length === 0)) continue;
                 var rowIcon = readPlainTextStrict(rowNode.icon, MAX_ICON_NAME_CHARS);
                 var cleanRow = {
-                    name: rowName,
+                    name: isBlankText(rowName) ? '' : rowName,
                     icon: isBlankText(rowIcon) ? null : rowIcon,
-                    runs: parseRuns(rowNode.runs, MAX_ATTACHMENT_RUNS)
+                    runs: rowRuns
                 };
                 if (Number(rowNode.depth) === 1) cleanRow.depth = 1;
                 out.push(cleanRow);
-                if (out.length >= MAX_ATTACHMENT_ROWS) break;
+                if (out.length >= maxRows) break;
             }
             return out.length ? out : null;
         }
@@ -736,6 +740,9 @@
     /** AS2 shouldSplitSmart + merge 兜底同公式。 */
     function shouldSplit(doc) {
         if (!doc) return false;
+        for (var i = 0; i < doc.sections.length; i++) {
+            if (doc.sections[i].kind === 'upgrades') return true;
+        }
         var introScore = textScore(plainTextOf(doc.titleRuns))
             + textScore(columnPlainText(doc, { intro: true }));
         var descScore = textScore(columnPlainText(doc, { description: true, body: true }));
@@ -760,7 +767,8 @@
 
     // run → 受限内联标记。嵌套序与 legacy sanitizeAS2Node 对齐：
     // <span style>(color/font-size/font-family) 最外 → <b> → <i> → <u> 最内。
-    // 与 as2FontStyle 同款 style 序：color;font-size;font-family。
+    // 与 as2FontStyle 同款 style 序：color;font-size;font-family；
+    // 只有精确 #000000 的文字片段额外使用白底。
     function runHtml(run) {
         var inner = escapeHtml(run.text).replace(/\r\n|\r|\n/g, '<br>');
         if (!inner) return '';
@@ -768,7 +776,10 @@
         if (run.italic) inner = '<i>' + inner + '</i>';
         if (run.bold) inner = '<b>' + inner + '</b>';
         var style = '';
-        if (run.color != null) style = 'color:' + run.color;
+        if (run.color != null) {
+            style = 'color:' + run.color;
+            if (run.color.toUpperCase() === '#000000') style += ';background-color:#fff';
+        }
         if (run.fontSize != null) style += (style ? ';' : '') + 'font-size:' + run.fontSize + 'px';
         var family = mapFontFace(run.fontFace);
         if (family) style += (style ? ';' : '') + 'font-family:' + family;
@@ -779,7 +790,7 @@
     function isALegionRun(run) {
         if (!run || !run.text) return false;
         if (typeof run.color === 'string' && run.color.toUpperCase() === '#FF0000') return true;
-        return /A兵团|Andy|安迪烙/i.test(run.text);
+        return /A兵团|Andy|安迪烙|格格巫|丽丽丝|小F|\b(?:Boy|King|Pig|Blue|The\s+Girl|Shop\s*Girl)\b/i.test(run.text);
     }
 
     function aLegionMarkHtml() {
@@ -790,20 +801,25 @@
     }
 
     function isWarlordRun(run) {
-        return run && run.text && run.text.indexOf('军阀') >= 0;
+        return run && run.text
+            && /军阀|军队|将军|莱昂利亚|自由革命军|\b(?:General|Gazer)\b/i.test(run.text);
     }
 
     function warlordMarkHtml() {
         return '<span class="ntt-warlord-mark" aria-hidden="true">'
             + '<svg viewBox="0 0 64 64" focusable="false">'
-            + '<circle cx="32" cy="32" r="30" fill="#000"/>'
+            + '<circle cx="32" cy="32" r="30" fill="currentColor"/>'
+            + '<circle cx="32" cy="32" r="28" fill="#000"/>'
             + '<path d="M32 6a26 26 0 0 0 0 52Z" fill="#000"/>'
             + '<path d="M32 6a26 26 0 0 1 0 52Z" fill="currentColor"/>'
-            + '<path d="M32 14a18 18 0 0 1 0 36Z" fill="#000"/>'
-            + '<path d="M32 22a10 10 0 0 0 0 20Z" fill="currentColor"/>'
-            + '<circle cx="32" cy="20" r="4" fill="#000"/>'
-            + '<circle cx="32" cy="44" r="4" fill="currentColor"/>'
+            + '<path d="M32 14a18 18 0 0 0 0 36" fill="none" stroke="currentColor" stroke-width="4"/>'
+            + '<path d="M32 14a18 18 0 0 1 0 36" fill="none" stroke="#000" stroke-width="4"/>'
             + '</svg></span>';
+    }
+
+    function isZombieRun(run) {
+        return run && run.text && run.text.indexOf('丧尸') >= 0
+            && typeof run.color === 'string' && run.color.toUpperCase() === '#B22222';
     }
 
     function runsHtml(runs) {
@@ -818,6 +834,10 @@
                 out += runHtml({ text: run.text,
                     color: warlord ? '#FFFFE0' : '#FF0000', bold: run.bold,
                     italic: run.italic, underline: true,
+                    fontSize: run.fontSize, fontFace: run.fontFace });
+            } else if (isZombieRun(run)) {
+                out += runHtml({ text: run.text, color: null, bold: run.bold,
+                    italic: run.italic, underline: run.underline,
                     fontSize: run.fontSize, fontFace: run.fontFace });
             } else {
                 out += runHtml(run);
@@ -836,7 +856,9 @@
         for (var i = 0; i < doc.sections.length; i++) {
             var sec = doc.sections[i];
             if (!roles[sec.role]) continue;
-            var inner = runsHtml(sec.runs);
+            var inner = sec.kind === 'upgrades' && sec.rows
+                ? '<div class="flash-tt-upgrades ntt-upgrades">' + attachmentsHtml(sec) + '</div>'
+                : runsHtml(sec.runs);
             // 空段保留占位：显式空 section 渲染为一个空行高度（对齐 AS2 空段落语义）
             if (!inner) inner = '<br>';
             if (out && !atLineStart) out += '<br>';
@@ -952,25 +974,35 @@
                 + escapeHtml(section.title) + '</div>';
         }
         var isAcquisition = section.kind === 'acquisition';
+        var isModInfo = section.kind === 'modinfo';
+        var isUpgrade = section.kind === 'upgrades';
         for (var i = 0; i < section.rows.length; i++) {
             var row = section.rows[i];
             var icon = '';
-            if (row.icon) {
+            if (!isModInfo && row.icon) {
                 icon = isAcquisition
                     ? portraitIconHtml(row.icon, 'flash-tt-attach-icon-image ntt-attach-icon-image')
                     : iconMarkupByName(row.icon, 'flash-tt-attach-icon-image ntt-attach-icon-image');
             }
             var rowClass = 'flash-tt-attach-row ntt-attach-row'
                 + (row.depth === 1 ? ' flash-tt-attach-row--child ntt-attach-row--child'
-                    : (isAcquisition ? ' flash-tt-attach-row--category ntt-attach-row--category' : ''));
-            var nameRuns = [{ text: row.name, color: null, bold: true }];
-            if (isAcquisition) nameRuns = nameRuns.concat(row.runs);
-            out += '<div class="' + rowClass + '">'
-                + '<span class="flash-tt-attach-icon ntt-attach-icon">' + icon + '</span>'
-                + '<span class="flash-tt-attach-text ntt-attach-text">'
-                + '<span class="flash-tt-attach-name ntt-attach-name">'
-                + runsHtml(nameRuns) + '</span>';
-            if (!isAcquisition && row.runs.length) {
+                    : (isAcquisition || isModInfo || isUpgrade
+                        ? ' flash-tt-attach-row--category ntt-attach-row--category' : ''));
+            var nameRuns = isUpgrade && row.depth !== 1 && row.runs.length
+                ? row.runs : (row.name ? [{ text: row.name, color: null, bold: true }] : []);
+            if (isAcquisition || isUpgrade && row.depth === 1) {
+                nameRuns = nameRuns.concat(row.runs);
+            }
+            out += '<div class="' + rowClass + '">';
+            if (!isModInfo && (!isUpgrade || row.depth === 1)) {
+                out += '<span class="flash-tt-attach-icon ntt-attach-icon">' + icon + '</span>';
+            }
+            out += '<span class="flash-tt-attach-text ntt-attach-text">';
+            if (nameRuns.length) {
+                out += '<span class="flash-tt-attach-name ntt-attach-name">'
+                    + runsHtml(nameRuns) + '</span>';
+            }
+            if (!isAcquisition && !isUpgrade && row.runs.length) {
                 out += '<span class="flash-tt-attach-effect ntt-attach-effect">'
                     + runsHtml(row.runs) + '</span>';
             }
@@ -1069,7 +1101,7 @@
             var subSec = doc.sections[si];
             if (subSec.role !== 'sub') continue;
             sideIndex++;
-            // 结构化段（attachments/acquisition）以 rows 渲染（runs 是旧端回退，
+            // 结构化段（attachments/acquisition/modinfo）以 rows 渲染（runs 是旧端回退，
             // 同源不叠加）；普通 sub 段仍走 runs。
             var subInner = subSec.rows
                 ? attachmentsHtml(subSec)
@@ -1078,7 +1110,9 @@
                 + (subSec.rows
                     ? (subSec.kind === 'acquisition'
                         ? ' flash-tt-sub-panel--acquisition ntt-sub-panel--acquisition'
-                        : ' flash-tt-sub-panel--attachments ntt-sub-panel--attachments')
+                        : subSec.kind === 'modinfo'
+                            ? ' flash-tt-sub-panel--modinfo ntt-sub-panel--modinfo'
+                            : ' flash-tt-sub-panel--attachments ntt-sub-panel--attachments')
                     : '');
             sideHtml += '<div class="' + subClass + '"'
                 + ' style="--tt-fade-ms:' + fadeMsForSub(sideIndex) + 'ms">' + subInner + '</div>';

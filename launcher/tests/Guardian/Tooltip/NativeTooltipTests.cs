@@ -793,20 +793,18 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         // ════════════ paint 真实像素 / icon 真实目录 ════════════
 
         [Fact]
-        public void Paint_Split_DescPanel_BlackFillWhiteBorder()
+        public void Paint_Split_DescPanel_GrayFillWhiteBorder()
         {
-            // 权威 = 2026-10 改版 Web token：面板 = rgba(0,0,0,.8) 平底 + 1px 白描边。
-            // 旧灰族渐变（#999→#333）退役；NativeHud chrome 不在此路径。
+            // 权威 = 2026-10 改版 Web token：面板 = rgba(32,32,32,.76) 平底 + 1px 白描边。
             using (Control a = Anchor())
             using (var w = new NativeTooltipWidget(a))
             {
                 Assert.True(w.Show(LongDensePayload()));
-                w.Tick(2000);   // 淡入走完才有实心像素可采
+                w.Tick(2000);
                 var plan = w.ActivePlan;
                 Assert.True(plan.Split);
                 Assert.False(plan.DescPanel.IsEmpty);
                 Rectangle placed = w.PlacedRect;
-                // 无 handle → 客户区坐标域；hudOrigin=Empty 时画布=客户区
                 using (var bmp = new Bitmap(1024, 576))
                 using (Graphics g = Graphics.FromImage(bmp))
                 {
@@ -814,10 +812,9 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                     w.Paint(g, 1.0f, Point.Empty);
                     Rectangle dp = new Rectangle(placed.X + plan.DescPanel.X,
                         placed.Y + plan.DescPanel.Y, plan.DescPanel.Width, plan.DescPanel.Height);
-                    // 黑底 80% over bg(24,26,28)：0*204/255 + 24*51/255 ≈ (5,6,6)
-                    int fr = (204 * 0 + 51 * 24 + 127) / 255;
-                    int fg = (204 * 0 + 51 * 26 + 127) / 255;
-                    int fb = (204 * 0 + 51 * 28 + 127) / 255;
+                    int fr = (194 * 32 + 51 * 24 + 127) / 255;
+                    int fg = (194 * 32 + 51 * 26 + 127) / 255;
+                    int fb = (194 * 32 + 51 * 28 + 127) / 255;
                     int borderHit = 0, fillHit = 0, bleedHit = 0, total = 0;
                     // 描边画在面板 1px 边缘；内缘 2px 起是填充（文本 pad=3，不踩字形）
                     for (int x = dp.X + 8; x < dp.Right - 8; x += 7)
@@ -838,7 +835,7 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                     Assert.True(borderHit * 2 >= total,
                         "desc 面板顶边应为 1px 白描边，命中=" + borderHit + "/" + total);
                     Assert.True(fillHit * 2 >= total,
-                        "desc 面板内缘应为半透明黑填充，命中=" + fillHit + "/" + total);
+                        "desc 面板内缘应为半透明深灰填充，命中=" + fillHit + "/" + total);
                     Assert.Equal(0, bleedHit);
                 }
             }
@@ -1281,6 +1278,148 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
         }
 
         [Fact]
+        public void ModInfoSubBox_ParentGroupsAndEffectOnlyChildren_UseDepthWithoutIcons()
+        {
+            var doc = NativeTooltipDocument.FromDocument(JObject.Parse(@"{
+                'version':1,'title':'龙迹截拳卡','icon':{'kind':'item','name':'x'},
+                'profile':'dense',
+                'sections':[
+                    {'role':'intro','runs':[{'text':'用于改装的中等材料'}]},
+                    {'role':'sub','kind':'modinfo','title':'配件信息',
+                     'rows':[
+                        {'name':'装配要求'},
+                        {'depth':1,'runs':[{'text':'插件位置：','color':'#66CC66'},{'text':'手环'}]},
+                        {'name':'属性与效果'},
+                        {'depth':1,'runs':[{'text':'动作类型 → 截拳'}]}]}]}"));
+            Assert.Equal(4, doc.Sections[1].Rows.Count);
+            Assert.Equal("", doc.Sections[1].Rows[1].Name);
+            var plan = NativeTooltipLayout.ComputePlan(
+                doc, FixedMeasure, 15, 1f, 1024, 576);
+            var rows = plan.Subs[0].Rows;
+            Assert.Equal("装配要求", LineText(rows[0].Lines[0]));
+            Assert.Empty(rows[1].Lines);
+            Assert.Equal("插件位置：手环", LineText(rows[1].EffectLines[0]));
+            Assert.Equal("动作类型 → 截拳", LineText(rows[3].EffectLines[0]));
+            Assert.True(rows[0].IconRect.IsEmpty && rows[1].IconRect.IsEmpty,
+                "插件信息大类和子级都不占图标列");
+            Assert.Equal(rows[0].TextLeftPx + 8, rows[1].TextLeftPx);
+            Assert.Equal(rows[1].TextLeftPx, rows[1].EffectLeftPx);
+            Assert.Equal(rows[1].TextTopPx, rows[1].EffectTopPx);
+        }
+
+        [Fact]
+        public void UpgradeLines_ItemIconsStayInDescriptionAndMirrorWithPanel()
+        {
+            JObject payload = GunPayload("tt-upgrade-icons");
+            payload["document"]["rail"] = JValue.CreateNull();
+            payload["document"]["magazine"] = JValue.CreateNull();
+            payload["document"]["sections"] = new JArray
+            {
+                new JObject { ["role"] = "intro", ["runs"] = new JArray
+                    { new JObject { ["text"] = "简介" } } },
+                new JObject { ["role"] = "description", ["runs"] = new JArray
+                    { new JObject { ["text"] = "普通描述" } } },
+                new JObject
+                {
+                    ["role"] = "description", ["kind"] = "upgrades", ["title"] = "升阶路线",
+                    ["rows"] = new JArray
+                    {
+                        new JObject { ["name"] = "升自", ["runs"] = new JArray
+                            { new JObject { ["text"] = "升自", ["color"] = "#99CCFF" } } },
+                        new JObject { ["name"] = "G11", ["icon"] = "weapon_g11", ["depth"] = 1,
+                            ["runs"] = new JArray { new JObject { ["text"] = " x1" } } },
+                        new JObject { ["name"] = "二阶", ["icon"] = "tier2", ["depth"] = 1,
+                            ["runs"] = new JArray { new JObject { ["text"] = " [组件]", ["color"] = "#FFCC00" } } }
+                    }
+                }
+            };
+            var plan = NativeTooltipLayout.ComputePlan(
+                NativeTooltipDocument.FromPayload(payload), FixedMeasure, 15, 1f, 1024, 576);
+            Assert.True(plan.Split, "升阶结构应使用带图标的描述面板");
+            NativeTooltipLayout.VisualLine iconLine = null;
+            foreach (var line in plan.DescLines)
+                if (line.IconName == "weapon_g11") { iconLine = line; break; }
+            Assert.NotNull(iconLine);
+            Assert.Equal(22, iconLine.IconRect.Width);
+            Assert.Equal(22, iconLine.IconRect.Height);
+            Assert.Equal(8 + 22 + NativeTooltipLayout.AttachIconGapBase, iconLine.TextOffsetPx);
+            Assert.Equal("G11 x1", LineText(iconLine));
+            Assert.True(iconLine.LineHeightPx >= 22);
+            int oldPanelX = plan.DescPanel.X;
+            Rectangle before = iconLine.IconRect;
+            plan.MirrorHorizontally();
+            Assert.Equal(plan.DescPanel.X + before.X - oldPanelX, iconLine.IconRect.X);
+            plan.MirrorHorizontally();
+            Assert.Equal(before, iconLine.IconRect);
+        }
+
+        [Fact]
+        public void Paint_BlackText_UsesWhiteBackdropOnlyForBlackSlices()
+        {
+            JObject payload = GunPayload("tt-black-text");
+            payload["document"]["rail"] = JValue.CreateNull();
+            payload["document"]["magazine"] = JValue.CreateNull();
+            payload["document"]["sections"] = new JArray
+            {
+                new JObject
+                {
+                    ["role"] = "intro",
+                    ["runs"] = new JArray
+                    {
+                        new JObject { ["text"] = "黑字", ["color"] = "#000000" },
+                        new JObject { ["text"] = "普通" }
+                    }
+                }
+            };
+            using (Control a = Anchor())
+            using (var catalog = new CF7Launcher.Guardian.Hud.Loot.LootIconCatalog(FindIconsDir()))
+            using (var w = new NativeTooltipWidget(a, catalog))
+            {
+                Assert.True(w.Show(payload));
+                w.Tick(2000);
+                var plan = w.ActivePlan;
+                var line = plan.IntroBodyLines[0];
+                int blackWidth = (int)Math.Ceiling(line.Slices[0].WidthF);
+                Rectangle placed = w.PlacedRect;
+                int x = placed.X + plan.IntroContentLeftPx;
+                int y = placed.Y + plan.IntroContentTopPx + line.LineHeightPx - 1;
+                using (var bmp = new Bitmap(1024, 576))
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.Clear(Color.FromArgb(255, 24, 26, 28));
+                    w.Paint(g, 1f, Point.Empty);
+                    Color blackBackdrop = bmp.GetPixel(x + blackWidth, y);
+                    Color normalBackdrop = bmp.GetPixel(x + blackWidth + 2, y);
+                    Assert.Equal(255, blackBackdrop.R);
+                    Assert.Equal(255, blackBackdrop.G);
+                    Assert.Equal(255, blackBackdrop.B);
+                    Assert.True(normalBackdrop.R < 250 || normalBackdrop.G < 250 || normalBackdrop.B < 250,
+                        "普通文字片段不应增加白底");
+                }
+            }
+        }
+
+        [Fact]
+        public void SideColumn_UsesEstimatedUniformWidthInsteadOfLongestLine()
+        {
+            string longSkill = new string('长', 400);
+            var doc = NativeTooltipDocument.FromDocument(JObject.Parse(@"{
+                'version':1,'title':'G11','profile':'dense',
+                'sections':[
+                    {'role':'intro','runs':[{'text':'简介'}]},
+                    {'role':'sub','runs':[{'text':'" + longSkill + @"'}]},
+                    {'role':'sub','kind':'acquisition','title':'获取方式',
+                     'rows':[{'name':'基础防具','depth':1,
+                              'runs':[{'text':'（$12500 + 800K）'}]}]}]}"));
+            var plan = NativeTooltipLayout.ComputePlan(
+                doc, FixedMeasure, 15, 1f, 1024, 576);
+            Assert.Equal(2, plan.Subs.Count);
+            Assert.InRange(plan.Subs[0].Panel.Width,
+                NativeTooltipLayout.DescMinWBase, NativeTooltipLayout.DescMaxWBase);
+            Assert.Equal(plan.Subs[0].Panel.Width, plan.Subs[1].Panel.Width);
+        }
+
+        [Fact]
         public void FloatingTitle_UsesSeparateLargerRunsBeforeBody()
         {
             var plan = NativeTooltipLayout.ComputePlan(
@@ -1368,6 +1507,103 @@ namespace CF7Launcher.Tests.Guardian.Tooltip
                     Assert.True(underlineRed > 0, "A兵团红字应带下划线");
                     Assert.True(namedUnderlineRed > 0, "未着色 A兵团相关文字也应改为红色下划线");
                     Assert.True(underlineGold > 0, "军阀文字应带淡黄色下划线");
+                }
+            }
+        }
+
+        [Fact]
+        public void Paint_FactionAliases_InAcquisitionAndIntro_UseFactionColorsAndClearZombie()
+        {
+            string[] aNames = { "Andy Law", "Boy", "kInG", "pIg", "bLuE", "The Girl",
+                "ShopGirl", "Shop Girl", "格格巫", "丽丽丝", "小F" };
+            string[] warlordNames = { "军队", "将军", "General", "Gazer" };
+            var sourceRows = new JArray();
+            for (int i = 0; i < aNames.Length; i++)
+                sourceRows.Add(new JObject { ["name"] = aNames[i], ["depth"] = 1 });
+            JObject payload = GunPayload("tt-faction-aliases");
+            payload["document"]["rail"] = JValue.CreateNull();
+            payload["document"]["magazine"] = JValue.CreateNull();
+            payload["document"]["sections"] = new JArray
+            {
+                new JObject
+                {
+                    ["role"] = "intro",
+                    ["runs"] = new JArray
+                    {
+                        new JObject { ["text"] = "军队\n" },
+                        new JObject { ["text"] = "将军\n" },
+                        new JObject { ["text"] = "General\n" },
+                        new JObject { ["text"] = "Gazer\n" },
+                        new JObject { ["text"] = "丧尸", ["color"] = "#B22222" }
+                    }
+                },
+                new JObject
+                {
+                    ["role"] = "sub", ["kind"] = "acquisition", ["title"] = "获取方式",
+                    ["rows"] = sourceRows
+                }
+            };
+            using (Control a = Anchor())
+            using (var catalog = new CF7Launcher.Guardian.Hud.Loot.LootIconCatalog(FindIconsDir()))
+            using (var w = new NativeTooltipWidget(a, catalog))
+            {
+                Assert.True(w.Show(payload));
+                w.Tick(2000);
+                var plan = w.ActivePlan;
+                var source = plan.Subs[0].Rows;
+                Rectangle placed = w.PlacedRect;
+                int lineH = plan.LineHeightPx;
+                int militaryY = placed.Y + plan.IntroContentTopPx;
+                using (var bmp = new Bitmap(1024, 576))
+                using (Graphics g = Graphics.FromImage(bmp))
+                {
+                    g.Clear(Color.FromArgb(255, 24, 26, 28));
+                    w.Paint(g, 1f, Point.Empty);
+                    Func<Rectangle, bool, int> tintCount = (area, gold) =>
+                    {
+                        int count = 0;
+                        for (int y = area.Top; y < area.Bottom; y++)
+                            for (int x = area.Left; x < area.Right; x++)
+                            {
+                                Color pixel = bmp.GetPixel(x, y);
+                                bool match = gold
+                                    ? pixel.R > 200 && pixel.G > 200 && pixel.B > 200
+                                    : pixel.R > 240 && pixel.G < 20 && pixel.B < 20;
+                                if (pixel.A > 200 && match) count++;
+                            }
+                        return count;
+                    };
+                    for (int i = 0; i < aNames.Length; i++)
+                    {
+                        var row = source[i];
+                        var mark = new Rectangle(placed.X + row.TextLeftPx,
+                            placed.Y + row.TextTopPx, lineH, lineH);
+                        var underline = new Rectangle(mark.Right + 2, mark.Bottom - 3, 96, 3);
+                        Assert.True(tintCount(mark, false) > 0, aNames[i] + " 来源行应有红色徽标");
+                        Assert.True(tintCount(underline, false) > 0,
+                            aNames[i] + " 来源行应有红色文字和下划线");
+                    }
+                    for (int i = 0; i < warlordNames.Length; i++)
+                    {
+                        int lineHeight = plan.IntroBodyLines[i].LineHeightPx;
+                        var mark = new Rectangle(placed.X + plan.IntroContentLeftPx,
+                            militaryY, lineHeight, lineHeight);
+                        var underline = new Rectangle(mark.Right + 2, mark.Bottom - 3, 96, 6);
+                        Assert.True(tintCount(mark, true) > 0, warlordNames[i] + " 应有军阀徽标");
+                        Assert.True(tintCount(underline, true) > 0,
+                            warlordNames[i] + " 应有淡金色文字和下划线");
+                        militaryY += lineHeight;
+                    }
+                    var zombie = new Rectangle(placed.X + plan.IntroContentLeftPx,
+                        militaryY, 240, plan.IntroBodyLines[warlordNames.Length].LineHeightPx);
+                    int zombieRed = 0;
+                    for (int y = zombie.Top; y < zombie.Bottom; y++)
+                        for (int x = zombie.Left; x < zombie.Right; x++)
+                        {
+                            Color pixel = bmp.GetPixel(x, y);
+                            if (pixel.R == 178 && pixel.G == 34 && pixel.B == 34) zombieRed++;
+                        }
+                    Assert.Equal(0, zombieRed);
                 }
             }
         }

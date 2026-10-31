@@ -326,6 +326,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             /// <summary>true=本行以硬断行（\n/流末）收尾，是一条逻辑行的结尾；
             /// false=软换行产生的续行。与 web innerText 语义对应（软折不产生 \n）。</summary>
             internal bool EndsLogicalLine;
+            internal string IconName;
+            internal Rectangle IconRect;
+            internal int TextOffsetPx;
         }
 
         /// <summary>
@@ -735,14 +738,81 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         /// `if (out && !atLineStart) out += '&lt;br&gt;'`）；整段无可见文本的
         /// section 计一个空行（web: `if (!inner) inner = '&lt;br&gt;'`）。
         /// </summary>
+        private static List<VisualLine> BuildUpgradeLines(
+            IList<NativeTooltipSection> sections, int panelX, int panelY, int textW,
+            int pad, float scale, Func<string, RunFont, int> measure, float lh,
+            bool leadingBlank)
+        {
+            List<VisualLine> lines = new List<VisualLine>();
+            if (sections == null) return lines;
+            int iconPx = Px(22, scale);
+            int iconGap = Px(AttachIconGapBase, scale);
+            int cursor = panelY + pad;
+            foreach (NativeTooltipSection sec in sections)
+            {
+                if (sec == null || sec.Kind != "upgrades") continue;
+                if (leadingBlank)
+                {
+                    lines.Add(new VisualLine
+                    {
+                        IsBlank = true, LineHeightF = lh,
+                        LineHeightPx = (int)Math.Round(lh), EndsLogicalLine = true
+                    });
+                    cursor += (int)Math.Round(lh);
+                }
+                if (!string.IsNullOrEmpty(sec.Title))
+                {
+                    List<NativeTooltipRun> titleRuns = new List<NativeTooltipRun>();
+                    titleRuns.Add(new NativeTooltipRun(sec.Title, null, true));
+                    List<VisualLine> titleLines = WrapRuns(titleRuns, textW, measure, lh);
+                    for (int t = 0; t < titleLines.Count; t++)
+                    {
+                        lines.Add(titleLines[t]);
+                        cursor += titleLines[t].LineHeightPx;
+                    }
+                }
+                for (int i = 0; i < sec.Rows.Count; i++)
+                {
+                    NativeTooltipAttachmentRow row = sec.Rows[i];
+                    bool child = row.Depth == 1;
+                    int indent = child ? Px(8, scale) : 0;
+                    List<NativeTooltipRun> content = new List<NativeTooltipRun>();
+                    if (child || row.Runs.Count == 0)
+                        content.Add(new NativeTooltipRun(row.Name, null, true));
+                    else
+                        content.AddRange(row.Runs);
+                    if (child) content.AddRange(row.Runs);
+                    int rowTextW = Math.Max(1, textW - indent - (child ? iconPx + iconGap : 0));
+                    List<VisualLine> wrapped = WrapRuns(content, rowTextW, measure, lh);
+                    for (int j = 0; j < wrapped.Count; j++)
+                    {
+                        VisualLine line = wrapped[j];
+                        if (child)
+                        {
+                            line.IconName = row.IconName;
+                            line.TextOffsetPx = indent + iconPx + iconGap;
+                            line.LineHeightF = Math.Max(line.LineHeightF, iconPx);
+                            line.LineHeightPx = Math.Max(line.LineHeightPx, iconPx);
+                            line.IconRect = new Rectangle(panelX + pad + indent,
+                                cursor + (line.LineHeightPx - iconPx) / 2, iconPx, iconPx);
+                        }
+                        lines.Add(line);
+                        cursor += line.LineHeightPx;
+                    }
+                }
+                leadingBlank = false;
+            }
+            return lines;
+        }
+
         private static List<NativeTooltipRun> BuildColumnRuns(
-            IEnumerable<NativeTooltipSection> sections)
+            IEnumerable<NativeTooltipSection> sections, bool includeUpgradeText = true)
         {
             List<NativeTooltipRun> runs = new List<NativeTooltipRun>();
             if (sections == null) return runs;
             foreach (NativeTooltipSection s in sections)
             {
-                if (s == null) continue;
+                if (s == null || (s.Kind == "upgrades" && !includeUpgradeText)) continue;
                 bool empty = true;
                 if (s.Runs != null)
                 {
@@ -994,7 +1064,18 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
 
                 foreach (RailBlock rb in RailBlocks) rb.Rect = MirrorX(rb.Rect, w);
                 if (hasIntro) IntroPanel = MirrorX(IntroPanel, w);
-                if (hasDesc) DescPanel = MirrorX(DescPanel, w);
+                if (hasDesc)
+                {
+                    int oldDescX = DescPanel.X;
+                    DescPanel = MirrorX(DescPanel, w);
+                    foreach (VisualLine line in DescLines)
+                    {
+                        if (line.IconRect.IsEmpty) continue;
+                        line.IconRect = new Rectangle(
+                            DescPanel.X + line.IconRect.X - oldDescX,
+                            line.IconRect.Y, line.IconRect.Width, line.IconRect.Height);
+                    }
+                }
                 foreach (SubBox sb in Subs)
                 {
                     int off = sb.ContentLeftPx - sb.Panel.X;
@@ -1152,7 +1233,10 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 if (ts.MaxLine > introScore.MaxLine) introScore.MaxLine = ts.MaxLine;
             }
             // desc 为空时强制 merge（buildItemRichHtml: !desc → doSplit=false）
-            plan.Split = hasDesc && ShouldSplit(descScore, introScore);
+            bool hasUpgrades = false;
+            for (int i = 0; i < descSecs.Count; i++)
+                if (descSecs[i].Kind == "upgrades") { hasUpgrades = true; break; }
+            plan.Split = hasDesc && (hasUpgrades || ShouldSplit(descScore, introScore));
 
             bool wide = plan.LayoutWide;
             int pad = Px(PanelPadBase, scale);
@@ -1172,7 +1256,7 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             // rich 浮动主框标题独立排版；正文与 merge desc 保持原有拼装规则。
             List<NativeTooltipRun> introRuns = IntroColumnRuns(doc, introSecs, false);
             if (!plan.Split && hasDesc) AppendMergedDesc(introRuns, descSecs);
-            List<NativeTooltipRun> descRuns = BuildColumnRuns(descSecs);
+            List<NativeTooltipRun> descRuns = BuildColumnRuns(descSecs, false);
 
             List<VisualLine> introLines = new List<VisualLine>();
             int introTextX = pad, introTextY = pad, introTextW = 0, introPanelH = 0;
@@ -1217,6 +1301,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 descPanelW = Px(Math.Max(DescMinWBase, estCss), scale);
                 descTextW = descPanelW - pad * 2 - sbW;   // scrollbar-gutter:stable 恒占
                 descLines = WrapRuns(descRuns, descTextW, measure, lh);
+                descLines.AddRange(BuildUpgradeLines(descSecs, 0,
+                    introPanelExists ? introPanelH : 0, descTextW, pad, scale, measure, lh,
+                    descLines.Count > 0));
                 int contentH = SumHeight(descLines, lh) + pad * 2;
                 // max-height:min(70vh,520px)：vh = 视口 CSS px（innerHeight 域，
                 // 不随 transform 缩放）→ 先在本地 CSS 域取 min，再整体 ×scale。
@@ -1247,6 +1334,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 descPanelW = Math.Max(Px(DescMinWBase, scale), descPanelW);
                 descTextW = descPanelW - pad * 2 - sbW;
                 descLines = WrapRuns(descRuns, descTextW, measure, lh);
+                descLines.AddRange(BuildUpgradeLines(descSecs, introW, 0,
+                    descTextW, pad, scale, measure, lh, descLines.Count > 0));
                 int contentH = SumHeight(descLines, lh) + pad * 2;
                 int maxH = Px(Math.Min(DescMaxHBase,
                     vhCss * DescMaxHViewportFrac), scale);
@@ -1376,7 +1465,8 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             foreach (NativeTooltipSection sec in subSecs)
             {
                 if (sec.Kind == "acquisition")
-                    w = Math.Max(w, RequiredAcquisitionWidth(sec, pad, scale, measure));
+                    w = Math.Max(w, Math.Min(Px(DescMaxWBase, scale),
+                        RequiredAcquisitionWidth(sec, pad, scale, measure)));
                 Plan.SubBox box = sec.IsAttachments
                     ? BuildAttachmentsBox(sec, x, y, w, pad, scale, measure, lh, maxH)
                     : BuildTextSubBox(sec, x, y, w, pad, scale, measure, lh, maxH);
@@ -1432,8 +1522,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         }
 
         /// <summary>
-        /// attachments/acquisition 子框：名称独占一行，效果在下一行并继续缩进；
-        /// Depth=1 的来源条目再缩进一级。图标与名称首行对齐，整框高度同 desc 上限。
+        /// attachments/acquisition/modinfo 子框：名称独占一行，效果在下一行并继续缩进；
+        /// Depth=1 的来源/插件条目再缩进一级；modinfo 纯效果子行不占图标列。
+        /// 图标与名称首行对齐，整框高度同 desc 上限。
         /// </summary>
         private static Plan.SubBox BuildAttachmentsBox(NativeTooltipSection sec,
             int x, int y, int w, int pad, float scale,
@@ -1466,20 +1557,27 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             for (int i = 0; i < sec.Rows.Count; i++)
             {
                 NativeTooltipAttachmentRow row = sec.Rows[i];
-                if (string.IsNullOrEmpty(row.Name)) continue;
+                bool modInfo = sec.Kind == "modinfo";
+                if (string.IsNullOrEmpty(row.Name) && (!modInfo || row.Runs.Count == 0)) continue;
                 int depth = row.Depth == 1 ? 1 : 0;
                 int rowIndent = depth == 0 ? 0 : Px(8, scale);
                 int effectIndent = Px(12, scale);
                 bool acquisition = sec.Kind == "acquisition";
-                bool showIconColumn = !acquisition || depth == 1 || !string.IsNullOrEmpty(row.IconName);
+                bool acquisitionNoWrap = acquisition
+                    && w >= RequiredAcquisitionWidth(sec, pad, scale, measure);
+                bool showIconColumn = (!acquisition && !modInfo)
+                    || (acquisition && (depth == 1 || !string.IsNullOrEmpty(row.IconName)));
                 int nameTextW = Math.Max(1, contentW - rowIndent
                     - (showIconColumn ? iconPx + iconGap : 0));
 
                 List<NativeTooltipRun> nameRuns = new List<NativeTooltipRun>();
-                nameRuns.Add(new NativeTooltipRun(row.Name, null, true));
+                if (!string.IsNullOrEmpty(row.Name))
+                    nameRuns.Add(new NativeTooltipRun(row.Name, null, true));
                 if (acquisition) nameRuns.AddRange(row.Runs);
-                List<VisualLine> nameLines = WrapRuns(nameRuns,
-                    acquisition ? int.MaxValue / 4 : nameTextW, measure, lh);
+                List<VisualLine> nameLines = nameRuns.Count > 0
+                    ? WrapRuns(nameRuns,
+                        acquisition && acquisitionNoWrap ? int.MaxValue / 4 : nameTextW, measure, lh)
+                    : new List<VisualLine>();
                 if (nameLines.Count > MaxRenderedLines)
                     nameLines = nameLines.GetRange(0, MaxRenderedLines);
                 int nameH = SumHeight(nameLines, lh);
@@ -1489,13 +1587,13 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 if (!acquisition && row.Runs.Count > 0)
                 {
                     effectLines = WrapRuns(row.Runs,
-                        Math.Max(1, nameTextW - effectIndent), measure, lh);
+                        Math.Max(1, nameTextW - (modInfo ? 0 : effectIndent)), measure, lh);
                     if (effectLines.Count > MaxRenderedLines)
                         effectLines = effectLines.GetRange(0, MaxRenderedLines);
                     effectH = SumHeight(effectLines, lh);
                 }
-                int textH = nameH + (effectH > 0 ? effectGap + effectH : 0);
-                int rowH = Math.Max(iconPx, textH);
+                int textH = nameH + (effectH > 0 ? (nameH > 0 ? effectGap : 0) + effectH : 0);
+                int rowH = Math.Max(modInfo ? 0 : iconPx, textH);
 
                 Plan.SubRow subRow = new Plan.SubRow();
                 subRow.IconName = row.IconName;
@@ -1508,8 +1606,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 subRow.TextTopPx = cursor + Math.Max(0, (rowH - textH) / 2);
                 subRow.Lines = nameLines;
                 subRow.EffectLines = effectLines;
-                subRow.EffectLeftPx = subRow.TextLeftPx + effectIndent;
-                subRow.EffectTopPx = subRow.TextTopPx + nameH + (effectH > 0 ? effectGap : 0);
+                subRow.EffectLeftPx = subRow.TextLeftPx + (modInfo ? 0 : effectIndent);
+                subRow.EffectTopPx = subRow.TextTopPx + nameH
+                    + (effectH > 0 && nameH > 0 ? effectGap : 0);
                 box.Rows.Add(subRow);
                 cursor += rowH + rowGap;
             }

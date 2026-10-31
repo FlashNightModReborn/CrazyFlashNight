@@ -7,4 +7,7 @@ org.flashNight.gesh.tooltip.test.TestDataBootstrap.runIsolated(function() {
 org.flashNight.gesh.tooltip.test.TestDataBootstrap.runIsolated(function() {
     org.flashNight.gesh.tooltip.test.NativeTooltipDocumentTest.runAllTests();
 });
+org.flashNight.gesh.tooltip.test.TestDataBootstrap.runIsolated(function() {
+    org.flashNight.gesh.tooltip.test.UpgradePathBuilderTest.runAllTests();
+});
 trace("FocusedTestRunId equipment-lighting-tooltip Complete: __FOCUSED_RUN_ID__");

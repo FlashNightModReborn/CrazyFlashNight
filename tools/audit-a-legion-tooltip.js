@@ -7,7 +7,9 @@ const ROOT = path.resolve(__dirname, '..');
 const ITEMS_DIR = path.join(ROOT, 'data', 'items');
 const REPORT = path.join(ROOT, 'docs', 'reports', 'a-legion-tooltip-content-audit.md');
 const LONG_DESCRIPTION_MIN = 200;
-const A_PATTERN = /A兵团|Andy|安迪烙/i;
+const A_PATTERN = /A兵团|Andy|安迪烙|格格巫|丽丽丝|小F|\b(?:Boy|King|Pig|Blue|The\s+Girl|Shop\s*Girl)\b/i;
+const WARLORD_PATTERN = /军阀|军队|将军|莱昂利亚|自由革命军|\b(?:General|Gazer)\b/i;
+const ZOMBIE_STYLE_PATTERN = /丧尸/i;
 
 function walk(dir) {
     const out = [];
@@ -57,9 +59,11 @@ function collect() {
                 spans.push({ color: colorOf(match[1]), text: plainText(match[2]) });
             }
             const aSpans = spans.filter(span => A_PATTERN.test(span.text));
-            const warlordSpans = spans.filter(span => span.text.includes('军阀'));
+            const warlordSpans = spans.filter(span => WARLORD_PATTERN.test(span.text));
             const hasA = A_PATTERN.test(text);
-            const hasWarlord = text.includes('军阀');
+            const hasWarlord = WARLORD_PATTERN.test(text);
+            const zombieStyled = spans.some(span => span.color === '#B22222'
+                && ZOMBIE_STYLE_PATTERN.test(span.text));
             items.push({
                 file: path.relative(ROOT, file).replace(/\\/g, '/'),
                 name: plainText(tag(block, 'name')),
@@ -67,6 +71,7 @@ function collect() {
                 length: text.length,
                 hasA,
                 hasWarlord,
+                zombieStyled,
                 aColors: [...new Set(aSpans.map(span => span.color))].sort(),
                 warlordColors: [...new Set(warlordSpans.map(span => span.color))].sort(),
                 aWithoutFont: hasA && aSpans.length === 0,
@@ -91,6 +96,7 @@ function render(items) {
     const warlordItems = items.filter(item => item.hasWarlord);
     const longItems = items.filter(item => item.length >= LONG_DESCRIPTION_MIN)
         .sort((a, b) => b.length - a.length || a.name.localeCompare(b.name, 'zh-CN'));
+    const zombieStyledItems = items.filter(item => item.zombieStyled);
     const colors = key => [...new Set(items.flatMap(item => item[key]))].sort();
     const lines = [
         '# 物品简介 A兵团/军阀内容与长文审计', '',
@@ -98,8 +104,10 @@ function render(items) {
             + (colors('aColors').join('、') || '无'),
         '- 军阀相关物品：' + warlordItems.length + ' 件；相关颜色：'
             + (colors('warlordColors').join('、') || '无'),
+        '- 丧尸 `#B22222` 特殊色来源：' + zombieStyledItems.length + ' 件（渲染时恢复默认色）',
         '- 超过 ' + LONG_DESCRIPTION_MIN + ' 字的简介：' + longItems.length + ' 件',
-        '- 匹配规则：预设 `#FF0000` 或明确 `A兵团` / `Andy` / `安迪烙` → 红色徽标 + 同色下划线；`军阀` → 黑黄徽标 + `#FFFFE0` 下划线。', '',
+        '- 匹配规则：预设 `#FF0000` 或明确 `A兵团` / `Andy` / `安迪烙` / `Boy` / `King` / `Pig` / `Blue` / `The Girl` / `ShopGirl` / `格格巫` / `丽丽丝` / `小F` → 红色徽标 + 同色下划线。',
+        '- `军阀` / `军队` / `将军` / `莱昂利亚自由革命军` / `General` / `Gazer` → 黑黄徽标 + `#FFFFE0` 下划线；徽标外圈同色描边。', '',
         '## A兵团相关内容', '',
         '| 显示名 | 物品名 | 已有字体颜色 | 未着色相关内容 | 文件 |',
         '|---|---|---|---|---|'

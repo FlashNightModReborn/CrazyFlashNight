@@ -100,11 +100,11 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         public NativeTooltipSectionRole Role;
         public List<NativeTooltipRun> Runs = new List<NativeTooltipRun>();
 
-        /// <summary>结构子框类型："attachments" = 已安装插件；"acquisition" = 获取来源。</summary>
+        /// <summary>结构段类型：attachments/acquisition/modinfo 子框；upgrades = 描述区升阶路线。</summary>
         public string Kind;
         /// <summary>结构子框标题（纯文本，如「已安装2个配件」）。</summary>
         public string Title;
-        /// <summary>结构子框行（attachments/acquisition 共用）。</summary>
+        /// <summary>结构段行（attachments/acquisition/modinfo/upgrades 共用）。</summary>
         public List<NativeTooltipAttachmentRow> Rows =
             new List<NativeTooltipAttachmentRow>();
 
@@ -113,7 +113,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             get
             {
                 return (string.Equals(Kind, "attachments", StringComparison.Ordinal)
-                    || string.Equals(Kind, "acquisition", StringComparison.Ordinal))
+                    || string.Equals(Kind, "acquisition", StringComparison.Ordinal)
+                    || string.Equals(Kind, "modinfo", StringComparison.Ordinal)
+                    || string.Equals(Kind, "upgrades", StringComparison.Ordinal))
                     && Rows.Count > 0;
             }
         }
@@ -434,8 +436,10 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                     ParseRuns(secNode["runs"] as JArray, section.Runs);
                     // 空 run 段也保留：显式空段可占位（例如预留 meta 行）。
                     if (string.Equals(section.Kind, "attachments", StringComparison.Ordinal)
-                        || string.Equals(section.Kind, "acquisition", StringComparison.Ordinal))
-                        ParseAttachmentRows(secNode["rows"] as JArray, section.Rows);
+                        || string.Equals(section.Kind, "acquisition", StringComparison.Ordinal)
+                        || string.Equals(section.Kind, "modinfo", StringComparison.Ordinal)
+                        || string.Equals(section.Kind, "upgrades", StringComparison.Ordinal))
+                        ParseAttachmentRows(secNode["rows"] as JArray, section.Rows, section.Kind);
                     Sections.Add(section);
                 }
             }
@@ -484,10 +488,11 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         }
 
         /// <summary>
-        /// attachments/acquisition 行：name 必填；icon/runs 可选；Depth=1 为子级条目。
+        /// attachments/acquisition 行：name 必填；modinfo 子级可以只用 runs 携带原文。
+        /// icon/runs 可选；Depth=1 为子级条目。
         /// </summary>
         private static void ParseAttachmentRows(JArray rows,
-            List<NativeTooltipAttachmentRow> output)
+            List<NativeTooltipAttachmentRow> output, string kind)
         {
             if (rows == null) return;
             foreach (JToken rowToken in rows)
@@ -495,13 +500,15 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
                 JObject rowNode = rowToken as JObject;
                 if (rowNode == null) continue;
                 string name = ReadString(rowNode, "name");
-                if (string.IsNullOrWhiteSpace(name)) continue;
                 NativeTooltipAttachmentRow row = new NativeTooltipAttachmentRow();
-                row.Name = name.Trim();
+                row.Name = string.IsNullOrWhiteSpace(name) ? "" : name.Trim();
                 row.IconName = ReadString(rowNode, "icon");
                 row.Depth = ReadInt(rowNode, "depth", 0) == 1 ? 1 : 0;
                 ParseRuns(rowNode["runs"] as JArray, row.Runs);
+                if (string.IsNullOrWhiteSpace(name)
+                    && (kind != "modinfo" || row.Runs.Count == 0)) continue;
                 output.Add(row);
+                if (kind == "modinfo" && output.Count >= 64) break;
             }
         }
 

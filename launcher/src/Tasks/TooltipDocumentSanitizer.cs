@@ -28,9 +28,10 @@ namespace CF7Launcher.Tasks
     ///   - 结构规模上界：section/run/字符总量超限时截断或剔除超限元素，
     ///     输出永远满足下列常量上界。
     ///   - 结构部件：rail（≤2 段书签文本）、magazine{name,icon,ammo}、
-    ///     role:"sub" 且 kind 为 "attachments"/"acquisition" 的
-    ///     title/rows[{name,icon,runs}]
-    ///     均走白名单重建；无有效行的结构化段退回普通 sub（runs 保留）。
+    ///     role:"sub" 且 kind 为 "attachments"/"acquisition"/"modinfo" 的
+    ///     title/rows[{name,icon,runs}]（modinfo 纯效果子行允许空 name）；
+    ///     role:"description" 且 kind="upgrades" 的升阶分组、物品图标和 depth 行
+    ///     均走白名单重建；无有效行时按原 role 退回普通段（runs 保留）。
     ///   - 纯文本契约：title 与 runs[].text 逐字透传，不做 HTML 解析、
     ///     不做实体解码、不做内联标记展开（AS2 聚合端已展开一次）。
     ///   - 输出为白名单重建：document 内任何未列举键（owner/revision/自定义
@@ -192,29 +193,34 @@ namespace CF7Launcher.Tasks
                     // 空 run 段保留：显式空段可占位（与 NativeTooltipDocument 一致）。
                     cleanSection["runs"] = cleanRuns;
 
-                    // attachments/acquisition 结构化子框：逐行名称/图标/内容 run。
+                    // attachments/acquisition/modinfo 结构化子框：逐行名称/图标/内容 run。
                     // 任一字段非法只丢该字段；无有效行的段退回普通 sub（保留 runs）。
                     string sectionKind =
                         sectionNode["kind"]?.Type == JTokenType.String
                             ? (string)sectionNode["kind"] : null;
                     var cleanRows = new JArray();
                     if (string.Equals(sectionKind, "attachments", StringComparison.Ordinal)
-                        || string.Equals(sectionKind, "acquisition", StringComparison.Ordinal))
+                        || string.Equals(sectionKind, "acquisition", StringComparison.Ordinal)
+                        || string.Equals(sectionKind, "modinfo", StringComparison.Ordinal)
+                        || string.Equals(sectionKind, "upgrades", StringComparison.Ordinal))
                     {
+                        int rowLimit = sectionKind == "modinfo" || sectionKind == "upgrades"
+                            ? 64 : MaxAttachmentRows;
                         JArray rows = sectionNode["rows"] as JArray;
                         if (rows != null)
                         {
                             foreach (JToken rowToken in rows)
                             {
-                                if (cleanRows.Count >= MaxAttachmentRows
+                                if (cleanRows.Count >= rowLimit
                                     || totalRuns >= MaxTotalRuns
                                     || totalChars >= MaxTotalTextChars) break;
                                 JObject rowNode = rowToken as JObject;
                                 if (rowNode == null) continue;
                                 string rowName = ReadPlainText(
                                     rowNode["name"], MaxAttachmentNameChars);
-                                if (string.IsNullOrWhiteSpace(rowName)) continue;
-                                var cleanRow = new JObject { ["name"] = rowName };
+                                bool hasRowName = !string.IsNullOrWhiteSpace(rowName);
+                                if (!hasRowName && sectionKind != "modinfo") continue;
+                                var cleanRow = new JObject { ["name"] = rowName ?? "" };
                                 string rowIcon = ReadPlainText(
                                     rowNode["icon"], MaxIconNameChars);
                                 if (!string.IsNullOrEmpty(rowIcon))
@@ -224,6 +230,7 @@ namespace CF7Launcher.Tasks
                                     cleanRow["depth"] = 1;
                                 cleanRow["runs"] = SanitizeRowRuns(
                                     rowNode["runs"], ref totalRuns, ref totalChars);
+                                if (!hasRowName && ((JArray)cleanRow["runs"]).Count == 0) continue;
                                 cleanRows.Add(cleanRow);
                                 hasContent = true;
                             }

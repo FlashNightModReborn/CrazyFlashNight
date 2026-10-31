@@ -20,6 +20,36 @@ import org.flashNight.gesh.tooltip.builder.EquipmentLightingInfoBuilder;
 class org.flashNight.gesh.tooltip.builder.ModStatBuilder {
 
     public static function build(itemName:String):Array {
+        return buildInternal(itemName, null);
+    }
+
+    public static function buildWithRows(itemName:String):Object {
+        var ranges:Object = {};
+        var html:Array = buildInternal(itemName, ranges);
+        if (html.length == 0) return null;
+
+        var rows:Array = [];
+        appendRowGroup(rows, "装配要求", html, ranges.infoStart, ranges.effectStart);
+        appendRowGroup(rows, "属性与效果", html, ranges.effectStart, ranges.descriptionStart);
+        appendRowGroup(rows, "附加说明", html, ranges.descriptionStart, html.length);
+        return {kind:"modinfo", title:TooltipConstants.LBL_MOD_INFO,
+            rows:rows, html:html.join("")};
+    }
+
+    private static function appendRowGroup(rows:Array, title:String,
+        html:Array, start:Number, end:Number):Void {
+        if (start >= end) return;
+        rows.push({name:title, depth:0});
+        var text:String = "";
+        for (var i:Number = start; i < end; i++) text += String(html[i]);
+        var lines:Array = text.split("<BR>");
+        for (var j:Number = 0; j < lines.length; j++) {
+            if (lines[j].length == 0) continue;
+            rows.push({depth:1, effect:lines[j]});
+        }
+    }
+
+    private static function buildInternal(itemName:String, ranges:Object):Array {
         var result = [];
 
         var modData = EquipmentUtil.modDict[itemName];
@@ -50,6 +80,7 @@ class org.flashNight.gesh.tooltip.builder.ModStatBuilder {
 
         if(!modData) return result;
         result.push("<font color='" + TooltipConstants.COL_HL + "'>" + TooltipConstants.LBL_MOD_INFO + "</font><BR>");
+        if (ranges != null) ranges.infoStart = result.length;
         result.push(TooltipConstants.LBL_MOD_USE_TYPE, "：", modData.use, "<BR>");
         if(modData.tagValue){
             result.push("<font color='" + TooltipConstants.COL_INFO + "'>" + TooltipConstants.LBL_MOD_SLOT + "：</font>", modData.tagValue, "<BR>");
@@ -113,6 +144,7 @@ class org.flashNight.gesh.tooltip.builder.ModStatBuilder {
             }
         }
 
+        if (ranges != null) ranges.effectStart = result.length;
         var stats = modData.stats;
         UseSwitchStatsBuilder.buildStatBlock(result, stats, "");
         UseSwitchStatsBuilder.buildBaseSwitchDetailed(result, stats);
@@ -132,6 +164,7 @@ class org.flashNight.gesh.tooltip.builder.ModStatBuilder {
         var lighting:Array = EquipmentLightingInfoBuilder.build(modData,null,true);
         for (var li:Number = 0; li < lighting.length; li++) result.push(lighting[li]);
 
+        if (ranges != null) ranges.descriptionStart = result.length;
         if(typeof modData.description === "string"){
             result.push(TooltipFormatter.normalizeDescription(modData.description), TooltipFormatter.br());
         }
