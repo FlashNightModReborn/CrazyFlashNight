@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/老头/特效/方舟指挥官/1.特效文件夹/地震2" itemID="6af00000-3b5355ed">
+  <timeline>
+    <DOMTimeline name="地震2" layerDepthEnabled="true">
+      <layers>
+        <DOMLayer name="图层_1" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 495" selected="true" centerPoint3DX="252.95" centerPoint3DY="112.75">
+                  <matrix>
+                    <Matrix a="1.0950927734375" d="1.0950927734375" tx="110.85" ty="83.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="60" blurY="12" color="#B10101"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 497" selected="true" centerPoint3DX="815.8" centerPoint3DY="194">
+                  <matrix>
+                    <Matrix a="0.339981079101562" d="0.339981079101562"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="20" blurY="20" color="#B10101"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

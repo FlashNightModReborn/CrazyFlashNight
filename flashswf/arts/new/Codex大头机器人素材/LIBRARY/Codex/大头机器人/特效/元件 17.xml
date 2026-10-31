@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大头机器人/特效/元件 17" itemID="6af00000-c4ddd29e">
+  <timeline>
+    <DOMTimeline name="元件 17" layerDepthEnabled="true">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/元件 18">
+                  <matrix>
+                    <Matrix tx="13.85" ty="15.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="77.1" y="82.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="20" blurY="0"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

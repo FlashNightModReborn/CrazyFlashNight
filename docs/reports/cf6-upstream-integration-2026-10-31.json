@@ -1,0 +1,4559 @@
+{
+  "schema": "cf6-upstream-integration.v1",
+  "at": "2026-10-31T19:44:49.753127",
+  "status": "POST_MERGE_NATIVE_AND_SOURCE_CHECKS_PASSED",
+  "merge": {
+    "at": "2026-10-31T19:22:30.076789",
+    "before": "19e1992b8d0f2d12ae38a99b10e9459c5e849613",
+    "upstream": "cc5f0e91a74ba8187a1909116e43fa44e952a216",
+    "strategy": "fast-forward",
+    "conflicts": 0,
+    "dirtyFilesPreservedByteForByte": 895,
+    "noStashOrResetUsed": true
+  },
+  "sourceRebind": {
+    "changedFiles": [
+      "tools/cf6-soldier-assets/native-manifest.json"
+    ],
+    "allSixSwfsAndGeneratedXmlUnchanged": true,
+    "reason": "Owning generator rebinds the declared shared skill interface after upstream merge; no compiled asset source changed."
+  },
+  "native": {
+    "head": "cc5f0e91a74ba8187a1909116e43fa44e952a216",
+    "receipts": [
+      {
+        "head": "cc5f0e91a74ba8187a1909116e43fa44e952a216",
+        "exitCode": 0,
+        "assetSha256": {
+          "特种兵": "0def6fe69da15a89fafef1ad48c1e9e183d61bb328ef2b475d110a43b5acbad2",
+          "老头": "84a3ea0721ff1a373c026e190c6c02dd764659db21d98e4c8e23118121ff464b",
+          "大头机器人": "04a97e5b51bdacc3ca3ace768bae6c40893be6278471b712f4c414b8c053f12d",
+          "蛮蛮": "510a252911cabf54195b32b9ba49c5941511b83f0a0b82cd019cdc9f26b338da",
+          "大刀机器人": "d91bf314b3b3e29617815f428c3d84e0b4d6db26c25815cdbcd8b27b755e9ece",
+          "光头保安": "e785224e92166e67ef835b986d063b26ab66be8807db4395b4508fdb2849fafb"
+        },
+        "traceSha256": "d02d533a13e6956871e8ef26657866ec58b5b4c7e36420ab62add60b4c7a6c6b",
+        "summaries": [
+          "Cf6SoldierAssetTest: 8944 passed, 0 failed; 300 actual timeline cases"
+        ]
+      },
+      {
+        "head": "cc5f0e91a74ba8187a1909116e43fa44e952a216",
+        "exitCode": 0,
+        "assetSha256": {
+          "特种兵": "0def6fe69da15a89fafef1ad48c1e9e183d61bb328ef2b475d110a43b5acbad2",
+          "老头": "84a3ea0721ff1a373c026e190c6c02dd764659db21d98e4c8e23118121ff464b",
+          "大头机器人": "04a97e5b51bdacc3ca3ace768bae6c40893be6278471b712f4c414b8c053f12d",
+          "蛮蛮": "510a252911cabf54195b32b9ba49c5941511b83f0a0b82cd019cdc9f26b338da",
+          "大刀机器人": "d91bf314b3b3e29617815f428c3d84e0b4d6db26c25815cdbcd8b27b755e9ece",
+          "光头保安": "e785224e92166e67ef835b986d063b26ab66be8807db4395b4508fdb2849fafb"
+        },
+        "traceSha256": "b91185dd6a763c8d37c57fd35b398a9fc3b9c2426127db10a04b2c53e0dc380a",
+        "summaries": [
+          "Cf6ElderCombatEffectsTest: 127 passed, 0 failed",
+          "Cf6ElderAssetTest: 1070 passed, 0 failed; 46 actual timeline cases; 13 phase cases"
+        ]
+      },
+      {
+        "head": "cc5f0e91a74ba8187a1909116e43fa44e952a216",
+        "exitCode": 0,
+        "assetSha256": {
+          "特种兵": "0def6fe69da15a89fafef1ad48c1e9e183d61bb328ef2b475d110a43b5acbad2",
+          "老头": "84a3ea0721ff1a373c026e190c6c02dd764659db21d98e4c8e23118121ff464b",
+          "大头机器人": "04a97e5b51bdacc3ca3ace768bae6c40893be6278471b712f4c414b8c053f12d",
+          "蛮蛮": "510a252911cabf54195b32b9ba49c5941511b83f0a0b82cd019cdc9f26b338da",
+          "大刀机器人": "d91bf314b3b3e29617815f428c3d84e0b4d6db26c25815cdbcd8b27b755e9ece",
+          "光头保安": "e785224e92166e67ef835b986d063b26ab66be8807db4395b4508fdb2849fafb"
+        },
+        "traceSha256": "d491f40717d9dac9aa7582f321f423379a1a30ef7afad7f2fede3efed6889605",
+        "summaries": [
+          "Cf6PlayerPressureTest: 218 passed, 0 failed; 68 paired player-source cases"
+        ]
+      }
+    ],
+    "allPassed": true,
+    "allSixAssetsUnchanged": true
+  },
+  "sourceVerification": {
+    "at": "2026-10-31T19:28:43.026819",
+    "allSixFamiliesPassed": true,
+    "checks": [
+      {
+        "family": "soldier",
+        "exitCode": 0
+      },
+      {
+        "family": "elder",
+        "exitCode": 0
+      },
+      {
+        "family": "headbot",
+        "exitCode": 0
+      },
+      {
+        "family": "manman",
+        "exitCode": 0
+      },
+      {
+        "family": "bladebot",
+        "exitCode": 0
+      },
+      {
+        "family": "guard",
+        "exitCode": 0
+      }
+    ],
+    "docGovernancePassed": true
+  },
+  "pressureBaselineFromVersionedFiles": true,
+  "cleanBaselinePreparationPassed": true,
+  "runtimeDeploymentChangedByThisCommit": false,
+  "allSixPublishedSwfsUnchangedByUpstreamMerge": true,
+  "priorCombatEvidence": {
+    "repair": "cf6-r8-performance-repair-2026-10-31.json",
+    "completion": "cf6-completion-2026-10-31.json",
+    "status": "Historical pre-merge combat evidence; not reclassified as post-merge full combat."
+  },
+  "limitations": [
+    "No new human PVE acceptance or formal runtime promotion.",
+    "Post-merge native tests run against the merged working tree; their HEAD field names the upstream parent before the pending CF6 source commit."
+  ],
+  "scopeFilesExcludingThisReceipt": [
+    {
+      "path": ".gitattributes",
+      "sha256": "e559b49135ebc9d51e509a7a6fbfcc9b2f56b7b1b85d211b07c8c8c5a5e9591b",
+      "bytes": 24591
+    },
+    {
+      "path": "docs/reports/cf6-completion-2026-10-31.json",
+      "sha256": "707416cf67a11909dbe74a0416764e8be91985ac9fd7dad6d792866015231def",
+      "bytes": 388213
+    },
+    {
+      "path": "docs/reports/cf6-elder-muzzle-fix-2026-10-31.json",
+      "sha256": "c8bd92b681fe9e4c3de9460834e63d6977dd6c427f6bb011fa9bd0c7cf47c6c9",
+      "bytes": 4782
+    },
+    {
+      "path": "docs/reports/cf6-r8-performance-repair-2026-10-31.json",
+      "sha256": "ece30eba5864f7822fc3e75ee8af823128baadd23588d6039edc50eec9e47180",
+      "bytes": 245620
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材.swf",
+      "sha256": "e785224e92166e67ef835b986d063b26ab66be8807db4395b4508fdb2849fafb",
+      "bytes": 235847
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/DOMDocument.xml",
+      "sha256": "ea9f3cd84810e3c5851fd342db19e3e657aa73bfa3a6071920e76cc60565ae43",
+      "bytes": 25288
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/倒地恢复.xml",
+      "sha256": "59388cb8d63a870588b7e5653e0a0f9aef5d70a332ffdd840c9b38f9e89d9f69",
+      "bytes": 297330
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/击飞.xml",
+      "sha256": "97c957bcb01354cee5496f84c96cb10c5a6f0f5cb91c4565a80d22738641649c",
+      "bytes": 11878
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/平a.xml",
+      "sha256": "e710e0f12f7e912c26b35c4c378b5195685a56aeedacc262d91fe3a7bb319e90",
+      "bytes": 333045
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/散弹射击.xml",
+      "sha256": "46c693afa813ac2ead51843ceaf6cd9c7a359fa02b402d0cdb0ad83893ac5d84",
+      "bytes": 394341
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/死亡.xml",
+      "sha256": "d87ae397032985dfa5a24fecbc94978a351f03b7de7ea14a62e71e9ca2720d3e",
+      "bytes": 363372
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/站立.xml",
+      "sha256": "cd1c6c40ea5633c5a8068d66d4d1a93a3f4c0370d6afc4ca4973e31963dc4407",
+      "bytes": 134130
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/行走.xml",
+      "sha256": "963a330ffd16240334699d6a4b601f557148d12dc07965cb72548bb06a5376f9",
+      "bytes": 188539
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/被击.xml",
+      "sha256": "a69990450feb0c1e61b89694e71ff2e5a76ffe3f4625c915ff51caef059bdbd0",
+      "bytes": 128100
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/被投.xml",
+      "sha256": "3c1223bbbecde844516809ea6a23594ece55264c1ebb1ddb120d00e63538eaee",
+      "bytes": 97950
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/跑步.xml",
+      "sha256": "7ebaa1a893103aa6381b2ce896ddf486c28d2ca281534c8e1961caa4494c7339",
+      "bytes": 196661
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/敌人-CF6光头保安.xml",
+      "sha256": "f60741d755e8104c70ee41e6c198b4e41fcf83d8cd33a44c45576a6d29fac04e",
+      "bytes": 37619
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/敌人-CF6变身光头保安.xml",
+      "sha256": "a8373d994a4398384375a1a6e70c04e1b82f90c40f436f1fe65c18804f8e7174",
+      "bytes": 37636
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材.swf",
+      "sha256": "d91bf314b3b3e29617815f428c3d84e0b4d6db26c25815cdbcd8b27b755e9ece",
+      "bytes": 157379
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/DOMDocument.xml",
+      "sha256": "f55529b04e512565fb4d4573a9485e47fd9735591e153895f51606cf5ac0f7c4",
+      "bytes": 42658
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/895.xml",
+      "sha256": "0055e47734991a46bbe2f9b270717d07fbc3d6f1dedd00db50366f4e7b5f0a05",
+      "bytes": 956
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/896.xml",
+      "sha256": "153594778bb7a39bfed7b3fda4de3b5dcf47a9ed90f18938c6bc2d08a58cad78",
+      "bytes": 956
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/897.xml",
+      "sha256": "f2fb5c830c195f2b9fbf7def6e0d6dd2e9b3223818e6d1bc7452fe984868a8be",
+      "bytes": 956
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/899-遮罩1.xml",
+      "sha256": "f3608c542be02949e4b4c4ef813c2157c98250029a5614d800be33c0936d9d51",
+      "bytes": 25293
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/899.xml",
+      "sha256": "1bdd3731a8871876e6b4af222af22a80f2108f96b56066ec16c12a7f14f6ead4",
+      "bytes": 956
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/900.xml",
+      "sha256": "69e7b1aa529cf6aa99978da58e16f0bf652d7c8d5e9a645992108a0ca793bf14",
+      "bytes": 956
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/可瞄准光束.xml",
+      "sha256": "995398499e31447f32858ca9d6fdb80e68350a11d4411efb516b84a72dfc6bf1",
+      "bytes": 7790
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/旋刃冲刺.xml",
+      "sha256": "52515250e8cd30935dc36c7fa7d4398277597feb16ee984e470d89ab63116fee",
+      "bytes": 528478
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/横扫.xml",
+      "sha256": "e0bed0418c14b71f23ec88dbe59bcf5a3eb2bacd44f579b02aa05328f7a180d8",
+      "bytes": 388781
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/波属性光束.xml",
+      "sha256": "a0bbbe4e60004c325dab6a80f3259244fc232ae6e10bc136516b6f71f7e5ca14",
+      "bytes": 41190
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/站立.xml",
+      "sha256": "7f4a2b3d3ad3913da78753dd12d2a3dd3e733895359baed24a6c7f3fdd290d4f",
+      "bytes": 194463
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/被击.xml",
+      "sha256": "514308ec3979d8347173d4987c63e3e85b76cd31b7ab377f5adb052a8ed9609f",
+      "bytes": 238998
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/重劈.xml",
+      "sha256": "2c567af3182b131feb3a2fc8ce6df13688e01c6eecfde119d3abf60ab9244512",
+      "bytes": 323381
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/敌人-CF6大刀机器人.xml",
+      "sha256": "8cc618bf48812033df0a3ce40bfa8e8059145cac1d4e66a99663536d1f6e9acd",
+      "bytes": 36868
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/元件 6.xml",
+      "sha256": "1bd5494bb2c590c0f83b5c0ac85c80c09dff6d06783c82c88fffc3bd63b2025b",
+      "bytes": 1627
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/刀光.xml",
+      "sha256": "2ac1bc225d84a0841458698e418fb3c0185e1b27e8f5f06ed0d84aa8b4255352",
+      "bytes": 1729
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/旋转刀光.xml",
+      "sha256": "ee3ab83ef5ba1fa18ecae16ce885e5ac0403f3448301120dda687fceb46bfe67",
+      "bytes": 354434
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙.xml",
+      "sha256": "d9c88d9f99d725682f96d9fe0119840bbc838b1a731d0bd9d394a0615282081d",
+      "bytes": 736004
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 100 副本 9.xml",
+      "sha256": "a3b50d75de5a6cfc23d2b5c1d874032867c5209e5cbfeb5284b29372b4947e06",
+      "bytes": 3244
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 106 副本 11.xml",
+      "sha256": "7ed1fcb2d0e0c4364b136246f476c9f8d7f3c84dabce28e350f69fd5fa8afdb3",
+      "bytes": 9675
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 108 副本 12.xml",
+      "sha256": "22f7c2bd495b9a7f2b2efb2e2a548e2a4f42533639e374f827d621c2df342f59",
+      "bytes": 7268
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 110 副本 10.xml",
+      "sha256": "a631261efa59fbfa3df711dde4c6a6b40d5b47750d20fdf46f6bd4446f7deeca",
+      "bytes": 3909
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 115 副本 8.xml",
+      "sha256": "ce03e0f25d07fe2c9e21f0b79afccdc338eef24ea27d9bdef712be230e91f779",
+      "bytes": 7365
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 117 副本 12.xml",
+      "sha256": "116623a36b106d6a8cfa6754fb2ffe758eddb43e398d7bc01efa485343cb0f6c",
+      "bytes": 5238
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 119 副本 7.xml",
+      "sha256": "3d426bdaa139fce6544ff0212fdcdbf1b5d56890562f978d371938729a9a0528",
+      "bytes": 5414
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 129 副本 8.xml",
+      "sha256": "a0852ef3056d45019df8bad2c9bbbe91638e015678b5662d4b3758fb157c766f",
+      "bytes": 8014
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 13 副本 30.xml",
+      "sha256": "0694d25fe176d9252001d30f117d46f76658c9e230b41eb117fc5d667cd27f8e",
+      "bytes": 2558
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 131 副本 9.xml",
+      "sha256": "a589865a42b3820bf6ab6da1a3f93f969c43e0b8aac7e3dffc88bdb0ec0f5bf1",
+      "bytes": 7117
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 133 副本 6.xml",
+      "sha256": "20b4c3316fc77201b56103b9e878c9d84a50fb74ef287ad76c36fee8a951635e",
+      "bytes": 6048
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 144 副本 7.xml",
+      "sha256": "ea30d815ad1d0d50db175c13859c3a7f0bfdb7562519098f519abfcb345079ed",
+      "bytes": 7621
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 146 副本 6.xml",
+      "sha256": "ccbee7ce875388d45e1af9166f571c15e074b65363294ff918ac794480b02ec9",
+      "bytes": 6214
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 148 副本 9.xml",
+      "sha256": "f3562909281f21d8c7a6760f6e372eff55fe0266d1f8ad3baed3cc4d6d2c10a8",
+      "bytes": 7185
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 15 副本 27.xml",
+      "sha256": "c68bc9daa3a84b2089bc386d6cad517770edebc6678c8ec0b03e7af01a555cd4",
+      "bytes": 2867
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 158 副本 6.xml",
+      "sha256": "6b2d35838472f4100713fc4256bddde5f3f46f2f98b83820eef6129e62406de2",
+      "bytes": 6484
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 160 副本 6.xml",
+      "sha256": "450e3a6f6339f0bc6c2f0e1a579678e6964e8f384d121a96506831915734bbe2",
+      "bytes": 3832
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 162 副本 3.xml",
+      "sha256": "9061bcf68d0e76816fa125e436fa29671fda96b0c110203afb1d53a985ab46eb",
+      "bytes": 6252
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 166 副本 3.xml",
+      "sha256": "ef0f5d4fd30562e5c4a97c912b3ef3aebd06dbb653b786208d792bc1cdbb0857",
+      "bytes": 1577
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 17 副本 30.xml",
+      "sha256": "4648750ba07f3b1fa91f36c24fad7923236dbf6e619ec33652d91b7265509b1e",
+      "bytes": 4405
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 174 副本 4.xml",
+      "sha256": "865c118b77797f208f7d3284e5d5028e2b775640e4b2f8f889cd47f08296a504",
+      "bytes": 6414
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 176 副本 7.xml",
+      "sha256": "7a8f479eb76a5088c109774e75673a93a88e2e56d8f2699e03b66461f8639b1d",
+      "bytes": 8272
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 186 副本 3.xml",
+      "sha256": "991e92f02d7c0b788d668d45758801ed888d476a92e8aeae7a33c86416250ca6",
+      "bytes": 6378
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 188 副本 4.xml",
+      "sha256": "d79dd6c8406789d7b208b2623e09e0ad775edb73b44f004f152528b8ae8d90cc",
+      "bytes": 11068
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 19 副本 25.xml",
+      "sha256": "69ac184a856530ded5e741d763dff213ec88e1cffd3e2ef16d669b9b52b82849",
+      "bytes": 4432
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 192 副本 6.xml",
+      "sha256": "47c0da2ddc68f019cf03b53b9a27997f0c7fdc5330d5160345c5bdeb483298c9",
+      "bytes": 5860
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 194 副本 4.xml",
+      "sha256": "168ee8555624fb6b6c5bab121723b76cf9d2b9870de0b51f148fa2e5511f77e1",
+      "bytes": 11182
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 196 副本 6.xml",
+      "sha256": "54508caae394455a79b9e70d47a04b996f5fcd3db1257b71f596880ed0bafeec",
+      "bytes": 4872
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 198 副本 5.xml",
+      "sha256": "f700e3640fb3aa36226fbb0d3a8a78fd6efd64bb947965ce99bc9b5bfc45ad70",
+      "bytes": 5789
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 200 副本 4.xml",
+      "sha256": "b063b2bb7a8e8f3a4b4606de33ccb499c3f71bba1539c435739236cd50f1f837",
+      "bytes": 6107
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 202 副本 4.xml",
+      "sha256": "6b9ea5d2fd0b16c48852c6c0860c4ee17943d52d4d71ec0ce3a8c9ce0d2e607b",
+      "bytes": 8334
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 204 副本 5.xml",
+      "sha256": "1dc0e810669aebb8728b7e2af87b87d6da1b2acc2244d973c7ea5480008a6173",
+      "bytes": 6090
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 206 副本 5.xml",
+      "sha256": "fc14914d093f4f39f9ec78669f8f756b94990798c4dc91d2bb7e49494bef7e90",
+      "bytes": 7034
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 208 副本 5.xml",
+      "sha256": "122dc572f8071db0c622a556887bc9850d8339a60f76865a963c51a3fbffa907",
+      "bytes": 5356
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 21 副本 26.xml",
+      "sha256": "82fc39dab80b0d2cf27d1b823cb548db8d175ab93e041043a4bcee440c7ced68",
+      "bytes": 5083
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 210 副本 3.xml",
+      "sha256": "9d73badf6f98b071582ae7deca7b80d742654079331358247a7e6c80be771cac",
+      "bytes": 8499
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 212.xml",
+      "sha256": "ac885e880771e2e7c9a468bbdb0cb1b876d5f7afd4297c925f72f4d769dd7951",
+      "bytes": 3433
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 214 副本 2.xml",
+      "sha256": "7f197e7730089e172e100c912f6e07ebc104022a4eb3a944d7afc4527bf3ab32",
+      "bytes": 3151
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 220 副本 4.xml",
+      "sha256": "64fb71f20421a91893328419431dafe649414a65595c83662dc778946026711a",
+      "bytes": 6128
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 222 副本 4.xml",
+      "sha256": "79b8d0095bf9e144d15326f86c81dd6fbcdc50554cff4c269f3fbec9dad26a2a",
+      "bytes": 2793
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 228 副本 3.xml",
+      "sha256": "80a59916c3816d7d911a75d776a648d8be3a59a784a30b884ecfbd161f834551",
+      "bytes": 6656
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 23 副本 32.xml",
+      "sha256": "37f1898004338f2fc09c8bee0cca0c9676494cdfc17592210b01d86756b114e4",
+      "bytes": 4084
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 230 副本 2.xml",
+      "sha256": "7efaa815dbadf2a8894b70723201faf589afebf8a52b05ff62d67b7b40cc276e",
+      "bytes": 3330
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 236 副本 3.xml",
+      "sha256": "263ab708737fad77784abb26c63e5e1df9a5309c7a3372da493101b9f9e1edd7",
+      "bytes": 4966
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 238 副本 4.xml",
+      "sha256": "2fb212875722defe51a69252423cc9c63a3683645a9c8904a6ec0a7831b7b1bf",
+      "bytes": 2892
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 240 副本 3.xml",
+      "sha256": "eb2a51c0ab6369b336121720db4e66993765fa5fcea2e39ff7ea7f42c69989f1",
+      "bytes": 3307
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 242 副本.xml",
+      "sha256": "c36f795925fd802f0b48659dc5da6bcccca5c35d0242d3c3f707a14f054e379b",
+      "bytes": 2031
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 25 副本 24.xml",
+      "sha256": "234b41e87a312155dae887caac682423e1890ecba95743c917373931f9615e7b",
+      "bytes": 3476
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 27 副本 27.xml",
+      "sha256": "25948842704461bcc9ec6ca2b106b47ac6d75b9545eb6ac080851b9c83d50cb1",
+      "bytes": 8468
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 32 副本 21.xml",
+      "sha256": "2901f23c9bdf76f0b9a2e3185f8da78d748db70eebce93a559c7d770ed7c87ed",
+      "bytes": 7358
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 34 副本 14.xml",
+      "sha256": "00cf82fe514c1bd0d68efc6ebc988f69ef5b213cd0f5c5abd0e0406c972a9564",
+      "bytes": 5503
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 36 副本 17.xml",
+      "sha256": "514fc2516ef0b5bbc98a50ea84f19f33bacb75b6fc0e2001275d49199b4288fd",
+      "bytes": 6177
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 38 副本 19.xml",
+      "sha256": "45f21ba6ba4de8b12d79e12e4f3d3a04d2a7fd0dfa58ee0c9ee576b838429d95",
+      "bytes": 5617
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 40 副本 17.xml",
+      "sha256": "7e7d5ca490327932aa00f9cdb548384c5ea61b36b92325dac8547957b8dbb750",
+      "bytes": 4520
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 42 副本 17.xml",
+      "sha256": "cf871c9e846b043bea54d548cfb9840c965b2d0a73fb415a6681b82c9b13b0ef",
+      "bytes": 8033
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 44 副本 17.xml",
+      "sha256": "ecf083f4f605b2a16709522481f0e10eaa73d6c4dc35db0c3a2e2dde902a6a3e",
+      "bytes": 1638
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 48 副本 20.xml",
+      "sha256": "90a8ca952065e258625eb199cdcfef3423a7357df7803fb86b071618f40b0ec4",
+      "bytes": 2203
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 50 副本 17.xml",
+      "sha256": "3613f37cf03779a7ea7a7fdffb07df66493e186ff6b2996a12405f0593e30a0e",
+      "bytes": 3074
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 52 副本 11.xml",
+      "sha256": "76d7c706f45079f32e05596d904e357f86ff5beced3aaa9accdd09b586c0843f",
+      "bytes": 3226
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 54 副本 16.xml",
+      "sha256": "41d17364000cab6b0f988cb90e516b5f94593786dc29d525142962787227c043",
+      "bytes": 5515
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 58 副本 16.xml",
+      "sha256": "074169ed99f81785c73aa7283010987e6e2bd5ecbcf954fcf52cf6c3df7ad688",
+      "bytes": 7545
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 60 副本 18.xml",
+      "sha256": "7fdc8fe1384fa37e970faa9850fe3d4c7f4158b9f0b25e4be7932a88ee117be0",
+      "bytes": 3748
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 62 副本 19.xml",
+      "sha256": "e42ea87a7c180d72cbfb1c41a6f86aed4bf65f42e2a40e6972c1ac7041ed57cf",
+      "bytes": 8854
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 66 副本 16.xml",
+      "sha256": "87d181e7b674649d3dde40f14f6ee4915492228e44eebaef4068a8ae800f8fe1",
+      "bytes": 2848
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 68 副本 17.xml",
+      "sha256": "7c06050d1a7d7cc8c9cf97afa8d913cebf70e7c3b2990261cbdc420aadac6d7b",
+      "bytes": 3795
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 73 副本 12.xml",
+      "sha256": "c519a22906cf9dc0f059452311c17fea93083e562f524290ada38bd7d1dd3ecf",
+      "bytes": 8905
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 75 副本 10.xml",
+      "sha256": "2654de55708b1a8cef116d466a6f078f9919bd31824189ce2fd69313d614712d",
+      "bytes": 3399
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 77 副本 9.xml",
+      "sha256": "f5381b54d9e05aa0bb1d9c734bb912463ecdb87178bce986a5de46f69dae01ad",
+      "bytes": 10228
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 79 副本 7.xml",
+      "sha256": "1cbe0456ba534743777cf4631eb382a575057f037fb288eabf33a9acacfab666",
+      "bytes": 3601
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 81 副本 9.xml",
+      "sha256": "79a998b5c7da57b1270be343dbbd2a41343f92c9c913fad9a69a2bf8facbb724",
+      "bytes": 2845
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 85 副本 11.xml",
+      "sha256": "cd71f8c87f436db686e89284be6f744e8177b9d77a7a7f7dc574dc5f4eb94402",
+      "bytes": 10219
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 87 副本 8.xml",
+      "sha256": "65d0b18492e1baace694ae888a574fb6966c3459aeb0f3ccf5c8ce6c91d6adfe",
+      "bytes": 15459
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 89 副本 11.xml",
+      "sha256": "6b4d769419329c02437e33403699d6ef7a911d2f427158d0bd8683ec3ff464a0",
+      "bytes": 2224
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 94 副本 11.xml",
+      "sha256": "b76f95d762f5bbb11dcf6cda111b2fd0b7d065385d91f87668e399dfaa26c752",
+      "bytes": 9216
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 96 副本 15.xml",
+      "sha256": "b1e3cf8af0d8e59420444706d5904f29fd180bcb3173d32dfab0c451577edd87",
+      "bytes": 2794
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 98 副本 12.xml",
+      "sha256": "437ff222c03d41de6b976dcd7d8fcacf3115e18ebe3e5d3191df9c696b8ac179",
+      "bytes": 6835
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 101 副本 5.xml",
+      "sha256": "b8e17474f3022749fafcda3558b155b9299e828609b43fb95176302855065306",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 107 副本 6.xml",
+      "sha256": "77363b33459679c727acaad1b16b103dc98879dcb62570d03a23bd3d49431445",
+      "bytes": 1063
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 109 副本 5.xml",
+      "sha256": "cbeb332984ccdca3443edf01374c093cc6bf2f81c022f620baac23b7e32ba4b0",
+      "bytes": 1063
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 111 副本 6.xml",
+      "sha256": "51fba01cd32891ae6d113692681ad2798e34bc69f007197eedc738e25722bb91",
+      "bytes": 1063
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 116 副本 6.xml",
+      "sha256": "258942acfc482b930b054076afd7e183e78cb1cdf20955ae616035f3cf259df8",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 118 副本 10.xml",
+      "sha256": "4e26d5904c5500e66730387aaa8255d4c89adb87598212b2c3aa3356e1de400f",
+      "bytes": 1065
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 120 副本 4.xml",
+      "sha256": "f769f31e317eb734242ae917a2c00f49189548372d99f8a802a8afde1481c0fe",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 130 副本 3.xml",
+      "sha256": "3c960a948fd2fb241197685a7012f7015339025070c4fb97554ec94ad333c95c",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 132 副本 7.xml",
+      "sha256": "b5a77449e15753752fda63bde394cf033a34ff81649a9d0c04bc479e0a3195c6",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 134 副本 5.xml",
+      "sha256": "a4581411cb7b93049a08fa6639a096446bc04cf76ef0f898b3d1e17dc699aa28",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 14 副本 26.xml",
+      "sha256": "c5dfa97fdf0cc35c3f314623ad99c49e4e264703d3b05ca7f10fbce36d17f474",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 145 副本 5.xml",
+      "sha256": "709b8a5f48d0787e3edb5cddd1592832b5e2df5a2b576d4f09ce32855cbb85c0",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 147 副本 5.xml",
+      "sha256": "0df7ba6ec246778de5f7e348ccf90f77da0430218888bbc4d96f7560d67a9865",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 149 副本 6.xml",
+      "sha256": "cd0e76c6d0fc5697f71d91126422cd6a1b4a9cec745d8fb6c706b94e090837d7",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 159 副本 4.xml",
+      "sha256": "4c12a790df70201b4a878ea162832e7a58fcecacbdea4de81194d0f059f91f1d",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 16 副本 22.xml",
+      "sha256": "fb85ab9d8872893f381dd71bd9c8d18662658985f6a49fd99343a47db0db106d",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 161 副本 4.xml",
+      "sha256": "90eab41340264533b6b15b044ffaf0be742203634d466e3d598d2441e2de7a9c",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 163 副本 2.xml",
+      "sha256": "fe92c07ded2f3eb18b691767bafdf60916aa021e2ec3a333556479ee2e31dd33",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 167 副本 3.xml",
+      "sha256": "fc98b5cd5c4d73bd8c7b7f1dbe55fd6200f5adfd3f1d75b5fc5156ed608457f8",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 175 副本 5.xml",
+      "sha256": "694e9a2bf752f9e4da5d597b508bdbed2667aefb84e22c7b906b5f8baef49131",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 177 副本 5.xml",
+      "sha256": "1433412e20a01abfba58bfeed135e5d95c94c29ef71455b3ef1e75d00ccc2518",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 18 副本 24.xml",
+      "sha256": "71b1e2c36dcfe487593fb01b32144f0b93d27d832475242d422b7546ca590b9d",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 187 副本 3.xml",
+      "sha256": "fad56546101b3c5b96d4c9b84046466e158c6795e029bdd31c96caf5c55c4c25",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 189 副本 5.xml",
+      "sha256": "57c230878c28da47bf6291e35fe78dd680ab590617972eee4bc86582a0aaaec1",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 193 副本 3.xml",
+      "sha256": "1e08fe7cebb3dfab0bbd9d0e55e8f3c73e1da3b2cd8ccec71aff3fa38f030eb8",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 195 副本 2.xml",
+      "sha256": "4cf25a62a4343077c225f021c167ab4314d274c49dfe6502731a9ab49720e1f3",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 197 副本 3.xml",
+      "sha256": "0b0ae74febdb453457e960cad565e635c131207306a440395398242a1121d3dc",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 199 副本 3.xml",
+      "sha256": "083286dd6eccf39b790fddc23e91e3e77a8c5e912f0fd1131ecb1fdd98b2ce0f",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 20 副本 20.xml",
+      "sha256": "68785b725b90639f69e45cccbf094fcd0b95ea7c0ef81180496943986968da41",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 201 副本 2.xml",
+      "sha256": "0dfceb315494aff871efe7d9f1650dd279f3c5a7612faf5240b03d801762036b",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 203 副本 2.xml",
+      "sha256": "0b75268d04386d7f5378253112e2e28f6eb850225464054fecbf20978cbeeeab",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 205 副本 2.xml",
+      "sha256": "94dff1d9206d820c3d5e522647efba91ebcef7ff6df0611174d7fffe44b36a51",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 207 副本 3.xml",
+      "sha256": "df9a9f3a32550d88268a2a627a7bb0b7549c1f716d0a7be451f5d3faa8a24732",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 209 副本 2.xml",
+      "sha256": "3858c6fb8ad58669d749ec2db709d572536a4173bb901cda33f75a33a598eaaf",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 211 副本.xml",
+      "sha256": "84d598b5ee52bb67cbfcb9199ae8c273abfdc651f87293ed51705d38cbc33347",
+      "bytes": 1058
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 213.xml",
+      "sha256": "1343bf8513779a40e6e3ede60b844984319b95f6d90ea93ba8cf51ed1145f3c4",
+      "bytes": 1035
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 215 副本.xml",
+      "sha256": "30f9b24dbf2f8727b9a3dc78a71248a1dfb556015839e380d5dae6fe144bcb5b",
+      "bytes": 1058
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 22 副本 20.xml",
+      "sha256": "d1af19d02e1697214b38abcaab9bc8af7bbc5a14ff9b5abe2212dc727164caf4",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 221 副本 2.xml",
+      "sha256": "731d8317a79cddd03874586f534c3a1bdb334eca60c156a629360c0b12e10b7b",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 223 副本 2.xml",
+      "sha256": "64470cdd5696df949994e488f2ba14c5ae8a396310e34e4deaab6c208c4dda9f",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 229 副本 2.xml",
+      "sha256": "d52e5c83aed060c5ce32ca1abd4a5bf1e324f9db0875dd4b2489a065bc08257e",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 231 副本.xml",
+      "sha256": "75b2e3491f206dde8f83d4110e2bff11465b8bc99052e317d30f940a4d0e8f5d",
+      "bytes": 1058
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 237.xml",
+      "sha256": "6e2078032b8c5f75bda99e76d1be817e02ce307832772537593813e220476b2f",
+      "bytes": 1044
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 239 副本 2.xml",
+      "sha256": "3c329ccd796b0d117b53bcb5b4c2a7ccfdbd13c0a66a5ad50a46c40b006b9a92",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 24 副本 25.xml",
+      "sha256": "83133bc95f1cc486a195931d79200ff0542b1593df8756de0cddefd920f2fbcb",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 241 副本 2.xml",
+      "sha256": "31b0ee4f570231b7b261d7147af53646ade987e5899fd00eb0a3bb055d097206",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 243 副本.xml",
+      "sha256": "87ac290d37b621dea76e4905678885132d7888a84c9e380f7c1f6866a19176ef",
+      "bytes": 1056
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 26 副本 18.xml",
+      "sha256": "902128b647242f833d5ec0689bef4cde7d360677ebec9b3191b2c17818c549c3",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 28 副本 19.xml",
+      "sha256": "16abb4be4a6e15a9b0e59f2d27ce6c868375b101988ae46f23b38f4ec49c46a5",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 33 副本 13.xml",
+      "sha256": "d204b052fc4d65c62db6a6b2fccc955bed7aeb97e7647edb80b2bbd6d6c08ce3",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 35 副本 10.xml",
+      "sha256": "ee1654ffc302d65b544725971ff822f42fd3e3b4e9b191cd25e7b1f40aba582f",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 37 副本 14.xml",
+      "sha256": "97d3e8e245aa4ab564642d2e36ed31db2e33e61171cfc756fabd9b865fb357ee",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 39 副本 12.xml",
+      "sha256": "fc8ed0b42db50380d78b3d2203accc111ea15863ca49766de0acdff3c6fec222",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 41 副本 13.xml",
+      "sha256": "f2845d0236e50bcd8f60d298e7f2585b46cbc39ed48a918391d3e36555f99533",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 43 副本 12.xml",
+      "sha256": "4c331bce9049460f0bf77146cde9825ef149a30f62606e75260462c810c0cf02",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 45 副本 16.xml",
+      "sha256": "2fad9930d91b09a1f98a334d960809cf447a76bcec2bddef7f7a6db0cbdbf15e",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 49 副本 14.xml",
+      "sha256": "89c4932af44aa237bb2d5b361b5c36fa13d9d42dbdff6c05c36d2f2555a9115d",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 51 副本 12.xml",
+      "sha256": "c32bf0412c666df3aacdea0bbe0ca81f14593b1ee192047e14b249b1d46205c0",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 53 副本 8.xml",
+      "sha256": "64577ccad2d6d66b0256d7be5c0f8efc09dbc67f8315695b4d151a948a0d8764",
+      "bytes": 1060
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 55 副本 10.xml",
+      "sha256": "0a169e4b0e1730ecde8c96bd28c8d997938080e0926487a7b3eab652cb9084da",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 59 副本 10.xml",
+      "sha256": "79749f6201d058cfcb1de90c2187f441771b3080367f5b4dfe7a92a3bee897ec",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 61 副本 11.xml",
+      "sha256": "b39b89e93f35a1720cf28940f54c2d0e9169bd2f75ef3d73abeb91f2c8d84397",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 63 副本 13.xml",
+      "sha256": "17408839ebae884d1f9c1da2a23dc628d7e1bb6ba8889de7a4815e1616605ec0",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 67 副本 11.xml",
+      "sha256": "6ae9668c0bb1ccd8b51f648c43c593662cfc38085fae97243823f9b8686b260f",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 69 副本 11.xml",
+      "sha256": "0c3d6c0ef7bc169e63b503f344e0dd5b497b1a0d1961e879598f39110564008f",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 74 副本 9.xml",
+      "sha256": "feb765f4882d0639668397ad444a0460a0949152433f6e299ca35c194e04ee68",
+      "bytes": 1060
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 76 副本 8.xml",
+      "sha256": "3598d47ccf59564da77359b56f05221b7dfc1d05096f6ca62abd3a1a95777e0d",
+      "bytes": 1060
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 78 副本 6.xml",
+      "sha256": "cbfc9e65be774d51cf47a759c6c7356ce433af890c07cbc3fb9db42435be8109",
+      "bytes": 1059
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 80 副本 5.xml",
+      "sha256": "98336744d92751d15715597c3e80bd294f240c050bef7bd37ab6e23942b953cd",
+      "bytes": 1059
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 82 副本 7.xml",
+      "sha256": "b26c28da0c09acaf228c9495e253dfafd33529b33a28143b557e2bc534853cd1",
+      "bytes": 1059
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 86 副本 8.xml",
+      "sha256": "d52ef6314d039ffd9a40bffdcbd5169da89a4ed3a52c223283df3cab72f8f95d",
+      "bytes": 1060
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 88 副本 5.xml",
+      "sha256": "3975c5521b46ba27138f984a8fbf3438cc29af46e38aa9c4f035d26ec0446cf3",
+      "bytes": 1059
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 90 副本 10.xml",
+      "sha256": "c3c4256748f846a03377eefe26b466b987aefd07fc620b76d9d88426b80ce03f",
+      "bytes": 1062
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 95 副本 6.xml",
+      "sha256": "2e6b046b13090f15faf3dfddb6d6cd34d75fb819c58e71fcd5f1f898f30532a7",
+      "bytes": 1060
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 97 副本 9.xml",
+      "sha256": "7fd75a1c5213f93bbf8c15bebef71484636140a4ea5771be7052217e06d0d647",
+      "bytes": 1060
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 99 副本 8.xml",
+      "sha256": "4b00cf2b3cb6e519e7d8a35a64bc9ae70008f93662c250f2cdf7cbfa4657a6f0",
+      "bytes": 1060
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+      "sha256": "04a97e5b51bdacc3ca3ace768bae6c40893be6278471b712f4c414b8c053f12d",
+      "bytes": 384338
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/DOMDocument.xml",
+      "sha256": "3d429678807fd9d25c72f13f3da32caddfe3011c165c618589a828b040820bf1",
+      "bytes": 23993
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/分件/929.xml",
+      "sha256": "ef67293fc502cd6c7e526026690c456be2088a1afafd15d49fe9228e18ddca7d",
+      "bytes": 578393
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/分件/930.xml",
+      "sha256": "6265959874c9cb5c9f4b85b2dd2f1af20c6cf79bc132e8ecd3be3085d4ce72f5",
+      "bytes": 38822
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/分件/931.xml",
+      "sha256": "2a688da27086c8d84bcd1cf3954da7dc316f5265c8dee8631eca2534c168e193",
+      "bytes": 140900
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/分件/932.xml",
+      "sha256": "95e13059caaf8f83e6ce53c0fe917d2cd691ea3dd597fe7d4586f1d6d7afe087",
+      "bytes": 39890
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/分件/934.xml",
+      "sha256": "3fad2da5c2b571fa35afbe66191c0331a10a38f5cba4be083d5b1547fb41753e",
+      "bytes": 928
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/动作/伸缩冲击.xml",
+      "sha256": "f4aa7326417a50c7e9644b62e20b906ea7afb130a01410dc71f56e317901b77b",
+      "bytes": 34096
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/动作/双臂光束.xml",
+      "sha256": "41b2b165ee1842c79305ed13bf9c53f07c98a467040e2859e6e57ee1f54e247e",
+      "bytes": 531934
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/动作/悬浮.xml",
+      "sha256": "333f291e3a9270372f8a02377dc110c02dbdac95fa656828a284389598afbc49",
+      "bytes": 147477
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/动作/被击.xml",
+      "sha256": "ab40b8b7f8e1376c94c1a3edc8dc603174f697631f56e242c1736bd8531cb3f8",
+      "bytes": 414982
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/敌人-CF6大头机器人.xml",
+      "sha256": "130c050127a031b990be395d5d528317275ce3fb9ae5503ad9ce447aec0a2962",
+      "bytes": 48053
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/Itinerant/人物素材/防护罩.xml",
+      "sha256": "e942d1ea4551c67513a6006981077a25c3cb847dbf605712f50cfc9865af9fdf",
+      "bytes": 6663
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 1.xml",
+      "sha256": "e2ade2fc4f769695893839a9be053c6039fac043c2ede571d500812e58720a5e",
+      "bytes": 3419
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 10.xml",
+      "sha256": "1a09bc8861c59d3a2ddb2122e9b490509f2486cda166aaf35a8c209099bbbc6a",
+      "bytes": 95902
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 11.xml",
+      "sha256": "e478ff7f6440a5d74ed98971ab9add3507819533415cf13c08d506a6cc09266f",
+      "bytes": 96427
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 12.xml",
+      "sha256": "9f4f89bc65a8ce6e3ff6e2bd523dafd837f691141b46871efa9ec17faeacada3",
+      "bytes": 152638
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 13.xml",
+      "sha256": "0601d29ccb48d0c51376dabd81f83013f9144840e1746bc24c7e3b625378a0db",
+      "bytes": 164984
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 14.xml",
+      "sha256": "730739d033d2c2d116bd188146bfa3a7f562c88ed616c40461cd72d3c2473c18",
+      "bytes": 156699
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 15.xml",
+      "sha256": "ee75dfcca4bebd5538d47bf58106047ed7d889698b9def29c85b6a78c30e8626",
+      "bytes": 129558
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 16.xml",
+      "sha256": "a240a2910976be56562c922c648a74e11fc532f97d336da1325104860a7fa509",
+      "bytes": 35795
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 17.xml",
+      "sha256": "9f0f8d448e05e31b7cd84069789ab28096e3b85acb3af11196f38bae7745d407",
+      "bytes": 1117
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 18.xml",
+      "sha256": "88119b5195b02c44994552e0bdb05a504b5f06b0d96f021e94978dee301ef7aa",
+      "bytes": 36135
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 2.xml",
+      "sha256": "16864f93a266a50a7388f761311dd01643bf808641857062e5f3b14a9d64aa4b",
+      "bytes": 1307
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 3.xml",
+      "sha256": "74833a8bf263d461a19fcdaf3543e9431f5a4593b0a546083c2547d35b9bd88e",
+      "bytes": 127099
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 4.xml",
+      "sha256": "54eaefe45cc3805d0741f729a92db34877988a63c5420818473630c847459109",
+      "bytes": 184909
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 5.xml",
+      "sha256": "7621de6521e4c49f15c542c153988a5cbe204573ffd580f38bb9776f08c68220",
+      "bytes": 150361
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 7.xml",
+      "sha256": "61d711d3b50795a55976a5efb92329b158030ce332fd66b57f99480ba56b027f",
+      "bytes": 140453
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 8.xml",
+      "sha256": "0d288337f2c0d36495d9f34a70992add5e657d7fd1fb5531af86ec54ac814d93",
+      "bytes": 207667
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/元件 9.xml",
+      "sha256": "e0b381a5d1ce51b2be8b4c8cd428c2c0d394957b4e991e862f2966a2b421e6cd",
+      "bytes": 136373
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/坠落轰炸弹.xml",
+      "sha256": "65f6cb70cf82938c221427f9061a9d80c70e930fc182a3227aa64e837bb76e60",
+      "bytes": 40955
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/对空枪火.xml",
+      "sha256": "812c8ccb8cfa8c1a170bea631b97f15449acc8914b985506da289b874edbca30",
+      "bytes": 5407
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/尚未整理/dkghkg.xml",
+      "sha256": "b25be86381a1cdc1874f7f146aee9cd85b05294e2f20c7ad4a44378c94e61972",
+      "bytes": 15833
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/方舟指挥官/1.特效文件夹/Symbol 477.xml",
+      "sha256": "71aa7932e6230649ce5e68e87130e9236399a35f4d42169336b4bd333504ed69",
+      "bytes": 3621
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/方舟指挥官/1.特效文件夹/Symbol 479 副本.xml",
+      "sha256": "24723133137f765064e5042224a2d1919edb7950371a9f0597a39c87c29483fd",
+      "bytes": 3897
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 469.xml",
+      "sha256": "a2858b00b46aa0cdc280c657b3d5692314ba49390148217b06e64a8906895f9a",
+      "bytes": 2204
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 471.xml",
+      "sha256": "bbe9be82420a5eae65df3cf17b58dec2822f0d5c9f63b90f0a9324ce07ceadda",
+      "bytes": 3052
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 473.xml",
+      "sha256": "fc3d387a3d595ea12a19a8667fe4e0050455f99d34ae05824c0d25e9a1d0c24f",
+      "bytes": 3646
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 475.xml",
+      "sha256": "bb348d93478a504f25164c9188873dd5b69d5802429a1a489eff36d30ec961cb",
+      "bytes": 4165
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/电流.xml",
+      "sha256": "ec367d9baad4a5f5e5dd9daec65c5ce8ff839f44bccfa4034bd6ca95061c12a1",
+      "bytes": 5045
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/巨型穿刺能量子弹.xml",
+      "sha256": "dfde2b12e4fb6dababcc67fb84061a114cc0c33e114ea6ed1cfd0e03e26b8409",
+      "bytes": 5569
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/巨型穿刺能量子弹_能量弹头.xml",
+      "sha256": "eb0f963d658a1424fff6d27290cd523979bc049400180561bdfcfed8b8a6b561",
+      "bytes": 1796
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/巨型穿刺能量子弹_能量轨迹.xml",
+      "sha256": "ed7c7c5a043f67c384f0d964a6ec860f4f0c67f174ce162b186a0f6374b96f87",
+      "bytes": 2853
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆.xml",
+      "sha256": "a332cd8172987d6646dcf8932a8946521e3ac158663f766e1a41ac11bfd3c966",
+      "bytes": 10648
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5116.xml",
+      "sha256": "291e8886c878b4c9705a111a52311520a6c76af610b5aad77ee44b3ea7099f7e",
+      "bytes": 7310
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5117.xml",
+      "sha256": "488eb371d8a195b4c0a4336193997db2710919aa37e74679d639da83b26b6e1f",
+      "bytes": 972
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5118.xml",
+      "sha256": "1c210cb4df34e004a697e8cff3bb071229495ece836c870089701a99ec8fec90",
+      "bytes": 11819
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5119.xml",
+      "sha256": "ac7c75a9b28d0bf24aac37d9c3b3384a29791a13c017917f28da416a10a3e59b",
+      "bytes": 972
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5121.xml",
+      "sha256": "7d11ebf061a316f4503c4f17915a4305cefa6941fe12289890b37c406454ec8e",
+      "bytes": 6256
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5122.xml",
+      "sha256": "a279fa74611b3045e4ac600d39cf511994d1a0c143030aa454a0f33f4f2ab342",
+      "bytes": 10171
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5123.xml",
+      "sha256": "8264c6fa8d24fbec54957cd289cec8fe34bcf8ff690a490f5ae330ef069e0fa9",
+      "bytes": 972
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5125.xml",
+      "sha256": "86f4402c0fd52b29920297dce7af6bbcda247cfff16592a293b57c027e82e05f",
+      "bytes": 11193
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5126.xml",
+      "sha256": "91609849c9e0698a0f74b0cb6c7af55e2acbf7504159dd3806b7edff04ed68ef",
+      "bytes": 29727
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5127.xml",
+      "sha256": "8ba0cced8a45c56bf36b47a189e86aeaa645bcdfa99788ada83dd2323890176e",
+      "bytes": 972
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5129.xml",
+      "sha256": "0fe3b3233ebdcea52f34ac48d9ccbb37a0e9ca9a11c16cf31cbd3d33337a56ac",
+      "bytes": 16886
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5130.xml",
+      "sha256": "caf0656955b0428b8c94e3b6d93a9782be89a3c644ddfa29bb0a2cb3b0810394",
+      "bytes": 45913
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5131.xml",
+      "sha256": "36e2c58959f58303a5a811cdae400adb5803f20964c29b66ad44d927add8706a",
+      "bytes": 972
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5133.xml",
+      "sha256": "09fdb7a8f648fcf0a3793bf5cd7a27bf3e2eb095c9bed8f31c220b220910883b",
+      "bytes": 22371
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5135.xml",
+      "sha256": "665771bef693ce5d752195fbc28790201f755188de944405254b361dee85c9a9",
+      "bytes": 17360
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5137.xml",
+      "sha256": "c81ea27115916aae39c7b39952fa2832948515fcc6c31d35269c23f709246ded",
+      "bytes": 9196
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地.xml",
+      "sha256": "3dd44f93dcfb48273a212fa9d7923fac220c5f317194391cc42e6c6710fb44a7",
+      "bytes": 13819
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5088.xml",
+      "sha256": "d99218cb9438378ab209b8034a966d1caca14d266bd61320f0dad0714cca4279",
+      "bytes": 25225
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5089.xml",
+      "sha256": "527f1a0ccfffa22880ce2d8bcbcb9d1794a0f0db5476e99bf3e3ad5824fa7a3d",
+      "bytes": 30326
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5090.xml",
+      "sha256": "2ca1168557c6d3ae469b46df3140022f99ed97454dd74c3d49bfa36e11b98846",
+      "bytes": 963
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5092.xml",
+      "sha256": "d421b56cd5c4a3955db1734941c7b5dab2e6d59c5992b93be25a5df69ac31711",
+      "bytes": 67543
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5093.xml",
+      "sha256": "5f6ba4760d0850435ae8380b12b4db6decd6853f9656b8b8cf7f05c9a57838b8",
+      "bytes": 72280
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5094.xml",
+      "sha256": "4ef3a7be5a45ea9e09a554c9d04c6a69228308d84129aa7ffe415bbef95b6322",
+      "bytes": 963
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5096.xml",
+      "sha256": "b2f69f778551b820c473941e36b50efbeab55af7345000b7e0dc067b19679524",
+      "bytes": 76679
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5097.xml",
+      "sha256": "06dbd1f0cd80e7718e2e36c94c089240704e6c3514454c5b8110ad71d9b17953",
+      "bytes": 38619
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5098.xml",
+      "sha256": "5b1cb18354aa5fcfbe0a40be8732d92fc1563157ca467437e2705888ec3e8d65",
+      "bytes": 963
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5100.xml",
+      "sha256": "75930095726042ac5ae92cb892cc4ff2fab146d3987b712d3133553782b53932",
+      "bytes": 81251
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5102.xml",
+      "sha256": "06f1bccfc84e460b8e209b6e068378190f2f46e01f0b01cacd34efa2f9e244cd",
+      "bytes": 20643
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5104.xml",
+      "sha256": "a35ddf7f9c78523766136f474c5e8f075332b43561a23d383f0be50e9fdb54e4",
+      "bytes": 47521
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5106.xml",
+      "sha256": "ee79e02b7475aaf3aacc844c349f716748dd3c4149deb4325db19cbaef620a6e",
+      "bytes": 21174
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5108.xml",
+      "sha256": "c4c2ead93edfa6785495fe457782dc5df4f8fe271168c9426ca6fa7e1db0fbe4",
+      "bytes": 31272
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5110.xml",
+      "sha256": "e401140f6eef3ea75bfa2791e2b18f0e440efa00d1adfe34ccfd912c861d41c0",
+      "bytes": 13590
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5112.xml",
+      "sha256": "48fd74b5001b087e3028c3f2d468820d7587871a1a7f96a810aea82f44f8099c",
+      "bytes": 15659
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/强震地_Symbol 5114.xml",
+      "sha256": "505ab2b8755afbd72d71737d138d736e3c1bee377a3ab15f741a8393c8ea9499",
+      "bytes": 6201
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/目标.xml",
+      "sha256": "bb5164734a9ba52732793a7c6068ae0583efc50c722193b28cbf6ca145da7b56",
+      "bytes": 10226
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/蓝色炮击.xml",
+      "sha256": "18ebbaacd9129ccec2a1829327bf7c4466f344771191bfa27281add4c5591e2a",
+      "bytes": 7089
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/蓝色炮击_Symbol 65.xml",
+      "sha256": "14a0f9dc1e9adbcafa3fcea48280b56c4b9ea647c556656ad0af6688a58ff5fb",
+      "bytes": 4734
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/蓝色炮击_Symbol 66.xml",
+      "sha256": "04518e933a8be9cf69f5eb7e9cc0bc4a061d40771bbaba9b533b0b95e0fc6af2",
+      "bytes": 966
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/蓝色炮击_Symbol 67.xml",
+      "sha256": "974aa181de0c40de6ea8defa734812c12f9529e29a59a531ddf3c449c32a67e7",
+      "bytes": 6456
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/蓝色炮击_Symbol 68.xml",
+      "sha256": "dc683041aa17d25ccc090a78bbec403037934fc44b4d01af124ced7f12b15083",
+      "bytes": 966
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/蓝色炮击_Symbol 69.xml",
+      "sha256": "3647449c069fdf72d7c300ba79cd204b3fa75c07fd6ec92de16e76db892aad6d",
+      "bytes": 5294
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/蓝色炮击_Symbol 70.xml",
+      "sha256": "917e4d79c6d65f84e5ebea5abad87a7229b5565557d83548dda51185720e51b0",
+      "bytes": 966
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/蓝色炮击_Symbol 72.xml",
+      "sha256": "c6095cba9ea6ae3242e925fb406660bbe6fe5d05823ebbdbed29bee7e69bd72f",
+      "bytes": 1444
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/蓝色炮击_Symbol 74.xml",
+      "sha256": "02de68338273b95fd83f5db0a9d5114b434b38406f47dcd7610d943707f4ac2b",
+      "bytes": 6579
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升.xml",
+      "sha256": "8f5d6e1700c3002ccc8b47602fc344116469a853b873073db5e39c6a6c27946c",
+      "bytes": 16120
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升_Symbol 125.xml",
+      "sha256": "00a3092cda4d5ff4a9b4a825bdc7dae1e6a7edb632103caf81b2a9fe6cc9e4de",
+      "bytes": 17022
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升_Symbol 127.xml",
+      "sha256": "481b0237a771c0ef9c295c9049b934da8121d6093418a60543f73c200ceed736",
+      "bytes": 24716
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升_Symbol 129.xml",
+      "sha256": "e118976d352eea6414925fc1fe727912f685b7a20f3003be7acb1c391c7e7659",
+      "bytes": 28790
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升_Symbol 131.xml",
+      "sha256": "c0ceca6f8f4f3cd92308b8cb1df1dc393408c671cdf6cba4b10007f72188dc96",
+      "bytes": 41011
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升_Symbol 133.xml",
+      "sha256": "ebcc6f84a0f965ec1e67b9584621052fca974536b1d2e9a0b66623ee68323dbc",
+      "bytes": 29654
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升_Symbol 135.xml",
+      "sha256": "2452362c8908581bb7d671b1f17699e6e45c832c58e10bbc90de0d123809a823",
+      "bytes": 24372
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升_Symbol 137.xml",
+      "sha256": "a077f901d3e41f2d2565d01d1f1d7e9b8c0426ef2aca58fc52ff7639c3a31b1d",
+      "bytes": 18046
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升_Symbol 139.xml",
+      "sha256": "482152ea386b387c25ec9edcd0f6ae2867a806697c7d54cd2329df2627571de0",
+      "bytes": 28758
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升_Symbol 141.xml",
+      "sha256": "35017f7d389d848ec66b87c5a5f4cc5172ba7ecb0da5cd0d357d9a08b03c5ab8",
+      "bytes": 52754
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升_Symbol 143.xml",
+      "sha256": "94de4a1c4e24a9457b7f5cdbb13c37e8d0c7ddb98156faf381c65d7843928e9e",
+      "bytes": 29381
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升_Symbol 145.xml",
+      "sha256": "f1f116200df858c7426762e124c88f27c92dd58b5f1f4d6a004e1064b35dd970",
+      "bytes": 147807
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升_Symbol 147.xml",
+      "sha256": "8e2ecfdb7b225e6f6e77624036df9776d45647b11adadd760e0a5a86b1d754be",
+      "bytes": 19207
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升_Symbol 149.xml",
+      "sha256": "210fcff42dcb41cc6823971b793963ba1b8c7f5daccf745860b480f8c19dfebc",
+      "bytes": 91559
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升_Symbol 151.xml",
+      "sha256": "9e3c98a61b42c29cf2729028a55514f205f3844200425dd54d66ee21f2ae90b8",
+      "bytes": 4359
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升_Symbol 153.xml",
+      "sha256": "13c098ad63404bfb216cc69df2a11af14400a922606ae484cde421da82a4e6d3",
+      "bytes": 90126
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/金焰斜升_Symbol 155.xml",
+      "sha256": "c3a066bc1a5c0ab076bc650d67642bf12a3f4d64f127ce792ebf304b2913bac9",
+      "bytes": 33700
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/靶标_元件 10.xml",
+      "sha256": "bb7cddccfa21c28ff2d70323c1e9eb6b1dc22e5f4716cf3dcaa3dba73d26d462",
+      "bytes": 4437
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/靶标_元件 11.xml",
+      "sha256": "58d2cf226d06f78db92681583b0ae45771bfdb0ef8e4449605fd0399a5cfb64e",
+      "bytes": 4478
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/靶标_元件 12.xml",
+      "sha256": "f1f78302e3a310dc910299f952f8a92614987840ba584980004a3285912c46ab",
+      "bytes": 4353
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/靶标_元件 13.xml",
+      "sha256": "28e0a7364ff94ca8a3fa82eeb8774369d0151812bc62322ae8d0628101301a92",
+      "bytes": 4479
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/靶标_元件 14.xml",
+      "sha256": "6e04cdff7a40771649c55fe42d4fa9f8e3605c1c65dc290d4fcf7f7b015e8864",
+      "bytes": 4597
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/靶标_元件 15.xml",
+      "sha256": "d0a5ef1dc07be01304fa516275c6cad9b4807bd4bc650f9061ad549965b6dda1",
+      "bytes": 4231
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/靶标_元件 8.xml",
+      "sha256": "c499af77db242b632877334015e18c2787f1e11f8204bb6cc74d81f377dcc5ea",
+      "bytes": 1259
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/特效/雾人/靶标_元件 9.xml",
+      "sha256": "4bf15553f3cac8d95ad9c5d643ecb3c073bb508b74c22cc3e7855f05440b2cbb",
+      "bytes": 4087
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材.swf",
+      "sha256": "0def6fe69da15a89fafef1ad48c1e9e183d61bb328ef2b475d110a43b5acbad2",
+      "bytes": 557495
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/教官/动作/教官_倒地恢复.xml",
+      "sha256": "67883d4dc811cc0aa0cc2d7ddac3513b0ef2608ce9c82a63268e014ddb418cd0",
+      "bytes": 419908
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/教官/动作/教官_匕首刺击.xml",
+      "sha256": "eda331707b5dfb118e9afd63ccd69465f0e9c60021a9d5f0cc1c5dcaf47d5b26",
+      "bytes": 179618
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/教官/动作/教官_持盾匕首刺击.xml",
+      "sha256": "46db8ed42490cc6685a4daec4baccaef89be9c0dd9206f67abcd5a1fd60f7c12",
+      "bytes": 419595
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/教官/动作/教官_持盾被击.xml",
+      "sha256": "85146bcc1be16d7299b8d3026db12259e07e34c1e6ff0c2842b5b2418a128788",
+      "bytes": 525207
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/教官/动作/教官_被击.xml",
+      "sha256": "f5e6dc12ea9a582c8f9b51c20a009d81326e87b6b713e54445fdd7011e261989",
+      "bytes": 269460
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/教官/敌人-CF6持盾特种教官.xml",
+      "sha256": "93d35335b8cc99271a9535ea43bcdec5282e1d7eee99266239c5ac1e6b089efb",
+      "bytes": 127452
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/教官/敌人-CF6特种教官.xml",
+      "sha256": "623dde99bf985031f227ce747eec3844aa12bf04ea46e7e0a3ec400392653509",
+      "bytes": 127434
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/动作/倒地恢复.xml",
+      "sha256": "7a0f2bbf3a174ef98108513f12e597ca35e53fd2e1fc1fcc1c77ebf26c2180dc",
+      "bytes": 417545
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/动作/匕首刺击.xml",
+      "sha256": "f9c61b6fa8636b3971c6b15f0747e69fb29fd6c54a96243950be17476a371b26",
+      "bytes": 179041
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/动作/持盾匕首刺击.xml",
+      "sha256": "aaf342315af55ca9f47329f26bbe90abe904cbfd4d254b87a803e2ac6e54459d",
+      "bytes": 417442
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/动作/持盾被击.xml",
+      "sha256": "35bab16997c0ed2be9e909387828e84388838d15b76913b1cf60a9280dbe55ff",
+      "bytes": 521668
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/动作/被击.xml",
+      "sha256": "910a7b2142c0532368f85943cf1aa5420ae6aa82ba3f61c816f12fda4c998eb3",
+      "bytes": 267621
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/敌人-CF6持盾特种兵.xml",
+      "sha256": "75f087f95777b62ee298bc896a5948ca0a5d2d772131c77b9042c7626f0e8be2",
+      "bytes": 90736
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/敌人-CF6持盾特种精英.xml",
+      "sha256": "5b576959734766a87be9104b23bba06c5b9931ceec5ed362a585970bdbe3673d",
+      "bytes": 125997
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/敌人-CF6特种兵.xml",
+      "sha256": "42a2e0ebc5cb8b67850772c7fd6b65849d1b39aad3bb78f4aa0ab0260cdcece6",
+      "bytes": 90718
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/敌人-CF6特种精英.xml",
+      "sha256": "46f43f97c85b2c39c81693732457a9697a695152970dc6287fe44fcbf06df7b1",
+      "bytes": 125979
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材.swf",
+      "sha256": "84a3ea0721ff1a373c026e190c6c02dd764659db21d98e4c8e23118121ff464b",
+      "bytes": 526339
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/DOMDocument.xml",
+      "sha256": "33a49a66c5218a47b3084c36ee7f94741daae60b35ce64c4f7af3db8dbb0cbbe",
+      "bytes": 24400
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/967.xml",
+      "sha256": "2f223be37c74e85db3571141fbae2c05df7888ab185e72191b8c4cc96870feef",
+      "bytes": 145373
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/968.xml",
+      "sha256": "8677b860ff5eeef0ac5ddf4b08eb1f712778187a27f929655a7dc695b6e4462e",
+      "bytes": 241665
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/970.xml",
+      "sha256": "b003a8fe80c7db8cddc51685e45fa1c4cf3bcd95d1e509815f8af1529094fe7f",
+      "bytes": 921193
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/972.xml",
+      "sha256": "08fbdd5f30d1c48994c2d867e9813af8c7be7361f76debb44663ffb834f19374",
+      "bytes": 326992
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/973.xml",
+      "sha256": "c9a99943e6ba5acbad2ec126774ec0f8172eaec7fff20f039fe7752120d3e021",
+      "bytes": 242260
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/974.xml",
+      "sha256": "93d18d6180d004b80b59b92cbc037186c0c95bd57b9e98ee3f546c251a561dbc",
+      "bytes": 794719
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/跑步.xml",
+      "sha256": "95fd69d558e3ab0c2f312cfd934aaa70bcf5dc99370fb2663c08231a09c90516",
+      "bytes": 253462
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/1007.xml",
+      "sha256": "90303dead50dc0b52fa4eac652792bea02edfe985cd118cd6fbef60af93d753a",
+      "bytes": 649440
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/1008.xml",
+      "sha256": "d15cfb47cdffc649aa8e777dce6d1bf2420d91c5f2ab7f31883b8a3b699015c3",
+      "bytes": 198129
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/19940.xml",
+      "sha256": "fc7621b6d5a834375e76a5216e1790c30c6c9eabfdcad286a99e0ed12395b36a",
+      "bytes": 229300
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/990.xml",
+      "sha256": "a48ac5b61a3e37f7d2907c15d79b33164ad4a27d2045eb0c3676138d6840cf0f",
+      "bytes": 185340
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/991.xml",
+      "sha256": "eb7d5544494edfd7da1beaf67a17bff0f43842d12e181b737aacc45154a07cf8",
+      "bytes": 303828
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/994.xml",
+      "sha256": "8f150b2e886e8c4559458aaa1af1fff3fa2601a70ac5e42f68264ef9d7651ebb",
+      "bytes": 398248
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/997.xml",
+      "sha256": "294c5c5cd845e74b805c2912be8e01ac2bf4711803e989dc66136f523ec97b4d",
+      "bytes": 343178
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头人形.xml",
+      "sha256": "24096da5b20c01f23e3e3a271db25552d8dc0059f577a903c54a13b72b72b606",
+      "bytes": 80571
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头机器人.xml",
+      "sha256": "3f932380974a20022c992288c48953d8e9ab5290236d504e34c8cdbf54c80c51",
+      "bytes": 78567
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/元件 6.xml",
+      "sha256": "73fc95bc1eb5b58a7043a2ebd4feb1c03e2c47b3d186f9accff638fe612a0bed",
+      "bytes": 1618
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/坠落轰炸弹.xml",
+      "sha256": "782852469eca5fe85dac482df243f0a6e746b7acb2e5874a936d26db679e5edf",
+      "bytes": 40389
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 473.xml",
+      "sha256": "396943f913097f3ee5f565488cf08295c75e6fcb54cab171f1291cb81dc5251a",
+      "bytes": 1834
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 475.xml",
+      "sha256": "9f8360fd12604059cbde967225df39934391015a3a506946bce8dc2ec7387f12",
+      "bytes": 1220
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 477.xml",
+      "sha256": "c248f2c30f2d16d7f84e7b442e7a18d3592571eee8d8b0a614bb5601feb0162f",
+      "bytes": 3612
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 479 副本.xml",
+      "sha256": "00c470c200992e1057df2d1a9cda1d9ed9efd2d90a2f6f34101591674c8bd10c",
+      "bytes": 3888
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 479.xml",
+      "sha256": "0a890bc25bcf8bb8e725023847d375512ed9eb16f79a01c776d44d4a729afd30",
+      "bytes": 22547
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 495.xml",
+      "sha256": "124e0baa6a07be8ea2f8073e8dae128085cb3593e55fe4a5551a8c851f032a55",
+      "bytes": 1484
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 497.xml",
+      "sha256": "2d310c0d40a8ef497536cbc31c5de686718aafc24c1129bfc8eb172fb3f2b67d",
+      "bytes": 19945
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 507.xml",
+      "sha256": "4bcf1525922ec487a6527ac9fab56c1d036469cfcd9c21525886cd6057fde8a5",
+      "bytes": 1413
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 509.xml",
+      "sha256": "b2c677ff78ced0e74e85f543e57d29d546ebf3958a4500c230d2daa33e4c56c4",
+      "bytes": 2785
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 518.xml",
+      "sha256": "1e01eabc86f165237c4dac8c83769f80f425cb7cc0cecde9f89223c2b23f7dba",
+      "bytes": 6425
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/地震1.xml",
+      "sha256": "58d4700c3a6c3df8c2a9465dd03a8c63645ffee8ed3d09428580600400f2e7ba",
+      "bytes": 2463
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/地震2.xml",
+      "sha256": "d7adc7a6984ee371fd413775961d06174972576ef85173d8ed8ebc0d3893fd7a",
+      "bytes": 1852
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/地震3.xml",
+      "sha256": "058cf45910cee4f3b2385d4c88ea5e4e27a5c5b97f4a184dd82a885f90a60949",
+      "bytes": 1873
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/地震4.xml",
+      "sha256": "87adae09f55fa40932a0418dffeb6fb59a2725ea0b1e4ce902013d0eed13b057",
+      "bytes": 1879
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 469.xml",
+      "sha256": "ca3b823ada93a8bd9c5cd8c305ade51b1874141257a13355818dad23062aa4c5",
+      "bytes": 2195
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 471.xml",
+      "sha256": "d75546c99730f01ce88f09d22c3f12186bbfb141169514da1287b5d9e4c5af0c",
+      "bytes": 3043
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 473 副本.xml",
+      "sha256": "e6c08b757dd2041f3f2b93a6678333ba1146ad3a1b49d6c40733c812491ccb21",
+      "bytes": 1870
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 473.xml",
+      "sha256": "d4604f6f551eee6f811d2776ea7e5b33367fe7265d10ec2770be42d9f6418002",
+      "bytes": 3637
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 475.xml",
+      "sha256": "24b3779354ea870da24e931481d265eb5b214457e3040bfb0214c0be4864f80a",
+      "bytes": 4156
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 495.xml",
+      "sha256": "2d66a7face9790452eb6174963bdde1f95edc883163b38407464cbc1e5ab0b20",
+      "bytes": 1506
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 507.xml",
+      "sha256": "70d7ec6c3f8b870a21e5f74519886510e0280918a294b3c30ba0b39dbeed1d31",
+      "bytes": 1435
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 522.xml",
+      "sha256": "e73a1e63f71c4cb2d2d3282b35db082cda40bd7313b4072f340286b3d8ab2570",
+      "bytes": 1764
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 525.xml",
+      "sha256": "b065447708df7a3757b7f6e2957ffb6dc6138ed75c75530969bdf79be80a59a1",
+      "bytes": 3233
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 533.xml",
+      "sha256": "0a8c5f44a8f5da6eb3479a42bda57015ba9fd55c6947f276e0faf05bbcd9a993",
+      "bytes": 2325
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/电流.xml",
+      "sha256": "491274416e7f2ee942f3c186a3a8474b7d7de69d1f1f411791ff96868cb659c3",
+      "bytes": 4982
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/蓄力对空光束.xml",
+      "sha256": "05b0f417129c3bd428ce9942e9c064397d7006333839d306a71d4eadd2ffe677",
+      "bytes": 22059
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/重束炮口光.xml",
+      "sha256": "853da0abe048741b9bc43a8fa3e883a82a7f4d37dcb3c0e75ae28cc04f9b7cdf",
+      "bytes": 3455
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/巨型穿刺能量子弹.xml",
+      "sha256": "d7863170c5bc68ea93fb407ed53e6fd377b1897757f2865bd7654924507cdf1e",
+      "bytes": 5506
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/巨型穿刺能量子弹_能量弹头.xml",
+      "sha256": "a2a9297a8599911fa09b5a5ba04416d70fdac17c4bf455e3f25303ca6f05a520",
+      "bytes": 1787
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/巨型穿刺能量子弹_能量轨迹.xml",
+      "sha256": "b4539c429868e20aba9e55d18e88e8dc8d63e93844e9ba44ada1d8e778b93c69",
+      "bytes": 2844
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地.xml",
+      "sha256": "c76bda18f11970243fe6b82b40186d3f459d1ff2e819c58e60717e40ad546fe5",
+      "bytes": 13684
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5088.xml",
+      "sha256": "bad853aadc8ebedf31c4db3015442141e67e400b415b9061394baf10b01f2ba9",
+      "bytes": 25216
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5089.xml",
+      "sha256": "6300acea5254fd1cff1235db1ddd8cd5c3b40285233f906588a99e12ed70754d",
+      "bytes": 30317
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5090.xml",
+      "sha256": "26ad7fb487f59d890fff5814061f5a8f87fcaa39c699041759e459d851aa836b",
+      "bytes": 945
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5092.xml",
+      "sha256": "8a64fc53a1f1c5cb0bfce4ba37594709826abaf6964fde7a1e5835806ce87ad8",
+      "bytes": 67534
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5093.xml",
+      "sha256": "323ff4ba28ea4884bc111c25ba9fbb68c0c5829d7c30c18412c13c0bb09639ab",
+      "bytes": 72271
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5094.xml",
+      "sha256": "5abbae54d2c843122cbed603826800c703f091781dea15e6373d8ab2ca7c9385",
+      "bytes": 945
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5096.xml",
+      "sha256": "30e65626eee4555ad5c7223fc4778113f49bd79b2bf1b8bf567516d5631eed78",
+      "bytes": 76670
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5097.xml",
+      "sha256": "30947f9b0b905fe289d01b0f9bfe7b8937beea1ea3aaf93c44422e91f87ca810",
+      "bytes": 38610
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5098.xml",
+      "sha256": "f933493bd3c25140f9574e27bcecfeddc2bf57d5c38323418b0eb980273bc75c",
+      "bytes": 945
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5100.xml",
+      "sha256": "8a45f8c2c0e5cff7a47d193051d6ea4ac421275cb0eadbaf74a73fca75c39dfb",
+      "bytes": 81242
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5102.xml",
+      "sha256": "71d60167a554f56674bd87b3515185a05ff4fa35636d943f95bed200cd704db2",
+      "bytes": 20634
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5104.xml",
+      "sha256": "5264b79e4421d6e31efe7c187d27074bd0641065e0fc596b7017835ac0a5afe3",
+      "bytes": 47512
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5106.xml",
+      "sha256": "79c8acca46ba3dac998d1793b8f839dbd95b61e21de7960aa3d4a296682227bb",
+      "bytes": 21165
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5108.xml",
+      "sha256": "9e7f1b2596c3982bca3cf195021c87cfae61fd7473f24e708998a936cc47ba1b",
+      "bytes": 31263
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5110.xml",
+      "sha256": "261eaba2735998ab4bb29e86eab3be5c281d980bc950f939b2a5baea2233e752",
+      "bytes": 13581
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5112.xml",
+      "sha256": "bc87fc17b39e42eaf4ea49e3e96623ad0e75553333f69f24413176a4b1e67b91",
+      "bytes": 15650
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/强震地_Symbol 5114.xml",
+      "sha256": "5f0a8c0d52a18ca7e875e6d41d22c2c5613693e5bdca5b17a8cb8d8c869df73e",
+      "bytes": 6192
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/目标.xml",
+      "sha256": "98efc7b2551fa8d94597776a15eaa3df586f37d4abf7243b41d0421c7a928264",
+      "bytes": 10145
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝色炮击.xml",
+      "sha256": "5191d07eca4d49eb4ca7c5783aa98fe90b312f9b86e093b17e1167d462ece23a",
+      "bytes": 7008
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝色炮击_Symbol 65.xml",
+      "sha256": "1e283beab130f00a3ea673ddd43616f86ca273a561054cede60c50723ff90db2",
+      "bytes": 4725
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝色炮击_Symbol 66.xml",
+      "sha256": "249ee88e017195aeaba103074b2a7aa6e69e2b49dd4e5d98b178e60b4282360f",
+      "bytes": 948
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝色炮击_Symbol 67.xml",
+      "sha256": "5227089e7c40ac34c0ee4a3cf53ea316773e0abc5f13fd9ee72e6fb45bae7daf",
+      "bytes": 6447
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝色炮击_Symbol 68.xml",
+      "sha256": "21a7ec5d6ba2e3c4361eb3a0a7eee4c575dae3f3213e5bf66fa0174c4582ce42",
+      "bytes": 948
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝色炮击_Symbol 69.xml",
+      "sha256": "0b46930b24b4e64dbeca8205bab3addb5b78fe6973d04949f7237eae4db0a7e0",
+      "bytes": 5285
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝色炮击_Symbol 70.xml",
+      "sha256": "fbe1f0aafe8a45bf30f4c45b02a54f9260af1959d0e717466cb535bc88d6a2f0",
+      "bytes": 948
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝色炮击_Symbol 72.xml",
+      "sha256": "008224593d6bba40d83e001e2595d1291294795504cd21834b561b8f296d6320",
+      "bytes": 1435
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝色炮击_Symbol 74.xml",
+      "sha256": "6e02dba660acb240a85a065adf9d4cc7d636431b97a292c19427f159c50ec239",
+      "bytes": 6570
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击.xml",
+      "sha256": "c4e1cf238435a0c994c2a4df7b9e3882ba96b12b4f5a5e4d958b4cdc01b9ec10",
+      "bytes": 105643
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击_Symbol 475.xml",
+      "sha256": "ba6b6fd7435a1fbdd6e61f363ec58b8961c4c5e320020fb4bfa1ccbc24d70f52",
+      "bytes": 19916
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击_Symbol 477.xml",
+      "sha256": "9b04b2d4c2d1757248e343f7c1c7634f6e7350adf8af4beb741efcd5214d32e6",
+      "bytes": 1543
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击_Symbol 479.xml",
+      "sha256": "cac8276621cd06aa7a16a5ff588300523673a6520e62aef8d8309ed99f43bd61",
+      "bytes": 1560
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击_Symbol 481.xml",
+      "sha256": "c87c808c5e69d842284ff7540d06a6769deb595e7871661bba190753bd34e6ac",
+      "bytes": 1511
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击_Symbol 483.xml",
+      "sha256": "6f1a823a2c677ccf4164c31974b4315cd2343233f929a40102c60b2ea24e1ba5",
+      "bytes": 1564
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击_Symbol 485.xml",
+      "sha256": "b34ff1528b33d39c3c46e8203baf414a3ece75fd848a2aca5fb2f355d990b429",
+      "bytes": 3826
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击_Symbol 487.xml",
+      "sha256": "4997399aaf556b5e6ecfc0514d585e812469ee6daee49f58112310c7a0e50325",
+      "bytes": 3269
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击_Symbol 489.xml",
+      "sha256": "b9090fe3aefdde8c4396639d265d022f535f88aa9e3b2072097c60431cd72aa1",
+      "bytes": 24832
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击_Symbol 491.xml",
+      "sha256": "c0912b2bbd13e25adfb1f5e7162151874cbec04beb29211fdc3f52bc11c968f0",
+      "bytes": 3157
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击_Symbol 493.xml",
+      "sha256": "2cbfe39ee8ca7351b8afacb6b9d45c51bfbccdaf893a24a620bd7405418c990b",
+      "bytes": 25444
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击_Symbol 495.xml",
+      "sha256": "c77e12af903594bdf08042a0f1da676cc135ac8342dcc9b049706a2b63e993b8",
+      "bytes": 3516
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击_Symbol 497.xml",
+      "sha256": "7bf526168925d55a0acbb58d232081eced6f7591127aeea35d44e75f36da0fac",
+      "bytes": 3081
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击_Symbol 499.xml",
+      "sha256": "ad14fb81120c4c7c8b4bca450eb7bfa0d37280770a34d93c0aebebb08371e102",
+      "bytes": 23218
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击_Symbol 501.xml",
+      "sha256": "48198f98722e965ee513ada3740dff386fd0740377104c5fe62470be4e7fe2cc",
+      "bytes": 3062
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击_Symbol 503.xml",
+      "sha256": "97faadb7770c3c6ca5096e6e8ecff7641dc36fd1ebdea4ac18f95e51c0b54545",
+      "bytes": 22205
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/蓝芒强击_Symbol 505.xml",
+      "sha256": "064cd47fd428ab98466b87ed0ec802c60d5eac4eba2691368c2987226048176f",
+      "bytes": 3108
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/靶标_元件 10.xml",
+      "sha256": "66a87cca87dad64dbe8643cbe36c89e7279a32cd077d64b2d217e4540f4e2557",
+      "bytes": 4392
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/靶标_元件 11.xml",
+      "sha256": "e825ef1314d1794d95b309f6a13205449bb84d3a2d58afdc0e2a0db315056594",
+      "bytes": 4433
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/靶标_元件 12.xml",
+      "sha256": "31bcbdd8b24385aec9423848f4b6c802a275d6d4d1999b5d7571503119021f5a",
+      "bytes": 4308
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/靶标_元件 13.xml",
+      "sha256": "59e77f20761f37d92bde199b8cc368d8e741d8543b3e7341753bba2fe9002c3a",
+      "bytes": 4434
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/靶标_元件 14.xml",
+      "sha256": "f753488f63ac3b2efc9c2e670c6dc9ddcfe356304b232119603d3195c70f71e0",
+      "bytes": 4552
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/靶标_元件 15.xml",
+      "sha256": "7c2c66148c72759c2ef26cc927e5ea2b70cd4642f0248aa0cf652543d0de3134",
+      "bytes": 4186
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/靶标_元件 8.xml",
+      "sha256": "a114babe2d111d34a9d52515c7d79b8df4e6c91c59d7ddc24570df218c3a3185",
+      "bytes": 1250
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/雾人/靶标_元件 9.xml",
+      "sha256": "13d15627e3384fcd79ba768cace6ccbd68ef3e7f5a380ea484159915dd0d398c",
+      "bytes": 4042
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材.swf",
+      "sha256": "510a252911cabf54195b32b9ba49c5941511b83f0a0b82cd019cdc9f26b338da",
+      "bytes": 180020
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/DOMDocument.xml",
+      "sha256": "94aac3102f2a5aa35890ed07c3a79e71c3936586cd6b73d3cc10f0346cacf901",
+      "bytes": 13499
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/CF7/Symbol 1110.xml",
+      "sha256": "3b3457f1c6ad33a1b7f35a7d12ab6d6001efce1a57304c7535c4e37081f97b77",
+      "bytes": 511393
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/CF7/Symbol 1112.xml",
+      "sha256": "34dde6077b2defa3a7f90e4420fb1137234928c0f0720e5f4a54906b33467500",
+      "bytes": 284349
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/CF7/Symbol 1113.xml",
+      "sha256": "ca7df394196001a061904c7ec26b465288b547b878876b25a639ff56a15e9ad7",
+      "bytes": 250659
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/CF7/Symbol 1116.xml",
+      "sha256": "4be82948c2e3268d1c3907e031926fef5dc61a18e6b82a1007cef10875518f38",
+      "bytes": 332159
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/CF7/Symbol 1117.xml",
+      "sha256": "5de54da2f1675280e063fb51480c864fb67a2f57aa3dd3019f3b073691498c87",
+      "bytes": 1330098
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/CF7/Symbol 1118.xml",
+      "sha256": "2a5252a63f5b331b8f3037399ff926221f301e5377087d4e0376b0560bc46c0e",
+      "bytes": 25840
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/CF7/Symbol 1120.xml",
+      "sha256": "b43c264aa994028e7bf9cac42dde348f466be8ae50c27a006088279939befd27",
+      "bytes": 298577
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/CF7/Symbol 137.xml",
+      "sha256": "a740bbc638568803e74a72a190abe6207940dedf6cb4df924e3eb175bfb80cbf",
+      "bytes": 50430
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/CF7/Symbol 139.xml",
+      "sha256": "3e7e3fb5e2e896ddd373ce203897f61f7ef7c460fc118147075b23668e599558",
+      "bytes": 127120
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/CF7/火花.xml",
+      "sha256": "0c98d3b6a2d59f79ebf0cd08b6681b221c64acb8059e26d6ec9d5ec6b53c5fae",
+      "bytes": 7713
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/敌人-CF6蛮蛮.xml",
+      "sha256": "f1bf84537a65f3962abb2b919844e58b821ce237a0e554a98ab1340ed9ccdc32",
+      "bytes": 40761
+    },
+    {
+      "path": "scripts/run-cf6-bladebot-asset-tests.ps1",
+      "sha256": "4d3b50bd26706b9c60cc7bfd1ca127c1e6f4f1204fb6e33dc8bdea380a21dff7",
+      "bytes": 1142
+    },
+    {
+      "path": "scripts/run-cf6-player-pressure-tests.ps1",
+      "sha256": "d935574f07c2a0bdfb78281c2f0a35f21a2df234e1a9b26d7339796157d3dbd2",
+      "bytes": 2845
+    },
+    {
+      "path": "scripts/run-cf6-shield-separation-tests.ps1",
+      "sha256": "7cc0daf9dc85bbdf0bc08e48704a6d0fcda9eef4e3000df69ff34de864321000",
+      "bytes": 1745
+    },
+    {
+      "path": "scripts/run-cf6-soldier-asset-tests.ps1",
+      "sha256": "8b83a602b768fa2d303bfce2f60fecabdd1d69367155e52660980df70117b589",
+      "bytes": 2988
+    },
+    {
+      "path": "scripts/test-runners/cf6-player-pressure/README.md",
+      "sha256": "c967f5c376c17643cd115d5e850b198ad09d276df1d090bc0077014c36847d06",
+      "bytes": 1983
+    },
+    {
+      "path": "scripts/test-runners/cf6-player-pressure/TestLoader.as.template",
+      "sha256": "74165289373b04cc14e667c97c276d2e4916fbad792dd426ca8d540d4748eb32",
+      "bytes": 906
+    },
+    {
+      "path": "scripts/test-runners/cf6-shield-separation/README.md",
+      "sha256": "59bd37e5944e8d11140cf9dca94ae3c31d50e7543df06c31dbb499860505ce55",
+      "bytes": 978
+    },
+    {
+      "path": "scripts/test-runners/cf6-shield-separation/TestLoader.as.template",
+      "sha256": "d071b10f01e8446c878992772e048bc9c35f04b5c4c504511e7eaea65aa6571c",
+      "bytes": 914
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6BladebotAssetTest.as",
+      "sha256": "8c52347ca8fa6e43f1acd52be857a0923b7fa49a9f8e7fd11a65e15c61c90696",
+      "bytes": 29893
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+      "sha256": "8e33e8c94bbc7b6d52d4d9bfa3bdc9a6a627ca47447fef3063a40221f4b789d8",
+      "bytes": 50075
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6GuardAssetTest.as",
+      "sha256": "bc4c12f869af7afb43e0d8bdbc54e2d4bd6b8280c73498eb72e1c95a25a1fa4f",
+      "bytes": 32527
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6HeadbotAssetTest.as",
+      "sha256": "e4a2471ca8e4da62e182fccd4b30709bd62270d314e7d1ffad0421f61f2709f0",
+      "bytes": 33968
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ManmanAssetTest.as",
+      "sha256": "9b5f815cb7bf9dc0fd3899be0a1f5dd67635cfbe6a67dd4a6b293b3f409e851f",
+      "bytes": 30125
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6PlayerPressureTest.as",
+      "sha256": "b9c3c0b6d0a1a14e6ea00fa2558bcb6da78ffbd1183d3bde253bbca2b2af1c07",
+      "bytes": 16471
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ShieldSeparationTest.as",
+      "sha256": "1b7e0e0a2d90fbee7b14e587c49adab3b127c22c0f8b80067ee6f4c8f9d6e63f",
+      "bytes": 4582
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6SoldierAssetTest.as",
+      "sha256": "9f080089950b9177ea6a104d24eae2148f056d2c8e2aac857bd068bc70c32d7d",
+      "bytes": 159225
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/BladebotAI.as",
+      "sha256": "a372b8e754fff9fb1500125786450453600b158517df945a2d4b4e7be9aedddb",
+      "bytes": 15979
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/README.md",
+      "sha256": "6de30fdbcdfaa6eadb30b9bbe8e9a355e44bf2e35e73c90354ed947506654a23",
+      "bytes": 12691
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/balance.py",
+      "sha256": "a9866326262ce08ba5855bf5481f9323f8d70d2276905a6158ea292885dd3e79",
+      "bytes": 8875
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/build.py",
+      "sha256": "1fde82f8a00fb8d8dae4be73f071b514a9fcb1a1d262d0d7d9d6817cd4dc289f",
+      "bytes": 22063
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/native-manifest.json",
+      "sha256": "5d806f907f16713138df0a3497daa0148c979d1ba4bcaf9c192595beedd3914c",
+      "bytes": 108672
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/act__横扫.xml",
+      "sha256": "25c4215a7788d54892734f4392d6bc53def01af75374abc80473f56b7648209c",
+      "bytes": 366522
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/act__波属性光束.xml",
+      "sha256": "2e4acd4ce86c0835252bf58e8cbf36f727d3f10d9ddcbec0820e312a0876ad38",
+      "bytes": 37931
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/act__站立.xml",
+      "sha256": "0863dd4fddb523f0a994df850837a39c899338bc91b8853c71be8a7ec0dbea66",
+      "bytes": 193923
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/act__行走.xml",
+      "sha256": "0fa933fe002382158cc509b00d37276520a77ccd6cdc7067da95b49abf1b6b77",
+      "bytes": 171978
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/act__被击.xml",
+      "sha256": "14bd962782a41ed3f04627b63bd2f884fe46736629cabf919e7639c784d8a290",
+      "bytes": 237806
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/act__重劈.xml",
+      "sha256": "f65bd2925c879ca81750d6ed2596a20cdca649bdee6b4dd5cbccd97984cdc109",
+      "bytes": 315888
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__分件__899-遮罩1.xml",
+      "sha256": "f3608c542be02949e4b4c4ef813c2157c98250029a5614d800be33c0936d9d51",
+      "bytes": 25293
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__元件 6.xml",
+      "sha256": "1bd5494bb2c590c0f83b5c0ac85c80c09dff6d06783c82c88fffc3bd63b2025b",
+      "bytes": 1627
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__刀光.xml",
+      "sha256": "2ac1bc225d84a0841458698e418fb3c0185e1b27e8f5f06ed0d84aa8b4255352",
+      "bytes": 1729
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__旋转刀光.xml",
+      "sha256": "ee3ab83ef5ba1fa18ecae16ce885e5ac0403f3448301120dda687fceb46bfe67",
+      "bytes": 354434
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙.xml",
+      "sha256": "d9c88d9f99d725682f96d9fe0119840bbc838b1a731d0bd9d394a0615282081d",
+      "bytes": 736004
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 100 副本 9.xml",
+      "sha256": "a3b50d75de5a6cfc23d2b5c1d874032867c5209e5cbfeb5284b29372b4947e06",
+      "bytes": 3244
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 106 副本 11.xml",
+      "sha256": "7ed1fcb2d0e0c4364b136246f476c9f8d7f3c84dabce28e350f69fd5fa8afdb3",
+      "bytes": 9675
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 108 副本 12.xml",
+      "sha256": "22f7c2bd495b9a7f2b2efb2e2a548e2a4f42533639e374f827d621c2df342f59",
+      "bytes": 7268
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 110 副本 10.xml",
+      "sha256": "a631261efa59fbfa3df711dde4c6a6b40d5b47750d20fdf46f6bd4446f7deeca",
+      "bytes": 3909
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 115 副本 8.xml",
+      "sha256": "ce03e0f25d07fe2c9e21f0b79afccdc338eef24ea27d9bdef712be230e91f779",
+      "bytes": 7365
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 117 副本 12.xml",
+      "sha256": "116623a36b106d6a8cfa6754fb2ffe758eddb43e398d7bc01efa485343cb0f6c",
+      "bytes": 5238
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 119 副本 7.xml",
+      "sha256": "3d426bdaa139fce6544ff0212fdcdbf1b5d56890562f978d371938729a9a0528",
+      "bytes": 5414
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 129 副本 8.xml",
+      "sha256": "a0852ef3056d45019df8bad2c9bbbe91638e015678b5662d4b3758fb157c766f",
+      "bytes": 8014
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 13 副本 30.xml",
+      "sha256": "0694d25fe176d9252001d30f117d46f76658c9e230b41eb117fc5d667cd27f8e",
+      "bytes": 2558
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 131 副本 9.xml",
+      "sha256": "a589865a42b3820bf6ab6da1a3f93f969c43e0b8aac7e3dffc88bdb0ec0f5bf1",
+      "bytes": 7117
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 133 副本 6.xml",
+      "sha256": "20b4c3316fc77201b56103b9e878c9d84a50fb74ef287ad76c36fee8a951635e",
+      "bytes": 6048
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 144 副本 7.xml",
+      "sha256": "ea30d815ad1d0d50db175c13859c3a7f0bfdb7562519098f519abfcb345079ed",
+      "bytes": 7621
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 146 副本 6.xml",
+      "sha256": "ccbee7ce875388d45e1af9166f571c15e074b65363294ff918ac794480b02ec9",
+      "bytes": 6214
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 148 副本 9.xml",
+      "sha256": "f3562909281f21d8c7a6760f6e372eff55fe0266d1f8ad3baed3cc4d6d2c10a8",
+      "bytes": 7185
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 15 副本 27.xml",
+      "sha256": "c68bc9daa3a84b2089bc386d6cad517770edebc6678c8ec0b03e7af01a555cd4",
+      "bytes": 2867
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 158 副本 6.xml",
+      "sha256": "6b2d35838472f4100713fc4256bddde5f3f46f2f98b83820eef6129e62406de2",
+      "bytes": 6484
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 160 副本 6.xml",
+      "sha256": "450e3a6f6339f0bc6c2f0e1a579678e6964e8f384d121a96506831915734bbe2",
+      "bytes": 3832
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 162 副本 3.xml",
+      "sha256": "9061bcf68d0e76816fa125e436fa29671fda96b0c110203afb1d53a985ab46eb",
+      "bytes": 6252
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 166 副本 3.xml",
+      "sha256": "ef0f5d4fd30562e5c4a97c912b3ef3aebd06dbb653b786208d792bc1cdbb0857",
+      "bytes": 1577
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 17 副本 30.xml",
+      "sha256": "4648750ba07f3b1fa91f36c24fad7923236dbf6e619ec33652d91b7265509b1e",
+      "bytes": 4405
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 174 副本 4.xml",
+      "sha256": "865c118b77797f208f7d3284e5d5028e2b775640e4b2f8f889cd47f08296a504",
+      "bytes": 6414
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 176 副本 7.xml",
+      "sha256": "7a8f479eb76a5088c109774e75673a93a88e2e56d8f2699e03b66461f8639b1d",
+      "bytes": 8272
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 186 副本 3.xml",
+      "sha256": "991e92f02d7c0b788d668d45758801ed888d476a92e8aeae7a33c86416250ca6",
+      "bytes": 6378
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 188 副本 4.xml",
+      "sha256": "d79dd6c8406789d7b208b2623e09e0ad775edb73b44f004f152528b8ae8d90cc",
+      "bytes": 11068
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 19 副本 25.xml",
+      "sha256": "69ac184a856530ded5e741d763dff213ec88e1cffd3e2ef16d669b9b52b82849",
+      "bytes": 4432
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 192 副本 6.xml",
+      "sha256": "47c0da2ddc68f019cf03b53b9a27997f0c7fdc5330d5160345c5bdeb483298c9",
+      "bytes": 5860
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 194 副本 4.xml",
+      "sha256": "168ee8555624fb6b6c5bab121723b76cf9d2b9870de0b51f148fa2e5511f77e1",
+      "bytes": 11182
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 196 副本 6.xml",
+      "sha256": "54508caae394455a79b9e70d47a04b996f5fcd3db1257b71f596880ed0bafeec",
+      "bytes": 4872
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 198 副本 5.xml",
+      "sha256": "f700e3640fb3aa36226fbb0d3a8a78fd6efd64bb947965ce99bc9b5bfc45ad70",
+      "bytes": 5789
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 200 副本 4.xml",
+      "sha256": "b063b2bb7a8e8f3a4b4606de33ccb499c3f71bba1539c435739236cd50f1f837",
+      "bytes": 6107
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 202 副本 4.xml",
+      "sha256": "6b9ea5d2fd0b16c48852c6c0860c4ee17943d52d4d71ec0ce3a8c9ce0d2e607b",
+      "bytes": 8334
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 204 副本 5.xml",
+      "sha256": "1dc0e810669aebb8728b7e2af87b87d6da1b2acc2244d973c7ea5480008a6173",
+      "bytes": 6090
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 206 副本 5.xml",
+      "sha256": "fc14914d093f4f39f9ec78669f8f756b94990798c4dc91d2bb7e49494bef7e90",
+      "bytes": 7034
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 208 副本 5.xml",
+      "sha256": "122dc572f8071db0c622a556887bc9850d8339a60f76865a963c51a3fbffa907",
+      "bytes": 5356
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 21 副本 26.xml",
+      "sha256": "82fc39dab80b0d2cf27d1b823cb548db8d175ab93e041043a4bcee440c7ced68",
+      "bytes": 5083
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 210 副本 3.xml",
+      "sha256": "9d73badf6f98b071582ae7deca7b80d742654079331358247a7e6c80be771cac",
+      "bytes": 8499
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 212.xml",
+      "sha256": "ac885e880771e2e7c9a468bbdb0cb1b876d5f7afd4297c925f72f4d769dd7951",
+      "bytes": 3433
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 214 副本 2.xml",
+      "sha256": "7f197e7730089e172e100c912f6e07ebc104022a4eb3a944d7afc4527bf3ab32",
+      "bytes": 3151
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 220 副本 4.xml",
+      "sha256": "64fb71f20421a91893328419431dafe649414a65595c83662dc778946026711a",
+      "bytes": 6128
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 222 副本 4.xml",
+      "sha256": "79b8d0095bf9e144d15326f86c81dd6fbcdc50554cff4c269f3fbec9dad26a2a",
+      "bytes": 2793
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 228 副本 3.xml",
+      "sha256": "80a59916c3816d7d911a75d776a648d8be3a59a784a30b884ecfbd161f834551",
+      "bytes": 6656
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 23 副本 32.xml",
+      "sha256": "37f1898004338f2fc09c8bee0cca0c9676494cdfc17592210b01d86756b114e4",
+      "bytes": 4084
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 230 副本 2.xml",
+      "sha256": "7efaa815dbadf2a8894b70723201faf589afebf8a52b05ff62d67b7b40cc276e",
+      "bytes": 3330
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 236 副本 3.xml",
+      "sha256": "263ab708737fad77784abb26c63e5e1df9a5309c7a3372da493101b9f9e1edd7",
+      "bytes": 4966
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 238 副本 4.xml",
+      "sha256": "2fb212875722defe51a69252423cc9c63a3683645a9c8904a6ec0a7831b7b1bf",
+      "bytes": 2892
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 240 副本 3.xml",
+      "sha256": "eb2a51c0ab6369b336121720db4e66993765fa5fcea2e39ff7ea7f42c69989f1",
+      "bytes": 3307
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 242 副本.xml",
+      "sha256": "c36f795925fd802f0b48659dc5da6bcccca5c35d0242d3c3f707a14f054e379b",
+      "bytes": 2031
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 25 副本 24.xml",
+      "sha256": "234b41e87a312155dae887caac682423e1890ecba95743c917373931f9615e7b",
+      "bytes": 3476
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 27 副本 27.xml",
+      "sha256": "25948842704461bcc9ec6ca2b106b47ac6d75b9545eb6ac080851b9c83d50cb1",
+      "bytes": 8468
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 32 副本 21.xml",
+      "sha256": "2901f23c9bdf76f0b9a2e3185f8da78d748db70eebce93a559c7d770ed7c87ed",
+      "bytes": 7358
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 34 副本 14.xml",
+      "sha256": "00cf82fe514c1bd0d68efc6ebc988f69ef5b213cd0f5c5abd0e0406c972a9564",
+      "bytes": 5503
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 36 副本 17.xml",
+      "sha256": "514fc2516ef0b5bbc98a50ea84f19f33bacb75b6fc0e2001275d49199b4288fd",
+      "bytes": 6177
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 38 副本 19.xml",
+      "sha256": "45f21ba6ba4de8b12d79e12e4f3d3a04d2a7fd0dfa58ee0c9ee576b838429d95",
+      "bytes": 5617
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 40 副本 17.xml",
+      "sha256": "7e7d5ca490327932aa00f9cdb548384c5ea61b36b92325dac8547957b8dbb750",
+      "bytes": 4520
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 42 副本 17.xml",
+      "sha256": "cf871c9e846b043bea54d548cfb9840c965b2d0a73fb415a6681b82c9b13b0ef",
+      "bytes": 8033
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 44 副本 17.xml",
+      "sha256": "ecf083f4f605b2a16709522481f0e10eaa73d6c4dc35db0c3a2e2dde902a6a3e",
+      "bytes": 1638
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 48 副本 20.xml",
+      "sha256": "90a8ca952065e258625eb199cdcfef3423a7357df7803fb86b071618f40b0ec4",
+      "bytes": 2203
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 50 副本 17.xml",
+      "sha256": "3613f37cf03779a7ea7a7fdffb07df66493e186ff6b2996a12405f0593e30a0e",
+      "bytes": 3074
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 52 副本 11.xml",
+      "sha256": "76d7c706f45079f32e05596d904e357f86ff5beced3aaa9accdd09b586c0843f",
+      "bytes": 3226
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 54 副本 16.xml",
+      "sha256": "41d17364000cab6b0f988cb90e516b5f94593786dc29d525142962787227c043",
+      "bytes": 5515
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 58 副本 16.xml",
+      "sha256": "074169ed99f81785c73aa7283010987e6e2bd5ecbcf954fcf52cf6c3df7ad688",
+      "bytes": 7545
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 60 副本 18.xml",
+      "sha256": "7fdc8fe1384fa37e970faa9850fe3d4c7f4158b9f0b25e4be7932a88ee117be0",
+      "bytes": 3748
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 62 副本 19.xml",
+      "sha256": "e42ea87a7c180d72cbfb1c41a6f86aed4bf65f42e2a40e6972c1ac7041ed57cf",
+      "bytes": 8854
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 66 副本 16.xml",
+      "sha256": "87d181e7b674649d3dde40f14f6ee4915492228e44eebaef4068a8ae800f8fe1",
+      "bytes": 2848
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 68 副本 17.xml",
+      "sha256": "7c06050d1a7d7cc8c9cf97afa8d913cebf70e7c3b2990261cbdc420aadac6d7b",
+      "bytes": 3795
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 73 副本 12.xml",
+      "sha256": "c519a22906cf9dc0f059452311c17fea93083e562f524290ada38bd7d1dd3ecf",
+      "bytes": 8905
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 75 副本 10.xml",
+      "sha256": "2654de55708b1a8cef116d466a6f078f9919bd31824189ce2fd69313d614712d",
+      "bytes": 3399
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 77 副本 9.xml",
+      "sha256": "f5381b54d9e05aa0bb1d9c734bb912463ecdb87178bce986a5de46f69dae01ad",
+      "bytes": 10228
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 79 副本 7.xml",
+      "sha256": "1cbe0456ba534743777cf4631eb382a575057f037fb288eabf33a9acacfab666",
+      "bytes": 3601
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 81 副本 9.xml",
+      "sha256": "79a998b5c7da57b1270be343dbbd2a41343f92c9c913fad9a69a2bf8facbb724",
+      "bytes": 2845
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 85 副本 11.xml",
+      "sha256": "cd71f8c87f436db686e89284be6f744e8177b9d77a7a7f7dc574dc5f4eb94402",
+      "bytes": 10219
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 87 副本 8.xml",
+      "sha256": "65d0b18492e1baace694ae888a574fb6966c3459aeb0f3ccf5c8ce6c91d6adfe",
+      "bytes": 15459
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 89 副本 11.xml",
+      "sha256": "6b4d769419329c02437e33403699d6ef7a911d2f427158d0bd8683ec3ff464a0",
+      "bytes": 2224
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 94 副本 11.xml",
+      "sha256": "b76f95d762f5bbb11dcf6cda111b2fd0b7d065385d91f87668e399dfaa26c752",
+      "bytes": 9216
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 96 副本 15.xml",
+      "sha256": "b1e3cf8af0d8e59420444706d5904f29fd180bcb3173d32dfab0c451577edd87",
+      "bytes": 2794
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 98 副本 12.xml",
+      "sha256": "437ff222c03d41de6b976dcd7d8fcacf3115e18ebe3e5d3191df9c696b8ac179",
+      "bytes": 6835
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 101 副本 5.xml",
+      "sha256": "b8e17474f3022749fafcda3558b155b9299e828609b43fb95176302855065306",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 107 副本 6.xml",
+      "sha256": "77363b33459679c727acaad1b16b103dc98879dcb62570d03a23bd3d49431445",
+      "bytes": 1063
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 109 副本 5.xml",
+      "sha256": "cbeb332984ccdca3443edf01374c093cc6bf2f81c022f620baac23b7e32ba4b0",
+      "bytes": 1063
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 111 副本 6.xml",
+      "sha256": "51fba01cd32891ae6d113692681ad2798e34bc69f007197eedc738e25722bb91",
+      "bytes": 1063
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 116 副本 6.xml",
+      "sha256": "258942acfc482b930b054076afd7e183e78cb1cdf20955ae616035f3cf259df8",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 118 副本 10.xml",
+      "sha256": "4e26d5904c5500e66730387aaa8255d4c89adb87598212b2c3aa3356e1de400f",
+      "bytes": 1065
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 120 副本 4.xml",
+      "sha256": "f769f31e317eb734242ae917a2c00f49189548372d99f8a802a8afde1481c0fe",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 130 副本 3.xml",
+      "sha256": "3c960a948fd2fb241197685a7012f7015339025070c4fb97554ec94ad333c95c",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 132 副本 7.xml",
+      "sha256": "b5a77449e15753752fda63bde394cf033a34ff81649a9d0c04bc479e0a3195c6",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 134 副本 5.xml",
+      "sha256": "a4581411cb7b93049a08fa6639a096446bc04cf76ef0f898b3d1e17dc699aa28",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 14 副本 26.xml",
+      "sha256": "c5dfa97fdf0cc35c3f314623ad99c49e4e264703d3b05ca7f10fbce36d17f474",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 145 副本 5.xml",
+      "sha256": "709b8a5f48d0787e3edb5cddd1592832b5e2df5a2b576d4f09ce32855cbb85c0",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 147 副本 5.xml",
+      "sha256": "0df7ba6ec246778de5f7e348ccf90f77da0430218888bbc4d96f7560d67a9865",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 149 副本 6.xml",
+      "sha256": "cd0e76c6d0fc5697f71d91126422cd6a1b4a9cec745d8fb6c706b94e090837d7",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 159 副本 4.xml",
+      "sha256": "4c12a790df70201b4a878ea162832e7a58fcecacbdea4de81194d0f059f91f1d",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 16 副本 22.xml",
+      "sha256": "fb85ab9d8872893f381dd71bd9c8d18662658985f6a49fd99343a47db0db106d",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 161 副本 4.xml",
+      "sha256": "90eab41340264533b6b15b044ffaf0be742203634d466e3d598d2441e2de7a9c",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 163 副本 2.xml",
+      "sha256": "fe92c07ded2f3eb18b691767bafdf60916aa021e2ec3a333556479ee2e31dd33",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 167 副本 3.xml",
+      "sha256": "fc98b5cd5c4d73bd8c7b7f1dbe55fd6200f5adfd3f1d75b5fc5156ed608457f8",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 175 副本 5.xml",
+      "sha256": "694e9a2bf752f9e4da5d597b508bdbed2667aefb84e22c7b906b5f8baef49131",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 177 副本 5.xml",
+      "sha256": "1433412e20a01abfba58bfeed135e5d95c94c29ef71455b3ef1e75d00ccc2518",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 18 副本 24.xml",
+      "sha256": "71b1e2c36dcfe487593fb01b32144f0b93d27d832475242d422b7546ca590b9d",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 187 副本 3.xml",
+      "sha256": "fad56546101b3c5b96d4c9b84046466e158c6795e029bdd31c96caf5c55c4c25",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 189 副本 5.xml",
+      "sha256": "57c230878c28da47bf6291e35fe78dd680ab590617972eee4bc86582a0aaaec1",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 193 副本 3.xml",
+      "sha256": "1e08fe7cebb3dfab0bbd9d0e55e8f3c73e1da3b2cd8ccec71aff3fa38f030eb8",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 195 副本 2.xml",
+      "sha256": "4cf25a62a4343077c225f021c167ab4314d274c49dfe6502731a9ab49720e1f3",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 197 副本 3.xml",
+      "sha256": "0b0ae74febdb453457e960cad565e635c131207306a440395398242a1121d3dc",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 199 副本 3.xml",
+      "sha256": "083286dd6eccf39b790fddc23e91e3e77a8c5e912f0fd1131ecb1fdd98b2ce0f",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 20 副本 20.xml",
+      "sha256": "68785b725b90639f69e45cccbf094fcd0b95ea7c0ef81180496943986968da41",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 201 副本 2.xml",
+      "sha256": "0dfceb315494aff871efe7d9f1650dd279f3c5a7612faf5240b03d801762036b",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 203 副本 2.xml",
+      "sha256": "0b75268d04386d7f5378253112e2e28f6eb850225464054fecbf20978cbeeeab",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 205 副本 2.xml",
+      "sha256": "94dff1d9206d820c3d5e522647efba91ebcef7ff6df0611174d7fffe44b36a51",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 207 副本 3.xml",
+      "sha256": "df9a9f3a32550d88268a2a627a7bb0b7549c1f716d0a7be451f5d3faa8a24732",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 209 副本 2.xml",
+      "sha256": "3858c6fb8ad58669d749ec2db709d572536a4173bb901cda33f75a33a598eaaf",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 211 副本.xml",
+      "sha256": "84d598b5ee52bb67cbfcb9199ae8c273abfdc651f87293ed51705d38cbc33347",
+      "bytes": 1058
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 213.xml",
+      "sha256": "1343bf8513779a40e6e3ede60b844984319b95f6d90ea93ba8cf51ed1145f3c4",
+      "bytes": 1035
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 215 副本.xml",
+      "sha256": "30f9b24dbf2f8727b9a3dc78a71248a1dfb556015839e380d5dae6fe144bcb5b",
+      "bytes": 1058
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 22 副本 20.xml",
+      "sha256": "d1af19d02e1697214b38abcaab9bc8af7bbc5a14ff9b5abe2212dc727164caf4",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 221 副本 2.xml",
+      "sha256": "731d8317a79cddd03874586f534c3a1bdb334eca60c156a629360c0b12e10b7b",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 223 副本 2.xml",
+      "sha256": "64470cdd5696df949994e488f2ba14c5ae8a396310e34e4deaab6c208c4dda9f",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 229 副本 2.xml",
+      "sha256": "d52e5c83aed060c5ce32ca1abd4a5bf1e324f9db0875dd4b2489a065bc08257e",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 231 副本.xml",
+      "sha256": "75b2e3491f206dde8f83d4110e2bff11465b8bc99052e317d30f940a4d0e8f5d",
+      "bytes": 1058
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 237.xml",
+      "sha256": "6e2078032b8c5f75bda99e76d1be817e02ce307832772537593813e220476b2f",
+      "bytes": 1044
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 239 副本 2.xml",
+      "sha256": "3c329ccd796b0d117b53bcb5b4c2a7ccfdbd13c0a66a5ad50a46c40b006b9a92",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 24 副本 25.xml",
+      "sha256": "83133bc95f1cc486a195931d79200ff0542b1593df8756de0cddefd920f2fbcb",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 241 副本 2.xml",
+      "sha256": "31b0ee4f570231b7b261d7147af53646ade987e5899fd00eb0a3bb055d097206",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 243 副本.xml",
+      "sha256": "87ac290d37b621dea76e4905678885132d7888a84c9e380f7c1f6866a19176ef",
+      "bytes": 1056
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 26 副本 18.xml",
+      "sha256": "902128b647242f833d5ec0689bef4cde7d360677ebec9b3191b2c17818c549c3",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 28 副本 19.xml",
+      "sha256": "16abb4be4a6e15a9b0e59f2d27ce6c868375b101988ae46f23b38f4ec49c46a5",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 33 副本 13.xml",
+      "sha256": "d204b052fc4d65c62db6a6b2fccc955bed7aeb97e7647edb80b2bbd6d6c08ce3",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 35 副本 10.xml",
+      "sha256": "ee1654ffc302d65b544725971ff822f42fd3e3b4e9b191cd25e7b1f40aba582f",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 37 副本 14.xml",
+      "sha256": "97d3e8e245aa4ab564642d2e36ed31db2e33e61171cfc756fabd9b865fb357ee",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 39 副本 12.xml",
+      "sha256": "fc8ed0b42db50380d78b3d2203accc111ea15863ca49766de0acdff3c6fec222",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 41 副本 13.xml",
+      "sha256": "f2845d0236e50bcd8f60d298e7f2585b46cbc39ed48a918391d3e36555f99533",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 43 副本 12.xml",
+      "sha256": "4c331bce9049460f0bf77146cde9825ef149a30f62606e75260462c810c0cf02",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 45 副本 16.xml",
+      "sha256": "2fad9930d91b09a1f98a334d960809cf447a76bcec2bddef7f7a6db0cbdbf15e",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 49 副本 14.xml",
+      "sha256": "89c4932af44aa237bb2d5b361b5c36fa13d9d42dbdff6c05c36d2f2555a9115d",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 51 副本 12.xml",
+      "sha256": "c32bf0412c666df3aacdea0bbe0ca81f14593b1ee192047e14b249b1d46205c0",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 53 副本 8.xml",
+      "sha256": "64577ccad2d6d66b0256d7be5c0f8efc09dbc67f8315695b4d151a948a0d8764",
+      "bytes": 1060
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 55 副本 10.xml",
+      "sha256": "0a169e4b0e1730ecde8c96bd28c8d997938080e0926487a7b3eab652cb9084da",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 59 副本 10.xml",
+      "sha256": "79749f6201d058cfcb1de90c2187f441771b3080367f5b4dfe7a92a3bee897ec",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 61 副本 11.xml",
+      "sha256": "b39b89e93f35a1720cf28940f54c2d0e9169bd2f75ef3d73abeb91f2c8d84397",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 63 副本 13.xml",
+      "sha256": "17408839ebae884d1f9c1da2a23dc628d7e1bb6ba8889de7a4815e1616605ec0",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 67 副本 11.xml",
+      "sha256": "6ae9668c0bb1ccd8b51f648c43c593662cfc38085fae97243823f9b8686b260f",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 69 副本 11.xml",
+      "sha256": "0c3d6c0ef7bc169e63b503f344e0dd5b497b1a0d1961e879598f39110564008f",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 74 副本 9.xml",
+      "sha256": "feb765f4882d0639668397ad444a0460a0949152433f6e299ca35c194e04ee68",
+      "bytes": 1060
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 76 副本 8.xml",
+      "sha256": "3598d47ccf59564da77359b56f05221b7dfc1d05096f6ca62abd3a1a95777e0d",
+      "bytes": 1060
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 78 副本 6.xml",
+      "sha256": "cbfc9e65be774d51cf47a759c6c7356ce433af890c07cbc3fb9db42435be8109",
+      "bytes": 1059
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 80 副本 5.xml",
+      "sha256": "98336744d92751d15715597c3e80bd294f240c050bef7bd37ab6e23942b953cd",
+      "bytes": 1059
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 82 副本 7.xml",
+      "sha256": "b26c28da0c09acaf228c9495e253dfafd33529b33a28143b557e2bc534853cd1",
+      "bytes": 1059
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 86 副本 8.xml",
+      "sha256": "d52ef6314d039ffd9a40bffdcbd5169da89a4ed3a52c223283df3cab72f8f95d",
+      "bytes": 1060
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 88 副本 5.xml",
+      "sha256": "3975c5521b46ba27138f984a8fbf3438cc29af46e38aa9c4f035d26ec0446cf3",
+      "bytes": 1059
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 90 副本 10.xml",
+      "sha256": "c3c4256748f846a03377eefe26b466b987aefd07fc620b76d9d88426b80ce03f",
+      "bytes": 1062
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 95 副本 6.xml",
+      "sha256": "2e6b046b13090f15faf3dfddb6d6cd34d75fb819c58e71fcd5f1f898f30532a7",
+      "bytes": 1060
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 97 副本 9.xml",
+      "sha256": "7fd75a1c5213f93bbf8c15bebef71484636140a4ea5771be7052217e06d0d647",
+      "bytes": 1060
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 99 副本 8.xml",
+      "sha256": "4b00cf2b3cb6e519e7d8a35a64bc9ae70008f93662c250f2cdf7cbfa4657a6f0",
+      "bytes": 1060
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "sha256": "582eba7bc97513fbe8513e5fc6ec2a99e04c4a29e683f110a985900bc62a1734",
+      "bytes": 54504
+    },
+    {
+      "path": "tools/cf6-elder-assets/README.md",
+      "sha256": "fc873bc8d1a17749959eeadddad3b8765d747f2b2e85bd026dcb61e22df83088",
+      "bytes": 21617
+    },
+    {
+      "path": "tools/cf6-elder-assets/balance.py",
+      "sha256": "934045f42bd316561c55a03fc6451afa088b7887e51a684646dcdb05d8431539",
+      "bytes": 7274
+    },
+    {
+      "path": "tools/cf6-elder-assets/build.py",
+      "sha256": "bd0684faaf4087016da552c1629dd363bbfd11ea40d342a57905ecf7b0e74313",
+      "bytes": 34709
+    },
+    {
+      "path": "tools/cf6-elder-assets/native-manifest.json",
+      "sha256": "7eb40ca2952deb3c5b2e1f829c0b987ad882320c09bf740fcf675406ef26115d",
+      "bytes": 79647
+    },
+    {
+      "path": "tools/cf6-elder-assets/playtest-fixture-manifest.json",
+      "sha256": "c2daec9d2034dd5b2af05e2e70796d3dbd8ad5cbfaf48f6be6ef1007801c6b68",
+      "bytes": 1433
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/act__human__967.xml",
+      "sha256": "cc4948084f3a5ed6b616f7c428ac3d84d135dfe7edab8faf05ef91b894e5c705",
+      "bytes": 143011
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/act__human__968.xml",
+      "sha256": "596104fedff28f747041df80e6716ac06e1dbe549133d947378b2c1ef67f0f4c",
+      "bytes": 239303
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/act__human__970.xml",
+      "sha256": "63c4d3dd4b74027f32038b76417adc8225cfd681b8031a067a391ec999c1c340",
+      "bytes": 910297
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/act__human__972.xml",
+      "sha256": "5283e1fa4879ad7a0ec1e0d17a82d33dcecd4fbe2c4b35b3e6df5d666811ab07",
+      "bytes": 322796
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/act__human__973.xml",
+      "sha256": "ada9a4f99d0d0a96876617ce90e7ca7a1ee5945005483f2c0138aeef52422ae8",
+      "bytes": 239461
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/act__human__974.xml",
+      "sha256": "4b1216ed748ab4bee63eac828bffc7c704cdb7af1955c14cd4dc497f63e91270",
+      "bytes": 791563
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/act__human__跑步.xml",
+      "sha256": "7784493a671a2235a5a49127f34b87ecc59b65f225a065c4fcece9e7c32197ee",
+      "bytes": 251415
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/act__robot__1007.xml",
+      "sha256": "b9b2815ed4ad0515df7e38e33f40abddb99b1c61b0851853b4a5576cac4ddd7a",
+      "bytes": 606624
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/act__robot__1008.xml",
+      "sha256": "f8b37c1efe6855246669b6f30c6e9de2ac094a159eadb18cc21432e953437692",
+      "bytes": 195305
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/act__robot__19940_fx.xml",
+      "sha256": "879f10d2aab6030be82f7ba5022008ab30bacf075b58d2b1fcfc38505048fd1f",
+      "bytes": 147324
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/act__robot__990.xml",
+      "sha256": "1537da6e86721343c807be61094665df0ce4cfc71783b8d45486f782ecacbe3d",
+      "bytes": 182995
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/act__robot__991.xml",
+      "sha256": "ddfc627a5441d916a8767aeeb74e26ffd6ac44b99345d78f944845a27d8cf0bd",
+      "bytes": 301484
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/act__robot__994.xml",
+      "sha256": "00390e5fdf40fc0a76af07f427589a44ea8294745a7aa608eacbbaca04c2f974",
+      "bytes": 394042
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/act__robot__997.xml",
+      "sha256": "e05be20be82677996fae53a96512cae6328dc62e72d7a09d674f00433426d772",
+      "bytes": 337638
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__元件 6.xml",
+      "sha256": "595b6e43ad60ae3ccf891cd276e43d1a94c826fd670c1628696fd4322fa24825",
+      "bytes": 1617
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__Symbol 473.xml",
+      "sha256": "396943f913097f3ee5f565488cf08295c75e6fcb54cab171f1291cb81dc5251a",
+      "bytes": 1834
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__Symbol 475.xml",
+      "sha256": "9f8360fd12604059cbde967225df39934391015a3a506946bce8dc2ec7387f12",
+      "bytes": 1220
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__Symbol 477.xml",
+      "sha256": "c248f2c30f2d16d7f84e7b442e7a18d3592571eee8d8b0a614bb5601feb0162f",
+      "bytes": 3612
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__Symbol 479 副本.xml",
+      "sha256": "00c470c200992e1057df2d1a9cda1d9ed9efd2d90a2f6f34101591674c8bd10c",
+      "bytes": 3888
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__Symbol 479.xml",
+      "sha256": "0a890bc25bcf8bb8e725023847d375512ed9eb16f79a01c776d44d4a729afd30",
+      "bytes": 22547
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__Symbol 495.xml",
+      "sha256": "124e0baa6a07be8ea2f8073e8dae128085cb3593e55fe4a5551a8c851f032a55",
+      "bytes": 1484
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__Symbol 497.xml",
+      "sha256": "2d310c0d40a8ef497536cbc31c5de686718aafc24c1129bfc8eb172fb3f2b67d",
+      "bytes": 19945
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__Symbol 507.xml",
+      "sha256": "4bcf1525922ec487a6527ac9fab56c1d036469cfcd9c21525886cd6057fde8a5",
+      "bytes": 1413
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__Symbol 509.xml",
+      "sha256": "b2c677ff78ced0e74e85f543e57d29d546ebf3958a4500c230d2daa33e4c56c4",
+      "bytes": 2785
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__Symbol 518.xml",
+      "sha256": "1e01eabc86f165237c4dac8c83769f80f425cb7cc0cecde9f89223c2b23f7dba",
+      "bytes": 6425
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__地震1.xml",
+      "sha256": "58d4700c3a6c3df8c2a9465dd03a8c63645ffee8ed3d09428580600400f2e7ba",
+      "bytes": 2463
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__地震2.xml",
+      "sha256": "d7adc7a6984ee371fd413775961d06174972576ef85173d8ed8ebc0d3893fd7a",
+      "bytes": 1852
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__地震3.xml",
+      "sha256": "058cf45910cee4f3b2385d4c88ea5e4e27a5c5b97f4a184dd82a885f90a60949",
+      "bytes": 1873
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__地震4.xml",
+      "sha256": "87adae09f55fa40932a0418dffeb6fb59a2725ea0b1e4ce902013d0eed13b057",
+      "bytes": 1879
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__重复项目文件夹__Symbol 469.xml",
+      "sha256": "ca3b823ada93a8bd9c5cd8c305ade51b1874141257a13355818dad23062aa4c5",
+      "bytes": 2195
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__重复项目文件夹__Symbol 471.xml",
+      "sha256": "d75546c99730f01ce88f09d22c3f12186bbfb141169514da1287b5d9e4c5af0c",
+      "bytes": 3043
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__重复项目文件夹__Symbol 473 副本.xml",
+      "sha256": "e6c08b757dd2041f3f2b93a6678333ba1146ad3a1b49d6c40733c812491ccb21",
+      "bytes": 1870
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__重复项目文件夹__Symbol 473.xml",
+      "sha256": "d4604f6f551eee6f811d2776ea7e5b33367fe7265d10ec2770be42d9f6418002",
+      "bytes": 3637
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__重复项目文件夹__Symbol 475.xml",
+      "sha256": "24b3779354ea870da24e931481d265eb5b214457e3040bfb0214c0be4864f80a",
+      "bytes": 4156
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__重复项目文件夹__Symbol 495.xml",
+      "sha256": "2d66a7face9790452eb6174963bdde1f95edc883163b38407464cbc1e5ab0b20",
+      "bytes": 1506
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__重复项目文件夹__Symbol 507.xml",
+      "sha256": "70d7ec6c3f8b870a21e5f74519886510e0280918a294b3c30ba0b39dbeed1d31",
+      "bytes": 1435
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__重复项目文件夹__Symbol 522.xml",
+      "sha256": "e73a1e63f71c4cb2d2d3282b35db082cda40bd7313b4072f340286b3d8ab2570",
+      "bytes": 1764
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__重复项目文件夹__Symbol 525.xml",
+      "sha256": "b065447708df7a3757b7f6e2957ffb6dc6138ed75c75530969bdf79be80a59a1",
+      "bytes": 3233
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__重复项目文件夹__Symbol 533.xml",
+      "sha256": "0a8c5f44a8f5da6eb3479a42bda57015ba9fd55c6947f276e0faf05bbcd9a993",
+      "bytes": 2325
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__电流.xml",
+      "sha256": "491274416e7f2ee942f3c186a3a8474b7d7de69d1f1f411791ff96868cb659c3",
+      "bytes": 4982
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__重束炮口光.xml",
+      "sha256": "e4f2429168071828026d051110c2cd2d1937c0a6dc0c9250c8a0fbbe06cb6042",
+      "bytes": 3465
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__巨型穿刺能量子弹.xml",
+      "sha256": "d7863170c5bc68ea93fb407ed53e6fd377b1897757f2865bd7654924507cdf1e",
+      "bytes": 5506
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__巨型穿刺能量子弹_能量弹头.xml",
+      "sha256": "a2a9297a8599911fa09b5a5ba04416d70fdac17c4bf455e3f25303ca6f05a520",
+      "bytes": 1787
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__巨型穿刺能量子弹_能量轨迹.xml",
+      "sha256": "b4539c429868e20aba9e55d18e88e8dc8d63e93844e9ba44ada1d8e778b93c69",
+      "bytes": 2844
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地.xml",
+      "sha256": "c76bda18f11970243fe6b82b40186d3f459d1ff2e819c58e60717e40ad546fe5",
+      "bytes": 13684
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5088.xml",
+      "sha256": "bad853aadc8ebedf31c4db3015442141e67e400b415b9061394baf10b01f2ba9",
+      "bytes": 25216
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5089.xml",
+      "sha256": "6300acea5254fd1cff1235db1ddd8cd5c3b40285233f906588a99e12ed70754d",
+      "bytes": 30317
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5090.xml",
+      "sha256": "26ad7fb487f59d890fff5814061f5a8f87fcaa39c699041759e459d851aa836b",
+      "bytes": 945
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5092.xml",
+      "sha256": "8a64fc53a1f1c5cb0bfce4ba37594709826abaf6964fde7a1e5835806ce87ad8",
+      "bytes": 67534
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5093.xml",
+      "sha256": "323ff4ba28ea4884bc111c25ba9fbb68c0c5829d7c30c18412c13c0bb09639ab",
+      "bytes": 72271
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5094.xml",
+      "sha256": "5abbae54d2c843122cbed603826800c703f091781dea15e6373d8ab2ca7c9385",
+      "bytes": 945
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5096.xml",
+      "sha256": "30e65626eee4555ad5c7223fc4778113f49bd79b2bf1b8bf567516d5631eed78",
+      "bytes": 76670
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5097.xml",
+      "sha256": "30947f9b0b905fe289d01b0f9bfe7b8937beea1ea3aaf93c44422e91f87ca810",
+      "bytes": 38610
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5098.xml",
+      "sha256": "f933493bd3c25140f9574e27bcecfeddc2bf57d5c38323418b0eb980273bc75c",
+      "bytes": 945
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5100.xml",
+      "sha256": "8a45f8c2c0e5cff7a47d193051d6ea4ac421275cb0eadbaf74a73fca75c39dfb",
+      "bytes": 81242
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5102.xml",
+      "sha256": "71d60167a554f56674bd87b3515185a05ff4fa35636d943f95bed200cd704db2",
+      "bytes": 20634
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5104.xml",
+      "sha256": "5264b79e4421d6e31efe7c187d27074bd0641065e0fc596b7017835ac0a5afe3",
+      "bytes": 47512
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5106.xml",
+      "sha256": "79c8acca46ba3dac998d1793b8f839dbd95b61e21de7960aa3d4a296682227bb",
+      "bytes": 21165
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5108.xml",
+      "sha256": "9e7f1b2596c3982bca3cf195021c87cfae61fd7473f24e708998a936cc47ba1b",
+      "bytes": 31263
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5110.xml",
+      "sha256": "261eaba2735998ab4bb29e86eab3be5c281d980bc950f939b2a5baea2233e752",
+      "bytes": 13581
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5112.xml",
+      "sha256": "bc87fc17b39e42eaf4ea49e3e96623ad0e75553333f69f24413176a4b1e67b91",
+      "bytes": 15650
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5114.xml",
+      "sha256": "5f0a8c0d52a18ca7e875e6d41d22c2c5613693e5bdca5b17a8cb8d8c869df73e",
+      "bytes": 6192
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__目标.xml",
+      "sha256": "98efc7b2551fa8d94597776a15eaa3df586f37d4abf7243b41d0421c7a928264",
+      "bytes": 10145
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝色炮击.xml",
+      "sha256": "5191d07eca4d49eb4ca7c5783aa98fe90b312f9b86e093b17e1167d462ece23a",
+      "bytes": 7008
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝色炮击_Symbol 65.xml",
+      "sha256": "1e283beab130f00a3ea673ddd43616f86ca273a561054cede60c50723ff90db2",
+      "bytes": 4725
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝色炮击_Symbol 66.xml",
+      "sha256": "249ee88e017195aeaba103074b2a7aa6e69e2b49dd4e5d98b178e60b4282360f",
+      "bytes": 948
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝色炮击_Symbol 67.xml",
+      "sha256": "5227089e7c40ac34c0ee4a3cf53ea316773e0abc5f13fd9ee72e6fb45bae7daf",
+      "bytes": 6447
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝色炮击_Symbol 68.xml",
+      "sha256": "21a7ec5d6ba2e3c4361eb3a0a7eee4c575dae3f3213e5bf66fa0174c4582ce42",
+      "bytes": 948
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝色炮击_Symbol 69.xml",
+      "sha256": "0b46930b24b4e64dbeca8205bab3addb5b78fe6973d04949f7237eae4db0a7e0",
+      "bytes": 5285
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝色炮击_Symbol 70.xml",
+      "sha256": "fbe1f0aafe8a45bf30f4c45b02a54f9260af1959d0e717466cb535bc88d6a2f0",
+      "bytes": 948
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝色炮击_Symbol 72.xml",
+      "sha256": "008224593d6bba40d83e001e2595d1291294795504cd21834b561b8f296d6320",
+      "bytes": 1435
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝色炮击_Symbol 74.xml",
+      "sha256": "6e02dba660acb240a85a065adf9d4cc7d636431b97a292c19427f159c50ec239",
+      "bytes": 6570
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击.xml",
+      "sha256": "c4e1cf238435a0c994c2a4df7b9e3882ba96b12b4f5a5e4d958b4cdc01b9ec10",
+      "bytes": 105643
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击_Symbol 475.xml",
+      "sha256": "ba6b6fd7435a1fbdd6e61f363ec58b8961c4c5e320020fb4bfa1ccbc24d70f52",
+      "bytes": 19916
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击_Symbol 477.xml",
+      "sha256": "9b04b2d4c2d1757248e343f7c1c7634f6e7350adf8af4beb741efcd5214d32e6",
+      "bytes": 1543
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击_Symbol 479.xml",
+      "sha256": "cac8276621cd06aa7a16a5ff588300523673a6520e62aef8d8309ed99f43bd61",
+      "bytes": 1560
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击_Symbol 481.xml",
+      "sha256": "c87c808c5e69d842284ff7540d06a6769deb595e7871661bba190753bd34e6ac",
+      "bytes": 1511
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击_Symbol 483.xml",
+      "sha256": "6f1a823a2c677ccf4164c31974b4315cd2343233f929a40102c60b2ea24e1ba5",
+      "bytes": 1564
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击_Symbol 485.xml",
+      "sha256": "b34ff1528b33d39c3c46e8203baf414a3ece75fd848a2aca5fb2f355d990b429",
+      "bytes": 3826
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击_Symbol 487.xml",
+      "sha256": "4997399aaf556b5e6ecfc0514d585e812469ee6daee49f58112310c7a0e50325",
+      "bytes": 3269
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击_Symbol 489.xml",
+      "sha256": "b9090fe3aefdde8c4396639d265d022f535f88aa9e3b2072097c60431cd72aa1",
+      "bytes": 24832
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击_Symbol 491.xml",
+      "sha256": "c0912b2bbd13e25adfb1f5e7162151874cbec04beb29211fdc3f52bc11c968f0",
+      "bytes": 3157
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击_Symbol 493.xml",
+      "sha256": "2cbfe39ee8ca7351b8afacb6b9d45c51bfbccdaf893a24a620bd7405418c990b",
+      "bytes": 25444
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击_Symbol 495.xml",
+      "sha256": "c77e12af903594bdf08042a0f1da676cc135ac8342dcc9b049706a2b63e993b8",
+      "bytes": 3516
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击_Symbol 497.xml",
+      "sha256": "7bf526168925d55a0acbb58d232081eced6f7591127aeea35d44e75f36da0fac",
+      "bytes": 3081
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击_Symbol 499.xml",
+      "sha256": "ad14fb81120c4c7c8b4bca450eb7bfa0d37280770a34d93c0aebebb08371e102",
+      "bytes": 23218
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击_Symbol 501.xml",
+      "sha256": "48198f98722e965ee513ada3740dff386fd0740377104c5fe62470be4e7fe2cc",
+      "bytes": 3062
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击_Symbol 503.xml",
+      "sha256": "97faadb7770c3c6ca5096e6e8ecff7641dc36fd1ebdea4ac18f95e51c0b54545",
+      "bytes": 22205
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__蓝芒强击_Symbol 505.xml",
+      "sha256": "064cd47fd428ab98466b87ed0ec802c60d5eac4eba2691368c2987226048176f",
+      "bytes": 3108
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__靶标_元件 10.xml",
+      "sha256": "4bd3ae6996c107ee8b114483ecde78c76395bb1db9160e5d8a43c165783ed5cf",
+      "bytes": 4391
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__靶标_元件 11.xml",
+      "sha256": "49e173d1d1ecbff1214eee3fe676fe4c8992fcfdbaf3fe190aeb4b2eab9cb0c7",
+      "bytes": 4432
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__靶标_元件 12.xml",
+      "sha256": "3b6fb517aef7b68fda508363233c4826bc5e71a4fba73cd9ea98d4ff2e2dcd0d",
+      "bytes": 4307
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__靶标_元件 13.xml",
+      "sha256": "ab45416a902307d80dbc70bde75e6dda8069962dbd0584ca45a901a31cbf7f15",
+      "bytes": 4433
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__靶标_元件 14.xml",
+      "sha256": "a3cca1ca0642d5d580a6f45e893a847b7b24c175f3a8b0173edd7aaaa74987ca",
+      "bytes": 4551
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__靶标_元件 15.xml",
+      "sha256": "ad701a5e53651fd8be553eb4474c9fce5127c78f85070fdfefa72a14ee2a8bbc",
+      "bytes": 4185
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__靶标_元件 8.xml",
+      "sha256": "a114babe2d111d34a9d52515c7d79b8df4e6c91c59d7ddc24570df218c3a3185",
+      "bytes": 1250
+    },
+    {
+      "path": "tools/cf6-elder-assets/r8-baked/ext__特效__雾人__靶标_元件 9.xml",
+      "sha256": "0f2aa318c5adaeb83cc0a32162652b2b1011c6c9a184de01c8b3bdd5fff04aec",
+      "bytes": 4041
+    },
+    {
+      "path": "tools/cf6-guard-assets/GuardAI.as",
+      "sha256": "c7c6ed1ce4170e1623f6590e9a0d834f2dd59ce9c554755f1cd125c5b040d380",
+      "bytes": 13769
+    },
+    {
+      "path": "tools/cf6-guard-assets/README.md",
+      "sha256": "6dfdb92a64c1bd9af7babb4c0f7982255a6f0f1a4cfb24d02d1b6083c37f044f",
+      "bytes": 24808
+    },
+    {
+      "path": "tools/cf6-guard-assets/balance.py",
+      "sha256": "908348e5d8529def5c1c01aa7934bfd2bc7111bcfbdfd0a115f9b1c9fd7e3d9c",
+      "bytes": 7374
+    },
+    {
+      "path": "tools/cf6-guard-assets/build.py",
+      "sha256": "ed85ee0b01d3a32f0f3968e3e80a0634a5e7fba4f1bee3b2908b63155c6d71d2",
+      "bytes": 25350
+    },
+    {
+      "path": "tools/cf6-guard-assets/native-manifest.json",
+      "sha256": "c67fefadf918282521ad2af407acbc618075d3871ef70c722e04f591b1e46615",
+      "bytes": 63380
+    },
+    {
+      "path": "tools/cf6-guard-assets/native-motion-samples.json",
+      "sha256": "340d71ecb73118cb2e50aa6795a0459019fcb8ac29a293e9dfd798706c730922",
+      "bytes": 578763
+    },
+    {
+      "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+      "sha256": "d8a8a3153a52dff3f0c355975e24b9d952df4031e068dd08926165dc984e06e6",
+      "bytes": 25144
+    },
+    {
+      "path": "tools/cf6-headbot-assets/README.md",
+      "sha256": "b21547f41af35755f190c711a7f7a5de85638972f3f5bf6208aba42f013210df",
+      "bytes": 19476
+    },
+    {
+      "path": "tools/cf6-headbot-assets/balance.py",
+      "sha256": "f8d0eb1593aa49fd257b1e6bcddc210864cd1acdc09aa02da2f075be094f7cdc",
+      "bytes": 7292
+    },
+    {
+      "path": "tools/cf6-headbot-assets/build.py",
+      "sha256": "aad239a1bb5b4f7b7d008da867ddbede27dbdc171177988351d10dda207d6003",
+      "bytes": 28853
+    },
+    {
+      "path": "tools/cf6-headbot-assets/native-manifest.json",
+      "sha256": "f725cdb5b1ab6da0a325089f61cf392984ab61fa12e256d6610c910b9c376acc",
+      "bytes": 73896
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/act__伸缩冲击.xml",
+      "sha256": "bb5428416cb4a29cc303d8bd87171698e092c352ec9cbc555eaf814ba3c0cd8d",
+      "bytes": 27275
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/act__双臂光束.xml",
+      "sha256": "076f55a4ceb6114814717a3620bd9c52628349d08d8e374e5e2fec7465914938",
+      "bytes": 465693
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/act__悬浮.xml",
+      "sha256": "44b06d66b12d4f1147e92ab2bf72400f7628cb452ab3bbfea6ab8288e9a014b6",
+      "bytes": 145109
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/act__被击.xml",
+      "sha256": "268a50ee2e1807d2f27bedc0017da3bfbc21c8007ae4e81b75c785acb973c52c",
+      "bytes": 411749
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__Itinerant__人物素材__防护罩.xml",
+      "sha256": "e942d1ea4551c67513a6006981077a25c3cb847dbf605712f50cfc9865af9fdf",
+      "bytes": 6663
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 1.xml",
+      "sha256": "3e017e83c1fd0ffb3d43682023f757cd009c750ed472da852cd8fdf4396c7511",
+      "bytes": 3418
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 10.xml",
+      "sha256": "87caf5ff9bf3404bab0ea71c72cee3dd58ce677ffc26fd327855d530361d4f57",
+      "bytes": 95901
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 11.xml",
+      "sha256": "6135a68f95fa74fc5ad874f1ba306848293c4dd81bff2bdfc3f7de4e025d1627",
+      "bytes": 96426
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 12.xml",
+      "sha256": "9e65e7f6fa120b1ad429cbf56294a3ed809c8b79b8a97b210702dbdc0c946f25",
+      "bytes": 152637
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 13.xml",
+      "sha256": "7b6cf05b6dec5a1c93b2e881a9fd0971ff04d16886bf5eccb12a19d5f93aeb11",
+      "bytes": 164983
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 14.xml",
+      "sha256": "45f8c4b1b2aced899c0c707d2f164067d9eb34bf92e271e9c0e015ad332d988c",
+      "bytes": 156698
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 15.xml",
+      "sha256": "809279d3e49c03df2b71bf95918873e4f855c771b6758ed34721ccc3406252f3",
+      "bytes": 129557
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 16.xml",
+      "sha256": "5a59d5c23c2e0685aa71e041fbbf9ea4ad77cb30f5ea6a9910a89b294ca6cb3c",
+      "bytes": 35794
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 17.xml",
+      "sha256": "b58173247670805a0a23d3f85c5cc3c01d05b314da3820bd60124dc7fa859d03",
+      "bytes": 1116
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 18.xml",
+      "sha256": "337cff63aa6f48a3f1f0b85c587ca4e8a8866c39be6d385f11d47f6eab715349",
+      "bytes": 36134
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 2.xml",
+      "sha256": "eee812559607305adbe4fbb8f2916688a3f84a8a5730576d73df2e8dbb4ae582",
+      "bytes": 1306
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 3.xml",
+      "sha256": "34944627011ecdbd1e6b1257ea3abf1a052dca9589337f11cce00bb1e5724289",
+      "bytes": 127098
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 4.xml",
+      "sha256": "0bebcb82a7417d110697f93b1f97237082dca1987c119e641b4d4baad2e7a14b",
+      "bytes": 184908
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 5.xml",
+      "sha256": "6c5690774edd0e7606a906530edca73c1ac47363033bcf6f331864d7c612e117",
+      "bytes": 150360
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 7.xml",
+      "sha256": "8a3718765109c37be6c2efdcc76333e26fd3e8ec082262b1414f0754d887f978",
+      "bytes": 140452
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 8.xml",
+      "sha256": "598f818bdaaf2c28cb79c7e5f1e02623d53865936df2a4e7f6f542d1b56b7793",
+      "bytes": 207666
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__元件 9.xml",
+      "sha256": "09bc2feba0391f2590ab93f87c1c9a99dcc6042289de707654770b0404679025",
+      "bytes": 136372
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__对空枪火.xml",
+      "sha256": "812c8ccb8cfa8c1a170bea631b97f15449acc8914b985506da289b874edbca30",
+      "bytes": 5407
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__尚未整理__dkghkg.xml",
+      "sha256": "b25be86381a1cdc1874f7f146aee9cd85b05294e2f20c7ad4a44378c94e61972",
+      "bytes": 15833
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__Symbol 477.xml",
+      "sha256": "71aa7932e6230649ce5e68e87130e9236399a35f4d42169336b4bd333504ed69",
+      "bytes": 3621
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__Symbol 479 副本.xml",
+      "sha256": "24723133137f765064e5042224a2d1919edb7950371a9f0597a39c87c29483fd",
+      "bytes": 3897
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__重复项目文件夹__Symbol 469.xml",
+      "sha256": "a2858b00b46aa0cdc280c657b3d5692314ba49390148217b06e64a8906895f9a",
+      "bytes": 2204
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__重复项目文件夹__Symbol 471.xml",
+      "sha256": "bbe9be82420a5eae65df3cf17b58dec2822f0d5c9f63b90f0a9324ce07ceadda",
+      "bytes": 3052
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__重复项目文件夹__Symbol 473.xml",
+      "sha256": "fc3d387a3d595ea12a19a8667fe4e0050455f99d34ae05824c0d25e9a1d0c24f",
+      "bytes": 3646
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__方舟指挥官__1.特效文件夹__重复项目文件夹__Symbol 475.xml",
+      "sha256": "bb348d93478a504f25164c9188873dd5b69d5802429a1a489eff36d30ec961cb",
+      "bytes": 4165
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__电流.xml",
+      "sha256": "ec367d9baad4a5f5e5dd9daec65c5ce8ff839f44bccfa4034bd6ca95061c12a1",
+      "bytes": 5045
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__巨型穿刺能量子弹.xml",
+      "sha256": "dfde2b12e4fb6dababcc67fb84061a114cc0c33e114ea6ed1cfd0e03e26b8409",
+      "bytes": 5569
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__巨型穿刺能量子弹_能量弹头.xml",
+      "sha256": "eb0f963d658a1424fff6d27290cd523979bc049400180561bdfcfed8b8a6b561",
+      "bytes": 1796
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__巨型穿刺能量子弹_能量轨迹.xml",
+      "sha256": "ed7c7c5a043f67c384f0d964a6ec860f4f0c67f174ce162b186a0f6374b96f87",
+      "bytes": 2853
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆.xml",
+      "sha256": "a332cd8172987d6646dcf8932a8946521e3ac158663f766e1a41ac11bfd3c966",
+      "bytes": 10648
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆_Symbol 5116.xml",
+      "sha256": "291e8886c878b4c9705a111a52311520a6c76af610b5aad77ee44b3ea7099f7e",
+      "bytes": 7310
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆_Symbol 5117.xml",
+      "sha256": "488eb371d8a195b4c0a4336193997db2710919aa37e74679d639da83b26b6e1f",
+      "bytes": 972
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆_Symbol 5118.xml",
+      "sha256": "1c210cb4df34e004a697e8cff3bb071229495ece836c870089701a99ec8fec90",
+      "bytes": 11819
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆_Symbol 5119.xml",
+      "sha256": "ac7c75a9b28d0bf24aac37d9c3b3384a29791a13c017917f28da416a10a3e59b",
+      "bytes": 972
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆_Symbol 5121.xml",
+      "sha256": "7d11ebf061a316f4503c4f17915a4305cefa6941fe12289890b37c406454ec8e",
+      "bytes": 6256
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆_Symbol 5122.xml",
+      "sha256": "a279fa74611b3045e4ac600d39cf511994d1a0c143030aa454a0f33f4f2ab342",
+      "bytes": 10171
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆_Symbol 5123.xml",
+      "sha256": "8264c6fa8d24fbec54957cd289cec8fe34bcf8ff690a490f5ae330ef069e0fa9",
+      "bytes": 972
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆_Symbol 5125.xml",
+      "sha256": "86f4402c0fd52b29920297dce7af6bbcda247cfff16592a293b57c027e82e05f",
+      "bytes": 11193
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆_Symbol 5126.xml",
+      "sha256": "91609849c9e0698a0f74b0cb6c7af55e2acbf7504159dd3806b7edff04ed68ef",
+      "bytes": 29727
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆_Symbol 5127.xml",
+      "sha256": "8ba0cced8a45c56bf36b47a189e86aeaa645bcdfa99788ada83dd2323890176e",
+      "bytes": 972
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆_Symbol 5129.xml",
+      "sha256": "0fe3b3233ebdcea52f34ac48d9ccbb37a0e9ca9a11c16cf31cbd3d33337a56ac",
+      "bytes": 16886
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆_Symbol 5130.xml",
+      "sha256": "caf0656955b0428b8c94e3b6d93a9782be89a3c644ddfa29bb0a2cb3b0810394",
+      "bytes": 45913
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆_Symbol 5131.xml",
+      "sha256": "36e2c58959f58303a5a811cdae400adb5803f20964c29b66ad44d927add8706a",
+      "bytes": 972
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆_Symbol 5133.xml",
+      "sha256": "09fdb7a8f648fcf0a3793bf5cd7a27bf3e2eb095c9bed8f31c220b220910883b",
+      "bytes": 22371
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆_Symbol 5135.xml",
+      "sha256": "665771bef693ce5d752195fbc28790201f755188de944405254b361dee85c9a9",
+      "bytes": 17360
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强烈震爆_Symbol 5137.xml",
+      "sha256": "c81ea27115916aae39c7b39952fa2832948515fcc6c31d35269c23f709246ded",
+      "bytes": 9196
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地.xml",
+      "sha256": "3dd44f93dcfb48273a212fa9d7923fac220c5f317194391cc42e6c6710fb44a7",
+      "bytes": 13819
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5088.xml",
+      "sha256": "d99218cb9438378ab209b8034a966d1caca14d266bd61320f0dad0714cca4279",
+      "bytes": 25225
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5089.xml",
+      "sha256": "527f1a0ccfffa22880ce2d8bcbcb9d1794a0f0db5476e99bf3e3ad5824fa7a3d",
+      "bytes": 30326
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5090.xml",
+      "sha256": "2ca1168557c6d3ae469b46df3140022f99ed97454dd74c3d49bfa36e11b98846",
+      "bytes": 963
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5092.xml",
+      "sha256": "d421b56cd5c4a3955db1734941c7b5dab2e6d59c5992b93be25a5df69ac31711",
+      "bytes": 67543
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5093.xml",
+      "sha256": "5f6ba4760d0850435ae8380b12b4db6decd6853f9656b8b8cf7f05c9a57838b8",
+      "bytes": 72280
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5094.xml",
+      "sha256": "4ef3a7be5a45ea9e09a554c9d04c6a69228308d84129aa7ffe415bbef95b6322",
+      "bytes": 963
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5096.xml",
+      "sha256": "b2f69f778551b820c473941e36b50efbeab55af7345000b7e0dc067b19679524",
+      "bytes": 76679
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5097.xml",
+      "sha256": "06dbd1f0cd80e7718e2e36c94c089240704e6c3514454c5b8110ad71d9b17953",
+      "bytes": 38619
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5098.xml",
+      "sha256": "5b1cb18354aa5fcfbe0a40be8732d92fc1563157ca467437e2705888ec3e8d65",
+      "bytes": 963
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5100.xml",
+      "sha256": "75930095726042ac5ae92cb892cc4ff2fab146d3987b712d3133553782b53932",
+      "bytes": 81251
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5102.xml",
+      "sha256": "06f1bccfc84e460b8e209b6e068378190f2f46e01f0b01cacd34efa2f9e244cd",
+      "bytes": 20643
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5104.xml",
+      "sha256": "a35ddf7f9c78523766136f474c5e8f075332b43561a23d383f0be50e9fdb54e4",
+      "bytes": 47521
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5106.xml",
+      "sha256": "ee79e02b7475aaf3aacc844c349f716748dd3c4149deb4325db19cbaef620a6e",
+      "bytes": 21174
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5108.xml",
+      "sha256": "c4c2ead93edfa6785495fe457782dc5df4f8fe271168c9426ca6fa7e1db0fbe4",
+      "bytes": 31272
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5110.xml",
+      "sha256": "e401140f6eef3ea75bfa2791e2b18f0e440efa00d1adfe34ccfd912c861d41c0",
+      "bytes": 13590
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5112.xml",
+      "sha256": "48fd74b5001b087e3028c3f2d468820d7587871a1a7f96a810aea82f44f8099c",
+      "bytes": 15659
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__强震地_Symbol 5114.xml",
+      "sha256": "505ab2b8755afbd72d71737d138d736e3c1bee377a3ab15f741a8393c8ea9499",
+      "bytes": 6201
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__目标.xml",
+      "sha256": "bb5164734a9ba52732793a7c6068ae0583efc50c722193b28cbf6ca145da7b56",
+      "bytes": 10226
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__蓝色炮击.xml",
+      "sha256": "18ebbaacd9129ccec2a1829327bf7c4466f344771191bfa27281add4c5591e2a",
+      "bytes": 7089
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__蓝色炮击_Symbol 65.xml",
+      "sha256": "14a0f9dc1e9adbcafa3fcea48280b56c4b9ea647c556656ad0af6688a58ff5fb",
+      "bytes": 4734
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__蓝色炮击_Symbol 66.xml",
+      "sha256": "04518e933a8be9cf69f5eb7e9cc0bc4a061d40771bbaba9b533b0b95e0fc6af2",
+      "bytes": 966
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__蓝色炮击_Symbol 67.xml",
+      "sha256": "974aa181de0c40de6ea8defa734812c12f9529e29a59a531ddf3c449c32a67e7",
+      "bytes": 6456
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__蓝色炮击_Symbol 68.xml",
+      "sha256": "dc683041aa17d25ccc090a78bbec403037934fc44b4d01af124ced7f12b15083",
+      "bytes": 966
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__蓝色炮击_Symbol 69.xml",
+      "sha256": "3647449c069fdf72d7c300ba79cd204b3fa75c07fd6ec92de16e76db892aad6d",
+      "bytes": 5294
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__蓝色炮击_Symbol 70.xml",
+      "sha256": "917e4d79c6d65f84e5ebea5abad87a7229b5565557d83548dda51185720e51b0",
+      "bytes": 966
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__蓝色炮击_Symbol 72.xml",
+      "sha256": "c6095cba9ea6ae3242e925fb406660bbe6fe5d05823ebbdbed29bee7e69bd72f",
+      "bytes": 1444
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__蓝色炮击_Symbol 74.xml",
+      "sha256": "02de68338273b95fd83f5db0a9d5114b434b38406f47dcd7610d943707f4ac2b",
+      "bytes": 6579
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升.xml",
+      "sha256": "8f5d6e1700c3002ccc8b47602fc344116469a853b873073db5e39c6a6c27946c",
+      "bytes": 16120
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升_Symbol 125.xml",
+      "sha256": "00a3092cda4d5ff4a9b4a825bdc7dae1e6a7edb632103caf81b2a9fe6cc9e4de",
+      "bytes": 17022
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升_Symbol 127.xml",
+      "sha256": "481b0237a771c0ef9c295c9049b934da8121d6093418a60543f73c200ceed736",
+      "bytes": 24716
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升_Symbol 129.xml",
+      "sha256": "e118976d352eea6414925fc1fe727912f685b7a20f3003be7acb1c391c7e7659",
+      "bytes": 28790
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升_Symbol 131.xml",
+      "sha256": "c0ceca6f8f4f3cd92308b8cb1df1dc393408c671cdf6cba4b10007f72188dc96",
+      "bytes": 41011
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升_Symbol 133.xml",
+      "sha256": "ebcc6f84a0f965ec1e67b9584621052fca974536b1d2e9a0b66623ee68323dbc",
+      "bytes": 29654
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升_Symbol 135.xml",
+      "sha256": "2452362c8908581bb7d671b1f17699e6e45c832c58e10bbc90de0d123809a823",
+      "bytes": 24372
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升_Symbol 137.xml",
+      "sha256": "a077f901d3e41f2d2565d01d1f1d7e9b8c0426ef2aca58fc52ff7639c3a31b1d",
+      "bytes": 18046
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升_Symbol 139.xml",
+      "sha256": "482152ea386b387c25ec9edcd0f6ae2867a806697c7d54cd2329df2627571de0",
+      "bytes": 28758
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升_Symbol 141.xml",
+      "sha256": "35017f7d389d848ec66b87c5a5f4cc5172ba7ecb0da5cd0d357d9a08b03c5ab8",
+      "bytes": 52754
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升_Symbol 143.xml",
+      "sha256": "94de4a1c4e24a9457b7f5cdbb13c37e8d0c7ddb98156faf381c65d7843928e9e",
+      "bytes": 29381
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升_Symbol 145.xml",
+      "sha256": "f1f116200df858c7426762e124c88f27c92dd58b5f1f4d6a004e1064b35dd970",
+      "bytes": 147807
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升_Symbol 147.xml",
+      "sha256": "8e2ecfdb7b225e6f6e77624036df9776d45647b11adadd760e0a5a86b1d754be",
+      "bytes": 19207
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升_Symbol 149.xml",
+      "sha256": "210fcff42dcb41cc6823971b793963ba1b8c7f5daccf745860b480f8c19dfebc",
+      "bytes": 91559
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升_Symbol 151.xml",
+      "sha256": "9e3c98a61b42c29cf2729028a55514f205f3844200425dd54d66ee21f2ae90b8",
+      "bytes": 4359
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升_Symbol 153.xml",
+      "sha256": "13c098ad63404bfb216cc69df2a11af14400a922606ae484cde421da82a4e6d3",
+      "bytes": 90126
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__金焰斜升_Symbol 155.xml",
+      "sha256": "c3a066bc1a5c0ab076bc650d67642bf12a3f4d64f127ce792ebf304b2913bac9",
+      "bytes": 33700
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__靶标_元件 10.xml",
+      "sha256": "a9cce194b5c11330aabe33cd53c0146a68b4153b35b8ecc137f7bf26019d0a18",
+      "bytes": 4436
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__靶标_元件 11.xml",
+      "sha256": "2c17b90bd94744b7a2577c7acb43b2d8c1a47779b5dcc648acac4a22ff97eec5",
+      "bytes": 4477
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__靶标_元件 12.xml",
+      "sha256": "d16e0e914ca2852a0dde4cd4715cd4e599ed3b202e00aceae708463a221ba53d",
+      "bytes": 4352
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__靶标_元件 13.xml",
+      "sha256": "df42cf2b32f1725b0433e5eca12a4abd77d84ae6c7d0046b7e05ef5490aac48b",
+      "bytes": 4478
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__靶标_元件 14.xml",
+      "sha256": "0b7c7be85ceda32b2c9a1f175ef8d01171880f9baa7685c96ecdf8264287b743",
+      "bytes": 4596
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__靶标_元件 15.xml",
+      "sha256": "7110362b60a81cbb6cb30657b36167a99160c6832d2a9095acb74ed1deace700",
+      "bytes": 4230
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__靶标_元件 8.xml",
+      "sha256": "c499af77db242b632877334015e18c2787f1e11f8204bb6cc74d81f377dcc5ea",
+      "bytes": 1259
+    },
+    {
+      "path": "tools/cf6-headbot-assets/r8-baked/ext__特效__雾人__靶标_元件 9.xml",
+      "sha256": "14f0f8f98ec9a54940057060b9dde138df2d27444de0571f0dabea2a6be1adaa",
+      "bytes": 4086
+    },
+    {
+      "path": "tools/cf6-manman-assets/ManmanAI.as",
+      "sha256": "b1c265fbca08deba29bc15b8f283a761bb6df87b7e3d1a2d15fa9dca463c5af6",
+      "bytes": 17716
+    },
+    {
+      "path": "tools/cf6-manman-assets/README.md",
+      "sha256": "20708575a934b394542a10f42a11a6ac6d0c2f6a47095a93547420ac8d6ca62b",
+      "bytes": 18062
+    },
+    {
+      "path": "tools/cf6-manman-assets/balance.py",
+      "sha256": "3889ee22c93dec21f08abdd1d255231815847038f50dc76e70d1c75bd2c07879",
+      "bytes": 7103
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "sha256": "2dee3ca844fd0a42ab5578d107969cd3a0085c140ced2a0c5335a82eb4443765",
+      "bytes": 22763
+    },
+    {
+      "path": "tools/cf6-manman-assets/native-manifest.json",
+      "sha256": "727347b6f38e479a592e03ea3f3433cd045689fa76f247ef8ec75b72f561f519",
+      "bytes": 29687
+    },
+    {
+      "path": "tools/cf6-manman-assets/r8-baked/Symbol 1110.xml",
+      "sha256": "eaf7f4dea608fc2fec0143c125ecffbc073fcaa3f7529e3d01c232a15d653462",
+      "bytes": 501211
+    },
+    {
+      "path": "tools/cf6-manman-assets/r8-baked/Symbol 1112.xml",
+      "sha256": "3e147cb3e5af0d1fb52aecb05d82a012ae68c3fb446960ba350a2f2a4c646ce1",
+      "bytes": 278247
+    },
+    {
+      "path": "tools/cf6-manman-assets/r8-baked/Symbol 1113.xml",
+      "sha256": "b782a1fa14535af489572c6f1d87cbade3d574a2450c90addf5f421ad7f65dee",
+      "bytes": 245781
+    },
+    {
+      "path": "tools/cf6-manman-assets/r8-baked/Symbol 1116.xml",
+      "sha256": "083ac46aab167fef9844bc920f4eb00f921e6652c6588850d04da3fda8a418b2",
+      "bytes": 323969
+    },
+    {
+      "path": "tools/cf6-manman-assets/r8-baked/Symbol 1117.xml",
+      "sha256": "3a5850e2224af39be9e477a57f3e86c13419d059f16103e88d4adeb0cfbbe223",
+      "bytes": 1301755
+    },
+    {
+      "path": "tools/cf6-manman-assets/r8-baked/Symbol 1118.xml",
+      "sha256": "9bea51fdc54a06e2d0ab6fb25c8162b43630771f81a4dcc8ad0f78d9ae74bd5e",
+      "bytes": 24399
+    },
+    {
+      "path": "tools/cf6-manman-assets/r8-baked/Symbol 1120.xml",
+      "sha256": "07ca85b3475e8437736e569da1b7f1a30e6f315d02b397d273680b931c2f8c69",
+      "bytes": 292458
+    },
+    {
+      "path": "tools/cf6-manman-assets/r8-baked/Symbol 137.xml",
+      "sha256": "166036ff0dfd29e86e6677c6497aa11829d0af2055bedd920b6fbef128eada09",
+      "bytes": 50439
+    },
+    {
+      "path": "tools/cf6-manman-assets/r8-baked/Symbol 139.xml",
+      "sha256": "74d93f40c0e6af3616feeab3677efc667b760966367933ddc3dcc753f13fe965",
+      "bytes": 127129
+    },
+    {
+      "path": "tools/cf6-manman-assets/r8-baked/火花.xml",
+      "sha256": "f7b250e4d775dc9910a81ffdf774638794b693417e6913e4a7d8ff3a5262d1de",
+      "bytes": 7577
+    },
+    {
+      "path": "tools/cf6-soldier-assets/EliteAI.as",
+      "sha256": "70b5d9d90735b8a7268cef7a4aec70f78ab7b8c2cba45ba3361b9f08dc4c8ac6",
+      "bytes": 33031
+    },
+    {
+      "path": "tools/cf6-soldier-assets/README.md",
+      "sha256": "e381d89d1ae35d198fc6e68bfcf3e9ca82a0ee97e0ce58561330d5c76622fa70",
+      "bytes": 52462
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierAI.as",
+      "sha256": "60197196d2446a54fd9b6408f5f00de06a35e034d7fcde8160b626795d594dea",
+      "bytes": 20216
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierRoles.as",
+      "sha256": "60769cff7ab11d499fa1b5cddb69040afc08368a4178082bd105a47f94d06ff9",
+      "bytes": 13850
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierSubweapon.as",
+      "sha256": "55fe5168018d885c3b1421cca6807bd51514708ebb7c7470eeb4108e25a544ab",
+      "bytes": 6693
+    },
+    {
+      "path": "tools/cf6-soldier-assets/TacticalAI.as",
+      "sha256": "f5944ea080d42c0c207da7f0d13b4624d7e9eab9cef05cc241135ed71b39d6f4",
+      "bytes": 18300
+    },
+    {
+      "path": "tools/cf6-soldier-assets/art_revision.py",
+      "sha256": "ba6d0e54babb6f9a9ad3d36728cd33aacbc45d44089d6c2d84deac42f6569941",
+      "bytes": 9865
+    },
+    {
+      "path": "tools/cf6-soldier-assets/balance.py",
+      "sha256": "8976ff288bdf366356a37804d046720df0634e91f1483aa3366521db81ee81e5",
+      "bytes": 9282
+    },
+    {
+      "path": "tools/cf6-soldier-assets/build.py",
+      "sha256": "e0b8dda16f41a38777ad0a79ded4db21a8bd214b82c06c308d9b21f9d4c1946c",
+      "bytes": 31506
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-pressure-baseline/Codex光头保安素材.swf",
+      "sha256": "bf4020477690ecfb106c488c7ea909e8bb01169de266f621008116a27b3fa318",
+      "bytes": 233569
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-pressure-baseline/Codex大刀机器人素材.swf",
+      "sha256": "5b32353fa5aa2c4e995bcea629dd3c955727808f72318f1d9c5491e708742e70",
+      "bytes": 157405
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-pressure-baseline/Codex大头机器人素材.swf",
+      "sha256": "4192f8bfd6861ff79b4b693d7d6eb94e0b23aab9fb95ffe1e3d53c0f0cf28e75",
+      "bytes": 383578
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-pressure-baseline/Codex蛮蛮素材.swf",
+      "sha256": "9244d555e8b6421a3e831ed670011ed367be0e41cab45fcaa0aaf02245a41a61",
+      "bytes": 180023
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-pressure-baseline/manifest.json",
+      "sha256": "2447efebf68ea472866d23394143f0e88733a5a03e42c2242f530690089c8bbe",
+      "bytes": 648
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-pressure-baseline/origin.json",
+      "sha256": "63a24b8fbbb8430d6bcb8ca592cbdc9526b742c76f04bf217e484822cc9d8b7b",
+      "bytes": 929
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-upstream/checks/clean-baseline-preparation.log",
+      "sha256": "b107f00f147b130163b856431dad3cee6ace1239b2370581edcd998e7bbef3af",
+      "bytes": 40
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-upstream/checks/verify-bladebot.log",
+      "sha256": "cdfc9f481d8e0560c0e13431bbd3a2026b7966130fab7af6e79939a3d0d6188c",
+      "bytes": 953
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-upstream/checks/verify-elder.log",
+      "sha256": "c4dc727b058cb255ee996e3cda205993128b4190c2b6f19fab3cd28eeb8b61a5",
+      "bytes": 1628
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-upstream/checks/verify-guard.log",
+      "sha256": "755f49a2edddb218f8eb078da97302142482972e9c39f9be594bc8346206f956",
+      "bytes": 1337
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-upstream/checks/verify-headbot.log",
+      "sha256": "88ddd8c688b83b66556f343a2179cbf403ae98364dc996e3c1a91900e2232346",
+      "bytes": 952
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-upstream/checks/verify-manman.log",
+      "sha256": "5d83d7e7bd209815c9cda6a81d81286edd92be66ff808ddd2218943f2702bc1b",
+      "bytes": 916
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-upstream/checks/verify-soldier.log",
+      "sha256": "ec5db6b68099c476fd6912a573aabd75dc3a04984944aba98c89e176cc2bcbd8",
+      "bytes": 2218
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-upstream/native-elder/compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-upstream/native-elder/flashlog.txt",
+      "sha256": "b91185dd6a763c8d37c57fd35b398a9fc3b9c2426127db10a04b2c53e0dc380a",
+      "bytes": 48292
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-upstream/native-elder/receipt.json",
+      "sha256": "83aba40da3930644fa8f7bfc546e526a981fef3a624b61503c767e0f3144ff1b",
+      "bytes": 882
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-upstream/native-pressure/compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-upstream/native-pressure/flashlog.txt",
+      "sha256": "d491f40717d9dac9aa7582f321f423379a1a30ef7afad7f2fede3efed6889605",
+      "bytes": 15238
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-upstream/native-pressure/receipt.json",
+      "sha256": "8b9c69385552cb26fb82acccb3282a0e39a53a23d56da4776e772a8d6d0e9c06",
+      "bytes": 818
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-upstream/native-soldier/compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-upstream/native-soldier/flashlog.txt",
+      "sha256": "d02d533a13e6956871e8ef26657866ec58b5b4c7e36420ab62add60b4c7a6c6b",
+      "bytes": 36654
+    },
+    {
+      "path": "tools/cf6-soldier-assets/evidence/20261031-upstream/native-soldier/receipt.json",
+      "sha256": "237995eca18fb6925c4d39d1e640fcf6704dae8e505b7d46bf3fe022fba3dbd1",
+      "bytes": 813
+    },
+    {
+      "path": "tools/cf6-soldier-assets/native-manifest.json",
+      "sha256": "dbfc570deac905dd274a82f611b96f323f9f5b126657565e5473110fcfb2e5aa",
+      "bytes": 155411
+    },
+    {
+      "path": "tools/cf6-soldier-assets/tactical-profiles.json",
+      "sha256": "5417d99891aabfdc86842a5d3718be32cc350ca2da681e988b6dabc352d1769a",
+      "bytes": 6929
+    },
+    {
+      "path": "tools/cf6-soldier-assets/tactics.py",
+      "sha256": "1ebb8cbc71591a8cff7cd71a285dd6ae25746473c6d5de1114ab603f443759f2",
+      "bytes": 10755
+    }
+  ],
+  "finalDocGovernancePassed": true
+}

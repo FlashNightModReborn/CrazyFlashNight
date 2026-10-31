@@ -19,7 +19,7 @@
   "buildInputs": [
     {
       "path": "tools/cf6-soldier-assets/build.py",
-      "sha256": "bd133b192c4f1abd2d4cf5daad1f3cfae49569e4a0cd760107d4ed2d05cca378"
+      "sha256": "e0b8dda16f41a38777ad0a79ded4db21a8bd214b82c06c308d9b21f9d4c1946c"
     },
     {
       "path": "tools/cf6-soldier-assets/vector.py",
@@ -31,7 +31,7 @@
     },
     {
       "path": "tools/cf6-soldier-assets/SoldierAI.as",
-      "sha256": "3036e43e714890f85131e67bddfe334ded171773634a294210eb157020237bd0"
+      "sha256": "60197196d2446a54fd9b6408f5f00de06a35e034d7fcde8160b626795d594dea"
     },
     {
       "path": "tools/cf6-wings-assets/vector.py",
@@ -39,7 +39,7 @@
     },
     {
       "path": "tools/cf6-manman-assets/build.py",
-      "sha256": "868001fe8a0b67b0c642455e51c0e5c19ff90df2b811904b028c22b9c90f2c68"
+      "sha256": "2dee3ca844fd0a42ab5578d107969cd3a0085c140ced2a0c5335a82eb4443765"
     },
     {
       "path": "tools/cf6-zombie-assets/build.py",
@@ -135,12 +135,12 @@
     {
       "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
       "lineEndingNormalization": "lf",
-      "sha256": "105b16ed054cca9b81840d6f598ce908ee3d376f568a982b8407af7d1b61e9cc"
+      "sha256": "9f925d6693798fd2aa6de61aac06f3db384a141638b7a8b8d3940101029f1371"
     },
     {
       "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
       "lineEndingNormalization": "lf",
-      "sha256": "c4b91be9636abec1a910e523dfd253261872bc5461fea772203395d60a7b2486"
+      "sha256": "48f3b71c9c27e667b4758125ec133d0b622b069a52d8359296829b9dcee2fe1c"
     },
     {
       "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-持盾-R4/archive-origin.json",
@@ -152,7 +152,7 @@
     },
     {
       "path": "tools/cf6-soldier-assets/EliteAI.as",
-      "sha256": "69664b35bd201520171a58a44ddb61dcca628f12cb5e93e9cada100f604094fe"
+      "sha256": "70b5d9d90735b8a7268cef7a4aec70f78ab7b8c2cba45ba3361b9f08dc4c8ac6"
     },
     {
       "path": "tools/cf6-soldier-assets/elite_anatomy.py",
@@ -184,11 +184,11 @@
     },
     {
       "path": "tools/cf6-soldier-assets/art_revision.py",
-      "sha256": "7a2c32517faf68baf242d494055c80cd4b3ad9752ce88bf5fe004fa664b02af1"
+      "sha256": "ba6d0e54babb6f9a9ad3d36728cd33aacbc45d44089d6c2d84deac42f6569941"
     },
     {
       "path": "tools/cf6-soldier-assets/SoldierRoles.as",
-      "sha256": "4cdc5a1b2eb9b4deb48252e89108f1091572fd62a07e0cc7002bbbed152f51e9"
+      "sha256": "60769cff7ab11d499fa1b5cddb69040afc08368a4178082bd105a47f94d06ff9"
     },
     {
       "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-美术R8/actions/倒地恢复.xml",
@@ -268,15 +268,19 @@
     },
     {
       "path": "tools/cf6-soldier-assets/tactics.py",
-      "sha256": "bdd477fa097878811fc47cc482de9656adeadbdcf3d8137901a2be60095ffa98"
+      "sha256": "1ebb8cbc71591a8cff7cd71a285dd6ae25746473c6d5de1114ab603f443759f2"
     },
     {
       "path": "tools/cf6-soldier-assets/TacticalAI.as",
-      "sha256": "abb32bac0a75a732b49cda18a0e7272736a790774c168a360e02817a14be995c"
+      "sha256": "f5944ea080d42c0c207da7f0d13b4624d7e9eab9cef05cc241135ed71b39d6f4"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierSubweapon.as",
+      "sha256": "55fe5168018d885c3b1421cca6807bd51514708ebb7c7470eeb4108e25a544ab"
     },
     {
       "path": "tools/cf6-soldier-assets/tactical-profiles.json",
-      "sha256": "2c2de540d75c7855c27ce598c19f7f3a53ca14279b44dc53bd6caa674f53007e"
+      "sha256": "5417d99891aabfdc86842a5d3718be32cc350ca2da681e988b6dabc352d1769a"
     },
     {
       "path": "flashswf/arts/new/Codex素材源稿/CF6教官-R9/archive-origin.json",
@@ -1361,8 +1365,8 @@
         "rifleRestFrames": 18,
         "eliteRestFrames": 30,
         "eliteStandShots": 4,
-        "retreatTrigger": 300,
-        "retreatDistance": 380,
+        "retreatTrigger": 220,
+        "retreatDistance": 220,
         "smokeRestFrames": 90,
         "smokeMoveFrames": 24,
         "smokeMoveSpeed": 0.55,
@@ -1395,7 +1399,14 @@
         "evasionRestFrames": 90,
         "retreatZBudget": 56,
         "retreatZSpeed": 0.8,
-        "evasionRetreatX": 64
+        "evasionRetreatX": 64,
+        "retreatKeepRange": 340,
+        "runTrigger": 380,
+        "runStopRange": 280,
+        "evasionRetryFrames": 12,
+        "slidePassDistance": 140,
+        "slideMaxTravel": 620,
+        "slideSpeedLimit": 3
       },
       "elite": {
         "rifleShots": 3,
@@ -1403,8 +1414,8 @@
         "rifleRestFrames": 30,
         "eliteRestFrames": 30,
         "eliteStandShots": 4,
-        "retreatTrigger": 300,
-        "retreatDistance": 380,
+        "retreatTrigger": 220,
+        "retreatDistance": 220,
         "smokeRestFrames": 90,
         "smokeMoveFrames": 24,
         "smokeMoveSpeed": 0.55,
@@ -1437,7 +1448,14 @@
         "evasionRestFrames": 90,
         "retreatZBudget": 56,
         "retreatZSpeed": 0.8,
-        "evasionRetreatX": 64
+        "evasionRetreatX": 64,
+        "retreatKeepRange": 340,
+        "runTrigger": 380,
+        "runStopRange": 280,
+        "evasionRetryFrames": 12,
+        "slidePassDistance": 140,
+        "slideMaxTravel": 620,
+        "slideSpeedLimit": 3
       },
       "instructor": {
         "rifleShots": 6,
@@ -1445,8 +1463,8 @@
         "rifleRestFrames": 18,
         "eliteRestFrames": 30,
         "eliteStandShots": 5,
-        "retreatTrigger": 300,
-        "retreatDistance": 380,
+        "retreatTrigger": 220,
+        "retreatDistance": 220,
         "smokeRestFrames": 90,
         "smokeMoveFrames": 24,
         "smokeMoveSpeed": 0.55,
@@ -1479,7 +1497,14 @@
         "evasionRestFrames": 90,
         "retreatZBudget": 56,
         "retreatZSpeed": 0.8,
-        "evasionRetreatX": 64
+        "evasionRetreatX": 64,
+        "retreatKeepRange": 340,
+        "runTrigger": 380,
+        "runStopRange": 280,
+        "evasionRetryFrames": 12,
+        "slidePassDistance": 140,
+        "slideMaxTravel": 620,
+        "slideSpeedLimit": 3
       }
     },
     "bounds": {
@@ -1642,6 +1667,34 @@
       "evasionRetreatX": [
         0,
         160
+      ],
+      "retreatKeepRange": [
+        220,
+        460
+      ],
+      "runTrigger": [
+        250,
+        600
+      ],
+      "runStopRange": [
+        120,
+        400
+      ],
+      "evasionRetryFrames": [
+        6,
+        30
+      ],
+      "slidePassDistance": [
+        60,
+        240
+      ],
+      "slideMaxTravel": [
+        240,
+        900
+      ],
+      "slideSpeedLimit": [
+        1,
+        4
       ]
     }
   },
@@ -2830,8 +2883,8 @@
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_倒地恢复.xml",
-      "sha256": "c669d51ca7be275b5d1337f84623b15e26e5445f0ce48a6da3169a785e61a04b",
-      "bytes": 419905
+      "sha256": "67883d4dc811cc0aa0cc2d7ddac3513b0ef2608ce9c82a63268e014ddb418cd0",
+      "bytes": 419908
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_击飞.xml",
@@ -2840,8 +2893,8 @@
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_匕首刺击.xml",
-      "sha256": "cc810b6105d6cf2982a589a981623312234b74706ae99cd3474299baae9e3683",
-      "bytes": 179619
+      "sha256": "eda331707b5dfb118e9afd63ccd69465f0e9c60021a9d5f0cc1c5dcaf47d5b26",
+      "bytes": 179618
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_投掷手雷.xml",
@@ -2850,8 +2903,8 @@
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_持盾匕首刺击.xml",
-      "sha256": "32e3cc36b6e9c5651712eeb8679f3d627b1e108fda1c3d27a48bd3f6df81e671",
-      "bytes": 419597
+      "sha256": "46db8ed42490cc6685a4daec4baccaef89be9c0dd9206f67abcd5a1fd60f7c12",
+      "bytes": 419595
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_持盾点射与装填.xml",
@@ -2870,8 +2923,8 @@
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_持盾被击.xml",
-      "sha256": "3e5baf9b77e1a3ff925175981c34d60dd841245e07d4b4309c2d9b60a705563d",
-      "bytes": 184832
+      "sha256": "85146bcc1be16d7299b8d3026db12259e07e34c1e6ff0c2842b5b2418a128788",
+      "bytes": 525207
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_死亡.xml",
@@ -2905,8 +2958,8 @@
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_被击.xml",
-      "sha256": "b442d58e9fc2bb0202ddbefb9f81e62df460f5ebe1055ece7d040c820dddbf72",
-      "bytes": 137459
+      "sha256": "f5e6dc12ea9a582c8f9b51c20a009d81326e87b6b713e54445fdd7011e261989",
+      "bytes": 269460
     },
     {
       "path": "LIBRARY/Codex/教官/动作/教官_被投.xml",
@@ -2925,13 +2978,13 @@
     },
     {
       "path": "LIBRARY/Codex/教官/敌人-CF6持盾特种教官.xml",
-      "sha256": "46e98eb9b6aa70bd76d4fc93032aa81f810e45521006011e170bd0da28ed5cca",
-      "bytes": 111035
+      "sha256": "93d35335b8cc99271a9535ea43bcdec5282e1d7eee99266239c5ac1e6b089efb",
+      "bytes": 127452
     },
     {
       "path": "LIBRARY/Codex/教官/敌人-CF6特种教官.xml",
-      "sha256": "3abca016b72b537afabdcfa0f2dc2f4b5ac36d301b8773ad27dae6048407bb39",
-      "bytes": 111017
+      "sha256": "623dde99bf985031f227ce747eec3844aa12bf04ea46e7e0a3ec400392653509",
+      "bytes": 127434
     },
     {
       "path": "LIBRARY/Codex/教官/教官_行为驱动.xml",
@@ -4105,8 +4158,8 @@
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/倒地恢复.xml",
-      "sha256": "a2ecae41a7eae82c7798d05720d94861627c314af145eae207dc2d96cf0a1db4",
-      "bytes": 417542
+      "sha256": "7a0f2bbf3a174ef98108513f12e597ca35e53fd2e1fc1fcc1c77ebf26c2180dc",
+      "bytes": 417545
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/击飞.xml",
@@ -4115,8 +4168,8 @@
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/匕首刺击.xml",
-      "sha256": "d5488efe09c80ceedaed8b39ed81c2ce38670e86a35e4449a828c01ffc9434c4",
-      "bytes": 179042
+      "sha256": "f9c61b6fa8636b3971c6b15f0747e69fb29fd6c54a96243950be17476a371b26",
+      "bytes": 179041
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/投掷手雷.xml",
@@ -4125,8 +4178,8 @@
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/持盾匕首刺击.xml",
-      "sha256": "5e8f90403507ca4a36e60d950ff27d1ee7c8ae90ccc9c0f50a5cc3674a909768",
-      "bytes": 417444
+      "sha256": "aaf342315af55ca9f47329f26bbe90abe904cbfd4d254b87a803e2ac6e54459d",
+      "bytes": 417442
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/持盾点射与装填.xml",
@@ -4145,8 +4198,8 @@
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/持盾被击.xml",
-      "sha256": "4729d0aca26824ba9b6f683c6793a6dafb46b2e1f2e3f4425f5616661e53665e",
-      "bytes": 183597
+      "sha256": "35bab16997c0ed2be9e909387828e84388838d15b76913b1cf60a9280dbe55ff",
+      "bytes": 521668
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/死亡.xml",
@@ -4180,8 +4233,8 @@
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/被击.xml",
-      "sha256": "282196b806905bd8756ff272c2d98f8d3998c1254d8512b2d39b36d2aa0a207c",
-      "bytes": 136528
+      "sha256": "910a7b2142c0532368f85943cf1aa5420ae6aa82ba3f61c816f12fda4c998eb3",
+      "bytes": 267621
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/被投.xml",
@@ -4200,23 +4253,23 @@
     },
     {
       "path": "LIBRARY/Codex/特种兵/敌人-CF6持盾特种兵.xml",
-      "sha256": "9bb7f3a19e2a615cbb5b431fd3f0be94e00b48e5856788fd24c4ccaa6441e1f8",
-      "bytes": 80094
+      "sha256": "75f087f95777b62ee298bc896a5948ca0a5d2d772131c77b9042c7626f0e8be2",
+      "bytes": 90736
     },
     {
       "path": "LIBRARY/Codex/特种兵/敌人-CF6持盾特种精英.xml",
-      "sha256": "6735614b2a208b740fdaa66f98ad19139bc8ef47e2d60ba5de5b576df65c5423",
-      "bytes": 109580
+      "sha256": "5b576959734766a87be9104b23bba06c5b9931ceec5ed362a585970bdbe3673d",
+      "bytes": 125997
     },
     {
       "path": "LIBRARY/Codex/特种兵/敌人-CF6特种兵.xml",
-      "sha256": "7dc787dbd17716e348a46ffc78afbf912934fc659d94da4da2bb75e344548da4",
-      "bytes": 80076
+      "sha256": "42a2e0ebc5cb8b67850772c7fd6b65849d1b39aad3bb78f4aa0ab0260cdcece6",
+      "bytes": 90718
     },
     {
       "path": "LIBRARY/Codex/特种兵/敌人-CF6特种精英.xml",
-      "sha256": "acfeab9a222c26e4e2cbc426ba27bc2c4e597bdbb0081e8e638488a76974cec8",
-      "bytes": 109562
+      "sha256": "46f43f97c85b2c39c81693732457a9697a695152970dc6287fe44fcbf06df7b1",
+      "bytes": 125979
     },
     {
       "path": "LIBRARY/Codex/特种兵/武器/可配置投掷物.xml",

@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大头机器人/特效/雾人/靶标_元件 15" itemID="6af00000-032f4705" lastModified="1779974895">
+  <timeline>
+    <DOMTimeline name="靶标_元件 15">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!4505 2163S1[4505 2162 4505 2161!4505 2161|4505 2160!4505 2160[4506 2130 4506 2100!4506 2100[4506 2085 4506 2071!4506 2071|4344 2071!4344 2071[4344 2075 4344 2080!4344 2080|3822 2080!3822 2080[3822 2075 3822 2071!3822 2071|3660 2071!3660  2071[3660 2075 3660 2080!3660 2080|2508 2080!2508 2080|2508 2221!2508 2221|4501 2221!4501 2221[4504 2193 4505 2165!4505 2165[4505 2164 4505 2163!2296 1[2295 1 2294 1!2294 1|2293 1!2293 1[2263 0 2233 0!2233 0[2218 0 2204 0!2204 0|2204  160!2204 160[2208 160 2213 160!2213 160|2213 674!2213 674[2208 674 2204 674!2204 674|2204 834!2204 834[2208 834 2213 834!2213 834|2213 1971!2213 1971|2354 1971!2354 1971|2354 4!2354 4[2326 2 2298 1!2298 1[2297 1 2296 1!892 2212|2029  2212!2029 2212|2029 2071!2029 2071|62 2071!62 2071[60 2099 59 2127!59 2127[59 2128 59 2129!59 2129[59 2130 59 2131!59 2131|59 2132!59 2132[58 2162 58 2192!58 2192[58 2207 58 2221!58 2221|218 2221!218 2221[218 2217 218 2212!218 2212|732  2212!732 2212[732 2217 732 2221!732 2221|892 2221!892 2221[892 2217 892 2212!2204 2383|2204 4436!2204 4436[2232 4439 2260 4440!2260 4440[2261 4440 2262 4440!2262 4440[2263 4440 2264 4440!2264 4440|2265 4440!2265 4440[2295 4441 2325 4441 !2325 4441[2340 4441 2354 4441!2354 4441|2354 4274!2354 4274[2350 4274 2345 4274!2345 4274|2345 3737!2345 3737[2350 3737 2354 3737!2354 3737|2354 3570!2354 3570[2350 3570 2345 3570!2345 3570|2345 2383!2345 2383|2204 2383"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/靶标_元件 8" selected="true" centerPoint3DX="174.05" centerPoint3DY="170.15">
+                  <matrix>
+                    <Matrix tx="125.7" ty="119.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.65" y="-10.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/靶标_元件 8" selected="true" centerPoint3DX="174.2" centerPoint3DY="50.25">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="1" d="0" tx="123.1" ty="98.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.1" y="-8.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/靶标_元件 8" selected="true" centerPoint3DX="51.1" centerPoint3DY="50.25">
+                  <matrix>
+                    <Matrix a="0" b="-1" c="-1" d="0" tx="102.2" ty="98.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.1" y="-8.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/靶标_元件 8" selected="true" centerPoint3DX="51.25" centerPoint3DY="170.15">
+                  <matrix>
+                    <Matrix a="-1" tx="99.6" ty="119.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.65" y="-10.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

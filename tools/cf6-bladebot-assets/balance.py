@@ -29,7 +29,9 @@ def expected():
              '高攻低血防系数': 0.75, '高防低血系数': 8}
     inputs = {FLAG_KEYS[key]: value for key, value in flags.items()}
     expression = "import {computeMonsterRow} from './tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts';console.log(JSON.stringify(computeMonsterRow(" + json.dumps(inputs) + ")));"
-    values = json.loads(subprocess.check_output(['node', 'tools/cf7-balance-tool/node_modules/tsx/dist/cli.mjs', '-e', expression],
+    tsx_cli = ROOT / 'tools/cf7-balance-tool/node_modules/tsx/dist/cli.mjs'
+    node_cmd = ['node', str(tsx_cli), '-e', expression] if tsx_cli.exists() else ['node', '--input-type=module', '-e', expression]
+    values = json.loads(subprocess.check_output(node_cmd,
                                                cwd=ROOT, text=True, encoding='utf-8'))
     entry = copy.deepcopy(source)
     entry.tag = LINK

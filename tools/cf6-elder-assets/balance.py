@@ -44,7 +44,9 @@ def expected(form):
     flags={k:float(f'{v:.8g}') for k,v in flags.items()}
     inputs={common.FLAG_KEYS[k]:v for k,v in flags.items()}
     expression="import {computeMonsterRow} from './tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts';console.log(JSON.stringify(computeMonsterRow("+json.dumps(inputs)+")));"
-    values=json.loads(subprocess.check_output(['node','tools/cf7-balance-tool/node_modules/tsx/dist/cli.mjs','-e',expression],cwd=ROOT,text=True,encoding='utf8'))
+    tsx_cli=ROOT/'tools/cf7-balance-tool/node_modules/tsx/dist/cli.mjs'
+    node_cmd=['node',str(tsx_cli),'-e',expression] if tsx_cli.exists() else ['node','--input-type=module','-e',expression]
+    values=json.loads(subprocess.check_output(node_cmd,cwd=ROOT,text=True,encoding='utf8'))
     entry=copy.deepcopy(E.parse(ROOT/'data/enemy_properties/诺亚新敌人.xml').getroot().find('敌人-黑铁会改造人'));entry.tag=link
     entry.find('displayname').text=config['name']
     for key,value in {'速度_min':config['speed'][0],'速度_max':config['speed'][1],

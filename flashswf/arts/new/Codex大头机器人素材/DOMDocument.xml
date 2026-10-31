@@ -9,6 +9,14 @@
     <DOMFolderItem name="Codex/大头机器人/尸体碎片" itemID="6af20000-1aa5efc6"/>
     <DOMFolderItem name="Codex/大头机器人/机械爆裂" itemID="6af20000-05be5f99"/>
     <DOMFolderItem name="Codex/大头机器人/死亡碎片" itemID="6af20000-ef47567b"/>
+    <DOMFolderItem name="Codex/大头机器人/特效" itemID="6af20000-51488784"/>
+    <DOMFolderItem name="Codex/大头机器人/特效/Itinerant" itemID="6af20000-0a499437"/>
+    <DOMFolderItem name="Codex/大头机器人/特效/Itinerant/人物素材" itemID="6af20000-b2707297"/>
+    <DOMFolderItem name="Codex/大头机器人/特效/尚未整理" itemID="6af20000-ac249a35"/>
+    <DOMFolderItem name="Codex/大头机器人/特效/方舟指挥官" itemID="6af20000-ed559aa6"/>
+    <DOMFolderItem name="Codex/大头机器人/特效/方舟指挥官/1.特效文件夹" itemID="6af20000-be0eb101"/>
+    <DOMFolderItem name="Codex/大头机器人/特效/方舟指挥官/1.特效文件夹/重复项目文件夹" itemID="6af20000-ff4ff02a"/>
+    <DOMFolderItem name="Codex/大头机器人/特效/雾人" itemID="6af20000-b2f38d32"/>
     <DOMFolderItem name="Codex/大头机器人/躯干分裂" itemID="6af20000-cfa5ea02"/>
   </folders>
   <symbols>
@@ -71,6 +79,107 @@
     <Include href="Codex/大头机器人/死亡碎片/948.xml" itemID="6aa00000-612d8af4" loadImmediate="false"/>
     <Include href="Codex/大头机器人/死亡碎片/949.xml" itemID="6aa00000-ed1d26f3" loadImmediate="false"/>
     <Include href="Codex/大头机器人/死亡碎片/950.xml" itemID="6aa00000-96ba98e5" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/Itinerant/人物素材/防护罩.xml" itemID="6af00000-660b7a18" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 1.xml" itemID="6af00000-469cf4dd" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 10.xml" itemID="6af00000-2f08c900" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 11.xml" itemID="6af00000-6b90c26f" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 12.xml" itemID="6af00000-5bcaad21" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 13.xml" itemID="6af00000-5259fdc2" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 14.xml" itemID="6af00000-609a7725" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 15.xml" itemID="6af00000-1be25431" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 16.xml" itemID="6af00000-12300043" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 17.xml" itemID="6af00000-c4ddd29e" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 18.xml" itemID="6af00000-88cf4d6f" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 2.xml" itemID="6af00000-e7556997" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 3.xml" itemID="6af00000-a7cfdf83" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 4.xml" itemID="6af00000-21c0c143" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 5.xml" itemID="6af00000-a55768f7" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 7.xml" itemID="6af00000-34350eaf" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 8.xml" itemID="6af00000-85e55cc9" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/元件 9.xml" itemID="6af00000-2e47fc8d" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/坠落轰炸弹.xml" itemID="6af00000-d6a1431e" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/对空枪火.xml" itemID="6af00000-03d0ed17" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/尚未整理/dkghkg.xml" itemID="6af00000-ab2cdb69" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/方舟指挥官/1.特效文件夹/Symbol 477.xml" itemID="6af00000-8384b706" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/方舟指挥官/1.特效文件夹/Symbol 479 副本.xml" itemID="6af00000-3a6c62f9" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 469.xml" itemID="6af00000-09a00e50" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 471.xml" itemID="6af00000-d4181215" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 473.xml" itemID="6af00000-5e868250" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 475.xml" itemID="6af00000-371ed118" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/电流.xml" itemID="6af00000-47663cd2" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/巨型穿刺能量子弹.xml" itemID="6af00000-09202472" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/巨型穿刺能量子弹_能量弹头.xml" itemID="6af00000-5c2d54bb" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/巨型穿刺能量子弹_能量轨迹.xml" itemID="6af00000-35b40483" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆.xml" itemID="6af00000-6d687423" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5116.xml" itemID="6af00000-53bb386f" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5117.xml" itemID="6af00000-1c6646c9" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5118.xml" itemID="6af00000-03c11cd3" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5119.xml" itemID="6af00000-785af7d1" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5121.xml" itemID="6af00000-8b65618e" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5122.xml" itemID="6af00000-bb196f40" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5123.xml" itemID="6af00000-d033c768" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5125.xml" itemID="6af00000-026a54ff" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5126.xml" itemID="6af00000-a8c1fcf9" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5127.xml" itemID="6af00000-9e0fbc4f" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5129.xml" itemID="6af00000-3c4d8207" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5130.xml" itemID="6af00000-b3ef56ab" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5131.xml" itemID="6af00000-569f6d41" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5133.xml" itemID="6af00000-1b9d0b61" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5135.xml" itemID="6af00000-5341bf05" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强烈震爆_Symbol 5137.xml" itemID="6af00000-59517314" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地.xml" itemID="6af00000-dff576ff" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5088.xml" itemID="6af00000-a1bd7e79" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5089.xml" itemID="6af00000-e24cd4ca" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5090.xml" itemID="6af00000-79e47145" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5092.xml" itemID="6af00000-b94441bf" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5093.xml" itemID="6af00000-7e35a314" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5094.xml" itemID="6af00000-3ffb2f04" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5096.xml" itemID="6af00000-67d9ace8" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5097.xml" itemID="6af00000-3a0d2da5" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5098.xml" itemID="6af00000-ed70a2dc" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5100.xml" itemID="6af00000-21412ea4" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5102.xml" itemID="6af00000-922ed439" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5104.xml" itemID="6af00000-42817998" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5106.xml" itemID="6af00000-058c45d8" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5108.xml" itemID="6af00000-d84a09c6" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5110.xml" itemID="6af00000-985ba777" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5112.xml" itemID="6af00000-c090be1f" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/强震地_Symbol 5114.xml" itemID="6af00000-10b45f5a" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/目标.xml" itemID="6af00000-ca0b1f66" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/蓝色炮击.xml" itemID="6af00000-92763514" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/蓝色炮击_Symbol 65.xml" itemID="6af00000-744d0aec" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/蓝色炮击_Symbol 66.xml" itemID="6af00000-612293b4" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/蓝色炮击_Symbol 67.xml" itemID="6af00000-47c5fa79" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/蓝色炮击_Symbol 68.xml" itemID="6af00000-0deae48e" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/蓝色炮击_Symbol 69.xml" itemID="6af00000-a5c8c5e4" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/蓝色炮击_Symbol 70.xml" itemID="6af00000-c294ed05" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/蓝色炮击_Symbol 72.xml" itemID="6af00000-cd93e90a" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/蓝色炮击_Symbol 74.xml" itemID="6af00000-117ae473" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升.xml" itemID="6af00000-c175c7c8" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升_Symbol 125.xml" itemID="6af00000-318a8c96" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升_Symbol 127.xml" itemID="6af00000-d98b4210" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升_Symbol 129.xml" itemID="6af00000-caeab54a" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升_Symbol 131.xml" itemID="6af00000-b26517e6" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升_Symbol 133.xml" itemID="6af00000-9ebfe71c" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升_Symbol 135.xml" itemID="6af00000-d619bc14" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升_Symbol 137.xml" itemID="6af00000-9a69d7ec" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升_Symbol 139.xml" itemID="6af00000-3325d14b" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升_Symbol 141.xml" itemID="6af00000-0a5153f3" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升_Symbol 143.xml" itemID="6af00000-dffe9104" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升_Symbol 145.xml" itemID="6af00000-44b97065" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升_Symbol 147.xml" itemID="6af00000-b8fcfcc6" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升_Symbol 149.xml" itemID="6af00000-f0b6c0c8" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升_Symbol 151.xml" itemID="6af00000-4cc32497" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升_Symbol 153.xml" itemID="6af00000-2921716d" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/金焰斜升_Symbol 155.xml" itemID="6af00000-a8d1679b" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/靶标_元件 10.xml" itemID="6af00000-14db0214" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/靶标_元件 11.xml" itemID="6af00000-01ecb167" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/靶标_元件 12.xml" itemID="6af00000-b9bc160d" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/靶标_元件 13.xml" itemID="6af00000-8594226d" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/靶标_元件 14.xml" itemID="6af00000-10d32663" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/靶标_元件 15.xml" itemID="6af00000-032f4705" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/靶标_元件 8.xml" itemID="6af00000-9f03638c" loadImmediate="false"/>
+    <Include href="Codex/大头机器人/特效/雾人/靶标_元件 9.xml" itemID="6af00000-a00c1e35" loadImmediate="false"/>
     <Include href="Codex/大头机器人/行为驱动.xml" itemID="6af00000-43d5f8a6" loadImmediate="false"/>
     <Include href="Codex/大头机器人/躯干分裂/1.xml" itemID="6aa00000-c840efce" loadImmediate="false"/>
     <Include href="Codex/大头机器人/躯干分裂/2.xml" itemID="6aa00000-57f39483" loadImmediate="false"/>

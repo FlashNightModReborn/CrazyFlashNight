@@ -59,7 +59,13 @@
             <DOMFrame index="71" keyMode="9728" name="躲闪" labelType="name">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="72" keyMode="9728" duration="9">
+            <DOMFrame index="72" keyMode="9728" duration="4">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="76" keyMode="9728" name="旋刃冲刺" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="77" keyMode="9728" duration="4">
               <elements/>
             </DOMFrame>
             <DOMFrame index="81" keyMode="9728" name="被击" labelType="name">
@@ -104,7 +110,7 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[x轴攻击范围=0; y轴攻击范围=30; x轴保持距离=185; 攻击欲望=3; 击中效果="火花"; 命中率=30;
+                <script><![CDATA[x轴攻击范围=0; y轴攻击范围=30; x轴保持距离=85; 攻击欲望=3; 击中效果="火花"; 命中率=30;
 女_攻击呐喊_库=[]; 女_中招呐喊_库=[]; 女_击倒呐喊_库=[];
 初始化敌人模板=_root.初始化敌人模板; 初始化敌人模板();
 // 起手到发力段同时持有刚体与抗位移；收招恢复原状态，不减免伤害。
@@ -112,7 +118,9 @@
 bladebotClock=0;
 bladebotReadyAt=6;
 bladebotNextSweep=0;
+bladebotNextDash=0;
 bladebotNextBeam=0;
+bladebotSpinShield=-1;
 bladebotCombo=null;
 bladebotComboCount=0;
 bladebotTargetName="";
@@ -120,15 +128,21 @@ bladebotAttackOwner=null;
 bladebotAttackCount=0;
 bladebotHitCount=0;
 bladebotDeathFxPlayed=false;
-bladebotTuning={cleaveRange:245,sweepRange:145,laneRange:30,keepDistance:185,
-    reactionFrames:6,recoveryFrames:0,sweepCooldown:75,maximumTargetHeight:150,airSweepRange:190,cleaveTargetHeight:80,
-    beamMinRange:250,beamRange:600,beamCooldown:90,comboWindow:45};
+bladebotIdentity={};
+bladebotTuning={cleaveRange:245,sweepRange:205,dashMinRange:250,dashRange:380,laneRange:30,keepDistance:85,
+    reactionFrames:6,recoveryFrames:0,sweepCooldown:36,dashCooldown:45,dashSpeed:14,
+    spinShieldCapacity:0.30,spinShieldStrength:3.0,maximumTargetHeight:150,airSweepRange:190,cleaveTargetHeight:80,
+    beamMinRange:250,beamRange:600,beamCooldown:45,comboWindow:45};
 
 bladebotState=function(action:String):String {
-    return action=="beam"?"激光束":action=="sweep"?"近战":"空手攻击";
+    return action=="beam"?"激光束":action=="sweep"?"近战":action=="dash"?"旋刃冲刺":"空手攻击";
 };
 
 bladebotCancelAttack=function():Void {
+    if(this.bladebotSpinShield>=0 && _root.护盾函数!=null && typeof _root.护盾函数.移除护盾=="function") {
+        _root.护盾函数.移除护盾(this,this.bladebotSpinShield);
+    }
+    this.bladebotSpinShield=-1;
     var owner:Object=this.bladebotAttackOwner;
     if(owner==null) return;
     owner.active=false;
@@ -152,7 +166,13 @@ bladebotBeginAttack=function(body:MovieClip,action:String):Void {
     this.刚体=true;this.免疫击退=true;
     this.bladebotAttackCount++;
     if(action=="sweep") this.bladebotNextSweep=this.bladebotClock+this.bladebotTuning.sweepCooldown;
+    if(action=="dash") this.bladebotNextDash=this.bladebotClock+this.bladebotTuning.dashCooldown;
     if(action=="beam") {this.bladebotNextBeam=this.bladebotClock+this.bladebotTuning.beamCooldown;this.bladebotCombo=null;}
+    if((action=="sweep" || action=="dash") && _root.护盾函数!=null && typeof _root.护盾函数.添加临时护盾=="function") {
+        var shieldCap:Number=Math.max(300,Math.floor(this.hp满血值*this.bladebotTuning.spinShieldCapacity));
+        var shieldStr:Number=Math.max(220,Math.floor(this.空手攻击力*this.bladebotTuning.spinShieldStrength));
+        this.bladebotSpinShield=_root.护盾函数.添加临时护盾(this,shieldCap,shieldStr,action=="sweep"?78:50,"大刀旋刃护盾",null);
+    }
 };
 
 // 起手锁定实际受击框中心；光束图形与接触框共用同一眼部支点和旋转。
@@ -188,7 +208,7 @@ bladebotCanAct=function(body:MovieClip):Boolean {
 bladebotFinishAttack=function(body:MovieClip):Void {
     var owner:Object=this.bladebotAttackOwner;
     if(owner==null || body!==this.man || owner.token!==body.bladebotToken) return;
-    if(owner.action=="cleave" && owner.lastHitFrame>0 && owner.targetIdentity!=undefined){
+    if((owner.action=="cleave" || owner.action=="sweep" || owner.action=="dash") && owner.lastHitFrame>0 && owner.targetIdentity!=undefined){
         this.bladebotCombo={target:owner.target,identity:owner.targetIdentity,
             expires:this.bladebotClock+this.bladebotTuning.comboWindow};
     }
@@ -203,10 +223,41 @@ bladebotAdvance=function(body:MovieClip,amount:Number):Void {
     if(!(target.hp>0)) return;
     var dx:Number=target._x-this._x;
     var dz:Number=target.Z轴坐标-this.Z轴坐标;
-    if(isNaN(dx) || isNaN(dz) || Math.abs(dz)>this.bladebotTuning.laneRange) return;
-    if((this.方向=="右" && dx>185) || (this.方向=="左" && dx< -185)) {
-        this.移动(this.方向,Math.min(amount,Math.abs(dx)-185));
+    if(isNaN(dx) || isNaN(dz) || Math.abs(dz)>90) return;
+    if(Math.abs(dz)>6) {
+        // 纵深同样通过正式碰撞、深度与受击框更新出口。
+        this.移动(dz<0?"上":"下",Math.min(2.5,Math.abs(dz)));
     }
+    if((this.方向=="右" && dx>95) || (this.方向=="左" && dx< -95)) {
+        this.移动(this.方向,Math.min(amount,Math.abs(dx)-95));
+    }
+};
+
+bladebotDashAdvance=function(body:MovieClip,amount:Number):Void {
+    if(!this.bladebotCanAct(body)) return;
+    var owner:Object=this.bladebotAttackOwner;
+    var target:MovieClip=_root.gameworld[owner.target];
+    if(!(target.hp>0)) return;
+    var dx:Number=target._x-this._x;
+    var dz:Number=target.Z轴坐标-this.Z轴坐标;
+    if(isNaN(dx) || isNaN(dz) || Math.abs(dz)>110) return;
+    if(Math.abs(dz)>6) {
+        this.移动(dz<0?"上":"下",Math.min(3.5,Math.abs(dz)));
+    }
+    if(owner.dashTurned!==true && ((this.方向=="右" && dx< -55) || (this.方向=="左" && dx>55))) {
+        owner.dashTurned=true;
+        this.方向改变(dx<0?"左":"右");
+    }
+    if((this.方向=="右" && dx> -45) || (this.方向=="左" && dx<45)) {
+        this.移动(this.方向,amount);
+    }
+};
+
+bladebotContactDue=function(action:String,frame:Number):Boolean {
+    if(action=="beam") return frame==14;
+    if(action=="cleave") return frame==20 || frame==22;
+    if(action=="dash") return frame>=4 && frame<=49 && ((frame-4)%3)==0;
+    return (frame>=19 && frame<=73 && ((frame-19)%3)==0) || frame==75;
 };
 
 bladebotStrike=function(body:MovieClip,point:MovieClip,multiplier:Number):Void {
@@ -215,21 +266,41 @@ bladebotStrike=function(body:MovieClip,point:MovieClip,multiplier:Number):Void {
         || point.bladebotToken!==body.bladebotToken || point.bladebotHitFrame!=body._currentframe) return;
     var owner:Object=this.bladebotAttackOwner;
     var frame:Number=body._currentframe;
-    if(owner.action=="beam"?frame!=11:owner.action=="cleave"?(frame!=20 && frame!=22):
-        (frame!=19 && frame!=22 && frame!=25 && frame!=28 && frame!=31 && frame!=34))return;
+    if(!this.bladebotContactDue(owner.action,frame)) return;
     if(owner.lastHitFrame>=frame) return;
     owner.lastHitFrame=body._currentframe;
     var p:Object={x:point._x,y:point._y};
     body.localToGlobal(p); _root.gameworld.globalToLocal(p);
     var heavy:Boolean=owner.action=="cleave";
     var beam:Boolean=owner.action=="beam";
+    var dash:Boolean=owner.action=="dash";
     this.bladebotHitCount++;
-    _root.子弹区域shoot传递({声音:"",霰弹值:1,子弹散射度:0,发射效果:"",
+    var bullet:Object={声音:"",霰弹值:1,子弹散射度:0,发射效果:"",
         子弹种类:"近战子弹",子弹威力:this.空手攻击力*multiplier,子弹速度:0,
         Z轴攻击范围:30,击中地图效果:"",发射者:this._name,shootX:p.x,shootY:p.y,
         shootZ:this.Z轴坐标,击倒率:heavy?3:10,击中后子弹的效果:"空手攻击火花",
-        水平击退速度:heavy?24:beam?2:3,垂直击退速度:heavy || beam?0:2,区域定位area:point.area,
-        伤害类型:beam?"魔法":"物理",魔法伤害属性:beam?"波":undefined});
+        水平击退速度:heavy?29:beam?2:dash?(frame>=49?26:4):3,垂直击退速度:heavy || beam || dash?0:2,区域定位area:point.area,
+        伤害类型:beam?"魔法":"物理",魔法伤害属性:beam?"波":undefined,
+        bladebotShooterIdentity:this.bladebotIdentity,bladebotAction:owner.action,bladebotHitFrame:frame};
+    bullet.击中时触发函数=function():Void {
+        if(this.bladebotStrikeRewarded===true) return;
+        this.bladebotStrikeRewarded=true;
+        var shooter:MovieClip=_root.gameworld[this.发射者];
+        var target:MovieClip=this.hitTarget;
+        if(!(shooter.hp>0) || shooter.bladebotIdentity!==this.bladebotShooterIdentity) return;
+        if(target!=null && target.hp>0 && target.area!=null) {
+            if((this.bladebotAction=="cleave" && this.bladebotHitFrame>=22)
+                || (this.bladebotAction=="sweep" && this.bladebotHitFrame>=75)
+                || (this.bladebotAction=="dash" && this.bladebotHitFrame>=49)) {
+                if(target.__bladebotComboIdentity==undefined) target.__bladebotComboIdentity={};
+                shooter.bladebotCombo={target:target._name,identity:target.__bladebotComboIdentity,
+                    expires:shooter.bladebotClock+shooter.bladebotTuning.comboWindow};
+                shooter.bladebotNextBeam=0;
+                shooter.bladebotReadyAt=0;
+            }
+        }
+    };
+    _root.子弹区域shoot传递(bullet);
 };
 
 // 暂停期间 onLoad 到达时保留本帧，恢复后只补一次实际接触。
@@ -240,11 +311,13 @@ bladebotBodyTick=function(body:MovieClip):Void {
     }
     if(!this.bladebotCanAct(body))return;
     var owner:Object=this.bladebotAttackOwner,frame:Number=body._currentframe;
-    var due:Boolean=owner.action=="beam"?frame==11:owner.action=="cleave"?(frame==20 || frame==22):
-        (frame==19 || frame==22 || frame==25 || frame==28 || frame==31 || frame==34);
+    var due:Boolean=this.bladebotContactDue(owner.action,frame);
     if(due && owner.lastHitFrame<frame){
-        this.bladebotStrike(body,body.攻击点,owner.action=="cleave"?2.4:1);
+        this.bladebotStrike(body,body.攻击点,owner.action=="cleave"?2.4:(owner.action=="dash"?0.85:1));
         if(owner.lastHitFrame<frame)return;
+    }
+    if(owner.action=="dash" && frame>=2 && frame<=48){
+        this.bladebotDashAdvance(body,this.bladebotTuning.dashSpeed);
     }
     if(frame<body._totalframes)body.nextFrame();
 };
@@ -267,6 +340,8 @@ bladebotChooseAttack=function(dx:Number,dz:Number,height:Number):String {
     }
     if(dx<=tune.sweepRange && this.bladebotClock>=this.bladebotNextSweep) return "sweep";
     if(dx<=tune.cleaveRange) return "cleave";
+    if(dx>=tune.dashMinRange && dx<=tune.dashRange && height<=tune.cleaveTargetHeight
+        && this.bladebotClock>=this.bladebotNextDash) return "dash";
     if(dx>=tune.beamMinRange && dx<=tune.beamRange && height<=tune.cleaveTargetHeight
         && this.bladebotClock>=this.bladebotNextBeam)return "beam";
     return "none";
@@ -294,7 +369,7 @@ bladebotTick=function():Void {
         if(this.状态!=state || this.man.bladebotToken!==owner.token) this.bladebotCancelAttack();
         else {
             var frame:Number=this.man._currentframe;
-            var active:Boolean=owner.action=="sweep"?(frame>=1 && frame<=40):owner.action=="beam"?(frame>=1 && frame<=11):(frame>=1 && frame<=30);
+            var active:Boolean=owner.action=="sweep"?(frame>=1 && frame<=75):owner.action=="dash"?(frame>=1 && frame<=49):owner.action=="beam"?(frame>=1 && frame<=28):(frame>=1 && frame<=38);
             if(active && !owner.ownsRigid) {
                 owner.previousRigid=this.刚体===true;owner.previousImmune=this.免疫击退===true;
                 owner.ownsRigid=true;this.刚体=true;this.免疫击退=true;
@@ -589,11 +664,23 @@ cf6RobotDeathTick=function(body:MovieClip):Boolean {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="71" keyMode="9728" duration="10">
+            <DOMFrame index="71" keyMode="9728" duration="5">
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/大刀机器人/动作/站立" name="man">
                   <matrix>
                     <Matrix tx="22.5" ty="-120.582516"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="76" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/动作/旋刃冲刺" name="man">
+                  <matrix>
+                    <Matrix tx="21.5" ty="-124.732516"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

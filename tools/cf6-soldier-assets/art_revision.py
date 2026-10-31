@@ -52,12 +52,15 @@ def install(b, symbols, parts, old):
         for layer in list(layers):
             if layer.get('name','').startswith('原始深度_'):layers.remove(layer)
         layers.extend(b.depth_layers(frames,parts))
-    for name in ('站立','行走','匕首刺击','持盾站立','持盾行走','被击'):
+    for name in ('站立','行走','匕首刺击','持盾站立','持盾行走'):
         art_only(name,poses[name])
+    hit_clip=copy.deepcopy(poses['被击'][:18])
+    body('被击',hit_clip+copy.deepcopy(hit_clip),{0:{'name':'a0','label_type':'name'},
+        17:{'script':'_parent.动画完毕();'},18:{'name':'a1','label_type':'name'},35:{'script':'_parent.动画完毕();'}})
     body('跑步',poses['跑步'])
     body('被投',poses['被投'],{13:{'script':'stop();'}})
     body('击飞',poses['击飞'],{0:{'name':'空手','label_type':'name'},28:{'script':'stop();'}})
-    body('倒地恢复',poses['倒地恢复'],{8:{'script':'_parent.死亡检测();'},77:{'script':'_parent.动画完毕();'}})
+    body('倒地恢复',poses['倒地恢复'],{13:{'script':'_parent.死亡检测();'},77:{'script':'_parent.动画完毕();'}})
     # The last death branch lands and stays down. Never play the get-up segment.
     death=copy.deepcopy(poses['死亡'][:104])
     fall=copy.deepcopy(poses['倒地恢复'][:14])+[copy.deepcopy(poses['倒地恢复'][13]) for _ in range(21)]
@@ -68,17 +71,16 @@ def install(b, symbols, parts, old):
     for name in ('长枪点射与装填','持盾点射与装填'):
         recoil=sample(poses[name][:14],14)
         art_only(name,recoil+[copy.deepcopy(recoil[0]) for _ in range(35)])
-    # Both hit variants use the authored cover-and-return movement, compressed
-    # to two 20-frame reactions rather than freezing on its first few keys.
-    cover=sample(poses['持盾被击'],20)
+    # Both hit variants use the full 62-frame authored crouch-guard-and-return motion.
+    cover=copy.deepcopy(poses['持盾被击'])
     body('持盾被击',cover+copy.deepcopy(cover),{0:{'name':'a0','label_type':'name'},
-        20:{'name':'a1','label_type':'name'},19:{'script':'_parent.动画完毕();'},39:{'script':'_parent.动画完毕();'}})
+        62:{'name':'a1','label_type':'name'},61:{'script':'_parent.动画完毕();'},123:{'script':'_parent.动画完毕();'}})
 
     # Preserve the previous shield stab as one branch; new art is a shield bash.
     stab=old['573'];bash=sample(poses['持盾匕首刺击'],34)
     center=-135/2-b.OFFSETS[517][1]-b.GROUND_SHIFT
     def hit(index):
-        return {index:{'elements':[n.instance(b.H['Symbol 195'],matrix=(101/25,0,0,135/25,10.3,center),
+        return {index:{'elements':[n.instance(b.H['Symbol 195'],matrix=(135/25,0,0,135/25,27.3,center),
             symbol_type='movie clip',name='攻击点',alpha_mult=0,
             script='onClipEvent(load){_parent._parent.soldierMeleeHit(_parent,this);}') ]}}
     lifecycle={0:{'script':'_parent.soldierBeginMelee(this);'},

@@ -2,11 +2,11 @@
   "schema": "cf6-guard.native-import.v1",
   "owner": "flashswf/arts/new/Codex光头保安素材",
   "approvedInput": "flashswf/arts/new/Codex素材源稿/CF6光头保安-R2",
-  "nativeSymbolCount": 185,
+  "nativeSymbolCount": 187,
   "buildInputs": [
     {
       "path": "tools/cf6-guard-assets/build.py",
-      "sha256": "1eae6c41ff669dae2228f829334eb73eb11942724f903097f77175a4b2f21124"
+      "sha256": "ed85ee0b01d3a32f0f3968e3e80a0634a5e7fba4f1bee3b2908b63155c6d71d2"
     },
     {
       "path": "tools/cf6-guard-assets/vector.py",
@@ -26,11 +26,15 @@
     },
     {
       "path": "tools/cf6-guard-assets/GuardAI.as",
-      "sha256": "f9a76c415b22deb1ee11bb63948ec2cebddf3db0d16d14f4118fea51bccd8c6e"
+      "sha256": "c7c6ed1ce4170e1623f6590e9a0d834f2dd59ce9c554755f1cd125c5b040d380"
     },
     {
       "path": "tools/cf6-guard-assets/GuardTransform.as",
       "sha256": "8719ac286ff66efa3511ef9dda22866d859e535fa95692c0d5fde38d2f7ec7c2"
+    },
+    {
+      "path": "tools/cf6-guard-assets/native-motion-samples.json",
+      "sha256": "340d71ecb73118cb2e50aa6795a0459019fcb8ac29a293e9dfd798706c730922"
     },
     {
       "path": "flashswf/arts/things切割/LIBRARY/长枪/SPAS12/枪-长枪-SPAS12.xml",
@@ -42,7 +46,7 @@
     },
     {
       "path": "tools/cf6-manman-assets/build.py",
-      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+      "sha256": "2dee3ca844fd0a42ab5578d107969cd3a0085c140ced2a0c5335a82eb4443765"
     },
     {
       "path": "tools/cf6-zombie-assets/build.py",
@@ -315,7 +319,7 @@
     {
       "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
       "lineEndingNormalization": "lf",
-      "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+      "sha256": "9f925d6693798fd2aa6de61aac06f3db384a141638b7a8b8d3940101029f1371"
     },
     {
       "path": "scripts/逻辑/战斗系统/战斗系统_fs_lsy_aka_重写子弹生成逻辑.as",
@@ -530,7 +534,7 @@
       -51.4
     ],
     "596": [
-      19.85,
+      5.1,
       -60.85
     ],
     "597": [
@@ -658,11 +662,16 @@
       "defaultTransform": true
     }
   ],
-  "sourceBodyFrames": 525,
+  "sourceBodyFrames": 518,
   "attackFrames": {
     "fire": 41,
     "finish": 74,
-    "authored": 87
+    "authored": 87,
+    "meleeHit": 22,
+    "meleeFinish": 40,
+    "followupStart": 88,
+    "followupFire": 96,
+    "followupFinish": 142
   },
   "pellets": 3,
   "deathBranches": [
@@ -679,13 +688,23 @@
       112
     ]
   ],
+  "authoredDeathBranches": [
+    [
+      1,
+      31
+    ],
+    [
+      32,
+      77
+    ]
+  ],
   "airborneSourceFrames": [
     1,
-    40
+    1
   ],
   "landedSourceFrames": [
-    41,
-    116
+    1,
+    80
   ],
   "gun": {
     "source": "flashswf/arts/things切割/LIBRARY/长枪/SPAS12/枪-长枪-SPAS12.xml",
@@ -1315,13 +1334,13 @@
     },
     {
       "path": "LIBRARY/Codex/光头保安/动作/倒地恢复.xml",
-      "sha256": "0c1de2ea4a3b59702a0b1b5aafec5b1d9379301bb9435a16a92f454c680e06dc",
-      "bytes": 50632
+      "sha256": "59388cb8d63a870588b7e5653e0a0f9aef5d70a332ffdd840c9b38f9e89d9f69",
+      "bytes": 297330
     },
     {
       "path": "LIBRARY/Codex/光头保安/动作/击飞.xml",
-      "sha256": "8e083f23a60cfcaaf98ae4a1a477415020d939e4f218b111fb3f50d82e897016",
-      "bytes": 209859
+      "sha256": "97c957bcb01354cee5496f84c96cb10c5a6f0f5cb91c4565a80d22738641649c",
+      "bytes": 11878
     },
     {
       "path": "LIBRARY/Codex/光头保安/动作/变身.xml",
@@ -1329,34 +1348,44 @@
       "bytes": 189142
     },
     {
+      "path": "LIBRARY/Codex/光头保安/动作/平a.xml",
+      "sha256": "e710e0f12f7e912c26b35c4c378b5195685a56aeedacc262d91fe3a7bb319e90",
+      "bytes": 333045
+    },
+    {
       "path": "LIBRARY/Codex/光头保安/动作/散弹射击.xml",
-      "sha256": "32775f6fc647f8405cac0e0077c237a9368fd79405aad474041e28073b50f5f6",
-      "bytes": 67738
+      "sha256": "46c693afa813ac2ead51843ceaf6cd9c7a359fa02b402d0cdb0ad83893ac5d84",
+      "bytes": 394341
     },
     {
       "path": "LIBRARY/Codex/光头保安/动作/死亡.xml",
-      "sha256": "a6673847f4c846c68303c7ddce8e3a8c1dcaaa1b7cd514f94c556de21370102c",
-      "bytes": 363383
+      "sha256": "d87ae397032985dfa5a24fecbc94978a351f03b7de7ea14a62e71e9ca2720d3e",
+      "bytes": 363372
     },
     {
       "path": "LIBRARY/Codex/光头保安/动作/站立.xml",
-      "sha256": "6f0308c156fd7b86e5b44007bfc4112feca507cbd38799c21a974b6f8bb12134",
-      "bytes": 35182
+      "sha256": "cd1c6c40ea5633c5a8068d66d4d1a93a3f4c0370d6afc4ca4973e31963dc4407",
+      "bytes": 134130
     },
     {
       "path": "LIBRARY/Codex/光头保安/动作/行走.xml",
-      "sha256": "11cac6e97aa667941b4c255d3b734a1994061c7e1843e75e029b4dee2b72fe43",
-      "bytes": 69268
+      "sha256": "963a330ffd16240334699d6a4b601f557148d12dc07965cb72548bb06a5376f9",
+      "bytes": 188539
     },
     {
       "path": "LIBRARY/Codex/光头保安/动作/被击.xml",
-      "sha256": "24bf5827e99b39339128ffa8d2f7e1f6e433958e403263c2a0f9698b7afb1fca",
-      "bytes": 54636
+      "sha256": "a69990450feb0c1e61b89694e71ff2e5a76ffe3f4625c915ff51caef059bdbd0",
+      "bytes": 128100
     },
     {
       "path": "LIBRARY/Codex/光头保安/动作/被投.xml",
-      "sha256": "4bb82536dd85f38ccf9cc4d48cb0c2a3d88da86bb977efe15a89f3e26e984811",
-      "bytes": 38270
+      "sha256": "3c1223bbbecde844516809ea6a23594ece55264c1ebb1ddb120d00e63538eaee",
+      "bytes": 97950
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/动作/跑步.xml",
+      "sha256": "7ebaa1a893103aa6381b2ce896ddf486c28d2ca281534c8e1961caa4494c7339",
+      "bytes": 196661
     },
     {
       "path": "LIBRARY/Codex/光头保安/变身/接地阴影.xml",
@@ -1590,13 +1619,13 @@
     },
     {
       "path": "LIBRARY/Codex/光头保安/敌人-CF6光头保安.xml",
-      "sha256": "c00ef9508b7be28816a01449437aafae2138009fbda598dba37bc2fbc7ad24af",
-      "bytes": 32629
+      "sha256": "f60741d755e8104c70ee41e6c198b4e41fcf83d8cd33a44c45576a6d29fac04e",
+      "bytes": 37619
     },
     {
       "path": "LIBRARY/Codex/光头保安/敌人-CF6变身光头保安.xml",
-      "sha256": "bd32db76cc1499708b9d16776e28dd40a79777f0ff4703d5843e578f0e3dc2df",
-      "bytes": 32646
+      "sha256": "a8373d994a4398384375a1a6e70c04e1b82f90c40f436f1fe65c18804f8e7174",
+      "bytes": 37636
     },
     {
       "path": "LIBRARY/Codex/光头保安/武器/SPAS12原生画稿.xml",
@@ -1627,8 +1656,8 @@
   "projectFiles": [
     {
       "path": "DOMDocument.xml",
-      "sha256": "4dc63812b83131fd23a18177bb0caefebbf9086e2d926248187a5e43349a0a10",
-      "bytes": 25074
+      "sha256": "ea9f3cd84810e3c5851fd342db19e3e657aa73bfa3a6071920e76cc60565ae43",
+      "bytes": 25288
     },
     {
       "path": "Codex光头保安素材.xfl",

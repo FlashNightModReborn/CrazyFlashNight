@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大头机器人/特效/雾人/靶标_元件 9" itemID="6af00000-a00c1e35" lastModified="1779974868">
+  <timeline>
+    <DOMTimeline name="靶标_元件 9">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!626 238S1|626 379!626 379|751 379!751 379[751 351 751 323!751 323[751 322 751 321!751 321[751 320 751 319!751 319|751 318!751 318[751 288 751 258!751 258[751 243 751 229!751 229|742 229!742 229[742 233 742 238!742 238|708 238!708 238 [708 233 708 229!708 229|699 229!699 229[699 233 699 238!699 238|626 238!416 1[415 1 414 1!414 1|413 1!413 1[383 1 353 1!353 1[338 1 324 1!324 1|324 11!324 11[328 11 333 11!333 11|333 45!333 45[328 45 324 45!324 45|324 55!324 55[328 55  333 55!333 55|333 130!333 130|474 130!474 130|474 1!474 1[446 1 418 1!418 1[417 1 416 1!21 229[21 257 21 285!21 285[21 286 21 287!21 287[21 288 21 289!21 289|21 290!21 290[21 320 21 350!21 350[21 365 21 379!21 379|31 379!31 379[31 375  31 370!31 370|65 370!65 370[65 375 65 379!65 379|75 379!75 379[75 375 75 370!75 370|150 370!150 370|150 229!150 229|21 229!382 668[383 668 384 668!384 668|385 668!385 668[415 668 445 668!445 668[460 668 474 668!474 668|474 658!474 658 [470 658 465 658!465 658|465 624!465 624[470 624 474 624!474 624|474 614!474 614[470 614 465 614!465 614|465 539!465 539|324 539!324 539|324 668!324 668[352 668 380 668!380 668[381 668 382 668"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/靶标_元件 8" selected="true" centerPoint3DX="30.15" centerPoint3DY="26.9">
+                  <matrix>
+                    <Matrix a="0.16888427734375" d="0.16888427734375" tx="22" ty="18.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.55" y="-10.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/靶标_元件 8" selected="true" centerPoint3DX="30" centerPoint3DY="7.9">
+                  <matrix>
+                    <Matrix a="0" b="-0.163360595703125" c="0.163360595703125" d="0" tx="21.65" ty="15.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11" y="-8.9"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/靶标_元件 8" selected="true" centerPoint3DX="7.85" centerPoint3DY="8.45">
+                  <matrix>
+                    <Matrix a="0" b="-0.153915405273438" c="-0.153915405273438" d="0" tx="15.75" ty="15.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.05" y="-8.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/靶标_元件 8" selected="true" centerPoint3DX="7.7" centerPoint3DY="26.3">
+                  <matrix>
+                    <Matrix a="-0.159210205078125" d="0.159210205078125" tx="15.4" ty="18.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.6" y="-10.35"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

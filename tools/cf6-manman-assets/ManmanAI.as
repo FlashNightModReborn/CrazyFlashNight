@@ -6,16 +6,18 @@ if (_arenaCalibrationUnit !== true || (蛮蛮AI模式 != "baseline" && 蛮蛮AI�
 manmanClock = 0;
 manmanReadyAt = 8;
 manmanNextAdvance = 0;
+manmanNextCleave = 0;
 manmanNextWolf = 0;
 manmanTargetName = "";
 manmanAttackOwner = null;
 manmanDecisionCount = 0;
 manmanAttackCount = 0;
 manmanHitCount = 0;
-manmanTuning = {cleaveRange:100, advanceRange:200, laneRange:22, keepDistance:75,
-    reactionFrames:8, recoveryFrames:0, advanceCooldown:40, maximumTargetHeight:65,
-    crumblePercent:0.25, wolfMinRange:200, wolfRange:440, wolfLaneRange:72,
-    wolfDepthLimit:60, wolfTravelLimit:360, wolfStandOff:70, wolfCooldown:180,
+manmanIdentity = {};
+manmanTuning = {cleaveRange:100, advanceRange:200, chargeHarassRange:380, cleaveCooldown:55,
+    laneRange:22, keepDistance:75, reactionFrames:8, recoveryFrames:0, advanceCooldown:20,
+    maximumTargetHeight:65, crumblePercent:0.25, wolfMinRange:200, wolfRange:440, wolfLaneRange:72,
+    wolfDepthLimit:60, wolfTravelLimit:360, wolfStandOff:70, wolfCooldown:75,
     wolfWindup:18, wolfFlight:12, wolfImpactFrame:31, wolfHeight:90};
 // 仅隔离实战允许关闭击溃，以保持动作、AI 和面板不变地做对照。
 manmanCrumblePercent = (_arenaCalibrationUnit === true && 蛮蛮击溃模式 == "off")
@@ -48,7 +50,10 @@ manmanCancelAttack = function():Void {
     var owner:Object = this.manmanAttackOwner;
     if (owner == null) return;
     owner.active = false;
-    if (owner.ownsRigid) this.刚体 = owner.previousRigid;
+    if (owner.ownsRigid) {
+        this.刚体 = owner.previousRigid;
+        this.免疫击退 = owner.previousImmune;
+    }
     // 只回收本动作仍持有的演出高度，不覆盖外部击飞已经写入的位置。
     if (owner.action == "wolf" && owner.ownsLift && this._y === owner.lastLiftY) {
         this.manmanLandWolf();
@@ -67,9 +72,10 @@ manmanBeginAttack = function(body:MovieClip, action:String):Void {
     var token:Object = {};
     body.manmanToken = token;
     this.manmanAttackOwner = {token:token, action:action, active:true,
-        previousRigid:this.刚体 === true, ownsRigid:false};
+        previousRigid:this.刚体 === true, previousImmune:this.免疫击退 === true, ownsRigid:false};
     this.manmanAttackCount++;
     if (action == "advance") this.manmanNextAdvance = this.manmanClock + this.manmanTuning.advanceCooldown;
+    if (action == "cleave") this.manmanNextCleave = this.manmanClock + this.manmanTuning.cleaveCooldown;
     if (action == "wolf") {
         this.manmanPrepareWolf();
         this.manmanSyncWolfShadow(body);
@@ -151,14 +157,91 @@ manmanWolfImpact = function(body:MovieClip):Void {
     this.manmanHitCount++;
     var point:Object = {x:90, y:5};
     body.localToGlobal(point); _root.gameworld.globalToLocal(point);
-    _root.子弹区域shoot传递({声音:"", 霰弹值:1, 子弹散射度:0, 发射效果:"",
+    var bullet:Object = {声音:"", 霰弹值:1, 子弹散射度:0, 发射效果:"",
         子弹种类:"近战子弹", 子弹威力:this.空手攻击力, 子弹速度:0,
         Z轴攻击范围:36, 击中地图效果:"", 发射者:this._name,
         shootX:point.x, shootY:point.y, shootZ:this.Z轴坐标,
         子弹敌我属性:this.是否为敌人 !== true, 击倒率:1, 击中后子弹的效果:"空手攻击火花",
-        血量上限击溃:this.manmanCrumblePercent, 区域定位area:body.wolfHit.area});
+        血量上限击溃:this.manmanCrumblePercent,
+        manmanShooterIdentity:this.manmanIdentity, 区域定位area:body.wolfHit.area};
+    bullet.击中时触发函数 = function():Void {
+        if (this.manmanWolfRewarded === true) return;
+        this.manmanWolfRewarded = true;
+        var shooter:MovieClip = _root.gameworld[this.发射者];
+        if (!(shooter.hp > 0) || shooter.manmanIdentity !== this.manmanShooterIdentity) return;
+        shooter.manmanNextAdvance = 0;
+        shooter.manmanReadyAt = 0;
+    };
+    _root.子弹区域shoot传递(bullet);
     if (this._arenaCalibrationUnit === true) _root.服务器.发布服务器消息("[MANMAN_WOLF] event=impact unit="+this._name+" frame="+body._currentframe+" x="+this._x+" z="+this.Z轴坐标+" height="+(this.Z轴坐标-this._y)+" rigid="+this.刚体+" stiff="+this.硬直中);
     _root.播放音效("CF6_0655.mp3");
+};
+
+manmanEnsureRamArea = function():MovieClip {
+    var area:MovieClip = this.manmanRamArea;
+    if (area == null) {
+        area = this.createEmptyMovieClip("manmanRamArea", this.getNextHighestDepth());
+        area.beginFill(0, 0);
+        area.moveTo(-10, -115);
+        area.lineTo(95, -115);
+        area.lineTo(95, 0);
+        area.lineTo(-10, 0);
+        area.endFill();
+        area._alpha = 0;
+        this.manmanRamArea = area;
+    }
+    return area;
+};
+
+manmanDashRamHit = function(body:MovieClip):Void {
+    if (!this.manmanCanHit(body.manmanToken)) return;
+    var face:Number = this.方向 == "左" ? -1 : 1;
+    var sx:Number = this._x + face * 36;
+    var sy:Number = this._y - 45;
+    this.manmanHitCount++;
+    _root.子弹区域shoot("", 1, 0, "", "近战子弹", Math.round(this.空手攻击力 * 0.45), 0, 30, "",
+        this._name, sx, sy, this.Z轴坐标, this.是否为敌人 !== true, 1, "空手攻击火花",
+        8, 0, undefined, undefined, undefined, 0, undefined, this.manmanEnsureRamArea());
+};
+
+manmanMeleeStep = function(body:MovieClip):Void {
+    if (!this.manmanCanHit(body.manmanToken)) return;
+    var owner:Object = this.manmanAttackOwner;
+    if (owner.action != "advance" && owner.action != "cleave") return;
+    var frame:Number = body._currentframe;
+    if (frame === owner.lastMeleeFrame) return;
+    owner.lastMeleeFrame = frame;
+    var step:Number = 0;
+    var isDashPhase:Boolean = false;
+    if (owner.action == "advance") {
+        if (frame >= 5 && frame <= 13) step = 8;
+    } else {
+        if (frame >= 17 && frame <= 32) {
+            step = 20;
+            isDashPhase = true;
+        } else if (frame >= 35 && frame <= 41) step = 10;
+        else if (frame >= 88 && frame <= 100) step = 10;
+    }
+    if (step > 0) {
+        var target:MovieClip = _root.gameworld[this.攻击目标];
+        var hasTarget:Boolean = target != null && target.hp > 0 && !isNaN(target._x);
+        if (hasTarget) {
+            var dx:Number = (target._x - this._x) * (this.方向 == "左" ? -1 : 1);
+            var stopDist:Number = isDashPhase ? 18 : 35;
+            if (dx <= stopDist) step = 0;
+            else if (dx - stopDist < step) step = dx - stopDist;
+            if (isDashPhase && !isNaN(target.Z轴坐标)) {
+                var dz:Number = target.Z轴坐标 - this.Z轴坐标;
+                if (Math.abs(dz) > 6) {
+                    this.manmanWolfMove(dz < 0 ? "上" : "下", Math.min(3, Math.abs(dz)));
+                }
+            }
+        }
+        if (step > 0) this.manmanWolfMove(this.方向, step);
+        if (isDashPhase && hasTarget && (frame == 18 || frame == 21 || frame == 24 || frame == 27 || frame == 30)) {
+            this.manmanDashRamHit(body);
+        }
+    }
 };
 
 manmanAnimationDone = function(body:MovieClip):Void {
@@ -179,6 +262,8 @@ manmanChooseAttack = function(dx:Number, dz:Number, height:Number):String {
     if (dz > tune.laneRange) return "none";
     if (dx <= tune.cleaveRange) return "cleave";
     if (dx <= tune.advanceRange && this.manmanClock >= this.manmanNextAdvance) return "advance";
+    if (dx > tune.advanceRange && dx <= tune.chargeHarassRange
+        && !(this.manmanClock < this.manmanNextCleave)) return "cleave";
     return "none";
 };
 
@@ -197,18 +282,25 @@ manmanTick = function():Void {
         if (!(this.hp > 0) || this.状态 != expected || this.man.manmanToken !== owner.token) {
             this.manmanCancelAttack();
         } else {
-            // 只在发力段持有刚体；保留起手与收招的反击窗口。
+            // 拖斧推进 17..32 与紧接的上撩/重劈保持抗打断；起手 1..7、换段 47..84 与末段收招仍可反击。
             var body:MovieClip = this.man;
             var active:Boolean = owner.action == "wolf"
                 ? body._currentframe > this.manmanTuning.wolfWindup && body._currentframe <= this.manmanTuning.wolfImpactFrame
-                : body._currentframe >= 8 && body._currentframe <= 17;
+                : owner.action == "cleave"
+                    ? ((body._currentframe >= 8 && body._currentframe <= 46)
+                        || (body._currentframe >= 85 && body._currentframe <= 106))
+                    : (body._currentframe >= 8 && body._currentframe <= 17);
             if (owner.action == "wolf") this.manmanWolfStep(body);
+            else this.manmanMeleeStep(body);
             if (active && !owner.ownsRigid) {
                 owner.previousRigid = this.刚体 === true;
+                owner.previousImmune = this.免疫击退 === true;
                 owner.ownsRigid = true;
                 this.刚体 = true;
+                this.免疫击退 = true;
             } else if (!active && owner.ownsRigid) {
                 this.刚体 = owner.previousRigid;
+                this.免疫击退 = owner.previousImmune;
                 owner.ownsRigid = false;
             }
         }

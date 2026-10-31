@@ -39,12 +39,12 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ManmanAssetTest {
         _root.子弹区域shoot=function(sound:String,pellets:Number,spread:Number,effect:String,kind:String,
             power:Number,speed:Number,lane:Number,hitEffect:String,shooter:String,sx:Number,sy:Number,
             sz:Number,friendly:Boolean,knockdown:Number,spark:String,horizontal:Number,vertical:Number,
-            accuracy:Number,solid:Number,percent:Number,crumble:Number):Void {
-            Cf6ManmanAssetTest.capture(shooter,kind,power,lane,knockdown,sx,sz,friendly,crumble);
+            accuracy:Number,solid:Number,percent:Number,crumble:Number,ignore:Object,area:MovieClip):Void {
+            Cf6ManmanAssetTest.capture(shooter,kind,power,lane,knockdown,sx,sz,friendly,crumble,area);
         };
         _root.子弹区域shoot传递=function(p:Object):Void {
             Cf6ManmanAssetTest.capture(p.发射者,p.子弹种类,p.子弹威力,p.Z轴攻击范围,p.击倒率,
-                p.shootX,p.shootZ,p.子弹敌我属性,p.血量上限击溃);
+                p.shootX,p.shootZ,p.子弹敌我属性,p.血量上限击溃,p.区域定位area);
             var unit:MovieClip=library[p.发射者];
             check(p.区域定位area._width>0 && p.区域定位area._height>0,"wolf landing area exists");
             check(unit.man._currentframe==31 && Math.abs(unit._y-unit.Z轴坐标)<0.01,"wolf impact on landing only");
@@ -97,7 +97,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ManmanAssetTest {
 
     private static function record():Object {
         return {shots:0,done:0,deathChecks:0,removed:false,moves:0,powerOk:true,laneOk:true,
-            knockdownOk:true,sideOk:true,crumbleOk:true,expectedCrumble:0.25,dx:0,wolf:false,maxHeight:0};
+            knockdownOk:true,sideOk:true,crumbleOk:true,areaOk:true,expectedCrumble:0.25,dx:0,wolf:false,maxHeight:0};
     }
 
     private static function loaded(mc:MovieClip):Void {
@@ -130,7 +130,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ManmanAssetTest {
     }
 
     private static function capture(name:String,kind:String,power:Number,lane:Number,kd:Number,
-        sx:Number,sz:Number,friendly:Boolean,crumble:Number):Void {
+        sx:Number,sz:Number,friendly:Boolean,crumble:Number,area:MovieClip):Void {
         var actor:MovieClip=library[name];var rec:Object=actor.fixtureRecord;
         if(rec==undefined)return;
         rec.shots++;
@@ -140,6 +140,8 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ManmanAssetTest {
         rec.knockdownOk=rec.knockdownOk && kd==1;
         rec.sideOk=rec.sideOk && friendly===false;
         rec.crumbleOk=rec.crumbleOk && crumble===rec.expectedCrumble;
+        var b:Object=area.getBounds(library);
+        rec.areaOk=rec.areaOk && (b.xMax-b.xMin)>=60 && (b.yMax-b.yMin)>=60;
         rec.dx+=sx-actor._x;
     }
 
@@ -258,7 +260,10 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ManmanAssetTest {
         check(u.manmanChooseAttack(441,0,0)=="none","outside wolf range");
         check(u.manmanChooseAttack(300,73,0)=="none","outside wolf depth window");
         u.manmanNextWolf=101;
-        check(u.manmanChooseAttack(300,0,0)=="none","wolf cooldown");
+        check(u.manmanChooseAttack(300,0,0)=="cleave","wolf cooldown falls back to long-range cleave charge harass");
+        u.manmanNextCleave=101;
+        check(u.manmanChooseAttack(300,0,0)=="none","wolf and cleave cooldown");
+        u.manmanNextCleave=0;
         check(u.manmanChooseAttack(180,0,0)=="advance","wolf cooldown retains advance");
         u.manmanNextWolf=0;
         check(u.manmanChooseAttack(90,23,0)=="none","lane alignment required");
@@ -299,6 +304,9 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ManmanAssetTest {
         u.manmanBeginAttack(u.man,"cleave");
         check(!u.manmanCanHit(stale) && u.manmanCanHit(u.man.manmanToken),"stale action token rejected");
         u.manmanCancelAttack();check(!u.manmanCanHit(u.man.manmanToken),"cancelled action cannot hit");
+        var ramArea:MovieClip=u.manmanEnsureRamArea();
+        var rb:Object=ramArea.getBounds(u);
+        check(Math.abs((rb.xMax-rb.xMin)-105)<0.5 && Math.abs((rb.yMax-rb.yMin)-115)<0.5,"drag-axe ram collider bounds");
         u.状态改变=realChange;u.状态="空手站立";u.攻击目标="无";
         u.左行=u.右行=u.上行=u.下行=false;target.removeMovieClip();
     }
@@ -412,20 +420,24 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ManmanAssetTest {
         if(ticks==14 || ticks==27) {
             for(var r:Number=0;r<cases.length;r++) {
                 var a:Object=cases[r];
-                if(a.move=="cleave" || a.move=="advance")check(a.actor.刚体===(ticks==14),"armor window "+a.move+" "+ticks);
+                if(a.move=="cleave" || a.move=="advance"){
+                    var guarded:Boolean=a.move=="cleave" || ticks==14;
+                    check(a.actor.刚体===guarded,"armor window "+a.move+" "+ticks);
+                    if(a.move=="cleave")check(a.actor.免疫击退===true,"drag charge keeps displacement immunity through its middle "+ticks);
+                }
             }
         }
         if(ticks==17)render(cases[0].actor,"cleave-impact");
         if(ticks==80)render(cases[6].actor,"death-late");
-        if(ticks==145) {
+        if(ticks==155) {
             check(cases[11].actor.man.wolfShadow==null,"wolf shadow removed on right recovery");
             check(cases[32].actor.man.wolfShadow==null,"wolf shadow removed on left recovery");
             for(var k:Number=0;k<cases.length;k++) {
                 var item:Object=cases[k];var rec:Object=item.record;
                 var wolfAttack:Boolean=rec.wolfComplete===true;
                 var attacks:Boolean=item.move=="cleave" || item.move=="advance" || wolfAttack;
-                check(rec.shots==(wolfAttack?1:attacks?3:0),"exact emissions "+k+" "+item.move+" "+rec.shots);
-                check(rec.powerOk && rec.laneOk && rec.knockdownOk && rec.sideOk && rec.crumbleOk,"damage contract "+k);
+                check(rec.shots==(wolfAttack?1:item.move=="cleave"?4:attacks?3:0),"exact emissions "+k+" "+item.move+" "+rec.shots);
+                check(rec.powerOk && rec.laneOk && rec.knockdownOk && rec.sideOk && rec.crumbleOk && rec.areaOk,"damage contract "+k);
                 if(attacks) {
                     check(rec.done==1,"attack terminal once "+k);
                     check(item.side==0?rec.dx>0:rec.dx<0,"mirrored hit placement "+k);

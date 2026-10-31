@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大刀机器人/特效/刀光" itemID="6af00000-87622837">
+  <timeline>
+    <DOMTimeline name="刀光" layerDepthEnabled="true">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#F63084"/>
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#D391B2"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!370 111|220 31!220 31[-10 990 1421 1246!1421 1246[929 664 1651 31!1651 31|1475 116!1475 116|1475 31!1475 31|1374 106"/>
+                    <Edge fillStyle0="2" edges="!1374 106|1374 31!1374 31|1290 111!1290 111|1236 31!1236 31|1170 106!1170 106|1103 31!1103 31|1035 96!1035 96|985 31!985 31|885 121!885 121|885 31!885 31|780 106!780 106|714 31!714 31|640 101!640 101|585 31!585 31|490 91!490 91|439 31 !439 31|370 111!50 0[-85 305 145 525!145 525[3 272 50 0"/>
+                    <Edge fillStyle0="2" fillStyle1="1" edges=" !370 111[258 517 853 937!853 937[667 630 701 638!701 638[874 986 1241 1075!1241 1075[845 606 1374 106"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -8,8 +8,8 @@
       "rifleRestFrames": 18,
       "eliteRestFrames": 30,
       "eliteStandShots": 4,
-      "retreatTrigger": 300,
-      "retreatDistance": 380,
+      "retreatTrigger": 220,
+      "retreatDistance": 220,
       "smokeRestFrames": 90,
       "smokeMoveFrames": 24,
       "smokeMoveSpeed": 0.55,
@@ -42,7 +42,14 @@
       "evasionRestFrames": 90,
       "retreatZBudget": 56,
       "retreatZSpeed": 0.8,
-      "evasionRetreatX": 64
+      "evasionRetreatX": 64,
+      "retreatKeepRange": 340,
+      "runTrigger": 380,
+      "runStopRange": 280,
+      "evasionRetryFrames": 12,
+      "slidePassDistance": 140,
+      "slideMaxTravel": 620,
+      "slideSpeedLimit": 3
     },
     "elite": {
       "rifleShots": 3,
@@ -50,8 +57,8 @@
       "rifleRestFrames": 30,
       "eliteRestFrames": 30,
       "eliteStandShots": 4,
-      "retreatTrigger": 300,
-      "retreatDistance": 380,
+      "retreatTrigger": 220,
+      "retreatDistance": 220,
       "smokeRestFrames": 90,
       "smokeMoveFrames": 24,
       "smokeMoveSpeed": 0.55,
@@ -84,7 +91,14 @@
       "evasionRestFrames": 90,
       "retreatZBudget": 56,
       "retreatZSpeed": 0.8,
-      "evasionRetreatX": 64
+      "evasionRetreatX": 64,
+      "retreatKeepRange": 340,
+      "runTrigger": 380,
+      "runStopRange": 280,
+      "evasionRetryFrames": 12,
+      "slidePassDistance": 140,
+      "slideMaxTravel": 620,
+      "slideSpeedLimit": 3
     },
     "instructor": {
       "rifleShots": 6,
@@ -92,8 +106,8 @@
       "rifleRestFrames": 18,
       "eliteRestFrames": 30,
       "eliteStandShots": 5,
-      "retreatTrigger": 300,
-      "retreatDistance": 380,
+      "retreatTrigger": 220,
+      "retreatDistance": 220,
       "smokeRestFrames": 90,
       "smokeMoveFrames": 24,
       "smokeMoveSpeed": 0.55,
@@ -126,7 +140,14 @@
       "evasionRestFrames": 90,
       "retreatZBudget": 56,
       "retreatZSpeed": 0.8,
-      "evasionRetreatX": 64
+      "evasionRetreatX": 64,
+      "retreatKeepRange": 340,
+      "runTrigger": 380,
+      "runStopRange": 280,
+      "evasionRetryFrames": 12,
+      "slidePassDistance": 140,
+      "slideMaxTravel": 620,
+      "slideSpeedLimit": 3
     }
   },
   "bounds": {
@@ -289,6 +310,34 @@
     "evasionRetreatX": [
       0,
       160
+    ],
+    "retreatKeepRange": [
+      220,
+      460
+    ],
+    "runTrigger": [
+      250,
+      600
+    ],
+    "runStopRange": [
+      120,
+      400
+    ],
+    "evasionRetryFrames": [
+      6,
+      30
+    ],
+    "slidePassDistance": [
+      60,
+      240
+    ],
+    "slideMaxTravel": [
+      240,
+      900
+    ],
+    "slideSpeedLimit": [
+      1,
+      4
     ]
   }
 }

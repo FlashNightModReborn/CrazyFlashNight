@@ -217,7 +217,7 @@ def build_symbols():
             0:{'script':'_parent.soldierBeginAttack(this,"knife");'},
             33:{'script':'_parent.soldierFinishAttack(this);'}}),
         native.make_sparse_layer('真实近战判定',34,{13:{'elements':[
-            native.instance(H['Symbol 195'],matrix=(101/25,0,0,knife_height/25,10.3,center_y),
+            native.instance(H['Symbol 195'],matrix=(135/25,0,0,knife_height/25,27.3,center_y),
                 symbol_type='movie clip',name='攻击点',alpha_mult=0,
                 script='onClipEvent(load){ _parent._parent.soldierStab(_parent,this); }')]}}),
         *depth_layers(timeline['517'],parts)],symbol_type='movie clip')

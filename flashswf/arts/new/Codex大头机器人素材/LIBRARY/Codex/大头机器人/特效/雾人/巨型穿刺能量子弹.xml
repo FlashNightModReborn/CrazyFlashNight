@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大头机器人/特效/雾人/巨型穿刺能量子弹" itemID="6af00000-09202472" lastModified="1766692701" lastUniqueIdentifier="4" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="巨型穿刺能量子弹" currentFrame="2">
+      <layers>
+        <DOMLayer name="Layer 4" color="#A695CB">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/巨型穿刺能量子弹_能量轨迹" centerPoint3DX="-42.95" centerPoint3DY="-0.15">
+                  <matrix>
+                    <Matrix a="0.791656494140625" d="1.39312744140625" tx="-18.9" ty="-5.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.25" y="3.55"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#00FFFF" quality="3" strength="1.2"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.55" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/巨型穿刺能量子弹_能量弹头" centerPoint3DX="44.9" centerPoint3DY="-0.15">
+                  <matrix>
+                    <Matrix a="2.08779907226563" d="1.39312744140625" tx="32.9" ty="-9.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.8" y="6.7"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF" quality="3"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.55" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/巨型穿刺能量子弹_能量轨迹" centerPoint3DX="-42.95" centerPoint3DY="-0.15">
+                  <matrix>
+                    <Matrix a="1.47833251953125" d="1.39312744140625" tx="-81.55" ty="-5.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="91.25" y="3.55"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#00FFFF" quality="3" strength="1.2"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.55" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/巨型穿刺能量子弹_能量弹头" centerPoint3DX="44.9" centerPoint3DY="-0.15">
+                  <matrix>
+                    <Matrix a="2.08779907226563" d="1.39312744140625" tx="32.9" ty="-9.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.8" y="6.7"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF" quality="3"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.55" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/巨型穿刺能量子弹_能量轨迹" centerPoint3DX="-42.95" centerPoint3DY="-0.15">
+                  <matrix>
+                    <Matrix a="2.08779907226563" d="1.39312744140625" tx="-137.15" ty="-5.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="45.2" y="3.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#00FFFF" quality="3" strength="1.2"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.55" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/巨型穿刺能量子弹_能量弹头" centerPoint3DX="44.9" centerPoint3DY="-0.15">
+                  <matrix>
+                    <Matrix a="2.08779907226563" d="1.39312744140625" tx="32.9" ty="-9.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="5.8" y="6.7"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFFFFF" quality="3"/>
+                  </filters>
+                  <color>
+                    <Color tintMultiplier="0.55" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

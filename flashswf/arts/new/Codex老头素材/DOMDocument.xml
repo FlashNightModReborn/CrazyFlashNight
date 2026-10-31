@@ -13,6 +13,11 @@
     <DOMFolderItem name="Codex/老头/原始特效" itemID="6af20000-bea6d551"/>
     <DOMFolderItem name="Codex/老头/变身" itemID="6af20000-0275cb4b"/>
     <DOMFolderItem name="Codex/老头/机械爆裂" itemID="6af20000-9298d296"/>
+    <DOMFolderItem name="Codex/老头/特效" itemID="6af20000-68f7e186"/>
+    <DOMFolderItem name="Codex/老头/特效/方舟指挥官" itemID="6af20000-8aefb633"/>
+    <DOMFolderItem name="Codex/老头/特效/方舟指挥官/1.特效文件夹" itemID="6af20000-d48e553c"/>
+    <DOMFolderItem name="Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹" itemID="6af20000-8916337c"/>
+    <DOMFolderItem name="Codex/老头/特效/雾人" itemID="6af20000-3f404a17"/>
   </folders>
   <symbols>
     <Include href="Codex/老头/CF7/Symbol 113.xml" itemID="6af00000-53ba4d46" loadImmediate="false"/>
@@ -36,6 +41,7 @@
     <Include href="Codex/老头/human/动作/973.xml" itemID="6af00000-550905c4" loadImmediate="false"/>
     <Include href="Codex/老头/human/动作/974.xml" itemID="6af00000-376045dd" loadImmediate="false"/>
     <Include href="Codex/老头/human/动作/击飞姿势.xml" itemID="6af00000-ff9410ba" loadImmediate="false"/>
+    <Include href="Codex/老头/human/动作/跑步.xml" itemID="6af00000-8f384e51" loadImmediate="false"/>
     <Include href="Codex/老头/robot/动作/1007.xml" itemID="6af00000-f4b4d9d6" loadImmediate="false"/>
     <Include href="Codex/老头/robot/动作/1008.xml" itemID="6af00000-c2491c30" loadImmediate="false"/>
     <Include href="Codex/老头/robot/动作/1010.xml" itemID="6af00000-4ea412c7" loadImmediate="false"/>
@@ -114,6 +120,91 @@
     <Include href="Codex/老头/敌人-CF6老头机器人.xml" itemID="6af00000-3aa5daea" loadImmediate="false"/>
     <Include href="Codex/老头/机械爆裂/5武器特效和子弹_爆炸狙击子弹_小火焰爆炸素材.xml" itemID="6af00000-aa7cb0a6" loadImmediate="false"/>
     <Include href="Codex/老头/机械爆裂/演出.xml" itemID="6af00000-88310233" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/元件 6.xml" itemID="6af00000-bee6fb08" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/坠落轰炸弹.xml" itemID="6af00000-17852b1f" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 473.xml" itemID="6af00000-8ce8f0a5" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 475.xml" itemID="6af00000-e8e00c38" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 477.xml" itemID="6af00000-3a6a05bb" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 479.xml" itemID="6af00000-191f747f" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 479 副本.xml" itemID="6af00000-c53cb1d3" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 495.xml" itemID="6af00000-a3dba885" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 497.xml" itemID="6af00000-025bbef1" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 507.xml" itemID="6af00000-d2e4acf4" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 509.xml" itemID="6af00000-b36815cc" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/Symbol 518.xml" itemID="6af00000-21d82463" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/地震1.xml" itemID="6af00000-a087cd57" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/地震2.xml" itemID="6af00000-3b5355ed" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/地震3.xml" itemID="6af00000-c7ee2290" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/地震4.xml" itemID="6af00000-709b2b92" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 469.xml" itemID="6af00000-dcb8e66a" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 471.xml" itemID="6af00000-33761aa8" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 473.xml" itemID="6af00000-349054f1" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 473 副本.xml" itemID="6af00000-a02291a4" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 475.xml" itemID="6af00000-eb40b5cc" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 495.xml" itemID="6af00000-4c4b9ff3" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 507.xml" itemID="6af00000-eb6031f9" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 522.xml" itemID="6af00000-b5c85f6b" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 525.xml" itemID="6af00000-3fe40d81" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/方舟指挥官/1.特效文件夹/重复项目文件夹/Symbol 533.xml" itemID="6af00000-42eebeb5" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/电流.xml" itemID="6af00000-ae9fc286" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/蓄力对空光束.xml" itemID="6af00000-274595e2" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/重束炮口光.xml" itemID="6af00000-af633a72" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/巨型穿刺能量子弹.xml" itemID="6af00000-43e63f33" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/巨型穿刺能量子弹_能量弹头.xml" itemID="6af00000-54dff7fc" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/巨型穿刺能量子弹_能量轨迹.xml" itemID="6af00000-a33bfc49" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地.xml" itemID="6af00000-26125cac" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5088.xml" itemID="6af00000-d5ffcb27" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5089.xml" itemID="6af00000-17814675" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5090.xml" itemID="6af00000-88e76e70" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5092.xml" itemID="6af00000-30db8fe6" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5093.xml" itemID="6af00000-2f0f24ae" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5094.xml" itemID="6af00000-9e63b112" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5096.xml" itemID="6af00000-cc83fc21" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5097.xml" itemID="6af00000-221fd5a3" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5098.xml" itemID="6af00000-0cef69f3" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5100.xml" itemID="6af00000-e71f7cc6" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5102.xml" itemID="6af00000-ce96daa0" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5104.xml" itemID="6af00000-985fbb39" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5106.xml" itemID="6af00000-da20b72f" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5108.xml" itemID="6af00000-43087c7d" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5110.xml" itemID="6af00000-ddf737b1" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5112.xml" itemID="6af00000-62f5a661" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/强震地_Symbol 5114.xml" itemID="6af00000-ac03e6cd" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/目标.xml" itemID="6af00000-c45b578e" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝色炮击.xml" itemID="6af00000-46dd6997" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝色炮击_Symbol 65.xml" itemID="6af00000-fbf40b47" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝色炮击_Symbol 66.xml" itemID="6af00000-abdac45c" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝色炮击_Symbol 67.xml" itemID="6af00000-4bdb2c9f" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝色炮击_Symbol 68.xml" itemID="6af00000-ead5d8bd" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝色炮击_Symbol 69.xml" itemID="6af00000-431f5f42" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝色炮击_Symbol 70.xml" itemID="6af00000-e7b9cd5f" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝色炮击_Symbol 72.xml" itemID="6af00000-985038b8" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝色炮击_Symbol 74.xml" itemID="6af00000-9eed3dcb" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击.xml" itemID="6af00000-9cd2ca5d" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击_Symbol 475.xml" itemID="6af00000-646fa70e" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击_Symbol 477.xml" itemID="6af00000-f70ba0ed" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击_Symbol 479.xml" itemID="6af00000-181ba315" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击_Symbol 481.xml" itemID="6af00000-92b493d9" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击_Symbol 483.xml" itemID="6af00000-1342d8b4" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击_Symbol 485.xml" itemID="6af00000-b1a9951a" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击_Symbol 487.xml" itemID="6af00000-1aa1a6ea" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击_Symbol 489.xml" itemID="6af00000-38052c09" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击_Symbol 491.xml" itemID="6af00000-e9b7ffa0" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击_Symbol 493.xml" itemID="6af00000-f7461436" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击_Symbol 495.xml" itemID="6af00000-dcc9d725" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击_Symbol 497.xml" itemID="6af00000-c7727b19" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击_Symbol 499.xml" itemID="6af00000-eb7a69b8" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击_Symbol 501.xml" itemID="6af00000-baca4727" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击_Symbol 503.xml" itemID="6af00000-8e81caaf" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/蓝芒强击_Symbol 505.xml" itemID="6af00000-cf69b75f" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/靶标_元件 10.xml" itemID="6af00000-07bdd14b" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/靶标_元件 11.xml" itemID="6af00000-c7e5b4bc" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/靶标_元件 12.xml" itemID="6af00000-259450b0" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/靶标_元件 13.xml" itemID="6af00000-aabd4a82" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/靶标_元件 14.xml" itemID="6af00000-e5960876" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/靶标_元件 15.xml" itemID="6af00000-98d8dd50" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/靶标_元件 8.xml" itemID="6af00000-e67eb71e" loadImmediate="false"/>
+    <Include href="Codex/老头/特效/雾人/靶标_元件 9.xml" itemID="6af00000-44227afa" loadImmediate="false"/>
     <Include href="Codex/老头/行为驱动.xml" itemID="6af00000-2f20a48b" loadImmediate="false"/>
     <Include href="Codex老头素材.xml" itemID="6af00000-8a7e73d6" loadImmediate="false"/>
   </symbols>

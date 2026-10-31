@@ -3,7 +3,8 @@ soldierClock=0;soldierReadyAt=6;soldierNextShootAt=0;soldierTargetName="";soldie
 soldierShotCount=0;soldierStabCount=0;soldierReloadCount=0;soldierInvalidMuzzleCount=0;
 soldierWeaponError="";
 soldierAlignZ=false;soldierApproachX=false;soldierMovementTarget="";
-soldierShieldBuffSource="CF6特种兵持盾";soldierBuffError="";soldierShieldReduction=0;
+soldierShieldBuffSource="CF6特种兵持盾";soldierBuffError="";soldierShieldReduction=0;soldierShieldGuardDamage=0;
+soldierNextShieldGuardAt=0;soldierShieldGuardActive=false;
 soldierPhase=2;soldierPhaseChanges=0;soldierPhasePending=false;
 soldierShieldStates={长枪站立:"持盾站立",长枪行走:"持盾行走",长枪跑:"持盾跑",
     长枪跳:"持盾被击",近战:"持盾近战",长枪攻击:"持盾攻击",拾取:"持盾站立",
@@ -12,7 +13,7 @@ soldierTuning={shootRange:460,knifeRange:95,laneRange:24,keepDistance:190,
     reactionFrames:6,maximumTargetHeight:85,burstShots:3,recoveryFrames:4,
     maximumFireFrames:18,shootRestFrames:30,
     knifeCritChance:10,knifeCritMultiplier:6,knifeExecutePercent:5,secondLifeRatio:0.35,
-    laneStopRange:12,approachStopRange:420,shieldDamageReductionPercent:75};
+    laneStopRange:12,approachStopRange:420,shieldDamageReductionPercent:75,shieldGuardTriggerRatio:0.1};
 
 soldierClearMovement=function():Void {
     this.左行=this.右行=this.上行=this.下行=false;
@@ -89,6 +90,14 @@ soldierCancelAttack=function():Void {
     _root.主角函数.清理射击任务(this);
 };
 
+soldierCanShieldGuard=function():Boolean {
+    if(this.soldierPhase!=1 || !(this.hp>0) || this.浮空 || this.倒地 || this.soldierClock<this.soldierNextShieldGuardAt)return false;
+    if(this.状态=="长枪站立" || this.状态=="长枪行走" || this.状态=="长枪跑"
+        || this.状态=="拾取" || this.状态=="躲闪")return true;
+    var owner:Object=this.soldierAttackOwner;
+    return this.状态=="长枪攻击" && (owner==null || (owner.action=="shoot" && !owner.charge && !owner.elite));
+};
+
 // Cancel before the timeline unloads its old man; delayed shots cannot adopt a new pose.
 状态改变=function(next:String):Void {
     if(this.soldierPhase==0)return;
@@ -96,6 +105,8 @@ soldierCancelAttack=function():Void {
         this.soldierSetHP(0);return;
     }
     if(this.状态==next)return;
+    if(next!="被击")this.soldierShieldGuardActive=false;
+    if(next=="被击" || this.soldierPhase!=1)this.soldierShieldGuardDamage=0;
     this.soldierCancelAttack();
     this.状态=next;
     var pose:String=this.soldierPhase==1?this.soldierShieldStates[next]:next;
@@ -109,17 +120,35 @@ soldierSetHP=function(value:Number):Void {
     if(this.soldierPhase==0)return;
     if(this.soldierPhase==1 && value<=0){
         this.soldierHP=1;this.soldierPhase=0;this.soldierPhasePending=true;
+        this.soldierShieldGuardDamage=0;this.soldierShieldGuardActive=false;
         this.soldierPhaseChanges++;this.soldierCancelAttack();
         this.soldierClearMovement();this.soldierRemoveShieldBuff();
         return;
     }
+    var previous:Number=this.soldierHP;
     this.soldierHP=value;
+    if(this.soldierPhase==1){
+        if(value>=this.hp满血值){this.soldierShieldGuardDamage=0;this.soldierNextShieldGuardAt=0;}
+        else if(isFinite(previous) && value<previous && this.soldierCanShieldGuard()){
+            this.soldierShieldGuardDamage+=previous-value;
+            var threshold:Number=Math.max(1,this.hp满血值*this.soldierTuning.shieldGuardTriggerRatio);
+            if(this.soldierShieldGuardDamage>=threshold){
+                this.soldierShieldGuardDamage=0;
+                this.soldierNextShieldGuardAt=this.soldierClock+90;
+                this.soldierShieldGuardActive=true;
+                this.soldierNextShootAt=0;this.soldierReadyAt=0;
+                this.状态改变("被击");
+            }
+        }
+    }
 };
 
 soldierOnKill=function(target:MovieClip):Void {
     if(this.soldierPhase==1){this.soldierSetHP(0);return;}
     if(this.soldierPhase==0 || this._killed || this.hp>0)return;
+    var airborne:Boolean=this.浮空===true && this.状态=="击倒";
     _root.敌人函数.标准击杀(this);
+    if(airborne){this.浮空=true;this.状态改变("击倒");}
 };
 
 soldierInitializePhase=function():Void {
@@ -310,6 +339,8 @@ soldierTick=function():Void {
     if(this.soldierTacticalConfig!=null)this.soldierTacticalObserve();
     if(!isNaN(this.hp) && this.hp<=0){
         this.soldierSlidePermit=null;this.soldierCancelAttack();
+        if(this.浮空 && this.状态=="击倒")return;
+        if(this.倒地 && this.状态=="倒地")return;
         if(this.状态!="血腥死" && this.状态!="消失")this.状态改变("血腥死");
         return;
     }

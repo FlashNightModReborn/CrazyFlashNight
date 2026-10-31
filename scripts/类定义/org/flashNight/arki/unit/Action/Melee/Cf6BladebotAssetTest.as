@@ -65,13 +65,13 @@ class org.flashNight.arki.unit.Action.Melee.Cf6BladebotAssetTest {
     }
     private static function loaded(mc:MovieClip):Void {
         mc.stop();
-        var states:Array=["空手站立","空手行走","空手跑","空手跳","近战","空手攻击","激光束","拾取","躲闪","被击","击倒","倒地","被投","血腥死","消失"];
+        var states:Array=["空手站立","空手行走","空手跑","空手跳","近战","空手攻击","激光束","拾取","躲闪","旋刃冲刺","被击","击倒","倒地","被投","血腥死","消失"];
         for(var side:Number=0;side<2;side++)for(var s:Number=0;s<states.length;s++) {
             var p:MovieClip=library.attachMovie(link,"bladebotProbe"+probes.length,library.getNextHighestDepth(),{fixtureRecord:record()});
             check(p!=null,"attach state "+states[s]);
             probes.push({actor:p,state:states[s],side:side,bodySeen:false});
         }
-        var moves:Array=["cleave","sweep","hit0","hit1","down","knockdown","death","interrupt","dead","interruptSweep","deadSweep","beam","interruptBeam","deadBeam"];
+        var moves:Array=["cleave","sweep","hit0","hit1","down","knockdown","death","interrupt","dead","interruptSweep","deadSweep","beam","interruptBeam","deadBeam","dash"];
         for(var j:Number=0;j<2;j++)for(var m:Number=0;m<moves.length;m++) {
             var rec:Object=record();
             var u:MovieClip=library.attachMovie(link,"bladebotCase"+cases.length,library.getNextHighestDepth(),{fixtureRecord:rec});
@@ -94,12 +94,12 @@ class org.flashNight.arki.unit.Action.Melee.Cf6BladebotAssetTest {
             if(rec.deathBursts==1)Cf6RobotCombatTest.captureDeath(data,u);return;
         }
         rec.shots++;
-        var heavy:Boolean=u.bladebotAttackOwner.action=="cleave",beam:Boolean=u.bladebotAttackOwner.action=="beam";
-        rec.powerOk=rec.powerOk && data.子弹威力==(heavy?240:100);
+        var heavy:Boolean=u.bladebotAttackOwner.action=="cleave",beam:Boolean=u.bladebotAttackOwner.action=="beam",dash:Boolean=u.bladebotAttackOwner.action=="dash";
+        rec.powerOk=rec.powerOk && Math.abs(data.子弹威力-(heavy?240:dash?85:100))<0.01;
         rec.contractOk=rec.contractOk && data.子弹种类=="近战子弹" && data.子弹速度==0
             && data.霰弹值==1 && data.Z轴攻击范围==30 && data.shootZ==u.Z轴坐标
             && data.击倒率==(heavy?3:10) && data.百分比伤害==undefined && data.血量上限击溃==undefined
-            && data.水平击退速度==(heavy?24:beam?2:3) && data.垂直击退速度==(heavy || beam?0:2)
+            && data.水平击退速度==(heavy?29:beam?2:dash?(u.man._currentframe>=49?26:4):3) && data.垂直击退速度==(heavy || beam || dash?0:2)
             && data.伤害类型==(beam?"魔法":"物理") && (beam?data.魔法伤害属性=="波":data.魔法伤害属性==undefined);
         var bounds:Object=data.区域定位area.getBounds(library);
         if(beam){
@@ -109,13 +109,21 @@ class org.flashNight.arki.unit.Action.Melee.Cf6BladebotAssetTest {
             rec.areaOk=rec.areaOk && Math.abs(length-619.05)<0.3 && Math.abs(thickness-32)<0.3;
             trace("[BLADEBOT_BEAM_GEOMETRY] unit="+u._name+" angle="+u.bladebotAttackOwner.beamAngle
                 +" length="+length+" thickness="+thickness+" bounds="+bounds.xMin+","+bounds.yMin+","+bounds.xMax+","+bounds.yMax);
-        }else rec.areaOk=rec.areaOk && bounds.xMax-bounds.xMin>210 && bounds.xMax-bounds.xMin<240
-            && Math.abs(bounds.yMax-bounds.yMin-(heavy?180:200))<0.3;
+        }else if(heavy){
+            rec.areaOk=rec.areaOk && bounds.xMax-bounds.xMin>210 && bounds.xMax-bounds.xMin<240
+                && Math.abs(bounds.yMax-bounds.yMin-180)<0.3;
+        }else if(dash){
+            rec.areaOk=rec.areaOk && Math.abs(bounds.xMax-bounds.xMin-300)<0.3
+                && Math.abs(bounds.yMax-bounds.yMin-240)<0.3;
+        }else{
+            rec.areaOk=rec.areaOk && Math.abs(bounds.xMax-bounds.xMin-320)<0.3
+                && Math.abs(bounds.yMax-bounds.yMin-250)<0.3;
+        }
         var dx:Number=(data.shootX-u._x)*(u.方向=="右"?1:-1);
         if(dx>0)rec.front++;else if(dx<0)rec.back++;
         if(beam && u._name=="bladebotCase11" && !images["beam-right"])render(u,"beam-right");
-        if(beam && u._name=="bladebotCase25" && !images["beam-left"])render(u,"beam-left");
-        var before:Number=rec.shots;u.bladebotStrike(u.man,u.man.攻击点,heavy?2.4:1);
+        if(beam && u._name=="bladebotCase26" && !images["beam-left"])render(u,"beam-left");
+        var before:Number=rec.shots;u.bladebotStrike(u.man,u.man.攻击点,heavy?2.4:dash?0.85:1);
         check(rec.shots==before,"contact duplicate cannot replay damage");
         if(u._name.indexOf("comboActor")==0){
             var target:MovieClip=library[u.攻击目标];
@@ -180,21 +188,30 @@ class org.flashNight.arki.unit.Action.Melee.Cf6BladebotAssetTest {
     private static function decisions():Void {
         var u:MovieClip=probes[0].actor;
         check(u.命中率==30,"mechanical aim is applied at initialization");
-        u.bladebotClock=100;u.bladebotReadyAt=0;u.bladebotNextSweep=0;
-        check(u.bladebotChooseAttack(120,0,0)=="sweep","close sweep");
+        u.bladebotClock=100;u.bladebotReadyAt=0;u.bladebotNextSweep=0;u.bladebotNextDash=0;u.bladebotNextBeam=0;
+        check(u.bladebotChooseAttack(180,0,0)=="sweep","close sweep");
+        u.bladebotNextSweep=101;
         check(u.bladebotChooseAttack(230,0,0)=="cleave","approaching heavy cleave");
+        u.bladebotNextSweep=0;
         check(u.bladebotChooseAttack(180,0,110)=="sweep","overhead sweep can catch a reachable airborne target");
         check(u.bladebotChooseAttack(246,0,0)=="none","gap outside melee and before beam");
+        check(u.bladebotChooseAttack(340,0,0)=="dash","mid-range selects diagonal blade dash");
+        u.bladebotNextDash=101;
+        check(u.bladebotChooseAttack(340,0,0)=="beam","dash cooldown falls back to beam");
+        u.bladebotNextDash=0;
         check(u.bladebotChooseAttack(400,0,0)=="beam","beam covers displaced target");
         check(u.bladebotChooseAttack(601,0,0)=="none","beam finite end");
-        u.bladebotNextBeam=101;check(u.bladebotChooseAttack(400,0,0)=="none","beam cooldown respected");u.bladebotNextBeam=0;
+        u.bladebotNextBeam=101;
+        check(u.bladebotChooseAttack(340,0,0)=="dash","beam cooldown still allows blade dash");
+        check(u.bladebotChooseAttack(400,0,0)=="none","beam cooldown respected beyond blade dash range");
+        u.bladebotNextBeam=0;
         check(u.bladebotChooseAttack(100,31,0)=="none","lane mismatch");
         check(u.bladebotChooseAttack(100,0,151)=="none","high target rejected");
         check(u.bladebotChooseAttack(Number("bad"),0,0)=="none","invalid coordinate rejected");
         u.bladebotReadyAt=101;check(u.bladebotChooseAttack(100,0,0)=="none","recovery");u.bladebotReadyAt=0;
         u.bladebotNextSweep=101;check(u.bladebotChooseAttack(100,0,0)=="cleave","sweep cooldown");u.bladebotNextSweep=0;
         var target:MovieClip=library.createEmptyMovieClip("bladebotDecisionTarget",library.getNextHighestDepth());
-        target.hp=1000;target._x=400;target.Z轴坐标=target._y=200;
+        target.hp=1000;target._x=430;target.Z轴坐标=target._y=200;
         target.createEmptyMovieClip("area",1);
         var change:Function=u.状态改变;
         u.状态改变=function(state:String):Void {this.requestedState=state;this.状态=state;};
@@ -221,15 +238,25 @@ class org.flashNight.arki.unit.Action.Melee.Cf6BladebotAssetTest {
         target.浮空高度=270;
         u.状态="空手站立";u.requestedState="none";u.bladebotClock=99;u.bladebotTick();
         check(u.requestedState=="none","authored high airborne offset does not waste an attack");
-        target.浮空高度=Number("bad");
+        target.浮空高度=Number("bad");u.bladebotNextSweep=101;
         u.状态="空手站立";u.requestedState="none";u.bladebotClock=99;u.bladebotTick();
         check(u.requestedState=="空手攻击","invalid optional airborne offset preserves ground height");
-        target.浮空高度=0;target._x=400;
+        u.bladebotNextSweep=0;target.浮空高度=0;target._x=400;
         u.状态="空手攻击";u.bladebotBeginAttack(u.man,"cleave");
         var first:Object=u.man.bladebotToken;u.bladebotBeginAttack(u.man,"cleave");
         var current:Object=u.man.bladebotToken;u.man.bladebotToken=first;
         check(!u.bladebotCanAct(u.man),"stale action token rejected");u.man.bladebotToken=current;
         check(u.bladebotCanAct(u.man),"current action token accepted");
+        var savedMove:Function=u.移动, savedZ:Number=u.Z轴坐标;
+        u.fixtureDepthMoves=0;
+        u.移动=function(direction:String,speed:Number):Void {
+            if(direction=="上" || direction=="下")this.fixtureDepthMoves++;
+            // Simulate an impassable map cell: the official movement exit refuses both axes.
+        };
+        target._x=u._x+200;target.Z轴坐标=savedZ+20;
+        u.bladebotAdvance(u.man,14);u.bladebotDashAdvance(u.man,14);
+        check(u.Z轴坐标==savedZ && u._y==savedZ && u.fixtureDepthMoves==2,"blocked movement prevents cleave and dash from writing depth directly");
+        u.移动=savedMove;target.Z轴坐标=target._y=savedZ;
         _root.暂停=true;check(!u.bladebotCanAct(u.man),"paused action cannot strike or advance");_root.暂停=false;
         u.bladebotCancelAttack();check(!u.bladebotCanAct(u.man),"cancelled action cannot strike");
         u.刚体=u.免疫击退=true;u.bladebotBeginAttack(u.man,"cleave");u.bladebotAttackOwner.ownsRigid=true;
@@ -300,6 +327,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6BladebotAssetTest {
                 if(c.move=="cleave" || c.move=="interrupt" || c.move=="dead")u.状态改变("空手攻击");
                 else if(c.move=="sweep" || c.move=="interruptSweep" || c.move=="deadSweep")u.状态改变("近战");
                 else if(c.move=="beam" || c.move=="interruptBeam" || c.move=="deadBeam")u.状态改变("激光束");
+                else if(c.move=="dash")u.状态改变("旋刃冲刺");
                 else if(c.move.substr(0,3)=="hit"){u.状态改变("被击");u.man.gotoAndPlay("a"+c.move.substr(3));}
                 else if(c.move=="down")u.状态改变("倒地");else if(c.move=="knockdown")u.状态改变("击倒");
                 else if(c.move=="death"){u.hp=0;u.状态改变("血腥死");}
@@ -334,10 +362,10 @@ class org.flashNight.arki.unit.Action.Melee.Cf6BladebotAssetTest {
         if(ticks==14){
             beamActor=cases[11].actor;check(beamActor.man._currentframe==beamActor.fixtureFrozen,"beam hitstop freezes actual timeline");beamActor.硬直中=false;
         }
-        if(ticks==16 || ticks==42 || ticks==48) {
+        if(ticks==16 || ticks==42 || ticks==68 || ticks==82) {
             for(var r:Number=0;r<cases.length;r++) {
                 var e:Object=cases[r];if(e.move=="cleave" || e.move=="sweep") {
-                    var guarded:Boolean=ticks==16 || (ticks==42 && e.move=="sweep");
+                    var guarded:Boolean=ticks==16 || ((ticks==42 || ticks==68) && e.move=="sweep");
                     check(e.actor.刚体===guarded && e.actor.免疫击退===guarded,"bounded rigidity "+e.move+" "+e.side+" "+ticks);
                 }
             }
@@ -348,15 +376,17 @@ class org.flashNight.arki.unit.Action.Melee.Cf6BladebotAssetTest {
         if(ticks==54)render(cases[6].actor,"death-late");
         if(ticks==100) {
             for(var n:Number=0;n<cases.length;n++) {
-                var entry:Object=cases[n],rec:Object=entry.record;var attack:Boolean=entry.move=="cleave" || entry.move=="sweep" || entry.move=="beam";
-                var expected:Number=entry.move=="cleave"?2:entry.move=="sweep"?6:entry.move=="beam"?1:0;
+                var entry:Object=cases[n],rec:Object=entry.record;var attack:Boolean=entry.move=="cleave" || entry.move=="sweep" || entry.move=="beam" || entry.move=="dash";
+                var expected:Number=entry.move=="cleave"?2:entry.move=="sweep"?20:entry.move=="dash"?16:entry.move=="beam"?1:0;
                 check(rec.shots==expected,"exact melee emissions "+entry.move+" "+entry.side+" got="+rec.shots);
                 check(rec.powerOk && rec.contractOk && rec.areaOk,"real area and damage contract "+n);
                 if(attack) {
                     check(rec.done==1,"attack completes once "+n);
-                    check(rec.front==(entry.move=="cleave"?2:entry.move=="beam"?1:3) && rec.back==(entry.move=="sweep"?3:0),"front/back mirrored areas "+n);
+                    check(rec.front==(entry.move=="cleave"?2:entry.move=="beam"?1:entry.move=="dash"?8:10) && rec.back==(entry.move=="sweep"?10:entry.move=="dash"?8:0),"front/back mirrored areas "+n);
                     check(entry.actor.bladebotAttackOwner==null && entry.actor.刚体===false && entry.actor.免疫击退===false,"attack ownership released "+n);
-                    if(entry.move=="cleave")check(rec.moves==6,"bounded advance movements "+n+" got="+rec.moves);
+                    if(entry.move=="cleave")check(rec.moves==10,"bounded advance movements "+n+" got="+rec.moves);
+                    if(entry.move=="sweep")check(rec.moves==0,"stationary sweep movements "+n+" got="+rec.moves);
+                    if(entry.move=="dash")check(rec.moves>0,"diagonal blade dash movements "+n+" got="+rec.moves);
                 } else if(entry.move=="death" || entry.move=="dead" || entry.move=="deadSweep" || entry.move=="deadBeam") {
                     check(rec.removed && rec.deathChecks==1,"death settles once "+n);
                 } else {

@@ -48,8 +48,11 @@ OFFSETS = {933: (18.3, -108.45), 936: (4.75, -62.05), 937: (26.5, -53.5),
            938: (8.95, -59.95), 951: (7, -60.15)}
 SCALES = {933: 1.0999908447265625, 936: 1, 937: 1, 938: 1, 951: 1}
 BEAM_WINDUP = 12
+R8_BAKED = HERE / 'r8-baked'
 ATTACKS = {'beam': {'id': 936, 'state': '空手攻击', 'hits': [15, 23], 'power': 1.5, 'damageType': '魔法', 'magicAttribute': '波'},
-           'thrust': {'id': 937, 'state': '近战', 'hits': [3, 5, 8, 12], 'power': 1, 'damageType': '物理'}}
+           'thrust': {'id': 937, 'state': '近战', 'hits': [3, 5, 8, 12], 'power': 1, 'damageType': '物理'},
+           'antiair': {'id': 936, 'state': '空手攻击', 'hits': [45, 49], 'power': 1.5, 'damageType': '魔法', 'magicAttribute': '波'},
+           'retreat_blast': {'id': 936, 'state': '空手攻击', 'hits': [83, 86, 89, 92, 95], 'power': 1.8, 'damageType': '魔法', 'magicAttribute': '波'}}
 
 
 def sha(path):
@@ -67,6 +70,7 @@ def build_inputs():
         ROOT / 'flashswf/arts/new/Codex黑仔素材/PublishSettings.xml']
     paths += [native.THINGS1 / (old + '.xml') for old in sorted(H)]
     paths += [HERE/'debris.py',*death.input_paths()]
+    paths += sorted(R8_BAKED.glob('*.xml'))
     return [{'path': p.relative_to(ROOT).as_posix(), 'sha256': sha(p)} for p in paths]
 
 
@@ -110,6 +114,92 @@ def make_body(name, timeline, parts, scripts=None, hits=None):
             symbol_type='movie clip', name='headbotShadow')])])], symbol_type='movie clip')
 
 
+def r8_part_matrix(r8_stem, frame_index, part_suffix):
+    r8_root = E.parse(str(R8_BAKED / f'act__{r8_stem}.xml'), PARSER).getroot()
+    for fr in r8_root.findall('.//x:DOMFrame', NS):
+        idx = int(fr.get('index', '0'))
+        dur = int(fr.get('duration', '1'))
+        if idx <= frame_index < idx + dur:
+            for inst in fr.findall('.//x:DOMSymbolInstance', NS):
+                if inst.get('libraryItemName', '').endswith(part_suffix):
+                    mat = inst.find('x:matrix/x:Matrix', NS)
+                    if mat is None:
+                        return (1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
+                    return (
+                        float(mat.get('a', '1')),
+                        float(mat.get('b', '0')),
+                        float(mat.get('c', '0')),
+                        float(mat.get('d', '1')),
+                        float(mat.get('tx', '0')),
+                        float(mat.get('ty', '0')),
+                    )
+    raise ValueError(f'Missing {part_suffix} at frame {frame_index} in act__{r8_stem}.xml')
+
+
+# Visible barrel tip in native part 928, also used by its wrapper 934.
+ANTIAIR_MUZZLE_LOCAL = (66.0, 0.0)
+
+def antiair_cannon_pose(frame_index, front):
+    tree=E.parse(str(R8_BAKED/'act__双臂光束.xml'),PARSER)
+    poses=[]
+    for frame in tree.findall('.//x:DOMFrame',NS):
+        start=int(frame.get('index','0'));duration=int(frame.get('duration','1'))
+        if not start<=frame_index<start+duration:continue
+        for item in frame.findall('x:elements/x:DOMSymbolInstance',NS):
+            if item.get('libraryItemName')!=PREFIX+'分件/934':continue
+            node=item.find('x:matrix/x:Matrix',NS)
+            poses.append([float(node.get(k,'1' if k in ('a','d') else '0')) for k in ('a','b','c','d','tx','ty')])
+    if len(poses)!=2:raise ValueError('Expected both native headbot cannon poses')
+    pose=sorted(poses,key=lambda m:m[4])[1 if front else 0]
+    x,y=ANTIAIR_MUZZLE_LOCAL
+    pose[4]+=pose[0]*x+pose[2]*y;pose[5]+=pose[1]*x+pose[3]*y
+    return pose
+
+def align_antiair_layers(layers):
+    # Expand only effect-bearing exposures; each frame follows its own recoil pose.
+    for layer in layers:
+        frames=layer.find('x:frames',NS)
+        for frame in list(frames):
+            effects=frame.findall('x:elements/x:DOMSymbolInstance[@libraryItemName="'+PREFIX+'特效/对空枪火"]',NS)
+            if not effects:continue
+            start=int(frame.get('index','0'));duration=int(frame.get('duration','1'));position=frames.index(frame)
+            for offset in range(duration):
+                single=copy.deepcopy(frame);single.set('index',str(start+offset));single.set('duration','1')
+                for effect in single.findall('x:elements/x:DOMSymbolInstance',NS):
+                    if effect.get('libraryItemName')!=PREFIX+'特效/对空枪火':continue
+                    node=effect.find('x:matrix/x:Matrix',NS);front=float(node.get('tx','0'))>50
+                    m=antiair_cannon_pose(start+offset,front)
+                    old_scale=(float(node.get('a','1'))**2+float(node.get('b','0'))**2)**0.5
+                    ratio=old_scale/(m[0]*m[0]+m[1]*m[1])**0.5
+                    values=(m[0]*ratio,m[1]*ratio,-m[2]*ratio,-m[3]*ratio,m[4],m[5])
+                    for key,value in zip(('a','b','c','d','tx','ty'),values):node.set(key,native.num(value))
+                    effect.set('firstFrame',str(int(effect.get('firstFrame','0'))+offset))
+                frames.insert(position+offset,single)
+            frames.remove(frame)
+
+def antiair_muzzle_markers(count):
+    markers={}
+    for f in range(31,70):
+        markers[f]={'elements':[native.instance(PREFIX+'行为驱动',matrix=antiair_cannon_pose(f,front),
+            symbol_type='movie clip',name='headbotAntiairMuzzle'+('Front' if front else 'Rear')) for front in (False,True)]}
+    return native.make_sparse_layer('逐帧对空炮口',count,markers)
+
+def make_r8_body(name, r8_stem, count, scripts=None, hits=None, top_layers=None):
+    r8_root = E.parse(str(R8_BAKED / f'act__{r8_stem}.xml'), PARSER).getroot()
+    vis_layers = [copy.deepcopy(l) for l in r8_root.findall('x:timeline/x:DOMTimeline/x:layers/x:DOMLayer', NS)]
+    if r8_stem=='双臂光束':align_antiair_layers(vis_layers)
+    return native.symbol(name, [
+        *(top_layers or []),
+        native.make_sparse_layer('CF7控制', count, scripts or {}),
+        native.layer('身体内部时钟', [native.frame(0, count, [native.instance(PREFIX+'行为驱动',
+            symbol_type='movie clip', name='headbotBodyDriver',
+            script='onClipEvent(enterFrame){_parent._parent.headbotBodyTick(_parent);}')])]),
+        native.make_sparse_layer('真实攻击区域', count, hits or {}),
+        *vis_layers,
+        native.layer('独立接地阴影', [native.frame(0, count, [native.instance(PREFIX+'接地阴影',
+            symbol_type='movie clip', name='headbotShadow')])])], symbol_type='movie clip')
+
+
 def build_symbols():
     common.verify_input()
     timeline = json.loads((ARCHIVE/'reference/timelines.json').read_text(encoding='utf8'))
@@ -123,6 +213,8 @@ def build_symbols():
             converted, report = vector.original_effect(ARCHIVE/'parts/926.svg', name, (0, 0))
         else:
             converted, report = vector.NativePart(ARCHIVE/'parts'/(str(cid)+'.svg'), name, (0, 0)).build()
+            if cid in (929, 930, 931, 932):
+                converted[name].attrib.pop('symbolType', None)
         for key, item in converted.items():
             if key in result and native.xml_bytes(result[key]) != native.xml_bytes(item):
                 raise ValueError('Conflicting shared vector atlas: '+key)
@@ -132,52 +224,88 @@ def build_symbols():
 
     # 934 is a one-frame arm wrapper, including the source local registration.
     parts[934] = PREFIX+'分件/934'
-    result[parts[934]] = native.symbol(parts[934], depth_layers(timeline['934'], parts))
+    result[parts[934]] = native.symbol(parts[934], depth_layers(timeline['934'], parts), symbol_type='movie clip')
+    for ext_file in sorted(R8_BAKED.glob('ext__*.xml')):
+        ext_root = E.parse(str(ext_file), PARSER).getroot()
+        result[ext_root.get('name')] = ext_root
     cut_symbols,torso_pieces,cut_reports = debris.torso_parts(vector,ARCHIVE/'parts/929.svg',PREFIX)
     result.update(cut_symbols)
     stats.append({'id':929,'kind':'nine-complementary-death-pieces','pieces':cut_reports})
     shadow_part = parts.pop(926)
     names = {sid: PREFIX+'动作/'+label for sid, label in [(933,'悬浮'), (936,'双臂光束'),
              (937,'伸缩冲击'), (938,'被击'), (951,'机械碎裂')]}
-    result[names[933]] = make_body(names[933], timeline['933'], parts,
+    result[names[933]] = make_r8_body(names[933], '悬浮', 45,
         {0: {'script': 'headbotMode="idle";stop();'},
          4: {'script': 'if(_parent.状态=="躲闪" || _parent.状态=="拾取")_parent.动画完毕();'}})
-    for action, spec in ATTACKS.items():
-        frames = timeline[str(spec['id'])]
-        if action == 'beam': frames = [copy.deepcopy(frames[0]) for _ in range(BEAM_WINDUP)] + frames
-        events = {0: {'script': 'headbotMode="attack";_parent.headbotBeginAttack(this,"'+action+'");stop();'},
-                  len(frames)-1: {'script': '_parent.headbotFinishAttack(this);stop();'}}
-        hits = {}
-        for f in spec['hits']:
-            original = next(row for row in frames[f-1].values() if row['id'] == 290)
-            m = original['matrix']
-            # Preserve CF6's horizontal contact span. CF7 needs a vertical area
-            # around the visible laser / extended tray, not the old ground test.
-            width = 66*abs(m[0])
-            center_x = m[4]
-            visual_id = 935 if action == 'beam' else 931
-            visual = next(row for row in frames[f-1].values() if row['id'] == visual_id)
-            height = 30 if action == 'beam' else 50
-            center_y = visual['matrix'][5]
-            hits[f-1] = {'elements': [native.instance(H['Symbol 195'],
-                matrix=(width/25, 0, 0, height/25, center_x, center_y),
-                symbol_type='movie clip', name='攻击点',
-                script='onClipEvent(load){headbotToken=_parent.headbotToken;headbotHitFrame=_parent._currentframe;_parent._parent.headbotStrike(_parent,this,'+str(spec['power'])+');}',
-                alpha_mult=0)]}
-        result[names[spec['id']]] = make_body(names[spec['id']], frames, parts, events, hits)
-        if action == 'beam':
-            charge = {}
-            for f in range(BEAM_WINDUP):
-                scale = 0.2 + 0.45 * f / (BEAM_WINDUP-1)
-                charge[f] = {'elements': [native.instance(parts[903], matrix=(scale,0,0,scale,x,-35.3),
-                    alpha_mult=0.25+0.65*f/(BEAM_WINDUP-1)) for x in (99,14)]}
-            result[names[spec['id']]].find('x:timeline/x:DOMTimeline/x:layers', NS).insert(0,
-                native.make_sparse_layer('双臂蓄光前摇', len(frames), charge))
 
-    result[names[938]] = make_body(names[938], timeline['938'], parts, {
+    # Thrust (伸缩冲击, 37f)
+    thrust_spec = ATTACKS['thrust']
+    thrust_hits = {}
+    for f in thrust_spec['hits']:
+        m = r8_part_matrix('伸缩冲击', f-1, '分件/931')
+        left = -40.15
+        right = m[4] + 60.95 * abs(m[0])
+        width = right - left
+        center_x = (left + right) / 2
+        center_y = m[5]
+        thrust_hits[f-1] = {'elements': [native.instance(H['Symbol 195'],
+            matrix=(width/25, 0, 0, 50/25, center_x, center_y),
+            symbol_type='movie clip', name='攻击点',
+            script='onClipEvent(load){headbotToken=_parent.headbotToken;headbotHitFrame=_parent._currentframe;_parent._parent.headbotStrike(_parent,this,'+str(thrust_spec['power'])+');}',
+            alpha_mult=0)]}
+    result[names[937]] = make_r8_body(names[937], '伸缩冲击', 37, {
+        0: {'script': 'headbotMode="attack";_parent.headbotBeginAttack(this,"thrust");stop();'},
+        36: {'script': '_parent.headbotFinishAttack(this);stop();'}}, thrust_hits)
+
+    # Beam / Anti-air / Retreat blast (双臂光束, 109f)
+    beam_spec = ATTACKS['beam']
+    beam_hits = {}
+    for f in beam_spec['hits']:
+        m = r8_part_matrix('双臂光束', f-1, '分件/935')
+        width = 297.08 * abs(m[0])
+        center_x = m[4]
+        center_y = m[5]
+        beam_hits[f-1] = {'elements': [native.instance(H['Symbol 195'],
+            matrix=(width/25, 0, 0, 36/25, center_x, center_y),
+            symbol_type='movie clip', name='攻击点',
+            script='onClipEvent(load){headbotToken=_parent.headbotToken;headbotHitFrame=_parent._currentframe;_parent._parent.headbotStrike(_parent,this,'+str(beam_spec['power'])+');}',
+            alpha_mult=0)]}
+    for f in ATTACKS['antiair']['hits']:
+        m=antiair_cannon_pose(f-1,f==49)
+        length=(m[0]*m[0]+m[1]*m[1])**0.5;dx,dy=m[0]/length,m[1]/length
+        beam_hits[f-1] = {'elements': [native.instance(H['Symbol 195'],
+            matrix=(-dy*120/25, dx*120/25, dx*190/25, dy*190/25, m[4]+dx*95, m[5]+dy*95),
+            symbol_type='movie clip', name='攻击点',
+            script='onClipEvent(load){headbotToken=_parent.headbotToken;headbotHitFrame=_parent._currentframe;_parent._parent.headbotStrike(_parent,this,'+str(ATTACKS['antiair']['power'])+');}',
+            alpha_mult=0)]}
+    for f in ATTACKS['retreat_blast']['hits']:
+        beam_hits[f-1] = {'elements': [native.instance(H['Symbol 195'],
+            matrix=(250/25, 0, 0, 165/25, 90, -20),
+            symbol_type='movie clip', name='攻击点',
+            script='onClipEvent(load){headbotToken=_parent.headbotToken;headbotHitFrame=_parent._currentframe;_parent._parent.headbotStrike(_parent,this,'+str(ATTACKS['retreat_blast']['power'])+');}',
+            alpha_mult=0)]}
+    charge = {}
+    for f in range(BEAM_WINDUP):
+        scale = 0.2 + 0.45 * f / (BEAM_WINDUP-1)
+        charge[f] = {'elements': [native.instance(parts[903], matrix=(scale,0,0,scale,x,-35.3),
+            alpha_mult=0.25+0.65*f/(BEAM_WINDUP-1)) for x in (99,14)]}
+    beam_events = {
+        0: {'name': '射击', 'label_type': 'name', 'script': 'headbotMode="attack";if(_parent.headbotPendingBeamSubmode=="antiair"){_parent.headbotPendingBeamSubmode="";gotoAndStop(32);}else if(_parent.headbotPendingBeamSubmode=="retreat_blast"){_parent.headbotPendingBeamSubmode="";gotoAndStop(72);}else{_parent.headbotBeginAttack(this,"beam");stop();}'},
+        29: {'script': '_parent.headbotFinishAttack(this);stop();'},
+        31: {'name': '对空射击', 'label_type': 'name', 'script': 'headbotMode="attack";_parent.headbotBeginAttack(this,"antiair");stop();'},
+        69: {'script': '_parent.headbotFinishAttack(this);stop();'},
+        71: {'name': '后撤爆破', 'label_type': 'name', 'script': 'headbotMode="attack";_parent.headbotBeginAttack(this,"retreat_blast");stop();'},
+        108: {'script': '_parent.headbotFinishAttack(this);stop();'},
+    }
+    result[names[936]] = make_r8_body(names[936], '双臂光束', 109, beam_events, beam_hits,
+        [native.make_sparse_layer('双臂蓄光前摇', 109, charge),antiair_muzzle_markers(109)])
+
+    result[names[938]] = make_r8_body(names[938], '被击', 88, {
         0: {'name': 'a0', 'label_type': 'name', 'script': 'headbotMode="hit";stop();'},
         6: {'name': 'a1', 'label_type': 'name', 'script': 'headbotMode="hit";stop();'},
-        5: {'script': '_parent.动画完毕();'}, 11: {'script': '_parent.动画完毕();'}})
+        24: {'script': '_parent.动画完毕();stop();'},
+        26: {'name': '护盾', 'label_type': 'name', 'script': 'headbotMode="shield";_parent.headbotBeginShield(this);stop();'},
+        87: {'script': '_parent.动画完毕();stop();'}})
     result[names[951]] = make_body(names[951], timeline['951'][:18]+[{} for _ in range(40)], parts, {
         0: {'name': 'a0', 'label_type': 'name', 'script': 'headbotMode="death";_parent.headbotCancelAttack();_parent.cf6ArmRobotDeath(this,19);stop();'},
         4: {'script': '_parent.headbotDeathFx();'},
@@ -188,6 +316,52 @@ def build_symbols():
 
     driver = PREFIX+'行为驱动'
     result[driver] = native.symbol(driver, [native.layer('停止',[native.frame(script='stop();')])], symbol_type='movie clip')
+    def g_inst(lib_name, matrix, first_frame=0, alpha_mult=None):
+        inst = native.instance(lib_name, matrix=matrix, symbol_type='graphic', alpha_mult=alpha_mult)
+        if first_frame > 0:
+            inst.set('firstFrame', str(first_frame))
+        return inst
+
+    bomb_fx_name = PREFIX+'特效/坠落轰炸弹'
+    wuren_target = PREFIX+'特效/雾人/目标'
+    wuren_shell = PREFIX+'特效/雾人/巨型穿刺能量子弹'
+    wuren_quake = PREFIX+'特效/雾人/强震地'
+    wuren_blast = PREFIX+'特效/雾人/强烈震爆'
+    lock_frames = {}
+    for f in range(12):
+        lock_frames[1 + f] = {'elements': [
+            g_inst(wuren_target, matrix=(1.15, 0, 0, 0.44, -128, -49), first_frame=f),
+        ]}
+    shell_frames = {}
+    for s in range(12):
+        lock_frames[13 + s] = {'elements': [
+            g_inst(wuren_target, matrix=(1.15, 0, 0, 0.44, -128, -49), first_frame=min(22, 12 + s)),
+        ]}
+        ratio = (s + 1) / 12.0
+        head_y = -520.0 * (1.0 - ratio) - 20.0
+        shell_frames[13 + s] = {'elements': [
+            g_inst(wuren_shell, matrix=(0, 2.5, -1.9, 0, 0, head_y), first_frame=min(17, 1 + s)),
+            g_inst(wuren_blast, matrix=(0.75, 0, 0, 0.75, 0, head_y + 40), first_frame=min(14, s)),
+        ]}
+    blast_frames = {}
+    for e in range(10):
+        if e < 5:
+            lock_frames[25 + e] = {'elements': [
+                g_inst(wuren_target, matrix=(1.15, 0, 0, 0.44, -128, -49), first_frame=22, alpha_mult=max(0.08, 0.72 - 0.15 * e)),
+            ]}
+        q_scale = 2.2 + 0.1 * e
+        b_scale = 1.45 + 0.06 * e
+        alpha = 1.0 if e < 7 else max(0.12, 1.0 - 0.28 * (e - 6))
+        blast_frames[25 + e] = {'elements': [
+            g_inst(wuren_quake, matrix=(q_scale, 0, 0, q_scale, -12, -14), first_frame=min(14, e), alpha_mult=alpha),
+            g_inst(wuren_blast, matrix=(b_scale, 0, 0, b_scale, 0, 0), first_frame=min(14, e), alpha_mult=alpha),
+        ]}
+    result[bomb_fx_name] = native.symbol(bomb_fx_name, [
+        native.make_sparse_layer('控制', 35, {0: {'script': 'stop();'}}),
+        native.make_sparse_layer('地面爆破冲击', 35, blast_frames),
+        native.make_sparse_layer('天降光束弹', 35, shell_frames),
+        native.make_sparse_layer('地面预警靶标', 35, lock_frames),
+    ], symbol_type='movie clip')
     result[PREFIX+'接地阴影'] = native.symbol(PREFIX+'接地阴影', [native.layer('接地更新', [native.frame(script='''headbotGround={x:0,y:0};
 updateHeadbotShadow=function():Void {
     var body:MovieClip=this._parent,unit:MovieClip=body._parent;
@@ -216,9 +390,10 @@ onEnterFrame=updateHeadbotShadow;updateHeadbotShadow();stop();''',
 女_攻击呐喊_库=[]; 女_中招呐喊_库=[]; 女_击倒呐喊_库=[];
 初始化敌人模板=_root.初始化敌人模板; 初始化敌人模板();
 '''+ 'headbotActions={'+','.join(action+':{hits:'+json.dumps(spec['hits'])+',power:'+str(spec['power'])+'}' for action,spec in ATTACKS.items())+'};\n'+(HERE/'HeadbotAI.as').read_text(encoding='utf-8-sig')+'\n'+(HERE/'CorpseFragments.as').read_text('utf-8-sig')+'\n'+(HERE/'RobotDeath.as').read_text('utf-8-sig')
-    hit = 'onClipEvent(load){gotoAndStop("a"+random(2));}'
+    hit = 'onClipEvent(load){if(_parent.headbotPendingShield===true){_parent.headbotPendingShield=false;gotoAndStop("护盾");}else{gotoAndStop("a"+random(2));}}'
+    beam_load = 'onClipEvent(load){if(_parent.headbotPendingBeamSubmode=="antiair"){_parent.headbotPendingBeamSubmode="";gotoAndStop(32);}else if(_parent.headbotPendingBeamSubmode=="retreat_blast"){_parent.headbotPendingBeamSubmode="";gotoAndStop(72);}}'
     bodies = {0:(9,body(933)),9:(10,body(933)),19:(10,body(933)),29:(8,body(933)),
-        37:(4,body(937)),41:(10,body(936)),51:(10,body(933)),61:(10,body(933)),
+        37:(4,body(937)),41:(10,body(936,beam_load)),51:(10,body(933)),61:(10,body(933)),
         71:(8,body(938,hit)),79:(9,body(938,hit)),88:(7,body(938,hit)),
         95:(9,body(938,hit)),104:(16,body(951))}
     result[root_name] = native.symbol(root_name, [
@@ -229,15 +404,16 @@ onEnterFrame=updateHeadbotShadow;updateHeadbotShadow();stop();''',
         native.make_sparse_layer('受击包围盒',125,{0:{'duration':104,'elements':[native.instance(H['Symbol 19'],matrix=(4.24,0,0,6.8,-53,-178),symbol_type='movie clip',name='area')]}}),
         native.make_sparse_layer('通用仇恨驱动',125,{0:{'duration':29,'elements':[native.instance(H['思考标签'],symbol_type='movie clip') ]}}),
         native.make_sparse_layer('行走',125,{0:{'duration':29,'elements':[native.instance(driver,symbol_type='movie clip',name='控制块',script='onClipEvent(enterFrame){ if(!_root.暂停) _parent.行走(); }')]}}),
+        native.make_sparse_layer('轰炸特效模板',125,{0:{'duration':120,'elements':[native.instance(bomb_fx_name,matrix=(1,0,0,1,0,0),symbol_type='movie clip',name='cf6BombTemplate')]}}),
         native.make_sparse_layer('动作',125,{i:{'duration':d,'elements':[b]} for i,(d,b) in bodies.items()}),
     ], symbol_type='movie clip', linkage=LINKAGE, export_first_frame=True)
     return result, root_name, stats
 
 
-def import_assets():
-    native.guard_overwrite_allowed(False)
+def import_assets(force=False):
+    native.guard_overwrite_allowed(force)
     symbols, root_name, stats = build_symbols()
-    native.guard_overwrite_allowed(False)
+    native.guard_overwrite_allowed(force)
     audio_receipt=audio.apply(symbols,OWNER,native.make_sparse_layer)
     outputs = common.write_workspace(symbols, root_name)
     # Vector adapters own their DOMSymbolItem IDs; Include must use those exact IDs.
@@ -250,7 +426,7 @@ def import_assets():
         'approvedInput':ARCHIVE.relative_to(ROOT).as_posix(),'nativeSymbolCount':len(outputs),
         'buildInputs':build_inputs(),'parts':stats,'actions':ATTACKS,'groundShift':GROUND_SHIFT,
         'sourceOffsets':{str(k):v for k,v in OFFSETS.items()},'sourceScales':SCALES,
-        'sourceVisualFrames':183,'replacedOriginalControls':[290,299,311,360,914],
+        'sourceVisualFrames':279,'replacedOriginalControls':[290,299,311,360,914],
         'sharedDeathEffects':['火花','小烟雾'],'outputs':outputs,
         'projectFiles':[{'path':p,'sha256':sha(OWNER/p),'bytes':(OWNER/p).stat().st_size} for p in native.PROJECT_FILES]}
     manifest['audio']=audio_receipt
@@ -282,7 +458,8 @@ if __name__ == '__main__':
     if hasattr(sys.stdout,'reconfigure'): sys.stdout.reconfigure(encoding='utf8')
     parser=argparse.ArgumentParser()
     parser.add_argument('--import-approved',action='store_true')
+    parser.add_argument('--force',action='store_true')
     parser.add_argument('--check',action='store_true')
     args=parser.parse_args()
-    if args.import_approved: import_assets()
+    if args.import_approved: import_assets(args.force)
     check()

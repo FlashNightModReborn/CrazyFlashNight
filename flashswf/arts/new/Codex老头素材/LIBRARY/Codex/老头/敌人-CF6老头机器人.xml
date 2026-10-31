@@ -120,14 +120,14 @@
 女_攻击呐喊_库=[];女_中招呐喊_库=[];女_击倒呐喊_库=[];
 初始化敌人模板=_root.初始化敌人模板;初始化敌人模板();
 elderForm="robot";
-elderActions={beam:{totalFrames:44,state:"空手攻击",hits:[29],power:3},kicks:{totalFrames:40,state:"近战",hits:[9,26],power:1},slam:{totalFrames:62,state:"重击",hits:[37],power:18},heavyBeam:{totalFrames:106,state:"蓄能重束",hits:[35,47,59,71],powers:[0.5,1,1.5,2]}};
+elderActions={beam:{totalFrames:44,state:"空手攻击",hits:[29],power:3},kicks:{totalFrames:40,state:"近战",hits:[9,26],power:1},slam:{totalFrames:71,state:"重击",hits:[37],power:18},heavyBeam:{totalFrames:106,state:"蓄能重束",hits:[35,47,59,71],powers:[0.5,1,1.5,2]}};
 // 两个形态共用私有动作时钟；仇恨、碰撞、伤害和结算仍由 CF7 执行。
 elderClock=0;elderReadyAt=6;elderTargetName="";elderAttackOwner=null;
 elderAttackCount=0;elderHitCount=0;elderFxMask=0;elderIdentity={};
-elderCombatReported=false;elderReactiveShield=-1;elderReactiveState=null;
-elderCombatStats={decisionChecks:0,rangeOutsideChecks:0,burstStarts:0,burstContacts:0,stabStarts:0,stabContacts:0,
+elderCombatReported=false;elderReactiveShield=-1;elderReactiveState=null;elderPendingBurstSubmode="";
+elderCombatStats={decisionChecks:0,rangeOutsideChecks:0,burstStarts:0,burstContacts:0,retreat_burstStarts:0,retreat_burstContacts:0,stabStarts:0,stabContacts:0,
     reactiveLostHp:0,reactiveForced:0,reactivePulses:0,reactiveGranted:0,reactiveAbsorbed:0,reactiveLeechHits:0,reactiveRageLeechHits:0,reactiveCrumbleHits:0,reactiveRageSources:{},
-    beamStarts:0,beamContacts:0,beamHits:0,beamHitPower:0,beamShieldSpent:0,beamShieldUnused:0,beamShieldSamples:0,heavyBeamStarts:0,heavyBeamContacts:0,heavyBeamHits:0,heavyBeamHitPower:0,slamHeavyStarts:0,kicksStarts:0,kicksContacts:0,slamStarts:0,slamContacts:0,kicksShieldGrants:0,slamShieldGrants:0,kicksShieldAbsorbed:0,slamShieldAbsorbed:0};
+    beamStarts:0,beamContacts:0,beamHits:0,beamHitPower:0,beamShieldSpent:0,beamShieldUnused:0,beamShieldSamples:0,heavyBeamStarts:0,heavyBeamContacts:0,heavyBeamHits:0,heavyBeamHitPower:0,slamHeavyStarts:0,kicksStarts:0,kicksContacts:0,slamStarts:0,slamContacts:0,slamAntiairContacts:0,slamShellContacts:0,kicksShieldGrants:0,slamShieldGrants:0,kicksShieldAbsorbed:0,slamShieldAbsorbed:0};
 elderAlignZ=false;elderApproachX=false;elderMovementTarget="";
 elderTuning={shootRange:elderForm=="human"?500:750,approachStopRange:elderForm=="human"?330:430,
     laneRange:30,laneStopRange:10,reactionFrames:6,recoveryFrames:6,maximumTargetHeight:140,
@@ -138,11 +138,15 @@ elderTuning={shootRange:elderForm=="human"?500:750,approachStopRange:elderForm==
     reactivePulseFrames:1,reactivePulseMissingRatio:0.000625/3,reactivePulseCapacityLimit:0.000625/3,reactiveDecayFrames:36,
     beamShieldCapacityBase:1,beamShieldCapacityLimit:0.6,beamShieldLevelScale:20,beamShieldStrength:0.75,beamShieldStrengthCap:800};
 // 砸地倍率变化会由统一公式重算攻击；55/43 折算抵消其对各层盾强的附带变化，保留整数面板舍入后的微小差异。
-elderNextSlam=0;elderNextBeam=0;elderNextHeavyBeam=0;elderCombo=null;elderMeleeShield=-1;elderSlamShield=-1;elderBeamShield=-1;
-elderNextBurst=0;elderSlamHeavyWindow=null;elderBeamShieldSample=null;
+elderNextSlam=0;elderNextBeam=0;elderNextHeavyBeam=0;elderCombo=null;elderMeleeShield=-1;elderSlamShield=-1;elderBeamShield=-1;elderSlamChargeShield=-1;
+elderNextBurst=0;elderHumanComboUntil=0;elderSlamHeavyWindow=null;elderBeamShieldSample=null;
 elderTuning.crossLaneRange=240;elderTuning.crossLaneMinX=220;elderTuning.crossLaneWaitPerPixel=1.5;
+elderTuning.retreatBurstRange=320;elderTuning.retreatBurstSpeed=6;
+elderTuning.retreatCritChance=75;elderTuning.retreatCritMultiplier=1.85;
+elderTuning.stabLifeSteal=35;elderTuning.stabKnockback=24;elderTuning.humanComboWindow=60;
 elderTuning.beamCooldown=80;elderTuning.comboWindow=75;elderTuning.heavyBeamCooldown=600;
 elderTuning.slamHeavyWindow=180;
+elderTuning.slamAntiairFrame=20;elderTuning.slamAntiairPower=3;elderTuning.slamShellPower=4;elderTuning.slamShellDelay=25;elderTuning.slamBombardRange=460;
 // elderActions 由装配器从同一动作表生成；帧位与逐段倍率不在此另写一份。
 
 elderClearMovement=function():Void {
@@ -268,6 +272,9 @@ elderCancelAttack=function():Void {
     if(this.elderBeamShield>=0){
         _root.护盾函数.移除护盾(this,this.elderBeamShield);this.elderBeamShield=-1;
     }
+    if(this.elderSlamChargeShield>=0){
+        _root.护盾函数.移除护盾(this,this.elderSlamChargeShield);this.elderSlamChargeShield=-1;
+    }
     if(!(this.hp>0) && this.elderMeleeShield>=0){
         _root.护盾函数.移除护盾(this,this.elderMeleeShield);this.elderMeleeShield=-1;
     }
@@ -331,8 +338,8 @@ elderBeginAttack=function(body:MovieClip,action:String):Void {
     if(!(this.hp>0) || spec==undefined || this.状态!=spec.state){body.stop();return;}
     var token:Object={};body.elderToken=token;
     this.elderAttackOwner={token:token,active:true,state:spec.state,action:action,lastHitFrame:0,
-        spec:spec,target:this.攻击目标,previousRigid:this.刚体===true,ownsRigid:this.elderForm=="robot",
-        previousImmune:this.免疫击退===true,ownsImmune:action=="beam" || action=="heavyBeam"};
+        spec:spec,target:this.攻击目标,previousRigid:this.刚体===true,ownsRigid:true,
+        previousImmune:this.免疫击退===true,ownsImmune:action=="beam" || action=="heavyBeam" || action=="retreat_burst"};
     if(this.elderAttackOwner.ownsRigid)this.刚体=true;
     if(this.elderAttackOwner.ownsImmune)this.免疫击退=true;
     var target:MovieClip=_root.gameworld[this.攻击目标];
@@ -341,9 +348,10 @@ elderBeginAttack=function(body:MovieClip,action:String):Void {
         this.elderAttackOwner.targetIdentity=target.__elderActionIdentity;
     }
     if(action=="heavyBeam" && !this.elderHasHeavyPermission(target,spec.hits[spec.hits.length-1]+1)){this.elderCancelAttack();this.动画完毕();return;}
-    if(action=="burst"){
+    if(action=="burst" || action=="retreat_burst"){
         if(!this.elderLockBurstAim(body,target)){this.elderCancelAttack();this.动画完毕();return;}
-        this.elderNextBurst=this.elderClock+53+this.elderTuning.recoveryFrames
+        if(action=="retreat_burst")this.elderHumanComboUntil=0;
+        this.elderNextBurst=this.elderClock+(action=="retreat_burst"?40:53)+this.elderTuning.recoveryFrames
             +Math.ceil(Math.max(0,this.elderAttackOwner.aimLaneDistance-this.elderTuning.laneRange)
                 *this.elderTuning.crossLaneWaitPerPixel);
     }
@@ -371,7 +379,184 @@ elderBeginAttack=function(body:MovieClip,action:String):Void {
     this.elderCombo=null;
     this.elderCombatStats[action+"Starts"]++;
     this.elderAttackCount++;this.elderClearMovement();
-    if(action=="slam")this.elderNextSlam=this.elderClock+this.elderTuning.slamCooldown;
+    if(action=="slam"){
+        if(this.elderForm=="robot"){
+            var slamChargeCap:Number=Math.max(80,Math.floor(this.hp满血值*0.08));
+            var slamChargeStr:Number=Math.min(this.elderTuning.beamShieldStrengthCap,Math.max(60,Math.floor(this.空手攻击力*this.elderTuning.shieldAttackScale*this.elderTuning.beamShieldStrength)));
+            this.elderSlamChargeShield=_root.护盾函数.添加临时护盾(this,slamChargeCap,slamChargeStr,38,"机械蓄力盾",null);
+        }
+        this.elderNextSlam=this.elderClock+this.elderTuning.slamCooldown;
+    }
+};
+elderHasActiveShield=function():Boolean {
+    return this.shield!=null && typeof this.shield.getCapacity=="function" && this.shield.getCapacity()>0;
+};
+// The hidden anchor uses the exact baked transform of visible fist part 986.
+// Its +X axis is the barrel direction, including body/actor mirroring and scale.
+elderSlamMuzzlePose=function(body:MovieClip):Object {
+    if(body!==this.man || body.elderSlamMuzzle._parent!==body)return null;
+    var marker:MovieClip=body.elderSlamMuzzle;
+    var origin:Object={x:0,y:0},axis:Object={x:100,y:0};
+    marker.localToGlobal(origin);marker.localToGlobal(axis);
+    _root.gameworld.globalToLocal(origin);_root.gameworld.globalToLocal(axis);
+    var dx:Number=axis.x-origin.x,dy:Number=axis.y-origin.y;
+    var length:Number=Math.sqrt(dx*dx+dy*dy);
+    if(!isFinite(origin.x) || !isFinite(origin.y) || !(length>0.0001))return null;
+    return {x:origin.x,y:origin.y,dx:dx/length,dy:dy/length};
+};
+elderPlaceSlamAntiairFx=function(fx:MovieClip,pose:Object):Void {
+    if(fx==null || pose==null)return;
+    // Keep the existing world-space effect size. Convert its complete basis,
+    // not just translation, through the parent to handle rotation/nonuniform scale.
+    var sign:Number=this._xscale<0?-1:1;
+    var origin:Object={x:pose.x,y:pose.y};
+    // Native coordinate conversion rounds to twips. Measure a 100-pixel basis
+    // before normalizing, so a one-pixel probe cannot turn the beam by degrees.
+    var across:Object={x:pose.x-pose.dy*sign*100,y:pose.y+pose.dx*sign*100};
+    var down:Object={x:pose.x-pose.dx*100,y:pose.y-pose.dy*100};
+    _root.gameworld.localToGlobal(origin);_root.gameworld.localToGlobal(across);_root.gameworld.localToGlobal(down);
+    this.globalToLocal(origin);this.globalToLocal(across);this.globalToLocal(down);
+    var matrix:flash.geom.Matrix=fx.transform.matrix;
+    matrix.a=(across.x-origin.x)/100;matrix.b=(across.y-origin.y)/100;
+    matrix.c=(down.x-origin.x)/100;matrix.d=(down.y-origin.y)/100;
+    matrix.tx=origin.x;matrix.ty=origin.y;fx.transform.matrix=matrix;
+};
+elderFireSlamAntiair=function(body:MovieClip):Void {
+    var world:MovieClip=_root.gameworld;
+    if(world==null)return;
+    var pose:Object=this.elderSlamMuzzlePose(body);
+    if(pose==null){this.elderAntiairMuzzleErrors=(this.elderAntiairMuzzleErrors|0)+1;return;}
+    var shootX:Number=pose.x,shootY:Number=pose.y;
+    var depth:Number=world.getNextHighestDepth();
+    var clip:MovieClip=world.createEmptyMovieClip("cf6ElderAntiair"+depth+"_"+this.elderClock,depth);
+    clip._x=shootX;clip._y=shootY;
+    var area:MovieClip=clip.createEmptyMovieClip("area",1);
+    // Preserve the 220 x 165 anti-air volume, now above its actual emission point.
+    area.beginFill(0,0);area.moveTo(-110,-165);area.lineTo(110,-165);area.lineTo(110,0);area.lineTo(-110,0);area.lineTo(-110,-165);area.endFill();
+    area._visible=false;
+    var fxDepth:Number=900+(this.elderClock&63);
+    var fx:MovieClip=this.cf6AntiairTemplate!=null?this.cf6AntiairTemplate.duplicateMovieClip("cf6ElderAaFx_"+fxDepth,fxDepth):null;
+    if(fx!=null){
+        fx._visible=true;this.elderPlaceSlamAntiairFx(fx,pose);fx.gotoAndStop(2);
+    }
+    clip.fx=fx;clip.shooterName=this._name;clip.shooterIdentity=this.elderIdentity;
+    clip.shooterToken=body.elderToken;clip.age=0;
+    clip.onUnload=function():Void {
+        if(this.fx!=null){this.fx.removeMovieClip();this.fx=null;}
+    };
+    clip.onEnterFrame=function():Void {
+        if(_root.暂停)return;
+        this.age++;
+        var shooter:MovieClip=_root.gameworld[this.shooterName];
+        var valid:Boolean=shooter._parent===_root.gameworld && shooter.elderIdentity===this.shooterIdentity
+            && shooter.hp>0 && shooter.man.elderToken===this.shooterToken;
+        var pose:Object=valid?shooter.elderSlamMuzzlePose(shooter.man):null;
+        if(!valid || pose==null || this.age>14){
+            if(this.fx!=null){this.fx.removeMovieClip();this.fx=null;}
+            this.removeMovieClip();return;
+        }
+        if(this.fx!=null){
+            shooter.elderPlaceSlamAntiairFx(this.fx,pose);
+            this.fx.gotoAndStop(Math.min(15,2+this.age));
+        }
+    };
+    this.elderCombatStats.slamAntiairContacts++;
+    var bullet:Object={声音:"",霰弹值:1,子弹散射度:0,发射效果:"",
+        子弹种类:"近战子弹",子弹威力:this.空手攻击力*this.elderTuning.slamAntiairPower,子弹速度:0,
+        Z轴攻击范围:36,击中地图效果:"",发射者:this._name,
+        shootX:shootX,shootY:shootY,shootZ:this.Z轴坐标,
+        击倒率:10,击中后子弹的效果:"空手攻击火花",
+        水平击退速度:6,垂直击退速度:-6,区域定位area:area,
+        伤害类型:"魔法",魔法伤害属性:"波",
+        cf6ElderSlamAntiair:true};
+    _root.子弹区域shoot传递(bullet);
+};
+elderSpawnFallingShell=function(shellIndex:Number):Void {
+    var world:MovieClip=_root.gameworld;
+    if(world==null)return;
+    var dir:Number=this.方向=="左"?-1:1;
+    var target:MovieClip=world[this.攻击目标];
+    var hasTarget:Boolean=target!=null && target.hp>0 && target!==this && target.area!=null && !isNaN(target._x);
+    var baseX:Number=hasTarget?target._x:(this._x+dir*260);
+    var baseZ:Number=(hasTarget && !isNaN(target.Z轴坐标))?target.Z轴坐标:this.Z轴坐标;
+    var strikeX:Number=baseX+(shellIndex>0?dir*65:0);
+    var strikeZ:Number=baseZ;
+    var depth:Number=world.getNextHighestDepth();
+    var clip:MovieClip=world.createEmptyMovieClip("cf6ElderShell"+depth+"_"+this.elderClock,depth);
+    clip._x=strikeX;clip._y=strikeZ;
+    var area:MovieClip=clip.createEmptyMovieClip("area",1);
+    area.beginFill(0,0);area.moveTo(-95,-115);area.lineTo(95,-115);area.lineTo(95,10);area.lineTo(-95,10);area.lineTo(-95,-115);area.endFill();
+    area._visible=false;
+    var fxDepth:Number=1000+((this.elderClock*2+(shellIndex>0?1:0))&511);
+    var fx:MovieClip=this.cf6BombTemplate!=null?this.cf6BombTemplate.duplicateMovieClip("cf6ElderShellFx_"+fxDepth,fxDepth):null;
+    if(fx!=null){fx._visible=true;fx.gotoAndStop(1);}
+    clip.fx=fx;
+    clip.age=0;
+    clip.delayFrames=this.elderTuning.slamShellDelay+(shellIndex>0?6:0);
+    clip.shooterName=this._name;
+    clip.shooterIdentity=this.elderIdentity;
+    clip.bulletPower=this.空手攻击力*this.elderTuning.slamShellPower;
+    clip.strikeX=strikeX;
+    clip.strikeZ=strikeZ;
+    clip.onUnload=function():Void {
+        if(this.fx!=null){this.fx.removeMovieClip();this.fx=null;}
+    };
+    clip.onEnterFrame=function():Void {
+        if(_root.暂停)return;
+        this.age++;
+        var d:Number=this.delayFrames;
+        var shooter:MovieClip=_root.gameworld[this.shooterName];
+        var shooterValid:Boolean=shooter!=null && shooter._parent===_root.gameworld && shooter.elderIdentity===this.shooterIdentity;
+        if(this.fx!=null){
+            if(!shooterValid){
+                this.fx.removeMovieClip();this.fx=null;
+            }else{
+                var sx:Number=shooter._xscale/100,sy:Number=shooter._yscale/100;
+                if(!sx)sx=1;if(!sy)sy=1;
+                this.fx._x=(this.strikeX-shooter._x)/sx;
+                this.fx._y=(this.strikeZ-shooter._y)/sy;
+                this.fx._xscale=100/sx;
+                this.fx._yscale=100/sy;
+            }
+        }
+        if(this.age<d){
+            if(this.fx!=null){
+                if(this.age<d-12)this.fx.gotoAndStop(2+((this.age-1)%12));
+                else this.fx.gotoAndStop(14+(this.age-(d-12)));
+            }
+        }else if(this.age==d){
+            if(this.fx!=null)this.fx.gotoAndStop(26);
+            if(shooterValid && shooter.hp>0){
+                shooter.elderCombatStats.slamShellContacts++;
+                _root.效果("火花",this.strikeX,this.strikeZ,135);
+                var bullet:Object={声音:"",霰弹值:1,子弹散射度:0,发射效果:"",
+                    子弹种类:"近战子弹",子弹威力:this.bulletPower,子弹速度:0,
+                    Z轴攻击范围:45,击中地图效果:"",发射者:this.shooterName,
+                    shootX:this.strikeX,shootY:this.strikeZ,shootZ:this.strikeZ,
+                    击倒率:10,击中后子弹的效果:"空手攻击火花",
+                    水平击退速度:8,垂直击退速度:-4,区域定位area:this.area,
+                    伤害类型:"魔法",魔法伤害属性:"波",
+                    elderShooterIdentity:this.shooterIdentity,
+                    hitBehavior:{type:"cf6ElderBeam",peak:0.25,durationFrames:180},
+                    cf6FallingShell:true};
+                bullet.击中时触发函数=function():Void {
+                    if(this.elderShellRewardSpent===true)return;
+                    this.elderShellRewardSpent=true;
+                    var s:MovieClip=_root.gameworld[this.发射者];
+                    if(!(s.hp>0) || s.elderIdentity!==this.elderShooterIdentity)return;
+                    s.elderRewardMelee(this.hitTarget,"slam");
+                    s.elderNextBeam=0;
+                    s.elderNextHeavyBeam=0;
+                };
+                _root.子弹区域shoot传递(bullet);
+            }
+        }else if(this.age<=d+9){
+            if(this.fx!=null)this.fx.gotoAndStop(26+(this.age-d));
+        }else{
+            if(this.fx!=null){this.fx.removeMovieClip();this.fx=null;}
+            this.removeMovieClip();
+        }
+    };
 };
 elderCanAct=function(body:MovieClip):Boolean {
     var owner:Object=this.elderAttackOwner;
@@ -387,14 +572,16 @@ elderStrike=function(body:MovieClip,point:MovieClip):Void {
     if(!this.elderCanAct(body) || point._parent!==body || point.elderToken!==body.elderToken
         || point.elderHitFrame!=body._currentframe || !this.elderContactDue(body._currentframe))return;
     var owner:Object=this.elderAttackOwner,action:String=owner.action;
+    var isBurst:Boolean=(action=="burst" || action=="retreat_burst");
     if(action=="heavyBeam" && !this.elderHeavyTargetValid(owner))return;
-    if(owner.lastHitFrame>=body._currentframe || (action!="burst" && point.area==null))return;
+    if(owner.lastHitFrame>=body._currentframe || (!isBurst && point.area==null))return;
     var p:Object={x:point._x,y:point._y};body.localToGlobal(p);
     var globalY:Number=p.y;_root.gameworld.globalToLocal(p);
     if(isNaN(p.x) || isNaN(p.y))return;
     owner.lastHitFrame=body._currentframe;this.elderHitCount++;this.elderCombatStats[action+"Contacts"]++;
     var bullet:Object;
-    if(action=="burst"){
+    if(isBurst){
+        if(action=="retreat_burst")this.elderLockBurstAim(body,_root.gameworld[owner.target],point);
         bullet=_root.子弹属性初始化(point,"穿刺子弹",this);
         bullet.角度偏移=owner.aimAngle;
         bullet.速度X=owner.aimSpeedX;bullet.速度Y=owner.aimSpeedY;bullet.ZY比例=owner.aimZYRatio;
@@ -412,10 +599,28 @@ elderStrike=function(body:MovieClip,point:MovieClip):Void {
     }
     bullet.子弹威力=this.空手攻击力*power;bullet.Z轴攻击范围=30;
     bullet.发射者=this._name;bullet.shootX=p.x;bullet.shootY=p.y;bullet.shootZ=this.Z轴坐标;
-    bullet.击倒率=action=="slam"?3:10;bullet.击中后子弹的效果="空手攻击火花";
-    bullet.水平击退速度=action=="slam"?18:3;bullet.垂直击退速度=0;
+    bullet.击倒率=action=="stab"?1:(action=="slam"?3:10);bullet.击中后子弹的效果="空手攻击火花";
+    bullet.水平击退速度=action=="stab"?this.elderTuning.stabKnockback:(action=="slam"?18:3);bullet.垂直击退速度=0;
     bullet.伤害类型=(action=="beam" || action=="heavyBeam")?"魔法":"物理";
     bullet.魔法伤害属性=(action=="beam" || action=="heavyBeam")?"波":undefined;
+    if(action=="retreat_burst"){
+        var retreatCritChance:Number=this.elderTuning.retreatCritChance;
+        var retreatCritMult:Number=this.elderTuning.retreatCritMultiplier;
+        bullet.暴击=function(当前子弹:Object):Number {
+            return _root.成功率(retreatCritChance)?retreatCritMult:1;
+        };
+    }
+    if(this.elderForm=="human" && action=="stab"){
+        bullet.吸血=this.elderTuning.stabLifeSteal;
+        bullet.elderShooterIdentity=this.elderIdentity;
+        bullet.击中时触发函数=function():Void {
+            if(this.elderStabRewardSpent===true)return;
+            this.elderStabRewardSpent=true;
+            var shooter:MovieClip=_root.gameworld[this.发射者];
+            if(!(shooter.hp>0) || shooter.elderIdentity!==this.elderShooterIdentity)return;
+            shooter.elderRewardHumanStab(this.hitTarget);
+        };
+    }
     if(action=="beam")bullet.hitBehavior={type:"cf6ElderBeam",peak:0.25,durationFrames:180};
     if(action=="beam" || action=="heavyBeam"){
         // 仅记录正式结算确认的真实命中；统计不反写伤害或改变后续选招。
@@ -440,9 +645,16 @@ elderStrike=function(body:MovieClip,point:MovieClip):Void {
             shooter.elderRewardMelee(this.hitTarget,this.elderMeleeAction);
         };
     }
-    if(action=="burst")_root.播放音效("shoot.wav");
+    if(isBurst)_root.播放音效("shoot.wav");
+    var ruleAShielded:Boolean=this.elderForm=="robot" && action=="slam" && !owner.slamAntiairChecked && this.elderHasActiveShield();
+    if(action=="slam")owner.slamAntiairChecked=true;
     var emitted:MovieClip=_root.子弹区域shoot传递(bullet);
-    if(action=="burst" && owner.aimSpeedX!=undefined && emitted!=null){
+    if(ruleAShielded){
+        this.elderFireSlamAntiair(body);
+        this.elderSpawnFallingShell(0);
+        this.elderSpawnFallingShell(1);
+    }
+    if(isBurst && owner.aimSpeedX!=undefined && emitted!=null){
         emitted.cf6LaneVX=emitted.xmov=owner.aimSpeedX;
         emitted.cf6LaneVY=emitted.ymov=owner.aimSpeedY;emitted.cf6LaneVZ=owner.aimSpeedZ;
         emitted.updateMovement=this.elderCrossLaneMovement;
@@ -485,14 +697,14 @@ elderHeavyTargetValid=function(owner:Object):Boolean {
 };
 
 // 同排保留原来的躯干瞄准；跨行沿用瞄准速度接口，并为本弹保存线性纵深，整轮不追踪。
-elderLockBurstAim=function(body:MovieClip,target:MovieClip):Boolean {
+elderLockBurstAim=function(body:MovieClip,target:MovieClip,point:MovieClip):Boolean {
     var owner:Object=this.elderAttackOwner;owner.aimAngle=0;owner.aimLaneDistance=0;
     if(!(target.hp>0) || target.area==null)return true;
     owner.aimLaneDistance=Math.abs(target.Z轴坐标-this.Z轴坐标);
     if(isNaN(owner.aimLaneDistance))return false;
     var bounds:Object=target.area.getBounds(_root.gameworld);
     if(!(bounds.xMax>bounds.xMin) || !(bounds.yMax>bounds.yMin))return owner.aimLaneDistance<=this.elderTuning.laneRange;
-    var muzzle:Object={x:103,y:-57.95};body.localToGlobal(muzzle);_root.gameworld.globalToLocal(muzzle);
+    var muzzle:Object=point!=null?{x:point._x,y:point._y}:{x:103,y:-57.95};body.localToGlobal(muzzle);_root.gameworld.globalToLocal(muzzle);
     if(owner.aimLaneDistance>this.elderTuning.laneRange){
         var centerY:Number=(bounds.yMin+bounds.yMax)/2;
         var crossX:Number=(bounds.xMin+bounds.xMax)/2-muzzle.x,crossY:Number=centerY-muzzle.y;
@@ -614,17 +826,42 @@ elderBodyTick=function(body:MovieClip):Void {
         if(owner.ownsImmune && frame>owner.spec.hits[owner.spec.hits.length-1]){
             this.免疫击退=owner.previousImmune;owner.ownsImmune=false;
         }
+        if(owner.action=="slam" && !owner.slamAntiairChecked && frame==this.elderTuning.slamAntiairFrame){
+            owner.slamAntiairChecked=true;
+            if(this.elderForm=="robot" && this.elderHasActiveShield()){
+                this.elderFireSlamAntiair(body);
+                this.elderSpawnFallingShell(0);
+                this.elderSpawnFallingShell(1);
+            }
+        }
         if(this.elderContactDue(frame) && owner.lastHitFrame<frame){
             this.elderStrike(body,body.攻击点);
             if(owner.lastHitFrame<frame)return;
         }
-        if((owner.action=="stab" && frame>7 && frame<17)
-            || (owner.action=="kicks" && ((frame>3 && frame<9) || (frame>20 && frame<26)))){
+        if(owner.action=="burst" && frame>=53){this.elderFinishAttack(body);return;}
+        if(owner.action=="slam" && frame>=71){this.elderFinishAttack(body);return;}
+        if(owner.action=="retreat_burst"){
+            if(frame>=60 && frame<=74)this.移动(this.方向=="右"?"左":"右",this.elderTuning.retreatBurstSpeed);
+            if(frame>=94){this.elderFinishAttack(body);return;}
+        }
+        if(owner.action=="stab" && frame>=2 && frame<=14){
+            var stabTarget:MovieClip=_root.gameworld[owner.target];
+            var sdx:Number=stabTarget._x-this._x;
+            if(stabTarget.hp>0 && Math.abs(sdx)>60 && Math.abs(stabTarget.Z轴坐标-this.Z轴坐标)<30
+                && ((this.方向=="右" && sdx>0) || (this.方向=="左" && sdx<0)))
+                this.移动(this.方向,Math.min(9,Math.abs(sdx)-60));
+        }else if(owner.action=="kicks" && ((frame>3 && frame<9) || (frame>20 && frame<26))){
             var target:MovieClip=_root.gameworld[owner.target];
             var dx:Number=target._x-this._x;
             if(target.hp>0 && Math.abs(dx)>90 && Math.abs(target.Z轴坐标-this.Z轴坐标)<30
                 && ((this.方向=="右" && dx>0) || (this.方向=="左" && dx<0)))
                 this.移动(this.方向,Math.min(8,Math.abs(dx)-90));
+        }else if(owner.action=="slam" && frame>=26 && frame<=36){
+            var slamTarget:MovieClip=_root.gameworld[owner.target];
+            var ldx:Number=slamTarget._x-this._x;
+            if(slamTarget.hp>0 && Math.abs(ldx)>155 && Math.abs(slamTarget.Z轴坐标-this.Z轴坐标)<30
+                && ((this.方向=="右" && ldx>0) || (this.方向=="左" && ldx<0)))
+                this.移动(this.方向,Math.min(6,Math.abs(ldx)-155));
         }
     }
     if(body._currentframe==body._totalframes)body.gotoAndStop(1);else body.nextFrame();
@@ -635,6 +872,16 @@ elderWantsClose=function(target:MovieClip):Boolean {
     return this.elderForm=="robot" && ((!isNaN(resistance) && resistance>=75)
         || this.elderClock<this.elderNextBeam || this.elderHasBeamMark(target));
 };
+elderRewardHumanStab=function(target:MovieClip):Void {
+    if(!(this.hp>0) || this.elderForm!="human")return;
+    this.elderHumanComboUntil=this.elderClock+this.elderTuning.humanComboWindow;
+    this.elderNextBurst=0;
+    this.elderReadyAt=0;
+};
+elderSelectBurstSubmode=function(dx:Number,dz:Number):String {
+    if(this.elderClock<=this.elderHumanComboUntil && dx<=this.elderTuning.shootRange && dz<=this.elderTuning.laneRange)return "retreat_burst";
+    return (dx<=this.elderTuning.retreatBurstRange && dz<=this.elderTuning.laneRange)?"retreat_burst":"burst";
+};
 elderChooseAttack=function(dx:Number,dz:Number,height:Number,preferClose:Boolean):String {
     var tune:Object=this.elderTuning;
     if(this.elderForm=="robot"){
@@ -644,16 +891,19 @@ elderChooseAttack=function(dx:Number,dz:Number,height:Number,preferClose:Boolean
     if(isNaN(dx) || isNaN(dz) || isNaN(height) || dx<0 || dz<0
         || height>tune.maximumTargetHeight || this.elderClock<this.elderReadyAt)return "none";
     if(this.elderForm=="human"){
+        if(this.elderClock<=this.elderHumanComboUntil && dx<=tune.shootRange && dz<=tune.laneRange)return "burst";
         if(dz<=tune.laneRange && dx<=tune.closeRange && height<=80)return "stab";
         return dx<=tune.shootRange && dz<=tune.crossLaneRange && this.elderClock>=this.elderNextBurst
             && (dz<=tune.laneRange || dx>=tune.crossLaneMinX)?"burst":"none";
     }
     if(dz>tune.laneRange)return "none";
-    if(dx<=tune.slamRange && height<=65 && this.elderClock>=this.elderNextSlam)return "slam";
+    if(dx<=tune.slamRange && this.elderClock>=this.elderNextSlam)return "slam";
     if(dx<=tune.closeRange && height<=100)return "kicks";
     if(dx<=tune.shootRange && this.elderClock>=this.elderNextHeavyBeam
         && this.elderHasHeavyPermission(_root.gameworld[this.攻击目标],this.elderActions.heavyBeam.hits[this.elderActions.heavyBeam.hits.length-1]+1))return "heavyBeam";
-    return dx<=tune.shootRange && this.elderClock>=this.elderNextBeam?"beam":"none";
+    if(dx<=tune.slamBombardRange && this.elderClock>=this.elderNextSlam && (height>35 || this.elderClock<this.elderNextBeam))return "slam";
+    if(dx<=tune.shootRange && this.elderClock>=this.elderNextBeam)return "beam";
+    return "none";
 };
 elderTick=function():Void {
     if(_root.暂停 || this.elderTransform!=null)return;
@@ -691,6 +941,10 @@ elderTick=function():Void {
         (this.elderClock>=this.elderNextHeavyBeam && this.elderHasHeavyPermission(target,this.elderActions.heavyBeam.hits[this.elderActions.heavyBeam.hits.length-1]+1)?"heavyBeam":"beam"):
         this.elderChooseAttack(Math.abs(dx),Math.abs(dz),height,this.elderWantsClose(target));
     if(action=="none"){this.elderUpdateMovement();return;}
+    if(this.elderForm=="human" && action=="burst"){
+        var submode:String=this.elderSelectBurstSubmode(Math.abs(dx),Math.abs(dz));
+        this.elderPendingBurstSubmode=submode=="burst"?"":submode;
+    }
     this.elderClearMovement();
     if(dx<0)this.方向改变("左");else if(dx>0)this.方向改变("右");
     this.状态改变(this.elderActions[action].state);
@@ -926,6 +1180,33 @@ cf6RobotDeathTick=function(body:MovieClip):Boolean {
               </elements>
             </DOMFrame>
             <DOMFrame index="29" keyMode="9728" duration="127">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="轰炸特效模板" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="121">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/蓄力对空光束" name="cf6AntiairTemplate">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/坠落轰炸弹" name="cf6BombTemplate">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="121" keyMode="9728" duration="35">
               <elements/>
             </DOMFrame>
           </frames>

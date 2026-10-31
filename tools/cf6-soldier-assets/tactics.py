@@ -20,7 +20,7 @@ def smoke_sources():
 
 
 def input_paths():
-    return [Path(__file__), HERE/'TacticalAI.as', HERE/'tactical-profiles.json',
+    return [Path(__file__), HERE/'TacticalAI.as', HERE/'SoldierSubweapon.as', HERE/'tactical-profiles.json',
             *sorted(p for p in SOURCE.rglob('*') if p.is_file()), *smoke_sources()]
 
 
@@ -113,7 +113,8 @@ def install(b,symbols,parts):
     data=load_profiles()
     source=('var cf6TacticalDefaults:Object='+elite.as2_literal(data['roles'])+';\n'
             +'var cf6TacticalLimits:Object='+elite.as2_literal(data['bounds'])+';\n'
-            +(HERE/'TacticalAI.as').read_text(encoding='utf-8-sig'))
+            +(HERE/'TacticalAI.as').read_text(encoding='utf-8-sig')+'\n'
+            +(HERE/'SoldierSubweapon.as').read_text(encoding='utf-8-sig'))
     for link in (b.LINKAGE,b.SHIELD_LINKAGE,*elite.LINKAGES):
         root=symbols[b.PREFIX+link]
         script=root.find('.//x:DOMLayer[@name="初始化与消失"]//x:script',NS)

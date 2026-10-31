@@ -10,6 +10,7 @@ from lxml import etree as E
 
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
+R8_BAKED = HERE / 'r8-baked'
 ARCHIVE = ROOT / 'flashswf/arts/new/Codex素材源稿/CF6大刀机器人-R2'
 OWNER = ROOT / 'flashswf/arts/new/Codex大刀机器人素材'
 ANCHOR = 'Codex大刀机器人素材'
@@ -46,9 +47,14 @@ GROUND_SHIFT = -44.03251647949219
 OFFSETS = {906: (4.75, -62.05), 901: (22.5, -76.55), 902: (21.5, -80.7), 910: (26.5, -53.5),
            912: (21.5, -79.55), 913: (8.95, -59.95), 924: (7, -61.0)}
 # Death's first pose is 0.85 px lower in the original; align the identical pelvis.
+SWEEP_HITS = [19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49, 52, 55, 58, 61, 64, 67, 70, 73, 75]
+SWEEP_HITBOX_SOURCE = {f: (19 if (i % 2 == 0) else 22) for i, f in enumerate(SWEEP_HITS) if f > 34}
+DASH_HITS = [4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46, 49]
+DASH_HITBOX_SOURCE = {f: (19 if (i % 2 == 0) else 22) for i, f in enumerate(DASH_HITS)}
 ATTACKS = {'cleave': {'id': 910, 'state': '空手攻击', 'hits': [20, 22], 'hitboxSourceFrames': {22: 20}, 'power': 2.4},
-           'sweep': {'id': 912, 'state': '近战', 'hits': [19, 22, 25, 28, 31, 34], 'power': 1.0},
-           'beam': {'id': 906, 'state': '激光束', 'hits': [11], 'power': 1.0, 'damageType': '魔法', 'magicAttribute': '波'}}
+           'sweep': {'id': 912, 'state': '近战', 'hits': SWEEP_HITS, 'hitboxSourceFrames': SWEEP_HITBOX_SOURCE, 'power': 1.0},
+           'dash': {'id': 902, 'state': '旋刃冲刺', 'hits': DASH_HITS, 'hitboxSourceFrames': DASH_HITBOX_SOURCE, 'power': 0.85},
+           'beam': {'id': 906, 'state': '激光束', 'hits': [14], 'hitboxSourceFrames': {14: 11}, 'power': 1.0, 'damageType': '魔法', 'magicAttribute': '波'}}
 
 
 def sha(path):
@@ -64,6 +70,7 @@ def build_inputs():
         ROOT / 'flashswf/arts/new/Codex黑仔素材/PublishSettings.xml']
     paths += [native.THINGS1 / (old + '.xml') for old in sorted(H)]
     paths += death.input_paths()
+    paths += sorted(R8_BAKED.glob('*.xml'))
     return [{'path': p.relative_to(ROOT).as_posix(), 'sha256': sha(p)} for p in paths]
 
 
@@ -100,9 +107,22 @@ def depth_layers(timeline, parts):
     return layers
 
 
+def baked_action_layers(label):
+    root = E.parse(str(R8_BAKED / f'act__{label}.xml'), PARSER).getroot()
+    layers = [copy.deepcopy(l) for l in root.findall('x:timeline/x:DOMTimeline/x:layers/x:DOMLayer', NS)]
+    fc = max(int(f.get('index', '0')) + int(f.get('duration', '1')) for l in layers for f in l.findall('x:frames/x:DOMFrame', NS))
+    return fc, layers
+
+
 def make_body(sid, name, timeline, parts, scripts=None):
     return native.symbol(name, [native.make_sparse_layer('CF7控制', len(timeline), scripts or {}),
                                *depth_layers(timeline, parts)], symbol_type='movie clip')
+
+
+def make_baked_body(label, name, scripts=None):
+    fc, v_layers = baked_action_layers(label)
+    return native.symbol(name, [native.make_sparse_layer('CF7控制', fc, scripts or {}),
+                               *v_layers], symbol_type='movie clip')
 
 
 def build_symbols():
@@ -113,6 +133,8 @@ def build_symbols():
         folder = 'parts' if cid < 901 else 'reference' if cid in (903,905,909) else 'death-parts'
         name = PREFIX + ('死亡碎片/' if cid > 915 else '分件/') + str(cid)
         converted, report = vector.NativePart(ARCHIVE/folder/(str(cid)+'.svg'), name, (0, 0)).build()
+        if cid in (895, 896, 897, 899, 900):
+            converted[name].attrib.pop('symbolType', None)
         for key, item in converted.items():
             if key in result and native.xml_bytes(result[key]) != native.xml_bytes(item):
                 raise ValueError('Conflicting shared vector atlas: '+key)
@@ -120,26 +142,69 @@ def build_symbols():
         parts[cid] = name
         stats.append({'id': cid, **report})
 
+    for ext_path in sorted(R8_BAKED.glob('ext__*.xml')):
+        ext_root = E.parse(str(ext_path), PARSER).getroot()
+        result[ext_root.get('name')] = ext_root
+
     beam_wrapper=PREFIX+'分件/可瞄准光束'
-    result[beam_wrapper]=native.symbol(beam_wrapper,[native.layer('原始光束',[native.frame(elements=[native.instance(parts[905])])])],symbol_type='movie clip')
+    beam_frames = []
+    for fi in range(12):
+        t = (fi / 11.0) ** 3
+        sy = 1.0 + (0.272705078125 - 1.0) * t
+        ty = -11.9 * t
+        alpha = 1.0 + (0.171875 - 1.0) * t
+        inst = native.instance(parts[905], matrix=(1, 0, 0, sy, 0, ty), alpha_mult=alpha if fi > 0 else None)
+        beam_frames.append(native.frame(fi, 1, [inst], script='stop();' if fi == 11 else None))
+    result[beam_wrapper]=native.symbol(beam_wrapper,[native.layer('原始光束',beam_frames)],symbol_type='movie clip')
     parts[905]=beam_wrapper
 
     names = {sid: PREFIX+'动作/'+label for sid, label in [(901,'站立'), (902,'行走'),
              (906,'波属性光束'), (910,'重劈'), (912,'横扫'), (913,'被击'), (924,'机械碎裂')]}
-    result[names[901]] = make_body(901, names[901], timeline['901'], parts,
+    dash_symbol_name = PREFIX+'动作/旋刃冲刺'
+    result[names[901]] = make_baked_body('站立', names[901],
         {4: {'script': 'if(_parent.状态=="躲闪" || _parent.状态=="拾取") _parent.动画完毕();'}})
     result[names[902]] = make_body(902, names[902], timeline['902'], parts)
     for action, spec in ATTACKS.items():
-        frames = timeline[str(spec['id'])]
+        frames = timeline['912' if action == 'dash' else str(spec['id'])]
+        if action == 'dash':
+            fc = 54
+            _, raw_dash_layers = baked_action_layers('行走')
+            v_layers = []
+            for l in raw_dash_layers:
+                l_copy = copy.deepcopy(l)
+                frames_el = l_copy.find('x:frames', NS)
+                orig_dfs = list(frames_el.findall('x:DOMFrame', NS))
+                for df in orig_dfs:
+                    frames_el.remove(df)
+                if l_copy.get('name') == '图层_2':
+                    df_copy = copy.deepcopy(orig_dfs[0])
+                    df_copy.set('index', '0')
+                    df_copy.set('duration', str(fc))
+                    frames_el.append(df_copy)
+                else:
+                    for rep in range(3):
+                        for df in orig_dfs:
+                            df_copy = copy.deepcopy(df)
+                            df_copy.set('index', str(int(df.get('index', '0')) + 18 * rep))
+                            frames_el.append(df_copy)
+                v_layers.append(l_copy)
+            target_sym_name = dash_symbol_name
+        else:
+            act_label = names[spec['id']].rsplit('/', 1)[-1]
+            fc, v_layers = baked_action_layers(act_label)
+            target_sym_name = names[spec['id']]
         events = {0: {'script': '_parent.bladebotBeginAttack(this,"'+action+'");stop();'},
-                  len(frames)-1: {'script': '_parent.bladebotFinishAttack(this);'}}
+                  fc-1: {'script': '_parent.bladebotFinishAttack(this);'}}
         if action == 'cleave':
             for f in range(9, 19):
-                events[f-1] = {'script': '_parent.bladebotAdvance(this,8);'}
+                events[f-1] = {'script': '_parent.bladebotAdvance(this,14);'}
+        elif action == 'dash':
+            for sfx_f in (1, 19, 37):
+                events[sfx_f] = {'script': 'if(!_root.暂停 && this===_parent.man){_root.播放音效("CF6_0911.mp3");}'}
         hits = {}
         for f in spec['hits']:
             source_frame = spec.get('hitboxSourceFrames', {}).get(f, f)
-            if source_frame != f:
+            if source_frame != f and action == 'cleave':
                 # CF7's second heavy contact uses the same held blade pose,
                 # not a second visual swing or an unrelated hitbox.
                 weapon = lambda n: [row['matrix'] for row in frames[n-1].values() if row['id'] == 899]
@@ -150,9 +215,17 @@ def build_symbols():
             # CF6's helper is a ground projection. In CF7 the melee area is the
             # vertical swept blade volume; retain the authored horizontal span.
             if action == 'beam':
-                beam = next(row['matrix'] for row in frames[f-1].values() if row['id'] == 905)
+                beam = next(row['matrix'] for row in frames[source_frame-1].values() if row['id'] == 905)
                 width, height = 619.05, 32
                 center_x, center_y = beam[4]+292.925, beam[5]-16.35
+            elif action == 'sweep':
+                width, height = 320, 250
+                center_x = 115 if m[4] > 0 else -145
+                center_y = -height/2 - OFFSETS[spec['id']][1] - GROUND_SHIFT
+            elif action == 'dash':
+                width, height = 300, 240
+                center_x = 120 if m[4] > 0 else -110
+                center_y = -height/2 - OFFSETS[spec['id']][1] - GROUND_SHIFT
             else:
                 width = 66*abs(m[0])
                 center_x = m[4]
@@ -163,14 +236,14 @@ def build_symbols():
                 symbol_type='movie clip', name='攻击点',
                 script='onClipEvent(load){ bladebotToken=_parent.bladebotToken;bladebotHitFrame=_parent._currentframe;_parent._parent.bladebotStrike(_parent,this,'+str(spec['power'])+'); }',
                 alpha_mult=0)]}
-        result[names[spec['id']]] = native.symbol(names[spec['id']], [
-            native.make_sparse_layer('攻击生命周期', len(frames), events),
-            native.layer('身体内部攻击时钟',[native.frame(0,len(frames),[native.instance(PREFIX+'行为驱动',symbol_type='movie clip',
+        result[target_sym_name] = native.symbol(target_sym_name, [
+            native.make_sparse_layer('攻击生命周期', fc, events),
+            native.layer('身体内部攻击时钟',[native.frame(0,fc,[native.instance(PREFIX+'行为驱动',symbol_type='movie clip',
                 name='bladebotBodyDriver',script='onClipEvent(enterFrame){_parent._parent.bladebotBodyTick(_parent);}')])]),
-            native.make_sparse_layer('真实近战判定', len(frames), hits),
-            *depth_layers(frames, parts)], symbol_type='movie clip')
+            native.make_sparse_layer('真实近战判定', fc, hits),
+            *v_layers], symbol_type='movie clip')
 
-    result[names[913]] = make_body(913, names[913], timeline['913'], parts, {
+    result[names[913]] = make_baked_body('被击', names[913], {
         0: {'name': 'a0', 'label_type': 'name'}, 12: {'name': 'a1', 'label_type': 'name'},
         7: {'script': '_parent.动画完毕();'}, 18: {'script': '_parent.动画完毕();'}})
     result[names[924]] = make_body(924, names[924], timeline['924'], parts, {
@@ -212,14 +285,15 @@ onEnterFrame=updateBladebotShadow; updateBladebotShadow(); stop();''')]))
                                symbol_type='movie clip', name='man', script=script)
 
     states = {1:'空手站立',9:'空手行走',19:'空手跑',29:'空手跳',37:'近战',41:'空手攻击',
-              51:'激光束',61:'拾取',71:'躲闪',81:'被击',89:'击倒',98:'倒地',105:'被投',114:'血腥死',130:'消失'}
+              51:'激光束',61:'拾取',71:'躲闪',76:'旋刃冲刺',81:'被击',89:'击倒',98:'倒地',105:'被投',114:'血腥死',130:'消失'}
     root_name = PREFIX+LINKAGE
-    init = '''x轴攻击范围=0; y轴攻击范围=30; x轴保持距离=185; 攻击欲望=3; 击中效果="火花"; 命中率=30;
+    init = '''x轴攻击范围=0; y轴攻击范围=30; x轴保持距离=85; 攻击欲望=3; 击中效果="火花"; 命中率=30;
 女_攻击呐喊_库=[]; 女_中招呐喊_库=[]; 女_击倒呐喊_库=[];
 初始化敌人模板=_root.初始化敌人模板; 初始化敌人模板();
 '''+(HERE/'BladebotAI.as').read_text(encoding='utf-8-sig')+'\n'+(ROOT/'tools/cf6-headbot-assets/RobotDeath.as').read_text('utf-8-sig')
     bodies = {0:(9,body(901)),9:(10,body(902)),19:(10,body(902)),29:(8,body(901)),
-        37:(4,body(912)),41:(10,body(910)),51:(10,body(906)),61:(10,body(901)),71:(10,body(901)),
+        37:(4,body(912)),41:(10,body(910)),51:(10,body(906)),61:(10,body(901)),71:(5,body(901)),
+        76:(5,body(902,name=dash_symbol_name)),
         81:(8,body(913,'onClipEvent(load){ _parent.bladebotCancelAttack(); gotoAndPlay("a"+random(2)); }')),
         89:(9,body(913,'onClipEvent(load){ _parent.bladebotCancelAttack(); _parent.击飞浮空(); }',knocked)),
         98:(7,body(913,'onClipEvent(load){ _parent.bladebotCancelAttack(); _parent.击飞倒地(); }',down)),
@@ -239,10 +313,10 @@ onEnterFrame=updateBladebotShadow; updateBladebotShadow(); stop();''')]))
     return result, root_name, stats
 
 
-def import_assets():
-    native.guard_overwrite_allowed(False)
+def import_assets(force=False):
+    native.guard_overwrite_allowed(force)
     symbols, root_name, stats = build_symbols()
-    native.guard_overwrite_allowed(False)
+    native.guard_overwrite_allowed(force)
     audio_receipt=audio.apply(symbols,OWNER,native.make_sparse_layer)
     outputs = common.write_workspace(symbols, root_name)
     manifest = {'schema':native.MANIFEST_SCHEMA,'owner':OWNER.relative_to(ROOT).as_posix(),
@@ -280,6 +354,7 @@ if __name__ == '__main__':
     parser=argparse.ArgumentParser()
     parser.add_argument('--import-approved',action='store_true')
     parser.add_argument('--check',action='store_true')
+    parser.add_argument('--force',action='store_true')
     args=parser.parse_args()
-    if args.import_approved: import_assets()
+    if args.import_approved: import_assets(args.force)
     check()

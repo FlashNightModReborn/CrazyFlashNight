@@ -325,6 +325,13 @@ launcher/app.manifest text eol=lf
 /scripts/test-runners/cf6-audio/** -text whitespace=cr-at-eol
 /scripts/test-runners/cf6-player-aim/** -text whitespace=cr-at-eol
 /scripts/test-runners/cf6-playtest/** -text whitespace=cr-at-eol
+/scripts/run-cf6-player-pressure-tests.ps1 -text whitespace=cr-at-eol
+/scripts/run-cf6-shield-separation-tests.ps1 -text whitespace=cr-at-eol
+/scripts/test-runners/cf6-player-pressure/** -text whitespace=cr-at-eol
+/scripts/test-runners/cf6-shield-separation/** -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6PlayerPressureTest.as -text
+/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ShieldSeparationTest.as -text
+/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ManmanAssetTest.as -text whitespace=cr-at-eol
 /scripts/test-runners/cf6-knockback-scope/** -text whitespace=cr-at-eol
 /scripts/test-runners/cf6-robot-death-render/** -text whitespace=cr-at-eol
 /scripts/test-runners/cf6-bladebot-beam-render/** -text whitespace=cr-at-eol

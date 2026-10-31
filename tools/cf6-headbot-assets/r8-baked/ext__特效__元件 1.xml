@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大头机器人/特效/元件 1" itemID="6af00000-469cf4dd">
+  <timeline>
+    <DOMTimeline name="元件 1" layerDepthEnabled="true">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape selected="true" isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.604965209960938" d="0.604965209960938" tx="4.3" ty="67.25"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.005859375" c="-0.018310546875" d="0" tx="-7.1" ty="-106.35"/>
+                        </matrix>
+                        <GradientEntry color="#A7090B" ratio="0"/>
+                        <GradientEntry color="#FF1B20" ratio="0.349019607843137"/>
+                        <GradientEntry color="#EB080F" ratio="0.749019607843137"/>
+                        <GradientEntry color="#9A080B" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!183 -2218|82 -2224!82 -2224|74 -2223!74 -2223|60 -2223!60 -2223|52 -2222!52 -2222|45 -2222!45 -2222|38 -2221!38 -2221|30 -2221!30 -2221|-92 -2196!-92 -2196|-142 -2178!-142 -2178|-2 -2038!-2 -2038|157 -2031!157 -2031|317 -2043!317 -2043 |398 -2058!398 -2058|458 -2118!458 -2118|278 -2198!278 -2198|183 -2218"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape selected="true" isDrawingObject="true">
+                  <matrix>
+                    <Matrix a="0.604965209960938" d="0.604965209960938" tx="4.3" ty="67.25"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient>
+                        <matrix>
+                          <Matrix a="0" b="0.005218505859375" c="-0.0121917724609375" d="0" tx="38.9" ty="-106.15"/>
+                        </matrix>
+                        <GradientEntry color="#A7090B" ratio="0"/>
+                        <GradientEntry color="#FF1B20" ratio="0.349019607843137"/>
+                        <GradientEntry color="#EB080F" ratio="0.749019607843137"/>
+                        <GradientEntry color="#9A080B" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges=" !1062 -2209|1012 -2209!1012 -2209|1004 -2208!1004 -2208|996 -2208!996 -2208|907 -2192!907 -2192|851 -2173!851 -2173|827 -2162!827 -2162|818 -2159!818 -2159|778 -2138!778 -2138|858 -2038!858 -2038|1098 -2058!1098 -2058|1178 -2138!1178  -2138|1138 -2198!1138 -2198|1132 -2199!1132 -2199|1125 -2201!1125 -2201|1094 -2206!1094 -2206|1087 -2206!1087 -2206|1075 -2208!1075 -2208|1068 -2208!1068 -2208|1062 -2209"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

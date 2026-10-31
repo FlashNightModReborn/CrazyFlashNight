@@ -67,7 +67,7 @@ soldierMeleeHit=function(body:MovieClip,point:MovieClip):Void {
     _root.子弹区域shoot传递({声音:"",霰弹值:1,子弹散射度:0,发射效果:"",子弹种类:"近战子弹",
         子弹威力:this.空手攻击力*0.6,子弹速度:0,暴击:function(bullet:Object):Number {return 1;},斩杀:0,Z轴攻击范围:24,
         发射者:this._name,shootX:p.x,shootY:p.y,shootZ:this.Z轴坐标,击倒率:10,
-        击中地图效果:"",击中后子弹的效果:"空手攻击火花",水平击退速度:7,垂直击退速度:0,区域定位area:point.area});
+        击中地图效果:"",击中后子弹的效果:"空手攻击火花",水平击退速度:24,垂直击退速度:0,区域定位area:point.area});
 };
 soldierFinishAttack=function(body:MovieClip):Void {
     var owner:Object=this.soldierAttackOwner;

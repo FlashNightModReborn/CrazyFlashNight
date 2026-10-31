@@ -5,25 +5,26 @@ import org.flashNight.arki.component.Buff.BuffManager;
 import org.flashNight.arki.component.Buff.Effect.ElderBeamVulnerability;
 import org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEventComponent;
 import org.flashNight.arki.component.Damage.*;
+import org.flashNight.arki.component.Shield.*;
 import org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler;
 
 /** Published SWF behavior under isolated damage / template fixtures; no save access. */
 class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
     private static var nativeKnockback:Function;
     private static var library:MovieClip,driver:MovieClip,loader:MovieClipLoader,listener:Object;
-    private static var passed:Number,failed:Number,ticks:Number,fxCount:Number;
+    private static var passed:Number,failed:Number,ticks:Number,fxCount:Number,muzzleChecks:Number;
     private static var ready:Boolean,finished:Boolean;
-    private static var cases:Array,probes:Array,phases:Array;
+    private static var cases:Array,r8Cases:Array,probes:Array,phases:Array;
     private static var links:Array=["敌人-CF6老头人形","敌人-CF6老头机器人"];
     private static function check(ok:Boolean,label:String):Void {
         if(ok)passed++;else{failed++;trace("[TEST_FAIL] Cf6ElderAssetTest: "+label);}
     }
     private static function record():Object {
         return {shots:0,heavyShots:0,frames:[],moves:0,done:0,kills:0,deathChecks:0,removed:false,
-            physics:0,powerOk:true,areaOk:true,contractOk:true,frontOk:true};
+            physics:0,powerOk:true,areaOk:true,contractOk:true,frontOk:true,slamAntiairOk:true,fallingShellOk:true};
     }
     public static function runAllTests():Void {
-        passed=failed=ticks=fxCount=0;ready=finished=false;cases=[];probes=[];phases=[];
+        passed=failed=ticks=fxCount=muzzleChecks=0;ready=finished=false;cases=[];r8Cases=[];probes=[];phases=[];
         Cf6ElderCombatEffectsTest.reset();
         Cf6RobotCombatTest.reset("elder");
         library=_root.createEmptyMovieClip("__elderLibrary",_root.getNextHighestDepth());
@@ -67,11 +68,13 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
             this.移动=function(dir:String,speed:Number):Void {
                 this._x+=dir=="右"?speed:dir=="左"?-speed:0;
                 this.Z轴坐标+=dir=="下"?speed:dir=="上"?-speed:0;
-                this._y=this.Z轴坐标;this.fixtureRecord.moves++;
+                this._y=this.Z轴坐标;if(this.fixtureRecord!=null)this.fixtureRecord.moves++;
             };
             this.方向改变=function(dir:String):Void {this.方向=dir;this._xscale=dir=="左"?-100:100;};
             this.动画完毕=function():Void {
-                this.fixtureRecord.done++;this.fixtureRecord.lastRecoveryFrame=this.man._currentframe;this.攻击目标="无";this.状态改变(this.hp>0?"空手站立":"血腥死");
+                this.__doneCount=(this.__doneCount|0)+1;this.__lastRecoveryFrame=this.man._currentframe;
+                if(this.fixtureRecord!=null){this.fixtureRecord.done++;this.fixtureRecord.lastRecoveryFrame=this.man._currentframe;}
+                this.攻击目标="无";this.状态改变(this.hp>0?"空手站立":"血腥死");
             };
             this.移动钝感硬直=function():Void {};
             this.击飞浮空=function():Void {this.fixtureRecord.physics++;this.浮空=true;};
@@ -88,7 +91,8 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
         listener={onLoadInit:function(mc:MovieClip):Void {Cf6ElderAssetTest.loaded(mc);},
             onLoadError:function(mc:MovieClip,error:String):Void {Cf6ElderAssetTest.check(false,"load "+error);Cf6ElderAssetTest.finish();}};
         loader=new MovieClipLoader();loader.addListener(listener);
-        check(loader.loadClip("../flashswf/arts/new/Codex老头素材.swf",library),"load published SWF");
+        var source:String=typeof _root.cf6ElderAssetUnderTest=="string"?_root.cf6ElderAssetUnderTest:"../flashswf/arts/new/Codex老头素材.swf";
+        check(loader.loadClip(source,library),"load published SWF");
         driver.onEnterFrame=function():Void {
             try{Cf6ElderAssetTest.tick();}
             catch(error){Cf6ElderAssetTest.check(false,"native fixture exception "+error);Cf6ElderAssetTest.finish();}
@@ -104,6 +108,28 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
             var u:MovieClip=library.attachMovie(links[form],"elderCase"+cases.length,library.getNextHighestDepth(),{fixtureRecord:rec,老头变身:false});
             check(u!=null,"attach "+form+" "+moves[form][m]+" "+side);
             cases.push({actor:u,form:form,side:side,move:moves[form][m],record:rec});
+        }
+        for(var r8Side:Number=0;r8Side<2;r8Side++){
+            var r8Rec:Object=record();
+            var r8u:MovieClip=library.attachMovie(links[0],"elderR8Case"+r8Cases.length,library.getNextHighestDepth(),{fixtureRecord:r8Rec,老头变身:false});
+            check(r8u!=null,"attach r8 retreat_burst "+r8Side);
+            r8Cases.push({actor:r8u,form:0,side:r8Side,move:"retreat_burst",record:r8Rec});
+            var noFixRetreat:MovieClip=library.attachMovie(links[0],"elderR8Case"+r8Cases.length,library.getNextHighestDepth(),{老头变身:false});
+            check(noFixRetreat!=null && noFixRetreat.fixtureRecord===undefined,"attach r8 retreat_burst_no_fixture "+r8Side);
+            r8Cases.push({actor:noFixRetreat,form:0,side:r8Side,move:"retreat_burst_no_fixture",record:null});
+            var noFixSlam:MovieClip=library.attachMovie(links[1],"elderR8Case"+r8Cases.length,library.getNextHighestDepth(),{老头变身:false});
+            check(noFixSlam!=null && noFixSlam.fixtureRecord===undefined,"attach r8 slam_no_fixture "+r8Side);
+            r8Cases.push({actor:noFixSlam,form:1,side:r8Side,move:"slam_no_fixture",record:null});
+            var r8SlamMoves:Array=["slam_ruleA_shielded","slam_ruleA_broken","slam_ruleA_scaled","slam_ruleA_rotated","slam_ruleA_interrupt"];
+            for(var sm:Number=0;sm<r8SlamMoves.length;sm++){
+                var slamRec:Object=record();
+                var slamUnit:MovieClip=library.attachMovie(links[1],"elderR8Case"+r8Cases.length,library.getNextHighestDepth(),{fixtureRecord:slamRec,老头变身:false});
+                slamUnit.shield=AdaptiveShield.createDormant("r8-"+r8SlamMoves[sm]+"-"+r8Side);
+                slamUnit.shield.setOwner(slamUnit);
+                check(slamUnit!=null,"attach r8 "+r8SlamMoves[sm]+" "+r8Side);
+                slamRec.muzzleVariant=r8SlamMoves[sm];
+                r8Cases.push({actor:slamUnit,form:1,side:r8Side,move:sm>1?"slam_ruleA_shielded":r8SlamMoves[sm],record:slamRec});
+            }
         }
         createPhases();ready=true;ticks=0;
     }
@@ -179,11 +205,71 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
     }
 
 
+    private static function captureMuzzleImage(u:MovieClip):Void {
+        var bitmap:flash.display.BitmapData=new flash.display.BitmapData(900,1000,false,0x18212d);
+        bitmap.draw(u,new flash.geom.Matrix(1,0,0,1,450,850));
+        trace("[ELDER_MUZZLE_IMAGE_BEGIN] 900 1000 frame="+u.man._currentframe);
+        for(var row:Number=0;row<1000;row++){
+            var parts:Array=[],last:Number=bitmap.getPixel(0,row),count:Number=1;
+            for(var col:Number=1;col<900;col++){
+                var value:Number=bitmap.getPixel(col,row);
+                if(value==last)count++;else{parts.push(last.toString(16)+":"+count);last=value;count=1;}
+            }
+            parts.push(last.toString(16)+":"+count);
+            trace("[ELDER_MUZZLE_IMAGE_ROW] "+row+" "+parts.join(","));
+        }
+        trace("[ELDER_MUZZLE_IMAGE_END]");bitmap.dispose();
+    }
     private static function capture(data:Object):Void {
         var u:MovieClip=library[data.发射者],rec:Object=u.fixtureRecord;if(rec==undefined)return;
         if(data.cf6DeathBurst===true){
             rec.deathBursts=(rec.deathBursts|0)+1;check(rec.deathBursts==1,"one death burst "+u._name);
             if(rec.deathBursts==1)Cf6RobotCombatTest.captureDeath(data,u);return;
+        }
+        if(data.cf6ElderSlamAntiair===true){
+            muzzleChecks++;
+            rec.slamAntiairs=(rec.slamAntiairs|0)+1;
+            var aaBounds:Object=data.区域定位area.getBounds(library);
+            var marker:MovieClip=u.man.elderSlamMuzzle;
+            check(marker._parent===u.man,"native cannon owns a muzzle anchor "+u.方向);
+            var muzzle:Object={x:0,y:0},axis:Object={x:100,y:0};
+            marker.localToGlobal(muzzle);marker.localToGlobal(axis);library.globalToLocal(muzzle);library.globalToLocal(axis);
+            check(Math.abs(data.shootX-muzzle.x)<0.2 && Math.abs(data.shootY-muzzle.y)<0.2,"upward emission follows cannon anchor "+u.方向);
+            check(Math.abs(aaBounds.yMax-data.shootY)<0.3 && Math.abs((aaBounds.xMin+aaBounds.xMax)/2-data.shootX)<0.3,"anti-air area begins at the actual muzzle "+u.方向);
+            var fx:MovieClip=u["cf6ElderAaFx_"+(900+(u.elderClock&63))];
+            check(fx!=null,"upward effect is instantiated "+u.方向);
+            var origin:Object={x:0,y:0},front:Object={x:0,y:-100};
+            fx.localToGlobal(origin);fx.localToGlobal(front);library.globalToLocal(origin);library.globalToLocal(front);
+            check(Math.abs(origin.x-muzzle.x)<0.25 && Math.abs(origin.y-muzzle.y)<0.25,"effect origin matches scaled/mirrored cannon "+u.方向);
+            var ex:Number=front.x-origin.x,ey:Number=front.y-origin.y,ax:Number=axis.x-muzzle.x,ay:Number=axis.y-muzzle.y;
+            var cosine:Number=(ex*ax+ey*ay)/Math.sqrt((ex*ex+ey*ey)*(ax*ax+ay*ay));
+            check(cosine>0.9999,"effect points along transformed cannon axis "+u.方向);
+            rec.muzzleFxName=fx._name;rec.muzzleSeen=true;
+            if(_root.cf6ElderMuzzleCapture===true && rec.muzzleVariant=="slam_ruleA_shielded" && u.方向=="右")
+                rec.muzzleCaptureAt=ticks+2;
+            trace("[CF6_ELDER_MUZZLE] unit="+u._name+" variant="+rec.muzzleVariant+" direction="+u.方向
+                +" source="+u._url+" x="+data.shootX+" y="+data.shootY+" cosine="+cosine);
+            if(rec.muzzleVariant=="slam_ruleA_interrupt")rec.muzzleInterruptRequested=true;
+            rec.slamAntiairOk=rec.slamAntiairOk && data.区域定位area!=null
+                && data.子弹种类=="近战子弹" && data.子弹速度==0
+                && data.伤害类型=="魔法" && data.魔法伤害属性=="波"
+                && Math.abs(data.子弹威力-300)<0.001 && data.垂直击退速度==-6
+                && Math.abs(aaBounds.xMax-aaBounds.xMin-220)<0.3
+                && Math.abs(aaBounds.yMax-aaBounds.yMin-165)<0.3;
+            return;
+        }
+        if(data.cf6FallingShell===true){
+            rec.fallingShells=(rec.fallingShells|0)+1;
+            var shellBounds:Object=data.区域定位area.getBounds(library);
+            rec.fallingShellOk=rec.fallingShellOk && data.区域定位area!=null
+                && data.子弹种类=="近战子弹" && data.子弹速度==0
+                && data.伤害类型=="魔法" && data.魔法伤害属性=="波"
+                && Math.abs(data.子弹威力-400)<0.001 && data.Z轴攻击范围==45
+                && data.hitBehavior.type=="cf6ElderBeam"
+                && Math.abs(shellBounds.xMax-shellBounds.xMin-190)<0.3
+                && Math.abs(shellBounds.yMax-shellBounds.yMin-125)<0.3
+                && (data.shootX-u._x)*(u.方向=="右"?1:-1)>0;
+            return;
         }
         var action:String=u.elderAttackOwner.action,frame:Number=u.man._currentframe;
         rec.shots++;rec.frames.push(frame);if(action=="heavyBeam")rec.heavyShots++;
@@ -191,16 +277,18 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
         if(action=="heavyBeam")check(u.刚体===true && u.免疫击退===true,"continuous beam remains braced through every pulse "+frame);
         if(u.elderForm=="robot")Cf6ElderCombatEffectsTest.capture(action,data,u);
         rec.contractOk=rec.contractOk && u.elderAttackOwner.spec.totalFrames==u.man._totalframes && data.霰弹值==1 && data.Z轴攻击范围==30 && data.shootZ==u.Z轴坐标
+            && data.击倒率==(action=="stab"?1:(action=="slam"?3:10)) && data.水平击退速度==(action=="stab"?24:(action=="slam"?18:3))
+            && (action=="stab"?data.吸血==35:true) && (action=="retreat_burst"?typeof data.暴击=="function":true)
             && data.百分比伤害==undefined && data.伤害类型==((action=="beam" || action=="heavyBeam")?"魔法":"物理")
             && ((action=="beam" || action=="heavyBeam")?data.魔法伤害属性=="波":data.魔法伤害属性==undefined);
-        if(action=="burst"){
+        if(action=="burst" || action=="retreat_burst"){
             rec.areaOk=rec.areaOk && data.子弹种类=="穿刺子弹" && data.子弹速度==30
                 && data.区域定位area==undefined && data.shootY<u.Z轴坐标-90;
         }else{
             var bounds:Object=data.区域定位area.getBounds(library);
             rec.areaOk=rec.areaOk && data.子弹种类=="近战子弹" && data.子弹速度==0
                 && bounds.xMax>bounds.xMin && bounds.yMax>bounds.yMin;
-            if(action=="beam" || action=="heavyBeam")rec.areaOk=rec.areaOk && Math.abs(bounds.xMax-bounds.xMin-600)<0.3
+            if(action=="beam" || action=="heavyBeam")rec.areaOk=rec.areaOk && Math.abs(bounds.xMax-bounds.xMin-780.83)<0.5
                 && Math.abs(bounds.yMax-bounds.yMin-(action=="heavyBeam"?96:32))<0.3;
             if(action=="kicks" && rec.reachTarget!=null){
                 var targetBounds:Object=rec.reachTarget.getBounds(library);
@@ -247,12 +335,20 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
         r.elderNextBeam=r.elderNextHeavyBeam=0;
         check(h.elderChooseAttack(120,0,0)=="stab","human close stab");
         check(h.elderChooseAttack(400,0,0)=="burst","human ranged burst");
+        check(h.elderSelectBurstSubmode(300,0)=="retreat_burst","human close-mid burst submode selects retreat_burst");
+        check(h.elderSelectBurstSubmode(350,0)=="burst","human far burst submode selects burst");
+        h.elderRewardHumanStab(null);
+        check(h.elderChooseAttack(360,0,0)=="burst" && h.elderSelectBurstSubmode(360,0)=="retreat_burst","stab hit arms immediate retreat_burst combo");
+        h.elderHumanComboUntil=0;
         check(h.elderChooseAttack(501,0,0)=="none","human range bound");
         check(r.elderChooseAttack(120,0,0)=="slam","robot close slam");
         r.elderNextSlam=101;check(r.elderChooseAttack(120,0,0)=="kicks","robot kicks while slam cooling");
         check(r.elderChooseAttack(190,0,0)=="kicks","robot kick approach includes 190 pixel boundary");
         check(r.elderChooseAttack(191,0,0)=="beam","outside kick approach retains ranged beam");
         check(r.elderChooseAttack(500,0,0)=="beam","robot beam range");
+        r.elderNextSlam=0;r.elderNextBeam=200;
+        check(r.elderChooseAttack(400,0,0)=="slam","robot mid-range selects slam bombardment while beam cooling");
+        r.elderNextBeam=0;r.elderNextSlam=101;
         var rangeChecks:Number=r.elderCombatStats.decisionChecks,outsideChecks:Number=r.elderCombatStats.rangeOutsideChecks;
         check(r.elderChooseAttack(750,0,0)=="beam","robot includes the authorized 750 pixel start boundary");
         check(r.elderChooseAttack(751,0,0)=="none","robot range remains bounded beyond 750 pixels");
@@ -307,7 +403,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
         check(r.elderHasBeamMark(target) && r.elderChooseAttack(400,0,0,false)=="beam","short remaining mark cannot start an incomplete channel");
         target.buffManager.update(71);
         check(r.elderChooseAttack(400,0,0,false)=="beam","expired mark removes heavy selection");
-        r.状态="空手站立";r.攻击目标="无";target.removeMovieClip();
+        r.状态改变("空手站立");r.攻击目标="无";target.removeMovieClip();
         r.浮空=r.倒地=true;r.垂直速度=-6;r.elderTick();
         check(!r.浮空 && !r.倒地 && r.垂直速度==0,"robot stays grounded");
         h.浮空=true;h.elderTick();check(h.浮空===true,"human keeps standard airborne behavior");h.浮空=false;
@@ -354,6 +450,37 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
                 u.攻击目标=target._name;c.record.reachTarget=target;c.record.reachOverlaps=0;
             }
             u.状态改变(state);
+        }
+        if(ticks==3)for(var r8i:Number=0;r8i<r8Cases.length;r8i++){
+            var r8c:Object=r8Cases[r8i],r8u:MovieClip=r8c.actor;r8u.方向改变(r8c.side==0?"右":"左");
+            if(r8c.record.muzzleVariant=="slam_ruleA_scaled"){r8u._xscale*=1.45;r8u._yscale=80;}
+            if(r8c.record.muzzleVariant=="slam_ruleA_rotated"){r8u._xscale*=0.85;r8u._yscale=130;r8u._rotation=17;}
+            if(r8c.move=="retreat_burst" || r8c.move=="retreat_burst_no_fixture"){
+                r8u.elderPendingBurstSubmode="retreat_burst";
+                r8u.状态改变("空手攻击");
+            }else{
+                r8u.状态改变("重击");
+            }
+        }
+        if(ticks==4)for(r8i=0;r8i<r8Cases.length;r8i++){
+            r8c=r8Cases[r8i];r8u=r8c.actor;
+            if(r8c.move=="slam_ruleA_shielded" || r8c.move=="slam_ruleA_broken"){
+                check(r8u.shield.getCapacity()>0,"slam windup holds active shield for Rule A "+r8i+" cap="+r8u.shield.getCapacity());
+                if(r8c.move=="slam_ruleA_broken"){
+                    r8u.shield.absorbDamage(10000,false,1);
+                    check(r8u.shield.getCapacity()==0,"broken windup shield removes capacity "+r8i+" cap="+r8u.shield.getCapacity());
+                }
+            }
+        }
+        for(r8i=0;r8i<r8Cases.length;r8i++){
+            r8c=r8Cases[r8i];r8u=r8c.actor;
+            if(r8c.record.muzzleCaptureAt==ticks)captureMuzzleImage(r8u);
+            if(r8c.record.muzzleInterruptRequested===true){
+                r8c.record.muzzleInterruptRequested=false;r8c.record.muzzleInterrupted=true;r8c.record.muzzleInterruptAt=ticks;
+                r8u.状态改变("被击");
+            }
+            if(r8c.record.muzzleInterrupted===true && ticks==r8c.record.muzzleInterruptAt+3)
+                check(r8u[r8c.record.muzzleFxName]==null,"interrupted action cannot retain a detached muzzle effect "+r8c.side);
         }
         if(ticks==7)for(i=0;i<cases.length;i++)shadowCheck(cases[i].actor,"case "+i);
         if(ticks==18)for(i=0;i<cases.length;i++){
@@ -479,6 +606,37 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
                 if(dead){if(c.form==1)check(rec.stamps==1 && rec.stampLayer==2 && rec.stampSettled===true && rec.allDebrisGrounded===true && rec.debrisCount==15,"settled robot corpse stamped once "+i);check(rec.kills==1,"standard kill once "+i);check(rec.removed && rec.deathChecks==1 && (c.form==0?rec.deathOptions.noCorpse===true:rec.deathOptions.noCorpse!==true),"death retirement once "+i);}
                 else check(c.actor.状态=="空手站立" && rec.done>=1,"action recovery "+i);
             }
+            for(var r8k:Number=0;r8k<r8Cases.length;r8k++){
+                var r8Case:Object=r8Cases[r8k],r8Rec:Object=r8Case.record;
+                if(r8Case.move=="retreat_burst"){
+                    check(r8Rec.shots==4,"retreat_burst contact count "+r8Case.side+" got "+r8Rec.shots);
+                    check(r8Rec.frames.join(",")=="63,65,68,70","retreat_burst authored frames "+r8Case.side);
+                    check(r8Rec.moves>0,"retreat_burst backward displacement "+r8Case.side);
+                    check(r8Rec.areaOk && r8Rec.powerOk && r8Rec.contractOk && r8Rec.frontOk,"retreat_burst contract "+r8Case.side);
+                }else if(r8Case.move=="slam_ruleA_shielded" && r8Rec.muzzleInterrupted===true){
+                    check(r8Rec.slamAntiairs==1 && r8Rec.shots==0 && r8Rec.muzzleSeen===true,"interrupt leaves the launched upward emission once and cancels the later hammer "+r8Case.side);
+                    check(r8Case.actor[r8Rec.muzzleFxName]==null,"interrupted muzzle effect remains retired "+r8Case.side);
+                }else if(r8Case.move=="slam_ruleA_shielded"){
+                    check(r8Rec.shots==1 && r8Rec.frames.join(",")=="37","Rule A shielded slam primary contact "+r8Case.side+" shots="+r8Rec.shots+" frames="+r8Rec.frames.join(","));
+                    check(r8Rec.slamAntiairs==1 && r8Rec.slamAntiairOk===true,"Rule A shielded slam emits upward anti-air wave hit "+r8Case.side+" aa="+r8Rec.slamAntiairs+" ok="+r8Rec.slamAntiairOk);
+                    check(r8Rec.fallingShells==2 && r8Rec.fallingShellOk===true,"Rule A shielded slam spawns 2 delayed falling beam shells "+r8Case.side+" shells="+r8Rec.fallingShells+" ok="+r8Rec.fallingShellOk);
+                    check(r8Rec.areaOk && r8Rec.powerOk && r8Rec.contractOk && r8Rec.frontOk,"Rule A shielded slam primary contract "+r8Case.side);
+                }else if(r8Case.move=="slam_ruleA_broken"){
+                    check(r8Rec.shots==1 && r8Rec.frames.join(",")=="37","Rule A broken-shield slam primary contact "+r8Case.side+" shots="+r8Rec.shots+" frames="+r8Rec.frames.join(","));
+                    check((r8Rec.slamAntiairs|0)==0 && (r8Rec.fallingShells|0)==0,"Rule A broken-shield slam suppresses anti-air and falling shells "+r8Case.side+" aa="+r8Rec.slamAntiairs+" shells="+r8Rec.fallingShells);
+                    check(r8Rec.areaOk && r8Rec.powerOk && r8Rec.contractOk && r8Rec.frontOk,"Rule A broken-shield slam primary contract "+r8Case.side);
+                }else if(r8Case.move=="retreat_burst_no_fixture"){
+                    check(r8Case.actor.fixtureRecord===undefined && r8Case.actor.__lastRecoveryFrame==94 && r8Case.actor.__doneCount==1,
+                        "retreat_burst without fixtureRecord plays full 94 frames "+r8Case.side+" last="+r8Case.actor.__lastRecoveryFrame);
+                }else if(r8Case.move=="slam_no_fixture"){
+                    check(r8Case.actor.fixtureRecord===undefined && r8Case.actor.__lastRecoveryFrame==71 && r8Case.actor.__doneCount==1,
+                        "slam without fixtureRecord plays full 71 frames "+r8Case.side+" last="+r8Case.actor.__lastRecoveryFrame);
+                }
+                check(r8Case.actor.状态=="空手站立" && (r8Rec!=null?r8Rec.done>=1:r8Case.actor.__doneCount>=1),"r8 case recovery "+r8Case.move+" "+r8Case.side);
+            }
+            r8Cases[0].actor.状态改变("空手跑");
+            check(r8Cases[0].actor.man._totalframes==24,"human run state mounts dedicated 24f R8 run clip");
+            r8Cases[0].actor.状态改变("空手站立");
             check(Cf6ElderCombatEffectsTest.runAllTests(nativeKnockback),"actual robot combat effect suite");
             finish();
         }
@@ -489,6 +647,8 @@ class org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest {
         check(FragmentAnimator.getActiveAnimationCount()==0,"all completed fragment instances released");
         check(Cf6RobotCombatTest.finish(),"real death burst settlement");
         loader.removeListener(listener);library.removeMovieClip();driver.removeMovieClip();
+        check(muzzleChecks>=8,"all native muzzle geometry variants emitted");
+        trace("Cf6ElderMuzzle: "+muzzleChecks+" native emissions checked");
         trace("Cf6ElderAssetTest: "+passed+" passed, "+failed+" failed; "+cases.length+" actual timeline cases; "+phases.length+" phase cases");
         _root.cf6ElderAssetComplete();
     }

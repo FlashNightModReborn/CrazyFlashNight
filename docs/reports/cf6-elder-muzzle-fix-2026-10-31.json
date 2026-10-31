@@ -1,0 +1,116 @@
+{
+  "schema": "cf6-elder.muzzle-fix.v1",
+  "date": "2026-10-31",
+  "status": "LOCAL_SOURCE_AND_SWF_APPLIED_NATIVE_VALIDATED",
+  "sourcePart": 986,
+  "sourcePoint": [
+    154,
+    4
+  ],
+  "sourceFrames": 71,
+  "damageArea": {
+    "width": 220,
+    "height": 165,
+    "location": "above_actual_muzzle"
+  },
+  "preserved": [
+    "slam 37f primary contact and x18 power",
+    "rule-A 20f shield check",
+    "upward x3 wave power",
+    "two delayed x4 falling shells",
+    "human stab lifesteal and retreat critical"
+  ],
+  "native": {
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "assetAssertions": 1070,
+    "combatEffectsAssertions": 127,
+    "robotCombatAssertions": 45,
+    "failures": 0,
+    "muzzleEmissions": 8,
+    "swfSha256": "4aa8179ffe10cd74f316f5ecce179df2d069b35542c19ce04e1a0930410cf366",
+    "swfBytes": 526416,
+    "traceSha256": "91c63b9258349fb73ab6530f7d7c24e4d47d6df007c4900dbe043a4ef67c7247",
+    "image": {
+      "kind": "native_CS6_BitmapData_capture",
+      "frame": 22,
+      "width": 900,
+      "height": 1000,
+      "traceSha256": "91c63b9258349fb73ab6530f7d7c24e4d47d6df007c4900dbe043a4ef67c7247",
+      "imageSha256": "037c13bd35b0053d0102d7e29590c9c7b531dc268d88d41e493bcd75a05066ec"
+    }
+  },
+  "firstAttempt": {
+    "retained": true,
+    "failures": 4,
+    "reason": "one-pixel transform probes lost angle precision through native twip rounding; fixed by measuring a 100-pixel basis; same angle assertion retained"
+  },
+  "changedFiles": [
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/1007.xml",
+      "beforeSha256": "413986175d282c8880248a7260c60973d455261ce2437f1a1f9f3b3bda4df527",
+      "afterSha256": "90303dead50dc0b52fa4eac652792bea02edfe985cd118cd6fbef60af93d753a",
+      "alreadyApplied": false
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头人形.xml",
+      "beforeSha256": "d29db2f54d352d5127ecd5a969fe97f68eb51ea0c255b0618c3097056b3820e8",
+      "afterSha256": "24096da5b20c01f23e3e3a271db25552d8dc0059f577a903c54a13b72b72b606",
+      "alreadyApplied": false
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头机器人.xml",
+      "beforeSha256": "d9b7e891501c3224095ade51698ec5c5503957215a281d407576044d8610314b",
+      "afterSha256": "3f932380974a20022c992288c48953d8e9ab5290236d504e34c8cdbf54c80c51",
+      "alreadyApplied": false
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/特效/蓄力对空光束.xml",
+      "beforeSha256": "12cd09d8aa0a6f19cfa3ded61e032eb4ba9d6eb4f40b498c73e16953c32361de",
+      "afterSha256": "05b0f417129c3bd428ce9942e9c064397d7006333839d306a71d4eadd2ffe677",
+      "alreadyApplied": false
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材.swf",
+      "beforeSha256": "d7ef0de9d1ea8ca6fcd98894e404a7d281c15ded929e602cc1bcab35c20746eb",
+      "afterSha256": "4aa8179ffe10cd74f316f5ecce179df2d069b35542c19ce04e1a0930410cf366",
+      "alreadyApplied": false
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+      "beforeSha256": "94f6f4069b80635bc5e121541e32e2eb9b80754a5da4d2591dfc5e62135232d7",
+      "afterSha256": "8e33e8c94bbc7b6d52d4d9bfa3bdc9a6a627ca47447fef3063a40221f4b789d8",
+      "alreadyApplied": true
+    },
+    {
+      "path": "tools/cf6-elder-assets/build.py",
+      "beforeSha256": "81a3c0115335064649a5d409b45f1eac8a446ce13598a52a0ee694bed28adb07",
+      "afterSha256": "bd0684faaf4087016da552c1629dd363bbfd11ea40d342a57905ecf7b0e74313",
+      "alreadyApplied": false
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "beforeSha256": "e46804443599909906e0c2625f878ab7af129e5c284dd4f7e4c85c1f4add70a4",
+      "afterSha256": "582eba7bc97513fbe8513e5fc6ec2a99e04c4a29e683f110a985900bc62a1734",
+      "alreadyApplied": false
+    },
+    {
+      "path": "tools/cf6-elder-assets/native-manifest.json",
+      "beforeSha256": "5cddb3703aec29ac5022e7681a5c7be5dbf933bb6d51f62f2483d9daae1eb533",
+      "afterSha256": "a5c256958a0c36899830472324c04b68e60f29a536b6d439d1b7e62a3ad93706",
+      "alreadyApplied": false
+    },
+    {
+      "path": "tools/cf6-elder-assets/README.md",
+      "beforeSha256": "c12674325858dae5b4d552c7bb682911af19a117b02855c71aa08126a06ba13d",
+      "afterSha256": "6c8389598555f3a86592eea2a0fef272ca902614d9ed2ddea8410f2634265832",
+      "alreadyApplied": false
+    }
+  ],
+  "soldierChanges": "review_only_no_runtime_change",
+  "currentPlayerSessionRestarted": false,
+  "committed": false,
+  "pushed": false,
+  "runtimePromoted": false,
+  "humanPveAccepted": false
+}

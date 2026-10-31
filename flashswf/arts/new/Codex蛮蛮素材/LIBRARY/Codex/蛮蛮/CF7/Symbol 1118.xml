@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/蛮蛮/CF7/Symbol 1118" itemID="6af00000-58899de6">
   <timeline>
-    <DOMTimeline name="Symbol 1118">
+    <DOMTimeline name="Symbol 1118" layerDepthEnabled="true">
       <layers>
         <DOMLayer name="原生SFX调用" color="#4FFF4F">
           <frames>
@@ -36,7 +36,7 @@
             <DOMFrame index="1" duration="21" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="22" name="a1" labelType="name" keyMode="9728">
+            <DOMFrame index="22" name="a1" labelType="name" keyMode="9728" duration="18">
               <elements/>
             </DOMFrame>
           </frames>
@@ -56,7 +56,7 @@
             <DOMFrame index="15" duration="21" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="36" keyMode="9728">
+            <DOMFrame index="36" keyMode="9728" duration="4">
               <Actionscript>
                 <script><![CDATA[_parent.动画完毕();
 ]]></script>
@@ -121,7 +121,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/蛮蛮/分件/637" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.116165161132813" b="0.048919677734375" c="-0.048919677734375" d="0.116165161132813" tx="-64.8" ty="-87"/>
+                    <Matrix a="0.116165161132812" b="0.048919677734375" c="-0.048919677734375" d="0.116165161132812" tx="-64.8" ty="-87"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -137,7 +137,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/蛮蛮/分件/637" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.0424652099609375" b="0.119400024414063" c="-0.119400024414063" d="0.0424652099609375" tx="-55.7" ty="-60.35"/>
+                    <Matrix a="0.0424652099609375" b="0.119400024414062" c="-0.119400024414062" d="0.0424652099609375" tx="-55.7" ty="-60.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -149,7 +149,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/蛮蛮/分件/643" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.02410888671875" b="0.118362426757813" c="-0.118362426757813" d="0.02410888671875" tx="-52" ty="-47.7"/>
+                    <Matrix a="0.02410888671875" b="0.118362426757812" c="-0.118362426757812" d="0.02410888671875" tx="-52" ty="-47.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -221,7 +221,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/蛮蛮/分件/640" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.126419067382813" b="0.0016632080078125" c="-0.0016632080078125" d="0.126419067382813" tx="-31.65" ty="-105.5"/>
+                    <Matrix a="0.126419067382812" b="0.0016632080078125" c="-0.0016632080078125" d="0.126419067382812" tx="-31.65" ty="-105.5"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -243,18 +243,6 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 10" color="#C199F0">
-          <frames>
-            <DOMFrame index="0" duration="22" keyMode="9728">
-              <elements>
-                </elements>
-            </DOMFrame>
-            <DOMFrame index="22" duration="18" keyMode="9728">
-              <elements>
-                </elements>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
         <DOMLayer name="Layer 11" color="#1889E1">
           <frames>
             <DOMFrame index="0" duration="22" keyMode="9728">
@@ -273,7 +261,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/蛮蛮/分件/639" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.124038696289063" b="0.02581787109375" c="-0.02581787109375" d="0.124038696289063" tx="-31" ty="-36.75"/>
+                    <Matrix a="0.124038696289062" b="0.02581787109375" c="-0.02581787109375" d="0.124038696289062" tx="-31" ty="-36.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -289,7 +277,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/蛮蛮/分件/638" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.121124267578125" b="-0.0286865234375" c="0.03277587890625" d="0.138427734375" tx="-15.7" ty="-46.3"/>
+                    <Matrix a="0.121124267578125" b="-0.0286865234375" c="0.03277587890625" d="0.138442993164062" tx="-15.7" ty="-46.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -301,7 +289,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/蛮蛮/分件/638" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.112319946289063" b="0.0531005859375" c="-0.0606689453125" d="0.12835693359375" tx="-31.75" ty="-44.8"/>
+                    <Matrix a="0.112319946289062" b="0.0531005859375" c="-0.0606689453125" d="0.12835693359375" tx="-31.75" ty="-44.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -357,7 +345,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/蛮蛮/分件/636" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.110000610351563" b="-0.0618743896484375" c="0.0618743896484375" d="0.110000610351563" tx="-0.05" ty="-37.2"/>
+                    <Matrix a="0.110000610351562" b="-0.0618743896484375" c="0.0618743896484375" d="0.110000610351562" tx="-0.05" ty="-37.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -469,7 +457,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/蛮蛮/分件/634" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.126663208007813" b="0.00054931640625" c="-0.00054931640625" d="0.126663208007813" tx="-44" ty="12"/>
+                    <Matrix a="0.126663208007812" b="0.00054931640625" c="-0.00054931640625" d="0.126663208007812" tx="-44" ty="12"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -513,7 +501,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/蛮蛮/分件/632" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.126419067382813" b="-0.00396728515625" c="0.00396728515625" d="0.126419067382813" tx="-25.95" ty="-36.3"/>
+                    <Matrix a="0.126419067382812" b="-0.00396728515625" c="0.00396728515625" d="0.126419067382812" tx="-25.95" ty="-36.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -525,7 +513,7 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/蛮蛮/分件/632" symbolType="graphic" loop="loop">
                   <matrix>
-                    <Matrix a="0.126480102539063" b="0.0021820068359375" c="-0.0021820068359375" d="0.126480102539063" tx="-43.3" ty="-39.8"/>
+                    <Matrix a="0.126480102539062" b="0.0021820068359375" c="-0.0021820068359375" d="0.126480102539062" tx="-43.3" ty="-39.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

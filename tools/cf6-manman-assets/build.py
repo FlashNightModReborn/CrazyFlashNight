@@ -14,6 +14,7 @@ from lxml import etree as E
 
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
+R8_BAKED = HERE / 'r8-baked'
 ARCHIVE = ROOT / 'flashswf/arts/new/Codex素材源稿/CF6蛮蛮-R2'
 OWNER = ROOT / 'flashswf/arts/new/Codex蛮蛮素材'
 ANCHOR = 'Codex蛮蛮素材'
@@ -55,7 +56,8 @@ def build_inputs():
         ROOT / 'tools/cf6-zombie-assets/build.py', ROOT / 'tools/gamma-echo-assets/build.py',
         ROOT / 'tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py',
         ROOT / 'tools/asset-metrology/xfl_geometry.py',
-        ROOT / 'flashswf/arts/new/Codex黑仔素材/PublishSettings.xml']
+        ROOT / 'flashswf/arts/new/Codex黑仔素材/PublishSettings.xml',
+        *sorted(R8_BAKED.glob('*.xml'))]
     return [{'path': p.relative_to(ROOT).as_posix(), 'sha256': sha(p)} for p in paths]
 
 
@@ -148,6 +150,11 @@ def build_symbols():
             if root.tag == N + 'DOMSymbolItem':
                 docs[root.get('name')] = (name, root)
     donor_root = next(name for name, (_, root) in docs.items() if root.get('linkageIdentifier') == '敌人-不死兽人')
+    for baked_path in sorted(R8_BAKED.glob('*.xml')):
+        baked_root = E.parse(str(baked_path), PARSER).getroot()
+        bname = baked_root.get('name')
+        prev_file = docs[bname][0] if bname in docs else None
+        docs[bname] = (prev_file, baked_root)
     mapped = {'Symbol ' + str(old): PREFIX + '分件/' + str(cid) for old, cid in PART_MAP.items()}
     generated = {}
     for cid in PART_MAP.values():
@@ -182,7 +189,8 @@ def build_symbols():
         filename, original = docs[old_name]
         root = copy.deepcopy(original)
         copied[old_name] = root
-        source_rows.append({'member': filename, 'sha256': hashlib.sha256(members[filename]).hexdigest()})
+        if filename is not None:
+            source_rows.append({'member': filename, 'sha256': hashlib.sha256(members[filename]).hexdigest()})
         if old_name == 'Symbol 1116':
             # Only a0 is reachable on the undead-orc reference; do not enable its stale firearm branches.
             clipped_timeline(root, 33)
@@ -216,7 +224,7 @@ def build_symbols():
                     endpoint = '击倒率,击中后子弹的效果);'
                     if inner.count(endpoint) != 1:
                         raise ValueError('Unexpected donor melee emission signature')
-                    inner = inner.replace(endpoint, '击倒率,击中后子弹的效果,undefined,undefined,undefined,undefined,undefined,_parent._parent.manmanCrumblePercent);')
+                    inner = inner.replace(endpoint, '击倒率,击中后子弹的效果,undefined,undefined,undefined,undefined,undefined,_parent._parent.manmanCrumblePercent,undefined,this.area);')
                     script.text = E.CDATA('onClipEvent(load){\nif(_parent._parent.manmanCanHit(_parent.manmanToken)) {\n_parent._parent.manmanHitCount++;\n' + inner + '\n}\n}\n')
                 elif 'function 攻击时移动' in text:
                     script.text = E.CDATA('function 攻击时移动(慢速度, 快速度) {\n'
@@ -228,7 +236,7 @@ def build_symbols():
             for frame in root.findall('.//x:DOMFrame', NS):
                 for script in frame.findall('x:Actionscript/x:script', NS):
                     idx = int(frame.get('index'))
-                    script.text = E.CDATA('_parent.死亡检测();\n' if idx in (13, 17) else '_parent.动画完毕();\n')
+                    script.text = E.CDATA('_parent.死亡检测();\n' if idx in (8, 12) else '_parent.动画完毕();\n')
         if old_name == donor_root:
             root.set('linkageExportForAS', 'true')
             root.set('linkageExportInFirstFrame', 'true')
@@ -242,6 +250,11 @@ def build_symbols():
                     inst.set('name', 'manmanSensor')
                     event_script(inst, 'onClipEvent(load){ stop(); this._visible=false; }\n')
                 if inst.get('name') == 'man' or ref == death_name:
+                    if ref == mapped['Symbol 1117']:
+                        mx = inst.find('x:matrix/x:Matrix', NS)
+                        if mx is not None:
+                            mx.set('tx', '-16.55')
+                            mx.set('ty', '-57.5')
                     if ref in [mapped[n] for n in ATTACKS]:
                         key = next(k for k in ATTACKS if mapped[k] == ref)
                         event_script(inst, 'onClipEvent(load){ _parent.manmanBeginAttack(this,"' + ATTACKS[key] + '"); }\n')
@@ -250,6 +263,10 @@ def build_symbols():
                     elif ref == mapped['Symbol 1119']:
                         event_script(inst, 'onClipEvent(load){ _parent.状态改变("倒地"); }\n')
                     elif ref == mapped['Symbol 1120']:
+                        mx = inst.find('x:matrix/x:Matrix', NS)
+                        if mx is not None:
+                            mx.set('tx', '385.6')
+                            mx.set('ty', '171.3')
                         event_script(inst, 'onClipEvent(load){ _parent._y=_parent.Z轴坐标; _parent.倒地=true; _parent.格斗架势=true; }\n'
                             'onClipEvent(unload){ _parent.倒地=false; }\n'
                             'onClipEvent(enterFrame){ if(_parent.hp<=0) _parent.状态改变("血腥死"); }\n')

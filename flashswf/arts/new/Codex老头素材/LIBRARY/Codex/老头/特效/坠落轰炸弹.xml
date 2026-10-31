@@ -1,0 +1,912 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/老头/特效/坠落轰炸弹" itemID="6af00000-17852b1f">
+  <timeline>
+    <DOMTimeline name="坠落轰炸弹">
+      <layers>
+        <DOMLayer name="控制" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728" duration="34">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="地面爆破冲击" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="25">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/强震地" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="2.2" d="2.2" tx="-12" ty="-14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.25" d="1.25" ty="-10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/强震地" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="2.3" d="2.3" tx="-12" ty="-14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="1.31" d="1.31" ty="-10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/强震地" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="2.4" d="2.4" tx="-12" ty="-14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="4">
+                  <matrix>
+                    <Matrix a="1.37" d="1.37" ty="-10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/强震地" symbolType="graphic" loop="loop" firstFrame="3">
+                  <matrix>
+                    <Matrix a="2.5" d="2.5" tx="-12" ty="-14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="6">
+                  <matrix>
+                    <Matrix a="1.43" d="1.43" ty="-10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/强震地" symbolType="graphic" loop="loop" firstFrame="4">
+                  <matrix>
+                    <Matrix a="2.6" d="2.6" tx="-12" ty="-14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="8">
+                  <matrix>
+                    <Matrix a="1.49" d="1.49" ty="-10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/强震地" symbolType="graphic" loop="loop" firstFrame="5">
+                  <matrix>
+                    <Matrix a="2.7" d="2.7" tx="-12" ty="-14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="10">
+                  <matrix>
+                    <Matrix a="1.55" d="1.55" ty="-10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/强震地" symbolType="graphic" loop="loop" firstFrame="6">
+                  <matrix>
+                    <Matrix a="2.8" d="2.8" tx="-12" ty="-14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="12">
+                  <matrix>
+                    <Matrix a="1.61" d="1.61" ty="-10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="1"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/强震地" symbolType="graphic" loop="loop" firstFrame="7">
+                  <matrix>
+                    <Matrix a="2.9" d="2.9" tx="-12" ty="-14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.72"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="14">
+                  <matrix>
+                    <Matrix a="1.67" d="1.67" ty="-10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.72"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/强震地" symbolType="graphic" loop="loop" firstFrame="8">
+                  <matrix>
+                    <Matrix a="3" d="3" tx="-12" ty="-14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.44"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="16">
+                  <matrix>
+                    <Matrix a="1.73" d="1.73" ty="-10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.44"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="34" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/强震地" symbolType="graphic" loop="loop" firstFrame="9">
+                  <matrix>
+                    <Matrix a="3.1" d="3.1" tx="-12" ty="-14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.16"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="18">
+                  <matrix>
+                    <Matrix a="1.79" d="1.79" ty="-10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.16"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="天降光束弹" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="13">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/巨型穿刺能量子弹" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0" b="2.5" c="-1.9" d="0" ty="-496.666667"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.75" d="0.75" ty="-456.666667"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/巨型穿刺能量子弹" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0" b="2.5" c="-1.9" d="0" ty="-453.333333"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.75" d="0.75" ty="-413.333333"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/巨型穿刺能量子弹" symbolType="graphic" loop="loop" firstFrame="3">
+                  <matrix>
+                    <Matrix a="0" b="2.5" c="-1.9" d="0" ty="-410"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="4">
+                  <matrix>
+                    <Matrix a="0.75" d="0.75" ty="-370"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/巨型穿刺能量子弹" symbolType="graphic" loop="loop" firstFrame="4">
+                  <matrix>
+                    <Matrix a="0" b="2.5" c="-1.9" d="0" ty="-366.666667"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="6">
+                  <matrix>
+                    <Matrix a="0.75" d="0.75" ty="-326.666667"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/巨型穿刺能量子弹" symbolType="graphic" loop="loop" firstFrame="5">
+                  <matrix>
+                    <Matrix a="0" b="2.5" c="-1.9" d="0" ty="-323.333333"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="8">
+                  <matrix>
+                    <Matrix a="0.75" d="0.75" ty="-283.333333"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/巨型穿刺能量子弹" symbolType="graphic" loop="loop" firstFrame="6">
+                  <matrix>
+                    <Matrix a="0" b="2.5" c="-1.9" d="0" ty="-280"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="10">
+                  <matrix>
+                    <Matrix a="0.75" d="0.75" ty="-240"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/巨型穿刺能量子弹" symbolType="graphic" loop="loop" firstFrame="7">
+                  <matrix>
+                    <Matrix a="0" b="2.5" c="-1.9" d="0" ty="-236.666667"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="12">
+                  <matrix>
+                    <Matrix a="0.75" d="0.75" ty="-196.666667"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/巨型穿刺能量子弹" symbolType="graphic" loop="loop" firstFrame="8">
+                  <matrix>
+                    <Matrix a="0" b="2.5" c="-1.9" d="0" ty="-193.333333"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="14">
+                  <matrix>
+                    <Matrix a="0.75" d="0.75" ty="-153.333333"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/巨型穿刺能量子弹" symbolType="graphic" loop="loop" firstFrame="9">
+                  <matrix>
+                    <Matrix a="0" b="2.5" c="-1.9" d="0" ty="-150"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="16">
+                  <matrix>
+                    <Matrix a="0.75" d="0.75" ty="-110"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/巨型穿刺能量子弹" symbolType="graphic" loop="loop" firstFrame="10">
+                  <matrix>
+                    <Matrix a="0" b="2.5" c="-1.9" d="0" ty="-106.666667"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="18">
+                  <matrix>
+                    <Matrix a="0.75" d="0.75" ty="-66.666667"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/巨型穿刺能量子弹" symbolType="graphic" loop="loop" firstFrame="11">
+                  <matrix>
+                    <Matrix a="0" b="2.5" c="-1.9" d="0" ty="-63.333333"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="20">
+                  <matrix>
+                    <Matrix a="0.75" d="0.75" ty="-23.333333"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/巨型穿刺能量子弹" symbolType="graphic" loop="loop" firstFrame="12">
+                  <matrix>
+                    <Matrix a="0" b="2.5" c="-1.9" d="0" ty="-20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/蓝芒强击" symbolType="graphic" loop="loop" firstFrame="22">
+                  <matrix>
+                    <Matrix a="0.75" d="0.75" ty="20"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728" duration="10">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="地面预警靶标" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="3">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="4">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="5">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="6">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="7">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="8">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="9">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="10">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="11">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="12">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="13">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="14">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="15">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="16">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="17">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="18">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="19">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="20">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="21">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="22">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="22">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="22">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.72"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="22">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.57"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="22">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.42"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="22">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.27"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/特效/雾人/目标" symbolType="graphic" loop="loop" firstFrame="22">
+                  <matrix>
+                    <Matrix a="1.15" d="0.44" tx="-128" ty="-49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.12"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728" duration="5">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

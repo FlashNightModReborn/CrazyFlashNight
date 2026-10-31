@@ -3,6 +3,7 @@ from pathlib import Path
 import argparse
 import copy
 import hashlib
+import math
 import importlib.util
 import json
 import re
@@ -21,8 +22,9 @@ NS = {'x':'http://ns.adobe.com/xfl/2008/'}
 N = '{'+NS['x']+'}'
 PARSER = E.XMLParser(remove_blank_text=False,strip_cdata=False,resolve_entities=False)
 SEQUENCES = {595:'站立',596:'行走',597:'被击',598:'被投',875:'击倒原稿',611:'死亡',874:'散弹射击'}
-OFFSETS = {595:(1.15,-51.4),596:(19.85,-60.85),597:(8.95,-59.95),598:(16.15,-61),
+OFFSETS = {595:(1.15,-51.4),596:(5.1,-60.85),597:(8.95,-59.95),598:(16.15,-61),
            875:(5.5,-59),611:(5,-61.95),874:(4.75,-62.05)}
+MOTION_SAMPLES = HERE/'native-motion-samples.json'
 GUN_SOURCE = ROOT/'flashswf/arts/things切割/LIBRARY/长枪/SPAS12/枪-长枪-SPAS12.xml'
 
 
@@ -73,7 +75,7 @@ def ground_shift(timeline):
 
 
 def build_inputs():
-    paths=[HERE/'build.py',HERE/'vector.py',HERE/'clipped_vector.py',HERE/'clip-vectors.ps1',HERE/'transform.py',HERE/'GuardAI.as',HERE/'GuardTransform.as',GUN_SOURCE,
+    paths=[HERE/'build.py',HERE/'vector.py',HERE/'clipped_vector.py',HERE/'clip-vectors.ps1',HERE/'transform.py',HERE/'GuardAI.as',HERE/'GuardTransform.as',MOTION_SAMPLES,GUN_SOURCE,
         ROOT/'tools/cf6-wings-assets/vector.py',ROOT/'tools/cf6-manman-assets/build.py',
         ROOT/'tools/cf6-zombie-assets/build.py',ROOT/'tools/gamma-echo-assets/build.py',
         ROOT/'tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py',
@@ -124,6 +126,39 @@ def make_body(name,timeline,parts,scripts=None):
         *depth_layers(timeline,parts)],symbol_type='movie clip')
 
 
+def followup_shot_motion(motion):
+    """Eight authored-pose transition frames, then original shot/recoil 41..87.
+
+    The melee and shot use the same root registration. Match the known limb
+    depths explicitly: the artist changed leg/hand stacking between actions.
+    Interpolate rotation/scale instead of flattening rotations through zero.
+    """
+    start, end = motion['melee'][-1], motion['874'][39]
+    from_depth = {'17':'16','16':'15','14':'14','13':'13','12':'12','11':'11',
+                  '10':'10','9':'7','8':'6','7':'9','6':'8','5':'5','4':'4','3':'3','2':'2','1':'1'}
+    def decompose(m):
+        a,b,c,d,tx,ty=m
+        sx=math.hypot(a,b)
+        if sx < 0.000001: raise ValueError('Degenerate guard followup pose')
+        return math.atan2(b,a),sx,(a*d-b*c)/sx,(a*c+b*d)/sx,tx,ty
+    frames=[]
+    for index in range(8):
+        t=index/7.0
+        pose={}
+        for depth, target in end.items():
+            source=start[from_depth[depth]]
+            if source['id'] != target['id']: raise ValueError('Guard followup limb mapping changed')
+            left,right=decompose(source['matrix']),decompose(target['matrix'])
+            angle=left[0]+((right[0]-left[0]+math.pi)%(2*math.pi)-math.pi)*t
+            sx,sy,shear,tx,ty=[left[n]+(right[n]-left[n])*t for n in range(1,6)]
+            co,si=math.cos(angle),math.sin(angle)
+            row=copy.deepcopy(target)
+            row['matrix']=[co*sx,si*sx,co*shear-si*sy,si*shear+co*sy,tx,ty]
+            pose[depth]=row
+        frames.append(pose)
+    return frames+copy.deepcopy(motion['874'][40:])
+
+
 def build_symbols():
     common.verify_input()
     timeline=json.loads((ARCHIVE/'reference/timelines.json').read_text('utf8'))
@@ -159,24 +194,38 @@ def build_symbols():
         native.instance(gun,matrix=(0.6,0,0,0.6,0,0),symbol_type='movie clip',name='gunArt')])])],symbol_type='movie clip')
     parts[593]=weapon
     phase_manifest=transform.add_parts(sys.modules[__name__],result,parts,stats)
+    motion=json.loads(MOTION_SAMPLES.read_text('utf8'))
     actions={sid:PREFIX+'动作/'+name for sid,name in SEQUENCES.items()}
-    result[actions[595]]=make_body(actions[595],timeline['595'],parts,
+    run_action,melee_action=PREFIX+'动作/跑步',PREFIX+'动作/平a'
+    result[actions[595]]=make_body(actions[595],motion['595'],parts,
         {4:{'script':'if(_parent.状态=="躲闪" || _parent.状态=="拾取")_parent.动画完毕();'}})
-    result[actions[596]]=make_body(actions[596],timeline['596'],parts)
-    result[actions[874]]=make_body(actions[874],timeline['874'],parts,{
-        0:{'script':'_parent.guardBeginAttack(this);stop();'},
+    result[actions[596]]=make_body(actions[596],motion['596'],parts)
+    result[run_action]=make_body(run_action,motion['run'],parts)
+    shot_motion=copy.deepcopy(motion['874'])+followup_shot_motion(motion)
+    result[actions[874]]=make_body(actions[874],shot_motion,parts,{
+        0:{'script':'if(_parent.guardPendingFollowup!=null){gotoAndStop(88);}else{_parent.guardBeginAttack(this);stop();}'},
         40:{'script':'_parent.guardShoot(this);stop();'},
-        73:{'script':'_parent.guardFinishAttack(this);stop();'}})
-    result[actions[597]]=make_body(actions[597],timeline['597'],parts,{
+        73:{'script':'_parent.guardFinishAttack(this);stop();'},
+        87:{'name':'枪托接射击','label_type':'name','script':'_parent.guardBeginAttack(this);stop();'},
+        95:{'script':'_parent.guardShoot(this);stop();'},
+        141:{'script':'_parent.guardFinishAttack(this);stop();'}})
+    result[melee_action]=make_body(melee_action,motion['melee'],parts,{
+        0:{'script':'_parent.guardBeginAttack(this);stop();'},
+        21:{'script':'_parent.guardMeleeHit(this);stop();'},
+        39:{'script':'_parent.guardFinishAttack(this);stop();'}})
+    result[melee_action].find('x:timeline/x:DOMTimeline/x:layers',NS).insert(1,
+        native.make_sparse_layer('攻击判定',len(motion['melee']),{
+            21:{'duration':4,'elements':[native.instance(H['Symbol 19'],matrix=(3.6,0,0,4.8,0,-72),symbol_type='movie clip',name='guardMeleeArea')]}}))
+    result[actions[597]]=make_body(actions[597],motion['597'],parts,{
         0:{'name':'a0','label_type':'name'},12:{'name':'a1','label_type':'name'},
         7:{'script':'_parent.动画完毕();'},18:{'script':'_parent.动画完毕();'}})
-    result[actions[598]]=make_body(actions[598],timeline['598'],parts,{12:{'script':'stop();'}})
+    result[actions[598]]=make_body(actions[598],motion['598'],parts,{12:{'script':'stop();'}})
     airborne,down=PREFIX+'动作/击飞',PREFIX+'动作/倒地恢复'
-    result[airborne]=make_body(airborne,timeline['875'][:40],parts,{
-        0:{'name':'空手','label_type':'name'},39:{'script':'stop();'}})
-    result[down]=make_body(down,timeline['875'][40:],parts,{
-        8:{'script':'_parent.死亡检测();'},75:{'script':'_parent.动画完毕();'}})
-    result[actions[611]]=make_body(actions[611],timeline['611'],parts,{
+    result[airborne]=make_body(airborne,motion['airborne'],parts,{
+        0:{'name':'空手','label_type':'name','script':'stop();'}})
+    result[down]=make_body(down,motion['down'],parts,{
+        10:{'script':'_parent.死亡检测();'},79:{'script':'_parent.动画完毕();'}})
+    result[actions[611]]=make_body(actions[611],motion['611'],parts,{
         0:{'name':'a0','label_type':'name'},31:{'name':'a1','label_type':'name'},77:{'name':'a2','label_type':'name'},
         30:{'script':'_parent.死亡检测();stop();'},76:{'script':'_parent.死亡检测();stop();'},
         111:{'script':'_parent.死亡检测();stop();'}})
@@ -232,13 +281,18 @@ onEnterFrame=updateGuardShadow;updateGuardShadow();stop();''')]))
 _root.敌人函数.配置音效("人类",this);
 初始化敌人模板=_root.初始化敌人模板;初始化敌人模板();
 '''
-    bodies={0:(9,body(595)),9:(10,body(596)),19:(10,body(596)),29:(8,body(598)),
-        37:(4,body(874)),41:(10,body(874)),51:(10,body(595)),61:(10,body(595)),
+    bodies={0:(9,body(595)),9:(10,body(596)),
+        19:(10,native.instance(run_action,matrix=(1,0,0,1,5.65,-60.85+shift),symbol_type='movie clip',name='man')),
+        29:(8,body(598)),
+        37:(4,native.instance(melee_action,matrix=(1,0,0,1,4.75,-62.05+shift),symbol_type='movie clip',name='man')),
+        41:(10,body(874)),51:(10,body(595)),61:(10,body(595)),
         71:(8,body(597,'onClipEvent(load){_parent.guardCancelAttack();gotoAndPlay("a"+random(2));}')),
-        79:(9,body(875,'onClipEvent(load){_parent.guardCancelAttack();_parent.击飞浮空();}',airborne)),
-        88:(7,body(875,'onClipEvent(load){_parent.guardCancelAttack();_parent.击飞倒地();}',down)),
+        79:(9,native.instance(airborne,matrix=(1,0,0,1,5.5,-32.4+shift),symbol_type='movie clip',name='man',
+            script='onClipEvent(load){_parent.guardCancelAttack();_parent.击飞浮空();}')),
+        88:(7,native.instance(down,matrix=(1,0,0,1,5.95,-57.7+shift),symbol_type='movie clip',name='man',
+            script='onClipEvent(load){_parent.guardCancelAttack();_parent.击飞倒地();}')),
         95:(9,body(598,'onClipEvent(load){_parent.guardCancelAttack();}')),
-        104:(16,body(611,'onClipEvent(load){_parent.guardCancelAttack();gotoAndPlay("a"+random(3));}')),
+        104:(16,body(611,'onClipEvent(load){_parent.guardCancelAttack();gotoAndPlay("a"+random(2));}')),
         130:(80,native.instance(phase_action,matrix=(1,0,0,1,3,-65.5+shift),symbol_type='movie clip',name='man'))}
     root_name=PREFIX+LINKAGE
     result[root_name]=native.symbol(root_name,[
@@ -306,8 +360,8 @@ def import_assets():
         'sourceOffsets':{str(k):v for k,v in OFFSETS.items()},'sourceRoot':888,'transformationIncluded':True,'transformation':phase_manifest,
         'variants':[{'linkage':LINKAGE,'unitId':468,'defaultTransform':False},
             {'linkage':TRANSFORM_LINKAGE,'unitId':469,'defaultTransform':True}],
-        'sourceBodyFrames':525,'attackFrames':{'fire':41,'finish':74,'authored':87},'pellets':int(re.search(r'\bpellets\s*:\s*(\d+)',(HERE/'GuardAI.as').read_text('utf-8-sig'))[1]),
-        'deathBranches':[[1,31],[32,77],[78,112]],'airborneSourceFrames':[1,40],'landedSourceFrames':[41,116],
+        'sourceBodyFrames':518,'attackFrames':{'fire':41,'finish':74,'authored':87,'meleeHit':22,'meleeFinish':40,'followupStart':88,'followupFire':96,'followupFinish':142},'pellets':int(re.search(r'\bpellets\s*:\s*(\d+)',(HERE/'GuardAI.as').read_text('utf-8-sig'))[1]),
+        'deathBranches':[[1,31],[32,77],[78,112]],'authoredDeathBranches':[[1,31],[32,77]],'airborneSourceFrames':[1,1],'landedSourceFrames':[1,80],
         'gun':{'source':GUN_SOURCE.relative_to(ROOT).as_posix(),'scale':0.6,'muzzle':[302.8,-34.05],
             'archivedBitmapReplaced':592,'equipmentConfigurable':False},'outputs':outputs,
         'projectFiles':[{'path':p,'sha256':sha(OWNER/p),'bytes':(OWNER/p).stat().st_size} for p in native.PROJECT_FILES]}

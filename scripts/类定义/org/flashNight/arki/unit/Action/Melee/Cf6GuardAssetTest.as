@@ -9,18 +9,18 @@ class org.flashNight.arki.unit.Action.Melee.Cf6GuardAssetTest {
     private static var passed:Number,failed:Number,ticks:Number,fxCount:Number,pauseFrame:Number,pauseClock:Number;
     private static var ready:Boolean,finished:Boolean;
     private static var cases:Array,probes:Array,phases:Array,images:Object;
-    private static var configs:Array;
+    private static var configs:Array,followups:Array;
     private static var link:String="敌人-CF6光头保安";
 
     private static function check(ok:Boolean,label:String):Void {
         if(ok) passed++; else {failed++;trace("[TEST_FAIL] Cf6GuardAssetTest: "+label);}
     }
     private static function record():Object {
-        return {shots:0,front:0,back:0,moves:0,done:0,deathChecks:0,removed:false,
+        return {shots:0,meleeHits:0,front:0,back:0,moves:0,done:0,deathChecks:0,removed:false,
             physics:0,powerOk:true,areaOk:true,contractOk:true};
     }
     public static function runAllTests():Void {
-        passed=failed=ticks=fxCount=0;ready=finished=false;cases=[];probes=[];phases=[];configs=[];images={};
+        passed=failed=ticks=fxCount=0;ready=finished=false;cases=[];probes=[];phases=[];configs=[];followups=[];images={};
         library=_root.createEmptyMovieClip("__guardLibrary",_root.getNextHighestDepth());
         driver=_root.createEmptyMovieClip("__guardTestDriver",_root.getNextHighestDepth());
         library._visible=false;_root.gameworld=library;_root.暂停=false;
@@ -82,7 +82,43 @@ class org.flashNight.arki.unit.Action.Melee.Cf6GuardAssetTest {
             var u:MovieClip=library.attachMovie(link,"guardCase"+cases.length,library.getNextHighestDepth(),{fixtureRecord:rec,光头保安变身:false});
             check(u!=null,"attach "+moves[m]+" "+j);cases.push({actor:u,move:moves[m],side:j,record:rec});
         }
-        createConfigs();createPhases();ready=true;ticks=0;
+        createConfigs();createPhases();createFollowups();ready=true;ticks=0;
+    }
+    private static function createFollowups():Void {
+        var modes:Array=["hit","miss","stale","dead","interrupt"];
+        for(var side:Number=0;side<2;side++)for(var n:Number=0;n<modes.length;n++){
+            var rec:Object=record();rec.followupMode=modes[n];rec.followupSide=side;
+            var u:MovieClip=library.attachMovie(link,"guardFollowup"+followups.length,library.getNextHighestDepth(),{fixtureRecord:rec,光头保安变身:false});
+            var target:MovieClip=library.createEmptyMovieClip("guardFollowTarget"+followups.length,library.getNextHighestDepth());
+            target.hp=1000;target.createEmptyMovieClip("area",1);
+            rec.followupTarget=target;followups.push({actor:u,record:rec,target:target,side:side});
+        }
+    }
+    private static function followupTick():Void {
+        for(var n:Number=0;n<followups.length;n++){
+            var c:Object=followups[n],u:MovieClip=c.actor,rec:Object=c.record;
+            if(ticks==3){
+                u.方向改变(c.side==0?"右":"左");c.target._x=u._x+(c.side==0?60:-60);
+                c.target._y=c.target.Z轴坐标=u.Z轴坐标;
+                u.攻击目标=c.target._name;u.guardTargetName=c.target._name;u.状态改变("近战");
+            }
+            if(rec.interruptQueued===true){
+                rec.interruptQueued=false;u.状态改变("被击");u.攻击目标="无";
+                check(u.guardCombo==null && u.guardPendingFollowup==null,"interruption revokes earned followup "+n);
+            }
+            if(ticks==150){
+                var armed:Boolean=rec.followupMode=="hit";
+                check(rec.meleeHits==1 && rec.shots==(armed?1:0),"hit-confirmed followup emissions "+rec.followupMode+" side="+c.side);
+                check(u.guardFollowupCount==(armed?1:0),"only eligible hit enters fast shot "+n);
+                if(armed){
+                    check(rec.followupShotClock-rec.followupHitClock>0 && rec.followupShotClock-rec.followupHitClock<=32,"melee hit to shotgun is bounded at 32 active frames "+n);
+                    check(rec.powerOk && rec.contractOk && rec.areaOk,"followup preserves real shotgun payload and muzzle "+n);
+                    check(u.guardAttackOwner==null && u.刚体===false && u.免疫击退===false,"followup releases stance after complete recoil "+n);
+                    trace("[CF6_GUARD_FOLLOWUP] side="+c.side+" gap="+(rec.followupShotClock-rec.followupHitClock)+" shots="+rec.shots);
+                }
+                c.target.removeMovieClip();
+            }
+        }
     }
     private static function createConfigs():Void {
         var values:Array=[undefined,true,false,1,0,"true","false","1","0"];
@@ -190,7 +226,33 @@ class org.flashNight.arki.unit.Action.Melee.Cf6GuardAssetTest {
     }
     private static function capture(data:Object):Void {
         var u:MovieClip=library[data.发射者],rec:Object=u.fixtureRecord;if(rec==undefined)return;
-        rec.shots++;check(u.man._currentframe==41,"emission on authored frame 41");
+        if(data.子弹种类=="近战子弹") {
+            rec.meleeHits++;check(u.man._currentframe==22,"melee emission on authored frame 22");
+            var savedMelee:Number=rec.meleeHits;u.guardMeleeHit(u.man);check(rec.meleeHits==savedMelee,"duplicate melee callback rejected");
+            rec.powerOk=rec.powerOk && data.子弹威力==150;
+            rec.contractOk=rec.contractOk && data.霰弹值==1 && data.Z轴攻击范围==28 && data.shootZ==u.Z轴坐标
+                && data.击倒率==2 && data.水平击退速度==28 && data.区域定位area!=null && data.区域定位area._parent===u.man;
+            var mdx:Number=(data.shootX-u._x)*(u.方向=="右"?1:-1);
+            rec.areaOk=rec.areaOk && mdx>30 && mdx<70;
+            if(mdx>0)rec.front++;else rec.back++;
+            if(rec.followupMode!=undefined){
+                rec.followupHitClock=u.guardClock;
+                if(rec.followupMode!="miss"){
+                    data.hitTarget=rec.followupTarget;data.击中时触发函数();
+                    var combo:Object=u.guardCombo;data.击中时触发函数();
+                    check(combo!=null && u.guardCombo===combo,"actual melee payload arms followup once");
+                    rec.followupTarget._x=u._x+(rec.followupSide==0?180:-180);
+                    if(rec.followupMode=="stale")rec.followupTarget.__guardActionIdentity={};
+                    if(rec.followupMode=="dead")rec.followupTarget.hp=0;
+                    if(rec.followupMode=="interrupt")rec.interruptQueued=true;
+                }
+            }
+            return;
+        }
+        rec.shots++;
+        var followup:Boolean=u.guardAttackOwner.mode=="followup";
+        check(u.man._currentframe==(followup?96:41),"emission on normal or confirmed followup fire frame");
+        if(followup)rec.followupShotClock=u.guardClock;
         var saved:Number=rec.shots;u.guardShoot(u.man);check(rec.shots==saved,"duplicate fire callback rejected");
         rec.powerOk=rec.powerOk && data.子弹威力==100;
         rec.contractOk=rec.contractOk && data.子弹种类=="穿刺子弹" && data.子弹速度==25
@@ -256,10 +318,10 @@ class org.flashNight.arki.unit.Action.Melee.Cf6GuardAssetTest {
             u.guardTick();check(u.requestedState==(flag=="dead"?"血腥死":"none"),"AI guard "+flag);
             _root.暂停=false;_root.控制目标="__no_player";u.hp=target.hp=1000;u.硬直中=u.倒地=u.浮空=false;
         }
-        var distances:Array=[381,380,30];
+        var distances:Array=[381,380,86,85,30];
         for(var d:Number=0;d<distances.length;d++) {
             target._x=u._x+distances[d];u.状态="空手站立";u.requestedState="none";u.guardClock=99;
-            u.guardTick();check(u.requestedState==(d==0?"none":"空手攻击"),"range boundary "+distances[d]);
+            u.guardTick();check(u.requestedState==(d==0?"none":(d>=3?"近战":"空手攻击")),"range boundary "+distances[d]);
         }
         target._x=500;target.Z轴坐标=target._y=240;
         u.状态="空手站立";u.requestedState="none";u.guardClock=99;u.guardTick();
@@ -288,7 +350,10 @@ class org.flashNight.arki.unit.Action.Melee.Cf6GuardAssetTest {
         target._x=585;target.Z轴坐标=u.Z轴坐标;u.行走();
         for(n=0;n<12;n++)u.行走();check(u._x==245,"approach caps final step at 340");
         _root.控制目标=u._name;u.行走();check(u.fixtureManualWalk===true,"manual walking delegates");_root.控制目标="__no_player";
-        u.状态改变=change;u.状态="空手站立";u.攻击目标="无";u._x=200;u._y=u.Z轴坐标=200;
+        u.状态改变=change;
+        u.状态改变("击倒");u.hp=0;u.guardTick();
+        check(u.状态=="击倒" && u.man._currentframe==1 && !u.fixtureRecord.removed,"airborne lethal stays in 1f knockdown pose before landing");
+        u.hp=1000;u.浮空=false;u.状态改变("空手站立");u.攻击目标="无";u._x=200;u._y=u.Z轴坐标=200;
         u.guardClearMovement();target.removeMovieClip();
         _root.是否阴影=false;u.guardShadow.updateGuardShadow();check(!u.guardShadow._visible,"shadow option off");
         _root.是否阴影=true;u.guardShadow.updateGuardShadow();check(u.guardShadow._visible,"shadow option on");
@@ -299,6 +364,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6GuardAssetTest {
     private static function tick():Void {
         if(finished)return;ticks++;
         if(!ready){if(ticks>300){check(false,"load timeout");finish();}return;}
+        followupTick();
         phaseTick();
         if(ticks==3) {
             for(var s:Number=0;s<probes.length;s++) {
@@ -309,7 +375,8 @@ class org.flashNight.arki.unit.Action.Melee.Cf6GuardAssetTest {
                 if(c.move=="shoot" || c.move=="interrupt" || c.move=="dead")u.状态改变("空手攻击");
                 else if(c.move=="near")u.状态改变("近战");
                 else if(c.move.substr(0,3)=="hit"){u.状态改变("被击");u.man.gotoAndPlay("a"+c.move.substr(3));}
-                else if(c.move=="down")u.状态改变("倒地");else if(c.move=="knockdown")u.状态改变("击倒");
+                else if(c.move=="down")u.状态改变("倒地");
+                else if(c.move=="knockdown" || c.move=="airborne-dead"){u.状态改变("击倒");if(c.move=="airborne-dead")u.hp=0;}
                 else if(c.move.substr(0,5)=="death"){u.hp=0;u.状态改变("血腥死");u.man.gotoAndPlay("a"+c.move.substr(5));}
             }
         }
@@ -330,7 +397,10 @@ class org.flashNight.arki.unit.Action.Melee.Cf6GuardAssetTest {
             var q:Object=cases[j];
             if(q.move=="interrupt"){q.actor.状态改变("被击");q.actor.man.gotoAndPlay("a0");}
             else if(q.move=="dead")q.actor.hp=0;
-            else if(q.move=="knockdown"){q.actor.浮空=false;q.actor.状态改变("倒地");}
+            else if(q.move=="knockdown" || q.move=="airborne-dead"){
+                if(q.move=="airborne-dead")check(q.actor.状态=="击倒" && q.actor.man._currentframe==1 && !q.record.removed,"airborne lethal stays in single-frame knockdown before landing");
+                q.actor.浮空=false;q.actor.状态改变("倒地");
+            }
         }
         if(ticks==12){
             check(cases[0].actor.刚体===true && cases[0].actor.免疫击退===true,"windup stance active");
@@ -352,14 +422,15 @@ class org.flashNight.arki.unit.Action.Melee.Cf6GuardAssetTest {
         if(ticks==150) {
             for(var n:Number=0;n<cases.length;n++) {
                 var entry:Object=cases[n],rec:Object=entry.record;var attack:Boolean=entry.move=="shoot" || entry.move=="near";
-                check(rec.shots==(attack?1:0),"exact shot count "+entry.move+" "+entry.side+" got="+rec.shots);
-                check(rec.powerOk && rec.contractOk && rec.areaOk,"real shotgun contract "+n);
+                check(rec.shots==(entry.move=="shoot"?1:0),"exact shot count "+entry.move+" "+entry.side+" got="+rec.shots);
+                check(rec.meleeHits==(entry.move=="near"?1:0),"exact melee count "+entry.move+" "+entry.side+" got="+rec.meleeHits);
+                check(rec.powerOk && rec.contractOk && rec.areaOk,"real shotgun/melee contract "+n);
                 if(attack) {
                     check(rec.done==1,"attack completes once "+n);
-                    check(rec.front==1 && rec.back==0,"muzzle ahead on both sides "+n);
+                    check(rec.front==1 && rec.back==0,"muzzle/melee ahead on both sides "+n);
                     check(entry.actor.guardAttackOwner==null && entry.actor.刚体===false && entry.actor.免疫击退===false,"action and stance ownership released "+n);
                     check(entry.actor.guardInvalidMuzzleCount==0,"no missing nested muzzle "+n);
-                } else if(entry.move.substr(0,5)=="death" || entry.move=="dead") {
+                } else if(entry.move.substr(0,5)=="death" || entry.move=="dead" || entry.move=="airborne-dead") {
                     check(rec.removed && rec.deathChecks==1,"death settles once "+n);
                 } else {
                     check(rec.done==1,"hit/down recovery "+n+" done="+rec.done);
@@ -374,7 +445,7 @@ class org.flashNight.arki.unit.Action.Melee.Cf6GuardAssetTest {
     private static function finish():Void {
         if(finished)return;finished=true;delete driver.onEnterFrame;
         if(loader!=null)loader.removeListener(listener);
-        trace("Cf6GuardAssetTest: "+passed+" passed, "+failed+" failed; "+cases.length+" actual timeline cases; "+phases.length+" transformation cases");
+        trace("Cf6GuardAssetTest: "+passed+" passed, "+failed+" failed; "+cases.length+" actual timeline cases; "+phases.length+" transformation cases; "+followups.length+" hit-confirmed followup cases");
         library.removeMovieClip();driver.removeMovieClip();_root.cf6GuardAssetComplete();
     }
 }

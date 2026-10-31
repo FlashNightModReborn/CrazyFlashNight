@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大头机器人/特效/雾人/靶标_元件 14" itemID="6af00000-10d32663" lastModified="1779974891">
+  <timeline>
+    <DOMTimeline name="靶标_元件 14">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle0="1" edges="!4026 1097S1[4025 1096 4025 1095!4025 1095|4024 1095!4024 1095[4010 1068 3995 1042!3995 1042[3988 1029 3981 1016!3981 1016|3842 1096!3842 1096[3844 1100 3846 1104!3846 1104|3401 1361!3401 1361[3399 1357 3397 1353!3397 1353|3258 1433!3258  1433[3260 1437 3262 1441!3262 1441|2278 2010!2278 2010|2349 2132!2349 2132|4052 1148!4052 1148[4040 1123 4027 1099!4027 1099[4026 1098 4026 1097!1051 322[1050 323 1049 323!1049 323|1049 324!1049 324[1022 338 996 353!996 353[983 360 970  367!970 367|1048 503!1048 503[1052 501 1056 499!1056 499|1306 931!1306 931[1302 933 1298 935!1298 935|1375 1069!1375 1069[1379 1067 1383 1065!1383 1065|1935 2021!1935 2021|2057 1950!2057 1950|1102 296!1102 296[1077 308 1053 321!1053  321[1052 322 1051 322!1003 2899|1988 2330!1988 2330|1918 2207!1918 2207|214 3191!214 3191[227 3217 240 3241!240 3241[240 3242 241 3243!241 3243[241 3244 242 3244!242 3244|242 3245!242 3245[256 3272 271 3298!271 3298[279 3311 286 3323 !286 3323|425 3243!425 3243[423 3240 420 3236!420 3236|865 2979!865 2979[868 2983 870 2986!870 2986|1008 2906!1008 2906[1006 2903 1003 2899!2166 2439|3150 4142!3150 4142[3176 4130 3200 4117!3200 4117[3201 4117 3202 4116!3202 4116[3203  4116 3203 4115!3203 4115|3204 4115!3204 4115[3231 4101 3257 4086!3257 4086[3270 4078 3282 4071!3282 4071|3202 3932!3202 3932[3199 3934 3195 3937!3195 3937|2938 3492!2938 3492[2942 3489 2945 3487!2945 3487|2865 3349!2865 3349[2862 3351  2858 3354!2858 3354|2289 2369!2289 2369|2166 2439"/>
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/靶标_元件 8" selected="true" centerPoint3DX="123.25" centerPoint3DY="48.9">
+                  <matrix>
+                    <Matrix a="-0.36151123046875" b="-0.626068115234375" c="0.626068115234375" d="-0.36151123046875" tx="108.75" ty="97.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.55" y="-10.25"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/靶标_元件 8" selected="true" centerPoint3DX="48.65" centerPoint3DY="91.7">
+                  <matrix>
+                    <Matrix a="-0.62445068359375" b="0.360580444335938" c="-0.360580444335938" d="-0.62445068359375" tx="97.25" ty="106.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.05" y="-8.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/靶标_元件 8" selected="true" centerPoint3DX="93.45" centerPoint3DY="169.15">
+                  <matrix>
+                    <Matrix a="-0.621734619140625" b="0.3590087890625" c="0.3590087890625" d="0.621734619140625" tx="105.05" ty="119.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.05" y="-8.75"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/特效/雾人/靶标_元件 8" selected="true" centerPoint3DX="167.65" centerPoint3DY="126.25">
+                  <matrix>
+                    <Matrix a="0.359893798828125" b="0.623260498046875" c="0.623260498046875" d="-0.359893798828125" tx="118.45" ty="114.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-11.65" y="-10.3"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

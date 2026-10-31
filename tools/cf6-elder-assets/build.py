@@ -20,7 +20,7 @@ PREFIX = 'Codex/老头/'
 NS = {'x':'http://ns.adobe.com/xfl/2008/'}
 N = '{'+NS['x']+'}'
 BEAM_ORIGINAL_WIDTH = 461.05
-BEAM_CONTACT_WIDTH = 600.0
+BEAM_CONTACT_WIDTH = 780.83
 BEAM_ORIGINAL_LEFT = -230.5
 PARSER = E.XMLParser(remove_blank_text=False, strip_cdata=False, resolve_entities=False)
 
@@ -60,6 +60,8 @@ FORMS = {
 def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
+R8_BAKED = HERE / 'r8-baked'
+
 def verify_inputs():
     for archive in ARCHIVES.values():
         for row in json.loads((archive/'archive-origin.json').read_text('utf8'))['members']:
@@ -79,6 +81,7 @@ def build_inputs():
     paths += [a/'archive-origin.json' for a in ARCHIVES.values()]
     paths += [native.THINGS1/(old+'.xml') for old in sorted(H)]
     paths += death.input_paths()
+    paths += sorted(R8_BAKED.glob('*.xml'))
     return [{'path':p.relative_to(ROOT).as_posix(),'sha256':sha(p)} for p in paths]
 
 def depth_layers(timeline, parts):
@@ -111,6 +114,45 @@ def make_body(name, timeline, parts, events=None, hits=None):
             name='elderBodyDriver',script='onClipEvent(enterFrame){_parent._parent.elderBodyTick(_parent);}')])]),
         native.make_sparse_layer('真实攻击区域',count,hits or {}),*depth_layers(timeline,parts),
         native.layer('身体内接地阴影',[native.frame(0,count,[native.instance(PREFIX+'接地阴影',symbol_type='movie clip',name='elderShadow')])])],symbol_type='movie clip')
+
+def make_r8_body(name, form, act_id, count, events=None, hits=None, top_layers=None):
+    r8_root = E.parse(str(R8_BAKED / f'act__{form}__{act_id}.xml'), PARSER).getroot()
+    vis_layers = [copy.deepcopy(l) for l in r8_root.findall('x:timeline/x:DOMTimeline/x:layers/x:DOMLayer', NS)]
+    return native.symbol(name, [
+        *(top_layers or []),
+        native.make_sparse_layer('CF7控制', count, events or {}),
+        native.layer('身体内部时钟', [native.frame(0, count, [native.instance(PREFIX+'行为驱动', symbol_type='movie clip',
+            name='elderBodyDriver', script='onClipEvent(enterFrame){_parent._parent.elderBodyTick(_parent);}')])]),
+        native.make_sparse_layer('真实攻击区域', count, hits or {}),
+        *vis_layers,
+        native.layer('身体内接地阴影', [native.frame(0, count, [native.instance(PREFIX+'接地阴影', symbol_type='movie clip', name='elderShadow')])])
+    ], symbol_type='movie clip')
+
+# Part 986 is the visible cannon fist. Its outer knuckle/barrel plane is
+# x=154; y=4 is the center of that plane in the immutable R7 native part.
+SLAM_MUZZLE_LOCAL = (154.0, 4.0)
+
+def slam_muzzle_layer(count, driver):
+    source = E.parse(str(R8_BAKED/'act__robot__1007.xml'), PARSER)
+    poses = {}
+    for frame in source.findall('.//x:DOMFrame', NS):
+        start, duration = int(frame.get('index', '0')), int(frame.get('duration', '1'))
+        for item in frame.findall('./x:elements/x:DOMSymbolInstance', NS):
+            if item.get('libraryItemName') != PREFIX+'分件/986':
+                continue
+            node = item.find('./x:matrix/x:Matrix', NS)
+            m = [float(node.get(k, '1' if k in ('a', 'd') else '0')) for k in ('a','b','c','d','tx','ty')]
+            tip_x, tip_y = SLAM_MUZZLE_LOCAL
+            m[4] += m[0]*tip_x + m[2]*tip_y
+            m[5] += m[1]*tip_x + m[3]*tip_y
+            for f in range(start, min(count, start+duration)):
+                if f in poses:
+                    raise ValueError('Ambiguous slam cannon pose at frame '+str(f+1))
+                poses[f] = {'elements':[native.instance(driver, matrix=m,
+                    symbol_type='movie clip', name='elderSlamMuzzle')]}
+    if set(poses) != set(range(count)):
+        raise ValueError('Slam muzzle must follow every authored cannon frame')
+    return native.make_sparse_layer('拳头炮口挂点', count, poses)
 
 def build_symbols():
     verify_inputs()
@@ -147,8 +189,72 @@ onEnterFrame=updateElderShadow;updateElderShadow();stop();''',elements=[native.i
             name=PREFIX+'原始特效/'+str(cid)
             converted,report=vector.original_effect(archive/'reference/shapes'/f'{cid}.svg',name,(0,0))
             result.update(converted);parts[cid]=name;stats.append({'id':cid,'kind':'original-vector',**report})
+    for ext_file in sorted(R8_BAKED.glob('ext__*.xml')):
+        ext_root = E.parse(str(ext_file), PARSER).getroot()
+        result[ext_root.get('name')] = ext_root
     driver=PREFIX+'行为驱动'
     result[driver]=native.symbol(driver,[native.layer('停止',[native.frame(script='stop();')])],symbol_type='movie clip')
+    def g_inst(lib_name,matrix,first_frame=0,alpha_mult=None):
+        inst=native.instance(lib_name,matrix=matrix,symbol_type='graphic',alpha_mult=alpha_mult)
+        if first_frame>0:inst.set('firstFrame',str(first_frame))
+        return inst
+
+    wuren_target=PREFIX+'特效/雾人/目标'
+    wuren_shell=PREFIX+'特效/雾人/巨型穿刺能量子弹'
+    wuren_quake=PREFIX+'特效/雾人/强震地'
+    wuren_blue_cannon=PREFIX+'特效/雾人/蓝色炮击'
+    wuren_blue_burst=PREFIX+'特效/雾人/蓝芒强击'
+    antiair_fx_name=PREFIX+'特效/蓄力对空光束'
+    aa_frames={}
+    for f in range(14):
+        alpha=1.0 if f<10 else max(0.15,1.0-0.2*(f-9))
+        els=[
+            g_inst(wuren_blue_burst,matrix=(1.1,0,0,1.1,0,-65),first_frame=min(23,f*2),alpha_mult=alpha),
+            g_inst(wuren_shell,matrix=(0,-2.2,1.8,0,0,-85-f*26),first_frame=min(17,f*2),alpha_mult=alpha),
+        ]
+        if f<10:
+            els.insert(0,g_inst(wuren_blue_cannon,matrix=(1.15,0,0,1.35,0,0),first_frame=min(9,f),alpha_mult=alpha))
+        aa_frames[1+f]={'elements':els}
+    result[antiair_fx_name]=native.symbol(antiair_fx_name,[
+        native.make_sparse_layer('控制',15,{0:{'script':'stop();'}}),
+        native.make_sparse_layer('对空光束与炮口光',15,aa_frames),
+    ],symbol_type='movie clip')
+    bomb_fx_name=PREFIX+'特效/坠落轰炸弹'
+    lock_frames={}
+    for f in range(12):
+        lock_frames[1+f]={'elements':[
+            g_inst(wuren_target,matrix=(1.15,0,0,0.44,-128,-49),first_frame=f),
+        ]}
+    shell_frames={}
+    for s in range(12):
+        lock_frames[13+s]={'elements':[
+            g_inst(wuren_target,matrix=(1.15,0,0,0.44,-128,-49),first_frame=min(22,12+s)),
+        ]}
+        ratio=(s+1)/12.0
+        head_y=-520.0*(1.0-ratio)-20.0
+        shell_frames[13+s]={'elements':[
+            g_inst(wuren_shell,matrix=(0,2.5,-1.9,0,0,head_y),first_frame=min(17,1+s)),
+            g_inst(wuren_blue_burst,matrix=(0.75,0,0,0.75,0,head_y+40),first_frame=min(23,s*2)),
+        ]}
+    blast_frames={}
+    for e in range(10):
+        if e<5:
+            lock_frames[25+e]={'elements':[
+                g_inst(wuren_target,matrix=(1.15,0,0,0.44,-128,-49),first_frame=22,alpha_mult=max(0.08,0.72-0.15*e)),
+            ]}
+        q_scale=2.2+0.1*e
+        b_scale=1.25+0.06*e
+        alpha=1.0 if e<7 else max(0.12,1.0-0.28*(e-6))
+        blast_frames[25+e]={'elements':[
+            g_inst(wuren_quake,matrix=(q_scale,0,0,q_scale,-12,-14),first_frame=min(14,e),alpha_mult=alpha),
+            g_inst(wuren_blue_burst,matrix=(b_scale,0,0,b_scale,0,-10),first_frame=min(23,e*2),alpha_mult=alpha),
+        ]}
+    result[bomb_fx_name]=native.symbol(bomb_fx_name,[
+        native.make_sparse_layer('控制',35,{0:{'script':'stop();'}}),
+        native.make_sparse_layer('地面爆破冲击',35,blast_frames),
+        native.make_sparse_layer('天降光束弹',35,shell_frames),
+        native.make_sparse_layer('地面预警靶标',35,lock_frames),
+    ],symbol_type='movie clip')
     roots={}
     for form,spec in FORMS.items():
         timeline=timelines[form]
@@ -156,7 +262,11 @@ onEnterFrame=updateElderShadow;updateElderShadow();stop();''',elements=[native.i
         offsets={r['body']['id']:r['body']['matrix'] for r in source['labels'] if r['body']}
         names={sid:PREFIX+form+'/动作/'+str(sid) for sid in {spec['stand'],spec['walk'],spec['hit'],spec['fall'],spec['death'],*[a['id'] for a in spec['actions'].values()]}}
         for sid in [spec['stand'],spec['walk']]:
-            result[names[sid]]=make_body(names[sid],timeline[str(sid)],parts,
+            result[names[sid]]=make_r8_body(names[sid],form,str(sid),len(timeline[str(sid)]),
+                {0:{'script':'elderMode="idle";stop();'},4:{'script':'if(_parent.状态=="拾取" || _parent.状态=="躲闪")_parent.动画完毕();'}})
+        if form=='human':
+            run_name = PREFIX+'human/动作/跑步'
+            result[run_name] = make_r8_body(run_name,'human','跑步',24,
                 {0:{'script':'elderMode="idle";stop();'},4:{'script':'if(_parent.状态=="拾取" || _parent.状态=="躲闪")_parent.动画完毕();'}})
         action_durations={}
         for action,a in spec['actions'].items():
@@ -185,7 +295,7 @@ onEnterFrame=updateElderShadow;updateElderShadow();stop();''',elements=[native.i
                             shift=BEAM_ORIGINAL_LEFT*(1-length_scale)
                             m[4]+=m[0]*shift;m[5]+=m[1]*shift
                             m[0]*=length_scale;m[1]*=length_scale
-            action_durations[action]=len(frames)
+            action_durations[action]=94 if action=='burst' else (71 if action=='slam' else len(frames))
             for f in a['hits']:
                 if action=='burst':
                     # Original CF6 control 359 sits at ground level. The visible
@@ -198,32 +308,63 @@ onEnterFrame=updateElderShadow;updateElderShadow();stop();''',elements=[native.i
                 else:
                     m=next(r['matrix'] for r in frames[f-1].values() if r['id']==290)
                     # CF6's ground-only probe becomes a vertical CF7 contact box.
-                    height=130 if action=='slam' else 90
-                    matrix=(66*abs(m[0])/25,0,0,height/25,m[4],-10 if action=='slam' else -35)
+                    height=160 if action=='slam' else (140 if action=='kicks' else 90)
+                    matrix=(66*abs(m[0])/25,0,0,height/25,m[4],-10 if action=='slam' else (-45 if action=='kicks' else -35))
                     helper=H['Symbol 195']
                 hits[f-1]={'elements':[native.instance(helper,matrix=matrix,symbol_type='movie clip',name='攻击点',
                     alpha_mult=0,script='onClipEvent(load){elderToken=_parent.elderToken;elderHitFrame=_parent._currentframe;_parent._parent.elderStrike(_parent,this);}')]}
-            events={0:{'script':'elderMode="attack";_parent.elderBeginAttack(this,"'+action+'");stop();'},
-                len(frames)-1:{'script':'_parent.elderFinishAttack(this);stop();'}}
-            result[names[a['id']]]=make_body(names[a['id']],frames,parts,events,hits)
-            if action=='heavyBeam':
+            if action=='burst':
+                r8_burst_root=E.parse(str(R8_BAKED/'act__human__970.xml'),PARSER).getroot()
+                gun_mats={}
+                for df in r8_burst_root.findall('.//x:DOMFrame',NS):
+                    idx=int(df.get('index','0'));dur_f=int(df.get('duration','1'))
+                    for inst in df.findall('.//x:DOMSymbolInstance',NS):
+                        if inst.get('libraryItemName')=='Codex/老头/分件/965':
+                            mel=inst.find('x:matrix/x:Matrix',NS)
+                            mat=(float(mel.get('a','1')),float(mel.get('b','0')),float(mel.get('c','0')),float(mel.get('d','1')),float(mel.get('tx','0')),float(mel.get('ty','0')))
+                            for fi in range(idx,idx+dur_f):gun_mats[fi]=mat
+                for rf in (63,65,68,70):
+                    gm=gun_mats[rf-1]
+                    mx=round(gm[4]+gm[0]*(-317.011056)+gm[2]*0.730554,2)
+                    my=round(gm[5]+gm[1]*(-317.011056)+gm[3]*0.730554,2)
+                    hits[rf-1]={'elements':[native.instance(driver,matrix=(1,0,0,1,mx,my),symbol_type='movie clip',name='攻击点',
+                        alpha_mult=0,script='onClipEvent(load){elderToken=_parent.elderToken;elderHitFrame=_parent._currentframe;_parent._parent.elderStrike(_parent,this);}')]}
+                events={
+                    0:{'name':'射击','label_type':'name','script':'elderMode="attack";if(_parent.elderPendingBurstSubmode=="retreat_burst"){_parent.elderPendingBurstSubmode="";gotoAndStop(55);}else{_parent.elderBeginAttack(this,"burst");stop();}'},
+                    52:{'script':'_parent.elderFinishAttack(this);stop();'},
+                    54:{'name':'后撤射击','label_type':'name','script':'elderMode="attack";_parent.elderBeginAttack(this,"retreat_burst");stop();'},
+                    93:{'script':'_parent.elderFinishAttack(this);stop();'}}
+                result[names[a['id']]]=make_r8_body(names[a['id']],form,str(a['id']),94,events,hits)
+            elif action=='heavyBeam':
+                events={0:{'script':'elderMode="attack";_parent.elderBeginAttack(this,"'+action+'");stop();'},
+                    len(frames)-1:{'script':'_parent.elderFinishAttack(this);stop();'}}
+                result[names[a['id']]]=make_body(names[a['id']],frames,parts,events,hits)
                 charge={}
                 for f in range(a['hits'][0]-1):
                     scale=0.25+1.6*f/(a['hits'][0]-2)
                     charge[f]={'elements':[native.instance(parts[903],matrix=(scale,0,0,scale,110.3,-31.25),
                         alpha_mult=0.3+0.6*f/(a['hits'][0]-2))]}
-                result[names[a['id']]].find('x:timeline/x:DOMTimeline/x:layers',NS).insert(0,
-                    native.make_sparse_layer('重束蓄力光',len(frames),charge))
+                layers_el=result[names[a['id']]].find('x:timeline/x:DOMTimeline/x:layers',NS)
+                fx_root=E.parse(str(R8_BAKED/'act__robot__19940_fx.xml'),PARSER).getroot()
+                for fx_layer in reversed(fx_root.findall('x:timeline/x:DOMTimeline/x:layers/x:DOMLayer',NS)):
+                    layers_el.insert(3,copy.deepcopy(fx_layer))
+                layers_el.insert(0,native.make_sparse_layer('重束蓄力光',len(frames),charge))
+            else:
+                dur=action_durations[action]
+                events={0:{'script':'elderMode="attack";_parent.elderBeginAttack(this,"'+action+'");stop();'},
+                    dur-1:{'script':'_parent.elderFinishAttack(this);stop();'}}
+                result[names[a['id']]]=make_r8_body(names[a['id']],form,str(a['id']),dur,events,hits,
+                    top_layers=[slam_muzzle_layer(dur, driver)] if form=='robot' and action=='slam' else None)
         first_hit,second_hit=spec['hitDurations']
         hit_events={0:{'name':'a0','label_type':'name','script':'elderMode="hit";stop();'},
             first_hit:{'name':'a1','label_type':'name','script':'elderMode="hit";stop();'},
             first_hit-1:{'script':'_parent.动画完毕();'},first_hit+second_hit-1:{'script':'_parent.动画完毕();'}}
-        result[names[spec['hit']]]=make_body(names[spec['hit']],timeline[str(spec['hit'])],parts,hit_events)
+        result[names[spec['hit']]]=make_r8_body(names[spec['hit']],form,str(spec['hit']),len(timeline[str(spec['hit'])]),hit_events)
         if form=='human':
-            result[names[974]]=make_body(names[974],timeline['974'],parts,{
+            result[names[974]]=make_r8_body(names[974],'human','974',82,{
                 0:{'script':'elderMode=_parent.hp>0?"fall":"death";stop();'},
-                30:{'script':'if(_parent.hp<=0){_parent.死亡检测({noCorpse:true});stop();}'},
-                88:{'script':'_parent.倒地=false;_parent.动画完毕();'}})
+                28:{'script':'if(_parent.hp<=0){_parent.死亡检测({noCorpse:true});stop();}'},
+                81:{'script':'_parent.倒地=false;_parent.动画完毕();'}})
         else:
             result[names[1010]]=make_body(names[1010],timeline['1010'][:31]+[{} for _ in range(80)],parts,{
                 0:{'script':'elderMode="death";_parent.elderCancelAttack();_parent.cf6ArmRobotDeath(this,32);stop();'},
@@ -260,6 +401,10 @@ onEnterFrame=updateElderShadow;updateElderShadow();stop();''',elements=[native.i
             end=state_rows[i+1][0] if i+1<len(state_rows) else 141
             script='onClipEvent(load){gotoAndStop("a"+random(2));}' if state=='被击' else None
             override_name=None
+            if form=='human' and state=='空手跑':
+                override_name=PREFIX+'human/动作/跑步'
+            elif form=='human' and state=='空手攻击':
+                script='onClipEvent(load){if(_parent.elderPendingBurstSubmode=="retreat_burst"){_parent.elderPendingBurstSubmode="";gotoAndStop(55);}}'
             if spec['canBeAirborne']:
                 if state=='击倒':
                     script='onClipEvent(load){_parent.elderCancelAttack();_parent.击飞浮空();}'
@@ -284,6 +429,8 @@ onEnterFrame=updateElderShadow;updateElderShadow();stop();''',elements=[native.i
 elderForm="'''+form+'";\n'
         runtime_actions={key:{'totalFrames':action_durations[key],**{k:v for k,v in action.items() if k in ('state','hits','power','powers')}}
                          for key,action in spec['actions'].items()}
+        if form=='human':
+            runtime_actions['retreat_burst']={'totalFrames':94,'state':'空手攻击','hits':[63,65,68,70],'power':1}
         init+='elderActions={'+','.join(key+':{'+','.join(k+':'+json.dumps(v,ensure_ascii=False,separators=(',',':')) for k,v in action.items())+'}' for key,action in runtime_actions.items())+'};\n'
         init+=(HERE/'ElderAI.as').read_text('utf-8-sig')
         init+='\n'+(ROOT/'tools/cf6-headbot-assets/CorpseFragments.as').read_text('utf-8-sig')
@@ -303,6 +450,9 @@ elderForm="'''+form+'";\n'
             native.make_sparse_layer('通用仇恨驱动',156,{0:{'duration':29,'elements':[native.instance(H['思考标签'],symbol_type='movie clip')]}}),
             native.make_sparse_layer('行走',156,{0:{'duration':29,'elements':[native.instance(driver,symbol_type='movie clip',name='控制块',
                 script='onClipEvent(enterFrame){if(!_root.暂停)_parent.行走();}')]}}),
+            *([native.make_sparse_layer('轰炸特效模板',156,{0:{'duration':121,'elements':[
+                native.instance(antiair_fx_name,matrix=(1,0,0,1,0,0),symbol_type='movie clip',name='cf6AntiairTemplate'),
+                native.instance(bomb_fx_name,matrix=(1,0,0,1,0,0),symbol_type='movie clip',name='cf6BombTemplate')]}})] if form=='robot' else []),
             native.make_sparse_layer('动作',156,bodies)
         ],symbol_type='movie clip',linkage=LINKS[form],export_first_frame=True)
     entry=PREFIX+'两形态共享入口'
@@ -312,10 +462,10 @@ elderForm="'''+form+'";\n'
     roots['entry']=entry
     return result,roots,stats
 
-def import_assets():
-    native.guard_overwrite_allowed(False)
+def import_assets(force=False):
+    native.guard_overwrite_allowed(force)
     symbols,roots,stats=build_symbols()
-    native.guard_overwrite_allowed(False)
+    native.guard_overwrite_allowed(force)
     audio_receipt=audio.apply(symbols,OWNER,native.make_sparse_layer)
     outputs=common.write_workspace(symbols,roots['entry'])
     # The common single-root writer synthesizes Include IDs. Use each actual
@@ -332,6 +482,7 @@ def import_assets():
             'matrix':[2/3,0,0,2/3,0,-133.325*2/3],'currentBodySources':['human-r7','robot-r7']},
         'omittedLegacyControls':[277,280,281,290,299,359,360],
         'sharedEffectReplacements':{'muzzle':506,'deathExplosion':list(range(364,391,2))},
+        'slamMuzzle':{'part':986,'localPoint':list(SLAM_MUZZLE_LOCAL),'outwardAxis':[1,0],'frames':71},
         'outputs':outputs,'projectFiles':[{'path':p,'sha256':sha(OWNER/p),'bytes':(OWNER/p).stat().st_size} for p in native.PROJECT_FILES]}
     manifest['audio']=audio_receipt
     (HERE/'native-manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n','utf8',newline='\n')
@@ -357,7 +508,7 @@ def check():
 
 if __name__=='__main__':
     if hasattr(sys.stdout,'reconfigure'):sys.stdout.reconfigure(encoding='utf8')
-    parser=argparse.ArgumentParser();parser.add_argument('--import-approved',action='store_true');parser.add_argument('--check',action='store_true')
+    parser=argparse.ArgumentParser();parser.add_argument('--import-approved',action='store_true');parser.add_argument('--force',action='store_true');parser.add_argument('--check',action='store_true')
     args=parser.parse_args()
-    if args.import_approved:import_assets()
+    if args.import_approved:import_assets(args.force)
     check()

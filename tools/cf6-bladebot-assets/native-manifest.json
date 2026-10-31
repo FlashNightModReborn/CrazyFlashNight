@@ -2,11 +2,11 @@
   "schema": "cf6-bladebot.native-import.v1",
   "owner": "flashswf/arts/new/Codex大刀机器人素材",
   "approvedInput": "flashswf/arts/new/Codex素材源稿/CF6大刀机器人-R2",
-  "nativeSymbolCount": 116,
+  "nativeSymbolCount": 273,
   "buildInputs": [
     {
       "path": "tools/cf6-bladebot-assets/build.py",
-      "sha256": "ba181db9136cb80e0b7dd9d4d45faea7b773cbe3b5d84a15b4fe6a111f407add"
+      "sha256": "1fde82f8a00fb8d8dae4be73f071b514a9fcb1a1d262d0d7d9d6817cd4dc289f"
     },
     {
       "path": "tools/cf6-bladebot-assets/vector.py",
@@ -14,7 +14,7 @@
     },
     {
       "path": "tools/cf6-bladebot-assets/BladebotAI.as",
-      "sha256": "c1f421d8cdec61d1dcc68100da604cd380b5acc5ce426c2621558a40a7d7079c"
+      "sha256": "a372b8e754fff9fb1500125786450453600b158517df945a2d4b4e7be9aedddb"
     },
     {
       "path": "tools/cf6-wings-assets/vector.py",
@@ -22,7 +22,7 @@
     },
     {
       "path": "tools/cf6-manman-assets/build.py",
-      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+      "sha256": "2dee3ca844fd0a42ab5578d107969cd3a0085c140ced2a0c5335a82eb4443765"
     },
     {
       "path": "tools/cf6-zombie-assets/build.py",
@@ -115,6 +115,658 @@
     {
       "path": "flashswf/arts/new/3XD的素材/LIBRARY/5武器特效和子弹/爆炸狙击子弹/小火焰爆炸素材.xml",
       "sha256": "ebf28a70835ab8089ddc4ab3fe695ba9f50aba0140f99e957b245e2c9eefc70c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/act__横扫.xml",
+      "sha256": "25c4215a7788d54892734f4392d6bc53def01af75374abc80473f56b7648209c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/act__波属性光束.xml",
+      "sha256": "2e4acd4ce86c0835252bf58e8cbf36f727d3f10d9ddcbec0820e312a0876ad38"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/act__站立.xml",
+      "sha256": "0863dd4fddb523f0a994df850837a39c899338bc91b8853c71be8a7ec0dbea66"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/act__行走.xml",
+      "sha256": "0fa933fe002382158cc509b00d37276520a77ccd6cdc7067da95b49abf1b6b77"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/act__被击.xml",
+      "sha256": "14bd962782a41ed3f04627b63bd2f884fe46736629cabf919e7639c784d8a290"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/act__重劈.xml",
+      "sha256": "f65bd2925c879ca81750d6ed2596a20cdca649bdee6b4dd5cbccd97984cdc109"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__分件__899-遮罩1.xml",
+      "sha256": "f3608c542be02949e4b4c4ef813c2157c98250029a5614d800be33c0936d9d51"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__元件 6.xml",
+      "sha256": "1bd5494bb2c590c0f83b5c0ac85c80c09dff6d06783c82c88fffc3bd63b2025b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__刀光.xml",
+      "sha256": "2ac1bc225d84a0841458698e418fb3c0185e1b27e8f5f06ed0d84aa8b4255352"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__旋转刀光.xml",
+      "sha256": "ee3ab83ef5ba1fa18ecae16ce885e5ac0403f3448301120dda687fceb46bfe67"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙.xml",
+      "sha256": "d9c88d9f99d725682f96d9fe0119840bbc838b1a731d0bd9d394a0615282081d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 100 副本 9.xml",
+      "sha256": "a3b50d75de5a6cfc23d2b5c1d874032867c5209e5cbfeb5284b29372b4947e06"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 106 副本 11.xml",
+      "sha256": "7ed1fcb2d0e0c4364b136246f476c9f8d7f3c84dabce28e350f69fd5fa8afdb3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 108 副本 12.xml",
+      "sha256": "22f7c2bd495b9a7f2b2efb2e2a548e2a4f42533639e374f827d621c2df342f59"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 110 副本 10.xml",
+      "sha256": "a631261efa59fbfa3df711dde4c6a6b40d5b47750d20fdf46f6bd4446f7deeca"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 115 副本 8.xml",
+      "sha256": "ce03e0f25d07fe2c9e21f0b79afccdc338eef24ea27d9bdef712be230e91f779"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 117 副本 12.xml",
+      "sha256": "116623a36b106d6a8cfa6754fb2ffe758eddb43e398d7bc01efa485343cb0f6c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 119 副本 7.xml",
+      "sha256": "3d426bdaa139fce6544ff0212fdcdbf1b5d56890562f978d371938729a9a0528"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 129 副本 8.xml",
+      "sha256": "a0852ef3056d45019df8bad2c9bbbe91638e015678b5662d4b3758fb157c766f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 13 副本 30.xml",
+      "sha256": "0694d25fe176d9252001d30f117d46f76658c9e230b41eb117fc5d667cd27f8e"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 131 副本 9.xml",
+      "sha256": "a589865a42b3820bf6ab6da1a3f93f969c43e0b8aac7e3dffc88bdb0ec0f5bf1"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 133 副本 6.xml",
+      "sha256": "20b4c3316fc77201b56103b9e878c9d84a50fb74ef287ad76c36fee8a951635e"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 144 副本 7.xml",
+      "sha256": "ea30d815ad1d0d50db175c13859c3a7f0bfdb7562519098f519abfcb345079ed"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 146 副本 6.xml",
+      "sha256": "ccbee7ce875388d45e1af9166f571c15e074b65363294ff918ac794480b02ec9"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 148 副本 9.xml",
+      "sha256": "f3562909281f21d8c7a6760f6e372eff55fe0266d1f8ad3baed3cc4d6d2c10a8"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 15 副本 27.xml",
+      "sha256": "c68bc9daa3a84b2089bc386d6cad517770edebc6678c8ec0b03e7af01a555cd4"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 158 副本 6.xml",
+      "sha256": "6b2d35838472f4100713fc4256bddde5f3f46f2f98b83820eef6129e62406de2"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 160 副本 6.xml",
+      "sha256": "450e3a6f6339f0bc6c2f0e1a579678e6964e8f384d121a96506831915734bbe2"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 162 副本 3.xml",
+      "sha256": "9061bcf68d0e76816fa125e436fa29671fda96b0c110203afb1d53a985ab46eb"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 166 副本 3.xml",
+      "sha256": "ef0f5d4fd30562e5c4a97c912b3ef3aebd06dbb653b786208d792bc1cdbb0857"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 17 副本 30.xml",
+      "sha256": "4648750ba07f3b1fa91f36c24fad7923236dbf6e619ec33652d91b7265509b1e"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 174 副本 4.xml",
+      "sha256": "865c118b77797f208f7d3284e5d5028e2b775640e4b2f8f889cd47f08296a504"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 176 副本 7.xml",
+      "sha256": "7a8f479eb76a5088c109774e75673a93a88e2e56d8f2699e03b66461f8639b1d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 186 副本 3.xml",
+      "sha256": "991e92f02d7c0b788d668d45758801ed888d476a92e8aeae7a33c86416250ca6"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 188 副本 4.xml",
+      "sha256": "d79dd6c8406789d7b208b2623e09e0ad775edb73b44f004f152528b8ae8d90cc"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 19 副本 25.xml",
+      "sha256": "69ac184a856530ded5e741d763dff213ec88e1cffd3e2ef16d669b9b52b82849"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 192 副本 6.xml",
+      "sha256": "47c0da2ddc68f019cf03b53b9a27997f0c7fdc5330d5160345c5bdeb483298c9"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 194 副本 4.xml",
+      "sha256": "168ee8555624fb6b6c5bab121723b76cf9d2b9870de0b51f148fa2e5511f77e1"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 196 副本 6.xml",
+      "sha256": "54508caae394455a79b9e70d47a04b996f5fcd3db1257b71f596880ed0bafeec"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 198 副本 5.xml",
+      "sha256": "f700e3640fb3aa36226fbb0d3a8a78fd6efd64bb947965ce99bc9b5bfc45ad70"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 200 副本 4.xml",
+      "sha256": "b063b2bb7a8e8f3a4b4606de33ccb499c3f71bba1539c435739236cd50f1f837"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 202 副本 4.xml",
+      "sha256": "6b9ea5d2fd0b16c48852c6c0860c4ee17943d52d4d71ec0ce3a8c9ce0d2e607b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 204 副本 5.xml",
+      "sha256": "1dc0e810669aebb8728b7e2af87b87d6da1b2acc2244d973c7ea5480008a6173"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 206 副本 5.xml",
+      "sha256": "fc14914d093f4f39f9ec78669f8f756b94990798c4dc91d2bb7e49494bef7e90"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 208 副本 5.xml",
+      "sha256": "122dc572f8071db0c622a556887bc9850d8339a60f76865a963c51a3fbffa907"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 21 副本 26.xml",
+      "sha256": "82fc39dab80b0d2cf27d1b823cb548db8d175ab93e041043a4bcee440c7ced68"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 210 副本 3.xml",
+      "sha256": "9d73badf6f98b071582ae7deca7b80d742654079331358247a7e6c80be771cac"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 212.xml",
+      "sha256": "ac885e880771e2e7c9a468bbdb0cb1b876d5f7afd4297c925f72f4d769dd7951"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 214 副本 2.xml",
+      "sha256": "7f197e7730089e172e100c912f6e07ebc104022a4eb3a944d7afc4527bf3ab32"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 220 副本 4.xml",
+      "sha256": "64fb71f20421a91893328419431dafe649414a65595c83662dc778946026711a"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 222 副本 4.xml",
+      "sha256": "79b8d0095bf9e144d15326f86c81dd6fbcdc50554cff4c269f3fbec9dad26a2a"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 228 副本 3.xml",
+      "sha256": "80a59916c3816d7d911a75d776a648d8be3a59a784a30b884ecfbd161f834551"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 23 副本 32.xml",
+      "sha256": "37f1898004338f2fc09c8bee0cca0c9676494cdfc17592210b01d86756b114e4"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 230 副本 2.xml",
+      "sha256": "7efaa815dbadf2a8894b70723201faf589afebf8a52b05ff62d67b7b40cc276e"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 236 副本 3.xml",
+      "sha256": "263ab708737fad77784abb26c63e5e1df9a5309c7a3372da493101b9f9e1edd7"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 238 副本 4.xml",
+      "sha256": "2fb212875722defe51a69252423cc9c63a3683645a9c8904a6ec0a7831b7b1bf"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 240 副本 3.xml",
+      "sha256": "eb2a51c0ab6369b336121720db4e66993765fa5fcea2e39ff7ea7f42c69989f1"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 242 副本.xml",
+      "sha256": "c36f795925fd802f0b48659dc5da6bcccca5c35d0242d3c3f707a14f054e379b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 25 副本 24.xml",
+      "sha256": "234b41e87a312155dae887caac682423e1890ecba95743c917373931f9615e7b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 27 副本 27.xml",
+      "sha256": "25948842704461bcc9ec6ca2b106b47ac6d75b9545eb6ac080851b9c83d50cb1"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 32 副本 21.xml",
+      "sha256": "2901f23c9bdf76f0b9a2e3185f8da78d748db70eebce93a559c7d770ed7c87ed"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 34 副本 14.xml",
+      "sha256": "00cf82fe514c1bd0d68efc6ebc988f69ef5b213cd0f5c5abd0e0406c972a9564"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 36 副本 17.xml",
+      "sha256": "514fc2516ef0b5bbc98a50ea84f19f33bacb75b6fc0e2001275d49199b4288fd"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 38 副本 19.xml",
+      "sha256": "45f21ba6ba4de8b12d79e12e4f3d3a04d2a7fd0dfa58ee0c9ee576b838429d95"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 40 副本 17.xml",
+      "sha256": "7e7d5ca490327932aa00f9cdb548384c5ea61b36b92325dac8547957b8dbb750"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 42 副本 17.xml",
+      "sha256": "cf871c9e846b043bea54d548cfb9840c965b2d0a73fb415a6681b82c9b13b0ef"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 44 副本 17.xml",
+      "sha256": "ecf083f4f605b2a16709522481f0e10eaa73d6c4dc35db0c3a2e2dde902a6a3e"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 48 副本 20.xml",
+      "sha256": "90a8ca952065e258625eb199cdcfef3423a7357df7803fb86b071618f40b0ec4"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 50 副本 17.xml",
+      "sha256": "3613f37cf03779a7ea7a7fdffb07df66493e186ff6b2996a12405f0593e30a0e"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 52 副本 11.xml",
+      "sha256": "76d7c706f45079f32e05596d904e357f86ff5beced3aaa9accdd09b586c0843f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 54 副本 16.xml",
+      "sha256": "41d17364000cab6b0f988cb90e516b5f94593786dc29d525142962787227c043"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 58 副本 16.xml",
+      "sha256": "074169ed99f81785c73aa7283010987e6e2bd5ecbcf954fcf52cf6c3df7ad688"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 60 副本 18.xml",
+      "sha256": "7fdc8fe1384fa37e970faa9850fe3d4c7f4158b9f0b25e4be7932a88ee117be0"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 62 副本 19.xml",
+      "sha256": "e42ea87a7c180d72cbfb1c41a6f86aed4bf65f42e2a40e6972c1ac7041ed57cf"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 66 副本 16.xml",
+      "sha256": "87d181e7b674649d3dde40f14f6ee4915492228e44eebaef4068a8ae800f8fe1"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 68 副本 17.xml",
+      "sha256": "7c06050d1a7d7cc8c9cf97afa8d913cebf70e7c3b2990261cbdc420aadac6d7b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 73 副本 12.xml",
+      "sha256": "c519a22906cf9dc0f059452311c17fea93083e562f524290ada38bd7d1dd3ecf"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 75 副本 10.xml",
+      "sha256": "2654de55708b1a8cef116d466a6f078f9919bd31824189ce2fd69313d614712d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 77 副本 9.xml",
+      "sha256": "f5381b54d9e05aa0bb1d9c734bb912463ecdb87178bce986a5de46f69dae01ad"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 79 副本 7.xml",
+      "sha256": "1cbe0456ba534743777cf4631eb382a575057f037fb288eabf33a9acacfab666"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 81 副本 9.xml",
+      "sha256": "79a998b5c7da57b1270be343dbbd2a41343f92c9c913fad9a69a2bf8facbb724"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 85 副本 11.xml",
+      "sha256": "cd71f8c87f436db686e89284be6f744e8177b9d77a7a7f7dc574dc5f4eb94402"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 87 副本 8.xml",
+      "sha256": "65d0b18492e1baace694ae888a574fb6966c3459aeb0f3ccf5c8ce6c91d6adfe"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 89 副本 11.xml",
+      "sha256": "6b4d769419329c02437e33403699d6ef7a911d2f427158d0bd8683ec3ff464a0"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 94 副本 11.xml",
+      "sha256": "b76f95d762f5bbb11dcf6cda111b2fd0b7d065385d91f87668e399dfaa26c752"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 96 副本 15.xml",
+      "sha256": "b1e3cf8af0d8e59420444706d5904f29fd180bcb3173d32dfab0c451577edd87"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__shape 98 副本 12.xml",
+      "sha256": "437ff222c03d41de6b976dcd7d8fcacf3115e18ebe3e5d3191df9c696b8ac179"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 101 副本 5.xml",
+      "sha256": "b8e17474f3022749fafcda3558b155b9299e828609b43fb95176302855065306"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 107 副本 6.xml",
+      "sha256": "77363b33459679c727acaad1b16b103dc98879dcb62570d03a23bd3d49431445"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 109 副本 5.xml",
+      "sha256": "cbeb332984ccdca3443edf01374c093cc6bf2f81c022f620baac23b7e32ba4b0"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 111 副本 6.xml",
+      "sha256": "51fba01cd32891ae6d113692681ad2798e34bc69f007197eedc738e25722bb91"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 116 副本 6.xml",
+      "sha256": "258942acfc482b930b054076afd7e183e78cb1cdf20955ae616035f3cf259df8"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 118 副本 10.xml",
+      "sha256": "4e26d5904c5500e66730387aaa8255d4c89adb87598212b2c3aa3356e1de400f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 120 副本 4.xml",
+      "sha256": "f769f31e317eb734242ae917a2c00f49189548372d99f8a802a8afde1481c0fe"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 130 副本 3.xml",
+      "sha256": "3c960a948fd2fb241197685a7012f7015339025070c4fb97554ec94ad333c95c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 132 副本 7.xml",
+      "sha256": "b5a77449e15753752fda63bde394cf033a34ff81649a9d0c04bc479e0a3195c6"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 134 副本 5.xml",
+      "sha256": "a4581411cb7b93049a08fa6639a096446bc04cf76ef0f898b3d1e17dc699aa28"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 14 副本 26.xml",
+      "sha256": "c5dfa97fdf0cc35c3f314623ad99c49e4e264703d3b05ca7f10fbce36d17f474"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 145 副本 5.xml",
+      "sha256": "709b8a5f48d0787e3edb5cddd1592832b5e2df5a2b576d4f09ce32855cbb85c0"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 147 副本 5.xml",
+      "sha256": "0df7ba6ec246778de5f7e348ccf90f77da0430218888bbc4d96f7560d67a9865"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 149 副本 6.xml",
+      "sha256": "cd0e76c6d0fc5697f71d91126422cd6a1b4a9cec745d8fb6c706b94e090837d7"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 159 副本 4.xml",
+      "sha256": "4c12a790df70201b4a878ea162832e7a58fcecacbdea4de81194d0f059f91f1d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 16 副本 22.xml",
+      "sha256": "fb85ab9d8872893f381dd71bd9c8d18662658985f6a49fd99343a47db0db106d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 161 副本 4.xml",
+      "sha256": "90eab41340264533b6b15b044ffaf0be742203634d466e3d598d2441e2de7a9c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 163 副本 2.xml",
+      "sha256": "fe92c07ded2f3eb18b691767bafdf60916aa021e2ec3a333556479ee2e31dd33"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 167 副本 3.xml",
+      "sha256": "fc98b5cd5c4d73bd8c7b7f1dbe55fd6200f5adfd3f1d75b5fc5156ed608457f8"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 175 副本 5.xml",
+      "sha256": "694e9a2bf752f9e4da5d597b508bdbed2667aefb84e22c7b906b5f8baef49131"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 177 副本 5.xml",
+      "sha256": "1433412e20a01abfba58bfeed135e5d95c94c29ef71455b3ef1e75d00ccc2518"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 18 副本 24.xml",
+      "sha256": "71b1e2c36dcfe487593fb01b32144f0b93d27d832475242d422b7546ca590b9d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 187 副本 3.xml",
+      "sha256": "fad56546101b3c5b96d4c9b84046466e158c6795e029bdd31c96caf5c55c4c25"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 189 副本 5.xml",
+      "sha256": "57c230878c28da47bf6291e35fe78dd680ab590617972eee4bc86582a0aaaec1"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 193 副本 3.xml",
+      "sha256": "1e08fe7cebb3dfab0bbd9d0e55e8f3c73e1da3b2cd8ccec71aff3fa38f030eb8"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 195 副本 2.xml",
+      "sha256": "4cf25a62a4343077c225f021c167ab4314d274c49dfe6502731a9ab49720e1f3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 197 副本 3.xml",
+      "sha256": "0b0ae74febdb453457e960cad565e635c131207306a440395398242a1121d3dc"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 199 副本 3.xml",
+      "sha256": "083286dd6eccf39b790fddc23e91e3e77a8c5e912f0fd1131ecb1fdd98b2ce0f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 20 副本 20.xml",
+      "sha256": "68785b725b90639f69e45cccbf094fcd0b95ea7c0ef81180496943986968da41"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 201 副本 2.xml",
+      "sha256": "0dfceb315494aff871efe7d9f1650dd279f3c5a7612faf5240b03d801762036b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 203 副本 2.xml",
+      "sha256": "0b75268d04386d7f5378253112e2e28f6eb850225464054fecbf20978cbeeeab"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 205 副本 2.xml",
+      "sha256": "94dff1d9206d820c3d5e522647efba91ebcef7ff6df0611174d7fffe44b36a51"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 207 副本 3.xml",
+      "sha256": "df9a9f3a32550d88268a2a627a7bb0b7549c1f716d0a7be451f5d3faa8a24732"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 209 副本 2.xml",
+      "sha256": "3858c6fb8ad58669d749ec2db709d572536a4173bb901cda33f75a33a598eaaf"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 211 副本.xml",
+      "sha256": "84d598b5ee52bb67cbfcb9199ae8c273abfdc651f87293ed51705d38cbc33347"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 213.xml",
+      "sha256": "1343bf8513779a40e6e3ede60b844984319b95f6d90ea93ba8cf51ed1145f3c4"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 215 副本.xml",
+      "sha256": "30f9b24dbf2f8727b9a3dc78a71248a1dfb556015839e380d5dae6fe144bcb5b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 22 副本 20.xml",
+      "sha256": "d1af19d02e1697214b38abcaab9bc8af7bbc5a14ff9b5abe2212dc727164caf4"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 221 副本 2.xml",
+      "sha256": "731d8317a79cddd03874586f534c3a1bdb334eca60c156a629360c0b12e10b7b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 223 副本 2.xml",
+      "sha256": "64470cdd5696df949994e488f2ba14c5ae8a396310e34e4deaab6c208c4dda9f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 229 副本 2.xml",
+      "sha256": "d52e5c83aed060c5ce32ca1abd4a5bf1e324f9db0875dd4b2489a065bc08257e"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 231 副本.xml",
+      "sha256": "75b2e3491f206dde8f83d4110e2bff11465b8bc99052e317d30f940a4d0e8f5d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 237.xml",
+      "sha256": "6e2078032b8c5f75bda99e76d1be817e02ce307832772537593813e220476b2f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 239 副本 2.xml",
+      "sha256": "3c329ccd796b0d117b53bcb5b4c2a7ccfdbd13c0a66a5ad50a46c40b006b9a92"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 24 副本 25.xml",
+      "sha256": "83133bc95f1cc486a195931d79200ff0542b1593df8756de0cddefd920f2fbcb"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 241 副本 2.xml",
+      "sha256": "31b0ee4f570231b7b261d7147af53646ade987e5899fd00eb0a3bb055d097206"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 243 副本.xml",
+      "sha256": "87ac290d37b621dea76e4905678885132d7888a84c9e380f7c1f6866a19176ef"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 26 副本 18.xml",
+      "sha256": "902128b647242f833d5ec0689bef4cde7d360677ebec9b3191b2c17818c549c3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 28 副本 19.xml",
+      "sha256": "16abb4be4a6e15a9b0e59f2d27ce6c868375b101988ae46f23b38f4ec49c46a5"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 33 副本 13.xml",
+      "sha256": "d204b052fc4d65c62db6a6b2fccc955bed7aeb97e7647edb80b2bbd6d6c08ce3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 35 副本 10.xml",
+      "sha256": "ee1654ffc302d65b544725971ff822f42fd3e3b4e9b191cd25e7b1f40aba582f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 37 副本 14.xml",
+      "sha256": "97d3e8e245aa4ab564642d2e36ed31db2e33e61171cfc756fabd9b865fb357ee"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 39 副本 12.xml",
+      "sha256": "fc8ed0b42db50380d78b3d2203accc111ea15863ca49766de0acdff3c6fec222"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 41 副本 13.xml",
+      "sha256": "f2845d0236e50bcd8f60d298e7f2585b46cbc39ed48a918391d3e36555f99533"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 43 副本 12.xml",
+      "sha256": "4c331bce9049460f0bf77146cde9825ef149a30f62606e75260462c810c0cf02"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 45 副本 16.xml",
+      "sha256": "2fad9930d91b09a1f98a334d960809cf447a76bcec2bddef7f7a6db0cbdbf15e"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 49 副本 14.xml",
+      "sha256": "89c4932af44aa237bb2d5b361b5c36fa13d9d42dbdff6c05c36d2f2555a9115d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 51 副本 12.xml",
+      "sha256": "c32bf0412c666df3aacdea0bbe0ca81f14593b1ee192047e14b249b1d46205c0"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 53 副本 8.xml",
+      "sha256": "64577ccad2d6d66b0256d7be5c0f8efc09dbc67f8315695b4d151a948a0d8764"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 55 副本 10.xml",
+      "sha256": "0a169e4b0e1730ecde8c96bd28c8d997938080e0926487a7b3eab652cb9084da"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 59 副本 10.xml",
+      "sha256": "79749f6201d058cfcb1de90c2187f441771b3080367f5b4dfe7a92a3bee897ec"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 61 副本 11.xml",
+      "sha256": "b39b89e93f35a1720cf28940f54c2d0e9169bd2f75ef3d73abeb91f2c8d84397"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 63 副本 13.xml",
+      "sha256": "17408839ebae884d1f9c1da2a23dc628d7e1bb6ba8889de7a4815e1616605ec0"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 67 副本 11.xml",
+      "sha256": "6ae9668c0bb1ccd8b51f648c43c593662cfc38085fae97243823f9b8686b260f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 69 副本 11.xml",
+      "sha256": "0c3d6c0ef7bc169e63b503f344e0dd5b497b1a0d1961e879598f39110564008f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 74 副本 9.xml",
+      "sha256": "feb765f4882d0639668397ad444a0460a0949152433f6e299ca35c194e04ee68"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 76 副本 8.xml",
+      "sha256": "3598d47ccf59564da77359b56f05221b7dfc1d05096f6ca62abd3a1a95777e0d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 78 副本 6.xml",
+      "sha256": "cbfc9e65be774d51cf47a759c6c7356ce433af890c07cbc3fb9db42435be8109"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 80 副本 5.xml",
+      "sha256": "98336744d92751d15715597c3e80bd294f240c050bef7bd37ab6e23942b953cd"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 82 副本 7.xml",
+      "sha256": "b26c28da0c09acaf228c9495e253dfafd33529b33a28143b557e2bc534853cd1"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 86 副本 8.xml",
+      "sha256": "d52ef6314d039ffd9a40bffdcbd5169da89a4ed3a52c223283df3cab72f8f95d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 88 副本 5.xml",
+      "sha256": "3975c5521b46ba27138f984a8fbf3438cc29af46e38aa9c4f035d26ec0446cf3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 90 副本 10.xml",
+      "sha256": "c3c4256748f846a03377eefe26b466b987aefd07fc620b76d9d88426b80ce03f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 95 副本 6.xml",
+      "sha256": "2e6b046b13090f15faf3dfddb6d6cd34d75fb819c58e71fcd5f1f898f30532a7"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 97 副本 9.xml",
+      "sha256": "7fd75a1c5213f93bbf8c15bebef71484636140a4ea5771be7052217e06d0d647"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/r8-baked/ext__特效__特效与子弹__牙通牙__牙通牙特效组件__sprite 99 副本 8.xml",
+      "sha256": "4b00cf2b3cb6e519e7d8a35a64bc9ae70008f93662c250f2cdf7cbfa4657a6f0"
     }
   ],
   "parts": [
@@ -273,16 +925,90 @@
         25,
         28,
         31,
-        34
+        34,
+        37,
+        40,
+        43,
+        46,
+        49,
+        52,
+        55,
+        58,
+        61,
+        64,
+        67,
+        70,
+        73,
+        75
       ],
+      "hitboxSourceFrames": {
+        "37": 19,
+        "40": 22,
+        "43": 19,
+        "46": 22,
+        "49": 19,
+        "52": 22,
+        "55": 19,
+        "58": 22,
+        "61": 19,
+        "64": 22,
+        "67": 19,
+        "70": 22,
+        "73": 19,
+        "75": 22
+      },
       "power": 1.0
+    },
+    "dash": {
+      "id": 902,
+      "state": "旋刃冲刺",
+      "hits": [
+        4,
+        7,
+        10,
+        13,
+        16,
+        19,
+        22,
+        25,
+        28,
+        31,
+        34,
+        37,
+        40,
+        43,
+        46,
+        49
+      ],
+      "hitboxSourceFrames": {
+        "4": 19,
+        "7": 22,
+        "10": 19,
+        "13": 22,
+        "16": 19,
+        "19": 22,
+        "22": 19,
+        "25": 22,
+        "28": 19,
+        "31": 22,
+        "34": 19,
+        "37": 22,
+        "40": 19,
+        "43": 22,
+        "46": 19,
+        "49": 22
+      },
+      "power": 0.85
     },
     "beam": {
       "id": 906,
       "state": "激光束",
       "hits": [
-        11
+        14
       ],
+      "hitboxSourceFrames": {
+        "14": 11
+      },
       "power": 1.0,
       "damageType": "魔法",
       "magicAttribute": "波"
@@ -447,8 +1173,8 @@
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/分件/895.xml",
-      "sha256": "ee5ebd889d12920d5bd04643a083b7e543102e6bf840bd0d0e192e2696a62678",
-      "bytes": 977
+      "sha256": "0055e47734991a46bbe2f9b270717d07fbc3d6f1dedd00db50366f4e7b5f0a05",
+      "bytes": 956
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/分件/895-遮罩0.xml",
@@ -457,8 +1183,8 @@
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/分件/896.xml",
-      "sha256": "e30e9e50f61a8be0a865e35cd43a22c0fc0c2cfb952132ee5b40c44cf602cfb7",
-      "bytes": 977
+      "sha256": "153594778bb7a39bfed7b3fda4de3b5dcf47a9ed90f18938c6bc2d08a58cad78",
+      "bytes": 956
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/分件/896-遮罩0.xml",
@@ -467,8 +1193,8 @@
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/分件/897.xml",
-      "sha256": "b07b96a7650f3eb30b8cafc9d836910b9b90b58e3a1614e160b628045ee7c505",
-      "bytes": 977
+      "sha256": "f2fb5c830c195f2b9fbf7def6e0d6dd2e9b3223818e6d1bc7452fe984868a8be",
+      "bytes": 956
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/分件/897-遮罩0.xml",
@@ -487,8 +1213,8 @@
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/分件/899.xml",
-      "sha256": "f8b1086d6340a986523c0f1e0eaac5c1463b0f5e066e4080163b498aa531e622",
-      "bytes": 977
+      "sha256": "1bdd3731a8871876e6b4af222af22a80f2108f96b56066ec16c12a7f14f6ead4",
+      "bytes": 956
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/分件/899-遮罩0.xml",
@@ -497,13 +1223,13 @@
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/分件/899-遮罩1.xml",
-      "sha256": "68c350009745c57fd0d17a1d2cf59ae912f727018aaf23f9cf64a98020df6c93",
-      "bytes": 24379
+      "sha256": "f3608c542be02949e4b4c4ef813c2157c98250029a5614d800be33c0936d9d51",
+      "bytes": 25293
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/分件/900.xml",
-      "sha256": "4a1b4d4f2b03f4d233bd44b3f73a59634c7e25c0815ade140527198b3a9a0119",
-      "bytes": 977
+      "sha256": "69e7b1aa529cf6aa99978da58e16f0bf652d7c8d5e9a645992108a0ca793bf14",
+      "bytes": 956
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/分件/900-遮罩0.xml",
@@ -527,8 +1253,8 @@
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/分件/可瞄准光束.xml",
-      "sha256": "434093771fa1c2434afecdf2e95c2506ec64e1bb21b8a3ec96ffc876b52d96b7",
-      "bytes": 950
+      "sha256": "995398499e31447f32858ca9d6fdb80e68350a11d4411efb516b84a72dfc6bf1",
+      "bytes": 7790
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/动作/倒地恢复.xml",
@@ -541,24 +1267,29 @@
       "bytes": 11913
     },
     {
+      "path": "LIBRARY/Codex/大刀机器人/动作/旋刃冲刺.xml",
+      "sha256": "52515250e8cd30935dc36c7fa7d4398277597feb16ee984e470d89ab63116fee",
+      "bytes": 528478
+    },
+    {
       "path": "LIBRARY/Codex/大刀机器人/动作/机械碎裂.xml",
       "sha256": "0595e8be1f53bdf1dff978d44e0afb9668b1ca0bab06af1e1796efc6173de7c3",
       "bytes": 110367
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/动作/横扫.xml",
-      "sha256": "6ee1992595087899fe7144f36f782bfc9fd405521a0451652826d5be4bfa995f",
-      "bytes": 70149
+      "sha256": "e0bed0418c14b71f23ec88dbe59bcf5a3eb2bacd44f579b02aa05328f7a180d8",
+      "bytes": 388781
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/动作/波属性光束.xml",
-      "sha256": "0fd1f9f08b88283edf39e425c7f12bdc934d763e85e3beb436103e36a470cb70",
-      "bytes": 33635
+      "sha256": "a0bbbe4e60004c325dab6a80f3259244fc232ae6e10bc136516b6f71f7e5ca14",
+      "bytes": 41190
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/动作/站立.xml",
-      "sha256": "5f0f95bd02d66d69ca3290c0700e8dd568a69d21a0338ae2feb2546c3085bc83",
-      "bytes": 38598
+      "sha256": "7f4a2b3d3ad3913da78753dd12d2a3dd3e733895359baed24a6c7f3fdd290d4f",
+      "bytes": 194463
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/动作/行走.xml",
@@ -567,18 +1298,18 @@
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/动作/被击.xml",
-      "sha256": "78866b6deaca15132ca5ff50b09ac7d85bc77b0150f581fa4b0ac048fd9c13d8",
-      "bytes": 60253
+      "sha256": "514308ec3979d8347173d4987c63e3e85b76cd31b7ab377f5adb052a8ed9609f",
+      "bytes": 238998
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/动作/重劈.xml",
-      "sha256": "5fa51459952935400fc2b13b77d0118955e90549e7778d46a7335a6184444404",
-      "bytes": 65102
+      "sha256": "2c567af3182b131feb3a2fc8ce6df13688e01c6eecfde119d3abf60ab9244512",
+      "bytes": 323381
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/敌人-CF6大刀机器人.xml",
-      "sha256": "c8ff185b3fe67a01ca028ae7b74690e67e0509e8cfbd34b03ffd65f33c49e25d",
-      "bytes": 32387
+      "sha256": "8cc618bf48812033df0a3ce40bfa8e8059145cac1d4e66a99663536d1f6e9acd",
+      "bytes": 36868
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/机械爆裂/5武器特效和子弹_爆炸狙击子弹_小火焰爆炸素材.xml",
@@ -831,6 +1562,786 @@
       "bytes": 2091
     },
     {
+      "path": "LIBRARY/Codex/大刀机器人/特效/元件 6.xml",
+      "sha256": "1bd5494bb2c590c0f83b5c0ac85c80c09dff6d06783c82c88fffc3bd63b2025b",
+      "bytes": 1627
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/刀光.xml",
+      "sha256": "2ac1bc225d84a0841458698e418fb3c0185e1b27e8f5f06ed0d84aa8b4255352",
+      "bytes": 1729
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/旋转刀光.xml",
+      "sha256": "ee3ab83ef5ba1fa18ecae16ce885e5ac0403f3448301120dda687fceb46bfe67",
+      "bytes": 354434
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙.xml",
+      "sha256": "d9c88d9f99d725682f96d9fe0119840bbc838b1a731d0bd9d394a0615282081d",
+      "bytes": 736004
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 100 副本 9.xml",
+      "sha256": "a3b50d75de5a6cfc23d2b5c1d874032867c5209e5cbfeb5284b29372b4947e06",
+      "bytes": 3244
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 106 副本 11.xml",
+      "sha256": "7ed1fcb2d0e0c4364b136246f476c9f8d7f3c84dabce28e350f69fd5fa8afdb3",
+      "bytes": 9675
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 108 副本 12.xml",
+      "sha256": "22f7c2bd495b9a7f2b2efb2e2a548e2a4f42533639e374f827d621c2df342f59",
+      "bytes": 7268
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 110 副本 10.xml",
+      "sha256": "a631261efa59fbfa3df711dde4c6a6b40d5b47750d20fdf46f6bd4446f7deeca",
+      "bytes": 3909
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 115 副本 8.xml",
+      "sha256": "ce03e0f25d07fe2c9e21f0b79afccdc338eef24ea27d9bdef712be230e91f779",
+      "bytes": 7365
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 117 副本 12.xml",
+      "sha256": "116623a36b106d6a8cfa6754fb2ffe758eddb43e398d7bc01efa485343cb0f6c",
+      "bytes": 5238
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 119 副本 7.xml",
+      "sha256": "3d426bdaa139fce6544ff0212fdcdbf1b5d56890562f978d371938729a9a0528",
+      "bytes": 5414
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 129 副本 8.xml",
+      "sha256": "a0852ef3056d45019df8bad2c9bbbe91638e015678b5662d4b3758fb157c766f",
+      "bytes": 8014
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 13 副本 30.xml",
+      "sha256": "0694d25fe176d9252001d30f117d46f76658c9e230b41eb117fc5d667cd27f8e",
+      "bytes": 2558
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 131 副本 9.xml",
+      "sha256": "a589865a42b3820bf6ab6da1a3f93f969c43e0b8aac7e3dffc88bdb0ec0f5bf1",
+      "bytes": 7117
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 133 副本 6.xml",
+      "sha256": "20b4c3316fc77201b56103b9e878c9d84a50fb74ef287ad76c36fee8a951635e",
+      "bytes": 6048
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 144 副本 7.xml",
+      "sha256": "ea30d815ad1d0d50db175c13859c3a7f0bfdb7562519098f519abfcb345079ed",
+      "bytes": 7621
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 146 副本 6.xml",
+      "sha256": "ccbee7ce875388d45e1af9166f571c15e074b65363294ff918ac794480b02ec9",
+      "bytes": 6214
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 148 副本 9.xml",
+      "sha256": "f3562909281f21d8c7a6760f6e372eff55fe0266d1f8ad3baed3cc4d6d2c10a8",
+      "bytes": 7185
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 15 副本 27.xml",
+      "sha256": "c68bc9daa3a84b2089bc386d6cad517770edebc6678c8ec0b03e7af01a555cd4",
+      "bytes": 2867
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 158 副本 6.xml",
+      "sha256": "6b2d35838472f4100713fc4256bddde5f3f46f2f98b83820eef6129e62406de2",
+      "bytes": 6484
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 160 副本 6.xml",
+      "sha256": "450e3a6f6339f0bc6c2f0e1a579678e6964e8f384d121a96506831915734bbe2",
+      "bytes": 3832
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 162 副本 3.xml",
+      "sha256": "9061bcf68d0e76816fa125e436fa29671fda96b0c110203afb1d53a985ab46eb",
+      "bytes": 6252
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 166 副本 3.xml",
+      "sha256": "ef0f5d4fd30562e5c4a97c912b3ef3aebd06dbb653b786208d792bc1cdbb0857",
+      "bytes": 1577
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 17 副本 30.xml",
+      "sha256": "4648750ba07f3b1fa91f36c24fad7923236dbf6e619ec33652d91b7265509b1e",
+      "bytes": 4405
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 174 副本 4.xml",
+      "sha256": "865c118b77797f208f7d3284e5d5028e2b775640e4b2f8f889cd47f08296a504",
+      "bytes": 6414
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 176 副本 7.xml",
+      "sha256": "7a8f479eb76a5088c109774e75673a93a88e2e56d8f2699e03b66461f8639b1d",
+      "bytes": 8272
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 186 副本 3.xml",
+      "sha256": "991e92f02d7c0b788d668d45758801ed888d476a92e8aeae7a33c86416250ca6",
+      "bytes": 6378
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 188 副本 4.xml",
+      "sha256": "d79dd6c8406789d7b208b2623e09e0ad775edb73b44f004f152528b8ae8d90cc",
+      "bytes": 11068
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 19 副本 25.xml",
+      "sha256": "69ac184a856530ded5e741d763dff213ec88e1cffd3e2ef16d669b9b52b82849",
+      "bytes": 4432
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 192 副本 6.xml",
+      "sha256": "47c0da2ddc68f019cf03b53b9a27997f0c7fdc5330d5160345c5bdeb483298c9",
+      "bytes": 5860
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 194 副本 4.xml",
+      "sha256": "168ee8555624fb6b6c5bab121723b76cf9d2b9870de0b51f148fa2e5511f77e1",
+      "bytes": 11182
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 196 副本 6.xml",
+      "sha256": "54508caae394455a79b9e70d47a04b996f5fcd3db1257b71f596880ed0bafeec",
+      "bytes": 4872
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 198 副本 5.xml",
+      "sha256": "f700e3640fb3aa36226fbb0d3a8a78fd6efd64bb947965ce99bc9b5bfc45ad70",
+      "bytes": 5789
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 200 副本 4.xml",
+      "sha256": "b063b2bb7a8e8f3a4b4606de33ccb499c3f71bba1539c435739236cd50f1f837",
+      "bytes": 6107
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 202 副本 4.xml",
+      "sha256": "6b9ea5d2fd0b16c48852c6c0860c4ee17943d52d4d71ec0ce3a8c9ce0d2e607b",
+      "bytes": 8334
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 204 副本 5.xml",
+      "sha256": "1dc0e810669aebb8728b7e2af87b87d6da1b2acc2244d973c7ea5480008a6173",
+      "bytes": 6090
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 206 副本 5.xml",
+      "sha256": "fc14914d093f4f39f9ec78669f8f756b94990798c4dc91d2bb7e49494bef7e90",
+      "bytes": 7034
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 208 副本 5.xml",
+      "sha256": "122dc572f8071db0c622a556887bc9850d8339a60f76865a963c51a3fbffa907",
+      "bytes": 5356
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 21 副本 26.xml",
+      "sha256": "82fc39dab80b0d2cf27d1b823cb548db8d175ab93e041043a4bcee440c7ced68",
+      "bytes": 5083
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 210 副本 3.xml",
+      "sha256": "9d73badf6f98b071582ae7deca7b80d742654079331358247a7e6c80be771cac",
+      "bytes": 8499
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 212.xml",
+      "sha256": "ac885e880771e2e7c9a468bbdb0cb1b876d5f7afd4297c925f72f4d769dd7951",
+      "bytes": 3433
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 214 副本 2.xml",
+      "sha256": "7f197e7730089e172e100c912f6e07ebc104022a4eb3a944d7afc4527bf3ab32",
+      "bytes": 3151
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 220 副本 4.xml",
+      "sha256": "64fb71f20421a91893328419431dafe649414a65595c83662dc778946026711a",
+      "bytes": 6128
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 222 副本 4.xml",
+      "sha256": "79b8d0095bf9e144d15326f86c81dd6fbcdc50554cff4c269f3fbec9dad26a2a",
+      "bytes": 2793
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 228 副本 3.xml",
+      "sha256": "80a59916c3816d7d911a75d776a648d8be3a59a784a30b884ecfbd161f834551",
+      "bytes": 6656
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 23 副本 32.xml",
+      "sha256": "37f1898004338f2fc09c8bee0cca0c9676494cdfc17592210b01d86756b114e4",
+      "bytes": 4084
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 230 副本 2.xml",
+      "sha256": "7efaa815dbadf2a8894b70723201faf589afebf8a52b05ff62d67b7b40cc276e",
+      "bytes": 3330
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 236 副本 3.xml",
+      "sha256": "263ab708737fad77784abb26c63e5e1df9a5309c7a3372da493101b9f9e1edd7",
+      "bytes": 4966
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 238 副本 4.xml",
+      "sha256": "2fb212875722defe51a69252423cc9c63a3683645a9c8904a6ec0a7831b7b1bf",
+      "bytes": 2892
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 240 副本 3.xml",
+      "sha256": "eb2a51c0ab6369b336121720db4e66993765fa5fcea2e39ff7ea7f42c69989f1",
+      "bytes": 3307
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 242 副本.xml",
+      "sha256": "c36f795925fd802f0b48659dc5da6bcccca5c35d0242d3c3f707a14f054e379b",
+      "bytes": 2031
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 25 副本 24.xml",
+      "sha256": "234b41e87a312155dae887caac682423e1890ecba95743c917373931f9615e7b",
+      "bytes": 3476
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 27 副本 27.xml",
+      "sha256": "25948842704461bcc9ec6ca2b106b47ac6d75b9545eb6ac080851b9c83d50cb1",
+      "bytes": 8468
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 32 副本 21.xml",
+      "sha256": "2901f23c9bdf76f0b9a2e3185f8da78d748db70eebce93a559c7d770ed7c87ed",
+      "bytes": 7358
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 34 副本 14.xml",
+      "sha256": "00cf82fe514c1bd0d68efc6ebc988f69ef5b213cd0f5c5abd0e0406c972a9564",
+      "bytes": 5503
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 36 副本 17.xml",
+      "sha256": "514fc2516ef0b5bbc98a50ea84f19f33bacb75b6fc0e2001275d49199b4288fd",
+      "bytes": 6177
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 38 副本 19.xml",
+      "sha256": "45f21ba6ba4de8b12d79e12e4f3d3a04d2a7fd0dfa58ee0c9ee576b838429d95",
+      "bytes": 5617
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 40 副本 17.xml",
+      "sha256": "7e7d5ca490327932aa00f9cdb548384c5ea61b36b92325dac8547957b8dbb750",
+      "bytes": 4520
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 42 副本 17.xml",
+      "sha256": "cf871c9e846b043bea54d548cfb9840c965b2d0a73fb415a6681b82c9b13b0ef",
+      "bytes": 8033
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 44 副本 17.xml",
+      "sha256": "ecf083f4f605b2a16709522481f0e10eaa73d6c4dc35db0c3a2e2dde902a6a3e",
+      "bytes": 1638
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 48 副本 20.xml",
+      "sha256": "90a8ca952065e258625eb199cdcfef3423a7357df7803fb86b071618f40b0ec4",
+      "bytes": 2203
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 50 副本 17.xml",
+      "sha256": "3613f37cf03779a7ea7a7fdffb07df66493e186ff6b2996a12405f0593e30a0e",
+      "bytes": 3074
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 52 副本 11.xml",
+      "sha256": "76d7c706f45079f32e05596d904e357f86ff5beced3aaa9accdd09b586c0843f",
+      "bytes": 3226
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 54 副本 16.xml",
+      "sha256": "41d17364000cab6b0f988cb90e516b5f94593786dc29d525142962787227c043",
+      "bytes": 5515
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 58 副本 16.xml",
+      "sha256": "074169ed99f81785c73aa7283010987e6e2bd5ecbcf954fcf52cf6c3df7ad688",
+      "bytes": 7545
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 60 副本 18.xml",
+      "sha256": "7fdc8fe1384fa37e970faa9850fe3d4c7f4158b9f0b25e4be7932a88ee117be0",
+      "bytes": 3748
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 62 副本 19.xml",
+      "sha256": "e42ea87a7c180d72cbfb1c41a6f86aed4bf65f42e2a40e6972c1ac7041ed57cf",
+      "bytes": 8854
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 66 副本 16.xml",
+      "sha256": "87d181e7b674649d3dde40f14f6ee4915492228e44eebaef4068a8ae800f8fe1",
+      "bytes": 2848
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 68 副本 17.xml",
+      "sha256": "7c06050d1a7d7cc8c9cf97afa8d913cebf70e7c3b2990261cbdc420aadac6d7b",
+      "bytes": 3795
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 73 副本 12.xml",
+      "sha256": "c519a22906cf9dc0f059452311c17fea93083e562f524290ada38bd7d1dd3ecf",
+      "bytes": 8905
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 75 副本 10.xml",
+      "sha256": "2654de55708b1a8cef116d466a6f078f9919bd31824189ce2fd69313d614712d",
+      "bytes": 3399
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 77 副本 9.xml",
+      "sha256": "f5381b54d9e05aa0bb1d9c734bb912463ecdb87178bce986a5de46f69dae01ad",
+      "bytes": 10228
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 79 副本 7.xml",
+      "sha256": "1cbe0456ba534743777cf4631eb382a575057f037fb288eabf33a9acacfab666",
+      "bytes": 3601
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 81 副本 9.xml",
+      "sha256": "79a998b5c7da57b1270be343dbbd2a41343f92c9c913fad9a69a2bf8facbb724",
+      "bytes": 2845
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 85 副本 11.xml",
+      "sha256": "cd71f8c87f436db686e89284be6f744e8177b9d77a7a7f7dc574dc5f4eb94402",
+      "bytes": 10219
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 87 副本 8.xml",
+      "sha256": "65d0b18492e1baace694ae888a574fb6966c3459aeb0f3ccf5c8ce6c91d6adfe",
+      "bytes": 15459
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 89 副本 11.xml",
+      "sha256": "6b4d769419329c02437e33403699d6ef7a911d2f427158d0bd8683ec3ff464a0",
+      "bytes": 2224
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 94 副本 11.xml",
+      "sha256": "b76f95d762f5bbb11dcf6cda111b2fd0b7d065385d91f87668e399dfaa26c752",
+      "bytes": 9216
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 96 副本 15.xml",
+      "sha256": "b1e3cf8af0d8e59420444706d5904f29fd180bcb3173d32dfab0c451577edd87",
+      "bytes": 2794
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 98 副本 12.xml",
+      "sha256": "437ff222c03d41de6b976dcd7d8fcacf3115e18ebe3e5d3191df9c696b8ac179",
+      "bytes": 6835
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 101 副本 5.xml",
+      "sha256": "b8e17474f3022749fafcda3558b155b9299e828609b43fb95176302855065306",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 107 副本 6.xml",
+      "sha256": "77363b33459679c727acaad1b16b103dc98879dcb62570d03a23bd3d49431445",
+      "bytes": 1063
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 109 副本 5.xml",
+      "sha256": "cbeb332984ccdca3443edf01374c093cc6bf2f81c022f620baac23b7e32ba4b0",
+      "bytes": 1063
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 111 副本 6.xml",
+      "sha256": "51fba01cd32891ae6d113692681ad2798e34bc69f007197eedc738e25722bb91",
+      "bytes": 1063
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 116 副本 6.xml",
+      "sha256": "258942acfc482b930b054076afd7e183e78cb1cdf20955ae616035f3cf259df8",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 118 副本 10.xml",
+      "sha256": "4e26d5904c5500e66730387aaa8255d4c89adb87598212b2c3aa3356e1de400f",
+      "bytes": 1065
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 120 副本 4.xml",
+      "sha256": "f769f31e317eb734242ae917a2c00f49189548372d99f8a802a8afde1481c0fe",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 130 副本 3.xml",
+      "sha256": "3c960a948fd2fb241197685a7012f7015339025070c4fb97554ec94ad333c95c",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 132 副本 7.xml",
+      "sha256": "b5a77449e15753752fda63bde394cf033a34ff81649a9d0c04bc479e0a3195c6",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 134 副本 5.xml",
+      "sha256": "a4581411cb7b93049a08fa6639a096446bc04cf76ef0f898b3d1e17dc699aa28",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 14 副本 26.xml",
+      "sha256": "c5dfa97fdf0cc35c3f314623ad99c49e4e264703d3b05ca7f10fbce36d17f474",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 145 副本 5.xml",
+      "sha256": "709b8a5f48d0787e3edb5cddd1592832b5e2df5a2b576d4f09ce32855cbb85c0",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 147 副本 5.xml",
+      "sha256": "0df7ba6ec246778de5f7e348ccf90f77da0430218888bbc4d96f7560d67a9865",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 149 副本 6.xml",
+      "sha256": "cd0e76c6d0fc5697f71d91126422cd6a1b4a9cec745d8fb6c706b94e090837d7",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 159 副本 4.xml",
+      "sha256": "4c12a790df70201b4a878ea162832e7a58fcecacbdea4de81194d0f059f91f1d",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 16 副本 22.xml",
+      "sha256": "fb85ab9d8872893f381dd71bd9c8d18662658985f6a49fd99343a47db0db106d",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 161 副本 4.xml",
+      "sha256": "90eab41340264533b6b15b044ffaf0be742203634d466e3d598d2441e2de7a9c",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 163 副本 2.xml",
+      "sha256": "fe92c07ded2f3eb18b691767bafdf60916aa021e2ec3a333556479ee2e31dd33",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 167 副本 3.xml",
+      "sha256": "fc98b5cd5c4d73bd8c7b7f1dbe55fd6200f5adfd3f1d75b5fc5156ed608457f8",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 175 副本 5.xml",
+      "sha256": "694e9a2bf752f9e4da5d597b508bdbed2667aefb84e22c7b906b5f8baef49131",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 177 副本 5.xml",
+      "sha256": "1433412e20a01abfba58bfeed135e5d95c94c29ef71455b3ef1e75d00ccc2518",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 18 副本 24.xml",
+      "sha256": "71b1e2c36dcfe487593fb01b32144f0b93d27d832475242d422b7546ca590b9d",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 187 副本 3.xml",
+      "sha256": "fad56546101b3c5b96d4c9b84046466e158c6795e029bdd31c96caf5c55c4c25",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 189 副本 5.xml",
+      "sha256": "57c230878c28da47bf6291e35fe78dd680ab590617972eee4bc86582a0aaaec1",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 193 副本 3.xml",
+      "sha256": "1e08fe7cebb3dfab0bbd9d0e55e8f3c73e1da3b2cd8ccec71aff3fa38f030eb8",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 195 副本 2.xml",
+      "sha256": "4cf25a62a4343077c225f021c167ab4314d274c49dfe6502731a9ab49720e1f3",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 197 副本 3.xml",
+      "sha256": "0b0ae74febdb453457e960cad565e635c131207306a440395398242a1121d3dc",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 199 副本 3.xml",
+      "sha256": "083286dd6eccf39b790fddc23e91e3e77a8c5e912f0fd1131ecb1fdd98b2ce0f",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 20 副本 20.xml",
+      "sha256": "68785b725b90639f69e45cccbf094fcd0b95ea7c0ef81180496943986968da41",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 201 副本 2.xml",
+      "sha256": "0dfceb315494aff871efe7d9f1650dd279f3c5a7612faf5240b03d801762036b",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 203 副本 2.xml",
+      "sha256": "0b75268d04386d7f5378253112e2e28f6eb850225464054fecbf20978cbeeeab",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 205 副本 2.xml",
+      "sha256": "94dff1d9206d820c3d5e522647efba91ebcef7ff6df0611174d7fffe44b36a51",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 207 副本 3.xml",
+      "sha256": "df9a9f3a32550d88268a2a627a7bb0b7549c1f716d0a7be451f5d3faa8a24732",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 209 副本 2.xml",
+      "sha256": "3858c6fb8ad58669d749ec2db709d572536a4173bb901cda33f75a33a598eaaf",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 211 副本.xml",
+      "sha256": "84d598b5ee52bb67cbfcb9199ae8c273abfdc651f87293ed51705d38cbc33347",
+      "bytes": 1058
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 213.xml",
+      "sha256": "1343bf8513779a40e6e3ede60b844984319b95f6d90ea93ba8cf51ed1145f3c4",
+      "bytes": 1035
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 215 副本.xml",
+      "sha256": "30f9b24dbf2f8727b9a3dc78a71248a1dfb556015839e380d5dae6fe144bcb5b",
+      "bytes": 1058
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 22 副本 20.xml",
+      "sha256": "d1af19d02e1697214b38abcaab9bc8af7bbc5a14ff9b5abe2212dc727164caf4",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 221 副本 2.xml",
+      "sha256": "731d8317a79cddd03874586f534c3a1bdb334eca60c156a629360c0b12e10b7b",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 223 副本 2.xml",
+      "sha256": "64470cdd5696df949994e488f2ba14c5ae8a396310e34e4deaab6c208c4dda9f",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 229 副本 2.xml",
+      "sha256": "d52e5c83aed060c5ce32ca1abd4a5bf1e324f9db0875dd4b2489a065bc08257e",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 231 副本.xml",
+      "sha256": "75b2e3491f206dde8f83d4110e2bff11465b8bc99052e317d30f940a4d0e8f5d",
+      "bytes": 1058
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 237.xml",
+      "sha256": "6e2078032b8c5f75bda99e76d1be817e02ce307832772537593813e220476b2f",
+      "bytes": 1044
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 239 副本 2.xml",
+      "sha256": "3c329ccd796b0d117b53bcb5b4c2a7ccfdbd13c0a66a5ad50a46c40b006b9a92",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 24 副本 25.xml",
+      "sha256": "83133bc95f1cc486a195931d79200ff0542b1593df8756de0cddefd920f2fbcb",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 241 副本 2.xml",
+      "sha256": "31b0ee4f570231b7b261d7147af53646ade987e5899fd00eb0a3bb055d097206",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 243 副本.xml",
+      "sha256": "87ac290d37b621dea76e4905678885132d7888a84c9e380f7c1f6866a19176ef",
+      "bytes": 1056
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 26 副本 18.xml",
+      "sha256": "902128b647242f833d5ec0689bef4cde7d360677ebec9b3191b2c17818c549c3",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 28 副本 19.xml",
+      "sha256": "16abb4be4a6e15a9b0e59f2d27ce6c868375b101988ae46f23b38f4ec49c46a5",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 33 副本 13.xml",
+      "sha256": "d204b052fc4d65c62db6a6b2fccc955bed7aeb97e7647edb80b2bbd6d6c08ce3",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 35 副本 10.xml",
+      "sha256": "ee1654ffc302d65b544725971ff822f42fd3e3b4e9b191cd25e7b1f40aba582f",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 37 副本 14.xml",
+      "sha256": "97d3e8e245aa4ab564642d2e36ed31db2e33e61171cfc756fabd9b865fb357ee",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 39 副本 12.xml",
+      "sha256": "fc8ed0b42db50380d78b3d2203accc111ea15863ca49766de0acdff3c6fec222",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 41 副本 13.xml",
+      "sha256": "f2845d0236e50bcd8f60d298e7f2585b46cbc39ed48a918391d3e36555f99533",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 43 副本 12.xml",
+      "sha256": "4c331bce9049460f0bf77146cde9825ef149a30f62606e75260462c810c0cf02",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 45 副本 16.xml",
+      "sha256": "2fad9930d91b09a1f98a334d960809cf447a76bcec2bddef7f7a6db0cbdbf15e",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 49 副本 14.xml",
+      "sha256": "89c4932af44aa237bb2d5b361b5c36fa13d9d42dbdff6c05c36d2f2555a9115d",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 51 副本 12.xml",
+      "sha256": "c32bf0412c666df3aacdea0bbe0ca81f14593b1ee192047e14b249b1d46205c0",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 53 副本 8.xml",
+      "sha256": "64577ccad2d6d66b0256d7be5c0f8efc09dbc67f8315695b4d151a948a0d8764",
+      "bytes": 1060
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 55 副本 10.xml",
+      "sha256": "0a169e4b0e1730ecde8c96bd28c8d997938080e0926487a7b3eab652cb9084da",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 59 副本 10.xml",
+      "sha256": "79749f6201d058cfcb1de90c2187f441771b3080367f5b4dfe7a92a3bee897ec",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 61 副本 11.xml",
+      "sha256": "b39b89e93f35a1720cf28940f54c2d0e9169bd2f75ef3d73abeb91f2c8d84397",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 63 副本 13.xml",
+      "sha256": "17408839ebae884d1f9c1da2a23dc628d7e1bb6ba8889de7a4815e1616605ec0",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 67 副本 11.xml",
+      "sha256": "6ae9668c0bb1ccd8b51f648c43c593662cfc38085fae97243823f9b8686b260f",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 69 副本 11.xml",
+      "sha256": "0c3d6c0ef7bc169e63b503f344e0dd5b497b1a0d1961e879598f39110564008f",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 74 副本 9.xml",
+      "sha256": "feb765f4882d0639668397ad444a0460a0949152433f6e299ca35c194e04ee68",
+      "bytes": 1060
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 76 副本 8.xml",
+      "sha256": "3598d47ccf59564da77359b56f05221b7dfc1d05096f6ca62abd3a1a95777e0d",
+      "bytes": 1060
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 78 副本 6.xml",
+      "sha256": "cbfc9e65be774d51cf47a759c6c7356ce433af890c07cbc3fb9db42435be8109",
+      "bytes": 1059
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 80 副本 5.xml",
+      "sha256": "98336744d92751d15715597c3e80bd294f240c050bef7bd37ab6e23942b953cd",
+      "bytes": 1059
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 82 副本 7.xml",
+      "sha256": "b26c28da0c09acaf228c9495e253dfafd33529b33a28143b557e2bc534853cd1",
+      "bytes": 1059
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 86 副本 8.xml",
+      "sha256": "d52ef6314d039ffd9a40bffdcbd5169da89a4ed3a52c223283df3cab72f8f95d",
+      "bytes": 1060
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 88 副本 5.xml",
+      "sha256": "3975c5521b46ba27138f984a8fbf3438cc29af46e38aa9c4f035d26ec0446cf3",
+      "bytes": 1059
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 90 副本 10.xml",
+      "sha256": "c3c4256748f846a03377eefe26b466b987aefd07fc620b76d9d88426b80ce03f",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 95 副本 6.xml",
+      "sha256": "2e6b046b13090f15faf3dfddb6d6cd34d75fb819c58e71fcd5f1f898f30532a7",
+      "bytes": 1060
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 97 副本 9.xml",
+      "sha256": "7fd75a1c5213f93bbf8c15bebef71484636140a4ea5771be7052217e06d0d647",
+      "bytes": 1060
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 99 副本 8.xml",
+      "sha256": "4b00cf2b3cb6e519e7d8a35a64bc9ae70008f93662c250f2cdf7cbfa4657a6f0",
+      "bytes": 1060
+    },
+    {
       "path": "LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376.xml",
       "sha256": "b0eb82b3c3bc96420dce452b3ad12ca11a21250b3cf751f793ae5c5f063d3b95",
       "bytes": 5439
@@ -909,8 +2420,8 @@
   "projectFiles": [
     {
       "path": "DOMDocument.xml",
-      "sha256": "2358adfefa5238d615a03f7e6cc709104e4e27da27fd836681425e9555be54ac",
-      "bytes": 15613
+      "sha256": "f55529b04e512565fb4d4573a9485e47fd9735591e153895f51606cf5ac0f7c4",
+      "bytes": 42658
     },
     {
       "path": "Codex大刀机器人素材.xfl",

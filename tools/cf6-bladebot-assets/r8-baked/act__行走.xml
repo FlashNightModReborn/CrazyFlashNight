@@ -1,0 +1,3869 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大刀机器人/动作/行走" itemID="6af00000-3396f819" lastModified="1792900235" lastUniqueIdentifier="35">
+  <timeline>
+    <DOMTimeline name="行走" currentFrame="17" layerDepthEnabled="true">
+      <layers>
+        <DOMLayer name="图层_2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/特效/旋转刀光" symbolType="graphic" centerPoint3DX="26.5" centerPoint3DY="-18.1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.865997314453125" b="0.500015258789062" c="-0.500015258789062" d="0.865997314453125" tx="-116.5" ty="-101.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="106.4" y="7.8"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_17" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.004715" b="-0.297485" c="0.297501" d="0.004715" tx="-17.8" ty="-0.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.006876" b="-0.29716" c="0.29717" d="0.006876" tx="-12.98" ty="-1.82"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.009033" b="-0.296819" c="0.296825" d="0.009033" tx="-8.16" ty="-3.43"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.011185" b="-0.296463" c="0.296463" d="0.011185" tx="-3.3" ty="-5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.009033" b="-0.296819" c="0.296825" d="0.009033" tx="-6.99" ty="-3.38"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.006876" b="-0.29716" c="0.29717" d="0.006876" tx="-10.67" ty="-1.77"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.004715" b="-0.297485" c="0.297501" d="0.004715" tx="-14.4" ty="-0.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.006876" b="-0.29716" c="0.29717" d="0.006876" tx="-11.96" ty="-2.12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.009033" b="-0.296819" c="0.296825" d="0.009033" tx="-9.53" ty="-4.03"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.011185" b="-0.296463" c="0.296463" d="0.011185" tx="-7.05" ty="-5.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.009033" b="-0.296819" c="0.296825" d="0.009033" tx="-6.2" ty="-3.53"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.006876" b="-0.29716" c="0.29717" d="0.006876" tx="-5.35" ty="-1.17"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.004715" b="-0.297485" c="0.297501" d="0.004715" tx="-4.55" ty="1.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.006876" b="-0.29716" c="0.29717" d="0.006876" tx="-4.61" ty="-1.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.009033" b="-0.296819" c="0.296825" d="0.009033" tx="-4.68" ty="-3.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.011185" b="-0.296463" c="0.296463" d="0.011185" tx="-4.7" ty="-6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.009028" b="-0.296814" c="0.296814" d="0.009028" tx="-9.08" ty="-4.08"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897" centerPoint3DX="0.1" centerPoint3DY="-1.9">
+                  <matrix>
+                    <Matrix a="0.006866" b="-0.29715" c="0.29715" d="0.006866" tx="-13.4" ty="-2.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.35" y="-0.35"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_16" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.185074" b="-0.232574" c="0.232574" d="0.185074" tx="-40.6" ty="-16.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.160377" b="-0.250077" c="0.250077" d="0.160377" tx="-38.35" ty="-16.37"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.13404" b="-0.26497" c="0.26497" d="0.13404" tx="-36.1" ty="-16.03"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.106339" b="-0.2771" c="0.2771" d="0.106339" tx="-33.85" ty="-15.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.13404" b="-0.26497" c="0.26497" d="0.13404" tx="-34.97" ty="-16.03"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.160377" b="-0.250077" c="0.250077" d="0.160377" tx="-36.08" ty="-16.37"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.185074" b="-0.232574" c="0.232574" d="0.185074" tx="-37.2" ty="-16.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.160377" b="-0.250077" c="0.250077" d="0.160377" tx="-37.33" ty="-16.67"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.13404" b="-0.26497" c="0.26497" d="0.13404" tx="-37.47" ty="-16.63"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.106339" b="-0.2771" c="0.2771" d="0.106339" tx="-37.6" ty="-16.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.13404" b="-0.26497" c="0.26497" d="0.13404" tx="-35.85" ty="-16.18"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.160377" b="-0.250077" c="0.250077" d="0.160377" tx="-34.1" ty="-15.77"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.185074" b="-0.232574" c="0.232574" d="0.185074" tx="-32.35" ty="-15.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.160377" b="-0.250077" c="0.250077" d="0.160377" tx="-33.32" ty="-15.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.13404" b="-0.26497" c="0.26497" d="0.13404" tx="-34.28" ty="-16.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.106339" b="-0.2771" c="0.2771" d="0.106339" tx="-35.25" ty="-16.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.13403" b="-0.26496" c="0.26496" d="0.13403" tx="-37.02" ty="-16.73"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896" centerPoint3DX="-27.8" centerPoint3DY="-9.8">
+                  <matrix>
+                    <Matrix a="0.160355" b="-0.250061" c="0.250061" d="0.160355" tx="-38.8" ty="-16.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_15" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.297775" b="-0.014481" c="0.014481" d="0.297775" tx="8.2" ty="0.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.291123" b="0.063287" c="-0.063287" d="0.291123" tx="12.88" ty="-1.26"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.264526" b="0.136611" c="-0.136611" d="0.264526" tx="17.56" ty="-3.32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.219833" b="0.20047" c="-0.20047" d="0.219833" tx="22.2" ty="-5.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="-0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.264526" b="0.136611" c="-0.136611" d="0.264526" tx="18.67" ty="-3.24"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="-0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.291123" b="0.063287" c="-0.063287" d="0.291123" tx="15.14" ty="-1.17"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="-0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.297775" b="-0.014481" c="0.014481" d="0.297775" tx="11.6" ty="0.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.291123" b="0.063287" c="-0.063287" d="0.291123" tx="13.9" ty="-1.56"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.264526" b="0.136611" c="-0.136611" d="0.264526" tx="16.2" ty="-3.92"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.219833" b="0.20047" c="-0.20047" d="0.219833" tx="18.45" ty="-6.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="-0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.264526" b="0.136611" c="-0.136611" d="0.264526" tx="17.79" ty="-3.39"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="-0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.291123" b="0.063287" c="-0.063287" d="0.291123" tx="17.13" ty="-0.57"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="-0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.297775" b="-0.014481" c="0.014481" d="0.297775" tx="16.45" ty="2.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.291123" b="0.063287" c="-0.063287" d="0.291123" tx="17.91" ty="-0.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.264526" b="0.136611" c="-0.136611" d="0.264526" tx="19.38" ty="-3.54"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.219833" b="0.20047" c="-0.20047" d="0.219833" tx="20.8" ty="-6.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="-0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900">
+                  <matrix>
+                    <Matrix a="0.264519" b="0.136604" c="-0.136604" d="0.264519" tx="16.63" ty="-3.92"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.1" y="-0.1"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900" centerPoint3DX="22.7" centerPoint3DY="-0.4">
+                  <matrix>
+                    <Matrix a="0.291107" b="0.063278" c="-0.063278" d="0.291107" tx="12.45" ty="-1.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="-0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_13" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-26.65" ty="24.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-24.98" ty="25.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-23.32" ty="25.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-21.65" ty="26.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-22.65" ty="25.12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-23.65" ty="23.78"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-24.65" ty="22.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-25.32" ty="23.28"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-25.98" ty="24.12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-26.65" ty="24.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-24.98" ty="25.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-23.32" ty="25.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-21.65" ty="26.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-22.65" ty="25.12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-23.65" ty="23.78"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-24.65" ty="22.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.29998" d="0.29998" tx="-25.35" ty="23.27"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" centerPoint3DX="-20.15" centerPoint3DY="-8.1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.299973" d="0.299973" tx="-26" ty="24.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_12" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="-0.088455" b="-0.28273" c="0.28273" d="-0.088455" tx="-5.45" ty="9.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="-0.045912" b="-0.292374" c="0.292374" d="-0.045912" tx="-5.57" ty="10.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="-0.002455" b="-0.295659" c="0.295659" d="-0.002455" tx="-5.69" ty="11.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.04097" b="-0.292526" c="0.292526" d="0.04097" tx="-5.8" ty="12.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="-0.002457" b="-0.295654" c="0.295659" d="-0.002455" tx="-4.77" ty="10.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="-0.045913" b="-0.292364" c="0.292374" d="-0.045912" tx="-3.74" ty="8.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="-0.088455" b="-0.282715" c="0.28273" d="-0.088455" tx="-2.7" ty="7.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="-0.045913" b="-0.292364" c="0.292374" d="-0.045912" tx="-5.7" ty="8.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="-0.002457" b="-0.295654" c="0.295659" d="-0.002455" tx="-8.7" ty="10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.04097" b="-0.292526" c="0.292526" d="0.04097" tx="-11.7" ty="11.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="-0.002457" b="-0.295654" c="0.295659" d="-0.002455" tx="-9.62" ty="10.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="-0.045913" b="-0.292364" c="0.292374" d="-0.045912" tx="-7.54" ty="9.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="-0.088455" b="-0.282715" c="0.28273" d="-0.088455" tx="-5.45" ty="9.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="-0.045913" b="-0.292364" c="0.292374" d="-0.045912" tx="-6.74" ty="9.96"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="-0.002457" b="-0.295654" c="0.295659" d="-0.002455" tx="-8.02" ty="10.58"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="0.04097" b="-0.292526" c="0.292526" d="0.04097" tx="-9.3" ty="11.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897">
+                  <matrix>
+                    <Matrix a="-0.002451" b="-0.295643" c="0.295643" d="-0.002451" tx="-8.05" ty="10.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897" centerPoint3DX="6.6" centerPoint3DY="7.8">
+                  <matrix>
+                    <Matrix a="-0.045898" b="-0.292343" c="0.292343" d="-0.045898" tx="-6.8" ty="9.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.35" y="-0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_11" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.274063" b="0.071381" c="-0.071381" d="0.274063" tx="-0.95" ty="-16.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.269515" b="0.086512" c="-0.086512" d="0.269515" tx="0.95" ty="-16.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.264133" b="0.101359" c="-0.101359" d="0.264133" tx="2.85" ty="-16.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.257935" b="0.115875" c="-0.115875" d="0.257935" tx="4.75" ty="-15.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.264128" b="0.101359" c="-0.101359" d="0.264128" tx="3.77" ty="-16.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.269505" b="0.086512" c="-0.086512" d="0.269505" tx="2.78" ty="-17.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.274048" b="0.071381" c="-0.071381" d="0.274048" tx="1.8" ty="-18.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.269505" b="0.086512" c="-0.086512" d="0.269505" tx="0.82" ty="-17.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.264128" b="0.101359" c="-0.101359" d="0.264128" tx="-0.17" ty="-17.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.257935" b="0.115875" c="-0.115875" d="0.257935" tx="-1.15" ty="-16.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.264128" b="0.101359" c="-0.101359" d="0.264128" tx="0.58" ty="-16.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.269505" b="0.086512" c="-0.086512" d="0.269505" tx="2.32" ty="-16.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.274048" b="0.071381" c="-0.071381" d="0.274048" tx="4.05" ty="-16.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.269505" b="0.086512" c="-0.086512" d="0.269505" tx="3.12" ty="-16.68"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.264128" b="0.101359" c="-0.101359" d="0.264128" tx="2.18" ty="-16.72"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.257935" b="0.115875" c="-0.115875" d="0.257935" tx="1.25" ty="-16.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896">
+                  <matrix>
+                    <Matrix a="0.264126" b="0.101354" c="-0.101354" d="0.264126" tx="0.5" ty="-16.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896" centerPoint3DX="-4" centerPoint3DY="-4.85">
+                  <matrix>
+                    <Matrix a="0.269501" b="0.086502" c="-0.086502" d="0.269501" tx="-0.25" ty="-16.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_10" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.294205" b="-0.046402" c="0.046402" d="0.294205" tx="21.35" ty="-1.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.296393" b="-0.028746" c="0.028746" d="0.296393" tx="20.35" ty="4.94"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.297524" b="-0.010994" c="0.010994" d="0.297524" tx="19.35" ty="10.99"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.297592" b="0.00679" c="-0.00679" d="0.297592" tx="18.35" ty="17"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.297519" b="-0.010995" c="0.010995" d="0.297519" tx="20.26" ty="10.31"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.296383" b="-0.028747" c="0.028747" d="0.296383" tx="22.18" ty="3.61"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.294189" b="-0.046402" c="0.046402" d="0.294189" tx="24.1" ty="-3.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.296383" b="-0.028747" c="0.028747" d="0.296383" tx="20.22" ty="3.34"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.297519" b="-0.010995" c="0.010995" d="0.297519" tx="16.33" ty="9.74"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.297592" b="0.00679" c="-0.00679" d="0.297592" tx="12.45" ty="16.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.297519" b="-0.010995" c="0.010995" d="0.297519" tx="17.08" ty="10.36"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.296383" b="-0.028747" c="0.028747" d="0.296383" tx="21.71" ty="4.61"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.294189" b="-0.046402" c="0.046402" d="0.294189" tx="26.35" ty="-1.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.296383" b="-0.028747" c="0.028747" d="0.296383" tx="22.52" ty="4.61"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.297519" b="-0.010995" c="0.010995" d="0.297519" tx="18.68" ty="10.32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.05"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.297592" b="0.00679" c="-0.00679" d="0.297592" tx="14.85" ty="16"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895">
+                  <matrix>
+                    <Matrix a="0.297512" b="-0.010988" c="0.010988" d="0.297512" tx="17.05" ty="10.28"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895" centerPoint3DX="29.45" centerPoint3DY="1.65">
+                  <matrix>
+                    <Matrix a="0.296371" b="-0.028732" c="0.028732" d="0.296371" tx="19.25" ty="4.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.2"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" blurY="15"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_9" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-62.1" ty="59.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-51.1" ty="57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-40.1" ty="56.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-29.1" ty="54.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-34.65" ty="53.28"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-40.2" ty="52.12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-45.75" ty="50.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-51.2" ty="53.82"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-56.65" ty="56.68"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-62.1" ty="59.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-51.1" ty="57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-40.1" ty="56.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-29.1" ty="54.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-34.65" ty="53.28"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-40.2" ty="52.12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-45.75" ty="50.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.29998" d="0.29998" tx="-51.22" ty="53.82"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" centerPoint3DX="-56.9" centerPoint3DY="83.65" loop="loop">
+                  <matrix>
+                    <Matrix a="0.299973" d="0.299973" tx="-56.65" ty="56.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.15" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_8" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.085388" b="0.287094" c="-0.287094" d="-0.085388" tx="-23.05" ty="71.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="-0.158025" b="0.254256" c="-0.20892" d="-0.129829" tx="-21.38" ty="72.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="-0.219391" b="0.203443" c="-0.130858" d="-0.141078" tx="-19.72" ty="72.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.265152" b="0.138275" c="-0.06424" d="-0.123123" tx="-18.05" ty="73.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="-0.241635" b="0.175961" c="-0.090958" d="-0.124866" tx="-19.05" ty="71.77"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="-0.212806" b="0.209732" c="-0.119406" d="-0.121133" tx="-20.05" ty="70.43"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.179306" b="0.238846" c="-0.148514" d="-0.111481" tx="-21.05" ty="69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="-0.15001" b="0.258586" c="-0.19345" d="-0.112215" tx="-21.72" ty="69.93"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="-0.118559" b="0.274747" c="-0.240176" d="-0.103636" tx="-22.38" ty="70.77"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.085388" b="0.287094" c="-0.287094" d="-0.085388" tx="-23.05" ty="71.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="-0.158025" b="0.254256" c="-0.20892" d="-0.129829" tx="-21.38" ty="72.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="-0.219391" b="0.203443" c="-0.130858" d="-0.141078" tx="-19.72" ty="72.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.265152" b="0.138275" c="-0.06424" d="-0.123123" tx="-18.05" ty="73.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="-0.241635" b="0.175961" c="-0.090958" d="-0.124866" tx="-19.05" ty="71.77"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="-0.212806" b="0.209732" c="-0.119406" d="-0.121133" tx="-20.05" ty="70.43"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.179306" b="0.238846" c="-0.148514" d="-0.111481" tx="-21.05" ty="69.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="-0.150002" b="0.258573" c="-0.193434" d="-0.112206" tx="-21.72" ty="69.97"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" centerPoint3DX="-39.25" centerPoint3DY="63.75" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.118546" b="0.274719" c="-0.240143" d="-0.103622" tx="-22.35" ty="70.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_7" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.269058" b="0.132477" c="-0.132477" d="0.269058" tx="-103.2" ty="45.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.258629" b="0.151707" c="-0.151707" d="0.258629" tx="-103.03" ty="47.13"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.246828" b="0.170121" c="-0.170121" d="0.246828" tx="-102.87" ty="48.97"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.233719" b="0.187622" c="-0.187622" d="0.233719" tx="-102.7" ty="50.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.249889" b="0.165329" c="-0.165329" d="0.249889" tx="-99.53" ty="46.47"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.263941" b="0.141651" c="-0.141651" d="0.263941" tx="-96.37" ty="42.13"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.275757" b="0.116791" c="-0.116791" d="0.275757" tx="-93.2" ty="37.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.273624" b="0.122059" c="-0.122059" d="0.273624" tx="-96.53" ty="40.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.271391" b="0.127288" c="-0.127288" d="0.271391" tx="-99.87" ty="42.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.269058" b="0.132477" c="-0.132477" d="0.269058" tx="-103.2" ty="45.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.258629" b="0.151707" c="-0.151707" d="0.258629" tx="-103.03" ty="47.13"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.246828" b="0.170121" c="-0.170121" d="0.246828" tx="-102.87" ty="48.97"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.233719" b="0.187622" c="-0.187622" d="0.233719" tx="-102.7" ty="50.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.249889" b="0.165329" c="-0.165329" d="0.249889" tx="-99.53" ty="46.47"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.263941" b="0.141651" c="-0.141651" d="0.263941" tx="-96.37" ty="42.13"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.275757" b="0.116791" c="-0.116791" d="0.275757" tx="-93.2" ty="37.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.273617" b="0.122052" c="-0.122052" d="0.273617" tx="-96.55" ty="40.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" centerPoint3DX="-111.5" centerPoint3DY="67.1" loop="loop">
+                  <matrix>
+                    <Matrix a="0.271378" b="0.127274" c="-0.127274" d="0.271378" tx="-99.9" ty="42.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_6" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.114548" b="0.276993" c="-0.276993" d="-0.114548" tx="-65.35" ty="61.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="-0.102307" b="0.281702" c="-0.281702" d="-0.102307" tx="-63.68" ty="61.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="-0.089873" b="0.28587" c="-0.28587" d="-0.089873" tx="-62.02" ty="62.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.077271" b="0.28949" c="-0.28949" d="-0.077271" tx="-60.35" ty="62.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="-0.101398" b="0.28186" c="-0.262434" d="-0.09442" tx="-61.35" ty="61.22"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="-0.124789" b="0.272223" c="-0.234689" d="-0.107603" tx="-62.35" ty="59.88"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.147278" b="0.260651" c="-0.206726" d="-0.116837" tx="-63.35" ty="58.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="-0.136597" b="0.266539" c="-0.229792" d="-0.117785" tx="-64.02" ty="59.38"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="-0.125681" b="0.271989" c="-0.253248" d="-0.117032" tx="-64.68" ty="60.22"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.114548" b="0.276993" c="-0.276993" d="-0.114548" tx="-65.35" ty="61.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="-0.102307" b="0.281702" c="-0.281702" d="-0.102307" tx="-63.68" ty="61.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="-0.089873" b="0.28587" c="-0.28587" d="-0.089873" tx="-62.02" ty="62.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.077271" b="0.28949" c="-0.28949" d="-0.077271" tx="-60.35" ty="62.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="-0.101398" b="0.28186" c="-0.262434" d="-0.09442" tx="-61.35" ty="61.22"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="-0.124789" b="0.272223" c="-0.234689" d="-0.107603" tx="-62.35" ty="59.88"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.147278" b="0.260651" c="-0.206726" d="-0.116837" tx="-63.35" ty="58.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="-0.136592" b="0.266523" c="-0.229786" d="-0.117779" tx="-64.05" ty="59.42"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" centerPoint3DX="-82.6" centerPoint3DY="52.3" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.125671" b="0.271957" c="-0.253235" d="-0.11702" tx="-64.7" ty="60.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2" y="0.1"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_5" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="26.8" ty="78.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="28.47" ty="78.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="30.13" ty="79.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="31.8" ty="79.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="30.8" ty="78.32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="29.8" ty="76.98"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="28.8" ty="75.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="28.13" ty="76.48"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="27.47" ty="77.32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="26.8" ty="78.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="28.47" ty="78.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="30.13" ty="79.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="31.8" ty="79.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="30.8" ty="78.32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="29.8" ty="76.98"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="28.8" ty="75.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="28.12" ty="76.47"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" centerPoint3DX="-15.55" centerPoint3DY="53.55" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="27.45" ty="77.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_4" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.284973" d="0.284973" tx="22.3" ty="54.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.283312" b="-0.029855" c="0.029855" d="0.283312" tx="23.97" ty="54.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.278533" b="-0.059362" c="0.059362" d="0.278533" tx="25.63" ty="55.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.270691" b="-0.088196" c="0.088196" d="0.270691" tx="27.3" ty="55.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.275216" b="-0.072666" c="0.072666" d="0.275216" tx="26.3" ty="54.32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.278852" b="-0.056907" c="0.056907" d="0.278852" tx="25.3" ty="52.98"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.281586" b="-0.04097" c="0.04097" d="0.281586" tx="24.3" ty="51.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.283372" b="-0.02738" c="0.02738" d="0.283372" tx="23.63" ty="52.48"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.284502" b="-0.013713" c="0.013713" d="0.284502" tx="22.97" ty="53.32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.284973" d="0.284973" tx="22.3" ty="54.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.283312" b="-0.029855" c="0.029855" d="0.283312" tx="23.97" ty="54.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.278533" b="-0.059362" c="0.059362" d="0.278533" tx="25.63" ty="55.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.270691" b="-0.088196" c="0.088196" d="0.270691" tx="27.3" ty="55.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.275216" b="-0.072666" c="0.072666" d="0.275216" tx="26.3" ty="54.32"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.278852" b="-0.056907" c="0.056907" d="0.278852" tx="25.3" ty="52.98"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.281586" b="-0.04097" c="0.04097" d="0.281586" tx="24.3" ty="51.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.283371" b="-0.027375" c="0.027375" d="0.283371" tx="23.65" ty="52.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" centerPoint3DX="35.55" centerPoint3DY="40.2" loop="loop">
+                  <matrix>
+                    <Matrix a="0.2845" b="-0.013702" c="0.013702" d="0.2845" tx="22.95" ty="53.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_3" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.276291" b="-0.06868" c="0.06868" d="0.276291" tx="53.3" ty="28.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.276291" b="-0.06868" c="0.06868" d="0.276291" tx="51.13" ty="26.02"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.276291" b="-0.06868" c="0.06868" d="0.276291" tx="48.97" ty="23.68"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.276291" b="-0.06868" c="0.06868" d="0.276291" tx="46.8" ty="21.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.276291" b="-0.06868" c="0.06868" d="0.276291" tx="48.3" ty="21.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.276291" b="-0.06868" c="0.06868" d="0.276291" tx="49.8" ty="21.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.276291" b="-0.06868" c="0.06868" d="0.276291" tx="51.3" ty="21.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.276291" b="-0.06868" c="0.06868" d="0.276291" tx="51.97" ty="23.78"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.276291" b="-0.06868" c="0.06868" d="0.276291" tx="52.63" ty="26.07"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.276291" b="-0.06868" c="0.06868" d="0.276291" tx="53.3" ty="28.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.276291" b="-0.06868" c="0.06868" d="0.276291" tx="51.13" ty="26.02"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.276291" b="-0.06868" c="0.06868" d="0.276291" tx="48.97" ty="23.68"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.276291" b="-0.06868" c="0.06868" d="0.276291" tx="46.8" ty="21.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.276291" b="-0.06868" c="0.06868" d="0.276291" tx="48.3" ty="21.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.276291" b="-0.06868" c="0.06868" d="0.276291" tx="49.8" ty="21.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.276291" b="-0.06868" c="0.06868" d="0.276291" tx="51.3" ty="21.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.276283" b="-0.068672" c="0.068672" d="0.276283" tx="52.03" ty="23.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" centerPoint3DX="59.05" centerPoint3DY="50.95" loop="loop">
+                  <matrix>
+                    <Matrix a="0.276276" b="-0.068665" c="0.068665" d="0.276276" tx="52.7" ty="26.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.15" y="0.2"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_2" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.284973" d="0.284973" tx="-13.7" ty="41.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.283536" b="0.027757" c="-0.027757" d="0.283536" tx="-12.03" ty="42.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.279402" b="0.055233" c="-0.055233" d="0.279402" tx="-10.37" ty="42.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.272614" b="0.082169" c="-0.082169" d="0.272614" tx="-8.7" ty="43.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.280289" b="0.049496" c="-0.049496" d="0.280289" tx="-9.7" ty="42.02"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.284064" b="0.016158" c="-0.016158" d="0.284064" tx="-10.7" ty="40.68"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.28389" b="-0.01738" c="0.01738" d="0.28389" tx="-11.7" ty="39.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.284369" b="-0.011598" c="0.011598" d="0.284369" tx="-12.37" ty="40.18"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.28473" b="-0.005804" c="0.005804" d="0.28473" tx="-13.03" ty="41.02"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.284973" d="0.284973" tx="-13.7" ty="41.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.283536" b="0.027757" c="-0.027757" d="0.283536" tx="-12.03" ty="42.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.279402" b="0.055233" c="-0.055233" d="0.279402" tx="-10.37" ty="42.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.272614" b="0.082169" c="-0.082169" d="0.272614" tx="-8.7" ty="43.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.280289" b="0.049496" c="-0.049496" d="0.280289" tx="-9.7" ty="42.02"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.284064" b="0.016158" c="-0.016158" d="0.284064" tx="-10.7" ty="40.68"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.28389" b="-0.01738" c="0.01738" d="0.28389" tx="-11.7" ty="39.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.284361" b="-0.011595" c="0.011595" d="0.284361" tx="-12.4" ty="40.17"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" centerPoint3DX="-0.2" centerPoint3DY="28.3" loop="loop">
+                  <matrix>
+                    <Matrix a="0.284714" b="-0.005798" c="0.005798" d="0.284714" tx="-13.1" ty="41"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.234268" b="-0.161499" c="0.161499" d="0.234268" tx="15.7" ty="12.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.234268" b="-0.161499" c="0.161499" d="0.234268" tx="19.83" ty="16.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.234268" b="-0.161499" c="0.161499" d="0.234268" tx="23.97" ty="19.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.234268" b="-0.161499" c="0.161499" d="0.234268" tx="28.1" ty="23.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.2468" b="-0.141461" c="0.141461" d="0.2468" tx="23.92" ty="19.03"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.257623" b="-0.120457" c="0.120457" d="0.257623" tx="19.73" ty="14.87"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.266663" b="-0.098633" c="0.098633" d="0.266663" tx="15.55" ty="10.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.257623" b="-0.120457" c="0.120457" d="0.257623" tx="15.6" ty="11.42"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.2468" b="-0.141461" c="0.141461" d="0.2468" tx="15.65" ty="12.13"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.234268" b="-0.161499" c="0.161499" d="0.234268" tx="15.7" ty="12.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.234268" b="-0.161499" c="0.161499" d="0.234268" tx="19.83" ty="16.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.234268" b="-0.161499" c="0.161499" d="0.234268" tx="23.97" ty="19.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.234268" b="-0.161499" c="0.161499" d="0.234268" tx="28.1" ty="23.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.2468" b="-0.141461" c="0.141461" d="0.2468" tx="23.92" ty="19.03"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="2">
+                  <matrix>
+                    <Matrix a="0.257623" b="-0.120457" c="0.120457" d="0.257623" tx="19.73" ty="14.87"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.266663" b="-0.098633" c="0.098633" d="0.266663" tx="15.55" ty="10.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop" firstFrame="1">
+                  <matrix>
+                    <Matrix a="0.257605" b="-0.120452" c="0.120452" d="0.257605" tx="15.62" ty="11.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" centerPoint3DX="28.55" centerPoint3DY="34.4" loop="loop">
+                  <matrix>
+                    <Matrix a="0.246765" b="-0.141449" c="0.141449" d="0.246765" tx="15.7" ty="12.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.1" y="0.15"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

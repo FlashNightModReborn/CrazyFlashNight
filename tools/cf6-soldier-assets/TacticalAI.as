@@ -1,7 +1,7 @@
 ﻿// Shared CF6 tactical parameters are copied once at spawn. External scalar
 // overrides use 特种兵战术_<key>; changing a test case never mutates another unit.
-soldierTacticalStats={smokes:0,smokeReloads:0,slideExits:0,chargeContacts:0,chargeHits:0,chargeDamage:0,chargeTurns:0,evasions:0,blockedMoves:0,strategyChanges:0};
-soldierNextEvasionAt=0;soldierPendingEvasion=null;soldierThreatOwned=false;
+soldierTacticalStats={wallEscapes:0,slideBlocks:0,slideStalls:0,smokes:0,smokeReloads:0,slideExits:0,chargeContacts:0,chargeHits:0,chargeDamage:0,chargeTurns:0,evasions:0,blockedMoves:0,strategyChanges:0};
+soldierNextEvasionAt=0;soldierNextEvasionAttemptAt=0;soldierPendingEvasion=null;soldierThreatOwned=false;
 soldierSmokeNextAt=0;soldierSlidePermit=null;soldierRecentDamageUntil=0;
 soldierStrategy="line";soldierStrategyUntil=0;soldierBlockedUntil=0;
 soldierConfigureTactics=function():Void {
@@ -56,8 +56,9 @@ soldierTacticalObserve=function():Void {
                 +" strategy="+this.soldierStrategy+" smoke="+stats.smokes+" reloaded="+stats.smokeReloads
                 +" exits="+stats.slideExits+" contact="+stats.chargeContacts+" blocked="+stats.blockedMoves
                 +" hits="+stats.chargeHits+" impactDamage="+stats.chargeDamage+" turns="+stats.chargeTurns
-                +" evasions="+stats.evasions+" bt="+this._btCount+" switches="+stats.strategyChanges
-                +" shots="+this.soldierShotCount+" hp="+this.hp);
+                +" evasions="+stats.evasions+" wallEscapes="+stats.wallEscapes+" slideBlocks="+stats.slideBlocks+" slideStalls="+stats.slideStalls+" bt="+this._btCount+" switches="+stats.strategyChanges
+                +" shots="+this.soldierShotCount+" sub="+this.soldierSubweaponShots
+                +" subReload="+this.soldierSubweaponReloads+" subLoaded="+this.长枪副武器状态.loaded+" hp="+this.hp);
         }
     }
     if(this.hp<=0)this.soldierReleaseTactics();
@@ -72,6 +73,11 @@ soldierSelectStrategy=function(dx:Number,dz:Number):String {
     var pressure:Boolean=this.soldierClock<this.soldierRecentDamageUntil;
     var lineScore:Number=(dx>180 && dz<=24?4:0)+(pressure?0:2);
     var mobileScore:Number=(dx<180?5:0)+(pressure?4:0)+(dz>36?2:0);
+    var rifleLoaded:Boolean=this.长枪.value.shot<this.长枪弹匣容量;
+    var pistolLoaded:Boolean=this.手枪.value.shot<this.手枪弹匣容量
+        || (this.eliteSidearmEnabled() && this.手枪2.value.shot<this.手枪2弹匣容量);
+    if(!rifleLoaded && pistolLoaded)mobileScore+=4;
+    if(rifleLoaded && !pistolLoaded)lineScore+=4;
     if(this.soldierClock<this.soldierBlockedUntil)mobileScore-=4;
     var next:String=mobileScore>lineScore+1?"mobile":"line";
     if(next!=this.soldierStrategy)this.soldierTacticalStats.strategyChanges++;
@@ -86,6 +92,13 @@ soldierTacticalChoose=function(dx:Number,dz:Number,height:Number):String {
     var strategy:String=this.soldierSelectStrategy(dx,dz);
     // A committed smoke reload hands directly to the slide; it does not
     // wait for a new AI decision or borrow the ordinary running prelude.
+    // Point-blank instructor defence takes precedence over strategy and bullet evasion.
+    if(this.soldierIsInstructor===true && dx<=tune.knifeRange && dz<=tune.laneRange
+        && !(this.soldierClock<this.soldierNextMeleeAt)){
+        this.soldierMeleeKind=this.soldierPhase==1 && dx<=tune.bashRange
+            && !(this.soldierClock<this.soldierNextBashAt)?"bash":"knife";
+        return "knife";
+    }
     if(this.soldierTryEvasion(dx,dz))return "shoot";
     if(this.soldierPhase==1 && this.soldierIsElite===true){
         if(dz>tune.laneRange)return "none";
@@ -114,7 +127,8 @@ soldierTacticalChoose=function(dx:Number,dz:Number,height:Number):String {
     if(dx>tune.shootRange || dz>tune.laneRange || this.soldierClock<this.soldierNextShootAt)return "none";
     this.eliteNextAction=this.soldierIsInstructor===true && strategy=="line"?"line":
         strategy=="mobile" && !(this.soldierClock<this.soldierBlockedUntil)?(dx<config.retreatTrigger?"retreat":
-            dx>config.slideStopRange+60?"run":"stand"):"stand";
+            dx>config.runTrigger?"run":"stand"):"stand";
+    if(this.soldierIsElite===true && (!this.eliteTactics || !this.eliteMobility))this.eliteNextAction="stand";
     return "shoot";
 };
 soldierTacticalMove=function(direction:String,speed:Number):Number {
@@ -152,7 +166,7 @@ soldierCanSlideExit=function(target:MovieClip):Boolean {
     if(this.soldierPhase!=2 || !(target.hp>0) || target!==_root.gameworld[this.攻击目标]
         || this.倒地 || this.浮空 || this.soldierClock<this.soldierBlockedUntil)return false;
     var dx:Number=Math.abs(target._x-this._x),dz:Number=Math.abs(target.Z轴坐标-this.Z轴坐标);
-    return isFinite(dx) && isFinite(dz) && dx>this.soldierTacticalConfig.slideStopRange
+    return isFinite(dx) && isFinite(dz) && this.eliteMobility && this.跑X速度>0
         && dx<=this.soldierTuning.shootRange
         && dz<=this.soldierTuning.laneRange+Math.min(this.soldierTacticalConfig.slideZBudget,60)
         && this.eliteWeaponReady("长枪") && this.长枪.value.shot<this.长枪弹匣容量;
@@ -240,8 +254,9 @@ soldierEvasionZSign=function():Number {
 soldierTryEvasion=function(dx:Number,dz:Number):Boolean {
     var config:Object=this.soldierTacticalConfig;
     if(!isFinite(dx) || !isFinite(dz) || this.soldierIsElite!==true || this.soldierPhase!=2 || this.特种兵避弹!==true
-        || this.soldierTacticalPolicy=="line" || this.硬直中 || this.倒地 || this.浮空
-        || this.soldierClock<this.soldierNextEvasionAt || dx>this.soldierTuning.shootRange || dz>80
+        || !this.eliteTactics || !this.eliteMobility || this.soldierClock<this.soldierNextEvasionAttemptAt
+        || this.soldierTacticalPolicy=="line" || this.倒地 || this.浮空
+        || dx>this.soldierTuning.shootRange || dz>80
         || !this.elitePrimaryPistolEnabled())return false;
     var target:MovieClip=_root.gameworld[this.攻击目标];
     if(!(target.hp>0))return false;
@@ -249,6 +264,9 @@ soldierTryEvasion=function(dx:Number,dz:Number):Boolean {
     if(pending!=null && (pending.target!==target || this.soldierClock>pending.until)){
         this.soldierPendingEvasion=null;pending=null;
     }
+    var wallEscape:Boolean=pending!=null && pending.noFire===true
+        && (pending.reason=="slide_blocked" || pending.reason=="slide_stalled");
+    if((this.硬直中 || this.soldierClock<this.soldierNextEvasionAt) && !wallEscape)return false;
     var age:Number=_root.帧计时器.当前帧数-this._btFrame;
     var fresh:Boolean=isFinite(age) && age>=0 && age<=1 && this._btCount>0
         && this._btMinETA>=0 && this._btMinETA<config.evasionETA;
@@ -260,4 +278,5 @@ soldierTryEvasion=function(dx:Number,dz:Number):Boolean {
 soldierInstallTactics=function():Void {
     this.soldierConfigureTactics();
     this.soldierChooseAttack=this.soldierTacticalChoose;
+    this.soldierInstallSubweapon();
 };

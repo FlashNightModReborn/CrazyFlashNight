@@ -8,6 +8,10 @@
     <DOMFolderItem name="Codex/大刀机器人/动作" itemID="6af20000-fceccafa"/>
     <DOMFolderItem name="Codex/大刀机器人/机械爆裂" itemID="6af20000-56c54752"/>
     <DOMFolderItem name="Codex/大刀机器人/死亡碎片" itemID="6af20000-9a4d83d3"/>
+    <DOMFolderItem name="Codex/大刀机器人/特效" itemID="6af20000-5de73833"/>
+    <DOMFolderItem name="Codex/大刀机器人/特效/特效与子弹" itemID="6af20000-693854fa"/>
+    <DOMFolderItem name="Codex/大刀机器人/特效/特效与子弹/牙通牙" itemID="6af20000-10b1fb20"/>
+    <DOMFolderItem name="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件" itemID="6af20000-84d2538b"/>
     <DOMFolderItem name="Codex/大刀机器人/碎片图集" itemID="6af20000-b9c8649f"/>
   </folders>
   <symbols>
@@ -54,6 +58,7 @@
     <Include href="Codex/大刀机器人/分件/可瞄准光束.xml" itemID="6af00000-cdfdc00b" loadImmediate="false"/>
     <Include href="Codex/大刀机器人/动作/倒地恢复.xml" itemID="6af00000-36405d4c" loadImmediate="false"/>
     <Include href="Codex/大刀机器人/动作/击飞姿势.xml" itemID="6af00000-e52de0fe" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/动作/旋刃冲刺.xml" itemID="6af00000-9bbeb249" loadImmediate="false"/>
     <Include href="Codex/大刀机器人/动作/机械碎裂.xml" itemID="6af00000-ca595d08" loadImmediate="false"/>
     <Include href="Codex/大刀机器人/动作/横扫.xml" itemID="6af00000-ace6e01b" loadImmediate="false"/>
     <Include href="Codex/大刀机器人/动作/波属性光束.xml" itemID="6af00000-4cf6046e" loadImmediate="false"/>
@@ -112,6 +117,162 @@
     <Include href="Codex/大刀机器人/死亡碎片/923-遮罩2.xml" itemID="6af00000-09c42006" loadImmediate="false"/>
     <Include href="Codex/大刀机器人/死亡碎片/923-遮罩3.xml" itemID="6af00000-f766a8a4" loadImmediate="false"/>
     <Include href="Codex/大刀机器人/死亡碎片/923-遮罩4.xml" itemID="6af00000-756d357a" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/元件 6.xml" itemID="6af00000-b51cad0a" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/刀光.xml" itemID="6af00000-87622837" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/旋转刀光.xml" itemID="6af00000-855b972f" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙.xml" itemID="6af00000-4f95b40a" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 100 副本 9.xml" itemID="6af00000-c76eef55" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 106 副本 11.xml" itemID="6af00000-7981c3de" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 108 副本 12.xml" itemID="6af00000-44c481bf" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 110 副本 10.xml" itemID="6af00000-31f93ed2" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 115 副本 8.xml" itemID="6af00000-1adb9d8d" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 117 副本 12.xml" itemID="6af00000-0c8862a6" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 119 副本 7.xml" itemID="6af00000-4255c8f5" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 129 副本 8.xml" itemID="6af00000-141ce864" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 13 副本 30.xml" itemID="6af00000-867bf110" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 131 副本 9.xml" itemID="6af00000-50f35f92" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 133 副本 6.xml" itemID="6af00000-b2aca9cc" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 144 副本 7.xml" itemID="6af00000-69dc246e" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 146 副本 6.xml" itemID="6af00000-52cd6938" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 148 副本 9.xml" itemID="6af00000-ae6b6e46" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 15 副本 27.xml" itemID="6af00000-95b46d96" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 158 副本 6.xml" itemID="6af00000-60e04adc" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 160 副本 6.xml" itemID="6af00000-0f809872" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 162 副本 3.xml" itemID="6af00000-dca5bf1b" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 166 副本 3.xml" itemID="6af00000-f4fed2f5" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 17 副本 30.xml" itemID="6af00000-6cf798ea" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 174 副本 4.xml" itemID="6af00000-849c29a8" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 176 副本 7.xml" itemID="6af00000-ed3b5357" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 186 副本 3.xml" itemID="6af00000-319b991e" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 188 副本 4.xml" itemID="6af00000-f9a8e7bb" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 19 副本 25.xml" itemID="6af00000-b58f6749" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 192 副本 6.xml" itemID="6af00000-1c91b9b6" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 194 副本 4.xml" itemID="6af00000-ad88d7e2" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 196 副本 6.xml" itemID="6af00000-5b399f4d" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 198 副本 5.xml" itemID="6af00000-fe996fb7" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 200 副本 4.xml" itemID="6af00000-3ad7440f" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 202 副本 4.xml" itemID="6af00000-0d40bef2" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 204 副本 5.xml" itemID="6af00000-08ea748e" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 206 副本 5.xml" itemID="6af00000-26fef232" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 208 副本 5.xml" itemID="6af00000-16bb7832" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 21 副本 26.xml" itemID="6af00000-6f832133" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 210 副本 3.xml" itemID="6af00000-5f678b46" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 212.xml" itemID="6af00000-ea3288f7" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 214 副本 2.xml" itemID="6af00000-48e1ebf9" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 220 副本 4.xml" itemID="6af00000-0da4c347" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 222 副本 4.xml" itemID="6af00000-070461b8" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 228 副本 3.xml" itemID="6af00000-62c51e95" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 23 副本 32.xml" itemID="6af00000-b27a8625" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 230 副本 2.xml" itemID="6af00000-f36ca873" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 236 副本 3.xml" itemID="6af00000-45d5f1fc" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 238 副本 4.xml" itemID="6af00000-d0266680" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 240 副本 3.xml" itemID="6af00000-dd5bfd26" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 242 副本.xml" itemID="6af00000-b41b5d0f" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 25 副本 24.xml" itemID="6af00000-af1c89e4" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 27 副本 27.xml" itemID="6af00000-15374337" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 32 副本 21.xml" itemID="6af00000-a3fee1ec" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 34 副本 14.xml" itemID="6af00000-7e282b0e" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 36 副本 17.xml" itemID="6af00000-a668feb2" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 38 副本 19.xml" itemID="6af00000-d799fb94" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 40 副本 17.xml" itemID="6af00000-921200ef" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 42 副本 17.xml" itemID="6af00000-1877dc80" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 44 副本 17.xml" itemID="6af00000-69675534" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 48 副本 20.xml" itemID="6af00000-5fe23639" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 50 副本 17.xml" itemID="6af00000-be11507f" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 52 副本 11.xml" itemID="6af00000-270fdcb1" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 54 副本 16.xml" itemID="6af00000-8444b1cb" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 58 副本 16.xml" itemID="6af00000-eb403087" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 60 副本 18.xml" itemID="6af00000-0c9aa89c" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 62 副本 19.xml" itemID="6af00000-2b3e737e" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 66 副本 16.xml" itemID="6af00000-7a4aad47" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 68 副本 17.xml" itemID="6af00000-40b294e6" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 73 副本 12.xml" itemID="6af00000-80c2660c" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 75 副本 10.xml" itemID="6af00000-d49fdf13" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 77 副本 9.xml" itemID="6af00000-be9dc1d1" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 79 副本 7.xml" itemID="6af00000-93222b11" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 81 副本 9.xml" itemID="6af00000-24404e67" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 85 副本 11.xml" itemID="6af00000-2c94ccf2" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 87 副本 8.xml" itemID="6af00000-0d345ee6" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 89 副本 11.xml" itemID="6af00000-d5a5c5d3" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 94 副本 11.xml" itemID="6af00000-b0a20e1e" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 96 副本 15.xml" itemID="6af00000-085478d8" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/shape 98 副本 12.xml" itemID="6af00000-6e2bd91f" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 101 副本 5.xml" itemID="6af00000-03862114" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 107 副本 6.xml" itemID="6af00000-052dc7fa" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 109 副本 5.xml" itemID="6af00000-076a8543" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 111 副本 6.xml" itemID="6af00000-0f6ec0e7" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 116 副本 6.xml" itemID="6af00000-59b7caf6" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 118 副本 10.xml" itemID="6af00000-7371bf0a" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 120 副本 4.xml" itemID="6af00000-6974de4c" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 130 副本 3.xml" itemID="6af00000-80c48046" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 132 副本 7.xml" itemID="6af00000-24e325fb" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 134 副本 5.xml" itemID="6af00000-e0fbf85d" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 14 副本 26.xml" itemID="6af00000-c719dce2" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 145 副本 5.xml" itemID="6af00000-89e4887d" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 147 副本 5.xml" itemID="6af00000-d7bb564f" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 149 副本 6.xml" itemID="6af00000-3c897295" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 159 副本 4.xml" itemID="6af00000-3acc103d" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 16 副本 22.xml" itemID="6af00000-eb91bf14" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 161 副本 4.xml" itemID="6af00000-e145b67d" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 163 副本 2.xml" itemID="6af00000-6a49303a" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 167 副本 3.xml" itemID="6af00000-0bf64d9a" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 175 副本 5.xml" itemID="6af00000-831373f2" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 177 副本 5.xml" itemID="6af00000-72af04d4" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 18 副本 24.xml" itemID="6af00000-1c18e557" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 187 副本 3.xml" itemID="6af00000-dab49122" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 189 副本 5.xml" itemID="6af00000-18847a56" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 193 副本 3.xml" itemID="6af00000-c3992355" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 195 副本 2.xml" itemID="6af00000-775e015f" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 197 副本 3.xml" itemID="6af00000-f1d401e5" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 199 副本 3.xml" itemID="6af00000-0c6b2259" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 20 副本 20.xml" itemID="6af00000-71cdb406" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 201 副本 2.xml" itemID="6af00000-969100ad" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 203 副本 2.xml" itemID="6af00000-a34f514a" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 205 副本 2.xml" itemID="6af00000-81c53230" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 207 副本 3.xml" itemID="6af00000-13e16eba" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 209 副本 2.xml" itemID="6af00000-2ccb7736" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 211 副本.xml" itemID="6af00000-3b6411c1" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 213.xml" itemID="6af00000-4db1bef1" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 215 副本.xml" itemID="6af00000-070e075a" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 22 副本 20.xml" itemID="6af00000-d1d5e3fc" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 221 副本 2.xml" itemID="6af00000-39ed9ae0" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 223 副本 2.xml" itemID="6af00000-1e2f4c35" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 229 副本 2.xml" itemID="6af00000-4e3a200d" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 231 副本.xml" itemID="6af00000-c58965aa" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 237.xml" itemID="6af00000-e61d4a31" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 239 副本 2.xml" itemID="6af00000-6b370570" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 24 副本 25.xml" itemID="6af00000-f3ed6dbd" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 241 副本 2.xml" itemID="6af00000-7896ad7f" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 243 副本.xml" itemID="6af00000-2786519e" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 26 副本 18.xml" itemID="6af00000-f5d87631" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 28 副本 19.xml" itemID="6af00000-68d4c49f" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 33 副本 13.xml" itemID="6af00000-83e6cc02" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 35 副本 10.xml" itemID="6af00000-fcf7559f" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 37 副本 14.xml" itemID="6af00000-c48bc0bc" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 39 副本 12.xml" itemID="6af00000-fbf7fd30" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 41 副本 13.xml" itemID="6af00000-e9d1f710" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 43 副本 12.xml" itemID="6af00000-8b41b9c0" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 45 副本 16.xml" itemID="6af00000-aba99501" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 49 副本 14.xml" itemID="6af00000-a3ec910b" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 51 副本 12.xml" itemID="6af00000-14dbb45b" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 53 副本 8.xml" itemID="6af00000-43a31e45" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 55 副本 10.xml" itemID="6af00000-1cd1fad1" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 59 副本 10.xml" itemID="6af00000-d4ee9d54" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 61 副本 11.xml" itemID="6af00000-febb703a" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 63 副本 13.xml" itemID="6af00000-17c032b7" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 67 副本 11.xml" itemID="6af00000-f394ca47" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 69 副本 11.xml" itemID="6af00000-7e1861d3" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 74 副本 9.xml" itemID="6af00000-e4b2587a" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 76 副本 8.xml" itemID="6af00000-6fc4f5d0" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 78 副本 6.xml" itemID="6af00000-41ce7eb6" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 80 副本 5.xml" itemID="6af00000-4a9acca1" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 82 副本 7.xml" itemID="6af00000-68bc14b4" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 86 副本 8.xml" itemID="6af00000-00fb74b8" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 88 副本 5.xml" itemID="6af00000-4337e3bb" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 90 副本 10.xml" itemID="6af00000-46f6e8f4" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 95 副本 6.xml" itemID="6af00000-70743e70" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 97 副本 9.xml" itemID="6af00000-711401d0" loadImmediate="false"/>
+    <Include href="Codex/大刀机器人/特效/特效与子弹/牙通牙/牙通牙特效组件/sprite 99 副本 8.xml" itemID="6af00000-9b5afd48" loadImmediate="false"/>
     <Include href="Codex/大刀机器人/碎片图集/207ad0e4be8a5376.xml" itemID="6af00000-24ef9006" loadImmediate="false"/>
     <Include href="Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩0.xml" itemID="6af00000-54fed0b7" loadImmediate="false"/>
     <Include href="Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩1.xml" itemID="6af00000-7923a0b9" loadImmediate="false"/>
