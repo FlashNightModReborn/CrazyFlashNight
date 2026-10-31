@@ -52,6 +52,18 @@ struct ProbeBulletSyncStats {
     double submittedQpcMs, presentedSubmittedQpcMs, presentedCaptureQpcMs, presentedQpcMs;
 };
 static_assert(sizeof(ProbeBulletSyncStats)==104,"Bullet sync diagnostic layout");
+// Optional source-tag diagnostic. A getter requests at most one asynchronous
+// 16-byte GPU result per second; it never waits for capture or GPU completion.
+// status: 0 pending, 1 matched, 2 invalid tag, 3 no history, 4 hole in history,
+// 5 source older than retained history, 6 source ahead, 7 epoch mismatch, 8 probe error.
+struct ProbeBulletSourceStats {
+    uint32_t size,status,tagValid,historyCount;
+    int32_t sourceEpoch,sourceFrame,matchedOrdinaryEpoch,matchedOrdinaryFrame,matchedChainEpoch,matchedChainFrame;
+    uint32_t matchedItems,sourceWidth,sourceHeight,reserved;
+    uint64_t sampleNumber;
+    double captureQpcMs,sampleQpcMs;
+};
+static_assert(sizeof(ProbeBulletSourceStats)==80,"Bullet source diagnostic layout");
 // postprocess-v1: additive extension; existing ABI 12 layouts stay intact.
 struct ProbePostprocessStats {
     uint32_t size,casEnabled,feedbackEnabled,historyValid;
@@ -172,6 +184,7 @@ __declspec(dllexport) int __cdecl ProbeSetBulletFrame(void* handle, const float*
 __declspec(dllexport) int __cdecl ProbeSetBulletFrameV2(void* handle, const float* items, int count, float cameraX, float cameraY, float cameraScale,
     int ordinaryEpoch, int ordinaryFrame, int chainEpoch, int chainFrame);
 __declspec(dllexport) int __cdecl ProbeGetBulletSyncStats(void* handle, ProbeBulletSyncStats* stats);
+__declspec(dllexport) int __cdecl ProbeGetBulletSourceStats(void* handle, ProbeBulletSourceStats* stats);
 // Atlas upload is one-time per resource generation; ready confirms GPU creation.
 __declspec(dllexport) int __cdecl ProbeSetCombatFxAtlas(void* handle,const uint8_t* pixels,int width,int height,int length);
 __declspec(dllexport) int __cdecl ProbeCombatFxReady(void* handle);

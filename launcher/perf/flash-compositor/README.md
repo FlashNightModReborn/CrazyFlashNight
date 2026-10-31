@@ -105,11 +105,19 @@ Remove-Item Env:CF7_TEST_SHARED_WORLD_CANDIDATE
 
 ### 子弹视觉源帧同步与诊断
 
-`NativeFrameTag` 在 1024×576 根逻辑坐标的 `(0,560)`、`(16,560)`、`(32,560)`、`(48,560)` 绘制四个 16×16 色块。帧末各视觉 section 已生成后、F 包发送前，只有 ordinary 处于原生所有权且 `ChainVisualBridge.flush()` 实际生成 F8 时才发布标记；任一通道缺失、身份非法、断连或没有 gameworld 时隐藏，场景退休时释放自己的 MovieClip。四块依次编码 magic `0x13579B`、24 位逻辑帧小端 RGB、16 位 F5 epoch 与校验字节、帧字节补色；校验为五个 epoch/frame 字节之和再加 167。原生按捕获分辨率映射到色块中心并用 `Load` 解码，不增加逐帧 CPU 像素回读，最终输出用右侧图像遮盖逻辑标记区。
+`NativeFrameTag` 在 1024×576 根逻辑坐标的 `(0,560)`、`(16,560)`、`(32,560)`、`(48,560)` 绘制四个 16×16 色块。帧末各视觉 section 已生成后、F 包发送前，只有 ordinary 处于原生所有权且 `ChainVisualBridge.flush()` 实际生成 F8 时才发布标记；任一通道缺失、身份非法、断连或没有 gameworld 时隐藏，场景退休时释放自己的 MovieClip。四块依次编码 magic `0x13579B`、24 位逻辑帧小端 RGB、16 位 F5 epoch 与校验字节、帧字节补色；校验为五个 epoch/frame 字节之和再加 167。原生先以 `min(sourceW/1024,sourceH/576)` 求实际内容尺寸和居中偏移，再映射色块中心并用 `Load` 解码。标记只在世界源图采样时清理，覆盖一源像素的光栅/滤波边缘；CAS 的邻域采样使用同一清理规则，原始捕获保留用于配帧和诊断。清理发生在原生特效、天气、灯光与 HUD 合成之前，不再改写最终画面或占用额外整帧同步纹理。
 
 GPU 同帧门要求 ordinary 与 chain 的 epoch/frame 均已知，并分别核对源标记中的 F5 epoch＋逻辑帧和 F8 的逻辑帧。F5 每次能力配置推进自己的 epoch，F8 只在重同步／场景退休时推进自己的 epoch；两套计数不能要求相等，F8 epoch 不写入源标记，只继续承担有序接收和旧包隔离。原生保留最近 8 个不可变子弹快照，GPU 只绘制与捕获源标记精确匹配的那份；同身份更新替换旧快照，任一通道 epoch 变化或未知身份清空历史，空快照不分配子弹数组。身份不匹配、标记无效或对应快照已越过容量时，只抑制无法确认的子弹，世界与 HUD 始终呈现当前捕获画面。禁止把子弹对齐失败扩大为整帧历史回放或无限等待：该旧策略会在空子弹、持续一帧错位下冻结整个画面，同时 Flash FPS 和 Present 计数继续增长。旧 ABI 和没有完整 F5／F8 身份的画廊仍走原路径，此时 AS2 不发布标记。该策略不改伤害结算、碰撞或受击时序；极端缺包时允许短时缺失子弹视觉，不绘制身份错误的子弹，也不延迟整个世界。
 
 `ProbeSetBulletFrameV2` 在 ABI 12 的旧记录之外追加 ordinary／chain 各自的 epoch、frame；旧 `ProbeSetBulletFrame` 保留，未知身份使用 -1。新 Host 必须配套带 V2 与 `ProbeGetBulletSyncStats` 的 native，104 字节统计分别记录最近提交和最近一次成功 Present 实际采用的候选、版本合并次数，以及提交、捕获和呈现 QPC。`world_bullet_sync` 每秒最多记录一次，FocusTrace 对应 `world.bullet_sync`。`candidateOrdinary`、`candidateChain` 与 `candidateVersions` 都是候选统计，不是 GPU 最终历史选择的源帧号；`candidateFrameIds=true` 表示候选携带身份，`sourceLogicalFrameInStats=false` 与 `presentedSourceMatchKnown=false` 保留这一观测边界。QPC 相近不能代替源帧身份，也不能据此声称物理 scanout 已验证。
+
+`ProbeGetBulletSourceStats` 是可选的 80 字节诊断扩展。Host 仅在既有 `diagFocusTrace` 开启时请求；原生最多每秒执行一次 1×1 GPU 解码，用同一个 `ReadFrameTag` 输出 16 字节结果，经 query 和 `DO_NOT_WAIT` 异步读取，不增加逐帧或整画面 CPU 回读。`world_bullet_source`／`world.bullet_source` 记录源 epoch/frame、有效性、该次采样绑定的历史及匹配身份，区分 `tag_invalid`、`history_empty`、`history_gap`、`source_older_than_history`、`source_ahead`、`epoch_mismatch` 和 `probe_error`；`pending` 表示还没有结果。`sampleNumber`、捕获/采样 QPC 用于识别旧结果，不能把采样到的源标签和历史匹配升级为最终子弹像素、实际游戏碰撞或物理 scanout 验收。诊断失败只影响该结果，不停住世界或自动修改配帧策略。
+
+### 内容视口、天气灯光与比例回归
+
+捕获客户区可能包含 Flash `showAll` 黑边；客户区到最终窗口还有独立的等比缩放和黑边。世界底图使用完整捕获视口，子弹、精灵、射线、天气与夜视使用其中的居中 1024×576 内容视口。点光源/场景灯光采样和氛围世界坐标反算使用同一内容区域，内容外不受灯光或氛围污染；HUD 继续使用输出物理像素。输入仍通过现役 `WorldPointerMapper` 映回 Flash 客户区，不添加第二次内部黑边扣除。
+
+`run-viewport-regression.ps1 -CandidateRoot <candidate> -OutputRoot <新证据目录>` 校验 candidate 完整性并记录 identity/closure；开发编译可改用互斥的 `-NativeDll <绝对DLL路径>`，此时只形成开发模块证据。入口使用锁定 SDK，创建自有源/输出窗口，不读写玩家存档。覆盖 16:9、16:10、4:3、超宽、窄高、微小尺寸舍入、低分辨率放大、独立输出黑边、非中心锚点、摄像机平移缩放、HUD 像素保持、同会话切换、快照边界/恢复与诊断分类；五类天气、动态/场景灯光和氛围另做内容内可见、黑边不变及灯光锚点断言。原有真实 Socket→FrameTask 子弹时序回归仍须运行。GPU 回读不替代真实 Flash 旅程、跨屏 DPI、HDR、其他驱动或物理输入验收。
 
 候选完成清单核验后运行受控 GPU 回归，未设置环境变量时测试跳过而不计通过：
 

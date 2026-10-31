@@ -46,6 +46,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly BulletStylesDelegate _bulletStyles;
         private readonly BulletFrameV2Delegate _bulletFrame;
         private readonly BulletSyncReadDelegate _bulletSyncRead;
+        private readonly BulletSourceReadDelegate _bulletSourceRead;
         private readonly CombatFxAtlasDelegate _bulletAtlas;
         private readonly CombatFxReadyDelegate _bulletReady;
         private readonly BulletFrameDelegate _rayFrame;
@@ -90,6 +91,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _bulletStyles=Export<BulletStylesDelegate>("ProbeSetBulletStyles");
                 _bulletFrame=Export<BulletFrameV2Delegate>("ProbeSetBulletFrameV2");
                 _bulletSyncRead=Export<BulletSyncReadDelegate>("ProbeGetBulletSyncStats");
+                _bulletSourceRead=TryExport<BulletSourceReadDelegate>("ProbeGetBulletSourceStats");
                 _bulletAtlas=Export<CombatFxAtlasDelegate>("ProbeSetBulletAtlas");
                 _bulletReady=Export<CombatFxReadyDelegate>("ProbeBulletReady");
                 _rayFrame=Export<BulletFrameDelegate>("ProbeSetRayFrame");
@@ -371,6 +373,16 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 throw new InvalidOperationException("Bullet sync stats unavailable");
             return value;
         }
+        internal BulletSourceStats? ReadBulletSource()
+        {
+            if(_session==IntPtr.Zero || _bulletSourceRead==null)return null;
+            var value=new BulletSourceStats {Size=(uint)Marshal.SizeOf<BulletSourceStats>()};
+            return _bulletSourceRead(_session,ref value)==1?value:null;
+        }
+        internal static string BulletSourceStatus(uint status) => status switch {
+            0=>"pending",1=>"matched",2=>"tag_invalid",3=>"history_empty",4=>"history_gap",
+            5=>"source_older_than_history",6=>"source_ahead",7=>"epoch_mismatch",8=>"probe_error",_=>"unknown"
+        };
         internal void CombatFxAtlas(CombatFxCatalog catalog)
         {
             if(catalog==null) throw new ArgumentNullException(nameof(catalog));
@@ -446,6 +458,15 @@ namespace CF7Launcher.Guardian.WorldCompositor
             public double SubmittedQpcMs, PresentedSubmittedQpcMs, PresentedCaptureQpcMs, PresentedQpcMs;
         }
         [StructLayout(LayoutKind.Sequential)]
+        internal struct BulletSourceStats
+        {
+            public uint Size,Status,TagValid,HistoryCount;
+            public int SourceEpoch,SourceFrame,MatchedOrdinaryEpoch,MatchedOrdinaryFrame,MatchedChainEpoch,MatchedChainFrame;
+            public uint MatchedItems,SourceWidth,SourceHeight,Reserved;
+            public ulong SampleNumber;
+            public double CaptureQpcMs,SampleQpcMs;
+        }
+        [StructLayout(LayoutKind.Sequential)]
         internal struct TimingStats
         {
             public uint Size, Count, IntervalCount, FreshCount;
@@ -504,6 +525,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int BulletFrameV2Delegate(IntPtr handle,[In] float[] items,int count,float cameraX,float cameraY,float cameraScale,
             int ordinaryEpoch,int ordinaryFrame,int chainEpoch,int chainFrame);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int BulletSyncReadDelegate(IntPtr handle,ref BulletSyncStats stats);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int BulletSourceReadDelegate(IntPtr handle,ref BulletSourceStats stats);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CombatFxAtlasDelegate(IntPtr handle,[In] byte[] pixels,int width,int height,int length);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CombatFxReadyDelegate(IntPtr handle);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CombatFxFrameDelegate(IntPtr handle,[In] float[] items,int count,int casings,

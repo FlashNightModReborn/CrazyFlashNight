@@ -685,6 +685,10 @@ public:
         Signal();return true;
     }
     void BulletSyncStats(ProbeBulletSyncStats& result) {std::lock_guard guard(mutex_);result=bulletSyncStats_;}
+    void BulletSourceStats(ProbeBulletSourceStats& result) {
+        sourceTagRequested_=true;
+        std::lock_guard guard(mutex_);result=bulletSourceStats_;
+    }
     bool CombatFxAtlas(const uint8_t* pixels,int width,int height,int length) {
         if(!pixels || width<1 || height<1 || width>4096 || height>4096 || length!=width*height*4) return false;
         auto bytes=std::make_shared<std::vector<uint8_t>>(pixels,pixels+length);
@@ -998,7 +1002,10 @@ private:
         com_ptr<ID3D11Texture2D> texture;
         com_ptr<ID3D11ShaderResourceView> srv;
         com_ptr<ID3D11RenderTargetView> rtv;
-        FrameSyncSurface syncSurface;
+        FrameSyncParameters frameSync;
+        frameSync.Prepare(device.get());
+        FrameTagSampler frameTagSampler;
+        double lastTagRequestMs=-1000;
         int textureW = 0, textureH = 0, outputW = 0, outputH = 0;
         int appliedMode = -1;
         float appliedSharpness=-1;
@@ -1331,7 +1338,35 @@ private:
             if(measureHudGpu)measureHudGpu=hudCostSampler.Begin(device.get(),context.get(),measuredHudEpoch,recordHudGpuCost);
             float scale = std::min(static_cast<float>(w)/textureW, static_cast<float>(h)/textureH);
             D3D11_VIEWPORT viewport{(w-textureW*scale)/2, (h-textureH*scale)/2, textureW*scale, textureH*scale, 0, 1};
+            // The captured Flash client can itself contain showAll bars. Native
+            // world coordinates belong to the centered logical 1024x576 stage,
+            // not to that client rectangle. Keep both transforms explicit.
+            float stageScale=std::min(static_cast<float>(textureW)/1024.f,static_cast<float>(textureH)/576.f)*scale;
+            D3D11_VIEWPORT contentViewport{viewport.TopLeftX+(viewport.Width-1024.f*stageScale)/2,
+                viewport.TopLeftY+(viewport.Height-576.f*stageScale)/2,1024.f*stageScale,576.f*stageScale,0,1};
             bool proof = proofRequested_.exchange(false);
+            int syncIdentity[4]{bulletFrame.ordinaryEpoch,bulletFrame.ordinaryFrame,bulletFrame.chainEpoch,bulletFrame.chainFrame};
+            bool syncActive=!proof && bulletFrame.ordinaryEpoch>=0 && bulletFrame.ordinaryFrame>=0
+                && bulletFrame.chainEpoch>=0 && bulletFrame.chainFrame>=0;
+            frameSync.UpdateParams(context.get(),syncIdentity,textureW,textureH,contentViewport,syncActive,!proof);
+            // Diagnostic work is explicitly requested by a reader, rate limited,
+            // and asynchronous. A slow query never blocks world presentation.
+            try {
+                ProbeBulletSourceStats sampled{};
+                if(frameTagSampler.Poll(context.get(),start,sampled)) {
+                    std::lock_guard guard(mutex_);bulletSourceStats_=sampled;++stats_.cpuReadbacks;
+                }
+                if(sourceTagRequested_ && !frameTagSampler.Pending() && start-lastTagRequestMs>=1000) {
+                    sourceTagRequested_=false;lastTagRequestMs=start;
+                    std::vector<FrameTagCandidate> candidates;candidates.reserve(bulletHistory.size());
+                    for(const auto& s:bulletHistory)candidates.push_back({s->ordinaryEpoch,s->ordinaryFrame,s->chainEpoch,s->chainFrame,
+                        static_cast<uint32_t>(s->items.size()/8)});
+                    frameTagSampler.Begin(device.get(),context.get(),vs.get(),raster.get(),srv.get(),textureW,textureH,frameQpcMs,std::move(candidates));
+                }
+            } catch(...) {
+                frameTagSampler.Abandon();sourceTagRequested_=false;
+                std::lock_guard guard(mutex_);bulletSourceStats_.status=8;
+            }
             bool nightOn=vision[0]==1 && !proof;
             bool gradeLutActive=lutActive && !nightOn;
             bool lightsOn=!proof && fxFrame.lightCount>0 && fxFrame.maximumLightResponse>0;
@@ -1352,7 +1387,7 @@ private:
                 float peak=std::max(.001f,std::max(palette[0],std::max(palette[1],palette[2])));
                 for(float& value:palette)value/=peak;
             }
-            float lp[16]{viewport.TopLeftX,viewport.TopLeftY,viewport.Width,viewport.Height,
+            float lp[16]{contentViewport.TopLeftX,contentViewport.TopLeftY,contentViewport.Width,contentViewport.Height,
                 fxFrame.cameraX,fxFrame.cameraY,fxFrame.cameraScale,0,
                 lightsOn || sceneOn?1.f:0.f,std::max(fxFrame.maximumLightResponse,sceneOn?sceneGpu.response:0.f),lightsOn?1.f:0.f,0,palette[0],palette[1],palette[2],0};
             context->UpdateSubresource(lightParams.get(),0,nullptr,lp,0,0);
@@ -1394,18 +1429,9 @@ private:
             auto resource=casSource.Apply(device.get(),context.get(),vs.get(),srv.get(),textureW,textureH,
                 postprocessWork.casEnabled && casStage==1 && imageScale>=1.5f,fresh,adjustedCas,casStageWork);
             if(sourceNeighborhood)casStageWork.appliedStage=2;
-            syncSurface.Resize(device.get(),w,h);
-            int syncIdentity[4]{bulletFrame.ordinaryEpoch,bulletFrame.ordinaryFrame,bulletFrame.chainEpoch,bulletFrame.chainFrame};
-            bool syncActive=!proof && bulletFrame.ordinaryEpoch>=0 && bulletFrame.ordinaryFrame>=0
-                && bulletFrame.chainEpoch>=0 && bulletFrame.chainFrame>=0;
             com_ptr<ID3D11Texture2D> composed;
-            ID3D11RenderTargetView* target=nullptr;
-            if(syncActive) {
-                target=syncSurface.CandidateTarget();composed.copy_from(syncSurface.CandidateTexture());
-            } else {
-                target=rtv.get();
-                check_hresult(swap->GetBuffer(0,__uuidof(ID3D11Texture2D),composed.put_void()));
-            }
+            ID3D11RenderTargetView* target=rtv.get();
+            check_hresult(swap->GetBuffer(0,__uuidof(ID3D11Texture2D),composed.put_void()));
             context->OMSetRenderTargets(1,&target,nullptr);
             const float black[]{0,0,0,1};context->ClearRenderTargetView(target,black);
             context->RSSetViewports(1,&viewport);
@@ -1451,6 +1477,7 @@ private:
             context->PSSetConstantBuffers(0,1,&buffer);
             context->PSSetShaderResources(1,1,&lutResource);
             context->PSSetSamplers(1,1,&lutSamp);
+            context->RSSetViewports(1,&contentViewport);
             appliedPostprocess=postprocessVersion;
             // Weather overlays the graded world inside the same content viewport,
             // blended after the source pass (not pre-grade composited). The base
@@ -1467,7 +1494,7 @@ private:
                 if (weather.quality==1) rainCount=rainCount*5/8;
                 else if (weather.quality==2) rainCount=rainCount*3/8;
                 float wp[16]{weatherTime,weather.intensity,static_cast<float>(weather.type),
-                    static_cast<float>(weather.seed & 0xFFFFFFu),viewport.Width,viewport.Height,static_cast<float>(rainCount),gradeLutActive?1.f:0.f,
+                    static_cast<float>(weather.seed & 0xFFFFFFu),contentViewport.Width,contentViewport.Height,static_cast<float>(rainCount),gradeLutActive?1.f:0.f,
                     weatherCamera.x,weatherCamera.y,weatherCamera.scale,weatherCamera.groundMin,
                     weatherCamera.groundMax,576.f,0,0};
                 context->UpdateSubresource(weatherParams.get(),0,nullptr,wp,0,0);
@@ -1498,15 +1525,15 @@ private:
                 context->Draw(count*6,0);context->OMSetBlendState(nullptr,nullptr,0xffffffff);
             };
             drawFx(0,fxFrame.casings);
-            syncSurface.UpdateParams(context.get(),syncIdentity,textureW,textureH,viewport,syncActive);
+            frameSync.UpdateParams(context.get(),syncIdentity,textureW,textureH,contentViewport,syncActive,!proof);
             auto syncSource=srv.get();context->VSSetShaderResources(4,1,&syncSource);
             // Bullets stay above casings and below short muzzle flashes,
             // alpha blended over world+weather+atmosphere. The base grade
             // cbuffer and LUT resource stay bound for the bullet grade.
             auto drawBulletSnapshot=[&](const float* items,int itemCount,float cameraX,float cameraY,float cameraScale,const int* identity) {
                 if(itemCount==0 || bulletStyles.count==0 || !texture || proof)return;
-                syncSurface.UpdateParams(context.get(),identity,textureW,textureH,viewport,syncActive);
-                float bp[8]{viewport.Width,viewport.Height,gradeLutActive?1.f:0.f,static_cast<float>(itemCount),
+                frameSync.UpdateParams(context.get(),identity,textureW,textureH,contentViewport,syncActive,!proof);
+                float bp[8]{contentViewport.Width,contentViewport.Height,gradeLutActive?1.f:0.f,static_cast<float>(itemCount),
                     cameraX,cameraY,cameraScale,static_cast<float>(bulletStyles.count)};
                 context->UpdateSubresource(bulletStyleParams.get(),0,nullptr,bulletStyles.params,0,0);
                 context->VSSetShader(bulletVs.get(),nullptr,0); context->PSSetShader(bulletPs.get(),nullptr,0);
@@ -1565,7 +1592,7 @@ private:
                     float batch[RayBatchCap*32];
                     for(size_t at=0;at<bucket.size();at+=RayBatchCap) {
                         int count=static_cast<int>(std::min(bucket.size()-at,static_cast<size_t>(RayBatchCap)));
-                        float params[8]{viewport.Width,viewport.Height,gradeLutActive?1.f:0.f,static_cast<float>(count),
+                        float params[8]{contentViewport.Width,contentViewport.Height,gradeLutActive?1.f:0.f,static_cast<float>(count),
                             rayFrame.cameraX,rayFrame.cameraY,rayFrame.cameraScale,static_cast<float>(pass)};
                         for(int k=0;k<count;k++) std::memcpy(batch+k*32,rayFrame.params+bucket[at+k]*32,128);
                         if(count<RayBatchCap)std::memset(batch+count*32,0,static_cast<size_t>(RayBatchCap-count)*128);
@@ -1589,7 +1616,7 @@ private:
                 // supplied by Flash's actual actor art, preserving its alpha/occlusion.
                 auto grade=constants.get();context->PSSetConstantBuffers(0,1,&grade);
                 context->PSSetShaderResources(1,1,&lutResource);context->PSSetSamplers(1,1,&lutSamp);
-                nightVision.Apply(device.get(),context.get(),composed.get(),target,viewport,vision,
+                nightVision.Apply(device.get(),context.get(),composed.get(),target,contentViewport,vision,
                     visionVersion,nightVisionEpoch_.load(),QpcMs(),lutActive);
             } else if(!proof) nightVision.Reset();
             context->PSSetShaderResources(1,1,&empty);
@@ -1601,8 +1628,6 @@ private:
             if(measureHudGpu)hudCostSampler.Finish(context.get());
             {std::lock_guard guard(mutex_);hudStats_.visibleLayers=hudDraw.visibleLayers;
                 hudStats_.uploads+=hudDraw.uploads;hudStats_.uploadedBytes+=hudDraw.uploadedBytes;hudStats_.draws+=hudDraw.draws;}
-            if(syncActive)syncSurface.Final(context.get(),vs.get(),rtv.get(),syncIdentity,
-                textureW,textureH,viewport,w,h,sampler.get());
             double submit = QpcMs();
             if (proof) {
                 VerifyPixels(device.get(), context.get(), swap.get(), texture.get(), viewport, textureW, textureH, mode,
@@ -1859,6 +1884,8 @@ private:
     BulletStylesState bulletStyles_{}; BulletFrameState bulletFrame_{}; uint64_t bulletVersion_=0;
     std::vector<std::shared_ptr<const BulletFrameSnapshot>> bulletHistory_;
     uint64_t bulletSnapshotVersion_=0;ProbeBulletSyncStats bulletSyncStats_{sizeof(ProbeBulletSyncStats)};
+    ProbeBulletSourceStats bulletSourceStats_{sizeof(ProbeBulletSourceStats)};
+    std::atomic<bool> sourceTagRequested_{false};
     std::shared_ptr<std::vector<uint8_t>> bulletAtlas_;int bulletAtlasW_=0,bulletAtlasH_=0;
     uint64_t bulletAtlasVersion_=0;std::atomic<uint64_t> bulletAtlasReady_{0};
     RayFrameState rayFrame_{};uint64_t rayVersion_=0;
@@ -2029,6 +2056,10 @@ int __cdecl ProbeSetBulletFrameV2(void* handle,const float* items,int count,floa
 int __cdecl ProbeGetBulletSyncStats(void* handle,ProbeBulletSyncStats* stats) {
     if(!handle || !stats || stats->size!=sizeof(ProbeBulletSyncStats))return 0;
     static_cast<Capture*>(handle)->BulletSyncStats(*stats);return 1;
+}
+int __cdecl ProbeGetBulletSourceStats(void* handle,ProbeBulletSourceStats* stats) {
+    if(!handle || !stats || stats->size!=sizeof(ProbeBulletSourceStats))return 0;
+    static_cast<Capture*>(handle)->BulletSourceStats(*stats);return 1;
 }
 int __cdecl ProbeSetCombatFxAtlas(void* handle,const uint8_t* pixels,int width,int height,int length) {
     try { return handle && static_cast<Capture*>(handle)->CombatFxAtlas(pixels,width,height,length) ? 1 : 0; }

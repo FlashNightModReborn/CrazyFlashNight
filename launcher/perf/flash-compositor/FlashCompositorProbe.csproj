@@ -11,6 +11,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
+    <Compile Include="ContentViewportRegression.cs" />
+    <Compile Include="../../src/Guardian/WorldCompositor/WorldPointerMapper.cs" Link="WorldPointerMapper.cs" />
     <Compile Include="../../src/Guardian/WorldCompositor/WorldPresentationCatalog.cs" Link="WorldPresentationCatalog.cs" />
     <Compile Include="../../src/Guardian/WorldCompositor/WorldLutSet.cs" Link="WorldLutSet.cs" />
   </ItemGroup>

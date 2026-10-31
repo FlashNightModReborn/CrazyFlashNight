@@ -12,6 +12,8 @@ internal static class Program
     [STAThread]
     private static int Main(string[] args)
     {
+        if(args.Length>0 && args[0]=="--viewport-regression")
+            return ContentViewportRegression.Run(args.Skip(1).ToArray());
         string report = Path.Combine(AppContext.BaseDirectory, "..", "startup-error.json");
         int reportIndex = Array.IndexOf(args, "--report");
         if (reportIndex >= 0 && reportIndex+1 < args.Length) report = Path.GetFullPath(args[reportIndex+1]);

@@ -30,7 +30,7 @@ int wmain(int argc, wchar_t** argv) {
         {FeedbackShader,"PVS","vs_4_0"},{FeedbackShader,"PPS","ps_4_0"},
         {WeatherShader,"WVS","vs_4_0"},{WeatherShader,"WPS","ps_4_0"},
         {BulletShader,"BVS","vs_4_0"},{BulletShader,"BPS","ps_4_0"},
-        {FrameSyncShader,"SyncPS","ps_4_0"},
+        {FrameTagDiagnosticShader,"TagPS","ps_4_0"},
         {CombatFxShader,"FVS","vs_4_0"},{CombatFxShader,"FPS","ps_4_0"},
         {RayShader,"RVS","vs_4_0"},{RayShader,"RPS","ps_4_0"},
         {PointLightShader,"LVS","vs_4_0"},{PointLightShader,"LPS","ps_4_0"},

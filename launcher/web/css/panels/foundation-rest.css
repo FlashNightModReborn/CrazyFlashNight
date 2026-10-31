@@ -706,7 +706,7 @@
 .flash-tt-mag-ammo,
 .ntt-mag-ammo {
     padding-left: calc(var(--tt-mag-icon-size) + var(--tt-mag-icon-text-gap));
-    color: rgba(255, 255, 255, 0.80);
+    color: color-mix(in srgb, var(--tt-text) 80%, transparent);
     white-space: nowrap;
 }
 
