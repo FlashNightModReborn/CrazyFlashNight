@@ -864,8 +864,8 @@
     margin-right: 2px;
     vertical-align: -0.125em;
 }
-.ntt-a-legion-mark { color: #FF0000; }
-.ntt-warlord-mark { color: #FFFFE0; }
+.ntt-a-legion-mark { color: var(--wb-semantic-faction-a-legion); }
+.ntt-warlord-mark { color: var(--wb-semantic-faction-warlord); }
 .ntt-a-legion-mark > svg,
 .ntt-warlord-mark > svg {
     display: block;
