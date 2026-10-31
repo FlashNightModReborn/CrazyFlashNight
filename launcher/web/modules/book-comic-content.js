@@ -708,7 +708,7 @@ window.BOOK_COMIC_CONTENT = {
     {
       "id": "lee-ambush",
       "title": "Lee · 攻入黑龙堂",
-      "note": "提前觉醒 · 截住偷袭",
+      "note": "精武破关 · 截骑碎甲",
       "image": "assets/book-comic/lee/lee-early-awakening-v1.png",
       "continueLabel": "继续",
       "autoContinue": false,
@@ -730,7 +730,7 @@ window.BOOK_COMIC_CONTENT = {
           "lines": [
             {
               "speaker": "旁白",
-              "text": "雷劲早已融进四肢，门后压抑的马蹄与鼻息一清二楚。",
+              "text": "同源电脉冲开封脉死锁，门后压抑的马蹄与鼻息一清二楚。",
               "camera": {
                 "motion": "pan",
                 "intensity": 0.14,
@@ -747,7 +747,7 @@ window.BOOK_COMIC_CONTENT = {
             },
             {
               "speaker": "Lee",
-              "text": "躲在门后等我力竭？黑龙，你算错了。",
+              "text": "还以为你那三脚猫的雷法锁住了我，躲在门后打闷棍？黑龙，你算错了。",
               "camera": {
                 "motion": "push",
                 "intensity": 0.18,
@@ -777,7 +777,7 @@ window.BOOK_COMIC_CONTENT = {
           "lines": [
             {
               "speaker": "黑龙",
-              "text": "叛逃的克隆人，给我躺下！",
+              "text": "逐出教门的邛池孽障，给我躺下！",
               "camera": {
                 "motion": "pan",
                 "intensity": 0.16,
@@ -795,7 +795,7 @@ window.BOOK_COMIC_CONTENT = {
             },
             {
               "speaker": "旁白",
-              "text": "重剑擦肩劈空，Lee 顺势错步，瞬间切入马腹内侧。",
+              "text": "重剑擦肩劈空，Lee 伏身错步，瞬间抢入黑龙身侧。",
               "camera": {
                 "motion": "push",
                 "intensity": 0.18,
@@ -825,7 +825,7 @@ window.BOOK_COMIC_CONTENT = {
           "lines": [
             {
               "speaker": "Lee",
-              "text": "这一脚，连本带利还给你——下来！",
+              "text": "喝啊——！这一脚，谢你替我冲开经脉！",
               "camera": {
                 "motion": "shake",
                 "intensity": 0.28,
@@ -838,7 +838,7 @@ window.BOOK_COMIC_CONTENT = {
             },
             {
               "speaker": "旁白",
-              "text": "一记侧踹正中胸甲，将黑龙从马背上硬生生震飞出去！",
+              "text": "一记飞身侧踹正中胸甲，将黑龙连人带甲硬生生震退！",
               "camera": {
                 "motion": "pull",
                 "intensity": 0.14,
@@ -868,7 +868,7 @@ window.BOOK_COMIC_CONTENT = {
           "lines": [
             {
               "speaker": "黑龙",
-              "text": "好硬的腿功……内堂的人听令，随我一起碾碎他！",
+              "text": "不可能……我照着长兄的规矩放雷，怎么反倒替你冲开了封脉死锁？！内堂弟子听令，随我碾碎他！",
               "camera": {
                 "motion": "pan",
                 "intensity": 0.14,
@@ -885,7 +885,7 @@ window.BOOK_COMIC_CONTENT = {
             },
             {
               "speaker": "Lee",
-              "text": "翻身回马倒是挺快。来吧，内堂见真章。",
+              "text": "照葫芦画瓢的蠢货。来吧，内堂见真章！",
               "camera": {
                 "motion": "push",
                 "intensity": 0.16,
@@ -903,7 +903,7 @@ window.BOOK_COMIC_CONTENT = {
     {
       "id": "lee-breakout",
       "title": "Lee · 攻入黑龙堂",
-      "note": "第三图觉醒 · 挣脱束缚",
+      "note": "死亡游戏 · 崩链破壁",
       "image": "assets/book-comic/lee/lee-late-awakening-v1.png",
       "continueLabel": "继续",
       "autoContinue": false,
@@ -925,7 +925,7 @@ window.BOOK_COMIC_CONTENT = {
           "lines": [
             {
               "speaker": "Lee",
-              "text": "最后那几道雷总算把劲冲开了，只是呼吸还没缓过来……",
+              "text": "最后那几道电脉总算把当年的封脉死锁震碎了，只是呼吸还没缓过来……",
               "camera": {
                 "motion": "push",
                 "intensity": 0.15,
@@ -938,7 +938,7 @@ window.BOOK_COMIC_CONTENT = {
             },
             {
               "speaker": "旁白",
-              "text": "新生的力道尚未收稳，门后的铁骑已趁隙冲至身后。",
+              "text": "死脉初通、电劲未稳，门后的铁骑已趁隙冲至身后。",
               "camera": {
                 "motion": "pan",
                 "intensity": 0.12,
@@ -985,7 +985,7 @@ window.BOOK_COMIC_CONTENT = {
             },
             {
               "speaker": "黑龙",
-              "text": "刚缓过气来？给我倒下！",
+              "text": "闯过三轮护堂神雷还能站着？给我倒下！",
               "camera": {
                 "motion": "push",
                 "intensity": 0.18,
@@ -1032,7 +1032,7 @@ window.BOOK_COMIC_CONTENT = {
             },
             {
               "speaker": "黑龙",
-              "text": "没用的克隆人，锁在这里，等我兄长亲自发落！",
+              "text": "中兴留下的最后一把破剑，凭长兄传下的雷法与铁箍还治不了你？锁在壁上等长兄发落！",
               "camera": {
                 "motion": "push",
                 "intensity": 0.14,
@@ -1062,7 +1062,7 @@ window.BOOK_COMIC_CONTENT = {
           "lines": [
             {
               "speaker": "旁白",
-              "text": "Lee 屏住呼吸，借着铁箍的压迫，将乱窜的电劲收进双拳。",
+              "text": "Lee 屏住呼吸，借着铁箍的压迫，将嗡鸣激荡的电劲尽数收进双拳。",
               "camera": {
                 "motion": "hold",
                 "anchor": [
@@ -1073,7 +1073,7 @@ window.BOOK_COMIC_CONTENT = {
             },
             {
               "speaker": "Lee",
-              "text": "拿铁圈锁我？正好借它把最后一口气合上。",
+              "text": "只懂照搬规矩的蠢货……这副铁箍，正好帮我把重归巅峰的最后一口气合上！",
               "camera": {
                 "motion": "push",
                 "intensity": 0.18,
@@ -1103,7 +1103,7 @@ window.BOOK_COMIC_CONTENT = {
           "lines": [
             {
               "speaker": "旁白",
-              "text": "双臂猛然发力下拽，石壁开裂，铁箍应声崩断！",
+              "text": "双臂猛然发力下拽，石壁开裂，锁腕的铁链应声崩断！",
               "camera": {
                 "motion": "shake",
                 "intensity": 0.3,
@@ -1116,7 +1116,7 @@ window.BOOK_COMIC_CONTENT = {
             },
             {
               "speaker": "Lee",
-              "text": "气顺了。黑龙，换我出拳了！",
+              "text": "阿打——！！把我们当器物铸、当废铁锁？睁眼看看，这把剑还没断！",
               "camera": {
                 "motion": "pull",
                 "intensity": 0.16,
@@ -1134,7 +1134,7 @@ window.BOOK_COMIC_CONTENT = {
     {
       "id": "lee-ending-normal",
       "title": "Lee · 攻入黑龙堂",
-      "note": "未觉醒 · 史实结局",
+      "note": "龙争虎斗 · 困龙受缚",
       "image": "assets/book-comic/lee/lee-historical-ending-v1.png",
       "continueLabel": "结束本章",
       "autoContinue": false,
@@ -1156,7 +1156,7 @@ window.BOOK_COMIC_CONTENT = {
           "lines": [
             {
               "speaker": "旁白",
-              "text": "皮外伤虽已合拢，体内那道坎却始终没能冲开。",
+              "text": "皮外伤虽已合拢，当年被锁死的经脉却始终没能借电脉冲开。",
               "camera": {
                 "motion": "push",
                 "intensity": 0.14,
@@ -1169,7 +1169,7 @@ window.BOOK_COMIC_CONTENT = {
             },
             {
               "speaker": "Lee",
-              "text": "前头没把雷劲吃够……耗到现在，脚步终究沉了。",
+              "text": "带着这身封脉旧伤连闯三关，到底还是力竭了……步子沉了。",
               "camera": {
                 "motion": "hold",
                 "anchor": [
@@ -1240,7 +1240,7 @@ window.BOOK_COMIC_CONTENT = {
           "lines": [
             {
               "speaker": "黑龙",
-              "text": "没用的克隆人，凭你这副身子还挣不开内堂的铁箍。",
+              "text": "中兴坏人伦的旧账早翻篇了！当年长兄仁德饶你不死，凭你这副残躯也想破长兄传下的护堂雷法与铁箍？",
               "camera": {
                 "motion": "pan",
                 "intensity": 0.12,
@@ -1257,7 +1257,7 @@ window.BOOK_COMIC_CONTENT = {
             },
             {
               "speaker": "黑龙",
-              "text": "先锁在墙上，留口气让我兄长亲自处置！",
+              "text": "先锁在墙上，留口气让我长兄亲自处置！",
               "camera": {
                 "motion": "push",
                 "intensity": 0.15,
@@ -1287,7 +1287,7 @@ window.BOOK_COMIC_CONTENT = {
           "lines": [
             {
               "speaker": "Lee",
-              "text": "……要是打进门起就接满那些雷，今天躺下的就是你。",
+              "text": "……当年没杀死我，倒编出个“逐出教门”给自己贴金！要不是这身旧伤和这副铁箍，你黑龙接得住我一脚吗？",
               "camera": {
                 "motion": "push",
                 "intensity": 0.14,
@@ -1300,7 +1300,7 @@ window.BOOK_COMIC_CONTENT = {
             },
             {
               "speaker": "旁白",
-              "text": "铁箍锁住了双手，却锁不住他的眼神。这段经历，仍沿着原有的轨迹继续。",
+              "text": "铁箍锁住了双腕，却锁不住他眼底的雷火。只要体内的封脉死锁一日未除，这头困龙终有再度破门的一天。",
               "camera": {
                 "motion": "pull",
                 "intensity": 0.12,
@@ -1318,7 +1318,7 @@ window.BOOK_COMIC_CONTENT = {
     {
       "id": "lee-ending-hidden",
       "title": "Lee · 攻入黑龙堂",
-      "note": "隐藏结局 · 自己走出去",
+      "note": "猛龙过江 · 留名出堂",
       "image": "assets/book-comic/lee/lee-hidden-victory-v1.png",
       "continueLabel": "结束本章",
       "autoContinue": false,
@@ -1340,7 +1340,7 @@ window.BOOK_COMIC_CONTENT = {
           "lines": [
             {
               "speaker": "旁白",
-              "text": "断电的内堂一片死寂，沉重的长剑终于脱手砸在地上。",
+              "text": "断电的内堂一片死寂，黑龙手中沉重的巨剑终于脱手砸在地上。",
               "camera": {
                 "motion": "pan",
                 "intensity": 0.14,
@@ -1374,7 +1374,7 @@ window.BOOK_COMIC_CONTENT = {
           "lines": [
             {
               "speaker": "黑龙",
-              "text": "铁骑、重甲……居然全被这一双拳头打穿了……",
+              "text": "铁骑、重甲……连长兄传下的雷法都压不住他，居然全被这一双肉拳打穿了……",
               "camera": {
                 "motion": "push",
                 "intensity": 0.15,
@@ -1387,7 +1387,7 @@ window.BOOK_COMIC_CONTENT = {
             },
             {
               "speaker": "黑龙",
-              "text": "兄长看走眼了……你根本不是什么没用的克隆人……",
+              "text": "你不过是中兴当年造出来的一件器物……怎么可能连长兄立下的铁壁都困不住你？！",
               "camera": {
                 "motion": "pull",
                 "intensity": 0.12,
@@ -1417,7 +1417,7 @@ window.BOOK_COMIC_CONTENT = {
           "lines": [
             {
               "speaker": "Lee",
-              "text": "听清楚了，我不是谁的替身，也不是你们造出来的东西。",
+              "text": "器物？写进《黑铁书》的那九把剑，每一把都是替会里流过血、卖过命的活人！",
               "camera": {
                 "motion": "push",
                 "intensity": 0.16,
@@ -1430,7 +1430,7 @@ window.BOOK_COMIC_CONTENT = {
             },
             {
               "speaker": "Lee",
-              "text": "我叫 Lee。记住了！",
+              "text": "听清楚了，我不是什么诛邪剑，我叫 Lee——不服，叫黑铁亲自来！",
               "camera": {
                 "motion": "pan",
                 "intensity": 0.12,
@@ -1449,7 +1449,7 @@ window.BOOK_COMIC_CONTENT = {
         },
         {
           "id": "V4",
-          "label": "自己走出去",
+          "label": "猛龙过江",
           "rect": [
             0.007812,
             0.643229,
@@ -1464,7 +1464,7 @@ window.BOOK_COMIC_CONTENT = {
           "lines": [
             {
               "speaker": "旁白",
-              "text": "黑龙堂没能困住他。这一次，他靠自己的拳头走出了大门。",
+              "text": "炉火映照满地断刃，猛龙过江。",
               "camera": {
                 "motion": "pull",
                 "intensity": 0.14,
