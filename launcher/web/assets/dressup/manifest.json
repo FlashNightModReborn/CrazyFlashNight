@@ -22868,6 +22868,40 @@
         }
       },
       "sourceFile": "防具_20-39级.xml"
+    },
+    "KHAOS 12": {
+      "use": "手枪",
+      "icon": "KHAOS 12",
+      "dressup": "枪-手枪-KHAOS 12",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "手枪_装扮": "枪-手枪-KHAOS 12",
+          "手枪2_装扮": "枪-手枪-KHAOS 12"
+        },
+        "女": {
+          "手枪_装扮": "枪-手枪-KHAOS 12",
+          "手枪2_装扮": "枪-手枪-KHAOS 12"
+        }
+      },
+      "sourceFile": "武器_手枪_霰弹枪.xml"
+    },
+    "KHAOS 12战术版": {
+      "use": "手枪",
+      "icon": "KHAOS 12战术版",
+      "dressup": "枪-手枪-KHAOS 12战术版",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "手枪_装扮": "枪-手枪-KHAOS 12战术版",
+          "手枪2_装扮": "枪-手枪-KHAOS 12战术版"
+        },
+        "女": {
+          "手枪_装扮": "枪-手枪-KHAOS 12战术版",
+          "手枪2_装扮": "枪-手枪-KHAOS 12战术版"
+        }
+      },
+      "sourceFile": "武器_手枪_霰弹枪.xml"
     }
   },
   "skinKeys": {
@@ -154958,6 +154992,86 @@
           "height": 139,
           "originX": 73.4,
           "originY": 71.2
+        }
+      ]
+    },
+    "枪-手枪-KHAOS 12": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "2副武器/khaos12g文件/武器版本/枪-手枪-KHAOS 12",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "KHAOS 12"
+      ],
+      "sourceFiles": [
+        "武器_手枪_霰弹枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/c0d91c0f_1.png",
+        "width": 557,
+        "height": 213,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/c0d91c0f_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 557,
+          "height": 213,
+          "originX": 42.4,
+          "originY": 97.7
+        }
+      ]
+    },
+    "枪-手枪-KHAOS 12战术版": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/3XD的素材.swf",
+        "symbolName": "2副武器/khaos12g文件/武器版本/枪-手枪-KHAOS 12战术版",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "手枪"
+      ],
+      "items": [
+        "KHAOS 12战术版"
+      ],
+      "sourceFiles": [
+        "武器_手枪_霰弹枪.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/4cae2c84_1.png",
+        "width": 1435,
+        "height": 217,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/4cae2c84_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 1435,
+          "height": 217,
+          "originX": 42.4,
+          "originY": 103.5
         }
       ]
     }
