@@ -1,66 +1,69 @@
-# 单位数据镜像、CSharp 原生绘制与碰撞判定 · 长期迁移路线 ADR（2026-08-09）
+# 玩家 HUD、单位血条、友军与碰撞统一迁移方案
 
-**文档角色**：跨 AS2 / Guardian Launcher Host 的长期迁移路线与 ADR。本文只冻结目标量纲、AVM1 优先原则、权威边界、固定跨帧语义、阶段门、停止线与待验证项。现役拓扑、现役协议字段和现役测试入口仍由对应 canonical docs 维护；具体施工另起 `*-施工-*.md`。
+**文档角色**：玩家 HUD 性能优化、单位头顶显示、至少 20 个友军头像与血量、普通 AABB 碰撞迁移的统一路线与验收合同。沿用原单位镜像 ADR 路径；本文件是四项工作的共享架构与阶段依赖真源，迁移台账只记录范围和进度。
 
-**状态**：`PROPOSED / ROUTE_FROZEN / NOT_IMPLEMENTED / P0_EVIDENCE_PENDING`。
+**状态**：`PROPOSED / ROUTE_FROZEN / NOT_IMPLEMENTED / P0_EVIDENCE_PENDING`。2026-10-26 本次更新只整理方案；现有玩家 HUD 已实现，新单位镜像、小队显示与碰撞接管尚未实现。`NOT_IMPLEMENTED` 指新增路线，不指已有 HUD。
 
-`ROUTE_FROZEN` 只表示本提案的目标、边界、已冻结输入与未决项已经固定供评审；后续变化必须进入决策日志。它不等于 `ROUTE_ACCEPTED`，也不授权 P0 施工或任何 gameplay authority 切换。
+**最后核对代码基线**：commit `c2664be316fda92c8e2d98149ff5eca790cdc0e6`（2026-10-26 核对当前本机 main）。本轮核查 HUD producer/consumer、上方血条、头像缓存、单位信息更新、BQP、XMLSocket 与共享合成入口。工作区存在其他并发修改，本方案不以未提交 asLoader 或其他资产作为冻结可执行基线；实际施工先冻结隔离源与产物身份。
 
-**最后核对代码基线**：commit `fff104b0f29d7c5def80f2ba0b5cc2682124f500`（2026-08-09）。
+**证据口径**：§2 为当前源码事实；§3–§13 为目标合同；§14 为施工与依赖；§15 为可执行的测量方法、初始工程预算与退出门。预算尚不是已取得的性能成绩。历史测量保留原负载、产物和证据边界，不能代签本路线。
 
-**证据口径**：
-
-- `[产品输入已冻结]`：用户在当前规划讨论中已经明确的产品/架构输入，作为本提案的冻结前提；不代表 ADR 已正式接受或代码已经实现。
-- `[提案内冻结]`：为使路线可施工而在本文中固定的技术选择；只有进入 `ROUTE_ACCEPTED / P0_AUTHORIZED` 后才生效。
-- `[源码事实]`：在上述代码基线完成只读追踪的现状。
-- `[待量测]`：方向成立，但量纲或收益必须由 P0 运行时数据裁决。
-- `[建议门]`：本 ADR 给出的初始验收门；P0 可以用证据收紧或替换，但必须留下决策记录。
-
----
+`ROUTE_FROZEN` 表示本次供评审的方案已固定，不代表代码施工、碰撞权威切换或正式 runtime 发布。实际施工授权与 `compiled → candidate_built → candidate_executed → e2e_verified → promoted → standard_entry_verified` 分别记录。
 
 ## 0. 一页结论
 
-### 0.1 冻结的路线提案
+### 0.1 统一范围与交付方式
 
-当前路线提案冻结为：
+四项工作共用单位身份、生命周期和世界状态来源，各消费者保留独立的更新频率、失效范围与验收结果。H0 先减少现有 HUD 的重复投影和绘制；P0 建立公共单位镜像；P1 同时容纳头顶显示和友军卡片；P3/P4 在同一底座上对照、接管普通 AABB 几何判定。血条与小队显示可以先交付，碰撞未通过不会让已验证的显示收益退回。
 
-```text
-最小单位/子弹世界帧
-    → CSharp World Overlay 垂直切除 Flash 头顶显示税
-    → CSharp 异步 SenseFrame / BulletThreat
-    → 普通 AABB 弹短期影子比对
-    → 固定 n→n+1 的 CSharp AABB 命中权威
-    → 雷达 / 边界异常保护
-    → 射线与地图几何按 profile 另案
+| 工作 | 当前状态 | 本轮规划交付 |
+|---|---|---|
+| 玩家 HUD 性能 H0 | 原生玩家 HUD、Buff 详情、最多 4 个聚焦目标已在主线 | 减少 Buff 重复编码/投影、无关重绘、首次头像处理及 UI 队列积压 |
+| 单位头顶显示 P1-HEAD | `InformationComponentUpdater` / `BloodBarEffectHandler` 仍操作 Flash 信息 MovieClip | 迁移姓名及基础血/盾/韧性表现，撤下对应 Flash 显示更新 |
+| 友军小队显示 P1-ALLY | 尚无覆盖本需求的统一常驻 20 人投影 | 同时表示至少 5 佣兵、5 战宠及保护 NPC，总数至少 20；使用同一单位镜像 |
+| 碰撞 P0-COLLISION / P3 / P4 | 生产几何检测与结算仍在 AS2 BQP | 首批普通 AABB 几何在 C#，固定下一帧由 AS2 结算；复杂弹及地图另分域 |
+
+```mermaid
+flowchart TD
+    A["AS2 生命周期与业务状态"] --> R["统一单位 roster 与身份"]
+    R --> M["低频元数据与单位表现事实"]
+    R --> W["逐模拟帧 WorldFrame"]
+    Q["白名单子弹队列"] --> W
+    M --> C["C# 只读单位镜像"]
+    W --> C
+    C --> H["头顶条与姓名"]
+    C --> T["至少 20 个友军卡片"]
+    C --> F["聚焦目标引用与可选查询"]
+    W --> K["C# 普通 AABB worker"]
+    K --> I["有序命中结果与帧身份"]
+    I --> S["AS2 下一帧结算"]
+    P["玩家专属 Buff 装配 冷却"] --> U["H0 优化后的玩家 HUD"]
 ```
 
-这不是“把 AS2 数据结构翻译成 CSharp”，而是以统一世界帧为跨栈数据面，**尽快删除 AVM1 中昂贵的显示树、排序、缓存重建、候选扫描和重复查询**。CSharp 在目标量纲下优先采用简单、可验证的暴力遍历。
+该图表示目标依赖，不表示当前已经存在 WorldFrame/worker。共享底座不等于所有状态塞进一份大 JSON，也不要求所有消费者等待同一阶段完成。
 
-### 0.2 目标量纲
+### 0.2 量纲与范围
 
-| 项目 | 当前体验边界（产品输入，尚非 profiler 基线） | 目标场景（产品输入） |
-|---|---:|---:|
-| 同屏单位 | 约 10–20 | 30–50 |
-| 活跃子弹 | 约 30–50 | 50–100 |
-| 主要弹种 | 绝大部分 AABB | 绝大部分 AABB |
-| 稀有复杂弹 | 多边形、射线占比低 | 先保留 AS2，按尖峰 profile 决定 |
-| 游戏节奏 | 30 fps | 固定一帧约 33.3 ms |
+| 场景 | 全部单位数 含玩家 | 常驻友军卡片 | 普通逻辑弹 | 用途 |
+|---|---:|---:|---:|---|
+| 最低友军承诺 | 至少 21 | 20 | 0 / 50 | 5 佣兵 + 5 战宠 + 10 保护或其他友军；布局和身份完整 |
+| 常态战斗 | 30 | 20 | 50 | 20 友军 + 玩家 + 9 敌方；常规体验门 |
+| 目标大场面 | 50 | 20 | 100 | 主性能与碰撞阶段门 |
+| 扩展压力 | 80 | 32 | 200 | 有界退化、队列和增长曲线；首版性能承诺以目标大场面为准 |
 
-50 单位 × 100 子弹只有 5,000 个粗配对/帧。该量纲对 CSharp 是低负载，对 AVM1 却足以迫使现役代码采用扫描线、近有序排序、属性缓存、循环展开、静态上下文与零临时分配。CSharp 首版因此不复刻这些结构。
+“20”是同时可表示的最低产品要求，不是后台只有 20 条数据、靠滚动才看到剩余单位。保护 NPC 不得因佣兵/战宠占满而静默丢失。超过首版容量的明确呈现方式在 P1-ALLY 布局小样裁定，不能用碰撞实体截断满足 UI 上限。
+
+普通逻辑弹数量、联弹组数、联弹子单元数、射线实例/目标数分别统计。现役原生视觉容量不等于几何检测已迁移，也不等于碰撞阶段可以直接承诺同样数量。
 
 ### 0.3 成功判据
 
-迁移成功不以“CSharp 已收到相同数据”或“CSharp 计算很快”为准，而以以下净收益为准：
+净收益以删除的 AS2 显示更新、排序、候选扫描及碰撞工作，扣除新增世界帧构建/编码、回包解析、必要 fallback 和 Host 工作后衡量。公共底座只计一次，不能分别在血条、友军和碰撞项目中重复认领。
 
-```text
-净收益
-= 被删除的 AS2 显示/更新/排序/碰撞/查询成本
-- WorldFrame 构建与编码
-- AS2 回包解析与提交
-- 仍保留的 shadow / fallback 成本
-```
+H0 可独立取得现有功能的成本下降；P0 单独运行主要证明开销上限与正确性；P1 要证明旧 Flash 显示更新确实退出；P4 要证明白名单弹退出本地几何热路且整局帧时间净改善。源码成立、夹具通过、候选执行、真实战斗与正式发布分别出结论。
 
-被迁域的 AS2 热函数、显示对象或缓存消费者没有真正停止，便不能宣称该阶段取得性能收益。
+### 0.4 推荐阅读顺序
+
+排期与验收阅读 §14、§15；实现公共数据面阅读 §7、§8、§9；碰撞时序与回退阅读 §6、§10、§13；尚未冻结的实现选择见 §16。原 2026-08-09 的 P0–P6 阶段身份保留，H0 为现有玩家 HUD 的独立优化阶段，P1-HEAD/P1-ALLY 为 P1 子阶段。
 
 ---
 
@@ -94,51 +97,50 @@
 
 ### 1.3 与 UI 迁移文档的边界
 
-本文规划的是跟随 Flash 世界坐标的 **CSharp native world overlay**，不是 Web Panel request/commit 生命周期。它可以复用 Launcher 的坐标映射、layered window 和 prepared DIB 模式，但不沿用 [AS2 UI → Web Panel 迁移护栏](../agentsDoc/as2-web-panel-migration.md) 的领域事务模板。
+本文同时规划固定屏幕 HUD/友军卡和跟随 Flash 世界坐标的 CSharp native world overlay，优先复用现役共享合成，不套用 [AS2 UI → Web Panel 迁移护栏](../agentsDoc/as2-web-panel-migration.md) 的领域事务模板。文中的服务器端是本机 Launcher/CSharp Host；公网联机服务器和远端网络延迟不在本轮范围。
 
 ---
 
-## 2. 已核对的现状地基
+## 2. 当前主线的地基与缺口
 
-### 2.1 AVM1 是首要成本域
+### 2.1 玩家 HUD 的现役数据与绘制
 
-`agentsDoc/as2-performance.md` 的基准将局部算术置于低成本带，而成员访问、函数/方法调用、`new`、闭包、`arguments`、字符串方法和 `split` 依次落入中税至极重成本带（[成本阶梯](../agentsDoc/as2-performance.md#1-avm1-成本阶梯速查)）。现役 BQP 也明确以双指针、零临时分配、内联、变量提升、属性缓存和循环展开换取性能（[BulletQueueProcessor.as:L8-L22](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as#L8)；[L2561-L2572](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as#L2561)）。
+| 路径 | 当前源码事实 | 迁移方案中的处理 |
+|---|---|---|
+| [PlayerHudService](../scripts/类定义/org/flashNight/arki/hud/PlayerHudService.as) | 每帧采样；按组比较变化；约两秒 full；变化组经 LiteJSON/Base64 放入 `pi`；装配一般每三帧读取 | H0 保留生命周期与强制校准，减少重复投影；WorldFrame 另用扁平 lane，不复制整份玩家 HUD |
+| [PlayerHudBuffProjection](../scripts/类定义/org/flashNight/arki/hud/PlayerHudBuffProjection.as) | 详情启用后持续读取 activation/mods；计时变化使整组连同 info 重发；每 Buff 8 条、每快照 64 条 mods 是容量保护 | 静态说明与动态状态分离；动态数值仍从真实效果读取，不能因缓存隐藏变化 |
+| [PlayerHudState](../launcher/src/Guardian/Hud/PlayerInfo/PlayerHudState.cs) 与 [BuffCard](../launcher/src/Guardian/Hud/PlayerInfo/PlayerHudBuffCard.cs) | 未传入的组复用 typed 对象，但每份新 Snapshot 都重新 Project BuffCards | Buff 数据未变则复用展示卡；按受影响组通知消费者 |
+| [PlayerHudController](../launcher/src/Guardian/Hud/PlayerInfo/PlayerHudController.cs) | 队列最多 64 个编码包；Drain 逐包解析与采用，满时清队并请求同步 | 上限不能代替帧内工作预算；状态可以安全合并，动作结果和事务不可丢弃 |
+| [PlayerHudRuntime](../launcher/src/Guardian/Hud/PlayerInfo/PlayerHudRuntime.cs) 与 [NativeHudOverlay](../launcher/src/Guardian/NativeHudOverlay.cs) | Buff、聚焦血条、提示共用上方 surface；只有共享主 HUD 启用了局部重绘；提交约 33 ms 合并 | H0/P1 分别治理组件失效与实际上传面积；局部绘制不自动等于局部上传 |
+| [FocusTargetHudService](../scripts/类定义/org/flashNight/arki/hud/FocusTargetHudService.as) 与 [FocusTargetWidget](../launcher/src/Guardian/Hud/PlayerInfo/PlayerHudFocusTargetWidget.cs) | protect/boss/combat 最多 4 行；Host parser 与布局也限制 4；包含头像、连击与受击/回血/低血动效 | 保留聚焦角色与优先级；20 人友军另建消费者，不把 4 改成 20 充当完整方案 |
 
-因此，本路线的优化顺序必须是：
+### 2.2 世界单位与碰撞仍在 AS2
 
-1. 先删除 AVM1 热工作；
-2. 再减少跨层字段；
-3. 最后才优化 CSharp 算法。
+[InformationComponentUpdater](../scripts/类定义/org/flashNight/arki/unit/UnitComponent/Updater/InformationComponentUpdater.as) 仍更新 `新版人物文字信息`、血/盾/韧性宽度与残余/渐隐，并发布 `HPChanged`；[BloodBarEffectHandler](../scripts/类定义/org/flashNight/arki/component/Effect/BloodBarEffectHandler.as) 仍触发血条时间线、颜色和受击显示。P1 必须区分这些显示写与领域事件，不能整类删除后期待无副作用。
 
-### 2.2 TargetCache 不是可直接搬走的权威单位池
+[BulletQueueProcessor](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as) 仍进行阵营候选、Z 粗判、cached AABB、联弹多边形及命中顺序处理，`settleHit` 仍在 AS2。当前 [BulletVisualFrame](../launcher/src/Guardian/WorldCompositor/BulletVisualFrame.cs)、[BulletVisualProbe](../scripts/类定义/org/flashNight/arki/render/BulletVisualProbe.as) 与 [ChainVisualBridge](../scripts/类定义/org/flashNight/arki/render/ChainVisualBridge.as) 服务原生表现，不能直接作为几何结算 authority。
 
-`TargetCacheUpdater` 是按阵营维护的单位索引镜像；单位仍以 MovieClip 和业务对象图为权威。Updater 复用并交换数组、重建 `nameIndex`（[TargetCacheUpdater.as:L20-L40](../scripts/类定义/org/flashNight/arki/unit/UnitComponent/Targetcache/TargetCacheUpdater.as#L20)；[L270-L388](../scripts/类定义/org/flashNight/arki/unit/UnitComponent/Targetcache/TargetCacheUpdater.as#L270)），`SortedUnitCache` 再维护排序键与前缀最大值（[SortedUnitCache.as:L1233-L1278](../scripts/类定义/org/flashNight/arki/unit/UnitComponent/Targetcache/SortedUnitCache.as#L1233)；引用不能跨帧持有）。
+[TargetCacheUpdater](../scripts/类定义/org/flashNight/arki/unit/UnitComponent/Targetcache/TargetCacheUpdater.as) 与 [SortedUnitCache](../scripts/类定义/org/flashNight/arki/unit/UnitComponent/Targetcache/SortedUnitCache.as) 仍服务多个同步消费者。WorldFrame 从生命周期维护的扁平 roster 导出，不主动调用 acquire/cache 重排以“顺手取得”单位列表。哪些旧缓存可以退役，由剩余消费者清单决定。
 
-`updateFromUnitArea()` 并非稳态每次缓存读取都调用：只有 `tempVersion < currentVersion` 时才重新收集并用 `getRect` 建立边界；日常移动主要由 `Mover` 同步 collider，缓存更新再读取现成边界并重排（[TargetCacheUpdater.as:L249-L268](../scripts/类定义/org/flashNight/arki/unit/UnitComponent/Targetcache/TargetCacheUpdater.as#L249)；[Mover.as:L134-L154](../scripts/类定义/org/flashNight/arki/spatial/move/Mover.as#L134)）。
+### 2.3 现有合成器与头像能力
 
-由此得到两条约束：
+[WorldCompositorController](../launcher/src/Guardian/WorldCompositor/WorldCompositorController.cs) 已有共享 HUD raster 呈现；[WorldRasterPresentation](../launcher/src/Guardian/WorldCompositor/WorldRasterPresentation.cs) 目前只允许层号 0–4，分别由伤害数字、资源、底部、Buff 和主 HUD 使用。不能假定还有第六个空闲槽，不能为每个友军新增 HWND、timer 或 native layer。
 
-- 不得为了导出 WorldFrame 调用 `acquireEnemyCache/acquireAllCache(..., 1)`，否则会继续支付排序、索引和缓存维护税。
-- CSharp 镜像首期来自独立、扁平、生命周期维护的 roster；TargetCache 为尚未迁移的 AS2 同步消费者保留，按消费者减少后再裁决退役范围。
+[LootIconCatalog](../launcher/src/Guardian/Hud/Loot/LootIconCatalog.cs) 使用有界 24 MiB LRU 和 64×64 缩略图；固定头像首次 miss 会同步栅格化 SVG。纸娃娃由 [DollPortraitBakeService](../launcher/src/Guardian/Hud/Loot/DollPortraitBakeService.cs) 单键去重并异步请求生成；现有最多 64 个在飞请求只是保护上限，不是 20 张首次同时准备的调度策略。
 
-### 2.3 现有 F 快车道不能直接扩成计算数据面
+P1 复用这些资源所有权与共享合成入口。2026-08 路线中“优先新增 layered-window world overlay”的物理选择在本次更新为共享合成优先；最终 surface/上传实现由 P1 渲染小样按像素搬运成本裁定。已有 HitNumber reducer 保持唯一。
 
-现役 `FrameBroadcaster` 在帧末合并 camera / hit-number / fps / UI / input 段（[FrameBroadcaster.as:L88-L135](../scripts/类定义/org/flashNight/arki/render/FrameBroadcaster.as#L88)）。CSharp 端 `XmlSocketServer` 使用单 ReadLoop 同步分派，且现有处理路径与 connection transition 锁、C# hit reducer/overlay、V8 GameInput 等工作耦合（[XmlSocketServer.cs:L343-L400](../launcher/src/Bus/XmlSocketServer.cs#L343)；[L442-L550](../launcher/src/Bus/XmlSocketServer.cs#L442)）。
+### 2.4 XMLSocket 与 worker 接入
 
-因此：
+[XmlSocketServer](../launcher/src/Bus/XmlSocketServer.cs) 仍在读循环按 NUL 分包并同步分派；[FrameTask](../launcher/src/Tasks/FrameTask.cs) 的 F 通道已处理 camera、伤害数字、普通弹/联弹/射线/光等表现。新的碰撞计算不能直接塞入该分派栈，也不能挂在 UI Paint/Timer 上。
 
-- P0-COMMON 必须设计独立、版本化的 `\0` 分隔 UTF-8 扁平文本 world 快车道；P0-COLLISION 在同一 envelope 上补齐 collision request/result 合同（下文统称 raw lane；不是二进制流）；具体 prefix 尚未冻结。
-- ingress 在锁内只允许校验小头部并投递有界 mailbox，解析与计算移出读循环。
-- overlay、AI 和 collision 可以共享一份不可变 WorldFrame，但不能共享一种 deadline/丢帧策略。
-- 当前 ReadLoop 会在遇到 `\0` 前持续扩展 `MemoryStream`（[XmlSocketServer.cs:L343-L400](../launcher/src/Bus/XmlSocketServer.cs#L343)）；新 lane 在进入解析与 mailbox 前必须有字节级硬上限，不能把“本地连接”当作无界分配许可。
+新增 world lane 复用现有本机连接及其所有权检查，独立版本、大小上限和 mailbox；读循环只做有界接收/投递，worker 解析计算。逻辑 lane 与时效隔离不要求新 socket。完整协议在 P0 冻结，届时检查输入、SFX、控制消息的尾延迟。
 
-### 2.4 HitNumber 是纵切原型，不是可复制的常驻实体模板
+### 2.5 历史性能证据的用途
 
-截至 2026-08-25，伤害数字已完成独立迁移：`FrameTask → HitNumberRuntime → HitNumberOverlay` 全部为 C#，V8 `HitNumber` namespace 与 Flash MovieClip fallback 已删除。世界层只保留短自然寿命，有限世界上限按 Burst 原子选择；balanced/total/classic/detail 四种表现共用同一 reducer，精确历史另进固定 32,768 段环形账本并只在暂停态 Web 设置按需分页物化。UI 侧使用 generation 栅栏、latest-wins 单槽 mailbox、紧边界和持久 top-down PArgb DIB / memory DC，常态不再逐帧创建整视口 Bitmap、HBITMAP 或 DC。具体生产与验收合同见 [Launcher README](../launcher/README.md#打击伤害数字生产路径)和[专项 harness](../tools/hit-number-visual-harness/README.md)。
+[10 月 10 日 HUD/Buff 对照](AS2界面快照与Buff调度优化验证-2026-10-10.md) 的 2.432 ms HUD 平均采样来自旧产物、暂停、无 Buff 和空槽位，不能代替当前丰富 HUD 战斗基线。[共享 HUD 成本记录](shared-hud-render-cost-2026-10-10.md) 证明受控呈现中局部绘制和缓冲复用有收益，但当时已明确提交仍搬运完整 raster。
 
-它仍只是瞬态事件纵切，不是人物文字的可复制模板。人物文字是持久实体状态，仍必须新增身份、spawn/despawn、full resync、迟到帧丢弃和实体级 latest-wins；不能把伤害段的 1.08 秒窗口、Burst 身份或允许丢旧视觉帧直接套到 roster。
-
-World Overlay 首版继续复用 `PlayerInfoLayeredDibSurface` 的持久 surface 模式。伤害数字保持独立 reducer 和独立 surface；P1 不得重新引入 V8 状态机或第二套 damage-number reducer。是否把两个已单一权威的最终绘制面物理合层，仍由 P1 的 paint/ULW profile 单独裁决。
+当前 [HUD 体验增量](玩家HUD交互与动效优化-2026-10-23.md) 已包含多目标、头像、连击与腕刃详情。H0/P0 必须对该主线重新测量；当前文档更新不宣称任何新的帧时间、碰撞等价或 20 人运行结果。
 
 ---
 
@@ -146,7 +148,7 @@ World Overlay 首版继续复用 `PlayerInfoLayeredDibSurface` 的持久 surface
 
 ### 原则 1 · AVM1 税最小化
 
-每增加一个帧级字段、dirty 检查、容器、排序或第二次遍历，都必须能指向一个将被删除的 AS2 热循环或显示成本。只因“CSharp 顺手可用”而扩充 WorldFrame，不构成收益理由。
+每增加一个帧级字段、dirty 检查、容器、排序或第二次遍历，都必须能指向一个将被删除的 AS2 热循环/显示成本，或像 20 人友军卡这样的已明确需求及独立增量预算。只因“CSharp 顺手可用”而扩充 WorldFrame，不构成收益理由。
 
 ### 原则 2 · CSharp 可以笨，但边界必须确定
 
@@ -157,7 +159,7 @@ World Overlay 首版继续复用 `PlayerInfoLayeredDibSurface` 的持久 surface
 - collision：exact `frameSeq`，固定 `n+1` deadline，不允许 latest-wins。
 - bullet threat：随 collision frame 产出，结果年龄上限为 1 帧，不进入四帧 AI advisory 节拍。
 - AI：四帧节拍的 advisory `SenseFrame`，允许受控陈旧，不允许晚到覆盖玩家命令。
-- overlay：latest-wins，可丢旧视觉帧，不影响游戏逻辑。
+- overlay：完整或已合并的状态可 latest-wins；身份/元数据和必要事件先有序采用，再合并视觉失效，不直接丢未经合并的增量。
 - telemetry/debug：可采样、可降级、不得反压 collision。
 
 ### 原则 4 · AS2 仍是业务提交权威
@@ -168,7 +170,7 @@ CSharp 返回 `HitIntent`、`SenseFrame` 或 `BoundsCorrectionIntent`；AS2 在�
 
 Shadow 可以短期开启；正式 steady-state 中，同一弹体/查询域不得同时由 AS2 和 CSharp 全量计算。fallback 是 deadline miss 时的冷路径或场景边界切换，不是每帧热备。
 
-### 原则 6 · 本地共进程不等于无需时序身份
+### 原则 6 · 本机 Host 仍需时序身份
 
 Launcher 是强制运行时，因此不需要按不可信公网服务器设计认证、分布式共识或持久重试；但 socket、线程、暂停、重连、换图和对象池复用仍会产生 stale result。batch key `{streamEpoch, sceneEpoch, frameSeq}` 与 entity key `{handle, generation}` 仍是硬约束。
 
@@ -178,8 +180,8 @@ Launcher 是强制运行时，因此不需要按不可信公网服务器设计�
 
 ### 4.1 本路线目标
 
-- 同一份单位/子弹动态帧同时服务 world overlay、普通 AABB 碰撞、AI 粗查询、bullet threat、雷达与调试。
-- 将人物姓名、称号及可选血条/盾条/韧性表现从 Flash 显示树垂直切到 CSharp。
+- 优化现役玩家 HUD；一份单位镜像服务头顶条、至少 20 个友军头像血量及现役聚焦目标，并扩展白名单子弹用于普通 AABB 碰撞。AI 粗查询、bullet threat、雷达按各阶段单独启用。
+- 将人物姓名、称号、血条及已有盾/韧性表现从 Flash 显示树垂直切到 CSharp；先保持现役语义和特殊单位例外。
 - 将普通 AABB 弹的候选枚举和几何命中移到 CSharp，AS2 保留结算。
 - 保持 AI 调用点同步，改为读取已完成的四帧 `SenseFrame`。
 - 建立可量测、可熔断、可按弹种/消费者切换的分期入口。
@@ -201,6 +203,8 @@ Launcher 是强制运行时，因此不需要按不可信公网服务器设计�
 |---|---|---|---|---|
 | 实体出生/死亡/阵营/代际 | AS2 | AS2 | 镜像状态 | 分配 handle/generation、换图清空 |
 | 单位/子弹动态事实 | AS2 | AS2 producer | WorldFrame 镜像 | 产生一次扁平帧 |
+| 玩家 HUD 与 Buff 详情 | AS2 事实 + 现役 CSharp 显示 | 原权威不变 | 分组状态、只读投影与绘制 | 保留 cooldown/Buff/装备业务，只优化采集和传输 |
+| 友军成员/头像/血量 | AS2 佣兵/宠物/关卡绑定与单位状态 | AS2 事实 + CSharp 显示 | 共用镜像的 20 人卡片 | 成员和外观 revision、生命周期；不新建第二套单位 |
 | 人物文字/头顶条绘制 | Flash | CSharp | native world overlay | 只发语义状态与锚点；停旧显示树 |
 | 普通 AABB 几何命中 | AS2 | CSharp（白名单） | ordered HitIntent | `n+1` 复核并结算 |
 | 动态消弹/反弹前置裁决 | AS2 BQP stage 1 | AS2（v1） | 无 | WorldFrame freeze 前处理；VANISH/REMOVE 不导出，BOUNCE 按现役语义跳过当帧单位碰撞 |
@@ -306,9 +310,9 @@ queue/source ordinal
 
 v1 使用独立 `collisionNumericRevision`，并将它与 `collisionComparatorRevision` 一起写入输入和结果。数值等价以现役 BQP 普通 AABB 热路径为 oracle，不以抽象几何库或“CSharp 更精确”为 oracle：
 
-- AABB/Z 分离必须逐比较复刻现役 `<`、`<=`、`>=` 组合，不引入 epsilon、`float` 降精度或隐式量化。普通 BQP 热路径在左右边缘相等时存在方向性：`unitRight == bulletLeft` 被内联 `bulletLeft >= unitRight` 排除；`unitLeft == bulletRight` 仍进入候选窗口，且不会再被 X 条件排除，Y/Z 合法时可命中。该不对称是 v1 parity 合同，不能笼统改写成“所有边缘接触均不命中”；是否修正另立 gameplay/balance 裁决（[BulletQueueProcessor.as:L2992-L3008](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as#L2992)；[L3062-L3108](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as#L3062)）。
+- AABB/Z 分离必须逐比较复刻现役 `<`、`<=`、`>=` 组合，不引入 epsilon、`float` 降精度或隐式量化。普通 BQP 热路径在左右边缘相等时存在方向性：`unitRight == bulletLeft` 被内联 `bulletLeft >= unitRight` 排除；`unitLeft == bulletRight` 仍进入候选窗口，且不会再被 X 条件排除，Y/Z 合法时可命中。该不对称是 v1 parity 合同，不能笼统改写成“所有边缘接触均不命中”；是否修正另立 gameplay/balance 裁决（[BulletQueueProcessor.as](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as)；[L3062-L3108](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as)）。
 - AABB `dmgMult` 恒为 `1`。
-- AABB 命中点必须复刻 AVM1 位运算：先以 `Number` 求两侧重叠边界之和，再按 ECMAScript `ToInt32` 语义转换该和，最后执行有符号算术 `>> 1`；不得用 CSharp `double / 2` 代替（[BulletQueueProcessor.as:L3154-L3159](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as#L3154)）。
+- AABB 命中点必须复刻 AVM1 位运算：先以 `Number` 求两侧重叠边界之和，再按 ECMAScript `ToInt32` 语义转换该和，最后执行有符号算术 `>> 1`；不得用 CSharp `double / 2` 代替（[BulletQueueProcessor.as](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as)）。
 - 输入使用 AS2 `Number` / CSharp `double` 可往返的有限值；`NaN`、`±Infinity`、缺失值、超长/不可解析 token 或 codec 声明范围外的值使整批无效，禁止默认为零。`-0` 在线路上规范化为 `0`。
 - P0-COLLISION golden 至少覆盖小数与负坐标、奇偶和、四向边界相等、Z 临界值、`ToInt32` wrap 边界，以及 contact point 的逐值 parity。
 
@@ -317,6 +321,30 @@ v1 使用独立 `collisionNumericRevision`，并将它与 `collisionComparatorRe
 ## 7. 数据面概念合同
 
 > 本节冻结职责与最小语义，不冻结 wire prefix、分隔符、具体类型宽度或类名。对应 P0-COMMON / P0-COLLISION readiness 量测后另立协议施工文档。
+
+### 7.0 四项工作共用的数据分层
+
+下列名称是职责名，未固定 wire prefix、字段位宽或具体类名。数据自 AS2 单向投影，显示不触发角色重建、Buff 注入/移除、回调、物品消费或存档写入。
+
+| 层 | 最小内容 | 频率与采用规则 | 消费者 |
+|---|---|---|---|
+| EntityMetaDelta | handle/generation、类型、所属关系、名字、头像键或外观 tuple、外观 revision、角色标签 | spawn/despawn/真实内容变化；revision 连续且可 full resync；元数据不随掉血重发 | 头顶、友军、聚焦、碰撞类型 |
+| WorldFrame | 单位显示坐标、groundY、锚点/visual transform、cached AABB、alive/collidable/faction 等资格；需要时加入白名单子弹 | 每模拟帧；collision 使用 exact frame，overlay 可取最新；一份不可变输入，多消费者引用 | 头顶位置、碰撞、可选查询 |
+| UnitPresentation | 当前/最大 HP、盾/韧性展示事实、受击显现等有限事件 | 初始方案每 3 模拟帧约 10 Hz；死亡/退场及关键显隐及时发送；按 source frame 推进表现，不推进 gameplay | 头顶、20 人卡片、聚焦 |
+| 玩家专属投影 | 玩家装配、技能/药剂、弹药、冷却、Buff 元数据与动态详情 | 保留各领域实际权威与 H0 分组更新；不广播给每个单位 | 玩家 HUD |
+| HitIntentBatch | batch/实体代际、ordered candidates、命中点、完整性与 apply frame | exact n，在 n+1 pre-simulation 采用；不可 latest-wins | AS2 结算 |
+
+UnitPresentation 的 10 Hz 是本次初始显示方案，取代旧提案的“四帧表现槽”；AI SenseFrame 仍是四帧节拍，玩法计时和 Buff 更新节拍不变。暂停时 source frame 不推进。关键状态的立即投影复用现有生命周期/伤害事实；不为显示额外执行一次领域更新。
+
+H0 不强制等待 WorldFrame。P0-COMMON 上线后，玩家 actor、聚焦目标和友军卡使用同一 entity key 关联；玩家 epoch 与 scene/stream epoch 有明确绑定。P1 接续时逐项撤下重复单位元数据和 HP producer，不能长期并存“新镜像 + 旧 focus rich DTO + 独立小队全量快照”三套来源。
+
+元数据 ACK 只确认身份和字段已采用，不等待头像文件、纸娃娃烘焙或 UI 绘制。视觉资源失败不撤销已闭合的碰撞几何 readiness；显示与碰撞分别记录能力就绪，头像用占位重试。
+
+固定屏幕友军卡不直接消费位置变化通知；world anchor 变化只使头顶组件失效。相同单位出现于聚焦、头顶和小队三个位置，可以有三种呈现，但仅有一份身份/HP 事实。
+
+友军成员来自真实佣兵、战宠及关卡保护绑定，生命周期维护集合；C# 可以筛选/排序/布局，不从名字、头像或阵营字符串猜测保护目标。名单更新后保留同代际的槽位稳定性，死亡、复活、换人和换图均有明确转移。
+
+---
 
 ### 7.1 身份头
 
@@ -341,6 +369,7 @@ collision input/result 还必须携带 `collisionComparatorRevision / collisionN
 
 - handle / generation / kind / faction / capability flags；
 - name / title / level / style token；
+- portrait key / appearance tuple / appearance revision、友军类型/所属关系及保护目标标签；
 - head-anchor profile：局部锚点、方向抵消规则与基础显示缩放；其 revision 独立于 collider；
 - collider profile / local bounds / geometry revision；
 - simple bullet 的静态形状和允许的运动类别。
@@ -366,9 +395,9 @@ v1 优先采用每帧自包含的全量动态数值帧：
 - bullet handle/gen、owner handle/gen、`settlementRevision`、`displayX=_x`、`displayY=_y`、`groundY=Z轴坐标`、zRange、gameplay flags、source ordinal；
 - 仅 collision/AI/overlay 至少一个消费者需要的动态字段。
 
-上述字段名是语义名，wire grammar 仍由对应 readiness 冻结。三分量不能折叠：`displayX/displayY` 服务单位本体与头顶锚点投影，`groundY` 服务地面平面、纵深、AI 与 Z 粗判；浮空高度由 `groundY - displayY` 派生（[玩家模板迁移.as:L833-L848](../scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as#L833)）。只发送 `_x/_y` 会丢失碰撞 Z，只发送 `_x/Z轴坐标` 会使浮空单位的头顶锚点钉在地面。P0-COMMON 必须冻结“直接发送当帧 world-space head anchor”或“profile + 完整 live visual transform”之一；只有 root position 与 profile、却缺方向/缩放/旋转语义，不构成完整 anchor 合同。
+上述字段名是语义名，wire grammar 仍由对应 readiness 冻结。三分量不能折叠：`displayX/displayY` 服务单位本体与头顶锚点投影，`groundY` 服务地面平面、纵深、AI 与 Z 粗判；浮空高度由 `groundY - displayY` 派生（[玩家模板迁移.as](../scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as)）。只发送 `_x/_y` 会丢失碰撞 Z，只发送 `_x/Z轴坐标` 会使浮空单位的头顶锚点钉在地面。P0-COMMON 必须冻结“直接发送当帧 world-space head anchor”或“profile + 完整 live visual transform”之一；只有 root position 与 profile、却缺方向/缩放/旋转语义，不构成完整 anchor 合同。
 
-位置、碰撞、相机，以及 `alive/collidable/faction/generation/capability` 等 gameplay eligibility 必须每帧或以同帧可见 revision 更新；collision/AI 不得从四帧表现槽读取资格。HP ratio、盾/韧性等纯表现状态可按四帧节拍；姓名/称号只走 MetaDelta。需要当前 HP 的 AI predicate 由 AS2 live 复核，不能把表现采样当权威。
+位置、碰撞、相机，以及 `alive/collidable/faction/generation/capability` 等 gameplay eligibility 必须每帧或以同帧可见 revision 更新；collision/AI 不得从低频表现槽读取资格。HP/maxHP、盾/韧性等纯表现状态初始每 3 帧采集，死亡/退场和关键显隐及时投影；姓名/称号只走 MetaDelta。需要当前 HP 的 AI predicate 由 AS2 live 复核，不能把表现采样当权威。各消费者按能力订阅字段组：P0-COMMON 的最小显示镜像不用承担尚未启用的 bullet/result/ThreatFrame 构建，碰撞启用时补齐其必要资格与几何字段。
 
 ### 7.4 HitIntentBatch
 
@@ -452,9 +481,9 @@ overlay、AI、collision 不得分别触发第二次 gameworld/TargetCache/Bulle
   - `remote-primary`：生成/分类时只进入 external-simple queue，不进入 legacy BQP active queue。
 - P0-COLLISION 只验证分类与碰撞扩展，不改变现役入队；P3 使用 `shadow`；只有 P4 gate 通过后才把白名单弹切为 `remote-primary`。
 - legacy BQP 继续处理 ray/polygon/cancel/UnitBullet 等例外，保持其现有预取键、排序、扫描和清理优化不受破坏。
-- `remote-primary` 只移出“子弹 × 单位”几何检测，不得绕过场上动态出现的全局消弹区。v1 从 BQP 抽取或复用一段共享 AS2 cancel prepass，在 WorldFrame freeze 前处理 external-simple queue（现役前置顺序见 [BulletQueueProcessor.as:L2643-L2672](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as#L2643)；[L2867-L2984](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as#L2867)）：
-  - `VANISH/REMOVE`：保留现役 `霰弹值=1`、`STATE_HIT_MAP`、killFlags、恰好一次 movement、地图命中 FX/`击中时触发函数` 与 REMOVE/VANISH 统一终止优先级，不进入本帧 collision batch（[BulletQueueProcessor.as:L2976-L2984](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as#L2976)；[L3329-L3370](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as#L3329)）；
-  - `BOUNCE`：执行现役 `handleBounce`，在旧 pending batch 已 disposition 后原子刷新 owner/faction/shooter settlement context 与 `settlementRevision`，再执行恰好一次 movement，并按现役 `continue` 语义跳过当帧单位碰撞（[BulletCancelQueueProcessor.as:L405-L432](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletCancelQueueProcessor.as#L405)）；
+- `remote-primary` 只移出“子弹 × 单位”几何检测，不得绕过场上动态出现的全局消弹区。v1 从 BQP 抽取或复用一段共享 AS2 cancel prepass，在 WorldFrame freeze 前处理 external-simple queue（现役前置顺序见 [BulletQueueProcessor.as](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as)；[L2867-L2984](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as)）：
+  - `VANISH/REMOVE`：保留现役 `霰弹值=1`、`STATE_HIT_MAP`、killFlags、恰好一次 movement、地图命中 FX/`击中时触发函数` 与 REMOVE/VANISH 统一终止优先级，不进入本帧 collision batch（[BulletQueueProcessor.as](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as)；[L3329-L3370](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletQueueProcessor.as)）；
+  - `BOUNCE`：执行现役 `handleBounce`，在旧 pending batch 已 disposition 后原子刷新 owner/faction/shooter settlement context 与 `settlementRevision`，再执行恰好一次 movement，并按现役 `continue` 语义跳过当帧单位碰撞（[BulletCancelQueueProcessor.as](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletCancelQueueProcessor.as)）；
   - `NONE`：才允许冻结并导出。
 - cancel disposition 必须进入 frozen input/`inputIntegrityToken` 和 shadow golden；不能在 `n+1` live world 补判。只有 profile 证明该条件 prepass 本身成为瓶颈，才把 cancel-zone geometry 纳入 P6。
 - cancel-zone catalog/SoA 每帧只允许 prepare 一次并同时服务 external 与 legacy 队列。该 prepass 在 `hasCZ=false` 时必须保持 O(1) 快退；有区域时可直接对目标量纲采用条件式 `O(B×C)` 暴力遍历，不能为了复用现役双扫描线而让 external queue 常态排序。区域优先级、重叠区 first-writer/token 语义仍须复刻现役。
@@ -473,9 +502,9 @@ AS2 微基准表明裸字符串 `+` 可能比 `Array.join()` 便宜，但完整 
 
 ### 8.5 collider profile 机会
 
-普通 bullet 已采用“首次缓存 local bounds，之后按位置偏移”的路径，透明弹为固定 25×25（[AABBCollider.as:L281-L343](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Collider/AABBCollider.as#L281)）。单位 `updateFromUnitArea()` 会调用 `unit.area.getRect(_root.gameworld)`（[AABBCollider.as:L433-L446](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Collider/AABBCollider.as#L433)），但现役 TargetCache 并非稳态每帧重算该 `getRect`。
+普通 bullet 已采用“首次缓存 local bounds，之后按位置偏移”的路径，透明弹为固定 25×25（[AABBCollider.as](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Collider/AABBCollider.as)）。单位 `updateFromUnitArea()` 会调用 `unit.area.getRect(_root.gameworld)`（[AABBCollider.as](../scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Collider/AABBCollider.as)），但现役 TargetCache 并非稳态每帧重算该 `getRect`。
 
-现役单位 AABB 是一次 `unit.area.getRect(_root.gameworld)` 的缓存快照，不是当前动画帧几何的持续函数。Mover 的多个实际移动路径会刷新碰撞盒（[Mover.as:L134-L154](../scripts/类定义/org/flashNight/arki/spatial/move/Mover.as#L134)；[L177-L204](../scripts/类定义/org/flashNight/arki/spatial/move/Mover.as#L177)），状态/tick 路径与 TargetCache 重新收集也存在显式刷新；但“静止且只播放动画”不保证刷新。
+现役单位 AABB 是一次 `unit.area.getRect(_root.gameworld)` 的缓存快照，不是当前动画帧几何的持续函数。Mover 的多个实际移动路径会刷新碰撞盒（[Mover.as](../scripts/类定义/org/flashNight/arki/spatial/move/Mover.as)；[L177-L204](../scripts/类定义/org/flashNight/arki/spatial/move/Mover.as)），状态/tick 路径与 TargetCache 重新收集也存在显式刷新；但“静止且只播放动画”不保证刷新。
 
 因此 P0-COLLISION/P3 的 parity 真源必须是当帧已经缓存的 `aabbCollider.left/right/top/bottom`，读取时不得再次调用 `getRect()`。静止动画、静止转向或姿态细节变化若没有触发现役 `updateFromUnitArea()`，CSharp 也必须继续使用旧碰撞盒；不得依据 live visual transform 主动提高精度。
 
@@ -507,7 +536,9 @@ AS2 微基准表明裸字符串 `+` 可能比 `Array.join()` 便宜，但完整 
 - SIMD / unsafe / 多 worker job system；
 - 通用 ECS、predicate DSL、query planner；
 - delta/bitpack/varint/compression；
-- shared memory、第二 socket 或 native C++ 依赖。
+- 为碰撞另建 shared memory、第二 socket 或新的 native C++ 计算依赖。
+
+现役 native compositor 已是显示底座；P1 若确需调整其层/批次 ABI，按渲染消融与发布范围处理，不等于允许另建碰撞后端。
 
 只有 `parse + O(B×N + A×N)` 在目标负载下成为 deadline 主因，才先优化 parser/复用；仍不满足，再评估最简单的 uniform grid。
 
@@ -520,30 +551,60 @@ AS2 微基准表明裸字符串 `+` 可能比 `Array.join()` 便宜，但完整 
 | collision result | exact epoch/seq，小型 expected/future 槽 | 旧、重复、late 立即丢弃 |
 | ThreatFrame | 与 collision result 同 batch/seq，最大年龄 1 | 缺失时不得沿用更老 threat advisory |
 | AI SenseFrame | latest completed，带 age/plan revision | 可覆盖旧 advisory；不得拖慢 collision |
-| overlay | 单 pending UI post，latest-wins | 丢旧视觉帧，保留最新 full state |
+| overlay | 单 pending UI post，完整/已合并状态 latest-wins | 元数据和必要事件先采用；丢旧绘制请求，保留最新完整状态 |
 | telemetry/debug | 有界采样 | 首先降级或关闭 |
 
-### 9.4 World Overlay
+### 9.4 World Overlay 与共享合成
 
-逻辑绘制面分 nameplate、bar、damage-number、debug/radar 图层。damage-number 已由独立 C# `HitNumberRuntime` 单一持有段寿命、Burst 聚合/裁剪、balanced/total/classic/detail 投影与 reset generation；AS2 只在 `H1` 时发送结算后段事件，V8 只保留 GameInput。固定容量精确账本同属该 runtime，但不参与世界 paint。WorldFrame 不接管或复制这份状态，“damage-number 图层”仍只表示未来可能复用同一最终合成面。
+逻辑上区分 nameplate、bar、ally cards、damage-number、debug/radar；物理上优先复用当前 WorldCompositor。damage-number 的 C# reducer、聚合/裁剪、reset generation 及固定容量精确账本保持现役单一权威；WorldFrame 不复制它，也不把历史账本放回战斗 paint。
 
-物理上 World Overlay 优先使用固定 viewport surface、持久 DIB/DC 和每帧最多一次 layered-window commit。现役 HitNumber 已采用紧边界持久 DIB/DC，但与 World Overlay 保持独立 surface；是否物理合层由 P1 GDI+/ULW profile 决定。任何合层只能组合最终 paint，不得产生第二套 damage-number reducer、把设置面板的 Host-local 分页账本带回战斗 overlay，或把 WorldFrame 变成伤害历史 authority。
+当前 raster 通道仅有五个槽，且局部 CPU 绘制后仍可能复制/上传完整 raster。P1-RENDER 先比较两条有限路径：在可复用的共享层内按受影响区域批量画；确有收益证据时增加专用有界批次或调整层 ABI。比较必须包含实际像素面积、CPU copy、GPU upload/queue、遮挡、DRS 和输入定位，不能只量 Paint。
+
+不预设全视口巨大位图，也不按单位/友军创建 HWND、Timer 或独立提交。原持久 DIB/DC 可复用为必要的 CPU 资源实现，但本次不再把新增 layered-window overlay 冻结为首选产品路径。最终方案和产物依赖在 P1 小样后记录；已有共享合成与 damage-number reducer 不因此重写。
 
 #### 9.4.1 Bar presentation reducer
 
-P1 cutover 后，CSharp 是 residual HP、渐隐、受击显现、轻微抖动与颜色表现的唯一 reducer；AS2 只提供四帧语义快照和带 frame/epoch 的表现事件，不继续计算或传输最终 `_width/_alpha/timeline frame`。现役语义基线包括 HP 变化时重置 actual/residual 起点、残余血条二次缓出、长时间无变化后的渐隐，以及受击时重新显现/播放、颜色反馈和位置抖动（[InformationComponentUpdater.as:L19-L35](../scripts/类定义/org/flashNight/arki/unit/UnitComponent/Updater/InformationComponentUpdater.as#L19)；[L60-L129](../scripts/类定义/org/flashNight/arki/unit/UnitComponent/Updater/InformationComponentUpdater.as#L60)；[BloodBarEffectHandler.as:L27-L55](../scripts/类定义/org/flashNight/arki/component/Effect/BloodBarEffectHandler.as#L27)）。
+P1 cutover 后，CSharp 是 residual HP、渐隐、受击显现、轻微抖动与颜色表现的唯一 reducer；AS2 只提供初始每 3 帧的语义快照和带 frame/epoch 的表现事件，不继续计算或传输最终 `_width/_alpha/timeline frame`。现役语义基线包括 HP 变化时重置 actual/residual 起点、残余血条二次缓出、长时间无变化后的渐隐，以及受击时重新显现/播放、颜色反馈和位置抖动（[InformationComponentUpdater.as](../scripts/类定义/org/flashNight/arki/unit/UnitComponent/Updater/InformationComponentUpdater.as)；[Updater 血条逻辑](../scripts/类定义/org/flashNight/arki/unit/UnitComponent/Updater/InformationComponentUpdater.as)；[BloodBarEffectHandler.as](../scripts/类定义/org/flashNight/arki/component/Effect/BloodBarEffectHandler.as)）。
 
 P1 shadow 可同时计算用于限时对账，但只能有一个可见 authority；切流后必须停止 Flash updater/时间线，且禁止从隐藏 MovieClip 反读 width/alpha。若完整复刻成本不成立，只能通过产品裁决降低表现合同，不能永久保留 AS2 width/alpha 状态机。
 
-Bar reducer 只按已接受的 game/presentation frame 推进，不使用独立 wall-clock timer；Flash pause 不得让 residual/fade 私自前进。逻辑年龄由单调 source/presentation `frameSeq` 或显式四帧采样序号计算，不按 UI paint/post 次数 `+1`。latest-wins 合并视觉帧时，reducer 必须按 seq delta 确定性追进，或由最新 full presentation snapshot 直接重建；gap 超过冻结上限时 resync/snap，禁止逐个补播无界历史事件。`sceneEpoch` 或 `streamEpoch` 变化立即废弃旧 reducer 状态与旧事件；恢复后的第一份完整 presentation snapshot 按 P1 冻结的初始化策略建立 actual/residual/fade 状态，旧 epoch 事件一律丢弃。重连后选择“完整恢复残血/渐隐状态”或“无动画 snap 到当前玩法事实”由 P1 cutover 前裁决，但不得猜测或沿用旧 stream 状态。
+Bar reducer 只按已接受的 game/presentation frame 推进，不使用独立 wall-clock timer；Flash pause 不得让 residual/fade 私自前进。逻辑年龄由单调 source/presentation `frameSeq` 或显式表现采样序号计算，不按 UI paint/post 次数 `+1`。latest-wins 合并视觉帧时，reducer 必须按 seq delta 确定性追进，或由最新 full presentation snapshot 直接重建；gap 超过冻结上限时 resync/snap，禁止逐个补播无界历史事件。`sceneEpoch` 或 `streamEpoch` 变化立即废弃旧 reducer 状态与旧事件；恢复后的第一份完整 presentation snapshot 按 P1 冻结的初始化策略建立 actual/residual/fade 状态，旧 epoch 事件一律丢弃。重连后选择“完整恢复残血/渐隐状态”或“无动画 snap 到当前玩法事实”由 P1 cutover 前裁决，但不得猜测或沿用旧 stream 状态。
+
+以上时钟约束针对世界头顶条。现役玩家 HUD 中暂停时仍运行的装饰动效保持原合同，不把所有 UI Timer 统一改为 gameplay frame。
 
 首期产品边界：
 
 - 语义/可读性等价，不要求 Flash 字体与 blend mode 像素等价；
 - 普通单位允许绘制在 Flash 世界之上；特殊遮挡/特殊血条单位走 allowlist；
 - 单屏为正式首期范围，保留 PMv2/混合 DPI 升级接口；
-- 位置每帧，表现状态四帧，文本事件化；
+- 位置每帧，普通表现初始每 3 帧，关键生命周期及时投影，文本事件化；
 - 切流后必须停止实例化或运行对应 Flash TextField、GlowFilter、时间线/updater，不能只隐藏。
+
+---
+
+### 9.5 玩家 HUD 的 H0 优化合同
+
+H0-A 先做消费者侧的安全收敛：未变化 Buff 数组复用展示卡；只通知受影响组件；Buff、聚焦条与 tooltip 的失效区域分开；重绘合并仍遵守原暂停、遮挡、输入与恢复合同。头像预处理从 Paint 路径移开。此切片不要求 WorldFrame 或改变 gameplay。
+
+H0-B 再按能力协商拆分 Buff 静态/动态协议：名称、说明、图标和关联关系进入元数据；remaining/total、stacks、activation 及实际 mods 数值进入动态状态。状态引用 actor/generation/incarnation 与 metadata revision，元数据缺失时请求完整校准，不能部分采用或串用旧角色数据。旧消费者只收其认识的版本；新版切流后不维持两套持续发送。
+
+“静态”以真实可变性和 revision 合同为准。Pod 的 getValue、计时器及激活状态可能原位变化，没有领域 revision 时仍读取并比较当次值；不能只因 tooltip 未打开便省略所有动态观察。允许避免临时对象和重复格式化，不允许调用 getValue 之外的重建、注入、更新或回调来取数。
+
+Host 仅在完成原子组采用后合并 display invalidation。未建立 typed state 前不能直接丢弃旧增量 JSON；状态合并须保留各组最新值及 full/clear/epoch 语义。动作结果、未知完成状态和不可丢事件走原有有序通道，不进入 latest-wins 槽。
+
+H0 的主证据为当前 HUD 负载下 producer、decode/adopt、BuffCard 和 paint/submit 的分项下降，以及整体帧时间不回退。128 KiB 单包和 64 队列只是保护，不作为正常工作量预算。
+
+### 9.6 友军卡片与头像生命周期
+
+首版至少完整表示 20 个单位，32 个进入扩展压力。5 佣兵、5 战宠和保护 NPC 是分类与身份来源；分类折叠不能成为“20 人已支持”的验收替代。卡片只有名字/类型、头像、HP 和必要危险/退场状态，不复制玩家技能、物品、Buff 全面板。
+
+头像优先复用现有静态/纸娃娃缓存，以外观 revision 去重；只在加入或外观变化时准备。冷缓存先显示有身份的占位，血量立即可用；准备任务经有界队列分批完成，初始调度建议 2 个活跃准备任务，最终并发在 P0/P1 按 UI/战斗尾延迟冻结。20 个请求不能同一 Paint 中逐个同步 SVG 栅格化。成功、失败和迟到回包都绑定原实体/外观版本。
+
+继续遵守 LRU 位图的共享所有权，消费者不能长期持有可被淘汰的 Bitmap 引用，也不能各自建立无界完整头像缓存。20 张 64×64×4 缩略图的纯像素约 320 KiB，只用于容量量级判断，不代表完整运行时内存或冷烘焙成本。
+
+固定卡片布局不随世界相机更新；静态卡片不持续重画，受击/回血动画结束停止请求；低血状态的持续动效必须单列成本，并与现有 reduced/static motion 设置一致。首版不引入卡片点击后的命令/治疗/装备功能，避免把只读展示扩大成新业务入口。
+
+布局小样必须在 1024×576 与 1920×1080 检查 20 个同时可见、保护目标辨识、姓名截断和与现有地图/刘海/聚焦/底部 HUD 的冲突。具体横排/分列和屏占比例在 P1-ALLY 小样冻结；数据面不依赖所选排版。
 
 ---
 
@@ -678,18 +739,36 @@ fallback kernel 必须使用与 remote 相同的 frozen input、`collisionCompar
 
 ## 14. 分阶段路线与 Gate
 
+### M0 · 当前主线基线与预算冻结
+
+**依赖**：后续取得对应施工授权；本轮仅更新文档。先在隔离产物上固定源码、AS2/Core/native 哈希、硬件、分辨率和负载种子。现有 HUD profiler 能记录部分 p50/p95/max 与聚合开销；缺失的 p99、逐链路阶段和 deadline slack 在此补齐有界采样，不把统计平均值冒充尾延迟。
+
+**交付**：§15 全部负载的现状表、耗时归因、头像冷热缓存记录、协议字节统计、完整单位/弹丸量纲。H0 选定一个主耗时指标，P0 冻结正常预算与硬保护上限；记录每项门槛的依据，不以调高预算掩盖候选失败。
+
+**退出门**：真实标准入口可重复运行；受控采样开销可区分；当前基线、历史记录和候选证据各有身份。没有主线战斗实测，后续只能报告局部试验，不能报告性能验收通过。
+
+### H0 · 当前玩家 HUD 优化，可先独立交付
+
+**依赖**：M0；不等待 WorldFrame、20 人布局或碰撞迁移。
+
+- H0-A：按 §9.5 做 BuffCard/tooltip 投影缓存、按变化组失效和头像准备；保留必要实时读取，静态 HUD 停止空转重画。先量测 producer、Host adopt 与 paint，避免只减少 wire 却加重 AS2 比较。
+- H0-B：仅当分项收益证明必要，再做版本化 Buff 静态/动态分离及增量采用；旧协议保留有界兼容期，按 actor/epoch/revision 原子绑定。不能因 HUD 读取而重建 Buff、触发注入/移除、执行回调或写档。
+- WorldFrame 可用后，把玩家/聚焦目标的共用身份、HP/盾和头像描述接到同一镜像，删除重复通用投影；玩家 cooldown、装备、资源和 Buff 详情继续窄域生产。
+
+**退出门**：现有全区域功能与动作语义保持；选定主耗时在相同重 HUD 负载下达到 §15 收益门；整体帧时间、输入和声音尾延迟不回退。丢包/full resync/actor 切换/暂停/换图不会显示混合版本；当前玩家 HUD 优化可以单独发布和回退，不依赖碰撞开关。
+
 ### P0 · 公共数据面与分域就绪
 
-`ROUTE_ACCEPTED / P0_AUTHORIZED` 后，P0 分为两个可独立验收的 readiness profile。P1/P2 只依赖 `P0-COMMON`；碰撞 comparator、cancel、settlement 与 fallback 证据不得阻塞最高 ROI 的 overlay。`P0-COLLISION` 可以与 P1/P2 并行或稍后完成，但必须在 P3 开始前通过。
+路线接受并取得对应施工授权后，P0 分为两个 readiness profile。P1-HEAD/P1-ALLY 和可选 P2 只依赖 `P0-COMMON`；碰撞 comparator、cancel、settlement 与 fallback 证据不得阻塞已满足条件的显示交付。`P0-COLLISION` 可以与 P1 并行或稍后完成，但必须在 P3 前通过。H0 与 P0 可独立推进；共用 producer/transport/Host 装配文件的集成必须串行并保留同一协议版本。
 
 #### P0-COMMON · WorldFrame / Overlay / Sense 公共地基
 
 **施工范围**：
 
 - 原型化 entity namespace 与 unit handle/generation 生命周期，不改变现役 gameplay authority；
-- 建立最小 unit roster、metadata ACK/fullSync/resync/laneReady 与有界 raw lane；
+- 建立最小 unit roster、metadata ACK/fullSync/resync/laneReady 与有界 raw lane；记录玩家、佣兵、战宠和保护 NPC 的成员来源、订阅与 despawn 语义；
 - 比较 unit-first WorldFrame 编码策略，冻结 `_x/_y/Z轴坐标`、head anchor/live visual transform 与 cached AABB debug baseline；
-- CSharp 只解析、计数和画 debug AABB，不切任何 gameplay authority；
+- CSharp 只解析、计数、维护共用镜像并画 debug AABB，不切任何 gameplay authority；验证 player/focus/ally 共用实体键，避免新增三份状态扫描；
 - 记录 entity count、payload、AS2 build/encode/send、CSharp queue/parse、overlay paint 与 frame age。
 
 **`P0_COMMON_MEASURED` 退出门**：
@@ -720,24 +799,45 @@ fallback kernel 必须使用与 remote 相同的 frozen input、`collisionCompar
 - 按时 remote、deadline fallback、重复/迟到 remote 与临界并发到达的组合，只允许 ledger 从 `PENDING` 原子进入一个终态；remote+fallback 双提交、重复结算与 late apply 均为 0；
 - collision request/result slack 可测；证据不成立时不进入 P3/P4，但不回滚已通过的 P1/P2。
 
-### P1 · World Overlay 垂直切除
+### P1 · 单位显示与至少 20 个友军卡片
 
-**施工范围**：姓名、称号、基础血/盾/韧性条；位置每帧、表现事实四帧、文本/受击事件化；CSharp 单独推进 bar presentation reducer；保留特殊单位 allowlist。现役 C# damage-number reducer 保持独立且不改语义，物理 surface 是否合并只做消融。
+**依赖**：P0-COMMON 和各自显示小样；P1-HEAD、P1-ALLY 可分别交付，均不以 P2/P3/P4 为前置。
 
-**开工前引用闭包门**：必须基于冻结 commit 生成 AS2 + XFL 的完整 touchpoint inventory，至少覆盖 attach/unload 与兼容别名、`variableName` 文本写点、`InformationComponentUpdater` / `BloodBarEffectHandler`、方向/缩放与锚点、天气透明度、登场/死亡/注销、特殊 bitmap capture，以及非显示系统对信息 MovieClip 存在性的假设（例如 [CharacterBuildService.as:L2828-L2849](../scripts/类定义/org/flashNight/arki/item/CharacterBuildService.as#L2828)）。inventory 必须区分活跃语义、可删除死引用和特殊 allowlist；具体文件清单下沉 P1 施工文档，AS2 编译不报错不能证明动态 MovieClip 引用已经闭合。
+#### P1-RENDER · 共同渲染小样
+
+优先复用现役共享合成。五个 raster 槽及全量上传成本按 §9.4 先做小样，比较受影响区域复用与必要的专用批次/层扩展；给出实际 paint、copy/upload、提交面积、遮挡和输入结果后冻结方案。不能在方案中假定第六槽已经存在，也不能用每单位独立窗口交付。若需要 native ABI 变更，按独立构建与发布范围登记。
+
+#### P1-HEAD · 头顶条和文字的纵向切除
+
+**范围**：姓名、称号、基础血/盾/韧性条；位置每帧、普通表现初始每 3 帧、生命周期与关键变化及时更新。CSharp 单独推进 bar presentation reducer；特殊单位保留有名有据的 allowlist。已有 C# damage-number reducer 保持独立权威。
+
+**开工前引用闭包门**：基于冻结 commit 生成 AS2 + XFL 完整 touchpoint inventory，覆盖 attach/unload、兼容别名、文本 variableName、InformationComponentUpdater/BloodBarEffectHandler、方向/缩放/锚点、天气透明度、登场/死亡/注销、特殊 bitmap capture 和非显示系统对信息 MovieClip 的依赖，例如 [CharacterBuildService](../scripts/类定义/org/flashNight/arki/item/CharacterBuildService.as)。HPChanged 等领域事件必须逐消费者判断去留；删除绘制不能连带删除有效业务通知。
 
 **退出门**：
 
-- Flash 对应 TextField/filter/updater 调用确实归零或仅剩明确例外；
-- residual/fade/受击显现/颜色/抖动语义通过冻结 corpus；cutover 后 AS2 不再推进或发送最终 width/alpha/timeline frame；
-- 30–50 单位下 paint+commit、GDI/USER handles、UI mailbox 有界；
-- 单屏、缩放、方向、天气、登场、死亡与场景重置无残影；
-- C# HitNumber 的 reducer 权威没有出现第二份；独立/合并 surface 的结论有 paint/ULW profile 支撑；
-- touchpoint inventory 每项均有改写、删除或 allowlist disposition；除冻结例外外，不再存在对退役信息 MovieClip 的活跃运行期依赖；
-- mailbox 合帧/连续丢视觉帧、长 pause 后恢复、reconnect/scene reset/旧 epoch 受击事件 golden 通过，bar reducer 不按 paint 次数或 wall clock 漂移；
-- 失败可以关闭 native renderer，但不得留下双状态机常驻。
+- 除冻结例外外，对应 Flash TextField/filter/updater 调用及退役 MC 活跃引用归零；每个 touchpoint 有改写、删除或 allowlist 结论。
+- residual/fade/受击显现/颜色/抖动通过语义 corpus；AS2 不再推进最终 width/alpha/timeline frame，不永久隐藏一份旧 renderer 保持状态。
+- 在 30/50 与 50/100 负载验证 head anchor、浮空、方向、缩放、天气、登场、死亡、暂停和换图；无错位、残影或错代际复活显示。
+- mailbox 合帧、丢视觉帧、长暂停、重连与旧 epoch 事件均按 source frame 处理；已有 HUD 的装饰动效时钟另行保留，不被统一改成 gameplay 时钟。
+- AS2 已删除开销与共享镜像/Host 新增成本分别报告，净收益满足 §15；单一 reducer、共享合成、GDI/USER 和队列有界。
+
+#### P1-ALLY · 20 个友军头像与血量
+
+**范围**：5 佣兵 + 5 战宠 + 至少 10 个其他友军/保护 NPC，共至少 20 个同时表示；32 个用于容量压力。成员集合由现役佣兵/宠物绑定和关卡 NPC 关系映射到统一实体身份，不按姓名、距离或旧宠物横条实例推断。
+
+**退出门**：
+
+- 20 个同时可见且可区分，保护目标不因排序或容量截断被静默遗漏；在 1024×576 与 1920×1080 完成人工可读性验收。
+- 移动/相机变化不触发固定卡片重绘；20 人静态、全体受伤/治疗、低血、死亡/复活、召回/再召唤、同名和池复用均正确。
+- 20 种不同头像的冷缓存有占位、有效血量和有界准备队列；热缓存不重复烘焙，失败/迟到回包不覆盖其他单位。
+- 与单位头顶条、玩家及 focus 读取同一通用状态；没有第二次单位列表扫描，没有每个卡片独立 Timer/RPC/窗口。
+- §15 的采用年龄、paint/submit、冷缓存尾延迟和资源生命周期门通过；只读展示不改变玩法状态。
+
+失败时回退整个显示消费者和对应 producer 订阅；不得停用仍被其他消费者使用的公共镜像。P1-HEAD 回退需恢复匹配产物中的原显示实现，不能依靠正式态常驻双 renderer。
 
 ### P2 · SenseFrame 只读查询
+
+本阶段是镜像稳定后的可选收益项，不是本次四项工作的交付前置；其成本和收益单列。
 
 **施工范围**：四帧 AI 候选/count、ThreatAssessor 粗统计与相机只读统计；AS2 保留最终决策。逐碰撞帧 bulletThreat 不属于本阶段依赖：其 `ThreatFrame` 合同在 P0-COLLISION 冻结、P3 随碰撞影子对账、P4 才随 remote-primary 普通弹切流。
 
@@ -772,7 +872,7 @@ fallback kernel 必须使用与 remote 相同的 frozen input、`collisionCompar
 - migrated bullet 不再进入 legacy sort/cache/collision 热路；
 - 动态消弹/反弹 prepass 没有被 remote-primary 绕过；revision gap/worker reset 恢复前 remote commit 为 0；
 - remote-primary 与 legacy bulletThreat 贡献按 §11.3 分流且无漏记/双记；
-- 目标 30–50 单位、50–100 子弹下 AS2 frame p95/p99 净改善；
+- 目标 30–50 单位、50–100 子弹、20 友军卡片及当前丰富 HUD 下，按 §15 量测端到端净改善、按时率和尾延迟；不得仅以 CSharp kernel 耗时判定通过；
 - fallback/熔断注入不造成双伤、漏序或旧场景写入；熔断后不发生 external queue → BQP 的场景内热转移；
 - 产品批准的 `remote-suspended` 玩家可见恢复旅程完成真机验收，不以“下一场景再正常”代替当前故障场景闭环；
 - 玩家/敌人方向分别完成打击感与公平性验收。
@@ -800,68 +900,84 @@ fallback kernel 必须使用与 remote 相同的 frozen input、`collisionCompar
 
 ---
 
-## 15. 量测矩阵与停止线
+## 15. 性能与正确性验收合同
 
-### 15.1 负载矩阵
+### 15.1 基线、采样与判定方法
 
-至少覆盖：
+本节数值是**待 M0 实测校准并在候选施工前冻结的初始工程预算，不是已达到的成绩**。正确性零容忍、每阶段删除旧热路径和固定 n+1 deadline 不因校准放宽。预算变更必须记录参考机、瓶颈证据和影响，不能在候选失败后仅提高门槛来宣告通过。
 
-| 场景 | 单位 | 子弹 | 用途 |
-|---|---:|---:|---|
-| 当前低负载 | 10 | 30 | 回归基线 |
-| 当前高负载 | 20 | 50 | 现状边界 |
-| 目标常态 | 30 | 50 | 首个产品门 |
-| 目标大场面 | 50 | 100 | 核心路线门 |
-| 诊断压力 | 80+ | 200+ | 只定位曲线，不作为产品承诺 |
+| 维度 | 固定方法 |
+|---|---|
+| 产物身份 | 由本次主线生成隔离、成套产物；记录 source commit、AS2/Core/native 和资源 manifest 哈希。当前工作区 asLoader.swf 有其他任务改动，不作为本次 main 可执行基线 |
+| 环境 | 记录 CPU/GPU/RAM/系统、供电状态、30 FPS 逻辑目标、HUD/伤害数字/DRS 档位；1024×576 与 1920×1080 分别比较，相同档位和 DPI，不跨机器拼接百分比 |
+| 稳态采样 | 每个 A/B/B/A 区块先热身 30 秒、连续测 120 秒；A=对应对照，B=候选。正常 30 FPS 时每版至少 7,200 个逻辑帧样本；不足则延长采样。保留全部原始样本，不剔除 GC/卡顿离群 |
+| 对照层级 | H0 对当前主线；P0 单独记录新增税；P1 对仅公共地基及原显示的对照；P4 对 P3 关闭 shadow 后的父版本，并最终对本次主线做全链路复测。共享底座成本只计一次 |
+| 统计 | 每个阶段报告 count/p50/p95/p99/max、队列峰值与字节数；总成本直接测总链路，不能把不同样本的分项 p95 相加充当 frame p95。精度不足的 AS2 getTimer 子毫秒值用累计窗口解释，不伪造高精度 |
+| 冷启动与生命周期 | 另测 20 种不同头像的首次加入，使用隔离缓存目录；热缓存复测。换图/暂停/面板开合/重连/退出单列，不藏进稳态均值。长时样本至少 30 分钟，含至少 20 轮加入/退场/换图 |
+| 采样扰动 | 对照开启/关闭采样的耗时，使用有界缓冲、聚合输出；采样日志不得引入同步每单位/每碰撞磁盘 I/O |
 
-复杂 ray/polygon 场景单列，禁止用低占比平均数掩盖尖峰。
+当前 PlayerHudProfiler 的统计并不完整覆盖本节：AS2 现有采样及 Host 聚合可复用，但 p99、WorldFrame、result slack、真实 copy/upload、头像队列和逐帧总开销需在 M0/后续阶段补齐。机器 harness、合成数据、受控呈现与真实战斗分别列证据，不互相代签。
 
-### 15.2 必测指标
+### 15.2 负载矩阵
 
-**AS2**：
+单位数包含玩家、友军和敌人；友军数是其中子集。子弹列指活跃逻辑弹丸，普通单目标弹、联弹组/子单元、射线和 UnitBullet 分别计数，不能以视觉实例数替代几何工作量。
 
-- frame total p50/p95/p99/max；
-- unit/bullet scan、WorldFrame build/encode/send；
-- BQP sort/cache/scan/narrow/settle；
-- TargetCache refresh/sort/nameIndex；
-- InformationComponentUpdater/display/filter A/B；
-- result parse/commit/fallback；
-- 临时分配与可见 GC 尖峰。
+| 场景 | 总单位 | 友军卡片 | 普通弹 | HUD/事件与验证目的 |
+|---|---:|---:|---:|---|
+| H0 玩家基线 | 1 与现役代表战斗分别测 | 0 | 0/代表负载 | Buff 0、12、32 项（不足则记录实际及独立压力夹具），4 个 focus、冷却/护盾变化；确定已有成本 |
+| 最小容量 | ≥21 | 20 | 0/50 | 5 佣兵 + 5 战宠 + 10 其他友军；静态、移动、全体受伤/回血各测 |
+| 目标常态 | 30 | 20 | 50 | 丰富 HUD、可见头顶条、头像热缓存 |
+| 目标大场面 | 50 | 20 | 100 | 核心产品门；同时覆盖普通受击与全体变化峰值 |
+| 扩展压力 | 80 | 32 | 200 | 曲线与有界退化检查；不作为固定 FPS 产品承诺 |
+| 头像冷峰值 | ≥21 | 20 种不同外观 | 0/50 | 占位/血量时延、准备队列、首次完整显示时间、首次绘制尖峰 |
+| 混合弹种 | 50 | 20 | 按类型分列 | 普通弹并存 ray/polygon/pierce/UnitBullet，确认 legacy 与新通道无漏记/双记 |
+| 故障/生命周期 | 代表负载 | 20 | 50/100 | 延迟/缺失/重复/乱序、元数据缺口、暂停、换图、重连、生成/死亡/复活和句柄复用 |
 
-**CSharp**：
+压力夹具可以检验容量，但不能伪装成标准入口自然战斗。4 个 focus 和 20 个友军必须同屏联合验收，不能分别通过后相加。复杂 ray/polygon 场景另报 p95/p99/max，避免低占比平均数掩盖尖峰。
 
-- ingress queue age/depth/overwrite/reject；
-- parse、AABB、AI、overlay paint、ULW commit；
-- result send 与距 `n+1` commit 的 slack；
-- GDI/USER handles、managed allocations/GC；
-- deadline miss、circuit breaker、metadata gap/full-resync/laneReady 恢复次数；
+### 15.3 初始性能预算
 
-**Wire**：
+以下耗时预算均在 M0 冻结的参考机上解释。AS2 的“帧工作时间”不含为了维持 30 FPS 的主动等待；实际呈现间隔和输入延迟同时记录。若无法可靠取得工作时间，必须标注缺证据，不能用固定帧间隔替代。
 
-- entity/bullet count、bytes/frame；
-- full/meta/presentation 各段占比；
-- oversize/count/token/contact-cap 拒绝计数；
-- 现有输入、SFX、UI/control 消息 p95/p99 是否回退。
+| 门 | 初始目标与验收口径 | 责任阶段 |
+|---|---|---|
+| 当前 HUD 净优化 | M0 预选的主要瓶颈（AS2 capture、Host decode/adopt 或 paint/submit）p95 至少下降 15%；不能把减少字节数当唯一收益。整体帧 p95/p99 与输入/SFX 尾延迟相对同配置基线的增量不超过 max(5%, 0.5 ms)，且没有新增重复卡顿 | H0 |
+| 50 单位公共导出 | AS2 roster 读取 + build/encode/send：p95 ≤2 ms，p99 ≤4 ms；同时必须小于所替换显示路径实际节省的工作量。无必要字段、二次列表扫描或新 getRect 热路 | P0-COMMON / P1 |
+| 50 单位 + 100 普通弹导出 | AS2 全部新导出总成本 p95 ≤3 ms，p99 ≤5 ms；包括已有公共部分，不能再加一份 2 ms 预算 | P0-COLLISION / P4 |
+| CSharp 几何链 | worker parse + 普通 AABB kernel p95 ≤1 ms，p99 ≤2 ms；排队、传输和返回分别测，不能从 kernel 达标推导端到端达标 | P3 / P4 |
+| 返回采用成本 | AS2 新增 result decode/校验/ledger 采用 p95 ≤1 ms，p99 ≤2 ms；原有伤害结算单列且纳入总帧。正常与 fallback 分开报告 | P4 |
+| 碰撞期限 | 无故障注入的稳态 remote 按时且完整率 ≥99.9%，frozen fallback ≤0.1%；slack 的第 1 百分位初始 ≥3 ms。所有结果仍必须在 exact n+1 pre-simulation 前采用，迟到就 fallback/丢弃，不放宽时限 | P3 / P4 |
+| 端到端战斗 | 50/100 + 20 友军 + 丰富 HUD 的 AS2 帧工作时间目标 p95 ≤26.7 ms、p99 ≤33.3 ms；最终 P4 对本次主线 p95 至少改善 10%，p99 不超上述回退容差。其他既有瓶颈导致绝对预算未达时明确记录，不能宣称全局达标 | P1 / P4 联合复测 |
+| 全部新增/受影响 HUD 绘制提交 | 共享 HUD paint + CPU copy/submit：1024×576 p95 ≤4 ms、p99 ≤8 ms；1920×1080 p95 ≤8 ms、p99 ≤12 ms。GPU 排队/上传另测；同时报告实际提交像素与字节，禁止以局部绘制冒充局部上传 | H0 / P1 |
+| 固定卡片刷新 | 20 张静态卡在有限动画结束后，自身 repaint 请求为 0；变化时由共享面板合帧，整体不高于现役约 30 次/秒上限。别的 widget 重绘导致共享面上传应如实计入整面成本 | P1-ALLY |
+| 显示新鲜度 | 普通 HP 从 AS2 事实变更至可见的 p95 ≤150 ms；关键死亡/退场状态 ≤2 个逻辑帧；头顶位置年龄 p99 ≤2 帧。普通 HP 初始每 3 帧采样，死亡等不等待该周期 | P1-HEAD / ALLY |
+| 头像冷/热体验 | 冷缓存占位及有效 HP p95 ≤150 ms；热缓存首次完整 20 卡 p95 ≤250 ms。冷缓存全部头像就绪时间单列，在 M0/P1 根据真实烘焙链冻结；不得将 placeholder 算作头像已就绪 | P1-ALLY |
+| Wire 与资源 | 50/100 动态请求初始预算 ≤64 KiB/帧（不含低频完整目录）；硬 cap 由最坏合法 schema 另行冻结。头像继续共享 24 MiB LRU 预算；队列、在飞任务及结果都有硬上限；长时循环后无持续增长的 live entity/bitmap/GDI/USER/pending ledger | P0 / P1 / P4 |
 
-### 15.3 零容忍正确性门
+“公共导出低于 2 ms”不是 P1 自动通过：还需实际移除旧显示并取得净收益。阶段对照中的改进应超过 A/B 自身抖动；两次对照方向不一致则延长复测，不能择优选 run。fallback 的 p95/p99/max 单列，持续触发时进入 §13 熔断，不用平均按时率掩盖连串卡顿。
 
-- cross-scene apply = 0；
-- wrong-generation apply = 0；
-- duplicate settlement = 0；
-- late apply = 0；
-- fallback + remote 双提交 = 0；
-- 玩家命令被迟到 AI 覆盖 = 0；
-- AABB damage multiplier 漂移 = 0；
-- comparator/numeric revision 不符却被采用 = 0；
-- 动态消弹/反弹前置裁决被绕过 = 0。
+### 15.4 必须可归因的指标
 
-### 15.4 性能停止线
+- AS2：HUD 各组采集/深比较/序列化，unit/bullet 扫描、编码/发送，BQP sort/cache/scan/narrow/settle，TargetCache refresh/sort/nameIndex，InformationComponentUpdater 与 filter，result parse/commit/fallback，临时分配及可见 GC 尖峰。
+- Host：socket 接收/排队、parse/adopt/BuffCard、worker 几何、result send、slack，portrait miss/prepare/ready，paint/copy/upload/submit，managed allocation/GC、GDI/USER 与 mailbox 峰值。
+- 协议：entity/bullet/contact 数、full/meta/presentation/private 各段字节和频率、重复字段、oversize/未知 revision/拒绝计数，重同步与 laneReady 恢复时间；输入、SFX、UI/control 消息 p95/p99。
+- 真实结果：画面帧间隔、HP/位置年龄、交互响应与音画体验。所有跨进程耗时由可对应的 frame/epoch/trace 标记关联；未校准的两端时钟不能直接相减。
 
-- WorldFrame 构建/编码 p95 抵消被删除 AS2 热路径：保留 overlay/debug 收益，停止 gameplay authority 扩张。
-- CSharp 结果无法稳定在 `n+1` deadline 前到达：停止扩张 collision authority；已切 remote-primary 的当前场景只能走获批的 circuit recovery，不能暗示无成本热切 BQP。AI/overlay 可继续使用镜像。
-- World Overlay 需要常驻 Flash 状态机才能保持语义：缩小迁移范围或重做 presentation reducer，不接受永久呈现双状态源。该停止线不禁止碰撞 fallback kernel 作为有界冷路径。
-- 为少数特殊弹增加的字段/分支显著污染普通帧：特殊弹留 legacy lane。
-- TargetCache 仍有高频本地消费者：不强行退役，只删除已迁消费者。
+### 15.5 零容忍正确性门与人工验收
+
+- 跨场景/错代际写入、duplicate settlement、late apply、remote + fallback 双提交、partial commit、错误版本被采用均为 0。
+- 固定输入上的 AABB FP/FN、首命中/排序/contact point、方向边界和 multiplier 漂移均为 0；死亡跳过、消弹/反弹前置裁决、单一 movement/收尾与 ledger 终态保持。
+- 既有伤害/闪避/护盾/RNG/死亡业务仍由 AS2 调用。对照几何使用同一 frozen input；产品已允许 n→n+1，不要求与旧版逐帧 RNG/replay 完全一致，也不能借机改变结算公式或概率。
+- HUD 读取触发 Buff 注入/移除/重建或保存写入为 0；新显示不得覆盖真人操作、把旧 actor 状态拼到新 actor、复活旧头像或漏掉受保护 NPC。
+- 机器结果之后，分别进行标准入口战斗、20 卡可读性、头顶条/残血/暂停恢复、玩家受击公平性与手感的人验。compile/harness/candidate build、候选执行、E2E、promoted、standard entry 各自登记，不能互相代签。
+
+### 15.6 停止线
+
+- 编码/复制/共同维护吃掉被删除热路收益：收缩字段或消费者，不扩大碰撞 authority。H0 与已独立达标的显示成果可保留。
+- n+1 按时率或 fallback 尾延迟不达标：P4 不切流；已切流时按获准的安全恢复旅程处理，禁止临时等待或当场把存活弹热转旧 BQP。
+- 20 卡的冷头像拖慢战斗：先约束准备并发、显示占位和缓存，不能通过省略保护目标或退回 5 人容量假装通过。
+- P1 仍须常驻 Flash 状态机、CPU 绘制省时但整面上传抵消收益：缩小显示范围或调整共享合成方案，重新做消融。
+- 特殊弹字段污染普通帧、TargetCache 仍有 legacy 高频消费者：保留明确的 legacy 域，只删除已证明替换的消费者。
 
 ---
 
@@ -869,6 +985,12 @@ fallback kernel 必须使用与 remote 相同的 frozen input、`collisionCompar
 
 | 项目 | 当前状态 | 最晚裁决阶段 | 所需证据/裁决 |
 |---|---|---|---|
+| H0 主瓶颈与性能预算 | 未做当前主线战斗量测；§15 为初始目标 | M0 / 各候选前 | 丰富 Buff/4 focus、实际 producer/adopt/paint、A/B 抖动；冻结参考机和预算 |
+| Buff 静态/动态缓存身份 | H0-B 待按收益选择；不可据引用身份跳过动态读取 | H0-B 切流前 | actor/generation/incarnation、metadata revision、原位 Pod 变化、full/clear/resync 和兼容版本 |
+| 通用单位状态去重 | 共享 entity key 方向已定，现役 producer 未改 | P0-COMMON / P1 接续 | 玩家/聚焦/友军/头顶引用同一事实，重复快照/扫描退出清单 |
+| 友军成员与 20 卡排版 | 容量需求已明确，显示细节待小样 | P1-ALLY | 5 佣兵 + 5 战宠 + 保护 NPC；同名/换人/复活；两种分辨率 20 人同时可读 |
+| 头像冷启动调度 | 复用有界缓存；初始准备并发建议 2，未冻结 | P1-ALLY | 20 种外观冷/热缓存、prepare/read/paint 尾延迟、全部就绪时间、LRU 所有权 |
+| 普通表现刷新率 | 初始每 3 模拟帧；AI 仍四帧 | P0-COMMON / P1 | HP 年龄、全体受伤峰值、死亡及时性；不改玩法/Buff 更新时钟 |
 | entity namespace/generation/reuse barrier | 语义冻结，未实现 | P0-COMMON（unit）/P0-COLLISION（bullet） | spawn/despawn/复活/换图/池复用、pending record 引用归零 golden |
 | batch triple/batchId/disposition ledger | 语义冻结，字段编码未定 | P0-COLLISION 退出 | stream+scene+frame 单调性、batchId 一一映射、counts/integrity、完整空结果、单一 disposition 注入 |
 | metadata ACK/fullSync/resync/laneReady | 恢复语义冻结，未实现 | P0-COMMON 退出 | `catalogIntegrityToken`、gap/worker reset、unknown profile、同连接 full resync、重连与恢复前零 remote commit |
@@ -881,12 +1003,12 @@ fallback kernel 必须使用与 remote 相同的 frozen input、`collisionCompar
 | pre-simulation/export phase 载体 | 时序冻结，具体接点未定 | P0-COLLISION 退出 | `n` cancel/precheck 后 export；`n+1` AI/bullet preCheck 前 commit；不依赖 EventBus 偶然顺序 |
 | collision comparator/numeric revision | 现役 BQP 为 oracle，revision/codec 未定 | P0-COLLISION 退出 | 方向性相等边界、tie、finite double round-trip、ToInt32/shift/contact point corpus |
 | fallback kernel/载体 | 未冻结 | P0-COLLISION 退出 | frozen snapshot、comparator+numeric、ledger 与 50/100 最坏 AVM1 尖峰；payload reparse vs 预分配数值帧 |
-| circuit-break threshold | 未冻结 | P4 前 | queue age/deadline miss/[1389ms 未归因离群](protocol-latency-baseline.md#L111)的风险注入；阈值不能由 tiny echo 外推 |
+| circuit-break threshold | 未冻结 | P4 前 | queue age/deadline miss/[1389ms 未归因离群](protocol-latency-baseline.md)的风险注入；阈值不能由 tiny echo 外推 |
 | bar presentation reducer | CSharp 单一权威方向冻结；精确容差/重连初始化未定 | P1 cutover 前 | residual/fade/hit/color/shake、game frame 时钟、pause/reconnect/reset/旧 epoch；必要时产品降级合同 |
-| damage-number physical composition | C# reducer 与独立持久 surface 已现役；是否与 World Overlay 合层未冻结 | P1 退出 | production paint/ULW profile；独立与合并 surface 消融；Host-local 分页账本与单一 reducer 不变 |
+| damage-number physical composition | 当前为共享合成中的独立语义层，reducer 保持 | P1-RENDER 退出 | 当前五槽与新增单位显示的 paint/copy/upload 消融；Host-local 账本不进 paint |
 | P1 touchpoint inventory completeness | 已知类别已登记，未穷举 | P1 开工前 | 直接属性、variableName、attach/unload、方向、天气、命中、死亡、bitmap capture 全量清单 |
 | P1 touchpoint disposition closure | 未施工 | P1 退出 | 每项标记改写/删除/allowlist；运行期直接引用与 Flash smoke 闭合 |
-| World Overlay renderer | 持久 DIB/有界 post 方向已选，细节未定 | P1 pilot 内、P1 退出前 | 字体、paint/ULW、单屏/DPI、handle 稳定性 |
+| World Overlay renderer | 现役共享合成优先；槽复用/专用批次/必要 ABI 扩展待小样 | P1-RENDER，批量迁移前 | 字体、层遮挡、实际 copy/upload、两种分辨率、DRS/输入与 handle 稳定性 |
 | AI legacy metric/completeness | 需要逐调用点冻结 | P2 前 | left-edge/X/tie、complete/provenTopK、filter、age cap corpus |
 | circuit-break 玩家可见恢复 | `PRODUCT_DECISION_PENDING` | P4 前 | 暂停提示/持续 fallback/checkpoint 重载等方案的进度、提示、失败与真机验收 |
 | damage number 锚点 | 未冻结 | P4 前 | frozen contact point 与 commit-time target position 产品验收 |
@@ -897,29 +1019,29 @@ fallback kernel 必须使用与 remote 相同的 frozen input、`collisionCompar
 
 ## 17. 文档与施工触发器
 
-本文建立路线，不建立现役协议。首次 P0-COMMON 或 P0-COLLISION 代码切片若发生以下任一变化，必须同轮同步 canonical docs：
+本文建立统一路线，不建立现役协议。本轮只更新 ADR、迁移台账和架构入口。未来 H0/P0/P1/碰撞代码切片若发生以下任一变化，必须同轮同步 canonical docs：
 
 - 新增 raw prefix / schema / Task / worker：更新 `agentsDoc/architecture.md` 与 `launcher/README.md`。
 - 新增测试入口、golden、延迟注入或性能门：更新 `agentsDoc/testing-guide.md`。
-- World Overlay 从规划变为现役：在架构文档登记 native world overlay，不把它写成 Web Panel。
+- HUD/Buff 协议、友军成员投影或 World Overlay 从规划变为现役：更新本 ADR、HUD 专档、U1/U9/U10 台账和架构入口；登记实际共享合成层，不把它写成 Web Panel。
 - AS2 producer/phase 入口变化：更新相关 AS2 架构说明；实际编译仍遵守 Flash CS6 fresh trace/Output Panel 证据边界。
 - TargetCache/BQP 消费者或 authority 变化：同步本文阶段状态与既有子弹 ADR 的关联说明。
 - 地图静态几何或导航进入范围：另立 ADR，不在本文静默扩张。
 
-路线状态按 readiness 依赖推进，而不是强制串行阻塞：
+路线状态按依赖推进，现役 HUD 不被标为“尚未实现”，新镜像/友军卡/碰撞不被标为“已发布”：
 
 ```text
-PROPOSED / ROUTE_FROZEN / NOT_IMPLEMENTED / P0_EVIDENCE_PENDING
-    → ROUTE_ACCEPTED / P0_AUTHORIZED
-        → P0_COMMON_MEASURED
-            → P1_OVERLAY_PILOT
-            → P2_SENSE_PILOT
-        → P0_COLLISION_READY（同时依赖 P0_COMMON_MEASURED）
-            → P3_COLLISION_SHADOW
-                → P4_AABB_REMOTE_PRIMARY
+PROPOSED / ROUTE_FROZEN / 新增项 NOT_IMPLEMENTED / P0_EVIDENCE_PENDING
+    → 对应切片取得施工授权 → M0_BASELINE_FROZEN
+        ├─ H0-A → 必要时 H0-B → H0_HUD_MEASURED
+        └─ P0_COMMON_MEASURED
+            ├─ P1_RENDER_PILOT → P1_HEAD / P1_ALLY_20（分别验收）
+            ├─ 可选 P2_SENSE_PILOT
+            └─ P0_COLLISION_READY → P3_COLLISION_SHADOW → P4_AABB_REMOTE_PRIMARY
+                （P0-COLLISION 可以与 P1 并行）
 ```
 
-P0-COLLISION 可以与 P1/P2 并行取证，也可以在其后启动；它不能阻塞已满足 P0-COMMON 的视觉/只读查询收益，但 P3/P4 不得绕过 P0-COLLISION。P1 与 P2 之间也不互相构成发布前置，分别按各自 gate 推进。
+工程切片完成后另走 candidate、真实验收、正式发布和标准入口复验流程。选择下一切片不自动授权后续阶段；本次“先不改代码”不进入任何施工状态。P1 两个消费者、H0 和碰撞均有独立功能开关/产物回退范围，共用地基只有在消费者全部退出后才可停用。具体回退必须符合 §13 的 ledger/场景边界，不能把显示回退方法用于存活 remote-primary 子弹。
 
 任何阶段的绿色 unit/harness 只证明对应范围；不得从 shadow parity 推导 gameplay authority，也不得从 candidate build 推导部署或产品验收。
 
@@ -942,7 +1064,7 @@ P0-COLLISION 可以与 P1/P2 并行取证，也可以在其后启动；它不能
 | 2026-08-09 | 人物文字以语义/可读性等价为首期目标 | 产品输入已冻结 |
 | 2026-08-09 | P1 头顶条切流后由 CSharp presentation reducer 单独持有；不永久保留 AS2 width/alpha 状态机 | 提案内冻结，待路线接受生效 |
 | 2026-08-09 | P1 保留当时现役 V8 damage-number reducer；是否合并物理 surface 由 profile 决定 | 历史决策；reducer 部分已被 2026-08-25 独立迁移取代 |
-| 2026-08-25 | damage-number 已迁为 C# 单一 reducer + 独立持久紧边界 surface；V8/Flash fallback 退役，P1 只保留物理合层消融权 | 当前现役；合层仍待 P1 量测 |
+| 2026-08-25 | damage-number 已迁为 C# 单一 reducer + 独立持久紧边界 surface；V8/Flash fallback 退役，P1 只保留物理合层消融权 | 历史现役；物理合成入口已按 2026-10-26 主线更新，reducer 边界保留 |
 | 2026-08-09 | 射线/多边形稀有弹先留 AS2，按尖峰 profile 再迁 | 产品范围输入已冻结 |
 | 2026-08-09 | remote-primary 普通弹仍先经过 AS2 动态消弹/反弹 prepass | 提案内冻结（v1），待路线接受生效 |
 | 2026-08-09 | collider parity 首先直传现役 cached AABB；profile 不得按动画帧提高精度 | 提案内冻结（v1 baseline），待路线接受生效 |
@@ -951,6 +1073,13 @@ P0-COLLISION 可以与 P1/P2 并行取证，也可以在其后启动；它不能
 | 2026-08-09 | codec、stable handle 编码与首批弹种名单由证据阶段裁决 | 路线接受后待量测 |
 | 2026-08-09 | circuit trip threshold | P4 前由真实 payload/slack/fault 注入裁决；不是 `n+1` gameplay deadline |
 | 2026-08-09 | circuit breaker 后的玩家可见恢复方式 | 待产品裁决；不得默认自动重载 |
+
+| 2026-10-26 | 玩家 HUD 优化、单位头顶条、至少 20 友军头像血量、普通 AABB 碰撞纳入同一 ADR | 用户要求已明确；本轮仅整理方案 |
+| 2026-10-26 | H0 可先独立推进；P1 显示不等待碰撞；共用实体镜像，按消费者独立切换 | 路线提案，未施工 |
+| 2026-10-26 | 容量按 5 佣兵 + 5 战宠 + 10 其他友军/保护 NPC；32 友军为扩展压力 | 20 为需求下限；32 为工程压力目标 |
+| 2026-10-26 | 显示以当前共享 compositor 为地基；五 raster 槽、完整上传与头像冷加载纳入预算 | 当前源码事实已复核；新增层实现待小样 |
+| 2026-10-26 | 普通 HP 表现初始每 3 帧约 10 Hz，生命周期及时更新；AI/Buff gameplay 时钟保持 | 初始方案待 P0/P1 验证，不是现役改动 |
+| 2026-10-26 | §15 性能预算先在 M0 用本次主线与参考机冻结 | 未执行量测；无新的性能或 E2E 通过结论 |
 
 ---
 
@@ -965,3 +1094,8 @@ P0-COLLISION 可以与 P1/P2 并行取证，也可以在其后启动；它不能
 - [AS2 UI → Web Panel 迁移护栏](../agentsDoc/as2-web-panel-migration.md)
 - [子弹命中-伤害双管线拆分 · 架构设计（2026-06-22）](子弹命中-伤害双管线拆分-架构设计-2026-06-22.md)
 - [子弹命中-伤害双管线拆分 · 施工（2026-06-23）](子弹命中-伤害双管线拆分-施工-2026-06-23.md)
+- [UI 迁移台账（U1/U9/U10）](AS2-UI迁移剩余清单与难度评估-2026-09-12.md)
+- [玩家 HUD 体验增量与当前功能](玩家HUD交互与动效优化-2026-10-23.md)
+- [战斗 HUD 共享呈现](startup-input-presentation-optimization.md)
+- [共享 HUD 绘制成本记录](shared-hud-render-cost-2026-10-10.md)
+- [旧 HUD/Buff 对照的证据范围](AS2界面快照与Buff调度优化验证-2026-10-10.md)
