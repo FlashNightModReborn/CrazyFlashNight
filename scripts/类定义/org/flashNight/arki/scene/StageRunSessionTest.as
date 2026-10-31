@@ -19,6 +19,7 @@ import org.flashNight.arki.merc.ArenaController;
 import org.flashNight.arki.merc.ArenaCalibrationService;
 import org.flashNight.arki.merc.ArenaPanelService;
 import org.flashNight.arki.scene.StageManager;
+import org.flashNight.arki.scene.StageInfo;
 import org.flashNight.arki.scene.WaveSpawner;
 import org.flashNight.arki.stageSelect.StageSelectPanelService;
 import org.flashNight.arki.stageSelect.StageClearHistory;
@@ -115,6 +116,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testCalibrationReadyTokenPropagation();
         testStageLoaderRootExactlyOnce();
         testStageManagerProjectionFailures();
+        testStageAutoAdvanceOnClear();
         testProductionSceneTransitionAuthority();
         testFailedReturnKeepsExactRetry();
         testRetreatCompletionIsolation();
@@ -1461,6 +1463,163 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.最上层加载外部动画 = oldStageAnimation;
         _root.关卡结束 = oldStageFinished;
         _root.关卡地图帧值 = oldStageFrame;
+    }
+
+    private static function testStageAutoAdvanceOnClear():Void {
+        var manager:StageManager = StageManager.getInstance();
+        var oldFade:Object = _root.淡出动画;
+        var oldTimer:Object = _root.帧计时器;
+        var oldRecord:Function = _root.转场景记录数据;
+        var oldEntry:Object = _root.场景进入位置名;
+        var oldStageFinished:Function = _root.关卡结束;
+        var effectClass:Object = EffectSystem;
+        var oldEffect:Function = effectClass.Effect;
+        var defaultData:Object = minimalManagerStage("");
+        var enabledData:Object = minimalManagerStage("");
+        var disabledData:Object = minimalManagerStage("");
+        enabledData.AutoAdvanceOnClear = true;
+        disabledData.AutoAdvanceOnClear = false;
+        assertFalse(new StageInfo(defaultData).autoAdvanceOnClear,
+            "missing AutoAdvanceOnClear preserves manual door progression");
+        assertTrue(new StageInfo(enabledData).autoAdvanceOnClear,
+            "XML boolean true enables AutoAdvanceOnClear on its own SubStage");
+        assertFalse(new StageInfo(disabledData).autoAdvanceOnClear,
+            "explicit AutoAdvanceOnClear false preserves manual door progression");
+
+        effectClass.Effect = function():Void {};
+        _root.关卡结束 = function():Void {};
+        _root.__autoAdvanceRecordCount = 0;
+        _root.转场景记录数据 = function():Void { _root.__autoAdvanceRecordCount++; };
+        var fade:Object = {calls:0, accepted:true, frames:[]};
+        fade.淡出跳转帧 = function(frame:String):Boolean {
+            this.calls++;
+            this.frames.push(frame);
+            return this.accepted;
+        };
+        _root.淡出动画 = fade;
+        var timer:Object = {tasks:[]};
+        timer.添加单次任务 = function(callback:Function, delay:Number):Void {
+            this.tasks.push({callback:callback, delay:delay});
+        };
+        _root.帧计时器 = timer;
+
+        resetWorld(0);
+        manager.dispose();
+        var defaultWorld:MovieClip = _root.createEmptyMovieClip(
+            "__stageDefaultClearWorld", _root.getNextHighestDepth());
+        _root.gameworld = defaultWorld;
+        installHero("success");
+        defaultWorld.dispatcher = {publish:function():Void {}};
+        manager.isActive = true;
+        manager.isFinished = false;
+        manager.isFailed = false;
+        manager.currentStage = 0;
+        manager.gameworld = defaultWorld;
+        manager["stageMode"] = "action";
+        manager["stageInfoList"] = [{}, {}];
+        manager["currentStageInfo"] = {
+            basicInfo:{Animation:{}}, autoAdvanceOnClear:false
+        };
+        manager.clearStage();
+        assertTrue(manager.isCleared && defaultWorld.允许通行 === true
+                && fade.calls == 0 && timer.tasks.length == 0,
+            "default clear opens the door without scheduling an automatic fade");
+        defaultWorld.removeMovieClip();
+
+        resetWorld(0);
+        manager.dispose();
+        var autoWorld:MovieClip = _root.createEmptyMovieClip(
+            "__stageAutoClearWorld", _root.getNextHighestDepth());
+        _root.gameworld = autoWorld;
+        installHero("success");
+        autoWorld.dispatcher = {publish:function():Void {}};
+        manager.isActive = true;
+        manager.isFinished = false;
+        manager.isFailed = false;
+        manager.currentStage = 0;
+        manager.gameworld = autoWorld;
+        manager["stageMode"] = "action";
+        manager["stageInfoList"] = [{}, {}];
+        manager["currentStageInfo"] = {
+            basicInfo:{Animation:{}}, autoAdvanceOnClear:true
+        };
+        manager.clearStage();
+        assertTrue(fade.calls == 0 && timer.tasks.length == 1
+                && timer.tasks[0].delay == 30,
+            "enabled clear waits 30 game frames before requesting the next-stage fade");
+        timer.tasks[0].callback();
+        assertTrue(fade.calls == 1 && fade.frames[0] == "wuxianguotu_1"
+                && _root.场景进入位置名 == "出生地"
+                && _root.__autoAdvanceRecordCount == 1,
+            "delayed auto advance uses the standard next-stage transfer and fade exactly once");
+        assertTrue(manager.isCleared && autoWorld.允许通行 === false,
+            "automatic progression commits the clear while keeping every door disabled");
+        manager.clearStage();
+        assertTrue(fade.calls == 1 && timer.tasks.length == 1,
+            "duplicate clear events cannot schedule a second automatic transition");
+        autoWorld.removeMovieClip();
+
+        resetWorld(0);
+        manager.dispose();
+        var rejectedWorld:MovieClip = _root.createEmptyMovieClip(
+            "__stageRejectedAutoClearWorld", _root.getNextHighestDepth());
+        _root.gameworld = rejectedWorld;
+        installHero("success");
+        rejectedWorld.dispatcher = {publish:function():Void {}};
+        manager.isActive = true;
+        manager.isFinished = false;
+        manager.isFailed = false;
+        manager.currentStage = 0;
+        manager.gameworld = rejectedWorld;
+        manager["stageMode"] = "action";
+        manager["stageInfoList"] = [{}, {}];
+        manager["currentStageInfo"] = {
+            basicInfo:{Animation:{}}, autoAdvanceOnClear:true
+        };
+        fade.accepted = false;
+        manager.clearStage();
+        timer.tasks[1].callback();
+        assertTrue(fade.calls == 2 && rejectedWorld.允许通行 === false
+                && timer.tasks.length == 3 && timer.tasks[2].delay == 30,
+            "an explicit fade rejection keeps doors disabled and schedules one safe retry");
+        manager.clearStage();
+        assertTrue(fade.calls == 2 && timer.tasks.length == 3,
+            "duplicate clear cannot add another retry alongside the pending automatic retry");
+        fade.accepted = true;
+        timer.tasks[2].callback();
+        assertEquals(3, fade.calls,
+            "the delayed retry uses the same automatic path after an explicit rejection");
+        rejectedWorld.removeMovieClip();
+
+        resetWorld(0);
+        manager.dispose();
+        var finalWorld:MovieClip = _root.createEmptyMovieClip(
+            "__stageFinalAutoClearWorld", _root.getNextHighestDepth());
+        _root.gameworld = finalWorld;
+        finalWorld.dispatcher = {publish:function():Void {}};
+        manager.isActive = true;
+        manager.isFinished = false;
+        manager.isFailed = false;
+        manager.currentStage = 0;
+        manager.gameworld = finalWorld;
+        manager["stageMode"] = "action";
+        manager["stageInfoList"] = [{}];
+        manager["currentStageInfo"] = {
+            basicInfo:{Animation:{}}, autoAdvanceOnClear:true
+        };
+        manager.clearStage();
+        assertTrue(manager.isFinished && fade.calls == 3 && timer.tasks.length == 3,
+            "AutoAdvanceOnClear on the final SubStage keeps normal stage completion");
+        finalWorld.removeMovieClip();
+
+        manager.dispose();
+        effectClass.Effect = oldEffect;
+        _root.淡出动画 = oldFade;
+        _root.帧计时器 = oldTimer;
+        _root.转场景记录数据 = oldRecord;
+        _root.场景进入位置名 = oldEntry;
+        _root.关卡结束 = oldStageFinished;
+        delete _root.__autoAdvanceRecordCount;
     }
 
     private static function testFailedReturnKeepsExactRetry():Void {

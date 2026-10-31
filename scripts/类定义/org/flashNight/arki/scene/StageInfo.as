@@ -17,6 +17,7 @@ class org.flashNight.arki.scene.StageInfo {
     public var eventInfo:Array; // 关卡事件
     public var triggerInfo:Array // 压力板信息
     public var timePoolRefs:Array; // 当前子图引用的 GameStage 计时池
+    public var autoAdvanceOnClear:Boolean; // 清场后是否直接请求进入下一子图
 
     // ————————————————————————
     // 构造函数
@@ -31,6 +32,7 @@ class org.flashNight.arki.scene.StageInfo {
         eventInfo = parseEventInfo(data);
         triggerInfo = parseTriggerInfo(data);
         timePoolRefs = parseTimePoolRefs(data);
+        autoAdvanceOnClear = data.AutoAdvanceOnClear === true;
     }
 
     public static function parseBasicInfo(data):Object{

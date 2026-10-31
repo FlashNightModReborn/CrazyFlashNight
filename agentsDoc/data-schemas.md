@@ -132,6 +132,23 @@ CF6 重制单位按系列归入 `data/enemy_properties/CF6重制敌人.xml`，�
 - AS2 `StageTimePoolController` 是时间与失败裁决权威；Launcher 的 `T` 快车道只显示 keyed HUD。静态门为 `powershell -File tools/validate-stage-time-pools.ps1`，行为门为 `powershell -File scripts/run-stage-time-pool-tests.ps1`。
 - 首批配置：`残垣断壁`前两图共享 600 秒、遇到键盘后停止；`核电站`四图共享 600 秒；`挑战战斗天才`单图 300 秒。
 
+### SubStage 清场后自动进入下一图
+
+`data/stages/**/*.xml` 的每个 `SubStage` 可独立声明 `<AutoAdvanceOnClear>true</AutoAdvanceOnClear>`。现有目标链完成并调用 `StageManager.clearStage()` 后，该子图等待 1 秒（30 个游戏帧），再通过同一 `nextStage()` 和标准淡出进入下一子图；消灭全部敌人只是现有清场条件的一种，不新增第二套目标计数。
+
+```xml
+<SubStage id="0">
+    <AutoAdvanceOnClear>true</AutoAdvanceOnClear>
+    <!-- BasicInformation、Wave 等其余关卡数据 -->
+</SubStage>
+```
+
+- 缺省或填写 `false` 保持原行为：清场后开门，由玩家移动到门处并操作过图。只有 XML 解析后的布尔 `true` 启用自动转场。
+- 自动模式下清场后仍保持 `允许通行=false`，不绑定普通门、不显示清场箭头，并拒绝 CF6 门/载具编排骨架的手动前进，避免与延迟回调冲突。
+- 每个延迟任务都绑定当前世界普通对象身份和子图序号；手动 `nextStage()`、离场或场景替换会使未触发回调失效。明确未提交的淡出拒绝会再等 30 帧重试，异常结果不盲重放，重复清场不会叠加任务。
+- 最后一图仍走原有 `StageFinished` 与关卡结算，该字段不额外创建下一张图，也不改变各图自身目标、奖励和结束动画。
+- 行为回归由 `scripts/run-map-loot-tests.ps1` 的 `StageRunSessionTest` 覆盖；逻辑注入层改动另需发布 `scripts/asLoader.swf`。
+
 ### 关卡事件存活敌人数门槛
 
 `GameStage` 的 `Event` 可声明 `<MinAliveEnemies>1</MinAliveEnemies>`。`StageEvent` 在事件名和参数匹配后、执行事件前检查存活敌人数；缺失、无法转换为数字或值不大于 0 时不限制。

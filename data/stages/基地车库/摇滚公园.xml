@@ -418,6 +418,14 @@ Reward的必要参数：
         </Wave>
     </SubStage>
     <SubStage id="4">
+        <!--
+SubStage可选参数：
+    AutoAdvanceOnClear：填写true时，本图现有目标全部完成后等待1秒（30个游戏帧），再自动转场进入下一图；
+        自动过图模式会屏蔽门交互与清场箭头，包括默认右边界门，避免与延迟转场冲突。
+        缺省或填写false时保持原行为，目标完成后仍需移动到门处操作过图。
+        最后一图仍按原流程结算，不受该参数影响。
+        示例：<AutoAdvanceOnClear>true</AutoAdvanceOnClear>
+-->
         <!-- 
 BasicInformation描述地图基本配置。
 必要参数：

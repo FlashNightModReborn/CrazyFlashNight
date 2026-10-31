@@ -314,7 +314,8 @@ class org.flashNight.arki.scene.StageManager {
         stageEventHandler.init(gameworld);
 
         // 附加箭头出现事件
-        if(!isWarlordAction && currentStage < stageInfoList.length - 1){
+        if(!isWarlordAction && currentStage < stageInfoList.length - 1
+                && currentStageInfo.autoAdvanceOnClear !== true){
             gameworld.dispatcher.subscribeOnce("Clear", function() {
                 this.显示箭头();
             }, gameworld.通关箭头);
@@ -1054,9 +1055,13 @@ class org.flashNight.arki.scene.StageManager {
             finishStage();
         }else{
             try {
-                // 共享场景 SWF 的门自带旧函数；在开放出口时接管，避免其首帧覆盖早期绑定。
-                bindStageExit(gameworld);
-                gameworld.允许通行 = true;
+                if (currentStageInfo.autoAdvanceOnClear === true) {
+                    gameworld.允许通行 = false;
+                } else {
+                    // 共享场景 SWF 的门自带旧函数；在开放出口时接管，避免其首帧覆盖早期绑定。
+                    bindStageExit(gameworld);
+                    gameworld.允许通行 = true;
+                }
                 var hero:MovieClip = TargetCacheManager.findHero();
                 if (!org.flashNight.arki.scene.Cf6ExitGuideService.hasClearCue(this, gameworld)) {
                     EffectSystem.Effect("小过关提示动画", hero._x, hero._y, 100);
@@ -1064,7 +1069,52 @@ class org.flashNight.arki.scene.StageManager {
             } catch (clearProjectionError) {
                 trace("[StageManager] clear projection failed: " + clearProjectionError);
             }
+            if (currentStageInfo.autoAdvanceOnClear === true
+                    && gameworld.__autoAdvanceOnClearRequested !== true) {
+                gameworld.__autoAdvanceOnClearRequested = true;
+                scheduleAutoAdvance();
+            }
         }
+    }
+
+    private function scheduleAutoAdvance():Void {
+        var manager:StageManager = this;
+        var world:MovieClip = gameworld;
+        var worldIdentity:Object = StageReturnFlow.worldIdentity(world);
+        var expectedStage:Number = currentStage;
+        world.__autoAdvanceOnClearPending = true;
+        try {
+            _root.帧计时器.添加单次任务(function():Void {
+                if (world.__autoAdvanceOnClearPending !== true
+                        || !manager.isAutoAdvanceWorldCurrent(
+                            world, worldIdentity, expectedStage)) return;
+                try {
+                    if (!manager.nextStage()) {
+                        trace("[StageManager] delayed auto advance rejected; retrying in 30 frames");
+                        if (manager.isAutoAdvanceWorldCurrent(
+                                world, worldIdentity, expectedStage)) {
+                            manager.scheduleAutoAdvance();
+                        }
+                    }
+                } catch (autoAdvanceError) {
+                    world.__autoAdvanceOnClearPending = false;
+                    trace("[StageManager] delayed auto advance failed without retry: "
+                        + autoAdvanceError);
+                }
+            }, 30);
+        } catch (autoAdvanceScheduleError) {
+            world.__autoAdvanceOnClearPending = false;
+            trace("[StageManager] delayed auto advance scheduling failed: "
+                + autoAdvanceScheduleError);
+        }
+    }
+
+    private function isAutoAdvanceWorldCurrent(world:MovieClip,
+            worldIdentity:Object, expectedStage:Number):Boolean {
+        return gameworld === world && _root.gameworld === world
+            && StageReturnFlow.worldIdentity(world) === worldIdentity
+            && isActive && isCleared && !isFinished && !isFailed
+            && currentStage === expectedStage;
     }
 
     public function finishStage():Void{
@@ -1149,6 +1199,7 @@ class org.flashNight.arki.scene.StageManager {
         if(manager!==StageManager.instance || world!==manager.gameworld || world!==_root.gameworld
                 || identity==null || identity!==world.__stageReturnWorldIdentity
                 || !manager.isActive || !manager.isCleared || manager.isFailed || manager.isFinished || manager.stageMode=="warlord"
+                || manager.currentStageInfo.autoAdvanceOnClear===true
                 || typeof expectedStage!="number" || (expectedStage-expectedStage)!=0
                 || expectedStage!==manager.currentStage || expectedStage<0 || expectedStage!=Math.floor(expectedStage)
                 || !(manager.stageInfoList instanceof Array) || !(manager.currentStage<manager.stageInfoList.length-1)) return "rejected";
@@ -1233,6 +1284,7 @@ class org.flashNight.arki.scene.StageManager {
             return false;
         }
         if(currentStage < stageInfoList.length - 1){
+            if (gameworld != null) gameworld.__autoAdvanceOnClearPending = false;
             _root.场景进入位置名 = "出生地";
             _root.转场景记录数据();
             return org.flashNight.arki.scene.PlayerSceneLifecycle.requestFade("wuxianguotu_1");
