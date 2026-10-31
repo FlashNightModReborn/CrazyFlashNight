@@ -47,7 +47,14 @@ class org.flashNight.arki.unit.UnitComponent.Routing.ContainerAttachAction {
      */
     public static function attach(unit, kind:String, actionName:String, initObj:Object):Object {
         var linkage:String = ContainerSpec.buildLinkageName(kind, actionName);
+        var originalLinkage:String = linkage;
+        linkage = org.flashNight.arki.unit.Action.Huofeng.HuofengNative.linkage(unit, kind, actionName, linkage);
+        if (linkage !== originalLinkage) {
+            if (initObj == undefined) initObj = {};
+            initObj.__huofengColdSnapshot = org.flashNight.arki.unit.Action.Huofeng.HuofengNative.snapshot(unit);
+        }
         var man:MovieClip = RoutingRuntime.attachMovie(unit, linkage, "man", 0, initObj);
+        if (linkage !== originalLinkage) delete initObj.__huofengColdSnapshot;
 
         var result:Object = {};
         result.man = man;

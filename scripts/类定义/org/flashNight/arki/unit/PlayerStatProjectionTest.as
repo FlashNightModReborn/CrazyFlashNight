@@ -21,6 +21,7 @@ class org.flashNight.arki.unit.PlayerStatProjectionTest {
             testResources();
             testStableEquipmentInput();
             testPersistentProjection();
+            testEquipmentHpFloor();
             testNegativePunch();
             testAiAuxiliaryIsolation();
             testRuntimeSources();
@@ -172,6 +173,39 @@ class org.flashNight.arki.unit.PlayerStatProjectionTest {
         org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection.beginCanonical(t);
         org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection.completeCanonical(t);
         return t;
+    }
+
+    private static function testEquipmentHpFloor():Void {
+        var t:Object=persistentFixture();
+        var input:Object=t.__persistentEquipmentInputV1.slots;
+        input.刀.data.hp=-1127;
+        var record:Object=DressupInitializer.buildPersistentSnapshot(t);
+        check(record.unbuffed.hp满血值==1 && record.unbuffed.hp满血值装备加层==-1127,
+            "negative equipment HP has a final floor without rewriting its contribution");
+        check(t.hp==600 && t.mp==200 && t.hp满血值==1000,"building the HP floor does not settle live resources");
+        for(var i:Number=0;i<10;i++) DressupInitializer.applyPersistentSnapshot(t,DressupInitializer.buildPersistentSnapshot(t));
+        check(t.hp满血值==1 && t.hp==600 && t.mp==200,"repeated persistent floor remains idempotent and resource-free");
+        t.被动技能={独行者:{等级:3,启用:true}};
+        _root.全局健身HP加成=10;_root.经脉HP加成=20;
+        record=DressupInitializer.buildPersistentSnapshot(t);
+        check(record.unbuffed.hp满血值==53,"gym meridian and loner are summed before the floor, retaining the full deficit");
+        _root.全局健身HP加成=0;_root.经脉HP加成=0;t.被动技能={};
+        input.刀.data.hp=-1000;
+        check(DressupInitializer.buildPersistentSnapshot(t).unbuffed.hp满血值==1,"zero max HP also receives the floor");
+        input.刀.data.hp=-998;
+        check(DressupInitializer.buildPersistentSnapshot(t).unbuffed.hp满血值==2,"positive max HP is not inflated");
+        delete input.刀.data.hp;
+        DressupInitializer.applyPersistentSnapshot(t,DressupInitializer.buildPersistentSnapshot(t));
+        check(t.hp满血值==1000 && t.hp==600,"removing negative equipment rebuilds from the source without healing");
+        var rejected:Boolean=false;input.刀.data.hp=Number.NaN;
+        try {DressupInitializer.buildPersistentSnapshot(t);} catch(error) {rejected=true;}
+        check(rejected,"NaN equipment HP remains invalid");
+        rejected=false;input.刀.data.hp=Number.NEGATIVE_INFINITY;
+        try {DressupInitializer.buildPersistentSnapshot(t);} catch(error) {rejected=true;}
+        check(rejected,"infinite equipment HP remains invalid");
+        delete input.刀.data.hp;input.刀.data.mp=-501;rejected=false;
+        try {DressupInitializer.buildPersistentSnapshot(t);} catch(error) {rejected=true;}
+        check(rejected,"negative MP still fails the resource validator");
     }
 
     private static function testPersistentProjection():Void {

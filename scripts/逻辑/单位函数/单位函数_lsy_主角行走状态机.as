@@ -185,6 +185,10 @@ _root.主角函数.拳刀行走状态机 = function(){
         _parent.按键控制攻击模式();
 	}
 	if (_parent.动作A){
+        if (org.flashNight.arki.unit.Action.Huofeng.HuofengRules.profileActive(_parent)) {
+            _parent.__huofeng.startAttack(_parent.状态 === _parent.攻击模式 + "跑");
+            return;
+        }
 		_parent.格斗架势 = true;
 		if (_parent.状态 === _parent.攻击模式 + "跑"){
 			_parent.状态改变(_parent.攻击模式 + "冲击");

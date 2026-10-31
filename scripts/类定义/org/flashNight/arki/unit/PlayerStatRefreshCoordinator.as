@@ -113,6 +113,7 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
                 PlayerStatRefreshCoordinator.resourceWindow(s.actor,r);
                 if(!r.hpDone) {
                     r.settledHp=org.flashNight.arki.unit.Action.Regeneration.HealApplier.settleHpAfterMaxChange(r.hp,r.oldMax,Number(s.actor.hp满血值));
+                    if(s.actor.__huofengHpContract!=undefined) r.settledHp=Math.min(r.settledHp,Number(s.actor.hp满血值));
                     if(Number(s.actor.hp)!==r.settledHp) s.actor.hp=r.settledHp;
                     r.hpDone=true;
                 }
@@ -419,6 +420,7 @@ class org.flashNight.arki.unit.PlayerStatRefreshCoordinator {
                     var hp:Number=Number(target.hp);var maxHp:Number=Number(target.hp满血值);var mp:Number=Number(target.mp);var maxMp:Number=Number(target.mp满血值);
                     var npcRecord:Object=api.buildPersistentSnapshot(target);api.applyPersistentSnapshot(target,npcRecord);api.refreshPersistentWeaponCaches(target,npcRecord);
                     if(maxHp!=target.hp满血值) target.hp=org.flashNight.arki.unit.Action.Regeneration.HealApplier.settleHpAfterMaxChange(hp,maxHp,Number(target.hp满血值));
+                    if(target.__huofengHpContract!=undefined && target.hp>target.hp满血值) target.hp=target.hp满血值;
                     if(maxMp!=target.mp满血值) target.mp=org.flashNight.arki.unit.Action.Regeneration.HealApplier.settleMpAfterMaxChange(mp,Number(target.mp满血值));
                     plan.record=npcRecord;
                 }

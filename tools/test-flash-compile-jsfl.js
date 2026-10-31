@@ -24,7 +24,7 @@ function uriToPlatformPath(uri) {
 function platformPathToURI(platformPath) {
   const slashPath = String(platformPath).replace(/\\/g, "/");
   const driveUri = slashPath.replace(/^([A-Za-z]):\//, "$1|/");
-  return `file:///${encodeURI(driveUri)}`;
+  return `file:///${encodeURI(driveUri).replace(/^([a-z])%7c\//i, "$1|/")}`;
 }
 
 function runHarness(options = {}) {
@@ -125,6 +125,7 @@ function runHarness(options = {}) {
       opened.push(uri);
       if (options.throwOnOpen) throw new Error("simulated openDocument failure");
       if (/\s/.test(uri)) throw new Error(`raw whitespace in URI: ${uri}`);
+      if (/^file:\/\/\/[a-z]%7c\//i.test(uri)) throw new Error(`encoded CS6 drive separator: ${uri}`);
       this.documents.push(document);
       return document;
     },

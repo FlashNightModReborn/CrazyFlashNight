@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/地面渐隐/nirvana-ground-31-24/art" itemID="78f00000-43ffe895">
+  <timeline>
+    <DOMTimeline name="art">
+      <layers>
+        <DOMLayer name="Artwork">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/R2特效实例/nvi692" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="2.006164551" b="0" c="0" d="1.398986816" tx="20.35" ty="10.4" />
+                  </matrix>
+                  <color>
+                    <Color alphaMultiplier="0.78" />
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

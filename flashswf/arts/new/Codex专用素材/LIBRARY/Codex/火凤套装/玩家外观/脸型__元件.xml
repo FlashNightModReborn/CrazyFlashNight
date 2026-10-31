@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/玩家外观/脸型__元件" itemID="78f00000-381978f0">
+  <timeline>
+    <DOMTimeline name="脸型__元件">
+      <layers>
+        <DOMLayer name="Artwork">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/玩家外观/脸型/holder" symbolType="movie clip" name="holder">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0" />
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/玩家外观/脸型/helmet" symbolType="movie clip" name="helmet">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

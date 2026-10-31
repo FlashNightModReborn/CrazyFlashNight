@@ -130,28 +130,61 @@ class org.flashNight.arki.component.Buff.BuffManager {
 
     public function hasCrumbleCeilingBinding():Boolean { return this._crumbleCeilingBinding != null; }
 
+    /** 共用已有 final HP 访问层；火凤只加本人拥有的最终乘区，不改 Buff 基值。 */
+    private function ensureFinalHpBinding():Boolean {
+        if (this._crumbleCeilingBinding != null) return true;
+        var container:PropertyContainer=ensurePropertyContainerExists("hp满血值");
+        if (container == null) return false;
+        var holder:Object={hp满血值:container.getBaseValue()};
+        container.syncAccessTarget(holder,container.getBaseValue());
+        this._crumbleCeilingBinding={holder:holder};
+        var self:BuffManager=this;
+        this._target.addProperty("hp满血值",function():Number {
+            return self.readCrumbleCeiling();
+        },function(value:Number):Void { self.setBaseValue("hp满血值",value); });
+        return true;
+    }
+
+    public function getHuofengNormalMaxHp():Number {
+        if (this._crumbleCeilingBinding == null) return Number(this._target.hp满血值);
+        return Math.max(1,Number(this._crumbleCeilingBinding.holder.hp满血值)-Number(this._target.__crumbleCeilingLoss || 0));
+    }
+
+    public function setHuofengHpContract(owner:Object, factor:Number):Boolean {
+        if (owner == null || (factor != 0.7 && factor != 0.5)) return false;
+        var contract:Object=this._target.__huofengHpContract;
+        if (contract != null && contract.owner !== owner) return false;
+        if (!ensureFinalHpBinding()) return false;
+        if (contract == null) contract={owner:owner,factor:factor};
+        contract.factor=factor;
+        this._target.__huofengHpContract=contract;
+        if (this._target.hp>this._target.hp满血值) this._target.hp=this._target.hp满血值;
+        return true;
+    }
+
+    public function clearHuofengHpContract(owner:Object):Void {
+        if (this._target.__huofengHpContract.owner !== owner) return;
+        delete this._target.__huofengHpContract;
+        // 上限恢复只移除成本，绝不补当前 HP；不解除其他 Buff 或击溃的访问层。
+    }
+
     public function recordCrumbleCeilingLoss(amount:Number):Void {
-        if (!(amount > 0) || !isFinite(amount)) return;
-        if (this._crumbleCeilingBinding == null) {
-            var container:PropertyContainer = ensurePropertyContainerExists("hp满血值");
-            if (container == null) {
-                this._target.__crumbleCeilingLoss = Number(this._target.__crumbleCeilingLoss || 0)+amount;
-                this._target.hp满血值 -= amount;
-                return;
-            }
-            var holder:Object = {hp满血值:container.getBaseValue()};
-            container.syncAccessTarget(holder,container.getBaseValue());
-            this._crumbleCeilingBinding = {holder:holder};
-            var self:BuffManager = this;
-            this._target.addProperty("hp满血值",function():Number {
-                return self.readCrumbleCeiling();
-            },function(value:Number):Void { self.setBaseValue("hp满血值",value); });
+        if (!(amount>0) || !isFinite(amount)) return;
+        if (!ensureFinalHpBinding()) {
+            this._target.__crumbleCeilingLoss=Number(this._target.__crumbleCeilingLoss || 0)+amount;
+            this._target.hp满血值-=amount;
+            return;
         }
-        this._target.__crumbleCeilingLoss = Number(this._target.__crumbleCeilingLoss || 0)+amount;
+        var factor:Number=Number(this._target.__huofengHpContract.factor);
+        // 击溃的 amount 仍是实际 final 点数；在 H0 域记录等价损失，避免被涅槃再缩小。
+        if (factor==0.7 || factor==0.5) amount/=factor;
+        this._target.__crumbleCeilingLoss=Number(this._target.__crumbleCeilingLoss || 0)+amount;
     }
 
     private function readCrumbleCeiling():Number {
-        return Math.max(1,Number(this._crumbleCeilingBinding.holder.hp满血值)-Number(this._target.__crumbleCeilingLoss || 0));
+        var value:Number=getHuofengNormalMaxHp();
+        var factor:Number=Number(this._target.__huofengHpContract.factor);
+        return factor==0.7 || factor==0.5 ? Math.max(1,Math.floor(value*factor)) : value;
     }
 
     private function detachCrumbleCeiling():Void {
@@ -160,6 +193,7 @@ class org.flashNight.arki.component.Buff.BuffManager {
         delete this._target.hp满血值;
         this._target.hp满血值 = value;
         this._crumbleCeilingBinding = null;
+        delete this._target.__huofengHpContract;
     }
     private var _pendingRemovals:Array;            // 待移除的Buff ID列表
 

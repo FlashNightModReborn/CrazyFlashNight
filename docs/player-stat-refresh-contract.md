@@ -57,6 +57,8 @@ context/body 是不可复用的普通 Object；world 复用 StageReturnFlow.worl
 
 ## 资源与分阶段恢复
 
+合法负 HP 装备不构成坏数据。基础、装备、健身、经脉和独行者的常驻 HP 上限先完整求和，再将有限数值保底到 1；原装备负加层保持不变，卸装从稳定输入重算。NaN/Infinity、非法 MP 和后验检查仍拒绝。该步骤只投影上限，当前 HP/MP 仍由原资源 owner 按下述规则结算；升上限不额外治疗，火凤涅槃比例继续在其后的上限契约中处理。 新角色尚未持有 current HP 时，完整初始化中的临时装备小计也可能非正；首次种子采用有限小计的至少 1 HP，以免最终投影前污染出生校验。已有资源种子仍先经场景 owner 验证，不能借此修复负数、NaN 或 Infinity；最终求和不因这份临时种子提前截断。回归必须包含真实场景资源门和嵌套被动初始化，单纯换装成功不能代表出生成功。
+
 小提交段只写已验证的数值和既定资源结算，不包含领域回调。普通资源检查点在同一身体首次写前捕获有效 current/oldMax，900/1000 降到 800 结算为 800，合法 1300/1000 溢出则为 1200。部分 max 写失败继续使用原检查点，不能重采半成品上限。已完成资源结算不重复执行；派生失败只续派生。新伤害/治疗改变窗口后，旧恢复不得覆盖它。
 
 固定尾部为：稳定基底/新旧效果/运行损伤 → 必要路径及武器/护盾/副武器缓存 → Heal → Impact → DPS/HUD → 后验。释放 PauseManager 也可能同步回调，因此释放后再次验证。普通派生更新只合并现有子弹属性的相关字段，不替换活动任务、付费弹药或护盾资源。
@@ -64,6 +66,8 @@ context/body 是不可复用的普通 Object；world 复用 StageReturnFlow.worl
 失败保留 dirty、具体 reason/stage 和协调器自己的暂停 lease；一般面板解除暂停不能释放它。读取与动作恢复必须检查 flush 的 applied/unchanged，pending/failed 不能伪装 clean。没有 Hero 为 pending_actor；缺身体/最终 ready 保留待做工作。
 
 ticket started 后普通 flush 禁止再安装完整 lifecycle。原 owner 的显式恢复先尝试已保存的纯最终尾部；较早失败才在原 proof、身体和有效完整资源窗口下显式中止并创建新受控 ticket。CharacterBuild 的既有 flushLive/finalize 以精确 Boolean recoverProjection 表示已知失败后的恢复；结果未知只走原 reconcile watermark，不能带此许可。Host-only orphan 恢复仍需原精确 authority/pause/保存证明。
+
+CharacterBuild 的新一次合法卸装/换装请求可纠正 `prepare_numeric` 阶段的已知完整初始化失败。必须先验证请求的 session、revision、物品 lease、容器端点和原 ticket/proof，确认失败 scope 已退出且资源窗口仍匹配，才允许原 owner 中止 ticket。更换后的投影继续携带原有效 HP/oldMax/MP，不能采信半成品最大值；下一次重建还需重验 context/actor/body 和当前资源。期间保持 dirty 与协调器暂停，只有新完整生命周期和原保存屏障均成功才能关闭。等待组件、生命周期尾部失败、身份变更、新损伤及结果未知均不能据此解锁。
 
 legacy 装备使用玩家属性投影.恢复遗留装备；它只重投影已提交的容器，不再拾取/移动物品。快捷拾取的原定攻击模式以 context/world/目标 body 回执保留，恢复完成后消费一次。成长使用玩家属性投影.恢复已提交成长，原成长 owner 保留早期 scope、分字段的一次性消费标志和最多一个更高等级意图；不再次执行经验、奖励或收费。缺 Hero 的成长意图不向后来新体追发治疗/特效。上述窄入口不提供 Web 任意 invalidate 权限。
 

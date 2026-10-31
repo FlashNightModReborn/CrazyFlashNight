@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/背负武器/手枪__元件" itemID="78f00000-d8e2c4ad">
+  <timeline>
+    <DOMTimeline name="手枪__元件">
+      <layers>
+        <DOMLayer name="Artwork">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/背负武器/手枪/holder" symbolType="movie clip" name="枪">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="28.5" ty="-4.5" />
+                  </matrix>
+                  <Actionscript>
+                    <script>onClipEvent (load) {
+var unit = _parent._parent._parent;
+if (unit != undefined &amp;&amp; _root.装备引用配置 != undefined) {
+    _root.装备引用配置.配置装扮(this, unit.手枪_装扮, "装扮", "手枪_引用");
+}
+}
+</script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

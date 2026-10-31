@@ -75,12 +75,14 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
             unit.__weaponSkillInputConsumed = false;
             return null;
         }
+        if (!inputEnabled && org.flashNight.arki.unit.Action.Huofeng.HuofengRules.profileActive(unit)) unit.__weaponSkillInputConsumed = true;
         if (!inputEnabled || unit.__weaponSkillInputConsumed === true) {
             return null;
         }
 
         var sharedCooldownReady:Boolean = ManualCooldownService.isReady(ManualCooldownService.WEAPON_SKILL_KEY);
         if (!canTriggerUnit(unit, sharedCooldownReady)) {
+            if (org.flashNight.arki.unit.Action.Huofeng.HuofengRules.profileActive(unit)) unit.__weaponSkillInputConsumed = true;
             return null;
         }
 
@@ -97,6 +99,8 @@ class org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService {
     }
 
     public static function canTriggerUnit(unit:Object, sharedCooldownReady:Boolean):Boolean {
+        if (org.flashNight.arki.unit.Action.Huofeng.HuofengInput.locked(unit)) return false;
+        if (org.flashNight.arki.unit.Action.Huofeng.HuofengRules.profileActive(unit) && !unit.__huofeng.canEnterSpin()) return false;
         var skill:Object = getCurrentSkill(unit);
         if (!skill) {
             return false;

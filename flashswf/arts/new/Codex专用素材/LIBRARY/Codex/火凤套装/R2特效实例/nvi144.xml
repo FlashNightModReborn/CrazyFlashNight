@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/R2特效实例/nvi144" itemID="78f00000-762c520d">
+  <timeline>
+    <DOMTimeline name="nvi144">
+      <layers>
+        <DOMLayer name="Artwork">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/原生特效/nv-690c7536863b958e" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <transformationPoint>
+                    <Point x="-6.65" y="-62.95" />
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.35546875" />
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

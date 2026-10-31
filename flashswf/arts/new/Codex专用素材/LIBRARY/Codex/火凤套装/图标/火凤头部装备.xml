@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/图标/火凤头部装备" itemID="78f00000-8269edb2" linkageExportForAS="true" linkageExportInFirstFrame="true" linkageIdentifier="图标-火凤头部装备">
+  <timeline>
+    <DOMTimeline name="火凤头部装备">
+      <layers>
+        <DOMLayer name="24px 遮罩" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <Actionscript>
+                <script>stop();</script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/图标/共同遮罩底影" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="1" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="部位特写" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/R9长发/Front" centerPoint3DX="55.4" centerPoint3DY="53.95">
+                  <matrix>
+                    <Matrix a="0.236587524414063" d="0.236968994140625" tx="-1.95" ty="-0.25" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="1" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原版底影">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/图标/共同遮罩底影" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="1" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="完整展示">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements />
+            </DOMFrame>
+            <DOMFrame index="1" duration="1" keyMode="9728">
+              <Actionscript>
+                <script>stop();</script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/R9长发/Front" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.277" b="0" c="0" d="0.277" tx="0" ty="0" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

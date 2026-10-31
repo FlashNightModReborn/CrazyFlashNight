@@ -31,6 +31,10 @@ class org.flashNight.arki.scene.StageRunSession {
     private static var _installed:Boolean = false;
     private static var _runSeq:Number = 0;
     private static var _run:Object = null;
+    // 普通地图只拥有生命/付费回执；绝不借用或覆盖关卡战报与奖励权威。
+    private static var _sceneRevive:Object = null;
+    private static var _sceneReviveSeq:Number = 0;
+    private static var _sceneReadyWorld:Object = null;
     private static var _processedIntents:Object = {};
     private static var _preparedInventory:ArrayInventory = null;
     private static var _preparedReport:Object = null;
@@ -131,6 +135,8 @@ class org.flashNight.arki.scene.StageRunSession {
         org.flashNight.arki.scene.StageReturnSelection.reset();
         org.flashNight.arki.scene.StageReturnOptions.reset();
         org.flashNight.arki.scene.PlayerSceneLifecycle.retire("new_run");
+        _sceneRevive = null;
+        _sceneReadyWorld = null;
         _runSeq++;
         _run = {
             v:1,
@@ -366,31 +372,45 @@ class org.flashNight.arki.scene.StageRunSession {
 
     /** 死亡检测可能每帧重入；只有 alive -> dead 会推进一次状态。 */
     public static function onHeroDeath():Void {
-        if (_run == null || _returnRequested || _run.life != "alive") return;
+        var authority:Object=getReviveAuthority();
+        if (authority==null || authority.life!="alive") return;
+        if (authority!==_run) {
+            var hero:MovieClip=TargetCacheManager.findHero();
+            if (hero==undefined || isNaN(Number(hero.hp)) || Number(hero.hp)>0) return;
+        }
         org.flashNight.arki.scene.PlayerSceneLifecycle.retire("hero_dead");
-        _run.life = "dead";
-        bumpRevision();
-        pushState();
+        setReviveLife(authority,"dead");
     }
 
     public static function onHeroRespawn(target:MovieClip):Void {
-        if (_run == null || _run.life == "alive") return;
+        var authority:Object=getReviveAuthority();
+        if (authority==null || authority.life=="alive") return;
         var hero:MovieClip;
         try { hero = TargetCacheManager.findHero(); } catch (findError) { hero = undefined; }
-        // RespawnEventComponent 也服务佣兵/敌人。只有当前控制主角的同一 MovieClip
-        // 且 HP 已真实恢复，才能推进玩家 life 轴。
+        // RespawnEventComponent 也服务佣兵/敌人。只有当前控制主角且 HP 已真实恢复才推进 life。
         if (hero == undefined || target == undefined || target !== hero
                 || isNaN(Number(target.hp)) || Number(target.hp) <= 0) return;
         org.flashNight.arki.scene.LeeAssaultService.onRespawn(target);
         if (target.__controlledEnemyContext != null) target.__controlledEnemyContext.handled = false;
-        _run.life = "alive";
+        authority.life="alive";
         org.flashNight.arki.scene.PlayerSceneLifecycle.onHeroRespawn(target);
-        bumpRevision();
-        pushState();
+        setReviveLife(authority,"alive");
     }
 
     public static function canRequestRevive():Boolean {
-        return _run != null && _run.life == "dead" && !_returnRequested;
+        var authority:Object=getReviveAuthority();
+        return authority!=null && authority.life=="dead" && reviveTransitionBlocked(authority)!==true;
+    }
+
+    private static function reviveTransitionBlocked(authority:Object):Boolean {
+        return _returnAttempt!=null || _stageStartReservation!=null || _root.场景转换中===true
+            || (authority===_run && (_returnRequested || _preparedInventory!=null));
+    }
+
+    private static function setReviveLife(authority:Object,life:String):Void {
+        authority.life=life;
+        authority.revision=Number(authority.revision)+1;
+        pushState();
     }
 
     /** 头像缓存仍按外观复用；人形战报只按单位实例分组。 */
@@ -541,10 +561,11 @@ class org.flashNight.arki.scene.StageRunSession {
 
     /** 设置页兜底与 C# 按钮都必须走这一条扣币 + respawn 事件路径。 */
     public static function requestReviveLocal(source:String):Object {
-        if (_run == null) return {success:false, error:"revive_unavailable"};
-        if (_run.life != "dead") return {success:false, error:"actor_alive"};
-        if (_returnRequested || _returnAttempt != null || _preparedInventory != null)
+        var authority:Object=getReviveAuthority();
+        if (authority==null) return {success:false, error:_returnRequested ? "return_in_progress" : "revive_unavailable"};
+        if (reviveTransitionBlocked(authority))
             return {success:false, error:"return_in_progress"};
+        if (authority.life!="dead") return {success:false, error:"actor_alive"};
         if (_root.限制系统 != undefined && _root.限制系统.DisableResurrection == true) {
             pushState();
             return {success:false, error:"resurrection_restricted"};
@@ -562,9 +583,16 @@ class org.flashNight.arki.scene.StageRunSession {
             return {success:false, error:"revive_target_unavailable"};
         }
 
-        _run.life = "reviving";
-        bumpRevision();
-        pushState();
+        var huofengPaidRun:Object=authority;
+        var huofengPaidWorld:Object=org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld);
+        var huofengPaidEligible:Boolean=hero.__huofeng != undefined && hero.__huofeng.isActive();
+        var huofengPaidEpoch:Number=huofengPaidEligible
+            ? org.flashNight.arki.unit.Action.Huofeng.HuofengRunState.forUnit(hero).equipmentEpoch : 0;
+        setReviveLife(authority,"reviving");
+        if (!reviveContextCurrent(authority,huofengPaidWorld,hero)) {
+            setReviveLife(authority,"dead");
+            return {success:false,error:"revive_target_unavailable"};
+        }
         var coinsBefore:Number = reviveCoinCount();
         var spendContext:Object = {
             source:"player_revive",
@@ -582,18 +610,12 @@ class org.flashNight.arki.scene.StageRunSession {
         var spentExactlyOne:Boolean = coinsBefore >= 1
             && coinsAfterSpend == coinsBefore - 1;
         if (!submitAccepted && !spentExactlyOne) {
-            org.flashNight.arki.scene.PlayerSceneLifecycle.retire("hero_dead");
-        _run.life = "dead";
-            bumpRevision();
-            pushState();
+            failReviveLife(authority,huofengPaidWorld,hero);
             return {success:false, error:coinsBefore < 1
                 ? "no_revive_coin" : "revive_asset_failed"};
         }
         if (submitAccepted && !spentExactlyOne) {
-            org.flashNight.arki.scene.PlayerSceneLifecycle.retire("hero_dead");
-        _run.life = "dead";
-            bumpRevision();
-            pushState();
+            failReviveLife(authority,huofengPaidWorld,hero);
             return {success:false, error:"revive_asset_ambiguous"};
         }
 
@@ -601,14 +623,24 @@ class org.flashNight.arki.scene.StageRunSession {
             // RespawnEventComponent 的回调契约是第一个参数为目标单位。EventBus v3
             // 的 scope 只负责绑定 this，零参数 publish 不会再把 scope 注入形参；
             // 因此必须与 ZeroHPDetector 一样显式携带 hero。
-            hero.dispatcher.publish("respawn", hero);
+            if (reviveContextCurrent(authority,huofengPaidWorld,hero)) hero.dispatcher.publish("respawn", hero);
         } catch (publishError) {
             // 下面按实际 HP / life 收敛；异常本身不决定复活是否发生。
         }
         // dispatcher 可以在已经恢复 HP / 发布 respawn 后才抛错；生命事实优先于
         // 回调返回形态，否则会错误退款并重新标死一个已经复活的主角。
         if (Number(hero.hp) > 0) {
-            if (_run.life != "alive") onHeroRespawn(hero);
+            if (authority.life!="alive" && reviveContextCurrent(authority,huofengPaidWorld,hero)) onHeroRespawn(hero);
+            if (getReviveAuthority()===huofengPaidRun) {
+                authority.paidReviveSequence=Number(authority.paidReviveSequence || 0)+1;
+                // 成功扣币+真实复活已经成立；表现通知失败不得改变成功事实或触发退款。
+                try {
+                    org.flashNight.arki.unit.Action.Huofeng.HuofengRunState.notifyPaidRevive(
+                        authority,hero,huofengPaidEligible,authority.paidReviveSequence,huofengPaidWorld,huofengPaidEpoch);
+                } catch (huofengNotifyError) {
+                    trace("[Huofeng] paid revive committed; presentation deferred: "+huofengNotifyError);
+                }
+            }
             return {success:true, error:"", reviveCoins:reviveCoinCount()};
         }
 
@@ -621,12 +653,20 @@ class org.flashNight.arki.scene.StageRunSession {
             // 同样按材料 before/after 判定退款是否真实落地。
         }
         var refundExact:Boolean = reviveCoinCount() == coinsBefore;
-        org.flashNight.arki.scene.PlayerSceneLifecycle.retire("hero_dead");
-        _run.life = "dead";
-        bumpRevision();
-        pushState();
+        failReviveLife(authority,huofengPaidWorld,hero);
         return {success:false, error:refundExact
             ? "respawn_dispatch_failed" : "respawn_dispatch_rollback_failed"};
+    }
+
+    private static function reviveContextCurrent(authority:Object,world:Object,hero:MovieClip):Boolean {
+        return authority===getReviveAuthority()
+            && world===org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld)
+            && hero===TargetCacheManager.findHero();
+    }
+
+    private static function failReviveLife(authority:Object,world:Object,hero:MovieClip):Void {
+        if (reviveContextCurrent(authority,world,hero)) org.flashNight.arki.scene.PlayerSceneLifecycle.retire("hero_dead");
+        setReviveLife(authority,"dead");
     }
 
     /** 地图主动撤退只投影本轮资格；真正返回仍走 _root.返回基地 的冻结与落盘硬门。 */
@@ -746,6 +786,21 @@ class org.flashNight.arki.scene.StageRunSession {
     }
 
     public static function getRunAuthority():Object { return _run; }
+
+    /** 复活与火凤状态的地图权威；战报消费者仍只读 getRunAuthority。 */
+    public static function getReviveAuthority():Object {
+        if (_run!=null && !_returnRequested) return _run;
+        if (_root.当前为战斗地图===true || _root.gameworld==undefined) return null;
+        var world:Object=org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld);
+        // 返回期间不能把尚未离开的死角色误认为基地内再次死亡。
+        if (_returnRequested && _sceneReadyWorld!==world) return null;
+        if (_sceneRevive==null || _sceneRevive.world!==world) {
+            _sceneReviveSeq++;
+            _sceneRevive={world:world,runId:"scene."+getTimer()+"."+_sceneReviveSeq,
+                revision:1,life:"alive",paidReviveSequence:0,processedIntents:{}};
+        }
+        return _sceneRevive;
+    }
 
     /** 到达后先呈现本轮战利品；暂存并关闭后可正常与当地 NPC 交互。 */
     public static function isNpcPresentationBlocked():Boolean {
@@ -944,6 +999,9 @@ class org.flashNight.arki.scene.StageRunSession {
                 + " identity=" + (readyIdentity != undefined));
         }
         if (!arrived) return;
+        _sceneReadyWorld=org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld);
+        // 新地图发 alive 清除旧死亡投影；复活成功后原任务提示自然重新取得显示权。
+        pushState();
         if (focusObservationActive() && !_focusSceneSeen && _focusReturnRun != ""
                 && _run != null && _focusReturnRun == _run.runId) {
             _focusSceneSeen = true;
@@ -1488,6 +1546,16 @@ class org.flashNight.arki.scene.StageRunSession {
 
     private static function handleAction(params:Object):Void {
         var valid:Boolean = validateLegacyAction(params);
+        var authority:Object=getReviveAuthority();
+        if (authority!=null && authority!==_run && authority.life!="alive") {
+            if (!valid || params.intent!=="revive" || params.runId!==authority.runId
+                    || Number(params.expectedRevision)!=Number(authority.revision)) {pushState();return;}
+            var sceneKey:String="$"+String(params.intentId);
+            if (authority.processedIntents[sceneKey]===true) {pushState();return;}
+            authority.processedIntents[sceneKey]=true;
+            requestReviveLocal("scene_outcome");
+            return;
+        }
         var rejection:String = !valid ? "schema" : _run == null ? "no_run"
             : params.runId !== _run.runId ? "run_mismatch"
             : Number(params.expectedRevision) != Number(_run.revision) ? "revision_mismatch" : "";
@@ -1900,6 +1968,11 @@ class org.flashNight.arki.scene.StageRunSession {
     public static function notifyReturnOptionsChanged():Void { bumpRevision(); pushState(); }
 
     private static function pushState():Void {
+        var authority:Object=getReviveAuthority();
+        if (authority!=null && authority!==_run) {
+            pushSceneReviveState(authority);
+            if (authority.life!="alive" || _run==null) return;
+        }
         if (_run == null) return;
         var server:Object = _root.server;
         if (server == undefined || server.isSocketConnected !== true
@@ -1944,6 +2017,25 @@ class org.flashNight.arki.scene.StageRunSession {
             // C# 是可恢复投影；socket 竞态绝不能中断扣币、复活或结算终态。
             trace("[StageRunSession] stage outcome projection failed");
         }
+    }
+
+    /** 复用既有 v1-v3 HUD 合同；普通地图没有医务室返回/奖励选择能力。 */
+    private static function pushSceneReviveState(authority:Object):Void {
+        var server:Object=_root.server;
+        if (server==undefined || server.isSocketConnected!==true || typeof server.sendTaskToNode!="function") return;
+        var coins:Number=reviveCoinCount();
+        var restricted:Boolean=_root.限制系统.DisableResurrection==true;
+        var blocked:String=authority.life!="dead" ? "" : restricted ? "resurrection_restricted" : coins<=0 ? "no_revive_coin" : "";
+        var version:Number=Math.min(3,_projectionVersion);
+        var projection:Object={v:version,runId:authority.runId,revision:authority.revision,
+            stageName:safeText(String(_root.gameworld.场景名 || _root.关卡标志),96,"普通地图"),difficulty:"普通地图",
+            outcome:"active",life:authority.life,activeFrames:0,reviveCoins:coins,
+            reviveAllowed:authority.life=="dead" && blocked=="" && !reviveTransitionBlocked(authority),
+            reviveBlockedReason:blocked,canReturnBase:false,settlement:"none",remainingRewards:0};
+        if (version>=2) projection.returnFailure="";
+        if (version>=3) projection.canSelectReturn=false;
+        try {server.sendTaskToNode("stage_outcome",projection,null);}
+        catch (projectionError) {trace("[StageRunSession] scene revive projection failed");}
     }
 
     private static function reviveCoinCount():Number {
@@ -2833,6 +2925,8 @@ class org.flashNight.arki.scene.StageRunSession {
         org.flashNight.arki.scene.StageReturnFlow.reset();
         _stageStartOrigin = null;
         _run = null;
+        _sceneRevive = null;
+        _sceneReadyWorld = null;
         _processedIntents = {};
         _preparedInventory = null;
         _preparedReport = null;

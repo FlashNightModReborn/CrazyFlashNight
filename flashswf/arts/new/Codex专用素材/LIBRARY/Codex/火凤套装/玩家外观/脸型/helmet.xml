@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/玩家外观/脸型/helmet" itemID="78f00000-6c817f3e">
+  <timeline>
+    <DOMTimeline name="helmet">
+      <layers>
+        <DOMLayer name="Artwork">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <Actionscript>
+                <script>stop();
+var unit = _parent._parent._parent;
+if (_root.装备引用配置 != undefined) _root.装备引用配置.配置装扮(this, unit.面具, "装扮3", "面具_引用");
+</script>
+              </Actionscript>
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

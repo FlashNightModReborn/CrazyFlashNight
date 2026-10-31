@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/冷兵器复用/sprite/枪-长枪-G36（模型）" itemID="78f10000-f6211358" lastModified="1756118877" lastUniqueIdentifier="13">
+  <timeline>
+    <DOMTimeline name="枪-长枪-G36（模型）">
+      <layers>
+        <DOMLayer name="Layer 1" color="#EEDFAD">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/冷兵器复用/sprite/Symbol 6 副本" name="枪口位置" centerPoint3DX="155.6" centerPoint3DY="-34.65">
+                  <matrix>
+                    <Matrix tx="143.1" ty="-47.15" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#7F42FB" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/冷兵器复用/shape/Symbol 4" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

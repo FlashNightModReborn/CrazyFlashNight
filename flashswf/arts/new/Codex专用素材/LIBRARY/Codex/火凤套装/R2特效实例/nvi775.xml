@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/R2特效实例/nvi775" itemID="78f00000-50c1cd15">
+  <timeline>
+    <DOMTimeline name="nvi775">
+      <layers>
+        <DOMLayer name="Artwork">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/原生特效/nv-07e54b21ac9e4fdc" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <transformationPoint>
+                    <Point x="262.85" y="188" />
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0.4609375" />
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

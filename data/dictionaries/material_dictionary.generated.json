@@ -1,10 +1,10 @@
 {
   "catalog": {
     "archiveOrderFirst": 0,
-    "archiveOrderLast": 233,
+    "archiveOrderLast": 234,
     "authoredDirectPurposeReferenceCount": 27,
     "directPurposeCount": 2,
-    "entryCount": 234,
+    "entryCount": 235,
     "equipmentTuningDistinctCount": 113,
     "machineDerivedEquipmentTuningCount": 107,
     "path": "data/dictionaries/material_catalog.xml",
@@ -12,7 +12,7 @@
     "typeCounts": {
       "equipment_mod": 107,
       "food": 50,
-      "general": 77
+      "general": 78
     }
   },
   "crafting": {
@@ -49,7 +49,7 @@
   "inputs": [
     {
       "path": "data/dictionaries/material_catalog.xml",
-      "sha256": "9682A50B84F4AA1CA6418540EE6E137692A33C7297B586C068671EDA95B2B0F3"
+      "sha256": "E66BBEF81E9A1F1E4C699A42FD4FA141AE9CFAAA9B0BC14585D74F149C3857C0"
     },
     {
       "path": "data/items/list.xml",
@@ -81,7 +81,7 @@
     },
     {
       "path": "data/items/收集品_材料.xml",
-      "sha256": "14FF9160EC792BC4A36677397E1030F7B38C48EA1562D30E3780D6B6012AAA3B"
+      "sha256": "C869F113C90719BB0E8FCD4CAC223157BD4FD693AF5C13517CBD09D1451DF476"
     },
     {
       "path": "data/items/收集品_材料_插件.xml",
@@ -117,7 +117,7 @@
     },
     {
       "path": "data/items/防具_20-39级.xml",
-      "sha256": "6220201E0FD9969BFAF2421D796BE33410C7D4A2A82460156988FE4370AFA550"
+      "sha256": "BFE9DF016D3039CCBAB6D87423212A86EC5A4B949DB1DA476A2B0BCC178FF903"
     },
     {
       "path": "data/items/防具_40+级.xml",
@@ -414,5 +414,5 @@
     "sha256": "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8"
   },
   "schema": "cf7.material-dictionary-generated.v2",
-  "sourceDigest": "A5646884945D82BAF349A390951702DEA2EB716433A7DEAD1194F164410C7100"
+  "sourceDigest": "15A2E5818814F4ED362950E180D70EA46BAF7385D21C2E5C8A42F60FA67100D0"
 }

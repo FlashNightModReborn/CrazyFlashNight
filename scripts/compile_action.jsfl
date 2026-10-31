@@ -17,8 +17,10 @@ function normalizeDocumentURI(uri) {
 // FLfile host call.
 function canonicalizeDocumentURI(uri) {
 	var value = String(uri || "");
-	try { return encodeURI(decodeURI(value)); } catch (decodeError) {}
-	try { return encodeURI(value); } catch (encodeError) {}
+	// CS6 requires its drive separator literally; %7C is interpreted as part
+	// of the filename even though the remaining path must be URI-escaped.
+	try { return encodeURI(decodeURI(value)).replace(/^(file:\/\/\/[a-z])%7c\//i, "$1|/"); } catch (decodeError) {}
+	try { return encodeURI(value).replace(/^(file:\/\/\/[a-z])%7c\//i, "$1|/"); } catch (encodeError) {}
 	return value;
 }
 

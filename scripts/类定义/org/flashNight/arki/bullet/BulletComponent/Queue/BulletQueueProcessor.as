@@ -728,6 +728,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             return null;
         }
 
+        if (bullet.__huofengPulse != undefined && !org.flashNight.arki.unit.Action.Huofeng.HuofengCombat.claimPulse(bullet, hitTarget)) {
+            ctx.actualHit = false;
+            return DamageResult.NULL;
+        }
+
         // 同步命中对象引用（幂等；caller 通常已设，供其 击中时触发函数 读取）
         bullet.hitTarget = hitTarget;
         bullet.命中对象 = hitTarget;

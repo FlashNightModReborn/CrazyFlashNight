@@ -153,6 +153,7 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
         if (current <= 0) return 0;
         if (!(amount > 0)) return 0; // 同时挡 NaN / 负数 / 0
         if (!(capValue > 0)) return 0;
+        if (target.__huofengHpContract != undefined) capValue=Math.min(capValue,Number(target.hp满血值));
         if (current >= capValue) return 0;
 
         var newValue:Number = current + amount;
@@ -191,6 +192,8 @@ class org.flashNight.arki.unit.Action.Regeneration.HealApplier {
         if (!(amount > 0)) return 0;
         if (!(baseMax > 0)) return 0;
 
+        // 仅火凤的有效涅槃契约取消过量 HP；普通吸血与炼金规则保持原有曲线。
+        if (target.__huofengHpContract != undefined) return applyHpCapped(target,amount,Number(target.hp满血值));
         var M:Number = baseMax;
         var C:Number = M * OVERFLOW_CAP_RATIO;
         if(!ResourceNumber.positive(C)) {ResourceNumber.reject(target,"hp_cap_product_invalid");return 0;}

@@ -22,6 +22,8 @@ function persistentFixture(source) {
     const t = f.target;
     Object.assign(f.root,{限制系统:{},宠物信息:[],佣兵个数限制:0});
     t.buff = {};t.buffManager = {};
+    // AS2 permits an absent contract's property read; the JS extraction needs an explicit empty port.
+    t.__huofengHpContract = {};
     t.被动技能 = {};t.__pileBunkerM7 = {};
     t.__persistentEquipmentInputV1 = {slots:{}};
     for (const slot of Object.keys(f.globals.equipmentKeys)) {
@@ -44,6 +46,18 @@ module.exports = function run(source,report) {
     t.__persistentEquipmentInputV1.slots.头部装备.data.hp=Infinity;
     let rejected=false;try { f.api.buildPersistentSnapshot(t); } catch(error) { rejected=/stat_input_invalid/.test(error.message); }
     report('persistent-invalid-zero-write',[rejected,t.hp满血值],[true,hp]);
+
+    const capped = persistentFixture(source), h = capped.target;
+    h.被动技能 = {独行者:{等级:0,启用:false}};
+    h.__persistentEquipmentInputV1.slots.刀.data.hp = -1127;
+    for (let i=0;i<3;i++) capped.api.applyPersistentSnapshot(h,capped.api.buildPersistentSnapshot(h));
+    report('persistent-negative-hp-floor',[h.hp满血值,h.hp满血值装备加层,h.hp,h.mp],[1,-1127,600,200]);
+    h.被动技能.独行者={等级:3,启用:true};capped.root.全局健身HP加成=10;capped.root.经脉HP加成=20;
+    capped.api.applyPersistentSnapshot(h,capped.api.buildPersistentSnapshot(h));
+    report('persistent-hp-floor-after-all-contributions',h.hp满血值,53);
+    delete h.__persistentEquipmentInputV1.slots.刀.data.hp;
+    capped.api.applyPersistentSnapshot(h,capped.api.buildPersistentSnapshot(h));
+    report('persistent-hp-source-restored-without-healing',[h.hp满血值,h.hp,h.mp],[1180,600,200]);
 
     // A legitimate flat punch penalty (e.g. 指骨撑架) must not poison the
     // mercenary-only square-root weight or reject the player's entire build.

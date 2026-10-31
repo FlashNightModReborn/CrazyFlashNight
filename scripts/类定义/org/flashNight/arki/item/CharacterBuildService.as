@@ -58,6 +58,8 @@ class org.flashNight.arki.item.CharacterBuildService {
     // 一次刷新只要抛错或后验失败，就禁止仅凭 equipment stamp 自动采信其半完成结果。
     private static var _liveRefreshRetryRequired:Boolean = false;
     private static var _statTicket:Object;
+    // 已知早期数值失败后换装，沿用原 owner 的资源窗口，不能重采半成品上限。
+    private static var _equipmentRecoveryResources:Object;
     private static var _modeFinalizeWait:Object;
     private static var _writeInProgress:Boolean = false;
     private static var _writeAuthorityTouched:Boolean = false;
@@ -510,18 +512,28 @@ class org.flashNight.arki.item.CharacterBuildService {
             if(_statTicket==null) {
                 var context:Object=liveContext(root(),_slotRefs);
                 if(context==null) return liveFailure();
+                var recovery:Object=_equipmentRecoveryResources;
+                if(recovery!=null && (recovery.context!==c.contextToken() || recovery.actor!==context.hero
+                        || recovery.body!==context.hero.__playerStatBody
+                        || Number(context.hero.hp)!==recovery.resources.hp
+                        || Number(context.hero.mp)!==recovery.resources.mp)) return liveFailure();
                 var proof:Object={context:c.contextToken(),generation:_sessionGeneration,revision:_loadoutRevision,
                     signature:_signature,inventory:_equipmentInventory,refs:_slotRefs.concat(),live:context};
                 var owner:Object=equipmentProjectionOwner(proof);
                 _statTicket=c.prepareEquipmentTransition(proof,owner);
                 if(_statTicket==null) return liveFailure();
+                if(recovery!=null) {
+                    _statTicket.recoveryResources=recovery.resources;
+                    _equipmentRecoveryResources=null;
+                }
                 declareEquipmentProjection();
             }
             var ticket:Object=_statTicket;
             if(ticket.status=="started" && typeof c.awaitingEquipmentComponent=="function"
                     && c.awaitingEquipmentComponent(ticket)
                     && !(recover===true && ticket.modeWaitExpired===true)) return liveFailure();
-            if(ticket.status=="started" || ticket.actor.__playerStatInitPlan.failed===true) {
+            if(ticket.status=="started" || (ticket.actor.__playerStatInitPlan.ticket===ticket
+                    && ticket.actor.__playerStatInitPlan.failed===true)) {
                 if(recover!==true) return liveFailure();
                 if(ticket.actor.__playerStatInitPlan.tailCheckpoint!=undefined) {
                     var tail:Object=org.flashNight.arki.unit.PlayerStatRefreshCoordinator.resumeFullInitialization(ticket,ticket.owner);
@@ -559,6 +571,30 @@ class org.flashNight.arki.item.CharacterBuildService {
         var c:Object=statCoordinator();if(c==null) return false;
         var ticket:Object=c.equipmentTransition();
         return ticket!=null && (ticket.status=="started" || ticket.actor.__playerStatInitPlan.failed===true);
+    }
+    /** 仅在完整校验本次换装请求后调用；pending/未知写和生命周期尾部不走此入口。 */
+    private static function prepareEquipmentMutationRecovery():Boolean {
+        var c:Object=statCoordinator();
+        if(_statTicket!=null && (c==null || _statTicket.context!==c.contextToken()
+                || _statTicket!==c.equipmentTransition())) return false;
+        var recovery:Object=_equipmentRecoveryResources;
+        if(recovery!=null && (c==null || recovery.context!==c.contextToken()
+                || recovery.actor!==root().gameworld[root().控制目标]
+                || recovery.body!==recovery.actor.__playerStatBody
+                || Number(recovery.actor.hp)!==recovery.resources.hp
+                || Number(recovery.actor.mp)!==recovery.resources.mp)) return false;
+        if(!equipmentRecoveryOpen()) return true;
+        var ticket:Object=c.equipmentTransition();
+        var plan:Object=ticket.actor.__playerStatInitPlan;
+        if(ticket!==_statTicket || ticket.status!="started" || !equipmentProofCurrent(ticket.proof)
+                || plan.ticket!==ticket || plan.failed!==true || plan.open!=0
+                || plan.stage!="prepare_numeric" || plan.tailCheckpoint!=undefined) return false;
+        var resources:Object=c.fullRecoveryResources(ticket,ticket.owner);
+        if(resources==null || !c.abortEquipmentTransition(ticket,ticket.owner)) return false;
+        _equipmentRecoveryResources={context:c.contextToken(),actor:ticket.actor,
+            body:ticket.actor.__playerStatBody,resources:resources};
+        _statTicket=null;
+        return true;
     }
     private static function equipmentProofCurrent(proof:Object):Boolean {
         var c:Object=statCoordinator();
@@ -1419,11 +1455,9 @@ class org.flashNight.arki.item.CharacterBuildService {
         if (r.存档系统 == null) return fail("service_not_ready");
 
         if (commandName == "equipEquipment") {
-            if(equipmentRecoveryOpen()) return fail("write_busy");
             return mutateEquipEquipment(params);
         }
         if (commandName == "unequipEquipment") {
-            if(equipmentRecoveryOpen()) return fail("write_busy");
             return mutateUnequipEquipment(params);
         }
         if (commandName == "equipDrug") {
@@ -1487,6 +1521,7 @@ class org.flashNight.arki.item.CharacterBuildService {
             stackBefore:stackMerge ? Number(targetBefore.value) : 0,
             stackAfter:stackMerge ? Number(merge.value) : 0
         };
+        if (!prepareEquipmentMutationRecovery()) return fail("write_busy");
         var transaction:Object = executeTwoSlotTransaction(plan);
         if (!transaction.success) return transaction.result;
         return commitEquipmentMutation(
@@ -1530,6 +1565,7 @@ class org.flashNight.arki.item.CharacterBuildService {
             stackBefore:stackMerge ? Number(targetBefore.value) : 0,
             stackAfter:stackMerge ? Number(destination.value) : 0
         };
+        if (!prepareEquipmentMutationRecovery()) return fail("write_busy");
         var transaction:Object = executeTwoSlotTransaction(plan);
         if (!transaction.success) return transaction.result;
         return commitEquipmentMutation(
@@ -1817,6 +1853,13 @@ class org.flashNight.arki.item.CharacterBuildService {
         _liveSignature = scan.liveSignature;
         _loadoutRevision++;
         _liveRefreshDirty = true;
+        // 库存已提交后才解除火凤契约；同面板 A -> 空 -> A 也必须付出重新复活的代价。
+        // 表现通知故障不能让已经提交的双槽写被误报成未执行。
+        try {
+            org.flashNight.arki.unit.Action.Huofeng.HuofengRunState.onEquipmentCommitted(
+                root(),String(plan.source===_equipmentInventory ? plan.sourceSlot : plan.targetSlot),
+                plan.source===_equipmentInventory ? plan.sourceBefore : plan.targetBefore);
+        } catch (huofengEquipmentError) {trace("[Huofeng] committed equipment invalidation failed");}
         markSaveDirty();
         declareEquipmentProjection();
         invalidateBackpackSlot(backpackSlot);
@@ -3488,6 +3531,7 @@ class org.flashNight.arki.item.CharacterBuildService {
     private static function clearSession():Void {
         if(_modeFinalizeWait!=null) retireModeFinalization(_modeFinalizeWait);
         _statTicket=null;
+        _equipmentRecoveryResources=null;
         _appearanceProjectionEnabled = false;
         _sessionGeneration = 0;
         _active = false;

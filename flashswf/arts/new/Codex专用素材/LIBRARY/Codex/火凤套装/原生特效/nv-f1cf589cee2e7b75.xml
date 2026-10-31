@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/原生特效/nv-f1cf589cee2e7b75" itemID="78f00000-c681f172">
+  <timeline>
+    <DOMTimeline name="nv-f1cf589cee2e7b75">
+      <layers>
+        <DOMLayer name="图层_1">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.130157470703125" d="0.130157470703125" tx="91.2" ty="91.8" />
+                        </matrix>
+                        <GradientEntry color="#FF6600" alpha="0" ratio="0.317647058823529" />
+                        <GradientEntry color="#FF6600" ratio="1" />
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1840 3680[1077 3680 537 3140!537 3140[0 2602 0 1840!0 1840[0 1077 537 537!537 537[1077 0 1840 0!1840 0[2602 0 3140 537!3140 537[3680 1077 3680 1840!3680 1840[3680 2602 3140 3140!3140 3140[2602 3680 1840 3680" />
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

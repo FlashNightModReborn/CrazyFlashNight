@@ -153,7 +153,7 @@ class org.flashNight.arki.component.Damage.DamageCalculator {
 
         // 计算子弹基础破坏力：子弹威力加上射手的伤害加成
         // 使用 (shooter.伤害加成 | 0) 来确保伤害加成为整数（按位或操作符会隐式转换非数值为0）
-        bullet.破坏力 = bullet.子弹威力 + (shooter.伤害加成 | 0);
+        bullet.破坏力 = bullet.子弹威力 + (bullet.__huofengFinalPower === true ? 0 : (bullet.__huofengDamageSnapshot != undefined ? bullet.__huofengDamageSnapshot : (shooter.伤害加成 | 0)));
         
         // 伤害波动：破坏力在 0.85~1.15 倍之间随机波动
         var damageVariance:Number = bullet.破坏力 * PinkNoiseEngine.instance.randomFluctuation(15);

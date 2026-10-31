@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/原生特效/nv-904a63badec836f7" itemID="78f00000-4794f551">
+  <timeline>
+    <DOMTimeline name="nv-904a63badec836f7">
+      <layers>
+        <DOMLayer name="图层_2">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="代码_判定">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_211">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/原生特效/nv-cb3398aa56fc40ef" blendMode="add" centerPoint3DX="2.55" centerPoint3DY="-9.6" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="2.50238037109375" d="1.67984008789062" tx="-238.9" ty="-171.7" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_181">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/原生特效/nv-2f32c3e36a90d5c4" centerPoint3DX="0.6" centerPoint3DY="-21.45" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.26483154296875" b="-0.0011444091796875" c="0.0018157958984375" d="0.248626708984375" tx="-114.95" ty="-50.45" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="0" />
+                    <AdjustColorFilter brightness="-77" contrast="2" saturation="-83" hue="-70" />
+                  </filters>
+                  <color>
+                    <Color redOffset="180" greenOffset="66" />
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_179">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_177">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_175">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_173">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_171">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_169">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/原生特效/nv-050ed50b03a0f02f" centerPoint3DX="-5.7" centerPoint3DY="-11.1" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.819732666015625" b="0.043060302734375" c="-0.0453338623046875" d="0.819610595703125" tx="-6.8" ty="9.15" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter color="#FFCC00" />
+                    <GlowFilter blurX="8" blurY="8" strength="1.2" />
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_167">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层_3">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

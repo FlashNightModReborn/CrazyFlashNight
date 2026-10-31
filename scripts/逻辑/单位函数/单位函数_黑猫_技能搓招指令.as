@@ -15,7 +15,7 @@
  *
  * 生效范围：
  *   - 只挂在「冷兵器攻击」的后摇窗口上（兵器攻击容器的 冷兵器攻击搓招 被本文件包一层）
- *   - 只认 攻击模式 == "兵器" 的控制目标，空手 / 长枪 / 双枪 / 手雷 模式不参与
+ *   - 控制目标的兵器模式或火凤五件套链锤可用；其余空手 / 长枪 / 双枪 / 手雷不参与
  *   - 技能名必须与 skills.xml 一致，否则 SkillReleaseGuard 查不到会静默失败
  *
  * 释放通道（QuickSkillInputService.releaseBySkillName，双通道）：
@@ -203,7 +203,7 @@ _root.技能函数.冷兵器主动技能搓招 = function(自机:MovieClip, 窗�
 	// 模式门。武器类招式（平A / 冷兵器招式）要求「兵器」模式；
 	// 技能容器末帧来的那次显式放行 —— 技能由 状态改变("技能") 进入，
 	// 攻击模式仍是兵器，但个别技能会改写模式，且被动技能根本不需要持刀。
-	if (自机.攻击模式 != "兵器" && 技能末帧 !== true) return 0;
+	if (!org.flashNight.arki.unit.Action.Huofeng.HuofengRules.coldMode(自机) && 技能末帧 !== true) return 0;
 
 	// 预输入窗口：默认沿用平A后摇的 黑猫预输入帧数；
 	// 招式容器末帧可传更大的窗口（招式演出可能比平A一段长得多）。
@@ -466,7 +466,7 @@ _root.技能函数._屏蔽本帧状态改变 = function(自机:MovieClip):Void {
 _root.技能函数._末帧技能搓招 = function(man:MovieClip, 自机:MovieClip):Boolean {
 	if (自机 == undefined || 自机 == null) return false;
 	if (自机._name != _root.控制目标) return false;
-	if (自机.攻击模式 != "兵器") return false;
+	if (!org.flashNight.arki.unit.Action.Huofeng.HuofengRules.coldMode(自机)) return false;
 	if (自机.倒地) return false;
 
 	// 技能释放会 状态改变("技能") 卸载旧容器；先压掉旧容器的 onUnload，
@@ -638,8 +638,8 @@ _root.技能函数.冷技能_HUD等级 = [];
 // 显示闸门：只有真正处在冷兵器战斗状态时才显示第二排额外技能栏。
 _root.技能函数._冷技能面板可显示 = function(单位:Object):Boolean {
 	if (单位 == null) return false;
-	if (单位.攻击模式 != "兵器") return false;
-	if (单位.刀 == null) return false;
+	if (!org.flashNight.arki.unit.Action.Huofeng.HuofengRules.coldMode(单位)) return false;
+	if (!org.flashNight.arki.unit.Action.Huofeng.HuofengRules.profileActive(单位) && 单位.刀 == null) return false;
 	if (单位.倒地 == true) return false;
 	return true;
 };

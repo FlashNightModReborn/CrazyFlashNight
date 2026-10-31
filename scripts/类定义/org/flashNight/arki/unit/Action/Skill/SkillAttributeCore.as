@@ -61,6 +61,11 @@ class org.flashNight.arki.unit.Action.Skill.SkillAttributeCore {
      * }
      */
     public static function transferWeaponAttributes(unit:MovieClip, bullet:Object):Void {
+        if (org.flashNight.arki.unit.Action.Huofeng.HuofengNative.ownsColdAction(unit)) {
+            org.flashNight.arki.unit.Action.Huofeng.HuofengCombat.primaryAttributes(unit, bullet);
+            org.flashNight.arki.unit.Action.Huofeng.HuofengNative.prepareBullet(unit, bullet);
+            return;
+        }
         // 传递伤害类型（如"物理"、"魔法"等）
         if (unit.兵器伤害类型) {
             bullet.伤害类型 = unit.兵器伤害类型;

@@ -183,7 +183,8 @@ sets.forEach((group) => {
             if (seenComponents.has(effectId + ':' + componentId)) fail(context + ': duplicate gated component');
             seenComponents.add(effectId + ':' + componentId);
             if (!xmlText(xmlBlock(raw, 'init'), 'initRoutines')) fail(context + ': gated component requires initRoutines');
-            if (!xmlText(xmlBlock(raw, 'cycle'), 'cycleRoutines')) fail(context + ': gated component requires cycleRoutines');
+            // READY_STATIC components need only initialization; a declared cycle must be usable.
+            if (/<cycle\b/.test(raw) && !xmlText(xmlBlock(raw, 'cycle'), 'cycleRoutines')) fail(context + ': declared cycle requires cycleRoutines');
         });
     });
 

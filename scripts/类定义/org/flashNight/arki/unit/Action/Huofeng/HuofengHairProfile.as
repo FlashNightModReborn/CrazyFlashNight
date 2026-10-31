@@ -1,0 +1,3 @@
+﻿class org.flashNight.arki.unit.Action.Huofeng.HuofengHairProfile {
+    public static function hair():Object { return {helmet: "HF8/Hair/Front", upper: "HF8/Hair/BackUpper", tail: "HF8/Hair/BackTail", backToHead: [-0.9534276440432712, -0.10938534476823622, -0.10938534476823622, 0.9534276440432712, -28.983013648081673, 73.15799612988988], tailPivot: [0, 0], maxTailRadians: 0.15707963267948966, lagSeconds: 0.11, upperOverlap: 22, sourceHeadSymbol: "Symbol 495", sourceBackSymbol: "Symbol 483", geometryRevision: "R9 original Boss contours with local volume fitting", playerFaceChanged: false, headFit: [1, 0, 0, 1, 0, 0]}; }
+}

@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/装扮/女变装-火凤下装右大腿" itemID="78f00000-60c4f0c9" linkageExportForAS="true" linkageExportInFirstFrame="true" linkageIdentifier="女变装-火凤下装右大腿">
+  <timeline>
+    <DOMTimeline name="女变装-火凤下装右大腿">
+      <layers>
+        <DOMLayer name="Artwork">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/原生底模/右大腿" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.998077" b="0" c="0" d="1.000641" tx="0.15" ty="-0.05" />
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/R2画稿/a14__元件" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

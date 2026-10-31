@@ -54,6 +54,19 @@ class org.flashNight.arki.item.CharacterBuildProductionLifecycleTest {
                 DepthManager.instance.dispose();world.removeMovieClip();
                 setup();runModeWaitCase(modes[i]);
             }
+            var recoveryCases:Array=["floor","unequip","swap","resources","identity","corrected_resources","spawn_floor","spawn_bad_seed"];
+            for(i=0;i<recoveryCases.length;i++) {
+                CharacterBuildService.testOnlyReset();
+                coordinator.resetContext(null,"fixture_between_cases",null);
+                DepthManager.instance.dispose();world.removeMovieClip();
+                setup();
+                org.flashNight.arki.item.CharacterBuildHpRecoveryTest.runCase(recoveryCases[i],org.flashNight.arki.item.CharacterBuildProductionLifecycleTest);
+            }
+            CharacterBuildService.testOnlyReset();
+            coordinator.resetContext(null,"fixture_between_cases",null);
+            DepthManager.instance.dispose();world.removeMovieClip();
+            setup();
+            org.flashNight.arki.unit.Action.Huofeng.HuofengEquipmentResetTest.runCase(org.flashNight.arki.item.CharacterBuildProductionLifecycleTest);
         }
         catch(error) {diagnostic("exception",{error:String(error.message==undefined ? error : error.message)});check(false,"exception in "+phase);}
         finally {

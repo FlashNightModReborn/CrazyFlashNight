@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/原生特效/nv-af3012c7796cafdb" itemID="78f00000-f864630d">
+  <timeline>
+    <DOMTimeline name="nv-af3012c7796cafdb">
+      <layers>
+        <DOMLayer name="图层_2">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_1">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/原生特效/nv-df5a66e6dccffbca" centerPoint3DX="1.45" centerPoint3DY="-43.15" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix tx="-14.75" ty="-46.2" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter brightness="50" hue="20" />
+                    <BlurFilter blurX="0" blurY="10" />
+                    <GlowFilter blurX="15" blurY="15" color="#FF6600" />
+                  </filters>
+                  <color>
+                    <Color alphaMultiplier="0.8515625" />
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

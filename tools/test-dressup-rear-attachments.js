@@ -1,0 +1,27 @@
+'use strict';
+const fs=require('fs'),path=require('path'),vm=require('vm'),assert=require('assert');
+const root=path.resolve(__dirname,'..'),draws=[],transforms=[];
+class Image {constructor(){this.complete=true;this.naturalWidth=10;this.naturalHeight=10;} set src(s){this._src=s;}get src(){return this._src;}}
+const ctx=new Proxy({drawImage:i=>draws.push(i.src.split('/').pop()),transform:(...m)=>transforms.push(m)}, {get:(t,k)=>t[k]||(()=>{})});
+const canvas={width:320,height:480,clientWidth:320,clientHeight:480,getBoundingClientRect:()=>({width:320,height:480}),getContext:()=>ctx};
+const sandbox={console,Image,URL,document:{baseURI:'http://example.test/'},window:{devicePixelRatio:1,performance:{now:()=>0},requestAnimationFrame:()=>1,cancelAnimationFrame:()=>{}}};
+vm.createContext(sandbox);
+for(const f of ['asset-timeline.js','dressup-doll-renderer.js'])vm.runInContext(fs.readFileSync(path.join(root,'launcher/web/modules',f),'utf8'),sandbox);
+const makeSkin=n=>({covered:true,export:{zoom:1,frameCount:1,playback:'static'},frames:[{uri:n+'.png',width:10,height:10,originX:5,originY:5}]});
+const attachment={skinKey:'rear',anchorField:'面具',requiredKeys:{'面具':'front','身体':'body'},matrix:{a:-1,b:0,c:0,d:1,tx:3,ty:7}};
+const manifest={__baseUrl:'http://example.test/manifest.json',items:{head:{use:'头部装备',fieldsByGender:{'女':{'面具':'front'}},rearAttachments:[attachment]},chest:{use:'上装装备',fieldsByGender:{'女':{'身体':'body'}}}},skinKeys:{front:makeSkin('front'),body:makeSkin('body'),rear:makeSkin('rear')},rig:{genders:{'女':{holders:[{field:'身体',matrix:{a:1,d:1,tx:0,ty:0}},{field:'面具',matrix:{a:2,b:0,c:0,d:3,tx:10,ty:20}}]}}}};
+const api=sandbox.DressupDollRenderer,build=(equipment,extra={})=>api.buildStateFromEquipment(manifest,{gender:'女',equipment,...extra});
+const renderer=api.create(canvas,{manifest,animate:false});
+const full=build({'头部装备':'head','上装装备':'chest'});
+assert.strictEqual(full.rearAttachments.length,1);
+let result=renderer.render(full);
+assert.deepStrictEqual(draws,['rear.png','body.png','front.png']);
+assert(transforms.some(m=>JSON.stringify(m)===JSON.stringify([-2,0,0,3,16,41])),'rear uses full native anchor transform');
+assert.strictEqual(result.rearAttachments,1);
+assert(!build({'头部装备':'head'}).rearAttachments,'partial equipment cannot borrow full-set attachment');
+assert(!build({'上装装备':'chest'}).rearAttachments,'unequip removes owned rear part');
+assert(!build({'头部装备':'head','上装装备':'chest'},{equipmentAppearance:{'头部装备':{dressup:'different'}}}).rearAttachments,'effective appearance override suppresses stale metadata');
+assert.strictEqual(build({'头部装备':'head','上装装备':'chest'},{equipmentAppearance:{'头部装备':{dressup:'front'}}}).rearAttachments.length,1,'same resolved appearance retains native rear parts');
+draws.length=0;renderer.render(build({'上装装备':'chest'}));assert(!draws.includes('rear.png'),'render after unequip retains no old part');
+delete manifest.skinKeys.rear;result=renderer.render(full);assert.strictEqual(result.missing,1,'missing attachment is reported');
+renderer.destroy();console.log('PASS rear attachments: paint order, exact mirrored transform, set gate, appearance override, unequip, missing asset');

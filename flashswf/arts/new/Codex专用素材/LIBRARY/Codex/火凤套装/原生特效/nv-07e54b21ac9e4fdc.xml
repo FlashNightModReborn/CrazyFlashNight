@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/原生特效/nv-07e54b21ac9e4fdc" itemID="78f00000-523074f3">
+  <timeline>
+    <DOMTimeline name="nv-07e54b21ac9e4fdc">
+      <layers>
+        <DOMLayer name="图层_8">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/原生特效/nv-f1cf589cee2e7b75" selected="true" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix tx="170.75" ty="170.75" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="92" y="92" />
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="19" blurY="19" />
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

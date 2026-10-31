@@ -78,6 +78,7 @@ class org.flashNight.arki.unit.Action.Skill.SkillDamageCore {
      * var finalDamage:Number = baseDamage * multiplier;
      */
     public static function getSkillMultiplier(unit:MovieClip, skillName:String):Number {
+        if (org.flashNight.arki.unit.Action.Huofeng.HuofengNative.ownsColdAction(unit)) return 1;
         // 默认乘数为1（无加成）
         var defaultMultiplier:Number = 1;
 

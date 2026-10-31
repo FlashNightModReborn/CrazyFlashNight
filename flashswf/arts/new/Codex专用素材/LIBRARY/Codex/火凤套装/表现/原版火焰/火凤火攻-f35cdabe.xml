@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/表现/原版火焰/火凤火攻-f35cdabe" itemID="78f20000-269daaa0" lastModified="1762656305" lastUniqueIdentifier="1" linkageExportForAS="true" linkageExportInFirstFrame="true" linkageIdentifier="火凤套装_原版火攻">
+  <timeline>
+    <DOMTimeline name="火凤火攻-f35cdabe">
+      <layers>
+        <DOMLayer name="表现时钟">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <Actionscript>
+                <script>stop();</script>
+              </Actionscript>
+              <elements />
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 1" color="#5CFA34">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/表现/原版火焰/Symbol 274-a36c4b8f" centerPoint3DX="3.25" centerPoint3DY="-34.1">
+                  <matrix>
+                    <Matrix a="1.10826110839844" d="1.10826110839844" tx="-41.65" ty="-63.35" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="28" blurY="6" strength="1.5" />
+                  </filters>
+                  <color>
+                    <Color alphaOffset="9" redOffset="246" blueOffset="-255" greenOffset="6" />
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/表现/原版火焰/Symbol 276-2e47cfd3" centerPoint3DX="-3.55" centerPoint3DY="-50.75">
+                  <matrix>
+                    <Matrix a="1.10826110839844" d="1.10826110839844" tx="-63.85" ty="-97" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="28" blurY="6" strength="1.5" />
+                  </filters>
+                  <color>
+                    <Color alphaOffset="9" redOffset="246" blueOffset="-255" greenOffset="29" />
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/表现/原版火焰/Symbol 278-a005d068" centerPoint3DX="1.15" centerPoint3DY="-69.7">
+                  <matrix>
+                    <Matrix a="1.10826110839844" d="1.10826110839844" tx="-70.95" ty="-127.05" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="28" blurY="6" strength="1.5" />
+                  </filters>
+                  <color>
+                    <Color alphaOffset="9" redOffset="246" blueOffset="-255" greenOffset="29" />
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/表现/原版火焰/Symbol 280-6de1f0ff" centerPoint3DX="7.55" centerPoint3DY="-84.35">
+                  <matrix>
+                    <Matrix a="1.10826110839844" d="1.10826110839844" tx="-73.25" ty="-153.75" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="28" blurY="6" strength="1.5" />
+                  </filters>
+                  <color>
+                    <Color alphaOffset="9" redOffset="246" blueOffset="-255" greenOffset="29" />
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/表现/原版火焰/Symbol 282-f358e82b" centerPoint3DX="4.55" centerPoint3DY="-87.4">
+                  <matrix>
+                    <Matrix a="1.10826110839844" d="1.10826110839844" tx="-85.8" ty="-159.35" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="28" blurY="6" strength="1.5" />
+                  </filters>
+                  <color>
+                    <Color alphaOffset="9" redOffset="246" blueOffset="-255" greenOffset="29" />
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/表现/原版火焰/Symbol 284-485f2d6d" centerPoint3DX="4.4" centerPoint3DY="-86.3">
+                  <matrix>
+                    <Matrix a="1.10826110839844" d="1.10826110839844" tx="-88.35" ty="-161" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="28" blurY="6" strength="1.5" />
+                  </filters>
+                  <color>
+                    <Color alphaOffset="9" redOffset="246" blueOffset="-255" greenOffset="29" />
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

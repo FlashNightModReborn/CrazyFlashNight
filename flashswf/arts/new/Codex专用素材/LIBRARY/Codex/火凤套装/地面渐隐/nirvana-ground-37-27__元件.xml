@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/地面渐隐/nirvana-ground-37-27__元件" itemID="78f00000-9b84c165">
+  <timeline>
+    <DOMTimeline name="nirvana-ground-37-27__元件">
+      <layers>
+        <DOMLayer name="Artwork">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <Actionscript>
+                <script>stop();
+// The child timeline must be placed before measuring its native bounds.
+onEnterFrame = function() {
+var bounds = this.art.getBounds(this);
+if (!(bounds.xMax &gt; bounds.xMin) || !(bounds.yMax &gt; bounds.yMin)) return;
+var fade = createEmptyMovieClip("fade", 10);
+var gradient = new flash.geom.Matrix();
+gradient.createGradientBox(1, 100, Math.PI / 2, 0, 30);
+fade.beginGradientFill("linear", [0xFFFFFF, 0xFFFFFF], [100, 0], [0, 255], gradient);
+fade.moveTo(bounds.xMin, bounds.yMin);
+fade.lineTo(bounds.xMax, bounds.yMin);
+fade.lineTo(bounds.xMax, Math.min(130, bounds.yMax));
+fade.lineTo(bounds.xMin, Math.min(130, bounds.yMax));
+fade.endFill();
+this.art.cacheAsBitmap = true;
+fade.cacheAsBitmap = true;
+this.art.setMask(fade);
+delete this.onEnterFrame;
+};
+</script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/地面渐隐/nirvana-ground-37-27/art" symbolType="movie clip" name="art">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

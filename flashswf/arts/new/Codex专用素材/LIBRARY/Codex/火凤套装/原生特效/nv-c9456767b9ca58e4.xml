@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/原生特效/nv-c9456767b9ca58e4" itemID="78f00000-85f4311a">
+  <timeline>
+    <DOMTimeline name="nv-c9456767b9ca58e4">
+      <layers>
+        <DOMLayer name="Layer_165">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/原生特效/nv-e5546a2dcb401486" centerPoint3DX="220.4" centerPoint3DY="84.9" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.310882568359375" d="0.396514892578125" tx="203.9" ty="115.85" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer_163">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/原生特效/nv-f7e5e530053a4a3a" centerPoint3DX="202.3" centerPoint3DY="88.75" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-2.32504272460938" b="2.847356130573718e-16" c="1.289993934410691e-16" d="2.10671997070312" tx="404.55" ty="11.275" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                  <color>
+                    <Color redOffset="127.5" blueOffset="-127.5" greenOffset="60.0" />
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

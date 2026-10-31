@@ -107,7 +107,8 @@ var DressupDollRenderer = (function() {
         var use = item ? item.use : slot === '手枪2' ? '手枪' : slot;
         fields[gender] = appearanceFields(use, appearance, gender);
         return {use:use, fieldsByGender:fields,
-            helmet:appearance.helmet === true, hairAbove:appearance.hairAbove === true};
+            helmet:appearance.helmet === true, hairAbove:appearance.hairAbove === true,
+            rearAttachments:item && item.rearAttachments};
     }
 
     // 武器槽位 → 该槽允许贡献的装扮字段（对齐 AS2 DressupInitializer 的逐槽赋值、
@@ -148,12 +149,14 @@ var DressupDollRenderer = (function() {
         var keyMap = {};
         var equipment = options.equipment || {};
         var equipmentAppearance = options.equipmentAppearance || {};
+        var rearAttachments = [];
         Object.keys(equipment).forEach(function(slot) {
             var itemName = equipment[slot];
             var item = resolvedEquipmentItem(manifest, itemName,
                 equipmentAppearance[slot], gender, slot);
             if (item && item.fieldsByGender) {
                 mergeEquipmentFields(keyMap, slot, item, gender);
+                (item.rearAttachments || []).forEach(function(part) { rearAttachments.push(part); });
             }
         });
         mergeFields(keyMap, options.appearance);
@@ -162,6 +165,13 @@ var DressupDollRenderer = (function() {
             gender: gender,
             keyMap: keyMap
         };
+        var activeRear = rearAttachments.filter(function(part) {
+            var required = part.requiredKeys || {};
+            return Object.keys(required).length > 0 && Object.keys(required).every(function(field) {
+                return keyMap[field] === required[field];
+            });
+        });
+        if (activeRear.length) state.rearAttachments = activeRear;
         // 逐件层级标记：当前头部装备在 manifest 声明 hairAbove=true 时
         // 钉住 脸型<面具<发型（发型压面具），否则 脸型<发型<面具（历史顺序）。
         // render() 只在 state 显式携带布尔值时重排，raw state 保持 rig 烘焙顺序。
@@ -979,6 +989,22 @@ var DressupDollRenderer = (function() {
                 });
                 ctx.restore();
             }
+            // Native equipment may place hair/skirt behind the whole body. These
+            // static, declared parts follow the current holder, never a guessed
+            // pose or screen-space offset. They do not affect the body camera.
+            var rearDrawn = 0;
+            (lastState.rearAttachments || []).forEach(function(part) {
+                var anchor = drawHolders.filter(function(holder) { return holder.field === part.anchorField; })[0];
+                var entry = manifest.skinKeys && manifest.skinKeys[part.skinKey];
+                if (!anchor) return;
+                if (!entry || !entry.export) { missing++; return; }
+                var renderable = renderableForHolder(anchor, manifest, lastState.keyMap, stateContext);
+                if (!renderable.entry) return;
+                var layer = Object.create(entry);
+                layer.matrix = multiplyMatrix(matrixForRenderable(anchor, renderable), matrixFrom(part.matrix));
+                drawLayer(layer, nowMs, '');
+                rearDrawn++;
+            });
             drawHolders.forEach(function(holder) {
                 var renderable = renderableForHolder(holder, manifest, lastState.keyMap, stateContext);
                 if (!renderable.entry) {
@@ -1046,6 +1072,7 @@ var DressupDollRenderer = (function() {
                 pendingImages: pendingImages,
                 failedImages: failedImages,
                 drawnImages: drawnImages,
+                rearAttachments: rearDrawn,
                 expressionRequests: expressionRequests,
                 expressions: expressionSelections,
                 expressionsUnmatched: expressionsUnmatched

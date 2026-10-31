@@ -189,6 +189,7 @@ def catalog():
             icon_names.discard("")
             icon_names.discard(None)
             skin_keys = sorted({value for fields in appearance.get("fieldsByGender", {}).values() for value in fields.values() if value})
+            skin_keys = sorted(set(skin_keys) | set(appearance.get("auxiliarySkinKeys", [])))
             links = ["图标-" + key for key in sorted(icon_names)] + skin_keys
             missing_sources = [key for key in links if key not in sources and key not in conflicts]
             collision = [key for key in links if key in conflicts]
@@ -447,6 +448,7 @@ def run(job_id: str):
             input_paths = {MAP, row["sourceFile"], "data/items/list.xml", "tools/asset_timeline_export.py",
                            "tools/bake-icons-offline.py", "tools/bake-dressup-offline.py", "tools/asset-workbench/core.py",
                            "tools/ffdec/ffdec.jar", "tools/ffdec/ffdec.bat"} | set(row["libraries"])
+            input_paths.update(module("bake-dressup-offline").presentation_input_paths(ROOT))
             baseline = snapshot({ICONS + "/manifest.json", DRESS + "/manifest.json", DRESS + "/report.json", MAP})
             inputs = snapshot(input_paths)
             if source_map_path() != ROOT / MAP:

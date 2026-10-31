@@ -1,0 +1,6 @@
+﻿trace("FocusedTestRunId huofeng-contract Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.component.Damage.UniversalDamageHandleTest.runTests();
+org.flashNight.arki.component.Damage.DamageHandlersTest.runTests();
+trace("HuofengStandardDamage Complete");
+org.flashNight.arki.unit.Action.Huofeng.HuofengContractTest.runAllTests();
+trace("FocusedTestRunId huofeng-contract Complete: __FOCUSED_RUN_ID__");

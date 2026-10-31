@@ -97,6 +97,10 @@ _root.兵器攻击路由.主角普攻连招开始 = function(unit:MovieClip):Voi
  * @param actionName:String 招式名（例如 "剑气释放"）
  */
 _root.兵器攻击路由.兵器攻击标签跳转 = function(unit:MovieClip, actionName:String):Void {
+    if (org.flashNight.arki.unit.Action.Huofeng.HuofengRules.profileActive(unit)) {
+        if (!org.flashNight.arki.unit.Action.Huofeng.HuofengInput.allowedPassive(actionName)) return;
+        unit.__huofeng.cancelAction(false);
+    }
     unit.兵器攻击名 = actionName;
     // 同帧跳转保护：搓招已触发新容器后，跳过旧容器本帧剩余的变招/后摇判定。
     RoutingIntent.markWeaponSameFrameJump(unit, _root.帧计时器.当前帧数);

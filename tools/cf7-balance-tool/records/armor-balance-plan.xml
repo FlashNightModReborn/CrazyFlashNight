@@ -727,6 +727,37 @@
     <record itemName="余烬-“廉价筹码”" sourceFile="data/items/防具_颈部装备.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="余烬队徽" sourceFile="data/items/防具_颈部装备.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
     <record itemName="九命猫妖项链" sourceFile="data/items/防具_颈部装备.xml" balanceMode="exception" status="unresolved" exceptionCode="legacy-off-formula" note="存量数值低于公式基线，待裁定改值或改层数口径" />
+    <record itemName="火凤头部装备" sourceFile="data/items/防具_20-39级.xml" weightLayers="2" priceLayers="0" category="0.5" damageTypeFactor="1" adoptedGoldPrice="33800" status="unresolved" note="26级火凤施工参数；Boss获取与新玩法共两层。火凤最终击败必掉5片，每件配方消耗5片、33800金币及通用材料；不另加合成层、不提升现有面板。金币价按26*2600*0.5机械投影，无商店入口；获取已闭合，胸甲40内力及专属动作、复活契约未纳入现役静态分数，保留未裁定状态，不据此标为平衡验收。">
+      <budgetBreakdown>
+        <entry code="acquisition.dungeon-drop" delta="1" ruleRef="ABR-LAYER-002" evidenceRef="data/crafting/基础防具.json#craft.basic-armor.034" />
+        <entry code="version-bonus" delta="1" ruleRef="ABR-LAYER-003" evidenceRef="tools/huofeng-set-assets/README.md" />
+      </budgetBreakdown>
+    </record>
+    <record itemName="火凤胸甲" sourceFile="data/items/防具_20-39级.xml" balanceMode="exception" exceptionCode="force-stat-unmodeled" weightLayers="2" priceLayers="0" category="0.5" damageTypeFactor="1" adoptedGoldPrice="33800" status="unresolved" note="现役静态分数未计40内力，分数比0.839633；保持已定参数，例外不代表平衡验收。26级火凤施工参数；Boss获取与新玩法共两层。火凤最终击败必掉5片，每件配方消耗5片、33800金币及通用材料；不另加合成层、不提升现有面板。金币价按26*2600*0.5机械投影，无商店入口；获取已闭合，胸甲40内力及专属动作、复活契约未纳入现役静态分数，保留未裁定状态，不据此标为平衡验收。">
+      <budgetBreakdown>
+        <entry code="acquisition.dungeon-drop" delta="1" ruleRef="ABR-LAYER-002" evidenceRef="data/crafting/基础防具.json#craft.basic-armor.035" />
+        <entry code="version-bonus" delta="1" ruleRef="ABR-LAYER-003" evidenceRef="tools/huofeng-set-assets/README.md" />
+      </budgetBreakdown>
+    </record>
+    <record itemName="火凤下装" sourceFile="data/items/防具_20-39级.xml" weightLayers="2" priceLayers="0" category="0.5" damageTypeFactor="1" adoptedGoldPrice="33800" status="unresolved" note="26级火凤施工参数；Boss获取与新玩法共两层。火凤最终击败必掉5片，每件配方消耗5片、33800金币及通用材料；不另加合成层、不提升现有面板。金币价按26*2600*0.5机械投影，无商店入口；获取已闭合，胸甲40内力及专属动作、复活契约未纳入现役静态分数，保留未裁定状态，不据此标为平衡验收。">
+      <budgetBreakdown>
+        <entry code="acquisition.dungeon-drop" delta="1" ruleRef="ABR-LAYER-002" evidenceRef="data/crafting/基础防具.json#craft.basic-armor.036" />
+        <entry code="version-bonus" delta="1" ruleRef="ABR-LAYER-003" evidenceRef="tools/huofeng-set-assets/README.md" />
+      </budgetBreakdown>
+    </record>
+    <record itemName="火凤手甲" sourceFile="data/items/防具_20-39级.xml" balanceMode="exception" exceptionCode="approved-set-stat-allocation" weightLayers="2" priceLayers="0" category="0.5" damageTypeFactor="1" adoptedGoldPrice="33800" status="unresolved" note="90冷兵器加成使单件分数比1.132897，超出5%带；保持已定的套装分配，例外不代表平衡验收。26级火凤施工参数；Boss获取与新玩法共两层。火凤最终击败必掉5片，每件配方消耗5片、33800金币及通用材料；不另加合成层、不提升现有面板。金币价按26*2600*0.5机械投影，无商店入口；获取已闭合，胸甲40内力及专属动作、复活契约未纳入现役静态分数，保留未裁定状态，不据此标为平衡验收。">
+      <budgetBreakdown>
+        <entry code="acquisition.dungeon-drop" delta="1" ruleRef="ABR-LAYER-002" evidenceRef="data/crafting/基础防具.json#craft.basic-armor.037" />
+        <entry code="version-bonus" delta="1" ruleRef="ABR-LAYER-003" evidenceRef="tools/huofeng-set-assets/README.md" />
+      </budgetBreakdown>
+    </record>
+    <record itemName="火凤战靴" sourceFile="data/items/防具_20-39级.xml" weightLayers="2" priceLayers="0" category="0.5" damageTypeFactor="1" adoptedGoldPrice="33800" status="unresolved" note="26级火凤施工参数；Boss获取与新玩法共两层。火凤最终击败必掉5片，每件配方消耗5片、33800金币及通用材料；不另加合成层、不提升现有面板。金币价按26*2600*0.5机械投影，无商店入口；获取已闭合，胸甲40内力及专属动作、复活契约未纳入现役静态分数，保留未裁定状态，不据此标为平衡验收。">
+      <budgetBreakdown>
+        <entry code="acquisition.dungeon-drop" delta="1" ruleRef="ABR-LAYER-002" evidenceRef="data/crafting/基础防具.json#craft.basic-armor.038" />
+        <entry code="version-bonus" delta="1" ruleRef="ABR-LAYER-003" evidenceRef="tools/huofeng-set-assets/README.md" />
+      </budgetBreakdown>
+    </record>
+
   <record itemName="统合61式头部装甲" sourceFile="data/items/防具_40+级.xml" weightLayers="3" priceLayers="1" category="1" damageTypeFactor="1" adoptedGoldPrice="170000" expectedKPointPrice="5400" kpointEvidenceRef="data/crafting/进阶防具.json#craft.unified61.helmet" status="confirmed" note="40级三加权候选：合成1+配方K点成本1+高价1；90kg整套，限制插件，不额外计40级浮动或减益层。公式通过不代表实战定档。">
     <budgetBreakdown>
       <entry code="acquisition.crafting" delta="1" ruleRef="ABR-LAYER-001" evidenceRef="data/crafting/进阶防具.json#craft.unified61.helmet"/>

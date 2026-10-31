@@ -17739,6 +17739,148 @@
       <note>存量数值低于公式基线，待裁定改值或改层数口径</note>
     </record>
     <record>
+      <auditRef>armor:火凤头部装备</auditRef>
+      <itemName>火凤头部装备</itemName>
+      <sourceFile>data/items/防具_20-39级.xml</sourceFile>
+      <weightLayers>2</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>0.5</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>33800</adoptedGoldPrice>
+      <status>unresolved</status>
+      <balanceMode>formula</balanceMode>
+      <marketPrice>33800</marketPrice>
+      <currentScore>794.84375</currentScore>
+      <balanceScore>525</balanceScore>
+      <weightedScore>820.3125</weightedScore>
+      <magicDefAvgCap>15.2</magicDefAvgCap>
+      <magicDefMaxCap>30.2</magicDefMaxCap>
+      <recommendedGoldPrice>33800</recommendedGoldPrice>
+      <recommendedKPointPrice>2340</recommendedKPointPrice>
+      <inputs level="26" defence="180" hp="80" mp="50" damage="25" weaponBonus="70" weight="0.5" punch="0" magicDefence="10" />
+      <budgetBreakdown>
+        <entry code="acquisition.dungeon-drop" delta="1" ruleRef="ABR-LAYER-002" evidenceRef="data/crafting/基础防具.json#craft.basic-armor.034" />
+        <entry code="version-bonus" delta="1" ruleRef="ABR-LAYER-003" evidenceRef="tools/huofeng-set-assets/README.md" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:67328cf9</inputDigest>
+      <sourceDigest>sha256:733af6132cb9cba997e30a0777593053a1157d4bb4a7570eb723aa2126ca2e82</sourceDigest>
+      <note>26级火凤施工参数；Boss获取与新玩法共两层。火凤最终击败必掉5片，每件配方消耗5片、33800金币及通用材料；不另加合成层、不提升现有面板。金币价按26*2600*0.5机械投影，无商店入口；获取已闭合，胸甲40内力及专属动作、复活契约未纳入现役静态分数，保留未裁定状态，不据此标为平衡验收。</note>
+    </record>
+    <record>
+      <auditRef>armor:火凤胸甲</auditRef>
+      <itemName>火凤胸甲</itemName>
+      <sourceFile>data/items/防具_20-39级.xml</sourceFile>
+      <weightLayers>2</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>0.5</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>33800</adoptedGoldPrice>
+      <status>unresolved</status>
+      <balanceMode>exception</balanceMode>
+      <exceptionCode>force-stat-unmodeled</exceptionCode>
+      <marketPrice>33800</marketPrice>
+      <currentScore>715</currentScore>
+      <balanceScore>545</balanceScore>
+      <weightedScore>851.5625</weightedScore>
+      <magicDefAvgCap>15.2</magicDefAvgCap>
+      <magicDefMaxCap>30.2</magicDefMaxCap>
+      <recommendedGoldPrice>33800</recommendedGoldPrice>
+      <recommendedKPointPrice>2340</recommendedKPointPrice>
+      <inputs level="26" defence="180" hp="110" mp="70" damage="15" weaponBonus="40" weight="2.5" punch="0" magicDefence="10" />
+      <budgetBreakdown>
+        <entry code="acquisition.dungeon-drop" delta="1" ruleRef="ABR-LAYER-002" evidenceRef="data/crafting/基础防具.json#craft.basic-armor.035" />
+        <entry code="version-bonus" delta="1" ruleRef="ABR-LAYER-003" evidenceRef="tools/huofeng-set-assets/README.md" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:55c01543</inputDigest>
+      <sourceDigest>sha256:9092cb3ce5140a20a50cc7e5b750c03f6d3f6f2d8dcb00d57b611409d6afaaee</sourceDigest>
+      <note>现役静态分数未计40内力，分数比0.839633；保持已定参数，例外不代表平衡验收。26级火凤施工参数；Boss获取与新玩法共两层。火凤最终击败必掉5片，每件配方消耗5片、33800金币及通用材料；不另加合成层、不提升现有面板。金币价按26*2600*0.5机械投影，无商店入口；获取已闭合，胸甲40内力及专属动作、复活契约未纳入现役静态分数，保留未裁定状态，不据此标为平衡验收。</note>
+    </record>
+    <record>
+      <auditRef>armor:火凤下装</auditRef>
+      <itemName>火凤下装</itemName>
+      <sourceFile>data/items/防具_20-39级.xml</sourceFile>
+      <weightLayers>2</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>0.5</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>33800</adoptedGoldPrice>
+      <status>unresolved</status>
+      <balanceMode>formula</balanceMode>
+      <marketPrice>33800</marketPrice>
+      <currentScore>815</currentScore>
+      <balanceScore>540</balanceScore>
+      <weightedScore>843.75</weightedScore>
+      <magicDefAvgCap>15.2</magicDefAvgCap>
+      <magicDefMaxCap>30.2</magicDefMaxCap>
+      <recommendedGoldPrice>33800</recommendedGoldPrice>
+      <recommendedKPointPrice>2340</recommendedKPointPrice>
+      <inputs level="26" defence="180" hp="100" mp="60" damage="25" weaponBonus="70" weight="2" punch="0" magicDefence="10" />
+      <budgetBreakdown>
+        <entry code="acquisition.dungeon-drop" delta="1" ruleRef="ABR-LAYER-002" evidenceRef="data/crafting/基础防具.json#craft.basic-armor.036" />
+        <entry code="version-bonus" delta="1" ruleRef="ABR-LAYER-003" evidenceRef="tools/huofeng-set-assets/README.md" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:3e596fac</inputDigest>
+      <sourceDigest>sha256:07ceaeef7e80f482f3517ef5e0f14f67ac157589cd70156138e6a74f5cb6c291</sourceDigest>
+      <note>26级火凤施工参数；Boss获取与新玩法共两层。火凤最终击败必掉5片，每件配方消耗5片、33800金币及通用材料；不另加合成层、不提升现有面板。金币价按26*2600*0.5机械投影，无商店入口；获取已闭合，胸甲40内力及专属动作、复活契约未纳入现役静态分数，保留未裁定状态，不据此标为平衡验收。</note>
+    </record>
+    <record>
+      <auditRef>armor:火凤手甲</auditRef>
+      <itemName>火凤手甲</itemName>
+      <sourceFile>data/items/防具_20-39级.xml</sourceFile>
+      <weightLayers>2</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>0.5</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>33800</adoptedGoldPrice>
+      <status>unresolved</status>
+      <balanceMode>exception</balanceMode>
+      <exceptionCode>approved-set-stat-allocation</exceptionCode>
+      <marketPrice>33800</marketPrice>
+      <currentScore>947.03125</currentScore>
+      <balanceScore>535</balanceScore>
+      <weightedScore>835.9375</weightedScore>
+      <magicDefAvgCap>15.2</magicDefAvgCap>
+      <magicDefMaxCap>30.2</magicDefMaxCap>
+      <recommendedGoldPrice>33800</recommendedGoldPrice>
+      <recommendedKPointPrice>2340</recommendedKPointPrice>
+      <inputs level="26" defence="170" hp="70" mp="60" damage="25" weaponBonus="90" weight="1.5" punch="0" magicDefence="10" />
+      <budgetBreakdown>
+        <entry code="acquisition.dungeon-drop" delta="1" ruleRef="ABR-LAYER-002" evidenceRef="data/crafting/基础防具.json#craft.basic-armor.037" />
+        <entry code="version-bonus" delta="1" ruleRef="ABR-LAYER-003" evidenceRef="tools/huofeng-set-assets/README.md" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:d8ac16a8</inputDigest>
+      <sourceDigest>sha256:7c9739e2f0be46ab5100b34f1a95b725f10df994a490f9832c884d4ec09329c3</sourceDigest>
+      <note>90冷兵器加成使单件分数比1.132897，超出5%带；保持已定的套装分配，例外不代表平衡验收。26级火凤施工参数；Boss获取与新玩法共两层。火凤最终击败必掉5片，每件配方消耗5片、33800金币及通用材料；不另加合成层、不提升现有面板。金币价按26*2600*0.5机械投影，无商店入口；获取已闭合，胸甲40内力及专属动作、复活契约未纳入现役静态分数，保留未裁定状态，不据此标为平衡验收。</note>
+    </record>
+    <record>
+      <auditRef>armor:火凤战靴</auditRef>
+      <itemName>火凤战靴</itemName>
+      <sourceFile>data/items/防具_20-39级.xml</sourceFile>
+      <weightLayers>2</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>0.5</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>33800</adoptedGoldPrice>
+      <status>unresolved</status>
+      <balanceMode>formula</balanceMode>
+      <marketPrice>33800</marketPrice>
+      <currentScore>797.03125</currentScore>
+      <balanceScore>535</balanceScore>
+      <weightedScore>835.9375</weightedScore>
+      <magicDefAvgCap>15.2</magicDefAvgCap>
+      <magicDefMaxCap>30.2</magicDefMaxCap>
+      <recommendedGoldPrice>33800</recommendedGoldPrice>
+      <recommendedKPointPrice>2340</recommendedKPointPrice>
+      <inputs level="26" defence="180" hp="90" mp="50" damage="25" weaponBonus="70" weight="1.5" punch="0" magicDefence="10" />
+      <budgetBreakdown>
+        <entry code="acquisition.dungeon-drop" delta="1" ruleRef="ABR-LAYER-002" evidenceRef="data/crafting/基础防具.json#craft.basic-armor.038" />
+        <entry code="version-bonus" delta="1" ruleRef="ABR-LAYER-003" evidenceRef="tools/huofeng-set-assets/README.md" />
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:1e9dcdab</inputDigest>
+      <sourceDigest>sha256:dc411a0a460221a81eb3d3799fd52cd75e61862c3f79b5ea61206fed729e4432</sourceDigest>
+      <note>26级火凤施工参数；Boss获取与新玩法共两层。火凤最终击败必掉5片，每件配方消耗5片、33800金币及通用材料；不另加合成层、不提升现有面板。金币价按26*2600*0.5机械投影，无商店入口；获取已闭合，胸甲40内力及专属动作、复活契约未纳入现役静态分数，保留未裁定状态，不据此标为平衡验收。</note>
+    </record>
+    <record>
       <auditRef>armor:统合61式头部装甲</auditRef>
       <itemName>统合61式头部装甲</itemName>
       <sourceFile>data/items/防具_40+级.xml</sourceFile>

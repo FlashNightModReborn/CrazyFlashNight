@@ -265,6 +265,8 @@ _root.帧计时器.发送DFA数据到Launcher = function():Void {
 _root.帧计时器.推断动作模组 = function(unit:Object):String {
     var state:String = unit.攻击模式;
 
+    if (state == "空手" && org.flashNight.arki.unit.Action.Huofeng.HuofengRules.profileActive(unit)) return "lightWeapon";
+
     // 空手模式 → barehand（最常见路径，最先判断并立即返回）
     if (state == "空手") {
         return "barehand";

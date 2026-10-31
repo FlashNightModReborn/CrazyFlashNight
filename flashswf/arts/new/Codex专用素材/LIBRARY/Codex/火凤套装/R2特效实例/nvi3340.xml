@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/R2特效实例/nvi3340" itemID="78f00000-443aff3d">
+  <timeline>
+    <DOMTimeline name="nvi3340">
+      <layers>
+        <DOMLayer name="Artwork">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/原生特效/nv-262abbcb243b64f7" centerPoint3DX="-434.7" centerPoint3DY="-233.8" firstFrame="0" loop="single frame" symbolType="graphic">
+                  <transformationPoint>
+                    <Point x="1.1" y="-15.3" />
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="15" blurY="15" color="#FF6600" inner="true" strength="1.3" />
+                    <GlowFilter blurX="15" blurY="15" color="#FF6600" strength="1.3" />
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

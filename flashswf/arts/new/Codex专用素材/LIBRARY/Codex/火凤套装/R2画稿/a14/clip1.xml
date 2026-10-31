@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/R2画稿/a14/clip1" itemID="78f00000-6dc694c4">
+  <timeline>
+    <DOMTimeline name="clip1">
+      <layers>
+        <DOMLayer name="Mask" layerType="mask">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#A40033" />
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!590 766|516 929[386 1177 216 1281|265 1386[403 1299 511 1147|572 1049|607 982|590 766" fillStyle0="1" />
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#0F0F0F" />
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!607 982|572 1049|511 1147[403 1299 265 1386[464 1433 562 1323|589 1285|590 1283|598 1271[621 1229 622 1155|622 1145|607 982" fillStyle0="1" />
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Masked artwork" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1" scaleMode="normal" caps="round" joints="round">
+                        <fill>
+                          <SolidColor color="#000000" />
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!340 -1175[356 -1040 334 -881|380 -690[522 -56 590 766|607 982|622 1145" strokeStyle="1" />
+                    <Edge edges="!265 1386|216 1281[-412 -68 -483 -414[-515 -575 -546 -690[-585 -834 -621 -906" strokeStyle="1" />
+                    <Edge edges="!590 766|516 929[386 1177 216 1281" strokeStyle="1" />
+                    <Edge edges="!607 982|572 1049|511 1147[403 1299 265 1386" strokeStyle="1" />
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

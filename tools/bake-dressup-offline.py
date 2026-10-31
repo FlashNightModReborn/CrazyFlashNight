@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from asset_timeline_export import FrameDedupeIndex, compressed_timeline_entries
+from dressup_attachments import attach_equipment_presentation, presentation_input_paths
 
 try:
     from PIL import Image
@@ -804,6 +805,7 @@ def load_items(project_root: Path, genders: tuple[str, ...]) -> tuple[dict[str, 
             for key in gender_fields.values():
                 add_skin(skin_keys, key, item["use"], name, item["sourceFile"])
     add_appearance_skin_keys(project_root, skin_keys)
+    attach_equipment_presentation(project_root, items, skin_keys, add_skin)
     return items, skin_keys
 
 

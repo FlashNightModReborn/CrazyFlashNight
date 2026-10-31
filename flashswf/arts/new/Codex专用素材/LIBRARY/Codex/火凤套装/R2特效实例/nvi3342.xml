@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/R2特效实例/nvi3342" itemID="78f00000-26d5ac0c">
+  <timeline>
+    <DOMTimeline name="nvi3342">
+      <layers>
+        <DOMLayer name="Artwork">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/原生特效/nv-ff205b7c2c2fbf91" centerPoint3DX="-423.2" centerPoint3DY="-155.1" firstFrame="0" loop="single frame" symbolType="graphic">
+                  <transformationPoint>
+                    <Point x="1.7" y="-28.75" />
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18" color="#FF0099" />
+                    <GlowFilter blurX="15" blurY="15" color="#FF6600" inner="true" strength="1.3" />
+                    <GlowFilter blurX="15" blurY="15" color="#FF6600" quality="2" strength="1.3" />
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" inner="true" strength="0" />
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0" />
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" inner="true" strength="0" />
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0" />
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" inner="true" strength="0" />
+                    <GlowFilter blurX="0" blurY="0" color="#FF6600" strength="0" />
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

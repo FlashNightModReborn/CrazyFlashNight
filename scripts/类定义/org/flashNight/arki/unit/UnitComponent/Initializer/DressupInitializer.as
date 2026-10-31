@@ -405,6 +405,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         var loner:Object = lonerContribution({被动技能:c.被动技能});
         c.hp满血值 += loner.hp; c.mp满血值 += loner.mp;
         c.伤害加成 += loner.damage; c.防御力 += loner.defense;
+        // 合法负 HP 装备可能耗尽常驻上限；先合计基础、装备、健身、经脉和被动再保底。
+        // 不改原装备加层，不结算当前 HP，也不把 NaN/Infinity 伪装成合法输出。
+        if (isFinite(Number(c.hp满血值)) && c.hp满血值 < 1) c.hp满血值 = 1;
         projectKnownModeInputs(target,c,input);
         SetEffectController.projectStaticResistance(target,c);
         var legacy:Object = null;
@@ -502,6 +505,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             key = weaponKeys[slot]+".power"; expected[key] = previewPersistentBase(target,key,value);
         }
         if (target.__crumbleCeilingLoss > 0) expected.hp满血值 = Math.max(1,expected.hp满血值-target.__crumbleCeilingLoss);
+        var huofengFactor:Number=Number(target.__huofengHpContract.factor);
+        if (huofengFactor==0.7 || huofengFactor==0.5) expected.hp满血值=Math.max(1,Math.floor(expected.hp满血值*huofengFactor));
         for (key in expected) if (!isFinite(Number(expected[key]))) throw new Error("stat_final_invalid:"+key);
         if (!(expected.hp满血值 > 0) || expected.mp满血值 < 0) throw new Error("stat_final_invalid:resources");
         return expected;
@@ -817,7 +822,11 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         }
 
         org.flashNight.arki.unit.PlayerStatRefreshCoordinator.validateSpawnResourceSeed(target);
-        if(isNaN(target.hp)) target.hp = target.hp满血值;
+        // 新单位尚未获得 current HP 时，装备小计可能在最终被动投影前低于零。
+        // 只约束首次资源种子，不改原始装备减益，也不修复已有负 HP/NaN 种子。
+        // checkSeed 已先验证已有资源；最终上限仍由 buildPersistentSnapshot 汇总后确定。
+        if(isNaN(target.hp)) target.hp = isFinite(Number(target.hp满血值))
+            ? Math.max(1,Number(target.hp满血值)) : target.hp满血值;
         if(isNaN(target.mp)) target.mp = target.mp满血值;
 
         // updateProperties 会整体替换魔法抗性及武器属性对象；先让仍在生效的路径 Buff
@@ -1316,6 +1325,7 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         // 冻结权威装备栏输入；后续 lifecycle 只能通过 RuntimeEquipmentProjection
         // 申请有所有权的运行态空槽借用，不能污染 CharacterBuild 的 canonical 判定。
         RuntimeEquipmentProjection.beginCanonical(target);
+        org.flashNight.arki.unit.Action.Huofeng.HuofengRunState.reconcileEquipment(target);
 
         // 更新装扮数据
         updateDressupKeys(target);

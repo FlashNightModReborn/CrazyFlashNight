@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/R2画稿/a14__元件" itemID="78f00000-14f05a00">
+  <timeline>
+    <DOMTimeline name="a14__元件">
+      <layers>
+        <DOMLayer name="Artwork">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#A40033" />
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-580 748|-597 953|-563 1017|-505 1110[-403 1254 -272 1337|-225 1237[-387 1138 -510 903|-580 748" fillStyle0="1" />
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#0F0F0F" />
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-597 953|-611 1108|-611 1117[-610 1188 -588 1227|-580 1239|-580 1241|-554 1277[-461 1381 -272 1337[-403 1254 -505 1110|-563 1017|-597 953" fillStyle0="1" />
+                  </edges>
+                </DOMShape>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/R2画稿/a14/clip1" symbolType="movie clip" name="clip1">
+                  <matrix>
+                    <Matrix a="-0.95" b="0" c="0" d="0.95" tx="-1" ty="1" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

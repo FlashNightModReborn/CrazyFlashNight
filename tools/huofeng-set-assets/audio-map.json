@@ -1,0 +1,74 @@
+{
+  "assets": [
+    {
+      "source": "flashswf/arts/things5/LIBRARY/音效/流星锤.wav",
+      "output": "sounds/export/特效/火凤_回旋.wav",
+      "sha256": "f05e0266dc219ab3e6eae14ce0a026619cade248ffb239786e9062e71017d06c",
+      "seconds": 1.1280045351473922,
+      "transcoding": false
+    },
+    {
+      "source": "flashswf/arts/things5/LIBRARY/音效/metalchain2.wav",
+      "output": "sounds/export/特效/火凤_链条.wav",
+      "sha256": "52e576c4cc987d97115d9fcf6d9412af2ca0559abd23b8c70973573764e4f57e",
+      "seconds": 0.3083673469387755,
+      "transcoding": false
+    },
+    {
+      "source": "flashswf/arts/things5/LIBRARY/音效/sound525.wav",
+      "output": "sounds/export/特效/火凤_挥锤1.wav",
+      "sha256": "932fb2886d07e11ce83bc0212ac50b844e06a86d84d0f97b10d1f1fd4fb38221",
+      "seconds": 0.3760090702947846,
+      "transcoding": false
+    },
+    {
+      "source": "flashswf/arts/things5/LIBRARY/音效/sound532.wav",
+      "output": "sounds/export/特效/火凤_挥锤2.wav",
+      "sha256": "e776c1bc2caff09023b9a03a1388ffcb15a45664b2a36ee13e0ed6bc85b122d2",
+      "seconds": 0.3760090702947846,
+      "transcoding": false
+    },
+    {
+      "source": "flashswf/arts/things5/LIBRARY/音效/sound536.wav",
+      "output": "sounds/export/特效/火凤_挥锤3.wav",
+      "sha256": "c43b4e45ba3cb61c1278b6cf4d2d08c6ffb2f2d224be791ec23b2e3486e83298",
+      "seconds": 0.5782539682539682,
+      "transcoding": false
+    }
+  ],
+  "sourceCues": {
+    "Symbol 553": [
+      7,
+      12,
+      17,
+      21,
+      25,
+      33
+    ],
+    "Symbol 538": [
+      19,
+      32,
+      46,
+      58
+    ]
+  },
+  "playerCues": {
+    "normal": [
+      8,
+      17,
+      31,
+      45,
+      55,
+      66
+    ],
+    "run": [
+      12
+    ],
+    "spin": [
+      16,
+      48,
+      80
+    ]
+  },
+  "nirvana": "Frozen R2 transition source has no sound cues; no claim of original sound preservation or listening acceptance."
+}

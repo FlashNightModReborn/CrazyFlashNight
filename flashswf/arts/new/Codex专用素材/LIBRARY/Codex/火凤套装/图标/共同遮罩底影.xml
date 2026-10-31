@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/图标/共同遮罩底影" itemID="78f00000-b007bd8f">
+  <timeline>
+    <DOMTimeline name="共同遮罩底影">
+      <layers>
+        <DOMLayer name="Artwork">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.02069091796875" d="0.02069091796875" />
+                        </matrix>
+                        <GradientEntry ratio="0" />
+                        <GradientEntry alpha="0" ratio="0.815686274509804" />
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!240 240|-240 240!-240 240|-240 -240!-240 -240|240 -240!240 -240|240 240" />
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

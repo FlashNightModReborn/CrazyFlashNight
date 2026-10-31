@@ -4705,6 +4705,173 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.斗兽标定模式 = oldCalibration;
     }
 
+    private static var _sceneSnapshots:Array;
+
+    private static function sceneCapture():Void {
+        _sceneSnapshots=[];
+        _root.server={isSocketConnected:true,sendTaskToNode:function(task:String,payload:Object):Void {
+            if(task=="stage_outcome") _sceneSnapshots.push(payload);
+        }};
+        StageRunSession.install();
+        _root.gameCommands.stageOutcomeSync({task:"cmd",action:"stageOutcomeSync",v:4});
+    }
+
+    private static function sceneLast():Object { return _sceneSnapshots[_sceneSnapshots.length-1]; }
+
+    private static function sceneIntent(state:Object,id:String,kind:String):Object {
+        return {task:"cmd",action:"stageOutcomeAction",v:2,runId:state.runId,
+            expectedRevision:state.revision,intent:kind,intentId:id};
+    }
+
+    private static function sceneHuofeng(hero:MovieClip):Void {
+        _root.控制目标=hero._name;_root.gameworld[_root.控制目标]=hero;
+        var slots:Array=org.flashNight.arki.unit.Action.Huofeng.HuofengRules.SLOTS;
+        for(var i:Number=0;i<slots.length;i++) {
+            hero[slots[i]]={name:"hf-fixture",value:{level:1}};
+            hero[slots[i]+"数据"]={setId:"huofeng"};
+        }
+        hero.__huofeng={isActive:function():Boolean{return true;}};
+        org.flashNight.arki.unit.Action.Huofeng.HuofengRunState.reconcileEquipment(hero);
+    }
+
+    /** 内存币库 + 真实命令入口；不读取或改写玩家存档。与原关卡回归独立计数。 */
+    public static function runSceneReviveTests():Void {
+        _passed=0;_failed=0;backupWorld();installMetadata();
+        trace("=== SceneReviveTest start ===");
+        testSceneDeathAndPaidNirvana();
+        testSceneReviveFailures();
+        testSceneReviveIdentityAndSettlement();
+        restoreWorld();
+        trace("SceneReviveTest Tests Passed: "+_passed);
+        trace("SceneReviveTest Tests Failed: "+_failed);
+        trace("=== SceneReviveTest complete ===");
+    }
+
+    private static function testSceneDeathAndPaidNirvana():Void {
+        resetWorld(5);var hero:MovieClip=installHero("real_dispatcher");sceneHuofeng(hero);sceneCapture();
+        var taskOwner:Array=_root.tasks_to_do;
+        StageRunSession.onHeroDeath();var snap:Object=sceneLast();
+        assertEquals("dead",snap.life,"base death projects dead over the existing task hint");
+        assertTrue(snap.reviveAllowed,"base death exposes the paid revive action");
+        assertEquals(3,snap.v,"scene projection stays within existing Host v3 schema");
+        assertFalse(snap.canReturnBase,"scene revive cannot synthesize stage-return rewards");
+        assertFalse(snap.canSelectReturn,"scene revive has no stage destination selector");
+        assertEquals("none",snap.settlement,"scene snapshot carries no reward authority");
+        assertTrue(StageRunSession.getRunAuthority()==null,"base death creates no fake battle run");
+        assertTrue(_root.tasks_to_do===taskOwner,"base death preserves the task authority");
+        assertTrue(StageRunSession.canRequestRevive(),"settings fallback sees the same dead state");
+        StageRunSession.onHeroDeath();assertEquals(snap.revision,sceneLast().revision,"repeated death callback is idempotent");
+        var stale:Object=sceneIntent(snap,"scene.stale","revive");stale.expectedRevision--;
+        _root.gameCommands.stageOutcomeAction(stale);
+        assertEquals(5,ItemUtil.getTotal(REVIVE),"stale revision cannot spend a coin");
+        _root.gameCommands.stageOutcomeAction(sceneIntent(snap,"scene.return","return_base"));
+        assertEquals(5,ItemUtil.getTotal(REVIVE),"scene authority accepts only revive intent");
+        var click:Object=sceneIntent(snap,"scene.once","revive");
+        _root.gameCommands.stageOutcomeAction(click);
+        assertEquals(100,hero.hp,"base revive uses the actual respawn dispatcher");
+        assertEquals(1,hero.__respawnPublishCount,"base revive dispatches once with the hero argument");
+        assertEquals(4,ItemUtil.getTotal(REVIVE),"base revive spends exactly one coin");
+        assertEquals("alive",sceneLast().life,"revive clears the death projection so task hints can return");
+        var authority:Object=StageRunSession.getReviveAuthority();
+        var hf:Object=org.flashNight.arki.unit.Action.Huofeng.HuofengRunState;
+        var state:Object=hf.forUnit(hero);
+        assertTrue(state===authority.huofeng && state.tier==1,"base paid revival shares the active Huofeng map state");
+        assertEquals(1,state.pendingNirvanaTier,"first base revival queues first Nirvana presentation");
+        _root.gameCommands.stageOutcomeAction(click);
+        assertEquals(4,ItemUtil.getTotal(REVIVE),"duplicate old HUD click cannot pay twice");
+        hero.刀={name:"new blade"};hero.攻击模式="兵器";hf.reconcileEquipment(hero);
+        assertEquals(1,state.tier,"changing the carried blade retains the contract");
+        hero.hp=0;StageRunSession.onHeroDeath();StageRunSession.requestReviveLocal("settings");
+        assertEquals(2,state.tier,"second base payment reaches second Nirvana");
+        var epoch:Number=state.equipmentEpoch;var chest:Object=hero.上装装备;
+        delete hero.上装装备;hf.reconcileEquipment(hero);
+        assertEquals(0,state.tier,"unequipping one Huofeng armor resets the tier");
+        assertEquals(0,state.pendingNirvanaTier,"unequip removes pending death presentation");
+        hero.上装装备=chest;hf.reconcileEquipment(hero);
+        assertEquals(0,hf.commitPaidRevive(authority,hero,true,3,authority.world,epoch),"old pre-unequip eligibility cannot grant a tier after re-equip");
+        assertEquals(0,hf.commitPaidRevive(authority,hero,true,2,authority.world,state.equipmentEpoch),"already consumed paid sequence stays consumed after reset");
+        hero.hp=0;StageRunSession.onHeroDeath();StageRunSession.requestReviveLocal("settings");
+        assertEquals(1,state.tier,"a new paid revival after re-equip starts again at tier one");
+        assertEquals(2,ItemUtil.getTotal(REVIVE),"three distinct successful revivals consume three coins");
+    }
+
+    private static function testSceneReviveFailures():Void {
+        resetWorld(1);var hero:MovieClip=installHero("no_effect");sceneCapture();StageRunSession.onHeroDeath();
+        assertEquals("respawn_dispatch_failed",StageRunSession.requestReviveLocal("settings").error,"base failed respawn reports failure");
+        assertEquals(1,ItemUtil.getTotal(REVIVE),"base failed respawn refunds its one coin");
+        assertEquals("dead",sceneLast().life,"base failed respawn restores retry UI");
+        assertEquals(0,StageRunSession.getReviveAuthority().paidReviveSequence,"failed revival earns no paid receipt");
+        _root.限制系统.DisableResurrection=true;
+        assertEquals("resurrection_restricted",StageRunSession.requestReviveLocal("settings").error,"base honors resurrection restrictions");
+        assertEquals(1,ItemUtil.getTotal(REVIVE),"restricted base revive is zero-write");
+        assertFalse(sceneLast().reviveAllowed,"restricted base revive is disabled in HUD");
+        resetWorld(0);hero=installHero("success");sceneCapture();StageRunSession.onHeroDeath();
+        assertFalse(sceneLast().reviveAllowed,"no-coin base death still projects a disabled button");
+        assertEquals("no_revive_coin",StageRunSession.requestReviveLocal("settings").error,"no-coin revive is rejected");
+        assertEquals(0,hero.dispatcher.publishCount,"no-coin revive never dispatches respawn");
+        resetWorld(1);hero=installHero("success_throw");sceneCapture();StageRunSession.onHeroDeath();
+        assertTrue(StageRunSession.requestReviveLocal("settings").success,"throw after actual base respawn remains successful");
+        assertEquals(0,ItemUtil.getTotal(REVIVE),"throw after restoration cannot refund a successful revive");
+        resetWorld(1);hero=installHero("success");StageRunSession.onHeroDeath();
+        _root.server={isSocketConnected:true,sendTaskToNode:function():Void{throw new Error("projection_unavailable");}};
+        assertTrue(StageRunSession.requestReviveLocal("settings").success,"broken HUD transport cannot break base revival");
+        assertEquals(0,ItemUtil.getTotal(REVIVE),"broken HUD transport still commits exactly one coin");
+        resetWorld(2);hero=installHero("success");sceneCapture();StageRunSession.onHeroDeath();
+        var inner:Object;
+        _root.server.sendTaskToNode=function(task:String,payload:Object):Void {
+            if(payload.life=="reviving") inner=StageRunSession.requestReviveLocal("reentrant");
+        };
+        assertTrue(StageRunSession.requestReviveLocal("settings").success,"outer base revive completes despite reentry");
+        assertFalse(inner.success,"reentrant base revive is rejected before payment");
+        assertEquals(1,ItemUtil.getTotal(REVIVE),"reentrant callback spends only one coin");
+        resetWorld(1);hero=installHero("success");sceneCapture();StageRunSession.onHeroDeath();
+        _root.场景转换中=true;
+        assertFalse(StageRunSession.canRequestRevive(),"scene transition closes the revive capability");
+        assertEquals("return_in_progress",StageRunSession.requestReviveLocal("settings").error,"scene transition blocks direct payment");
+        assertEquals(1,ItemUtil.getTotal(REVIVE),"scene transition rejection is zero-write");
+        _root.场景转换中=false;
+    }
+
+    private static function testSceneReviveIdentityAndSettlement():Void {
+        resetWorld(2);
+        var fixture:MovieClip=_root.createEmptyMovieClip("__sceneReviveWorldFixture",_root.getNextHighestDepth());
+        _root.gameworld=fixture.createEmptyMovieClip("world",1);
+        var hero:MovieClip=installHero("success");sceneHuofeng(hero);sceneCapture();StageRunSession.onHeroDeath();
+        var prior:Object=StageRunSession.getReviveAuthority();var stale:Object=sceneIntent(sceneLast(),"old.world","revive");
+        var oldIdentity:Object=prior.world;var oldWorld:MovieClip=_root.gameworld;
+        oldWorld.removeMovieClip();_root.gameworld=fixture.createEmptyMovieClip("world",1);
+        hero=installHero("success");hero.hp=100;sceneHuofeng(hero);
+        var flow:Object=org.flashNight.arki.scene.StageReturnFlow;
+        StageRunSession.onSceneReady(_root.gameworld,"",flow.worldIdentity(_root.gameworld));
+        assertTrue(StageRunSession.getReviveAuthority()!==prior,"same-path MovieClip replacement gets a new scene authority");
+        assertEquals("alive",sceneLast().life,"new map clears the old death overlay");
+        assertEquals(0,org.flashNight.arki.unit.Action.Huofeng.HuofengRunState.forUnit(hero).tier,"new map starts with no Nirvana tier");
+        hero.hp=0;StageRunSession.onHeroDeath();_root.gameCommands.stageOutcomeAction(stale);
+        assertEquals(2,ItemUtil.getTotal(REVIVE),"old-world click cannot revive the new world's dead hero");
+        StageRunSession.onSceneReady(oldWorld,"",oldIdentity);
+        assertEquals("dead",sceneLast().life,"late old SceneReady cannot clear current death state");
+        _root.gameCommands.stageOutcomeAction(sceneIntent(sceneLast(),"new.world","revive"));
+        assertEquals(1,ItemUtil.getTotal(REVIVE),"new-world exact click revives once");
+        fixture.removeMovieClip();
+
+        resetWorld(1);hero=installHero("success");sceneCapture();
+        StageRunSession.begin("保留上一场结算","普通");StageRunSession.finish("victory");
+        _root.返回基地=function():Boolean{return StageRunSession.onReturnBaseStarted();};
+        StageRunSession.requestReturnBaseLocal("focused_test");
+        var battle:Object=StageRunSession.getRunAuthority();var settlement:String=battle.settlement;
+        assertEquals("return_in_progress",StageRunSession.requestReviveLocal("late_before_arrival").error,"returning stage cannot be mistaken for a fresh base death");
+        _root.gameworld={};hero=installHero("success");hero.hp=100;
+        StageRunSession.onSceneReady(_root.gameworld,"",flow.worldIdentity(_root.gameworld));
+        hero.hp=0;StageRunSession.onHeroDeath();
+        assertEquals("dead",sceneLast().life,"death after confirmed base arrival overrides settled battle notice");
+        assertTrue(sceneLast().reviveAllowed,"confirmed base arrival enables its own revival");
+        assertTrue(StageRunSession.requestReviveLocal("settings").success,"base revival works with a retained previous stage report");
+        assertTrue(StageRunSession.getRunAuthority()===battle,"base revival preserves the previous battle authority object");
+        assertEquals("victory",battle.outcome,"base revival cannot rewrite the previous battle result");
+        assertEquals(settlement,battle.settlement,"base revival cannot rewrite reward settlement");
+        assertEquals(0,ItemUtil.getTotal(REVIVE),"base revival alongside a report spends exactly one coin");
+    }
+
     private static function installHero(mode:String):MovieClip {
         if (_testHero != undefined) _testHero.removeMovieClip();
         var hero:MovieClip = _root.createEmptyMovieClip(

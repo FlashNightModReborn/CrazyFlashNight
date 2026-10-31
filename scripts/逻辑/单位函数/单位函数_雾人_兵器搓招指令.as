@@ -16,11 +16,14 @@ _root.技能函数.后摇可跳跃 = function():Boolean {
 };
 
 _root.技能函数.使用剑气释放 = function():Number {
-	var 自机 = _parent;
+	var 自机 = this._parent || _parent;
 	if(!org.flashNight.arki.skill.SkillFeaturePolicy.isEnabled(自机,"sword.wave")) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "剑气释放") {
+        if (org.flashNight.arki.unit.Action.Huofeng.HuofengRules.profileActive(自机)) {
+            自机.当前搓招名="";自机.搓招缓冲名="";自机.搓招缓冲已消费=true;
+        }
 		_root.兵器攻击路由.兵器攻击标签跳转(自机, "剑气释放");
 		return _root.技能函数.搓招监控("剑气释放", 1);
 	}
@@ -101,7 +104,7 @@ _root.技能函数.使用疾影剑气 = function():Number {
 
 _root.技能函数.判定剑气或飞沙 = function():Number {
 	var 自机 = _parent;
-	var 类型 = 自机.兵器动作类型;
+	var 类型 = org.flashNight.arki.unit.Action.Huofeng.HuofengNative.actionType(自机);
 
 	// 归一化：DFA可能返回剑气释放或双剑气，按武器类型重映射
 	if (自机.当前搓招名 == "剑气释放" || 自机.当前搓招名 == "双剑气" || 自机.当前搓招名 == "疾影剑气") {
@@ -124,7 +127,7 @@ _root.技能函数.判定剑气或飞沙 = function():Number {
 };
 
 _root.技能函数.使用贯穿突刺 = function():Number {
-	var 自机 = _parent;
+	var 自机 = this._parent || _parent;
 	var 技能 = 自机.被动技能["贯穿突刺"];
 	if(!技能 || !技能.启用  || 自机.上行 || 自机.下行 || 自机.动作A) return 0;
 	
@@ -133,6 +136,9 @@ _root.技能函数.使用贯穿突刺 = function():Number {
 
 	// DFA优先
 	if(自机.当前搓招名 == "贯穿突刺") {
+        if (org.flashNight.arki.unit.Action.Huofeng.HuofengRules.profileActive(自机)) {
+            自机.当前搓招名="";自机.搓招缓冲名="";自机.搓招缓冲已消费=true;
+        }
 		_root.兵器攻击路由.兵器攻击标签跳转(自机, "贯穿突刺");
 		return _root.技能函数.搓招监控("贯穿突刺", 1);
 	}
@@ -200,7 +206,7 @@ _root.技能函数.使用疾影突进 = function():Number {
 
 _root.技能函数.判定突刺或砸击 = function():Number {
 	var 自机 = _parent;
-	var 类型 = 自机.兵器动作类型;
+	var 类型 = org.flashNight.arki.unit.Action.Huofeng.HuofengNative.actionType(自机);
 
 	// 归一化：DFA可能返回贯穿突刺或飞跃砸击，按武器类型重映射
 	if (自机.当前搓招名 == "贯穿突刺" || 自机.当前搓招名 == "飞跃砸击") {
@@ -219,12 +225,15 @@ _root.技能函数.判定突刺或砸击 = function():Number {
 };
 
 _root.技能函数.使用蓄力重劈 = function():Number {
-	var 自机 = _parent;
+	var 自机 = this._parent || _parent;
 	var 技能 = 自机.被动技能["蓄力重劈"];
 	if(!技能 || !技能.启用  || 自机.左行 || 自机.右行) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "蓄力重劈") {
+        if (org.flashNight.arki.unit.Action.Huofeng.HuofengRules.profileActive(自机)) {
+            自机.当前搓招名="";自机.搓招缓冲名="";自机.搓招缓冲已消费=true;
+        }
 		_root.兵器攻击路由.兵器攻击标签跳转(自机, "蓄力重劈");
 		return _root.技能函数.搓招监控("蓄力重劈", 1);
 	}
@@ -238,12 +247,15 @@ _root.技能函数.使用蓄力重劈 = function():Number {
 };
 
 _root.技能函数.使用月光斩 = function():Number {
-	var 自机 = _parent;
+	var 自机 = this._parent || _parent;
 	var 技能 = 自机.被动技能["月光斩"];
 	if(!技能 || !技能.启用  || 自机.左行 || 自机.右行 || 自机.动作C) return 0;
 
 	// DFA优先
 	if(自机.当前搓招名 == "月光斩") {
+        if (org.flashNight.arki.unit.Action.Huofeng.HuofengRules.profileActive(自机)) {
+            自机.当前搓招名="";自机.搓招缓冲名="";自机.搓招缓冲已消费=true;
+        }
 		_root.兵器攻击路由.兵器攻击标签跳转(自机, "月光斩");
 		return _root.技能函数.搓招监控("月光斩", 1);
 	}
@@ -334,7 +346,7 @@ _root.技能函数.使用疾影上挑 = function():Number {
 
 _root.技能函数.判定月光斩或全垒打 = function():Number {
 	var 自机 = _parent;
-	var 类型 = 自机.兵器动作类型;
+	var 类型 = org.flashNight.arki.unit.Action.Huofeng.HuofengNative.actionType(自机);
 
 	// 归一化：DFA可能返回全垒打/无双击(重武器)或月光斩/外斩劈裂(轻武器)
 	if (自机.当前搓招名 == "全垒打" || 自机.当前搓招名 == "无双击" || 自机.当前搓招名 == "月光斩" || 自机.当前搓招名 == "外斩劈裂") {
@@ -400,7 +412,7 @@ _root.技能函数.使用追地祀 = function():Number {
 
 _root.技能函数.判定次元斩或追地祀 = function():Number {
 	var 自机 = _parent;
-	var 类型 = 自机.兵器动作类型;
+	var 类型 = org.flashNight.arki.unit.Action.Huofeng.HuofengNative.actionType(自机);
 	if(类型 == "长柄" || 类型 == "长枪" || 类型 == "长棍" || 类型 == "狂野" || 类型 == "重斩" || 类型 == "镰刀" || 类型 == "棍棒") {
 		return _root.技能函数.使用追地祀();
 	}
@@ -485,7 +497,7 @@ _root.技能函数.使用疾空旋风破 = function():Number {
 
 _root.技能函数.判定粉碎切割 = function():Number {
 	var 自机 = _parent;
-	var 类型 = 自机.兵器动作类型;
+	var 类型 = org.flashNight.arki.unit.Action.Huofeng.HuofengNative.actionType(自机);
 
 	// 归一化：DFA可能返回粉碎切割/狂乱龙卷/疾空旋风破(重武器)或粉碎切割/双旋轮切(轻武器)
 	if (自机.当前搓招名 == "粉碎切割" || 自机.当前搓招名 == "狂乱龙卷" || 自机.当前搓招名 == "疾空旋风破" || 自机.当前搓招名 == "双旋轮切") {
@@ -601,7 +613,7 @@ _root.技能函数.使用疾影十字 = function():Number {
 
 _root.技能函数.判定影十字或空坠袭 = function():Number {
 	var 自机 = _parent;
-	var 类型 = 自机.兵器动作类型;
+	var 类型 = org.flashNight.arki.unit.Action.Huofeng.HuofengNative.actionType(自机);
 
 	// 归一化：DFA可能返回猎影十字或交叉斩(轻武器)，按武器类型重映射
 	if (自机.当前搓招名 == "猎影十字" || 自机.当前搓招名 == "交叉斩" || 自机.当前搓招名 == "疾影十字") {
@@ -740,7 +752,7 @@ _root.技能函数.使用迅捷连斩 = function():Number {
 
 _root.技能函数.判定月华分支 = function():Number {
 	var 自机 = _parent;
-	var 类型 = 自机.兵器动作类型;
+	var 类型 = org.flashNight.arki.unit.Action.Huofeng.HuofengNative.actionType(自机);
 
 	// 归一化：DFA可能返回十六夜月华/双龙连斩/迅捷连斩(轻武器)，按武器类型重映射
 	// 千山破晓钟/日曜三段突(重武器)无DFA命令，仅靠帧检查
@@ -860,7 +872,7 @@ _root.技能函数.使用回旋刃 = function():Number {
 
 _root.技能函数.判定百万突刺和百裂刺 = function():Number {
 	var 自机 = _parent;
-	var 类型 = 自机.兵器动作类型;
+	var 类型 = org.flashNight.arki.unit.Action.Huofeng.HuofengNative.actionType(自机);
 
 	// 归一化：DFA可能返回百万突刺/迷踪连刺/回旋刃(重武器)或百万突刺/百裂刺(轻武器)
 	if (自机.当前搓招名 == "百万突刺" || 自机.当前搓招名 == "迷踪连刺" || 自机.当前搓招名 == "回旋刃" || 自机.当前搓招名 == "百裂刺") {
@@ -953,7 +965,7 @@ _root.技能函数.使用疾影剑舞 = function():Number {
 
 _root.技能函数.判定剑舞 = function():Number {
 	var 自机 = _parent;
-	var 类型 = 自机.兵器动作类型;
+	var 类型 = org.flashNight.arki.unit.Action.Huofeng.HuofengNative.actionType(自机);
 
 	// 归一化：DFA可能返回幻影剑舞/疾影剑舞/狂暴切割
 	if (自机.当前搓招名 == "幻影剑舞" || 自机.当前搓招名 == "疾影剑舞" || 自机.当前搓招名 == "狂暴切割") {
@@ -1103,7 +1115,7 @@ _root.技能函数.使用交叠 = function():Number {
 
 _root.技能函数.判定见切或重架 = function():Number {
 	var 自机 = _parent;
-	var 类型 = 自机.兵器动作类型;
+	var 类型 = org.flashNight.arki.unit.Action.Huofeng.HuofengNative.actionType(自机);
 
 	// 归一化：DFA可能返回见切/重架/微风拂柳(重武器)或见切/交叠(轻武器)/疾影
 	if (自机.当前搓招名 == "见切" || 自机.当前搓招名 == "重架" || 自机.当前搓招名 == "微风拂柳" || 自机.当前搓招名 == "交叠" || 自机.当前搓招名 == "疾影后撤") {

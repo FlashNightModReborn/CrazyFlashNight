@@ -395,6 +395,28 @@
         <name>3XF特勤套装</name>
         <order>680</order>
     </set>
+    <set>
+        <id>huofeng</id><name>火凤套装</name><order>325</order>
+        <description>“她只是……过于纯粹。”翅虎如此评价火凤。她说教主将她从灰烬中拾起，赐予新生。至于她为此永远放下了什么，堂里的老兵酒醒后再没提过。</description>
+        <effects><effect_0>
+            <id>phoenix_contract</id><threshold>5</threshold>
+            <activationGroup>huofeng_full_set</activationGroup>
+            <kind>routine</kind><mode>member_components</mode>
+            <prepareRoutine>火凤套装准备</prepareRoutine>
+            <components>
+                    <component_0><id>head</id><slot>头部装备</slot></component_0>
+                    <component_1><id>chest</id><slot>上装装备</slot></component_1>
+                    <component_2><id>legs</id><slot>下装装备</slot></component_2>
+                    <component_3><id>hands</id><slot>手部装备</slot></component_3>
+                    <component_4><id>feet</id><slot>脚部装备</slot></component_4>
+            </components>
+            <description>五件齐备：空手改用流星锤，按冷兵器加成结算，基础锋利度随手甲强化等级提升；按住普攻键连续施展五段攻击。焰链回旋轻按一圈、按住两圈，消耗36/48MP，冷却8秒，挥击可消除普通敌方飞弹。
+首次付费复活：生命上限降至正常值70%，每秒回复正常上限3%；流星锤转为热破击，附加破坏力10%的热伤。
+第二次付费复活：生命上限50%，每秒回复6%；流星锤主伤转为纯热，不再叠加首档附伤。后续复活仍播放完整涅槃，不再叠加增益。
+火焰与热伤仅增强流星锤普攻、跑攻、战技及该模式的冷兵器搓招，自带武器和其他技能保留原属性。
+跨图或卸下任一火凤防具清零涅槃次数与效果；卸装不回血，重新穿齐后须再次付费复活，从首档开始。</description>
+        </effect_0></effects>
+    </set>
 <set>
     <id>unified_type_61_armor</id>
     <name>统合61号工程·全装型套装</name>

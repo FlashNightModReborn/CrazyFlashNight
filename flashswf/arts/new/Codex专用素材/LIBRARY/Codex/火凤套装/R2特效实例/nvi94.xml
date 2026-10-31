@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/R2特效实例/nvi94" itemID="78f00000-33f2e9bd">
+  <timeline>
+    <DOMTimeline name="nvi94">
+      <layers>
+        <DOMLayer name="Artwork">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/原生特效/nv-ff205b7c2c2fbf91" selected="true" centerPoint3DX="-359.2" centerPoint3DY="-116.6" firstFrame="0" loop="single frame" symbolType="graphic">
+                  <transformationPoint>
+                    <Point x="0.5" y="-30.3" />
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="18" blurY="18" color="#FF0099" />
+                    <GradientBevelFilter angle="127.000001138365" blurX="8.25" blurY="8.25" distance="3" strength="0.3">
+                      <GradientEntry color="#FF6666" ratio="0" />
+                      <GradientEntry color="#FF0000" alpha="0" ratio="0.501960784313725" />
+                      <GradientEntry color="#FF9900" ratio="1" />
+                    </GradientBevelFilter>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

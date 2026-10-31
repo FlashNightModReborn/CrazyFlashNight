@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤套装/玩家外观/脸型/holder" itemID="78f00000-8c8120e0">
+  <timeline>
+    <DOMTimeline name="holder">
+      <layers>
+        <DOMLayer name="Artwork">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <Actionscript>
+                <script>stop();
+var unit = _parent._parent._parent;
+if (unit != undefined &amp;&amp; _root.装备引用配置 != undefined) {
+    var key = unit.脸型;
+    _root.装备引用配置.配置装扮(this, key, "装扮", "脸型_引用");
+    
+}
+</script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/火凤套装/原生底模/脸型" symbolType="movie clip" name="基本款">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0" />
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

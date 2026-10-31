@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5827 unique assets -->
+  <!-- 5909 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -35,6 +35,9 @@
   <asset id="Codex蛮蛮素材" swf="flashswf/arts/new/Codex蛮蛮素材.swf" />
   <asset id="Codex黑仔素材" swf="flashswf/arts/new/Codex黑仔素材.swf" />
   <asset id="GM6j击杀特效" swf="flashswf/arts/new/fs配置素材.swf" symbolName="长枪/GM6_LYNX/GM6j击杀特效" />
+  <asset id="HF8/Hair/BackTail" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/R9长发/BackTail" />
+  <asset id="HF8/Hair/BackUpper" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/R9长发/BackUpper" />
+  <asset id="HF8/Hair/Front" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/R9长发/Front" />
   <asset id="HUD物品图标" swf="flashswf/UI/玩家信息界面.swf" symbolName="sprite/物品栏/物品图标位置示意" />
   <asset id="JK次元斩" swf="flashswf/arts/new/武装JK.swf" symbolName="特效与子弹/次元斩1" />
   <asset id="JK真伤次元斩" swf="flashswf/arts/new/武装JK.swf" symbolName="特效与子弹/次元斩1真伤" />
@@ -641,11 +644,11 @@
   <asset id="图标-3XF士兵军靴" swf="flashswf/arts/new/天网大家庭.swf" />
   <asset id="图标-3XF士兵头盔" swf="flashswf/arts/new/天网大家庭.swf" />
   <asset id="图标-3XF士兵手套" swf="flashswf/arts/new/天网大家庭.swf" />
-  <asset id="图标-3XF特勤上装" swf="flashswf/arts/new/天网大家庭.swf" symbolName="图标-3XF特勤上装" />
-  <asset id="图标-3XF特勤下装" swf="flashswf/arts/new/天网大家庭.swf" symbolName="图标-3XF特勤下装" />
-  <asset id="图标-3XF特勤军靴" swf="flashswf/arts/new/天网大家庭.swf" symbolName="图标-3XF特勤军靴" />
-  <asset id="图标-3XF特勤头盔" swf="flashswf/arts/new/天网大家庭.swf" symbolName="图标-3XF特勤头盔" />
-  <asset id="图标-3XF特勤手套" swf="flashswf/arts/new/天网大家庭.swf" symbolName="图标-3XF特勤手套" />
+  <asset id="图标-3XF特勤上装" swf="flashswf/arts/new/天网大家庭.swf" />
+  <asset id="图标-3XF特勤下装" swf="flashswf/arts/new/天网大家庭.swf" />
+  <asset id="图标-3XF特勤军靴" swf="flashswf/arts/new/天网大家庭.swf" />
+  <asset id="图标-3XF特勤头盔" swf="flashswf/arts/new/天网大家庭.swf" />
+  <asset id="图标-3XF特勤手套" swf="flashswf/arts/new/天网大家庭.swf" />
   <asset id="图标-3XF电棍" swf="flashswf/arts/new/天网大家庭.swf" />
   <asset id="图标-53式步骑枪" swf="flashswf/arts/new/fs配置素材.swf" symbolName="长枪/53式步骑枪/图标-53式步骑枪" />
   <asset id="图标-53式步骑枪墨冰" swf="flashswf/arts/new/变体武器.swf" symbolName="1.枪械相关/长枪/53式步骑枪/0.墨冰/图标-53式步骑枪墨冰" />
@@ -1641,8 +1644,14 @@
   <asset id="图标-清炒白菜" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="食材相关/图标-清炒白菜" />
   <asset id="图标-清炒花菜" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="食材相关/图标-清炒花菜" />
   <asset id="图标-湛蓝玫瑰" swf="flashswf/arts/new/伊恩的素材.swf" symbolName="鬼泣素材包/湛蓝玫瑰组件/图标-湛蓝玫瑰" />
+  <asset id="图标-火凤下装" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/图标/火凤下装" />
   <asset id="图标-火凤令" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="情报物品相关/图标-火凤令" />
   <asset id="图标-火凤堂徽章" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="情报物品相关/图标-火凤堂徽章" />
+  <asset id="图标-火凤头部装备" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/图标/火凤头部装备" />
+  <asset id="图标-火凤战靴" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/图标/火凤战靴" />
+  <asset id="图标-火凤手甲" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/图标/火凤手甲" />
+  <asset id="图标-火凤胸甲" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/图标/火凤胸甲" />
+  <asset id="图标-火凤装备碎片" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/图标/火凤装备碎片" />
   <asset id="图标-火力支援" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="技能相关/Symbol 4696" />
   <asset id="图标-火焰喷射器燃料罐" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="消耗道具相关/1.弹药相关/图标-火焰喷射器燃料罐" />
   <asset id="图标-火箭弹弹药" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="消耗道具相关/1.弹药相关/图标-火箭弹弹药" />
@@ -2918,6 +2927,17 @@
   <asset id="女变装-沙漠军装裤屁股" swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/女变装-沙漠军装裤屁股" />
   <asset id="女变装-沙漠军装裤左大腿" swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/女变装-沙漠军装裤左大腿" />
   <asset id="女变装-浅灰背心身体" swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/女变装-浅灰背心身体" />
+  <asset id="女变装-火凤上装上臂" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/女变装-火凤上装上臂" />
+  <asset id="女变装-火凤上装右下臂" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/女变装-火凤上装右下臂" />
+  <asset id="女变装-火凤上装左下臂" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/女变装-火凤上装左下臂" />
+  <asset id="女变装-火凤上装身体" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/女变装-火凤上装身体" />
+  <asset id="女变装-火凤下装右大腿" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/女变装-火凤下装右大腿" />
+  <asset id="女变装-火凤下装小腿" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/女变装-火凤下装小腿" />
+  <asset id="女变装-火凤下装屁股" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/女变装-火凤下装屁股" />
+  <asset id="女变装-火凤下装左大腿" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/女变装-火凤下装左大腿" />
+  <asset id="女变装-火凤战靴" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/女变装-火凤战靴" />
+  <asset id="女变装-火凤手甲右手" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/女变装-火凤手甲右手" />
+  <asset id="女变装-火凤手甲左手" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/女变装-火凤手甲左手" />
   <asset id="女变装-灰色格子短裙右大腿" swf="flashswf/arts/new/3XD的素材.swf" symbolName="4人物服饰外观/一部分服饰/防具/灰色裙子/1Symbol 2354" />
   <asset id="女变装-灰色格子短裙小腿" swf="flashswf/arts/new/3XD的素材.swf" symbolName="4人物服饰外观/一部分服饰/防具/灰色裙子/1Symbol 2013" />
   <asset id="女变装-灰色格子短裙屁股" swf="flashswf/arts/new/3XD的素材.swf" symbolName="4人物服饰外观/一部分服饰/防具/灰色裙子/1Symbol 2350" />
@@ -3584,8 +3604,12 @@
   <asset id="敌人-CF6大头机器人" swf="flashswf/arts/new/Codex大头机器人素材.swf" symbolName="Codex/大头机器人/敌人-CF6大头机器人" />
   <asset id="敌人-CF6女僵尸" swf="flashswf/arts/new/Antigravity专用素材.swf" symbolName="Antigravity/CF6女僵尸/敌人-CF6女僵尸" />
   <asset id="敌人-CF6持盾特种兵" swf="flashswf/arts/new/Codex特种兵素材.swf" symbolName="Codex/特种兵/敌人-CF6持盾特种兵" />
+  <asset id="敌人-CF6持盾特种教官" swf="flashswf/arts/new/Codex特种兵素材.swf" symbolName="Codex/教官/敌人-CF6持盾特种教官" />
+  <asset id="敌人-CF6持盾特种精英" swf="flashswf/arts/new/Codex特种兵素材.swf" symbolName="Codex/特种兵/敌人-CF6持盾特种精英" />
   <asset id="敌人-CF6普通男僵尸" swf="flashswf/arts/new/Antigravity专用素材.swf" symbolName="Antigravity/CF6普通男僵尸/敌人-CF6普通男僵尸" />
   <asset id="敌人-CF6特种兵" swf="flashswf/arts/new/Codex特种兵素材.swf" symbolName="Codex/特种兵/敌人-CF6特种兵" />
+  <asset id="敌人-CF6特种教官" swf="flashswf/arts/new/Codex特种兵素材.swf" symbolName="Codex/教官/敌人-CF6特种教官" />
+  <asset id="敌人-CF6特种精英" swf="flashswf/arts/new/Codex特种兵素材.swf" symbolName="Codex/特种兵/敌人-CF6特种精英" />
   <asset id="敌人-CF6老头人形" swf="flashswf/arts/new/Codex老头素材.swf" symbolName="Codex/老头/敌人-CF6老头人形" />
   <asset id="敌人-CF6老头机器人" swf="flashswf/arts/new/Codex老头素材.swf" symbolName="Codex/老头/敌人-CF6老头机器人" />
   <asset id="敌人-CF6蛮蛮" swf="flashswf/arts/new/Codex蛮蛮素材.swf" symbolName="Codex/蛮蛮/敌人-CF6蛮蛮" />
@@ -4287,6 +4311,28 @@
   <asset id="激光瞄准-Codex-钛合金61-红束" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/Ti61-共用/02_光束视觉参考/红束_暖白亮芯" />
   <asset id="火凤余烬" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/03.赤橙色系/火焰与爆炸/余烬重生/火凤余烬" />
   <asset id="火凤回旋" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火回旋/火凤回旋" />
+  <asset id="火凤套装_五段普攻" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/动作/五段普攻" />
+  <asset id="火凤套装_位移扫击" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/动作/位移扫击" />
+  <asset id="火凤套装_余烬" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/表现/脚底余烬" />
+  <asset id="火凤套装_冷兵器_凶斩" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/冷兵器复用/容器/技能容器/技能容器-凶斩" />
+  <asset id="火凤套装_冷兵器_剑气释放" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/冷兵器复用/容器/兵器攻击容器/兵器攻击容器-剑气释放" />
+  <asset id="火凤套装_冷兵器_拔刀术" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/冷兵器复用/容器/技能容器/技能容器-拔刀术" />
+  <asset id="火凤套装_冷兵器_月光斩" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/冷兵器复用/容器/兵器攻击容器/兵器攻击容器-月光斩" />
+  <asset id="火凤套装_冷兵器_火舞旋风" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/冷兵器复用/容器/技能容器/技能容器-火舞旋风" />
+  <asset id="火凤套装_冷兵器_瞬步斩" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/冷兵器复用/容器/技能容器/技能容器-瞬步斩" />
+  <asset id="火凤套装_冷兵器_蓄力重劈" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/冷兵器复用/容器/兵器攻击容器/兵器攻击容器-蓄力重劈" />
+  <asset id="火凤套装_冷兵器_贯穿突刺" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/冷兵器复用/容器/兵器攻击容器/兵器攻击容器-贯穿突刺" />
+  <asset id="火凤套装_冷兵器_跳跃" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/冷兵器复用/sprite/兵器跳跃" />
+  <asset id="火凤套装_冷兵器_迅斩" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/冷兵器复用/容器/技能容器/技能容器-迅斩" />
+  <asset id="火凤套装_原版回旋" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/表现/原版火焰/火凤回旋-39976758" />
+  <asset id="火凤套装_原版火攻" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/表现/原版火焰/火凤火攻-f35cdabe" />
+  <asset id="火凤套装_后披摆" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/后披摆" />
+  <asset id="火凤套装_回血提示" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/表现/回血提示" />
+  <asset id="火凤套装_完整涅槃" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/动作/完整涅槃" />
+  <asset id="火凤套装_完整热附击" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/表现/完整热附击" />
+  <asset id="火凤套装_普通涅槃" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/动作/普通涅槃" />
+  <asset id="火凤套装_热附击" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/表现/热附击" />
+  <asset id="火凤套装_焰链回旋" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/动作/焰链回旋" />
   <asset id="火凤火攻" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/03.赤橙色系/火焰与爆炸/火攻/火凤火攻" />
   <asset id="火凤转阶段演出" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤转阶段/火凤转阶段演出" />
   <asset id="火力支援-天网" swf="flashswf/arts/new/偷吃屑鱼坟头贡品.swf" />
@@ -4998,6 +5044,17 @@
   <asset id="男变装-浅灰背心身体" swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/男变装-浅灰背心身体" />
   <asset id="男变装-浅灰蒙面" swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/男变装-浅灰蒙面" />
   <asset id="男变装-深灰色皮鞋" swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/男变装-深灰色皮鞋" />
+  <asset id="男变装-火凤上装上臂" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/男变装-火凤上装上臂" />
+  <asset id="男变装-火凤上装右下臂" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/男变装-火凤上装右下臂" />
+  <asset id="男变装-火凤上装左下臂" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/男变装-火凤上装左下臂" />
+  <asset id="男变装-火凤上装身体" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/男变装-火凤上装身体" />
+  <asset id="男变装-火凤下装右大腿" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/男变装-火凤下装右大腿" />
+  <asset id="男变装-火凤下装小腿" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/男变装-火凤下装小腿" />
+  <asset id="男变装-火凤下装屁股" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/男变装-火凤下装屁股" />
+  <asset id="男变装-火凤下装左大腿" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/男变装-火凤下装左大腿" />
+  <asset id="男变装-火凤战靴" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/男变装-火凤战靴" />
+  <asset id="男变装-火凤手甲右手" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/男变装-火凤手甲右手" />
+  <asset id="男变装-火凤手甲左手" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/火凤套装/装扮/男变装-火凤手甲左手" />
   <asset id="男变装-炎魔手套右手" swf="flashswf/arts/things切割.swf" symbolName="防具/炎魔套/男变装-炎魔手套右手" />
   <asset id="男变装-炎魔手套左手" swf="flashswf/arts/things切割.swf" symbolName="防具/炎魔套/男变装-炎魔手套左手" />
   <asset id="男变装-炎魔甲上臂" swf="flashswf/arts/things切割.swf" symbolName="防具/炎魔套/男变装-炎魔甲上臂" />
@@ -6476,8 +6533,4 @@
     <source swf="flashswf/arts/new/素材库-诺亚新敌人.swf" symbolName="地狱三头/1.特效文件夹/06.青蓝色系/雷电电/雷电电" />
     <source swf="flashswf/arts/new/雾人整合特效.swf" symbolName="1.特效文件夹/06.青蓝色系/雷电电/雷电电" />
   </conflict>
-  <asset id="敌人-CF6特种精英" swf="flashswf/arts/new/Codex特种兵素材.swf" symbolName="Codex/特种兵/敌人-CF6特种精英" />
-  <asset id="敌人-CF6持盾特种精英" swf="flashswf/arts/new/Codex特种兵素材.swf" symbolName="Codex/特种兵/敌人-CF6持盾特种精英" />
-  <asset id="敌人-CF6特种教官" swf="flashswf/arts/new/Codex特种兵素材.swf" symbolName="Codex/教官/敌人-CF6特种教官" />
-  <asset id="敌人-CF6持盾特种教官" swf="flashswf/arts/new/Codex特种兵素材.swf" symbolName="Codex/教官/敌人-CF6持盾特种教官" />
 </assetSourceMap>

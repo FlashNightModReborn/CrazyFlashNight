@@ -360,16 +360,16 @@ _root.技能函数.刀口触发特效 = function(状态名:String):Void {
  * @param 垂直击退速度:Number 垂直击退速度（可选）
  */
 _root.技能函数.兵器攻击 = function(子弹威力:Number, Z轴攻击范围:Number, 击倒率:Number, 水平击退速度:Number, 垂直击退速度:Number):Void {
-	var unit:MovieClip = _parent;
+	var unit:MovieClip = this._parent;
 	var 子弹参数:Object = new Object();
 	子弹参数.子弹威力 = 子弹威力;
 	// 刀剑攻击被动技能加成
 	if (unit.被动技能.刀剑攻击 && unit.被动技能.刀剑攻击.启用) {
-		子弹参数.子弹威力 += unit.刀属性.power * unit.被动技能.刀剑攻击.等级 * 0.075;
+		子弹参数.子弹威力 += org.flashNight.arki.unit.Action.Huofeng.HuofengRules.bladePower(unit) * unit.被动技能.刀剑攻击.等级 * 0.075;
 	}
 	// mp攻击加成
-	if (unit.mp攻击加成) {
-		子弹参数.子弹威力 += unit.mp攻击加成;
+	if (org.flashNight.arki.unit.Action.Huofeng.HuofengNative.mpPower(unit)) {
+		子弹参数.子弹威力 += org.flashNight.arki.unit.Action.Huofeng.HuofengNative.mpPower(unit);
 	}
 	子弹参数.Z轴攻击范围 = Z轴攻击范围;
 	子弹参数.击中后子弹的效果 = "斩打命中特效";
@@ -743,23 +743,24 @@ _root.技能函数.龟派气功攻击 = function(当前攻击点, 段数类型, 
 
 _root.技能函数.凶斩攻击 = function(不硬直)
 {
+	var unit:MovieClip = this._parent;
 	var 子弹参数 = new Object();
 	// 从XML配置读取技能乘数（使用工具函数）
-	var temp = SkillDamageCore.getSkillMultiplier(_parent, "凶斩");
+	var temp = SkillDamageCore.getSkillMultiplier(unit, "凶斩");
 
-	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + 1.5 * _parent.内力 * (5 + _parent.技能等级) + _parent.刀属性.power * temp * 0.125 * (10 + _parent.技能等级);
-	if (_parent.mp攻击加成)
+	子弹参数.子弹威力 = org.flashNight.arki.unit.Action.Huofeng.HuofengRules.unarmedTerm(unit) * 0.1 + 1.5 * org.flashNight.arki.unit.Action.Huofeng.HuofengNative.force(unit) * (5 + unit.技能等级) + org.flashNight.arki.unit.Action.Huofeng.HuofengRules.bladePower(unit) * temp * 0.125 * (10 + unit.技能等级);
+	if (org.flashNight.arki.unit.Action.Huofeng.HuofengNative.mpPower(unit))
 	{
-		子弹参数.子弹威力 += _parent.mp攻击加成;
+		子弹参数.子弹威力 += org.flashNight.arki.unit.Action.Huofeng.HuofengNative.mpPower(unit);
 	}
 	子弹参数.Z轴攻击范围 = 30;
 	子弹参数.击倒率 = 10;
 	子弹参数.不硬直 = 不硬直;
 
 	// 传递兵器特殊属性到子弹
-	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹参数);
+	SkillAttributeCore.transferWeaponAttributes(unit, 子弹参数);
 
-	_parent.刀口位置生成子弹(_parent, 子弹参数);
+	unit.刀口位置生成子弹(unit, 子弹参数);
 }
 
 // 注：瞬步斩伤害乘数表已迁移至 data/items/武器_刀.xml 中的 <skillmultipliers> 标签
@@ -772,14 +773,14 @@ _root.技能函数.瞬步斩攻击 = function()
 	// 从XML配置读取技能乘数（使用工具函数）
 	var temp = SkillDamageCore.getSkillMultiplier(unit, "瞬步斩");
 
-	子弹参数.子弹威力 = unit.空手攻击力 * 0.1 + 0.5 * unit.内力 * (5 + unit.技能等级) + unit.刀属性.power * temp * 0.1 * (10 + unit.技能等级);
+	子弹参数.子弹威力 = org.flashNight.arki.unit.Action.Huofeng.HuofengRules.unarmedTerm(unit) * 0.1 + 0.5 * org.flashNight.arki.unit.Action.Huofeng.HuofengNative.force(unit) * (5 + unit.技能等级) + org.flashNight.arki.unit.Action.Huofeng.HuofengRules.bladePower(unit) * temp * 0.1 * (10 + unit.技能等级);
 	// 添加速度转伤害加成
 	if (unit.行走X速度) {
 		子弹参数.子弹威力 += SkillDamageCore.speedToDamage(unit.行走X速度);
 	}
-	if (unit.mp攻击加成)
+	if (org.flashNight.arki.unit.Action.Huofeng.HuofengNative.mpPower(unit))
 	{
-		子弹参数.子弹威力 += unit.mp攻击加成;
+		子弹参数.子弹威力 += org.flashNight.arki.unit.Action.Huofeng.HuofengNative.mpPower(unit);
 	}
 	子弹参数.Z轴攻击范围 = 30;
 	子弹参数.击倒率 = 10;
@@ -958,18 +959,19 @@ _root.技能函数.龙斩气伤 = function(Z轴攻击范围)
 
 _root.技能函数.龙斩刀伤 = function(Z轴攻击范围)
 {
+	var unit:MovieClip = this._parent;
 	var 子弹 = _root.子弹属性初始化(this.攻击点);
 	子弹.声音 = "";
 	子弹.霰弹值 = 5;
 	子弹.子弹散射度 = 0;
 	子弹.子弹种类 = "近战联弹";
 	// 从XML配置读取技能乘数（使用工具函数）
-	var temp = SkillDamageCore.getSkillMultiplier(_parent, "龙斩");
+	var temp = SkillDamageCore.getSkillMultiplier(unit, "龙斩");
 
-	子弹.子弹威力 = 12 * _parent.内力 + _parent.空手攻击力 * 0.1 + (_parent.内力 + _parent.刀属性.power * 0.2) * 0.5 * _parent.技能等级 + _parent.刀属性.power * temp * 0.12 * (10 + _parent.技能等级);
-	if (_parent.mp攻击加成)
+	子弹.子弹威力 = 12 * unit.内力 + unit.空手攻击力 * 0.1 + (unit.内力 + unit.刀属性.power * 0.2) * 0.5 * unit.技能等级 + unit.刀属性.power * temp * 0.12 * (10 + unit.技能等级);
+	if (unit.mp攻击加成)
 	{
-		子弹.子弹威力 += _parent.mp攻击加成 * 0.5;
+		子弹.子弹威力 += unit.mp攻击加成 * 0.5;
 	}
 	子弹.子弹速度 = 0;
 	子弹.击中地图效果 = "";
@@ -985,7 +987,7 @@ _root.技能函数.龙斩刀伤 = function(Z轴攻击范围)
 	子弹.击中后子弹的效果 = "空手攻击火花";
 	子弹.水平击退速度 = 15;
 	子弹.区域定位area = this.攻击点;
-	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹);
+	SkillAttributeCore.transferWeaponAttributes(unit, 子弹);
 	_root.子弹区域shoot传递(子弹);
 }
 
@@ -1019,6 +1021,7 @@ _root.技能函数.地震攻击 = function(Z轴攻击范围)
 
 _root.技能函数.拔刀术攻击 = function()
 {
+	var unit:MovieClip = this._parent;
 	var 子弹 = _root.子弹属性初始化(this.攻击点);
 	子弹.声音 = "";
 	子弹.霰弹值 = 1;
@@ -1026,23 +1029,23 @@ _root.技能函数.拔刀术攻击 = function()
 	子弹.子弹种类 = "近战子弹";
 
 	// 从XML配置读取技能乘数（使用工具函数）
-	var temp = SkillDamageCore.getSkillMultiplier(_parent, "拔刀术");
+	var temp = SkillDamageCore.getSkillMultiplier(unit, "拔刀术");
 
-	if (_parent.刀属性.power != undefined && _parent.刀属性.power != NaN)
+	if (org.flashNight.arki.unit.Action.Huofeng.HuofengRules.bladePower(unit) != undefined && org.flashNight.arki.unit.Action.Huofeng.HuofengRules.bladePower(unit) != NaN)
 	{
-		子弹.子弹威力 = _parent.空手攻击力 * 0.1 + (0.5 * _parent.内力 + _parent.刀属性.power * 0.12) * (4 + _parent.技能等级) + _parent.刀属性.power * temp * 0.12 * (10 + _parent.技能等级);
+		子弹.子弹威力 = org.flashNight.arki.unit.Action.Huofeng.HuofengRules.unarmedTerm(unit) * 0.1 + (0.5 * org.flashNight.arki.unit.Action.Huofeng.HuofengNative.force(unit) + org.flashNight.arki.unit.Action.Huofeng.HuofengRules.bladePower(unit) * 0.12) * (4 + unit.技能等级) + org.flashNight.arki.unit.Action.Huofeng.HuofengRules.bladePower(unit) * temp * 0.12 * (10 + unit.技能等级);
 	}
 	else
 	{
-		子弹.子弹威力 = _parent.空手攻击力 * 0.1 + 0.85 * _parent.内力 * (4 + _parent.技能等级);
+		子弹.子弹威力 = unit.空手攻击力 * 0.1 + 0.85 * org.flashNight.arki.unit.Action.Huofeng.HuofengNative.force(unit) * (4 + unit.技能等级);
 	}
 	// 添加速度转伤害加成
-	if (_parent.行走X速度) {
-		子弹.子弹威力 += SkillDamageCore.speedToDamage(_parent.行走X速度);
+	if (unit.行走X速度) {
+		子弹.子弹威力 += SkillDamageCore.speedToDamage(unit.行走X速度);
 	}
-	if (_parent.mp攻击加成)
+	if (org.flashNight.arki.unit.Action.Huofeng.HuofengNative.mpPower(unit))
 	{
-		子弹.子弹威力 += _parent.mp攻击加成 * 0.5;
+		子弹.子弹威力 += org.flashNight.arki.unit.Action.Huofeng.HuofengNative.mpPower(unit) * 0.5;
 	}
 
 	子弹.子弹速度 = 0;
@@ -1051,12 +1054,13 @@ _root.技能函数.拔刀术攻击 = function()
 	子弹.击倒率 = 1;
 	子弹.击中后子弹的效果 = "空手攻击火花";
 	子弹.区域定位area = this.攻击点;
-	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹);
+	SkillAttributeCore.transferWeaponAttributes(unit, 子弹);
 	_root.子弹区域shoot传递(子弹);
 }
 
 _root.技能函数.六连攻击 = function()
 {
+	var unit:MovieClip = this._parent;
 	var 子弹 = _root.子弹属性初始化(this.攻击点);
 	子弹.声音 = "";
 	子弹.霰弹值 = 1;
@@ -1064,17 +1068,17 @@ _root.技能函数.六连攻击 = function()
 	子弹.子弹种类 = "近战子弹";
 	子弹.不硬直 = true;
 
-	if (_parent.刀属性.power != undefined && _parent.刀属性.power != NaN)
+	if (unit.刀属性.power != undefined && unit.刀属性.power != NaN)
 	{
-		子弹.子弹威力 = _parent.空手攻击力 * 0.1 + (0.5 * _parent.内力 + _parent.刀属性.power * 0.1) * (4 + _parent.技能等级) + _parent.刀属性.power * 0.1 * (10 + _parent.技能等级);
+		子弹.子弹威力 = unit.空手攻击力 * 0.1 + (0.5 * unit.内力 + unit.刀属性.power * 0.1) * (4 + unit.技能等级) + unit.刀属性.power * 0.1 * (10 + unit.技能等级);
 	}
 	else
 	{
-		子弹.子弹威力 =  _parent.空手攻击力 * 0.1 + 0.75 * _parent.内力 * (4 + _parent.技能等级);
+		子弹.子弹威力 =  unit.空手攻击力 * 0.1 + 0.75 * unit.内力 * (4 + unit.技能等级);
 	}
-	if (_parent.mp攻击加成)
+	if (unit.mp攻击加成)
 	{
-		子弹.子弹威力 += _parent.mp攻击加成 * 0.5;
+		子弹.子弹威力 += unit.mp攻击加成 * 0.5;
 	}
 
 	子弹.子弹速度 = 0;
@@ -1083,27 +1087,28 @@ _root.技能函数.六连攻击 = function()
 	子弹.击倒率 = 1;
 	子弹.击中后子弹的效果 = "空手攻击火花";
 	子弹.区域定位area = this.攻击点;
-	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹);
+	SkillAttributeCore.transferWeaponAttributes(unit, 子弹);
 	_root.子弹区域shoot传递(子弹);
 }
 
 _root.技能函数.迅斩攻击 = function(){
+	var unit:MovieClip = this._parent;
 	var 子弹参数 = new Object();
 
-	子弹参数.子弹威力 = _parent.空手攻击力 * 0.1 + _parent.刀属性.power * (3 + _parent.技能等级 * 0.35);
+	子弹参数.子弹威力 = org.flashNight.arki.unit.Action.Huofeng.HuofengRules.unarmedTerm(unit) * 0.1 + org.flashNight.arki.unit.Action.Huofeng.HuofengRules.bladePower(unit) * (3 + unit.技能等级 * 0.35);
 	// 添加速度转伤害加成
-	if (_parent.行走X速度) {
-		子弹参数.子弹威力 += SkillDamageCore.speedToDamage(_parent.行走X速度);
+	if (unit.行走X速度) {
+		子弹参数.子弹威力 += SkillDamageCore.speedToDamage(unit.行走X速度);
 	}
-	// if (_parent.mp攻击加成)
+	// if (org.flashNight.arki.unit.Action.Huofeng.HuofengNative.mpPower(unit))
 	// {
-	// 	子弹参数.子弹威力 += _parent.mp攻击加成;
+	// 	子弹参数.子弹威力 += org.flashNight.arki.unit.Action.Huofeng.HuofengNative.mpPower(unit);
 	// }
 	子弹参数.Z轴攻击范围 = 50;
-	子弹参数.击倒率 = 2/(10 + _parent.技能等级);
+	子弹参数.击倒率 = 2/(10 + unit.技能等级);
 	子弹参数.不硬直 = true;
-	SkillAttributeCore.transferWeaponAttributes(_parent, 子弹参数);
-	_parent.刀口位置生成子弹(_parent, 子弹参数);
+	SkillAttributeCore.transferWeaponAttributes(unit, 子弹参数);
+	unit.刀口位置生成子弹(unit, 子弹参数);
 }
 
 // 注：单个武器换弹工具函数已迁移至 SkillReloadCore.reloadWeapon，业务代码请直接调用
@@ -1114,23 +1119,27 @@ _root.技能函数.翻滚换弹 = function(){
 }
 
 _root.技能函数.火舞旋风攻击 = function(){
-	子弹属性 = _root.子弹属性初始化(this.攻击点);
+	var unit:MovieClip = this._parent;
+	var 子弹属性:Object = _root.子弹属性初始化(this.攻击点);
+	if (org.flashNight.arki.unit.Action.Huofeng.HuofengRules.profileActive(unit)) {
+		org.flashNight.arki.unit.Action.Huofeng.HuofengNative.prepareBullet(unit, 子弹属性);
+	}
 
 	子弹属性.声音 = "";
 	子弹属性.霰弹值 = 1;
 	子弹属性.子弹散射度 = 0;
 	子弹属性.子弹种类 = "常规旋风";
 	子弹属性.子弹速度 = 0;
-	if (_parent.刀属性.power){
-		子弹属性.子弹威力 = _parent.空手攻击力 * 0.1 + 2 * _parent.内力 * (3 + _parent.技能等级 * 0.5) + _parent.刀属性.power * (10 + _parent.技能等级) / 10;
+	if (org.flashNight.arki.unit.Action.Huofeng.HuofengRules.bladePower(unit)){
+		子弹属性.子弹威力 = org.flashNight.arki.unit.Action.Huofeng.HuofengRules.unarmedTerm(unit) * 0.1 + 2 * org.flashNight.arki.unit.Action.Huofeng.HuofengNative.force(unit) * (3 + unit.技能等级 * 0.5) + org.flashNight.arki.unit.Action.Huofeng.HuofengRules.bladePower(unit) * (10 + unit.技能等级) / 10;
 	}else{
-		子弹属性.子弹威力 = _parent.空手攻击力 * 0.1 + 2 * _parent.内力 * (3 + _parent.技能等级 * 0.5);
+		子弹属性.子弹威力 = unit.空手攻击力 * 0.1 + 2 * org.flashNight.arki.unit.Action.Huofeng.HuofengNative.force(unit) * (3 + unit.技能等级 * 0.5);
 	}
-	if (_parent.mp攻击加成){
-		子弹属性.子弹威力 += _parent.mp攻击加成;
+	if (org.flashNight.arki.unit.Action.Huofeng.HuofengNative.mpPower(unit)){
+		子弹属性.子弹威力 += org.flashNight.arki.unit.Action.Huofeng.HuofengNative.mpPower(unit);
 	}
 	//消耗燃料罐
-	if (_parent._name == _root.控制目标){
+	if (unit._name == _root.控制目标){
 		if (ItemUtil.singleSubmit("火焰喷射器燃料罐", 1,
 			{source:"skill_cost", reason:"fire_whirlwind"})){
 			子弹属性.子弹种类 = "火舞旋风";
@@ -1138,7 +1147,7 @@ _root.技能函数.火舞旋风攻击 = function(){
 			子弹属性.魔法伤害属性 = "热";
 				_root.发布消息("消耗火焰喷射器燃料罐");
 		}
-		if (Key.isDown(_parent.左键) || Key.isDown(_parent.右键)){
+		if (Key.isDown(unit.左键) || Key.isDown(unit.右键)){
 			子弹属性.子弹速度 = 13;
 		}
 	}else{

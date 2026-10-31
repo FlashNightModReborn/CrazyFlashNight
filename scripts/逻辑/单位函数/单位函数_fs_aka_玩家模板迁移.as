@@ -848,6 +848,7 @@ _root.主角函数.拾取 = function() {
 };
 
 _root.主角函数.跳 = function() {
+    if (org.flashNight.arki.unit.Action.Huofeng.HuofengInput.locked(this)) return false;
     // 判断是否飞行浮空状态
     if (this.飞行浮空) {
         return;
@@ -1170,6 +1171,7 @@ _root.主角函数.执行切手技 = function(定位器:MovieClip, 形态:String
 
 //切换武器
 _root.主角函数.攻击模式切换 = function(模式) {
+    if (org.flashNight.arki.unit.Action.Huofeng.HuofengInput.locked(this)) return false;
     var previousAttackMode:String = this.攻击模式;
     var previousSwitchSerial:Number = this.__attackModeSwitchSerial | 0;
     if (this.飞行浮空 && this._name === _root.控制目标) {
@@ -1593,6 +1595,7 @@ _root.主角函数.读取当前飞行状态 = function(type) {
 // 副作用编排：StateTransition.apply 内顺序调用 self.存储/读取当前飞行状态、self.gotoAndStop、
 // self.man.removeMovieClip、RoutingIntent.executeStateTransitionJob / clearStateTransitionJob。
 _root.主角函数.状态改变 = function(新状态名) {
+    if (org.flashNight.arki.unit.Action.Huofeng.HuofengNative.routeJump(this, 新状态名)) return;
     StateTransition.apply(this, 新状态名);
 };
 
@@ -1816,6 +1819,7 @@ _root.主角函数.刀口位置生成子弹 = BladeShootCore.shoot;
 
 //释放技能与战技
 _root.主角函数.释放技能 = function(技能名, 消耗mp, 技能按键值) {
+    if (org.flashNight.arki.unit.Action.Huofeng.HuofengInput.locked(this)) return false;
     if(!org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.nonnegative(消耗mp))
         return org.flashNight.arki.unit.Action.Regeneration.ResourceNumber.reject(this,"skill_cost_invalid");
     // 统一校验原始空值、已学习技能、技能数据与 MP 消耗，禁止无效名称进入默认技能路由。
