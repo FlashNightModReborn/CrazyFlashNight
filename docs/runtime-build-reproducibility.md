@@ -1358,3 +1358,9 @@ v1政策失败、材料与workbench修正、GPU元数据补齐、CS6与GPU实测
 冻结源 `4f08917aa7f585e29c2935d51e61024fe585d485`、标签 `runtime-build-v2/20261030-world-stutter-hotfix-v2` 将子弹同步限制在对应视觉层，保留有界快照匹配，取消错帧时冻结整个世界与 HUD 的路径。正式旧 DLL 的零子弹持续错一帧对照复现约 2.3 秒停帧；修复后的精确候选通过 46 组 GPU 对照。
 
 production policy **47/47**，注册本地 X509 与 [GitHub 独立构建 41031842989](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/41031842989) 达成同一 43 文件闭包的双签名、双故障域共识。唯一 writer 推广后，部署 `a3b879f5cc` 与合并上游的 `276d786fa6` 已推送 main、同步常用目录；strict consensus 和普通入口 `--verify-only` 通过。实际自动入场的标题回执超时仍保留为未通过，不宣称实战或物理手感验收。身份、旧包、完整验证与边界见[本批发布记录](reports/整帧冻结止血-正式发布-2026-10-30.md)。本批仍为 2.718 DEV / UNSTABLE。
+
+## 2026-10-31 火凤套装与上游修复正式推广
+
+冻结源 `68003ef5c51049316819751c3ad0993c100f499b`、标签 `runtime-build-v2/20261031-huofeng-set-r2` 与部署 `6ae2b8d2b4d1d6dcaddfe490566d65d814264adc` 已推送 main 并同步常用目录。production policy 47/47，本地 X509 与 GitHub hosted 独立构建对同一 43 文件闭包达成双签名、双故障域共识；唯一 writer 原子推广，部署 Audit 报告 `state=promoted / deploymentChanged=true`。
+
+标准入口只复验实际运行身份、首屏和正常关闭，未进入玩家存档或重跑实战。火凤连招、涅槃、掉落合成、护圈文案、上游修复、失败回执及回滚归档见[本批发布记录](reports/火凤套装-正式发布-2026-10-31.md)。仍为 2.718 DEV / UNSTABLE，不新增稳定整包。
