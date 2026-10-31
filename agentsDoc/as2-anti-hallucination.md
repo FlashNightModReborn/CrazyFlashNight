@@ -1,4 +1,4 @@
-﻿# AS2 反幻觉约束
+# AS2 反幻觉约束
 
 ## Quick Sheet（速查）
 
@@ -210,8 +210,10 @@ AS2/AVM1 是冷门运行时，官方语言参考停在 Flash 8 且不再更新�
 - [AS2 / AVM1 BitmapData 尺寸上限与 API 黑箱实测](../scripts/优化随笔/AS2-BitmapData-尺寸上限实测.md)
   —— `BitmapData` 无 2880 / 8191 / 16,777,215 硬墙（官方文档过时），约束是内存；
   失败形态分「挂死」与「clean null」，`null` 检查挡不住 OOM；
-  `getPixel32` 有符号、alpha=0 fillColor 致 setPixel 失效、`getColorBoundsRect`
-  AVM1 恒空等 API 陷阱。
+  `getPixel32` 有符号、alpha=0 fillColor 致 setPixel 失效；`getColorBoundsRect`
+  对 mask/color 形式敏感，不能概括为恒空或恒全图。非底色裁剪参照 `Cf6BladebotBeamRenderTest`
+  的完整 ARGB 调用（`0xffffffff, 0xffe8e6e2, false`），其原生 68 项回归验证了内部边界；
+  更换遮罩或底色必须重新验证，不能省略界外像素完整性检查。
 - [AS2 中 proto-null 对象的相等性退化与工程边界](../scripts/优化随笔/AS2%20中%20proto-null%20对象的相等性退化与工程边界.md)
   —— 见上文 §2「原型链」。
 

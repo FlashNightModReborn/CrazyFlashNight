@@ -73,9 +73,10 @@ alpha=`0xFF` 的像素，`getPixel32` 读回是**负数**（`0xFF00FF00` → `-1
 **恒返回 0**（预乘 alpha 所致）。alpha ≥ 1 即恢复正常。
 → 初始化 fillColor 的 alpha 取 ≥ 1，或用 `setPixel32` 显式写 alpha。
 
-### 4.3 `getColorBoundsRect()` 在 AVM1 恒返回空矩形
-无论 mask / color 如何设置，AVM1 的 `getColorBoundsRect` 恒返回 `(0,0,0,0)`
-（与 AS3 行为不同）。不能作为 AVM1 的判活 / 内容检测手段。
+### 4.3 `getColorBoundsRect()` 的 mask / color 与输入必须实测
+早先断言「AVM1 恒返回空矩形」过宽，不能当作运行时规则。实际输入可能得到空矩形、全图或内部边界，不能把任一结果推广成恒态，也不能只凭它证明内容完整。
+
+在本仓不透明底色 `ffe8e6e2` 上，[`Cf6BladebotBeamRenderTest`](../类定义/org/flashNight/arki/unit/Action/Melee/Cf6BladebotBeamRenderTest.as) 使用 `getColorBoundsRect(0xffffffff, 0xffe8e6e2, false)` 并断言内部边界；其 [68 项原生回归](../../tools/cf6-bladebot-assets/evidence/20261017-wave/raw/blade-beam-capture-r2-trace.txt) 通过。更换遮罩、颜色或底色必须重新验证，边界外的像素仍需保留完整性证据。
 
 ## 5. 复现方法与测量边界
 
