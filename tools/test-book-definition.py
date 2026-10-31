@@ -15,7 +15,7 @@ spec.loader.exec_module(builder)
 class BookDefinitionTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.source = builder.resolve_book_choices(json.loads(builder.SOURCE.read_text(encoding='utf-8')))
+        cls.source = builder.normalize_book_units(builder.resolve_book_choices(json.loads(builder.SOURCE.read_text(encoding='utf-8'))), builder.UnitRegistry.load(ROOT))
         cls.skills = ET.parse(ROOT / 'data/skills/skills.xml').findall('Skill')
         cls.items = {}
         for path in (ROOT / 'data/items').glob('*.xml'):
@@ -297,19 +297,20 @@ class BookDefinitionTests(unittest.TestCase):
         builder.validate_cf6(data,self.items,self.skills,units,require_backgrounds=False)
 
     def test_type61_partial_loadout_is_independent_of_historical_actor(self):
-        data=json.loads(builder.TYPE61_SOURCE.read_text('utf8'))
+        registry=builder.UnitRegistry.load(ROOT)
+        data=builder.normalize_book_units(json.loads(builder.TYPE61_SOURCE.read_text('utf8')),registry)
         self.validate_cf6(data)
         self.assertEqual((35,17372868,1050),(data['actor']['level'],data['actor']['experience'],data['startingSkillPoints']))
         self.assertEqual(1,next(s['level'] for s in data['actor']['skills'] if s['name']=='铁匠'))
         self.assertEqual({1},{e['enhancement'] for e in data['actor']['equipment']})
         self.assertIn('移动射击',data['actor']['quickSkills'])
         self.assertEqual('cf6-type61.runtime.json',next(iter(builder.generated_cf6(data))).name)
-        historical=json.loads(builder.CF6_SOURCE.read_text('utf8'))
+        historical=builder.normalize_book_units(json.loads(builder.CF6_SOURCE.read_text('utf8')),registry)
         self.validate_cf6(historical)
         self.assertEqual(60,historical['actor']['level'])
 
     def test_type61_rejects_duplicate_sp_smith_upgrades_and_foreign_loadouts(self):
-        original=json.loads(builder.TYPE61_SOURCE.read_text('utf8'))
+        original=builder.normalize_book_units(json.loads(builder.TYPE61_SOURCE.read_text('utf8')),builder.UnitRegistry.load(ROOT))
         mutations=[lambda d:d.update(startingSkillPoints=2560),
                    lambda d:d['actor'].update(experience=0),
                    lambda d:d['actor']['equipment'][0].update(enhancement=11),
@@ -509,7 +510,7 @@ class BookDefinitionTests(unittest.TestCase):
             data=self.cf6_fixture();mutate(data['maps'][0]['mechanism']['turrets']['turrets'])
             with self.assertRaises(ValueError): self.validate_cf6(data)
         # 真实装配产物全章过门
-        chapter=json.loads((ROOT/'data/stages/books/cf6-sting.json').read_text(encoding='utf-8-sig'))
+        chapter=builder.normalize_book_units(json.loads((ROOT/'data/stages/books/cf6-sting.json').read_text(encoding='utf-8-sig')), builder.UnitRegistry.load(ROOT))
         units={u['id'] for u in json.loads((ROOT/'data/units/units.json').read_text('utf-8-sig'))}
         builder.validate_cf6(chapter,self.items,self.skills,units,require_backgrounds=False)
 

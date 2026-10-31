@@ -61,6 +61,7 @@
 ### XML / 数据 / 游戏数值通用门
 
 - 受影响路径运行时 smoke。
+- 单位 `id/key`、刷怪引用或其生成/解析边界变化：执行 [单位身份检查](../tools/unit-registry/README.md#离线验证)；涉及 AS2 时追加其 tracked `run-unit-registry-tests.ps1`，编译目标与共享 CS6/scratch 隔离仍遵守下文 Flash 合同。离线工具输出等价不代签真实 AVM1。
 - 近战/压制近战长枪的 `bullet`、`split` 或 `data*` 变体改动固定运行 `node tools/validate-melee-longgun-chain.js`。
 - 竞技场标准佣兵掉落固定运行 `node tools/validate-arena-drop-rules.js`、`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-arena-drop-rule-tests.ps1 -TimeoutSeconds 240`（机器钉死 20/20）
   与 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run-boot-sequencer-tests.ps1 -TimeoutSeconds 240`（机器钉死 BootSequencer 91/91 + BootstrapHandshake 12/12），分别冻结 XML/物品目录/旧可达集合、规则顺序与概率语义、启动 fail-closed 和 `ItemObtainIndex → TooltipComposer` 来源投影。

@@ -65,7 +65,8 @@ def expected(shield=False):
         entry.find(key).text = str(math.floor(values[formula]+0.5))
     unit = {'id':unit_id,'spritename':link,'level':30,'name':display_name,
         'is_hostile':True,'height':175,'data':{'primary':None,'secondary':None,'secondary2':None,'melee':None}}
-    existing = next((r for r in json.loads((ROOT/'data/units/units.json').read_text(encoding='utf-8-sig'))
+    registered = json.loads((ROOT/'data/units/units.json').read_text(encoding='utf-8-sig'))
+    existing = next((r for r in registered
         if r['id']==unit_id),None)
     if existing:
         if existing['spritename']!=link or not isinstance(existing.get('data'),dict):
@@ -73,6 +74,8 @@ def expected(shield=False):
         # units.json remains the external equipment authority. Recomputing the
         # monster panel must not erase a user's explicit loadout.
         unit['data'] = copy.deepcopy(existing['data'])
+    unit = common.preserve_unit_key(unit, registered,
+        new_key='cf6.特种兵.持盾一阶段' if shield else 'cf6.特种兵.二阶段')
     receipt = {'formula':'tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts',
         'schemaReference':SOURCE,'unitId':unit_id,'linkage':link,'requestedStage':7,'requestedTier':5,
         'fixedByUser':[] if shield else ['阶段','档次系数'],

@@ -42,6 +42,7 @@ _root.loaders.push(function ()
     {
         this.units = this.units.concat(this.json_parser.parse(this.units_srcs[i]));
     }
+    org.flashNight.arki.unit.UnitRegistry.initialize(this.units);
     for (var i in this.units)
     {
         this.unit_indices_by_id[this.units[i].id] = i;

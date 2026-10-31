@@ -62,12 +62,15 @@ for s in rooms[1:3]:
 check(all(float(p.findtext('x'))<150 for p in rooms[0].findall('SpawnPoint/Point')),'crash pursuers enter left')
 arrival=next(e for e in rooms[0].findall('Event') if e.findtext('EventName')=='WaveFinished')
 check(all(float(e.findtext('x'))<250 and e.findtext('Parameters/方向')=='右' for e in arrival.findall('Enemy')),'both regular companions enter from left')
-check([e.findtext('Type') for e in arrival.findall('Enemy')]==['兵种470','兵种471'] and all(e.findtext('Level')=='20' for e in arrival.findall('Enemy')),'ordinary level-20 companions use their own unit entries')
 units=json.loads((ROOT/'data/units/units.json').read_text(encoding='utf-8-sig'))
 ordinary={u['id']:u for u in units}
+key_to_id={u['key']:u['id'] for u in units if u.get('key')}
+def _resolve_id(t):
+    return int(t[2:]) if t and t.startswith('兵种') and t[2:].isdigit() else key_to_id.get(t)
+check([_resolve_id(e.findtext('Type')) for e in arrival.findall('Enemy')]==[470,471] and all(e.findtext('Level')=='20' for e in arrival.findall('Enemy')),'ordinary level-20 companions use their own unit entries')
 check(ordinary[470]['data']['primary']=='AK74' and ordinary[471]['data']['primary']=='m14','ordinary companion primary weapons are present and upgraded')
 check(ordinary[470]['data']['hand']=='A兵团制式战术手套' and ordinary[471]['data']['hand']=='A兵团制式战术手套','ordinary companion handgear uses the formal item name')
-companion_dialogue=[d for d in stage.findall('.//Dialogue') if d.findtext('Type') in ('兵种470','兵种471')]
+companion_dialogue=[d for d in stage.findall('.//Dialogue') if _resolve_id(d.findtext('Type')) in (470,471)]
 check(len(companion_dialogue)==9 and all(d.findtext('Char')=='主角模板' for d in companion_dialogue),'companion dialogue uses doll portraits')
 blue_radio=[d for d in stage.findall('.//Dialogue') if d.findtext('Name')=='Blue（无线电）']
 check(len(blue_radio)==6 and all(d.findtext('Char')=='Blue（无线电）' and d.findtext('Title')=='格斗教练' for d in blue_radio),'base radio uses Blue communication portraits')
@@ -87,6 +90,9 @@ for i,row in enumerate(baseline):
     # R6 adds optional intelligence to a single existing rooftop carrier only.
     # Compare the original combat fingerprint after removing that exact loot addition.
     for enemy in s.findall('Wave/SubWave/EnemyGroup/Enemy'):
+        tnode=enemy.find('Type')
+        if tnode is not None and _resolve_id((tnode.text or '').strip()) is not None:
+            tnode.text='兵种'+str(_resolve_id((tnode.text or '').strip()))
         params=enemy.find('Parameters')
         if params is not None:
             for drop in list(params.findall('掉落物')):
@@ -157,7 +163,7 @@ for n in intel_names:
     if drops:
         intel=next(d for d in drops[0].findall('Parameters/掉落物') if d.findtext('名字')==n)
         check(intel.findtext('概率')=='100','guaranteed optional document '+n)
-        sprite=ordinary[int(drops[0].findtext('Type')[2:])]['spritename']
+        sprite=ordinary[_resolve_id(drops[0].findtext('Type'))]['spritename']
         defaults=E.parse(str(ROOT/'data/enemy_properties/原版敌人 2011-2012.xml')).find(sprite).findall('掉落物')
         actual=[d for d in drops[0].findall('Parameters/掉落物') if d.findtext('名字')!=n]
         def fields(d):return sorted((c.tag,(c.text or '').strip()) for c in d)

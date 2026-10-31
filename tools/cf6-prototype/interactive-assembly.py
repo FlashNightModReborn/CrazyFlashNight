@@ -13,7 +13,11 @@ import math
 from pathlib import Path
 import re
 
+import sys
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "tools"))
+from unit_registry import UnitRegistry
+REGISTRY = UnitRegistry.load(ROOT)
 MANIFEST = ROOT / 'tools/cf6-scene-completion/interactive-art-manifest.json'
 EXPLOSION_SOURCE = ROOT / 'flashswf/arts/原版素材库-子弹/LIBRARY/手雷/地瓜手雷/地瓜手雷.xml'
 PROJECTION_SHA = 'da8403d2135566583ef7baf6a1351c820f5bcb78a31c633a95066e239aa04e01'
@@ -74,7 +78,7 @@ def migrate_pod_budget(stage, props):
         entries = plan['groups'][0]['enemies']
     else:
         raise ValueError('unreviewed clone pod budget')
-    selected = [entry for entry in entries if entry['Type'] == '兵种460']
+    selected = [entry for entry in entries if REGISTRY.resolve_id(entry['Type']) == 460]
     if (len(selected) != 1 or selected[0]['Quantity'] != 5
             or selected[0]['Level'] != (50 if identity == 'A15' else 55)
             or any(key in selected[0] for key in ('TriggerEvent','podId'))):

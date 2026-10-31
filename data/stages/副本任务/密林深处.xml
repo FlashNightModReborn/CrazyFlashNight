@@ -54,38 +54,38 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种21</Type>
+                        <Type>铁血.狂战士</Type>
                         <Interval>400</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种22</Type>
+                        <Type>铁血.狩猎者</Type>
                         <Interval>800</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种23</Type>
+                        <Type>铁血.驯鹰者</Type>
                         <Interval>1600</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种237</Type>
+                        <Type>铁血.独狼</Type>
                         <Interval>2400</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种305</Type>
+                        <Type>彩蛋.杂交熊.I型</Type>
                         <Interval>3000</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                         <Parameters>不掉装备:true</Parameters>
                     </Enemy>
 					<Enemy id="5">
-                        <Type>兵种308</Type>
+                        <Type>彩蛋.文天.密林友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>60</Level>
@@ -100,31 +100,31 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种21</Type>
+                        <Type>铁血.狂战士</Type>
                         <Interval>200</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种22</Type>
+                        <Type>铁血.狩猎者</Type>
                         <Interval>800</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种23</Type>
+                        <Type>铁血.驯鹰者</Type>
                         <Interval>1200</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种237</Type>
+                        <Type>铁血.独狼</Type>
                         <Interval>1800</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种306</Type>
+                        <Type>彩蛋.杂交熊.II型.绯红女皇</Type>
                         <Interval>2800</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -138,31 +138,31 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种21</Type>
+                        <Type>铁血.狂战士</Type>
                         <Interval>200</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种22</Type>
+                        <Type>铁血.狩猎者</Type>
                         <Interval>600</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种23</Type>
+                        <Type>铁血.驯鹰者</Type>
                         <Interval>1200</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种237</Type>
+                        <Type>铁血.独狼</Type>
                         <Interval>1800</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种307</Type>
+                        <Type>彩蛋.杂交熊.II型.武神之刃</Type>
                         <Interval>2400</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -201,8 +201,8 @@
                 <Title>？？？</Title>
                 <Char>主角模板</Char>
                 <Text>不要再得寸进尺了，这和你们没有任何关系。</Text>
-                <Type>兵种301</Type>
-            <Type>兵种303</Type>
+                <Type>彩蛋.奇美拉.I型</Type>
+            <Type>彩蛋.奇美拉.III型</Type>
                 </Dialogue>
             <Dialogue id="1">
                 <Name>文天</Name>
@@ -228,20 +228,20 @@
                 </WaveInformation>     
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种296</Type>
+                        <Type>彩蛋.杰克霜精</Type>
                         <Interval>2100</Interval>
                         <Quantity>3</Quantity>
                         <Level>25</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种297</Type>
+                        <Type>彩蛋.邪恶霜精</Type>
                         <Interval>1000</Interval>
                         <Quantity>2</Quantity>
                         <SpawnIndex>0</SpawnIndex>
                         <Level>25</Level>
                     </Enemy>
 					<Enemy id="2">
-                        <Type>兵种308</Type>
+                        <Type>彩蛋.文天.密林友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>60</Level>
@@ -256,14 +256,14 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种301</Type>
+                        <Type>彩蛋.奇美拉.I型</Type>
                         <Interval>1800</Interval>
                         <Quantity>2</Quantity>
                         <Level>25</Level>
                         <SpawnIndex>left</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种302</Type>
+                        <Type>彩蛋.奇美拉.II型</Type>
                         <Interval>1200</Interval>
                         <Quantity>2</Quantity>
                         <Level>25</Level>
@@ -277,25 +277,25 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种301</Type>
+                        <Type>彩蛋.奇美拉.I型</Type>
                         <Interval>200</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种302</Type>
+                        <Type>彩蛋.奇美拉.II型</Type>
                         <Interval>800</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种297</Type>
+                        <Type>彩蛋.邪恶霜精</Type>
                         <Interval>1200</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种303</Type>
+                        <Type>彩蛋.奇美拉.III型</Type>
                         <Interval>1800</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>

@@ -94,8 +94,8 @@ def main():
     check(level20=={'hp':847,'attack':116,'defense':344},'actual level20 profile')
     stage=E.parse(ROOT/'data/stages/地下2层/禁区边缘.xml').getroot()
     types=[x.findtext('Type') for x in stage.find("SubStage[@id='1']").findall('.//Enemy')]
-    check(types.count('兵种56')==2 and types.count('兵种'+str(unit_id))==1 and types.count('兵种25')==2,'showcase composition')
-    check(stage.find("SubStage[@id='0']").find('.//Enemy[Type="兵种13"]') is not None,'opening wild dog preserved')
+    check(sum(t in ('兵种56','军阀.突击兵') for t in types)==2 and sum(t in ('兵种'+str(unit_id),'军阀.铁卫犬') for t in types)==1 and sum(t in ('兵种25','终结者.标准型') for t in types)==2,'showcase composition')
+    check(any(e.findtext('Type') in ('兵种13','僵尸.野狗') for e in stage.find("SubStage[@id='0']").findall('.//Enemy')),'opening wild dog preserved')
     swf=ROOT/'flashswf/arts/new/Codex专用素材.swf'
     linkage,counts,sprites,shapes=exports(swf)
     check('敌人-军阀铁卫犬' in linkage,'compiled export present')

@@ -36,6 +36,9 @@ import xml.etree.ElementTree as ET
 from collections import deque
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+sys.path.insert(0, os.path.join(ROOT, "tools"))
+from unit_registry import UnitRegistry
+REGISTRY = UnitRegistry.load(ROOT)
 SRC = os.path.join(ROOT, "data/stages/books/cf6-sting-source")
 ENV_XML = os.path.join(ROOT, "tools/cf6-map-runtime/generated/environment.fragment.xml")
 MAPINPUT = os.path.join(ROOT, "tools/cf6-map-source/generated/map-input.json")
@@ -54,14 +57,14 @@ TOL = 0.051  # native coords are rounded to 0.1 in the fragment
 TARGETS = [
     {"id": "A02-wave-0-3", "map": "A02", "kind": "waveEnemy",
      "fieldPath": "stage.Wave.SubWave[0].EnemyGroup.Enemy[3]",
-     "unit": "兵种461", "originalNative": [828.8, 441.9],
+     "unit": "cf6.生化僵尸.男", "originalNative": [828.8, 441.9],
      "factPath": ["statics", 3], "factIdentity": {"unit": "aw-僵尸", "xy": [828.75, 441.85]},
      "originalProvenance": "原作 display[13] id=477 depth=336 (aw-僵尸) — 作者摆放实例",
      "reason": "原作摆放位于原始 even-odd 填充体内;CF7 环境语义把填充转为实体 Collision,"
                "出生点落入多边形内部、玩家不可达(r6 fail#1)"},
     {"id": "A02-wave-0-5", "map": "A02", "kind": "waveEnemy",
      "fieldPath": "stage.Wave.SubWave[0].EnemyGroup.Enemy[5]",
-     "unit": "兵种461", "originalNative": [1085.8, 463.9],
+     "unit": "cf6.生化僵尸.男", "originalNative": [1085.8, 463.9],
      "factPath": ["statics", 5], "factIdentity": {"unit": "aw-僵尸", "xy": [1085.75, 463.85]},
      "originalProvenance": "原作 display[15] id=477 depth=411 (aw-僵尸) — 作者摆放实例",
      "reason": "同 r6 fail#2:填充体内摆放,转换后落入实体 Collision,玩家不可达"},
@@ -69,7 +72,7 @@ TARGETS = [
      "fieldPath": "stage.SpawnPoint.Point[0]",
      "unit": None,
      "referencing": [{"fieldPath": "stage.Wave.SubWave[1].EnemyGroup.Enemy[0]",
-                      "unit": "兵种463", "spawnIndex": 0}],
+                      "unit": "cf6.蛮斧刽子手", "spawnIndex": 0}],
      "engineOffsets": [[0, 2]],
      "originalNative": [856.5, 191.2],
      "factPath": ["generators", 1], "factIdentity": {"instance": "敌人生成器1", "xy": [856.45, 191.15]},
@@ -78,13 +81,13 @@ TARGETS = [
                "(WaveSpawner Offset)不足以脱出,引用它的 Wave[1][0](SpawnIndex=0)随本点一并修复"},
     {"id": "A20-boss-0-0", "map": "A20", "kind": "bossEnemy",
      "fieldPath": "bossEncounter.groups[0].enemies[0]",
-     "unit": "兵种467", "originalNative": [185.0, 162.0],
+     "unit": "cf6.特种兵.持盾一阶段", "originalNative": [185.0, 162.0],
      "factPath": ["generators", 5], "factIdentity": {"unit": "敌人-特种兵-带盾", "xy": [185.0, 162.0]},
      "originalProvenance": "原作 display[18] id=1434 depth=225 — door1 门刷点(门触发演出属机关线,首版按血量阈值发兵)",
      "reason": "r6 fail#5:门刷点在墙内填充体,转换后落入实体 Collision,玩家不可达"},
     {"id": "A22-boss-0-3", "map": "A22", "kind": "bossEnemy",
      "fieldPath": "bossEncounter.groups[0].enemies[3]",
-     "unit": "兵种465", "originalNative": [185.0, 162.0],
+     "unit": "cf6.大刀机器人", "originalNative": [185.0, 162.0],
      "factPath": ["generators", 5], "factIdentity": {"unit": "敌人-大刀机器人", "xy": [185.0, 162.0]},
      "originalProvenance": "与 A20 共享门几何(A20/A22 walkBounds/碰撞相同),原作 display[18] 同位 id=1434",
      "reason": "r6 fail#6:同 A20 boss[0][0] 的门内墙填充问题"},
@@ -347,12 +350,12 @@ def main():
                 refuse("%s %s = (%s,%s), expected original (%s,%s); "
                        "source drifted or already adapted — will not move blindly"
                        % (mid, t["fieldPath"], cur.get("x"), cur.get("y"), want[0], want[1]))
-        if t["unit"] is not None and cur.get("Type") != t["unit"]:
+        if t["unit"] is not None and REGISTRY.resolve_id(cur.get("Type")) != REGISTRY.resolve_id(t["unit"]):
             refuse("%s %s Type=%s, expected %s (identity mismatch)"
                    % (mid, t["fieldPath"], cur.get("Type"), t["unit"]))
         for r in t.get("referencing", []):
             rn = get_path(fm, r["fieldPath"])
-            if rn.get("Type") != r["unit"] or rn.get("SpawnIndex") != r["spawnIndex"]:
+            if REGISTRY.resolve_id(rn.get("Type")) != REGISTRY.resolve_id(r["unit"]) or rn.get("SpawnIndex") != r["spawnIndex"]:
                 refuse("%s referencing field %s identity mismatch" % (mid, r["fieldPath"]))
 
         # --- identity guard 2: fact-table provenance unchanged ---

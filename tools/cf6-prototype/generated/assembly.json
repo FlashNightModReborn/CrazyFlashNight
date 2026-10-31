@@ -52,7 +52,7 @@
   "inputs": [
     {
       "path": "data/stages/books/cf6-sting-source/maps.fragment.json",
-      "sha256": "3baddf2aeffd731c6138082151a73ff8a0557ce71397788e3ddc612485e1c92c"
+      "sha256": "43f6c48f510593f10c655213de0347e6a500a3157c509be161f09be33ef3415f"
     },
     {
       "path": "data/stages/books/cf6-sting-source/economy.fragment.json",
@@ -120,11 +120,11 @@
     },
     {
       "path": "tools/cf6-roguelike-content/difficulty.source.json",
-      "sha256": "a3989c3c4be841e76d573b847c69a0ee489922f96835a564dc93ea6323d3f26a"
+      "sha256": "4df1ac046f6258f09a6f84a41c2c2ea4ff8c78b94749a423cbc0dfb912bfe5cc"
     },
     {
       "path": "tools/cf6-roguelike-content/difficulty_plan.py",
-      "sha256": "ae2718351b5afe014a40b5617e117204296019589233ebb4d474171d714d6b51"
+      "sha256": "4407a5d00f873df6a3298ed430bf3182c82c608f45f5d659bfcbce511c0ca172"
     },
     {
       "path": "data/stages/books/cf6-sting-source/encounter-facts.v1.json",
@@ -136,7 +136,7 @@
     },
     {
       "path": "tools/cf6-scene-completion/completion-plan.json",
-      "sha256": "b6da4fa0b0ee1db59ddfbab4d707c80647761894f93ba1d54ebfcf541d30d78e"
+      "sha256": "53340aeabc1c518c3063ee6ea12fde28203faeb2d6b65907b9f589231c5ea2fd"
     },
     {
       "path": "tools/cf6-scene-completion/traversal-art-manifest.json",
@@ -172,7 +172,7 @@
     },
     {
       "path": "tools/cf6-prototype/interactive-assembly.py",
-      "sha256": "059e01338d7cd2e9096691cf94b47abd09cbf0406978ec67e0362c6e78fd554e"
+      "sha256": "89fbfbced1cb7fd44835290eeec9d91d85832e19ed4cef64fdc349116193210c"
     },
     {
       "path": "tools/cf6-scene-completion/interactive-art-manifest.json",
@@ -188,7 +188,7 @@
     },
     {
       "path": "tools/cf6-prototype/transport-assembly.py",
-      "sha256": "b248214631d83f48ef3fef260fd5d7bde028697c03884ac1f680471da3fde74a"
+      "sha256": "78a635202cb7c5f6331fdd622645d201a432efa0a1bd6c976e5d73818755f197"
     },
     {
       "path": "tools/cf6-scene-completion/transport-art-manifest.json",
@@ -208,7 +208,7 @@
     },
     {
       "path": "tools/cf6-scene-completion/completion-plan.json",
-      "sha256": "b6da4fa0b0ee1db59ddfbab4d707c80647761894f93ba1d54ebfcf541d30d78e"
+      "sha256": "53340aeabc1c518c3063ee6ea12fde28203faeb2d6b65907b9f589231c5ea2fd"
     },
     {
       "path": "tools/cf6-tutorial/original-tutorial-geometry.json",
@@ -388,7 +388,7 @@
     },
     {
       "path": "data/skills/skills.xml",
-      "sha256": "c1fd19aed12be870a78b6af1a1e533ac19d55bf5ab5ad6f92ff998d480767628"
+      "sha256": "f8f337ba96eb4296712ca03f0f1e68b687260439203335d4a8ee1de57ed877e7"
     },
     {
       "path": "data/items/list.xml",
@@ -440,7 +440,7 @@
     },
     {
       "path": "data/items/收集品_材料.xml",
-      "sha256": "14ff9160ec792bc4a36677397e1030f7b38c48ea1562d30e3780d6b6012aaa3b"
+      "sha256": "c869f113c90719bb0e8fcd4cac223157bd4fd693af5c13517cbd09d1451df476"
     },
     {
       "path": "data/items/收集品_材料_插件.xml",
@@ -476,7 +476,7 @@
     },
     {
       "path": "data/items/防具_20-39级.xml",
-      "sha256": "6220201e0fd9969bfaf2421d796be33410c7d4a2a82460156988fe4370afa550"
+      "sha256": "bfe9df016d3039ccbab6d87423212a86ec5a4b949db1da476a2b0bcc178ff903"
     },
     {
       "path": "data/items/防具_40+级.xml",
@@ -584,7 +584,7 @@
     },
     {
       "path": "data/items/武器_手枪_霰弹枪.xml",
-      "sha256": "2941d6dd2781c3565353ed52fd7a70a844b05bbbffcb688c9cc7a49faea35369"
+      "sha256": "256fa454f3b30ba464a88107f091f411a392d1eb3a71d41c83a32c6fa308d657"
     },
     {
       "path": "data/items/武器_长枪_冲锋枪.xml",
@@ -636,7 +636,7 @@
     },
     {
       "path": "data/items/武器_长枪_霰弹枪.xml",
-      "sha256": "e68ba53aa8e0a71e34d747782a6942d5260546ace079dcabd8a94c4fbceebde4"
+      "sha256": "0bb7d5cf545af01d1fb8f5543b51be2fa341605631c64878af18df4ce29b71d3"
     },
     {
       "path": "data/items/消耗品_书中配给.xml",
@@ -986,7 +986,7 @@
       "tools/cf6-vehicle/chapter_fragment.py": "af633fe0d92cb510dd4318ee4075c172752da7ff7e75b411a0e6e418a744702f",
       "tools/cf6-vehicle/source/original-nodes.json": "2ec3c11095326219f42695737cbe4e08c2ed2e4308650ff04be797a82ca2d463",
       "tools/cf6-scene-completion/source-evidence/original.json": "14d0209481025b6ce2b792819c59de61ea5490cde99f069c163e8a31ca4dc194",
-      "tools/cf6-scene-completion/completion-plan.json": "b6da4fa0b0ee1db59ddfbab4d707c80647761894f93ba1d54ebfcf541d30d78e"
+      "tools/cf6-scene-completion/completion-plan.json": "53340aeabc1c518c3063ee6ea12fde28203faeb2d6b65907b9f589231c5ea2fd"
     }
   },
   "spawnAssembly": {
@@ -6188,12 +6188,12 @@
         "value": true
       }
     ],
-    "authorityBeforeSha256": "0396ebb1d00ed41d04ea80c04289b7693eff020ce48b253767d379e22ce0498b",
-    "authorityAfterSha256": "0396ebb1d00ed41d04ea80c04289b7693eff020ce48b253767d379e22ce0498b",
+    "authorityBeforeSha256": "158c5afca857c3f9759a35f9a9fdaff10c290d4a62647822e7fd550406485284",
+    "authorityAfterSha256": "158c5afca857c3f9759a35f9a9fdaff10c290d4a62647822e7fd550406485284",
     "preservedInitialEntries": 27,
-    "preservedInitialSha256": "2406672438ad97906100f50f6ed9e101a0ddbfd317315f7b8e4de1e58ad09d6a",
+    "preservedInitialSha256": "df4dd43b7853c90e03736bfcb1e9646fd3af72a1222ea3ba5122dbcc24c7b017",
     "preservedPodEntries": 10,
-    "preservedPodSha256": "fd27d578336cdb0b21b0f482f621c60f7c19735ac25819613362933ee195a4b0"
+    "preservedPodSha256": "a866fbe1daedac99ff61e343bcf960a1d999df91047757a8fefaab7af9e8fc6e"
   },
   "exitGuidance": [
     {
@@ -8165,7 +8165,7 @@
         458.596,
         432.9453
       ],
-      "enemyType": "兵种467",
+      "enemyType": "cf6.特种兵.持盾一阶段",
       "level": 45,
       "existingQuantity": 5,
       "finalQuantity": 5,
@@ -8192,7 +8192,7 @@
         458.596,
         432.9453
       ],
-      "enemyType": "兵种469",
+      "enemyType": "cf6.光头保安.变身型",
       "level": 50,
       "existingQuantity": 7,
       "finalQuantity": 7,
@@ -8219,7 +8219,7 @@
         458.596,
         432.9453
       ],
-      "enemyType": "兵种463",
+      "enemyType": "cf6.蛮斧刽子手",
       "level": 59,
       "existingQuantity": 5,
       "finalQuantity": 5,

@@ -70,7 +70,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种3</Type>
+                        <Type>僵尸.光头军人</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>
@@ -78,7 +78,7 @@
                         <y>511</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种3</Type>
+                        <Type>僵尸.光头军人</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>
@@ -86,7 +86,7 @@
                         <y>350</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种2</Type>
+                        <Type>僵尸.眼镜男</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>
@@ -94,7 +94,7 @@
                         <y>550</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种1</Type>
+                        <Type>僵尸.金发女</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>
@@ -102,7 +102,7 @@
                         <y>638</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种6</Type>
+                        <Type>僵尸.黄衣男</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>
@@ -110,7 +110,7 @@
                         <y>427</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种5</Type>
+                        <Type>僵尸.胖子</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>
@@ -118,7 +118,7 @@
                         <y>331</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种4</Type>
+                        <Type>僵尸.红衣金发女</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>
@@ -126,7 +126,7 @@
                         <y>418</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种353</Type>
+                        <Type>堕落城.掠夺少女</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>10</Level>
@@ -155,14 +155,14 @@
                             <Enemy>
                                 <Type>
                                     <CaseSwitch expression="_root.随机整数" params="0,7">
-                                        <Case casevalue="0">兵种415</Case>
-                                        <Case casevalue="1">兵种416</Case>
-                                        <Case casevalue="2">兵种417</Case>
-                                        <Case casevalue="3">兵种418</Case>
-                                        <Case casevalue="4">兵种419</Case>
-                                        <Case casevalue="5">兵种420</Case>
-                                        <Case casevalue="6">兵种421</Case>
-                                        <Case casevalue="default">兵种422</Case>
+                                        <Case casevalue="0">盗贼.男.匕首</Case>
+                                        <Case casevalue="1">盗贼.男.徒手墨镜</Case>
+                                        <Case casevalue="2">盗贼.男.M1911配M9</Case>
+                                        <Case casevalue="3">盗贼.男.UZI</Case>
+                                        <Case casevalue="4">盗贼.女.UZI配水管</Case>
+                                        <Case casevalue="5">盗贼.女.UZI配短斧</Case>
+                                        <Case casevalue="6">盗贼.女.Glock18配匕首</Case>
+                                        <Case casevalue="default">盗贼.女.Glock18配大剑</Case>
                                     </CaseSwitch>
                                 </Type>
                                 <Interval>100</Interval>
@@ -174,7 +174,7 @@
                         </Case>
                         <Case casevalue="default">
                             <Enemy>
-                                <Type>兵种3</Type>
+                                <Type>僵尸.光头军人</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -182,7 +182,7 @@
                                 <y>448</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种3</Type>
+                                <Type>僵尸.光头军人</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -190,7 +190,7 @@
                                 <y>520</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种1</Type>
+                                <Type>僵尸.金发女</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -198,7 +198,7 @@
                                 <y>520</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种6</Type>
+                                <Type>僵尸.黄衣男</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -206,7 +206,7 @@
                                 <y>309</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种5</Type>
+                                <Type>僵尸.胖子</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -214,7 +214,7 @@
                                 <y>351</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种4</Type>
+                                <Type>僵尸.红衣金发女</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -222,7 +222,7 @@
                                 <y>570</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种3</Type>
+                                <Type>僵尸.光头军人</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -252,14 +252,14 @@
                             <Enemy>
                                 <Type>
                                     <CaseSwitch expression="_root.随机整数" params="0,7">
-                                        <Case casevalue="0">兵种415</Case>
-                                        <Case casevalue="1">兵种416</Case>
-                                        <Case casevalue="2">兵种417</Case>
-                                        <Case casevalue="3">兵种418</Case>
-                                        <Case casevalue="4">兵种419</Case>
-                                        <Case casevalue="5">兵种420</Case>
-                                        <Case casevalue="6">兵种421</Case>
-                                        <Case casevalue="default">兵种422</Case>
+                                        <Case casevalue="0">盗贼.男.匕首</Case>
+                                        <Case casevalue="1">盗贼.男.徒手墨镜</Case>
+                                        <Case casevalue="2">盗贼.男.M1911配M9</Case>
+                                        <Case casevalue="3">盗贼.男.UZI</Case>
+                                        <Case casevalue="4">盗贼.女.UZI配水管</Case>
+                                        <Case casevalue="5">盗贼.女.UZI配短斧</Case>
+                                        <Case casevalue="6">盗贼.女.Glock18配匕首</Case>
+                                        <Case casevalue="default">盗贼.女.Glock18配大剑</Case>
                                     </CaseSwitch>
                                 </Type>
                                 <Interval>100</Interval>
@@ -269,7 +269,7 @@
                                 <y>500</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种6</Type>
+                                <Type>僵尸.黄衣男</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -277,7 +277,7 @@
                                 <y>586</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种5</Type>
+                                <Type>僵尸.胖子</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -285,7 +285,7 @@
                                 <y>321</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种3</Type>
+                                <Type>僵尸.光头军人</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -295,7 +295,7 @@
                         </Case>
                         <Case casevalue="default">
                             <Enemy>
-                                <Type>兵种6</Type>
+                                <Type>僵尸.黄衣男</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -303,7 +303,7 @@
                                 <y>586</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种5</Type>
+                                <Type>僵尸.胖子</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -311,7 +311,7 @@
                                 <y>321</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种3</Type>
+                                <Type>僵尸.光头军人</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -319,7 +319,7 @@
                                 <y>564</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种3</Type>
+                                <Type>僵尸.光头军人</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -327,7 +327,7 @@
                                 <y>427</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种6</Type>
+                                <Type>僵尸.黄衣男</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -335,7 +335,7 @@
                                 <y>267</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种5</Type>
+                                <Type>僵尸.胖子</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -343,7 +343,7 @@
                                 <y>387</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种4</Type>
+                                <Type>僵尸.红衣金发女</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -351,7 +351,7 @@
                                 <y>297</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种3</Type>
+                                <Type>僵尸.光头军人</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -393,14 +393,14 @@
                             <Enemy>
                                 <Type>
                                     <CaseSwitch expression="_root.随机整数" params="0,7">
-                                        <Case casevalue="0">兵种415</Case>
-                                        <Case casevalue="1">兵种416</Case>
-                                        <Case casevalue="2">兵种417</Case>
-                                        <Case casevalue="3">兵种418</Case>
-                                        <Case casevalue="4">兵种419</Case>
-                                        <Case casevalue="5">兵种420</Case>
-                                        <Case casevalue="6">兵种421</Case>
-                                        <Case casevalue="default">兵种422</Case>
+                                        <Case casevalue="0">盗贼.男.匕首</Case>
+                                        <Case casevalue="1">盗贼.男.徒手墨镜</Case>
+                                        <Case casevalue="2">盗贼.男.M1911配M9</Case>
+                                        <Case casevalue="3">盗贼.男.UZI</Case>
+                                        <Case casevalue="4">盗贼.女.UZI配水管</Case>
+                                        <Case casevalue="5">盗贼.女.UZI配短斧</Case>
+                                        <Case casevalue="6">盗贼.女.Glock18配匕首</Case>
+                                        <Case casevalue="default">盗贼.女.Glock18配大剑</Case>
                                     </CaseSwitch>
                                 </Type>
                                 <Interval>100</Interval>
@@ -410,7 +410,7 @@
                                 <y>500</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种6</Type>
+                                <Type>僵尸.黄衣男</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -418,7 +418,7 @@
                                 <y>267</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种5</Type>
+                                <Type>僵尸.胖子</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -426,7 +426,7 @@
                                 <y>387</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种4</Type>
+                                <Type>僵尸.红衣金发女</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -436,7 +436,7 @@
                         </Case>
                         <Case casevalue="default">
                             <Enemy>
-                                <Type>兵种8</Type>
+                                <Type>僵尸.佝偻</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -444,7 +444,7 @@
                                 <y>468</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种2</Type>
+                                <Type>僵尸.眼镜男</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -452,7 +452,7 @@
                                 <y>567</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种6</Type>
+                                <Type>僵尸.黄衣男</Type>
                                 <Interval>100</Interval>
                                 <Quantity>1</Quantity>
                                 <Level>6</Level>
@@ -460,14 +460,14 @@
                                 <y>431</y>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种3</Type>
+                                <Type>僵尸.光头军人</Type>
                                 <Interval>1000</Interval>
                                 <Quantity>4</Quantity>
                                 <Level>10</Level>
                                 <SpawnIndex>0</SpawnIndex>
                             </Enemy>
                             <Enemy>
-                                <Type>兵种3</Type>
+                                <Type>僵尸.光头军人</Type>
                                 <Interval>1000</Interval>
                                 <Quantity>4</Quantity>
                                 <Level>10</Level>
@@ -492,7 +492,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种1</Type>
+                        <Type>僵尸.金发女</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>
@@ -500,7 +500,7 @@
                         <y>386</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种3</Type>
+                        <Type>僵尸.光头军人</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>
@@ -508,7 +508,7 @@
                         <y>403</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种8</Type>
+                        <Type>僵尸.佝偻</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>
@@ -516,7 +516,7 @@
                         <y>605</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种8</Type>
+                        <Type>僵尸.佝偻</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>
@@ -524,7 +524,7 @@
                         <y>448</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种8</Type>
+                        <Type>僵尸.佝偻</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>
@@ -532,7 +532,7 @@
                         <y>532</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种2</Type>
+                        <Type>僵尸.眼镜男</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>
@@ -540,7 +540,7 @@
                         <y>365</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种1</Type>
+                        <Type>僵尸.金发女</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>
@@ -548,7 +548,7 @@
                         <y>613</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种6</Type>
+                        <Type>僵尸.黄衣男</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>
@@ -556,7 +556,7 @@
                         <y>357</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种4</Type>
+                        <Type>僵尸.红衣金发女</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>
@@ -564,7 +564,7 @@
                         <y>673</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种3</Type>
+                        <Type>僵尸.光头军人</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>6</Level>

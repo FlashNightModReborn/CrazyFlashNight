@@ -47,7 +47,9 @@ def main():
         flags.update({'阶段':tuning['stage'],'档次系数':tuning['tierFactor']})
         inputs={balance.common.FLAG_KEYS[key]:value for key,value in flags.items()}
         expression="import {computeMonsterRow} from './tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts';console.log(JSON.stringify(computeMonsterRow("+json.dumps(inputs)+")));"
-        values=json.loads(subprocess.check_output(['node','tools/cf7-balance-tool/node_modules/tsx/dist/cli.mjs','-e',expression],cwd=ROOT,text=True,encoding='utf-8'))
+        tsx_cli=ROOT/'tools/cf7-balance-tool/node_modules/tsx/dist/cli.mjs'
+        node_cmd=['node',str(tsx_cli),'-e',expression] if tsx_cli.exists() else ['node','--input-type=module','-e',expression]
+        values=json.loads(subprocess.check_output(node_cmd,cwd=ROOT,text=True,encoding='utf-8'))
         for key,value in flags.items():entry.find('标识/'+key).text=f'{value:g}'
         for key,formula in balance.common.FIELDS.items():entry.find(key).text=str(math.floor(values[formula]+0.5))
         resistance=entry.find('魔法抗性')
@@ -56,6 +58,8 @@ def main():
         E.SubElement(resistance,'首领').text=str(tuning['bossResistance'])
         unit=copy.deepcopy(base);unit.update(id=unit_id,spritename=link,name=name)
         unit['data']['secondary']='FR506';unit['data']['secondary2']='FR506'
+        unit=balance.common.preserve_unit_key(unit,units,
+            new_key='cf6.特种教官.持盾一阶段' if unit_id==481 else 'cf6.特种教官.二阶段')
         balance.common.LINK=link;balance.common.UNIT_ID=unit_id
         text=balance.common.update_enemy_text(text,entry)
         unit_text=balance.common.update_registration_text(unit_text,unit)

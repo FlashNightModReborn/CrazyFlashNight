@@ -67,7 +67,9 @@ def main():
         for item in ET.parse(path).findall(".//item"):
             items[item.findtext("name")] = item
     skills = ET.parse(os.path.join(ROOT, "data/skills/skills.xml")).findall("Skill")
-    units = {u["id"] for u in load(os.path.join(ROOT, "data/units/units.json"))}
+    reg = bbd.UnitRegistry.load(ROOT)
+    units = set(reg.by_id)
+    chapter = bbd.normalize_book_units(chapter, reg)
 
     try:
         bbd.validate_cf6(chapter, items, skills, units)

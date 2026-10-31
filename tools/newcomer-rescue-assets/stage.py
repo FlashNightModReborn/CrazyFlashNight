@@ -53,7 +53,11 @@ def fields(parent, values):
 
 
 def enemy(parent, unit, quantity=1, level=18, interval=1700, spawn=0, **extra):
-    data = dict(Type="兵种" + str(unit), IsHostile=True, Level=level, Quantity=quantity,
+    import sys as _sys
+    if str(ROOT / "tools") not in _sys.path: _sys.path.insert(0, str(ROOT / "tools"))
+    from unit_registry import UnitRegistry as _UR
+    _u = _UR.load(ROOT).get(unit)
+    data = dict(Type=_u.get("key") or ("兵种" + str(unit)), IsHostile=True, Level=level, Quantity=quantity,
                 Interval=interval, Delay=0, SpawnIndex=spawn)
     data.update(extra)
     return fields(node(parent, "Enemy"), data)

@@ -13,6 +13,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { UnitRegistry } from "../../../../lib/unit-registry.js";
 
 import { loadXmlDocument } from "./document.js";
 import type { ArmorRules, MeleeBulletRules, PierceSegmentRules } from "./monster-attack.js";
@@ -157,8 +158,6 @@ interface TaskEntry {
   stageNames: string[];
 }
 
-const BATTLE_TYPE_PATTERN = /^兵种(\d+)$/;
-
 export function buildStageIndex(repoRoot: string, config: MonsterCensusConfig): StageIndex {
   const stagesRoot = path.join(repoRoot, "data", "stages");
   const stages = readStageInfos(stagesRoot);
@@ -172,9 +171,9 @@ export function buildStageIndex(repoRoot: string, config: MonsterCensusConfig): 
     if (!fs.existsSync(stagePath)) continue;
     const document = loadXmlDocument(stagePath);
     const sprites = new Set<string>();
-    const refs = collectSpawnRefs(document, document.root);
+    const refs = collectSpawnRefs(document, document.root, units, stagePath);
     for (const id of refs.unitIds) {
-      const spritename = units.get(id);
+      const spritename = units.byId.get(id)?.spritename;
       if (spritename) sprites.add(spritename);
     }
     for (const spritename of refs.spriteNames) {
@@ -402,19 +401,8 @@ function readStageInfos(stagesRoot: string): StageInfoEntry[] {
   return entries;
 }
 
-function readUnits(unitsPath: string): Map<number, string> {
-  const map = new Map<number, string>();
-  if (!fs.existsSync(unitsPath)) return map;
-  const raw = JSON.parse(fs.readFileSync(unitsPath, "utf8")) as unknown;
-  if (!Array.isArray(raw)) return map;
-  for (const entry of raw) {
-    if (typeof entry !== "object" || entry === null) continue;
-    const record = entry as Record<string, unknown>;
-    if (typeof record.id === "number" && typeof record.spritename === "string") {
-      map.set(record.id, record.spritename);
-    }
-  }
-  return map;
+function readUnits(unitsPath: string): UnitRegistry {
+  return new UnitRegistry(JSON.parse(fs.readFileSync(unitsPath, "utf8")) as unknown);
 }
 
 function readTasks(taskRoot: string): TaskEntry[] {
@@ -466,20 +454,58 @@ function stageNamesOf(value: unknown): string[] {
 function collectSpawnRefs(
   document: XmlDocument,
   node: XmlDocumentNode,
+  units: UnitRegistry,
+  context: string,
   into: { unitIds: Set<number>; spriteNames: Set<string> } = { unitIds: new Set(), spriteNames: new Set() },
 ): typeof into {
+  let effectiveDirectTypeIds: Set<number> | undefined;
+  let directTypeCount = 0;
   for (const child of node.children) {
     if (child.name === "Type") {
-      const value = document.leafText(child);
-      const match = value === undefined ? undefined : BATTLE_TYPE_PATTERN.exec(value);
-      if (match?.[1]) into.unitIds.add(Number(match[1]));
+      if (node.name === "Enemy" || node.name === "SubDialogue" || node.name === "Dialogue") {
+        directTypeCount += 1;
+        if (node.name !== "Dialogue" && directTypeCount > 1) {
+          throw new Error(context + ": duplicate direct Type");
+        }
+        const candidateIds = new Set<number>();
+        collectUnitTypeRefs(document, child, units, context, candidateIds);
+        effectiveDirectTypeIds = candidateIds;
+      } else {
+        // Preserve historical numeric references outside spawn descriptors.
+        const value = document.leafText(child);
+        if (value !== undefined && /^兵种\d+$/.test(value)) {
+          into.unitIds.add(units.resolveId(value, context));
+        }
+      }
     } else if (child.name === "spritename") {
       const value = document.leafText(child);
       if (value) into.spriteNames.add(value);
     }
-    collectSpawnRefs(document, child, into);
+    collectSpawnRefs(document, child, units, context, into);
+  }
+  if (effectiveDirectTypeIds) {
+    for (const id of effectiveDirectTypeIds) into.unitIds.add(id);
   }
   return into;
+}
+
+function collectUnitTypeRefs(
+  document: XmlDocument, node: XmlDocumentNode, units: UnitRegistry, context: string, into: Set<number>,
+): void {
+  const value = document.leafText(node, { trim: false });
+  if (node.name === "Case" && node.children.length === 0 && !value) {
+    throw new Error(context + ": Enemy.Type contains an empty Case");
+  }
+  if (value) {
+    into.add(units.resolveId(value, context + ": Enemy.Type"));
+    return;
+  }
+  // Enumerate authored alternatives without evaluating or flattening their RNG.
+  for (const branch of node.children) {
+    if (branch.name === "CaseSwitch" || branch.name === "Case") {
+      collectUnitTypeRefs(document, branch, units, context, into);
+    }
+  }
 }
 
 function descendantsNamed(node: XmlDocumentNode, name: string): XmlDocumentNode[] {

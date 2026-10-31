@@ -215,6 +215,8 @@ def register():
     for _,label,linkage,unitid in VARIANTS:
         match=[u for u in units if u['id']==unitid or u['spritename']==linkage]
         expect=copy.deepcopy(base);expect.update(id=unitid,spritename=linkage,name=label)
+        if match and 'key' in match[0]:expect['key']=match[0]['key']
+        elif 'key' in expect:del expect['key']
         if match and match!=[expect]:raise ValueError('Unit registration collision: '+str(unitid))
         if not match:additions.append(expect)
     if additions:

@@ -75,7 +75,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种7</Type>
+                        <Type>僵尸.狂暴</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
@@ -83,7 +83,7 @@
                         <y>607</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种7</Type>
+                        <Type>僵尸.狂暴</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
@@ -91,7 +91,7 @@
                         <y>636</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种6</Type>
+                        <Type>僵尸.黄衣男</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
@@ -99,7 +99,7 @@
                         <y>458</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种5</Type>
+                        <Type>僵尸.胖子</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
@@ -107,7 +107,7 @@
                         <y>442</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种4</Type>
+                        <Type>僵尸.红衣金发女</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
@@ -115,7 +115,7 @@
                         <y>636</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种3</Type>
+                        <Type>僵尸.光头军人</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>16</Level>
@@ -139,7 +139,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种7</Type>
+                        <Type>僵尸.狂暴</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>17</Level>
@@ -147,7 +147,7 @@
                         <y>424</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种7</Type>
+                        <Type>僵尸.狂暴</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>17</Level>
@@ -155,7 +155,7 @@
                         <y>441</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种7</Type>
+                        <Type>僵尸.狂暴</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>17</Level>
@@ -163,7 +163,7 @@
                         <y>513</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种8</Type>
+                        <Type>僵尸.佝偻</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>17</Level>
@@ -171,7 +171,7 @@
                         <y>586</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种7</Type>
+                        <Type>僵尸.狂暴</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>17</Level>
@@ -179,7 +179,7 @@
                         <y>595</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种3</Type>
+                        <Type>僵尸.光头军人</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>17</Level>
@@ -211,7 +211,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种39</Type>
+                        <Type>僵尸.狂躁</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>18</Level>
@@ -219,7 +219,7 @@
                         <y>628</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种39</Type>
+                        <Type>僵尸.狂躁</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>18</Level>
@@ -227,7 +227,7 @@
                         <y>309</y>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种39</Type>
+                        <Type>僵尸.狂躁</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>18</Level>
@@ -333,7 +333,7 @@
             <EventName>TriggerPressed</EventName>
             <Parameter>0</Parameter>
             <Enemy>
-                <Type>兵种10</Type>
+                <Type>僵尸.兽化.赤膊</Type>
                 <Interval>100</Interval>
                 <Quantity>1</Quantity>
                 <Level>20</Level>
@@ -344,7 +344,7 @@
                 </Parameters>
             </Enemy>
             <Enemy>
-                <Type>兵种10</Type>
+                <Type>僵尸.兽化.赤膊</Type>
                 <Interval>100</Interval>
                 <Quantity>1</Quantity>
                 <Level>20</Level>
@@ -362,14 +362,14 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种10</Type>
+                        <Type>僵尸.兽化.赤膊</Type>
                         <Interval>100</Interval>
                         <Quantity>3</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种39</Type>
+                        <Type>僵尸.狂躁</Type>
                         <Interval>200</Interval>
                         <Quantity>4</Quantity>
                         <Level>20</Level>
@@ -444,7 +444,7 @@
             <EventName>TriggerPressed</EventName>
             <Parameter>0</Parameter>
             <Enemy>
-                <Type>兵种10</Type>
+                <Type>僵尸.兽化.赤膊</Type>
                 <Interval>50</Interval>
                 <Quantity>1</Quantity>
                 <Level>20</Level>
@@ -455,7 +455,7 @@
                 </Parameters>
             </Enemy>
             <Enemy>
-                <Type>兵种10</Type>
+                <Type>僵尸.兽化.赤膊</Type>
                 <Interval>200</Interval>
                 <Quantity>1</Quantity>
                 <Level>20</Level>
@@ -466,7 +466,7 @@
                 </Parameters>
             </Enemy>
             <Enemy>
-                <Type>兵种10</Type>
+                <Type>僵尸.兽化.赤膊</Type>
                 <Interval>400</Interval>
                 <Quantity>1</Quantity>
                 <Level>20</Level>
@@ -484,14 +484,14 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种10</Type>
+                        <Type>僵尸.兽化.赤膊</Type>
                         <Interval>100</Interval>
                         <Quantity>6</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种39</Type>
+                        <Type>僵尸.狂躁</Type>
                         <Interval>100</Interval>
                         <Quantity>5</Quantity>
                         <Level>20</Level>
@@ -587,7 +587,7 @@
             <EventName>TriggerPressed</EventName>
             <Parameter>1</Parameter>
             <Enemy>
-                <Type>兵种10</Type>
+                <Type>僵尸.兽化.赤膊</Type>
                 <Interval>50</Interval>
                 <Quantity>1</Quantity>
                 <Level>20</Level>
@@ -598,7 +598,7 @@
                 </Parameters>
             </Enemy>
             <Enemy>
-                <Type>兵种10</Type>
+                <Type>僵尸.兽化.赤膊</Type>
                 <Interval>200</Interval>
                 <Quantity>1</Quantity>
                 <Level>20</Level>
@@ -609,7 +609,7 @@
                 </Parameters>
             </Enemy>
             <Enemy>
-                <Type>兵种10</Type>
+                <Type>僵尸.兽化.赤膊</Type>
                 <Interval>400</Interval>
                 <Quantity>1</Quantity>
                 <Level>20</Level>
@@ -627,14 +627,14 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy>
-                        <Type>兵种10</Type>
+                        <Type>僵尸.兽化.赤膊</Type>
                         <Interval>100</Interval>
                         <Quantity>10</Quantity>
                         <Level>20</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>兵种39</Type>
+                        <Type>僵尸.狂躁</Type>
                         <Interval>100</Interval>
                         <Quantity>7</Quantity>
                         <Level>20</Level>

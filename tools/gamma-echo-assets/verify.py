@@ -46,6 +46,10 @@ def main():
         assert len(matches) == 1 and matches[0]['id'] == unit_id and matches[0]['spritename'] == link
         expected = deepcopy(noah)
         expected.update(id=unit_id, spritename=link, name=entry.find('displayname').text)
+        if 'key' in matches[0]:
+            expected['key'] = matches[0]['key']
+        elif 'key' in expected:
+            del expected['key']
         assert expected == matches[0]
         asset = [e for e in source_map if e.get('id') == link]
         assert len(asset) == 1 and asset[0].get('swf') == 'flashswf/arts/new/Codex专用素材.swf'

@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.scene.StageEvent;
 import org.flashNight.arki.weather.WeatherSystem;
+import org.flashNight.arki.unit.UnitRegistry;
 import org.flashNight.gesh.object.ObjectUtil;
 
 /**
@@ -152,9 +153,30 @@ class org.flashNight.arki.scene.StageInfo {
     }
 
     public static function parseEnemyAttribute(enemyInfo):Object{
-        // 如果Type属性存在，则直接返回已有敌人配置
-        if (_root.兵种库[enemyInfo.Type] != null){
-            var attr = ObjectUtil.clone(_root.兵种库[enemyInfo.Type]);
+        // Explicit references resolve once at the load boundary. Empty/absent Type
+        // keeps the authored inline-unit and dialogue appearance contract.
+        if (enemyInfo.Type != null && enemyInfo.Type !== ""){
+            var unitType:String;
+            if (enemyInfo.Type instanceof Array) {
+                var typeList:Array = enemyInfo.Type;
+                if (typeList.length <= 0) {
+                    throw new Error("Unknown unit reference: " + enemyInfo.Type);
+                }
+                for (var ti:Number = 0; ti < typeList.length; ti++) {
+                    unitType = UnitRegistry.resolveType(typeList[ti]);
+                    if (_root.兵种库[unitType] == null) {
+                        throw new Error("Unknown unit reference: " + typeList[ti]);
+                    }
+                    typeList[ti] = unitType;
+                }
+            } else {
+                unitType = UnitRegistry.resolveType(enemyInfo.Type);
+                if (_root.兵种库[unitType] == null) {
+                    throw new Error("Unknown unit reference: " + enemyInfo.Type);
+                }
+            }
+            enemyInfo.Type = unitType;
+            var attr = ObjectUtil.clone(_root.兵种库[unitType]);
             if(enemyInfo.IsHostile != null) attr.是否为敌人 = enemyInfo.IsHostile;
             return attr;
         }

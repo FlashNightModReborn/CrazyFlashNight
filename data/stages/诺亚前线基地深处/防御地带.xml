@@ -53,7 +53,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种97</Type>
+                        <Type>军阀.狙击兵.友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -61,7 +61,7 @@
                         <y>460</y>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种99</Type>
+                        <Type>军阀.突击兵.友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -69,7 +69,7 @@
                         <y>390</y>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种159</Type>
+                        <Type>联合军.Boy.NPC</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -106,21 +106,21 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种70</Type>
+                        <Type>诺亚.重型改造僵尸.常规</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种71</Type>
+                        <Type>诺亚.兽化改造僵尸.常规</Type>
                         <Interval>900</Interval>
                         <Quantity>6</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种72</Type>
+                        <Type>诺亚.普通改造僵尸.常规</Type>
                         <Interval>900</Interval>
                         <Quantity>6</Quantity>
                         <Level>40</Level>
@@ -135,13 +135,13 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种70</Type>
+                        <Type>诺亚.重型改造僵尸.常规</Type>
                         <Interval>1200</Interval>
                         <Quantity>4</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种74</Type>
+                        <Type>诺亚.爆炸僵尸.常规</Type>
                         <Interval>1200</Interval>
                         <Quantity>4</Quantity>
                         <Level>40</Level>
@@ -154,14 +154,14 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种372</Type>
+                        <Type>诺亚.克隆兽</Type>
                         <Interval>1000</Interval>
                         <Quantity>6</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种373</Type>
+                        <Type>诺亚.克隆人</Type>
                         <Interval>1000</Interval>
                         <Quantity>6</Quantity>
                         <Level>40</Level>
@@ -229,26 +229,26 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种70</Type>
+                        <Type>诺亚.重型改造僵尸.常规</Type>
                         <Interval>2500</Interval>
                         <Quantity>4</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种74</Type>
+                        <Type>诺亚.爆炸僵尸.常规</Type>
                         <Interval>2000</Interval>
                         <Quantity>5</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种372</Type>
+                        <Type>诺亚.克隆兽</Type>
                         <Interval>1000</Interval>
                         <Quantity>99</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种373</Type>
+                        <Type>诺亚.克隆人</Type>
                         <Interval>1000</Interval>
                         <Quantity>99</Quantity>
                         <Level>40</Level>
@@ -263,14 +263,14 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种97</Type>
+                        <Type>军阀.狙击兵.友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
                         <SpawnIndex>right</SpawnIndex>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种99</Type>
+                        <Type>军阀.突击兵.友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -316,7 +316,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种90</Type>
+                        <Type>黑铁会.黑铁死士.友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -324,7 +324,7 @@
                         <y>450</y>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种101</Type>
+                        <Type>黑铁会.黑铁刺客.友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -332,7 +332,7 @@
                         <y>490</y>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种102</Type>
+                        <Type>黑铁会.黑铁行刑者.友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -340,7 +340,7 @@
                         <y>500</y>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种97</Type>
+                        <Type>军阀.狙击兵.友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -348,7 +348,7 @@
                         <y>430</y>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种99</Type>
+                        <Type>军阀.突击兵.友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -356,7 +356,7 @@
                         <y>470</y>
                     </Enemy>
                     <Enemy id="5">
-                        <Type>兵种372</Type>
+                        <Type>诺亚.克隆兽</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -364,7 +364,7 @@
                         <y>490</y>
                     </Enemy>
                     <Enemy id="6">
-                        <Type>兵种373</Type>
+                        <Type>诺亚.克隆人</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -372,7 +372,7 @@
                         <y>450</y>
                     </Enemy>
                     <Enemy id="7">
-                        <Type>兵种74</Type>
+                        <Type>诺亚.爆炸僵尸.常规</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -424,7 +424,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种264</Type>
+                        <Type>军阀.精英突击兵</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -434,7 +434,7 @@
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种267</Type>
+                        <Type>军阀.精英狙击兵</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -444,7 +444,7 @@
                         <Parameters>称号:军阀</Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种376</Type>
+                        <Type>黑铁会.黑铁流锤.友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -453,7 +453,7 @@
                         <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种377</Type>
+                        <Type>黑铁会.黑铁游侠.友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -462,13 +462,13 @@
                         <Parameters>称号:坛主</Parameters>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种71</Type>
+                        <Type>诺亚.兽化改造僵尸.常规</Type>
                         <Interval>500</Interval>
                         <Quantity>5</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="5">
-                        <Type>兵种72</Type>
+                        <Type>诺亚.普通改造僵尸.常规</Type>
                         <Interval>500</Interval>
                         <Quantity>5</Quantity>
                         <Level>40</Level>
@@ -481,25 +481,25 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种70</Type>
+                        <Type>诺亚.重型改造僵尸.常规</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种74</Type>
+                        <Type>诺亚.爆炸僵尸.常规</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种372</Type>
+                        <Type>诺亚.克隆兽</Type>
                         <Interval>1000</Interval>
                         <Quantity>4</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种373</Type>
+                        <Type>诺亚.克隆人</Type>
                         <Interval>1000</Interval>
                         <Quantity>4</Quantity>
                         <Level>40</Level>
@@ -551,25 +551,25 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种70</Type>
+                        <Type>诺亚.重型改造僵尸.常规</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种74</Type>
+                        <Type>诺亚.爆炸僵尸.常规</Type>
                         <Interval>1000</Interval>
                         <Quantity>5</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种372</Type>
+                        <Type>诺亚.克隆兽</Type>
                         <Interval>1000</Interval>
                         <Quantity>4</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种373</Type>
+                        <Type>诺亚.克隆人</Type>
                         <Interval>1000</Interval>
                         <Quantity>4</Quantity>
                         <Level>40</Level>
@@ -582,13 +582,13 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种373</Type>
+                        <Type>诺亚.克隆人</Type>
                         <Interval>400</Interval>
                         <Quantity>4</Quantity>
                         <Level>40</Level>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种347</Type>
+                        <Type>诺亚.诺亚试验体Alpha</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -601,7 +601,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种360</Type>
+                        <Type>军阀.Surveyor.友军</Type>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -645,7 +645,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种360</Type>
+                        <Type>军阀.Surveyor.友军</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -745,7 +745,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种70</Type>
+                        <Type>诺亚.重型改造僵尸.常规</Type>
                         <Interval>1000</Interval>
                         <Quantity>4</Quantity>
                         <Level>45</Level>
@@ -756,7 +756,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种74</Type>
+                        <Type>诺亚.爆炸僵尸.常规</Type>
                         <Interval>1000</Interval>
                         <Quantity>4</Quantity>
                         <Level>45</Level>
@@ -767,7 +767,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种372</Type>
+                        <Type>诺亚.克隆兽</Type>
                         <Interval>900</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
@@ -778,7 +778,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种373</Type>
+                        <Type>诺亚.克隆人</Type>
                         <Interval>900</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
@@ -789,7 +789,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种360</Type>
+                        <Type>军阀.Surveyor.友军</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>50</Level>
@@ -809,7 +809,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种372</Type>
+                        <Type>诺亚.克隆兽</Type>
                         <Interval>900</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
@@ -820,7 +820,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种373</Type>
+                        <Type>诺亚.克隆人</Type>
                         <Interval>900</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
@@ -831,7 +831,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种347</Type>
+                        <Type>诺亚.诺亚试验体Alpha</Type>
                         <Interval>500</Interval>
                         <Quantity>1</Quantity>
                         <Level>40</Level>
@@ -849,7 +849,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种363</Type>
+                        <Type>天网.EXUSIAI.支援型</Type>
                         <Interval>2000</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
@@ -861,7 +861,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种364</Type>
+                        <Type>天网.EXUSIAI.突击型</Type>
                         <Interval>1400</Interval>
                         <Quantity>1</Quantity>
                         <Level>45</Level>
@@ -873,7 +873,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种372</Type>
+                        <Type>诺亚.克隆兽</Type>
                         <Interval>3000</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
@@ -884,7 +884,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种373</Type>
+                        <Type>诺亚.克隆人</Type>
                         <Interval>3000</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
@@ -895,7 +895,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种70</Type>
+                        <Type>诺亚.重型改造僵尸.常规</Type>
                         <Interval>4000</Interval>
                         <Quantity>4</Quantity>
                         <Level>45</Level>
@@ -906,7 +906,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="5">
-                        <Type>兵种74</Type>
+                        <Type>诺亚.爆炸僵尸.常规</Type>
                         <Interval>4000</Interval>
                         <Quantity>4</Quantity>
                         <Level>45</Level>
@@ -924,7 +924,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种363</Type>
+                        <Type>天网.EXUSIAI.支援型</Type>
                         <Interval>1800</Interval>
                         <Quantity>2</Quantity>
                         <Level>45</Level>
@@ -936,7 +936,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种364</Type>
+                        <Type>天网.EXUSIAI.突击型</Type>
                         <Interval>1800</Interval>
                         <Quantity>2</Quantity>
                         <Level>45</Level>
@@ -948,7 +948,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种372</Type>
+                        <Type>诺亚.克隆兽</Type>
                         <Interval>3000</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
@@ -959,7 +959,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种373</Type>
+                        <Type>诺亚.克隆人</Type>
                         <Interval>3000</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
@@ -970,7 +970,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="5">
-                        <Type>兵种70</Type>
+                        <Type>诺亚.重型改造僵尸.常规</Type>
                         <Interval>4000</Interval>
                         <Quantity>4</Quantity>
                         <Level>45</Level>
@@ -981,7 +981,7 @@
                         </Parameters>
                     </Enemy>
                     <Enemy id="6">
-                        <Type>兵种74</Type>
+                        <Type>诺亚.爆炸僵尸.常规</Type>
                         <Interval>4000</Interval>
                         <Quantity>4</Quantity>
                         <Level>45</Level>

@@ -151,6 +151,9 @@ FIXED_SUPPLIES = {
     "A22": [{"name": "普通hp药剂", "kind": "item", "n": 2, "note": "原版A22救护包×2同位置"}],
 }
 AMMO_TRIAL_CLIPS = 3
+sys.path.insert(0, os.path.join(ROOT, "tools"))
+from unit_registry import UnitRegistry
+UNIT_REGISTRY = UnitRegistry.load(ROOT)
 sys.path.insert(0, os.path.dirname(__file__))
 import weapon_pools
 EXCLUSIVE_GUNS = {w for e in ELITES.values() for w in e['candidates']} | {
@@ -165,7 +168,7 @@ RANDOM_POOLS = weapon_pools.random_pools(EXCLUSIVE_GUNS)
 # intervalFrames=45:原出兵节奏约22帧/门(frame10→frame24→frame2),并发1;适配取2倍。
 # ---------------------------------------------------------------------------
 def _sup(key, level, qty, ranged, side, xy=None, params=None):
-    e = {"Type": "兵种%d" % UNIT_MAP[key]["id"], "Level": level, "Quantity": qty,
+    e = {"Type": UNIT_REGISTRY.by_id[UNIT_MAP[key]["id"]]["key"], "Level": level, "Quantity": qty,
          "ranged": ranged, "SpawnIndex": side}
     if xy is not None:
         e["x"], e["y"] = round(xy[0], 1), round(xy[1], 1)
@@ -400,7 +403,7 @@ class Adaptation:
         e = self.by_key.get(key)
         if e is None:
             return xy, None
-        if e["unit"] is not None and unit_type != e["unit"]:
+        if e["unit"] is not None and UNIT_REGISTRY.resolve_id(unit_type) != UNIT_REGISTRY.resolve_id(e["unit"]):
             raise SystemExit("适配身份不符:%s %s 当前Type=%s,表记录=%s;拒绝盲挪"
                              % (mid, e["fieldPath"], unit_type, e["unit"]))
         if key in self.consumed:
@@ -450,7 +453,7 @@ def ammo_of(weapon, item_index):
 
 def enemy(unit_key, level, qty, xy=None, spawn=None, name=None, params=None, interval=None):
     u = UNIT_MAP[unit_key]
-    e = {"Type": "兵种%d" % u["id"], "Level": level, "Quantity": qty}
+    e = {"Type": UNIT_REGISTRY.by_id[u["id"]]["key"], "Level": level, "Quantity": qty}
     if interval is not None:
         e["Interval"] = interval
     if xy is not None:
@@ -566,12 +569,12 @@ def build_regular_map(fact, mid, item_index, notes, adapt):
         key = key_of(s["unitKey"], s.get("transform"))
         if elite and not elite_used and s["unitKey"] == "specop_shield":
             ekey = "specop" if elite["entry"] == 466 else "specop_shield"
-            xy, _ = adapt.apply(mid, "waveEnemy", "兵种%d" % UNIT_MAP[ekey]["id"], s["xy"])
+            xy, _ = adapt.apply(mid, "waveEnemy", UNIT_REGISTRY.by_id[UNIT_MAP[ekey]["id"]]["key"], s["xy"])
             initial.append(elite_enemy(mid, elite, item_index, xy))
             elite_used = True
             notes.append("%s: %s" % (elite["quota"], elite["note"]))
             continue
-        xy, _ = adapt.apply(mid, "waveEnemy", "兵种%d" % UNIT_MAP[key]["id"], s["xy"])
+        xy, _ = adapt.apply(mid, "waveEnemy", UNIT_REGISTRY.by_id[UNIT_MAP[key]["id"]]["key"], s["xy"])
         params = gun_params(key, s.get("gun"))
         if key == "zombie_turret":
             # sprite630 等价体仅证实存在于 A01;若事实表漂移到他图即拒绝生成(身份守卫)。
@@ -1077,7 +1080,7 @@ def check(maps_doc, econ, shops_doc, choice_frag, item_index, units, actor, skil
             errors.append("%s 含BookBoss" % mid)
 
         def scan_enemy(e, where, in_boss_plan):
-            if not e["Type"].startswith("兵种") or int(e["Type"][2:]) not in unit_ids:
+            if e["Type"] not in UNIT_REGISTRY.by_key or UNIT_REGISTRY.resolve_id(e["Type"]) not in unit_ids:
                 errors.append("%s 非法Type %s" % (mid, e["Type"]))
             if not (1 <= e["Level"] <= 60):
                 errors.append("%s 等级越界 %s" % (mid, e["Level"]))
@@ -1136,7 +1139,7 @@ def check(maps_doc, econ, shops_doc, choice_frag, item_index, units, actor, skil
                 b = sw[0]["EnemyGroup"]["Enemy"][0]
                 if b.get("InstanceName") != plan["instanceName"] or b["Quantity"] != 1:
                     errors.append("%s 主Wave Boss身份不符" % mid)
-                if b["Type"] != "兵种%d" % UNIT_MAP[BOSS_UNIT[mid]]["id"]:
+                if UNIT_REGISTRY.resolve_id(b["Type"]) != UNIT_MAP[BOSS_UNIT[mid]]["id"]:
                     errors.append("%s 主Wave Boss兵种不符" % mid)
                 if mid == "A20" and (b.get("Parameters") or {}).get("老头变身") is not False:
                     errors.append("A20 Boss老头变身!=false")
@@ -1157,7 +1160,7 @@ def check(maps_doc, econ, shops_doc, choice_frag, item_index, units, actor, skil
             if mid == "A22":
                 for g in plan["groups"]:
                     for e in g["enemies"]:
-                        if e["Type"] == "兵种474":
+                        if UNIT_REGISTRY.resolve_id(e["Type"]) == 474:
                             errors.append("A22增援组含474")
         elif "bossEncounter" in m:
             errors.append("%s 非Boss图带bossEncounter" % mid)
@@ -1175,7 +1178,7 @@ def check(maps_doc, econ, shops_doc, choice_frag, item_index, units, actor, skil
             if q not in ELITE_QUOTA_MAPS or q in marked or ELITE_QUOTA_MAPS[q] != mid:
                 errors.append("%s cf6EliteQuota标记未知/重复/落图不符: %s" % (mid, q))
                 continue
-            if e["Type"] not in ("兵种466", "兵种467") or e["Quantity"] != 1:
+            if UNIT_REGISTRY.resolve_id(e["Type"]) not in (466, 467) or e["Quantity"] != 1:
                 errors.append("%s %s载体非唯一466/467特种兵" % (mid, q))
             marked[q] = e
     for q, mid in ELITE_QUOTA_MAPS.items():
@@ -1215,7 +1218,7 @@ def check(maps_doc, econ, shops_doc, choice_frag, item_index, units, actor, skil
             if mark != TURRET_FILTER_MARKER:
                 errors.append("%s 未知目标标记: %s" % (mid, mark))
                 continue
-            if mid != "A01" or e["Type"] != "兵种461":
+            if mid != "A01" or UNIT_REGISTRY.resolve_id(e["Type"]) != 461:
                 errors.append("%s 目标标记落在非A01或非461敌人: %s" % (mid, e["Type"]))
             marked_entries += 1
             marked_qty += e["Quantity"]

@@ -80,21 +80,21 @@ class DifficultyTests(unittest.TestCase):
         self.assertEqual(plan.waves(self.nodes['A15'])[0],plan.waves(self.original['A15'])[0])
         a17=self.nodes['A17']['bossEncounter']
         self.assertEqual((a17['maxAlive'],a17['intervalFrames']),(4,45))
-        self.assertEqual(sum(e['Quantity'] for e in plan.supports(self.nodes['A17']) if e['Type']=='兵种460'),5)
+        self.assertEqual(sum(e['Quantity'] for e in plan.supports(self.nodes['A17']) if plan.REGISTRY.resolve_id(e['Type'])==460),5)
 
     def test_special_producers_cannot_lose_or_duplicate_units_after_adaptation(self):
         for mid,field in [('A09','transport'),('A15','pods'),('A17','support')]:
             value=copy.deepcopy(self.document);node=next(n for n in value['maps'] if n['id']==mid)
             if field=='transport':plan.waves(node)[1]['EnemyGroup']['Enemy'][0]['Quantity']+=1
             elif field=='pods':plan.waves(node)[0]['EnemyGroup']['Enemy'][0]['Quantity']-=1
-            else:next(e for e in plan.supports(node) if e['Type']=='兵种460')['Quantity']-=1
+            else:next(e for e in plan.supports(node) if plan.REGISTRY.resolve_id(e['Type'])==460)['Quantity']-=1
             with self.assertRaises(ValueError):plan.validate(value)
 
     def test_turret_compatibility_stays_exactly_twenty_not_the_whole_new_horde(self):
         enemies=plan.wave_enemies(self.nodes['A01'])
         tagged=[e for e in enemies if e.get('Parameters',{}).get('目标标记')=='cf6-a01-turret-zombie']
         self.assertEqual(sum(e['Quantity'] for e in tagged),20)
-        self.assertTrue(all(e['Type']=='兵种461' for e in tagged))
+        self.assertTrue(all(plan.REGISTRY.resolve_id(e['Type'])==461 for e in tagged))
         self.assertEqual(sum(e['Quantity'] for e in enemies),66)
 
     def test_caps_deduplicate_shared_points_and_include_static_map_bucket(self):
@@ -141,7 +141,7 @@ class DifficultyTests(unittest.TestCase):
 
     def test_malformed_budget_composition_and_nocount_are_rejected(self):
         for mutate in [lambda d:d['maps'][1]['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0].update(Quantity=99),
-                       lambda d:d['maps'][1]['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0].update(Type='兵种472'),
+                       lambda d:d['maps'][1]['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0].update(Type='cf6.大头机器人'),
                        lambda d:d['maps'][1]['stage']['Wave']['SubWave'][0]['WaveInformation'].update(FinishRequirement=5),
                        lambda d:d['maps'][1]['stage']['BasicInformation'].update(MapNoCount=True),
                        lambda d:d['maps'][1]['stage']['SpawnPoint']['Point'][-1].update(NoCount=True)]:

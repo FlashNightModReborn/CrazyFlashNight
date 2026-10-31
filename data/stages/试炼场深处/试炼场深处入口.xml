@@ -53,7 +53,7 @@
                 <Text>你们两个！等等，好像不是来杀我的。</Text>
             </Dialogue>
             <Enemy id="0">
-                <Type>兵种378</Type>
+                <Type>通缉犯.浮士德兄弟.友军</Type>
                 <InstanceName>浮士德兄弟</InstanceName>
                 <Quantity>1</Quantity>
                 <Level>30</Level>
@@ -87,7 +87,7 @@
                 <Text>今日真是损失惨重，不跟你一般较量了，把兄弟们带走！</Text>
             </Dialogue>
             <Enemy id="0">
-                <Type>兵种90</Type>
+                <Type>黑铁会.黑铁死士.友军</Type>
                 <Quantity>1</Quantity>
                 <Level>30</Level>
                 <x>250</x>
@@ -95,7 +95,7 @@
                 <IsHostile>false</IsHostile>
             </Enemy>
             <Enemy id="1">
-                <Type>兵种90</Type>
+                <Type>黑铁会.黑铁死士.友军</Type>
                 <Quantity>1</Quantity>
                 <Level>30</Level>
                 <x>300</x>
@@ -124,7 +124,7 @@
                 </WaveInformation>
                 <EnemyGroup>
                     <Enemy id="0">
-                        <Type>兵种90</Type>
+                        <Type>黑铁会.黑铁死士.友军</Type>
                         <Interval>300</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -133,7 +133,7 @@
                         <IsHostile>false</IsHostile>
                     </Enemy>
                     <Enemy id="1">
-                        <Type>兵种90</Type>
+                        <Type>黑铁会.黑铁死士.友军</Type>
                         <Interval>300</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -142,7 +142,7 @@
                         <IsHostile>false</IsHostile>
                     </Enemy>
                     <Enemy id="2">
-                        <Type>兵种377</Type>
+                        <Type>黑铁会.黑铁游侠.友军</Type>
                         <Interval>300</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -151,7 +151,7 @@
                         <IsHostile>false</IsHostile>
                     </Enemy>
                     <Enemy id="3">
-                        <Type>兵种377</Type>
+                        <Type>黑铁会.黑铁游侠.友军</Type>
                         <Interval>300</Interval>
                         <Quantity>1</Quantity>
                         <Level>30</Level>
@@ -160,7 +160,7 @@
                         <IsHostile>false</IsHostile>
                     </Enemy>
                     <Enemy id="4">
-                        <Type>兵种12</Type>
+                        <Type>诺亚.神秘忍者</Type>
                         <InstanceName>紫色方舟武士</InstanceName>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>

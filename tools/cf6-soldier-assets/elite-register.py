@@ -51,6 +51,8 @@ def main():
         unit.update(id=unit_id,spritename=link,name=name)
         unit['data']['secondary']=sidearm
         unit['data']['secondary2']=sidearm2
+        unit=balance.common.preserve_unit_key(unit,units,
+            new_key='cf6.特种精英.持盾一阶段' if unit_id==479 else 'cf6.特种精英.二阶段')
         balance.common.LINK=link
         balance.common.UNIT_ID=unit_id
         text=balance.common.update_enemy_text(text,entry)

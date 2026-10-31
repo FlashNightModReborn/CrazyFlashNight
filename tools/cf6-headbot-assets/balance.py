@@ -74,6 +74,8 @@ def expected():
             'damage':'Beam uses instantaneous wave magic damage; thrust remains physical. CF7 area bullets own resolution.',
             'targetPosition':'Stable same-level wins over Arkclaw; stage 7 and tier 16 stay fixed.',
             'hit':'Short reaction, horizontal knockback allowed, no airborne/down state; original hover preserved.'}}
+    unit=common.preserve_unit_key(unit,json.loads((ROOT/'data/units/units.json').read_text('utf-8-sig')),
+        new_key='cf6.大头机器人')
     return entry,unit,receipt
 
 

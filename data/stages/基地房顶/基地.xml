@@ -102,7 +102,7 @@
         </WaveInformation>
         <EnemyGroup>
           <Enemy>
-            <Type>兵种56</Type>
+            <Type>军阀.突击兵</Type>
             <Level>17</Level>
             <Quantity>4</Quantity>
             <Interval>900</Interval>
@@ -110,7 +110,7 @@
             <SpawnIndex>0</SpawnIndex>
           </Enemy>
           <Enemy>
-            <Type>兵种477</Type>
+            <Type>军阀.铁卫犬</Type>
             <Level>17</Level>
             <Quantity>2</Quantity>
             <Interval>1300</Interval>
@@ -126,7 +126,7 @@
         </WaveInformation>
         <EnemyGroup>
           <Enemy>
-            <Type>兵种56</Type>
+            <Type>军阀.突击兵</Type>
             <Level>17</Level>
             <Quantity>8</Quantity>
             <Interval>950</Interval>
@@ -134,7 +134,7 @@
             <SpawnIndex>0</SpawnIndex>
           </Enemy>
           <Enemy>
-            <Type>兵种57</Type>
+            <Type>军阀.弹药兵</Type>
             <Level>17</Level>
             <Quantity>4</Quantity>
             <Interval>1700</Interval>
@@ -142,7 +142,7 @@
             <SpawnIndex>1</SpawnIndex>
           </Enemy>
           <Enemy>
-            <Type>兵种54</Type>
+            <Type>军阀.狙击兵</Type>
             <Level>17</Level>
             <Quantity>2</Quantity>
             <Interval>2600</Interval>
@@ -150,7 +150,7 @@
             <SpawnIndex>1</SpawnIndex>
           </Enemy>
           <Enemy>
-            <Type>兵种55</Type>
+            <Type>军阀.重装兵</Type>
             <Level>17</Level>
             <Quantity>2</Quantity>
             <Interval>2600</Interval>
@@ -168,14 +168,14 @@
         <Title>A兵团同伴</Title>
         <Char>主角模板#愤怒</Char>
         <Text>果然是你！闹市区那回多亏你救场，这次换我们来接应你了！趴低点！</Text>
-        <Type>兵种470</Type>
+        <Type>基地.同伴A</Type>
       </Dialogue>
       <Dialogue id="1">
         <Name>同伴B</Name>
         <Title>A兵团同伴</Title>
         <Char>主角模板</Char>
         <Text>巡逻队的增援从左边压过来了，先联手把他们清掉！</Text>
-        <Type>兵种471</Type>
+        <Type>基地.同伴B</Type>
       </Dialogue>
       <Dialogue id="2">
         <Name>$PC</Name>
@@ -184,7 +184,7 @@
         <Text>来得正好！一起上！</Text>
       </Dialogue>
       <Enemy>
-        <Type>兵种470</Type>
+        <Type>基地.同伴A</Type>
         <Level>20</Level>
         <Quantity>1</Quantity>
         <InstanceName>siege_elite_a</InstanceName>
@@ -196,7 +196,7 @@
         </Parameters>
       </Enemy>
       <Enemy>
-        <Type>兵种471</Type>
+        <Type>基地.同伴B</Type>
         <Level>20</Level>
         <Quantity>1</Quantity>
         <InstanceName>siege_elite_b</InstanceName>
@@ -215,21 +215,21 @@
         <Title>A兵团同伴</Title>
         <Char>主角模板</Char>
         <Text>这一拨追兵清干净了。直升机被击落的时候没伤着吧？</Text>
-        <Type>兵种471</Type>
+        <Type>基地.同伴B</Type>
       </Dialogue>
       <Dialogue id="1">
         <Name>同伴A</Name>
         <Title>A兵团同伴</Title>
         <Char>主角模板#微笑</Char>
         <Text>来得太及时了，往左走就是军阀的重炮坦克阵地，我们正缺你带出来的有源中继！</Text>
-        <Type>兵种470</Type>
+        <Type>基地.同伴A</Type>
       </Dialogue>
       <Dialogue id="2">
         <Name>同伴B</Name>
         <Title>A兵团同伴</Title>
         <Char>主角模板#严肃</Char>
         <Text>那几辆坦克正在校准坐标，旁边还立着干扰线圈。得赶在他们朝基地开炮前把中继接上去。</Text>
-        <Type>兵种471</Type>
+        <Type>基地.同伴B</Type>
       </Dialogue>
       <Dialogue id="3">
         <Name>$PC</Name>
@@ -318,10 +318,10 @@
         <Title>A兵团同伴</Title>
         <Char>主角模板#愤怒</Char>
         <Text>看到前面的坦克和干扰线圈了吗？先把阵地上的警戒兵清掉，别让他们安心架炮！</Text>
-        <Type>兵种470</Type>
+        <Type>基地.同伴A</Type>
       </Dialogue>
       <Enemy>
-        <Type>兵种470</Type>
+        <Type>基地.同伴A</Type>
         <Level>20</Level>
         <Quantity>1</Quantity>
         <InstanceName>siege_elite_a</InstanceName>
@@ -333,7 +333,7 @@
         </Parameters>
       </Enemy>
       <Enemy>
-        <Type>兵种471</Type>
+        <Type>基地.同伴B</Type>
         <Level>20</Level>
         <Quantity>1</Quantity>
         <InstanceName>siege_elite_b</InstanceName>
@@ -353,7 +353,7 @@
         </WaveInformation>
         <EnemyGroup>
           <Enemy>
-            <Type>兵种56</Type>
+            <Type>军阀.突击兵</Type>
             <Level>17</Level>
             <Quantity>6</Quantity>
             <Interval>950</Interval>
@@ -361,7 +361,7 @@
             <SpawnIndex>0</SpawnIndex>
           </Enemy>
           <Enemy>
-            <Type>兵种57</Type>
+            <Type>军阀.弹药兵</Type>
             <Level>17</Level>
             <Quantity>3</Quantity>
             <Interval>1600</Interval>
@@ -369,7 +369,7 @@
             <SpawnIndex>1</SpawnIndex>
           </Enemy>
           <Enemy>
-            <Type>兵种54</Type>
+            <Type>军阀.狙击兵</Type>
             <Level>17</Level>
             <Quantity>2</Quantity>
             <Interval>2100</Interval>
@@ -377,7 +377,7 @@
             <SpawnIndex>0</SpawnIndex>
           </Enemy>
           <Enemy>
-            <Type>兵种55</Type>
+            <Type>军阀.重装兵</Type>
             <Level>17</Level>
             <Quantity>1</Quantity>
             <Interval>2300</Interval>
@@ -422,7 +422,7 @@
         </WaveInformation>
         <EnemyGroup>
           <Enemy>
-            <Type>兵种56</Type>
+            <Type>军阀.突击兵</Type>
             <Level>17</Level>
             <Quantity>10</Quantity>
             <Interval>950</Interval>
@@ -436,7 +436,7 @@
             </Parameters>
           </Enemy>
           <Enemy>
-            <Type>兵种57</Type>
+            <Type>军阀.弹药兵</Type>
             <Level>17</Level>
             <Quantity>4</Quantity>
             <Interval>1600</Interval>
@@ -450,7 +450,7 @@
             </Parameters>
           </Enemy>
           <Enemy>
-            <Type>兵种54</Type>
+            <Type>军阀.狙击兵</Type>
             <Level>17</Level>
             <Quantity>2</Quantity>
             <Interval>2300</Interval>
@@ -464,7 +464,7 @@
             </Parameters>
           </Enemy>
           <Enemy>
-            <Type>兵种55</Type>
+            <Type>军阀.重装兵</Type>
             <Level>17</Level>
             <Quantity>2</Quantity>
             <Interval>2300</Interval>
@@ -488,14 +488,14 @@
         <Title>A兵团同伴</Title>
         <Char>主角模板</Char>
         <Text>警戒兵清掉了！快去右上方沙袋掩体旁启动有源中继，我们替你架枪掩护！</Text>
-        <Type>兵种470</Type>
+        <Type>基地.同伴A</Type>
       </Dialogue>
       <Dialogue id="1">
         <Name>同伴B</Name>
         <Title>A兵团同伴</Title>
         <Char>主角模板#严肃</Char>
         <Text>把基地的信号引过来，就能顺着线圈瘫掉这批坦克。设备一旦启动肯定会引来反扑，千万别让他们打坏中继。</Text>
-        <Type>兵种471</Type>
+        <Type>基地.同伴B</Type>
       </Dialogue>
       <FollowingEvent>
         <EventName>SiegeRelayExplained</EventName>
@@ -548,14 +548,14 @@
         <Title>A兵团同伴</Title>
         <Char>主角模板#微笑</Char>
         <Text>漂亮！你看那些坦克，炮塔全卡死不动了！这下他们休想朝基地开炮了。</Text>
-        <Type>兵种470</Type>
+        <Type>基地.同伴A</Type>
       </Dialogue>
       <Dialogue id="1">
         <Name>同伴B</Name>
         <Title>A兵团同伴</Title>
         <Char>主角模板#严肃</Char>
         <Text>这处阵地交给我们盯防。往左走是他们前沿的装甲车阵地，去那边的第二组弟兄刚才一直呼叫不应……你快从左边过去看看。</Text>
-        <Type>兵种471</Type>
+        <Type>基地.同伴B</Type>
       </Dialogue>
       <Dialogue id="2">
         <Name>$PC</Name>
@@ -676,7 +676,7 @@
         </WaveInformation>
         <EnemyGroup>
           <Enemy>
-            <Type>兵种56</Type>
+            <Type>军阀.突击兵</Type>
             <Level>17</Level>
             <Quantity>4</Quantity>
             <Interval>1150</Interval>
@@ -684,7 +684,7 @@
             <SpawnIndex>0</SpawnIndex>
           </Enemy>
           <Enemy>
-            <Type>兵种57</Type>
+            <Type>军阀.弹药兵</Type>
             <Level>17</Level>
             <Quantity>2</Quantity>
             <Interval>1800</Interval>
@@ -692,7 +692,7 @@
             <SpawnIndex>1</SpawnIndex>
           </Enemy>
           <Enemy>
-            <Type>兵种54</Type>
+            <Type>军阀.狙击兵</Type>
             <Level>17</Level>
             <Quantity>1</Quantity>
             <Interval>2200</Interval>
@@ -700,7 +700,7 @@
             <SpawnIndex>0</SpawnIndex>
           </Enemy>
           <Enemy>
-            <Type>兵种55</Type>
+            <Type>军阀.重装兵</Type>
             <Level>17</Level>
             <Quantity>1</Quantity>
             <Interval>2200</Interval>
@@ -745,7 +745,7 @@
         </WaveInformation>
         <EnemyGroup>
           <Enemy>
-            <Type>兵种56</Type>
+            <Type>军阀.突击兵</Type>
             <Level>17</Level>
             <Quantity>6</Quantity>
             <Interval>1100</Interval>
@@ -759,7 +759,7 @@
             </Parameters>
           </Enemy>
           <Enemy>
-            <Type>兵种57</Type>
+            <Type>军阀.弹药兵</Type>
             <Level>17</Level>
             <Quantity>3</Quantity>
             <Interval>1700</Interval>
@@ -773,7 +773,7 @@
             </Parameters>
           </Enemy>
           <Enemy>
-            <Type>兵种54</Type>
+            <Type>军阀.狙击兵</Type>
             <Level>17</Level>
             <Quantity>1</Quantity>
             <Interval>2300</Interval>
@@ -817,7 +817,7 @@
 </Parameters>
           </Enemy>
           <Enemy>
-            <Type>兵种477</Type>
+            <Type>军阀.铁卫犬</Type>
             <Level>17</Level>
             <Quantity>2</Quantity>
             <Interval>1700</Interval>
@@ -963,7 +963,7 @@
         </WaveInformation>
         <EnemyGroup>
           <Enemy>
-            <Type>兵种57</Type>
+            <Type>军阀.弹药兵</Type>
             <Interval>100</Interval>
             <Quantity>1</Quantity>
             <Level>17</Level>
@@ -971,7 +971,7 @@
             <y>529</y>
           </Enemy>
           <Enemy>
-            <Type>兵种55</Type>
+            <Type>军阀.重装兵</Type>
             <Interval>100</Interval>
             <Quantity>1</Quantity>
             <Level>17</Level>
@@ -979,7 +979,7 @@
             <y>540</y>
           </Enemy>
           <Enemy>
-            <Type>兵种56</Type>
+            <Type>军阀.突击兵</Type>
             <Interval>100</Interval>
             <Quantity>1</Quantity>
             <Level>17</Level>
@@ -987,7 +987,7 @@
             <y>400</y>
           </Enemy>
           <Enemy>
-            <Type>兵种54</Type>
+            <Type>军阀.狙击兵</Type>
             <Interval>100</Interval>
             <Quantity>1</Quantity>
             <Level>17</Level>
@@ -1117,7 +1117,7 @@
             <Gender>男</Gender>
           </Enemy>
           <Enemy>
-            <Type>兵种55</Type>
+            <Type>军阀.重装兵</Type>
             <Interval>100</Interval>
             <Quantity>1</Quantity>
             <Level>17</Level>
@@ -1125,14 +1125,14 @@
             <y>529</y>
           </Enemy>
           <Enemy>
-            <Type>兵种57</Type>
+            <Type>军阀.弹药兵</Type>
             <Interval>1000</Interval>
             <Quantity>10</Quantity>
             <Level>17</Level>
             <SpawnIndex>0</SpawnIndex>
           </Enemy>
           <Enemy>
-            <Type>兵种56</Type>
+            <Type>军阀.突击兵</Type>
             <Interval>1000</Interval>
             <Quantity>10</Quantity>
             <Level>17</Level>
@@ -1277,7 +1277,7 @@
             <Gender>女</Gender>
           </Enemy>
           <Enemy>
-            <Type>兵种55</Type>
+            <Type>军阀.重装兵</Type>
             <Interval>100</Interval>
             <Quantity>1</Quantity>
             <Level>17</Level>
@@ -1285,14 +1285,14 @@
             <y>305</y>
           </Enemy>
           <Enemy>
-            <Type>兵种57</Type>
+            <Type>军阀.弹药兵</Type>
             <Interval>1000</Interval>
             <Quantity>15</Quantity>
             <Level>17</Level>
             <SpawnIndex>0</SpawnIndex>
           </Enemy>
           <Enemy>
-            <Type>兵种56</Type>
+            <Type>军阀.突击兵</Type>
             <Interval>1000</Interval>
             <Quantity>15</Quantity>
             <Level>17</Level>
@@ -1449,7 +1449,7 @@
             <Gender>男</Gender>
           </Enemy>
           <Enemy>
-            <Type>兵种55</Type>
+            <Type>军阀.重装兵</Type>
             <Interval>100</Interval>
             <Quantity>1</Quantity>
             <Level>17</Level>
@@ -1465,14 +1465,14 @@
             </Parameters>
           </Enemy>
           <Enemy>
-            <Type>兵种57</Type>
+            <Type>军阀.弹药兵</Type>
             <Interval>1000</Interval>
             <Quantity>15</Quantity>
             <Level>17</Level>
             <SpawnIndex>0</SpawnIndex>
           </Enemy>
           <Enemy>
-            <Type>兵种56</Type>
+            <Type>军阀.突击兵</Type>
             <Interval>1000</Interval>
             <Quantity>15</Quantity>
             <Level>17</Level>
@@ -1571,7 +1571,7 @@
         </WaveInformation>
         <EnemyGroup>
           <Enemy>
-            <Type>兵种57</Type>
+            <Type>军阀.弹药兵</Type>
             <Interval>100</Interval>
             <Quantity>1</Quantity>
             <Level>17</Level>
@@ -1579,7 +1579,7 @@
             <y>328</y>
           </Enemy>
           <Enemy>
-            <Type>兵种55</Type>
+            <Type>军阀.重装兵</Type>
             <Interval>100</Interval>
             <Quantity>1</Quantity>
             <Level>17</Level>
@@ -1616,7 +1616,7 @@
   </掉落物>
 </Parameters></Enemy>
           <Enemy>
-            <Type>兵种54</Type>
+            <Type>军阀.狙击兵</Type>
             <Interval>100</Interval>
             <Quantity>1</Quantity>
             <Level>17</Level>
@@ -1632,14 +1632,14 @@
             </Parameters>
           </Enemy>
           <Enemy>
-            <Type>兵种54</Type>
+            <Type>军阀.狙击兵</Type>
             <Interval>1000</Interval>
             <Quantity>2</Quantity>
             <Level>17</Level>
             <SpawnIndex>0</SpawnIndex>
           </Enemy>
           <Enemy>
-            <Type>兵种56</Type>
+            <Type>军阀.突击兵</Type>
             <Interval>1000</Interval>
             <Quantity>2</Quantity>
             <Level>17</Level>

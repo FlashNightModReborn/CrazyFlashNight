@@ -1,0 +1,4 @@
+﻿trace("FocusedTestRunId unit-registry Start: __FOCUSED_RUN_ID__");
+_root.__unitRegistryRunId = "__FOCUSED_RUN_ID__";
+org.flashNight.arki.unit.UnitRegistryTest.runAllTests();
+stop();

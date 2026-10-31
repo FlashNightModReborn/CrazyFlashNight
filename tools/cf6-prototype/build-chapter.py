@@ -21,6 +21,9 @@ import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[2]
 TOOLS = ROOT / "tools"
+sys.path.insert(0, str(TOOLS))
+from unit_registry import UnitRegistry
+REGISTRY = UnitRegistry.load(ROOT)
 HERE = Path(__file__).resolve().parent
 ROUTE = [f"A{i:02}" for i in range(1, 23) if i not in (7, 21)]
 CHAPTER_ROUTE = [f"A{i:02}" for i in range(1, 23) if i != 21]
@@ -315,7 +318,7 @@ def merge_elder_finale(chapter, environments):
         raise ValueError('elder phases no longer share the same room geometry')
     boss = human['stage']['Wave']['SubWave'][-1]['EnemyGroup']['Enemy'][0]
     next_boss = robot['stage']['Wave']['SubWave'][0]['EnemyGroup']['Enemy'][0]
-    if (boss['Type'] != '兵种473' or next_boss['Type'] != '兵种474'
+    if (REGISTRY.resolve_id(boss['Type']) != 473 or REGISTRY.resolve_id(next_boss['Type']) != 474
             or boss['Level'] != next_boss['Level'] or boss['Quantity'] != 1 or next_boss['Quantity'] != 1):
         raise ValueError('elder phase boss identity mismatch')
     boss['Parameters']['老头变身'] = True
@@ -689,8 +692,8 @@ def build(require_swfs=True):
     spawn_audit = spawn.adapt(chapter, environments)
     inputs.append(HERE / 'spawn-assembly.py')
     guide_audit = apply_exit_guides(chapter, environments)
-    units = {int(row['id']) for row in read(ROOT / 'data/units/units.json')}
-    validator.validate_cf6(chapter, items, skills, units,
+    units = set(REGISTRY.by_id)
+    validator.validate_cf6(validator.normalize_book_units(chapter, REGISTRY), items, skills, units,
                            require_backgrounds=require_swfs)
     inputs.extend([ROOT / 'data/skills/skills.xml', ROOT / 'data/items/list.xml',
                    ROOT / 'data/rewards/choice-rewards.json', SOURCE / 'choice-rewards.fragment.json',

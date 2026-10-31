@@ -4,6 +4,7 @@
 const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
+const { UnitRegistry, extractDirectChildXml } = require("./lib/unit-registry");
 
 const ROOT = path.resolve(__dirname, "..");
 const STAGES_DIR = path.join(ROOT, "data", "stages");
@@ -170,6 +171,7 @@ function modeLevel(levelCounts, fallback) {
 
 function buildPresets() {
   const units = JSON.parse(fs.readFileSync(UNITS_PATH, "utf8"));
+  const registry = new UnitRegistry(units);
   const byType = {};
   units.forEach(unit => {
     byType["兵种" + unit.id] = unit;
@@ -187,16 +189,16 @@ function buildPresets() {
     let match;
     while ((match = enemyRe.exec(xml))) {
       const body = match[1];
-      const type = tagText(body, "Type");
+      const type = extractDirectChildXml(body, "Type", rel + ": Enemy");
       const parametersBody = tagText(body, "Parameters");
       if (!parametersBody) continue;
       enemyWithParameters += 1;
-      if (!type || !/^兵种\d+$/.test(type.trim()) || !byType[type.trim()]) {
+      if (!type || !type.trim() || type.indexOf("<") >= 0) {
         skippedUnknownType += 1;
         continue;
       }
 
-      const unitType = type.trim();
+      const unitType = registry.resolveType(type, rel + ": Enemy.Type");
       const id = normalizeUnitId(unitType);
       const unit = byType[unitType];
       const parameters = stableNormalize(parseParameterBody(parametersBody));

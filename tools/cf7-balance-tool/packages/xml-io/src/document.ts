@@ -85,13 +85,17 @@ export class XmlDocument {
   }
 
   /** 按节点本身读取叶子文本；普查这类需要遍历大量节点的场景不必拼路径。 */
-  leafText(node: XmlDocumentNode): string | undefined {
+  leafText(node: XmlDocumentNode, options?: { trim?: boolean }): string | undefined {
     if (node.selfClosing || node.children.length > 0) {
       return undefined;
     }
 
-    const value = this.#readRange(node.innerStart, node.innerEnd).trim();
-    return value.length > 0 ? value : undefined;
+    const raw = this.#readRange(node.innerStart, node.innerEnd);
+    const trimmed = raw.trim();
+    if (trimmed.length === 0) {
+      return undefined;
+    }
+    return options?.trim === false ? raw : trimmed;
   }
 
   childText(node: XmlDocumentNode, name: string): string | undefined {

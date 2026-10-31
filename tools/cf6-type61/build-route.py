@@ -17,6 +17,7 @@ sys.path.insert(0, str(SOURCE.parent))
 import encounters
 from choice_reward_catalog import item_catalog
 from cf6_acquisition import channels, route_plan, sources as acquisition_sources, registries as acquisition_registries
+from unit_registry import UnitRegistry, normalize_book_units
 
 MID_MODS = ['高强度合金', '枪械内构强化套件', '战术背带']
 HIGH_MODS = ['纳米执行单元', '水冷机构', '黑爪扩张弹']
@@ -317,8 +318,9 @@ def build(source=None):
     skill_inputs=[{key:(int(s.findtext(key)) if key in ('MaxLevel','UnlockLevel','UnlockSP','UpgradeSP') else s.findtext(key))
                    for key in ('Name','Type','MaxLevel','UnlockLevel','UnlockSP','UpgradeSP')} for s in skill_rows if s.findtext('Name') in actor_skills]
     fixture+=fixture_method('actorInputs',dict(items=actor_items,skills=skill_inputs),True)
-    fixture+=fixture_method('metadata',{k:v for k,v in chapter.items() if k not in ('maps','type61')})
-    for i,stage in enumerate(chapter['maps']): fixture+=fixture_method('map'+str(i),stage)
+    runtime_chapter=normalize_book_units(chapter,UnitRegistry.load(ROOT))
+    fixture+=fixture_method('metadata',{k:v for k,v in runtime_chapter.items() if k not in ('maps','type61')})
+    for i,stage in enumerate(runtime_chapter['maps']): fixture+=fixture_method('map'+str(i),stage)
     fixture+='    public static function book():Object {\n        var data:Object=metadata();data.type61=config();\n        data.maps=['+','.join('map%d()'%i for i in range(len(chapter['maps'])))+'];\n        return data;\n    }\n}\n'
     outputs[ROOT/'scripts/类定义/org/flashNight/arki/scene/Cf6Type61Fixture.as']=b'\xef\xbb\xbf'+fixture.encode('utf8')
     outputs[ROOT/'data/shops/list.xml']=register_xml(ROOT/'data/shops/list.xml','shops',['npcs/'+s+'.json' for s in shop_ids],'GENERATED CF6 TYPE61 SHOPS')
@@ -355,13 +357,14 @@ def build(source=None):
         return dict(path=path.relative_to(ROOT).as_posix(),bytes=len(content),sha256=hashlib.sha256(content).hexdigest())
     entries=[identity(p,b) for p,b in sorted(outputs.items())]
     total=sum(e['bytes'] for e in entries)
-    complete_size=total+len(encoded(chapter))
+    runtime_bytes=encoded(normalize_book_units(chapter,UnitRegistry.load(ROOT)))
+    complete_size=total+len(runtime_bytes)
     if complete_size>2000000: raise ValueError('Type61 generated content exceeds its reviewed 2 MB limit')
     manifest=dict(schema='cf6-type61-content.v1',scope='Generated route content and test fixtures; no SWF compilation, execution or promotion claim.',
                   inputs=[identity(p,p.read_bytes()) for p in sorted(inputs)],outputs=entries,generatedBytes=total,
                   bytesIncludingRuntimeSidecar=complete_size,maxGeneratedBytes=2000000,
                   downstreamChecks=['tools/build-choice-rewards.py --check','tools/build-book-definition.py --check'],
-                  runtimeSidecar=identity(ROOT/'data/stages/books/cf6-type61.runtime.json',encoded(chapter)))
+                  runtimeSidecar=identity(ROOT/'data/stages/books/cf6-type61.runtime.json',runtime_bytes))
     outputs[SOURCE.with_name('manifest.generated.json')]=encoded(manifest)
     return outputs
 
