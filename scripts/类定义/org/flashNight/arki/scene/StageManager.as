@@ -1295,6 +1295,7 @@ class org.flashNight.arki.scene.StageManager {
     }
 
     public function closeStage():Void{
+        org.flashNight.arki.scene.DefenseElevatorController.closeForStage(gameworld, currentStage);
         if (timePoolController != null) {
             leaveTimePoolBestEffort(timePoolController);
         }

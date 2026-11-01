@@ -1416,7 +1416,8 @@ class org.flashNight.arki.item.CharacterBuildService {
             iconName:String(tooltip.iconName),
             itemType:String(tooltip.itemType),
             descHTML:String(tooltip.descHTML),
-            introHTML:String(tooltip.introHTML)
+            introHTML:String(tooltip.introHTML),
+            document:tooltip.document
         }};
     }
 

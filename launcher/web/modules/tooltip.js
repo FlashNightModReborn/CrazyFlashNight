@@ -696,9 +696,26 @@ var PanelTooltip = (function() {
 
     // 侧栏宽度：有描述栏时整列与描述栏同宽（子框 stretch 到同一宽度）；只有
     // role:"sub" 子框时按内容估算一次，避免列宽缩成最长行或撑满整条 tooltip。
+    // 任一子框被内容强制横向撑开时，以最宽子框为准整体加宽，避免出现无法操作的横滚动条。
+    function requiredSubPanelWidth(side) {
+        if (!side) return 0;
+        var panels = side.querySelectorAll('.flash-tt-sub-panel');
+        var required = 0;
+        for (var i = 0; i < panels.length; i++) {
+            var panel = panels[i];
+            var overflow = panel.scrollWidth - panel.clientWidth;
+            var width = panel.offsetWidth + (overflow > 0 ? overflow + 1 : 0);
+            if (width > required) required = width;
+        }
+        return required;
+    }
+
     function applySideWidth(side) {
         if (!side || side.querySelector('.flash-tt-desc')) return;
-        side.style.width = estimateMainWidth(htmlScoresBoth(side.innerHTML)) + 'px';
+        var w = estimateMainWidth(htmlScoresBoth(side.innerHTML));
+        var required = requiredSubPanelWidth(side);
+        if (required > w) w = required;
+        side.style.width = w + 'px';
     }
 
     // 给 desc 写 inline width（侧栏整列同宽）；无 desc 时只给纯子框侧栏估宽。
@@ -720,8 +737,14 @@ var PanelTooltip = (function() {
         var w = estimateMainWidth(scores);
         descPanel.style.width = w + 'px';
         // 侧栏宽度取 desc 的实际 border-box（含 min-width 下限与 max-width 夹紧），
-        // 避免列宽与描述栏差几个像素导致子框越界。
-        if (side) side.style.width = (descPanel.offsetWidth || w) + 'px';
+        // 再让最宽子框强制加宽整列；子框 stretch 后不再需要横向滚动。
+        var sideW = descPanel.offsetWidth || w;
+        var required = requiredSubPanelWidth(side);
+        if (required > sideW) {
+            sideW = required;
+            descPanel.style.width = sideW + 'px';
+        }
+        if (side) side.style.width = sideW + 'px';
     }
 
     /** hover 模式：跟随鼠标移动 */

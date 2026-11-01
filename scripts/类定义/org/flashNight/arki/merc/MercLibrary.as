@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.merc.*;
 import org.flashNight.naki.Sort.InsertionSort;
 import org.flashNight.neur.Server.DataQueryService;
+import org.flashNight.gesh.object.ObjectUtil;
 
 /*
  * MercLibrary：佣兵数据访问层。
@@ -38,6 +39,7 @@ class org.flashNight.arki.merc.MercLibrary {
     // 补独立拷贝，副本上也读得到 对话，所以本索引与 [19].对话 等价；把两条通道收成一条要同步改
     // MercDialogueTest 的门数，留作独立清理。见 buildDialogueGroups 的取用点。
     private static var _dialoguesByName:Object = {};
+    private static var _mercDataCache:Object = {};
 
     public static function get bundle():Object {
         return _bundle;
@@ -86,6 +88,7 @@ class org.flashNight.arki.merc.MercLibrary {
         _root.隐藏的可雇佣兵 = [];
         // 与池同步重建：JSON 里已删除的记录不能留下过期的指定对话
         _dialoguesByName = {};
+        _mercDataCache = {};
 
         var seen:Object = {};
         for (var i:Number = 0; i < _root.佣兵个数限制; i++) {
@@ -120,6 +123,10 @@ class org.flashNight.arki.merc.MercLibrary {
     }
 
     public static function buildMercData(raw:Object):Array {
+        var cacheKey:String = raw.id == undefined ? "" : String(raw.id);
+        if (cacheKey != "" && _mercDataCache[cacheKey] != undefined) {
+            return arrayFromObject(ObjectUtil.clone(_mercDataCache[cacheKey]));
+        }
         var merc:Array = new Array(20);
         var equipment:Object = raw.equipment;
         if (equipment == undefined) equipment = {};
@@ -169,7 +176,14 @@ class org.flashNight.arki.merc.MercLibrary {
             merc[19].对话 = 对话配置;
             _dialoguesByName[raw.name] = 对话配置;
         }
+        if (cacheKey != "") {
+            _mercDataCache[cacheKey] = ObjectUtil.clone(merc);
+        }
         return merc;
+    }
+
+    private static function arrayFromObject(value):Array {
+        return value;
     }
 
     // 人格六维键。与 _root.生成随机人格 的维度名、MercPanelService 序列化顺序同源。

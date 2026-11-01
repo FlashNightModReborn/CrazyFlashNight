@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5913 unique assets -->
+  <!-- 5937 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -25,6 +25,18 @@
   <asset id="Au的素材" swf="flashswf/arts/new/Au的素材.swf" symbolName="男变装-大圣上装身体" />
   <asset id="BBPLAYER手雷" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="手雷/BBPLAYER炸弹/BBPLAYER手雷" />
   <asset id="BBPLAYER炸弹" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="手雷/BBPLAYER炸弹/BBPLAYER炸弹" />
+  <asset id="CF6Vehicle" swf="flashswf/arts/new/CF6Vehicle.swf" />
+  <asset id="CF6VehicleArmoredBoss" swf="flashswf/arts/new/CF6Vehicle.swf" symbolName="CF6VehicleSource/1813" />
+  <asset id="CF6VehicleBullet" swf="flashswf/arts/new/CF6Vehicle.swf" symbolName="CF6VehicleSource/356" />
+  <asset id="CF6VehicleExplosion" swf="flashswf/arts/new/CF6Vehicle.swf" symbolName="CF6VehicleSource/391" />
+  <asset id="CF6VehicleGrenade" swf="flashswf/arts/new/CF6Vehicle.swf" symbolName="CF6VehicleSource/361" />
+  <asset id="CF6VehiclePlayer" swf="flashswf/arts/new/CF6Vehicle.swf" symbolName="CF6VehicleSource/1803" />
+  <asset id="CF6VehicleRaider" swf="flashswf/arts/new/CF6Vehicle.swf" symbolName="CF6VehicleSource/612" />
+  <asset id="CF6VehicleRoad" swf="flashswf/arts/new/CF6Vehicle.swf" symbolName="CF6VehicleSource/1791" />
+  <asset id="CF6VehicleRoadblock" swf="flashswf/arts/new/CF6Vehicle.swf" symbolName="CF6VehicleSource/627" />
+  <asset id="CF6VehicleShield" swf="flashswf/arts/new/CF6Vehicle.swf" symbolName="CF6VehicleSource/629" />
+  <asset id="CF6VehicleSpark" swf="flashswf/arts/new/CF6Vehicle.swf" symbolName="CF6VehicleSource/115" />
+  <asset id="CF6教学炮塔-A01自动炮" swf="flashswf/backgrounds/cf6/CF6_A01_Turret.swf" symbolName="CF6Turret/00004-CF6教学炮塔-A01自动炮" />
   <asset id="CodexWings素材" swf="flashswf/arts/new/CodexWings素材.swf" />
   <asset id="Codex专用素材" swf="flashswf/arts/new/Codex专用素材.swf" />
   <asset id="Codex光头保安素材" swf="flashswf/arts/new/Codex光头保安素材.swf" />
@@ -1198,6 +1210,7 @@
   <asset id="图标-剑圣胸甲" swf="flashswf/arts/things.swf" symbolName="0.防具相关/11.剑圣套装相关/图标-剑圣胸甲" />
   <asset id="图标-剑圣腿甲" swf="flashswf/arts/things.swf" symbolName="0.防具相关/11.剑圣套装相关/图标-剑圣腿甲" />
   <asset id="图标-剑圣装甲鞋" swf="flashswf/arts/things.swf" symbolName="0.防具相关/11.剑圣套装相关/图标-剑圣装甲鞋" />
+  <asset id="图标-剑气释放" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="技能相关/图标-剑气释放" />
   <asset id="图标-剧毒蛇矛" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/长柄/21.剧毒蛇矛/图标-剧毒蛇矛" />
   <asset id="图标-剧毒银刃" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/锐器/剧毒银刃/图标-剧毒银刃" />
   <asset id="图标-加农手炮" swf="flashswf/arts/new/3XD的素材.swf" symbolName="2副武器/加农手炮/图标-加农手炮" />
@@ -1211,6 +1224,7 @@
   <asset id="图标-勇气灵剑" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/重锐器/勇气灵剑/图标-勇气灵剑" />
   <asset id="图标-匕首" swf="flashswf/arts/things切割.swf" symbolName="冷兵/锐器/短刀/匕首/图标-匕首" />
   <asset id="图标-医用口罩" swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/图标-医用口罩" />
+  <asset id="图标-十六夜月华" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="技能相关/图标-十六夜月华" />
   <asset id="图标-十字螺旋手里剑" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/暗器/图标-十字螺旋手里剑" />
   <asset id="图标-十文字大剑" swf="flashswf/arts/things切割.swf" symbolName="冷兵/锐器/十文字大剑/图标-十文字大剑" />
   <asset id="图标-升龙拳" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="技能相关/图标-升龙拳" />
@@ -1387,6 +1401,7 @@
   <asset id="图标-巴雷特" swf="flashswf/arts/things.swf" symbolName="1.枪械相关/长枪/巴雷特/图标-巴雷特" />
   <asset id="图标-巴雷特印花集" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/巴雷特印花集/长枪/图标-AK74" />
   <asset id="图标-幻层残响" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="消耗道具相关/0.回复增益类相关/图标-幻层残响" />
+  <asset id="图标-幻影剑舞" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="技能相关/图标-幻影剑舞" />
   <asset id="图标-幻影头部装甲" swf="flashswf/arts/things.swf" symbolName="0.防具相关/幻影套装/图标-幻影头部装甲" />
   <asset id="图标-幻影手甲" swf="flashswf/arts/things.swf" symbolName="0.防具相关/幻影套装/图标-幻影手甲" />
   <asset id="图标-幻影胸甲" swf="flashswf/arts/things.swf" symbolName="0.防具相关/幻影套装/图标-幻影胸甲" />
@@ -1542,6 +1557,7 @@
   <asset id="图标-月之碎片" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="材料相关/图标-月之碎片" />
   <asset id="图标-月之精华" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="材料相关/图标-月之精华" />
   <asset id="图标-月光大剑" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/重锐器/月光大剑/图标-月光大剑" />
+  <asset id="图标-月光斩" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="技能相关/图标-月光斩" />
   <asset id="图标-月饼" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="消耗道具相关/0.回复增益类相关/图标-月饼" />
   <asset id="图标-木制球棒" swf="flashswf/arts/new/原体融合生物.swf" />
   <asset id="图标-未知金属" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="材料相关/图标-未知金属" />
@@ -1737,6 +1753,7 @@
   <asset id="图标-狸灰直刃" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/长柄/02.狸灰直刃/图标-狸灰直刃" />
   <asset id="图标-狼牙长棒" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/长柄/22.狼牙长棒/图标-狼牙长棒" />
   <asset id="图标-狼的末路" swf="flashswf/arts/new/无名氏的宝库.swf" symbolName="装备/狼的末路/图标-狼的末路" />
+  <asset id="图标-猎影十字" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="技能相关/图标-猎影十字" />
   <asset id="图标-猎杀巨物大锤" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/钝器/猎杀巨物大锤/图标-猎杀巨物大锤" />
   <asset id="图标-猩红天秤" swf="flashswf/arts/things0.swf" symbolName="Codex/Ti61-血剑战技/图标-猩红天秤" />
   <asset id="图标-猪年碎片" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="材料相关/图标-猪年碎片" />
@@ -1800,6 +1817,7 @@
   <asset id="图标-白象牙" swf="flashswf/arts/new/伊恩的素材.swf" symbolName="鬼泣素材包/黑檀木白象牙组件/白象牙组件/图标-白象牙" />
   <asset id="图标-白金剑刃" swf="flashswf/arts/new/天网大家庭.swf" />
   <asset id="图标-白金石斧" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/重锐器/白金石斧/图标-白金石斧" />
+  <asset id="图标-百万突刺" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="技能相关/图标-百万突刺" />
   <asset id="图标-盗贼无袖皮马甲" swf="flashswf/arts/things.swf" symbolName="0.防具相关/盗贼相关套装/图标-盗贼无袖皮马甲" />
   <asset id="图标-盗贼牛仔裤带腿包" swf="flashswf/arts/things.swf" symbolName="0.防具相关/盗贼相关套装/图标-盗贼牛仔裤带腿包" />
   <asset id="图标-盗贼猪鼻式防毒面具" swf="flashswf/arts/things.swf" symbolName="0.防具相关/盗贼相关套装/图标-盗贼猪鼻式防毒面具" />
@@ -1873,6 +1891,7 @@
   <asset id="图标-箭矢" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="消耗道具相关/1.弹药相关/图标-箭矢" />
   <asset id="图标-米色高腰背心" swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/图标-米色高腰背心" />
   <asset id="图标-米酒" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="食材相关/图标-米酒" />
+  <asset id="图标-粉碎切割" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="技能相关/图标-粉碎切割" />
   <asset id="图标-粘土" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="材料相关/图标-粘土" />
   <asset id="图标-精武短发" swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/图标-精武短发" />
   <asset id="图标-精油" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="材料相关/图标-精油" />
@@ -1955,6 +1974,7 @@
   <asset id="图标-菠萝罐头" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="消耗道具相关/新道具/菠萝罐头/图标-菠萝罐头" />
   <asset id="图标-葱花炒蛋" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="食材相关/图标-葱花炒蛋" />
   <asset id="图标-蒜蓉炒空心菜" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="食材相关/图标-蒜蓉炒空心菜" />
+  <asset id="图标-蓄力重劈" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="技能相关/图标-蓄力重劈" />
   <asset id="图标-蓝尤克里里" swf="flashswf/arts/new/蓝环章鱼烧.swf" symbolName="C.武器以及装备/图标/奇怪的U" />
   <asset id="图标-蓝晶" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="材料相关/图标-蓝晶" />
   <asset id="图标-蓝晶下装" swf="flashswf/arts/things.swf" symbolName="0.防具相关/10.蓝晶/图标-蓝晶下装" />
@@ -1996,6 +2016,7 @@
   <asset id="图标-西洋重剑" swf="flashswf/arts/things切割.swf" symbolName="冷兵/锐器-重/西洋重剑/图标-西洋重剑" />
   <asset id="图标-西洋重剑枪" swf="flashswf/arts/new/雾人装备调整.swf" symbolName="1.冷兵器/长柄/04.西洋重剑枪/图标-西洋重剑枪" />
   <asset id="图标-西风大剑" swf="flashswf/arts/new/无名氏的宝库.swf" symbolName="装备/西风大剑/图标-西风大剑" />
+  <asset id="图标-见切" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="技能相关/图标-见切" />
   <asset id="图标-觉醒不坏金身" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="技能相关/Symbol 6" />
   <asset id="图标-觉醒晶体" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="材料相关/图标-觉醒晶体" />
   <asset id="图标-觉醒者.L33T墨镜" swf="flashswf/arts/new/蓝环章鱼烧.swf" symbolName="C.武器以及装备/图标/图标-觉醒者.L33T墨镜" />
@@ -2047,6 +2068,7 @@
   <asset id="图标-贯空天盖手套" swf="flashswf/arts/new/瓦巴杰克.swf" symbolName="防具/贯空天盖/图标-贯空天盖手套" />
   <asset id="图标-贯空天盖长靴" swf="flashswf/arts/new/瓦巴杰克.swf" symbolName="防具/贯空天盖/图标-贯空天盖长靴" />
   <asset id="图标-贯穿波束发生器" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="材料相关/图标-贯穿波束发生器" />
+  <asset id="图标-贯穿突刺" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="技能相关/图标-贯穿突刺" />
   <asset id="图标-资料" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="情报物品相关/图标-资料" />
   <asset id="图标-赤旌熔脊柄" swf="flashswf/arts/素材库-物品技能图标.swf" symbolName="材料相关/图标-赤旌熔脊柄" />
   <asset id="图标-超合金战刀修复版" swf="flashswf/arts/new/偷吃屑鱼坟头贡品.swf" symbolName="图标/图标-超合金战刀修复版" />
@@ -2371,6 +2393,8 @@
   <asset id="地图-测试空间" swf="flashswf/levels/地图-测试空间.swf" />
   <asset id="地图-理科教室" swf="flashswf/levels/地图-教学楼内部.swf" />
   <asset id="地图-界外街道" swf="flashswf/levels/地图-界外街道.swf" />
+  <asset id="地图-研究所接待处" swf="flashswf/levels/地图-研究所接待处.swf" />
+  <asset id="地图-研究所通路" swf="flashswf/levels/地图-研究所通路.swf" />
   <asset id="地图-第一防线防区" swf="flashswf/levels/地图-第一防线防区.swf" />
   <asset id="地图-联合大学" swf="flashswf/levels/地图-联合大学.swf" />
   <asset id="地图-走廊" swf="flashswf/levels/地图-走廊.swf" />
@@ -6390,6 +6414,8 @@
     <source swf="flashswf/arts/things0.swf" symbolName="sprite/男变装-基本脸型" />
     <source swf="flashswf/backgrounds/gk22_2_BG.swf" />
     <source swf="flashswf/backgrounds/gk22_3_BG.swf" />
+    <source swf="flashswf/levels/地图-研究所接待处.swf" symbolName="sprite/男变装-基本脸型" />
+    <source swf="flashswf/levels/地图-研究所通路.swf" symbolName="sprite/男变装-基本脸型" />
     <source swf="flashswf/levels/地图-第一防线防区.swf" symbolName="待整理防具相关汇总/Symbol 97" />
     <source swf="flashswf/portraits/artist.swf" symbolName="待整理防具相关汇总/Symbol 97" />
   </conflict>
@@ -6498,6 +6524,8 @@
     <source swf="flashswf/arts/new/天网大家庭.swf" symbolName="sprite/男变装-裸体身体" />
     <source swf="flashswf/arts/new/新的动作.swf" symbolName="sprite/男变装-裸体身体" />
     <source swf="flashswf/arts/things0.swf" symbolName="sprite/男变装-裸体身体" />
+    <source swf="flashswf/levels/地图-研究所接待处.swf" symbolName="sprite/男变装-裸体身体" />
+    <source swf="flashswf/levels/地图-研究所通路.swf" symbolName="sprite/男变装-裸体身体" />
   </conflict>
   <conflict id="男变装-黑色太阳镜">
     <source swf="flashswf/arts/things.swf" symbolName="待整理防具相关汇总/男变装-黑色太阳镜" />

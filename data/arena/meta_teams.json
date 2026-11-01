@@ -4,12 +4,12 @@
   "note": "竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队，npc=true 标记保护成员); rosters{}=排除 NPC 保护与人形模板的自动势力兵种池(按等级带采样K体用); mercenaries[]=混编人形侧优先池(来自 data/merc/mercenaries.json，排除 hidden)。请勿手改——改采集规则后重跑。",
   "stageFilesScanned": 216,
   "stagesWithTeams": 198,
-  "teamCount": 2100,
+  "teamCount": 2103,
   "mercenaryCount": 199,
   "factionBreakdown": {
     "日本军": 126,
     "unknown": 103,
-    "亡灵/僵尸": 604,
+    "亡灵/僵尸": 607,
     "天网": 234,
     "异形": 262,
     "联合大学": 1,
@@ -118,7 +118,7 @@
       "unitCount": 9
     },
     "亡灵/僵尸": {
-      "teamCount": 604,
+      "teamCount": 607,
       "units": [
         {
           "type": "兵种72",
@@ -127,7 +127,7 @@
           "isHostile": true,
           "minLevel": 1,
           "maxLevel": 60,
-          "weight": 4478
+          "weight": 4485
         },
         {
           "type": "兵种71",
@@ -136,7 +136,7 @@
           "isHostile": true,
           "minLevel": 37,
           "maxLevel": 60,
-          "weight": 474
+          "weight": 479
         },
         {
           "type": "兵种70",
@@ -145,7 +145,7 @@
           "isHostile": true,
           "minLevel": 30,
           "maxLevel": 60,
-          "weight": 371
+          "weight": 374
         },
         {
           "type": "兵种74",
@@ -154,7 +154,7 @@
           "isHostile": true,
           "minLevel": 37,
           "maxLevel": 60,
-          "weight": 345
+          "weight": 349
         },
         {
           "type": "兵种3",
@@ -977,6 +977,15 @@
           "weight": 5
         },
         {
+          "type": "兵种90",
+          "name": "黑铁死士",
+          "spritename": "敌人-黑铁会死士",
+          "isHostile": false,
+          "minLevel": 35,
+          "maxLevel": 40,
+          "weight": 5
+        },
+        {
           "type": "兵种373",
           "name": "克隆人",
           "spritename": "敌人-闪6特工",
@@ -1004,15 +1013,6 @@
           "minLevel": 60,
           "maxLevel": 60,
           "weight": 5
-        },
-        {
-          "type": "兵种90",
-          "name": "黑铁死士",
-          "spritename": "敌人-黑铁会死士",
-          "isHostile": false,
-          "minLevel": 35,
-          "maxLevel": 40,
-          "weight": 4
         },
         {
           "type": "兵种204",
@@ -1259,6 +1259,24 @@
             },
             "超时空传送": true
           }
+        },
+        {
+          "type": "兵种101",
+          "name": "黑铁刺客",
+          "spritename": "敌人-黑铁会刺客",
+          "isHostile": false,
+          "minLevel": 40,
+          "maxLevel": 40,
+          "weight": 3
+        },
+        {
+          "type": "兵种102",
+          "name": "黑铁行刑者",
+          "spritename": "敌人-黑铁会大叔",
+          "isHostile": false,
+          "minLevel": 40,
+          "maxLevel": 40,
+          "weight": 3
         },
         {
           "type": "兵种363",
@@ -1609,6 +1627,15 @@
           }
         },
         {
+          "type": "兵种99",
+          "name": "突击兵",
+          "spritename": "敌人-军阀突击兵",
+          "isHostile": false,
+          "minLevel": 40,
+          "maxLevel": 40,
+          "weight": 2
+        },
+        {
           "type": "兵种200",
           "name": "暴走方舟克隆忍者",
           "spritename": "敌人-忍者兵",
@@ -1624,24 +1651,6 @@
           "isHostile": true,
           "minLevel": 60,
           "maxLevel": 60,
-          "weight": 2
-        },
-        {
-          "type": "兵种101",
-          "name": "黑铁刺客",
-          "spritename": "敌人-黑铁会刺客",
-          "isHostile": false,
-          "minLevel": 40,
-          "maxLevel": 40,
-          "weight": 2
-        },
-        {
-          "type": "兵种102",
-          "name": "黑铁行刑者",
-          "spritename": "敌人-黑铁会大叔",
-          "isHostile": false,
-          "minLevel": 40,
-          "maxLevel": 40,
           "weight": 2
         },
         {
@@ -1984,6 +1993,15 @@
           }
         },
         {
+          "type": "兵种97",
+          "name": "狙击兵",
+          "spritename": "敌人-军阀狙击兵",
+          "isHostile": false,
+          "minLevel": 40,
+          "maxLevel": 40,
+          "weight": 1
+        },
+        {
           "type": "兵种376",
           "name": "黑铁流锤",
           "spritename": "敌人-黑铁精英流锤兵",
@@ -2166,7 +2184,7 @@
           }
         }
       ],
-      "unitCount": 182
+      "unitCount": 184
     },
     "天网": {
       "teamCount": 234,
@@ -101105,6 +101123,219 @@
       "factionConfidence": "rule",
       "members": [
         {
+          "type": "兵种72",
+          "id": 72,
+          "name": "普通改造僵尸",
+          "spritename": "敌人-普通改造僵尸",
+          "level": 40,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种71",
+          "id": 71,
+          "name": "兽化改造僵尸",
+          "spritename": "敌人-兽化改造僵尸",
+          "level": 40,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种74",
+          "id": 74,
+          "name": "爆炸僵尸",
+          "spritename": "敌人-普通爆炸僵尸",
+          "level": 40,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 7,
+      "distinctTypes": 3,
+      "avgLevel": 40,
+      "levelMin": 40,
+      "levelMax": 40,
+      "powerRating": 280
+    },
+    {
+      "id": "诺亚前线基地深处/防御地带.xml#4.1",
+      "sourceStage": "诺亚前线基地深处/防御地带.xml",
+      "sourceName": "防御地带",
+      "group": "4.1",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule-weak",
+      "members": [
+        {
+          "type": "兵种72",
+          "id": 72,
+          "name": "普通改造僵尸",
+          "spritename": "敌人-普通改造僵尸",
+          "level": 40,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种70",
+          "id": 70,
+          "name": "重型改造僵尸",
+          "spritename": "敌人-重型改造僵尸",
+          "level": 40,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种74",
+          "id": 74,
+          "name": "爆炸僵尸",
+          "spritename": "敌人-普通爆炸僵尸",
+          "level": 40,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种90",
+          "id": 90,
+          "name": "黑铁死士",
+          "spritename": "敌人-黑铁会死士",
+          "level": 40,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        },
+        {
+          "type": "兵种101",
+          "id": 101,
+          "name": "黑铁刺客",
+          "spritename": "敌人-黑铁会刺客",
+          "level": 40,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        },
+        {
+          "type": "兵种97",
+          "id": 97,
+          "name": "狙击兵",
+          "spritename": "敌人-军阀狙击兵",
+          "level": 40,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        },
+        {
+          "type": "兵种99",
+          "id": 99,
+          "name": "突击兵",
+          "spritename": "敌人-军阀突击兵",
+          "level": 40,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 9,
+      "distinctTypes": 7,
+      "avgLevel": 40,
+      "levelMin": 40,
+      "levelMax": 40,
+      "powerRating": 360
+    },
+    {
+      "id": "诺亚前线基地深处/防御地带.xml#4.2",
+      "sourceStage": "诺亚前线基地深处/防御地带.xml",
+      "sourceName": "防御地带",
+      "group": "4.2",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种71",
+          "id": 71,
+          "name": "兽化改造僵尸",
+          "spritename": "敌人-兽化改造僵尸",
+          "level": 40,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种70",
+          "id": 70,
+          "name": "重型改造僵尸",
+          "spritename": "敌人-重型改造僵尸",
+          "level": 40,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种74",
+          "id": 74,
+          "name": "爆炸僵尸",
+          "spritename": "敌人-普通爆炸僵尸",
+          "level": 40,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种102",
+          "id": 102,
+          "name": "黑铁行刑者",
+          "spritename": "敌人-黑铁会大叔",
+          "level": 40,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        },
+        {
+          "type": "兵种99",
+          "id": 99,
+          "name": "突击兵",
+          "spritename": "敌人-军阀突击兵",
+          "level": 40,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 9,
+      "distinctTypes": 5,
+      "avgLevel": 40,
+      "levelMin": 40,
+      "levelMax": 40,
+      "powerRating": 360
+    },
+    {
+      "id": "诺亚前线基地深处/防御地带.xml#5.0",
+      "sourceStage": "诺亚前线基地深处/防御地带.xml",
+      "sourceName": "防御地带",
+      "group": "5.0",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule",
+      "members": [
+        {
           "type": "兵种264",
           "id": 264,
           "name": "军阀精英突击兵",
@@ -101191,130 +101422,130 @@
       "powerRating": 560
     },
     {
-      "id": "诺亚前线基地深处/防御地带.xml#4.1",
-      "sourceStage": "诺亚前线基地深处/防御地带.xml",
-      "sourceName": "防御地带",
-      "group": "4.1",
-      "faction": "亡灵/僵尸",
-      "factionConfidence": "rule-weak",
-      "members": [
-        {
-          "type": "兵种70",
-          "id": 70,
-          "name": "重型改造僵尸",
-          "spritename": "敌人-重型改造僵尸",
-          "level": 40,
-          "count": 5,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种74",
-          "id": 74,
-          "name": "爆炸僵尸",
-          "spritename": "敌人-普通爆炸僵尸",
-          "level": 40,
-          "count": 5,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种372",
-          "id": 372,
-          "name": "克隆兽",
-          "spritename": "敌人-诺亚克隆兽",
-          "level": 40,
-          "count": 4,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种373",
-          "id": 373,
-          "name": "克隆人",
-          "spritename": "敌人-闪6特工",
-          "level": 40,
-          "count": 4,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 18,
-      "distinctTypes": 4,
-      "avgLevel": 40,
-      "levelMin": 40,
-      "levelMax": 40,
-      "powerRating": 720
-    },
-    {
-      "id": "诺亚前线基地深处/防御地带.xml#5.0",
-      "sourceStage": "诺亚前线基地深处/防御地带.xml",
-      "sourceName": "防御地带",
-      "group": "5.0",
-      "faction": "亡灵/僵尸",
-      "factionConfidence": "rule-weak",
-      "members": [
-        {
-          "type": "兵种70",
-          "id": 70,
-          "name": "重型改造僵尸",
-          "spritename": "敌人-重型改造僵尸",
-          "level": 40,
-          "count": 5,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种74",
-          "id": 74,
-          "name": "爆炸僵尸",
-          "spritename": "敌人-普通爆炸僵尸",
-          "level": 40,
-          "count": 5,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种372",
-          "id": 372,
-          "name": "克隆兽",
-          "spritename": "敌人-诺亚克隆兽",
-          "level": 40,
-          "count": 4,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        },
-        {
-          "type": "兵种373",
-          "id": 373,
-          "name": "克隆人",
-          "spritename": "敌人-闪6特工",
-          "level": 40,
-          "count": 4,
-          "random": false,
-          "isHostile": true,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 18,
-      "distinctTypes": 4,
-      "avgLevel": 40,
-      "levelMin": 40,
-      "levelMax": 40,
-      "powerRating": 720
-    },
-    {
       "id": "诺亚前线基地深处/防御地带.xml#5.1",
       "sourceStage": "诺亚前线基地深处/防御地带.xml",
       "sourceName": "防御地带",
       "group": "5.1",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule-weak",
+      "members": [
+        {
+          "type": "兵种70",
+          "id": 70,
+          "name": "重型改造僵尸",
+          "spritename": "敌人-重型改造僵尸",
+          "level": 40,
+          "count": 5,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种74",
+          "id": 74,
+          "name": "爆炸僵尸",
+          "spritename": "敌人-普通爆炸僵尸",
+          "level": 40,
+          "count": 5,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种372",
+          "id": 372,
+          "name": "克隆兽",
+          "spritename": "敌人-诺亚克隆兽",
+          "level": 40,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种373",
+          "id": 373,
+          "name": "克隆人",
+          "spritename": "敌人-闪6特工",
+          "level": 40,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 18,
+      "distinctTypes": 4,
+      "avgLevel": 40,
+      "levelMin": 40,
+      "levelMax": 40,
+      "powerRating": 720
+    },
+    {
+      "id": "诺亚前线基地深处/防御地带.xml#6.0",
+      "sourceStage": "诺亚前线基地深处/防御地带.xml",
+      "sourceName": "防御地带",
+      "group": "6.0",
+      "faction": "亡灵/僵尸",
+      "factionConfidence": "rule-weak",
+      "members": [
+        {
+          "type": "兵种70",
+          "id": 70,
+          "name": "重型改造僵尸",
+          "spritename": "敌人-重型改造僵尸",
+          "level": 40,
+          "count": 5,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种74",
+          "id": 74,
+          "name": "爆炸僵尸",
+          "spritename": "敌人-普通爆炸僵尸",
+          "level": 40,
+          "count": 5,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种372",
+          "id": 372,
+          "name": "克隆兽",
+          "spritename": "敌人-诺亚克隆兽",
+          "level": 40,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种373",
+          "id": 373,
+          "name": "克隆人",
+          "spritename": "敌人-闪6特工",
+          "level": 40,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 18,
+      "distinctTypes": 4,
+      "avgLevel": 40,
+      "levelMin": 40,
+      "levelMax": 40,
+      "powerRating": 720
+    },
+    {
+      "id": "诺亚前线基地深处/防御地带.xml#6.1",
+      "sourceStage": "诺亚前线基地深处/防御地带.xml",
+      "sourceName": "防御地带",
+      "group": "6.1",
       "faction": "黑铁会",
       "factionConfidence": "rule-weak",
       "members": [
@@ -101349,37 +101580,10 @@
       "powerRating": 200
     },
     {
-      "id": "诺亚前线基地深处/防御地带.xml#5.2",
+      "id": "诺亚前线基地深处/防御地带.xml#6.2",
       "sourceStage": "诺亚前线基地深处/防御地带.xml",
       "sourceName": "防御地带",
-      "group": "5.2",
-      "faction": "unknown",
-      "factionConfidence": "unknown",
-      "members": [
-        {
-          "type": "兵种360",
-          "id": 360,
-          "name": "Surveyor",
-          "spritename": "敌人-Surveyor",
-          "level": 40,
-          "count": 1,
-          "random": false,
-          "isHostile": false,
-          "humanoid": false
-        }
-      ],
-      "unitCount": 1,
-      "distinctTypes": 1,
-      "avgLevel": 40,
-      "levelMin": 40,
-      "levelMax": 40,
-      "powerRating": 40
-    },
-    {
-      "id": "诺亚前线基地深处/防御地带.xml#6.0",
-      "sourceStage": "诺亚前线基地深处/防御地带.xml",
-      "sourceName": "防御地带",
-      "group": "6.0",
+      "group": "6.2",
       "faction": "unknown",
       "factionConfidence": "unknown",
       "members": [
@@ -101407,6 +101611,33 @@
       "sourceStage": "诺亚前线基地深处/防御地带.xml",
       "sourceName": "防御地带",
       "group": "7.0",
+      "faction": "unknown",
+      "factionConfidence": "unknown",
+      "members": [
+        {
+          "type": "兵种360",
+          "id": 360,
+          "name": "Surveyor",
+          "spritename": "敌人-Surveyor",
+          "level": 40,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 1,
+      "distinctTypes": 1,
+      "avgLevel": 40,
+      "levelMin": 40,
+      "levelMax": 40,
+      "powerRating": 40
+    },
+    {
+      "id": "诺亚前线基地深处/防御地带.xml#8.0",
+      "sourceStage": "诺亚前线基地深处/防御地带.xml",
+      "sourceName": "防御地带",
+      "group": "8.0",
       "faction": "亡灵/僵尸",
       "factionConfidence": "rule-weak",
       "members": [
@@ -101499,10 +101730,10 @@
       "powerRating": 680
     },
     {
-      "id": "诺亚前线基地深处/防御地带.xml#7.1",
+      "id": "诺亚前线基地深处/防御地带.xml#8.1",
       "sourceStage": "诺亚前线基地深处/防御地带.xml",
       "sourceName": "防御地带",
-      "group": "7.1",
+      "group": "8.1",
       "faction": "天网",
       "factionConfidence": "rule-weak",
       "members": [
@@ -101563,10 +101794,10 @@
       "powerRating": 310
     },
     {
-      "id": "诺亚前线基地深处/防御地带.xml#7.2",
+      "id": "诺亚前线基地深处/防御地带.xml#8.2",
       "sourceStage": "诺亚前线基地深处/防御地带.xml",
       "sourceName": "防御地带",
-      "group": "7.2",
+      "group": "8.2",
       "faction": "亡灵/僵尸",
       "factionConfidence": "rule-weak",
       "members": [
@@ -101675,10 +101906,10 @@
       "powerRating": 720
     },
     {
-      "id": "诺亚前线基地深处/防御地带.xml#7.3",
+      "id": "诺亚前线基地深处/防御地带.xml#8.3",
       "sourceStage": "诺亚前线基地深处/防御地带.xml",
       "sourceName": "防御地带",
-      "group": "7.3",
+      "group": "8.3",
       "faction": "亡灵/僵尸",
       "factionConfidence": "rule-weak",
       "members": [

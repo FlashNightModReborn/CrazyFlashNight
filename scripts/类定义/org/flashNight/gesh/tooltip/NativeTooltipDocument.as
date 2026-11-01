@@ -81,7 +81,7 @@ class org.flashNight.gesh.tooltip.NativeTooltipDocument {
         if (descHtml != null && extras != null && extras.upgrades != null) {
             var upgradeStart:Number = descHtml.lastIndexOf(TooltipConstants.LBL_UPGRADE_PATH);
             if (upgradeStart >= 0) {
-                var headerStart:Number = descHtml.lastIndexOf("<font", upgradeStart);
+                var headerStart:Number = descHtml.toLowerCase().lastIndexOf("<font", upgradeStart);
                 descHtml = descHtml.substring(0, headerStart >= 0 ? headerStart : upgradeStart);
             }
         }

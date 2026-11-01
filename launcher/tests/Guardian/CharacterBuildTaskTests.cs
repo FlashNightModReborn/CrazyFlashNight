@@ -1411,6 +1411,45 @@ namespace CF7Launcher.Tests.Guardian
             }
         }
 
+        [Fact]
+        public void TooltipSuccessForwardsSanitizedRailDocument()
+        {
+            using (var harness = OpenProductionHarness())
+            {
+                harness.Flash.Clear();
+                harness.Web.Clear();
+                JObject request = ProductionPayload("tooltip");
+                harness.Task.HandleWebRequest(
+                    "tooltip",
+                    WebRequest("tooltip", "prod.tooltip.document", request));
+                JObject response = SuccessResponse(
+                    Assert.Single(harness.Flash),
+                    "tooltip",
+                    Generation,
+                    3,
+                    3,
+                    InitialDrugRevision,
+                    false);
+                JObject payload = Assert.IsType<JObject>(response["payload"]);
+                payload["document"] = new JObject
+                {
+                    ["version"] = 1,
+                    ["title"] = "兽王虎甲手套",
+                    ["rail"] = new JArray("手部装备", "兽形拳")
+                };
+                harness.Task.HandleFlashResponse(response, null);
+
+                JObject web = Assert.Single(harness.Web);
+                Assert.True(web.Value<bool>("success"));
+                JObject projection = Assert.IsType<JObject>(web["payload"]);
+                JObject document = Assert.IsType<JObject>(projection["document"]);
+                JArray rail = Assert.IsType<JArray>(document["rail"]);
+                Assert.Equal(2, rail.Count);
+                Assert.Equal("手部装备", rail[0].Value<string>());
+                Assert.Equal("兽形拳", rail[1].Value<string>());
+            }
+        }
+
         [Theory]
         [InlineData("payload_extra")]
         [InlineData("target_mismatch")]

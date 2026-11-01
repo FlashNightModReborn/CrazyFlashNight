@@ -28,6 +28,7 @@ class org.flashNight.arki.item.InventoryTooltipProjectionTest {
         trace("=== InventoryTooltipProjectionTest start ===");
 
         testEquipmentInstanceDocument();
+        testHandEquipmentActionRail();
         testStackItemDocument();
         testDocumentTitleDedupBoundary();
 
@@ -236,6 +237,54 @@ class org.flashNight.arki.item.InventoryTooltipProjectionTest {
         EquipmentUtil.modDict = previousModDict;
         if (itemDictWasUndefined) ItemUtil.itemDataDict = undefined;
         if (balanceDictWasUndefined) ItemUtil.balanceDataDict = undefined;
+        if (equipDictWasUndefined) ItemUtil.equipmentDict = undefined;
+    }
+
+    /**
+     * 手部装备的 actiontype 必须进入 rail 书签，而不是只留在属性区的动作行。
+     * 这条覆盖兽王虎甲手套这类套装手套在 character-build / merc 面板的富注释。
+     */
+    private static function testHandEquipmentActionRail():Void {
+        var name:String = "GateNI手部动作装备";
+        var itemDictWasUndefined:Boolean = ItemUtil.itemDataDict == undefined;
+        if (itemDictWasUndefined) ItemUtil.itemDataDict = {};
+        var equipDictWasUndefined:Boolean = ItemUtil.equipmentDict == undefined;
+        if (equipDictWasUndefined) ItemUtil.equipmentDict = {};
+        var previousMeta:Object = ItemUtil.itemDataDict[name];
+        var previousEquipFlag:Object = ItemUtil.equipmentDict[name];
+        var itemData:Object = {
+            name: name, displayname: name, icon: name,
+            type: "防具", use: "手部装备", actiontype: "兽形拳",
+            price: 1,
+            data: {
+                level: 40, weight: 4, damage: 0, punch: 200,
+                hp: 0, mp: 0, defence: 1
+            }
+        };
+        ItemUtil.itemDataDict[name] = itemData;
+        ItemUtil.equipmentDict[name] = true;
+        var equipment:Object = {
+            name: name, value: {level: 1, mods: []}, lastUpdate: 1,
+            getData: function():Object { return itemData; }
+        };
+
+        var r:Object = InventoryPanelService.buildTooltipProjection(equipment);
+        assertTrue(r != null && r.success === true && r.document != null,
+            "手部装备产出 document");
+        assertTrue(r.document.rail != null && r.document.rail.length == 2
+                && r.document.rail[0] == "手部装备"
+                && r.document.rail[1] == "兽形拳",
+            "手部装备 actiontype 写入 rail 下方书签");
+        var intro:Object = sectionByRole(r.document, "intro");
+        assertTrue(intro != null && intro.runs != null
+                && findRunText(intro.runs, "兽形拳") == null,
+            "rail 承载动作后 intro 不再重复动作行");
+
+        if (previousMeta == undefined) delete ItemUtil.itemDataDict[name];
+        else ItemUtil.itemDataDict[name] = previousMeta;
+        if (previousEquipFlag == undefined) delete ItemUtil.equipmentDict[name];
+        else ItemUtil.equipmentDict[name] = previousEquipFlag;
+        if (itemDictWasUndefined) ItemUtil.itemDataDict = undefined;
         if (equipDictWasUndefined) ItemUtil.equipmentDict = undefined;
     }
 

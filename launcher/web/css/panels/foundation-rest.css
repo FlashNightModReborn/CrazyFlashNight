@@ -738,8 +738,8 @@
 /* ── 侧栏：描述栏 + 子注释框（role:"sub"，2026-10 三轮）──
    主框（图标+简介）右侧的一列：描述栏在最上，role:"sub" 子注释框（已安装插件/
    额外功能/暴击斩杀等）按文档序接在下方。子框不再整宽堆在主框底部；整列宽度由
-   tooltip.js 写定（有描述栏时与描述栏同宽，只有子框时按内容估算），子框 stretch
-   到同宽。框间间隙 --tt-sub-gap（C# NativeTooltipLayout.SubGapBase=6 同值），
+   tooltip.js 写定（有描述栏时取描述栏与最宽子框的较大者，只有子框时按内容估算），
+   子框 stretch 到同宽。框间间隙 --tt-sub-gap（C# NativeTooltipLayout.SubGapBase=6 同值），
    间隙只由列 gap 承担，不再给单个框加 margin。 */
 .flash-tt-side,
 .ntt-side {

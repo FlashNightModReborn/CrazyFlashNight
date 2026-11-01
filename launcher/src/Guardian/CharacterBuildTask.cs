@@ -2472,17 +2472,21 @@ namespace CF7Launcher.Guardian
             else if (entry.Command == "tooltip")
             {
                 JObject payload = message["payload"] as JObject;
+                JObject normalizedTooltip;
                 if (loadoutRevision
                         != entry.NormalizedPayload.Value<long>(
                             "expectedLoadoutRevision")
                     || drugRevision
                         != entry.NormalizedPayload.Value<long>(
                             "expectedDrugRevision")
-                    || !IsTooltipProjection(payload, entry.NormalizedPayload))
+                    || !TryNormalizeTooltipProjection(
+                        payload,
+                        entry.NormalizedPayload,
+                        out normalizedTooltip))
                 {
                     return false;
                 }
-                web["payload"] = payload.DeepClone();
+                web["payload"] = normalizedTooltip;
             }
             else if (entry.Command == "statsSnapshot")
             {
@@ -2901,14 +2905,16 @@ namespace CF7Launcher.Guardian
                 && sourceBackpackVersion == backpackVersion;
         }
 
-        private static bool IsTooltipProjection(
+        private static bool TryNormalizeTooltipProjection(
             JObject payload,
-            JObject request)
+            JObject request,
+            out JObject normalized)
         {
-            if (!IsExactObject(
+            normalized = null;
+            if (!TooltipDocumentSanitizer.HasExactKeysAllowingOptionalDocument(
                     payload,
-                    Set("v", "target", "itemName", "displayName", "iconName",
-                        "itemType", "descHTML", "introHTML"))
+                    "v", "target", "itemName", "displayName", "iconName",
+                    "itemType", "descHTML", "introHTML")
                 || !HasVersion(payload)
                 || !IsTooltipTarget(payload["target"] as JObject, request)
                 || !IsIdentityText(payload["itemName"], 256)
@@ -2922,6 +2928,18 @@ namespace CF7Launcher.Guardian
             {
                 return false;
             }
+            normalized = new JObject
+            {
+                ["v"] = 1,
+                ["target"] = payload["target"].DeepClone(),
+                ["itemName"] = payload.Value<string>("itemName"),
+                ["displayName"] = payload.Value<string>("displayName"),
+                ["iconName"] = payload.Value<string>("iconName"),
+                ["itemType"] = payload.Value<string>("itemType"),
+                ["descHTML"] = payload.Value<string>("descHTML"),
+                ["introHTML"] = payload.Value<string>("introHTML")
+            };
+            TooltipDocumentSanitizer.ApplyTo(payload["document"], normalized);
             return true;
         }
 

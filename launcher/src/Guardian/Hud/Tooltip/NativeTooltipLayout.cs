@@ -1436,8 +1436,9 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
         /// <summary>
         /// 侧栏子注释框（role:"sub"）：与描述栏同列 —— 并排时在主面板右侧一列，
         /// desc 在最上、子框按文档序接在下方，框间间隙 Px(SubGapBase)；stacked
-        /// 降级时整列落到主面板下方，框内仍按 desc → sub 排列。列宽 = desc 宽
-        /// （无 desc 时按内容估宽，下限 DescMinW，对齐 Web applySideWidth）。
+        /// 降级时整列落到主面板下方，框内仍按 desc → sub 排列。列宽 = desc 宽，
+        /// 但任一子框被不可折行内容强制撑宽时以最宽子框为准（无 desc 时按内容估宽，
+        /// 下限 DescMinW，对齐 Web applySideWidth）。
         /// 高 = pad*2 + 内容高，上限沿用 desc max-height；TipSize 随之加宽/加高，
         /// SolvePlacement 的避让/夹取自动覆盖整个组合。
         /// </summary>
@@ -1461,12 +1462,12 @@ namespace CF7Launcher.Guardian.Hud.Tooltip
             // stacked 降级时 desc 面板本身已在主面板下方，子框继续接在其底缘。
             int x = hasDesc ? plan.DescPanel.X : plan.TipSize.Width;
             int y = hasDesc ? plan.DescPanel.Bottom + gap : 0;
+            if (hasDesc && w > plan.DescPanel.Width) plan.DescPanel.Width = w;
 
             foreach (NativeTooltipSection sec in subSecs)
             {
                 if (sec.Kind == "acquisition")
-                    w = Math.Max(w, Math.Min(Px(DescMaxWBase, scale),
-                        RequiredAcquisitionWidth(sec, pad, scale, measure)));
+                    w = Math.Max(w, RequiredAcquisitionWidth(sec, pad, scale, measure));
                 Plan.SubBox box = sec.IsAttachments
                     ? BuildAttachmentsBox(sec, x, y, w, pad, scale, measure, lh, maxH)
                     : BuildTextSubBox(sec, x, y, w, pad, scale, measure, lh, maxH);

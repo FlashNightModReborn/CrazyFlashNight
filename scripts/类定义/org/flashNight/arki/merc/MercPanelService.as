@@ -561,24 +561,27 @@ class org.flashNight.arki.merc.MercPanelService {
 
         if (!isNaN(equipLevel) && equipLevel > 0) item.value.level = equipLevel;
 
-        var itemData:Object = ItemUtil.getItemData(item.name);
-        if (itemData == undefined) {
-            sendResponse({ task: "merc_response", callId: callId, success: false, error: "item_data_missing", itemName: raw });
+        var tooltip:Object = InventoryPanelService.buildTooltipProjection(item);
+        if (tooltip == null || tooltip.success !== true) {
+            sendResponse({
+                task: "merc_response",
+                callId: callId,
+                success: false,
+                error: tooltip != null && tooltip.error != undefined ? tooltip.error : "tooltip_failed",
+                itemName: raw
+            });
             return;
         }
-
-        var descHTML:String = TooltipComposer.generateItemDescriptionText(itemData, item);
-        var introHTML:String = TooltipComposer.generateIntroPanelContent(item, itemData, item.value);
 
         sendResponse({
             task: "merc_response",
             callId: callId,
             success: true,
-            itemName: String(item.name),
-            displayname: String(itemData.displayname || item.name),
-            // wire 由 sendResponse 的 stringifySafe 统一转义；保留原始 htmlText 双引号属性。
-            descHTML: descHTML,
-            introHTML: introHTML
+            itemName: tooltip.itemName,
+            displayname: tooltip.displayname,
+            descHTML: tooltip.descHTML,
+            introHTML: tooltip.introHTML,
+            document: tooltip.document
         });
     }
 
@@ -673,7 +676,7 @@ class org.flashNight.arki.merc.MercPanelService {
         });
     }
 
-    // tooltip 响应为 buildTooltipProjection 键（itemName/displayname/iconName/itemType/descHTML/introHTML）。
+    // tooltip 响应为 buildTooltipProjection 键（itemName/displayname/iconName/itemType/descHTML/introHTML/document）。
     public static function handleLoadoutTooltip(params:Object):Void {
         var callId = params.callId;
         var check:Object = resolveMercForLoadout(params);
@@ -698,7 +701,8 @@ class org.flashNight.arki.merc.MercPanelService {
             iconName: String(result.iconName),
             itemType: String(result.itemType),
             descHTML: result.descHTML,
-            introHTML: result.introHTML
+            introHTML: result.introHTML,
+            document: result.document
         });
     }
 

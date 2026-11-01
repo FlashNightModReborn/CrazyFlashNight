@@ -447,3 +447,10 @@ _root.关卡回调函数.NewcomerRescueBegin = function(index:Number):Void {
 _root.关卡回调函数.NewcomerRescueSignal = function(name:String):Void {
     org.flashNight.arki.scene.NewcomerRescueController.signal(name);
 };
+
+_root.关卡回调函数.DefenseElevatorBegin = function():Void {
+    org.flashNight.arki.scene.DefenseElevatorController.begin();
+};
+_root.关卡回调函数.DefenseElevatorStop = function(waveIndex:Number, totalWaves:Number):Void {
+    org.flashNight.arki.scene.DefenseElevatorController.stop(waveIndex, totalWaves);
+};

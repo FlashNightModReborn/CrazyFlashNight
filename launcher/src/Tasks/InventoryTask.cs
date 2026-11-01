@@ -1844,7 +1844,12 @@ namespace CF7Launcher.Tasks
             {
                 JObject balance;
                 if (!TrySanitizeBalanceSummary(
-                        input["balanceSummary"] as JObject, out balance)) return false;
+                        input["balanceSummary"] as JObject, out balance))
+                {
+                    JObject withoutBalance = (JObject)input.DeepClone();
+                    withoutBalance.Property("balanceSummary").Remove();
+                    return TrySanitizeItem(withoutBalance, out output);
+                }
                 clean["balanceSummary"] = balance;
             }
             output = clean;

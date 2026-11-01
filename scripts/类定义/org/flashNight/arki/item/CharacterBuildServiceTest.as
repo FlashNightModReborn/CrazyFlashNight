@@ -1365,10 +1365,11 @@ class org.flashNight.arki.item.CharacterBuildServiceTest {
                 && equipmentTooltip.payload.descHTML
                     .indexOf("实例装备富注释") >= 0
                 && equipmentTooltip.payload.introHTML.length > 0
+                && equipmentTooltip.payload.document != undefined
                 && hasOnlyKeys(equipmentTooltip.payload, {
                     v:true, target:true, itemName:true, displayName:true,
                     iconName:true, itemType:true, descHTML:true,
-                    introHTML:true
+                    introHTML:true, document:true
                 })
                 && hasOnlyKeys(equipmentTooltip.payload.target, {
                     kind:true, slotKey:true

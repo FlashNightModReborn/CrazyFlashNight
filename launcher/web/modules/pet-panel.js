@@ -341,8 +341,8 @@
         tools.appendChild(adoptEntry);
         var expandBtn = button('扩容', 'team-pane-btn team-expand-slot', function() { onExpandSlot(this); });
         expandBtn.setAttribute('data-tone', 'primary');
-        expandBtn.title = '花费金币扩充一个' + noun + '栏位';
-        expandBtn.setAttribute('aria-label', '扩充' + noun + '栏位');
+        expandBtn.title = '花费 50,000 金币扩充一个' + noun + '栏位';
+        expandBtn.setAttribute('aria-label', '花费 50,000 金币扩充一个' + noun + '栏位');
         tools.appendChild(expandBtn);
         paneHeader.appendChild(tools);
         _rosterLeftRoot.appendChild(paneHeader);

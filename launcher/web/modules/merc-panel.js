@@ -43,7 +43,7 @@
     var HIRE_SCROLL_TRIGGER = 220;  // 距底部多少 px 触发无缝加载（与现役一致）
 
     // mercenaries.json equiplocked → merc[19].装备锁定：AS2 权威拒绝写，Web 只投影同一原因
-    var EQUIP_LOCKED_REASON = '该佣兵不可更换装备';
+    var EQUIP_LOCKED_REASON = '该佣兵装备已锁定';
 
     // 培养页 live canvas 复用共享 MercPortraits 状态构建；卡片/右栏快照也统一走该模块。
     var DRESSUP_BODY_FIT_FIELDS = MercPortraits.BODY_FIT_FIELDS;

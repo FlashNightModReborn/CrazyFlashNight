@@ -34,6 +34,12 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
     'use strict';
     window.__characterBuild404Icon = '__qa_icon_404_fallback__';
     window.fetch = function(input, init) {
+        if (String(input).indexOf('icons/manifest.json') >= 0
+                && new URLSearchParams(location.search).get('icon-delay-probe') === '1') {
+            return new Promise(function(resolve) {
+                setTimeout(function() { resolve(nativeFetch(input, init)); }, 300);
+            });
+        }
         return nativeFetch(input, init).then(function(response) {
             if (String(input).indexOf('icons/manifest.json') < 0) return response;
             return response.clone().json().then(function(manifest) {
@@ -1959,6 +1965,48 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
         };
     }
     try {
+        if (new URLSearchParams(location.search).get('icon-delay-probe') === '1') {
+            var delayedIconHost = document.createElement('div');
+            document.body.appendChild(delayedIconHost);
+            var delayedIconController = new CharacterBuild.CharacterBuildController({
+                document:document,
+                send:function() { return true; },
+                timeoutMs:30000
+            });
+            var delayedIconPayload = {equipment:[], drugs:[], stateHealth:'ok', drugLayout:null};
+            ['头部装备','上装装备','下装装备','手部装备','脚部装备','颈部装备',
+                '长枪','手枪','手枪2','刀','手雷'].forEach(function(slotKey) {
+                delayedIconPayload.equipment.push({slotKey:slotKey, occupied:true,
+                    item:{displayName:'测试装备', icon:'M4A1', use:'武器', itemKind:'equipment'}});
+            });
+            for (var delayedDrugSlot = 0; delayedDrugSlot < 8; delayedDrugSlot++) {
+                delayedIconPayload.drugs.push({
+                    slot:delayedDrugSlot, bank:Math.floor(delayedDrugSlot / 4), lane:delayedDrugSlot % 4,
+                    active:delayedDrugSlot < 4, keyLabel:String(delayedDrugSlot + 1), ready:true,
+                    totalSteps:0, currentStep:0, progressPercent:100, animationFrame:1, remainingMs:0,
+                    occupied:true, quantity:1,
+                    item:{displayName:'测试药剂', icon:'普通hp药剂', use:'药剂', itemKind:'stack', quantity:1}
+                });
+            }
+            delayedIconController._createView(delayedIconHost);
+            delayedIconController._applySnapshot(delayedIconPayload);
+            check('icon manifest delay starts with explicit fallback slots',
+                await until(function() {
+                    return delayedIconHost.querySelectorAll('.inventory-icon-fallback').length === 19
+                        && delayedIconHost.querySelectorAll('img.inventory-owned-icon[data-icon-name]').length === 0;
+                }), JSON.stringify({
+                    fallback:delayedIconHost.querySelectorAll('.inventory-icon-fallback').length,
+                    images:delayedIconHost.querySelectorAll('img.inventory-owned-icon[data-icon-name]').length,
+                    state:delayedIconController.debugState()
+                }));
+            check('icon manifest completion repaints the first opened snapshot without reopening',
+                await until(function() {
+                    return delayedIconHost.querySelectorAll('img.inventory-owned-icon[data-icon-name]').length === 19
+                        && delayedIconHost.querySelectorAll('.inventory-icon-fallback').length === 0;
+                }));
+            delayedIconController.destroy();
+            delayedIconHost.remove();
+        }
         var manifestProbeHost = document.createElement('div');
         document.body.appendChild(manifestProbeHost);
         var manifestProbe = new CharacterBuild.CharacterBuildController({

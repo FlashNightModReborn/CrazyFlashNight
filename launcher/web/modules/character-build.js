@@ -151,6 +151,12 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
             timeoutMs:options.timeoutMs,
             sessionNonce:options.sessionNonce
         };
+        if (global.Icons && typeof global.Icons.load === 'function') {
+            global.Icons.load(function() {
+                if (!self._view || !self._snapshotPayload) return;
+                self._view.setSnapshot(Projection.viewSnapshot(self._snapshotPayload));
+            });
+        }
     }
 
     CharacterBuildController.prototype._stateChanged = function(state, reason, debug) {

@@ -12,6 +12,7 @@ const WEB = path.join(ROOT, 'launcher', 'web');
 const PLAYWRIGHT = path.join(ROOT, 'launcher', 'perf', 'node_modules', 'playwright');
 const HARNESS = 'modules/character-build/dev/workbench-harness.html';
 const shotArg = process.argv.find(argument => argument.startsWith('--shot-dir='));
+const iconDelayProbe = process.argv.includes('--icon-delay-probe');
 
 function writeShots(shots, viewport) {
     if (!shotArg) return 0;
@@ -408,7 +409,7 @@ async function runStorageToBuildVisibilityProbe(browser, server, shotDirectory) 
     await routeCatalogFonts(page);
     try {
         await page.goto('http://127.0.0.1:' + server.address().port + '/' + HARNESS
-            + '?stats-probe=1',
+            + (iconDelayProbe ? '?icon-delay-probe=1' : '?stats-probe=1'),
         {waitUntil:'load'});
         try {
             await page.waitForFunction(() => window.__statsProbeReady === true
@@ -422,9 +423,24 @@ async function runStorageToBuildVisibilityProbe(browser, server, shotDirectory) 
             ready:window.__statsProbeReady === true,
             report:window.__qaReport || null
         }));
-        if (!probeState.ready) {
+        if (!iconDelayProbe && !probeState.ready) {
             throw new Error('stats probe stopped on an earlier harness failure: '
                 + JSON.stringify(probeState.report));
+        }
+        if (iconDelayProbe) {
+            const expectedChecks = [
+                'icon manifest delay starts with explicit fallback slots',
+                'icon manifest completion repaints the first opened snapshot without reopening'
+            ];
+            const recorded = (probeState.report && probeState.report.checks) || [];
+            const verdicts = expectedChecks.map(name => {
+                const hit = recorded.filter(entry => entry.name === name).pop();
+                return name + '=' + (hit ? (hit.ok ? 'passed' : 'failed: ' + hit.detail) : 'absent');
+            });
+            if (verdicts.some(text => !text.endsWith('passed'))) {
+                throw new Error('icon delay probe did not pass: ' + verdicts.join('; '));
+            }
+            return true;
         }
         await page.evaluate(() => {
             const output = document.getElementById('qa-output');

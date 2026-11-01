@@ -2057,6 +2057,10 @@ var MockHost = {
       !!fPetHead && !fPetHead.querySelector('.team-pane-title') &&
       fPetHead.offsetHeight>0 && fPetHead.offsetHeight<=40,
       'height='+(fPetHead&&fPetHead.offsetHeight));
+    var expandSlotBtn=document.querySelector('.team-pet-child .team-expand-slot');
+    assert('team-expand-cost','扩容按钮在 hover 与无障碍名称中明示 50,000 金币费用',
+      !!expandSlotBtn && expandSlotBtn.title==='花费 50,000 金币扩充一个伙伴栏位' &&
+      expandSlotBtn.getAttribute('aria-label')==='花费 50,000 金币扩充一个伙伴栏位');
     // ── 排版收紧：store 页头并条（返回钮 + 分类 tabs 同一行 chrome）──
     document.querySelector('.team-goto-store').click();
     await waitFor(function(){ return document.querySelectorAll('.team-store-tab').length===2; },2000);

@@ -286,42 +286,27 @@ class org.flashNight.arki.merc.ArenaPanelService {
 
         if (!isNaN(equipLevel) && equipLevel > 0) item.value.level = equipLevel;
 
-        // 关键：参考 _root.物品图标注释（权威路径）的实现 —— TooltipComposer 必须拿 raw itemData
-        // 才能正确显示"基础值 + 强化增益"的拆分（例如 "空手加成: 68 (50 + 18)"）。
-        // 如果预先调 item.getData() 把 itemData 算过，差值公式 base - calc 恒为 0 → 拆分丢失，
-        // 还会出现 "伤害加成: 0 (60 - 60)" 这种 ghost row。getData() 仅用于需要 calculateData
-        // 输出（如 displayname / icon）的字段。
-        var itemData:Object = ItemUtil.getItemData(item.name);
-        if (itemData == undefined) {
-            sendResponse({ task: "arena_response", callId: callId, success: false, error: "item_data_missing", itemName: raw });
+        var tooltip:Object = InventoryPanelService.buildTooltipProjection(item);
+        if (tooltip == null || tooltip.success !== true) {
+            sendResponse({
+                task: "arena_response",
+                callId: callId,
+                success: false,
+                error: tooltip != null && tooltip.error != undefined ? tooltip.error : "tooltip_failed",
+                itemName: raw
+            });
             return;
-        }
-
-        var descHTML:String = TooltipComposer.generateItemDescriptionText(itemData, item);
-        var introHTML:String = TooltipComposer.generateIntroPanelContent(item, itemData, item.value);
-
-        // getData() 仅取 displayname/icon 覆盖键（涂装实例），与 intro 标题头同源；
-        // 不会改动 item.value / Buff / 装备状态。
-        var iconData:Object = null;
-        if (item.getData != undefined && ItemUtil.isEquipment(item.name)) {
-            iconData = item.getData();
         }
 
         sendResponse({
             task: "arena_response",
             callId: callId,
             success: true,
-            itemName: String(item.name),
-            displayname: String(itemData.displayname || item.name),
-            // wire 由 sendResponse 的 stringifySafe 统一转义；保留原始 htmlText。
-            // 真实数据里存在双引号属性（如 <font color="#ff00ff">）：旧 &quot; 替换会让
-            // convertAS2Html 的白名单校验丢样式，' 替换会破坏 wire JSON；两者都已废弃。
-            descHTML: descHTML,
-            introHTML: introHTML,
-            // COMMON v1 语义文档：同一真实实例与同次 intro/desc 同源构建（含 equipLevel），
-            // title/icon 走 getData() 覆盖键；纯文本 runs，Host/Web 不得二次解析。
-            document: NativeTooltipDocument.buildItem(String(item.name), itemData, iconData,
-                introHTML, descHTML)
+            itemName: tooltip.itemName,
+            displayname: tooltip.displayname,
+            descHTML: tooltip.descHTML,
+            introHTML: tooltip.introHTML,
+            document: tooltip.document
         });
     }
 

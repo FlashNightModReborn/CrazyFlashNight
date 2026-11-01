@@ -534,6 +534,16 @@ class org.flashNight.gesh.tooltip.test.NativeTooltipDocumentTest {
         assertEq(1, doc.sections[2].rows[1].depth, "upgrades: child depth survives");
         assertEq("#99CCFF", doc.sections[2].rows[0].runs[0].color,
             "upgrades: group color survives");
+
+        var baseballDoc:Object = NativeTooltipDocument.buildItem("黑色棒球帽", itemData, null, "简介",
+            "如果他们能够勤奋练习打棒球，说不定如今就能把<font color='#b22222'>丧尸</font>的脑袋当球打飞···"
+            + "<BR><FONT COLOR='#FFCC00'>【升阶路线】</FONT><BR>旧行", null,
+            {upgrades:upgrades});
+        var baseballText:String = runsTextOf(baseballDoc);
+        assert(baseballText.indexOf("如果他们能够勤奋练习打棒球，说不定如今就能把丧尸的脑袋当球打飞···") >= 0,
+            "upgrades: uppercase production header does not truncate the inline-color description");
+        assert(baseballText.indexOf("旧行") < 0,
+            "upgrades: uppercase legacy block is still replaced");
     }
 
     private static function test_buildItem_extrasNotContent():Void {

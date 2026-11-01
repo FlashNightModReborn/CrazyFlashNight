@@ -1822,8 +1822,6 @@ namespace CF7Launcher.Tests.Tasks
                     ["icon"] = "uNdEfInEd",
                 response => response["snapshots"][0]["slots"][0]
                     ["confirmProjection"]["name"] = "错位物品",
-                response => response["snapshots"][0]["slots"][0]["item"]
-                    ["balanceSummary"]["formula"] = "1",
                 response => response["snapshots"][0]["filterFacets"] = new JArray
                 {
                     new JObject { ["id"] = "weapon", ["label"] = "武器" }
@@ -2827,6 +2825,67 @@ namespace CF7Launcher.Tests.Tasks
                     "lease.inventory.after-drift",
                     out _));
             }
+        }
+
+        [Fact]
+        public void BalanceSummary_InvalidOptionalFieldIsDroppedWithoutLosingItem()
+        {
+            JObject input = ItemProjection(true);
+            input["balanceSummary"]["weightLayers"] = "invalid";
+
+            bool accepted = InventoryTask.TrySanitizeItem(input, out JObject clean);
+
+            Assert.True(accepted);
+            Assert.Null(clean.Property("balanceSummary"));
+            Assert.Equal("测试步枪", clean.Value<string>("displayName"));
+            Assert.Equal(1, clean.Value<int>("quantity"));
+            Assert.Equal("稀有", clean.Value<string>("rarity"));
+        }
+
+        [Fact]
+        public void BalanceSummary_ValidOptionalFieldIsPreserved()
+        {
+            JObject input = ItemProjection(true);
+
+            bool accepted = InventoryTask.TrySanitizeItem(input, out JObject clean);
+
+            Assert.True(accepted);
+            Assert.NotNull(clean.Property("balanceSummary"));
+            Assert.Equal(-1, clean["balanceSummary"].Value<int>("weightLayers"));
+        }
+
+        [Fact]
+        public void BalanceSummary_ToleranceStillRejectsInvalidCoreIdentity()
+        {
+            JObject input = ItemProjection(true);
+            input["displayName"] = "";
+            input["balanceSummary"]["weightLayers"] = "invalid";
+
+            bool accepted = InventoryTask.TrySanitizeItem(input, out _);
+
+            Assert.False(accepted);
+        }
+
+        [Fact]
+        public void Discard_InvalidBalanceSummaryKeepsCommittedResultAndUnlocks()
+        {
+            var sent = new List<string>();
+            var posted = new List<JObject>();
+            var task = new InventoryTask(
+                () => true,
+                payload => { sent.Add(payload); return true; });
+            task.SetPostToWeb(payload => posted.Add(JObject.Parse(payload)));
+
+            task.HandleWebRequest("discard", StrictWriteRequest("discard", "inventory.balance.discard"));
+            JObject response = StrictWriteSuccess("discard", ParseSent(sent[0]));
+            response["discarded"]["balanceSummary"] = "broken";
+
+            task.HandleFlashResponse(response, _ => { });
+
+            Assert.Single(posted);
+            Assert.True(posted[0].Value<bool>("success"));
+            Assert.Null(((JObject)posted[0]["discarded"]).Property("balanceSummary"));
+            Assert.Equal("idle", task.WriteState);
         }
     }
 }

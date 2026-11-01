@@ -384,6 +384,223 @@
         </Wave>
     </SubStage>
     <SubStage id="4">
+        <AutoAdvanceOnClear>true</AutoAdvanceOnClear>
+        <BasicInformation>
+            <PlayerX>294.4</PlayerX>
+            <PlayerY>475.392</PlayerY>
+            <Background>flashswf/backgrounds/cf6/CF6_A10_BG.swf</Background>
+            <EndFrame>房间</EndFrame>
+            <CallbackFunction>
+                <Name>DefenseElevatorBegin</Name>
+            </CallbackFunction>
+        </BasicInformation>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Callback>
+                <Name>DefenseElevatorStop</Name>
+                <Parameter>0</Parameter>
+                <Parameter>3</Parameter>
+            </Callback>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>1</Parameter>
+            <Callback>
+                <Name>DefenseElevatorStop</Name>
+                <Parameter>1</Parameter>
+                <Parameter>3</Parameter>
+            </Callback>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>2</Parameter>
+            <Callback>
+                <Name>DefenseElevatorStop</Name>
+                <Parameter>2</Parameter>
+                <Parameter>3</Parameter>
+            </Callback>
+        </Event>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>0</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>诺亚.普通改造僵尸.常规</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>477.8667</x>
+                        <y>477.8667</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>诺亚.普通改造僵尸.常规</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>546.1333</x>
+                        <y>477.8667</y>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>诺亚.普通改造僵尸.常规</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>614.4</x>
+                        <y>477.8667</y>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>诺亚.普通改造僵尸.常规</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>682.6667</x>
+                        <y>477.8667</y>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>诺亚.兽化改造僵尸.常规</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>750.9333</x>
+                        <y>477.8667</y>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>诺亚.兽化改造僵尸.常规</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>819.2</x>
+                        <y>477.8667</y>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>诺亚.爆炸僵尸.常规</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>682.6667</x>
+                        <y>508.5867</y>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>0</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>诺亚.普通改造僵尸.常规</Type>
+                        <Interval>100</Interval>
+                        <Delay>2000</Delay>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>诺亚.重型改造僵尸.常规</Type>
+                        <Interval>100</Interval>
+                        <Delay>2000</Delay>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>诺亚.爆炸僵尸.常规</Type>
+                        <Interval>100</Interval>
+                        <Delay>2000</Delay>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>黑铁会.黑铁死士.友军</Type>
+                        <Interval>100</Interval>
+                        <Delay>2000</Delay>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>黑铁会.黑铁刺客.友军</Type>
+                        <Interval>100</Interval>
+                        <Delay>2000</Delay>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="5">
+                        <Type>军阀.狙击兵.友军</Type>
+                        <Interval>100</Interval>
+                        <Delay>2000</Delay>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="6">
+                        <Type>军阀.突击兵.友军</Type>
+                        <Interval>100</Interval>
+                        <Delay>2000</Delay>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>0</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="0">
+                        <Type>诺亚.兽化改造僵尸.常规</Type>
+                        <Interval>100</Interval>
+                        <Delay>2000</Delay>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>诺亚.重型改造僵尸.常规</Type>
+                        <Interval>100</Interval>
+                        <Delay>2000</Delay>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>诺亚.爆炸僵尸.常规</Type>
+                        <Interval>100</Interval>
+                        <Delay>2000</Delay>
+                        <Quantity>2</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>黑铁会.黑铁行刑者.友军</Type>
+                        <Interval>100</Interval>
+                        <Delay>2000</Delay>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>军阀.突击兵.友军</Type>
+                        <Interval>100</Interval>
+                        <Delay>2000</Delay>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="5">
         <BasicInformation>
             <Background>flashswf/backgrounds/防御地带内部1.swf</Background>
             <PlayerX>420</PlayerX>
@@ -508,7 +725,7 @@
             </SubWave>
         </Wave>
     </SubStage>
-    <SubStage id="5">
+    <SubStage id="6">
         <BasicInformation>
             <Background>flashswf/backgrounds/防御地带内部2.swf</Background>
         </BasicInformation>
@@ -610,7 +827,7 @@
             </SubWave>
         </Wave>
     </SubStage>
-    <SubStage id="6">
+    <SubStage id="7">
         <BasicInformation>
             <Background>flashswf/backgrounds/防御地带内部3.swf</Background>
             <PlayerX>450</PlayerX>
@@ -656,7 +873,7 @@
             </SubWave>
         </Wave>
     </SubStage>
-    <SubStage id="7">
+    <SubStage id="8">
         <BasicInformation>
             <Animation>
                 <Path>flashswf/movies/电子战过场.swf</Path>

@@ -88,12 +88,16 @@ if ($guardIndex -lt 0 -or $firstWrite -le $guardIndex -or
 
 $scenePath = Join-Path $repoRoot 'scripts\逻辑\关卡系统\关卡系统_lsy_场景转换.as'
 $sceneSource = Get-Content -LiteralPath $scenePath -Raw -Encoding UTF8
+# 521d77135f 后两处重复 attach 已收敛为唯一生成点 加载单个佣兵，场景侧只经 scheduleMercs 调度；
+# 这里锁定单块参数解析正确、且没有绕过 加载单个佣兵 的第二处 attach。
 if ([regex]::Matches($sceneSource,
-        'org\.flashNight\.arki\.merc\.MercLoadoutService\.buildSpawnLoadout\(同伴信息\)').Count -ne 2 -or
-    [regex]::Matches($sceneSource, '头部装备:装备解析\.头部装备').Count -ne 2 -or
-    [regex]::Matches($sceneSource, '刀:装备解析\.刀').Count -ne 2 -or
-    [regex]::Matches($sceneSource, '手雷:同伴信息\[16\]').Count -ne 2) {
-    throw 'Both merc attach blocks in 场景转换 must resolve spawn loadout and keep the grenade slot untouched.'
+        'org\.flashNight\.arki\.merc\.MercLoadoutService\.buildSpawnLoadout\(同伴信息\)').Count -ne 1 -or
+    [regex]::Matches($sceneSource, '头部装备:装备解析\.头部装备').Count -ne 1 -or
+    [regex]::Matches($sceneSource, '刀:装备解析\.刀').Count -ne 1 -or
+    [regex]::Matches($sceneSource, '手雷:同伴信息\[16\]').Count -ne 1 -or
+    $sceneSource -notmatch 'org\.flashNight\.arki\.scene\.PlayerSceneLifecycle\.scheduleMercs' -or
+    [regex]::Matches($sceneSource, '_root\.加载单个佣兵\s*=\s*function').Count -ne 1) {
+    throw 'Merc attach must keep the single 加载单个佣兵 spawn block resolving loadout (grenade slot untouched) and schedule via PlayerSceneLifecycle.scheduleMercs.'
 }
 
 # 本 suite 现有循环会把 117 个静态 check 调用展开为 125 次运行时断言；把调用点
@@ -334,11 +338,13 @@ $focusedRun = @{
         'scripts\类定义\org\flashNight\arki\merc\MercLoadoutServiceTest.as'
         'scripts\类定义\org\flashNight\arki\merc\MercPersonalityTest.as'
         'scripts\类定义\org\flashNight\arki\merc\MercDialogueTest.as'
+        'scripts\类定义\org\flashNight\arki\merc\MercDefinitionCacheTest.as'
     )
     SuiteFqns = @(
         'org.flashNight.arki.merc.MercLoadoutServiceTest'
         'org.flashNight.arki.merc.MercPersonalityTest'
         'org.flashNight.arki.merc.MercDialogueTest'
+        'org.flashNight.arki.merc.MercDefinitionCacheTest'
     )
     AdditionalAsRelativePaths = @(
         'scripts\类定义\org\flashNight\arki\merc\MercLibrary.as'
@@ -354,8 +360,10 @@ $focusedRun = @{
         '(?m)^MercPersonalityTest Tests Failed: 0\r?$'
         '(?m)^MercDialogueTest Tests Passed: 31\r?$'
         '(?m)^MercDialogueTest Tests Failed: 0\r?$'
+        '(?m)^MercDefinitionCacheTest Tests Passed: 11\r?$'
+        '(?m)^MercDefinitionCacheTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'MercLoadoutServiceTest 125/125 + MercPersonalityTest 24/24 + MercDialogueTest 31/31 passed'
+    SuccessSummary = 'MercLoadoutServiceTest 125/125 + MercPersonalityTest 24/24 + MercDialogueTest 31/31 + MercDefinitionCacheTest 11/11 passed'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }
