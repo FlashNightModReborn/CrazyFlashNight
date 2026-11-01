@@ -11,8 +11,8 @@ import balance
 import tactics
 
 ROOT=Path(__file__).resolve().parents[2]
-PAIRS=((466,480,tactics.LINKAGES[0],'CF6特种教官·二阶段'),
-       (467,481,tactics.LINKAGES[1],'CF6特种教官·持盾一阶段'))
+PAIRS=((466,480,tactics.LINKAGES[0],'战术教官'),
+       (467,481,tactics.LINKAGES[1],'重盾教官'))
 
 
 def main():

@@ -789,7 +789,7 @@ eliteOriginalStateChange=状态改变;
 eliteNextAction="stand";eliteNextDodgeAt=0;eliteStrafeSign=1;
 
 eliteUpdateName=function():Void {
-    var next:String=this.soldierIsInstructor===true?(this.soldierPhase==1?"CF6特种教官·持盾":"CF6特种教官"):(this.soldierPhase==1?"CF6特种兵·持盾一阶段":"CF6特种精英·二阶段");
+    var next:String=this.soldierIsInstructor===true?(this.soldierPhase==1?"重盾教官":"战术教官"):(this.soldierPhase==1?"攻坚盾卫":"机动特勤");
     if(typeof this.displayName=="string" && this.名字!=undefined)this.displayName=this.displayName.split(this.名字).join(next);
     this.名字=next;
 };

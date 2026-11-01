@@ -10,8 +10,8 @@ import elite
 
 ROOT=Path(__file__).resolve().parents[2]
 HERE=Path(__file__).resolve().parent
-PAIRS=((466,478,elite.LINKAGES[0],'CF6特种精英·二阶段'),
-       (467,479,elite.LINKAGES[1],'CF6特种精英·持盾一阶段'))
+PAIRS=((466,478,elite.LINKAGES[0],'机动特勤'),
+       (467,479,elite.LINKAGES[1],'攻坚盾卫'))
 
 
 def main():

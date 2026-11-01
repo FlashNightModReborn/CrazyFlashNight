@@ -21,7 +21,7 @@
         "expectedType": "兵种466",
         "expectedQuantity": 6,
         "unit": 466,
-        "quantity": 2,
+        "quantity": 3,
         "parameters": {
           "特种兵策略": "line",
           "特种兵投掷物": "高爆手雷"
@@ -45,7 +45,7 @@
         "expectedType": "兵种466",
         "expectedQuantity": 6,
         "unit": 466,
-        "quantity": 2,
+        "quantity": 3,
         "parameters": {
           "特种兵策略": "line",
           "特种兵投掷物": "高爆手雷"
@@ -84,11 +84,15 @@
         "enemy": 0,
         "expectedType": "兵种466",
         "expectedQuantity": 1,
-        "unit": 466,
+        "unit": 478,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "line",
-          "特种兵投掷物": "高爆手雷"
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
+          "手枪": "Glock40",
+          "手枪2": "Glock40",
+          "特种兵烟雾弹": true,
+          "称号": "宝剑十·军械队长"
         }
       },
       {
@@ -97,7 +101,7 @@
         "expectedType": "兵种466",
         "expectedQuantity": 1,
         "unit": 466,
-        "quantity": 1,
+        "quantity": 2,
         "parameters": {
           "特种兵策略": "line",
           "特种兵投掷物": "高爆手雷"
@@ -734,7 +738,8 @@
           "特种兵投掷物": "高爆手雷",
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
-          "特种兵烟雾弹": true
+          "特种兵烟雾弹": true,
+          "称号": "阿卡那 XV·恶魔（正位）"
         }
       },
       {
@@ -784,7 +789,7 @@
         "expectedType": "兵种466",
         "expectedQuantity": 2,
         "unit": 478,
-        "quantity": 2,
+        "quantity": 1,
         "parameters": {
           "特种兵策略": "mobile",
           "特种兵投掷物": false,
@@ -823,7 +828,7 @@
         "expectedType": "兵种466",
         "expectedQuantity": 5,
         "unit": 478,
-        "quantity": 3,
+        "quantity": 2,
         "parameters": {
           "特种兵策略": "mobile",
           "特种兵投掷物": false,
@@ -877,7 +882,7 @@
         "expectedType": "兵种466",
         "expectedQuantity": 4,
         "unit": 478,
-        "quantity": 2,
+        "quantity": 1,
         "parameters": {
           "特种兵策略": "mobile",
           "特种兵投掷物": false,
@@ -900,7 +905,8 @@
           "特种兵投掷物": "BBPLAYER手雷",
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
-          "特种兵烟雾弹": true
+          "特种兵烟雾弹": true,
+          "称号": "阿卡那 XVII·星星（正位）"
         }
       },
       {
@@ -923,11 +929,11 @@
         "enemy": 4,
         "expectedType": "兵种466",
         "expectedQuantity": 2,
-        "unit": 480,
+        "unit": 478,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -938,11 +944,11 @@
         "enemy": 5,
         "expectedType": "兵种466",
         "expectedQuantity": 2,
-        "unit": 480,
+        "unit": 478,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -953,11 +959,11 @@
         "enemy": 4,
         "expectedType": "兵种467",
         "expectedQuantity": 1,
-        "unit": 481,
+        "unit": 479,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -983,11 +989,11 @@
         "enemy": 6,
         "expectedType": "兵种466",
         "expectedQuantity": 1,
-        "unit": 480,
+        "unit": 478,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -1013,11 +1019,11 @@
         "enemy": 4,
         "expectedType": "兵种467",
         "expectedQuantity": 1,
-        "unit": 481,
+        "unit": 479,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -1075,11 +1081,11 @@
         "enemy": 2,
         "expectedType": "兵种466",
         "expectedQuantity": 1,
-        "unit": 480,
+        "unit": 478,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -1105,11 +1111,11 @@
         "enemy": 0,
         "expectedType": "兵种467",
         "expectedQuantity": 1,
-        "unit": 481,
+        "unit": 479,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -1135,11 +1141,11 @@
         "enemy": 2,
         "expectedType": "兵种466",
         "expectedQuantity": 1,
-        "unit": 480,
+        "unit": 478,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -1165,11 +1171,11 @@
         "enemy": 8,
         "expectedType": "兵种466",
         "expectedQuantity": 1,
-        "unit": 480,
+        "unit": 478,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -1195,11 +1201,11 @@
         "enemy": 2,
         "expectedType": "兵种467",
         "expectedQuantity": 1,
-        "unit": 481,
+        "unit": 479,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -1225,11 +1231,11 @@
         "enemy": 6,
         "expectedType": "兵种466",
         "expectedQuantity": 2,
-        "unit": 480,
+        "unit": 478,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -1240,11 +1246,11 @@
         "enemy": 7,
         "expectedType": "兵种466",
         "expectedQuantity": 2,
-        "unit": 480,
+        "unit": 478,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -1287,11 +1293,11 @@
         "enemy": 2,
         "expectedType": "兵种466",
         "expectedQuantity": 1,
-        "unit": 480,
+        "unit": 478,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -1302,11 +1308,11 @@
         "enemy": 3,
         "expectedType": "兵种466",
         "expectedQuantity": 2,
-        "unit": 480,
+        "unit": 478,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -1317,11 +1323,11 @@
         "enemy": 4,
         "expectedType": "兵种467",
         "expectedQuantity": 1,
-        "unit": 481,
+        "unit": 479,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -1332,11 +1338,11 @@
         "enemy": 5,
         "expectedType": "兵种467",
         "expectedQuantity": 1,
-        "unit": 481,
+        "unit": 479,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -1347,11 +1353,11 @@
         "enemy": 6,
         "expectedType": "兵种467",
         "expectedQuantity": 1,
-        "unit": 481,
+        "unit": 479,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -1362,11 +1368,11 @@
         "enemy": 7,
         "expectedType": "兵种467",
         "expectedQuantity": 1,
-        "unit": 481,
+        "unit": 479,
         "quantity": 1,
         "parameters": {
-          "特种兵策略": "adaptive",
-          "特种兵投掷物": "BBPLAYER手雷",
+          "特种兵策略": "mobile",
+          "特种兵投掷物": false,
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
           "特种兵烟雾弹": true
@@ -1374,7 +1380,7 @@
       },
       {
         "wave": 5,
-        "enemy": 6,
+        "enemy": 7,
         "expectedType": "兵种467",
         "expectedQuantity": 1,
         "unit": 481,
@@ -1400,7 +1406,8 @@
           "特种兵投掷物": "BBPLAYER手雷",
           "手枪": "Glock18战术版",
           "手枪2": "Glock18战术版",
-          "特种兵烟雾弹": true
+          "特种兵烟雾弹": true,
+          "称号": "阿卡那 XXI·世界（正位）"
         }
       }
     ]

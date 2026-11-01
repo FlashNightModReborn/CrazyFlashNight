@@ -199,9 +199,9 @@ class Type61RouteTests(unittest.TestCase):
                 role={'兵种466':'ordinary','兵种467':'ordinary','兵种478':'elite','兵种479':'elite','兵种480':'instructor','兵种481':'instructor'}.get(unit)
                 if role is None:continue
                 counter[role]+=enemy['Quantity']
-                if node<'A10':self.assertEqual('ordinary',role)
+                if node<'A09':self.assertEqual('ordinary',role)
                 if node<'A13':self.assertNotEqual('instructor',role)
-                if node>='A18':self.assertEqual('instructor',role)
+                if node>='A18':self.assertIn(role,('elite','instructor'))
                 if role in ('elite','instructor'):self.assertTrue(p.get('手枪') and p.get('手枪2'))
                 if role in ('ordinary','instructor'):self.assertTrue(p.get('特种兵投掷物') in self.items,(node,unit))
                 if p.get('cf6EliteQuota'):
@@ -209,11 +209,46 @@ class Type61RouteTests(unittest.TestCase):
                     if p['cf6EliteQuota']!='E1':self.assertEqual('instructor',role)
                     self.assertEqual(p['长枪'],p['掉落物'][0]['名字'])
             counts[node]=counter
-        self.assertEqual({'ordinary':8},counts['A06'])
-        self.assertEqual({'ordinary':15},counts['A09'])
+        self.assertEqual({'ordinary':10},counts['A06'])
+        self.assertEqual({'ordinary':15,'elite':1},counts['A09'])
         self.assertEqual({'elite':4},counts['A10'])
         self.assertEqual({'instructor':1},counts['A13'])
         for node in ('A14','A15','A17'):self.assertEqual({'ordinary','elite','instructor'},set(counts[node]))
+        totals=sum(counts.values(),collections.Counter())
+        self.assertEqual({'ordinary':96,'elite':40,'instructor':22},dict(totals))
+        bladebots=collections.Counter()
+        primary_bladebots=collections.Counter()
+        support_bladebots=collections.Counter()
+        human_rooms=[]
+        for stage in self.chapter['maps']:
+            has_human=False
+            for wave in stage['stage']['Wave']['SubWave']:
+                for enemy in wave['EnemyGroup']['Enemy']:
+                    unit=registry.resolve_type(enemy['Type'])
+                    if unit in ('兵种465','兵种482'):
+                        primary_bladebots[unit]+=enemy['Quantity']
+            boss=stage.get('bossEncounter',{})
+            for phase in (boss,boss.get('nextPhase',{})):
+                for group in phase.get('groups',[]):
+                    for enemy in group['enemies']:
+                        unit=registry.resolve_type(enemy['Type'])
+                        if unit in ('兵种465','兵种482'):
+                            support_bladebots[unit]+=enemy['Quantity']
+            for enemy in builder.all_enemies(stage):
+                unit=registry.resolve_type(enemy['Type'])
+                if unit in ('兵种465','兵种482'):
+                    bladebots[unit]+=enemy['Quantity']
+                if unit in ('兵种466','兵种467','兵种468','兵种469','兵种478','兵种479','兵种480','兵种481'):
+                    has_human=True
+            if has_human:
+                human_rooms.append(stage['id'])
+        self.assertEqual({'兵种465':48,'兵种482':1},dict(bladebots))
+        self.assertEqual({'兵种465':48,'兵种482':1},dict(primary_bladebots))
+        self.assertEqual({},dict(support_bladebots))
+        a20_wave5=[registry.resolve_type(e['Type']) for e in self.maps['A20']['stage']['Wave']['SubWave'][4]['EnemyGroup']['Enemy']
+                   if registry.resolve_type(e['Type']) in ('兵种465','兵种482')]
+        self.assertEqual('兵种482',a20_wave5[-1])
+        self.assertEqual(['A02','A03','A04','A05','A06','A09','A10','A11','A12','A13','A14','A15','A17','A18','A19','A20'],human_rooms)
         units={x['id']:x['spritename'] for x in json.loads((ROOT/'data/units/units.json').read_text('utf-8-sig'))}
         props=ET.parse(ROOT/'data/enemy_properties/CF6重制敌人.xml')
         for unit in (466,467,478,479):self.assertIsNotNone(props.find(units[unit]+'/魔法抗性/精英'))

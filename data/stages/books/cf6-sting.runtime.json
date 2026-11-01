@@ -593,7 +593,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "combat",
             "combat",
@@ -915,7 +915,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "combat",
             "combat",
@@ -1275,7 +1275,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "combat",
             "combat",
@@ -3014,7 +3014,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "combat",
             "combat",
@@ -6098,7 +6098,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "combat",
             "combat",
@@ -8001,7 +8001,7 @@
                     "y": 354.304,
                     "InstanceName": "cf6Boss_A06",
                     "Parameters": {
-                      "称号": "Boss",
+                      "称号": "C.T重装处刑人",
                       "保留屏外尸体": true
                     }
                   }
@@ -8151,7 +8151,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "combat",
             "combat",
@@ -8171,7 +8171,7 @@
           "baseline": {
             "primaryWave": 1,
             "optionalSupport": 35,
-            "enemyAuthoritySha256": "dfb5b97975a9843d4ae9b7bf9299f21de87f0d736f860f20281467ac23a1c990"
+            "enemyAuthoritySha256": "74c91a60c36a30612d354b66b64dbe3da2aa6fe4ed344ffc991a970593ef4abb"
           },
           "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
         },
@@ -9223,7 +9223,7 @@
                     "Level": 45,
                     "Quantity": 1,
                     "Parameters": {
-                      "称号": "E1精英",
+                      "称号": "权杖骑士·军械官",
                       "cf6EliteQuota": "E1",
                       "长枪": "SAI GRY 幽灵",
                       "不掉装备": true,
@@ -9487,7 +9487,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "combat",
             "transport",
@@ -9507,7 +9507,7 @@
           "baseline": {
             "primaryWave": 9,
             "optionalSupport": 0,
-            "enemyAuthoritySha256": "0a14f9ceb57e26966338f6ccff219353bb0ff7ffcee513d05cff4c57f230ddd6"
+            "enemyAuthoritySha256": "fe3da451fd48fe7c10b4bee93cbcca0a0a93761c065d80ef76d6922fa05f47e9"
           },
           "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
         },
@@ -10273,7 +10273,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "elevator"
           ],
@@ -11124,7 +11124,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "combat",
             "combat",
@@ -11660,7 +11660,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "combat",
             "combat",
@@ -12365,7 +12365,7 @@
                     "Level": 49,
                     "Quantity": 1,
                     "Parameters": {
-                      "称号": "E2精英",
+                      "称号": "阿卡那 VII·战车（正位）",
                       "cf6EliteQuota": "E2",
                       "长枪": "TTI Gen 12",
                       "不掉装备": true,
@@ -12540,7 +12540,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "elevator"
           ],
@@ -12549,7 +12549,7 @@
           "baseline": {
             "primaryWave": 1,
             "optionalSupport": 0,
-            "enemyAuthoritySha256": "b5619866b690524da6139afb8de09767047f19a2b9e6686edcdf46cee62d4dda"
+            "enemyAuthoritySha256": "6d943811ee52a0658505252d706e836343ff98b3fd4dd0c70787da32c3cc708f"
           },
           "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
         },
@@ -13117,7 +13117,7 @@
                     "Level": 51,
                     "Quantity": 1,
                     "Parameters": {
-                      "称号": "E3精英",
+                      "称号": "阿卡那 XII·倒吊人（逆位）",
                       "cf6EliteQuota": "E3",
                       "长枪": "HK416战术版",
                       "不掉装备": true,
@@ -13471,7 +13471,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "combat",
             "transport",
@@ -13492,7 +13492,7 @@
           "baseline": {
             "primaryWave": 9,
             "optionalSupport": 0,
-            "enemyAuthoritySha256": "c94b227ecaa09cd11174f173f7f0cd7cac9beee4e8058f236cd13ca770eeb05c"
+            "enemyAuthoritySha256": "a6e4400353f5a91c2929994d81ecc9712b7d8217748245ee5b464c4b767a8264"
           },
           "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
         },
@@ -13953,7 +13953,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "pods",
             "combat",
@@ -14230,15 +14230,15 @@
           "char": "Andy Law#惊讶"
         },
         {
-          "speaker": "R_server",
+          "speaker": "M.O.D智能主机",
           "text": "入侵等级升至一级，应急预案F启动！"
         },
         {
-          "speaker": "bloody",
+          "speaker": "Bloody",
           "text": "呵呵，没想到你突破重围竟然来到这里！"
         },
         {
-          "speaker": "bloody",
+          "speaker": "Bloody",
           "text": "连联合国特工部队也无法攻破的堡垒竟然被一个人突破，你就像传说中一样厉害啊，Andy Law！"
         },
         {
@@ -14247,7 +14247,7 @@
           "char": "Andy Law#愤怒"
         },
         {
-          "speaker": "R_server",
+          "speaker": "M.O.D智能主机",
           "text": "攻坚队到位！立刻对入侵者进行终结！"
         }
       ],
@@ -14489,7 +14489,7 @@
                     "Level": 56,
                     "Quantity": 1,
                     "Parameters": {
-                      "称号": "E4精英",
+                      "称号": "阿卡那 XVI·高塔（正位）",
                       "cf6EliteQuota": "E4",
                       "长枪": "MG42战术版",
                       "不掉装备": true,
@@ -14736,7 +14736,7 @@
                     "y": 386.9013,
                     "InstanceName": "cf6Boss_A17",
                     "Parameters": {
-                      "称号": "Boss",
+                      "称号": "M.O.D中枢防卫核心",
                       "保留屏外尸体": true,
                       "长枪": "G36"
                     }
@@ -14897,7 +14897,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "combat",
             "combat",
@@ -14918,7 +14918,7 @@
           "baseline": {
             "primaryWave": 1,
             "optionalSupport": 40,
-            "enemyAuthoritySha256": "f88f512a9b27925ba6068cd145011a673ce95b931d562f4747daa4e05c900e09"
+            "enemyAuthoritySha256": "dddd864efe9d712ce9cdf03381d607ee5f72b780aad5680a123ca47febb084d0"
           },
           "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
         },
@@ -15537,7 +15537,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "combat",
             "transport",
@@ -15699,7 +15699,7 @@
                     "Level": 60,
                     "Quantity": 1,
                     "Parameters": {
-                      "称号": "E5精英",
+                      "称号": "阿卡那 XX·审判（正位）",
                       "cf6EliteQuota": "E5",
                       "长枪": "量子能量枪",
                       "不掉装备": true,
@@ -16313,7 +16313,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "combat",
             "combat",
@@ -16335,7 +16335,7 @@
           "baseline": {
             "primaryWave": 19,
             "optionalSupport": 0,
-            "enemyAuthoritySha256": "1410b329795c6580fa19f495f46fa268f2389d2e0e069e75386e3f6fcfed8b66"
+            "enemyAuthoritySha256": "dea27e796fb4b5f47c5ae70d71dc811b4ffabe8e6f2476d25820fccfe4b8a4c0"
           },
           "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
         },
@@ -16887,7 +16887,7 @@
                   {
                     "Type": "兵种465",
                     "Level": 60,
-                    "Quantity": 5,
+                    "Quantity": 4,
                     "SpawnIndex": 0,
                     "Interval": 400,
                     "Parameters": {
@@ -16906,12 +16906,25 @@
                     }
                   },
                   {
+                    "Type": "兵种482",
+                    "Level": 60,
+                    "Quantity": 1,
+                    "Parameters": {
+                      "名字": "星轨特装机·蛇夫",
+                      "称号": "第十三序列·蛇夫座",
+                      "publishStageEvent": true
+                    },
+                    "SpawnIndex": 0,
+                    "Interval": 400,
+                    "Delay": 400
+                  },
+                  {
                     "Type": "兵种463",
                     "Level": 60,
                     "Quantity": 1,
                     "SpawnIndex": 0,
                     "Interval": 400,
-                    "Delay": 400,
+                    "Delay": 600,
                     "Parameters": {
                       "publishStageEvent": true
                     }
@@ -16921,17 +16934,6 @@
                     "Level": 60,
                     "Quantity": 2,
                     "SpawnIndex": 1,
-                    "Interval": 400,
-                    "Delay": 600,
-                    "Parameters": {
-                      "publishStageEvent": true
-                    }
-                  },
-                  {
-                    "Type": "兵种460",
-                    "Level": 60,
-                    "Quantity": 2,
-                    "SpawnIndex": 0,
                     "Interval": 400,
                     "Delay": 800,
                     "Parameters": {
@@ -16941,10 +16943,21 @@
                   {
                     "Type": "兵种460",
                     "Level": 60,
+                    "Quantity": 2,
+                    "SpawnIndex": 0,
+                    "Interval": 400,
+                    "Delay": 1000,
+                    "Parameters": {
+                      "publishStageEvent": true
+                    }
+                  },
+                  {
+                    "Type": "兵种460",
+                    "Level": 60,
                     "Quantity": 1,
                     "SpawnIndex": 1,
                     "Interval": 400,
-                    "Delay": 1000,
+                    "Delay": 1200,
                     "Parameters": {
                       "publishStageEvent": true
                     }
@@ -16959,7 +16972,7 @@
                     },
                     "SpawnIndex": 1,
                     "Interval": 400,
-                    "Delay": 1200
+                    "Delay": 1400
                   }
                 ]
               }
@@ -16979,7 +16992,7 @@
                     "y": 344.2347,
                     "InstanceName": "cf6Boss_A20",
                     "Parameters": {
-                      "称号": "Boss",
+                      "称号": "C.T组织首脑",
                       "保留屏外尸体": true,
                       "老头变身": true,
                       "长枪": "G36"
@@ -17060,7 +17073,10 @@
                 "ranged": true,
                 "SpawnIndex": "right",
                 "x": 2414.7627,
-                "y": 777.728
+                "y": 777.728,
+                "Parameters": {
+                  "称号": "3XF-W00"
+                }
               },
               {
                 "Type": "兵种461",
@@ -17120,10 +17136,10 @@
                   "y": 578.2187
                 },
                 {
-                  "Type": "兵种465",
+                  "Type": "兵种460",
                   "Level": 60,
                   "Quantity": 1,
-                  "ranged": true,
+                  "ranged": false,
                   "SpawnIndex": "left",
                   "x": 314.88,
                   "y": 303.104
@@ -17164,7 +17180,7 @@
         "chapterDifficulty": {
           "schema": "cf6-difficulty-source.v1",
           "source": "tools/cf6-roguelike-content/difficulty.source.json",
-          "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+          "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
           "waveKinds": [
             "combat",
             "combat",
@@ -17187,7 +17203,7 @@
           "baseline": {
             "primaryWave": 1,
             "optionalSupport": 40,
-            "enemyAuthoritySha256": "97f3f0e48d6c32ac5d6ed7226baf170016ce78d70d7d267100a6c5955bcdb8e2"
+            "enemyAuthoritySha256": "beb32b18bf246fb9b6ded55bebfbb9ef16b7ee68672dd4966f2802b001a0a459"
           },
           "authority": "chapter design adaptation; original source facts retained; no global unit/player edits"
         },

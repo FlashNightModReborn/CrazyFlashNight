@@ -1,4 +1,6 @@
-﻿import org.flashNight.arki.scene.*;
+﻿import org.flashNight.arki.unit.UnitComponent.Initializer.DisplayNameInitializer;
+import org.flashNight.gesh.string.Cf6NameRandomizer;
+import org.flashNight.arki.scene.*;
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.item.itemCollection.*;
 import org.flashNight.arki.pause.PauseManager;
@@ -114,6 +116,7 @@ class org.flashNight.arki.scene.Cf6Type61ServiceTest {
             testField();
             testCurrency();
             testSale();
+            testCf6Identities();
         } catch (error) {check(false,"fixture exception: "+error);}
         finally {
             if (RewardStashService.pendingOperationId() != "") {
@@ -373,5 +376,72 @@ class org.flashNight.arki.scene.Cf6Type61ServiceTest {
             if(pickup!=null)pickup.destroy();world.attachMovie=oldAttach;_root.pickupItemManager=oldPickup;
             rngType.instance=oldRng;depthType.instance=oldDepth;weatherType.getInstance=oldWeather;
         }
+    }
+    private static function makeUnitStub(clipName:String, linkage:String, displayName:String, title:String):MovieClip {
+        var mc:MovieClip=world.createEmptyMovieClip(clipName,world.getNextHighestDepth());
+        mc.兵种=linkage;mc.名字=displayName;mc.称号=title;mc.是否为敌人=true;mc.等级=50;
+        mc.新版人物文字信息=mc.createEmptyMovieClip("info",1);
+        mc.新版人物文字信息.文字信息={text:""};
+        mc.新版人物文字信息.称号文本框={text:"",removeMovieClip:function():Void {this.removed=true;}};
+        return mc;
+    }
+    private static function testCf6Identities():Void {
+        Cf6NameRandomizer.resetPools();
+        var s1:MovieClip=makeUnitStub("cf6_s1","敌人-CF6持盾特种兵","特种兵",undefined);s1.soldierPhase=1;
+        var s2:MovieClip=makeUnitStub("cf6_s2","敌人-CF6特种兵","特种兵",undefined);s2.soldierPhase=2;
+        DisplayNameInitializer.initialize(s1);DisplayNameInitializer.initialize(s2);
+        check(s1.名字=="重盾突击兵" && s1.称号.indexOf("组")>0 && s1.称号==s2.称号,"ordinary CF6 soldiers share room-locked Court Card detachment");
+        s1.soldierPhase=2;
+        check(s1.名字=="突击步兵" && s1.displayName.indexOf("突击步兵")>0,"ordinary shield break updates name via watch without touching SoldierAI");
+        var e1:MovieClip=makeUnitStub("cf6_e1","敌人-CF6持盾特种精英","精锐特种兵",undefined);e1.soldierPhase=1;
+        DisplayNameInitializer.initialize(e1);
+        e1.eliteUpdateName=function():Void {this.名字="CF6特种兵·持盾一阶段";};
+        e1.eliteUpdateName();
+        check(e1.名字=="攻坚盾卫" && e1.称号.indexOf("·")>0,"elite CF6 soldier retains formal phase-1 name and Minor Arcana Pip title after EliteAI hook assignment");
+        e1.soldierPhase=2;e1.eliteUpdateName();
+        check(e1.名字=="机动特勤","elite shield break updates name to mobile operative even after EliteAI hook assignment");
+        var inst1:MovieClip=makeUnitStub("cf6_i1","敌人-CF6持盾特种教官","教官特种兵",undefined);inst1.soldierPhase=1;
+        DisplayNameInitializer.initialize(inst1);
+        inst1.eliteUpdateName=function():Void {this.名字="CF6特种教官·持盾";};
+        inst1.eliteUpdateName();
+        check(inst1.名字=="重盾教官" && inst1.称号.indexOf("阿卡那 ")==0 && inst1.称号.indexOf("（正位）")>0,"shielded instructor starts upright Major Arcana and blocks legacy EliteAI name overwrite");
+        inst1.soldierPhase=2;inst1.eliteUpdateName();
+        check(inst1.名字=="战术教官" && inst1.称号.indexOf("（逆位）")>0,"instructor shield break flips Major Arcana to reversed");
+        var inst2:MovieClip=makeUnitStub("cf6_i2","敌人-CF6持盾特种教官","重盾教官","VII·战车·正位");inst2.soldierPhase=1;inst2.特种兵初始阶段=1;
+        DisplayNameInitializer.initialize(inst2);inst2.soldierPhase=2;inst2.eliteUpdateName(2);
+        DisplayNameInitializer.initialize(inst2);
+        check(inst2.名字=="战术教官" && inst2.称号=="VII·战车·逆位","re-initialization after shield break respects live soldierPhase over spawn-time 特种兵初始阶段");
+        var seenCourts:Object={};var courtCount:Number=0;
+        Cf6NameRandomizer.resetPools();
+        var humanRooms:Array=["A02","A03","A04","A05","A06","A09","A10","A11","A12","A13","A14","A15","A17","A18","A19","A20"];
+        for (var ri:Number=0;ri<humanRooms.length;ri++) {
+            var roomId:String=humanRooms[ri];
+            Cf6NameRandomizer.onSceneChanged();
+            var linkage:String=(roomId=="A10") ? "敌人-CF6持盾特种精英" : ((roomId=="A13") ? "敌人-CF6持盾特种教官" : "敌人-CF6特种兵");
+            var u:MovieClip=makeUnitStub("cf6_room_"+roomId,linkage,"特种兵",roomId=="A13" ? "XII·倒吊人·正位" : undefined);
+            u.soldierPhase=(roomId=="A10" || roomId=="A13") ? 1 : 2;
+            DisplayNameInitializer.initialize(u);
+            if (typeof u.驻防番号=="string" && u.驻防番号.indexOf("组")>0 && seenCourts[u.驻防番号]!==true) {
+                seenCourts[u.驻防番号]=true;courtCount++;
+            }
+        }
+        check(courtCount==16,"all 16 human-troop rooms including A10 (elite elevator) and A13 (instructor elevator) bind a unique Court Card detachment");
+        var b1:MovieClip=makeUnitStub("cf6_b1","敌人-CF6大刀机器人","星轨斩铁机兵",undefined);b1.单位编号=465;
+        var fakeOph:MovieClip=makeUnitStub("cf6_fake_oph","敌人-CF6大刀机器人","星轨斩铁机兵","第十三序列·蛇夫座");fakeOph.单位编号=465;
+        fakeOph.hp=fakeOph.hp满血值=1000;fakeOph.空手攻击力=100;
+        var oph:MovieClip=makeUnitStub("cf6_oph","敌人-CF6大刀机器人","自定义蛇夫",undefined);oph.单位编号=482;
+        oph.hp=oph.hp满血值=1000;oph.空手攻击力=100;oph.基本防御力=200;oph.行走X速度=10;
+        DisplayNameInitializer.initialize(b1);DisplayNameInitializer.initialize(fakeOph);DisplayNameInitializer.initialize(oph);
+        check(b1.称号.indexOf("黄道星链·")==0 && fakeOph.hp满血值==1000 && fakeOph.空手攻击力==100 && oph.名字=="自定义蛇夫" && oph.称号=="第十三序列·蛇夫座" && oph.hp满血值==1250 && oph.空手攻击力==115 && oph.基本防御力==250 && oph.行走X速度==11.5,"bladebot zodiac link and 49th Ophiuchus use unit identity rather than display name/title");
+        var w1:MovieClip=makeUnitStub("cf6_w1","敌人-CF6Wings","Wings",undefined);
+        var w0a:MovieClip=makeUnitStub("cf6_w0a","敌人-CF6Wings","Wings","3XF-W00");
+        var w0b:MovieClip=makeUnitStub("cf6_w0b","敌人-CF6Wings","Wings","3XF-W00");
+        DisplayNameInitializer.initialize(w1);DisplayNameInitializer.initialize(w0a);
+        Cf6NameRandomizer.resetPools();
+        DisplayNameInitializer.initialize(w0b);
+        check(w1.名字=="「翼」型克隆特工" && w1.称号.indexOf("3XF-W")==0 && w0a.称号=="3XF-W00「零号·Origin」" && w0b.称号=="3XF-W00「零号·Origin」","hostile Wings clones initialize and resetPools resets zero/mirror sequence");
+        var er:MovieClip=makeUnitStub("cf6_er","敌人-CF6老头机器人","老头机器人",undefined);
+        DisplayNameInitializer.initialize(er);
+        check(er.名字=="Roll Phantom" && er.称号=="M.O.D终式决战兵器","elder robot phase normalizes to Roll Phantom with final weapon title");
     }
 }

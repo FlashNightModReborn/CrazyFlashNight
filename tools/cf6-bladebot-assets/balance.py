@@ -13,8 +13,11 @@ sys.path.insert(0, str(ROOT / 'tools'))
 from unit_registry import preserve_unit_key
 HERE = Path(__file__).resolve().parent
 LINK = '敌人-CF6大刀机器人'
-DISPLAY_NAME = '大刀机器人'
+DISPLAY_NAME = '星轨斩铁机兵'
 UNIT_ID = 465
+OPHIUCHUS_ID = 482
+OPHIUCHUS_NAME = '星轨特装机·蛇夫'
+OPHIUCHUS_KEY = 'cf6.大刀机器人.蛇夫座'
 PROPERTY_FILE = 'CF6重制敌人.xml'
 SOURCE = '敌人-黑铁会改造人'
 FIELDS = {'最小经验值': 'expMin', '最大经验值': 'expMax', 'hp_min': 'hpMin', 'hp_max': 'hpMax',
@@ -120,15 +123,19 @@ def update_enemy_text(text, entry):
 
 
 def main():
+    global UNIT_ID
     parser = argparse.ArgumentParser()
     parser.add_argument('--write', action='store_true')
     args = parser.parse_args()
     entry, unit, receipt, units = expected()
+    ophiuchus_unit = copy.deepcopy(unit)
+    ophiuchus_unit.update(id=OPHIUCHUS_ID, spritename=LINK, name=OPHIUCHUS_NAME, height=185, level=45)
+    ophiuchus_unit = preserve_unit_key(ophiuchus_unit, units, new_key=OPHIUCHUS_KEY)
     target = ROOT / 'data/enemy_properties' / PROPERTY_FILE
     ledger_path = ROOT / 'tools/cf7-balance-tool/data/monster-flag-ledger.json'
     ledger = json.loads(ledger_path.read_text(encoding='utf-8'))
-    matching = [row for row in units if row['id'] == UNIT_ID or row['spritename'] == LINK]
-    if any(row['id'] != UNIT_ID or row['spritename'] != LINK for row in matching) or len(matching) > 1:
+    matching = [row for row in units if row['id'] in (UNIT_ID, OPHIUCHUS_ID) or row['spritename'] == LINK]
+    if any(row['id'] not in (UNIT_ID, OPHIUCHUS_ID) or row['spritename'] != LINK for row in matching) or len(matching) > 2:
         raise ValueError('Unit registration collision')
     list_path = ROOT / 'data/enemy_properties/list.xml'
     if args.write:
@@ -138,7 +145,11 @@ def main():
             target.write_text(updated_properties, encoding='utf-8', newline='\n')
         units_path = ROOT / 'data/units/units.json'
         units_text = units_path.read_text(encoding='utf-8-sig')
+        UNIT_ID = 465
         updated_units = update_registration_text(units_text, unit)
+        UNIT_ID = OPHIUCHUS_ID
+        updated_units = update_registration_text(updated_units, ophiuchus_unit)
+        UNIT_ID = 465
         if updated_units != units_text:
             units_path.write_text(updated_units, encoding='utf-8', newline='\n')
         text = list_path.read_text(encoding='utf-8')
@@ -149,11 +160,13 @@ def main():
         ledger_path.write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
         (HERE / 'balance-inputs.json').write_text(json.dumps(receipt, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
     assert canonical(E.parse(target).getroot().find(LINK)) == canonical(entry)
-    assert next(row for row in json.loads((ROOT / 'data/units/units.json').read_text(encoding='utf-8-sig')) if row['id'] == UNIT_ID) == unit
+    registered_after = json.loads((ROOT / 'data/units/units.json').read_text(encoding='utf-8-sig'))
+    assert next(row for row in registered_after if row['id'] == UNIT_ID) == unit
+    assert next(row for row in registered_after if row['id'] == OPHIUCHUS_ID) == ophiuchus_unit
     assert sum(e.text == PROPERTY_FILE for e in E.parse(list_path).getroot()) == 1
     assert json.loads(ledger_path.read_text(encoding='utf-8'))['claims'][LINK] == {'阶段': 8, '档次系数': 9}
     assert json.loads((HERE / 'balance-inputs.json').read_text(encoding='utf-8')) == receipt
-    print(json.dumps({'ok': True, 'unitId': UNIT_ID, 'stage': 8, 'tier': 9, 'panel': receipt['integerPanel']}, ensure_ascii=False))
+    print(json.dumps({'ok': True, 'unitId': UNIT_ID, 'ophiuchusUnitId': OPHIUCHUS_ID, 'stage': 8, 'tier': 9, 'panel': receipt['integerPanel']}, ensure_ascii=False))
 
 
 if __name__ == '__main__':

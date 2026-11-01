@@ -52,7 +52,7 @@
   "inputs": [
     {
       "path": "data/stages/books/cf6-sting-source/maps.fragment.json",
-      "sha256": "43f6c48f510593f10c655213de0347e6a500a3157c509be161f09be33ef3415f"
+      "sha256": "e224c49693b06dcc8b3589763ebc329a5080b5fb0df2cacbc176789fd376b766"
     },
     {
       "path": "data/stages/books/cf6-sting-source/economy.fragment.json",
@@ -120,11 +120,11 @@
     },
     {
       "path": "tools/cf6-roguelike-content/difficulty.source.json",
-      "sha256": "4df1ac046f6258f09a6f84a41c2c2ea4ff8c78b94749a423cbc0dfb912bfe5cc"
+      "sha256": "f330e4893df93e6e9a2dd30c09c52b82b003544a51c7b89207655bed9b239b5e"
     },
     {
       "path": "tools/cf6-roguelike-content/difficulty_plan.py",
-      "sha256": "4407a5d00f873df6a3298ed430bf3182c82c608f45f5d659bfcbce511c0ca172"
+      "sha256": "f2ce5a41c13ff14ea2f2ccefcba6d1ca6f3762b8dde5fdaa1ff3253a312f15fd"
     },
     {
       "path": "data/stages/books/cf6-sting-source/encounter-facts.v1.json",
@@ -488,7 +488,7 @@
     },
     {
       "path": "data/items/武器_刀_直剑.xml",
-      "sha256": "d36da20c96e60a69550b9ae69eadb53b932d58a956fa107bdfcee7f28ec2d5ee"
+      "sha256": "104ef1e7646eb2b8576fe91aeaddb5cc515098d60210732fb22c5955c290fa99"
     },
     {
       "path": "data/items/武器_刀_长刀.xml",
@@ -4275,7 +4275,7 @@
         "oldIntervalMs": 100,
         "intervalMs": 400,
         "delayMs": 0,
-        "quantity": 5,
+        "quantity": 4,
         "event": null
       },
       {
@@ -4304,18 +4304,18 @@
         "mapId": "A20",
         "waveIndex": 4,
         "entryIndex": 3,
-        "spawnIndex": 1,
+        "spawnIndex": 0,
         "oldIntervalMs": 100,
         "intervalMs": 400,
         "delayMs": 600,
-        "quantity": 2,
+        "quantity": 1,
         "event": null
       },
       {
         "mapId": "A20",
         "waveIndex": 4,
         "entryIndex": 4,
-        "spawnIndex": 0,
+        "spawnIndex": 1,
         "oldIntervalMs": 100,
         "intervalMs": 400,
         "delayMs": 800,
@@ -4326,11 +4326,11 @@
         "mapId": "A20",
         "waveIndex": 4,
         "entryIndex": 5,
-        "spawnIndex": 1,
+        "spawnIndex": 0,
         "oldIntervalMs": 100,
         "intervalMs": 400,
         "delayMs": 1000,
-        "quantity": 1,
+        "quantity": 2,
         "event": null
       },
       {
@@ -4341,6 +4341,17 @@
         "oldIntervalMs": 100,
         "intervalMs": 400,
         "delayMs": 1200,
+        "quantity": 1,
+        "event": null
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 7,
+        "spawnIndex": 1,
+        "oldIntervalMs": 100,
+        "intervalMs": 400,
+        "delayMs": 1400,
         "quantity": 1,
         "event": null
       }
@@ -6159,14 +6170,6 @@
         "mapId": "A20",
         "waveIndex": 4,
         "entryIndex": 3,
-        "spawnIndex": 1,
-        "field": "Parameters.publishStageEvent",
-        "value": true
-      },
-      {
-        "mapId": "A20",
-        "waveIndex": 4,
-        "entryIndex": 4,
         "spawnIndex": 0,
         "field": "Parameters.publishStageEvent",
         "value": true
@@ -6174,8 +6177,16 @@
       {
         "mapId": "A20",
         "waveIndex": 4,
-        "entryIndex": 5,
+        "entryIndex": 4,
         "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 5,
+        "spawnIndex": 0,
         "field": "Parameters.publishStageEvent",
         "value": true
       },
@@ -6186,12 +6197,20 @@
         "spawnIndex": 1,
         "field": "Parameters.publishStageEvent",
         "value": true
+      },
+      {
+        "mapId": "A20",
+        "waveIndex": 4,
+        "entryIndex": 7,
+        "spawnIndex": 1,
+        "field": "Parameters.publishStageEvent",
+        "value": true
       }
     ],
-    "authorityBeforeSha256": "158c5afca857c3f9759a35f9a9fdaff10c290d4a62647822e7fd550406485284",
-    "authorityAfterSha256": "158c5afca857c3f9759a35f9a9fdaff10c290d4a62647822e7fd550406485284",
+    "authorityBeforeSha256": "fea2f2bc6d0a9c2641522b5f9a5616f2913c08235e3a707a7b4d53a61b4146a7",
+    "authorityAfterSha256": "fea2f2bc6d0a9c2641522b5f9a5616f2913c08235e3a707a7b4d53a61b4146a7",
     "preservedInitialEntries": 27,
-    "preservedInitialSha256": "df4dd43b7853c90e03736bfcb1e9646fd3af72a1222ea3ba5122dbcc24c7b017",
+    "preservedInitialSha256": "4f97b3767185885bf2d75e8b243d0268addee231ffae1d893ae7dc4efdcb6477",
     "preservedPodEntries": 10,
     "preservedPodSha256": "a866fbe1daedac99ff61e343bcf960a1d999df91047757a8fefaab7af9e8fc6e"
   },

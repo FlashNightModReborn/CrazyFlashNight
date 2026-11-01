@@ -66,6 +66,7 @@ UNIT_MAP = {
     "thug_tf":       {"id": 469, "evidence": "units.json#469;原版是否变身=1实例专用;变身后继由469自产,不另发460(encounter-review feedback)"},
     "wings":         {"id": 464, "evidence": "units.json#464 spritename=敌人-CF6Wings"},
     "robot_sword":   {"id": 465, "evidence": "units.json#465 spritename=敌人-CF6大刀机器人"},
+    "robot_sword_ophiuchus": {"id": 482, "evidence": "units.json#482 spritename=敌人-CF6大刀机器人;第十三序列·蛇夫座特装机占位"},
     "robot_big":     {"id": 472, "evidence": "units.json#472 spritename=敌人-CF6大头机器人"},
     "oldman_human":  {"id": 473, "evidence": "units.json#473 spritename=敌人-CF6老头人形;Parameters.老头变身有文档(tools/cf6-elder-assets),A20须=false"},
     "oldman_robot":  {"id": 474, "evidence": "units.json#474 spritename=敌人-CF6老头机器人;A22仅主Wave生成"},
@@ -74,7 +75,7 @@ UNIT_MAP = {
 # 兵种相对档次(同级不同兵种不视为等强),用于图内等级分配
 UNIT_TIER = {"alien": 0, "zombie": 1, "zombie_turret": 1, "zombie_f": 1, "thug": 2,
              "thug_tf": 2, "wings": 3, "specop": 3, "specop_shield": 3, "manman": 4,
-             "robot_sword": 4, "robot_big": 5, "oldman_human": 6, "oldman_robot": 6}
+             "robot_sword": 4, "robot_sword_ophiuchus": 5, "robot_big": 5, "oldman_human": 6, "oldman_robot": 6}
 
 # 原版gunname -> 现役武器名(仅466/467的Parameters.长枪有资产README文档;其余单位不挂参数,只在sourceNote记录)
 GUN_MAP = {"g36": "G36", "ak47": "AK47"}
@@ -99,6 +100,7 @@ LEVEL_RANGE = {
 }
 BOSS_LEVEL = {"A06": 42, "A17": 57, "A20": 60, "A22": 60}
 BOSS_UNIT = {"A06": "manman", "A17": "robot_big", "A20": "oldman_human", "A22": "oldman_robot"}
+BOSS_TITLE = {"A06": "C.T重装处刑人", "A17": "M.O.D中枢防卫核心", "A20": "C.T组织首脑", "A22": "M.O.D终式决战兵器"}
 MAP_TITLE = {
     "A01": "外围入口", "A02": "废车场", "A03": "室内第一段",
     "A04": "室内第二段", "A05": "室内深处", "A06": "蛮斧刽子手", "A08": "抵达设施",
@@ -114,19 +116,19 @@ MAP_ORDER = ["TUTORIAL", "A01", "A02", "A03", "A04", "A05", "A06", "A08", "A09",
 # candidates=§7"先抽定再装备"候选清单(首个=作者态载体装备/掉落,消费端抽定后整枪替换);
 # 载体以 Parameters.cf6EliteQuota='E#' 标记(tools/cf6-prototype/economy-input-contract.json)。
 ELITES = {
-    "A09": {"quota": "E1", "weapon": "SAI GRY 幽灵", "entry": 466,
+    "A09": {"quota": "E1", "title": "权杖骑士·军械官", "weapon": "SAI GRY 幽灵", "entry": 466,
             "candidates": ["SAI GRY 幽灵"],
             "note": "既有静态带盾特种兵×1转为无盾入口466,占原467名额,图敌人总数不变(设计配额适配;r5核对A09总数9)"},
-    "A13": {"quota": "E2", "weapon": "TTI Gen 12", "entry": 467,
+    "A13": {"quota": "E2", "title": "阿卡那 VII·战车（正位）", "weapon": "TTI Gen 12", "entry": 467,
             "candidates": ["TTI Gen 12", "AA12丧尸"],
             "note": "持盾队长、小Boss;两阶段最终死亡后掉落,不在破盾时发"},
-    "A14": {"quota": "E3", "weapon": "HK416战术版", "entry": 466,
+    "A14": {"quota": "E3", "title": "阿卡那 XII·倒吊人（逆位）", "weapon": "HK416战术版", "entry": 466,
             "candidates": ["HK416战术版", "PKM战术版"],
             "note": "既有静态带盾特种兵×2中指定1名转无盾入口466,占原467名额,图敌人总数不变(r5核对A14总数9)"},
-    "A17": {"quota": "E4", "weapon": "MG42战术版", "entry": 467,
+    "A17": {"quota": "E4", "title": "阿卡那 XVI·高塔（正位）", "weapon": "MG42战术版", "entry": 467,
             "candidates": ["MG42战术版"],
             "note": "持盾重装精英,既有静态带盾特种兵×1;在bossEncounter hpRatio=1组(禁InstanceName,以cf6EliteQuota标记)"},
-    "A19": {"quota": "E5", "weapon": "量子能量枪", "entry": 467,
+    "A19": {"quota": "E5", "title": "阿卡那 XX·审判（正位）", "weapon": "量子能量枪", "entry": 467,
             "candidates": ["量子能量枪", "战术版喷火器"],
             "note": "终战前强精英,既有静态带盾特种兵×2中指定1名,保留原入口467"},
 }
@@ -210,7 +212,7 @@ def boss_plans(item_index):
         "groups": [
             {"hpRatio": 1.0, "enemies": [
                 _sup("specop_shield", 56, 1, True, "left", [161.1, 372.65], {
-                    "称号": "E4精英", "cf6EliteQuota": "E4", "长枪": ELITES["A17"]["weapon"],
+                    "称号": ELITES["A17"]["title"], "cf6EliteQuota": "E4", "长枪": ELITES["A17"]["weapon"],
                     "不掉装备": True, "保留屏外尸体": True,
                     "掉落物": [
                         {"名字": ELITES["A17"]["weapon"], "概率": 100, "最小数量": 1, "最大数量": 1, "总数": 1},
@@ -232,14 +234,14 @@ def boss_plans(item_index):
 
     # ---- A20 老头人形(473,L60,变身=false)。原四路:盾5/Wings5/僵尸15/变身保安15。
     shield = lambda side, qty, xy=None: _sup("specop_shield", 60, qty, True, side, xy, {"长枪": "AK47"})
-    wing = lambda side, qty, xy=None: _sup("wings", 60, qty, True, side, xy)
+    wing = lambda side, qty, xy=None, params=None: _sup("wings", 60, qty, True, side, xy, params)
     zom = lambda side, qty, xy=None: _sup("zombie", 60, qty, False, side, xy)
     tfg = lambda side, qty, xy=None: _sup("thug_tf", 60, qty, False, side, xy)
     plans["A20"] = {
         "instanceName": "cf6Boss_A20", "maxAlive": 4, "maxRanged": 2, "intervalFrames": 45,
         "groups": [
             {"hpRatio": 1.0, "enemies": [
-                shield("left", 2, [185.0, 162.0]), wing("right", 2, [1414.9, 455.7]),
+                shield("left", 2, [185.0, 162.0]), wing("right", 2, [1414.9, 455.7], {"称号": "3XF-W00"}),
                 zom("right", 1, [1103.95, 225.75]), tfg("right", 1, [1250.95, 338.75])]},
             {"hpRatio": 0.75, "enemies": [zom("left", 4), tfg("right", 4), shield("left", 2), wing("right", 2)]},
             {"hpRatio": 0.5, "enemies": [zom("left", 5), tfg("right", 5), shield("left", 1), wing("right", 1)]},
@@ -486,6 +488,8 @@ def key_of(unit_key, transform):
 
 def gun_params(unit_key, gun):
     """仅466/467的Parameters.长枪有资产README文档;其余单位不挂,记录在note。"""
+    if unit_key == "robot_sword_ophiuchus":
+        return {"名字": "星轨特装机·蛇夫", "称号": "第十三序列·蛇夫座"}
     if gun and unit_key in ("specop", "specop_shield"):
         p = {"长枪": GUN_MAP[gun]}
         if unit_key == "specop":
@@ -498,7 +502,7 @@ def elite_enemy(mid, elite, item_index, xy):
     w = elite["weapon"]
     key = "specop" if elite["entry"] == 466 else "specop_shield"
     params = {
-        "称号": elite["quota"] + "精英", "cf6EliteQuota": elite["quota"], "长枪": w,
+        "称号": elite["title"], "cf6EliteQuota": elite["quota"], "长枪": w,
         "不掉装备": True, "保留屏外尸体": True,
         "掉落物": [
             {"名字": w, "概率": 100, "最小数量": 1, "最大数量": 1, "总数": 1},
@@ -514,7 +518,7 @@ def elite_enemy(mid, elite, item_index, xy):
 def build_boss_map(fact, mid, plan, item_index, notes):
     """主Wave仅Boss一名(InstanceName与plan相同);杂兵全在bossEncounter组。"""
     b = fact["boss"]
-    params = {"称号": "Boss", "保留屏外尸体": True}
+    params = {"称号": BOSS_TITLE[mid], "保留屏外尸体": True}
     if mid == "A20":
         params["老头变身"] = False
         notes.append("A20老头人形关闭自动变身(Parameters.老头变身=false,elder-assets文档);A21由机关线演出")
@@ -747,6 +751,9 @@ def build_maps(facts, item_index, turret_block):
                  "background": "cf6/CF6_%s_BG.swf" % mid,
                  "dialogue": fact["dialogue"], "stage": stage}
         if mid == "A16":
+            speaker_map = {"R_server": "M.O.D智能主机", "bloody": "Bloody"}
+            m["dialogue"] = [dict(line, speaker=speaker_map.get(line["speaker"], line["speaker"]))
+                             for line in m["dialogue"]]
             notes.append("模板出口需要杀死数0→a12为复制模板;对白链实际目标a17(encounter-review确认);章节按路线顺序A16→A17,不回A12")
         if mid == "A01":
             m["turrets"] = turret_block

@@ -73,7 +73,8 @@ def original_progression():
 
 
 def require_original_unit(unit, mid, progression, role='ordinary'):
-    first = progression.get(unit, {}).get(role)
+    base_unit = 'robot_sword' if unit == 'robot_sword_ophiuchus' else unit
+    first = progression.get(base_unit, {}).get(role)
     if first is None or mid < first['mapId']:
         raise ValueError('enemy precedes original ' + role + ' appearance: ' + mid + '/' + unit)
 
@@ -149,6 +150,12 @@ def _support_policy(node, policy):
     initial = copy.deepcopy(old['groups'][0])
     if initial['hpRatio'] != 1: raise ValueError('difficulty requires the original initial support group')
     if policy == 'retain-initial-group':
+        if node['id'] == 'A22':
+            for enemy in initial['enemies']:
+                if REGISTRY.resolve_id(enemy['Type']) == 465:
+                    enemy['Type'] = '诺亚.暴君克隆兽'
+                    enemy['ranged'] = False
+                    enemy.pop('Parameters', None)
         old['groups'] = [initial]
     elif policy == 'pods-and-small-escort':
         if node['id'] != 'A17' or old['maxAlive'] != 4 or old['intervalFrames'] != 45:

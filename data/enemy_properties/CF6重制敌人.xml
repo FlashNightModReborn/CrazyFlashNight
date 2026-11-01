@@ -2,7 +2,7 @@
 <root>
     <!-- 维护者指定阶段 6，其余九项标识分别继承原版黄衣僵尸（敌人-黄色衣服男僵尸1）与红衣僵尸（敌人-金发红衣服女僵尸1）；八项面板由权威工作簿的现有公式实现正算并取四舍五入整数。 -->
     <敌人-CF6普通男僵尸>
-        <displayname>CF6黄衣僵尸</displayname>
+        <displayname>制服感染者</displayname>
         <最小经验值>126</最小经验值>
         <最大经验值>1696</最大经验值>
         <hp_min>1345</hp_min>
@@ -38,7 +38,7 @@
         </标识>
     </敌人-CF6普通男僵尸>
     <敌人-CF6女僵尸>
-        <displayname>CF6红衣僵尸</displayname>
+        <displayname>游荡感染者</displayname>
         <最小经验值>112</最小经验值>
         <最大经验值>1707</最大经验值>
         <hp_min>1097</hp_min>
@@ -108,7 +108,7 @@
         </标识>
     </敌人-CF6蛮蛮>
     <敌人-CF6Wings>
-        <displayname>Wings</displayname>
+        <displayname>「翼」型克隆特工</displayname>
         <最小经验值>1364</最小经验值>
         <最大经验值>7668</最大经验值>
         <hp_min>3667</hp_min>
@@ -145,7 +145,7 @@
         </标识>
     </敌人-CF6Wings>
     <敌人-CF6大刀机器人>
-        <displayname>大刀机器人</displayname>
+        <displayname>星轨斩铁机兵</displayname>
         <最小经验值>1832</最小经验值>
         <最大经验值>10193</最大经验值>
         <hp_min>9687</hp_min>
@@ -183,7 +183,7 @@
         <battleRecordAppearance>fixed</battleRecordAppearance>
     </敌人-CF6大刀机器人>
     <敌人-CF6特种兵>
-        <displayname>CF6特种兵·二阶段</displayname>
+        <displayname>突击步兵</displayname>
         <最小经验值>776</最小经验值>
         <最大经验值>4433</最大经验值>
         <hp_min>7514</hp_min>
@@ -221,7 +221,7 @@
         <battleRecordAppearance>fixed</battleRecordAppearance>
     </敌人-CF6特种兵>
     <敌人-CF6持盾特种兵>
-        <displayname>CF6特种兵·持盾一阶段</displayname>
+        <displayname>重盾突击兵</displayname>
         <最小经验值>776</最小经验值>
         <最大经验值>4433</最大经验值>
         <hp_min>6913</hp_min>
@@ -259,7 +259,7 @@
         <battleRecordAppearance>fixed</battleRecordAppearance>
     </敌人-CF6持盾特种兵>
     <敌人-CF6光头保安>
-        <displayname>CF6光头保安·普通型</displayname>
+        <displayname>安保干员</displayname>
         <最小经验值>352</最小经验值>
         <最大经验值>2418</最大经验值>
         <hp_min>5474</hp_min>
@@ -295,7 +295,7 @@
         <battleRecordAppearance>fixed</battleRecordAppearance>
     </敌人-CF6光头保安>
     <敌人-CF6变身光头保安>
-        <displayname>CF6光头保安·变身型</displayname>
+        <displayname>安保干员</displayname>
         <最小经验值>352</最小经验值>
         <最大经验值>2418</最大经验值>
         <hp_min>5474</hp_min>
@@ -331,7 +331,7 @@
         <battleRecordAppearance>fixed</battleRecordAppearance>
     </敌人-CF6变身光头保安>
     <敌人-CF6大头机器人>
-        <displayname>大头机器人</displayname>
+        <displayname>守卫机兵·WAR-I</displayname>
         <最小经验值>3133</最小经验值>
         <最大经验值>19950</最大经验值>
         <hp_min>43531</hp_min>
@@ -369,7 +369,7 @@
         <battleRecordAppearance>fixed</battleRecordAppearance>
     </敌人-CF6大头机器人>
     <敌人-CF6老头人形>
-        <displayname>老头</displayname>
+        <displayname>Bloody</displayname>
         <最小经验值>1832</最小经验值>
         <最大经验值>10193</最大经验值>
         <hp_min>6674</hp_min>
@@ -407,7 +407,7 @@
         <battleRecordAppearance>fixed</battleRecordAppearance>
     </敌人-CF6老头人形>
     <敌人-CF6老头机器人>
-        <displayname>老头机器人</displayname>
+        <displayname>Roll Phantom</displayname>
         <最小经验值>11882</最小经验值>
         <最大经验值>31703</最大经验值>
         <hp_min>10001</hp_min>
@@ -445,7 +445,7 @@
         <battleRecordAppearance>fixed</battleRecordAppearance>
     </敌人-CF6老头机器人>
     <敌人-CF6特种精英>
-        <displayname>CF6特种精英·二阶段</displayname>
+        <displayname>机动特勤</displayname>
         <最小经验值>776</最小经验值>
         <最大经验值>4433</最大经验值>
         <hp_min>7514</hp_min>
@@ -483,7 +483,7 @@
         <battleRecordAppearance>fixed</battleRecordAppearance>
     </敌人-CF6特种精英>
     <敌人-CF6持盾特种精英>
-        <displayname>CF6特种精英·持盾一阶段</displayname>
+        <displayname>攻坚盾卫</displayname>
         <最小经验值>776</最小经验值>
         <最大经验值>4433</最大经验值>
         <hp_min>6913</hp_min>
@@ -521,7 +521,7 @@
         <battleRecordAppearance>fixed</battleRecordAppearance>
     </敌人-CF6持盾特种精英>
     <敌人-CF6特种教官>
-        <displayname>CF6特种教官·二阶段</displayname>
+        <displayname>战术教官</displayname>
         <最小经验值>1832</最小经验值>
         <最大经验值>10193</最大经验值>
         <hp_min>15623</hp_min>
@@ -559,7 +559,7 @@
         <battleRecordAppearance>fixed</battleRecordAppearance>
     </敌人-CF6特种教官>
     <敌人-CF6持盾特种教官>
-        <displayname>CF6特种教官·持盾一阶段</displayname>
+        <displayname>重盾教官</displayname>
         <最小经验值>1832</最小经验值>
         <最大经验值>10193</最大经验值>
         <hp_min>15623</hp_min>

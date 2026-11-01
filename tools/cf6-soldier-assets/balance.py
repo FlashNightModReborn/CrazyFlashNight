@@ -13,7 +13,7 @@ import xml.etree.ElementTree as E
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
 LINK = '敌人-CF6特种兵'
-DISPLAY_NAME = 'CF6特种兵·二阶段'
+DISPLAY_NAME = '突击步兵'
 UNIT_ID = 466
 PROPERTY_FILE = 'CF6重制敌人.xml'
 SOURCE = '敌人-大学军校生'
@@ -25,7 +25,7 @@ common.LINK, common.UNIT_ID = LINK, UNIT_ID
 
 def expected(shield=False):
     link,unit_id = ('敌人-CF6持盾特种兵',467) if shield else (LINK,UNIT_ID)
-    display_name = 'CF6特种兵·持盾一阶段' if shield else DISPLAY_NAME
+    display_name = '重盾突击兵' if shield else DISPLAY_NAME
     armor_band = 4 if shield else 2
     reduction_matches=re.findall(r'\bshieldDamageReductionPercent\s*:\s*(\d+)',
         (HERE/'SoldierAI.as').read_text(encoding='utf-8-sig'))

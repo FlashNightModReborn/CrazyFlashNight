@@ -60,7 +60,14 @@ def apply(stage, items):
             raise ValueError('Elite uses smoke rather than explosive grenades')
         if params.get('cf6EliteQuota'):
             if quantity!=1:raise ValueError('Finite loot carrier cannot multiply')
-            params['称号']='军械教官' if role=='instructor' else '军械队长'
+            quota_titles={
+                'E1':'宝剑十·军械队长',
+                'E2':'阿卡那 VII·战车（正位）',
+                'E3':'阿卡那 XII·倒吊人（逆位）',
+                'E4':'阿卡那 XVI·高塔（正位）',
+                'E5':'阿卡那 XX·审判（正位）',
+            }
+            params['称号']=row['parameters'].get('称号') or quota_titles.get(params['cf6EliteQuota'],'军械教官' if role=='instructor' else '军械队长')
             weapons=[r['名字'] for r in params.get('掉落物',[]) if r['名字'] in items and items[r['名字']].findtext('use')=='长枪']
             if not weapons or params.get('长枪')!=weapons[0]:
                 raise ValueError('Finite loot carrier must wield its reward weapon')

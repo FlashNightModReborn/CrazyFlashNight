@@ -74,8 +74,8 @@
     },
     {
       "path": "data/enemy_properties/CF6重制敌人.xml",
-      "bytes": 24134,
-      "sha256": "beb65602109cf95f0b76312342a320c46ec2148122cea4eb19b7297c27bac979"
+      "bytes": 24036,
+      "sha256": "0f8b6000cef121cf4c8f2cf2278fc729057c250abdacec90f44da35b51ce9690"
     },
     {
       "path": "data/items/收集品_材料.xml",
@@ -94,8 +94,8 @@
     },
     {
       "path": "data/items/武器_刀_直剑.xml",
-      "bytes": 67783,
-      "sha256": "d36da20c96e60a69550b9ae69eadb53b932d58a956fa107bdfcee7f28ec2d5ee"
+      "bytes": 67787,
+      "sha256": "104ef1e7646eb2b8576fe91aeaddb5cc515098d60210732fb22c5955c290fa99"
     },
     {
       "path": "data/items/武器_刀_短兵.xml",
@@ -514,13 +514,13 @@
     },
     {
       "path": "data/stages/books/cf6-sting.json",
-      "bytes": 531682,
-      "sha256": "6e1b17b45a9b0fa850318a7d79298a6ee10367d83002c916c90b2b45cf54765d"
+      "bytes": 532460,
+      "sha256": "1a8bc325a2362a6764c0f61ae6a87b6c5586fb7f9eae54a933ac454f7b429d0e"
     },
     {
       "path": "data/units/units.json",
-      "bytes": 175146,
-      "sha256": "86213ab98744ac10b667e8fdbaf8b893b41fc535cc5715fbb449d834744a796b"
+      "bytes": 175376,
+      "sha256": "112d5e9d76a0108aac86da4d24b32bc759b4ed48cac84246e671dc54e787729e"
     },
     {
       "path": "tools/cf6-soldier-assets/instructor-tuning.json",
@@ -529,18 +529,18 @@
     },
     {
       "path": "tools/cf6-type61/build-route.py",
-      "bytes": 28923,
-      "sha256": "3f2a04a18ec327fe66bfc754c58d071f2ed5d5bc2cc9ae859079084b44cbd8aa"
+      "bytes": 32310,
+      "sha256": "b9d53ee4be28abf7e74ca5e3ac559b29f5a2953cf240fb39a4d11a33ba1ec7b6"
     },
     {
       "path": "tools/cf6-type61/encounters.py",
-      "bytes": 4046,
-      "sha256": "aa6e0a8acb4a35934f042f78a269e74e6124d609e0321dd66ce5bf8bde1a6208"
+      "bytes": 4446,
+      "sha256": "47f4cbafed973cb1e92f2d8363f2107a5712864dba3109b8277656ec0dd4f411"
     },
     {
       "path": "tools/cf6-type61/encounters.source.json",
-      "bytes": 37336,
-      "sha256": "dec959b401cd83103955089d5c2e2caf5e23899686133aab7f489700e179cb35"
+      "bytes": 37421,
+      "sha256": "e3e0730dc35abf1d44078242713716311d25054e04a1c37d047c612fb5d34869"
     },
     {
       "path": "tools/cf6-type61/route.source.json",
@@ -611,13 +611,13 @@
     },
     {
       "path": "data/stages/books/cf6-type61.json",
-      "bytes": 604850,
-      "sha256": "3fce218b7382f83321e5ae87704ffffe069843239b91e8bcd1831ec043336aa9"
+      "bytes": 605660,
+      "sha256": "5a823612e9f9a2d6da867798640db18dd49f6a6b5bbcc991c937957f7fdf16cd"
     },
     {
       "path": "scripts/类定义/org/flashNight/arki/scene/Cf6Type61Fixture.as",
-      "bytes": 321131,
-      "sha256": "ba892d903d5aad2ff34e2b27008de861de8f7814dec64e09819d15b71b2e6e90"
+      "bytes": 52421,
+      "sha256": "deac2343a40364487b86ed95aa7872e2e35373f4a34c15eda02c186fdfa9f60a"
     },
     {
       "path": "tools/cf6-type61/acquisition.generated.json",
@@ -635,8 +635,8 @@
       "sha256": "a5564665a449b2b9de69126ed4d519d46959d3be26a7ab8fe7abd8ad499932fd"
     }
   ],
-  "generatedBytes": 984530,
-  "bytesIncludingRuntimeSidecar": 1584639,
+  "generatedBytes": 716630,
+  "bytesIncludingRuntimeSidecar": 1317523,
   "maxGeneratedBytes": 2000000,
   "downstreamChecks": [
     "tools/build-choice-rewards.py --check",
@@ -644,7 +644,7 @@
   ],
   "runtimeSidecar": {
     "path": "data/stages/books/cf6-type61.runtime.json",
-    "bytes": 600109,
-    "sha256": "a4db0ab28e2fa704240e06e45270fd35b2ee5a72d4efe607ac3e3f0b9fb1bce7"
+    "bytes": 600893,
+    "sha256": "863258616c28cc5772e66ba347fd6ba3d1e7546fdff02a2bf5dbda1b136a8f2d"
   }
 }

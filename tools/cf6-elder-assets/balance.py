@@ -13,9 +13,9 @@ import build
 ROOT,HERE=build.ROOT,build.HERE
 spec=importlib.util.spec_from_file_location('elder_balance_io',ROOT/'tools/cf6-bladebot-assets/balance.py')
 common=importlib.util.module_from_spec(spec);spec.loader.exec_module(common)
-CONFIG={'human':{'id':473,'name':'老头','tier':9,'height':180,'speed':[55,65],'tenacity':20,
+CONFIG={'human':{'id':473,'name':'Bloody','tier':9,'height':180,'speed':[55,65],'tenacity':20,
                  'growth':1,'attackBias':2,'defenseBias':4},
-        'robot':{'id':474,'name':'老头机器人','tier':20,'height':190,'speed':[45,65],'tenacity':40,
+        'robot':{'id':474,'name':'Roll Phantom','tier':20,'height':190,'speed':[45,65],'tenacity':40,
                  'growth':1,'attackBias':2,'defenseBias':34}}
 
 def expected(form):

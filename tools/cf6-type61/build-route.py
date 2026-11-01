@@ -310,7 +310,11 @@ def build(source=None):
         result='    '+('public' if public else 'private')+' static function '+name+'():Object {\n        var text:String="";\n'
         for offset in range(0,len(text),1000): result+='        text+='+json.dumps(text[offset:offset+1000],ensure_ascii=False)+';\n'
         return result+'        var codec:LiteJSON=new LiteJSON();\n        return codec.parse(text);\n    }\n'
-    fixture+=fixture_method('config',config,True)
+    def fixture_literal(name,value):
+        text=re.sub(r'"([A-Za-z_\u4e00-\u9fa5][A-Za-z0-9_\u4e00-\u9fa5]*)"(?=\s*:)',r'\1',
+                    json.dumps(value,ensure_ascii=False,separators=(',',':')))
+        return '    private static function '+name+'():Object {\n        return '+text+';\n    }\n'
+    fixture+=fixture_method('config',{k:v for k,v in config.items() if k!='acquisition'},True)
     actor_names={e['name'] for e in source['actor']['equipment']}
     actor_items={name:dict(name=name,type=items[name].findtext('type'),use=items[name].findtext('use'),
                            data=dict(level=int(items[name].findtext('data/level')))) for name in sorted(actor_names)}
@@ -319,8 +323,51 @@ def build(source=None):
                    for key in ('Name','Type','MaxLevel','UnlockLevel','UnlockSP','UpgradeSP')} for s in skill_rows if s.findtext('Name') in actor_skills]
     fixture+=fixture_method('actorInputs',dict(items=actor_items,skills=skill_inputs),True)
     runtime_chapter=normalize_book_units(chapter,UnitRegistry.load(ROOT))
-    fixture+=fixture_method('metadata',{k:v for k,v in runtime_chapter.items() if k not in ('maps','type61')})
-    for i,stage in enumerate(runtime_chapter['maps']): fixture+=fixture_method('map'+str(i),stage)
+    fixture+=fixture_literal('metadata',{k:v for k,v in runtime_chapter.items() if k not in ('maps','type61')})
+    def slim_params(p):
+        if not p: return None
+        keep={k:p[k] for k in ('cf6EliteQuota','掉落物','老头变身','cf6Type61MidMod') if k in p}
+        return keep if keep else None
+    def slim_wave_enemy(e):
+        row={'Type':e['Type'],'Level':e['Level'],'Quantity':e['Quantity']}
+        if 'TriggerEvent' in e:
+            if 'Interval' in e: row['Interval']=e['Interval']
+            if 'SpawnIndex' in e: row['SpawnIndex']=e['SpawnIndex']
+            row['TriggerEvent']=e['TriggerEvent']
+        if 'InstanceName' in e: row['InstanceName']=e['InstanceName']
+        p=slim_params(e.get('Parameters'))
+        if p: row['Parameters']=p
+        return row
+    def slim_wave_enemies(enemies):
+        kept=[slim_wave_enemy(e) for e in enemies if 'TriggerEvent' in e or 'InstanceName' in e or slim_params(e.get('Parameters'))]
+        return kept if kept or not enemies else [slim_wave_enemy(enemies[0])]
+    def slim_boss_enemy(e):
+        row={'Type':e['Type'],'Level':e['Level'],'Quantity':e['Quantity'],'ranged':e['ranged'],'SpawnIndex':e['SpawnIndex']}
+        if 'podId' in e: row['podId']=e['podId']
+        p=slim_params(e.get('Parameters'))
+        if p: row['Parameters']=p
+        return row
+    def slim_plan(plan):
+        if not plan: return None
+        res={'instanceName':plan['instanceName'],'maxAlive':plan['maxAlive'],'maxRanged':plan['maxRanged'],'intervalFrames':plan['intervalFrames'],
+             'groups':[{'hpRatio':g['hpRatio'],'enemies':[slim_boss_enemy(e) for e in g['enemies'] if 'podId' in e or slim_params(e.get('Parameters'))] or [slim_boss_enemy(g['enemies'][0])]} for g in plan['groups']]}
+        if plan.get('nextPhase'): res['nextPhase']=slim_plan(plan['nextPhase'])
+        return res
+    def fixture_stage(stage):
+        mech={'assetScale':stage['mechanism']['assetScale']}
+        for k in ('elderFinale','transport','turrets','vehicle'):
+            if k in stage['mechanism']: mech[k]=stage['mechanism'][k]
+        if stage['id']=='A07':
+            mech['kind']=stage['mechanism']['kind'];mech['layers']=stage['mechanism']['layers']
+        st={'BasicInformation':{'PlayerX':stage['stage']['BasicInformation']['PlayerX'],'PlayerY':stage['stage']['BasicInformation']['PlayerY']},
+            'SpawnPoint':{'Point':[{} for _ in stage['stage'].get('SpawnPoint',{}).get('Point',[])]},
+            'Pickups':{'Pickup':stage['stage'].get('Pickups',{}).get('Pickup',[])},
+            'Wave':{'SubWave':[{'WaveInformation':{'Duration':sw['WaveInformation']['Duration'],'FinishRequirement':sw['WaveInformation']['FinishRequirement']},
+                                'EnemyGroup':{'Enemy':slim_wave_enemies(sw['EnemyGroup']['Enemy'])}} for sw in stage['stage']['Wave']['SubWave']]}}
+        row={'id':stage['id'],'title':stage['title'],'background':stage['background'],'dialogue':[],'presentation':stage['presentation'],'mechanism':mech,'stage':st}
+        if stage.get('bossEncounter'): row['bossEncounter']=slim_plan(stage['bossEncounter'])
+        return row
+    for i,stage in enumerate(runtime_chapter['maps']): fixture+=fixture_literal('map'+str(i),fixture_stage(stage))
     fixture+='    public static function book():Object {\n        var data:Object=metadata();data.type61=config();\n        data.maps=['+','.join('map%d()'%i for i in range(len(chapter['maps'])))+'];\n        return data;\n    }\n}\n'
     outputs[ROOT/'scripts/类定义/org/flashNight/arki/scene/Cf6Type61Fixture.as']=b'\xef\xbb\xbf'+fixture.encode('utf8')
     outputs[ROOT/'data/shops/list.xml']=register_xml(ROOT/'data/shops/list.xml','shops',['npcs/'+s+'.json' for s in shop_ids],'GENERATED CF6 TYPE61 SHOPS')

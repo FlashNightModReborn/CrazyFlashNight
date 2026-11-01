@@ -1214,7 +1214,11 @@
           "groups": [
             {
               "unit": "robot_sword",
-              "count": 9
+              "count": 8
+            },
+            {
+              "unit": "robot_sword_ophiuchus",
+              "count": 1
             },
             {
               "unit": "manman",
@@ -1260,6 +1264,7 @@
     "thug_tf": "cf6.光头保安.变身型",
     "wings": "cf6.Wings",
     "robot_sword": "cf6.大刀机器人",
+    "robot_sword_ophiuchus": "cf6.大刀机器人.蛇夫座",
     "robot_big": "cf6.大头机器人",
     "oldman_human": "cf6.老头",
     "oldman_robot": "cf6.老头机器人"

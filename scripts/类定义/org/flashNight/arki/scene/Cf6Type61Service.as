@@ -276,6 +276,7 @@ class org.flashNight.arki.scene.Cf6Type61Service {
         // A live unknown commit owns its pause even if an illegal caller attempts to replace the room.
         if (room != null && room.operationId != "" && RewardStashService.pendingOperationId() != "") return;
         release(room);
+        org.flashNight.gesh.string.Cf6NameRandomizer.bindRoomCourtDetachment(world, mapId);
         var run:Object=_root._saveExt.bookRun;
         room={world:world,owner:owner,mapId:mapId,manager:StageManager.instance,
             stage:StageManager.instance.currentStage,slot:String(_root.savePath),

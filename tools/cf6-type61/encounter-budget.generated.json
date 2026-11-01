@@ -10,17 +10,17 @@
   ],
   "sourceHashes": {
     "tools/cf6-type61/encounter-budget.py": "b702be28e573fd40d3bc998c7046bda18f84cfee1ab9647ac8366559875911ee",
-    "tools/cf6-type61/encounters.py": "aa6e0a8acb4a35934f042f78a269e74e6124d609e0321dd66ce5bf8bde1a6208",
-    "tools/cf6-type61/encounters.source.json": "dec959b401cd83103955089d5c2e2caf5e23899686133aab7f489700e179cb35",
+    "tools/cf6-type61/encounters.py": "47f4cbafed973cb1e92f2d8363f2107a5712864dba3109b8277656ec0dd4f411",
+    "tools/cf6-type61/encounters.source.json": "e3e0730dc35abf1d44078242713716311d25054e04a1c37d047c612fb5d34869",
     "tools/cf6-type61/route.source.json": "b0d200eaad731f53d4e829ab8e6b67732b3b3ba91d291706a26a2960335c16ae",
     "tools/cf6-type61/acquisition-budget.py": "3109f66815cfe84f790a5dbccfde57563e6661ff927a2b944cc7363dc78dc7fb",
-    "data/stages/books/cf6-type61.json": "3fce218b7382f83321e5ae87704ffffe069843239b91e8bcd1831ec043336aa9",
-    "data/units/units.json": "86213ab98744ac10b667e8fdbaf8b893b41fc535cc5715fbb449d834744a796b",
+    "data/stages/books/cf6-type61.json": "5a823612e9f9a2d6da867798640db18dd49f6a6b5bbcc991c937957f7fdf16cd",
+    "data/units/units.json": "112d5e9d76a0108aac86da4d24b32bc759b4ed48cac84246e671dc54e787729e",
     "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as": "cb48c9531f9fe0a538c16508c6c3020f127ec7c341222fbb53c8a4e0683cd811",
     "scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as": "6b73a0f367fd81c9ad33cde8b1ac48b3c4adacef956dbcb89169a0bc25917fff",
     "scripts/类定义/org/flashNight/arki/unit/Action/PickUp/PickUpManager.as": "5bde8c1be3aa484fe36ddf868f1c24fabc77983f46281e93dcc17f4af1e2340b",
     "data/enemy_properties/boss重做.xml": "33dc2f30d55a465acbd6d31d4760cca33402767f196d744939afe56a1222a45b",
-    "data/enemy_properties/CF6重制敌人.xml": "beb65602109cf95f0b76312342a320c46ec2148122cea4eb19b7297c27bac979",
+    "data/enemy_properties/CF6重制敌人.xml": "0f8b6000cef121cf4c8f2cf2278fc729057c250abdacec90f44da35b51ce9690",
     "data/enemy_properties/list.xml": "145d364977a7f641608360c897109becdd15aa534e064529be6796019301a1da",
     "data/enemy_properties/γ-ECHO克隆兽.xml": "667b89db99944fb12cbb716195cc5ea924dcd006b508bcf832f7051dc6ba2314",
     "data/enemy_properties/下水道.xml": "be8bc425a04e1cdfce5545bf7ca58200015cb5241fbf86ddf05760cd533c69ce",
@@ -382,10 +382,10 @@
     },
     {
       "map": "A06",
-      "authoredEnemies": 26,
-      "hp": 483018.5,
+      "authoredEnemies": 28,
+      "hp": 517868.5,
       "soldiers": {
-        "ordinary": 8
+        "ordinary": 10
       }
     },
     {
@@ -402,9 +402,10 @@
     },
     {
       "map": "A09",
-      "authoredEnemies": 41,
-      "hp": 541257,
+      "authoredEnemies": 42,
+      "hp": 559649,
       "soldiers": {
+        "elite": 1,
         "ordinary": 15
       }
     },
@@ -470,41 +471,44 @@
     },
     {
       "map": "A17",
-      "authoredEnemies": 65,
-      "hp": 1644877.0,
+      "authoredEnemies": 62,
+      "hp": 1581724.0,
       "soldiers": {
         "instructor": 2,
         "ordinary": 13,
-        "elite": 7
+        "elite": 4
       }
     },
     {
       "map": "A18",
       "authoredEnemies": 40,
-      "hp": 979190,
+      "hp": 859851,
       "soldiers": {
-        "instructor": 10
+        "instructor": 5,
+        "elite": 5
       }
     },
     {
       "map": "A19",
       "authoredEnemies": 52,
-      "hp": 1279022,
+      "hp": 1111511,
       "soldiers": {
-        "instructor": 14
+        "instructor": 7,
+        "elite": 7
       }
     },
     {
       "map": "A20",
       "authoredEnemies": 80,
-      "hp": 2586523.0,
+      "hp": 2409939.5,
       "soldiers": {
-        "instructor": 10
+        "instructor": 4,
+        "elite": 6
       }
     }
   ],
   "totalAuthoredEnemies": 753,
-  "totalAuthoredHp": 12259190.0,
+  "totalAuthoredHp": 11785845.5,
   "finiteWeaponSales": {
     "minimum": 324900,
     "maximum": 1263480,
@@ -579,14 +583,14 @@
   },
   "deathIncome": {
     "gold": {
-      "p10": 137075,
-      "median": 166541,
-      "p90": 207154
+      "p10": 131714,
+      "median": 160530,
+      "p90": 200683
     },
     "kpoints": {
-      "p10": 20154,
-      "median": 32234,
-      "p90": 49520
+      "p10": 19379,
+      "median": 31038,
+      "p90": 47003
     }
   },
   "routes": [
@@ -595,14 +599,14 @@
       "fixedOnly": 744200,
       "afterMinimumFiniteSales": 1069100,
       "deathScenarioWithMinimumFiniteSales": {
-        "p10": 1351199,
-        "median": 1433245,
-        "p90": 1543699
+        "p10": 1342154,
+        "median": 1420709,
+        "p90": 1521638
       },
       "deathScenarioWithoutSales": {
-        "p10": 1026299,
-        "median": 1108345,
-        "p90": 1218799
+        "p10": 1017254,
+        "median": 1095809,
+        "p90": 1196738
       }
     },
     {
@@ -610,14 +614,14 @@
       "fixedOnly": -613400,
       "afterMinimumFiniteSales": -288500,
       "deathScenarioWithMinimumFiniteSales": {
-        "p10": 881636,
-        "median": 1404829,
-        "p90": 1523699
+        "p10": 844086,
+        "median": 1383832,
+        "p90": 1501117
       },
       "deathScenarioWithoutSales": {
-        "p10": 556736,
-        "median": 1079929,
-        "p90": 1198799
+        "p10": 519186,
+        "median": 1058932,
+        "p90": 1176217
       }
     },
     {
@@ -625,14 +629,14 @@
       "fixedOnly": -1309600,
       "afterMinimumFiniteSales": -984700,
       "deathScenarioWithMinimumFiniteSales": {
-        "p10": 177884,
-        "median": 281184,
-        "p90": 391649
+        "p10": 147067,
+        "median": 268376,
+        "p90": 369588
       },
       "deathScenarioWithoutSales": {
-        "p10": -147016,
-        "median": -43716,
-        "p90": 66749
+        "p10": -177833,
+        "median": -56524,
+        "p90": 44688
       }
     }
   ]

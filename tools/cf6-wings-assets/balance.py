@@ -13,7 +13,7 @@ sys.path.insert(0, str(ROOT / 'tools'))
 from unit_registry import preserve_unit_key
 HERE = Path(__file__).resolve().parent
 LINK = '敌人-CF6Wings'
-DISPLAY_NAME = 'Wings'
+DISPLAY_NAME = '「翼」型克隆特工'
 UNIT_ID = 464
 PROPERTY_FILE = 'CF6重制敌人.xml'
 SOURCE = '敌人-闪6特工'

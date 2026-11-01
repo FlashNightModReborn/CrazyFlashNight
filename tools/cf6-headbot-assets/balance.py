@@ -44,7 +44,7 @@ def expected():
     values = json.loads(subprocess.check_output(node_cmd,cwd=ROOT,text=True,encoding='utf8'))
     entry = copy.deepcopy(E.parse(ROOT/'data/enemy_properties/诺亚新敌人.xml').getroot().find(SOURCE))
     entry.tag = LINK
-    entry.find('displayname').text = '大头机器人'
+    entry.find('displayname').text = '守卫机兵·WAR-I'
     for key,value in {'速度_min':45,'速度_max':60,'躲闪率_min':100,'躲闪率_max':50,'重量':200,'韧性系数':100}.items():
         entry.find(key).text = str(value)
     resistance = entry.find('魔法抗性')
@@ -57,7 +57,7 @@ def expected():
         entry.find('标识/'+key).text = f'{value:g}'
     for key,formula in common.FIELDS.items():
         entry.find(key).text = str(math.floor(values[formula]+0.5))
-    unit = {'id':UNIT_ID,'spritename':LINK,'level':40,'name':'大头机器人','is_hostile':True,'height':185,
+    unit = {'id':UNIT_ID,'spritename':LINK,'level':40,'name':'守卫机兵·WAR-I','is_hostile':True,'height':185,
         'data':{'primary':None,'secondary':None,'secondary2':None,'melee':None}}
     receipt = {'formula':'tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts',
         'schemaReference':SOURCE,'unitId':UNIT_ID,'linkage':LINK,'requestedStage':7,'requestedTier':16,

@@ -1,6 +1,6 @@
 {
  "schema": "cf6-difficulty-audit.v1",
- "sourceSha256": "2dde4e12ad00563480b060f9e6da74670c8d86955745d8eacef1d6618c98a678",
+ "sourceSha256": "82be644585f265303761d498f269eb95326862d4a13b9aee7f93a7004b1c6b8b",
  "originalProgression": {
   "zombie": {
    "ordinary": {
@@ -1511,8 +1511,9 @@
     "cf6.光头保安.变身型": 6,
     "cf6.Wings": 8,
     "cf6.蛮斧刽子手": 10,
-    "cf6.大刀机器人": 27,
+    "cf6.大刀机器人": 26,
     "诺亚.暴君克隆兽": 10,
+    "cf6.大刀机器人.蛇夫座": 1,
     "cf6.老头": 1
    },
    "possible469Successors": 7
@@ -1580,12 +1581,12 @@
   "A06": {
    "primaryWave": 1,
    "optionalSupport": 35,
-   "enemyAuthoritySha256": "dfb5b97975a9843d4ae9b7bf9299f21de87f0d736f860f20281467ac23a1c990"
+   "enemyAuthoritySha256": "74c91a60c36a30612d354b66b64dbe3da2aa6fe4ed344ffc991a970593ef4abb"
   },
   "A09": {
    "primaryWave": 9,
    "optionalSupport": 0,
-   "enemyAuthoritySha256": "0a14f9ceb57e26966338f6ccff219353bb0ff7ffcee513d05cff4c57f230ddd6"
+   "enemyAuthoritySha256": "fe3da451fd48fe7c10b4bee93cbcca0a0a93761c065d80ef76d6922fa05f47e9"
   },
   "A10": {
    "primaryWave": 2,
@@ -1605,12 +1606,12 @@
   "A13": {
    "primaryWave": 1,
    "optionalSupport": 0,
-   "enemyAuthoritySha256": "b5619866b690524da6139afb8de09767047f19a2b9e6686edcdf46cee62d4dda"
+   "enemyAuthoritySha256": "6d943811ee52a0658505252d706e836343ff98b3fd4dd0c70787da32c3cc708f"
   },
   "A14": {
    "primaryWave": 9,
    "optionalSupport": 0,
-   "enemyAuthoritySha256": "c94b227ecaa09cd11174f173f7f0cd7cac9beee4e8058f236cd13ca770eeb05c"
+   "enemyAuthoritySha256": "a6e4400353f5a91c2929994d81ecc9712b7d8217748245ee5b464c4b767a8264"
   },
   "A15": {
    "primaryWave": 5,
@@ -1620,7 +1621,7 @@
   "A17": {
    "primaryWave": 1,
    "optionalSupport": 40,
-   "enemyAuthoritySha256": "f88f512a9b27925ba6068cd145011a673ce95b931d562f4747daa4e05c900e09"
+   "enemyAuthoritySha256": "dddd864efe9d712ce9cdf03381d607ee5f72b780aad5680a123ca47febb084d0"
   },
   "A18": {
    "primaryWave": 12,
@@ -1630,24 +1631,24 @@
   "A19": {
    "primaryWave": 19,
    "optionalSupport": 0,
-   "enemyAuthoritySha256": "1410b329795c6580fa19f495f46fa268f2389d2e0e069e75386e3f6fcfed8b66"
+   "enemyAuthoritySha256": "dea27e796fb4b5f47c5ae70d71dc811b4ffabe8e6f2476d25820fccfe4b8a4c0"
   },
   "A20": {
    "primaryWave": 1,
    "optionalSupport": 40,
-   "enemyAuthoritySha256": "97f3f0e48d6c32ac5d6ed7226baf170016ce78d70d7d267100a6c5955bcdb8e2"
+   "enemyAuthoritySha256": "beb32b18bf246fb9b6ded55bebfbb9ef16b7ee68672dd4966f2802b001a0a459"
   },
   "A22": {
    "primaryWave": 1,
    "optionalSupport": 60,
-   "enemyAuthoritySha256": "fb2e6a829434ce8f8736e00e89ed8e464f7d790a0e427395da44864222001cee"
+   "enemyAuthoritySha256": "bc47632ab51ed12d4c393ec56be3e32f5cb635b3d5c1d7b8f1e1072c6972b408"
   }
  },
  "preservedMaps": {
   "TUTORIAL": "08aa8988c361fc3bdd1d78bd79c66f1f51bdd3efd473407e76b8941b042a3b22",
   "A08": "8f5da897175df4e9037c6ad86b690a10abcc7afe14cc04a017edfbfded8d093e",
-  "A16": "32dea2ca6b27f0393ba729e000cf467177b921637fb523110545d1f0b5fa737f"
+  "A16": "3b8fe1ebb470e77f7ecbe834a5ac03cce20fe765e938c7baf05e59c670187204"
  },
- "originalDocumentSha256": "368a51d3aba5c9ba633f4fef440d5049c36e3decd9314399668195d09dfb10c3",
- "adaptedDocumentSha256": "70475d18fd5b058eeac00a9f77f08cae92b0193e5fbc1d46eb5c5f6156af4796"
+ "originalDocumentSha256": "3e5c55092184c42b7a8ec99d5a2d23494379a49293e2a56fe21f6f2cb6cad22a",
+ "adaptedDocumentSha256": "ab15e10a8d5f6dd14108bf3844b651a663736bd59923568c9a7c4e43d7c92e9f"
 }

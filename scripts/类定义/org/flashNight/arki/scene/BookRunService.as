@@ -110,6 +110,7 @@ class org.flashNight.arki.scene.BookRunService {
             var config:Object = BookDefinition.get();
             if (config == null || chapter.index < 0 || chapter.index >= config.maps.length) return;
             chapter.started = true; chapter.storyActive = false; delete _chapterWatch.onEnterFrame;
+            org.flashNight.gesh.string.Cf6NameRandomizer.bindRoomCourtDetachment(_root.gameworld, config.maps[chapter.index].id);
             org.flashNight.arki.scene.Cf6MapMechanism.beginRoom(_root.gameworld, chapter.owner,
                 config.maps[chapter.index].id, config.maps[chapter.index].mechanism);
             org.flashNight.arki.scene.Cf6Type61Service.beginRoom(_root.gameworld, chapter.owner, config.maps[chapter.index].id);
@@ -223,7 +224,10 @@ class org.flashNight.arki.scene.BookRunService {
             _startError = "本章复活币未能准备，请返回原角色。"; return "";
         }
         run.startedAt = new Date().getTime();
-        if (run.bookId === "cf6-sting") _cf6PlanOwner=org.flashNight.gesh.object.PersistedSnapshot.clone(run);
+        if (run.bookId === "cf6-sting") {
+            _cf6PlanOwner=org.flashNight.gesh.object.PersistedSnapshot.clone(run);
+            org.flashNight.gesh.string.Cf6NameRandomizer.resetPools();
+        }
         run.started = true;
         run.playTimeMs = 0; run.clockVersion = 1;
         if (!SaveManager.getInstance().flushBeforeTransition("bookshelf.switch")) {

@@ -48,6 +48,8 @@ _root.loaders.push(function ()
         this.unit_indices_by_id[this.units[i].id] = i;
         this.unit_indices_by_name[this.units[i].name] = i;
         var tmpDict = {};
+        tmpDict.单位编号 = this.units[i].id;
+        tmpDict.单位键 = this.units[i].key;
         tmpDict.兵种名 = this.units[i].spritename;
         tmpDict.等级 = this.units[i].level;
         tmpDict.名字 = this.units[i].name;

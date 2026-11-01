@@ -13,7 +13,7 @@ import xml.etree.ElementTree as E
 ROOT=Path(__file__).resolve().parents[2]
 HERE=Path(__file__).resolve().parent
 LINK='敌人-CF6光头保安'
-DISPLAY_NAME='CF6光头保安·普通型'
+DISPLAY_NAME='安保干员'
 TRANSFORM_LINK='敌人-CF6变身光头保安'
 UNIT_ID=468
 PROPERTY_FILE='CF6重制敌人.xml'
@@ -26,7 +26,7 @@ common.LINK,common.UNIT_ID=LINK,UNIT_ID
 def expected(transform=False):
     link=TRANSFORM_LINK if transform else LINK
     unit_id=469 if transform else UNIT_ID
-    display_name='CF6光头保安·变身型' if transform else DISPLAY_NAME
+    display_name='安保干员' if transform else DISPLAY_NAME
     census=json.loads((ROOT/'tools/cf7-balance-tool/data/monster-census.json').read_text('utf-8-sig'))
     tail_factor=census['attackTempoTailFactor']
     weighted=40+33*tail_factor

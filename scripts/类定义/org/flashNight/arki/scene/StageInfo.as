@@ -177,6 +177,9 @@ class org.flashNight.arki.scene.StageInfo {
             }
             enemyInfo.Type = unitType;
             var attr = ObjectUtil.clone(_root.兵种库[unitType]);
+            if (attr.单位编号 == null && unitType.indexOf("兵种") == 0) {
+                attr.单位编号 = Number(unitType.substr(2));
+            }
             if(enemyInfo.IsHostile != null) attr.是否为敌人 = enemyInfo.IsHostile;
             return attr;
         }

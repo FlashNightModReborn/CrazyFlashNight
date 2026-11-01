@@ -7682,7 +7682,7 @@
     "key": "cf6.生化僵尸.男",
     "spritename": "敌人-CF6普通男僵尸",
     "level": 2,
-    "name": "CF6黄衣僵尸",
+    "name": "制服感染者",
     "is_hostile": true,
     "height": 175,
     "data": {
@@ -7697,7 +7697,7 @@
     "key": "cf6.生化僵尸.女",
     "spritename": "敌人-CF6女僵尸",
     "level": 2,
-    "name": "CF6红衣僵尸",
+    "name": "游荡感染者",
     "is_hostile": true,
     "height": 175,
     "data": {
@@ -7724,10 +7724,9 @@
   },
   {
     "id": 464,
-    "key": "cf6.Wings",
     "spritename": "敌人-CF6Wings",
     "level": 30,
-    "name": "Wings",
+    "name": "「翼」型克隆特工",
     "is_hostile": true,
     "height": 190,
     "data": {
@@ -7735,14 +7734,14 @@
       "secondary": null,
       "secondary2": null,
       "melee": null
-    }
+    },
+    "key": "cf6.Wings"
   },
   {
     "id": 465,
-    "key": "cf6.大刀机器人",
     "spritename": "敌人-CF6大刀机器人",
     "level": 45,
-    "name": "大刀机器人",
+    "name": "星轨斩铁机兵",
     "is_hostile": true,
     "height": 185,
     "data": {
@@ -7750,14 +7749,14 @@
       "secondary": null,
       "secondary2": null,
       "melee": null
-    }
+    },
+    "key": "cf6.大刀机器人"
   },
   {
     "id": 466,
-    "key": "cf6.特种兵.二阶段",
     "spritename": "敌人-CF6特种兵",
     "level": 30,
-    "name": "CF6特种兵·二阶段",
+    "name": "突击步兵",
     "is_hostile": true,
     "height": 175,
     "data": {
@@ -7765,14 +7764,14 @@
       "secondary": null,
       "secondary2": null,
       "melee": null
-    }
+    },
+    "key": "cf6.特种兵.二阶段"
   },
   {
     "id": 467,
-    "key": "cf6.特种兵.持盾一阶段",
     "spritename": "敌人-CF6持盾特种兵",
     "level": 30,
-    "name": "CF6特种兵·持盾一阶段",
+    "name": "重盾突击兵",
     "is_hostile": true,
     "height": 175,
     "data": {
@@ -7780,14 +7779,14 @@
       "secondary": null,
       "secondary2": null,
       "melee": null
-    }
+    },
+    "key": "cf6.特种兵.持盾一阶段"
   },
   {
     "id": 468,
-    "key": "cf6.光头保安.普通型",
     "spritename": "敌人-CF6光头保安",
     "level": 30,
-    "name": "CF6光头保安·普通型",
+    "name": "安保干员",
     "is_hostile": true,
     "height": 175,
     "data": {
@@ -7795,14 +7794,14 @@
       "secondary": null,
       "secondary2": null,
       "melee": null
-    }
+    },
+    "key": "cf6.光头保安.普通型"
   },
   {
     "id": 469,
-    "key": "cf6.光头保安.变身型",
     "spritename": "敌人-CF6变身光头保安",
     "level": 30,
-    "name": "CF6光头保安·变身型",
+    "name": "安保干员",
     "is_hostile": true,
     "height": 175,
     "data": {
@@ -7810,7 +7809,8 @@
       "secondary": null,
       "secondary2": null,
       "melee": null
-    }
+    },
+    "key": "cf6.光头保安.变身型"
   },
   {
     "id": 470,
@@ -7864,10 +7864,9 @@
   },
   {
     "id": 472,
-    "key": "cf6.大头机器人",
     "spritename": "敌人-CF6大头机器人",
     "level": 40,
-    "name": "大头机器人",
+    "name": "守卫机兵·WAR-I",
     "is_hostile": true,
     "height": 185,
     "data": {
@@ -7875,14 +7874,14 @@
       "secondary": null,
       "secondary2": null,
       "melee": null
-    }
+    },
+    "key": "cf6.大头机器人"
   },
   {
     "id": 473,
-    "key": "cf6.老头",
     "spritename": "敌人-CF6老头人形",
     "level": 50,
-    "name": "老头",
+    "name": "Bloody",
     "is_hostile": true,
     "height": 180,
     "data": {
@@ -7890,14 +7889,14 @@
       "secondary": null,
       "secondary2": null,
       "melee": null
-    }
+    },
+    "key": "cf6.老头"
   },
   {
     "id": 474,
-    "key": "cf6.老头机器人",
     "spritename": "敌人-CF6老头机器人",
     "level": 50,
-    "name": "老头机器人",
+    "name": "Roll Phantom",
     "is_hostile": true,
     "height": 190,
     "data": {
@@ -7905,7 +7904,8 @@
       "secondary": null,
       "secondary2": null,
       "melee": null
-    }
+    },
+    "key": "cf6.老头机器人"
   },
   {
     "id": 475,
@@ -7954,10 +7954,9 @@
   },
   {
     "id": 478,
-    "key": "cf6.特种精英.二阶段",
     "spritename": "敌人-CF6特种精英",
     "level": 30,
-    "name": "CF6特种精英·二阶段",
+    "name": "机动特勤",
     "is_hostile": true,
     "height": 175,
     "data": {
@@ -7965,14 +7964,14 @@
       "secondary": "FR506",
       "secondary2": "FR506",
       "melee": null
-    }
+    },
+    "key": "cf6.特种精英.二阶段"
   },
   {
     "id": 479,
-    "key": "cf6.特种精英.持盾一阶段",
     "spritename": "敌人-CF6持盾特种精英",
     "level": 30,
-    "name": "CF6特种精英·持盾一阶段",
+    "name": "攻坚盾卫",
     "is_hostile": true,
     "height": 175,
     "data": {
@@ -7980,14 +7979,14 @@
       "secondary": "FR506",
       "secondary2": "FR506",
       "melee": null
-    }
+    },
+    "key": "cf6.特种精英.持盾一阶段"
   },
   {
     "id": 480,
-    "key": "cf6.特种教官.二阶段",
     "spritename": "敌人-CF6特种教官",
     "level": 30,
-    "name": "CF6特种教官·二阶段",
+    "name": "战术教官",
     "is_hostile": true,
     "height": 175,
     "data": {
@@ -7995,14 +7994,14 @@
       "secondary": "FR506",
       "secondary2": "FR506",
       "melee": null
-    }
+    },
+    "key": "cf6.特种教官.二阶段"
   },
   {
     "id": 481,
-    "key": "cf6.特种教官.持盾一阶段",
     "spritename": "敌人-CF6持盾特种教官",
     "level": 30,
-    "name": "CF6特种教官·持盾一阶段",
+    "name": "重盾教官",
     "is_hostile": true,
     "height": 175,
     "data": {
@@ -8010,6 +8009,22 @@
       "secondary": "FR506",
       "secondary2": "FR506",
       "melee": null
-    }
+    },
+    "key": "cf6.特种教官.持盾一阶段"
+  },
+  {
+    "id": 482,
+    "spritename": "敌人-CF6大刀机器人",
+    "level": 45,
+    "name": "星轨特装机·蛇夫",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    },
+    "key": "cf6.大刀机器人.蛇夫座"
   }
 ]
