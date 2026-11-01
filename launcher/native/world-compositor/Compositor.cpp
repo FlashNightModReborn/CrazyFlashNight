@@ -63,21 +63,16 @@ constexpr int BulletStyleCap = 16;
 constexpr int BulletItemCap = 16384;
 constexpr int BulletBatchCap = 1024;
 struct BulletStylesState { int count = 0; float params[BulletStyleCap*32]{}; };
-struct BulletFrameState {
-    int count = 0;
-    int ordinaryEpoch = -1, ordinaryFrame = -1, chainEpoch = -1, chainFrame = -1;
-    uint64_t version = 0;
-    double submittedQpcMs = 0;
-    float cameraX = 0, cameraY = 0, cameraScale = 1;
-    float params[BulletItemCap*8]{};
-};
 // WGC and the socket are independent clocks. Keep bounded immutable packets so
 // a newer packet cannot evict the one belonging to the captured source frame.
 // Empty packets retain identity but allocate no item storage.
 struct BulletFrameSnapshot {
-    int ordinaryEpoch,ordinaryFrame,chainEpoch,chainFrame;
-    float cameraX,cameraY,cameraScale;
+    int ordinaryEpoch=-1,ordinaryFrame=-1,chainEpoch=-1,chainFrame=-1;
+    uint64_t version=0;
+    double submittedQpcMs=0;
+    float cameraX=0,cameraY=0,cameraScale=1;
     std::vector<float> items;
+    int count() const noexcept { return static_cast<int>(items.size()/8); }
 };
 constexpr size_t BulletHistoryCap=8;
 constexpr int CombatFxCap=512;
@@ -529,22 +524,68 @@ public:
         }
         Signal();return true;
     }
+    template<typename BuilderFn>
+    bool CommitGeometryTransaction(bool acquirePresentationLock, bool signalWorker, BuilderFn&& buildNext) {
+        std::unique_lock presentation(presentationMutex_, std::defer_lock);
+        if (acquirePresentationLock) presentation.lock();
+        {
+            std::lock_guard guard(mutex_);
+            ViewportGeometryState next = geometry_;
+            if (!buildNext(geometry_, next)) return false;
+            geometry_ = next;
+        }
+        if (signalWorker) Signal();
+        return true;
+    }
     bool Crop(int x, int y, int width, int height) {
-        if (x < 0 || y < 0 || width < 1 || height < 1 || width > 8192 || height > 8192) return false;
-        std::lock_guard guard(mutex_); crop_ = {x,y,x+width,y+height}; return true;
+        return CommitGeometryTransaction(false, false, [&](const ViewportGeometryState& cur, ViewportGeometryState& next) {
+            return ViewportGeometryState::TryBuildTransaction(
+                cur, x, y, width, height, 0, 0, width, height, 0, 0, cur.notBefore, false, next);
+        });
     }
     bool Viewport(int x, int y, int width, int height, double notBefore) {
-        if (x<0 || y<0 || width<1 || height<1 || width>8192 || height>8192 || !std::isfinite(notBefore)) return false;
-        std::lock_guard presentation(presentationMutex_);
-        { std::lock_guard guard(mutex_); crop_={x,y,x+width,y+height}; cropNotBefore_=notBefore; }
-        viewportHeld_=false;
-        Signal(); return true;
+        return CommitGeometryTransaction(true, true, [&](const ViewportGeometryState& cur, ViewportGeometryState& next) {
+            if (!ViewportGeometryState::ValidCrop(x, y, width, height, notBefore)) return false;
+            int capW = (x == 0 && y == 0 && notBefore <= 0.0) ? width : 0;
+            int capH = (x == 0 && y == 0 && notBefore <= 0.0) ? height : 0;
+            int offX = cur.clientOffsetX, offY = cur.clientOffsetY, fullW = cur.clientWidth, fullH = cur.clientHeight;
+            if (!ViewportGeometryState::CompatibleCropAndClient(width, height, offX, offY, fullW, fullH)) {
+                offX = 0; offY = 0; fullW = width; fullH = height;
+            }
+            return ViewportGeometryState::TryBuildTransaction(
+                cur, x, y, width, height, offX, offY, fullW, fullH, capW, capH, notBefore, true, next);
+        });
+    }
+    bool ClientGeometry(int offsetX, int offsetY, int fullWidth, int fullHeight) {
+        return CommitGeometryTransaction(false, true, [&](const ViewportGeometryState& cur, ViewportGeometryState& next) {
+            if (!ViewportGeometryState::ValidClient(offsetX, offsetY, fullWidth, fullHeight)) return false;
+            int croppedW = cur.CroppedWidth(), croppedH = cur.CroppedHeight();
+            if (!cur.held && croppedW > 0) {
+                return ViewportGeometryState::TryBuildTransaction(
+                    cur, cur.crop.left, cur.crop.top, croppedW, croppedH,
+                    offsetX, offsetY, fullWidth, fullHeight, cur.captureWidth, cur.captureHeight, cur.notBefore, false, next);
+            }
+            next = cur;
+            next.clientOffsetX = offsetX; next.clientOffsetY = offsetY;
+            next.clientWidth = fullWidth; next.clientHeight = fullHeight;
+            return true;
+        });
+    }
+    bool ViewportGeometry(int x, int y, int width, int height,
+        int offsetX, int offsetY, int fullWidth, int fullHeight,
+        int captureWidth, int captureHeight, double notBefore) {
+        return CommitGeometryTransaction(true, true, [&](const ViewportGeometryState& cur, ViewportGeometryState& next) {
+            return ViewportGeometryState::TryBuildTransaction(
+                cur, x, y, width, height, offsetX, offsetY, fullWidth, fullHeight, captureWidth, captureHeight, notBefore, true, next);
+        });
     }
     void HoldViewport() {
         // Return only after any in-flight copy/Present has finished. The caller
         // can now resize its source without an old crop observing new geometry.
-        std::lock_guard presentation(presentationMutex_);
-        viewportHeld_=true; ++historyEpoch_; Signal();
+        CommitGeometryTransaction(true, false, [](const ViewportGeometryState& cur, ViewportGeometryState& next) {
+            next = cur; next.held = true; return true;
+        });
+        ++historyEpoch_; Signal();
     }
     bool Sharpness(float value) {
         if (!std::isfinite(value) || value<0 || value>.4f) return false;
@@ -653,25 +694,22 @@ public:
                 || std::abs(p[4])>10000.f || std::abs(p[5])>10000.f
                 || p[6]<0.f || p[6]>100.f || p[7]!=0.f) return false;
         }
+        auto snapshot=std::make_shared<BulletFrameSnapshot>();
+        snapshot->ordinaryEpoch=ordinaryEpoch;snapshot->ordinaryFrame=ordinaryFrame;
+        snapshot->chainEpoch=chainEpoch;snapshot->chainFrame=chainFrame;
+        snapshot->cameraX=cameraX;snapshot->cameraY=cameraY;snapshot->cameraScale=cameraScale;
+        if(count>0)snapshot->items.assign(items,items+static_cast<size_t>(count)*8);
         double submittedAt=QpcMs();
         { std::lock_guard guard(mutex_);
             for (int b=0;b<count;b++)
                 if (static_cast<int>(items[b*8])>=bulletStyles_.count) return false;
-            bulletFrame_.cameraX=cameraX; bulletFrame_.cameraY=cameraY; bulletFrame_.cameraScale=cameraScale;
-            if (count>0) std::memcpy(bulletFrame_.params,items,static_cast<size_t>(count)*32);
-            bulletFrame_.count=count;
-            bulletFrame_.ordinaryEpoch=ordinaryEpoch;bulletFrame_.ordinaryFrame=ordinaryFrame;
-            bulletFrame_.chainEpoch=chainEpoch;bulletFrame_.chainFrame=chainFrame;
-            bulletFrame_.submittedQpcMs=submittedAt;bulletFrame_.version=++bulletSnapshotVersion_;
+            snapshot->submittedQpcMs=submittedAt;
+            snapshot->version=++bulletSnapshotVersion_;
+            bulletLatest_=snapshot;
             if(ordinaryEpoch<0 || chainEpoch<0) bulletHistory_.clear();
             else {
                 if(!bulletHistory_.empty() && (bulletHistory_.back()->ordinaryEpoch!=ordinaryEpoch
                     || bulletHistory_.back()->chainEpoch!=chainEpoch)) bulletHistory_.clear();
-                auto snapshot=std::make_shared<BulletFrameSnapshot>();
-                snapshot->ordinaryEpoch=ordinaryEpoch;snapshot->ordinaryFrame=ordinaryFrame;
-                snapshot->chainEpoch=chainEpoch;snapshot->chainFrame=chainFrame;
-                snapshot->cameraX=cameraX;snapshot->cameraY=cameraY;snapshot->cameraScale=cameraScale;
-                if(count>0)snapshot->items.assign(items,items+static_cast<size_t>(count)*8);
                 bulletHistory_.erase(std::remove_if(bulletHistory_.begin(),bulletHistory_.end(),[&](const auto& old) {
                     return old->ordinaryFrame==ordinaryFrame && old->chainFrame==chainFrame;
                 }),bulletHistory_.end());
@@ -776,7 +814,7 @@ public:
         Signal();return true;
     }
     void Stats(ProbeStats& result) { std::lock_guard guard(mutex_); result = stats_; }
-    void CaptureSize(int32_t& width,int32_t& height,uint64_t& generation) { std::lock_guard guard(mutex_); width=captureWidth_;height=captureHeight_;generation=captureGeneration_; }
+    void CaptureSize(int32_t& width,int32_t& height,uint64_t& generation) { std::lock_guard guard(mutex_); width=geometry_.observedCaptureW;height=geometry_.observedCaptureH;generation=geometry_.captureGeneration; }
     bool OutputSize(int32_t& width,int32_t& height) { std::lock_guard guard(mutex_); width=presentedOutputW_;height=presentedOutputH_;return stats_.state!=3 && width>0 && height>0; }
 
 private:
@@ -840,7 +878,7 @@ private:
         GraphicsCaptureItem item{nullptr};
         check_hresult(interop->CreateForWindow(source_, guid_of<GraphicsCaptureItem>(), put_abi(item)));
         auto size = item.Size();
-        { std::lock_guard guard(mutex_); captureWidth_=size.Width;captureHeight_=size.Height; }
+        { std::lock_guard guard(mutex_); geometry_.observedCaptureW=size.Width;geometry_.observedCaptureH=size.Height; }
         ValidateSize(size.Width, size.Height);
         auto pool = Direct3D11CaptureFramePool::CreateFreeThreaded(runtimeDevice,
             DirectXPixelFormat::B8G8R8A8UIntNormalized, 2, size);
@@ -855,7 +893,7 @@ private:
             if (auto cursor = session.try_as<IGraphicsCaptureSession2>()) cursor.IsCursorCaptureEnabled(false);
             if (borderless_) if (auto border = session.try_as<IGraphicsCaptureSession3>()) border.IsBorderRequired(false);
             session.StartCapture();
-            { std::lock_guard guard(mutex_); ++captureGeneration_; }
+            { std::lock_guard guard(mutex_); ++geometry_.captureGeneration; }
         };
 
         com_ptr<IDXGISwapChain1> swap;
@@ -1027,7 +1065,7 @@ private:
         // The ~512KB frame snapshots would overflow the worker's 1MB default
         // stack together; heap-allocate once and keep the draw code unchanged.
         BulletStylesState bulletStyles;
-        auto bulletFrameStore=std::make_unique<BulletFrameState>();auto& bulletFrame=*bulletFrameStore;
+        std::shared_ptr<const BulletFrameSnapshot> bulletFrame=std::make_shared<const BulletFrameSnapshot>();
         CombatFxState fxFrame;uint64_t appliedFx=0,appliedFxAtlas=0;
         auto rayFrameStore=std::make_unique<RayFrameState>();auto& rayFrame=*rayFrameStore;uint64_t appliedRay=0;
         // Per-frame pass buckets; capacity is reserved once and reused.
@@ -1097,7 +1135,7 @@ private:
                 && weatherStyle.type==weather.type && weatherStyle.count>0 && texture;
             bool atmosphereOn = atmosphere.preset!=0 && (atmosphere.preset==11
                 || atmosphereStyle.family==atmosphere.preset) && texture;
-            bool bulletsOn = bulletFrame.count>0 && bulletStyles.count>0 && texture;
+            bool bulletsOn = bulletFrame->count()>0 && bulletStyles.count>0 && texture;
             bool fxOn=(fxFrame.count>0 || fxFrame.lightCount>0) && fxSrv && texture;
             uint64_t observedSceneLightVersion;{std::lock_guard guard(mutex_);observedSceneLightVersion=sceneLightVersion_;}
             // Weather animates per presented frame; keep a 30fps floor even on
@@ -1131,19 +1169,43 @@ private:
                 startSession();continue;
             }
             std::unique_lock presentation(presentationMutex_);
-            if (viewportHeld_) {
+            bool isViewportHeld = false;
+            { std::lock_guard guard(mutex_); isViewportHeld = geometry_.held; }
+            if (isViewportHeld) {
+                if (grabRequested_.load()) ServiceGrab(device.get(),context.get(),nullptr,0,0);
                 previousTimingPresent=0;
                 // Geometry must remain observable while the host holds pixels
                 // for a resize. Waiting for a released frame here would deadlock
                 // the host's crop selection against Viewport() unholding us.
                 auto heldSize=item.Size();
-                { std::lock_guard guard(mutex_); captureWidth_=heldSize.Width;captureHeight_=heldSize.Height; }
+                if (heldSize.Width>0 && heldSize.Height>0 && (heldSize.Width!=size.Width || heldSize.Height!=size.Height)) {
+                    size=heldSize;
+                    pool.Recreate(runtimeDevice,DirectXPixelFormat::B8G8R8A8UIntNormalized,2,size);
+                    InvalidateRect(source_,nullptr,FALSE);
+                    std::lock_guard guard(mutex_); ++stats_.resizes;
+                }
+                { std::lock_guard guard(mutex_); geometry_.observedCaptureW=heldSize.Width;geometry_.observedCaptureH=heldSize.Height; }
                 presentation.unlock();
                 std::unique_lock lock(waitMutex_);
                 wake_.wait_for(lock,std::chrono::milliseconds(100),[this,observedWake] { return stop_.load() || wakeVersion_.load()!=observedWake; });
                 continue;
             }
             auto frame = pool.TryGetNextFrame();
+            if (!frame) {
+                int expectedCapW=0,expectedCapH=0;
+                { std::lock_guard guard(mutex_); expectedCapW=geometry_.captureWidth; expectedCapH=geometry_.captureHeight; }
+                if (expectedCapW>0 && expectedCapH>0 && (size.Width!=expectedCapW || size.Height!=expectedCapH)) {
+                    auto currentSize=item.Size();
+                    if (currentSize.Width>0 && currentSize.Height>0
+                        && (currentSize.Width!=size.Width || currentSize.Height!=size.Height)) {
+                        size=currentSize;
+                        pool.Recreate(runtimeDevice,DirectXPixelFormat::B8G8R8A8UIntNormalized,2,size);
+                        InvalidateRect(source_,nullptr,FALSE);
+                        std::lock_guard guard(mutex_);
+                        geometry_.observedCaptureW=size.Width;geometry_.observedCaptureH=size.Height;++stats_.resizes;
+                    }
+                }
+            }
             RECT client{}; GetClientRect(output_, &client);
             bool fresh = static_cast<bool>(frame);
             if (!frame && (!texture || (appliedPostprocess==postprocessVersion && !feedbackHistory.Pending()
@@ -1172,7 +1234,7 @@ private:
                     frame.Close(); frame = newer; ++drained;
                 }
                 auto content = frame.ContentSize();
-                { std::lock_guard guard(mutex_); captureWidth_=content.Width;captureHeight_=content.Height; }
+                { std::lock_guard guard(mutex_); geometry_.observedCaptureW=content.Width;geometry_.observedCaptureH=content.Height; }
                 ValidateSize(content.Width, content.Height);
                 auto access = frame.Surface().as<::Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess>();
                 com_ptr<ID3D11Texture2D> sourceTexture;
@@ -1183,24 +1245,47 @@ private:
                 if (content.Width > static_cast<int>(sourceDesc.Width) || content.Height > static_cast<int>(sourceDesc.Height)) {
                     sourceTexture = nullptr; access = nullptr; frame.Close();
                     size = content; pool.Recreate(runtimeDevice, DirectXPixelFormat::B8G8R8A8UIntNormalized, 2, size);
+                    InvalidateRect(source_, nullptr, FALSE);
                     { std::lock_guard guard(mutex_); ++stats_.resizes; }
                     continue;
                 }
                 if (sourceDesc.Format != DXGI_FORMAT_B8G8R8A8_UNORM || sourceDesc.SampleDesc.Count != 1)
                     throw hresult_error(E_INVALIDARG, L"Unexpected capture texture format");
                 double incomingQpcMs = static_cast<double>(frame.SystemRelativeTime().count()) / 10000.0;
-                RECT crop; double cropNotBefore;
-                { std::lock_guard guard(mutex_); crop = crop_; cropNotBefore=cropNotBefore_; }
+                RECT crop; double cropNotBefore; int cropCapW = 0, cropCapH = 0;
+                { std::lock_guard guard(mutex_); crop=geometry_.crop; cropNotBefore=geometry_.notBefore; cropCapW=geometry_.captureWidth; cropCapH=geometry_.captureHeight; }
                 // Keep the last swapchain image until a frame newer than the source
                 // resize is available. Never crop a queued old frame with new geometry.
-                if (incomingQpcMs<cropNotBefore) { sourceTexture=nullptr; access=nullptr; frame.Close(); continue; }
-                frameQpcMs=incomingQpcMs;
-                if (crop.right == 0) crop = {0,0,content.Width,content.Height};
-                if (crop.right > content.Width || crop.bottom > content.Height) {
-                    sourceTexture = nullptr; access = nullptr; frame.Close();
-                    if (changed) { size=content; pool.Recreate(runtimeDevice,DirectXPixelFormat::B8G8R8A8UIntNormalized,2,size); }
+                if (incomingQpcMs<cropNotBefore) {
+                    sourceTexture=nullptr; access=nullptr; frame.Close();
+                    auto targetSize = item.Size();
+                    if (targetSize.Width > 0 && targetSize.Height > 0
+                        && (targetSize.Width != size.Width || targetSize.Height != size.Height)) {
+                        size=targetSize;
+                        pool.Recreate(runtimeDevice,DirectXPixelFormat::B8G8R8A8UIntNormalized,2,size);
+                        std::lock_guard guard(mutex_);
+                        geometry_.observedCaptureW=size.Width;geometry_.observedCaptureH=size.Height;++stats_.resizes;
+                    }
+                    InvalidateRect(source_,nullptr,FALSE);
                     continue;
                 }
+                if (crop.right == 0) crop = {0,0,content.Width,content.Height};
+                if ((cropCapW > 0 && (content.Width != cropCapW || content.Height != cropCapH))
+                    || crop.right > content.Width || crop.bottom > content.Height) {
+                    sourceTexture = nullptr; access = nullptr; frame.Close();
+                    auto targetSize = item.Size();
+                    if (targetSize.Width <= 0 || targetSize.Height <= 0) targetSize = content;
+                    if (targetSize.Width > 0 && targetSize.Height > 0
+                        && (targetSize.Width != size.Width || targetSize.Height != size.Height)) {
+                        size=targetSize;
+                        pool.Recreate(runtimeDevice,DirectXPixelFormat::B8G8R8A8UIntNormalized,2,size);
+                        std::lock_guard guard(mutex_);
+                        geometry_.observedCaptureW=size.Width;geometry_.observedCaptureH=size.Height;++stats_.resizes;
+                    }
+                    InvalidateRect(source_,nullptr,FALSE);
+                    continue;
+                }
+                frameQpcMs=incomingQpcMs;
                 int croppedWidth = crop.right-crop.left, croppedHeight = crop.bottom-crop.top;
                 if (textureW != croppedWidth || textureH != croppedHeight) {
                     ID3D11ShaderResourceView* empty = nullptr; context->PSSetShaderResources(0, 1, &empty);
@@ -1263,7 +1348,7 @@ private:
             std::shared_ptr<std::vector<uint8_t>> bulletPixels;int bulletW=0,bulletH=0;uint64_t bulletAtlasVersion=0;
             uint64_t lightCaptureGeneration=0;
             { std::lock_guard guard(mutex_);
-                lightCaptureGeneration=captureGeneration_;
+                lightCaptureGeneration=geometry_.captureGeneration;
                 // Keep the weather state/style and their version together. This
                 // snapshot follows capture selection under presentationMutex_, so
                 // a host repaint fence cannot present a new frame with a weather
@@ -1277,16 +1362,11 @@ private:
                 // batch, so stale tail bytes need no clearing.
                 if (bulletVersion_!=appliedBullet) {
                     bulletStyles=bulletStyles_;
-                    bulletFrame.cameraX=bulletFrame_.cameraX;bulletFrame.cameraY=bulletFrame_.cameraY;
-                    bulletFrame.cameraScale=bulletFrame_.cameraScale;bulletFrame.count=bulletFrame_.count;
-                    bulletFrame.ordinaryEpoch=bulletFrame_.ordinaryEpoch;bulletFrame.ordinaryFrame=bulletFrame_.ordinaryFrame;
-                    bulletFrame.chainEpoch=bulletFrame_.chainEpoch;bulletFrame.chainFrame=bulletFrame_.chainFrame;
-                    bulletFrame.version=bulletFrame_.version;bulletFrame.submittedQpcMs=bulletFrame_.submittedQpcMs;
-                    if(bulletFrame.version>appliedBulletSnapshot) {
-                        bulletSyncStats_.coalescedVersions+=bulletFrame.version-appliedBulletSnapshot-1;
-                        appliedBulletSnapshot=bulletFrame.version;
+                    bulletFrame=bulletLatest_;
+                    if(bulletFrame->version>appliedBulletSnapshot) {
+                        bulletSyncStats_.coalescedVersions+=bulletFrame->version-appliedBulletSnapshot-1;
+                        appliedBulletSnapshot=bulletFrame->version;
                     }
-                    if(bulletFrame.count>0)std::memcpy(bulletFrame.params,bulletFrame_.params,static_cast<size_t>(bulletFrame.count)*32);
                     bulletHistory=bulletHistory_;appliedBullet=bulletVersion_; }
                 if(fxVersion_!=appliedFx) {
                     if(fxFrame.count!=fxFrame_.count || (fxFrame_.count>0
@@ -1336,19 +1416,25 @@ private:
                 if(hudCostSampling_) {measuredHudEpoch=hudCostEpoch_;++hudCostStats_.started;measureHudGpu=true;}
             }
             if(measureHudGpu)measureHudGpu=hudCostSampler.Begin(device.get(),context.get(),measuredHudEpoch,recordHudGpuCost);
-            float scale = std::min(static_cast<float>(w)/textureW, static_cast<float>(h)/textureH);
-            D3D11_VIEWPORT viewport{(w-textureW*scale)/2, (h-textureH*scale)/2, textureW*scale, textureH*scale, 0, 1};
+            int clientOffX=0,clientOffY=0,fullClientW=textureW,fullClientH=textureH;
+            { std::lock_guard guard(mutex_);
+                geometry_.ResolveClientForTexture(textureW,textureH,clientOffX,clientOffY,fullClientW,fullClientH);
+            }
+            float scale = std::min(static_cast<float>(w)/fullClientW, static_cast<float>(h)/fullClientH);
+            float clientLeft = (w-fullClientW*scale)/2.f, clientTop = (h-fullClientH*scale)/2.f;
+            D3D11_VIEWPORT viewport{clientLeft+clientOffX*scale, clientTop+clientOffY*scale, textureW*scale, textureH*scale, 0, 1};
             // The captured Flash client can itself contain showAll bars. Native
             // world coordinates belong to the centered logical 1024x576 stage,
             // not to that client rectangle. Keep both transforms explicit.
-            float stageScale=std::min(static_cast<float>(textureW)/1024.f,static_cast<float>(textureH)/576.f)*scale;
-            D3D11_VIEWPORT contentViewport{viewport.TopLeftX+(viewport.Width-1024.f*stageScale)/2,
-                viewport.TopLeftY+(viewport.Height-576.f*stageScale)/2,1024.f*stageScale,576.f*stageScale,0,1};
+            float stageScale=std::min(static_cast<float>(fullClientW)/1024.f,static_cast<float>(fullClientH)/576.f)*scale;
+            D3D11_VIEWPORT contentViewport{clientLeft+(fullClientW*scale-1024.f*stageScale)/2.f,
+                clientTop+(fullClientH*scale-576.f*stageScale)/2.f,1024.f*stageScale,576.f*stageScale,0,1};
             bool proof = proofRequested_.exchange(false);
-            int syncIdentity[4]{bulletFrame.ordinaryEpoch,bulletFrame.ordinaryFrame,bulletFrame.chainEpoch,bulletFrame.chainFrame};
-            bool syncActive=!proof && bulletFrame.ordinaryEpoch>=0 && bulletFrame.ordinaryFrame>=0
-                && bulletFrame.chainEpoch>=0 && bulletFrame.chainFrame>=0;
-            frameSync.UpdateParams(context.get(),syncIdentity,textureW,textureH,contentViewport,syncActive,!proof);
+            int syncIdentity[4]{bulletFrame->ordinaryEpoch,bulletFrame->ordinaryFrame,bulletFrame->chainEpoch,bulletFrame->chainFrame};
+            bool syncActive=!proof && bulletFrame->ordinaryEpoch>=0 && bulletFrame->ordinaryFrame>=0
+                && bulletFrame->chainEpoch>=0 && bulletFrame->chainFrame>=0;
+            frameSync.UpdateParams(context.get(),syncIdentity,textureW,textureH,contentViewport,syncActive,!proof,
+                clientOffX,clientOffY,fullClientW,fullClientH);
             // Diagnostic work is explicitly requested by a reader, rate limited,
             // and asynchronous. A slow query never blocks world presentation.
             try {
@@ -1525,17 +1611,25 @@ private:
                 context->Draw(count*6,0);context->OMSetBlendState(nullptr,nullptr,0xffffffff);
             };
             drawFx(0,fxFrame.casings);
-            frameSync.UpdateParams(context.get(),syncIdentity,textureW,textureH,contentViewport,syncActive,!proof);
+            frameSync.UpdateParams(context.get(),syncIdentity,textureW,textureH,contentViewport,syncActive,!proof,
+                clientOffX,clientOffY,fullClientW,fullClientH);
             auto syncSource=srv.get();context->VSSetShaderResources(4,1,&syncSource);
             // Bullets stay above casings and below short muzzle flashes,
             // alpha blended over world+weather+atmosphere. The base grade
             // cbuffer and LUT resource stay bound for the bullet grade.
+            // All retained pictures use this composition's immutable style table.
+            // Lazy upload keeps the zero-bullet path free of GPU updates.
+            bool bulletStylesUploaded=false;
             auto drawBulletSnapshot=[&](const float* items,int itemCount,float cameraX,float cameraY,float cameraScale,const int* identity) {
                 if(itemCount==0 || bulletStyles.count==0 || !texture || proof)return;
-                frameSync.UpdateParams(context.get(),identity,textureW,textureH,contentViewport,syncActive,!proof);
+                frameSync.UpdateParams(context.get(),identity,textureW,textureH,contentViewport,syncActive,!proof,
+                    clientOffX,clientOffY,fullClientW,fullClientH);
                 float bp[8]{contentViewport.Width,contentViewport.Height,gradeLutActive?1.f:0.f,static_cast<float>(itemCount),
                     cameraX,cameraY,cameraScale,static_cast<float>(bulletStyles.count)};
-                context->UpdateSubresource(bulletStyleParams.get(),0,nullptr,bulletStyles.params,0,0);
+                if(!bulletStylesUploaded) {
+                    context->UpdateSubresource(bulletStyleParams.get(),0,nullptr,bulletStyles.params,0,0);
+                    bulletStylesUploaded=true;
+                }
                 context->VSSetShader(bulletVs.get(),nullptr,0); context->PSSetShader(bulletPs.get(),nullptr,0);
                 auto bulletBuffer=bulletParams.get();
                 context->VSSetConstantBuffers(1,1,&bulletBuffer); context->PSSetConstantBuffers(1,1,&bulletBuffer);
@@ -1566,8 +1660,8 @@ private:
                     drawBulletSnapshot(snapshot->items.data(),static_cast<int>(snapshot->items.size()/8),
                         snapshot->cameraX,snapshot->cameraY,snapshot->cameraScale,identity);
                 }
-            } else drawBulletSnapshot(bulletFrame.params,bulletFrame.count,bulletFrame.cameraX,
-                bulletFrame.cameraY,bulletFrame.cameraScale,syncIdentity);
+            } else drawBulletSnapshot(bulletFrame->items.data(),bulletFrame->count(),bulletFrame->cameraX,
+                bulletFrame->cameraY,bulletFrame->cameraScale,syncIdentity);
             ID3D11ShaderResourceView* noSyncSource=nullptr;context->VSSetShaderResources(4,1,&noSyncSource);
             if(rayFrame.count>0 && texture && !proof) {
                 context->VSSetShader(rayVs.get(),nullptr,0);context->PSSetShader(rayPs.get(),nullptr,0);
@@ -1657,13 +1751,13 @@ private:
                     timingNext_=(timingNext_+1)%timingSamples_.size();
                     timingCount_=std::min(timingCount_+1,timingSamples_.size());
                     previousTimingPresent=end;
-                    bulletSyncStats_.presentedFlags=(fresh?1u:0u)|(bulletFrame.count>0?2u:0u);
-                    bulletSyncStats_.presentedOrdinaryEpoch=bulletFrame.ordinaryEpoch;
-                    bulletSyncStats_.presentedOrdinaryFrame=bulletFrame.ordinaryFrame;
-                    bulletSyncStats_.presentedChainEpoch=bulletFrame.chainEpoch;
-                    bulletSyncStats_.presentedChainFrame=bulletFrame.chainFrame;
-                    bulletSyncStats_.presentedVersion=bulletFrame.version;
-                    bulletSyncStats_.presentedSubmittedQpcMs=bulletFrame.submittedQpcMs;
+                    bulletSyncStats_.presentedFlags=(fresh?1u:0u)|(bulletFrame->count()>0?2u:0u);
+                    bulletSyncStats_.presentedOrdinaryEpoch=bulletFrame->ordinaryEpoch;
+                    bulletSyncStats_.presentedOrdinaryFrame=bulletFrame->ordinaryFrame;
+                    bulletSyncStats_.presentedChainEpoch=bulletFrame->chainEpoch;
+                    bulletSyncStats_.presentedChainFrame=bulletFrame->chainFrame;
+                    bulletSyncStats_.presentedVersion=bulletFrame->version;
+                    bulletSyncStats_.presentedSubmittedQpcMs=bulletFrame->submittedQpcMs;
                     bulletSyncStats_.presentedCaptureQpcMs=frameQpcMs;bulletSyncStats_.presentedQpcMs=end;
                     ++bulletSyncStats_.presentedCount;
                 } else previousTimingPresent=0;
@@ -1797,7 +1891,7 @@ private:
         td.Usage=D3D11_USAGE_STAGING; td.CPUAccessFlags=D3D11_CPU_ACCESS_READ;
         check_hresult(device->CreateTexture2D(&td,nullptr,staging.put()));
         auto read=[&](ID3D11Texture2D* tex,int x,int y) {
-            D3D11_BOX box{static_cast<UINT>(x),static_cast<UINT>(x+width),static_cast<UINT>(y+height),1};
+            D3D11_BOX box{static_cast<UINT>(x),static_cast<UINT>(y),0,static_cast<UINT>(x+width),static_cast<UINT>(y+height),1};
             context->CopySubresourceRegion(staging.get(),0,0,0,0,tex,0,&box);
             D3D11_MAPPED_SUBRESOURCE mapped{}; check_hresult(context->Map(staging.get(),0,D3D11_MAP_READ,0,&mapped));
             std::vector<uint32_t> pixels(static_cast<size_t>(width)*height);
@@ -1828,9 +1922,7 @@ private:
     std::atomic<bool> proofRequested_{false};
     std::atomic<bool> contentRequested_{false};
     ProbeContentStats contentStats_{sizeof(ProbeContentStats)};
-    int32_t captureWidth_=0,captureHeight_=0;
     int32_t presentedOutputW_=0,presentedOutputH_=0;
-    uint64_t captureGeneration_=0;
     std::thread worker_; std::mutex mutex_; ProbeStats stats_{};
     bool casEnabled_=false,feedbackEnabled_=false;
     float casSharpness_=0;
@@ -1854,10 +1946,61 @@ private:
     size_t timingNext_=0,timingCount_=0;
     SceneLightState sceneLights_{};uint64_t sceneLightVersion_=0;
     ProbeSceneLightStats sceneLightStats_{sizeof(ProbeSceneLightStats)};
-    RECT crop_{};
-    double cropNotBefore_=0;
+    struct ViewportGeometryState {
+        RECT crop{};
+        int32_t clientOffsetX=0,clientOffsetY=0,clientWidth=0,clientHeight=0;
+        int32_t captureWidth=0,captureHeight=0;
+        int32_t observedCaptureW=0,observedCaptureH=0;
+        uint64_t captureGeneration=0;
+        double notBefore=0;
+        bool held=false;
+        int CroppedWidth() const noexcept { return crop.right-crop.left; }
+        int CroppedHeight() const noexcept { return crop.bottom-crop.top; }
+        static bool ValidCrop(int x,int y,int width,int height,double notBefore=0.0) noexcept {
+            return x>=0 && y>=0 && width>=1 && height>=1 && width<=8192 && height<=8192 && std::isfinite(notBefore);
+        }
+        static bool ValidClient(int offsetX,int offsetY,int fullWidth,int fullHeight) noexcept {
+            return offsetX>=0 && offsetY>=0 && offsetX<=2 && offsetY<=2
+                && fullWidth>=1 && fullHeight>=1 && fullWidth<=8192 && fullHeight<=8192;
+        }
+        static bool CompatibleCropAndClient(int cropW,int cropH,int offsetX,int offsetY,int fullWidth,int fullHeight) noexcept {
+            return ValidClient(offsetX,offsetY,fullWidth,fullHeight)
+                && offsetX+cropW<=fullWidth && offsetY+cropH<=fullHeight
+                && fullWidth-cropW<=4 && fullHeight-cropH<=4;
+        }
+        static bool ValidCapture(int x,int y,int width,int height,int captureWidth,int captureHeight) noexcept {
+            if(captureWidth<0 || captureHeight<0 || captureWidth>8192 || captureHeight>8192) return false;
+            if((captureWidth!=0 || captureHeight!=0) && (x+width>captureWidth || y+height>captureHeight)) return false;
+            return true;
+        }
+        static bool TryBuildTransaction(
+            const ViewportGeometryState& current,
+            int x,int y,int width,int height,
+            int offsetX,int offsetY,int fullWidth,int fullHeight,
+            int captureWidth,int captureHeight,double notBefore,
+            bool unholdViewport,ViewportGeometryState& next) noexcept {
+            if(!ValidCrop(x,y,width,height,notBefore)
+                || !CompatibleCropAndClient(width,height,offsetX,offsetY,fullWidth,fullHeight)
+                || !ValidCapture(x,y,width,height,captureWidth,captureHeight)) return false;
+            next=current;
+            next.crop={x,y,x+width,y+height};
+            next.clientOffsetX=offsetX; next.clientOffsetY=offsetY;
+            next.clientWidth=fullWidth; next.clientHeight=fullHeight;
+            next.captureWidth=captureWidth; next.captureHeight=captureHeight;
+            next.notBefore=notBefore;
+            if(unholdViewport) next.held=false;
+            return true;
+        }
+        void ResolveClientForTexture(int texW,int texH,int& outOffX,int& outOffY,int& outFullW,int& outFullH) const noexcept {
+            if(CompatibleCropAndClient(texW,texH,clientOffsetX,clientOffsetY,clientWidth,clientHeight)) {
+                outOffX=clientOffsetX;outOffY=clientOffsetY;outFullW=clientWidth;outFullH=clientHeight;
+            } else {
+                outOffX=0;outOffY=0;outFullW=texW;outFullH=texH;
+            }
+        }
+    };
+    ViewportGeometryState geometry_{};
     std::mutex presentationMutex_;
-    bool viewportHeld_=false;
     std::atomic<float> sharpness_{0};
     int fps_; bool borderless_;
     std::atomic<bool> active_{true};
@@ -1881,7 +2024,7 @@ private:
     WeatherState weather_{}; WeatherCameraState weatherCamera_{}; uint64_t weatherVersion_=0;
     AtmosphereState atmosphere_{}; uint64_t atmosphereVersion_=0;
     WeatherStyleState weatherStyle_{}; AtmosphereStyleState atmosphereStyle_{};
-    BulletStylesState bulletStyles_{}; BulletFrameState bulletFrame_{}; uint64_t bulletVersion_=0;
+    BulletStylesState bulletStyles_{}; std::shared_ptr<const BulletFrameSnapshot> bulletLatest_{std::make_shared<const BulletFrameSnapshot>()}; uint64_t bulletVersion_=0;
     std::vector<std::shared_ptr<const BulletFrameSnapshot>> bulletHistory_;
     uint64_t bulletSnapshotVersion_=0;ProbeBulletSyncStats bulletSyncStats_{sizeof(ProbeBulletSyncStats)};
     ProbeBulletSourceStats bulletSourceStats_{sizeof(ProbeBulletSourceStats)};
@@ -1915,6 +2058,14 @@ int __cdecl ProbeSetCrop(void* handle, int x, int y, int width, int height) {
 }
 int __cdecl ProbeSetViewport(void* handle, int x, int y, int width, int height, double notBefore) {
     return handle && static_cast<Capture*>(handle)->Viewport(x,y,width,height,notBefore) ? 1 : 0;
+}
+int __cdecl ProbeSetClientGeometry(void* handle, int offsetX, int offsetY, int fullWidth, int fullHeight) {
+    return handle && static_cast<Capture*>(handle)->ClientGeometry(offsetX,offsetY,fullWidth,fullHeight) ? 1 : 0;
+}
+int __cdecl ProbeSetViewportGeometry(void* handle, int x, int y, int width, int height,
+    int offsetX, int offsetY, int fullWidth, int fullHeight, int captureWidth, int captureHeight, double notBefore) {
+    return handle && static_cast<Capture*>(handle)->ViewportGeometry(x,y,width,height,
+        offsetX,offsetY,fullWidth,fullHeight,captureWidth,captureHeight,notBefore) ? 1 : 0;
 }
 void __cdecl ProbeHoldViewport(void* handle) { if (handle) static_cast<Capture*>(handle)->HoldViewport(); }
 int __cdecl ProbeSetSharpness(void* handle, float value) {
@@ -2035,7 +2186,8 @@ int __cdecl ProbeSetWeatherStyle(void* handle,int type,int count,const float* pa
     return handle && static_cast<Capture*>(handle)->WeatherStyle(type,count,params) ? 1 : 0;
 }
 int __cdecl ProbeSetBulletStyles(void* handle,const float* styles,int count) {
-    return handle && static_cast<Capture*>(handle)->BulletStyles(styles,count) ? 1 : 0;
+    try { return handle && static_cast<Capture*>(handle)->BulletStyles(styles,count) ? 1 : 0; }
+    catch(...) { return 0; }
 }
 int __cdecl ProbeSetBulletAtlas(void* handle,const uint8_t* pixels,int width,int height,int length) {
     try { return handle && static_cast<Capture*>(handle)->BulletAtlas(pixels,width,height,length) ? 1 : 0; }
@@ -2043,15 +2195,18 @@ int __cdecl ProbeSetBulletAtlas(void* handle,const uint8_t* pixels,int width,int
 }
 int __cdecl ProbeBulletReady(void* handle) { return handle && static_cast<Capture*>(handle)->BulletReady() ? 1 : 0; }
 int __cdecl ProbeSetRayFrame(void* handle,const float* items,int count,float x,float y,float scale) {
-    return handle && static_cast<Capture*>(handle)->RayFrame(items,count,x,y,scale) ? 1 : 0;
+    try { return handle && static_cast<Capture*>(handle)->RayFrame(items,count,x,y,scale) ? 1 : 0; }
+    catch(...) { return 0; }
 }
 int __cdecl ProbeSetBulletFrame(void* handle,const float* items,int count,float cameraX,float cameraY,float cameraScale) {
-    return handle && static_cast<Capture*>(handle)->BulletFrame(items,count,cameraX,cameraY,cameraScale) ? 1 : 0;
+    try { return handle && static_cast<Capture*>(handle)->BulletFrame(items,count,cameraX,cameraY,cameraScale) ? 1 : 0; }
+    catch(...) { return 0; }
 }
 int __cdecl ProbeSetBulletFrameV2(void* handle,const float* items,int count,float cameraX,float cameraY,float cameraScale,
     int ordinaryEpoch,int ordinaryFrame,int chainEpoch,int chainFrame) {
-    return handle && static_cast<Capture*>(handle)->BulletFrame(items,count,cameraX,cameraY,cameraScale,
-        ordinaryEpoch,ordinaryFrame,chainEpoch,chainFrame) ? 1 : 0;
+    try { return handle && static_cast<Capture*>(handle)->BulletFrame(items,count,cameraX,cameraY,cameraScale,
+        ordinaryEpoch,ordinaryFrame,chainEpoch,chainFrame) ? 1 : 0; }
+    catch(...) { return 0; }
 }
 int __cdecl ProbeGetBulletSyncStats(void* handle,ProbeBulletSyncStats* stats) {
     if(!handle || !stats || stats->size!=sizeof(ProbeBulletSyncStats))return 0;

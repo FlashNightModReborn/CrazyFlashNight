@@ -71,6 +71,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private NativePointerBridge _pointerBridge;
         private IntPtr _flash;
         private Rectangle _crop;
+        private Point _lastClientOffset;
+        private Size _lastFullClientSize;
+        private Size _lastCaptureSize;
+        private Size _lastAnchorClientSize;
+        private double _geometryChangedAtMs=double.NaN;
         private string _lastGeometryRejection;
         private ulong _lastCaptureGeneration;
         private WorldLightingFrame _frame;
@@ -131,6 +136,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly uint _inputEpochLimit;
         private bool _permissionChecked, _borderless;
         private double _waitingStateMs;
+        private const double CaptureRecoveryTimeoutMs=10000;
+        private double _geometryWaitStartedMs=double.NaN;
         private double _requiredFrameMs, _startedMs, _lastLogMs;
         private readonly bool _profileHudCosts=Environment.GetEnvironmentVariable("CF7_PLAYER_HUD_PROFILE")=="1";
         private bool _hudCostProfiling;
@@ -555,7 +562,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     }
                     LogManager.Log("event=world_compositor_identity S=0x"+_owner.Handle.ToString("X")+" P=0x"+_surface.Handle.ToString("X")
                         +" F=0x"+_flash.ToString("X")+" hostPid="+Environment.ProcessId+" inputSession="+_pointerBridge.SessionIdentity);
-                    _crop=Rectangle.Empty; _startedMs=NowMs(); _lastSettings=null; _active=true; _appliedSharpness=float.NaN;
+                    _crop=Rectangle.Empty; _lastClientOffset=Point.Empty; _lastFullClientSize=Size.Empty; _lastCaptureSize=Size.Empty; _lastAnchorClientSize=_anchor.ClientSize; _geometryChangedAtMs=double.NaN; _startedMs=NowMs(); _lastSettings=null; _active=true; _appliedSharpness=float.NaN;
                     _lastLut=null; _lutActive=false; _lutOwner=null; _lastNightMatrix=null; _lastNightShadowLift=double.NaN; _appliedNightVision=null;
                     _appliedWeatherType=-1;
                     _appliedWeatherStyleType=-1;
@@ -584,6 +591,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     if (!show) _surface.Hide();
                 }
                 if (!_active) {
+                    _geometryWaitStartedMs=double.NaN;
                     RefreshHudPresentations();
                     _schedulingAllowed=false;
                     if (_frame==null && NowMs()-_startedMs>10000) throw new TimeoutException("未收到配套 AS2 光照状态，请检查 asLoader 构建");
@@ -638,7 +646,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 NativeCompositorSession.Stats stats;
                 using (CF7Launcher.Diagnostic.InputLatencyProbe.Measure("world_read")) stats=_native.Read();
                 if (stats.State==2 || stats.State==3) throw new InvalidOperationException(stats.Message+" HRESULT=0x"+stats.Error.ToString("X8"));
-                if (!Synchronize()) { NoteBulletCaptureNotReady("geometry_unknown"); return; } // an unknown extent must not mask native failure
+                if (!Synchronize()) {
+                    NoteBulletCaptureNotReady("geometry_unknown");
+                    CheckGeometryRecoveryTimeout(NowMs());
+                    return;
+                } // native errors are still checked before geometry admission
+                _geometryWaitStartedMs=double.NaN;
                 bool ready=stats.Received>0 && stats.Width==_crop.Width && stats.Height==_crop.Height && stats.LastFrameQpcMs>=_requiredFrameMs;
                 if (ready) _bulletCaptureNotReadyMs=0;
                 else NoteBulletCaptureNotReady("capture_not_ready");
@@ -771,7 +784,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     if(!sent) RevokeCombatFx("cap_send_failed");
                     else LogManager.Log("event=combat_fx_cap_native");
                 }
-                if (!ready && NowMs()-Math.Max(_startedMs,_requiredFrameMs)>10000) throw new TimeoutException("世界捕获没有恢复有效画面");
+                if (!ready && NowMs()-Math.Max(_startedMs,_requiredFrameMs)>CaptureRecoveryTimeoutMs) throw new TimeoutException("世界捕获没有恢复有效画面");
                 if (NowMs()-_lastLogMs>1000) {
                     _lastLogMs=NowMs();
                     LogHudCosts(stats);
@@ -903,9 +916,6 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _lastCaptureGeneration=_native.CaptureGeneration;
                 LogManager.Log("event=world_compositor_capture_generation value="+_lastCaptureGeneration+" WGC="+content+" window="+window.Rectangle);
             }
-            if(!TryResolveCaptureFrame(frame.Rectangle,window.Rectangle,content,out Rectangle capture))
-                return RejectGeometry("capture_bounds_pending content="+content+" window="+window.Rectangle,screen,Rectangle.Empty,frame.Rectangle);
-            if (screen.Width<1 || screen.Height<1 || !capture.Contains(screen)) return RejectGeometry("output_outside_capture",screen,Rectangle.Empty,capture);
             if (!GetClientRect(_flash,out Rect client)) return false;
             var sourceOrigin=new Point(0,0);
             if (!ClientToScreen(_flash,ref sourceOrigin)) return false;
@@ -917,18 +927,18 @@ namespace CF7Launcher.Guardian.WorldCompositor
             // DWM and the Flash child can round their bottom edges one pixel
             // apart after a window move. Capture only the measured intersection;
             // keep rejecting larger misses instead of inventing an origin.
-            if (!TryCalculateCrop(source,capture,out Rectangle crop)) return RejectGeometry("source_outside_capture",screen,source,capture);
+            if (!TryResolveGeometrySnapshot(screen,source,frame.Rectangle,window.Rectangle,content,out WorldGeometrySnapshot geometry,out string rejectionReason))
+                return RejectGeometry(rejectionReason,geometry.OutputScreen,geometry.SourceScreen,geometry.CaptureFrame);
             if(_lastGeometryRejection!=null) {
-                LogManager.Log("event=world_compositor_geometry_resumed FClient="+source+" captureFrame="+capture+" P="+screen);
+                LogManager.Log("event=world_compositor_geometry_resumed FClient="+source+" captureFrame="+geometry.CaptureFrame+" P="+screen);
                 _lastGeometryRejection=null;
             }
-            if (crop!=_crop || _surface.Bounds!=screen || _viewportHeld) {
-                // Keep the previous composed image over the reduced-resolution F.
-                // A geometry transition must not expose F while awaiting a fresh frame.
-                _requiredFrameMs=_viewportHeld ? Math.Max(_requiredFrameMs,_paintFenceMs) : NowMs();
-                _native.Viewport(crop,_requiredFrameMs); _viewportHeld=false;
-                _crop=crop; _surface.Bounds=screen; _surface.RefreshPointer();
-                LogManager.Log("event=world_compositor_geometry FClient="+source+" captureFrame="+capture+" dwmFrame="+frame.Rectangle+" windowFrame="+window.Rectangle+" WGC="+content+" crop="+crop+" P="+_surface.Bounds+" frameFenceMs="+_requiredFrameMs.ToString("F1",CultureInfo.InvariantCulture));
+            bool boundsChanged=_surface.Bounds!=screen;
+            bool committed=CommitGeometrySnapshot(geometry,NowMs());
+            if (committed || boundsChanged) {
+                if (boundsChanged) _surface.Bounds=screen;
+                _surface.RefreshPointer();
+                LogManager.Log("event=world_compositor_geometry FClient="+source+" captureFrame="+geometry.CaptureFrame+" dwmFrame="+frame.Rectangle+" windowFrame="+window.Rectangle+" WGC="+content+" crop="+geometry.Crop+" clientOffset="+geometry.ClientOffset+" P="+_surface.Bounds+" frameFenceMs="+_requiredFrameMs.ToString("F1",CultureInfo.InvariantCulture));
             }
             return true;
         }
@@ -1022,6 +1032,22 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _appliedWeatherGroundMin=_weatherCameraGroundMin;
             _appliedWeatherGroundMax=_weatherCameraGroundMax;
         }
+        private void CheckGeometryRecoveryTimeout(double now)
+        {
+            // Start with the first failed observation, not an old session/fence.
+            // Only genuine owner geometry events, inactivity or success reset it;
+            // repeated/oscillating WGC rejection details cannot slide the deadline.
+            if (double.IsNaN(_geometryWaitStartedMs)) _geometryWaitStartedMs=now;
+            double waited=now-_geometryWaitStartedMs;
+            if (now-_lastLogMs>1000) {
+                _lastLogMs=now;
+                LogManager.Log("event=world_compositor_geometry_pending waitMs="
+                    +waited.ToString("F1",CultureInfo.InvariantCulture)+" held="+_viewportHeld
+                    +" "+(_lastGeometryRejection??"reason=geometry_unavailable"));
+            }
+            if (waited>CaptureRecoveryTimeoutMs)
+                throw new TimeoutException("世界捕获几何没有恢复有效范围");
+        }
         private bool RejectGeometry(string reason,Rectangle output,Rectangle source,Rectangle capture)
         {
             _schedulingAllowed=false;
@@ -1038,15 +1064,73 @@ namespace CF7Launcher.Guardian.WorldCompositor
             return crop;
         }
         internal static bool TryCalculateCrop(Rectangle game,Rectangle capturedFrame,out Rectangle crop)
+            => TryCalculateCrop(game,capturedFrame,out crop,out _);
+        internal static bool TryCalculateCrop(Rectangle game,Rectangle capturedFrame,out Rectangle crop,out Point clientOffset)
         {
             crop=Rectangle.Empty;
+            clientOffset=Point.Empty;
             if (game.Width<1 || game.Height<1 || capturedFrame.Width<1 || capturedFrame.Height<1) return false;
             Rectangle visible=Rectangle.Intersect(game,capturedFrame);
             if (visible.Width<1 || visible.Height<1
                 || visible.Left-game.Left>2 || visible.Top-game.Top>2
                 || game.Right-visible.Right>2 || game.Bottom-visible.Bottom>2) return false;
             crop=new Rectangle(visible.X-capturedFrame.X,visible.Y-capturedFrame.Y,visible.Width,visible.Height);
+            clientOffset=new Point(visible.Left-game.Left,visible.Top-game.Top);
             return true;
+        }
+        internal bool CommitGeometrySnapshot(WorldGeometrySnapshot geometry,double nowMs,Action<WorldGeometrySnapshot,double> submitViewport=null)
+        {
+            Rectangle crop=geometry.Crop;
+            Point clientOffset=geometry.ClientOffset;
+            Size fullClient=geometry.FullClientSize;
+            Size captureSize=geometry.CaptureFrame.Size;
+            bool cropChanged=crop!=_crop;
+            bool clientGeometryChanged=clientOffset!=_lastClientOffset || fullClient!=_lastFullClientSize || captureSize!=_lastCaptureSize;
+            if (!cropChanged && !clientGeometryChanged && !_viewportHeld) return false;
+            // Keep the previous composed image over the reduced-resolution F.
+            // A geometry transition must not expose F while awaiting a fresh frame.
+            // Initial crop admission or a pure window move (same source size) retains
+            // the existing frame fence so static single-paint scenes do not stall.
+            _requiredFrameMs=SelectGeometryCropFenceMs(_crop,crop,_viewportHeld,_paintFenceMs,_geometryChangedAtMs,_requiredFrameMs,nowMs);
+            if (submitViewport!=null) submitViewport(geometry,_requiredFrameMs);
+            else _native.Viewport(geometry,_requiredFrameMs);
+            _viewportHeld=false;
+            _geometryChangedAtMs=double.NaN;
+            _crop=crop;
+            _lastClientOffset=clientOffset;
+            _lastFullClientSize=fullClient;
+            _lastCaptureSize=captureSize;
+            return true;
+        }
+        internal static bool TryResolveGeometrySnapshot(Rectangle outputScreen,Rectangle sourceScreen,Rectangle extendedFrame,
+            Rectangle windowFrame,Size captureContent,out WorldGeometrySnapshot snapshot,out string rejectionReason)
+        {
+            if(!TryResolveCaptureFrame(extendedFrame,windowFrame,captureContent,out Rectangle capture)) {
+                snapshot=new WorldGeometrySnapshot(outputScreen,Rectangle.Empty,extendedFrame,Rectangle.Empty,Point.Empty);
+                rejectionReason="capture_bounds_pending content="+captureContent+" window="+windowFrame;
+                return false;
+            }
+            if(outputScreen.Width<1 || outputScreen.Height<1 || !capture.Contains(outputScreen)) {
+                snapshot=new WorldGeometrySnapshot(outputScreen,Rectangle.Empty,capture,Rectangle.Empty,Point.Empty);
+                rejectionReason="output_outside_capture";
+                return false;
+            }
+            if(!TryCalculateCrop(sourceScreen,capture,out Rectangle crop,out Point clientOffset)) {
+                snapshot=new WorldGeometrySnapshot(outputScreen,sourceScreen,capture,Rectangle.Empty,Point.Empty);
+                rejectionReason="source_outside_capture";
+                return false;
+            }
+            rejectionReason=null;
+            snapshot=new WorldGeometrySnapshot(outputScreen,sourceScreen,capture,crop,clientOffset);
+            return true;
+        }
+        internal static double SelectGeometryCropFenceMs(Rectangle previousCrop,Rectangle nextCrop,bool viewportHeld,
+            double paintFenceMs,double geometryChangedAtMs,double requiredFrameMs,double nowMs)
+        {
+            if(viewportHeld) return Math.Max(requiredFrameMs,paintFenceMs);
+            if(previousCrop.IsEmpty || previousCrop.Size==nextCrop.Size) return requiredFrameMs;
+            double resizeFence=double.IsFinite(geometryChangedAtMs) ? geometryChangedAtMs : nowMs;
+            return Math.Max(requiredFrameMs,resizeFence);
         }
         private void PlaceBelowHud()
         {
@@ -1073,6 +1157,17 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private void OnGeometryChanged(object sender,EventArgs e)
         {
             _schedulingAllowed=false;
+            // A continuing move/resize is not a stable failed geometry.
+            _geometryWaitStartedMs=double.NaN;
+            if (_anchor!=null && !_anchor.IsDisposed && _anchor.ClientSize!=_lastAnchorClientSize) {
+                _lastAnchorClientSize=_anchor.ClientSize;
+                _geometryChangedAtMs=NowMs();
+                if (_native!=null && _active && !_viewportHeld && !_crop.IsEmpty) {
+                    _paintFenceMs=_geometryChangedAtMs;
+                    _native.HoldViewport();
+                    _viewportHeld=true;
+                }
+            }
             if (_surface==null || _surface.IsDisposed) return;
             if (!CanShow()) { _surface.Hide(); RefreshHudPresentations(); return; }
             Rectangle screen=_anchor.RectangleToScreen(_anchor.ClientRectangle);
@@ -1176,6 +1271,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             }
             _lastWeatherCapAttemptMs=0;
             _lastGeometryRejection=null;
+            _geometryWaitStartedMs=double.NaN;
             _lastCaptureGeneration=0;
             _appliedWeatherType=-1; _appliedWeatherIntensity=float.NaN;
             _appliedWeatherQuality=-1; _appliedWeatherSeed=0;
@@ -1190,7 +1286,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _weatherCameraGroundMin=360; _weatherCameraGroundMax=520;
             }
             _inputRenewRequested=false;_inputClosed=false;
-            _viewportHeld=false; _paintFenceMs=0;
+            _viewportHeld=false; _paintFenceMs=0; _lastClientOffset=Point.Empty; _lastFullClientSize=Size.Empty; _lastCaptureSize=Size.Empty; _geometryChangedAtMs=double.NaN;
             _everReady=false; _frameAdvancing=false; _progressKnown=false;
             _transitionGradeScene=0; _transitionPresentedScene=0; _transitionGradeSubmittedAt=0;
             _transitionPaintRequest=null; _transitionRequestedScene=0;

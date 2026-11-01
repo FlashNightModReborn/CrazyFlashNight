@@ -18,7 +18,7 @@ $run=@{
  ExpectedTracePatterns=@(
   '(?m)^BulletVisualProbeTest Tests Passed: 15\r?$',
   '(?m)^BulletVisualProbeTest Tests Failed: 0\r?$',
-  '(?m)^NativeFrameTagTest Tests Passed: 12\r?$',
+  '(?m)^NativeFrameTagTest Tests Passed: 15\r?$',
   '(?m)^NativeFrameTagTest Tests Failed: 0\r?$'
  )
  SuccessSummary='Bullet ownership plus native source-frame tag matrix'

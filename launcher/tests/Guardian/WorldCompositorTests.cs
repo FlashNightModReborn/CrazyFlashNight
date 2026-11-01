@@ -86,6 +86,43 @@ namespace CF7Launcher.Tests.Guardian {
             Assert.Same(request,TransitionPaint(controller));
         }
 
+        private static void GeometryWait(WorldCompositorController controller,double now) =>
+            typeof(WorldCompositorController).GetMethod("CheckGeometryRecoveryTimeout",BindingFlags.NonPublic|BindingFlags.Instance)
+                .Invoke(controller,new object[]{now});
+        [Fact] public void UnknownGeometryStartsItsBudgetAtFirstFailureAfterAHealthySession() {
+            using var owner=new Form(); using var controller=RenderController(owner);
+            SetRenderField(controller,"_startedMs",1d); SetRenderField(controller,"_requiredFrameMs",2d);
+            GeometryWait(controller,100000);
+            GeometryWait(controller,110000); // preserve existing strictly-greater 10s limit
+            var error=Assert.Throws<TargetInvocationException>(()=>GeometryWait(controller,110001));
+            Assert.IsType<TimeoutException>(error.InnerException);
+        }
+        [Fact] public void RepeatedGeometryFailureDoesNotSlideRecoveryDeadline() {
+            using var owner=new Form(); using var controller=RenderController(owner);
+            GeometryWait(controller,1000);
+            for(int now=2000;now<=11000;now+=1000) GeometryWait(controller,now);
+            var error=Assert.Throws<TargetInvocationException>(()=>GeometryWait(controller,11001));
+            Assert.IsType<TimeoutException>(error.InnerException);
+        }
+        [Fact] public void OnGeometryChangedHandlerRestartsGeometryWaitBudget() {
+            using var owner=new Form(); using var controller=RenderController(owner);
+            GeometryWait(controller,1000);
+            typeof(WorldCompositorController).GetMethod("OnGeometryChanged",BindingFlags.NonPublic|BindingFlags.Instance)
+                .Invoke(controller,new object[]{owner,EventArgs.Empty});
+            GeometryWait(controller,500000);
+            GeometryWait(controller,510000);
+            var error=Assert.Throws<TargetInvocationException>(()=>GeometryWait(controller,510001));
+            Assert.IsType<TimeoutException>(error.InnerException);
+        }
+        [Fact] public void SourceResetDoesNotInheritGeometryWaitDeadline() {
+            using var owner=new Form(); using var controller=RenderController(owner);
+            GeometryWait(controller,1000); controller.ResetSource();
+            GeometryWait(controller,500000);
+            GeometryWait(controller,510000);
+            var error=Assert.Throws<TargetInvocationException>(()=>GeometryWait(controller,510001));
+            Assert.IsType<TimeoutException>(error.InnerException);
+        }
+
         [Fact] public void CaptureFrameRejectsUnknownExtentRatherThanGuessingAnOrigin()
         {
             var visible=new Rectangle(0,0,1920,1020);
@@ -423,6 +460,255 @@ namespace CF7Launcher.Tests.Guardian {
                 directory=directory.Parent;
             }
             throw new FileNotFoundException(WorldPresentationCatalog.RelativePath);
+        }
+        [Fact] public void ClippedClientGeometryPreservesFullStageAlignmentAcrossTopLeftAndBottomRight() {
+            var capture=new Rectangle(100,50,1024,576);
+            var topLeftClippedSource=new Rectangle(98,48,1024,576);
+            Assert.True(WorldCompositorController.TryResolveGeometrySnapshot(
+                new Rectangle(100,50,1022,574),topLeftClippedSource,capture,capture,capture.Size,
+                out var topLeft,out var reason));
+            Assert.Null(reason);
+            Assert.True(topLeft.IsClientClipped);
+            Assert.Equal(new Point(2,2),topLeft.ClientOffset);
+            Assert.Equal(new Rectangle(0,0,1022,574),topLeft.Crop);
+            Assert.Equal(new RectangleF(-2f,-2f,1024f,576f),topLeft.ComputeSourceStageRect());
+            Assert.Equal(new RectangleF(0f,0f,1024f,576f),topLeft.ComputeContentViewport(new Size(1024,576)));
+            Assert.Equal(new RectangleF(2f,2f,1022f,574f),topLeft.ComputeOutputViewport(new Size(1024,576)));
+
+            var bottomRightClippedSource=new Rectangle(102,52,1024,576);
+            Assert.True(WorldCompositorController.TryResolveGeometrySnapshot(
+                new Rectangle(102,52,1022,574),bottomRightClippedSource,capture,capture,capture.Size,
+                out var bottomRight,out reason));
+            Assert.Null(reason);
+            Assert.True(bottomRight.IsClientClipped);
+            Assert.Equal(new Point(0,0),bottomRight.ClientOffset);
+            Assert.Equal(new Rectangle(2,2,1022,574),bottomRight.Crop);
+            Assert.Equal(new RectangleF(0f,0f,1024f,576f),bottomRight.ComputeSourceStageRect());
+            Assert.Equal(new RectangleF(0f,0f,1024f,576f),bottomRight.ComputeContentViewport(new Size(1024,576)));
+            Assert.Equal(new RectangleF(0f,0f,1022f,574f),bottomRight.ComputeOutputViewport(new Size(1024,576)));
+        }
+        [Fact] public void GeometryCropFencePreservesStaticSceneAcrossInitialCropAndWindowMoveWhileFencingResizes() {
+            var initialCrop=new Rectangle(8,40,1280,720);
+            Assert.Equal(100d,WorldCompositorController.SelectGeometryCropFenceMs(
+                Rectangle.Empty,initialCrop,viewportHeld:false,paintFenceMs:0d,geometryChangedAtMs:double.NaN,requiredFrameMs:100d,nowMs:250d));
+            var movedSameSizeCrop=new Rectangle(9,40,1280,720);
+            Assert.Equal(100d,WorldCompositorController.SelectGeometryCropFenceMs(
+                initialCrop,movedSameSizeCrop,viewportHeld:false,paintFenceMs:0d,geometryChangedAtMs:double.NaN,requiredFrameMs:100d,nowMs:300d));
+            var resizedCrop=new Rectangle(8,40,1600,900);
+            Assert.Equal(420d,WorldCompositorController.SelectGeometryCropFenceMs(
+                initialCrop,resizedCrop,viewportHeld:true,paintFenceMs:420d,geometryChangedAtMs:400d,requiredFrameMs:100d,nowMs:450d));
+            Assert.Equal(410d,WorldCompositorController.SelectGeometryCropFenceMs(
+                initialCrop,resizedCrop,viewportHeld:false,paintFenceMs:0d,geometryChangedAtMs:410d,requiredFrameMs:100d,nowMs:450d));
+        }
+        [Fact] public void CommitGeometrySnapshotSubmitsAtomicResizeAndClippedClientTransitions() {
+            using var owner=new Form(); using var controller=RenderController(owner);
+            SetRenderField(controller,"_requiredFrameMs",100d);
+            var submissions=new List<(WorldGeometrySnapshot Geometry,double FenceMs)>();
+
+            // 1. Initial 1280x720 windowed admission
+            var cap1280=new Rectangle(100,50,1296,759);
+            var src1280=new Rectangle(108,81,1280,720);
+            Assert.True(WorldCompositorController.TryResolveGeometrySnapshot(
+                src1280,src1280,cap1280,cap1280,cap1280.Size,out var snap1280,out var reason));
+            Assert.Null(reason);
+            Assert.True(controller.CommitGeometrySnapshot(snap1280,200d,(g,f)=>submissions.Add((g,f))));
+            Assert.Single(submissions);
+            Assert.Equal(new Rectangle(8,31,1280,720),submissions[0].Geometry.Crop);
+            Assert.Equal(new Size(1280,720),submissions[0].Geometry.FullClientSize);
+            Assert.Equal(100d,submissions[0].FenceMs);
+            Assert.False(controller.CommitGeometrySnapshot(snap1280,210d,(g,f)=>submissions.Add((g,f))));
+
+            // 2. Held resize enlarge 1280x720 -> 1600x900 (R01 regression check)
+            SetRenderField(controller,"_viewportHeld",true);
+            SetRenderField(controller,"_paintFenceMs",420d);
+            SetRenderField(controller,"_geometryChangedAtMs",400d);
+            var cap1600=new Rectangle(100,50,1616,939);
+            var src1600=new Rectangle(108,81,1600,900);
+            Assert.True(WorldCompositorController.TryResolveGeometrySnapshot(
+                src1600,src1600,cap1600,cap1600,cap1600.Size,out var snap1600,out reason));
+            Assert.True(controller.CommitGeometrySnapshot(snap1600,450d,(g,f)=>submissions.Add((g,f))));
+            Assert.Equal(2,submissions.Count);
+            Assert.Equal(new Rectangle(8,31,1600,900),submissions[1].Geometry.Crop);
+            Assert.Equal(new Size(1600,900),submissions[1].Geometry.FullClientSize);
+            Assert.Equal(420d,submissions[1].FenceMs);
+            Assert.False((bool)typeof(WorldCompositorController).GetField("_viewportHeld",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(controller));
+
+            // 3. Unheld resize shrink 1600x900 -> 1024x576 (R01 regression check)
+            SetRenderField(controller,"_geometryChangedAtMs",510d);
+            var cap1024=new Rectangle(100,50,1040,615);
+            var src1024=new Rectangle(108,81,1024,576);
+            Assert.True(WorldCompositorController.TryResolveGeometrySnapshot(
+                src1024,src1024,cap1024,cap1024,cap1024.Size,out var snap1024,out reason));
+            Assert.True(controller.CommitGeometrySnapshot(snap1024,520d,(g,f)=>submissions.Add((g,f))));
+            Assert.Equal(3,submissions.Count);
+            Assert.Equal(new Rectangle(8,31,1024,576),submissions[2].Geometry.Crop);
+            Assert.Equal(new Size(1024,576),submissions[2].Geometry.FullClientSize);
+            Assert.Equal(510d,submissions[2].FenceMs);
+
+            // 4. Clipped client transition (1px top-left clip on 1024x576) preserves fence when only clientOffset changes
+            var capBorderless=new Rectangle(100,50,1024,576);
+            var srcClipped=new Rectangle(99,49,1024,576);
+            Assert.True(WorldCompositorController.TryResolveGeometrySnapshot(
+                new Rectangle(100,50,1023,575),srcClipped,capBorderless,capBorderless,capBorderless.Size,out var snapClipped,out reason));
+            Assert.True(controller.CommitGeometrySnapshot(snapClipped,550d,(g,f)=>submissions.Add((g,f))));
+            Assert.Equal(4,submissions.Count);
+            Assert.Equal(new Point(1,1),submissions[3].Geometry.ClientOffset);
+            Assert.Equal(new Rectangle(0,0,1023,575),submissions[3].Geometry.Crop);
+            Assert.Equal(new Size(1024,576),submissions[3].Geometry.FullClientSize);
+            Assert.Equal(550d,submissions[3].FenceMs);
+        }
+        internal static string ResolveNativeCompositorModuleForTest(string root,string candidateEnv) {
+            if(!string.IsNullOrWhiteSpace(candidateEnv)) {
+                string candidate=Path.GetFullPath(candidateEnv);
+                if(!Directory.Exists(candidate))
+                    throw new InvalidOperationException($"Explicit candidate directory does not exist: {candidate}");
+                string module=Path.Combine(candidate,"runtime",NativeCompositorSession.ModuleName);
+                if(!File.Exists(module))
+                    throw new InvalidOperationException($"Explicit candidate native module is missing: {module}");
+                string manifestPath=Path.Combine(candidate,"runtime","cf7-runtime-manifest.tsv");
+                if(!File.Exists(manifestPath))
+                    throw new InvalidOperationException($"Explicit candidate manifest is missing: {manifestPath}");
+                string metadataPath=Path.Combine(candidate,"runtime-build-metadata.v2.json");
+                if(!File.Exists(metadataPath))
+                    throw new InvalidOperationException($"Explicit candidate metadata is missing: {metadataPath}");
+                JObject metadata=JObject.Parse(File.ReadAllText(metadataPath));
+                string identity=metadata.Value<string>("buildIdentityHash");
+                string closure=metadata.Value<string>("payloadClosureHash");
+                if(string.IsNullOrWhiteSpace(identity) || identity.Length!=64 || string.IsNullOrWhiteSpace(closure) || closure.Length!=64)
+                    throw new InvalidOperationException($"Explicit candidate metadata hashes are invalid: {metadataPath}");
+                string expectedRel="runtime/"+NativeCompositorSession.ModuleName;
+                string[] matchedRow=null;
+                foreach(string line in File.ReadLines(manifestPath)) {
+                    string[] parts=line.Split('\t');
+                    if(parts.Length==4 && parts[0]=="file" && string.Equals(parts[1],expectedRel,StringComparison.Ordinal)) {
+                        matchedRow=parts; break;
+                    }
+                }
+                if(matchedRow==null || !long.TryParse(matchedRow[2],out long expectedLength))
+                    throw new InvalidOperationException($"Explicit candidate manifest is missing entry for {expectedRel}");
+                long actualLength=new FileInfo(module).Length;
+                if(actualLength!=expectedLength)
+                    throw new InvalidOperationException($"Explicit candidate module length mismatch: expected={expectedLength} actual={actualLength}");
+                string actualSha=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(module)));
+                if(!string.Equals(actualSha,matchedRow[3],StringComparison.OrdinalIgnoreCase))
+                    throw new InvalidOperationException($"Explicit candidate module SHA256 mismatch: expected={matchedRow[3]} actual={actualSha}");
+                IntPtr loaded=System.Runtime.InteropServices.NativeLibrary.Load(module);
+                try {
+                    if(!System.Runtime.InteropServices.NativeLibrary.TryGetExport(loaded,"ProbeSetViewportGeometry",out _))
+                        throw new InvalidOperationException($"Explicit candidate module is missing required export ProbeSetViewportGeometry: {module}");
+                } finally {
+                    System.Runtime.InteropServices.NativeLibrary.Free(loaded);
+                }
+                Console.WriteLine($"[WorldCompositorTests] Verified explicit candidate module: path={module} sha256={actualSha} buildIdentity={identity}");
+                return module;
+            }
+            string latestCandidate=null;
+            string candidatesDir=Path.Combine(root,"tmp","runtime-candidates","v2");
+            if(Directory.Exists(candidatesDir)) {
+                foreach(string dir in Directory.GetDirectories(candidatesDir,"c-*")) {
+                    string dll=Path.Combine(dir,"runtime",NativeCompositorSession.ModuleName);
+                    if(File.Exists(dll) && (latestCandidate==null || File.GetLastWriteTimeUtc(dll)>File.GetLastWriteTimeUtc(latestCandidate)))
+                        latestCandidate=dll;
+                }
+            }
+            string[] fallbackCandidates={
+                Path.Combine(root,"tmp","night-vision-native-tests",NativeCompositorSession.ModuleName),
+                latestCandidate,
+                Path.Combine(root,"launcher","build","native",NativeCompositorSession.ModuleName),
+                Path.Combine(root,"runtime",NativeCompositorSession.ModuleName)
+            };
+            foreach(string c in fallbackCandidates) {
+                if(string.IsNullOrWhiteSpace(c) || !File.Exists(c)) continue;
+                IntPtr mod=System.Runtime.InteropServices.NativeLibrary.Load(c);
+                try {
+                    if(System.Runtime.InteropServices.NativeLibrary.TryGetExport(mod,"ProbeSetViewportGeometry",out _))
+                        return Path.GetFullPath(c);
+                } finally { System.Runtime.InteropServices.NativeLibrary.Free(mod); }
+            }
+            return null;
+        }
+        [Fact] public void ExplicitCandidateResolutionRejectsMissingDirectoryMissingExportAndHashMismatch() {
+            string root=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"..","..","..",".."));
+            string missingDir=Path.Combine(root,"tmp","candidate-does-not-exist-"+Guid.NewGuid().ToString("N"));
+            var missingEx=Assert.Throws<InvalidOperationException>(()=>ResolveNativeCompositorModuleForTest(root,missingDir));
+            Assert.Contains("Explicit candidate directory does not exist",missingEx.Message);
+
+            string tempRoot=Path.Combine(Path.GetTempPath(),"cf7-explicit-candidate-test-"+Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(Path.Combine(tempRoot,"runtime"));
+            try {
+                string modulePath=Path.Combine(tempRoot,"runtime",NativeCompositorSession.ModuleName);
+                string systemDll=Path.Combine(Environment.SystemDirectory,"version.dll");
+                File.Copy(systemDll,modulePath,overwrite:true);
+                byte[] moduleBytes=File.ReadAllBytes(modulePath);
+                string actualSha=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(moduleBytes));
+                string wrongSha=new string('0',64);
+                File.WriteAllText(Path.Combine(tempRoot,"runtime-build-metadata.v2.json"),
+                    "{\"buildIdentityHash\":\""+new string('A',64)+"\",\"payloadClosureHash\":\""+new string('B',64)+"\"}");
+
+                // 2. Hash mismatch against manifest is immediately rejected without falling back
+                File.WriteAllText(Path.Combine(tempRoot,"runtime","cf7-runtime-manifest.tsv"),
+                    $"file\truntime/{NativeCompositorSession.ModuleName}\t{moduleBytes.Length}\t{wrongSha}\n");
+                var hashEx=Assert.Throws<InvalidOperationException>(()=>ResolveNativeCompositorModuleForTest(root,tempRoot));
+                Assert.Contains("SHA256 mismatch",hashEx.Message);
+
+                // 3. Matching manifest + hash but missing ProbeSetViewportGeometry export is immediately rejected
+                File.WriteAllText(Path.Combine(tempRoot,"runtime","cf7-runtime-manifest.tsv"),
+                    $"file\truntime/{NativeCompositorSession.ModuleName}\t{moduleBytes.Length}\t{actualSha}\n");
+                var exportEx=Assert.Throws<InvalidOperationException>(()=>ResolveNativeCompositorModuleForTest(root,tempRoot));
+                Assert.Contains("ProbeSetViewportGeometry",exportEx.Message);
+            } finally {
+                if(Directory.Exists(tempRoot)) Directory.Delete(tempRoot,recursive:true);
+            }
+        }
+        [Fact] public void NativeSessionAcceptsResizeAndClippedClientHandoffsWhileRejectingInvalidGeometry() {
+            string root=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"..","..","..",".."));
+            string candidateEnv=Environment.GetEnvironmentVariable("CF7_TEST_SHARED_WORLD_CANDIDATE");
+            string modulePath=ResolveNativeCompositorModuleForTest(root,candidateEnv);
+            if(!string.IsNullOrWhiteSpace(candidateEnv)) {
+                string expectedModule=Path.Combine(Path.GetFullPath(candidateEnv),"runtime",NativeCompositorSession.ModuleName);
+                Assert.Equal(expectedModule,modulePath,ignoreCase:true);
+            }
+            if(modulePath==null) return;
+
+            using var source=new Form { FormBorderStyle=FormBorderStyle.None,ShowInTaskbar=false,ClientSize=new Size(1280,720) };
+            using var output=new Form { FormBorderStyle=FormBorderStyle.None,ShowInTaskbar=false,ClientSize=new Size(1280,720) };
+            _=source.Handle; _=output.Handle;
+            using var controller=RenderController(source);
+            using var session=new NativeCompositorSession(modulePath,source.Handle,(uint)Environment.ProcessId,output.Handle,borderless:true);
+
+            // 1. Initial 1280x720 -> Enlarge 1600x900 -> Shrink 1024x576 -> Clipped 1022x574 via production CommitGeometrySnapshot + session.Viewport
+            var snap1280=new WorldGeometrySnapshot(new Rectangle(0,0,1280,720),new Rectangle(8,31,1280,720),new Rectangle(0,0,1296,759),new Rectangle(8,31,1280,720),Point.Empty);
+            Assert.True(controller.CommitGeometrySnapshot(snap1280,100d,session.Viewport));
+
+            session.HoldViewport();
+            SetRenderField(controller,"_viewportHeld",true);
+            SetRenderField(controller,"_paintFenceMs",200d);
+            var snap1600=new WorldGeometrySnapshot(new Rectangle(0,0,1600,900),new Rectangle(8,31,1600,900),new Rectangle(0,0,1616,939),new Rectangle(8,31,1600,900),Point.Empty);
+            Assert.True(controller.CommitGeometrySnapshot(snap1600,210d,session.Viewport));
+
+            session.HoldViewport();
+            SetRenderField(controller,"_viewportHeld",true);
+            SetRenderField(controller,"_paintFenceMs",300d);
+            var snap1024=new WorldGeometrySnapshot(new Rectangle(0,0,1024,576),new Rectangle(8,31,1024,576),new Rectangle(0,0,1040,615),new Rectangle(8,31,1024,576),Point.Empty);
+            Assert.True(controller.CommitGeometrySnapshot(snap1024,310d,session.Viewport));
+
+            var snapClipTl=new WorldGeometrySnapshot(new Rectangle(0,0,1022,574),new Rectangle(-2,-2,1024,576),new Rectangle(0,0,1024,576),new Rectangle(0,0,1022,574),new Point(2,2));
+            Assert.True(controller.CommitGeometrySnapshot(snapClipTl,400d,session.Viewport));
+
+            var snapClipBr=new WorldGeometrySnapshot(new Rectangle(0,0,1022,574),new Rectangle(2,2,1024,576),new Rectangle(0,0,1024,576),new Rectangle(2,2,1022,574),Point.Empty);
+            Assert.True(controller.CommitGeometrySnapshot(snapClipBr,500d,session.Viewport));
+
+            // 2. Standalone Viewport + ClientGeometry across resizes
+            session.Viewport(new Rectangle(0,0,1280,720),600d);
+            session.ClientGeometry(Point.Empty,new Size(1280,720));
+            session.Viewport(new Rectangle(0,0,1023,575),700d);
+            session.ClientGeometry(new Point(1,1),new Size(1024,576));
+
+            // 3. Invalid client geometry and out-of-capture crop are rejected without crashing
+            Assert.Throws<InvalidOperationException>(()=>session.ClientGeometry(new Point(3,0),new Size(1026,576)));
+            Assert.Throws<InvalidOperationException>(()=>session.ClientGeometry(Point.Empty,new Size(1600,900)));
+            var badCaptureSnap=new WorldGeometrySnapshot(new Rectangle(0,0,1024,576),new Rectangle(0,0,1024,576),new Rectangle(0,0,1000,576),new Rectangle(0,0,1024,576),Point.Empty);
+            Assert.Throws<InvalidOperationException>(()=>session.Viewport(badCaptureSnap,800d));
         }
         [Fact] public void DisconnectInvalidatesAlreadyQueuedSnapshot() {
             var queue=new Queue<Action>(); int adopted=0,resets=0;

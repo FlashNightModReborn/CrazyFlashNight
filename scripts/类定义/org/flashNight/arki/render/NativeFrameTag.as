@@ -35,6 +35,9 @@
         }
         var nextEpoch:Number = Math.floor(epoch) % 65536;
         var nextFrame:Number = Math.floor(frame) % 16777216;
+        if (clip != null && clip._parent != root) {
+            reset();
+        }
         if (clip != null && currentEpoch == nextEpoch && currentFrame == nextFrame) {
             clip._visible = true; return;
         }
@@ -59,7 +62,27 @@
     }
 
     public static function reset():Void {
-        if (clip != null) clip.removeMovieClip();
+        if (cells != null) {
+            for (var i:Number = 0; i < cells.length; i++) {
+                if (cells[i] != null) {
+                    cells[i].clear();
+                }
+            }
+        }
+        if (clip != null) {
+            clip._visible = false;
+            var parentClip:MovieClip = clip._parent;
+            if (parentClip != null && clip.getDepth() >= 1048576) {
+                var removableDepth:Number = 1048575;
+                while (removableDepth >= 0 && parentClip.getInstanceAtDepth(removableDepth) != undefined) {
+                    removableDepth--;
+                }
+                if (removableDepth >= 0) {
+                    clip.swapDepths(removableDepth);
+                }
+            }
+            clip.removeMovieClip();
+        }
         clip = null; cells = null; currentEpoch = -2; currentFrame = -2;
     }
 

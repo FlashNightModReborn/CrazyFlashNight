@@ -14,8 +14,15 @@ internal static class ContentViewportRegression
     static string Output="";
     static int ExitCode;
     static readonly List<string> Failures=new();
-    record Case(string Name,int W,int H,int OW,int OH,string Tag="fit",bool? ExpectedBullet=true,int Lead=0,bool Recover=false,bool Hud=false,bool Sync=true,bool Post=false,float CamX=0,float CamY=0,float CamScale=1,int SourceEpoch=3,int SourceFrame=42,int OmitFrame=-1,uint ExpectedTagStatus=1);
+    record Case(string Name,int W,int H,int OW,int OH,string Tag="fit",bool? ExpectedBullet=true,int Lead=0,bool Recover=false,bool Hud=false,bool Sync=true,bool Post=false,float CamX=0,float CamY=0,float CamScale=1,int SourceEpoch=3,int SourceFrame=42,int OmitFrame=-1,uint ExpectedTagStatus=1,int SnapshotStartFrame=42,int SnapshotEpoch=3,bool DistinctHistory=false,int ChainFrameOffset=0,int OffX=0,int OffY=0,int FullW=0,int FullH=0);
     static readonly Case[] Cases={
+        new("identity-before-wrap",1024,576,1024,576,SourceFrame:16777215,SnapshotStartFrame:16777215),
+        new("identity-at-wrap",1024,576,1024,576,SourceFrame:16777216,SnapshotStartFrame:16777216),
+        new("identity-after-wrap-odd",1024,576,1024,576,SourceFrame:16777217,SnapshotStartFrame:16777217),
+        new("identity-after-wrap-alias",1024,576,1024,576,Lead:1,SourceFrame:16777216,SnapshotStartFrame:16777216,DistinctHistory:true),
+        new("identity-large-epoch",1024,576,1024,576,SourceEpoch:16777217,SnapshotEpoch:16777217),
+        new("identity-chain-raw-mismatch",1024,576,1024,576,ExpectedBullet:false,SourceFrame:16777216,ExpectedTagStatus:5,SnapshotStartFrame:16777217,ChainFrameOffset:-1),
+        new("identity-chain-full-cycle-mismatch",1024,576,1024,576,ExpectedBullet:false,ExpectedTagStatus:4,ChainFrameOffset:16777216),
         new("base-1024",1024,576,1024,576),
         new("360p-to-1600",640,360,1600,900),
         new("540p-to-1600",960,540,1600,900),
@@ -44,7 +51,9 @@ internal static class ContentViewportRegression
         new("epoch-mismatch",1024,576,1024,576,ExpectedBullet:false,SourceEpoch:4,ExpectedTagStatus:7),
         new("cas-feedback-360p",640,360,1600,900,Post:true),
         new("camera-pan-zoom-16x9",1280,720,1280,720,CamX:25,CamY:-10,CamScale:.8f),
-        new("camera-pan-zoom-wide",1088,576,1088,576,CamX:25,CamY:-10,CamScale:.8f)
+        new("camera-pan-zoom-wide",1088,576,1088,576,CamX:25,CamY:-10,CamScale:.8f),
+        new("client-clip-tl-1px",1023,599,1280,750,OffX:1,OffY:1,FullW:1024,FullH:600),
+        new("client-clip-br-1px",1023,599,1280,750,OffX:0,OffY:0,FullW:1024,FullH:600)
     };
     internal static int Run(string[] args)
     {
@@ -85,13 +94,17 @@ internal static class ContentViewportRegression
     {source.Test=test;source.ClientSize=new(test.W,test.H);target.ClientSize=new(test.OW,test.OH);source.Refresh();GdiFlush();}
     static void Setup(nint session,Case test)
     {
-        ProbeSetMode(session,0);Check(ProbeSetViewport(session,0,0,test.W,test.H,0),"viewport");
+        ProbeSetMode(session,0);
+        if(test.FullW>0 && test.FullH>0){
+            Check(ProbeSetViewportGeometry(session,0,0,test.W,test.H,test.OffX,test.OffY,test.FullW,test.FullH,test.W,test.H,0),"viewport geometry");
+            Check(ProbeSetClientGeometry(session,test.OffX,test.OffY,test.FullW,test.FullH),"client geometry");
+        } else Check(ProbeSetViewport(session,0,0,test.W,test.H,0),"viewport");
         Check(ProbeSetMatrix(session,new float[]{1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1}),"matrix");
         Check(ProbeSetPostprocess(session,test.Post?1:0,.4f,test.Post?1:0),"postprocess");
         var style=new float[32];style[0]=-12;style[1]=-5;style[2]=12;style[3]=0;style[4]=-12;style[5]=5;style[7]=1;
         Check(ProbeSetBulletStyles(session,style,1),"styles");
-        for(int frame=42;frame<=42+test.Lead;frame++)if(frame!=test.OmitFrame)SubmitBullet(session,test,frame);
-        if(test.Recover)SubmitBullet(session,test,42);
+        for(int offset=0;offset<=test.Lead;offset++){int frame=checked(test.SnapshotStartFrame+offset);if(frame!=test.OmitFrame)SubmitBullet(session,test,frame);}
+        if(test.Recover)SubmitBullet(session,test,test.SnapshotStartFrame);
         byte[] redAtlas={0,0,255,255,0,0,255,255,0,0,255,255,0,0,255,255};
         Check(ProbeSetCombatFxAtlas(session,redAtlas,2,2,redAtlas.Length),"fx atlas");
         float[] fx={924,400,0,1,1,1,1,0,-5,-5,10,10,0,0,1,1};
@@ -102,7 +115,12 @@ internal static class ContentViewportRegression
             Check(ProbeSetHudRaster(session,0,hud,32,10,128,4,test.OH-12),"hud");}
     }
     static void SubmitBullet(nint session,Case test,int frame)
-    {Check(ProbeSetBulletFrameV2(session,new float[]{0,100,160,0,100,100,100,0},1,test.CamX,test.CamY,test.CamScale,test.Sync?3:-1,test.Sync?frame:-1,test.Sync?9:-1,test.Sync?frame:-1),"bullet frame");}
+    {
+        float x=test.DistinctHistory?100+64*(frame-test.SnapshotStartFrame):100;
+        int chainFrame=checked(frame+test.ChainFrameOffset);
+        Check(ProbeSetBulletFrameV2(session,new float[]{0,x,160,0,100,100,100,0},1,test.CamX,test.CamY,test.CamScale,test.Sync?test.SnapshotEpoch:-1,test.Sync?frame:-1,test.Sync?9:-1,test.Sync?chainFrame:-1),"bullet frame");
+    }
+    static double ExpectedBulletX(Case test)=>test.DistinctHistory?100+64*(test.SourceFrame-test.SnapshotStartFrame):100;
     static async Task Capture(Source source,nint session,Case test)
     {
         byte[]? raw=null,composed=null;uint rw=0,rh=0,cw=0,ch=0;
@@ -113,10 +131,13 @@ internal static class ContentViewportRegression
             raw=Grab(session,false,out rw,out rh);composed=Grab(session,true,out cw,out ch);
             if(raw!=null&&composed!=null&&rw==test.W&&rh==test.H&&cw==test.OW&&ch==test.OH&&i>=5)break;
         }
-        if(raw==null||composed==null||rw!=test.W||rh!=test.H||cw!=test.OW||ch!=test.OH)throw new Exception(test.Name+": readback geometry timeout");
+        if(raw==null||composed==null||rw!=test.W||rh!=test.H||cw!=test.OW||ch!=test.OH){
+            ProbeGetCaptureSize(session,out int captureW,out int captureH,out ulong captureGen);
+            throw new Exception(test.Name+": readback geometry timeout; source="+rw+"x"+rh+" composite="+cw+"x"+ch+" observedCapture="+captureW+"x"+captureH+" generation="+captureGen);
+        }
         Save(raw,(int)rw,(int)rh,Path.Combine(Output,test.Name+"-source.png"));
         Save(composed,(int)cw,(int)ch,Path.Combine(Output,test.Name+"-composite.png"));
-        var bullet=Feature(composed,test,"bullet",100,160,(r,g,b)=>g>100&&g>r*2&&g>b*2);
+        var bullet=Feature(composed,test,"bullet",ExpectedBulletX(test),160,(r,g,b)=>g>100&&g>r*2&&g>b*2);
         var fx=Feature(composed,test,"sprite",924,400,(r,g,b)=>r>180&&g<60&&b<60);
         var ray=Feature(composed,test,"ray",768,128,(r,g,b)=>b>100&&r<80&&g<80);
         int tagPixels=0,hudPixels=0;
@@ -166,7 +187,7 @@ internal static class ContentViewportRegression
             using var bmp=new Bitmap(Path.Combine(folder,test.Name+"-composite.png"));
             var bytes=new byte[bmp.Width*bmp.Height*4];var locked=bmp.LockBits(new(0,0,bmp.Width,bmp.Height),ImageLockMode.ReadOnly,PixelFormat.Format32bppArgb);
             try{for(int y=0;y<bmp.Height;y++)Marshal.Copy(locked.Scan0+y*locked.Stride,bytes,y*bmp.Width*4,bmp.Width*4);}finally{bmp.UnlockBits(locked);}
-            row["bullet"]=JsonSerializer.SerializeToNode(Feature(bytes,test,"bullet",100,160,(r,g,b)=>g>100&&g>r*2&&g>b*2));
+            row["bullet"]=JsonSerializer.SerializeToNode(Feature(bytes,test,"bullet",ExpectedBulletX(test),160,(r,g,b)=>g>100&&g>r*2&&g>b*2));
             row["fx"]=JsonSerializer.SerializeToNode(Feature(bytes,test,"sprite",924,400,(r,g,b)=>r>180&&g<60&&b<60));
             row["ray"]=JsonSerializer.SerializeToNode(Feature(bytes,test,"ray",768,128,(r,g,b)=>b>100&&r<80&&g<80));
         }
@@ -175,16 +196,18 @@ internal static class ContentViewportRegression
     }
     static PointF StageToOutput(Case t,double x,double y)
     {
-        double inner=Math.Min(t.W/1024.0,t.H/576.0),ix=(t.W-1024*inner)/2,iy=(t.H-576*inner)/2;
-        double outer=Math.Min(t.OW/(double)t.W,t.OH/(double)t.H),ox=(t.OW-t.W*outer)/2,oy=(t.OH-t.H*outer)/2;
+        int fullW=t.FullW>0?t.FullW:t.W,fullH=t.FullH>0?t.FullH:t.H;
+        double inner=Math.Min(fullW/1024.0,fullH/576.0),ix=(fullW-1024*inner)/2,iy=(fullH-576*inner)/2;
+        double outer=Math.Min(t.OW/(double)fullW,t.OH/(double)fullH),ox=(t.OW-fullW*outer)/2,oy=(t.OH-fullH*outer)/2;
         return new((float)(ox+(ix+x*inner)*outer),(float)(oy+(iy+y*inner)*outer));
     }
     static double PointerError(Case t)
     {
-        double max=0,inner=Math.Min(t.W/1024.0,t.H/576.0),ix=(t.W-1024*inner)/2,iy=(t.H-576*inner)/2;
+        int fullW=t.FullW>0?t.FullW:t.W,fullH=t.FullH>0?t.FullH:t.H;
+        double max=0,inner=Math.Min(fullW/1024.0,fullH/576.0),ix=(fullW-1024*inner)/2,iy=(fullH-576*inner)/2;
         foreach(var p in new[]{new Point(100,160),new Point(768,128),new Point(924,400),new Point(512,288)}){
             var output=StageToOutput(t,p.X,p.Y);
-            var mapped=WorldPointerMapper.Map(new((int)Math.Floor(output.X),(int)Math.Floor(output.Y)),new(t.OW,t.OH),new(t.W,t.H));
+            var mapped=WorldPointerMapper.Map(new((int)Math.Floor(output.X),(int)Math.Floor(output.Y)),new(t.OW,t.OH),new(fullW,fullH));
             double ex=(mapped.X-ix)/inner-p.X,ey=(mapped.Y-iy)/inner-p.Y;max=Math.Max(max,Math.Sqrt(ex*ex+ey*ey));
         }return max;
     }
@@ -276,7 +299,7 @@ internal static class ContentViewportRegression
     sealed class Source:Quiet{
         internal Case Test=Cases[0];
         public Source(){Text="Owned geometry audit source";DoubleBuffered=true;}
-        protected override void OnPaint(PaintEventArgs e){var g=e.Graphics;g.Clear(Color.Black);double s=Math.Min(ClientSize.Width/1024.0,ClientSize.Height/576.0),left=(ClientSize.Width-1024*s)/2,top=(ClientSize.Height-576*s)/2;
+        protected override void OnPaint(PaintEventArgs e){var g=e.Graphics;g.Clear(Color.Black);int fullW=Test.FullW>0?Test.FullW:ClientSize.Width,fullH=Test.FullH>0?Test.FullH:ClientSize.Height;double s=Math.Min(fullW/1024.0,fullH/576.0),left=(fullW-1024*s)/2-Test.OffX,top=(fullH-576*s)/2-Test.OffY;
             using var bg=new SolidBrush(Color.FromArgb(24,40,56));g.FillRectangle(bg,(float)left,(float)top,(float)(1024*s),(float)(576*s));
             foreach(var p in new[]{new Point(100,160),new Point(924,400),new Point(768,128)}){float x=(float)(left+(p.X*Test.CamScale+Test.CamX)*s),y=(float)(top+(p.Y*Test.CamScale+Test.CamY)*s);g.DrawLine(Pens.White,x-12,y,x+12,y);g.DrawLine(Pens.White,x,y-12,x,y+12);}
             if(Test.Tag=="none")return;
@@ -291,7 +314,10 @@ internal static class ContentViewportRegression
     [DllImport("probe",CallingConvention=CallingConvention.Cdecl)] static extern void ProbeStop(nint handle);
     [DllImport("probe",CallingConvention=CallingConvention.Cdecl)] static extern void ProbeSetMode(nint handle,int mode);
     [DllImport("probe",CallingConvention=CallingConvention.Cdecl)] static extern int ProbeSetViewport(nint handle,int x,int y,int w,int h,double fence);
+    [DllImport("probe",CallingConvention=CallingConvention.Cdecl)] static extern int ProbeSetClientGeometry(nint handle,int offX,int offY,int fullW,int fullH);
+    [DllImport("probe",CallingConvention=CallingConvention.Cdecl)] static extern int ProbeSetViewportGeometry(nint handle,int x,int y,int w,int h,int offX,int offY,int fullW,int fullH,int capW,int capH,double fence);
     [DllImport("probe",CallingConvention=CallingConvention.Cdecl)] static extern void ProbeHoldViewport(nint handle);
+    [DllImport("probe",CallingConvention=CallingConvention.Cdecl)] static extern int ProbeGetCaptureSize(nint handle,out int w,out int h,out ulong generation);
     [DllImport("probe",CallingConvention=CallingConvention.Cdecl)] static extern int ProbeSetMatrix(nint handle,float[] settings);
     [DllImport("probe",CallingConvention=CallingConvention.Cdecl)] static extern int ProbeSetPostprocess(nint handle,int cas,float sharp,int feedback);
     [DllImport("probe",CallingConvention=CallingConvention.Cdecl)] static extern int ProbeSetBulletStyles(nint handle,float[] styles,int count);

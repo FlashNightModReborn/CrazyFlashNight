@@ -67,5 +67,67 @@ namespace CF7Launcher.Guardian.WorldCompositor
     // Local result of posting one packet to the projector thread. Posted means "in the
     // endpoint's message queue" only; endpoint receipt is observed separately through
     // the shared consumedSeq counter. Nothing here may be called delivered.
+    internal readonly struct WorldGeometrySnapshot
+    {
+        internal readonly Rectangle OutputScreen;
+        internal readonly Rectangle SourceScreen;
+        internal readonly Rectangle CaptureFrame;
+        internal readonly Rectangle Crop;
+        internal readonly Point ClientOffset;
+
+        internal WorldGeometrySnapshot(Rectangle outputScreen,Rectangle sourceScreen,Rectangle captureFrame,Rectangle crop,Point clientOffset)
+        {
+            OutputScreen=outputScreen;
+            SourceScreen=sourceScreen;
+            CaptureFrame=captureFrame;
+            Crop=crop;
+            ClientOffset=clientOffset;
+        }
+
+        internal Size FullClientSize => SourceScreen.Size;
+        internal Size CroppedSize => Crop.Size;
+        internal bool IsClientClipped => ClientOffset.X!=0 || ClientOffset.Y!=0 || Crop.Size!=SourceScreen.Size;
+
+        internal RectangleF ComputeOutputViewport(Size outputClient)
+        {
+            Size basis=FullClientSize.Width>=1 && FullClientSize.Height>=1 ? FullClientSize : CroppedSize;
+            if(outputClient.Width<1 || outputClient.Height<1 || basis.Width<1 || basis.Height<1) return RectangleF.Empty;
+            float scale=Math.Min((float)outputClient.Width/basis.Width,(float)outputClient.Height/basis.Height);
+            float fullW=basis.Width*scale;
+            float fullH=basis.Height*scale;
+            float fullX=(outputClient.Width-fullW)*0.5f;
+            float fullY=(outputClient.Height-fullH)*0.5f;
+            return new RectangleF(fullX+ClientOffset.X*scale,fullY+ClientOffset.Y*scale,CroppedSize.Width*scale,CroppedSize.Height*scale);
+        }
+
+        internal RectangleF ComputeContentViewport(Size outputClient)
+        {
+            Size basis=FullClientSize.Width>=1 && FullClientSize.Height>=1 ? FullClientSize : CroppedSize;
+            if(outputClient.Width<1 || outputClient.Height<1 || basis.Width<1 || basis.Height<1) return RectangleF.Empty;
+            float outScale=Math.Min((float)outputClient.Width/basis.Width,(float)outputClient.Height/basis.Height);
+            float outW=basis.Width*outScale;
+            float outH=basis.Height*outScale;
+            float outX=(outputClient.Width-outW)*0.5f;
+            float outY=(outputClient.Height-outH)*0.5f;
+            float srcScale=Math.Min(basis.Width/1024f,basis.Height/576f);
+            float stageW=1024f*srcScale;
+            float stageH=576f*srcScale;
+            float stageX=(basis.Width-stageW)*0.5f;
+            float stageY=(basis.Height-stageH)*0.5f;
+            return new RectangleF(outX+stageX*outScale,outY+stageY*outScale,stageW*outScale,stageH*outScale);
+        }
+
+        internal RectangleF ComputeSourceStageRect()
+        {
+            Size basis=FullClientSize.Width>=1 && FullClientSize.Height>=1 ? FullClientSize : CroppedSize;
+            if(basis.Width<1 || basis.Height<1) return RectangleF.Empty;
+            float scale=Math.Min(basis.Width/1024f,basis.Height/576f);
+            float stageW=1024f*scale;
+            float stageH=576f*scale;
+            float stageX=(basis.Width-stageW)*0.5f-ClientOffset.X;
+            float stageY=(basis.Height-stageH)*0.5f-ClientOffset.Y;
+            return new RectangleF(stageX,stageY,stageW,stageH);
+        }
+    }
     internal enum PointerPostStatus { Posted, BridgeClosed, SourceGone, PostFailed }
 }

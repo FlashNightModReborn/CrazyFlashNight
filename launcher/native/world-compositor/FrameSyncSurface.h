@@ -11,12 +11,38 @@ public:
         desc.Usage=D3D11_USAGE_DEFAULT;
         winrt::check_hresult(device->CreateBuffer(&desc,nullptr,params_.put()));
     }
+    static D3D11_VIEWPORT ResolveSourceStageViewport(int sourceWidth,int sourceHeight,
+            int clientOffsetX=0,int clientOffsetY=0,int fullClientWidth=0,int fullClientHeight=0) {
+        const bool validClient=fullClientWidth>=sourceWidth && fullClientHeight>=sourceHeight
+            && clientOffsetX>=0 && clientOffsetY>=0
+            && clientOffsetX+sourceWidth<=fullClientWidth
+            && clientOffsetY+sourceHeight<=fullClientHeight;
+        const int clientW=validClient?fullClientWidth:sourceWidth;
+        const int clientH=validClient?fullClientHeight:sourceHeight;
+        const int offX=validClient?clientOffsetX:0;
+        const int offY=validClient?clientOffsetY:0;
+        const float scale=std::min(static_cast<float>(clientW)/1024.f,static_cast<float>(clientH)/576.f);
+        const float w=1024.f*scale,h=576.f*scale;
+        return D3D11_VIEWPORT{(clientW-w)*0.5f-offX,(clientH-h)*0.5f-offY,w,h,0.f,1.f};
+    }
     void UpdateParams(ID3D11DeviceContext* context,const int* identity,int sourceWidth,int sourceHeight,
-            const D3D11_VIEWPORT& viewport,bool enabled,bool hideSourceTag) {
+            const D3D11_VIEWPORT& viewport,bool enabled,bool hideSourceTag,
+            int clientOffsetX=0,int clientOffsetY=0,int fullClientWidth=0,int fullClientHeight=0) {
+        (void)viewport;
+        const auto sourceStage=ResolveSourceStageViewport(
+            sourceWidth,sourceHeight,clientOffsetX,clientOffsetY,fullClientWidth,fullClientHeight);
+        // Preserve full int identities in the CPU history/diagnostics. Only the
+        // packed GPU tag is modulo encoded, before conversion to float loses bits.
+        const float epoch=identity[0]<0 ? -1.f : static_cast<float>(static_cast<uint32_t>(identity[0])&0xFFFFu);
+        const float frame=identity[1]<0 ? -1.f : static_cast<float>(static_cast<uint32_t>(identity[1])&0xFFFFFFu);
+        const float chainEpoch=identity[2]<0 ? -1.f : static_cast<float>(static_cast<uint32_t>(identity[2])&0xFFFFu);
+        // Test exact CPU equality first: different full frames with equal low
+        // bits must not become an apparently coherent ordinary/chain snapshot.
+        const float chainFrame=identity[2]>=0 && identity[3]==identity[1] ? frame : -1.f;
         float values[12]{
-            static_cast<float>(identity[0]),static_cast<float>(identity[1]),static_cast<float>(identity[2]),static_cast<float>(identity[3]),
-            static_cast<float>(sourceWidth),static_cast<float>(sourceHeight),viewport.Width,viewport.Height,
-            viewport.TopLeftX,viewport.TopLeftY,enabled?1.f:0.f,hideSourceTag?1.f:0.f};
+            epoch,frame,chainEpoch,chainFrame,
+            static_cast<float>(sourceWidth),static_cast<float>(sourceHeight),sourceStage.Width,sourceStage.Height,
+            sourceStage.TopLeftX,sourceStage.TopLeftY,enabled?1.f:0.f,hideSourceTag?1.f:0.f};
         context->UpdateSubresource(params_.get(),0,nullptr,values,0,0);
         auto buffer=params_.get();
         // b7 belongs to night vision. b8 is shared by source sampling and bullets.

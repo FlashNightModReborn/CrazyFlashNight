@@ -199,6 +199,9 @@ __declspec(dllexport) uint32_t __cdecl ProbeGetAbiVersion();
 __declspec(dllexport) void* __cdecl ProbeStart(HWND source, DWORD sourcePid, HWND output, uint32_t vendor);
 __declspec(dllexport) int __cdecl ProbeSetCrop(void* handle, int x, int y, int width, int height);
 __declspec(dllexport) int __cdecl ProbeSetViewport(void* handle, int x, int y, int width, int height, double notBefore);
+__declspec(dllexport) int __cdecl ProbeSetClientGeometry(void* handle, int offsetX, int offsetY, int fullWidth, int fullHeight);
+__declspec(dllexport) int __cdecl ProbeSetViewportGeometry(void* handle, int x, int y, int width, int height,
+    int offsetX, int offsetY, int fullWidth, int fullHeight, int captureWidth, int captureHeight, double notBefore);
 __declspec(dllexport) void __cdecl ProbeHoldViewport(void* handle);
 __declspec(dllexport) int __cdecl ProbeSetSharpness(void* handle, float value);
 __declspec(dllexport) void __cdecl ProbeSetMode(void* handle, int mode);

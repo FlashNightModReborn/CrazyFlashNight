@@ -94,6 +94,7 @@ struct FrameTag {
     bool valid;
 };
 float4 SourceContentRect(float2 size) {
+    if(bFrameSize.z>0.0 && bFrameSize.w>0.0) return float4(bView.xy,bFrameSize.zw);
     float scale=min(size.x/1024.0,size.y/576.0);
     float2 content=float2(1024.0,576.0)*scale;
     return float4((size-content)*0.5,content);

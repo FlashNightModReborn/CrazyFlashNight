@@ -1,4 +1,5 @@
 #pragma once
+#include "CasSourceStage.h"
 // Also projected into the generated laboratory renderer.
 constexpr double NightVisionScanCycleSeconds=7.0;
 // Bounded GPU camera stage. No readback, per-unit texture, or CPU color scan.
@@ -15,21 +16,22 @@ class NightVisionStage {
     winrt::com_ptr<ID3D11Buffer> constants_;
     winrt::com_ptr<ID3D11SamplerState> sampler_;
     int width_=0,height_=0,maskWidth_=0,maskHeight_=0,gainIndex_=0;
+    StageAllocationGuard allocGuard_;
     uint64_t version_=0,epoch_=0;
     double lastMs_=0;
     double scanSeconds_=0;
     bool exposureValid_=false;
     bool adaptive_=false,edgesEnabled_=false;
-    static void Make(ID3D11Device* device,Surface& s,int w,int h,DXGI_FORMAT format) {
+    static void Make(ID3D11Device* device,Surface& s,int w,int h,DXGI_FORMAT format,bool createTarget=true) {
         D3D11_TEXTURE2D_DESC d{};d.Width=w;d.Height=h;d.MipLevels=1;d.ArraySize=1;
         d.Format=format;d.SampleDesc.Count=1;d.Usage=D3D11_USAGE_DEFAULT;
-        d.BindFlags=D3D11_BIND_SHADER_RESOURCE|D3D11_BIND_RENDER_TARGET;
+        d.BindFlags=D3D11_BIND_SHADER_RESOURCE|(createTarget?D3D11_BIND_RENDER_TARGET:0);
         winrt::check_hresult(device->CreateTexture2D(&d,nullptr,s.texture.put()));
-        winrt::check_hresult(device->CreateRenderTargetView(s.texture.get(),nullptr,s.target.put()));
+        if(createTarget)winrt::check_hresult(device->CreateRenderTargetView(s.texture.get(),nullptr,s.target.put()));
         winrt::check_hresult(device->CreateShaderResourceView(s.texture.get(),nullptr,s.source.put()));
     }
     void Initialize(ID3D11Device* device) {
-        if(constants_)return;
+        if(sampler_)return;
         auto vs=CompositorShaders::NVS;
         winrt::check_hresult(device->CreateVertexShader(vs.data,vs.size,nullptr,vertex_.put()));
         auto make=[&](CompositorShaders::Bytecode code,winrt::com_ptr<ID3D11PixelShader>& p) {
@@ -55,10 +57,14 @@ public:
             && p[8]>=0 && p[8]<=1 && p[9]>=0 && p[9]<=1 && p[10]>=0 && p[10]<=1 && p[11]>=.25f && p[11]<=8
             && p[12]>=.15f && p[12]<=1 && p[13]>=.05f && p[13]<=2 && p[14]>=.01f && p[14]<=.5f && p[15]>=0 && p[15]<=.08f;
     }
-    void Reset() {
+    void InjectAllocationFaultForTests(int count=1,HRESULT hr=E_OUTOFMEMORY) noexcept {
+        allocGuard_.InjectFault(count,hr);
+    }
+    void Reset(bool clearFailureLatch=true) noexcept {
         world_=Surface{};edge_=Surface{};blur_=Surface{};gain_[0]=Surface{};gain_[1]=Surface{};
         guide_[0]=Surface{};guide_[1]=Surface{};features_=Surface{};adaptive_=false;edgesEnabled_=false;
         width_=height_=maskWidth_=maskHeight_=0;exposureValid_=false;lastMs_=0;scanSeconds_=0;
+        if(clearFailureLatch)allocGuard_.ClearLatch();
     }
     uint64_t TextureBytes() const {return width_?static_cast<uint64_t>(width_)*height_*4+static_cast<uint64_t>(maskWidth_)*maskHeight_*((edgesEnabled_?2:0)+(adaptive_?8:0)+(features_.texture?8:0))+32:0;}
     ID3D11Texture2D* GainForDiagnostics() const {return gain_[gainIndex_].texture.get();}
@@ -68,32 +74,46 @@ public:
     void Apply(ID3D11Device* device,ID3D11DeviceContext* context,ID3D11Texture2D* composed,
             ID3D11RenderTargetView* output,const D3D11_VIEWPORT& viewport,const float* settings,
             uint64_t version,uint64_t epoch,double nowMs,bool lutActive) {
-        if(settings[0]!=1){Reset();return;}
-        Initialize(device);
+        if(settings[0]!=1){Reset(true);return;}
         D3D11_TEXTURE2D_DESC d{};composed->GetDesc(&d);
+        const int w=static_cast<int>(d.Width),h=static_cast<int>(d.Height);
+        if(allocGuard_.IsLatched(w,h)) {
+            context->OMSetRenderTargets(1,&output,nullptr);context->RSSetViewports(1,&viewport);
+            return;
+        }
         bool edges=settings[1]>0;
         bool adaptive=settings[3]>0 && (settings[1]>0 || settings[6]<1);
         int mw=settings[1]>0 || adaptive?std::max(1,std::min(1024,static_cast<int>(viewport.Width))):1;
         int mh=settings[1]>0 || adaptive?std::max(1,std::min(576,static_cast<int>(viewport.Height))):1;
-        if(width_!=static_cast<int>(d.Width) || height_!=static_cast<int>(d.Height) || maskWidth_!=mw || maskHeight_!=mh || adaptive_!=adaptive || edgesEnabled_!=edges) {
-            Reset();width_=d.Width;height_=d.Height;
-            maskWidth_=mw;maskHeight_=mh;
-            Make(device,world_,width_,height_,d.Format);
-            edgesEnabled_=edges;
-            if(edgesEnabled_) {
-                Make(device,edge_,maskWidth_,maskHeight_,DXGI_FORMAT_R8_UNORM);
-                Make(device,blur_,maskWidth_,maskHeight_,DXGI_FORMAT_R8_UNORM);
-            }
-            Make(device,gain_[0],1,1,DXGI_FORMAT_R32G32B32A32_FLOAT);
-            Make(device,gain_[1],1,1,DXGI_FORMAT_R32G32B32A32_FLOAT);
-            adaptive_=adaptive;
-            if(adaptive_) {
-                Make(device,guide_[0],mw,mh,DXGI_FORMAT_R8G8B8A8_UNORM);
-                Make(device,guide_[1],mw,mh,DXGI_FORMAT_R8G8B8A8_UNORM);
-            }
+        bool needSurfaces=width_!=w || height_!=h || maskWidth_!=mw || maskHeight_!=mh || adaptive_!=adaptive || edgesEnabled_!=edges;
+        bool needFeatures=adaptive && settings[1]>0 && (needSurfaces || !features_.texture);
+        if(!sampler_ || needSurfaces || needFeatures || allocGuard_.HasPendingFault()) {
+            if(!allocGuard_.TryAllocate(device,w,h,[&] {
+                Initialize(device);
+                if(needSurfaces) {
+                    Reset(true);width_=w;height_=h;
+                    maskWidth_=mw;maskHeight_=mh;
+                    Make(device,world_,width_,height_,d.Format,false);
+                    edgesEnabled_=edges;
+                    if(edgesEnabled_) {
+                        Make(device,edge_,maskWidth_,maskHeight_,DXGI_FORMAT_R8_UNORM);
+                        Make(device,blur_,maskWidth_,maskHeight_,DXGI_FORMAT_R8_UNORM);
+                    }
+                    Make(device,gain_[0],1,1,DXGI_FORMAT_R32G32B32A32_FLOAT);
+                    Make(device,gain_[1],1,1,DXGI_FORMAT_R32G32B32A32_FLOAT);
+                    adaptive_=adaptive;
+                    if(adaptive_) {
+                        Make(device,guide_[0],mw,mh,DXGI_FORMAT_R8G8B8A8_UNORM);
+                        Make(device,guide_[1],mw,mh,DXGI_FORMAT_R8G8B8A8_UNORM);
+                    }
+                }
+                if(adaptive_ && settings[1]>0 && !features_.texture)
+                    Make(device,features_,mw,mh,DXGI_FORMAT_R16G16B16A16_FLOAT);
+            },[&] {
+                Reset(false);
+                context->OMSetRenderTargets(1,&output,nullptr);context->RSSetViewports(1,&viewport);
+            })) return;
         }
-        if(adaptive_ && settings[1]>0 && !features_.texture)
-            Make(device,features_,mw,mh,DXGI_FORMAT_R16G16B16A16_FLOAT);
         if(settings[1]<=0)features_=Surface{};
         bool reset=!exposureValid_ || version_!=version || epoch_!=epoch || nowMs-lastMs_>500;
         if(reset) {const float one[]{1,0,0,1};context->ClearRenderTargetView(gain_[0].target.get(),one);
@@ -118,6 +138,8 @@ public:
         auto draw=[&](ID3D11RenderTargetView* target,ID3D11PixelShader* shader,float w,float h) {
             context->OMSetRenderTargets(1,&target,nullptr);D3D11_VIEWPORT v{0,0,w,h,0,1};context->RSSetViewports(1,&v);
             context->PSSetShader(shader,nullptr,0);context->Draw(3,0);
+            // A completed target may be the next pass input; detach before callers bind its SRV.
+            context->OMSetRenderTargets(0,nullptr,nullptr);
         };
         auto previousGain=gain_[gainIndex_].source.get();context->PSSetShaderResources(4,1,&previousGain);
         int next=1-gainIndex_;draw(gain_[next].target.get(),meterShader_.get(),1,1);

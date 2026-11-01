@@ -20,10 +20,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly HudCostReadDelegate _readHudCost;
         private readonly CaptureSizeDelegate _captureSize;
         private readonly CropDelegate _crop;
+        private readonly ClientGeometryDelegate _clientGeometry;
         private readonly ModeDelegate _mode;
         private readonly MatrixDelegate _matrix;
         private readonly ActiveDelegate _active;
         private readonly ViewportDelegate _viewport;
+        private readonly ViewportGeometryDelegate _viewportGeometry;
         private readonly SharpnessDelegate _sharpness;
         private readonly PostprocessDelegate _postprocess;
         private readonly FeedbackResetDelegate _resetFeedback;
@@ -72,8 +74,9 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _readHudCost=TryExport<HudCostReadDelegate>("ProbeGetHudCostStats");
                 _captureSize=Export<CaptureSizeDelegate>("ProbeGetCaptureSize"); // reject an old unpaired DLL
                 _crop = Export<CropDelegate>("ProbeSetCrop"); _mode = Export<ModeDelegate>("ProbeSetMode");
+                _clientGeometry=TryExport<ClientGeometryDelegate>("ProbeSetClientGeometry");
                 _matrix=Export<MatrixDelegate>("ProbeSetMatrix"); _active=Export<ActiveDelegate>("ProbeSetActive");
-                _viewport=Export<ViewportDelegate>("ProbeSetViewport"); _sharpness=Export<SharpnessDelegate>("ProbeSetSharpness");
+                _viewport=Export<ViewportDelegate>("ProbeSetViewport"); _viewportGeometry=TryExport<ViewportGeometryDelegate>("ProbeSetViewportGeometry"); _sharpness=Export<SharpnessDelegate>("ProbeSetSharpness");
                 _postprocess=Export<PostprocessDelegate>("ProbeSetPostprocessV2");
                 _resetFeedback=Export<FeedbackResetDelegate>("ProbeResetFeedback");
                 _readPostprocess=Export<PostprocessReadDelegate>("ProbeGetPostprocessStats");
@@ -202,6 +205,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (_session == IntPtr.Zero || _crop(_session,rect.X,rect.Y,rect.Width,rect.Height) != 1)
                 throw new InvalidOperationException("Invalid compositor crop");
         }
+        internal void ClientGeometry(System.Drawing.Point offset,System.Drawing.Size fullClientSize)
+        {
+            if (_session == IntPtr.Zero) throw new ObjectDisposedException(nameof(NativeCompositorSession));
+            if (_clientGeometry != null && _clientGeometry(_session,offset.X,offset.Y,fullClientSize.Width,fullClientSize.Height) != 1)
+                throw new InvalidOperationException("Invalid compositor client geometry");
+        }
         internal static int RequestBorderless(string modulePath)
         {
             IntPtr module=NativeLibrary.Load(Path.GetFullPath(modulePath));
@@ -210,7 +219,26 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         internal void Viewport(System.Drawing.Rectangle rect,double notBefore)
         {
+            if (_session == IntPtr.Zero) throw new ObjectDisposedException(nameof(NativeCompositorSession));
             if (_viewport(_session,rect.X,rect.Y,rect.Width,rect.Height,notBefore)!=1) throw new InvalidOperationException("Invalid render viewport");
+        }
+        internal void Viewport(WorldGeometrySnapshot geometry,double notBefore)
+        {
+            if (_session == IntPtr.Zero) throw new ObjectDisposedException(nameof(NativeCompositorSession));
+            var crop=geometry.Crop;
+            var offset=geometry.ClientOffset;
+            var fullClient=geometry.FullClientSize;
+            var capture=geometry.CaptureFrame.Size;
+            if (_viewportGeometry!=null)
+            {
+                if (_viewportGeometry(_session,crop.X,crop.Y,crop.Width,crop.Height,
+                    offset.X,offset.Y,fullClient.Width,fullClient.Height,
+                    capture.Width,capture.Height,notBefore)!=1)
+                    throw new InvalidOperationException("Invalid render viewport geometry");
+                return;
+            }
+            Viewport(crop,notBefore);
+            ClientGeometry(offset,fullClient);
         }
         internal void HoldViewport() { _holdViewport(_session); }
         internal void Sharpness(float value) { if (_sharpness(_session,value)!=1) throw new InvalidOperationException("Invalid sharpness"); }
@@ -498,6 +526,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             IntPtr handle,ref HudRasterStats stats);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate uint VersionDelegate();
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ViewportDelegate(IntPtr handle,int x,int y,int width,int height,double notBefore);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ViewportGeometryDelegate(IntPtr handle,int x,int y,int width,int height,int offsetX,int offsetY,int fullWidth,int fullHeight,int captureWidth,int captureHeight,double notBefore);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int SharpnessDelegate(IntPtr handle,float value);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int PermissionDelegate();
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int MatrixDelegate(IntPtr handle,[In] float[] values);
@@ -510,6 +539,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int TimingReadDelegate(IntPtr handle,ref TimingStats stats);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CaptureSizeDelegate(IntPtr handle,out int width,out int height,out ulong generation);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CropDelegate(IntPtr handle,int x,int y,int width,int height);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ClientGeometryDelegate(IntPtr handle,int offsetX,int offsetY,int fullWidth,int fullHeight);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void ModeDelegate(IntPtr handle,int mode);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int GrabDelegate(IntPtr handle,[In,Out] byte[] buffer,uint bufferSize,out uint width,out uint height);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int LutDelegate(IntPtr handle,[In] byte[] rgba);

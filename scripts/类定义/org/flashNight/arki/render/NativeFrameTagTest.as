@@ -40,12 +40,26 @@ class org.flashNight.arki.render.NativeFrameTagTest {
         NativeFrameTag.update(_root, 3, Number.NaN);
         check(!NativeFrameTag.stateForTests().visible, "non-finite identity cannot publish a stale tag");
         NativeFrameTag.update(_root, 4, 99);
+        _root.__nativeFrameTag._y = 400;
         NativeFrameTag.reset();
         state = NativeFrameTag.stateForTests();
         check(!state.visible && state.epoch == -2 && state.frame == -2 && state.colors.length == 0,
             "scene reset releases the clip and identity");
+        check(_root.__nativeFrameTag == undefined && _root.getInstanceAtDepth(2000000000) == undefined,
+            "reset actually removes high-depth MovieClip instance");
+        var resetPixels:BitmapData = new BitmapData(1024, 576, true, 0);
+        resetPixels.draw(_root);
+        check(resetPixels.getPixel(8, 408) == 0 && resetPixels.getPixel(8, 568) == 0,
+            "reset leaves zero rasterized tag pixels on stage");
+        resetPixels.dispose();
+        NativeFrameTag.hide();
         NativeFrameTag.update(_root, 3, 0x123456);
         _root.__nativeFrameTag._y = 400;
+        var recreatedPixels:BitmapData = new BitmapData(1024, 576, true, 0);
+        recreatedPixels.draw(_root);
+        check(recreatedPixels.getPixel(8, 408) == 0x13579B && recreatedPixels.getPixel(24, 408) == 0x563412,
+            "update after reset and hide re-rasterizes tag cleanly");
+        recreatedPixels.dispose();
         trace("NativeFrameTagTest Tests Passed: " + passed);
         trace("NativeFrameTagTest Tests Failed: " + failed);
     }
