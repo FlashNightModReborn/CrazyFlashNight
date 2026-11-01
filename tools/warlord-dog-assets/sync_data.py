@@ -61,14 +61,21 @@ def main():
         suffix=json.dumps(record,ensure_ascii=False,indent=2)
         indented='\n'.join('  '+line for line in suffix.splitlines())
         units_path.write_text(text.rstrip()[:-1].rstrip()+',\n'+indented+'\n]\n',encoding='utf-8')
-    # Each replaced dog is explicitly in a military combat group, including base defence.
-    for name in ['军阀临时补给点','军阀据点','残垣断壁','基地','难民营地']:
+    # Early warlord skirmishes use standard military/police dogs (475); main base siege & stronghold use armored warlord dogs (477).
+    for name in ['难民营地','军阀临时补给点','残垣断壁']:
+        path=ROOT/'data/stages/基地房顶'/f'{name}.xml'
+        text=path.read_text(encoding='utf-8-sig')
+        projected=text.replace('<Type>兵种13</Type>','<Type>第一防线.制式军警犬</Type>').replace('<Type>军阀.铁卫犬</Type>','<Type>第一防线.制式军警犬</Type>').replace(f'<Type>兵种{balance["unitId"]}</Type>','<Type>第一防线.制式军警犬</Type>')
+        if args.check:
+            if projected!=text or '<Type>第一防线.制式军警犬</Type>' not in text:failures.append(str(path.relative_to(ROOT)))
+        elif projected!=text:path.write_text(projected,encoding='utf-8')
+    for name in ['军阀据点','基地']:
         path=ROOT/'data/stages/基地房顶'/f'{name}.xml'
         text=path.read_text(encoding='utf-8-sig')
         target_type='军阀.铁卫犬' if '<Type>军阀.铁卫犬</Type>' in text else f'兵种{balance["unitId"]}'
         projected=text.replace('<Type>兵种13</Type>',f'<Type>{target_type}</Type>')
         if args.check:
-            if projected!=text:failures.append(str(path.relative_to(ROOT)))
+            if projected!=text or f'<Type>{target_type}</Type>' not in text:failures.append(str(path.relative_to(ROOT)))
         elif projected!=text:path.write_text(projected,encoding='utf-8')
     # The opening wild dog stays ordinary. Only the military ambush replaces a rifleman.
     path=ROOT/'data/stages/地下2层/禁区边缘.xml'

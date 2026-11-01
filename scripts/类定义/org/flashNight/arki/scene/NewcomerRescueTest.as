@@ -62,7 +62,7 @@ class org.flashNight.arki.scene.NewcomerRescueTest {
         }
         check(reserve==745 && fodder==720,"dense horde reserve is predominantly continuous basic zombies");
         check(stages[4].SpawnPoint.Point[0].NoCount && stages[5].SpawnPoint.Point[1].NoCount,"pursuit spawn points are excluded from clear counts");
-        check(stages[7].Wave.SubWave[0].EnemyGroup.Enemy[0].Type=="兵种456" && stages[7].Wave.SubWave[0].EnemyGroup.Enemy[1].Type=="兵种13","published drone and temporary dog IDs");
+        check((stages[7].Wave.SubWave[0].EnemyGroup.Enemy[0].Type=="盗贼.望风鸢" || stages[7].Wave.SubWave[0].EnemyGroup.Enemy[0].Type=="兵种456") && (stages[7].Wave.SubWave[0].EnemyGroup.Enemy[1].Type=="盗贼.撕咬犬" || stages[7].Wave.SubWave[0].EnemyGroup.Enemy[1].Type=="兵种476"),"published drone and bandit dog IDs");
         check(stages[2].BasicInformation.Environment.Door.Direction=="左" && stages[3].BasicInformation.Environment.Door.Direction=="右" && stages[4].BasicInformation.PlayerX==100,"jeep turns around east toward the clinic");
         var groundArrows:Number=0;
         for(var ri:Number=0;ri<stages.length;ri++){
@@ -72,7 +72,7 @@ class org.flashNight.arki.scene.NewcomerRescueTest {
         check(groundArrows==0,"no preplaced ground arrows in any room");
         var raidEnemies:Array=stages[7].Wave.SubWave[2].EnemyGroup.Enemy;var hostileBandits:Boolean=true;
         for(var ei:Number=0;ei<raidEnemies.length;ei++)if(raidEnemies[ei].IsHostile!==true || raidEnemies[ei].Type=="兵种27" || raidEnemies[ei].Type=="兵种28")hostileBandits=false;
-        check(hostileBandits && raidEnemies[4].Type=="兵种48","dedicated male bandits are explicitly hostile");
+        check(hostileBandits && (raidEnemies[4].Type=="盗贼.铁拳" || raidEnemies[4].Type=="兵种48"),"dedicated male bandits are explicitly hostile");
         var clinicExplained:Boolean=false;
         for(var ci:Number=0;ci<stages[2].Event.length;ci++)if(stages[2].Event[ci].EventName=="WaveFinished" && stages[2].Event[ci].FollowingEvent.EventName=="RescueClinicExplained")clinicExplained=true;
         check(clinicExplained,"clinic contact is enabled after spoken guidance");

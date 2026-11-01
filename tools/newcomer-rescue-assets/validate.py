@@ -54,7 +54,7 @@ def validate(require_published=False):
     # This side quest is available after main quest 13. Audit the actual sprite
     # identity, not its generic name: unit 9 uses the enhanced-beast art folder.
     early_zombies = {"1", "2", "3", "4", "5", "6", "8", "293"}
-    raid_units = {"13", "44", "45", "48", "49", "456", "458"}
+    raid_units = {"476", "44", "45", "48", "49", "456", "458"}
     quests = {t["id"]: t for t in json.loads((ROOT / "data/task/iron_spear_tasks.json").read_text(encoding="utf-8"))["tasks"]}
     require(quests[70001]["get_requirements"] == [13] and quests[70002]["get_requirements"] == [70001], "Re-audit the zombie roster if the earliest main-story gate changes")
     first_defense = E.parse(ROOT / "data/stages/基地门口/第一防线.xml").getroot()
@@ -138,7 +138,8 @@ def validate(require_published=False):
     require(rooms[3].findtext("Event[EventName='Start']/FollowingEvent/EventName") == "RescueJeepBriefed", "Investigation requires dialogue guidance")
     require(_uid(sheriff.findtext("Type")) == "458" and sheriff.findtext("IsHostile") == "false", "Use existing independent sheriff boss as ally")
     require(units["458"]["spritename"] == "敌人-前治安官", "Sheriff linkage drift")
-    require(units["13"]["spritename"] == "敌人-僵尸1-狗", "Do not replace global dog while cloud art is pending")
+    require(units["13"]["spritename"] == "敌人-僵尸1-狗", "Do not replace global dog")
+    require(units["476"]["spritename"] == "敌人-盗贼撕咬犬", "Bandit dog linkage drift")
     require(rooms[7].findtext("Wave/SubWave[@id='1']/WaveInformation/Duration") == "10", "Refit window drift")
     drop = rooms[7].find("Wave/SubWave[@id='0']/EnemyGroup/Enemy/Parameters/掉落物")
     require(drop.findtext("名字") == "八门金锁镇暴弹" and drop.findtext("概率") == "100", "Teaching drone must yield one plugin")

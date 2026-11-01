@@ -9,7 +9,7 @@
   "factionBreakdown": {
     "日本军": 126,
     "unknown": 103,
-    "亡灵/僵尸": 605,
+    "亡灵/僵尸": 604,
     "天网": 234,
     "异形": 262,
     "联合大学": 1,
@@ -23,7 +23,7 @@
     "军阀势力": 63,
     "摇滚公园": 14,
     "狂野玫瑰": 45,
-    "堕落城": 39,
+    "堕落城": 40,
     "虫群": 35,
     "凤凰眷属": 38,
     "方舟": 176,
@@ -118,7 +118,7 @@
       "unitCount": 9
     },
     "亡灵/僵尸": {
-      "teamCount": 605,
+      "teamCount": 604,
       "units": [
         {
           "type": "兵种72",
@@ -409,15 +409,6 @@
           "weight": 38
         },
         {
-          "type": "兵种13",
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
-          "isHostile": true,
-          "minLevel": 10,
-          "maxLevel": 40,
-          "weight": 33
-        },
-        {
           "type": "兵种425",
           "name": "巨臂僵尸",
           "spritename": "敌人-巨臂僵尸",
@@ -461,6 +452,15 @@
           "minLevel": 60,
           "maxLevel": 60,
           "weight": 29
+        },
+        {
+          "type": "兵种13",
+          "name": "野狗",
+          "spritename": "敌人-僵尸1-狗",
+          "isHostile": true,
+          "minLevel": 10,
+          "maxLevel": 40,
+          "weight": 28
         },
         {
           "type": "兵种372",
@@ -1838,42 +1838,6 @@
           }
         },
         {
-          "type": "兵种50",
-          "name": "吉他",
-          "spritename": "敌人-摇滚公园萝莉",
-          "isHostile": true,
-          "minLevel": 30,
-          "maxLevel": 30,
-          "weight": 1,
-          "Parameters": {
-            "不掉钱": true
-          }
-        },
-        {
-          "type": "兵种51",
-          "name": "键盘",
-          "spritename": "敌人-摇滚公园少女",
-          "isHostile": true,
-          "minLevel": 30,
-          "maxLevel": 30,
-          "weight": 1,
-          "Parameters": {
-            "不掉钱": true
-          }
-        },
-        {
-          "type": "兵种52",
-          "name": "主唱",
-          "spritename": "敌人-摇滚公园御姐",
-          "isHostile": true,
-          "minLevel": 30,
-          "maxLevel": 30,
-          "weight": 1,
-          "Parameters": {
-            "不掉钱": true
-          }
-        },
-        {
           "type": "兵种430",
           "name": "骨刺僵尸",
           "spritename": "敌人-骨刺僵尸",
@@ -2202,7 +2166,7 @@
           }
         }
       ],
-      "unitCount": 185
+      "unitCount": 182
     },
     "天网": {
       "teamCount": 234,
@@ -7077,15 +7041,6 @@
           "weight": 43
         },
         {
-          "type": "兵种477",
-          "name": "军阀铁卫犬",
-          "spritename": "敌人-军阀铁卫犬",
-          "isHostile": true,
-          "minLevel": 17,
-          "maxLevel": 22,
-          "weight": 32
-        },
-        {
           "type": "兵种56",
           "name": "突击兵",
           "spritename": "敌人-军阀突击兵",
@@ -7134,6 +7089,15 @@
           }
         },
         {
+          "type": "兵种475",
+          "name": "制式军警犬",
+          "spritename": "敌人-制式军警犬",
+          "isHostile": true,
+          "minLevel": 20,
+          "maxLevel": 20,
+          "weight": 19
+        },
+        {
           "type": "兵种266",
           "name": "军阀精英弹药兵",
           "spritename": "敌人-军阀精英弹药兵",
@@ -7144,6 +7108,15 @@
           "Parameters": {
             "称号": "军阀"
           }
+        },
+        {
+          "type": "兵种477",
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
+          "isHostile": true,
+          "minLevel": 17,
+          "maxLevel": 22,
+          "weight": 13
         },
         {
           "type": "兵种57",
@@ -7664,7 +7637,7 @@
           "weight": 1
         }
       ],
-      "unitCount": 43
+      "unitCount": 44
     },
     "摇滚公园": {
       "teamCount": 14,
@@ -8335,7 +8308,7 @@
       "unitCount": 52
     },
     "堕落城": {
-      "teamCount": 39,
+      "teamCount": 40,
       "units": [
         {
           "type": "兵种45",
@@ -8422,6 +8395,15 @@
           }
         },
         {
+          "type": "兵种476",
+          "name": "盗贼撕咬犬",
+          "spritename": "敌人-盗贼撕咬犬",
+          "isHostile": true,
+          "minLevel": 10,
+          "maxLevel": 24,
+          "weight": 16
+        },
+        {
           "type": "兵种48",
           "name": "铁拳",
           "spritename": "敌人-盗贼大叔",
@@ -8431,19 +8413,6 @@
           "weight": 13,
           "Parameters": {
             "手枪": "M79式榴弹发射器"
-          }
-        },
-        {
-          "type": "兵种13",
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
-          "isHostile": true,
-          "minLevel": 23,
-          "maxLevel": 24,
-          "weight": 11,
-          "Parameters": {
-            "newcomerDogPlaceholder": true,
-            "名字": "盗贼战犬"
           }
         },
         {
@@ -8744,6 +8713,42 @@
           "weight": 1
         },
         {
+          "type": "兵种50",
+          "name": "吉他",
+          "spritename": "敌人-摇滚公园萝莉",
+          "isHostile": true,
+          "minLevel": 30,
+          "maxLevel": 30,
+          "weight": 1,
+          "Parameters": {
+            "不掉钱": true
+          }
+        },
+        {
+          "type": "兵种51",
+          "name": "键盘",
+          "spritename": "敌人-摇滚公园少女",
+          "isHostile": true,
+          "minLevel": 30,
+          "maxLevel": 30,
+          "weight": 1,
+          "Parameters": {
+            "不掉钱": true
+          }
+        },
+        {
+          "type": "兵种52",
+          "name": "主唱",
+          "spritename": "敌人-摇滚公园御姐",
+          "isHostile": true,
+          "minLevel": 30,
+          "maxLevel": 30,
+          "weight": 1,
+          "Parameters": {
+            "不掉钱": true
+          }
+        },
+        {
           "type": "兵种7",
           "name": "狂暴僵尸",
           "spritename": "敌人-帽子瘦僵尸1",
@@ -8756,7 +8761,7 @@
           }
         }
       ],
-      "unitCount": 40
+      "unitCount": 43
     },
     "虫群": {
       "teamCount": 35,
@@ -37176,7 +37181,7 @@
       "sourceName": "新人救援",
       "group": "7.0",
       "faction": "堕落城",
-      "factionConfidence": "rule-weak",
+      "factionConfidence": "rule",
       "members": [
         {
           "type": "兵种456",
@@ -37198,19 +37203,15 @@
           }
         },
         {
-          "type": "兵种13",
-          "id": 13,
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种476",
+          "id": 476,
+          "name": "盗贼撕咬犬",
+          "spritename": "敌人-盗贼撕咬犬",
           "level": 23,
           "count": 5,
           "random": false,
           "isHostile": true,
-          "humanoid": false,
-          "parameters": {
-            "newcomerDogPlaceholder": true,
-            "名字": "盗贼战犬"
-          }
+          "humanoid": false
         },
         {
           "type": "兵种44",
@@ -37325,19 +37326,15 @@
           "humanoid": false
         },
         {
-          "type": "兵种13",
-          "id": 13,
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种476",
+          "id": 476,
+          "name": "盗贼撕咬犬",
+          "spritename": "敌人-盗贼撕咬犬",
           "level": 24,
           "count": 6,
           "random": false,
           "isHostile": true,
-          "humanoid": false,
-          "parameters": {
-            "newcomerDogPlaceholder": true,
-            "名字": "盗贼战犬"
-          }
+          "humanoid": false
         },
         {
           "type": "兵种458",
@@ -57956,10 +57953,10 @@
       "factionConfidence": "rule",
       "members": [
         {
-          "type": "兵种477",
-          "id": 477,
-          "name": "军阀铁卫犬",
-          "spritename": "敌人-军阀铁卫犬",
+          "type": "兵种475",
+          "id": 475,
+          "name": "制式军警犬",
+          "spritename": "敌人-制式军警犬",
           "level": 20,
           "count": 2,
           "random": false,
@@ -58016,10 +58013,10 @@
       "factionConfidence": "rule",
       "members": [
         {
-          "type": "兵种477",
-          "id": 477,
-          "name": "军阀铁卫犬",
-          "spritename": "敌人-军阀铁卫犬",
+          "type": "兵种475",
+          "id": 475,
+          "name": "制式军警犬",
+          "spritename": "敌人-制式军警犬",
           "level": 20,
           "count": 2,
           "random": false,
@@ -59600,10 +59597,10 @@
           "humanoid": false
         },
         {
-          "type": "兵种477",
-          "id": 477,
-          "name": "军阀铁卫犬",
-          "spritename": "敌人-军阀铁卫犬",
+          "type": "兵种475",
+          "id": 475,
+          "name": "制式军警犬",
+          "spritename": "敌人-制式军警犬",
           "level": 20,
           "count": 2,
           "random": false,
@@ -59674,10 +59671,10 @@
           "humanoid": false
         },
         {
-          "type": "兵种477",
-          "id": 477,
-          "name": "军阀铁卫犬",
-          "spritename": "敌人-军阀铁卫犬",
+          "type": "兵种475",
+          "id": 475,
+          "name": "制式军警犬",
+          "spritename": "敌人-制式军警犬",
           "level": 20,
           "count": 2,
           "random": false,
@@ -59757,10 +59754,10 @@
           "humanoid": false
         },
         {
-          "type": "兵种477",
-          "id": 477,
-          "name": "军阀铁卫犬",
-          "spritename": "敌人-军阀铁卫犬",
+          "type": "兵种475",
+          "id": 475,
+          "name": "制式军警犬",
+          "spritename": "敌人-制式军警犬",
           "level": 20,
           "count": 3,
           "random": false,
@@ -59883,10 +59880,10 @@
           "humanoid": false
         },
         {
-          "type": "兵种477",
-          "id": 477,
-          "name": "军阀铁卫犬",
-          "spritename": "敌人-军阀铁卫犬",
+          "type": "兵种475",
+          "id": 475,
+          "name": "制式军警犬",
+          "spritename": "敌人-制式军警犬",
           "level": 20,
           "count": 3,
           "random": false,
@@ -59986,10 +59983,10 @@
           }
         },
         {
-          "type": "兵种477",
-          "id": 477,
-          "name": "军阀铁卫犬",
-          "spritename": "敌人-军阀铁卫犬",
+          "type": "兵种475",
+          "id": 475,
+          "name": "制式军警犬",
+          "spritename": "敌人-制式军警犬",
           "level": 20,
           "count": 3,
           "random": false,
@@ -61118,10 +61115,10 @@
           "humanoid": false
         },
         {
-          "type": "兵种477",
-          "id": 477,
-          "name": "军阀铁卫犬",
-          "spritename": "敌人-军阀铁卫犬",
+          "type": "兵种475",
+          "id": 475,
+          "name": "制式军警犬",
+          "spritename": "敌人-制式军警犬",
           "level": 20,
           "count": 2,
           "random": false,
@@ -67071,7 +67068,7 @@
       "sourceStage": "基地车库/摇滚公园.xml",
       "sourceName": "摇滚公园",
       "group": "4.0",
-      "faction": "亡灵/僵尸",
+      "faction": "堕落城",
       "factionConfidence": "rule-weak",
       "members": [
         {
@@ -67117,10 +67114,10 @@
           }
         },
         {
-          "type": "兵种13",
-          "id": 13,
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种476",
+          "id": 476,
+          "name": "盗贼撕咬犬",
+          "spritename": "敌人-盗贼撕咬犬",
           "level": 10,
           "count": 5,
           "random": false,

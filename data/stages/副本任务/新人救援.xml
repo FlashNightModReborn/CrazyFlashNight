@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <GameStage>
-    <!--70002：八段救援；战犬暂用兵种13。伤员不作为战场背景人物。由 tools/newcomer-rescue-assets/stage.py 生成。-->
+    <!--70002：八段救援；盗贼战犬使用盗贼.撕咬犬。伤员不作为战场背景人物。由 tools/newcomer-rescue-assets/stage.py 生成。-->
     <Rewards>
         <Reward id="0">
             <Name>普通hp药剂</Name>
@@ -2070,17 +2070,13 @@
                         </Parameters>
                     </Enemy>
                     <Enemy>
-                        <Type>僵尸.野狗</Type>
+                        <Type>盗贼.撕咬犬</Type>
                         <IsHostile>true</IsHostile>
                         <Level>23</Level>
                         <Quantity>5</Quantity>
                         <Interval>650</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>0</SpawnIndex>
-                        <Parameters>
-                            <名字>盗贼战犬</名字>
-                            <newcomerDogPlaceholder>true</newcomerDogPlaceholder>
-                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>堕落城.左轮</Type>
@@ -2180,17 +2176,13 @@
                         <SpawnIndex>3</SpawnIndex>
                     </Enemy>
                     <Enemy>
-                        <Type>僵尸.野狗</Type>
+                        <Type>盗贼.撕咬犬</Type>
                         <IsHostile>true</IsHostile>
                         <Level>24</Level>
                         <Quantity>6</Quantity>
                         <Interval>1300</Interval>
                         <Delay>0</Delay>
                         <SpawnIndex>0</SpawnIndex>
-                        <Parameters>
-                            <名字>盗贼战犬</名字>
-                            <newcomerDogPlaceholder>true</newcomerDogPlaceholder>
-                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

@@ -127,7 +127,7 @@ def supply(parent, name, quantity):
 
 def build():
     root = E.Element("GameStage")
-    root.append(E.Comment("70002：八段救援；战犬暂用兵种13。伤员不作为战场背景人物。由 tools/newcomer-rescue-assets/stage.py 生成。"))
+    root.append(E.Comment("70002：八段救援；盗贼战犬使用盗贼.撕咬犬。伤员不作为战场背景人物。由 tools/newcomer-rescue-assets/stage.py 生成。"))
     rewards = node(root, "Rewards")
     for i, (name, chance, amount) in enumerate([("普通hp药剂", 4, 2), ("普通mp药剂", 4, 2), ("12号霰弹弹药", 5, 2)]):
         fields(E.SubElement(rewards, "Reward", {"id": str(i)}),
@@ -320,7 +320,7 @@ def build():
     g = wave(rooms[7], 0)
     drone = enemy(g, 456, 1, 23, spawn=2, Delay=500, InstanceName="rescue_drone_teaching")
     supply(node(drone, "Parameters"), "八门金锁镇暴弹", 1)
-    enemy(g, 13, 5, 23, 650, 0, Delay=0, Parameters={"名字": "盗贼战犬", "newcomerDogPlaceholder": True})
+    enemy(g, 476, 5, 23, 650, 0, Delay=0)
     enemy(g, 44, 3, 23, 2200, 0, Delay=2600)
     enemy(g, 45, 3, 23, 1900, 1, Delay=3200)
     event(rooms[7], "WaveFinished", 0, follow="RescueReserveDeploy", lines=[
@@ -337,7 +337,7 @@ def build():
     enemy(g, 45, 6, 24, 2000, 1, Delay=2200)
     enemy(g, 48, 3, 24, 5500, 2, Delay=3800)
     enemy(g, 49, 5, 24, 3400, 3, Delay=2800)
-    enemy(g, 13, 6, 24, 1300, 0, Delay=0, Parameters={"名字": "盗贼战犬", "newcomerDogPlaceholder": True})
+    enemy(g, 476, 6, 24, 1300, 0, Delay=0)
     event(rooms[7], "WaveFinished", 2, follow="RescueRaidDone", lines=[
         ("前治安官", "守住防线缺口，别追溃散的尾巴！先把伤员和随身药包护送进内门，各哨位重新封锁通道！"),
         ("$PC#严肃", "击落的主攻无人机里有一份踩点记号单。吉普上的火控座和加密匣已经被他们提前转运走了，刚才这伙人只是顺着撤离尾巴来扑防线物资箱的。"),
